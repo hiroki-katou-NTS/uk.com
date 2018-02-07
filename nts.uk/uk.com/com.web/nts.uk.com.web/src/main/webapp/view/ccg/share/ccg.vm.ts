@@ -31,11 +31,11 @@ module nts.uk.com.view.ccg.share.ccg {
             showPeriodYM: boolean; // 対象期間精度
 
             /** Required parameter */
-            baseDate: KnockoutObservable<string>;
-            periodStartDate: KnockoutObservable<string>;
-            periodEndDate: KnockoutObservable<string>;
-            periodStartYm: KnockoutObservable<string>;
-            periodEndYm: KnockoutObservable<string>;
+            baseDate: KnockoutObservable<moment.Moment>;
+            periodStartDate: KnockoutObservable<moment.Moment>;
+            periodEndDate: KnockoutObservable<moment.Moment>;
+            periodStartYm: KnockoutObservable<moment.Moment>;
+            periodEndYm: KnockoutObservable<moment.Moment>;
             inService: boolean; // 在職区分
             leaveOfAbsence: boolean; // 休職区分
             closed: boolean; // 休業区分
@@ -86,8 +86,11 @@ module nts.uk.com.view.ccg.share.ccg {
             selectedClosure: KnockoutObservable<number>;
             quickSearchParam: QuickSearchParam;
             advancedSearchParam: AdvancedSearchParam;
+            referenceRange: number;
             
             //params Status Of Employee
+            statusPeriodStart: KnockoutObservable<moment.Moment>;
+            statusPeriodEnd: KnockoutObservable<moment.Moment>;
             incumbentDatasource: KnockoutObservableArray<any>;
             selectedIncumbent: any;
             
@@ -124,6 +127,10 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.selectedCodeWorkplace = ko.observableArray([]);
                 self.selectedCodeEmployee = ko.observableArray([]);
 
+                // status of employment period
+                self.statusPeriodStart = ko.observable(moment());
+                self.statusPeriodEnd = ko.observable(moment());
+
                 // init query param
                 self.initQuickSearchParam();
                 self.initAdvancedSearchParam();
@@ -155,10 +162,12 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.isOpenWorkTypeList = ko.observable(false);
                 self.closureList = ko.observableArray([]);
                 self.selectedClosure = ko.observable(null);
-                self.periodStartDate = ko.observable('');
-                self.periodEndDate = ko.observable('');
-                self.periodStartYm = ko.observable('');
-                self.periodEndYm = ko.observable('');
+
+                self.baseDate = ko.observable(moment());
+                self.periodStartDate = ko.observable(moment());
+                self.periodEndDate = ko.observable(moment());
+                self.periodStartYm = ko.observable(moment());
+                self.periodEndYm = ko.observable(moment());
                 
                 self.incumbentDatasource = ko.observableArray([
                     { code: '1', name: nts.uk.resource.getText("CCG001_40") },
@@ -398,17 +407,23 @@ module nts.uk.com.view.ccg.share.ccg {
             private startComponent(): JQueryPromise<void> {
                 let dfd = $.Deferred<void>();
                 let self = this;
-                service.getRefRangeBySysType(self.systemType)// get ref range
-                // TODO: AppContexts.user().roles().forPersonalInfo() null?
-                self.acquireBaseDate().done(date => {
-                    console.log(date);
-                    //TODO: set basedate to query param. 
-                });
-                self.loadClosure().done(() => {
+                $.when(service.getRefRangeBySysType(self.systemType),
+                    self.acquireBaseDate(),
+                    self.loadClosure()
+                ).done((refRange, baseDate, noValue) => {
+                    self.referenceRange = refRange;
+                    self.setSearchParamBaseDate(baseDate);
                     dfd.resolve();
                 });
 
                 return dfd.promise();
+            }
+
+            private setSearchParamBaseDate(baseDate: any): void {
+                let self = this;
+                console.log(baseDate);
+                self.quickSearchParam.baseDate = baseDate;
+                self.advancedSearchParam.baseDate = baseDate;
             }
 
             /**
@@ -429,11 +444,11 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.showPeriodYM = options.periodAccuracy == 1 ? true : false; // 1 == YM, other = YMD
 
                 /** Required parameter */
-                self.baseDate = ko.observable('2018-06-02'); //TODO: mock data
-                self.periodStartDate = ko.observable('2018-06-02');
-                self.periodEndDate = ko.observable('2018-06-02');
-                self.periodStartYm = ko.observable('2018-06-02');
-                self.periodEndYm = ko.observable('2018-06-02');
+                self.baseDate = ko.observable(moment()); //TODO: mock data
+                self.periodStartDate = ko.observable(moment());
+                self.periodEndDate = ko.observable(moment());
+                self.periodStartYm = ko.observable(moment());
+                self.periodEndYm = ko.observable(moment());
                 self.inService = options.inService;
                 self.leaveOfAbsence = options.leaveOfAbsence;
                 self.closed = options.closed;
@@ -490,6 +505,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 return dfd.promise();
             }
 
+            /**
+             * Get selected closure id
+             */
             private getSelectedClosure(): JQueryPromise<number> {
                 let dfd = $.Deferred<number>();
                 let self = this;
@@ -572,6 +590,41 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
             }
 
+            private isValidDate(): boolean {
+                let self = this;
+                if (self.isFutureDate(self.baseDate())) { //TODO: check input basedate hay basedate tinh duoc?
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_853" });
+                    return false;
+                }
+                if (self.isFutureDate(self.getPeriodEnd())) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_860" });
+                    return false;
+                }
+                return true;
+            }
+
+            private getPeriodStart(): moment.Moment {
+                let self = this;
+                if (self.showPeriodYM) {
+                    return self.periodStartYm();
+                } else {
+                    return self.periodStartDate();
+                }
+            }
+
+            private isFutureDate(date: moment.Moment): boolean {
+                return date.isAfter(moment());
+            }
+
+            private getPeriodEnd(): moment.Moment {
+                let self = this;
+                if (self.showPeriodYM) {
+                    return self.periodEndYm();
+                } else {
+                    return self.periodEndDate();
+                }
+            }
+
             /**
              * function click by apply data search employee (init tab 2)
              * get base date
@@ -584,6 +637,15 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (self.validateClient()) {
                     return;
                 }
+
+                const acquiredDate = self.acquireBaseDate();
+                self.getFuturePermit().done(permit => {
+                    if (permit) {
+                        self.setSearchParamBaseDate(acquiredDate);
+                    } else if (self.isValidDate()) {
+                        self.setSearchParamBaseDate(acquiredDate);
+                    }
+                });
 
                 return;
                 nts.uk.ui.block.invisible(); // block ui
@@ -665,18 +727,21 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
             }
 
-            public acquireBaseDate(): JQueryPromise<String> {
+            /**
+             * Acquire base date
+             */
+            public acquireBaseDate(): JQueryPromise<string> {
                 let dfd = $.Deferred<String>();
                 let self = this;
                 if (self.showBaseDate) {
                     dfd.resolve(self.baseDate().toString());
                 } else {
-                    if (self.showPeriodYM) { //TODO: is accuracy year month date 
-                        dfd.resolve(self.periodEndDate().toString());
-                    } else {
+                    if (self.showPeriodYM) { // Period accuracy is YM 
                         service.calculatePeriod(1, 201802).done(date => { //TODO mock data
                             return dfd.resolve(date);
                         });
+                    } else { // Period accuracy is YMD
+                        dfd.resolve(self.periodEndDate().toString());
                     }
                 }
                 return dfd.promise();
@@ -692,18 +757,26 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
             }
 
-            public getFuturePermit(): boolean {
+            public getFuturePermit(): JQueryPromise<boolean> {
                 let self = this;
-                if (self.systemType == 1) { //TODO: check system type
-                    //TODO: call ws check future permit
-                    return true;
+                switch (self.systemType) {
+                    case 1:
+                        return service.getPersonalRoleFuturePermit();
+                    case 2:
+                        return service.getEmploymentRoleFuturePermit();
+                    default: 
+                        let dfd = $.Deferred<boolean>();
+                        dfd.reject;
+                        return dfd.promise();// systemType not found
                 }
             }
 
             public validateBaseDateAndTargetPeriod() {
                 let self = this;
-                if (self.baseDate()) { //TODO: base date is not in target period range.
-                    // throw Msg_765
+                const periodStart = self.getPeriodStart();
+                const periodEnd = self.getPeriodEnd();
+                if (self.baseDate().isBefore(periodStart) || self.baseDate().isAfter(periodEnd)) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_765" });
                 }
             }
             /**

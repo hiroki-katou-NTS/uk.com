@@ -10,7 +10,6 @@
 				<div id="inp_baseDate" tabindex="1" data-bind="ntsDatePicker: {
 					name: '#[CCG001_27]',
 					dateFormat: 'YYYY/MM/DD',
-					valueFormat: 'YYYY/MM/DD',
 					value: baseDate,
 					required: true }"></div>
 			</div>
@@ -35,28 +34,24 @@
 					<div id="inp-period-startYMD" tabindex="3" data-bind="ntsDatePicker: {
 						name: '#[CCG001_30]',
 						dateFormat: 'YYYY/MM/DD',
-						valueFormat: 'YYYY/MM/DD',
-						value: periodStartYm,
+						value: periodStartDate,
 						required: true }"></div>
 						<div id="inp-period-endYMD" tabindex="4" data-bind="ntsDatePicker: {
 						name: '#[CCG001_31]',
 						dateFormat: 'YYYY/MM/DD',
-						valueFormat: 'YYYY/MM/DD',
-						value: periodEndYm,
+						value: periodEndDate,
 						required: true }"></div>
 				</com:ko>
 				<com:ko tag="if" bind="showPeriodYM">
 					<div id="inp-period-startYM" tabindex="3" data-bind="ntsDatePicker: {
 						name: '#[CCG001_30]',
-						dateFormat: 'YYYY/MM/DD',
-						valueFormat: 'YYYY/MM/DD',
-						value: periodStartDate,
+						dateFormat: 'YYYY/MM',
+						value: periodStartYm,
 						required: true }"></div> 
 						<div id="inp-period-endYM" tabindex="4" data-bind="ntsDatePicker: {
 						name: '#[CCG001_31]',
-						dateFormat: 'YYYY/MM/DD',
-						valueFormat: 'YYYY/MM/DD',
-						value: periodEndDate,
+						dateFormat: 'YYYY/MM',
+						value: periodEndYm,
 						required: true }"></div> 
 				</com:ko>
 				<button tabindex="5" id="zcxvzxcv" class="proceed" data-bind="click: applyDataSearch">#{i18n.getText('CCG001_2')}</button>
@@ -152,16 +147,14 @@
 											<div id="ccg001-partg-start" tabindex="1" data-bind="ntsDatePicker: {
 												name: '#[CCG001_93]',
 												dateFormat: 'YYYY/MM/DD',
-												valueFormat: 'YYYY/MM/DD',
-												value: periodStartYm,
+												value: statusPeriodStart,
 												required: true }">
 											</div> 
 											<span> ~ </span>
 											<div id="ccg001-partg-end" tabindex="2" data-bind="ntsDatePicker: {
 												name: '#[CCG001_94]',
 												dateFormat: 'YYYY/MM/DD',
-												valueFormat: 'YYYY/MM/DD',
-												value: periodEndYm,
+												value: statusPeriodEnd,
 												required: true }">
 											</div> 
 										</div>

@@ -159,9 +159,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 periodAccuracy: number; // 対象期間精度
 
                 /** Required parameter */
-                baseDate?: KnockoutObservable<string>; // 基準日
-                periodStartDate?: KnockoutObservable<string>; // 対象期間開始日
-                periodEndDate?: KnockoutObservable<string>; // 対象期間終了日
+                baseDate?: string; // 基準日
+                periodStartDate?: string; // 対象期間開始日
+                periodEndDate?: string; // 対象期間終了日
                 inService: boolean; // 在職区分
                 leaveOfAbsence: boolean; // 休職区分
                 closed: boolean; // 休業区分
