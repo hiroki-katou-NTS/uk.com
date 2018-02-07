@@ -204,11 +204,19 @@ module nts.uk.ui.koExtentions {
             }
 
             // Checked
-            var checkedRadio = _.find(container.find("input[type='radio']"), (item) => {
-                return _.isEqual(selectedValue(), $(item).data("value"));
-            });
-            if (checkedRadio !== undefined)
-                $(checkedRadio).prop("checked", true);
+            //var checkedRadio = _.find(container.find("input[type='radio']"), (item) => {
+            //    return _.isEqual(selectedValue(), $(item).data("value"));
+            //});
+            //if (checkedRadio !== undefined)
+            //    $(checkedRadio).prop("checked", true);
+            if(!nts.uk.util.isNullOrUndefined(selectedValue())){  
+                // Checked
+                var checkedRadio = _.find(container.find("input[type='radio']"), (item) => {
+                    return _.isEqual(JSON.parse(ko.toJSON(selectedValue())), $(item).data("value"));
+                });
+                if (checkedRadio !== undefined)
+                    $(checkedRadio).prop("checked", true);
+            }
 
             // Enable
             if (enable === true) {

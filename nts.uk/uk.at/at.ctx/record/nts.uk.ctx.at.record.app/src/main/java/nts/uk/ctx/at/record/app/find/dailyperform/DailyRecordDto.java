@@ -225,7 +225,7 @@ public class DailyRecordDto implements ConvertibleAttendanceItem {
 	}
 
 	@Override
-	public Object toDomain() {
+	public Object toDomain(String employeeId, GeneralDate date) {
 		// TODO Auto-generated method stub
 		return null;
 	}

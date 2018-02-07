@@ -170,6 +170,12 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		}
 		return Optional.empty();
 	}
+	
+	@Override
+	public boolean isExists(String employeeId, GeneralDate date) {
+		Optional<KscdtBasicSchedule>  result = findById(employeeId, date);
+		return result.isPresent();
+	}
 
 	/**
 	 * Find by id.

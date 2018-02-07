@@ -76,12 +76,12 @@ public class TimeLeavingOfDailyPerformanceDto implements ConvertibleAttendanceIt
 	public GeneralDate workingDate() {
 		return this.ymd;
 	}
-
+	
 	@Override
-	public TimeLeavingOfDailyPerformance toDomain() {
-		return new TimeLeavingOfDailyPerformance(getEmployeeId(), new WorkTimes(toWorkTime()),
+	public TimeLeavingOfDailyPerformance toDomain(String emp, GeneralDate date) {
+		return new TimeLeavingOfDailyPerformance(emp, new WorkTimes(toWorkTime()),
 				workAndLeave == null ? new ArrayList<>() : ConvertHelper.mapTo(workAndLeave, c -> toTimeLeaveWork(c)),
-				ymd);
+				date);
 	}
 
 	private int toWorkTime() {

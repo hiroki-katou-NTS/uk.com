@@ -51,17 +51,16 @@
 						<!-- <span style="float: right; margin-top: 7px;">#{i18n.getText('CAS005_15')}</span> -->
 					</div>
 				</div>
-				<div id="contents-area">
-					<div class="container" style="margin-left: 30px;">
-						<div style="margin-bottom: 20px;">#{i18n.getText('CAS005_20')}</div>
+				<div id="contents-area" class="fixed-flex-layout">
 						<!-- body left  -->
-						<div style="float: left;" data-bind="with: component">
-							<div id="pannel-top" data-bind="ntsPanel:{width: '350px', height: '320px', direction: '', showIcon: true, visible: true}">
+						<div  class="fixed-flex-layout-left" data-bind="with: component">
+							<div style="margin-bottom: 20px;margin-left: 15px;">#{i18n.getText('CAS005_20')}</div> 
+							<div style="margin-left: 15px;" id="pannel-top" data-bind="ntsPanel:{width: '350px', height: '320px', direction: '', showIcon: true, visible: true}">
 								<ui:include src="../../../ccg/025/component/index.xhtml" />
 							</div>
 						</div>
 						<!-- body right -->
-						<div class=" body-right">
+						<div class="fixed-flex-layout-right">
 							<table class="layout-table">
 								<!-- row 1 -->
 								<tr>
@@ -253,8 +252,7 @@
 		
 							</table>
 						</div>
-					</div>
-				</div>
+				</div><!--  end content area -->
 			</ui:define>
 		
 	</ui:composition>

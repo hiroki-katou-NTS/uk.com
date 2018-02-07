@@ -2882,7 +2882,8 @@ module nts.uk.ui.jqueryExtentions {
                             return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
                                     .validate(value);
                         case "Clock":
-                            this.options.outputFormat = "time";
+                            // Don't merge with time type.
+                            this.options.mode = "time";
                             return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
                                     .validate(value);
                         case "TimeWithDay":
@@ -3265,7 +3266,7 @@ module nts.uk.ui.jqueryExtentions {
                                     let minutes = time.minutesBased.clock.dayattr.parseString(value).asMinutes;
                                     let timeOpts = { timeWithDay: false };
                                     let formatter = new text.TimeWithDayFormatter(timeOpts);
-                                    value = formatter.format(minutes);
+                                    if (!util.isNullOrUndefined(minutes)) value = formatter.format(minutes);
                                 } else if (valueType === "Currency") { 
                                     let currencyOpts: any = new ui.option.CurrencyEditorOption();
                                     currencyOpts.grouplength = constraint.groupLength | 3;
@@ -3643,8 +3644,11 @@ module nts.uk.ui.jqueryExtentions {
                         utils.analyzeColumns(options.columns).forEach(function(c, i) {
                             idxes[c.key] = i;
                         });
-                        let settings = $grid.data(internal.SETTINGS);
-                        settings.descriptor.colIdxes = idxes;
+                        let setting = $grid.data(internal.SETTINGS);
+                        if (!setting.descriptor) {
+                            setting.descriptor = new settings.Descriptor();
+                        } 
+                        setting.descriptor.colIdxes = idxes;
                         return;
                     }
                     Configurator.load($grid, sheetFeature);
@@ -4012,7 +4016,9 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 
                 $grid.on(events.Handler.RECORDS, function(evt, arg) {
-                    if (util.isNullOrUndefined(arg.owner._startRowIndex)) return;
+                    if (util.isNullOrUndefined(arg.owner._startRowIndex)) {
+                        arg.owner._startRowIndex = 0;
+                    }
                     let setting = $grid.data(internal.SETTINGS);
                     let owner = arg.owner;
                     let pageIndex = 0, pageSize = 0;
@@ -4045,9 +4051,11 @@ module nts.uk.ui.jqueryExtentions {
                     if (!setting.descriptor.keyIdxes) {
                         let pk = owner.dataSource.settings.primaryKey;
                         let keyIdxes = {};
-                        owner.dataSource._origDs.forEach(function(d, i) {
-                            keyIdxes[d[pk]] = i; 
-                        });
+                        if (owner.dataSource._origDs) {
+                            owner.dataSource._origDs.forEach(function(d, i) {
+                                keyIdxes[d[pk]] = i; 
+                            });
+                        }
                         setting.descriptor.keyIdxes = keyIdxes;
                         setting.descriptor.fixedTable = owner._fixedTable;
                     }
@@ -4104,6 +4112,8 @@ module nts.uk.ui.jqueryExtentions {
                     && idx <= descriptor.rowCount + descriptor.startRow - 1 && !util.isNullOrUndefined(colIdx)) {
                     return $(descriptor.elements[idx - descriptor.startRow][colIdx]);
                 }
+                
+                return $grid.igGrid("cellById", rowId, key);
             }
         }
         

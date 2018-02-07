@@ -364,6 +364,9 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		}
 		
 		//validate data range
+		if (this.atdItemCondition.getGroup1().getLstErAlAtdItemCon().isEmpty()) {
+			throw new RuntimeErrorException(new Error(), "Data is invalid");
+		}
 		CompareRange<?> compareRange = this.atdItemCondition.getGroup1().getLstErAlAtdItemCon().get(0).getCompareRange();
 		validRangeOfErAlCondition(compareRange);
 	}

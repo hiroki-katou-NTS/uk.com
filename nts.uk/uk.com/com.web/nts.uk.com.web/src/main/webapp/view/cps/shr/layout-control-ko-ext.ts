@@ -517,10 +517,10 @@ module nts.custombinding {
                                     <div class="set-items" data-bind="let: {
                                                 _first: _.find(_items, function(x, i) { return i == 0; }) || {},
                                                 _childs: _.filter(_items, function(x) { return x.itemParentCode == _item.itemCode; }) || [],
-                                                _render: _.filter(_items, function(x) { return [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT].indexOf(x.item.dataTypeValue) > -1; } ) || []
+                                                _render: _.filter(_items, function(x) { return x.item && [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT].indexOf(x.item.dataTypeValue) > -1; } ) || []
                                         }">
                                         <!-- ko if: _items.length == 1 || (_items.length < 3 && _render.length == _items.length) -->
-                                            <!-- ko if: _items.length == 1 && [ITEM_TYPE.SEL_RADIO].indexOf(_items[0].item.dataTypeValue) == -1 -->
+                                            <!-- ko if: _items.length == 1 && _items[0].item && [ITEM_TYPE.SEL_RADIO].indexOf(_items[0].item.dataTypeValue) == -1 -->
                                             <div class="set-group"></div>
                                             <!-- /ko -->
                                             <div class="set-group">
@@ -530,7 +530,7 @@ module nts.custombinding {
                                                     <span data-bind="text: text('CPS001_89')"></span>
                                                 </div>
                                                 <!-- /ko -->
-                                                <!-- ko if: _items.length == 1 && [ITEM_TYPE.SEL_RADIO].indexOf(_items[0].item.dataTypeValue) == -1 -->
+                                                <!-- ko if: _items.length == 1 && _items[0].item && [ITEM_TYPE.SEL_RADIO].indexOf(_items[0].item.dataTypeValue) == -1 -->
                                                 <div class="child-label" data-bind="text: set.itemName"></div>
                                                 <!-- /ko -->
                                                 <div data-bind="template: {
@@ -542,10 +542,10 @@ module nts.custombinding {
                                         <!-- /ko -->
                                         <!-- ko if: _items.length != 1 && (_items.length >= 3 || _render.length != _items.length) -->
                                             <!-- ko foreach: { data: _childs, as: 'set' } -->
-                                                <!-- ko if: $index() == 0 && [ITEM_TYPE.SEL_RADIO].indexOf(set.item.dataTypeValue) == -1 -->
+                                                <!-- ko if: $index() == 0 && set.item && [ITEM_TYPE.SEL_RADIO].indexOf(set.item.dataTypeValue) == -1 -->
                                                     <div class="set-group"></div>
                                                 <!-- /ko -->
-                                                <div class="set-group" data-bind="css: { 'radio': [ITEM_TYPE.SEL_RADIO].indexOf(set.item.dataTypeValue) > -1 }">
+                                                <div class="set-group" data-bind="css: { 'radio':  set.item && [ITEM_TYPE.SEL_RADIO].indexOf(set.item.dataTypeValue) > -1 }">
                                                     <!-- ko if: (set || {}).type == CTRL_TYPE.SET -->
                                                         <div class="child-label" data-bind="text: set.itemName"></div>
                                                         <!-- ko foreach: { data: _.filter(__items, function(x) { return x.itemParentCode == set.itemCode }), as: 'child' } -->
@@ -645,9 +645,6 @@ module nts.custombinding {
                         <button id="cps007_btn_line"></button>
                     </div>
                 </div>
-                <script type="text/html" id="set_template">
-
-                </script>
                 <script type="text/html" id="ctr_template">
                     <div data-bind="let: {
                             nameid : itemDefId.replace(/[-_]/g, '')
@@ -852,64 +849,19 @@ module nts.custombinding {
                                 'data-code': itemCode,
                                 'data-category': categoryCode
                              }, text: text('CPS001_106'), enable: editable">選択</button>
-                            <label class="value-text" data-bind="text: value"></label>
+                            <label class="value-text" data-bind="text: ko.computed(function() { return (value() || '') + '&nbsp;&nbsp;&nbsp;' + (textValue() || ''); })"></label>
                         <!-- /ko -->
                     </div>
                 </script>`;
 
-        private api = {
-            getCat: 'ctx/pereg/person/info/category/find/companyby/{0}',
-            getCats: "ctx/pereg/person/info/category/findby/company",
-            getGroups: 'ctx/pereg/person/groupitem/getAll',
-            getItemCats: 'ctx/pereg/person/info/ctgItem/layout/findby/categoryId/{0}',
-            getItemGroups: 'ctx/pereg/person/groupitem/getAllItemDf/{0}',
-            getItemsById: 'ctx/pereg/person/info/ctgItem/layout/findby/itemId/{0}',
-            getItemsByIds: 'ctx/pereg/person/info/ctgItem/layout/findby/listItemId',
-        };
-
         private services = {
-            getCat: (cid) => {
-                let self = this,
-                    api = self.api;
-
-                return ajax(format(api.getCat, cid));
-            },
-            getCats: () => {
-                let self = this,
-                    api = self.api;
-
-                return ajax(api.getCats);
-            },
-            getGroups: () => {
-                let self = this,
-                    api = self.api;
-
-                return ajax(api.getGroups);
-            },
-            getItemByCat: (cid) => {
-                let self = this,
-                    api = self.api;
-
-                return ajax(format(api.getItemCats, cid));
-            },
-            getItemByGroup: (gid) => {
-                let self = this,
-                    api = self.api;
-
-                return ajax(format(api.getItemGroups, gid));
-            },
-            getItemsById: (id: string) => {
-                let self = this,
-                    api = self.api;
-
-                return ajax(format(api.getItemsById, id));
-            },
-            getItemsByIds: (ids: Array<any>) => {
-                let self = this,
-                    api = self.api;
-
-                return ajax(api.getItemsByIds, ids);
-            }
+            getCat: (cid) => ajax(`ctx/pereg/person/info/category/find/companyby/${cid}`),
+            getCats: () => ajax(`ctx/pereg/person/info/category/findby/company`),
+            getGroups: () => ajax(`ctx/pereg/person/groupitem/getAll`),
+            getItemByCat: (cid) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/categoryId/${cid}`),
+            getItemByGroup: (gid) => ajax(`ctx/pereg/person/groupitem/getAllItemDf/${gid}`),
+            getItemsById: (id: string) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/itemId/${id}`),
+            getItemsByIds: (ids: Array<any>) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/listItemId`, ids)
         };
 
         remove = (item, sender) => {
@@ -1576,13 +1528,13 @@ module nts.custombinding {
                                                     && ko.isObservable(next.value)) {
 
                                                     def.endDate = ko.computed(() => {
-                                                        return moment.utc(ko.toJS(next.value) || '9999-12-31').add(ko.toJS(next.value) ? -1 : 0, "days").toDate();
+                                                        return moment.utc(ko.toJS(next.value) || '9999/12/31', "YYYY/MM/DD").add(ko.toJS(next.value) ? -1 : 0, "days").toDate();
                                                     });
                                                     def.startDate = ko.observable();
 
                                                     next.endDate = ko.observable();
                                                     next.startDate = ko.computed(() => {
-                                                        return moment.utc(ko.toJS(def.value) || '1900-01-01').add(ko.toJS(def.value) ? 1 : 0, "days").toDate();
+                                                        return moment.utc(ko.toJS(def.value) || '1900/01/01', "YYYY/MM/DD").add(ko.toJS(def.value) ? 1 : 0, "days").toDate();
                                                     });
                                                 }
                                             }
@@ -1701,8 +1653,8 @@ module nts.custombinding {
                             def.categoryCode = _.has(def, "categoryCode") && def.categoryCode || '';
 
                             def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? def.lstComboBoxValue : [
-                                { optionValue: '0', optionText: text('CPS001_99') },
-                                { optionValue: '1', optionText: text('CPS001_100') }
+                                { optionValue: '1', optionText: text('CPS001_100') },
+                                { optionValue: '0', optionText: text('CPS001_99') }
                             ];
 
                             def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
@@ -1715,6 +1667,8 @@ module nts.custombinding {
                             def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
 
                             def.value = ko.isObservable(def.value) ? def.value : ko.observable(isStr(def.item) && def.value ? String(def.value) : def.value);
+                            def.textValue = ko.isObservable(def.textValue) ? def.textValue : ko.observable(isStr(def.item) && def.textValue ? String(def.textValue) : def.textValue);
+
                             def.value.subscribe(x => {
                                 let inputs = [],
                                     proc = function(data: any): any {
@@ -1741,7 +1695,7 @@ module nts.custombinding {
                                                 };
                                             case ITEM_SINGLE_TYPE.DATE:
                                                 return {
-                                                    value: data.value ? moment.utc(data.value).format("YYYY/MM/DD") : undefined,
+                                                    value: data.value ? moment.utc(data.value, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
                                                     typeData: 3
                                                 };
                                             case ITEM_SINGLE_TYPE.SELECTION:
@@ -1794,7 +1748,7 @@ module nts.custombinding {
                                     .filter(x => _.has(x, "items") && _.isFunction(x.items))
                                     .map(x => ko.toJS(x.items))
                                     .flatten()
-                                    .filter((x: any) => _.has(x, "item") && !!x.item)
+                                    .filter((x: any) => _.has(x, "item") && !!x.item && x.editable)
                                     .map((x: any) => {
                                         if (_.isArray(x)) {
                                             return x.map((m: any) => {
@@ -1863,7 +1817,12 @@ module nts.custombinding {
                                 // change value
                                 opts.sortable.outData(inputs);
                             });
-                            def.value.valueHasMutated();
+
+                            def.editable.subscribe(x => {
+                                def.value.valueHasMutated();
+                            });
+
+                            def.editable.valueHasMutated();
                         };
 
                     x.dispOrder = i + 1;

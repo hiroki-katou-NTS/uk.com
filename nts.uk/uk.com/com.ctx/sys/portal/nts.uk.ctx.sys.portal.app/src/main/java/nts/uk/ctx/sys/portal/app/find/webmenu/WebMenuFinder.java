@@ -128,20 +128,13 @@ public class WebMenuFinder {
 	}
 	
 	/**
-	 * Get all only menu info, not include Menu bar
+	 * Get all simple web menu info
 	 * @return
 	 */
-	public List<WebMenuDto> findAllWithNoMenuBar() {
+	public List<WebMenuSimpleDto> findAllWithNoMenuBar() {
 		String companyId = AppContexts.user().companyId();
-
-		return webMenuRepository.findAll(companyId).stream().map(webMenuItem -> {
-		
-			return new WebMenuDto(
-					companyId, 
-					webMenuItem.getWebMenuCode().v(), 
-					webMenuItem.getWebMenuName().v(), 
-					webMenuItem.getDefaultMenu().value,
-					null);
+		return webMenuRepository.findAllSimpleValue(companyId).stream().map(webMenuItem -> {
+			return new WebMenuSimpleDto(webMenuItem.getCode(), webMenuItem.getName());
 		}).collect(Collectors.toList());
 	}
 	
