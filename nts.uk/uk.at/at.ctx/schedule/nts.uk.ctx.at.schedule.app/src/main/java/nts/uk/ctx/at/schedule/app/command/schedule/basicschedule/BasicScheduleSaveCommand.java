@@ -85,10 +85,10 @@ public class BasicScheduleSaveCommand {
 		command.setScheduleCnt(timezone.getWorkNo());
 
 		// 予定開始時刻 = 取得した勤務予定時間帯. 開始
-		command.setScheduleStartClock(timezone.getStart().valueAsMinutes());
+		command.setScheduleStartClock(timezone.getStart() != null ? timezone.getStart().valueAsMinutes() : null);
 
 		// 予定終了時刻 = 取得した勤務予定時間帯. 終了
-		command.setScheduleEndClock(timezone.getEnd().valueAsMinutes());
+		command.setScheduleEndClock(timezone.getEnd() != null ? timezone.getEnd().valueAsMinutes() : null);
 
 		return command;
 	}
