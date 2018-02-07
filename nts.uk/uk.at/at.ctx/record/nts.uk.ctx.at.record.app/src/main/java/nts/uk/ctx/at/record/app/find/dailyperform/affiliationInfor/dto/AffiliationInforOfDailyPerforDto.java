@@ -64,10 +64,10 @@ public class AffiliationInforOfDailyPerforDto implements ConvertibleAttendanceIt
 	}
 
 	@Override
-	public AffiliationInforOfDailyPerfor toDomain() {
+	public AffiliationInforOfDailyPerfor toDomain(String employeeId, GeneralDate date) {
 		return new AffiliationInforOfDailyPerfor(
 					this.employmentCode == null ? null : new EmploymentCode(this.employmentCode), 
-					this.employeeId, this.jobId, this.workplaceID, this.baseDate,
+					employeeId, this.jobId, this.workplaceID, date,
 					this.classificationCode == null ? null : new ClassificationCode(this.classificationCode),
 					this.subscriptionCode == null ? null : new BonusPaySettingCode(this.subscriptionCode));
 	}
