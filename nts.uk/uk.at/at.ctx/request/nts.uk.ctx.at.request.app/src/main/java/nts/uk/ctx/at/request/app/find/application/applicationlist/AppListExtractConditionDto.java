@@ -3,22 +3,24 @@ package nts.uk.ctx.at.request.app.find.application.applicationlist;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.AppTypeList;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.ApplicationDisplayAtr;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.ApplicationListAtr;
-import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.AppListExtractCondition;
 @Getter
 public class AppListExtractConditionDto {
 
 	/**期間開始日付*/
+	@Setter
 	private String startDate;
 	/**期間終了日付*/
-	private String emdDate;
+	@Setter
+	private String endDate;
 	/**申請一覧区分*/
-	private int appListAtr;
+	private Integer appListAtr;
 	/**申請種類*/
 	private int appType;
 	/**承認状況＿未承認*/
@@ -44,8 +46,8 @@ public class AppListExtractConditionDto {
 		String dateFormat = "yyyy-MM-dd";
 		return new AppListExtractCondition(
 				GeneralDate.fromString(dto.getStartDate(), dateFormat),
-				GeneralDate.fromString(dto.getEmdDate(), dateFormat),
-				EnumAdaptor.valueOf(dto.getAppListAtr(),ApplicationListAtr.class),
+				GeneralDate.fromString(dto.getEndDate(), dateFormat),
+				dto.getAppListAtr() == null ? null : EnumAdaptor.valueOf(dto.getAppListAtr(),ApplicationListAtr.class),
 				EnumAdaptor.valueOf(dto.getAppType(), AppTypeList.class),
 				dto.isUnapprovalStatus(),
 				dto.isApprovalStatus(),

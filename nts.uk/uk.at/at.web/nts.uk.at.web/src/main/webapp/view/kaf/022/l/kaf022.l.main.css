@@ -13,7 +13,13 @@
 	background-color: #CFF1A5;
 }
 .fixed-table.kaf022l{
-	margin-top: 10px;
+	margin-top: 20px;
+}
+.ui-iggrid.kaf022l table tr th{
+	height: 35px;
+}
+.ui-iggrid.kaf022l table tr td{
+	height: 35px;
 }
 .ntsCheckBox.margin-left-style span.label{
 	margin-left: 30px !important;
@@ -24,4 +30,14 @@
 }
 .block-style{
 	display: flex;
+}
+.group-margin-left{	
+    margin-left: 34px;
+}
+.center-content-kaf022l{	
+    display: inline-block;
+    left: 50%;
+    margin-left: -100px;
+    position: absolute;
+    top: 18%;	
 }

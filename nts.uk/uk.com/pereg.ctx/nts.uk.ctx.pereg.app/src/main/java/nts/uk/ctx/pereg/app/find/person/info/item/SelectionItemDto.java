@@ -13,16 +13,16 @@ public class SelectionItemDto extends DataTypeStateDto {
 
 	private ReferenceTypes referenceType;
 
-	public static SelectionItemDto createMasterRefDto(String masterType) {
-		return MasterRefConditionDto.createFromJavaType(masterType);
+	public static SelectionItemDto createMasterRefDto(String masterType, int dataTypeValue) {
+		return MasterRefConditionDto.createFromJavaType(masterType, dataTypeValue);
 	}
 
-	public static SelectionItemDto createCodeNameRefDto(String typeCode) {
-		return CodeNameRefTypeDto.createFromJavaType(typeCode);
+	public static SelectionItemDto createCodeNameRefDto(String typeCode, int dataTypeValue) {
+		return CodeNameRefTypeDto.createFromJavaType(typeCode, dataTypeValue);
 	}
 
-	public static SelectionItemDto createEnumRefDto(String enumName) {
-		return EnumRefConditionDto.createFromJavaType(enumName);
+	public static SelectionItemDto createEnumRefDto(String enumName, int dataTypeValue) {
+		return EnumRefConditionDto.createFromJavaType(enumName, dataTypeValue);
 	}
 
 	public SelectionItemDto(ReferenceTypes referenceType) {
@@ -31,18 +31,18 @@ public class SelectionItemDto extends DataTypeStateDto {
 		this.dataTypeValue = DataTypeValue.SELECTION.value;
 	}
 
-	public static SelectionItemDto createFromJavaType(ReferenceTypeState referenceTypeState) {
+	public static SelectionItemDto createFromJavaType(ReferenceTypeState referenceTypeState, int dataTypeValue) {
 		ReferenceTypes refType = referenceTypeState.getReferenceType();
 
 		if (refType == ReferenceTypes.DESIGNATED_MASTER) {
 			MasterReferenceCondition masterRef = (MasterReferenceCondition) referenceTypeState;
-			return createMasterRefDto(masterRef.getMasterType().v());
+			return createMasterRefDto(masterRef.getMasterType().v(), dataTypeValue);
 		} else if (refType == ReferenceTypes.CODE_NAME) {
 			CodeNameReferenceType codeNameRef = (CodeNameReferenceType) referenceTypeState;
-			return createCodeNameRefDto(codeNameRef.getTypeCode().v());
+			return createCodeNameRefDto(codeNameRef.getTypeCode().v(), dataTypeValue);
 		} else {
 			EnumReferenceCondition enumRef = (EnumReferenceCondition) referenceTypeState;
-			return createEnumRefDto(enumRef.getEnumName().v());
+			return createEnumRefDto(enumRef.getEnumName().v(), dataTypeValue);
 		}
 	}
 }

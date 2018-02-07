@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 
@@ -182,10 +183,39 @@ public class ScheCreExeWorkTypeHandler {
 			}
 			return optionalWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().v();
 		} else {
-
+			
+			int closeAtr = 0;
+			String WorkTypeCd = null;
+			//convert TEMP_ABS_FRAME_NO -> CLOSE_ATR
+			switch (employmentStatus.getLeaveHolidayType()) {
+			case 1:
+				List<WorkType> findByCompanyIdAndLeaveAbsences = this.workTypeRepository.findByCompanyIdAndLeaveAbsence(command.getBaseGetter().getCompanyId());
+				WorkType workType2 = findByCompanyIdAndLeaveAbsences.get(FIRST_DATA);
+				WorkTypeCd = workType2.getWorkTypeCode().v();
+				break;
+			case 2:
+				closeAtr = 3;
+				break;
+			case 3:
+				closeAtr = 2;
+				break;
+			case 4:
+				closeAtr = 0;
+				break;
+			case 5:
+				closeAtr = 1;
+				break;
+			default:
+				//6,7,8,9,10
+				closeAtr = 4;
+				break;
+			}
+			if(WorkTypeCd!=null){
+				return WorkTypeCd;
+			}
 			// find work type set by close atr employment status
 			List<WorkTypeSet> worktypeSets = this.workTypeRepository.findWorkTypeSetCloseAtr(
-					command.getBaseGetter().getCompanyId(), employmentStatus.getLeaveHolidayType());
+					command.getBaseGetter().getCompanyId(), closeAtr);
 
 			// check empty work type set
 			if (CollectionUtil.isEmpty(worktypeSets)) {

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
 
 /**
  * 月別実績の休日日数
@@ -32,5 +33,17 @@ public class HolidayDaysOfMonthly {
 		val domain = new HolidayDaysOfMonthly();
 		domain.days = days;
 		return domain;
+	}
+	
+	/**
+	 * 集計
+	 * @param workTypeDaysCountTable 勤務種類の日数カウント表
+	 */
+	public void aggregate(WorkTypeDaysCountTable workTypeDaysCountTable){
+
+		if (workTypeDaysCountTable == null) return;
+		
+		// 休日日数に加算する
+		this.days = this.days.addDays(workTypeDaysCountTable.getHolidayDays().v());
 	}
 }

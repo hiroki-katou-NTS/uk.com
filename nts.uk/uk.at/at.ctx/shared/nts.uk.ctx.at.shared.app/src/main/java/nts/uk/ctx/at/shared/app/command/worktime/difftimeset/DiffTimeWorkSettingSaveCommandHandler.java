@@ -57,12 +57,11 @@ public class DiffTimeWorkSettingSaveCommandHandler extends CommandHandler<DiffTi
 		// Convert dto to domain
 		DiffTimeWorkSetting difftimeWorkSetting = command.toDomainDiffTimeWorkSetting();
 
-		// Validate + common handler
-		this.validate(command, difftimeWorkSetting);
-
 		// call repository save fixed work setting
 		if (command.isAddMode()) {
 			difftimeWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.getScreenMode()));
+			// Validate + common handler
+			this.validate(command, difftimeWorkSetting);
 			this.difftimeRepo.add(difftimeWorkSetting);
 		} else {
 			Optional<DiffTimeWorkSetting> opDiffTimeWorkSetting = this.difftimeRepo.find(companyId,
@@ -70,6 +69,8 @@ public class DiffTimeWorkSettingSaveCommandHandler extends CommandHandler<DiffTi
 			if (opDiffTimeWorkSetting.isPresent()) {
 				difftimeWorkSetting.restoreData(ScreenMode.valueOf(command.getScreenMode()),
 						command.getWorktimeSetting().getWorkTimeDivision(), opDiffTimeWorkSetting.get());
+				// Validate + common handler
+				this.validate(command, difftimeWorkSetting);
 				this.difftimeRepo.update(difftimeWorkSetting);
 			}
 		}

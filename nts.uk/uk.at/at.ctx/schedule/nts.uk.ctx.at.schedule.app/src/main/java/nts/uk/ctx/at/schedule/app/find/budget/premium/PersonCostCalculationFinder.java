@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.app.find.budget.premium;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,7 +51,7 @@ public class PersonCostCalculationFinder {
 		String companyID = AppContexts.user().companyId();
 		return this.personCostCalculationRepository.findByCompanyID(companyID)
 				.stream()
-				.map(x -> convertToDto(x))
+				.map(x -> convertToSimpleDto(x))
 				.collect(Collectors.toList());
 	}
 	
@@ -68,6 +69,23 @@ public class PersonCostCalculationFinder {
 						x.getName().v(), 
 						x.getUseAtr().value))
 				.collect(Collectors.toList());
+	}
+	
+	public PersonCostCalculationSettingDto findByHistoryID(String historyID){
+		String companyID = AppContexts.user().companyId();
+		return this.personCostCalculationRepository.findItemByHistoryID(companyID, historyID)
+				.map(x -> convertToDto(x)).orElse(null);
+	}
+	
+	private PersonCostCalculationSettingDto convertToSimpleDto(PersonCostCalculation personCostCalculation){
+		return new PersonCostCalculationSettingDto(
+				personCostCalculation.getCompanyID(), 
+				personCostCalculation.getHistoryID(), 
+				personCostCalculation.getStartDate(), 
+				personCostCalculation.getEndDate(),
+				personCostCalculation.getUnitPrice().value,
+				personCostCalculation.getMemo().v(), 
+				Collections.emptyList());
 	}
 	
 	/**

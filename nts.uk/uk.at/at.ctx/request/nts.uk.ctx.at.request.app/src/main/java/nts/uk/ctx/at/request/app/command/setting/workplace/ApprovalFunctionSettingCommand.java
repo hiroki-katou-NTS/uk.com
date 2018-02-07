@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.InstructionCategory;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApplicationDetailSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApplicationUseSetting;
@@ -99,7 +100,7 @@ public class ApprovalFunctionSettingCommand {
 		return new ApprovalFunctionSetting(
 				SettingFlg.toEnum(this.prerequisiteForpauseFlg), 
 				new InstructionUseSetting(
-						UseAtr.toEnum(this.instructionAtr), 
+						InstructionCategory.toEnum(this.instructionAtr), 
 						new Memo(this.instructionMemo), 
 						UseAtr.toEnum(this.instructionUseAtr)), 
 				SettingFlg.toEnum(this.holidayTimeAppCalFlg), 

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.pub.workrecord.erroralarm;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @NoArgsConstructor
@@ -11,6 +12,7 @@ public class ErrorAlarmWorkRecordPubExport {
 	/* コード */
 	private String code;
 	/* 名称 */
+	@Setter
 	private String name;
 	/* システム固定とする */
 	private int fixedAtr;

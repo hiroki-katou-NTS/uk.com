@@ -8,7 +8,7 @@
 }
 
 #btnVacationRemaining {
-	margin-left: 200px;
+	margin-left: 50px;
 }
 
 #dislayFormatLbl {
@@ -33,24 +33,25 @@
 }
 
 #btn-saveColumnWidth {
-	float: right;
+	/* float: right; */
 	margin-top: 3px;
 }
 
 #btn-legend {
-	float: right;
+	/* float: left; */
 	margin-top: 3px;
-	margin-right: 10px;
+	margin-left: 150px;
 }
 
 .grid-container {
 	margin: 15px 0 0 0px;
-	margin-top: 7px;
+    margin-top: -36px;
+    float: left;
 }
 
 .setting-container {
 	display: inline-block;
-	float: right;
+	float: left;
 	margin: 3px 100px 0 20px;
 	position: relative;
 }
@@ -136,29 +137,31 @@
 	border: 1px solid #CCC;
 	text-align: center;
 	height: 29px;
+	width: 50px;
 }
 #fixed-table .ui-widget-body{
 	border: 1px solid #CCC;
 	text-align: right;
     height: 29px;
 }
-#fixed-table .ui-widget-body .text-holiday{ 
+/* #fixed-table .ui-widget-body .text-holiday{ 
 	margin-right: 10px;
-}
+} */
 #fixed-table {
 	border: 2px solid #CCC;
 	text-align: center;
 	padding: 0 2px;
-	width: 400px;
+	/* width: 400px; */
 }
-#numberHoliday{
-    margin-left: 5px;
-	height: 80px ; 
-	margin-top: 10px; 
-	margin-bottom: 10px;
-}
+#numberHoliday {
+	/* margin-left: 5px;
+	height: 80px;
+	margin-top: 4px; */
+	float: right;
+	margin-left: 120px;
+	}
 #emp-component{
-	margin-top: 10px;
+	margin-top: -33px;
 	margin-left: -10px;
 }
 .ui-iggrid .ui-iggrid-headercaption, .ui-iggrid .ui-iggrid-header, .ui-iggrid .ui-iggrid-toolbar {
@@ -167,12 +170,14 @@
 }
 #content-grid{
     position: absolute;
+    top: 93px;
 }
 #content-grid-not{
-	height: 20px ;
+/* 	height: 20px ;
 	position: relative;
 	bottom: -30px;
-	margin-right: 300px;
+	margin-right: 300px; */
+	margin-top: -3px;
 }
 .ui-iggrid-results{
 	background-color: #e9e9e9;
@@ -182,6 +187,13 @@
 }
 .nts-grid-wrapper table tr td.ui-state-hover, .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-state-hover,  .nts-grid  tr.ui-ig-altrecord td.ui-state-hover{
 	background-color: #f5f5dc ;
+}
+#right-content {
+    margin-left: 80px;
+     width: 1400px !IMPORTANT;
+}
+.nts-grid-sheet-buttons{
+/* 	margin-top:32px; */
 }
 /* .nts-grid  tr.ui-ig-altrecord td.ui-state-active{
 	background-color: #007fff !IMPORTANT;

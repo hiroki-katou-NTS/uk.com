@@ -6,12 +6,9 @@ package nts.uk.ctx.at.request.dom.setting.request.application;
  */
 
 import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
-import nts.arc.primitive.constraint.StringMaxLength;
+import nts.arc.primitive.constraint.IntegerRange;
 
-@StringCharType(CharType.NUMERIC)
-@StringMaxLength(2)
+@IntegerRange(max = 31, min = 1)
 public class Deadline extends IntegerPrimitiveValue<Deadline> {
 
 	public Deadline(int rawValue) {

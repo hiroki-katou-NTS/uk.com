@@ -151,13 +151,9 @@ module nts.uk.ui.koExtentions {
             if (data.childField) {
                 childField = ko.unwrap(data.childField);
             }
-            var component;
             let targetMode = data.mode;
             if (targetMode === "listbox") {
-                component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");
                 targetMode = "igGrid";    
-            } else {
-                component = $("#" + ko.unwrap(data.comId));    
             }
             
             var $container = $(element);
@@ -183,7 +179,8 @@ module nts.uk.ui.koExtentions {
                 let $clearButton = $container.find("button.clear-btn");  
                 minusWidth +=  $clearButton.outerWidth(true);
                 $clearButton.click(function(evt: Event, ui: any) {
-                    if(component.length === 0){
+                    let component = $("#" + ko.unwrap(data.comId));    
+                    if(component.hasClass("listbox-wrapper")){
                         component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");     
                     }
                     let srh: SearchPub= $container.data("searchObject");
@@ -191,7 +188,7 @@ module nts.uk.ui.koExtentions {
                     component.igGrid("option", "dataSource", srh.seachBox.getDataSource());  
                     component.igGrid("dataBind"); 
                     $container.data("searchKey", null);    
-                    component.attr("filtered", false);     
+                    component.attr("filtered", "false");     
                     _.defer(function() {
                         component.trigger("selectChange");    
                     });     
@@ -210,9 +207,10 @@ module nts.uk.ui.koExtentions {
             let search = function (searchKey: string){
                 if (targetMode) {
                     let selectedItems, isMulti;
+                    let component = $("#" + ko.unwrap(data.comId));   
                     if (targetMode == 'igGrid') {
-                        if(component.length === 0){
-                            component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");    
+                        if(component.hasClass("listbox-wrapper")){
+                            component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");     
                         }
                         selectedItems = component.ntsGridList("getSelected");
                         isMulti = component.igGridSelection('option', 'multipleSelection');
@@ -240,7 +238,7 @@ module nts.uk.ui.koExtentions {
                         component.ntsGridList("setSelected", selectedProperties);
                         if(searchMode === "filter"){
                             $container.data("filteredSrouce", result.options); 
-                            component.attr("filtered", true);   
+                            component.attr("filtered", "true");   
                             //selected(selectedValue);
                             //selected.valueHasMutated();
                             let source = _.filter(data.items(), function (item: any){
@@ -253,9 +251,9 @@ module nts.uk.ui.koExtentions {
                             component.igGrid("option", "dataSource", _.cloneDeep(source));  
                             component.igGrid("dataBind");  
                             
-                            if(nts.uk.util.isNullOrEmpty(selectedProperties)){
+//                            if(nts.uk.util.isNullOrEmpty(selectedProperties)){
                                 component.trigger("selectionchanged");        
-                            }
+//                            }
                         } else {
                             component.trigger("selectionchanged");    
                         }
@@ -318,17 +316,15 @@ module nts.uk.ui.koExtentions {
             var searchMode = ko.unwrap(data.searchMode);
             let primaryKey = ko.unwrap(data.targetKey);
             let enable = ko.unwrap(data.enable);
-            let targetMode = data.mode;
             let component;
-            if (targetMode === "listbox") {
+            if (data.mode === "listbox") {
                 component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");    
-                targetMode = "igGrid";    
             } else {
                 component = $("#" + ko.unwrap(data.comId));    
             }
             let srhX: SearchPub= $searchBox.data("searchObject");
             
-            if(component.attr("filtered") === true || component.attr("filtered") === "true"){
+            if(component.attr("filtered") === "true"){
                 let currentSoruce = srhX.getDataSource();
             
                 let newItems = _.filter(arr, function(i){

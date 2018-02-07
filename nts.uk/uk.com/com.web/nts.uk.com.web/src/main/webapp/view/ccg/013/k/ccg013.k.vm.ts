@@ -235,7 +235,7 @@ function validateInput($input: JQuery, data: any) {
         return true;
     } else {
         let error = $input.ntsError('getError');
-        if (nts.uk.util.isNullOrUndefined(error) || error.messageText !== result.errorMessage) {
+        if (nts.uk.util.isNullOrEmpty(error) || error.messageText !== result.errorMessage) {
             $input.ntsError('clear');
             $input.ntsError('set', result.errorMessage, result.errorCode);
             $input.attr("style", "border-color: red !important;");
