@@ -5,11 +5,15 @@
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeekSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeek;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeekPK;
 
 /**
  * The Class JpaPersonalDayOfWeekSetMemento.
@@ -21,7 +25,7 @@ public class JpaPerDayOfWeekSetMemento implements PersonalDayOfWeekSetMemento {
 
 	/** The entities. */
 	private List<KshmtPersonalDayOfWeek> entities;
-
+	
 	/**
 	 * Instantiates a new jpa personal day of week set memento.
 	 *
@@ -30,16 +34,7 @@ public class JpaPerDayOfWeekSetMemento implements PersonalDayOfWeekSetMemento {
 	 */
 	public JpaPerDayOfWeekSetMemento(String historyId, List<KshmtPersonalDayOfWeek> entities) {
 		this.historyId = historyId;
-		// Check empty
-//		if (CollectionUtil.isEmpty(entities)) {
-//			this.entities = new ArrayList<>();
-//		} else {
-//			this.entities = entities;
-//		}
 		this.entities = entities;
-		
-		// Clear item
-		this.entities.clear();
 	}
 
 	/*
@@ -51,8 +46,7 @@ public class JpaPerDayOfWeekSetMemento implements PersonalDayOfWeekSetMemento {
 	@Override
 	public void setSaturday(Optional<SingleDaySchedule> saturday) {
 		if (saturday.isPresent()) {
-			this.entities.add(
-					this.toEntity(saturday.get(), this.historyId, DayOfWeekAtr.SATURDAY.value));
+			this.setDayOfWeek(saturday.get(), this.historyId, DayOfWeekAtr.SATURDAY.value);
 		}
 	}
 
@@ -65,8 +59,7 @@ public class JpaPerDayOfWeekSetMemento implements PersonalDayOfWeekSetMemento {
 	@Override
 	public void setSunday(Optional<SingleDaySchedule> sunday) {
 		if (sunday.isPresent()) {
-			this.entities
-					.add(this.toEntity(sunday.get(), this.historyId, DayOfWeekAtr.SUNDAY.value));
+			this.setDayOfWeek(sunday.get(), this.historyId, DayOfWeekAtr.SUNDAY.value);
 		}
 
 	}
@@ -80,8 +73,7 @@ public class JpaPerDayOfWeekSetMemento implements PersonalDayOfWeekSetMemento {
 	@Override
 	public void setMonday(Optional<SingleDaySchedule> monday) {
 		if (monday.isPresent()) {
-			this.entities
-					.add(this.toEntity(monday.get(), this.historyId, DayOfWeekAtr.MONDAY.value));
+			this.setDayOfWeek(monday.get(), this.historyId, DayOfWeekAtr.MONDAY.value);
 		}
 	}
 
@@ -94,8 +86,7 @@ public class JpaPerDayOfWeekSetMemento implements PersonalDayOfWeekSetMemento {
 	@Override
 	public void setThursday(Optional<SingleDaySchedule> thursday) {
 		if (thursday.isPresent()) {
-			this.entities.add(
-					this.toEntity(thursday.get(), this.historyId, DayOfWeekAtr.THURSDAY.value));
+			this.setDayOfWeek(thursday.get(), this.historyId, DayOfWeekAtr.THURSDAY.value);
 		}
 	}
 
@@ -108,8 +99,7 @@ public class JpaPerDayOfWeekSetMemento implements PersonalDayOfWeekSetMemento {
 	@Override
 	public void setWednesday(Optional<SingleDaySchedule> wednesday) {
 		if (wednesday.isPresent()) {
-			this.entities.add(
-					this.toEntity(wednesday.get(), this.historyId, DayOfWeekAtr.WEDNESDAY.value));
+			this.setDayOfWeek(wednesday.get(), this.historyId, DayOfWeekAtr.WEDNESDAY.value);
 		}
 	}
 
@@ -122,8 +112,7 @@ public class JpaPerDayOfWeekSetMemento implements PersonalDayOfWeekSetMemento {
 	@Override
 	public void setTuesday(Optional<SingleDaySchedule> tuesday) {
 		if (tuesday.isPresent()) {
-			this.entities
-					.add(this.toEntity(tuesday.get(), this.historyId, DayOfWeekAtr.TUESDAY.value));
+			this.setDayOfWeek(tuesday.get(), this.historyId, DayOfWeekAtr.TUESDAY.value);
 		}
 	}
 
@@ -136,8 +125,7 @@ public class JpaPerDayOfWeekSetMemento implements PersonalDayOfWeekSetMemento {
 	@Override
 	public void setFriday(Optional<SingleDaySchedule> friday) {
 		if (friday.isPresent()) {
-			this.entities
-					.add(this.toEntity(friday.get(), this.historyId, DayOfWeekAtr.FRIDAY.value));
+			this.setDayOfWeek(friday.get(), this.historyId, DayOfWeekAtr.FRIDAY.value);
 		}
 	}
 
@@ -150,11 +138,29 @@ public class JpaPerDayOfWeekSetMemento implements PersonalDayOfWeekSetMemento {
 	 *            the day of week atr
 	 * @return the kshmt per day of week
 	 */
-	private KshmtPersonalDayOfWeek toEntity(SingleDaySchedule domain, String historyId,
+	private void setDayOfWeek(SingleDaySchedule domain, String historyId,
 			int dayOfWeekAtr) {
-		KshmtPersonalDayOfWeek entity = new KshmtPersonalDayOfWeek();
+		// Convert list entities to map for searching
+		Map<KshmtPersonalDayOfWeekPK, KshmtPersonalDayOfWeek> mapEntities = this.entities.stream()
+				.collect(Collectors.toMap(KshmtPersonalDayOfWeek::getKshmtPersonalDayOfWeekPK, Function.identity()));
+		
+		// Create primary key
+		KshmtPersonalDayOfWeekPK pk = new KshmtPersonalDayOfWeekPK();
+		pk.setHistoryId(historyId);
+		pk.setPerWorkDayOffAtr(dayOfWeekAtr);
+		
+		// Get exist item with primary key or return new entity if not exist
+		KshmtPersonalDayOfWeek entity = mapEntities.getOrDefault(pk, new KshmtPersonalDayOfWeek());
+		
+		// Save new data into entity
 		domain.saveToMemento(new JpaSDayScheDayOfSetMemento(historyId, dayOfWeekAtr, entity));
-		return entity;
+		
+		// Put new/updated entity into map
+		mapEntities.put(pk, entity);
+		
+		// Put back to the entities list
+		this.entities.clear();
+		this.entities.addAll(mapEntities.values());
 	}
 
 }
