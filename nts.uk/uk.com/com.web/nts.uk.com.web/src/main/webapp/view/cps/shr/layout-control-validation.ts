@@ -135,70 +135,91 @@ module nts.layout {
             Item && Item.data.textValue(value || '');
         }
 
-        regClickEvent(btnEvent: IButtonEvent) {
-    
-            _.each(btnEvent.btnCodes, (code) => {
-                         let self = this,
-                            finder = self.finder,
-                            currentCtg = 'CS00020',
-                            btnItem: IFindData = finder.find(currentCtg,code),
-                            wkTypeItem: IFindData = finder.find(currentCtg, btnEvent.wkTypeCode),
-                            wkTimeItem: IFindData = finder.find(currentCtg, btnEvent.timeCode),
-                            startItem1: IFindData = finder.find(currentCtg, btnEvent.startTime1),
-                            startItem2: IFindData = finder.find(currentCtg, btnEvent.startTime2),
-                            endItem1: IFindData = finder.find(currentCtg, btnEvent.endTime1),
-                            endItem2: IFindData = finder.find(currentCtg, btnEvent.endTime2);
-            
-                        if (btnItem) {
-                            btnItem.ctrl.on('click', () => {
-                                let typeCode: string = wkTypeItem ? wkTypeItem.data.value() || "" : "",
-                                    typeCodes: Array<any> = btnEvent.wkTypeCodes.constructor === Array ? btnEvent.wkTypeCodes : !finder.find(currentCtg, btnEvent.wkTypeCodes) ? [] : finder.find(currentCtg, btnEvent.wkTypeCodes).data.lstComboBoxValue,
-                                    timeCode: string = wkTimeItem ? wkTimeItem.data.value() || "" : "",
-                                    timeCodes: Array<any> = btnEvent.wkTimeCodes.constructor === Array ? btnEvent.wkTimeCodes : !finder.find(currentCtg, btnEvent.wkTimeCodes) ? [] : finder.find(currentCtg, btnEvent.wkTimeCodes).data.lstComboBoxValue
-            
-                                setShared('parentCodes', {
-                                    workTypeCodes: _.map(typeCodes, x => x.optionValue),
-                                    selectedWorkTypeCode: typeCode,
-                                    workTimeCodes: _.map(timeCodes, x => x.optionValue),
-                                    selectedWorkTimeCode: timeCode
-                                }, true);
-            
-                                modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                                    let childData: IChildData = getShared('childData');
-            
-                                    if (childData) {
-                                        self.setItemData(wkTypeItem, childData.selectedWorkTypeCode);
-                                        self.setItemName(wkTypeItem, childData.selectedWorkTypeName);
-                                        self.setItemData(wkTimeItem, childData.selectedWorkTimeCode);
-                                        self.setItemName(wkTimeItem, childData.selectedWorkTimeName);
-                                        self.setItemData(startItem1, childData.first ? childData.first.start : undefined);
-                                        self.setItemData(endItem1, childData.first ? childData.first.end : undefined);
-                                        self.setItemData(startItem2, childData.second ? childData.second.start : undefined);
-                                        self.setItemData(endItem2, childData.second ? childData.second.end : undefined);
-            
-                                        let command: ICheckParam = {
-                                            workTimeCode: ko.toJS(wkTimeItem != null? wkTimeItem.data.value : '')
-                                        };
-            
-                                        fetch.check_start_end(command).done(first => {
-                                            startItem1.data.editable(!!first);
-                                            endItem1.data.editable(!!first);
-            
-                                            fetch.check_multi_time(command).done(second => {
-                                                startItem2.data.editable(!!first && !!second);
-                                                endItem2.data.editable(!!first && !!second);
-                                            });
-                                        });
-                                    }
-                                });
-                            });
-                        }
-            
-            
-            });
-    
+        setEditAble(Item, value) {
+            Item && Item.data.editable(value);
+        }
 
-           
+        regClickEvent(btnEvent: IButtonEvent) {
+<<<<<<< HEAD
+
+=======
+>>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
+            _.each(btnEvent.btnCodes, (code) => {
+                let self = this,
+                    finder = self.finder,
+                    currentCtg = 'CS00020',
+                    btnItem: IFindData = finder.find(currentCtg, code),
+                    wkTypeItem: IFindData = finder.find(currentCtg, btnEvent.wkTypeCode),
+                    wkTimeItem: IFindData = finder.find(currentCtg, btnEvent.timeCode),
+                    startItem1: IFindData = finder.find(currentCtg, btnEvent.startTime1),
+                    startItem2: IFindData = finder.find(currentCtg, btnEvent.startTime2),
+                    endItem1: IFindData = finder.find(currentCtg, btnEvent.endTime1),
+                    endItem2: IFindData = finder.find(currentCtg, btnEvent.endTime2);
+
+                if (btnItem) {
+                    btnItem.ctrl.on('click', () => {
+                        let typeCode: string = wkTypeItem ? wkTypeItem.data.value() || "" : "",
+                            typeCodes: Array<any> = btnEvent.wkTypeCodes.constructor === Array ? btnEvent.wkTypeCodes : !finder.find(currentCtg, btnEvent.wkTypeCodes) ? [] : finder.find(currentCtg, btnEvent.wkTypeCodes).data.lstComboBoxValue,
+                            timeCode: string = wkTimeItem ? wkTimeItem.data.value() || "" : "",
+                            timeCodes: Array<any> = btnEvent.wkTimeCodes.constructor === Array ? btnEvent.wkTimeCodes : !finder.find(currentCtg, btnEvent.wkTimeCodes) ? [] : finder.find(currentCtg, btnEvent.wkTimeCodes).data.lstComboBoxValue
+
+                        setShared('parentCodes', {
+                            workTypeCodes: _.map(typeCodes, x => x.optionValue),
+                            selectedWorkTypeCode: typeCode,
+                            workTimeCodes: _.map(timeCodes, x => x.optionValue),
+                            selectedWorkTimeCode: timeCode
+                        }, true);
+
+                        modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                            let childData: IChildData = getShared('childData');
+
+                            if (childData) {
+                                self.setItemData(wkTypeItem, childData.selectedWorkTypeCode);
+                                self.setItemName(wkTypeItem, childData.selectedWorkTypeName);
+                                self.setItemData(wkTimeItem, childData.selectedWorkTimeCode);
+                                self.setItemName(wkTimeItem, childData.selectedWorkTimeName);
+                                self.setItemData(startItem1, childData.first ? childData.first.start : undefined);
+                                self.setItemData(endItem1, childData.first ? childData.first.end : undefined);
+                                self.setItemData(startItem2, childData.second ? childData.second.start : undefined);
+                                self.setItemData(endItem2, childData.second ? childData.second.end : undefined);
+
+                                let command: ICheckParam = {
+                                    workTimeCode: ko.toJS(wkTimeItem != null ? wkTimeItem.data.value : '')
+                                };
+
+                                fetch.check_start_end(command).done(first => {
+<<<<<<< HEAD
+                                    self.setEditAble(startItem1, !!first);
+                                    self.setEditAble(endItem1, !!first);
+
+                                    fetch.check_multi_time(command).done(second => {
+                                        self.setEditAble(startItem2, !!first && !!second);
+                                        self.setEditAble(endItem2, !!first && !!second);
+
+=======
+                                    startItem1.data.editable(!!first);
+                                    endItem1.data.editable(!!first);
+
+                                    fetch.check_multi_time(command).done(second => {
+                                        startItem2.data.editable(!!first && !!second);
+                                        endItem2.data.editable(!!first && !!second);
+>>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
+                                    });
+                                });
+                            }
+                        });
+                    });
+                }
+<<<<<<< HEAD
+
+
+            });
+
+
+
+=======
+            });
+>>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
         };
 
         button = () => {
@@ -207,8 +228,8 @@ module nts.layout {
                 cmm009Items = [],
 
                 btnEvents: Array<IButtonEvent> = [
-                //128
-                {
+                    //128
+                    {
                         btnCodes: ['IS00128'],
                         wkTypeCode: 'IS00128',
                         wkTypeCodes: 'IS00128',
@@ -218,11 +239,14 @@ module nts.layout {
                         endTime1: '',
                         startTime2: '',
                         endTime2: ''
-                
-                },
-                //130 131
-                {
-                        btnCodes: ['IS00130','IS00131'],
+<<<<<<< HEAD
+
+=======
+>>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
+                    },
+                    //130 131
+                    {
+                        btnCodes: ['IS00130', 'IS00131'],
                         wkTypeCode: 'IS00130',
                         wkTypeCodes: 'IS00130',
                         timeCode: 'IS00131',
@@ -231,11 +255,14 @@ module nts.layout {
                         endTime1: 'IS00134',
                         startTime2: 'IS00136',
                         endTime2: 'IS00137'
-                
-                },
-                //139 140
-                {
-                        btnCodes: ['IS00139','IS00140'],
+<<<<<<< HEAD
+
+=======
+>>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
+                    },
+                    //139 140
+                    {
+                        btnCodes: ['IS00139', 'IS00140'],
                         wkTypeCode: 'IS00139',
                         wkTypeCodes: 'IS00139',
                         timeCode: 'IS00140',
@@ -244,11 +271,18 @@ module nts.layout {
                         endTime1: 'IS00143',
                         startTime2: 'IS00145',
                         endTime2: 'IS00146'
-                
-                },
-                //157 158
-                {
-                        btnCodes: ['IS00157','IS00140'],
+<<<<<<< HEAD
+
+                    },
+                    //157 158
+                    {
+                        btnCodes: ['IS00157', 'IS00158'],
+=======
+                    },
+                    //157 158
+                    {
+                        btnCodes: ['IS00157', 'IS00140'],
+>>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
                         wkTypeCode: 'IS00157',
                         wkTypeCodes: 'IS00157',
                         timeCode: 'IS00158',
@@ -257,12 +291,15 @@ module nts.layout {
                         endTime1: 'IS00161',
                         startTime2: 'IS00163',
                         endTime2: 'IS00164'
-                
-                },
-                
-                //166 167
-                {
-                        btnCodes: ['IS00166','IS00167'],
+<<<<<<< HEAD
+
+=======
+>>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
+                    },
+
+                    //166 167
+                    {
+                        btnCodes: ['IS00166', 'IS00167'],
                         wkTypeCode: 'IS00166',
                         wkTypeCodes: 'IS00166',
                         timeCode: 'IS00167',
@@ -271,12 +308,15 @@ module nts.layout {
                         endTime1: 'IS00170',
                         startTime2: 'IS00172',
                         endTime2: 'IS00173'
-                
-                },
-                
-                //175 176
-                {
-                        btnCodes: ['IS00175','IS00176'],
+<<<<<<< HEAD
+
+=======
+>>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
+                    },
+
+                    //175 176
+                    {
+                        btnCodes: ['IS00175', 'IS00176'],
                         wkTypeCode: 'IS00175',
                         wkTypeCodes: 'IS00175',
                         timeCode: 'IS00176',
@@ -285,11 +325,14 @@ module nts.layout {
                         endTime1: 'IS00179',
                         startTime2: 'IS00181',
                         endTime2: 'IS00182'
-                
-                },
-                //148 149
-                {
-                        btnCodes: ['IS00148','IS00149'],
+<<<<<<< HEAD
+
+=======
+>>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
+                    },
+                    //148 149
+                    {
+                        btnCodes: ['IS00148', 'IS00149'],
                         wkTypeCode: 'IS00148',
                         wkTypeCodes: 'IS00148',
                         timeCode: 'IS00149',
@@ -298,11 +341,14 @@ module nts.layout {
                         endTime1: 'IS00152',
                         startTime2: 'IS00154',
                         endTime2: 'IS00155'
-                
-                },
-                //193 194
-                {
-                        btnCodes: ['IS00193','IS00194'],
+<<<<<<< HEAD
+
+=======
+>>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
+                    },
+                    //193 194
+                    {
+                        btnCodes: ['IS00193', 'IS00194'],
                         wkTypeCode: 'IS00193',
                         wkTypeCodes: 'IS00193',
                         timeCode: 'IS00194',
@@ -311,11 +357,14 @@ module nts.layout {
                         endTime1: 'IS00197',
                         startTime2: 'IS00199',
                         endTime2: 'IS00200'
-                
-                },
-                //202 203
-                {
-                        btnCodes: ['IS00202','IS00203'],
+<<<<<<< HEAD
+
+=======
+>>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
+                    },
+                    //202 203
+                    {
+                        btnCodes: ['IS00202', 'IS00203'],
                         wkTypeCode: 'IS00202',
                         wkTypeCodes: 'IS00202',
                         timeCode: 'IS00203',
@@ -324,11 +373,14 @@ module nts.layout {
                         endTime1: 'IS00206',
                         startTime2: 'IS00208',
                         endTime2: 'IS00209'
-                
-                },
-                //211 212
-                {
-                        btnCodes: ['IS00211','IS00212'],
+<<<<<<< HEAD
+
+=======
+>>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
+                    },
+                    //211 212
+                    {
+                        btnCodes: ['IS00211', 'IS00212'],
                         wkTypeCode: 'IS00211',
                         wkTypeCodes: 'IS00211',
                         timeCode: 'IS00212',
@@ -337,12 +389,15 @@ module nts.layout {
                         endTime1: 'IS00215',
                         startTime2: 'IS00217',
                         endTime2: 'IS00218'
-                
-                },
-                
-                //220 221
-                {
-                        btnCodes: ['IS00220','IS00221'],
+<<<<<<< HEAD
+
+=======
+>>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
+                    },
+
+                    //220 221
+                    {
+                        btnCodes: ['IS00220', 'IS00221'],
                         wkTypeCode: 'IS00220',
                         wkTypeCodes: 'IS00220',
                         timeCode: 'IS00221',
@@ -351,11 +406,14 @@ module nts.layout {
                         endTime1: 'IS00224',
                         startTime2: 'IS00226',
                         endTime2: 'IS00227'
-                
-                },
-                //220 221
-                {
-                        btnCodes: ['IS00229','IS00230'],
+<<<<<<< HEAD
+
+=======
+>>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
+                    },
+                    //220 221
+                    {
+                        btnCodes: ['IS00229', 'IS00230'],
                         wkTypeCode: 'IS00229',
                         wkTypeCodes: 'IS00229',
                         timeCode: 'IS00230',
@@ -364,12 +422,15 @@ module nts.layout {
                         endTime1: 'IS00233',
                         startTime2: 'IS00235',
                         endTime2: 'IS00236'
-                
-                },
-                
-                //238 239
-                {
-                        btnCodes: ['IS00238','IS00239'],
+<<<<<<< HEAD
+
+=======
+>>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
+                    },
+
+                    //238 239
+                    {
+                        btnCodes: ['IS00238', 'IS00239'],
                         wkTypeCode: 'IS00238',
                         wkTypeCodes: 'IS00238',
                         timeCode: 'IS00239',
@@ -378,11 +439,14 @@ module nts.layout {
                         endTime1: 'IS00242',
                         startTime2: 'IS00244',
                         endTime2: 'IS00245'
-                
-                },
-                //184 185
-                {
-                        btnCodes: ['IS00184','IS00185'],
+<<<<<<< HEAD
+
+=======
+>>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
+                    },
+                    //184 185
+                    {
+                        btnCodes: ['IS00184', 'IS00185'],
                         wkTypeCode: 'IS00184',
                         wkTypeCodes: 'IS00184',
                         timeCode: 'IS00185',
@@ -391,15 +455,17 @@ module nts.layout {
                         endTime1: 'IS00188',
                         startTime2: 'IS00190',
                         endTime2: 'IS00191'
-                
-                }
+<<<<<<< HEAD
+
+=======
+>>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
+                    }
                 ];
 
             //register Event
             _.each(btnEvents, (event) => {
                 self.regClickEvent(event);
             });
-
         };
 
         combobox = () => {
@@ -503,7 +569,7 @@ module nts.layout {
         workTimeCode?: string;
     }
 
-    class IButtonEvent {
+    interface IButtonEvent {
         btnCodes: any;
         wkTypeCode: string;
         wkTypeCodes: any;
