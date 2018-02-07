@@ -68,18 +68,18 @@ public class JpaWithdrawalAppSetRepository extends JpaRepository implements With
 	public void update(WithdrawalAppSet with) {
 		KrqstWithDrawalAppSet entity = toEntity(with);
 		KrqstWithDrawalAppSet oldEntity = this.queryProxy().find(entity.companyId, KrqstWithDrawalAppSet.class).get();
-		oldEntity.appSimul = entity.appSimul;
+		oldEntity.appSimul = oldEntity.appSimul;
 		oldEntity.bounSeg = entity.bounSeg;
 		oldEntity.breakTime = entity.breakTime;
 		oldEntity.checkHdTime = entity.checkHdTime;
 		oldEntity.checkOut = entity.checkOut;
 		oldEntity.directDivi = entity.directDivi;
 		oldEntity.prefixLeave = entity.prefixLeave;
-		oldEntity.prePerflex = entity.prePerflex;
+		oldEntity.prePerflex = oldEntity.prePerflex;
 		oldEntity.restTime = entity.restTime;
 		oldEntity.timeInit = entity.timeInit;
 		oldEntity.typePaidLeave = entity.typePaidLeave;
-		oldEntity.unitTime = entity.unitTime;
+		oldEntity.unitTime = oldEntity.unitTime;
 		oldEntity.workChange = entity.workChange;
 		oldEntity.workTime = entity.workTime;
 		this.commandProxy().update(oldEntity);

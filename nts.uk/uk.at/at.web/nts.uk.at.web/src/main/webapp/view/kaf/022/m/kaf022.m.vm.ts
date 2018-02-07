@@ -185,9 +185,11 @@ module nts.uk.at.view.kmf022.m.viewmodel {
 
         remove() {
             let command = ko.mapping.toJS(nts.uk.ui._viewModel.content.viewmodelM.selectedSetting);
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_19" }).ifYes(() => {
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 nts.uk.at.view.kmf022.m.service.remove(command).done(() => {
-                    nts.uk.ui._viewModel.content.viewmodelM.reloadData();
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_16' }).then(function() {
+                       nts.uk.ui._viewModel.content.viewmodelM.reloadData();
+                    });
                 });
             });
         }

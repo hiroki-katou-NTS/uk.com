@@ -47,8 +47,8 @@ public class EditStateOfDailyPerformanceDto implements ConvertibleAttendanceItem
 	}
 
 	@Override
-	public EditStateOfDailyPerformance toDomain() {
-		return new EditStateOfDailyPerformance(employeeId, attendanceItemId, ymd,
+	public EditStateOfDailyPerformance toDomain(String employeeId, GeneralDate date) {
+		return new EditStateOfDailyPerformance(employeeId, attendanceItemId, date,
 				ConvertHelper.getEnum(editStateSetting, EditStateSetting.class));
 	}
 }

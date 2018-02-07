@@ -9,6 +9,7 @@ import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.AppHolidayWorkFinder;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamChangeAppDate;
 
 @Path("at/request/application/holidaywork")
 @Produces("application/json")
@@ -20,6 +21,11 @@ public class HolidayWorkWebService extends WebService{
 	@Path("getHolidayWorkByUI")
 	public AppHolidayWorkDto getOvertimeByUIType(Param param) {
 		return this.appHolidayWorkFinder.getAppHolidayWork(param.getAppDate(), param.getUiType());
+	}
+	@POST
+	@Path("findChangeAppDate")
+	public AppHolidayWorkDto findChangeAppDate(ParamChangeAppDate param) {
+		return this.appHolidayWorkFinder.findChangeAppDate(param.getAppDate(), param.getPrePostAtr(),param.getSiftCD(),param.getOvertimeHours());
 	}
 	
 }

@@ -255,6 +255,19 @@ module nts.uk.ui {
 
                 return subWindow;
             }
+            
+            createDialogNotOpen(path: string, options: any, parentId: string) {
+
+                var parentwindow = this.windows[parentId];
+                var subWindow = ScreenWindow.createSubWindow(parentwindow);
+                this.windows[subWindow.id] = subWindow;
+
+                return subWindow;
+            }
+            
+            mergeOption(options: any){
+                return $.extend({}, DEFAULT_DIALOG_OPTIONS, options);
+            }
 
             getShared(key: string): any {               
                 return this.localShared[key] !== undefined ? this.localShared[key] : this.shared[key];
@@ -327,38 +340,48 @@ module nts.uk.ui {
                 if (typeof arguments[1] !== 'string') {
                     return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                 }
-                if(webAppId==nts.uk.request.location.currentAppId){
-                    path = nts.uk.request.resolvePath(path);
-                }else{
-                    path = nts.uk.request.location.siteRoot
-                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
-                    .mergeRelativePath(path).serialize();
-                }
                 
-                options = options || {};
-                options.modal = true;
-                return open(path, options);
+                return dialog(webAppId, path, true, options);
             }
             export function modeless(path: string, options?: any)
             export function modeless(webAppId: nts.uk.request.WebAppId, path: string, options?: any) {
                  if (typeof arguments[1] !== 'string') {
                     return modeless.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                 }
+                return dialog(webAppId, path, false, options);
+            }
+            
+            function dialog(webAppId: nts.uk.request.WebAppId, path: string, modal: boolean, options?: any){
+                options = options || {};
+                options.modal = modal;
                 if(webAppId==nts.uk.request.location.currentAppId){
                     path = nts.uk.request.resolvePath(path);
+                    return open(path, options);
                 }else{
                     path = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
                     .mergeRelativePath(path).serialize();
+                    
+                    let dialog = createDialog(path, options);
+                    request.login.keepSerializedSession()
+                        .then(() => {
+                            return request.login.restoreSessionTo(webAppId);
+                        })
+                        .then(() => {
+                            dialog.setupAsDialog(path, windows.container.mergeOption(options)); 
+                        });
+                    return dialog;
                 }
-                options = options || {};
-                options.modal = false;
-                return open(path, options);
             }
 
             export function open(path: string, options?: any) {
                 nts.uk.ui.block.invisible();
                 return windows.container.createDialog(path, options, selfId);
+            }
+            
+            export function createDialog(path: string, options?: any) {
+                nts.uk.ui.block.invisible();
+                return windows.container.createDialogNotOpen(path, options, selfId);
             }
         }
     }
@@ -448,6 +471,16 @@ module nts.uk.ui {
                 $this.dialog("option", "title", header.text);
             }
             return $this;
+        }
+        
+        export function version() {
+            let versinText = "AP version: ...";
+            
+            let $this = window.parent.$('<div/>').addClass('version-dialog')
+                .append($('<div/>').addClass('text').append(versinText))
+                .appendTo('body')
+                .dialog({
+                });
         }
 
 		/**

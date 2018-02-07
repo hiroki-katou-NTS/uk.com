@@ -56,14 +56,15 @@ public class ShortTimeOfDailyDto implements ConvertibleAttendanceItem {
 	}
 
 	@Override
-	public ShortTimeOfDailyPerformance toDomain() {
-		return new ShortTimeOfDailyPerformance(employeeId,
-				shortWorkingTimeSheets == null ? new ArrayList<>() : ConvertHelper.mapTo(shortWorkingTimeSheets,
-						(c) -> new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.getShortWorkTimeFrameNo()),
-								c.getChildCareAttr() == null ? ChildCareAttribute.CHILD_CARE : ConvertHelper.getEnum(c.getChildCareAttr(), ChildCareAttribute.class),
-								createTimeWithDayAttr(c.getStartTime()), createTimeWithDayAttr(c.getEndTime()),
-								createAttendanceTime(c.getDeductionTime()), createAttendanceTime(c.getShortTime()))),
-				ymd);
+	public ShortTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+		return new ShortTimeOfDailyPerformance(
+					emp,
+					shortWorkingTimeSheets == null ? new ArrayList<>() : ConvertHelper.mapTo(shortWorkingTimeSheets,
+							(c) -> new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.getShortWorkTimeFrameNo()),
+									c.getChildCareAttr() == null ? ChildCareAttribute.CHILD_CARE : ConvertHelper.getEnum(c.getChildCareAttr(), ChildCareAttribute.class),
+									createTimeWithDayAttr(c.getStartTime()), createTimeWithDayAttr(c.getEndTime()),
+									createAttendanceTime(c.getDeductionTime()), createAttendanceTime(c.getShortTime()))),
+					date);
 	}
 
 	private TimeWithDayAttr createTimeWithDayAttr(Integer c) {

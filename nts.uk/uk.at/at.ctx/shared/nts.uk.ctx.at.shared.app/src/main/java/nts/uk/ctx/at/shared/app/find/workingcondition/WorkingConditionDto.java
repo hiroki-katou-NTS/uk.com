@@ -55,19 +55,19 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 営業日カレンダーのマスタ参照先 予定作成方法.営業日カレンダーによる勤務予定作成.営業日カレンダーの参照先
 	 */
 	@PeregItem("IS00124")
-	private int referenceBusinessDayCalendar;
+	private Integer referenceBusinessDayCalendar;
 
 	/**
 	 * 基本勤務のマスタ参照先 予定作成方法.営業日カレンダーによる勤務予定作成.基本勤務の参照先
 	 */
 	@PeregItem("IS00125")
-	private int referenceBasicWork;
+	private Integer referenceBasicWork;
 
 	/**
 	 * 就業時間帯の参照先 予定作成方法.月間パターンによる勤務予定作成.勤務種類と就業時間帯の参照先
 	 */
 	@PeregItem("IS00126")
-	private int referenceType;
+	private Integer referenceType;
 
 	/**
 	 * 月間パターンCD
@@ -781,43 +781,43 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 年休就時設定 就業時間帯の自動設定区分
 	 */
 	@PeregItem("IS00247")
-	private int autoIntervalSetAtr;
+	private Integer autoIntervalSetAtr;
 
 	/**
 	 * 加算時間利用区分 休暇加算時間利用区分
 	 */
 	@PeregItem("IS00248")
-	private int vacationAddedTimeAtr;
+	private Integer vacationAddedTimeAtr;
 
 	/**
 	 * 加算時間１日 休暇加算時間設定.１日
 	 */
 	@PeregItem("IS00249")
-	private int oneDay;
+	private Integer oneDay;
 
 	/**
 	 * 加算時間ＡＭ 休暇加算時間設定.午前
 	 */
 	@PeregItem("IS00250")
-	private int morning;
+	private Integer morning;
 
 	/**
 	 * 加算時間ＰＭ 休暇加算時間設定.午後
 	 */
 	@PeregItem("IS00251")
-	private int afternoon;
+	private Integer afternoon;
 
 	/**
 	 * 就業区分 労働制
 	 */
 	@PeregItem("IS00252")
-	private int laborSystem;
+	private Integer laborSystem;
 
 	/**
 	 * 契約時間 契約時間
 	 */
 	@PeregItem("IS00253")
-	private int contractTime;
+	private Integer contractTime;
 	
 	/** The auto stamp set atr. */
 	// 自動打刻セット区分

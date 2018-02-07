@@ -23,11 +23,13 @@ module nts.layout {
 
     class constraint {
         lstCls: Array<any> = [];
+
         constructor(lstCls: Array<any>) {
             let self = this;
 
             self.lstCls = lstCls;
         }
+
         find = (categoryCode: string, subscribeCode: string): IFindData => {
             let self = this,
                 controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && _.isFunction(x.items)).map(x => x.items()).flatten().flatten().value(),
@@ -75,7 +77,8 @@ module nts.layout {
     }
 
     const fetch = {
-        combobox: (baseDate: string, itemCode: string) => ajax(`/pereg/get-combo-value/${itemCode}/${baseDate}`)
+        check_start_end: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkStartEnd`, param),
+        check_multi_time: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkMultiTime`, param)
     }
 
     export class validation {
@@ -93,7 +96,8 @@ module nts.layout {
             let self = this,
                 finder = self.finder,
                 CS00020_IS00248: IFindData = finder.find('CS00020', 'IS00248'),
-                CS00020_IS00121: IFindData = finder.find('CS00020', 'IS00121');
+                CS00020_IS00121: IFindData = finder.find('CS00020', 'IS00121'),
+                CS00020_IS00123: IFindData = finder.find("CS00020", "IS00123");
 
             if (CS00020_IS00248) {
                 CS00020_IS00248.data.value.subscribe(x => {
@@ -102,7 +106,6 @@ module nts.layout {
                     _.each(ctrls, c => {
                         if (c.data.itemCode != CS00020_IS00248.data.itemCode) {
                             c.data.editable(x == 1);
-                            c.data.readonly(x != 1);
                         }
                     });
                 });
@@ -110,546 +113,337 @@ module nts.layout {
 
             if (CS00020_IS00121) {
                 CS00020_IS00121.data.value.subscribe(x => {
-                    let ctrls: Array<IFindData> = finder.findChilds(CS00020_IS00248.data.categoryCode, CS00020_IS00248.data.itemParentCode);
+                    let ctrls: Array<IFindData> = finder.findChilds(CS00020_IS00121.data.categoryCode, CS00020_IS00121.data.itemParentCode);
 
                     _.each(ctrls, c => {
-                        if (c.data.itemCode != CS00020_IS00248.data.itemCode) {
+                        if (c.data.itemCode != CS00020_IS00121.data.itemCode) {
                             c.data.editable(x == 1);
+                            if (x == 1 && CS00020_IS00123) {
+                                CS00020_IS00123.data.value.valueHasMutated();
+                            }
                         }
                     });
                 });
             }
         };
+
+        setItemData(Item, value) {
+            Item && Item.data.value(value || '');
+        }
+
+        setItemName(Item, value) {
+            Item && Item.data.textValue(value || '');
+        }
+
+        setEditAble(Item, value) {
+            Item && Item.data.editable(value);
+        }
+
+        regClickEvent(btnEvent: IButtonEvent) {
+            _.each(btnEvent.btnCodes, (code) => {
+                let self = this,
+                    finder = self.finder,
+                    currentCtg = 'CS00020',
+                    btnItem: IFindData = finder.find(currentCtg, code),
+                    wkTypeItem: IFindData = finder.find(currentCtg, btnEvent.wkTypeCode),
+                    wkTimeItem: IFindData = finder.find(currentCtg, btnEvent.timeCode),
+                    startItem1: IFindData = finder.find(currentCtg, btnEvent.startTime1),
+                    startItem2: IFindData = finder.find(currentCtg, btnEvent.startTime2),
+                    endItem1: IFindData = finder.find(currentCtg, btnEvent.endTime1),
+                    endItem2: IFindData = finder.find(currentCtg, btnEvent.endTime2);
+
+                if (btnItem) {
+                    btnItem.ctrl.on('click', () => {
+                        let typeCode: string = wkTypeItem ? wkTypeItem.data.value() || "" : "",
+                            typeCodes: Array<any> = btnEvent.wkTypeCodes.constructor === Array ? btnEvent.wkTypeCodes : !finder.find(currentCtg, btnEvent.wkTypeCodes) ? [] : finder.find(currentCtg, btnEvent.wkTypeCodes).data.lstComboBoxValue,
+                            timeCode: string = wkTimeItem ? wkTimeItem.data.value() || "" : "",
+                            timeCodes: Array<any> = btnEvent.wkTimeCodes.constructor === Array ? btnEvent.wkTimeCodes : !finder.find(currentCtg, btnEvent.wkTimeCodes) ? [] : finder.find(currentCtg, btnEvent.wkTimeCodes).data.lstComboBoxValue
+
+                        setShared('parentCodes', {
+                            workTypeCodes: _.map(typeCodes, x => x.optionValue),
+                            selectedWorkTypeCode: typeCode,
+                            workTimeCodes: _.map(timeCodes, x => x.optionValue),
+                            selectedWorkTimeCode: timeCode
+                        }, true);
+
+                        modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                            let childData: IChildData = getShared('childData');
+
+                            if (childData) {
+                                self.setItemData(wkTypeItem, childData.selectedWorkTypeCode);
+                                self.setItemName(wkTypeItem, childData.selectedWorkTypeName);
+                                self.setItemData(wkTimeItem, childData.selectedWorkTimeCode);
+                                self.setItemName(wkTimeItem, childData.selectedWorkTimeName);
+                                self.setItemData(startItem1, childData.first ? childData.first.start : undefined);
+                                self.setItemData(endItem1, childData.first ? childData.first.end : undefined);
+                                self.setItemData(startItem2, childData.second ? childData.second.start : undefined);
+                                self.setItemData(endItem2, childData.second ? childData.second.end : undefined);
+
+                                let command: ICheckParam = {
+                                    workTimeCode: ko.toJS(wkTimeItem != null ? wkTimeItem.data.value : '')
+                                };
+
+                                fetch.check_start_end(command).done(first => {
+
+                                    self.setEditAble(startItem1, !!first);
+                                    self.setEditAble(endItem1, !!first);
+
+                                    fetch.check_multi_time(command).done(second => {
+                                        self.setEditAble(startItem2, !!first && !!second);
+                                        self.setEditAble(endItem2, !!first && !!second);
+                                    });
+
+                                });
+
+                            }
+
+                        });
+
+
+                    });
+
+                }
+            });
+        }
+
 
         button = () => {
             let self = this,
                 finder = self.finder,
-                CS00020_IS00130: IFindData = finder.find('CS00020', 'IS00130'),
-                CS00020_IS00238: IFindData = finder.find('CS00020', 'IS00238'),
-                CS00020_IS00239: IFindData = finder.find('CS00020', 'IS00239'),
-                CS00020_IS00148: IFindData = finder.find('CS00020', 'IS00148'),
-                CS00020_IS00149: IFindData = finder.find('CS00020', 'IS00149'),
-                CS00020_IS00157: IFindData = finder.find('CS00020', 'IS00157'),
-                CS00020_IS00158: IFindData = finder.find('CS00020', 'IS00158'),
-                CS00020_IS00166: IFindData = finder.find('CS00020', 'IS00166'),
-                CS00020_IS00167: IFindData = finder.find('CS00020', 'IS00167'),
-                CS00020_IS00175: IFindData = finder.find('CS00020', 'IS00175'),
-                CS00020_IS00176: IFindData = finder.find('CS00020', 'IS00176'),
-                CS00020_IS00184: IFindData = finder.find('CS00020', 'IS00184'),
-                CS00020_IS00185: IFindData = finder.find('CS00020', 'IS00185'),
-                CS00020_IS00193: IFindData = finder.find('CS00020', 'IS00193'),
-                CS00020_IS00194: IFindData = finder.find('CS00020', 'IS00194'),
-                CS00020_IS00202: IFindData = finder.find('CS00020', 'IS00202'),
-                CS00020_IS00203: IFindData = finder.find('CS00020', 'IS00203'),
-                CS00020_IS00211: IFindData = finder.find('CS00020', 'IS00211'),
-                CS00020_IS00212: IFindData = finder.find('CS00020', 'IS00212'),
-                CS00020_IS00220: IFindData = finder.find('CS00020', 'IS00220'),
-                CS00020_IS00221: IFindData = finder.find('CS00020', 'IS00221');
-
-            if (CS00020_IS00130) {
-                CS00020_IS00130.ctrl.on('click', () => {
-                    let _finder = finder,
-                        lstComboBoxValue = CS00020_IS00130.data.lstComboBoxValue,
-                        selectedWorkTypeCode = CS00020_IS00130.data.value() || "";
-
-                    setShared('parentCodes', {
-                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
-                        selectedWorkTypeCode: selectedWorkTypeCode,
-                        workTimeCodes: "",
-                        selectedWorkTimeCode: ""
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('childData');
-                        if (!childData) {
-                            CS00020_IS00130.data.value(undefined);
-                        } else {
-                            CS00020_IS00130.data.value(childData.selectedWorkTypeCode);
-                        }
-                    });
-                });
-            }
-
-            // Button IS00238
-            if (CS00020_IS00238) {
-                CS00020_IS00238.ctrl.on('click', () => {
-                    let _finder = finder,
-                        lstComboBoxValue = CS00020_IS00238.data.lstComboBoxValue,
-                        selectedWorkTypeCode = CS00020_IS00238.data.value() || "";
-
-                    setShared('CS00020_IS00238', {
-                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
-                        selectedWorkTypeCode: selectedWorkTypeCode
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('CS00020_IS00238');
-                        if (!childData) {
-                            CS00020_IS00238.data.value(undefined);
-                        } else {
-                            CS00020_IS00238.data.value(childData.selectedWorkTypeCode);
-                        }
-                    });
-                });
-            }
-
-            // Button IS00239
-            if (CS00020_IS00239) {
-                CS00020_IS00239.ctrl.on('click', () => {
-                    let _finder = finder,
-                        selectedWorkTimeCode = CS00020_IS00239.data.value() || "";
-
-                    setShared('CS00020_IS00239', {
-                        workTimeCodes: "",
-                        selectedWorkTimeCode: selectedWorkTimeCode
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('CS00020_IS00239');
-                        if (!childData) {
-                            CS00020_IS00239.data.value(undefined);
-                        } else {
-                            CS00020_IS00239.data.value(childData.selectedWorkTypeCode);
-                        }
-                    });
-                });
-            }
-
-            if (CS00020_IS00220) {
-                CS00020_IS00220.ctrl.on('click', () => {
-                    let _finder = finder,
-                        lstComboBoxValue = CS00020_IS00220.data.lstComboBoxValue,
-                        selectedWorkTypeCode = CS00020_IS00220.data.value() || "";
-
-                    setShared('parentCodes', {
-                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
-                        selectedWorkTypeCode: selectedWorkTypeCode
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('childData');
-                        if (!childData) {
-                            CS00020_IS00220.data.value(undefined);
-                        } else {
-                            CS00020_IS00220.data.value(childData.selectedWorkTypeCode);
-                        }
-                    });
-                });
-            }
-
-            if (CS00020_IS00221) {
-                CS00020_IS00221.ctrl.on('click', () => {
-                    let _finder = finder,
-                        selectedWorkTypeCode = CS00020_IS00221.data.value() || "";
-
-                    setShared('parentCodes', {
-                        workTypeCodes: "",
-                        selectedWorkTypeCode: selectedWorkTypeCode
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('childData');
-                        if (!childData) {
-                            CS00020_IS00221.data.value(undefined);
-                        } else {
-                            CS00020_IS00221.data.value(childData.selectedWorkTypeCode);
-                        }
-                    });
-                });
-            }
-
-
-            if (CS00020_IS00148) {
-                CS00020_IS00148.ctrl.on('click', () => {
-                    let _finder = finder,
-                        lstComboBoxValue = CS00020_IS00148.data.lstComboBoxValue,
-                        selectedWorkTypeCode = CS00020_IS00148.data.value() || "";
-
-                    setShared('parentCodes', {
-                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
-                        selectedWorkTypeCode: selectedWorkTypeCode,
-                        workTimeCodes: "",
-                        selectedWorkTimeCode: ""
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('childData');
-                        if (!childData) {
-                            CS00020_IS00148.data.value(undefined);
-                        } else {
-                            CS00020_IS00148.data.value(childData.selectedWorkTypeCode);
-
-                        }
-                    });
-                });
-            }
-
-            if (CS00020_IS00149) {
-                CS00020_IS00149.ctrl.on('click', () => {
-                    let _finder = finder,
-                        lstComboBoxValue = CS00020_IS00149.data.lstComboBoxValue,
-                        selectedWorkTypeCode = CS00020_IS00149.data.value() || "";
-
-                    setShared('parentCodes', {
-                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
-                        selectedWorkTypeCode: selectedWorkTypeCode,
-                        workTimeCodes: "",
-                        selectedWorkTimeCode: ""
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('childData');
-                        if (!childData) {
-                            CS00020_IS00149.data.value(undefined);
-                        } else {
-                            CS00020_IS00149.data.value(childData.selectedWorkTypeCode);
-                        }
-                    });
-                });
-            }
-
-
-            // Button IS00184
-            if (CS00020_IS00184) {
-                CS00020_IS00184.ctrl.on('click', () => {
-                    let _finder = finder,
-                        lstComboBoxValue = CS00020_IS00184.data.lstComboBoxValue,
-                        selectedWorkTypeCode = CS00020_IS00184.data.value() || "";
-
-                    setShared('CS00020_IS00184', {
-                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
-                        selectedWorkTypeCode: selectedWorkTypeCode
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('CS00020_IS00184');
-                        if (!childData) {
-                            CS00020_IS00184.data.value(undefined);
-                        } else {
-                            CS00020_IS00184.data.value(childData.selectedWorkTypeCode);
-                        }
-                    });
-                });
-            }
-
-
-            if (CS00020_IS00193) {
-                CS00020_IS00193.ctrl.on('click', () => {
-                    let _finder = finder,
-                        lstComboBoxValue = CS00020_IS00193.data.lstComboBoxValue,
-                        selectedWorkTypeCode = CS00020_IS00193.data.value() || "";
-
-                    setShared('parentCodes', {
-                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
-                        selectedWorkTypeCode: selectedWorkTypeCode,
-                        workTimeCodes: "",
-                        selectedWorkTimeCode: ""
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('childData');
-                        if (!childData) {
-                            CS00020_IS00193.data.value(undefined);
-                        } else {
-                            CS00020_IS00193.data.value(childData.selectedWorkTypeCode);
-
-                        }
-                    });
-                });
-            }
-
-
-
-            // Button IS00185
-            if (CS00020_IS00185) {
-                CS00020_IS00185.ctrl.on('click', () => {
-                    let _finder = finder,
-                        selectedWorkTimeCode = CS00020_IS00185.data.value() || "";
-
-                    setShared('CS00020_IS00185', {
-                        workTimeCodes: "",
-                        selectedWorkTimeCode: selectedWorkTimeCode
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('CS00020_IS00185');
-                        if (!childData) {
-                            CS00020_IS00185.data.value(undefined);
-                        } else {
-                            CS00020_IS00185.data.value(childData.selectedWorkTypeCode);
-                        }
-                    });
-                });
-            }
-
-            if (CS00020_IS00194) {
-                CS00020_IS00194.ctrl.on('click', () => {
-                    let _finder = finder,
-                        lstComboBoxValue = CS00020_IS00194.data.lstComboBoxValue,
-                        selectedWorkTypeCode = CS00020_IS00194.data.value() || "";
-
-                    setShared('parentCodes', {
-                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
-                        selectedWorkTypeCode: selectedWorkTypeCode,
-                        workTimeCodes: "",
-                        selectedWorkTimeCode: ""
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('childData');
-                        if (!childData) {
-                            CS00020_IS00194.data.value(undefined);
-                        } else {
-                            CS00020_IS00194.data.value(childData.selectedWorkTypeCode);
-                        }
-                    });
-                });
-            }
-
-            if (CS00020_IS00202) {
-                CS00020_IS00202.ctrl.on('click', () => {
-                    let _finder = finder,
-                        lstComboBoxValue = CS00020_IS00202.data.lstComboBoxValue,
-                        selectedWorkTypeCode = CS00020_IS00202.data.value() || "";
-
-                    setShared('parentCodes', {
-                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
-                        selectedWorkTypeCode: selectedWorkTypeCode,
-                        workTimeCodes: "",
-                        selectedWorkTimeCode: ""
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('childData');
-                        if (!childData) {
-                            CS00020_IS00202.data.value(undefined);
-                        } else {
-                            CS00020_IS00202.data.value(childData.selectedWorkTypeCode);
-                        }
-                    });
-                });
-            }
-
-            if (CS00020_IS00203) {
-                CS00020_IS00203.ctrl.on('click', () => {
-                    let _finder = finder,
-                        lstComboBoxValue = CS00020_IS00203.data.lstComboBoxValue,
-                        selectedWorkTypeCode = CS00020_IS00203.data.value() || "";
-
-                    setShared('parentCodes', {
-                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
-                        selectedWorkTypeCode: selectedWorkTypeCode,
-                        workTimeCodes: "",
-                        selectedWorkTimeCode: ""
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('childData');
-                        if (!childData) {
-                            CS00020_IS00203.data.value(undefined);
-                        } else {
-                            CS00020_IS00203.data.value(childData.selectedWorkTypeCode);
-                        }
-                    });
-                });
-            }
-
-            if (CS00020_IS00211) {
-                CS00020_IS00211.ctrl.on('click', () => {
-                    let _finder = finder,
-                        lstComboBoxValue = CS00020_IS00211.data.lstComboBoxValue,
-                        selectedWorkTypeCode = CS00020_IS00211.data.value() || "";
-
-                    setShared('parentCodes', {
-                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
-                        selectedWorkTypeCode: selectedWorkTypeCode,
-                        workTimeCodes: "",
-                        selectedWorkTimeCode: ""
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('childData');
-                        if (!childData) {
-                            CS00020_IS00211.data.value(undefined);
-                        } else {
-                            CS00020_IS00211.data.value(childData.selectedWorkTypeCode);
-                        }
-                    });
-                });
-            }
-
-            if (CS00020_IS00212) {
-                CS00020_IS00212.ctrl.on('click', () => {
-                    let _finder = finder,
-                        lstComboBoxValue = CS00020_IS00212.data.lstComboBoxValue,
-                        selectedWorkTypeCode = CS00020_IS00212.data.value() || "";
-
-                    setShared('parentCodes', {
-                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
-                        selectedWorkTypeCode: selectedWorkTypeCode,
-                        workTimeCodes: "",
-                        selectedWorkTimeCode: ""
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('childData');
-                        if (!childData) {
-                            CS00020_IS00212.data.value(undefined);
-                        } else {
-                            CS00020_IS00212.data.value(childData.selectedWorkTypeCode);
-                        }
-                    });
-                });
-            }
-
-            if (CS00020_IS00157) {
-                CS00020_IS00157.ctrl.on('click', () => {
-                    let _finder = finder,
-                        lstComboBoxValue = CS00020_IS00157.data.lstComboBoxValue,
-                        selectedWorkTypeCode = CS00020_IS00157.data.value() || "";
-
-                    setShared('parentCodes', {
-                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
-                        selectedWorkTypeCode: selectedWorkTypeCode,
-                        workTimeCodes: "",
-                        selectedWorkTimeCode: ""
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('childData');
-                        if (!childData) {
-                            CS00020_IS00157.data.value(undefined);
-                        } else {
-                            CS00020_IS00157.data.value(childData.selectedWorkTypeCode);
-                        }
-                    });
-                });
-            }
-            if (CS00020_IS00158) {
-                CS00020_IS00158.ctrl.on('click', () => {
-                    let _finder = finder,
-                        lstComboBoxValue = CS00020_IS00158.data.lstComboBoxValue,
-                        selectedWorkTypeCode = CS00020_IS00158.data.value() || "";
-
-                    setShared('parentCodes', {
-                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
-                        selectedWorkTypeCode: selectedWorkTypeCode,
-                        workTimeCodes: "",
-                        selectedWorkTimeCode: ""
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('childData');
-                        if (!childData) {
-                            CS00020_IS00158.data.value(undefined);
-                        } else {
-                            CS00020_IS00158.data.value(childData.selectedWorkTypeCode);
-                        }
-                    });
-                });
-            }
-
-            if (CS00020_IS00166) {
-                CS00020_IS00166.ctrl.on('click', () => {
-                    let _finder = finder,
-                        lstComboBoxValue = CS00020_IS00166.data.lstComboBoxValue,
-                        selectedWorkTypeCode = CS00020_IS00166.data.value() || "";
-
-                    setShared('parentCodes', {
-                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
-                        selectedWorkTypeCode: selectedWorkTypeCode,
-                        workTimeCodes: "",
-                        selectedWorkTimeCode: ""
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('childData');
-                        if (!childData) {
-                            CS00020_IS00166.data.value(undefined);
-                        } else {
-                            CS00020_IS00166.data.value(childData.selectedWorkTypeCode);
-                        }
-                    });
-                });
-            }
-            if (CS00020_IS00167) {
-                CS00020_IS00167.ctrl.on('click', () => {
-                    let _finder = finder,
-                        lstComboBoxValue = CS00020_IS00167.data.lstComboBoxValue,
-                        selectedWorkTypeCode = CS00020_IS00167.data.value() || "";
-
-                    setShared('parentCodes', {
-                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
-                        selectedWorkTypeCode: selectedWorkTypeCode,
-                        workTimeCodes: "",
-                        selectedWorkTimeCode: ""
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('childData');
-                        if (!childData) {
-                            CS00020_IS00167.data.value(undefined);
-                        } else {
-                            CS00020_IS00167.data.value(childData.selectedWorkTypeCode);
-                        }
-                    });
-                });
-            }
-
-            if (CS00020_IS00175) {
-                CS00020_IS00175.ctrl.on('click', () => {
-                    let _finder = finder,
-                        lstComboBoxValue = CS00020_IS00175.data.lstComboBoxValue,
-                        selectedWorkTypeCode = CS00020_IS00175.data.value() || "";
-
-                    setShared('parentCodes', {
-                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
-                        selectedWorkTypeCode: selectedWorkTypeCode,
-                        workTimeCodes: "",
-                        selectedWorkTimeCode: ""
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('childData');
-                        if (!childData) {
-                            CS00020_IS00175.data.value(undefined);
-                        } else {
-                            CS00020_IS00175.data.value(childData.selectedWorkTypeCode);
-                        }
-                    });
-                });
-            }
-            if (CS00020_IS00176) {
-                CS00020_IS00176.ctrl.on('click', () => {
-                    let _finder = finder,
-                        lstComboBoxValue = CS00020_IS00176.data.lstComboBoxValue,
-                        selectedWorkTypeCode = CS00020_IS00176.data.value() || "";
-
-                    setShared('parentCodes', {
-                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
-                        selectedWorkTypeCode: selectedWorkTypeCode,
-                        workTimeCodes: "",
-                        selectedWorkTimeCode: ""
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        var childData: IChildData = getShared('childData');
-                        if (!childData) {
-                            CS00020_IS00176.data.value(undefined);
-                        } else {
-                            CS00020_IS00176.data.value(childData.selectedWorkTypeCode);
-                        }
-                    });
-                });
-            }
-
-
+                cmm009Items = [],
+
+                btnEvents: Array<IButtonEvent> = [
+                    //128
+                    {
+                        btnCodes: ['IS00128'],
+                        wkTypeCode: 'IS00128',
+                        wkTypeCodes: 'IS00128',
+                        timeCode: '',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: '',
+                        endTime1: '',
+                        startTime2: '',
+                        endTime2: ''
+
+                    },
+                    //130 131
+                    {
+                        btnCodes: ['IS00130', 'IS00131'],
+                        wkTypeCode: 'IS00130',
+                        wkTypeCodes: 'IS00130',
+                        timeCode: 'IS00131',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00133',
+                        endTime1: 'IS00134',
+                        startTime2: 'IS00136',
+                        endTime2: 'IS00137'
+
+                    },
+                    //139 140
+                    {
+                        btnCodes: ['IS00139', 'IS00140'],
+                        wkTypeCode: 'IS00139',
+                        wkTypeCodes: 'IS00139',
+                        timeCode: 'IS00140',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00142',
+                        endTime1: 'IS00143',
+                        startTime2: 'IS00145',
+                        endTime2: 'IS00146'
+
+
+                    },
+                    //157 158
+                    {
+                        btnCodes: ['IS00157', 'IS00158'],
+                        wkTypeCode: 'IS00157',
+                        wkTypeCodes: 'IS00157',
+                        timeCode: 'IS00158',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00160',
+                        endTime1: 'IS00161',
+                        startTime2: 'IS00163',
+                        endTime2: 'IS00164'
+
+                    },
+
+                    //166 167
+                    {
+                        btnCodes: ['IS00166', 'IS00167'],
+                        wkTypeCode: 'IS00166',
+                        wkTypeCodes: 'IS00166',
+                        timeCode: 'IS00167',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00169',
+                        endTime1: 'IS00170',
+                        startTime2: 'IS00172',
+                        endTime2: 'IS00173'
+
+                    },
+
+                    //175 176
+                    {
+                        btnCodes: ['IS00175', 'IS00176'],
+                        wkTypeCode: 'IS00175',
+                        wkTypeCodes: 'IS00175',
+                        timeCode: 'IS00176',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00178',
+                        endTime1: 'IS00179',
+                        startTime2: 'IS00181',
+                        endTime2: 'IS00182'
+
+                    },
+                    //148 149
+                    {
+                        btnCodes: ['IS00148', 'IS00149'],
+                        wkTypeCode: 'IS00148',
+                        wkTypeCodes: 'IS00148',
+                        timeCode: 'IS00149',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00151',
+                        endTime1: 'IS00152',
+                        startTime2: 'IS00154',
+                        endTime2: 'IS00155'
+
+                    },
+                    //193 194
+                    {
+                        btnCodes: ['IS00193', 'IS00194'],
+                        wkTypeCode: 'IS00193',
+                        wkTypeCodes: 'IS00193',
+                        timeCode: 'IS00194',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00196',
+                        endTime1: 'IS00197',
+                        startTime2: 'IS00199',
+                        endTime2: 'IS00200'
+
+                    },
+                    //202 203
+                    {
+                        btnCodes: ['IS00202', 'IS00203'],
+                        wkTypeCode: 'IS00202',
+                        wkTypeCodes: 'IS00202',
+                        timeCode: 'IS00203',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00205',
+                        endTime1: 'IS00206',
+                        startTime2: 'IS00208',
+                        endTime2: 'IS00209'
+
+                    },
+                    //211 212
+                    {
+                        btnCodes: ['IS00211', 'IS00212'],
+                        wkTypeCode: 'IS00211',
+                        wkTypeCodes: 'IS00211',
+                        timeCode: 'IS00212',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00214',
+                        endTime1: 'IS00215',
+                        startTime2: 'IS00217',
+                        endTime2: 'IS00218'
+
+                    },
+
+                    //220 221
+                    {
+                        btnCodes: ['IS00220', 'IS00221'],
+                        wkTypeCode: 'IS00220',
+                        wkTypeCodes: 'IS00220',
+                        timeCode: 'IS00221',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00223',
+                        endTime1: 'IS00224',
+                        startTime2: 'IS00226',
+                        endTime2: 'IS00227'
+
+                    },
+                    //220 221
+                    {
+                        btnCodes: ['IS00229', 'IS00230'],
+                        wkTypeCode: 'IS00229',
+                        wkTypeCodes: 'IS00229',
+                        timeCode: 'IS00230',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00232',
+                        endTime1: 'IS00233',
+                        startTime2: 'IS00235',
+                        endTime2: 'IS00236'
+
+                    },
+
+                    //238 239
+                    {
+                        btnCodes: ['IS00238', 'IS00239'],
+                        wkTypeCode: 'IS00238',
+                        wkTypeCodes: 'IS00238',
+                        timeCode: 'IS00239',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00241',
+                        endTime1: 'IS00242',
+                        startTime2: 'IS00244',
+                        endTime2: 'IS00245'
+
+                    },
+                    //184 185
+                    {
+                        btnCodes: ['IS00184', 'IS00185'],
+                        wkTypeCode: 'IS00184',
+                        wkTypeCodes: 'IS00184',
+                        timeCode: 'IS00185',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00187',
+                        endTime1: 'IS00188',
+                        startTime2: 'IS00190',
+                        endTime2: 'IS00191'
+
+                    }
+                ];
+
+            //register Event
+            _.each(btnEvents, (event) => {
+                self.regClickEvent(event);
+            });
         };
 
         combobox = () => {
+            let self = this,
+                finder: IFinder = self.finder,
+                CS00020_IS00123: IFindData = finder.find("CS00020", "IS00123"),
+                CS00020_IS00124: IFindData = finder.find("CS00020", "IS00124"),
+                CS00020_IS00125: IFindData = finder.find("CS00020", "IS00125"),
+                CS00020_IS00126: IFindData = finder.find("CS00020", "IS00126"),
+                CS00020_IS00127: IFindData = finder.find("CS00020", "IS00127");
+
+            if (CS00020_IS00123) {
+                CS00020_IS00123.data.value.subscribe(v => {
+                    switch (v) {
+                        case "0":
+                            CS00020_IS00124.data.editable(true);
+                            CS00020_IS00125.data.editable(true);
+                            CS00020_IS00126.data.editable(true);
+                            CS00020_IS00127.data.editable(false);
+                            break;
+                        case "1":
+                            CS00020_IS00124.data.editable(false);
+                            CS00020_IS00125.data.editable(false);
+                            CS00020_IS00126.data.editable(true);
+                            CS00020_IS00127.data.editable(true);
+                            break;
+                        case "2":
+                            CS00020_IS00124.data.editable(false);
+                            CS00020_IS00125.data.editable(false);
+                            CS00020_IS00126.data.editable(false);
+                            CS00020_IS00127.data.editable(false);
+                            break;
+                    }
+                });
+                CS00020_IS00123.data.value.valueHasMutated();
+            }
         };
     }
-
 
     // define ITEM_CLASSIFICATION_TYPE
     enum IT_CLA_TYPE {
@@ -702,7 +496,28 @@ module nts.layout {
         selectedWorkTypeName: string;
         selectedWorkTimeCode: string;
         selectedWorkTimeName: string;
-        firstTime: string;
-        secondTime: string;
+        first: IDateRange;
+        second: IDateRange;
     }
-} 
+
+    interface IDateRange {
+        start: number;
+        end: number;
+    }
+
+    interface ICheckParam {
+        workTimeCode?: string;
+    }
+
+    interface IButtonEvent {
+        btnCodes: any;
+        wkTypeCode: string;
+        wkTypeCodes: any;
+        timeCode: string;
+        wkTimeCodes: any;
+        startTime1: string;
+        endTime1: string;
+        startTime2: string;
+        endTime2: string;
+    }
+}

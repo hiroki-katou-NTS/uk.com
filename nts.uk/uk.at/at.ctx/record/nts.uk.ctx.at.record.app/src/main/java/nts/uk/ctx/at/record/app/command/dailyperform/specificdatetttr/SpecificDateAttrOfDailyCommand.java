@@ -15,7 +15,7 @@ public class SpecificDateAttrOfDailyCommand extends DailyWorkCommonCommand {
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		this.data = item == null ? Optional.empty() : Optional.of(((SpecificDateAttrOfDailyPerforDto) item).toDomain());
+		this.data = item == null ? Optional.empty() : Optional.of(((SpecificDateAttrOfDailyPerforDto) item).toDomain(getEmployeeId(), getWorkDate()));
 	}
 
 	@Override

@@ -33,14 +33,14 @@
 }
 
 #btn-saveColumnWidth {
-	float: right;
+	/* float: right; */
 	margin-top: 3px;
 }
 
 #btn-legend {
-	float: right;
+	/* float: left; */
 	margin-top: 3px;
-	margin-right: 10px;
+	margin-left: 200px;
 }
 
 .grid-container {
@@ -51,9 +51,9 @@
 
 .setting-container {
 	display: inline-block;
-	float: right;
-	margin: 3px 100px 0 20px;
-	position: relative;
+	margin: 3px ;
+	/* position: relative; */
+	margin-left: 100px;
 }
 
 #setting-content {
@@ -191,6 +191,9 @@
 #right-content {
     margin-left: 80px;
      width: 1400px !IMPORTANT;
+}
+.nts-grid-sheet-buttons{
+/* 	margin-top:32px; */
 }
 /* .nts-grid  tr.ui-ig-altrecord td.ui-state-active{
 	background-color: #007fff !IMPORTANT;

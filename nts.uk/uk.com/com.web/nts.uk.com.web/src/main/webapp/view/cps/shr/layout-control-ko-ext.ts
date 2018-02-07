@@ -645,9 +645,6 @@ module nts.custombinding {
                         <button id="cps007_btn_line"></button>
                     </div>
                 </div>
-                <script type="text/html" id="set_template">
-
-                </script>
                 <script type="text/html" id="ctr_template">
                     <div data-bind="let: {
                             nameid : itemDefId.replace(/[-_]/g, '')
@@ -852,64 +849,19 @@ module nts.custombinding {
                                 'data-code': itemCode,
                                 'data-category': categoryCode
                              }, text: text('CPS001_106'), enable: editable">選択</button>
-                            <label class="value-text" data-bind="text: value"></label>
+                            <label class="value-text" data-bind="text: ko.computed(function() { return (value() || '') + '&nbsp;&nbsp;&nbsp;' + (textValue() || ''); })"></label>
                         <!-- /ko -->
                     </div>
                 </script>`;
 
-        private api = {
-            getCat: 'ctx/pereg/person/info/category/find/companyby/{0}',
-            getCats: "ctx/pereg/person/info/category/findby/company",
-            getGroups: 'ctx/pereg/person/groupitem/getAll',
-            getItemCats: 'ctx/pereg/person/info/ctgItem/layout/findby/categoryId/{0}',
-            getItemGroups: 'ctx/pereg/person/groupitem/getAllItemDf/{0}',
-            getItemsById: 'ctx/pereg/person/info/ctgItem/layout/findby/itemId/{0}',
-            getItemsByIds: 'ctx/pereg/person/info/ctgItem/layout/findby/listItemId',
-        };
-
         private services = {
-            getCat: (cid) => {
-                let self = this,
-                    api = self.api;
-
-                return ajax(format(api.getCat, cid));
-            },
-            getCats: () => {
-                let self = this,
-                    api = self.api;
-
-                return ajax(api.getCats);
-            },
-            getGroups: () => {
-                let self = this,
-                    api = self.api;
-
-                return ajax(api.getGroups);
-            },
-            getItemByCat: (cid) => {
-                let self = this,
-                    api = self.api;
-
-                return ajax(format(api.getItemCats, cid));
-            },
-            getItemByGroup: (gid) => {
-                let self = this,
-                    api = self.api;
-
-                return ajax(format(api.getItemGroups, gid));
-            },
-            getItemsById: (id: string) => {
-                let self = this,
-                    api = self.api;
-
-                return ajax(format(api.getItemsById, id));
-            },
-            getItemsByIds: (ids: Array<any>) => {
-                let self = this,
-                    api = self.api;
-
-                return ajax(api.getItemsByIds, ids);
-            }
+            getCat: (cid) => ajax(`ctx/pereg/person/info/category/find/companyby/${cid}`),
+            getCats: () => ajax(`ctx/pereg/person/info/category/findby/company`),
+            getGroups: () => ajax(`ctx/pereg/person/groupitem/getAll`),
+            getItemByCat: (cid) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/categoryId/${cid}`),
+            getItemByGroup: (gid) => ajax(`ctx/pereg/person/groupitem/getAllItemDf/${gid}`),
+            getItemsById: (id: string) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/itemId/${id}`),
+            getItemsByIds: (ids: Array<any>) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/listItemId`, ids)
         };
 
         remove = (item, sender) => {
@@ -1501,6 +1453,12 @@ module nts.custombinding {
                         }
                     },
                         modifitems = (row: Array<any>) => {
+                            let _valids = [ITEM_SINGLE_TYPE.DATE, ITEM_SINGLE_TYPE.TIME, ITEM_SINGLE_TYPE.TIMEPOINT];
+
+                            if (row.length != 3 || _valids.indexOf(row[1].item.dataTypeValue) == -1 || _valids.indexOf(row[1].item.dataTypeValue) == -1) {
+                                return;
+                            }
+                            
                             _.each(row, (def, j) => {
                                 // call some validate function at here
                                 if (_.has(def, "item") && !_.isNull(def.item)) {
@@ -1529,7 +1487,6 @@ module nts.custombinding {
                                                     nv = ko.toJS(next.value),
                                                     tpt = typeof pv == 'number',
                                                     tnt = typeof nv == 'number';
-
 
                                                 dom2.trigger('change');
                                                 dom1.trigger('change');
@@ -1576,13 +1533,13 @@ module nts.custombinding {
                                                     && ko.isObservable(next.value)) {
 
                                                     def.endDate = ko.computed(() => {
-                                                        return moment.utc(ko.toJS(next.value) || '9999-12-31').add(ko.toJS(next.value) ? -1 : 0, "days").toDate();
+                                                        return moment.utc(ko.toJS(next.value) || '9999/12/31', "YYYY/MM/DD").add(ko.toJS(next.value) ? -1 : 0, "days").toDate();
                                                     });
                                                     def.startDate = ko.observable();
 
                                                     next.endDate = ko.observable();
                                                     next.startDate = ko.computed(() => {
-                                                        return moment.utc(ko.toJS(def.value) || '1900-01-01').add(ko.toJS(def.value) ? 1 : 0, "days").toDate();
+                                                        return moment.utc(ko.toJS(def.value) || '1900/01/01', "YYYY/MM/DD").add(ko.toJS(def.value) ? 1 : 0, "days").toDate();
                                                     });
                                                 }
                                             }
@@ -1700,7 +1657,10 @@ module nts.custombinding {
 
                             def.categoryCode = _.has(def, "categoryCode") && def.categoryCode || '';
 
-                            def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? def.lstComboBoxValue : [];
+                            def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? def.lstComboBoxValue : [
+                                { optionValue: '1', optionText: text('CPS001_100') },
+                                { optionValue: '0', optionText: text('CPS001_99') }
+                            ];
 
                             def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
                             def.readonly = ko.observable(_.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled());
@@ -1712,6 +1672,8 @@ module nts.custombinding {
                             def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
 
                             def.value = ko.isObservable(def.value) ? def.value : ko.observable(isStr(def.item) && def.value ? String(def.value) : def.value);
+                            def.textValue = ko.isObservable(def.textValue) ? def.textValue : ko.observable(isStr(def.item) && def.textValue ? String(def.textValue) : def.textValue);
+
                             def.value.subscribe(x => {
                                 let inputs = [],
                                     proc = function(data: any): any {
@@ -1738,7 +1700,7 @@ module nts.custombinding {
                                                 };
                                             case ITEM_SINGLE_TYPE.DATE:
                                                 return {
-                                                    value: data.value ? moment.utc(data.value).format("YYYY/MM/DD") : undefined,
+                                                    value: data.value ? moment.utc(data.value, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
                                                     typeData: 3
                                                 };
                                             case ITEM_SINGLE_TYPE.SELECTION:
@@ -1791,7 +1753,7 @@ module nts.custombinding {
                                     .filter(x => _.has(x, "items") && _.isFunction(x.items))
                                     .map(x => ko.toJS(x.items))
                                     .flatten()
-                                    .filter((x: any) => _.has(x, "item") && !!x.item)
+                                    .filter((x: any) => _.has(x, "item") && !!x.item && x.editable)
                                     .map((x: any) => {
                                         if (_.isArray(x)) {
                                             return x.map((m: any) => {
@@ -1860,7 +1822,12 @@ module nts.custombinding {
                                 // change value
                                 opts.sortable.outData(inputs);
                             });
-                            def.value.valueHasMutated();
+
+                            def.editable.subscribe(x => {
+                                def.value.valueHasMutated();
+                            });
+
+                            def.editable.valueHasMutated();
                         };
 
                     x.dispOrder = i + 1;

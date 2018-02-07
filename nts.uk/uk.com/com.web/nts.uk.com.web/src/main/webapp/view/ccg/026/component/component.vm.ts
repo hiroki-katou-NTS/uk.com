@@ -33,12 +33,13 @@ module nts.uk.com.view.ccg026.component {
                 // caculate height by row number
                 var headerHeight: number = 23;
                 var heigth: number = (self.setting.maxRow) * 28 + headerHeight;
-                $("html").find("#table-permission-" + self.componentId).ntsFixedTable({ height: heigth });
                 self.getListOfFunctionPermission().done(() => {
                     self.buildAvialabilityFunctionPermission().done(() => {
                         dfd.resolve();
                     }).fail(function(res: any) {
                         dfd.reject();
+                    }).always(() => {
+                        $("html").find("#table-permission-" + self.componentId).ntsFixedTable({ height: heigth });
                     });
                 }).fail(function(res: any) {
                     dfd.reject();

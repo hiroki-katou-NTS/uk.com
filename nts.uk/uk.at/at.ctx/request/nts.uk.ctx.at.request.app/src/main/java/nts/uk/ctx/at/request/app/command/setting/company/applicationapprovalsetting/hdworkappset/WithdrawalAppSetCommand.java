@@ -8,8 +8,6 @@ import lombok.Data;
 public class WithdrawalAppSetCommand {
 	// 会社ID
 	private String companyId;
-	// 事前反映設定
-	private int prePerflex;
 	// 休憩時間
 	private int breakTime;
 	// 勤務時間（出勤、退勤時刻）
@@ -26,10 +24,6 @@ public class WithdrawalAppSetCommand {
 	private int checkOut;
 	// 代休先取り許可
 	private int prefixLeave;
-	// 休出時間指定単位
-	private int unitTime;
-	// 休暇申請同時申請設定
-	private int appSimul;
 	// 直帰区分
 	private int bounSeg;
 	// 直行区分
