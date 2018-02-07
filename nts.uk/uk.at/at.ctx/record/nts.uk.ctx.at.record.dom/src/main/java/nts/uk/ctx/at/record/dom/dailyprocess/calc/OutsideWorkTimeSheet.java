@@ -71,7 +71,7 @@ public class OutsideWorkTimeSheet {
 			BreakdownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalculationOfOverTimeWork autoCalculationSet,
 			LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet) {
 		
-		Optional<HolidayWorkTimeSheet> holidayWorkTimeSheet = Optional.empty();
+		List<HolidayWorkFrameTimeSheetForCalc> holidayWorkFrameTimeSheetForCalc = new ArrayList<>();
 		List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheet = new ArrayList<>();
 		if (toDay.isWeekDayAttendance()) {
 			/* 就業時間外時間帯の平日出勤の処理 */
@@ -95,10 +95,10 @@ public class OutsideWorkTimeSheet {
 
 		} else {
 			/* 休日出勤 */
-			List<HolidayWorkFrameTimeSheet> outsideWorkTimeSheet = new ArrayList<>();//new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(1), new TimeSpanForCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0))); 
-//					HolidayWorkFrameTimeSheet.getHolidayWorkTimeOfDaily(
+//			new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(1), new TimeSpanForCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)));
 //					fixOff.getWorkTimezone(), attendanceLeave, dayEndSet, overDayEndSet, holidayTimeWorkItem, beforeDay,
 //					toDay, afterDay);
+			holidayWorkFrameTimeSheetForCalc = HolidayWorkFrameTimeSheetForCalc.createHolidayTimeWorkFrame(fixOff,toDay);
 
 			/* 0時跨ぎ */
 			OverDayEnd overEnd = new OverDayEnd();
@@ -123,11 +123,15 @@ public class OutsideWorkTimeSheet {
 //																		// Optional.of(overTimeWorkSheet.get().getOverWorkTimeOfDaily()),
 //																		// Optional.of(holidayWorkTimeSheet.get().getWorkHolidayTime()))
 		return new OutsideWorkTimeSheet(
-				   Optional.of(new OverTimeSheet(new SubHolOccurrenceInfo(),
+				   Optional.of(new OverTimeSheet(new RaisingSalaryTime(),
 						   						 overTimeWorkFrameTimeSheet,
-						   						 new RaisingSalaryTime()
+						   						new SubHolOccurrenceInfo()
 						   						 ))
-				   ,holidayWorkTimeSheet);
+				   ,
+				   Optional.of(new HolidayWorkTimeSheet(new RaisingSalaryTime(),
+						   								holidayWorkFrameTimeSheetForCalc, 
+						   								new SubHolOccurrenceInfo()))
+				   );
 
 	}
 

@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkSchedu
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 
@@ -98,8 +99,8 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 * @param oneDay 1日の範囲クラス
 	 * @return 日別実績(Work)クラス
 	 */
-	public static IntegrationOfDaily calcTimeResult(CalculationRangeOfOneDay oneDay,IntegrationOfDaily integrationOfDaily,AutoCalculationOfOverTimeWork overTimeAutoCalcSet) {
-		integrationOfDaily.setAttendanceTimeOfDailyPerformance(collectCalculationResult(oneDay,overTimeAutoCalcSet));
+	public static IntegrationOfDaily calcTimeResult(CalculationRangeOfOneDay oneDay,IntegrationOfDaily integrationOfDaily,AutoCalculationOfOverTimeWork overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting) {
+		integrationOfDaily.setAttendanceTimeOfDailyPerformance(collectCalculationResult(oneDay,overTimeAutoCalcSet,holidayAutoCalcSetting));
 		return integrationOfDaily;
 	}
 	
@@ -107,14 +108,14 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 * 時間の計算結果をまとめて扱う
 	 * @param 1日の範囲クラス
 	 */
-	private static AttendanceTimeOfDailyPerformance collectCalculationResult(CalculationRangeOfOneDay oneDay,AutoCalculationOfOverTimeWork overTimeAutoCalcSet) {
+	private static AttendanceTimeOfDailyPerformance collectCalculationResult(CalculationRangeOfOneDay oneDay,AutoCalculationOfOverTimeWork overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting) {
 		
 		/*勤務予定時間の計算*/
 		val workScheduleTime = new WorkScheduleTimeOfDaily(new WorkScheduleTime(new AttendanceTime(510),new AttendanceTime(0),new AttendanceTime(510)),
 														   new AttendanceTime(0),
 														   new AttendanceTime(0));
 		/*日別実績の実績時間の計算*/
-		val actualWorkingTimeOfDaily = ActualWorkingTimeOfDaily.calcRecordTime(oneDay,overTimeAutoCalcSet);
+		val actualWorkingTimeOfDaily = ActualWorkingTimeOfDaily.calcRecordTime(oneDay,overTimeAutoCalcSet,holidayAutoCalcSetting);
 		/*滞在時間の計算*/
 		val stayingTime = new StayingTimeOfDaily(new AttendanceTime(0),
 												 new AttendanceTime(0),

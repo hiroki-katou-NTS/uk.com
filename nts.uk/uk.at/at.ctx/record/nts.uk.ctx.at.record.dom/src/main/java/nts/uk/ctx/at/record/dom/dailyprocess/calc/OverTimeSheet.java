@@ -31,12 +31,13 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 @Getter
 public class OverTimeSheet {
 	
-	//代休発生情報
-	private SubHolOccurrenceInfo subOccurrenceInfo;
-	//残業枠時間帯
-	private List<OverTimeFrameTimeSheetForCalc> frameTimeSheets;
 	//加給時間
 	private RaisingSalaryTime raisingsalyryTime;
+	//残業枠時間帯
+	private List<OverTimeFrameTimeSheetForCalc> frameTimeSheets;
+	//代休発生情報
+	private SubHolOccurrenceInfo subOccurrenceInfo;
+
 	
 	/**
 	 * Constrctor
@@ -44,12 +45,13 @@ public class OverTimeSheet {
 	 * @param frameTimeSheets
 	 * @param raisingsalyryTime
 	 */
-	public OverTimeSheet(SubHolOccurrenceInfo subOccurrenceInfo, List<OverTimeFrameTimeSheetForCalc> frameTimeSheets,
-			RaisingSalaryTime raisingsalyryTime) {
+	public OverTimeSheet(RaisingSalaryTime raisingsalyryTime, List<OverTimeFrameTimeSheetForCalc> frameTimeSheets,
+							SubHolOccurrenceInfo subOccurrenceInfo) {
 		super();
-		this.subOccurrenceInfo = subOccurrenceInfo;
-		this.frameTimeSheets = frameTimeSheets;
+		
 		this.raisingsalyryTime = raisingsalyryTime;
+		this.frameTimeSheets = frameTimeSheets;
+		this.subOccurrenceInfo = subOccurrenceInfo;
 	}
 	
 	
