@@ -9,6 +9,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.command.setting.company.applicationsetting.ProxyAppSetCommand;
+import nts.uk.ctx.at.request.app.command.setting.company.applicationsetting.UpdateProxyAppSetCommandHandler;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationsetting.ProxyAppSetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationsetting.ProxyAppSetFinder;
 
@@ -17,6 +19,8 @@ import nts.uk.ctx.at.request.app.find.setting.company.applicationsetting.ProxyAp
 public class ProxyAppSetWebservice extends WebService{
 	@Inject
 	private ProxyAppSetFinder proxyFinder;
+	@Inject
+	private UpdateProxyAppSetCommandHandler update;
 	/**
 	 * get all proxy app set
 	 * @return
@@ -31,5 +35,11 @@ public class ProxyAppSetWebservice extends WebService{
 	@Path("findApp/{closureId}")
 	public ProxyAppSetDto getByCom(@PathParam("closureId") int appType){
 		 return proxyFinder.findByApp(appType);
+	}
+	
+	@POST
+	@Path("update")
+	public void update(ProxyAppSetCommand command){
+		 this.update.handle(command);
 	}
 }

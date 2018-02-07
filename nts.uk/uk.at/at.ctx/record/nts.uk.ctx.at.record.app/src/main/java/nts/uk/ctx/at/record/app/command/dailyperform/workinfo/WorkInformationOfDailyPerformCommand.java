@@ -13,7 +13,7 @@ public class WorkInformationOfDailyPerformCommand extends DailyWorkCommonCommand
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		this.data = item == null ? null : ((WorkInformationOfDailyDto) item).toDomain();
+		this.data = item == null ? null : ((WorkInformationOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate());
 	}
 
 	@Override

@@ -15,9 +15,10 @@ public class OutingTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand 
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		this.data = item == null ? Optional.empty() : Optional.of(((OutingTimeOfDailyPerformanceDto) item).toDomain());
+		this.data = item == null ? Optional.empty() : Optional.of(
+				((OutingTimeOfDailyPerformanceDto) item).toDomain(getEmployeeId(), getWorkDate()));
 	}
-	
+
 	@Override
 	public void updateData(Object data) {
 		this.data = data == null ? Optional.empty() : Optional.of((OutingTimeOfDailyPerformance) data);

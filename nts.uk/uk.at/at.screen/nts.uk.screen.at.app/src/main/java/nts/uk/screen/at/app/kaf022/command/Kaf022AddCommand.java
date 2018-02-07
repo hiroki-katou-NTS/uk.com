@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.kaf022.command;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +30,7 @@ import nts.uk.ctx.at.request.app.command.setting.request.gobackdirectlycommon.Go
 @AllArgsConstructor
 @NoArgsConstructor
 public class Kaf022AddCommand {
-	private ApplicationDeadlineCommand appDead;
+	private List<ApplicationDeadlineCommand> appDead;
 	private ApprovalSetCommand appSet; 
 	private AppCommonSetCommand appCommon;
 	private ProxyAppSetCommand proxy;

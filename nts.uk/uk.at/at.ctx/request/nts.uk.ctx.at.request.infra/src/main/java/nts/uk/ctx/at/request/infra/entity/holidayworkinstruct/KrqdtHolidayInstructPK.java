@@ -23,11 +23,6 @@ public class KrqdtHolidayInstructPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	@Basic(optional = false)
-    @Column(name = "CID")
-    private String cid;
-	
-
     /**
      * 対象者
      */
