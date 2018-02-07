@@ -371,7 +371,7 @@ module nts.layout {
                         self.setItemName(CS00020_IS00130, childData ? childData.selectedWorkTypeName : undefined);
                     });
 
-                })
+                });
             }
 
             //            if (CS00020_IS00130 || CS00020_IS00131) {
