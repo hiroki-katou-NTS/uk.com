@@ -85,6 +85,8 @@ module nts.uk.com.view.ccg.share.ccg {
             employeeinfo: any;
             closureList: KnockoutObservableArray<any>;
             selectedClosure: KnockoutObservable<number>;
+            
+            //QueryParam
             quickSearchParam: QuickSearchParam;
             advancedSearchParam: AdvancedSearchParam;
             referenceRange: number;
@@ -210,13 +212,13 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 self.quickSearchParam = <QuickSearchParam>{};
                 self.quickSearchParam.filterByDepartment = false;
-                self.quickSearchParam.listDepartmentId = [];
+                self.quickSearchParam.departmentCodes = [];
                 self.quickSearchParam.filterByWorkplace = false;
-                self.quickSearchParam.listWorkplaceId = [];
+                self.quickSearchParam.workplaceCodes = [];
                 self.quickSearchParam.filterByClassification = false;
-                self.quickSearchParam.listClassificationCode = [];
+                self.quickSearchParam.classificationCodes = [];
                 self.quickSearchParam.filterByJobTitle = false;
-                self.quickSearchParam.listPositionId = [];
+                self.quickSearchParam.jobTitleCodes = [];
                 self.quickSearchParam.includeIncumbents = true;
                 self.quickSearchParam.includeOccupancy = false;
                 self.quickSearchParam.includeRetirees = false;
@@ -636,7 +638,7 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             applyDataSearch(): void {
                 var self = this;
-                
+
                 // validate input base date
                 if (self.validateClient()) {
                     return;
@@ -669,9 +671,9 @@ module nts.uk.com.view.ccg.share.ccg {
                                 $('#employeeinfo').ntsListComponent(self.employeeinfo);
                             }
                             nts.uk.ui.block.clear();
+
                         });
                 }
-
             }
 
             /**
@@ -742,6 +744,13 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (self.validateClient()) {
                     return;
                 }
+                service.searchEmployeeByLogin(self.baseDate().toDate()).done(data => {
+                    if (data.length > 0) {
+                        self.onSearchOnlyClicked(data[0]);
+                    }
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                });
             }
 
             /**
@@ -871,14 +880,40 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (self.validateClient()) {
                     return;
                 }
-                
-                
-                
-//                service.searchAllEmployee(self.baseDate()).done(data => {
-//                    self.onSearchAllClicked(data);
-//                }).fail(function(error) {
-//                    nts.uk.ui.dialog.alertError(error);
-//                });
+//                var status : boolean;
+                self.quickSearchParam.referenceRange = ConfigEnumReferenceRange.ALL_EMPLOYEE;
+                //check closure is displayed 
+                self.quickSearchParam.referenceRange = ConfigEnumReferenceRange.ALL_EMPLOYEE;
+                if (self.showClosure){
+                    if (self.selectedClosed != ConfigEnumClosure.CLOSURE_ALL){
+                        service.getEmploymentCodeByClosureId(self.selectedClosed).done(data => {
+                            self.quickSearchParam.filterByEmployment = true;
+                            self.quickSearchParam.employmentCodes = data;
+                        });
+                    } 
+                    if (!nts.uk.util.isNullOrEmpty(self.systemType)){
+                        // Goi Query (thang nay de lai chua lm)
+                        /** if(self.systemType == ConfigEnumSystemType.SYSTYPE_ADMIN){
+                            //change the workplace list
+                            service.getRefRangeBySysType(self.systemType).done(data => {
+                                if (data == ConfigEnumReferenceRange.ONLY_MYSELF){
+                                    status = false;
+                                }
+                                else {
+                                    if (self.quickSearchParam.referenceRange == ConfigEnumReferenceRange.ALL_EMPLOYEE){
+                                        if (data != ConfigEnumReferenceRange.ALL_EMPLOYEE){
+                                            self.getReferableWorkplaceList(self.quickSearchParam);
+                                        }
+                                    }
+                                    status = 0;
+                                }
+                                else {
+                                    if (self.quickSearchParam.referenceRange == 
+                                }
+                            });
+                        }**/
+                    }
+                }
             }
 
             /**
@@ -955,20 +990,37 @@ module nts.uk.com.view.ccg.share.ccg {
             static MAX_ROWS_WORKPLACE = 10;
             static MAX_ROWS_EMPLOYEE = 20;    
         }
+        
+        export class ConfigEnumSystemType{
+            static SYSTYPE_ADMIN = 5;
+            static SYSTYPE_EMPLOYMENT = 2;
+            static SYSTYPE_PERSONALINFOR = 1;
+        }
+        
+         export class ConfigEnumClosure{
+            static CLOSURE_ALL = 0;
+        }
+        
+        export class ConfigEnumReferenceRange{
+            static ALL_EMPLOYEE = 0;
+            static DEPARTMENT_AND_CHILD = 1;
+            static DEPARTMENT_ONLY = 2;
+            static ONLY_MYSELF = 3;
+        }
 
         interface BaseQueryParam {
             baseDate: any;
             referenceRange: number;
             filterByEmployment: boolean;
-            listEmploymentCode: Array<any>;
+            employmentCodes: Array<string>;
             filterByDepartment: boolean;
-            listDepartmentId: Array<any>;
+            departmentCodes: Array<number>;
             filterByWorkplace: boolean;
-            listWorkplaceId: Array<any>;
+            workplaceCodes: Array<number>;
             filterByClassification: boolean;
-            listClassificationCode: Array<any>;
+            classificationCodes: Array<any>;
             filterByJobTitle: boolean;
-            listPositionId: Array<any>;
+            jobTitleCodes: Array<number>;
 
             periodStart: any;
             periodEnd: any;

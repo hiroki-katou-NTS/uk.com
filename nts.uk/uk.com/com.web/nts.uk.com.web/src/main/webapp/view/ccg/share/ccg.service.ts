@@ -12,15 +12,18 @@ module nts.uk.com.view.ccg.share.ccg {
             searchWorkplaceChild: "basic/organization/employee/workplacechild",
             searchWorkplaceOfEmployee: "basic/organization/employee/workplaceemp",
             getOfSelectedEmployee: "basic/organization/employee/getoffselect",
-            searchAllWorkType: "at/share/worktype/findNotDeprecated",
-            quickSearchEmployee: "basic/organization/employee/quicksearch",
+            searchAllWorkType: "share/worktype/findNotDeprecated",
+            getEmploymentCodeByClosureId: "ctx/at/shared/workrule/closure/findEmpByClosureId",
+//            quickSearchEmployee: "basic/organization/employee/quicksearch",
             getRefRangeBySysType: "ctx/sys/auth/role/getrefrangebysystype",
             getClosuresByBaseDate: "ctx/at/shared/workrule/closure/getclosuresbybasedate",
             calculatePeriod: "ctx/at/shared/workrule/closure/calculateperiod",
             getClosureTiedByEmployment: "ctx/at/shared/workrule/closure/getclosuretiedbyemployment",
             getCurrentHistoryItem: "bs/employee/employment/history/getcurrenthistoryitem",
             getPersonalRoleFuturePermit: "ctx/sys/auth/grant/roleindividual/get/futurerefpermit",
-            getEmploymentRoleFuturePermit: "at/auth/workplace/employmentrole/get/futurerefpermit"
+            getEmploymentRoleFuturePermit: "at/auth/workplace/employmentrole/get/futurerefpermit",
+            findAllWorkplaceId: "at/auth/workplace/manager/findAllWorkplaceId",
+            getAffWorkplaceHistItem: "bs/employee/workplace/getAffWorkplaceHistItem",
         }
 
         /**
@@ -42,12 +45,22 @@ module nts.uk.com.view.ccg.share.ccg {
             return nts.uk.request.ajax('com', servicePath.getCurrentHistoryItem);
         }
 
+        /**
+         * Get Reference Range By System Type
+         */
         export function getRefRangeBySysType(sysType: number): JQueryPromise<number> {
             return nts.uk.request.ajax('com', servicePath.getRefRangeBySysType + '/' + sysType);
         }
 
         export function getClosuresByBaseDate(baseDate: string): JQueryPromise<Array<any>> {
             return nts.uk.request.ajax('at', servicePath.getClosuresByBaseDate + '/' + baseDate);
+        }
+        
+        /**
+         * Get Employment Code By ClosureId
+         */
+        export function getEmploymentCodeByClosureId(closureId: number): JQueryPromise<Array<any>> {
+            return nts.uk.request.ajax('at', servicePath.getEmploymentCodeByClosureId + '/' + closureId);
         }
 
         export function getClosureTiedByEmployment(employmentCd: string): JQueryPromise<number> {
@@ -99,27 +112,44 @@ module nts.uk.com.view.ccg.share.ccg {
         }
 
         /**
-         * search data of employee
+         * search WorkPlace of Employee
          */
         export function searchWorkplaceOfEmployee(baseDate: Date): JQueryPromise<string[]> {
             return nts.uk.request.ajax('com', servicePath.searchWorkplaceOfEmployee, baseDate);
         }
         
         /**
-         * search data of employee
+         * get of selected Employee
          */
         export function getOfSelectedEmployee(baseDate: Date, employeeIds: string[]): JQueryPromise<model.EmployeeSearchDto[]> {
             return nts.uk.request.ajax('com', servicePath.getOfSelectedEmployee, { baseDate: baseDate, employeeIds: employeeIds });
         }
         
-        
-        export function searchAllWorkType(): JQueryPromise<any> {
+        /**
+         * search all worktype
+         */
+        export function searchAllWorkType(): JQueryPromise<string[]> {
             return nts.uk.request.ajax('at', servicePath.searchAllWorkType);
         }
         
-        export function quickSearchEmployee(baseDate: Date): JQueryPromise<any> {
-            return nts.uk.request.ajax('com', servicePath.searchAllEmployee, baseDate);
+        /**
+         * quick search employee
+         */
+//        export function quickSearchEmployee(params: any): JQueryPromise<any> {
+//            return nts.uk.request.ajax('com', servicePath.searchAllEmployee, params);
+//        }
+        
+        /**
+         * find All WorkplaceId
+         */
+        export function findAllWorkplaceId(baseDate: Date): JQueryPromise<any> {
+            return nts.uk.request.ajax('at', servicePath.findAllWorkplaceId, baseDate);
         }
+        
+        export function getAffWorkplaceHistItem(baseDate: Date): JQueryPromise<any> {
+            return nts.uk.request.ajax('com', servicePath.getAffWorkplaceHistItem, baseDate);
+        }
+        
         
         export module model{
 
