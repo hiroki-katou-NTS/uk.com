@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,10 +60,10 @@ public class OptionalItemOfDailyPerformDto implements ConvertibleAttendanceItem 
 	@Override
 	public AnyItemValueOfDaily toDomain() {
 		return new AnyItemValueOfDaily(employeeId, date,
-				ConvertHelper.mapTo(optionalItems,
-						(c) -> new AnyItemValue(new AnyItemNo(c.getItemNo()), 
-								c.isTimesItem() ? Optional.of(new AnyItemTimes(Integer.valueOf(c.getValue()))) : Optional.empty(),
-								c.isAmountItem() ? Optional.of(new AnyItemAmount(new BigDecimal(c.getValue()))) : Optional.empty(),
-								c.isTimeItem() ? Optional.of(new AnyItemTime(Integer.valueOf(c.getValue()))) : Optional.empty())));
+						optionalItems == null ? new ArrayList<>() : ConvertHelper.mapTo(optionalItems,
+								(c) -> new AnyItemValue(new AnyItemNo(c.getItemNo()), 
+									c.isTimesItem() ? Optional.of(new AnyItemTimes(Integer.valueOf(c.getValue()))) : Optional.empty(),
+									c.isAmountItem() ? Optional.of(new AnyItemAmount(new BigDecimal(c.getValue()))) : Optional.empty(),
+									c.isTimeItem() ? Optional.of(new AnyItemTime(Integer.valueOf(c.getValue()))) : Optional.empty())));
 	}
 }

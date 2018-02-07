@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppType;
 /**
  * 休暇申請設定
  * @author yennth
@@ -17,10 +16,6 @@ import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppType;
 public class HdAppSet extends AggregateRoot {
 	// 会社ID
 	private String companyId;
-	// 休暇申請の種類
-	private HdAppType hdAppType;
-	// 未選択を表示する
-	private UseAtr dispUnselec;
 	// 60H超休を利用する
 	private UseAtr use60h;
 	// 代表者名
@@ -69,7 +64,7 @@ public class HdAppSet extends AggregateRoot {
 	private ObstacleName yearResig;
 	// 積立年休残数不足登録できる
 	private UseAtr regisShortReser;
-	public static HdAppSet createFromJavaType(String companyId, int hdAppType, int dispUnselec, 
+	public static HdAppSet createFromJavaType(String companyId,
 												int use60h, String obstacleName, int regisShortLostHd, 
 												String hdName, int regisLackPubHd, int changeWrkHour, 
 												int ckuperLimit, int actualDisp, int wrkHours, int pridigCheck, 
@@ -77,8 +72,7 @@ public class HdAppSet extends AggregateRoot {
 												int useGener, int useYear, String timeDigest, String absenteeism, 
 												int concheckOutLegal, String specialVaca, int concheckDateRelease, 
 												int appDateContra, String yearResig, int regisShortReser){
-		return new HdAppSet(companyId, EnumAdaptor.valueOf(hdAppType, HdAppType.class), 
-				EnumAdaptor.valueOf(dispUnselec, UseAtr.class), 
+		return new HdAppSet(companyId, 
 				EnumAdaptor.valueOf(use60h, UseAtr.class), 
 				new ObstacleName(obstacleName), 
 				EnumAdaptor.valueOf(regisShortLostHd, UseAtr.class), 

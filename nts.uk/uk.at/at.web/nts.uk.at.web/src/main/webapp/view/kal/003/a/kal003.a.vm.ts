@@ -175,6 +175,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
             let command: any = ko.toJS(data);
             $("#A3_4").trigger("validate");
+            $("#check-condition-table .nts-editor.nts-input").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 block.invisible();
                 service.registerData(command).done(function() {
@@ -230,7 +231,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     block.clear();
                 });
 
-            }).ifCancel(() => {
+            }).ifNo(() => {
             });
         }
 

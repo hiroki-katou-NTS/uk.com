@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -49,9 +50,9 @@ public class SpecificDateAttrOfDailyPerforDto implements ConvertibleAttendanceIt
 	@Override
 	public SpecificDateAttrOfDailyPerfor toDomain() {
 		return new SpecificDateAttrOfDailyPerfor(employeeId,
-				ConvertHelper.mapTo(sepecificDateAttrs,
-						(c) -> new SpecificDateAttrSheet(new SpecificDateItemNo(c.getItemNo()),
-								ConvertHelper.getEnum(c.getSpecificDate(), SpecificDateAttr.class))),
-				ymd);
+					sepecificDateAttrs == null ? new ArrayList<>() : ConvertHelper.mapTo(sepecificDateAttrs,
+							(c) -> new SpecificDateAttrSheet(new SpecificDateItemNo(c.getItemNo()),
+									ConvertHelper.getEnum(c.getSpecificDate(), SpecificDateAttr.class))),
+					ymd);
 	}
 }

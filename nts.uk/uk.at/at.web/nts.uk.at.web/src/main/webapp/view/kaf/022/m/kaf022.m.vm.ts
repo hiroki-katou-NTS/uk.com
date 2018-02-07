@@ -129,8 +129,8 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                 code: $('#wkp-list').getRowSelected()[0].workplaceCode,
                 name: wkp ? wkp.name : '',
                 targetType: 4,
-                itemListSetting: nts.uk.ui._viewModel.content.viewModelM.alreadySettingList().map((alreadySetting) => { return alreadySetting.workplaceId; }),
-                baseDate: nts.uk.ui._viewModel.content.viewModelM.baseDate()
+                itemListSetting: nts.uk.ui._viewModel.content.viewmodelM.alreadySettingList().map((alreadySetting) => { return alreadySetting.workplaceId; }),
+                baseDate: nts.uk.ui._viewModel.content.viewmodelM.baseDate()
             };
             nts.uk.ui.windows.setShared("CDL023Input", param);
 
@@ -142,7 +142,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                 if (lstSelection && lstSelection.length > 0) {
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_19" }).ifYes(() => {
                         _.forEach(lstSelection, (wkpIdToCopy) => {
-                            let copySetting = ko.mapping.toJS(nts.uk.ui._viewModel.content.viewModelM.selectedSetting);
+                            let copySetting = ko.mapping.toJS(nts.uk.ui._viewModel.content.viewmodelM.selectedSetting);
                             copySetting.approvalFunctionSettingDtoLst.forEach((setting) => {
                                 setting.breakInputFieldDisFlg = setting.breakInputFieldDisFlg ? 1 : 0;
                                 setting.goOutTimeBeginDisFlg = setting.goOutTimeBeginDisFlg ? 1 : 0;
@@ -153,7 +153,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                         });
                         nts.uk.at.view.kmf022.m.service.update(lstCommand).done(() => {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                nts.uk.ui._viewModel.content.viewModelM.reloadData();
+                                nts.uk.ui._viewModel.content.viewmodelM.reloadData();
                             });
                         })
                     });
@@ -165,7 +165,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
 
         update() {
             nts.uk.ui.dialog.confirm({ messageId: "Msg_19" }).ifYes(() => {
-                let command = ko.mapping.toJS(nts.uk.ui._viewModel.content.viewModelM.selectedSetting);
+                let command = ko.mapping.toJS(nts.uk.ui._viewModel.content.viewmodelM.selectedSetting);
                 command.approvalFunctionSettingDtoLst.forEach((setting) => {
                     setting.breakInputFieldDisFlg = setting.breakInputFieldDisFlg ? 1 : 0;
                     setting.goOutTimeBeginDisFlg = setting.goOutTimeBeginDisFlg ? 1 : 0;
@@ -175,7 +175,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                 lstCommand.push(command);
                 nts.uk.at.view.kmf022.m.service.update(lstCommand).done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                        nts.uk.ui._viewModel.content.viewModelM.reloadData();
+                        nts.uk.ui._viewModel.content.viewmodelM.reloadData();
                     });
                 }).fail(() => {
                     nts.uk.ui.dialog.alert({ messageId: "Msg_59" });
@@ -184,10 +184,10 @@ module nts.uk.at.view.kmf022.m.viewmodel {
         }
 
         remove() {
-            let command = ko.mapping.toJS(nts.uk.ui._viewModel.content.viewModelM.selectedSetting);
+            let command = ko.mapping.toJS(nts.uk.ui._viewModel.content.viewmodelM.selectedSetting);
             nts.uk.ui.dialog.confirm({ messageId: "Msg_19" }).ifYes(() => {
                 nts.uk.at.view.kmf022.m.service.remove(command).done(() => {
-                    nts.uk.ui._viewModel.content.viewModelM.reloadData();
+                    nts.uk.ui._viewModel.content.viewmodelM.reloadData();
                 });
             });
         }

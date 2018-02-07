@@ -196,7 +196,7 @@ public class WorkingConditionItem extends AggregateRoot {
 	 */
 	public WorkingConditionItem(String historyId, NotUseAtr scheduleManagementAtr, PersonalDayOfWeek workDayOfWeek,
 			PersonalWorkCategory workCategory, NotUseAtr autoStampSetAtr, NotUseAtr autoIntervalSetAtr,
-			String employeeId, NotUseAtr vacationAddedTimeAtr, int contractTime, WorkingSystem laborSystem,
+			String employeeId, NotUseAtr vacationAddedTimeAtr, LaborContractTime contractTime, WorkingSystem laborSystem,
 			BreakdownTimeDay holidayAddTimeSet, ScheduleMethod scheduleMethod, Integer hourlyPaymentAtr,
 			BonusPaySettingCode timeApply, MonthlyPatternCode monthlyPattern) {
 		super();
@@ -208,7 +208,7 @@ public class WorkingConditionItem extends AggregateRoot {
 		this.autoIntervalSetAtr = autoIntervalSetAtr;
 		this.employeeId = employeeId;
 		this.vacationAddedTimeAtr = vacationAddedTimeAtr;
-		this.contractTime = new LaborContractTime(contractTime);
+		this.contractTime = contractTime;
 		this.laborSystem = laborSystem;
 		this.holidayAddTimeSet = Optional.ofNullable(holidayAddTimeSet);
 		this.scheduleMethod = Optional.ofNullable(scheduleMethod);

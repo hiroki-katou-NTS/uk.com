@@ -64,7 +64,7 @@ module nts.uk.at.view.kal004.a.model {
             ]);
 
             self.currentCodeListSwap = ko.observableArray([]);
-            self.currentCode = ko.observable('');
+            self.currentCode = ko.observable(null);
             self.currentAlarm = null;
         }
 
@@ -126,8 +126,7 @@ module nts.uk.at.view.kal004.a.model {
         private initSubscribe(): void {
             var self = this;
             // AlarmPatternSetting
-            self.currentCode.subscribe((newV) => {
-                $('#alarmName').focus();
+            self.currentCode.subscribe((newV) => {                
                 self.periodSetting.listStorageCheckCondition.removeAll();
                 self.alarmCodeChange(newV);
 
@@ -175,16 +174,15 @@ module nts.uk.at.view.kal004.a.model {
             let self = this;
             $("#swap-list-grid2").igGridSelection("clearSelection");
             $("#swap-list-grid1").igGridSelection("clearSelection");
-            errors.clearAll();
-            if (newV == '') {
-                self.createMode(true);
+            $('#alarmCode').ntsError('clear');
+            $('#alarmName').ntsError('clear');
+            if (newV == null) {                
                 self.alarmCode('');
                 self.alarmName('');
-                self.currentCode('');
                 self.currentCodeListSwap([]);
                 self.checkConditionList(_.sortBy(self.checkSource, ['category', 'checkConditonCode']));
                 self.currentAlarm = null;
-
+                self.createMode(true);
                 // tab3
                 self.setPermissionModel.listRoleID([]);
                 self.setPermissionModel.selectedRuleCode(1);
@@ -193,15 +191,14 @@ module nts.uk.at.view.kal004.a.model {
                 //tab2
                 self.periodSetting.isCreateMode(true);
 
-                $('#alarmCode').focus();
-
             }
             else {
-                self.createMode(false);
+                
                 self.currentAlarm = _.find(self.alarmSource(), function(a) { return a.alarmPatternCD == newV });
-                self.alarmCode(self.currentAlarm.alarmPatternCD);
+                self.alarmCode(self.currentAlarm.alarmPatternCD);                
                 self.alarmName(self.currentAlarm.alarmPatternName);
-
+                self.createMode(false);
+                
                 // Tab 1
                 let currentCodeListSwap = [];
                 let checkSource = _.cloneDeep(self.checkSource);
@@ -237,20 +234,45 @@ module nts.uk.at.view.kal004.a.model {
 
                 //tab2
                 self.periodSetting.isCreateMode(false);
-
-                $('#alarmName').focus();
             }
-        }
+            self.setFocus();
 
-        public setFocus(): void {
+        }
+        public setFocus(): void{
             let self = this;
-            if (self.currentCode() == '') {
+            if(self.currentCode()==null) 
                 $('#alarmCode').focus();
-            } else {
-                $('#alarmName').focus();
+            else
+                $('#alarmName').focus();    
+        }     
+        public createAlarm(): void {
+            let self = this;
+            self.currentCode(null);
+            if(self.createMode()){
+                $("#swap-list-grid2").igGridSelection("clearSelection");
+                $("#swap-list-grid1").igGridSelection("clearSelection");
+                
+                $('#alarmCode').ntsError('clear');
+                $('#alarmName').ntsError('clear');
+                                            
+                self.alarmCode('');
+                self.alarmName('');
+                self.currentCodeListSwap([]);
+                self.checkConditionList(_.sortBy(self.checkSource, ['category', 'checkConditonCode']));
+                self.currentAlarm = null;
+                self.createMode(true);
+    
+                // tab3
+                self.setPermissionModel.listRoleID([]);
+                self.setPermissionModel.selectedRuleCode(1);
+                self.setPermissionModel.createMode(false);
+    
+                //tab2
+                self.periodSetting.isCreateMode(true);
+                
             }
+            self.setFocus();
         }
-
         public saveAlarm(): void {
             let self = this;
 
@@ -302,16 +324,9 @@ module nts.uk.at.view.kal004.a.model {
             }
 
         }
-        public createAlarm(): void {
-            let self = this;
-            self.currentCode('');
-            $('#alarmCode').focus();
-            errors.clearAll();
-
-        }
         public removeAlarm(): void {
             let self = this;
-            if (self.currentCode() !== '') {
+            if (self.currentCode() !== null) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
                     // Call service  alarmPatternCD
                     block.invisible();
@@ -341,7 +356,7 @@ module nts.uk.at.view.kal004.a.model {
             if (selectAlarmByIndex !== undefined)
                 self.currentCode(selectAlarmByIndex.alarmPatternCD);
             else {
-                self.currentCode('');
+                self.currentCode(null);
                 nts.uk.ui.errors.clearAll();
             }
         }

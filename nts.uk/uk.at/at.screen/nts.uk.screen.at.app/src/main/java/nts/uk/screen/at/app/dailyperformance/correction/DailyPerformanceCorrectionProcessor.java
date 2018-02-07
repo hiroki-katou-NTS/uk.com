@@ -39,6 +39,8 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
@@ -104,6 +106,9 @@ public class DailyPerformanceCorrectionProcessor {
 	@Inject
 	private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
 
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepository;
+
 	private static final String CODE = "Code";
 	private static final String NAME = "Name";
 	private static final String NO = "NO";
@@ -128,7 +133,8 @@ public class DailyPerformanceCorrectionProcessor {
 	 * Get List Data include:<br/>
 	 * Employee and Date
 	 **/
-	private List<DPDataDto> getListData(List<DailyPerformanceEmployeeDto> listEmployee, DateRange dateRange, Integer displayFormat) {
+	private List<DPDataDto> getListData(List<DailyPerformanceEmployeeDto> listEmployee, DateRange dateRange,
+			Integer displayFormat) {
 		List<DPDataDto> result = new ArrayList<>();
 		if (listEmployee.size() > 0) {
 			List<GeneralDate> lstDate = dateRange.toListDate();
@@ -137,7 +143,7 @@ public class DailyPerformanceCorrectionProcessor {
 				DailyPerformanceEmployeeDto employee = listEmployee.get(j);
 				for (int i = 0; i < lstDate.size(); i++) {
 					result.add(new DPDataDto(
-							displayFormat+"_" + employee.getId() + "_" + converDateToString(lstDate.get(i)) + "_"
+							displayFormat + "_" + employee.getId() + "_" + converDateToString(lstDate.get(i)) + "_"
 									+ converDateToString(lstDate.get(lstDate.size() - 1)) + "_" + dataId,
 							"", "", lstDate.get(i), false, employee.getId(), employee.getCode(),
 							employee.getBusinessName(), employee.getWorkplaceId()));
@@ -147,12 +153,12 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 		return result;
 	}
-    
-	private String converDateToString(GeneralDate genDate){
+
+	private String converDateToString(GeneralDate genDate) {
 		Format formatter = new SimpleDateFormat(DATE_FORMAT);
 		return formatter.format(genDate.date());
 	}
-	
+
 	/**
 	 * アルゴリズム「表示項目を制御する」を実行する | Execute the algorithm "control display items"
 	 */
@@ -361,7 +367,13 @@ public class DailyPerformanceCorrectionProcessor {
 		String NAME_NOT_FOUND = TextResource.localize("KDW003_81");
 		String companyId = AppContexts.user().companyId();
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
-
+		if (dateRange == null) {
+			Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
+					.findByEmploymentCD(companyId, getEmploymentCode(new DateRange(null, GeneralDate.today()), sId));
+			DatePeriod period = closureService.getClosurePeriod(closureEmploymentOptional.get().getClosureId(),
+					YearMonth.of(GeneralDate.today().year(), GeneralDate.today().month()));
+			dateRange = new DateRange(period.start(), period.end());
+		}
 		/**
 		 * システム日付を基準に1ヵ月前の期間を設定する | Set date range one month before system date
 		 */
@@ -424,15 +436,17 @@ public class DailyPerformanceCorrectionProcessor {
 		System.out.println("time before get item" + (System.currentTimeMillis() - timeStart));
 		long start = System.currentTimeMillis();
 		DisplayItem disItem = getDisplayItems(correct, formatCodes, companyId, screenDto, listEmployeeId);
-		DPControlDisplayItem dPControlDisplayItem = this.getItemIdNames(disItem);
-		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 
 		List<DailyModifyResult> results = new ArrayList<>();
 		ExecutorService service = Executors.newFixedThreadPool(1);
 
 		CountDownLatch latch = new CountDownLatch(1);
+
 		Future<List<DailyModifyResult>> sResults = service.submit(
-				new GetDataDaily( listEmployeeId.size() > 31 ? listEmployeeId.subList(0,30) : listEmployeeId , dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
+				new GetDataDaily( listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
+		DPControlDisplayItem dPControlDisplayItem = this.getItemIdNames(disItem);
+		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
+
 		try {
 			results = sResults.get();
 			screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
@@ -537,9 +551,9 @@ public class DailyPerformanceCorrectionProcessor {
 				int attendanceAtr = dpAttenItem.getAttendanceAtr();
 				String attendanceAtrAsString = String.valueOf(item.getAttendanceAtr());
 				Integer groupType = dpAttenItem.getTypeGroup();
-				String key = mergeString(itemIdAsString, "|", data.getEmployeeId(),
-						"|" + data.getDate().toString());
-				String value = itemValueMap.get(key) != null && itemValueMap.get(key).value() != null ? itemValueMap.get(key).value().toString() : "";
+				String key = mergeString(itemIdAsString, "|", data.getEmployeeId(), "|" + data.getDate().toString());
+				String value = itemValueMap.get(key) != null && itemValueMap.get(key).value() != null
+						? itemValueMap.get(key).value().toString() : "";
 				if (attendanceAtr == DailyAttendanceAtr.Code.value
 						|| attendanceAtr == DailyAttendanceAtr.Classification.value) {
 					String nameColKey = mergeString(NAME, itemIdAsString);
@@ -563,7 +577,8 @@ public class DailyPerformanceCorrectionProcessor {
 											attendanceAtrAsString, TYPE_LABEL));
 									value = !optCodeName.isPresent() ? NAME_NOT_FOUND : optCodeName.get().getName();
 								} else {
-									cellDatas.add(new DPCellDataDto(codeColKey, value, attendanceAtrAsString, TYPE_LABEL));
+									cellDatas.add(
+											new DPCellDataDto(codeColKey, value, attendanceAtrAsString, TYPE_LABEL));
 									value = mapGetName.get(groupType).containsKey(value)
 											? mapGetName.get(groupType).get(value) : NAME_NOT_FOUND;
 								}
@@ -585,7 +600,8 @@ public class DailyPerformanceCorrectionProcessor {
 					if (lock) {
 						screenDto.setLock(data.getId(), anyChar);
 					}
-					if (attendanceAtr == DailyAttendanceAtr.Time.value || attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
+					if (attendanceAtr == DailyAttendanceAtr.Time.value
+							|| attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
 						if (!value.isEmpty()) {
 							// convert HH:mm
 							int minute = Integer.parseInt(value);
@@ -721,8 +737,7 @@ public class DailyPerformanceCorrectionProcessor {
 	private Optional<DailyRecOpeFuncDto> findDailyRecOpeFun(DailyPerformanceCorrectionDto screenDto, String companyId) {
 		Optional<DailyRecOpeFuncDto> findDailyRecOpeFun = repo.findDailyRecOpeFun(companyId);
 		if (findDailyRecOpeFun.isPresent()) {
-			screenDto.setShowPrincipal(
-					findDailyRecOpeFun.get().getUseConfirmByYourself() == 0 ? false : true);
+			screenDto.setShowPrincipal(findDailyRecOpeFun.get().getUseConfirmByYourself() == 0 ? false : true);
 		} else {
 			screenDto.setShowPrincipal(false);
 		}
@@ -969,22 +984,22 @@ public class DailyPerformanceCorrectionProcessor {
 		List<Integer> lstAtdItemUnique = disItem.getLstAtdItemUnique();
 		List<FormatDPCorrectionDto> lstFormat = disItem.getLstFormat();
 		if (!lstAtdItemUnique.isEmpty()) {
-			Map<Integer, String> itemName = dailyAttendanceItemNameAdapter
-					.getDailyAttendanceItemName(lstAtdItemUnique).stream()
-					.collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId, x -> x.getAttendanceItemName())); // 9s
+			Map<Integer, String> itemName = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(lstAtdItemUnique)
+					.stream().collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
+							x -> x.getAttendanceItemName())); // 9s
 			lstAttendanceItem = lstAtdItemUnique.isEmpty() ? Collections.emptyList()
-					: this.repo.getListAttendanceItem(lstAtdItemUnique).stream()
-							.map(x -> {
-								x.setName(itemName.get(x.getId()));
-								return x;
-							}).collect(Collectors.toList());
+					: this.repo.getListAttendanceItem(lstAtdItemUnique).stream().map(x -> {
+						x.setName(itemName.get(x.getId()));
+						return x;
+					}).collect(Collectors.toList());
 		}
 		result.createSheets(disItem.getLstSheet());
 		mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
 		result.addColumnsToSheet(lstFormat, mapDP);
 		List<DPHeaderDto> lstHeader = new ArrayList<>();
 		for (FormatDPCorrectionDto dto : lstFormat) {
-			lstHeader.add(DPHeaderDto.createSimpleHeader(mergeString(ADD_CHARACTER, String.valueOf(dto.getAttendanceItemId())),
+			lstHeader.add(DPHeaderDto.createSimpleHeader(
+					mergeString(ADD_CHARACTER, String.valueOf(dto.getAttendanceItemId())),
 					String.valueOf(dto.getColumnWidth()) + PX, mapDP));
 		}
 		result.setLstHeader(lstHeader);

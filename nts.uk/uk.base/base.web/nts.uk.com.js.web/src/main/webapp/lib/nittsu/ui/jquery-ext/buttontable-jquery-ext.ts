@@ -292,7 +292,7 @@ module nts.uk.ui.jqueryExtentions {
                     }
                 });
 
-                button.contextmenu(function() {
+                button.contextmenu(function() { 
                     let c = $(this);
                     let enable: boolean = c.data("empty-cell");
                     if (self.mode === "master") {

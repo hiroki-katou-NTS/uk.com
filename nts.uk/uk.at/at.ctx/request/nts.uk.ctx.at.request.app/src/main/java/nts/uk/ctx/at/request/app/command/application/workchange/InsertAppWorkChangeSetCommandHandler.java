@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkC
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
 
 @Stateless
+@Transactional
 public class InsertAppWorkChangeSetCommandHandler extends CommandHandler<AppWorkChangeSetCommand>{
 	@Inject
 	private IAppWorkChangeSetRepository appWorkRep;
@@ -26,6 +28,7 @@ public class InsertAppWorkChangeSetCommandHandler extends CommandHandler<AppWork
 				data.getCommentFontColor2());
 		if(appWork.isPresent()){
 			appWorkRep.update(appChange);
+			return;
 		}
 		appWorkRep.add(appChange);
 	}

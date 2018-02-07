@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingRepository;
 
 @Stateless
+@Transactional
 public class UpdateAppOvertimeSettingCommandHandler extends CommandHandler<AppOvertimeSettingCommand> {
 	@Inject
 	private AppOvertimeSettingRepository appOverRep;
@@ -27,6 +29,7 @@ public class UpdateAppOvertimeSettingCommandHandler extends CommandHandler<AppOv
 				data.getNormalOvertimeUseAtr(), data.getAttendanceId(), data.getUseOt());
 		if(appOver.isPresent()){
 			appOverRep.update(appOvertime);
+			return;
 		}
 		appOverRep.insert(appOvertime);
 	};
