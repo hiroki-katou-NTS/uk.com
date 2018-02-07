@@ -340,8 +340,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		Optional<TimeLeavingOfDailyPerformance> timeLeavingOfDailyPerformance = Optional.of(integrationOfDaily.getAttendanceLeave());
 		if(!timeLeavingOfDailyPerformance.isPresent()) {
 			//TimeLeavingOfDailyPerformance attendanceLeavingOfDaily = timeLeavingOfDailyPerformanceRepository.
-			WorkStamp attendance = new WorkStamp(new TimeWithDayAttr(0),new TimeWithDayAttr(480), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
-			WorkStamp leaving = new WorkStamp(new TimeWithDayAttr(0),new TimeWithDayAttr(960), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
+			WorkStamp attendance = new WorkStamp(new TimeWithDayAttr(0),new TimeWithDayAttr(0), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
+			WorkStamp leaving = new WorkStamp(new TimeWithDayAttr(0),new TimeWithDayAttr(0), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
 			TimeActualStamp stamp = new TimeActualStamp(attendance,leaving,1);
 			TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(1),Optional.of(stamp),Optional.of(stamp));
 			List<TimeLeavingWork> timeLeavingWorkList = new ArrayList<>();
