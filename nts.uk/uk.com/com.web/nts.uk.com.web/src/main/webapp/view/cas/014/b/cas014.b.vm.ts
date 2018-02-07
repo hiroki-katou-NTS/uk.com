@@ -80,7 +80,11 @@ module nts.uk.com.view.cas014.b {
                     }
                     dfd.resolve();
                 }).fail(function(error) {
-                    alertError(error);
+                    alertError(error).then(() => {
+                        if (error.messageId == "Msg_713") {
+                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                        }
+                    });
                     dfd.reject();
                 }).always(() => {
                     block.clear();

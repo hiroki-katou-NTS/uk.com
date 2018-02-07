@@ -71,7 +71,9 @@ module nts.uk.com.view.cas014.a {
                     dfd.resolve();
                 }).fail(function(error) {
                     alertError(error).then(() => {
-                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                        if (error.messageId == "Msg_713" || error.messageId == "Msg_712") {
+                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                        }
                     });
                     dfd.reject();
                 }).always(() => {
