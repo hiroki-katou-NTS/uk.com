@@ -177,7 +177,7 @@ module nts.layout {
                                         self.setItemData(endItem2, childData.second ? childData.second.end : undefined);
             
                                         let command: ICheckParam = {
-                                            workTimeCode: ko.toJS(wkTimeItem.data.value)
+                                            workTimeCode: ko.toJS(wkTimeItem != null? wkTimeItem.data.value : '')
                                         };
             
                                         fetch.check_start_end(command).done(first => {
