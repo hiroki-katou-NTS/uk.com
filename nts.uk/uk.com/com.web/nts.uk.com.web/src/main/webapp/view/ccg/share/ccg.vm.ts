@@ -155,6 +155,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.reloadDataSearch();
                 self.isShow = ko.observable(false);
                 self.isFistTimeShow = true;
+                self.isOpenStatusOfEmployeeList = ko.observable(false);
                 self.isOpenEmploymentList = ko.observable(false);
                 self.isOpenClassificationList = ko.observable(false);
                 self.isOpenJoptitleList = ko.observable(false);
@@ -543,6 +544,9 @@ module nts.uk.com.view.ccg.share.ccg {
                     if ($(e.target).hasClass('ui-widget-overlay ui-front')) {
                         return;
                     }
+                    if ($(e.target).hasClass('blockUI blockOverlay')) {
+                        return;
+                    }
                     // Check is click to dialog.
                     if ($(e.target).parents("[role='dialog']")[0]) {
                         return;
@@ -633,7 +637,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 var self = this;
                 
                 // validate input base date
-                self.validateBaseDateAndTargetPeriod();
                 if (self.validateClient()) {
                     return;
                 }
@@ -647,27 +650,26 @@ module nts.uk.com.view.ccg.share.ccg {
                     }
                 });
 
-                return;
                 nts.uk.ui.block.invisible(); // block ui
-                service.searchWorkplaceOfEmployee(self.baseDate()).done(function(data) {
-                    self.selectedCodeWorkplace(data);
-                    self.reloadDataSearch();
-                    if (self.isAdvancedSearchTab) {
-                        $('#employmentList').ntsListComponent(self.employments);
-                        $('#classificationList').ntsListComponent(self.classifications);
-                        $('#jobtitleList').ntsListComponent(self.jobtitles);
-                        $('#workplaceList').ntsTreeComponent(self.workplaces);
-                        if(!self.isSelectAllEmployee) {
-                            $('#employeeinfo').ntsListComponent(self.employeeinfo);
-                        }
-                        service.searchAllWorkType()
-                            .done(function(workTypeList: Array<WorkType>) {
-                                self.listWorkType(workTypeList);
+                // reload advanced search tab.
+                if (self.isAdvancedSearchTab) {
+                    $.when(service.searchWorkplaceOfEmployee(new Date()), // mock base date
+                        service.searchAllWorkType())
+                        .done((selectedCodes, workTypeList: Array<WorkType>) => {
+                            self.selectedCodeWorkplace(selectedCodes);
+                            self.listWorkType(workTypeList);
+                            self.reloadDataSearch();
+
+                            $('#employmentList').ntsListComponent(self.employments);
+                            $('#classificationList').ntsListComponent(self.classifications);
+                            $('#jobtitleList').ntsListComponent(self.jobtitles);
+                            $('#workplaceList').ntsTreeComponent(self.workplaces);
+                            if (!self.isSelectAllEmployee) {
+                                $('#employeeinfo').ntsListComponent(self.employeeinfo);
+                            }
+                            nts.uk.ui.block.clear();
                         });
-                    }
-                }).fail(function(error){
-                    nts.uk.ui.dialog.alertError(error);
-                }).always(() => nts.uk.ui.block.clear());
+                }
 
             }
 
@@ -709,9 +711,13 @@ module nts.uk.com.view.ccg.share.ccg {
              * validate client
              */
             validateClient(): boolean {
+                let self = this;
                 $("#inp_baseDate").ntsEditor("validate");
 
                 if ($('#inp_baseDate').ntsError('hasError')) {
+                    return true;
+                }
+                if (self.showPeriod && self.showBaseDate && !self.isBaseDateInTargetPeriod()) {
                     return true;
                 }
                 return false;
@@ -747,16 +753,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 return dfd.promise();
             }
 
-            public validateBaseDate(): void {
-                let self = this;
-                if (self.baseDate()) { // is future date
-                    //TODO: throw msg_853
-                }
-                if (1==1) { // period end is future date
-                    //TODO: throw msg_860
-                }
-            }
-
             public getFuturePermit(): JQueryPromise<boolean> {
                 let self = this;
                 switch (self.systemType) {
@@ -771,13 +767,15 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
             }
 
-            public validateBaseDateAndTargetPeriod() {
+            public isBaseDateInTargetPeriod(): boolean {
                 let self = this;
                 const periodStart = self.getPeriodStart();
                 const periodEnd = self.getPeriodEnd();
                 if (self.baseDate().isBefore(periodStart) || self.baseDate().isAfter(periodEnd)) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_765" });
+                    return false;
                 }
+                return true;
             }
             /**
              * function click by search employee of work place
