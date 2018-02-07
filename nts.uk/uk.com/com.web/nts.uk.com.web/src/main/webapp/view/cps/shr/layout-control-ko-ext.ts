@@ -1453,6 +1453,12 @@ module nts.custombinding {
                         }
                     },
                         modifitems = (row: Array<any>) => {
+                            let _valids = [ITEM_SINGLE_TYPE.DATE, ITEM_SINGLE_TYPE.TIME, ITEM_SINGLE_TYPE.TIMEPOINT];
+
+                            if (row.length != 3 || _valids.indexOf(row[1].item.dataTypeValue) == -1 || _valids.indexOf(row[1].item.dataTypeValue) == -1) {
+                                return;
+                            }
+                            
                             _.each(row, (def, j) => {
                                 // call some validate function at here
                                 if (_.has(def, "item") && !_.isNull(def.item)) {
@@ -1481,7 +1487,6 @@ module nts.custombinding {
                                                     nv = ko.toJS(next.value),
                                                     tpt = typeof pv == 'number',
                                                     tnt = typeof nv == 'number';
-
 
                                                 dom2.trigger('change');
                                                 dom1.trigger('change');
