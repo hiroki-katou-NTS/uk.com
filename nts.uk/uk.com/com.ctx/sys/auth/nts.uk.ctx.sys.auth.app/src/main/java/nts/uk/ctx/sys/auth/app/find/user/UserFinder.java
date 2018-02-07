@@ -87,7 +87,7 @@ public class UserFinder {
 				}
 			}
 			for (String id : userIds) {
-				result = result.stream().filter(c -> c.getUserName().equals(id)).collect(Collectors.toList());
+				result.removeIf(c -> c.getUserID().equals(id));
 			}
 			return result;
 		}
@@ -96,7 +96,10 @@ public class UserFinder {
 				.filter(c -> c.getUserName().v().toLowerCase().contains(userKeyDto.getKey().toLowerCase()))
 				.map(c -> UserDto.fromDomain(c)).collect(Collectors.toList());
 		for (String id : userIds) {
-			result = result.stream().filter(c -> c.getUserName().equals(id)).collect(Collectors.toList());
+			result.removeIf(c -> {
+			    boolean a = c.getUserID().equals(id);
+				return a;
+		    });
 		}
 		return result;
 	}
