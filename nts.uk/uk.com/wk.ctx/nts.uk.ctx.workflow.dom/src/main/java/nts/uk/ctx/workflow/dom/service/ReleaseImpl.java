@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.dom.service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +40,7 @@ public class ReleaseImpl implements ReleaseService {
 			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 		}
 		ApprovalRootState approvalRootState = opApprovalRootState.get();
+		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
 		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
 			List<String> listApprover = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
 			if(CollectionUtil.isEmpty(listApprover)){

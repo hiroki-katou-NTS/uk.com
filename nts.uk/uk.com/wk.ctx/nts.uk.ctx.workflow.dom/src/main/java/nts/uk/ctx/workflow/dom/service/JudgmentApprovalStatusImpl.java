@@ -81,6 +81,7 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 		}
 		ApprovalRootState approvalRootState = opApprovalRootState.get();
+		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
 		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
 			List<String> approvers = this.getApproverFromPhase(approvalPhaseState);
 			if(CollectionUtil.isEmpty(approvers)){
@@ -98,7 +99,7 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 					.filter(x -> x.getPhaseOrder() > approvalPhaseState.getPhaseOrder())
 					.filter(x -> !x.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED))
 					.findAny();
-			if(!previousPhaseResult.isPresent()&&!afterPhaseResult.isPresent()){
+			if(!previousPhaseResult.isPresent()&&(!afterPhaseResult.isPresent()||approvalPhaseState.getPhaseOrder()==1)){
 				approvalAtr = approvalPhaseState.getApprovalAtr();
 				break;
 			}
@@ -131,19 +132,19 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 					.filter(x -> x.getPhaseOrder() > approvalPhaseState.getPhaseOrder())
 					.filter(x -> !x.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED))
 					.findAny();
-			if(previousPhaseResult.isPresent()||afterPhaseResult.isPresent()){
+			if(!previousPhaseResult.isPresent()&&(!afterPhaseResult.isPresent()||approvalPhaseState.getPhaseOrder()==1)){
+				ApprovalStatusOutput approvalStatusOutput = this.judmentApprovalStatus(companyID, approvalPhaseState, employeeID);
+				authorFlag = approvalStatusOutput.getApprovableFlag();
+				approvalAtr = approvalStatusOutput.getApprovalAtr();
+				expirationAgentFlag = approvalStatusOutput.getSubExpFlag(); 
+				pastPhaseFlag = true;
+			} else {
 				if(pastPhaseFlag.equals(Boolean.FALSE)){
 					continue;
 				}
 				ApprovalStatusOutput approvalStatusOutput = this.judmentApprovalStatus(companyID, approvalPhaseState, employeeID);
 				authorFlag = approvalStatusOutput.getApprovableFlag();
 				approvalAtr = approvalStatusOutput.getApprovalAtr();
-			} else {
-				ApprovalStatusOutput approvalStatusOutput = this.judmentApprovalStatus(companyID, approvalPhaseState, employeeID);
-				authorFlag = approvalStatusOutput.getApprovableFlag();
-				approvalAtr = approvalStatusOutput.getApprovalAtr();
-				expirationAgentFlag = approvalStatusOutput.getSubExpFlag(); 
-				pastPhaseFlag = true;
 			}
 			if(pastPhaseFlag.equals(Boolean.TRUE)){
 				break;

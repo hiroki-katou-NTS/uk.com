@@ -11,4 +11,11 @@ public interface HolidayWorkInputRepository {
 	 * @return
 	 */
 	public List<HolidayWorkInput> getHolidayWorkInputByAttendanceType(String companyID, String appID,int attendanceType);
+	/**
+	 * getHolidayWorkInputByAppID
+	 * @param companyID
+	 * @param appID
+	 * @return
+	 */
+	public List<HolidayWorkInput> getHolidayWorkInputByAppID(String companyID, String appID);
 }
