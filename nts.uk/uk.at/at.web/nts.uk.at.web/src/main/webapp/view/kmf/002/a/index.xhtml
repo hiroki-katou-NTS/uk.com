@@ -11,8 +11,15 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.WeekNumberOfDay
 				nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.FourWeekDay
-				nts.uk.ctx.bs.employee.dom.holidaysetting.common.MonthlyNumberOfDays
+				<!-- nts.uk.ctx.bs.employee.dom.holidaysetting.common.MonthlyNumberOfDays -->
 			</com:ValidatorScript>
+			<script>
+				__viewContext.primitiveValueConstraints.MonthlyNumberOfDays = {
+					valueType: 'HalfInt',
+					min: 0.0,
+					max: 31.0,
+				};
+			</script>
 			
 			<com:scriptfile set="IGNITE" />
 

@@ -102,28 +102,11 @@ public class EmpCtgFinder {
 		String companyId = AppContexts.user().companyId();
 		String empIdCurrentLogin = AppContexts.user().employeeId();
 		String roleIdOfLogin = AppContexts.user().roles().forPersonalInfo();
-		// String roleIdOfLogin = "99900000-0000-0000-0000-000000000001";
-
-		// companyId of viewer
-		String viewerCId = (employeeRepository.findByEmpId(selectedEmployeeIdId).get()).getCompanyId();
+		
 		boolean isSelf = selectedEmployeeIdId.equals(empIdCurrentLogin);
 		// get list Category
 		List<PersonInfoCategory> listCategory = isSelf ? perInfoCategoryRepositoty.getAllCtgWithAuth(companyId, roleIdOfLogin, 1, 0) : 
 			perInfoCategoryRepositoty.getAllCtgWithAuth(companyId, roleIdOfLogin, 0, 1);
-
-		
-
-		/*boolean isSameCom = companyId.equals(viewerCId);
-		// get category domain list
-		Map<String, PersonInfoCategoryAuth> mapCategoryAuth = personInfoCategoryAuthRepository
-				.getAllCategoryAuthByRoleId(roleIdOfLogin).stream()
-				.collect(Collectors.toMap(e -> e.getPersonInfoCategoryAuthId(), e -> e));
-		List<PersonInfoCategory> returnList = listCategory.stream().filter(x -> {
-
-			String ctgId = x.getPersonInfoCategoryId();
-			PersonInfoCategoryAuth ctgAuth = mapCategoryAuth.get(ctgId);
-			return checkRole(ctgAuth, roleIdOfLogin, ctgId, isSelf, isSameCom) && checkIsNotAbolition(x);
-		}).collect(Collectors.toList());*/
 
 		List<PerInfoCtgFullDto> returnDtoList = listCategory.stream()
 				.map(x -> new PerInfoCtgFullDto(x.getPersonInfoCategoryId(), x.getCategoryCode().v(),

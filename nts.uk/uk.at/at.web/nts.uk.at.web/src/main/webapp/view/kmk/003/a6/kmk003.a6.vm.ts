@@ -52,9 +52,9 @@ module a6 {
         public initDataModel(): void {
             var self = this;
             self.fixTableOptionFlow = {
-                maxRow: 10,
+                maxRow: 5,
                 minRow: 0,
-                maxRowDisplay: 10,
+                maxRowDisplay: 5,
                 isShowButton: true,
                 dataSource: self.dataSourceFlow,
                 isMultipleSelect: true,
@@ -253,7 +253,7 @@ module a6 {
                     unitAttrName: 'roundingTime',
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0),
-                    width: 130,
+                    width: 170,
                     template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 3,
@@ -278,7 +278,9 @@ module a6 {
                     width: 100,
                     template: `<input data-bind="ntsTimeEditor: {
                             mode: 'time',
-                            inputFormat: 'time'}" />`
+                            inputFormat: 'time',
+                            required: true
+                            }" />`
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_77"),

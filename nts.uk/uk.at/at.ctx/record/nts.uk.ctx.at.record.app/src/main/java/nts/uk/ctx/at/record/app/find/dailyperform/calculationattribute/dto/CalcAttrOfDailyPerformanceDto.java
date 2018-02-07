@@ -118,10 +118,9 @@ public class CalcAttrOfDailyPerformanceDto implements ConvertibleAttendanceItem 
 	}
 
 	@Override
-	public CalAttrOfDailyPerformance toDomain() {
+	public CalAttrOfDailyPerformance toDomain(String employeeId, GeneralDate date) {
 		return new CalAttrOfDailyPerformance(
-				this.employeeId, 
-				this.ymd, 
+				employeeId,  date, 
 				newAutoCalcSetting(this.flexExcessTime),
 				createAutoCalcRaisingSalarySetting(),
 				createAutoCalcHolidaySetting(),

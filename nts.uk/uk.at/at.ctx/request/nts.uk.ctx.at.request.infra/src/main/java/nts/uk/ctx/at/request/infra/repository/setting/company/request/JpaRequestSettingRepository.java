@@ -9,6 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstApplicationSetting;
+import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstApplicationSettingPK;
 /**
  * 
  * @author hoatt
@@ -22,7 +23,7 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 	 */
 	@Override
 	public Optional<RequestSetting> findByCompany(String companyID) {
-		return this.queryProxy().find(companyID, KrqstApplicationSetting.class).map(c->toDomain(c));
+		return this.queryProxy().find(new KrqstApplicationSettingPK(companyID), KrqstApplicationSetting.class).map(c->toDomain(c));
 	}
 	
 	private  RequestSetting toDomain(KrqstApplicationSetting entity){

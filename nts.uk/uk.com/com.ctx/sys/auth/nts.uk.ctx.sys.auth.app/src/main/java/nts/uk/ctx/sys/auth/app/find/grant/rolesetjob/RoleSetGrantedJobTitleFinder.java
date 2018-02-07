@@ -14,6 +14,7 @@ import nts.uk.ctx.sys.auth.dom.employee.dto.SimpleJobTitleImport;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * 
@@ -34,7 +35,8 @@ public class RoleSetGrantedJobTitleFinder {
 
 	public GrantRoleSetJobDto getAllData(GeneralDate refDate) {
 		String companyId = AppContexts.user().companyId();
-		if (companyId == null)
+		LoginUserContext user = AppContexts.user();
+		if (!user.roles().have().companyAdmin() && !user.roles().have().systemAdmin())
 			return null;
 
 		// get Job Title by date, companyId
