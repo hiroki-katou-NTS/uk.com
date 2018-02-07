@@ -2882,7 +2882,8 @@ module nts.uk.ui.jqueryExtentions {
                             return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
                                     .validate(value);
                         case "Clock":
-                            this.options.outputFormat = "time";
+                            // Don't merge with time type.
+                            this.options.mode = "time";
                             return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
                                     .validate(value);
                         case "TimeWithDay":
@@ -3265,7 +3266,7 @@ module nts.uk.ui.jqueryExtentions {
                                     let minutes = time.minutesBased.clock.dayattr.parseString(value).asMinutes;
                                     let timeOpts = { timeWithDay: false };
                                     let formatter = new text.TimeWithDayFormatter(timeOpts);
-                                    value = formatter.format(minutes);
+                                    if (!util.isNullOrUndefined(minutes)) value = formatter.format(minutes);
                                 } else if (valueType === "Currency") { 
                                     let currencyOpts: any = new ui.option.CurrencyEditorOption();
                                     currencyOpts.grouplength = constraint.groupLength | 3;

@@ -4151,6 +4151,10 @@ var nts;
                         this.constraint = getConstraint(primitiveValueName);
                         if (nts.uk.util.isNullOrUndefined(this.constraint)) {
                             this.constraint = {};
+                            if (option && option.min && option.max) {
+                                this.constraint.min = option.min;
+                                this.constraint.max = option.max;
+                            }
                         }
                         this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
                         this.required = ((option && option.required) ? option.required : false) || this.constraint.required === true;
@@ -17903,7 +17907,8 @@ var nts;
                                         return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
                                             .validate(value);
                                     case "Clock":
-                                        this.options.outputFormat = "time";
+                                        // Don't merge with time type.
+                                        this.options.mode = "time";
                                         return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
                                             .validate(value);
                                     case "TimeWithDay":
@@ -18279,7 +18284,8 @@ var nts;
                                                 var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
                                                 var timeOpts = { timeWithDay: false };
                                                 var formatter = new uk.text.TimeWithDayFormatter(timeOpts);
-                                                value = formatter.format(minutes);
+                                                if (!uk.util.isNullOrUndefined(minutes))
+                                                    value = formatter.format(minutes);
                                             }
                                             else if (valueType === "Currency") {
                                                 var currencyOpts = new ui.option.CurrencyEditorOption();
