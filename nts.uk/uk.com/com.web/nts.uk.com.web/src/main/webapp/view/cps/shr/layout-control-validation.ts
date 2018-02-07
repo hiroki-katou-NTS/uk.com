@@ -140,10 +140,6 @@ module nts.layout {
         }
 
         regClickEvent(btnEvent: IButtonEvent) {
-<<<<<<< HEAD
-
-=======
->>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
             _.each(btnEvent.btnCodes, (code) => {
                 let self = this,
                     finder = self.finder,
@@ -188,39 +184,28 @@ module nts.layout {
                                 };
 
                                 fetch.check_start_end(command).done(first => {
-<<<<<<< HEAD
+
                                     self.setEditAble(startItem1, !!first);
                                     self.setEditAble(endItem1, !!first);
 
                                     fetch.check_multi_time(command).done(second => {
                                         self.setEditAble(startItem2, !!first && !!second);
                                         self.setEditAble(endItem2, !!first && !!second);
-
-=======
-                                    startItem1.data.editable(!!first);
-                                    endItem1.data.editable(!!first);
-
-                                    fetch.check_multi_time(command).done(second => {
-                                        startItem2.data.editable(!!first && !!second);
-                                        endItem2.data.editable(!!first && !!second);
->>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
                                     });
+
                                 });
+
                             }
+
                         });
+
+
                     });
+
                 }
-<<<<<<< HEAD
-
-
             });
+        }
 
-
-
-=======
-            });
->>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
-        };
 
         button = () => {
             let self = this,
@@ -239,10 +224,7 @@ module nts.layout {
                         endTime1: '',
                         startTime2: '',
                         endTime2: ''
-<<<<<<< HEAD
 
-=======
->>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
                     },
                     //130 131
                     {
@@ -255,10 +237,7 @@ module nts.layout {
                         endTime1: 'IS00134',
                         startTime2: 'IS00136',
                         endTime2: 'IS00137'
-<<<<<<< HEAD
 
-=======
->>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
                     },
                     //139 140
                     {
@@ -271,18 +250,12 @@ module nts.layout {
                         endTime1: 'IS00143',
                         startTime2: 'IS00145',
                         endTime2: 'IS00146'
-<<<<<<< HEAD
+
 
                     },
                     //157 158
                     {
                         btnCodes: ['IS00157', 'IS00158'],
-=======
-                    },
-                    //157 158
-                    {
-                        btnCodes: ['IS00157', 'IS00140'],
->>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
                         wkTypeCode: 'IS00157',
                         wkTypeCodes: 'IS00157',
                         timeCode: 'IS00158',
@@ -291,10 +264,7 @@ module nts.layout {
                         endTime1: 'IS00161',
                         startTime2: 'IS00163',
                         endTime2: 'IS00164'
-<<<<<<< HEAD
 
-=======
->>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
                     },
 
                     //166 167
@@ -308,10 +278,7 @@ module nts.layout {
                         endTime1: 'IS00170',
                         startTime2: 'IS00172',
                         endTime2: 'IS00173'
-<<<<<<< HEAD
 
-=======
->>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
                     },
 
                     //175 176
@@ -325,10 +292,7 @@ module nts.layout {
                         endTime1: 'IS00179',
                         startTime2: 'IS00181',
                         endTime2: 'IS00182'
-<<<<<<< HEAD
 
-=======
->>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
                     },
                     //148 149
                     {
@@ -341,10 +305,7 @@ module nts.layout {
                         endTime1: 'IS00152',
                         startTime2: 'IS00154',
                         endTime2: 'IS00155'
-<<<<<<< HEAD
 
-=======
->>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
                     },
                     //193 194
                     {
@@ -357,10 +318,7 @@ module nts.layout {
                         endTime1: 'IS00197',
                         startTime2: 'IS00199',
                         endTime2: 'IS00200'
-<<<<<<< HEAD
 
-=======
->>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
                     },
                     //202 203
                     {
@@ -373,10 +331,7 @@ module nts.layout {
                         endTime1: 'IS00206',
                         startTime2: 'IS00208',
                         endTime2: 'IS00209'
-<<<<<<< HEAD
 
-=======
->>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
                     },
                     //211 212
                     {
@@ -389,10 +344,7 @@ module nts.layout {
                         endTime1: 'IS00215',
                         startTime2: 'IS00217',
                         endTime2: 'IS00218'
-<<<<<<< HEAD
 
-=======
->>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
                     },
 
                     //220 221
@@ -406,10 +358,7 @@ module nts.layout {
                         endTime1: 'IS00224',
                         startTime2: 'IS00226',
                         endTime2: 'IS00227'
-<<<<<<< HEAD
 
-=======
->>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
                     },
                     //220 221
                     {
@@ -422,10 +371,7 @@ module nts.layout {
                         endTime1: 'IS00233',
                         startTime2: 'IS00235',
                         endTime2: 'IS00236'
-<<<<<<< HEAD
 
-=======
->>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
                     },
 
                     //238 239
@@ -439,10 +385,7 @@ module nts.layout {
                         endTime1: 'IS00242',
                         startTime2: 'IS00244',
                         endTime2: 'IS00245'
-<<<<<<< HEAD
 
-=======
->>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
                     },
                     //184 185
                     {
@@ -455,10 +398,7 @@ module nts.layout {
                         endTime1: 'IS00188',
                         startTime2: 'IS00190',
                         endTime2: 'IS00191'
-<<<<<<< HEAD
 
-=======
->>>>>>> 59a4da72c208d02f8a240cfdd8d407f61aea21e8
                     }
                 ];
 
@@ -580,4 +520,4 @@ module nts.layout {
         startTime2: string;
         endTime2: string;
     }
-} 
+}
