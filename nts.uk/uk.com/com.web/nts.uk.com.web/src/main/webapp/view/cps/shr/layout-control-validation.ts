@@ -135,126 +135,264 @@ module nts.layout {
             Item && Item.data.textValue(value || '');
         }
 
-        regClickEvent(btnEvent: ButtonEvent) {
-            let self = this,
-                finder = self.finder,
-                currentCtg = 'CS00020',
-                btnItem: IFindData = finder.find(currentCtg, btnEvent.btnCode),
-                wkTypeItem: IFindData = finder.find(currentCtg, btnEvent.wkTypeCode),
-                wkTimeItem: IFindData = finder.find(currentCtg, btnEvent.timeCode),
-                startItem1: IFindData = finder.find(currentCtg, btnEvent.startTime1),
-                startItem2: IFindData = finder.find(currentCtg, btnEvent.startTime2),
-                endItem1: IFindData = finder.find(currentCtg, btnEvent.endTime1),
-                endItem2: IFindData = finder.find(currentCtg, btnEvent.endTime2);
-
-            if (btnItem) {
-                btnItem.ctrl.on('click', () => {
-                    let typeCode: string = wkTypeItem ? wkTypeItem.data.value() || "" : "",
-                        typeCodes: Array<any> = btnEvent.wkTypeCodes.constructor === Array ? btnEvent.wkTypeCodes : !finder.find(currentCtg, btnEvent.wkTypeCodes) ? [] : finder.find(currentCtg, btnEvent.wkTypeCodes).data.lstComboBoxValue,
-                        timeCode: string = wkTimeItem ? wkTimeItem.data.value() || "" : "",
-                        timeCodes: Array<any> = btnEvent.wkTimeCodes.constructor === Array ? btnEvent.wkTimeCodes : !finder.find(currentCtg, btnEvent.wkTimeCodes) ? [] : finder.find(currentCtg, btnEvent.wkTimeCodes).data.lstComboBoxValue
-
-                    setShared('parentCodes', {
-                        workTypeCodes: _.map(typeCodes, x => x.optionValue),
-                        selectedWorkTypeCode: typeCode,
-                        workTimeCodes: _.map(timeCodes, x => x.optionValue),
-                        selectedWorkTimeCode: timeCode
-                    }, true);
-
-                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                        let childData: IChildData = getShared('childData');
-
-                        if (childData) {
-                            self.setItemData(wkTypeItem, childData.selectedWorkTypeCode);
-                            self.setItemName(wkTypeItem, childData.selectedWorkTypeName);
-                            self.setItemData(wkTimeItem, childData.selectedWorkTimeCode);
-                            self.setItemName(wkTimeItem, childData.selectedWorkTimeName);
-                            self.setItemData(startItem1, childData.first ? childData.first.start : undefined);
-                            self.setItemData(endItem1, childData.first ? childData.first.end : undefined);
-                            self.setItemData(startItem2, childData.second ? childData.second.start : undefined);
-                            self.setItemData(endItem2, childData.second ? childData.second.end : undefined);
-
-                            let command: ICheckParam = {
-                                workTimeCode: ko.toJS(wkTimeItem.data.value)
-                            };
-
-                            fetch.check_start_end(command).done(first => {
-                                startItem1.data.editable(!!first);
-                                endItem1.data.editable(!!first);
-
-                                fetch.check_multi_time(command).done(second => {
-                                    startItem2.data.editable(!!first && !!second);
-                                    endItem2.data.editable(!!first && !!second);
+        regClickEvent(btnEvent: IButtonEvent) {
+    
+            _.each(btnEvent.btnCodes, (code) => {
+                         let self = this,
+                            finder = self.finder,
+                            currentCtg = 'CS00020',
+                            btnItem: IFindData = finder.find(currentCtg,code),
+                            wkTypeItem: IFindData = finder.find(currentCtg, btnEvent.wkTypeCode),
+                            wkTimeItem: IFindData = finder.find(currentCtg, btnEvent.timeCode),
+                            startItem1: IFindData = finder.find(currentCtg, btnEvent.startTime1),
+                            startItem2: IFindData = finder.find(currentCtg, btnEvent.startTime2),
+                            endItem1: IFindData = finder.find(currentCtg, btnEvent.endTime1),
+                            endItem2: IFindData = finder.find(currentCtg, btnEvent.endTime2);
+            
+                        if (btnItem) {
+                            btnItem.ctrl.on('click', () => {
+                                let typeCode: string = wkTypeItem ? wkTypeItem.data.value() || "" : "",
+                                    typeCodes: Array<any> = btnEvent.wkTypeCodes.constructor === Array ? btnEvent.wkTypeCodes : !finder.find(currentCtg, btnEvent.wkTypeCodes) ? [] : finder.find(currentCtg, btnEvent.wkTypeCodes).data.lstComboBoxValue,
+                                    timeCode: string = wkTimeItem ? wkTimeItem.data.value() || "" : "",
+                                    timeCodes: Array<any> = btnEvent.wkTimeCodes.constructor === Array ? btnEvent.wkTimeCodes : !finder.find(currentCtg, btnEvent.wkTimeCodes) ? [] : finder.find(currentCtg, btnEvent.wkTimeCodes).data.lstComboBoxValue
+            
+                                setShared('parentCodes', {
+                                    workTypeCodes: _.map(typeCodes, x => x.optionValue),
+                                    selectedWorkTypeCode: typeCode,
+                                    workTimeCodes: _.map(timeCodes, x => x.optionValue),
+                                    selectedWorkTimeCode: timeCode
+                                }, true);
+            
+                                modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                                    let childData: IChildData = getShared('childData');
+            
+                                    if (childData) {
+                                        self.setItemData(wkTypeItem, childData.selectedWorkTypeCode);
+                                        self.setItemName(wkTypeItem, childData.selectedWorkTypeName);
+                                        self.setItemData(wkTimeItem, childData.selectedWorkTimeCode);
+                                        self.setItemName(wkTimeItem, childData.selectedWorkTimeName);
+                                        self.setItemData(startItem1, childData.first ? childData.first.start : undefined);
+                                        self.setItemData(endItem1, childData.first ? childData.first.end : undefined);
+                                        self.setItemData(startItem2, childData.second ? childData.second.start : undefined);
+                                        self.setItemData(endItem2, childData.second ? childData.second.end : undefined);
+            
+                                        let command: ICheckParam = {
+                                            workTimeCode: ko.toJS(wkTimeItem.data.value)
+                                        };
+            
+                                        fetch.check_start_end(command).done(first => {
+                                            startItem1.data.editable(!!first);
+                                            endItem1.data.editable(!!first);
+            
+                                            fetch.check_multi_time(command).done(second => {
+                                                startItem2.data.editable(!!first && !!second);
+                                                endItem2.data.editable(!!first && !!second);
+                                            });
+                                        });
+                                    }
                                 });
                             });
                         }
-                    });
-                });
-            }
+            
+            
+            });
+    
+
+           
         };
 
         button = () => {
             let self = this,
                 finder = self.finder,
-                CS00020_IS00128: IFindData = finder.find('CS00020', 'IS00128'),
-                CS00020_IS00130: IFindData = finder.find('CS00020', 'IS00130'),
+                cmm009Items = [],
 
-                btnEvents: Array<ButtonEvent> = [
-                    //128
-                    new ButtonEvent('IS00128', 'IS00128', 'IS00128', '', [], '', '', '', ''),
-                    //130
-                    new ButtonEvent('IS00130', 'IS00130', 'IS00130', 'IS00131', [], 'IS00133', 'IS00134', 'IS00136', 'IS00137'),
-                    //131
-                    new ButtonEvent('IS00131', 'IS00130', 'IS00130', 'IS00131', [], 'IS00133', 'IS00134', 'IS00136', 'IS00137'),
-                    //139
-                    new ButtonEvent('IS00139', 'IS00139', 'IS00139', 'IS00140', [], 'IS00142', 'IS00143', 'IS00145', 'IS00146'),
-                    //140
-                    new ButtonEvent('IS00140', 'IS00139', 'IS00139', 'IS00140', [], 'IS00142', 'IS00143', 'IS00145', 'IS00146'),
-                    //157
-                    new ButtonEvent('IS00157', 'IS00157', 'IS00157', 'IS00158', [], 'IS00160', 'IS00160', 'IS00163', 'IS00164'),
-                    //158
-                    new ButtonEvent('IS00158', 'IS00157', 'IS00157', 'IS00158', [], 'IS00160', 'IS00160', 'IS00163', 'IS00164'),
-                    //166
-                    new ButtonEvent('IS00166', 'IS00166', 'IS00166', 'IS00167', [], 'IS00169', 'IS00170', 'IS00172', 'IS00173'),
-                    //167
-                    new ButtonEvent('IS00167', 'IS00166', 'IS00166', 'IS00167', [], 'IS00169', 'IS00170', 'IS00172', 'IS00173'),
-                    //175
-                    new ButtonEvent('IS00175', 'IS00175', 'IS00175', 'IS00176', [], 'IS00178', 'IS00179', 'IS00181', 'IS00182'),
-                    //176
-                    new ButtonEvent('IS00176', 'IS00175', 'IS00175', 'IS00176', [], 'IS00178', 'IS00179', 'IS00181', 'IS00182'),
-                    //148
-                    new ButtonEvent('IS00148', 'IS00148', 'IS00148', 'IS00149', [], 'IS00151', 'IS00152', 'IS00154', 'IS00155'),
-                    //149
-                    new ButtonEvent('IS00149', 'IS00148', 'IS00148', 'IS00149', [], 'IS00151', 'IS00152', 'IS00154', 'IS00155'),
-                    //193
-                    new ButtonEvent('IS00193', 'IS00193', 'IS00193', 'IS00194', [], 'IS00196', 'IS00197', 'IS00199', 'IS00200'),
-                    //194
-                    new ButtonEvent('IS00194', 'IS00193', 'IS00193', 'IS00194', [], 'IS00196', 'IS00197', 'IS00199', 'IS00200'),
-                    //202
-                    new ButtonEvent('IS00202', 'IS00202', 'IS00202', 'IS00203', [], 'IS00205', 'IS00206', 'IS00208', 'IS00209'),
-                    //203
-                    new ButtonEvent('IS00203', 'IS00202', 'IS00202', 'IS00203', [], 'IS00205', 'IS00206', 'IS00208', 'IS00209'),
-                    //211
-                    new ButtonEvent('IS00211', 'IS00211', 'IS00211', 'IS00212', [], 'IS00214', 'IS00215', 'IS00217', 'IS00218'),
-                    //212
-                    new ButtonEvent('IS00212', 'IS00211', 'IS00211', 'IS00212', [], 'IS00214', 'IS00215', 'IS00217', 'IS00218'),
-                    //220
-                    new ButtonEvent('IS00220', 'IS00220', 'IS00220', 'IS00221', [], 'IS00223', 'IS00224', 'IS00226', 'IS00227'),
-                    //221
-                    new ButtonEvent('IS00221', 'IS00220', 'IS00220', 'IS00221', [], 'IS00223', 'IS00224', 'IS00226', 'IS00227'),
-                    //229
-                    new ButtonEvent('IS00229', 'IS00229', 'IS00229', 'IS00230', [], 'IS00232', 'IS00233', 'IS00235', 'IS00236'),
-                    //230
-                    new ButtonEvent('IS00230', 'IS00229', 'IS00229', 'IS00230', [], 'IS00232', 'IS00233', 'IS00235', 'IS00236'),
-                    //238
-                    new ButtonEvent('IS00238', 'IS00238', 'IS00238', 'IS00239', [], 'IS00241', 'IS00242', 'IS00244', 'IS00245'),
-                    //239
-                    new ButtonEvent('IS00239', 'IS00238', 'IS00238', 'IS00239', [], 'IS00241', 'IS00242', 'IS00244', 'IS00245'),
-                    //184
-                    new ButtonEvent('IS00184', 'IS00184', 'IS00184', 'IS00185', [], 'IS00187', 'IS00188', 'IS00190', 'IS00191'),
-                    //185
-                    new ButtonEvent('IS00185', 'IS00184', 'IS00184', 'IS00185', [], 'IS00187', 'IS00188', 'IS00190', 'IS00191'),
-
+                btnEvents: Array<IButtonEvent> = [
+                //128
+                {
+                        btnCodes: ['IS00128'],
+                        wkTypeCode: 'IS00128',
+                        wkTypeCodes: 'IS00128',
+                        timeCode: '',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: '',
+                        endTime1: '',
+                        startTime2: '',
+                        endTime2: ''
+                
+                },
+                //130 131
+                {
+                        btnCodes: ['IS00130','IS00131'],
+                        wkTypeCode: 'IS00130',
+                        wkTypeCodes: 'IS00130',
+                        timeCode: 'IS00131',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00133',
+                        endTime1: 'IS00134',
+                        startTime2: 'IS00136',
+                        endTime2: 'IS00137'
+                
+                },
+                //139 140
+                {
+                        btnCodes: ['IS00139','IS00140'],
+                        wkTypeCode: 'IS00139',
+                        wkTypeCodes: 'IS00139',
+                        timeCode: 'IS00140',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00142',
+                        endTime1: 'IS00143',
+                        startTime2: 'IS00145',
+                        endTime2: 'IS00146'
+                
+                },
+                //157 158
+                {
+                        btnCodes: ['IS00157','IS00140'],
+                        wkTypeCode: 'IS00157',
+                        wkTypeCodes: 'IS00157',
+                        timeCode: 'IS00158',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00160',
+                        endTime1: 'IS00161',
+                        startTime2: 'IS00163',
+                        endTime2: 'IS00164'
+                
+                },
+                
+                //166 167
+                {
+                        btnCodes: ['IS00166','IS00167'],
+                        wkTypeCode: 'IS00166',
+                        wkTypeCodes: 'IS00166',
+                        timeCode: 'IS00167',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00169',
+                        endTime1: 'IS00170',
+                        startTime2: 'IS00172',
+                        endTime2: 'IS00173'
+                
+                },
+                
+                //175 176
+                {
+                        btnCodes: ['IS00175','IS00176'],
+                        wkTypeCode: 'IS00175',
+                        wkTypeCodes: 'IS00175',
+                        timeCode: 'IS00176',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00178',
+                        endTime1: 'IS00179',
+                        startTime2: 'IS00181',
+                        endTime2: 'IS00182'
+                
+                },
+                //148 149
+                {
+                        btnCodes: ['IS00148','IS00149'],
+                        wkTypeCode: 'IS00148',
+                        wkTypeCodes: 'IS00148',
+                        timeCode: 'IS00149',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00151',
+                        endTime1: 'IS00152',
+                        startTime2: 'IS00154',
+                        endTime2: 'IS00155'
+                
+                },
+                //193 194
+                {
+                        btnCodes: ['IS00193','IS00194'],
+                        wkTypeCode: 'IS00193',
+                        wkTypeCodes: 'IS00193',
+                        timeCode: 'IS00194',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00196',
+                        endTime1: 'IS00197',
+                        startTime2: 'IS00199',
+                        endTime2: 'IS00200'
+                
+                },
+                //202 203
+                {
+                        btnCodes: ['IS00202','IS00203'],
+                        wkTypeCode: 'IS00202',
+                        wkTypeCodes: 'IS00202',
+                        timeCode: 'IS00203',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00205',
+                        endTime1: 'IS00206',
+                        startTime2: 'IS00208',
+                        endTime2: 'IS00209'
+                
+                },
+                //211 212
+                {
+                        btnCodes: ['IS00211','IS00212'],
+                        wkTypeCode: 'IS00211',
+                        wkTypeCodes: 'IS00211',
+                        timeCode: 'IS00212',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00214',
+                        endTime1: 'IS00215',
+                        startTime2: 'IS00217',
+                        endTime2: 'IS00218'
+                
+                },
+                
+                //220 221
+                {
+                        btnCodes: ['IS00220','IS00221'],
+                        wkTypeCode: 'IS00220',
+                        wkTypeCodes: 'IS00220',
+                        timeCode: 'IS00221',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00223',
+                        endTime1: 'IS00224',
+                        startTime2: 'IS00226',
+                        endTime2: 'IS00227'
+                
+                },
+                //220 221
+                {
+                        btnCodes: ['IS00229','IS00230'],
+                        wkTypeCode: 'IS00229',
+                        wkTypeCodes: 'IS00229',
+                        timeCode: 'IS00230',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00232',
+                        endTime1: 'IS00233',
+                        startTime2: 'IS00235',
+                        endTime2: 'IS00236'
+                
+                },
+                
+                //238 239
+                {
+                        btnCodes: ['IS00238','IS00239'],
+                        wkTypeCode: 'IS00238',
+                        wkTypeCodes: 'IS00238',
+                        timeCode: 'IS00239',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00241',
+                        endTime1: 'IS00242',
+                        startTime2: 'IS00244',
+                        endTime2: 'IS00245'
+                
+                },
+                //184 185
+                {
+                        btnCodes: ['IS00184','IS00185'],
+                        wkTypeCode: 'IS00184',
+                        wkTypeCodes: 'IS00184',
+                        timeCode: 'IS00185',
+                        wkTimeCodes: cmm009Items,
+                        startTime1: 'IS00187',
+                        endTime1: 'IS00188',
+                        startTime2: 'IS00190',
+                        endTime2: 'IS00191'
+                
+                }
                 ];
 
             //register Event
@@ -365,8 +503,8 @@ module nts.layout {
         workTimeCode?: string;
     }
 
-    class ButtonEvent {
-        btnCode: string;
+    class IButtonEvent {
+        btnCodes: any;
         wkTypeCode: string;
         wkTypeCodes: any;
         timeCode: string;
@@ -375,18 +513,5 @@ module nts.layout {
         endTime1: string;
         startTime2: string;
         endTime2: string;
-
-        constructor(btnCode, wkTypeCode, wkTypeCodes, timeCode, wkTimeCodes, startTime1, endTime1, startTime2, endTime2) {
-            this.btnCode = btnCode;
-            this.wkTypeCode = wkTypeCode;
-            this.wkTypeCodes = wkTypeCodes;
-            this.timeCode = timeCode;
-            this.wkTimeCodes = wkTimeCodes;
-            this.startTime1 = startTime1;
-            this.endTime1 = endTime1;
-            this.startTime2 = startTime2;
-            this.endTime2 = endTime2;
-
-        }
     }
 } 
