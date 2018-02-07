@@ -176,14 +176,14 @@ public class WorkTimeSettingFinder {
 				workTimeSetItems = this.predetemineTimeSettingRepository.findByStartAndEnd(companyID, codeList,
 						startTime, endTime);
 				// when only start time is select
-//			} else if ((startTime != null) && (endTime == null)) {
-//				workTimeItems = this.workTimeSettingRepository.findByCodes(companyID, codeList);
-//				workTimeSetItems = this.predetemineTimeSettingRepository.findByStart(companyID, codeList, startTime);
-//				// when only end time is select
-//			} else if ((startTime == null) && (endTime != null)) {
-//				workTimeItems = this.workTimeSettingRepository.findByCodes(companyID, codeList);
-//				workTimeSetItems = this.predetemineTimeSettingRepository.findByEnd(companyID, codeList, endTime);
-//				// when both start time and end time is invalid
+			} else if ((startTime != null) && (endTime == null)) {
+				workTimeItems = this.workTimeSettingRepository.findByCodes(companyID, codeList);
+				workTimeSetItems = this.predetemineTimeSettingRepository.findByStart(companyID, codeList, startTime);
+				// when only end time is select
+			} else if ((startTime == null) && (endTime != null)) {
+				workTimeItems = this.workTimeSettingRepository.findByCodes(companyID, codeList);
+				workTimeSetItems = this.predetemineTimeSettingRepository.findByEnd(companyID, codeList, endTime);
+				// when both start time and end time is invalid
 			} else {
 				throw new BusinessException("Msg_53");
 			}
@@ -234,7 +234,9 @@ public class WorkTimeSettingFinder {
 										timezone2.getEnd()) : null,
 								i18n.localize(currentWorkTime.getWorkTimeDivision().getWorkTimeMethodSet().nameId)
 										.get(),
-								currentWorkTime.getNote().v()));
+								currentWorkTime.getNote().v(), timezone1.getStart().v(), timezone1.getEnd().v(), 
+								(timezone2 != null) ? timezone2.getStart().v() : null , 
+										(timezone2 != null) ? timezone2.getEnd().v() : null));
 					} else {
 						workTimeDtos.add(new WorkTimeDto(currentWorkTime.getWorktimeCode().v(),
 								currentWorkTime.getWorkTimeDisplayName().getWorkTimeName().v(),
@@ -243,7 +245,9 @@ public class WorkTimeSettingFinder {
 								(timezone2 != null) ? createWorkTimeField(timezone2.getUseAtr(), timezone2.getStart(),
 										timezone2.getEnd()) : null,
 								i18n.localize(currentWorkTime.getWorkTimeDivision().getWorkTimeDailyAtr().nameId).get(),
-								currentWorkTime.getNote().v()));
+								currentWorkTime.getNote().v(), timezone1.getStart().v(), timezone1.getEnd().v(), 
+								(timezone2 != null) ? timezone2.getStart().v() : null , 
+										(timezone2 != null) ? timezone2.getEnd().v() : null));
 					}
 				}
 			}
@@ -302,7 +306,7 @@ public class WorkTimeSettingFinder {
 		// call repository find by id
 		Optional<WorkTimeSetting> opWorkTime = this.workTimeSettingRepository.findByCode(companyId, workTimeCode);
 
-		WorkTimeDto dto = new WorkTimeDto(null, null, null, null, null, null);
+		WorkTimeDto dto = new WorkTimeDto(null, null, null, null, null, null, null, null, null, null);
 		// check exist data
 		if (opWorkTime.isPresent()) {
 			dto.setCode(opWorkTime.get().getWorktimeCode().v());

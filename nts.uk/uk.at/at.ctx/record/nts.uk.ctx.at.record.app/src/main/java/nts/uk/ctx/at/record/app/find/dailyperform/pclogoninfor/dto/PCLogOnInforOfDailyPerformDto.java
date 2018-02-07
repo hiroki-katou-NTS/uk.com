@@ -42,10 +42,10 @@ public class PCLogOnInforOfDailyPerformDto implements ConvertibleAttendanceItem 
 	}
 
 	@Override
-	public Object toDomain() {
-		return new PCLogOnInfoOfDaily(employeeId, ymd,
-				logonTime == null ? new ArrayList<>()
-						: ConvertHelper.mapTo(logonTime, c -> new LogOnInfo(new WorkNo(c.getTimeSheetNo()),
+	public Object toDomain(String employeeId, GeneralDate date) {
+		return new PCLogOnInfoOfDaily(employeeId, date,
+					logonTime == null ? new ArrayList<>() : ConvertHelper.mapTo(logonTime, 
+							c -> new LogOnInfo(new WorkNo(c.getTimeSheetNo()),
 								toWorkStamp(c.getEnd()), toWorkStamp(c.getStart()))));
 	}
 

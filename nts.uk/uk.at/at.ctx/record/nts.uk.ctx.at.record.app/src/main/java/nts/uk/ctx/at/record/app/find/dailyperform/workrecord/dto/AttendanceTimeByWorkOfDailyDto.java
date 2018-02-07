@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -78,15 +79,15 @@ public class AttendanceTimeByWorkOfDailyDto implements ConvertibleAttendanceItem
 	}
 	
 	@Override
-	public AttendanceTimeByWorkOfDaily toDomain() {
-		return new AttendanceTimeByWorkOfDaily(employeeId, ymd,
-				ConvertHelper.mapTo(workTimes,
+	public AttendanceTimeByWorkOfDaily toDomain(String employeeId, GeneralDate date) {
+		return new AttendanceTimeByWorkOfDaily(employeeId, date,
+					workTimes == null ? new ArrayList<>() : ConvertHelper.mapTo(workTimes,
 								c -> new WorkTimeOfDaily(new WorkFrameNo(c.getWorkFrameNo()),
 										new ActualWorkTimeSheet(getStamp(c.getTimeSheet().getStart()),
 												getStamp(c.getTimeSheet().getEnd())),
 										new ActualWorkTime(c.getWorkTime()))));
 	}
-
+	
 	private TimeActualStamp getStamp(WithActualTimeStampDto stamp) {
 		return stamp == null ? null
 				: new TimeActualStamp(getWorkStamp(stamp.getActualTime()), getWorkStamp(stamp.getTime()),

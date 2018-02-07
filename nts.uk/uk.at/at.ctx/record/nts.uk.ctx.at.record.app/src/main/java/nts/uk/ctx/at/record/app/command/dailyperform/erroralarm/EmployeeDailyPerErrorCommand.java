@@ -13,7 +13,7 @@ public class EmployeeDailyPerErrorCommand extends DailyWorkCommonCommand {
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		this.data = item == null ? null : ((EmployeeDailyPerErrorDto) item).toDomain();
+		this.data = item == null ? null : ((EmployeeDailyPerErrorDto) item).toDomain(getEmployeeId(), getWorkDate());
 	}
 
 	@Override

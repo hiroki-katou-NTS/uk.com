@@ -16,8 +16,9 @@ public class GoBackDirectlyCommonSettingWebservice extends WebService{
 	@POST
 	@Path("getGoBackCommonByCid")
 	public GoBackDirectlyCommonSettingDto getGoBackCommonByCid(){
-		// Hoang Yen
-		// ten AppId nhung thuc chat truyen vao companyid
+		/**
+		 * Ten appid nhung thuc chat tim theo companyid
+		 */
 		return this.goBackSettingFinder.findGoBackDirectlyCommonSettingbyAppID();
 	}
 }

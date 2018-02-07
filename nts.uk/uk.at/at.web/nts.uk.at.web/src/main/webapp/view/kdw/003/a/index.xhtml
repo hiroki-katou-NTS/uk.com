@@ -81,8 +81,8 @@
 							]}"></div>
 					<button id="btnExtraction" data-bind="click: btnExtraction_Click">#{i18n.getText('KDW003_20')}</button>
 					<div class="vacationRemaining-container">
-						<button id="btnVacationRemaining"
-							data-bind="click: btnVacationRemaining_Click , false">#{i18n.getText('KDW003_21')}</button>
+						<button style="visibility: hidden;" id="btnVacationRemaining"
+							data-bind="click: btnVacationRemaining_Click ">#{i18n.getText('KDW003_21')}</button>
 							<!-- visible: referenceVacation().allVacation -->
 						<div id="vacationRemaining-content">
 							<button data-bind="visible: referenceVacation().yearHoliday20">#{i18n.getText('Com_PaidHoliday')}</button>
@@ -134,7 +134,11 @@
 					<!-- <div id="content-grid"> -->
 						<div id="content-grid-not">
 							<button id="btn-signAll"
-								data-bind="click: signAll, visible: showButton().available25">#{i18n.getText('KDW003_23')}</button>
+								data-bind="click: signAll" >#{i18n.getText('KDW003_23')}</button>
+							<button id="btn-legend"
+								data-bind="ntsLegendButton: legendOptions">凡例</button>
+							<button id="btn-saveColumnWidth"
+								data-bind="click: btnSaveColumnWidth_Click, visible : showButton().available8">#{i18n.getText('KDW003_24')}</button>
 							<div class="setting-container">
 								<button id="btn-setting" data-bind="click: btnSetting_Click , visible:false">&#9881;</button>
 								<div id="setting-content">
@@ -158,10 +162,6 @@
 									<br />
 								</div>
 							</div>
-							<button id="btn-saveColumnWidth"
-								data-bind="click: btnSaveColumnWidth_Click, visible : showButton().available8">#{i18n.getText('KDW003_24')}</button>
-							<button id="btn-legend"
-								data-bind="ntsLegendButton: legendOptions">凡例</button>
 						</div>
 						<div class="compact-grid grid-container" id="gid">
 							<table id="dpGrid"></table>

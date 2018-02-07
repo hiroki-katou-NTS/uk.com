@@ -48,6 +48,9 @@ public class LayoutPersonInfoValueDto {
 
 	// value of item definition
 	private Object value;
+	
+	// text value if button control
+	private String textValue;
 
 	// is required?
 	// for render control label
