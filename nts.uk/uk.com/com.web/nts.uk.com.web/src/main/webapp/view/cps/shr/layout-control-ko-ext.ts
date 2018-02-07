@@ -1458,7 +1458,7 @@ module nts.custombinding {
                             if (row.length != 3 || _valids.indexOf(row[1].item.dataTypeValue) == -1 || _valids.indexOf(row[1].item.dataTypeValue) == -1) {
                                 return;
                             }
-                            
+
                             _.each(row, (def, j) => {
                                 // call some validate function at here
                                 if (_.has(def, "item") && !_.isNull(def.item)) {
@@ -1704,6 +1704,8 @@ module nts.custombinding {
                                                     typeData: 3
                                                 };
                                             case ITEM_SINGLE_TYPE.SELECTION:
+                                            case ITEM_SINGLE_TYPE.SEL_RADIO:
+                                            case ITEM_SINGLE_TYPE.SEL_BUTTON:
                                                 switch (data.item.referenceType) {
                                                     case ITEM_SELECT_TYPE.ENUM:
                                                         return {
@@ -1736,16 +1738,6 @@ module nts.custombinding {
                                                             };
                                                         }
                                                 }
-                                            case ITEM_SINGLE_TYPE.SEL_RADIO:
-                                                return {
-                                                    value: data.value ? String(data.value).replace(/:/g, '') : undefined,
-                                                    typeData: 2 // be error
-                                                };
-                                            case ITEM_SINGLE_TYPE.SEL_BUTTON:
-                                                return {
-                                                    value: data.value ? String(data.value).replace(/:/g, '') : undefined,
-                                                    typeData: 2 // be error
-                                                }
                                         }
                                     };
 
@@ -1753,7 +1745,7 @@ module nts.custombinding {
                                     .filter(x => _.has(x, "items") && _.isFunction(x.items))
                                     .map(x => ko.toJS(x.items))
                                     .flatten()
-                                    .filter((x: any) => _.has(x, "item") && !!x.item && x.editable)
+                                    .filter((x: any) => _.has(x, "item") && !!x.item)
                                     .map((x: any) => {
                                         if (_.isArray(x)) {
                                             return x.map((m: any) => {
