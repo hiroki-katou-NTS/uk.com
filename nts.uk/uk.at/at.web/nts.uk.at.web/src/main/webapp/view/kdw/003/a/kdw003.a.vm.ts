@@ -246,11 +246,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            let dateRangeParam = nts.uk.ui.windows.getShared('DateRangeKDW003');
             var param = {
-                dateRange: {
-                    startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                    endDate: moment(self.dateRanger().endDate).utc().toISOString()
-                },
+                dateRange: dateRangeParam? {
+                    startDate: moment(dateRangeParam.startDate).utc().toISOString(),
+                    endDate: moment(dateRangeParam.endDate).utc().toISOString()
+                }: null,
                 displayFormat : 0,
                 initScreen: 0,
                 lstEmployee: [],
@@ -260,6 +261,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.ui.block.grayout();
             service.startScreen(param).done((data) => {
                 console.log(data);
+                self.dateRanger().startDate = data.dateRange.startDate;
+                self.dateRanger().endDate = data.dateRange.endDate;
+                self.dateRanger.valueHasMutated();
                 self.dataAll(data);
                 self.itemValueAll(data.itemValues);
                 self.comment(data.comment != null ? '■ ' + data.comment : null);
@@ -858,9 +862,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         destroyGrid() {
             $("#dpGrid").ntsGrid("destroy");
-//            $("#dpGrid").remove();
-//            $(".nts-grid-sheet-buttons").remove();
-//            $('<table id="dpGrid"></table>').appendTo('#gid');
+            $("#dpGrid").remove();
+            $(".nts-grid-sheet-buttons").remove();
+            $('<table id="dpGrid"></table>').appendTo('#gid');
         }
         setColorWeekend() {
             var self = this;

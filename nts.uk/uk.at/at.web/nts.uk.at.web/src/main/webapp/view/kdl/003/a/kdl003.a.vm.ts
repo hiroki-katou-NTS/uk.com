@@ -537,6 +537,8 @@ module nts.uk.at.view.kdl003.a {
                         firstEndTime : time1.end,
                         secondStartTime: time2.start,
                         secondEndTime: time2.end,
+                        first: time1,
+                        second: time2
                     };
                     nts.uk.ui.windows.setShared("childData", returnedData, false);
 
@@ -627,6 +629,8 @@ module nts.uk.at.view.kdl003.a {
             firstEndTime : number;
             secondStartTime: number;
             secondEndTime: number;
+            first: first;
+            second: second; 
 
         }
         interface first {
