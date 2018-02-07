@@ -134,6 +134,8 @@ module nts.uk.at.view.ksm005.c {
                             }
                         });
                     } else {
+                        self.selectedHists(null);
+                        self.isEnableListHist(false);
                         self.enableDelete(false);
                         self.enableSystemChange(false);
                         self.employeeName('');  
@@ -147,6 +149,9 @@ module nts.uk.at.view.ksm005.c {
                 self.selectedHists.subscribe(function(newValue) {            
                     if(self.histList().filter(e => e.historyId == newValue && e.textDisplay.indexOf("9999/12/31") == -1).length > 0){
                         self.enableSave(false);
+                        self.selectedHists(null);
+                        self.enableDelete(false);
+                        self.enableCopy(false);
                     } else {
                         self.enableSave(true);
                     }
