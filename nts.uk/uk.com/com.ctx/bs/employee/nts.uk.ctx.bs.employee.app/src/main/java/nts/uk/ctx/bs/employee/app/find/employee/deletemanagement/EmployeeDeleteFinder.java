@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.app.find.employee.deletemanagement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -59,14 +60,21 @@ public class EmployeeDeleteFinder {
 		if (!listEmpData.isEmpty()) {
 			EmployeeDataMngInfo empInfo = listEmpData.get(0);
 			Person person = personRepo.getByPersonId(empInfo.getPersonId()).get();
-			
-			return EmployeeToDeleteDetailDto.fromDomain(
-					empInfo.getEmployeeCode().v(),
-					person.getPersonNameGroup().getPersonName().getFullName().v(), 
-					empInfo.getRemoveReason().v(),
+
+			return EmployeeToDeleteDetailDto.fromDomain(empInfo.getEmployeeCode().v(),
+					person.getPersonNameGroup().getPersonName().getFullName().v(), empInfo.getRemoveReason().v(),
 					empInfo.getDeleteDateTemporary().toString("yyyy/MM/dd HH:mm:ss"));
 		} else {
 			return null;
 		}
+	}
+
+	public boolean checkExit(String empCode) {
+		Optional<EmployeeDataMngInfo> emp = empDataMngRepo.findByEmployeCD(empCode, AppContexts.user().companyId());
+		if (emp.isPresent())
+			return true;
+
+		return false;
+
 	}
 }
