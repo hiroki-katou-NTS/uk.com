@@ -19065,9 +19065,11 @@ var nts;
                                 if (!setting.descriptor.keyIdxes) {
                                     var pk_2 = owner.dataSource.settings.primaryKey;
                                     var keyIdxes_2 = {};
-                                    owner.dataSource._origDs.forEach(function (d, i) {
-                                        keyIdxes_2[d[pk_2]] = i;
-                                    });
+                                    if (owner.dataSource._origDs) {
+                                        owner.dataSource._origDs.forEach(function (d, i) {
+                                            keyIdxes_2[d[pk_2]] = i;
+                                        });
+                                    }
                                     setting.descriptor.keyIdxes = keyIdxes_2;
                                     setting.descriptor.fixedTable = owner._fixedTable;
                                 }
