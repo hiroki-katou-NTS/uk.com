@@ -49,7 +49,10 @@ module nts.uk.com.view.ccg.share.ccg {
          * Get Reference Range By System Type
          */
         export function getRefRangeBySysType(sysType: number): JQueryPromise<number> {
-            return nts.uk.request.ajax('com', servicePath.getRefRangeBySysType + '/' + sysType);
+            let dfd = $.Deferred<number>();
+            dfd.resolve(1);
+            return dfd.promise();
+            //return nts.uk.request.ajax('com', servicePath.getRefRangeBySysType + '/' + sysType);
         }
 
         export function getClosuresByBaseDate(baseDate: string): JQueryPromise<Array<any>> {
@@ -129,7 +132,10 @@ module nts.uk.com.view.ccg.share.ccg {
          * search all worktype
          */
         export function searchAllWorkType(): JQueryPromise<string[]> {
-            return nts.uk.request.ajax('at', servicePath.searchAllWorkType);
+            let dfd = $.Deferred<string[]>();
+            dfd.resolve([]);
+            return dfd.promise();
+            //return nts.uk.request.ajax('at', servicePath.searchAllWorkType);
         }
         
         /**
