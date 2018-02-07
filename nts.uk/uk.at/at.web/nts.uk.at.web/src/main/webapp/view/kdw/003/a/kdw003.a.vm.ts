@@ -862,9 +862,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         destroyGrid() {
             $("#dpGrid").ntsGrid("destroy");
-//            $("#dpGrid").remove();
-//            $(".nts-grid-sheet-buttons").remove();
-//            $('<table id="dpGrid"></table>').appendTo('#gid');
+            $("#dpGrid").remove();
+            $(".nts-grid-sheet-buttons").remove();
+            $('<table id="dpGrid"></table>').appendTo('#gid');
         }
         setColorWeekend() {
             var self = this;
