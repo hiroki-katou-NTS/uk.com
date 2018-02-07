@@ -180,6 +180,7 @@ module nts.uk.ui.gridlist {
                                                 constraint: { 
 //                                                                primitiveValue: 'SampleTimeClock',
                                                                 cDisplayType: "Clock",
+                                                                min: "10:00", max: "30:00",
                                                                 required: true
                                                             }
                                 },

@@ -3314,28 +3314,7 @@ var nts;
                     });
                     kiban.systemName(__viewContext.env.systemName);
                     ui.viewModelBuilt.fire(ui._viewModel);
-                    if ($(".html-loading").length > 0) {
-                        var dfd_1 = [];
-                        _.forEach($(".html-loading"), function (e) {
-                            var $container = $(e);
-                            var dX = $.Deferred();
-                            $container.load($container.attr("link"), function () {
-                                dX.resolve();
-                            });
-                            dfd_1.push(dX);
-                            dX.promise();
-                        });
-                        $.when.apply($, dfd_1).then(function (data, textStatus, jqXHR) {
-                            $('.html-loading').contents().unwrap();
-                            binding(ui._viewModel);
-                        });
-                    }
-                    else {
-                        binding(ui._viewModel);
-                    }
-                };
-                var binding = function (_viewModel) {
-                    ko.applyBindings(_viewModel);
+                    ko.applyBindings(ui._viewModel);
                     // off event reset for class reset-not-apply
                     $(".reset-not-apply").find(".reset-element").off("reset");
                     //avoid page content overlap header and function area
@@ -3351,7 +3330,7 @@ var nts;
                     }
                     $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
                     //            if($("#functions-area-bottom").length!=0){
-                    //            }    
+                    //            } 
                 };
                 var startP = function () {
                     _.defer(function () { return _start.call(__viewContext); });
@@ -3396,6 +3375,18 @@ var nts;
                     $.when.apply($, dfd).then(function (data, textStatus, jqXHR) {
                         $('.html-loading').contents().unwrap();
                         startP();
+                    });
+                });
+                $(function () {
+                    var lastPause = new Date();
+                    $(window).keydown(function (e) {
+                        if (e.keyCode !== 19)
+                            return;
+                        var now = new Date();
+                        if (now - lastPause < 500) {
+                            ui.dialog.version();
+                        }
+                        lastPause = new Date();
                     });
                 });
             })(init || (init = {}));
@@ -4151,6 +4142,10 @@ var nts;
                         this.constraint = getConstraint(primitiveValueName);
                         if (nts.uk.util.isNullOrUndefined(this.constraint)) {
                             this.constraint = {};
+                            if (option && option.min && option.max) {
+                                this.constraint.min = option.min;
+                                this.constraint.max = option.max;
+                            }
                         }
                         this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
                         this.required = ((option && option.required) ? option.required : false) || this.constraint.required === true;
@@ -5012,6 +5007,14 @@ var nts;
                     }
                     return $this;
                 }
+                function version() {
+                    var versinText = "AP version: ...";
+                    var $this = window.parent.$('<div/>').addClass('version-dialog')
+                        .append($('<div/>').addClass('text').append(versinText))
+                        .appendTo('body')
+                        .dialog({});
+                }
+                dialog.version = version;
                 /**
                  * Show information dialog.
                  *
@@ -17903,7 +17906,8 @@ var nts;
                                         return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
                                             .validate(value);
                                     case "Clock":
-                                        this.options.outputFormat = "time";
+                                        // Don't merge with time type.
+                                        this.options.mode = "time";
                                         return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
                                             .validate(value);
                                     case "TimeWithDay":
@@ -18279,7 +18283,8 @@ var nts;
                                                 var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
                                                 var timeOpts = { timeWithDay: false };
                                                 var formatter = new uk.text.TimeWithDayFormatter(timeOpts);
-                                                value = formatter.format(minutes);
+                                                if (!uk.util.isNullOrUndefined(minutes))
+                                                    value = formatter.format(minutes);
                                             }
                                             else if (valueType === "Currency") {
                                                 var currencyOpts = new ui.option.CurrencyEditorOption();
@@ -19121,6 +19126,7 @@ var nts;
                                 && idx <= descriptor.rowCount + descriptor.startRow - 1 && !uk.util.isNullOrUndefined(colIdx)) {
                                 return $(descriptor.elements[idx - descriptor.startRow][colIdx]);
                             }
+                            return $grid.igGrid("cellById", rowId, key);
                         }
                         internal.getCellById = getCellById;
                     })(internal || (internal = {}));

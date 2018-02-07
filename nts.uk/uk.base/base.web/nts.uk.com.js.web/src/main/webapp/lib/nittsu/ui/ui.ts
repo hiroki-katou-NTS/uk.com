@@ -453,6 +453,16 @@ module nts.uk.ui {
             }
             return $this;
         }
+        
+        export function version() {
+            let versinText = "AP version: ...";
+            
+            let $this = window.parent.$('<div/>').addClass('version-dialog')
+                .append($('<div/>').addClass('text').append(versinText))
+                .appendTo('body')
+                .dialog({
+                });
+        }
 
 		/**
 		 * Show information dialog.
