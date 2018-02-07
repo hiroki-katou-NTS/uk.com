@@ -23,6 +23,8 @@ import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
@@ -85,6 +87,8 @@ public class AppHolidayWorkFinder {
 	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
 	@Inject
 	private EmployeeRequestAdapter employeeAdapter;
+	@Inject
+	private DailyAttendanceTimeCaculation dailyAttendanceTimeCaculation;
 	
 	
 	/**
@@ -177,9 +181,9 @@ public class AppHolidayWorkFinder {
 	 * @param siftCD
 	 * @return
 	 */
-	public List<CaculationTime> getCaculationValue(List<CaculationTime> breakTime ,List<CaculationTime> bonusTimes,int prePostAtr,String appDate,String siftCD){
+	public List<CaculationTime> getCaculationValue(List<CaculationTime> breakTime ,List<CaculationTime> bonusTimes,int prePostAtr,String appDate,String siftCD,String workTydeCode,String employeeID){
 		// 6.計算処理 : TODO
-		
+		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), workTydeCode, siftCD, null, null, null, null);
 		// 06-01_色表示チェック
 		
 		return null;
@@ -187,6 +191,7 @@ public class AppHolidayWorkFinder {
 	public AppHolidayWorkDto getAppHolidayWorkByAppID(String appID){
 		AppHolidayWorkDto result = new AppHolidayWorkDto();
 		// 7.休出申請（詳細）起動前処理
+		
 		
 		return result;
 	}

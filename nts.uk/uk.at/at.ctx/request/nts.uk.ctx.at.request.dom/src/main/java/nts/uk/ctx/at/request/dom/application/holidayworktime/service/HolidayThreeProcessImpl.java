@@ -17,15 +17,19 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
+import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
@@ -39,7 +43,37 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
 	@Inject
 	private WorkTypeRepository workTypeRep;
-
+	@Inject
+	private IOvertimePreProcess iOvertimePreProcess;
+	@Inject
+	private RecordWorkInfoAdapter recordWorkInfoAdapter;
+	@Inject
+	private PredetemineTimeSettingRepository workTimeSetRepository;
+	
+	// 03-02_実績超過チェック
+	@Override
+	public List<CaculationTime> checkCaculationActualExcess(int prePostAtr, int appType, String employeeID,
+			String companyID, ApprovalFunctionSetting approvalFunctionSetting, GeneralDate appDate,
+			List<CaculationTime> overTimeInputs, String siftCD) {
+		if(!checkCodition(prePostAtr,companyID)){
+			return null;
+		}
+		//Imported(申請承認)「勤務実績」を取得する
+		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,appDate);
+		Optional<PredetemineTimeSetting> workTimeSetOtp = workTimeSetRepository.findByWorkTimeCode(companyID, siftCD);
+		if (workTimeSetOtp.isPresent()) {
+			PredetemineTimeSetting workTimeSet = workTimeSetOtp.get();
+			
+			if(iOvertimePreProcess.checkTimeDay(appDate.toString("yyyy/MM/dd"),workTimeSet)){
+				// 03-02-3_当日の場合
+				overTimeInputs = checkHolidayWorkOnDay(companyID, employeeID, appDate.toString("yyyy/MM/dd"), approvalFunctionSetting, siftCD, overTimeInputs,recordWorkInfoImport);
+			}else{
+				// 03-02-2_当日以外の場合
+				overTimeInputs = this.checkOutSideTimeTheDay(companyID, employeeID, appDate.toString("yyyy/MM/dd"), approvalFunctionSetting, siftCD, overTimeInputs,recordWorkInfoImport);
+			}
+		}
+		return null;
+	}
 	@Override
 	public List<CaculationTime> checkOutSideTimeTheDay(String companyID, String employeeID, String appDate,
 			ApprovalFunctionSetting approvalFunctionSetting, String siftCD, List<CaculationTime> breakTimes,
@@ -136,7 +170,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository
 				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.OVER_TIME_APPLICATION.value);
 		if (overtimeRestAppCommonSet.isPresent()) {
-			// 残業休出申請共通設定.事前表示区分＝表示する
+			// 残業休出申請共通設定.事前表示区分＝表示する  
 			if (overtimeRestAppCommonSet.get().getPreDisplayAtr().equals(UseAtr.USE)) {
 				// 表示する:Trueを返す
 				return true;
@@ -146,6 +180,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	}
 
 	/* (non-Javadoc)
+	 * 03-02-3_当日の場合
 	 * @see nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayThreeProcess#checkHolidayWorkOnDay(java.lang.String, java.lang.String, java.lang.String, nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting, java.lang.String, java.util.List, nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport)
 	 */
 	@Override
@@ -180,5 +215,20 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 		}
 		return null;
 	}
+	// 03-02-1_チェック条件
+	@Override
+	public boolean checkCodition(int prePostAtr, String companyID) {
+		if(prePostAtr == PrePostAtr.POSTERIOR.value){
+			Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
+			if(overtimeRestAppCommonSetting.isPresent()){
+				//ドメインモデル「残業休出申請共通設定」.実績表示区分チェック
+				if(overtimeRestAppCommonSetting.get().getPerformanceDisplayAtr().value == UseAtr.USE.value){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 
 }

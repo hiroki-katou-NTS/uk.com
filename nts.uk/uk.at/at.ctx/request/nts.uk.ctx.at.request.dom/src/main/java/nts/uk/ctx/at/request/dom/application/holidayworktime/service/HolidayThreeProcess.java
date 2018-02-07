@@ -23,6 +23,27 @@ public interface HolidayThreeProcess {
 	 * @return 0: Normal. 1: 背景色を設定する
 	 */
 	OvertimeCheckResult preApplicationExceededCheck(String companyId, GeneralDate appDate, GeneralDateTime inputDate, PrePostAtr prePostAtr, int attendanceId, List<HolidayWorkInput> overtimeInputs) ;
+	
+	/**
+	 * 03-02_実績超過チェック
+	 * @param prePostAtr
+	 * @param appType
+	 * @param employeeID
+	 * @param companyID
+	 * @param approvalFunctionSetting
+	 * @param appDate
+	 * @param overTimeInputs
+	 * @param siftCD
+	 * @return
+	 */
+	public List<CaculationTime> checkCaculationActualExcess(int prePostAtr,int appType,String employeeID,String companyID,ApprovalFunctionSetting approvalFunctionSetting,GeneralDate appDate,List<CaculationTime> overTimeInputs, String siftCD);
+	/**
+	 * 03-02-1_チェック条件
+	 * @param prePostAtr
+	 * @param companyID
+	 * @return
+	 */
+	public boolean checkCodition(int prePostAtr,String companyID);
 	/**
 	 * 03-02-2_当日以外の場合
 	 * @param companyID
@@ -48,6 +69,7 @@ public interface HolidayThreeProcess {
 	 */
 	public List<CaculationTime> checkOutSideTimeTheDayForHoliday(String companyID,String employeeID,String appDate,ApprovalFunctionSetting approvalFunctionSetting, String siftCD,List<CaculationTime> breakTimes,RecordWorkInfoImport recordWorkInfoImport);
 	/**
+	 * 03-02-3_当日の場合
 	 * checkHolidayWorkOnDay
 	 * @param companyID
 	 * @param employeeID
