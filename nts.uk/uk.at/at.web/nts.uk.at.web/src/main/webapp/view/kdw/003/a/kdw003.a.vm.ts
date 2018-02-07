@@ -284,6 +284,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 // Fixed Header
                 self.fixHeaders(data.lstFixedHeader);
                 self.showPrincipal(data.showPrincipal);
+                self.showPrincipal(false);
                 if(data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
                 if (data.showPrincipal || data.lstControlDisplayItem.lstHeader.length == 0) {
                     self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
@@ -339,6 +340,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             // Fixed Header
                             self.fixHeaders(data.lstFixedHeader);
                             self.showPrincipal(data.showPrincipal);
+                             self.showPrincipal(false);
                             if (data.showPrincipal) {
                                 self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
                                 self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
@@ -389,40 +391,41 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
             let dataChangeProcess: any = [];
             _.each(dataChange, (data: any) => {
-                let dataTemp = _.find(self.dpData, (item: any) => {
-                    return item.id == data.rowId.substring(1, data.rowId.length);
-                });
-                if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
-                    if (data.columnKey.indexOf("Name") != -1) {
-                        // todo
-                    } else {
-                        //get layout , and type
-                        let layoutAndType : any  = _.find(self.itemValueAll(), (item :any) =>{
-                              return item.itemId == data.columnKey.substring(1, data.columnKey.length);
+                if (data.columnKey != "sign") {
+                    let dataTemp = _.find(self.dpData, (item: any) => {
+                        return item.id == data.rowId.substring(1, data.rowId.length);
+                    });
+                    if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
+                        if (data.columnKey.indexOf("Name") != -1) {
+                            // todo
+                        } else {
+                            //get layout , and type
+                                return item.itemId == data.columnKey.substring(1, data.columnKey.length);
                             });
-                        let value: any;
-                        value = self.getPrimitiveValue(data.value);
-                        let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" :layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), 0);
+                            let value: any;
+                            value = self.getPrimitiveValue(data.value);
+                            let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), 0);
+                            dataChangeProcess.push(dataMap);
+                        }
+                    } else {
+                        let columnKey: any;
+                        let item: any;
+                        if (data.columnKey.indexOf("Code") != -1) {
+                            columnKey = data.columnKey.substring(4, data.columnKey.length);
+                        } else {
+                            columnKey = data.columnKey.substring(2, data.columnKey.length);
+                        }
+                        //TO Thanh: move find logic out if condition
+                        item = _.find(self.lstAttendanceItem(), (data) => {
+                            return String(data.id) === columnKey;
+                        })
+
+                        let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
+                            return item.itemId == columnKey;
+                        });
+                        let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), item.typeGroup);
                         dataChangeProcess.push(dataMap);
                     }
-                }else{
-                    let columnKey: any;
-                    let item : any;
-                    if (data.columnKey.indexOf("Code") != -1) {
-                        columnKey = data.columnKey.substring(4, data.columnKey.length);
-                    } else {
-                        columnKey = data.columnKey.substring(2, data.columnKey.length);
-                    }
-                    //TO Thanh: move find logic out if condition
-                    item = _.find(self.lstAttendanceItem(), (data) => {
-                        return String(data.id) === columnKey;
-                    })
-
-                    let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
-                        return item.itemId == columnKey;
-                    });
-                    let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), item.typeGroup);
-                    dataChangeProcess.push(dataMap);
                 }
             });
             let param = { itemValues: dataChangeProcess }
@@ -540,6 +543,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.createSumColumn(data);
                     self.columnSettings(data.lstControlDisplayItem.columnSettings);
                     self.showPrincipal(data.showPrincipal);
+                     self.showPrincipal(false);
                     if (data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
                     if (data.showPrincipal || data.lstControlDisplayItem.lstHeader.length == 0) {
                         self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];

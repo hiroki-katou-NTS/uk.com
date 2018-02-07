@@ -368,7 +368,7 @@ module nts.uk.ui {
                             return request.login.restoreSessionTo(webAppId);
                         })
                         .then(() => {
-                            dialog.setupAsDialog(path, windows.container.mergeOption(options));
+                            dialog.setupAsDialog(path, windows.container.mergeOption(options)); 
                         });
                     return dialog;
                 }
