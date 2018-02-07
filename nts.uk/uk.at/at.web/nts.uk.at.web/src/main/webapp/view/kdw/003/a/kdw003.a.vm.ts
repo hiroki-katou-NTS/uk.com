@@ -284,6 +284,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 // Fixed Header
                 self.fixHeaders(data.lstFixedHeader);
                 self.showPrincipal(data.showPrincipal);
+                self.showPrincipal(false);
                 if(data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
                 if (data.showPrincipal || data.lstControlDisplayItem.lstHeader.length == 0) {
                     self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
@@ -339,6 +340,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             // Fixed Header
                             self.fixHeaders(data.lstFixedHeader);
                             self.showPrincipal(data.showPrincipal);
+                             self.showPrincipal(false);
                             if (data.showPrincipal) {
                                 self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
                                 self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
@@ -540,6 +542,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.createSumColumn(data);
                     self.columnSettings(data.lstControlDisplayItem.columnSettings);
                     self.showPrincipal(data.showPrincipal);
+                     self.showPrincipal(false);
                     if (data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
                     if (data.showPrincipal || data.lstControlDisplayItem.lstHeader.length == 0) {
                         self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];

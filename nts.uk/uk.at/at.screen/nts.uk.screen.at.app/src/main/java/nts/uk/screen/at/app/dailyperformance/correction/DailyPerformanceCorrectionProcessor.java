@@ -443,7 +443,7 @@ public class DailyPerformanceCorrectionProcessor {
 		CountDownLatch latch = new CountDownLatch(1);
 
 		Future<List<DailyModifyResult>> sResults = service.submit(
-				new GetDataDaily( listEmployeeId.size() > 31 ? listEmployeeId.subList(0,30) : listEmployeeId , dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
+				new GetDataDaily( listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
 		DPControlDisplayItem dPControlDisplayItem = this.getItemIdNames(disItem);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 
