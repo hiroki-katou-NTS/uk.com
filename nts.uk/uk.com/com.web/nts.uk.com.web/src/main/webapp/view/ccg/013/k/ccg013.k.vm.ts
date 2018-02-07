@@ -117,13 +117,16 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             
             _.defer(() => {
                 if (!nts.uk.ui.errors.hasError() ) {
-                    service.updateStandardMenu(a).done(function() {                          
+                    service.updateStandardMenu(a).done(function() {   
+                        service.getAllStandardMenu().done(function (lst){
+                            self.listStandardMenu(lst);
+                        });                       
                         _.remove(self.listStandardMenu(), function(item){                              
                             return item.system == parseInt(self.selectedCode());                         
                         });                         
-                         for(let i = 0; i < a.length; i++)  {   
-                            self.listStandardMenu().push(new StandardMenu(self.id(self.id()+1), a[i].code, a[i].targetItems, a[i].displayName, a[i].system, a[i].classification));  
-                         }
+//                         for(let i = 0; i < a.length; i++)  {   
+//                            self.listStandardMenu().push(new StandardMenu(self.id(self.id()+1), a[i].code, a[i].targetItems, a[i].displayName, a[i].system, a[i].classification));  
+//                         }
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });     
                         self.getListStandardMenu(self.selectedCode());
                     }).fail(function(error) {
