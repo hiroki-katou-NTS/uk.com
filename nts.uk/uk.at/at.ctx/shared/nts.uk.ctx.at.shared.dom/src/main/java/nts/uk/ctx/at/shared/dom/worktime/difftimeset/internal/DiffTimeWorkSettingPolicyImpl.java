@@ -200,7 +200,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 				}
 			}
 			if (!CollectionUtil.isEmpty(lstLateOT)) {
-				int lateOTStartTime = lstLateOT.get(lstEarlyOT.size() - 1).getTimezone().getStart().v();
+				int lateOTStartTime = lstLateOT.get(lstLateOT.size() - 1).getTimezone().getStart().v();
 				List<EmTimeZoneSet> invalidList = item.getWorkTimezone().getEmploymentTimezones().stream()
 						.filter(work -> work.getTimezone().getEnd().v() + behindChange > lateOTStartTime)
 						.collect(Collectors.toList());
