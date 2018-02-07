@@ -22,6 +22,21 @@ module nts.uk.com.view.ccg001.a {
             periodEndDate: KnockoutObservable<Date>;
             baseDate: KnockoutObservable<Date>;                
             selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
+            showEmployment: KnockoutObservable<boolean>; // 雇用条件
+            showWorkplace: KnockoutObservable<boolean>; // 職場条件
+            showClassification: KnockoutObservable<boolean>; // 分類条件
+            showJobTitle: KnockoutObservable<boolean>; // 職位条件
+            showWorktype: KnockoutObservable<boolean>; // 勤種条件
+            inService: KnockoutObservable<boolean>; // 在職区分
+            leaveOfAbsence: KnockoutObservable<boolean>; // 休職区分
+            closed: KnockoutObservable<boolean>; // 休業区分
+            retirement: KnockoutObservable<boolean>; // 退職区分
+            systemType: KnockoutObservable<number>;
+            showClosure: KnockoutObservable<boolean>; // 就業締め日利用
+            showBaseDate: KnockoutObservable<boolean>; // 基準日利用
+            showAllClosure: KnockoutObservable<boolean>; // 全締め表示
+            showPeriod: KnockoutObservable<boolean>; // 対象期間利用
+            periodAccuracy: KnockoutObservable<number>; // 対象期間精度
 
             constructor() {
                 var self = this;
@@ -29,18 +44,8 @@ module nts.uk.com.view.ccg001.a {
                 self.selectedEmployee = ko.observableArray([]);
                 self.showinfoSelectedEmployee = ko.observable(false);
                 
-                // Options
-                self.isQuickSearchTab = ko.observable(true);
-                self.isAdvancedSearchTab = ko.observable(true);
-                self.isAllReferableEmployee = ko.observable(true);
-                self.isOnlyMe = ko.observable(true);
-                self.isEmployeeOfWorkplace = ko.observable(true);
-                self.isEmployeeWorkplaceFollow = ko.observable(true);
-                self.isMutipleCheck = ko.observable(true);
-                self.isSelectAllEmployee = ko.observable(true);
-                self.baseDate = ko.observable(new Date());
-                self.periodStartDate = ko.observable(new Date());
-                self.periodEndDate = ko.observable(new Date());
+                // set ccg options
+                self.setCcgOption();
                 
                 // Init component.
                 self.applyView();
@@ -79,6 +84,36 @@ module nts.uk.com.view.ccg001.a {
                 });
             }
 
+            private setCcgOption(): void {
+                let self = this;
+                self.isQuickSearchTab = ko.observable(true);
+                self.isAdvancedSearchTab = ko.observable(true);
+                self.isAllReferableEmployee = ko.observable(true);
+                self.isOnlyMe = ko.observable(true);
+                self.isEmployeeOfWorkplace = ko.observable(true);
+                self.isEmployeeWorkplaceFollow = ko.observable(true);
+                self.isMutipleCheck = ko.observable(true);
+                self.isSelectAllEmployee = ko.observable(true);
+                self.baseDate = ko.observable(new Date());
+                self.periodStartDate = ko.observable(new Date());
+                self.periodEndDate = ko.observable(new Date());
+                self.showEmployment = ko.observable(true); // 雇用条件
+                self.showWorkplace = ko.observable(true); // 職場条件
+                self.showClassification = ko.observable(true); // 分類条件
+                self.showJobTitle = ko.observable(true); // 職位条件
+                self.showWorktype = ko.observable(true); // 勤種条件
+                self.inService = ko.observable(true); // 在職区分
+                self.leaveOfAbsence = ko.observable(true); // 休職区分
+                self.closed = ko.observable(true); // 休業区分
+                self.retirement = ko.observable(true); // 退職区分
+                self.systemType = ko.observable(1);
+                self.showClosure = ko.observable(true); // 就業締め日利用
+                self.showBaseDate = ko.observable(true); // 基準日利用
+                self.showAllClosure = ko.observable(true); // 全締め表示
+                self.showPeriod = ko.observable(true); // 対象期間利用
+                self.periodAccuracy = ko.observable(1); // 対象期間精度
+            }
+
             /**
              * apply view
              */
@@ -86,18 +121,40 @@ module nts.uk.com.view.ccg001.a {
                 var self = this;
                 self.baseDate(new Date());
                 self.ccgcomponent = {
-                    showClosure: true,
-                    baseDate: self.baseDate,
-                    periodStartDate: self.baseDate,
-                    periodEndDate: self.baseDate,
-                    isQuickSearchTab: self.isQuickSearchTab(),
-                    isAdvancedSearchTab: self.isAdvancedSearchTab(),
-                    isAllReferableEmployee: self.isAllReferableEmployee(),
-                    isOnlyMe: self.isOnlyMe(),
-                    isEmployeeOfWorkplace: self.isEmployeeOfWorkplace(),
-                    isEmployeeWorkplaceFollow: self.isEmployeeWorkplaceFollow(),
-                    isMutipleCheck: self.isMutipleCheck(),
-                    isSelectAllEmployee: self.isSelectAllEmployee(),
+                    /** Common properties */
+                    systemType: self.systemType(), // システム区分
+                    isSelectAllEmployee: self.isSelectAllEmployee(), // 検索タイプ
+                    isQuickSearchTab: self.isQuickSearchTab(), // クイック検索
+                    isAdvancedSearchTab: self.isAdvancedSearchTab(), // 詳細検索
+                    showBaseDate: self.showBaseDate(), // 基準日利用
+                    showClosure: self.showClosure(), // 就業締め日利用
+                    showAllClosure: self.showAllClosure(), // 全締め表示
+                    showPeriod: self.showPeriod(), // 対象期間利用
+                    periodAccuracy: self.periodAccuracy(), // 対象期間精度
+
+                    /** Required parameter */
+                    baseDate: self.baseDate().toString(), // 基準日
+                    periodStartDate: self.periodStartDate().toString(), // 対象期間開始日
+                    periodEndDate: self.periodEndDate().toString(), // 対象期間終了日
+                    inService: self.inService(), // 在職区分
+                    leaveOfAbsence: self.leaveOfAbsence(), // 休職区分
+                    closed: self.closed(), // 休業区分
+                    retirement: self.retirement(), // 退職区分
+
+                    /** Quick search tab options */
+                    isAllReferableEmployee: self.isAllReferableEmployee(), // 参照可能な社員すべて
+                    isOnlyMe: self.isOnlyMe(), // 自分だけ
+                    isEmployeeOfWorkplace: self.isEmployeeOfWorkplace(), // 同じ職場の社員
+                    isEmployeeWorkplaceFollow: self.isEmployeeWorkplaceFollow(), // 同じ職場とその配下の社員
+
+                    /** Advanced search properties */
+                    showEmployment: self.showEmployment(), // 雇用条件
+                    showWorkplace: self.showWorkplace(), // 職場条件
+                    showClassification: self.showClassification(), // 分類条件
+                    showJobTitle: self.showJobTitle(), // 職位条件
+                    showWorktype: self.showWorktype(), // 勤種条件
+                    isMutipleCheck: self.isMutipleCheck(), // 選択モード
+
                     onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
                         self.selectedEmployee(dataList);
@@ -124,7 +181,7 @@ module nts.uk.com.view.ccg001.a {
                         self.selectedEmployee(dataEmployee);
                     }
 
-                } 
+                }
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
             }
             
