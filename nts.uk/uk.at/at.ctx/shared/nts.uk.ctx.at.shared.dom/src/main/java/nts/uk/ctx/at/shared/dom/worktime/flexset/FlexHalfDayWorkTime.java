@@ -121,13 +121,13 @@ public class FlexHalfDayWorkTime extends WorkTimeDomainObject {
 	 * @param other the other
 	 */
 	public void restoreData(ScreenMode screenMode, FlexWorkSetting flexWorkSet,
-			FlexHalfDayWorkTime other) {
+			FlexHalfDayWorkTime oldDomain) {
 		switch (screenMode) {
 		case SIMPLE:
-			this.restoreSimpleMode(other);
+			this.restoreSimpleMode(oldDomain);
 			break;
 		case DETAIL:
-			this.restoreDetailMode(flexWorkSet, other);;
+			this.restoreDetailMode(screenMode,flexWorkSet, oldDomain);;
 			break;
 		default:
 			throw new RuntimeException("ScreenMode not found.");
@@ -139,9 +139,9 @@ public class FlexHalfDayWorkTime extends WorkTimeDomainObject {
 	 *
 	 * @param other the other
 	 */
-	private void restoreSimpleMode(FlexHalfDayWorkTime other) {
-		if (other.getAmpmAtr() != AmPmAtr.ONE_DAY) {
-			this.workTimezone.restoreData(other.getWorkTimezone());
+	private void restoreSimpleMode(FlexHalfDayWorkTime oldDomain) {
+		if (oldDomain.getAmpmAtr() != AmPmAtr.ONE_DAY) {
+			this.workTimezone.restoreData(oldDomain.getWorkTimezone());
 		}
 	}
 	
@@ -151,10 +151,16 @@ public class FlexHalfDayWorkTime extends WorkTimeDomainObject {
 	 * @param flexWorkSet the flex work set
 	 * @param other the other
 	 */
-	private void restoreDetailMode(FlexWorkSetting flexWorkSet, FlexHalfDayWorkTime other) {
-		// restore data of dayAtr = AM, PM
-		if (!flexWorkSet.isUseHalfDayShift() && other.getAmpmAtr() != AmPmAtr.ONE_DAY) {
-			this.workTimezone.restoreData(other.getWorkTimezone());
+	private void restoreDetailMode(ScreenMode screenMode,FlexWorkSetting flexWorkSet, FlexHalfDayWorkTime oldDomain) {
+		// restore worktime data of dayAtr = AM, PM
+		if (!flexWorkSet.isUseHalfDayShift() && oldDomain.getAmpmAtr() != AmPmAtr.ONE_DAY) {
+			this.workTimezone.restoreData(oldDomain.getWorkTimezone());
+		}
+		// restore rest time data of dayAtr = AM, PM
+		if (!flexWorkSet.isUseHalfDayShift() && oldDomain.getAmpmAtr() != AmPmAtr.ONE_DAY) {
+			this.restTimezone = oldDomain.getRestTimezone();
+		} else {
+			this.restTimezone.restoreData(screenMode, oldDomain.getRestTimezone());
 		}
 	}
 }
