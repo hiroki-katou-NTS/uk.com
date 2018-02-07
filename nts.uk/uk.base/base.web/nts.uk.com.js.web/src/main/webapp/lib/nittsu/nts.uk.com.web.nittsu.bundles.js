@@ -4826,6 +4826,15 @@ var nts;
                         subWindow.setupAsDialog(path, options);
                         return subWindow;
                     };
+                    ScreenWindowContainer.prototype.createDialogNotOpen = function (path, options, parentId) {
+                        var parentwindow = this.windows[parentId];
+                        var subWindow = ScreenWindow.createSubWindow(parentwindow);
+                        this.windows[subWindow.id] = subWindow;
+                        return subWindow;
+                    };
+                    ScreenWindowContainer.prototype.mergeOption = function (options) {
+                        return $.extend({}, DEFAULT_DIALOG_OPTIONS, options);
+                    };
                     ScreenWindowContainer.prototype.getShared = function (key) {
                         return this.localShared[key] !== undefined ? this.localShared[key] : this.shared[key];
                     };
@@ -4912,13 +4921,15 @@ var nts;
                             path = nts.uk.request.location.siteRoot
                                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
                                 .mergeRelativePath(path).serialize();
+                            var dialog_1 = createDialog(path, options);
                             uk.request.login.keepSerializedSession()
                                 .then(function () {
                                 return uk.request.login.restoreSessionTo(webAppId);
                             })
                                 .then(function () {
-                                return open(path, options);
+                                dialog_1.setupAsDialog(path, windows.container.mergeOption(options));
                             });
+                            return dialog_1;
                         }
                     }
                     function open(path, options) {
@@ -4926,6 +4937,11 @@ var nts;
                         return windows.container.createDialog(path, options, windows.selfId);
                     }
                     sub.open = open;
+                    function createDialog(path, options) {
+                        nts.uk.ui.block.invisible();
+                        return windows.container.createDialogNotOpen(path, options, windows.selfId);
+                    }
+                    sub.createDialog = createDialog;
                 })(sub = windows.sub || (windows.sub = {}));
             })(windows = ui_1.windows || (ui_1.windows = {}));
             function localize(textId) {
@@ -19065,9 +19081,11 @@ var nts;
                                 if (!setting.descriptor.keyIdxes) {
                                     var pk_2 = owner.dataSource.settings.primaryKey;
                                     var keyIdxes_2 = {};
-                                    owner.dataSource._origDs.forEach(function (d, i) {
-                                        keyIdxes_2[d[pk_2]] = i;
-                                    });
+                                    if (owner.dataSource._origDs) {
+                                        owner.dataSource._origDs.forEach(function (d, i) {
+                                            keyIdxes_2[d[pk_2]] = i;
+                                        });
+                                    }
                                     setting.descriptor.keyIdxes = keyIdxes_2;
                                     setting.descriptor.fixedTable = owner._fixedTable;
                                 }

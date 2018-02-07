@@ -425,18 +425,15 @@ module nts.uk.at.view.kdl003.a {
                     return;
                 }
                 
-                 if (nts.uk.util.isNullOrEmpty(self.startTime()) || nts.uk.util.isNullOrEmpty(self.endTime())) {
-                    return;
-                }
                 nts.uk.ui.block.invisible();
 
                 // Search command.
                 let command = {
                     codelist: self.initialWorkTimeCodes,
                     startAtr: self.startTimeOption(),
-                    startTime: nts.uk.util.isNullOrEmpty(self.startTime()) ? -1 : self.startTime(),
+                    startTime: nts.uk.util.isNullOrEmpty(self.startTime()) ? null : self.startTime(),
                     endAtr: self.endTimeOption(),
-                    endTime: nts.uk.util.isNullOrEmpty(self.endTime()) ? -1 : self.endTime()
+                    endTime: nts.uk.util.isNullOrEmpty(self.endTime()) ? null : self.endTime()
                 }
 
                 // Search & display data.

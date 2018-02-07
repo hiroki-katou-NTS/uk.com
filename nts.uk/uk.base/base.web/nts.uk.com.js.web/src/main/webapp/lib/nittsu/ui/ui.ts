@@ -255,6 +255,19 @@ module nts.uk.ui {
 
                 return subWindow;
             }
+            
+            createDialogNotOpen(path: string, options: any, parentId: string) {
+
+                var parentwindow = this.windows[parentId];
+                var subWindow = ScreenWindow.createSubWindow(parentwindow);
+                this.windows[subWindow.id] = subWindow;
+
+                return subWindow;
+            }
+            
+            mergeOption(options: any){
+                return $.extend({}, DEFAULT_DIALOG_OPTIONS, options);
+            }
 
             getShared(key: string): any {               
                 return this.localShared[key] !== undefined ? this.localShared[key] : this.shared[key];
@@ -349,20 +362,26 @@ module nts.uk.ui {
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
                     .mergeRelativePath(path).serialize();
                     
+                    let dialog = createDialog(path, options);
                     request.login.keepSerializedSession()
                         .then(() => {
                             return request.login.restoreSessionTo(webAppId);
                         })
                         .then(() => {
-                            return open(path, options);
+                            dialog.setupAsDialog(path, windows.container.mergeOption(options)); 
                         });
+                    return dialog;
                 }
-                
             }
 
             export function open(path: string, options?: any) {
                 nts.uk.ui.block.invisible();
                 return windows.container.createDialog(path, options, selfId);
+            }
+            
+            export function createDialog(path: string, options?: any) {
+                nts.uk.ui.block.invisible();
+                return windows.container.createDialogNotOpen(path, options, selfId);
             }
         }
     }

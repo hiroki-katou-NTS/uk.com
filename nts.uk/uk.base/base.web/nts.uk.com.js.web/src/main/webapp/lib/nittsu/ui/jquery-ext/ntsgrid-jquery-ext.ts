@@ -4051,9 +4051,11 @@ module nts.uk.ui.jqueryExtentions {
                     if (!setting.descriptor.keyIdxes) {
                         let pk = owner.dataSource.settings.primaryKey;
                         let keyIdxes = {};
-                        owner.dataSource._origDs.forEach(function(d, i) {
-                            keyIdxes[d[pk]] = i; 
-                        });
+                        if (owner.dataSource._origDs) {
+                            owner.dataSource._origDs.forEach(function(d, i) {
+                                keyIdxes[d[pk]] = i; 
+                            });
+                        }
                         setting.descriptor.keyIdxes = keyIdxes;
                         setting.descriptor.fixedTable = owner._fixedTable;
                     }
