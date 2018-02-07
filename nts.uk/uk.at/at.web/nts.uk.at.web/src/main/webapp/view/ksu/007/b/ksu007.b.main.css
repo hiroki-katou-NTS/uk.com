@@ -35,9 +35,18 @@
 	margin-top: 60px;
 }
 
+.executionStateTime {
+	margin-left: 25px;
+}
+
+.errorCount {
+	margin-left: 50px;
+}
+
 ul.countdown {
 	list-style: none;
 	display: block;
+	margin-left: 25px;
 }
 
 ul.countdown li {
