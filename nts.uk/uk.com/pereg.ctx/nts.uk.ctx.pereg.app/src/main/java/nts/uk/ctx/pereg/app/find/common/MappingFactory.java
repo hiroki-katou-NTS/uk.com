@@ -216,9 +216,9 @@ public class MappingFactory {
 					}
 
 				}
-				if(firstReqLstItems.contains(valueItem.getItemCode())) {
+				if(firstReqLstItems.contains(valueItem.getItemCode()) && valueItem.getValue() != null) {
 					valueItem.setTextValue(getFirstValueText(valueItem.getItemCode()));
-				} else if(secReqLstItems.contains(valueItem.getItemCode())) {
+				} else if(secReqLstItems.contains(valueItem.getItemCode()) && valueItem.getValue() != null) {
 					valueItem.setTextValue(getSecValueText(valueItem.getItemCode()));
 				}
 				
@@ -227,11 +227,11 @@ public class MappingFactory {
 	}
 	//Wait request list
 	private static String getFirstValueText(String itemCode) {
-		return null;
+		return "First button";
 	}
 	
 	private static String getSecValueText(String itemCode) {
-		return null;
+		return "Second button";
 	}
 
 }
