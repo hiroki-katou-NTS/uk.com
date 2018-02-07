@@ -21,21 +21,6 @@ public class UpdateApplicationDeadlineCommandHandler extends CommandHandler<List
 	/**
 	 * update application deadline
 	 */
-//	@Override
-//	protected void handle(CommandHandlerContext<ApplicationDeadlineCommand> context) {
-//		List<ApplicationDeadlineCommand> data = context.getCommand();
-//		String companyId = AppContexts.user().companyId();
-//		Optional<ApplicationDeadline> app = appRep.getDeadlineByClosureId(companyId, data.getClosureId());
-//		ApplicationDeadline appDeadline = ApplicationDeadline.createSimpleFromJavaType(companyId, data.getClosureId(),
-//																				data.getUserAtr(), data.getDeadline(), 
-//																				data.getDeadlineCriteria());
-//		appDeadline.validate();
-//		if(app.isPresent()){
-//			appRep.update(appDeadline);
-//			return;
-//		}
-//		appRep.insert(appDeadline);
-//	}
 	@Override
 	protected void handle(CommandHandlerContext<List<ApplicationDeadlineCommand>> context) {
 		List<ApplicationDeadlineCommand> data = context.getCommand();
