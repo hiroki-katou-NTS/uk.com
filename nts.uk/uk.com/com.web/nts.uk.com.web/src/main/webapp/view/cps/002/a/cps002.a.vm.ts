@@ -712,10 +712,8 @@ module cps002.a.vm {
                     if (imageResult) {
                         self.currentEmployee().avatarId(imageResult.cropImgId)
                         self.defaultImgId(imageResult.defaultImgId);
-
-
-
-                    });
+                    }
+                });
 
             }
         }

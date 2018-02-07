@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.pub.dailyprocess.attendancetime;
 
-import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
@@ -16,29 +16,17 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.
 @Getter
 public class DailyAttendanceTimePubExport {
 
-	//残業時間
-	private List<TimeWithCalculation> overTime;
+	//残業枠No,残業時間
+	private Map<OverTimeFrameNo,TimeWithCalculation> overTime;
 	
-	//残業枠No
-	private List<OverTimeFrameNo> overTimeFrameNo;
+	//休出枠,休出時間
+	private Map<HolidayWorkFrameNo,TimeWithCalculation> holidayWorkTime;
 	
-	//休出時間
-	private List<TimeWithCalculation> holidayWorkTime;
-	
-	//休出枠
-	private List<HolidayWorkFrameNo> holidayWorkTimeNo;
-	
-	//加給時間
-	private List<TimeWithCalculation> bonusPayTime;
-	
-	//加給Ｎｏ
-	private List<Integer> bonusPayNo;
-	
-	//特定日加給時間
-	private List<TimeWithCalculation> specBonusPayTime;
-	
-	//特定日加給No
-	private List<Integer> specBonusPayNo;
+	//加給Ｎｏ,加給時間
+	private Map<Integer,TimeWithCalculation> bonusPayTime;
+
+	//特定日加給No,特定日加給時間
+	private Map<Integer,TimeWithCalculation> specBonusPayTime;
 	
 	//フレックス時間
 	private TimeWithCalculation flexTime;
@@ -49,23 +37,19 @@ public class DailyAttendanceTimePubExport {
 	/**
 	 * Constructor 
 	 */
-	public DailyAttendanceTimePubExport(List<TimeWithCalculation> overTime, List<OverTimeFrameNo> overTimeFrameNo,
-			List<TimeWithCalculation> holidayWorkTime, List<HolidayWorkFrameNo> holidayWorkTimeNo,
-			List<TimeWithCalculation> bonusPayTime, List<Integer> bonusPayNo,
-			List<TimeWithCalculation> specBonusPayTime, List<Integer> specBonusPayNo, TimeWithCalculation flexTime,
-			TimeWithCalculation midNightTime) {
+	public DailyAttendanceTimePubExport(Map<OverTimeFrameNo, TimeWithCalculation> overTime,
+			Map<HolidayWorkFrameNo, TimeWithCalculation> holidayWorkTime,
+			Map<Integer, TimeWithCalculation> bonusPayTime, Map<Integer, TimeWithCalculation> specBonusPayTime,
+			TimeWithCalculation flexTime, TimeWithCalculation midNightTime) {
 		super();
 		this.overTime = overTime;
-		this.overTimeFrameNo = overTimeFrameNo;
 		this.holidayWorkTime = holidayWorkTime;
-		this.holidayWorkTimeNo = holidayWorkTimeNo;
 		this.bonusPayTime = bonusPayTime;
-		this.bonusPayNo = bonusPayNo;
 		this.specBonusPayTime = specBonusPayTime;
-		this.specBonusPayNo = specBonusPayNo;
 		this.flexTime = flexTime;
 		this.midNightTime = midNightTime;
 	}
+
 
 
 	
