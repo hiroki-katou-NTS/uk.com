@@ -17,7 +17,7 @@ public class BreakTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
 		if(item != null){
-			this.data.add(((BreakTimeDailyDto) item).toDomain());
+			this.data.add(((BreakTimeDailyDto) item).toDomain(getEmployeeId(), getWorkDate()));
 		}
 	}
 	

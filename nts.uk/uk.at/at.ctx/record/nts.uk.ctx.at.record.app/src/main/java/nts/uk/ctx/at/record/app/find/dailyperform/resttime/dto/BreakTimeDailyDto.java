@@ -92,8 +92,8 @@ public class BreakTimeDailyDto implements ConvertibleAttendanceItem {
 	}
 	
 	@Override
-	public BreakTimeOfDailyPerformance toDomain() {
-		return new BreakTimeOfDailyPerformance(employeeId,
+	public BreakTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+		return new BreakTimeOfDailyPerformance(emp,
 					EnumAdaptor.valueOf(restTimeType, BreakType.class),
 					timeZone == null ? new ArrayList<>() : ConvertHelper.mapTo(timeZone,
 							(d) -> new BreakTimeSheet(new BreakFrameNo(d.getTimeSheetNo()),
@@ -101,7 +101,7 @@ public class BreakTimeDailyDto implements ConvertibleAttendanceItem {
 									createWorkStamp(d.getEnd()),
 									// TODO: calculate break time
 									new AttendanceTime(d.getBreakTime()))),
-					ymd);
+					date);
 	}
 
 	private WorkStamp createWorkStamp(TimeStampDto d) {
