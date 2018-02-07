@@ -762,7 +762,7 @@ public class DailyPerformanceCorrectionProcessor {
 				screenDto.addErrorToResponseData(lstError, lstErrorSetting);
 			}
 		}
-		return lstError.stream().collect(Collectors.toMap(e -> e.getEmployeeId(), e -> ""));
+		return lstError.stream().collect(Collectors.toMap(e -> e.getEmployeeId(), e -> "", (x, y) -> x));
 	}
 
 	private List<DailyPerformanceEmployeeDto> extractEmployeeData(Integer initScreen, String sId,
