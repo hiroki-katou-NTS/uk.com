@@ -862,9 +862,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         destroyGrid() {
             $("#dpGrid").ntsGrid("destroy");
-//            $("#dpGrid").remove();
-//            $(".nts-grid-sheet-buttons").remove();
-//            $('<table id="dpGrid"></table>').appendTo('#gid');
+            $("#dpGrid").remove();
+            $(".nts-grid-sheet-buttons").remove();
+            $('<table id="dpGrid"></table>').appendTo('#gid');
         }
         setColorWeekend() {
             var self = this;
@@ -1215,7 +1215,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 preventEditInError: false,
                 columns: self.headersGrid(),
                 hidePrimaryKey: true,
-                recordKeys: self.createKeyLoad(),
+               // recordKeys: self.createKeyLoad(),
                 features: [
                     { name: 'Paging', pageSize: 31, currentPageIndex: 0 },
                     { name: 'ColumnFixing', fixingDirection: 'left', showFixButtons: false, columnSettings: self.fixColGrid() },
@@ -1565,6 +1565,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.available7(self.checkAvailable(data, 7));
             this.available23(self.checkAvailable(data, 23));
             this.available25(self.checkAvailable(data, 25));
+            if(self.checkAvailable(data, 25)){
+                $("#btn-signAll").css("visibility", "visible"); 
+            }else{
+                $("#btn-signAll").css("visibility", "hidden");
+            }
             this.available17(self.checkAvailable(data, 17));
             this.available18(self.checkAvailable(data, 18));
             this.available19(self.checkAvailable(data, 19));
