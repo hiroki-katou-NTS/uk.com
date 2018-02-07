@@ -81,11 +81,11 @@ public class WorkInformationOfDailyDto implements ConvertibleAttendanceItem {
 	@Override
 	public WorkInfoOfDailyPerformance toDomain() {
 		return new WorkInfoOfDailyPerformance(getEmployeeId(), getWorkInfo(actualWorkInfo),
-				getWorkInfo(planWorkInfo),
-				ConvertHelper.getEnum(calculationState, CalculationState.class),
-				ConvertHelper.getEnum(goStraightAtr, NotUseAttribute.class),
-				ConvertHelper.getEnum(backStraightAtr, NotUseAttribute.class), date,
-				this.getScheduleTimeZone() == null ? new ArrayList<>() :
+					getWorkInfo(planWorkInfo),
+					ConvertHelper.getEnum(calculationState, CalculationState.class),
+					ConvertHelper.getEnum(goStraightAtr, NotUseAttribute.class),
+					ConvertHelper.getEnum(backStraightAtr, NotUseAttribute.class), date,
+					this.getScheduleTimeZone() == null ? new ArrayList<>() :
 						ConvertHelper.mapTo(this.getScheduleTimeZone(), (c) -> 
 							new ScheduleTimeSheet(c.getWorkNo(), c.getWorking() == null ?  0 : c.getWorking(), c.getLeave() == null ? 0: c.getLeave())));
 	}

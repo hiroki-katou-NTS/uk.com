@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -93,14 +94,14 @@ public class BreakTimeDailyDto implements ConvertibleAttendanceItem {
 	@Override
 	public BreakTimeOfDailyPerformance toDomain() {
 		return new BreakTimeOfDailyPerformance(employeeId,
-				EnumAdaptor.valueOf(restTimeType, BreakType.class),
-				ConvertHelper.mapTo(timeZone,
-						(d) -> new BreakTimeSheet(new BreakFrameNo(d.getTimeSheetNo()),
-								createWorkStamp(d.getStart()),
-								createWorkStamp(d.getEnd()),
-								// TODO: calculate break time
-								new AttendanceTime(d.getBreakTime()))),
-				ymd);
+					EnumAdaptor.valueOf(restTimeType, BreakType.class),
+					timeZone == null ? new ArrayList<>() : ConvertHelper.mapTo(timeZone,
+							(d) -> new BreakTimeSheet(new BreakFrameNo(d.getTimeSheetNo()),
+									createWorkStamp(d.getStart()),
+									createWorkStamp(d.getEnd()),
+									// TODO: calculate break time
+									new AttendanceTime(d.getBreakTime()))),
+					ymd);
 	}
 
 	private WorkStamp createWorkStamp(TimeStampDto d) {
