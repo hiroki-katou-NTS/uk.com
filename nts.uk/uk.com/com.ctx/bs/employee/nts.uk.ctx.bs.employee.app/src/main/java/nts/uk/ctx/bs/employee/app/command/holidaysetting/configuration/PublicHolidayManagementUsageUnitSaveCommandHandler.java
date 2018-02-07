@@ -44,7 +44,12 @@ public class PublicHolidayManagementUsageUnitSaveCommandHandler extends CommandH
 			domain.setIsManageWkpPublicHd(command.getIsManageWkpPublicHd());
 			
 			this.repository.update(domain);
+		} else {
+			PublicHolidayManagementUsageUnit domain = new PublicHolidayManagementUsageUnit(
+																	command.getIsManageEmployeePublicHd(), 
+																	command.getIsManageWkpPublicHd(), 
+																	command.getIsManageEmpPublicHd());
+			this.repository.add(domain); 
 		}
 	}
-
 }
