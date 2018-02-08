@@ -21,25 +21,35 @@ public class Agent extends AggregateRoot {
 	private String employeeId;
 	
 	private UUID requestId;
-
+	
+	/**開始日*/
 	private GeneralDate startDate;
 
+	/**終了日*/
 	private GeneralDate endDate;
 
+	/**就業承認: 社員ID*/
 	private String agentSid1;
 
+	/**就業承認: 代行承認種類1*/
 	private AgentAppType agentAppType1;
 
+	/**人事承認: 社員ID*/
 	private String agentSid2;
 
+	/**人事承認: 代行承認種類2*/
 	private AgentAppType agentAppType2;
 
+	/**給与承認: 社員ID*/
 	private String agentSid3;
 
+	/**給与承認: 代行承認種類3*/
 	private AgentAppType agentAppType3;
 
+	/**経理承認: 社員ID*/
 	private String agentSid4;
 
+	/**経理承認: 代行承認種類4*/
 	private AgentAppType agentAppType4;
 
 	public Agent(String companyId, String employeeId, UUID requestId, GeneralDate startDate, GeneralDate endDate,
