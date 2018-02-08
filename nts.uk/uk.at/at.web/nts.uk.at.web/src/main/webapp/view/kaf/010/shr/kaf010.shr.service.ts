@@ -1,7 +1,7 @@
 module nts.uk.at.view.kaf010.shr.service {
     var paths: any = {
         getHolidayWorkByUI: "at/request/application/holidaywork/getHolidayWorkByUI",
-        findByChangeAppDate: "at/request/application/overtime/findByChangeAppDate",
+        findByChangeAppDate: "at/request/application/holidaywork/findChangeAppDate",
         checkConvertPrePost: "at/request/application/overtime/checkConvertPrePost",
         getCaculationResult: "at/request/application/overtime/getCaculationResult",
         createOvertime: "at/request/application/overtime/create",

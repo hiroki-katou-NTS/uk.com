@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.AppListExtractCondition;
-import nts.uk.ctx.at.request.dom.application.applicationlist.service.ApplicationListInitialRepository;
+import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListInitialRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
@@ -25,7 +25,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class ApplicationListFinder {
 
 	@Inject
-	private ApplicationListInitialRepository repoAppListInit;
+	private AppListInitialRepository repoAppListInit;
 	@Inject
 	private RequestSettingRepository repoRequestSet;
 	

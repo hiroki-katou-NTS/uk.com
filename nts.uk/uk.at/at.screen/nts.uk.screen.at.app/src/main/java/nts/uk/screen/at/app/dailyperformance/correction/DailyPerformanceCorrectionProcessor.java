@@ -443,7 +443,7 @@ public class DailyPerformanceCorrectionProcessor {
 		CountDownLatch latch = new CountDownLatch(1);
 
 		Future<List<DailyModifyResult>> sResults = service.submit(
-				new GetDataDaily( listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
+				new GetDataDaily( listEmployeeId.size() > 31 ? listEmployeeId.subList(0,30) : listEmployeeId , dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
 		DPControlDisplayItem dPControlDisplayItem = this.getItemIdNames(disItem);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 
@@ -762,7 +762,7 @@ public class DailyPerformanceCorrectionProcessor {
 				screenDto.addErrorToResponseData(lstError, lstErrorSetting);
 			}
 		}
-		return lstError.stream().collect(Collectors.toMap(e -> e.getEmployeeId(), e -> ""));
+		return lstError.stream().collect(Collectors.toMap(e -> e.getEmployeeId(), e -> "", (x, y) -> x));
 	}
 
 	private List<DailyPerformanceEmployeeDto> extractEmployeeData(Integer initScreen, String sId,

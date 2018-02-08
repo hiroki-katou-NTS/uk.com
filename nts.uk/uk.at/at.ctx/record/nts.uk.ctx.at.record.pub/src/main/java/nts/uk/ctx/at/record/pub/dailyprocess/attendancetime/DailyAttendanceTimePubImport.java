@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.pub.dailyprocess.attendancetime;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  *
  */
 @Getter
+@Setter
 public class DailyAttendanceTimePubImport {
 	//社員ID
 	String employeeid;

@@ -112,6 +112,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         flag: boolean = true;
         isClickChangeDisplayMode: boolean = false;
         stopRequest: KnockoutObservable<boolean> = ko.observable(true);
+        detailHeaderDecoInit: any = [];
 
         constructor() {
             let self = this;
@@ -168,16 +169,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $('#oViewModel').show();
                     $('#qViewModel').hide();
                     $("#extable").exTable("updateMode", "none");
-//                    $("#extable").exTable("viewMode", "shortName", { y: 175 });
-                    $("#extable").exTable("viewMode", "shortName", { y: 230 });
+                    //                    $("#extable").exTable("viewMode", "shortName", { y: 175 });
+                    $("#extable").exTable("viewMode", "shortName", { y: 232 });
                     $("#combo-box1").focus();
                     // get data to stickData
                     $("#extable").exTable("stickData", __viewContext.viewModel.viewO.nameWorkTimeType());
                 } else if (newValue == 2) {
                     $('#contain-view').hide();
                     $("#extable").exTable("updateMode", "edit");
-//                    $("#extable").exTable("viewMode", "time", { y: 115 });
-                    $("#extable").exTable("viewMode", "time", { y: 170 });
+                    //                    $("#extable").exTable("viewMode", "time", { y: 115 });
+                    $("#extable").exTable("viewMode", "time", { y: 172 });
                 } else {
                     $('#contain-view').show();
                     $('#contain-view').addClass('h-90');
@@ -252,6 +253,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     nts.uk.ui.block.clear();
                 }
             });
+
+            /**
+             * close popup
+             */
+            $(".close-popup").click(function() {
+                $('#popup-area8').css('display', 'none');
+            });
         }
 
         /**
@@ -278,6 +286,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.listStateWorkTypeCode(__viewContext.viewModel.viewO.checkStateWorkTypeCode);
                 self.listCheckNeededOfWorkTime(__viewContext.viewModel.viewO.checkNeededOfWorkTimeSetting);
                 self.dataWorkEmpCombine(__viewContext.viewModel.viewO.workEmpCombines);
+                //                self.setColorForCellHeaderDetailAndHoz(self.detailHeaderDecoInit);
 
                 self.initCCG001();
                 self.initExTable();
@@ -599,7 +608,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     areaResize: true,
                     bodyHeightMode: "dynamic",
                     windowXOccupation: 25,
-//                    windowYOccupation: 175,
+                    //                    windowYOccupation: 175,
                     windowYOccupation: 230,
                     updateMode: "none",
                     pasteOverWrite: true,
@@ -623,13 +632,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                  */
                 $("#popup-set").click(function() {
                     $("#extable").exTable("popupValue", self.popupVal());
-                });
-
-                /**
-                 * close popup
-                 */
-                $(".close-popup").click(function() {
-                    $('#popup-area8').css('display', 'none');
                 });
             });
         }
@@ -1653,6 +1655,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         pasteData(): void {
             let self = this;
+            //Paste data into cell (set-sticker-single)
+            $("#extable").exTable("stickData", __viewContext.viewModel.viewO.nameWorkTimeType());
+
             $("#extable").exTable("updateMode", "stick");
             if (self.selectedModeDisplay() == 1) {
                 $("#extable").exTable("stickMode", "single");

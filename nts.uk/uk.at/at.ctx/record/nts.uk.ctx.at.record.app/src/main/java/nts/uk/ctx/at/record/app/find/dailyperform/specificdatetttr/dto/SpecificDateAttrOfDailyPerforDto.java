@@ -48,11 +48,11 @@ public class SpecificDateAttrOfDailyPerforDto implements ConvertibleAttendanceIt
 	}
 
 	@Override
-	public SpecificDateAttrOfDailyPerfor toDomain() {
-		return new SpecificDateAttrOfDailyPerfor(employeeId,
-					sepecificDateAttrs == null ? new ArrayList<>() : ConvertHelper.mapTo(sepecificDateAttrs,
-							(c) -> new SpecificDateAttrSheet(new SpecificDateItemNo(c.getItemNo()),
-									ConvertHelper.getEnum(c.getSpecificDate(), SpecificDateAttr.class))),
-					ymd);
+	public SpecificDateAttrOfDailyPerfor toDomain(String emp, GeneralDate date) {
+		return new SpecificDateAttrOfDailyPerfor(emp,
+				sepecificDateAttrs == null ? new ArrayList<>() : ConvertHelper.mapTo(sepecificDateAttrs,
+						(c) -> new SpecificDateAttrSheet(new SpecificDateItemNo(c.getItemNo()),
+								ConvertHelper.getEnum(c.getSpecificDate(), SpecificDateAttr.class))),
+						date);
 	}
 }

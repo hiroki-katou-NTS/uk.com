@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.record.pubimp.dailyprocess.attendancetime;
 
+import java.util.HashMap;
+
+import lombok.val;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePub;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePubExport;
@@ -16,14 +19,27 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 	@Override
 	public DailyAttendanceTimePubExport calcDailyAttendance(DailyAttendanceTimePubImport imp) {
 
-		return new DailyAttendanceTimePubExport(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-												new OverTimeFrameNo(0),
-												TimeWithCalculation.sameTime(new AttendanceTime(0)),
-												new HolidayWorkFrameNo(0),
-												TimeWithCalculation.sameTime(new AttendanceTime(0)),
-												0,
-												TimeWithCalculation.sameTime(new AttendanceTime(0)),
-												0,
+		val overTimeFrames = new HashMap<OverTimeFrameNo,TimeWithCalculation>();
+		val holidayWorkFrames = new HashMap<HolidayWorkFrameNo,TimeWithCalculation>();
+		val bonusPays = new HashMap<Integer,TimeWithCalculation>();
+		val specBonusPays = new HashMap<Integer,TimeWithCalculation>();
+		for(int loopNumber = 1 ; loopNumber <=10 ; loopNumber++ ) {
+			//残業
+			overTimeFrames.put(new OverTimeFrameNo(loopNumber), TimeWithCalculation.sameTime(new AttendanceTime(0)));
+			//休出
+			holidayWorkFrames.put(new HolidayWorkFrameNo(loopNumber), TimeWithCalculation.sameTime(new AttendanceTime(0)));
+			//加給
+			bonusPays.put(loopNumber, TimeWithCalculation.sameTime(new AttendanceTime(0)));
+			//特定日加給
+			specBonusPays.put(loopNumber, TimeWithCalculation.sameTime(new AttendanceTime(0)));
+			
+		}
+		
+		
+		return new DailyAttendanceTimePubExport(overTimeFrames,
+												holidayWorkFrames,
+												bonusPays,
+												specBonusPays,
 												TimeWithCalculation.sameTime(new AttendanceTime(0)),
 												TimeWithCalculation.sameTime(new AttendanceTime(0))
 											);

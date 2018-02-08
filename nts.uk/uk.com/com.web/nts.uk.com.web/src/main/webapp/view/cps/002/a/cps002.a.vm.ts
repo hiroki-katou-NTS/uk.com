@@ -706,16 +706,11 @@ module cps002.a.vm {
                 subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
 
                     let imageResult = getShared("imageId");
-
-
-
                     if (imageResult) {
                         self.currentEmployee().avatarId(imageResult.cropImgId)
                         self.defaultImgId(imageResult.defaultImgId);
-
-
-
-                    });
+                    }
+                });
 
             }
         }

@@ -79,8 +79,8 @@ public class WorkInformationOfDailyDto implements ConvertibleAttendanceItem {
 	}
 
 	@Override
-	public WorkInfoOfDailyPerformance toDomain() {
-		return new WorkInfoOfDailyPerformance(getEmployeeId(), getWorkInfo(actualWorkInfo),
+	public WorkInfoOfDailyPerformance toDomain(String employeeId, GeneralDate date) {
+		return new WorkInfoOfDailyPerformance(employeeId, getWorkInfo(actualWorkInfo),
 					getWorkInfo(planWorkInfo),
 					ConvertHelper.getEnum(calculationState, CalculationState.class),
 					ConvertHelper.getEnum(goStraightAtr, NotUseAttribute.class),

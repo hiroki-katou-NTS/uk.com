@@ -79,8 +79,7 @@ public class ActualWorkTimeDailyPerformDto {
 	}
 
 	private static List<PremiumTimeDto> getPremiumTime(PremiumTimeOfDailyPerformance domain) {
-		return domain == null || domain.getPremiumTimes() == null ? new ArrayList<>()
-				: ConvertHelper.mapTo(domain.getPremiumTimes(),
+		return domain == null || domain.getPremiumTimes() == null ? new ArrayList<>() : ConvertHelper.mapTo(domain.getPremiumTimes(),
 						c -> new PremiumTimeDto(
 								c.getPremitumTime() == null ? null : c.getPremitumTime().valueAsMinutes(),
 								c.getPremiumTimeNo()));
@@ -89,8 +88,8 @@ public class ActualWorkTimeDailyPerformDto {
 	public ActualWorkingTimeOfDaily toDomain() {
 		return ActualWorkingTimeOfDaily.of(
 					totalWorkingTime == null ? null : totalWorkingTime.toDomain(), 
-					constraintTime == null ? null : constraintTime.getLateNightConstraintTime(),
-					constraintTime == null ? null : constraintTime.getTotalConstraintTime(),
+					constraintTime == null ? 0 : constraintTime.getLateNightConstraintTime(),
+					constraintTime == null ? 0 : constraintTime.getTotalConstraintTime(),
 					constraintDifferenceTime == null ? 0 : constraintDifferenceTime, timeDifferenceWorkingHours,
 				new DivergenceTimeOfDaily(divergenceTime == null ? new ArrayList<>()
 						: ConvertHelper.mapTo(divergenceTime,

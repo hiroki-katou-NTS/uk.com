@@ -52,8 +52,9 @@ public class RequestSetting extends AggregateRoot {
 	public static RequestSetting createSimpleFromJavaType(String companyID, int scheReflectFlg, int priorityTimeReflectFlag, int attendentTimeReflectFlg, 
 			int advanceExcessMessDisAtr,int hwAdvanceDisAtr, int hwActualDisAtr, int actualExcessMessDisAtr,int otAdvanceDisAtr, 
 			int otActualDisAtr, int warningDateDisAtr, int appReasonDisAtr,
-			int appContentChangeFlg, int scheduleConfirmedAtr, int achievementConfirmedAtr){
-		return new RequestSetting(companyID, null,
+			int appContentChangeFlg, int scheduleConfirmedAtr, int achievementConfirmedAtr, ApplicationSetting applicationSetting){
+		return new RequestSetting(companyID, 
+				applicationSetting,
 				new AppReflectionSetting(scheReflectFlg == 1 ? true : false, EnumAdaptor.valueOf(priorityTimeReflectFlag, PriorityTimeReflectAtr.class),attendentTimeReflectFlg == 1 ? true : false),
 				new ApprovalListDisplaySetting(EnumAdaptor.valueOf(advanceExcessMessDisAtr, DisplayAtr.class),
 						EnumAdaptor.valueOf(hwAdvanceDisAtr, DisplayAtr.class),

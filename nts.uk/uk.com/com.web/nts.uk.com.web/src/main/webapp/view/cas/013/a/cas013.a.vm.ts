@@ -72,16 +72,20 @@ module nts.uk.com.view.cas013.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            if (!__viewContext.user) {
-                self.backToTopPage();
-                dfd.resolve();
-            } else {
-                // initial screen
-                new service.Service().getRoleTypes().done(function(data: Array<RollType>) {
-                    self.listRoleType(data);
-                    dfd.resolve();
-                });
-            }
+            
+            // initial screen
+            new service.Service().getRoleTypes().done(function(data: Array<RollType>) {
+                if(data){
+                    if(nts.uk.util.isNullOrUndefined(data)){
+                        self.backToTopPage();   
+                    }else{
+                        self.listRoleType(data);
+                    }
+                }else{
+                     nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                }
+                dfd.resolve(); 
+            });
             return dfd.promise();
         }
 
@@ -172,11 +176,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
         }
         openBModal(): void {
             var self = this;
-            let userIds = [];
-            for (let user of self.listRoleIndividual()) {
-                userIds.push(user.userId);                
-            }
-            nts.uk.ui.windows.setShared("userIds", userIds);
+            nts.uk.ui.windows.setShared("roleType", self.selectedRoleType());
             nts.uk.ui.windows.sub.modal("../b/index.xhtml").onClosed(() => {
                 let data = nts.uk.ui.windows.getShared("UserInfo");
                 if (data != null) {

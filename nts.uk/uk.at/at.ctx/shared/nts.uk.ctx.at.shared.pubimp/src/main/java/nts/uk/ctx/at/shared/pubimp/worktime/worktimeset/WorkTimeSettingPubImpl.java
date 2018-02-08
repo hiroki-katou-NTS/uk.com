@@ -38,4 +38,19 @@ public class WorkTimeSettingPubImpl implements WorkTimeSettingPub {
 		return opWorkTimeSetting.get().getWorkTimeDivision().isFlow();
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.pub.worktime.worktimeset.WorkTimeSettingPub#getWorkTimeSettingName(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public String getWorkTimeSettingName(String companyId, String workTimeCode) {
+		
+		// Get WorkTimeSetting
+		Optional<WorkTimeSetting> opWorkTimeSetting = this.workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		if (!opWorkTimeSetting.isPresent()) {
+			return null;
+		}
+		
+		return opWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v();
+	}
+
 }
