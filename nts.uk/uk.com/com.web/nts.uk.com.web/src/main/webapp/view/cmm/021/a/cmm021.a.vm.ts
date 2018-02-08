@@ -14,7 +14,7 @@ module nts.uk.com.view.cmm021.a {
         export class ScreenModel {
             baseDate: Date;
             inputDate: KnockoutObservable<Date>;
-            
+
             listUserDto: UserDto[];
             listUserDtoScreenAC: UserDto[];
             checked: KnockoutObservable<boolean>;
@@ -84,8 +84,6 @@ module nts.uk.com.view.cmm021.a {
 
             enable_otherAcc: KnockoutObservable<boolean>;
 
-            isSaveAction: boolean;   
-
             constructor() {
                 let _self = this;
                 _self.listUserDto = [];
@@ -95,7 +93,7 @@ module nts.uk.com.view.cmm021.a {
                 _self.currentCode = ko.observable();
                 _self.baseDate = moment(new Date()).toDate();
                 _self.inputDate = ko.observable(moment(new Date()).toDate());
-                
+
                 _self.inputDate.subscribe((newValue) => {
                     if (_self.validateInputDate(newValue) == false) {
                         return false;
@@ -103,7 +101,7 @@ module nts.uk.com.view.cmm021.a {
                         _self.baseDate = _self.inputDate();
                     }
                 });
-                
+
                 _self.useSet = ko.observableArray([
                     { code: '1', name: nts.uk.resource.getText("CMM021_11") },
                     { code: '0', name: nts.uk.resource.getText("CMM021_10") },
@@ -123,16 +121,12 @@ module nts.uk.com.view.cmm021.a {
                     //check if selected employee id empty
                     if (nts.uk.util.isNullOrEmpty(newValue)) {
                         _self.unSelectedUserId();
-                        //$('.nts-input').ntsError('clear');
                     } else {
-                        
                         _self.userId("");
                         if (newValue) {
                             _self.findUserDtoByEmployeeId(newValue);
-                            //$('.nts-input').ntsError('clear');
                         }
                     }
-                    //$('.nts-input').ntsError('clear');
                 });
 
                 _self.personName = ko.observable("");
@@ -231,7 +225,6 @@ module nts.uk.com.view.cmm021.a {
                 _self.userIdBeChoosen = ko.observable("");
                 _self.userId.subscribe((newValue) => {
                     $('.nts-input').ntsError('clear');
-
                     if (!newValue) {
                         return;
                     }
@@ -239,11 +232,23 @@ module nts.uk.com.view.cmm021.a {
                     _self.userIdBeChoosen(newValue);
 
                     if (_self.isScreenBSelected()) {
-                        _self.findListWindowAccByUserId(newValue);
-                        $('.nts-input').ntsError('clear');
+                        _self.findListWindowAccByUserId(newValue)
+                            .done(() => {
+                                if (_self.enable_WinAcc1() == true) {
+                                    $("#focus-hostName1").focus();
+                                    $('#focus-hostName1').ntsError('clear');
+
+                                }
+                            });
                     }
                     if (_self.isScreenCSelected()) {
-                        _self.findFirstOtherAcc(newValue);
+                        _self.findFirstOtherAcc(newValue)
+                            .done(() => {
+                                if (_self.enable_otherAcc() == true) {
+                                    $('#focus-CompanyCode').ntsError('clear');
+                                    $('#focus-CompanyCode').focus();
+                                }
+                            });
                     }
                 });
 
@@ -309,7 +314,7 @@ module nts.uk.com.view.cmm021.a {
                     { headerText: nts.uk.resource.getText('CMM021_17'), key: 'other', width: 60, formatter: lockIcon }
                 ]);
             }
-            
+
             // validate input date 
             private validateInputDate(inputDate: Date) {
                 let _self = this;
@@ -319,7 +324,6 @@ module nts.uk.com.view.cmm021.a {
                 }
                 return true
             }
-            
 
             /**
             * Start page
@@ -327,7 +331,7 @@ module nts.uk.com.view.cmm021.a {
             public startPage(): JQueryPromise<any> {
                 let _self = this;
                 let dfd = $.Deferred<any>();
-             
+
                 _self.onSelectScreenB();
                 dfd.resolve();
                 return dfd.promise();
@@ -372,11 +376,12 @@ module nts.uk.com.view.cmm021.a {
             }
 
             //find list Window Acc
-            private findListWindowAccByUserId(userId: string): JQueryPromise<any> {
+            private findListWindowAccByUserId(userId: string): JQueryPromise<WindowAccountFinderDto[]> {
                 let _self = this;
                 let dfd = $.Deferred<any>();
-                service.findListWindowAccByUserId(userId).done((data: any) => {
-                    // check data null or empty
+
+                nts.uk.ui.block.invisible();
+                service.findListWindowAccByUserId(userId).done((data: WindowAccountFinderDto[]) => {
                     if (data && data.length > 0) {
                         let winAcc1: any = data.filter(function(o: any) { return o.no == 1; })[0];
                         let winAcc2: any = data.filter(function(o: any) { return o.no == 2; })[0];
@@ -417,22 +422,16 @@ module nts.uk.com.view.cmm021.a {
                         _self.updateMode();
                     } else {
                         _self.newMode();
-                        _self.loadNewWindowAccount();            
-                    }                
-//                    $("#focus-hostName1").focus(function() {
-//                        
-//                        //$("#focus-hostName1").focus();
-//                    });
-                    
-//                    $("#focus-hostName1").blur(function() {
-//                        $('.nts-input').ntsError('clear');
-//                    }); 
-                    $("#focus-hostName1").focus();
+                        _self.loadNewWindowAccount();
+                    }
+
                     dfd.resolve();
-                }).fail((res: any) => {
-                    dfd.reject(res);
-                });
+                })
+                    .fail((res: any) => {
+                        dfd.reject(res);
+                    }).always(() => nts.uk.ui.block.clear());
                 return dfd.promise();
+
             }
 
             // find user dto                      
@@ -590,37 +589,39 @@ module nts.uk.com.view.cmm021.a {
                 nts.uk.ui.block.invisible();
                 service.saveWindowAccount(saveCommand)
                     .done((data: any) => {
-                        
+
                         if (_self.selectUse() == 0 && isCheck == true) {
                             _self.listUserInfos([]);
                             _self.listUserUnsetting = _self.listUserUnsetting.filter(item => item.userId != _self.userIdBeChoosen());
-                            _self.listUserInfos(_self.listUserUnsetting);                                                    
-                            _self.loadUserInfoAfterSaveWinAcc();                         
-                            _self.selectedEmployeeId("");
+                            _self.listUserInfos(_self.listUserUnsetting);
+                            _self.loadUserInfoAfterSaveWinAcc();
                             _self.selectedEmployeeId(_self.listUserUnsetting.filter(item => item.userId != _self.userIdBeChoosen())[0].employeeId);
-                            _self.loadNewWindowAccount();
                             _self.updateMode();
-                            $('#focus-hostName1').focus();
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => $('.nts-input').ntsError('clear'));
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                $('.nts-input').ntsError('clear');
+                                $('#focus-hostName1').focus();
+                            });
                             dfd.resolve();
                         } else if (_self.selectUse() == 0 && isCheck == false) {
                             _self.listUserInfos([]);
                             _self.listUserInfos(_self.listUserUnsetting);
                             _self.loadUserInfoAfterSaveWinAcc();
-                            _self.findListWindowAccByUserId("");
                             _self.findListWindowAccByUserId(_self.userIdBeChoosen());
-                            _self.loadNewWindowAccount();
                             _self.updateMode();
-                            $('#focus-hostName1').focus();
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => $('.nts-input').ntsError('clear'));
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                $('.nts-input').ntsError('clear');
+                                $('#focus-hostName1').focus();
+                            });
                             dfd.resolve();
 
                         } else {
                             _self.loadUserInfoAfterSaveAndDelWinAcc();
                             _self.reload();
                             _self.updateMode();
-                            $('#focus-hostName1').focus();
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => $('.nts-input').ntsError('clear'));
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                $('.nts-input').ntsError('clear');
+                                $('#focus-hostName1').focus();
+                            });
                             dfd.resolve();
                         }
                     }).fail(function(res: any) {
@@ -720,6 +721,7 @@ module nts.uk.com.view.cmm021.a {
                         if (!_.isEmpty(_self.listUserDto)) {
                             _self.selectedEmployeeId("");
                             _self.selectedEmployeeId(_self.listUserDto[0].employeeId);
+                            $("#focus-hostName1").focus();
                         }
                         _self.loadUserDto();
                         dfd.resolve();
@@ -800,7 +802,7 @@ module nts.uk.com.view.cmm021.a {
                     .done((data: UserDto[]) => {
                         _self.listUserDto = [];
                         _self.listUserDto = data;
-                       
+
                         dfd.resolve();
                     })
                     .fail((res: any) => {
@@ -1012,6 +1014,7 @@ module nts.uk.com.view.cmm021.a {
 
                 // select first item in list unsetting
                 if (!_.isEmpty(_self.listUserUnsetting)) {
+                    _self.selectedEmployeeId("");
                     _self.selectedEmployeeId(_self.listUserUnsetting[0].employeeId);
                     _self.newMode();
                 }
@@ -1042,30 +1045,25 @@ module nts.uk.com.view.cmm021.a {
                 if (_self.listUserUnsettingScreenAC.length == 0) {
                     _self.unselectedMode();
                 }
-                $('.nts-input').ntsError('clear');
             }
 
             //load user info  
             private loadUserInfo() {
                 let _self = this;
-                
-                $('.nts-input').ntsError('clear');
-                //$('.base-date-editor').focus();
+
                 if (nts.uk.util.isNullOrEmpty(_self.inputDate())) {
                     return false;
                 }
-                
-                if(_self.validateInputDate(_self.inputDate()) == false){
-                    _self.unLoadListWinAcc();
-                    _self.unLoadOtherAcc();
+
+                if (!_self.validateInputDate(_self.inputDate())) {
+                    $('.nts-input').ntsError('clear');
                     return false;
                 }
 
                 if ($('.base-date-editor').ntsError("hasError")) {
                     return false;
                 }
-                
-                
+
                 if (_self.isScreenBSelected()) {
                     _self.loadUserInfoScreenAB().done(() => {
                         if (_self.selectUse() == 1) {
@@ -1152,7 +1150,7 @@ module nts.uk.com.view.cmm021.a {
                 if (_self.isScreenBSelected()) {
                     _self.saveWindowAcc();
                 } else if (_self.isScreenCSelected()) {
-                    _self.SaveOtherAcc();
+                    _self.saveOtherAcc();
                 }
 
             }
@@ -1165,6 +1163,7 @@ module nts.uk.com.view.cmm021.a {
                     service.removeWindowAccount(_self.userIdBeChoosen()).done((data: any) => {
                         if (_self.selectUse() == 0) {
                             _self.listUserInfos(_self.listUserUnsetting);
+                            _self.findListWindowAccByUserId(_self.userIdBeChoosen());
                             _self.newMode();
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
                                 $('.nts-input').ntsError('clear');
@@ -1195,6 +1194,7 @@ module nts.uk.com.view.cmm021.a {
 
             public onSelectScreenB() {
                 let _self = this;
+
                 _self.listUserInfos([]);
                 _self.isScreenBSelected(true);
                 _self.isScreenCSelected(false);
@@ -1205,6 +1205,7 @@ module nts.uk.com.view.cmm021.a {
 
             public onSelectScreenC() {
                 let _self = this;
+
                 _self.isScreenBSelected(false);
                 _self.isScreenCSelected(true);
                 _self.selectUse(1);
@@ -1212,11 +1213,12 @@ module nts.uk.com.view.cmm021.a {
                 _self.loadUserInfoForOtherAcc();
             }
 
-            private findFirstOtherAcc(userId: string): JQueryPromise<any> {
+            private findFirstOtherAcc(userId: string): JQueryPromise<OtherSysAccFinderDto> {
                 let _self = this;
                 let dfd = $.Deferred<any>();
 
-                service.findOtherSysAccByUserId(userId).done((data: any) => {
+                nts.uk.ui.block.invisible();
+                service.findOtherSysAccByUserId(userId).done((data: OtherSysAccFinderDto) => {
                     // check data null
                     if (data.userId != null && data.useAtr == 1) {
                         _self.companyCode6(data.companyCode);
@@ -1234,17 +1236,14 @@ module nts.uk.com.view.cmm021.a {
                         _self.enable_otherAcc(true);
                         _self.newMode();
                     }
-                    $('#focus-CompanyCode').focus();
-                    $('.nts-input').ntsError('clear');
-
                     dfd.resolve();
                 }).fail((res: any) => {
                     dfd.reject(res);
-                });
+                }).always(() => nts.uk.ui.block.clear());
                 return dfd.promise();
             }
 
-            private SaveOtherAcc(): JQueryPromise<any> {
+            private saveOtherAcc(): JQueryPromise<any> {
                 let _self = this;
                 let otherAcc = new SaveOtherSysAccountCommand();
 
@@ -1276,31 +1275,33 @@ module nts.uk.com.view.cmm021.a {
                                 _self.selectedEmployeeId("");
                                 _self.selectedEmployeeId(_self.listUserUnsettingScreenAC.filter(item => item.userId != _self.userIdBeChoosen())[0].employeeId);
                                 _self.loadUserInfoAfterSaveOtherAcc();
-                                _self.findFirstOtherAcc("");
                                 _self.findFirstOtherAcc(_self.userIdBeChoosen());
-                                _self.loadNewOtherAcc();
                                 _self.updateMode();
-                                $('#focus-CompanyCode').focus();
-                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => $('.nts-input').ntsError('clear'));
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                    $('.nts-input').ntsError('clear');
+                                    $('#focus-CompanyCode').focus();
+                                });
                                 dfd.resolve();
                             } else if (_self.selectUse() == 0 && otherAcc.useAtr == 0) {
                                 _self.listUserInfos([]);
                                 _self.listUserInfos(_self.listUserUnsettingScreenAC);
                                 _self.loadUserInfoAfterSaveOtherAcc();
-                                _self.findFirstOtherAcc("");
                                 _self.findFirstOtherAcc(_self.userIdBeChoosen());
-                                _self.loadNewOtherAcc();
                                 _self.updateMode();
-                                $('#focus-CompanyCode').focus();
-                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => $('.nts-input').ntsError('clear'));
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                    $('.nts-input').ntsError('clear');
+                                    $('#focus-CompanyCode').focus();
+                                });
                                 dfd.resolve();
                             }
                             else {
                                 _self.loadUserInfoAfterSaveAndDelOtherAcc();
                                 _self.reload();
                                 _self.updateMode();
-                                $('#focus-CompanyCode').focus();
-                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => $('.nts-input').ntsError('clear'));
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                    $('.nts-input').ntsError('clear');
+                                    $('#focus-CompanyCode').focus();
+                                });
                                 dfd.resolve();
                             }
                         })
