@@ -21,3 +21,6 @@
 #list-box_grid_displayContainer {
 	height: 110px !important;
 }
+#list-box_grid_scrollContainer {
+	height: 110px !important;
+}
