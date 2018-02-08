@@ -12,8 +12,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.uk.query.app.employee.EmployeeSearchQueryDto;
 import nts.uk.query.app.employee.RegulationInfoEmployeeFinder;
-import nts.uk.query.model.employee.EmployeeSearchQuery;
 import nts.uk.query.model.employee.RegulationInfoEmployee;
 
 /**
@@ -34,8 +34,8 @@ public class RegulationInfoEmployeeWs {
 	 * @return the list
 	 */
 	@POST
-	@Path("findAll")
-	public List<RegulationInfoEmployee> findRegulationInfoEmployee(EmployeeSearchQuery query) {
+	@Path("find")
+	public List<RegulationInfoEmployee> findRegulationInfoEmployee(EmployeeSearchQueryDto query) {
 		return this.finder.find(query);
 	}
 }

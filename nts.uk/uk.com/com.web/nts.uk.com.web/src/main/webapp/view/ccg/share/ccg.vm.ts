@@ -10,6 +10,7 @@ module nts.uk.com.view.ccg.share.ccg {
     import GroupOption = service.model.GroupOption;
     import EmployeeSearchInDto = service.model.EmployeeSearchInDto;
     import EmployeeRangeSelection = service.model.EmployeeRangeSelection;
+    import EmployeeQueryParam = service.model.EmployeeQueryParam;
 
 
     export module viewmodel {
@@ -87,8 +88,8 @@ module nts.uk.com.view.ccg.share.ccg {
             selectedClosure: KnockoutObservable<number>;
             
             //QueryParam
-            quickSearchParam: QuickSearchParam;
-            advancedSearchParam: AdvancedSearchParam;
+            quickSearchParam: EmployeeQueryParam;
+            advancedSearchParam: EmployeeQueryParam;
             referenceRange: number;
             
             //params Status Of Employee
@@ -210,7 +211,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
             private initQuickSearchParam(): void {
                 let self = this;
-                self.quickSearchParam = <QuickSearchParam>{};
+                self.quickSearchParam = <EmployeeQueryParam>{};
                 self.quickSearchParam.filterByDepartment = false;
                 self.quickSearchParam.departmentCodes = [];
                 self.quickSearchParam.filterByWorkplace = false;
@@ -228,7 +229,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
             private initAdvancedSearchParam(): void {
                 let self = this;
-                self.advancedSearchParam = <QuickSearchParam>{};
+                self.advancedSearchParam = <EmployeeQueryParam>{};
                 self.advancedSearchParam.sortOrderNo = 1; // 並び順NO＝1
                 self.advancedSearchParam.nameType = 1; // ビジネスネーム（日本語）
             }
@@ -430,11 +431,23 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.advancedSearchParam.baseDate = baseDate;
             }
 
+            private setQuickSearchParam(options: GroupOption): void {
+                let param = this.advancedSearchParam;
+                param.filterByEmployment = options.showEmployment;
+                // not covered param.filterByDepartment = options.showDepartment;
+                param.filterByWorkplace = options.showWorkplace;
+                param.filterByClassification = options.showClassification;
+                param.filterByJobTitle = options.showJobTitle;
+            }
+
             /**
              * Set component properties
              */
             private setProperties(options: GroupOption): void {
                 let self = this;
+
+                // set search param
+                self.setQuickSearchParam(options);
 
                 /** Common properties */
                 self.isShowEmployeeList = options.isSelectAllEmployee;
@@ -541,6 +554,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             private initCcgEvent(): void {
                 let self = this;
+                $('#component-ccg001').parent('#component-ccg001').on('hover', e => {
+                    console.log('hovered');
+                });
                 $(window).on('click', function(e) {
                     // Check is click to inside component.
                     if (e.target.id == "component-ccg001" || $(e.target).parents("#component-ccg001")[0]) {
@@ -647,13 +663,14 @@ module nts.uk.com.view.ccg.share.ccg {
                     return;
                 }
 
-                const acquiredDate = self.acquireBaseDate();
-                self.getFuturePermit().done(permit => {
-                    if (permit) {
-                        self.setSearchParamBaseDate(acquiredDate);
-                    } else if (self.isValidDate(acquiredDate)) {
-                        self.setSearchParamBaseDate(acquiredDate);
-                    }
+                self.acquireBaseDate().done(acquiredDate => {
+                    self.getFuturePermit().done(permit => {
+                        if (permit) {
+                            self.setSearchParamBaseDate(acquiredDate);
+                        } else if (self.isValidDate(acquiredDate)) {
+                            self.setSearchParamBaseDate(acquiredDate);
+                        }
+                    });
                 });
 
                 nts.uk.ui.block.invisible(); // block ui
@@ -673,9 +690,26 @@ module nts.uk.com.view.ccg.share.ccg {
                             if (self.isShowEmployeeList) {
                                 $('#employeeinfo').ntsListComponent(self.employeeinfo);
                             }
+                            self.setAdvancedFilterCondition();
                             nts.uk.ui.block.clear();
 
                         });
+                }
+            }
+
+            private setAdvancedFilterCondition(): void {
+                let self = this;
+                if (self.showEmployment) {
+                    self.advancedSearchParam.employmentCodes = self.selectedCodeEmployment();
+                }
+                if (self.showClassification) {
+                    self.advancedSearchParam.classificationCodes = self.selectedCodeClassification();
+                }
+                if (self.showJobTitle) {
+                    self.advancedSearchParam.jobTitleCodes = self.selectedCodeJobtitle();
+                }
+                if (self.showWorkplace) {
+                    self.advancedSearchParam.workplaceCodes = self.selectedCodeWorkplace();
                 }
             }
 
@@ -828,6 +862,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 const mock = <EmployeeRangeSelection>{};
                 mock.userId = __viewContext.user.employeeId;
                 mock.companyId = __viewContext.user.companyId;
+
+                // test
+                service.findRegulationInfoEmployee(self.advancedSearchParam);
 
                 nts.uk.ui.block.invisible(); // block ui
                 service.saveEmployeeRangeSelection(mock).done(() => {
@@ -1091,40 +1128,6 @@ module nts.uk.com.view.ccg.share.ccg {
             static ONLY_MYSELF = 3;
         }
 
-        interface BaseQueryParam {
-            baseDate: any;
-            referenceRange: number;
-            filterByEmployment: boolean;
-            employmentCodes: Array<string>;
-            filterByDepartment: boolean;
-            departmentCodes: Array<number>;
-            filterByWorkplace: boolean;
-            workplaceCodes: Array<string>;
-            filterByClassification: boolean;
-            classificationCodes: Array<any>;
-            filterByJobTitle: boolean;
-            jobTitleCodes: Array<number>;
-
-            periodStart: any;
-            periodEnd: any;
-
-            includeIncumbents: boolean;
-            //TODO: Including workers on leave 
-            includeOccupancy: boolean;
-            includeRetirees: boolean;
-            retireStart: any;
-            retireEnd: any;
-
-            sortOrderNo: number;
-            nameType: number;
-        }
-
-        interface QuickSearchParam extends BaseQueryParam {
-        }
-
-        interface AdvancedSearchParam extends BaseQueryParam {
-        }
-        
         interface WorkType {
             abbreviationName: string;
             companyId: string;

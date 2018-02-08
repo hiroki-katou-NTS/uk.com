@@ -9,7 +9,6 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.query.model.employee.EmployeeSearchQuery;
 import nts.uk.query.model.employee.RegulationInfoEmployee;
 import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
 
@@ -29,7 +28,7 @@ public class RegulationInfoEmployeeFinder {
 	 * @param query the query
 	 * @return the list
 	 */
-	public List<RegulationInfoEmployee> find(EmployeeSearchQuery query) {
-		return this.repo.find(query);
+	public List<RegulationInfoEmployee> find(EmployeeSearchQueryDto queryDto) {
+		return this.repo.find(queryDto.toQueryModel());
 	}
 }

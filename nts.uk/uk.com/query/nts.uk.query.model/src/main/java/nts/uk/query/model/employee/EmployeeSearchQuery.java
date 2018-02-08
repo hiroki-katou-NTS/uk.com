@@ -7,12 +7,14 @@ package nts.uk.query.model.employee;
 import java.io.Serializable;
 import java.util.List;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDateTime;
 
 @Getter
 @Setter
+@Builder
 public class EmployeeSearchQuery implements Serializable {
 
 	/** The Constant serialVersionUID. */

@@ -23,6 +23,7 @@ module nts.uk.com.view.ccg.share.ccg {
             getPersonalRoleFuturePermit: "ctx/sys/auth/grant/roleindividual/get/futurerefpermit",
             getEmploymentRoleFuturePermit: "at/auth/workplace/employmentrole/get/futurerefpermit",
             getListWorkplaceId: "ctx/sys/auth/role/getListWorkplaceId",
+            findRegulationInfoEmployee: "query/employee/find",
         }
 
         /**
@@ -30,6 +31,10 @@ module nts.uk.com.view.ccg.share.ccg {
          */
         export function searchAllEmployee(baseDate: Date): JQueryPromise<Array<model.EmployeeSearchDto>> {
             return nts.uk.request.ajax('com', servicePath.searchAllEmployee, baseDate);
+        }
+
+        export function findRegulationInfoEmployee(query: model.EmployeeQueryParam): JQueryPromise<Array<model.EmployeeSearchDto>> {
+            return nts.uk.request.ajax('com', servicePath.findRegulationInfoEmployee, query);
         }
 
         export function getPersonalRoleFuturePermit(): JQueryPromise<boolean> {
@@ -230,6 +235,34 @@ module nts.uk.com.view.ccg.share.ccg {
             export interface SelectedInformation {
                 sortOrder: number; // 前回選択していた並び順
                 selectedClosureId: number; // 前回選択していた締め
+            }
+
+            export interface EmployeeQueryParam {
+                baseDate: any;
+                referenceRange: number;
+                filterByEmployment: boolean;
+                employmentCodes: Array<string>;
+                filterByDepartment: boolean;
+                departmentCodes: Array<number>;
+                filterByWorkplace: boolean;
+                workplaceCodes: Array<string>;
+                filterByClassification: boolean;
+                classificationCodes: Array<any>;
+                filterByJobTitle: boolean;
+                jobTitleCodes: Array<string>;
+
+                periodStart: any;
+                periodEnd: any;
+
+                includeIncumbents: boolean;
+                includeWorkersOnLeave: boolean;
+                includeOccupancy: boolean;
+                includeRetirees: boolean;
+                retireStart: any;
+                retireEnd: any;
+
+                sortOrderNo: number;
+                nameType: number;
             }
 
             export interface EmployeeRangeSelection {
