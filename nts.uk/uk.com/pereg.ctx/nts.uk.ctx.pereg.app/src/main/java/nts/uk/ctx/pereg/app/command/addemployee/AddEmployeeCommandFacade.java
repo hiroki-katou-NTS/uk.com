@@ -190,7 +190,7 @@ public class AddEmployeeCommandFacade {
 
 	private DataTypeValue getSaveDataType(DataTypeValue dataType, SettingItemDto item) {
 
-		if (dataType.equals(DataTypeValue.SELECTION)) {
+		if (dataType.equals(DataTypeValue.SELECTION)||dataType.equals(DataTypeValue.SELECTION_BUTTON)||dataType.equals(DataTypeValue.SELECTION_RADIO)) {
 			switch (item.getSelectionItemRefType()) {
 			case ENUM:
 				return DataTypeValue.NUMERIC;

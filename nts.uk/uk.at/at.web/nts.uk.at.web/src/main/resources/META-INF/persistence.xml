@@ -13,7 +13,7 @@
 
 		<jar-file>lib/nts.uk.ctx.pereg.infra-0.1.6.jar</jar-file>
 
-		<jar-file>lib/nts.uk.ctx.workflow.infra-0.12.3.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.workflow.infra-0.12.4.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.sys.env.infra-0.2.2.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.sys.auth.infra-0.3.7.jar</jar-file> 
 		<jar-file>lib/nts.uk.ctx.sys.portal.infra-0.1.3.jar</jar-file>

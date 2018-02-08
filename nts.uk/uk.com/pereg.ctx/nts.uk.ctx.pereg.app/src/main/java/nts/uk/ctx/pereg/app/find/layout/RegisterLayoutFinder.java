@@ -11,7 +11,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
-import nts.uk.ctx.pereg.app.find.common.MappingFactory;
+import nts.uk.ctx.pereg.app.find.common.InitDefaultValue;
 import nts.uk.ctx.pereg.app.find.copysetting.item.CopySettingItemFinder;
 import nts.uk.ctx.pereg.app.find.copysetting.setting.EmpCopySettingFinder;
 import nts.uk.ctx.pereg.app.find.initsetting.item.InitValueSetItemFinder;
@@ -64,6 +64,9 @@ public class RegisterLayoutFinder {
 
 	@Inject
 	private ComboBoxRetrieveFactory cbbfact;
+	@Inject
+
+	private InitDefaultValue initDefaultValue;
 
 	// sonnlb end
 
@@ -89,7 +92,7 @@ public class RegisterLayoutFinder {
 		List<LayoutPersonInfoClsDto> itemCls = getItemCls(command, _layout);
 
 		if (itemCls.stream().filter(c -> c.getPersonInfoCategoryCD().equals("CS00020")).findFirst().isPresent()) {
-			MappingFactory.setDefaultValueRadio(itemCls);
+			initDefaultValue.setDefaultValueRadio(itemCls);
 		}
 		return NewLayoutDto.fromDomain(_layout, itemCls);
 

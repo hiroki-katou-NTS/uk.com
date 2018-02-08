@@ -29,8 +29,6 @@ public class StampRequestSettingCommand {
 	
 	public Integer supFrameDispNO;
 	
-	public Integer stampPlaceDisp;
-
 	public Integer stampAtr_Work_Disp;
 	
 	public Integer stampAtr_GoOut_Disp;
@@ -53,7 +51,7 @@ public class StampRequestSettingCommand {
 		StampRequestSetting stampRequest = StampRequestSetting.createFromJavaType(companyId, this.getTopComment(), 
 								this.getTopCommentFontColor(), this.getTopCommentFontWeight(), this.getBottomComment(), 
 								this.getBottomCommentFontColor(), this.getBottomCommentFontWeight(), this.getResultDisp(), 
-								this.getSupFrameDispNO(), this.getStampPlaceDisp(), this.getStampAtr_Work_Disp(), 
+								this.getSupFrameDispNO(), 0, this.getStampAtr_Work_Disp(), 
 								this.getStampAtr_GoOut_Disp(), this.getStampAtr_Care_Disp(), this.getStampAtr_Sup_Disp(),
 								this.getStampAtr_Child_Care_Disp(),
 								this.getStampGoOutAtr_Private_Disp(), this.getStampGoOutAtr_Public_Disp(), 

@@ -9,12 +9,6 @@ public class HdAppSetCommand {
 	/** 会社ID **/
 	public String companyId;
 	
-	/** 休暇申請の種類  **/
-	public int hdAppType;
-	
-	/** 未選択を表示する */
-	public int dispUnselec;
-	
 	/** 60H超休を利用する名 */
 	public int use60h;
 	

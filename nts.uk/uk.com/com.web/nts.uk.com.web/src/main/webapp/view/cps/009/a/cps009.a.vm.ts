@@ -79,7 +79,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 if (value) {
 
                     self.getItemList(self.initSettingId(), value);
- 
+
 
                 } else {
                     return;
@@ -89,9 +89,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
 
         }
-        
-        getTitleName(itemName: string){
-            return ko.computed(()=>{
+
+        getTitleName(itemName: string) {
+            return ko.computed(() => {
                 return itemName.length > 5 ? itemName : "";
             });
         }
@@ -143,17 +143,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.currentCategory().itemList.removeAll();
                     self.currentCategory().itemList(itemConvert);
                     self.lstItemFilter = itemConvert;
-                       
-//                    $.fn.hasScrollBar = function() {
-//                        return this.get(0).scrollHeight > this.height();
-//                    }
-//                    if($("#sub-right>table>tbody").hasScrollBar()){
-//                        $(".contents-header thead, #sub-right>table>tbody").css("width", "651px");
-//                        $("#COL_3").css("width", "257px !important");
-//                    }else{
-//                        $(".contents-header thead, #sub-right>table>tbody").css("width", "634px");
-//                        $("#COL_3").css("width", "240px !important");
-//                    }
                 } else {
                     self.currentCategory().itemList.removeAll();
                     self.currentCategory().itemList([]);
@@ -263,14 +252,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 if (itemSelected.isCancel) {
                     return;
                 } else {
+                    let itemLst: Array<any> = _.map(ko.toJS(self.currentCategory().itemList()), function(obj) {
+                        return obj.perInfoItemDefId;
+                    });
                     if (itemSelected.lstItem.length > 0) {
                         _.each(itemSelected.lstItem, function(item) {
-                            // đoạn này kiểm tra xem những item được chọn trong màn B được thiết lập
-                            // sau đó thì đi tìm kiếm index của item đó nằm trong list item hiện tại của màn A 
-                            // để set lại selected cho combox của cột 2 của item
-                            let i: number = _.indexOf(_.map(ko.toJS(self.currentCategory().itemList()), function(obj) {
-                                return obj.perInfoItemDefId;
-                            }), item);
+                            let i: number = _.indexOf(itemLst , item);
                             if (i > -1) {
                                 self.currentCategory().itemList()[i].selectedRuleCode(Number(itemSelected.refMethodType));
                             }
@@ -805,7 +792,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.itemType = ko.observable(params.itemType || undefined);
             self.dataType = ko.observable(params.dataType || undefined);
-            
+
             if (params.dataType === 3) {
                 if (params.dateType === 1) {
                     self.dateValue = ko.observable(params.dateValue || undefined);
@@ -943,8 +930,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
 
         }
-        getWidthText(str: string) : number{
-            let div = $('<span>').text(str).appendTo('body'), width = div.width(); div.remove(); 
+        getWidthText(str: string): number {
+            let div = $('<span>').text(str).appendTo('body'), width = div.width(); div.remove();
             return width;
         }
     }

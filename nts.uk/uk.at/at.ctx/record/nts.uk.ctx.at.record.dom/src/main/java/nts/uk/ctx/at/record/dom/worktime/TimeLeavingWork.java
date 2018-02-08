@@ -10,6 +10,7 @@ import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.worktime.enums.TimeLeavingType;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 
 /**
  * 
@@ -56,6 +57,14 @@ public class TimeLeavingWork extends DomainObject{
 								  ,leaveStamp.get().getStamp().get().getTimeWithDay());
 	}
 
+	/**
+	 * 出勤時刻と退勤時刻から時間帯クラス作成
+	 * @return 時間帯
+	 */
+	public TimeZone getTimeZone() {
+		return new TimeZone(attendanceStamp.get().getStamp().get().getTimeWithDay()
+							,leaveStamp.get().getStamp().get().getTimeWithDay());
+	}
 	
 	/**
 	 * ジャスト遅刻・早退の設定を見て時刻を調整する

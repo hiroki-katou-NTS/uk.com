@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.pub.scheduletime;
+package nts.uk.ctx.at.record.pub.dailyprocess.scheduletime;
 
 /**
  * Publisher
