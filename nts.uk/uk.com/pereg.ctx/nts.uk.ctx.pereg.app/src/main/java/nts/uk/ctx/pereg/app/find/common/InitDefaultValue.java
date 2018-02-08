@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.dom.common.WorkTimeSettingRepo;
+import nts.uk.ctx.pereg.dom.common.WorkTypeRepo;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -16,6 +17,9 @@ public class InitDefaultValue {
 	
 	@Inject
 	private WorkTimeSettingRepo wtsRepo;
+	
+	@Inject 
+	private WorkTypeRepo wtRepo;
 	
 	public void setDefaultValueRadio(List<LayoutPersonInfoClsDto> classItemList) {
 		List<String> firstReqLstItems = new ArrayList<String>();
@@ -77,7 +81,7 @@ public class InitDefaultValue {
 	}
 	//request list request 251
 	private String getFirstValueText(String itemValue) {
-		return "First button";
+		return wtRepo.acquireWorkTypeName(itemValue);
 	}
 	//request list request 252
 	private String getSecValueText(String itemValue, String companyId) {
