@@ -830,7 +830,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.selectedRuleCode = ko.observable(params.refMethodType || 1);
 
-            if (params.dataType === 6) {
+            if (params.dataType === 6 || params.dataType === 7 || params.dataType === 8) {
                 self.selectionItemId = params.selectionItemId || undefined;
 
                 self.selectionItemRefType = params.selectionItemRefType || undefined;
@@ -956,6 +956,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         constructor(params: number, params2: INumbericItem) {
             let self = this;
             if (params === 2) {
+                
                 this.numberIntegerPart = params2.numberIntegerPart;
                 this.numberDecimalPart = params2.numberDecimalPart;
             }
