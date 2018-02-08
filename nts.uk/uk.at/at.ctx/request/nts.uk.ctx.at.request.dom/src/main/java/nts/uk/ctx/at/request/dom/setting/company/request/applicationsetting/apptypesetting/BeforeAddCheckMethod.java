@@ -15,12 +15,12 @@ public enum BeforeAddCheckMethod {
 	/**
 	 * 日数でチェック
 	 */
-	CHECK_IN_DAY(6, "日数でチェック"),
+	CHECK_IN_DAY(0, "日数でチェック"),
 	
 	/**
 	 * 時刻でチェック
 	 */
-	CHECK_IN_TIME(7, "時刻でチェック");
+	CHECK_IN_TIME(1, "時刻でチェック");
 
 	public final Integer value;
 	

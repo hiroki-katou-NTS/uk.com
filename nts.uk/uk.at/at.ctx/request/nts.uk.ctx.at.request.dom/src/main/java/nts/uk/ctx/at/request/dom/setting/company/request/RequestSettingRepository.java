@@ -14,5 +14,9 @@ public interface RequestSettingRepository {
 	 * @return
 	 */
 	public Optional<RequestSetting> findByCompany(String companyID);
-	
+	/**
+	 * update before and after hand restriction
+	 * @param req
+	 */
+	public void update(RequestSetting req);
 }
