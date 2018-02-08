@@ -13,17 +13,24 @@ module nts.uk.at.view.kdl001.a {
             startTime: KnockoutObservable<number>;
             endTimeOption: KnockoutObservable<number>;
             endTime: KnockoutObservable<number>;
+            isEnableSwitchButton: KnockoutObservable<boolean> = ko.observable(false);
+            gridHeight: KnockoutObservable<number> = ko.observable(260);
             constructor() {
                 var self = this;
                 self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('KDL001_12'), prop: 'code', width: 70 },
-                    { headerText: nts.uk.resource.getText('KDL001_13'), prop: 'name', width: 150 },
-                    { headerText: nts.uk.resource.getText('KDL001_14'), prop: 'workTime1', width: 230 },
-                    { headerText: nts.uk.resource.getText('KDL001_15'), prop: 'workTime2', width: 230 },
-                    { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 120 },
+                    { headerText: nts.uk.resource.getText('KDL001_12'), prop: 'code', width: 50 },
+                    { headerText: nts.uk.resource.getText('KDL001_13'), prop: 'name', width: 130 },
+                    { headerText: nts.uk.resource.getText('KDL001_14'), prop: 'workTime1', width: 200 },
+                    //{ headerText: nts.uk.resource.getText('KDL001_15'), prop: 'workTime2', width: 200 }, //tam thoi comment theo yeu cau cua oohashi san
+                    { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 160 },
                     { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', template: '<span>${remark}</span>'}
                 ]);
                 self.multiSelectMode = nts.uk.ui.windows.getShared('kml001multiSelectMode');
+                 if(!self.multiSelectMode) {
+                    self.gridHeight(260);    
+                 }else{
+                     self.gridHeight(255);
+                 }
                 self.selectAbleCodeList = ko.observableArray(<Array<string>>nts.uk.ui.windows.getShared('kml001selectAbleCodeList'));
                 self.selectedCodeList = ko.observableArray(<Array<string>>nts.uk.ui.windows.getShared('kml001selectedCodeList'));
                 self.selectedCode = ko.observable(null);
@@ -139,7 +146,7 @@ module nts.uk.at.view.kdl001.a {
             code: string;
             name: string;
             workTime1: string;
-            workTime2: string;
+            //workTime2: string;
             workAtr: string;
             remark: string;
         }
