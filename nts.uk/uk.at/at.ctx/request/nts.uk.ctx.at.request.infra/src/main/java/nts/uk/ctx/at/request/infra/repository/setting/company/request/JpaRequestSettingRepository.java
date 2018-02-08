@@ -13,6 +13,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.setting.company.request.AuthorizationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
@@ -26,8 +27,12 @@ import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.appt
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReason;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.PrePostInitialAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.ReceptionRestrictionSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.deadlinesetting.AppDeadlineSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.AppDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.AppReflectionSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.AppReflectAfterConfirm;
+import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstAppTypeDiscrete;
 import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstAppTypeDiscretePK;
 import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstApplicationSetting;
@@ -53,62 +58,67 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 	}
 	
 	private  RequestSetting toDomain(KrqstApplicationSetting entity){
-//		RequestSetting domain = RequestSetting.createSimpleFromJavaType(entity.krqstApplicationSettingPK.companyID,
-//				entity.scheReflectFlg,
-//				entity.priorityTimeReflectFlg,
-//				entity.attendentTimeReflectFlg,
-//				entity.advanceExcessMessDispAtr,
-//				entity.hwAdvanceDispAtr,
-//				entity.hwActualDispAtr,
-//				entity.actualExcessMessDispAtr,
-//				entity.otAdvanceDispAtr,
-//				entity.otActualDispAtr,
-//				entity.warningDateDispAtr,
-//				entity.appReasonDispAtr,
-//				entity.appContentChangeFlg,
-//				entity.scheduleConfirmedAtr,
-//				entity.achievementConfirmedAtr,
-//				new ApplicationSetting(
-//						EnumAdaptor.valueOf(entity.baseDateFlg, RecordDate.class), 
-//						new AppDisplaySetting(
-//								EnumAdaptor.valueOf(entity.displayPrePostFlg, DisplayAtr.class), 
-//								EnumAdaptor.valueOf(entity.displaySearchTimeFlg, UseAtr.class), 
-//								EnumAdaptor.valueOf(entity.manualSendMailAtr, DisabledSegment_New.class)), 
-//						entity.krqstAppTypeDiscretes.stream()
-//							.map(x -> new ReceptionRestrictionSetting(
-//									EnumAdaptor.valueOf(x.krqstAppTypeDiscretePK.appType, ApplicationType.class), 
-//									new BeforehandRestriction(
-//											EnumAdaptor.valueOf(x.retrictPreMethodFlg, BeforeAddCheckMethod.class), 
-//											x.retrictPreUseFlg == 1 ? true : false, 
-//											EnumAdaptor.valueOf(x.retrictPreDay, AppAcceptLimitDay.class), 
-//											new AttendanceClock(x.retrictPreTimeDay)
-//									), 
-//									new AfterhandRestriction(x.retrictPostAllowFutureFlg == 1 ? true : false)))
-//							.collect(Collectors.toList()), 
-//						entity.krqstAppTypeDiscretes.stream()
-//							.map(x -> new AppTypeSetting(
-//									EnumAdaptor.valueOf(x.prePostInitAtr, PrePostInitialAtr.class), 
-//									x.prePostCanChangeFlg == 1 ? true : false, 
-//									EnumAdaptor.valueOf(x.typicalReasonDisplayFlg, DisplayAtr.class), 
-//									x.sendMailWhenApprovalFlg == 1 ? true : false, 
-//									x.sendMailWhenRegisterlFlg == 1 ? true : false, 
-//									EnumAdaptor.valueOf(x.displayReasonFlg, DisplayAtr.class), 
-//									EnumAdaptor.valueOf(x.krqstAppTypeDiscretePK.appType, ApplicationType.class), 
-//									new DisplayReason(
-//											typeOfLeaveApp, 
-//											displayFixedReason, 
-//											displayAppReason))
-//							.collect(Collectors.toList()), 
-//						new AppLimitSetting(
-//								entity.appActLockFlg == 1? true : false, 
-//								entity.appEndWorkFlg == 1? true : false, 
-//								entity.appActConfirmFlg == 1? true : false, 
-//								entity.appOvertimeNightFlg == 1? true : false, 
-//								entity.appActMonthConfirmFlg == 1? true : false, 
-//								entity.requireAppReasonFlg == 1? true : false), 
-//						Collections.emptyList()
-//				));
-		return null;
+		return RequestSetting.toDomain(
+				entity.krqstApplicationSettingPK.companyID, 
+				ApplicationSetting.toDomain(
+						entity.baseDateFlg, 
+						AppDisplaySetting.toDomain(
+								entity.displayPrePostFlg, 
+								entity.displaySearchTimeFlg, 
+								entity.manualSendMailAtr), 
+						entity.krqstAppTypeDiscretes.stream()
+							.map(x -> ReceptionRestrictionSetting.toDomain(
+									x.krqstAppTypeDiscretePK.appType, 
+									BeforehandRestriction.toDomain(
+											x.retrictPreMethodFlg, 
+											x.retrictPreUseFlg, 
+											x.retrictPreDay, 
+											x.retrictPreTimeDay), 
+									AfterhandRestriction.toDomain(x.retrictPostAllowFutureFlg)))
+							.collect(Collectors.toList()), 
+						entity.krqstAppTypeDiscretes.stream()
+							.map(x -> AppTypeSetting.toDomain(
+									x.prePostInitAtr, 
+									x.prePostCanChangeFlg, 
+									x.typicalReasonDisplayFlg, 
+									x.sendMailWhenApprovalFlg, 
+									x.sendMailWhenRegisterlFlg, 
+									x.displayReasonFlg, 
+									x.krqstAppTypeDiscretePK.appType, 
+									null))
+							.collect(Collectors.toList()), 
+						AppLimitSetting.toDomain(
+								entity.appActLockFlg, 
+								entity.appEndWorkFlg, 
+								entity.appActConfirmFlg, 
+								entity.appOvertimeNightFlg, 
+								entity.appActMonthConfirmFlg, 
+								entity.requireAppReasonFlg), 
+						entity.krqstAppDeadlines.stream()
+							.map(x -> AppDeadlineSetting.createSimpleFromJavaType(
+									x.krqstAppDeadlinePK.companyId, 
+									x.krqstAppDeadlinePK.closureId, 
+									x.useAtr, 
+									x.deadline, 
+									x.deadlineCriteria))
+							.collect(Collectors.toList())
+				),  
+				AppReflectionSetting.toDomain(
+						entity.scheReflectFlg, 
+						entity.priorityTimeReflectFlg, 
+						entity.attendentTimeReflectFlg), 
+				ApprovalListDisplaySetting.toDomain(
+						entity.advanceExcessMessDispAtr, 
+						entity.hwAdvanceDispAtr, 
+						entity.hwActualDispAtr, 
+						entity.actualExcessMessDispAtr, 
+						entity.otAdvanceDispAtr, 
+						entity.otActualDispAtr, 
+						entity.warningDateDispAtr, 
+						entity.appReasonDispAtr), 
+				AuthorizationSetting.toDomain(
+						entity.appContentChangeFlg), 
+				null);
 	}
 	/**
 	 * update after and Before hand Restriction
@@ -117,7 +127,7 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 	@Override
 	public void update(RequestSetting req) {
 		String companyId = AppContexts.user().companyId();
-		List<ReceptionRestrictionSetting> appType = req.getApplicationSetting().getReceptionRestrictionSetting();
+		List<ReceptionRestrictionSetting> appType = req.getApplicationSetting().getListReceptionRestrictionSetting();
 		for(ReceptionRestrictionSetting item: appType){
 			KrqstAppTypeDiscrete oldEntity = this.queryProxy().find(new KrqstAppTypeDiscretePK(companyId, item.getAppType().value), KrqstAppTypeDiscrete.class).get();
 			//チェック方法 - retrictPreMethodFlg - RETRICT_PRE_METHOD_CHECK_FLG
