@@ -21,7 +21,7 @@ module nts.uk.com.view.ccg.share.ccg {
         export class ListGroupScreenModel {
 
             /** Common properties */
-            isSelectAllEmployee: boolean; // 検索タイプ
+            isShowEmployeeList: boolean; // 検索タイプ
             systemType: number; // システム区分
             isQuickSearchTab: boolean; // クイック検索
             isAdvancedSearchTab: boolean; // 詳細検索
@@ -437,7 +437,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
 
                 /** Common properties */
-                self.isSelectAllEmployee = options.isSelectAllEmployee;
+                self.isShowEmployeeList = options.isSelectAllEmployee;
                 self.systemType = 5; //TODO: mock data
                 self.isQuickSearchTab = options.isQuickSearchTab;
                 self.isAdvancedSearchTab = options.isAdvancedSearchTab;
@@ -499,7 +499,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 if (self.showClosure) {
-                    service.getClosuresByBaseDate('2018-06-02').done(data => { // mock base date
+                    service.getClosuresByBaseDate(self.baseDate().format('YYYY-MM-DD')).done(data => {
                         self.closureList(data);
                         self.getSelectedClosure().done(selected => {
                             self.selectedClosure(selected);
@@ -600,9 +600,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
             }
 
-            private isValidDate(): boolean {
+            private isValidDate(acquiredBaseDate: string): boolean {
                 let self = this;
-                if (self.isFutureDate(self.baseDate())) { //TODO: check input basedate hay basedate tinh duoc?
+                if (self.isFutureDate(moment.utc(acquiredBaseDate))) { //TODO: check input basedate hay basedate tinh duoc?
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_853" });
                     return false;
                 }
@@ -651,7 +651,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.getFuturePermit().done(permit => {
                     if (permit) {
                         self.setSearchParamBaseDate(acquiredDate);
-                    } else if (self.isValidDate()) {
+                    } else if (self.isValidDate(acquiredDate)) {
                         self.setSearchParamBaseDate(acquiredDate);
                     }
                 });
@@ -670,7 +670,7 @@ module nts.uk.com.view.ccg.share.ccg {
                             $('#classificationList').ntsListComponent(self.classifications);
                             $('#jobtitleList').ntsListComponent(self.jobtitles);
                             $('#workplaceList').ntsTreeComponent(self.workplaces);
-                            if (!self.isSelectAllEmployee) {
+                            if (self.isShowEmployeeList) {
                                 $('#employeeinfo').ntsListComponent(self.employeeinfo);
                             }
                             nts.uk.ui.block.clear();
@@ -759,18 +759,18 @@ module nts.uk.com.view.ccg.share.ccg {
             /**
              * Acquire base date
              */
-            public acquireBaseDate(): JQueryPromise<string> {
+            public acquireBaseDate(): JQueryPromise<string> { // format: YYYY-MM-DD
                 let dfd = $.Deferred<String>();
                 let self = this;
                 if (self.showBaseDate) {
-                    dfd.resolve(self.baseDate().toString());
+                    dfd.resolve(self.baseDate().format('YYYY-MM-DD'));
                 } else {
                     if (self.showPeriodYM) { // Period accuracy is YM 
                         service.calculatePeriod(1, 201802).done(date => { //TODO mock data
                             return dfd.resolve(date);
                         });
                     } else { // Period accuracy is YMD
-                        dfd.resolve(self.periodEndDate().toString());
+                        dfd.resolve(self.periodEndDate().format('YYYY-MM-DD'));
                     }
                 }
                 return dfd.promise();
@@ -833,7 +833,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 service.saveEmployeeRangeSelection(mock).done(() => {
                     service.searchAllEmployee(new Date()).done(data => {
                         nts.uk.ui.block.clear(); // clear block UI
-                        if (!self.isSelectAllEmployee) {
+                        if (self.isShowEmployeeList) {
                             self.employeeinfo.employeeInputList(self.toUnitModelList(data));
                         } else {
                             self.onSearchAllClicked(data);
@@ -953,7 +953,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         selectType: SelectType.SELECT_ALL,
                         selectedCode: self.selectedCodeJobtitle,
                         isDialog: true,
-                        baseDate: ko.observable(new Date()),
+                        baseDate: ko.observable(self.baseDate().toDate()),
                         maxRows: ConfigCCGKCP.MAX_ROWS_JOBTITLE
                     }
 
@@ -966,7 +966,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         selectType: SelectType.SELECT_BY_SELECTED_CODE,
                         isShowSelectButton: true,
                         selectedWorkplaceId: self.selectedCodeWorkplace,
-                        baseDate: ko.observable(new Date()),
+                        baseDate: ko.observable(self.baseDate().toDate()),
                         maxRows: ConfigCCGKCP.MAX_ROWS_WORKPLACE,
                         isDialog: true
                     }
