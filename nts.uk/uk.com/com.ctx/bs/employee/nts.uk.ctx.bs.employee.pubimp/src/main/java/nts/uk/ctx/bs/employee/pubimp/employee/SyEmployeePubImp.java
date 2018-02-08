@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pubimp.employee;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +29,13 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
+import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
@@ -68,6 +75,15 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	/** The aff com hist repo. */
 	@Inject
 	private AffCompanyHistRepository affComHistRepo;
+	
+	@Inject
+	private  AffWorkplaceHistoryItemRepository affWkpItemRepo;
+	
+	@Inject
+	private WorkplaceConfigRepository wkpConfigRepo;
+	
+	@Inject
+	private WorkplaceConfigInfoRepository wkpConfigInfoRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -290,6 +306,43 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			return result;
 		}).collect(Collectors.toList());
 
+	}
+
+	@Override
+	public List<String> GetListSid(String sid, GeneralDate baseDate) {
+		
+		if (sid == null || baseDate ==null) {
+			return null;
+		}
+		
+		// get AffWorkplaceHistoryItem
+		AffWorkplaceHistoryItem affWkpItem = this.getAffWkpItem(sid, baseDate);
+		if (affWkpItem == null) {
+			return null;
+		}
+		
+		// Get List WkpId (chơ bên anh Thành)
+		List<String> lstWkpId = new ArrayList<>();
+		
+		List<AffWorkplaceHistoryItem> result = this.affWkpItemRepo.getAffWrkplaHistItemByListEmpIdAndDate(baseDate, lstWkpId);
+		
+		if (result.isEmpty()) {
+			return null;
+		}
+		
+		return result.stream().map(f -> f.getEmployeeId()).collect(Collectors.toList());
+	}
+	
+
+	
+	private AffWorkplaceHistoryItem getAffWkpItem(String sid, GeneralDate basedate) {
+		
+		List<AffWorkplaceHistoryItem> lstWkpHistItem = affWkpItemRepo.getAffWrkplaHistItemByEmpIdAndDate(basedate, sid);
+		if (lstWkpHistItem.isEmpty()) {
+			return null;
+		}
+		return lstWkpHistItem.get(0);
+		
 	}
 
 }
