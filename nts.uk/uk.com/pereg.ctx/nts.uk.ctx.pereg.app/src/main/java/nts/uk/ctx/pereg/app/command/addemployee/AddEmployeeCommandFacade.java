@@ -158,9 +158,10 @@ public class AddEmployeeCommandFacade {
 
 			String itemCD = x.getItemCode();
 			ItemValue itemVal = getItemById(inputs, itemCD, x.getCategoryCode());
-			
-			x.setDataType(getSaveDataType(x.getDataType(), x));
-			
+
+			x.setDataType(getSaveDataType(x.getDataType(), x,
+					itemVal == null ? itemVal.value() : x.getSaveData().getValue().toString()));
+
 			if (itemVal != null) {
 				x.setSaveData(new SaveDataDto(x.getSaveData().getSaveDataType(),
 						itemVal.value() != null ? itemVal.value().toString() : ""));
@@ -188,9 +189,10 @@ public class AddEmployeeCommandFacade {
 
 	}
 
-	private DataTypeValue getSaveDataType(DataTypeValue dataType, SettingItemDto item) {
+	private DataTypeValue getSaveDataType(DataTypeValue dataType, SettingItemDto item, String value) {
 
-		if (dataType.equals(DataTypeValue.SELECTION)||dataType.equals(DataTypeValue.SELECTION_BUTTON)||dataType.equals(DataTypeValue.SELECTION_RADIO)) {
+		if (dataType.equals(DataTypeValue.SELECTION) || dataType.equals(DataTypeValue.SELECTION_BUTTON)
+				|| dataType.equals(DataTypeValue.SELECTION_RADIO)) {
 			switch (item.getSelectionItemRefType()) {
 			case ENUM:
 				return DataTypeValue.NUMERIC;
@@ -198,7 +200,7 @@ public class AddEmployeeCommandFacade {
 				return DataTypeValue.STRING;
 			case DESIGNATED_MASTER:
 
-				if (item.getSaveData().getValue().toString().chars().allMatch(Character::isDigit)) {
+				if (value.chars().allMatch(Character::isDigit)) {
 					return DataTypeValue.NUMERIC;
 				} else {
 					return DataTypeValue.STRING;
