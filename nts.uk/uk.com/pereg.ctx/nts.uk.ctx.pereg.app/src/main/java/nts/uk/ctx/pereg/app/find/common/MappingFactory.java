@@ -215,13 +215,13 @@ public class MappingFactory {
 						break;
 					}
 
+				}else {
+					if(firstReqLstItems.contains(valueItem.getItemCode())) {
+						valueItem.setTextValue(getFirstValueText(valueItem.getItemCode()));
+					} else if(secReqLstItems.contains(valueItem.getItemCode())) {
+						valueItem.setTextValue(getSecValueText(valueItem.getItemCode()));
+					}
 				}
-				if(firstReqLstItems.contains(valueItem.getItemCode()) && valueItem.getValue() != null) {
-					valueItem.setTextValue(getFirstValueText(valueItem.getItemCode()));
-				} else if(secReqLstItems.contains(valueItem.getItemCode()) && valueItem.getValue() != null) {
-					valueItem.setTextValue(getSecValueText(valueItem.getItemCode()));
-				}
-				
 			}
 		}
 	}
