@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.infra.repository.holidayinstruct;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -29,28 +30,26 @@ public class JpaHolidayInstructRepository extends JpaRepository implements Holid
 	}
 	@Override
 	public HolidayInstruct getHolidayWorkInstruct(GeneralDate instructDate, String targetPerson) {
-		List<HolidayInstruct> overTimeInstructs = this.queryProxy().query(FIND_FOR_TARGET_PERSON,KrqdtHolidayInstruct.class)
+		Optional<HolidayInstruct> overTimeInstructs = this.queryProxy().query(FIND_FOR_TARGET_PERSON,KrqdtHolidayInstruct.class)
 				.setParameter("instructDate", instructDate.date())
-				.setParameter("targetPerson", targetPerson).getList(c -> convertToDomain(c));
-				if(overTimeInstructs != null){
-					if(overTimeInstructs.size() > 0){
-						return overTimeInstructs.get(0);
-					}
+				.setParameter("targetPerson", targetPerson).getSingle(c -> convertToDomain(c));
+				if(overTimeInstructs.isPresent()){
+					return overTimeInstructs.get();
 				}
 				return null;
 			}
-			private HolidayInstruct convertToDomain(KrqdtHolidayInstruct krqdtHolidayWorkInstruct){
-				 return HolidayInstruct.createSimpleFromJavaType(
-						 krqdtHolidayWorkInstruct.getWorkContent(),
-						 krqdtHolidayWorkInstruct.getInputDate(),
-						 krqdtHolidayWorkInstruct.getKrqdtHolidayInstructPK().getTargetPerson(),
-						 krqdtHolidayWorkInstruct.getKrqdtHolidayInstructPK().getInstructDate(),
-						 krqdtHolidayWorkInstruct.getInstructor(),
-						 krqdtHolidayWorkInstruct.getHolidayInstructReason(),
-						 krqdtHolidayWorkInstruct.getHolidayWorkHour(),
-						 krqdtHolidayWorkInstruct.getStartClock(),
-						 krqdtHolidayWorkInstruct.getEndClock());
-				
-				
-			}
+	private HolidayInstruct convertToDomain(KrqdtHolidayInstruct krqdtHolidayWorkInstruct){
+		 return HolidayInstruct.createSimpleFromJavaType(
+				 krqdtHolidayWorkInstruct.getWorkContent(),
+				 krqdtHolidayWorkInstruct.getInputDate(),
+				 krqdtHolidayWorkInstruct.getKrqdtHolidayInstructPK().getTargetPerson(),
+				 krqdtHolidayWorkInstruct.getKrqdtHolidayInstructPK().getInstructDate(),
+				 krqdtHolidayWorkInstruct.getInstructor(),
+				 krqdtHolidayWorkInstruct.getHolidayInstructReason(),
+				 krqdtHolidayWorkInstruct.getHolidayWorkHour(),
+				 krqdtHolidayWorkInstruct.getStartClock(),
+				 krqdtHolidayWorkInstruct.getEndClock());
+		
+		
+	}
 }

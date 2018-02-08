@@ -5,6 +5,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.MailHdInstructionCommand;
+import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.UpdateMailHdInstructionCommandHandler;
 import nts.uk.ctx.at.request.app.find.setting.company.mailsetting.mailapplicationapproval.ApprovalTempDto;
 import nts.uk.ctx.at.request.app.find.setting.company.mailsetting.mailapplicationapproval.ApprovalTempFinder;
 import nts.uk.ctx.at.request.app.find.setting.company.mailsetting.mailholidayinstruction.MailHdInstructionDto;
@@ -21,6 +23,8 @@ public class MailHdInstructioWebservice {
 	private ApprovalTempFinder tempFinder;
 	@Inject 
 	private MailOtInstructionFinder otFinder;
+	@Inject
+	private UpdateMailHdInstructionCommandHandler updateHd;
 	
 	@POST
 	@Path("holiday")
@@ -38,5 +42,11 @@ public class MailHdInstructioWebservice {
 	@Path("ot")
 	public MailOtInstructionDto getOt(){
 		 return otFinder.findByComId();
+	}
+	
+	@POST
+	@Path("update")
+	public void updateHd(MailHdInstructionCommand cm){
+		 this.updateHd.handle(cm);;
 	}
 }

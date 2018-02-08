@@ -30,15 +30,15 @@
 					<button id="reference" data-bind="enable: enableDetail, click: open_Dialog" tabindex="4">#{i18n.getText('CAS009_6')}</button>
 				</div>
 			</div>
-			<div id="contents-area" >
-				<div class="container">
-					<div id="left-content" data-bind="with : component ">
+			<div id="contents-area" class="fixed-flex-layout" >
+				<div class="container cf">
+					<div id="left-content" data-bind="with : component " class="fixed-flex-layout-left">
 						<div id='text_list' tabindex="5" >#{i18n.getText('CAS009_7')}</div>
 						<div id='list_role' tabindex="6"><ui:include src="../../../ccg/025/component/index.xhtml" /> </div>						
 					</div>
 					
-					<div id="right-content" >
-						<table class="control-group">						
+					<div id="right-content" class="fixed-flex-layout-right">
+						<table class="control-group"  >						
 								<tr>
 									<td>
 										<div data-bind="ntsFormLabel: {required: true, constraint: ['RoleCode' , 'RoleName']}">#{i18n.getText('CAS009_10')}</div>									

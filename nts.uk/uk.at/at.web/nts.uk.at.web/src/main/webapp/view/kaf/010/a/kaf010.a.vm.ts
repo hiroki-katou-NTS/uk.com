@@ -169,7 +169,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                         }).done((data) =>{
                             self.findBychangeAppDateData(data);
                             self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false);
-                            self.convertAppOvertimeReferDto(data);
+                            //self.convertAppOvertimeReferDto(data);
                             nts.uk.ui.block.clear(); 
                             dfd.resolve(data);
                         }).fail((res) =>{
@@ -652,11 +652,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         findBychangeAppDateData(data: any) {
             var self = this;
             let overtimeDto = data;
-            self.manualSendMailAtr(overtimeDto.manualSendMailAtr);
-            self.prePostSelected(overtimeDto.application.prePostAtr);
             self.displayCaculationTime(overtimeDto.displayCaculationTime);
             self.restTimeDisFlg(self.restTimeDisFlg());
-            self.employeeName(overtimeDto.employeeName);
             if (overtimeDto.siftType != null) {
                 self.siftCD(overtimeDto.siftType.siftCode);
                 self.siftName(overtimeDto.siftType.siftName);
@@ -671,55 +668,45 @@ module nts.uk.at.view.kaf010.a.viewmodel {
               self.workTypeCd('');
               self.workTypeName('');  
             }
-            self.timeStart1(data.workClockFrom1);
-            self.timeEnd1(data.workClockTo1);
-            self.timeStart2(data.workClockFrom2);
-            self.timeEnd2(data.workClockTo2);
-            if(overtimeDto.applicationReasonDtos != null){
-                self.reasonCombo(_.map(overtimeDto.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); }));
-                self.selectedReason(_.find(overtimeDto.applicationReasonDtos, o => { return o.defaultFlg == 1 }).reasonID);
-                self.multilContent(overtimeDto.application.applicationReason);
-            }
-            
-            if(overtimeDto.divergenceReasonDtos != null){
-                self.reasonCombo2(_.map(overtimeDto.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); }));
-                self.selectedReason2(overtimeDto.divergenceReasonDtos.divergenceReasonIdDefault);
-                self.multilContent2(overtimeDto.divergenceReasonContent);
-            }
+            self.timeStart1(data.workClockStart1);
+            self.timeEnd1(data.workClockEnd1);
+            self.timeStart2(data.workClockStart2);
+            self.timeEnd2(data.workClockEnd2);
+           
             
             self.instructInforFlag(overtimeDto.displayOvertimeInstructInforFlg);
             self.instructInfor(overtimeDto.overtimeInstructInformation);
             // preAppOvertime
-            self.convertpreAppOvertimeDto(overtimeDto);
+            //self.convertpreAppOvertimeDto(overtimeDto);
             self.referencePanelFlg(data.referencePanelFlg);
             self.preAppPanelFlg(data.preAppPanelFlg);
             self.allPreAppPanelFlg(data.allPreAppPanelFlg);
             self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
            
              // 残業時間
-            if (overtimeDto.overTimeInputs != null) {
-                for (let i = 0; i < overtimeDto.overTimeInputs.length; i++) {
-                    //1: 残業時間
-                    if (overtimeDto.overTimeInputs[i].attendanceID == 1) {
-                        self.overtimeHours.push(new common.OvertimeCaculation("", "", overtimeDto.overTimeInputs[i].attendanceID, "", overtimeDto.overTimeInputs[i].frameNo,0, overtimeDto.overTimeInputs[i].frameName, null, null, null,"#[KAF005_55]","",""));
-                    }
-                    //2: 休憩時間
-                    if (overtimeDto.overTimeInputs[i].attendanceID == 2) {
-                        self.breakTimes.push(new common.OvertimeCaculation("", "", overtimeDto.overTimeInputs[i].attendanceID, "", overtimeDto.overTimeInputs[i].frameNo,0,overtimeDto.overTimeInputs[i].frameName, null, null, null,"","",""));
-                    }
-                    //3: 加給時間
-                    if (overtimeDto.overTimeInputs[i].attendanceID == 3 || overtimeDto.overTimeInputs[i].attendanceID == 4) {
-                        self.bonusTimes.push(new common.OvertimeCaculation("", "", overtimeDto.overTimeInputs[i].attendanceID, "", overtimeDto.overTimeInputs[i].frameNo,overtimeDto.overTimeInputs[i].timeItemTypeAtr ,overtimeDto.overTimeInputs[i].frameName, null, null, null,"","",""));
-                    }
-                }
-            }
-            if(overtimeDto.overtimeAtr == 0){
-                self.heightOvertimeHours(58);   
-            }else if(overtimeDto.overtimeAtr == 1){
-                self.heightOvertimeHours(180);
-            }else{
-                self.heightOvertimeHours(216);
-            }
+//            if (overtimeDto.overTimeInputs != null) {
+//                for (let i = 0; i < overtimeDto.overTimeInputs.length; i++) {
+//                    //1: 残業時間
+//                    if (overtimeDto.overTimeInputs[i].attendanceID == 1) {
+//                        self.overtimeHours.push(new common.OvertimeCaculation("", "", overtimeDto.overTimeInputs[i].attendanceID, "", overtimeDto.overTimeInputs[i].frameNo,0, overtimeDto.overTimeInputs[i].frameName, null, null, null,"#[KAF005_55]","",""));
+//                    }
+//                    //2: 休憩時間
+//                    if (overtimeDto.overTimeInputs[i].attendanceID == 2) {
+//                        self.breakTimes.push(new common.OvertimeCaculation("", "", overtimeDto.overTimeInputs[i].attendanceID, "", overtimeDto.overTimeInputs[i].frameNo,0,overtimeDto.overTimeInputs[i].frameName, null, null, null,"","",""));
+//                    }
+//                    //3: 加給時間
+//                    if (overtimeDto.overTimeInputs[i].attendanceID == 3 || overtimeDto.overTimeInputs[i].attendanceID == 4) {
+//                        self.bonusTimes.push(new common.OvertimeCaculation("", "", overtimeDto.overTimeInputs[i].attendanceID, "", overtimeDto.overTimeInputs[i].frameNo,overtimeDto.overTimeInputs[i].timeItemTypeAtr ,overtimeDto.overTimeInputs[i].frameName, null, null, null,"","",""));
+//                    }
+//                }
+//            }
+//            if(overtimeDto.overtimeAtr == 0){
+//                self.heightOvertimeHours(58);   
+//            }else if(overtimeDto.overtimeAtr == 1){
+//                self.heightOvertimeHours(180);
+//            }else{
+//                self.heightOvertimeHours(216);
+//            }
         }
         
         convertpreAppOvertimeDto(data: any) {

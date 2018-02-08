@@ -44,6 +44,9 @@ public class JpaFlexODFlowRestTzSetMemento implements FlowRestTimezoneSetMemento
 		if (CollectionUtil.isEmpty(set)) {
 			this.entity.setKshmtFlexOdRestSets(new ArrayList<>());
 		} else {
+			if (this.entity.getKshmtFlexOdRestSets() == null) {
+				this.entity.setKshmtFlexOdRestSets(new ArrayList<>());
+			}
 			Map<KshmtFlexOdRestSetPK, KshmtFlexOdRestSet> mapEntity = this.entity.getKshmtFlexOdRestSets().stream()
 					.collect(Collectors.toMap(KshmtFlexOdRestSet::getKshmtFlexOdRestSetPK, Function.identity()));
 			List<KshmtFlexOdRestSet> lstNew = new ArrayList<>();

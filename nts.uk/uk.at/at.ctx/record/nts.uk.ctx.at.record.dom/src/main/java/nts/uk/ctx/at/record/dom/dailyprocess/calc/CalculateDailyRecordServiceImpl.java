@@ -120,6 +120,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	public IntegrationOfDaily calculate(String companyId,String placeId, String employmentCd, String employeeId, GeneralDate targetDate, IntegrationOfDaily integrationOfDaily) {
 		/*日別実績(Work)の退避*/
 		val copyIntegrationOfDaily = integrationOfDaily;
+		if((employeeId == null)||(placeId == null)||(employmentCd == null)) return integrationOfDaily;
 		// 実績データの計算
 		return this.calculateRecord(companyId,placeId, employmentCd, employeeId, targetDate, integrationOfDaily);
 	}
@@ -138,20 +139,21 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		/*勤務種類の取得*/
 		val workInfo = integrationOfDaily.getWorkInformation();
 		//val workType = this.workTypeRepository.findByPK(companyId, "001").get();
-		val workType = this.workTypeRepository.findByPK(companyId,workInfo.getRecordWorkInformation().getWorkTypeCode().v()).get(); // 要確認：勤務種類マスタが削除されている場合は考慮しない？
-		
+		val workType = this.workTypeRepository.findByPK(companyId,workInfo.getRecordWorkInformation().getWorkTypeCode().v()); // 要確認：勤務種類マスタが削除されている場合は考慮しない？
+		if(!workType.isPresent()) return integrationOfDaily;
 		
 		
 		/*就業時間帯勤務区分*/
 		//Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,//"901"); 
-		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
+		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,integrationOfDaily.getWorkInformation().getScheduleWorkInformation().getWorkTimeCode().toString());
+		if(!workTime.isPresent()) return integrationOfDaily;
 		/*労働制*/
 		DailyCalculationPersonalInformation personalInfo = getPersonInfomation(companyId
 																				, placeId
 																				, employmentCd
 																				, employeeId
 																				, targetDate);
-		if(!workType.getAttendanceHolidayAttr().equals(AttendanceHolidayAttr.HOLIDAY)) {
+		if(!workType.get().getAttendanceHolidayAttr().equals(AttendanceHolidayAttr.HOLIDAY)) {
 //												WorkTimeDivision workTimeDivision,
 			//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
 			//休憩管理(BreakManagement)
@@ -183,8 +185,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						
 			}
 			//固定勤務の設定
-			FixedWorkSetting fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordWorkInformation().getWorkTimeCode().toString()).get();
-			
+			Optional<FixedWorkSetting> fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordWorkInformation().getWorkTimeCode().toString());
+			if(!fixedWorkSetting.isPresent()) return integrationOfDaily;
 			
 			//0時跨ぎ計算設定
 			OverDayEndCalcSet overDayEndCalcSet = new OverDayEndCalcSet(companyId,
@@ -237,9 +239,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 //												PredetermineTimeSet predetermineTimeSet,
 												predetermineTimeSet.get(),
 //												FixedWorkSetting fixedWorkSetting,
-												fixedWorkSetting,//(repository確認中)
+												fixedWorkSetting.get(),//(repository確認中)
 //												WorkTimeCommonSet workTimeCommonSet,
-												fixedWorkSetting.getCommonSetting(),
+												fixedWorkSetting.get().getCommonSetting(),
 //												BonusPaySetting bonusPaySetting,
 												BonusPaySetting.createFromJavaType(companyId,
 																					"01"/*ここは聞く*/,
@@ -248,9 +250,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																					Collections.emptyList()
 																					),
 //												List<OverTimeHourSet> overTimeHourSetList , 残業時間の時間帯設定
-												fixedWorkSetting.getLstHalfDayWorkTimezone().get(0).getWorkTimezone().getLstOTTimezone(),//固定勤務の設定にぶら下がっている 
+												fixedWorkSetting.get().getLstHalfDayWorkTimezone().get(0).getWorkTimezone().getLstOTTimezone(),//固定勤務の設定にぶら下がっている 
 //												FixOffdayWorkTime fixOff, 固定勤務の休日出勤用勤務時間帯
-												fixedWorkSetting.getOffdayWorkTimezone(),//固定勤務の設定にぶら下がっている
+												fixedWorkSetting.get().getOffdayWorkTimezone(),//固定勤務の設定にぶら下がっている
 //												OverDayEndCalcSet dayEndSet,
 												overDayEndCalcSet,
 //												List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem,
@@ -258,7 +260,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 //												WorkType beforeDay,
 												yesterDay.get(),
 //												WorkType toDay,
-												workType,
+												workType.get(),
 //												WorkType afterDay,
 												tomorrow.get(),
 //												BreakdownTimeDay breakdownTimeDay,
@@ -268,7 +270,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 //										 		AutoCalculationOfOverTimeWork autoCalculationSet,
 												autoCalcOverTimeWork,
 //												StatutoryOverTimeWorkSet statutorySet,
-												fixedWorkSetting.getLegalOTSetting(),
+												fixedWorkSetting.get().getLegalOTSetting(),
 //												StatutoryPrioritySet prioritySet
 												StatutoryPrioritySet.priorityNormalOverTimeWork,
 												//WorkTime

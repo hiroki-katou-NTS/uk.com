@@ -31,6 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.text.RegexUtil;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ConfirmOfManagerOrYouself;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
@@ -500,41 +501,44 @@ public class DailyPerformanceCorrectionProcessor {
 		});
 		// set cell data
 		for (DPDataDto data : screenDto.getLstData()) {
-
-			lockData(sId, screenDto, dailyRecOpeFun, data);
-
-			boolean lock = checkLockAndSetState(employeeAndDateRange, data);
-
-			if (lock) {
-				lockCell(screenDto, data);
-			}
+			
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
-			if (resultOfOneRow != null) {
-				// List<ItemValue> attendanceTimes =
-				// resultOfOneRow.getItems().get("AttendanceTimeOfDailyPerformance");
-				itemValueMap = resultOfOneRow.getItems().stream()
-						.collect(Collectors.toMap(x -> mergeString(String.valueOf(x.getItemId()), "|",
-								data.getEmployeeId(), "|", data.getDate().toString()), x -> x));
+			if (resultOfOneRow != null && !isDataWorkInfoEmpty(resultOfOneRow.getItems())) {
+				lockData(sId, screenDto, dailyRecOpeFun, data);
+
+				boolean lock = checkLockAndSetState(employeeAndDateRange, data);
+
+				if (lock) {
+					lockCell(screenDto, data);
+				}
+				if (resultOfOneRow != null) {
+					// List<ItemValue> attendanceTimes =
+					// resultOfOneRow.getItems().get("AttendanceTimeOfDailyPerformance");
+					itemValueMap = resultOfOneRow.getItems().stream()
+							.collect(Collectors.toMap(x -> mergeString(String.valueOf(x.getItemId()), "|",
+									data.getEmployeeId(), "|", data.getDate().toString()), x -> x));
+				}
+				processCellData(NAME_EMPTY, NAME_NOT_FOUND, screenDto, dPControlDisplayItem, mapDP, mapGetName,
+						itemValueMap, data, lock);
+				lstData.add(data);
+				// DPCellDataDto bPCellDataDto = new DPCellDataDto(columnKey,
+				// value,
+				// dataType, type);
+				Optional<WorkInfoOfDailyPerformanceDto> optWorkInfoOfDailyPerformanceDto = workInfoOfDaily.stream()
+						.filter(w -> w.getEmployeeId().equals(data.getEmployeeId())
+								&& w.getYmd().equals(data.getDate()))
+						.findFirst();
+				if (optWorkInfoOfDailyPerformanceDto.isPresent()
+						&& optWorkInfoOfDailyPerformanceDto.get().getState() == CalculationState.No_Calculated)
+					screenDto.setAlarmCellForFixedColumn(data.getId());
 			}
-			processCellData(NAME_EMPTY, NAME_NOT_FOUND, screenDto, dPControlDisplayItem, mapDP, mapGetName,
-					itemValueMap, data, lock);
-			lstData.add(data);
-			// DPCellDataDto bPCellDataDto = new DPCellDataDto(columnKey, value,
-			// dataType, type);
-			Optional<WorkInfoOfDailyPerformanceDto> optWorkInfoOfDailyPerformanceDto = workInfoOfDaily.stream()
-					.filter(w -> w.getEmployeeId().equals(data.getEmployeeId()) && w.getYmd().equals(data.getDate()))
-					.findFirst();
-			if (optWorkInfoOfDailyPerformanceDto.isPresent()
-					&& optWorkInfoOfDailyPerformanceDto.get().getState() == CalculationState.No_Calculated)
-				screenDto.setAlarmCellForFixedColumn(data.getId());
 		}
 		System.out.println("time get data into cell : " + (System.currentTimeMillis() - start));
 		start = System.currentTimeMillis();
-		// screenDto.setLstData(lstData);
+		screenDto.setLstData(lstData);
 		latch1.await();
 		System.out.println("time add  return : " + (System.currentTimeMillis() - start));
 		System.out.println("All time :" + (System.currentTimeMillis() - timeStart));
-		screenDto.getData().put("A111", "111");
 		return screenDto;
 	}
 
@@ -620,7 +624,20 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 		data.setCellDatas(cellDatas);
 	}
-
+    
+	private boolean isDataWorkInfoEmpty(List<ItemValue> values){
+		if(values == null || values.isEmpty()) return true;
+		else {
+			List<ItemValue> data = values.stream().filter(x -> (checkLayoutDataWork(x.getLayoutCode()) && x.getValue() != null && !x.getValue().equals(""))).collect(Collectors.toList());
+			if(data.isEmpty()) return true;
+			else return false;
+		}
+	}
+	
+	private boolean checkLayoutDataWork(String layoutCode){
+		if(layoutCode.split("_")[0].equals("A")) return true;
+		else return false;
+	}
 	private DailyModifyResult getRow(Map<String, DailyModifyResult> resultDailyMap, String sId, GeneralDate date) {
 		return resultDailyMap.isEmpty() ? null : resultDailyMap.get(mergeString(sId, "|", date.toString()));
 	}
@@ -762,7 +779,7 @@ public class DailyPerformanceCorrectionProcessor {
 				screenDto.addErrorToResponseData(lstError, lstErrorSetting);
 			}
 		}
-		return lstError.stream().collect(Collectors.toMap(e -> e.getEmployeeId(), e -> ""));
+		return lstError.stream().collect(Collectors.toMap(e -> e.getEmployeeId(), e -> "", (x, y) -> x));
 	}
 
 	private List<DailyPerformanceEmployeeDto> extractEmployeeData(Integer initScreen, String sId,

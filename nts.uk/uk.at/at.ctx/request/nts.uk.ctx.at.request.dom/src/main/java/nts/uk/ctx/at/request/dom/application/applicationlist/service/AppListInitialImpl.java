@@ -9,7 +9,6 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -21,7 +20,6 @@ import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.Ap
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.ApplicationDisplayAtr;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.ApplicationListAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
@@ -35,6 +33,10 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImp
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
@@ -44,8 +46,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vaca
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.deadlinesetting.AppDeadlineSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.deadlinesetting.AppDeadlineSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
@@ -54,8 +54,6 @@ import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceReposit
 import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
@@ -64,7 +62,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
-public class ApplicationListInitialImpl implements ApplicationListInitialRepository{
+public class AppListInitialImpl implements AppListInitialRepository{
 
 	@Inject
 	private ClosureRepository repoClosure;
@@ -96,7 +94,12 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 	private RelationshipRepository repoRelationship;
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
-	
+	@Inject
+	private OvertimeRepository repoOverTime;
+	@Inject
+	private GoBackDirectlyRepository repoGoBack;
+	@Inject
+	private AppDetailInfoRepository repoAppDetail;
 	/**
 	 * 0 - 申請一覧事前必須チェック
 	 */
@@ -132,43 +135,67 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 	@Override
 	public List<Application_New> getApplicationList(AppListExtractCondition param, ApprovalListDisplaySetting displaySet) {
 		//申請一覧区分が申請 OR 承認-(Check xem là application hay aprove)
+		List<Application_New> lstApp = new ArrayList<>();
 		if(param.getAppListAtr().equals(ApplicationListAtr.APPLICATION)){//申請
 			//アルゴリズム「申請一覧リスト取得申請」を実行する - 2
 			this.getApplicationListByApp(param);
 		}else{//承認
 			//アルゴリズム「申請一覧リスト取得承認」を実行する - 3
-			this.getAppListByApproval(param,displaySet);
+			lstApp = this.getAppListByApproval(param,displaySet);
 		}
 		//取得した一覧の申請種類(単一化）でリストを作成する - create list for drop-down list (A4_4_1)
+		
 		// TODO Auto-generated method stub
 		//ドメインモデル「休暇申請設定」を取得する (Vacation application setting)- YenNTH
 		Optional<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
+		return null;
+	}
+	private List<Integer> lstAppType(List<Application_New> lstApp){
+		List<Integer> lstAppDis = new ArrayList<>();
+		for (Application_New app : lstApp) {
+			
+		}
 		return null;
 	}
 	/**
 	 * 2 - 申請一覧リスト取得申請
 	 */
 	@Override
-	public List<Application_New> getApplicationListByApp(AppListExtractCondition param) {
+	public AppListOutPut getApplicationListByApp(AppListExtractCondition param) {
 		String companyId = AppContexts.user().companyId();
 		String sID = AppContexts.user().employeeId();
 		// TODO Auto-generated method stub
 		//ドメインモデル「申請」を取得する-(Lấy dữ liệu domain Application) - get List Application By SID
 		List<Application_New> lstApp = repoApp.getListAppBySID(companyId, sID, param.getStartDate(), param.getEndDate());
+		List<Application_New> lstAppFilter = lstApp;
+		lstAppFilter.stream().filter(c -> c.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION))
+				.filter(d -> d.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION));
+		for (Application_New application : lstAppFilter) {
+			//get app xin lam them
+			if(application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)){
+				Optional<AppOverTime> appOvertime = repoOverTime.getAppOvertime(companyId, application.getAppID());
+				
+			}
+			if(application.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION)){
+				Optional<GoBackDirectly> appGoBack = repoGoBack.findByApplicationID(companyId, application.getAppID());
+			}
+		}
 		for (Application_New application : lstApp) {
 			//アルゴリズム「申請一覧リスト取得打刻取消」を実行する-(Cancel get list app stamp): 7 - 申請一覧リスト取得打刻取消
-			this.getListAppStampIsCancel(application);
+//			this.getListAppStampIsCancel(application);
 			//アルゴリズム「申請一覧リスト取得振休振出」を実行する-(get List App Complement Leave): 6 - 申請一覧リスト取得振休振出
-			this.getListAppComplementLeave(application);
+//			this.getListAppComplementLeave(application);
 			//アルゴリズム「申請一覧リスト取得休暇」を実行する-(get List App Absence): 8 - 申請一覧リスト取得休暇
-			this.getListAppAbsence(application);
+//			this.getListAppAbsence(application);
 		}
 		//imported(申請承認）「稟議書」を取得する - wait
 		//アルゴリズム「申請一覧リスト取得マスタ情報」を実行する(get List App Master Info): 9 - 申請一覧リスト取得マスタ情報
-		this.getListAppMasterInfo(lstApp);
+//		List<AppMasterInfo> lstAppMasterInfo = this.getListAppMasterInfo(lstApp);
+		List<AppMasterInfo> lstAppMasterInfo = this.getListAppMasterInfo(lstAppFilter);
 		//申請日付順でソートする
+		
 		// TODO Auto-generated method stub
-		return null;
+		return new AppListOutPut(lstAppMasterInfo, lstAppFilter);// NOTE
 	}
 	/**
 	 * 3 - 申請一覧リスト取得承認
@@ -196,7 +223,7 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 		//imported(申請承認）「稟議書」を取得する - wait request : return list app - tam thoi bo qua
 		// TODO Auto-generated method stub
 		//アルゴリズム「申請一覧リスト取得マスタ情報」を実行する(get List App Master Info): 9 - 申請一覧リスト取得マスタ情報
-		List<Application_New> lstMaster = this.getListAppMasterInfo(lstApp);
+		List<AppMasterInfo> lstMaster = this.getListAppMasterInfo(lstApp);
 		//アルゴリズム「申請一覧リスト取得実績」を実行する-(get App List Achievement): 5 - 申請一覧リスト取得実績
 		this.getAppListAchievement(lstApp, displaySet);
 		//承認一覧に稟議書リスト追加し、申請日付順に整列する - phu thuoc vao request
@@ -271,6 +298,7 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 				//承認一覧表示設定.残業の実績
 				if(displaySet.getOtActualDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
 					//アルゴリズム「申請一覧リスト取得実績残業申請」を実行する-(5.2)
+					this.getAppListAchievementOverTime(appPost.getEmployeeID(), appPost.getAppDate());
 					// TODO Auto-generated method stub
 				}
 			}else{//休出時間申請の場合
@@ -282,9 +310,19 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 				//承認一覧表示設定.休出の実績
 				if(displaySet.getHwActualDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
 					//アルゴリズム「申請一覧リスト取得実績休出申請」を実行する-(5.1))
+					this.getAppListAchievementBreak(appPost.getEmployeeID(), appPost.getAppDate());
 					// TODO Auto-generated method stub
 				}
 			}
+		}
+		//「残業申請」または「休出時間申請」の事後以外の場合 (Không phải xin sau)
+		for (Application_New appDif : lstDif) {
+			//アルゴリズム「申請一覧リスト取得打刻取消」を実行する-(getListAppStampIsCancel 7)
+			this.getListAppStampIsCancel(appDif);
+			//アルゴリズム「申請一覧リスト取得振休振出」を実行する (get List App Complement Leave - 6)
+			this.getListAppComplementLeave(appDif);
+			//アルゴリズム「申請一覧リスト取得休暇」を実行する (get List App Absence - 8)
+			this.getListAppAbsence(appDif);
 		}
 		//アルゴリズム「申請一覧リスト取得承認件数」を実行する(countAppListApproval): 4 -   申請一覧リスト取得承認件数
 		this.countAppListApproval(lstApp);
@@ -381,9 +419,10 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 	 * 9 - 申請一覧リスト取得マスタ情報
 	 */
 	@Override
-	public List<Application_New> getListAppMasterInfo(List<Application_New> lstApp) {
+	public List<AppMasterInfo> getListAppMasterInfo(List<Application_New> lstApp) {
 		//ドメインモデル「申請一覧共通設定」を取得する-(Lấy domain Application list common settings) - wait YenNTH
 		Optional<AppCommonSet> appCommonSet = repoAppCommonSet.find();
+		List<AppMasterInfo> lstAppMasterInfo = new ArrayList<>();
 		//申請一覧リスト　繰返し実行
 		for (Application_New app : lstApp) {
 			//ドメインモデル「申請表示名」より申請表示名称を取得する-(Lấy Application display name) - wait YenNTH
@@ -400,8 +439,9 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 				//事前、事後の後ろに#CMM045_101(※)を追加
 				// TODO Auto-generated method stub
 			}
+			lstAppMasterInfo.add(new AppMasterInfo(app, appDispName.get().getDispName().v(), empName, wkp.getWkpDisplayName()));
 		}
-		return null;
+		return lstAppMasterInfo;
 	}
 	/**
 	 * 12 - 申請一覧初期日付期間

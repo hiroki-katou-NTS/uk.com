@@ -248,6 +248,6 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 				// 当日以外の場合,03-02-2_当日以外の場合
 			}
 		}
-		return null;
+		return result;
 	}
 }

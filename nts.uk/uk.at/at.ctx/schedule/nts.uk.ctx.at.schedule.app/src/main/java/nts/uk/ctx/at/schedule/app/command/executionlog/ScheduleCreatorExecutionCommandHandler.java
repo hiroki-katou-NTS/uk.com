@@ -202,6 +202,8 @@ public class ScheduleCreatorExecutionCommandHandler
 			// check is client submit cancel
 			if (asyncTask.hasBeenRequestedToCancel()) {
 				asyncTask.finishedAsCancelled();
+				// ドメインモデル「スケジュール作成実行ログ」を更新する(update domain 「スケジュール作成実行ログ」)
+				this.updateStatusScheduleExecutionLog(scheduleExecutionLog, CompletionStatus.INTERRUPTION);
 				break;
 			}
 			
@@ -228,7 +230,14 @@ public class ScheduleCreatorExecutionCommandHandler
 			domain.updateToCreated();
 			this.scheduleCreatorRepository.update(domain);
 		}
-		this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
+		
+		// find execution log by id
+		ScheduleExecutionLog scheExeLog = this.scheduleExecutionLogRepository.findById(
+				command.getCompanyId(), scheduleExecutionLog.getExecutionId()).get();
+		if (scheExeLog.getCompletionStatus() != CompletionStatus.INTERRUPTION) {
+			System.out.println("not hasBeenRequestedToCancel: " + asyncTask.hasBeenRequestedToCancel() + "&exeid="+ scheduleExecutionLog.getExecutionId());
+			this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
+		}
 	}
 	
 	/**

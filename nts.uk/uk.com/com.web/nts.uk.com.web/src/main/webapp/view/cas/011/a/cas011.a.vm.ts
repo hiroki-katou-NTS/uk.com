@@ -52,7 +52,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
                                            ]);
 
             self.swapColumns = ko.observableArray([
-                                               { headerText: resource.getText('CAS011_9'), key: 'webMenuCode', width: 100 },
+                                               { headerText: resource.getText('CAS011_9'), key: 'webMenuCode', width: 40 },
                                                { headerText: resource.getText('CAS011_34'), key: 'webMenuName', width: 150 }
                                            ]);
 
@@ -452,7 +452,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
                 self.listWebMenus(self.listAllWebMenus.filter(item1 => !self.isSelectedWebMenu(item1.webMenuCode)));
                 // get Web Menu Name for Web menu
                 let listWebMenuRight = self.listAllWebMenus.filter(item1 => self.isSelectedWebMenu(item1.webMenuCode));
-                currentRoleSet.webMenus.removeAll();
+                //currentRoleSet.webMenus.removeAll();
                 currentRoleSet.webMenus(listWebMenuRight);
             }
         }

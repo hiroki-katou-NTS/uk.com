@@ -201,6 +201,17 @@ module a3 {
                 }
                 self.mainSettingModel.flexWorkSetting.getHDWtzAfternoon().workTimezone.updateOvertimeZone(lstOTTimezone);
             });
+            
+            self.isDetailMode.subscribe((v) => {
+                if (self.isFixedMode()) {
+                    if (v) {
+                        self.fixTableOptionOnedayFixed.columns = self.columnSettingFixedAndDiffTime();
+                    }
+                    else {
+                        self.fixTableOptionOnedayFixed.columns = self.columnSettingFlex();
+                    }
+                }
+            });
         }
         
         public initDataModel(): void {
@@ -448,8 +459,8 @@ module a3 {
                 timezone: timezone,
                 otFrameNo: dataModel.otFrameNo(),
                 earlyOTUse: dataModel.earlyOTUse(),
-                legalOTframeNo: dataModel.legalOTframeNo(),
-                settlementOrder: dataModel.settlementOrder()
+                legalOTframeNo: dataModel.legalOTframeNo?dataModel.legalOTframeNo():1,
+                settlementOrder: dataModel.settlementOrder?dataModel.settlementOrder():1
             };
             return dataDTO;
         }
