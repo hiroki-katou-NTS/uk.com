@@ -361,6 +361,10 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 	@Override
 	public List<String> getEmployeeCode(String sid, GeneralDate basedate) {
+		
+		if (sid == null || basedate == null) {
+			return null;
+		}
 
 		List<EmploymentHistoryItem> lstHistItem = emptHistItem.getEmploymentByEmpIdAndDate(basedate, sid);
 
