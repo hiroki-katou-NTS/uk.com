@@ -12151,6 +12151,17 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui) {
+            ui.DATA_SET_ERROR_STYLE = "set-error-style";
+            ui.DATA_CLEAR_ERROR_STYLE = "clear-error-style";
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsError;
@@ -12175,6 +12186,8 @@ var nts;
                     };
                     function processErrorOnItem($control, message, action, errorCode, businessError) {
                         switch (action) {
+                            case 'check':
+                                return $control.trigger("validate");
                             case 'set':
                                 return setError($control, message, errorCode, businessError);
                             case 'clear':
@@ -12197,13 +12210,13 @@ var nts;
                             $control: $control,
                             businessError: businessError
                         });
-                        $control.parent().addClass('error');
+                        ($control.data(ui.DATA_SET_ERROR_STYLE) || function () { $control.parent().addClass('error'); })();
                         return $control;
                     }
                     function clearErrors($control) {
                         $control.data(DATA_HAS_ERROR, false);
                         ui.errors.removeByElement($control);
-                        $control.parent().removeClass('error');
+                        ($control.data(ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
                         return $control;
                     }
                     function clearErrorByCode($control, errorCode) {
@@ -12211,7 +12224,7 @@ var nts;
                         var remainErrors = ui.errors.getErrorByElement($control);
                         if (uk.util.isNullOrEmpty(remainErrors)) {
                             $control.data(DATA_HAS_ERROR, false);
-                            $control.parent().removeClass('error');
+                            ($control.data(ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
                         }
                         return $control;
                     }
@@ -12220,7 +12233,7 @@ var nts;
                         var remainErrors = ui.errors.getErrorByElement($control);
                         if (uk.util.isNullOrEmpty(remainErrors)) {
                             $control.data(DATA_HAS_ERROR, false);
-                            $control.parent().removeClass('error');
+                            ($control.data(ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
                         }
                         return $control;
                     }
@@ -14565,6 +14578,8 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
+                var CONTROL_NAME = "control-name";
+                var REQUIRED = "required";
                 var FILES_CACHE_FOR_CANCEL = "files-cache-for-cancel";
                 var IS_RESTORED_BY_CANCEL = "restored-by-cancel";
                 var SELECTED_FILE_NAME = "selected-file-name";
@@ -14611,6 +14626,7 @@ var nts;
                                 $container.data(IS_RESTORED_BY_CANCEL, false);
                                 return;
                             }
+                            $container.ntsError("clear");
                             var selectedFilePath = $(this).val();
                             // canceled on selecting file dialog
                             if (nts.uk.util.isNullOrEmpty(selectedFilePath)) {
@@ -14642,6 +14658,22 @@ var nts;
                         $fileNameLabel.click(function () {
                             onfilenameclick($(this).text());
                         });
+                        $container.bind("validate", function () {
+                            if ($container.data(REQUIRED) && uk.util.isNullOrEmpty(ko.unwrap(data.filename))) {
+                                var controlName = $container.data(CONTROL_NAME);
+                                $container.ntsError("set", uk.resource.getMessage("FND_E_REQ_SELECT", [controlName]), "FND_E_REQ_SELECT");
+                            }
+                            else {
+                                $container.ntsError("clear");
+                            }
+                        });
+                        $container
+                            .data(ui.DATA_SET_ERROR_STYLE, function () {
+                            $container.addClass("error");
+                        })
+                            .data(ui.DATA_CLEAR_ERROR_STYLE, function () {
+                            $container.removeClass("error");
+                        });
                     };
                     /**
                      * Update
@@ -14654,6 +14686,8 @@ var nts;
                         var text = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : "参照";
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var $container = $(element)
+                            .data(CONTROL_NAME, ko.unwrap(data.name))
+                            .data(REQUIRED, ko.unwrap(data.required) === true)
                             .data(STEREOTYPE, ko.unwrap(data.stereoType))
                             .data(IMMEDIATE_UPLOAD, ko.unwrap(data.immediateUpload) === true);
                         $container.find("input[type='file']").attr("accept", accept.toString());

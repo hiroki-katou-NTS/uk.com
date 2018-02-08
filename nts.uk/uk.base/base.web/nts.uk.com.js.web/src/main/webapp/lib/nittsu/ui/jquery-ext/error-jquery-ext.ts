@@ -4,6 +4,11 @@ interface JQuery {
     ntsError(action: string, param?: any, errorCode?: string): any;
 }
 
+module nts.uk.ui {
+    export const DATA_SET_ERROR_STYLE = "set-error-style";
+    export const DATA_CLEAR_ERROR_STYLE = "clear-error-style";
+}
+
 module nts.uk.ui.jqueryExtentions {
 
     module ntsError {
@@ -28,6 +33,8 @@ module nts.uk.ui.jqueryExtentions {
 
         function processErrorOnItem($control: JQuery, message: any, action: string, errorCode: string, businessError: boolean) {
             switch (action) {
+                case 'check':
+                    return $control.trigger("validate");
                 case 'set':
                     return setError($control, message, errorCode, businessError);
                 case 'clear':
@@ -52,14 +59,17 @@ module nts.uk.ui.jqueryExtentions {
                 $control: $control,
                 businessError: businessError
             });
-            $control.parent().addClass('error');
+            
+            ($control.data(DATA_SET_ERROR_STYLE) || function () { $control.parent().addClass('error'); })();
+            
             return $control;
         }
 
         function clearErrors($control: JQuery) {
             $control.data(DATA_HAS_ERROR, false);
             ui.errors.removeByElement($control);
-            $control.parent().removeClass('error');
+            
+            ($control.data(DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
             return $control;
         }
 
@@ -68,7 +78,7 @@ module nts.uk.ui.jqueryExtentions {
             let remainErrors = ui.errors.getErrorByElement($control);
             if(util.isNullOrEmpty(remainErrors)) {
                 $control.data(DATA_HAS_ERROR, false);
-                $control.parent().removeClass('error');
+                ($control.data(DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
             }
             return $control;
         }
@@ -78,7 +88,7 @@ module nts.uk.ui.jqueryExtentions {
             let remainErrors = ui.errors.getErrorByElement($control);
             if(util.isNullOrEmpty(remainErrors)) {
                 $control.data(DATA_HAS_ERROR, false);
-                $control.parent().removeClass('error');
+                ($control.data(DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
             }
             return $control;
         }
