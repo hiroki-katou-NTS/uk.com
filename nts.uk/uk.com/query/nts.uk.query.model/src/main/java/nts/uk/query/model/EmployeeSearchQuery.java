@@ -9,7 +9,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 @Getter
 @Setter
@@ -19,7 +19,7 @@ public class EmployeeSearchQuery implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/** The base date. */
-	private GeneralDate baseDate; //基準日
+	private GeneralDateTime baseDate; //基準日
 	
 	/** The search reference range. */
 	private Integer referenceRange; //検索参照範囲
@@ -55,10 +55,10 @@ public class EmployeeSearchQuery implements Serializable {
 	private List<String> jobTitleCodes; //職位ID一覧
 	
 	/** The period date. */
-	private GeneralDate periodStart; //在職・休職・休業のチェック期間
+	private GeneralDateTime periodStart; //在職・休職・休業のチェック期間
 	
 	/** The period date. */
-	private GeneralDate periodEnd; //在職・休職・休業のチェック期間
+	private GeneralDateTime periodEnd; //在職・休職・休業のチェック期間
 	
 	/** The incumbents. */
 	private Boolean includeIncumbents; //在職者を含める
@@ -73,9 +73,9 @@ public class EmployeeSearchQuery implements Serializable {
 	private Boolean includeRetirees; //退職者を含める
 	
 	/** The period of retirees date. */
-	private GeneralDate retireStart; //退職日のチェック期間
+	private GeneralDateTime retireStart; //退職日のチェック期間
 	
-	private GeneralDate retireEnd; //退職日のチェック期間
+	private GeneralDateTime retireEnd; //退職日のチェック期間
 	
 	/** The sort oder no. */
 	private Integer sortOrderNo; //並び順NO
