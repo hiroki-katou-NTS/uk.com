@@ -211,6 +211,15 @@ module a3 {
                         self.fixTableOptionOnedayFixed.columns = self.columnSettingFlex();
                     }
                 }
+                
+                if (self.isFlowMode()) {
+                    if (v) {
+                        self.fixTableOptionOvertimeFlow.columns = self.columnSettingOvertimeFlow();
+                    }
+                    else {
+                        self.fixTableOptionOvertimeFlow.columns = self.columnSettingFlowSimple();
+                    }
+                }
             });
         }
         
@@ -532,8 +541,8 @@ module a3 {
                 restrictTime: false,
                 otFrameNo: 1,
                 flowTimeSetting: flowTimeSetting,
-                inLegalOTFrameNo: dataModel.inLegalOTFrameNo(),
-                settlementOrder: dataModel.settlementOrder()
+                inLegalOTFrameNo: dataModel.inLegalOTFrameNo?dataModel.inLegalOTFrameNo():1,
+                settlementOrder: dataModel.settlementOrder?dataModel.settlementOrder():1
             };
             return dataDTO;
         }
@@ -546,9 +555,47 @@ module a3 {
         /**
          * init array setting column option overtime flow mode
          */
-         private columnSettingOvertimeFlow(): Array<any> {
-             let self = this;
-             return [
+        private columnSettingOvertimeFlow(): Array<any> {
+            let self = this;
+            let stringColumns: Array<any> = self.columnSettingFlowSimple();
+            stringColumns.push(
+                {
+                    headerText: nts.uk.resource.getText("KMK003_186"),
+                    key: "inLegalOTFrameNo",
+                    dataSource: self.lstOvertimeWorkFrame,
+                    defaultValue: ko.observable(1),
+                    width: 120,
+                    template: `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
+                                    optionsValue: 'overtimeWorkFrNo',
+                                    visibleItemsCount: 10,
+                                    optionsText: 'overtimeWorkFrName',
+                                    editable: false,
+                                    enable: true,
+                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
+                                </div>`
+                });
+            stringColumns.push({
+                headerText: nts.uk.resource.getText("KMK003_187"),
+                key: "settlementOrder",
+                dataSource: self.lstOvertimeWorkFrame,
+                defaultValue: ko.observable(1),
+                width: 100,
+                template: `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
+                                    optionsValue: 'overtimeWorkFrNo',
+                                    visibleItemsCount: 10,
+                                    optionsText: 'overtimeWorkFrName',
+                                    editable: false,
+                                    enable: true,
+                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
+                                </div>`
+            });
+            return stringColumns;
+        }
+        
+        private columnSettingFlowSimple(): Array<any>
+        {
+            let self = this;
+            return [
                  {
                      headerText: nts.uk.resource.getText("KMK003_174"),
                      key: "elapsedTime",
@@ -606,40 +653,8 @@ module a3 {
                                     enable: true,
                                     columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
                                 </div>`
-                 },
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_186"),
-                     key: "inLegalOTFrameNo",
-                     dataSource: self.lstOvertimeWorkFrame,
-                     defaultValue: ko.observable(1),
-                     width: 120,
-                     template:  `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
-                                    optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 10,
-                                    optionsText: 'overtimeWorkFrName',
-                                    editable: false,
-                                    enable: true,
-                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
-                                </div>`
-                 },
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_187"),
-                     key: "settlementOrder",
-                     dataSource: self.lstOvertimeWorkFrame,
-                     defaultValue: ko.observable(1),
-                     width: 100,
-                     template:  `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
-                                    optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 10,
-                                    optionsText: 'overtimeWorkFrName',
-                                    editable: false,
-                                    enable: true,
-                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
-                                </div>`
-                 }
-             ];
-         }
-        
+                 }];
+            }
         /**
          * function get column setting fixed and diff time
          */

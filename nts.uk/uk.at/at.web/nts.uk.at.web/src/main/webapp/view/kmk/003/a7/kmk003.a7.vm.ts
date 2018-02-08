@@ -451,9 +451,12 @@ module a7 {
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                
-                document.getElementById('nts-fix-table-a7-fixed-difftime').addEventListener('timerangedatachange', e => {
-                    screenModel.dataSourceForFixedOrDiffTime.valueHasMutated();
+                screenModel.isFlowOrFlex.subscribe((v) => {
+                    if (!v) {
+                        document.getElementById('nts-fix-table-a7-fixed-difftime').addEventListener('timerangedatachange', e => {
+                            screenModel.dataSourceForFixedOrDiffTime.valueHasMutated();
+                        });
+                    }
                 });
                 
 //                document.getElementById('nts-fix-table-a7-flow-flex-use').addEventListener('timerangedatachange', e => {
