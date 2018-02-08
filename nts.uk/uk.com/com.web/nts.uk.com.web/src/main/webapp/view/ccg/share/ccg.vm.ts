@@ -881,7 +881,7 @@ module nts.uk.com.view.ccg.share.ccg {
             /**
              * search Employee of Departmant_only
              */
-            searchEmployeeOfDepOnly(): void {
+            public searchEmployeeOfDepOnly(): void {
                 var self = this;
                 if (self.validateClient()) {
                     return;
@@ -893,7 +893,7 @@ module nts.uk.com.view.ccg.share.ccg {
             /**
              * search Employee of Departmant_Not_Only
              */
-            searchEmployeeOfDepOnly(): void {
+            public searchEmployeeOfDepNotOn(): void {
                 var self = this;
                 if (self.validateClient()) {
                     return;
@@ -993,7 +993,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 _.forEach(lstWkp, item => {
                     _.forEach(listWorkplaceId, item1 => {
                         if(_.eq(item, item1)){
-                            self.quickSearchParam.workplaceCodes.push({item});
+                            self.quickSearchParam.workplaceCodes.push(item);
                         }
                     });
                 });  
