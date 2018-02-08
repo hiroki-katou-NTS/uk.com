@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.query.model;
+package nts.uk.query.model.employee;
 
 import java.util.Optional;
 
@@ -11,11 +11,11 @@ import lombok.Getter;
 import nts.arc.time.GeneralDateTime;
 
 /**
- * The Class EmployeeQueryModel.
+ * The Class RegulationInfoEmployee.
  */
 @Getter
 @Builder
-public class EmployeeQueryModel { // 社員のソート用の規定情報
+public class RegulationInfoEmployee { // 社員のソート用の規定情報
 
 	/** The employee ID. */
 	private String employeeID; // 社員ID

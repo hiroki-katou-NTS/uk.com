@@ -2,14 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.query.model;
+package nts.uk.query.model.employee;
 
 import java.util.List;
 
 /**
  * The Interface EmployeeQueryModelRepository.
  */
-public interface EmployeeQueryModelRepository {
+public interface RegulationInfoEmployeeRepository {
 	
 	/**
 	 * Find.
@@ -17,6 +17,6 @@ public interface EmployeeQueryModelRepository {
 	 * @param paramQuery the param query
 	 * @return the list
 	 */
-	public List<EmployeeQueryModel> find(EmployeeSearchQuery paramQuery);
+	public List<RegulationInfoEmployee> find(EmployeeSearchQuery paramQuery);
 
 }

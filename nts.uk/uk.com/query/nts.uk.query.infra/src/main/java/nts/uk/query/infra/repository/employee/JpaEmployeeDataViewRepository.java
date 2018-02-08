@@ -20,15 +20,15 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.query.infra.entity.employee.EmployeeDataView;
 import nts.uk.query.infra.entity.employee.EmployeeDataView_;
-import nts.uk.query.model.EmployeeQueryModel;
-import nts.uk.query.model.EmployeeQueryModelRepository;
-import nts.uk.query.model.EmployeeSearchQuery;
+import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
+import nts.uk.query.model.employee.EmployeeSearchQuery;
+import nts.uk.query.model.employee.RegulationInfoEmployee;
 
 /**
  * The Class JpaEmployeeDataViewRepository.
  */
 @Stateless
-public class JpaEmployeeDataViewRepository extends JpaRepository implements EmployeeQueryModelRepository {
+public class JpaEmployeeDataViewRepository extends JpaRepository implements RegulationInfoEmployeeRepository {
 
 	/** The Constant LIST_MAX_QUERY_IN. */
 	private static final int LIST_MAX_QUERY_IN = 1000;
@@ -44,7 +44,7 @@ public class JpaEmployeeDataViewRepository extends JpaRepository implements Empl
 	 * EmployeeSearchQuery)
 	 */
 	@Override
-	public List<EmployeeQueryModel> find(EmployeeSearchQuery paramQuery) {
+	public List<RegulationInfoEmployee> find(EmployeeSearchQuery paramQuery) {
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -193,7 +193,7 @@ public class JpaEmployeeDataViewRepository extends JpaRepository implements Empl
 		});
 
 		return resultList.stream()
-				.map(entity -> EmployeeQueryModel.builder()
+				.map(entity -> RegulationInfoEmployee.builder()
 						.classificationCode(Optional.of(entity.getClassificationCode())).employeeCode(entity.getScd())
 						.employeeID(entity.getSid()).employmentCode(Optional.of(entity.getEmpCd()))
 						.hireDate(Optional.of(entity.getComStrDate())).jobTitleCode(Optional.of(entity.getJobCd()))
