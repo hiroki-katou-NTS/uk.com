@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.pub.scheduletime;
+package nts.uk.ctx.at.record.pub.dailyprocess.scheduletime;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
@@ -55,5 +55,6 @@ public class ScheduleTimePubExport {
 		this.childCareTime = childCareTime;
 		this.personalExpenceTime = personalExpenceTime;
 	}
+	
 	
 }

@@ -40,4 +40,12 @@ public class BreakdownTimeDay extends DomainObject{
 		this.afternoon = afternoon;
 	}
 	
+	/**
+	 * 所定労働時間の取得
+	 * @return　所定労働時間
+	 */
+	public int getPredetermineWorkTime(){
+		return this.morning.valueAsMinutes() + this.afternoon.valueAsMinutes();
+	}
+	
 }

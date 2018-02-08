@@ -13,13 +13,25 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
  *
  */
 @Getter
-@AllArgsConstructor
 public class IntegrationOfDaily {
 
 	private WorkInfoOfDailyPerformance workInformation;
 	private TimeLeavingOfDailyPerformance attendanceLeave;
 	@Setter
-	private AttendanceTimeOfDailyPerformance attendanceTimeOfDailyPerformance; 
+	private AttendanceTimeOfDailyPerformance attendanceTimeOfDailyPerformance;
+	
+	
+	/**
+	 * Constructor
+	 */
+	public IntegrationOfDaily(WorkInfoOfDailyPerformance workInformation, TimeLeavingOfDailyPerformance attendanceLeave,
+			AttendanceTimeOfDailyPerformance attendanceTimeOfDailyPerformance) {
+		super();
+		this.workInformation = workInformation;
+		this.attendanceLeave = attendanceLeave;
+		this.attendanceTimeOfDailyPerformance = attendanceTimeOfDailyPerformance;
+	} 
 	
 
+	
 }

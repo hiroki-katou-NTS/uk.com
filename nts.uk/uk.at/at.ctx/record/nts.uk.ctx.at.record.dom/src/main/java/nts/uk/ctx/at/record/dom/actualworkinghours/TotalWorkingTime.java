@@ -23,6 +23,8 @@ import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 
 /**
  * 
@@ -112,7 +114,7 @@ public class TotalWorkingTime {
 	 * 日別実績の総労働時間の計算
 	 * @return 
 	 */
-	public static TotalWorkingTime calcAllDailyRecord(CalculationRangeOfOneDay oneDay) {
+	public static TotalWorkingTime calcAllDailyRecord(CalculationRangeOfOneDay oneDay,AutoCalculationOfOverTimeWork overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting) {
 		
 		//総労働時間
 		val totalWorkTime = new AttendanceTime(0);
@@ -123,7 +125,7 @@ public class TotalWorkingTime {
 		/*日別実績の法定内時間*/
 		val withinStatutoryTimeOfDaily = WithinStatutoryTimeOfDaily.calcStatutoryTime(oneDay);
 		//日別実績の所定外時間
-		val excesstime = new ExcessOfStatutoryTimeOfDaily(new ExcessOfStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0)) ,Optional.empty(),Optional.empty());
+		val excesstime =ExcessOfStatutoryTimeOfDaily.calculationExcessTime(oneDay, overTimeAutoCalcSet,holidayAutoCalcSetting);
 		//日別実績の遅刻時間
 		val lateTime = Collections.emptyList();
 		//日別実績の早退時間

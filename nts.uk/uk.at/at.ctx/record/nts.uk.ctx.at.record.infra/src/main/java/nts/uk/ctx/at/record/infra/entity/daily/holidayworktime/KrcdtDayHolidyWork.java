@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.daily.holidayworktime;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -291,26 +292,42 @@ public class KrcdtDayHolidyWork extends UkJpaEntity implements Serializable{
 		this.preAppTime9 = frame9.getBeforeApplicationTime().get() == null ? 0 : frame9.getBeforeApplicationTime().get().valueAsMinutes();
 		this.preAppTime10 = frame10.getBeforeApplicationTime().get() == null ? 0 : frame10.getBeforeApplicationTime().get().valueAsMinutes();	
 		
-		HolidayWorkMidNightTime within = getHolidayMidNightWork(domain.getHolidayMidNightWork().get(), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
-		HolidayWorkMidNightTime excess = getHolidayMidNightWork(domain.getHolidayMidNightWork().get(), StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork);
-		HolidayWorkMidNightTime publicWork = getHolidayMidNightWork(domain.getHolidayMidNightWork().get(), StaturoryAtrOfHolidayWork.PublicHolidayWork);
-		if(within.getTime() != null){
-			/*法定内休日出勤深夜*/
-			this.legHoliWorkMidn = within.getTime().getTime() == null ? null : within.getTime().getTime().valueAsMinutes();
-			/*計算法定内休日出勤深夜*/
-			this.calcLegHoliWorkMidn = within.getTime().getCalcTime() == null ? 0 : within.getTime().getCalcTime().valueAsMinutes();
-		}
-		if(excess != null){
-			/*法定外休日出勤深夜*/
-			this.illegHoliWorkMidn = excess.getTime().getTime() == null ? 0 : excess.getTime().getTime().valueAsMinutes();
-			/*計算法定外休日出勤深夜*/
-			this.calcIllegHoliWorkMidn = excess.getTime().getCalcTime() == null ? 0 : excess.getTime().getCalcTime().valueAsMinutes();
-		}
-		if(publicWork != null){
-			/*祝日日出勤深夜*/
-			this.pbHoliWorkMidn = publicWork.getTime().getTime() == null ? 0 : publicWork.getTime().getTime().valueAsMinutes();
-			/*計算祝日日出勤深夜*/
-			this.calcPbHoliWorkMidn = publicWork.getTime().getCalcTime() == null ? 0 : publicWork.getTime().getCalcTime().valueAsMinutes();
+		this.legHoliWorkMidn  = 0;
+		this.calcLegHoliWorkMidn = 0;
+		this.illegHoliWorkMidn = 0;
+		this.calcIllegHoliWorkMidn = 0;
+		this.pbHoliWorkMidn = 0;
+		this.calcPbHoliWorkMidn = 0;
+		
+		if(domain.getHolidayMidNightWork().isPresent()) {
+			Optional<HolidayWorkMidNightTime> within = getHolidayMidNightWork(domain.getHolidayMidNightWork().get(), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
+			Optional<HolidayWorkMidNightTime> excess = getHolidayMidNightWork(domain.getHolidayMidNightWork().get(), StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork);
+			Optional<HolidayWorkMidNightTime> publicWork = getHolidayMidNightWork(domain.getHolidayMidNightWork().get(), StaturoryAtrOfHolidayWork.PublicHolidayWork);
+			if(within.isPresent()) {
+				if(within.get().getTime() != null){
+					/*法定内休日出勤深夜*/
+					this.legHoliWorkMidn = within.get().getTime().getTime() == null ? null : within.get().getTime().getTime().valueAsMinutes();
+					/*計算法定内休日出勤深夜*/
+					this.calcLegHoliWorkMidn = within.get().getTime().getCalcTime() == null ? 0 : within.get().getTime().getCalcTime().valueAsMinutes();
+				}
+			}
+			if(excess.isPresent()) {
+				if(excess != null){
+					/*法定外休日出勤深夜*/
+					this.illegHoliWorkMidn = excess.get().getTime().getTime() == null ? 0 : excess.get().getTime().getTime().valueAsMinutes();
+					/*計算法定外休日出勤深夜*/
+					this.calcIllegHoliWorkMidn = excess.get().getTime().getCalcTime() == null ? 0 : excess.get().getTime().getCalcTime().valueAsMinutes();
+				}
+			}
+			if(publicWork.isPresent())
+			{
+				if(publicWork != null){
+					/*祝日日出勤深夜*/
+					this.pbHoliWorkMidn = publicWork.get().getTime().getTime() == null ? 0 : publicWork.get().getTime().getTime().valueAsMinutes();
+					/*計算祝日日出勤深夜*/
+					this.calcPbHoliWorkMidn = publicWork.get().getTime().getCalcTime() == null ? 0 : publicWork.get().getTime().getCalcTime().valueAsMinutes();
+				}
+			}
 		}
 		
 		/*休日出勤拘束時間*/
@@ -318,8 +335,8 @@ public class KrcdtDayHolidyWork extends UkJpaEntity implements Serializable{
 	}
 
 
-	private HolidayWorkMidNightTime getHolidayMidNightWork(HolidayMidnightWork domain, StaturoryAtrOfHolidayWork statutoryAttr) {
-		return domain.getHolidayWorkMidNightTime().stream().filter(tc -> tc.getStatutoryAtr() == statutoryAttr).findFirst().get();
+	private Optional<HolidayWorkMidNightTime> getHolidayMidNightWork(HolidayMidnightWork domain, StaturoryAtrOfHolidayWork statutoryAttr) {
+		return domain.getHolidayWorkMidNightTime().stream().filter(tc -> tc.getStatutoryAtr().equals(statutoryAttr)).findFirst();
 	}
 
 
