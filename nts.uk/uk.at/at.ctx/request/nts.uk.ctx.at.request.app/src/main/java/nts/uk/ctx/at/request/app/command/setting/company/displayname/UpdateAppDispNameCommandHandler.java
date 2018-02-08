@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.command.setting.company.displayname;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -17,19 +18,21 @@ import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameReposito
  */
 @Stateless
 @Transactional
-public class UpdateAppDispNameCommandHandler extends CommandHandler<AppDispNameCommand>{
+public class UpdateAppDispNameCommandHandler extends CommandHandler<List<AppDispNameCommand>>{
 	@Inject
 	private AppDispNameRepository dispRep;
 	@Override
-	protected void handle(CommandHandlerContext<AppDispNameCommand> context) {
-		AppDispNameCommand data = context.getCommand();
-		Optional<AppDispName> appDisp = dispRep.getDisplay(data.getAppType());
-		AppDispName app = AppDispName.createFromJavaType(data.getCompanyId(), data.getAppType(), data.getDispName());
-		if(appDisp.isPresent()){
-			dispRep.update(app);
-			return;
+	protected void handle(CommandHandlerContext<List<AppDispNameCommand>> context) {
+		List<AppDispNameCommand> data = context.getCommand();
+		for(AppDispNameCommand item : data){
+			Optional<AppDispName> appDisp = dispRep.getDisplay(item.getAppType());
+			AppDispName app = AppDispName.createFromJavaType(item.getCompanyId(), item.getAppType(), item.getDispName());
+			if(appDisp.isPresent()){
+				dispRep.update(app);
+			}else{
+				dispRep.insert(app);
+			}
 		}
-		dispRep.insert(app);
 	}
 
 }

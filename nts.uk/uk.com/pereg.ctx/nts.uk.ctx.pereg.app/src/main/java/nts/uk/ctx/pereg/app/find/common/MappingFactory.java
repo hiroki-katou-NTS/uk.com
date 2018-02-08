@@ -72,7 +72,9 @@ public class MappingFactory {
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
 				Object value = itemCodeValueMap.get(valueItem.getItemCode());
 				if (valueItem.getItem() != null) {
-					if (valueItem.getItem().getDataTypeValue() == 7) {
+					if(valueItem.getItem().getDataTypeValue() == 6
+							|| valueItem.getItem().getDataTypeValue() == 7
+							|| valueItem.getItem().getDataTypeValue() == 8) {
 						value = value.toString();
 					}
 				}
@@ -215,13 +217,13 @@ public class MappingFactory {
 						break;
 					}
 
+				}else {
+					if(firstReqLstItems.contains(valueItem.getItemCode())) {
+						valueItem.setTextValue(getFirstValueText(valueItem.getItemCode()));
+					} else if(secReqLstItems.contains(valueItem.getItemCode())) {
+						valueItem.setTextValue(getSecValueText(valueItem.getItemCode()));
+					}
 				}
-				if(firstReqLstItems.contains(valueItem.getItemCode()) && valueItem.getValue() != null) {
-					valueItem.setTextValue(getFirstValueText(valueItem.getItemCode()));
-				} else if(secReqLstItems.contains(valueItem.getItemCode()) && valueItem.getValue() != null) {
-					valueItem.setTextValue(getSecValueText(valueItem.getItemCode()));
-				}
-				
 			}
 		}
 	}

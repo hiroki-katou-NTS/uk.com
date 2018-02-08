@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.daily.holidayworktime;
 
+import lombok.Getter;
 import lombok.Value;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
@@ -11,13 +12,28 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWork
  * @author keisuke_hoshina
  *
  */
-@Value
+@Getter
 public class HolidayWorkFrameTime {
 	private HolidayWorkFrameNo holidayFrameNo;
 	private Finally<TimeWithCalculation> holidayWorkTime;
 	private Finally<TimeWithCalculation> transferTime;
 	private Finally<AttendanceTime> beforeApplicationTime;
 	
+	/**
+	 * Constructor 
+	 */
+	public HolidayWorkFrameTime(HolidayWorkFrameNo holidayFrameNo, Finally<TimeWithCalculation> holidayWorkTime,
+			Finally<TimeWithCalculation> transferTime, Finally<AttendanceTime> beforeApplicationTime) {
+		super();
+		this.holidayFrameNo = holidayFrameNo;
+		this.holidayWorkTime = holidayWorkTime;
+		this.transferTime = transferTime;
+		this.beforeApplicationTime = beforeApplicationTime;
+	}
+	
+	public void addHolidayTime(AttendanceTime holidayWorkTime) {
+		this.holidayWorkTime = Finally.of(this.holidayWorkTime.get().addMinutes(holidayWorkTime, holidayWorkTime));
+	}
 	
 	//休出枠Noのみ指定した休出枠Noに更新する
 	public HolidayWorkFrameTime updateHolidayFrameNo(HolidayWorkFrameNo holidayFrameNo) {
@@ -29,5 +45,7 @@ public class HolidayWorkFrameTime {
 				this.beforeApplicationTime);
 		return holidayWorkFrameTime;
 	}
+
+
 	
 }
