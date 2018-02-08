@@ -59,7 +59,7 @@ public class TotalCondition {
 		this.atdItemId = memento.getAttendanceItemId();
 
 		if (UseAtr.Use.equals(upperLimitSettingAtr) && UseAtr.Use.equals(lowerLimitSettingAtr)
-				&& thresoldUpperLimit.greaterThanOrEqualTo(thresoldLowerLimit)) {
+				&& thresoldUpperLimit.lessThanOrEqualTo(thresoldLowerLimit)) {
 			throw new BusinessException("Msg_210");
 		}
 		
