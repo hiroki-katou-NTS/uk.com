@@ -80,7 +80,7 @@ public class JpaStampRequestSettingRepository extends JpaRepository implements S
 		oldEntity.stampGoOutAtr_Private_Disp = entity.stampGoOutAtr_Private_Disp;
 		oldEntity.stampGoOutAtr_Public_Disp = entity.stampGoOutAtr_Public_Disp;
 		oldEntity.stampGoOutAtr_Union_Disp = entity.stampGoOutAtr_Union_Disp;
-		oldEntity.stampPlaceDisp = entity.stampPlaceDisp;
+		oldEntity.stampPlaceDisp = oldEntity.stampPlaceDisp;
 		oldEntity.supFrameDispNO = entity.supFrameDispNO;
 		oldEntity.topComment = entity.topComment;
 		oldEntity.topCommentFontColor = entity.topCommentFontColor;

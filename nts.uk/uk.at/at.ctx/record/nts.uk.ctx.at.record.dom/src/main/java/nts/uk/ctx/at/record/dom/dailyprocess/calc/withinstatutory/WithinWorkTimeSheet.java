@@ -119,6 +119,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			Optional<MidNightTimeSheet> midNightTimeSheet;
 			for(EmTimeZoneSet duplicateTimeSheet :workingHourSet) {
 				//DeductionTimeSheet deductionTimeSheet = /*控除時間を分割する*/
+				
 				timeFrame = new WithinWorkTimeFrame(frameNo, duplicateTimeSheet.getTimezone(),duplicateTimeSheet.getTimezone().timeSpan(),deductionTimeSheet.getForDeductionTimeZoneList(),Collections.emptyList(),Optional.empty(),Collections.emptyList());
 				/*加給*/
 				//bonusPayTimeSheet = bonusPaySetting.createDuplicationBonusPayTimeSheet(duplicateTimeSheet.getTimezone().timeSpan());

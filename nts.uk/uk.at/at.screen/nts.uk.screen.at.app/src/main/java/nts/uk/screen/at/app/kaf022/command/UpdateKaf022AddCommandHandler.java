@@ -94,7 +94,7 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 	@Override
 	protected void handle(CommandHandlerContext<Kaf022AddCommand> context) {
 		Kaf022AddCommand kaf022 = context.getCommand();
-		
+		// update list command object
 		this.updateApp.handle(kaf022.getAppDead());
 		
 		this.updateAppSet.handle(kaf022.getAppSet());
@@ -110,9 +110,9 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		this.updateAppTemp.handle(kaf022.getAppTemp());
 		
 		this.updateAppliSet.handle(kaf022.getAppliSet());
-		
+		// update list command object
 		this.updateAppDisp.handle(kaf022.getAppName());
-		
+		// update list command object
 		this.updateHdApp.handle(kaf022.getHdDisp());
 		
 		this.updateStamp.handle(kaf022.getStampReq());
