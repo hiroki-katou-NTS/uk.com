@@ -878,15 +878,37 @@ module nts.uk.com.view.ccg.share.ccg {
                 return dataRes;
             }
             
-            quickSearchEmployee(): void {
+            /**
+             * search Employee of Departmant_only
+             */
+            searchEmployeeOfDepOnly(): void {
                 var self = this;
                 if (self.validateClient()) {
                     return;
                 }
-//                var status : boolean;
-                self.quickSearchParam.referenceRange = ConfigEnumReferenceRange.ALL_EMPLOYEE;
+                self.quickSearchParam.referenceRange = ConfigEnumReferenceRange.DEPARTMENT_ONLY;
+                self.queryMethod();
+            }
+            
+            /**
+             * search Employee of Departmant_Not_Only
+             */
+            searchEmployeeOfDepOnly(): void {
+                var self = this;
+                if (self.validateClient()) {
+                    return;
+                }
+                self.quickSearchParam.referenceRange = ConfigEnumReferenceRange.DEPARTMENT_AND_CHILD;
+                self.queryMethod();
+            }
+            
+            /**
+             * Method Query
+             */
+            public queryMethod(): void {
+                var self = this;
+                
                 //check closure is displayed 
-                self.quickSearchParam.referenceRange = ConfigEnumReferenceRange.ALL_EMPLOYEE;
                 if (self.showClosure){
                     if (self.selectedClosed != ConfigEnumClosure.CLOSURE_ALL){
                         service.getEmploymentCodeByClosureId(self.selectedClosed).done(data => {
@@ -895,28 +917,86 @@ module nts.uk.com.view.ccg.share.ccg {
                         });
                     } 
                     if (!nts.uk.util.isNullOrEmpty(self.systemType)){
-                        // Goi Query (thang nay de lai chua lm)
-                        /** if(self.systemType == ConfigEnumSystemType.SYSTYPE_ADMIN){
-                            //change the workplace list
-                            service.getRefRangeBySysType(self.systemType).done(data => {
-                                if (data == ConfigEnumReferenceRange.ONLY_MYSELF){
-                                    status = false;
-                                }
-                                else {
-                                    if (self.quickSearchParam.referenceRange == ConfigEnumReferenceRange.ALL_EMPLOYEE){
-                                        if (data != ConfigEnumReferenceRange.ALL_EMPLOYEE){
-                                            self.getReferableWorkplaceList(self.quickSearchParam);
-                                        }
-                                    }
-                                    status = 0;
-                                }
-                                else {
-                                    if (self.quickSearchParam.referenceRange == 
-                                }
-                            });
-                        }**/
+                        // Call Method Query 
+                        self.queryMethod();
                     }
                 }
+                
+                self.changeListWorkplaceId();
+                //Get List Employee 
+                service.getEmploymentCodeByClosureId(self.selectedClosed).done(data => {
+                    
+                });
+            }
+            
+            /**
+             * Change workplace list
+             */
+            public changeListWorkplaceId(): void {
+                var self = this;
+                var status = true;
+               
+                //change the workplace list
+                var listWorkplaceId = [];
+                
+                if (nts.uk.util.isNullOrEmpty(self.quickSearchParam.referenceRange)){
+                    return;
+                } else {
+                    //Get ReferenceRange by Role
+                    service.getRefRangeBySysType(self.systemType).done(data => {
+                        if (data == ConfigEnumReferenceRange.ONLY_MYSELF){
+                            status = false;
+                            return;
+                        }
+                        else {
+                            //check param ReferenceRange
+                            if (self.quickSearchParam.referenceRange == ConfigEnumReferenceRange.ALL_EMPLOYEE){
+                                //check ReferenceRange from Role
+                                if (data == ConfigEnumReferenceRange.ALL_EMPLOYEE){
+                                    return;
+                                } 
+                            } else {
+                                ////check ReferenceRange from Role
+                                if (data != ConfigEnumReferenceRange.DEPARTMENT_AND_CHILD){
+                                    self.quickSearchParam.referenceRange = ConfigEnumReferenceRange.DEPARTMENT_ONLY;
+                                }
+                            }
+                            //get Workplace list from domain
+                            service.getListWorkplaceId(self.quickSearchParam.baseDate, data).done(data => {
+                                listWorkplaceId = data;
+                            });
+                        }
+                        //check param filterByWorkplace
+                        if(self.quickSearchParam.filterByWorkplace){
+                            if(!nts.uk.util.isNullOrEmpty(self.quickSearchParam.workplaceCodes) &&
+                                !nts.uk.util.isNullOrEmpty(listWorkplaceId)){
+                                //Set list workplaceId
+                                self.setListWorkplace(listWorkplaceId);
+                            }      
+                        } else {
+                            self.quickSearchParam.filterByWorkplace = true;
+                            self.quickSearchParam.workplaceCodes = listWorkplaceId;
+                        }
+                    });
+                }
+            }
+            
+            /**
+             * Set list workplaceId
+             */
+            public setListWorkplace(listWorkplaceId: Array<string>): void {
+                var self = this;
+                
+                var lstWkp = self.quickSearchParam.workplaceCodes;
+                self.quickSearchParam.workplaceCodes = [];
+                
+                _.forEach(lstWkp, item => {
+                    _.forEach(listWorkplaceId, item1 => {
+                        if(_.eq(item, item1)){
+                            self.quickSearchParam.workplaceCodes.push({item});
+                        }
+                    });
+                });  
             }
 
             /**
@@ -1019,7 +1099,7 @@ module nts.uk.com.view.ccg.share.ccg {
             filterByDepartment: boolean;
             departmentCodes: Array<number>;
             filterByWorkplace: boolean;
-            workplaceCodes: Array<number>;
+            workplaceCodes: Array<string>;
             filterByClassification: boolean;
             classificationCodes: Array<any>;
             filterByJobTitle: boolean;

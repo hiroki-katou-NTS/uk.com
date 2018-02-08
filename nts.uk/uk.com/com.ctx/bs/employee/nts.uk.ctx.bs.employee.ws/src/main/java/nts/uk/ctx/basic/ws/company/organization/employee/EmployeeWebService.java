@@ -107,18 +107,6 @@ public class EmployeeWebService extends WebService {
 	}
 	
 	/**
-	 * Quick search.
-	 *
-	 * @param input the input
-	 * @return the list
-	 */
-	@POST
-	@Path("quicksearch")
-	public List<EmployeeSearchData> quickSearch(EmployeeSearchQuery input) {
-		return this.employeeQueryProcessor.quickSearchEmployee(input);
-	}
-
-	/**
 	 * Search of work place.
 	 *
 	 * @param baseDate

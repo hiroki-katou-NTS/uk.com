@@ -19,6 +19,7 @@ import nts.uk.ctx.sys.auth.app.find.person.role.PersonInformationRole;
 import nts.uk.ctx.sys.auth.app.find.person.role.PersonInformationRoleFinder;
 import nts.uk.ctx.sys.auth.app.find.person.role.dto.RoleDto;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.RoleWorkplaceIDFinder;
+import nts.uk.ctx.sys.auth.app.find.role.workplace.WorkplaceParam;
 import nts.uk.ctx.sys.auth.dom.adapter.persettingmenu.PermissionSettingMenuAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.persettingmenu.PermissionSettingMenuImport;
 import nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange;
@@ -106,6 +107,12 @@ public class RoleWebservice extends WebService {
 	@Path("per/setting/menu/{roleType}")
 	public List<PermissionSettingMenuImport> perSettingMenu( @PathParam("roleType") int roleType){
 		return 	permissionSettingMenuAdapter.findByRoleType(roleType);
+	}
+	
+	@POST
+	@Path("getListWokplaceId")
+	public List<String> findListWokplaceId(WorkplaceParam param){
+		return roleWorkplaceIDFinder.findListWorkplaceId(param);
 	}
 	
 }

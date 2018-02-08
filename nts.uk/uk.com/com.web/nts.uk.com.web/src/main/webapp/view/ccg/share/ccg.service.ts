@@ -14,7 +14,7 @@ module nts.uk.com.view.ccg.share.ccg {
             getOfSelectedEmployee: "basic/organization/employee/getoffselect",
             searchAllWorkType: "share/worktype/findNotDeprecated",
             getEmploymentCodeByClosureId: "ctx/at/shared/workrule/closure/findEmpByClosureId",
-//            quickSearchEmployee: "basic/organization/employee/quicksearch",
+            searchEmployee: "query/employee/findAll",
             getRefRangeBySysType: "ctx/sys/auth/role/getrefrangebysystype",
             getClosuresByBaseDate: "ctx/at/shared/workrule/closure/getclosuresbybasedate",
             calculatePeriod: "ctx/at/shared/workrule/closure/calculateperiod",
@@ -22,8 +22,7 @@ module nts.uk.com.view.ccg.share.ccg {
             getCurrentHistoryItem: "bs/employee/employment/history/getcurrenthistoryitem",
             getPersonalRoleFuturePermit: "ctx/sys/auth/grant/roleindividual/get/futurerefpermit",
             getEmploymentRoleFuturePermit: "at/auth/workplace/employmentrole/get/futurerefpermit",
-            findAllWorkplaceId: "at/auth/workplace/manager/findAllWorkplaceId",
-            getAffWorkplaceHistItem: "bs/employee/workplace/getAffWorkplaceHistItem",
+            getListWorkplaceId: "ctx/sys/auth/role/getListWorkplaceId",
         }
 
         /**
@@ -139,22 +138,19 @@ module nts.uk.com.view.ccg.share.ccg {
         }
         
         /**
-         * quick search employee
+         * search employee
          */
-//        export function quickSearchEmployee(params: any): JQueryPromise<any> {
-//            return nts.uk.request.ajax('com', servicePath.searchAllEmployee, params);
-//        }
+        export function searchEmployee(param: model.QuickSearchParam): JQueryPromise<any> {
+            return nts.uk.request.ajax('com', servicePath.searchEmployee, param);
+        }
         
         /**
-         * find All WorkplaceId
+         * get List WorkPlaceId
          */
-        export function findAllWorkplaceId(baseDate: Date): JQueryPromise<any> {
-            return nts.uk.request.ajax('at', servicePath.findAllWorkplaceId, baseDate);
+        export function getListWorkplaceId(baseDate: Date, referenceRange: number): JQueryPromise<any> {
+            return nts.uk.request.ajax('com', servicePath.getListWorkplaceId, { baseDate: baseDate, referenceRange: referenceRange });
         }
         
-        export function getAffWorkplaceHistItem(baseDate: Date): JQueryPromise<any> {
-            return nts.uk.request.ajax('com', servicePath.getAffWorkplaceHistItem, baseDate);
-        }
         
         
         export module model{
@@ -244,7 +240,40 @@ module nts.uk.com.view.ccg.share.ccg {
                 employmentInfo: SelectedInformation; // 就業の選択している情報
                 salaryInfo: SelectedInformation; // 給与の選択している情報
             }
+                
+            export interface BaseQueryParam {
+                baseDate: any;
+                referenceRange: number;
+                filterByEmployment: boolean;
+                employmentCodes: Array<string>;
+                filterByDepartment: boolean;
+                departmentCodes: Array<number>;
+                filterByWorkplace: boolean;
+                workplaceCodes: Array<string>;
+                filterByClassification: boolean;
+                classificationCodes: Array<any>;
+                filterByJobTitle: boolean;
+                jobTitleCodes: Array<number>;
+    
+                periodStart: any;
+                periodEnd: any;
+    
+                includeIncumbents: boolean;
+                //TODO: Including workers on leave 
+                includeOccupancy: boolean;
+                includeRetirees: boolean;
+                retireStart: any;
+                retireEnd: any;
+    
+                sortOrderNo: number;
+                nameType: number;
+            }
 
+            export interface QuickSearchParam extends BaseQueryParam {
+            }
+
+            export interface AdvancedSearchParam extends BaseQueryParam {
+            }
         }
     }
 }
