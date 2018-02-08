@@ -3,6 +3,14 @@
 	float: left;
 }
 
+#oViewModel  #set-work-type, #oViewModel #set-work-time {
+	position: absolute;
+}
+
+#oViewModel #set-work-time {
+	top: 29px;
+}
+
 #oViewModel #time-edit1 {
 	text-align: center !important;
 	width: 43px !important;

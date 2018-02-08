@@ -72,7 +72,9 @@ public class MappingFactory {
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
 				Object value = itemCodeValueMap.get(valueItem.getItemCode());
 				if (valueItem.getItem() != null) {
-					if (valueItem.getItem().getDataTypeValue() == 7) {
+					if(valueItem.getItem().getDataTypeValue() == 6
+							|| valueItem.getItem().getDataTypeValue() == 7
+							|| valueItem.getItem().getDataTypeValue() == 8) {
 						value = value.toString();
 					}
 				}
