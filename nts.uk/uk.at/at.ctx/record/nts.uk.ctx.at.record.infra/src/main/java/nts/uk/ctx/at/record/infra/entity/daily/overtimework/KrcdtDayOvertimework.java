@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.daily.overtimework;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -295,13 +296,12 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 		this.preOverTimeAppTime9 = frame9.getBeforeApplicationTime() == null ? 0 : frame9.getBeforeApplicationTime().valueAsMinutes();
 		this.preOverTimeAppTime10 = frame10.getBeforeApplicationTime() == null ? 0 : frame10.getBeforeApplicationTime().valueAsMinutes();
 		
-		ExcessOverTimeWorkMidNightTime excessOver = overTimeOfDaily.getExcessOverTimeWorkMidNightTime().get();
-		if(excessOver.getTime() != null){
-			//法定外
-			this.ileglMidntOverTime = excessOver.getTime().getTime() == null ? 0 : excessOver.getTime().getTime().valueAsMinutes();
-			//計算法定外
-			this.calcIleglMidNOverTime = excessOver.getTime().getCalcTime() == null ? 0 : excessOver.getTime().getCalcTime().valueAsMinutes();
-		}
+		Finally<ExcessOverTimeWorkMidNightTime> excessOver = overTimeOfDaily.getExcessOverTimeWorkMidNightTime();
+		//法定外
+		this.ileglMidntOverTime = excessOver.get().getTime().getTime() == null ? 0 : excessOver.get().getTime().getTime().valueAsMinutes();
+		//計算法定外
+		this.calcIleglMidNOverTime = excessOver.get().getTime().getCalcTime() == null ? 0 : excessOver.get().getTime().getCalcTime().valueAsMinutes();
+
 		//拘束時間
 		this.overTimeBindTime = overTimeOfDaily.getOverTimeWorkSpentAtWork() == null ? 0 : overTimeOfDaily.getOverTimeWorkSpentAtWork().valueAsMinutes();
 		//変形法定内残業

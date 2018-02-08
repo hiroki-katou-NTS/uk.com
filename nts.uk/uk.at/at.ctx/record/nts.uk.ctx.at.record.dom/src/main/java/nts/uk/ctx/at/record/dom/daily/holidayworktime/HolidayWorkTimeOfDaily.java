@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.record.dom.daily.holidayworktime;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Value;
+import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
@@ -13,8 +15,10 @@ import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlHolidayWorkTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
@@ -31,6 +35,9 @@ public class HolidayWorkTimeOfDaily {
 	private Finally<HolidayMidnightWork> holidayMidNightWork;
 	private AttendanceTime holidayTimeSpentAtWork;
 	
+	/**
+	 * Constructor 
+	 */
 	public HolidayWorkTimeOfDaily(List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheet,List<HolidayWorkFrameTime> holidayWorkFrameTime,
 								   Finally<HolidayMidnightWork> holidayMidNightWork, AttendanceTime holidayTimeSpentAtWork) {
 		this.holidayWorkFrameTimeSheet = holidayWorkFrameTimeSheet;
@@ -39,17 +46,22 @@ public class HolidayWorkTimeOfDaily {
 		this.holidayTimeSpentAtWork = holidayTimeSpentAtWork;
 	}
 	
+
 	/**
-	 * 休出時間枠時間帯をループさせ時間を計算する
+	 * メンバー変数の時間計算を指示するクラス
+	 * @param holidayTimeSheet
+	 * @return
 	 */
-	public List<HolidayWorkFrameTime> collectHolidayWorkTime(AutoCalcSetOfHolidayWorkTime autoCalcSet) {
-		List<HolidayWorkFrameTime> calcHolidayWorkTimeList = new ArrayList<>();
-		for(HolidayWorkFrameTimeSheet holidyWorkFrameTimeSheet : holidayWorkFrameTimeSheet) {
-			//calcHolidayWorkTimeList.add(holidyWorkFrameTimeSheet.calcOverTimeWorkTime(autoCalcSet));
-		}
-		return calcHolidayWorkTimeList;
+	public static HolidayWorkTimeOfDaily calculationTime(HolidayWorkTimeSheet holidayWorkTimeSheet,AutoCalSetting holidayAutoCalcSetting) {
+		val holidayWorkFrameTimeSheet = holidayWorkTimeSheet.changeHolidayWorkTimeFrameTimeSheet();
+		val holidayWorkFrameTime = holidayWorkTimeSheet.collectHolidayWorkTime(holidayAutoCalcSetting);
+		val holidayMidnightWork = Finally.of(new HolidayMidnightWork(Collections.emptyList()));
+		val holidayTimeSpentTime = new AttendanceTime(0);
+		return new HolidayWorkTimeOfDaily(holidayWorkFrameTimeSheet,
+										  holidayWorkFrameTime,
+										  holidayMidnightWork,
+										  holidayTimeSpentTime);
 	}
-	
 	/**
 	 * 休出枠時間へ休出時間の集計結果を追加する
 	 * @param hasAddListClass 休出時間帯の集計を行った後の休出枠時間クラス
