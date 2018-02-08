@@ -107,7 +107,7 @@ public class OverTimeWorkDailyPerformDto {
 								toAttendanceTime(c.getBeforeApplicationTime()), toAttendanceTime(c.getOrderTime()))),
 				excessOfStatutoryMidNightTime == null ? Finally.empty() : Finally.of(excessOfStatutoryMidNightTime.toDomain()),
 				toAttendanceTime(irregularWithinPrescribedOverTimeWork),
-				new FlexTime(createTimeWithCalcMinus(), toAttendanceTime(flexTime.getBeforeApplicationTime())),
+				new FlexTime(createTimeWithCalcMinus(), flexTime == null ? null : toAttendanceTime(flexTime.getBeforeApplicationTime())),
 				toAttendanceTime(overTimeSpentAtWork));
 	}
 
