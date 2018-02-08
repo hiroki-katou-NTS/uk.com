@@ -12,7 +12,7 @@ module nts.uk.com.view.ccg.share.ccg {
             searchWorkplaceChild: "basic/organization/employee/workplacechild",
             searchWorkplaceOfEmployee: "basic/organization/employee/workplaceemp",
             getOfSelectedEmployee: "basic/organization/employee/getoffselect",
-            searchAllWorkType: "share/worktype/findNotDeprecated",
+            searchAllWorkType: "at/share/worktype/findNotDeprecated",
             getEmploymentCodeByClosureId: "ctx/at/shared/workrule/closure/findEmpByClosureId",
             searchEmployee: "query/employee/findAll",
             getRefRangeBySysType: "ctx/sys/auth/role/getrefrangebysystype",
@@ -136,10 +136,7 @@ module nts.uk.com.view.ccg.share.ccg {
          * search all worktype
          */
         export function searchAllWorkType(): JQueryPromise<string[]> {
-            let dfd = $.Deferred<string[]>();
-            dfd.resolve([]);
-            return dfd.promise();
-            //return nts.uk.request.ajax('at', servicePath.searchAllWorkType);
+            return nts.uk.request.ajax('at', servicePath.searchAllWorkType);
         }
         
         /**

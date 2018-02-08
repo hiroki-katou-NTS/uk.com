@@ -454,10 +454,10 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.systemType = 5; //TODO: mock data
                 self.isQuickSearchTab = options.isQuickSearchTab;
                 self.isAdvancedSearchTab = options.isAdvancedSearchTab;
-                self.showBaseDate = options.showBaseDate;
+                self.showBaseDate = true;
                 self.showClosure = true; //TODO: mock data
                 self.showAllClosure = options.showAllClosure;
-                self.showPeriod = options.showPeriod;
+                self.showPeriod = true;
                 self.showPeriodYM = options.periodAccuracy == 1 ? true : false; // 1 == YM, other = YMD
 
                 /** Required parameter */
@@ -478,12 +478,12 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.isEmployeeWorkplaceFollow = options.isEmployeeWorkplaceFollow;
 
                 /** Advanced search properties */
-                self.showEmployment = options.showEmployment;
-                self.showWorkplace = options.showWorkplace;
-                self.showClassification = options.showClassification;
-                self.showJobTitle = options.showJobTitle;
-                self.showWorktype = options.showWorktype;
-                self.isMultiple = options.isMutipleCheck;
+                self.showEmployment = true; //options.showEmployment;
+                self.showWorkplace = true; //options.showWorkplace;
+                self.showClassification = true; //options.showClassification;
+                self.showJobTitle = true; //options.showJobTitle;
+                self.showWorktype = true; //options.showWorktype;
+                self.isMultiple = true; //options.isMutipleCheck;
 
                 // functions
                 self.onSearchAllClicked = options.onSearchAllClicked;
@@ -683,10 +683,18 @@ module nts.uk.com.view.ccg.share.ccg {
                             self.listWorkType(workTypeList);
                             self.reloadDataSearch();
 
-                            $('#employmentList').ntsListComponent(self.employments);
-                            $('#classificationList').ntsListComponent(self.classifications);
-                            $('#jobtitleList').ntsListComponent(self.jobtitles);
-                            $('#workplaceList').ntsTreeComponent(self.workplaces);
+                            if (self.showEmployment) {
+                                $('#employmentList').ntsListComponent(self.employments);
+                            }
+                            if (self.showClassification) {
+                                $('#classificationList').ntsListComponent(self.classifications);
+                            }
+                            if (self.showJobTitle) {
+                                $('#jobtitleList').ntsListComponent(self.jobtitles);
+                            }
+                            if (self.showWorkplace) {
+                                $('#workplaceList').ntsTreeComponent(self.workplaces);
+                            }
                             if (self.isShowEmployeeList) {
                                 $('#employeeinfo').ntsListComponent(self.employeeinfo);
                             }
