@@ -160,7 +160,7 @@ public class AddEmployeeCommandFacade {
 			ItemValue itemVal = getItemById(inputs, itemCD, x.getCategoryCode());
 
 			x.setDataType(getSaveDataType(x.getDataType(), x,
-					itemVal != null ? itemVal.value() : x.getSaveData().getValue().toString()));
+					itemVal != null ? itemVal.value() : String.valueOf(x.getSaveData().getValue())));
 
 			if (itemVal != null) {
 				x.setSaveData(new SaveDataDto(x.getSaveData().getSaveDataType(),
