@@ -9,4 +9,6 @@ public class AppListOutPut {
 
 	private List<AppMasterInfo> lstMasterInfo;
 	private List<Application_New> lstApp;
+	List<AppOverTimeInfoFull> lstAppOt;
+	List<AppGoBackInfoFull> lstAppGoBack;
 }
