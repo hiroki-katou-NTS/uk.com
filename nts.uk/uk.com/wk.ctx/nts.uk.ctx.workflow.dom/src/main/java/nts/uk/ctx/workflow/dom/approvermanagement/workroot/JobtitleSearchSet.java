@@ -16,7 +16,7 @@ public class JobtitleSearchSet extends AggregateRoot{
 	private String companyId;
 	/**職位ID	 */
 	private String jobId;
-	
+	/** サーチ設定 */
 	private SearchSetFlg searchSetFlg;
 	
 	public static JobtitleSearchSet createSimpleFromJavaType(String companyId,

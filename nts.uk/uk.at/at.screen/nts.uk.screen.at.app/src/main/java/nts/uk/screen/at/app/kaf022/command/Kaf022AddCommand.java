@@ -17,7 +17,6 @@ import nts.uk.ctx.at.request.app.command.setting.company.applicationcommonsettin
 import nts.uk.ctx.at.request.app.command.setting.company.applicationcommonsetting.ApprovalSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationsetting.ProxyAppSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.displayname.AppDispNameCommand;
-import nts.uk.ctx.at.request.app.command.setting.company.displayname.HdAppDispNameCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.ApprovalTempCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.MailHdInstructionCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.MailOtInstructionCommand;
@@ -39,7 +38,7 @@ public class Kaf022AddCommand {
 	private ApprovalTempCommand appTemp;
 	private ApplicationSettingCommand appliSet;
 	private List<AppDispNameCommand> appName;
-	private List<HdAppDispNameCommand> hdDisp;
+//	private List<HdAppDispNameCommand> hdDisp;
 	private StampRequestSettingCommand stampReq;
 	private GoBackDirectlyCommonSettingCommand goBack;
 	private AppOvertimeSettingCommand appOt;
