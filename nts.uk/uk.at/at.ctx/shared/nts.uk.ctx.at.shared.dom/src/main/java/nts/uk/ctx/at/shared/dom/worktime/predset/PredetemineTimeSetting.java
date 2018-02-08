@@ -18,12 +18,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * The Class PredetemineTimeSetting.
  */
 // 所定時間設定
-
-/**
- * Checks if is predetermine.
- *
- * @return true, if is predetermine
- */
 @Getter
 public class PredetemineTimeSetting extends WorkTimeAggregateRoot {
 
@@ -167,6 +161,14 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot {
 		AttendanceTime oneDayRange = this.getRangeTimeDay();
 		AttendanceTime oneDayTime = this.getPredTime().getPredTime().getOneDay(); 		
 		if (oneDayTime.greaterThan(oneDayRange)) {
+			this.bundledBusinessExceptions.addMessage("Msg_781");
+		}
+		AttendanceTime morningTime = this.getPredTime().getPredTime().getMorning(); 		
+		if (morningTime.greaterThan(oneDayRange)) {
+			this.bundledBusinessExceptions.addMessage("Msg_781");
+		}
+		AttendanceTime afternoonTime = this.getPredTime().getPredTime().getAfternoon(); 		
+		if (afternoonTime.greaterThan(oneDayRange)) {
 			this.bundledBusinessExceptions.addMessage("Msg_781");
 		}
 	}

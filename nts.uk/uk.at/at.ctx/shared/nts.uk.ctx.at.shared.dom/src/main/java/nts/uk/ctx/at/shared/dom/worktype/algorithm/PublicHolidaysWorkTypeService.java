@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.worktype.algorithm;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -16,7 +17,8 @@ import nts.uk.shr.com.context.AppContexts;
  * @author tanlv
  *
  */
-public class PublicHolidaysWorkType {
+@Stateless
+public class PublicHolidaysWorkTypeService {
 	@Inject
 	public WorkTypeRepository workTypeRepository;
 	
