@@ -168,7 +168,6 @@ module nts.uk.at.view.ksm005.c {
                             monthlyPatternData.push(new MonthlyPatterModel(item.code, item.name));
                         });
                         self.monthlyPatternList(monthlyPatternData);
-                        $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
                         dfd.resolve(); 
                 });
                 return dfd.promise();
@@ -213,7 +212,7 @@ module nts.uk.at.view.ksm005.c {
                         maxRows: 15,
                         maxWidth: 450
                     }; 
-                    $('#component-items-list').ntsListComponent(self.listComponentOption);                    
+                    //$('#component-items-list').ntsListComponent(self.listComponentOption);                    
                 });
                 
             }
