@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.worktype.algorithm;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -13,6 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author tanlv
  *
  */
+@Stateless
 public class AcquireWorkTypeNameService {
 	@Inject
 	public WorkTypeRepository repository;
