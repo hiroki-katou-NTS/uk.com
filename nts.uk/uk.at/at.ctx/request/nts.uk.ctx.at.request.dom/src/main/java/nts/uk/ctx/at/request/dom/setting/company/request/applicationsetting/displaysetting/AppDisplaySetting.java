@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
  *
  */
 @Getter
+@AllArgsConstructor
 public class AppDisplaySetting extends DomainObject {
 	
 	/**
