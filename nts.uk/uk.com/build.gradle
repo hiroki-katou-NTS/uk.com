@@ -910,7 +910,14 @@ project (':com.web:nts.uk.com.web') {
 		//runtime group: 'pr.formula', name: 'nts.uk.ctx.pr.formula.pubimp', version: '0.1'
 		//runtime group: 'pr.formula', name: 'nts.uk.ctx.pr.formula.ac', version: '0.1'
 		
-
+		// Query Projects. Add by TienDD.
+		runtime project (':query:nts.uk.query.ws')
+		runtime project (':query:nts.uk.query.ac')
+		runtime project (':query:nts.uk.query.app')
+		runtime project (':query:nts.uk.query.model')
+		runtime project (':query:nts.uk.query.infra')
+		runtime project (':query:nts.uk.query.pub')
+		runtime project (':query:nts.uk.query.pubimp')
 	}
 }
 //========================nts.uk.com.web↑=====================================
