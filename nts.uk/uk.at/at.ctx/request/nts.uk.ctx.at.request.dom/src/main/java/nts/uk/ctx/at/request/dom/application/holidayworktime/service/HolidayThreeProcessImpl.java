@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
@@ -27,7 +28,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -52,11 +52,11 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	
 	// 03-02_実績超過チェック
 	@Override
-	public List<CaculationTime> checkCaculationActualExcess(int prePostAtr, int appType, String employeeID,
-			String companyID, ApprovalFunctionSetting approvalFunctionSetting, GeneralDate appDate,
-			List<CaculationTime> overTimeInputs, String siftCD) {
+	public CaculationTime checkCaculationActualExcess(int prePostAtr, int appType, String employeeID,
+			String companyID, GeneralDate appDate,
+			CaculationTime breakTime, String siftCD,Integer calTime) {
 		if(!checkCodition(prePostAtr,companyID)){
-			return null;
+			return breakTime;
 		}
 		//Imported(申請承認)「勤務実績」を取得する
 		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,appDate);
@@ -66,29 +66,130 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 			
 			if(iOvertimePreProcess.checkTimeDay(appDate.toString("yyyy/MM/dd"),workTimeSet)){
 				// 03-02-3_当日の場合
-				overTimeInputs = checkHolidayWorkOnDay(companyID, employeeID, appDate.toString("yyyy/MM/dd"), approvalFunctionSetting, siftCD, overTimeInputs,recordWorkInfoImport);
+				breakTime = checkHolidayWorkOnDay(companyID, employeeID, appDate.toString("yyyy/MM/dd"), siftCD, breakTime,recordWorkInfoImport,calTime);
 			}else{
 				// 03-02-2_当日以外の場合
-				overTimeInputs = this.checkOutSideTimeTheDay(companyID, employeeID, appDate.toString("yyyy/MM/dd"), approvalFunctionSetting, siftCD, overTimeInputs,recordWorkInfoImport);
+				breakTime = this.checkOutSideTimeTheDay(companyID, employeeID, appDate.toString("yyyy/MM/dd"), siftCD, breakTime,recordWorkInfoImport,calTime);
 			}
 		}
 		return null;
 	}
+	// 03-02-2_当日以外の場合
 	@Override
-	public List<CaculationTime> checkOutSideTimeTheDay(String companyID, String employeeID, String appDate,
-			ApprovalFunctionSetting approvalFunctionSetting, String siftCD, List<CaculationTime> breakTimes,
-			RecordWorkInfoImport recordWorkInfoImport) {
+	public CaculationTime checkOutSideTimeTheDay(String companyID, String employeeID, String appDate,
+			String siftCD, CaculationTime breakTime,
+			RecordWorkInfoImport recordWorkInfoImport,Integer calTime) {
 		Optional<WorkType> workType = workTypeRep.findByPK(companyID, recordWorkInfoImport.getWorkTypeCode());
 		if(workType.isPresent()){
 			if(workType.get().getDailyWork().isHolidayWork()){
 				// 03-02-2-1_当日以外_休日出勤の場合
+				this.checkOutSideTimeTheDayForHoliday(companyID, employeeID, appDate, siftCD, breakTime, recordWorkInfoImport, calTime);
 			}else{
 				// 03-02-2-2_当日以外_休日の場合
+				this.checkOutSideTimeTheDayNoForHoliday(companyID, employeeID, appDate, siftCD, breakTime, recordWorkInfoImport, calTime);
 			}
 		}
-		return null;
+		return breakTime;
+	}
+	/* (non-Javadoc)
+	 * 03-02-2-1_当日以外_休日出勤の場合
+	 * @see nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayThreeProcess#checkOutSideTimeTheDayForHoliday(java.lang.String, java.lang.String, java.lang.String, nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting, java.lang.String, java.util.List, nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport)
+	 */
+	@Override
+	public CaculationTime checkOutSideTimeTheDayForHoliday(String companyID, String employeeID, String appDate,
+			String siftCD, CaculationTime breakTime,
+			RecordWorkInfoImport recordWorkInfoImport,Integer calTime) {
+		if(recordWorkInfoImport != null){
+			//打刻漏れチェック
+			if(recordWorkInfoImport.getAttendanceStampTimeFirst() != null && recordWorkInfoImport.getLeaveStampTimeFirst() != null){
+				//就業時間帯チェック
+				 if(siftCD.equals(recordWorkInfoImport.getWorkTimeCode())){
+					 //Imported(申請承認)「実績内容」.就業時間帯コード=画面上の就業時間帯
+					 checkTimeThanCalTimeReally(breakTime,recordWorkInfoImport);
+				 }else{
+					 //Imported(申請承認)「実績内容」.就業時間帯コード != 画面上の就業時間帯
+					 //画面上の申請時間＞Imported(申請承認)「計算休出時間」.休出時間
+					if(breakTime.getApplicationTime() > calTime){
+						throw new BusinessException("Msg_423");
+					}
+				 }
+			}else{
+				throw new BusinessException("Msg_423");
+			}
+		}
+		return breakTime;
+	}
+	
+	/* (non-Javadoc)
+	 * 03-02-2-2_当日以外_休日の場合
+	 * @see nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayThreeProcess#checkOutSideTimeTheDayNoForHoliday(java.lang.String, java.lang.String, java.lang.String, java.lang.String, nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime, nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport, java.lang.Integer)
+	 */
+	@Override
+	public CaculationTime checkOutSideTimeTheDayNoForHoliday(String companyID, String employeeID, String appDate,
+			String siftCD, CaculationTime breakTime, RecordWorkInfoImport recordWorkInfoImport, Integer calTime) {
+		if(recordWorkInfoImport != null){
+			//打刻漏れチェック
+			if(recordWorkInfoImport.getAttendanceStampTimeFirst() != null && recordWorkInfoImport.getLeaveStampTimeFirst() != null){
+				 //Imported(申請承認)「実績内容」.就業時間帯コード != 画面上の就業時間帯
+				 //画面上の申請時間＞Imported(申請承認)「計算休出時間」.休出時間
+				if(breakTime.getApplicationTime() > calTime){
+					throw new BusinessException("Msg_423");
+				}
+			}else{
+				throw new BusinessException("Msg_423");
+			}
+		}
+		return breakTime;
+	}
+	/* (non-Javadoc)
+	 * 03-02-3_当日の場合
+	 * @see nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayThreeProcess#checkHolidayWorkOnDay(java.lang.String, java.lang.String, java.lang.String, nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting, java.lang.String, java.util.List, nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport)
+	 */
+	@Override
+	public CaculationTime checkHolidayWorkOnDay(String companyID, String employeeID, String appDate,
+			String siftCD, CaculationTime breakTime,
+			RecordWorkInfoImport recordWorkInfoImport,Integer calTime) {
+		Optional<WorkType> workType = workTypeRep.findByPK(companyID, recordWorkInfoImport.getWorkTypeCode());
+		if(workType.isPresent()){
+			if(workType.get().getDailyWork().isHolidayWork()){
+				// 03-02-3-1_当日_休日出勤の場合
+				this.checkOnDayTheDayForHoliday(companyID, employeeID, appDate, siftCD, breakTime, recordWorkInfoImport, calTime);
+			}else{
+				//03-02-3-2_当日_休日の場合
+				this.checkOutSideTimeTheDayNoForHoliday(companyID, employeeID, appDate, siftCD, breakTime, recordWorkInfoImport, calTime);
+			}
+		}
+		return breakTime;
+	}
+	// 03-02-3-1_当日_休日出勤の場合
+	@Override
+	public void checkOnDayTheDayForHoliday(String companyID, String employeeID, String appDate, String siftCD,
+			CaculationTime breakTime, RecordWorkInfoImport recordWorkInfoImport, Integer calTime) {
+		if(recordWorkInfoImport != null){
+			//打刻漏れチェック
+			if(recordWorkInfoImport.getAttendanceStampTimeFirst() != null && recordWorkInfoImport.getLeaveStampTimeFirst() != null){
+				// ドメインモデル「残業休出申請共通設定」を取得
+				Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository
+						.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
+				if(overtimeRestAppCommonSet.isPresent()){
+					
+					//Imported(申請承認)「実績内容」.就業時間帯コード != 画面上の就業時間帯
+					 //画面上の申請時間＞Imported(申請承認)「計算休出時間」.休出時間
+					if(breakTime.getApplicationTime() > calTime){
+						throw new BusinessException("Msg_423");
+					}
+				}
+			}else{
+				throw new BusinessException("Msg_423");
+			}
+		}
+		
 	}
 
+	/* (non-Javadoc)
+	 * 03-01_事前申請超過チェック
+	 * @see nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayThreeProcess#preApplicationExceededCheck(java.lang.String, nts.arc.time.GeneralDate, nts.arc.time.GeneralDateTime, nts.uk.ctx.at.request.dom.application.PrePostAtr, int, java.util.List)
+	 */
 	@Override
 	public OvertimeCheckResult preApplicationExceededCheck(String companyId, GeneralDate appDate,
 			GeneralDateTime inputDate, PrePostAtr prePostAtr, int attendanceId, List<HolidayWorkInput> holidayWorkInputs) {
@@ -106,7 +207,6 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, appDate, inputDate,
 				ApplicationType.BREAK_TIME_APPLICATION.value, PrePostAtr.PREDICT.value);
 		if (beforeApplication.isEmpty()) {
-			// TODO: QA Pending
 			result.setErrorCode(1);
 			return result;
 		}
@@ -168,7 +268,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 		}
 		// ドメインモデル「残業休出申請共通設定」を取得
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.OVER_TIME_APPLICATION.value);
+				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.BREAK_TIME_APPLICATION.value);
 		if (overtimeRestAppCommonSet.isPresent()) {
 			// 残業休出申請共通設定.事前表示区分＝表示する  
 			if (overtimeRestAppCommonSet.get().getPreDisplayAtr().equals(UseAtr.USE)) {
@@ -179,42 +279,9 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * 03-02-3_当日の場合
-	 * @see nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayThreeProcess#checkHolidayWorkOnDay(java.lang.String, java.lang.String, java.lang.String, nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting, java.lang.String, java.util.List, nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport)
-	 */
-	@Override
-	public List<CaculationTime> checkHolidayWorkOnDay(String companyID, String employeeID, String appDate,
-			ApprovalFunctionSetting approvalFunctionSetting, String siftCD, List<CaculationTime> breakTimes,
-			RecordWorkInfoImport recordWorkInfoImport) {
-		
-		return null;
-	}
+	
 
-	/* (non-Javadoc)
-	 * 03-02-2-1_当日以外_休日出勤の場合
-	 * @see nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayThreeProcess#checkOutSideTimeTheDayForHoliday(java.lang.String, java.lang.String, java.lang.String, nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting, java.lang.String, java.util.List, nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport)
-	 */
-	@Override
-	public List<CaculationTime> checkOutSideTimeTheDayForHoliday(String companyID, String employeeID, String appDate,
-			ApprovalFunctionSetting approvalFunctionSetting, String siftCD, List<CaculationTime> breakTimes,
-			RecordWorkInfoImport recordWorkInfoImport) {
-		if(recordWorkInfoImport != null){
-			//打刻漏れチェック
-			if(recordWorkInfoImport.getAttendanceStampTimeFirst() != null && recordWorkInfoImport.getLeaveStampTimeFirst() != null){
-				//就業時間帯チェック
-				 if(siftCD.equals(recordWorkInfoImport.getWorkTimeCode())){
-					 
-				 }else{
-					 //Imported(申請承認)「実績内容」.就業時間帯コード != 画面上の就業時間帯
-					
-				 }
-			}else{
-				throw new BusinessException("Msg_423");
-			}
-		}
-		return null;
-	}
+	
 	// 03-02-1_チェック条件
 	@Override
 	public boolean checkCodition(int prePostAtr, String companyID) {
@@ -229,6 +296,16 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 		}
 		return false;
 	}
+	private void checkTimeThanCalTimeReally(CaculationTime breakTime,
+			RecordWorkInfoImport recordWorkInfoImport){
+		for(OvertimeInputCaculation holidayCal : recordWorkInfoImport.getOvertimeHolidayCaculation()){
+			 if(holidayCal.getFrameNo() == breakTime.getFrameNo()){
+				 //画面上の申請時間＞Imported(申請承認)「実績内容」.休出時間
+				 if(breakTime.getApplicationTime() > holidayCal.getResultCaculation()){
+					 throw new BusinessException("Msg_423");
+				 }
+			 }
+		 }
+	}
 	
-
 }

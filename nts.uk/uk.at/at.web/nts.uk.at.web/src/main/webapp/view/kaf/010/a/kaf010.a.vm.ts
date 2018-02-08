@@ -514,11 +514,14 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 };
             }         
             let param : any ={
-                overtimeHours: _.map(ko.toJS(self.overtimeHours()), item => {return self.initCalculateData(item);}),
-                 bonusTimes: _.map(ko.toJS(self.bonusTimes()), item => {return self.initCalculateData(item);}),
+                breakTimes: _.map(ko.toJS(self.breakTimes()), item => {return self.initCalculateData(item);}),
+                //bonusTimes: _.map(ko.toJS(self.bonusTimes()), item => {return self.initCalculateData(item);}),
                 prePostAtr : self.prePostSelected(),
                 appDate : nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
-                siftCD: self.siftCD()
+                siftCD: self.siftCD(),
+                workTypeCode: self.workTypeCd(),
+                inputDate: null,
+                employeeID: self.employeeID()
             }
             //setting work content
             self.preWorkContent = {
@@ -533,14 +536,13 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 }
             //計算をクリック
             service.getCaculationResult(param).done(function(data){
-               self.overtimeHours.removeAll();
+               self.breakTimes.removeAll();
                self.bonusTimes.removeAll();
                 if(data != null){
                     for(let i =0; i < data.length; i++){
                         //残業時間
-                        if(data[i].attendanceID == 1){
-                           if(data[i].frameNo != 11 && data[i].frameNo != 12){
-                               self.overtimeHours.push(new common.OvertimeCaculation("", "",
+                        if(data[i].attendanceID == 2){
+                               self.breakTimes.push(new common.OvertimeCaculation("", "",
                                     data[i].attendanceID,
                                     "", 
                                     data[i].frameNo,
@@ -549,30 +551,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                                     data[i].applicationTime,
                                     self.convertIntToTime(data[i].preAppTime),
                                     self.convertIntToTime(data[i].caculationTime),"#[KAF005_55]","",""));
-                              
-                           }else if(data[i].frameNo == 11){
-                                self.overtimeHours.push(new common.OvertimeCaculation("", "",
-                                     data[i].attendanceID,
-                                     "", 
-                                     data[i].frameNo,
-                                     0, 
-                                     nts.uk.resource.getText("KAF005_63"),
-                                     data[i].applicationTime,
-                                     self.convertIntToTime(data[i].preAppTime),
-                                     self.convertIntToTime(data[i].caculationTime),"#[KAF005_64]","",""));
-                           }else if(data[i].frameNo == 12){
-                                self.overtimeHours.push(new common.OvertimeCaculation("", "",
-                                     data[i].attendanceID,
-                                     "", 
-                                     data[i].frameNo,
-                                     0, 
-                                     nts.uk.resource.getText("KAF005_65"),
-                                     data[i].applicationTime,
-                                     self.convertIntToTime(data[i].preAppTime),
-                                     self.convertIntToTime(data[i].caculationTime),"#[KAF005_66]","",""));
+                               self.changeColor(2,data[i].frameNo,data[i].errorCode);//
                            }
-                           self.changeColor(1,data[i].frameNo,data[i].errorCode);//
-                       }
                         //加給時間
                         else if(data[i].attendanceID == 3){
                            self.bonusTimes.push(new common.OvertimeCaculation("", "", data[i].attendanceID,
@@ -584,7 +564,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     }   
                 }
                 //勤務内容を変更後に計算ボタン押下。計算フラグ=0にする。 
-                if(!self.isEmptyOverTimeInput(ko.toJS(self.overtimeHours()))){
+                if(!self.isEmptyOverTimeInput(ko.toJS(self.breakTimes()))){
                     self.calculateFlag(0);
                 }
                 dfd.resolve(data);
