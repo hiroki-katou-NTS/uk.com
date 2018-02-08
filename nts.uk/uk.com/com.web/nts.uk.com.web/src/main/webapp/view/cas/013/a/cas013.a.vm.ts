@@ -71,7 +71,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
 
         startPage(): JQueryPromise<any> {
             var self = this;
-            var dfd = $.Deferred();
+            var dfd = $.Deferred(); 
             
             // initial screen
             new service.Service().getRoleTypes().done(function(data: Array<RollType>) {
