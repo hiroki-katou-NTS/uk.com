@@ -9,4 +9,6 @@ public interface AgentPub {
 	AgentPubExport getApprovalAgencyInformation(String companyID, List<String> approverList);
 	
 	List<AgentDataPubExport> getBySidDate(String companyId, String employeeId, GeneralDate baseDate);
+
+	List<AgentExport> getApprovalAgencyInfoByPeriod(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate);
 }
