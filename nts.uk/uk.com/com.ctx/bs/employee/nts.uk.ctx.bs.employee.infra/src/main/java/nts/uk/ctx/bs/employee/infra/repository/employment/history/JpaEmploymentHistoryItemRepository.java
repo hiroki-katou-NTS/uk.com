@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.employment.history;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,9 +20,11 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem_;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist_;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
 
 @Stateless
 public class JpaEmploymentHistoryItemRepository extends JpaRepository implements EmploymentHistoryItemRepository {
@@ -36,6 +39,10 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 			+ " WHERE h.sid =:sid" + " AND h.strDate <= :date"
 			+ " AND h.endDate >= :date " 
 			+ " AND a.bsymtEmploymentPK.cid =:companyId";
+	
+	private static final String SELECT_BY_EMPID_BASEDATE = "SELECT ehi FROM BsymtEmploymentHistItem ehi"
+			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId"
+			+ " WHERE eh.sid = :sid AND eh.strDate <= :basedate AND :basedate <= eh.endDate";
 
 	
 	@Override
@@ -335,6 +342,26 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	 */
 	private EmploymentHistoryItem toDomain(BsymtEmploymentHistItem entity) {
 		return EmploymentHistoryItem.createFromJavaType(entity.hisId, entity.sid, entity.empCode, entity.salarySegment);
+	}
+
+	@Override
+	public List<EmploymentHistoryItem> getEmploymentByEmpIdAndDate(GeneralDate basedate, String employeeId) {
+		
+		List<BsymtEmploymentHistItem> listHistItem = this.queryProxy()
+				.query(SELECT_BY_EMPID_BASEDATE, BsymtEmploymentHistItem.class)
+				.setParameter("sid", employeeId).setParameter("basedate", basedate)
+				.getList();
+
+		// Check exist items
+		if (listHistItem.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		// Return
+		return listHistItem.stream().map(e -> {
+			EmploymentHistoryItem domain = this.toDomain(e);
+			return domain;
+		}).collect(Collectors.toList());
 	}
 
 }
