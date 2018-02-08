@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,12 +47,25 @@ public class OverTimeWorkSheet {
 	 * @return
 	 */
 	public static OverTimeOfDaily calcOverTimeWork(AutoCalculationOfOverTimeWork autoCalcSet) {
-		ControlOverFrameTime returnClass = new ControlOverFrameTime(overWorkTimeOfDaily.collectOverTimeWorkTime(autoCalcSet));
+		//ControlOverFrameTime returnClass = new ControlOverFrameTime(overWorkTimeOfDaily.collectOverTimeWorkTime(autoCalcSet));
 		
-		overWorkTimeOfDaily.addToList(returnClass);
+		//overWorkTimeOfDaily.addToList(returnClass);
 		
 		return  overWorkTimeOfDaily;
 	}
+	
+//	/**
+//	 * 残業時間枠時間帯をループさせ時間を計算する
+//	 * @param autoCalcSet 時間外時間の自動計算設定
+//	 */
+//	public List<OverTimeFrameTime> collectOverTimeWorkTime(AutoCalculationOfOverTimeWork autoCalcSet) {
+//		List<OverTimeFrameTime> calcOverTimeWorkTimeList = new ArrayList<>();
+//		for(OverTimeFrameTimeSheetWork overTimeWorkFrameTime : overTimeWorkFrameTimeSheet) {
+//			calcOverTimeWorkTimeList.add(overTimeWorkFrameTime.calcOverTimeWorkTime(autoCalcSet));
+//			//calcOverTimeWorkTimeList.add();
+//		}
+//		return calcOverTimeWorkTimeList;
+//	}
 	
 	/**
 	 * 深夜時間計算後の時間帯再作成

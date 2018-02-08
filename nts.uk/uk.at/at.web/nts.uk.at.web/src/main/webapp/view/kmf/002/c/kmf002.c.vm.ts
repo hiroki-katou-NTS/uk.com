@@ -141,7 +141,8 @@ module nts.uk.at.view.kmf002.c {
                     isShowNoSelectRow: _self.isShowNoSelectRow(),
                     alreadySettingList: _self.alreadySettingList,
                     isShowWorkPlaceName: _self.isShowWorkPlaceName(),
-                    isShowSelectAllButton: _self.isShowSelectAllButton()
+                    isShowSelectAllButton: _self.isShowSelectAllButton(),
+                    maxRows: 26
                 };
                 
 //                $('#component-items-list').ntsListComponent(_self.listComponentOption);
@@ -155,6 +156,11 @@ module nts.uk.at.view.kmf002.c {
 //                _self.commonTableMonthDaySet.infoSelect3(_self.employeeList()[0].name);
                 
                 _self.selectedCode.subscribe(function(newValue: any) {
+                    if (_.isNull(newValue)) {
+                        _self.enableSave(false);
+                    } else {
+                        _self.enableSave(true);
+                    }
                      _.forEach(_self.employeeList(), function(value: any) {
                         if (value.code == newValue) {
                             _self.commonTableMonthDaySet().infoSelect2(newValue);

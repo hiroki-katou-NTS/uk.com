@@ -5,12 +5,13 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
  *
  */
 
+import lombok.Getter;
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
-@Value
+@Getter
 public class OverTimeFrameTime {
 	/** 残業枠NO: 残業枠NO */
 	private OverTimeFrameNo OverWorkFrameNo;
@@ -23,6 +24,27 @@ public class OverTimeFrameTime {
 	/** 指示時間: 勤怠時間 */
 	private AttendanceTime orderTime;
 	
+	/**
+	 * Constructor 
+	 */
+	public OverTimeFrameTime(OverTimeFrameNo overWorkFrameNo, TimeWithCalculation overTimeWork,
+			TimeWithCalculation transferTime, AttendanceTime beforeApplicationTime, AttendanceTime orderTime) {
+		super();
+		OverWorkFrameNo = overWorkFrameNo;
+		OverTimeWork = overTimeWork;
+		TransferTime = transferTime;
+		BeforeApplicationTime = beforeApplicationTime;
+		this.orderTime = orderTime;
+	}
+	
+	
+	public void addOverTime(AttendanceTime overTime) {
+		this.OverTimeWork = this.OverTimeWork.addMinutes(overTime, overTime);
+	}
+
+
+
+
 	/**
 	 * 上限の時間から残業時間の差分をとる
 	 * @param limitTime　上限の時間

@@ -62,7 +62,7 @@ public class JpaWorkMonthlySettingSetMemento implements WorkMonthlySettingSetMem
 	 */
 	@Override
 	public void setWorkingCode(WorkingCode workingCode) {
-		this.entity.setWorkingCd(workingCode.v());
+		this.entity.setWorkingCd(workingCode == null ? null : workingCode.v());
 		
 	}
 

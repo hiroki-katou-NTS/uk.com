@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.holidaysetting.configuration;
 
 import java.util.Optional;
@@ -21,4 +25,11 @@ public interface PublicHolidayManagementUsageUnitRepository {
 	 * @param domain the domain
 	 */
 	void update(PublicHolidayManagementUsageUnit domain);
+	
+	/**
+	 * Adds the.
+	 *
+	 * @param domain the domain
+	 */
+	void add(PublicHolidayManagementUsageUnit domain);
 }

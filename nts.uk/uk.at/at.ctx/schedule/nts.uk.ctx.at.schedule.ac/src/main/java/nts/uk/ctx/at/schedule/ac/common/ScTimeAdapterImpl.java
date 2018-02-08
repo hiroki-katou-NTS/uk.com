@@ -3,9 +3,9 @@ package nts.uk.ctx.at.schedule.ac.common;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.pub.scheduletime.ScheduleTimePub;
-import nts.uk.ctx.at.record.pub.scheduletime.ScheduleTimePubExport;
-import nts.uk.ctx.at.record.pub.scheduletime.ScheduleTimePubImport;
+import nts.uk.ctx.at.record.pub.dailyprocess.scheduletime.ScheduleTimePub;
+import nts.uk.ctx.at.record.pub.dailyprocess.scheduletime.ScheduleTimePubExport;
+import nts.uk.ctx.at.record.pub.dailyprocess.scheduletime.ScheduleTimePubImport;
 import nts.uk.ctx.at.schedule.dom.adapter.ScTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.ScTimeImport;
 import nts.uk.ctx.at.schedule.dom.adapter.ScTimeParam;

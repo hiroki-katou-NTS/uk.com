@@ -9,6 +9,7 @@ module cps002.a.vm {
     import liveView = nts.uk.request.liveView;
     import character = nts.uk.characteristics;
     import block = nts.uk.ui.block;
+    import lv = nts.layout.validate;
     import vc = nts.layout.validation;
 
     export class ViewModel {
@@ -336,7 +337,8 @@ module cps002.a.vm {
         isError() {
             let self = this;
             if (self.currentStep() == 2) {
-                $('.drag-panel .nts-input').trigger('change');
+                let controls = self.layout().listItemCls();
+                lv.checkError(controls);
             } else {
                 $(".form_step1").trigger("validate");
 
@@ -706,9 +708,6 @@ module cps002.a.vm {
                 subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
 
                     let imageResult = getShared("imageId");
-
-
-
                     if (imageResult) {
                         self.currentEmployee().avatarId(imageResult.cropImgId)
                         self.defaultImgId(imageResult.defaultImgId);
