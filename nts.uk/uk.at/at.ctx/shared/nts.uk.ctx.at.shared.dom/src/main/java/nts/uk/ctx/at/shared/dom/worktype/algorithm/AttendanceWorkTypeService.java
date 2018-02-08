@@ -13,7 +13,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author tanlv
  *
  */
-public class AttendanceWorkType {
+public class AttendanceWorkTypeService {
 	@Inject
 	public WorkTypeRepository workTypeRepository;
 	

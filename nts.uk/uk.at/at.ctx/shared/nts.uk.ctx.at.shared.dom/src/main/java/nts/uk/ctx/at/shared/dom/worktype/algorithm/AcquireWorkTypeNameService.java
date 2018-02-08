@@ -13,7 +13,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author tanlv
  *
  */
-public class AcquireWorkTypeName {
+public class AcquireWorkTypeNameService {
 	@Inject
 	public WorkTypeRepository repository;
 	
