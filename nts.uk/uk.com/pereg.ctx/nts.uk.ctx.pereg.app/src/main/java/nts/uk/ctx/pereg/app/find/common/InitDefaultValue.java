@@ -2,6 +2,7 @@ package nts.uk.ctx.pereg.app.find.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,13 +15,13 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class InitDefaultValue {
-	
+
 	@Inject
 	private WorkTimeSettingRepo wtsRepo;
-	
-	@Inject 
+
+	@Inject
 	private WorkTypeRepo wtRepo;
-	
+
 	public void setDefaultValueRadio(List<LayoutPersonInfoClsDto> classItemList) {
 		List<String> firstReqLstItems = new ArrayList<String>();
 		firstReqLstItems.add("IS00130");
@@ -51,7 +52,13 @@ public class InitDefaultValue {
 		secReqLstItems.add("IS00230");
 		secReqLstItems.add("IS00239");
 		secReqLstItems.add("IS00185");
-		for (LayoutPersonInfoClsDto classItem : classItemList) {
+		if (classItemList == null) {
+
+			return;
+		}
+		List<LayoutPersonInfoClsDto> cls = classItemList.stream().filter(x -> x.getItems() != null)
+				.collect(Collectors.toList());
+		for (LayoutPersonInfoClsDto classItem : cls) {
 			for (Object item : classItem.getItems()) {
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
 				if (valueItem.getValue() == null) {
@@ -68,25 +75,26 @@ public class InitDefaultValue {
 						break;
 					}
 
-				}else {
+				} else {
 					String companyId = AppContexts.user().companyId();
-					if(firstReqLstItems.contains(valueItem.getItemCode())) {
+					if (firstReqLstItems.contains(valueItem.getItemCode())) {
 						valueItem.setTextValue(getFirstValueText(valueItem.getValue().toString()));
-					} else if(secReqLstItems.contains(valueItem.getItemCode())) {
+					} else if (secReqLstItems.contains(valueItem.getItemCode())) {
 						valueItem.setTextValue(getSecValueText(valueItem.getValue().toString(), companyId));
 					}
 				}
 			}
 		}
 	}
-	//request list request 251
+
+	// request list request 251
 	private String getFirstValueText(String itemValue) {
 		return wtRepo.acquireWorkTypeName(itemValue);
 	}
-	//request list request 252
+
+	// request list request 252
 	private String getSecValueText(String itemValue, String companyId) {
 		return wtsRepo.getWorkTimeSettingName(companyId, itemValue);
 	}
-	
-	
+
 }
