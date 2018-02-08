@@ -209,28 +209,29 @@ public class PeregProcessor {
 			PersonInfoCategory perInfoCtg, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef, PeregDto peregDto) {
 
 		List<LayoutPersonInfoClsDto> classItemList = creatClassItemList(lstPerInfoItemDef);
-		if(perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO
-				&& query.getInfoId() == null && query.getStandardDate() == null)
-			return classItemList;
-		if (perInfoCtg.getIsFixed() == IsFixed.FIXED) {
-			 
-			if (peregDto != null) {
-				// map data
-				MappingFactory.mapListItemClass(peregDto, classItemList);
-			}
-		} else {
-			switch (perInfoCtg.getCategoryType()) {
-			case SINGLEINFO:
-				setOptionData(perInfoCtg, classItemList, query);
-				break;
-			case DUPLICATEHISTORY:
-			case CONTINUOUSHISTORY:
-			case CONTINUOUS_HISTORY_FOR_ENDDATE:
-			case NODUPLICATEHISTORY:
-				String recordId = query.getInfoId();
-				setOptionalDataByRecordId(recordId, perInfoCtg.getPersonEmployeeType(), classItemList);
-			default:
-				break;
+		if(!(perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO
+				&& query.getInfoId() == null && query.getStandardDate() == null))
+		{
+			if (perInfoCtg.getIsFixed() == IsFixed.FIXED) {
+				 
+				if (peregDto != null) {
+					// map data
+					MappingFactory.mapListItemClass(peregDto, classItemList);
+				}
+			} else {
+				switch (perInfoCtg.getCategoryType()) {
+				case SINGLEINFO:
+					setOptionData(perInfoCtg, classItemList, query);
+					break;
+				case DUPLICATEHISTORY:
+				case CONTINUOUSHISTORY:
+				case CONTINUOUS_HISTORY_FOR_ENDDATE:
+				case NODUPLICATEHISTORY:
+					String recordId = query.getInfoId();
+					setOptionalDataByRecordId(recordId, perInfoCtg.getPersonEmployeeType(), classItemList);
+				default:
+					break;
+				}
 			}
 		}
 		if(query.getCategoryCode().equals("CS00020")) {
