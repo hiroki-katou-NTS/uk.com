@@ -419,7 +419,7 @@ module nts.uk.at.view.ksm005.c {
                     name: dataSource.filter(e => e.code == self.selectedCode())[0].name,
                     targetType: TargetType.WORKPLACE_PERSONAL,
                     itemListSetting: itemListSetting,
-                    baseDate: new Date()
+                    baseDate: self.baseDate()
                 };
                 
                 // create object has data type IObjectDuplication and use:
