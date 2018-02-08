@@ -320,3 +320,13 @@ table th, table td {
 .ml-15 {
 	margin-left: 15px
 }
+
+tbody a.x-link {
+	color: black !important;
+	text-decoration: none !important;
+	cursor: unset !important;
+}
+
+#oViewModel>div:FIRST-CHILD {
+	position: relative;
+}
