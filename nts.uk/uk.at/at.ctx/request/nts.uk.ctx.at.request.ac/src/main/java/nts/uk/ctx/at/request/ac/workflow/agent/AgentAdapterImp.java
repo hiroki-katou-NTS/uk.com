@@ -46,8 +46,11 @@ public class AgentAdapterImp implements AgentAdapter {
 				new RepresenterInformationImport(approverRepresenterExport.getRepresenter().getValue()) 
 				);
 	}
+	
 
-	@Override
+	/**
+	 * 代行者、期間から承認代行情報を取得する			
+	 */
 	public List<AgentDataRequestPubImport> lstAgentData(String companyId, String employeeId, GeneralDate baseDate) {
 		List<AgentDataRequestPubImport> lstData = AgentPub.getBySidDate(companyId, employeeId, baseDate)
 				.stream()
