@@ -72,21 +72,6 @@
 	background-color: #2BBF6A;
 }
 
-.btn_apply {
-	height: 100%;
-	background-color: #2ECC71;
-	color: white;
-	border-radius: 5px;
-	display: inline-table;
-	cursor: pointer;
-	margin-left: 10px;
-	margin-right: 5px;
-}
-
-.btn_apply:hover {
-	background-color: #2BBF6A;
-}
-
 .caret-background.caret-bottom:after {
 	left: 36%;
 	color: #AEEE60;
@@ -178,12 +163,14 @@
 	position: fixed;
 	display: none;
 	overflow: hidden;
+	height: 100%;
 }
 
 #hor-scroll-button-hide {
+	height: 100%;
 	z-index: 998;
 	position: fixed;
-	margin-top: 180px;
+	display: table;
 }
 
 .icon-01-searchmode {
@@ -194,17 +181,11 @@
 	cursor: pointer;
 }
 
-.btn_apply .icon-01-searchmode {
-	background: url(icon/01_ShowHideSearch.png);
-	width: 25px;
-	height: 25px;
-	background-size: 25px 25px;
+.ccg-lbl-vertical {
+	height: 96px;
+	width: 40px;
 	cursor: pointer;
-}
-
-.labelShowHideButton {
-	cursor: pointer;
-	font-size: 16pt;
+	font-size: 18pt;
 	writing-mode: vertical-lr;
 	-ms-writing-mode: tb-lr;
 }
@@ -216,23 +197,15 @@
 	margin-bottom: 90px;
 }
 
-.btn_showhide {
-	width: 40px;
+.ccg-btn-vertical {
+	height: 100%;
 	background-color: #2ECC71;
 	padding-left: 8px;
 	color: white;
 	border-top-right-radius: 5px;
 	border-bottom-right-radius: 5px;
-	display: inline-table;
-	height: 370px;
+	display: table;
 	cursor: pointer;
-}
-
-.lbl-apply {
-	font-size: 24px;
-	cursor: pointer;
-	writing-mode: vertical-lr;
-	-ms-writing-mode: tb-lr;
 }
 
 .ccg-tabpanel #nts-component-list {
@@ -246,6 +219,10 @@
 }
 #tbl-ccg001-tab2 td{
 	vertical-align: top;
+}
+.ccg001-tbl-cell-middle {
+	display: table-cell;
+	vertical-align: middle;
 }
 
 .ccg-tabpanel {

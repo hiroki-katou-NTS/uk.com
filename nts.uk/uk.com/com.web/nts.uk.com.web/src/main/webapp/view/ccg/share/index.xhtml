@@ -217,9 +217,9 @@
 								</div>
 							</div>
 							<div class="pull-left" style="height: 100%">
-								<div tabindex="17" class="btn_apply" data-bind="click: advancedSearchEmployee">
-									<div style="display:table-cell;vertical-align:middle;">
-										<div class="lbl-apply">#{i18n.getText('CCG001_25')}</div>
+								<div tabindex="17" class="ccg-btn-vertical" data-bind="click: advancedSearchEmployee">
+									<div class="ccg001-tbl-cell-middle">
+										<div class="ccg-lbl-vertical">#{i18n.getText('CCG001_25')}</div>
 									</div>
 								</div>
 							</div>
@@ -230,10 +230,10 @@
 										id="employeeinfo"></div>
 								</div>
 								<div class="pull-left" style="height: 100%">
-									<div tabindex="19" class="btn_apply" data-bind="click: extractSelectedEmployees">
-										<div style="display:table-cell;vertical-align:middle;">
+									<div tabindex="19" class="ccg-btn-vertical" data-bind="click: extractSelectedEmployees">
+										<div class="ccg001-tbl-cell-middle">
 											<i class="icon icon-01-searchmode"></i>
-											<div class="lbl-apply">#{i18n.getText('CCG001_26')}</div>
+											<div class="ccg-lbl-vertical">#{i18n.getText('CCG001_26')}</div>
 										</div>
 									</div>
 								</div>
@@ -246,12 +246,13 @@
 		</div>
 		</div>
 	</div>
-	<div id="hor-scroll-button-hide"
-		data-bind="click: showHide">
-		<div class="btn_showhide">
-			<div style="display:table-cell;vertical-align:middle;">
-			<i class="icon icon-01-searchmode"></i> <label
-				class="labelShowHideButton">#{i18n.getText('CCG001_21')}</label>
+	<div id="hor-scroll-button-hide">
+		<div class="ccg001-tbl-cell-middle">
+			<div id="ccg001-btn-search-drawer" class="ccg-btn-vertical" data-bind="click: showHide">
+				<div class="ccg001-tbl-cell-middle">
+				<i class="icon icon-01-searchmode"></i>
+				<div class="ccg-lbl-vertical">#{i18n.getText('CCG001_21')}</div>
+				</div>
 			</div>
 		</div>
 	</div>
