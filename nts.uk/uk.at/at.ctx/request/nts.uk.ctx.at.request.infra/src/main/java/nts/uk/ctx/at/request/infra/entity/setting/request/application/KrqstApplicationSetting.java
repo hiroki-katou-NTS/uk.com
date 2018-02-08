@@ -150,6 +150,10 @@ public class KrqstApplicationSetting extends UkJpaEntity {
 	@JoinTable(name = "KRQST_APP_TYPE_DISCRETE")
 	public List<KrqstAppTypeDiscrete> krqstAppTypeDiscretes;
 	
+	@OneToMany(targetEntity=KrqstAppDeadline.class, cascade = CascadeType.ALL, mappedBy = "krqstApplicationSetting", orphanRemoval = true)
+	@JoinTable(name = "KRQST_APP_DEADLINE")
+	public List<KrqstAppDeadline> krqstAppDeadlines;
+	
 	@Override
 	protected Object getKey() {
 		return krqstApplicationSettingPK;

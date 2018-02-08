@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.app
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 /**
@@ -27,5 +28,13 @@ public class ReceptionRestrictionSetting extends DomainObject {
 	 * 事後の受付制限
 	 */
 	private AfterhandRestriction afterhandRestriction;
+	
+	public static ReceptionRestrictionSetting toDomain(Integer appType, 
+			BeforehandRestriction beforehandRestriction, AfterhandRestriction afterhandRestriction){
+		return new ReceptionRestrictionSetting(
+				EnumAdaptor.valueOf(appType, ApplicationType.class), 
+				beforehandRestriction, 
+				afterhandRestriction);
+	}
 	
 }
