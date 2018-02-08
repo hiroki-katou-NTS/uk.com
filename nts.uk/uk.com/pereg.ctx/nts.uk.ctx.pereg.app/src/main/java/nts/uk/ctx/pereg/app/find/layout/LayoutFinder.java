@@ -473,6 +473,11 @@ public class LayoutFinder {
 				}
 			}
 		}
+		
+		// set default value for items of category WorkingCondition 
+		if (perInfoCategory.getCategoryCode().equals("CS00020")) {
+			MappingFactory.setDefaultValueRadio(classItemList);
+		}
 
 	}
 

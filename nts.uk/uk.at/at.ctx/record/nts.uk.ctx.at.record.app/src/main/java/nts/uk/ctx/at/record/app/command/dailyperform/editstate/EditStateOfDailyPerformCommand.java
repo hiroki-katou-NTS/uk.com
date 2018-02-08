@@ -17,7 +17,7 @@ public class EditStateOfDailyPerformCommand extends DailyWorkCommonCommand {
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
 		if(item != null){
-			this.data.add(((EditStateOfDailyPerformanceDto) item).toDomain());
+			this.data.add(((EditStateOfDailyPerformanceDto) item).toDomain(getEmployeeId(), getWorkDate()));
 		}
 	}
 
