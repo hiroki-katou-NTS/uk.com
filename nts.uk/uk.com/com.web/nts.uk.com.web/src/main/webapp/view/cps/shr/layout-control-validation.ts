@@ -38,8 +38,7 @@ module nts.layout {
 
                     if (element && (element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper'))) {
                         x.value.subscribe(d => {
-                            debugger;
-                            nou(d) && rmError($element, "FND_E_REQ_INPUT");
+                            !nou(d) && rmError($element, "FND_E_REQ_INPUT");
                         });
                     }
                 });
