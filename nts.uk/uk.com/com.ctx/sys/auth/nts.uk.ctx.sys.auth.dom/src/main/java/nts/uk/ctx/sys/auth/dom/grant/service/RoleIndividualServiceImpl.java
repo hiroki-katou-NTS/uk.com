@@ -32,7 +32,7 @@ public class RoleIndividualServiceImpl implements RoleIndividualService {
 	public boolean checkSysAdmin(String userID, DatePeriod validPeriod) {
 
 		List<RoleIndividualGrant> listRoleIndividualGrant = roleIndividualGrantRepo.findByUserAndRole(userID, RoleType.SYSTEM_MANAGER.value);
-		if (!listRoleIndividualGrant.isEmpty()) {
+		if (listRoleIndividualGrant.isEmpty()) {
 			return false;
 		}
 

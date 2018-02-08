@@ -53,59 +53,62 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 	}
 	
 	private  RequestSetting toDomain(KrqstApplicationSetting entity){
-		val domain = RequestSetting.createSimpleFromJavaType(entity.krqstApplicationSettingPK.companyID,
-				entity.scheReflectFlg,
-				entity.priorityTimeReflectFlg,
-				entity.attendentTimeReflectFlg,
-				entity.advanceExcessMessDispAtr,
-				entity.hwAdvanceDispAtr,
-				entity.hwActualDispAtr,
-				entity.actualExcessMessDispAtr,
-				entity.otAdvanceDispAtr,
-				entity.otActualDispAtr,
-				entity.warningDateDispAtr,
-				entity.appReasonDispAtr,
-				entity.appContentChangeFlg,
-				entity.scheduleConfirmedAtr,
-				entity.achievementConfirmedAtr,
-				new ApplicationSetting(
-						EnumAdaptor.valueOf(entity.baseDateFlg, RecordDate.class), 
-						new AppDisplaySetting(
-								EnumAdaptor.valueOf(entity.displayPrePostFlg, DisplayAtr.class), 
-								EnumAdaptor.valueOf(entity.displaySearchTimeFlg, UseAtr.class), 
-								EnumAdaptor.valueOf(entity.manualSendMailAtr, DisabledSegment_New.class)), 
-						entity.krqstAppTypeDiscretes.stream()
-							.map(x -> new ReceptionRestrictionSetting(
-									EnumAdaptor.valueOf(x.krqstAppTypeDiscretePK.appType, ApplicationType.class), 
-									new BeforehandRestriction(
-											EnumAdaptor.valueOf(x.retrictPreMethodFlg, BeforeAddCheckMethod.class), 
-											x.retrictPreUseFlg == 1 ? true : false, 
-											EnumAdaptor.valueOf(x.retrictPreDay, AppAcceptLimitDay.class), 
-											new AttendanceClock(x.retrictPreTimeDay)
-									), 
-									new AfterhandRestriction(x.retrictPostAllowFutureFlg == 1 ? true : false)))
-							.collect(Collectors.toList()), 
-						entity.krqstAppTypeDiscretes.stream()
-							.map(x -> new AppTypeSetting(
-									EnumAdaptor.valueOf(x.prePostInitAtr, PrePostInitialAtr.class), 
-									x.prePostCanChangeFlg == 1 ? true : false, 
-									EnumAdaptor.valueOf(x.typicalReasonDisplayFlg, DisplayAtr.class), 
-									x.sendMailWhenApprovalFlg == 1 ? true : false, 
-									x.sendMailWhenRegisterlFlg == 1 ? true : false, 
-									EnumAdaptor.valueOf(x.displayReasonFlg, DisplayAtr.class), 
-									EnumAdaptor.valueOf(x.krqstAppTypeDiscretePK.appType, ApplicationType.class), 
-									EnumAdaptor.valueOf(x.displayReasonFlg, DisplayReason.class)))
-							.collect(Collectors.toList()), 
-						new AppLimitSetting(
-								entity.appActLockFlg == 1? true : false, 
-								entity.appEndWorkFlg == 1? true : false, 
-								entity.appActConfirmFlg == 1? true : false, 
-								entity.appOvertimeNightFlg == 1? true : false, 
-								entity.appActMonthConfirmFlg == 1? true : false, 
-								entity.requireAppReasonFlg == 1? true : false), 
-						Collections.emptyList()
-				));
-		return domain;
+//		RequestSetting domain = RequestSetting.createSimpleFromJavaType(entity.krqstApplicationSettingPK.companyID,
+//				entity.scheReflectFlg,
+//				entity.priorityTimeReflectFlg,
+//				entity.attendentTimeReflectFlg,
+//				entity.advanceExcessMessDispAtr,
+//				entity.hwAdvanceDispAtr,
+//				entity.hwActualDispAtr,
+//				entity.actualExcessMessDispAtr,
+//				entity.otAdvanceDispAtr,
+//				entity.otActualDispAtr,
+//				entity.warningDateDispAtr,
+//				entity.appReasonDispAtr,
+//				entity.appContentChangeFlg,
+//				entity.scheduleConfirmedAtr,
+//				entity.achievementConfirmedAtr,
+//				new ApplicationSetting(
+//						EnumAdaptor.valueOf(entity.baseDateFlg, RecordDate.class), 
+//						new AppDisplaySetting(
+//								EnumAdaptor.valueOf(entity.displayPrePostFlg, DisplayAtr.class), 
+//								EnumAdaptor.valueOf(entity.displaySearchTimeFlg, UseAtr.class), 
+//								EnumAdaptor.valueOf(entity.manualSendMailAtr, DisabledSegment_New.class)), 
+//						entity.krqstAppTypeDiscretes.stream()
+//							.map(x -> new ReceptionRestrictionSetting(
+//									EnumAdaptor.valueOf(x.krqstAppTypeDiscretePK.appType, ApplicationType.class), 
+//									new BeforehandRestriction(
+//											EnumAdaptor.valueOf(x.retrictPreMethodFlg, BeforeAddCheckMethod.class), 
+//											x.retrictPreUseFlg == 1 ? true : false, 
+//											EnumAdaptor.valueOf(x.retrictPreDay, AppAcceptLimitDay.class), 
+//											new AttendanceClock(x.retrictPreTimeDay)
+//									), 
+//									new AfterhandRestriction(x.retrictPostAllowFutureFlg == 1 ? true : false)))
+//							.collect(Collectors.toList()), 
+//						entity.krqstAppTypeDiscretes.stream()
+//							.map(x -> new AppTypeSetting(
+//									EnumAdaptor.valueOf(x.prePostInitAtr, PrePostInitialAtr.class), 
+//									x.prePostCanChangeFlg == 1 ? true : false, 
+//									EnumAdaptor.valueOf(x.typicalReasonDisplayFlg, DisplayAtr.class), 
+//									x.sendMailWhenApprovalFlg == 1 ? true : false, 
+//									x.sendMailWhenRegisterlFlg == 1 ? true : false, 
+//									EnumAdaptor.valueOf(x.displayReasonFlg, DisplayAtr.class), 
+//									EnumAdaptor.valueOf(x.krqstAppTypeDiscretePK.appType, ApplicationType.class), 
+//									new DisplayReason(
+//											typeOfLeaveApp, 
+//											displayFixedReason, 
+//											displayAppReason))
+//							.collect(Collectors.toList()), 
+//						new AppLimitSetting(
+//								entity.appActLockFlg == 1? true : false, 
+//								entity.appEndWorkFlg == 1? true : false, 
+//								entity.appActConfirmFlg == 1? true : false, 
+//								entity.appOvertimeNightFlg == 1? true : false, 
+//								entity.appActMonthConfirmFlg == 1? true : false, 
+//								entity.requireAppReasonFlg == 1? true : false), 
+//						Collections.emptyList()
+//				));
+		return null;
 	}
 	/**
 	 * update after and Before hand Restriction

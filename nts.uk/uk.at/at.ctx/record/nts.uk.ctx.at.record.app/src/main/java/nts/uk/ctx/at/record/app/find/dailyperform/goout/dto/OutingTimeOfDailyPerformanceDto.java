@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.goout.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,9 +78,9 @@ public class OutingTimeOfDailyPerformanceDto implements ConvertibleAttendanceIte
 	
 
 	@Override
-	public OutingTimeOfDailyPerformance toDomain() {
-		return new OutingTimeOfDailyPerformance(employeeId, ymd, ConvertHelper.mapTo(
-						timeZone,
+	public OutingTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+		return new OutingTimeOfDailyPerformance(emp, date, 
+					timeZone == null ? new ArrayList<>() : ConvertHelper.mapTo(timeZone,
 						(c) -> new OutingTimeSheet(new OutingFrameNo(c.getWorkNo()), createTimeActual(c.getOuting()),
 								new AttendanceTime(c.getOutTimeCalc()), new AttendanceTime(c.getOutTIme()),
 								ConvertHelper.getEnum(c.getReason(), GoingOutReason.class),

@@ -24,7 +24,7 @@
 		</com:ko>
 		
 		<com:ko tag="if" bind="isSimpleMode() &amp;&amp; !isFlowMode()">
-			<div tabindex="-1" class="accordion setting_detail_tab2">
+			<div tabindex="46" class="accordion setting_detail_tab2">
 				<div id="fixtable-tab2-one-day-simple-mode" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
 						isEnableAllControl: isEnableTimeRangeOneDaySimpleMode,
 						option: fixTableOptionOneDaySimpleMode}"></div>
@@ -39,7 +39,7 @@
 					<label>#{i18n.getText('KMK003_60')}</label>
 				</h3>
 				<div class ="accordion-content">
-					<div id="fixtable-tab2-morning-day" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
+					<div tabindex ="47" id="fixtable-tab2-morning-day" class="tab-2-table-width" data-bind="ntsFixTableCustom: {
 						option: fixTableOptionMorning}"></div>
 				</div>
 			</div>
@@ -49,7 +49,7 @@
 					<label>#{i18n.getText('KMK003_61')}</label>
 				</h3>
 				<div class ="accordion-content">
-					<div id="fixtable-tab2-afternoon" class="tab-2-table-width"
+					<div tabindex ="48" id="fixtable-tab2-afternoon" class="tab-2-table-width"
 						data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoon}"></div>
 				</div>
 			</div>
@@ -71,7 +71,7 @@
 		</div>
 		
 		<div class="tab-block" style="display: inline-flex;">
-			<div tabindex="49" style="margin-right: 10px;" data-bind="ntsComboBox: {
+			<div tabindex="49" style="margin-right: 10px; width: 100px;" data-bind="ntsComboBox: {
 						options: settingEnum.roundingTime,
 						optionsValue: 'value',
 						visibleItemsCount: 8,
@@ -80,10 +80,7 @@
 						editable: false,
 						name: '#[KMK003_169]',
 						enable: true,
-						dropDownAttachedToBody: true,
-						columns: [
-							{ prop: 'localizedName', length: 10 }
-						]}">
+						dropDownAttachedToBody: true }">
 			</div>
 			<div tabindex="50"
 				data-bind="ntsSwitchButton: {

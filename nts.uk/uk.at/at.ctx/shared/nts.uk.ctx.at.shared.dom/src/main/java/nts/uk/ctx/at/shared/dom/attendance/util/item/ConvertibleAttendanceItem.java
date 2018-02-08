@@ -8,5 +8,9 @@ public interface ConvertibleAttendanceItem {
 	
 	GeneralDate workingDate();
 	
-	Object toDomain();
+	default Object toDomain(){
+		return toDomain(employeeId(), workingDate());
+	}
+	
+	Object toDomain(String employeeId, GeneralDate date);
 }

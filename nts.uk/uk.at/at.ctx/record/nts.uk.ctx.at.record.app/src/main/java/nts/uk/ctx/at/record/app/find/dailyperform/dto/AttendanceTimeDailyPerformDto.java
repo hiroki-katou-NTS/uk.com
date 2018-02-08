@@ -75,10 +75,10 @@ public class AttendanceTimeDailyPerformDto implements ConvertibleAttendanceItem 
 	public GeneralDate workingDate() {
 		return this.date;
 	}
-
+	
 	@Override
-	public AttendanceTimeOfDailyPerformance toDomain() {
-		return new AttendanceTimeOfDailyPerformance(employeeID, date,
+	public AttendanceTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+		return new AttendanceTimeOfDailyPerformance(emp, date,
 				scheduleTime == null ? null : scheduleTime.toDomain(), 
 				actualWorkTime == null ? null : actualWorkTime.toDomain(),
 				stayingTime == null ? null : stayingTime.toDomain(), 

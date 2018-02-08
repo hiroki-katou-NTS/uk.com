@@ -229,6 +229,9 @@ public class PeregProcessor {
 				break;
 			}
 		}
+		if(query.getCategoryCode().equals("CS00020")) {
+			MappingFactory.setDefaultValueRadio(classItemList);
+		}
 		return classItemList;
 	}
 	

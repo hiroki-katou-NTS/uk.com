@@ -436,16 +436,17 @@ public class DailyPerformanceCorrectionProcessor {
 		System.out.println("time before get item" + (System.currentTimeMillis() - timeStart));
 		long start = System.currentTimeMillis();
 		DisplayItem disItem = getDisplayItems(correct, formatCodes, companyId, screenDto, listEmployeeId);
-		DPControlDisplayItem dPControlDisplayItem = this.getItemIdNames(disItem);
-		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 
 		List<DailyModifyResult> results = new ArrayList<>();
 		ExecutorService service = Executors.newFixedThreadPool(1);
 
 		CountDownLatch latch = new CountDownLatch(1);
-		Future<List<DailyModifyResult>> sResults = service
-				.submit(new GetDataDaily(listEmployeeId.size() > 31 ? listEmployeeId.subList(0, 30) : listEmployeeId,
-						dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
+
+		Future<List<DailyModifyResult>> sResults = service.submit(
+				new GetDataDaily( listEmployeeId.size() > 31 ? listEmployeeId.subList(0,30) : listEmployeeId , dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
+		DPControlDisplayItem dPControlDisplayItem = this.getItemIdNames(disItem);
+		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
+
 		try {
 			results = sResults.get();
 			screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
@@ -761,7 +762,7 @@ public class DailyPerformanceCorrectionProcessor {
 				screenDto.addErrorToResponseData(lstError, lstErrorSetting);
 			}
 		}
-		return lstError.stream().collect(Collectors.toMap(e -> e.getEmployeeId(), e -> ""));
+		return lstError.stream().collect(Collectors.toMap(e -> e.getEmployeeId(), e -> "", (x, y) -> x));
 	}
 
 	private List<DailyPerformanceEmployeeDto> extractEmployeeData(Integer initScreen, String sId,

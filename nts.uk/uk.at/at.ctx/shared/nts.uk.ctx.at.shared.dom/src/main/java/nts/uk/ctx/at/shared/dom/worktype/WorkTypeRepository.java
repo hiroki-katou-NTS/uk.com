@@ -195,4 +195,12 @@ public interface WorkTypeRepository {
 	 * @return
 	 */
 	List<WorkType> getAcquiredLeaveSystemWorkTypes(String companyId);
+	
+	/**
+	 * Get data by Deprecated
+	 * @param companyId
+	 * @param workTypeCd
+	 * @return
+	 */
+	Optional<WorkType> findByDeprecated(String companyId, String workTypeCd);
 }

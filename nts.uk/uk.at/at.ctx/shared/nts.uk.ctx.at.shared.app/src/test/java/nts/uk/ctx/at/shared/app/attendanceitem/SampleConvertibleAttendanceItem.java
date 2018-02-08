@@ -39,7 +39,7 @@ public class SampleConvertibleAttendanceItem implements ConvertibleAttendanceIte
 	}
 
 	@Override
-	public Object toDomain() {
+	public Object toDomain(String emp, GeneralDate date) {
 		// TODO Auto-generated method stub
 		return null;
 	}
