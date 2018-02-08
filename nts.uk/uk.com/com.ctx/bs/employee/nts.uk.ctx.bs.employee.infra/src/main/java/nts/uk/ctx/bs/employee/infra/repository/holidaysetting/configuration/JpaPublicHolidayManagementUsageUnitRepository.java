@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.holidaysetting.configuration;
 
 import java.util.Optional;
@@ -30,6 +34,14 @@ public class JpaPublicHolidayManagementUsageUnitRepository extends JpaRepository
 	@Override
 	public void update(PublicHolidayManagementUsageUnit domain) {
 		this.commandProxy().update(this.toEntity(domain));
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementUsageUnitRepository#add(nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementUsageUnit)
+	 */
+	@Override
+	public void add(PublicHolidayManagementUsageUnit domain) {
+		this.commandProxy().insert(this.toEntity(domain));
 	}
 	
 	/**
