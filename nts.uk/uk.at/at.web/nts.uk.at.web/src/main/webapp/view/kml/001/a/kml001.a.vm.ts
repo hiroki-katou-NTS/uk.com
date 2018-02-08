@@ -145,7 +145,7 @@ module nts.uk.at.view.kml001.a {
                             self.currentPersonCost().premiumSets()[i].attendanceItems().forEach(function(item) {
                                 iDList.push(item.shortAttendanceID);
                             });
-                            let request = self.getItem(iDList, index);
+                            let request = self.getItem(iDList, i);
                             allRequest.push(request);
                         });
                         $.when.apply($, allRequest).then(()=>{
