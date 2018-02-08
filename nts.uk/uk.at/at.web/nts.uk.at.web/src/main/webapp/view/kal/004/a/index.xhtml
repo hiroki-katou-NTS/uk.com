@@ -40,9 +40,8 @@
 					<button id="delete" tabindex="4" class="danger" data-bind="click: removeAlarm, enable: !createMode()" >#{i18n.getText('KAL004_6')}</button>
 				</div>
 			</div>
-			<div id="contents-area" >
-				<div class="container">
-					<div id="left-content" class ="bg-green caret-right caret-background">
+			<div id="contents-area" class ='fixed-flex-layout' >
+					<div id="left-content" class ="bg-green caret-right caret-background fixed-flex-layout-left">
 						<table tabindex="5" id="single-list" data-bind="ntsGridList: {								
 								height: 350,
 								dataSource: alarmSource,
@@ -52,7 +51,7 @@
 							}"></table>				
 					</div>
 					
-					<div id="right-content" >
+					<div id="right-content" class ='fixed-flex-layout-right' >
 						<table class="control-group">						
 								<tr>
 									<td>
@@ -112,7 +111,6 @@
 						</div>											
 					</div>
 				</div>
-			</div>
 		</ui:define>
 	</ui:composition>
 </body>
