@@ -52,7 +52,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
                                            ]);
 
             self.swapColumns = ko.observableArray([
-                                               { headerText: resource.getText('CAS011_9'), key: 'webMenuCode', width: 100 },
+                                               { headerText: resource.getText('CAS011_9'), key: 'webMenuCode', width: 40 },
                                                { headerText: resource.getText('CAS011_34'), key: 'webMenuName', width: 150 }
                                            ]);
 
