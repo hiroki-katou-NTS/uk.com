@@ -5,15 +5,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.uk.ctx.at.function.dom.adapter.ErrorAlarmWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.FixedConditionDataAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConditionDataAdapterDto;
+import nts.uk.ctx.at.function.dom.adapter.PublicHolidaySettingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapterDto;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
@@ -46,11 +45,21 @@ public class AlarmCheckConditionByCategoryFinder {
 
 	@Inject
 	private ErrorAlarmWorkRecordAdapter errorAlarmWkRcAdapter;
+	
+	@Inject
+	private PublicHolidaySettingAdapter publicHolidaySettingAdapter;
 
 	public List<AlarmCheckConditionByCategoryDto> getAllData(int category) {
 		String companyId = AppContexts.user().companyId();
 		return conditionRepo.findByCategory(companyId, category).stream().map(item -> minValueFromDomain(item))
 				.collect(Collectors.toList());
+	}
+	
+	public boolean checkManager(){
+		 if(publicHolidaySettingAdapter.FindPublicHolidaySetting().getIsManageComPublicHd() == 1)
+			 return true;
+		 return false;
+		
 	}
 
 	public AlarmCheckConditionByCategoryDto getDataByCode(int category, String code) {
