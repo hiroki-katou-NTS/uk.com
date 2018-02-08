@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.query.model;
+package nts.uk.ctx.bs.employee.app.query.employee;
 
 import java.io.Serializable;
 import java.util.List;
