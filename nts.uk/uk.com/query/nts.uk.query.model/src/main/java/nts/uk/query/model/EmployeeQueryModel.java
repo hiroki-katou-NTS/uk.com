@@ -10,7 +10,7 @@ import nts.arc.time.GeneralDate;
 @Getter
 
 //社員のソート用の規定情報
-public class QueryModel {
+public class EmployeeQueryModel {
 	
 	/** The employee ID. */
 	private String employeeID; //社員ID
