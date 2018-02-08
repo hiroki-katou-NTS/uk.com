@@ -66,7 +66,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         ]);
         selectedIds: KnockoutObservableArray<number> = ko.observableArray([1, 2]);
         popupVal: KnockoutObservable<string> = ko.observable('');
-        selectedDate: KnockoutObservable<string> = ko.observable('2017/01/01');
+        selectedDate: KnockoutObservable<string> = ko.observable('1993/23/12');
 
         //Date time
         currentDate: Date = new Date();
@@ -112,7 +112,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         flag: boolean = true;
         isClickChangeDisplayMode: boolean = false;
         stopRequest: KnockoutObservable<boolean> = ko.observable(true);
-        detailHeaderDecoInit: any = [];
 
         constructor() {
             let self = this;
@@ -286,7 +285,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.listStateWorkTypeCode(__viewContext.viewModel.viewO.checkStateWorkTypeCode);
                 self.listCheckNeededOfWorkTime(__viewContext.viewModel.viewO.checkNeededOfWorkTimeSetting);
                 self.dataWorkEmpCombine(__viewContext.viewModel.viewO.workEmpCombines);
-                //                self.setColorForCellHeaderDetailAndHoz(self.detailHeaderDecoInit);
 
                 self.initCCG001();
                 self.initExTable();
@@ -581,7 +579,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             popup: {
                                 rows: [1],
                                 provider: function() {
-                                    return $("#popup-area8");
+                                    //                                    return $("#popup-area8");
+                                    return;
                                 }
                             }
                         }]
@@ -733,7 +732,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             },
                             popup: {
                                 rows: [1],
-                                provider: function() { return $("#popup-area8"); }
+                                provider: function() {
+                                    //                                return $("#popup-area8"); 
+                                    return;
+                                }
                             }
                         }]
                 };
@@ -785,10 +787,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                  * validate when stick data in cell
                  */
                 $("#extable").exTable("stickValidate", function(rowIdx, key, data) {
-
-                    if (__viewContext.viewModel.viewO.selectedWorkTimeCode() == '000据え置き') {
-                        //TO-DO
-                    }
+//                    if (__viewContext.viewModel.viewO.selectedWorkTimeCode() == '000据え置き') {
+//                        let dataS: BasicSchedule =
+//                            _.find(self.dataSource(), { 'date': moment(key, '_YYYYMMDD').format('YYYY/MM/DD'), 'employeeId': self.listSid()[rowIdx] });
+//                        let wTimeCode: string = dataS ? dataS.workTimeCode : null;
+//                        let wTime: any =
+//                            wTimeCode ? _.find(__viewContext.viewModel.viewO.listWorkTime(), { 'workTimeCode': wTimeCode }) : null;
+//                        let wTimeName: string = wTime ? wTime.abName : null;
+//                        $("#extable").exTable("stickData", {
+//                            workTypeCode: data.workTypeCode,
+//                            workTypeName: data.workTypeName,
+//                            workTimeCode: wTimeCode,
+//                            workTimeName: wTimeName,
+//                            startTime: dataS ? dataS.scheduleStartClock : '',
+//                            endTime: dataS ? dataS.scheduleEndClock : ''
+//                        });
+//                        return true;
+//                    }
 
                     let stateWorkTypeCd: any = _.find(self.listCheckNeededOfWorkTime(), ['workTypeCode', data.workTypeCode]);
                     // if workTypeCode is not required( state = 2) worktime is needless
@@ -874,7 +889,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 },
                                 popup: {
                                     rows: [1],
-                                    provider: function() { return $("#popup-area8"); }
+                                    provider: function() {
+                                        //                                    return $("#popup-area8"); 
+                                        return;
+                                    }
                                 }
                             }]
                     };
@@ -918,7 +936,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     },
                                     popup: {
                                         rows: [1],
-                                        provider: function() { return $("#popup-area8"); }
+                                        provider: function() {
+                                            //                                        return $("#popup-area8"); 
+                                            return;
+                                        }
                                     }
                                 }]
                         };
@@ -986,7 +1007,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     },
                                     popup: {
                                         rows: [1],
-                                        provider: function() { return $("#popup-area8"); }
+                                        provider: function() {
+                                            //                                        return $("#popup-area8"); 
+                                            return;
+                                        }
                                     }
                                 }]
                         };

@@ -38,8 +38,8 @@ public class Kaf022AddCommand {
 	private MailOtInstructionCommand mailOt;
 	private ApprovalTempCommand appTemp;
 	private ApplicationSettingCommand appliSet;
-	private AppDispNameCommand appName;
-	private HdAppDispNameCommand hdDisp;
+	private List<AppDispNameCommand> appName;
+	private List<HdAppDispNameCommand> hdDisp;
 	private StampRequestSettingCommand stampReq;
 	private GoBackDirectlyCommonSettingCommand goBack;
 	private AppOvertimeSettingCommand appOt;
