@@ -1,7 +1,6 @@
 package nts.uk.ctx.workflow.dom.agent;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -87,6 +86,25 @@ public class ApprovalAgencyInfoServiceImpl implements ApprovalAgencyInfoService 
 			}
 		}
 		return new ApprovalAgencyInfoOutput(outputListApproverAndRepresenterSID, outputListRepresenterSID, outputFlag);
+	}
+
+	@Override
+	public List<Agent> getApprovalAgencyInfoByPeriod(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate) {
+		List<Agent> newAgents = new ArrayList<>();
+		
+		// ドメインモデル「代行承認」を取得する(lấy thông tin domain 「代行承認」)
+		List<Agent> agents = agentRepository.findByCid(companyId);
+		
+		// 就業承認．基本設定．承認代行者 =パラメータ．社員ID OR 給与承認．基本設定．承認代行者 =パラメータ．社員ID OR 人事承認．基本設定．承認代行者 =パラメータ．社員ID OR 経理承認．基本設定．承認代行者 =パラメータ．社員ID
+		for (Agent item : agents) {
+			if(item.getAgentSid1().equals(employeeId) || item.getAgentSid2().equals(employeeId) || item.getAgentSid3().equals(employeeId) || item.getAgentSid4().equals(employeeId)) {
+				if(item.getStartDate().beforeOrEquals(startDate) && item.getEndDate().afterOrEquals(endDate)) {
+					newAgents.add(item);
+				}
+			}
+		}
+		
+		return newAgents;
 	}
 
 }
