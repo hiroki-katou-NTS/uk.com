@@ -28,7 +28,7 @@ public class PerInfoInitValueSetItemFinder {
 		List<PerInfoInitValueSetItem> item = this.settingItemRepo.getAllItem(settingId, perInfoCtgId);
 		if (item != null) {
 			List<PerInfoInitValueSettingItemDto> itemDto = item.stream().map(c -> {
-				if (c.getDataType() == 6) {
+				if (c.getDataType() == 6 || c.getDataType() == 7 || c.getDataType() == 8) {
 					PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
 					SelectionItemDto selectionItemDto = null;
 					if (dto.getSelectionItemRefType() == 1) {
@@ -58,4 +58,18 @@ public class PerInfoInitValueSetItemFinder {
 		return new ArrayList<>();
 	}
 
+	
+	public List<ItemDto> getAllItemRequired(String settingId, String perInfoCtgId) {
+
+		List<PerInfoInitValueSetItem> item = this.settingItemRepo.getAllItem(settingId, perInfoCtgId);
+		if (item != null) {
+			List<ItemDto> itemDto = item.stream().map(c -> {
+				return new ItemDto(c.getPerInfoItemDefId(), c.getItemName(), c.getIsRequired().value);
+			}).collect(Collectors.toList());
+
+			return itemDto;
+		}
+
+		return new ArrayList<>();
+	}
 }

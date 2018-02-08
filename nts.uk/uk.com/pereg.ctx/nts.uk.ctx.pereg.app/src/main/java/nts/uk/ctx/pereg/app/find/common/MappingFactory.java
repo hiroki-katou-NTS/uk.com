@@ -3,19 +3,16 @@
  */
 package nts.uk.ctx.pereg.app.find.common;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.inject.Inject;
 
 import nts.gul.reflection.AnnotationUtil;
 import nts.gul.reflection.FieldsWorkerStream;
 import nts.gul.reflection.ReflectionUtil;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
-import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
@@ -28,10 +25,7 @@ import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
  *
  */
 public class MappingFactory {
-
-	@Inject
-	I18NResourcesForUK ukResouce;
-
+	
 	public static void mapItemClass(PeregDto peregDto, LayoutPersonInfoClsDto classItem) {
 
 		// map data
@@ -72,10 +66,11 @@ public class MappingFactory {
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
 				Object value = itemCodeValueMap.get(valueItem.getItemCode());
 				if (valueItem.getItem() != null) {
-					if(valueItem.getItem().getDataTypeValue() == 6
-							|| valueItem.getItem().getDataTypeValue() == 7
-							|| valueItem.getItem().getDataTypeValue() == 8) {
-						value = value.toString();
+					int itemType = valueItem.getItem().getDataTypeValue() ;
+					if(itemType == DataTypeValue.SELECTION.value || 
+							itemType == DataTypeValue.SELECTION_BUTTON.value || 
+							itemType == DataTypeValue.SELECTION_RADIO.value) {
+						value = value == null ? null : value.toString();
 					}
 				}
 				valueItem.setValue(value);
@@ -168,72 +163,6 @@ public class MappingFactory {
 				}
 			}
 		}
-	}
-
-	public static void setDefaultValueRadio(List<LayoutPersonInfoClsDto> classItemList) {
-		List<String> firstReqLstItems = new ArrayList<String>();
-		firstReqLstItems.add("IS00130");
-		firstReqLstItems.add("IS00128");
-		firstReqLstItems.add("IS00139");
-		firstReqLstItems.add("IS00157");
-		firstReqLstItems.add("IS00166");
-		firstReqLstItems.add("IS00175");
-		firstReqLstItems.add("IS00148");
-		firstReqLstItems.add("IS00193");
-		firstReqLstItems.add("IS00202");
-		firstReqLstItems.add("IS00211");
-		firstReqLstItems.add("IS00220");
-		firstReqLstItems.add("IS00229");
-		firstReqLstItems.add("IS00238");
-		firstReqLstItems.add("IS00184");
-		List<String> secReqLstItems = new ArrayList<String>();
-		secReqLstItems.add("IS00131");
-		secReqLstItems.add("IS00140");
-		secReqLstItems.add("IS00158");
-		secReqLstItems.add("IS00167");
-		secReqLstItems.add("IS00176");
-		secReqLstItems.add("IS00149");
-		secReqLstItems.add("IS00194");
-		secReqLstItems.add("IS00203");
-		secReqLstItems.add("IS00212");
-		secReqLstItems.add("IS00221");
-		secReqLstItems.add("IS00230");
-		secReqLstItems.add("IS00239");
-		secReqLstItems.add("IS00185");
-		for (LayoutPersonInfoClsDto classItem : classItemList) {
-			for (Object item : classItem.getItems()) {
-				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-				if (valueItem.getValue() == null) {
-					switch (valueItem.getItemCode()) {
-					case "IS00248":
-					case "IS00247":
-					case "IS00258":
-						valueItem.setValue("0");
-						break;
-					case "IS00121":
-						valueItem.setValue("1");
-						break;
-					default:
-						break;
-					}
-
-				}else {
-					if(firstReqLstItems.contains(valueItem.getItemCode())) {
-						valueItem.setTextValue(getFirstValueText(valueItem.getItemCode()));
-					} else if(secReqLstItems.contains(valueItem.getItemCode())) {
-						valueItem.setTextValue(getSecValueText(valueItem.getItemCode()));
-					}
-				}
-			}
-		}
-	}
-	//Wait request list
-	private static String getFirstValueText(String itemCode) {
-		return "First button";
-	}
-	
-	private static String getSecValueText(String itemCode) {
-		return "Second button";
 	}
 
 }

@@ -15,6 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.reflection.AnnotationUtil;
 import nts.gul.reflection.ReflectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.pereg.app.find.common.InitDefaultValue;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
@@ -93,6 +94,9 @@ public class PeregProcessor {
 	
 	@Inject
 	private PersonInfoItemAuthRepository itemAuthRepo;
+	
+	@Inject
+	private InitDefaultValue initDefaultValue;
 	
 	/**
 	 * get person information category and it's children (Hiển thị category và
@@ -230,7 +234,7 @@ public class PeregProcessor {
 			}
 		}
 		if(query.getCategoryCode().equals("CS00020")) {
-			MappingFactory.setDefaultValueRadio(classItemList);
+			initDefaultValue.setDefaultValueRadio(classItemList);
 		}
 		return classItemList;
 	}

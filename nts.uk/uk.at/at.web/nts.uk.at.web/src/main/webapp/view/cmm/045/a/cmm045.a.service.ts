@@ -1,0 +1,19 @@
+module cmm045.a.service {
+     var paths = {
+         getApplicationList: "at/request/application/applist/getapplist",
+         getApplicationDisplayAtr: "at/request/application/applist/get/appdisplayatr"
+    }
+
+    /**
+    * get List Application
+    */
+    export function getApplicationList(param: any): JQueryPromise<Array<viewmodel.model.Item>>{
+        return nts.uk.request.ajax("at", paths.getApplicationList,param);
+    }  
+    /**
+     * get list Application display atr
+     */
+    export function getApplicationDisplayAtr(): JQueryPromise<Array<viewmodel.model.Item>>{
+        return nts.uk.request.ajax("at", paths.getApplicationDisplayAtr);
+    }
+}
