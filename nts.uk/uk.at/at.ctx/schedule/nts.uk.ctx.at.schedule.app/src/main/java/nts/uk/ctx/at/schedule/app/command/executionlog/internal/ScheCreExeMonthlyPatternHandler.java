@@ -205,7 +205,7 @@ public class ScheCreExeMonthlyPatternHandler {
 		//ドメインモデル「スケジュール作成エラーログ」を登録する
 		if (!workingConditionItem.getMonthlyPattern().isPresent() || StringUtil.isNullOrEmpty(workingConditionItem.getMonthlyPattern().get().v(), true)) {
 			//log Msg_603
-			scheCreExeErrorLogHandler.addError(command.toBaseCommand(), command.getEmployeeId(), "Msg_603");
+			scheCreExeErrorLogHandler.addError(command.toBaseCommand(), workingConditionItem.getEmployeeId(), "Msg_603");
 			return false; 
 		}
 				
@@ -217,7 +217,7 @@ public class ScheCreExeMonthlyPatternHandler {
 		//ドメインモデル「スケジュール作成エラーログ」を登録する
 		if (!workMonthlySetOpt.isPresent()) {
 			//log Msg_604
-			scheCreExeErrorLogHandler.addError(command.toBaseCommand(), command.getEmployeeId(), "Msg_604");
+			scheCreExeErrorLogHandler.addError(command.toBaseCommand(), workingConditionItem.getEmployeeId(), "Msg_604");
 			return false;
 		}
 		
