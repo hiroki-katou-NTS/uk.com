@@ -126,10 +126,13 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 		for(OverTimeOfTimeZoneSet overTimeHourSet:overTimeHourSetList) {
 			
 			//if(overTimeHourSet.getTimezone().contains(attendanceLeave.getTimeSpan()));
-			if(attendanceLeave.getTimeZone().isBetweenOrEqual(overTimeHourSet.getTimezone())) {
-					createTimeSheet.add(OverTimeFrameTimeSheetForCalc.createOverWorkFramTimeSheet(overTimeHourSet
-																							  ,overTimeHourSet.getTimezone().getDuplicatedWith(attendanceLeave.getTimeSpan()).get()));
+			//if(attendanceLeave.getTimeZone().isBetweenOrEqual(overTimeHourSet.getTimezone())) {
+			Optional<TimeSpanForCalc> calcrange = overTimeHourSet.getTimezone().getDuplicatedWith(attendanceLeave.getTimeSpan());
+			if(calcrange.isPresent()) {
+				createTimeSheet.add(OverTimeFrameTimeSheetForCalc.createOverWorkFramTimeSheet(overTimeHourSet,calcrange.get()));
 			}
+																					  
+			//}
 
 		}
 //		/*変形残業　振替*/
@@ -159,7 +162,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 //		deductionTimeSheet.getForDeductionTimeZoneList();/*法定内区分の置き換え*/
 		
 		
-		return new OverTimeFrameTimeSheetForCalc(overTimeHourSet.getTimezone(),
+		return new OverTimeFrameTimeSheetForCalc(new TimeZoneRounding(timeSpan.getStart(),timeSpan.getEnd(),overTimeHourSet.getTimezone().getRounding()),
 											  	timeSpan,
 											  	deductionTimeSheet.getForDeductionTimeZoneList().stream().map(tc ->tc.createWithExcessAtr()).collect(Collectors.toList()),
 											  	Collections.emptyList(),

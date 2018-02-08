@@ -98,7 +98,7 @@ public class OutsideWorkTimeSheet {
 //			new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(1), new TimeSpanForCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)));
 //					fixOff.getWorkTimezone(), attendanceLeave, dayEndSet, overDayEndSet, holidayTimeWorkItem, beforeDay,
 //					toDay, afterDay);
-			holidayWorkFrameTimeSheetForCalc = HolidayWorkFrameTimeSheetForCalc.createHolidayTimeWorkFrame(fixOff,toDay);
+			holidayWorkFrameTimeSheetForCalc = HolidayWorkFrameTimeSheetForCalc.createHolidayTimeWorkFrame(attendanceLeave,fixOff,toDay);
 
 			/* 0時跨ぎ */
 			OverDayEnd overEnd = new OverDayEnd();

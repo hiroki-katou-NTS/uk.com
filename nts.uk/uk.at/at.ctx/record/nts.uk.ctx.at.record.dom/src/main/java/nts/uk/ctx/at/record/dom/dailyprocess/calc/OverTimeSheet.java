@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaisingSalaryTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
@@ -99,8 +100,10 @@ public class OverTimeSheet {
 		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(10), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
 		
 		for(OverTimeFrameTimeSheetForCalc overTimeFrameTime : frameTimeSheets) {
-			val calcTime = overTimeFrameTime.correctCalculationTime(Optional.empty(), autoCalcSet);
-			calcOverTimeWorkTimeList.get(overTimeFrameTime.getOverTimeWorkSheetNo().v()).getOverTimeWork().addMinutes(calcTime,calcTime);
+			AttendanceTime calcTime = overTimeFrameTime.correctCalculationTime(Optional.empty(), autoCalcSet);
+			OverTimeFrameTime getListItem = calcOverTimeWorkTimeList.get(overTimeFrameTime.getOverTimeWorkSheetNo().v().intValue() - 1);
+			getListItem.addOverTime(calcTime);
+			calcOverTimeWorkTimeList.set(overTimeFrameTime.getOverTimeWorkSheetNo().v().intValue() - 1, getListItem);
 		}
 		return calcOverTimeWorkTimeList;
 	}

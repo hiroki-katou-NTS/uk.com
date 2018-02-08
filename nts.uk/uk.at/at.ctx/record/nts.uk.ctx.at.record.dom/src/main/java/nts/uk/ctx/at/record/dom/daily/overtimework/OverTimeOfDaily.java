@@ -229,13 +229,13 @@ public class OverTimeOfDaily {
 	public static OverTimeOfDaily calculationTime(OverTimeSheet overTimeSheet,AutoCalculationOfOverTimeWork overTimeAutoCalcSet) {
 		val overTimeFrameTimeSheet = overTimeSheet.changeOverTimeFrameTimeSheet();
 		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(overTimeAutoCalcSet);
-		//val excessOverTimeWorkMidNightTime = Finally.empty();
+		val excessOverTimeWorkMidNightTime = Finally.of(new ExcessOverTimeWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0))));
 		val irregularTime = new AttendanceTime(0);
 		val flexTime = new FlexTime(TimeWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0));
 		val overTimeWork = new AttendanceTime(0);
 		return new OverTimeOfDaily(overTimeFrameTimeSheet,
 								   overTimeFrame,
-								   Finally.empty(),
+								   excessOverTimeWorkMidNightTime,
 								   irregularTime,
 								   flexTime,
 								   overTimeWork);

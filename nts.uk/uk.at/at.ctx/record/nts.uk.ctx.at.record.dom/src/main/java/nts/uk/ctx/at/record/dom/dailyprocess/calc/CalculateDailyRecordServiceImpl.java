@@ -144,7 +144,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		/*就業時間帯勤務区分*/
 		//Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,//"901"); 
-		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,integrationOfDaily.getWorkInformation().getScheduleWorkInformation().getWorkTimeCode().toString());
+		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
 		/*労働制*/
 		DailyCalculationPersonalInformation personalInfo = getPersonInfomation(companyId
 																				, placeId

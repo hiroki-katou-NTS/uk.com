@@ -78,8 +78,10 @@ public class HolidayWorkTimeSheet{
 		calcHolidayTimeWorkTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(10),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),Finally.of(new AttendanceTime(0))));
 		
 		for(HolidayWorkFrameTimeSheetForCalc holidayWorkFrameTime:workHolidayTime) {
-			val calcTime = holidayWorkFrameTime.correctCalculationTime(holidayAutoCalcSetting);
-			calcHolidayTimeWorkTimeList.get(holidayWorkFrameTime.getHolidayWorkTimeSheetNo().v().intValue()).getHolidayWorkTime().get().addMinutes(calcTime, calcTime);
+			AttendanceTime calcTime = holidayWorkFrameTime.correctCalculationTime(holidayAutoCalcSetting); 
+			HolidayWorkFrameTime getListItem = calcHolidayTimeWorkTimeList.get(holidayWorkFrameTime.getHolidayWorkTimeSheetNo().v().intValue() - 1);
+			getListItem.addHolidayTime(calcTime);
+			calcHolidayTimeWorkTimeList.set(holidayWorkFrameTime.getHolidayWorkTimeSheetNo().v().intValue() - 1, getListItem);
 		}
 		return calcHolidayTimeWorkTimeList;
 	}

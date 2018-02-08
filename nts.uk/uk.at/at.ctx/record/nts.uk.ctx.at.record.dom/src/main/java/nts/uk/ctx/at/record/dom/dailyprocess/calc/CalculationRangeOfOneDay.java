@@ -222,14 +222,16 @@ public class CalculationRangeOfOneDay {
 			return;
 		}
 		for (int workNumber = 1; workNumber <= attendanceLeavingWork.getTimeLeavingWorks().size(); workNumber++) {
-			/* 就業内の時間帯作成 */
-			val createWithinWorkTimeSheet = WithinWorkTimeSheet.createAsFixed(toDay, predetermineTimeSet, fixedWorkSetting,workTimeCommonSet, deductionTimeSheet, bonusPaySetting); 
-			withinWorkingTimeSheet.set(createWithinWorkTimeSheet);
-			/* 就業外の時間帯作成 */
-			outsideWorkTimeSheet.set(OutsideWorkTimeSheet.createOutsideWorkTimeSheet(overTimeHourSetList, fixOff,
+			if(workNumber <=1) {
+				/* 就業内の時間帯作成 */
+				val createWithinWorkTimeSheet = WithinWorkTimeSheet.createAsFixed(toDay, predetermineTimeSet, fixedWorkSetting,workTimeCommonSet, deductionTimeSheet, bonusPaySetting); 
+				withinWorkingTimeSheet.set(createWithinWorkTimeSheet);
+				/* 就業外の時間帯作成 */
+				outsideWorkTimeSheet.set(OutsideWorkTimeSheet.createOutsideWorkTimeSheet(overTimeHourSetList, fixOff,
 					attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)),
 					workNumber, dayEndSet, workTimeCommonSet, holidayTimeWorkItem, beforeDay, toDay, afterDay, workTime,
 					workingSystem, breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet));
+			}
 		}
 
 	}
