@@ -136,6 +136,7 @@ module nts.uk.at.view.ksm005.c {
                     } else {
                         self.selectedHists(null);
                         self.isEnableListHist(false);
+                        self.histList([]);
                         self.enableDelete(false);
                         self.enableSystemChange(false);
                         self.employeeName('');  
