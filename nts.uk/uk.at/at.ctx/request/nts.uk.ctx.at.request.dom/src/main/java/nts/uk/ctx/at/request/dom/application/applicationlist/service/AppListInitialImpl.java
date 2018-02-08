@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.applicationlist.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -22,6 +23,9 @@ import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.Ap
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
@@ -33,9 +37,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImp
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
@@ -100,6 +102,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	private GoBackDirectlyRepository repoGoBack;
 	@Inject
 	private AppDetailInfoRepository repoAppDetail;
+	@Inject
+	private DailyAttendanceTimeCaculation calTime;
 	/**
 	 * 0 - 申請一覧事前必須チェック
 	 */
@@ -360,12 +364,42 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	public Boolean getAppListAchievementOverTime(String sID, GeneralDate date) {
 		//Imported(申請承認)「勤務実績」を取得する - req #5
 		RecordWorkInfoImport record = recordWkpInfoAdapter.getRecordWorkInfo(sID, date);
-		
+		DailyAttendanceTimeCaculationImport cal = calTime.getCalculation(sID, date, record.getWorkTypeCode(), record.getWorkTimeCode(), record.getTime1(), record.getTime2(), record.getTime3(), record.getTime4());
 		//Imported(申請承認)「計算残業時間」を取得する - req #23
+		List<Integer> lstFrameNo = new ArrayList<>();
+		
+		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getOverTime().entrySet()){
+			for(Integer i : lstFrameNo){
+				if(i == entry.getKey()){
+				int a =	entry.getValue().getCalTime();
+				}
+			}
+		}
 		// TODO Auto-generated method stub
 		//Imported(申請承認)「計算休出時間」を取得する - req #23
+		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getHolidayWorkTime().entrySet()){
+			for(Integer i : lstFrameNo){
+				if(i == entry.getKey()){
+				int a =	entry.getValue().getCalTime();
+				}
+			}
+		}
 		// TODO Auto-generated method stub
 		//Imported(申請承認)「計算加給時間」を取得する - req #23
+		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getBonusPayTime().entrySet()){
+			for(Integer i : lstFrameNo){
+				if(i == entry.getKey()){
+				int a =	entry.getValue().getCalTime();
+				}
+			}
+		}
+		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getSpecBonusPayTime().entrySet()){
+			for(Integer i : lstFrameNo){
+				if(i == entry.getKey()){
+				int a =	entry.getValue().getCalTime();
+				}
+			}
+		}
 		// TODO Auto-generated method stub
 		return null;
 	}
