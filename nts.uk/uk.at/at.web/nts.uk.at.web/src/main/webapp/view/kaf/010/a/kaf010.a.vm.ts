@@ -186,27 +186,27 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     }
                     return dfd.promise();
                     });
-                self.prePostSelected.subscribe(function(value){
-                    let dfd =$.Deferred();
-                        service.checkConvertPrePost({
-                            prePostAtr: value,
-                            appDate:  nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
-                            siftCD: self.siftCD(),
-                            overtimeHours: ko.toJS(self.overtimeHours) 
-                        }).done((data) =>{
-                            self.convertpreAppOvertimeDto(data);
-                            self.convertAppOvertimeReferDto(data);
-                            self.referencePanelFlg(data.referencePanelFlg);
-                            self.allPreAppPanelFlg(data.allPreAppPanelFlg);
-                            self.preAppPanelFlg(data.preAppPanelFlg);
-                            self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
-                            self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
-                            self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
-                        }).fail((res) =>{
-                            dfd.reject(res);    
-                        });
-                     return dfd.promise();
-                });
+//                self.prePostSelected.subscribe(function(value){
+//                    let dfd =$.Deferred();
+//                        service.checkConvertPrePost({
+//                            prePostAtr: value,
+//                            appDate:  nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
+//                            siftCD: self.siftCD(),
+//                            overtimeHours: ko.toJS(self.overtimeHours) 
+//                        }).done((data) =>{
+//                            self.convertpreAppOvertimeDto(data);
+//                            self.convertAppOvertimeReferDto(data);
+//                            self.referencePanelFlg(data.referencePanelFlg);
+//                            self.allPreAppPanelFlg(data.allPreAppPanelFlg);
+//                            self.preAppPanelFlg(data.preAppPanelFlg);
+//                            self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
+//                            self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
+//                            self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
+//                        }).fail((res) =>{
+//                            dfd.reject(res);    
+//                        });
+//                     return dfd.promise();
+//                });
                 
                 //Check work content Changed
                 self.checkWorkContentChanged();
