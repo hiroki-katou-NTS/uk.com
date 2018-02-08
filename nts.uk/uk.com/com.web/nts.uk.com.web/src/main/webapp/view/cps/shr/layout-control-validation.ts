@@ -37,7 +37,10 @@ module nts.layout {
                         $element = $(element);
 
                     if (element && (element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper'))) {
-                        x.value.subscribe(d => nou(d) && rmError($element, "FND_E_REQ_INPUT"));
+                        x.value.subscribe(d => {
+                            debugger;
+                            nou(d) && rmError($element, "FND_E_REQ_INPUT");
+                        });
                     }
                 });
         },
@@ -256,10 +259,10 @@ module nts.layout {
                                 self.setItemName(wkTypeItem, childData.selectedWorkTypeName);
                                 self.setItemData(wkTimeItem, childData.selectedWorkTimeCode);
                                 self.setItemName(wkTimeItem, childData.selectedWorkTimeName);
-                                self.setItemData(startItem1, childData.first && childData.first.start || undefined);
-                                self.setItemData(endItem1, childData.first && childData.first.end || undefined);
-                                self.setItemData(startItem2, childData.second && childData.second.start || undefined);
-                                self.setItemData(endItem2, childData.second && childData.second.end || undefined);
+                                self.setItemData(startItem1, childData.first && childData.first.start);
+                                self.setItemData(endItem1, childData.first && childData.first.end);
+                                self.setItemData(startItem2, childData.second && childData.second.start);
+                                self.setItemData(endItem2, childData.second && childData.second.end);
 
                                 validateEditable(wkTimeItem != null ? wkTimeItem.data.value : '');
                             }
