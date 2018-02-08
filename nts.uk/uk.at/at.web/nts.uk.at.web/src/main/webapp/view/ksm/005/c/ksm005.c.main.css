@@ -19,5 +19,8 @@
 	width: 125px;
 }
 #list-box_grid_displayContainer {
-	height: 110px;
+	height: 110px !important;
+}
+#list-box_grid_scrollContainer {
+	height: 87px !important;
 }
