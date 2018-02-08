@@ -13,7 +13,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author tanlv
  *
  */
-public class LeaveSystemWorkType {
+public class LeaveSystemWorkTypeService {
 	@Inject
 	public WorkTypeRepository workTypeRepository;
 	
