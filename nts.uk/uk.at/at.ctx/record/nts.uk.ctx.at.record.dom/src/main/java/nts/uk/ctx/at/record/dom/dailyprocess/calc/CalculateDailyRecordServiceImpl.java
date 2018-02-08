@@ -117,6 +117,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	public IntegrationOfDaily calculate(String companyId,String placeId, String employmentCd, String employeeId, GeneralDate targetDate, IntegrationOfDaily integrationOfDaily) {
 		/*日別実績(Work)の退避*/
 		val copyIntegrationOfDaily = integrationOfDaily;
+		if((employeeId == null)||(placeId == null)||(employmentCd == null)) return integrationOfDaily;
 		// 実績データの計算
 		return this.calculateRecord(companyId,placeId, employmentCd, employeeId, targetDate, integrationOfDaily);
 	}
