@@ -13,6 +13,7 @@ module nts.uk.at.view.kml001.a {
             newStartDate: KnockoutObservable<string>;
             viewAttendanceItems: KnockoutObservableArray<KnockoutObservable<string>>;
             textKML001_40 = nts.uk.resource.getText("KML001_40");
+            isLastItem: KnockoutObservable<Boolean> = ko.observable(false);
             constructor() {
                 $('#formula-child-1').html(nts.uk.resource.getText('KML001_7').replace(/\n/g,'<br/>'));
                 var self = this;
@@ -80,6 +81,7 @@ module nts.uk.at.view.kml001.a {
                                     let historyID = _.find(self.personCostList(), function(o) { return o.startDate() == _.split(value, self.textKML001_40, 1)[0]; }).historyID();
                                     servicebase.findByHistoryID(historyID).done(data => {
                                         self.currentPersonCost(vmbase.ProcessHandler.createPersonCostCalFromValue(data, self.premiumItems()));   
+                                        self.checkLastItem();
                                         self.newStartDate(self.currentPersonCost().startDate());
                                         _.defer(() => {$("#startDateInput").ntsError('clear');}); 
                                         nts.uk.ui.errors.clearAll();
@@ -135,6 +137,7 @@ module nts.uk.at.view.kml001.a {
                     let historyID = self.personCostList()[index].historyID();
                     servicebase.findByHistoryID(historyID).done(data => {
                         self.currentPersonCost(vmbase.ProcessHandler.createPersonCostCalFromValue(data, self.premiumItems()));      
+                        self.checkLastItem();
                         self.currentGridPersonCost(self.currentPersonCost().startDate() + self.textKML001_40 + self.currentPersonCost().endDate());
                         let allRequest = [];
                         ko.utils.arrayForEach(self.currentPersonCost().premiumSets(), function(premiumSet, i) {
@@ -142,7 +145,7 @@ module nts.uk.at.view.kml001.a {
                             self.currentPersonCost().premiumSets()[i].attendanceItems().forEach(function(item) {
                                 iDList.push(item.shortAttendanceID);
                             });
-                            let request = self.getItem(iDList, index);
+                            let request = self.getItem(iDList, i);
                             allRequest.push(request);
                         });
                         $.when.apply($, allRequest).then(()=>{
@@ -522,6 +525,16 @@ module nts.uk.at.view.kml001.a {
                         nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});         
                     });
     
+            }
+            
+            checkLastItem(){
+                var self = this;
+                let index = _.findIndex(self.personCostList(), function(o){ return self.currentPersonCost().startDate() == o.startDate();});        
+                if(index==0) {
+                    self.isLastItem(true);    
+                } else {
+                    self.isLastItem(false);    
+                }
             }
             
             /**

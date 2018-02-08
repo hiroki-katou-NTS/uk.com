@@ -18,4 +18,5 @@ public class AppDateDataDto{
 	private RecordWorkDto_New recordWorkDto;
 	private ApplicationDto_New applicationDto;
 	private Integer errorFlag;
+	private Integer defaultPrePostAtr;
 }
