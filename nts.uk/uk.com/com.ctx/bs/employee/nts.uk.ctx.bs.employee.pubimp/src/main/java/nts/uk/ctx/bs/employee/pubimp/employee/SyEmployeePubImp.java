@@ -42,6 +42,7 @@ import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.JobClassification;
 import nts.uk.ctx.bs.employee.pub.employee.MailAddress;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
+import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -84,6 +85,9 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	
 	@Inject
 	private WorkplaceConfigInfoRepository wkpConfigInfoRepo;
+	
+	@Inject
+	private SyWorkplacePub  syWorkplacePub;
 
 	/*
 	 * (non-Javadoc)
@@ -321,8 +325,12 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			return null;
 		}
 		
-		// Get List WkpId (chơ bên anh Thành)
-		List<String> lstWkpId = new ArrayList<>();
+		// Get List WkpId ( Get From RequestList #154(ANH THANH NWS))
+		List<String> lstWkpId = syWorkplacePub.findListWorkplaceIdByCidAndWkpIdAndBaseDate(AppContexts.user().companyId(), affWkpItem.getWorkplaceId(), baseDate);
+		
+		if (lstWkpId.isEmpty()) {
+			return null;
+		}
 		
 		List<AffWorkplaceHistoryItem> result = this.affWkpItemRepo.getAffWrkplaHistItemByListEmpIdAndDate(baseDate, lstWkpId);
 		
