@@ -65,8 +65,8 @@ public class RegisterLayoutFinder {
 
 	@Inject
 	private ComboBoxRetrieveFactory cbbfact;
-	
 	@Inject
+
 	private InitDefaultValue initDefaultValue;
 
 	// sonnlb end
