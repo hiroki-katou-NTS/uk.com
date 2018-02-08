@@ -47,7 +47,7 @@ public class KrqdtAppHolidayWork extends UkJpaEntity implements Serializable {
     /**
      * 勤務種類コード
      */
-    @Column(name = "WORK_TYPE_CODE")
+    @Column(name = "WORKTYPE_CD")
     private String workTypeCode;
     
     /**
