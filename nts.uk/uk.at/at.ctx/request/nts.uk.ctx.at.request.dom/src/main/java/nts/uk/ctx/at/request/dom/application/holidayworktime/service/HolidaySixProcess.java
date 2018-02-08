@@ -1,12 +1,12 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime.service;
 
 import java.util.List;
+import java.util.Map;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 
 public interface HolidaySixProcess {
 	
@@ -25,5 +25,17 @@ public interface HolidaySixProcess {
 	 * @return
 	 */
 	public List<CaculationTime> checkDisplayColor(List<CaculationTime> breakTimeInputs,
-			List<OvertimeInputCaculation> overtimeInputCaculations,int prePostAtr,GeneralDateTime inputDate,GeneralDate appDate,int appType,String employeeID,String companyID,ApprovalFunctionSetting approvalFunctionSetting,String siftCD);
+			Map<Integer,TimeWithCalculationImport> holidayWorkCal,int prePostAtr,GeneralDateTime inputDate,GeneralDate appDate,int appType,String employeeID,String companyID ,String siftCD);
+
+	/**
+	 *  06-02_休出時間を取得
+	 * @param companyID
+	 * @param employeeId
+	 * @param appDate
+	 * @param appType
+	 * @param holidayWorks
+	 * @param holidayWorkCal
+	 * @return
+	 */
+	public List<CaculationTime> getCaculationHolidayWork(String companyID,String employeeId, String appDate,int appType,List<CaculationTime> holidayWorks,Map<Integer,TimeWithCalculationImport> holidayWorkCal);
 }

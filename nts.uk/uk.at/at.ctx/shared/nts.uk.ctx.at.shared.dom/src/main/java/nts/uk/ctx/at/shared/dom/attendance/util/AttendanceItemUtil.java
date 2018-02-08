@@ -79,7 +79,7 @@ public class AttendanceItemUtil {
 					AttendanceItemValue valueAnno = getItemValueAnnotation(field);
 					if (valueAnno != null) {
 						String currentPath = getKey(pathName, "", false, index);
-						String currentFullPath = getKey(pathName, exCon, true, index);
+						String currentFullPath = getKey(pathName, exCon, index > 0, index);
 						return filterAndMap(
 									c.getValue(), 
 									id -> getTextWithNoCondition(id.path()).equals(currentPath),
