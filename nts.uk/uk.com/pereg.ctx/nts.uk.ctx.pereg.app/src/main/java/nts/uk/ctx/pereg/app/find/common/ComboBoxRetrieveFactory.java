@@ -252,25 +252,27 @@ public class ComboBoxRetrieveFactory {
 					.collect(Collectors.toList());
 
 		case "M00010":
+			// 出勤系の勤務種類を取得する
 			return workTypeRepo.getAcquiredAttendanceWorkTypes(companyId).stream()
 					.map(attWkType -> new ComboBoxObject(attWkType.getWorkTypeCode().v(),
 							attWkType.getWorkTypeCode().v() + JP_SPACE + attWkType.getName().v()))
 					.collect(Collectors.toList());
 		case "M00011":
-
+			// 休日系の勤務種類を取得する
 			return workTypeRepo.getAcquiredHolidayWorkTypes(companyId).stream()
 					.map(attWkType -> new ComboBoxObject(attWkType.getWorkTypeCode().v(),
 							attWkType.getWorkTypeCode().v() + JP_SPACE + attWkType.getName().v()))
 					.collect(Collectors.toList());
 
 		case "M00012":
-
+			// 休出系の勤務種類を取得する
 			return workTypeRepo.getAcquiredLeaveSystemWorkTypes(companyId).stream()
 					.map(attWkType -> new ComboBoxObject(attWkType.getWorkTypeCode().v(),
 							attWkType.getWorkTypeCode().v() + JP_SPACE + attWkType.getName().v()))
 					.collect(Collectors.toList());
 
 		case "M00013":
+			// 休日系の勤務種類を取得する
 			List<WorkType> workType = workTypeRepo.getAcquiredHolidayWorkTypes(companyId);
 
 			List<WorkType> workTypeNew = new ArrayList<WorkType>();
