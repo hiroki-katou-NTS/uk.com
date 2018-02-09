@@ -39,7 +39,7 @@ module nts.uk.at.view.kmf002.b {
                         isDialog: false,
                         alreadySettingList: _self.alreadySettingList,
                         maxRows: 20,
-                        tabindex: 1,
+                        tabindex: 3,
                         systemType : SystemType.EMPLOYMENT
                 };
                 
@@ -51,15 +51,20 @@ module nts.uk.at.view.kmf002.b {
                         
                         _self.commonTableMonthDaySet().infoSelect3(_self.workplaceNameSelected());
                         _self.getDataFromService();
+                        
+                        if (!_.isNull(newValue) && !_.isEmpty(newValue)) {
+                            _self.enableSave(true);    
+                        }
                     }
                     catch (e){
-                    }
-                    
+                    } 
                 });
                 
                 _self.commonTableMonthDaySet().fiscalYear.subscribe(function(newValue) {
                     // change year
-                    _self.getDataFromService();
+                    if (!nts.uk.ui.errors.hasError()) {
+                        _self.getDataFromService();    
+                    }
                 });
             }
             
@@ -93,7 +98,11 @@ module nts.uk.at.view.kmf002.b {
                $('#tree-grid').ntsTreeComponent(_self.treeGrid).done(() => {
                     _self.getDataFromService();
                    _self.baseDate(new Date(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth()[0].month()-1, 2));
-//                    nts.uk.ui.errors.clearAll();
+                    
+                   if (_.isEmpty($('#tree-grid').getRowSelected())) {
+                        _self.enableSave(false);                              
+                   }
+                   
                     dfd.resolve();    
                });
                return dfd.promise();   
