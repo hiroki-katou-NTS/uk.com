@@ -805,6 +805,7 @@ module a3 {
             var isLoading:  KnockoutObservable<boolean> = input.isLoading; 
             var isDetailMode:  KnockoutObservable<boolean> = input.isDetailMode;
             var useHalfDay:  KnockoutObservable<boolean> = input.useHalfDay;
+            var isClickSave: KnockoutObservable<boolean> = input.isClickSave;
             let screenModel = new ScreenModel(settingEnum, mainSettingModel, isLoading, isDetailMode, useHalfDay);
             nts.uk.at.view.kmk003.a3.service.findAllOvertimeWorkFrame().done(function(data) {
                 screenModel.lstOvertimeWorkFrame = data;
@@ -812,6 +813,11 @@ module a3 {
                 $(element).load(webserviceLocator, function() {
                     ko.cleanNode($(element)[0]);
                     ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+                    isClickSave.subscribe((v) => {
+                        if (v) {
+                            screenModel.dataSourceOvertimeFlow.valueHasMutated();
+                        }
+                    });
                 });
             });
         }
