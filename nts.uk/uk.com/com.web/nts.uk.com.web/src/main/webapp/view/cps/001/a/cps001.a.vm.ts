@@ -671,7 +671,7 @@ module cps001.a.vm {
                         self.infoId(undefined);
 
                         let sdate = layout.standardDate(),
-                            ddate = sdate && moment.utc(sdate).toDate() || moment.utc().toDate(),
+                            ddate = sdate && moment.utc(sdate, "YYYY/MM/DD").toDate() || moment.utc().toDate(),
                             query: ILayoutQuery = {
                                 layoutId: id,
                                 browsingEmpId: self.employeeId(),
