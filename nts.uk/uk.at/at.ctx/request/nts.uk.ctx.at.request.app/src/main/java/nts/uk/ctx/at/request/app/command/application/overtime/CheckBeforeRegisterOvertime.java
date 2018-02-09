@@ -94,7 +94,7 @@ public class CheckBeforeRegisterOvertime {
 		beforeCheck.TimeUpperLimitYearCheck();
 		// 事前否認チェック
 		res = beforeCheck.preliminaryDenialCheck(app.getCompanyID(), app.getAppDate(), app.getInputDate(),
-				app.getPrePostAtr());
+				app.getPrePostAtr(),ApplicationType.OVER_TIME_APPLICATION.value);
 		result.setConfirm(res.isConfirm());
 
 		return result;
@@ -156,7 +156,7 @@ public class CheckBeforeRegisterOvertime {
 		beforeCheck.TimeUpperLimitYearCheck();
 		// 事前否認チェック
 		res = beforeCheck.preliminaryDenialCheck(appRoot.getCompanyID(), appRoot.getAppDate(), appRoot.getInputDate(),
-				appRoot.getPrePostAtr());
+				appRoot.getPrePostAtr(),ApplicationType.OVER_TIME_APPLICATION.value);
 		result.setConfirm(res.isConfirm());
 
 		return result;
