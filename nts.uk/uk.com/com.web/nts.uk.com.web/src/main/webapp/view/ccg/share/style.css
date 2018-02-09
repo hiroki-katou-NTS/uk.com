@@ -137,10 +137,11 @@
 
 .ccg001-content {
 	background-color: #F2F2F2;
-	border-radius: 5px;
 	overflow: hidden;
-	height:100%;
-	padding-top: 20px;
+	height: calc(100% - 15px);
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	padding-top: 15px;
 }
 
 .ccg001-control-group {
@@ -148,12 +149,12 @@
 }
 
 .ccg-tabpanel #tab-1 {
-	height: calc(100% - 80px);
+	height: calc(100% - 70px);
 	background-color: white;
 }
 
 .ccg-tabpanel #tab-2 {
-	height: calc(100% - 80px);
+	height: calc(100% - 70px);
 	background-color: white;
 	padding-right: 5px;
 }
@@ -182,12 +183,17 @@
 }
 
 .ccg-lbl-vertical {
-	height: 96px;
 	width: 40px;
 	cursor: pointer;
 	font-size: 18pt;
 	writing-mode: vertical-lr;
 	-ms-writing-mode: tb-lr;
+}
+.ccg-lbl-search-drawer {
+	height: 96px;
+}
+.ccg-lbl-extract-emp {
+	height: 50px;
 }
 
 .controlSettingShowHide.caret-right:after {
@@ -207,7 +213,6 @@
 	display: table;
 	cursor: pointer;
 }
-
 .ccg-tabpanel #nts-component-list {
 	padding: 0px !important;
 }
@@ -220,13 +225,17 @@
 #tbl-ccg001-tab2 td{
 	vertical-align: top;
 }
+#ccg001-btn-apply-search-condition {
+	margin-bottom: 14px;
+	margin-left: 10px;
+}
 .ccg001-tbl-cell-middle {
 	display: table-cell;
 	vertical-align: middle;
 }
 
 .ccg-tabpanel {
-	height: calc(100% - 160px);
+	height: calc(100% - 150px);
 	background-color: #F2F2F2;
 	border-radius: 5px;
 }

@@ -499,7 +499,7 @@ module nts.uk.com.view.ccg.share.ccg {
             private setComponentHeight(): void {
                 const headerHeight = $('#header').outerHeight();
                 const functionAreaHeight = $('#functions-area').length > 0 ? $('#functions-area').outerHeight() : 0;
-                const componentHeight = window.innerHeight - headerHeight - functionAreaHeight - 30;
+                const componentHeight = window.innerHeight - headerHeight - functionAreaHeight - 15;
                 $('#component-ccg001').outerHeight(componentHeight);
                 $('#hor-scroll-button-hide').outerHeight(componentHeight);
                 $('#ccg001-btn-search-drawer').outerHeight(componentHeight / 2);

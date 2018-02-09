@@ -5,72 +5,76 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 	<div class="cf" id="component-ccg001">
 		<div class="pull-left ccg001-content">
-			<div class="control-group ccg001-control-group">
-			<com:ko tag="if" bind="showBaseDate">
-				<div class="control-group ccg001-control-group">
-					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_27')}</div>
-					<div id="inp_baseDate" tabindex="1"
-						data-bind="ntsDatePicker: {
-					name: '#[CCG001_27]',
-					dateFormat: 'YYYY/MM/DD',
-					value: baseDate,
-					required: true }"></div>
-				</div>
-			</com:ko>
-			<com:ko tag="if" bind="showClosure">
-				<div class="control-group ccg001-control-group">
-					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_28')}</div>
-					<div id="cbb-closure" tabindex="2" style="display: inline-table"
-						data-bind="ntsComboBox: {
-					name: '#[CCG001_28]',
-					options: closureList,
-					optionsValue: 'id',
-					value: selectedClosure,
-					optionsText: 'closureName',
-					editable: false,
-					enable: true,
-					columns: [
-						{ prop: 'closureId', length: 1 },
-						{ prop: 'closureName', length: 5 },
-					]}"></div>
-				</div>
-			</com:ko>
-			<com:ko tag="if" bind="showPeriod">
-				<div class="control-group ccg001-control-group">
-					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_29')}</div>
-					<com:ko tag="ifnot" bind="showPeriodYM">
-						<div id="inp-period-startYMD" tabindex="3"
-							data-bind="ntsDatePicker: {
-						name: '#[CCG001_30]',
-						dateFormat: 'YYYY/MM/DD',
-						value: periodStartDate,
-						required: true }"></div>
-						<div id="inp-period-endYMD" tabindex="4"
-							data-bind="ntsDatePicker: {
-						name: '#[CCG001_31]',
-						dateFormat: 'YYYY/MM/DD',
-						value: periodEndDate,
-						required: true }"></div>
+			<div class="table">
+				<div class="cell">
+					<com:ko tag="if" bind="showBaseDate">
+						<div class="control-group ccg001-control-group">
+							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_27')}</div>
+							<div id="inp_baseDate" tabindex="1"
+								data-bind="ntsDatePicker: {
+								name: '#[CCG001_27]',
+								dateFormat: 'YYYY/MM/DD',
+								value: baseDate,
+								required: true }"></div>
+						</div>
 					</com:ko>
-					<com:ko tag="if" bind="showPeriodYM">
-						<div id="inp-period-startYM" tabindex="3"
-							data-bind="ntsDatePicker: {
-						name: '#[CCG001_30]',
-						dateFormat: 'YYYY/MM',
-						value: periodStartYm,
-						required: true }"></div>
-						<div id="inp-period-endYM" tabindex="4"
-							data-bind="ntsDatePicker: {
-						name: '#[CCG001_31]',
-						dateFormat: 'YYYY/MM',
-						value: periodEndYm,
-						required: true }"></div>
+					<com:ko tag="if" bind="showClosure">
+						<div class="control-group ccg001-control-group">
+							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_28')}</div>
+							<div id="cbb-closure" tabindex="2" style="display: inline-table"
+								data-bind="ntsComboBox: {
+									name: '#[CCG001_28]',
+									options: closureList,
+									optionsValue: 'id',
+									value: selectedClosure,
+									optionsText: 'closureName',
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'closureId', length: 1 },
+										{ prop: 'closureName', length: 5 },
+									]}"></div>
+						</div>
 					</com:ko>
-					<button tabindex="5" id="zcxvzxcv" class="proceed" data-bind="click: applyDataSearch">#{i18n.getText('CCG001_2')}</button>
+					<com:ko tag="if" bind="showPeriod">
+						<div class="control-group ccg001-control-group">
+							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_29')}</div>
+							<com:ko tag="ifnot" bind="showPeriodYM">
+								<div id="inp-period-startYMD" tabindex="3"
+									data-bind="ntsDatePicker: {
+										name: '#[CCG001_30]',
+										dateFormat: 'YYYY/MM/DD',
+										value: periodStartDate,
+										required: true }"></div>
+								<div id="inp-period-endYMD" tabindex="3"
+									data-bind="ntsDatePicker: {
+										name: '#[CCG001_31]',
+										dateFormat: 'YYYY/MM/DD',
+										value: periodEndDate,
+										required: true }"></div>
+							</com:ko>
+							<com:ko tag="if" bind="showPeriodYM">
+								<div id="inp-period-startYM" tabindex="3"
+									data-bind="ntsDatePicker: {
+										name: '#[CCG001_30]',
+										dateFormat: 'YYYY/MM',
+										value: periodStartYm,
+										required: true }"></div>
+								<div id="inp-period-endYM" tabindex="3"
+									data-bind="ntsDatePicker: {
+										name: '#[CCG001_31]',
+										dateFormat: 'YYYY/MM',
+										value: periodEndYm,
+										required: true }"></div>
+							</com:ko>
+						</div>
+					</com:ko>
 				</div>
-			</com:ko>
-			
-		</div>
+				<div class="cell valign-bottom">
+					<button tabindex="5" id="ccg001-btn-apply-search-condition"
+						class="proceed caret-bottom" data-bind="click: applyDataSearch">#{i18n.getText('CCG001_2')}</button>
+				</div>
+			</div>
 		<div tabindex="6" id="tab-panel" class="cf ccg-tabpanel pull-left"
 			data-bind="if: isQuickSearchTab||isAdvancedSearchTab, ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 			<com:ko tag="if" bind="isQuickSearchTab || !isAdvancedSearchTab">
@@ -252,7 +256,7 @@
 							<div class="pull-left" style="height: 100%">
 								<div tabindex="17" class="ccg-btn-vertical" data-bind="click: advancedSearchEmployee">
 									<div class="ccg001-tbl-cell-middle">
-										<div class="ccg-lbl-vertical">#{i18n.getText('CCG001_25')}</div>
+										<div class="ccg-lbl-vertical ccg-lbl-extract-emp">#{i18n.getText('CCG001_25')}</div>
 									</div>
 								</div>
 							</div>
@@ -266,7 +270,7 @@
 									<div tabindex="19" class="ccg-btn-vertical" data-bind="click: extractSelectedEmployees">
 										<div class="ccg001-tbl-cell-middle">
 											<i class="icon icon-01-searchmode"></i>
-											<div class="ccg-lbl-vertical">#{i18n.getText('CCG001_26')}</div>
+											<div class="ccg-lbl-vertical ccg-lbl-extract-emp">#{i18n.getText('CCG001_26')}</div>
 										</div>
 									</div>
 								</div>
@@ -284,7 +288,7 @@
 			<div id="ccg001-btn-search-drawer" class="ccg-btn-vertical" data-bind="click: showHide">
 				<div class="ccg001-tbl-cell-middle">
 				<i class="icon icon-01-searchmode"></i>
-				<div class="ccg-lbl-vertical">#{i18n.getText('CCG001_21')}</div>
+				<div class="ccg-lbl-vertical ccg-lbl-search-drawer">#{i18n.getText('CCG001_21')}</div>
 				</div>
 			</div>
 		</div>
