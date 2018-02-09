@@ -66,8 +66,8 @@ module a3 {
             
             
             self.autoCalUseAttrs = ko.observableArray([
-                { code: 0, name: nts.uk.resource.getText("KMK003_142") },
-                { code: 1, name: nts.uk.resource.getText("KMK003_143") }
+                { code: 1, name: nts.uk.resource.getText("KMK003_142") },
+                { code: 0, name: nts.uk.resource.getText("KMK003_143") }
             ]);
             self.lstOvertimeWorkFrame = [];
             
