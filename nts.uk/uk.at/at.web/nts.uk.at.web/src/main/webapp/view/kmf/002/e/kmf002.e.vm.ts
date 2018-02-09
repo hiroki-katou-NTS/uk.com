@@ -18,8 +18,10 @@ module nts.uk.at.view.kmf002.e {
                 _self.commonTableMonthDaySet = ko.observable(new nts.uk.at.view.kmf002.viewmodel.CommonTableMonthDaySet());
                 _self.commonTableMonthDaySet().fiscalYear.subscribe(function(newValue) {
                     // change year
-                    $.when(_self.start_page()).done(function() {
-                    });  
+                    if (!nts.uk.ui.errors.hasError()) {
+                        $.when(_self.start_page()).done(function() {
+                        });    
+                    }  
                 });
             }
             
@@ -58,7 +60,6 @@ module nts.uk.at.view.kmf002.e {
                 } else {
 //                    blockUI.clear();
                 }
-                $( "#datePickerYear" ).focus();
                 service.find(_self.commonTableMonthDaySet().fiscalYear()).done((data) => {
                     if (typeof data === "undefined") {
                         /** 
