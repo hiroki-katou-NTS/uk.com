@@ -36,9 +36,7 @@ public class AddEmployeeCommandFacade {
 	private RegisterLayoutFinder layoutFinder;
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void addNewFromInputs(AddEmployeeCommand command, String personId, String employeeId, String comHistId) {
-
-		List<ItemsByCategory> inputs = createData(command, personId, employeeId, comHistId);
+	public void addNewFromInputs(AddEmployeeCommand command, String personId, String employeeId, String comHistId,List<ItemsByCategory> inputs) {
 
 		updateRequiredInputs(command, inputs, personId, employeeId);
 
