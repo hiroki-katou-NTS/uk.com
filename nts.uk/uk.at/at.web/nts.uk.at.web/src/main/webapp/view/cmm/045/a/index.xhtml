@@ -7,11 +7,9 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-				nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent
-				nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode
-			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"  of="/nts.uk.com.js.web"/>
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"  of="/nts.uk.com.js.web"/>
 			<com:stylefile path="cmm045.a.main.css" />
 			<com:scriptfile path="cmm045.a.start.js" />
 			<com:scriptfile path="cmm045.a.vm.js" />
@@ -23,7 +21,7 @@
 				<button>#{i18n.getText('CMM045_3')}</button>
 				<!-- A1_2: Button 印刷 -->
 				<button>#{i18n.getText('CMM045_4')}</button>
-				<div data-bind="ntsSwitchButton: {
+ 				<div data-bind="ntsSwitchButton: {
 						options: roundingRules,
 						optionsValue: 'code',
 						optionsText: 'name',
@@ -32,7 +30,9 @@
 			
 			</div>
 			<div id="content-area">
-			
+			<div style = "margin-left: 20px;" class="compact-grid">
+					<table id="grid2"></table>
+			</div>
 			</div>
 		</ui:define>
 	</ui:composition>

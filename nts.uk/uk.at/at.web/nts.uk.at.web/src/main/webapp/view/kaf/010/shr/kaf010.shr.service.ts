@@ -4,10 +4,10 @@ module nts.uk.at.view.kaf010.shr.service {
         findByChangeAppDate: "at/request/application/holidaywork/findChangeAppDate",
         checkConvertPrePost: "at/request/application/overtime/checkConvertPrePost",
         getCaculationResult: "at/request/application/holidaywork/getcalculationresult",
-        createOvertime: "at/request/application/overtime/create",
+        createOvertime: "at/request/application/holidaywork/create",
         deleteOvertime: "at/request/application/overtime/delete",
         updateOvertime: "at/request/application/overtime/update",
-        checkBeforeRegister: "at/request/application/overtime/checkBeforeRegister",
+        checkBeforeRegister: "at/request/application/holidaywork/checkBeforeRegister",
         checkBeforeUpdate: "at/request/application/overtime/checkBeforeUpdate",
         findByAppID: "at/request/application/overtime/findByAppID",
         getRecordWork: "at/request/application/overtime/getRecordWork"

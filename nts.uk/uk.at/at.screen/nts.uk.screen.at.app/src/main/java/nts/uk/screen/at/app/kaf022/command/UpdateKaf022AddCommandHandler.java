@@ -18,7 +18,6 @@ import nts.uk.ctx.at.request.app.command.setting.company.applicationcommonsettin
 import nts.uk.ctx.at.request.app.command.setting.company.applicationcommonsetting.UpdateApprovalSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationsetting.UpdateProxyAppSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.displayname.UpdateAppDispNameCommandHandler;
-import nts.uk.ctx.at.request.app.command.setting.company.displayname.UpdateHdAppDispNameCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.UpdateApprovalTempCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.UpdateMailHdInstructionCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.UpdateMailOtInstructionCommandHandler;
@@ -58,8 +57,8 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 	@Inject 
 	private UpdateAppDispNameCommandHandler updateAppDisp;
 	// 休暇申請種類表示名
-	@Inject
-	private UpdateHdAppDispNameCommandHandler updateHdApp;
+//	@Inject
+//	private UpdateHdAppDispNameCommandHandler updateHdApp;
 	// 打刻申請設定
 	@Inject
 	private UpdateStampRequestSettingCommandHandler updateStamp;
@@ -113,7 +112,7 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		// update list command object
 		this.updateAppDisp.handle(kaf022.getAppName());
 		// update list command object
-		this.updateHdApp.handle(kaf022.getHdDisp());
+//		this.updateHdApp.handle(kaf022.getHdDisp());
 		
 		this.updateStamp.handle(kaf022.getStampReq());
 		

@@ -56,13 +56,13 @@ public class ScheCreExeMonthlyPatternHandler {
 		}
 				
 		//在職状態を判断
-		if (!checkEmploymentStatus(command)) {
+		if (!checkEmploymentStatus(command, workingConditionItem.getEmployeeId())) {
 			return;
 		}
 				
 		//在職、休職、休業
 		//ドメインモデル「勤務予定基本情報」を取得する
-		Optional<BasicSchedule> basicScheOpt = basicScheduleRepo.find(command.getEmployeeId(), command.getToDate());
+		Optional<BasicSchedule> basicScheOpt = basicScheduleRepo.find(workingConditionItem.getEmployeeId(), command.getToDate());
 		
 		// 再作成
 		if (basicScheOpt.isPresent()) { //「勤務予定基本情報」 データあり
@@ -171,6 +171,9 @@ public class ScheCreExeMonthlyPatternHandler {
 		WorkTimeZoneGetterCommand commandGetter = workTimeGetterCommand.toWorkTimeZone();
 		commandGetter.setWorkTypeCode(workMonthlySet.getWorkTypeCode().v());
 		commandGetter.setWorkingCode(workMonthlySet.getWorkingCode() == null ? null : workMonthlySet.getWorkingCode().v());
+		if (StringUtil.isNullOrEmpty(commandGetter.getWorkingCode(), true)) {
+			commandGetter.setWorkingCode(null);
+		}
 		return this.scheCreExeWorkTimeHandler.getWorkingTimeZoneCode(commandGetter);
 	}
 
@@ -179,8 +182,8 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * 
 	 * @param command
 	 */
-	private boolean checkEmploymentStatus(ScheduleCreatorExecutionCommand command) {
-		EmploymentStatusDto employmentStatus = this.scEmploymentStatusAdapter.getStatusEmployment(command.getEmployeeId(), command.getToDate());
+	private boolean checkEmploymentStatus(ScheduleCreatorExecutionCommand command, String cretorEmployeeId) {
+		EmploymentStatusDto employmentStatus = this.scEmploymentStatusAdapter.getStatusEmployment(cretorEmployeeId, command.getToDate());
 		
 		//退職、取得できない(退職 OR không lấy được)
 		if (employmentStatus == null || employmentStatus.getStatusOfEmployment() == 6) {//RETIREMENT

@@ -136,7 +136,7 @@ public class AttendanceItemUtil {
 									layoutIdx + 1,
 									listNoIdx ? currentLayout : currentLayout + (idx == null ? "" : idx), 
 									pathName,
-									idx - 1, 
+									idx, 
 									needCheckWithIdx || (isList && !listNoIdx),
 									mapByPath(subList, id -> getCurrentPath(layoutIdx + 1, id.path(), false)));
 

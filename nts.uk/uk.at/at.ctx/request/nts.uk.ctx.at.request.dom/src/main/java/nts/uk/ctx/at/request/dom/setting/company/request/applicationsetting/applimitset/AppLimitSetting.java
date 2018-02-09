@@ -42,4 +42,17 @@ public class AppLimitSetting extends DomainObject {
 	 */
 	private Boolean requiredAppReason;
 	
+	public static AppLimitSetting toDomain(Integer canAppAchievementLock, 
+			Integer canAppFinishWork, Integer canAppAchievementConfirm, 
+			Integer canAppOTNight, Integer canAppAchievementMonthConfirm, 
+			Integer requiredAppReason){
+		return new AppLimitSetting(
+				canAppAchievementLock == 1 ? true : false, 
+				canAppFinishWork == 1 ? true : false, 
+				canAppAchievementConfirm == 1 ? true : false, 
+				canAppOTNight == 1 ? true : false, 
+				canAppAchievementMonthConfirm == 1 ? true : false, 
+				requiredAppReason == 1 ? true : false);
+	}
+	
 }

@@ -226,6 +226,9 @@ public class KrcdtDayHolidyWork extends UkJpaEntity implements Serializable{
 
 
 	public void setData(HolidayWorkTimeOfDaily domain) {
+		if(domain == null || domain.getHolidayWorkFrameTime() == null || domain.getHolidayWorkFrameTime().isEmpty()){
+			return;
+		}
 		HolidayWorkFrameTime frame1 = getHolidayTimeFrame(domain.getHolidayWorkFrameTime(), 1);
 		HolidayWorkFrameTime frame2 = getHolidayTimeFrame(domain.getHolidayWorkFrameTime(), 2);
 		HolidayWorkFrameTime frame3 = getHolidayTimeFrame(domain.getHolidayWorkFrameTime(), 3);
