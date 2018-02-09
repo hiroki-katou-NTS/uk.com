@@ -48,40 +48,8 @@ module nts.uk.com.view.ccg001.a {
                 self.setCcgOption();
                 
                 // Init component.
-                self.applyView();
+                self.reloadCcg001();
                 
-                self.isQuickSearchTab.subscribe(function(){
-                   self.applyView(); 
-                });
-                
-                self.isAdvancedSearchTab.subscribe(function(){
-                    self.applyView();    
-                });
-                
-                self.isAllReferableEmployee.subscribe(function() {
-                    self.applyView();
-                });
-                
-                
-                self.isOnlyMe.subscribe(function(){
-                    self.applyView();   
-                });
-                
-                self.isEmployeeOfWorkplace.subscribe(function(){
-                   self.applyView(); 
-                });
-                
-                self.isEmployeeWorkplaceFollow.subscribe(function(){
-                   self.applyView(); 
-                });
-                
-                self.isMutipleCheck.subscribe(function(){
-                    self.applyView();
-                });
-                
-                self.isSelectAllEmployee.subscribe(function(){
-                   self.applyView(); 
-                });
             }
 
             private setCcgOption(): void {
@@ -115,9 +83,9 @@ module nts.uk.com.view.ccg001.a {
             }
 
             /**
-             * apply view
+             * Reload component CCG001
              */
-            public applyView(): void {
+            public reloadCcg001(): void {
                 var self = this;
                 self.baseDate(new Date());
                 self.ccgcomponent = {
