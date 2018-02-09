@@ -20,7 +20,7 @@
 		<div>
 			<div id="A2-1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG018_6')}</div>
 			<div tabindex="1" id="A2-2"
-				data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD', required: true}"></div>
+				data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD', required: true, name : referenceDate}"></div>
 			<button tabindex="2" id="A2-3" class="caret-bottom"
 				data-bind="click : searchByDate">#{i18n.getText('CCG018_7')}</button>
 		</div>
