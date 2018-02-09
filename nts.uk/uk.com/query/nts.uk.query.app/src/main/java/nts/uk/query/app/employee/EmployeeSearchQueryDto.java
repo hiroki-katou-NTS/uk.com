@@ -17,6 +17,12 @@ import nts.uk.query.model.employee.EmployeeSearchQuery;
 @Data
 public class EmployeeSearchQueryDto implements Serializable {
 
+	/** The Constant TIME_DAY_START. */
+	private final static String TIME_DAY_START = " 00:00:00";
+
+	/** The Constant DATE_TIME_FORMAT. */
+	private final static String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
@@ -93,7 +99,7 @@ public class EmployeeSearchQueryDto implements Serializable {
 	 */
 	public EmployeeSearchQuery toQueryModel() {
 		return EmployeeSearchQuery.builder()
-				.baseDate(GeneralDateTime.fromString(this.baseDate, "yyyy-MM-dd"))
+				.baseDate(GeneralDateTime.fromString(this.baseDate + TIME_DAY_START, DATE_TIME_FORMAT))
 				.classificationCodes(this.classificationCodes)
 				.departmentCodes(this.departmentCodes)
 				.employmentCodes(this.employmentCodes)
@@ -108,11 +114,11 @@ public class EmployeeSearchQueryDto implements Serializable {
 				.includeWorkersOnLeave(this.includeWorkersOnLeave)
 				.jobTitleCodes(this.jobTitleCodes)
 				.nameType(this.nameType)
-				.periodEnd(GeneralDateTime.fromString(this.periodEnd, "yyyy-MM-dd"))
-				.periodStart(GeneralDateTime.fromString(this.periodStart, "yyyy-MM-dd"))
+				.periodEnd(GeneralDateTime.fromString(this.periodEnd + TIME_DAY_START, DATE_TIME_FORMAT))
+				.periodStart(GeneralDateTime.fromString(this.periodStart + TIME_DAY_START, DATE_TIME_FORMAT))
 				.referenceRange(this.referenceRange)
-				.retireEnd(GeneralDateTime.fromString(this.retireEnd, "yyyy-MM-dd"))
-				.retireStart(GeneralDateTime.fromString(this.retireStart, "yyyy-MM-dd"))
+				.retireEnd(GeneralDateTime.fromString(this.retireEnd + TIME_DAY_START, DATE_TIME_FORMAT))
+				.retireStart(GeneralDateTime.fromString(this.retireStart + TIME_DAY_START, DATE_TIME_FORMAT))
 				.sortOrderNo(this.sortOrderNo)
 				.workplaceCodes(this.workplaceCodes).build();
 	}

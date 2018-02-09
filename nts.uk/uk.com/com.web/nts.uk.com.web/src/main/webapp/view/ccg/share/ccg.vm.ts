@@ -432,12 +432,25 @@ module nts.uk.com.view.ccg.share.ccg {
             }
 
             private setQuickSearchParam(options: GroupOption): void {
-                let param = this.advancedSearchParam;
+                let param = this.quickSearchParam;
                 param.filterByEmployment = options.showEmployment;
                 // not covered param.filterByDepartment = options.showDepartment;
                 param.filterByWorkplace = options.showWorkplace;
                 param.filterByClassification = options.showClassification;
                 param.filterByJobTitle = options.showJobTitle;
+            }
+
+            private setAdvancedSearchParam(options: GroupOption): void {
+                let param = this.advancedSearchParam;
+                param.filterByEmployment = true;
+                // not covered param.filterByDepartment = options.showDepartment;
+                param.filterByWorkplace = true;
+                param.filterByClassification = true;
+                param.filterByJobTitle = true;
+                param.includeIncumbents = true;
+                param.includeWorkersOnLeave = true;
+                param.includeOccupancy = true;
+                param.includeRetirees = true;
             }
 
             /**
@@ -448,6 +461,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // set search param
                 self.setQuickSearchParam(options);
+                self.setAdvancedSearchParam(options);
 
                 /** Common properties */
                 self.isShowEmployeeList = options.isSelectAllEmployee;
@@ -672,6 +686,11 @@ module nts.uk.com.view.ccg.share.ccg {
                         }
                     });
                 });
+
+                self.advancedSearchParam.periodStart = self.getPeriodStart().format('YYYY-MM-DD');
+                self.advancedSearchParam.periodEnd = self.getPeriodEnd().format('YYYY-MM-DD');
+                self.advancedSearchParam.retireStart = self.statusPeriodStart().format('YYYY-MM-DD');
+                self.advancedSearchParam.retireEnd = self.statusPeriodEnd().format('YYYY-MM-DD');
 
                 nts.uk.ui.block.invisible(); // block ui
                 // reload advanced search tab.
