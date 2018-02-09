@@ -11,9 +11,13 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTimeHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTypeHolidayWork;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
@@ -33,6 +37,10 @@ public class HolidayServiceImpl implements HolidayService {
 	private WorkTimeSettingRepository workTimeRepository;
 	@Inject
 	private WorkTypeRepository workTypeRepository;
+	@Inject
+	private ApplicationApprovalService_New appRepository;
+	@Inject
+	private AppHolidayWorkRepository appHolidayWorkRepository;
 	
 	@Override
 	public WorkTypeHolidayWork getWorkTypes(String companyID, String employeeID, List<AppEmploymentSetting> appEmploymentSettings,
@@ -113,6 +121,13 @@ public class HolidayServiceImpl implements HolidayService {
 			}
 		}
 		return workTimeHolidayWork;
+	}
+	@Override
+	public void createHolidayWork(AppHolidayWork domain, Application_New newApp) {
+		//Register application
+		appRepository.insert(newApp);
+		// insert appHolidayWork,HolidayWorkInput
+		appHolidayWorkRepository.Add(domain);
 	}
 
 }
