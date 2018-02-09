@@ -393,7 +393,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
             let dataChangeProcess: any = [];
             _.each(dataChange, (data: any) => {
-                if (data.columnKey != "sign") {
+                if (data.columnKey != "sign" && data.value != "") {
                     let dataTemp = _.find(self.dpData, (item: any) => {
                         return item.id == data.rowId.substring(1, data.rowId.length);
                     });
@@ -446,6 +446,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dfd.resolve();
                 });
                 dfd.promise();
+            }else{
+                 nts.uk.ui.block.clear(); 
             }
             debugger;
         }
@@ -457,7 +459,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
             let dataChangeProcess: any = [];
             _.each(dataChange, (data: any) => {
-                if (data.columnKey != "sign") {
+                if (data.columnKey != "sign"  && data.value != "") {
                     let dataTemp = _.find(self.dpData, (item: any) => {
                         return item.id == data.rowId.substring(1, data.rowId.length);
                     });
@@ -509,6 +511,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dfd.resolve();
                 });
                 dfd.promise();
+            }else{
+                  nts.uk.ui.block.clear();
             }
             debugger;
         }
