@@ -438,7 +438,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     // alert("done");
                     dataChange = {};
                     self.btnExtraction_Click();
-                     nts.uk.ui.block.clear();
+                    // nts.uk.ui.block.clear();
                     dfd.resolve();
                 }).fail((data) => {
                     alert("fail");
@@ -450,8 +450,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             debugger;
         }
         
-        proceedSave(){
-                      nts.uk.ui.block.invisible();
+        proceedSave() {
+            nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             var self = this;
             let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
@@ -502,11 +502,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     // alert("done");
                     dataChange = {};
                     self.btnExtraction_Click();
-                     nts.uk.ui.block.clear();
                     dfd.resolve();
                 }).fail((data) => {
                     alert("fail");
-                     nts.uk.ui.block.clear();
+                    nts.uk.ui.block.clear();
                     dfd.resolve();
                 });
                 dfd.promise();

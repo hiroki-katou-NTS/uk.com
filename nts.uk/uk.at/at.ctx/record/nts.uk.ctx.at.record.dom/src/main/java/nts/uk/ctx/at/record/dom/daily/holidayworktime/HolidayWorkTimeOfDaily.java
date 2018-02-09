@@ -55,7 +55,9 @@ public class HolidayWorkTimeOfDaily {
 	public static HolidayWorkTimeOfDaily calculationTime(HolidayWorkTimeSheet holidayWorkTimeSheet,AutoCalSetting holidayAutoCalcSetting) {
 		val holidayWorkFrameTimeSheet = holidayWorkTimeSheet.changeHolidayWorkTimeFrameTimeSheet();
 		val holidayWorkFrameTime = holidayWorkTimeSheet.collectHolidayWorkTime(holidayAutoCalcSetting);
-		val holidayMidnightWork = Finally.of(new HolidayMidnightWork(Collections.emptyList()));
+		List<HolidayWorkMidNightTime> holMidNightTime = new ArrayList<>();
+		holMidNightTime.add(new HolidayWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
+		val holidayMidnightWork = Finally.of(new HolidayMidnightWork(holMidNightTime));
 		val holidayTimeSpentTime = new AttendanceTime(0);
 		return new HolidayWorkTimeOfDaily(holidayWorkFrameTimeSheet,
 										  holidayWorkFrameTime,

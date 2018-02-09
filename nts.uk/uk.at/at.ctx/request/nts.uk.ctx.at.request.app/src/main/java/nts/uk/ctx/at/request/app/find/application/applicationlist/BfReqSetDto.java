@@ -22,7 +22,7 @@ public class BfReqSetDto {
 	public Integer retrictPostAllowFutureFlg;
 	
 	public static List<BfReqSetDto> convertToDto(RequestSetting domain){
-		List<ReceptionRestrictionSetting> appType = domain.getApplicationSetting().getReceptionRestrictionSetting();
+		List<ReceptionRestrictionSetting> appType = domain.getApplicationSetting().getListReceptionRestrictionSetting();
 		List<BfReqSetDto> listDto = new ArrayList<>();
 		for(ReceptionRestrictionSetting item: appType){
 			listDto.add(new BfReqSetDto(domain.getCompanyID(), item.getAppType().value, item.getBeforehandRestriction().getMethodCheck().value, item.getBeforehandRestriction().getToUse() == true ? 1 : 0, item.getBeforehandRestriction().getDateBeforehandRestriction().value, item.getBeforehandRestriction().getTimeBeforehandRestriction().v(), item.getAfterhandRestriction().getAllowFutureDay() == true ? 1: 0));

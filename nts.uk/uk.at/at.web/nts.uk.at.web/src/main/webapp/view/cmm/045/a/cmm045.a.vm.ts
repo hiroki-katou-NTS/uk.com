@@ -1,32 +1,25 @@
 module cmm045.a.viewmodel {
     export class ScreenModel {
         roundingRules: KnockoutObservableArray<ApplicationDisplayAtr> = ko.observableArray([]);
-        selectedRuleCode: any;
-
-        constructor() {
-            var self = this;
+        selectedRuleCode: KnockoutObservable<any> = ko.observable(1);
+        constructor(){
             
-            //cmm045
-            self.selectedRuleCode = ko.observable(1);
-            //--------
-            self.start();
         }
+   
         start(){
             let self = this;
             let param: AppListExtractConditionDto = new AppListExtractConditionDto('2017-12-01', '2018-06-01', 0,
                     1, true, true, true, true, true, true, 1, [], '');
-            service.getApplicationList(param).done(function(data){
+            service.getApplicationDisplayAtr().done(function(data){
+                _.each(data, function(obj){
+                    self.roundingRules.push(new ApplicationDisplayAtr(obj.value, obj.localizedName));
+                });
+                service.getApplicationList(param).done(function(data){
                     console.log(data);
             });
-            
-//            service.getApplicationDisplayAtr().done(function(data){
-//                _.each(data, function(obj){
-//                    self.roundingRules.push(new ApplicationDisplayAtr(obj.value, obj.localizedName));
-//                });
-//            });
+            });
         }
-
-    }
+    } 
     export class ApplicationDisplayAtr{
         code: number;
         name: string;
