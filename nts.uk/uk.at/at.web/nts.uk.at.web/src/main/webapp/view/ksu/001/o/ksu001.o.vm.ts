@@ -209,21 +209,21 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 self.checkNeededOfWorkTimeSetting = data.checkNeededOfWorkTimeSetting;
                 self.workEmpCombines = data.workEmpCombines;
                 //set data for listWorkTime
-                //                self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
-                //                    workTimeCode: '000',
-                //                    name: nts.uk.resource.getText("KSU001_97"),
-                //                    abName: '',
-                //                    symbolName: '',
-                //                    dailyWorkAtr: undefined,
-                //                    worktimeSetMethod: undefined,
-                //                    abolitionAtr: undefined,
-                //                    color: null,
-                //                    note: null,
-                //                    startTime: undefined,
-                //                    endTime: undefined,
-                //                    workNo: undefined,
-                //                    useAtr: undefined
-                //                }));
+//                self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
+//                    workTimeCode: '000',
+//                    name: nts.uk.resource.getText("KSU001_97"),
+//                    abName: '',
+//                    symbolName: '',
+//                    dailyWorkAtr: undefined,
+//                    worktimeSetMethod: undefined,
+//                    abolitionAtr: undefined,
+//                    color: null,
+//                    note: null,
+//                    startTime: undefined,
+//                    endTime: undefined,
+//                    workNo: undefined,
+//                    useAtr: undefined
+//                }));
                 // insert item 「なし」 with code = '000'
                 self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
                     workTimeCode: '000',
@@ -284,8 +284,6 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 });
                 dfd.resolve();
                 self.listWorkTimeComboBox(self.listWorkTime());
-                //                self.selectedWorkTypeCode(self.listWorkType()[0].workTypeCode);
-                //                self.selectedWorkTimeCode(self.listWorkTimeComboBox()[0].codeName);
             }).fail(function() {
                 dfd.reject();
             });

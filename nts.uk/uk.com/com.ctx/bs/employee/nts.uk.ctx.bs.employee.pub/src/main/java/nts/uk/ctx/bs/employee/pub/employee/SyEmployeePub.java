@@ -62,6 +62,16 @@ public interface SyEmployeePub {
 	List<String> GetListSid(String sid , GeneralDate baseDate);
 	
 	
+	/**
+	 * Get List EmployeeCode 
+	 * @param sid
+	 * @param basedate
+	 * @return
+	 */
+	// RequestList #212
+	List<String> getEmployeeCode(String sid , GeneralDate basedate);
+	
+	
 	
 	
 	
