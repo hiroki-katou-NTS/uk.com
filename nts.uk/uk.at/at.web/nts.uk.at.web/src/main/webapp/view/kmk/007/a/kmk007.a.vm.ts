@@ -125,7 +125,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 new ItemModel(0, nts.uk.resource.getText('Enum_CloseAtr_PRENATAL'), 0),
                 new ItemModel(1, nts.uk.resource.getText('Enum_CloseAtr_POSTPARTUM'), 0),
                 new ItemModel(2, nts.uk.resource.getText('Enum_CloseAtr_CHILD_CARE'), 0),
-                new ItemModel(3, nts.uk.resource.getText('Enum_CloseAtr_CARE'), 0)
+                new ItemModel(3, nts.uk.resource.getText('Enum_CloseAtr_CARE'), 0),
+                new ItemModel(4, nts.uk.resource.getText('Enum_CloseAtr_INJURY_OR_ILLNESS'), 0)
             ]);
 
             //出勤率の計算方法
