@@ -25,10 +25,10 @@ import nts.uk.query.model.employee.EmployeeSearchQuery;
 import nts.uk.query.model.employee.RegulationInfoEmployee;
 
 /**
- * The Class JpaEmployeeDataViewRepository.
+ * The Class JpaRegulationInfoEmployeeRepository.
  */
 @Stateless
-public class JpaEmployeeDataViewRepository extends JpaRepository implements RegulationInfoEmployeeRepository {
+public class JpaRegulationInfoEmployeeRepository extends JpaRepository implements RegulationInfoEmployeeRepository {
 
 	/** The Constant LIST_MAX_QUERY_IN. */
 	private static final int LIST_MAX_QUERY_IN = 1000;
@@ -197,7 +197,7 @@ public class JpaEmployeeDataViewRepository extends JpaRepository implements Regu
 						.classificationCode(Optional.of(entity.getClassificationCode())).employeeCode(entity.getScd())
 						.employeeID(entity.getSid()).employmentCode(Optional.of(entity.getEmpCd()))
 						.hireDate(Optional.of(entity.getComStrDate())).jobTitleCode(Optional.of(entity.getJobCd()))
-						.name(Optional.of(entity.getBusinessNameKana())).workplaceCode(Optional.of(entity.getWplCd()))
+						.name(Optional.of(entity.getBusinessName())).workplaceCode(Optional.of(entity.getWplCd()))
 						.build())
 				.collect(Collectors.toList());
 	}

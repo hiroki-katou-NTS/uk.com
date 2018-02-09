@@ -16,7 +16,7 @@ import nts.arc.time.GeneralDateTime;
 public class EmployeeDataView_ {
 
 	/** The business name kana. */
-	public static volatile SingularAttribute<EmployeeDataView, String> businessNameKana;
+	public static volatile SingularAttribute<EmployeeDataView, String> businessName;
 
 	/** The job end date. */
 	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> jobEndDate;

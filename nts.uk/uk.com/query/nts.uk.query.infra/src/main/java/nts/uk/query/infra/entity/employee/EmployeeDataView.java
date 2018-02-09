@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
@@ -49,9 +50,9 @@ public class EmployeeDataView implements Serializable {
 	@Column(name="BUSINESS_ENGLISH_NAME")
 	private String businessEnglishName;
 
-	/** The business name kana. */
-	@Column(name="BUSINESS_NAME_KANA")
-	private String businessNameKana;
+	/** The business name. */
+	@Column(name="BUSINESS_NAME")
+	private String businessName;
 
 	/** The business other name. */
 	@Column(name="BUSINESS_OTHER_NAME")
@@ -153,13 +154,13 @@ public class EmployeeDataView implements Serializable {
 
 	/** The work type end date. */
 	@Column(name="WORK_TYPE_END_DATE")
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
-	private GeneralDateTime workTypeEndDate;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate workTypeEndDate;
 
 	/** The work type str date. */
 	@Column(name="WORK_TYPE_STR_DATE")
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
-	private GeneralDateTime workTypeStrDate;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate workTypeStrDate;
 
 	/** The workplace id. */
 	@Column(name="WORKPLACE_ID")
