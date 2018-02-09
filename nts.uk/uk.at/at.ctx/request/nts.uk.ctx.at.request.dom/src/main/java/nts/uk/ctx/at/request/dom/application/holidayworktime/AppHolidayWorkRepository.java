@@ -15,4 +15,12 @@ public interface AppHolidayWorkRepository {
 	 * @param domain : 休日出勤申請
 	 */
 	public void Add(AppHolidayWork domain);
+	
+	/**
+	 * getFullAppHolidayWork
+	 * @param companyID
+	 * @param appID
+	 * @return
+	 */
+	public Optional<AppHolidayWork> getFullAppHolidayWork(String companyID, String appID);
 }

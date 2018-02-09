@@ -53,7 +53,8 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 				employeeID, 
 				false, 
 				application.getAppType().value, 
-				application.getAppDate());
+				application.getAppDate(), 
+				memo);
 		Boolean allApprovalFlg = approvalRootStateAdapter.isApproveAllComplete(
 				companyID, 
 				appID, 
@@ -62,7 +63,6 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 				application.getAppType().value, 
 				application.getAppDate());
 		applicationRepository.updateWithVersion(application);
-		approvalRootStateAdapter.updateReason(appID, employeeID, memo);
 		if(allApprovalFlg.equals(Boolean.TRUE)){
 			// 実績反映状態 = 反映状態．反映待ち
 			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.WAITREFLECTION);
