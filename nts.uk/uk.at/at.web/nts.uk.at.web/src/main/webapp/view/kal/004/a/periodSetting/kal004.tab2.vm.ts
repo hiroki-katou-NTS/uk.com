@@ -64,12 +64,12 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 nts.uk.ui.windows.sub.modal("../f/index.xhtml").onClosed(() => {
                     let data = nts.uk.ui.windows.getShared("segmentationOfCycle");
                     if(!nts.uk.util.isNullOrUndefined(data) && !nts.uk.util.isNullOrUndefined(data.decisionEnum)){
-                        self.extractionPeriodUnit(categoryId,ModelCheckConditonCode.extractionPeriodUnit.extractionId,data.decisionEnum);
-                    }
-                }
+                        self.extractionPeriodUnit(categoryId, ModelCheckConditonCode.extractionPeriodUnit.extractionId, data.decisionEnum);
+                    } 
+                });
             }else if(categoryId == 5 || categoryId == 13){
                 var param = ModelCheckConditonCode.extractionPeriodDaily;
-                var ExtractionDailyDto = {
+                var extractionDailyDto = {
                     extractionId: param.extractionId,
                     extractionRange: param.extractionRange,
                     strSpecify: param.strSpecify,
@@ -86,8 +86,8 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                     endPreviousMonth: param.endPreviousMonth,
                     endCurrentMonth: param.endCurrentMonth,
                     endMonth: param.endMonth
-                }
-                nts.uk.ui.windows.setShared("extractionDailyDto", ExtractionDailyDto);
+                };
+                nts.uk.ui.windows.setShared("extractionDailyDto", extractionDailyDto);
                 nts.uk.ui.windows.setShared("categoryId", categoryId);
                 nts.uk.ui.windows.setShared("categoryName", ModelCheckConditonCode.categoryName);
                 nts.uk.ui.windows.sub.modal("../b/index.xhtml").onClosed(() => {
