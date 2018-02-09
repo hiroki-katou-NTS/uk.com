@@ -66,7 +66,7 @@ module nts.uk.com.view.ccg.share.ccg {
         /**
          * Get Employment Code By ClosureId
          */
-        export function getEmploymentCodeByClosureId(closureId: number): JQueryPromise<Array<any>> {
+        export function getEmploymentCodeByClosureId(closureId: number): JQueryPromise<Array<string>> {
             return nts.uk.request.ajax('at', servicePath.getEmploymentCodeByClosureId + '/' + closureId);
         }
 
@@ -142,7 +142,7 @@ module nts.uk.com.view.ccg.share.ccg {
         /**
          * search employee
          */
-        export function searchEmployee(param: model.QuickSearchParam): JQueryPromise<any> {
+        export function searchEmployee(param: model.EmployeeQueryParam): JQueryPromise<any> {
             return nts.uk.request.ajax('com', servicePath.searchEmployee, param);
         }
         
@@ -269,40 +269,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 personalInfo: SelectedInformation; // 個人情報の選択している情報
                 employmentInfo: SelectedInformation; // 就業の選択している情報
                 salaryInfo: SelectedInformation; // 給与の選択している情報
-            }
-                
-            export interface BaseQueryParam {
-                baseDate: any;
-                referenceRange: number;
-                filterByEmployment: boolean;
-                employmentCodes: Array<string>;
-                filterByDepartment: boolean;
-                departmentCodes: Array<number>;
-                filterByWorkplace: boolean;
-                workplaceCodes: Array<string>;
-                filterByClassification: boolean;
-                classificationCodes: Array<any>;
-                filterByJobTitle: boolean;
-                jobTitleCodes: Array<number>;
-    
-                periodStart: any;
-                periodEnd: any;
-    
-                includeIncumbents: boolean;
-                //TODO: Including workers on leave 
-                includeOccupancy: boolean;
-                includeRetirees: boolean;
-                retireStart: any;
-                retireEnd: any;
-    
-                sortOrderNo: number;
-                nameType: number;
-            }
-
-            export interface QuickSearchParam extends BaseQueryParam {
-            }
-
-            export interface AdvancedSearchParam extends BaseQueryParam {
             }
         }
     }

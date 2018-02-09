@@ -204,8 +204,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 
                 // Define gridlist's columns
                 self.workTypeColumns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('CCG001_60'), prop: 'workTypeCode', width: 50 },
-                    { headerText: nts.uk.resource.getText('CCG001_61'), prop: 'name', width: 100 }
+                    { headerText: nts.uk.resource.getText('CCG001_60'), prop: 'workTypeCode', width: 100 },
+                    { headerText: nts.uk.resource.getText('CCG001_61'), prop: 'name', width: 200 }
                 ]);
             }
 
@@ -471,7 +471,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.showBaseDate = true;
                 self.showClosure = true; //TODO: mock data
                 self.showAllClosure = options.showAllClosure;
-                self.showPeriod = true;
+                self.showPeriod = false;
                 self.showPeriodYM = options.periodAccuracy == 1 ? true : false; // 1 == YM, other = YMD
 
                 /** Required parameter */
@@ -943,6 +943,18 @@ module nts.uk.com.view.ccg.share.ccg {
             }
             
             /**
+             * search all Employee
+             */
+            public searchAllListEmployee(): void {
+                var self = this;
+                if (self.validateClient()) {
+                    return;
+                }
+                self.quickSearchParam.referenceRange = ConfigEnumReferenceRange.ALL_EMPLOYEE;
+                self.queryMethod();
+            }
+            
+            /**
              * search Employee of Departmant_only
              */
             public searchEmployeeOfDepOnly(): void {
@@ -974,23 +986,21 @@ module nts.uk.com.view.ccg.share.ccg {
                 
                 //check closure is displayed 
                 if (self.showClosure){
-                    if (self.selectedClosed != ConfigEnumClosure.CLOSURE_ALL){
-                        service.getEmploymentCodeByClosureId(self.selectedClosed).done(data => {
+                    if (self.selectedClosure() != ConfigEnumClosure.CLOSURE_ALL){
+                        service.getEmploymentCodeByClosureId(self.selectedClosure()).done(data => {
                             self.quickSearchParam.filterByEmployment = true;
                             self.quickSearchParam.employmentCodes = data;
                         });
                     } 
-                    if (!nts.uk.util.isNullOrEmpty(self.systemType)){
-                        // Call Method Query 
-                        self.queryMethod();
-                    }
                 }
                 
                 self.changeListWorkplaceId();
+                
+                self.quickSearchParam;
                 //Get List Employee 
-                service.getEmploymentCodeByClosureId(self.selectedClosed).done(data => {
-                    
-                });
+//                service.searchEmployee(self.quickSearchParam).done(data => {
+//                    
+//                });
             }
             
             /**
@@ -1026,8 +1036,8 @@ module nts.uk.com.view.ccg.share.ccg {
                                 }
                             }
                             //get Workplace list from domain
-                            service.getListWorkplaceId(self.quickSearchParam.baseDate, data).done(data => {
-                                listWorkplaceId = data;
+                            service.getListWorkplaceId(self.quickSearchParam.baseDate, data).done(wkplist => {
+                                listWorkplaceId = wkplist;
                             });
                         }
                         //check param filterByWorkplace

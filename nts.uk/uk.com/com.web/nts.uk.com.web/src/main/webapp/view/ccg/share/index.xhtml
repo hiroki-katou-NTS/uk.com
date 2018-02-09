@@ -25,7 +25,7 @@
 								data-bind="ntsComboBox: {
 									name: '#[CCG001_28]',
 									options: closureList,
-									optionsValue: 'id',
+									optionsValue: 'closureId',
 									value: selectedClosure,
 									optionsText: 'closureName',
 									editable: false,
@@ -80,7 +80,7 @@
 			<com:ko tag="if" bind="isQuickSearchTab || !isAdvancedSearchTab">
 				<div tabindex="-1" class="tab-content-1">
 					<com:ko tag="if" bind="isAllReferableEmployee">
-						<div tabindex="7" class="btn-quick-search" data-bind="click: searchEmployeeOfDepOnly">
+						<div tabindex="7" class="btn-quick-search" data-bind="click: searchAllListEmployee">
 							<div class="flex valign-center btn_big">
 								<i class="icon icon-28-allemployee"></i>
 								<label class="labelBigButton">#{i18n.getText('CCG001_10')}</label> 
