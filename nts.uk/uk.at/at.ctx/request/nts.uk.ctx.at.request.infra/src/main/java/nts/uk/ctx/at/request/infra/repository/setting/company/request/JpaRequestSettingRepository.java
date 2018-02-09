@@ -1,43 +1,29 @@
 package nts.uk.ctx.at.request.infra.repository.setting.company.request;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.AuthorizationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.RecordDate;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.applimitset.AppLimitSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AfterhandRestriction;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppAcceptLimitDay;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.BeforeAddCheckMethod;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.BeforehandRestriction;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReason;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.PrePostInitialAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.ReceptionRestrictionSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.deadlinesetting.AppDeadlineSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.AppDisplaySetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.AppReflectionSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.AppReflectAfterConfirm;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstAppTypeDiscrete;
 import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstAppTypeDiscretePK;
 import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstApplicationSetting;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.AttendanceClock;
 /**
  * 
  * @author hoatt
@@ -82,7 +68,7 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 									x.prePostCanChangeFlg, 
 									x.typicalReasonDisplayFlg, 
 									x.sendMailWhenApprovalFlg, 
-									x.sendMailWhenRegisterlFlg, 
+									x.sendMailWhenRegisterFlg, 
 									x.displayReasonFlg, 
 									x.krqstAppTypeDiscretePK.appType, 
 									null))
@@ -125,22 +111,38 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 	 * @author yennth
 	 */
 	@Override
-	public void update(RequestSetting req) {
+	public void update(List<ReceptionRestrictionSetting> receiption, List<AppTypeSetting> appType) {
 		String companyId = AppContexts.user().companyId();
-		List<ReceptionRestrictionSetting> appType = req.getApplicationSetting().getListReceptionRestrictionSetting();
-		for(ReceptionRestrictionSetting item: appType){
-			KrqstAppTypeDiscrete oldEntity = this.queryProxy().find(new KrqstAppTypeDiscretePK(companyId, item.getAppType().value), KrqstAppTypeDiscrete.class).get();
+		// update before and after 
+		for(ReceptionRestrictionSetting item: receiption){ 
+			KrqstAppTypeDiscrete oldEntity1 = this.queryProxy().find(new KrqstAppTypeDiscretePK(companyId, item.getAppType().value), KrqstAppTypeDiscrete.class).get();
 			//チェック方法 - retrictPreMethodFlg - RETRICT_PRE_METHOD_CHECK_FLG
-			oldEntity.retrictPreMethodFlg = item.getBeforehandRestriction().getMethodCheck().value;
+			oldEntity1.retrictPreMethodFlg = item.getBeforehandRestriction().getMethodCheck().value;
 			// 利用する - retrictPreUseFlg - RETRICT_PRE_USE_FLG
-			oldEntity.retrictPreUseFlg = item.getBeforehandRestriction().getToUse() == true ? 1 : 0;
+			oldEntity1.retrictPreUseFlg = item.getBeforehandRestriction().getToUse() == true ? 1 : 0;
 			// 日数 - retrictPreDay - RETRICT_PRE_DAY
-			oldEntity.retrictPreDay = item.getBeforehandRestriction().getDateBeforehandRestriction().value;
+			oldEntity1.retrictPreDay = item.getBeforehandRestriction().getDateBeforehandRestriction().value;
 			// 時刻 - retrictPreTimeDay - RETRICT_PRE_TIMEDAY
-			oldEntity.retrictPreTimeDay = item.getBeforehandRestriction().getTimeBeforehandRestriction().v();
+			oldEntity1.retrictPreTimeDay = item.getBeforehandRestriction().getTimeBeforehandRestriction().v();
 			// 未来日許可しない - retrictPostAllowFutureFlg - RETRICT_POST_ALLOW_FUTURE_FLG
-			oldEntity.retrictPostAllowFutureFlg = item.getAfterhandRestriction().getAllowFutureDay() == true ? 1: 0;
-			this.commandProxy().update(oldEntity);
+			oldEntity1.retrictPostAllowFutureFlg = item.getAfterhandRestriction().getAllowFutureDay() == true ? 1: 0;
+			this.commandProxy().update(oldEntity1);
+		}
+		for(AppTypeSetting app : appType){
+			KrqstAppTypeDiscrete oldEntity2 = this.queryProxy().find(new KrqstAppTypeDiscretePK(companyId, app.getAppType().value), KrqstAppTypeDiscrete.class).get();
+			// 定型理由の表示  - displayFixedReason - TYPICAL_REASON_DISPLAY_FLG (map domain AppTypeDiscreteSetting)
+			oldEntity2.typicalReasonDisplayFlg = app.getDisplayFixedReason().value;
+			// 申請理由の表示  - displayAppReason - DISPLAY_REASON_FLG
+			oldEntity2.displayReasonFlg = app.getDisplayAppReason().value;
+			// 新規登録時に自動でメールを送信する - sendMailWhenRegisterFlg - SEND_MAIL_WHEN_REGISTER_FLG
+			oldEntity2.sendMailWhenRegisterFlg = app.getSendMailWhenRegister() ? 1 : 0;
+			// 承認処理時に自動でメールを送信する -  - SEND_MAIL_WHEN_APPROVAL_FLG
+			oldEntity2.sendMailWhenApprovalFlg = app.getSendMailWhenApproval() ? 1 : 0;
+			// 事前事後区分の初期表示 - prePostInitAtr - PRE_POST_INIT_ATR
+			oldEntity2.prePostInitAtr = app.getDisplayInitialSegment().value;
+			// 事前事後区分を変更できる - prePostCanChangeFlg - PRE_POST_CAN_CHANGE_FLG
+			oldEntity2.prePostCanChangeFlg = app.getCanClassificationChange() ? 1 : 0;
+			this.commandProxy().update(oldEntity2);
 		}
 	}
 }
