@@ -139,14 +139,13 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 updateTimezone(lstOTTimezone: FlOTTimezoneDto[]) {
-                    this.lstOTTimezone([]);
                     var dataModelTimezone: FlowOTTimezoneModel[] = [];
                     for (var dataDTO of lstOTTimezone) {
                         var dataModel: FlowOTTimezoneModel = new FlowOTTimezoneModel();
                         dataModel.updateData(dataDTO);
                         dataModelTimezone.push(dataModel);
                     }
-                    this.lstOTTimezone(dataModelTimezone);
+                    this.lstOTTimezone(_.sortBy(dataModelTimezone, item => item.flowTimeSetting.elapsedTime()));
                 }
                 
                 getTimezoneByWorkNo(worktimeNo: number) {
