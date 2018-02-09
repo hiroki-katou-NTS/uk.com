@@ -372,8 +372,8 @@ module nts.custombinding {
                         display: block;
                     }
 
-                    .layout-control.readonly [disabled],
-                    .layout-control.dragable [disabled] {
+                    .layout-control.readonly:not(.inputable) [disabled],
+                    .layout-control.dragable:not(.inputable) [disabled] {
                         background-color: #fff;
                     }
 
