@@ -169,7 +169,6 @@ module nts.uk.at.view.ksm005.c {
                             monthlyPatternData.push(new MonthlyPatterModel(item.code, item.name));
                         });
                         self.monthlyPatternList(monthlyPatternData);
-                        $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
                         dfd.resolve(); 
                 });
                 return dfd.promise();
@@ -214,7 +213,7 @@ module nts.uk.at.view.ksm005.c {
                         maxRows: 15,
                         maxWidth: 450
                     }; 
-                    $('#component-items-list').ntsListComponent(self.listComponentOption);                    
+                    //$('#component-items-list').ntsListComponent(self.listComponentOption);                    
                 });
                 
             }
@@ -301,7 +300,6 @@ module nts.uk.at.view.ksm005.c {
                             self.enableDelete(false);
                         }
                         self.histList(historyData);
-//                        self.findMonthlyPatternSetting(self.selectedHists());
                         dfd.resolve();
                     });
                 }
@@ -314,6 +312,26 @@ module nts.uk.at.view.ksm005.c {
                 service.findByIdMonthlyPatternSetting(historyId).done(function(data: MonthlyPatternSettingDto) {
                     if (data != null) {
                         if (data.monthlyPatternCode != "") {
+                            if (self.monthlyPatternList().filter(e => e.code == data.monthlyPatternCode).length <= 0) {
+                                var dto: MonthlyPatternSettingDto;
+                                dto = { 
+                                        employeeId: self.findEmployeeIdByCode(self.selectedCode()),
+                                        historyId: self.selectedHists(), 
+                                        monthlyPatternCode: self.selectedmonthlyPattern() };
+                                service.deleteMonthlyPatternSetting(dto).done(function() {
+                                    // reload page
+                                    self.reloadPage();
+                                    self.enableCopy(false);
+                                    self.enableDelete(false);
+                                    self.selectedmonthlyPattern('000');
+                                    if (self.histList().length > 0){
+                                        self.selectedHists(self.histList()[0].historyId);
+                                    }
+                                }).fail(function(error) {
+                                    nts.uk.ui.dialog.alertError(error);
+                                });
+                                return; 
+                            }
                             self.selectedmonthlyPattern(data.monthlyPatternCode);                    
                             self.enableDelete(true);
                             self.enableSystemChange(true);

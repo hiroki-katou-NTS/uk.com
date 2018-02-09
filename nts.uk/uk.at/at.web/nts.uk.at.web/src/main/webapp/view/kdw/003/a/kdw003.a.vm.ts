@@ -502,7 +502,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     // alert("done");
                     dataChange = {};
                     self.btnExtraction_Click();
-                    nts.uk.ui.block.clear();
                     dfd.resolve();
                 }).fail((data) => {
                     alert("fail");

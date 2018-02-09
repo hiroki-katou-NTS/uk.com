@@ -42,7 +42,7 @@ public class EmployeeInfoFinder {
 				.getEmployeeNotDeleteInCompany(AppContexts.user().companyId(), empInfo.getEmployeeCode()));
 
 		if (isDuplicateEmpCode) {
-			throw new BusinessException(new RawErrorMessage("Msg_345"));
+			throw new BusinessException("Msg_345");
 		}
 		// Boolean isDuplicateCardNo =
 		// this.employeeRepository.isDuplicateCardNo(AppContexts.user().companyId(),
@@ -55,7 +55,7 @@ public class EmployeeInfoFinder {
 
 		if (isDuplicateLoginId) {
 
-			throw new BusinessException(new RawErrorMessage("Msg_757"));
+			throw new BusinessException("Msg_757");
 
 		}
 

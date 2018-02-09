@@ -370,13 +370,13 @@ module cps002.a.vm {
 
                 }).fail((error) => {
 
-                    let message = error.message;
-                    switch (message) {
+                    let messageId = error.messageId;
+                    switch (messageId) {
                         case "Msg_345":
-                            $('#employeeCode').ntsError('set', { messageId: message });
+                            $('#employeeCode').ntsError('set', { messageId: messageId });
                             break;
                         case "Msg_757":
-                            $('#loginId').ntsError('set', { messageId: message });
+                            $('#loginId').ntsError('set', { messageId: messageId });
                             break;
                     }
 
@@ -633,7 +633,7 @@ module cps002.a.vm {
 
                 }).fail(error => {
 
-                    dialog({ messageId: error.message });
+                    dialog({ messageId: error.messageId });
 
                 })
             }
