@@ -37,7 +37,7 @@ module nts.uk.com.view.cmm021.a {
         
         
         //Screen C
-        export function findOtherSysAccByUserId(userId: string): JQueryPromise<any> {
+        export function findOtherSysAccByUserId(userId: string): JQueryPromise<model.OtherSysAccFinderDto> {
             return nts.uk.request.ajax(servicePath.findOtherSysAccByUserId, { userId: userId });
         }
         
