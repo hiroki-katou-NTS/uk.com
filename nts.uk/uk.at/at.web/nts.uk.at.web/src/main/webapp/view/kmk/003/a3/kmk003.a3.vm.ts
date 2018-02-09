@@ -220,6 +220,15 @@ module a3 {
                         self.fixTableOptionOvertimeFlow.columns = self.columnSettingFlowSimple();
                     }
                 }
+                if(self.isDiffTimeMode())
+                {
+                    if (v) {
+                        self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFixedAndDiffTime();
+                    }
+                    else {
+                        self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFlex();
+                    }
+                }
             });
         }
         
