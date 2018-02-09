@@ -82,6 +82,8 @@
 								<td class="no-wrap">
 									<div id="file_upload"
 										data-bind="ntsFileUpload:{
+											stereoType: 'flowmenu',
+											immediateUpload: false,
 											filename: selectedFlowMenu().fileName, 
 											accept: ['.jpg,.gif,.bmp,.jpeg,.png'],
 											aslink: true,
@@ -89,9 +91,9 @@
 											onchange: uploadFile.bind($data),
 											onfilenameclick: open030B_Dialog.bind($data) }"></div>
 								</td>
-								<td><button class="danger"
+								<!-- <td><button class="danger"
 										data-bind="click: deleteButtonClick, enable: isDelete()"
-										tabindex="9" style ="width: 70px;">#{i18n.getText('CCG030_5')}</button></td>
+										tabindex="9" style ="width: 70px;">#{i18n.getText('CCG030_5')}</button></td> -->
 							</tr>
 							<tr>
 								<td></td>
