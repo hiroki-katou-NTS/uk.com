@@ -25,10 +25,11 @@ module nts.uk.at.view.kmk012.e {
                 primaryKey: 'code',
                 virtualization: true,
                 virtualizationMode: 'continuous',
+                hidePrimaryKey: true,
 
                 //columns on grid list.
                 columns: [
-                    { headerText: 'ID', key: 'code', dataType: 'string', width: '50px', hidden: true },
+                    { headerText: 'ID', key: 'code', dataType: 'string', width: '50px' },
                     { headerText: getText('KMK012_38'), key: 'name', dataType: 'string', width: '150px' },
                     { headerText: getText('KMK012_39'), key: 'closureId', dataType: 'number', width: '180px', ntsControl: 'Combobox' }
                 ],
@@ -38,7 +39,7 @@ module nts.uk.at.view.kmk012.e {
                 ntsControls: [
                     { name: 'Combobox', options: comboItems, optionsValue: 'id', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true }]
             });
-            $("#gridData > tbody > tr > td:NTH-CHILD(1) > div.ui-igcombo ui-widget ui-state-default ui-corner-all ui-unselectable ui-igcombo-mode-dropdown").each(function (i) { $(this).attr('tabindex', i * 2 + 1); });
+           
         });
 
         //Add function button

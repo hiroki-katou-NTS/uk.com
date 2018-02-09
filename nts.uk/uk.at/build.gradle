@@ -634,12 +634,12 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.dom', version: '0.1.6')
 		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.infra', version: '0.1.6')		
 		 
-		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.app', version: '0.10.30')
-		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: '0.10.30')
-		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.infra', version: '0.10.30')
-		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.30')
-		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pubimp', version: '0.10.30')
-		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.ac', version: '0.10.30')
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.app', version: '0.10.31')
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: '0.10.31')
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.infra', version: '0.10.31')
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.31')
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pubimp', version: '0.10.31')
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.ac', version: '0.10.31')
 		
 		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.app', version: '0.6.4')
 		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.dom', version: '0.6.4')

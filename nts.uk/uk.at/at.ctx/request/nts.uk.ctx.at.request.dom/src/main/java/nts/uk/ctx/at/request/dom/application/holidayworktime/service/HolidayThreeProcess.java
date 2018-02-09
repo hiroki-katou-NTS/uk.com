@@ -35,7 +35,7 @@ public interface HolidayThreeProcess {
 	 * @param siftCD
 	 * @return
 	 */
-	public CaculationTime checkCaculationActualExcess(int prePostAtr,int appType,String employeeID,String companyID,GeneralDate appDate,CaculationTime overTimeInputs, String siftCD,Integer calTime);
+	public CaculationTime checkCaculationActualExcess(int prePostAtr,int appType,String employeeID,String companyID,GeneralDate appDate,CaculationTime breakTimeInput, String siftCD,Integer calTime);
 	/**
 	 * 03-02-1_チェック条件
 	 * @param prePostAtr
