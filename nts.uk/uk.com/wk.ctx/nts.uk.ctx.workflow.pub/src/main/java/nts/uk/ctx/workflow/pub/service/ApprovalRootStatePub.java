@@ -35,7 +35,7 @@ public interface ApprovalRootStatePub {
 	 * @param employeeID 社員ID
 	 * @return 承認フェーズ枠番
 	 */
-	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, Integer appTypeValue, GeneralDate appDate);
+	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, Integer appTypeValue, GeneralDate appDate, String memo);
 	
 	/**
 	 * 2.承認全体が完了したか
@@ -95,7 +95,7 @@ public interface ApprovalRootStatePub {
 				true：否認を実行した
 				false：否認を実行しなかった
 	 */
-	public Boolean doDeny(String companyID, String rootStateID, String employeeID);
+	public Boolean doDeny(String companyID, String rootStateID, String employeeID, String memo);
 	
 	/**
 	 * 1.指定した社員が承認者であるかの判断
@@ -116,7 +116,5 @@ public interface ApprovalRootStatePub {
 	 * @return
 	 */
 	public ApproverPersonExport judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID);
-	
-	public void updateReason(String rootStateID, String employeeID, String reason);
 	
 }

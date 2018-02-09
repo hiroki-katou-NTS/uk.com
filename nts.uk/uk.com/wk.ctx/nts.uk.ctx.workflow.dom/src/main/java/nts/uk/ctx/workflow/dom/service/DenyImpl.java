@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
@@ -34,7 +35,7 @@ public class DenyImpl implements DenyService {
 	private CollectApprovalAgentInforService collectApprovalAgentInforService;
 
 	@Override
-	public Boolean doDeny(String companyID, String rootStateID, String employeeID) {
+	public Boolean doDeny(String companyID, String rootStateID, String employeeID, String memo) {
 		Boolean executedFlag = false;
 		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID);
 		if(!opApprovalRootState.isPresent()){
@@ -61,6 +62,8 @@ public class DenyImpl implements DenyService {
 					approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 					approvalFrame.setApproverID(employeeID);
 					approvalFrame.setRepresenterID("");
+					approvalFrame.setApprovalDate(GeneralDate.today());
+					approvalFrame.setApprovalReason(memo);
 					return;
 				}
 				List<String> listApprover = approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
@@ -69,6 +72,8 @@ public class DenyImpl implements DenyService {
 					approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 					approvalFrame.setApproverID("");
 					approvalFrame.setRepresenterID(employeeID);
+					approvalFrame.setApprovalDate(GeneralDate.today());
+					approvalFrame.setApprovalReason(memo);
 				}
 			});
 			executedFlag = true;
