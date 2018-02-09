@@ -18,7 +18,6 @@ import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.text.IdentifierUtil;
 
 /**
  * The Class EmployeeDataView.
@@ -32,9 +31,10 @@ public class EmployeeDataView implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The uuid. */
+	/** The id. */
 	@Id
-	private String uuid = IdentifierUtil.randomUniqueId();
+	@Column(name="ID")
+	private String id;
 
 	/** The abs end date. */
 	@Column(name="ABS_END_DATE")
