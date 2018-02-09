@@ -7,14 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import nts.gul.reflection.AnnotationUtil;
 import nts.gul.reflection.FieldsWorkerStream;
 import nts.gul.reflection.ReflectionUtil;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
-import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
@@ -27,10 +25,7 @@ import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
  *
  */
 public class MappingFactory {
-
-	@Inject
-	I18NResourcesForUK ukResouce;
-
+	
 	public static void mapItemClass(PeregDto peregDto, LayoutPersonInfoClsDto classItem) {
 
 		// map data
@@ -71,8 +66,11 @@ public class MappingFactory {
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
 				Object value = itemCodeValueMap.get(valueItem.getItemCode());
 				if (valueItem.getItem() != null) {
-					if (valueItem.getItem().getDataTypeValue() == 7) {
-						value = value.toString();
+					int itemType = valueItem.getItem().getDataTypeValue() ;
+					if(itemType == DataTypeValue.SELECTION.value || 
+							itemType == DataTypeValue.SELECTION_BUTTON.value || 
+							itemType == DataTypeValue.SELECTION_RADIO.value) {
+						value = value == null ? null : value.toString();
 					}
 				}
 				valueItem.setValue(value);
@@ -162,29 +160,6 @@ public class MappingFactory {
 					if (valueItem.getItemCode().equals(dataItem.getItemCode())) {
 						valueItem.setValue(dataItem.getValue());
 					}
-				}
-			}
-		}
-	}
-
-	public static void setDefaultValueRadio(List<LayoutPersonInfoClsDto> classItemList) {
-		for (LayoutPersonInfoClsDto classItem : classItemList) {
-			for (Object item : classItem.getItems()) {
-				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-				if (valueItem.getValue() == null) {
-					switch (valueItem.getItemCode()) {
-					case "IS00248":
-					case "IS00247":
-					case "IS00258":
-						valueItem.setValue("0");
-						break;
-					case "IS00121":
-						valueItem.setValue("1");
-						break;
-					default:
-						break;
-					}
-
 				}
 			}
 		}

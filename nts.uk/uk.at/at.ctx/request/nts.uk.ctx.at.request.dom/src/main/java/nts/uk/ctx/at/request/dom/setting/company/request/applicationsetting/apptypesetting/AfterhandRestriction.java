@@ -18,4 +18,7 @@ public class AfterhandRestriction extends DomainObject {
 	 */
 	private Boolean allowFutureDay;
 	
+	public static AfterhandRestriction toDomain(Integer allowFutureDay){
+		return new AfterhandRestriction(allowFutureDay == 1 ? true : false);
+	}
 }

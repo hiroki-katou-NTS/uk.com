@@ -26,6 +26,7 @@ import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserName;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 @Stateless
 public class RoleIndividualFinder {
@@ -94,6 +95,9 @@ public class RoleIndividualFinder {
 	}
 	
 	public RoleIndividualGrantMetaDto getMetadata() {
+		LoginUserContext user = AppContexts.user();
+		if (!user.roles().have().companyAdmin() && !user.roles().have().systemAdmin())
+			return null;
 		
 		// Get List Enum RoleType
 		List<EnumConstant> enumRoleType = EnumAdaptor.convertToValueNameList(RoleType.class,  RoleType.SYSTEM_MANAGER, RoleType.COMPANY_MANAGER, RoleType.GROUP_COMAPNY_MANAGER);
@@ -107,7 +111,7 @@ public class RoleIndividualFinder {
 	public List<RoleTypeDto> GetRoleType(){
 		
 		val user = AppContexts.user();
-		if (user.roles().have().systemAdmin() && user.roles().have().companyAdmin())
+		if (!user.roles().have().systemAdmin() && !user.roles().have().companyAdmin())
 			return null;
 		
 		List<RoleTypeDto> roleTypeDtos = new ArrayList<>();

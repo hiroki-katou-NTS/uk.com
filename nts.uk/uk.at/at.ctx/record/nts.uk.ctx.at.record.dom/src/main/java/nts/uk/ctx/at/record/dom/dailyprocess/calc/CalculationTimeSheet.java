@@ -155,7 +155,7 @@ public abstract class CalculationTimeSheet {
 	 * @return 時間
 	 */
 	public AttendanceTime deductionLengthMinutes() {
-		if(deductionTimeSheet.isEmpty()) return new AttendanceTime(0) ;
+		if(deductionTimeSheet.isEmpty()) return new AttendanceTime(this.calcrange.lengthAsMinutes()) ;
 		return recursiveTotalTime() ;
 	}
 	

@@ -6,7 +6,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentAppTypeRequestImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentDataRequestPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRepresenterImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.RepresenterInformationImport;
@@ -42,5 +46,30 @@ public class AgentAdapterImp implements AgentAdapter {
 				new RepresenterInformationImport(approverRepresenterExport.getRepresenter().getValue()) 
 				);
 	}
+	
+
+	/**
+	 * 代行者、期間から承認代行情報を取得する			
+	 */
+	public List<AgentDataRequestPubImport> lstAgentData(String companyId, String employeeId, GeneralDate baseDate) {
+		List<AgentDataRequestPubImport> lstData = AgentPub.getBySidDate(companyId, employeeId, baseDate)
+				.stream()
+				.map(x -> new AgentDataRequestPubImport(companyId, 
+						x.getEmployeeId(), 
+						x.getRequestId(), 
+						x.getStartDate(),
+						x.getEndDate(), 
+						x.getAgentSid1(), 
+						EnumAdaptor.valueOf(x.getAgentAppType1().value,AgentAppTypeRequestImport.class),
+						x.getAgentSid2(),
+						EnumAdaptor.valueOf(x.getAgentAppType2().value ,AgentAppTypeRequestImport.class), 
+						x.getAgentSid3(), 
+						EnumAdaptor.valueOf(x.getAgentAppType3().value ,AgentAppTypeRequestImport.class),
+						x.getAgentSid4(), 
+						EnumAdaptor.valueOf(x.getAgentAppType4().value ,AgentAppTypeRequestImport.class))).collect(Collectors.toList());
+		return lstData;
+	}
+	
+	
 
 }

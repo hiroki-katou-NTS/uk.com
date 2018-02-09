@@ -58,24 +58,43 @@ public class PerInfoItemDefForLayoutFinder {
 	 * @param mapListCombo
 	 */
 	public void setItemForLayout(PerInfoItemDefForLayoutDto itemForLayout, String empId, int ctgType,
-			PersonInfoItemDefinition itemDef, String perInfoCd, int dispOrder, boolean isCtgViewOnly, GeneralDate sDate, Map<Integer, Map<String,  List<ComboBoxObject>>> combobox) {
+			PersonInfoItemDefinition itemDef, String perInfoCd, int dispOrder, boolean isCtgViewOnly, 
+			GeneralDate sDate, Map<Integer, Map<String,  List<ComboBoxObject>>> combobox) {
 		setData(itemForLayout, empId, ctgType, itemDef, perInfoCd, dispOrder, isCtgViewOnly, sDate, combobox);
-		// get children by itemId list
-		if(itemDef.getItemTypeState().getItemType() == ItemType.SET_ITEM) {
-			List<PersonInfoItemDefinition> lstDomain = getListChildrenDef(itemDef.getItemTypeState());
-			List<PerInfoItemDefForLayoutDto> lstChildren = getPerItemSet(lstDomain, empId, ctgType, itemDef.getItemCode().v(),
-					perInfoCd, dispOrder, isCtgViewOnly, sDate, itemForLayout.getActionRole(), combobox);					
-			for(int index = 0; index < lstDomain.size(); index++) {
-				PersonInfoItemDefinition i = lstDomain.get(index);
-				if(i.getItemTypeState().getItemType() == ItemType.SET_ITEM) {
-					List<PersonInfoItemDefinition> lstGrandChild = getListChildrenDef(i.getItemTypeState());
-					List<PerInfoItemDefForLayoutDto> lstGrandChildDto = getPerItemSet(lstGrandChild, empId, ctgType, i.getItemCode().v(),
-							perInfoCd, dispOrder, isCtgViewOnly, sDate, lstChildren.get(index).getActionRole(), combobox);		
-					lstChildren.addAll(lstGrandChildDto);
-				}
+		List<PerInfoItemDefForLayoutDto> childrenItems = getChildrenItems(itemDef, empId, ctgType, 
+				perInfoCd, dispOrder, isCtgViewOnly, sDate, combobox, itemForLayout.getActionRole());
+		itemForLayout.setLstChildItemDef(childrenItems);
+	}
+	
+	
+	public List<PerInfoItemDefForLayoutDto> getChildrenItems(PersonInfoItemDefinition parentItem, String empId, int ctgType, 
+			String perInfoCd, int dispOrder, boolean isCtgViewOnly, GeneralDate sDate,  Map<Integer, Map<String,  List<ComboBoxObject>>> combobox,
+			ActionRole role) {
+		List<PersonInfoItemDefinition> parentItems = new ArrayList<>();
+		parentItems.add(parentItem);
+		List<PerInfoItemDefForLayoutDto> items = new ArrayList<>();
+		int index;
+		while(parentItems.size() > 0) {
+			PersonInfoItemDefinition itemDef = parentItems.stream().findFirst().get();
+			index = parentItems.indexOf(itemDef);
+			parentItems.remove(index);
+			// get children by itemId list
+			if(itemDef.getItemTypeState().getItemType() == ItemType.SET_ITEM) {
+				
+				List<PersonInfoItemDefinition> lstDomain = getListChildrenDef(itemDef.getItemTypeState());	
+				lstDomain.forEach(i -> {
+					PerInfoItemDefForLayoutDto itemForLayout = new PerInfoItemDefForLayoutDto();
+					itemForLayout.setItemParentCode(itemDef.getItemCode().v());
+					itemForLayout.setActionRole(role);
+					setData(itemForLayout, empId, ctgType, i, perInfoCd, dispOrder, isCtgViewOnly, sDate, combobox);
+					if(i.getItemTypeState().getItemType() == ItemType.SET_ITEM) {
+						parentItems.add(i);
+					}
+					items.add(itemForLayout);
+				});
 			}
-			itemForLayout.setLstChildItemDef(lstChildren);
 		}
+		return items;
 		
 	}
 	
@@ -166,27 +185,27 @@ public class PerInfoItemDefForLayoutFinder {
 		return lstDomain;
 	}
 
-	/**
-	 * get per item set from domain
-	 * 
-	 * @param item
-	 * @return
-	 */
-	private List<PerInfoItemDefForLayoutDto> getPerItemSet(List<PersonInfoItemDefinition> lstDomain, String empId, int ctgType, String itemParentCode,
-			String perInfoCd, int dispOrder, boolean ctgIsViewOnly, GeneralDate sDate, ActionRole actionRole, Map<Integer, Map<String,  List<ComboBoxObject>>> combobox) {
-		// 1 set - 2 Single
-		List<PerInfoItemDefForLayoutDto> lstResult = new ArrayList<>();		
-		PerInfoItemDefForLayoutDto childItem;
-		for (int i = 0; i < lstDomain.size(); i++) {
-			childItem = new PerInfoItemDefForLayoutDto();
-			childItem.setActionRole(actionRole);
-			childItem.setItemParentCode(itemParentCode);
-			setData(childItem, empId, ctgType, lstDomain.get(i), perInfoCd, dispOrder, ctgIsViewOnly,
-					sDate,combobox) ;
-			lstResult.add(childItem);
-		}		
-		return lstResult;
-	}
+//	/**
+//	 * get per item set from domain
+//	 * 
+//	 * @param item
+//	 * @return
+//	 */
+//	private List<PerInfoItemDefForLayoutDto> getPerItemSet(List<PersonInfoItemDefinition> lstDomain, String empId, int ctgType, String itemParentCode,
+//			String perInfoCd, int dispOrder, boolean ctgIsViewOnly, GeneralDate sDate, ActionRole actionRole, Map<Integer, Map<String,  List<ComboBoxObject>>> combobox) {
+//		// 1 set - 2 Single
+//		List<PerInfoItemDefForLayoutDto> lstResult = new ArrayList<>();		
+//		PerInfoItemDefForLayoutDto childItem;
+//		for (int i = 0; i < lstDomain.size(); i++) {
+//			childItem = new PerInfoItemDefForLayoutDto();
+//			childItem.setActionRole(actionRole);
+//			childItem.setItemParentCode(itemParentCode);
+//			setData(childItem, empId, ctgType, lstDomain.get(i), perInfoCd, dispOrder, ctgIsViewOnly,
+//					sDate,combobox) ;
+//			lstResult.add(childItem);
+//		}		
+//		return lstResult;
+//	}
 
 	public List<ComboBoxObject> getLstComboBoxValue(SelectionItemDto selectionItemDto, String empId,
 			GeneralDate baseDate, boolean isRequired) {

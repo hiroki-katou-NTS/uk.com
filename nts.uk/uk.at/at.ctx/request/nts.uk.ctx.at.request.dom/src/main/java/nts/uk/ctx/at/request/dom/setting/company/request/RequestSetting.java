@@ -69,4 +69,9 @@ public class RequestSetting extends AggregateRoot {
 						EnumAdaptor.valueOf(achievementConfirmedAtr, ReflectAtr.class))
 				);
 	}
+	
+	public static RequestSetting toDomain(String companyID, ApplicationSetting applicationSetting, AppReflectionSetting appReflectionSetting,
+		ApprovalListDisplaySetting approvalListDisplaySetting, AuthorizationSetting authorizationSetting, AppReflectAfterConfirm appReflectAfterConfirm){
+		return new RequestSetting(companyID, applicationSetting, appReflectionSetting, approvalListDisplaySetting, authorizationSetting, appReflectAfterConfirm);
+	}
 }

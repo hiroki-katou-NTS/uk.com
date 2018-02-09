@@ -2,6 +2,8 @@ package nts.uk.ctx.at.request.dom.application.holidayworktime.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -9,42 +11,58 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
+import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInputRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 
 @Stateless
 public class HolidaySixProcessImpl implements HolidaySixProcess{
+	final String DATE_FORMAT = "yyyy/MM/dd";
 	@Inject
 	private HolidayThreeProcess holidayThreeProcess;
-
+	@Inject
+	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
+	@Inject
+	private ApplicationRepository_New applicationRepository;
+	@Inject
+	private AppHolidayWorkRepository appHolidayWorkRepository;
+	@Inject
+	private HolidayWorkInputRepository holidayWorkInputRepository;
+	
 	@Override
 	public List<CaculationTime> checkDisplayColor(List<CaculationTime> breakTimeInputs,
-			List<OvertimeInputCaculation> overtimeInputCaculations, int prePostAtr, GeneralDateTime inputDate,
+			Map<Integer,TimeWithCalculationImport> holidayWorkCal, int prePostAtr, GeneralDateTime inputDate,
 			GeneralDate appDate, int appType, String employeeID, String companyID,
-			ApprovalFunctionSetting approvalFunctionSetting, String siftCD) {
+			String siftCD) {
 		
-		for(CaculationTime overtimeInput : breakTimeInputs){
-			for(OvertimeInputCaculation overtimeInputCaculation : overtimeInputCaculations){
-					if(overtimeInput.getFrameNo() == overtimeInputCaculation.getFrameNo()){
-						if(overtimeInput.getApplicationTime() != null && overtimeInput.getApplicationTime() != overtimeInputCaculation.getResultCaculation()){
-							overtimeInput.setErrorCode(3); // 色定義名：計算値
+		for(CaculationTime breakTime : breakTimeInputs){
+			for(Map.Entry<Integer,TimeWithCalculationImport> entry : holidayWorkCal.entrySet()){
+					if(breakTime.getFrameNo() == entry.getKey()){
+						if(breakTime.getApplicationTime() != null && breakTime.getApplicationTime() != entry.getValue().getCalTime()){
+							breakTime.setErrorCode(3); // 色定義名：計算値
 						}
-						if(overtimeInputCaculation.getResultCaculation() == 0){
+						if(entry.getValue().getCalTime() == 0){
 							continue;
-						}else if(overtimeInputCaculation.getResultCaculation() > 0){
+						}else if(entry.getValue().getCalTime() > 0){
 							// 03-01_事前申請超過チェック
-							OvertimeCheckResult overtimeCheckResult = this.holidayThreeProcess.preApplicationExceededCheck(overtimeInput.getCompanyID(),appDate, inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), overtimeInputCaculation.getAttendanceID(), convert(overtimeInput));
+							OvertimeCheckResult overtimeCheckResult = this.holidayThreeProcess.preApplicationExceededCheck(companyID,
+									appDate, inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),AttendanceType.BREAKTIME.value, convert(breakTime));
 							if(overtimeCheckResult.getErrorCode() != 0){
-								overtimeInput.setErrorCode(overtimeCheckResult.getErrorCode());
+								breakTime.setErrorCode(overtimeCheckResult.getErrorCode());
 							}
-							// 06-04_計算実績超過チェック
-//							List<CaculationTime> caculations = new ArrayList<>();
-//							caculations.add(overtimeInput);
-//							overtimeInput.setErrorCode(checkCaculationActualExcess(prePostAtr,appType,employeeID,companyID,approvalFunctionSetting,appDate,caculations,siftCD).getErrorCode());
+							// 03-02_実績超過チェック
+							breakTime = this.holidayThreeProcess.checkCaculationActualExcess(prePostAtr, appType, employeeID, companyID, appDate, breakTime, siftCD,entry.getValue().getCalTime());
 						}
 					}
 			}
@@ -66,5 +84,42 @@ public class HolidaySixProcessImpl implements HolidaySixProcess{
 	
 	return holidayInputs;
 }
+	@Override
+	public List<CaculationTime> getCaculationHolidayWork(String companyID, String employeeId, String appDate,
+			int appType, List<CaculationTime> holidayWorks, Map<Integer, TimeWithCalculationImport> holidayWorkCal) {
+		// 0時跨ぎチェック
+		//事前申請を取得
+		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, appType);
+		if(overtimeRestAppCommonSetting.isPresent()){
+			if(overtimeRestAppCommonSetting.get().getPreDisplayAtr().value == UseAtr.USE.value){
+				List<Application_New> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value, appType);
+				if(application.size() > 0){
+					Optional<AppHolidayWork> appHolidayWork = this.appHolidayWorkRepository
+							.getAppHolidayWork(application.get(0).getCompanyID(), application.get(0).getAppID());
+					if(appHolidayWork.isPresent()){
+						List<HolidayWorkInput> holidayWorkInputs = holidayWorkInputRepository.getHolidayWorkInputByAttendanceType(appHolidayWork.get().getCompanyID(), appHolidayWork.get().getAppID(),
+								AttendanceType.BREAKTIME.value);
+						for(HolidayWorkInput holidayWorkInput : holidayWorkInputs){
+							for(CaculationTime cal : holidayWorks){
+								if(cal.getFrameNo() == holidayWorkInput.getFrameNo()){
+									cal.setPreAppTime(Integer.toString(holidayWorkInput.getApplicationTime().v()));
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		// 06-02-2_申請時間を取得
+		for(CaculationTime cal : holidayWorks){
+			for(Map.Entry<Integer, TimeWithCalculationImport> entry : holidayWorkCal.entrySet()){
+				if(cal.getFrameNo() == entry.getKey()){
+					cal.setCaculationTime(Integer.toString(entry.getValue().getCalTime()));
+				}
+			}
+		}
+		return holidayWorks;
+	}
 
 }

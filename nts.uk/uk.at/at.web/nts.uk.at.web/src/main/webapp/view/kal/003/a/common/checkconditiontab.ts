@@ -136,6 +136,7 @@ module nts.uk.at.view.kal003.a.tab {
                 return;
             }
             self.listWorkRecordExtractingConditions.remove(function(item) { return item.rowId() == (self.currentRowSelected()); })
+            nts.uk.ui.errors.clearAll();
             for (var i = 0; i < self.listWorkRecordExtractingConditions().length; i++) {
                 self.listWorkRecordExtractingConditions()[i].rowId(i + 1);
             }
