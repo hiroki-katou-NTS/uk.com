@@ -191,12 +191,12 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	 */
 	@Override
 	public OvertimeCheckResult preliminaryDenialCheck(String companyId, GeneralDate appDate, GeneralDateTime inputDate,
-			PrePostAtr prePostAtr) {
+			PrePostAtr prePostAtr,int appType) {
 		OvertimeCheckResult result = new OvertimeCheckResult();
 		result.setErrorCode(0);
 		// ドメインモデル「申請」
 		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, appDate, inputDate,
-				ApplicationType.OVER_TIME_APPLICATION.value, prePostAtr.value);
+				appType, prePostAtr.value);
 		if (beforeApplication.isEmpty()) {
 			return result;
 		}
