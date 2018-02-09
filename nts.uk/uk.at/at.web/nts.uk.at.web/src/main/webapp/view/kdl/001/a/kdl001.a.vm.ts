@@ -14,7 +14,7 @@ module nts.uk.at.view.kdl001.a {
             endTimeOption: KnockoutObservable<number>;
             endTime: KnockoutObservable<number>;
             isEnableSwitchButton: KnockoutObservable<boolean> = ko.observable(false);
-            gridHeight: KnockoutObservable<number> = ko.observable(260);
+            gridHeight: number = 260;
             constructor() {
                 var self = this;
                 self.columns = ko.observableArray([
@@ -27,9 +27,9 @@ module nts.uk.at.view.kdl001.a {
                 ]);
                 self.multiSelectMode = nts.uk.ui.windows.getShared('kml001multiSelectMode');
                  if(!self.multiSelectMode) {
-                    self.gridHeight(260);    
+                    self.gridHeight = 260;    
                  }else{
-                     self.gridHeight(255);
+                     self.gridHeight = 255;
                  }
                 self.selectAbleCodeList = ko.observableArray(<Array<string>>nts.uk.ui.windows.getShared('kml001selectAbleCodeList'));
                 self.selectedCodeList = ko.observableArray(<Array<string>>nts.uk.ui.windows.getShared('kml001selectedCodeList'));
