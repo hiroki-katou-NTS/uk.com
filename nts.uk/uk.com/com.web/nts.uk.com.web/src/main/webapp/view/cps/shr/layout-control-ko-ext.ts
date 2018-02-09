@@ -10,9 +10,11 @@ module nts.custombinding {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import parseTime = nts.uk.time.parseTime;
-    import clearError = nts.uk.ui.errors.clearAll;
+    import nou = nts.uk.util.isNullOrUndefined;
 
-    let getError = window['nts']['uk']['ui']['errors']['getErrorList'],
+    let rmError = window['nts']['uk']['ui']['errors']['removeByCode'],
+        getError = window['nts']['uk']['ui']['errors']['getErrorList'],
+        clearError = window['nts']['uk']['ui']['errors']['clearAll'],
         writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'],
         writeConstraints = window['nts']['uk']['ui']['validation']['writeConstraints'],
         parseTimeWidthDay = window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'];
@@ -370,8 +372,8 @@ module nts.custombinding {
                         display: block;
                     }
 
-                    .layout-control.readonly [disabled],
-                    .layout-control.dragable [disabled] {
+                    .layout-control.readonly:not(.inputable) [disabled],
+                    .layout-control.dragable:not(.inputable) [disabled] {
                         background-color: #fff;
                     }
 
@@ -1324,6 +1326,149 @@ module nts.custombinding {
                         writeConstraints(constraints);
                     }
                 },
+                dateTimeConsts = () => {
+                    let range = [
+                        ITEM_SINGLE_TYPE.DATE,
+                        ITEM_SINGLE_TYPE.TIME,
+                        ITEM_SINGLE_TYPE.TIMEPOINT
+                    ], controls = _(ko.unwrap(opts.sortable.data))
+                        .filter(x => _.has(x, "items") && _.isFunction(x.items))
+                        .map(x => x.items())
+                        .flatten()
+                        .flatten()
+                        .value();
+
+                    // validate for singe date
+                    _(controls)
+                        .filter((x: any) => {
+                            return x.item
+                                && x.item.dataTypeValue == ITEM_SINGLE_TYPE.DATE;
+                        })
+                        .each((x: any) => {
+                            x.startDate = ko.observable();
+                            x.endDate = ko.observable();
+                        });
+
+                    // validate date, time, timepoint range
+                    _(controls)
+                        .filter((x: any) => x.type == ITEM_TYPE.SET)
+                        .each((x: any) => {
+                            let childs: Array<any> = _(controls)
+                                .filter((c: any) => c.itemParentCode == x.itemCode)
+                                //.orderBy(c => c)
+                                .value(),
+                                is_range = _.filter(childs, (c: any) => c.item && range.indexOf(c.item.dataTypeValue) > -1);
+
+                            if (childs.length == 2 && childs.length == is_range.length) {
+                                let first: any = childs[0],
+                                    second: any = childs[1],
+                                    validate = (prev: any, next: any) => {
+                                        let id1 = '#' + prev.itemDefId.replace(/[-_]/g, ""),
+                                            id2 = '#' + next.itemDefId.replace(/[-_]/g, "");
+
+                                        $(document).on('blur', `${id1}, ${id2}`, (evt) => {
+                                            setTimeout(() => {
+                                                let dom1 = $(id1),
+                                                    dom2 = $(id2),
+                                                    pv = ko.toJS(prev.value),
+                                                    nv = ko.toJS(next.value),
+                                                    tpt = typeof pv == 'number',
+                                                    tnt = typeof nv == 'number';
+
+                                                if (!tpt && tnt && !dom1.parent().hasClass('error')) {
+                                                    dom1.ntsError('set', { messageId: "Msg_858" });
+                                                }
+
+                                                if (tpt && !tnt && !dom2.parent().hasClass('error')) {
+                                                    dom2.ntsError('set', { messageId: "Msg_858" });
+                                                }
+
+                                                if ((!tpt && !tnt) || (tpt && tnt)) {
+                                                    rmError(dom1, "Msg_858");
+                                                    rmError(dom2, "Msg_858");
+
+                                                    if (!getError().length) {
+                                                        clearError();
+                                                    }
+                                                }
+                                            }, 0);
+                                        });
+                                    };
+
+                                if (first.item.dataTypeValue == second.item.dataTypeValue) {
+                                    switch (first.item.dataTypeValue) {
+                                        case ITEM_SINGLE_TYPE.DATE:
+                                            first.startDate = ko.observable();
+                                            first.endDate = ko.computed(() => {
+                                                return moment.utc(ko.toJS(second.value) || '9999/12/31', "YYYY/MM/DD").add(ko.toJS(second.value) ? -1 : 0, "days").toDate();
+                                            });
+
+                                            second.startDate = ko.computed(() => {
+                                                return moment.utc(ko.toJS(first.value) || '1900/01/01', "YYYY/MM/DD").add(ko.toJS(first.value) ? 1 : 0, "days").toDate();
+                                            });
+                                            second.endDate = ko.observable();
+                                            break;
+                                        case ITEM_SINGLE_TYPE.TIME:
+                                            validate(first, second);
+                                            first.value.subscribe(v => {
+                                                let t = typeof v == 'number',
+                                                    clone = _.cloneDeep(second);
+
+                                                clone.item.min = first.value() + 1;
+
+                                                let primi = primitiveConst(t ? clone : second);
+
+                                                exceptConsts.push(primi.itemCode);
+                                                writeConstraint(primi.itemCode, primi);
+                                            });
+                                            first.value.valueHasMutated();
+
+                                            second.value.subscribe(v => {
+                                                let t = typeof v == 'number',
+                                                    clone = _.cloneDeep(first);
+
+                                                clone.item.max = second.value() - 1;
+
+                                                let primi = primitiveConst(t ? clone : first);
+
+                                                exceptConsts.push(primi.itemCode);
+                                                writeConstraint(primi.itemCode, primi);
+                                            });
+                                            second.value.valueHasMutated();
+                                            break;
+                                        case ITEM_SINGLE_TYPE.TIMEPOINT:
+                                            validate(first, second);
+                                            first.value.subscribe(v => {
+                                                let t = typeof v == 'number',
+                                                    clone = _.cloneDeep(second);
+
+                                                clone.item.timePointItemMin = first.value() + 1;
+
+                                                let primi = primitiveConst(t ? clone : second);
+
+                                                exceptConsts.push(primi.itemCode);
+                                                writeConstraint(primi.itemCode, primi);
+                                            });
+                                            first.value.valueHasMutated();
+
+                                            second.value.subscribe(v => {
+                                                let t = typeof v == 'number',
+                                                    clone = _.cloneDeep(first);
+
+                                                clone.item.timePointItemMax = second.value() - 1;
+
+                                                let primi = primitiveConst(t ? clone : first);
+
+                                                exceptConsts.push(primi.itemCode);
+                                                writeConstraint(primi.itemCode, primi);
+                                            });
+                                            second.value.valueHasMutated();
+                                            break;
+                                    }
+                                }
+                            }
+                        });
+                },
                 scrollDown = () => {
                     // remove old selected items
                     $(ctrls.sortable)
@@ -1474,188 +1619,6 @@ module nts.custombinding {
                                 return true;
                         }
                     },
-                        modifitems = (row: Array<any>) => {
-                            _.each(row, (def, j) => {
-                                // call some validate function at here
-                                if (_.has(def, "item") && !_.isNull(def.item)) {
-                                    let validate = (prev: any, next: any) => {
-                                        if (!prev || !next) {
-                                            return;
-                                        }
-
-                                        let id1 = '#' + prev.itemDefId.replace(/[-_]/g, ""),
-                                            id2 = '#' + next.itemDefId.replace(/[-_]/g, ""),
-                                            dom1 = $(id1),
-                                            dom2 = $(id2);
-
-                                        if ((id1 == id2) ||
-                                            (!dom1[0] || !dom2[0]) ||
-                                            ((dom1[0].nodeName.toUpperCase() != "INPUT") || (dom2[0].nodeName.toUpperCase() != "INPUT"))) {
-                                            return;
-                                        }
-
-                                        $(document).on('blur', `${id1}, ${id2}`, (evt) => {
-                                            setTimeout(() => {
-                                                let pv = ko.toJS(prev.value),
-                                                    nv = ko.toJS(next.value),
-                                                    tpt = typeof pv == 'number',
-                                                    tnt = typeof nv == 'number';
-
-                                                dom2.trigger('change');
-                                                dom1.trigger('change');
-
-                                                if (!tpt && tnt && !dom1.parent().hasClass('error')) {
-                                                    dom1.ntsError('set', { messageId: "Msg_858" });
-                                                }
-
-                                                if (tpt && !tnt && !dom2.parent().hasClass('error')) {
-                                                    dom2.ntsError('set', { messageId: "Msg_858" });
-                                                }
-
-                                                if ((!tpt && !tnt) || (tpt && tnt)) {
-                                                    let rm: Array<any> = [],
-                                                        error: Array<any> = getError();
-                                                    _.each(error, er => {
-                                                        let dom = er.$control[0];
-                                                        if ((dom.id == dom1[0].id || dom.id == dom2[0].id) && er.errorCode == "Msg_858") {
-                                                            rm.push(er);
-                                                        }
-                                                    });
-
-                                                    _.remove(error, x => _.indexOf(rm, x) > -1);
-
-                                                    if (!error.length) {
-                                                        clearError();
-                                                    }
-                                                }
-                                            }, 0);
-                                        });
-                                    };
-                                    // validate date range
-                                    switch (def.item.dataTypeValue) {
-                                        case ITEM_SINGLE_TYPE.DATE:
-                                            if (def.index == 0) {
-                                                def.endDate = ko.observable();
-                                                def.startDate = ko.observable();
-                                            }
-
-                                            if (def.index == 1) {
-                                                let next = row[2] || { item: {}, value: () => ko.observable() };
-                                                if (next.item.dataTypeValue == ITEM_SINGLE_TYPE.DATE
-                                                    && _.has(next, "value")
-                                                    && ko.isObservable(next.value)) {
-
-                                                    def.endDate = ko.computed(() => {
-                                                        return moment.utc(ko.toJS(next.value) || '9999/12/31', "YYYY/MM/DD").add(ko.toJS(next.value) ? -1 : 0, "days").toDate();
-                                                    });
-                                                    def.startDate = ko.observable();
-
-                                                    next.endDate = ko.observable();
-                                                    next.startDate = ko.computed(() => {
-                                                        return moment.utc(ko.toJS(def.value) || '1900/01/01', "YYYY/MM/DD").add(ko.toJS(def.value) ? 1 : 0, "days").toDate();
-                                                    });
-                                                }
-                                            }
-
-                                            if (def.index == 2) {
-                                                if (def.ctgType == IT_CAT_TYPE.CONTINU) {
-                                                    if (def.value() == '9999/12/31') {
-                                                        def.value('');
-                                                    }
-                                                }
-                                            }
-
-                                            if (!_.has(def, "endDate")) {
-                                                def.endDate = ko.observable();
-                                            }
-
-                                            if (!_.has(def, "startDate")) {
-                                                def.startDate = ko.observable();
-                                            }
-                                            break;
-                                        case ITEM_SINGLE_TYPE.TIME:
-                                            validate(def, row[2]);
-                                            if (def.index == 1) {
-                                                def.value.subscribe(v => {
-                                                    let t = typeof v == 'number',
-                                                        next = row[2] || { value: () => ko.observable(undefined) };
-                                                    if (next.item && next.item.dataTypeValue == ITEM_SINGLE_TYPE.TIME && _.has(next, "value")) {
-                                                        if (ko.isObservable(next.value)) {
-                                                            let clone = _.cloneDeep(next);
-                                                            clone.item.min = def.value() + 1;
-
-                                                            let primi = primitiveConst(t ? clone : next);
-
-                                                            exceptConsts.push(primi.itemCode);
-                                                            writeConstraint(primi.itemCode, primi);
-                                                        }
-                                                    }
-                                                });
-                                                def.value.valueHasMutated();
-                                            }
-
-                                            if (def.index == 2) {
-                                                def.value.subscribe(v => {
-                                                    let t = typeof v == 'number',
-                                                        prev = row[1] || { value: () => ko.observable(undefined) };
-                                                    if (prev.item && prev.item.dataTypeValue == ITEM_SINGLE_TYPE.TIME && _.has(prev, "value")) {
-                                                        if (ko.isObservable(prev.value)) {
-                                                            let clone = _.cloneDeep(prev);
-                                                            clone.item.max = def.value() - 1;
-
-                                                            let primi = primitiveConst(t ? clone : prev);
-
-                                                            exceptConsts.push(primi.itemCode);
-                                                            writeConstraint(primi.itemCode, primi);
-                                                        }
-                                                    }
-                                                });
-                                                def.value.valueHasMutated();
-                                            }
-                                            break;
-                                        case ITEM_SINGLE_TYPE.TIMEPOINT:
-                                            validate(def, row[2]);
-                                            if (def.index == 1) {
-                                                def.value.subscribe(v => {
-                                                    let t = typeof v == 'number',
-                                                        next = row[2] || { value: () => ko.observable(undefined) };
-                                                    if (next.item && next.item.dataTypeValue == ITEM_SINGLE_TYPE.TIMEPOINT && _.has(next, "value")) {
-                                                        if (ko.isObservable(next.value)) {
-                                                            let clone = _.cloneDeep(next);
-                                                            clone.item.timePointItemMin = def.value() + 1;
-
-                                                            let primi = primitiveConst(t ? clone : next);
-
-                                                            exceptConsts.push(primi.itemCode);
-                                                            writeConstraint(primi.itemCode, primi);
-                                                        }
-                                                    }
-                                                });
-                                                def.value.valueHasMutated();
-                                            }
-                                            if (def.index == 2) {
-                                                def.value.subscribe(v => {
-                                                    let t = typeof v == 'number',
-                                                        prev = row[1] || { value: () => ko.observable(undefined) };
-                                                    if (prev.item && prev.item.dataTypeValue == ITEM_SINGLE_TYPE.TIMEPOINT && _.has(prev, "value")) {
-                                                        if (ko.isObservable(prev.value)) {
-                                                            let clone = _.cloneDeep(prev);
-                                                            clone.item.timePointItemMax = def.value() - 1;
-
-                                                            let primi = primitiveConst(t ? clone : prev);
-
-                                                            exceptConsts.push(primi.itemCode);
-                                                            writeConstraint(primi.itemCode, primi);
-                                                        }
-                                                    }
-                                                });
-                                                def.value.valueHasMutated();
-                                            }
-                                            break;
-                                    }
-                                }
-                            });
-                        },
                         modifitem = (def: any, item?: any) => {
                             if (!item) {
                                 item = {};
@@ -1701,19 +1664,19 @@ module nts.custombinding {
                                             default:
                                             case ITEM_SINGLE_TYPE.STRING:
                                                 return {
-                                                    value: data.value ? String(data.value) : undefined,
+                                                    value: !nou(data.value) ? String(data.value) : undefined,
                                                     typeData: 1
                                                 };
                                             case ITEM_SINGLE_TYPE.TIME:
                                             case ITEM_SINGLE_TYPE.NUMERIC:
                                             case ITEM_SINGLE_TYPE.TIMEPOINT:
                                                 return {
-                                                    value: data.value ? String(data.value).replace(/:/g, '') : undefined,
+                                                    value: !nou(data.value) ? String(data.value).replace(/:/g, '') : undefined,
                                                     typeData: 2
                                                 };
                                             case ITEM_SINGLE_TYPE.DATE:
                                                 return {
-                                                    value: data.value ? moment.utc(data.value, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
+                                                    value: !nou(data.value) ? moment.utc(data.value, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
                                                     typeData: 3
                                                 };
                                             case ITEM_SINGLE_TYPE.SELECTION:
@@ -1722,31 +1685,31 @@ module nts.custombinding {
                                                 switch (data.item.referenceType) {
                                                     case ITEM_SELECT_TYPE.ENUM:
                                                         return {
-                                                            value: data.value ? String(data.value) : undefined,
+                                                            value: !nou(data.value) ? String(data.value) : undefined,
                                                             typeData: 2
                                                         };
                                                     case ITEM_SELECT_TYPE.CODE_NAME:
                                                         return {
-                                                            value: data.value ? String(data.value) : undefined,
+                                                            value: !nou(data.value) ? String(data.value) : undefined,
                                                             typeData: 1
                                                         };
                                                     case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
-                                                        let value: number = data.value ? Number(data.value) : undefined;
-                                                        if (value) {
+                                                        let value: number = !nou(data.value) ? Number(data.value) : undefined;
+                                                        if (!nou(value)) {
                                                             if (String(value) == String(data.value)) {
                                                                 return {
-                                                                    value: data.value ? String(data.value) : undefined,
+                                                                    value: !nou(data.value) ? String(data.value) : undefined,
                                                                     typeData: 2
                                                                 };
                                                             } else {
                                                                 return {
-                                                                    value: data.value ? String(data.value) : undefined,
+                                                                    value: !nou(data.value) ? String(data.value) : undefined,
                                                                     typeData: 1
                                                                 };
                                                             }
                                                         } else {
                                                             return {
-                                                                value: data.value ? String(data.value) : undefined,
+                                                                value: !nou(data.value) ? String(data.value) : undefined,
                                                                 typeData: 1
                                                             };
                                                         }
@@ -1942,34 +1905,14 @@ module nts.custombinding {
                             x.items = undefined;
                             break;
                     }
-
-                    // validation set item range
-                    switch (x.layoutItemType) {
-                        case IT_CLA_TYPE.ITEM:
-                            modifitems(x.items());
-                            break;
-                        case IT_CLA_TYPE.LIST:
-                            // define row number
-                            let rn = _.map(ko.toJS(x.items), x => x).length;
-
-                            _.each(_.range(rn), i => {
-                                let row = x.items()[i];
-
-                                if (!row || !_.isArray(row)) {
-                                    row = [];
-                                }
-
-                                x.items()[i] = row;
-                                modifitems(row);
-                            });
-                            break;
-                        case IT_CLA_TYPE.SPER:
-                            x.items = undefined;
-                            break;
-                    }
                 });
+
                 // clear all error on switch new layout
                 clearError();
+
+                // write date/time/timepoint 
+                // primitive constraint to viewContext
+                dateTimeConsts();
 
                 // write primitive constraints to viewContext
                 primitiveConsts();
