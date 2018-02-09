@@ -196,7 +196,8 @@ public class DailyRecordWorkCommandHandler {
 			IntegrationOfDaily calced = calcService.calculate(
 					AppContexts.user().companyId(), 
 					command.getAffiliationInfo().getData().getWplID(),
-					command.getAffiliationInfo().getData().getEmploymentCode().v(), 
+					command.getAffiliationInfo().getData().getEmploymentCode() == null  ? null 
+							: command.getAffiliationInfo().getData().getEmploymentCode().v(), 
 					command.getEmployeeId(),
 					command.getWorkDate(),
 					new IntegrationOfDaily(

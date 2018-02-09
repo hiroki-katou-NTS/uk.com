@@ -667,7 +667,9 @@ module nts.custombinding {
                                 nameid: nameid,
                                 title: itemName,
                                 'data-code': itemCode,
-                                'data-category': categoryCode
+                                'data-category': categoryCode,
+                                'data-required': required,
+                                'data-defv': value()
                             }," />
                         <!-- /ko -->
                         <!-- ko if: item.stringItemType != STRING_TYPE.NUMERIC && (([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80)) -->
@@ -687,7 +689,9 @@ module nts.custombinding {
                                 nameid: nameid,
                                 title: itemName,
                                 'data-code': itemCode,
-                                'data-category': categoryCode
+                                'data-category': categoryCode,
+                                'data-required': required,
+                                'data-defv': value()
                             }" />
                         <!-- /ko -->
                         <!-- /ko -->
@@ -709,7 +713,9 @@ module nts.custombinding {
                                     nameid: nameid,
                                     title: itemName,
                                     'data-code': itemCode,
-                                    'data-category': categoryCode
+                                    'data-category': categoryCode,
+                                    'data-required': required,
+                                    'data-defv': value()
                                 }" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.DATE -->
@@ -728,7 +734,9 @@ module nts.custombinding {
                                 nameid: nameid,
                                 title: itemName,
                                 'data-code': itemCode,
-                                'data-category': categoryCode
+                                'data-category': categoryCode,
+                                'data-required': required,
+                                'data-defv': value()
                             }"></div>
                         <!-- /ko -->
                         <!-- ko if: index == 2 -->
@@ -751,7 +759,9 @@ module nts.custombinding {
                                     nameid: nameid,
                                     title: itemName,
                                     'data-code': itemCode,
-                                    'data-category': categoryCode
+                                    'data-category': categoryCode,
+                                    'data-required': required,
+                                    'data-defv': value()
                                 }"></div>
                             <!-- /ko -->
                         <!-- /ko -->
@@ -770,7 +780,9 @@ module nts.custombinding {
                                     nameid: nameid,
                                     title: itemName,
                                     'data-code': itemCode,
-                                    'data-category': categoryCode
+                                    'data-category': categoryCode,
+                                    'data-required': required,
+                                    'data-defv': value()
                                 }"></div>
                         <!-- /ko -->
                         <!-- /ko -->
@@ -790,7 +802,9 @@ module nts.custombinding {
                                     nameid: nameid,
                                     title: itemName,
                                     'data-code': itemCode,
-                                    'data-category': categoryCode
+                                    'data-category': categoryCode,
+                                    'data-required': required,
+                                    'data-defv': value()
                                 }" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.TIMEPOINT -->
@@ -806,7 +820,9 @@ module nts.custombinding {
                                     nameid: nameid,
                                     title: itemName,
                                     'data-code': itemCode,
-                                    'data-category': categoryCode
+                                    'data-category': categoryCode,
+                                    'data-required': required,
+                                    'data-defv': value()
                                 }" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SELECTION -->
@@ -825,7 +841,9 @@ module nts.custombinding {
                                     nameid: nameid,
                                     title: itemName,
                                     'data-code': itemCode,
-                                    'data-category': categoryCode
+                                    'data-category': categoryCode,
+                                    'data-required': required,
+                                    'data-defv': value()
                                 }"></div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SEL_RADIO -->
@@ -839,7 +857,9 @@ module nts.custombinding {
                             }, attr: {
                                 id: nameid,
                                 'data-code': itemCode,
-                                'data-category': categoryCode
+                                'data-category': categoryCode,
+                                'data-required': required,
+                                'data-defv': value()
                             }"></div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SEL_BUTTON -->
@@ -847,7 +867,9 @@ module nts.custombinding {
                                 id: nameid, 
                                 title: itemName,
                                 'data-code': itemCode,
-                                'data-category': categoryCode
+                                'data-category': categoryCode,
+                                'data-required': required,
+                                'data-defv': value()
                              }, text: text('CPS001_106'), enable: editable">選択</button>
                             <label class="value-text" data-bind="text: ko.computed(function() { return (value() || '') + '&nbsp;&nbsp;&nbsp;' + (textValue() || ''); })"></label>
                         <!-- /ko -->
@@ -1809,7 +1831,6 @@ module nts.custombinding {
                             def.editable.subscribe(x => {
                                 def.value.valueHasMutated();
                             });
-
                             def.editable.valueHasMutated();
                         };
 

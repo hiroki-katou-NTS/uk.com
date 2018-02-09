@@ -39,6 +39,16 @@ public class TimeWithCalculation {
 	}
 	
 	/**
+	 * 時間を加算する(返値なし)
+	 * @param time
+	 * @param calcTime
+	 */
+	public void addMinutesNotReturn(AttendanceTime time,AttendanceTime calcTime) {
+		this.time.addMinutes(time.valueAsMinutes());
+		this.calcTime.addMinutes(calcTime.valueAsMinutes());
+	}
+	
+	/**
 	 * 受け取った時間を今持っている時間に加算する
 	 * @param time 時間
 	 * @param calcTime 計算時間

@@ -158,12 +158,14 @@ public enum WorkTypeClassification {
 		case Closure:
 		case ContinuousWork:
 		case Holiday:
+		case HolidayWork:
 		case LeaveOfAbsence:
 		case Pause:
 		case SpecialHoliday:
 		case SubstituteHoliday:
 		case TimeDigestVacation:
 		case YearlyReserved:
+			
 			return false;
 		default:
 			throw new RuntimeException("invalid value: " + this);

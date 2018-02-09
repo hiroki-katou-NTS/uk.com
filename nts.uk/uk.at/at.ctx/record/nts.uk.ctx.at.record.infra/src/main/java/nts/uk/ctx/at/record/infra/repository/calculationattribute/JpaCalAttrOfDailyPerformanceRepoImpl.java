@@ -183,27 +183,27 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 
 	private void setOvertimeCalcSetting(AutoCalOfOverTime domain, KrcstOtAutoCalSet overtimeCalc) {
 		if (domain != null) {
-			overtimeCalc.earlyMidOtCalAtr = domain.getEarlyMidnightOverTime() == null ? 1
+			overtimeCalc.earlyMidOtCalAtr = domain.getEarlyMidnightOverTime() == null ? 0
 					: domain.getEarlyMidnightOverTime().getCalculationAttr().value;
 			overtimeCalc.earlyMidOtLimitSet = domain.getEarlyMidnightOverTime() == null ? 0
 					: domain.getEarlyMidnightOverTime().getUpperLimitSetting().value;
-			overtimeCalc.earlyOverTimeCalAtr = domain.getEarlyOverTime() == null ? 1
+			overtimeCalc.earlyOverTimeCalAtr = domain.getEarlyOverTime() == null ? 0
 					: domain.getEarlyOverTime().getCalculationAttr().value;
 			overtimeCalc.earlyOverTimeLimitSet = domain.getEarlyOverTime() == null ? 0
 					: domain.getEarlyOverTime().getUpperLimitSetting().value;
-			overtimeCalc.legalMidOtCalAtr = domain.getLegalMidnightOverTime() == null ? 1
+			overtimeCalc.legalMidOtCalAtr = domain.getLegalMidnightOverTime() == null ? 0
 					: domain.getLegalMidnightOverTime().getCalculationAttr().value;
 			overtimeCalc.legalMidOtLimitSet = domain.getLegalMidnightOverTime() == null ? 0
 					: domain.getLegalMidnightOverTime().getUpperLimitSetting().value;
-			overtimeCalc.legalOverTimeCalAtr = domain.getLegalOverTime() == null ? 1
+			overtimeCalc.legalOverTimeCalAtr = domain.getLegalOverTime() == null ? 0
 					: domain.getLegalOverTime().getCalculationAttr().value;
 			overtimeCalc.legalOverTimeLimitSet = domain.getLegalOverTime() == null ? 0
 					: domain.getLegalOverTime().getUpperLimitSetting().value;
-			overtimeCalc.normalMidOtCalAtr = domain.getNormalMidnightOverTime() == null ? 1
+			overtimeCalc.normalMidOtCalAtr = domain.getNormalMidnightOverTime() == null ? 0
 					: domain.getNormalMidnightOverTime().getCalculationAttr().value;
 			overtimeCalc.normalMidOtLimitSet = domain.getNormalMidnightOverTime() == null ? 0
 					: domain.getNormalMidnightOverTime().getUpperLimitSetting().value;
-			overtimeCalc.normalOverTimeCalAtr = domain.getNormalOverTime() == null ? 1
+			overtimeCalc.normalOverTimeCalAtr = domain.getNormalOverTime() == null ? 0
 					: domain.getNormalOverTime().getCalculationAttr().value;
 			overtimeCalc.normalOverTimeLimitSet = domain.getNormalOverTime() == null ? 0
 					: domain.getNormalOverTime().getUpperLimitSetting().value;
@@ -212,18 +212,18 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 
 	private void setFlexCalcSetting(AutoCalculationSetting domain, KrcstFlexAutoCalSet flexCalc) {
 		if (domain != null) {
-			flexCalc.flexExcessLimitSet = domain.getUpperLimitSetting().value;
-			flexCalc.flexExcessTimeCalAtr = domain.getCalculationAttr().value;
+			flexCalc.flexExcessLimitSet = domain.getUpperLimitSetting() == null ? 0 : domain.getUpperLimitSetting().value;
+			flexCalc.flexExcessTimeCalAtr = domain.getCalculationAttr() == null ? 0 : domain.getCalculationAttr().value;
 		}
 	}
 
 	private void setHolidayCalcSetting(AutoCalHolidaySetting domain, KrcstHolAutoCalSet holidayCalc) {
 		if (domain != null) {
-			holidayCalc.holWorkTimeCalAtr = domain.getHolidayWorkTime() == null ? 1
+			holidayCalc.holWorkTimeCalAtr = domain.getHolidayWorkTime() == null ? 0
 					: domain.getHolidayWorkTime().getCalculationAttr().value;
 			holidayCalc.holWorkTimeLimitSet = domain.getHolidayWorkTime() == null ? 0
 					: domain.getHolidayWorkTime().getUpperLimitSetting().value;
-			holidayCalc.lateNightTimeCalAtr = domain.getLateNightTime() == null ? 1
+			holidayCalc.lateNightTimeCalAtr = domain.getLateNightTime() == null ? 0
 					: domain.getLateNightTime().getCalculationAttr().value;
 			holidayCalc.lateNightTimeLimitSet = domain.getLateNightTime() == null ? 0
 					: domain.getLateNightTime().getUpperLimitSetting().value;
