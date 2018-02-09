@@ -231,7 +231,11 @@ public class ScheduleCreatorExecutionCommandHandler
 			this.scheduleCreatorRepository.update(domain);
 		}
 		
-		if (!asyncTask.hasBeenRequestedToCancel()) {
+		// find execution log by id
+		ScheduleExecutionLog scheExeLog = this.scheduleExecutionLogRepository.findById(
+				command.getCompanyId(), scheduleExecutionLog.getExecutionId()).get();
+		if (scheExeLog.getCompletionStatus() != CompletionStatus.INTERRUPTION) {
+			System.out.println("not hasBeenRequestedToCancel: " + asyncTask.hasBeenRequestedToCancel() + "&exeid="+ scheduleExecutionLog.getExecutionId());
 			this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
 		}
 	}

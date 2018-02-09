@@ -51,4 +51,28 @@ public interface SyEmployeePub {
 	 */
 	// RequestList #126
 	List<EmployeeBasicInfoExport> findBySIds(List<String> sIds);
+	
+	
+	/** Get list employees in the workplace by baseDate and employeeID
+	 * @param sid
+	 * @param baseDate
+	 * @return
+	 */
+	//  RequestList #243
+	List<String> GetListSid(String sid , GeneralDate baseDate);
+	
+	
+	/**
+	 * Get List EmployeeCode 
+	 * @param sid
+	 * @param basedate
+	 * @return
+	 */
+	// RequestList #212
+	List<String> getEmployeeCode(String sid , GeneralDate basedate);
+	
+	
+	
+	
+	
 }

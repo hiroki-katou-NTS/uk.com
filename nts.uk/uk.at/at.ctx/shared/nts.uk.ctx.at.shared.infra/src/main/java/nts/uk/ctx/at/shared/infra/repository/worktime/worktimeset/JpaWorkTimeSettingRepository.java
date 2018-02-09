@@ -69,10 +69,12 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 				.add(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.worktimeCd).in(codes));
 		lstpredicateWhere.add(criteriaBuilder
 				.equal(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid), companyID));
+		cq.orderBy(criteriaBuilder
+				.asc(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.worktimeCd)));
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		List<KshmtWorkTimeSet> lstKwtstWorkTimeSet = em.createQuery(cq).getResultList();
-
+		
 		return lstKwtstWorkTimeSet.stream().map(item -> {
 			WorkTimeSetting worktimeSetting = new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(item));
 			return worktimeSetting;
@@ -175,6 +177,8 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 			lstpredicateWhere.add(
 					criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.abolitionAtr), AbolishAtr.NOT_ABOLISH.value));
 		}
+		cq.orderBy(criteriaBuilder
+				.asc(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.worktimeCd)));
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		List<KshmtWorkTimeSet> lstKwtstWorkTimeSet = em.createQuery(cq).getResultList();

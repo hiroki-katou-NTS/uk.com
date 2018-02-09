@@ -88,9 +88,10 @@ public class ActualWorkTimeDailyPerformDto {
 	public ActualWorkingTimeOfDaily toDomain() {
 		return ActualWorkingTimeOfDaily.of(
 					totalWorkingTime == null ? null : totalWorkingTime.toDomain(), 
-					constraintTime == null ? null : constraintTime.getLateNightConstraintTime(),
-					constraintTime == null ? null : constraintTime.getTotalConstraintTime(),
-					constraintDifferenceTime == null ? 0 : constraintDifferenceTime, timeDifferenceWorkingHours,
+					constraintTime == null || constraintTime.getLateNightConstraintTime() == null ? 0 : constraintTime.getLateNightConstraintTime(),
+					constraintTime == null || constraintTime.getTotalConstraintTime() == null ? 0 : constraintTime.getTotalConstraintTime(),
+					constraintDifferenceTime == null ? 0 : constraintDifferenceTime, 
+					timeDifferenceWorkingHours == null ? 0 : timeDifferenceWorkingHours,
 				new DivergenceTimeOfDaily(divergenceTime == null ? new ArrayList<>()
 						: ConvertHelper.mapTo(divergenceTime,
 								c -> new DivergenceTime(toAttendanceTime(c.getDivergenceTimeAfterDeduction()),

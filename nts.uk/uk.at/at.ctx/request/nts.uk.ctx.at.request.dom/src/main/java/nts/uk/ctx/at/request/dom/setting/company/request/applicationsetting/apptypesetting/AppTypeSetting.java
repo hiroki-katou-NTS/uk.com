@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.app
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
@@ -54,5 +55,20 @@ public class AppTypeSetting extends DomainObject {
 	 * 申請理由表示
 	 */
 	private DisplayReason displayReason;
+	
+	public static AppTypeSetting toDomain(Integer displayInitialSegment, Integer canClassificationChange, 
+			Integer displayFixedReason, Integer sendMailWhenApproval, 
+			Integer sendMailWhenRegister, Integer displayAppReason, 
+			Integer appType, DisplayReason displayReason){
+		return new AppTypeSetting(
+				EnumAdaptor.valueOf(displayInitialSegment, PrePostInitialAtr.class), 
+				canClassificationChange == 1 ? true : false, 
+				EnumAdaptor.valueOf(displayFixedReason, DisplayAtr.class), 
+				sendMailWhenApproval == 1 ? true : false, 
+				sendMailWhenRegister == 1 ? true : false, 
+				EnumAdaptor.valueOf(displayAppReason, DisplayAtr.class), 
+				EnumAdaptor.valueOf(appType, ApplicationType.class), 
+				displayReason);
+	}
 	
 }

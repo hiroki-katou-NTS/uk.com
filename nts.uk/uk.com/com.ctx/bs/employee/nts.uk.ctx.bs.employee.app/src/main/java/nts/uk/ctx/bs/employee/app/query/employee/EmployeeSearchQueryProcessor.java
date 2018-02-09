@@ -312,9 +312,15 @@ public class EmployeeSearchQueryProcessor {
 		if (!workplaceHistory.isPresent()) {
 			throw new BusinessException("Msg_177");
 		}
+		// Find workplace of login employee.
+		Optional<AffWorkplaceHistoryItem> wpl = this.affWorkplaceHistoryItemRepository
+				.getByHistId(workplaceHistory.get().getHistoryItems().get(0).identifier());
+		List<String> employeeIds = this.affWorkplaceHistoryItemRepository
+				.getAffWrkplaHistItemByListWkpIdAndDate(baseDate, Arrays.asList(wpl.get().getWorkplaceId())).stream()
+				.map(emp -> emp.getEmployeeId()).collect(Collectors.toList());
 
 		// return data
-		return this.toEmployee(baseDate, Arrays.asList(employeeId), companyId);
+		return this.toEmployee(baseDate, employeeIds, companyId);
 	}
 
 	/**

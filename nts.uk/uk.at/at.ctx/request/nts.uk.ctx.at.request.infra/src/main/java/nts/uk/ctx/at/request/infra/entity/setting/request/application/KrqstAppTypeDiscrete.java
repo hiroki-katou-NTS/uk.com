@@ -3,6 +3,9 @@ package nts.uk.ctx.at.request.infra.entity.setting.request.application;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -53,6 +56,12 @@ public class KrqstAppTypeDiscrete extends UkJpaEntity{
 
 	@Column(name = "RETRICT_POST_ALLOW_FUTURE_FLG")
 	public int retrictPostAllowFutureFlg;
+	
+	@ManyToOne
+	@PrimaryKeyJoinColumns({
+		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID")
+	})
+	private KrqstApplicationSetting krqstApplicationSetting;
 
 	@Override
 	protected Object getKey() {
