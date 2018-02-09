@@ -26,7 +26,6 @@ public class DetailAfterReleaseImpl implements DetailAfterRelease {
 	public void detailAfterRelease(String companyID, String appID, String loginID, String memo) {
 		Application_New application = applicationRepository.findByID(companyID, appID).get();
 		Boolean releaseFlg = approvalRootStateAdapter.doRelease(companyID, appID, loginID);
-		approvalRootStateAdapter.updateReason(appID, loginID, "");
 		if(releaseFlg.equals(Boolean.TRUE)){
 			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
 			applicationRepository.updateWithVersion(application);

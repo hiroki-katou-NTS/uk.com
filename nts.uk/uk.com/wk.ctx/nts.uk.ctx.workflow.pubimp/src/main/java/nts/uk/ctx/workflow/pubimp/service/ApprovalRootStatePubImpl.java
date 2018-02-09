@@ -13,7 +13,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
-import nts.uk.ctx.workflow.dom.agent.Agent;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
@@ -162,8 +161,8 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	}
 
 	@Override
-	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, Integer appTypeValue, GeneralDate appDate) {
-		return approveService.doApprove(companyID, rootStateID, employeeID, isCreate, EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), appDate);
+	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, Integer appTypeValue, GeneralDate appDate, String memo) {
+		return approveService.doApprove(companyID, rootStateID, employeeID, isCreate, EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), appDate, memo);
 	}
 
 	@Override
@@ -213,8 +212,8 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	}
 
 	@Override
-	public Boolean doDeny(String companyID, String rootStateID, String employeeID) {
-		return denyService.doDeny(companyID, rootStateID, employeeID);
+	public Boolean doDeny(String companyID, String rootStateID, String employeeID, String memo) {
+		return denyService.doDeny(companyID, rootStateID, employeeID, memo);
 	}
 
 	@Override
@@ -230,10 +229,5 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 				approverPersonOutput.getAuthorFlag(), 
 				EnumAdaptor.valueOf(approverPersonOutput.getApprovalAtr().value, ApprovalBehaviorAtrExport.class) , 
 				approverPersonOutput.getExpirationAgentFlag());
-	}
-
-	@Override
-	public void updateReason(String rootStateID, String employeeID, String reason) {
-		approvalRootStateService.updateReason(rootStateID, employeeID, reason);
 	}
 }

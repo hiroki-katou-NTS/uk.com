@@ -52,29 +52,30 @@ public class HolidayServiceImpl implements HolidayService {
 		if(sEmpHistImport != null && !CollectionUtil.isEmpty(appEmploymentSettings)){
 			// ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する
 			List<AppEmployWorkType> lstEmploymentWorkType = appEmploymentSettings.get(0).getLstWorkType();
-			if(CollectionUtil.isEmpty(lstEmploymentWorkType)) {
-				return workTypeHolidayWorks;
+			if(!CollectionUtil.isEmpty(lstEmploymentWorkType)) {
+				Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType :: getWorkTypeCode));
+				lstEmploymentWorkType.forEach(x -> {
+					
+					workTypeCodes.add(x.getWorkTypeCode());
+					});
+				workTypeHolidayWorks.setWorkTypeCodes(workTypeCodes);
 			}
-			Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType :: getWorkTypeCode));
-			lstEmploymentWorkType.forEach(x -> {
-				
-				workTypeCodes.add(x.getWorkTypeCode());
-				});
-			workTypeHolidayWorks.setWorkTypeCodes(workTypeCodes);
 		}else{
 			////休出
 			int breakDay = 11;
 			// ドメインモデル「勤務種類」を取得
 			List<WorkType> workrTypes = this.workTypeRepository.findWorkOneDay(companyID, 0, breakDay);
-			if(CollectionUtil.isEmpty(workrTypes)){
-				return workTypeHolidayWorks;
+			if(!CollectionUtil.isEmpty(workrTypes)){
+				workrTypes.forEach(x -> {
+					workTypeCodes.add(x.getWorkTypeCode().toString());
+				});
+				workTypeHolidayWorks.setWorkTypeCodes(workTypeCodes);
 			}
-			workrTypes.forEach(x -> {
-				workTypeCodes.add(x.getWorkTypeCode().toString());
-			});
-			workTypeHolidayWorks.setWorkTypeCodes(workTypeCodes);
 		}
 		// 勤務種類初期選択 :4_c.初期選択 : TODO
+		if(workTypeHolidayWorks.getWorkTypeCodes() == null){
+			return workTypeHolidayWorks;
+		}
 		getWorkType(workTypeHolidayWorks,baseDate,employeeID,personalLablorCodition);
 		return workTypeHolidayWorks;
 	}
@@ -88,6 +89,7 @@ public class HolidayServiceImpl implements HolidayService {
 			}
 		}else{
 			// 「申請日－法定外・法定内休日区分」をチェック : TODO
+			
 		}
 	}
 	/** 5.就業時間帯を取得する */

@@ -3,8 +3,6 @@ package nts.uk.ctx.workflow.dom.service;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
@@ -43,21 +41,6 @@ public class ApprovalRootStateImpl implements ApprovalRootStateService {
 	@Override
 	public void delete(String rootStateID) {
 		approvalRootStateRepository.delete(rootStateID);
-	}
-
-	@Override
-	public void updateReason(String rootStateID, String employeeID, String reason) {
-		ApprovalRootState approvalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID).get();
-		approvalRootState.getListApprovalPhaseState().forEach(approvalPhaseState -> {
-			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
-				if((Strings.isNotBlank(approvalFrame.getApproverID()) && approvalFrame.getApproverID().equals(employeeID)) ||
-					(Strings.isNotBlank(approvalFrame.getRepresenterID()) && approvalFrame.getRepresenterID().equals(employeeID))){
-					approvalFrame.setApprovalReason(reason);
-					approvalFrame.setApprovalDate(GeneralDate.today());
-				}
-			});
-		});
-		approvalRootStateRepository.update(approvalRootState);
 	}
 
 }
