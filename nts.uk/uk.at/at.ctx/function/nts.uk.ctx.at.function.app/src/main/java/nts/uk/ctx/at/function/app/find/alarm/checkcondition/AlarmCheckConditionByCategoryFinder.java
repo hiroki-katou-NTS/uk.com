@@ -56,7 +56,7 @@ public class AlarmCheckConditionByCategoryFinder {
 	}
 	
 	public boolean checkManager(){
-		 if(publicHolidaySettingAdapter.FindPublicHolidaySetting().getIsManageComPublicHd() == 1)
+		 if(publicHolidaySettingAdapter.findPublicHolidaySetting().getIsManageComPublicHd() == 1)
 			 return true;
 		 return false;
 		
