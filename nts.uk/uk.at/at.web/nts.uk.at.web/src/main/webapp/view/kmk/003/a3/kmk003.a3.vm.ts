@@ -565,7 +565,7 @@ module a3 {
                     dataSource: self.lstOvertimeWorkFrame,
                     defaultValue: ko.observable(1),
                     width: 120,
-                    template: `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
+                    template: `<div data-key="inLegalOTFrameNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
                                     visibleItemsCount: 10,
                                     optionsText: 'overtimeWorkFrName',
@@ -577,23 +577,22 @@ module a3 {
             stringColumns.push({
                 headerText: nts.uk.resource.getText("KMK003_187"),
                 key: "settlementOrder",
-                dataSource: self.lstOvertimeWorkFrame,
+                dataSource: self.lstSettlementOrder,
                 defaultValue: ko.observable(1),
                 width: 100,
-                template: `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
-                                    optionsValue: 'overtimeWorkFrNo',
+                template: `<div data-key="settlementOrder" class="column-combo-box" data-bind="ntsComboBox: {
+                                    optionsValue: 'settlementOrder',
                                     visibleItemsCount: 10,
-                                    optionsText: 'overtimeWorkFrName',
+                                    optionsText: 'settlementOrderName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
+                                    columns: [{ prop: 'settlementOrderName', length: 12 }]}">
                                 </div>`
             });
             return stringColumns;
         }
         
-        private columnSettingFlowSimple(): Array<any>
-        {
+        private columnSettingFlowSimple(): Array<any> {
             let self = this;
             return [
                  {
@@ -602,8 +601,10 @@ module a3 {
                      defaultValue: ko.observable(0), 
                      width: 100, 
                      template: `<input data-bind="ntsTimeEditor: {
+                            constraint: 'TimeWithDayAttr',
                             mode: 'time',
-                            inputFormat: 'time'}" />`
+                            inputFormat: 'time',
+                            required: true }" />`
                  },
                  {
                      headerText: nts.uk.resource.getText("KMK003_56"),

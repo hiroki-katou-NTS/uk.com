@@ -277,10 +277,10 @@ module a6 {
                     defaultValue: ko.observable(0),
                     width: 100,
                     template: `<input data-bind="ntsTimeEditor: {
+                            constraint: 'TimeWithDayAttr',
                             mode: 'time',
                             inputFormat: 'time',
-                            required: true
-                            }" />`
+                            required: true }" />`
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_77"),
