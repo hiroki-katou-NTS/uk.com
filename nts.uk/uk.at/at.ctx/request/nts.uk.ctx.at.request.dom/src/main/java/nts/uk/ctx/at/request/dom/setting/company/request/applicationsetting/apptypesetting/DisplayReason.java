@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 
@@ -10,6 +12,7 @@ import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.disp
  *
  */
 @Getter
+@AllArgsConstructor
 public class DisplayReason extends DomainObject {
 	
 	/**
@@ -26,4 +29,12 @@ public class DisplayReason extends DomainObject {
 	 * 申請理由の表示
 	 */
 	private DisplayAtr displayAppReason;
+	
+	public static DisplayReason toDomain(Integer typeOfLeaveApp, 
+			Integer displayFixedReason, Integer displayAppReason){
+		return new DisplayReason(
+				EnumAdaptor.valueOf(typeOfLeaveApp, HolidayAppType.class), 
+				EnumAdaptor.valueOf(displayFixedReason, DisplayAtr.class), 
+				EnumAdaptor.valueOf(displayAppReason, DisplayAtr.class));
+	}
 }

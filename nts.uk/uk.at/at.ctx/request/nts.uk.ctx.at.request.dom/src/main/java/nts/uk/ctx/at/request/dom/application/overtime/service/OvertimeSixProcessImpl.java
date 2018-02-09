@@ -115,7 +115,7 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 				overTimeInputs.get(0).getApplicationTime(),
 				overTimeInputs.get(0).getPreAppTime(),
 				overTimeInputs.get(0).getCaculationTime(),
-				overTimeInputs.get(0).getErrorCode());
+				overTimeInputs.get(0).getErrorCode(),true);
 	}
 	/* 
 	 * 06-04-1_チェック条件

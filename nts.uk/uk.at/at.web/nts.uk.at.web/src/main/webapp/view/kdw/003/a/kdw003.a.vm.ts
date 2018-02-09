@@ -387,6 +387,72 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.sheetsGrid.valueHasMutated();
         }
         proceed() {
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.block.grayout();
+            var self = this;
+            let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
+            let dataChangeProcess: any = [];
+            _.each(dataChange, (data: any) => {
+                if (data.columnKey != "sign") {
+                    let dataTemp = _.find(self.dpData, (item: any) => {
+                        return item.id == data.rowId.substring(1, data.rowId.length);
+                    });
+                    if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
+                        if (data.columnKey.indexOf("Name") != -1) {
+                            // todo
+                        } else {
+                            //get layout , and type
+                            let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
+                                return item.itemId == data.columnKey.substring(1, data.columnKey.length);
+                            });
+                            let value: any;
+                            value = self.getPrimitiveValue(data.value);
+                            let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), 0);
+                            dataChangeProcess.push(dataMap);
+                        }
+                    } else {
+                        let columnKey: any;
+                        let item: any;
+                        if (data.columnKey.indexOf("Code") != -1) {
+                            columnKey = data.columnKey.substring(4, data.columnKey.length);
+                        } else {
+                            columnKey = data.columnKey.substring(2, data.columnKey.length);
+                        }
+                        //TO Thanh: move find logic out if condition
+                        item = _.find(self.lstAttendanceItem(), (data) => {
+                            return String(data.id) === columnKey;
+                        })
+
+                        let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
+                            return item.itemId == columnKey;
+                        });
+                        let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), item.typeGroup);
+                        dataChangeProcess.push(dataMap);
+                    }
+                }
+            });
+            let param = { itemValues: dataChangeProcess }
+            if (dataChangeProcess.length > 0) {
+                let dfd = $.Deferred();
+                service.addAndUpdate(dataChangeProcess).done((data) => {
+                    // alert("done");
+                    dataChange = {};
+                    self.btnExtraction_Click();
+                    // nts.uk.ui.block.clear();
+                    dfd.resolve();
+                }).fail((data) => {
+                    alert("fail");
+                     nts.uk.ui.block.clear();
+                    dfd.resolve();
+                });
+                dfd.promise();
+            }
+            debugger;
+        }
+        
+        proceedSave() {
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.block.grayout();
             var self = this;
             let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
             let dataChangeProcess: any = [];
@@ -439,6 +505,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dfd.resolve();
                 }).fail((data) => {
                     alert("fail");
+                    nts.uk.ui.block.clear();
                     dfd.resolve();
                 });
                 dfd.promise();

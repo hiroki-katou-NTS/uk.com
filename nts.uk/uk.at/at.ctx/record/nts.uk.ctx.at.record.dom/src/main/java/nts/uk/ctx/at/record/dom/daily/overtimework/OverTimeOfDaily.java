@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculationMinusExist;
@@ -17,6 +19,8 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlOverFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeSheet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.time.OverTimeFrame;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
@@ -35,13 +39,13 @@ public class OverTimeOfDaily {
 	//残業枠時間
 	private List<OverTimeFrameTime> overTimeWorkFrameTime;
 	//法定外深夜時間
-	private Finally<ExcessOverTimeWorkMidNightTime> excessOverTimeWorkMidNightTime;
+	private Finally<ExcessOverTimeWorkMidNightTime> excessOverTimeWorkMidNightTime; 
+	//残業拘束時間
+	private AttendanceTime overTimeWorkSpentAtWork = new AttendanceTime(0);
 	//変形法定内残業
 	private AttendanceTime irregularWithinPrescribedOverTimeWork = new AttendanceTime(0);
 	//フレックス時間
-	private FlexTime flexTime = new FlexTime(TimeWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0)); 
-	//残業拘束時間
-	private AttendanceTime overTimeWorkSpentAtWork = new AttendanceTime(0);
+	private FlexTime flexTime = new FlexTime(TimeWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0));
 	
 	public OverTimeOfDaily(List<OverTimeFrameTimeSheet> frameTimeSheetList, List<OverTimeFrameTime> frameTimeList
 							   ,Finally<ExcessOverTimeWorkMidNightTime> excessOverTimeWorkMidNightTime) {
@@ -82,18 +86,7 @@ public class OverTimeOfDaily {
 		}
 	}
 	
-	/**
-	 * 残業時間枠時間帯をループさせ時間を計算する
-	 * @param autoCalcSet 時間外時間の自動計算設定
-	 */
-	public List<OverTimeFrameTime> collectOverTimeWorkTime(AutoCalculationOfOverTimeWork autoCalcSet) {
-		List<OverTimeFrameTime> calcOverTimeWorkTimeList = new ArrayList<>();
-//		for(OverTimeFrameTimeSheetWork overTimeWorkFrameTime : overTimeWorkFrameTimeSheet) {
-//			calcOverTimeWorkTimeList.add(overTimeWorkFrameTime.calcOverTimeWorkTime(autoCalcSet));
-//			//calcOverTimeWorkTimeList.add();
-//		}
-		return calcOverTimeWorkTimeList;
-	}
+
 	
 	/**
 	 * 残業枠時間へ残業時間の集計結果を追加する
@@ -228,4 +221,25 @@ public class OverTimeOfDaily {
 								   overTimeWork
 								   );
 	}
+	
+	/**
+	 * メンバー変数の時間計算を指示するクラス
+	 * @return 計算結果
+	 */
+	public static OverTimeOfDaily calculationTime(OverTimeSheet overTimeSheet,AutoCalculationOfOverTimeWork overTimeAutoCalcSet) {
+		val overTimeFrameTimeSheet = overTimeSheet.changeOverTimeFrameTimeSheet();
+		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(overTimeAutoCalcSet);
+		val excessOverTimeWorkMidNightTime = Finally.of(new ExcessOverTimeWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0))));
+		val irregularTime = new AttendanceTime(0);
+		val flexTime = new FlexTime(TimeWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0));
+		val overTimeWork = new AttendanceTime(0);
+		return new OverTimeOfDaily(overTimeFrameTimeSheet,
+								   overTimeFrame,
+								   excessOverTimeWorkMidNightTime,
+								   irregularTime,
+								   flexTime,
+								   overTimeWork);
+		
+	}
+	
 }

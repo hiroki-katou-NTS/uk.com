@@ -664,7 +664,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 					return new DPErrorSettingDto(s.kwrmtErAlWorkRecordPK.companyId,
 							s.kwrmtErAlWorkRecordPK.errorAlarmCode, s.errorAlarmName,
 							s.fixedAtr.intValue() == 1 ? true : false, s.useAtr.intValue() == 1 ? true : false,
-							s.typeAtr.intValue(), "", s.boldAtr.intValue() == 1 ? true : false, s.messageColor,
+							s.typeAtr.intValue(), s.krcmtErAlCondition == null ? "" : s.krcmtErAlCondition.messageDisplay, s.boldAtr.intValue() == 1 ? true : false, s.messageColor,
 							s.cancelableAtr.intValue() == 1 ? true : false, s.errorDisplayItem == null ? null : s.errorDisplayItem.intValue());
 				}).collect(Collectors.toList());
 	}

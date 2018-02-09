@@ -1,15 +1,14 @@
 package nts.uk.ctx.at.request.app.find.application.applicationlist;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListInitialRepository;
+import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListOutPut;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
@@ -55,7 +54,7 @@ public class ApplicationListFinder {
 		//ドメインモデル「申請一覧共通設定フォーマット.表の列幅」を取得-(Lấy 表の列幅)//xu ly o ui
 		//アルゴリズム「申請一覧リスト取得」を実行する-(Thực hiện thuật toán Application List get): 1-申請一覧リスト取得
 		AppListExtractCondition appListExCon = param.convertDtotoDomain(param);
-		List<Application_New> lstApp = repoAppListInit.getApplicationList(appListExCon, appDisplaySet);
-		return new ApplicationListDto();
+		AppListOutPut lstApp = repoAppListInit.getApplicationList(appListExCon, appDisplaySet);
+		return new ApplicationListDto(lstApp);
 	}
 }
