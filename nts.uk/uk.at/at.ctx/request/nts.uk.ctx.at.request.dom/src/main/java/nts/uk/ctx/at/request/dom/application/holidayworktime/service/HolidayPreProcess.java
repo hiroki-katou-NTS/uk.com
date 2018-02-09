@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHolidayWorkPreAndReferDto;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
@@ -29,6 +31,12 @@ public interface HolidayPreProcess {
 	 * @return
 	 */
 	public AppHolidayWorkPreAndReferDto getPreApplicationHoliday(String companyID, String employeeId, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,String appDate, int prePostAtr);
+	/**
+	 * 01-10_0時跨ぎチェック
+	 * @param holidayWorkCal
+	 * @return
+	 */
+	public CaculationTime  getOverTimeHourCal(Map<Integer,TimeWithCalculationImport> holidayWorkCal);
 	/**
 	 * 01-18_実績内容を取得（新規）
 	 * @param prePostAtr

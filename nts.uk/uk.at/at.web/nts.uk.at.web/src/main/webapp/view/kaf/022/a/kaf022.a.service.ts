@@ -31,7 +31,7 @@ module nts.uk.at.view.kmf022.a.service {
         findTemp: "at/request/application/mail/template",
         // A17_5 (com)
         findAppro: "approval/setting/approval",
-        // A17_4, A9_5
+        // A17_4, A9_5, A11_8 -> A12_7 (ver 2)
         findAppSet: "at/request/application/setting/appset",
         // A6_24, A6_26, A6_35->A6_45 có thể lấy list cty đang đăng nhập rồi lên UI lọc, hoặc lấy thẳng 1 object(nhớ truyền apptype)
         findDisp: "at/request/application/displayname/disp",

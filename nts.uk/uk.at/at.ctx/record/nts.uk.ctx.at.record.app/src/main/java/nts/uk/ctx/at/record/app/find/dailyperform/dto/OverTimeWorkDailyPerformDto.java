@@ -98,16 +98,16 @@ public class OverTimeWorkDailyPerformDto {
 
 	public OverTimeOfDaily toDomain() {
 		return new OverTimeOfDaily(
-				ConvertHelper.mapTo(overTimeFrameTimeSheet,
+				overTimeFrameTimeSheet == null ? new ArrayList<>() : ConvertHelper.mapTo(overTimeFrameTimeSheet,
 						(c) -> new OverTimeFrameTimeSheet(createTimeSheet(c.getTimeSheet()),
 								new OverTimeFrameNo(c.getOvertimeFrameNo()))),
-				ConvertHelper.mapTo(overTimeFrameTime,
+				overTimeFrameTime == null ? new ArrayList<>() : ConvertHelper.mapTo(overTimeFrameTime,
 						(c) -> new OverTimeFrameTime(new OverTimeFrameNo(c.getOvertimeFrameNo()),
 								createTimeWithCalc(c.getOvertime()), createTimeWithCalc(c.getTransferTime()),
 								toAttendanceTime(c.getBeforeApplicationTime()), toAttendanceTime(c.getOrderTime()))),
-				Finally.of(excessOfStatutoryMidNightTime.toDomain()),
+				excessOfStatutoryMidNightTime == null ? Finally.empty() : Finally.of(excessOfStatutoryMidNightTime.toDomain()),
 				toAttendanceTime(irregularWithinPrescribedOverTimeWork),
-				new FlexTime(createTimeWithCalcMinus(), toAttendanceTime(flexTime.getBeforeApplicationTime())),
+				new FlexTime(createTimeWithCalcMinus(), flexTime == null ? null : toAttendanceTime(flexTime.getBeforeApplicationTime())),
 				toAttendanceTime(overTimeSpentAtWork));
 	}
 

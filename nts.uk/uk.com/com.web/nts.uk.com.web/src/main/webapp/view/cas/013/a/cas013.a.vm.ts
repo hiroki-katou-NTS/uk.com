@@ -71,17 +71,20 @@ module nts.uk.com.view.cas013.a.viewmodel {
 
         startPage(): JQueryPromise<any> {
             var self = this;
-            var dfd = $.Deferred();
+            var dfd = $.Deferred(); 
             
             // initial screen
             new service.Service().getRoleTypes().done(function(data: Array<RollType>) {
-                if(nts.uk.util.isNullOrUndefined(data)){
-                    self.backToTopPage();
-                    dfd.resolve();    
+                if(data){
+                    if(nts.uk.util.isNullOrUndefined(data)){
+                        self.backToTopPage();   
+                    }else{
+                        self.listRoleType(data);
+                    }
                 }else{
-                    self.listRoleType(data);
-                    dfd.resolve();
+                     nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                 }
+                dfd.resolve(); 
             });
             return dfd.promise();
         }
