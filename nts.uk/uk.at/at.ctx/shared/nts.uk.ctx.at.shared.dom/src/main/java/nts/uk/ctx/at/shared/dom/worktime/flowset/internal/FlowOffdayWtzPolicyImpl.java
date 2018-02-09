@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset.internal;
@@ -10,11 +10,12 @@ import javax.inject.Inject;
 import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWtzPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
- * The Class FlOffdayWtzPolicyImpl.
+ * The Class FlowOffdayWtzPolicyImpl.
  */
 @Stateless
 public class FlowOffdayWtzPolicyImpl implements FlowOffdayWtzPolicy {
@@ -22,6 +23,10 @@ public class FlowOffdayWtzPolicyImpl implements FlowOffdayWtzPolicy {
 	/** The flow rest policy. */
 	@Inject
 	private FlowWorkRestTimezonePolicy flowRestPolicy;
+	
+	/** The flow holiday policy. */
+	@Inject
+	private FlowWorkHolidayTimezonePolicy flowHolidayPolicy;
 
 	/*
 	 * (non-Javadoc)
@@ -35,6 +40,10 @@ public class FlowOffdayWtzPolicyImpl implements FlowOffdayWtzPolicy {
 	public void validate(BundledBusinessException be, PredetemineTimeSetting predTime, FlowOffdayWorkTimezone flowOff) {
 		// validate FlowWorkRestTimezone
 		this.flowRestPolicy.validate(be, predTime, flowOff.getRestTimeZone());
+		
+		flowOff.getLstWorkTimezone().forEach(timezone -> {
+			this.flowHolidayPolicy.validate(be, predTime, timezone);
+		});		
 	}
 
 }

@@ -690,9 +690,6 @@ module nts.uk.at.view.kmk003.a {
                         .fail(err => dfd.reject(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
                 }                
-                if (self.workTimeSetting.isDiffTime()) {
-                    //TODO
-                }
                 if (self.workTimeSetting.isFlow()) {
                     service.saveFlowWorkSetting(self.toFlowCommand(addMode, tabMode))
                         .done(() => self.onSaveSuccess(dfd))

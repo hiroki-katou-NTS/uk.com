@@ -10,6 +10,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
@@ -93,6 +94,20 @@ public class DiffTimezoneSetting extends WorkTimeDomainObject {
 					this.bundledBusinessExceptions.addMessage("Msg_515","KMK003_89");
 				}
 			}
+		}
+		
+		// validate worktime vs OT time
+		//validate msg_845
+		 this.checkOverTimeAndEmTimeOverlap();
+	}
+	
+	/**
+	 * Check over time and em time overlap.
+	 */
+	private void checkOverTimeAndEmTimeOverlap() {
+		if (this.oTTimezones.stream().anyMatch(ot -> CollectionUtil.isEmpty(this.employmentTimezones)
+				|| this.employmentTimezones.stream().anyMatch(em -> ot.getTimezone().isOverlap(em.getTimezone())))) {
+			this.bundledBusinessExceptions.addMessage("Msg_845", "KMK003_89");
 		}
 	}
 }
