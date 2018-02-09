@@ -171,6 +171,9 @@ public class ScheCreExeMonthlyPatternHandler {
 		WorkTimeZoneGetterCommand commandGetter = workTimeGetterCommand.toWorkTimeZone();
 		commandGetter.setWorkTypeCode(workMonthlySet.getWorkTypeCode().v());
 		commandGetter.setWorkingCode(workMonthlySet.getWorkingCode() == null ? null : workMonthlySet.getWorkingCode().v());
+		if (StringUtil.isNullOrEmpty(commandGetter.getWorkingCode(), true)) {
+			commandGetter.setWorkingCode(null);
+		}
 		return this.scheCreExeWorkTimeHandler.getWorkingTimeZoneCode(commandGetter);
 	}
 
