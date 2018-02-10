@@ -125,12 +125,13 @@ module nts.uk.ui.gridlist {
                             virtualizationMode: 'continuous',
 //                            enter: 'right',
                             columns: [
+                            { headerText: 'Button', key: 'open', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Button' },
                                 { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
                                 { headerText: 'FLAG', key: 'flag', dataType: 'boolean', width: '200px', showHeaderCheckbox: true, ntsControl: 'Checkbox' },
                                 { headerText: 'RULECODE', key: 'ruleCode', dataType: 'string', width: '290px', ntsControl: 'SwitchButtons' },
                                 { headerText: 'Combobox', key: 'combo', dataType: 'string', width: '230px', ntsControl: 'Combobox', tabIndex: 0 },
                                 { headerText: 'Text', key: 'text1', dataType: 'string', width: '120px' },
-                                { headerText: 'Button', key: 'open', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Button' },
+                                
                                 { headerText: 'Delete', key: 'delete', dataType: 'string', width: '80px', unbound: true, ntsControl: 'DeleteButton' }
                             ], 
                             features: [{ name: 'Resizing' },
