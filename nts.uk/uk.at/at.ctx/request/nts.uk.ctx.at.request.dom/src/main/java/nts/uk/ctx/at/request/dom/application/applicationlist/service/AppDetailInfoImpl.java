@@ -81,7 +81,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 //		for (OvertimeWorkFrame normal : lstFramOt) {
 //			lstFrame.add(new OverTimeFrame(1, normal.getOvertimeWorkFrNo().v().intValue(), normal.getOvertimeWorkFrName().v(), null));
 //		}
-		return new AppOverTimeInfoFull(appOt.getWorkClockFrom1(), appOt.getWorkClockTo1(),
+		return new AppOverTimeInfoFull(appId, appOt.getWorkClockFrom1(), appOt.getWorkClockTo1(),
 				appOt.getWorkClockFrom2(), appOt.getWorkClockTo2(),
 				0, lstFrame, appOt.getOverTimeShiftNight(),
 				appOt.getFlexExessTime());
@@ -91,7 +91,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	public AppGoBackInfoFull getAppGoBackInfo(String companyID, String appId) {
 		Optional<GoBackDirectly> appGoBackOp = repoGoBack.findByApplicationID(companyID, appId);
 		GoBackDirectly appGoBack = appGoBackOp.get();
-		return new AppGoBackInfoFull(appGoBack.getGoWorkAtr1().value,
+		return new AppGoBackInfoFull(appId, appGoBack.getGoWorkAtr1().value,
 				appGoBack.getWorkTimeStart1().v(), appGoBack.getBackHomeAtr1().value, 
 				appGoBack.getWorkTimeEnd1().v(), appGoBack.getGoWorkAtr2().value,
 				appGoBack.getWorkTimeStart2().v(), appGoBack.getBackHomeAtr2().value,

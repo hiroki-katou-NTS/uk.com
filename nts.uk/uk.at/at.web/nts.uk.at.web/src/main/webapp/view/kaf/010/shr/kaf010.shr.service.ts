@@ -9,7 +9,7 @@ module nts.uk.at.view.kaf010.shr.service {
         updateOvertime: "at/request/application/overtime/update",
         checkBeforeRegister: "at/request/application/holidaywork/checkBeforeRegister",
         checkBeforeUpdate: "at/request/application/overtime/checkBeforeUpdate",
-        findByAppID: "at/request/application/overtime/findByAppID",
+        findByAppID: "at/request/application/holidaywork/findByAppID",
         getRecordWork: "at/request/application/overtime/getRecordWork"
     }
     /** Get TitleMenu */

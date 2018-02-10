@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.pubimp.service;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,8 @@ import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.service.ApprovalRootStateService;
@@ -109,11 +112,16 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		return new ApprovalRootContentExport(
 				new ApprovalRootStateExport(
 					approvalRootContentOutput.getApprovalRootState().getListApprovalPhaseState()
-					.stream().map(x -> {
+					.stream()
+					.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
+					.map(x -> {
 						return new ApprovalPhaseStateExport(
 								x.getPhaseOrder(), 
 								x.getApprovalAtr().name, 
-								x.getListApprovalFrame().stream().map(y -> {
+								x.getListApprovalFrame()
+								.stream()
+								.sorted(Comparator.comparing(ApprovalFrame::getFrameOrder))
+								.map(y -> {
 									return new ApprovalFrameExport(
 											y.getPhaseOrder(), 
 											y.getFrameOrder(), 

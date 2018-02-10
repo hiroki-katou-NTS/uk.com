@@ -22,7 +22,7 @@ public class AppListExtractConditionDto {
 	/**申請一覧区分*/
 	private Integer appListAtr;
 	/**申請種類*/
-	private int appType;
+	private Integer appType;
 	/**承認状況＿未承認*/
 	private boolean unapprovalStatus;
 	/**承認状況＿承認済*/
@@ -47,8 +47,8 @@ public class AppListExtractConditionDto {
 		return new AppListExtractCondition(
 				GeneralDate.fromString(dto.getStartDate(), dateFormat),
 				GeneralDate.fromString(dto.getEndDate(), dateFormat),
-				dto.getAppListAtr() == null ? null : EnumAdaptor.valueOf(dto.getAppListAtr(),ApplicationListAtr.class),
-				EnumAdaptor.valueOf(dto.getAppType(), ApplicationType.class),
+				EnumAdaptor.valueOf(dto.getAppListAtr(),ApplicationListAtr.class),
+				dto.getAppType() == null ? null : EnumAdaptor.valueOf(dto.getAppType(), ApplicationType.class),
 				dto.isUnapprovalStatus(),
 				dto.isApprovalStatus(),
 				dto.isDenialStatus(),

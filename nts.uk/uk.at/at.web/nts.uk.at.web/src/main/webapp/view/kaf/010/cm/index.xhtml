@@ -6,7 +6,7 @@
 			<!--A2_7時間外労働ラベル--> 			
 			<div class="pull-left">#{i18n.getText('KAF010_23')}</div>
 			<div class="pull-left">
-				<table id="fixed-table-indicate">
+				<table id="fixed-table-indicate-holiday">
 					<colgroup>
 						<col width="109px" />
 						<col width="109px" />
@@ -133,7 +133,7 @@
 							id="inpStartTime1"
 							data-bind="ntsTimeWithDayEditor: { name: '#[KAF010_333]', constraint:'TimeWithDayAttr',value: timeStart1, enable: true, readonly: false, required: true }" />
 						<!--A4_10 ~1-->
-						<label class="valign-center link-label-kaf005">#{i18n.getText('KAF010_38')}</label>
+						<label class="valign-center link-label-kaf010">#{i18n.getText('KAF010_38')}</label>
 					</div>
 				</div>
 				<div class="cell valign-center">
@@ -233,7 +233,7 @@
 				<div class="lblTitle pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF010_40')}</div>
 			</div>
 			<div class ="table-time">
-				<table id="fixed-table">
+				<table id="fixed-table-holiday">
 					<colgroup>
 						<col width="109px" />
 						<col width="115px" />
@@ -273,7 +273,7 @@
 				<div class="lblTitle pull-left" data-bind="ntsFormLabel: {required : true}">#{i18n.getText('KAF010_50')}</div>
 			</div>	
 			<div class ="table-time">
-				<table id="fixed-break_time-table">
+				<table id="fixed-break_time-table-holiday">
 					<colgroup>
 						<col width="110px" />
 						<col width="110px" />
@@ -298,7 +298,7 @@
 							<td class="header" data-bind="attr: { id: 'overtimeHoursHeader_'+attendanceID()+'_'+frameNo()},text: frameName"></td>
 							<!--A6_8 休出申請時間入力--> 						
 							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }"><input tabindex="16" class="right-content"
-								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()},ntsTimeEditor: {name: '#[KAF010_56]',value: applicationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime' }" /></td>
+								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()},style: { 'background-color' : color },ntsTimeEditor: {name: '#[KAF010_56]',value: applicationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime' }" /></td>
 							<!--A6_9 休出事前申請時間--> 						
 							<td class="right-content" data-bind="text: preAppTime"></td>
 							<!--A6_11 休出実績時間--> 						
@@ -308,13 +308,13 @@
 				</table>
 			</div>
 		</div>
-		<div class="cf valign-top control-group cell">
+		<div class="cf valign-top control-group cell" data-bind ="visible : false">
 			<!--A6_1 残業時間ラベル--> 	
 			<div class="cm-column" style="display: inline-block;">
 				<div class="lblTitle pull-left" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF005_50')}</div>
 			</div>	
 			<div class ="table-time">
-				<table id="fixed-overtime-hour-table">
+				<table id="fixed-overtime-hour-table-holiday">
 					<colgroup>
 						<col width="110px" />
 						<col width="110px" />
@@ -337,8 +337,8 @@
 							<!--A6_7 残業時間名称--> 						
 							<td class="header" data-bind="attr: { id: 'overtimeHoursHeader_'+attendanceID()+'_'+frameNo()}, text: frameName"></td>
 							<!--A6_8 残業申請時間入力--> 						
-							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }"><input tabindex="15" class="right-content"
-								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }, ntsTimeEditor: {name: nameID ,value: applicationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime'}" /></td>
+							<td data-bind="attr: { id: 'hoursCheck_'+attendanceID()+'_'+frameNo()}"><input tabindex="15" class="right-content"
+								data-bind="attr: { id: 'hoursCheck_'+attendanceID()+'_'+frameNo()}, ntsTimeEditor: {name: nameID ,value: applicationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime'}" /></td>
 							<!--A6_9 残業事前申請時間--> 						
 							<td class="right-content" data-bind="text: preAppTime"></td>
 							<!--A6_11 実績時間--> 						
@@ -355,7 +355,7 @@
 				<div class="lblTitle pull-left cm-column" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF005_81')}</div>
 			</div>
 			<div class ="table-time">
-				<table id="fixed-bonus_time-table">
+				<table id="fixed-bonus_time-table-holiday">
 					<colgroup>
 						<col width="110px" />
 						<col width="110px" />
