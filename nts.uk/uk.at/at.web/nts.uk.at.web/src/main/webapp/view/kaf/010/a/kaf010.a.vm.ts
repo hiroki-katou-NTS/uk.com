@@ -127,18 +127,19 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         calculateFlag: KnockoutObservable<number> = ko.observable(1);
         preWorkContent: common.WorkContent;
         constructor() {
-            let self = this;             
+            let self = this;  
+                    
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 010a AFTER start 000_A
             self.startPage().done(function() {
                 self.kaf000_a.start(self.employeeID, 1, 0, moment(new Date()).format(self.DATE_FORMAT)).done(function() {                    
-                    $("#fixed-table").ntsFixedTable({ height: 120 });
-                    $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
-                    $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
-                    $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
-                    $("#fixed-table-indicate").ntsFixedTable({ height: 120 });
-                    $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC')
+                    $("#fixed-table-holiday").ntsFixedTable({ height: 120 });
+                    $("#fixed-overtime-hour-table-holiday").ntsFixedTable({ height: self.heightOvertimeHours() });
+                    $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 120 });
+                    $("#fixed-bonus_time-table-holiday").ntsFixedTable({ height: 120 });
+                    $("#fixed-table-indicate-holiday").ntsFixedTable({ height: 120 });
+                    $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');
                 })
             })
 
