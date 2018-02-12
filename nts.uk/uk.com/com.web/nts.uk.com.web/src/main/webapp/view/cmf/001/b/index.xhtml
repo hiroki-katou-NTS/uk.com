@@ -36,7 +36,7 @@
 					<button tabindex="4" >#{i18n.getText('CMF001_33')}</button>
 					<button tabindex="5" class="danger" >#{i18n.getText('CMF001_34')}</button>
 					<label>#{i18n.getText('CMF001_35')}</label>
-					<div tabindex="5" id="combo-box" data-bind="ntsComboBox: {
+					<div tabindex="6" data-bind="ntsComboBox: {
 						options: itemList,
 						optionsValue: 'code',
 						visibleItemsCount: 5,
@@ -46,18 +46,77 @@
 						editable: false,
 						enable: true,
 						columns: [
-							{ prop: 'code', length: 3 },
-							{ prop: 'name', length: 8 },
+							{ prop: 'name', length: 8 }
 						]}"></div>
 				</div>
-				<div id="contents-area-a" class="fixed-flex-layout">
+				<div id="contents-area" class="fixed-flex-layout">
 					<div class="fixed-flex-layout-left">
 						<div data-bind="ntsPanel:{width: '350px', height: '400px', showIcon: true, visible: true}">
 							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_38')}</div>
+							<div tabindex="7" style="width: 350px" data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'dispConditionSettingCode', comId: 'B3_4', 
+								items: listStandardImportSetting, selected: selectedStandardImportSettingCode, selectedKey: 'dispConditionSettingCode', fields: ['dispConditionSettingCode', 'dispConditionSettingName'], mode: 'igGrid'}" />		
+							<table id="B3_4" data-bind="ntsGridList: {
+									height: 320,
+									name: '#[CMF001_39]', 
+ 									dataSource: listStandardImportSetting,
+									primaryKey: 'dispConditionSettingCode', 
+ 									columns: [
+ 										{ headerText: '#{i18n.getText('CMF001_40')}', key: 'a', width: 50, formatter: _.escape },
+						                { headerText: '#{i18n.getText('CMF001_41')}', key: 'dispConditionSettingCode', width: 100, formatter: _.escape },
+						                { headerText: '#{i18n.getText('CMF001_42')}', key: 'dispConditionSettingName', width: 180, formatter: _.escape }
+						            ], 
+									multiple: false,
+									value: selectedStandardImportSettingCode
+								}"></table>
 						</div>
 					</div>
-					<div class="fixed-flex-layout-right">
-						<!-- some contents in right column -->
+					<div class="fixed-flex-layout-right" data-bind="with: selectedStandardImportSetting">
+						<div class="label warning">#{i18n.getText('CMF001_50')}</div>
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_51')}</div>
+							<input tabindex="9" id="B4_3" data-bind="ntsTextEditor: {name: '#[CMF001_52]', value: conditionSettingCode, required: true, option: {width: '80px'}}" />
+							<input tabindex="10" id="B4_4" data-bind="ntsTextEditor: {name: '#[CMF001_53]', value: conditionSettingName, required: true}" />
+						</div>
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_54')}</div>
+							<div style="display: inline-block">
+								<div tabindex="11" data-bind="ntsRadioButton: { checked: deleteDetermination, option: $parent.radioItemList()[0], name: '#[CMF001_55]', optionValue: 'code', optionText: 'name', group: 'DeleteDetermination'}"></div>
+								<div tabindex="11" style="display: block" data-bind="ntsRadioButton: { checked: deleteDetermination, option: $parent.radioItemList()[1], name: '#[CMF001_55]', optionValue: 'code', optionText: 'name', group: 'DeleteDetermination'}"></div>
+							</div>
+							<div tabindex="12" data-bind="ntsComboBox: {
+								options: [{code: 1, name: '受入る会社のデータを全て削除してから受入'}, {code: 2, name: '対象データのみ削除してから受入'}],
+								optionsValue: 'code',
+								name: '#[CMF001_58]',
+								value: deleteExistingData,
+								optionsText: 'name',
+								editable: false,
+								enable: true,
+								columns: [
+									{ prop: 'name', length: 12 }
+								]}"></div>
+						</div>
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_59')}</div>
+							<div tabindex="13" class="cf" data-bind="ntsSwitchButton: {
+								options: $parent.acceptModes,
+								name: '#[CMF001_65]',
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: acceptMode,
+								enable: true }"></div>
+						</div>
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_69')}</div>
+							<button tabindex="14" >#{i18n.getText('CMF001_70')}</button>
+							<label>#{i18n.getText('CMF001_71')}</label>
+							<label>standard accept item</label>
+						</div>
+<!-- 						<div class="valign-center control-group"> -->
+<!-- 							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_51')}</div> -->
+<!-- 						</div> -->
+<!-- 						<div class="valign-center control-group"> -->
+<!-- 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_51')}</div> -->
+<!-- 						</div> -->
 					</div>
 				</div>
 			</div>

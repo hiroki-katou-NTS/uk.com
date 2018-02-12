@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+<!-- 			<com:stylefile path="kal003.a.style.css" /> -->
+<!-- 			<com:scriptfile path="kal003.a.service.js" /> -->
+			<com:scriptfile path="cmf001.d.vm.js" />
+
+<!-- 			<com:ValidatorScript> -->
+<!-- 		        nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode -->
+<!-- 		        nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionName -->
+<!-- 		    </com:ValidatorScript> -->
+
+			<com:scriptfile path="cmf001.d.start.js" />
+			
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<div class="container">
+					<button tabindex="1" class="proceed">#{i18n.getText('CMF001_130')}</button>
+					<button tabindex="2" >#{i18n.getText('CMF001_131')}</button>
+					<button tabindex="3" >#{i18n.getText('CMF001_132')}</button>
+				</div>
+			</div>
+			<div class="contents-area container">
+				<div>
+					<table border="1">
+						<tr>
+							<th>
+								<label>#{i18n.getText('CMF001_134')}</label>
+								<label>item transport</label>
+								<label>item transport</label>
+								<label>#{i18n.getText('CMF001_135')}</label>
+								<label>item transport</label>
+							</th>
+							<th>
+								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_139')}</div>
+							</th>
+						</tr>
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_136')}</div>
+							</td>
+							<td>
+								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_142')}</div>
+							</td>
+							<td rowspan="2"><button>#{i18n.getText('CMF001_145')}</button></td>
+						</tr>
+					</table>
+					
+					
+					
+				</div>
+				<div>
+					<div class="fixed-flex-layout-left">
+						<div data-bind="ntsPanel:{width: '350px', height: '50px', direction: 'bottom', showIcon: false, visible: true}">
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_150')}</div>
+							<div tabindex="6" data-bind="ntsComboBox: {
+								options: listCategory,
+								optionsValue: 'dispCategoryCode',
+								visibleItemsCount: 15,
+								name: '#[CMF001_58]',
+								value: selectedCategory,
+								optionsText: 'dispCategoryName',
+								editable: false,
+								enable: true,
+								columns: [
+									{ prop: 'dispCategoryName', length: 8 }
+								]}"></div>
+						</div>
+						<div data-bind="ntsPanel:{width: '350px', height: '400px', direction: 'none', showIcon: true, visible: true}">
+							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_151')}</div>
+							<div tabindex="7" style="width: 350px" data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'dispItemCode', comId: 'D5_4', 
+								items: listCategoryItem, selected: selectedCategoryItem, selectedKey: 'dispItemCode', fields: ['dispItemName'], mode: 'igGrid'}" />		
+							<table id="D5_4" data-bind="ntsGridList: {
+									height: 320,
+									name: '#[CMF001_39]', 
+ 									dataSource: listCategoryItem,
+									primaryKey: 'dispItemCode', 
+ 									columns: [
+						                { headerText: '', key: 'dispItemCode', width: 100, hidden: true, formatter: _.escape },
+						                { headerText: '#{i18n.getText('CMF001_153')}', key: 'dispItemName', width: 180, formatter: _.escape }
+						            ], 
+									multiple: false,
+									value: selectedCategoryItem
+								}"></table>
+						</div>
+						<button><i class="icon icon-button-arrow-left"></i></button>
+						<button><i class="icon icon-button-arrow-right"></i></button>
+					</div>
+					<div>
+						<label>#{i18n.getText('CMF001_160')}</label>
+						<table id="fixed-table">
+							<colgroup>
+								<col width="100px"/>
+								<col width="100px"/>
+								<col width="100px"/>
+								<col width="100px"/>
+								<col width="100px"/>
+								<col width="100px"/>
+								<col width="100px"/>
+							</colgroup>
+							<thead>
+								<tr>
+									<th class="ui-widget-header"></th>
+									<th class="ui-widget-header">#{i18n.getText('CMF001_161')}</th>
+									<th class="ui-widget-header">#{i18n.getText('CMF001_162')}</th>
+									<th class="ui-widget-header">#{i18n.getText('CMF001_163')}</th>
+									<th class="ui-widget-header">#{i18n.getText('CMF001_164')}</th>
+									<th class="ui-widget-header">#{i18n.getText('CMF001_165')}</th>
+									<th class="ui-widget-header">#{i18n.getText('CMF001_166')}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>adadfasdf</td>
+									<td>asdfasdfs</td>
+									<td>asdfasdf</td>
+									<td>1234567890AE</td>
+									<td>wersff</td>
+									<td>2017/08/08</td>
+									<td>2017/08/08</td>
+									<td>HoangNK</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
