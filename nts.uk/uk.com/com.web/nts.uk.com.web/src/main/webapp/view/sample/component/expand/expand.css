@@ -1,8 +1,12 @@
-#expand-example {}
-#expand-example th {height: 22px;}
+#expand-example {
+	
+}
+
+#expand-example th {
+	height: 22px;
+}
 
 .toggle-expand {
 	position: absolute;
 	left: 100%;
 }
-

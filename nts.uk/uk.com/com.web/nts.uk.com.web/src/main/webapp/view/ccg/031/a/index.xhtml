@@ -20,7 +20,8 @@
 		<ui:define name="content">
 
 			<div id="functions-area">
-				<button class="btn btn-register proceed" data-bind="click: registryLayout">#{i18n.getText('CCG031_2')}</button>
+				<button class="btn btn-register proceed"
+					data-bind="click: registryLayout">#{i18n.getText('CCG031_2')}</button>
 				<button class="btn btn-preview" data-bind="click: openPreviewDialog">#{i18n.getText('CCG031_3')}</button>
 				<button class="btn btn-close" data-bind="click: closeDialog">#{i18n.getText('CCG031_4')}</button>
 			</div>
@@ -34,7 +35,8 @@
 								<com:ko-foreach bind="layoutRows">
 									<div class="layout-row cf">
 										<com:ko-foreach bind="layoutCells">
-											<div class="layout-cell" data-bind="attr: {'id': $data.id },
+											<div class="layout-cell"
+												data-bind="attr: {'id': $data.id },
 											 click: $parents[2].openAddDialog.bind($parents[2], $data.row, $data.column, $element)"></div>
 										</com:ko-foreach>
 									</div>
@@ -43,14 +45,18 @@
 							<!-- Widget -->
 							<div class="widget-container">
 								<com:ko-foreach bind="placements">
-									<div class="widget-panel preview" data-bind="attr: {id: placementID}">
+									<div class="widget-panel preview"
+										data-bind="attr: {id: placementID}">
 										<div class="panel-header">
 											<span class="title" data-bind="text: name"></span>
-											<div class="remove-button" data-bind="click: $parent.removeWidget.bind($parent, placementID)"><span class="ui-icon ui-icon-closethick"></span></div>
+											<div class="remove-button"
+												data-bind="click: $parent.removeWidget.bind($parent, placementID)">
+												<span class="ui-icon ui-icon-closethick"></span>
+											</div>
 										</div>
 										<div class="panel-content">
 											<!-- External Url -->
-											<iframe data-bind="visible: isExternalUrl, attr:{src: url}"  />
+											<iframe data-bind="visible: isExternalUrl, attr:{src: url}" />
 											<!-- TopPage Part -->
 										</div>
 									</div>
@@ -58,14 +64,14 @@
 							</div>
 						</div>
 						<div class="right-area">
-							<button class="btn-addcolumn" data-bind="click: addColumnButtonClick">#{i18n.getText('CCG031_5')}</button>
+							<button class="btn-addcolumn"
+								data-bind="click: addColumnButtonClick">#{i18n.getText('CCG031_5')}</button>
 							<i class="icon icon-arrow icon-button-arrow-right"></i>
 						</div>
 					</div>
 					<div class="bottom-area">
 						<button class="btn-addrow" data-bind="click: addRowButtonClick">#{i18n.getText('CCG031_6')}</button>
-						<br/>
-						<i class="icon icon-arrow icon-button-arrow-bottom"></i>
+						<br /> <i class="icon icon-arrow icon-button-arrow-bottom"></i>
 					</div>
 				</div>
 			</div>

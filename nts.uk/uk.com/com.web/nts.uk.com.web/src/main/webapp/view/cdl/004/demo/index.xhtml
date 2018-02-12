@@ -21,39 +21,42 @@
 				<div id="side-menu" class="cf"></div>
 				<div id="content" class="cf">
 					<div id="functions-area">
-						<button class="large" data-bind="click: openDialogCDL004" >CDL004</button>
+						<button class="large" data-bind="click: openDialogCDL004">CDL004</button>
 					</div>
 					<div id="contents-area">
-					<table>
-						<tr>
-							<td>基準日</td>
-							<td data-bind = "ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, required: true}" >
-							</td>
-						</tr>
-						<tr>
-							<td>分類コード:</td>
-							<td><input class="inputSelectCode" data-bind="ntsTextEditor: {
+						<table>
+							<tr>
+								<td>基準日</td>
+								<td
+									data-bind="ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, required: true}">
+								</td>
+							</tr>
+							<tr>
+								<td>分類コード:</td>
+								<td><input class="inputSelectCode"
+									data-bind="ntsTextEditor: {
 								value: canSelectJobtitleCodes,
 								required: false,
 								enable: true,
 								readonly: false}" /></td>
-						</tr>
-						<tr>
-							<td>選択モード:</td>
-							<td><div data-bind="ntsCheckBox: { checked: selectMode }"></div></td>
-						</tr>
-						
-						<tr>
-							<td>未選択表示:</td>
-							<td><div data-bind="ntsCheckBox: { checked: showNoSelection }"></div></td>
-						</tr>
-					</table>
-							
-						<br/>
+							</tr>
+							<tr>
+								<td>選択モード:</td>
+								<td><div data-bind="ntsCheckBox: { checked: selectMode }"></div></td>
+							</tr>
+
+							<tr>
+								<td>未選択表示:</td>
+								<td><div
+										data-bind="ntsCheckBox: { checked: showNoSelection }"></div></td>
+							</tr>
+						</table>
+
+						<br />
 						<div style="font-weight: bold">Returned Data:</div>
-						<div> Selected Job Title Codes:</div>
+						<div>Selected Job Title Codes:</div>
 						<span data-bind="text: selectJobtitleCodes"></span>
-						
+
 					</div>
 				</div>
 			</div>

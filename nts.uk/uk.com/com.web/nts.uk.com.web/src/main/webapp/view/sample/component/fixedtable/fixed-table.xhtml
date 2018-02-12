@@ -25,16 +25,16 @@
 					<button data-bind="click: removeItem">Delete</button>
 					<table id="fixed-table">
 						<colgroup>
-							<col width="120px"/>
-							<col width="100px"/>
-							<col width="100px"/>
-							<col width="110px"/>
-							<col width="100px"/>
-							<col width="220px"/>
-							<col width="100px"/>
-							<col width="100px"/>
-							<col width="100px"/>
-							<col width="150px"/>
+							<col width="120px" />
+							<col width="100px" />
+							<col width="100px" />
+							<col width="110px" />
+							<col width="100px" />
+							<col width="220px" />
+							<col width="100px" />
+							<col width="100px" />
+							<col width="100px" />
+							<col width="150px" />
 						</colgroup>
 						<thead>
 							<tr>
@@ -59,9 +59,11 @@
 								<td><div data-bind="ntsFormLabel: {}">レイアウトコード</div></td>
 								<td><div data-bind="ntsCheckBox: {checked: enable}">Enable</div></td>
 								<td><span data-bind="text: enable"></span></td>
-								<td><input data-bind="ntsTextEditor: {value: text, option: {width: '80px'}}" /></td>
+								<td><input
+									data-bind="ntsTextEditor: {value: text, option: {width: '80px'}}" /></td>
 								<td><span data-bind="text: text"></span></td>
-								<td><div id="combo-box" data-bind="ntsComboBox: {options: itemList,
+								<td><div id="combo-box"
+										data-bind="ntsComboBox: {options: itemList,
 										optionsValue: 'code',
 										visibleItemsCount: 5,
 										value: selectedCode,
@@ -83,11 +85,11 @@
 								<li><a href="#tabs-api">API</a></li>
 							</ol>
 							<div id="tabs-usage" class="cf">
-								<article>
-									Table width will be defined by total &lt;col&gt; width in &lt;colgroup&gt;
-								</article>
+								<article>Table width will be defined by total
+									&lt;col&gt; width in &lt;colgroup&gt;</article>
 								<h2>HTML</h2>
-<pre><![CDATA[<table id="fixed-table">
+								<pre>
+									<![CDATA[<table id="fixed-table">
 	<colgroup>
 		<col width="100px"/>
 		<col width="100px"/>
@@ -132,17 +134,20 @@
 			<td>HoangNK</td>
 		</tr>
 	</tbody>
-</table>]]></pre>
+</table>]]>
+								</pre>
 								<h2>TypeScript</h2>
-<pre><![CDATA[// Init Fixed Table
+								<pre>
+									<![CDATA[// Init Fixed Table
 $("#fixed-table").ntsFixedTable({ height: 300, width: 600 });
-]]></pre>
+]]>
+								</pre>
 							</div>
 							<div id="tabs-api" class="cf">
 								<article>
 									<h2>Information</h2>
-									<b>Module:</b> nts.uk.ui.jqueryExtentions.ntsFixedTable<br/>
-									<b>File:</b> nts.uk.com.js.web/src/main/webapp/lib/nittsu/ui/jquery-ext/fixed-table-jquery-ext.ts<br/>
+									<b>Module:</b> nts.uk.ui.jqueryExtentions.ntsFixedTable<br /> <b>File:</b>
+									nts.uk.com.js.web/src/main/webapp/lib/nittsu/ui/jquery-ext/fixed-table-jquery-ext.ts<br />
 								</article>
 								<article>
 									<h2>JQuery Extension</h2>
@@ -158,12 +163,8 @@ $("#fixed-table").ntsFixedTable({ height: 300, width: 600 });
 										</thead>
 										<tbody>
 											<tr>
-												<td>
-													$(".selector").ntsFixedTable(option?)
-												</td>
-												<td>
-													Initializes fixed table on selected tables
-													<b>Arguments:</b><br/>
+												<td>$(".selector").ntsFixedTable(option?)</td>
+												<td>Initializes fixed table on selected tables <b>Arguments:</b><br />
 													<i>option: FixedTableOption</i> Option for fixed table
 													<div class="catalog-accordion">
 														<a href="#">FixedTableOption</a>
@@ -179,12 +180,10 @@ $("#fixed-table").ntsFixedTable({ height: 300, width: 600 });
 															</thead>
 															<tbody>
 																<tr>
-																	<td>height<br/><i>(optional)</i></td>
-																	<td>
-																		<b>Type:</b> number | string<br/>
-																		<b>Default:</b> "auto"<br/>
-																		Set height for fixed table
-																	</td>
+																	<td>height<br />
+																	<i>(optional)</i></td>
+																	<td><b>Type:</b> number | string<br /> <b>Default:</b>
+																		"auto"<br /> Set height for fixed table</td>
 																</tr>
 															</tbody>
 														</table>
@@ -192,12 +191,8 @@ $("#fixed-table").ntsFixedTable({ height: 300, width: 600 });
 												</td>
 											</tr>
 											<tr>
-												<td>
-													$(".selector").ntsFixedTable("init", option?)
-												</td>
-												<td>
-													Initializes fixed table on selected tables
-												</td>
+												<td>$(".selector").ntsFixedTable("init", option?)</td>
+												<td>Initializes fixed table on selected tables</td>
 											</tr>
 										</tbody>
 									</table>
