@@ -43,6 +43,11 @@ public class BsymtEmpOrderCond extends JpaEntity implements Serializable {
 	public BsymtEmpOrderCond(BsymtEmpOrderCondPK id) {
 		this.id = id;
 	}
+	/**
+	 * Instantiates a new bsymt emp order cond.
+	 */
+	public BsymtEmpOrderCond() {
+	}
 
 	/*
 	 * (non-Javadoc)

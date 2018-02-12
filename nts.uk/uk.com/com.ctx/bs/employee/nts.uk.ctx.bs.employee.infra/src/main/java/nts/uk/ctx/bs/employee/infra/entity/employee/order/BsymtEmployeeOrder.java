@@ -41,6 +41,11 @@ public class BsymtEmployeeOrder extends UkJpaEntity implements Serializable {
 		this.id = id;
 	}
 
+	/**
+	 * Instantiates a new bsymt employee order.
+	 */
+	public BsymtEmployeeOrder() {
+	}
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */

@@ -43,6 +43,12 @@ public class BsymtEmployeeOrderPK implements Serializable {
 		this.searchType = searchType;
 	}
 
+	/**
+	 * Instantiates a new bsymt employee order PK.
+	 */
+	public BsymtEmployeeOrderPK() {
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
