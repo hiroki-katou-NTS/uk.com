@@ -168,14 +168,14 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 											  	Collections.emptyList(),
 											  	Collections.emptyList(),
 											  	Optional.empty(),
-											  	new OverTimeFrameTime(new OverTimeFrameNo(overTimeHourSet.getLegalOTframeNo().v()),
+											  	new OverTimeFrameTime(new OverTimeFrameNo(overTimeHourSet.getOtFrameNo().v()),
 													  					TimeWithCalculation.sameTime(new AttendanceTime(0)),
 													  					TimeWithCalculation.sameTime(new AttendanceTime(0)),
 													  					new AttendanceTime(0),
 													  					new AttendanceTime(0)),
 											  	StatutoryAtr.Statutory,
 											  	false,
-											  	new EmTimezoneNo(1),
+											  	overTimeHourSet.getWorkTimezoneNo(),
 											  	false,
 											  	Optional.empty()
 											  	);
