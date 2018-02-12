@@ -436,7 +436,7 @@ public class AppOvertimeFinder {
 			overTimeInputs.add(calcu);
 		}
 		List<OvertimeInputCaculation> overtimeInputCaculations = new ArrayList<>();
-		overTimeInputs = this.overtimeFourProcess.checkDisplayColor(overTimeInputs, overtimeInputCaculations, prePostAtr, inputDate == null ? null : GeneralDateTime.fromString(inputDate + SPACE + ZEZO_TIME, DATE_TIME_FORMAT), appDate == null ? null :GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION.value, employeeID, companyID);
+		overTimeInputs = this.overtimeFourProcess.checkDisplayColor(overTimeInputs, overtimeInputCaculations, prePostAtr, inputDate == null ? null : GeneralDateTime.fromString(inputDate, DATE_TIME_FORMAT), appDate == null ? null :GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION.value, employeeID, companyID);
 		for(OvertimeInputDto overtime : overtimeHours){
 			for(CaculationTime calculation : overTimeInputs){
 				if(overtime.getFrameNo() == calculation.getFrameNo()){
