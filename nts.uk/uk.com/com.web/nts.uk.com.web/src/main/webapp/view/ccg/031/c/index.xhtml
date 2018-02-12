@@ -9,10 +9,11 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 1000, height: 610 };</script>
-			<com:scriptfile path="../../common/model.js" />
+			<com:scriptfile path="/view/ccg/common/model.js" />
+			<com:scriptfile path="/view/ccg/common/positionUtility.js" />
 			<com:scriptfile path="ccg031.c.vm.js" />
 			<com:scriptfile path="ccg031.c.start.js" />
-			<com:stylefile path="../../common/common.css" />
+			<com:stylefile path="/view/ccg/common/common.css" />
 			<com:stylefile path="ccg031.c.style.css" />
 		</ui:define>
 
