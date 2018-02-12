@@ -6,8 +6,7 @@ module nts.uk.com.view.ccg001.a {
         export class ScreenModel {
            
             ccgcomponent: GroupOption;
-            selectedCode: KnockoutObservableArray<string>;
-            showinfoSelectedEmployee: KnockoutObservable<boolean>;
+            systemTypes: KnockoutObservableArray<any>;
 
             // Options
             isQuickSearchTab: KnockoutObservable<boolean>;
@@ -18,9 +17,9 @@ module nts.uk.com.view.ccg001.a {
             isEmployeeWorkplaceFollow: KnockoutObservable<boolean>;
             isMutipleCheck: KnockoutObservable<boolean>;
             isSelectAllEmployee: KnockoutObservable<boolean>;
-            periodStartDate: KnockoutObservable<Date>;
-            periodEndDate: KnockoutObservable<Date>;
-            baseDate: KnockoutObservable<Date>;                
+            periodStartDate: KnockoutObservable<moment.Moment>;
+            periodEndDate: KnockoutObservable<moment.Moment>;
+            baseDate: KnockoutObservable<moment.Moment>;
             selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
             showEmployment: KnockoutObservable<boolean>; // 雇用条件
             showWorkplace: KnockoutObservable<boolean>; // 職場条件
@@ -36,23 +35,31 @@ module nts.uk.com.view.ccg001.a {
             showBaseDate: KnockoutObservable<boolean>; // 基準日利用
             showAllClosure: KnockoutObservable<boolean>; // 全締め表示
             showPeriod: KnockoutObservable<boolean>; // 対象期間利用
-            periodAccuracy: KnockoutObservable<number>; // 対象期間精度
+            periodFormatYM: KnockoutObservable<boolean>; // 対象期間精度
 
             constructor() {
                 var self = this;
-                self.selectedCode = ko.observableArray([]);
+                self.systemTypes = ko.observableArray([
+                    { name: 'システム管理者', value: 1 }, // PERSONAL_INFORMATION
+                    { name: '就業', value: 2 }, // EMPLOYMENT
+                    { name: '給与', value: 3 }, // SALARY
+                    { name: '人事', value: 4 }, // HUMAN_RESOURCES
+                    { name: '管理者', value: 5 }, // ADMINISTRATOR
+                ]);
                 self.selectedEmployee = ko.observableArray([]);
-                self.showinfoSelectedEmployee = ko.observable(false);
-                
-                // set ccg options
-                self.setCcgOption();
+
+                // initial ccg options
+                self.setDefaultCcg001Option();
                 
                 // Init component.
                 self.reloadCcg001();
                 
             }
 
-            private setCcgOption(): void {
+            /**
+             * Set default ccg001 options
+             */
+            public setDefaultCcg001Option(): void {
                 let self = this;
                 self.isQuickSearchTab = ko.observable(true);
                 self.isAdvancedSearchTab = ko.observable(true);
@@ -62,9 +69,9 @@ module nts.uk.com.view.ccg001.a {
                 self.isEmployeeWorkplaceFollow = ko.observable(true);
                 self.isMutipleCheck = ko.observable(true);
                 self.isSelectAllEmployee = ko.observable(true);
-                self.baseDate = ko.observable(new Date());
-                self.periodStartDate = ko.observable(new Date());
-                self.periodEndDate = ko.observable(new Date());
+                self.baseDate = ko.observable(moment());
+                self.periodStartDate = ko.observable(moment());
+                self.periodEndDate = ko.observable(moment());
                 self.showEmployment = ko.observable(true); // 雇用条件
                 self.showWorkplace = ko.observable(true); // 職場条件
                 self.showClassification = ko.observable(true); // 分類条件
@@ -79,7 +86,7 @@ module nts.uk.com.view.ccg001.a {
                 self.showBaseDate = ko.observable(true); // 基準日利用
                 self.showAllClosure = ko.observable(true); // 全締め表示
                 self.showPeriod = ko.observable(true); // 対象期間利用
-                self.periodAccuracy = ko.observable(1); // 対象期間精度
+                self.periodFormatYM = ko.observable(false); // 対象期間精度
             }
 
             /**
@@ -87,7 +94,6 @@ module nts.uk.com.view.ccg001.a {
              */
             public reloadCcg001(): void {
                 var self = this;
-                self.baseDate(new Date());
                 self.ccgcomponent = {
                     /** Common properties */
                     systemType: self.systemType(), // システム区分
@@ -98,12 +104,12 @@ module nts.uk.com.view.ccg001.a {
                     showClosure: self.showClosure(), // 就業締め日利用
                     showAllClosure: self.showAllClosure(), // 全締め表示
                     showPeriod: self.showPeriod(), // 対象期間利用
-                    periodAccuracy: self.periodAccuracy(), // 対象期間精度
+                    periodFormatYM: self.periodFormatYM(), // 対象期間精度
 
                     /** Required parameter */
-                    baseDate: self.baseDate().toString(), // 基準日
-                    periodStartDate: self.periodStartDate().toString(), // 対象期間開始日
-                    periodEndDate: self.periodEndDate().toString(), // 対象期間終了日
+                    baseDate: self.baseDate().format('YYYY-MM-DD'), // 基準日
+                    periodStartDate: self.periodStartDate().format('YYYY-MM-DD'), // 対象期間開始日
+                    periodEndDate: self.periodEndDate().format('YYYY-MM-DD'), // 対象期間終了日
                     inService: self.inService(), // 在職区分
                     leaveOfAbsence: self.leaveOfAbsence(), // 休職区分
                     closed: self.closed(), // 休業区分
@@ -124,11 +130,9 @@ module nts.uk.com.view.ccg001.a {
                     isMutipleCheck: self.isMutipleCheck(), // 選択モード
 
                     onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
-                        self.showinfoSelectedEmployee(true);
                         self.selectedEmployee(dataList);
                     },
                     onSearchOnlyClicked: function(data: EmployeeSearchDto) {
-                        self.showinfoSelectedEmployee(true);
                         var dataEmployee: EmployeeSearchDto[] = [];
                         dataEmployee.push(data);
                         
@@ -136,16 +140,13 @@ module nts.uk.com.view.ccg001.a {
                         self.selectedEmployee(dataEmployee);
                     },
                     onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
-                        self.showinfoSelectedEmployee(true);
                         self.selectedEmployee(dataList);
                     },
 
                     onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
-                        self.showinfoSelectedEmployee(true);
                         self.selectedEmployee(dataList);
                     },
                     onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
-                        self.showinfoSelectedEmployee(true);
                         self.selectedEmployee(dataEmployee);
                     }
 
