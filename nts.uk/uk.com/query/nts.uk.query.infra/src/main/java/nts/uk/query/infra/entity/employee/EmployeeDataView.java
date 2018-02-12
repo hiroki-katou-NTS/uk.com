@@ -126,7 +126,7 @@ public class EmployeeDataView implements Serializable {
 	/** The job str date. */
 	@Column(name="JOB_STR_DATE")
 	@Convert(converter = GeneralDateTimeToDBConverter.class)
-	private GeneralDate jobStrDate;
+	private GeneralDateTime jobStrDate;
 
 	/** The job title id. */
 	@Column(name="JOB_TITLE_ID")
