@@ -2,7 +2,6 @@ package nts.uk.ctx.pereg.app.find.employee.category;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -23,13 +22,11 @@ import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
-import nts.uk.ctx.pereg.dom.person.info.category.IsAbolition;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
-import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.setitem.SetItem;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgData;
@@ -86,7 +83,7 @@ public class EmpCtgFinder {
 	private PersonInfoItemAuthRepository itemAuth;
 	
 	@Inject
-	private PerInfoItemDefRepositoty perItemRepo;
+	private EmployeeDataMngInfoRepository empRepo;
 
 	/**
 	 * Get all category by selected employee
@@ -99,14 +96,16 @@ public class EmpCtgFinder {
 	public List<PerInfoCtgFullDto> getAllPerInfoCtg(String selectedEmployeeIdId) {
 
 		// App contexts of login employee
-		String companyId = AppContexts.user().companyId();
+		String loginCompanyId = AppContexts.user().companyId();
 		String empIdCurrentLogin = AppContexts.user().employeeId();
 		String roleIdOfLogin = AppContexts.user().roles().forPersonalInfo();
 		
 		boolean isSelf = selectedEmployeeIdId.equals(empIdCurrentLogin);
+		String curEmCompanyId = empRepo.findByEmpId(selectedEmployeeIdId).get().getCompanyId();
+		
 		// get list Category
-		List<PersonInfoCategory> listCategory = isSelf ? perInfoCategoryRepositoty.getAllCtgWithAuth(companyId, roleIdOfLogin, 1, 0) : 
-			perInfoCategoryRepositoty.getAllCtgWithAuth(companyId, roleIdOfLogin, 0, 1);
+		List<PersonInfoCategory> listCategory = isSelf ? perInfoCategoryRepositoty.getAllCtgWithAuth(loginCompanyId, roleIdOfLogin, 1, 0, !curEmCompanyId.equals(loginCompanyId)) : 
+			perInfoCategoryRepositoty.getAllCtgWithAuth(loginCompanyId, roleIdOfLogin, 0, 1, !curEmCompanyId.equals(loginCompanyId));
 
 		List<PerInfoCtgFullDto> returnDtoList = listCategory.stream()
 				.map(x -> new PerInfoCtgFullDto(x.getPersonInfoCategoryId(), x.getCategoryCode().v(),
@@ -379,11 +378,4 @@ public class EmpCtgFinder {
 		}
 	}
 	
-	private boolean checkIsNotAbolition(PersonInfoCategory ctg) {
-		if(ctg.getIsAbolition() == IsAbolition.ABOLITION) return false;
-		List<PersonInfoItemDefinition> lstItem = perItemRepo.getAllPerInfoItemDefByCategoryId(ctg.getPersonInfoCategoryId(), AppContexts.user().contractCode());
-		return lstItem.stream().filter(x -> {
-			return x.getIsAbolition() == IsAbolition.ABOLITION;
-		}).collect(Collectors.toList()).size() != lstItem.size();
-	}
 }
