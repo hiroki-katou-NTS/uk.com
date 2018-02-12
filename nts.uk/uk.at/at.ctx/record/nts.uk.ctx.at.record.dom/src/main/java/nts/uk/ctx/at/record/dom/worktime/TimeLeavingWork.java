@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.worktime.enums.TimeLeavingType;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 
@@ -31,6 +32,8 @@ public class TimeLeavingWork extends DomainObject{
 	
 	private Optional<TimeActualStamp> leaveStamp;
 	
+	private TimeSpanForCalc timespan;
+	
 //	private TimeLeavingType timeLeavingType;
 //	
 //	public TimeLeavingWork(WorkNo workNo, TimeActualStamp attendanceStamp, TimeActualStamp leaveStamp, TimeLeavingType timeLeavingType) {
@@ -46,15 +49,29 @@ public class TimeLeavingWork extends DomainObject{
 		this.workNo = workNo;
 		this.attendanceStamp = attendanceStamp;
 		this.leaveStamp = leaveStamp;
+		
+		this.timespan = this.craeteTimeSpan();
 	}
 
 	/**
 	 * 出勤時刻と退勤時刻から計算用時間帯クラス作成
 	 * @return　計算用時間帯クラス
 	 */
-	public TimeSpanForCalc getTimeSpan() {
+	private TimeSpanForCalc craeteTimeSpan() {
+		//Optional<TimeActualStamp> val = attendanceStamp.orElse(Optional.of(new TimeActualStamp()));
+		TimeActualStamp att_myObj = attendanceStamp.orElse(new TimeActualStamp()); //出勤
+		WorkStamp att_stamp = att_myObj.getStamp().orElse(new WorkStamp()); //出勤（実じゃない）
+		TimeWithDayAttr att_attr = att_stamp.getTimeWithDay(); //出勤時刻
+		
+		TimeActualStamp lea_myObj = leaveStamp.orElse(new TimeActualStamp()); //退勤
+		WorkStamp lea_stamp = lea_myObj.getStamp().orElse(new WorkStamp()); //退勤（実じゃない）                                                                                                                                                                                                 
+		TimeWithDayAttr lea_attr = lea_stamp.getTimeWithDay(); //退勤時刻
+		
+		return new TimeSpanForCalc(att_attr,lea_attr);
+		/*
 		return new TimeSpanForCalc(attendanceStamp.get().getStamp().get().getTimeWithDay()
 								  ,leaveStamp.get().getStamp().get().getTimeWithDay());
+		*/
 	}
 
 	/**
@@ -62,8 +79,13 @@ public class TimeLeavingWork extends DomainObject{
 	 * @return 時間帯
 	 */
 	public TimeZone getTimeZone() {
+		
+		/*
 		return new TimeZone(attendanceStamp.get().getStamp().get().getTimeWithDay()
 							,leaveStamp.get().getStamp().get().getTimeWithDay());
+		*/
+		return new TimeZone(this.timespan.getStart(), this.timespan.getEnd());
+		
 	}
 	
 	/**

@@ -127,7 +127,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 			
 			//if(overTimeHourSet.getTimezone().contains(attendanceLeave.getTimeSpan()));
 			//if(attendanceLeave.getTimeZone().isBetweenOrEqual(overTimeHourSet.getTimezone())) {
-			Optional<TimeSpanForCalc> calcrange = overTimeHourSet.getTimezone().getDuplicatedWith(attendanceLeave.getTimeSpan());
+			Optional<TimeSpanForCalc> calcrange = overTimeHourSet.getTimezone().getDuplicatedWith(attendanceLeave.getTimespan());
 			if(calcrange.isPresent()) {
 				createTimeSheet.add(OverTimeFrameTimeSheetForCalc.createOverWorkFramTimeSheet(overTimeHourSet,calcrange.get()));
 			}
