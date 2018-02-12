@@ -142,7 +142,7 @@ module nts.uk.com.view.ccg.share.ccg {
         /**
          * search employee
          */
-        export function searchEmployee(param: model.EmployeeQueryParam): JQueryPromise<any> {
+        export function searchEmployee(param: model.EmployeeQueryParam): JQueryPromise<model.EmployeeDto> {
             return nts.uk.request.ajax('com', servicePath.searchEmployee, param);
         }
         
@@ -269,6 +269,18 @@ module nts.uk.com.view.ccg.share.ccg {
                 personalInfo: SelectedInformation; // 個人情報の選択している情報
                 employmentInfo: SelectedInformation; // 就業の選択している情報
                 salaryInfo: SelectedInformation; // 給与の選択している情報
+            }
+            
+            export class EmployeeDto {
+                employeeID: string;
+                employeeCode: string;
+                hireDate: string;
+                classificationCode: string;
+                name: string;
+                jobTitleCode: string;
+                workplaceCode: string;
+                departmentCode: string;
+                employmentCode: string;
             }
         }
     }

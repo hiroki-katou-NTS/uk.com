@@ -11,6 +11,7 @@ module nts.uk.com.view.ccg.share.ccg {
     import EmployeeSearchInDto = service.model.EmployeeSearchInDto;
     import EmployeeRangeSelection = service.model.EmployeeRangeSelection;
     import EmployeeQueryParam = service.model.EmployeeQueryParam;
+    import EmployeeDto = service.model.EmployeeDto;
 
 
     export module viewmodel {
@@ -119,6 +120,8 @@ module nts.uk.com.view.ccg.share.ccg {
             selectedWorkTypeCode: KnockoutObservableArray<string>;
             
             workTypeColumns: KnockoutObservableArray<any>;
+            
+            employeeList: KnockoutObservableArray<EmployeeDto>;
 
             /**
              * Init screen model
@@ -207,6 +210,8 @@ module nts.uk.com.view.ccg.share.ccg {
                     { headerText: nts.uk.resource.getText('CCG001_60'), prop: 'workTypeCode', width: 100 },
                     { headerText: nts.uk.resource.getText('CCG001_61'), prop: 'name', width: 200 }
                 ]);
+                
+                self.employeeList = ko.observableArray([]);
             }
 
             private initQuickSearchParam(): void {
@@ -998,9 +1003,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 
                 self.quickSearchParam;
                 //Get List Employee 
-//                service.searchEmployee(self.quickSearchParam).done(data => {
-//                    
-//                });
+                service.searchEmployee(self.quickSearchParam).done(data => {
+                    self.employeeList = data;
+                });
             }
             
             /**
@@ -1011,8 +1016,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 var status = true;
                
                 //change the workplace list
-                var listWorkplaceId = [];
-                
                 if (nts.uk.util.isNullOrEmpty(self.quickSearchParam.referenceRange)){
                     return;
                 } else {
@@ -1037,20 +1040,20 @@ module nts.uk.com.view.ccg.share.ccg {
                             }
                             //get Workplace list from domain
                             service.getListWorkplaceId(self.quickSearchParam.baseDate, data).done(wkplist => {
-                                listWorkplaceId = wkplist;
+                                 //check param filterByWorkplace
+                                if(self.quickSearchParam.filterByWorkplace){
+                                    if(!nts.uk.util.isNullOrEmpty(self.quickSearchParam.workplaceCodes) &&
+                                        !nts.uk.util.isNullOrEmpty(wkplist)){
+                                        //Set list workplaceId
+                                        self.setListWorkplace(wkplist);
+                                    }      
+                                } else {
+                                    self.quickSearchParam.filterByWorkplace = true;
+                                    self.quickSearchParam.workplaceCodes = wkplist;
+                                }
                             });
                         }
-                        //check param filterByWorkplace
-                        if(self.quickSearchParam.filterByWorkplace){
-                            if(!nts.uk.util.isNullOrEmpty(self.quickSearchParam.workplaceCodes) &&
-                                !nts.uk.util.isNullOrEmpty(listWorkplaceId)){
-                                //Set list workplaceId
-                                self.setListWorkplace(listWorkplaceId);
-                            }      
-                        } else {
-                            self.quickSearchParam.filterByWorkplace = true;
-                            self.quickSearchParam.workplaceCodes = listWorkplaceId;
-                        }
+                       
                     });
                 }
             }

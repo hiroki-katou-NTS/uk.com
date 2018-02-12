@@ -110,8 +110,8 @@ public class RoleWebservice extends WebService {
 	}
 	
 	@POST
-	@Path("getListWokplaceId")
-	public List<String> findListWokplaceId(WorkplaceParam param){
+	@Path("getListWorkplaceId")
+	public List<String> findListWorkplaceId(WorkplaceParam param){
 		return roleWorkplaceIDFinder.findListWorkplaceId(param);
 	}
 	
