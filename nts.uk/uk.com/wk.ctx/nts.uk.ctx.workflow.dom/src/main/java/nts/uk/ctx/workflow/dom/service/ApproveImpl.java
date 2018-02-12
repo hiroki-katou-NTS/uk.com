@@ -64,6 +64,7 @@ public class ApproveImpl implements ApproveService {
 			}
 			approvalRootState = opApprovalRootState.get();
 		}
+		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder));
 		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
 			if(approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 				continue;

@@ -8,39 +8,6 @@ module cmm045.a.viewmodel {
         displaySet: KnockoutObservable<vmbase.ApprovalListDisplaySetDto> = ko.observable(null);
         constructor(){
             let self = this;
-//            self.items.push(new vmbase.DataModeApp('1', 'chi tiet', '2',
-//                        '3', '事前' , '44','Mot ngay dep troi', '44', 'erw','');
-//            //grid list application            
-//            $("#grid21").ntsGrid({
-//            width: '1200px',
-//            height: '200px',
-//            dataSource: self.items(),
-//            primaryKey: 'id',
-//            virtualization: true,
-//            virtualizationMode: 'continuous',
-//            columns: [
-//                
-//                { headerText: 'Button', key: 'details', dataType: 'string', width: '70px', unbound: true, ntsControl: 'Button' },
-//                { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
-//                { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '120px' },
-//                { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '120px' },
-//                { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '120px' },
-//                { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '120px' },
-//                { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '120px' },
-//                { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '120px' },
-//                { headerText: getText('CMM045_58'), key: 'displayAppStatus', dataType: 'string', width: '80px' },
-//                { headerText: 'ID', key: 'appId', dataType: 'string', width: '50px', ntsControl: 'Label'}
-//            ], 
-//            features: [{ name: 'Resizing' },
-//                        { 
-//                            name: 'Selection',
-//                            mode: 'row',
-//                            multipleSelection: true
-//                        }
-//            ],
-//            ntsControls: [{ name: 'Checkbox', options: { value: 1, text: 'Custom Check' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-//                        { name: 'Button', text: 'Open', click: function() { alert("Button!!"); }, controlType: 'Button' },                
-//            ]});
         }
    
         start(): JQueryPromise<any>{
@@ -87,11 +54,7 @@ module cmm045.a.viewmodel {
                     });
                     let lstData = self.mapData(lstApp, lstMaster, lstGoBack, lstOverTime);
                     self.items(lstData);
-//                     self.items().push(new vmbase.DataModeApp('2', 'chi tiet', '2',
-//                        '3', '事前' , '44','Mot ngay dep troi', '44', 'erw','');
-//                        $("#grid2").ntsGrid("destroy");
                     self.reloadGrid();
-//                    $('#grid2').igGrid("dataBind"); 
                     dfd.resolve();
                 });
             });
@@ -108,16 +71,15 @@ module cmm045.a.viewmodel {
             virtualization: true,
             virtualizationMode: 'continuous',
             columns: [
-                { headerText: 'Button', key: 'details', dataType: 'string', width: '70px', unbound: true, ntsControl: 'Button' },
+                { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '50px', unbound: false, ntsControl: 'Button' },
                 { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
                 { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '120px' },
                 { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '120px' },
-                { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '120px' },
-                { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '120px' },
+                { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '150px' },
+                { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '200px' },
                 { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '120px' },
                 { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '120px' },
-                { headerText: getText('CMM045_58'), key: 'displayAppStatus', dataType: 'string', width: '80px' },
-                { headerText: 'ID', key: 'details', dataType: 'string', width: '50px', ntsControl: 'Label'}
+                { headerText: 'ID', key: 'appId', dataType: 'string', width: '50px', ntsControl: 'Label', hidden: true}
             ], 
             features: [{ name: 'Resizing' },
                         { 
@@ -127,7 +89,7 @@ module cmm045.a.viewmodel {
                         }
             ],
             ntsControls: [{ name: 'Checkbox', options: { value: 1, text: 'Custom Check' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                        { name: 'Button', text: 'Open', click: function() { alert("Button!!"); }, controlType: 'Button' , enable: true}, 
+                        { name: 'Button', text: getText('CMM045_50'), click: function() { alert("Button!!"); }, controlType: 'Button' , enable: true}, 
             ]});
                         $("#grid2").setupSearchScroll("igGrid", true);
             $("#run").on("click", function() {

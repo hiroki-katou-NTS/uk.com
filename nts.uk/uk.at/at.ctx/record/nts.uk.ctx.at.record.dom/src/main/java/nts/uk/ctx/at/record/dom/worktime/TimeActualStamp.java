@@ -17,7 +17,7 @@ public class TimeActualStamp {
 	
 	private WorkStamp actualStamp;
 	
-	private Optional<WorkStamp> stamp;
+	private Optional<WorkStamp> stamp = Optional.of(new WorkStamp());
 	
 	private int numberOfReflectionStamp;
 	
