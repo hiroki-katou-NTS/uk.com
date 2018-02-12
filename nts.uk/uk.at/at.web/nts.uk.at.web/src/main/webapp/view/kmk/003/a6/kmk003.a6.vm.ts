@@ -253,7 +253,7 @@ module a6 {
                     unitAttrName: 'roundingTime',
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0),
-                    width: 170,
+                    width: 200,
                     template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 3,
@@ -277,10 +277,10 @@ module a6 {
                     defaultValue: ko.observable(0),
                     width: 100,
                     template: `<input data-bind="ntsTimeEditor: {
+                            constraint: 'TimeWithDayAttr',
                             mode: 'time',
                             inputFormat: 'time',
-                            required: true
-                            }" />`
+                            required: true }" />`
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_77"),
@@ -349,7 +349,7 @@ module a6 {
                     unitAttrName: 'roundingTime',
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0),
-                    width: 110,
+                    width: 200,
                     template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 3,
@@ -389,6 +389,7 @@ module a6 {
             var settingEnum: WorkTimeSettingEnumDto = input.enum;
             var mainSettingModel: MainSettingModel = input.mainModel;
             var isLoading: KnockoutObservable<boolean> = input.isLoading;
+            var isClickSave: KnockoutObservable<boolean> = input.isClickSave;
             nts.uk.at.view.kmk003.a6.service.findAllWorkDayoffFrame().done(function(data) {
                 let screenModel = new ScreenModel(settingEnum, mainSettingModel, isLoading);
                 screenModel.lstWorkDayOffFrame = data;
@@ -397,6 +398,11 @@ module a6 {
                     $(element).load(webserviceLocator, function() {
                         ko.cleanNode($(element)[0]);
                         ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+                        isClickSave.subscribe((v) => {
+                            if (v) {
+                                screenModel.dataSourceFlow.valueHasMutated();
+                            }
+                        });
                     });
                 });
             });

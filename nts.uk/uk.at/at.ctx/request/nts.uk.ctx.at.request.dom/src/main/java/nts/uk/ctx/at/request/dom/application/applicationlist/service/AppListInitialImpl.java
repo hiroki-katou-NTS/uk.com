@@ -177,8 +177,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				.filter(d -> d.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION));
 		List<AppOverTimeInfoFull> lstAppOt = new ArrayList<>();
 		List<AppGoBackInfoFull> lstAppGoBack = new ArrayList<>();
-		boolean overTimeDisplay = param.getAppListAtr() == null ? true : param.getAppListAtr().equals(ApplicationType.OVER_TIME_APPLICATION);
-		boolean goBackDisplay = param.getAppListAtr() == null ? true : param.getAppListAtr().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION);
+		boolean overTimeDisplay = param.getAppType() == null ? true : param.getAppListAtr().equals(ApplicationType.OVER_TIME_APPLICATION);
+		boolean goBackDisplay = param.getAppType() == null ? true : param.getAppListAtr().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION);
 		for (Application_New application : lstAppFilter) {
 			//get app xin lam them
 			if(overTimeDisplay && application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)){
@@ -489,7 +489,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			if(appDispName.isPresent()){
 				appDispNameStr = appDispName.get().getDispName().v();
 			}
-			lstAppMasterInfo.add(new AppMasterInfo(app, appDispNameStr, empName, wkp.getWkpDisplayName()));
+			lstAppMasterInfo.add(new AppMasterInfo(app.getAppID(), app.getAppType().value, appDispNameStr, empName, wkp.getWkpDisplayName()));
 		}
 		return lstAppMasterInfo;
 	}

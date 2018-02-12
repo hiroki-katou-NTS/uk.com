@@ -228,7 +228,7 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 	}
 	
 	public void setData(OverTimeOfDaily overTimeOfDaily){
-		if(overTimeOfDaily == null){
+		if(overTimeOfDaily == null || overTimeOfDaily.getOverTimeWorkFrameTime() == null || overTimeOfDaily.getOverTimeWorkFrameTime().isEmpty()){
 			return;
 		}
 		OverTimeFrameTime frame1 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 1);

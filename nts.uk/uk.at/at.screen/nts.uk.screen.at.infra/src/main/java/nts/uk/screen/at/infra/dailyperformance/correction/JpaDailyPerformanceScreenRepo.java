@@ -436,7 +436,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				+ " h.strDate <= :baseDate AND h.endDate >= :baseDate AND h.companyId = :companyId AND h.sid IN :sIds";
 		Map<String, String> empCodes = this.queryProxy().query(query_empCodes, BsymtEmploymentHistItem.class)
 				.setParameter("companyId", AppContexts.user().companyId()).setParameter("baseDate", baseDate)
-				.setParameter("sIds", sIds).getList().stream().collect(Collectors.toMap(x -> x.sid, x -> x.empCode));
+				.setParameter("sIds", sIds).getList().stream().collect(Collectors.toMap(x -> x.sid, x -> x.empCode, (x, y) -> x));
 		if(empCodes.isEmpty()) {
 			return new ArrayList<>();
 		}
@@ -541,7 +541,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		return this.queryProxy().query(SEL_DAILY_WORK_INFO, KrcdtDaiPerWorkInfo.class)
 				.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", lstEmployee).getList(e -> {
 					return new WorkInfoOfDailyPerformanceDto(e.krcdtDaiPerWorkInfoPK.employeeId, e.calculationState,
-							e.krcdtDaiPerWorkInfoPK.ymd);
+							e.krcdtDaiPerWorkInfoPK.ymd, e.recordWorkWorktypeCode, e.recordWorkWorktimeCode, e.scheduleWorkWorktypeCode, e.scheduleWorkWorktimeCode, e.scheduleTimes == null ? false : true);
 				});
 	}
 

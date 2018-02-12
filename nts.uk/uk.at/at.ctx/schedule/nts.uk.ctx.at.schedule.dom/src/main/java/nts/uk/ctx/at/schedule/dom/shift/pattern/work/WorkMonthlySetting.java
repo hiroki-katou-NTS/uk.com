@@ -78,7 +78,7 @@ public class WorkMonthlySetting extends AggregateRoot {
 	public void saveToMemento(WorkMonthlySettingSetMemento memento){
 		memento.setCompanyId(this.companyId);
 		memento.setWorkTypeCode(this.workTypeCode);
-		memento.setWorkingCode(this.workingCode == null ? null : this.workingCode);
+		memento.setWorkingCode(this.workingCode == null || StringUtils.isEmpty(this.workingCode.v()) ? null : this.workingCode);
 		memento.setYmdK(this.ymdk);
 		memento.setMonthlyPatternCode(this.monthlyPatternCode);
 	}

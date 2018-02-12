@@ -5,15 +5,12 @@
 package nts.uk.ctx.bs.employee.dom.workplace.info;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * The Class OutsideWorkplaceCode.
  */
-@StringCharType(CharType.ALPHA_NUMERIC)
-@StringMaxLength(10)
+@StringMaxLength(20)
 public class OutsideWorkplaceCode extends StringPrimitiveValue<OutsideWorkplaceCode> {
 
 	/** The Constant serialVersionUID. */

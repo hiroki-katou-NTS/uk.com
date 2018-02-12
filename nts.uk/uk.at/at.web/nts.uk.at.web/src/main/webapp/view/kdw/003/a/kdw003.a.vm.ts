@@ -100,7 +100,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         lockMessage: KnockoutObservable<any> = ko.observable("");
 
-        dataHoliday: KnockoutObservable<DataHoliday> =  ko.observable(new DataHoliday("12","13","11","11","11","11"));
+        dataHoliday: KnockoutObservable<DataHoliday> =  ko.observable(new DataHoliday("0","0","0","0","0","0"));
         comboItems: KnockoutObservableArray<any> = ko.observableArray([new ItemModel('1', '基本給'),
             new ItemModel('2', '役職手当'),
             new ItemModel('3', '基本給2')]);
@@ -441,11 +441,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     // nts.uk.ui.block.clear();
                     dfd.resolve();
                 }).fail((data) => {
-                    alert("fail");
                      nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.alert(data.message);
                     dfd.resolve();
                 });
                 dfd.promise();
+            }else{
+                 nts.uk.ui.block.clear(); 
             }
             debugger;
         }
@@ -504,11 +506,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.btnExtraction_Click();
                     dfd.resolve();
                 }).fail((data) => {
-                    alert("fail");
                     nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.alert(data.message);
                     dfd.resolve();
                 });
                 dfd.promise();
+            }else{
+                  nts.uk.ui.block.clear();
             }
             debugger;
         }
@@ -1642,6 +1646,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }else{
                 $("#btn-signAll").css("visibility", "hidden");
             }
+            $("#btn-signAll").css("visibility", "hidden");
             this.available17(self.checkAvailable(data, 17));
             this.available18(self.checkAvailable(data, 18));
             this.available19(self.checkAvailable(data, 19));

@@ -82,7 +82,6 @@ module nts.uk.at.view.kmf002.c {
                             _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
                         });
                         _self.findAllEmployeeRegister();
-                        
                     },
                     onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
                         _self.showinfoSelectedEmployee(true);
@@ -111,7 +110,6 @@ module nts.uk.at.view.kmf002.c {
                         });
                         _self.findAllEmployeeRegister();
                     }
-
                 }
 
 //                $('#ccgcomponent').ntsGroupComponent(_self.ccgcomponent);
@@ -177,7 +175,9 @@ module nts.uk.at.view.kmf002.c {
                 
                 _self.commonTableMonthDaySet().fiscalYear.subscribe(function(newValue) {
                     // change year
-                    _self.getDataFromService();
+                    if (!nts.uk.ui.errors.hasError()) {
+                        _self.getDataFromService();    
+                    }
                 });
             }
 

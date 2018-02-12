@@ -66,8 +66,8 @@ module a3 {
             
             
             self.autoCalUseAttrs = ko.observableArray([
-                { code: 0, name: nts.uk.resource.getText("KMK003_142") },
-                { code: 1, name: nts.uk.resource.getText("KMK003_143") }
+                { code: 1, name: nts.uk.resource.getText("KMK003_142") },
+                { code: 0, name: nts.uk.resource.getText("KMK003_143") }
             ]);
             self.lstOvertimeWorkFrame = [];
             
@@ -218,6 +218,15 @@ module a3 {
                     }
                     else {
                         self.fixTableOptionOvertimeFlow.columns = self.columnSettingFlowSimple();
+                    }
+                }
+                if(self.isDiffTimeMode())
+                {
+                    if (v) {
+                        self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFixedAndDiffTime();
+                    }
+                    else {
+                        self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFlex();
                     }
                 }
             });
@@ -565,7 +574,7 @@ module a3 {
                     dataSource: self.lstOvertimeWorkFrame,
                     defaultValue: ko.observable(1),
                     width: 120,
-                    template: `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
+                    template: `<div data-key="inLegalOTFrameNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
                                     visibleItemsCount: 10,
                                     optionsText: 'overtimeWorkFrName',
@@ -577,23 +586,22 @@ module a3 {
             stringColumns.push({
                 headerText: nts.uk.resource.getText("KMK003_187"),
                 key: "settlementOrder",
-                dataSource: self.lstOvertimeWorkFrame,
+                dataSource: self.lstSettlementOrder,
                 defaultValue: ko.observable(1),
                 width: 100,
-                template: `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
-                                    optionsValue: 'overtimeWorkFrNo',
+                template: `<div data-key="settlementOrder" class="column-combo-box" data-bind="ntsComboBox: {
+                                    optionsValue: 'settlementOrder',
                                     visibleItemsCount: 10,
-                                    optionsText: 'overtimeWorkFrName',
+                                    optionsText: 'settlementOrderName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
+                                    columns: [{ prop: 'settlementOrderName', length: 12 }]}">
                                 </div>`
             });
             return stringColumns;
         }
         
-        private columnSettingFlowSimple(): Array<any>
-        {
+        private columnSettingFlowSimple(): Array<any> {
             let self = this;
             return [
                  {
@@ -602,8 +610,10 @@ module a3 {
                      defaultValue: ko.observable(0), 
                      width: 100, 
                      template: `<input data-bind="ntsTimeEditor: {
+                            constraint: 'TimeWithDayAttr',
                             mode: 'time',
-                            inputFormat: 'time'}" />`
+                            inputFormat: 'time',
+                            required: true }" />`
                  },
                  {
                      headerText: nts.uk.resource.getText("KMK003_56"),
@@ -805,6 +815,7 @@ module a3 {
             var isLoading:  KnockoutObservable<boolean> = input.isLoading; 
             var isDetailMode:  KnockoutObservable<boolean> = input.isDetailMode;
             var useHalfDay:  KnockoutObservable<boolean> = input.useHalfDay;
+            var isClickSave: KnockoutObservable<boolean> = input.isClickSave;
             let screenModel = new ScreenModel(settingEnum, mainSettingModel, isLoading, isDetailMode, useHalfDay);
             nts.uk.at.view.kmk003.a3.service.findAllOvertimeWorkFrame().done(function(data) {
                 screenModel.lstOvertimeWorkFrame = data;
@@ -812,6 +823,11 @@ module a3 {
                 $(element).load(webserviceLocator, function() {
                     ko.cleanNode($(element)[0]);
                     ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+                    isClickSave.subscribe((v) => {
+                        if (v) {
+                            screenModel.dataSourceOvertimeFlow.valueHasMutated();
+                        }
+                    });
                 });
             });
         }

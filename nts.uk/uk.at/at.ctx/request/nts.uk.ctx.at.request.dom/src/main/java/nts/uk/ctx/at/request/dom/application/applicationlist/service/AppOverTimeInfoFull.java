@@ -8,6 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class AppOverTimeInfoFull {
 
+	private String appID;
 	/**
 	 * 勤務時間From1
 	 */

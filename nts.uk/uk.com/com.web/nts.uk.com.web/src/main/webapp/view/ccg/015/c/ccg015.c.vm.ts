@@ -18,7 +18,7 @@ module nts.uk.pr.view.ccg015.c {
                 self.newTopPageCode = ko.observable("");
                 self.newTopPageName = ko.observable("");
                 self.isDuplicateCode = ko.observable(false);
-                self.check = ko.observable(true);
+                self.check = ko.observable(false);
             }
             start(): JQueryPromise<void> {
                 var self = this;

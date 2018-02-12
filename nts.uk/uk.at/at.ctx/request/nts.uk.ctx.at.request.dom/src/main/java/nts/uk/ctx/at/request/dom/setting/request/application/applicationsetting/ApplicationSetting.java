@@ -123,7 +123,7 @@ public class ApplicationSetting {
 				EnumAdaptor.valueOf(actualExcessMessDispAtr, AppDisplayAtr.class), 
 				EnumAdaptor.valueOf(otAdvanceDispAtr, AppDisplayAtr.class), 
 				EnumAdaptor.valueOf(otActualDispAtr, AppDisplayAtr.class), 
-				EnumAdaptor.valueOf(warningDateDispAtr, NumDaysOfWeek.class), 
+				new NumDaysOfWeek(warningDateDispAtr),
 				EnumAdaptor.valueOf(appReasonDispAtr, AppDisplayAtr.class), 
 				EnumAdaptor.valueOf(appContentChangeFlg, AppCanAtr.class), 
 				EnumAdaptor.valueOf(scheReflectFlg, ReflectionFlg.class), 
