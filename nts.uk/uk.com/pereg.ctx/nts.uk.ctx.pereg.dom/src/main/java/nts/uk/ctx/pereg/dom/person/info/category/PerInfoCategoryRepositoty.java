@@ -30,7 +30,7 @@ public interface PerInfoCategoryRepositoty {
 	 */
 	List<PersonInfoCategory> getAllPerInfoCtg(String companyId);
 	
-	List<PersonInfoCategory> getAllCtgWithAuth(String companyId, String roleId, int selfAuth, int otherAuth);
+	List<PersonInfoCategory> getAllCtgWithAuth(String companyId, String roleId, int selfAuth, int otherAuth, boolean isOtherCompany);
 	
 	List<PersonInfoCategory> getAllPerInfoCtgUsed(String companyId);
 
