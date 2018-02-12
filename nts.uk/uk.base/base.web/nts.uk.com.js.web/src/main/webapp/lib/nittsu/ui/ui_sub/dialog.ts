@@ -124,6 +124,8 @@ module nts.uk.ui {
                             then();
                         }
                     }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/infor.png", text: toBeResource.info });
+                
+                $this.find("button").focus();
             }, 0);
 
             return {
@@ -132,6 +134,7 @@ module nts.uk.ui {
                 }
             };
         };
+        
         export function alertError(message) {
             var then = $.noop;
             var $dialog = PS.$('<div/>').hide();
@@ -152,6 +155,8 @@ module nts.uk.ui {
                             then();
                         }
                     }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/error.png", text: toBeResource.error });
+                
+                $this.find("button").focus();
             }, 0);
 
             return {
@@ -160,6 +165,7 @@ module nts.uk.ui {
                 }
             };
         }
+        
         /**
          * Show alert dialog.
          * 
@@ -187,6 +193,8 @@ module nts.uk.ui {
                             then();
                         }
                     }], { text: nts.uk.resource.getText(toBeResource.warn) });
+                
+                $this.find("button").focus();
             }, 0);
 
             return {
@@ -203,13 +211,17 @@ module nts.uk.ui {
          *          text information text
          * @returns handler
          */
-        export function confirm(text) {
+        export function confirm(text: string, option?: any) {
             var handleYes = $.noop;
             var handleNo = $.noop;
             var handleCancel = $.noop;
             var handleThen = $.noop;
             var hasNoButton = true;
             var hasCancelButton = false;
+            
+            var option = option || {
+                buttonStyles: { yes: "danger" }
+            };
 
             var handlers = {
                 ifYes: function(handler) {
@@ -239,7 +251,7 @@ module nts.uk.ui {
                 // yes button
                 buttons.push({
                     text: toBeResource.yes,
-                    "class": "yes large danger",
+                    "class": "yes large " + (option.buttonStyles.yes || ""),
                     click: function() {
                         $this.dialog('close');
                         handleYes();
@@ -250,7 +262,7 @@ module nts.uk.ui {
                 if (hasNoButton) {
                     buttons.push({
                         text: toBeResource.no,
-                        "class": "no large",
+                        "class": "no large " + (option.buttonStyles.no || ""),
                         click: function() {
                             $this.dialog('close');
                             handleNo();
@@ -272,10 +284,24 @@ module nts.uk.ui {
                 }
 
                 var $this = createNoticeDialog(text, buttons);
+                
+                if (option.buttonStyles.yes === "danger") {
+                    $this.find("button.no").focus();
+                } else if (option.buttonStyles.yes === "proceed") {
+                    $this.find("button.yes").focus();
+                }
             });
 
             return handlers;
         };
+        
+        export function confirmDanger(text: string) {
+            return confirm(text);
+        }
+        
+        export function confirmProceed(text: string) {
+            return confirm(text, { buttonStyles: { yes: "proceed" } });
+        }
         
         function addError(errorBody: JQuery, error: any, idx: number){
             let row = $("<tr/>");

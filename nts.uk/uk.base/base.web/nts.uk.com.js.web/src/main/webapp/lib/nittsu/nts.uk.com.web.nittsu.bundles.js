@@ -26919,6 +26919,7 @@ var nts;
                                     then();
                                 }
                             }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/infor.png", text: ui_29.toBeResource.info });
+                        $this.find("button").focus();
                     }, 0);
                     return {
                         then: function (callback) {
@@ -26945,6 +26946,7 @@ var nts;
                                     then();
                                 }
                             }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/error.png", text: ui_29.toBeResource.error });
+                        $this.find("button").focus();
                     }, 0);
                     return {
                         then: function (callback) {
@@ -26977,6 +26979,7 @@ var nts;
                                     then();
                                 }
                             }], { text: nts.uk.resource.getText(ui_29.toBeResource.warn) });
+                        $this.find("button").focus();
                     }, 0);
                     return {
                         then: function (callback) {
@@ -26993,13 +26996,16 @@ var nts;
                  *          text information text
                  * @returns handler
                  */
-                function confirm(text) {
+                function confirm(text, option) {
                     var handleYes = $.noop;
                     var handleNo = $.noop;
                     var handleCancel = $.noop;
                     var handleThen = $.noop;
                     var hasNoButton = true;
                     var hasCancelButton = false;
+                    var option = option || {
+                        buttonStyles: { yes: "danger" }
+                    };
                     var handlers = {
                         ifYes: function (handler) {
                             handleYes = handler;
@@ -27026,7 +27032,7 @@ var nts;
                         // yes button
                         buttons.push({
                             text: ui_29.toBeResource.yes,
-                            "class": "yes large danger",
+                            "class": "yes large " + (option.buttonStyles.yes || ""),
                             click: function () {
                                 $this.dialog('close');
                                 handleYes();
@@ -27037,7 +27043,7 @@ var nts;
                         if (hasNoButton) {
                             buttons.push({
                                 text: ui_29.toBeResource.no,
-                                "class": "no large",
+                                "class": "no large " + (option.buttonStyles.no || ""),
                                 click: function () {
                                     $this.dialog('close');
                                     handleNo();
@@ -27058,11 +27064,25 @@ var nts;
                             });
                         }
                         var $this = createNoticeDialog(text, buttons);
+                        if (option.buttonStyles.yes === "danger") {
+                            $this.find("button.no").focus();
+                        }
+                        else if (option.buttonStyles.yes === "proceed") {
+                            $this.find("button.yes").focus();
+                        }
                     });
                     return handlers;
                 }
                 dialog.confirm = confirm;
                 ;
+                function confirmDanger(text) {
+                    return confirm(text);
+                }
+                dialog.confirmDanger = confirmDanger;
+                function confirmProceed(text) {
+                    return confirm(text, { buttonStyles: { yes: "proceed" } });
+                }
+                dialog.confirmProceed = confirmProceed;
                 function addError(errorBody, error, idx) {
                     var row = $("<tr/>");
                     row.append("<td style='display: none;'>" + idx + "/td><td>" + error["message"] + "</td><td>" + error["messageId"] + "</td>");
