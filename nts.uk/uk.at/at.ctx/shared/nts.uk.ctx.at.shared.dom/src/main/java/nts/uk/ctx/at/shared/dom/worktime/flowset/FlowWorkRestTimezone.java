@@ -105,4 +105,8 @@ public class FlowWorkRestTimezone extends WorkTimeDomainObject {
 			this.flowRestTimezone.restoreDefaultData(screenMode);
 		}
 	}
+	
+	public void restoreFixRestTime(boolean fixRestTime) {
+		this.fixRestTime = fixRestTime;
+	}
 }
