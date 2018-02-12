@@ -8,6 +8,7 @@
 	padding-top: 20px;
 	vertical-align: top;
 }
+
 #left-content {
 	padding: 20px;
 }
@@ -15,9 +16,11 @@
 .tr-height {
 	height: 70px;
 }
+
 #right-contents div table {
 	margin-right: 40px;
 }
+
 .td-width {
 	width: 200px;
 }

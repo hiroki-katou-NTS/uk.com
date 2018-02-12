@@ -16,42 +16,57 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-			<div id="side-menu" class="cf"></div>
+				<div id="side-menu" class="cf"></div>
 				<div id="content">
 					<div id="function-area" style="margin: 40px; margin-bottom: 10px">
 						<h1>Demo Main SCR to test -> CDL009</h1>
 						<h2>(所属社員選択ダイアログ)</h2>
 
 						<div style="margin-left: 10px; padding-top: 10px">
-							<p><b>Single/Multiple Selection (property of Employee List)</b></p><br></br>
-							<div class="cf" data-bind="ntsSwitchButton: {
+							<p>
+								<b>Single/Multiple Selection (property of Employee List)</b>
+							</p>
+							<br></br>
+							<div class="cf"
+								data-bind="ntsSwitchButton: {
 														options: selectionOption,
 														optionsValue: 'code',
 														optionsText: 'name',
 														value: selectedOption,
-														enable: true }"></div><br></br><br></br>
-							
-							<p><br></br><br></br> 
-								<b>Target Category:</b>
+														enable: true }"></div>
+							<br></br>
+							<br></br>
+
+							<p>
+								<br></br>
+								<br></br> <b>Target Category:</b>
 							</p>
 							<br></br>
-							<div id="target-classification" data-bind="ntsRadioBoxGroup: {
+							<div id="target-classification"
+								data-bind="ntsRadioBoxGroup: {
 											options: targetList,
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: selectedTarget,
-											enable: true}"></div><br></br><br></br>
-							<p><br></br>
-								<b>Base Date:</b>
+											enable: true}"></div>
+							<br></br>
+							<br></br>
+							<p>
+								<br></br> <b>Base Date:</b>
 							</p>
-							<div data-bind="ntsDatePicker: {value: baseDate, dateFormat: 'YYYY/MM/DD'}"></div>
-							
-							<div><br></br>
+							<div
+								data-bind="ntsDatePicker: {value: baseDate, dateFormat: 'YYYY/MM/DD'}"></div>
+
+							<div>
+								<br></br>
 								<p>
 									<b>Initial Selected Workplaces:</b>
 								</p>
 								<!-- <p data-bind="text: selectedIds()"></p> -->
-								<p><input data-bind="ntsTextEditor: {value: inputWorkplaceIds, option: {width: '500'}}" /></p>
+								<p>
+									<input
+										data-bind="ntsTextEditor: {value: inputWorkplaceIds, option: {width: '500'}}" />
+								</p>
 								<br></br>
 							</div>
 							<br></br>
@@ -60,11 +75,13 @@
 								<b>Click Button to Open Dialog</b>
 							</p>
 							<br></br>
-							<BUTTON data-bind="click: openDialog"
-								style="margin-right: 10px">Open Dialog</BUTTON>
+							<BUTTON data-bind="click: openDialog" style="margin-right: 10px">Open
+								Dialog</BUTTON>
 							<br></br>
-							
-							<div><br></br><br></br>
+
+							<div>
+								<br></br>
+								<br></br>
 								<p>
 									<b>Selected Employee:</b>
 								</p>

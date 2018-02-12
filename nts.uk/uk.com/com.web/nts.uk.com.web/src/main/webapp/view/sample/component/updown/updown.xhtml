@@ -63,7 +63,7 @@
 							class=""></div>
 					</div>
 					<div>
-									<article class="cf">
+						<article class="cf">
 							<div class="tabs">
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
@@ -71,11 +71,17 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-									<p>Using Ignite library so you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
-<pre><![CDATA[<ui:define name="htmlHead">
+									<p>
+										Using Ignite library so you must include following line in <i>&lt;ui:define
+											name="htmlHead"&gt;</i>
+									</p>
+									<pre>
+										<![CDATA[<ui:define name="htmlHead">
 	<com:scriptfile set="IGNITE" />
-</ui:define>]]></pre>
-<pre><![CDATA[<div>
+</ui:define>]]>
+									</pre>
+									<pre>
+										<![CDATA[<div>
 	<div id="swap-up-down"
 		data-bind="ntsUpDown: {
 				targetSource: itemsSwap,
@@ -106,11 +112,13 @@
 				swapTarget: 'right'
 			}"
 		class=""></div>
-</div>]]></pre>
+</div>]]>
+									</pre>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
 									<h2>TypeScript</h2>
-<pre><![CDATA[
+									<pre>
+										<![CDATA[
 	class ScreenModel {
         itemsSwap: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
@@ -144,11 +152,12 @@
             this.description = description;
         }
     }
-]]></pre>
+]]>
+									</pre>
 								</div>
 							</div>
 						</article>
-								</div>
+					</div>
 					<br />
 					<hr />
 					<h2>Multiple select grid case</h2>
@@ -175,7 +184,7 @@
 							class=""></div>
 					</div>
 					<div>
-									<article class="cf">
+						<article class="cf">
 							<div class="tabs">
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
@@ -183,11 +192,17 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-									<p>Using Ignite library so you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
-<pre><![CDATA[<ui:define name="htmlHead">
+									<p>
+										Using Ignite library so you must include following line in <i>&lt;ui:define
+											name="htmlHead"&gt;</i>
+									</p>
+									<pre>
+										<![CDATA[<ui:define name="htmlHead">
 	<com:scriptfile set="IGNITE" />
-</ui:define>]]></pre>
-<pre><![CDATA[<div>
+</ui:define>]]>
+									</pre>
+									<pre>
+										<![CDATA[<div>
 	<div style="display: inline-block;">
 		<table id="grid-test"
 			data-bind="ntsGridList: {
@@ -208,11 +223,13 @@
 				type: 'grid'
 			}"
 		class=""></div>
-</div>]]></pre>
+</div>]]>
+									</pre>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
 									<h2>TypeScript</h2>
-<pre><![CDATA[
+									<pre>
+										<![CDATA[
 	class ScreenModel {
         itemsSwap: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
@@ -247,11 +264,12 @@
             this.description = description;
         }
     }
-]]></pre>
+]]>
+									</pre>
 								</div>
 							</div>
 						</article>
-								</div>
+					</div>
 					<br />
 					<hr />
 					<h2>Single select grid case</h2>
@@ -278,7 +296,7 @@
 							class=""></div>
 					</div>
 					<div>
-									<article class="cf">
+						<article class="cf">
 							<div class="tabs">
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
@@ -286,11 +304,17 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-									<p>Using Ignite library so you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
-<pre><![CDATA[<ui:define name="htmlHead">
+									<p>
+										Using Ignite library so you must include following line in <i>&lt;ui:define
+											name="htmlHead"&gt;</i>
+									</p>
+									<pre>
+										<![CDATA[<ui:define name="htmlHead">
 	<com:scriptfile set="IGNITE" />
-</ui:define>]]></pre>
-<pre><![CDATA[<div>
+</ui:define>]]>
+									</pre>
+									<pre>
+										<![CDATA[<div>
 	<div style="display: inline-block;">
 		<table id="grid-test-single"
 			data-bind="ntsGridList: {
@@ -311,11 +335,13 @@
 				type: 'grid'
 			}"
 		class=""></div>
-</div>]]></pre>
+</div>]]>
+									</pre>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
 									<h2>TypeScript</h2>
-<pre><![CDATA[
+									<pre>
+										<![CDATA[
 	class ScreenModel {
         itemsSwap: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
@@ -350,11 +376,12 @@
             this.description = description;
         }
     }
-]]></pre>
+]]>
+									</pre>
 								</div>
 							</div>
 						</article>
-								</div>
+					</div>
 					<br />
 					<hr />
 					<h2>Tree view grid case</h2>
@@ -387,7 +414,7 @@
 							class=""></div>
 					</div>
 					<div>
-									<article class="cf">
+						<article class="cf">
 							<div class="tabs">
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
@@ -395,11 +422,17 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-									<p>Using Ignite library so you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
-<pre><![CDATA[<ui:define name="htmlHead">
+									<p>
+										Using Ignite library so you must include following line in <i>&lt;ui:define
+											name="htmlHead"&gt;</i>
+									</p>
+									<pre>
+										<![CDATA[<ui:define name="htmlHead">
 	<com:scriptfile set="IGNITE" />
-</ui:define>]]></pre>
-<pre><![CDATA[<div>
+</ui:define>]]>
+									</pre>
+									<pre>
+										<![CDATA[<div>
 	<div style="display: inline-block;">
 		<table id="treegrid"
 			data-bind="ntsTreeGridView:{
@@ -426,11 +459,13 @@
 				childDataKey: 'childs'
 			}"
 		class=""></div>
-</div>]]></pre>
+</div>]]>
+									</pre>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
 									<h2>TypeScript</h2>
-<pre><![CDATA[
+									<pre>
+										<![CDATA[
 	class ScreenModel {
         items1: KnockoutObservableArray<Node>;
         selectedCode: KnockoutObservableArray<any>;
@@ -483,64 +518,65 @@
             self.custom = 'Random' + new Date().getTime();
         }
     }
-]]></pre>
+]]>
+									</pre>
 								</div>
 							</div>
 						</article>
-								</div>
+					</div>
 					<div>
 						<h2>API</h2>
-					<table>
-						<colgroup>
-							<col width="200px" />
-						</colgroup>
-						<thead>
-							<tr>
-								<th><h4>Binding</h4></th>
-								<th><h4>Description</h4></th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>targetSource</td>
-								<td><b>Type:</b> Array. Sources of target grid (tree) for
-									action.<br /> + <b>Required: True.</b></td>
-							</tr>
-							<tr>
-								<td>primaryKey</td>
-								<td><b>Type:</b> string. Primary key of grid (tree).<br />
-									<b>Required: True.</b></td>
-							</tr>
-							<tr>
-								<td>comId</td>
-								<td><b>Type:</b> string. Id of target element.<br /> <b>Required:
-										True.</b></td>
-							</tr>
-							<tr>
-								<td>type</td>
-								<td><b>Type:</b> string. Type of target component.
-									Currently, only support GridList, TreeList, SwapList<br /> <b>Required:
-										True.</b></td>
-							</tr>
-							<tr>
-								<td>childDataKey</td>
-								<td><b>Type:</b> string. Children data in target sources
-									for tree case<br /> <b>Required: False (True in tree
-										case).</b></td>
-							</tr>
-							<tr>
-								<td>swapTarget</td>
-								<td><b>Type:</b> string. Because swap list have two grid.
-									Needs to determine what grid for action.<br /> <i>Default:</i>
-									'right'</td>
-							</tr>
-							<tr>
-								<td>height</td>
-								<td><b>Type:</b> number.<br /> <i>Default:</i> Height of
-									target.</td>
-							</tr>
-						</tbody>
-					</table>
+						<table>
+							<colgroup>
+								<col width="200px" />
+							</colgroup>
+							<thead>
+								<tr>
+									<th><h4>Binding</h4></th>
+									<th><h4>Description</h4></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>targetSource</td>
+									<td><b>Type:</b> Array. Sources of target grid (tree) for
+										action.<br /> + <b>Required: True.</b></td>
+								</tr>
+								<tr>
+									<td>primaryKey</td>
+									<td><b>Type:</b> string. Primary key of grid (tree).<br />
+										<b>Required: True.</b></td>
+								</tr>
+								<tr>
+									<td>comId</td>
+									<td><b>Type:</b> string. Id of target element.<br /> <b>Required:
+											True.</b></td>
+								</tr>
+								<tr>
+									<td>type</td>
+									<td><b>Type:</b> string. Type of target component.
+										Currently, only support GridList, TreeList, SwapList<br /> <b>Required:
+											True.</b></td>
+								</tr>
+								<tr>
+									<td>childDataKey</td>
+									<td><b>Type:</b> string. Children data in target sources
+										for tree case<br /> <b>Required: False (True in tree
+											case).</b></td>
+								</tr>
+								<tr>
+									<td>swapTarget</td>
+									<td><b>Type:</b> string. Because swap list have two grid.
+										Needs to determine what grid for action.<br /> <i>Default:</i>
+										'right'</td>
+								</tr>
+								<tr>
+									<td>height</td>
+									<td><b>Type:</b> number.<br /> <i>Default:</i> Height of
+										target.</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 					<div class="footer cf">
 						<button class="previous large">Previous</button>
