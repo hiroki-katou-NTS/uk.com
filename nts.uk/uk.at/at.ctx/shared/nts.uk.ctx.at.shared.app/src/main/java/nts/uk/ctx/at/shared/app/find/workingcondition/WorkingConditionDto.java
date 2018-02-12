@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.PeregItem;
@@ -948,6 +949,14 @@ public class WorkingConditionDto extends PeregDomainDto {
 		if(scheduleMethod.getWorkScheduleBusCal().isPresent()){
 			dto.setReferenceBusinessDayCalendar(scheduleMethod.getWorkScheduleBusCal().get().getReferenceBusinessDayCalendar().value);			
 			dto.setReferenceBasicWork(scheduleMethod.getWorkScheduleBusCal().get().getReferenceBasicWork().value);
+		}
+		if(scheduleMethod.getBasicCreateMethod() == WorkScheduleBasicCreMethod.MONTHLY_PATTERN)
+		{
+			if(scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent())
+				dto.setReferenceType(scheduleMethod.getMonthlyPatternWorkScheduleCre().get().getReferenceType().value);
+		}else if(scheduleMethod.getBasicCreateMethod() == WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR) {
+			if(scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent())
+				dto.setReferenceType(scheduleMethod.getWorkScheduleBusCal().get().getReferenceWorkingHours().value);
 		}
 		if(scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent())
 		dto.setReferenceType(scheduleMethod.getMonthlyPatternWorkScheduleCre().get().getReferenceType().value);
