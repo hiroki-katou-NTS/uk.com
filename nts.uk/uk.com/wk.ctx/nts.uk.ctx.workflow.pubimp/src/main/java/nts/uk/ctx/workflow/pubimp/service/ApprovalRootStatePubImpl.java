@@ -116,7 +116,8 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 					.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
 					.map(x -> {
 						return new ApprovalPhaseStateExport(
-								x.getPhaseOrder(), 
+								x.getPhaseOrder(),
+								x.getApprovalAtr().value,
 								x.getApprovalAtr().name, 
 								x.getListApprovalFrame()
 								.stream()
@@ -125,6 +126,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 									return new ApprovalFrameExport(
 											y.getPhaseOrder(), 
 											y.getFrameOrder(), 
+											y.getApprovalAtr().value,
 											y.getApprovalAtr().name, 
 											y.getListApproverState().stream().map(z -> { 
 												String approverName = personAdapter.getPersonInfo(z.getApproverID()).getEmployeeName();
