@@ -4,11 +4,67 @@ module nts.uk.time.minutesBased {
     
     export module clock {
         
+        export enum DayAttr {
+            THE_PREVIOUS_DAY = 0,
+            THE_PRESENT_DAY = 1,
+            THE_NEXT_DAY = 2,
+            TWO_DAY_LATER = 3,
+        }
+        
+        export namespace DayAttr {
+            export function fromValue(value: number) {
+                switch (value) {
+                    case 0: return DayAttr.THE_PREVIOUS_DAY;
+                    case 1: return DayAttr.THE_PRESENT_DAY;
+                    case 2: return DayAttr.THE_NEXT_DAY;
+                    case 3: return DayAttr.TWO_DAY_LATER;
+                    default: new Error("invalid value: " + value);
+                }
+            }
+            
+            export function fromDaysOffset(daysOffset: number) {
+                switch (daysOffset) {
+                    case -1: return DayAttr.THE_PREVIOUS_DAY;
+                    case 0: return DayAttr.THE_PRESENT_DAY;
+                    case 1: return DayAttr.THE_NEXT_DAY;
+                    case 2: return DayAttr.TWO_DAY_LATER;
+                    default: new Error("invalid daysOffset: " + daysOffset);
+                }
+            }
+            
+            export function toDaysOffset(dayAttr: DayAttr) {
+                switch (dayAttr) {
+                    case DayAttr.THE_PREVIOUS_DAY: return -1;
+                    case DayAttr.THE_PRESENT_DAY: return 0;
+                    case DayAttr.THE_NEXT_DAY: return 1;
+                    case DayAttr.TWO_DAY_LATER: return 2;
+                    default: new Error("invalid dayAttr: " + dayAttr);
+                }
+            }
+            
+            export function toText(dayAttr: DayAttr) {
+                switch (dayAttr) {
+                    case DayAttr.THE_PREVIOUS_DAY: return "前日";
+                    case DayAttr.THE_PRESENT_DAY: return "当日";
+                    case DayAttr.THE_NEXT_DAY: return "翌日";
+                    case DayAttr.TWO_DAY_LATER: return "翌々日";
+                    default: new Error("invalid dayAttr: " + dayAttr);
+                }
+            }
+        }
+        
+        
+        export type ClockFormatId
+            = "Clock_Short_HM"          // 5:03
+            | "ClockDay_Short_HM";      // 当日5:03
+        
         export interface ClockMinutesBasedTime extends MinutesBasedTime<ClockMinutesBasedTime> {
             daysOffset: number;
             hourPart: number;
             minutePart: number;
+            dayAttr: DayAttr;
             clockTextInDay: string;
+            formatById(formatId: ClockFormatId): string;
         }
         
         /**
@@ -30,10 +86,15 @@ module nts.uk.time.minutesBased {
             
             util.accessor.defineInto(clock)
                 .get("typeName", () => "ClockMinutesBasedTime")
-                .get("daysOffset", () => daysOffset())
+                .get("daysOffset", daysOffset)
                 .get("hourPart", () => Math.floor((positivizedMinutes() % MINUTES_IN_DAY) / 60))
                 .get("minutePart", () => positivizedMinutes() % 60)
-                .get("clockTextInDay", () => clock.hourPart + ":" + text.padLeft(clock.minutePart.toString(), "0", 2));
+                .get("dayAttr", () => DayAttr.fromDaysOffset(daysOffset()))
+                .get("clockTextInDay", () => format.clockTextInDay(clock));
+            
+            clock.formatById = function (formatId: ClockFormatId): string {
+                return format.byId(formatId, clock);
+            };
             
             return clock;
         }
@@ -52,6 +113,42 @@ module nts.uk.time.minutesBased {
             }
             
             return result;
+        }
+        
+        module format {
+            export function byId(formatId: ClockFormatId, clock: ClockMinutesBasedTime) {
+                switch (formatId) {
+                    case "Clock_Short_HM":
+                        return short.make(clock);
+                    case "ClockDay_Short_HM":
+                        return long.make(clock);
+                }
+            }
+            
+            export function clockTextInDay(clock: ClockMinutesBasedTime) {
+                return clock.hourPart + ":" + clock.minutePartText;
+            }
+            
+            module short {
+                export function make(clock: ClockMinutesBasedTime) {
+                    return sign(clock) + hours(clock) + ":" + clock.minutePartText;
+                }
+                
+                function sign(clock: ClockMinutesBasedTime) {
+                    return clock.daysOffset < 0 ? "-" : "";
+                }
+                
+                function hours(clock: ClockMinutesBasedTime) {
+                    return clock.daysOffset < 0 ? clock.hourPart : clock.daysOffset * 24 + clock.hourPart;
+                }
+            }
+            
+            module long {
+                
+                export function make(clock: ClockMinutesBasedTime) {
+                    return DayAttr.toText(clock.dayAttr) + clock.clockTextInDay;
+                }
+            }
         }
     }
 }

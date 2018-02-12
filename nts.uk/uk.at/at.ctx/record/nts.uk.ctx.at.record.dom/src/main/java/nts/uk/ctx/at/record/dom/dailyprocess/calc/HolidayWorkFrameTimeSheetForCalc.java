@@ -102,7 +102,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 */
 	public static HolidayWorkFrameTimeSheetForCalc createHolidayTimeWorkFrameTimeSheet(TimeLeavingWork attendanceLeave,HDWorkTimeSheetSetting holidayWorkFrameTimeSheet,WorkType today) {
 		//計算範囲判断
-		Optional<TimeSpanForCalc> calcrange = holidayWorkFrameTimeSheet.getTimezone().getDuplicatedWith(attendanceLeave.getTimeSpan());
+		Optional<TimeSpanForCalc> calcrange = holidayWorkFrameTimeSheet.getTimezone().getDuplicatedWith(attendanceLeave.getTimespan());
 		if(!calcrange.isPresent()) {
 			calcrange = Optional.of(new TimeSpanForCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)));
 		}

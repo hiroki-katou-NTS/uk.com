@@ -1391,14 +1391,20 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 param.param.workplaceId = employee.workplaceId;
                                 break
                         }
-                        $.when(service.findCodeName(param)).done((data) => {
-                           // $("#dpGrid").igGridUpdating("setCellValue", ui.rowID, "Name" + ui.columnKey.substring(4, ui.columnKey.length), (data == undefined ? "Not found" : data.name));
-                           // nts.uk.ui.block.clear();
-                            var object = {};
-                            object["Name" + ui.columnKey.substring(4, ui.columnKey.length)] = (data == undefined ? nts.uk.resource.getText("KDW003_81") : data.name);
+                        var object = {};
+                        if (ui.value == "") {
+                            object["Name" + ui.columnKey.substring(4, ui.columnKey.length)] = nts.uk.resource.getText("KDW003_82");
                             $("#dpGrid").ntsGrid("updateRow", ui.rowID, object);
-                            dfd.resolve();
-                        });
+                              dfd.resolve();
+                        } else {
+                            $.when(service.findCodeName(param)).done((data) => {
+                                // $("#dpGrid").igGridUpdating("setCellValue", ui.rowID, "Name" + ui.columnKey.substring(4, ui.columnKey.length), (data == undefined ? "Not found" : data.name));
+                                // nts.uk.ui.block.clear();
+                                object["Name" + ui.columnKey.substring(4, ui.columnKey.length)] = (data == undefined ? nts.uk.resource.getText("KDW003_81") : data.name);
+                                $("#dpGrid").ntsGrid("updateRow", ui.rowID, object);
+                                dfd.resolve();
+                            });
+                        }
                         dfd.promise();
                     }
                 } 

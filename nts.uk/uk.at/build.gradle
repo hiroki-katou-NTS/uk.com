@@ -116,7 +116,7 @@ subprojects {
         compile group: 'nts.gul', name: 'nts.gul', version: '0.43'
         compile group: 'nts.arc', name: 'nts.arc', version: '0.56.1'
 		
-		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.7.31'
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.7.32'
 	}
 }
 
@@ -304,6 +304,7 @@ project (':at.ctx:function:nts.uk.ctx.at.function.ac') {
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.pub')
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.pub')
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.31')
+		compile(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: '0.3.7')
 	}
 }
 project (':at.ctx:function:nts.uk.ctx.at.function.pub') {
