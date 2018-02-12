@@ -886,5 +886,4 @@ module nts.uk.time {
         return japaneseDate;
     }
 
-
 }

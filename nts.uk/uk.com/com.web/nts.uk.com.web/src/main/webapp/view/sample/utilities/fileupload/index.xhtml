@@ -27,6 +27,8 @@
 					<h1>File Uploading</h1>
 					<h2>Demo</h2>
 					<div id="file-upload" data-bind="ntsFileUpload:{
+						name: controlName,
+						required: required,
 						filename: filename,
 						accept: accept,
 						text: textId,
@@ -40,9 +42,11 @@
 					}"></div>
 					<br/>
 					<div>File (stereo) Type: <input data-bind="ntsTextEditor: { value: stereoType, option: { width: '310' } }" /></div>
+					<div data-bind="ntsCheckBox: { checked: required }">Required</div>
 					<div data-bind="ntsCheckBox: { checked: asLink }">As Link</div>
 					<div data-bind="ntsCheckBox: { checked: enable }">Enable</div>
 					<div data-bind="ntsCheckBox: { checked: immediate }">Immediate Upload</div>
+					<div><button data-bind="click: validate">validate</button></div>
 					<div>File ID (when uploaded): <input data-bind="ntsTextEditor: { value: fileId, option: { width: '310' } }" /></div>
 					
 					<br/><br/>

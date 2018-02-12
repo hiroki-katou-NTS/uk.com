@@ -2,6 +2,8 @@
 
 module nts.uk.ui.koExtentions {
     
+    const CONTROL_NAME = "control-name";
+    const REQUIRED = "required";
     const FILES_CACHE_FOR_CANCEL = "files-cache-for-cancel";
     const IS_RESTORED_BY_CANCEL = "restored-by-cancel";
     const SELECTED_FILE_NAME = "selected-file-name";
@@ -30,7 +32,7 @@ module nts.uk.ui.koExtentions {
             let uploadFinished: (fileInfo: any) => void = (data.uploadFinished !== undefined) ? data.uploadFinished : $.noop;
             
             // Container
-            let $container = $(element)
+            let $container = $(element);
             
             let $fileuploadContainer = $("<div class='nts-fileupload-container cf'></div>");
             let $fileBrowserButton = $("<button class='browser-button'></button>");
@@ -55,6 +57,8 @@ module nts.uk.ui.koExtentions {
                     $container.data(IS_RESTORED_BY_CANCEL, false)
                     return;
                 }
+                
+                $container.ntsError("clear");
                 
                 var selectedFilePath = $(this).val();
                 
@@ -92,6 +96,23 @@ module nts.uk.ui.koExtentions {
             $fileNameLabel.click(function() {
                 onfilenameclick($(this).text());
             });
+            
+            $container.bind("validate", function () {
+                if ($container.data(REQUIRED) && util.isNullOrEmpty(ko.unwrap(data.filename))) {
+                    let controlName = $container.data(CONTROL_NAME);
+                    $container.ntsError("set", resource.getMessage("FND_E_REQ_SELECT", [controlName]), "FND_E_REQ_SELECT");
+                } else {
+                    $container.ntsError("clear");
+                }
+            });
+            
+            $container
+                .data(ui.DATA_SET_ERROR_STYLE, function () {
+                    $container.addClass("error");
+                })
+                .data(ui.DATA_CLEAR_ERROR_STYLE, function () {
+                    $container.removeClass("error");
+                });
         }
 
         /**
@@ -106,6 +127,8 @@ module nts.uk.ui.koExtentions {
             let enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             
             let $container = $(element)
+                .data(CONTROL_NAME, ko.unwrap(data.name))
+                .data(REQUIRED, ko.unwrap(data.required) === true)
                 .data(STEREOTYPE, ko.unwrap(data.stereoType))
                 .data(IMMEDIATE_UPLOAD, ko.unwrap(data.immediateUpload) === true);
             
@@ -135,6 +158,7 @@ module nts.uk.ui.koExtentions {
             $fileBrowserButton.text(text);
             $fileBrowserButton.prop("disabled", !enable);
             $fileNameInput.prop("disabled", !enable);
+            
         }
     }
 
