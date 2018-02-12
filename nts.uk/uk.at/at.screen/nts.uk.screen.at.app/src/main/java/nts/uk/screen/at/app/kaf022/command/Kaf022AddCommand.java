@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.AppTypeBfCommand;
 import nts.uk.ctx.at.request.app.command.application.common.ApplicationSettingCommand;
 import nts.uk.ctx.at.request.app.command.application.triprequestsetting.TripRequestSetCommand;
 import nts.uk.ctx.at.request.app.command.application.workchange.AppWorkChangeSetCommand;
@@ -17,7 +18,6 @@ import nts.uk.ctx.at.request.app.command.setting.company.applicationcommonsettin
 import nts.uk.ctx.at.request.app.command.setting.company.applicationcommonsetting.ApprovalSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationsetting.ProxyAppSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.displayname.AppDispNameCommand;
-import nts.uk.ctx.at.request.app.command.setting.company.displayname.HdAppDispNameCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.ApprovalTempCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.MailHdInstructionCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.MailOtInstructionCommand;
@@ -38,8 +38,8 @@ public class Kaf022AddCommand {
 	private MailOtInstructionCommand mailOt;
 	private ApprovalTempCommand appTemp;
 	private ApplicationSettingCommand appliSet;
-	private AppDispNameCommand appName;
-	private HdAppDispNameCommand hdDisp;
+	private List<AppDispNameCommand> appName;
+//	private List<HdAppDispNameCommand> hdDisp;
 	private StampRequestSettingCommand stampReq;
 	private GoBackDirectlyCommonSettingCommand goBack;
 	private AppOvertimeSettingCommand appOt;
@@ -50,4 +50,6 @@ public class Kaf022AddCommand {
 	private TimeHdAppSetCommand timeHd;
 	private UpdateWithDrawalReqSetCommand wdReq;
 	private LateEarlyRequestCommand lateEarly;
+	// a7, 8
+	private AppTypeBfCommand appBf;
 }

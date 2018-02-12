@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.pubimp.dailyprocess.attendancetime;
 
 import java.util.HashMap;
 
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePub;
@@ -11,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
+@Stateless
 public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 
 	/**

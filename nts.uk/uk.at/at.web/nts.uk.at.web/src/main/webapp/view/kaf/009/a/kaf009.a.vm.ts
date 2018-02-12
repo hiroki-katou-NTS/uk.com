@@ -14,7 +14,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         //申請者
         employeeName: KnockoutObservable<string> = ko.observable("");
         //Pre-POST
-        prePostSelected: KnockoutObservable<number> = ko.observable(0);
+        prePostSelected: KnockoutObservable<number> = ko.observable(2);
+        defaultPrePost: number = 0;
         workState : KnockoutObservable<boolean> = ko.observable(true);
         typeSiftVisible : KnockoutObservable<boolean> = ko.observable(true);
         // 申請日付
@@ -94,14 +95,16 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 textalign: "left",
             }));
             self.startPage().done(function() {
-                self.kaf000_a.start(self.employeeID,1,4,moment(new Date()).format(self.dateType)).done(function(){
+                self.kaf000_a.start(self.employeeID,1,4,moment(new Date()).format(self.dateType)).done(function(data){
+                    self.defaultPrePost = data.defaultPrePostAtr;
                     nts.uk.ui.block.clear();
                     self.appDate.subscribe(value => {
                         if(!$('#inputdate').ntsError('hasError')){
                             if(!nts.uk.util.isNullOrEmpty(value)){
                                 nts.uk.ui.block.invisible();
                                 self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false)
-                                .done(()=>{
+                                .done((changeDateData)=>{
+                                    self.defaultPrePost = changeDateData.defaultPrePostAtr;
                                     nts.uk.ui.block.clear();         
                                 }).fail(()=>{
                                     nts.uk.ui.block.clear();    
@@ -418,7 +421,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 0,
                 "",
                 txtReasonTmp,
-                self.prePostSelected(),
+                self.prePostSelected() == 2 ? self.defaultPrePost : self.prePostSelected(),
                 moment().format(self.dateType),
                 self.employeeID,
                 "",

@@ -10,22 +10,33 @@ import javax.ws.rs.Produces;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.AppTypeBfCommand;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.UpdateAppTypeBfCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListExtractConditionDto;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfDto;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfFinder;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListFinder;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.ApplicationDisplayAtr;
+
 /**
  * 
  * @author hoatt
  *
  */
-
 @Path("at/request/application/applist")
 @Produces("application/json")
 public class ApplicationListWebservice extends WebService{
 
 	@Inject
 	private ApplicationListFinder appListFinder;
+	
+	@Inject
+	private AppTypeBfFinder bfreqFinder;
+	
+	@Inject
+	private UpdateAppTypeBfCommandHandler update;
+	
 	@POST
 	/**
 	 * get all list application
@@ -36,6 +47,28 @@ public class ApplicationListWebservice extends WebService{
 	public ApplicationListDto getApplicationList(AppListExtractConditionDto param) {
 		return this.appListFinder.getAppList(param);
 	}
+	
+	/**
+	 * get before After Restriction
+	 * @return
+	 * @author yennth
+	 */
+	@POST
+	@Path("getappDisp")
+	public AppTypeBfDto getBeforAfer() {
+		return this.bfreqFinder.findByCom();
+	}
+	/**
+	 * update after, before and apptype set
+	 * @return
+	 * @author yennth
+	 */
+	@POST
+	@Path("update")
+	public void update(AppTypeBfCommand cm) {
+		this.update.handle(cm);
+	}
+	
 	/**
 	 * Enum 申請表示区分.
 	 *

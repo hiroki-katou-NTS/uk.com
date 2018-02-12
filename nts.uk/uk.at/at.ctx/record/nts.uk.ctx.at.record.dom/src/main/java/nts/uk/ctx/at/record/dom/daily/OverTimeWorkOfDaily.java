@@ -51,18 +51,7 @@ public class OverTimeWorkOfDaily {
 		}
 	}
 	
-	/**
-	 * 残業時間枠時間帯をループさせ時間を計算する
-	 * @param autoCalcSet 時間外時間の自動計算設定
-	 */
-	public List<OverTimeFrameTime> collectOverTimeWorkTime(AutoCalculationOfOverTimeWork autoCalcSet) {
-		List<OverTimeFrameTime> calcOverTimeWorkTimeList = new ArrayList<>();
-		for(OverTimeFrameTimeSheet OverTimeFrameTime : OverTimeFrameTimeSheet) {
-			//calcOverTimeWorkTimeList.add(OverTimeFrameTime.calcOverTimeWorkTime(autoCalcSet));
-			//calcOverTimeWorkTimeList.add();
-		}
-		return calcOverTimeWorkTimeList;
-	}
+
 	
 	/**
 	 * 残業枠時間へ残業時間の集計結果を追加する

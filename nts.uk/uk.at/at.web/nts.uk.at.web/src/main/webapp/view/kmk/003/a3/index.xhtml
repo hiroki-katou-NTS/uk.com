@@ -132,14 +132,26 @@
 			</com:ko>
 			
 		</com:ko>
-		
-		<com:ko tag="if" bind="isFlowMode">
-			<div class="tab-seperator">	
-				<div tabindex="59" id="tab3_fixtable_flow" data-bind="ntsFixTableCustom: {option: fixTableOptionOvertimeFlow}"></div>
-			</div>
+
+			<com:ko tag="if" bind="isFlowMode">
+
+				<com:ko tag="if" bind="isDetailMode">
+					<div class="tab-seperator">
+						<div tabindex="59" id="tab3_fixtable_flow"
+							data-bind="ntsFixTableCustom: {option: fixTableOptionOvertimeFlow}"></div>
+					</div>
+				</com:ko>
+
+
+				<com:ko tag="ifnot" bind="isDetailMode">
+					<div class="tab-seperator">
+						<div tabindex="59" id="tab3_fixtable_flow"
+							data-bind="ntsFixTableCustom: {option: fixTableOptionOvertimeFlow}"></div>
+					</div>
+				</com:ko>
+			</com:ko>
+
 		</com:ko>
-		
-	</com:ko>
 	
 	<com:ko tag="if" bind="isFlexMode">
 		<div class="tab-seperator">	

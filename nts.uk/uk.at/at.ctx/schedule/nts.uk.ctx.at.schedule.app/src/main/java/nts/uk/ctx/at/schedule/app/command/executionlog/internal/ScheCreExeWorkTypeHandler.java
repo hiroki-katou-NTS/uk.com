@@ -194,16 +194,16 @@ public class ScheCreExeWorkTypeHandler {
 				WorkTypeCd = workType2.getWorkTypeCode().v();
 				break;
 			case 2:
-				closeAtr = 3;
-				break;
-			case 3:
-				closeAtr = 2;
-				break;
-			case 4:
 				closeAtr = 0;
 				break;
-			case 5:
+			case 3:
 				closeAtr = 1;
+				break;
+			case 4:
+				closeAtr = 2;
+				break;
+			case 5:
+				closeAtr = 3;
 				break;
 			default:
 				//6,7,8,9,10

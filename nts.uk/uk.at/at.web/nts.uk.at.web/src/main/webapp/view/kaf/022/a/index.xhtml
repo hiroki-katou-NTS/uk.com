@@ -30,6 +30,7 @@
 			</com:ValidatorScript>
 			<com:EnumScript>
 				nts.uk.ctx.at.request.dom.application.ApplicationType
+				nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppType
 			</com:EnumScript>
 		</ui:define>
 		<ui:define name="sidebar">
@@ -46,7 +47,7 @@
 				<span class="title" data-bind="text: title"></span>
 				<com:ko-if bind="currentTab()==='a'">
 					<!-- A2_1 -->
-					<button class="proceed">#{i18n.getText('KMF004_2')}</button>
+					<button class="proceed" data-bind="click: function(){$parent.viewmodelA.save($parent.viewmodelA);}">#{i18n.getText('KMF004_2')}</button>
 					
 				</com:ko-if>
 				<com:ko-if bind="currentTab()==='l'">

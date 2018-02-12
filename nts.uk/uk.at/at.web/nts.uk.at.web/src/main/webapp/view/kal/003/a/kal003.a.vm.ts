@@ -283,6 +283,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                             self.selectedDataCondition(item.dailyAlarmCheckCondition().conditionToExtractDaily());
                             self.tabFixedCondition.listFixedConditionWorkRecord(item.dailyAlarmCheckCondition().listFixedExtractConditionWorkRecord());
                             self.tabDailyErrorAlarm.currentCodeList(item.dailyAlarmCheckCondition().listErrorAlarmCode());
+                            self.tabDailyErrorAlarm.addApplication(item.dailyAlarmCheckCondition().addApplication());
                         }
                         
                         self.screenMode(model.SCREEN_MODE.UPDATE);

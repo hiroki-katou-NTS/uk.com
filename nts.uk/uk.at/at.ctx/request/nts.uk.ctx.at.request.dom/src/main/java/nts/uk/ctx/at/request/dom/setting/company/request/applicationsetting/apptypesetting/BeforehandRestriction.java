@@ -2,6 +2,8 @@ package nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.app
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.time.AttendanceClock;
 /**
@@ -32,5 +34,14 @@ public class BeforehandRestriction extends DomainObject {
 	 * 時刻
 	 */
 	private AttendanceClock timeBeforehandRestriction;
+	
+	public static BeforehandRestriction toDomain(Integer methodCheck, Integer toUse, 
+			Integer dateBeforehandRestriction, Integer timeBeforehandRestriction){
+		return new BeforehandRestriction(
+				EnumAdaptor.valueOf(methodCheck, BeforeAddCheckMethod.class), 
+				toUse == 1 ? true : false, 
+				EnumAdaptor.valueOf(dateBeforehandRestriction, AppAcceptLimitDay.class), 
+				new AttendanceClock(timeBeforehandRestriction));
+	}
 	
 }

@@ -3,7 +3,7 @@ module nts.uk.at.view.kaf010.shr.service {
         getHolidayWorkByUI: "at/request/application/holidaywork/getHolidayWorkByUI",
         findByChangeAppDate: "at/request/application/holidaywork/findChangeAppDate",
         checkConvertPrePost: "at/request/application/overtime/checkConvertPrePost",
-        getCaculationResult: "at/request/application/overtime/getCaculationResult",
+        getCaculationResult: "at/request/application/holidaywork/getcalculationresult",
         createOvertime: "at/request/application/overtime/create",
         deleteOvertime: "at/request/application/overtime/delete",
         updateOvertime: "at/request/application/overtime/update",

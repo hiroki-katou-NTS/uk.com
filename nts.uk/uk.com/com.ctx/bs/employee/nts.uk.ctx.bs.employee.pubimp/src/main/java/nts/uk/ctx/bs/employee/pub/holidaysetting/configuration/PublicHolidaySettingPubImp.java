@@ -6,6 +6,7 @@ package nts.uk.ctx.bs.employee.pub.holidaysetting.configuration;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidaySetting;
@@ -15,6 +16,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Class PublicHolidaySettingPubImp.
  */
+@Stateless
 public class PublicHolidaySettingPubImp implements PublicHolidaySettingPub{
 
 	/** The pub hd set repo. */
