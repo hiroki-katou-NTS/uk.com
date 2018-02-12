@@ -393,7 +393,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
             let dataChangeProcess: any = [];
             _.each(dataChange, (data: any) => {
-                if (data.columnKey != "sign" && data.value != "") {
+                if (data.columnKey != "sign") {
                     let dataTemp = _.find(self.dpData, (item: any) => {
                         return item.id == data.rowId.substring(1, data.rowId.length);
                     });
@@ -441,8 +441,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     // nts.uk.ui.block.clear();
                     dfd.resolve();
                 }).fail((data) => {
-                    alert("fail");
                      nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.alert(data.message);
                     dfd.resolve();
                 });
                 dfd.promise();
@@ -459,7 +459,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
             let dataChangeProcess: any = [];
             _.each(dataChange, (data: any) => {
-                if (data.columnKey != "sign"  && data.value != "") {
+                if (data.columnKey != "sign") {
                     let dataTemp = _.find(self.dpData, (item: any) => {
                         return item.id == data.rowId.substring(1, data.rowId.length);
                     });
@@ -506,8 +506,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.btnExtraction_Click();
                     dfd.resolve();
                 }).fail((data) => {
-                    alert("fail");
                     nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.alert(data.message);
                     dfd.resolve();
                 });
                 dfd.promise();
