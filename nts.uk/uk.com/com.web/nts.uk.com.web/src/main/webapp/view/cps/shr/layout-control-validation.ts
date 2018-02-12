@@ -24,12 +24,13 @@ module nts.layout {
             });
         },
         initCheckError: (items: Array<any>) => {
+            // validate button, radio button
             _(items)
                 .filter(x => _.has(x, "items") && _.isFunction(x.items))
                 .map(x => x.items())
                 .flatten()
                 .flatten()
-                .filter((x: any) => x.required)
+                .filter((x: IItemData) => x.required && x.type != ITEM_TYPE.SET)
                 .each((x: IItemData) => {
                     let v: any = ko.toJS(x),
                         id = v.itemDefId.replace(/[-_]/g, ''),
@@ -38,7 +39,7 @@ module nts.layout {
 
                     if (element && (element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper'))) {
                         x.value.subscribe(d => {
-                            !nou(d) && rmError($element, "FND_E_REQ_INPUT");
+                            !nou(d) && rmError($element, "FND_E_REQ_SELECT");
                         });
                     }
                 });
@@ -49,7 +50,7 @@ module nts.layout {
                 .map(x => x.items())
                 .flatten()
                 .flatten()
-                .filter((x: any) => x.required)
+                .filter((x: any) => x.required && x.type != ITEM_TYPE.SET)
                 .map(x => ko.toJS(x))
                 .each(x => {
                     let id = x.itemDefId.replace(/[-_]/g, ''),
@@ -64,7 +65,7 @@ module nts.layout {
                         } else if (element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper')) {
                             if (nou(x.value) && x.required) {
                                 if (!getError($element).length) {
-                                    $element.ntsError('set', { messageId: "FND_E_REQ_INPUT", messageParams: [x.itemName] });
+                                    $element.ntsError('set', { messageId: "FND_E_REQ_SELECT", messageParams: [x.itemName] });
                                 }
                             }
                         }
@@ -168,6 +169,9 @@ module nts.layout {
                         }
                     });
                 });
+                setTimeout(() => {
+                    CS00020_IS00248.data.value.valueHasMutated();
+                }, 0);
             }
 
             if (CS00020_IS00121) {
@@ -183,6 +187,9 @@ module nts.layout {
                         }
                     });
                 });
+                setTimeout(() => {
+                    CS00020_IS00121.data.value.valueHasMutated();
+                }, 0);
             }
         };
 
@@ -501,6 +508,11 @@ module nts.layout {
         SPER = <any>"SeparatorLine" // line item
     }
 
+    enum ITEM_TYPE {
+        SET = 1,
+        SINGLE = 2
+    }
+
     interface IValidation {
         radio: () => void;
         button: () => void;
@@ -519,7 +531,10 @@ module nts.layout {
     }
 
     interface IItemData {
+        'type': ITEM_TYPE;
+        required: boolean;
         value: KnockoutObservable<any>;
+        items: KnockoutObservableArray<any>;
         editable: KnockoutObservable<boolean>;
         readonly: KnockoutObservable<boolean>;
         categoryCode: string;

@@ -49,6 +49,10 @@
 			<com:scriptfile path="../../007/share/kaf007.share.vm.js" />
 			<com:scriptfile path="../../007/share/kaf007.share.service.js" />
 			<com:scriptfile path="../../007/b/kaf007.b.vm.js" />
+			<com:scriptfile path="../../010/shr/kaf010.shr.service.js" />
+			<com:scriptfile path="../../010/shr/kaf010.shr.vm.js" />
+			<com:scriptfile path="../../010/b/kaf010.b.vm.js" />
+			
 			<com:scriptfile path="kaf000.b.start.js" />
 		</ui:define>
 		<ui:define name="content">
@@ -172,6 +176,9 @@
 				</com:ko-if>
 				<com:ko-if bind="appType() == 2">
 					<ui:include src="../../007/b/index.xhtml" />
+				</com:ko-if>
+				<com:ko-if bind="appType() == 6">
+					<ui:include src="../../010/b/index.xhtml" />
 				</com:ko-if>
 				
 				<!-- Footer -->

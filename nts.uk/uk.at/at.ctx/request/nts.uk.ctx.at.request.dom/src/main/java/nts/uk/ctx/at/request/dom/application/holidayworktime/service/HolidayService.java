@@ -24,6 +24,16 @@ public interface HolidayService {
 	 */
 	public WorkTypeHolidayWork getWorkTypes(String companyID, String employeeID,List<AppEmploymentSetting> appEmploymentSettings,GeneralDate appDate,Optional<PersonalLaborCondition> personalLablorCodition);
 	/**
+	 * 4_b.勤務種類を取得する（詳細）
+	 * @param companyID
+	 * @param employeeID
+	 * @param appEmploymentSettings
+	 * @param appDate
+	 * @param personalLablorCodition
+	 * @return
+	 */
+	public WorkTypeHolidayWork getListWorkType(String companyID, String employeeID,List<AppEmploymentSetting> appEmploymentSettings,GeneralDate appDate,Optional<PersonalLaborCondition> personalLablorCodition);
+	/**
 	 * 4_c.初期選択
 	 * @param workType
 	 * @param appDate

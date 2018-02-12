@@ -441,11 +441,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     // nts.uk.ui.block.clear();
                     dfd.resolve();
                 }).fail((data) => {
-                    alert("fail");
                      nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.alert(data.message);
                     dfd.resolve();
                 });
                 dfd.promise();
+            }else{
+                 nts.uk.ui.block.clear(); 
             }
             debugger;
         }
@@ -504,11 +506,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.btnExtraction_Click();
                     dfd.resolve();
                 }).fail((data) => {
-                    alert("fail");
                     nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.alert(data.message);
                     dfd.resolve();
                 });
                 dfd.promise();
+            }else{
+                  nts.uk.ui.block.clear();
             }
             debugger;
         }
