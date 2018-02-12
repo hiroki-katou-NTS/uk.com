@@ -39,6 +39,16 @@ public class TimeZone extends WorkTimeDomainObject {
 		super();
 		this.start = start;
 		this.end = end;
+		if(start == null && end == null) {
+			this.start = new TimeWithDayAttr(0);
+			this.end = new TimeWithDayAttr(0);
+		}
+		else if(start == null){
+			this.start = this.end;
+		}
+		else if(end == null) {
+			this.end = this.start;
+		}
 	}
 
 	/**

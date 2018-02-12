@@ -224,7 +224,7 @@ public class CalculationRangeOfOneDay {
 		for (int workNumber = 1; workNumber <= attendanceLeavingWork.getTimeLeavingWorks().size(); workNumber++) {
 			if(workNumber <=1) {
 				/* 就業内の時間帯作成 */
-				val createWithinWorkTimeSheet = WithinWorkTimeSheet.createAsFixed(toDay, predetermineTimeSet, fixedWorkSetting,workTimeCommonSet, deductionTimeSheet, bonusPaySetting); 
+				val createWithinWorkTimeSheet = WithinWorkTimeSheet.createAsFixed(attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)),toDay, predetermineTimeSet, fixedWorkSetting,workTimeCommonSet, deductionTimeSheet, bonusPaySetting); 
 				withinWorkingTimeSheet.set(createWithinWorkTimeSheet);
 				/* 就業外の時間帯作成 */
 				outsideWorkTimeSheet.set(OutsideWorkTimeSheet.createOutsideWorkTimeSheet(overTimeHourSetList, fixOff,
