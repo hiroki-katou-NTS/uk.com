@@ -14,10 +14,10 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 @AllArgsConstructor
 public class SchePerInfoAtr extends DomainObject {
-	/** 会社ID */
+	/** 会社ID **/
 	private String companyId;
 	
-	/** コード */
+	/** 個人情報区分 **/
 	private PerInfoAtr personInfoAtr;
 	
 	/**
