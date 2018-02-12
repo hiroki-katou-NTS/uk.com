@@ -76,8 +76,8 @@
 				</div>
 			</div>
 		<div tabindex="6" id="tab-panel" class="cf ccg-tabpanel pull-left"
-			data-bind="if: isQuickSearchTab||isAdvancedSearchTab, ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-			<com:ko tag="if" bind="isQuickSearchTab || !isAdvancedSearchTab">
+			data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+			<com:ko tag="if" bind="isQuickSearchTab">
 				<div tabindex="-1" class="tab-content-1">
 					<com:ko tag="if" bind="isAllReferableEmployee">
 						<div tabindex="7" class="btn-quick-search" data-bind="click: searchAllListEmployee">

@@ -226,6 +226,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.quickSearchParam.filterByJobTitle = false;
                 self.quickSearchParam.jobTitleCodes = [];
                 self.quickSearchParam.includeIncumbents = true;
+                self.quickSearchParam.includeWorkersOnLeave = false;
                 self.quickSearchParam.includeOccupancy = false;
                 self.quickSearchParam.includeRetirees = false;
                 self.quickSearchParam.sortOrderNo = 1; // 並び順NO＝1
@@ -438,11 +439,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
             private setQuickSearchParam(options: GroupOption): void {
                 let param = this.quickSearchParam;
-                param.filterByEmployment = options.showEmployment;
-                // not covered param.filterByDepartment = options.showDepartment;
-                param.filterByWorkplace = options.showWorkplace;
-                param.filterByClassification = options.showClassification;
-                param.filterByJobTitle = options.showJobTitle;
+                param.filterByEmployment =  options.showClosure;
             }
 
             private setAdvancedSearchParam(options: GroupOption): void {
@@ -470,14 +467,15 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 /** Common properties */
                 self.isShowEmployeeList = options.isSelectAllEmployee;
-                self.systemType = 5; //TODO: mock data
-                self.isQuickSearchTab = options.isQuickSearchTab;
+                self.systemType = options.systemType;
+                // always show quick search if advanced search is hidden
+                self.isQuickSearchTab = options.isAdvancedSearchTab ? options.isQuickSearchTab : true;
                 self.isAdvancedSearchTab = options.isAdvancedSearchTab;
-                self.showBaseDate = true;
-                self.showClosure = true; //TODO: mock data
+                self.showBaseDate = options.showBaseDate;
+                self.showClosure = options.showClosure;
                 self.showAllClosure = options.showAllClosure;
-                self.showPeriod = false;
-                self.showPeriodYM = options.periodAccuracy == 1 ? true : false; // 1 == YM, other = YMD
+                self.showPeriod = options.showPeriod;
+                self.showPeriodYM = options.periodFormatYM;
 
                 /** Required parameter */
                 self.baseDate = ko.observable(moment()); //TODO: mock data
@@ -497,12 +495,12 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.isEmployeeWorkplaceFollow = options.isEmployeeWorkplaceFollow;
 
                 /** Advanced search properties */
-                self.showEmployment = true; //options.showEmployment;
-                self.showWorkplace = true; //options.showWorkplace;
-                self.showClassification = true; //options.showClassification;
-                self.showJobTitle = true; //options.showJobTitle;
-                self.showWorktype = true; //options.showWorktype;
-                self.isMultiple = true; //options.isMutipleCheck;
+                self.showEmployment = options.showEmployment;
+                self.showWorkplace = options.showWorkplace;
+                self.showClassification = options.showClassification;
+                self.showJobTitle = options.showJobTitle;
+                self.showWorktype = options.showWorktype;
+                self.isMultiple = options.isMutipleCheck;
 
                 // functions
                 self.onSearchAllClicked = options.onSearchAllClicked;
@@ -998,6 +996,8 @@ module nts.uk.com.view.ccg.share.ccg {
                         });
                     } 
                 }
+                // test
+                service.findRegulationInfoEmployee(self.quickSearchParam);
                 
                 self.changeListWorkplaceId();
                 

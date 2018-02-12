@@ -190,7 +190,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 showClosure: boolean; // 就業締め日利用
                 showAllClosure: boolean; // 全締め表示
                 showPeriod: boolean; // 対象期間利用
-                periodAccuracy: number; // 対象期間精度
+                periodFormatYM: boolean; // 対象期間精度
 
                 /** Required parameter */
                 baseDate?: string; // 基準日
