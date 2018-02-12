@@ -9,11 +9,12 @@
 	<ui:composition template="../../../../master/freelayout.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 985, height: 765 };</script>
-			<com:scriptfile path="../model.js" />
+			<com:scriptfile path="/view/ccg/common/model.js" />
+			<com:scriptfile path="/view/ccg/common/positionUtility.js" />
 			<com:scriptfile path="previewWidget.service.js" />
 			<com:scriptfile path="previewWidget.vm.js" />
 			<com:scriptfile path="previewWidget.start.js" />
-			<com:stylefile path="../common.css" />
+			<com:stylefile path="/view/ccg/common/common.css" />
 			<com:stylefile path="previewWidget.style.css" />
 		</ui:define>
 

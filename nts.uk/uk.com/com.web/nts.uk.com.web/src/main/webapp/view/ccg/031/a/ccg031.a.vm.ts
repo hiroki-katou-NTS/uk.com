@@ -5,9 +5,9 @@ module nts.uk.com.view.ccg031.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import resource = nts.uk.resource;
     import block = nts.uk.ui.block;
+    import positionUtil = nts.uk.com.view.ccg.positionUtility;
     const MINROW: number = 4;
     const MINCOLUMN: number = 6;
-    const ANIMATION_EASETYPE: string = "easeOutQuint";
     const ANIMATION_DURATION: number = 500;
 
     export class ScreenModel {
@@ -110,12 +110,12 @@ module nts.uk.com.view.ccg031.a.viewmodel {
             $(element).addClass("hover");
             windows.setShared("pgtype", self.pgType, false);
             windows.setShared("size", { row: row, column: column }, false);
-            windows.sub.modal("/view/ccg/031/b/index.xhtml", { title: "ウィジェットの追加" }).onClosed(() => {
+            windows.sub.modal("/view/ccg/031/b/index.xhtml").onClosed(() => {
                 block.clear();
                 let placement: model.Placement = windows.getShared("placement");
                 if (placement != undefined) {
                     self.placements.push(placement);
-                    self.setupPositionAndSize(placement);
+                    positionUtil.setupPositionAndSize(placement);
                     var movingPlacementIds = self.layoutGrid().markOccupied(placement);
                     self.reorderPlacements(movingPlacementIds, [placement.placementID]);
                     self.autoExpandLayout();
@@ -146,25 +146,11 @@ module nts.uk.com.view.ccg031.a.viewmodel {
         /** Init all Widget display & binding */
         private initDisplay(): void {
             var self = this;
-            self.initReorderPlacements(_.clone(self.placements()), []);
+            positionUtil.initReorderPlacements(_.clone(self.placements()), []);
             self.autoExpandLayout();
             self.markOccupiedAll();
-            self.setupPositionAndSizeAll();
+            positionUtil.setupPositionAndSizeAll(self.placements());
             self.setupDragDrop();
-        }
-
-        /** Re-order all Placements when init */
-        private initReorderPlacements(listPlacements: Array<model.Placement>, checkingPlacements: Array<model.Placement>): void {
-            var self = this;
-            if (listPlacements.length > 0) {
-                // Moving Placement
-                var movingPlacement = listPlacements[0];
-                self.shiftOverlapPart(movingPlacement, checkingPlacements);
-
-                checkingPlacements.push(listPlacements[0]);
-                _.pullAt(listPlacements, [0]);
-                self.initReorderPlacements.call(self, listPlacements, checkingPlacements);
-            }
         }
 
         /** Setup Draggable & Droppable */
@@ -201,7 +187,7 @@ module nts.uk.com.view.ccg031.a.viewmodel {
                     self.layoutGrid().clearOccupied(placement);
                     placement.row = ntsNumber.getDecimal($dropable.attr("id").split("-")[1], 0);
                     placement.column = ntsNumber.getDecimal($dropable.attr("id").split("-")[2], 0);
-                    self.setupPositionAndSize(placement);
+                    positionUtil.setupPositionAndSize(placement);
                     var movingPlacementIds = self.layoutGrid().markOccupied(placement);
                     self.reorderPlacements(movingPlacementIds, [placement.placementID]);
                     self.autoExpandLayout();
@@ -216,7 +202,7 @@ module nts.uk.com.view.ccg031.a.viewmodel {
          * @param movingPlacementIds list placementID need to move
          * @param checkingPlacementIds list placementID need to check overlap
          */
-        private reorderPlacements(movingPlacementIds: Array<string>, checkingPlacementIds: Array<string>): Array<string> {
+        private reorderPlacements(movingPlacementIds: Array<string>, checkingPlacementIds: Array<string>): any {
             var self = this;
             var movingPlacements = _.filter(self.placements(), (placement) => {
                 return _.includes(movingPlacementIds, placement.placementID);
@@ -228,84 +214,17 @@ module nts.uk.com.view.ccg031.a.viewmodel {
                 var checkingPlacements = _.filter(self.placements(), (placement) => {
                     return _.includes(checkingPlacementIds, placement.placementID);
                 });
-                self.shiftOverlapPart(movingPlacement, checkingPlacements);
+                positionUtil.shiftOverlapPart(movingPlacement, checkingPlacements);
                 // Add that moving placement to checking so that Placement won't be move anymore
                 checkingPlacementIds.push(movingPlacement.placementID);
                 checkingPlacementIds = _.union(checkingPlacementIds);
                 // List Placement need to moving because their parents were moved
                 listOverlapPlacement = _.concat(listOverlapPlacement, self.layoutGrid().markOccupied(movingPlacement));
                 self.autoExpandLayout();
-                self.setupPositionAndSize(movingPlacement, ANIMATION_DURATION);
+                positionUtil.setupPositionAndSize(movingPlacement, ANIMATION_DURATION);
             });
             if (listOverlapPlacement.length > 0)
                 self.reorderPlacements.call(self, listOverlapPlacement, checkingPlacementIds);
-        }
-
-        /** Recursive move overlap part */
-        private shiftOverlapPart(movingPlacement: model.Placement, checkingPlacements: Array<model.Placement>): void {
-            var self = this;
-            var newColumnPosition: Array<number> = [];
-            _.each(checkingPlacements, (checkingPlacement) => {
-                if (!_.isEqual(movingPlacement, checkingPlacement)) {
-                    if (self.checkIntersect(movingPlacement, checkingPlacement)) {
-                        movingPlacement.column = checkingPlacement.column + checkingPlacement.width;
-                        // Check if new position is overlap
-                        self.shiftOverlapPart.call(self, movingPlacement, _.clone(checkingPlacements));
-                    }
-                }
-            });
-        }
-
-        /** Check 2 placements is intersect */
-        private checkIntersect(placeA: model.Placement, placeB: model.Placement): boolean {
-            var AX1: number = placeA.column;
-            var AY1: number = placeA.row;
-            var AX2: number = placeA.column + placeA.width - 1;
-            var AY2: number = placeA.row + placeA.height - 1;
-            var BX1: number = placeB.column;
-            var BY1: number = placeB.row;
-            var BX2: number = placeB.column + placeB.width - 1;
-            var BY2: number = placeB.row + placeB.height - 1;
-            if (AX1 <= BX2 && AX2 >= BX1 &&
-                AY1 <= BY2 && AY2 >= BY1) {
-                return true;
-            }
-            return false;
-        }
-
-        /** Setup position and size for all Placements */
-        private setupPositionAndSizeAll(): void {
-            var self = this;
-            _.forEach(self.placements(), (placement) => {
-                self.setupPositionAndSize(placement);
-            });
-        }
-
-        /**
-         * Setup position and size for a Placement
-         * @param placement placement need to setup
-         * @param duration milliseconds moving a placement
-         */
-        private setupPositionAndSize(placement: model.Placement, duration?: number): void {
-            var self = this;
-            var $placement = $("#" + placement.placementID);
-            duration = duration || 0;
-            $placement.css({
-                width: (placement.width * 150) + ((placement.width - 1) * 10),
-                height: (placement.height * 150) + ((placement.height - 1) * 10)
-            });
-            if (duration === 0) {
-                $placement.css({
-                    top: ((placement.row - 1) * 150) + ((placement.row - 1) * 10),
-                    left: ((placement.column - 1) * 150) + ((placement.column - 1) * 10)
-                });
-            }
-            else {
-                $placement.animate({
-                    top: ((placement.row - 1) * 150) + ((placement.row - 1) * 10),
-                    left: ((placement.column - 1) * 150) + ((placement.column - 1) * 10),
-                }, duration, ANIMATION_EASETYPE);
-            }
         }
 
         /** Expand layout */
