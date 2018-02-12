@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/sidebar.xhtml">
+		<ui:define name="sidebar-head">
+			<com:scriptfile set="IGNITE" />
+<!-- 			<com:stylefile path="cas014.a.style.css" /> -->
+<!-- 			<com:scriptfile path="cas014.a.service.js" /> -->
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="cmf001.b.vm.js" />
+			
+<!-- 			<com:scriptfile path="../b/cas014.b.vm.js" /> -->
+<!-- 			<com:scriptfile path="../b/cas014.b.service.js" /> -->
+			
+			<com:scriptfile path="cmf001.b.start.js" />
+		</ui:define>
+		
+		<ui:define name="sidebar">
+			<ul class="navigator">
+				<li><a href="#tabpanel-1" role="tab-navigator" class="active" data-bind="click: nts.uk.ui.errors.clearAll()">#{i18n.getText('CMF001_27')}</a></li>
+				<li><a href="#tabpanel-2" role="tab-navigator" data-bind="click: nts.uk.ui.errors.clearAll()">#{i18n.getText('CMF001_28')}</a></li>
+			</ul>
+		</ui:define>
+
+		<ui:define name="sidebar-content">
+			<div id="tabpanel-1" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span tabindex="-1" class="title">#{i18n.getText('CMF001_27')}</span>
+					<button tabindex="1" >#{i18n.getText('CMF001_29')}</button>
+					<button tabindex="2" class="proceed" >#{i18n.getText('CMF001_30')}</button>
+					<button tabindex="3" >#{i18n.getText('CMF001_31')}</button>
+					<button tabindex="4" >#{i18n.getText('CMF001_33')}</button>
+					<button tabindex="5" class="danger" >#{i18n.getText('CMF001_34')}</button>
+					<label>#{i18n.getText('CMF001_35')}</label>
+					<div tabindex="5" id="combo-box" data-bind="ntsComboBox: {
+						options: itemList,
+						optionsValue: 'code',
+						visibleItemsCount: 5,
+						name: '#[CMF001_36]',
+						value: selectedCode,
+						optionsText: 'name',
+						editable: false,
+						enable: true,
+						columns: [
+							{ prop: 'code', length: 3 },
+							{ prop: 'name', length: 8 },
+						]}"></div>
+				</div>
+				<div id="contents-area-a" class="fixed-flex-layout">
+					<div class="fixed-flex-layout-left">
+						<div data-bind="ntsPanel:{width: '350px', height: '400px', showIcon: true, visible: true}">
+							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_38')}</div>
+						</div>
+					</div>
+					<div class="fixed-flex-layout-right">
+						<!-- some contents in right column -->
+					</div>
+				</div>
+			</div>
+			<div id="tabpanel-2" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span tabindex="-1" class="title">#{i18n.getText('CMF001_28')}</span>
+					<button tabindex="1" >#{i18n.getText('CMF001_29')}</button>
+					<button tabindex="2" class="proceed" >#{i18n.getText('CMF001_30')}</button>
+					<button tabindex="3" >#{i18n.getText('CMF001_32')}</button>
+					<button tabindex="4" >#{i18n.getText('CMF001_33')}</button>
+					<button tabindex="5" class="danger" >#{i18n.getText('CMF001_34')}</button>
+				</div>
+				<div class="contents-area-b">
+					
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
