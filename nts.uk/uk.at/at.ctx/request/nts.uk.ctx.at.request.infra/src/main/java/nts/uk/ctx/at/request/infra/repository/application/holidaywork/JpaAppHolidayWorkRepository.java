@@ -87,4 +87,25 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 		appHolidayWork.setApplication(kafdtApplication.toDomain());
 		return Optional.of(appHolidayWork);
 	}
+	@Override
+	public void update(AppHolidayWork domain) {
+		String companyID = domain.getCompanyID();
+		String appID = domain.getAppID();
+		Optional<KrqdtAppHolidayWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHolidayWork.class);
+		if(!opKrqdtAppHolidayWork.isPresent()){
+			throw new RuntimeException("khong ton tai doi tuong de update");
+		}
+		KrqdtAppHolidayWork krqdtAppHolidayWork = opKrqdtAppHolidayWork.get();
+		krqdtAppHolidayWork.fromDomainValue(domain);
+		this.commandProxy().update(krqdtAppHolidayWork);
+		
+	}
+	@Override
+	public void delete(String companyID, String appID) {
+		Optional<KrqdtAppHolidayWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHolidayWork.class);
+		if(!opKrqdtAppHolidayWork.isPresent()){
+			throw new RuntimeException("khong ton tai doi tuong de update");
+		}
+		this.commandProxy().remove(KrqdtAppHolidayWork.class, new KrqdtAppHolidayWorkPK(companyID, appID));
+	}
 }

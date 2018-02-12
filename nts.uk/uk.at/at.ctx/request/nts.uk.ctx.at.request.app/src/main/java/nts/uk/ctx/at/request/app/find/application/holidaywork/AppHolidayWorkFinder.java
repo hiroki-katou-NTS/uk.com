@@ -19,6 +19,7 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWork
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkInputDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -49,6 +50,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTim
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTypeHolidayWork;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.TimeItemTypeAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
@@ -117,8 +119,6 @@ public class AppHolidayWorkFinder {
 	private WorkTypeRepository workTypeRepository;
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
-	@Inject
-	private WorkdayoffFrameRepository workdayoffFrameRepository;
 	
 	
 	/**
@@ -345,6 +345,37 @@ public class AppHolidayWorkFinder {
 		});
 		appHolidayWorkDto.setHolidayWorkInputDtos(holidayWorkInputDtos);
 		return appHolidayWorkDto;
+	}
+	
+	/**
+	 * 01-14_勤務時間取得
+	 * @param companyID
+	 * @param employeeID
+	 * @param appDate
+	 * @param siftCD
+	 * @return
+	 */
+	public RecordWorkDto getRecordWork(String employeeID, String appDate, String siftCD,int prePortAtr,List<CaculationTime> overtimeHours){
+		String companyID = AppContexts.user().companyId();
+		Integer startTime1 = -1; 
+		Integer endTime1 = -1;
+		Integer startTime2 = -1;
+		Integer endTime2 = -1;
+		AppOvertimeReference appOvertimeReference = new AppOvertimeReference();
+		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
+				employeeID,
+				1, EnumAdaptor.valueOf(ApplicationType.BREAK_TIME_APPLICATION.value, ApplicationType.class), appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT));
+		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
+		// 01-14_勤務時間取得(lay thoi gian): Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」)
+		RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,approvalFunctionSetting,siftCD);
+		startTime1 = recordWorkOutput.getStartTime1();
+		endTime1 = recordWorkOutput.getEndTime1();
+		startTime2 = recordWorkOutput.getStartTime2();
+		endTime2 = recordWorkOutput.getEndTime2();
+		// 01-18_実績の内容を表示し直す
+		//appOvertimeReference = iOvertimePreProcess.getResultContentActual(prePortAtr, siftCD, companyID,employeeID, appDate,approvalFunctionSetting,overtimeHours);
+		
+		return new RecordWorkDto(startTime1, endTime1, startTime2, endTime2, appOvertimeReference);
 	}
 	
 	/**

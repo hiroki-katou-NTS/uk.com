@@ -152,7 +152,7 @@ public class CheckBeforeRegisterHolidayWork {
 		// 登録前エラーチェック
 		// 計算ボタン未クリックチェック
 		beforeCheck.calculateButtonCheck(calculateFlg, appRoot.getCompanyID(), employeeId, 1,
-				ApplicationType.OVER_TIME_APPLICATION, appRoot.getAppDate());
+				ApplicationType.BREAK_TIME_APPLICATION, appRoot.getAppDate());
 		// 事前申請超過チェック
 		Map<AttendanceType, List<HolidayWorkInput>> findMap = holidayWorkDomain.getHolidayWorkInputs().stream()
 				.collect(groupingBy(HolidayWorkInput::getAttendanceType));
