@@ -18840,7 +18840,9 @@ var nts;
                                 var sheetFeature = feature.find(options.ntsFeatures, feature.SHEET);
                                 if (uk.util.isNullOrUndefined(sheetFeature)) {
                                     var idxes_1 = {};
-                                    utils.analyzeColumns(options.columns).forEach(function (c, i) {
+                                    utils.analyzeColumns(options.columns)
+                                        .filter(function (c) { return c.hidden !== true; })
+                                        .forEach(function (c, i) {
                                         idxes_1[c.key] = i;
                                     });
                                     var setting = $grid.data(internal.SETTINGS);
