@@ -169,7 +169,7 @@ public class EmployeeSearchQueryProcessor {
 				EmployeeSearchData dto = new EmployeeSearchData();
 				dto.setEmployeeId(employee.getEmployeeId());
 				dto.setEmployeeCode(employee.getEmployeeCode().v());
-				dto.setEmployeeName(personMap.get(employee.getPersonId()).getPersonName());
+				dto.setEmployeeName(personMap.get(employee.getPersonId()).getBusinessName());
 				dto.setWorkplaceId(wplId);
 
 				dto.setWorkplaceCode(workplaceMap.get(dto.getWorkplaceId()).getWorkplaceCode().v());
@@ -312,9 +312,15 @@ public class EmployeeSearchQueryProcessor {
 		if (!workplaceHistory.isPresent()) {
 			throw new BusinessException("Msg_177");
 		}
+		// Find workplace of login employee.
+		Optional<AffWorkplaceHistoryItem> wpl = this.affWorkplaceHistoryItemRepository
+				.getByHistId(workplaceHistory.get().getHistoryItems().get(0).identifier());
+		List<String> employeeIds = this.affWorkplaceHistoryItemRepository
+				.getAffWrkplaHistItemByListWkpIdAndDate(baseDate, Arrays.asList(wpl.get().getWorkplaceId())).stream()
+				.map(emp -> emp.getEmployeeId()).collect(Collectors.toList());
 
 		// return data
-		return this.toEmployee(baseDate, Arrays.asList(employeeId), companyId);
+		return this.toEmployee(baseDate, employeeIds, companyId);
 	}
 
 	/**
@@ -472,7 +478,7 @@ public class EmployeeSearchQueryProcessor {
 
 			// check exist person data
 			if (personMap.containsKey(employeeData.getPersonId())) {
-				data.setEmployeeName(personMap.get(employeeData.getPersonId()).getPersonName());
+				data.setEmployeeName(personMap.get(employeeData.getPersonId()).getBusinessName());
 			}
 
 			// check exist work place history

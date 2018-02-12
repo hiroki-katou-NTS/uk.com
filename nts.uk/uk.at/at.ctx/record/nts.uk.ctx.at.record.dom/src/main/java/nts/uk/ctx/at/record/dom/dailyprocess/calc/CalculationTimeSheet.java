@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -155,7 +155,7 @@ public abstract class CalculationTimeSheet {
 	 * @return 時間
 	 */
 	public AttendanceTime deductionLengthMinutes() {
-		if(deductionTimeSheet.isEmpty()) return new AttendanceTime(0) ;
+		if(deductionTimeSheet.isEmpty()) return new AttendanceTime(this.calcrange.lengthAsMinutes()) ;
 		return recursiveTotalTime() ;
 	}
 	
@@ -450,7 +450,7 @@ public abstract class CalculationTimeSheet {
 	 * 深夜時間の計算
 	 * @return 深夜時間
 	 */
-	public int calcMidNight(AutoCalculationCategoryOutsideHours autoCalcSet) {
+	public int calcMidNight(AutoCalAtrOvertime autoCalcSet) {
 		if(autoCalcSet.isCalculateEmbossing())
 		{
 			if(this.midNightTimeSheet.isPresent()) {

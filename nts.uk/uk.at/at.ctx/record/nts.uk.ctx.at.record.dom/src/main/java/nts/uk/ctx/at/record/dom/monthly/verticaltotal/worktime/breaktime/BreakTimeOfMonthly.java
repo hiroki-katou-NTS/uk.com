@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.breaktime;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
@@ -39,19 +37,16 @@ public class BreakTimeOfMonthly {
 	
 	/**
 	 * 集計
-	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
+	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
 	 */
-	public void aggregate(List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
+	public void aggregate(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
+
+		if (attendanceTimeOfDaily == null) return;
 		
-		this.breakTime = new AttendanceTimeMonth(0);
+		val totalWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+		val breakTimeOfDaily = totalWorkingTime.getBreakTimeOfDaily();
 		
-		// 日別実績の「休憩時間」を集計する
-		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
-			val totalWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime();
-			val breakTimeOfDaily = totalWorkingTime.getBreakTimeOfDaily();
-			
-			this.breakTime = this.breakTime.addMinutes(
-					breakTimeOfDaily.getToRecordTotalTime().getTotalTime().getTime().v());
-		}
+		this.breakTime = this.breakTime.addMinutes(
+				breakTimeOfDaily.getToRecordTotalTime().getTotalTime().getTime().v());
 	}
 }

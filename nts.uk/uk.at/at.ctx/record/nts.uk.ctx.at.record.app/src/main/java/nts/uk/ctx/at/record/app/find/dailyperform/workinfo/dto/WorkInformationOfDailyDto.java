@@ -1,12 +1,17 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
+import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
+import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
@@ -73,4 +78,19 @@ public class WorkInformationOfDailyDto implements ConvertibleAttendanceItem {
 		return this.date;
 	}
 
+	@Override
+	public WorkInfoOfDailyPerformance toDomain(String employeeId, GeneralDate date) {
+		return new WorkInfoOfDailyPerformance(employeeId, getWorkInfo(actualWorkInfo),
+					getWorkInfo(planWorkInfo),
+					ConvertHelper.getEnum(calculationState, CalculationState.class),
+					ConvertHelper.getEnum(goStraightAtr, NotUseAttribute.class),
+					ConvertHelper.getEnum(backStraightAtr, NotUseAttribute.class), date,
+					this.getScheduleTimeZone() == null ? new ArrayList<>() :
+						ConvertHelper.mapTo(this.getScheduleTimeZone(), (c) -> 
+							new ScheduleTimeSheet(c.getWorkNo(), c.getWorking() == null ?  0 : c.getWorking(), c.getLeave() == null ? 0: c.getLeave())));
+	}
+
+	private WorkInformation getWorkInfo(WorkInfoDto dto) {
+		return dto == null ? null : new WorkInformation(dto.getWorkTimeCode(), dto.getWorkTypeCode());
+	}
 }

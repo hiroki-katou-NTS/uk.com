@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -84,6 +85,7 @@ public class WorkingConditionItem extends AggregateRoot {
 	 */
 	public WorkingConditionItem(WorkingConditionItemGetMemento memento) {
 		this.historyId = memento.getHistoryId();
+		this.hourlyPaymentAtr = memento.getHourlyPaymentAtr();
 		this.scheduleManagementAtr = memento.getScheduleManagementAtr();
 		this.vacationAddedTimeAtr = memento.getVacationAddedTimeAtr();
 		this.laborSystem = memento.getLaborSystem();
@@ -95,6 +97,8 @@ public class WorkingConditionItem extends AggregateRoot {
 		this.autoStampSetAtr = memento.getAutoStampSetAtr();
 		this.scheduleMethod = memento.getScheduleMethod();
 		this.holidayAddTimeSet = memento.getHolidayAddTimeSet();
+		this.timeApply = memento.getTimeApply();
+		this.monthlyPattern = memento.getMonthlyPattern();
 	}
 
 	/**
@@ -105,6 +109,7 @@ public class WorkingConditionItem extends AggregateRoot {
 	 */
 	public void saveToMemento(WorkingConditionItemSetMemento memento) {
 		memento.setHistoryId(this.historyId);
+		memento.setHourlyPaymentAtr(this.hourlyPaymentAtr);
 		memento.setScheduleManagementAtr(this.scheduleManagementAtr);
 		memento.setVacationAddedTimeAtr(this.vacationAddedTimeAtr);
 		memento.setLaborSystem(this.laborSystem);
@@ -116,6 +121,8 @@ public class WorkingConditionItem extends AggregateRoot {
 		memento.setAutoStampSetAtr(this.autoStampSetAtr);
 		memento.setScheduleMethod(this.scheduleMethod);
 		memento.setHolidayAddTimeSet(this.holidayAddTimeSet);
+		memento.setTimeApply(this.timeApply);
+		memento.setMonthlyPattern(this.monthlyPattern);
 	}
 
 	/*
@@ -180,12 +187,18 @@ public class WorkingConditionItem extends AggregateRoot {
 	 *            the holiday add time set
 	 * @param scheduleMethod
 	 *            the schedule method
+	 * @param hourlyPaymentAtr
+	 * 			  the hourlyPaymentAtr
+	 * @param timeApply
+	 * 			  the timeApply
+	 * @param monthlyPattern
+	 * 			  the monthlyPattern
 	 */
-	public WorkingConditionItem(String historyId, NotUseAtr scheduleManagementAtr,
-			PersonalDayOfWeek workDayOfWeek, PersonalWorkCategory workCategory,
-			NotUseAtr autoStampSetAtr, NotUseAtr autoIntervalSetAtr, String employeeId,
-			NotUseAtr vacationAddedTimeAtr, int contractTime, WorkingSystem laborSystem,
-			BreakdownTimeDay holidayAddTimeSet, ScheduleMethod scheduleMethod) {
+	public WorkingConditionItem(String historyId, NotUseAtr scheduleManagementAtr, PersonalDayOfWeek workDayOfWeek,
+			PersonalWorkCategory workCategory, NotUseAtr autoStampSetAtr, NotUseAtr autoIntervalSetAtr,
+			String employeeId, NotUseAtr vacationAddedTimeAtr, LaborContractTime contractTime, WorkingSystem laborSystem,
+			BreakdownTimeDay holidayAddTimeSet, ScheduleMethod scheduleMethod, Integer hourlyPaymentAtr,
+			BonusPaySettingCode timeApply, MonthlyPatternCode monthlyPattern) {
 		super();
 		this.historyId = historyId;
 		this.scheduleManagementAtr = scheduleManagementAtr;
@@ -195,10 +208,17 @@ public class WorkingConditionItem extends AggregateRoot {
 		this.autoIntervalSetAtr = autoIntervalSetAtr;
 		this.employeeId = employeeId;
 		this.vacationAddedTimeAtr = vacationAddedTimeAtr;
-		this.contractTime = new LaborContractTime(contractTime);
+		this.contractTime = contractTime;
 		this.laborSystem = laborSystem;
 		this.holidayAddTimeSet = Optional.ofNullable(holidayAddTimeSet);
 		this.scheduleMethod = Optional.ofNullable(scheduleMethod);
+		if (hourlyPaymentAtr != null){
+			this.hourlyPaymentAtr = EnumAdaptor.valueOf(hourlyPaymentAtr.intValue(),HourlyPaymentAtr.class);
+		}
+		this.timeApply = Optional.ofNullable(timeApply);
+		this.monthlyPattern = Optional.ofNullable(monthlyPattern);
+		
+		
 	}
 
 }

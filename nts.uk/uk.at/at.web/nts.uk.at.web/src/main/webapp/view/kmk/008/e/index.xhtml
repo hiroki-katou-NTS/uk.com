@@ -8,7 +8,7 @@
 			data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a>
 		<button class="proceed" tabindex="3" data-bind="click: addUpdateWorkPlace, enable: $root.errors.isEmpty">#{i18n.getText('KMK008_14')}</button>
 		<button tabindex="4">#{i18n.getText('KMK008_15')}</button>
-		<button class="danger" tabindex="5" data-bind="click: removeDataWorkPlace">#{i18n.getText('KMK008_16')}</button>
+		<button class="danger" tabindex="5" data-bind="click: removeDataWorkPlace, enable: isRemove">#{i18n.getText('KMK008_16')}</button>
 
 	</div>
 	<div class="contents-area">

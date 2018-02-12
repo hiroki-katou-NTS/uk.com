@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.holidaysetting.configuration;
 
 import java.util.Optional;
@@ -8,6 +12,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementUsageUnit;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementUsageUnitRepository;
 import nts.uk.ctx.bs.employee.infra.entity.holidaysetting.configuration.KshmtPubHdMngUnitSet;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaPublicHolidayManagementUsageUnitRepository.
@@ -29,6 +34,14 @@ public class JpaPublicHolidayManagementUsageUnitRepository extends JpaRepository
 	@Override
 	public void update(PublicHolidayManagementUsageUnit domain) {
 		this.commandProxy().update(this.toEntity(domain));
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementUsageUnitRepository#add(nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementUsageUnit)
+	 */
+	@Override
+	public void add(PublicHolidayManagementUsageUnit domain) {
+		this.commandProxy().insert(this.toEntity(domain));
 	}
 	
 	/**
@@ -58,7 +71,7 @@ public class JpaPublicHolidayManagementUsageUnitRepository extends JpaRepository
 		e.setIsManageEmpPubHd(domain.getIsManageEmpPublicHd());
 		e.setIsManageSPubHd(domain.getIsManageEmployeePublicHd());
 		e.setIsManageWkpPubHd(domain.getIsManageWkpPublicHd());
-		
+		e.setCid(AppContexts.user().companyId());
 		return e;
 	}
 }

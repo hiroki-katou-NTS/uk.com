@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.app.command.alarm.checkcondition;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,7 +13,6 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
-import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapterDto;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
@@ -73,13 +71,28 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			AlarmCategory category = AlarmCategory.values()[command.getCategory()];
 			switch (category) {
 			case DAILY:
+				//update WorkRecordExtractCondition
+				DailyAlarmCondition dailyAlramCondition = (DailyAlarmCondition) domain.getExtractionCondition();
+				List<String> listErrorAlarmId = this.workRecordExtraConRepo.checkUpdateListErAl(
+						dailyAlramCondition.getExtractConditionWorkRecord(),
+						command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork());
+				
 				extractionCondition = command.getDailyAlarmCheckCondition() == null ? null
 						: new DailyAlarmCondition(IdentifierUtil.randomUniqueId(),
 								command.getDailyAlarmCheckCondition().getConditionToExtractDaily(),
 								command.getDailyAlarmCheckCondition().isAddApplication(),
-								command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork().stream().map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList()),
-//								command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().stream().map(item -> item.getFixConWorkRecordNo()).collect(Collectors.toList()),
+								listErrorAlarmId,
 								command.getDailyAlarmCheckCondition().getListErrorAlarmCode());
+
+				// update FixedWorkRecordExtractCondition
+				for(FixedConWorkRecordAdapterDto fixedConWorkRecordAdapterDto : command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord()) {
+					if (fixedConWorkRecordAdapterDto.getDailyAlarmConID() == null || fixedConWorkRecordAdapterDto.getDailyAlarmConID().equals("")) {
+						fixedConWorkRecordAdapterDto.setDailyAlarmConID(dailyAlramCondition.getDailyAlarmConID());
+						this.fixedConWorkRecordRepo.addFixedConWorkRecordPub(fixedConWorkRecordAdapterDto);
+					} else {
+						this.fixedConWorkRecordRepo.updateFixedConWorkRecordPub(fixedConWorkRecordAdapterDto);
+					}
+				}
 				break;
 			case SCHEDULE_4WEEK:
 				extractionCondition = command.getSchedule4WeekAlarmCheckCondition() == null ? null
@@ -91,14 +104,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			}
 			domain.changeState(command.getName(), command.getAvailableRoles(), targetConditionValue, extractionCondition);
 			
-			//update WorkRecordExtractCondition
-			for(WorkRecordExtraConAdapterDto workRecordExtraConAdapterDto : command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork()) {
-				this.workRecordExtraConRepo.updateWorkRecordExtraConPub(workRecordExtraConAdapterDto);
-			}
-			// update FixedWorkRecordExtractCondition
-			for(FixedConWorkRecordAdapterDto fixedConWorkRecordAdapterDto : command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord()) {
-				this.fixedConWorkRecordRepo.updateFixedConWorkRecordPub(fixedConWorkRecordAdapterDto);
-			}
+			
 			conditionRepo.update(domain);
 		} else {
 			// add
@@ -108,17 +114,13 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			case DAILY:
 				String dailyAlarmId = IdentifierUtil.randomUniqueId();
 				//add WorkRecordExtractCondition
-//				for(WorkRecordExtraConAdapterDto workRecordExtraConAdapterDto : command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork()) {
 				List<String> listErrorAlarmId = this.workRecordExtraConRepo.addNewListErAl(command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork());
-//				}
 				
 				extractionCondition = command.getDailyAlarmCheckCondition() == null ? null
 						: new DailyAlarmCondition(dailyAlarmId,
 								command.getDailyAlarmCheckCondition().getConditionToExtractDaily(),
 								command.getDailyAlarmCheckCondition().isAddApplication(),
 								listErrorAlarmId,
-//								command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork().stream().map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList()),
-//								command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().stream().map(c->c.getFixConWorkRecordNo()).collect(Collectors.toList()),
 								command.getDailyAlarmCheckCondition().getListErrorAlarmCode()
 								);
 				

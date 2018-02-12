@@ -1,6 +1,8 @@
 package nts.uk.ctx.bs.employee.app.find.holidaysetting.configuration;
 
 import lombok.Data;
+import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHoliday;
+import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayGrantDate;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementClassification;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementStartDate;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidaySettingSetMemento;
@@ -18,25 +20,25 @@ public class PublicHolidaySettingFindDto implements PublicHolidaySettingSetMemen
 	private final static int FALSE_VALUE = 0;
 	
 	/** The is manage com public hd. */
-	private int isManageComPublicHd;
+	private Integer isManageComPublicHd;
 	
 	/** The public hd management classification. */
-	private int publicHdManagementClassification;
+	private Integer publicHdManagementClassification;
 	
 	/** The is weekly hd check. */
-	private int isWeeklyHdCheck;
+	private Integer isWeeklyHdCheck;
 	
 	/** The period. */
-	private int period;
+	private Integer period;
 	
 	/** The full date. */
 	private String fullDate;
 	
 	/** The day month. */
-	private int dayMonth;
+	private Integer dayMonth;
 	
 	/** The determine start D. */
-	private int determineStartD;
+	private Integer determineStartD;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidaySettingSetMemento#setCompanyID(java.lang.String)
@@ -53,8 +55,9 @@ public class PublicHolidaySettingFindDto implements PublicHolidaySettingSetMemen
 	public void setIsManageComPublicHd(boolean isManageComPublicHd) {
 		if(isManageComPublicHd){
 			this.isManageComPublicHd = TRUE_VALUE;
+		} else {
+			this.isManageComPublicHd = FALSE_VALUE;
 		}
-		this.isManageComPublicHd = FALSE_VALUE;
 	}
 
 	/* (non-Javadoc)
@@ -73,14 +76,51 @@ public class PublicHolidaySettingFindDto implements PublicHolidaySettingSetMemen
 	public void setIsWeeklyHdCheck(boolean isWeeklyHdCheck) {
 		if(isWeeklyHdCheck){
 			this.isWeeklyHdCheck = TRUE_VALUE;
+		} else {
+			this.isWeeklyHdCheck = FALSE_VALUE;
 		}
-		this.isWeeklyHdCheck = FALSE_VALUE;
 	}
 
 	@Override
 	public void setPublicHolidayManagementStartDate(PublicHolidayManagementStartDate publicHolidayManagementStartDate) {
 		// TODO Auto-generated method stub
-		
+		if (this.publicHdManagementClassification == 1) {
+			PublicHoliday publicHoliday = (PublicHoliday) publicHolidayManagementStartDate;
+			this.dayMonth = publicHoliday.getDayMonth();
+			this.fullDate = publicHoliday.getDate().toString();
+			this.determineStartD = publicHoliday.getDetermineStartDate().value;
+		} else {
+			PublicHolidayGrantDate holidayGrantDate = (PublicHolidayGrantDate) publicHolidayManagementStartDate;
+			this.period = holidayGrantDate.getPeriod().value;
+		}
+	}
+
+	@Override
+	public void setPublicHolidayManagementStartDate(PublicHolidayManagementStartDate publicHolidayManagementStartDate,
+			Integer type) {
+		if (type == 1) { 
+			PublicHoliday publicHoliday = (PublicHoliday) publicHolidayManagementStartDate;
+			if (publicHoliday.getDayMonth() != null) {
+				this.dayMonth = publicHoliday.getDayMonth();
+			}
+			if (publicHoliday.getDate() != null) {
+				this.fullDate = publicHoliday.getDate().toString();
+			} 
+			if (publicHoliday.getDetermineStartDate() != null) {
+				this.determineStartD = publicHoliday.getDetermineStartDate().value;
+			} else {
+				this.determineStartD = 0; // 0 is value Year - month - day
+			}
+			
+		} else {
+			PublicHolidayGrantDate holidayGrantDate = (PublicHolidayGrantDate) publicHolidayManagementStartDate;
+			if (holidayGrantDate.getPeriod() == null) {
+				this.period = 0; // default value
+			} else {
+				this.period = holidayGrantDate.getPeriod().value;
+			}
+			
+		}
 	}
 
 }

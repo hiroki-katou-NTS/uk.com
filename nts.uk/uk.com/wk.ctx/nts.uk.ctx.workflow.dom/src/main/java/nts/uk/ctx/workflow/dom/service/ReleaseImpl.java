@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.dom.service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
@@ -39,6 +41,7 @@ public class ReleaseImpl implements ReleaseService {
 			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 		}
 		ApprovalRootState approvalRootState = opApprovalRootState.get();
+		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
 		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
 			List<String> listApprover = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
 			if(CollectionUtil.isEmpty(listApprover)){
@@ -60,6 +63,8 @@ public class ReleaseImpl implements ReleaseService {
 					approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 					approvalFrame.setApproverID("");
 					approvalFrame.setRepresenterID("");
+					approvalFrame.setApprovalDate(GeneralDate.today());
+					approvalFrame.setApprovalReason("");
 				}
 			});
 			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);

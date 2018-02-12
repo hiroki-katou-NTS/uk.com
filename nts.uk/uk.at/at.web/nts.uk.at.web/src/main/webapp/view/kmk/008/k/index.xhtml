@@ -33,7 +33,7 @@
 
 			<div id="functions-area">
 				<div id="functions-area-content">
-					<button class="large" data-bind="click : setNewMode">#{i18n.getText('KMK008_40')}</button>
+					<button class="large" data-bind="click : setNewMode, enable : updateEnable">#{i18n.getText('KMK008_40')}</button>
 					<button class="large proceed button-margin-left"
 						data-bind="click : addOrUpdateClick, enable: $root.errors.isEmpty">#{i18n.getText('KMK008_14')}</button>
 					<button class="large danger" data-bind="click: removeData, enable: deleteEnable">#{i18n.getText('KMK008_16')}</button>

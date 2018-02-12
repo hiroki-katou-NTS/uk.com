@@ -48,9 +48,9 @@
 						<div data-bind="ntsFormLabel: {}" style="margin-bottom: 10px;">#{i18n.getText('CMM021_8')}</div>
 						<!-- A5_2 -->
 						<div tabindex="4" class="base-date-editor" style="margin-left: 20px;"
-							data-bind=" ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name: '#[CMM021_8]', required: true}"></div>
+							data-bind=" ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: inputDate, name: '#[CMM021_8]', required: true}"></div>
 						<!-- A5_3 -->	
-						<button tabindex="5" data-bind="click: loadUserInfo" style="width: 60px; margin-left: 7px" class="button-load-user-info">#{i18n.getText('CMM021_9')}</button>
+						<button tabindex="5" data-bind="click: loadUserInfo" style="width: 60px; margin-left: 3px" class="button-load-user-info">#{i18n.getText('CMM021_9')}</button>
 					</div>
 
 					<!-- A6_2 , A6_3 , A6_4: Setting Use -->
@@ -100,31 +100,25 @@
 			<!-- start-right-content -->
 			<div class="right-content">
 				<div class="show-text-user-id">
-					<div>
-						<!-- A8_1 -->	
-						<span>#{i18n.getText('CMM021_18')}</span>
-						<!-- A8_2 -->
-						<span class="right-content-space">#{i18n.getText('CMM021_19')}</span>
-						<!-- A8_3 -->
-						<span data-bind="text: personName"></span>
-					</div>
-
-					<div>
-						<!-- A9_1 -->
-						<span>#{i18n.getText('CMM021_13')}</span> 
-						<!-- A9_2 -->
-						<span class="right-content-space-employee-code">#{i18n.getText('CMM021_19')}</span>
-						<!-- A9_3 -->
-						<span data-bind="text: employeeCode"></span>
-					</div>
-					<div>
-						<!-- A10_1 -->
-						<span>#{i18n.getText('CMM021_14')}</span> 
-						<!-- A10_2 -->
-						<span class="right-content-space-login">#{i18n.getText('CMM021_19')}</span>
-						<!-- A10_3 -->
-						<span data-bind="text: loginId"></span>
-					</div>
+					<table>
+						<tr class="right-content-space-personName">
+							<td class="right-content-space-personName1"><span >#{i18n.getText('CMM021_18')}</span></td>
+							<td class="right-content-space-personName2"><span>#{i18n.getText('CMM021_19')}</span></td>
+							<td class="right-content-space-personName3"><span data-bind="text: personName"></span></td>
+						</tr>
+						
+						<tr class="right-content-space-employee">
+							<td class="right-content-space-employee-code1"><span>#{i18n.getText('CMM021_14')}</span></td>
+							<td class="right-content-space-employee-code2"><span>#{i18n.getText('CMM021_19')}</span></td>
+							<td class="right-content-space-employee-code3"><span data-bind="text: employeeCode"></span></td>
+						</tr>
+						
+						<tr class="right-content-space-login">
+							<td class="right-content-space-login1"><span>#{i18n.getText('CMM021_13')}</span></td>
+							<td class="right-content-space-login2"><span>#{i18n.getText('CMM021_19')}</span></td>
+							<td class="right-content-space-login3"><span data-bind="text: loginId"></span></td>													
+						</tr>
+					</table>
 				</div>
 				<div class="show-tab-panel">				
 					<div id="tabpanel-1" role="tabpanel" >

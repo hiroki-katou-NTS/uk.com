@@ -8,12 +8,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategorySetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCat;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCatPK;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeek;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeekPK;
 
 /**
  * The Class JpaPersonalWorkCategorySetMemento.
@@ -36,16 +40,16 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 *            the entitys
 	 */
 	public JpaPerWorkCatSetMemento(String historyId, List<KshmtPerWorkCat> entities) {
-		this.mapSingleDaySchedule = new HashMap<>();
-		if (CollectionUtil.isEmpty(entities)) {
-			this.mapSingleDaySchedule = entities.stream().collect(Collectors.toMap(
-					entity -> entity.getKshmtPerWorkCatPK().getPerWorkCatAtr(), entity -> entity));
-		}
+//		this.mapSingleDaySchedule = new HashMap<>();
+//		if (!CollectionUtil.isEmpty(entities)) {
+//			this.mapSingleDaySchedule = entities.stream().collect(Collectors.toMap(
+//					entity -> entity.getKshmtPerWorkCatPK().getPerWorkCatAtr(), entity -> entity));
+//		}
 
 		this.entities = entities;
 
 		// Clean all
-		this.entities.clear();
+//		this.entities.clear();
 		this.historyId = historyId;
 	}
 
@@ -59,7 +63,9 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	@Override
 	public void setHolidayWork(SingleDaySchedule holidayWork) {
-		this.entities.add(this.toEntity(holidayWork, WorkCategoryAtr.HOLIDAY_WORK.value));
+		if (holidayWork != null) {
+			this.toEntity(holidayWork, WorkCategoryAtr.HOLIDAY_WORK.value);
+		}		
 	}
 
 	/*
@@ -72,7 +78,9 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	@Override
 	public void setHolidayTime(SingleDaySchedule holidayTime) {
-		this.entities.add(this.toEntity(holidayTime, WorkCategoryAtr.HOLIDAY_TIME.value));
+		if (holidayTime != null) {
+			this.toEntity(holidayTime, WorkCategoryAtr.HOLIDAY_TIME.value);
+		}	
 	}
 
 	/*
@@ -85,7 +93,9 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	@Override
 	public void setWeekdayTime(SingleDaySchedule weekdayTime) {
-		this.entities.add(this.toEntity(weekdayTime, WorkCategoryAtr.WEEKDAY_TIME.value));
+		if (weekdayTime != null) {
+			this.toEntity(weekdayTime, WorkCategoryAtr.WEEKDAY_TIME.value);
+		}
 	}
 
 	/*
@@ -98,8 +108,8 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	@Override
 	public void setPublicHolidayWork(Optional<SingleDaySchedule> publicHolidayWork) {
 		if (publicHolidayWork.isPresent()) {
-			this.entities.add(this.toEntity(publicHolidayWork.get(),
-					WorkCategoryAtr.PUBLIC_HOLIDAY_WORK.value));
+			this.toEntity(publicHolidayWork.get(),
+					WorkCategoryAtr.PUBLIC_HOLIDAY_WORK.value);
 		}
 	}
 
@@ -113,8 +123,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	@Override
 	public void setInLawBreakTime(Optional<SingleDaySchedule> inLawBreakTime) {
 		if (inLawBreakTime.isPresent()) {
-			this.entities.add(
-					this.toEntity(inLawBreakTime.get(), WorkCategoryAtr.INLAW_BREAK_TIME.value));
+			this.toEntity(inLawBreakTime.get(), WorkCategoryAtr.INLAW_BREAK_TIME.value);
 		}
 	}
 
@@ -128,8 +137,8 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	@Override
 	public void setOutsideLawBreakTime(Optional<SingleDaySchedule> outsideLawBreakTime) {
 		if (outsideLawBreakTime.isPresent()) {
-			this.entities.add(this.toEntity(outsideLawBreakTime.get(),
-					WorkCategoryAtr.OUTSIDE_LAW_BREAK_TIME.value));
+			this.toEntity(outsideLawBreakTime.get(),
+					WorkCategoryAtr.OUTSIDE_LAW_BREAK_TIME.value);
 		}
 	}
 
@@ -143,8 +152,8 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	@Override
 	public void setHolidayAttendanceTime(Optional<SingleDaySchedule> holidayAttendanceTime) {
 		if (holidayAttendanceTime.isPresent()) {
-			this.entities.add(this.toEntity(holidayAttendanceTime.get(),
-					WorkCategoryAtr.HOLIDAY_ATTENDANCE_TIME.value));
+			this.toEntity(holidayAttendanceTime.get(),
+					WorkCategoryAtr.HOLIDAY_ATTENDANCE_TIME.value);
 		}
 	}
 
@@ -157,12 +166,34 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 *            the work category atr
 	 * @return the kshmt per work category
 	 */
-	private KshmtPerWorkCat toEntity(SingleDaySchedule domain, int workCategoryAtr) {
-		KshmtPerWorkCat entity = this.mapSingleDaySchedule.getOrDefault(workCategoryAtr,
-				new KshmtPerWorkCat());
-		domain.saveToMemento(
-				new JpaSDayScheWorkCatSetMemento(this.historyId, workCategoryAtr, entity));
-		return entity;
+	private void toEntity(SingleDaySchedule domain, int workCategoryAtr) {
+//		KshmtPerWorkCat entity = this.mapSingleDaySchedule.getOrDefault(workCategoryAtr,
+//				new KshmtPerWorkCat());
+//		domain.saveToMemento(
+//				new JpaSDayScheWorkCatSetMemento(this.historyId, workCategoryAtr, entity));
+//		return entity;
+		// Convert list entities to map for searching
+		Map<KshmtPerWorkCatPK, KshmtPerWorkCat> mapEntities = this.entities.stream()
+				.collect(Collectors.toMap(KshmtPerWorkCat::getKshmtPerWorkCatPK, Function.identity()));
+		
+		// Create primary key
+		KshmtPerWorkCatPK pk = new KshmtPerWorkCatPK();
+		pk.setHistoryId(historyId);
+		pk.setPerWorkCatAtr(workCategoryAtr);
+		
+		// Get exist item with primary key or return new entity if not exist
+		KshmtPerWorkCat entity = mapEntities.getOrDefault(pk, new KshmtPerWorkCat());
+		
+		// Save new data into entity
+		domain.saveToMemento(new JpaSDayScheWorkCatSetMemento(historyId, workCategoryAtr, entity));
+		
+		// Put new/updated entity into map
+		mapEntities.put(pk, entity);
+		
+		// Put back to the entities list
+		this.entities.clear();
+		this.entities.addAll(mapEntities.values());
 	}
+	
 
 }

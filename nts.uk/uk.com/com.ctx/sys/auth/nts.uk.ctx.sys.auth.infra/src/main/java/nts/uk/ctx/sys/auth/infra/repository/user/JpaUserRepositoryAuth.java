@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.auth.infra.repository.user;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,6 +8,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.auth.infra.entity.user.SacmtUser;
@@ -87,6 +89,17 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	public void addNewUser(User user) {
 		this.commandProxy().insert(SacmtUser.toEntity(user));
 		this.getEntityManager().flush();
+	}
+	
+	private final String SELECT_USER_BY_LIST_AS_ID = "SELECT s FROM SacmtUser s WHERE s.associatedPersonID IN :listAssociatePersonId";
+	@Override
+	public List<User> getListUserByListAsID(List<String> listAssociatePersonId) {
+		List<User> datas = new ArrayList<>();
+		CollectionUtil.split(listAssociatePersonId, 1000, subIdList -> {
+			datas.addAll(this.queryProxy().query(SELECT_USER_BY_LIST_AS_ID, SacmtUser.class)
+					.setParameter("listAssociatePersonId", subIdList).getList(c->c.toDomain()));
+		});
+		return datas;
 	}
 
 }

@@ -75,6 +75,7 @@ public class JpaApplicationDeadlineRepository extends JpaRepository implements A
 		oldentity.deadline = entity.deadline;
 		oldentity.deadlineCriteria = entity.deadlineCriteria;
 		oldentity.useAtr = entity.useAtr;
+		this.commandProxy().update(oldentity);
 	}
 	/**
 	 * insert deadline

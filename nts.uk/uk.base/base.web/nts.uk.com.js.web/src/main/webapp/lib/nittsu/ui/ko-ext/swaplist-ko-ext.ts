@@ -47,6 +47,15 @@ module nts.uk.ui.koExtentions {
             var enableRowNumbering = ko.unwrap(data.enableRowNumbering);
             var defaultSearchText = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・"; 
             
+            let beforeLeft = nts.uk.util.isNullOrUndefined(data.beforeMoveLeft) ? $.noop : data.beforeMoveLeft;
+            let beforeRight = nts.uk.util.isNullOrUndefined(data.beforeMoveRight) ? $.noop : data.beforeMoveRight;
+            let beforeAllL = nts.uk.util.isNullOrUndefined(data.beforeAllLeft) ? $.noop : data.beforeAllLeft;
+            let beforeAllR = nts.uk.util.isNullOrUndefined(data.beforeAllRight) ? $.noop : data.beforeAllRight;
+            let afterLeft = nts.uk.util.isNullOrUndefined(data.afterMoveLeft) ? $.noop : data.afterMoveLeft;
+            let afterRight = nts.uk.util.isNullOrUndefined(data.afterMoveRight) ? $.noop : data.afterMoveRight;
+            let afterAllL = nts.uk.util.isNullOrUndefined(data.afterAllLeft) ? $.noop : data.afterAllLeft;
+            let afterAllR = nts.uk.util.isNullOrUndefined(data.afterAllRight) ? $.noop : data.afterAllRight;
+            
             // 動作が不安定なので、使わないようにする
             data.draggable = false;
     
@@ -234,22 +243,38 @@ module nts.uk.ui.koExtentions {
 
             var swapper = this.swapper;
             $moveForward.click(function() {
-                swapper.Model.move(true, data.value, false);
+                swapper.Model.move(true, data.value, false, beforeRight, afterRight);
             });
             $moveBack.click(function() {
-                swapper.Model.move(false, data.value, false);
+                swapper.Model.move(false, data.value, false, beforeLeft, afterLeft);
             });
             $moveForwardAll.click(function() {
-                swapper.Model.move(true, data.value, true);
+                swapper.Model.move(true, data.value, true, beforeAllR, afterAllR);
             });
             $moveBackAll.click(function() {
-                swapper.Model.move(false, data.value, true);
+                swapper.Model.move(false, data.value, true, beforeAllL, afterAllL);
             });
             
             $swap.find(".ntsSwap_Component").attr("tabindex", tabIndex);
             
             this.swapper.Model.$container.bind("swaplistgridsizeexceed", function(evt, data){
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_887" });
+            });
+    
+            $swap.find(".ntsSwapGrid").bind("listfilterred", function(evt, data){
+                let $gridX = $(this);
+                let currentDataSource = $gridX.igGrid('option', 'dataSource');
+                let selected = $gridX.ntsGridList('getSelected');
+                let selectItems = _.filter(currentDataSource, function (itemFilterd: any){
+                    return _.find(selected, function (item: any){
+                        let itemVal = itemFilterd[primaryKey];
+                        if(nts.uk.util.isNullOrUndefined(itemVal) || nts.uk.util.isNullOrUndefined(item["id"])){
+                           return false;
+                        }
+                        return itemVal.toString() === item["id"].toString();        
+                    }) !== undefined;            
+                }); 
+                $gridX.ntsGridList("setSelected",  _.map(selectItems, primaryKey));
             });
         }
 
@@ -484,7 +509,7 @@ module nts.uk.ui.koExtentions {
         abstract neighbor(param: any): string;
         abstract dropDone(): void;
         abstract enableDrag(ctx: any, value: (param?: any) => any, parts: Array<number>, cb: (parts: Array<number>, value: (param?: any) => any) => void): void;
-        abstract move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean): void;
+        abstract move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean, beforMove: Function, afterMove: Function): void;
     }
     
     interface ISwapAction {
@@ -494,7 +519,7 @@ module nts.uk.ui.koExtentions {
         neighbor(param: any): string;
         dropDone(): void;
         enableDrag(ctx: any, value: (param?: any) => any, parts: Array<number>, cb: (parts: Array<number>, value: (param?: any) => any) => void): void;
-        move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean): void;
+        move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean, beforMove: Function, afterMove: Function): void;
     }
     
     class SearchResult {
@@ -658,6 +683,7 @@ module nts.uk.ui.koExtentions {
                 var results: SearchResult = this.search();
                 if (results === null) return;
                 this.bindData(results.data);
+                this.$listControl.trigger("listfilterred");
             } else {
                 this.highlightSearch();
             }
@@ -780,7 +806,8 @@ module nts.uk.ui.koExtentions {
             }
         }
         
-        move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean): void {
+        move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean, beforMove: Function, afterMove: Function): void {
+            
             var primaryKey = this.transportBuilder.primaryKey;
             
             var $source = forward === true ? this.swapParts[0].$listControl : this.swapParts[1].$listControl;
@@ -788,9 +815,12 @@ module nts.uk.ui.koExtentions {
             var $dest = forward === true ? this.swapParts[1].$listControl : this.swapParts[0].$listControl;
             var destList = forward === true ? this.swapParts[1].dataSource : this.swapParts[0].dataSource;
             var max = forward === true ? this.swapParts[1].itemsLimit : this.swapParts[0].itemsLimit;
-            
+            var oldSource = _.cloneDeep(destList);
             if (moveAll) {
                 var selectedIds = sourceList.map(function(row) { return row[primaryKey]; });
+                if(beforMove(forward, oldSource, selectedIds) == false) {
+                    return;
+                }
                 if (!util.isNullOrUndefined(max) && (selectedIds.length + destList.length > max)) {
                     this.$container.trigger($.Event("swaplistgridsizeexceed"), [ $dest, max ]);
                     return;
@@ -814,6 +844,9 @@ module nts.uk.ui.koExtentions {
                 var firstSelected = selectedRows[0];
                 
                 var selectedIds = selectedRows.map(function(row) { return row.id; });
+                if(beforMove(forward, oldSource, selectedIds) == false) {
+                    return;
+                }
                 
                 this.transportBuilder.at(forward ? "first" : "second").directTo(forward ? "second" : "first")
                         .target(selectedIds).toAdjacent(destList.length > 0 ? destList[destList.length - 1][primaryKey] : null).update(moveAll);    
@@ -827,6 +860,7 @@ module nts.uk.ui.koExtentions {
             value(secondSource);
             $source.igGridSelection("clearSelection");
             $dest.igGridSelection("clearSelection");
+            afterMove(forward, oldSource, _.cloneDeep(forward ? secondSource : firstSource))
             
             if (forward){
                 var selectIndex = firstSource.length === 0 ? -1 

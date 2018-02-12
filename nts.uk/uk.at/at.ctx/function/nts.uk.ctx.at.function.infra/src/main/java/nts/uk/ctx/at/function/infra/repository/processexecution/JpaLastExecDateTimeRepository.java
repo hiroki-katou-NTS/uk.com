@@ -8,6 +8,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.processexecution.LastExecDateTime;
 import nts.uk.ctx.at.function.dom.processexecution.repository.LastExecDateTimeRepository;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtLastExecDateTime;
+import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtLastExecDateTimePK;
+import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecution;
+import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionPK;
 
 @Stateless
 public class JpaLastExecDateTimeRepository extends JpaRepository
@@ -29,5 +32,20 @@ public class JpaLastExecDateTimeRepository extends JpaRepository
 	@Override
 	public void insert(LastExecDateTime domain) {
 		this.commandProxy().insert(KfnmtLastExecDateTime.toEntity(domain));
+	}
+
+	@Override
+	public void update(LastExecDateTime domain) {
+		KfnmtLastExecDateTime updateData = KfnmtLastExecDateTime.toEntity(domain);
+		KfnmtLastExecDateTime oldData = this.queryProxy().find(updateData.kfnmtLastDateTimePK, KfnmtLastExecDateTime.class).get();
+		oldData.lastExecDateTime = updateData.lastExecDateTime;
+		
+		this.commandProxy().update(oldData);
+	}
+
+	@Override
+	public void remove(String companyId, String execItemCd) {
+		KfnmtLastExecDateTimePK kfnmtLastExecPK = new KfnmtLastExecDateTimePK(companyId, execItemCd);
+		this.commandProxy().remove(KfnmtLastExecDateTime.class, kfnmtLastExecPK);
 	}
 }

@@ -86,45 +86,44 @@ public class DPHeaderDto {
 	
 	public static DPHeaderDto createSimpleHeader(String key, String width, Map<Integer,DPAttendanceItem>  mapDP) {
 		DPHeaderDto dto = new DPHeaderDto("", key, "String", width, "", false, "", false, false);
-		DPAttendanceItem item = mapDP.get(Integer.parseInt(key.trim().substring(1, key.trim().length())));
+		DPAttendanceItem item = mapDP.get(Integer.parseInt(getCode(key)));
 		int attendanceAtr = item.getAttendanceAtr() ;
 		if(attendanceAtr == DailyAttendanceAtr.Code.value ){
 			List<DPHeaderDto> groups = new ArrayList<>();
 			int withChild = Integer.parseInt(width.substring(0, width.length()-2))/2;
-			groups.add(new DPHeaderDto("コード", "Code"+key.trim().substring(1, key.trim().length()), "String", String.valueOf(withChild)+"px", "",false, "","","search", false, false));
-			groups.add(new DPHeaderDto("名称", "Name"+key.trim().substring(1, key.trim().length()), "String", String.valueOf(withChild)+"px", "",false, "Link2", false, false));
+			groups.add(new DPHeaderDto("コード", "Code"+getCode(key), "String", String.valueOf(withChild)+"px", "",false, "","","search", false, false));
+			groups.add(new DPHeaderDto("名称", "Name"+getCode(key), "String", String.valueOf(withChild)+"px", "",false, "Link2", false, false));
 			dto.setGroup(groups);
-		}
-		if(attendanceAtr == DailyAttendanceAtr.Classification.value ){
+		} else if(attendanceAtr == DailyAttendanceAtr.Classification.value ){
 			List<DPHeaderDto> groups = new ArrayList<>();
 			int withChild = Integer.parseInt(width.substring(0, width.length()-2))/2;
-			groups.add(new DPHeaderDto("NO", "NO"+key.trim().substring(1, key.trim().length()), "number", String.valueOf(withChild)+"px", "",false, "","comboCode","", false, false));
+			groups.add(new DPHeaderDto("NO", "NO"+getCode(key), "number", String.valueOf(withChild)+"px", "",false, "","comboCode","", false, false));
 			if(item.getTypeGroup() == TypeLink.CALC.value){
-				groups.add(new DPHeaderDto("名称", "Name"+key.trim().substring(1, key.trim().length()), "String", String.valueOf(withChild)+"px", "",false, "ComboboxCalc", false, false));
+				groups.add(new DPHeaderDto("名称", "Name"+getCode(key), "String", String.valueOf(withChild)+"px", "",false, "ComboboxCalc", false, false));
 			}
 			if (item.getTypeGroup() == TypeLink.REASON_GO_OUT.value) {
-				groups.add(new DPHeaderDto("名称", "Name"+key.trim().substring(1, key.trim().length()), "String", String.valueOf(withChild)+"px", "",false, "ComboboxReason", false, false));
+				groups.add(new DPHeaderDto("名称", "Name"+getCode(key), "String", String.valueOf(withChild)+"px", "",false, "ComboboxReason", false, false));
 			}
 			if (item.getTypeGroup() == TypeLink.DOWORK.value) {
-				groups.add(new DPHeaderDto("名称", "Name"+key.trim().substring(1, key.trim().length()), "String", String.valueOf(withChild)+"px", "",false, "ComboboxDoWork", false, false));
+				groups.add(new DPHeaderDto("名称", "Name"+getCode(key), "String", String.valueOf(withChild)+"px", "",false, "ComboboxDoWork", false, false));
 			}
 			dto.setGroup(groups);
-		}
-		if(attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value){
+		} else if(attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value){
 			//dto.setNtsControl("TextEditorNumberSeparated");
-			dto.setConstraint(new Constraint("Currency", true));
-		}
-		if(attendanceAtr == DailyAttendanceAtr.Time.value){
+			dto.setConstraint(new Constraint("Currency", false));
+		} else if(attendanceAtr == DailyAttendanceAtr.Time.value){
 			//dto.setNtsControl("TextEditorTimeShortHM");
-			dto.setConstraint(new Constraint("Clock", true));
-		}
-		if(attendanceAtr == DailyAttendanceAtr.NumberOfTime.value){
-			dto.setConstraint(new Constraint("Integer", true));
-		}
-		if(attendanceAtr == DailyAttendanceAtr.TimeOfDay.value){
-			dto.setConstraint(new Constraint("TimeWithDay", true));
+			dto.setConstraint(new Constraint("Clock", false));
+		} else if(attendanceAtr == DailyAttendanceAtr.NumberOfTime.value){
+			dto.setConstraint(new Constraint("Integer", false));
+		} else if(attendanceAtr == DailyAttendanceAtr.TimeOfDay.value){
+			dto.setConstraint(new Constraint("TimeWithDay", false));
 		}
 		return dto;
+	}
+
+	private static String getCode(String key) {
+		return key.trim().substring(1, key.trim().length());
 	}
 
 	public void setHeaderText(DPAttendanceItem param) {

@@ -5,13 +5,14 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * 繰り返し詳細設定(毎月)
  */
 @Getter
 @AllArgsConstructor
-public class RepeatDetailSettingMonthly {
+public class RepeatDetailSettingMonthly extends DomainObject {
 	/* 日 */
 	private List<RepeatMonthDaysSelect> days;
 	

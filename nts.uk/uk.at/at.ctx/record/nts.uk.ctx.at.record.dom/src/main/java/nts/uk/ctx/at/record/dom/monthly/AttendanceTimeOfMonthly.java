@@ -7,7 +7,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -100,13 +100,14 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 	 * 履歴ごとに月別実績を集計する
 	 * @param companyId 会社ID
 	 * @param workingSystem 労働制
+	 * @param isRetireMonth 退職月かどうか
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void aggregate(String companyId, WorkingSystem workingSystem,
+	public void aggregate(String companyId, WorkingSystem workingSystem, boolean isRetireMonth,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		this.monthlyCalculation.aggregate(companyId, this.employeeId, this.yearMonth,
-				this.closureId, this.closureDate, this.datePeriod, workingSystem, repositories);
+				this.closureId, this.closureDate, this.datePeriod, workingSystem, isRetireMonth, repositories);
 	}
 	
 	/**

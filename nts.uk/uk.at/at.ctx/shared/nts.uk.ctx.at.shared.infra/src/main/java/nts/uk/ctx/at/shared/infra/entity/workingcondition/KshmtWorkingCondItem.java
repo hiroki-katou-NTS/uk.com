@@ -50,7 +50,7 @@ public class KshmtWorkingCondItem extends UkJpaEntity implements Serializable {
 	private String sid;
 	
 	/** The hourly pay atr */
-	@Column(name = "HOURLY_PAY_ART")
+	@Column(name = "HOURLY_PAY_ATR")
 	private Integer hourlyPayAtr;
 
 	/** The sche management atr. */

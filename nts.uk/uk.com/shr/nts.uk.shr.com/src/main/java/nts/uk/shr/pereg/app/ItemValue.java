@@ -17,23 +17,25 @@ public class ItemValue {
 	private String itemCode;
 	private String value;
 	private int type;
-	
+
 	/**
 	 * 個人情報項目定義ID
+	 * 
 	 * @return 個人情報項目定義ID
 	 */
 	public String definitionId() {
 		return this.definitionId;
 	}
-	
+
 	/**
 	 * 項目定義コード
+	 * 
 	 * @return 項目定義コード
 	 */
 	public String itemCode() {
 		return this.itemCode;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public <T> T value() {
 		Object convertedValue;
@@ -42,7 +44,7 @@ public class ItemValue {
 		case TIME:
 		case TIMEPOINT:
 			// In case of value is empty or null return default value
-			if (StringUtils.isEmpty(this.value)){
+			if (StringUtils.isEmpty(this.value)) {
 				convertedValue = null;
 			} else {
 				convertedValue = new BigDecimal(this.value);
@@ -50,11 +52,13 @@ public class ItemValue {
 			break;
 		case STRING:
 		case SELECTION:
+		case SELECTION_RADIO:
+		case SELECTION_BUTTON:
 			convertedValue = this.value;
 			break;
 		case DATE:
-			// In case of value is empty or null return null 
-			if (StringUtils.isEmpty(this.value)){
+			// In case of value is empty or null return null
+			if (StringUtils.isEmpty(this.value)) {
 				convertedValue = null;
 			} else {
 				convertedValue = GeneralDate.fromString(this.value, "yyyy/MM/dd");
@@ -63,10 +67,10 @@ public class ItemValue {
 		default:
 			throw new RuntimeException("invalid type: " + this.type);
 		}
-		
-		return (T)convertedValue;
+
+		return (T) convertedValue;
 	}
-	
+
 	public void setValue(Object obj) {
 		switch (this.itemValueType()) {
 		case NUMERIC:
@@ -76,16 +80,18 @@ public class ItemValue {
 			break;
 		case STRING:
 		case SELECTION:
+		case SELECTION_RADIO:
+		case SELECTION_BUTTON:
 			this.value = obj.toString();
 			break;
 		case DATE:
-			this.value = ((GeneralDate)obj).toString("yyyy/MM/dd");
+			this.value = ((GeneralDate) obj).toString("yyyy/MM/dd");
 			break;
 		default:
 			throw new RuntimeException("invalid type: " + this.type);
 		}
 	}
-	
+
 	public ItemValueType itemValueType() {
 		return EnumAdaptor.valueOf(this.type, ItemValueType.class);
 	}

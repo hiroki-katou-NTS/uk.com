@@ -14,6 +14,7 @@ module cps001.a.vm {
     import permision4Cat = service.getPermision4Cat;
     import format = nts.uk.text.format;
     import lv = nts.layout.validate;
+    import vc = nts.layout.validation;
 
     const REPL_KEY = '__REPLACE',
         RELOAD_KEY = "__RELOAD",
@@ -404,6 +405,7 @@ module cps001.a.vm {
                 emp = self.employee(),
                 person = emp.personInfo(),
                 layouts = self.multipleData().map(x => x.layout()),
+                controls = _.flatten(layouts.map(x => x.listItemCls())),
                 inputs = _.flatten(layouts.map(x => x.outData())),
                 command: IPeregCommand = {
                     personId: person.personId(),
@@ -412,9 +414,7 @@ module cps001.a.vm {
                 };
 
             // trigger change of all control in layout
-            $('.drag-panel .nts-input')
-                .trigger('blur')
-                .trigger('change');
+            lv.checkError(controls);
 
             setTimeout(() => {
                 if (hasError()) {
@@ -503,6 +503,7 @@ module cps001.a.vm {
 
     class MultiData {
         title: KnockoutObservable<string> = undefined;
+        htitle: KnockoutObservable<string> = ko.observable('');
         mode: KnockoutObservable<TABS> = ko.observable(undefined);
         roleId: KnockoutObservable<string> = ko.observable(undefined);
 
@@ -670,7 +671,7 @@ module cps001.a.vm {
                         self.infoId(undefined);
 
                         let sdate = layout.standardDate(),
-                            ddate = sdate && moment.utc(sdate).toDate() || moment.utc().toDate(),
+                            ddate = sdate && moment.utc(sdate, "YYYY/MM/DD").toDate() || moment.utc().toDate(),
                             query: ILayoutQuery = {
                                 layoutId: id,
                                 browsingEmpId: self.employeeId(),
@@ -696,6 +697,11 @@ module cps001.a.vm {
 
                                 lv.removeDoubleLine(data.classificationItems);
                                 layout.listItemCls(data.classificationItems || []);
+
+                                _.defer(() => {
+                                    new vc(layout.listItemCls());
+                                    $('.drag-panel input:first').focus();
+                                });
                             } else {
                                 layout.listItemCls.removeAll();
                             }
@@ -726,6 +732,10 @@ module cps001.a.vm {
                                     if (data) {
                                         lv.removeDoubleLine(data.classificationItems);
                                         layout.listItemCls(data.classificationItems || []);
+                                        _.defer(() => {
+                                            new vc(layout.listItemCls());
+                                            $('.drag-panel input:first').focus();
+                                        });
                                     } else {
                                         layout.listItemCls.removeAll();
                                     }
@@ -749,6 +759,12 @@ module cps001.a.vm {
 
                                 if (rep == REPL_KEYS.NORMAL) {
                                     service.getHistData(query).done((data: Array<any>) => {
+                                        let _title = _.find(data, x => !x.optionValue);
+                                        if (_title) {
+                                            self.htitle(_title.optionText);
+                                        }
+
+                                        data = _.filter(data, x => !!x.optionValue);
                                         if (data && data.length) {
                                             self.gridlist(data);
                                             self.changeTitle(ATCS.UPDATE);
@@ -830,22 +846,25 @@ module cps001.a.vm {
 
                                 self.infoId(undefined);
 
-                                let removed: Array<any> = [];
+                                let removed: Array<any> = [],
+                                    clearRecord = (m: any) => {
+                                        if (!_.isArray(m)) {
+                                            m.recordId = undefined;
+                                        } else {
+                                            _.each(m, k => {
+                                                k.recordId = undefined;
+                                            });
+                                        }
+                                    };
                                 _.each(data.classificationItems, (c: any, i: number) => {
                                     if (_.has(c, "items") && _.isArray(c.items)) {
+                                        _.each(c.items, m => clearRecord(m));
+
+                                        // clear value of first set item
                                         if (!removed.length) {
                                             removed = _.filter(c.items, (x: any) => x.item && x.item.dataTypeValue == ITEM_SINGLE_TYPE.DATE);
                                             if (removed.length) {
-                                                _.each(c.items, m => {
-                                                    if (!_.isArray(m)) {
-                                                        m.value = undefined;
-                                                        m.recordId = undefined;
-                                                    } else {
-                                                        _.each(m, k => {
-                                                            k.recordId = undefined;
-                                                        });
-                                                    }
-                                                });
+                                                _.each(c.items, m => m.value = undefined);
                                             }
                                         }
                                     }
@@ -855,7 +874,12 @@ module cps001.a.vm {
                             }
                             layout.showColor(false);
                             lv.removeDoubleLine(data.classificationItems);
-                            layout.listItemCls(data.classificationItems);
+                            layout.listItemCls(data.classificationItems || []);
+
+                            _.defer(() => {
+                                new vc(layout.listItemCls());
+                                $('.drag-panel input:first').focus();
+                            });
 
                             let roleId = self.roleId(),
                                 catId = self.categoryId() || self.id();
@@ -996,7 +1020,7 @@ module cps001.a.vm {
                 days = self.numberOfWork(),
                 duration = moment.duration(days, "days");
 
-            return format("{0}{1}{2}{3}", duration.years(), text('CPS001_67'), duration.months(), text('CPS001_88'));
+            return duration.days() != 0 && format("{0}{1}{2}{3}", duration.years(), text('CPS001_67'), duration.months(), text('CPS001_88')) || '';
         });
 
         constructor(param?: IEmployee) {
@@ -1027,7 +1051,11 @@ module cps001.a.vm {
                             self.contractType(data.contractCodeType);
 
                             person.gender(data.gender);
-                            person.birthDate(moment.utc(data.birthday).toDate());
+                            if (data.birthday) {
+                                person.birthDate(moment.utc(data.birthday, "YYYY/MM/DD").toDate());
+                            } else {
+                                person.birthDate(undefined);
+                            }
 
                             self.departmentCode(data.departmentCode);
                             self.departmentName(data.departmentName);
@@ -1126,7 +1154,7 @@ module cps001.a.vm {
                 birth = moment.utc(birthDay),
                 duration = moment.duration(now.diff(birth));
 
-            return duration.years() + text('CPS001_66');
+            return birthDay && (duration.years() + text('CPS001_66')) || '';
         });
     }
 

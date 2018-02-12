@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,7 +53,6 @@ import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTimeCode;
 import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTypeCode;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageContent;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfo;
@@ -288,7 +288,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		} else {
 
 			workInfoOfDailyPerformanceUpdate.setEmployeeId(employeeID);
-			workInfoOfDailyPerformanceUpdate.setCalculationState(CalculationState.Calculated);
+			workInfoOfDailyPerformanceUpdate.setCalculationState(CalculationState.No_Calculated);
 			workInfoOfDailyPerformanceUpdate.setYmd(day);
 
 			if (workingConditionItem.get().getScheduleManagementAtr() == NotUseAtr.USE) {
@@ -316,42 +316,53 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							.setRecordWorkInformation(new WorkInformation(basicScheduleHasData.get().getWorkTimeCode(),
 									basicScheduleHasData.get().getWorkTypeCode()));
 
-					// Imported(就業.勤務実績)「勤務予定時間帯」を取得する
-					List<WorkScheduleSidImport> workScheduleHasData = basicScheduleHasData.get()
-							.getWorkScheduleSidImports();
-					// 存在しない - no data
-					if (workScheduleHasData.isEmpty()) {
-						ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
-								new ErrMessageResource("007"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
-								new ErrMessageContent(TextResource.localize("Msg_432")));
-						errMesInfos.add(employmentErrMes);
+					// 1日半日出勤・1日休日系の判定
+					WorkStyle workStyle = basicScheduleService.checkWorkDay(
+							workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTypeCode().v());
 
-						this.errMessageInfoRepository.addList(errMesInfos);
+					if (workStyle != WorkStyle.ONE_DAY_REST) {
+
+						// Imported(就業.勤務実績)「勤務予定時間帯」を取得する
+						List<WorkScheduleSidImport> workScheduleHasData = basicScheduleHasData.get()
+								.getWorkScheduleSidImports();
+						// 存在しない - no data
+						if (workScheduleHasData.isEmpty()) {
+							ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
+									new ErrMessageResource("007"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
+									new ErrMessageContent(TextResource.localize("Msg_432")));
+							errMesInfos.add(employmentErrMes);
+
+							this.errMessageInfoRepository.addList(errMesInfos);
+						} else {
+							// copy information for employeeId has data
+							List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
+							workScheduleHasData.forEach(items -> {
+
+								if (items.getBounceAtr() == 3) {
+									workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Not_use);
+									workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Not_use);
+								} else if (items.getBounceAtr() == 2) {
+									workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Not_use);
+									workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Use);
+								} else if (items.getBounceAtr() == 0) {
+									workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Use);
+									workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Not_use);
+								} else if (items.getBounceAtr() == 1) {
+									workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Use);
+									workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Use);
+								}
+
+								ScheduleTimeSheet scheduleTimeSheet = new ScheduleTimeSheet(items.getScheduleCnt(),
+										items.getScheduleStartClock(), items.getScheduleEndClock());
+								scheduleTimeSheets.add(scheduleTimeSheet);
+							});
+
+							workInfoOfDailyPerformanceUpdate.setScheduleTimeSheets(scheduleTimeSheets);
+						}
 					} else {
-						// copy information for employeeId has data
-						List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
-						workScheduleHasData.forEach(items -> {
-
-							if (items.getBounceAtr() == 3) {
-								workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Not_use);
-								workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Not_use);
-							} else if (items.getBounceAtr() == 2) {
-								workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Not_use);
-								workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Use);
-							} else if (items.getBounceAtr() == 0) {
-								workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Use);
-								workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Not_use);
-							} else if (items.getBounceAtr() == 1) {
-								workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Use);
-								workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Use);
-							}
-
-							ScheduleTimeSheet scheduleTimeSheet = new ScheduleTimeSheet(items.getScheduleCnt(),
-									items.getScheduleStartClock(), items.getScheduleEndClock());
-							scheduleTimeSheets.add(scheduleTimeSheet);
-						});
-
-						workInfoOfDailyPerformanceUpdate.setScheduleTimeSheets(scheduleTimeSheets);
+						workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Not_use);
+						workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Not_use);
+						workInfoOfDailyPerformanceUpdate.setScheduleTimeSheets(null);
 					}
 				}
 
@@ -511,22 +522,26 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					String workTypeCode = workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTypeCode()
 							.v();
 					Optional<WorkType> workType = this.workTypeRepository.findByPK(companyId, workTypeCode);
-					// 打刻の扱い方に従って、直行区分、直帰区分を更新
-					if (workType.get().getWorkTypeSetList().get(0).getAttendanceTime() == WorkTypeSetCheck.CHECK) {
-						workInfoOfDailyPerformanceUpdate
-								.setGoStraightAtr(EnumAdaptor.valueOf(1, NotUseAttribute.class));
-					} else if (workType.get().getWorkTypeSetList().get(0)
-							.getAttendanceTime() == WorkTypeSetCheck.NO_CHECK) {
-						workInfoOfDailyPerformanceUpdate
-								.setGoStraightAtr(EnumAdaptor.valueOf(0, NotUseAttribute.class));
-					}
-					if (workType.get().getWorkTypeSetList().get(0).getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
-						workInfoOfDailyPerformanceUpdate
-								.setBackStraightAtr(EnumAdaptor.valueOf(1, NotUseAttribute.class));
-					} else if (workType.get().getWorkTypeSetList().get(0)
-							.getTimeLeaveWork() == WorkTypeSetCheck.NO_CHECK) {
-						workInfoOfDailyPerformanceUpdate
-								.setBackStraightAtr(EnumAdaptor.valueOf(0, NotUseAttribute.class));
+					if (workType.isPresent()) {
+						// 打刻の扱い方に従って、直行区分、直帰区分を更新
+						if (workType.get().getWorkTypeSetList().get(0).getAttendanceTime() == WorkTypeSetCheck.CHECK) {
+							workInfoOfDailyPerformanceUpdate
+									.setGoStraightAtr(EnumAdaptor.valueOf(1, NotUseAttribute.class));
+						} else if (workType.get().getWorkTypeSetList().get(0)
+								.getAttendanceTime() == WorkTypeSetCheck.NO_CHECK) {
+							workInfoOfDailyPerformanceUpdate
+									.setGoStraightAtr(EnumAdaptor.valueOf(0, NotUseAttribute.class));
+						}
+						if (workType.get().getWorkTypeSetList().get(0).getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
+							workInfoOfDailyPerformanceUpdate
+									.setBackStraightAtr(EnumAdaptor.valueOf(1, NotUseAttribute.class));
+						} else if (workType.get().getWorkTypeSetList().get(0)
+								.getTimeLeaveWork() == WorkTypeSetCheck.NO_CHECK) {
+							workInfoOfDailyPerformanceUpdate
+									.setBackStraightAtr(EnumAdaptor.valueOf(0, NotUseAttribute.class));
+						}
+					} else {
+						throw new RuntimeException("worktype hasn't data");
 					}
 				} else {
 					workInfoOfDailyPerformanceUpdate.setGoStraightAtr(EnumAdaptor.valueOf(1, NotUseAttribute.class));
@@ -558,6 +573,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						}
 					}
 					workInfoOfDailyPerformanceUpdate.setScheduleTimeSheets(scheduleTimeSheets);
+				} else {
+					throw new RuntimeException("PredetemineTimeSetting has not data");
 				}
 			}
 
@@ -565,16 +582,18 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance = null;
 
 			if (errMesInfos.isEmpty()) {
-				createStamp(companyId, workInfoOfDailyPerformanceUpdate, workingConditionItem, timeLeavingOptional,
-						employeeID, day);
-
-				// check tay
-				stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeID, day,
-						workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID, reCreateAttr,
-						breakTimeOfDailyPerformance);
-
+				// 1日半日出勤・1日休日系の判定
+				WorkStyle workStyle = basicScheduleService.checkWorkDay(
+						workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTypeCode().v());
+				if (workStyle != WorkStyle.ONE_DAY_REST) {
+					createStamp(companyId, workInfoOfDailyPerformanceUpdate, workingConditionItem, timeLeavingOptional,
+							employeeID, day);
+					// check tay
+					stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId, employeeID, day,
+							workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID, reCreateAttr,
+							breakTimeOfDailyPerformance);
+				}
 			}
-
 		}
 
 		if (errMesInfos.isEmpty() && stampOutput != null) {
@@ -601,32 +620,40 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			// timeLeavingOptional.getTimeLeavingWorks();
 		}
 		if (stampOutput != null) {
-//			if (stampOutput.getOutingTimeOfDailyPerformance() != null) {
-//				List<OutingFrameNo> outingFrameNos = stampOutput.getOutingTimeOfDailyPerformance().getOutingTimeSheets()
-//						.stream().map(item -> {
-//							return item.getOutingFrameNo();
-//						}).collect(Collectors.toList());
-//				for (OutingFrameNo outingFrameNo : outingFrameNos) {
-//					if (this.outingTimeOfDailyPerformanceRepository.checkExistData(employeeID, day, outingFrameNo)) {
-//						OutingTimeSheet outingTimeSheet = stampOutput.getOutingTimeOfDailyPerformance()
-//								.getOutingTimeSheets().stream()
-//								.filter(item -> item.getOutingFrameNo().v() == outingFrameNo.v()).findFirst().get();
-//						this.outingTimeOfDailyPerformanceRepository.updateOneDataInlist(employeeID, day,
-//								outingTimeSheet);
-//					} else {
-//						this.outingTimeOfDailyPerformanceRepository.add(stampOutput.getOutingTimeOfDailyPerformance());
-//					}
-//				}
-//			}
-//			if (stampOutput.getTemporaryTimeOfDailyPerformance() != null) {
-//				if (this.temporaryTimeOfDailyPerformanceRepository.findByKey(employeeID, day).isPresent()) {
-//					this.temporaryTimeOfDailyPerformanceRepository
-//							.update(stampOutput.getTemporaryTimeOfDailyPerformance());
-//				} else {
-//					this.temporaryTimeOfDailyPerformanceRepository
-//							.insert(stampOutput.getTemporaryTimeOfDailyPerformance());
-//				}
-//			}
+			// if (stampOutput.getOutingTimeOfDailyPerformance() != null) {
+			// List<OutingFrameNo> outingFrameNos =
+			// stampOutput.getOutingTimeOfDailyPerformance().getOutingTimeSheets()
+			// .stream().map(item -> {
+			// return item.getOutingFrameNo();
+			// }).collect(Collectors.toList());
+			// for (OutingFrameNo outingFrameNo : outingFrameNos) {
+			// if
+			// (this.outingTimeOfDailyPerformanceRepository.checkExistData(employeeID,
+			// day, outingFrameNo)) {
+			// OutingTimeSheet outingTimeSheet =
+			// stampOutput.getOutingTimeOfDailyPerformance()
+			// .getOutingTimeSheets().stream()
+			// .filter(item -> item.getOutingFrameNo().v() ==
+			// outingFrameNo.v()).findFirst().get();
+			// this.outingTimeOfDailyPerformanceRepository.updateOneDataInlist(employeeID,
+			// day,
+			// outingTimeSheet);
+			// } else {
+			// this.outingTimeOfDailyPerformanceRepository.add(stampOutput.getOutingTimeOfDailyPerformance());
+			// }
+			// }
+			// }
+			// if (stampOutput.getTemporaryTimeOfDailyPerformance() != null) {
+			// if
+			// (this.temporaryTimeOfDailyPerformanceRepository.findByKey(employeeID,
+			// day).isPresent()) {
+			// this.temporaryTimeOfDailyPerformanceRepository
+			// .update(stampOutput.getTemporaryTimeOfDailyPerformance());
+			// } else {
+			// this.temporaryTimeOfDailyPerformanceRepository
+			// .insert(stampOutput.getTemporaryTimeOfDailyPerformance());
+			// }
+			// }
 			if (stampOutput.getTimeLeavingOfDailyPerformance() != null
 					&& stampOutput.getTimeLeavingOfDailyPerformance().getTimeLeavingWorks() != null
 					&& !stampOutput.getTimeLeavingOfDailyPerformance().getTimeLeavingWorks().isEmpty()) {
@@ -768,10 +795,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 											.findBySid(employeeID, day);
 
 									if (affWorkplaceDto.isPresent()) {
-										actualStamp.setLocationCode(
-												new WorkLocationCD(affWorkplaceDto.get().getWorkplaceCode()));
-										leaveActualStamp.setLocationCode(
-												new WorkLocationCD(affWorkplaceDto.get().getWorkplaceCode()));
+										actualStamp.setLocationCode(null);
+										leaveActualStamp.setLocationCode(null);
 									}
 									actualStamp.setStampSourceInfo(automaticStampSetDetailDto.getAttendanceStamp());
 									leaveActualStamp.setStampSourceInfo(automaticStampSetDetailDto.getLeavingStamp());
@@ -834,6 +859,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			automaticStampSetDetailDto.setTimeLeavingWorks(timeLeavingWorks);
 
 			Calendar toDay = Calendar.getInstance();
+			Date date2 = toDay.getTime();
 			int hour = toDay.get(Calendar.HOUR_OF_DAY);
 			int minute = toDay.get(Calendar.MINUTE);
 			int currentMinuteOfDay = ((hour * 60) + minute);
@@ -861,10 +887,15 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.SET_AUTO_STAMP
 							|| (stampReflectionManagement.get()
 									.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.DO_NOT_SET_AUTO_STAMP
+									&& day.date().before(date2))
+							|| (stampReflectionManagement.get()
+									.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.DO_NOT_SET_AUTO_STAMP
+									&& day.date().equals(date2)
 									&& timeLeavingWork.getAttendanceStamp().isPresent()
 									&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent()
 									&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay()
 											.lessThanOrEqualTo(currentMinuteOfDay))) {
+						
 
 						if (timeLeavingOptional.getTimeLeavingWorks() == null || leavingStamp == null
 								|| (leavingStamp != null && !leavingStamp.getAttendanceStamp().isPresent())
@@ -890,7 +921,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.SET_AUTO_STAMP
 							|| (stampReflectionManagement.get()
 									.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.DO_NOT_SET_AUTO_STAMP
+											&& day.date().before(date2))
+							|| (stampReflectionManagement.get()
+									.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.DO_NOT_SET_AUTO_STAMP
+									&& day.date().equals(date2)
 									&& timeLeavingWork.getLeaveStamp().isPresent()
+									&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent()
 									&& timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()
 											.lessThanOrEqualTo(currentMinuteOfDay))) {
 						if (timeLeavingOptional.getTimeLeavingWorks() == null || leavingStamp == null

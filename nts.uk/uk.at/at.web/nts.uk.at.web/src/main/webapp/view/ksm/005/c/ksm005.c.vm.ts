@@ -2,20 +2,26 @@ module nts.uk.at.view.ksm005.c {
     
     import MonthlyPatternDto = service.model.MonthlyPatternDto;
     import MonthlyPatternSettingDto = service.model.MonthlyPatternSettingDto;
-    import MonthlyPatternSettingActionDto = service.model.MonthlyPatternSettingActionDto;
-  
+    import CopyMonthlyPatternSettingDto = service.model.CopyMonthlyPatternSettingDto;
+    import HistoryDto = service.model.HistoryDto;
 
     export module viewmodel {
 
         export class ScreenModel {
             ccgcomponent: GroupOption;
+            
+            enableSave: KnockoutObservable<boolean>;
+            enableCopy: KnockoutObservable<boolean>;
+            
+            //copy mode
+            listDestSid: KnockoutObservableArray<string[]>;
 
             // Options
             baseDate: KnockoutObservable<Date>;
-            selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
+            selectedEmployee: KnockoutObservableArray<any>;
 
             listComponentOption: any;
-            selectedCode: KnockoutObservable<string>;
+            selectedCode: KnockoutObservable<any>;
             monthlyPatternCode: string;
             monthlyPatternSetting: KnockoutObservable<string>;
             employeeName: KnockoutObservable<string>;
@@ -24,11 +30,44 @@ module nts.uk.at.view.ksm005.c {
             alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
             isShowNoSelectRow: KnockoutObservable<boolean>;
             employeeList: KnockoutObservableArray<UnitModel>;
-
-
+            
+            // list hist
+            histList: KnockoutObservableArray<any>;
+            histName: KnockoutObservable<string>;
+            currentHist: KnockoutObservable<number>
+            selectedHist: KnockoutObservable<string>;
+            selectedHists: KnockoutObservableArray<any>;
+            isEnableListHist: KnockoutObservable<boolean>;
+            
+            // monthly pattern list
+            monthlyPatternList: KnockoutObservableArray<any>;
+            selectedmonthlyPattern: KnockoutObservable<string>;
+            isEnableListMonthlyPattern: KnockoutObservable<boolean>;
+            isEditableListMonthlyPattern: KnockoutObservable<boolean>;
 
             constructor() {
                 var self = this;
+                
+                //copy mode
+                self.listDestSid = ko.observableArray([]);
+                
+                self.enableSave = ko.observable(true);
+                self.enableCopy = ko.observable(false);
+                
+                // list hist
+                self.histList = ko.observableArray([]);
+                self.histName = ko.observable('');
+                self.currentHist = ko.observable(3);
+                self.selectedHist = ko.observable(null)
+                self.isEnableListHist = ko.observable(false);
+                self.selectedHists = ko.observableArray([]);
+                
+                // list monthly pattern
+                self.monthlyPatternList = ko.observableArray([]);
+                self.selectedmonthlyPattern = ko.observable('');
+                self.isEnableListMonthlyPattern = ko.observable(true);
+                self.isEditableListMonthlyPattern = ko.observable(false);
+                
                 self.selectedEmployee = ko.observableArray([]);
                 self.baseDate = ko.observable(new Date());
                 self.monthlyPatternSetting = ko.observable('');
@@ -75,26 +114,66 @@ module nts.uk.at.view.ksm005.c {
 
                 }
 
-                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+//                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
 
                 self.selectedCode = ko.observable('');
                 self.alreadySettingList = ko.observableArray([]);
                 self.isShowNoSelectRow = ko.observable(false);
                 self.employeeList = ko.observableArray<UnitModel>([]);
                 self.applyKCP005ContentSearch([]);
-                $('#component-items-list').ntsListComponent(self.listComponentOption);
+//                $('#component-items-list').ntsListComponent(self.listComponentOption);
 
                 self.selectedCode.subscribe(function(employeeCode: string) {
                     if (employeeCode) {
-                        self.applySelectEmployeeCode(employeeCode);
-                    }else {
+                        self.applySelectEmployeeCode(employeeCode).done(function(){
+                            if (self.histList().length > 0){
+                                self.selectedHists(self.histList()[0].historyId);
+                            } else {
+                                self.selectedHists(null);
+                                self.selectedHists.valueHasMutated();                              
+                            }
+                        });
+                    } else {
+                        self.selectedHists(null);
+                        self.isEnableListHist(false);
+                        self.histList([]);
                         self.enableDelete(false);
-                        self.enableSystemChange(false);  
+                        self.enableSystemChange(false);
                         self.employeeName('');  
                         self.monthlyPatternSetting('');
+                        self.selectedmonthlyPattern(self.monthlyPatternList()[0]);
+                        self.enableCopy(false);
+                        self.enableSave(false);
                     }
                 });
+                
+                self.selectedHists.subscribe(function(newValue) {            
+                    if(self.histList().filter(e => e.historyId == newValue && e.textDisplay.indexOf("9999/12/31") == -1).length > 0){
+//                        self.selectedHists(null);
+                        self.enableSave(false);
+                        self.enableDelete(false);
+                        self.enableCopy(false);
+                    } else {
+                        self.enableSave(true);
+                    }
+                    self.findMonthlyPatternSetting(newValue);
+                });
             }
+            
+            public start_page(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred();
+                var monthlyPatternData: MonthlyPatterModel[] = [new MonthlyPatterModel('000', 'なし') ];
+                 service.getListMonthlyPattern().done(function(data) {
+                        data.forEach(function(item){
+                            monthlyPatternData.push(new MonthlyPatterModel(item.code, item.name));
+                        });
+                        self.monthlyPatternList(monthlyPatternData);
+                        dfd.resolve(); 
+                });
+                return dfd.promise();
+            }
+            
             /**
              * apply ccg001 search data to kcp005
              */
@@ -116,23 +195,26 @@ module nts.uk.at.view.ksm005.c {
                 }
                 
                 self.findAllByEmployeeIds(self.getAllEmployeeIdBySearch()).done(function(data){
-                    self.alreadySettingList(data);                       
+                    if (data != null){
+                        self.alreadySettingList(data);
+                    }
+                    self.listComponentOption = {
+                        isShowAlreadySet: true,
+                        isMultiSelect: false,
+                        listType: ListType.EMPLOYEE,
+                        employeeInputList: self.employeeList,
+                        selectType: SelectType.SELECT_FIRST_ITEM,
+                        selectedCode: self.selectedCode,
+                        isDialog: false,
+                        isShowNoSelectRow: false,
+                        alreadySettingList: self.alreadySettingList,
+                        isShowWorkPlaceName: true,
+                        isShowSelectAllButton: false,
+                        maxRows: 15,
+                        maxWidth: 450
+                    }; 
+                    //$('#component-items-list').ntsListComponent(self.listComponentOption);                    
                 });
-                self.listComponentOption = {
-                    isShowAlreadySet: true,
-                    isMultiSelect: false,
-                    listType: ListType.EMPLOYEE,
-                    employeeInputList: self.employeeList,
-                    selectType: SelectType.SELECT_FIRST_ITEM,
-                    selectedCode: self.selectedCode,
-                    isDialog: false,
-                    isShowNoSelectRow: false,
-                    alreadySettingList: self.alreadySettingList,
-                    isShowWorkPlaceName: true,
-                    isShowSelectAllButton: false,
-                    maxRows: 15,
-                    maxWidth: 450
-                }; 
                 
             }
 
@@ -194,51 +276,85 @@ module nts.uk.at.view.ksm005.c {
              /**
              *  apply info monthly pattern setting 
              */
-            public applySelectEmployeeCode(employeeCode: string){
+            public applySelectEmployeeCode(employeeCode: string): JQueryPromise<any> {
                 var self = this;
+                var dfd = $.Deferred();
+                var historyData: HistModel[] = [];
+                var textDisplay = "";
                 if (employeeCode) {
                     self.employeeName((self.findByCodeEmployee(employeeCode)).name);
-                    service.findByIdMonthlyPatternSetting(self.findEmployeeIdByCode(employeeCode)).done(function(data: MonthlyPatternSettingDto) {
-                        console.log(data);
-                        if (data.setting) {
-                            if (data.info && data.info.code) {
-                                self.monthlyPatternCode = data.info.code;
-                                self.monthlyPatternSetting(data.info.code + ' ' + data.info.name);
-                                self.enableDelete(true);
-                                self.enableSystemChange(true);
-                            }else {
-                                self.monthlyPatternCode = '';
-                                self.monthlyPatternSetting('');
-                                self.enableDelete(true);
-                                self.enableSystemChange(true);   
-                            }
+                    service.getListHistory(self.findEmployeeIdByCode(employeeCode)).done(function (data){
+                        if(data != null){
+                             data.forEach(function(item){
+                              textDisplay = item.period.startDate + " " + nts.uk.resource.getText("CMM011_26") + " " + item.period.endDate;
+                              historyData.push(new HistModel(item.historyId, textDisplay));
+                            });
+                            self.isEnableListMonthlyPattern(true);
+                            self.isEnableListHist(true);
+                            self.enableSave(true);
                         } else {
-                            self.monthlyPatternCode = '';
-                            self.monthlyPatternSetting('');
+                            self.isEnableListMonthlyPattern(true);
+                            self.isEnableListHist(false);
+                            self.enableSave(false);
+                            self.enableCopy(false);
                             self.enableDelete(false);
-                            self.enableSystemChange(true);
                         }
+                        self.histList(historyData);
+                        dfd.resolve();
                     });
                 }
+                return dfd.promise(); 
             }
-            /**
-             * open dialog system change (f)
-             */
-            public onpenDialogSystemChange(): void {
+            
+            public findMonthlyPatternSetting(historyId: string): JQueryPromise<any> {
                 var self = this;
-                nts.uk.ui.windows.setShared("employeeId",self.selectedCode());
-                nts.uk.ui.windows.setShared("monthlyPatternCode",self.monthlyPatternCode);
-                nts.uk.ui.windows.sub.modal("/view/ksm/005/f/index.xhtml").onClosed(function(){
-                    var isCancel: boolean = nts.uk.ui.windows.getShared("isCancel");
-                    if (!isCancel) {
-                        service.findByIdMonthlyPattern(nts.uk.ui.windows.getShared("monthlyPatternCode")).done(function(data) {
-                            self.monthlyPatternCode = data.code;
-                            self.monthlyPatternSetting(data.code + ' ' + data.name);
-                        });
+                var dfd = $.Deferred();
+                service.findByIdMonthlyPatternSetting(historyId).done(function(data: MonthlyPatternSettingDto) {
+                    if (data != null) {
+                        if (data.monthlyPatternCode != "") {
+                            if (self.monthlyPatternList().filter(e => e.code == data.monthlyPatternCode).length <= 0) {
+                                var dto: MonthlyPatternSettingDto;
+                                dto = { 
+                                        employeeId: self.findEmployeeIdByCode(self.selectedCode()),
+                                        historyId: self.selectedHists(), 
+                                        monthlyPatternCode: self.selectedmonthlyPattern() };
+                                service.deleteMonthlyPatternSetting(dto).done(function() {
+                                    // reload page
+                                    self.reloadPage();
+                                    self.enableCopy(false);
+                                    self.enableDelete(false);
+                                    self.selectedmonthlyPattern('000');
+                                    if (self.histList().length > 0){
+                                        self.selectedHists(self.histList()[0].historyId);
+                                    }
+                                }).fail(function(error) {
+                                    nts.uk.ui.dialog.alertError(error);
+                                });
+                                return; 
+                            }
+                            self.selectedmonthlyPattern(data.monthlyPatternCode);                    
+                            self.enableDelete(true);
+                            self.enableSystemChange(true);
+                            self.enableCopy(true);
+                            //self.selectedHists(data.historyId);
+                        } else {
+                            self.selectedmonthlyPattern('000');
+                            self.enableDelete(false);
+                            self.enableCopy(false);
+                            self.enableSystemChange(false);   
+                        }
+                    } else {
+                        self.selectedmonthlyPattern('000');                    
+                        self.enableDelete(false);
+                        self.enableCopy(false);
+                        self.enableSystemChange(true);
+                        //self.selectedHists(null);
                     }
-                });
+                    dfd.resolve();
+                });   
+                return dfd.promise(); 
             }
-
+            
             /**
              * call service find all by employee id
              */
@@ -247,13 +363,17 @@ module nts.uk.at.view.ksm005.c {
                 var dataRes: UnitAlreadySettingModel[] = [];
                 var self = this;
                 service.findAllMonthlyPatternSetting(employeeIds).done(function(data) {
-                    for (var employeeId of data) {
-                        var setting: UnitAlreadySettingModel;
-                        setting = { code: self.findEmployeeCodeById(employeeId), isAlreadySetting: true };
-                        dataRes.push(setting);
+                    if(data != null){
+                        data.forEach(function(item){
+                            var setting: UnitAlreadySettingModel;
+                            setting = { code: self.findEmployeeCodeById(item.employeeId), isAlreadySetting: true };
+                            dataRes.push(setting);
+                        })
                     }
+                    
                     dfd.resolve(dataRes);
                 });
+
                 return dfd.promise();
             }
             /**
@@ -272,13 +392,84 @@ module nts.uk.at.view.ksm005.c {
              */
             public saveMonthlyPatternSetting(): void {
                 var self = this;
-                var dto : MonthlyPatternSettingActionDto;
+                
+                if (!self.selectedHists()) {
+//                    nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
+                    return;
+                }
+                
                 if (!self.selectedCode()) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
                     return;
                 }
-                dto = {employeeId: self.findEmployeeIdByCode(self.selectedCode()), monthlyPatternCode: self.monthlyPatternCode};
+                if (self.selectedmonthlyPattern() == "000") {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_190" });
+                    return;
+                }
+                var dto = {employeeId: self.findEmployeeIdByCode(self.selectedCode()), historyId: self.selectedHists(), monthlyPatternCode: self.selectedmonthlyPattern()};
                 service.saveMonthlyPatternSetting(dto).done(function() {
+                    // show message 15
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        // reload page
+                        self.reloadPage();
+                        self.enableCopy(true);
+                        self.enableDelete(true);
+                    });
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                });    
+            }
+            
+            /**
+             * open dialog copy monthly pattern setting by on click button
+             */
+            public openDialogCopy(): void {
+                var self = this;
+                if (!self.selectedCode()) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
+                    return;
+                }
+                
+                let dataSource = $('#component-items-list').getDataList();
+                let itemListSetting = dataSource.filter(e => e.isAlreadySetting == true).map(e => self.findEmployeeIdByCode(e.code));
+                
+                let object: IObjectDuplication = {
+                    code: self.selectedCode(),
+                    name: dataSource.filter(e => e.code == self.selectedCode())[0].name,
+                    targetType: TargetType.WORKPLACE_PERSONAL,
+                    itemListSetting: itemListSetting,
+                    baseDate: self.baseDate()
+                };
+                
+                // create object has data type IObjectDuplication and use:
+                nts.uk.ui.windows.setShared("CDL023Input", object);
+                
+                // open dialog
+                nts.uk.ui.windows.sub.modal('com','/view/cdl/023/a/index.xhtml').onClosed(() => {
+                    // show data respond
+                    let lstSelection: Array<string> = nts.uk.ui.windows.getShared("CDL023Output");                 
+                    if (!nts.uk.util.isNullOrEmpty(lstSelection)) {
+                        self.listDestSid(lstSelection); 
+                        self.copyMonthlyPatternSetting();
+                    }
+                });
+            }
+            
+             /**
+             * call service copy monthly pattern setting
+             */
+            public copyMonthlyPatternSetting(): void {
+                var self = this;
+                if (!self.selectedCode()) {
+                    return;
+                }
+                var dto : CopyMonthlyPatternSettingDto = {
+                    destSid: self.listDestSid(),
+                    sourceSid: self.findEmployeeIdByCode(self.selectedCode()),
+                    isOverwrite: 0
+                };
+                
+                service.copyMonthlyPatternSetting(dto).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         // reload page
@@ -286,20 +477,27 @@ module nts.uk.at.view.ksm005.c {
                     });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
-                });    
+                });   
+                
             }
             /**
              * call service delete monthly pattern setting by on click button 
              */
             public deleteMonthlyPatternSetting(): void {
                 var self = this;
-                var dto: MonthlyPatternSettingActionDto;
-                dto = { employeeId: self.findEmployeeIdByCode(self.selectedCode()), monthlyPatternCode: self.monthlyPatternCode };
+                var dto: MonthlyPatternSettingDto;
+                dto = { employeeId: self.findEmployeeIdByCode(self.selectedCode()),historyId: self.selectedHists(), monthlyPatternCode: self.selectedmonthlyPattern() };
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     service.deleteMonthlyPatternSetting(dto).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             // reload page
                             self.reloadPage();
+                            self.enableCopy(false);
+                            self.enableDelete(false);
+                            self.selectedmonthlyPattern('000');
+                            if (self.histList().length > 0){
+                                self.selectedHists(self.histList()[0].historyId);
+                            }
                         });
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
@@ -358,6 +556,44 @@ module nts.uk.at.view.ksm005.c {
 
         onApplyEmployee: (data: EmployeeSearchDto[]) => void;
     }
+    
+    /**
+     * IObjectDuplication
+     */
+    export interface IObjectDuplication {
+        code: string;
+        name: string;
+        targetType: number;
+        itemListSetting: Array<string>;
+        baseDate?: Date;
+    }
+    
+    /**
+     * TargetType
+     */
+    export class TargetType {
+        
+        // 雇用
+        static EMPLOYMENT = 1;
+        
+        // 分類
+        static CLASSIFICATION = 2;
+        
+        // 職位
+        static JOB_TITLE = 3;
+        
+        // 職場
+        static WORKPLACE = 4;
+        
+        // 部門
+        static DEPARTMENT = 5;
+        
+        // 職場個人
+        static WORKPLACE_PERSONAL = 6;
+        
+        // 部門個人
+        static DEPARTMENT_PERSONAL = 7;
+    }
 
     export class ListType {
         static EMPLOYMENT = 1;
@@ -383,5 +619,25 @@ module nts.uk.at.view.ksm005.c {
     export interface UnitAlreadySettingModel {
         code: string;
         isAlreadySetting: boolean;
+    }
+    
+    export class HistModel {
+        historyId: string;
+        textDisplay: string;
+        
+        constructor(historyId: string, textDisplay: string) {
+            this.historyId = historyId;
+            this.textDisplay = textDisplay;
+        }
+    }
+    
+    export class MonthlyPatterModel {
+        code: string;
+        name: string;
+       
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
     }
 }

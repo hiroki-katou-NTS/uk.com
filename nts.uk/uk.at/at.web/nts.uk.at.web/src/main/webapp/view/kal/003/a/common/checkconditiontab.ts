@@ -1,9 +1,11 @@
 module nts.uk.at.view.kal003.a.tab {
     import windows = nts.uk.ui.windows;
+    import dialog = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
     import model = nts.uk.at.view.kal003.share.model;
     import shareutils = nts.uk.at.view.kal003.share.kal003utils;
+    import info = nts.uk.ui.dialog.info;
 
     export class CheckConditionTab {
         listWorkRecordExtractingConditions: KnockoutObservableArray<model.WorkRecordExtractingCondition> = ko.observableArray([]);
@@ -61,7 +63,6 @@ module nts.uk.at.view.kal003.a.tab {
             self.currentRowSelected.subscribe((data) => {
                 $("#check-condition-table tr").removeClass("ui-state-active");
                 $("#check-condition-table tr[data-id='" + data + "']").addClass("ui-state-active");
-                //$("#check-condition-table tr").get(data - 1).scrollIntoView();
             });
             
         }
@@ -75,6 +76,7 @@ module nts.uk.at.view.kal003.a.tab {
                 self.listWorkRecordExtractingConditions = ko.observableArray([]);
             }
             if (self.listWorkRecordExtractingConditions().length == 50) {
+                dialog.alertError({ messageId: "Msg_833" });
                 return;
             }
             let workRecordExtractingCondition = shareutils.getDefaultWorkRecordExtractingCondition(0);
@@ -82,6 +84,7 @@ module nts.uk.at.view.kal003.a.tab {
 
             self.listWorkRecordExtractingConditions.push(workRecordExtractingCondition);
             self.currentRowSelected(self.listWorkRecordExtractingConditions().length);
+            $("#check-condition-table tr")[self.listWorkRecordExtractingConditions().length - 1].scrollIntoView();
         }
 
         /**
@@ -128,10 +131,12 @@ module nts.uk.at.view.kal003.a.tab {
          */
         private deleteCheckCondition_click() {
             let self = this;
+            block.invisible();
             if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listWorkRecordExtractingConditions().length) {
                 return;
             }
             self.listWorkRecordExtractingConditions.remove(function(item) { return item.rowId() == (self.currentRowSelected()); })
+            nts.uk.ui.errors.clearAll();
             for (var i = 0; i < self.listWorkRecordExtractingConditions().length; i++) {
                 self.listWorkRecordExtractingConditions()[i].rowId(i + 1);
             }
@@ -139,6 +144,11 @@ module nts.uk.at.view.kal003.a.tab {
                 self.currentRowSelected(self.listWorkRecordExtractingConditions().length);
             }
             self.currentRowSelected.valueHasMutated();
+            if (self.currentRowSelected() > 0) 
+                $("#check-condition-table tr")[self.currentRowSelected() - 1].scrollIntoView();
+            info({ messageId: "Msg_16" }).then(() => {
+                block.clear();
+            });
         }
     }
 }

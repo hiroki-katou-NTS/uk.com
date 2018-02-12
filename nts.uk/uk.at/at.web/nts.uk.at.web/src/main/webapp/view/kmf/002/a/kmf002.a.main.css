@@ -32,35 +32,56 @@
 	padding-left:40px
 }
 
-#scrA #one_week_scrA, #scrA #four_week_scrA {
+#scrA .one_week_scrA, #scrA .four_week_scrA {
 	padding-left: 70px;
 }  
 
-/* .ntsRadioBox span.box {
-    border: 2px solid black;
+.one_week_scrA >div:nth-child(1), .four_week_scrA >div:nth-child(1) {
+	padding-top: 10px;
+	padding-bottom: 10px;
 }
 
-.ntsRadioBox span.box:after {
-    width: 15px;
-    height: 15px;
-    top: 0px;
-    left: 0px;
-    background: black;
-} */
+#scrA #ckbTransferWhenPublicHdIsMinus {
+	margin-left: 50px;
+}
 
 .sidebar-content-header {
 	display: flex;
 	align-items: center;	
 }
 
-.sidebar-content-header > button:nth-child(1) {
-	margin-left: 100px;
+.sidebar-content-header > span:nth-child(1) {
+	margin-left: 55px;
 }
 
 .sidebar-content-header > button:nth-child(2) {
+	margin-left: 60px;
+}
+
+.sidebar-content-header > button:nth-child(3) {
 	margin-left: 60px;
 } 
 
 .hidden-element {
     display: none !important;
+}
+
+.ntsMonthDays_Container{
+	top: 0px !important;
+}
+
+#scrA #managePubHD > label:nth-child(1) {
+	padding-right:40px
+}
+
+#scrA #publicHdManagementClassification > label:nth-child(1) {
+	padding-right:40px
+}
+
+#scrA #determineStartDate > label:nth-child(1) {
+	padding-right:40px
+}
+
+#scrA .weekHDCheck_A > div > div:nth-child(1){
+	width:100px !important	
 }

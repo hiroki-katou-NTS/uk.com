@@ -5,6 +5,8 @@ import java.util.Optional;
 import nts.uk.ctx.at.function.dom.processexecution.LastExecDateTime;
 
 public interface LastExecDateTimeRepository {
-	public Optional<LastExecDateTime> get(String companyId, String execItemCd);
-	public void insert(LastExecDateTime domain);
+	Optional<LastExecDateTime> get(String companyId, String execItemCd);
+	void insert(LastExecDateTime domain);
+	void update(LastExecDateTime domain);
+	void remove(String companyId, String execItemCd);
 }

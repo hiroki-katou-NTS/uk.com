@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.schedule.dom.schedule.setting.WorkTypeDisplaySetting;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.functioncontrol.UseAtr;
 /**
  * 
@@ -20,9 +21,9 @@ public class WorktypeDis {
 	/**  利用区分*/
 	private UseAtr useAtr;
 	
-	private List<String> workTypeList;
+	private List<WorkTypeDisplaySetting> workTypeList;
 	
-	public static WorktypeDis createFromJavaType(String companyId, Integer useAtr,List<String> workTypeList){
+	public static WorktypeDis createFromJavaType(String companyId, Integer useAtr,List<WorkTypeDisplaySetting> workTypeList){
 		return new WorktypeDis(companyId, EnumAdaptor.valueOf(useAtr, UseAtr.class),workTypeList);
 	}
 }

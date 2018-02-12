@@ -32,7 +32,7 @@ public class RoleIndividualServiceImpl implements RoleIndividualService {
 	public boolean checkSysAdmin(String userID, DatePeriod validPeriod) {
 
 		List<RoleIndividualGrant> listRoleIndividualGrant = roleIndividualGrantRepo.findByUserAndRole(userID, RoleType.SYSTEM_MANAGER.value);
-		if (!listRoleIndividualGrant.isEmpty()) {
+		if (listRoleIndividualGrant.isEmpty()) {
 			return false;
 		}
 
@@ -45,7 +45,10 @@ public class RoleIndividualServiceImpl implements RoleIndividualService {
 		List<RoleIndividualGrant> filterListRoleIndividualGrant = listSysAdmin.stream().filter(c -> !c.getUserId().equals(userID) && c.getRoleType().equals(RoleType.SYSTEM_MANAGER)).collect(Collectors.toList());
 
 		List<String> userIds = filterListRoleIndividualGrant.stream().map(c -> c.getUserId()).collect(Collectors.toList());
-		List<User> users = userRepository.getByListUser(userIds);
+		
+		List<User> users = new ArrayList<User>();
+		if (!userIds.isEmpty())
+			users = userRepository.getByListUser(userIds);
 
 		for (RoleIndividualGrant roleIndividualGrant : filterListRoleIndividualGrant) {
 			User user = users.stream().filter(c -> c.getUserID().equals(roleIndividualGrant.getUserId())).findFirst().get();

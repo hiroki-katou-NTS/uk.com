@@ -100,7 +100,7 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 		this.commandProxy().insert(KrcdtEmpExecutionLog.toEntity(empCalAndSumExeLog));
 		this.getEntityManager().flush();
 	}
-
+	
 	@Override
 	public void updateStatus(String empCalAndSumExecLogID, int executionStatus) {
 		KrcdtEmpExecutionLog krcdtEmpExecutionLog = this.queryProxy()
@@ -109,5 +109,4 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 		krcdtEmpExecutionLog.executedStatus = executionStatus;
 		this.commandProxy().update(krcdtEmpExecutionLog);
 	}
-
 }

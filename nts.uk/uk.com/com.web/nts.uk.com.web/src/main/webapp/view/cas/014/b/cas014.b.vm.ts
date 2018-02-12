@@ -76,13 +76,15 @@ module nts.uk.com.view.cas014.b {
                         //select first role set
                         self.selectedRoleSet(self.roleSetList()[0].code);
                     } else {
-                        alertError({ messageId: "Msg_713" }).then(() => {
-                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
-                        });
+                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                     }
                     dfd.resolve();
                 }).fail(function(error) {
-                    alertError({ messageId: error.messageId });
+                    alertError(error).then(() => {
+                        if (error.messageId == "Msg_713") {
+                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                        }
+                    });
                     dfd.reject();
                 }).always(() => {
                     block.clear();
@@ -120,7 +122,7 @@ module nts.uk.com.view.cas014.b {
                         $("#B3_2").focus();
                     }
                 }).fail(function(error) {
-                    alertError({ messageId: error.messageId });
+                    alertError(error);
                 });
                 return dfd;
             }
@@ -132,7 +134,7 @@ module nts.uk.com.view.cas014.b {
                         self.roleSetPerson(new RoleSetPerson(self.selectedRoleSet(), empId, data.employeeCode, data.personalName, _data.startDate, _data.endDate));
                     }
                 }).fail(function(error) {
-                    alertError({ messageId: error.messageId });
+                    alertError(error);
                 });
             }
 
@@ -169,7 +171,7 @@ module nts.uk.com.view.cas014.b {
                         });
 
                     }).fail(error => {
-                        alertError({ messageId: error.messageId });
+                        alertError(error);
                     }).always(() => {
                         block.clear();
                     });
@@ -206,12 +208,12 @@ module nts.uk.com.view.cas014.b {
                         });
 
                     }).fail(error => {
-                        alertError({ messageId: error.messageId });
+                        alertError(error);
                     }).always(() => {
                         block.clear();
                     });
 
-                }).ifCancel(() => {
+                }).ifNo(() => {
                 });
 
             }

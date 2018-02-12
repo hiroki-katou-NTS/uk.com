@@ -85,6 +85,23 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot {
 		memento.setPredetermine(this.predetermine);
 	}
 
+	/**
+	 * Constructor 
+	 */
+	public PredetemineTimeSetting(String companyId, AttendanceTime rangeTimeDay, WorkTimeCode workTimeCode,
+			PredetermineTime predTime, boolean nightShift, PrescribedTimezoneSetting prescribedTimezoneSetting,
+			TimeWithDayAttr startDateClock, boolean predetermine) {
+		super();
+		this.companyId = companyId;
+		this.rangeTimeDay = rangeTimeDay;
+		this.workTimeCode = workTimeCode;
+		this.predTime = predTime;
+		this.nightShift = nightShift;
+		this.prescribedTimezoneSetting = prescribedTimezoneSetting;
+		this.startDateClock = startDateClock;
+		this.predetermine = predetermine;
+	}
+	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
@@ -269,4 +286,6 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot {
 			this.predetermine = false;
 		} 		
 	}
+
+	
 }

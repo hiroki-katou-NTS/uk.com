@@ -1,10 +1,19 @@
 package nts.uk.ctx.at.record.dom.daily.withinworktime;
 
+import java.util.Collections;
+import java.util.Optional;
+
 import lombok.Getter;
+import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
+import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.BreakTimeManagement;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.CalculationByActualTimeAtr;
 
 /**
  * 日別実績の法定内時間
@@ -37,7 +46,23 @@ public class WithinStatutoryTimeOfDaily {
 	 */
 	public static WithinStatutoryTimeOfDaily calcStatutoryTime(CalculationRangeOfOneDay oneDay) {
 		AttendanceTime workTime = new AttendanceTime(0);
-		//AttendanceTime workTime =  oneDay.getWithinWorkingTimeSheet().calcWorkTimeForStatutory(calcActualTime, dedTimeSheet);
+		DeductionTimeSheet dedSheet = oneDay.getTemporaryDeductionTimeSheet().isPresent()
+												?oneDay.getTemporaryDeductionTimeSheet().get()
+												:new DeductionTimeSheet(Collections.emptyList(), Collections.emptyList(),new BreakTimeManagement(new BreakTimeOfDaily(DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+																TimeWithCalculation.sameTime(new AttendanceTime(0)),
+																TimeWithCalculation.sameTime(new AttendanceTime(0))),
+														DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+																TimeWithCalculation.sameTime(new AttendanceTime(0)),
+																TimeWithCalculation.sameTime(new AttendanceTime(0))),
+														new BreakTimeGoOutTimes(0),
+														new AttendanceTime(0),
+														Collections.emptyList()
+														),
+														Collections.emptyList()));
+		if(oneDay.getWithinWorkingTimeSheet().isPresent()) {
+			workTime =  oneDay.getWithinWorkingTimeSheet().get().calcWorkTimeForStatutory(CalculationByActualTimeAtr.CalculationByActualTime,dedSheet);
+		}
+		
 		return new WithinStatutoryTimeOfDaily(workTime);
 	}
 	

@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
@@ -45,29 +43,26 @@ public class Late {
 	
 	/**
 	 * 集計
-	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
+	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
 	 */
-	public void aggregate(List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
+	public void aggregate(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
 		
-		this.times = new AttendanceTimesMonth(0);
-		this.time = TimeMonthWithCalculation.ofSameTime(0);
+		if (attendanceTimeOfDaily == null) return;
 		
-		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
-			val totalWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime();
-			val lateTimeOfDailys = totalWorkingTime.getLateTimeOfDaily();
-			for (val lateTimeOfDaily : lateTimeOfDailys){
-				val lateTime = lateTimeOfDaily.getLateTime();
-				
-				// 回数をインクリメント
-				if (lateTime.getTime().greaterThan(0)){
-					this.times = this.times.addTimes(1);
-				}
-				
-				// 時間を計算
-				this.time = this.time.addMinutes(
-						lateTime.getTime().v(),
-						lateTime.getCalcTime().v());
+		val totalWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+		val lateTimeOfDailys = totalWorkingTime.getLateTimeOfDaily();
+		for (val lateTimeOfDaily : lateTimeOfDailys){
+			val lateTime = lateTimeOfDaily.getLateTime();
+			
+			// 回数をインクリメント
+			if (lateTime.getTime().greaterThan(0)){
+				this.times = this.times.addTimes(1);
 			}
+			
+			// 時間を計算
+			this.time = this.time.addMinutes(
+					lateTime.getTime().v(),
+					lateTime.getCalcTime().v());
 		}
 	}
 }

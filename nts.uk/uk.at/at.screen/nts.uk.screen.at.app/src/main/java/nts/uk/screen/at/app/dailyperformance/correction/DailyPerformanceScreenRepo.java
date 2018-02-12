@@ -30,6 +30,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecEditSetDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecOpeFuncDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DivergenceTimeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmploymentDto;
@@ -96,6 +97,9 @@ public interface DailyPerformanceScreenRepo {
 	/** Get list employee by jobTitle, employment, workplace, classification */
 	List<DailyPerformanceEmployeeDto> getListEmployee(List<String> lstJobTitle, List<String> lstEmployment,
 			Map<String, String> lstWorkplace, List<String> lstClassification);
+	
+	/** Get list employee by sid*/
+	List<DailyPerformanceEmployeeDto> getListEmployeeWithSid(List<String> sid);
 
 	/** Get list business type of list employee (no duplicated) */
 	List<String> getListBusinessType(List<String> lstEmployee, DateRange dateRange);
@@ -177,4 +181,7 @@ public interface DailyPerformanceScreenRepo {
 	List<CodeName> findWorkType(String companyId, Set<String> typeCodes);
 	
 	void updateColumnsWidth(Map<Integer, Integer> lstHeader, List<String> formatCodes);
+	
+	Optional<DailyRecOpeFuncDto> findDailyRecOpeFun(String companyId);
+	
  }

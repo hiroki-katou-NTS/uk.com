@@ -28,19 +28,23 @@ public class PerInfoInitValueSetItemFinder {
 		List<PerInfoInitValueSetItem> item = this.settingItemRepo.getAllItem(settingId, perInfoCtgId);
 		if (item != null) {
 			List<PerInfoInitValueSettingItemDto> itemDto = item.stream().map(c -> {
-				if (c.getDataType() == 6) {
+				if (c.getDataType() == 6 || c.getDataType() == 7 || c.getDataType() == 8) {
 					PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
 					SelectionItemDto selectionItemDto = null;
 					if (dto.getSelectionItemRefType() == 1) {
-						selectionItemDto = SelectionItemDto.createMasterRefDto(dto.getSelectionItemId());
+						selectionItemDto = SelectionItemDto.createMasterRefDto(dto.getSelectionItemId(),
+								dto.getSelectionItemRefType());
 					} else if (dto.getSelectionItemRefType() == 2) {
-						selectionItemDto = SelectionItemDto.createCodeNameRefDto(dto.getSelectionItemId());
+						selectionItemDto = SelectionItemDto.createCodeNameRefDto(dto.getSelectionItemId(),
+								dto.getSelectionItemRefType());
 					} else if (dto.getSelectionItemRefType() == 3) {
-						selectionItemDto = SelectionItemDto.createEnumRefDto(dto.getSelectionItemId());
+						selectionItemDto = SelectionItemDto.createEnumRefDto(dto.getSelectionItemId(),
+								dto.getSelectionItemRefType());
 					}
-					
-					List<ComboBoxObject> selectionDto =this.comboBoxFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(), GeneralDate.today(), true);
-					
+
+					List<ComboBoxObject> selectionDto = this.comboBoxFactory.getComboBox(selectionItemDto,
+							AppContexts.user().employeeId(), GeneralDate.today(), true);
+
 					dto.setSelection(selectionDto);
 					return dto;
 				} else {
@@ -51,7 +55,21 @@ public class PerInfoInitValueSetItemFinder {
 			return itemDto;
 		}
 
-		return new ArrayList<>();	
+		return new ArrayList<>();
 	}
 
+	
+	public List<ItemDto> getAllItemRequired(String settingId, String perInfoCtgId) {
+
+		List<PerInfoInitValueSetItem> item = this.settingItemRepo.getAllItem(settingId, perInfoCtgId);
+		if (item != null) {
+			List<ItemDto> itemDto = item.stream().map(c -> {
+				return new ItemDto(c.getPerInfoItemDefId(), c.getItemName(), c.getIsRequired().value);
+			}).collect(Collectors.toList());
+
+			return itemDto;
+		}
+
+		return new ArrayList<>();
+	}
 }

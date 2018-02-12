@@ -52,7 +52,7 @@
 	                       <span data-bind="text: rowId"></span>
 	                   </td>
 	                   <td>
-	                       <input data-bind="ntsTextEditor: {value: nameWKRecord, required: true, constraint: 'NameWKRecord',
+	                       <input data-bind="ntsTextEditor: {value: nameWKRecord, required: true, constraint: 'NameWKRecord', name: '#[KAL003_12]', 
 		                       option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
 				                textmode: 'text',
 				                placeholder: '',
@@ -75,18 +75,16 @@
 		</div>
 	</div>
 	<div id="schedule4week-content" data-bind="visible: category() == 2">
-		<!-- <div data-bind="ntsRadioBoxGroup: {
-			options: itemList,
-			optionsValue: 'code',
-			optionsText: 'name',
-			value: schedule4WeekCheckCondition,
-			enable: true}"></div> -->
+		<div class="valign-center control-group">
 			<div
-			data-bind="ntsRadioButton: { checked: schedule4WeekCheckCondition, option: list4weekClassEnum()[0], name: '#[KAL003_150]', optionValue: 'code', optionText: 'name', group: 'D4W4'}"></div>
-		<label class="label4w4d">#{i18n.getText('KAL003_151')}</label>
-		<div
-			data-bind="ntsRadioButton: { checked: schedule4WeekCheckCondition, option: list4weekClassEnum()[1], name: '#[KAL003_150]', optionValue: 'code', optionText: 'name', group: 'D4W4'}"></div>
-		<label class="label4w4d">#{i18n.getText('KAL003_152')}</label>
+				data-bind="ntsRadioButton: { checked: schedule4WeekCheckCondition, option: list4weekClassEnum()[0], name: '#[KAL003_150]', optionValue: 'value', optionText: 'name', group: 'D4W4'}"></div>
+			<label class="label4w4d">#{i18n.getText('KAL003_151')}</label>
+		</div>
+		<div class="valign-center control-group">
+			<div
+				data-bind="ntsRadioButton: { checked: schedule4WeekCheckCondition, option: list4weekClassEnum()[1], name: '#[KAL003_150]', optionValue: 'value', optionText: 'name', group: 'D4W4'}"></div>
+			<label class="label4w4d">#{i18n.getText('KAL003_152')}</label>
+		</div>
 	</div>
 
 </ui:composition>

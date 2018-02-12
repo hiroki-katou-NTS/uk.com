@@ -30,6 +30,7 @@ public class UpdateStampRequestSettingCommandHandler extends CommandHandler<Stam
 		StampRequestSetting stampRequest = data.toDomain(companyId);
 		if(stamp.isPresent()){
 			stampRep.updateStamp(stampRequest);
+			return;
 		}
 		stampRep.insertStamp(stampRequest);
 	}

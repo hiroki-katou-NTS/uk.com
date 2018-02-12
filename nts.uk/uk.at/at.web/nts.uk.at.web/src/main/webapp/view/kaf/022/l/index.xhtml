@@ -1,3 +1,189 @@
-<div class="contents-area">
-	
-</div>
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<div id="contents-area" class="fixed-flex-layout">
+		<div class="fixed-flex-layout-left">
+			<div id="empt-list-setting"></div>
+		</div>
+		<div class="fixed-flex-layout-right">			
+			<div class="block-style">
+				<!--L4_1 単位情報--> 
+				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF022_276',['#Com_Employment'])}</div>
+				<div style="margin-left: 30px;padding: 0 10px 0 8px; margin-top: 7px;">
+					<label data-bind="text : employmentName"></label>
+				</div>
+			</div>			
+			<!--   -->
+			<div class="ui-iggrid kaf022l" data-bind="with: appSetData">
+				<table class="fixed-table kaf022l">
+					<colgroup>
+						<col width="350px" />
+						<col width="450px" />
+					</colgroup>
+					<thead>
+						<!--L5 申請設定テーブル--> 
+						<tr>
+							<!--L5_1 申請の種類--> 
+							<th class="color-header" >#{i18n.getText('KAF022_242')}</th>
+							<!--L5_2 対象勤務種類--> 
+							<th class="color-header" >#{i18n.getText('KAF022_243')}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- 残業申請 -->
+						<tr>
+							<td>
+								<!--L6 残業申請--> 
+								<div data-bind="ntsCheckBox: {checked: overTimeSet().holidayTypeUseFlg, 
+																enable: true }">#{i18n.getText('KAF022_3')}</div>
+							</td>
+							<td>
+								<button class="small"
+									data-bind="click: function(){ $parent.openKDL002Dialog(overTimeSet()); }, 
+																enable: overTimeSet().holidayTypeUseFlg">#{i18n.getText('KAF022_280')}</button>
+								<input class="lagre-input-code"
+									data-bind="ntsTextEditor: {value: overTimeSet().displayWorkTypes, 
+																enable: overTimeSet().holidayTypeUseFlg, 
+																readonly: true}"/>
+							</td>
+						</tr>
+						<!-- 休暇申請 -->
+						<tr>
+							<td><div class="group-margin-left">#{i18n.getText('KAF022_4')}</div></td>
+							<td></td>
+						</tr>	
+						<com:ko bind="absenceSet" tag="foreach">
+							<tr>
+								<td>
+									<div class="block-style">
+										<div class="margin-left-style" data-bind="ntsCheckBox: {checked: holidayTypeUseFlg, 
+																								enable: true, 
+																								text: optionName()}"></div>
+										<div data-bind="ntsCheckBox: {checked: displayFlag, enable: holidayTypeUseFlg}">#{i18n.getText('KAF022_101')}</div>
+									</div>
+								</td>
+								<td>
+									<button class="small" data-bind="click: function(){ $parents[1].openKDL002Dialog($data); }, 
+																	enable: holidayTypeUseFlg">#{i18n.getText('KAF022_280')}</button>
+									<input class="lagre-input-code" data-bind="ntsTextEditor: {value: displayWorkTypes, 
+																								enable: holidayTypeUseFlg, 
+																								readonly: true}"/>
+								</td>
+							</tr>	
+						</com:ko>	
+						<!--L24 勤務変更申請--> 
+						<tr>
+							<td>
+								<div data-bind="ntsCheckBox: {checked: workChangeSet().holidayTypeUseFlg, enable: true }">#{i18n.getText('KAF022_5')}</div>
+							</td>
+							<td>
+								<button class="small" data-bind="click: function(){ $parent.openKDL002Dialog(workChangeSet()); }, enable: workChangeSet().holidayTypeUseFlg">#{i18n.getText('KAF022_280')}</button>
+								<input class="lagre-input-code" data-bind="ntsTextEditor: {value: workChangeSet().displayWorkTypes, enable: workChangeSet().holidayTypeUseFlg, readonly: true}" />
+							</td>
+						</tr>
+						<!--L25 出張申請--> 
+						<tr>
+							<td>
+								<div data-bind="ntsCheckBox: {checked: businessTripSet().holidayTypeUseFlg, enable: true }">#{i18n.getText('KAF022_6')}</div>
+							</td>
+							<td>
+								<button class="small" data-bind="click: function(){ $parent.openKDL002Dialog(businessTripSet()); }, enable: businessTripSet().holidayTypeUseFlg">#{i18n.getText('KAF022_280')}</button>
+								<input class="lagre-input-code" data-bind="ntsTextEditor: {value: businessTripSet().displayWorkTypes, enable: businessTripSet().holidayTypeUseFlg, readonly: true}" />
+							</td>
+						</tr>
+						<!--L26 直行直帰申請--> 
+						<tr>
+							<td>
+								<div data-bind="ntsCheckBox: {checked: goReturndirectSet().holidayTypeUseFlg, enable: true }">#{i18n.getText('KAF022_7')}</div>
+							</td>
+							<td>
+								<button class="small" data-bind="click: function(){ $parent.openKDL002Dialog(goReturndirectSet()); }, enable: goReturndirectSet().holidayTypeUseFlg">#{i18n.getText('KAF022_280')}</button>
+								<input class="lagre-input-code" data-bind="ntsTextEditor: {value: goReturndirectSet().displayWorkTypes, enable: goReturndirectSet().holidayTypeUseFlg, readonly: true}" />
+							</td>
+						</tr>
+						<!--L27 休出時間申請--> 
+						<tr>
+							<td>
+								<div data-bind="ntsCheckBox: {checked: breakTimeSet().holidayTypeUseFlg, enable: true }">#{i18n.getText('KAF022_8')}</div>
+							</td>
+							<td>
+								<button class="small" data-bind="click: function(){ $parent.openKDL002Dialog(breakTimeSet()); }, enable: breakTimeSet().holidayTypeUseFlg">#{i18n.getText('KAF022_280')}</button>
+								<input class="lagre-input-code" data-bind="ntsTextEditor: {value: breakTimeSet().displayWorkTypes, enable: breakTimeSet().holidayTypeUseFlg, readonly: true}" />
+							</td>
+						</tr>
+						<!--L28 時間年休申請--> 
+						<tr>
+							<td>
+								<div data-bind="ntsCheckBox: {checked: annualHolidaySet().holidayTypeUseFlg, enable: true }">#{i18n.getText('KAF022_9')}</div>
+							</td>
+							<td>
+								<button class="small" data-bind="click: function(){ $parent.openKDL002Dialog(annualHolidaySet()); }, enable: annualHolidaySet().holidayTypeUseFlg">#{i18n.getText('KAF022_280')}</button>
+								<input class="lagre-input-code" data-bind="ntsTextEditor: {value: annualHolidaySet().displayWorkTypes, enable: annualHolidaySet().holidayTypeUseFlg, readonly: true}" />
+							</td>
+						</tr>
+						<!--L29 遅刻早退取消申請--> 
+						<tr>
+							<td>
+								<div data-bind="ntsCheckBox: {checked: earlyLeaveSet().holidayTypeUseFlg, enable: true }">#{i18n.getText('KAF022_10')}</div>
+							</td>
+							<td>
+								<button class="small" data-bind="click: function(){ $parent.openKDL002Dialog(earlyLeaveSet()); }, enable: earlyLeaveSet().holidayTypeUseFlg">#{i18n.getText('KAF022_280')}</button>
+								<input class="lagre-input-code" data-bind="ntsTextEditor: {value: earlyLeaveSet().displayWorkTypes, enable: earlyLeaveSet().holidayTypeUseFlg, readonly: true}" />
+							</td>
+						</tr>
+						<!--L30 打刻申請--> 
+						<tr>
+							<td>
+								<div data-bind="ntsCheckBox: {checked: stampSet().holidayTypeUseFlg, enable: true }">#{i18n.getText('KAF022_11')}</div>
+							</td>
+							<td>
+								<button class="small" data-bind="click: function(){ $parent.openKDL002Dialog(stampSet()); }, enable: stampSet().holidayTypeUseFlg">#{i18n.getText('KAF022_280')}</button>
+								<input class="lagre-input-code" data-bind="ntsTextEditor: {value: stampSet().displayWorkTypes, enable: stampSet().holidayTypeUseFlg, readonly: true}" />
+							</td>
+						</tr>
+						<!--L31 打刻申請（NR形式）--> 
+						<tr>
+							<td>
+								<div data-bind="ntsCheckBox: {checked: stampNRSet().holidayTypeUseFlg, enable: true }">#{i18n.getText('KAF022_55')}</div>
+							</td>
+							<td>
+								<button class="small" data-bind="click: function(){ $parent.openKDL002Dialog(stampNRSet()); }, enable: stampNRSet().holidayTypeUseFlg">#{i18n.getText('KAF022_280')}</button>
+								<input class="lagre-input-code" data-bind="ntsTextEditor: {value: stampNRSet().displayWorkTypes, enable: stampNRSet().holidayTypeUseFlg, readonly: true}" />
+							</td>
+						</tr>
+						<!--L32 振休振出申請--> 
+						<tr>
+							<td><div class="group-margin-left">#{i18n.getText('KAF022_12')}</div></td>
+							<td></td>
+						</tr>
+						<com:ko bind="complementLeaveSet" tag="foreach">	
+						<tr>
+							<td>
+								<div class="block-style">
+									<div class="margin-left-style" data-bind="ntsCheckBox: {checked: holidayTypeUseFlg, enable: true, text: optionName()}"></div>
+									<div data-bind="ntsCheckBox: {checked: displayFlag, enable: holidayTypeUseFlg}">#{i18n.getText('KAF022_101')}</div>
+								</div>
+							</td>
+							<td>
+								<button class="small" data-bind="click: function(){ $parents[1].openKDL002Dialog($data); }, enable: holidayTypeUseFlg">#{i18n.getText('KAF022_280')}</button>
+								<input class="lagre-input-code" data-bind="ntsTextEditor: {value: displayWorkTypes, enable: holidayTypeUseFlg, readonly: true}" />
+							</td>
+						</tr>
+						</com:ko>
+						<!--L35 ３６協定時間申請-->
+						<tr>
+							<td>
+								<div data-bind="ntsCheckBox: {checked: application36Set().holidayTypeUseFlg, enable: true }">#{i18n.getText('KAF022_13')}</div>
+							</td>
+							<td>
+								<button class="small" data-bind="click: function(){ $parent.openKDL002Dialog(application36Set()); }, enable: application36Set().holidayTypeUseFlg">#{i18n.getText('KAF022_280')}</button>
+								<input class="lagre-input-code" data-bind="ntsTextEditor: {value: application36Set().displayWorkTypes, enable: application36Set().holidayTypeUseFlg, readonly: true}" />
+							</td>
+						</tr>	
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</ui:composition>

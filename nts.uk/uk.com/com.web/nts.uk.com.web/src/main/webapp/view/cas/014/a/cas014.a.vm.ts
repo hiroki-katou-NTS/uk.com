@@ -70,8 +70,10 @@ module nts.uk.com.view.cas014.a {
                     $("#A4").focus();
                     dfd.resolve();
                 }).fail(function(error) {
-                    alertError({ messageId: error.messageId }).then(() => {
-                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                    alertError(error).then(() => {
+                        if (error.messageId == "Msg_713" || error.messageId == "Msg_712") {
+                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                        }
                     });
                     dfd.reject();
                 }).always(() => {
@@ -97,7 +99,7 @@ module nts.uk.com.view.cas014.a {
                         $("#A4").focus();
                     });
                 }).fail(error => {
-                    alertError({ messageId: error.messageId });
+                    alertError(error);
                 }).always(() => {
                     block.clear();
                 });

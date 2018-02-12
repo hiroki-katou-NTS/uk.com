@@ -18,4 +18,7 @@ public class AuthorizationSetting extends DomainObject {
 	 */
 	private Boolean appContentChangeFlg;
 	
+	public static AuthorizationSetting toDomain(Integer appContentChangeFlg){
+		return new AuthorizationSetting(appContentChangeFlg == 1 ? true : false);
+	}
 }

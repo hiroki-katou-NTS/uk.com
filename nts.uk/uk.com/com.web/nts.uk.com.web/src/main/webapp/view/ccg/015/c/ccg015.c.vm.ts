@@ -18,7 +18,7 @@ module nts.uk.pr.view.ccg015.c {
                 self.newTopPageCode = ko.observable("");
                 self.newTopPageName = ko.observable("");
                 self.isDuplicateCode = ko.observable(false);
-                self.check = ko.observable(true);
+                self.check = ko.observable(false);
             }
             start(): JQueryPromise<void> {
                 var self = this;
@@ -29,10 +29,10 @@ module nts.uk.pr.view.ccg015.c {
             }
             private copyTopPage() {
                 var self = this;
-                nts.uk.ui.windows.setShared("codeOfNewTopPage", _.escape(self.newTopPageCode()));
+                nts.uk.ui.windows.setShared("codeOfNewTopPage", self.newTopPageCode());
                 var data: service.TopPageDto = {
-                    topPageCode: _.escape(self.newTopPageCode()),
-                    topPageName: _.escape(self.newTopPageName()),
+                    topPageCode: self.newTopPageCode(),
+                    topPageName: self.newTopPageName(),
                     layoutId: self.parentLayoutId(),
                     languageNumber: 0,
                     isCheckOverwrite: self.check(),

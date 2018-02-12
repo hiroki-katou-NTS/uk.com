@@ -23,11 +23,12 @@ module nts.uk.com.view.ccg015.a {
                 self.topPageModel = ko.observable(new TopPageModel());
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("CCG015_11"), width: "50px", key: 'code', dataType: "string", hidden: false },
-                    { headerText: nts.uk.resource.getText("CCG015_12"), width: "300px", key: 'nodeText', dataType: "string" }
+                    { headerText: nts.uk.resource.getText("CCG015_12"), width: "300px", key: 'nodeText', dataType: "string",formatter: _.escape}
                 ]);
                 self.isNewMode = ko.observable(true);
                 self.toppageSelectedCode.subscribe(function(selectedTopPageCode: string) {
                     if(!self.isNewMode() && selectedTopPageCode === ''){
+                        self.isNewMode(true);
                         return;    
                     }
                     if (selectedTopPageCode && selectedTopPageCode != "") {
@@ -55,7 +56,7 @@ module nts.uk.com.view.ccg015.a {
                 self.listLinkScreen = ko.observableArray([
                     { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_17"), action: function(evt, ui) {/*TODO go to ccg011*/ } },
                     { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_18"), action: function(evt, ui) { nts.uk.request.jump("/view/ccg/014/a/index.xhtml"); } },
-                    { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_19"), action: function(evt, ui) {/*TODO go to ccg018*/ } },
+                    { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_19"), action: function(evt, ui) {nts.uk.request.jump("/view/ccg/018/a/index.xhtml"); } },
                 ]);
 
                 self.isProcess = ko.observable(false);
@@ -119,7 +120,7 @@ module nts.uk.com.view.ccg015.a {
             private collectData(): TopPageDto {
                 var self = this;
                 //mock data
-                var data: TopPageDto = { topPageCode: _.escape(self.topPageModel().topPageCode()), topPageName: _.escape(self.topPageModel().topPageName()), languageNumber: 0, layoutId: self.topPageModel().layoutId() };
+                var data: TopPageDto = { topPageCode: self.topPageModel().topPageCode(), topPageName: self.topPageModel().topPageName(), languageNumber: 0, layoutId: self.topPageModel().layoutId() };
                 return data;
             }
 
@@ -225,7 +226,7 @@ module nts.uk.com.view.ccg015.a {
             }
 
             private removeTopPage() {
-                var self = this;
+                var self = this;                
                 nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18")).ifYes(function() {
                     var removeCode = self.toppageSelectedCode();
                     var removeIndex = self.getIndexOfRemoveItem(removeCode);

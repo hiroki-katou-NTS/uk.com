@@ -19,6 +19,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.output.ApprovalRootPattern;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -51,6 +53,9 @@ public class AppDataDateFinder {
 	@Inject
 	private ApplicationRepository_New applicationRepository_New;
 	
+	@Inject
+	private OtherCommonAlgorithm otherCommonAlgorithm;
+	
 	private final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	public AppDateDataDto getAppDataByDate(Integer appTypeValue, String appDate, Boolean isStartUp, String appID){
@@ -60,6 +65,7 @@ public class AppDataDateFinder {
 		OutputMessageDeadline outputMessageDeadline = getDataAppCfDetailFinder.getDataConfigDetail(new ApplicationMetaDto("", appTypeValue, appGeneralDate));
 		ApprovalRootPattern approvalRootPattern = null;
 		ApplicationDto_New applicationDto = null;
+		PrePostAtr defaultPrePostAtr = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), appGeneralDate);
 		if(Strings.isNotBlank(appID)){
 			approvalRootPattern = approvalRootPatternService.getApprovalRootPatternService(
 					companyID, 
@@ -117,7 +123,8 @@ public class AppDataDateFinder {
 						recordWorkInfoImport.getAttendanceStampTimeSecond(), 
 						recordWorkInfoImport.getLeaveStampTimeSecond()),
 				applicationDto,
-				approvalRootPattern.getApprovalRootContentImport().getErrorFlag().value);
+				approvalRootPattern.getApprovalRootContentImport().getErrorFlag().value,
+				defaultPrePostAtr.value);
 	}
 	
 }

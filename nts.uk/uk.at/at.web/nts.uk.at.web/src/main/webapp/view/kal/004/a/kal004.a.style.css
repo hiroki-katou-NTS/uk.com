@@ -1,8 +1,7 @@
 #left-content {
-	padding: 27px 0px 0px 10px;
+	padding: 27px 0px 0px 7px;
 	float: left;
-	background-color: #E0F59E;
-	width: 240px;
+	width: 250px;
     height: 410px;
     margin-top: 40px;
 	border-radius: 7px;
@@ -36,6 +35,14 @@
 }
 
 .tab-content-fixsize{
-	width: 871px;
-	height: 345px;
+	width: 873px;
+	height: 350px;
+}
+
+.red-color{
+	color: red;
+}   
+#tab-panel{
+	 width: 914px;
+	
 }

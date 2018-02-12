@@ -17,7 +17,7 @@
 }
 
 #grid_container {
-	width: 1034px !important;
+	width: 682px !important;
 }
 
 .proceed {
@@ -71,8 +71,9 @@ td:nth-child(3), td:nth-child(4), td:nth-child(5) {
 	background-color: #f2f2f2;
 }
 
-.leftpanel {
-	float: left;
+.fixed-flex-layout-left {
+	 width: 305px !important;
+    height: 260px !important;
 }
 
 .leftLabel {

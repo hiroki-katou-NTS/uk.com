@@ -39,19 +39,21 @@
 			<div id="functions-area">
 				<div id="function-content">
 					<button class="proceed"
-						data-bind="enable: $root.errors.isEmpty ,showButton().available1, click: proceed ">#{i18n.getText('KDW003_4')}</button>
-					<button data-bind="visible: showButton().available4">#{i18n.getText('KDW003_5')}</button>
+						data-bind="enable: $root.errors.isEmpty , visible:showButton().available1, click: proceed ">#{i18n.getText('KDW003_4')}</button>
+					<button data-bind="visible: showButton().available4, click: proceedSave">#{i18n.getText('KDW003_5')}</button>
 					<button data-bind="visible: showButton().available2">#{i18n.getText('KDW003_6')}</button>
 					<button data-bind="visible: showButton().available3">#{i18n.getText('KDW003_12')}</button>
-					<button data-bind="click: employmentOk">#{i18n.getText('KDW003_65')}</button>
+					<button data-bind="click: employmentOk, visible:false">#{i18n.getText('KDW003_65')}</button>
 					<button
 						data-bind="click : changeExtractionCondition, visible: showButton().available5">#{i18n.getText('KDW003_13')}</button>
 					<button
 						data-bind="click : selectDisplayItem, visible: showButton().available8Authority">#{i18n.getText('KDW003_14')}</button>
-					<button data-bind="visible: showButton().available22">#{i18n.getText('KDW003_15')}</button>
+					<button data-bind="visible: false">#{i18n.getText('KDW003_15')}</button>
+					<!-- showButton().available22 -->
 					<button class="danger"
 						data-bind="click: showErrorDialog , visible: showButton().available24">#{i18n.getText('KDW003_16')}</button>
-					<button data-bind="visible: showButton().available7">#{i18n.getText('KDW003_17')}</button>
+					<button data-bind="visible: false">#{i18n.getText('KDW003_17')}</button>
+					<!-- visible: showButton().available7 -->
 				</div>
 			</div>
 			<div id="contents-area">
@@ -79,8 +81,9 @@
 							]}"></div>
 					<button id="btnExtraction" data-bind="click: btnExtraction_Click">#{i18n.getText('KDW003_20')}</button>
 					<div class="vacationRemaining-container">
-						<button id="btnVacationRemaining"
-							data-bind="click: btnVacationRemaining_Click , visible: referenceVacation().allVacation">#{i18n.getText('KDW003_21')}</button>
+						<button style="visibility: hidden;" id="btnVacationRemaining"
+							data-bind="click: btnVacationRemaining_Click ">#{i18n.getText('KDW003_21')}</button>
+							<!-- visible: referenceVacation().allVacation -->
 						<div id="vacationRemaining-content">
 							<button data-bind="visible: referenceVacation().yearHoliday20">#{i18n.getText('Com_PaidHoliday')}</button>
 							<button data-bind="visible: referenceVacation().substVacation">#{i18n.getText('Com_SubstituteHoliday')}</button>
@@ -88,24 +91,17 @@
 							<button data-bind="visible: referenceVacation().compensLeave">#{i18n.getText('Com_CompensationHoliday')}</button>
 							<button data-bind="visible: referenceVacation().com60HVacation">#{i18n.getText('Com_ExsessHoliday')}</button>
 						</div>
-					</div>
-					<button id="btnComfirmAttendance"
-						data-bind="click : referencesActualResult, visible: showButton().available23">#{i18n.getText('KDW003_22')}</button>
-					<div id="container">
-						<table>
-							<tr>
-								<td>
-									<div id="emp-component"></div>
-								</td>
-								<td>
-									<div id="numberHoliday">
+						<button id="btnComfirmAttendance"
+							data-bind="click : referencesActualResult, visible: false">#{i18n.getText('KDW003_22')}</button>
+							<!-- visible: showButton().available23 -->
+						<div id="numberHoliday">
 										<table id="fixed-table">
 											<thead>
 												<tr>
-													<th class="ui-widget-header" rowspan="2">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
-													<th class="ui-widget-header" rowspan="2">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
-													<th class="ui-widget-header" rowspan="2">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
-													<th class="ui-widget-header" rowspan="2">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
+													<th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
+													<th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
+													<th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
+													<th class="ui-widget-header" style="width: 100px">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -122,9 +118,9 @@
 											</tbody>
 										</table>
 									</div>
-								</td>
-							</tr>
-						</table>
+					</div>
+						<div id="container">
+						<div id="emp-component"></div>
 					</div>
 					<div id="cbListDate">
 						<div id="choosenDate"
@@ -135,12 +131,16 @@
 											endDate: dateRanger().endDate}">
 						</div>
 					</div>
-					<div id="content-grid">
+					<!-- <div id="content-grid"> -->
 						<div id="content-grid-not">
 							<button id="btn-signAll"
-								data-bind="click: signAll, visible: showButton().available25">#{i18n.getText('KDW003_23')}</button>
+								data-bind="click: signAll" >#{i18n.getText('KDW003_23')}</button>
+							<button id="btn-legend"
+								data-bind="ntsLegendButton: legendOptions">凡例</button>
+							<button id="btn-saveColumnWidth"
+								data-bind="click: btnSaveColumnWidth_Click, visible : showButton().available8">#{i18n.getText('KDW003_24')}</button>
 							<div class="setting-container">
-								<button id="btn-setting" data-bind="click: btnSetting_Click">&#9881;</button>
+								<button id="btn-setting" data-bind="click: btnSetting_Click , visible:false">&#9881;</button>
 								<div id="setting-content">
 									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW003_28')}</div>
 									<div id="cbCursorMoveDirection"
@@ -162,10 +162,6 @@
 									<br />
 								</div>
 							</div>
-							<button id="btn-saveColumnWidth"
-								data-bind="click: btnSaveColumnWidth_Click, visible : showButton().available8">#{i18n.getText('KDW003_24')}</button>
-							<button id="btn-legend"
-								data-bind="ntsLegendButton: legendOptions">凡例</button>
 						</div>
 						<div class="compact-grid grid-container" id="gid">
 							<table id="dpGrid"></table>
@@ -176,7 +172,7 @@
 					</div>
 					<div id="tooltip"><span id="textLock"></span></div>
 				</div>
-			</div>
+			<!-- </div> -->
 		</ui:define>
 	</ui:composition>
 </body>

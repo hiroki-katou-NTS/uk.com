@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.dom.service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
@@ -33,13 +35,14 @@ public class DenyImpl implements DenyService {
 	private CollectApprovalAgentInforService collectApprovalAgentInforService;
 
 	@Override
-	public Boolean doDeny(String companyID, String rootStateID, String employeeID) {
+	public Boolean doDeny(String companyID, String rootStateID, String employeeID, String memo) {
 		Boolean executedFlag = false;
 		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID);
 		if(!opApprovalRootState.isPresent()){
 			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 		}
 		ApprovalRootState approvalRootState = opApprovalRootState.get();
+		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
 		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
 			List<String> approvers = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
 			if(CollectionUtil.isEmpty(approvers)){
@@ -49,16 +52,18 @@ public class DenyImpl implements DenyService {
 				.filter(x -> !x.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)).findAny().map(y -> false).orElse(true);
 			Boolean phaseNotApprovalFlag = approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)&&allFrameUnapproveFlag;
 			if(phaseNotApprovalFlag.equals(Boolean.TRUE)){
-				Boolean canDenyCheckFlag = canDenyCheck(approvalRootState, approvalPhaseState.getPhaseOrder(), employeeID);
+				Boolean canDenyCheckFlag = this.canDenyCheck(approvalRootState, approvalPhaseState.getPhaseOrder()-1, employeeID);
 				if(canDenyCheckFlag.equals(Boolean.FALSE)){
 					continue;
 				}
 			}
 			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
-				if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+				if(approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList()).contains(employeeID)){
 					approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 					approvalFrame.setApproverID(employeeID);
 					approvalFrame.setRepresenterID("");
+					approvalFrame.setApprovalDate(GeneralDate.today());
+					approvalFrame.setApprovalReason(memo);
 					return;
 				}
 				List<String> listApprover = approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
@@ -67,6 +72,8 @@ public class DenyImpl implements DenyService {
 					approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 					approvalFrame.setApproverID("");
 					approvalFrame.setRepresenterID(employeeID);
+					approvalFrame.setApprovalDate(GeneralDate.today());
+					approvalFrame.setApprovalReason(memo);
 				}
 			});
 			executedFlag = true;

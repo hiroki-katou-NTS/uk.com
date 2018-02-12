@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 日別実績の勤怠時間 */
 @Getter
@@ -73,5 +74,15 @@ public class AttendanceTimeDailyPerformDto implements ConvertibleAttendanceItem 
 	@Override
 	public GeneralDate workingDate() {
 		return this.date;
+	}
+	
+	@Override
+	public AttendanceTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+		return new AttendanceTimeOfDailyPerformance(emp, date,
+				scheduleTime == null ? null : scheduleTime.toDomain(), 
+				actualWorkTime == null ? null : actualWorkTime.toDomain(),
+				stayingTime == null ? null : stayingTime.toDomain(), 
+				budgetTimeVariance == null ? null : new AttendanceTime(budgetTimeVariance),
+				unemployedTime == null ? null : new AttendanceTime(unemployedTime));
 	}
 }

@@ -98,27 +98,22 @@ public class OverTimeWorkDailyPerformDto {
 
 	public OverTimeOfDaily toDomain() {
 		return new OverTimeOfDaily(
-				ConvertHelper.mapTo(overTimeFrameTimeSheet,
+				overTimeFrameTimeSheet == null ? new ArrayList<>() : ConvertHelper.mapTo(overTimeFrameTimeSheet,
 						(c) -> new OverTimeFrameTimeSheet(createTimeSheet(c.getTimeSheet()),
 								new OverTimeFrameNo(c.getOvertimeFrameNo()))),
-				ConvertHelper.mapTo(overTimeFrameTime,
+				overTimeFrameTime == null ? new ArrayList<>() : ConvertHelper.mapTo(overTimeFrameTime,
 						(c) -> new OverTimeFrameTime(new OverTimeFrameNo(c.getOvertimeFrameNo()),
 								createTimeWithCalc(c.getOvertime()), createTimeWithCalc(c.getTransferTime()),
 								toAttendanceTime(c.getBeforeApplicationTime()), toAttendanceTime(c.getOrderTime()))),
-				Finally.of(excessOfStatutoryMidNightTime.toDomain()),
+				excessOfStatutoryMidNightTime == null ? Finally.empty() : Finally.of(excessOfStatutoryMidNightTime.toDomain()),
 				toAttendanceTime(irregularWithinPrescribedOverTimeWork),
-				new FlexTime(createTimeWithCalcMinus(), toAttendanceTime(flexTime.getBeforeApplicationTime())),
+				new FlexTime(createTimeWithCalcMinus(), flexTime == null ? null : toAttendanceTime(flexTime.getBeforeApplicationTime())),
 				toAttendanceTime(overTimeSpentAtWork));
 	}
 
 	private TimeWithCalculationMinusExist createTimeWithCalcMinus() {
 		return flexTime == null || flexTime.getFlexTime() == null ? null
-				: flexTime.getFlexTime().getCalcTime() == null
-						? TimeWithCalculationMinusExist
-								.sameTime(toAttendanceTimeOfExistMinus(flexTime.getFlexTime().getTime()))
-						: TimeWithCalculationMinusExist.createTimeWithCalculation(
-								toAttendanceTimeOfExistMinus(flexTime.getFlexTime().getTime()),
-								toAttendanceTimeOfExistMinus(flexTime.getFlexTime().getCalcTime()));
+				: TimeWithCalculationMinusExist.sameTime(toAttendanceTimeOfExistMinus(flexTime.getFlexTime().getTime()));
 	}
 
 	private TimeSpanForCalc createTimeSheet(TimeSpanForCalcDto c) {
@@ -126,9 +121,7 @@ public class OverTimeWorkDailyPerformDto {
 	}
 
 	private TimeWithCalculation createTimeWithCalc(CalcAttachTimeDto c) {
-		return c == null ? null
-				: TimeWithCalculation.createTimeWithCalculation(toAttendanceTime(c.getTime()),
-						toAttendanceTime(c.getCalcTime()));
+		return c == null ? null : TimeWithCalculation.sameTime(toAttendanceTime(c.getTime()));
 	}
 
 	private AttendanceTime toAttendanceTime(Integer time) {

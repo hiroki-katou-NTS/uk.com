@@ -9,17 +9,29 @@
 		<ui:define name="sidebar-head">
 			<script>var dialogSize = { width: 1200, height: 800 };</script>
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
 			<com:stylefile path="kaf022.a.main.css" />
+			<com:stylefile path="../l/kaf022.l.main.css" />
 			<!-- <com:stylefile path="../e/kmf004.e.main.css" /> -->
 			
 			<com:scriptfile path="kaf022.a.vm.js" />
 			<com:scriptfile path="kaf022.a.service.js" />
 			<com:scriptfile path="kaf022.a.start.js" />
 			<com:scriptfile path="../m/kaf022.m.vm.js" /> 
+			<com:scriptfile path="../m/kaf022.m.service.js" /> 
+			<com:stylefile path="../m/kaf022.m.style.css" />
 			<com:scriptfile path="../l/kaf022.l.vm.js" />
-			 
+			<com:scriptfile path="../l/kaf022.l.service.js" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
 			<!-- <com:scriptfile path="../e/kmf004.e.vm.js" /> 
  			<com:scriptfile path="../e/kmf004.e.service.js" />  -->
+ 			<com:ValidatorScript>
+				nts.uk.shr.com.primitive.Memo
+			</com:ValidatorScript>
+			<com:EnumScript>
+				nts.uk.ctx.at.request.dom.application.ApplicationType
+				nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppType
+			</com:EnumScript>
 		</ui:define>
 		<ui:define name="sidebar">
 			<div data-bind="with: tabView">
@@ -35,18 +47,27 @@
 				<span class="title" data-bind="text: title"></span>
 				<com:ko-if bind="currentTab()==='a'">
 					<!-- A2_1 -->
-					<button class="proceed">#{i18n.getText('KMF004_2')}</button>
+					<button class="proceed" data-bind="click: function(){$parent.viewmodelA.save($parent.viewmodelA);}">#{i18n.getText('KMF004_2')}</button>
 					
 				</com:ko-if>
 				<com:ko-if bind="currentTab()==='l'">
-					<button  id="btn_001" class="button separate-button fix-button"  data-bind="">#{i18n.getText('KAF022_1')}</button>
-					<button  id="btn_002" class="button proceed separate-button fix-button" data-bind="">#{i18n.getText('KAF022_274')}</button>
-					<button  id="btn_004" class="button danger separate-button fix-button" data-bind="" >#{i18n.getText('KAF022_275')}</button>
+					<div class="center-content-kaf022l">
+                        <button  id="btn_001" class="button proceed separate-button fix-button"  
+                                data-bind="click: function(){$parent.viewmodelL.registerEmploymentSet($parent.viewmodelL);}">#{i18n.getText('KAF022_1')}</button>
+                        <button  id="btn_002" class="button separate-button fix-button" 
+                                data-bind="click: function(){$parent.viewmodelL.copyEmploymentSet($parent.viewmodelL);},
+                                enable: $parent.viewmodelL.screenMode() == 1">#{i18n.getText('KAF022_274')}</button>
+                        <button  id="btn_004" class="button danger separate-button fix-button" 
+                                data-bind="click: function(){$parent.viewmodelL.deleteEmploymentSet($parent.viewmodelL);},
+                                enable: $parent.viewmodelL.screenMode() == 1" >#{i18n.getText('KAF022_275')}</button>
+                    </div>
 				</com:ko-if>
 				<com:ko-if bind="currentTab()==='m'">
-					<button  id="btn_001" class="button separate-button fix-button"  data-bind="">#{i18n.getText('KAF022_1')}</button>
-					<button  id="btn_002" class="button proceed separate-button fix-button" data-bind="">#{i18n.getText('KAF022_274')}</button>
-					<button  id="btn_004" class="button danger separate-button fix-button" data-bind="" >#{i18n.getText('KAF022_275')}</button>
+					<div class="center-content-kaf022l">
+						<button  id="btn_001" class="button proceed separate-button fix-button"  data-bind="click: $parent.viewmodelM.update">#{i18n.getText('KAF022_1')}</button>
+						<button  id="btn_002" class="button separate-button fix-button" data-bind="click: $parent.viewmodelM.openDialogCopy, enable: $parent.viewmodelM.isUpdateMode">#{i18n.getText('KAF022_274')}</button>
+						<button  id="btn_004" class="button danger separate-button fix-button" data-bind="click: $parent.viewmodelM.remove, enable: $parent.viewmodelM.isUpdateMode" >#{i18n.getText('KAF022_275')}</button>
+					</div>
 				</com:ko-if>
 			</div>
 			<div id="tabpanel-a" role="tabpanel" class="screen-a"
@@ -87,7 +108,7 @@
 													editable: $parent.isEditable,
 													enable: $parent.isEnable,
 													columns: [
-														{ prop: 'name', length: 4 }
+														{ prop: 'name', length: 8 }
 													]}">
 											</div> <span class="label">#{i18n.getText('KAF022_355')}</span>
 											<div tabindex="1" id="a4_8"
@@ -316,213 +337,21 @@
 										<th class="ui-widget-header" id="a6_2">#{i18n.getText('KAF022_46')}</th>
 									</tr>
 								</thead>
-								<tbody>
+								<tbody data-bind="foreach: listDataA6">
 									<tr>
-										<td class="color-header"><span class="label" id="a6_3">#{i18n.getText('KAF022_3')}</span></td>
+										<td class="color-header"><span class="label" data-bind="text:appTypeName"></span></td>
 										<td>
-											<div class="a6_text color-header" data-bind="with: texteditorA6_24">
+											<div class="a6_text color-header">
 												<input tabindex="29"
 													data-bind="ntsTextEditor: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly
+													value: dispName,
+													constraint: $parent.constraint,
+													option: $parent.option,
+													required: $parent.required,
+													enable: $parent.enable,
+													readonly: $parent.readonly
 													 }" />
-											</div> <span class="label" id="a6_25">#{i18n.getText('KAF022_58')}</span>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header"><span class="label " id="a6_4">#{i18n.getText('KAF022_4')}</span></td>
-										<td>
-											<div class="a6_text" data-bind="with: texteditorA6_26">
-												<input tabindex="30"
-													data-bind="ntsTextEditor: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly
-													 }" />
-											</div> <span class="label" id="a6_25">#{i18n.getText('KAF022_58')}</span>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header"><span class="label " id="a6_13">#{i18n.getText('KAF022_5')}</span></td>
-										<td>
-											<div class="a6_text" data-bind="with: texteditorA6_35">
-												<input tabindex="31"
-													data-bind="ntsTextEditor: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly
-													 }" />
-											</div> <span class="label" id="a6_25">#{i18n.getText('KAF022_58')}</span>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header"><span class="label" id="a6_14">#{i18n.getText('KAF022_6')}</span></td>
-										<td>
-											<div class="a6_text" data-bind="with: texteditorA6_36">
-												<input tabindex="32"
-													data-bind="ntsTextEditor: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly
-													 }" />
-											</div> <span class="label" id="a6_25">#{i18n.getText('KAF022_58')}</span>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header"><span class="label " id="a6_15">#{i18n.getText('KAF022_6')}</span></td>
-										<td>
-											<div class="a6_text" data-bind="with: texteditorA6_37">
-												<input tabindex="33"
-													data-bind="ntsTextEditor: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly
-													 }" />
-											</div> <span class="label" id="a6_25">#{i18n.getText('KAF022_58')}</span>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header"><span class="label " id="a6_16">#{i18n.getText('KAF022_8')}</span></td>
-										<td>
-											<div class="a6_text" data-bind="with: texteditorA6_38">
-												<input tabindex="34"
-													data-bind="ntsTextEditor: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly
-													 }" />
-											</div> <span class="label" id="a6_25">#{i18n.getText('KAF022_58')}</span>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header"><span class="label " id="a6_17">#{i18n.getText('KAF022_11')}</span></td>
-										<td>
-											<div class="a6_text" data-bind="with: texteditorA6_39">
-												<input tabindex="35"
-													data-bind="ntsTextEditor: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly
-													 }" />
-											</div> <span class="label" id="a6_25">#{i18n.getText('KAF022_58')}</span>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header"><span class="label " id="a6_18">#{i18n.getText('KAF022_9')}</span></td>
-										<td>
-											<div class="a6_text" data-bind="with: texteditorA6_40">
-												<input tabindex="36"
-													data-bind="ntsTextEditor: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly
-													 }" />
-											</div> <span class="label" id="a6_25">#{i18n.getText('KAF022_58')}</span>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header"><span class="label " id="a6_19">#{i18n.getText('KAF022_10')}</span></td>
-										<td>
-											<div class="a6_text" data-bind="with: texteditorA6_41">
-												<input tabindex="37"
-													data-bind="ntsTextEditor: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly
-													 }" />
-											</div> <span class="label" id="a6_25">#{i18n.getText('KAF022_58')}</span>
-										</td>
-									</tr>
-									<tr> 
-										<td class="color-header"><span class="label " id="a6_20">#{i18n.getText('KAF022_12')}</span></td>
-										<td>
-											<div class="a6_text" data-bind="with: texteditorA6_42">
-												<input tabindex="38"
-													data-bind="ntsTextEditor: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly
-													 }" />
-											</div> <span class="label" id="a6_25">#{i18n.getText('KAF022_58')}</span>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header"><span class="label " id="a6_21">#{i18n.getText('KAF022_55')}</span></td>
-										<td>
-											<div class="a6_text" data-bind="with: texteditorA6_43">
-												<input tabindex="39"
-													data-bind="ntsTextEditor: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly
-													 }" />
-											</div> <span class="label" id="a6_25">#{i18n.getText('KAF022_58')}</span>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header"><span class="label " id="a6_22">#{i18n.getText('KAF022_56')}</span></td>
-										<td>
-											<div class="a6_text" data-bind="with: texteditorA6_44">
-												<input tabindex="40"
-													data-bind="ntsTextEditor: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly
-													 }" />
-											</div> <span class="label" id="a6_25">#{i18n.getText('KAF022_58')}</span>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header"><span class="label " id="a6_23">#{i18n.getText('KAF022_13')}</span></td>
-										<td>
-											<div class="a6_text" data-bind="with: texteditorA6_45">
-												<input tabindex="41"
-													data-bind="ntsTextEditor: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly
-													 }" />
-											</div> <span class="label" id="a6_25">#{i18n.getText('KAF022_58')}</span>
+											</div> <span class="label" >#{i18n.getText('KAF022_58')}</span>
 										</td>
 									</tr>
 								</tbody>
@@ -1763,147 +1592,20 @@
 										<th class="ui-widget-header" id="a15_2" colspan="1">#{i18n.getText('KAF022_105')}</th>
 									</tr>
 								</thead>
-								<tbody>
+								<tbody data-bind="foreach : listDataA15" >
 									<tr>
-										<td class="color-header" id="a15_3">#{i18n.getText('KAF022_106')}</td>
+										<td class="color-header" data-bind="text:name"></td>
 										<td>
-											<div id="a15_4" class="a5_14" tabindex="226"
+											<div  class="a5_14" tabindex="226"
 												data-bind="ntsRadioBoxGroup: {
-													options: itemListA15_4,
+													options: $parent.itemListA15_4,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: selectedIdA15_4,
-													enable: true}">
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header"  id="a15_5">#{i18n.getText('KAF022_106')}</td>
-										<td>
-											<div id="a15_4_1" class="a5_14" tabindex="227"
-												data-bind="ntsRadioBoxGroup: {
-													options: itemListA15_4,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selectedIdA15_4_1,
-													enable: true}">
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header" id="a15_6">#{i18n.getText('KAF022_106')}</td>
-										<td>
-											<div id="a15_4_2" class="a5_14" tabindex="228"
-												data-bind="ntsRadioBoxGroup: {
-													options: itemListA15_4,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selectedIdA15_4_2,
-													enable: true}">
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header" id="a15_7">#{i18n.getText('KAF022_106')}</td>
-										<td>
-											<div id="a15_4_3" class="a5_14" tabindex="229"
-												data-bind="ntsRadioBoxGroup: {
-													options: itemListA15_4,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selectedIdA15_4_3,
-													enable: true}">
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header" id="a15_8">#{i18n.getText('KAF022_106')}</td>
-										<td>
-											<div id="a15_4_4" class="a5_14" tabindex="230"
-												data-bind="ntsRadioBoxGroup: {
-													options: itemListA15_4,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selectedIdA15_4_4,
-													enable: true}">
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header" id="a15_9">#{i18n.getText('KAF022_106')}</td>
-										<td>
-											<div id="a15_4_5" class="a5_14" tabindex="231"
-												data-bind="ntsRadioBoxGroup: {
-													options: itemListA15_4,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selectedIdA15_4_5,
-													enable: true}">
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header" id="a15_10">#{i18n.getText('KAF022_106')}</td>
-										<td>
-											<div id="a15_4_6" class="a5_14" tabindex="232"
-												data-bind="ntsRadioBoxGroup: {
-													options: itemListA15_4,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selectedIdA15_4_6,
-													enable: true}">
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header" id="a15_11">#{i18n.getText('KAF022_106')}</td>
-										<td>
-											<div id="a15_4_7" class="a5_14" tabindex="233"
-												data-bind="ntsRadioBoxGroup: {
-													options: itemListA15_4,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selectedIdA15_4_7,
-													enable: true}">
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header" id="a15_12">#{i18n.getText('KAF022_106')}</td>
-										<td>
-											<div id="a15_4_8" class="a5_14" tabindex="234"
-												data-bind="ntsRadioBoxGroup: {
-													options: itemListA15_4,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selectedIdA15_4_8,
-													enable: true}">
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header" id="a15_13">#{i18n.getText('KAF022_106')}</td>
-										<td>
-											<div id="a15_4_9" class="a5_14" tabindex="235"
-												data-bind="ntsRadioBoxGroup: {
-													options: itemListA15_4,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selectedIdA15_4_9,
-													enable: true}">
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td class="color-header" id="a15_14">#{i18n.getText('KAF022_106')}</td>
-										<td>
-											<div id="a15_4_10" class="a5_14" tabindex="236"
-												data-bind="ntsRadioBoxGroup: {
-													options: itemListA15_4,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selectedIdA15_4_10,
-													enable: true}">
+													value: selectedId,
+													enable: true}, 
+													attr:{
+														tabindex:226 + $index()
+													}">
 											</div>
 										</td>
 									</tr>
@@ -2031,10 +1733,10 @@
 
 				</div>
 			</div>
-			<div id="tabpanel-l" role="tabpanel" class="screen-l" data-bind="">
+			<div id="tabpanel-l" role="tabpanel" class="screen-l" data-bind="with: viewmodelL">
 				<ui:include src="../l/index.xhtml" />
 			</div>
-			<div id="tabpanel-m" role="tabpanel" class="screen-m" data-bind="">
+			<div id="tabpanel-m" role="tabpanel" class="screen-m" data-bind="with: viewmodelM">
 				<ui:include src="../m/index.xhtml" />
 			</div>
 		</ui:define>

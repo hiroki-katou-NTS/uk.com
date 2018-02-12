@@ -18,7 +18,6 @@ import nts.uk.ctx.pereg.app.find.initsetting.item.SaveDataDto;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
 import nts.uk.ctx.pereg.dom.person.info.dateitem.DateType;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.SaveDataType;
 import nts.uk.shr.pereg.app.ItemValue;
@@ -37,9 +36,7 @@ public class AddEmployeeCommandFacade {
 	private RegisterLayoutFinder layoutFinder;
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void addNewFromInputs(AddEmployeeCommand command, String personId, String employeeId, String comHistId) {
-
-		List<ItemsByCategory> inputs = createData(command, personId, employeeId, comHistId);
+	public void addNewFromInputs(AddEmployeeCommand command, String personId, String employeeId, String comHistId,List<ItemsByCategory> inputs) {
 
 		updateRequiredInputs(command, inputs, personId, employeeId);
 
@@ -153,26 +150,18 @@ public class AddEmployeeCommandFacade {
 
 	private List<SettingItemDto> mergeData(List<ItemsByCategory> inputs, AddEmployeeCommand command) {
 
-		List<SettingItemDto> dataList = this.layoutFinder.getAllSettingItemList(command);
+		List<SettingItemDto> dataList = this.layoutFinder.getSetItems(command);
 
 		dataList.forEach(x -> {
 
-			if (x.getDataType().equals(DataTypeValue.SELECTION)) {
-				if (x.getSelectionItemRefType().equals(ReferenceTypes.ENUM)) {
-					x.setDataType(DataTypeValue.NUMERIC);
-				}
-			}
-
 			String itemCD = x.getItemCode();
 			ItemValue itemVal = getItemById(inputs, itemCD, x.getCategoryCode());
-
+			x.setDataType(getSaveDataType(x.getDataType(), x,itemVal));
 			if (itemVal != null) {
 				x.setSaveData(new SaveDataDto(x.getSaveData().getSaveDataType(),
 						itemVal.value() != null ? itemVal.value().toString() : ""));
-				x.setDataType(getSaveDataType(x.getDataType(), x));
-				inputs.remove(itemVal);
-			} else {
 
+				inputs.remove(itemVal);
 			}
 		});
 
@@ -195,17 +184,18 @@ public class AddEmployeeCommandFacade {
 
 	}
 
-	private DataTypeValue getSaveDataType(DataTypeValue dataType, SettingItemDto item) {
-
-		if (dataType.equals(DataTypeValue.SELECTION)) {
+	private DataTypeValue getSaveDataType(DataTypeValue dataType, SettingItemDto item, ItemValue value) {
+	
+		if (dataType.equals(DataTypeValue.SELECTION) || dataType.equals(DataTypeValue.SELECTION_BUTTON)
+				|| dataType.equals(DataTypeValue.SELECTION_RADIO)) {
 			switch (item.getSelectionItemRefType()) {
 			case ENUM:
 				return DataTypeValue.NUMERIC;
 			case CODE_NAME:
 				return DataTypeValue.STRING;
 			case DESIGNATED_MASTER:
-
-				if (item.getSaveData().getValue().toString().chars().allMatch(Character::isDigit)) {
+				String itemValue = value != null ? value.value() : item.getSaveData().getValue().toString();
+				if (itemValue.chars().allMatch(Character::isDigit)) {
 					return DataTypeValue.NUMERIC;
 				} else {
 					return DataTypeValue.STRING;

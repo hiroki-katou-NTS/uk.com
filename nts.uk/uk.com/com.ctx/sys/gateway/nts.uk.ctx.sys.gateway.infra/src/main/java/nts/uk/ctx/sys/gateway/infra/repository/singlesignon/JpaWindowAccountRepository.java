@@ -5,13 +5,13 @@
 package nts.uk.ctx.sys.gateway.infra.repository.singlesignon;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -20,6 +20,7 @@ import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccount;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAcc;
@@ -33,6 +34,9 @@ import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAcc_;
 @Stateless
 @Transactional
 public class JpaWindowAccountRepository extends JpaRepository implements WindowAccountRepository {
+	
+	private final String GET_BY_LIST_USERIDS = "SELECT w FROM SgwmtWindowAcc w "
+			+ " where w.sgwmtWindowAccPK.userId IN :lstUserId";
 
 	/*
 	 * (non-Javadoc)
@@ -128,14 +132,13 @@ public class JpaWindowAccountRepository extends JpaRepository implements WindowA
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
-		// Create Query
-		TypedQuery<SgwmtWindowAcc> query = em.createQuery(cq);
-
-		try {
-			// exclude select
-			return Optional.of(this.toDomain(query.getSingleResult()));
-		} catch (NoResultException e) {
+		// Create Query		
+		List<SgwmtWindowAcc> result = em.createQuery(cq).getResultList();
+		
+		if (result.isEmpty()) {
 			return Optional.empty();
+		} else {
+			return Optional.of(this.toDomain(result.get(0)));
 		}
 
 	}
@@ -190,6 +193,26 @@ public class JpaWindowAccountRepository extends JpaRepository implements WindowA
 
 		// update
 		this.commandProxy().update(entity);
+	}
+
+	@Override
+	public List<WindowAccount> findByListUserId(List<String> ltsUserId) {
+		// Check conditions
+		if (CollectionUtil.isEmpty(ltsUserId)) {
+			return Collections.emptyList();
+		}
+
+		// Split user id list.
+		List<SgwmtWindowAcc> resultList = new ArrayList<>();
+
+		CollectionUtil.split(ltsUserId, 1000, subList -> {
+			resultList.addAll(this.queryProxy().query(GET_BY_LIST_USERIDS, SgwmtWindowAcc.class)
+					.setParameter("lstUserId", subList).getList());
+		});
+
+		// Return
+		return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+
 	}
 
 }

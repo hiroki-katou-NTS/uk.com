@@ -1,7 +1,5 @@
 package nts.uk.ctx.pereg.app.command.roles.auth.item;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,9 +11,10 @@ public class PersonInfoItemAuthCommand {
 
 	private String personItemDefId;
 
+	private String parrentCd;
+
 	private int otherAuth;
 
 	private int selfAuth;
 
-	private List<PersonInfoItemAuthCommand> setItems;
 }

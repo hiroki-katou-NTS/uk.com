@@ -117,13 +117,16 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             
             _.defer(() => {
                 if (!nts.uk.ui.errors.hasError() ) {
-                    service.updateStandardMenu(a).done(function() {                          
+                    service.updateStandardMenu(a).done(function() {   
+                        service.getAllStandardMenu().done(function (lst){
+                            self.listStandardMenu(lst);
+                        });                       
                         _.remove(self.listStandardMenu(), function(item){                              
                             return item.system == parseInt(self.selectedCode());                         
                         });                         
-                         for(let i = 0; i < a.length; i++)  {   
-                            self.listStandardMenu().push(new StandardMenu(self.id(self.id()+1), a[i].code, a[i].targetItems, a[i].displayName, a[i].system, a[i].classification));  
-                         }
+//                         for(let i = 0; i < a.length; i++)  {   
+//                            self.listStandardMenu().push(new StandardMenu(self.id(self.id()+1), a[i].code, a[i].targetItems, a[i].displayName, a[i].system, a[i].classification));  
+//                         }
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });     
                         self.getListStandardMenu(self.selectedCode());
                     }).fail(function(error) {
@@ -170,12 +173,16 @@ module nts.uk.com.view.ccg013.k.viewmodel {
                         { columnKey: "targetItems", editorOptions: { disabled: true} },
                     ],
                     editCellEnded: function(evt, ui){ 
-                        let dataSource: Array<any> = $("#grid").igGrid("option", "dataSource"),
-                            row = dataSource[ui.rowID];
-                        if (row) {
-                            row.displayName = ui.value;
-                        }  
-                        $("#grid").igGrid("option", "dataSource", dataSource); 
+                        let dataSource: Array<any> = $("#grid").igGrid("option", "dataSource");
+                        if (dataSource && dataSource.length > 0) {
+                            let row = _.find(dataSource, function(item:StandardMenu) {
+                               return ui.rowID == item.id;     
+                            });
+                            if (row) {
+                                row.displayName = ui.value;
+                            }  
+                            $("#grid").igGrid("option", "dataSource", dataSource);
+                        } 
                     }
                 }]
             });   
@@ -235,7 +242,7 @@ function validateInput($input: JQuery, data: any) {
         return true;
     } else {
         let error = $input.ntsError('getError');
-        if (nts.uk.util.isNullOrUndefined(error) || error.messageText !== result.errorMessage) {
+        if (nts.uk.util.isNullOrEmpty(error) || error.messageText !== result.errorMessage) {
             $input.ntsError('clear');
             $input.ntsError('set', result.errorMessage, result.errorCode);
             $input.attr("style", "border-color: red !important;");

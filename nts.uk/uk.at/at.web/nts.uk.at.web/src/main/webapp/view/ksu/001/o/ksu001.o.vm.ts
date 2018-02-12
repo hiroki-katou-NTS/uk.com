@@ -93,7 +93,8 @@ module nts.uk.at.view.ksu001.o.viewmodel {
             let self = this;
 
             $('#contain-view').hide();
-            //            $("#extable").exTable("viewMode", "shortName", { y: 115 }); 
+            //            $("#extable").exTable("viewMode", "shortName", { y: 115 });
+            $("#extable").exTable("viewMode", "shortName", { y: 172 });
             setShare('listWorkType', self.listWorkType());
             setShare('listWorkTime', self.listWorkTime());
 
@@ -102,6 +103,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 self.currentScreen = null;
                 if (__viewContext.viewModel.viewA.selectedModeDisplay() == 1) {
                     //                    $("#extable").exTable("viewMode", "shortName", { y: 100 }); 
+                    $("#extable").exTable("viewMode", "shortName", { y: 232 });
                     $('#contain-view').show();
                     //when close dialog, copy-paste value of nameWorkTimeType of screen O(not O1) for cell
                     $("#extable").exTable("stickData", self.nameWorkTimeType());
@@ -132,14 +134,45 @@ module nts.uk.at.view.ksu001.o.viewmodel {
             }
             self.listWorkTimeComboBox([]);
             _.forEach(self.listWorkTime(), (obj) => {
-                if (self.time1() && self.time2()
-                    && (moment.duration(self.time1()).asMinutes() == obj.startTime)
-                    && (moment.duration(self.time2()).asMinutes() == obj.endTime)) {
-                    self.listWorkTimeComboBox.push(obj);
-                } else if (!self.time2() && (moment.duration(self.time1()).asMinutes() == obj.startTime)) {
-                    self.listWorkTimeComboBox.push(obj);
-                } else if (!self.time1() && (moment.duration(self.time2()).asMinutes() == obj.endTime)) {
-                    self.listWorkTimeComboBox.push(obj);
+                let timezone1 = obj.timeZone1.split("～");
+                let timezone2 = obj.timeZone2.split("～");
+                if (self.time1() && self.time2()) {
+                    if (timezone1.length == 2) {
+                        if (moment.duration(self.time1()).asMinutes() == moment.duration(timezone1[0]).asMinutes()
+                            && moment.duration(self.time2()).asMinutes() == moment.duration(timezone1[1]).asMinutes()) {
+                            self.listWorkTimeComboBox.push(obj);
+                        }
+                    }
+                    if (timezone2.length == 2) {
+                        if (moment.duration(self.time1()).asMinutes() == moment.duration(timezone2[0]).asMinutes()
+                            && moment.duration(self.time2()).asMinutes() == moment.duration(timezone2[1]).asMinutes()) {
+                            self.listWorkTimeComboBox.push(obj);
+                        }
+                    }
+
+                } else if (!self.time2()) {
+                    if (timezone1.length == 2) {
+                        if (moment.duration(self.time1()).asMinutes() == moment.duration(timezone1[0]).asMinutes()) {
+                            self.listWorkTimeComboBox.push(obj);
+                        }
+                    }
+                    if (timezone2.length == 2) {
+                        if (moment.duration(self.time1()).asMinutes() == moment.duration(timezone2[0]).asMinutes()) {
+                            self.listWorkTimeComboBox.push(obj);
+                        }
+                    }
+
+                } else if (!self.time1()) {
+                    if (timezone1.length == 2) {
+                        if (moment.duration(self.time2()).asMinutes() == moment.duration(timezone1[1]).asMinutes()) {
+                            self.listWorkTimeComboBox.push(obj);
+                        }
+                    }
+                    if (timezone2.length == 2) {
+                        if (moment.duration(self.time2()).asMinutes() == moment.duration(timezone2[1]).asMinutes()) {
+                            self.listWorkTimeComboBox.push(obj);
+                        }
+                    }
                 }
             });
 
@@ -176,21 +209,21 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 self.checkNeededOfWorkTimeSetting = data.checkNeededOfWorkTimeSetting;
                 self.workEmpCombines = data.workEmpCombines;
                 //set data for listWorkTime
-                self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
-                    workTimeCode: '000',
-                    name: nts.uk.resource.getText("KSU001_97"),
-                    abName: '',
-                    symbolName: '',
-                    dailyWorkAtr: undefined,
-                    worktimeSetMethod: undefined,
-                    abolitionAtr: undefined,
-                    color: null,
-                    note: null,
-                    startTime: undefined,
-                    endTime: undefined,
-                    workNo: undefined,
-                    useAtr: undefined
-                }));
+//                self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
+//                    workTimeCode: '000',
+//                    name: nts.uk.resource.getText("KSU001_97"),
+//                    abName: '',
+//                    symbolName: '',
+//                    dailyWorkAtr: undefined,
+//                    worktimeSetMethod: undefined,
+//                    abolitionAtr: undefined,
+//                    color: null,
+//                    note: null,
+//                    startTime: undefined,
+//                    endTime: undefined,
+//                    workNo: undefined,
+//                    useAtr: undefined
+//                }));
                 // insert item 「なし」 with code = '000'
                 self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
                     workTimeCode: '000',
@@ -208,21 +241,21 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     useAtr: undefined
                 }));
                 // insert item 「個人情報設定」 with code = '000'
-                self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
-                    workTimeCode: '000',
-                    name: nts.uk.resource.getText("KSU001_99"),
-                    abName: '',
-                    symbolName: '',
-                    dailyWorkAtr: undefined,
-                    worktimeSetMethod: undefined,
-                    abolitionAtr: undefined,
-                    color: null,
-                    note: null,
-                    startTime: undefined,
-                    endTime: undefined,
-                    workNo: undefined,
-                    useAtr: undefined
-                }));
+                //                self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
+                //                    workTimeCode: '000',
+                //                    name: nts.uk.resource.getText("KSU001_99"),
+                //                    abName: '',
+                //                    symbolName: '',
+                //                    dailyWorkAtr: undefined,
+                //                    worktimeSetMethod: undefined,
+                //                    abolitionAtr: undefined,
+                //                    color: null,
+                //                    note: null,
+                //                    startTime: undefined,
+                //                    endTime: undefined,
+                //                    workNo: undefined,
+                //                    useAtr: undefined
+                //                }));
                 _.each(data.listWorkTime, function(wT) {
                     let workTimeObj: ksu001.common.viewmodel.WorkTime = _.find(self.listWorkTime(), ['workTimeCode', wT.workTimeCode]);
                     if (workTimeObj && wT.workNo == 1) {
@@ -251,7 +284,6 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 });
                 dfd.resolve();
                 self.listWorkTimeComboBox(self.listWorkTime());
-
             }).fail(function() {
                 dfd.reject();
             });

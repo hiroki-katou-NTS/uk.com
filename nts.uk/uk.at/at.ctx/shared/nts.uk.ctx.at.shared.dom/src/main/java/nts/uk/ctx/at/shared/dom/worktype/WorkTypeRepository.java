@@ -38,7 +38,28 @@ public interface WorkTypeRepository {
 	 * @param companyId
 	 * @return
 	 */
+	List<WorkType> findByCompanyIdAndLeaveAbsence(String companyId);
+	
+	
+	/**
+	 *1日.休職
+	 *
+	 * @param companyId
+	 *            the company id
+	 * @return the list
+	 */
+	
 	List<WorkType> findNotDeprecateByCompanyId(String companyId);
+	
+	/**
+	 *1日.休職
+	 *
+	 * @param companyId
+	 *            the company id
+	 * @return the list
+	 */
+	
+	List<List<String>> findCodeAndNameOfWorkTypeByCompanyId(String companyId);
 
 	/**
 	 * Find not deprecated.
@@ -149,4 +170,37 @@ public interface WorkTypeRepository {
 	 * @param workTypeCd
 	 */
 	void remove(String companyId, String workTypeCd);
+	/**
+	 * @param companyId  会社ID
+	 * @param abolishAtr 勤務種類.廃止する
+	 * @param worktypeAtr １日の勤務
+	 * @return the list of Work Type
+	 */
+	List<WorkType> findWorkOneDay(String companyId, int abolishAtr, int worktypeAtr);
+	
+	/**
+	 * Get acquired attendance work type
+	 * @return
+	 */
+	List<WorkType> getAcquiredAttendanceWorkTypes(String companyId);
+	
+	/**
+	 * Get acquired holiday work type
+	 * @return
+	 */
+	List<WorkType> getAcquiredHolidayWorkTypes(String companyId);
+	
+	/**
+	 * Get acquired leave system work type
+	 * @return
+	 */
+	List<WorkType> getAcquiredLeaveSystemWorkTypes(String companyId);
+	
+	/**
+	 * Get data by Deprecated
+	 * @param companyId
+	 * @param workTypeCd
+	 * @return
+	 */
+	Optional<WorkType> findByDeprecated(String companyId, String workTypeCd);
 }

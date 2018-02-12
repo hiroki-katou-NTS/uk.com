@@ -31,10 +31,9 @@ public class SelectionFinder {
 
 	@Inject
 	private SelectionItemOrderRepository selectionOrderRpo;
-	
+
 	@Inject
 	private ComboBoxRetrieveFactory comboBoxFactory;
-
 
 	// アルゴリズム「選択肢履歴選択時処理」を実行する(Thực thi xử lý chọn 選択肢履歴)
 	public List<SelectionDto> getAllSelection() {
@@ -117,19 +116,21 @@ public class SelectionFinder {
 		return selectionLst;
 
 	}
-	
-	public List<ComboBoxObject>  getAllComboxByHistoryId(SelectionQuery dto) {
+
+	public List<ComboBoxObject> getAllComboxByHistoryId(SelectionQuery dto) {
 		GeneralDate baseDateConvert = GeneralDate.fromString(dto.getBaseDate(), "yyyy-MM-dd");
-		SelectionItemDto selectionItemDto =  null;
+		SelectionItemDto selectionItemDto = null;
 		String companyId = AppContexts.user().companyId();
-		if(dto.getSelectionItemRefType() == 2) {
-		return this.selectionRepo.getAllSelectionByCompanyId(
-				companyId , dto.getSelectionItemId(), baseDateConvert).stream()
-				.map(c -> new ComboBoxObject(c.getSelectionID(), c.getSelectionName().toString())).collect(Collectors.toList());
-		} else if(dto.getSelectionItemRefType() == 1) {
-			selectionItemDto = SelectionItemDto.createMasterRefDto(dto.getSelectionItemId());
-			return this.comboBoxFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(), baseDateConvert , true);
-			
+		if (dto.getSelectionItemRefType() == 2) {
+			return this.selectionRepo.getAllSelectionByCompanyId(companyId, dto.getSelectionItemId(), baseDateConvert)
+					.stream().map(c -> new ComboBoxObject(c.getSelectionID(), c.getSelectionName().toString()))
+					.collect(Collectors.toList());
+		} else if (dto.getSelectionItemRefType() == 1) {
+			selectionItemDto = SelectionItemDto.createMasterRefDto(dto.getSelectionItemId(),
+					dto.getSelectionItemRefType());
+			return this.comboBoxFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(), baseDateConvert,
+					true);
+
 		}
 		return new ArrayList<>();
 

@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.medicaltime;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
@@ -59,17 +57,13 @@ public class MedicalTimeOfMonthly {
 	
 	/**
 	 * 集計
-	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
+	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
 	 */
-	public void aggregate(List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
+	public void aggregate(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
+
+		if (attendanceTimeOfDaily == null) return;
 		
-		this.workTime = new AttendanceTimeMonth(0);
-		this.deducationTime = new AttendanceTimeMonth(0);
-		this.takeOverTime = new AttendanceTimeMonth(0);
-		
-		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
-			//val medicalCareTime = attendanceTimeOfDaily.getMedicalCareTime();
-			//*****（未）　医療時間の集計単位の確認要。
-		}
+		//*****（未）　医療時間クラスをリスト管理に設計変更要。
+		//val medicalCareTime = attendanceTimeOfDaily.getMedicalCareTime();
 	}
 }

@@ -108,7 +108,7 @@ public class WebMenuFinder {
 	 * @return
 	 */
 	public List<WebMenuDto> findAll() {
-
+		long start = java.lang.System.currentTimeMillis();
 		String companyId = AppContexts.user().companyId();
 
 		List<WebMenu> webMenuList = webMenuRepository.findAll(companyId);
@@ -123,8 +123,19 @@ public class WebMenuFinder {
 					webMenuItem.getDefaultMenu().value,
 					menuBars);
 		}).collect(Collectors.toList());
-		
+
 		return result;
+	}
+	
+	/**
+	 * Get all simple web menu info
+	 * @return
+	 */
+	public List<WebMenuSimpleDto> findAllWithNoMenuBar() {
+		String companyId = AppContexts.user().companyId();
+		return webMenuRepository.findAllSimpleValue(companyId).stream().map(webMenuItem -> {
+			return new WebMenuSimpleDto(webMenuItem.getCode(), webMenuItem.getName());
+		}).collect(Collectors.toList());
 	}
 	
 	/**

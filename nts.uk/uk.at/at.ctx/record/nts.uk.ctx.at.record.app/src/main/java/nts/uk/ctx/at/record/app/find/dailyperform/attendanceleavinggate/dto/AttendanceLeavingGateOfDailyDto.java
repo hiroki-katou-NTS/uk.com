@@ -1,17 +1,24 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeSheetDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
+import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
+import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
 @AttendanceItemRoot(rootName = "日別実績の入退門")
@@ -56,5 +63,21 @@ public class AttendanceLeavingGateOfDailyDto implements ConvertibleAttendanceIte
 	@Override
 	public GeneralDate workingDate() {
 		return this.ymd;
+	}
+
+	@Override
+	public AttendanceLeavingGateOfDaily toDomain(String employeeId, GeneralDate ymd) {
+		return new AttendanceLeavingGateOfDaily(employeeId, ymd,
+					attendanceLeavingGateTime == null ? new ArrayList<>() : ConvertHelper.mapTo(attendanceLeavingGateTime,
+						(c) -> new AttendanceLeavingGate(new WorkNo(c.getTimeSheetNo()),
+								createWorkStamp(c.getStart()),
+								createWorkStamp(c.getEnd()))));
+	}
+
+	private WorkStamp createWorkStamp(TimeStampDto c) {
+		return c == null ? null : new WorkStamp(new TimeWithDayAttr(c.getAfterRoundingTimesOfDay()),
+				new TimeWithDayAttr(c.getTimesOfDay()),
+				new WorkLocationCD(c.getPlaceCode()),
+				c == null ? StampSourceInfo.HAND_CORRECTION_BY_MYSELF : EnumAdaptor.valueOf(c.getStampSourceInfo(), StampSourceInfo.class));
 	}
 }

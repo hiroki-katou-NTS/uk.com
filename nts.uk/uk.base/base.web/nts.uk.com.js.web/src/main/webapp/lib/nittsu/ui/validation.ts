@@ -368,7 +368,7 @@ module nts.uk.ui.validation {
             }
             if (!util.isNullOrUndefined(this.constraint.mantissaMaxLength)) {
                 mantissaMaxLength = this.constraint.mantissaMaxLength;
-                let parts = String(value).split(".");
+                let parts = inputText.split(".");
                 if (parts[1] !== undefined && parts[1].length > mantissaMaxLength) validateFail = true;
             }
             if(!(/^-?\d*(\.\d+)?$/).test(inputText)){
@@ -408,7 +408,11 @@ module nts.uk.ui.validation {
             this.name = name;
             this.constraint = getConstraint(primitiveValueName);
             if(nts.uk.util.isNullOrUndefined(this.constraint)){
-                this.constraint = {};                    
+                this.constraint = {}; 
+                if (option && option.min && option.max) {
+                    this.constraint.min = option.min;
+                    this.constraint.max = option.max;
+                }                   
             }
             this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
             this.required = ((option && option.required) ? option.required : false) || this.constraint.required === true;

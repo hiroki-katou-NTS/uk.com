@@ -25,7 +25,7 @@
 					data-bind="click: copyData"></button>
 				<button id="undo" class="size-image-button"
 					data-bind="click: undoData"></button>
-				<button id="setting-workplace">#{i18n.getText('KSU001_69')}</button>
+				<!-- <button id="setting-workplace">#{i18n.getText('KSU001_69')}</button> -->
 			</div>
 			<div id="contents-area">
 				<div id="set-work-type">
@@ -54,14 +54,6 @@
 						data-bind="ntsTimeEditor: {value: time2, inputFormat: 'time'}" />
 					<button data-bind="click:search" class="reserved">#{i18n.getText('KSU001_67')}</button>
 					<button data-bind="click:clear">#{i18n.getText('KSU001_68')}</button>
-
-					<div id="switch-o" class="cf1"
-						data-bind="ntsSwitchButton: {
-											options: roundingRules,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: selectedRuleCode}">
-					</div>
 				</div>
 
 				<div id="table-worktime">

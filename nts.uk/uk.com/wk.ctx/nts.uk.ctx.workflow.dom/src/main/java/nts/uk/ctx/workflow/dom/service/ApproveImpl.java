@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.dom.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,7 +46,7 @@ public class ApproveImpl implements ApproveService {
 	private CollectApprovalRootService collectApprovalRootService;
 	
 	@Override
-	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, ApplicationType appType, GeneralDate appDate) {
+	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, ApplicationType appType, GeneralDate appDate, String memo) {
 		Integer approvalPhaseNumber = 0;
 		ApprovalRootState approvalRootState = null;
 		if(isCreate.equals(Boolean.TRUE)){
@@ -63,6 +64,7 @@ public class ApproveImpl implements ApproveService {
 			}
 			approvalRootState = opApprovalRootState.get();
 		}
+		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder));
 		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
 			if(approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 				continue;
@@ -76,6 +78,8 @@ public class ApproveImpl implements ApproveService {
 					approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
 					approvalFrame.setApproverID(employeeID);
 					approvalFrame.setRepresenterID("");
+					approvalFrame.setApprovalDate(GeneralDate.today());
+					approvalFrame.setApprovalReason(memo);
 					return;
 				}
 				ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
@@ -83,6 +87,8 @@ public class ApproveImpl implements ApproveService {
 					approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
 					approvalFrame.setApproverID("");
 					approvalFrame.setRepresenterID(employeeID);
+					approvalFrame.setApprovalDate(GeneralDate.today());
+					approvalFrame.setApprovalReason(memo);
 					return;
 				}
 			});
@@ -125,7 +131,8 @@ public class ApproveImpl implements ApproveService {
 			}
 			return false;
 		}
-		Optional<ApprovalFrame> opApprovalFrameIsApprove = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
+		Optional<ApprovalFrame> opApprovalFrameIsApprove = approvalPhaseState.getListApprovalFrame().stream()
+				.filter(x -> x.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)).findAny();
 		if(opApprovalFrameIsApprove.isPresent()){
 			return true;
 		}
@@ -156,6 +163,7 @@ public class ApproveImpl implements ApproveService {
 			}
 			approvalRootState = opApprovalRootState.get();
 		}
+		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
 		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
 			if(approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 				approveAllFlag = true;

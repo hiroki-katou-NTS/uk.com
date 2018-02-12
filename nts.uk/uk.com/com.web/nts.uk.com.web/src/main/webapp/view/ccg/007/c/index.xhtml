@@ -5,7 +5,7 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/noheader.xhtml">
+	<ui:composition template="../../../../master/freelayout.xhtml">
 		<ui:define name="htmlHead">
 			<com:stylefile path="ccg007.c.style.css" />
 			<com:scriptfile set="IGNITE" />
@@ -14,9 +14,6 @@
 			<com:scriptfile path="ccg007.c.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<!-- TODO remove after kiban fix -->
-			<div id="functions-area" class="divHeader"></div>
-			<!-- ===== -->
 			<div style="background-color: lightblue;" id="contents-area">
 				<div style="position: relative; top: 30%; margin: 0 auto auto 40%;">
 					<table>
@@ -39,7 +36,8 @@
 										required: false,
 										option: {textmode: 'text',width: '50px'},
 										enable: true,
-										readonly: false}" />
+										readonly: false,
+										enterkey: submitLogin}" />
 								</div></td>
 							<td><img alt="" src="26.png" /></td>
 							<td class="pad_5"><div>
@@ -50,7 +48,8 @@
 										option: {textmode: 'text',width: '100px'},
 										required: false,
 										enable: true,
-										readonly: false}" />
+										readonly: false,
+										enterkey: submitLogin}" />
 								</div></td>
 						</tr>
 						<tr>
@@ -67,7 +66,8 @@
 										required: false,
 										option: {textmode: 'password',width: '230px'},
 										enable: true,
-										readonly: false}" />
+										readonly: false,
+										enterkey: submitLogin}" />
 								</div></td>
 						</tr>
 						<tr>

@@ -25,7 +25,7 @@
 		<div id="part-2" style="width: 590px;">
 			<div id="sample-component"></div>
 		</div>
-		<div id="part-3" style="width: 65px;">
+		<div id="part-3">
 			<div>
 				<div id="B3_12" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG018_38')}</div>
 				<span id="B3_13" data-bind="text: employeeCode"></span> <span
@@ -48,9 +48,11 @@
 								options: comboItemsAfterLogin,
 								optionsValue: 'uniqueCode',
 								value: selectedItemAfterLogin,
+								visibleItemsCount: 5,
 								optionsText: 'name',
 								editable: false,
 								enable: true,
+								dropDownAttachedToBody: true,
 								columns: [
 									{ prop: 'name', length: 10 },
 								]}"></div>
@@ -61,9 +63,11 @@
 							options: comboItemsAsTopPage,
 							optionsValue: 'code',
 							value: selectedItemAsTopPage,
+							visibleItemsCount: 5,
 							optionsText: 'name',
 							editable: false,
 							enable: true,
+							dropDownAttachedToBody: true,
 							columns: [
 								{ prop: 'name', length: 10 },
 							]}"></div>

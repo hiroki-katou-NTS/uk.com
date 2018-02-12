@@ -53,7 +53,8 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 				employeeID, 
 				false, 
 				application.getAppType().value, 
-				application.getAppDate());
+				application.getAppDate(), 
+				memo);
 		Boolean allApprovalFlg = approvalRootStateAdapter.isApproveAllComplete(
 				companyID, 
 				appID, 
@@ -61,11 +62,10 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 				false, 
 				application.getAppType().value, 
 				application.getAppDate());
-		approvalRootStateAdapter.updateReason(appID, employeeID, memo);
+		applicationRepository.updateWithVersion(application);
 		if(allApprovalFlg.equals(Boolean.TRUE)){
 			// 実績反映状態 = 反映状態．反映待ち
 			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.WAITREFLECTION);
-			applicationRepository.updateWithVersion(application);
 		}
 		AppTypeDiscreteSetting discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
 		// 承認処理時に自動でメールを送信するが trueの場合

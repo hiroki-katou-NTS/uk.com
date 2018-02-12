@@ -86,7 +86,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 		
 		// 集計期間の判断
 		//*****（未）　実締め毎集計期間クラスの作成が必要。仮に変数で設定。実締め毎集計期間は、ループで複数件の処理要。
-		for (int ixClosure = 1; ixClosure <= 2; ixClosure++){
+		for (int ixClosure = 1; ixClosure <= 1; ixClosure++){
 			YearMonth yearMonth = YearMonth.of(2017, 11);
 			val closureId = ClosureId.RegularEmployee;
 			ClosureDate closureDate = new ClosureDate(0, true);
@@ -131,12 +131,20 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	 */
 	private void registAttendanceTime(AttendanceTimeOfMonthly attendanceTime){
 		
+		// 登録および更新
+		this.attendanceTimeRepository.persistAndUpdate(attendanceTime);
+		
+		/*
 		// キー値　確認
 		val attendanceTimeKey = new AttendanceTimeOfMonthlyKey(
 				attendanceTime.getEmployeeId(),
 				attendanceTime.getYearMonth(),
 				attendanceTime.getClosureId(),
 				attendanceTime.getClosureDate());
+		val employeeId = attendanceTime.getEmployeeId();
+		val yearMonth = attendanceTime.getYearMonth();
+		val closureId = attendanceTime.getClosureId();
+		val closureDate = attendanceTime.getClosureDate();
 		
 		// 更新ドメイン　確認
 		val monthlyCalculation = attendanceTime.getMonthlyCalculation();
@@ -150,11 +158,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 		val aggregateHolidayWorkTimeList = holidayWorktime.getAggregateHolidayWorkTimeMap().values();
 		val aggregateTotalTimeSpentAtWork = monthlyCalculation.getTotalTimeSpentAtWork();
 		
-		if (this.attendanceTimeRepository.find(attendanceTime.getEmployeeId(),
-				attendanceTime.getYearMonth(),
-				attendanceTime.getClosureId(),
-				attendanceTime.getClosureDate()).isPresent()) {
-			
+		if (this.attendanceTimeRepository.find(employeeId, yearMonth, closureId, closureDate).isPresent()) {
 			// 更新
 			this.attendanceTimeRepository.update(attendanceTime);
 			this.regularAndIrregularTimeRepository.update(attendanceTimeKey, regularAndIrregularTime);
@@ -197,5 +201,30 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			}
 			this.aggregateTotalTimeSpentAtWorkRepository.insert(attendanceTimeKey, aggregateTotalTimeSpentAtWork);
 		}
+		*/
+		
+		/*
+		//*****（仮）　テーブル追加時のデータ不整合が起きにくいよう、delete→insertをする案。insertのキー重複が起きるため、動作不可。
+		// 既にあるデータを削除する
+		if (this.attendanceTimeRepository.find(employeeId, yearMonth, closureId, closureDate).isPresent()) {
+			this.attendanceTimeRepository.remove(employeeId, yearMonth, closureId, closureDate);
+		}
+		
+		// 追加
+		this.attendanceTimeRepository.insert(attendanceTime);
+		this.regularAndIrregularTimeRepository.insert(attendanceTimeKey, regularAndIrregularTime);
+		this.flexTimeRepository.insert(attendanceTimeKey, flexTime);
+		this.aggregateTotalWorkingTimeRepository.insert(attendanceTimeKey, aggregateTotalWorkingTime);
+		this.overTimeWorkRepository.insert(attendanceTimeKey, overTimeWork);
+		for (val aggregateOverTime : aggregateOverTimeList){
+			this.aggregateOverTimeRepository.insert(attendanceTimeKey, aggregateOverTime);
+		}
+		this.vacationUseTimeRepository.insert(attendanceTimeKey, vacationUseTime);
+		this.holidayWorkTimeRepository.insert(attendanceTimeKey, holidayWorktime);
+		for (val aggregateHolidayWorkTime : aggregateHolidayWorkTimeList){
+			this.aggregateHolidayWorkTimeRepository.insert(attendanceTimeKey, aggregateHolidayWorkTime);
+		}
+		this.aggregateTotalTimeSpentAtWorkRepository.insert(attendanceTimeKey, aggregateTotalTimeSpentAtWork);
+		*/
 	}
 }

@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.app.command.dailyperform;
 
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -36,10 +36,13 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeBy
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeByWorkOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandUpdateHandler;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class DailyRecordWorkCommandHandler {
@@ -163,6 +166,9 @@ public class DailyRecordWorkCommandHandler {
 	@Inject
 	@AttendanceItemLayout(layout = "O", jpPropertyName = "", index = 15)
 	private TemporaryTimeOfDailyPerformanceCommandUpdateHandler temporaryTimeUpdateHandler;
+	
+	@Inject
+	private CalculateDailyRecordService calcService;
 
 	public void handleAdd(DailyRecordWorkCommand command) {
 		handler(command, false);
@@ -174,14 +180,35 @@ public class DailyRecordWorkCommandHandler {
 
 	@SuppressWarnings({ "unchecked" })
 	private <T extends DailyWorkCommonCommand> void handler(DailyRecordWorkCommand command, boolean isUpdate) {
-		List<String> mapped = command.itemValues().stream().map(c -> getGroup(c))
-				.distinct().collect(Collectors.toList());
+		Set<String> mapped = command.itemValues().stream().map(c -> getGroup(c))
+				.distinct().collect(Collectors.toSet());
+		calcIfNeed(mapped, command);
 		mapped.stream().forEach(c -> {
 			CommandFacade<T> handler = (CommandFacade<T>) getHandler(c, isUpdate);
 			if(handler != null){
 				handler.handle((T) command.getCommand(c));
 			}
 		});
+	}
+	
+	private void calcIfNeed(Set<String> group, DailyRecordWorkCommand command){
+		if(group.contains("I") || group.contains("G")){
+			IntegrationOfDaily calced = calcService.calculate(
+					AppContexts.user().companyId(), 
+					command.getAffiliationInfo().getData().getWplID(),
+					command.getAffiliationInfo().getData().getEmploymentCode() == null  ? null 
+							: command.getAffiliationInfo().getData().getEmploymentCode().v(), 
+					command.getEmployeeId(),
+					command.getWorkDate(),
+					new IntegrationOfDaily(
+							command.getWorkInfo().getData(),
+							command.getTimeLeaving().getData().orElse(null), 
+							command.getAttendanceTime().getData().orElse(null)));
+			command.getTimeLeaving().updateData(calced.getAttendanceLeave());
+			command.getAttendanceTime().updateData(calced.getAttendanceTimeOfDailyPerformance());
+			group.add("I");
+			group.add("G");
+		}
 	}
 	
 	private CommandFacade<?> getHandler(String group, boolean isUpdate) {
@@ -206,7 +233,6 @@ public class DailyRecordWorkCommandHandler {
 			handler = isUpdate ? this.breakTimeUpdateHandler : this.breakTimeAddHandler;
 			break;
 		case "G":
-			//
 			handler = isUpdate ? this.attendanceTimeUpdateHandler : this.attendanceTimeAddHandler;
 			break;
 		case "H":

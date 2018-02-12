@@ -12,7 +12,6 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 
 /**
- * @author loivt
  * 申請設定/申請承認設定/申請表示設定/申請制限設定
  */
 @Value
@@ -124,7 +123,7 @@ public class ApplicationSetting {
 				EnumAdaptor.valueOf(actualExcessMessDispAtr, AppDisplayAtr.class), 
 				EnumAdaptor.valueOf(otAdvanceDispAtr, AppDisplayAtr.class), 
 				EnumAdaptor.valueOf(otActualDispAtr, AppDisplayAtr.class), 
-				EnumAdaptor.valueOf(warningDateDispAtr, NumDaysOfWeek.class), 
+				new NumDaysOfWeek(warningDateDispAtr),
 				EnumAdaptor.valueOf(appReasonDispAtr, AppDisplayAtr.class), 
 				EnumAdaptor.valueOf(appContentChangeFlg, AppCanAtr.class), 
 				EnumAdaptor.valueOf(scheReflectFlg, ReflectionFlg.class), 

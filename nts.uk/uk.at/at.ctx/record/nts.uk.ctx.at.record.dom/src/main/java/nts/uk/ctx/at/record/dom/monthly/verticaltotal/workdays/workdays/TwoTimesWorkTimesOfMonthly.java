@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
  * 月別実績の二回勤務回数
@@ -36,9 +37,19 @@ public class TwoTimesWorkTimesOfMonthly {
 	
 	/**
 	 * 集計
+	 * @param predetermineTimeSet 所定時間設定
+	 * @param isTwoTimesStampExists 2回目の打刻が存在するか
 	 */
-	public void aggregate(){
+	public void aggregate(PredetemineTimeSetting predetermineTimeSet, boolean isTwoTimesStampExists){
+
+		if (predetermineTimeSet == null) return;
 		
-		this.times = new AttendanceTimesMonth(0);
+		// 2回勤務かどうかの判断処理　（2回勤務でなければ、無視）
+		if (!predetermineTimeSet.getPrescribedTimezoneSetting().isUseShiftTwo()) return;
+		
+		// 2回目の打刻が存在する時、1回加算
+		if (isTwoTimesStampExists){
+			this.times = this.times.addTimes(1);
+		}
 	}
 }

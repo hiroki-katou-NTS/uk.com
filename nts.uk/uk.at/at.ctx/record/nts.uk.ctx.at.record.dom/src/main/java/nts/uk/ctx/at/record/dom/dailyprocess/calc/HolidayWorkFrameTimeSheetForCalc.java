@@ -1,0 +1,228 @@
+package nts.uk.ctx.at.record.dom.dailyprocess.calc;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import lombok.Getter;
+import lombok.val;
+import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.time.TimeWithDayAttr;
+
+/**
+ * 計算用休出枠時間帯
+ * @author keisuke_hoshina
+ *
+ */
+@Getter
+public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
+	
+	private HolidayWorkFrameTime frameTime;
+	
+	private boolean TreatAsTimeSpentAtWork;
+	
+	private EmTimezoneNo HolidayWorkTimeSheetNo; 
+	
+	private Finally<StaturoryAtrOfHolidayWork> statutoryAtr;
+	
+	/**
+	 * constructor
+	 * @param timeSheet 時間帯(丸め付き)
+	 * @param calculationTimeSheet 計算範囲
+	 * @param deductionTimeSheets 控除項目の時間帯
+	 * @param bonusPayTimeSheet 加給時間帯
+	 * @param midNighttimeSheet 
+	 * @param frameTime
+	 * @param treatAsTimeSpentAtWork
+	 * @param holidayWorkTimeSheetNo
+	 */
+	public HolidayWorkFrameTimeSheetForCalc(TimeZoneRounding timeSheet, TimeSpanForCalc calcrange,
+			List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimesheet> bonusPayTimeSheet,
+			List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet, Optional<MidNightTimeSheet> midNighttimeSheet,
+			HolidayWorkFrameTime frameTime, boolean treatAsTimeSpentAtWork, EmTimezoneNo holidayWorkTimeSheetNo,
+			Finally<StaturoryAtrOfHolidayWork> statutoryAtr) {
+		super(timeSheet, calcrange, deductionTimeSheets, bonusPayTimeSheet, specifiedBonusPayTimeSheet,
+				midNighttimeSheet);
+		this.frameTime = frameTime;
+		TreatAsTimeSpentAtWork = treatAsTimeSpentAtWork;
+		HolidayWorkTimeSheetNo = holidayWorkTimeSheetNo;
+		this.statutoryAtr = statutoryAtr;
+	}
+	
+	
+	/**
+	 * 計算用休出枠時間帯リストの作成
+	 * @return
+	 */
+	public static List<HolidayWorkFrameTimeSheetForCalc> createHolidayTimeWorkFrame(TimeLeavingWork attendanceLeave,FixOffdayWorkTimezone holidayWorksetting,WorkType todayWorkType) {
+		List<HolidayWorkFrameTimeSheetForCalc> returnList = new ArrayList<>();
+		for(HDWorkTimeSheetSetting holidayWorkSheetSetting:holidayWorksetting.getLstWorkTimezone()) {
+			returnList.add(createHolidayTimeWorkFrameTimeSheet(attendanceLeave,holidayWorkSheetSetting,todayWorkType));
+		}
+		return returnList;
+	}
+	
+	/**
+	 * 計算用休出枠時間帯から休出枠時間帯へ変換する
+	 * @return　残業枠時間帯
+	 */
+	public HolidayWorkFrameTimeSheet changeNotWorkFrameTimeSheet() {
+		return new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(this.HolidayWorkTimeSheetNo.v().intValue()),this.calcrange);
+	}
+	
+	/**
+	 * 計算用休出枠ｔ時間帯(WORK)の作成
+	 * @param holidayWorkFrameTimeSheet
+	 * @param today
+	 * @return
+	 */
+	public static HolidayWorkFrameTimeSheetForCalc createHolidayTimeWorkFrameTimeSheet(TimeLeavingWork attendanceLeave,HDWorkTimeSheetSetting holidayWorkFrameTimeSheet,WorkType today) {
+		//計算範囲判断
+		Optional<TimeSpanForCalc> calcrange = holidayWorkFrameTimeSheet.getTimezone().getDuplicatedWith(attendanceLeave.getTimespan());
+		if(!calcrange.isPresent()) {
+			calcrange = Optional.of(new TimeSpanForCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)));
+		}
+		//時間帯跨いだ控除時間帯分割
+		//控除時間帯を保持させる(継承先に)
+		//控除の丸め
+		//休出枠No
+		BreakFrameNo breakFrameNo = holidayWorkFrameTimeSheet.decisionBreakFrameNoByHolidayAtr(today.getWorkTypeSetList().get(0).getHolidayAtr());
+		//加給
+		//深夜
+		return new HolidayWorkFrameTimeSheetForCalc(new TimeZoneRounding(calcrange.get().getStart(),calcrange.get().getEnd(),holidayWorkFrameTimeSheet.getTimezone().getRounding()),
+													calcrange.get(),
+													Collections.emptyList(),
+													Collections.emptyList(),
+													Collections.emptyList(),
+													Optional.empty(),
+													new HolidayWorkFrameTime(new HolidayWorkFrameNo(breakFrameNo.v().intValue()),
+										  					Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+										  					Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+										  					Finally.of(new AttendanceTime(0))),
+													false,
+													new EmTimezoneNo(holidayWorkFrameTimeSheet.getWorkTimeNo()),
+													Finally.of(StaturoryAtrOfHolidayWork.deicisionAtrByHolidayAtr(today.getWorkTypeSetList().get(0).getHolidayAtr())));
+	}
+	/**
+	 * 残業時間帯時間枠に残業時間を埋める
+	 * @param autoCalcSet 時間外の自動計算区分
+	 * @return 残業時間枠時間帯クラス
+	 */
+	public HolidayWorkFrameTime calcOverTimeWorkTime(AutoCalcSetOfHolidayWorkTime autoCalcSet) {
+		AttendanceTime holidayWorkTime;
+		if(autoCalcSet.getLateNightTime().getCalculationClassification().isCalculateEmbossing()) {
+			holidayWorkTime = new AttendanceTime(0);
+		}
+		else {
+			holidayWorkTime = this.calcTotalTime();
+		}
+		return  new HolidayWorkFrameTime(this.frameTime.getHolidayFrameNo()
+				,this.frameTime.getTransferTime()
+				,Finally.of(TimeWithCalculation.sameTime(holidayWorkTime))
+				,this.frameTime.getBeforeApplicationTime());
+	}
+	
+	/**
+	 * 計算処理
+	 * 休出時間の計算
+	 * @param forceCalcTime 強制時間区分
+	 * @param autoCalcSet 
+	 */
+	public AttendanceTime correctCalculationTime(AutoCalSetting autoCalcSet) {
+		AttendanceTime calcTime = this.calcTotalTime();
+		//区分をみて、計算設定を設定
+		//一旦、打刻から計算する場合　を入れとく
+		//if(){
+		val forceAtr = AutoCalAtrOvertime.CALCULATEMBOSS;
+		//}
+		//	else {
+		//		autoCalcSet.
+		//	}
+		
+		if(!forceAtr.isApplyOrManuallyEnter()) {
+			//calcTime = new AttendanceTime(0);
+		}
+		return calcTime;
+	}
+	
+	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	
+	/**
+	 * 控除時間を考慮して終了時刻を求める
+	 * @return
+	 */
+	public HolidayWorkFrameTimeSheet collectHolidayWorkFrameTimeSheet(
+			FlowWorkHolidayTimeZone fluWorkHolidayTimeSheet,
+			WorkType workType,
+			DeductionTimeSheet deductionTimeSheet,/*事前処理で作成した控除時間帯で良い？*/
+			TimeSpanForCalc collectCalcRange,/*計算範囲*/
+			AttendanceTime previousElapsedTime/*前回の経過時間*/
+			) {
+		//今回の処理の経過時間
+		AttendanceTime elapsedTime = fluWorkHolidayTimeSheet.getFlowTimeSetting().getElapsedTime();
+		//休出枠の時間を計算する (今回処理する経過時間-前回の経過時間)
+		AttendanceTime holidayWorkFrameTime =  new AttendanceTime(elapsedTime.valueAsMinutes()-previousElapsedTime.valueAsMinutes());
+		//休出枠時間から終了時刻を計算する
+		TimeWithDayAttr endClock = collectCalcRange.getStart().backByMinutes(elapsedTime.valueAsMinutes());
+		//休出枠時間帯　（一時的に作成）
+		TimeSpanForCalc holidayWorkFrameTimeSheet = new TimeSpanForCalc(collectCalcRange.getStart(),endClock);
+		//控除時間帯分ループ
+		for(TimeSheetOfDeductionItem timeSheetOfDeductionItem : deductionTimeSheet.getForDeductionTimeZoneList()) {
+			TimeSpanForCalc duplicateTime = holidayWorkFrameTimeSheet.getDuplicatedWith(timeSheetOfDeductionItem.getTimeSheet().timeSpan()).orElse(null);
+			if(duplicateTime!=null) {//重複している場合の処理
+				//控除項目の時間帯に法定内区分をセット
+				//TODO: createBreakTimeSheetAsFixed
+//				timeSheetOfDeductionItem = timeSheetOfDeductionItem.createBreakTimeSheetAsFixed(
+//						timeSheetOfDeductionItem.getTimeSheet().getSpan(),
+//						timeSheetOfDeductionItem.getGoOutReason(),
+//						timeSheetOfDeductionItem.getBreakAtr(),
+//						timeSheetOfDeductionItem.getDeductionAtr(),
+//						WithinStatutoryAtr.WithinStatutory);
+				//控除時間分、終了時刻を遅くする
+				TimeSpanForCalc collectTimeSheet = this.timeSheet.timeSpan().shiftEndBack(duplicateTime.lengthAsMinutes());
+				TimeZoneRounding newTimeSheet = this.timeSheet;
+				// ここはベトナムへ連絡後コメントアウトを外すnewTimeSheet.newTimeSpan(collectTimeSheet);
+			}	
+		}
+		
+		//休出枠NOを判断
+		
+		//控除時間帯に丸め設定を付与
+
+		//加給時間帯を作成
+		
+		//深夜時間帯を作成
+		
+		//TODO: return HolidayWorkFrameTimeSheet
+//		HolidayWorkFrameTimeSheet holidayWorkFrameTimeSheet2 =  new HolidayWorkFrameTimeSheet();
+		return null;
+	}
+
+	
+}

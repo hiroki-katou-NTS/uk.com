@@ -4,6 +4,7 @@
 package nts.uk.ctx.pereg.app.find.layoutdef.classification;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,53 +50,66 @@ public class LayoutPersonInfoClsFinder {
 	}
 
 	private List<LayoutPersonInfoClsDto> mapItemCls(List<LayoutPersonInfoClsDto> listItemCls) {
-		if (listItemCls.size() > 0) {
-			for (LayoutPersonInfoClsDto classDto : listItemCls) {
-				switch (classDto.getLayoutItemType()) {
-				case ITEM: // single item
-				case LIST: // list item
-					List<String> listId = this.clsItemDefFinder.getItemDefineIds(classDto.getLayoutID(),
-							classDto.getDispOrder());
+		if (listItemCls == null) {
+			return Collections.emptyList();
+		}
 
-					if (!listId.isEmpty()) {
-						List<PerInfoItemDefDto> listItemDefDto = new ArrayList<PerInfoItemDefDto>();
+		for (LayoutPersonInfoClsDto classDto : listItemCls) {
+			switch (classDto.getLayoutItemType()) {
+			case ITEM: // single item
+			case LIST: // list item
+				List<String> listId = this.clsItemDefFinder.getItemDefineIds(classDto.getLayoutID(),
+						classDto.getDispOrder());
 
-						List<PerInfoItemDefDto> listItemDef = itemDfFinder.getPerInfoItemDefByListIdForLayout(listId);
+				if (!listId.isEmpty()) {
+					List<PerInfoItemDefDto> listItemDefDto = new ArrayList<PerInfoItemDefDto>();
 
-						for (String id : listId) {
-							List<PerInfoItemDefDto> dto = listItemDef.stream().filter(p -> p.getId().equals(id))
-									.collect(Collectors.toList());
+					List<PerInfoItemDefDto> listItemDef = itemDfFinder.getPerInfoItemDefByListIdForLayout(listId);
 
-							if (!dto.isEmpty()) {
-								listItemDefDto.add(dto.get(0));
-							}
+					for (String id : listId) {
+						List<PerInfoItemDefDto> dto = listItemDef.stream().filter(p -> p.getId().equals(id))
+								.collect(Collectors.toList());
+
+						if (!dto.isEmpty()) {
+							listItemDefDto.add(dto.get(0));
 						}
+					}
 
+					if (listItemDefDto.size() > 1) {
+						if (listItemDefDto.get(0).getItemTypeState().getItemType() == 1) {
+							classDto.setListItemDf(listItemDefDto);
+						} else {
+							classDto.setListItemDf(new ArrayList<PerInfoItemDefDto>());
+						}
+					} else if (listItemDefDto.size() == 1) {
 						classDto.setListItemDf(listItemDefDto);
-
-						if (classDto.getLayoutItemType() == LayoutItemType.ITEM && !listItemDefDto.isEmpty()
-								&& listItemDefDto.get(0) != null) {
-							classDto.setClassName(listItemDefDto.get(0).getItemName());
-						}
+					} else {
+						classDto.setListItemDf(new ArrayList<PerInfoItemDefDto>());
 					}
 
-					if (classDto.getLayoutItemType() == LayoutItemType.LIST) {
-						PerInfoCtgWithItemsNameDto catDto = this.catFinder
-								.getPerInfoCtgWithItemsName(classDto.getPersonInfoCategoryID());
-
-						if (catDto != null) {
-							classDto.setClassName(catDto.getCategoryName());
-						}
+					if (classDto.getLayoutItemType() == LayoutItemType.ITEM && !listItemDefDto.isEmpty()
+							&& listItemDefDto.get(0) != null) {
+						classDto.setClassName(listItemDefDto.get(0).getItemName());
 					}
-					break;
-				case SeparatorLine: // SeparatorLine
-					break;
 				}
+
+				if (classDto.getLayoutItemType() == LayoutItemType.LIST) {
+					PerInfoCtgWithItemsNameDto catDto = this.catFinder
+							.getPerInfoCtgWithItemsName(classDto.getPersonInfoCategoryID());
+
+					if (catDto != null) {
+						classDto.setClassName(catDto.getCategoryName());
+					}
+				}
+				break;
+			case SeparatorLine: // SeparatorLine
+				break;
 			}
 		}
 		return listItemCls.stream()
 				.filter(m -> (m.getLayoutItemType() != LayoutItemType.SeparatorLine && !m.getListItemDf().isEmpty())
 						|| m.getLayoutItemType() == LayoutItemType.SeparatorLine)
 				.collect(Collectors.toList());
+
 	}
 }

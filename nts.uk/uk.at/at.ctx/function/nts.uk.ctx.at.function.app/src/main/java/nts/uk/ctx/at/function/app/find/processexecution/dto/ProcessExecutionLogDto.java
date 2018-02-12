@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,13 +27,13 @@ public class ProcessExecutionLogDto {
 	private String companyId;
 	
 	/* 現在の実行状態 */
-	public int currentStatusCd;
+	public Integer currentStatusCd;
 	
 	/* 現在の実行状態 */
 	public String currentStatus;
 	
 	/* 全体の終了状態 */
-	public int overallStatusCd;
+	public Integer overallStatusCd;
 	
 	/* 全体の終了状態 */
 	public String overallStatus;
@@ -72,8 +74,8 @@ public class ProcessExecutionLogDto {
 		super();
 	}
 
-	public ProcessExecutionLogDto(String execItemCd, String companyId, int currentStatusCd,
-			String currentStatus, int overallStatusCd, String overallStatus, String overallError,
+	public ProcessExecutionLogDto(String execItemCd, String companyId, Integer currentStatusCd,
+			String currentStatus, Integer overallStatusCd, String overallStatus, String overallError,
 			String lastExecDateTime, GeneralDate schCreateStart, GeneralDate schCreateEnd, GeneralDate dailyCreateStart,
 			GeneralDate dailyCreateEnd, GeneralDate dailyCalcStart, GeneralDate dailyCalcEnd, String execId,
 			List<ProcessExecutionTaskLogDto> taskLogList) {
@@ -98,13 +100,19 @@ public class ProcessExecutionLogDto {
 	
 	public static ProcessExecutionLogDto fromDomain(ProcessExecutionLog procExecLog) {
 		List<ProcessExecutionTaskLogDto> taskLogList = procExecLog.getTaskLogList().stream().map(x -> ProcessExecutionTaskLogDto.fromDomain(x)).collect(Collectors.toList());
+		Collections.sort(taskLogList, new Comparator<ProcessExecutionTaskLogDto>() {
+			@Override
+			public int compare(ProcessExecutionTaskLogDto dto1, ProcessExecutionTaskLogDto dto2) {
+				return dto1.getTaskId() - dto2.getTaskId();
+			}
+		});
 		return new ProcessExecutionLogDto(
 				procExecLog.getExecItemCd().v(),
 				procExecLog.getCompanyId(),
-				procExecLog.getCurrentStatus().value,
-				EnumAdaptor.valueOf(procExecLog.getCurrentStatus().value, CurrentExecutionStatus.class).name,
-				procExecLog.getOverallStatus().value,
-				EnumAdaptor.valueOf(procExecLog.getOverallStatus().value, EndStatus.class).name,
+				procExecLog.getCurrentStatus() == null ? null : procExecLog.getCurrentStatus().value,
+				procExecLog.getCurrentStatus() == null ? "" : EnumAdaptor.valueOf(procExecLog.getCurrentStatus().value, CurrentExecutionStatus.class).name,
+				procExecLog.getOverallStatus() == null ? null : procExecLog.getOverallStatus().value,
+				procExecLog.getOverallStatus() == null ? "" : EnumAdaptor.valueOf(procExecLog.getOverallStatus().value, EndStatus.class).name,
 				procExecLog.getOverallError() == null ? "" : EnumAdaptor.valueOf(procExecLog.getOverallError().value, OverallErrorDetail.class).name,
 				procExecLog.getLastExecDateTime() == null ? "" : procExecLog.getLastExecDateTime().toString(DATE_FORMAT),
 				procExecLog.getEachProcPeriod().getScheduleCreationPeriod().start(),

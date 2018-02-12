@@ -17,7 +17,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IFactoryOvertime;
@@ -69,19 +69,19 @@ public class CheckBeforeRegisterOvertime {
 		beforeCheck.calculateButtonCheck(calculateFlg, app.getCompanyID(), employeeId, 1,
 				ApplicationType.OVER_TIME_APPLICATION, app.getAppDate());
 		// 事前申請超過チェック
-		Map<AttendanceID, List<OverTimeInput>> findMap = overtime.getOverTimeInput().stream()
-				.collect(groupingBy(OverTimeInput::getAttendanceID));
+		Map<AttendanceType, List<OverTimeInput>> findMap = overtime.getOverTimeInput().stream()
+				.collect(groupingBy(OverTimeInput::getAttendanceType));
 		// Only check for [残業時間]
 		// 時間①～フレ超過時間 まで 背景色をピンク
-		List<OverTimeInput> overtimeInputs = findMap.get(AttendanceID.NORMALOVERTIME);
+		List<OverTimeInput> overtimeInputs = findMap.get(AttendanceType.NORMALOVERTIME);
 		
 		if (overtimeInputs != null && !overtimeInputs.isEmpty()) {
 			res = beforeCheck.preApplicationExceededCheck(app.getCompanyID(), app.getAppDate(),
-					app.getInputDate(), app.getPrePostAtr(), AttendanceID.NORMALOVERTIME.value, overtimeInputs);
+					app.getInputDate(), app.getPrePostAtr(), AttendanceType.NORMALOVERTIME.value, overtimeInputs);
 			if (res.getErrorCode() != 0) {
 				result.setErrorCode(res.getErrorCode());
 				result.setFrameNo(res.getFrameNo());
-				result.setAttendanceId(AttendanceID.NORMALOVERTIME.value);
+				result.setAttendanceId(AttendanceType.NORMALOVERTIME.value);
 				return result;
 			}
 		}
@@ -94,7 +94,7 @@ public class CheckBeforeRegisterOvertime {
 		beforeCheck.TimeUpperLimitYearCheck();
 		// 事前否認チェック
 		res = beforeCheck.preliminaryDenialCheck(app.getCompanyID(), app.getAppDate(), app.getInputDate(),
-				app.getPrePostAtr());
+				app.getPrePostAtr(),ApplicationType.OVER_TIME_APPLICATION.value);
 		result.setConfirm(res.isConfirm());
 
 		return result;
@@ -131,19 +131,19 @@ public class CheckBeforeRegisterOvertime {
 		beforeCheck.calculateButtonCheck(calculateFlg, appRoot.getCompanyID(), employeeId, 1,
 				ApplicationType.OVER_TIME_APPLICATION, appRoot.getAppDate());
 		// 事前申請超過チェック
-		Map<AttendanceID, List<OverTimeInput>> findMap = overTimeDomain.getOverTimeInput().stream()
-				.collect(groupingBy(OverTimeInput::getAttendanceID));
+		Map<AttendanceType, List<OverTimeInput>> findMap = overTimeDomain.getOverTimeInput().stream()
+				.collect(groupingBy(OverTimeInput::getAttendanceType));
 		// Only check for [残業時間]
 		// 時間①～フレ超過時間 まで 背景色をピンク
-		List<OverTimeInput> overtimeInputs = findMap.get(AttendanceID.NORMALOVERTIME);
+		List<OverTimeInput> overtimeInputs = findMap.get(AttendanceType.NORMALOVERTIME);
 		
 		if (overtimeInputs != null && !overtimeInputs.isEmpty()) {
 			res = beforeCheck.preApplicationExceededCheck(appRoot.getCompanyID(), appRoot.getAppDate(),
-					appRoot.getInputDate(), appRoot.getPrePostAtr(), AttendanceID.NORMALOVERTIME.value, overtimeInputs);
+					appRoot.getInputDate(), appRoot.getPrePostAtr(), AttendanceType.NORMALOVERTIME.value, overtimeInputs);
 			if (res.getErrorCode() != 0) {
 				result.setErrorCode(res.getErrorCode());
 				result.setFrameNo(res.getFrameNo());
-				result.setAttendanceId(AttendanceID.NORMALOVERTIME.value);
+				result.setAttendanceId(AttendanceType.NORMALOVERTIME.value);
 				return result;
 			}
 		}
@@ -156,7 +156,7 @@ public class CheckBeforeRegisterOvertime {
 		beforeCheck.TimeUpperLimitYearCheck();
 		// 事前否認チェック
 		res = beforeCheck.preliminaryDenialCheck(appRoot.getCompanyID(), appRoot.getAppDate(), appRoot.getInputDate(),
-				appRoot.getPrePostAtr());
+				appRoot.getPrePostAtr(),ApplicationType.OVER_TIME_APPLICATION.value);
 		result.setConfirm(res.isConfirm());
 
 		return result;
@@ -168,27 +168,27 @@ public class CheckBeforeRegisterOvertime {
 		 * 休憩時間  ATTENDANCE_ID = 2
 		 */
 		if (null != command.getBreakTimes()) {
-			overTimeInputs.addAll(getOverTimeInput(command.getBreakTimes(), Cid, appId, AttendanceID.BREAKTIME.value));
+			overTimeInputs.addAll(getOverTimeInput(command.getBreakTimes(), Cid, appId, AttendanceType.BREAKTIME.value));
 		}
 		/**
 		 * 残業時間 ATTENDANCE_ID = 1
 		 */
 		if (null != command.getOvertimeHours()) {
 			overTimeInputs
-					.addAll(getOverTimeInput(command.getOvertimeHours(), Cid, appId, AttendanceID.NORMALOVERTIME.value));
+					.addAll(getOverTimeInput(command.getOvertimeHours(), Cid, appId, AttendanceType.NORMALOVERTIME.value));
 		}
 		/**
 		 * 休出時間 ATTENDANCE_ID = 0
 		 */
 		if (null != command.getRestTime()) {
 			overTimeInputs
-					.addAll(getOverTimeInput(command.getRestTime(), Cid, appId, AttendanceID.RESTTIME.value));
+					.addAll(getOverTimeInput(command.getRestTime(), Cid, appId, AttendanceType.RESTTIME.value));
 		}
 		/**
 		 * 加給時間 ATTENDANCE_ID = 3
 		 */
 		if (null != command.getBonusTimes()) {
-			overTimeInputs.addAll(getOverTimeInput(command.getBonusTimes(), Cid, appId, AttendanceID.BONUSPAYTIME.value));
+			overTimeInputs.addAll(getOverTimeInput(command.getBonusTimes(), Cid, appId, AttendanceType.BONUSPAYTIME.value));
 		}
 		return overTimeInputs;
 	}

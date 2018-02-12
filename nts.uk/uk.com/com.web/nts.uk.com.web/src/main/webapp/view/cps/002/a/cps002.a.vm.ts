@@ -9,6 +9,8 @@ module cps002.a.vm {
     import liveView = nts.uk.request.liveView;
     import character = nts.uk.characteristics;
     import block = nts.uk.ui.block;
+    import lv = nts.layout.validate;
+    import vc = nts.layout.validation;
 
     export class ViewModel {
 
@@ -335,7 +337,8 @@ module cps002.a.vm {
         isError() {
             let self = this;
             if (self.currentStep() == 2) {
-                $('.drag-panel .nts-input').trigger('change');
+                let controls = self.layout().listItemCls();
+                lv.checkError(controls);
             } else {
                 $(".form_step1").trigger("validate");
 
@@ -367,13 +370,13 @@ module cps002.a.vm {
 
                 }).fail((error) => {
 
-                    let message = error.message;
-                    switch (message) {
+                    let messageId = error.messageId;
+                    switch (messageId) {
                         case "Msg_345":
-                            $('#employeeCode').ntsError('set', { messageId: message });
+                            $('#employeeCode').ntsError('set', { messageId: messageId });
                             break;
                         case "Msg_757":
-                            $('#loginId').ntsError('set', { messageId: message });
+                            $('#loginId').ntsError('set', { messageId: messageId });
                             break;
                     }
 
@@ -412,7 +415,10 @@ module cps002.a.vm {
                     layout.standardDate(data.standardDate);
                 }
 
-                layout.listItemClsDto(data.itemsClassification || []);
+                layout.listItemCls(data.itemsClassification || []);
+                if (layout.listItemCls().length > 0) {
+                    new vc(layout.listItemCls());
+                }
 
             });
 
@@ -627,7 +633,7 @@ module cps002.a.vm {
 
                 }).fail(error => {
 
-                    dialog({ messageId: error.message });
+                    dialog({ messageId: error.messageId });
 
                 })
             }
@@ -702,16 +708,11 @@ module cps002.a.vm {
                 subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
 
                     let imageResult = getShared("imageId");
-
-
-
                     if (imageResult) {
                         self.currentEmployee().avatarId(imageResult.cropImgId)
                         self.defaultImgId(imageResult.defaultImgId);
-
-
-
-                    });
+                    }
+                });
 
             }
         }
@@ -878,9 +879,27 @@ module cps002.a.vm {
             this.saveData = param ? param.saveData : null;
             this.dataType = param ? param.dataType : '';
             this.dateType = param ? param.dateType : '';
+            this.saveData.value = this.genString(this);
+
+        }
+
+        genString(item: SettingItem) {
+
             if (this.dataType === "DATE" && this.saveData.value) {
-                this.saveData.value = this.genDateString(this.saveData.value, this.dateType);
+                return this.genDateString(this.saveData.value, this.dateType);
             }
+
+            if (this.dataType === "TIME" && this.saveData.value) {
+                return this.genTimeString(this.saveData.value, this.dateType);
+            }
+
+            return this.saveData.value;
+
+        }
+
+
+        genTimeString(value, dateType) {
+            return nts.uk.time.parseTime(value, true).format();
         }
         genDateString(value, dateType) {
             let formatString = "yyyy/MM/dd";
@@ -912,7 +931,7 @@ module cps002.a.vm {
         layoutCode: KnockoutObservable<string> = ko.observable('');
         layoutName: KnockoutObservable<string> = ko.observable('');
         maintenanceLayoutID: KnockoutObservable<string> = ko.observable('');
-        listItemClsDto: KnockoutObservableArray<any> = ko.observableArray([]);
+        listItemCls: KnockoutObservableArray<any> = ko.observableArray([]);
         standardDate: KnockoutObservable<string> = ko.observable(undefined);
 
         constructor(param?: ILayout) {
@@ -923,7 +942,7 @@ module cps002.a.vm {
                 self.maintenanceLayoutID(param.maintenanceLayoutID || '');
                 self.standardDate(param.standardDate)
 
-                self.listItemClsDto(param.itemsClassification || []);
+                self.listItemCls(param.itemsClassification || []);
             }
         }
 

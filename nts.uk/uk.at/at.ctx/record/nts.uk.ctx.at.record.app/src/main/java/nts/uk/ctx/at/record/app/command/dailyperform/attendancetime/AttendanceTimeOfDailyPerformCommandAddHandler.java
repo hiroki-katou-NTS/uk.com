@@ -12,12 +12,12 @@ public class AttendanceTimeOfDailyPerformCommandAddHandler extends CommandFacade
 
 	@Inject
 	private AttendanceTimeRepository repo;
-
+	
 	@Override
 	protected void handle(CommandHandlerContext<AttendanceTimeOfDailyPerformCommand> context) {
 		AttendanceTimeOfDailyPerformCommand command = context.getCommand();
 		if(command.getData().isPresent()){
-			repo.add(command.toDomain());
+			repo.add(command.getData().get());
 		}
 	}
 

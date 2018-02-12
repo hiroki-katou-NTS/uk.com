@@ -51,7 +51,7 @@ public class JpaErrorAlarmConditionRepository extends JpaRepository implements E
 		targetEntity.filterByJobTitle = domainAfterConvert.filterByJobTitle;
 		targetEntity.group2UseAtr = domainAfterConvert.group2UseAtr;
 		targetEntity.krcstErAlConGroup1 = domainAfterConvert.krcstErAlConGroup1;
-		targetEntity.krcstErAlConGroup2 = domainAfterConvert.krcstErAlConGroup1;
+		targetEntity.krcstErAlConGroup2 = domainAfterConvert.krcstErAlConGroup2;
 		targetEntity.lstBusinessType = domainAfterConvert.lstBusinessType;
 		targetEntity.lstClassification = domainAfterConvert.lstClassification;
 		targetEntity.lstEmployment = domainAfterConvert.lstEmployment;
@@ -72,7 +72,7 @@ public class JpaErrorAlarmConditionRepository extends JpaRepository implements E
 		targetEntity.wtCompareAtr = domainAfterConvert.wtCompareAtr;
 		targetEntity.wtPlanActualOperator = domainAfterConvert.wtPlanActualOperator;
 		targetEntity.wtPlanFilterAtr = domainAfterConvert.wtPlanFilterAtr;
-
+		targetEntity.continuousPeriod = domainAfterConvert.continuousPeriod;
 		this.commandProxy().update(targetEntity);
 	}
 
@@ -97,14 +97,14 @@ public class JpaErrorAlarmConditionRepository extends JpaRepository implements E
     }
 	@Override
 	public List<ErrorAlarmCondition> findConditionByListErrorAlamCheckId(List<String> listEralCheckId) {
-		return this.queryProxy().query(FIND_BY_ERROR_ALARM_CHECK_ID, KrcmtErAlCondition.class)
+		return this.queryProxy().query(FIND_BY_ERROR_ALARM_CHECK_IDS, KrcmtErAlCondition.class)
                 .setParameter("erAlCheckIds", listEralCheckId).getList().stream().map(item -> 
                 KrcmtErAlCondition.toDomain(item, "", "")).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<ErrorAlarmCondition> findMessageConByListErAlCheckId(List<String> listEralCheckId) {
-		return this.queryProxy().query(FIND_BY_ERROR_ALARM_CHECK_ID, KrcmtErAlCondition.class)
+		return this.queryProxy().query(FIND_BY_ERROR_ALARM_CHECK_IDS, KrcmtErAlCondition.class)
                 .setParameter("erAlCheckIds", listEralCheckId).getList().stream().map(item -> 
                 	new ErrorAlarmCondition(item.eralCheckId, item.messageDisplay)).collect(Collectors.toList());
 	}

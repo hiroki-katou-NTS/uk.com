@@ -77,24 +77,21 @@ public class PremiumTimeOfMonthly {
 	
 	/**
 	 * 集計
-	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
+	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
 	 */
-	public void aggregate(List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
+	public void aggregate(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
+
+		if (attendanceTimeOfDaily == null) return;
 		
-		this.premiumTime = new HashMap<>();
-		
-		// 日別実績の「割増時間」を集計する
-		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
-			val actualWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
-			val premiumTimeOfDaily = actualWorkingTime.getPremiumTimeOfDailyPerformance();
-			for (val premiumTime : premiumTimeOfDaily.getPremiumTimes()){
-				val premiumTimeNo = premiumTime.getPremiumTimeNo();
-				if (!this.premiumTime.containsKey(premiumTimeNo)) {
-					this.premiumTime.put(premiumTimeNo, new AggregatePremiumTime(premiumTimeNo));
-				}
-				val targetPremiumTime = this.premiumTime.get(premiumTimeNo);
-				targetPremiumTime.addMinutesToTime(premiumTime.getPremitumTime().v());
+		val actualWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+		val premiumTimeOfDaily = actualWorkingTime.getPremiumTimeOfDailyPerformance();
+		for (val premiumTime : premiumTimeOfDaily.getPremiumTimes()){
+			val premiumTimeNo = premiumTime.getPremiumTimeNo();
+			if (!this.premiumTime.containsKey(premiumTimeNo)) {
+				this.premiumTime.put(premiumTimeNo, new AggregatePremiumTime(premiumTimeNo));
 			}
+			val targetPremiumTime = this.premiumTime.get(premiumTimeNo);
+			targetPremiumTime.addMinutesToTime(premiumTime.getPremitumTime().v());
 		}
 	}
 }

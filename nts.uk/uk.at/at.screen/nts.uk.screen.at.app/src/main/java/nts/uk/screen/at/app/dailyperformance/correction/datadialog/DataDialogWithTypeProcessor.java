@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -143,118 +145,84 @@ public class DataDialogWithTypeProcessor {
 		switch (type) {
 		case 1:
 			// KDL002
-			return this.getDutyType(companyId, param.getWorkTypeCode(), param.getEmploymentCode()).getCodeNames()
-					.stream().collect(Collectors.toList());
+			return this.getDutyType(companyId, param.getWorkTypeCode(), param.getEmploymentCode()).getCodeNames();
 		case 2:
 			// KDL001
-			return this.getWorkHours(companyId, param.getWorkplaceId()).getCodeNames().stream()
-					.collect(Collectors.toList());
+			return this.getWorkHours(companyId, param.getWorkplaceId()).getCodeNames();
 		case 3:
 			// KDL010
-			return this.getServicePlace(companyId).getCodeNames().stream().collect(Collectors.toList());
+			return this.getServicePlace(companyId).getCodeNames();
 		case 4:
 			// KDL032
-			return this.getReason(companyId).getCodeNames().stream().collect(Collectors.toList());
+			return this.getReason(companyId).getCodeNames();
 		case 5:
 			// CDL008
-			return this.getWorkPlace(companyId, param.getDate()).getCodeNames().stream().collect(Collectors.toList());
+			return this.getWorkPlace(companyId, param.getDate()).getCodeNames();
 		case 6:
 			// KCP002
-			return this.getClassification(companyId).getCodeNames().stream().collect(Collectors.toList());
+			return this.getClassification(companyId).getCodeNames();
 		case 7:
 			// KCP003
-			return this.getPossition(companyId, param.getDate()).getCodeNames().stream().collect(Collectors.toList());
+			return this.getPossition(companyId, param.getDate()).getCodeNames();
 		case 8:
 			// KCP001
-			return this.getEmployment(companyId).getCodeNames().stream().collect(Collectors.toList());
+			return this.getEmployment(companyId).getCodeNames();
 		default:
 			return null;
 		}
 	}
 
-	public Map<Integer, Map<String, CodeName>> getAllCodeName(List<Integer> types, String companyId) {
-		Map<Integer, Map<String, CodeName>> result = new HashMap<Integer, Map<String, CodeName>>();
-		for (int i = 0; i < types.size(); i++) {
-			int type = types.get(i);
-			List<CodeName> codeNames = new ArrayList<>();
+	public Map<Integer, Map<String, String>> getAllCodeName(List<Integer> types, String companyId) {
+		return types.stream().collect(Collectors.toMap(type -> type, type -> {
 			switch (type) {
 			case 1:
 				// KDL002
-				codeNames = this.getDutyTypeAll(companyId).getCodeNames().stream().collect(Collectors.toList());
-				Map<String, CodeName> map1 = new HashMap<>();
-				codeNames.forEach(x ->{
-					map1.put(x.getCode(),x);
-				});
-				result.put(type, map1);
-				break;
+				return toMap(this.getDutyTypeAll(companyId).getCodeNames());
 			case 2:
 				// KDL001
-				codeNames = this.getWorkHoursAll(companyId).getCodeNames().stream().collect(Collectors.toList());
-				Map<String, CodeName> map2 = new HashMap<>();
-				codeNames.forEach(x ->{
-					map2.put(x.getCode(),x);
-				});
-				result.put(type, map2);
-				break;
+				return toMap(this.getWorkHoursAll(companyId).getCodeNames());
 			case 3:
 				// KDL010
-				codeNames = this.getServicePlace(companyId).getCodeNames().stream().collect(Collectors.toList());
-				Map<String, CodeName> map3 = new HashMap<>();
-				codeNames.forEach(x ->{
-					map3.put(x.getCode(),x);
-				});
-				result.put(type, map3);
-				break;
+				return toMap(this.getServicePlace(companyId).getCodeNames());
 			case 4:
 				// KDL032
-				codeNames = this.getReason(companyId).getCodeNames().stream().collect(Collectors.toList());
-				Map<String, CodeName> map4 = new HashMap<>();
-				codeNames.forEach(x ->{
-					map4.put(x.getCode(),x);
-				});
-				result.put(type, map4);
-				break;
+				return toMap(this.getReason(companyId).getCodeNames());
 			case 5:
 				// CDL008
-				codeNames = new ArrayList<>();
-				break;
+				return new HashMap<>();
 			case 6:
 				// KCP002
-				codeNames = this.getClassification(companyId).getCodeNames().stream().collect(Collectors.toList());
-				Map<String, CodeName> map6 = new HashMap<>();
-				codeNames.forEach(x ->{
-					map6.put(x.getCode(),x);
-				});
-				result.put(type, map6);
+				return toMap(this.getClassification(companyId).getCodeNames());
 			case 7:
 				// KCP003
-				codeNames = new ArrayList<>();
-				break;
+				return new HashMap<>();
 			case 8:
 				// KCP001
-				codeNames = this.getEmployment(companyId).getCodeNames().stream().collect(Collectors.toList());
-				Map<String, CodeName> map8 = new HashMap<>();
-				codeNames.forEach(x ->{
-					map8.put(x.getCode(),x);
-				});
-				result.put(type, map8);
-				break;
+				return toMap(this.getEmployment(companyId).getCodeNames());
 			default:
-				break;
+				return new HashMap<>();
 			}
-		};
-
-		return result;
+		}));
 	}
-	
+
+	private Map<String, String> toMap(List<CodeName> codeNames) {
+		return codeNames.stream().filter(distinctByKey(x -> x.getCode()))
+				.collect(Collectors.toMap(x -> x.getCode(), x -> x.getName()));
+	}
+
 	public Optional<CodeName> getCodeNameWithId(int type, GeneralDate date, String id) {
 		String companyId = AppContexts.user().companyId();
-		if(type == TypeLink.POSSITION.value){
+		if (type == TypeLink.POSSITION.value) {
 			return repo.findJobInfoId(companyId, date, id);
-		}else if(type == TypeLink.WORKPLACE.value){
+		} else if (type == TypeLink.WORKPLACE.value) {
 			return repo.findWorkplaceId(companyId, date, id);
 		}
-		
+
 		return null;
+	}
+
+	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+		final Set<Object> seen = new HashSet<>();
+		return t -> seen.add(keyExtractor.apply(t));
 	}
 }

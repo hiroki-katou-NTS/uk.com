@@ -9,18 +9,18 @@ module nts.uk.com.view.cas013.b.viewmodel {
         //user
         selectUserID: KnockoutObservable<string>;
         userName: KnockoutObservable<string>;
-        paramUserIds: Array<string>
-        
-        special : KnockoutObserveble<boolean>;
-        multi : KnockoutObserveble<boolean>;
+        roleTypeParam: number;
+
+        special: KnockoutObservable<boolean>;
+        multi: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
-            self.paramUserIds = nts.uk.ui.windows.getShared("userIds");
-            
+            self.roleTypeParam = nts.uk.ui.windows.getShared("roleType");
+
             self.special = ko.observable(true);
             self.multi = ko.observable(true);
-            
+
             self.searchValue = ko.observable('');
             self.dataSource = ko.observableArray([]);
             self.columns = [
@@ -34,42 +34,31 @@ module nts.uk.com.view.cas013.b.viewmodel {
         search() {
             let self = this;
             if (nts.uk.text.isNullOrEmpty(self.searchValue())) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_438", messageParams: ['検索文字列 ']});
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_438", messageParams: [nts.uk.resource.getText("CAS013_33")] });
                 return;
             }
             var key = self.searchValue();
             var Special = self.special();
-            var Multi= self.multi();
-            nts.uk.ui.block.invisible();
-            service.searchUser(key,Special,Multi).done(function(data) {
+            var Multi = self.multi();
+            var roleType =  self.roleTypeParam;
+            nts.uk.ui.block.invisible(); 
+            service.searchUser(key, Special, Multi, roleType).done(function(data) {
                 var items = [];
-                if(self.paramUserIds.length == 0){
-                    items = data;   
-                }else{
-                    for(let userId of self.paramUserIds){
-                        for(let user of data){
-                            if(user.userID == userId){
-                                break;
-                            }
-                            items.push(user);    
-                        }
-                    }
-                }
-                items = _.sortBy(items, ["loginID"]);
+                items = _.sortBy(data, ["loginID"]);
                 self.dataSource(items);
             }).always(() => {
-                nts.uk.ui.block.clear();    
+                nts.uk.ui.block.clear();
             });
         }
-        
+
         enterPress() {
-            this.search();   
+            this.search();
         }
 
         decision() {
             var self = this;
             if (nts.uk.text.isNullOrEmpty(self.selectUserID())) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_218" , messageParams: [nts.uk.resource.getText("CAS013_19")]});
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_218", messageParams: [nts.uk.resource.getText("CAS013_19")] });
                 return;
             }
 

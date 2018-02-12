@@ -5,8 +5,10 @@
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -19,11 +21,13 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem_;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond_;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkingConditionItemRepository.
@@ -34,6 +38,37 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 	/** The Constant FIRST_ITEM_INDEX. */
 	private final static int FIRST_ITEM_INDEX = 0;
+	
+	/** The Constant FIND_WORKCONDITEM_MONTHLY_NOT_NULL. */
+	private final static String FIND_WORKCONDITEM_MONTHLY_NOT_NULL = "SELECT wi FROM KshmtWorkingCondItem wi"
+																	+ " WHERE wi.monthlyPattern IS NOT NULL"
+																	+ " AND wi.sid IN :employeeIds";
+
+	/** The Constant FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D. */
+	private final static String FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D =
+			"SELECT wi FROM KshmtWorkingCondItem wi "
+			+ "WHERE wi.sid = :employeeId "
+			+ "AND wi.kshmtWorkingCond.strD <= :endDate "
+			+ "AND wi.kshmtWorkingCond.endD >= :startDate "
+			+ "ORDER BY wi.kshmtWorkingCond.strD";
+	
+	/**
+	 * Gets the by list sid and monthly pattern not null.
+	 *
+	 * @param employeeIds the employee ids
+	 * @return the by list sid and monthly pattern not null
+	 */
+	public List<WorkingConditionItem> getByListSidAndMonthlyPatternNotNull(List<String> employeeIds){
+		if (employeeIds.isEmpty()){
+			return Collections.emptyList();
+		}
+		List<KshmtWorkingCondItem> entitys = this.queryProxy().query(FIND_WORKCONDITEM_MONTHLY_NOT_NULL, KshmtWorkingCondItem.class)
+													.setParameter("employeeIds", employeeIds).getList();
+		if(entitys.isEmpty()){
+			return Collections.emptyList();
+		}
+		return entitys.stream().map(e -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(e))).collect(Collectors.toList());
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -114,6 +149,31 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 				new JpaWorkingConditionItemGetMemento(result.get(FIRST_ITEM_INDEX))));
 	}
 
+	/**
+	 * Gets the list by sid and date period
+	 *
+	 * @param employeeId the employee id
+	 * @param datePeriod the date period
+	 * @return the list
+	 */
+	// add 2018.1.31 shuichi_ishida
+	@Override
+	public List<WorkingConditionItem> getBySidAndPeriodOrderByStrD(String employeeId, DatePeriod datePeriod) {
+		
+		List<KshmtWorkingCondItem> entitys =
+				this.queryProxy().query(FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D, KshmtWorkingCondItem.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("startDate", datePeriod.start())
+				.setParameter("endDate", datePeriod.end())
+				.getList();
+		
+		if (entitys.isEmpty()) return Collections.emptyList();
+		
+		return entitys.stream()
+				.map(e -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(e)))
+				.collect(Collectors.toList());
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -167,7 +227,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	 * getBySidAndHistId(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Optional<WorkingConditionItem> getBySidAndHistId(String employeeId, String historyId) {
+	public Optional<WorkingConditionItem> getBySid(String employeeId) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -187,8 +247,6 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		// equal
 		lstpredicateWhere
 				.add(criteriaBuilder.equal(root.get(KshmtWorkingCondItem_.sid), employeeId));
-		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KshmtWorkingCondItem_.historyId), employeeId));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -206,6 +264,106 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		// exclude select
 		return Optional.of(new WorkingConditionItem(
 				new JpaWorkingConditionItemGetMemento(result.get(FIRST_ITEM_INDEX))));
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#deleteMonthlyPattern(java.lang.String)
+	 */
+	@Override
+	public void deleteMonthlyPattern(String historyId) {
+		Optional<KshmtWorkingCondItem> optEntity = this.queryProxy().find(historyId,
+				KshmtWorkingCondItem.class);
+		KshmtWorkingCondItem entity = optEntity.get();
+		
+		entity.setMonthlyPattern(null);
+		
+		this.commandProxy().update(entity);
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#updateMonthlyPattern(java.lang.String, nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode)
+	 */
+	@Override
+	public void updateMonthlyPattern(String historyId, MonthlyPatternCode monthlyPattern) {
+		Optional<KshmtWorkingCondItem> optEntity = this.queryProxy().find(historyId,
+				KshmtWorkingCondItem.class);
+		KshmtWorkingCondItem entity = optEntity.get();
+		
+		entity.setMonthlyPattern(monthlyPattern.v());
+		this.commandProxy().update(entity);
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#copyLastMonthlyPatternSetting(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public boolean copyLastMonthlyPatternSetting(String sourceSid, List<String> destSid) {
+		// Get items
+		Optional<WorkingConditionItem>  optSourceItem = this.getBySid(sourceSid);
+		List<KshmtWorkingCondItem> optDestItem = this.getLastWorkingCondItem(destSid);
+
+		// Check 
+		if (!optSourceItem.isPresent() || optDestItem.isEmpty()) {
+			// Copy fails
+			return false;
+		}
+		
+		// Copy data
+		optDestItem.stream().forEach(e -> {
+			e.setMonthlyPattern(optSourceItem.get().getMonthlyPattern().get().v());
+			// Update
+			this.commandProxy().update(e);
+		});
+		
+		// Copy success
+		return true;
+	}
+	
+	/**
+	 * Gets the last working cond item.
+	 *
+	 * @param employeeId the employee id
+	 * @return the last working cond item
+	 */
+	private List<KshmtWorkingCondItem> getLastWorkingCondItem(List<String> employeeId) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<KshmtWorkingCondItem> cq = criteriaBuilder
+				.createQuery(KshmtWorkingCondItem.class);
+
+		// root data
+		Root<KshmtWorkingCondItem> root = cq.from(KshmtWorkingCondItem.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal
+		lstpredicateWhere
+				.add(root.get(KshmtWorkingCondItem_.sid).in(employeeId));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.endD),
+				GeneralDate.max()));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		
+		// create query
+		TypedQuery<KshmtWorkingCondItem> query = em.createQuery(cq);
+
+		List<KshmtWorkingCondItem> result = query.getResultList();
+		
+		// Check empty
+		if (CollectionUtil.isEmpty(result)) {
+			return Collections.emptyList();
+		}
+
+		// exclude select
+		return result;
 	}
 
 }

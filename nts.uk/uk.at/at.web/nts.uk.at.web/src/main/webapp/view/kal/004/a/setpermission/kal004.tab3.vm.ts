@@ -6,20 +6,26 @@ module nts.uk.at.view.kal004.tab3.viewmodel {
         selectedRuleCode: any;
         executionAuthor: KnockoutObservable<string>;
         listRoleID: KnockoutObservableArray<string> = ko.observableArray([]);
+        createMode:  KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             self.roundingRules = ko.observableArray([
                 { code: '0', name: nts.uk.resource.getText('KAL004_112') },
                 { code: '1', name: nts.uk.resource.getText('KAL004_113') }
             ]);
-            self.selectedRuleCode = ko.observable(1);
+            self.selectedRuleCode = ko.observable(0);
             self.executionAuthor = ko.observable("");
+            self.createMode =ko.observable(true);
+            self.selectedRuleCode.subscribe((newV) =>{
+                if(newV== 1)
+                    self.executionAuthor('');    
+            });
             self.listRoleID.subscribe((newListRoleID) => {
                 self.changeItem(newListRoleID);
             });
         }
 
-        private changeItem(listRoleID: Array<share.AlarmPermissionSettingDto>): void {
+        private changeItem(listRoleID: Array<string>): void {
             let self = this;
             service.getListRoleName(self.listRoleID()).done(function(listRole) {
                 self.executionAuthor(_.join(_.map(listRole, "name"), ", "));
@@ -34,7 +40,8 @@ module nts.uk.at.view.kal004.tab3.viewmodel {
             return dfd.promise();
         }
 
-
+                   
+        
         openCDL025() {
             let self = this;
             let param = {

@@ -18,7 +18,7 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
@@ -96,7 +96,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 				ApplicationType.OVER_TIME_APPLICATION.value, PrePostAtr.PREDICT.value);
 		if (beforeApplication.isEmpty()) {
 			// TODO: QA Pending
-			result.setErrorCode(0);
+			result.setErrorCode(1);
 			return result;
 		}
 		// 事前申請否認チェック
@@ -114,7 +114,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		// 事前申請の申請時間
 		List<OverTimeInput> beforeOvertimeInputs = overtimeInputRepository.getOvertimeInput(beforeCid, beforeAppId)
 				.stream()
-				.filter(item -> item.getAttendanceID() == EnumAdaptor.valueOf(attendanceId, AttendanceID.class))
+				.filter(item -> item.getAttendanceType() == EnumAdaptor.valueOf(attendanceId, AttendanceType.class))
 				.collect(Collectors.toList());
 		if (beforeOvertimeInputs.isEmpty()) {
 			result.setErrorCode(0);
@@ -191,12 +191,12 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	 */
 	@Override
 	public OvertimeCheckResult preliminaryDenialCheck(String companyId, GeneralDate appDate, GeneralDateTime inputDate,
-			PrePostAtr prePostAtr) {
+			PrePostAtr prePostAtr,int appType) {
 		OvertimeCheckResult result = new OvertimeCheckResult();
 		result.setErrorCode(0);
 		// ドメインモデル「申請」
 		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, appDate, inputDate,
-				ApplicationType.OVER_TIME_APPLICATION.value, prePostAtr.value);
+				appType, prePostAtr.value);
 		if (beforeApplication.isEmpty()) {
 			return result;
 		}

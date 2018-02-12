@@ -8,12 +8,13 @@ module nts.uk.at.view.kmf002.c {
                 find: "bs/employee/holidaysetting/employee/findEmployeeMonthDaySetting",
                 remove: "bs/employee/holidaysetting/employee/remove",
                 findFirstMonth: "basic/company/beginningmonth/find",
+                findAllEmployeeRegister: "bs/employee/holidaysetting/employee/findEmployeeMonthDaySetting/findAllEmployeeRegister",
             };
         
         /**
          * 
          */
-        export function save(year: number, data: any, sId: string): JQueryPromise<any> {
+        export function save(year: string, data: any, sId: string): JQueryPromise<any> {
             let employeeMonthDaySetting: model.EmployeeMonthDaySetting= new model.EmployeeMonthDaySetting(year, sId, []);
             employeeMonthDaySetting.toDto(data);
             let command: any = {};
@@ -23,14 +24,18 @@ module nts.uk.at.view.kmf002.c {
             return nts.uk.request.ajax("com", path.save, command);
         }
         
-        export function find(year: number, employeeId: string): JQueryPromise<any> {
+        export function find(year: string, employeeId: string): JQueryPromise<any> {
             return nts.uk.request.ajax("com", path.find + "/" + year + "/" + employeeId);
         }
         
-        export function remove(year: number, sId: string): JQueryPromise<any> {
+        export function findAllEmployeeRegister(): JQueryPromise<any> {
+            return nts.uk.request.ajax("com", path.findAllEmployeeRegister);
+        }
+        
+        export function remove(year: string, sId: string): JQueryPromise<any> {
             let command: any = {};
             command.year = year;
-            command.sId = sId;
+            command.employeeId = sId;
             return nts.uk.request.ajax("com", path.remove, command);
         }
         
@@ -44,11 +49,11 @@ module nts.uk.at.view.kmf002.c {
      */
     export module model {
         export class EmployeeMonthDaySetting {
-            year: number;
+            year: string;
             publicHolidayMonthSettingDto: PublicHolidayMonthSettingDto[];
             sId: string;
             
-            constructor(year: number, sId: string, publicHolidayMonthSettingDto: PublicHolidayMonthSettingDto[]){
+            constructor(year: string, sId: string, publicHolidayMonthSettingDto: PublicHolidayMonthSettingDto[]){
                 let _self = this;
                 _self.year = year;
                 _self.publicHolidayMonthSettingDto = publicHolidayMonthSettingDto;

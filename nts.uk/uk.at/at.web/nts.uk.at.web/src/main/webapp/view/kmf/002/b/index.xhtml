@@ -8,6 +8,7 @@
 <body>
 	<ui:composition>
 		<div class="sidebar-content-header">
+			<span>#{i18n.getText('Com_Workplace')}</span>
 			<!-- B1_1 -->
    			<button tabindex="1" data-bind="click: saveWorkpalce, enable: enableSave">#{i18n.getText('KMF002_2')}</button>
    			<!-- B1_2 -->
@@ -15,7 +16,8 @@
 		</div>
 		
 		<div id="scrB" class="contents-area">
-			<div id="tree-grid"></div>
+			<!-- B2_1 -->
+			<div tabindex="3" id="tree-grid"></div>
 			<div id="includeTableMonthlyDay" data-bind="with: commonTableMonthDaySet">
 				<ui:include src="../base.xhtml"/>
 			</div>

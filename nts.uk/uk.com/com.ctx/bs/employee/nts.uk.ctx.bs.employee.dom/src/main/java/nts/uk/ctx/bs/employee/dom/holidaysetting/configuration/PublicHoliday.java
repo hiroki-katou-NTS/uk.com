@@ -6,6 +6,7 @@ package nts.uk.ctx.bs.employee.dom.holidaysetting.configuration;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 
@@ -24,7 +25,7 @@ public class PublicHoliday extends DomainObject
 	
 	/** The day month. */
 	// 月日
-	private int dayMonth;
+	private Integer dayMonth;
 	
 	/** The determine start date. */
 	// 起算日指定方法
@@ -37,9 +38,14 @@ public class PublicHoliday extends DomainObject
 	 * @param dayMonth the day month
 	 * @param determineStartDate the determine start date
 	 */
-	public PublicHoliday(GeneralDate date, int dayMonth, DayOfPublicHoliday determineStartDate) {
+	public PublicHoliday(GeneralDate date, Integer dayMonth, DayOfPublicHoliday determineStartDate) {
 		this.date = date;
 		this.dayMonth = dayMonth;
 		this.determineStartDate = determineStartDate;
+		
+		if ((determineStartDate == DayOfPublicHoliday.DESIGNATE_BY_YEAR_MONTH_DAY && date == null)
+				|| (determineStartDate == DayOfPublicHoliday.DESIGNATE_BY_MONTH_DAY && dayMonth == null)) {
+			throw new BusinessException("Msg_995");
+		}
 	}
 }

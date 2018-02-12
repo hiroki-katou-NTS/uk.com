@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.val;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 
@@ -26,7 +28,7 @@ import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements LateLeaveEarlyManagementTimeFrame {
 
 	@Getter
-	private final int workingHoursTimeNo;
+	private final EmTimeFrameNo workingHoursTimeNo;
 	
 	private final Optional<TimeSpanForCalc> premiumTimeSheetInPredetermined;
 	
@@ -46,7 +48,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	 * @param calculationTimeSheet
 	 */
 	public WithinWorkTimeFrame(
-			int workingHoursTimeNo,
+			EmTimeFrameNo workingHoursTimeNo,
 			TimeZoneRounding timeSheet,
 			TimeSpanForCalc calculationTimeSheet,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets,
@@ -237,8 +239,11 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	 * @return
 	 */
 	public AttendanceTime calcActualWorkTimeAndWorkTime(HolidayAdditionAtr holidayAdditionAtr,DeductionTimeSheet dedTimeSheet) {
-		AttendanceTime actualTime = calcActualTime(); 
-		actualTime = actualTime.minusMinutes(dedTimeSheet.calcDeductionAllTimeSheet(DeductionAtr.Deduction, ((CalculationTimeSheet)this).getTimeSheet().timeSpan()).valueAsMinutes());
+		AttendanceTime actualTime = calcActualTime();
+		val dedAllTime = dedTimeSheet.calcDeductionAllTimeSheet(DeductionAtr.Deduction, this.getTimeSheet().timeSpan()).valueAsMinutes();
+		if(dedAllTime > 0) {
+			actualTime = actualTime.minusMinutes(dedAllTime);
+		}
 		AttendanceTime workTime = calcWorkTime(actualTime);
 		/*就業時間算出ロジックをここに*/
 		

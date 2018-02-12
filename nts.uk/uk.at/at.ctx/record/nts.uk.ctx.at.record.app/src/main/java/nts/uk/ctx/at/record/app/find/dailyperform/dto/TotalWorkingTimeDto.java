@@ -167,7 +167,6 @@ public class TotalWorkingTimeDto {
 	}
 
 	private TimeWithCalculation createTimeWithCalc(CalcAttachTimeDto c) {
-		return c == null ? null : TimeWithCalculation.createTimeWithCalculation(toAttendanceTime(c.getTime()),
-						toAttendanceTime(c.getCalcTime()));
+		return c == null ? null : TimeWithCalculation.sameTime(toAttendanceTime(c.getTime()));
 	}
 }

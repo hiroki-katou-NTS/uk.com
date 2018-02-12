@@ -1,13 +1,10 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays;
 
-import java.util.List;
-import java.util.Map;
-
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
  * 月別実績の出勤日数
@@ -41,28 +38,29 @@ public class AttendanceDaysOfMonthly {
 	
 	/**
 	 * 集計
-	 * @param workInfoOfDailys 日別実績の勤務情報リスト
-	 * @param workTypeMap 勤務種類マップ
+	 * @param workingSystem 労働制
+	 * @param workTypeDaysCountTable 勤務種類の日数カウント表
+	 * @param isAttendanceDay 出勤しているかどうか
 	 */
 	public void aggregate(
-			List<WorkInfoOfDailyPerformance> workInfoOfDailys,
-			Map<String, WorkType> workTypeMap){
+			WorkingSystem workingSystem,
+			WorkTypeDaysCountTable workTypeDaysCountTable,
+			boolean isAttendanceDay){
 		
-		this.days = new AttendanceDaysMonth(0.0);
-		for (val workInfoOfDaily : workInfoOfDailys){
-			val recordWorkInfo = workInfoOfDaily.getRecordWorkInformation();
-			val workTypeCd = recordWorkInfo.getWorkTypeCode();
-			if (!workTypeMap.containsKey(workTypeCd.v())) continue;
-			val workType = workTypeMap.get(workTypeCd.v());
+		if (workTypeDaysCountTable == null) return;
 			
-			// 勤務種類を判断しカウント数を取得する
-			//*****（未）　カウントの確認方法の確認要。
-			val workTypeSet = workType.getWorkTypeSet();
+		// 労働制を取得
+		if (workingSystem == WorkingSystem.EXCLUDED_WORKING_CALCULATE){
+
+			// 計算対象外の時、無条件で、出勤日数に加算する
+			this.days = this.days.addDays(workTypeDaysCountTable.getAttendanceDays().v());
+		}
+		else {
 			
-			// 出勤状態を判断する
-			
-			// 出勤日数に加算する
-			this.days = this.days.addDays(0.0);
+			// その他労働制の時、出勤している日なら、出勤日数に加算する
+			if (isAttendanceDay){
+				this.days = this.days.addDays(workTypeDaysCountTable.getAttendanceDays().v());
+			}
 		}
 	}
 }

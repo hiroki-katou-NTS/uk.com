@@ -103,6 +103,7 @@ module nts.uk.at.view.kmf022 {
 
     export module a.viewmodel {
         export class ScreenModel {
+            companyId: KnockoutObservable<string>;
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
             enableA4_6: KnockoutObservable<boolean>;
@@ -134,6 +135,8 @@ module nts.uk.at.view.kmf022 {
             itemListA17_5: KnockoutObservableArray<any>;
             selectedIdA17_4: KnockoutObservable<number>;
             selectedIdA17_5: KnockoutObservable<number>;
+            //a6
+            listDataA6: KnockoutObservableArray<any>;
             texteditorA6_24: any;
             texteditorA6_26: any;
             texteditorA6_35: any;
@@ -360,17 +363,7 @@ module nts.uk.at.view.kmf022 {
             selectedIdA14_3: KnockoutObservable<number>;
             //a15
             itemListA15_4: KnockoutObservableArray<ItemModel>;
-            selectedIdA15_4: KnockoutObservable<number>;
-            selectedIdA15_4_1: KnockoutObservable<number>;
-            selectedIdA15_4_2: KnockoutObservable<number>;
-            selectedIdA15_4_3: KnockoutObservable<number>;
-            selectedIdA15_4_4: KnockoutObservable<number>;
-            selectedIdA15_4_5: KnockoutObservable<number>;
-            selectedIdA15_4_6: KnockoutObservable<number>;
-            selectedIdA15_4_7: KnockoutObservable<number>;
-            selectedIdA15_4_8: KnockoutObservable<number>;
-            selectedIdA15_4_9: KnockoutObservable<number>;
-            selectedIdA15_4_10: KnockoutObservable<number>;
+            listDataA15: KnockoutObservableArray<ItemA15>;
 
             //a16
             texteditorA16_7: any;
@@ -460,8 +453,8 @@ module nts.uk.at.view.kmf022 {
             valueE14: KnockoutObservable<string>;
             enableE15: KnockoutObservable<boolean>;
             texteditorE16: any;
-            valueE14_1: KnockoutObservable<string>;
-            enableE15_1: KnockoutObservable<boolean>;
+            valueE17: KnockoutObservable<string>;
+            enableE18: KnockoutObservable<boolean>;
 
             //f
             selectedIdF10: KnockoutObservable<number>;
@@ -472,11 +465,11 @@ module nts.uk.at.view.kmf022 {
             enableF13_1: KnockoutObservable<boolean>;
             selectedIdF14: KnockoutObservable<number>;
             texteditorF15: any;
-            valueF15: KnockoutObservable<string>;
-            enableF15: KnockoutObservable<boolean>;
-            texteditorF16: any;
             valueF15_1: KnockoutObservable<string>;
-            enableF15_1: KnockoutObservable<boolean>;
+            enableF15_2: KnockoutObservable<boolean>;
+            texteditorF16: any;
+            valueF16_1: KnockoutObservable<string>;
+            enableF16_1: KnockoutObservable<boolean>;
             itemListF11: KnockoutObservableArray<ItemModel>;
 
             //g
@@ -512,7 +505,6 @@ module nts.uk.at.view.kmf022 {
             texteditorH26_1: any;
             texteditorH27_1: any;
             enableH21: KnockoutObservable<boolean>;
-            enableH22: KnockoutObservable<boolean>;
             enableH23: KnockoutObservable<boolean>;
             enableH24: KnockoutObservable<boolean>;
             enableH25: KnockoutObservable<boolean>;
@@ -558,8 +550,22 @@ module nts.uk.at.view.kmf022 {
             selectedIdK21: KnockoutObservable<number>;
             itemListK22: KnockoutObservableArray<ItemModel>;
             selectedIdK22: KnockoutObservable<number>;
+            
+            //appliSet 
+            baseDateFlg: KnockoutObservable<number>;
+            advanceExcessMessDispAtr: KnockoutObservable<number>;
+            hwAdvanceDispAtr: KnockoutObservable<number>;
+            hwActualDispAtr: KnockoutObservable<number>;
+            actualExcessMessDispAtr: KnockoutObservable<number>;
+            otAdvanceDispAtr: KnockoutObservable<number>;
+            otActualDispAtr: KnockoutObservable<number>;
+            warningDateDispAtr: KnockoutObservable<number>;
+            appReasonDispAtr: KnockoutObservable<number>;
+            scheReflectFlg: KnockoutObservable<number>;
+            priorityTimeReflectFlg: KnockoutObservable<number>;
             constructor() {
                 let self = this;
+                self.companyId = ko.observable('');
                 self.tabs = ko.observableArray([
                     { id: 'tab-1', title: nts.uk.resource.getText('KAF022_2'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-2', title: nts.uk.resource.getText('KAF022_3'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
@@ -610,40 +616,40 @@ module nts.uk.at.view.kmf022 {
                     new ItemModel(1, nts.uk.resource.getText('KAF022_322')),
                 ]);
                 self.itemListA4_8 = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_323')),
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_324')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_325')),
-                    new ItemModel(3, nts.uk.resource.getText('KAF022_326')),
-                    new ItemModel(4, nts.uk.resource.getText('KAF022_327')),
-                    new ItemModel(5, nts.uk.resource.getText('KAF022_328')),
-                    new ItemModel(6, nts.uk.resource.getText('KAF022_329')),
-                    new ItemModel(7, nts.uk.resource.getText('KAF022_330')),
-                    new ItemModel(8, nts.uk.resource.getText('KAF022_331')),
-                    new ItemModel(9, nts.uk.resource.getText('KAF022_332')),
-                    new ItemModel(10, nts.uk.resource.getText('KAF022_333')),
-                    new ItemModel(11, nts.uk.resource.getText('KAF022_334')),
-                    new ItemModel(12, nts.uk.resource.getText('KAF022_335')),
-                    new ItemModel(13, nts.uk.resource.getText('KAF022_336')),
-                    new ItemModel(14, nts.uk.resource.getText('KAF022_337')),
-                    new ItemModel(15, nts.uk.resource.getText('KAF022_338')),
-                    new ItemModel(16, nts.uk.resource.getText('KAF022_339')),
-                    new ItemModel(17, nts.uk.resource.getText('KAF022_340')),
-                    new ItemModel(18, nts.uk.resource.getText('KAF022_341')),
-                    new ItemModel(19, nts.uk.resource.getText('KAF022_342')),
-                    new ItemModel(20, nts.uk.resource.getText('KAF022_343')),
-                    new ItemModel(21, nts.uk.resource.getText('KAF022_344')),
-                    new ItemModel(22, nts.uk.resource.getText('KAF022_345')),
-                    new ItemModel(23, nts.uk.resource.getText('KAF022_346')),
-                    new ItemModel(24, nts.uk.resource.getText('KAF022_347')),
-                    new ItemModel(25, nts.uk.resource.getText('KAF022_348')),
-                    new ItemModel(26, nts.uk.resource.getText('KAF022_349')),
-                    new ItemModel(27, nts.uk.resource.getText('KAF022_350')),
-                    new ItemModel(28, nts.uk.resource.getText('KAF022_351')),
-                    new ItemModel(29, nts.uk.resource.getText('KAF022_352')),
-                    new ItemModel(30, nts.uk.resource.getText('KAF022_353'))
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_323')),
+                    new ItemModel(2, nts.uk.resource.getText('KAF022_324')),
+                    new ItemModel(3, nts.uk.resource.getText('KAF022_325')),
+                    new ItemModel(4, nts.uk.resource.getText('KAF022_326')),
+                    new ItemModel(5, nts.uk.resource.getText('KAF022_327')),
+                    new ItemModel(6, nts.uk.resource.getText('KAF022_328')),
+                    new ItemModel(7, nts.uk.resource.getText('KAF022_329')),
+                    new ItemModel(8, nts.uk.resource.getText('KAF022_330')),
+                    new ItemModel(9, nts.uk.resource.getText('KAF022_331')),
+                    new ItemModel(10, nts.uk.resource.getText('KAF022_332')),
+                    new ItemModel(12, nts.uk.resource.getText('KAF022_333')),
+                    new ItemModel(12, nts.uk.resource.getText('KAF022_334')),
+                    new ItemModel(13, nts.uk.resource.getText('KAF022_335')),
+                    new ItemModel(14, nts.uk.resource.getText('KAF022_336')),
+                    new ItemModel(15, nts.uk.resource.getText('KAF022_337')),
+                    new ItemModel(16, nts.uk.resource.getText('KAF022_338')),
+                    new ItemModel(17, nts.uk.resource.getText('KAF022_339')),
+                    new ItemModel(18, nts.uk.resource.getText('KAF022_340')),
+                    new ItemModel(19, nts.uk.resource.getText('KAF022_341')),
+                    new ItemModel(20, nts.uk.resource.getText('KAF022_342')),
+                    new ItemModel(21, nts.uk.resource.getText('KAF022_343')),
+                    new ItemModel(22, nts.uk.resource.getText('KAF022_344')),
+                    new ItemModel(23, nts.uk.resource.getText('KAF022_345')),
+                    new ItemModel(24, nts.uk.resource.getText('KAF022_346')),
+                    new ItemModel(25, nts.uk.resource.getText('KAF022_347')),
+                    new ItemModel(26, nts.uk.resource.getText('KAF022_348')),
+                    new ItemModel(27, nts.uk.resource.getText('KAF022_349')),
+                    new ItemModel(28, nts.uk.resource.getText('KAF022_350')),
+                    new ItemModel(29, nts.uk.resource.getText('KAF022_351')),
+                    new ItemModel(30, nts.uk.resource.getText('KAF022_352')),
+                    new ItemModel(31, nts.uk.resource.getText('KAF022_353'))
                 ]);
-                self.selectedCodeA4_7 = ko.observable(1);
-                self.selectedCodeA4_8 = ko.observable(1);
+                self.selectedCodeA4_7 = ko.observable(0);
+                self.selectedCodeA4_8 = ko.observable(0);
                 self.isEnable = ko.observable(true);
                 self.isEditable = ko.observable(true);
                 self.dataA4Display = ko.observableArray([]);
@@ -651,43 +657,49 @@ module nts.uk.at.view.kmf022 {
 
                 //a5
                 self.itemListA5_14 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_36')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_37'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_36')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_37'))
                 ]);
-                self.selectedIdA5_14 = ko.observable(1);
+                self.selectedIdA5_14 = ko.observable(0);
                 self.enableA5_14 = ko.observable(true);
                 self.itemListA5_16 = ko.observableArray([
-                    new ItemModel(1, '基本給'),
-                    new ItemModel(2, '役職手当'),
-                    new ItemModel(3, '基本給ながい文字列ながい文字列ながい文字列')
+                    new ItemModel(0, '0'),
+                    new ItemModel(1, '1'),
+                    new ItemModel(2, '2'),
+                    new ItemModel(3, '3'),
+                    new ItemModel(4, '4'),
+                    new ItemModel(5, '5'),
+                    new ItemModel(6, '6'),
+                    new ItemModel(7, '7'),
                 ]);
-                self.selectedCodeA5_16 = ko.observable(1);
-                self.selectedIdA5_18 = ko.observable(1);
-                self.selectedIdA5_19 = ko.observable(1);
-                self.selectedIdA5_20 = ko.observable(1);
-                self.selectedIdA5_21 = ko.observable(1);
-                self.selectedIdA5_22 = ko.observable(1);
-                self.selectedIdA5_23 = ko.observable(1);
+                self.selectedCodeA5_16 = ko.observable(0);
+                self.selectedIdA5_18 = ko.observable(0);
+                self.selectedIdA5_19 = ko.observable(0);
+                self.selectedIdA5_20 = ko.observable(0);
+                self.selectedIdA5_21 = ko.observable(0);
+                self.selectedIdA5_22 = ko.observable(0);
+                self.selectedIdA5_23 = ko.observable(0);
                 self.itemListA5_24 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_42')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_43')),
-                    new ItemModel(3, nts.uk.resource.getText('KAF022_44'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_42')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_43')),
+                    new ItemModel(2, nts.uk.resource.getText('KAF022_44'))
                 ]);
-                self.selectedIdA5_24 = ko.observable(1);
-                self.selectedIdA5_25 = ko.observable(1);
+                self.selectedIdA5_24 = ko.observable(0);
+                self.selectedIdA5_25 = ko.observable(0);
 
                 //a17
                 self.itemListA17_4 = ko.observableArray([
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_82')),
                 ]);
-                self.selectedIdA17_4 = ko.observable(1);
+                self.selectedIdA17_4 = ko.observable(0);
                 self.itemListA17_5 = ko.observableArray([
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_82')),
                 ]);
-                self.selectedIdA17_5 = ko.observable(1);
+                self.selectedIdA17_5 = ko.observable(0);
                 //a6
+                self.listDataA6 = ko.observableArray([]);
                 self.texteditorA6_24 = {
                     value: ko.observable(''),
                     constraint: 'ResidenceCode',
@@ -874,16 +886,16 @@ module nts.uk.at.view.kmf022 {
 
                 self.selectedValueA7_18 = ko.observable(0);
                 self.itemListA7_20 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_323')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_357')),
-                    new ItemModel(3, nts.uk.resource.getText('KAF022_358')),
-                    new ItemModel(4, nts.uk.resource.getText('KAF022_359')),
-                    new ItemModel(5, nts.uk.resource.getText('KAF022_360')),
-                    new ItemModel(6, nts.uk.resource.getText('KAF022_361')),
-                    new ItemModel(7, nts.uk.resource.getText('KAF022_362')),
-                    new ItemModel(8, nts.uk.resource.getText('KAF022_363')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_323')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_357')),
+                    new ItemModel(2, nts.uk.resource.getText('KAF022_358')),
+                    new ItemModel(3, nts.uk.resource.getText('KAF022_359')),
+                    new ItemModel(4, nts.uk.resource.getText('KAF022_360')),
+                    new ItemModel(5, nts.uk.resource.getText('KAF022_361')),
+                    new ItemModel(6, nts.uk.resource.getText('KAF022_362')),
+                    new ItemModel(7, nts.uk.resource.getText('KAF022_363')),
                 ]);
-                self.selectedCodeA7_20 = ko.observable(1);
+                self.selectedCodeA7_20 = ko.observable(0);
                 self.timeeditor = {
                     value: ko.observable(120),
                     constraint: 'SampleTimeDuration',
@@ -895,7 +907,7 @@ module nts.uk.at.view.kmf022 {
                     readonly: ko.observable(false)
                 };
                 self.enableA7_25 = ko.observable(false);
-                self.selectedCodeA7_28 = ko.observable(1);
+                self.selectedCodeA7_28 = ko.observable(0);
                 self.enableA7_30 = ko.observable(false);
                 self.enableA7_30_1 = ko.observable(false);
                 self.enableA7_30_2 = ko.observable(false);
@@ -908,17 +920,17 @@ module nts.uk.at.view.kmf022 {
                 self.enableA7_30_9 = ko.observable(false);
                 self.enableA7_30_10 = ko.observable(false);
                 self.enableA7_30_11 = ko.observable(false);
-                self.selectedCodeA7_31 = ko.observable(1);
-                self.selectedCodeA7_32 = ko.observable(1);
-                self.selectedCodeA7_33 = ko.observable(1);
-                self.selectedCodeA7_34 = ko.observable(1);
-                self.selectedCodeA7_35 = ko.observable(1);
-                self.selectedCodeA7_36 = ko.observable(1);
-                self.selectedCodeA7_37 = ko.observable(1);
-                self.selectedCodeA7_38 = ko.observable(1);
-                self.selectedCodeA7_39 = ko.observable(1);
-                self.selectedCodeA7_40 = ko.observable(1);
-                self.selectedCodeA7_41 = ko.observable(1);
+                self.selectedCodeA7_31 = ko.observable(0);
+                self.selectedCodeA7_32 = ko.observable(0);
+                self.selectedCodeA7_33 = ko.observable(0);
+                self.selectedCodeA7_34 = ko.observable(0);
+                self.selectedCodeA7_35 = ko.observable(0);
+                self.selectedCodeA7_36 = ko.observable(0);
+                self.selectedCodeA7_37 = ko.observable(0);
+                self.selectedCodeA7_38 = ko.observable(0);
+                self.selectedCodeA7_39 = ko.observable(0);
+                self.selectedCodeA7_40 = ko.observable(0);
+                self.selectedCodeA7_41 = ko.observable(0);
                 //a8
                 self.enableA8_29 = ko.observable(false);
                 self.enableA8_35 = ko.observable(false);
@@ -1031,108 +1043,98 @@ module nts.uk.at.view.kmf022 {
                 self.enableA8_34_20 = ko.observable(false);
 
                 self.itemListA8_33 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_42')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_43'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_76')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_75'))
                 ]);
-                self.selectedCodeA8_33 = ko.observable(1);
-                self.selectedCodeA8_33_1 = ko.observable(1);
-                self.selectedCodeA8_33_2 = ko.observable(1);
-                self.selectedCodeA8_33_3 = ko.observable(1);
-                self.selectedCodeA8_33_4 = ko.observable(1);
-                self.selectedCodeA8_33_5 = ko.observable(1);
-                self.selectedCodeA8_33_6 = ko.observable(1);
-                self.selectedCodeA8_33_7 = ko.observable(1);
-                self.selectedCodeA8_33_8 = ko.observable(1);
-                self.selectedCodeA8_33_9 = ko.observable(1);
-                self.selectedCodeA8_33_10 = ko.observable(1);
-                self.selectedCodeA8_33_11 = ko.observable(1);
-                self.selectedCodeA8_33_12 = ko.observable(1);
-                self.selectedCodeA8_33_13 = ko.observable(1);
-                self.selectedCodeA8_33_14 = ko.observable(1);
-                self.selectedCodeA8_33_15 = ko.observable(1);
-                self.selectedCodeA8_33_16 = ko.observable(1);
-                self.selectedCodeA8_33_17 = ko.observable(1);
-                self.selectedCodeA8_33_18 = ko.observable(1);
-                self.selectedCodeA8_33_19 = ko.observable(1);
-                self.selectedCodeA8_33_20 = ko.observable(1);
+                self.selectedCodeA8_33 = ko.observable(0);
+                self.selectedCodeA8_33_1 = ko.observable(0);
+                self.selectedCodeA8_33_2 = ko.observable(0);
+                self.selectedCodeA8_33_3 = ko.observable(0);
+                self.selectedCodeA8_33_4 = ko.observable(0);
+                self.selectedCodeA8_33_5 = ko.observable(0);
+                self.selectedCodeA8_33_6 = ko.observable(0);
+                self.selectedCodeA8_33_7 = ko.observable(0);
+                self.selectedCodeA8_33_8 = ko.observable(0);
+                self.selectedCodeA8_33_9 = ko.observable(0);
+                self.selectedCodeA8_33_10 = ko.observable(0);
+                self.selectedCodeA8_33_11 = ko.observable(0);
+                self.selectedCodeA8_33_12 = ko.observable(0);
+                self.selectedCodeA8_33_13 = ko.observable(0);
+                self.selectedCodeA8_33_14 = ko.observable(0);
+                self.selectedCodeA8_33_15 = ko.observable(0);
+                self.selectedCodeA8_33_16 = ko.observable(0);
+                self.selectedCodeA8_33_17 = ko.observable(0);
+                self.selectedCodeA8_33_18 = ko.observable(0);
+                self.selectedCodeA8_33_19 = ko.observable(0);
+                self.selectedCodeA8_33_20 = ko.observable(0);
 
                 //a9 
                 self.itemListA9_5 = ko.observableArray([
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
                 ]);
 
                 self.itemListA9_9 = ko.observableArray([
                     new ItemModel(1, nts.uk.resource.getText('KAF022_84')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_85'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_85'))
                 ]);
 
-                self.selectedIdA9_5 = ko.observable(1);
-                self.selectedIdA9_8 = ko.observable(1);
-                self.selectedIdA9_9 = ko.observable(1);
+                self.selectedIdA9_5 = ko.observable(0);
+                self.selectedIdA9_8 = ko.observable(0);
+                self.selectedIdA9_9 = ko.observable(0);
 
                 //a10
                 self.itemListA10_3 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_90')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_91'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_90')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_91'))
                 ]);
-                self.selectedIdA10_3 = ko.observable(1);
+                self.selectedIdA10_3 = ko.observable(0);
 
                 //a11
                 self.itemListA11_8 = ko.observableArray([
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
                 ]);
-                self.selectedIdA11_8 = ko.observable(1);
-                self.selectedIdA11_9 = ko.observable(1);
-                self.selectedIdA11_10 = ko.observable(1);
-                self.selectedIdA11_11 = ko.observable(1);
-                self.selectedIdA11_12 = ko.observable(1);
-                self.selectedIdA11_13 = ko.observable(1);
+                self.selectedIdA11_8 = ko.observable(0);
+                self.selectedIdA11_9 = ko.observable(0);
+                self.selectedIdA11_10 = ko.observable(0);
+                self.selectedIdA11_11 = ko.observable(0);
+                self.selectedIdA11_12 = ko.observable(0);
+                self.selectedIdA11_13 = ko.observable(0);
 
                 //a12
                 self.itemListA12_5 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_36')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_37'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_36')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_37'))
                 ]);
-                self.selectedIdA12_5 = ko.observable(1);
+                self.selectedIdA12_5 = ko.observable(0);
                 self.itemListA12_6 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_100')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_101'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_100')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_101'))
                 ]);
-                self.selectedIdA12_6 = ko.observable(1);
+                self.selectedIdA12_6 = ko.observable(0);
                 self.itemListA12_7 = ko.observableArray([
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
                 ]);
-                self.selectedIdA12_7 = ko.observable(1);
+                self.selectedIdA12_7 = ko.observable(0);
 
                 //a13
                 self.textEditorA13_4 = ko.observable('aaaa');
 
                 //a14
                 self.itemListA14_3 = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_82'))
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
                 ]);
-                self.selectedIdA14_3 = ko.observable(1);
+                self.selectedIdA14_3 = ko.observable(0);
 
                 //a15
                 self.itemListA15_4 = ko.observableArray([
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
                 ]);
-                self.selectedIdA15_4 = ko.observable(1);
-                self.selectedIdA15_4_1 = ko.observable(1);
-                self.selectedIdA15_4_2 = ko.observable(1);
-                self.selectedIdA15_4_3 = ko.observable(1);
-                self.selectedIdA15_4_4 = ko.observable(1);
-                self.selectedIdA15_4_5 = ko.observable(1);
-                self.selectedIdA15_4_6 = ko.observable(1);
-                self.selectedIdA15_4_7 = ko.observable(1);
-                self.selectedIdA15_4_8 = ko.observable(1);
-                self.selectedIdA15_4_9 = ko.observable(1);
-                self.selectedIdA15_4_10 = ko.observable(1);
+                self.listDataA15 = ko.observableArray([]);
                 //a16
                 self.texteditorA16_7 = {
                     value: ko.observable(''),
@@ -1202,81 +1204,83 @@ module nts.uk.at.view.kmf022 {
 
                 //b
                 self.itemListB18 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_37')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_136')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_37')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_136')),
                     new ItemModel(2, nts.uk.resource.getText('KAF022_137'))
                 ]);
-                self.selectedIdB18 = ko.observable(1);
+                self.selectedIdB18 = ko.observable(0);
                 self.itemListB19 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_139')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_140'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_139')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_140'))
                 ]);
-                self.selectedIdB19 = ko.observable(1);
+                self.selectedIdB19 = ko.observable(0);
                 self.itemListB21 = ko.observableArray([
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
                 ]);
-                self.selectedIdB21 = ko.observable(1);
-                self.selectedIdB23 = ko.observable(1);
-                self.selectedIdB25 = ko.observable(1);
-                self.selectedIdB27 = ko.observable(1);
-                self.selectedIdB29 = ko.observable(1);
-                self.selectedIdB31 = ko.observable(1);
-                self.selectedIdB32 = ko.observable(1);
-                self.selectedIdB34 = ko.observable(1);
-                self.selectedIdB35 = ko.observable(1);
-                self.selectedIdB36 = ko.observable(1);
+                self.selectedIdB21 = ko.observable(0);
+                self.selectedIdB23 = ko.observable(0);
+                self.selectedIdB25 = ko.observable(0);
+                self.selectedIdB27 = ko.observable(0);
+                self.selectedIdB29 = ko.observable(0);
+                self.selectedIdB31 = ko.observable(0);
+                self.selectedIdB32 = ko.observable(0);
+                self.selectedIdB34 = ko.observable(0);
+                self.selectedIdB35 = ko.observable(0);
+                self.selectedIdB36 = ko.observable(0);
 
                 self.itemListB30 = ko.observableArray([
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
                 ]);
-                self.selectedCodeB30 = ko.observable(1);
+                self.selectedCodeB30 = ko.observable(0);
                 self.itemListB33 = ko.observableArray([
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
                 ]);
-                self.selectedCodeB33 = ko.observable(1);
+                self.selectedCodeB33 = ko.observable(0);
 
                 //i
                 self.itemListI4 = ko.observableArray([
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
                 ]);
-                self.selectedIdI4 = ko.observable(1);
+                self.selectedIdI4 = ko.observable(0);
                 //c
                 self.itemListC27 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_99')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_100')),
+                    new ItemModel(2, nts.uk.resource.getText('KAF022_171')),
                 ]);
                 self.itemListC28 = ko.observableArray([
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
                 ]);
                 self.itemListC29 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_173')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_174')),
+                    new ItemModel(2, nts.uk.resource.getText('KAF022_175'))
                 ]);
                 self.itemListC30 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82'))
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_173')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_175'))
                 ]);
-                self.selectedIdC27 = ko.observable(1);
-                self.selectedIdC28 = ko.observable(1);
-                self.selectedIdC29 = ko.observable(1);
-                self.selectedIdC30 = ko.observable(1);
-                self.selectedIdC31 = ko.observable(1);
-                self.selectedIdC32 = ko.observable(1);
-                self.selectedIdC33 = ko.observable(1);
-                self.selectedIdC34 = ko.observable(1);
-                self.selectedIdC35 = ko.observable(1);
-                self.selectedIdC36 = ko.observable(1);
-                self.selectedIdC37 = ko.observable(1);
-                self.selectedIdC38 = ko.observable(1);
-                self.selectedIdC39 = ko.observable(1);
-                self.selectedIdC40 = ko.observable(1);
-                self.selectedIdC48 = ko.observable(1);
-                self.selectedIdC49 = ko.observable(1);
+                self.selectedIdC27 = ko.observable(0);
+                self.selectedIdC28 = ko.observable(0);
+                self.selectedIdC29 = ko.observable(0);
+                self.selectedIdC30 = ko.observable(0);
+                self.selectedIdC31 = ko.observable(0);
+                self.selectedIdC32 = ko.observable(0);
+                self.selectedIdC33 = ko.observable(0);
+                self.selectedIdC34 = ko.observable(0);
+                self.selectedIdC35 = ko.observable(0);
+                self.selectedIdC36 = ko.observable(0);
+                self.selectedIdC37 = ko.observable(0);
+                self.selectedIdC38 = ko.observable(0);
+                self.selectedIdC39 = ko.observable(0);
+                self.selectedIdC40 = ko.observable(0);
+                self.selectedIdC48 = ko.observable(0);
+                self.selectedIdC49 = ko.observable(0);
                 self.texteditorC41 = {
                     value: ko.observable(''),
                     constraint: 'ResidenceCode',
@@ -1384,9 +1388,9 @@ module nts.uk.at.view.kmf022 {
                 //d
                 self.itemListD8 = ko.observableArray([
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
                 ]);
-                self.selectedIdD8 = ko.observable(1);
+                self.selectedIdD8 = ko.observable(0);
                 self.valueD10 = ko.observable('');
                 self.enableD11 = ko.observable(false);
                 self.texteditorD9 = {
@@ -1417,13 +1421,13 @@ module nts.uk.at.view.kmf022 {
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
-                self.selectedValueD13 = ko.observable(1);
+                self.selectedValueD13 = ko.observable(0);
                 self.itemListD15 = ko.observableArray([
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
                 ]);
-                self.selectedIdD15 = ko.observable(1);
-                self.selectedIdD16 = ko.observable(1);
+                self.selectedIdD15 = ko.observable(0);
+                self.selectedIdD16 = ko.observable(0);
                 self.enableD15 = ko.observable(true);
 
                 self.selectedValueD13.subscribe((value) => {
@@ -1435,24 +1439,24 @@ module nts.uk.at.view.kmf022 {
                 });
                 //e
                 self.itemListE9 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_195')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_196'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_195')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_196'))
                 ]);
-                self.selectedIdE9 = ko.observable(1);
+                self.selectedIdE9 = ko.observable(0);
                 self.itemListE10 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_173')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_173')),
                     new ItemModel(1, nts.uk.resource.getText('KAF022_174')),
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_175'))
+                    new ItemModel(2, nts.uk.resource.getText('KAF022_175'))
                 ]);
-                self.selectedIdE10 = ko.observable(1);
-                self.selectedValueE11 = ko.observable(1);
+                self.selectedIdE10 = ko.observable(0);
+                self.selectedValueE11 = ko.observable(0);
                 self.enableE11_5 = ko.observable(false);
                 self.itemListE12 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_173')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_173')),
                     new ItemModel(1, nts.uk.resource.getText('KAF022_174')),
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_175'))
+                    new ItemModel(2, nts.uk.resource.getText('KAF022_175'))
                 ]);
-                self.selectedIdE12 = ko.observable(1);
+                self.selectedIdE12 = ko.observable(0);
                 self.texteditorE13 = {
                     value: ko.observable(''),
                     constraint: 'ResidenceCode',
@@ -1481,8 +1485,8 @@ module nts.uk.at.view.kmf022 {
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
-                self.valueE14_1 = ko.observable('');
-                self.enableE15_1 = ko.observable(false);
+                self.valueE17 = ko.observable('');
+                self.enableE18 = ko.observable(false);
                 self.checkedE11_5 = ko.observable(false);
                 self.selectedValueE11.subscribe((newValue) => {
                     if (newValue == 2) {
@@ -1492,13 +1496,13 @@ module nts.uk.at.view.kmf022 {
                     }
                 })
                 //f
-                self.selectedIdF10 = ko.observable(1);
-                self.selectedIdF11 = ko.observable(1);
-                self.selectedIdF12 = ko.observable(1);
-                self.selectedValueF13 = ko.observable(1);
+                self.selectedIdF10 = ko.observable(0);
+                self.selectedIdF11 = ko.observable(0);
+                self.selectedIdF12 = ko.observable(0);
+                self.selectedValueF13 = ko.observable(0);
                 self.checkedF13_1 = ko.observable(false);
                 self.enableF13_1 = ko.observable(false);
-                self.selectedIdF14 = ko.observable(1);
+                self.selectedIdF14 = ko.observable(0);
                 self.texteditorF15 = {
                     value: ko.observable(''),
                     constraint: 'ResidenceCode',
@@ -1512,8 +1516,8 @@ module nts.uk.at.view.kmf022 {
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
-                self.valueF15 = ko.observable('');
-                self.enableF15 = ko.observable(false);
+                self.valueF15_1 = ko.observable('');
+                self.enableF15_2 = ko.observable(false);
                 self.texteditorF16 = {
                     value: ko.observable(''),
                     constraint: 'ResidenceCode',
@@ -1527,11 +1531,11 @@ module nts.uk.at.view.kmf022 {
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
-                self.valueF15_1 = ko.observable('');
-                self.enableF15_1 = ko.observable(false);
+                self.valueF16_1 = ko.observable('');
+                self.enableF16_1 = ko.observable(false);
                 self.itemListF11 = ko.observableArray([
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
                 ]);
                 self.selectedValueF13.subscribe((newValue) => {
                     if (newValue == 2) {
@@ -1542,50 +1546,50 @@ module nts.uk.at.view.kmf022 {
                 })
                 //g
                 self.itemListG16 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_221')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_222'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_221')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_222'))
                 ]);
-                self.selectedIdG16 = ko.observable(1);
+                self.selectedIdG16 = ko.observable(0);
                 self.itemListG18 = ko.observableArray([
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
                 ]);
-                self.selectedIdG18 = ko.observable(1);
-                self.selectedIdG20 = ko.observable(1);
-                self.selectedIdG22 = ko.observable(1);
+                self.selectedIdG18 = ko.observable(0);
+                self.selectedIdG20 = ko.observable(0);
+                self.selectedIdG22 = ko.observable(0);
                 self.itemListG23 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_173')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_175'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_173')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_175'))
                 ]);
-                self.selectedIdG23 = ko.observable(1);
+                self.selectedIdG23 = ko.observable(0);
                 self.itemListG24 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_198')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_199')),
-                    new ItemModel(3, nts.uk.resource.getText('KAF022_200')),
-                    new ItemModel(4, nts.uk.resource.getText('KAF022_201'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_198')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_199')),
+                    new ItemModel(2, nts.uk.resource.getText('KAF022_200')),
+                    new ItemModel(3, nts.uk.resource.getText('KAF022_201'))
                 ]);
-                self.selectedIdG24 = ko.observable(1);
+                self.selectedIdG24 = ko.observable(0);
                 self.itemListG25 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_226')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_227'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_226')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_227'))
                 ]);
-                self.selectedIdG25 = ko.observable(1);
-                self.selectedIdG26 = ko.observable(1);
-                self.selectedIdG27 = ko.observable(1);
-                self.selectedIdG28 = ko.observable(1);
-                self.selectedIdG29 = ko.observable(1);
+                self.selectedIdG25 = ko.observable(0);
+                self.selectedIdG26 = ko.observable(0);
+                self.selectedIdG27 = ko.observable(0);
+                self.selectedIdG28 = ko.observable(0);
+                self.selectedIdG29 = ko.observable(0);
 
                 //h
                 self.itemListH15 = ko.observableArray([
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
                 ]);
-                self.selectedIdH15 = ko.observable(1);
-                self.selectedIdH16 = ko.observable(1);
-                self.selectedIdH17 = ko.observable(1);
-                self.selectedIdH18 = ko.observable(1);
-                self.selectedIdH19 = ko.observable(1);
-                self.selectedIdH20 = ko.observable(1);
+                self.selectedIdH15 = ko.observable(0);
+                self.selectedIdH16 = ko.observable(0);
+                self.selectedIdH17 = ko.observable(0);
+                self.selectedIdH18 = ko.observable(0);
+                self.selectedIdH19 = ko.observable(0);
+                self.selectedIdH20 = ko.observable(0);
                 self.texteditorH22 = {
                     value: ko.observable(''),
                     constraint: 'ResidenceCode',
@@ -1665,7 +1669,6 @@ module nts.uk.at.view.kmf022 {
                     readonly: ko.observable(false)
                 };
                 self.enableH21 = ko.observable(false);
-                self.enableH22 = ko.observable(false);
                 self.enableH23 = ko.observable(false);
                 self.enableH24 = ko.observable(false);
                 self.enableH25 = ko.observable(false);
@@ -1673,31 +1676,31 @@ module nts.uk.at.view.kmf022 {
                 self.enableH27 = ko.observable(false);
                 //j
                 self.itemListJ18 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_226')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_227')),
-                    new ItemModel(3, nts.uk.resource.getText('KAF022_226')),
-                    new ItemModel(4, nts.uk.resource.getText('KAF022_227')),
-                    new ItemModel(5, nts.uk.resource.getText('KAF022_226'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_226')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_227')),
+                    new ItemModel(2, nts.uk.resource.getText('KAF022_226')),
+                    new ItemModel(3, nts.uk.resource.getText('KAF022_227')),
+                    new ItemModel(4, nts.uk.resource.getText('KAF022_226'))
                 ]);
-                self.selectedCodeJ18 = ko.observable(1);
+                self.selectedCodeJ18 = ko.observable(0);
                 self.itemListJ19 = ko.observableArray([
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_82')),
                 ]);
                 self.itemListJ20 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_36')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_37')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_36')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_37')),
                 ]);
-                self.selectedIdJ19 = ko.observable(1);
-                self.selectedIdJ20 = ko.observable(1);
-                self.selectedIdJ21 = ko.observable(1);
-                self.selectedIdJ22 = ko.observable(1);
-                self.selectedIdJ23 = ko.observable(1);
-                self.selectedIdJ24 = ko.observable(1);
-                self.selectedIdJ25 = ko.observable(1);
-                self.selectedIdJ26 = ko.observable(1);
-                self.selectedIdJ27 = ko.observable(1);
-                self.selectedIdJ28 = ko.observable(1);
+                self.selectedIdJ19 = ko.observable(0);
+                self.selectedIdJ20 = ko.observable(0);
+                self.selectedIdJ21 = ko.observable(0);
+                self.selectedIdJ22 = ko.observable(0);
+                self.selectedIdJ23 = ko.observable(0);
+                self.selectedIdJ24 = ko.observable(0);
+                self.selectedIdJ25 = ko.observable(0);
+                self.selectedIdJ26 = ko.observable(0);
+                self.selectedIdJ27 = ko.observable(0);
+                self.selectedIdJ28 = ko.observable(0);
                 self.texteditorJ29 = {
                     value: ko.observable(''),
                     constraint: 'ResidenceCode',
@@ -1730,27 +1733,27 @@ module nts.uk.at.view.kmf022 {
                 self.enableJ31_1 = ko.observable(false);
                 //k
                 self.itemListK12 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_100')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_101')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_100')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_101')),
                     new ItemModel(2, nts.uk.resource.getText('KAF022_270')),
                 ]);
-                self.selectedIdK12 = ko.observable(1);
+                self.selectedIdK12 = ko.observable(0);
                 self.itemListK13 = ko.observableArray([
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_82')),
                 ]);
-                self.selectedIdK13 = ko.observable(1);
+                self.selectedIdK13 = ko.observable(0);
                 self.itemListK14 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_272')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_273')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_272')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_273')),
                 ]);
-                self.selectedIdK14 = ko.observable(1);
-                self.selectedIdK15 = ko.observable(1);
+                self.selectedIdK14 = ko.observable(0);
+                self.selectedIdK15 = ko.observable(0);
                 self.itemListK16 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_173')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_175')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_173')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_175')),
                 ]);
-                self.selectedIdK16 = ko.observable(1);
+                self.selectedIdK16 = ko.observable(0);
                 self.texteditorK17 = {
                     value: ko.observable(''),
                     constraint: 'ResidenceCode',
@@ -1781,14 +1784,26 @@ module nts.uk.at.view.kmf022 {
                 };
                 self.valueK18_1 = ko.observable('');
                 self.enableK19_1 = ko.observable(false);
-                self.selectedIdK21 = ko.observable(1);
+                self.selectedIdK21 = ko.observable(0);
                 self.itemListK22 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_173')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_174')),
-                    new ItemModel(3, nts.uk.resource.getText('KAF022_175'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_173')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_174')),
+                    new ItemModel(2, nts.uk.resource.getText('KAF022_175'))
                 ]);
-                self.selectedIdK22 = ko.observable(1);
-
+                self.selectedIdK22 = ko.observable(0);
+                //appliSet
+                self.baseDateFlg = ko.observable(0);
+                self.advanceExcessMessDispAtr = ko.observable(0);
+                self.hwAdvanceDispAtr = ko.observable(0);
+                self.hwActualDispAtr = ko.observable(0);
+                self.actualExcessMessDispAtr = ko.observable(0);
+                self.otAdvanceDispAtr = ko.observable(0);
+                self.otActualDispAtr = ko.observable(0);
+                self.warningDateDispAtr = ko.observable(0);
+                self.appReasonDispAtr = ko.observable(0);
+                self.scheReflectFlg = ko.observable(0);
+                self.priorityTimeReflectFlg = ko.observable(0);
+                
                 self.start();
             }
 
@@ -1802,30 +1817,81 @@ module nts.uk.at.view.kmf022 {
             initData(): void {
                 let self = this;
                 self.initDataA4();
+                self.initDataA5();
+                self.initDataA6();
+                self.initDataA10();
                 self.initDataA14();
-                //self.initDataA17();
+                self.initDataA16();
+                self.initDataA15();
+                self.initDataA17();
+
+                self.initDataB();
+                self.initDataC();
+                self.initDataD();
                 self.initDataF();
+                self.initDataE();
+                self.initDataG();
+                self.initDataH();
+                self.initDataI();
+                self.initDataJ();
+                self.initDataK();
             }
             initDataA4(): void {
                 let self = this;
                 // init data A4
                 self.dataA4Display([]);
                 self.sizeArrayA4(0);
-                let dataA4 = [];
+
                 service.findAllClosure().done(data => {
                     self.sizeArrayA4(data.length);
-                    for (let i = 0; i < 5; i++) {
-                        if (data[i]) {
-                            let name = data[i].id + "." + data[i].name;
-                            service.findApp(data[i].id).done(obj => {
-                                self.dataA4Display.push(new ItemA4(data[i].id, name, obj.userAtr, obj.deadlineCriteria, obj.deadline));
-                            });
-                        } else {
-                            self.dataA4Display.push(new ItemA4(i + 1, (i + 1) + ".", 0, 0, 0));
-                        }
-                    }
+                    _.forEach(data, element => {
+                        let name = element.id + "." + element.name;
+                        service.findApp(element.id).done((obj: any) => {
+                            self.dataA4Display.push(new ItemA4(element.id, name, obj.userAtr, obj.deadlineCriteria, obj.deadline));
+                            if (self.dataA4Display().length == data.length) {
+                                for (let i = data.length + 1; i <= 5; i++) {
+                                    self.dataA4Display.push(new ItemA4(i, i + '.', 0, 0, 1));
+                                }
+                            }
+                        });
+                    });
                 });
-                //self.dataA4Display(_.sortBy(self.dataA4Display(),['index']));
+            }
+            initDataA5(): void {
+                let self = this;
+                service.findApproSet().done(data => {
+                    self.companyId(data.companyId);
+                    self.selectedIdA5_14(data.reasonDisp);
+                    self.selectedCodeA5_16(data.warnDateDisp);
+                    self.selectedIdA5_18(data.overtimePre);
+                    self.selectedIdA5_19(data.hdPre);
+                    self.selectedIdA5_20(data.msgAdvance);
+                    self.selectedIdA5_21(data.overtimePerfom);
+                    self.selectedIdA5_22(data.hdPerform);
+                    self.selectedIdA5_23(data.msgExceeded)
+                    self.selectedIdA5_24(data.scheduleCon);
+                    self.selectedIdA5_25(data.achiveCon);
+                });
+            }
+            initDataA6(): void {
+                let self = this;
+                let listAppType = __viewContext.enums.ApplicationType;
+                service.findDisp().done(data => {
+                    _.forEach(listAppType, (appType) => {
+                        let obj: any = _.find(data, ['appType', appType.value]);
+                        if (obj) {
+                            self.listDataA6.push(new ItemA6(self.companyId(), appType.name, obj.dispName, appType.value));
+                        } else {
+                            self.listDataA6.push(new ItemA6(self.companyId(), appType.name, '', appType.value));
+                        }
+                    });
+                });
+            }
+            initDataA10(): void {
+                let self = this;
+                service.findAppCom().done(data => {
+                    self.selectedIdA10_3(data.showWkpNameBelong);
+                });
             }
             initDataA14(): void {
                 let self = this;
@@ -1833,33 +1899,550 @@ module nts.uk.at.view.kmf022 {
                     self.selectedIdA14_3(data.isConcurrently ? 1 : 0);
                 });
             }
+            initDataA15(): void {
+                let self = this;
+                let date = {
+                    baseDate: new Date().toISOString()
+                };
+                service.findJobId(date).done(data => {
+                    let jobIds = _.map(data, 'id');
+
+                    let id = {
+                        "jobtitleId": jobIds
+                    };
+                    service.findJobTitleSearchList(id).done(obj => {
+                        _.forEach(data, element => {
+                            let finder = _.find(obj, ['jobId', element.id]);
+                            if (finder) {
+                                self.listDataA15.push(new ItemA15(element.name, finder.searchSetFlg));
+                            } else {
+                                self.listDataA15.push(new ItemA15(element.name, 1));
+                            }
+                        });
+                    });
+                });
+            }
+
+            initDataA16(): void {
+                let self = this;
+                service.findMail().done(data => {
+                    self.texteditorA16_7.value(data.subject);
+                    self.texteditorA16_8.value(data.content);
+                });
+                service.findOt().done(data => {
+                    self.texteditorA16_9.value(data.subject);
+                    self.texteditorA16_10.value(data.content);
+                });
+                service.findTemp().done(data => {
+                    self.texteditorA16_11.value(data.content);
+                });
+            }
+
             initDataA17(): void {
                 let self = this;
                 service.findAppro().done(data => {
                     self.selectedIdA17_5(data.prinFlg);
                 });
-                service.findAppSetting().done(data => {
+                service.findAppSet().done(data => {
                     self.selectedIdA17_4(data.appContentChangeFlg);
-                    self.selectedIdA9_5(data.appContentChangeFlg);
+                    self.selectedIdA9_5(data.attendentTimeReflectFlg);
+                    self.selectedIdA11_8(data.appActMonthConfirmFlg);
+                    self.selectedIdA11_9(data.appOvertimeNightFlg);
+                    self.selectedIdA11_10(data.appActLockFlg);
+                    self.selectedIdA11_11(data.appEndWorkFlg);
+                    self.selectedIdA11_12(data.requireAppReasonFlg);
+                    self.selectedIdA11_13(data.appActConfirmFlg);
+                    self.selectedIdA12_5(data.displayPrePostFlg);
+                    self.selectedIdA12_6(data.displaySearchTimeFlg);
+                    self.selectedIdA12_7(data.manualSendMailAtr);
+                    self.baseDateFlg(data.baseDateFlg);
+                    self.advanceExcessMessDispAtr(data.advanceExcessMessDispAtr);
+                    self.hwAdvanceDispAtr(data.hwAdvanceDispAtr);
+                    self.hwActualDispAtr(data.hwActualDispAtr);
+                    self.actualExcessMessDispAtr(data.actualExcessMessDispAtr);
+                    self.otAdvanceDispAtr(data.otAdvanceDispAtr);
+                    self.otActualDispAtr(data.otActualDispAtr);
+                    self.warningDateDispAtr(data.warningDateDispAtr);
+                    self.appReasonDispAtr(data.appReasonDispAtr);
+                    self.scheReflectFlg(data.scheReflectFlg);
+                    self.priorityTimeReflectFlg(data.priorityTimeReflectFlg);
                 });
             }
+            initDataB(): void {
+                let self = this;
+                service.findOvertime().done(data => {
+                    self.selectedIdB18(data.flexExcessUseSetAtr);
+                    self.selectedIdB19(data.priorityStampSetAtr);
+                    self.selectedIdB21(data.preTypeSiftReflectFlg);
+                    self.selectedIdB23(data.preOvertimeReflectFlg);
+                    self.selectedIdB25(data.postTypesiftReflectFlg);
+                    self.selectedIdB27(data.postWorktimeReflectFlg);
+                    self.selectedIdB29(data.postBreakReflectFlg);
+                    self.selectedCodeB30(data.attendanceId);
+                    self.selectedIdB31(data.calendarDispAtr);
+                    self.selectedIdB32(data.instructExcessOtAtr);
+                    self.selectedCodeB33(data.unitAssignmentOvertime);
+                    self.selectedIdB34(data.useOt);
+                    self.selectedIdB35(data.earlyOverTimeUseAtr);
+                    self.selectedIdB36(data.normalOvertimeUseAtr);
+
+                });
+            }
+            initDataC(): void {
+                let self = this;
+                service.findAllVaca().done(data => {
+                    self.selectedIdC27(data.wrkHours);
+                    self.selectedIdC28(data.actualDisp);
+                    self.selectedIdC29(data.appDateContra);
+                    self.selectedIdC30(data.concheckOutLegal);
+                    self.selectedIdC31(data.concheckDateRelease);
+                    self.selectedIdC32(data.ckuperLimit);
+                    self.selectedIdC33(data.regisNumYear);
+                    self.selectedIdC34(data.regisShortLostHd);
+                    self.selectedIdC35(data.regisShortReser);
+                    self.selectedIdC36(data.regisLackPubHd);
+                    self.selectedIdC37(data.regisInsuff);
+                    self.selectedIdC38(data.useYear);
+                    self.selectedIdC39(data.use60h);
+                    self.selectedIdC40(data.useGener);
+                    self.texteditorC41.value(data.yearHdName);
+                    self.texteditorC42.value(data.obstacleName);
+                    self.texteditorC43.value(data.absenteeism);
+                    self.texteditorC44.value(data.specialVaca);
+                    self.texteditorC45.value(data.yearResig);
+                    self.texteditorC46.value(data.hdName);
+                    self.texteditorC47.value(data.timeDigest);
+                    self.selectedIdC48(data.changeWrkHour);
+                    self.selectedIdC49(data.pridigCheck);
+                    self.texteditorC51.value(data.furikyuName);
+                });
+            }
+            initDataD(): void {
+                let self = this;
+                service.findWorkChange().done(data => {
+                    self.selectedIdD8(data.displayResultAtr);
+                    self.valueD10(data.commentFontColor1);
+                    self.enableD11(data.commentFontWeight1);
+                    self.texteditorD9.value(data.commentContent1);
+                    self.valueD10_1(data.commentFontColor2);
+                    self.enableD11_1(data.commentFontWeight2);
+                    self.texteditorD12.value(data.commentContent2);
+                    self.selectedValueD13(data.workChangeTimeAtr);
+                    self.selectedIdD15(data.initDisplayWorktime);
+                    self.selectedIdD16(data.excludeHoliday);
+                });
+            }
+
             initDataF(): void {
                 let self = this;
                 service.findDirectlycommon().done(data => {
                     self.selectedIdF10(data.workType);
                     self.selectedIdF11(data.performanceDisplayAtr);
                     self.selectedIdF12(data.contraditionCheckAtr);
-                    self.selectedValueF13(data.workChangeTimeAtr);
-                    // self.checkedF13_1()
-                    self.enableF13_1 = ko.observable(false);
-                    self.selectedIdF14 = ko.observable(1);
-                    self.texteditorF15.value(data.commentContent1) ;
-                    self.valueF15(data.commentFontColor1);
-                    self.enableF15(data.commentFontWeight1==1 ? true : false);
-                    self.texteditorF16.value(data.commentContent2) ;
-                    self.valueF15_1(data.commentFontColor2);
-                    self.enableF15_1(data.commentFontWeight2==1 ? true : false);
+                    self.selectedValueF13(data.workChangeFlg);
+                    self.checkedF13_1(data.workChangeTimeAtr == 1 ? true : false);
+                    self.selectedIdF14(data.lateLeaveEarlySetAtr);
+                    self.texteditorF15.value(data.commentContent1);
+                    self.valueF15_1(data.commentFontColor1);
+                    self.enableF15_2(data.commentFontWeight1 == 1 ? true : false);
+                    self.texteditorF16.value(data.commentContent2);
+                    self.valueF16_1(data.commentFontColor2);
+                    self.enableF16_1(data.commentFontWeight2 == 1 ? true : false);
                 });
+            }
+            initDataE(): void {
+                let self = this;
+                service.findTrip().done(data => {
+                    self.selectedIdE9(data.workType);
+                    self.selectedIdE10(data.contractCheck);
+                    self.selectedValueE11(data.workChange);
+                    self.checkedE11_5(data.WorkChangeAppTime);
+                    self.selectedIdE12(data.lateLeave);
+                    self.texteditorE13.value(data.comment1);
+                    self.texteditorE16.value(data.comment2);
+                });
+            }
+            initDataG(): void {
+                let self = this;
+                service.findWith().done(data => {
+                    self.selectedIdG16(data.typePaidLeave);
+                    self.selectedIdG18(data.restTime);
+                    self.selectedIdG20(data.workTime);
+                    self.selectedIdG22(data.breakTime);
+                    self.selectedIdG23(data.checkOut);
+                    self.selectedIdG24(data.workChange);
+                    self.selectedIdG25(data.timeInit);
+                    self.selectedIdG26(data.checkHdTime);
+                    self.selectedIdG27(data.prefixLeave);
+                    self.selectedIdG28(data.directDivi);
+                    self.selectedIdG29(data.bounSeg);
+                });
+            }
+            initDataJ(): void {
+                let self = this;
+                service.findStamp().done(data => {
+                    self.selectedCodeJ18(data.supFrameDispNO);
+                    self.selectedIdJ19(data.resultDisp);
+                    self.selectedIdJ20(data.stampAtr_Work_Disp);
+                    self.selectedIdJ21(data.stampAtr_GoOut_Disp);
+                    self.selectedIdJ22(data.stampAtr_Care_Disp);
+                    self.selectedIdJ23(data.stampAtr_Sup_Disp);
+                    self.selectedIdJ24(data.stampAtr_Child_Care_Disp);
+                    self.selectedIdJ25(data.stampGoOutAtr_Private_Disp);
+                    self.selectedIdJ26(data.stampGoOutAtr_Public_Disp);
+                    self.selectedIdJ27(data.stampGoOutAtr_Compensation_Disp);
+                    self.selectedIdJ28(data.stampGoOutAtr_Union_Disp);
+                    self.texteditorJ29.value(data.topComment);
+                    self.texteditorJ32.value(data.bottomComment);
+                    //self.valueJ30(data.topCommentFontColor);
+                    //self.valueJ30_1(data.bottomCommentFontColor);
+                    //self.enableJ31(data.topCommentFontWeight);
+                    //self.enableJ31_1(data.bottomCommentFontWeight);
+
+                    //e
+                    self.valueE14(data.topCommentFontColor);
+                    self.enableE15(data.topCommentFontWeight);
+                    self.valueE17(data.bottomCommentFontColor);
+                    self.enableE18(data.bottomCommentFontWeight);
+                });
+            }
+            initDataH(): void {
+                let self = this;
+                service.findTimeHd().done(data => {
+                    self.selectedIdH15(data.actualDisp);
+                    self.selectedIdH16(data.checkOver);
+                    self.selectedIdH17(data.checkDay);
+                    self.selectedIdH18(data.useTimeYear);
+                    self.selectedIdH19(data.use60h);
+                    self.selectedIdH20(data.useTimeHd);
+                    self.enableH21(data.useBefore == 1 ? true : false);
+                    self.texteditorH22.value(data.nameBefore);
+                    self.enableH23(data.useAfter == 1 ? true : false);
+                    self.texteditorH23_1.value(data.nameAfter);
+                    self.enableH24(data.useAttend2 == 1 ? true : false);
+                    self.texteditorH24_1.value(data.nameBefore2);
+                    self.enableH25(data.useAfter2 == 1 ? true : false);
+                    self.texteditorH25_1.value(data.nameAfter2);
+                    self.enableH26(data.usePrivate == 1 ? true : false);
+                    self.texteditorH26_1.value(data.privateName);
+                    self.enableH27(data.unionLeave == 1 ? true : false);
+                    self.texteditorH27_1.value(data.unionName);
+                });
+            }
+            initDataK(): void {
+                let self = this;
+                service.findDraw().done(data => {
+                    self.selectedIdK12(data.deferredWorkTimeSelect);
+                    self.selectedIdK13(data.simulAppliReq);
+                    self.selectedIdK14(data.lettleSuperLeave);
+                    self.selectedIdK15(data.useAtr);
+                    self.selectedIdK16(data.checkUpLimitHalfDayHD);
+                    self.texteditorK17.value(data.pickUpComment);
+                    self.valueK18(data.pickUpLettleColor);
+                    self.enableK19(data.pickUpBold);
+                    self.texteditorK20.value(data.deferredComment);
+                    self.valueK18_1(data.deferredLettleColor);
+                    self.enableK19_1(data.deferredBold);
+                    self.selectedIdK21(data.permissionDivision);
+                    self.selectedIdK22(data.appliDateContrac);
+                });
+            }
+            initDataI(): void {
+                let self = this;
+                service.findLateEarly().done(data => {
+                    self.selectedIdI4(data.showResult);
+                });
+            }
+            save(): void {
+                let self = this;
+                self.saveDataAt();
+            }
+            saveDataAt(): void {
+                let self = this;
+                let data: any = {};
+                let dataA4 = [];
+                for (let i = 0; i < self.sizeArrayA4(); i++) {
+                    dataA4.push({
+                        closureId: self.dataA4Display()[i].index,
+                        userAtr: (self.dataA4Display()[i].a4_6() ? 1 : 0),
+                        deadlineCriteria: self.dataA4Display()[i].a4_7(),
+                        deadline: self.dataA4Display()[i].a4_8()
+                    });
+                }
+                data.appDead = dataA4; //done
+                data.appSet = {
+                    companyId: self.companyId(),
+                    reasonDisp: self.selectedIdA5_14(),
+                    warnDateDisp: self.selectedCodeA5_16(),
+                    overtimePre: self.selectedIdA5_18(),
+                    hdPre: self.selectedIdA5_19(),
+                    msgAdvance: self.selectedIdA5_20(),
+                    overtimePerfom: self.selectedIdA5_21(),
+                    hdPerform: self.selectedIdA5_22(),
+                    msgExceeded: self.selectedIdA5_23(),
+                    scheduleCon: self.selectedIdA5_24(),
+                    achiveCon: self.selectedIdA5_25(),
+                    //done
+                };
+                data.appCommon = {
+                    companyId: self.companyId(),
+                    showWkpNameBelong: self.selectedIdA10_3(),
+                    //done
+                };
+                data.proxy = {
+                    companyId: self.companyId(),
+                    appType: [1,2]
+                    //todo A13_4
+                };
+                data.mailHd = {
+                    companyId: self.companyId(),
+                    subject: self.texteditorA16_7.value(),
+                    content: self.texteditorA16_8.value()
+                    //done
+                };
+                data.mailOt = {
+                    companyId: self.companyId(),
+                    subject: self.texteditorA16_9.value(),
+                    content: self.texteditorA16_10.value()
+                    //done    
+                };
+                data.appTemp = {
+                    companyId: self.companyId(),
+                    content: self.texteditorA16_11.value()
+                    //done    
+                };
+                data.appliSet = {
+                    companyId: self.companyId(),
+                    baseDateFlg:self.baseDateFlg(),
+                    advanceExcessMessDispAtr:self.advanceExcessMessDispAtr(),
+                    hwAdvanceDispAtr:self.hwAdvanceDispAtr(),
+                    hwActualDispAtr:self.hwActualDispAtr(),
+                    actualExcessMessDispAtr:self.actualExcessMessDispAtr(),
+                    otAdvanceDispAtr:self.otAdvanceDispAtr(),
+                    otActualDispAtr:self.otActualDispAtr(),
+                    warningDateDispAtr:self.warningDateDispAtr(),
+                    appReasonDispAtr:self.appReasonDispAtr(),
+                    scheReflectFlg:self.scheReflectFlg(),
+                    priorityTimeReflectFlg:self.priorityTimeReflectFlg(),
+                    appContentChangeFlg: self.selectedIdA17_4(),
+                    attendentTimeReflectFlg: self.selectedIdA9_5(),
+                    appActMonthConfirmFlg: self.selectedIdA11_8(),
+                    appOvertimeNightFlg: self.selectedIdA11_9(),
+                    appActLockFlg: self.selectedIdA11_10(),
+                    appEndWorkFlg: self.selectedIdA11_11(),
+                    requireAppReasonFlg: self.selectedIdA11_12(),
+                    appActConfirmFlg: self.selectedIdA11_13(),
+                    displayPrePostFlg: self.selectedIdA12_5(),
+                    displaySearchTimeFlg: self.selectedIdA12_6(),
+                    manualSendMailAtr: self.selectedIdA12_7(),
+                    //todo wait -check 
+                };
+                data.appName = ko.toJS(self.listDataA6()); 
+                data.stampReq = {
+                    companyId: self.companyId(),
+                    supFrameDispNO: self.selectedCodeJ18(),
+                    resultDisp: self.selectedIdJ19(),
+                    stampAtr_Work_Disp: self.selectedIdJ20(),
+                    stampAtr_GoOut_Disp: self.selectedIdJ21(),
+                    stampAtr_Care_Disp: self.selectedIdJ22(),
+                    stampAtr_Sup_Disp: self.selectedIdJ23(),
+                    stampAtr_Child_Care_Disp: self.selectedIdJ24(),
+                    stampGoOutAtr_Private_Disp: self.selectedIdJ25(),
+                    stampGoOutAtr_Public_Disp: self.selectedIdJ26(),
+                    stampGoOutAtr_Compensation_Disp: self.selectedIdJ27(),
+                    stampGoOutAtr_Union_Disp: self.selectedIdJ28(),
+                    topComment: self.texteditorJ29.value(),
+                    bottomComment: self.texteditorJ32.value(),
+                    topCommentFontColor: self.valueE14(),
+                    topCommentFontWeight: self.enableE15(),
+                    bottomCommentFontColor: self.valueE17(),
+                    bottomCommentFontWeight: self.enableE18(),
+                    //done
+                };
+                data.goBack = {
+                    companyId: self.companyId(),
+                    workType: self.selectedIdF10(),
+                    performanceDisplayAtr: self.selectedIdF11(),
+                    contraditionCheckAtr: self.selectedIdF12(),
+                    workChangeFlg: self.selectedValueF13(),
+                    workChangeTimeAtr: (self.checkedF13_1() ? 1 : 0),
+                    lateLeaveEarlySetAtr: self.selectedIdF14(),
+                    commentContent1: self.texteditorF15.value(),
+                    commentFontColor1: self.valueF15_1(),
+                    commentFontWeight1: (self.enableF15_2() ? 1 : 0),
+                    commentContent2: self.texteditorF16.value(),
+                    commentFontColor2: self.valueF16_1(),
+                    commentFontWeight2: (self.enableF16_1() ? 1 : 0),
+                    //done
+                };
+                data.appOt = {
+                    cid: self.companyId(),
+                    flexExcessUseSetAtr: self.selectedIdB18(),
+                    priorityStampSetAtr: self.selectedIdB19(),
+                    preTypeSiftReflectFlg: self.selectedIdB21(),
+                    preOvertimeReflectFlg: self.selectedIdB23(),
+                    postTypesiftReflectFlg: self.selectedIdB25(),
+                    postWorktimeReflectFlg: self.selectedIdB27(),
+                    postBreakReflectFlg: self.selectedIdB29(),
+                    attendanceId: self.selectedCodeB30(),
+                    calendarDispAtr: self.selectedIdB31(),
+                    instructExcessOtAtr: self.selectedIdB32(),
+                    unitAssignmentOvertime: self.selectedCodeB33(),
+                    useOt: self.selectedIdB34(),
+                    earlyOverTimeUseAtr: self.selectedIdB35(),
+                    normalOvertimeUseAtr: self.selectedIdB36(),
+                    //done
+                };
+                data.hdSet = {
+                    companyId: self.companyId(),
+                    wrkHours: self.selectedIdC27(),
+                    actualDisp: self.selectedIdC28(),
+                    appDateContra: self.selectedIdC29(),
+                    concheckOutLegal: self.selectedIdC30(),
+                    concheckDateRelease: self.selectedIdC31(),
+                    ckuperLimit: self.selectedIdC32(),
+                    regisNumYear: self.selectedIdC33(),
+                    regisShortLostHd: self.selectedIdC34(),
+                    regisShortReser: self.selectedIdC35(),
+                    regisLackPubHd: self.selectedIdC36(),
+                    regisInsuff: self.selectedIdC37(),
+                    useYear: self.selectedIdC38(),
+                    use60h: self.selectedIdC39(),
+                    useGener: self.selectedIdC40(),
+                    yearHdName: self.texteditorC41.value(),
+                    obstacleName: self.texteditorC42.value(),
+                    absenteeism: self.texteditorC43.value(),
+                    specialVaca: self.texteditorC44.value(),
+                    yearResig: self.texteditorC45.value(),
+                    hdName: self.texteditorC46.value(),
+                    timeDigest: self.texteditorC47.value(),
+                    changeWrkHour: self.selectedIdC48(),
+                    pridigCheck: self.selectedIdC49(),
+                    furikyuName: self.texteditorC51.value()
+                    //done
+                };
+                data.appChange = {
+                    cid: self.companyId(),
+                    displayResultAtr: self.selectedIdD8(),
+                    commentFontColor1: self.valueD10(),
+                    commentFontWeight1: self.enableD11(),
+                    commentContent1: self.texteditorD9.value(),
+                    commentFontColor2: self.valueD10_1(),
+                    commentFontWeight2: self.enableD11_1(),
+                    commentContent2: self.texteditorD12.value(),
+                    workChangeTimeAtr: self.selectedValueD13(),
+                    initDisplayWorktime: self.selectedIdD15(),
+                    excludeHoliday: self.selectedIdD16()
+                    //done
+                };
+                data.tripReq = {
+                    companyId: self.companyId(),
+                    workType: self.selectedIdE9(),
+                    contractCheck: self.selectedIdE10(),
+                    workChange: self.selectedValueE11(),
+                    WorkChangeAppTime: self.checkedE11_5(),
+                    lateLeave: self.selectedIdE12(),
+                    comment1: self.texteditorE13.value(),
+                    comment2: self.texteditorE16.value()
+                    //done
+                };
+                data.wdApp = {
+                    companyId: self.companyId(),
+                    typePaidLeave: self.selectedIdG16(),
+                    restTime: self.selectedIdG18(),
+                    workTime: self.selectedIdG20(),
+                    breakTime: self.selectedIdG22(),
+                    checkOut: self.selectedIdG23(),
+                    workChange: self.selectedIdG24(),
+                    timeInit: self.selectedIdG25(),
+                    checkHdTime: self.selectedIdG26(),
+                    prefixLeave: self.selectedIdG27(),
+                    directDivi: self.selectedIdG28(),
+                    bounSeg: self.selectedIdG29()
+                    //done
+                };
+                data.timeHd = {
+                    companyId: self.companyId(),
+                    actualDisp: self.selectedIdH15(),
+                    checkOver: self.selectedIdH16(),
+                    checkDay: self.selectedIdH17(),
+                    useTimeYear: self.selectedIdH18(),
+                    use60h: self.selectedIdH19(),
+                    useTimeHd: self.selectedIdH20(),
+                    useBefore: (self.enableH21() ? 1 : 0),
+                    nameBefore: self.texteditorH22.value(),
+                    useAfter: (self.enableH23() ? 1 : 0),
+                    nameAfter: self.texteditorH23_1.value(),
+                    useAttend2: (self.enableH24() ? 1 : 0),
+                    nameBefore2: self.texteditorH24_1.value(),
+                    useAfter2: (self.enableH25() ? 1 : 0),
+                    nameAfter2: self.texteditorH25_1.value(),
+                    usePrivate: (self.enableH26() ? 1 : 0),
+                    privateName: self.texteditorH26_1.value(),
+                    unionLeave: (self.enableH27() ? 1 : 0),
+                    unionName: self.texteditorH27_1.value()
+                    //done
+                };
+                data.wdReq = {
+                    companyId: self.companyId(),
+                    deferredWorkTimeSelect: self.selectedIdK12(),
+                    simulAppliReq: self.selectedIdK13(),
+                    lettleSuperLeave: self.selectedIdK14(),
+                    useAtr: self.selectedIdK15(),
+                    checkUpLimitHalfDayHD: self.selectedIdK16(),
+                    pickUpComment: self.texteditorK17.value(),
+                    pickUpLettleColor: self.valueK18(),
+                    pickUpBold: self.enableK19(),
+                    deferredComment: self.texteditorK20.value(),
+                    deferredLettleColor: self.valueK18_1(),
+                    deferredBold: self.enableK19_1(),
+                    permissionDivision: self.selectedIdK21(),
+                    appliDateContrac: self.selectedIdK22(),
+                    //done                    
+                };
+                data.lateEarly = {
+                    companyId: self.companyId(),
+                    showResult: self.selectedIdI4()
+                    //done
+                };
+                service.update(data).done();
+            }
+
+            saveDataA14(): void {
+                let self = this;
+                let data = {};
+                data.isConcurrently = self.selectedIdA14_3() == 1 ? true : false;
+            }
+            saveDataA15(): void {
+                let self = this;
+                let date = {
+                    baseDate: new Date().toISOString()
+                };
+                service.findJobId(date).done(data => {
+                    let jobIds = _.map(data, 'id');
+                    let id = {
+                        "jobtitleId": jobIds
+                    };
+                    service.findJobTitleSearchList(id).done(obj => {
+                        _.forEach(data, element => {
+                            let finder = _.find(obj, ['jobId', element.id]);
+                            if (finder) {
+                                self.listDataA15.push(new ItemA15(element.name, finder.searchSetFlg));
+                            } else {
+                                self.listDataA15.push(new ItemA15(element.name, 1));
+                            }
+                        });
+                    });
+                });
+            }
+
+            saveDataA17(): void {
+                let self = this;
+                let dataAppro = {};
+                dataAppro.prinFlg = self.selectedIdA17_5();
+                let dataAppSet = {};
+                dataAppSet.appContentChangeFlg = self.selectedIdA17_4();
+                dataAppSet.appContentChangeFlg = self.selectedIdA9_5();
             }
 
         }
@@ -1885,6 +2468,26 @@ module nts.uk.at.view.kmf022 {
                 this.a4_6 = ko.observable(a4_6 == 1 ? true : false);
                 this.a4_7 = ko.observable(a4_7);
                 this.a4_8 = ko.observable(a4_8);
+            }
+        }
+        class ItemA6 {
+            companyId: KnockoutObservable<string>;
+            appTypeName: KnockoutObservable<string>;
+            dispName: KnockoutObservable<string>;
+            appType: KnockoutObservable<number>;
+            constructor(companyId: string, appTypeName: string, dispName: string, appType: number) {
+                this.companyId = ko.observable(companyId);
+                this.appTypeName = ko.observable(appTypeName);
+                this.dispName = ko.observable(dispName);
+                this.appType = ko.observable(appType);
+            }
+        }
+        class ItemA15 {
+            name: KnockoutObservable<string>;
+            selectedId: KnockoutObservable<number>;
+            constructor(name: string, selectedId: number) {
+                this.name = ko.observable(name);
+                this.selectedId = ko.observable(selectedId);
             }
         }
 
