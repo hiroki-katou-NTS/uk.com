@@ -148,7 +148,7 @@
 		<div class="valign-center control-group">
 			<div class="table">
 				<div class="cell valign-top cm-column2">
-							<div class="lblTitle"></div>
+				<div class="lblTitle"></div>
 				</div>
 				<div tabindex="12" class="row-cell-margin right-content"
 						data-bind="ntsSwitchButton: {name: '#{i18n.getText('KAF010_3')}',
@@ -158,8 +158,9 @@
 								                ]),
 										optionsValue: 'goCode1',
 										optionsText: 'goName1',
-										value: goSelected1}">
+										value: goSelected1}, if: screenModeNew()">
 				</div>
+				<div data-bind = "if: !screenModeNew()"> <lable class="label fix-margin-left" data-bind="text: goSelected1()==0 ? '#{i18n.getText('KAF009_16')}' : '#{i18n.getText('KAF009_17')}'"></lable></div>
 				<div tabindex="13" class="row-cell-margin right-content"
 						data-bind="ntsSwitchButton: {name: '#{i18n.getText('KAF010_4')}',
 										options:ko.observableArray([
