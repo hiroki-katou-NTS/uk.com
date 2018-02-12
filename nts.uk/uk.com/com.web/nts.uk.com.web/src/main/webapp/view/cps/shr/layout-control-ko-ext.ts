@@ -671,7 +671,7 @@ module nts.custombinding {
                                 'data-code': itemCode,
                                 'data-category': categoryCode,
                                 'data-required': required,
-                                'data-defv': value()
+                                'data-defv': ko.toJSON(value)
                             }," />
                         <!-- /ko -->
                         <!-- ko if: item.stringItemType != STRING_TYPE.NUMERIC && (([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80)) -->
@@ -693,7 +693,7 @@ module nts.custombinding {
                                 'data-code': itemCode,
                                 'data-category': categoryCode,
                                 'data-required': required,
-                                'data-defv': value()
+                                'data-defv': ko.toJSON(value)
                             }" />
                         <!-- /ko -->
                         <!-- /ko -->
@@ -717,7 +717,7 @@ module nts.custombinding {
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
-                                    'data-defv': value()
+                                    'data-defv'ko.toJSON(value)
                                 }" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.DATE -->
@@ -738,7 +738,7 @@ module nts.custombinding {
                                 'data-code': itemCode,
                                 'data-category': categoryCode,
                                 'data-required': required,
-                                'data-defv': value()
+                                'data-defv'ko.toJSON(value)
                             }"></div>
                         <!-- /ko -->
                         <!-- ko if: index == 2 -->
@@ -763,7 +763,7 @@ module nts.custombinding {
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
-                                    'data-defv': value()
+                                    'data-defv'ko.toJSON(value)
                                 }"></div>
                             <!-- /ko -->
                         <!-- /ko -->
@@ -784,7 +784,7 @@ module nts.custombinding {
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
-                                    'data-defv': value()
+                                    'data-defv'ko.toJSON(value)
                                 }"></div>
                         <!-- /ko -->
                         <!-- /ko -->
@@ -806,7 +806,7 @@ module nts.custombinding {
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
-                                    'data-defv': value()
+                                    'data-defv'ko.toJSON(value)
                                 }" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.TIMEPOINT -->
@@ -824,7 +824,7 @@ module nts.custombinding {
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
-                                    'data-defv': value()
+                                    'data-defv'ko.toJSON(value)
                                 }" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SELECTION -->
@@ -845,7 +845,7 @@ module nts.custombinding {
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
-                                    'data-defv': value()
+                                    'data-defv'ko.toJSON(value)
                                 }"></div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SEL_RADIO -->
@@ -861,7 +861,7 @@ module nts.custombinding {
                                 'data-code': itemCode,
                                 'data-category': categoryCode,
                                 'data-required': required,
-                                'data-defv': value()
+                                'data-defv'ko.toJSON(value)
                             }"></div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SEL_BUTTON -->
@@ -871,7 +871,7 @@ module nts.custombinding {
                                 'data-code': itemCode,
                                 'data-category': categoryCode,
                                 'data-required': required,
-                                'data-defv': value()
+                                'data-defv'ko.toJSON(value)
                              }, text: text('CPS001_106'), enable: editable">選択</button>
                             <label class="value-text" data-bind="text: ko.computed(function() { return (value() || '') + '&nbsp;&nbsp;&nbsp;' + (textValue() || ''); })"></label>
                         <!-- /ko -->
@@ -1407,6 +1407,13 @@ module nts.custombinding {
                                                 return moment.utc(ko.toJS(first.value) || '1900/01/01', "YYYY/MM/DD").add(ko.toJS(first.value) ? 1 : 0, "days").toDate();
                                             });
                                             second.endDate = ko.observable();
+
+                                            // remove max date if category is continue
+                                            if (second.ctgType == IT_CAT_TYPE.CONTINU) {
+                                                if (second.value() == '9999/12/31') {
+                                                    second.value('');
+                                                }
+                                            }
                                             break;
                                         case ITEM_SINGLE_TYPE.TIME:
                                             validate(first, second);
