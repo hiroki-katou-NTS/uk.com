@@ -53,7 +53,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	 * @param employeeIds the employee ids
 	 * @return the by list sid and monthly pattern not null
 	 */
-	public List<WorkingConditionItem> getByListSidAndMonthlyPatternNotNull(List<String> employeeIds){
+	public List<WorkingConditionItem> getByListSidAndMonthlyPatternNotNull(List<String> employeeIds, List<String> monthlyPatternCodes){
 		if (employeeIds.isEmpty()){
 			return Collections.emptyList();
 		}
@@ -77,7 +77,9 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		// condition
 		lstpredicateWhere
 				.add(root.get(KshmtWorkingCondItem_.sid).in(employeeIds));
-		lstpredicateWhere.add(criteriaBuilder.isNotNull(root.get(KshmtWorkingCondItem_.monthlyPattern)));
+		lstpredicateWhere
+				.add(root.get(KshmtWorkingCondItem_.monthlyPattern).in(monthlyPatternCodes));
+//		lstpredicateWhere.add(criteriaBuilder.isNotNull(root.get(KshmtWorkingCondItem_.monthlyPattern)));
 		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.endD),
 				GeneralDate.max()));

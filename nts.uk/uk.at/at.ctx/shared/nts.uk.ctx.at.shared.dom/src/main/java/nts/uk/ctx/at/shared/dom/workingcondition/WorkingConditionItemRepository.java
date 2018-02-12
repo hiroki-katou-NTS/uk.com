@@ -19,9 +19,10 @@ public interface WorkingConditionItemRepository {
 	 * Gets the by list sid and monthly pattern not null.
 	 *
 	 * @param employeeIds the employee ids
+	 * @param monthlyPatternCodes the monthly pattern codes
 	 * @return the by list sid and monthly pattern not null
 	 */
-	List<WorkingConditionItem> getByListSidAndMonthlyPatternNotNull(List<String> employeeIds);
+	List<WorkingConditionItem> getByListSidAndMonthlyPatternNotNull(List<String> employeeIds, List<String> monthlyPatternCodes);
 
 	/**
 	 * Gets the by history id.
