@@ -15,7 +15,7 @@ public class WorkTypeSetCommand {
 	/**
 	 * To domain
 	 * @param companyId
-	 * @param conditionNo
+	 * @param workTypeCode
 	 * @return
 	 */
 	public WorkTypeDisplaySetting toDomain(String workTypeCode){
