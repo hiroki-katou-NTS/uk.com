@@ -26,6 +26,8 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWork
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
@@ -45,7 +47,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	
 	private boolean TreatAsTimeSpentAtWork;
 	
-	private BreakFrameNo HolidayWorkTimeSheetNo; 
+	private EmTimezoneNo HolidayWorkTimeSheetNo; 
 	
 	private Finally<StaturoryAtrOfHolidayWork> statutoryAtr;
 	
@@ -63,7 +65,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	public HolidayWorkFrameTimeSheetForCalc(TimeZoneRounding timeSheet, TimeSpanForCalc calcrange,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimesheet> bonusPayTimeSheet,
 			List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet, Optional<MidNightTimeSheet> midNighttimeSheet,
-			HolidayWorkFrameTime frameTime, boolean treatAsTimeSpentAtWork, BreakFrameNo holidayWorkTimeSheetNo,
+			HolidayWorkFrameTime frameTime, boolean treatAsTimeSpentAtWork, EmTimezoneNo holidayWorkTimeSheetNo,
 			Finally<StaturoryAtrOfHolidayWork> statutoryAtr) {
 		super(timeSheet, calcrange, deductionTimeSheets, bonusPayTimeSheet, specifiedBonusPayTimeSheet,
 				midNighttimeSheet);
@@ -124,7 +126,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 										  					Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
 										  					Finally.of(new AttendanceTime(0))),
 													false,
-													breakFrameNo,
+													new EmTimezoneNo(holidayWorkFrameTimeSheet.getWorkTimeNo()),
 													Finally.of(StaturoryAtrOfHolidayWork.deicisionAtrByHolidayAtr(today.getWorkTypeSetList().get(0).getHolidayAtr())));
 	}
 	/**

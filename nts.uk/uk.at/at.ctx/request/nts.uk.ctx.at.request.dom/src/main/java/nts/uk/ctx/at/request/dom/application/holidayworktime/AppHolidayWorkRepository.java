@@ -23,4 +23,15 @@ public interface AppHolidayWorkRepository {
 	 * @return
 	 */
 	public Optional<AppHolidayWork> getFullAppHolidayWork(String companyID, String appID);
+	/**
+	 * 「休日出勤申請」の登録する
+	 * @param domain
+	 */
+	public void update(AppHolidayWork domain);
+	/**
+	 * delete
+	 * @param companyID
+	 * @param appID
+	 */
+	public void delete(String companyID, String appID);
 }

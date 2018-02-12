@@ -422,11 +422,11 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	public List<PersonInfoCategory> getAllCtgWithAuth(String companyId, String roleId, int selfAuth, int otherAuth, boolean isOtherComapany) {
 		String fullQuery = "";
 		if(isOtherComapany) {
-			fullQuery = SELECT_CTG_WITH_AUTH  + " AND ((au.allowOtherRef = :otherAuth AND au.allowOtherCompanyRef = 1) OR 0 = :otherAuth) ORDER BY po.disporde";
+			fullQuery = SELECT_CTG_WITH_AUTH  + " AND ((au.allowOtherRef = :otherAuth AND au.allowOtherCompanyRef = 1) OR 0 = :otherAuth) ORDER BY po.disporder";
 		}else {
-			fullQuery = SELECT_CTG_WITH_AUTH  +  " AND (au.allowOtherRef = :otherAuth  OR 0 = :otherAuth) ORDER BY po.disporde";
+			fullQuery = SELECT_CTG_WITH_AUTH  +  " AND (au.allowOtherRef = :otherAuth  OR 0 = :otherAuth) ORDER BY po.disporder";
 		}
-		return this.queryProxy().query(SELECT_CTG_WITH_AUTH, Object[].class)
+		return this.queryProxy().query(fullQuery, Object[].class)
 				.setParameter("cid", companyId)
 				.setParameter("roleId", roleId)
 				.setParameter("selfAuth", selfAuth)
