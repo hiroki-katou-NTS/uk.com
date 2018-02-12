@@ -2,6 +2,7 @@
 
 module nts.uk.ui {
     
+    let PS: any = window.parent;
 
     /**
      * Dialog Module
@@ -17,7 +18,7 @@ module nts.uk.ui {
             messageParams?: any[];
         }
         export function getMaxZIndex() {
-            let overlayElements = parent.$(".ui-widget-overlay");
+            let overlayElements = PS.$(".ui-widget-overlay");
             var max = 12000;
             if (overlayElements.length > 0) {
                 let zIndexs = _.map(overlayElements, function(element) { return parseInt($(element).css("z-index")); });
@@ -46,7 +47,7 @@ module nts.uk.ui {
             }
             text = text.replace(/\n/g, '<br />');
 
-            var $this = window.parent.$('<div/>').addClass('notice-dialog')
+            var $this = PS.$('<div/>').addClass('notice-dialog')
                 .append($('<div/>').addClass('text').append(text))
                 .append($control)
                 .appendTo('body')
@@ -74,8 +75,8 @@ module nts.uk.ui {
                         }
                     },
                     close: function(event) {
-                        window.parent.$(this).dialog('destroy');
-                        window.parent.$(event.target).remove();
+                        PS.$(this).dialog('destroy');
+                        PS.$(event.target).remove();
                     }
                 });
             $this.dialogPositionControl();
@@ -89,7 +90,7 @@ module nts.uk.ui {
         export function version() {
             let versinText = "AP version: ...";
             
-            let $this = window.parent.$('<div/>').addClass('version-dialog')
+            let $this = PS.$('<div/>').addClass('version-dialog')
                 .append($('<div/>').addClass('text').append(versinText))
                 .appendTo('body')
                 .dialog({
@@ -105,7 +106,7 @@ module nts.uk.ui {
          */
         export function info(text) {
             var then = $.noop;
-            var $dialog = window.parent.$('<div/>').hide();
+            var $dialog = PS.$('<div/>').hide();
             $(function() {
                 $dialog.appendTo('body').dialog({
                     autoOpen: false
@@ -133,7 +134,7 @@ module nts.uk.ui {
         };
         export function alertError(message) {
             var then = $.noop;
-            var $dialog = window.parent.$('<div/>').hide();
+            var $dialog = PS.$('<div/>').hide();
             $(function() {
                 $dialog.appendTo('body').dialog({
                     autoOpen: false
@@ -168,7 +169,7 @@ module nts.uk.ui {
          */
         export function alert(text) {  
             var then = $.noop;
-            var $dialog = parent.$('<div/>').hide();
+            var $dialog = PS.$('<div/>').hide();
             $(function() {
                 $dialog.appendTo('body').dialog({
                     autoOpen: false

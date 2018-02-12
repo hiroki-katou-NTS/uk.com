@@ -26811,6 +26811,7 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui_29) {
+            var PS = window.parent;
             /**
              * Dialog Module
              * Using for display info or confirm dialog
@@ -26818,7 +26819,7 @@ var nts;
             var dialog;
             (function (dialog) {
                 function getMaxZIndex() {
-                    var overlayElements = parent.$(".ui-widget-overlay");
+                    var overlayElements = PS.$(".ui-widget-overlay");
                     var max = 12000;
                     if (overlayElements.length > 0) {
                         var zIndexs = _.map(overlayElements, function (element) { return parseInt($(element).css("z-index")); });
@@ -26848,7 +26849,7 @@ var nts;
                         text = message;
                     }
                     text = text.replace(/\n/g, '<br />');
-                    var $this = window.parent.$('<div/>').addClass('notice-dialog')
+                    var $this = PS.$('<div/>').addClass('notice-dialog')
                         .append($('<div/>').addClass('text').append(text))
                         .append($control)
                         .appendTo('body')
@@ -26875,8 +26876,8 @@ var nts;
                             }
                         },
                         close: function (event) {
-                            window.parent.$(this).dialog('destroy');
-                            window.parent.$(event.target).remove();
+                            PS.$(this).dialog('destroy');
+                            PS.$(event.target).remove();
                         }
                     });
                     $this.dialogPositionControl();
@@ -26888,7 +26889,7 @@ var nts;
                 }
                 function version() {
                     var versinText = "AP version: ...";
-                    var $this = window.parent.$('<div/>').addClass('version-dialog')
+                    var $this = PS.$('<div/>').addClass('version-dialog')
                         .append($('<div/>').addClass('text').append(versinText))
                         .appendTo('body')
                         .dialog({});
@@ -26903,7 +26904,7 @@ var nts;
                  */
                 function info(text) {
                     var then = $.noop;
-                    var $dialog = window.parent.$('<div/>').hide();
+                    var $dialog = PS.$('<div/>').hide();
                     $(function () {
                         $dialog.appendTo('body').dialog({
                             autoOpen: false
@@ -26929,7 +26930,7 @@ var nts;
                 ;
                 function alertError(message) {
                     var then = $.noop;
-                    var $dialog = window.parent.$('<div/>').hide();
+                    var $dialog = PS.$('<div/>').hide();
                     $(function () {
                         $dialog.appendTo('body').dialog({
                             autoOpen: false
@@ -26961,7 +26962,7 @@ var nts;
                  */
                 function alert(text) {
                     var then = $.noop;
-                    var $dialog = parent.$('<div/>').hide();
+                    var $dialog = PS.$('<div/>').hide();
                     $(function () {
                         $dialog.appendTo('body').dialog({
                             autoOpen: false
