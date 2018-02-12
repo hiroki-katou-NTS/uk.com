@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.actualworkinghours;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -130,7 +131,7 @@ public class TotalWorkingTime {
 		//日別実績の所定外時間
 		val excesstime =ExcessOfStatutoryTimeOfDaily.calculationExcessTime(oneDay, overTimeAutoCalcSet,holidayAutoCalcSetting);
 		//日別実績の遅刻時間
-		List<LateTimeOfDaily> lateTime = Collections.emptyList();
+		List<LateTimeOfDaily> lateTime = new ArrayList<>();
 		lateTime.add(new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
 										 TimeWithCalculation.sameTime(new AttendanceTime(0)),
 										 new WorkNo(1),
@@ -144,7 +145,7 @@ public class TotalWorkingTime {
 										new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
 				 						));
 		//日別実績の早退時間
-		List<LeaveEarlyTimeOfDaily> earlyTime = Collections.emptyList();
+		List<LeaveEarlyTimeOfDaily> earlyTime = new ArrayList<>();
 		earlyTime.add(new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
 									    TimeWithCalculation.sameTime(new AttendanceTime(0)),
 									    new WorkNo(1),
