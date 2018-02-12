@@ -4725,7 +4725,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_1) {
+        (function (ui) {
             var toBeResource;
             (function (toBeResource) {
                 toBeResource.yes = "はい";
@@ -4740,690 +4740,13 @@ var nts;
                 toBeResource.errorCode = "エラーコード";
                 toBeResource.errorList = "エラー一覧";
                 toBeResource.plzWait = "お待ちください";
-            })(toBeResource = ui_1.toBeResource || (ui_1.toBeResource = {}));
-            var windows;
-            (function (windows) {
-                var MAIN_WINDOW_ID = 'MAIN_WINDOW';
-                var DEFAULT_DIALOG_OPTIONS = {
-                    autoOpen: false,
-                    draggable: true,
-                    resizable: false,
-                    dialogClass: "no-close"
-                };
-                /**
-                 * Main or Sub Window(dialog)
-                 */
-                var ScreenWindow = (function () {
-                    function ScreenWindow(id, isRoot, parent) {
-                        this.globalContext = null;
-                        this.$dialog = null;
-                        this.$iframe = null;
-                        this.onClosedHandler = $.noop;
-                        this.id = id;
-                        this.isRoot = isRoot;
-                        this.parent = parent;
-                    }
-                    ScreenWindow.createMainWindow = function () {
-                        return new ScreenWindow(MAIN_WINDOW_ID, true, null);
-                    };
-                    ScreenWindow.createSubWindow = function (parent) {
-                        return new ScreenWindow(uk.util.randomId(), false, parent);
-                    };
-                    ScreenWindow.prototype.setGlobal = function (globalContext) {
-                        this.globalContext = globalContext;
-                    };
-                    ScreenWindow.prototype.setTitle = function (newTitle) {
-                        if (this.isRoot) {
-                            this.globalContext.title = newTitle;
-                        }
-                        else {
-                            this.$dialog.dialog('option', { title: newTitle });
-                        }
-                    };
-                    ScreenWindow.prototype.setHeight = function (height) {
-                        if (!isNaN(height)) {
-                            this.$dialog.dialog('option', {
-                                height: height
-                            });
-                            this.$dialog.resize();
-                        }
-                    };
-                    ScreenWindow.prototype.setWidth = function (width) {
-                        if (!isNaN(width)) {
-                            this.$dialog.dialog('option', {
-                                width: width
-                            });
-                            this.$dialog.resize();
-                        }
-                    };
-                    ScreenWindow.prototype.setSize = function (height, width) {
-                        if (!isNaN(width) && !isNaN(height)) {
-                            this.$dialog.dialog('option', {
-                                width: width,
-                                height: height
-                            });
-                            this.$dialog.resize();
-                        }
-                    };
-                    ScreenWindow.prototype.setupAsDialog = function (path, options) {
-                        var _this = this;
-                        options.close = function () {
-                            _this.dispose();
-                        };
-                        this.build$dialog(options);
-                        this.$iframe.bind('load', function () {
-                            _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
-                            var dialogName = _this.globalContext.__viewContext["program"]["programName"];
-                            var title = nts.uk.util.isNullOrEmpty(dialogName) ? "" : dialogName;
-                            var showCloseButton = _this.globalContext.dialogCloseButton === true;
-                            _this.$dialog.dialog('option', {
-                                width: options.width || _this.globalContext.dialogSize.width,
-                                height: options.height || _this.globalContext.dialogSize.height,
-                                title: title,
-                                resizable: options.resizable,
-                                open: function () {
-                                    var $dialog = $(this);
-                                    if (!showCloseButton) {
-                                        $dialog.closest(".ui-dialog").addClass("no-close-btn");
-                                    }
-                                    $dialog.dialogPositionControl();
-                                    //                            if ($(this).parent().height() >= $("#contents-area").height()) {
-                                    //                                $(this).dialog("option", "position", {
-                                    //                                    my: "center top",
-                                    //                                    at: "center top",
-                                    //                                    of: $("#contents-area"),
-                                    //                                    collision: "none"
-                                    //                                })
-                                    //                                $(this).parent().css("position", "absolute");
-                                    //                            }
-                                    var $dialogDocument = $(this).parent();
-                                    var $dialogContentDoc = $(this.lastElementChild.contentDocument);
-                                    // catch press tab key in close button of dialog.
-                                    $dialogDocument.on("keydown", ":tabbable", function (evt) {
-                                        var code = evt.which || evt.keyCode;
-                                        if (code.toString() === "9") {
-                                            var focusableElements = $dialogContentDoc.find(":tabbable");
-                                            if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false) {
-                                                focusableElements.first().focus();
-                                                evt.preventDefault();
-                                            }
-                                            else if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === true) {
-                                                focusableElements.last().focus();
-                                                evt.preventDefault();
-                                            }
-                                        }
-                                    });
-                                    // catch press tab key for component in dialog.
-                                    $dialogContentDoc.on("keydown", ":tabbable", function (evt) {
-                                        var code = evt.which || evt.keyCode;
-                                        if (code.toString() === "9") {
-                                            var focusableElements = $dialogContentDoc.find(":tabbable");
-                                            if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
-                                                focusableElements.first().focus();
-                                                evt.preventDefault();
-                                            }
-                                            else if ($(evt.target).is(focusableElements.first()) && evt.shiftKey === true) {
-                                                focusableElements.last().focus();
-                                                evt.preventDefault();
-                                            }
-                                        }
-                                    });
-                                },
-                                beforeClose: function () {
-                                    //return dialogWindow.__viewContext.dialog.beforeClose();
-                                }
-                            }).dialog('open');
-                            //remove focus on tab key press on the close button on jquery dialog
-                            $('.ui-dialog-titlebar-close').attr('tabindex', '-1');
-                            if (_this.parent !== null)
-                                _this.parent.globalContext.nts.uk.ui.block.clear();
-                            //                    var widget= this.$dialog.dialog("widget");
-                            //                    widget.draggable("option","containment",false);
-                        });
-                        this.globalContext.location.href = path;
-                    };
-                    ScreenWindow.prototype.build$dialog = function (options) {
-                        this.$dialog = $('<div/>')
-                            .css({
-                            padding: '0px',
-                            overflow: 'hidden'
-                        })
-                            .appendTo($('body'))
-                            .dialog(options);
-                        this.$iframe = $('<iframe/>').css({
-                            width: '100%',
-                            height: '100%'
-                        }).appendTo(this.$dialog);
-                        this.setGlobal(this.$iframe[0].contentWindow);
-                    };
-                    ScreenWindow.prototype.onClosed = function (callback) {
-                        this.onClosedHandler = function () {
-                            callback();
-                            windows.container.localShared = {};
-                        };
-                    };
-                    ScreenWindow.prototype.close = function () {
-                        if (this.isRoot) {
-                            window.close();
-                        }
-                        else {
-                            this.$dialog.dialog('close');
-                        }
-                    };
-                    ScreenWindow.prototype.dispose = function () {
-                        var _this = this;
-                        _.defer(function () { return _this.onClosedHandler(); });
-                        // delay 2 seconds to avoid IE error when any JS is running in destroyed iframe
-                        setTimeout(function () {
-                            _this.$iframe.remove();
-                            _this.$dialog.remove();
-                            _this.$dialog = null;
-                            _this.$iframe = null;
-                            _this.globalContext = null;
-                            _this.parent = null;
-                            _this.onClosedHandler = null;
-                        }, 2000);
-                    };
-                    return ScreenWindow;
-                }());
-                windows.ScreenWindow = ScreenWindow;
-                /**
-                 * All ScreenWindows are managed by this container.
-                 * this instance is singleton in one browser-tab.
-                 */
-                var ScreenWindowContainer = (function () {
-                    function ScreenWindowContainer() {
-                        this.windows = {};
-                        this.windows[windows.selfId] = ScreenWindow.createMainWindow();
-                        this.windows[windows.selfId].setGlobal(window);
-                        this.shared = {};
-                        this.localShared = {};
-                    }
-                    /**
-                     * All dialog object is in MainWindow.
-                     */
-                    ScreenWindowContainer.prototype.createDialog = function (path, options, parentId) {
-                        var parentwindow = this.windows[parentId];
-                        var subWindow = ScreenWindow.createSubWindow(parentwindow);
-                        this.windows[subWindow.id] = subWindow;
-                        options = $.extend({}, DEFAULT_DIALOG_OPTIONS, options);
-                        subWindow.setupAsDialog(path, options);
-                        return subWindow;
-                    };
-                    ScreenWindowContainer.prototype.createDialogNotOpen = function (path, options, parentId) {
-                        var parentwindow = this.windows[parentId];
-                        var subWindow = ScreenWindow.createSubWindow(parentwindow);
-                        this.windows[subWindow.id] = subWindow;
-                        return subWindow;
-                    };
-                    ScreenWindowContainer.prototype.mergeOption = function (options) {
-                        return $.extend({}, DEFAULT_DIALOG_OPTIONS, options);
-                    };
-                    ScreenWindowContainer.prototype.getShared = function (key) {
-                        return this.localShared[key] !== undefined ? this.localShared[key] : this.shared[key];
-                    };
-                    ScreenWindowContainer.prototype.setShared = function (key, data, isRoot, persist) {
-                        var transferData;
-                        // Null or Undefined
-                        if (uk.util.isNullOrUndefined(data)) {
-                            transferData = data;
-                        }
-                        else if (!_.isFunction(data) || ko.isObservable(data)) {
-                            transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
-                        }
-                        else {
-                            transferData = data;
-                        }
-                        if (persist || isRoot) {
-                            this.shared[key] = transferData;
-                        }
-                        else {
-                            this.localShared[key] = transferData;
-                        }
-                    };
-                    ScreenWindowContainer.prototype.close = function (id) {
-                        var target = this.windows[id];
-                        delete this.windows[id];
-                        target.close();
-                    };
-                    return ScreenWindowContainer;
-                }());
-                windows.ScreenWindowContainer = ScreenWindowContainer;
-                function rgc() {
-                    return windows.container.windows[MAIN_WINDOW_ID].globalContext;
-                }
-                windows.rgc = rgc;
-                if (uk.util.isInFrame()) {
-                    var parent = window.parent;
-                    windows.container = (parent.nts.uk.ui.windows.container);
-                }
-                else {
-                    windows.selfId = MAIN_WINDOW_ID;
-                    windows.container = new ScreenWindowContainer();
-                }
-                function getShared(key) {
-                    return windows.container.getShared(key);
-                }
-                windows.getShared = getShared;
-                function setShared(key, data, persist) {
-                    windows.container.setShared(key, data, windows.getSelf().isRoot, persist);
-                }
-                windows.setShared = setShared;
-                function getSelf() {
-                    return windows.container.windows[windows.selfId];
-                }
-                windows.getSelf = getSelf;
-                function close(windowId) {
-                    windowId = uk.util.orDefault(windowId, windows.selfId);
-                    windows.container.close(windowId);
-                }
-                windows.close = close;
-                var sub;
-                (function (sub) {
-                    function modal(webAppId, path, options) {
-                        if (typeof arguments[1] !== 'string') {
-                            return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
-                        }
-                        return dialog(webAppId, path, true, options);
-                    }
-                    sub.modal = modal;
-                    function modeless(webAppId, path, options) {
-                        if (typeof arguments[1] !== 'string') {
-                            return modeless.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
-                        }
-                        return dialog(webAppId, path, false, options);
-                    }
-                    sub.modeless = modeless;
-                    function dialog(webAppId, path, modal, options) {
-                        options = options || {};
-                        options.modal = modal;
-                        if (webAppId == nts.uk.request.location.currentAppId) {
-                            path = nts.uk.request.resolvePath(path);
-                            return open(path, options);
-                        }
-                        else {
-                            path = nts.uk.request.location.siteRoot
-                                .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
-                                .mergeRelativePath(path).serialize();
-                            var dialog_1 = createDialog(path, options);
-                            uk.request.login.keepSerializedSession()
-                                .then(function () {
-                                return uk.request.login.restoreSessionTo(webAppId);
-                            })
-                                .then(function () {
-                                dialog_1.setupAsDialog(path, windows.container.mergeOption(options));
-                            });
-                            return dialog_1;
-                        }
-                    }
-                    function open(path, options) {
-                        nts.uk.ui.block.invisible();
-                        return windows.container.createDialog(path, options, windows.selfId);
-                    }
-                    sub.open = open;
-                    function createDialog(path, options) {
-                        nts.uk.ui.block.invisible();
-                        return windows.container.createDialogNotOpen(path, options, windows.selfId);
-                    }
-                    sub.createDialog = createDialog;
-                })(sub = windows.sub || (windows.sub = {}));
-            })(windows = ui_1.windows || (ui_1.windows = {}));
+            })(toBeResource = ui.toBeResource || (ui.toBeResource = {}));
             function localize(textId) {
                 return textId;
             }
-            ui_1.localize = localize;
-            /**
-             * Dialog Module
-             * Using for display info or confirm dialog
-             */
-            var dialog;
-            (function (dialog) {
-                function getMaxZIndex() {
-                    var overlayElements = parent.$(".ui-widget-overlay");
-                    var max = 12000;
-                    if (overlayElements.length > 0) {
-                        var zIndexs = _.map(overlayElements, function (element) { return parseInt($(element).css("z-index")); });
-                        var temp = _.max(zIndexs);
-                        max = temp > max ? temp : max;
-                    }
-                    return max;
-                }
-                dialog.getMaxZIndex = getMaxZIndex;
-                function createNoticeDialog(message, buttons, header) {
-                    var $control = $('<div/>').addClass('control').addClass("pre");
-                    var text;
-                    if (typeof message === "object") {
-                        //business exception
-                        if (message.message) {
-                            text = message.message;
-                            if (message.messageId) {
-                                $control.append(message.messageId);
-                            }
-                        }
-                        else {
-                            text = nts.uk.resource.getMessage(message.messageId, message.messageParams);
-                            $control.append(message.messageId);
-                        }
-                    }
-                    else {
-                        text = message;
-                    }
-                    text = text.replace(/\n/g, '<br />');
-                    var $this = window.parent.$('<div/>').addClass('notice-dialog')
-                        .append($('<div/>').addClass('text').append(text))
-                        .append($control)
-                        .appendTo('body')
-                        .dialog({
-                        dialogClass: "no-close-btn",
-                        width: 'auto',
-                        modal: true,
-                        minWidth: 300,
-                        maxWidth: 800,
-                        maxHeight: 400,
-                        closeOnEscape: false,
-                        buttons: buttons,
-                        open: function () {
-                            $(this).closest('.ui-dialog').css('z-index', getMaxZIndex() + 2);
-                            $('.ui-widget-overlay').last().css('z-index', getMaxZIndex() + 1);
-                            $(this).parent().find('.ui-dialog-buttonset > button:first-child').focus();
-                            $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
-                            //add header icon if it has
-                            if (header && header.icon) {
-                                var $headerContainer = $("<div'></div>").addClass("ui-dialog-titlebar-container");
-                                $headerContainer.append($("<img>").attr("src", header.icon).addClass("ui-dialog-titlebar-icon"));
-                                $headerContainer.append($(this).parent().find(".ui-dialog-title"));
-                                $(this).parent().children(".ui-dialog-titlebar").prepend($headerContainer);
-                            }
-                        },
-                        close: function (event) {
-                            window.parent.$(this).dialog('destroy');
-                            window.parent.$(event.target).remove();
-                        }
-                    });
-                    $this.dialogPositionControl();
-                    //add header text if it has
-                    if (header && header.text) {
-                        $this.dialog("option", "title", header.text);
-                    }
-                    return $this;
-                }
-                function version() {
-                    var versinText = "AP version: ...";
-                    var $this = window.parent.$('<div/>').addClass('version-dialog')
-                        .append($('<div/>').addClass('text').append(versinText))
-                        .appendTo('body')
-                        .dialog({});
-                }
-                dialog.version = version;
-                /**
-                 * Show information dialog.
-                 *
-                 * @param {String}
-                 *			text information text
-                 * @returns handler
-                 */
-                function info(text) {
-                    var then = $.noop;
-                    var $dialog = window.parent.$('<div/>').hide();
-                    $(function () {
-                        $dialog.appendTo('body').dialog({
-                            autoOpen: false
-                        });
-                    });
-                    setTimeout(function () {
-                        var $this = createNoticeDialog(text, [{
-                                text: toBeResource.close,
-                                "class": "large",
-                                click: function () {
-                                    $this.dialog('close');
-                                    then();
-                                }
-                            }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/infor.png", text: toBeResource.info });
-                    }, 0);
-                    return {
-                        then: function (callback) {
-                            then = callback;
-                        }
-                    };
-                }
-                dialog.info = info;
-                ;
-                function alertError(message) {
-                    var then = $.noop;
-                    var $dialog = window.parent.$('<div/>').hide();
-                    $(function () {
-                        $dialog.appendTo('body').dialog({
-                            autoOpen: false
-                        });
-                    });
-                    setTimeout(function () {
-                        var $this = createNoticeDialog(message, [{
-                                text: toBeResource.close,
-                                "class": "large",
-                                click: function () {
-                                    $this.dialog('close');
-                                    then();
-                                }
-                            }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/error.png", text: toBeResource.error });
-                    }, 0);
-                    return {
-                        then: function (callback) {
-                            then = callback;
-                        }
-                    };
-                }
-                dialog.alertError = alertError;
-                /**
-                 * Show alert dialog.
-                 *
-                 * @param {String}
-                 *			text information text
-                 * @returns handler
-                 */
-                function alert(text) {
-                    var then = $.noop;
-                    var $dialog = parent.$('<div/>').hide();
-                    $(function () {
-                        $dialog.appendTo('body').dialog({
-                            autoOpen: false
-                        });
-                    });
-                    setTimeout(function () {
-                        var $this = createNoticeDialog(text, [{
-                                text: toBeResource.close,
-                                "class": "large",
-                                click: function () {
-                                    $this.dialog('close');
-                                    then();
-                                }
-                            }], { text: nts.uk.resource.getText(toBeResource.warn) });
-                    }, 0);
-                    return {
-                        then: function (callback) {
-                            then = callback;
-                        }
-                    };
-                }
-                dialog.alert = alert;
-                ;
-                /**
-                 * Show confirm dialog.
-                 *
-                 * @param {String}
-                 *			text information text
-                 * @returns handler
-                 */
-                function confirm(text) {
-                    var handleYes = $.noop;
-                    var handleNo = $.noop;
-                    var handleCancel = $.noop;
-                    var handleThen = $.noop;
-                    var hasNoButton = true;
-                    var hasCancelButton = false;
-                    var handlers = {
-                        ifYes: function (handler) {
-                            handleYes = handler;
-                            return handlers;
-                        },
-                        ifCancel: function (handler) {
-                            hasNoButton = false;
-                            hasCancelButton = true;
-                            handleCancel = handler;
-                            return handlers;
-                        },
-                        ifNo: function (handler) {
-                            hasNoButton = true;
-                            handleNo = handler;
-                            return handlers;
-                        },
-                        then: function (handler) {
-                            handleThen = handler;
-                            return handlers;
-                        }
-                    };
-                    setTimeout(function () {
-                        var buttons = [];
-                        // yes button
-                        buttons.push({
-                            text: toBeResource.yes,
-                            "class": "yes large danger",
-                            click: function () {
-                                $this.dialog('close');
-                                handleYes();
-                                handleThen();
-                            }
-                        });
-                        // no button
-                        if (hasNoButton) {
-                            buttons.push({
-                                text: toBeResource.no,
-                                "class": "no large",
-                                click: function () {
-                                    $this.dialog('close');
-                                    handleNo();
-                                    handleThen();
-                                }
-                            });
-                        }
-                        // cancel button
-                        if (hasCancelButton) {
-                            buttons.push({
-                                text: toBeResource.cancel,
-                                "class": "cancel large",
-                                click: function () {
-                                    $this.dialog('close');
-                                    handleCancel();
-                                    handleThen();
-                                }
-                            });
-                        }
-                        var $this = createNoticeDialog(text, buttons);
-                    });
-                    return handlers;
-                }
-                dialog.confirm = confirm;
-                ;
-                function addError(errorBody, error, idx) {
-                    var row = $("<tr/>");
-                    row.append("<td style='display: none;'>" + idx + "/td><td>" + error["message"] + "</td><td>" + error["messageId"] + "</td>");
-                    var nameId = error["supplements"]["NameID"];
-                    if (!uk.util.isNullOrUndefined(nameId)) {
-                        row.click(function (evt, ui) {
-                            var element = $("body").find('[NameID="' + nameId + '"]');
-                            var tab = element.closest("[role='tabpanel']");
-                            while (!uk.util.isNullOrEmpty(tab)) {
-                                var tabId = tab.attr("id");
-                                tab.siblings(":first").children("li[aria-controls='" + tabId + "']").children("a").click();
-                                tab = tab.parent().closest("[role='tabpanel']");
-                            }
-                            element.focus();
-                            var $dialogContainer = errorBody.closest(".bundled-errors-alert").closest("[role='dialog']");
-                            var $self = nts.uk.ui.windows.getSelf();
-                            var additonalTop = 0;
-                            var additonalLeft = 0;
-                            if (!$self.isRoot) {
-                                var $currentDialog = $self.$dialog.closest("[role='dialog']");
-                                var $currentHeadBar = $currentDialog.find(".ui-dialog-titlebar");
-                                var currentDialogOffset = $currentDialog.offset();
-                                additonalTop = currentDialogOffset.top + $currentHeadBar.height();
-                                additonalLeft = currentDialogOffset.left;
-                            }
-                            var currentControlOffset = element.offset();
-                            var top = additonalTop + currentControlOffset.top + element.outerHeight() - window.scrollY;
-                            var left = additonalLeft + currentControlOffset.left - window.scrollX;
-                            var $errorDialogOffset = $dialogContainer.offset();
-                            var maxLeft = $errorDialogOffset.left + $dialogContainer.width();
-                            var maxTop = $errorDialogOffset.top + $dialogContainer.height();
-                            if ($errorDialogOffset.top < top && top < maxTop) {
-                                $dialogContainer.css("top", top + 15);
-                            }
-                            if (($errorDialogOffset.left < left && left < maxLeft)) {
-                                $dialogContainer.css("left", left);
-                            }
-                        });
-                    }
-                    row.appendTo(errorBody);
-                }
-                function getRoot() {
-                    var self = nts.uk.ui.windows.getSelf();
-                    while (!self.isRoot) {
-                        self = self.parent;
-                    }
-                    return $(self.globalContext.document).find("body");
-                }
-                function bundledErrors(errors) {
-                    var then = $.noop;
-                    var id = uk.util.randomId();
-                    var container = $("<div id='" + id + "' class='bundled-errors-alert'/>"), functionArea = $("<div id='functions-area-bottom'/>"), errorBoard = $("<div id='error-board'>    <table> <thead> <tr>    <th style='width: auto;'>"
-                        + toBeResource.errorContent + "</th><th style='display: none;'/>    <th style='width: 150px;'>"
-                        + toBeResource.errorCode + "</th>   </tr>   </thead>    <tbody/>    </table> </div>"), closeButton = $("<button class='ntsButton ntsClose large'/>");
-                    var errorBody = errorBoard.find("tbody");
-                    if ($.isArray(errors["errors"])) {
-                        _.forEach(errors["errors"], function (error, idx) {
-                            addError(errorBody, error, idx + 1);
-                        });
-                    }
-                    else {
-                        return alertError(errors);
-                    }
-                    closeButton.appendTo(functionArea);
-                    functionArea.appendTo(container);
-                    errorBoard.appendTo(container);
-                    container.appendTo(getRoot());
-                    setTimeout(function () {
-                        container.dialog({
-                            title: toBeResource.errorList,
-                            dialogClass: "no-close-btn",
-                            modal: false,
-                            resizable: false,
-                            width: 450,
-                            maxHeight: 500,
-                            closeOnEscape: false,
-                            open: function () {
-                                errorBoard.css({ "overflow": "auto", "max-height": "300px", "margin-bottom": "65px" });
-                                functionArea.css({ "left": "0px" });
-                                closeButton.text(toBeResource.close).click(function (evt) {
-                                    container.dialog("destroy");
-                                    container.remove();
-                                    then();
-                                });
-                                container.closest("div[role='dialog']").position({ my: "center", at: "center", of: window.parent });
-                            },
-                            close: function (event) {
-                            }
-                        }).dialogPositionControl();
-                    }, 0);
-                    return {
-                        then: function (callback) {
-                            then = callback;
-                        }
-                    };
-                }
-                dialog.bundledErrors = bundledErrors;
-                ;
-            })(dialog = ui_1.dialog || (ui_1.dialog = {}));
-            ui_1.confirmSave = function (dirtyChecker) {
-                var frame = windows.getSelf();
+            ui.localize = localize;
+            ui.confirmSave = function (dirtyChecker) {
+                var frame = ui.windows.getSelf();
                 if (frame.$dialog === undefined || frame.$dialog === null) {
                     confirmSaveWindow(dirtyChecker);
                 }
@@ -5457,22 +4780,22 @@ var nts;
             function confirmSaveEnableDialog(beforeunloadHandler, dialog) {
                 dialog.on("dialogbeforeclose", beforeunloadHandler);
             }
-            ui_1.confirmSaveEnableDialog = confirmSaveEnableDialog;
+            ui.confirmSaveEnableDialog = confirmSaveEnableDialog;
             ;
             function confirmSaveDisableDialog(dialog) {
                 dialog.on("dialogbeforeclose", function () { });
             }
-            ui_1.confirmSaveDisableDialog = confirmSaveDisableDialog;
+            ui.confirmSaveDisableDialog = confirmSaveDisableDialog;
             ;
             function confirmSaveEnable(beforeunloadHandler) {
                 $(window).bind('beforeunload', beforeunloadHandler);
             }
-            ui_1.confirmSaveEnable = confirmSaveEnable;
+            ui.confirmSaveEnable = confirmSaveEnable;
             ;
             function confirmSaveDisable() {
                 $(window).unbind('beforeunload');
             }
-            ui_1.confirmSaveDisable = confirmSaveDisable;
+            ui.confirmSaveDisable = confirmSaveDisable;
             ;
             /**
              * Block UI Module
@@ -5518,7 +4841,7 @@ var nts;
                         left: left
                     };
                 }
-            })(block = ui_1.block || (ui_1.block = {}));
+            })(block = ui.block || (ui.block = {}));
             var DirtyChecker = (function () {
                 function DirtyChecker(targetViewModelObservable) {
                     this.targetViewModel = targetViewModelObservable;
@@ -5535,159 +4858,7 @@ var nts;
                 };
                 return DirtyChecker;
             }());
-            ui_1.DirtyChecker = DirtyChecker;
-            /**
-             * Utilities for IgniteUI
-             */
-            var ig;
-            (function (ig) {
-                var grid;
-                (function (grid) {
-                    function getScrollContainer($grid) {
-                        var $scroll = $grid.igGrid("scrollContainer");
-                        if ($scroll.length === 1)
-                            return $scroll;
-                        return $("#" + $grid.attr("id") + "_scrollContainer");
-                    }
-                    grid.getScrollContainer = getScrollContainer;
-                    function getRowIdFrom($anyElementInRow) {
-                        return $anyElementInRow.closest('tr').attr('data-id');
-                    }
-                    grid.getRowIdFrom = getRowIdFrom;
-                    function getRowIndexFrom($anyElementInRow) {
-                        return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
-                    }
-                    grid.getRowIndexFrom = getRowIndexFrom;
-                    function expose(targetRow, $grid) {
-                        var $scroll = getScrollContainer($grid);
-                        $scroll.exposeVertically(targetRow.element);
-                    }
-                    grid.expose = expose;
-                    var virtual;
-                    (function (virtual) {
-                        function getDisplayContainer(gridId) {
-                            return $('#' + gridId + '_displayContainer');
-                        }
-                        virtual.getDisplayContainer = getDisplayContainer;
-                        function getVisibleRows(gridId) {
-                            return $('#' + gridId + ' > tbody > tr:visible');
-                        }
-                        virtual.getVisibleRows = getVisibleRows;
-                        function getFirstVisibleRow(gridId) {
-                            var top = getDisplayContainer(gridId).scrollTop();
-                            var visibleRows = getVisibleRows(gridId);
-                            for (var i = 0; i < visibleRows.length; i++) {
-                                var $row = $(visibleRows[i]);
-                                if (visibleRows[i].offsetTop + $row.height() > top) {
-                                    return $row;
-                                }
-                            }
-                        }
-                        virtual.getFirstVisibleRow = getFirstVisibleRow;
-                        function getLastVisibleRow(gridId) {
-                            var $displayContainer = getDisplayContainer(gridId);
-                            var bottom = $displayContainer.scrollTop() + $displayContainer.height();
-                            return getVisibleRows(gridId).filter(function () {
-                                return this.offsetTop < bottom;
-                            }).last();
-                        }
-                        virtual.getLastVisibleRow = getLastVisibleRow;
-                        function expose(targetRow, $grid) {
-                            if (targetRow.index === undefined) {
-                                $grid.igGrid("virtualScrollTo", dataSource.getIndexOfKey(targetRow.id, $grid) + 1);
-                                return;
-                            }
-                            var rowHeight = targetRow.element.outerHeight();
-                            var targetTop = targetRow.index * rowHeight;
-                            var targetBottom = targetTop + rowHeight;
-                            var $scroll = getScrollContainer($grid);
-                            var viewHeight = $scroll.height();
-                            var viewTop = $scroll.scrollTop();
-                            var viewBottom = viewTop + viewHeight;
-                            if (viewTop <= targetTop && targetBottom <= viewBottom) {
-                                return;
-                            }
-                            // when specify 1, top row will be shown.
-                            $grid.igGrid("virtualScrollTo", targetRow.index + 1);
-                        }
-                        virtual.expose = expose;
-                    })(virtual = grid.virtual || (grid.virtual = {}));
-                    var dataSource;
-                    (function (dataSource) {
-                        function getIndexOfKey(targetKey, $grid) {
-                            var option = $grid.igGrid("option");
-                            return _.findIndex(option.dataSource, function (s) { return s[option.primaryKey].toString() === targetKey.toString(); });
-                        }
-                        dataSource.getIndexOfKey = getIndexOfKey;
-                    })(dataSource = grid.dataSource || (grid.dataSource = {}));
-                    var header;
-                    (function (header) {
-                        function getCell(gridId, columnKey) {
-                            var $headers = $('#' + gridId).igGrid("headersTable");
-                            return $headers.find('#' + gridId + '_' + columnKey);
-                        }
-                        header.getCell = getCell;
-                        function getLabel(gridId, columnKey) {
-                            return getCell(gridId, columnKey).find('span');
-                        }
-                        header.getLabel = getLabel;
-                    })(header = grid.header || (grid.header = {}));
-                })(grid = ig.grid || (ig.grid = {}));
-                var tree;
-                (function (tree) {
-                    var grid;
-                    (function (grid) {
-                        function expandTo(targetKey, $treeGrid) {
-                            var option = $treeGrid.igTreeGrid("option");
-                            var ancestorKeys = dataSource.collectAncestorKeys(targetKey, option.dataSource, option.primaryKey, option.childDataKey);
-                            if (ancestorKeys === null) {
-                                return;
-                            }
-                            var expand = function (currentIndex) {
-                                if (currentIndex >= ancestorKeys.length)
-                                    return;
-                                $treeGrid.igTreeGrid("expandRow", ancestorKeys[currentIndex]);
-                                setTimeout(function () { expand(currentIndex + 1); }, 0);
-                            };
-                            expand(0);
-                            setTimeout(function () {
-                                scrollTo(targetKey, $treeGrid);
-                            }, 1);
-                        }
-                        grid.expandTo = expandTo;
-                        function scrollTo(targetKey, $treeGrid) {
-                            var $scroll = $treeGrid.igTreeGrid("scrollContainer");
-                            var $targetNode = $treeGrid.find("tr[data-id='" + targetKey + "']").first();
-                            if ($targetNode.length === 0)
-                                return;
-                            $scroll.exposeVertically($targetNode);
-                        }
-                        grid.scrollTo = scrollTo;
-                    })(grid = tree.grid || (tree.grid = {}));
-                    var dataSource;
-                    (function (dataSource_1) {
-                        function collectAncestorKeys(targetKey, dataSource, primaryKey, childDataKey) {
-                            if (typeof dataSource === "undefined") {
-                                return null;
-                            }
-                            for (var i = 0, len = dataSource.length; i < len; i++) {
-                                var currentData = dataSource[i];
-                                if (currentData[primaryKey] === targetKey) {
-                                    return [targetKey];
-                                }
-                                var children = currentData[childDataKey];
-                                var results = collectAncestorKeys(targetKey, children, primaryKey, childDataKey);
-                                if (results !== null) {
-                                    results.unshift(currentData[primaryKey]);
-                                    return results;
-                                }
-                            }
-                            return null;
-                        }
-                        dataSource_1.collectAncestorKeys = collectAncestorKeys;
-                    })(dataSource = tree.dataSource || (tree.dataSource = {}));
-                })(tree = ig.tree || (ig.tree = {}));
-            })(ig = ui_1.ig || (ui_1.ig = {}));
+            ui.DirtyChecker = DirtyChecker;
             var smallExtensions;
             (function (smallExtensions) {
                 $(function () {
@@ -5721,7 +4892,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_2) {
+        (function (ui_1) {
             var option;
             (function (option_1) {
                 var DialogOption = (function () {
@@ -5854,9 +5025,9 @@ var nts;
                         _super.call(this);
                         // Default value
                         this.headers = (option && option.headers) ? option.headers : [
-                            new ui_2.errors.ErrorHeader("tab", "タブ", 90, true),
-                            new ui_2.errors.ErrorHeader("location", "エラー箇所", 115, true),
-                            new ui_2.errors.ErrorHeader("message", "エラー詳細", 250, true)
+                            new ui_1.errors.ErrorHeader("tab", "タブ", 90, true),
+                            new ui_1.errors.ErrorHeader("location", "エラー箇所", 115, true),
+                            new ui_1.errors.ErrorHeader("message", "エラー詳細", 250, true)
                         ];
                         this.modal = (option && option.modal !== undefined) ? option.modal : false;
                         this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
@@ -5886,7 +5057,7 @@ var nts;
                     return DialogButton;
                 }());
                 option_1.DialogButton = DialogButton;
-            })(option = ui_2.option || (ui_2.option = {}));
+            })(option = ui_1.option || (ui_1.option = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6018,7 +5189,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_3) {
+        (function (ui_2) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 // This file left here for log purpose
@@ -6079,7 +5250,7 @@ var nts;
                         } });
                     return $dialog;
                 };
-            })(jqueryExtentions = ui_3.jqueryExtentions || (ui_3.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_2.jqueryExtentions || (ui_2.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6089,7 +5260,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_4) {
+        (function (ui_3) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -6304,7 +5475,7 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
                 ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
-            })(koExtentions = ui_4.koExtentions || (ui_4.koExtentions = {}));
+            })(koExtentions = ui_3.koExtentions || (ui_3.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6314,7 +5485,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_5) {
+        (function (ui_4) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -6496,7 +5667,7 @@ var nts;
                     return ComboBoxBindingHandler;
                 }());
                 ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
-            })(koExtentions = ui_5.koExtentions || (ui_5.koExtentions = {}));
+            })(koExtentions = ui_4.koExtentions || (ui_4.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -8223,7 +7394,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_6) {
+        (function (ui_5) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -8665,7 +7836,7 @@ var nts;
                     };
                     return ListItemTransporter;
                 }());
-            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
+            })(koExtentions = ui_5.koExtentions || (ui_5.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -8982,7 +8153,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_7) {
+        (function (ui_6) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsRadioBoxBindingHandler = (function () {
@@ -9239,7 +8410,7 @@ var nts;
                 }
                 ko.bindingHandlers['ntsRadioButton'] = new NtsRadioBoxBindingHandler();
                 ko.bindingHandlers['ntsRadioBoxGroup'] = new NtsRadioBoxGroupBindingHandler();
-            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
+            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -9249,7 +8420,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_8) {
+        (function (ui_7) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -9563,7 +8734,7 @@ var nts;
                     return NtsSearchBoxBindingHandler;
                 }());
                 ko.bindingHandlers['ntsSearchBox'] = new NtsSearchBoxBindingHandler();
-            })(koExtentions = ui_8.koExtentions || (ui_8.koExtentions = {}));
+            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -9573,7 +8744,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_9) {
+        (function (ui_8) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -10471,7 +9642,7 @@ var nts;
                     };
                     return ListItemTransporter;
                 }());
-            })(koExtentions = ui_9.koExtentions || (ui_9.koExtentions = {}));
+            })(koExtentions = ui_8.koExtentions || (ui_8.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -10481,7 +9652,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_10) {
+        (function (ui_9) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -10628,7 +9799,7 @@ var nts;
                     return NtsSwitchButtonBindingHandler;
                 }());
                 ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
-            })(koExtentions = ui_10.koExtentions || (ui_10.koExtentions = {}));
+            })(koExtentions = ui_9.koExtentions || (ui_9.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -10638,7 +9809,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_11) {
+        (function (ui_10) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -10746,7 +9917,7 @@ var nts;
                     return TabPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTabPanel'] = new TabPanelBindingHandler();
-            })(koExtentions = ui_11.koExtentions || (ui_11.koExtentions = {}));
+            })(koExtentions = ui_10.koExtentions || (ui_10.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -10820,7 +9991,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_12) {
+        (function (ui_11) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -11143,7 +10314,7 @@ var nts;
                     return ExpandNode;
                 }());
                 ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
-            })(koExtentions = ui_12.koExtentions || (ui_12.koExtentions = {}));
+            })(koExtentions = ui_11.koExtentions || (ui_11.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -11153,7 +10324,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_13) {
+        (function (ui_12) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -11418,7 +10589,7 @@ var nts;
                     return NtsUpDownBindingHandler;
                 }());
                 ko.bindingHandlers['ntsUpDown'] = new NtsUpDownBindingHandler();
-            })(koExtentions = ui_13.koExtentions || (ui_13.koExtentions = {}));
+            })(koExtentions = ui_12.koExtentions || (ui_12.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -11665,7 +10836,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_14) {
+        (function (ui_13) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -11729,7 +10900,7 @@ var nts;
                     return NtsCharsetSettingBindingHandler;
                 }());
                 ko.bindingHandlers['ntsCharsetSetting'] = new NtsCharsetSettingBindingHandler();
-            })(koExtentions = ui_14.koExtentions || (ui_14.koExtentions = {}));
+            })(koExtentions = ui_13.koExtentions || (ui_13.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -11739,7 +10910,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_15) {
+        (function (ui_14) {
             var contextmenu;
             (function (contextmenu) {
                 var ContextMenu = (function () {
@@ -11912,7 +11083,7 @@ var nts;
                     return ContextMenuItem;
                 }());
                 contextmenu.ContextMenuItem = ContextMenuItem;
-            })(contextmenu = ui_15.contextmenu || (ui_15.contextmenu = {}));
+            })(contextmenu = ui_14.contextmenu || (ui_14.contextmenu = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -11942,6 +11113,9 @@ var nts;
 /// <reference path="ui/validation.ts"/>
 /// <reference path="ui/errors.ts"/>
 /// <reference path="ui/ui.ts"/>
+/// <reference path="ui/ui_sub/ui_windows.ts"/>
+/// <reference path="ui/ui_sub/ui_dialog.ts"/>
+/// <reference path="ui/ui_sub/ui_ig.ts"/>
 /// <reference path="ui/dialog-options.ts"/>
 /// <reference path="ui/textbox-options.ts"/>
 /// <reference path="ui/jquery-ext.ts"/>
@@ -11972,7 +11146,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_16) {
+        (function (ui_15) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -12145,7 +11319,7 @@ var nts;
                             $target.ntsError('clear');
                             $ntsDateRange.ntsError("clear");
                             var isStart = $target.hasClass("ntsStartDatePicker");
-                            var validator = new ui_16.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                            var validator = new ui_15.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                             var result = validator.validate(newText);
                             var oldValue = value();
                             if ($target.hasClass("ntsStartDatePicker")) {
@@ -12164,7 +11338,7 @@ var nts;
                                 $(e.target).ntsError('set', getMessage('FND_E_REQ_INPUT', [isStart ? startName : endName]), 'FND_E_REQ_INPUT');
                             }
                             else {
-                                var validator = new ui_16.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                                var validator = new ui_15.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                                 var result = validator.validate(newText);
                                 if (!result.isValid) {
                                     $(e.target).ntsError('set', result.errorMessage, result.errorCode);
@@ -12176,7 +11350,7 @@ var nts;
                             var newText = $target.val();
                             var isStart = $target.hasClass("ntsStartDatePicker");
                             var oldValue = value();
-                            var validator = new ui_16.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                            var validator = new ui_15.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                             var result = validator.validate(newText);
                             $target.ntsError('clear');
                             $ntsDateRange.ntsError("clear");
@@ -12239,7 +11413,7 @@ var nts;
                     return NtsDateRangePickerBindingHandler;
                 }());
                 ko.bindingHandlers['ntsDateRangePicker'] = new NtsDateRangePickerBindingHandler();
-            })(koExtentions = ui_16.koExtentions || (ui_16.koExtentions = {}));
+            })(koExtentions = ui_15.koExtentions || (ui_15.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -12392,7 +11566,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_17) {
+        (function (ui_16) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsFixedTable;
@@ -12489,7 +11663,7 @@ var nts;
                         return controls;
                     }
                 })(ntsFixedTable || (ntsFixedTable = {}));
-            })(jqueryExtentions = ui_17.jqueryExtentions || (ui_17.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_16.jqueryExtentions || (ui_16.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -12499,7 +11673,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_18) {
+        (function (ui_17) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsGridList;
@@ -12709,7 +11883,7 @@ var nts;
                             mousePos = {
                                 x: e.pageX,
                                 y: e.pageY,
-                                rowIndex: ui_18.ig.grid.getRowIndexFrom($(e.target))
+                                rowIndex: ui_17.ig.grid.getRowIndexFrom($(e.target))
                             };
                             // set position to start dragging
                             dragSelectRange.push(mousePos.rowIndex);
@@ -12726,7 +11900,7 @@ var nts;
                             }, 20);
                             // handle mousemove on window while dragging (unhandle when mouseup)
                             $(window).bind('pointermove.NtsGridListDragging', function (e) {
-                                var newPointedRowIndex = ui_18.ig.grid.getRowIndexFrom($(e.target));
+                                var newPointedRowIndex = ui_17.ig.grid.getRowIndexFrom($(e.target));
                                 // selected range is not changed
                                 if (mousePos.rowIndex === newPointedRowIndex) {
                                     return;
@@ -12802,7 +11976,7 @@ var nts;
                         //            $grid.off('mouseup');
                     }
                 })(ntsGridList || (ntsGridList = {}));
-            })(jqueryExtentions = ui_18.jqueryExtentions || (ui_18.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_17.jqueryExtentions || (ui_17.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -12812,7 +11986,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_19) {
+        (function (ui_18) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsWizard;
@@ -12901,7 +12075,7 @@ var nts;
                         return wizard.steps("getCurrentIndex");
                     }
                 })(ntsWizard || (ntsWizard = {}));
-            })(jqueryExtentions = ui_19.jqueryExtentions || (ui_19.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_18.jqueryExtentions || (ui_18.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -13000,7 +12174,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_20) {
+        (function (ui_19) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var isNull = nts.uk.util.isNullOrUndefined;
@@ -13367,7 +12541,7 @@ var nts;
                     }());
                     ntsButtonTable.TableButtonEntity = TableButtonEntity;
                 })(ntsButtonTable || (ntsButtonTable = {}));
-            })(jqueryExtentions = ui_20.jqueryExtentions || (ui_20.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_19.jqueryExtentions || (ui_19.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -13377,7 +12551,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_21) {
+        (function (ui_20) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -13575,7 +12749,7 @@ var nts;
                     return NtsTreeDragAndDropBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTreeDragAndDrop'] = new NtsTreeDragAndDropBindingHandler();
-            })(koExtentions = ui_21.koExtentions || (ui_21.koExtentions = {}));
+            })(koExtentions = ui_20.koExtentions || (ui_20.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -13585,7 +12759,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_22) {
+        (function (ui_21) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -13702,7 +12876,7 @@ var nts;
                     return NtsMonthDaysBindingHandler;
                 }());
                 ko.bindingHandlers['ntsMonthDays'] = new NtsMonthDaysBindingHandler();
-            })(koExtentions = ui_22.koExtentions || (ui_22.koExtentions = {}));
+            })(koExtentions = ui_21.koExtentions || (ui_21.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -13712,7 +12886,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_23) {
+        (function (ui_22) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -14086,7 +13260,7 @@ var nts;
                     return ImageEditorHelper;
                 }());
                 ko.bindingHandlers['ntsImageEditor'] = new NtsImageEditorBindingHandler();
-            })(koExtentions = ui_23.koExtentions || (ui_23.koExtentions = {}));
+            })(koExtentions = ui_22.koExtentions || (ui_22.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -14096,7 +13270,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_24) {
+        (function (ui_23) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -14186,7 +13360,7 @@ var nts;
                     return NtsFunctionPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsFunctionPanel'] = new NtsFunctionPanelBindingHandler();
-            })(koExtentions = ui_24.koExtentions || (ui_24.koExtentions = {}));
+            })(koExtentions = ui_23.koExtentions || (ui_23.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -14346,7 +13520,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_25) {
+        (function (ui_24) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -14431,7 +13605,7 @@ var nts;
                     return NtsAccordionBindingHandler;
                 }());
                 ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
-            })(koExtentions = ui_25.koExtentions || (ui_25.koExtentions = {}));
+            })(koExtentions = ui_24.koExtentions || (ui_24.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -14549,7 +13723,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_26) {
+        (function (ui_25) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -14706,7 +13880,7 @@ var nts;
                     return NtsColorPickerBindingHandler;
                 }());
                 ko.bindingHandlers['ntsColorPicker'] = new NtsColorPickerBindingHandler();
-            })(koExtentions = ui_26.koExtentions || (ui_26.koExtentions = {}));
+            })(koExtentions = ui_25.koExtentions || (ui_25.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -14896,7 +14070,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_27) {
+        (function (ui_26) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var errorMementos = {};
@@ -15019,7 +14193,7 @@ var nts;
                         return control.find("#sidebar-area .navigator a.active").closest("li").index();
                     }
                 })(ntsSideBar || (ntsSideBar = {}));
-            })(jqueryExtentions = ui_27.jqueryExtentions || (ui_27.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_26.jqueryExtentions || (ui_26.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -15183,7 +14357,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_28) {
+        (function (ui_27) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsGrid;
@@ -19749,7 +18923,7 @@ var nts;
                         utils.outsideGrid = outsideGrid;
                     })(utils || (utils = {}));
                 })(ntsGrid = jqueryExtentions.ntsGrid || (jqueryExtentions.ntsGrid = {}));
-            })(jqueryExtentions = ui_28.jqueryExtentions || (ui_28.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_27.jqueryExtentions || (ui_27.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -20437,7 +19611,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_29) {
+        (function (ui_28) {
             var exTable;
             (function (exTable_1) {
                 var NAMESPACE = "extable";
@@ -27339,7 +26513,7 @@ var nts;
                         return css;
                     }
                 })(widget || (widget = {}));
-            })(exTable = ui_29.exTable || (ui_29.exTable = {}));
+            })(exTable = ui_28.exTable || (ui_28.exTable = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -27627,6 +26801,865 @@ var nts;
                     }
                 })(ntsImageEditor || (ntsImageEditor = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui_29) {
+            /**
+             * Dialog Module
+             * Using for display info or confirm dialog
+             */
+            var dialog;
+            (function (dialog) {
+                function getMaxZIndex() {
+                    var overlayElements = parent.$(".ui-widget-overlay");
+                    var max = 12000;
+                    if (overlayElements.length > 0) {
+                        var zIndexs = _.map(overlayElements, function (element) { return parseInt($(element).css("z-index")); });
+                        var temp = _.max(zIndexs);
+                        max = temp > max ? temp : max;
+                    }
+                    return max;
+                }
+                dialog.getMaxZIndex = getMaxZIndex;
+                function createNoticeDialog(message, buttons, header) {
+                    var $control = $('<div/>').addClass('control').addClass("pre");
+                    var text;
+                    if (typeof message === "object") {
+                        //business exception
+                        if (message.message) {
+                            text = message.message;
+                            if (message.messageId) {
+                                $control.append(message.messageId);
+                            }
+                        }
+                        else {
+                            text = nts.uk.resource.getMessage(message.messageId, message.messageParams);
+                            $control.append(message.messageId);
+                        }
+                    }
+                    else {
+                        text = message;
+                    }
+                    text = text.replace(/\n/g, '<br />');
+                    var $this = window.parent.$('<div/>').addClass('notice-dialog')
+                        .append($('<div/>').addClass('text').append(text))
+                        .append($control)
+                        .appendTo('body')
+                        .dialog({
+                        dialogClass: "no-close-btn",
+                        width: 'auto',
+                        modal: true,
+                        minWidth: 300,
+                        maxWidth: 800,
+                        maxHeight: 400,
+                        closeOnEscape: false,
+                        buttons: buttons,
+                        open: function () {
+                            $(this).closest('.ui-dialog').css('z-index', getMaxZIndex() + 2);
+                            $('.ui-widget-overlay').last().css('z-index', getMaxZIndex() + 1);
+                            $(this).parent().find('.ui-dialog-buttonset > button:first-child').focus();
+                            $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
+                            //add header icon if it has
+                            if (header && header.icon) {
+                                var $headerContainer = $("<div'></div>").addClass("ui-dialog-titlebar-container");
+                                $headerContainer.append($("<img>").attr("src", header.icon).addClass("ui-dialog-titlebar-icon"));
+                                $headerContainer.append($(this).parent().find(".ui-dialog-title"));
+                                $(this).parent().children(".ui-dialog-titlebar").prepend($headerContainer);
+                            }
+                        },
+                        close: function (event) {
+                            window.parent.$(this).dialog('destroy');
+                            window.parent.$(event.target).remove();
+                        }
+                    });
+                    $this.dialogPositionControl();
+                    //add header text if it has
+                    if (header && header.text) {
+                        $this.dialog("option", "title", header.text);
+                    }
+                    return $this;
+                }
+                function version() {
+                    var versinText = "AP version: ...";
+                    var $this = window.parent.$('<div/>').addClass('version-dialog')
+                        .append($('<div/>').addClass('text').append(versinText))
+                        .appendTo('body')
+                        .dialog({});
+                }
+                dialog.version = version;
+                /**
+                 * Show information dialog.
+                 *
+                 * @param {String}
+                 *          text information text
+                 * @returns handler
+                 */
+                function info(text) {
+                    var then = $.noop;
+                    var $dialog = window.parent.$('<div/>').hide();
+                    $(function () {
+                        $dialog.appendTo('body').dialog({
+                            autoOpen: false
+                        });
+                    });
+                    setTimeout(function () {
+                        var $this = createNoticeDialog(text, [{
+                                text: ui_29.toBeResource.close,
+                                "class": "large",
+                                click: function () {
+                                    $this.dialog('close');
+                                    then();
+                                }
+                            }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/infor.png", text: ui_29.toBeResource.info });
+                    }, 0);
+                    return {
+                        then: function (callback) {
+                            then = callback;
+                        }
+                    };
+                }
+                dialog.info = info;
+                ;
+                function alertError(message) {
+                    var then = $.noop;
+                    var $dialog = window.parent.$('<div/>').hide();
+                    $(function () {
+                        $dialog.appendTo('body').dialog({
+                            autoOpen: false
+                        });
+                    });
+                    setTimeout(function () {
+                        var $this = createNoticeDialog(message, [{
+                                text: ui_29.toBeResource.close,
+                                "class": "large",
+                                click: function () {
+                                    $this.dialog('close');
+                                    then();
+                                }
+                            }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/error.png", text: ui_29.toBeResource.error });
+                    }, 0);
+                    return {
+                        then: function (callback) {
+                            then = callback;
+                        }
+                    };
+                }
+                dialog.alertError = alertError;
+                /**
+                 * Show alert dialog.
+                 *
+                 * @param {String}
+                 *          text information text
+                 * @returns handler
+                 */
+                function alert(text) {
+                    var then = $.noop;
+                    var $dialog = parent.$('<div/>').hide();
+                    $(function () {
+                        $dialog.appendTo('body').dialog({
+                            autoOpen: false
+                        });
+                    });
+                    setTimeout(function () {
+                        var $this = createNoticeDialog(text, [{
+                                text: ui_29.toBeResource.close,
+                                "class": "large",
+                                click: function () {
+                                    $this.dialog('close');
+                                    then();
+                                }
+                            }], { text: nts.uk.resource.getText(ui_29.toBeResource.warn) });
+                    }, 0);
+                    return {
+                        then: function (callback) {
+                            then = callback;
+                        }
+                    };
+                }
+                dialog.alert = alert;
+                ;
+                /**
+                 * Show confirm dialog.
+                 *
+                 * @param {String}
+                 *          text information text
+                 * @returns handler
+                 */
+                function confirm(text) {
+                    var handleYes = $.noop;
+                    var handleNo = $.noop;
+                    var handleCancel = $.noop;
+                    var handleThen = $.noop;
+                    var hasNoButton = true;
+                    var hasCancelButton = false;
+                    var handlers = {
+                        ifYes: function (handler) {
+                            handleYes = handler;
+                            return handlers;
+                        },
+                        ifCancel: function (handler) {
+                            hasNoButton = false;
+                            hasCancelButton = true;
+                            handleCancel = handler;
+                            return handlers;
+                        },
+                        ifNo: function (handler) {
+                            hasNoButton = true;
+                            handleNo = handler;
+                            return handlers;
+                        },
+                        then: function (handler) {
+                            handleThen = handler;
+                            return handlers;
+                        }
+                    };
+                    setTimeout(function () {
+                        var buttons = [];
+                        // yes button
+                        buttons.push({
+                            text: ui_29.toBeResource.yes,
+                            "class": "yes large danger",
+                            click: function () {
+                                $this.dialog('close');
+                                handleYes();
+                                handleThen();
+                            }
+                        });
+                        // no button
+                        if (hasNoButton) {
+                            buttons.push({
+                                text: ui_29.toBeResource.no,
+                                "class": "no large",
+                                click: function () {
+                                    $this.dialog('close');
+                                    handleNo();
+                                    handleThen();
+                                }
+                            });
+                        }
+                        // cancel button
+                        if (hasCancelButton) {
+                            buttons.push({
+                                text: ui_29.toBeResource.cancel,
+                                "class": "cancel large",
+                                click: function () {
+                                    $this.dialog('close');
+                                    handleCancel();
+                                    handleThen();
+                                }
+                            });
+                        }
+                        var $this = createNoticeDialog(text, buttons);
+                    });
+                    return handlers;
+                }
+                dialog.confirm = confirm;
+                ;
+                function addError(errorBody, error, idx) {
+                    var row = $("<tr/>");
+                    row.append("<td style='display: none;'>" + idx + "/td><td>" + error["message"] + "</td><td>" + error["messageId"] + "</td>");
+                    var nameId = error["supplements"]["NameID"];
+                    if (!uk.util.isNullOrUndefined(nameId)) {
+                        row.click(function (evt, ui) {
+                            var element = $("body").find('[NameID="' + nameId + '"]');
+                            var tab = element.closest("[role='tabpanel']");
+                            while (!uk.util.isNullOrEmpty(tab)) {
+                                var tabId = tab.attr("id");
+                                tab.siblings(":first").children("li[aria-controls='" + tabId + "']").children("a").click();
+                                tab = tab.parent().closest("[role='tabpanel']");
+                            }
+                            element.focus();
+                            var $dialogContainer = errorBody.closest(".bundled-errors-alert").closest("[role='dialog']");
+                            var $self = nts.uk.ui.windows.getSelf();
+                            var additonalTop = 0;
+                            var additonalLeft = 0;
+                            if (!$self.isRoot) {
+                                var $currentDialog = $self.$dialog.closest("[role='dialog']");
+                                var $currentHeadBar = $currentDialog.find(".ui-dialog-titlebar");
+                                var currentDialogOffset = $currentDialog.offset();
+                                additonalTop = currentDialogOffset.top + $currentHeadBar.height();
+                                additonalLeft = currentDialogOffset.left;
+                            }
+                            var currentControlOffset = element.offset();
+                            var top = additonalTop + currentControlOffset.top + element.outerHeight() - window.scrollY;
+                            var left = additonalLeft + currentControlOffset.left - window.scrollX;
+                            var $errorDialogOffset = $dialogContainer.offset();
+                            var maxLeft = $errorDialogOffset.left + $dialogContainer.width();
+                            var maxTop = $errorDialogOffset.top + $dialogContainer.height();
+                            if ($errorDialogOffset.top < top && top < maxTop) {
+                                $dialogContainer.css("top", top + 15);
+                            }
+                            if (($errorDialogOffset.left < left && left < maxLeft)) {
+                                $dialogContainer.css("left", left);
+                            }
+                        });
+                    }
+                    row.appendTo(errorBody);
+                }
+                function getRoot() {
+                    var self = nts.uk.ui.windows.getSelf();
+                    while (!self.isRoot) {
+                        self = self.parent;
+                    }
+                    return $(self.globalContext.document).find("body");
+                }
+                function bundledErrors(errors) {
+                    var then = $.noop;
+                    var id = uk.util.randomId();
+                    var container = $("<div id='" + id + "' class='bundled-errors-alert'/>"), functionArea = $("<div id='functions-area-bottom'/>"), errorBoard = $("<div id='error-board'>    <table> <thead> <tr>    <th style='width: auto;'>"
+                        + ui_29.toBeResource.errorContent + "</th><th style='display: none;'/>    <th style='width: 150px;'>"
+                        + ui_29.toBeResource.errorCode + "</th>   </tr>   </thead>    <tbody/>    </table> </div>"), closeButton = $("<button class='ntsButton ntsClose large'/>");
+                    var errorBody = errorBoard.find("tbody");
+                    if ($.isArray(errors["errors"])) {
+                        _.forEach(errors["errors"], function (error, idx) {
+                            addError(errorBody, error, idx + 1);
+                        });
+                    }
+                    else {
+                        return alertError(errors);
+                    }
+                    closeButton.appendTo(functionArea);
+                    functionArea.appendTo(container);
+                    errorBoard.appendTo(container);
+                    container.appendTo(getRoot());
+                    setTimeout(function () {
+                        container.dialog({
+                            title: ui_29.toBeResource.errorList,
+                            dialogClass: "no-close-btn",
+                            modal: false,
+                            resizable: false,
+                            width: 450,
+                            maxHeight: 500,
+                            closeOnEscape: false,
+                            open: function () {
+                                errorBoard.css({ "overflow": "auto", "max-height": "300px", "margin-bottom": "65px" });
+                                functionArea.css({ "left": "0px" });
+                                closeButton.text(ui_29.toBeResource.close).click(function (evt) {
+                                    container.dialog("destroy");
+                                    container.remove();
+                                    then();
+                                });
+                                container.closest("div[role='dialog']").position({ my: "center", at: "center", of: window.parent });
+                            },
+                            close: function (event) {
+                            }
+                        }).dialogPositionControl();
+                    }, 0);
+                    return {
+                        then: function (callback) {
+                            then = callback;
+                        }
+                    };
+                }
+                dialog.bundledErrors = bundledErrors;
+                ;
+            })(dialog = ui_29.dialog || (ui_29.dialog = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            /**
+             * Utilities for IgniteUI
+             */
+            var ig;
+            (function (ig) {
+                var grid;
+                (function (grid) {
+                    function getScrollContainer($grid) {
+                        var $scroll = $grid.igGrid("scrollContainer");
+                        if ($scroll.length === 1)
+                            return $scroll;
+                        return $("#" + $grid.attr("id") + "_scrollContainer");
+                    }
+                    grid.getScrollContainer = getScrollContainer;
+                    function getRowIdFrom($anyElementInRow) {
+                        return $anyElementInRow.closest('tr').attr('data-id');
+                    }
+                    grid.getRowIdFrom = getRowIdFrom;
+                    function getRowIndexFrom($anyElementInRow) {
+                        return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
+                    }
+                    grid.getRowIndexFrom = getRowIndexFrom;
+                    function expose(targetRow, $grid) {
+                        var $scroll = getScrollContainer($grid);
+                        $scroll.exposeVertically(targetRow.element);
+                    }
+                    grid.expose = expose;
+                    var virtual;
+                    (function (virtual) {
+                        function getDisplayContainer(gridId) {
+                            return $('#' + gridId + '_displayContainer');
+                        }
+                        virtual.getDisplayContainer = getDisplayContainer;
+                        function getVisibleRows(gridId) {
+                            return $('#' + gridId + ' > tbody > tr:visible');
+                        }
+                        virtual.getVisibleRows = getVisibleRows;
+                        function getFirstVisibleRow(gridId) {
+                            var top = getDisplayContainer(gridId).scrollTop();
+                            var visibleRows = getVisibleRows(gridId);
+                            for (var i = 0; i < visibleRows.length; i++) {
+                                var $row = $(visibleRows[i]);
+                                if (visibleRows[i].offsetTop + $row.height() > top) {
+                                    return $row;
+                                }
+                            }
+                        }
+                        virtual.getFirstVisibleRow = getFirstVisibleRow;
+                        function getLastVisibleRow(gridId) {
+                            var $displayContainer = getDisplayContainer(gridId);
+                            var bottom = $displayContainer.scrollTop() + $displayContainer.height();
+                            return getVisibleRows(gridId).filter(function () {
+                                return this.offsetTop < bottom;
+                            }).last();
+                        }
+                        virtual.getLastVisibleRow = getLastVisibleRow;
+                        function expose(targetRow, $grid) {
+                            if (targetRow.index === undefined) {
+                                $grid.igGrid("virtualScrollTo", dataSource.getIndexOfKey(targetRow.id, $grid) + 1);
+                                return;
+                            }
+                            var rowHeight = targetRow.element.outerHeight();
+                            var targetTop = targetRow.index * rowHeight;
+                            var targetBottom = targetTop + rowHeight;
+                            var $scroll = getScrollContainer($grid);
+                            var viewHeight = $scroll.height();
+                            var viewTop = $scroll.scrollTop();
+                            var viewBottom = viewTop + viewHeight;
+                            if (viewTop <= targetTop && targetBottom <= viewBottom) {
+                                return;
+                            }
+                            // when specify 1, top row will be shown.
+                            $grid.igGrid("virtualScrollTo", targetRow.index + 1);
+                        }
+                        virtual.expose = expose;
+                    })(virtual = grid.virtual || (grid.virtual = {}));
+                    var dataSource;
+                    (function (dataSource) {
+                        function getIndexOfKey(targetKey, $grid) {
+                            var option = $grid.igGrid("option");
+                            return _.findIndex(option.dataSource, function (s) { return s[option.primaryKey].toString() === targetKey.toString(); });
+                        }
+                        dataSource.getIndexOfKey = getIndexOfKey;
+                    })(dataSource = grid.dataSource || (grid.dataSource = {}));
+                    var header;
+                    (function (header) {
+                        function getCell(gridId, columnKey) {
+                            var $headers = $('#' + gridId).igGrid("headersTable");
+                            return $headers.find('#' + gridId + '_' + columnKey);
+                        }
+                        header.getCell = getCell;
+                        function getLabel(gridId, columnKey) {
+                            return getCell(gridId, columnKey).find('span');
+                        }
+                        header.getLabel = getLabel;
+                    })(header = grid.header || (grid.header = {}));
+                })(grid = ig.grid || (ig.grid = {}));
+                var tree;
+                (function (tree) {
+                    var grid;
+                    (function (grid) {
+                        function expandTo(targetKey, $treeGrid) {
+                            var option = $treeGrid.igTreeGrid("option");
+                            var ancestorKeys = dataSource.collectAncestorKeys(targetKey, option.dataSource, option.primaryKey, option.childDataKey);
+                            if (ancestorKeys === null) {
+                                return;
+                            }
+                            var expand = function (currentIndex) {
+                                if (currentIndex >= ancestorKeys.length)
+                                    return;
+                                $treeGrid.igTreeGrid("expandRow", ancestorKeys[currentIndex]);
+                                setTimeout(function () { expand(currentIndex + 1); }, 0);
+                            };
+                            expand(0);
+                            setTimeout(function () {
+                                scrollTo(targetKey, $treeGrid);
+                            }, 1);
+                        }
+                        grid.expandTo = expandTo;
+                        function scrollTo(targetKey, $treeGrid) {
+                            var $scroll = $treeGrid.igTreeGrid("scrollContainer");
+                            var $targetNode = $treeGrid.find("tr[data-id='" + targetKey + "']").first();
+                            if ($targetNode.length === 0)
+                                return;
+                            $scroll.exposeVertically($targetNode);
+                        }
+                        grid.scrollTo = scrollTo;
+                    })(grid = tree.grid || (tree.grid = {}));
+                    var dataSource;
+                    (function (dataSource_1) {
+                        function collectAncestorKeys(targetKey, dataSource, primaryKey, childDataKey) {
+                            if (typeof dataSource === "undefined") {
+                                return null;
+                            }
+                            for (var i = 0, len = dataSource.length; i < len; i++) {
+                                var currentData = dataSource[i];
+                                if (currentData[primaryKey] === targetKey) {
+                                    return [targetKey];
+                                }
+                                var children = currentData[childDataKey];
+                                var results = collectAncestorKeys(targetKey, children, primaryKey, childDataKey);
+                                if (results !== null) {
+                                    results.unshift(currentData[primaryKey]);
+                                    return results;
+                                }
+                            }
+                            return null;
+                        }
+                        dataSource_1.collectAncestorKeys = collectAncestorKeys;
+                    })(dataSource = tree.dataSource || (tree.dataSource = {}));
+                })(tree = ig.tree || (ig.tree = {}));
+            })(ig = ui.ig || (ui.ig = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var windows;
+            (function (windows) {
+                var MAIN_WINDOW_ID = 'MAIN_WINDOW';
+                var DEFAULT_DIALOG_OPTIONS = {
+                    autoOpen: false,
+                    draggable: true,
+                    resizable: false,
+                    dialogClass: "no-close"
+                };
+                /**
+                 * Main or Sub Window(dialog)
+                 */
+                var ScreenWindow = (function () {
+                    function ScreenWindow(id, isRoot, parent) {
+                        this.globalContext = null;
+                        this.$dialog = null;
+                        this.$iframe = null;
+                        this.onClosedHandler = $.noop;
+                        this.id = id;
+                        this.isRoot = isRoot;
+                        this.parent = parent;
+                    }
+                    ScreenWindow.createMainWindow = function () {
+                        return new ScreenWindow(MAIN_WINDOW_ID, true, null);
+                    };
+                    ScreenWindow.createSubWindow = function (parent) {
+                        return new ScreenWindow(uk.util.randomId(), false, parent);
+                    };
+                    ScreenWindow.prototype.setGlobal = function (globalContext) {
+                        this.globalContext = globalContext;
+                    };
+                    ScreenWindow.prototype.setTitle = function (newTitle) {
+                        if (this.isRoot) {
+                            this.globalContext.title = newTitle;
+                        }
+                        else {
+                            this.$dialog.dialog('option', { title: newTitle });
+                        }
+                    };
+                    ScreenWindow.prototype.setHeight = function (height) {
+                        if (!isNaN(height)) {
+                            this.$dialog.dialog('option', {
+                                height: height
+                            });
+                            this.$dialog.resize();
+                        }
+                    };
+                    ScreenWindow.prototype.setWidth = function (width) {
+                        if (!isNaN(width)) {
+                            this.$dialog.dialog('option', {
+                                width: width
+                            });
+                            this.$dialog.resize();
+                        }
+                    };
+                    ScreenWindow.prototype.setSize = function (height, width) {
+                        if (!isNaN(width) && !isNaN(height)) {
+                            this.$dialog.dialog('option', {
+                                width: width,
+                                height: height
+                            });
+                            this.$dialog.resize();
+                        }
+                    };
+                    ScreenWindow.prototype.setupAsDialog = function (path, options) {
+                        var _this = this;
+                        options.close = function () {
+                            _this.dispose();
+                        };
+                        this.build$dialog(options);
+                        this.$iframe.bind('load', function () {
+                            _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
+                            var dialogName = _this.globalContext.__viewContext["program"]["programName"];
+                            var title = nts.uk.util.isNullOrEmpty(dialogName) ? "" : dialogName;
+                            var showCloseButton = _this.globalContext.dialogCloseButton === true;
+                            _this.$dialog.dialog('option', {
+                                width: options.width || _this.globalContext.dialogSize.width,
+                                height: options.height || _this.globalContext.dialogSize.height,
+                                title: title,
+                                resizable: options.resizable,
+                                open: function () {
+                                    var $dialog = $(this);
+                                    if (!showCloseButton) {
+                                        $dialog.closest(".ui-dialog").addClass("no-close-btn");
+                                    }
+                                    $dialog.dialogPositionControl();
+                                    //                            if ($(this).parent().height() >= $("#contents-area").height()) {
+                                    //                                $(this).dialog("option", "position", {
+                                    //                                    my: "center top",
+                                    //                                    at: "center top",
+                                    //                                    of: $("#contents-area"),
+                                    //                                    collision: "none"
+                                    //                                })
+                                    //                                $(this).parent().css("position", "absolute");
+                                    //                            }
+                                    var $dialogDocument = $(this).parent();
+                                    var $dialogContentDoc = $(this.lastElementChild.contentDocument);
+                                    // catch press tab key in close button of dialog.
+                                    $dialogDocument.on("keydown", ":tabbable", function (evt) {
+                                        var code = evt.which || evt.keyCode;
+                                        if (code.toString() === "9") {
+                                            var focusableElements = $dialogContentDoc.find(":tabbable");
+                                            if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false) {
+                                                focusableElements.first().focus();
+                                                evt.preventDefault();
+                                            }
+                                            else if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === true) {
+                                                focusableElements.last().focus();
+                                                evt.preventDefault();
+                                            }
+                                        }
+                                    });
+                                    // catch press tab key for component in dialog.
+                                    $dialogContentDoc.on("keydown", ":tabbable", function (evt) {
+                                        var code = evt.which || evt.keyCode;
+                                        if (code.toString() === "9") {
+                                            var focusableElements = $dialogContentDoc.find(":tabbable");
+                                            if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
+                                                focusableElements.first().focus();
+                                                evt.preventDefault();
+                                            }
+                                            else if ($(evt.target).is(focusableElements.first()) && evt.shiftKey === true) {
+                                                focusableElements.last().focus();
+                                                evt.preventDefault();
+                                            }
+                                        }
+                                    });
+                                },
+                                beforeClose: function () {
+                                    //return dialogWindow.__viewContext.dialog.beforeClose();
+                                }
+                            }).dialog('open');
+                            //remove focus on tab key press on the close button on jquery dialog
+                            $('.ui-dialog-titlebar-close').attr('tabindex', '-1');
+                            if (_this.parent !== null)
+                                _this.parent.globalContext.nts.uk.ui.block.clear();
+                            //                    var widget= this.$dialog.dialog("widget");
+                            //                    widget.draggable("option","containment",false);
+                        });
+                        this.globalContext.location.href = path;
+                    };
+                    ScreenWindow.prototype.build$dialog = function (options) {
+                        this.$dialog = $('<div/>')
+                            .css({
+                            padding: '0px',
+                            overflow: 'hidden'
+                        })
+                            .appendTo($('body'))
+                            .dialog(options);
+                        this.$iframe = $('<iframe/>').css({
+                            width: '100%',
+                            height: '100%'
+                        }).appendTo(this.$dialog);
+                        this.setGlobal(this.$iframe[0].contentWindow);
+                    };
+                    ScreenWindow.prototype.onClosed = function (callback) {
+                        this.onClosedHandler = function () {
+                            callback();
+                            windows.container.localShared = {};
+                        };
+                    };
+                    ScreenWindow.prototype.close = function () {
+                        if (this.isRoot) {
+                            window.close();
+                        }
+                        else {
+                            this.$dialog.dialog('close');
+                        }
+                    };
+                    ScreenWindow.prototype.dispose = function () {
+                        var _this = this;
+                        _.defer(function () { return _this.onClosedHandler(); });
+                        // delay 2 seconds to avoid IE error when any JS is running in destroyed iframe
+                        setTimeout(function () {
+                            _this.$iframe.remove();
+                            _this.$dialog.remove();
+                            _this.$dialog = null;
+                            _this.$iframe = null;
+                            _this.globalContext = null;
+                            _this.parent = null;
+                            _this.onClosedHandler = null;
+                        }, 2000);
+                    };
+                    return ScreenWindow;
+                }());
+                windows.ScreenWindow = ScreenWindow;
+                /**
+                 * All ScreenWindows are managed by this container.
+                 * this instance is singleton in one browser-tab.
+                 */
+                var ScreenWindowContainer = (function () {
+                    function ScreenWindowContainer() {
+                        this.windows = {};
+                        this.windows[windows.selfId] = ScreenWindow.createMainWindow();
+                        this.windows[windows.selfId].setGlobal(window);
+                        this.shared = {};
+                        this.localShared = {};
+                    }
+                    /**
+                     * All dialog object is in MainWindow.
+                     */
+                    ScreenWindowContainer.prototype.createDialog = function (path, options, parentId) {
+                        var parentwindow = this.windows[parentId];
+                        var subWindow = ScreenWindow.createSubWindow(parentwindow);
+                        this.windows[subWindow.id] = subWindow;
+                        options = $.extend({}, DEFAULT_DIALOG_OPTIONS, options);
+                        subWindow.setupAsDialog(path, options);
+                        return subWindow;
+                    };
+                    ScreenWindowContainer.prototype.createDialogNotOpen = function (path, options, parentId) {
+                        var parentwindow = this.windows[parentId];
+                        var subWindow = ScreenWindow.createSubWindow(parentwindow);
+                        this.windows[subWindow.id] = subWindow;
+                        return subWindow;
+                    };
+                    ScreenWindowContainer.prototype.mergeOption = function (options) {
+                        return $.extend({}, DEFAULT_DIALOG_OPTIONS, options);
+                    };
+                    ScreenWindowContainer.prototype.getShared = function (key) {
+                        return this.localShared[key] !== undefined ? this.localShared[key] : this.shared[key];
+                    };
+                    ScreenWindowContainer.prototype.setShared = function (key, data, isRoot, persist) {
+                        var transferData;
+                        // Null or Undefined
+                        if (uk.util.isNullOrUndefined(data)) {
+                            transferData = data;
+                        }
+                        else if (!_.isFunction(data) || ko.isObservable(data)) {
+                            transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
+                        }
+                        else {
+                            transferData = data;
+                        }
+                        if (persist || isRoot) {
+                            this.shared[key] = transferData;
+                        }
+                        else {
+                            this.localShared[key] = transferData;
+                        }
+                    };
+                    ScreenWindowContainer.prototype.close = function (id) {
+                        var target = this.windows[id];
+                        delete this.windows[id];
+                        target.close();
+                    };
+                    return ScreenWindowContainer;
+                }());
+                windows.ScreenWindowContainer = ScreenWindowContainer;
+                function rgc() {
+                    return windows.container.windows[MAIN_WINDOW_ID].globalContext;
+                }
+                windows.rgc = rgc;
+                if (uk.util.isInFrame()) {
+                    var parent = window.parent;
+                    windows.container = (parent.nts.uk.ui.windows.container);
+                }
+                else {
+                    windows.selfId = MAIN_WINDOW_ID;
+                    windows.container = new ScreenWindowContainer();
+                }
+                function getShared(key) {
+                    return windows.container.getShared(key);
+                }
+                windows.getShared = getShared;
+                function setShared(key, data, persist) {
+                    windows.container.setShared(key, data, windows.getSelf().isRoot, persist);
+                }
+                windows.setShared = setShared;
+                function getSelf() {
+                    return windows.container.windows[windows.selfId];
+                }
+                windows.getSelf = getSelf;
+                function close(windowId) {
+                    windowId = uk.util.orDefault(windowId, windows.selfId);
+                    windows.container.close(windowId);
+                }
+                windows.close = close;
+                var sub;
+                (function (sub) {
+                    function modal(webAppId, path, options) {
+                        if (typeof arguments[1] !== 'string') {
+                            return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                        }
+                        return dialog(webAppId, path, true, options);
+                    }
+                    sub.modal = modal;
+                    function modeless(webAppId, path, options) {
+                        if (typeof arguments[1] !== 'string') {
+                            return modeless.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                        }
+                        return dialog(webAppId, path, false, options);
+                    }
+                    sub.modeless = modeless;
+                    function dialog(webAppId, path, modal, options) {
+                        options = options || {};
+                        options.modal = modal;
+                        if (webAppId == nts.uk.request.location.currentAppId) {
+                            path = nts.uk.request.resolvePath(path);
+                            return open(path, options);
+                        }
+                        else {
+                            path = nts.uk.request.location.siteRoot
+                                .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                                .mergeRelativePath(path).serialize();
+                            var dialog_1 = createDialog(path, options);
+                            uk.request.login.keepSerializedSession()
+                                .then(function () {
+                                return uk.request.login.restoreSessionTo(webAppId);
+                            })
+                                .then(function () {
+                                dialog_1.setupAsDialog(path, windows.container.mergeOption(options));
+                            });
+                            return dialog_1;
+                        }
+                    }
+                    function open(path, options) {
+                        nts.uk.ui.block.invisible();
+                        return windows.container.createDialog(path, options, windows.selfId);
+                    }
+                    sub.open = open;
+                    function createDialog(path, options) {
+                        nts.uk.ui.block.invisible();
+                        return windows.container.createDialogNotOpen(path, options, windows.selfId);
+                    }
+                    sub.createDialog = createDialog;
+                })(sub = windows.sub || (windows.sub = {}));
+            })(windows = ui.windows || (ui.windows = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

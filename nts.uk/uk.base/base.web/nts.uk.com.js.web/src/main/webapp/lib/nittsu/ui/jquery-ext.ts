@@ -1,3 +1,10 @@
+interface JQuery {
+    exposeVertically($target: JQuery);
+    onkey(command: "down"|"up"|"press", keyCode: number, handler: (JQueryEventObject) => void): JQuery;
+    dialogPositionControl(): JQuery;
+    
+}
+
 module nts.uk.ui.jqueryExtentions {
     // This file left here for log purpose
     

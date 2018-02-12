@@ -27,6 +27,9 @@
 /// <reference path="ui/validation.ts"/>
 /// <reference path="ui/errors.ts"/>
 /// <reference path="ui/ui.ts"/>
+/// <reference path="ui/ui_sub/ui_windows.ts"/>
+/// <reference path="ui/ui_sub/ui_dialog.ts"/>
+/// <reference path="ui/ui_sub/ui_ig.ts"/>
 /// <reference path="ui/dialog-options.ts"/>
 /// <reference path="ui/textbox-options.ts"/>
 /// <reference path="ui/jquery-ext.ts"/>
