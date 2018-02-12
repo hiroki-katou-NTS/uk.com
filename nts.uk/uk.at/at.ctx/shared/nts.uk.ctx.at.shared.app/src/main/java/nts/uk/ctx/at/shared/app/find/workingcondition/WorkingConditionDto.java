@@ -958,8 +958,6 @@ public class WorkingConditionDto extends PeregDomainDto {
 			if(scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent())
 				dto.setReferenceType(scheduleMethod.getWorkScheduleBusCal().get().getReferenceWorkingHours().value);
 		}
-		if(scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent())
-		dto.setReferenceType(scheduleMethod.getMonthlyPatternWorkScheduleCre().get().getReferenceType().value);
 	}
 
 	private static void setHolidayTime(WorkingConditionDto dto, SingleDaySchedule holidayTime) {
