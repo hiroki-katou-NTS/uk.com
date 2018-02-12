@@ -2,6 +2,7 @@ module nts.uk.at.view.ksu007.b {
 
     import ScheduleBatchCorrectSetting = nts.uk.at.view.ksu007.a.viewmodel.ScheduleBatchCorrectSetting;
     import ScheduleBatchCorrectSettingSave = nts.uk.at.view.ksu007.a.service.model.ScheduleBatchCorrectSettingSave;
+    import ErrorContentDto = nts.uk.at.view.ksu007.b.service.Model.ErrorContentDto;
 
     export module viewmodel {
 
@@ -114,7 +115,7 @@ module nts.uk.at.view.ksu007.b {
                                     console.log(item);
                                     var errors = JSON.parse(item.valueAsString);
                                     _.forEach(errors, error => {
-                                        var errorContent : ErrorContentDto {
+                                        var errorContent : ErrorContentDto = {
                                             employeeId : error.employeeCode,
                                             employeeName : error.employeeName,
                                             ymd : error.dateYMD,
@@ -122,7 +123,7 @@ module nts.uk.at.view.ksu007.b {
                                         }
                                         self.dataError.push(errorContent);
                                         self.errorLogs.push(errorContent);
-                                    };
+                                    });
                                 }
                                 if (item.key == 'NUMBER_OF_SUCCESS') {
                                      self.numberSuccess(item.valueAsNumber);

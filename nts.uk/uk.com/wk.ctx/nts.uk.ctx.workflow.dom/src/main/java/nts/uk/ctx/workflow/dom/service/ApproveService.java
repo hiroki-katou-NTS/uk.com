@@ -21,7 +21,7 @@ public interface ApproveService {
 	 * @param employeeID 社員ID
 	 * @return 承認フェーズ枠番
 	 */
-	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, ApplicationType appType, GeneralDate appDate);
+	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, ApplicationType appType, GeneralDate appDate, String memo);
 	
 	/**
 	 * 1.指定する承認フェーズの承認が完了したか

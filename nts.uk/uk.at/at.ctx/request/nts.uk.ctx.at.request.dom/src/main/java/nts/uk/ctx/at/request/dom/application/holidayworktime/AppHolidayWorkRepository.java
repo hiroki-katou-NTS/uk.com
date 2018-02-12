@@ -10,4 +10,17 @@ public interface AppHolidayWorkRepository {
 	 * @return
 	 */
 	public Optional<AppHolidayWork> getAppHolidayWork(String companyID, String appID);
+	/**
+	 * ドメインモデル「休日出勤申請」の登録処理を実行する(INSERT)
+	 * @param domain : 休日出勤申請
+	 */
+	public void Add(AppHolidayWork domain);
+	
+	/**
+	 * getFullAppHolidayWork
+	 * @param companyID
+	 * @param appID
+	 * @return
+	 */
+	public Optional<AppHolidayWork> getFullAppHolidayWork(String companyID, String appID);
 }

@@ -67,10 +67,13 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandler<UpdateApp
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
 				.getApplicationSettingByComID(companyId);
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
-		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-				&& Strings.isBlank(typicalReason+displayReason)) {
-			throw new BusinessException("Msg_115");
-		}
+		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)
+				&&appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
+				if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
+						&& Strings.isBlank(typicalReason+displayReason)) {
+					throw new BusinessException("Msg_115");
+				}
+			}
 		appReason = typicalReason + displayReason;
 		
 		Application_New updateApp = new Application_New(0L, companyId, command.goBackCommand.getAppID(),

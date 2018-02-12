@@ -24,6 +24,7 @@ module ccg014.a.viewmodel {
             self.selectedTitleMenuCD = ko.observable(null);
             self.selectedTitleMenuCD.subscribe((value) => {
                 if(value === '' && !self.isCreate()){
+                    self.isCreate(true);
                     return;
                 }
                 self.findSelectedTitleMenu(value);
@@ -31,7 +32,7 @@ module ccg014.a.viewmodel {
             });
             self.columns = ko.observableArray([
                 { headerText: resource.getText('CCG014_11'), key: 'titleMenuCD', width: 45 },
-                { headerText: resource.getText('CCG014_12'), key: 'name', width: 260 }
+                { headerText: resource.getText('CCG014_12'), key: 'name', width: 260,formatter: _.escape }
             ]);
             // TitleMenu Details
             self.selectedTitleMenu = ko.observable(null);

@@ -11,8 +11,6 @@ public interface ApprovalRootStateService {
 	
 	public void insertAppRootType(String companyID, String employeeID, ApplicationType appType, GeneralDate date, String appID);
 	
-	public void updateReason(String rootStateID, String employeeID, String reason);
-	
 	public void delete(String rootStateID);
 	
 }

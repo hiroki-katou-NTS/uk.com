@@ -3641,9 +3641,11 @@ module nts.uk.ui.jqueryExtentions {
                     let sheetFeature = feature.find(options.ntsFeatures, feature.SHEET);
                     if (util.isNullOrUndefined(sheetFeature)) {
                         let idxes = {};
-                        utils.analyzeColumns(options.columns).forEach(function(c, i) {
-                            idxes[c.key] = i;
-                        });
+                        utils.analyzeColumns(options.columns)
+                            .filter(function (c) { return c.hidden !== true; })
+                            .forEach(function(c, i) {
+                                idxes[c.key] = i;
+                            });
                         let setting = $grid.data(internal.SETTINGS);
                         if (!setting.descriptor) {
                             setting.descriptor = new settings.Descriptor();

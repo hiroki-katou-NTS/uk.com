@@ -110,14 +110,14 @@ public class DPHeaderDto {
 			dto.setGroup(groups);
 		} else if(attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value){
 			//dto.setNtsControl("TextEditorNumberSeparated");
-			dto.setConstraint(new Constraint("Currency", true));
+			dto.setConstraint(new Constraint("Currency", false));
 		} else if(attendanceAtr == DailyAttendanceAtr.Time.value){
 			//dto.setNtsControl("TextEditorTimeShortHM");
-			dto.setConstraint(new Constraint("Clock", true));
+			dto.setConstraint(new Constraint("Clock", false));
 		} else if(attendanceAtr == DailyAttendanceAtr.NumberOfTime.value){
-			dto.setConstraint(new Constraint("Integer", true));
+			dto.setConstraint(new Constraint("Integer", false));
 		} else if(attendanceAtr == DailyAttendanceAtr.TimeOfDay.value){
-			dto.setConstraint(new Constraint("TimeWithDay", true));
+			dto.setConstraint(new Constraint("TimeWithDay", false));
 		}
 		return dto;
 	}

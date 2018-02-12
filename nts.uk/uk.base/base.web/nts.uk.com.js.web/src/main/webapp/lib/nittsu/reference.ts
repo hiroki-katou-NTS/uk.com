@@ -14,6 +14,7 @@
 /// <reference path="number.ts"/>
 
 /// <reference path="time.ts"/>
+/// <reference path="time/timeformat.ts"/>
 /// <reference path="time/minutesbased/minutesbased.ts"/>
 /// <reference path="time/minutesbased/minutesbased_duration.ts"/>
 /// <reference path="time/minutesbased/minutesbased_clock.ts"/>

@@ -334,17 +334,29 @@ public class WorkplaceConfigInfoFinder {
 
 	/**
 	 * Find flat list.
-	 *
-	 * @param strD the str D
-	 * @return the list6
+	 * 会社の基準日時点の職場を取得する
 	 */
-	public List<WorkplaceHierarchyDto> findFlatList(GeneralDate strD) {
-		WkpConfigInfoFindObject findObject = new WkpConfigInfoFindObject();
-		findObject.setBaseDate(strD);
-		findObject.setSystemType(1);
-		List<WorkplaceHierarchyDto> treeList = this.findAllByBaseDate(findObject);
+	public List<WorkplaceHierarchyDto> findFlatList(GeneralDate baseDate) {
+		//Find all workplace in compant
+		String companyId = AppContexts.user().companyId();
+		Optional<WorkplaceConfig> optionalWkpConfig = wkpConfigRepository.findByBaseDate(companyId, baseDate);
+		if (!optionalWkpConfig.isPresent()) {
+			return Collections.emptyList();
+		}
+		
+		// Find Workplace config info
+		WorkplaceConfig wkpConfig = optionalWkpConfig.get();
+		String historyId = wkpConfig.getWkpConfigHistoryLatest().identifier();
+		Optional<WorkplaceConfigInfo> opWkpConfigInfo = wkpConfigInfoRepo.find(companyId, historyId);
+		if (!opWkpConfigInfo.isPresent()) {
+			return Collections.emptyList();
+		}
 
-		// flat workplace tree.
+		// Convert list to tree. -> special process for sort workplace list.
+		List<WorkplaceHierarchy> lstHierarchy = opWkpConfigInfo.get().getLstWkpHierarchy();
+		List<WorkplaceHierarchyDto> treeList = this.initTree(baseDate, lstHierarchy);
+
+		// flat workplace tree. -> special process for sort workplace list.
 		List<WorkplaceHierarchyDto> flatList = new ArrayList<>();
 		treeList.stream().forEach(wpl -> {
 			// Convert tree to flat list.

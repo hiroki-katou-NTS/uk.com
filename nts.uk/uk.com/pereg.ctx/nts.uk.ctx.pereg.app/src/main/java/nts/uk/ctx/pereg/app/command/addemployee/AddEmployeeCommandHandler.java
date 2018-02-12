@@ -11,6 +11,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
+import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommand;
+import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommandAssembler;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 
@@ -27,6 +29,9 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	@Inject
 	private AddEmployeeCommandFacade process;
 
+	@Inject
+	private AddWorkingConditionCommandAssembler wkCodAs;
+
 	@Override
 	protected String handle(CommandHandlerContext<AddEmployeeCommand> context) {
 
@@ -42,11 +47,13 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		String comHistId = IdentifierUtil.randomUniqueId();
 
-		validateData(command.getInputs(), employeeId, personId);
+		List<ItemsByCategory> inputs = process.createData(command, personId, employeeId, comHistId);
+
+		validateData(inputs, employeeId, personId);
 
 		helper.addBasicData(command, personId, employeeId, comHistId, companyId, userId);
 
-		process.addNewFromInputs(command, personId, employeeId, comHistId);
+		process.addNewFromInputs(command, personId, employeeId, comHistId, inputs);
 
 		return employeeId;
 
@@ -60,6 +67,15 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 					.createCommandForSystemDomain(personId, employeeId, AddShortWorkTimeCommand.class);
 			shortWk.getLstTimeSlot();
 		}
+
+		Optional<ItemsByCategory> wkCodOpt = inputs.stream().filter(ctg -> ctg.getCategoryCd().equals("CS00020"))
+				.findFirst();
+		if (wkCodOpt.isPresent()) {
+			AddWorkingConditionCommand wkCod = (AddWorkingConditionCommand) wkCodOpt.get()
+					.createCommandForSystemDomain(personId, employeeId, AddWorkingConditionCommand.class);
+			wkCodAs.fromDTO(null, wkCod);
+		}
+
 	}
 
 }

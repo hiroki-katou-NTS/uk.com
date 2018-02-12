@@ -254,7 +254,7 @@ public class DailyPerformanceCorrectionProcessor {
 		CountDownLatch latch = new CountDownLatch(1);
 
 		Future<List<DailyModifyResult>> sResults = service.submit(
-				new GetDataDaily( listEmployeeId.size() > 31 ? listEmployeeId.subList(0,30) : listEmployeeId , dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
+				new GetDataDaily(listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
 		DPControlDisplayItem dPControlDisplayItem = this.getItemIdNames(disItem);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 
@@ -301,15 +301,18 @@ public class DailyPerformanceCorrectionProcessor {
 		service.submit(new Runnable() {
 			@Override
 			public void run() {
+				long start1 = System.currentTimeMillis();
 				screenDto.createAccessModifierCellState(mapDP);
 				screenDto.getLstFixedHeader().forEach(column -> {
 					screenDto.getLstControlDisplayItem().getColumnSettings()
 							.add(new ColumnSetting(column.getKey(), false));
 				});
+				System.out.println("time disable : " + (System.currentTimeMillis() - start1));
 				latch1.countDown();
 			}
 		});
 		// set cell data
+		long start2 = System.currentTimeMillis();
 		for (DPDataDto data : screenDto.getLstData()) {
 			
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
@@ -343,8 +346,7 @@ public class DailyPerformanceCorrectionProcessor {
 					screenDto.setAlarmCellForFixedColumn(data.getId());
 			}
 		}
-		System.out.println("time get data into cell : " + (System.currentTimeMillis() - start));
-		start = System.currentTimeMillis();
+		System.out.println("time get data into cell : " + (System.currentTimeMillis() - start2));
 		screenDto.setLstData(lstData);
 		latch1.await();
 		System.out.println("time add  return : " + (System.currentTimeMillis() - start));

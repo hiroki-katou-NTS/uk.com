@@ -100,7 +100,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         lockMessage: KnockoutObservable<any> = ko.observable("");
 
-        dataHoliday: KnockoutObservable<DataHoliday> =  ko.observable(new DataHoliday("12","13","11","11","11","11"));
+        dataHoliday: KnockoutObservable<DataHoliday> =  ko.observable(new DataHoliday("0","0","0","0","0","0"));
         comboItems: KnockoutObservableArray<any> = ko.observableArray([new ItemModel('1', '基本給'),
             new ItemModel('2', '役職手当'),
             new ItemModel('3', '基本給2')]);
@@ -441,11 +441,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     // nts.uk.ui.block.clear();
                     dfd.resolve();
                 }).fail((data) => {
-                    alert("fail");
                      nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.alert(data.message);
                     dfd.resolve();
                 });
                 dfd.promise();
+            }else{
+                 nts.uk.ui.block.clear(); 
             }
             debugger;
         }
@@ -502,14 +504,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     // alert("done");
                     dataChange = {};
                     self.btnExtraction_Click();
-                    nts.uk.ui.block.clear();
                     dfd.resolve();
                 }).fail((data) => {
-                    alert("fail");
                     nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.alert(data.message);
                     dfd.resolve();
                 });
                 dfd.promise();
+            }else{
+                  nts.uk.ui.block.clear();
             }
             debugger;
         }
@@ -1388,14 +1391,20 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 param.param.workplaceId = employee.workplaceId;
                                 break
                         }
-                        $.when(service.findCodeName(param)).done((data) => {
-                           // $("#dpGrid").igGridUpdating("setCellValue", ui.rowID, "Name" + ui.columnKey.substring(4, ui.columnKey.length), (data == undefined ? "Not found" : data.name));
-                           // nts.uk.ui.block.clear();
-                            var object = {};
-                            object["Name" + ui.columnKey.substring(4, ui.columnKey.length)] = (data == undefined ? nts.uk.resource.getText("KDW003_81") : data.name);
+                        var object = {};
+                        if (ui.value == "") {
+                            object["Name" + ui.columnKey.substring(4, ui.columnKey.length)] = nts.uk.resource.getText("KDW003_82");
                             $("#dpGrid").ntsGrid("updateRow", ui.rowID, object);
-                            dfd.resolve();
-                        });
+                              dfd.resolve();
+                        } else {
+                            $.when(service.findCodeName(param)).done((data) => {
+                                // $("#dpGrid").igGridUpdating("setCellValue", ui.rowID, "Name" + ui.columnKey.substring(4, ui.columnKey.length), (data == undefined ? "Not found" : data.name));
+                                // nts.uk.ui.block.clear();
+                                object["Name" + ui.columnKey.substring(4, ui.columnKey.length)] = (data == undefined ? nts.uk.resource.getText("KDW003_81") : data.name);
+                                $("#dpGrid").ntsGrid("updateRow", ui.rowID, object);
+                                dfd.resolve();
+                            });
+                        }
                         dfd.promise();
                     }
                 } 
@@ -1643,6 +1652,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }else{
                 $("#btn-signAll").css("visibility", "hidden");
             }
+            $("#btn-signAll").css("visibility", "hidden");
             this.available17(self.checkAvailable(data, 17));
             this.available18(self.checkAvailable(data, 18));
             this.available19(self.checkAvailable(data, 19));

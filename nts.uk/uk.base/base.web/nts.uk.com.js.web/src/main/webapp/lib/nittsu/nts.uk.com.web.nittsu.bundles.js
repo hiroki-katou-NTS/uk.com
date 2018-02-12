@@ -2445,6 +2445,44 @@ var nts;
         })(time = uk.time || (uk.time = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var time;
+        (function (time) {
+            var format;
+            (function (format) {
+                var DATE_FORMATS = {
+                    Short_YMD: "yyyy/M/d",
+                    Short_YMDW: "yyyy/M/d(D)",
+                    Short_YM: "yyyy/M",
+                    Short_MD: "M/d",
+                    Short_D: "d",
+                    Short_W: "D",
+                    Short_MDW: "M/d(D)",
+                    Long_YMD: "yyyy年M月d日",
+                    Long_YMDW: "yyyy年M月d日(D)",
+                    Long_YM: "yyyy年M月",
+                    Long_MD: "M月d日",
+                    Long_F: "yyyy年度"
+                };
+                function byId(formatId, value) {
+                    switch (formatId) {
+                        case "Clock_Short_HM":
+                        case "ClockDay_Short_HM":
+                            return time.minutesBased.clock.create(value).formatById(formatId);
+                        case "Time_Short_HM":
+                            return time.minutesBased.duration.create(value).formatById(formatId);
+                        default:
+                            throw new Error("not supported: " + formatId + " of " + value);
+                    }
+                }
+                format.byId = byId;
+            })(format = time.format || (time.format = {}));
+        })(time = uk.time || (uk.time = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 /// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
@@ -2463,6 +2501,8 @@ var nts;
                     uk.util.accessor.defineInto(mat)
                         .get("asMinutes", function () { return timeAsMinutes; })
                         .get("isNegative", function () { return timeAsMinutes < 0; })
+                        .get("minutePart", function () { return Math.abs(timeAsMinutes) % 60; })
+                        .get("minutePartText", function () { return uk.text.padLeft(mat.minutePart.toString(), "0", 2); })
                         .get("typeName", function () { return "MinutesBasedTime"; });
                     return mat;
                 }
@@ -2498,7 +2538,7 @@ var nts;
                         };
                         ResultParseMiuntesBasedDuration.prototype.toValue = function () {
                             if (!this.success)
-                                return 0;
+                                return NaN;
                             return (this.minus ? -1 : 1) * (this.hours * 60 + this.minutes);
                         };
                         ResultParseMiuntesBasedDuration.prototype.getMsg = function () {
@@ -2549,14 +2589,18 @@ var nts;
                             .get("typeName", function () { return "DurationMinutesBasedTime"; })
                             .get("asHoursDouble", function () { return timeAsMinutes / 60; })
                             .get("asHoursInt", function () { return uk.ntsNumber.trunc(duration.asHoursDouble); })
-                            .get("minutePart", function () { return Math.abs(timeAsMinutes) % 60; })
                             .get("text", function () { return createText(duration); });
+                        duration.formatById = function (formatId) {
+                            switch (formatId) {
+                                default: return createText(duration);
+                            }
+                        };
                         return duration;
                     }
                     duration_1.create = create;
                     function createText(duration) {
                         return (duration.isNegative ? "-" : "")
-                            + duration.asHoursInt + ":" + uk.text.padLeft(duration.minutePart.toString(), "0", 2);
+                            + duration.asHoursInt + ":" + duration.minutePartText;
                     }
                 })(duration = minutesBased.duration || (minutesBased.duration = {}));
             })(minutesBased = time.minutesBased || (time.minutesBased = {}));
@@ -2574,6 +2618,56 @@ var nts;
             (function (minutesBased) {
                 var clock;
                 (function (clock_1) {
+                    (function (DayAttr) {
+                        DayAttr[DayAttr["THE_PREVIOUS_DAY"] = 0] = "THE_PREVIOUS_DAY";
+                        DayAttr[DayAttr["THE_PRESENT_DAY"] = 1] = "THE_PRESENT_DAY";
+                        DayAttr[DayAttr["THE_NEXT_DAY"] = 2] = "THE_NEXT_DAY";
+                        DayAttr[DayAttr["TWO_DAY_LATER"] = 3] = "TWO_DAY_LATER";
+                    })(clock_1.DayAttr || (clock_1.DayAttr = {}));
+                    var DayAttr = clock_1.DayAttr;
+                    var DayAttr;
+                    (function (DayAttr) {
+                        function fromValue(value) {
+                            switch (value) {
+                                case 0: return DayAttr.THE_PREVIOUS_DAY;
+                                case 1: return DayAttr.THE_PRESENT_DAY;
+                                case 2: return DayAttr.THE_NEXT_DAY;
+                                case 3: return DayAttr.TWO_DAY_LATER;
+                                default: new Error("invalid value: " + value);
+                            }
+                        }
+                        DayAttr.fromValue = fromValue;
+                        function fromDaysOffset(daysOffset) {
+                            switch (daysOffset) {
+                                case -1: return DayAttr.THE_PREVIOUS_DAY;
+                                case 0: return DayAttr.THE_PRESENT_DAY;
+                                case 1: return DayAttr.THE_NEXT_DAY;
+                                case 2: return DayAttr.TWO_DAY_LATER;
+                                default: new Error("invalid daysOffset: " + daysOffset);
+                            }
+                        }
+                        DayAttr.fromDaysOffset = fromDaysOffset;
+                        function toDaysOffset(dayAttr) {
+                            switch (dayAttr) {
+                                case DayAttr.THE_PREVIOUS_DAY: return -1;
+                                case DayAttr.THE_PRESENT_DAY: return 0;
+                                case DayAttr.THE_NEXT_DAY: return 1;
+                                case DayAttr.TWO_DAY_LATER: return 2;
+                                default: new Error("invalid dayAttr: " + dayAttr);
+                            }
+                        }
+                        DayAttr.toDaysOffset = toDaysOffset;
+                        function toText(dayAttr) {
+                            switch (dayAttr) {
+                                case DayAttr.THE_PREVIOUS_DAY: return "前日";
+                                case DayAttr.THE_PRESENT_DAY: return "当日";
+                                case DayAttr.THE_NEXT_DAY: return "翌日";
+                                case DayAttr.TWO_DAY_LATER: return "翌々日";
+                                default: new Error("invalid dayAttr: " + dayAttr);
+                            }
+                        }
+                        DayAttr.toText = toText;
+                    })(DayAttr = clock_1.DayAttr || (clock_1.DayAttr = {}));
                     function create() {
                         var args = [];
                         for (var _i = 0; _i < arguments.length; _i++) {
@@ -2588,10 +2682,14 @@ var nts;
                             : timeAsMinutes / minutesBased.MINUTES_IN_DAY); };
                         uk.util.accessor.defineInto(clock)
                             .get("typeName", function () { return "ClockMinutesBasedTime"; })
-                            .get("daysOffset", function () { return daysOffset(); })
+                            .get("daysOffset", daysOffset)
                             .get("hourPart", function () { return Math.floor((positivizedMinutes() % minutesBased.MINUTES_IN_DAY) / 60); })
                             .get("minutePart", function () { return positivizedMinutes() % 60; })
-                            .get("clockTextInDay", function () { return clock.hourPart + ":" + uk.text.padLeft(clock.minutePart.toString(), "0", 2); });
+                            .get("dayAttr", function () { return DayAttr.fromDaysOffset(daysOffset()); })
+                            .get("clockTextInDay", function () { return format.clockTextInDay(clock); });
+                        clock.formatById = function (formatId) {
+                            return format.byId(formatId, clock);
+                        };
                         return clock;
                     }
                     clock_1.create = create;
@@ -2608,6 +2706,42 @@ var nts;
                         }
                         return result;
                     }
+                    var format;
+                    (function (format) {
+                        function byId(formatId, clock) {
+                            switch (formatId) {
+                                case "Clock_Short_HM":
+                                    return short.make(clock);
+                                case "ClockDay_Short_HM":
+                                    return long.make(clock);
+                            }
+                        }
+                        format.byId = byId;
+                        function clockTextInDay(clock) {
+                            return clock.hourPart + ":" + clock.minutePartText;
+                        }
+                        format.clockTextInDay = clockTextInDay;
+                        var short;
+                        (function (short) {
+                            function make(clock) {
+                                return sign(clock) + hours(clock) + ":" + clock.minutePartText;
+                            }
+                            short.make = make;
+                            function sign(clock) {
+                                return clock.daysOffset < 0 ? "-" : "";
+                            }
+                            function hours(clock) {
+                                return clock.daysOffset < 0 ? clock.hourPart : clock.daysOffset * 24 + clock.hourPart;
+                            }
+                        })(short || (short = {}));
+                        var long;
+                        (function (long) {
+                            function make(clock) {
+                                return DayAttr.toText(clock.dayAttr) + clock.clockTextInDay;
+                            }
+                            long.make = make;
+                        })(long || (long = {}));
+                    })(format || (format = {}));
                 })(clock = minutesBased.clock || (minutesBased.clock = {}));
             })(minutesBased = time.minutesBased || (time.minutesBased = {}));
         })(time = uk.time || (uk.time = {}));
@@ -2624,6 +2758,7 @@ var nts;
             (function (minutesBased) {
                 var clock;
                 (function (clock) {
+                    // このファイルはminutesbased_clockに統合したい
                     var dayattr;
                     (function (dayattr) {
                         dayattr.MAX_VALUE = create(4319);
@@ -2644,7 +2779,6 @@ var nts;
                                 default: throw new Error("invalid value: " + dayAttr);
                             }
                         }
-                        dayattr.getDayAttrText = getDayAttrText;
                         function getDaysOffset(dayAttr) {
                             switch (dayAttr) {
                                 case DayAttr.THE_PREVIOUS_DAY: return -1;
@@ -2654,7 +2788,6 @@ var nts;
                                 default: throw new Error("invalid value: " + dayAttr);
                             }
                         }
-                        dayattr.getDaysOffset = getDaysOffset;
                         var ResultParseTimeWithDayAttr = (function () {
                             function ResultParseTimeWithDayAttr(success, asMinutes) {
                                 this.success = success;
@@ -2703,20 +2836,11 @@ var nts;
                             var timeWithDayAttr = (clock.create(minutesFromZeroOclock));
                             uk.util.accessor.defineInto(timeWithDayAttr)
                                 .get("dayAttr", function () { return getDayAttrFromDaysOffset(timeWithDayAttr.daysOffset); })
-                                .get("fullText", function () { return getDayAttrText(timeWithDayAttr.dayAttr) + timeWithDayAttr.clockTextInDay; })
-                                .get("shortText", function () { return createShortText(timeWithDayAttr); });
+                                .get("fullText", function () { return timeWithDayAttr.formatById("ClockDay_Short_HM"); })
+                                .get("shortText", function () { return timeWithDayAttr.formatById("Clock_Short_HM"); });
                             return timeWithDayAttr;
                         }
                         dayattr.create = create;
-                        function createShortText(timeWithDayAttr) {
-                            if (timeWithDayAttr.daysOffset >= 0) {
-                                var asDuration = minutesBased.duration.create(timeWithDayAttr.asMinutes);
-                                return asDuration.text;
-                            }
-                            else {
-                                return "-" + timeWithDayAttr.clockTextInDay;
-                            }
-                        }
                         function getDayAttrFromDaysOffset(daysOffset) {
                             switch (daysOffset) {
                                 case -1: return DayAttr.THE_PREVIOUS_DAY;
@@ -11806,6 +11930,7 @@ var nts;
 /// <reference path="text.ts"/>
 /// <reference path="number.ts"/>
 /// <reference path="time.ts"/>
+/// <reference path="time/timeformat.ts"/>
 /// <reference path="time/minutesbased/minutesbased.ts"/>
 /// <reference path="time/minutesbased/minutesbased_duration.ts"/>
 /// <reference path="time/minutesbased/minutesbased_clock.ts"/>
@@ -12167,6 +12292,17 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui) {
+            ui.DATA_SET_ERROR_STYLE = "set-error-style";
+            ui.DATA_CLEAR_ERROR_STYLE = "clear-error-style";
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsError;
@@ -12191,6 +12327,8 @@ var nts;
                     };
                     function processErrorOnItem($control, message, action, errorCode, businessError) {
                         switch (action) {
+                            case 'check':
+                                return $control.trigger("validate");
                             case 'set':
                                 return setError($control, message, errorCode, businessError);
                             case 'clear':
@@ -12213,13 +12351,13 @@ var nts;
                             $control: $control,
                             businessError: businessError
                         });
-                        $control.parent().addClass('error');
+                        ($control.data(ui.DATA_SET_ERROR_STYLE) || function () { $control.parent().addClass('error'); })();
                         return $control;
                     }
                     function clearErrors($control) {
                         $control.data(DATA_HAS_ERROR, false);
                         ui.errors.removeByElement($control);
-                        $control.parent().removeClass('error');
+                        ($control.data(ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
                         return $control;
                     }
                     function clearErrorByCode($control, errorCode) {
@@ -12227,7 +12365,7 @@ var nts;
                         var remainErrors = ui.errors.getErrorByElement($control);
                         if (uk.util.isNullOrEmpty(remainErrors)) {
                             $control.data(DATA_HAS_ERROR, false);
-                            $control.parent().removeClass('error');
+                            ($control.data(ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
                         }
                         return $control;
                     }
@@ -12236,7 +12374,7 @@ var nts;
                         var remainErrors = ui.errors.getErrorByElement($control);
                         if (uk.util.isNullOrEmpty(remainErrors)) {
                             $control.data(DATA_HAS_ERROR, false);
-                            $control.parent().removeClass('error');
+                            ($control.data(ui.DATA_CLEAR_ERROR_STYLE) || function () { $control.parent().removeClass('error'); })();
                         }
                         return $control;
                     }
@@ -14581,6 +14719,8 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
+                var CONTROL_NAME = "control-name";
+                var REQUIRED = "required";
                 var FILES_CACHE_FOR_CANCEL = "files-cache-for-cancel";
                 var IS_RESTORED_BY_CANCEL = "restored-by-cancel";
                 var SELECTED_FILE_NAME = "selected-file-name";
@@ -14627,6 +14767,7 @@ var nts;
                                 $container.data(IS_RESTORED_BY_CANCEL, false);
                                 return;
                             }
+                            $container.ntsError("clear");
                             var selectedFilePath = $(this).val();
                             // canceled on selecting file dialog
                             if (nts.uk.util.isNullOrEmpty(selectedFilePath)) {
@@ -14658,6 +14799,22 @@ var nts;
                         $fileNameLabel.click(function () {
                             onfilenameclick($(this).text());
                         });
+                        $container.bind("validate", function () {
+                            if ($container.data(REQUIRED) && uk.util.isNullOrEmpty(ko.unwrap(data.filename))) {
+                                var controlName = $container.data(CONTROL_NAME);
+                                $container.ntsError("set", uk.resource.getMessage("FND_E_REQ_SELECT", [controlName]), "FND_E_REQ_SELECT");
+                            }
+                            else {
+                                $container.ntsError("clear");
+                            }
+                        });
+                        $container
+                            .data(ui.DATA_SET_ERROR_STYLE, function () {
+                            $container.addClass("error");
+                        })
+                            .data(ui.DATA_CLEAR_ERROR_STYLE, function () {
+                            $container.removeClass("error");
+                        });
                     };
                     /**
                      * Update
@@ -14670,6 +14827,8 @@ var nts;
                         var text = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : "参照";
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var $container = $(element)
+                            .data(CONTROL_NAME, ko.unwrap(data.name))
+                            .data(REQUIRED, ko.unwrap(data.required) === true)
                             .data(STEREOTYPE, ko.unwrap(data.stereoType))
                             .data(IMMEDIATE_UPLOAD, ko.unwrap(data.immediateUpload) === true);
                         $container.find("input[type='file']").attr("accept", accept.toString());
@@ -18681,7 +18840,9 @@ var nts;
                                 var sheetFeature = feature.find(options.ntsFeatures, feature.SHEET);
                                 if (uk.util.isNullOrUndefined(sheetFeature)) {
                                     var idxes_1 = {};
-                                    utils.analyzeColumns(options.columns).forEach(function (c, i) {
+                                    utils.analyzeColumns(options.columns)
+                                        .filter(function (c) { return c.hidden !== true; })
+                                        .forEach(function (c, i) {
                                         idxes_1[c.key] = i;
                                     });
                                     var setting = $grid.data(internal.SETTINGS);

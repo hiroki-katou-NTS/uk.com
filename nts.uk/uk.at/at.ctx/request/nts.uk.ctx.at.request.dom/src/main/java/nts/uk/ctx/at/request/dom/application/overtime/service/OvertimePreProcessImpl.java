@@ -247,9 +247,9 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 			// 01-14-3_始業時刻、退勤時刻を初期表示
 			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,
 					GeneralDate.fromString(appDate, DATE_FORMAT));
-			Optional<PredetemineTimeSetting> workTimeSet = workTimeSetRepository.findByWorkTimeCode(companyID, siftCD);
+			Optional<PredetemineTimeSetting> workTimeSet = workTimeSetRepository.findByWorkTimeCode(companyID, recordWorkInfoImport.getWorkTimeCode());
 			if (workTimeSet.isPresent()) {
-				if (workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().size() > 1) {
+				if (workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().size() > 1 && workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(1).getUseAtr().value == UseAtr.USE.value) {
 					startTime2 = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(1).getStart().v();
 				}
 				if (workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().size() > 0) {
@@ -276,11 +276,11 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 			// 01-14-4_始業時刻、終業時刻を初期表示
 			Optional<PredetemineTimeSetting> workTimeSet = workTimeSetRepository.findByWorkTimeCode(companyID, siftCD);
 			if (workTimeSet.isPresent()) {
-				if (workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().size() > 1) {
+				if (workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().size() > 1 && workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(1).getUseAtr().value == UseAtr.USE.value) {
 					startTime2 = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(1).getStart().v();
 					endTime2 = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(1).getEnd().v();
 				}
-				if (workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().size() > 0) {
+				if (workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().size() > 0 ) {
 					startTime1 = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(0).getStart().v();
 					endTime1 = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(0).getEnd().v();
 				}
@@ -445,6 +445,9 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	public AppOvertimeReference getResultContentActual(int prePostAtr, String siftCode, String companyID, String employeeID, String appDate,ApprovalFunctionSetting approvalFunctionSetting,List<CaculationTime> overtimeHours) {
 		// TODO Auto-generated method stub
 		AppOvertimeReference result = new AppOvertimeReference();
+		if(appDate == null){
+			return result;
+		}
 		List<CaculationTime> caculationTimes = new ArrayList<>();
 		if (PrePostAtr.POSTERIOR.value == prePostAtr) {
 			//Imported(申請承認)「勤務実績」を取得する

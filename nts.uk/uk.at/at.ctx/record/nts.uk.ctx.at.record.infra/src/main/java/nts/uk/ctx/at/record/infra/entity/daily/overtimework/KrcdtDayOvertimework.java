@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.infra.entity.daily.overtimework;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -229,6 +228,9 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 	}
 	
 	public void setData(OverTimeOfDaily overTimeOfDaily){
+		if(overTimeOfDaily == null || overTimeOfDaily.getOverTimeWorkFrameTime() == null || overTimeOfDaily.getOverTimeWorkFrameTime().isEmpty()){
+			return;
+		}
 		OverTimeFrameTime frame1 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 1);
 		OverTimeFrameTime frame2 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 2);
 		OverTimeFrameTime frame3 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 3);
