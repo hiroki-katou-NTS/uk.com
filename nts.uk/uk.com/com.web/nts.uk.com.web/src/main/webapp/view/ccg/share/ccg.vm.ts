@@ -219,6 +219,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 param.classificationCodes = [];
                 param.filterByJobTitle = false;
                 param.jobTitleCodes = [];
+                param.filterByWorktype = false;
+                param.worktypeCodes = [];
                 param.includeIncumbents = true;
                 param.includeWorkersOnLeave = false;
                 param.includeOccupancy = false;
@@ -426,10 +428,10 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 $.when(service.getRefRangeBySysType(self.systemType),
                     self.loadClosure()
-                ).done((refRange, noValue) => {
+                ).always((refRange, noValue) => {
                     self.referenceRange = refRange;
                     dfd.resolve();
-                });
+                }).fail(err => nts.uk.ui.dialog.alertError(err));
 
                 return dfd.promise();
             }
@@ -716,7 +718,7 @@ module nts.uk.com.view.ccg.share.ccg {
                             // no permission and acquiredDate is future
                             dfd.reject();
                         }
-                    });
+                    }).fail(err => nts.uk.ui.dialog.alertError(err));
 
                 return dfd.promise();
             }
@@ -935,23 +937,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 nts.uk.ui.block.invisible(); // block ui
                 service.saveEmployeeRangeSelection(empRangeSelection).done(() => {
-                    service.findRegulationInfoEmployee(self.queryParam).done(data => {
-                        // Data not found
-                        if (nts.uk.util.isNullOrEmpty(data)) {
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_317" });
-                            return;
-                        }
-
-                        // Data found
-                        if (self.isShowEmployeeList) {
-                            self.employeeinfo.employeeInputList(self.toUnitModelList(data));
-                        } else {
-                            self.onApplyEmployee(data);
-                            // Hide component.
-                            self.hideComponent();
-                        }
-                        nts.uk.ui.block.clear(); // clear block UI
-                    })
+                    self.findAndReturnListEmployee(true);
                 });
             }
 
@@ -1024,24 +1010,38 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.quickSearchEmployee();
             }
 
+            /**
+             * Quick search employee
+             */
             private quickSearchEmployee(): void {
                 let self = this;
+                nts.uk.ui.block.invisible(); // block ui
                 self.setQuickSearchParam().done(() => {
-                    self.queryMethod();
+                    self.findAndReturnListEmployee(false);
                 });
             }
             /**
-             * Method Query
+             * Find and return list employee for caller screen.
              */
-            public queryMethod(): void {
-                var self = this;
-
+            public findAndReturnListEmployee(isAdvancedSearch: boolean): void {
+                let self = this;
                 self.changeListWorkplaceId().done(() => {
                     service.findRegulationInfoEmployee(self.queryParam).done(data => {
-                        // return data
-                        self.onSearchAllClicked(data);
-                        // Hide component.
-                        self.hideComponent();
+                        // Data not found
+                        if (nts.uk.util.isNullOrEmpty(data)) {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_317" });
+                            return;
+                        }
+
+                        // Data found
+                        if (isAdvancedSearch && self.isShowEmployeeList) {
+                            self.employeeinfo.employeeInputList(self.toUnitModelList(data));
+                        } else {
+                            self.onApplyEmployee(data);
+                            // Hide component.
+                            self.hideComponent();
+                        }
+                        nts.uk.ui.block.clear(); // clear block UI
                     });
                 });
             }
@@ -1063,27 +1063,28 @@ module nts.uk.com.view.ccg.share.ccg {
                         if (referenceRangeOfCurrentRole == ConfigEnumReferenceRange.ALL_EMPLOYEE) {
                             dfd.resolve(); // continue execution without change
                         } else {
-                            // TODO: change workplaces 
+                            self.changeListWorkplaces().done(() => dfd.resolve());
                         }
                         break;
                     case ConfigEnumReferenceRange.DEPARTMENT_ONLY:
-                        // convert param
-                        // change workplace
+                        self.changeListWorkplaces().done(() => dfd.resolve());
                         break;
                     case ConfigEnumReferenceRange.DEPARTMENT_AND_CHILD:
                         if (referenceRangeOfCurrentRole == ConfigEnumReferenceRange.DEPARTMENT_AND_CHILD) {
-                            // convert param
-                            // change workplace
+                            self.changeListWorkplaces().done(() => dfd.resolve());
                         } else {
-                            // change param to aff only
-                            // convert param
-                            // change workplace
+                            self.queryParam.referenceRange = ConfigEnumReferenceRange.DEPARTMENT_ONLY;
+                            self.changeListWorkplaces().done(() => dfd.resolve());
                         }
                         break;
                     default: break;
                 }
+                return dfd.promise();
+            }
 
-                //get Workplace list from domain
+            private changeListWorkplaces(): JQueryPromise<void> {
+                let dfd = $.Deferred<void>();
+                let self = this;
                 service.getListWorkplaceId(self.queryParam.baseDate, self.referenceRange).done(wkplist => {
                     //check param filterByWorkplace
                     if (self.queryParam.filterByWorkplace) {
@@ -1095,7 +1096,6 @@ module nts.uk.com.view.ccg.share.ccg {
                     }
                     dfd.resolve();
                 });
-
                 return dfd.promise();
             }
 

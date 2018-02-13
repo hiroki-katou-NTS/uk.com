@@ -7,6 +7,7 @@ package nts.uk.query.infra.entity.employee;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
 /**
@@ -58,7 +59,7 @@ public class EmployeeDataView_ {
 	public static volatile SingularAttribute<EmployeeDataView, String> sid;
 
 	/** The work type end date. */
-	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> workTypeEndDate;
+	public static volatile SingularAttribute<EmployeeDataView, GeneralDate> workTypeEndDate;
 
 	/** The business other name. */
 	public static volatile SingularAttribute<EmployeeDataView, String> businessOtherName;
@@ -76,7 +77,7 @@ public class EmployeeDataView_ {
 	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> classEndDate;
 
 	/** The work type str date. */
-	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> workTypeStrDate;
+	public static volatile SingularAttribute<EmployeeDataView, GeneralDate> workTypeStrDate;
 
 	/** The wpl str date. */
 	public static volatile SingularAttribute<EmployeeDataView, GeneralDateTime> wplStrDate;

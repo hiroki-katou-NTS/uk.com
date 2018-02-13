@@ -55,6 +55,12 @@ public class EmployeeSearchQuery implements Serializable {
 
 	/** The job title codes. */
 	private List<String> jobTitleCodes; //職位ID一覧
+
+	/** The filter by worktype. */
+	private Boolean filterByWorktype;
+
+	/** The worktype codes. */
+	private List<String> worktypeCodes;
 	
 	/** The period date. */
 	private GeneralDateTime periodStart; //在職・休職・休業のチェック期間
@@ -77,6 +83,7 @@ public class EmployeeSearchQuery implements Serializable {
 	/** The period of retirees date. */
 	private GeneralDateTime retireStart; //退職日のチェック期間
 	
+	/** The retire end. */
 	private GeneralDateTime retireEnd; //退職日のチェック期間
 	
 	/** The sort oder no. */

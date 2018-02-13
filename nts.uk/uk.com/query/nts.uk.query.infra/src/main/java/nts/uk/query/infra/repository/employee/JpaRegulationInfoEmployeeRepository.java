@@ -19,6 +19,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmpOrderCond;
 import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmployeeOrder;
 import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmployeeOrderPK;
@@ -62,6 +63,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		List<String> workplaceCodes = paramQuery.getWorkplaceCodes();
 		List<String> classificationCodes = paramQuery.getClassificationCodes();
 		List<String> jobTitleCodes = paramQuery.getJobTitleCodes();
+		List<String> worktypeCodes = paramQuery.getWorktypeCodes();
 
 		// employment condition
 		if (paramQuery.getFilterByEmployment()) {
@@ -102,6 +104,15 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.jobInfoStrDate), paramQuery.getBaseDate()));
 			conditions
 					.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.jobInfoEndDate), paramQuery.getBaseDate()));
+		}
+		if (paramQuery.getFilterByWorktype()) {
+			if (!worktypeCodes.isEmpty()) {
+				conditions.add(root.get(EmployeeDataView_.workTypeCd).in(worktypeCodes));
+			}
+			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.workTypeStrDate),
+					GeneralDate.localDate(paramQuery.getBaseDate().toLocalDate())));
+			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.workTypeEndDate),
+					GeneralDate.localDate(paramQuery.getBaseDate().toLocalDate())));
 		}
 
 		// status of employee conddition
