@@ -79,11 +79,11 @@ module nts.uk.com.view.ccg.share.ccg {
             selectedCodeWorkType: KnockoutObservableArray<string>;
 
             // params
-            employments: any;
-            classifications: any;
-            jobtitles: any;
+            employments: ComponentOption;
+            classifications: ComponentOption;
+            jobtitles: ComponentOption;
             workplaces: TreeComponentOption;
-            employeeinfo: any;
+            employeeinfo: ComponentOption;
             closureList: KnockoutObservableArray<any>;
             selectedClosure: KnockoutObservable<number>;
             
@@ -160,7 +160,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.selectedTab = ko.observable('tab-1');
                 self.reloadDataSearch();
                 self.isShow = ko.observable(false);
-                self.isFistTimeShow = true;
                 self.isOpenStatusOfEmployeeList = ko.observable(false);
                 self.isOpenEmploymentList = ko.observable(false);
                 self.isOpenClassificationList = ko.observable(false);
@@ -813,6 +812,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 service.searchEmployeeByLogin(self.baseDate().toDate()).done(data => {
                     if (data.length > 0) {
                         self.onSearchOnlyClicked(data[0]);
+                        self.hideComponent();
                     }
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
@@ -892,12 +892,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 mock.userId = __viewContext.user.employeeId;
                 mock.companyId = __viewContext.user.companyId;
 
-                // test
-                service.findRegulationInfoEmployee(self.advancedSearchParam);
-
                 nts.uk.ui.block.invisible(); // block ui
                 service.saveEmployeeRangeSelection(mock).done(() => {
-                    service.searchAllEmployee(new Date()).done(data => {
+                    service.findRegulationInfoEmployee(self.advancedSearchParam).done(data => {
                         nts.uk.ui.block.clear(); // clear block UI
                         if (self.isShowEmployeeList) {
                             self.employeeinfo.employeeInputList(self.toUnitModelList(data));
@@ -1086,31 +1083,37 @@ module nts.uk.com.view.ccg.share.ccg {
                     self.employments = {
                         isShowAlreadySet: false,
                         isMultiSelect: true,
+                        isMultipleUse: true,
                         selectType: SelectType.SELECT_ALL,
                         listType: ListType.EMPLOYMENT,
                         selectedCode: self.selectedCodeEmployment,
                         isDialog: true,
+                        isShowNoSelectRow: false,
                         maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT
                     };
 
                     self.classifications = {
                         isShowAlreadySet: false,
                         isMultiSelect: true,
+                        isMultipleUse: true,
                         listType: ListType.Classification,
                         selectType: SelectType.SELECT_ALL,
                         selectedCode: self.selectedCodeClassification,
                         isDialog: true,
+                        isShowNoSelectRow: false,
                         maxRows: ConfigCCGKCP.MAX_ROWS_CLASSIFICATION
                     }
 
                     self.jobtitles = {
                         isShowAlreadySet: false,
                         isMultiSelect: true,
+                        isMultipleUse: true,
                         listType: ListType.JOB_TITLE,
                         selectType: SelectType.SELECT_ALL,
                         selectedCode: self.selectedCodeJobtitle,
                         isDialog: true,
                         baseDate: ko.observable(self.baseDate().toDate()),
+                        isShowNoSelectRow: false,
                         maxRows: ConfigCCGKCP.MAX_ROWS_JOBTITLE
                     }
 
@@ -1131,6 +1134,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     self.employeeinfo = {
                         isShowAlreadySet: false,
                         isMultiSelect: self.isMultiple,
+                        isMultipleUse: true,
                         listType: ListType.EMPLOYEE,
                         employeeInputList: ko.observableArray([]),
                         selectType: SelectType.SELECT_BY_SELECTED_CODE,
