@@ -1,15 +1,18 @@
 @CHARSET "UTF-8";
+
 textarea {
 	resize: none;
 	background: transparent;
 	/* color: transparent; */
 }
-#input-containner{
+
+#input-containner {
 	width: 803px;
 	height: 365px;
 	position: relative;
 }
-#input-content-area{
+
+#input-content-area {
 	position: absolute;
 	top: 0px;
 	left: 0px;
@@ -22,44 +25,52 @@ textarea {
 	word-break: normal;
 	color: transparent;
 }
-#input-area{
+
+#input-area {
 	position: absolute;
 	top: 0px;
 	left: 0px;
 	width: 100%;
 	height: 100%;
 }
-#cursor-key{
+
+#cursor-key {
 	visibility: hidden;
-    position: relative;
-    z-index: 10;
+	position: relative;
+	z-index: 10;
 }
-#input-cursor{
+
+#input-cursor {
 	position: absolute;
-    pointer-events: none;
-   	border-left: 1px solid black;
-    border-right: none;
-    width: 0;
-    cursor: text;
-    height: 18px;
+	pointer-events: none;
+	border-left: 1px solid black;
+	border-right: none;
+	width: 0;
+	cursor: text;
+	height: 18px;
 }
-.editor-line{
+
+.editor-line {
 	display: block;
 }
-.error-char{
-	border-bottom: 1px red dotted; 
+
+.error-char {
+	border-bottom: 1px red dotted;
 }
-#auto-complete{
+
+#auto-complete {
 	position: relative;
 	width: 100%;
 	height: 100%;
 }
-#auto-complete-containner{
+
+#auto-complete-containner {
 	position: absolute;
 	z-index: 1000;
 }
-#error-containner{
-		position: absolute;
+
+#error-containner {
+	position: absolute;
 	z-index: 1000;
 	/* width: 100px; */
 	/* height: 32px; */

@@ -18,7 +18,7 @@
 		<jar-file>lib/nts.uk.ctx.sys.portal.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.sys.shared.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.query.infra.jar</jar-file>
-		
+
 		<jar-file>lib/nts.uk.ctx.at.auth.infra-0.2.9.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.at.function.infra-0.3.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.at.record.infra-0.3.10.jar</jar-file>
@@ -36,8 +36,9 @@
 		<shared-cache-mode>NONE</shared-cache-mode>
 
 		<properties>
-			<!-- Disable weaving change tracking, for entity is always updated with JPA -->
-			<property name="eclipselink.weaving.changetracking" value="false"/>	
+			<!-- Disable weaving change tracking, for entity is always updated with 
+				JPA -->
+			<property name="eclipselink.weaving.changetracking" value="false" />
 		</properties>
 	</persistence-unit>
 </persistence>

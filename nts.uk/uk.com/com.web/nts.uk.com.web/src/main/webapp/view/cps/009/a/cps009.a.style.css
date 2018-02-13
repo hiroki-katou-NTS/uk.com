@@ -24,7 +24,6 @@
 	background-color: #C7F391;
 }
 
-
 .input-units {
 	width: 209px !important;
 }
@@ -40,9 +39,11 @@
 .nts-datepicker-wrapper .ntsDatepicker {
 	width: 161px !important;
 }
-#datey.nts-input{
+
+#datey.nts-input {
 	padding: 3px 10px !important;
 }
+
 #date {
 	border: 0px solid #999999 !important;
 	width: 200px !important;
@@ -136,14 +137,16 @@ input.ntsSearchBox {
 	width: 634px;
 	margin-left: 30px;
 }
-#sub-right>table>tbody, #sub-right>table>thead{
+
+#sub-right>table>tbody, #sub-right>table>thead {
 	display: block;
 }
-#sub-right>table>tbody{
-    max-height: 510px;       /* Just for the demo          */
-    overflow-y: scroll;    /* Trigger vertical scroll    */
-    overflow-x: hidden;  /* Hide the horizontal scroll */
-    width: 634px;
+
+#sub-right>table>tbody {
+	max-height: 510px; /* Just for the demo          */
+	overflow-y: scroll; /* Trigger vertical scroll    */
+	overflow-x: hidden; /* Hide the horizontal scroll */
+	width: 634px;
 }
 
 #search_his {
@@ -171,11 +174,10 @@ input.ntsSearchBox {
 	text-align: left;
 }
 
-
 table.contents-data thead, table.contents-data tbody {
 	display: block !important;
 }
-    
+
 table.contents-data tbody {
 	overflow-y: auto;
 	overflow-x: hidden;
@@ -186,7 +188,6 @@ thead {
 	background-color: #CFF1A5;
 	/* 	height: 35px !important; */
 }
-
 
 table tr td, table tr th {
 	font-size: 14px;
@@ -207,7 +208,6 @@ table tr td, table tr th {
 	min-width: 210px !important;
 	max-width: 210px !important;
 } */
-
 .contents-header thead td {
 	border: 1px solid #CCC;
 	text-align: left;
@@ -215,7 +215,7 @@ table tr td, table tr th {
 	font-weight: bold;
 }
 
-.contents-header thead{
+.contents-header thead {
 	width: 634px;
 }
 
@@ -246,16 +246,16 @@ table tr td, table tr th {
 }
 
 #combo-box {
-/* 	margin-left: 9px; */
+	/* 	margin-left: 9px; */
 	min-width: 100px !important;
 }
 
 .input-units-1 {
 	min-width: 200px;
 	max-width: 200px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .input-units-2 {
@@ -266,15 +266,16 @@ table tr td, table tr th {
 .input-units-3 {
 	width: 240px !important;
 }
-@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-    .ntsControl .nts-input{
+
+@media all and (-ms-high-contrast: none) , ( -ms-high-contrast : active)
+	{
+	.ntsControl .nts-input {
 		padding: 3px 10px !important;
 	}
-	.ntsControl .nts-input:focus{
+	.ntsControl .nts-input:focus {
 		padding: 5px 10px !important;
 	}
 }
-
 
 #notdata {
 	min-width: 240px !important;
@@ -375,10 +376,11 @@ label[for] {
 .caret-background caret-right direction-right {
 	margin-top: 90px !important;
 }
-.ui-state-default{
+
+.ui-state-default {
 	border: 1px solid #c5c5c500 !important;;
 }
 
-abbr[title]{
+abbr[title] {
 	text-decoration: none;
 }

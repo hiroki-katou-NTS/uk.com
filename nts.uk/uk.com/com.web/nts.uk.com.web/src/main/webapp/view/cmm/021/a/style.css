@@ -22,8 +22,9 @@
 	padding-left: 23px;
 	margin-right: 15px;
 	width: 500px;
- 	height: 600px; 
+	height: 600px;
 }
+
 .reference-date {
 	padding-left: 28px;
 	padding-top: 24px;
@@ -44,20 +45,20 @@
 	padding-left: 90px;
 }
 
-.nts-switch-button.selected{
-	width: 102px;
-	
-}
-.nts-switch-button{
+.nts-switch-button.selected {
 	width: 102px;
 }
 
+.nts-switch-button {
+	width: 102px;
+}
 
 .searchbox {
 	width: 400px;
 	padding-left: 23px;
 }
-.show-text-user-id{
+
+.show-text-user-id {
 	width: 470px;
 	height: 80px;
 	padding-left: 28px;
@@ -69,82 +70,87 @@
 	padding-top: 50px;
 }
 
-.show-text-user-id table{
+.show-text-user-id table {
 	height: 80px;
 }
 
-.right-content-space-personName1, .right-content-space-employee-code1, .right-content-space-login1{
+.right-content-space-personName1, .right-content-space-employee-code1,
+	.right-content-space-login1 {
 	width: 100px;
 }
 
-.right-content-space-personName2, .right-content-space-employee-code2, .right-content-space-login2{
+.right-content-space-personName2, .right-content-space-employee-code2,
+	.right-content-space-login2 {
 	width: 30px;
-} 
+}
 
-.right-content-space-personName3, .right-content-space-employee-code3, .right-content-space-login3{
+.right-content-space-personName3, .right-content-space-employee-code3,
+	.right-content-space-login3 {
 	width: 200px;
 }
 
-.right-content-space-personName{
+.right-content-space-personName {
 	margin-bottom: 10px;
 }
 
-.right-content-space-login{
+.right-content-space-login {
 	margin-bottom: 10px;
 }
-
 
 /*  b screen mode */
 .screen-b-mode {
 	padding-top: 30px;
 	float: left;
 }
-.screen-b-mode .padding-scr-b{
-	padding-left: 40px;	
+
+.screen-b-mode .padding-scr-b {
+	padding-left: 40px;
 	padding-top: 10px;
-	
-}
-.screen-b-mode .padding-botom-scr-b{
-	padding-bottom: 10px;
-	
 }
 
-.screen-b-mode .padding-checkbox{
+.screen-b-mode .padding-botom-scr-b {
+	padding-bottom: 10px;
+}
+
+.screen-b-mode .padding-checkbox {
 	padding-left: 0px;
 }
-
 
 .screen-c-mode {
 	width: 520px;
 	padding-top: 30px;
 	float: left;
 }
-.ntsCheckBox-label{
+
+.ntsCheckBox-label {
 	width: 180px;
 }
 
-.screen-c-mode .padding-checkbox{
+.screen-c-mode .padding-checkbox {
 	padding-left: 0px;
 }
 
 /* .screen-c-mode tr td div{ */
 /* 	padding-left: 20px; */
 /* } */
-.screen-c-mode .padding-scr-c{
-	padding-left: 40px;	
+.screen-c-mode .padding-scr-c {
+	padding-left: 40px;
 	padding-top: 10px;
 }
-
 
 /* /* .ntsSearchBox nts-editor ntsSearchBox_Component{ */
 *
 /
 /* /* 	width:200px; */
+
  
+
 *
 /
 /* /* } */
+
  
+
 *
 /
 
