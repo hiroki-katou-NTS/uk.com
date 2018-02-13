@@ -282,27 +282,38 @@ module nts.uk.com.view.cmm021.a {
                     $('.nts-input').ntsError('clear');
                     if (newValue) {
                         if (!_.isEmpty(_self.listUserDto)) {
-                            _self.userId("");
-                            _self.userId(_self.listUserDto[0].userId);
+                            
+                            if (_self.userId() == _self.listUserDto[0].userId) {
+                                _self.userId.valueHasMutated();
+                            } else {
+                                _self.userId(_self.listUserDto[0].userId);
+                            }
 
-                            // show first item in list item
-                            _self.selectedEmployeeId("");
-                            _self.selectedEmployeeId(_self.listUserDto[0].employeeId);
-
+                            // show first item in list item                            
+                            if (_self.selectedEmployeeId() == _self.listUserDto[0].employeeId) {
+                                _self.selectedEmployeeId.valueHasMutated();
+                            } else {
+                                _self.selectedEmployeeId(_self.listUserDto[0].employeeId);
+                            }
                         }
                     }
                 });
                 _self.isScreenCSelected.subscribe((newValue) => {
                     $('.nts-input').ntsError('clear');
                     if (newValue) {
-                        if (!_.isEmpty(_self.listUserDtoScreenAC)) {
-                            _self.userId("");
-                            _self.userId(_self.listUserDtoScreenAC[0].userId);
-
-                            // show first item in list item
-                            _self.selectedEmployeeId("");
-                            _self.selectedEmployeeId(_self.listUserDtoScreenAC[0].employeeId);
-
+                        if (!_.isEmpty(_self.listUserDtoScreenAC)) {                            
+                            if (_self.userId() == _self.listUserDtoScreenAC[0].userId) {
+                                _self.userId.valueHasMutated();
+                            } else {
+                                _self.userId(_self.listUserDtoScreenAC[0].userId);
+                            }
+                            
+                            // show first item in list item                           
+                            if (_self.selectedEmployeeId() == _self.listUserDtoScreenAC[0].employeeId) {
+                                _self.selectedEmployeeId.valueHasMutated();
+                            } else {
+                                _self.selectedEmployeeId(_self.listUserDtoScreenAC[0].employeeId);
+                            }
                         }
                     }
                 });
@@ -727,8 +738,11 @@ module nts.uk.com.view.cmm021.a {
                             _self.unLoadListWinAcc();
                         }
                         if (!_.isEmpty(_self.listUserDto)) {
-                            _self.selectedEmployeeId(_self.listUserDto[0].employeeId);
-                            $("#focus-hostName1").focus();
+                            if (_self.selectedEmployeeId() == _self.listUserDto[0].employeeId) {
+                                _self.selectedEmployeeId.valueHasMutated();
+                            } else {
+                                _self.selectedEmployeeId(_self.listUserDto[0].employeeId);
+                            }          
                         }
                         _self.loadUserDto();
                         dfd.resolve();
@@ -835,7 +849,7 @@ module nts.uk.com.view.cmm021.a {
                             if (_.isEmpty(_self.listUserDtoScreenAC)) {
                                 _self.findUserDtoByEmployeeId("");
                                 _self.unLoadOtherAcc();
-                            } else {
+                            } else {                                
                                 if (_self.selectedEmployeeId() == _self.listUserDtoScreenAC[0].employeeId) {
                                     _self.selectedEmployeeId.valueHasMutated();
                                 } else {
@@ -1028,7 +1042,8 @@ module nts.uk.com.view.cmm021.a {
                         _self.selectedEmployeeId.valueHasMutated();
                     } else {
                         _self.selectedEmployeeId(_self.listUserUnsetting[0].employeeId);
-                    }      
+                    }
+
                     _self.newMode();
                 }
 
@@ -1053,9 +1068,13 @@ module nts.uk.com.view.cmm021.a {
                     if (_self.selectedEmployeeId() == _self.listUserUnsettingScreenAC[0].employeeId) {
                         _self.selectedEmployeeId.valueHasMutated();
                     } else {
-                        _self.selectedEmployeeId(_self.listUserUnsettingScreenAC[0].employeeId);
+                        if (_self.selectedEmployeeId() == _self.listUserUnsettingScreenAC[0].employeeId) {
+                            _self.selectedEmployeeId.valueHasMutated();
+                        } else {
+                            _self.selectedEmployeeId(_self.listUserUnsettingScreenAC[0].employeeId);
+                        }
                     }
-                
+                    
                     _self.newMode();
                 }
                 _self.listUserInfos(_self.listUserUnsettingScreenAC);
@@ -1108,7 +1127,8 @@ module nts.uk.com.view.cmm021.a {
                 if (_.isEmpty(_self.listUserDto)) {
                     _self.findUserDtoByEmployeeId("");
                     _self.unLoadListWinAcc();
-                } else {                   
+                } else {
+                    
                     if (_self.selectedEmployeeId() == _self.listUserDto[0].employeeId) {
                         _self.selectedEmployeeId.valueHasMutated();
                     } else {
@@ -1215,23 +1235,24 @@ module nts.uk.com.view.cmm021.a {
 
             public onSelectScreenB() {
                 let _self = this;
-
-                _self.listUserInfos([]);
+                
                 _self.isScreenBSelected(true);
                 _self.isScreenCSelected(false);
                 _self.selectUse(1);
                 _self.listUserInfos([]);
                 _self.loadUserInfoScreenAB();
+                
             }
 
             public onSelectScreenC() {
                 let _self = this;
-
+                
                 _self.isScreenBSelected(false);
                 _self.isScreenCSelected(true);
                 _self.selectUse(1);
                 _self.listUserInfos([]);
                 _self.loadUserInfoForOtherAcc();
+                
             }
 
             private findOtherAccByUserId(userId: string): JQueryPromise<OtherSysAccFinderDto> {
