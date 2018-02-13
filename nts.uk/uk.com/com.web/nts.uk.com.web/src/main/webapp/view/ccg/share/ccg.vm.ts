@@ -800,12 +800,13 @@ module nts.uk.com.view.ccg.share.ccg {
                     return;
                 }
                 nts.uk.ui.block.invisible(); // block ui
-                service.getOfSelectedEmployee(new Date(), self.getSelectedCodeEmployee())
+                service.getOfSelectedEmployee(
+                    moment.utc(self.advancedSearchParam.baseDate, 'YYYY-MM-DD').toDate(), self.getSelectedCodeEmployee())
                     .done(selectedEmps => {
-                        nts.uk.ui.block.clear(); // clear block UI
-                        self.onSearchAllClicked(selectedEmps);
+                        self.onApplyEmployee(selectedEmps);
                         // Hide component.
                         self.hideComponent();
+                        nts.uk.ui.block.clear(); // clear block UI
                     });
             }
 
@@ -955,7 +956,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         if (self.isShowEmployeeList) {
                             self.employeeinfo.employeeInputList(self.toUnitModelList(data));
                         } else {
-                            self.onSearchAllClicked(data);
+                            self.onApplyEmployee(data);
                             // Hide component.
                             self.hideComponent();
                         }
