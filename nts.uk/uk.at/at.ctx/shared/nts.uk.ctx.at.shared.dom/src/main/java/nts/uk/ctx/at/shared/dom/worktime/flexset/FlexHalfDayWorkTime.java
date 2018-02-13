@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
@@ -159,6 +161,11 @@ public class FlexHalfDayWorkTime extends WorkTimeDomainObject {
 		// restore rest time data of dayAtr = AM, PM
 		if (!flexWorkSet.isUseHalfDayShift() && oldDomain.getAmpmAtr() != AmPmAtr.ONE_DAY) {
 			this.restTimezone = oldDomain.getRestTimezone();
+			Optional<FlexHalfDayWorkTime> oneDay = flexWorkSet.getLstHalfDayWorkTimezone().stream()
+					.filter(half -> half.ampmAtr.equals(AmPmAtr.ONE_DAY)).findFirst();
+			if (oneDay.isPresent()) {
+				this.restTimezone.restoreFixRestTime(oneDay.get().getRestTimezone().isFixRestTime());
+			}
 		} else {
 			this.restTimezone.restoreData(screenMode, oldDomain.getRestTimezone());
 		}

@@ -81,7 +81,8 @@ td {
 }
 
 /* for EDGE browser */
-@supports (-ms-ime-align:auto ) { .table1 tbody {
+@
+supports (-ms-ime-align:auto ) { .table1 tbody {
 	height: 495px;
 	overflow-y: auto;
 	overflow-x: hidden;

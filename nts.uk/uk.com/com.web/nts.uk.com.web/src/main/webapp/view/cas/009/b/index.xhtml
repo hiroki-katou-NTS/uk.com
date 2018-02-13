@@ -8,20 +8,22 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 350, height: 550 };</script>
-            <com:scriptfile set="IGNITE" />
+			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cas009.b.style.css" />
 			<com:scriptfile path="cas009.b.service.js" />
 			<com:scriptfile path="cas009.b.start.js" />
-			<com:scriptfile path="cas009.b.vm.js" />            
+			<com:scriptfile path="cas009.b.vm.js" />
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area" >
-					<div tabindex="1" id="list_link" data-bind="foreach: listMenu">
-						<a class="hyperlink"  target="_blank" data-bind="attr: { href: url }"><span data-bind="text: displayName"></span></a>
-					</div>
+			<div id="contents-area">
+				<div tabindex="1" id="list_link" data-bind="foreach: listMenu">
+					<a class="hyperlink" target="_blank"
+						data-bind="attr: { href: url }"><span
+						data-bind="text: displayName"></span></a>
+				</div>
 			</div>
-			<div id="functions-area-bottom" >
+			<div id="functions-area-bottom">
 				<button tabindex="2" data-bind='click: closeDialog'>#{i18n.getText('CAS009_21')}</button>
 			</div>
 		</ui:define>

@@ -28,11 +28,11 @@
 				of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 		</ui:define>
-		
+
 		<script type="text/html" id="jobtitle-template">
     		<ui:include src="../a1/index.xhtml" />
 		</script>
-		
+
 		<script type="text/html" id="person-template">
     		<ui:include src="../b/index.xhtml" />
 		</script>
@@ -50,9 +50,11 @@
 			</div>
 		</ui:define>
 		<ui:define name="sidebar-content">
-			<div role="tabpanel" data-bind="attr:{id: 'tabpanel-' + currentTab().id()}">
-				<div data-bind="attr:{class: 'screen-content screen-' + currentTab().id(), id: 'screen-' + currentTab().id()} ">
-					
+			<div role="tabpanel"
+				data-bind="attr:{id: 'tabpanel-' + currentTab().id()}">
+				<div
+					data-bind="attr:{class: 'screen-content screen-' + currentTab().id(), id: 'screen-' + currentTab().id()} ">
+
 				</div>
 			</div>
 		</ui:define>

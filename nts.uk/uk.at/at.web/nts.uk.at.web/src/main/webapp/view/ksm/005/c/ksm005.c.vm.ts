@@ -362,7 +362,9 @@ module nts.uk.at.view.ksm005.c {
                 var dfd = $.Deferred();
                 var dataRes: UnitAlreadySettingModel[] = [];
                 var self = this;
-                service.findAllMonthlyPatternSetting(employeeIds).done(function(data) {
+                var monthlyPatternCodes: string[] = [];
+                self.monthlyPatternList().forEach(e => monthlyPatternCodes.push(e.code));
+                service.findAllMonthlyPatternSetting(employeeIds, monthlyPatternCodes).done(function(data) {
                     if(data != null){
                         data.forEach(function(item){
                             var setting: UnitAlreadySettingModel;

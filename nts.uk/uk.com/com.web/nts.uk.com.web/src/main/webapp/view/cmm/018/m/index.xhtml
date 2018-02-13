@@ -18,25 +18,33 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="btnPrint" data-bind = "click: printExcel" class="proceed">#{i18n.getText('CMM018_71')}</button>
+				<button id="btnPrint" data-bind="click: printExcel" class="proceed">#{i18n.getText('CMM018_71')}</button>
 				<button id="btnClose" data-bind="click: closeDialog">#{i18n.getText('CMM018_72')}</button>
 			</div>
 			<div id="contents-area">
-			
-				<div id="lblTitle" class="label">#{i18n.getText('CMM018_91')}</div><br/>
-				
-				<div id="divImage" class="label with-image" style = "width: 50% !important">
-					<i class="image image-calendar"/>
-					<span>#{i18n.getText('CMM018_74')}</span>
-					<div id = "basedate" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+
+				<div id="lblTitle" class="label">#{i18n.getText('CMM018_91')}</div>
+				<br />
+
+				<div id="divImage" class="label with-image"
+					style="width: 50% !important">
+					<i class="image image-calendar" /> <span>#{i18n.getText('CMM018_74')}</span>
+					<div id="basedate"
+						data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
 				</div>
-				
+
 				<div id="checkboxArea">
-					<div class ="divCheckbox" id="chkCompany" data-bind="ntsCheckBox: { checked: isCompany }">#{i18n.getText('CMM018_75')}</div><br></br>
-					<div class ="divCheckbox" id="chkWorkplace" data-bind="ntsCheckBox: { checked: isWorkplace }">#{i18n.getText('CMM018_76')}</div><br></br>
-					<div class ="divCheckbox" id="chkPerson" data-bind="ntsCheckBox: { checked: isPerson }">#{i18n.getText('CMM018_78')}</div><br></br>
+					<div class="divCheckbox" id="chkCompany"
+						data-bind="ntsCheckBox: { checked: isCompany }">#{i18n.getText('CMM018_75')}</div>
+					<br></br>
+					<div class="divCheckbox" id="chkWorkplace"
+						data-bind="ntsCheckBox: { checked: isWorkplace }">#{i18n.getText('CMM018_76')}</div>
+					<br></br>
+					<div class="divCheckbox" id="chkPerson"
+						data-bind="ntsCheckBox: { checked: isPerson }">#{i18n.getText('CMM018_78')}</div>
+					<br></br>
 				</div>
-				
+
 			</div>
 		</ui:define>
 

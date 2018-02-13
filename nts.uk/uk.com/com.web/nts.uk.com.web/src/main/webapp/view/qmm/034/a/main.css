@@ -11,26 +11,28 @@
 .alignRight {
 	float: right;
 }
-#contents-area{
+
+#contents-area {
 	padding-top: 30px;
 }
+
 .nts-left-content {
 	float: left;
 	width: 290px;
-    height: 440px;
-    padding: 20px 15px;
+	height: 440px;
+	padding: 20px 15px;
 }
 
 .nts-right-content {
 	float: left;
 	padding: 20px;
 	width: 450px;
-	margin-left:20px;
+	margin-left: 20px;
 }
 
 .tableRange {
 	width: 100%;
-	}
+}
 
 .tableRange tr {
 	height: 45px;
@@ -39,10 +41,12 @@
 .gridList {
 	margin-top: 30px;
 }
+
 .nts-left-content .caret-background.caret-right:after {
-    left: 105% !important;
+	left: 105% !important;
 }
-.empriseLabel div{
+
+.empriseLabel div {
 	display: inline-block;
 	vertical-align: middle;
 }

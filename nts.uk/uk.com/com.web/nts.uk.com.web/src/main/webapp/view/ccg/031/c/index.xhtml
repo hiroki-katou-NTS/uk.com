@@ -22,13 +22,14 @@
 					<div class="placement-container overflow-x overflow-y">
 						<div class="widget-container">
 							<com:ko-foreach bind="placements">
-								<div class="widget-panel preview" data-bind="attr: {id: placementID}">
+								<div class="widget-panel preview"
+									data-bind="attr: {id: placementID}">
 									<div class="panel-header">
 										<span class="title" data-bind="text: name"></span>
 									</div>
 									<div class="panel-content">
 										<!-- External Url -->
-										<iframe data-bind="visible: isExternalUrl, attr:{src: url}"  />
+										<iframe data-bind="visible: isExternalUrl, attr:{src: url}" />
 										<!-- TopPage Part -->
 									</div>
 								</div>
