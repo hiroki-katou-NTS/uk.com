@@ -5,11 +5,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
         // Service paths.
         var servicePath = {
-            searchAllEmployee: "basic/organization/employee/allemployee",
             searchEmployeeByLogin: "basic/organization/employee/onlyemployee",
-            searchModeEmployee: "basic/organization/employee/advanced",
-            searchOfWorkplace: "basic/organization/employee/ofworkplace",
-            searchWorkplaceChild: "basic/organization/employee/workplacechild",
             searchWorkplaceOfEmployee: "basic/organization/employee/workplaceemp",
             getOfSelectedEmployee: "basic/organization/employee/getoffselect",
             searchAllWorkType: "at/share/worktype/findNotDeprecated",
@@ -26,24 +22,29 @@ module nts.uk.com.view.ccg.share.ccg {
         }
 
         /**
-         * Find person list
+         * Find regulation info employee
          */
-        export function searchAllEmployee(baseDate: Date): JQueryPromise<Array<model.EmployeeSearchDto>> {
-            return nts.uk.request.ajax('com', servicePath.searchAllEmployee, baseDate);
-        }
-
         export function findRegulationInfoEmployee(query: model.EmployeeQueryParam): JQueryPromise<Array<model.EmployeeSearchDto>> {
             return nts.uk.request.ajax('com', servicePath.findRegulationInfoEmployee, query);
         }
 
+        /**
+         * Get personal role future permit
+         */
         export function getPersonalRoleFuturePermit(): JQueryPromise<boolean> {
             return nts.uk.request.ajax('com', servicePath.getPersonalRoleFuturePermit);
         }
 
+        /**
+         * Get personal role future permit
+         */
         export function getEmploymentRoleFuturePermit(): JQueryPromise<boolean> {
             return nts.uk.request.ajax('at', servicePath.getEmploymentRoleFuturePermit);
         }
 
+        /**
+         * Get current history item.
+         */
         export function getCurrentHistoryItem(): JQueryPromise<any> {
             return nts.uk.request.ajax('com', servicePath.getCurrentHistoryItem);
         }
@@ -58,6 +59,9 @@ module nts.uk.com.view.ccg.share.ccg {
             //return nts.uk.request.ajax('com', servicePath.getRefRangeBySysType + '/' + sysType);
         }
 
+        /**
+         * Get list closure by base date
+         */
         export function getClosuresByBaseDate(baseDate: string): JQueryPromise<Array<any>> {
             return nts.uk.request.ajax('at', servicePath.getClosuresByBaseDate + '/' + baseDate);
         }
@@ -69,20 +73,32 @@ module nts.uk.com.view.ccg.share.ccg {
             return nts.uk.request.ajax('at', servicePath.getEmploymentCodeByClosureId + '/' + closureId);
         }
 
+        /**
+         * Get closure tied by employment
+         */
         export function getClosureTiedByEmployment(employmentCd: string): JQueryPromise<number> {
             return nts.uk.request.ajax('at', servicePath.getClosureTiedByEmployment + '/' + employmentCd);
         }
 
+        /**
+         * Get employee range selection
+         */
         export function getEmployeeRangeSelection(): JQueryPromise<model.EmployeeRangeSelection> {
             const key = __viewContext.user.employeeId + '' + __viewContext.user.companyId;
             return nts.uk.characteristics.restore(key);
         }
 
+        /**
+         * Save employee range selection
+         */
         export function saveEmployeeRangeSelection(data: model.EmployeeRangeSelection): JQueryPromise<void> {
             const key = data.userId + '' + data.companyId;
             return nts.uk.characteristics.save(key, data);
         }
 
+        /**
+         * Calculate period
+         */
         export function calculatePeriod(closureId: number, yearMonth: number): JQueryPromise<Array<any>> {
             const param = '/' + closureId + '/' + yearMonth;
             return nts.uk.request.ajax('at', servicePath.calculatePeriod + param);
@@ -94,28 +110,6 @@ module nts.uk.com.view.ccg.share.ccg {
         
         export function searchEmployeeByLogin(baseDate: Date): JQueryPromise<Array<model.EmployeeSearchDto>> {
             return nts.uk.request.ajax('com', servicePath.searchEmployeeByLogin, baseDate);
-        }
-
-        /**
-         *search employee of work place 
-         */
-         
-        export function searchOfWorkplace(baseDate: Date): JQueryPromise<model.EmployeeSearchDto[]> {
-            return nts.uk.request.ajax('com', servicePath.searchOfWorkplace, baseDate);
-        }
-        /**
-         * search employee of work place child
-         */
-        export function searchWorkplaceChild(baseDate: Date): JQueryPromise<model.EmployeeSearchDto[]> {
-            return nts.uk.request.ajax('com', servicePath.searchWorkplaceChild, baseDate);
-        }
-
-        /**
-         * search data mode employee
-         */
-        export function searchModeEmployee(input: model.EmployeeSearchInDto)
-            : JQueryPromise<model.EmployeeSearchDto[]> {
-            return nts.uk.request.ajax('com', servicePath.searchModeEmployee, input);
         }
 
         /**
@@ -145,8 +139,6 @@ module nts.uk.com.view.ccg.share.ccg {
         export function getListWorkplaceId(baseDate: Date, referenceRange: number): JQueryPromise<any> {
             return nts.uk.request.ajax('com', servicePath.getListWorkplaceId, { baseDate: baseDate, referenceRange: referenceRange });
         }
-        
-        
         
         export module model{
 
