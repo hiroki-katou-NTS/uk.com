@@ -229,19 +229,11 @@ module cps002.a.vm {
                 });
             }
         }
-        clearEmployeeData() {
-            let self = this;
-            self.currentEmployee().employeeName("");
-            self.currentEmployee().employeeCode("");
-            self.currentEmployee().loginId("");
-            self.currentEmployee().password("");
-            self.currentEmployee().avatarId("");
-        }
 
         start() {
 
             let self = this;
-            self.clearEmployeeData();
+            self.currentEmployee().clearData();
 
             nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
                 self.employeeBasicInfo(data);
@@ -752,6 +744,15 @@ module cps002.a.vm {
         avatarId: KnockoutObservable<string> = ko.observable("");
         loginId: KnockoutObservable<string> = ko.observable("");
         password: KnockoutObservable<string> = ko.observable("");
+        clearData() {
+            let self = this;
+            self.employeeName("");
+            self.employeeCode("");
+            self.avatarId("");
+            self.loginId("");
+            self.password("");
+
+        }
     }
 
 
@@ -889,7 +890,7 @@ module cps002.a.vm {
                 return this.genDateString(this.saveData.value, this.dateType);
             }
 
-            if (this.dataType === "TIME" && this.saveData.value) {
+            if (this.dataType === "TIME" && this.saveData.value || this.dataType === "TIMEPOINT" && this.saveData.value) {
                 return this.genTimeString(this.saveData.value, this.dateType);
             }
 
