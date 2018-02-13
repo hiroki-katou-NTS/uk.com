@@ -3,7 +3,7 @@ module nts.uk.at.view.ksm011.c.viewmodel {
 
     export class ScreenModel {
         controlUseCls: KnockoutObservableArray<any>;
-        selectedControlUse: KnockoutObservable<number>;
+        useAtr: KnockoutObservable<number>;
         workTypeList: KnockoutObservableArray<any>;
         openDialogEnable: KnockoutObservable<boolean>;
         workTypeListEnable: KnockoutObservable<boolean>;
@@ -19,7 +19,7 @@ module nts.uk.at.view.ksm011.c.viewmodel {
                 { code: 1, name: nts.uk.resource.getText("KSM011_9") }
             ]);
 
-            self.selectedControlUse = ko.observable(0);
+            self.useAtr = ko.observable(0);
             self.workTypeList = ko.observableArray([]);
             self.openDialogEnable = ko.observable(true);
             self.workTypeListEnable = ko.observable(true);
@@ -27,7 +27,7 @@ module nts.uk.at.view.ksm011.c.viewmodel {
             self.workTypeNames = ko.observable("");
             self.items = ko.observableArray([]);
 
-            self.selectedControlUse.subscribe(function(value) {
+            self.useAtr.subscribe(function(value) {
                 if (value == 0) {
                     self.openDialogEnable(true);
                     self.workTypeListEnable(true);

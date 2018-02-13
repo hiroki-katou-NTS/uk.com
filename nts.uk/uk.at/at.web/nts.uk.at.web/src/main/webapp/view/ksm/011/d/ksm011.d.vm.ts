@@ -76,12 +76,6 @@ module nts.uk.at.view.ksm011.d.viewmodel {
             self.useCls = ko.observable(0);
             self.correctDeadline = ko.observable(0);
             self.component.currentCode.subscribe(function(codeChanged) {
-                self.component026.listPermissions([]);
-                self.componentShift.listPermissions([]);
-                self.componentWorkplace.listPermissions([]);
-                self.componentEmployee.listPermissions([]);
-                self.componentDate.listPermissions([]);
-                
                 self.findAll(codeChanged);
                 self.useCls(0);
                 self.correctDeadline(0);
@@ -196,13 +190,6 @@ module nts.uk.at.view.ksm011.d.viewmodel {
         private getListWorkplace() {
             let self = this;
             let dfd = $.Deferred();
-
-
-            self.listPermissionCommon([]);
-            self.listPermissionWorkplace([]);
-            self.listPermissionEmployee([]);
-            self.listPermissionDate([]);
-            self.listPermissionShift([]);
             
             self.component026.roleId(self.component.currentCode());
             self.component026.startPage().done(function() {
@@ -268,7 +255,6 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                         self.listPermissionCommon(listCommon);
 
                         if (author) {
-                            self.component026.listPermissions([]);
                             self.component026.listPermissions(self.listPermissionCommon());
                         } else {
                             self.component026.roleId(roleId);
@@ -287,7 +273,6 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                         self.listPermissionWorkplace(listWorkplace);
 
                         if (author) {
-                            self.componentWorkplace.listPermissions([]);
                             self.componentWorkplace.listPermissions(self.listPermissionWorkplace());
                         } else {
                             self.componentWorkplace.roleId(roleId);
