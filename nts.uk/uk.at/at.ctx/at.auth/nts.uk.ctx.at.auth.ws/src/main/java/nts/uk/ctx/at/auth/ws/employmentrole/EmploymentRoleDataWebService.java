@@ -9,6 +9,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.at.auth.app.command.employmentrole.CreateEmploymentRoleCmd;
 import nts.uk.ctx.at.auth.app.command.employmentrole.CreateEmploymentRoleCmdHandler;
 import nts.uk.ctx.at.auth.app.command.employmentrole.DeleteEmploymentRoleCmd;
@@ -82,6 +84,9 @@ public class EmploymentRoleDataWebService {
 	@Path("get/futurerefpermit")
 	public boolean getFutureDateRefPermit() {
 		String roleId = AppContexts.user().roles().forAttendance(); // 就業
+		if (roleId == null) {
+			throw new BusinessException(new RawErrorMessage("Access denied"));
+		}
 		return this.employmentRoleFinder.getEmploymentRoleById(roleId).getFutureDateRefPermit() == 0 ? false : true;
 	}
 
