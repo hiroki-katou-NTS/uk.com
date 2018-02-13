@@ -127,34 +127,35 @@ public class SavePersonInfoRoleAuthCommandHandler extends CommandHandler<SavePer
 	private void updateItemAuth(String roleId, String categoryId, PersonInfoItemAuthCommand itemCmd,
 			SavePersonInfoCategoryAuthCommand ctgCmd) {
 
-		boolean isNeedSave = ctgCmd.getAllowPersonRef() == 1 || ctgCmd.getAllowOtherRef() == 1;
+		// boolean isNeedSave = ctgCmd.getAllowPersonRef() == 1 ||
+		// ctgCmd.getAllowOtherRef() == 1;
 
-		if (isNeedSave) {
-			// check available item auth
-			Optional<PersonInfoItemAuth> oldItemAuthOpt = this.pItemAuthRepo.getItemDetai(roleId, categoryId,
-					itemCmd.getPersonItemDefId());
+		// if (isNeedSave) {
+		// check available item auth
+		Optional<PersonInfoItemAuth> oldItemAuthOpt = this.pItemAuthRepo.getItemDetai(roleId, categoryId,
+				itemCmd.getPersonItemDefId());
 
-			int selfAuth = itemCmd.getSelfAuth();
+		int selfAuth = itemCmd.getSelfAuth();
 
-			int otherAuth = itemCmd.getOtherAuth();
+		int otherAuth = itemCmd.getOtherAuth();
 
-			if (oldItemAuthOpt.isPresent()) {
+		if (oldItemAuthOpt.isPresent()) {
 
-				PersonInfoItemAuth oldItemAuth = oldItemAuthOpt.get();
+			PersonInfoItemAuth oldItemAuth = oldItemAuthOpt.get();
 
-				oldItemAuth.updateFromJavaType(selfAuth, otherAuth);
+			oldItemAuth.updateFromJavaType(selfAuth, otherAuth);
 
-				this.pItemAuthRepo.update(oldItemAuth);
+			this.pItemAuthRepo.update(oldItemAuth);
 
-			} else {
+		} else {
 
-				PersonInfoItemAuth newItemAuth = PersonInfoItemAuth.createFromJavaType(roleId, categoryId,
-						itemCmd.getPersonItemDefId(), selfAuth, otherAuth);
+			PersonInfoItemAuth newItemAuth = PersonInfoItemAuth.createFromJavaType(roleId, categoryId,
+					itemCmd.getPersonItemDefId(), selfAuth, otherAuth);
 
-				this.pItemAuthRepo.add(newItemAuth);
+			this.pItemAuthRepo.add(newItemAuth);
 
-			}
 		}
+		// }
 
 	}
 

@@ -88,3 +88,7 @@ table.control {
 .control td {
 	padding-bottom: 0.5em
 }
+
+.nts-fileupload-container .nts-input {
+	display: none !important;
+}

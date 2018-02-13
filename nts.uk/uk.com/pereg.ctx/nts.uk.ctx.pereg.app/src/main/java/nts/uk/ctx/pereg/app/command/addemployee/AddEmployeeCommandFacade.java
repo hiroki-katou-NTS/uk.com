@@ -36,9 +36,7 @@ public class AddEmployeeCommandFacade {
 	private RegisterLayoutFinder layoutFinder;
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void addNewFromInputs(AddEmployeeCommand command, String personId, String employeeId, String comHistId) {
-
-		List<ItemsByCategory> inputs = createData(command, personId, employeeId, comHistId);
+	public void addNewFromInputs(AddEmployeeCommand command, String personId, String employeeId, String comHistId,List<ItemsByCategory> inputs) {
 
 		updateRequiredInputs(command, inputs, personId, employeeId);
 
@@ -158,9 +156,7 @@ public class AddEmployeeCommandFacade {
 
 			String itemCD = x.getItemCode();
 			ItemValue itemVal = getItemById(inputs, itemCD, x.getCategoryCode());
-			
-			x.setDataType(getSaveDataType(x.getDataType(), x));
-			
+			x.setDataType(getSaveDataType(x.getDataType(), x,itemVal));
 			if (itemVal != null) {
 				x.setSaveData(new SaveDataDto(x.getSaveData().getSaveDataType(),
 						itemVal.value() != null ? itemVal.value().toString() : ""));
@@ -188,17 +184,18 @@ public class AddEmployeeCommandFacade {
 
 	}
 
-	private DataTypeValue getSaveDataType(DataTypeValue dataType, SettingItemDto item) {
-
-		if (dataType.equals(DataTypeValue.SELECTION)) {
+	private DataTypeValue getSaveDataType(DataTypeValue dataType, SettingItemDto item, ItemValue value) {
+	
+		if (dataType.equals(DataTypeValue.SELECTION) || dataType.equals(DataTypeValue.SELECTION_BUTTON)
+				|| dataType.equals(DataTypeValue.SELECTION_RADIO)) {
 			switch (item.getSelectionItemRefType()) {
 			case ENUM:
 				return DataTypeValue.NUMERIC;
 			case CODE_NAME:
 				return DataTypeValue.STRING;
 			case DESIGNATED_MASTER:
-
-				if (item.getSaveData().getValue().toString().chars().allMatch(Character::isDigit)) {
+				String itemValue = value != null ? value.value() : item.getSaveData().getValue().toString();
+				if (itemValue.chars().allMatch(Character::isDigit)) {
 					return DataTypeValue.NUMERIC;
 				} else {
 					return DataTypeValue.STRING;

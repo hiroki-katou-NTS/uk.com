@@ -18,5 +18,11 @@ public class WorkTimeSettingAC implements WorkTimeSettingRepo{
 	public boolean isFlowWork(String workTimeCode) {
 		return workTimeSetting.isFlowWork(AppContexts.user().companyId(), workTimeCode);
 	}
+
+	@Override
+	public String getWorkTimeSettingName(String companyId, String worktimeCode) {
+		return workTimeSetting.getWorkTimeSettingName(companyId, worktimeCode);
+	}
+	
 	
 }

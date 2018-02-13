@@ -50,11 +50,15 @@
 	align-items: center;	
 }
 
-.sidebar-content-header > button:nth-child(1) {
-	margin-left: 100px;
+.sidebar-content-header > span:nth-child(1) {
+	margin-left: 55px;
 }
 
 .sidebar-content-header > button:nth-child(2) {
+	margin-left: 60px;
+}
+
+.sidebar-content-header > button:nth-child(3) {
 	margin-left: 60px;
 } 
 

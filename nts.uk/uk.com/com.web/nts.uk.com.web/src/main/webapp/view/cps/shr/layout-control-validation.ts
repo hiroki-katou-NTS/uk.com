@@ -1,8 +1,12 @@
 module nts.layout {
     import ajax = nts.uk.request.ajax;
     import modal = nts.uk.ui.windows.sub.modal;
+    import nou = nts.uk.util.isNullOrUndefined;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+
+    let rmError = nts.uk.ui.errors["removeByCode"],
+        getError = nts.uk.ui.errors["getErrorByElement"]
 
     export const validate = {
         removeDoubleLine: (items: Array<any>) => {
@@ -18,6 +22,61 @@ module nts.layout {
                     });
                 }
             });
+        },
+        initCheckError: (items: Array<any>) => {
+            // validate button, radio button
+            _(items)
+                .filter(x => _.has(x, "items") && _.isFunction(x.items))
+                .map(x => x.items())
+                .flatten()
+                .flatten()
+                .filter((x: IItemData) => x.required && x.type != ITEM_TYPE.SET)
+                .each((x: IItemData) => {
+                    let v: any = ko.toJS(x),
+                        id = v.itemDefId.replace(/[-_]/g, ''),
+                        element = document.getElementById(id),
+                        $element = $(element);
+
+                    if (element && (element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper'))) {
+                        x.value.subscribe(d => {
+                            !nou(d) && rmError($element, "FND_E_REQ_SELECT");
+                        });
+                    }
+                });
+        },
+        checkError: (items: Array<any>) => {
+            _(items)
+                .filter(x => _.has(x, "items") && _.isFunction(x.items))
+                .map(x => x.items())
+                .flatten()
+                .flatten()
+                .filter((x: any) => x.required && x.type != ITEM_TYPE.SET)
+                .map(x => ko.toJS(x))
+                .each(x => {
+                    let id = x.itemDefId.replace(/[-_]/g, ''),
+                        element = document.getElementById(id),
+                        $element = $(element);
+
+                    if (element) {
+                        if (element.tagName.toUpperCase() == "INPUT") {
+                            $element
+                                .trigger('blur')
+                                .trigger('change');
+                        } else if (element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper')) {
+                            if (nou(x.value) && x.required) {
+                                if (!getError($element).length) {
+                                    $element.ntsError('set', { messageId: "FND_E_REQ_SELECT", messageParams: [x.itemName] });
+                                }
+                            }
+                        }
+                        else {
+                            $element
+                                .find('.nts-input')
+                                .trigger('blur')
+                                .trigger('change');
+                        }
+                    }
+                });
         }
     }
 
@@ -90,6 +149,7 @@ module nts.layout {
             self.radio();
             self.button();
             self.combobox();
+            validate.initCheckError(lstCls);
         }
 
         radio = () => {
@@ -109,6 +169,9 @@ module nts.layout {
                         }
                     });
                 });
+                setTimeout(() => {
+                    CS00020_IS00248.data.value.valueHasMutated();
+                }, 0);
             }
 
             if (CS00020_IS00121) {
@@ -124,11 +187,14 @@ module nts.layout {
                         }
                     });
                 });
+                setTimeout(() => {
+                    CS00020_IS00121.data.value.valueHasMutated();
+                }, 0);
             }
         };
 
         setItemData(Item, value) {
-            Item && Item.data.value(value || '');
+            Item && Item.data.value(value);
         }
 
         setItemName(Item, value) {
@@ -138,8 +204,6 @@ module nts.layout {
         setEditAble(Item, value) {
             Item && Item.data.editable(value);
         }
-
-
 
         regClickEvent(btnEvent: IButtonEvent) {
             _.each(btnEvent.btnCodes, (code) => {
@@ -158,15 +222,22 @@ module nts.layout {
                             workTimeCode: ko.toJS(wtc)
                         };
 
-                        fetch.check_start_end(command).done(first => {
-                            self.setEditAble(startItem1, !!first);
-                            self.setEditAble(endItem1, !!first);
+                        if (command.workTimeCode) {
+                            fetch.check_start_end(command).done(first => {
+                                self.setEditAble(startItem1, !!first);
+                                self.setEditAble(endItem1, !!first);
 
-                            fetch.check_multi_time(command).done(second => {
-                                self.setEditAble(startItem2, !!first && !!second);
-                                self.setEditAble(endItem2, !!first && !!second);
+                                fetch.check_multi_time(command).done(second => {
+                                    self.setEditAble(startItem2, !!first && !!second);
+                                    self.setEditAble(endItem2, !!first && !!second);
+                                });
                             });
-                        });
+                        } else {
+                            self.setEditAble(startItem1, false);
+                            self.setEditAble(endItem1, false);
+                            self.setEditAble(startItem2, false);
+                            self.setEditAble(endItem2, false);
+                        }
                     };
 
                 // for first run
@@ -194,10 +265,10 @@ module nts.layout {
                                 self.setItemName(wkTypeItem, childData.selectedWorkTypeName);
                                 self.setItemData(wkTimeItem, childData.selectedWorkTimeCode);
                                 self.setItemName(wkTimeItem, childData.selectedWorkTimeName);
-                                self.setItemData(startItem1, childData.first ? childData.first.start : undefined);
-                                self.setItemData(endItem1, childData.first ? childData.first.end : undefined);
-                                self.setItemData(startItem2, childData.second ? childData.second.start : undefined);
-                                self.setItemData(endItem2, childData.second ? childData.second.end : undefined);
+                                self.setItemData(startItem1, childData.first && childData.first.start);
+                                self.setItemData(endItem1, childData.first && childData.first.end);
+                                self.setItemData(startItem2, childData.second && childData.second.start);
+                                self.setItemData(endItem2, childData.second && childData.second.end);
 
                                 validateEditable(wkTimeItem != null ? wkTimeItem.data.value : '');
                             }
@@ -437,6 +508,11 @@ module nts.layout {
         SPER = <any>"SeparatorLine" // line item
     }
 
+    enum ITEM_TYPE {
+        SET = 1,
+        SINGLE = 2
+    }
+
     interface IValidation {
         radio: () => void;
         button: () => void;
@@ -455,7 +531,10 @@ module nts.layout {
     }
 
     interface IItemData {
+        'type': ITEM_TYPE;
+        required: boolean;
         value: KnockoutObservable<any>;
+        items: KnockoutObservableArray<any>;
         editable: KnockoutObservable<boolean>;
         readonly: KnockoutObservable<boolean>;
         categoryCode: string;

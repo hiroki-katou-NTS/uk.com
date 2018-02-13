@@ -87,3 +87,7 @@ img {
 .labelRight {
 	margin-left: 10px;
 }
+
+.nts-fileupload-container .nts-input {
+	display: none !important;
+}

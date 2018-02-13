@@ -3,7 +3,6 @@ module nts.uk.com.view.cas012.a.viewmodel {
 
     export class ScreenModel {
 
-        self.sysAdmin: KnockoutObservable<boolean> = ko.observable(false);
         // Metadata
         isCreate: KnockoutObservable<boolean> = ko.observable(false);
 

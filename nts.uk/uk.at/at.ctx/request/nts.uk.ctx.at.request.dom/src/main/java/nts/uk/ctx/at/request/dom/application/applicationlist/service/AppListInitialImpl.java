@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.applicationlist.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -19,12 +20,19 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.ApplicationDisplayAtr;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.ApplicationListAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentDataRequestPubImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
@@ -33,10 +41,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImp
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
@@ -95,11 +99,13 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
 	@Inject
-	private OvertimeRepository repoOverTime;
-	@Inject
-	private GoBackDirectlyRepository repoGoBack;
-	@Inject
 	private AppDetailInfoRepository repoAppDetail;
+	@Inject
+	private DailyAttendanceTimeCaculation calTime;
+	@Inject
+	private AgentAdapter agentAdapter;
+	@Inject
+	private AtEmployeeAdapter employeeAdapter;
 	/**
 	 * 0 - 申請一覧事前必須チェック
 	 */
@@ -133,22 +139,23 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * 1 - 申請一覧リスト取得
 	 */
 	@Override
-	public List<Application_New> getApplicationList(AppListExtractCondition param, ApprovalListDisplaySetting displaySet) {
+	public AppListOutPut getApplicationList(AppListExtractCondition param, ApprovalListDisplaySetting displaySet) {
 		//申請一覧区分が申請 OR 承認-(Check xem là application hay aprove)
 		List<Application_New> lstApp = new ArrayList<>();
+		AppListOutPut appFull = null;
 		if(param.getAppListAtr().equals(ApplicationListAtr.APPLICATION)){//申請
 			//アルゴリズム「申請一覧リスト取得申請」を実行する - 2
-			this.getApplicationListByApp(param);
+			appFull = this.getApplicationListByApp(param);
 		}else{//承認
 			//アルゴリズム「申請一覧リスト取得承認」を実行する - 3
-			lstApp = this.getAppListByApproval(param,displaySet);
+			appFull = this.getAppListByApproval(param,displaySet);
 		}
 		//取得した一覧の申請種類(単一化）でリストを作成する - create list for drop-down list (A4_4_1)
 		
 		// TODO Auto-generated method stub
 		//ドメインモデル「休暇申請設定」を取得する (Vacation application setting)- YenNTH
 		Optional<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
-		return null;
+		return appFull;
 	}
 	private List<Integer> lstAppType(List<Application_New> lstApp){
 		List<Integer> lstAppDis = new ArrayList<>();
@@ -170,24 +177,31 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		List<Application_New> lstAppFilter = lstApp;
 		lstAppFilter.stream().filter(c -> c.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION))
 				.filter(d -> d.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION));
+		List<AppOverTimeInfoFull> lstAppOt = new ArrayList<>();
+		List<AppGoBackInfoFull> lstAppGoBack = new ArrayList<>();
+		boolean overTimeDisplay = param.getAppType() == null ? true : param.getAppListAtr().equals(ApplicationType.OVER_TIME_APPLICATION);
+		boolean goBackDisplay = param.getAppType() == null ? true : param.getAppListAtr().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION);
 		for (Application_New application : lstAppFilter) {
 			//get app xin lam them
-			if(application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)){
-				Optional<AppOverTime> appOvertime = repoOverTime.getAppOvertime(companyId, application.getAppID());
-				
+			if(overTimeDisplay && application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)){
+//				Optional<AppOverTime> appOvertime = repoOverTime.getAppOvertime(companyId, application.getAppID());
+				AppOverTimeInfoFull appOt = repoAppDetail.getAppOverTimeInfo(companyId, application.getAppID());
+				lstAppOt.add(appOt);
 			}
-			if(application.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION)){
-				Optional<GoBackDirectly> appGoBack = repoGoBack.findByApplicationID(companyId, application.getAppID());
+			if(goBackDisplay && application.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION)){
+//				Optional<GoBackDirectly> appGoBack = repoGoBack.findByApplicationID(companyId, application.getAppID());
+				AppGoBackInfoFull appGoBack = repoAppDetail.getAppGoBackInfo(companyId, application.getAppID());
+				lstAppGoBack.add(appGoBack);
 			}
 		}
-		for (Application_New application : lstApp) {
+//		for (Application_New application : lstApp) {
 			//アルゴリズム「申請一覧リスト取得打刻取消」を実行する-(Cancel get list app stamp): 7 - 申請一覧リスト取得打刻取消
 //			this.getListAppStampIsCancel(application);
 			//アルゴリズム「申請一覧リスト取得振休振出」を実行する-(get List App Complement Leave): 6 - 申請一覧リスト取得振休振出
 //			this.getListAppComplementLeave(application);
 			//アルゴリズム「申請一覧リスト取得休暇」を実行する-(get List App Absence): 8 - 申請一覧リスト取得休暇
 //			this.getListAppAbsence(application);
-		}
+//		}
 		//imported(申請承認）「稟議書」を取得する - wait
 		//アルゴリズム「申請一覧リスト取得マスタ情報」を実行する(get List App Master Info): 9 - 申請一覧リスト取得マスタ情報
 //		List<AppMasterInfo> lstAppMasterInfo = this.getListAppMasterInfo(lstApp);
@@ -195,40 +209,74 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//申請日付順でソートする
 		
 		// TODO Auto-generated method stub
-		return new AppListOutPut(lstAppMasterInfo, lstAppFilter);// NOTE
+		
+		//get status app
+//		List<ApplicationFullOutput> lstAppFull = this.findStatusAPp(lstAppFilter);
+		return new AppListOutPut(lstAppMasterInfo, lstAppFilter, lstAppOt, lstAppGoBack);// NOTE
 	}
 	/**
 	 * 3 - 申請一覧リスト取得承認
 	 */
 	@Override
-	public List<Application_New> getAppListByApproval(AppListExtractCondition param, ApprovalListDisplaySetting displaySet) {
+	public AppListOutPut getAppListByApproval(AppListExtractCondition param, ApprovalListDisplaySetting displaySet) {
 		String companyId = AppContexts.user().companyId();
+		String sID = AppContexts.user().employeeId();
+		GeneralDate baseDate = GeneralDate.today();
 		//ドメインモデル「承認機能設定」を取得する-(Lấy dữ liệu domain 承認機能設定) - wait hoi lai ben nhat
 		// TODO Auto-generated method stub
 		//申請一覧抽出条件.申請表示対象が「部下の申請」が指定-(Check đk lọc)
 		if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_SUB)){//部下の申請の場合
-			//アルゴリズム「自部門職場と配下の社員をすべて取得する」を実行する - wait request
-			// TODO Auto-generated method stub
+			//アルゴリズム「自部門職場と配下の社員をすべて取得する」を実行する - wait request 243
+			List<String> lstEmployeeId = employeeAdapter.getListSid(sID, baseDate);
 		}
 		//申請一覧抽出条件.申請表示対象が「事前通知」または「検討指示」が指定
 		List<Application_New> lstApp = new ArrayList<>();
-		if(!param.getAppDisplayAtr().equals(ApplicationDisplayAtr.PRIOR_NOTICE) || !param.getAppDisplayAtr().equals(ApplicationDisplayAtr.CONSIDER_INSTRUCT)){//「事前通知」または「検討指示」以外
-			//ドメインモデル「代行者管理」を取得する-(Lấy dữ liệu domain 代行者管理) - wait request
+//		if(!param.getAppDisplayAtr().equals(ApplicationDisplayAtr.PRIOR_NOTICE) || !param.getAppDisplayAtr().equals(ApplicationDisplayAtr.CONSIDER_INSTRUCT)){//「事前通知」または「検討指示」以外
+			//ドメインモデル「代行者管理」を取得する-(Lấy dữ liệu domain 代行者管理) - wait request 244
+			List<AgentDataRequestPubImport> lstAgent = agentAdapter.lstAgentData(companyId, sID, baseDate);
+			List<String> lstEmp = new ArrayList<>();
+			for (AgentDataRequestPubImport agent : lstAgent) {
+				lstEmp.add(agent.getEmployeeId());
+			}
 			// TODO Auto-generated method stub
 			//ドメインモデル「申請」を取得する-(Lấy dữ liệu domain 申請) - get List App By Reflect
 			lstApp = repoApp.getListAppByReflect(companyId, param.getStartDate(), param.getEndDate());
+			//loc du lieu
+			//条件１：ログイン者の表示対象の基本条件
+			List<Application_New> lstAppFilter = lstApp;
+			lstAppFilter.stream().filter(c -> c.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION))
+					.filter(d -> d.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION));
+			List<AppOverTimeInfoFull> lstAppOt = new ArrayList<>();
+			List<AppGoBackInfoFull> lstAppGoBack = new ArrayList<>();
+			boolean overTimeDisplay = param.getAppType() == null ? true : param.getAppListAtr().equals(ApplicationType.OVER_TIME_APPLICATION);
+			boolean goBackDisplay = param.getAppType() == null ? true : param.getAppListAtr().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION);
+			for (Application_New application : lstAppFilter) {
+				//get app xin lam them
+				if(overTimeDisplay && application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)){
+//					Optional<AppOverTime> appOvertime = repoOverTime.getAppOvertime(companyId, application.getAppID());
+					AppOverTimeInfoFull appOt = repoAppDetail.getAppOverTimeInfo(companyId, application.getAppID());
+					lstAppOt.add(appOt);
+				}
+				if(goBackDisplay && application.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION)){
+//					Optional<GoBackDirectly> appGoBack = repoGoBack.findByApplicationID(companyId, application.getAppID());
+					AppGoBackInfoFull appGoBack = repoAppDetail.getAppGoBackInfo(companyId, application.getAppID());
+					lstAppGoBack.add(appGoBack);
+				}
+			}
+			
+			
 			//アルゴリズム「申請一覧リスト取得出張」を実行する
 			// TODO Auto-generated method stub
-		}
+//		}
 		//imported(申請承認）「稟議書」を取得する - wait request : return list app - tam thoi bo qua
 		// TODO Auto-generated method stub
 		//アルゴリズム「申請一覧リスト取得マスタ情報」を実行する(get List App Master Info): 9 - 申請一覧リスト取得マスタ情報
-		List<AppMasterInfo> lstMaster = this.getListAppMasterInfo(lstApp);
+		List<AppMasterInfo> lstMaster = this.getListAppMasterInfo(lstAppFilter);
 		//アルゴリズム「申請一覧リスト取得実績」を実行する-(get App List Achievement): 5 - 申請一覧リスト取得実績
-		this.getAppListAchievement(lstApp, displaySet);
+		AppListAtrOutput timeOutput = this.getAppListAchievement(lstApp, displaySet);
 		//承認一覧に稟議書リスト追加し、申請日付順に整列する - phu thuoc vao request
 		// TODO Auto-generated method stub
-		return null;
+		return new AppListOutPut(lstMaster, lstAppFilter, lstAppOt, lstAppGoBack);
 	}
 	/**
 	 * lam o ui
@@ -245,6 +293,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			appFull.setStatus(statusApp);
 			appFull.setAgentId(status.getAgentId());
 		}
+//		List<ApplicationFullOutput> lstAppFull = this.findStatusAPp(lstApp);
 		for (ApplicationFullOutput appFull : lstAppFull) {
 			switch(appFull.getStatus()){
 				case 1://承認状況＝否
@@ -310,22 +359,22 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				//承認一覧表示設定.休出の実績
 				if(displaySet.getHwActualDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
 					//アルゴリズム「申請一覧リスト取得実績休出申請」を実行する-(5.1))
-					this.getAppListAchievementBreak(appPost.getEmployeeID(), appPost.getAppDate());
+//					this.getAppListAchievementBreak(appPost.getEmployeeID(), appPost.getAppDate());
 					// TODO Auto-generated method stub
 				}
 			}
 		}
 		//「残業申請」または「休出時間申請」の事後以外の場合 (Không phải xin sau)
-		for (Application_New appDif : lstDif) {
-			//アルゴリズム「申請一覧リスト取得打刻取消」を実行する-(getListAppStampIsCancel 7)
-			this.getListAppStampIsCancel(appDif);
-			//アルゴリズム「申請一覧リスト取得振休振出」を実行する (get List App Complement Leave - 6)
-			this.getListAppComplementLeave(appDif);
-			//アルゴリズム「申請一覧リスト取得休暇」を実行する (get List App Absence - 8)
-			this.getListAppAbsence(appDif);
-		}
+//		for (Application_New appDif : lstDif) {
+//			//アルゴリズム「申請一覧リスト取得打刻取消」を実行する-(getListAppStampIsCancel 7)
+//			this.getListAppStampIsCancel(appDif);
+//			//アルゴリズム「申請一覧リスト取得振休振出」を実行する (get List App Complement Leave - 6)
+//			this.getListAppComplementLeave(appDif);
+//			//アルゴリズム「申請一覧リスト取得休暇」を実行する (get List App Absence - 8)
+//			this.getListAppAbsence(appDif);
+//		}
 		//アルゴリズム「申請一覧リスト取得承認件数」を実行する(countAppListApproval): 4 -   申請一覧リスト取得承認件数
-		this.countAppListApproval(lstApp);
+		ApplicationStatus status = this.countAppListApproval(lstApp);
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -348,12 +397,42 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	public Boolean getAppListAchievementOverTime(String sID, GeneralDate date) {
 		//Imported(申請承認)「勤務実績」を取得する - req #5
 		RecordWorkInfoImport record = recordWkpInfoAdapter.getRecordWorkInfo(sID, date);
-		
+		DailyAttendanceTimeCaculationImport cal = calTime.getCalculation(sID, date, record.getWorkTypeCode(), record.getWorkTimeCode(), record.getTime1(), record.getTime2(), record.getTime3(), record.getTime4());
 		//Imported(申請承認)「計算残業時間」を取得する - req #23
+		List<Integer> lstFrameNo = new ArrayList<>();
+		
+		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getOverTime().entrySet()){
+			for(Integer i : lstFrameNo){
+				if(i == entry.getKey()){
+				int a =	entry.getValue().getCalTime();
+				}
+			}
+		}
 		// TODO Auto-generated method stub
 		//Imported(申請承認)「計算休出時間」を取得する - req #23
+		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getHolidayWorkTime().entrySet()){
+			for(Integer i : lstFrameNo){
+				if(i == entry.getKey()){
+				int a =	entry.getValue().getCalTime();
+				}
+			}
+		}
 		// TODO Auto-generated method stub
 		//Imported(申請承認)「計算加給時間」を取得する - req #23
+		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getBonusPayTime().entrySet()){
+			for(Integer i : lstFrameNo){
+				if(i == entry.getKey()){
+				int a =	entry.getValue().getCalTime();
+				}
+			}
+		}
+		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getSpecBonusPayTime().entrySet()){
+			for(Integer i : lstFrameNo){
+				if(i == entry.getKey()){
+				int a =	entry.getValue().getCalTime();
+				}
+			}
+		}
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -439,7 +518,11 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				//事前、事後の後ろに#CMM045_101(※)を追加
 				// TODO Auto-generated method stub
 			}
-			lstAppMasterInfo.add(new AppMasterInfo(app, appDispName.get().getDispName().v(), empName, wkp.getWkpDisplayName()));
+			String appDispNameStr = "";
+			if(appDispName.isPresent()){
+				appDispNameStr = appDispName.get().getDispName().v();
+			}
+			lstAppMasterInfo.add(new AppMasterInfo(app.getAppID(), app.getAppType().value, appDispNameStr, empName, wkp.getWkpDisplayName()));
 		}
 		return lstAppMasterInfo;
 	}
@@ -583,6 +666,17 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		return check;
 	}
+//	private List<ApplicationFullOutput> findStatusAPp(List<Application_New> lstApp){
+//		List<ApplicationFullOutput> lstAppFull = mergeAppAndPhase(lstApp);
+//		for (ApplicationFullOutput appFull : lstAppFull) {
+//			PhaseFrameStatus status = this.findPhaseFrameStatus(appFull.getLstPhaseState(), AppContexts.user().employeeId());
+//			int statusApp = this.calApplication(appFull.getApplication().getReflectionInformation().getStateReflection(), status, status.getAgentId());
+//			appFull.setStatus(statusApp);
+//			appFull.setAgentId(status.getAgentId());
+//		}
+//		return lstAppFull;
+//	}
+	
 	/**
 	 * calculate status of application
 	 * @param appStatus

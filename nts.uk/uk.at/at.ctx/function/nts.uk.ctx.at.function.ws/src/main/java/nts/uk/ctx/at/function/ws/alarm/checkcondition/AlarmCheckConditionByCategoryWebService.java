@@ -64,4 +64,10 @@ public class AlarmCheckConditionByCategoryWebService extends WebService {
 	public void delete(AlarmCheckConditionByCategoryCommand command){
 		this.delHandler.handle(command);
 	}
+	
+	@POST
+	@Path("checkManager")
+	public boolean checkManager(){
+		return this.finder.checkManager();
+	}
 }

@@ -20,7 +20,7 @@ public class KrcdtTimeLeavingWorkPK implements Serializable {
 	public String employeeId;
 	
 	@Column(name = "WORK_NO")
-	public int workNo;
+	public Integer workNo;
 
 	@Column(name = "YMD")
 	public GeneralDate ymd;

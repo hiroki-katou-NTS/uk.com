@@ -42,7 +42,7 @@
 					data-bind="click : addData, enable: revDisSel01">#{i18n.getText('CPS017_2')}</button>
 				<button id="A1_005" class="danger" tabindex="3"
 					data-bind="click : remove, enable: revDisSel02 ">#{i18n.getText('CPS017_4')}</button>
-				
+
 				<button id="A1_003"
 					data-bind="click: openDialogB, enable: revDisSel03" tabindex="5">#{i18n.getText('CPS017_3')}</button>
 
@@ -57,18 +57,19 @@
 			</div>
 			<div id="contents-area" class="cf"
 				data-bind="let: { infoSelection: perInfoSelectionItem }">
-				
+
 				<!-- phần trái của màn hình -->
 				<div id="content-left" class="pull-left">
 					<!-- panel -->
-					<div data-bind="ntsPanel:{
+					<div
+						data-bind="ntsPanel:{
 							width: '278px', 
 							height: '540px',
 							direction: 'right', 
 							showIcon: true, 
 							visible: true}">
-							
-							<!-- thanh tìm kiếm  -->
+
+						<!-- thanh tìm kiếm  -->
 						<div tabindex="7"
 							data-bind="ntsSearchBox: {
 								searchMode: 'filter',
@@ -83,7 +84,7 @@
 								fields: ['selectionItemName'],
 								mode: 'igGrid' 
 								}" />
-								<!-- kết quả tìm kiếm  -->
+						<!-- kết quả tìm kiếm  -->
 						<table id="sel_item_grid"
 							data-bind="ntsGridList: {
 								height: 270,
@@ -97,22 +98,23 @@
 								multiple: false,
 								value: perInfoSelectionItem().selectionItemId}">
 						</table>
-						
+
 						<!-- mũi tên -->
 						<span id="caret" class="caret-bottom outline"></span>
-						
+
 						<!-- khu vực thêm lịch sử, sửa lịch sử  -->
 						<div id="history" class="cf">
-							<button tabindex="9" id="add-history" class = "history-control-button"
-								data-bind="click: openDialogC, enable: disbleAdUpHist"
-								>#{i18n.getText('CPS017_8')}</button>
-							<button tabindex="10" id="edit-history" class="history-control-button"
-								data-bind="click: openDialogD, enable: disbleAdUpHist"
-								>#{i18n.getText('CPS017_9')}</button>
-							<button tabindex="11" id="remove-history" class="danger history-control-button"
+							<button tabindex="9" id="add-history"
+								class="history-control-button"
+								data-bind="click: openDialogC, enable: disbleAdUpHist">#{i18n.getText('CPS017_8')}</button>
+							<button tabindex="10" id="edit-history"
+								class="history-control-button"
+								data-bind="click: openDialogD, enable: disbleAdUpHist">#{i18n.getText('CPS017_9')}</button>
+							<button tabindex="11" id="remove-history"
+								class="danger history-control-button"
 								data-bind="click : removeHistory, enable: enableDelHist ">#{i18n.getText('CPS017_10')}</button>
 						</div>
-						
+
 						<!-- khu vực history list -->
 						<div id="history_lst"
 							data-bind="ntsListBox: {
@@ -128,7 +130,7 @@
 								{ key: 'displayDate', length: 17 }
 							]}">
 						</div>
-						
+
 					</div>
 
 				</div>
@@ -142,14 +144,14 @@
 						</div>
 						<span class="col1" data-bind="text: selectionItemName"></span>
 					</div>
-					
+
 					<div id="register">
 						<span> #{i18n.getText('CPS017_14')}</span>
 					</div>
-					
+
 					<div id="itemRegisterLst" class="caret-right caret-background">
 						<table id="item_register_grid"
-								data-bind="ntsGridList: {
+							data-bind="ntsGridList: {
 									height: 270,
 									options: listSelection,
 									primaryKey: 'selectionID',
@@ -168,17 +170,20 @@
 				</div>
 
 				<!-- phần bên phải của màn hình  -->
-				<div id="content-right" class="pull-left" data-bind="with: selection">
+				<div id="content-right" class="pull-left"
+					data-bind="with: selection">
 					<div class="form-input">
 						<div class='form-lable'
 							data-bind="ntsFormLabel: {constraint: ['SelectionCD','SelectionName'], required: true}">
 							<label>#{i18n.getText('CPS017_20')}</label>
 						</div>
-						
+
 						<div class="input">
 							<div>
-								<span data-bind="if: infoSelection().selectionCodeCharacter() == 0"> 
-								<input id="code" data-bind="ntsTextEditor: {
+								<span
+									data-bind="if: infoSelection().selectionCodeCharacter() == 0">
+									<input id="code"
+									data-bind="ntsTextEditor: {
 										name: '#[CPS017_21]', 
 										value: selectionCD,
 										constraint: 'SelectionCD', 
@@ -186,9 +191,9 @@
 										enable: $parent.selectionCd, 
 		 								immediate: false									
 										}" />
-								</span>
-								<span data-bind="if: infoSelection().selectionCodeCharacter() == 1">
-								<input id="code"
+								</span> <span
+									data-bind="if: infoSelection().selectionCodeCharacter() == 1">
+									<input id="code"
 									data-bind="ntsTextEditor: {
 										name: '#[CPS017_21]', 
 										value: selectionCD,
@@ -196,11 +201,11 @@
 										required: true, 
 										enable: $parent.selectionCd, 
 		 								immediate: false}" />
-								</span> 
+								</span>
 							</div>
 							<div>
 								<input id="name"
-								data-bind="ntsTextEditor: {
+									data-bind="ntsTextEditor: {
 								name: '#[CPS017_22]',
 								value: selectionName, 
 								constraint: 'SelectionName', 
@@ -210,7 +215,7 @@
 							</div>
 						</div>
 					</div>
-					
+
 					<div class="form-input">
 						<div class="form-lable"
 							data-bind="ntsFormLabel: {constraint: 'ExternalCD', required: false }">
@@ -229,7 +234,7 @@
 									readonly: false}" />
 						</div>
 					</div>
-					
+
 					<div class="form-input">
 						<div class="form-lable"
 							data-bind="ntsFormLabel: {constraint: 'MemoSelection', required: false }">

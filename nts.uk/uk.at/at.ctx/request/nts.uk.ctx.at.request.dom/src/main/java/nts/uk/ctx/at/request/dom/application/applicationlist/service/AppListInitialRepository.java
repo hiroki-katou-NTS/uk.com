@@ -27,7 +27,7 @@ public interface AppListInitialRepository {
 	 * @param displaySet
 	 * @return
 	 */
-	public List<Application_New> getApplicationList(AppListExtractCondition param, ApprovalListDisplaySetting displaySet);
+	public AppListOutPut getApplicationList(AppListExtractCondition param, ApprovalListDisplaySetting displaySet);
 	/**
 	 * 2 - 申請一覧リスト取得申請
 	 * @param param
@@ -40,7 +40,7 @@ public interface AppListInitialRepository {
 	 * @param displaySet
 	 * @return
 	 */
-	public List<Application_New> getAppListByApproval(AppListExtractCondition param, ApprovalListDisplaySetting displaySet);
+	public AppListOutPut getAppListByApproval(AppListExtractCondition param, ApprovalListDisplaySetting displaySet);
 	/**
 	 * 4 - 申請一覧リスト取得承認件数
 	 * @param lstApp

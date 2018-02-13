@@ -18,6 +18,22 @@
 .lableData {
 	width: 125px;
 }
+/* #list-box_grid_displayContainer {
+	height: 110px !important;
+}
+*/
+#list-box_grid_scrollContainer {
+	height: 83.6px !important;
+} 
+
+#list-box_grid_container {
+	width: 245px !important;
+	height: 84px !important;
+}
 #list-box_grid_displayContainer {
-	height: 110px;
+	width: 228px !important;
+	height: 83.6px !important;
+}
+#list-box_grid {
+	height: 83.6px !important;
 }

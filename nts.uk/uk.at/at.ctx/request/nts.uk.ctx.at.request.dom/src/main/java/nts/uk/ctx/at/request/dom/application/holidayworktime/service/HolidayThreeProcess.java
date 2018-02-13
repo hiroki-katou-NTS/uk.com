@@ -9,7 +9,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInf
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 
 public interface HolidayThreeProcess {
 	/**
@@ -23,6 +22,27 @@ public interface HolidayThreeProcess {
 	 * @return 0: Normal. 1: 背景色を設定する
 	 */
 	OvertimeCheckResult preApplicationExceededCheck(String companyId, GeneralDate appDate, GeneralDateTime inputDate, PrePostAtr prePostAtr, int attendanceId, List<HolidayWorkInput> overtimeInputs) ;
+	
+	/**
+	 * 03-02_実績超過チェック
+	 * @param prePostAtr
+	 * @param appType
+	 * @param employeeID
+	 * @param companyID
+	 * @param approvalFunctionSetting
+	 * @param appDate
+	 * @param overTimeInputs
+	 * @param siftCD
+	 * @return
+	 */
+	public CaculationTime checkCaculationActualExcess(int prePostAtr,int appType,String employeeID,String companyID,GeneralDate appDate,CaculationTime breakTimeInput, String siftCD,Integer calTime);
+	/**
+	 * 03-02-1_チェック条件
+	 * @param prePostAtr
+	 * @param companyID
+	 * @return
+	 */
+	public boolean checkCodition(int prePostAtr,String companyID);
 	/**
 	 * 03-02-2_当日以外の場合
 	 * @param companyID
@@ -34,7 +54,7 @@ public interface HolidayThreeProcess {
 	 * @param recordWorkInfoImport
 	 * @return
 	 */
-	public List<CaculationTime> checkOutSideTimeTheDay(String companyID,String employeeID,String appDate,ApprovalFunctionSetting approvalFunctionSetting, String siftCD,List<CaculationTime> breakTimes,RecordWorkInfoImport recordWorkInfoImport);
+	public CaculationTime checkOutSideTimeTheDay(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTime,RecordWorkInfoImport recordWorkInfoImport,Integer calTime);
 	/**
 	 * 03-02-2-1_当日以外_休日出勤の場合
 	 * @param companyID
@@ -46,8 +66,21 @@ public interface HolidayThreeProcess {
 	 * @param recordWorkInfoImport
 	 * @return
 	 */
-	public List<CaculationTime> checkOutSideTimeTheDayForHoliday(String companyID,String employeeID,String appDate,ApprovalFunctionSetting approvalFunctionSetting, String siftCD,List<CaculationTime> breakTimes,RecordWorkInfoImport recordWorkInfoImport);
+	public CaculationTime checkOutSideTimeTheDayForHoliday(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTime,RecordWorkInfoImport recordWorkInfoImport,Integer calTime);
 	/**
+	 * 03-02-2-2_当日以外_休日の場合
+	 * @param companyID
+	 * @param employeeID
+	 * @param appDate
+	 * @param siftCD
+	 * @param breakTime
+	 * @param recordWorkInfoImport
+	 * @param calTime
+	 * @return
+	 */
+	public CaculationTime checkOutSideTimeTheDayNoForHoliday(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTime,RecordWorkInfoImport recordWorkInfoImport,Integer calTime);
+	/**
+	 * 03-02-3_当日の場合
 	 * checkHolidayWorkOnDay
 	 * @param companyID
 	 * @param employeeID
@@ -58,5 +91,16 @@ public interface HolidayThreeProcess {
 	 * @param recordWorkInfoImport
 	 * @return
 	 */
-	public List<CaculationTime> checkHolidayWorkOnDay(String companyID,String employeeID,String appDate,ApprovalFunctionSetting approvalFunctionSetting, String siftCD,List<CaculationTime> breakTimes,RecordWorkInfoImport recordWorkInfoImport);
+	public CaculationTime checkHolidayWorkOnDay(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTimes,RecordWorkInfoImport recordWorkInfoImport,Integer calTime);
+	/**
+	 * 03-02-3-1_当日_休日出勤の場合
+	 * @param companyID
+	 * @param employeeID
+	 * @param appDate
+	 * @param siftCD
+	 * @param breakTimes
+	 * @param recordWorkInfoImport
+	 * @param calTime
+	 */
+	public void checkOnDayTheDayForHoliday(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTimes,RecordWorkInfoImport recordWorkInfoImport,Integer calTime);
 }

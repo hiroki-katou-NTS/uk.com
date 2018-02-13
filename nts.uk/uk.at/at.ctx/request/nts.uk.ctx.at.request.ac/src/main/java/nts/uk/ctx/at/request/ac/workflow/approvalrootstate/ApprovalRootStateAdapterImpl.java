@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.EnumType;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
@@ -27,7 +26,6 @@ import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
 import nts.uk.ctx.workflow.pub.agent.ApproverRepresenterExport;
 import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
-import nts.uk.ctx.workflow.pub.service.export.ApprovalRootStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
 /**
@@ -51,14 +49,14 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 							return new ApprovalPhaseStateImport_New(
 									x.getPhaseOrder(), 
 									x.getApprovalAtr(), 
-									EnumAdaptor.valueOf(0, ApprovalBehaviorAtrImport_New.class),
+									EnumAdaptor.valueOf(x.getApprovalAtr_Enum(), ApprovalBehaviorAtrImport_New.class),
 									x.getListApprovalFrame().stream()
 									.map(y -> {
 										return new ApprovalFrameImport_New(
 												y.getPhaseOrder(), 
 												y.getFrameOrder(), 
 												y.getApprovalAtr(), 
-												EnumAdaptor.valueOf(0, ApprovalBehaviorAtrImport_New.class),
+												EnumAdaptor.valueOf(y.getApprovalAtr_Enum(), ApprovalBehaviorAtrImport_New.class),
 												y.getListApprover().stream().map(z -> new ApproverStateImport_New(z.getApproverID(), z.getRepresenterID())).collect(Collectors.toList()), 
 												y.getApproverID(), 
 												y.getRepresenterID(), 
@@ -82,8 +80,8 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 
 	@Override
 	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate,
-			Integer appTypeValue, GeneralDate appDate) {
-		return approvalRootStatePub.doApprove(companyID, rootStateID, employeeID, isCreate, appTypeValue, appDate);
+			Integer appTypeValue, GeneralDate appDate, String memo) {
+		return approvalRootStatePub.doApprove(companyID, rootStateID, employeeID, isCreate, appTypeValue, appDate, memo);
 	}
 
 	@Override
@@ -147,8 +145,8 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	}
 
 	@Override
-	public Boolean doDeny(String companyID, String rootStateID, String employeeID) {
-		return approvalRootStatePub.doDeny(companyID, rootStateID, employeeID);
+	public Boolean doDeny(String companyID, String rootStateID, String employeeID, String memo) {
+		return approvalRootStatePub.doDeny(companyID, rootStateID, employeeID, memo);
 	}
 
 	@Override
@@ -164,11 +162,6 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 				approverPersonExport.getAuthorFlag(), 
 				EnumAdaptor.valueOf(approverPersonExport.getApprovalAtr().value, ApprovalBehaviorAtrImport_New.class), 
 				approverPersonExport.getExpirationAgentFlag());
-	}
-
-	@Override
-	public void updateReason(String appID, String employeeID, String reason) {
-		approvalRootStatePub.updateReason(appID, employeeID, reason);
 	}
 	
 }

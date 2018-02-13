@@ -75,6 +75,9 @@ public class KrcdtDayLateTime extends UkJpaEntity implements Serializable {
 	}
 	
 	public void setData(LateTimeOfDaily domain){
+		if(domain == null){
+			return;
+		}
 		if(domain.getLateTime() != null){
 			/* 遅刻時間 */
 			this.lateTime = domain.getLateTime().getTime() == null ? 0 : domain.getLateTime().getTime().valueAsMinutes();

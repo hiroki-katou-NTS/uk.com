@@ -1,4 +1,5 @@
 module nts.uk.at.view.kdw006.e.viewmodel {
+    import getText = nts.uk.resource.getText;
     export class ScreenModelE {
         roleItems: KnockoutObservableArray<any>;
         functionalRestriction: KnockoutObservableArray<any>;
@@ -14,8 +15,8 @@ module nts.uk.at.view.kdw006.e.viewmodel {
 
             self.columns1 = ko.observableArray([
                 { headerText: 'ID', key: 'roleId', width: 100, hidden: true },
-                { headerText: 'コード', key: 'roleCode', width: 100 },
-                { headerText: '名称', key: 'roleName', width: 150 }
+                { headerText: getText('KDW006_44'), key: 'roleCode', width: 100 },
+                { headerText: getText('KDW006_45'), key: 'roleName', width: 150 }
             ]);
 
             self.selectedItem.subscribe(function(newValue) {
@@ -35,10 +36,10 @@ module nts.uk.at.view.kdw006.e.viewmodel {
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 columns: [
-                    { headerText: 'コード', key: 'functionNo', dataType: 'number', width: '10px', hidden: true },
-                    { headerText: '設定', key: 'displayName', dataType: 'string', width: '320px' },
-                    { headerText: '利用区分', key: 'availability', dataType: 'boolean', width: ' 80px', ntsControl: 'Checkbox' },
-                    { headerText: '説明', key: 'description', dataType: 'string', width: '370px' }
+                    { headerText: getText('KDW006_44'), key: 'functionNo', dataType: 'number', width: '10px', hidden: true },
+                    { headerText: getText('KDW006_49'), key: 'displayName', dataType: 'string', width: '320px' },
+                    { headerText: getText('KDW006_50'), key: 'availability', dataType: 'boolean', width: ' 80px', ntsControl: 'Checkbox' },
+                    { headerText: getText('KDW006_51'), key: 'description', dataType: 'string', width: '370px' }
                 ],
                 features: [  { 
                                             name: 'Selection',

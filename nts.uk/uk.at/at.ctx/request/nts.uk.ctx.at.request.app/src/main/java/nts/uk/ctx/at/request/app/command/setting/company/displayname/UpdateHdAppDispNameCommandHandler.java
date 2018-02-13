@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.command.setting.company.displayname;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -17,21 +18,22 @@ import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispNameReposi
  */
 @Stateless
 @Transactional
-public class UpdateHdAppDispNameCommandHandler extends CommandHandler<HdAppDispNameCommand>{
+public class UpdateHdAppDispNameCommandHandler extends CommandHandler<List<HdAppDispNameCommand>>{
 	@Inject
 	private HdAppDispNameRepository hdAppRep;
 
 	@Override
-	protected void handle(CommandHandlerContext<HdAppDispNameCommand> context) {
-		HdAppDispNameCommand data = context.getCommand();
-		Optional<HdAppDispName> hdApp = hdAppRep.getHdApp(data.getHdAppType());
-		HdAppDispName hdAppDisp = HdAppDispName.createFromJavaType(data.getCompanyId(), 
-													data.getHdAppType(), data.getDispName());
-		if(hdApp.isPresent()){
-			hdAppRep.update(hdAppDisp);
-			return;
+	protected void handle(CommandHandlerContext<List<HdAppDispNameCommand>> context) {
+		List<HdAppDispNameCommand> data = context.getCommand();
+		for(HdAppDispNameCommand item : data){
+			Optional<HdAppDispName> hdApp = hdAppRep.getHdApp(item.getHdAppType());
+			HdAppDispName hdAppDisp = HdAppDispName.createFromJavaType(item.getCompanyId(), 
+					item.getHdAppType(), item.getDispName());
+			if(hdApp.isPresent()){
+				hdAppRep.update(hdAppDisp);
+			}else{
+				hdAppRep.insert(hdAppDisp);
+			}
 		}
-		hdAppRep.insert(hdAppDisp);
-	} 
-	
+	}
 }

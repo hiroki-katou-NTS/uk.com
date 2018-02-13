@@ -13,16 +13,16 @@ import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.appt
 @Data
 @NoArgsConstructor
 public class BfReqSetDto {
-	public String companyId;
-	public Integer appType;
-	public Integer retrictPreMethodFlg;
-	public Integer retrictPreUseFlg;
-	public Integer retrictPreDay;
-	public Integer retrictPreTimeDay;
-	public Integer retrictPostAllowFutureFlg;
+	private String companyId;
+	private Integer appType;
+	private Integer retrictPreMethodFlg;
+	private Integer retrictPreUseFlg;
+	private Integer retrictPreDay;
+	private Integer retrictPreTimeDay;
+	private Integer retrictPostAllowFutureFlg;
 	
 	public static List<BfReqSetDto> convertToDto(RequestSetting domain){
-		List<ReceptionRestrictionSetting> appType = domain.getApplicationSetting().getReceptionRestrictionSetting();
+		List<ReceptionRestrictionSetting> appType = domain.getApplicationSetting().getListReceptionRestrictionSetting();
 		List<BfReqSetDto> listDto = new ArrayList<>();
 		for(ReceptionRestrictionSetting item: appType){
 			listDto.add(new BfReqSetDto(domain.getCompanyID(), item.getAppType().value, item.getBeforehandRestriction().getMethodCheck().value, item.getBeforehandRestriction().getToUse() == true ? 1 : 0, item.getBeforehandRestriction().getDateBeforehandRestriction().value, item.getBeforehandRestriction().getTimeBeforehandRestriction().v(), item.getAfterhandRestriction().getAllowFutureDay() == true ? 1: 0));

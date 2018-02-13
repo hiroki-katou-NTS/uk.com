@@ -405,6 +405,7 @@ module cps001.a.vm {
                 emp = self.employee(),
                 person = emp.personInfo(),
                 layouts = self.multipleData().map(x => x.layout()),
+                controls = _.flatten(layouts.map(x => x.listItemCls())),
                 inputs = _.flatten(layouts.map(x => x.outData())),
                 command: IPeregCommand = {
                     personId: person.personId(),
@@ -413,9 +414,7 @@ module cps001.a.vm {
                 };
 
             // trigger change of all control in layout
-            $('.drag-panel .nts-input')
-                .trigger('blur')
-                .trigger('change');
+            lv.checkError(controls);
 
             setTimeout(() => {
                 if (hasError()) {
@@ -672,7 +671,7 @@ module cps001.a.vm {
                         self.infoId(undefined);
 
                         let sdate = layout.standardDate(),
-                            ddate = sdate && moment.utc(sdate).toDate() || moment.utc().toDate(),
+                            ddate = sdate && moment.utc(sdate, "YYYY/MM/DD").toDate() || moment.utc().toDate(),
                             query: ILayoutQuery = {
                                 layoutId: id,
                                 browsingEmpId: self.employeeId(),

@@ -34,6 +34,8 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistory;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
@@ -102,6 +104,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	@Inject
 	private FlexWorkSettingRepository flexWorkSettingRpository;
 	
+	
 
 	/**
 	 * 勤務情報を取得して計算
@@ -117,6 +120,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	public IntegrationOfDaily calculate(String companyId,String placeId, String employmentCd, String employeeId, GeneralDate targetDate, IntegrationOfDaily integrationOfDaily) {
 		/*日別実績(Work)の退避*/
 		val copyIntegrationOfDaily = integrationOfDaily;
+		if((employeeId == null)||(placeId == null)||(employmentCd == null)) return integrationOfDaily;
 		// 実績データの計算
 		return this.calculateRecord(companyId,placeId, employmentCd, employeeId, targetDate, integrationOfDaily);
 	}
@@ -141,7 +145,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		/*就業時間帯勤務区分*/
 		//Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,//"901"); 
-		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,integrationOfDaily.getWorkInformation().getScheduleWorkInformation().getWorkTimeCode().toString());
+		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
 		if(!workTime.isPresent()) return integrationOfDaily;
 		/*労働制*/
 		DailyCalculationPersonalInformation personalInfo = getPersonInfomation(companyId
@@ -280,8 +284,20 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			/*出勤日の時間帯作成*/
 			//val calcRangeOfOneDay =　/*現在作業分の対応範囲外のため保留 2017.10.16*/;
 		}
+		
+		//残業の自動計算設定
+		val overTimeSet = new AutoCalcSet(AutoCalAtrOvertime.CALCULATEMBOSS);
+		AutoCalculationOfOverTimeWork overTimeAutoCalcSet = new AutoCalculationOfOverTimeWork(overTimeSet, 
+																							  overTimeSet, 
+																							  overTimeSet, 
+																							  overTimeSet, 
+																							  overTimeSet, 
+																							  overTimeSet);
+		//休出の自動計算設定
+		AutoCalSetting holidayAutoCalcSetting = new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.CALCULATEMBOSS);
+		
 		/*時間の計算*/
-		integrationOfDaily = AttendanceTimeOfDailyPerformance.calcTimeResult(oneRange,integrationOfDaily);
+		integrationOfDaily = AttendanceTimeOfDailyPerformance.calcTimeResult(oneRange,integrationOfDaily,overTimeAutoCalcSet,holidayAutoCalcSetting);
 		
 		/*手修正、申請範囲された項目を元に戻す(ベトナムが作成している可能性があるため、確認後)*/
 		/*日別実績への項目移送*/
@@ -323,19 +339,21 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 //		boolean justLate        = /*就業時間帯から固定・流動・フレックスの設定を取得してくるロジック*/;
 //		boolean justEarlyLeave  = /*就業時間帯から固定・流動・フレックスの設定を取得してくるロジック*/;
 //		/*日別実績の出退勤時刻セット*/
-		//TimeLeavingOfDailyPerformance attendanceLeavingOfDaily = timeLeavingOfDailyPerformanceRepository.
-		WorkStamp attendance = new WorkStamp(new TimeWithDayAttr(480),new TimeWithDayAttr(480), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
-		WorkStamp leaving = new WorkStamp(new TimeWithDayAttr(960),new TimeWithDayAttr(960), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
-		TimeActualStamp stamp = new TimeActualStamp(attendance,leaving,1);
-		TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(1),Optional.of(stamp),Optional.of(stamp));
-		List<TimeLeavingWork> timeLeavingWorkList = new ArrayList<>();
-		timeLeavingWorkList.add(timeLeavingWork);
-		TimeLeavingOfDailyPerformance attendanceLeavingOfDaily = new TimeLeavingOfDailyPerformance(employeeId,new WorkTimes(1),timeLeavingWorkList,targetDate); 
-		
+		Optional<TimeLeavingOfDailyPerformance> timeLeavingOfDailyPerformance = Optional.of(integrationOfDaily.getAttendanceLeave());
+		if(!timeLeavingOfDailyPerformance.isPresent()) {
+			//TimeLeavingOfDailyPerformance attendanceLeavingOfDaily = timeLeavingOfDailyPerformanceRepository.
+			WorkStamp attendance = new WorkStamp(new TimeWithDayAttr(0),new TimeWithDayAttr(0), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
+			WorkStamp leaving = new WorkStamp(new TimeWithDayAttr(0),new TimeWithDayAttr(0), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
+			TimeActualStamp stamp = new TimeActualStamp(attendance,leaving,1);
+			TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(1),Optional.of(stamp),Optional.of(stamp));
+			List<TimeLeavingWork> timeLeavingWorkList = new ArrayList<>();
+			timeLeavingWorkList.add(timeLeavingWork);
+			timeLeavingOfDailyPerformance = Optional.of(new TimeLeavingOfDailyPerformance(employeeId,new WorkTimes(1),timeLeavingWorkList,targetDate)); 
+		}
 		return new CalculationRangeOfOneDay(Finally.empty(),  
 											Finally.empty(),
 											calcRangeOfOneDay,
-											attendanceLeavingOfDaily,/*出退勤*/
+											timeLeavingOfDailyPerformance.get(),/*出退勤*/
 											PredetermineTimeSetForCalc.convertMastarToCalc(predetermineTimeSet.get())/*所定時間帯(計算用)*/,
 											Finally.empty(),
 											toDayWorkInfo);

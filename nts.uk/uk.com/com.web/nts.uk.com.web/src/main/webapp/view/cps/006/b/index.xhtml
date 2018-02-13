@@ -36,12 +36,14 @@
 					<div id="content-left"
 						data-bind="ntsPanel:{width: '260px', height: '485px', direction: 'right', showIcon: true, visible: true}">
 
-						<div >
-							<div id="checked" data-bind="ntsCheckBox: { checked: ckbDisplayAbolition }">#{i18n.getText('CPS006_22')}</div>
+						<div>
+							<div id="checked"
+								data-bind="ntsCheckBox: { checked: ckbDisplayAbolition }">#{i18n.getText('CPS006_22')}</div>
 						</div>
 
 						<div>
-							<div data-bind="ntsSearchBox: {
+							<div
+								data-bind="ntsSearchBox: {
 							searchMode: 'filter',
 							targetKey: 'id', 
 							comId: 'B1_3', 
@@ -88,7 +90,8 @@
 							</div>
 
 							<div class="line_col_2">
-								<input id="itemName" data-bind="ntsTextEditor: {value: itemNameText, constraint:'ItemName'}"  />
+								<input id="itemName"
+									data-bind="ntsTextEditor: {value: itemNameText, constraint:'ItemName'}" />
 							</div>
 
 							<com:ko-if bind="currentItem().systemRequired === 0">
@@ -193,18 +196,20 @@
 											<div id="B2_20" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CPS006_32')}</div>
 										</div>
 
-										<com:ko-if bind="currentItem().itemTypeState.dataTypeState.numericItemAmount === 1">
-										<div class="line_col_2">
-											<span id="B2_21">#{i18n.getText('CPS006_52')}</span>
-										</div>
+										<com:ko-if
+											bind="currentItem().itemTypeState.dataTypeState.numericItemAmount === 1">
+											<div class="line_col_2">
+												<span id="B2_21">#{i18n.getText('CPS006_52')}</span>
+											</div>
 										</com:ko-if>
-										
-										<com:ko-if bind="currentItem().itemTypeState.dataTypeState.numericItemAmount === 0">
-										<div class="line_col_2">
-											<span id="B2_21">#{i18n.getText('CPS006_53')}</span>
-										</div>
+
+										<com:ko-if
+											bind="currentItem().itemTypeState.dataTypeState.numericItemAmount === 0">
+											<div class="line_col_2">
+												<span id="B2_21">#{i18n.getText('CPS006_53')}</span>
+											</div>
 										</com:ko-if>
-										
+
 									</div>
 
 									<div class="div_line">
@@ -212,7 +217,7 @@
 										<div class="line_col_1">
 											<div id="B2_22" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CPS006_33')}</div>
 										</div>
-										
+
 										<div class="line_col_2">
 											<span id="B2_23"
 												data-bind="text:genStringNumericItemMinusText()">roleCode</span>
@@ -245,36 +250,39 @@
 										</div>
 
 									</div>
-									<com:ko-if bind=" currentItem().itemTypeState.dataTypeState.numericItemMin !=null &amp; currentItem().itemTypeState.dataTypeState.numericItemMax !=null">
-									<div class="div_line">
+									<com:ko-if
+										bind=" currentItem().itemTypeState.dataTypeState.numericItemMin !=null &amp; currentItem().itemTypeState.dataTypeState.numericItemMax !=null">
+										<div class="div_line">
 
-										<div class="line_col_1">
-											<div id="B2_24" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CPS006_40')}</div>
+											<div class="line_col_1">
+												<div id="B2_24" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CPS006_40')}</div>
+											</div>
+
+											<div class="line_col_2">
+												<com:ko-if
+													bind=" currentItem().itemTypeState.dataTypeState.numericItemAmount === 1">
+													<span id="B2_25"
+														data-bind="text:genNumber(currentItem().itemTypeState.dataTypeState.numericItemMin,currentItem().itemTypeState.dataTypeState.decimalPart )"></span>
+													<span class="label">～</span>
+													<span id="B2_25"
+														data-bind="text:genNumber(currentItem().itemTypeState.dataTypeState.numericItemMax,currentItem().itemTypeState.dataTypeState.decimalPart )"></span>
+												</com:ko-if>
+
+												<com:ko-if
+													bind=" currentItem().itemTypeState.dataTypeState.numericItemAmount === 0">
+													<span id="B2_25"
+														data-bind="text:currentItem().itemTypeState.dataTypeState.numericItemMin"></span>
+
+
+													<span class="label">～</span>
+													<span id="B2_25"
+														data-bind="text:currentItem().itemTypeState.dataTypeState.numericItemMax"></span>
+												</com:ko-if>
+
+											</div>
+
 										</div>
-
-										<div class="line_col_2">
-										   <com:ko-if bind=" currentItem().itemTypeState.dataTypeState.numericItemAmount === 1">
-											<span id="B2_25"
-												data-bind="text:genNumber(currentItem().itemTypeState.dataTypeState.numericItemMin,currentItem().itemTypeState.dataTypeState.decimalPart )"></span>
-												<span class="label">～</span>
-											<span id="B2_25"
-												data-bind="text:genNumber(currentItem().itemTypeState.dataTypeState.numericItemMax,currentItem().itemTypeState.dataTypeState.decimalPart )"></span>	
-											</com:ko-if>
-											
-										   <com:ko-if bind=" currentItem().itemTypeState.dataTypeState.numericItemAmount === 0">
-											<span id="B2_25"
-												data-bind="text:currentItem().itemTypeState.dataTypeState.numericItemMin"></span>
-										
-										
-												<span class="label">～</span>
-											<span id="B2_25"
-												data-bind="text:currentItem().itemTypeState.dataTypeState.numericItemMax"></span>	
-											</com:ko-if>
-																						
-										</div>
-
-									</div>		
-									</com:ko-if>							
+									</com:ko-if>
 
 								</com:ko-if>
 
@@ -304,8 +312,7 @@
 										<div class="line_col_2">
 											<span id="B2_33"
 												data-bind="text: genTime(currentItem().itemTypeState.dataTypeState.min) "></span>
-											<span id="B2_34">~</span> 
-											<span id="B2_35"
+											<span id="B2_34">~</span> <span id="B2_35"
 												data-bind="text: genTime(currentItem().itemTypeState.dataTypeState.max)"></span>
 										</div>
 
@@ -336,43 +343,43 @@
 
 									<com:ko-if bind="currentItem().selectionItemRefType === 2">
 										<div class="div_line">
-	
+
 											<div class="line_col_1_sel">
-												<div id="B2_42" data-bind="ntsFormLabel: { required: true , constraint: ['SelectionItemName']}">#{i18n.getText('CPS006_43')}</div>
+												<div id="B2_42"
+													data-bind="ntsFormLabel: { required: true , constraint: ['SelectionItemName']}">#{i18n.getText('CPS006_43')}</div>
 											</div>
-	
+
 											<div class="line_col_2_sel">
-												<span id="B2_43"  data-bind="text: currentItem().selectionItemName"></span>
+												<span id="B2_43"
+													data-bind="text: currentItem().selectionItemName"></span>
 											</div>
-	
+
 											<button id="B2_44" data-bind="click: settingSelection">#{i18n.getText('CPS006_44')}</button>
-										
-											
+
+
 										</div>
-										<div  class="div_line">
-										<table class="contents-header"> 
-											<thead>
+										<div class="div_line">
+											<table class="contents-header">
+												<thead>
 													<tr>
 														<!-- A3_017: header 項目名 -->
 														<td id="COL_1">#{i18n.getText('CPS006_50')}</td>
-														<td id="COL_2" >#{i18n.getText('CPS006_51')}</td>
+														<td id="COL_2">#{i18n.getText('CPS006_51')}</td>
 													</tr>
-											</thead>
+												</thead>
 											</table>
 											<section class="table-container">
-											<div>
-											<table >								         
-											<tbody data-bind="foreach:  currentItem().selectionLst()">
-											<td id="code" >
-													<span class="months-input " data-bind="text: selectionCode" />
-											</td>
-											<td id="name" >
-													<span class="months-input " data-bind="text: selectionName" />
-											</td>									
-										    </tbody>
-										    </table>
-										    </div>
-										    </section>
+												<div>
+													<table>
+														<tbody data-bind="foreach:  currentItem().selectionLst()">
+															<td id="code"><span class="months-input "
+																data-bind="text: selectionCode" /></td>
+															<td id="name"><span class="months-input "
+																data-bind="text: selectionName" /></td>
+														</tbody>
+													</table>
+												</div>
+											</section>
 										</div>
 									</com:ko-if>
 								</com:ko-if>

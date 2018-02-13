@@ -67,12 +67,12 @@ module nts.uk.at.view.kmk008.e {
                     self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_9}', '{#Com_Workplace}']));
                 }
                 self.selectedWorkplaceId('');
+                self.getalreadySettingList();
                 $('#tree-grid-screen-e').ntsTreeComponent(self.treeGrid).done(function() {
                     self.workplaceGridList($('#tree-grid-screen-e').getDataList());
                     if (self.workplaceGridList().length > 0) {
                         self.selectedWorkplaceId(self.workplaceGridList()[0].workplaceId);
                     }
-                    self.getalreadySettingList();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -80,17 +80,14 @@ module nts.uk.at.view.kmk008.e {
 
             getalreadySettingList() {
                 let self = this;
-                let dfd = $.Deferred();
                 self.alreadySettingList([]);
                 new service.Service().getList(self.laborSystemAtr).done(data => {
                     if (data.workPlaceIds.length > 0) {
-                        self.alreadySettingList(_.map(data.workPlaceIds, item => { return new UnitAlreadySettingModel(item.toString()) }));
+                        self.alreadySettingList(_.map(data.workPlaceIds, item => { return new UnitAlreadySettingModel(item.toString(), true); }));
                         _.defer(() => self.workplaceGridList($('#tree-grid-screen-e').getDataList()));
                     }
-                    self.isRemove(self.isShowAlreadySet());
-                    dfd.resolve();
                 })
-                return dfd.promise();
+                    self.isRemove(self.isShowAlreadySet());
             }
 
             findUnitModelByWorkplaceId(workplaceGridList: Array<UnitModel>, workplaceId: string): UnitModel {
@@ -150,6 +147,7 @@ module nts.uk.at.view.kmk008.e {
                         new service.Service().removeAgreementTimeOfWorkplace(deleteModel).done(function() {
                             self.getalreadySettingList();
                             self.getDetail(self.selectedWorkplaceId());
+                            self.isRemove(false);
                         });
                         nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
                     });
@@ -304,7 +302,7 @@ module nts.uk.at.view.kmk008.e {
         export class UnitAlreadySettingModel {
             workplaceId: string;
             isAlreadySetting: boolean = true;
-            constructor(workplaceId: string) {
+            constructor(workplaceId: string, isAlreadySetting: boolean) {
                 this.workplaceId = workplaceId;
             }
         }

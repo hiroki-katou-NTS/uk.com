@@ -60,7 +60,8 @@ public class AttendanceItemUtil {
 				boolean isList = layout.listMaxLength() > 0;
 				Class<T> className = layout.isOptional() || isList ? getGenericType(field) : (Class<T>) field.getType();
 				String pathName = getPath(path, layout, getRootAnnotation(field)),
-						currentLayout = mergeLayout(layoutCode, layout.layout());
+						currentLayout = mergeLayout(layoutCode, layout.layout()),
+						exCon = getExCondition(extraCondition, attendanceItems, layout);
 				if (isList) {
 					List<T> list = ReflectionUtil.getFieldValue(field, attendanceItems);
 					return mapByPath(c.getValue(),
@@ -68,12 +69,9 @@ public class AttendanceItemUtil {
 								).entrySet().stream().map(idx -> {
 										T idxValue = list == null || list.size() < idx.getKey() ? null : list.get(idx.getKey() - 1);
 										return getItemValues(
-													fieldValue(className, idxValue), 
-													layoutIdx + 1,
+													fieldValue(className, idxValue),  layoutIdx + 1,
 													layout.listNoIndex() ? currentLayout : currentLayout + idx.getKey(), 
-													pathName,
-													extraCondition, 
-													idx.getKey(),
+													pathName, exCon,  idx.getKey(),
 													mapByPath(idx.getValue(), id -> getCurrentPath(layoutIdx + 1, id.path(), false)));
 									}).flatMap(List::stream).collect(Collectors.toList());
 				} else {
@@ -81,20 +79,23 @@ public class AttendanceItemUtil {
 					AttendanceItemValue valueAnno = getItemValueAnnotation(field);
 					if (valueAnno != null) {
 						String currentPath = getKey(pathName, "", false, index);
+						String currentFullPath = getKey(pathName, exCon, index > 0, index);
 						return filterAndMap(
 									c.getValue(), 
 									id -> getTextWithNoCondition(id.path()).equals(currentPath),
-									item -> item.value(value).valueType(valueAnno.type())
-												.layout(currentLayout + getTextWithCondition(item.path()))
-												.completed());
+									item -> {
+										if(item.path().equals(currentFullPath)){
+											return item.value(value).valueType(valueAnno.type())
+														.layout(currentLayout + getTextWithCondition(item.path()))
+														.completed();
+										} else {
+											return item.layout(currentLayout + getTextWithCondition(item.path()))
+														.valueType(valueAnno.type()).completed();
+										}
+									});
 					} else {
 						return getItemValues(
-									fieldValue(className, value), 
-									layoutIdx + 1, 
-									currentLayout, 
-									pathName,
-									getExCondition(extraCondition, attendanceItems, layout), 
-									index,
+									fieldValue(className, value),  layoutIdx + 1, currentLayout, pathName, exCon, index,
 									mapByPath(c.getValue(), id -> getCurrentPath(layoutIdx + 1, id.path(), false)));
 					}
 				}
@@ -135,7 +136,7 @@ public class AttendanceItemUtil {
 									layoutIdx + 1,
 									listNoIdx ? currentLayout : currentLayout + (idx == null ? "" : idx), 
 									pathName,
-									idx - 1, 
+									idx, 
 									needCheckWithIdx || (isList && !listNoIdx),
 									mapByPath(subList, id -> getCurrentPath(layoutIdx + 1, id.path(), false)));
 
@@ -249,7 +250,7 @@ public class AttendanceItemUtil {
 
 	private static String getKey(String pathName, String extraCondition, boolean needCheckWithIdx, int idx) {
 		return StringUtils.join(pathName, extraCondition.isEmpty() ? "" : StringUtils.join("-", extraCondition),
-				(needCheckWithIdx ? String.valueOf(idx + 1) : ""));
+				(needCheckWithIdx ? String.valueOf(idx) : ""));
 	}
 
 	private static <T> List<T> processListToMax(List<T> list, int max, Class<T> targetClass, String idxFieldName) {

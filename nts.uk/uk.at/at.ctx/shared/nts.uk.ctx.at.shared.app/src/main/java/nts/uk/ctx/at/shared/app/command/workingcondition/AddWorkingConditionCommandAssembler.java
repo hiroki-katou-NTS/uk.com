@@ -171,12 +171,11 @@ public class AddWorkingConditionCommandAssembler {
 						? EnumAdaptor.valueOf(command.getReferenceBusinessDayCalendar().intValue() ,
 						WorkScheduleMasterReferenceAtr.class) : null,
 						command.getReferenceBasicWork() != null ? EnumAdaptor.valueOf(command.getReferenceBasicWork().intValue(),
-						WorkScheduleMasterReferenceAtr.class) : null,
-						command.getReferenceType() != null ? EnumAdaptor.valueOf(command.getReferenceType().intValue(),
+						WorkScheduleMasterReferenceAtr.class) : null,command.getReferenceType() != null ? EnumAdaptor.valueOf(command.getReferenceType().intValue(),
 						TimeZoneScheduledMasterAtr.class) : null);
 		// MonthlyPatternWorkScheduleCre
-		MonthlyPatternWorkScheduleCre monthlySchedule = new MonthlyPatternWorkScheduleCre(
-				command.getReferenceType()!=null? EnumAdaptor.valueOf(command.getReferenceType().intValue(), TimeZoneScheduledMasterAtr.class) : null);
+		// Set default to FOLLOW_MASTER_REFERENCE
+		MonthlyPatternWorkScheduleCre monthlySchedule = new MonthlyPatternWorkScheduleCre( TimeZoneScheduledMasterAtr.FOLLOW_MASTER_REFERENCE);
 		ScheduleMethod scheduleMethod = new ScheduleMethod(
 				command.getBasicCreateMethod()!=null? EnumAdaptor.valueOf(command.getBasicCreateMethod().intValue(), WorkScheduleBasicCreMethod.class) :null,
 				busCal, monthlySchedule);

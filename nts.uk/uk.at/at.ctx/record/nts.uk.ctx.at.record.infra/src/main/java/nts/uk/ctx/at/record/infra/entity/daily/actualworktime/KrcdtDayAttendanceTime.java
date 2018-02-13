@@ -177,9 +177,10 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 	
 	public void setData(AttendanceTimeOfDailyPerformance attendanceTime){
 		ActualWorkingTimeOfDaily actualWork = attendanceTime.getActualWorkingTimeOfDaily();
-		TotalWorkingTime totalWork = actualWork.getTotalWorkingTime();
-		ConstraintTime constraintTime = actualWork.getConstraintTime();
-		ExcessOfStatutoryMidNightTime excessStt = totalWork.getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime();
+		TotalWorkingTime totalWork = actualWork == null ? null :actualWork.getTotalWorkingTime();
+		ConstraintTime constraintTime = actualWork == null ? null : actualWork.getConstraintTime();
+		ExcessOfStatutoryMidNightTime excessStt = totalWork == null ? null : totalWork.getExcessOfStatutoryTimeOfDaily() == null ? null 
+				: totalWork.getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime();
 		StayingTimeOfDaily staying = attendanceTime.getStayingTime();
 		if(totalWork != null){
 			/* 総労働時間 */

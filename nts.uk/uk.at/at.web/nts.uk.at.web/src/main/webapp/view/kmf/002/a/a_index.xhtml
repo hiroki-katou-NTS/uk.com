@@ -9,6 +9,7 @@
 		
 	<ui:composition>
 		<div class="sidebar-content-header">
+			<span>#{i18n.getText('KMF002_30')}</span>
    			<!-- A2_1 -->
    			<button tabindex="1" data-bind="click: save, attr : {'disabled' : false}, ">#{i18n.getText('KMF002_2')}</button>
    			<!-- A2_2 -->
@@ -179,7 +180,7 @@
 																	value: weekHDSet().inLegalHoliday,
 																	constraint: 'WeekNumberOfDay',
 																	option: {width: '85px',
-																			 decimallength: 1,
+																			decimallength: 0,
 																	}, 
 																	required: true,
 																	enable: enableWeekHDSetInLegalHoliday,
@@ -198,12 +199,11 @@
 							<input id="outLegalHoliday17" data-bind="ntsNumberEditor: {
 																	value: weekHDSet().outLegalHoliday,
 																	constraint: 'WeekNumberOfDay',
-																	option: {width: '85px',
-																			 decimallength: 1,}, 
+																	option: {width: '85px'}, 
 																	required: true,
 																	enable: enableWeekHDSetOutLegalHoliday,
 																	readonly: false,
-																	name:'#[KMF002_54]'
+																	name:'#[KMF002_55]'
 																}" />
 								<span>日</span>
 						</div>
@@ -246,8 +246,7 @@
 									<input tabindex="18" id="inLegalHoliday18" data-bind="ntsNumberEditor: {
 																			value: fourWkFourHDNumSet().oneWeek().inLegalHoliday,
 																			constraint: 'WeekNumberOfDay',
-																			option: {width: '85px',
-																			 decimallength: 1,}, 
+																			option: {width: '85px'}, 
 																			required: true,
 																			enable: enableOneWeekPubHDInLegalHD,
 																			readonly: false,
@@ -261,8 +260,7 @@
 									<input tabindex="19" id="outLegalHoliday19" data-bind="ntsNumberEditor: {
 																		value: fourWkFourHDNumSet().oneWeek().outLegalHoliday,
 																		constraint: 'WeekNumberOfDay',
-																		option: {width: '85px',
-																			 decimallength: 1,}, 
+																		option: {width: '85px'}, 
 																		required: true,
 																		enable: enableOneWeekPubHDOutLegalHD,
 																		readonly: false},
@@ -287,8 +285,7 @@
 											<input tabindex="20" id="inLegalHoliday20" data-bind="ntsNumberEditor: {
 																			value: fourWkFourHDNumSet().oneWeek().lastWeekAddedDays().inLegalHoliday,
 																			constraint: 'WeekNumberOfDay',
-																			option: {width: '85px',
-																			 decimallength: 1,}, 
+																			option: {width: '85px'}, 
 																			required: true,
 																			enable: enableLastPeriod1WeekPubHD,
 																			readonly: false},
@@ -302,8 +299,7 @@
 											<input tabindex="21" id="outLegalHoliday21" data-bind="ntsNumberEditor: {
 																			value: fourWkFourHDNumSet().oneWeek().lastWeekAddedDays().outLegalHoliday,
 																			constraint: 'WeekNumberOfDay',
-																			option: {width: '85px',
-																			 decimallength: 1,}, 
+																			option: {width: '85px'}, 
 																			required: true,
 																			enable: enableLastPeriod1WeekPubHD,
 																			readonly: false},
@@ -346,8 +342,7 @@
 										<input tabindex="22" id="inLegalHoliday22" data-bind="ntsNumberEditor: {
 																							value: fourWkFourHDNumSet().fourWeek().inLegalHoliday,
 																							constraint: 'FourWeekDay',
-																							option: {width: '85px',
-																									 decimallength: 1,}, 
+																							option: {width: '85px'}, 
 																							required: true,
 																							enable: enable4WeeksPubHDInLegalHD,
 																							readonly: false,
@@ -362,8 +357,7 @@
 										<input tabindex="23" id="outLegalHoliday23" data-bind="ntsNumberEditor: {
 																							value: fourWkFourHDNumSet().fourWeek().outLegalHoliday,
 																							constraint: 'FourWeekDay',
-																							option: {width: '85px',
-																									 decimallength: 1,}, 
+																							option: {width: '85px'}, 
 																							required: true,
 																							enable: enable4WeeksPubHDOutLegalHD,
 																							readonly: false,
@@ -389,8 +383,7 @@
 											<input tabindex="24" id="inLegalHoliday24" data-bind="ntsNumberEditor: {
 																								value: fourWkFourHDNumSet().fourWeek().lastWeekAddedDays().inLegalHoliday,
 																								constraint: 'FourWeekDay',
-																								option: {width: '85px',
-																										 decimallength: 1,}, 
+																								option: {width: '85px'}, 
 																								required: true,
 																								enable: enableLastPeriod4WeekPubHD,
 																								readonly: false,
@@ -405,8 +398,7 @@
 											<input tabindex="25" id="outLegalHoliday25" data-bind="ntsNumberEditor: {
 																									value: fourWkFourHDNumSet().fourWeek().lastWeekAddedDays().outLegalHoliday,
 																									constraint: 'FourWeekDay',
-																						            option: {width: '85px',
-																											 decimallength: 1,}, 
+																						            option: {width: '85px',}, 
 																									required: true,
 																									enable: enableLastPeriod4WeekPubHD,
 																									readonly: false,

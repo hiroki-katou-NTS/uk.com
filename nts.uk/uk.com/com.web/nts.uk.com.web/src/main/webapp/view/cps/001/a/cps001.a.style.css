@@ -158,7 +158,7 @@
 	border: 1px solid #999;
 }
 
-.person-info td:not(:first-child) {
+.person-info td:not (:first-child ) {
 	position: relative;
 }
 

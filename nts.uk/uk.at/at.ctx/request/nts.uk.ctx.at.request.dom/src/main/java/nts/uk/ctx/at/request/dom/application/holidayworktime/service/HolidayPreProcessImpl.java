@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.holidayworktime.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -21,6 +22,7 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstruct;
 import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstructRepository;
@@ -37,7 +39,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -53,6 +54,9 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 	final static String ZEZO_TIME = "00:00";
 	final static String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm";
 	final static String SPACE = " ";
+	final static String MESSAGE = "の休出指示はありません。";
+	final static String ZEZO = "0";
+	final static String COLON = ":";
 	@Inject
 	private HolidayInstructRepository holidayInstructRepository;
 	@Inject
@@ -103,7 +107,7 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 											+ employeeAdapter.getEmployeeName(overtimeInstruct.getInstructor()) + ")");
 						} else {
 							holidayInstructInformation.setHolidayWorkInstructInfomation(
-									GeneralDate.fromString(appDate, DATE_FORMAT) + "の残業指示はありません。");
+									GeneralDate.fromString(appDate, DATE_FORMAT) + MESSAGE);
 						}
 					}
 				} else {
@@ -124,7 +128,7 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 			int hour = minute / 60;
 			int hourInDay = hour % 24;
 			int minutes = minute % 60;
-			hourminute = (hourInDay < 10 ? ("0" + hourInDay) : hourInDay) + ":" + (minutes < 10 ? ("0" + minutes) : minutes);
+			hourminute = (hourInDay < 10 ? (ZEZO + hourInDay) : hourInDay) + COLON + (minutes < 10 ? (ZEZO + minutes) : minutes);
 		}
 		return hourminute;
 	}
@@ -249,5 +253,17 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 			}
 		}
 		return result;
+	}
+	@Override
+	// TODO
+	//01-10_0時跨ぎチェック
+	public CaculationTime getOverTimeHourCal(Map<Integer, TimeWithCalculationImport> holidayWorkCal) {
+		for(Map.Entry<Integer, TimeWithCalculationImport> entry : holidayWorkCal.entrySet()){
+			
+			if(entry.getValue().getCalTime() == null || entry.getValue().getCalTime() == 0){
+				return null;
+			}
+		}
+		return null;
 	}
 }

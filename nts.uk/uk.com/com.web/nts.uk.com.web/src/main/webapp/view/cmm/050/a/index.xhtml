@@ -13,18 +13,18 @@
 					nts.uk.ctx.sys.env.dom.mailserver.Port
 					nts.uk.ctx.sys.env.dom.mailserver.Server
 			</com:ValidatorScript>
-			
+
 			<com:stylefile path="cmm050.a.main.css" />
 			<com:scriptfile set="IGNITE" />
-			
+
 			<com:scriptfile path="cmm050.a.service.js" />
 			<com:scriptfile path="cmm050.a.vm.js" />
 			<com:scriptfile path="cmm050.a.start.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="mail_setting_register" class="proceed" tabindex="2" style="margin-left: 45px"
-					data-bind="click: registerMailSetting">#{i18n.getText('CMM050_3')}</button>
+				<button id="mail_setting_register" class="proceed" tabindex="2"
+					style="margin-left: 45px" data-bind="click: registerMailSetting">#{i18n.getText('CMM050_3')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="right-content">
@@ -51,15 +51,15 @@
 											option: {width: '230px'},
                                            	constraint: 'EmailAuthentication'}" />
 								</div>
-								<button id="test_send_mail" data-bind="click: showDialogTest, enable: isEnableButtonTest"
+								<button id="test_send_mail"
+									data-bind="click: showDialogTest, enable: isEnableButtonTest"
 									class="btnStyle">#{i18n.getText('CMM050_5')}</button>
 							</td>
 						</tr>
 
 						<tr>
 							<td>
-								<div
-									data-bind="ntsFormLabel: {required: true}">
+								<div data-bind="ntsFormLabel: {required: true}">
 									#{i18n.getText('CMM050_6')}</div>
 							</td>
 							<td>
@@ -73,13 +73,13 @@
 						</tr>
 						<tr>
 							<td>
-								<div
-									data-bind="ntsFormLabel: {required: true}">
+								<div data-bind="ntsFormLabel: {required: true}">
 									<label id="A_LBL_003">#{i18n.getText('CMM050_9')}</label>
 								</div>
 							</td>
 							<td>
-								<div id="combo-box" data-bind="ntsComboBox: {
+								<div id="combo-box"
+									data-bind="ntsComboBox: {
 										options: authMethodArray,
 										optionsValue: 'value',
 										value: authMethod,
@@ -88,7 +88,7 @@
 										editable: false,
 										columns: [
 											{ prop: 'text', length: 15 }
-										]}"></div> 
+										]}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -112,7 +112,7 @@
 							</td>
 						</tr>
 					</table>
-					
+
 					<div class="method_info">
 						<p style="margin-bottom: 20px">#{i18n.getText('CMM050_11')}</p>
 						<table class="table_content_smtp">
@@ -120,7 +120,7 @@
 								<col width="230px" />
 								<col width="*" />
 							</colgroup>
-							
+
 							<tr>
 								<td class="row_1">
 									<div
@@ -137,12 +137,12 @@
 												required: true,
 												option: {width: '25px', textalign: 'left'},
 	                                           	constraint: 'Port'}" />
-	                                    
-	                                     <span data-bind="text: computedText"></span>
+
+										<span data-bind="text: computedText"></span>
 									</div>
 								</td>
 							</tr>
-						
+
 							<tr>
 								<td>
 									<div
@@ -163,14 +163,15 @@
 								</td>
 							</tr>
 						</table>
-						
+
 						<p style="margin: 20px 0" data-bind="visible: haveImapSetting">#{i18n.getText('CMM050_20')}</p>
-						<table class="table_content_imap" data-bind="visible: haveImapSetting">
+						<table class="table_content_imap"
+							data-bind="visible: haveImapSetting">
 							<colgroup>
 								<col width="230px" />
 								<col width="*" />
 							</colgroup>
-							
+
 							<tr>
 								<td class="row_1">
 									<div
@@ -187,14 +188,13 @@
 												required: true,
 												option: {width: '25px', textalign: 'left'},
 	                                           	constraint: 'Port'}" />
-	                                     <span>#{i18n.getText('CMM050_22')}</span>
+										<span>#{i18n.getText('CMM050_22')}</span>
 									</div>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<div
-										data-bind="ntsFormLabel: {required: true}">
+									<div data-bind="ntsFormLabel: {required: true}">
 										#{i18n.getText('CMM050_18')}</div>
 								</td>
 								<td>
@@ -227,17 +227,19 @@
 								</td>
 							</tr>
 						</table>
-						
+
 						<p style="margin: 20px 0" data-bind="visible: havePopSetting">#{i18n.getText('CMM050_15')}</p>
-						<table class="table_content_pop" data-bind="visible: havePopSetting">
+						<table class="table_content_pop"
+							data-bind="visible: havePopSetting">
 							<colgroup>
 								<col width="230px" />
 								<col width="*" />
 							</colgroup>
-							
+
 							<tr>
 								<td class="row_1">
-									<div data-bind="ntsFormLabel: { 
+									<div
+										data-bind="ntsFormLabel: { 
 											constraint: ['Port'], 
 											required: true }">#{i18n.getText('CMM050_16')}</div>
 								</td>
@@ -250,7 +252,7 @@
 												required: true,
 												option: {width: '25px', textalign: 'left'},
 	                                           	constraint: 'Port'}" />
-	                                    <span>#{i18n.getText('CMM050_17')}</span>
+										<span>#{i18n.getText('CMM050_17')}</span>
 									</div>
 								</td>
 							</tr>
@@ -270,7 +272,8 @@
 							</tr>
 							<tr>
 								<td>
-									<div data-bind="ntsFormLabel: { 
+									<div
+										data-bind="ntsFormLabel: { 
 											constraint: ['Server'], 
 											required: true }">#{i18n.getText('CMM050_19')}</div>
 								</td>
@@ -288,9 +291,10 @@
 								</td>
 							</tr>
 						</table>
-						
+
 						<p style="margin: 20px 0" data-bind="visible: haveEncryptMethod">#{i18n.getText('CMM050_24')}</p>
-						<table class="table_content_setting_encrypt" data-bind="visible: haveEncryptMethod">
+						<table class="table_content_setting_encrypt"
+							data-bind="visible: haveEncryptMethod">
 							<colgroup>
 								<col width="230px" />
 								<col width="*" />
@@ -301,7 +305,7 @@
 										#{i18n.getText('CMM050_25')}</div>
 								</td>
 								<td>
-									<div id="combo-box" 
+									<div id="combo-box"
 										data-bind="ntsComboBox: {
 											options: encryptionMethodArray,
 											visibleItemsCount: 20,
