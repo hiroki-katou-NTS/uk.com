@@ -15,10 +15,10 @@ public class ShiftPermissonCommand {
 	/** ロールID*/	
 	private String roleId;
 	
-	/** 利用できる*/
+	/** シフト別権限制御: 利用区分*/
 	private Integer availableShift; 
 	
-	/** 機能NO*/
+	/** シフト別権限制御: 修正期限*/
 	private Integer functionNoShift;
 	
 	public  ShiftPermisson toDomain(String companyId){

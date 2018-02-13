@@ -16,10 +16,10 @@ public class CommonAuthor {
 	/** ロールID*/	
 	private String roleId;
 	
-	/** 利用できる*/
+	/** 共通権限制御: 利用区分*/
 	private int availableCommon;
 	
-	/** 機能NO*/
+	/** 共通権限制御: 機能NO*/
 	private Integer functionNoCommon;
 	
 	public static CommonAuthor createFromJavaType(String companyId, String roleId, int availableCommon,Integer functionNoCommon){

@@ -172,7 +172,6 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                 shiftPermisson: shiftPermisson,
                 schemodifyDeadline: schemodifyDeadline
             });
-            _.forEach(self.items(), function(item: IPermissonDto) {
                 service.add(ko.toJS(permissonData)).done(function() {
                     nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
                 }).fail(function(res) {
@@ -180,7 +179,6 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 })
-            });
         }
 
         private getData() {
@@ -270,6 +268,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                         self.listPermissionCommon(listCommon);
 
                         if (author) {
+                            self.component026.listPermissions([]);
                             self.component026.listPermissions(self.listPermissionCommon());
                         } else {
                             self.component026.roleId(roleId);
@@ -288,6 +287,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                         self.listPermissionWorkplace(listWorkplace);
 
                         if (author) {
+                            self.componentWorkplace.listPermissions([]);
                             self.componentWorkplace.listPermissions(self.listPermissionWorkplace());
                         } else {
                             self.componentWorkplace.roleId(roleId);

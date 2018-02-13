@@ -16,10 +16,10 @@ public class PersAuthority {
 	/** ロールID*/	
 	private String roleId;
 	
-	/** 利用できる*/
+	/** 個人別権限制御: 利用できる*/
 	private int availablePers;
 	
-	/** 機能NO*/
+	/** 個人別権限制御: 機能NO*/
 	private Integer functionNoPers;
 	
 	public static PersAuthority createFromJavaType(String companyId, String roleId, int availablePers, Integer functionNoPers){

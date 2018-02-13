@@ -16,10 +16,10 @@ public class PerWorkplace {
 	/** ロールID*/	
 	private String roleId;
 	
-	/** 利用できる*/
+	/** 職場別権限制御: 利用できる*/
 	private int availableWorkplace;
 	
-	/** 機能NO*/
+	/** 職場別権限制御: 機能NO*/
 	private Integer functionNoWorkplace;
 	
 	public static PerWorkplace createFromJavaType(String companyId, String roleId, int availableWorkplace, Integer functionNoWorkplace){

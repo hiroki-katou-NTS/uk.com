@@ -15,10 +15,10 @@ public class PersAuthorityCommand {
 	/** ロールID*/	
 	private String roleId;
 	
-	/** 利用できる*/
+	/** 個人別権限制御: 利用できる*/
 	private int availablePers;
 	
-	/** 機能NO*/
+	/** 個人別権限制御: 機能NO*/
 	private Integer functionNoPers;
 	
 	public  PersAuthority toDomain(String companyId){

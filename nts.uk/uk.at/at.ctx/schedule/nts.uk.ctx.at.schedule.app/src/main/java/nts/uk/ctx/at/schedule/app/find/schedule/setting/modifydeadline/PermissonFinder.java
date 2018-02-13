@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.app.find.schedule.setting.modifydeadline;
 
 import java.util.List;
+
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -19,6 +20,11 @@ import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.SchemodifyDead
 import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.ShiftPermisson;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.ShiftPermissonRepository;
 import nts.uk.shr.com.context.AppContexts;
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Stateless
 public class PermissonFinder {
 	

@@ -15,10 +15,10 @@ public class CommonAuthorCommand {
 	/** ロールID*/	
 	private String roleId;
 	
-	/** 利用できる*/
+	/** 共通権限制御: 利用できる*/
 	private int availableCommon;
 	
-	/** 機能NO*/
+	/** 共通権限制御: 機能NO*/
 	private Integer functionNoCommon;
 	
 	public  CommonAuthor toDomain(String companyId){
