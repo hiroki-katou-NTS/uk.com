@@ -134,7 +134,8 @@
 
 									<th colspan="2" class="th-col2">
 										<div style="margin-top: 5px">
-											<input id="companyNameKana" class="save-error" data-name="会社名カナ"
+											<input id="companyNameKana" class="save-error"
+												data-name="会社名カナ"
 												data-bind="ntsTextEditor: {value: companyNameKana,
 												 constraint: 'CompanyNameKana',
 												 immediate: true}" />
@@ -151,7 +152,8 @@
 
 									<th colspan="2" class="th-col2">
 										<div>
-											<input id="companyNameAbb" class="save-error" data-name="会社略名"
+											<input id="companyNameAbb" class="save-error"
+												data-name="会社略名"
 												data-bind="ntsTextEditor: {value: companyNameAbb,
 												 constraint: 'CompanyNameAbb',
 												 immediate: true}" />
@@ -167,11 +169,11 @@
 					<!-- <Tabpanel> -->
 					<div class="cf flex">
 						<div style="width: 100%; height: 100%; margin-top: 20px">
-							<div  class="cf"
+							<div class="cf"
 								data-bind="ntsTabPanel: { dataSource: $parent.tabs,
 										   active: $parent.selectedTab, 
 										   direction: 'vertical' }">
-								<!-- Màn hình B -->		   
+								<!-- Màn hình B -->
 								<div class="tab-content-1">
 									<table>
 										<tbody>
@@ -206,7 +208,8 @@
 
 												<th colspan="2" class="th-col2">
 													<div>
-														<input id="presidentName" class="save-error" data-name="代表者名"
+														<input id="presidentName" class="save-error"
+															data-name="代表者名"
 															data-bind="ntsTextEditor: {value: presidentName,
 															 constraint: 'PresidentName',
 															 immediate: true,
@@ -226,7 +229,8 @@
 
 												<th colspan="2" class="th-col2">
 													<div>
-														<input id="presidentJobTitle" class="save-error" data-name="代表者職位"
+														<input id="presidentJobTitle" class="save-error"
+															data-name="代表者職位"
 															data-bind="ntsTextEditor: {value: presidentJobTitle,
 															 constraint: 'PresidentJobTitle',
 															 immediate: true,
@@ -311,18 +315,19 @@
 												<th colspan="2" class="th-col1">
 													<div class="form-label"
 														data-bind="ntsFormLabel:{required: true, constraint: ['AddressKana1', 'AddressKana2']}">
-														<label >住所カナ</label>
+														<label>住所カナ</label>
 													</div>
 												</th>
 											</tr>
 											<!--  7 -->
 											<tr style="margin-top: 5px;">
-												<th colspan="1" class="th-col1"><label id="LBLAddressKana1">市区町村・番地</label>
-												</th>
+												<th colspan="1" class="th-col1"><label
+													id="LBLAddressKana1">市区町村・番地</label></th>
 
 												<th colspan="2" class="th-col2">
 													<div id="colum1" style="width: 200px">
-														<input id="addressKana1" class="save-error" data-name="住所カナ１"
+														<input id="addressKana1" class="save-error"
+															data-name="住所カナ１"
 															data-bind="ntsTextEditor: {value: addressKana1, 
 															constraint: 'AddressKana1',
 															 required: true,
@@ -332,10 +337,12 @@
 											</tr>
 											<!--  8 -->
 											<tr style="margin-top: 5px;">
-												<th colspan="1" class="th-col1"><label id="LBLAddressKana2">建物名など</label></th>
+												<th colspan="1" class="th-col1"><label
+													id="LBLAddressKana2">建物名など</label></th>
 												<th colspan="2" class="th-col2">
 													<div id="colum1">
-														<input id="addressKana2" class="save-error" data-name="住所カナ２"
+														<input id="addressKana2" class="save-error"
+															data-name="住所カナ２"
 															data-bind="ntsTextEditor: {value: addressKana2, 
 															constraint: 'AddressKana2',
 															immediate: true}" />
@@ -347,13 +354,14 @@
 												<th colspan="1" class="th-col1">
 													<div class="form-label"
 														data-bind="ntsFormLabel:{required: true, constraint:'TelephoneNo'}">
-														<label >電話番号</label>
+														<label>電話番号</label>
 													</div>
 												</th>
 
 												<th colspan="2" class="th-col2">
 													<div id="colum1">
-														<input id="telephoneNo" class="save-error" data-name="電話番号"
+														<input id="telephoneNo" class="save-error"
+															data-name="電話番号"
 															data-bind="ntsTextEditor: {value: telephoneNo,
 																					    constraint: 'TelephoneNo',
 																						required: true,
@@ -366,7 +374,7 @@
 												<th colspan="1" class="th-col1">
 													<div class=" border_none left20"
 														data-bind="ntsFormLabel:{required: true, constraint:'FaxNo'}">
-														<label >FAX</label>
+														<label>FAX</label>
 													</div>
 												</th>
 
@@ -387,7 +395,7 @@
 								<!--  Màn hình D-->
 								<div class="tab-content-3">
 									<div>
-										<table >
+										<table>
 											<tbody>
 												<!--  1  -->
 												<tr style="margin-top: 5px;">
@@ -395,7 +403,7 @@
 														<div class="form-label"
 															data-bind="ntsFormLabel:{required: true}"
 															style="margin-top: 5px;">
-															<label >人事システム</label>
+															<label>人事システム</label>
 														</div>
 													</th>
 
@@ -416,13 +424,13 @@
 													<th colspan="1" class="th-col1">
 														<div class="form-label"
 															data-bind="ntsFormLabel:{required: true}">
-															<label >就業システム</label>
+															<label>就業システム</label>
 														</div>
 													</th>
 
 													<th colspan="2" class="th-col2">
 														<div>
-															<div  class="cf"
+															<div class="cf"
 																data-bind="ntsSwitchButton: {
 																			options: roundingRules,
 																			optionsValue: 'code',
@@ -444,7 +452,7 @@
 
 													<th colspan="2" class="th-col2">
 														<div>
-															<div  class="cf"
+															<div class="cf"
 																data-bind="ntsSwitchButton: {
 																			options: roundingRules,
 																			optionsValue: 'code',
@@ -458,13 +466,13 @@
 													<th colspan="1" class="th-col1">
 														<div class="form-label"
 															data-bind="ntsFormLabel:{required: true}">
-															<label >職場と部門</label>
+															<label>職場と部門</label>
 														</div>
 													</th>
 
 													<th colspan="2" class="th-col2">
 														<div class="flex">
-															<div  class="cf"
+															<div class="cf"
 																data-bind="ntsSwitchButton: {
 																			options: roundingRules3,
 																			optionsValue: 'code',

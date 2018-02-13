@@ -7,28 +7,30 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-		<script>var dialogSize = { width: 400, height: 340 };</script>
-		<com:ValidatorScript>
+			<script>var dialogSize = { width: 400, height: 340 };</script>
+			<com:ValidatorScript>
 			nts.uk.ctx.sys.portal.dom.webmenu.MenuBarName
 		</com:ValidatorScript>
-		<com:stylefile path="ccg013.i.style.css" />
-		<com:scriptfile set="IGNITE" />
-		<com:scriptfile path="/view/ccg/013/base/base.js" of="/nts.uk.com.web" />
-		<com:scriptfile path="ccg013.i.start.js" />
-		<com:scriptfile path="ccg013.i.service.js" />
-		<com:scriptfile path="ccg013.i.vm.js" />
-		<com:stylefile path="../../common/common.css" />
+			<com:stylefile path="ccg013.i.style.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/ccg/013/base/base.js"
+				of="/nts.uk.com.web" />
+			<com:scriptfile path="ccg013.i.start.js" />
+			<com:scriptfile path="ccg013.i.service.js" />
+			<com:scriptfile path="ccg013.i.vm.js" />
+			<com:stylefile path="../../common/common.css" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="content-area" class="body">
-				<div id="functions-area-bottom">					
-					<button id="i1_8" class="x-large bg-daily-reflect-application" data-bind="click: submit" >#{i18n.getText('CCG013_90')}</button>
+				<div id="functions-area-bottom">
+					<button id="i1_8" class="x-large bg-daily-reflect-application"
+						data-bind="click: submit">#{i18n.getText('CCG013_90')}</button>
 					<span style="padding: 0 20px;"></span>
-					<button id="i1_9" class="large" data-bind="click: closeDialog" >#{i18n.getText('CCG013_91')}</button>
+					<button id="i1_9" class="large" data-bind="click: closeDialog">#{i18n.getText('CCG013_91')}</button>
 				</div>
-				
-				<br/>
-				
+
+				<br />
+
 				<div class="functions-area-content">
 					<table class="contents-area">
 						<tr>
@@ -37,17 +39,20 @@
 						<tr>
 							<td width="10"></td>
 							<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG013_87')}</div></td>
-							<td><input id="menu-bar-name" data-bind="ntsTextEditor: {name:'#[CCG013_87]', value: nameMenuBar, constraint: 'MenuBarName', required: true, option: textOption}, hasfocus: true" /></td>
+							<td><input id="menu-bar-name"
+								data-bind="ntsTextEditor: {name:'#[CCG013_87]', value: nameMenuBar, constraint: 'MenuBarName', required: true, option: textOption}, hasfocus: true" /></td>
 						</tr>
 						<tr>
 							<td width="10"></td>
 							<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG013_88')}</div></td>
-							<td><div id="textColorpicker" data-bind="ntsColorPicker: {name:'#[CCG013_88]', value: textColor, enable: true, width: 60, required: true}"/></td>
+							<td><div id="textColorpicker"
+									data-bind="ntsColorPicker: {name:'#[CCG013_88]', value: textColor, enable: true, width: 60, required: true}" /></td>
 						</tr>
 						<tr>
 							<td width="10"></td>
 							<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG013_89')}</div></td>
-							<td><div id="bgColorpicker" data-bind="ntsColorPicker: {name:'#[CCG013_89]', value: bgColor, enable: true, width: 60, required: true}"/></td>
+							<td><div id="bgColorpicker"
+									data-bind="ntsColorPicker: {name:'#[CCG013_89]', value: bgColor, enable: true, width: 60, required: true}" /></td>
 						</tr>
 					</table>
 				</div>

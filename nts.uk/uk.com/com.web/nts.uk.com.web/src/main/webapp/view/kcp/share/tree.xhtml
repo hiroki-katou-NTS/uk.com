@@ -11,14 +11,18 @@
 		</com:ko>
 		<div data-bind="visible: !isMultipleUse">
 			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KCP004_2')}</div>
-			<div class="base-date-editor" style="margin-left: 17px; margin-right: 5px;"
+			<div class="base-date-editor"
+				style="margin-left: 17px; margin-right: 5px;"
 				data-bind="attr: {tabindex: isSetTabindex() ? tabindex : 1},
-				ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name:'#[KCP004_2]', required: true}"></div>	
-			<button data-bind="click: reload, attr: {tabindex: isSetTabindex() ? tabindex : 2}" style="width: 100px">#{i18n.getText('KCP004_3')}</button>
+				ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name:'#[KCP004_2]', required: true}"></div>
+			<button
+				data-bind="click: reload, attr: {tabindex: isSetTabindex() ? tabindex : 2}"
+				style="width: 100px">#{i18n.getText('KCP004_3')}</button>
 		</div>
-		<div style="margin-top: 10px;margin-bottom: 10px;">
+		<div style="margin-top: 10px; margin-bottom: 10px;">
 			<div data-bind="ntsFormLabel: {}" style="float: left;">#{i18n.getText('KCP004_4')}</div>
-			<div id="combo-box-tree-component" style="width: 107px;margin-left: 35px;" 
+			<div id="combo-box-tree-component"
+				style="width: 107px; margin-left: 35px;"
 				data-bind="attr: {tabindex: isSetTabindex() ? tabindex : 3}, ntsComboBox: {
 					options: levelList,
 					optionsValue: 'level',
@@ -30,9 +34,9 @@
 						{ prop: 'name', length: 4 },
 					]}"></div>
 		</div>
-		
+
 		<div>
-			<div style="width: 264px;display: inline-block;" 
+			<div style="width: 264px; display: inline-block;"
 				data-bind="attr: {tabindex: isSetTabindex() ? tabindex : 4}, ntsSearchBox: {
 					targetKey: 'workplaceId',
 					mode: 'igTree',
@@ -43,16 +47,18 @@
 					childField: 'childs',
 					fields: ['nodeText', 'code']}">
 			</div>
-			<div style="display: inline-block;float: right;">
-			<com:ko tag="if" bind="isShowSelectButton">
-					<button data-bind="click: selectAll, attr: {tabindex: isSetTabindex() ? tabindex : 5}">#{i18n.getText('KCP004_7')}</button>
-					<button  data-bind="click: selectSubParent, attr: {tabindex: isSetTabindex() ? tabindex : 6}">#{i18n.getText('KCP004_8')}</button>
-			</com:ko>
+			<div style="display: inline-block; float: right;">
+				<com:ko tag="if" bind="isShowSelectButton">
+					<button
+						data-bind="click: selectAll, attr: {tabindex: isSetTabindex() ? tabindex : 5}">#{i18n.getText('KCP004_7')}</button>
+					<button
+						data-bind="click: selectSubParent, attr: {tabindex: isSetTabindex() ? tabindex : 6}">#{i18n.getText('KCP004_8')}</button>
+				</com:ko>
 			</div>
 		</div>
-		
-		<com:ko tag="if" bind="!isMultiSelect" >
-			<table id="single-tree-grid" class="cf" 
+
+		<com:ko tag="if" bind="!isMultiSelect">
+			<table id="single-tree-grid" class="cf"
 				data-bind="attr: {tabindex: isSetTabindex() ? tabindex : 7}, ntsTreeGridView:{
 					width: 412,
 					height: treeStyle.height,
@@ -67,8 +73,8 @@
 					showCheckBox: isMultiSelect}">
 			</table>
 		</com:ko>
-		<com:ko tag="if" bind="isMultiSelect" >
-			<table id="multiple-tree-grid" class="cf" 
+		<com:ko tag="if" bind="isMultiSelect">
+			<table id="multiple-tree-grid" class="cf"
 				data-bind="attr: {tabindex: isSetTabindex() ? tabindex : 7}, ntsTreeGridView:{
 					width: 412,
 					height: treeStyle.height,

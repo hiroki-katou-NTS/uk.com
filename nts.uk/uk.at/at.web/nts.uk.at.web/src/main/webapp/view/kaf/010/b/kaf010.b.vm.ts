@@ -22,6 +22,8 @@ module nts.uk.at.view.kaf010.b {
             goSelected1 : KnockoutObservable<number> = ko.observable(0);
             backSelected2 : KnockoutObservable<number> = ko.observable(0);
             goSelected2 : KnockoutObservable<number> = ko.observable(0);
+            goSelected1Value: KnockoutObservable<string> = ko.observable("");
+            backSelected1Value: KnockoutObservable<string> = ko.observable("");
             workState: KnockoutObservable<boolean> = ko.observable(true);;
             typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
             // 申請日付
@@ -201,6 +203,8 @@ module nts.uk.at.view.kaf010.b {
                 self.goSelected2(data.goAtr2);
                 self.backSelected1(data.backAtr1);
                 self.backSelected2(data.backAtr2);
+                self.goSelected1Value(data.goAtr1 == 0 ? nts.uk.resource.getText("KAF009_17") : nts.uk.resource.getText("KAF009_16"));
+                self.backSelected1Value(data.goAtr1 == 0 ? nts.uk.resource.getText("KAF009_19") : nts.uk.resource.getText("KAF009_18"));
                 if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
                     let reasonID = data.applicationReasonDtos[0].reasonID;
                     self.selectedReason(reasonID);
