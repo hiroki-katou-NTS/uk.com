@@ -76,6 +76,12 @@ module nts.uk.at.view.ksm011.d.viewmodel {
             self.useCls = ko.observable(0);
             self.correctDeadline = ko.observable(0);
             self.component.currentCode.subscribe(function(codeChanged) {
+                self.component026.listPermissions([]);
+                self.componentShift.listPermissions([]);
+                self.componentWorkplace.listPermissions([]);
+                self.componentEmployee.listPermissions([]);
+                self.componentDate.listPermissions([]);
+                
                 self.findAll(codeChanged);
                 self.useCls(0);
                 self.correctDeadline(0);
@@ -194,10 +200,14 @@ module nts.uk.at.view.ksm011.d.viewmodel {
             let dfd = $.Deferred();
 
 
-
+            self.listPermissionCommon([]);
+            self.listPermissionWorkplace([]);
+            self.listPermissionEmployee([]);
+            self.listPermissionDate([]);
+            self.listPermissionShift([]);
+            
             self.component026.roleId(self.component.currentCode());
             self.component026.startPage().done(function() {
-                self.listPermissionCommon([]);
                 self.listPermissionCommon(self.component026.listPermissions());
                 dfd.resolve();
             });
@@ -257,18 +267,14 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                             item.availability(!!item.availability()) ? 1 : 0;
                         }
                         listCommon.push(item);
-                        self.listPermissionCommon([]);
                         self.listPermissionCommon(listCommon);
-                        
+
                         if (author) {
-                            self.component026.listPermissions([]);
                             self.component026.listPermissions(self.listPermissionCommon());
                         } else {
                             self.component026.roleId(roleId);
                         }
                     });
-
-
 
                     var listWorkplace = [];
                     _.forEach(self.listPermissionWorkplace(), function(item) {
@@ -287,8 +293,6 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                             self.componentWorkplace.roleId(roleId);
                         }
                     });
-
-
 
                     var listEmployee = [];
                     _.forEach(self.listPermissionEmployee(), function(item) {
@@ -326,8 +330,6 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                         }
                     });
 
-
-
                     var listShift = [];
                     _.forEach(self.listPermissionShift(), function(item) {
                         var author = _.find(permissonTotalArr.shiftPermisson, function(a: any) { return a.functionNoShift == item.functionNo });
@@ -346,7 +348,6 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                         }
                     });
 
-
                     _.forEach(permissonTotalArr.schemodifyDeadline, function(item) {
                         if (permissonTotalArr.schemodifyDeadline.length = 0) {
                             self.useCls(0);
@@ -359,13 +360,13 @@ module nts.uk.at.view.ksm011.d.viewmodel {
 
                     })
                 }
-
                 dfd.resolve();
             }).fail(function(res) {
                 dfd.reject(res);
             });
             return dfd.promise();
         }
+
     }
 
     export interface IPermissonDto {

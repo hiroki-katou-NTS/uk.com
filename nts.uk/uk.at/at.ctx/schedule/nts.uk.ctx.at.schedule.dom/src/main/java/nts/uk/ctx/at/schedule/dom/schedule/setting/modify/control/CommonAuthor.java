@@ -2,7 +2,11 @@ package nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Getter
 @AllArgsConstructor
 public class CommonAuthor {

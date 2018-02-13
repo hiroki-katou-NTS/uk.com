@@ -117,13 +117,16 @@ module nts.uk.at.view.ksm011.c.viewmodel {
             var dfd = $.Deferred();
             self.items.removeAll();
             service.findAll().done(function(totalTimeArr: Array<any>) {
-                    var totalTime: IWorktypeDisplayDto = {
-                        useAtr: totalTimeArr.useAtr,
-                        workTypeList: totalTimeArr.workTypeList
-                    };
-                    self.items.push(new WorktypeDisplayDto(totalTime));
-                    var names = self.getNames(self.workTypeList(), totalTimeArr.workTypeList);
-                    self.workTypeNames(names);
+                var totalTime: any = {
+                    useAtr: totalTimeArr.useAtr,
+                    workTypeList: totalTimeArr.workTypeList
+                };
+                _.each(totalTime.workTypeList, (items: any) => {
+                    self.currentItem().workTypeList().push(items.workTypeCode);
+                });
+                self.items.push(new WorktypeDisplayDto(totalTime));
+                var names = self.getNames(self.workTypeList(), totalTimeArr.workTypeList);
+                self.workTypeNames(names);
             });
             return dfd.promise();
         }
