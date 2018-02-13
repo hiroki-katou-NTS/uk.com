@@ -35,11 +35,11 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             self.selectedCode = ko.observable(1);
             
             self.listStandardImportSetting = ko.observableArray([
-                new model.StandardAcceptanceConditionSetting('001', 'Import Setting 1', 2, 0),
-                new model.StandardAcceptanceConditionSetting('002', 'Import Setting 2', 1, 1), 
-                new model.StandardAcceptanceConditionSetting('003', 'Import Setting 3', null, 2),
-                new model.StandardAcceptanceConditionSetting('004', 'Import Setting 4', 1, 3),
-                new model.StandardAcceptanceConditionSetting('005', 'Import Setting 5', 0, 0)
+                new model.StandardAcceptanceConditionSetting('001', 'Import Setting 1', 2, 0, 0, 1),
+                new model.StandardAcceptanceConditionSetting('002', 'Import Setting 2', 1, 1, 0, 1), 
+                new model.StandardAcceptanceConditionSetting('003', 'Import Setting 3', null, 2, 0, 1),
+                new model.StandardAcceptanceConditionSetting('004', 'Import Setting 4', 1, 3, 1, 2),
+                new model.StandardAcceptanceConditionSetting('005', 'Import Setting 5', 0, 0, 1, 3)
             ]);
             self.selectedStandardImportSettingCode = ko.observable(self.listStandardImportSetting()[0].dispConditionSettingCode);
             self.selectedStandardImportSetting = ko.observable(self.listStandardImportSetting()[0]);

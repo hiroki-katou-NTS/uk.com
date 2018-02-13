@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
-<!-- 			<com:stylefile path="kal003.a.style.css" /> -->
+			<com:stylefile path="cmf001.d.style.css" />
 <!-- 			<com:scriptfile path="kal003.a.service.js" /> -->
 			<com:scriptfile path="cmf001.d.vm.js" />
 
@@ -30,38 +30,52 @@
 					<button tabindex="3" >#{i18n.getText('CMF001_132')}</button>
 				</div>
 			</div>
-			<div class="contents-area container">
-				<div>
-					<table border="1">
-						<tr>
-							<th>
-								<label>#{i18n.getText('CMF001_134')}</label>
-								<label>item transport</label>
-								<label>item transport</label>
-								<label>#{i18n.getText('CMF001_135')}</label>
-								<label>item transport</label>
-							</th>
-							<th>
-								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_139')}</div>
-							</th>
-						</tr>
-						<tr>
-							<td>
-								<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_136')}</div>
-							</td>
-							<td>
-								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_142')}</div>
-							</td>
-							<td rowspan="2"><button>#{i18n.getText('CMF001_145')}</button></td>
-						</tr>
-					</table>
-					
-					
-					
+			<div id="contents-area">
+				<div class="container">
+					<div style="display: inline-block;">
+						<div class="valign-center control-group" data-bind="with: selectedStandardImportSetting">
+							<span class="label">#{i18n.getText('CMF001_134')}</span>
+							<span class="label" data-bind="text: dispConditionSettingCode"></span>
+							<span class="label" data-bind="text: dispConditionSettingName"></span>
+							<span class="label">#{i18n.getText('CMF001_135')}</span>
+							<span class="label">item transport</span>
+						</div>
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_136')}</div>
+							<div id="file-upload" style="display: inline-block;" data-bind="ntsFileUpload:{
+								name: '#[CMF001_137]',
+								filename: filename,
+								accept: accept,
+								text: 'CMF001_138',
+								aslink: false,
+								enable: true,
+								onchange: onchange,
+								immediateUpload: true,
+								stereoType: stereoType,
+								uploadFinished: finished
+							}"></div>
+						</div>
+					</div>
+					<div style="display: inline-block;">
+						<div class="valign-center control-group" data-bind="with: selectedStandardImportSetting">
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_139')}</div>
+							<input data-bind="ntsTextEditor: {name: '#[CMF001_140]', value: csvDataItemLineNumber, required: true, option: {width: '80px'}}" />
+							<span class="label">#{i18n.getText('CMF001_141')}</span>
+						</div>
+						<div class="valign-center control-group" data-bind="with: selectedStandardImportSetting">
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_142')}</div>
+							<input data-bind="ntsTextEditor: {name: '#[CMF001_143]', value: csvDataStartLine, required: true, option: {width: '80px'}}" />
+							<span class="label">#{i18n.getText('CMF001_144')}</span>
+						</div>
+					</div>
+					<div class="valign-center control-group" style="display: inline-block;">
+						<button>#{i18n.getText('CMF001_145')}</button>
+					</div>
 				</div>
-				<div>
-					<div class="fixed-flex-layout-left">
-						<div data-bind="ntsPanel:{width: '350px', height: '50px', direction: 'bottom', showIcon: false, visible: true}">
+				<div class="fixed-flex-layout container">
+				<div class="fixed-flex-layout-left">
+					<div data-bind="ntsPanel:{width: '300px', height: '40px', direction: 'bottom', showIcon: false, visible: true}">
+						<div class="valign-center control-group">
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_150')}</div>
 							<div tabindex="6" data-bind="ntsComboBox: {
 								options: listCategory,
@@ -76,65 +90,98 @@
 									{ prop: 'dispCategoryName', length: 8 }
 								]}"></div>
 						</div>
-						<div data-bind="ntsPanel:{width: '350px', height: '400px', direction: 'none', showIcon: true, visible: true}">
-							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_151')}</div>
-							<div tabindex="7" style="width: 350px" data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'dispItemCode', comId: 'D5_4', 
-								items: listCategoryItem, selected: selectedCategoryItem, selectedKey: 'dispItemCode', fields: ['dispItemName'], mode: 'igGrid'}" />		
-							<table id="D5_4" data-bind="ntsGridList: {
-									height: 320,
-									name: '#[CMF001_39]', 
- 									dataSource: listCategoryItem,
-									primaryKey: 'dispItemCode', 
- 									columns: [
-						                { headerText: '', key: 'dispItemCode', width: 100, hidden: true, formatter: _.escape },
-						                { headerText: '#{i18n.getText('CMF001_153')}', key: 'dispItemName', width: 180, formatter: _.escape }
-						            ], 
-									multiple: false,
-									value: selectedCategoryItem
-								}"></table>
-						</div>
-						<button><i class="icon icon-button-arrow-left"></i></button>
-						<button><i class="icon icon-button-arrow-right"></i></button>
 					</div>
-					<div>
-						<label>#{i18n.getText('CMF001_160')}</label>
-						<table id="fixed-table">
-							<colgroup>
-								<col width="100px"/>
-								<col width="100px"/>
-								<col width="100px"/>
-								<col width="100px"/>
-								<col width="100px"/>
-								<col width="100px"/>
-								<col width="100px"/>
-							</colgroup>
-							<thead>
-								<tr>
-									<th class="ui-widget-header"></th>
-									<th class="ui-widget-header">#{i18n.getText('CMF001_161')}</th>
-									<th class="ui-widget-header">#{i18n.getText('CMF001_162')}</th>
-									<th class="ui-widget-header">#{i18n.getText('CMF001_163')}</th>
-									<th class="ui-widget-header">#{i18n.getText('CMF001_164')}</th>
-									<th class="ui-widget-header">#{i18n.getText('CMF001_165')}</th>
-									<th class="ui-widget-header">#{i18n.getText('CMF001_166')}</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>adadfasdf</td>
-									<td>asdfasdfs</td>
-									<td>asdfasdf</td>
-									<td>1234567890AE</td>
-									<td>wersff</td>
-									<td>2017/08/08</td>
-									<td>2017/08/08</td>
-									<td>HoangNK</td>
-								</tr>
-							</tbody>
-						</table>
+					<div data-bind="ntsPanel:{width: '300px', height: '400px', direction: 'none', showIcon: true, visible: true}">
+						<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_151')}</div>
+						<div tabindex="7" style="width: 300px" data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'dispItemCode', comId: 'D5_4', 
+							items: listCategoryItem, selected: selectedCategoryItem, selectedKey: 'dispItemCode', fields: ['dispItemName'], mode: 'igGrid'}" />		
+						<table id="D5_4" data-bind="ntsGridList: {
+								rows: 12,
+								name: '#[CMF001_39]', 
+								dataSource: listCategoryItem,
+								primaryKey: 'dispItemCode', 
+									columns: [
+					                { headerText: '', key: 'dispItemCode', width: 10, hidden: true, formatter: _.escape },
+					                { headerText: '#{i18n.getText('CMF001_153')}', key: 'dispItemName', width: 280, formatter: _.escape }
+					            ], 
+								multiple: false,
+								value: selectedCategoryItem
+							}"></table>
 					</div>
 				</div>
+				<div style="margin-right: 10px; margin-top: 260px">
+					<button><i class="icon icon-button-arrow-right"></i></button>
+					<button><i class="icon icon-button-arrow-left"></i></button>
+				</div>
+				<div class="fixed-flex-layout-right">
+					<span class="label" style="margin-bottom: 30px; font-size: 1.5rem;">#{i18n.getText('CMF001_160')}</span>
+					<table id="fixed-table">
+						<colgroup>
+							<col width="30px"/>
+							<col width="150px"/>
+							<col width="200px"/>
+							<col width="110px"/>
+							<col width="100px"/>
+							<col width="100px"/>
+							<col width="100px"/>
+						</colgroup>
+						<thead>
+							<tr>
+								<th class="ui-widget-header"></th>
+								<th class="ui-widget-header">#{i18n.getText('CMF001_161')}</th>
+								<th class="ui-widget-header">#{i18n.getText('CMF001_162')}</th>
+								<th class="ui-widget-header">#{i18n.getText('CMF001_163')}</th>
+								<th class="ui-widget-header">#{i18n.getText('CMF001_164')}</th>
+								<th class="ui-widget-header">#{i18n.getText('CMF001_165')}</th>
+								<th class="ui-widget-header">#{i18n.getText('CMF001_166')}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td style ="text-align: right;">1</td>
+								<td>asdfasdfs</td>
+								<td>
+									<span class="label">item transport</span>
+									<button>#{i18n.getText('CMF001_167')}</button>
+								</td>
+								<td>item transport</td>
+								<td>
+									<div data-bind="ntsComboBox: {
+										options: dataTypes,
+										optionsValue: 'code',
+										visibleItemsCount: 5,
+										name: '#[CMF001_168]',
+										value: selectedDataType,
+										optionsText: 'name',
+										editable: false,
+										enable: true,
+										columns: [
+											{ prop: 'name', length: 4 }
+										]}"></div>
+								</td>
+								<td style ="text-align: center;">
+								    <i data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: function() { alert('yeah!') }"></i>
+								</td>
+								<td style ="text-align: center;">
+									<i data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: function() { alert('yeah!') }"></i>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				</div>
 			</div>
+<!-- 			<div class="contents-area"> -->
+				
+<!-- 				<div class="container"> -->
+<!-- 					<div class="left-content"> -->
+						
+<!-- 					</div> -->
+<!-- 					<div class="right-content"> -->
+						
+<!-- 					</div> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
 		</ui:define>
 	</ui:composition>
 </body>

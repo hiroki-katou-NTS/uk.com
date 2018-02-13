@@ -12,8 +12,10 @@ module nts.uk.com.view.cmf001.share.model {
         deleteExistingData: KnockoutObservable<number> = ko.observable(0);
         deleteDetermination: KnockoutObservable<number> = ko.observable(-1);
         acceptMode: KnockoutObservable<number>;
+        csvDataItemLineNumber: KnockoutObservable<number>;
+        csvDataStartLine: KnockoutObservable<number>;
         
-        constructor(code: string, name: string, deleteExistingData: number, acceptMode: number) {
+        constructor(code: string, name: string, deleteExistingData: number, acceptMode: number, csvDataItemLineNumber: number, csvDataStartLine: number) {
             this.conditionSettingCode = ko.observable(code);
             this.dispConditionSettingCode = code;
             this.conditionSettingName = ko.observable(name);
@@ -23,6 +25,8 @@ module nts.uk.com.view.cmf001.share.model {
                 this.deleteDetermination(1);
             }
             this.acceptMode = ko.observable(acceptMode);
+            this.csvDataItemLineNumber = ko.observable(csvDataItemLineNumber);
+            this.csvDataStartLine = ko.observable(csvDataStartLine);
         }
     }
     
@@ -31,12 +35,24 @@ module nts.uk.com.view.cmf001.share.model {
         dispConditionSettingCode: string;
         conditionSettingName: KnockoutObservable<string>;
         dispConditionSettingName: string;
+        deleteExistingData: KnockoutObservable<number> = ko.observable(0);
+        deleteDetermination: KnockoutObservable<number> = ko.observable(-1);
+        acceptMode: KnockoutObservable<number>;
+        csvDataItemLineNumber: KnockoutObservable<number>;
+        csvDataStartLine: KnockoutObservable<number>;
         
-        constructor(code: string, name: string) {
+        constructor(code: string, name: string, deleteExistingData: number, acceptMode: number, csvDataItemLineNumber: number, csvDataStartLine: number) {
             this.conditionSettingCode = ko.observable(code);
             this.dispConditionSettingCode = code;
             this.conditionSettingName = ko.observable(name);
             this.dispConditionSettingName = name;
+            if (deleteExistingData) {
+                this.deleteExistingData(deleteExistingData);
+                this.deleteDetermination(1);
+            }
+            this.acceptMode = ko.observable(acceptMode);
+            this.csvDataItemLineNumber = ko.observable(csvDataItemLineNumber);
+            this.csvDataStartLine = ko.observable(csvDataStartLine);
         }
     }
     

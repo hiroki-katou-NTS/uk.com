@@ -1,0 +1,40 @@
+#contents-area .container {
+	margin: 20px;
+}
+
+.left-content {
+	float: left;
+	vertical-align: top;
+}
+
+.right-content {
+	float: left;
+	vertical-align: top;
+	padding-top: 70px;
+}
+
+.control-group {
+	/*margin: 30px;*/
+}
+
+.flabel {
+	display: inline-block;
+	width: 150px;
+}
+
+.panel.ntsPanel.direction-bottom {
+	margin-bottom: 30px;
+}
+
+.fixed-flex-layout {
+	display: flex;
+	margin: 20px;
+}
+
+.fixed-flex-layout-left {
+	margin-right: 10px;
+}
+
+.fixed-flex-layout-right {
+	flex: 1;
+}
