@@ -241,7 +241,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	private void validateLeftOfWork(EmTimeZoneSet work, List<DiffTimeOTTimezoneSet> lstOT, int aheadChange,
 			BundledBusinessException be) {
 		List<DiffTimeOTTimezoneSet> lstLeft = lstOT.stream()
-				.filter(ot -> ot.getTimezone().getEnd().v() < work.getTimezone().getStart().v())
+				.filter(ot -> ot.getTimezone().getEnd().v() <= work.getTimezone().getStart().v())
 				.filter(ot -> ot.isEarlyOTUse())
 				.filter(ot -> !ot.isUpdateStartTime())
 				.sorted((a, b) -> a.getTimezone().getStart().compareTo(b.getTimezone().getStart()))
@@ -259,7 +259,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	private void validateRightOfWork(EmTimeZoneSet work, List<DiffTimeOTTimezoneSet> lstOT, int behindChange,
 			BundledBusinessException be) {
 		List<DiffTimeOTTimezoneSet> lstRight = lstOT.stream()
-				.filter(ot -> ot.getTimezone().getStart().v() > work.getTimezone().getEnd().v())
+				.filter(ot -> ot.getTimezone().getStart().v() >= work.getTimezone().getEnd().v())
 				.filter(ot -> !ot.isEarlyOTUse())
 				.filter(ot -> !ot.isUpdateStartTime())
 				.sorted((a, b) -> a.getTimezone().getStart().compareTo(b.getTimezone().getStart()))
