@@ -116,7 +116,7 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 				roudingTime == null ? null : new TimeWithDayAttr(roudingTime),
 				time == null ? null : new TimeWithDayAttr(time),
 				placeCode == null ? null : new WorkLocationCD(placeCode),
-				EnumAdaptor.valueOf(sourceInfo, StampSourceInfo.class));
+				sourceInfo == null ? null : EnumAdaptor.valueOf(sourceInfo, StampSourceInfo.class));
 	}
 
 	public static KrcdtTimeLeavingWork toEntity(String employeeId, GeneralDate ymd, TimeLeavingWork domain, int type) {
