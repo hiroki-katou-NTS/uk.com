@@ -21,7 +21,7 @@ module nts.uk.com.view.cps005.b {
                     dataItemModel = new ItemDataModel(null);
                 self.currentItemData = ko.observable(dataItemModel);
                 self.isEnableButtonProceed = ko.observable(true);
-
+               
 
             }
 
@@ -402,7 +402,7 @@ module nts.uk.com.view.cps005.b {
                         });
                     });
                 } else if (value === 2) {
-
+                    
                     self.numericItem().numericItemMinus.subscribe(function(data: number) {
                         self.numericItem().decimalPart.valueHasMutated();
                     })
@@ -414,7 +414,7 @@ module nts.uk.com.view.cps005.b {
                     self.numericItem().decimalPart.subscribe(function(x: number) {
                         let maxValue = (Math.pow(10, self.numericItem().integerPart()) - 1) + ((Math.pow(10, x || 0) - 1) / Math.pow(10, x || 0));
                         writeConstraint("NumericItemMin", {
-                            mantissaMaxLength: x,
+                            mantissaMaxLength: parseInt(x),
                             min: self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
                             max: maxValue
                         });
@@ -425,16 +425,7 @@ module nts.uk.com.view.cps005.b {
                     });
                     let init = true;
                     self.numericItem().numericItemMin.subscribe(function(x : number){
-                       if(x){
-                        let decimalPart = x.split('.')[1];
-                                if(decimalPart.length > self.numericItem().decimalPart()){
-                                     let index = x.indexOf(".");
-                                         $("#numericItemMin").val(x.substring(0, parseInt((index+1) + parseInt(self.numericItem().decimalPart()))));
-                                    //$("#numericItemMin").ntsError('set', {messageId:"Msg_599"});
-                                     $('#numericItemMin').trigger('change');
-                                    
-                                }
-                        }
+                      
                         if (!self.numericItem().integerPart()) {
                             $('#integerPart').trigger('change');
                             return;
@@ -442,7 +433,7 @@ module nts.uk.com.view.cps005.b {
                         let maxValue = (Math.pow(10, self.numericItem().integerPart()) - 1) + ((Math.pow(10, self.numericItem().decimalPart() || 0) - 1) / Math.pow(10, self.numericItem().decimalPart() || 0));
                         if (init) {
                             writeConstraint("NumericItemMin", {
-                                mantissaMaxLength: self.numericItem().decimalPart(),
+                                mantissaMaxLength: parseInt(self.numericItem().decimalPart()),
                                 min: self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
                                 max: maxValue
                             });
@@ -450,22 +441,14 @@ module nts.uk.com.view.cps005.b {
                             $('#numericItemMin').trigger('change');
                         }
                         writeConstraint("NumericItemMax", {
-                            mantissaMaxLength: self.numericItem().decimalPart(),
+                            mantissaMaxLength: parseInt(self.numericItem().decimalPart()),
                             min: x ? parseFloat(x.toString()) : self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
                             max: maxValue
                         });
                         $('#numericItemMax').trigger('change');
                     });
                     self.numericItem().numericItemMax.subscribe(function(x: number) {
-                         if(x){
-                                let decimalPart = x.split('.')[1];
-                                    if(decimalPart.length > self.numericItem().decimalPart()){
-                                        let index = x.indexOf(".");
-                                        $("#numericItemMax").val(parseFloat(x.substring(0, parseInt((index+1) + parseInt(self.numericItem().decimalPart())))));
-                                       // $("#numericItemMin").ntsError('set', {messageId:"Msg_599"});
-                                         $("#numericItemMax").trigger("change");
-                                    }
-                            }
+                       
                         if (!self.numericItem().integerPart()) {
 
                             $('#integerPart').trigger('change');
@@ -547,7 +530,9 @@ module nts.uk.com.view.cps005.b {
             self.numericItemMinus.subscribe(function(data) {
                 self.decimalPart.valueHasMutated();
             })
-
+            $('#numericItemMin').blur(() => {
+                $(this).val(parseFloat($(this).val()));
+            });
             self.integerPart.subscribe(x => {
                 self.decimalPart.valueHasMutated();
             });
@@ -574,15 +559,7 @@ module nts.uk.com.view.cps005.b {
                 }
                 let maxValue = Math.pow(10, self.integerPart() || 0) - Math.pow(10, self.decimalPart() * -1 || 0);
                 if (init) {
-                    if(x){
-                        let decimalPart = x.split('.')[1];
-                                if(decimalPart.length > self.numericItem().decimalPart()){
-                                     let index = x.indexOf(".");
-                                        $("#numericItemMin").val(x.substring(0, parseInt((index+1) + parseInt(self.numericItem().decimalPart()))));
-                                    //$("#numericItemMin").ntsError('set', {messageId:"Msg_599"});
-                                    $("#numericItemMin").trigger("change");
-                                }
-                        }
+                   
                     writeConstraint("NumericItemMin", {
                         mantissaMaxLength: parseInt(self.decimalPart()),
                         min: self.numericItemMinus() == 0 ? 0 : maxValue * (-1),
@@ -599,15 +576,7 @@ module nts.uk.com.view.cps005.b {
                 $('#numericItemMax').trigger('change');
             });
             self.numericItemMax.subscribe(x => {
-                 if(x){
-                    let decimalPart = x.split('.')[1];
-                        if(decimalPart.length > self.numericItem().decimalPart()){
-                            let index = x.indexOf(".");
-                                        $("#numericItemMax").val(x.substring(0, parseInt((index+1) + parseInt(self.numericItem().decimalPart()))));
-                            //$("#numericItemMin").ntsError('set', {messageId:"Msg_599"});
-                            $("#numericItemMax").trigger("change");
-                        }
-                }
+                 
                 if (!self.integerPart()) {
                     $('#integerPart').trigger('change');
                     return;
@@ -619,11 +588,7 @@ module nts.uk.com.view.cps005.b {
         }
 
 
-        checkIntegerEmpty() {
-            //            if ($("#integerPart").val() == "") {
-            //                $("#integerPart").focus();
-            //            }
-        }
+       
     }
     export class TimeItemModel {
         timeItemMin: KnockoutObservable<number> = ko.observable(null);
