@@ -5,6 +5,7 @@
 package nts.uk.query.infra.repository.employee;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,6 +19,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmpOrderCond;
+import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmployeeOrder;
+import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmployeeOrderPK;
 import nts.uk.query.infra.entity.employee.EmployeeDataView;
 import nts.uk.query.infra.entity.employee.EmployeeDataView_;
 import nts.uk.query.model.employee.EmployeeSearchQuery;
@@ -162,14 +166,38 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		conditions.add(statusOfEmployeeCondition);
 		cq.where(conditions.toArray(new Predicate[] {}));
 
-		// sort
+		// getSortConditions
 		List<Order> orders = new ArrayList<>();
+		List<BsymtEmpOrderCond> sortConditions = this.getSortConditions("", 1, 2); //TODO: mock data
+
+		sortConditions.forEach(cond -> {
+			switch (cond.getId().getSearchType()) {
+			case 0: // EMPLOYMENT
+				orders.add(cb.asc(root.get(EmployeeDataView_.empCd)));
+				break;
+			case 1: // DEPARTMENT
+				break;
+			case 2: // WORKPLACE
+				orders.add(cb.asc(root.get(EmployeeDataView_.wplCd)));
+				break;
+			case 3: // CLASSIFICATION
+				orders.add(cb.asc(root.get(EmployeeDataView_.classificationCode)));
+				break;
+			case 4: // POSITION
+				// TODO sort by posistion order?
+				orders.add(cb.asc(root.get(EmployeeDataView_.jobCd)));
+				break;
+			case 5: // HIRE_DATE
+				orders.add(cb.asc(root.get(EmployeeDataView_.comStrDate)));
+				break;
+			case 6: // NAME
+				orders.add(cb.asc(root.get(EmployeeDataView_.personNameKana)));
+				break;
+			}
+		});
+
+		// sort by employee code
 		orders.add(cb.asc(root.get(EmployeeDataView_.scd)));
-		orders.add(cb.asc(root.get(EmployeeDataView_.empCd)));
-		orders.add(cb.asc(root.get(EmployeeDataView_.wplCd)));
-		orders.add(cb.asc(root.get(EmployeeDataView_.classificationCode)));
-		orders.add(cb.asc(root.get(EmployeeDataView_.personNameKana)));
-		orders.add(cb.asc(root.get(EmployeeDataView_.comStrDate)));
 		cq.orderBy(orders);
 
 		// execute query & add to resultList
@@ -181,6 +209,20 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				.hireDate(Optional.of(entity.getComStrDate())).jobTitleCode(Optional.ofNullable(entity.getJobCd()))
 				.name(Optional.of(entity.getBusinessName())).workplaceCode(Optional.ofNullable(entity.getWplCd()))
 				.build()).collect(Collectors.toList());
+	}
+
+	/**
+	 * Gets the sort conditions.
+	 *
+	 * @param comId the com id
+	 * @param systemType the system type
+	 * @param sortOrderNo the sort order no
+	 * @return the sort conditions
+	 */
+	private List<BsymtEmpOrderCond> getSortConditions(String comId, int systemType, int sortOrderNo) {
+		BsymtEmployeeOrderPK pk = new BsymtEmployeeOrderPK(comId, sortOrderNo, systemType);
+		Optional<BsymtEmployeeOrder> empOrder = this.queryProxy().find(pk, BsymtEmployeeOrder.class);
+		return empOrder.isPresent() ? empOrder.get().getLstBsymtEmpOrderCond() : Collections.emptyList();
 	}
 
 }
