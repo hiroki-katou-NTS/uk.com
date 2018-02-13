@@ -9,10 +9,15 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * The Class BsymtEmpOrderCondPK.
  */
 @Embeddable
+@Setter
+@Getter
 public class BsymtEmpOrderCondPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
