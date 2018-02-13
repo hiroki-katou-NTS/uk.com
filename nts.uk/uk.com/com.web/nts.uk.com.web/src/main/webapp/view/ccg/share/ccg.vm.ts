@@ -59,7 +59,6 @@ module nts.uk.com.view.ccg.share.ccg {
             isMultiple: boolean; // 選択モード
 
             isShow: KnockoutObservable<boolean>;
-            isFistTimeShow: boolean;
             isOpenStatusOfEmployeeList: KnockoutObservable<boolean>;
             isOpenEmploymentList: KnockoutObservable<boolean>;
             isOpenClassificationList: KnockoutObservable<boolean>;
@@ -597,30 +596,31 @@ module nts.uk.com.view.ccg.share.ccg {
                     if (e.target.id == "hor-scroll-button-hide" || $(e.target).parents("#hor-scroll-button-hide")[0]) {
                         return;
                     }
-                    if (self.isShow()) {
-                        // Hide component.
-                        self.isShow(false);
-                        $('#component-ccg001').toggle("slide");
-                    }
+                    self.hideComponent();
                 });
             }
             
             /**
-             * show hide div ccg common
+             * Hide component
              */
-            showHide() {
-                // Show component.
-                var self = this;
+            public hideComponent(): void {
+                let self = this;
+                if (self.isShow()) {
+                    $('#component-ccg001').toggle("slide");
+                    self.isShow(false);
+                }
+            }
+
+            /**
+             * Show component
+             */
+            public showComponent(): void {
+                let self = this;
                 if (self.isShow()) {
                     return;
                 }
+                $('#component-ccg001').toggle("slide");
                 self.isShow(true);
-                $('#component-ccg001').toggle("slide", function() {
-                    if (self.isFistTimeShow) {
-                        self.applyDataSearch();
-                        self.isFistTimeShow = false;
-                    }
-                });
             }
 
             /**
@@ -774,8 +774,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         nts.uk.ui.block.clear(); // clear block UI
                         self.onSearchAllClicked(selectedEmps);
                         // Hide component.
-                        self.isShow(false);
-                        $('#component-ccg001').toggle("slide");
+                        self.hideComponent();
                     });
             }
 
@@ -905,8 +904,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         } else {
                             self.onSearchAllClicked(data);
                             // Hide component.
-                            self.isShow(false);
-                            $('#component-ccg001').toggle("slide");
+                            self.hideComponent();
                         }
                     })
                 });
