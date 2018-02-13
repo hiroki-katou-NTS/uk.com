@@ -7,6 +7,7 @@ module nts.uk.com.view.cas014.a {
     import setShared = nts.uk.ui.windows.setShared;
     import textUK = nts.uk.text;
     import block = nts.uk.ui.block;
+    import error = nts.uk.ui.errors;
     export module viewmodel {
         export class ScreenModel {
             date: KnockoutObservable<string>;
@@ -37,7 +38,6 @@ module nts.uk.com.view.cas014.a {
                 block.invisible();
                 self.roleSetList.removeAll();
                 self.jobTitleList.removeAll();
-                $("#A3_4").trigger("validate");
                 service.getAllData(self.date()).done(function(data: any) {
                     if (data) {
                         let _rsList: Array<RoleSet> = _.map(data.listRoleSetDto, (rs: any) => {
@@ -80,6 +80,13 @@ module nts.uk.com.view.cas014.a {
                     block.clear();
                 });
                 return dfd.promise();
+            }
+
+            findBtnClick(): void {
+                $("#A3_4").trigger("validate");
+                if (!error.hasError()) {
+                    this.startPage();
+                }
             }
 
             register() {

@@ -42,6 +42,7 @@ public interface MonthlyPatternRepository {
 	 * @param companyId the company id
 	 * @return the list
 	 */
+	//	会社の月間パターンを取得する
 	public List<MonthlyPattern> findAll(String companyId);
 	
 	
