@@ -73,7 +73,8 @@ module nts.uk.com.view.ccg.share.ccg {
             return nts.uk.request.ajax('at', servicePath.getClosureTiedByEmployment + '/' + employmentCd);
         }
 
-        export function getEmployeeRangeSelection(key: any): JQueryPromise<model.EmployeeRangeSelection> {
+        export function getEmployeeRangeSelection(): JQueryPromise<model.EmployeeRangeSelection> {
+            const key = __viewContext.user.employeeId + '' + __viewContext.user.companyId;
             return nts.uk.characteristics.restore(key);
         }
 
@@ -221,13 +222,18 @@ module nts.uk.com.view.ccg.share.ccg {
                 onApplyEmployee: (data: EmployeeSearchDto[]) => void;
             }
 
-            export interface SelectedInformation {
+            export class SelectedInformation {
                 sortOrder: number; // 前回選択していた並び順
                 selectedClosureId: number; // 前回選択していた締め
+                constructor() {
+                    let self = this;
+                    self.sortOrder = null;
+                    self.selectedClosureId = null;
+                }
             }
 
             export interface EmployeeQueryParam {
-                baseDate: any;
+                baseDate: string;
                 referenceRange: number;
                 filterByEmployment: boolean;
                 employmentCodes: Array<string>;
@@ -240,27 +246,36 @@ module nts.uk.com.view.ccg.share.ccg {
                 filterByJobTitle: boolean;
                 jobTitleCodes: Array<string>;
 
-                periodStart: any;
-                periodEnd: any;
+                periodStart: string;
+                periodEnd: string;
 
                 includeIncumbents: boolean;
                 includeWorkersOnLeave: boolean;
                 includeOccupancy: boolean;
                 includeRetirees: boolean;
-                retireStart: any;
-                retireEnd: any;
+                retireStart: string;
+                retireEnd: string;
 
                 sortOrderNo: number;
                 nameType: number;
             }
 
-            export interface EmployeeRangeSelection {
+            export class EmployeeRangeSelection {
                 userId: String; // ユーザID
                 companyId: String; // 会社ID
-                personnelInfo: SelectedInformation; // 人事の選択している情報
+                humanResourceInfo: SelectedInformation; // 人事の選択している情報
                 personalInfo: SelectedInformation; // 個人情報の選択している情報
                 employmentInfo: SelectedInformation; // 就業の選択している情報
                 salaryInfo: SelectedInformation; // 給与の選択している情報
+                constructor() {
+                    let self = this;
+                    self.userId = __viewContext.user.employeeId;
+                    self.companyId = __viewContext.user.companyId;
+                    self.humanResourceInfo = new SelectedInformation();
+                    self.personalInfo = new SelectedInformation();
+                    self.employmentInfo = new SelectedInformation();
+                    self.salaryInfo = new SelectedInformation();
+                }
             }
             
             export class EmployeeDto {
