@@ -994,41 +994,41 @@ module nts.uk.com.view.ccg.share.ccg {
                         });
                     } 
                 }
-                // test
-                service.findRegulationInfoEmployee(self.quickSearchParam);
-                
-                self.changeListWorkplaceId();
-                
-                self.quickSearchParam;
-                //Get List Employee 
-                service.searchEmployee(self.quickSearchParam).done(data => {
-                    self.employeeList = data;
+
+                self.changeListWorkplaceId().done(() => {
+                    service.findRegulationInfoEmployee(self.quickSearchParam).done(data => {
+                        // return data
+                        self.onSearchAllClicked(data);
+                        // Hide component.
+                        self.hideComponent();
+                    });
                 });
             }
             
             /**
              * Change workplace list
              */
-            public changeListWorkplaceId(): void {
+            public changeListWorkplaceId(): JQueryPromise<void> {
+                let dfd = $.Deferred<void>();
                 var self = this;
                 var status = true;
                
                 //change the workplace list
                 if (nts.uk.util.isNullOrEmpty(self.quickSearchParam.referenceRange)){
-                    return;
+                    dfd.resolve();
                 } else {
                     //Get ReferenceRange by Role
                     service.getRefRangeBySysType(self.systemType).done(data => {
                         if (data == ConfigEnumReferenceRange.ONLY_MYSELF){
                             status = false;
-                            return;
+                            dfd.resolve();
                         }
                         else {
                             //check param ReferenceRange
                             if (self.quickSearchParam.referenceRange == ConfigEnumReferenceRange.ALL_EMPLOYEE){
                                 //check ReferenceRange from Role
                                 if (data == ConfigEnumReferenceRange.ALL_EMPLOYEE){
-                                    return;
+                                    dfd.resolve();
                                 } 
                             } else {
                                 ////check ReferenceRange from Role
@@ -1049,11 +1049,13 @@ module nts.uk.com.view.ccg.share.ccg {
                                     self.quickSearchParam.filterByWorkplace = true;
                                     self.quickSearchParam.workplaceCodes = wkplist;
                                 }
+                                dfd.resolve();
                             });
                         }
                        
                     });
                 }
+                return dfd.promise();
             }
             
             /**

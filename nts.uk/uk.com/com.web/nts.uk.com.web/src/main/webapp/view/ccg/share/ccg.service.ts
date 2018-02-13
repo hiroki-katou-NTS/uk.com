@@ -14,7 +14,6 @@ module nts.uk.com.view.ccg.share.ccg {
             getOfSelectedEmployee: "basic/organization/employee/getoffselect",
             searchAllWorkType: "at/share/worktype/findNotDeprecated",
             getEmploymentCodeByClosureId: "ctx/at/shared/workrule/closure/findEmpByClosureId",
-            searchEmployee: "query/employee/findAll",
             getRefRangeBySysType: "ctx/sys/auth/role/getrefrangebysystype",
             getClosuresByBaseDate: "ctx/at/shared/workrule/closure/getclosuresbybasedate",
             calculatePeriod: "ctx/at/shared/workrule/closure/calculateperiod",
@@ -137,13 +136,6 @@ module nts.uk.com.view.ccg.share.ccg {
          */
         export function searchAllWorkType(): JQueryPromise<string[]> {
             return nts.uk.request.ajax('at', servicePath.searchAllWorkType);
-        }
-        
-        /**
-         * search employee
-         */
-        export function searchEmployee(param: model.EmployeeQueryParam): JQueryPromise<model.EmployeeDto> {
-            return nts.uk.request.ajax('com', servicePath.searchEmployee, param);
         }
         
         /**
