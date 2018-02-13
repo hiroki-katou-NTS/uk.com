@@ -48,7 +48,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 	 * EmployeeSearchQuery)
 	 */
 	@Override
-	public List<RegulationInfoEmployee> find(EmployeeSearchQuery paramQuery) {
+	public List<RegulationInfoEmployee> find(String comId, EmployeeSearchQuery paramQuery) {
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -168,7 +168,8 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 		// getSortConditions
 		List<Order> orders = new ArrayList<>();
-		List<BsymtEmpOrderCond> sortConditions = this.getSortConditions("", 1, 2); //TODO: mock data
+		List<BsymtEmpOrderCond> sortConditions = this.getSortConditions(comId, paramQuery.getSystemType(),
+				paramQuery.getSortOrderNo());
 
 		sortConditions.forEach(cond -> {
 			switch (cond.getId().getSearchType()) {

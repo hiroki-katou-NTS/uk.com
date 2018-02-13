@@ -442,6 +442,7 @@ module nts.uk.com.view.ccg.share.ccg {
             private setQuickSearchParam(options: GroupOption): void {
                 let param = this.quickSearchParam;
                 param.filterByEmployment =  options.showClosure;
+                param.systemType = options.systemType;
             }
 
             private setAdvancedSearchParam(options: GroupOption): void {
@@ -455,6 +456,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 param.includeWorkersOnLeave = true;
                 param.includeOccupancy = true;
                 param.includeRetirees = true;
+                param.systemType = options.systemType;
             }
 
             /**

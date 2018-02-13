@@ -84,4 +84,7 @@ public class EmployeeSearchQuery implements Serializable {
 	
 	/** The type of name. */
 	private String nameType; //氏名の種類
+
+	/** The system type. */
+	private Integer systemType;
 }

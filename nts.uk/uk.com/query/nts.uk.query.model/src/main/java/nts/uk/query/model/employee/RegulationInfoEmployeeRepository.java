@@ -14,9 +14,10 @@ public interface RegulationInfoEmployeeRepository {
 	/**
 	 * Find.
 	 *
+	 * @param comId the com id
 	 * @param paramQuery the param query
 	 * @return the list
 	 */
-	public List<RegulationInfoEmployee> find(EmployeeSearchQuery paramQuery);
+	public List<RegulationInfoEmployee> find(String comId, EmployeeSearchQuery paramQuery);
 
 }

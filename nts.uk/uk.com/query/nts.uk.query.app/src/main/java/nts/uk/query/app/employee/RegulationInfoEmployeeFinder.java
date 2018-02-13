@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class RegulationInfoEmployeeFinder.
@@ -29,7 +30,7 @@ public class RegulationInfoEmployeeFinder {
 	 * @return the list
 	 */
 	public List<RegulationInfoEmployeeDto> find(EmployeeSearchQueryDto queryDto) {
-		return this.repo.find(queryDto.toQueryModel()).stream()
+		return this.repo.find(AppContexts.user().companyId(), queryDto.toQueryModel()).stream()
 				.map(model -> RegulationInfoEmployeeDto.builder().employeeCode(model.getEmployeeCode())
 						.employeeId(model.getEmployeeID()).employeeName(model.getName().get()).build())
 				.collect(Collectors.toList());

@@ -92,6 +92,9 @@ public class EmployeeSearchQueryDto implements Serializable {
 	/** The name type. */
 	private String nameType; // 氏名の種類
 
+	/** The system type. */
+	private Integer systemType;
+
 	/**
 	 * To query model.
 	 *
@@ -120,6 +123,7 @@ public class EmployeeSearchQueryDto implements Serializable {
 				.retireEnd(this.retireEnd == null ? null : GeneralDateTime.fromString(this.retireEnd + TIME_DAY_START, DATE_TIME_FORMAT))
 				.retireStart(this.retireStart == null ? null : GeneralDateTime.fromString(this.retireStart + TIME_DAY_START, DATE_TIME_FORMAT))
 				.sortOrderNo(this.sortOrderNo)
-				.workplaceCodes(this.workplaceCodes).build();
+				.workplaceCodes(this.workplaceCodes)
+				.systemType(this.systemType).build();
 	}
 }

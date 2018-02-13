@@ -250,6 +250,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 sortOrderNo: number;
                 nameType: number;
+                systemType: number;
             }
 
             export class EmployeeRangeSelection {
