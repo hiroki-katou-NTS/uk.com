@@ -77,15 +77,16 @@ public class WorkHolidayTimeDailyPerformDto {
 										toTimeWithDayAttr(c.getTimeSheet().getEnd())))),
 				holidayWorkFrameTime == null ? new ArrayList<>() : ConvertHelper.mapTo(holidayWorkFrameTime,
 						(c) -> new HolidayWorkFrameTime(new HolidayWorkFrameNo(c.getHolidayFrameNo()),
-								Finally.of(createTimeWithCalc(c.getHolidayWorkTime())),
-								Finally.of(createTimeWithCalc(c.getTransferTime())),
-								Finally.of(toAttendanceTime(c.getBeforeApplicationTime())))),
-				Finally.of(holidayMidnightWork.toDomain()),
+								createTimeWithCalc(c.getHolidayWorkTime()),
+								createTimeWithCalc(c.getTransferTime()),
+								c.getBeforeApplicationTime() == null ? Finally.empty() 
+										: Finally.of(toAttendanceTime(c.getBeforeApplicationTime())))),
+				holidayMidnightWork == null ? Finally.empty() : Finally.of(holidayMidnightWork.toDomain()),
 				toAttendanceTime(holidayTimeSpentAtWork));
 	}
 
-	private TimeWithCalculation createTimeWithCalc(CalcAttachTimeDto c) {
-		return c == null ? null : TimeWithCalculation.sameTime(toAttendanceTime(c.getTime()));
+	private Finally<TimeWithCalculation> createTimeWithCalc(CalcAttachTimeDto c) {
+		return c == null ? Finally.empty() : Finally.of(TimeWithCalculation.sameTime(toAttendanceTime(c.getTime())));
 	}
 	
 	private TimeWithDayAttr toTimeWithDayAttr(Integer time) {

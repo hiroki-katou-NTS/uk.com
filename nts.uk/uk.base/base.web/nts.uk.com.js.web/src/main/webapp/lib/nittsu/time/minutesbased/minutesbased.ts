@@ -9,6 +9,8 @@ module nts.uk.time {
         export interface MinutesBasedTime<T> extends Number {
             isNegative: boolean;
             asMinutes: number;
+            minutePart: number;
+            minutePartText: string;
             typeName: string;
         }
         
@@ -23,6 +25,8 @@ module nts.uk.time {
             util.accessor.defineInto(mat)
                 .get("asMinutes", () => timeAsMinutes)
                 .get("isNegative", () => timeAsMinutes < 0)
+                .get("minutePart", () => Math.abs(timeAsMinutes) % 60)
+                .get("minutePartText", () => text.padLeft(mat.minutePart.toString(), "0", 2))
                 .get("typeName", () => "MinutesBasedTime");
             
             return mat;

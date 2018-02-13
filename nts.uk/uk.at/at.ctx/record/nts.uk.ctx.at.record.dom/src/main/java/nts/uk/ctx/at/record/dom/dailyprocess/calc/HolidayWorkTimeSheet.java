@@ -61,7 +61,7 @@ public class HolidayWorkTimeSheet{
 		
 		for(HolidayWorkFrameTimeSheetForCalc holidayWorkFrameTime:workHolidayTime) {
 			AttendanceTime calcTime = holidayWorkFrameTime.correctCalculationTime(holidayAutoCalcSetting); 
-			HolidayWorkFrameTime getListItem = calcHolidayTimeWorkTimeList.get(holidayWorkFrameTime.getHolidayWorkTimeSheetNo().v().intValue() - 1);
+			HolidayWorkFrameTime getListItem = calcHolidayTimeWorkTimeList.get(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v() - 1);
 			getListItem.addHolidayTime(calcTime);
 			calcHolidayTimeWorkTimeList.set(holidayWorkFrameTime.getHolidayWorkTimeSheetNo().v().intValue() - 1, getListItem);
 		}

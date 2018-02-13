@@ -165,6 +165,8 @@ public class AddWorkingConditionCommandAssembler {
 		
 		
 		// ScheduleMethod
+		WorkScheduleBasicCreMethod basicCreMethod = command.getBasicCreateMethod()!=null? EnumAdaptor.valueOf(command.getBasicCreateMethod().intValue(), WorkScheduleBasicCreMethod.class) : null;
+		
 		// WorkScheduleBusCal - 営業日カレンダーによる勤務予定作成
 		WorkScheduleBusCal busCal = new WorkScheduleBusCal(
 				command.getReferenceBusinessDayCalendar() != null
@@ -172,11 +174,13 @@ public class AddWorkingConditionCommandAssembler {
 						WorkScheduleMasterReferenceAtr.class) : null,
 						command.getReferenceBasicWork() != null ? EnumAdaptor.valueOf(command.getReferenceBasicWork().intValue(),
 						WorkScheduleMasterReferenceAtr.class) : null,
-						command.getReferenceType() != null ? EnumAdaptor.valueOf(command.getReferenceType().intValue(),
+						// 予定作成方法.営業日カレンダーによる勤務予定作成.就業時間帯の参照先（基本作成方法＝営業部カレンダーの場合）
+						command.getReferenceType() != null && basicCreMethod == WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR ? EnumAdaptor.valueOf(command.getReferenceType().intValue(),
 						TimeZoneScheduledMasterAtr.class) : null);
 		// MonthlyPatternWorkScheduleCre
 		MonthlyPatternWorkScheduleCre monthlySchedule = new MonthlyPatternWorkScheduleCre(
-				command.getReferenceType()!=null? EnumAdaptor.valueOf(command.getReferenceType().intValue(), TimeZoneScheduledMasterAtr.class) : null);
+				// 予定作成方法.月間パターンによる勤務予定作成.勤務種類と就業時間帯の参照先（基本作成方法＝月間パターンの場合）
+				command.getReferenceType()!=null && basicCreMethod == WorkScheduleBasicCreMethod.MONTHLY_PATTERN ? EnumAdaptor.valueOf(command.getReferenceType().intValue(), TimeZoneScheduledMasterAtr.class) : null);
 		ScheduleMethod scheduleMethod = new ScheduleMethod(
 				command.getBasicCreateMethod()!=null? EnumAdaptor.valueOf(command.getBasicCreateMethod().intValue(), WorkScheduleBasicCreMethod.class) :null,
 				busCal, monthlySchedule);

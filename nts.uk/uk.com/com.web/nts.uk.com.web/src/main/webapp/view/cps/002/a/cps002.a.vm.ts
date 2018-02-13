@@ -370,13 +370,13 @@ module cps002.a.vm {
 
                 }).fail((error) => {
 
-                    let message = error.message;
-                    switch (message) {
+                    let messageId = error.messageId;
+                    switch (messageId) {
                         case "Msg_345":
-                            $('#employeeCode').ntsError('set', { messageId: message });
+                            $('#employeeCode').ntsError('set', { messageId: messageId });
                             break;
                         case "Msg_757":
-                            $('#loginId').ntsError('set', { messageId: message });
+                            $('#loginId').ntsError('set', { messageId: messageId });
                             break;
                     }
 
@@ -633,7 +633,7 @@ module cps002.a.vm {
 
                 }).fail(error => {
 
-                    dialog({ messageId: error.message });
+                    dialog({ messageId: error.messageId });
 
                 })
             }
@@ -879,9 +879,27 @@ module cps002.a.vm {
             this.saveData = param ? param.saveData : null;
             this.dataType = param ? param.dataType : '';
             this.dateType = param ? param.dateType : '';
+            this.saveData.value = this.genString(this);
+
+        }
+
+        genString(item: SettingItem) {
+
             if (this.dataType === "DATE" && this.saveData.value) {
-                this.saveData.value = this.genDateString(this.saveData.value, this.dateType);
+                return this.genDateString(this.saveData.value, this.dateType);
             }
+
+            if (this.dataType === "TIME" && this.saveData.value) {
+                return this.genTimeString(this.saveData.value, this.dateType);
+            }
+
+            return this.saveData.value;
+
+        }
+
+
+        genTimeString(value, dateType) {
+            return nts.uk.time.parseTime(value, true).format();
         }
         genDateString(value, dateType) {
             let formatString = "yyyy/MM/dd";

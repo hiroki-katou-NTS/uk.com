@@ -28,6 +28,7 @@ module nts.uk.com.view.ccg015.a {
                 self.isNewMode = ko.observable(true);
                 self.toppageSelectedCode.subscribe(function(selectedTopPageCode: string) {
                     if(!self.isNewMode() && selectedTopPageCode === ''){
+                        self.isNewMode(true);
                         return;    
                     }
                     if (selectedTopPageCode && selectedTopPageCode != "") {
@@ -225,7 +226,7 @@ module nts.uk.com.view.ccg015.a {
             }
 
             private removeTopPage() {
-                var self = this;
+                var self = this;                
                 nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18")).ifYes(function() {
                     var removeCode = self.toppageSelectedCode();
                     var removeIndex = self.getIndexOfRemoveItem(removeCode);

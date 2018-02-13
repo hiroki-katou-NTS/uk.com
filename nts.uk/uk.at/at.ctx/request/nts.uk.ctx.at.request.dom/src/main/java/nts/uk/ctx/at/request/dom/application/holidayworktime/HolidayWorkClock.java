@@ -43,4 +43,12 @@ public class HolidayWorkClock {
 		this.startTime = new HolidayAppPrimitiveTime(startTime);
 		this.endTime = new HolidayAppPrimitiveTime(endTime);
 	}
+	public static HolidayWorkClock validateTime2(Integer startTime, Integer endTime,int goAtr,int backAtr){
+		if(startTime != null && startTime != -1 && endTime != null && endTime != -1){
+			if(startTime >= endTime){
+				throw new BusinessException("Msg_307");
+			}
+		}
+		return new HolidayWorkClock(new HolidayAppPrimitiveTime(startTime), new HolidayAppPrimitiveTime(endTime),EnumAdaptor.valueOf(goAtr, GoBackAtr.class),EnumAdaptor.valueOf(backAtr, GoBackAtr.class));
+	}
 }

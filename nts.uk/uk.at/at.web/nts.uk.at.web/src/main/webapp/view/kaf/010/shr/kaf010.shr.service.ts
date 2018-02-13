@@ -4,13 +4,12 @@ module nts.uk.at.view.kaf010.shr.service {
         findByChangeAppDate: "at/request/application/holidaywork/findChangeAppDate",
         checkConvertPrePost: "at/request/application/overtime/checkConvertPrePost",
         getCaculationResult: "at/request/application/holidaywork/getcalculationresult",
-        createOvertime: "at/request/application/overtime/create",
-        deleteOvertime: "at/request/application/overtime/delete",
-        updateOvertime: "at/request/application/overtime/update",
-        checkBeforeRegister: "at/request/application/overtime/checkBeforeRegister",
-        checkBeforeUpdate: "at/request/application/overtime/checkBeforeUpdate",
-        findByAppID: "at/request/application/overtime/findByAppID",
-        getRecordWork: "at/request/application/overtime/getRecordWork"
+        createOvertime: "at/request/application/holidaywork/create",
+        updateOvertime: "at/request/application/holidaywork/update",
+        checkBeforeRegister: "at/request/application/holidaywork/checkBeforeRegister",
+        checkBeforeUpdate: "at/request/application/holidaywork/checkBeforeUpdate",
+        findByAppID: "at/request/application/holidaywork/findByAppID",
+        getRecordWork: "at/request/application/holidaywork/getRecordWork"
     }
     /** Get TitleMenu */
     export function getHolidayWorkByUI(param: any): JQueryPromise<any> {
@@ -31,10 +30,6 @@ module nts.uk.at.view.kaf010.shr.service {
     
     export function createOvertime(overtime: any): JQueryPromise<void> {
         return nts.uk.request.ajax("at", paths.createOvertime,overtime);
-    }
-    
-     export function deleteOvertime(appID : string): JQueryPromise<void> { 
-        return nts.uk.request.ajax("at", paths.deleteOvertime,appID);
     }
     
      export function updateOvertime(overtime:any): JQueryPromise<void> {

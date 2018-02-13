@@ -116,13 +116,12 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	private final static String SELECT_CTG_WITH_AUTH = SELECT_NO_WHERE
 			+ " INNER JOIN PpemtPersonCategoryAuth au ON ca.ppemtPerInfoCtgPK.perInfoCtgId = au.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId"
 			+ " WHERE ca.cid = :cid AND co.categoryParentCd IS NULL AND (au.allowPersonRef = :selfAuth or 0 = :selfAuth)"
-			+ " AND ((au.allowOtherRef = :otherAuth AND au.allowOtherCompanyRef = 1) OR 0 = :otherAuth) AND ca.abolitionAtr = 0 AND au.ppemtPersonCategoryAuthPk.roleId = :roleId"
+			+ " AND ca.abolitionAtr = 0 AND au.ppemtPersonCategoryAuthPk.roleId = :roleId"
 			+ " AND 0 != (SELECT COUNT(i) FROM PpemtPerInfoItem i WHERE i.abolitionAtr = 0 AND i.perInfoCtgId = ca.ppemtPerInfoCtgPK.perInfoCtgId)"
 			+ " AND (SELECT COUNT(c) FROM PpemtPersonItemAuth c WHERE c.ppemtPersonItemAuthPk.roleId = :roleId AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId = ca.ppemtPerInfoCtgPK.perInfoCtgId) "
 			+ " != (SELECT COUNT(c) FROM PpemtPersonItemAuth c WHERE c.ppemtPersonItemAuthPk.roleId = :roleId "
 			+ " AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId = ca.ppemtPerInfoCtgPK.perInfoCtgId AND (0 = :otherAuth or c.otherPersonAuthType = 1) "
-			+ " AND (0 = :selfAuth or c.selfAuthType = 1))" 
-			+ " ORDER BY po.disporder";
+			+ " AND (0 = :selfAuth or c.selfAuthType = 1))";
 	
 	private final static String SELECT_CATEGORY_BY_COMPANY_ID_USED = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
@@ -420,8 +419,14 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 
 	@Override
-	public List<PersonInfoCategory> getAllCtgWithAuth(String companyId, String roleId, int selfAuth, int otherAuth) {
-		return this.queryProxy().query(SELECT_CTG_WITH_AUTH, Object[].class)
+	public List<PersonInfoCategory> getAllCtgWithAuth(String companyId, String roleId, int selfAuth, int otherAuth, boolean isOtherComapany) {
+		String fullQuery = "";
+		if(isOtherComapany) {
+			fullQuery = SELECT_CTG_WITH_AUTH  + " AND ((au.allowOtherRef = :otherAuth AND au.allowOtherCompanyRef = 1) OR 0 = :otherAuth) ORDER BY po.disporder";
+		}else {
+			fullQuery = SELECT_CTG_WITH_AUTH  +  " AND (au.allowOtherRef = :otherAuth  OR 0 = :otherAuth) ORDER BY po.disporder";
+		}
+		return this.queryProxy().query(fullQuery, Object[].class)
 				.setParameter("cid", companyId)
 				.setParameter("roleId", roleId)
 				.setParameter("selfAuth", selfAuth)

@@ -128,7 +128,7 @@ public class WorkingConditionCommandUtils {
 	}
 	
 	public static Optional<SingleDaySchedule> getOptionalSingleDay(SingleDaySchedule value){
-		if (value.getWorkTypeCode() != null && !value.getWorkTypeCode().equals("")){
+		if (value.getWorkTypeCode() != null && !value.getWorkTypeCode().v().equals("")){
 			return Optional.of(value);
 		}
 		

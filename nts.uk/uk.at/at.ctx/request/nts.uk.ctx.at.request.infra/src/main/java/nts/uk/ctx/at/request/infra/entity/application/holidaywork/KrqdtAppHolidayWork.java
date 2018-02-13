@@ -47,7 +47,7 @@ public class KrqdtAppHolidayWork extends UkJpaEntity implements Serializable {
     /**
      * 勤務種類コード
      */
-    @Column(name = "WORK_TYPE_CODE")
+    @Column(name = "WORKTYPE_CD")
     private String workTypeCode;
     
     /**
@@ -131,8 +131,12 @@ public class KrqdtAppHolidayWork extends UkJpaEntity implements Serializable {
 		this.setWorkTimeCode(appHolidayWork.getWorkTimeCode().v());
 		this.setWorkClockStart1(appHolidayWork.getWorkClock1().getStartTime().v());
 		this.setWorkClockEnd1(appHolidayWork.getWorkClock1().getEndTime().v());
+		this.setGoAtr1(appHolidayWork.getWorkClock1().getGoAtr().value);
+		this.setBackAtr1(appHolidayWork.getWorkClock1().getBackAtr().value);
 		this.setWorkClockStart2(appHolidayWork.getWorkClock2().getStartTime().v());
 		this.setWorkClockEnd2(appHolidayWork.getWorkClock2().getEndTime().v());
+		this.setGoAtr2(appHolidayWork.getWorkClock2().getGoAtr().value);
+		this.setBackAtr2(appHolidayWork.getWorkClock2().getBackAtr().value);
 		this.setHolidayShiftNight(appHolidayWork.getHolidayShiftNight());
 		this.setDivergenceReason(appHolidayWork.getDivergenceReason());
 		for(int i = 0; i< appHolidayWork.getHolidayWorkInputs().size(); i++){

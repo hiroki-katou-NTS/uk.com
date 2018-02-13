@@ -54,7 +54,7 @@ public class KrqstWpAppConfig extends UkJpaEntity implements Serializable {
 	public int selectOfApproversFlg;
 
 	@OneToMany(targetEntity = KrqstWpAppConfigDetail.class, cascade = CascadeType.ALL, mappedBy = "krqstWpAppConfig", orphanRemoval = true)
-	@JoinTable(name = "KRQST_COM_APP_CF_DETAIL")
+	@JoinTable(name = "KRQST_WP_APP_CF_DETAIL")
 	public List<KrqstWpAppConfigDetail> krqstWpAppConfigDetails;
 
 	@Override

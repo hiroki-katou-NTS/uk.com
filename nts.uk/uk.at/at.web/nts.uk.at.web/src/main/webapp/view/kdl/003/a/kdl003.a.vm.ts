@@ -187,6 +187,7 @@ module nts.uk.at.view.kdl003.a {
                 if (!nts.uk.util.isNullOrEmpty(self.callerParameter.workTimeCodes)) {
                     service.findWorkTimeByCodes(self.callerParameter.workTimeCodes)
                         .done(function(data) {
+                            data = _.sortBy(data, item => item.code);
                             self.getTimeBySelectedCode(data, code);
                             self.addFirstItem(data);
                             self.listWorkTime(data);
@@ -196,6 +197,7 @@ module nts.uk.at.view.kdl003.a {
                     // Find all work time
                     service.findAllWorkTime()
                         .done(function(data) {
+                            data = _.sortBy(data, item => item.code);
                             self.getTimeBySelectedCode(data, code);
                             self.addFirstItem(data);
                             self.listWorkTime(data);
@@ -362,7 +364,11 @@ module nts.uk.at.view.kdl003.a {
                     workTime1: "",
                     workTime2: "",
                     workAtr: "",
-                    remark: ""
+                    remark: "",
+                    firstStartTime: null,
+                    firstEndTime: null,
+                    secondStartTime: null,
+                    secondEndTime: null
                 });
                 self.listWorkTime(data);
             }
@@ -439,6 +445,7 @@ module nts.uk.at.view.kdl003.a {
                 // Search & display data.
                 service.findByTime(command)
                     .done(function(data) {
+                        data = _.sortBy(data, item => item.code);
                         self.listWorkTime([]);
                         self.listWorkTime(data);
                         if (!nts.uk.util.isNullOrEmpty(data)) {

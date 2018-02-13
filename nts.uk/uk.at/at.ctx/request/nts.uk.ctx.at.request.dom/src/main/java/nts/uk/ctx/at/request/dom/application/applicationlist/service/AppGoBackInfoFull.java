@@ -8,6 +8,7 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGo
 @AllArgsConstructor
 public class AppGoBackInfoFull {
 
+	private String appID;
 	/**
 	 * 勤務直行1
 	 */

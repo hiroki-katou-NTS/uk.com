@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.actualworkinghours;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -15,8 +16,10 @@ import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.latetime.IntervalExemptionTime;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
@@ -25,6 +28,7 @@ import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
 /**
  * 
@@ -126,10 +130,36 @@ public class TotalWorkingTime {
 		val withinStatutoryTimeOfDaily = WithinStatutoryTimeOfDaily.calcStatutoryTime(oneDay);
 		//日別実績の所定外時間
 		val excesstime =ExcessOfStatutoryTimeOfDaily.calculationExcessTime(oneDay, overTimeAutoCalcSet,holidayAutoCalcSetting);
+		//2018.02.14　一時的対応 byホシナ ↓
 		//日別実績の遅刻時間
-		val lateTime = Collections.emptyList();
+		List<LateTimeOfDaily> lateTime = new ArrayList<>();
+		lateTime.add(new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+										 TimeWithCalculation.sameTime(new AttendanceTime(0)),
+										 new WorkNo(1),
+										 new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
+										 new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
+										 ));
+		lateTime.add(new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+										TimeWithCalculation.sameTime(new AttendanceTime(0)),
+										new WorkNo(2),
+										new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
+										new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
+				 						));
 		//日別実績の早退時間
-		val earlyTime = Collections.emptyList();
+		List<LeaveEarlyTimeOfDaily> earlyTime = new ArrayList<>();
+		earlyTime.add(new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+									    TimeWithCalculation.sameTime(new AttendanceTime(0)),
+									    new WorkNo(1),
+									    new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
+									    new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
+										));
+		earlyTime.add(new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+										  TimeWithCalculation.sameTime(new AttendanceTime(0)),
+										  new WorkNo(2),
+										  new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
+										  new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
+					));
+		//2018.02.14　一時的対応 byホシナ ↑
 		//日別実績の休憩時間
 		val breakTime = new BreakTimeOfDaily(DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
 																   TimeWithCalculation.sameTime(new AttendanceTime(0)),

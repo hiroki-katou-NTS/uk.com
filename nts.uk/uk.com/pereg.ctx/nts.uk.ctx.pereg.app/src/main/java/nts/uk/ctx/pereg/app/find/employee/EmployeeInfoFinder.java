@@ -37,12 +37,11 @@ public class EmployeeInfoFinder {
 	}
 
 	public void validateEmpInfo(EmpInfoDto empInfo) {
-
 		Boolean isDuplicateEmpCode = !CollectionUtil.isEmpty(this.empDataRepo
 				.getEmployeeNotDeleteInCompany(AppContexts.user().companyId(), empInfo.getEmployeeCode()));
 
 		if (isDuplicateEmpCode) {
-			throw new BusinessException(new RawErrorMessage("Msg_345"));
+			throw new BusinessException("Msg_345");
 		}
 		// Boolean isDuplicateCardNo =
 		// this.employeeRepository.isDuplicateCardNo(AppContexts.user().companyId(),
@@ -55,7 +54,7 @@ public class EmployeeInfoFinder {
 
 		if (isDuplicateLoginId) {
 
-			throw new BusinessException(new RawErrorMessage("Msg_757"));
+			throw new BusinessException("Msg_757");
 
 		}
 
@@ -67,8 +66,8 @@ public class EmployeeInfoFinder {
 		String companyId = AppContexts.user().companyId();
 		String lastEmployeeCode = empDataMngInfoRepo.findLastEml(companyId, startLetters);
 		int length = lastEmployeeCode.length();
-		if(length <maxLength){
-			for(int i = 0; i < (maxLength - length); i++){
+		if (length < maxLength) {
+			for (int i = 0; i < (maxLength - length); i++) {
 				lastEmployeeCode += " ";
 			}
 		}
@@ -105,63 +104,63 @@ public class EmployeeInfoFinder {
 				returnString = standard;
 			} else {
 				char increaseLetter = ' ';
-				char [] arr = value.toCharArray();
-				char [] resultArr = new char[arr.length];
+				char[] arr = value.toCharArray();
+				char[] resultArr = new char[arr.length];
 				boolean con = true;
 				boolean beforeLast = false;
-				for(int i = arr.length -1; i >= 0; i--){
+				for (int i = arr.length - 1; i >= 0; i--) {
 					char curChar = arr[i];
-					if(con){
+					if (con) {
 						con = false;
-						switch(curChar){
-							case ' ':
-								increaseLetter = ' ';
-								con = true;
-								break;
-							case '9':
-								increaseLetter = '0';
-								beforeLast = true;
-								con = true;
-								break;
-							// nếu ký tự tăng là z
-							case 'z':
-								increaseLetter = 'a';
-								beforeLast = true;
-								con = true;
-								break;
-							// nếu ký tự tăng là Z
-							case 'Z':
-								increaseLetter = 'A';
-								beforeLast = true;
-								con = true;
-								break;
-							default:
-								increaseLetter = (char)((int) curChar + 1);								
-								break;
+						switch (curChar) {
+						case ' ':
+							increaseLetter = ' ';
+							con = true;
+							break;
+						case '9':
+							increaseLetter = '0';
+							beforeLast = true;
+							con = true;
+							break;
+						// nếu ký tự tăng là z
+						case 'z':
+							increaseLetter = 'a';
+							beforeLast = true;
+							con = true;
+							break;
+						// nếu ký tự tăng là Z
+						case 'Z':
+							increaseLetter = 'A';
+							beforeLast = true;
+							con = true;
+							break;
+						default:
+							increaseLetter = (char) ((int) curChar + 1);
+							break;
 						}
-						if(i != 0){
-							if(beforeLast && increaseLetter == ' '){
+						if (i != 0) {
+							if (beforeLast && increaseLetter == ' ') {
 								increaseLetter = '1';
 								beforeLast = false;
 								con = false;
 							}
 							resultArr[i] = increaseLetter;
-						}
-						else {
-							if(con){
+						} else {
+							if (con) {
 								resultArr[i] = increaseLetter;
-								for(int j = resultArr.length - 2; j > 0; j--){
-									char c = resultArr[j-1];
+								for (int j = resultArr.length - 2; j > 0; j--) {
+									char c = resultArr[j - 1];
 									resultArr[j] = c;
 								}
-								if(beforeLast)
+								if (beforeLast)
 									resultArr[0] = '1';
-							}else resultArr[i] = increaseLetter;
+							} else
+								resultArr[i] = increaseLetter;
 						}
-					}else {
+					} else {
 						resultArr[i] = arr[i];
 					}
-					
+
 				}
 				returnString = String.valueOf(resultArr);
 			}

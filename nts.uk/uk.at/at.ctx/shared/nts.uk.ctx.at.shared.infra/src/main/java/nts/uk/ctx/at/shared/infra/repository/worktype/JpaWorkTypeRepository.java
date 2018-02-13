@@ -169,7 +169,8 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		val entity = new KshmtWorkTypeSet(
 				new KshmtWorkTypeSetPK(domain.getCompanyId(), domain.getWorkTypeCd().v(), domain.getWorkAtr().value),
 				domain.getDigestPublicHd().value, domain.getHolidayAtr().value, domain.getCountHodiday().value,
-				domain.getCloseAtr().value, domain.getSumAbsenseNo(), domain.getSumSpHodidayNo(),
+				domain.getCloseAtr() != null ? domain.getCloseAtr().value : null, 
+				domain.getSumAbsenseNo(), domain.getSumSpHodidayNo(),
 				domain.getTimeLeaveWork().value, domain.getAttendanceTime().value, domain.getGenSubHodiday().value,
 				domain.getDayNightTimeAsk().value);
 		return entity;

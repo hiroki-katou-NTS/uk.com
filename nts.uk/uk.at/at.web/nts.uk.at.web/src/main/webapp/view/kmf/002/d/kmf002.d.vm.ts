@@ -48,7 +48,9 @@ module nts.uk.at.view.kmf002.d {
                 _self.commonTableMonthDaySet = ko.observable(new nts.uk.at.view.kmf002.viewmodel.CommonTableMonthDaySet());
                 _self.commonTableMonthDaySet().fiscalYear.subscribe(function(newValue) {
                     // change year
-                    _self.getDataFromService();
+                    if (!nts.uk.ui.errors.hasError()) {
+                        _self.getDataFromService();    
+                    }
                 });
                 _self.commonTableMonthDaySet().visibleInfoSelect(true);
                 _self.commonTableMonthDaySet().infoSelect1(nts.uk.resource.getText("Com_Employment"));
@@ -88,6 +90,7 @@ module nts.uk.at.view.kmf002.d {
             public start_page(): JQueryPromise<void> {
                 let _self = this;
                 var dfd = $.Deferred<void>();
+                
                 if (getShared('conditionSidebar5') == false) {
 //                    blockUI.grayout();
                 } else {
