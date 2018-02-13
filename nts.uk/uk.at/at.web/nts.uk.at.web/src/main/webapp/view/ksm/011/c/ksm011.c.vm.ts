@@ -100,7 +100,11 @@ module nts.uk.at.view.ksm011.c.viewmodel {
             var dfd = $.Deferred();
             nts.uk.ui.block.invisible();
             var workType = ko.toJS(self.currentItem());
-            service.add(workType).done(function() {
+            var workTypeData : any = {
+                    useAtr: self.useAtr(),
+                    workTypeList: workType.workTypeList
+                };
+            service.add(workTypeData).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message);
@@ -117,6 +121,7 @@ module nts.uk.at.view.ksm011.c.viewmodel {
             var dfd = $.Deferred();
             self.items.removeAll();
             service.findAll().done(function(totalTimeArr: Array<any>) {
+                self.useAtr(totalTimeArr.useAtr);
                 var totalTime: any = {
                     useAtr: totalTimeArr.useAtr,
                     workTypeList: totalTimeArr.workTypeList
