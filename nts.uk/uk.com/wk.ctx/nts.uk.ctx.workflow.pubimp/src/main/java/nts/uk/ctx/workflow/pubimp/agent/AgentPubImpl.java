@@ -26,6 +26,7 @@ public class AgentPubImpl implements AgentPub {
 	@Inject
 	private ApprovalAgencyInfoService approvalAgencyInfoService;
 	
+	@Inject
 	private AgentRepository agentRepository;
 
 	@Override
