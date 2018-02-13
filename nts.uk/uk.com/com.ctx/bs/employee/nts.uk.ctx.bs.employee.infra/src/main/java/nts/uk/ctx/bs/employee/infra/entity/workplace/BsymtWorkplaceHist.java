@@ -55,7 +55,7 @@ public class BsymtWorkplaceHist extends UkJpaEntity implements Serializable {
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "WKPID", referencedColumnName = "WKPID"),
 			@PrimaryKeyJoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID") })
-	private List<BsymtWorkplaceInfo> bsymtWorkplaceInfo;
+	private BsymtWorkplaceInfo bsymtWorkplaceInfo;
 
 	/*
 	 * (non-Javadoc)
