@@ -138,6 +138,7 @@ module nts.uk.at.view.kml001.a {
                     servicebase.findByHistoryID(historyID).done(data => {
                         self.currentPersonCost(vmbase.ProcessHandler.createPersonCostCalFromValue(data, self.premiumItems()));      
                         self.checkLastItem();
+                        self.newStartDate(self.currentPersonCost().startDate());
                         self.currentGridPersonCost(self.currentPersonCost().startDate() + self.textKML001_40 + self.currentPersonCost().endDate());
                         let allRequest = [];
                         ko.utils.arrayForEach(self.currentPersonCost().premiumSets(), function(premiumSet, i) {
@@ -162,7 +163,6 @@ module nts.uk.at.view.kml001.a {
                 } else {
                     dfd.resolve();    
                 }
-                self.newStartDate(self.currentPersonCost().startDate());
                 return dfd.promise();
             }
             
