@@ -84,6 +84,8 @@ module cmm045.shr {
         //data fill grid list mode application
         export class DataModeApp{
             appId: string;
+            appType: number;
+            check: boolean;
             details: string;
             applicant: string;
             appName: string;
@@ -93,11 +95,13 @@ module cmm045.shr {
             inputDate: string;
             appStatus: string;
             displayAppStatus: string;
-            constructor(appId: string, details: string, applicant: string,
+            constructor(appId: string,appType: number,  details: string, applicant: string,
                 appName: string, appAtr: string, appDate: string,
                 appContent: string, inputDate: string, appStatus: string,
                 displayAppStatus: string){
                 this.appId = appId;
+                this.appType = appType;
+                this.check = appType == 0 ? true : false;
                 this.details = details;
                 this.applicant = applicant;
                 this.appName = appName;

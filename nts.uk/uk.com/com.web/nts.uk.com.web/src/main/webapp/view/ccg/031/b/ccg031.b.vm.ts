@@ -8,56 +8,38 @@ module nts.uk.com.view.ccg031.b.viewmodel {
 
     export class ScreenModel {
         // PGType
-        listPartType: number;
+        pgType: number = 0;
         // Position
-        positionRow: KnockoutObservable<number>;
-        positionColumn: KnockoutObservable<number>;
+        positionRow: KnockoutObservable<number> = ko.observable(null);
+        positionColumn: KnockoutObservable<number> = ko.observable(null);
         // TopPage Part Type
-        listPartType: KnockoutObservableArray<any>;
-        selectedPartType: KnockoutObservable<any>;
+        listPartType: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectedPartType: KnockoutObservable<any> = ko.observable(null);
         //TopPage Part
-        allPart: KnockoutObservableArray<model.TopPagePartDto>;
-        listPart: KnockoutObservableArray<model.TopPagePartDto>;
-        selectedPartID: KnockoutObservable<string>;
-        selectedPart: KnockoutObservable<model.TopPagePartDto>;
+        allPart: KnockoutObservableArray<model.TopPagePartDto> = ko.observableArray([]);
+        listPart: KnockoutObservableArray<model.TopPagePartDto> = ko.observableArray([]);
+        selectedPartID: KnockoutObservable<string> = ko.observable(null);
+        selectedPart: KnockoutObservable<model.TopPagePartDto> = ko.observable(null);
         listPartColumn: any;
         // External Url
-        isExternalUrl: KnockoutObservable<boolean>;
-        urlWidth: KnockoutObservable<number>;
-        urlHeight: KnockoutObservable<number>;
-        url: KnockoutObservable<string>;
+        isExternalUrl: KnockoutObservable<boolean> = ko.observable(false);
+        urlWidth: KnockoutObservable<number> = ko.observable(null);
+        urlHeight: KnockoutObservable<number> = ko.observable(null);
+        url: KnockoutObservable<string> = ko.observable(null);
         // UI Binding
-        instructionText: KnockoutObservable<string>;
+        instructionText: KnockoutObservable<string> = ko.observable('');
         constructor() {
             var self = this;
-            // PGType
-            self.pgType = 0;
-            // Position
-            self.positionRow = ko.observable(null);
-            self.positionColumn = ko.observable(null);
             // TopPage Part
-            self.listPartType = ko.observableArray([]);
-            self.selectedPartType = ko.observable(null);
             self.selectedPartType.subscribe((value) => {
                 self.filterPartType(value);
             });
-            self.allPart = ko.observableArray([]);
-            self.listPart = ko.observableArray([]);
-            self.selectedPartID = ko.observable(null);
             self.selectedPartID.subscribe((value) => { self.changeSelectedPart(value); });
-            self.selectedPart = ko.observable(null);
             self.listPartColumn = [
                 { headerText: "ID", key: "topPagePartID", dataType: "string", hidden: true },
                 { headerText: resource.getText("CCG031_27"), key: "code", dataType: "string", width: 50 },
                 { headerText: resource.getText("CCG031_28"), key: "name", dataType: "string" },
             ];
-            // External Url
-            self.isExternalUrl = ko.observable(false);
-            self.urlWidth = ko.observable(null);
-            self.urlHeight = ko.observable(null);
-            self.url = ko.observable(null);
-            // UI Binding
-            self.instructionText = ko.observable('');
         }
 
         /** Start Page */

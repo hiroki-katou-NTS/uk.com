@@ -6,14 +6,16 @@ module cmm045.a.viewmodel {
         selectedRuleCode: KnockoutObservable<any> = ko.observable(1);
         items: KnockoutObservableArray<vmbase.DataModeApp> = ko.observableArray([]);
         displaySet: KnockoutObservable<vmbase.ApprovalListDisplaySetDto> = ko.observable(null);
+        approvalMode:  KnockoutObservable<boolean> = ko.observable(false);
         constructor(){
             let self = this;
+            
         }
    
         start(): JQueryPromise<any>{
             let self = this;
             var dfd = $.Deferred();
-            let param: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto('2017-12-01', '2018-06-01', 0,
+            let param: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto('2017-12-01', '2018-06-01', 1,
                     null, true, true, true, true, true, true, 1, [], '');
             service.getApplicationDisplayAtr().done(function(data){
                 _.each(data, function(obj){
@@ -54,16 +56,16 @@ module cmm045.a.viewmodel {
                     });
                     let lstData = self.mapData(lstApp, lstMaster, lstGoBack, lstOverTime);
                     self.items(lstData);
-                    self.reloadGrid();
+                    self.reloadGridApproval();
                     dfd.resolve();
                 });
             });
             return dfd.promise();
         }
         
-        reloadGrid(){
+        reloadGridApplicaion(){
             var self = this;
-             $("#grid2").ntsGrid({
+            $("#grid2").ntsGrid({
             width: '1200px',
             height: '700px',
             dataSource: self.items(),
@@ -88,7 +90,7 @@ module cmm045.a.viewmodel {
                             multipleSelection: true
                         }
             ],
-            ntsControls: [{ name: 'Checkbox', options: { value: 1, text: 'Custom Check' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+            ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                         { name: 'Button', text: getText('CMM045_50'), click: function() { alert("Button!!"); }, controlType: 'Button' , enable: true}, 
             ]});
                         $("#grid2").setupSearchScroll("igGrid", true);
@@ -111,7 +113,68 @@ module cmm045.a.viewmodel {
             $("#enable-all").on("click", function() {
                 $("#grid2").ntsGrid("enableNtsControls", "ruleCode", "SwitchButtons");
             });
-            }
+        }
+        
+        reloadGridApproval(){
+            var self = this;
+            $("#grid1").ntsGrid({
+            width: '1200px',
+            height: '700px',
+            dataSource: self.items(),
+            primaryKey: 'appId',
+            virtualization: true,
+            virtualizationMode: 'continuous',
+            columns: [
+                { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '60px', ntsControl: 'Checkbox' },
+                { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '50px', unbound: false, ntsControl: 'Button' },
+                { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
+                { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '120px' },
+                { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '120px' },
+                { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '150px' },
+                { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '200px' },
+                { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '120px' },
+                { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '120px' },
+                { headerText: getText('CMM045_58'), key: 'appStatus', dataType: 'string', width: '120px' },
+                { headerText: 'ID', key: 'appId', dataType: 'string', width: '50px', ntsControl: 'Label', hidden: true}
+            ], 
+            features: [{ name: 'Resizing' },
+                        { 
+                            name: 'Selection',
+                            mode: 'row',
+                            multipleSelection: true
+                        }
+            ],
+            ntsControls: [{ name: 'Checkbox', options: { value: 1, text:'' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox' },
+                        { name: 'Button', text: getText('CMM045_50'), click: function() { alert("Button!!"); }, controlType: 'Button' , enable: true}, 
+            ]});
+            $("#grid1").setupSearchScroll("igGrid", true);
+            $("#run").on("click", function() {
+                var source = $("#grid1").igGrid("option", "dataSource");
+                alert(source[1].details);
+            });
+            $("#update-row").on("click", function() {
+                $("#grid1").ntsGrid("updateRow", 0, { flag: false, ruleCode: '2', combo: '3' });
+            });
+            $("#enable-ctrl").on("click", function() {
+                $("#grid1").ntsGrid("enableNtsControlAt", 1, "combo", "ComboBox");
+            });
+            $("#disable-ctrl").on("click", function() {
+                $("#grid1").ntsGrid("disableNtsControlAt", 1, "combo", "ComboBox");
+            });
+            $("#disable-all").on("click", function() {
+                $("#grid1").ntsGrid("disableNtsControls", "ruleCode", "SwitchButtons");
+            });
+            $("#enable-all").on("click", function() {
+                $("#grid1").ntsGrid("enableNtsControls", "ruleCode", "SwitchButtons");
+            });
+            
+            
+            _.each(self.items(), function(item){
+                if(item.check == false){
+                    $(".nts-grid-control-check-"+ item.appId).css("display", "none");
+                }
+            });
+        }
         convertTime_Short_HM(time: number): string{
             let hh = time/60;
             let min1: string = time%60;
@@ -131,7 +194,7 @@ module cmm045.a.viewmodel {
             let reason = self.displaySet().appReasonDisAtr == 1 ? ' ' + app.applicationReason : '';
             let applicant: string = masterInfo.workplaceName + ' ' + masterInfo.empName;
             let appContent: string = getText('CMM045_268') + ' ' + self.convertTime_Short_HM(overTime.workClockFrom1) + getText('CMM045_100')+ self.convertTime_Short_HM(overTime.workClockTo1) + ' 残業合計' + '4:00' + reason;
-            let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, 'chi tiet', applicant,
+            let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                         masterInfo.dispName, app.prePostAtr == 0 ? '事前' : '事後', self.convertDate(app.applicationDate),appContent, self.convertDateTime(app.inputDate), self.convertStatus(app.reflectPerState),'');
             return a;
         }
@@ -152,7 +215,7 @@ module cmm045.a.viewmodel {
                         + self.convertTime_Short_HM(goBack.workTimeEnd1);
             let reason = self.displaySet().appReasonDisAtr == 1 ? ' ' + app.applicationReason : '';
             let appContent: string = getText('CMM045_258') + go + back + reason;
-            let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, 'chi tiet', applicant,
+            let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                         masterInfo.dispName, app.prePostAtr == 0 ? '事前' : '事後', self.convertDate(app.applicationDate),appContent, self.convertDateTime(app.inputDate), self.convertStatus(app.reflectPerState),'');
             return a;
         }

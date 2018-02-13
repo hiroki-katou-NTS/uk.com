@@ -11,24 +11,25 @@
 	margin-left: 15px;
 }
 
-#label-d1-003{
+#label-d1-003 {
 	margin-top: 20px;
 	margin-left: 19px;
 }
 
-.proceed{
+.proceed {
 	margin-left: 25px !important;
 }
 
-.ntsDateRange_Container{
+.ntsDateRange_Container {
 	margin-left: 80px;
-    margin-top: -34px;
+	margin-top: -34px;
 }
 
-.caret-bottom{
+.caret-bottom {
 	margin-left: 10px;
 }
-.nts-fixed-table.cf{
+
+.nts-fixed-table.cf {
 	margin-top: 15px;
 }
 
@@ -37,6 +38,6 @@
 	height: 30px;
 }
 
-.nts-fixed-table .nts-fixed-body-table > tbody > tr > td {
+.nts-fixed-table .nts-fixed-body-table>tbody>tr>td {
 	height: 22px;
 }

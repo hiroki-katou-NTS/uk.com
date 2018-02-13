@@ -41,7 +41,8 @@
 .ntsHelpButton {
 	margin-left: 15px !important;
 }
-.contents-header{
+
+.contents-header {
 	margin-left: 145px !important;
 }
 
@@ -51,25 +52,27 @@
 	height: 15px;
 	padding: 0px 0px;
 	font-weight: bold;
-
-  
 }
+
 thead {
 	background-color: #CFF1A5 !important;
 }
-#COL_1{
+
+#COL_1 {
 	width: 100px !important;
 }
-#COL_2{
-	width: 200px !important;
-}
-#code{
-	width: 100px !important;
-}
-#name{
+
+#COL_2 {
 	width: 200px !important;
 }
 
+#code {
+	width: 100px !important;
+}
+
+#name {
+	width: 200px !important;
+}
 
 .contents-data  td {
 	border: 1px solid #CCC;
@@ -88,11 +91,9 @@ table.contents-data thead, table.contents-data tbody {
 }
 
 table.contents-data tbody {
-	
 	overflow-y: auto;
 	overflow-x: hidden;
 }
-
 
 .table-container {
 	color: #000;
@@ -112,6 +113,7 @@ table.contents-data tbody {
 	width: 300px !important;
 	border-collapse: collapse;
 }
+
 td {
 	padding: 0px !important;
 	border: 1px solid #ccc;

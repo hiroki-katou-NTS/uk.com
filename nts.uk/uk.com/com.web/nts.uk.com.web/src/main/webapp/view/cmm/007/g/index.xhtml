@@ -8,27 +8,29 @@
 <body>
 	<ui:composition>
 		<div class="sidebar-content-header">
-   			<span class="title">#{i18n.getText('CMM007_73')}</span>
-			<button class="proceed" tabindex="1" data-bind="click: saveWorkdayoffFrSetting">#{i18n.getText('CMM007_5')}</button>
+			<span class="title">#{i18n.getText('CMM007_73')}</span>
+			<button class="proceed" tabindex="1"
+				data-bind="click: saveWorkdayoffFrSetting">#{i18n.getText('CMM007_5')}</button>
 		</div>
 		<div class="contents-area" id="screenG">
 			<div class="work_day_off">
 				<p>#{i18n.getText('CMM007_74')}</p>
-				
+
 				<table class="table_content">
 					<tr>
 						<td>
-							<div data-bind="ntsFormLabel: {
+							<div
+								data-bind="ntsFormLabel: {
 									required: true, constraint: 'WorkdayoffFrameName', }">#{i18n.getText('CMM007_73')}</div>
 						</td>
 						<td class="pl">
-							<div class=" " tabindex="-1" data-bind="ntsCheckBox: { 
+							<div class=" " tabindex="-1"
+								data-bind="ntsCheckBox: { 
 									checked: isCheckedNo1,
 									text: wdoFrCheckboxLabel1}"></div>
 						</td>
-						<td>
-							<input id="work_day_off_name1" tabindex="2"
-								data-bind="ntsTextEditor: {
+						<td><input id="work_day_off_name1" tabindex="2"
+							data-bind="ntsTextEditor: {
 									name: '#[CMM007_75]',
 									value: wdoFrName1,
 									required: requiredWdoFrName1,
@@ -42,13 +44,13 @@
 							<div data-bind="visible: false"></div>
 						</td>
 						<td class="pl">
-							<div class=" " tabindex="-1" data-bind="ntsCheckBox: { 
+							<div class=" " tabindex="-1"
+								data-bind="ntsCheckBox: { 
 									checked: isCheckedNo2,
 									text: wdoFrCheckboxLabel2}"></div>
 						</td>
-						<td>
-							<input id="work_day_off_name2" tabindex="3"
-								data-bind="ntsTextEditor: {
+						<td><input id="work_day_off_name2" tabindex="3"
+							data-bind="ntsTextEditor: {
 									name: '#[CMM007_76]',
 									value: wdoFrName2,
 									required: requiredWdoFrName2,
@@ -62,13 +64,13 @@
 							<div data-bind="visible: false"></div>
 						</td>
 						<td class="pl">
-							<div class=" " tabindex="-1" data-bind="ntsCheckBox: { 
+							<div class=" " tabindex="-1"
+								data-bind="ntsCheckBox: { 
 									checked: isCheckedNo3,
 									text: wdoFrCheckboxLabel3}"></div>
 						</td>
-						<td>
-							<input id="work_day_off_name4" tabindex="4"
-								data-bind="ntsTextEditor: {
+						<td><input id="work_day_off_name4" tabindex="4"
+							data-bind="ntsTextEditor: {
 									name: '#[CMM007_77]',
 									value: wdoFrName3,
 									required: requiredWdoFrName3,
@@ -82,13 +84,13 @@
 							<div data-bind="visible: false"></div>
 						</td>
 						<td class="pl">
-							<div class=" " tabindex="-1" data-bind="ntsCheckBox: { 
+							<div class=" " tabindex="-1"
+								data-bind="ntsCheckBox: { 
 									checked: isCheckedNo4,
 									text: wdoFrCheckboxLabel4}"></div>
 						</td>
-						<td>
-							<input id="work_day_off_name4" tabindex="5"
-								data-bind="ntsTextEditor: {
+						<td><input id="work_day_off_name4" tabindex="5"
+							data-bind="ntsTextEditor: {
 									name: '#[CMM007_78]',
 									value: wdoFrName4,
 									required: requiredWdoFrName4,
@@ -102,13 +104,13 @@
 							<div data-bind="visible: false"></div>
 						</td>
 						<td class="pl">
-							<div class=" " tabindex="-1" data-bind="ntsCheckBox: { 
+							<div class=" " tabindex="-1"
+								data-bind="ntsCheckBox: { 
 									checked: isCheckedNo5,
 									text: wdoFrCheckboxLabel5}"></div>
 						</td>
-						<td>
-							<input id="work_day_off_name5" tabindex="6"
-								data-bind="ntsTextEditor: {
+						<td><input id="work_day_off_name5" tabindex="6"
+							data-bind="ntsTextEditor: {
 									name: '#[CMM007_79]',
 									value: wdoFrName5,
 									required: requiredWdoFrName5,
@@ -122,13 +124,13 @@
 							<div data-bind="visible: false"></div>
 						</td>
 						<td class="pl">
-							<div class=" " tabindex="-1" data-bind="ntsCheckBox: { 
+							<div class=" " tabindex="-1"
+								data-bind="ntsCheckBox: { 
 									checked: isCheckedNo6,
 									text: wdoFrCheckboxLabel6}"></div>
 						</td>
-						<td>
-							<input id="work_day_off_name6" tabindex="7"
-								data-bind="ntsTextEditor: {
+						<td><input id="work_day_off_name6" tabindex="7"
+							data-bind="ntsTextEditor: {
 									name: '#[CMM007_80]',
 									value: wdoFrName6,
 									required: requiredWdoFrName6,
@@ -142,13 +144,13 @@
 							<div data-bind="visible: false"></div>
 						</td>
 						<td class="pl">
-							<div class=" " tabindex="-1" data-bind="ntsCheckBox: { 
+							<div class=" " tabindex="-1"
+								data-bind="ntsCheckBox: { 
 									checked: isCheckedNo7,
 									text: wdoFrCheckboxLabel7}"></div>
 						</td>
-						<td>
-							<input id="work_day_off_name7" tabindex="8"
-								data-bind="ntsTextEditor: {
+						<td><input id="work_day_off_name7" tabindex="8"
+							data-bind="ntsTextEditor: {
 									name: '#[CMM007_81]',
 									value: wdoFrName7,
 									required: requiredWdoFrName7,
@@ -162,13 +164,13 @@
 							<div data-bind="visible: false"></div>
 						</td>
 						<td class="pl">
-							<div class=" " tabindex="-1" data-bind="ntsCheckBox: { 
+							<div class=" " tabindex="-1"
+								data-bind="ntsCheckBox: { 
 									checked: isCheckedNo8,
 									text: wdoFrCheckboxLabel8}"></div>
 						</td>
-						<td>
-							<input id="work_day_off_name8" tabindex="9"
-								data-bind="ntsTextEditor: {
+						<td><input id="work_day_off_name8" tabindex="9"
+							data-bind="ntsTextEditor: {
 									name: '#[CMM007_82]',
 									value: wdoFrName8,
 									required: requiredWdoFrName8,
@@ -182,13 +184,13 @@
 							<div data-bind="visible: false"></div>
 						</td>
 						<td class="pl">
-							<div class=" " tabindex="-1" data-bind="ntsCheckBox: { 
+							<div class=" " tabindex="-1"
+								data-bind="ntsCheckBox: { 
 									checked: isCheckedNo9,
 									text: wdoFrCheckboxLabel9}"></div>
 						</td>
-						<td>
-							<input id="work_day_off_name9" tabindex="10"
-								data-bind="ntsTextEditor: {
+						<td><input id="work_day_off_name9" tabindex="10"
+							data-bind="ntsTextEditor: {
 									name: '#[CMM007_83]',
 									value: wdoFrName9,
 									required: requiredWdoFrName9,
@@ -202,13 +204,13 @@
 							<div data-bind="visible: false"></div>
 						</td>
 						<td class="pl">
-							<div class=" "  tabindex="-1" data-bind="ntsCheckBox: { 
+							<div class=" " tabindex="-1"
+								data-bind="ntsCheckBox: { 
 									checked: isCheckedNo10,
 									text: wdoFrCheckboxLabel10}"></div>
 						</td>
-						<td>
-							<input id="work_day_off_name10" tabindex="11"
-								data-bind="ntsTextEditor: {
+						<td><input id="work_day_off_name10" tabindex="11"
+							data-bind="ntsTextEditor: {
 									name: '#[CMM007_84]',
 									value: wdoFrName10,
 									required: requiredWdoFrName10,
@@ -218,20 +220,19 @@
 						</td>
 					</tr>
 				</table>
-				
+
 				<!-- Transfer name  -->
 				<table class="table_content" style="margin-left: 200px;">
 					<tr>
 						<td>
-							<div data-bind="ntsFormLabel: {
+							<div
+								data-bind="ntsFormLabel: {
 									required: true, constraint: 'WorkdayoffFrameName', }">#{i18n.getText('CMM007_85')}</div>
 						</td>
-						<td class="pl">
-							<span data-bind="text: wdoFrCheckboxLabel1"></span>
+						<td class="pl"><span data-bind="text: wdoFrCheckboxLabel1"></span>
 						</td>
-						<td>
-							<input id="work_day_off_trans_name1" tabindex="11"
-								data-bind="ntsTextEditor: {
+						<td><input id="work_day_off_trans_name1" tabindex="11"
+							data-bind="ntsTextEditor: {
 									name: '#[CMM007_87]',
 									value: transferName1,
 									required: requiredtransferName1,
@@ -239,18 +240,16 @@
 									constraint: 'WorkdayoffFrameName',
 									option: {width: '130px'}}" />
 						</td>
-						
+
 					</tr>
 					<tr>
 						<td>
 							<div data-bind="visible: false"></div>
 						</td>
-						<td class="pl">
-							<span data-bind="text: wdoFrCheckboxLabel2"></span>
+						<td class="pl"><span data-bind="text: wdoFrCheckboxLabel2"></span>
 						</td>
-						<td>
-							<input id="work_day_off_trans_name2" tabindex="13"
-								data-bind="ntsTextEditor: {
+						<td><input id="work_day_off_trans_name2" tabindex="13"
+							data-bind="ntsTextEditor: {
 									name: '#[CMM007_88]',
 									value: transferName2,
 									required: requiredtransferName2,
@@ -263,12 +262,10 @@
 						<td>
 							<div data-bind="visible: false"></div>
 						</td>
-						<td class="pl">
-							<span data-bind="text: wdoFrCheckboxLabel3"></span>
+						<td class="pl"><span data-bind="text: wdoFrCheckboxLabel3"></span>
 						</td>
-						<td>
-							<input id="work_day_off_trans_name3" tabindex="14"
-								data-bind="ntsTextEditor: {
+						<td><input id="work_day_off_trans_name3" tabindex="14"
+							data-bind="ntsTextEditor: {
 									name: '#[CMM007_89]',
 									value: transferName3,
 									required: requiredtransferName3,
@@ -281,12 +278,10 @@
 						<td>
 							<div data-bind="visible: false"></div>
 						</td>
-						<td class="pl">
-							<span data-bind="text: wdoFrCheckboxLabel4"></span>
+						<td class="pl"><span data-bind="text: wdoFrCheckboxLabel4"></span>
 						</td>
-						<td>
-							<input id="work_day_off_trans_name4" tabindex="15"
-								data-bind="ntsTextEditor: {
+						<td><input id="work_day_off_trans_name4" tabindex="15"
+							data-bind="ntsTextEditor: {
 									name: '#[CMM007_90]',
 									value: transferName4,
 									required: requiredtransferName4,
@@ -299,12 +294,10 @@
 						<td>
 							<div data-bind="visible: false"></div>
 						</td>
-						<td class="pl">
-							<span data-bind="text: wdoFrCheckboxLabel5"></span>
+						<td class="pl"><span data-bind="text: wdoFrCheckboxLabel5"></span>
 						</td>
-						<td>
-							<input id="work_day_off_trans_name5" tabindex="16"
-								data-bind="ntsTextEditor: {
+						<td><input id="work_day_off_trans_name5" tabindex="16"
+							data-bind="ntsTextEditor: {
 									name: '#[CMM007_91]',
 									value: transferName5,
 									required: requiredtransferName5,
@@ -317,12 +310,10 @@
 						<td>
 							<div data-bind="visible: false"></div>
 						</td>
-						<td class="pl">
-							<span data-bind="text: wdoFrCheckboxLabel6"></span>
+						<td class="pl"><span data-bind="text: wdoFrCheckboxLabel6"></span>
 						</td>
-						<td>
-							<input id="work_day_off_trans_name6" tabindex="17"
-								data-bind="ntsTextEditor: {
+						<td><input id="work_day_off_trans_name6" tabindex="17"
+							data-bind="ntsTextEditor: {
 									name: '#[CMM007_92]',
 									value: transferName6,
 									required: requiredtransferName6,
@@ -335,12 +326,10 @@
 						<td>
 							<div data-bind="visible: false"></div>
 						</td>
-						<td class="pl">
-							<span data-bind="text: wdoFrCheckboxLabel7"></span>
+						<td class="pl"><span data-bind="text: wdoFrCheckboxLabel7"></span>
 						</td>
-						<td>
-							<input id="work_day_off_trans_name7" tabindex="18"
-								data-bind="ntsTextEditor: {
+						<td><input id="work_day_off_trans_name7" tabindex="18"
+							data-bind="ntsTextEditor: {
 									name: '#[CMM007_93]',
 									value: transferName7,
 									required: requiredtransferName7,
@@ -353,12 +342,10 @@
 						<td>
 							<div data-bind="visible: false"></div>
 						</td>
-						<td class="pl">
-							<span data-bind="text: wdoFrCheckboxLabel8"></span>
+						<td class="pl"><span data-bind="text: wdoFrCheckboxLabel8"></span>
 						</td>
-						<td>
-							<input id="work_day_off_trans_name8" tabindex="19"
-								data-bind="ntsTextEditor: {
+						<td><input id="work_day_off_trans_name8" tabindex="19"
+							data-bind="ntsTextEditor: {
 									name: '#[CMM007_94]',
 									value: transferName8,
 									required: requiredtransferName8,
@@ -371,12 +358,10 @@
 						<td>
 							<div data-bind="visible: false"></div>
 						</td>
-						<td class="pl">
-							<span data-bind="text: wdoFrCheckboxLabel9"></span>
+						<td class="pl"><span data-bind="text: wdoFrCheckboxLabel9"></span>
 						</td>
-						<td>
-							<input id="work_day_off_trans_name9" tabindex="20"
-								data-bind="ntsTextEditor: {
+						<td><input id="work_day_off_trans_name9" tabindex="20"
+							data-bind="ntsTextEditor: {
 									name: '#[CMM007_95]',
 									value: transferName9,
 									required: requiredtransferName9,
@@ -389,12 +374,10 @@
 						<td>
 							<div data-bind="visible: false"></div>
 						</td>
-						<td class="pl">
-							<span data-bind="text: wdoFrCheckboxLabel10"></span>
+						<td class="pl"><span data-bind="text: wdoFrCheckboxLabel10"></span>
 						</td>
-						<td>
-							<input id="work_day_off_trans_name10" tabindex="21"
-								data-bind="ntsTextEditor: {
+						<td><input id="work_day_off_trans_name10" tabindex="21"
+							data-bind="ntsTextEditor: {
 									name: '#[CMM007_96]',
 									value: transferName10,
 									required: requiredtransferName10,
@@ -404,8 +387,8 @@
 						</td>
 					</tr>
 				</table>
-			</div> 
+			</div>
 		</div>
-   	</ui:composition>
+	</ui:composition>
 </body>
 </html>

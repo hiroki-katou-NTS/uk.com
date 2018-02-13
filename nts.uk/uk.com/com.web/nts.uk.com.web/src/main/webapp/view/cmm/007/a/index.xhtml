@@ -16,7 +16,7 @@
 			</com:ValidatorScript>
 
 			<com:scriptfile set="IGNITE" />
-			
+
 			<script>
 				__viewContext.primitiveValueConstraints.PlanYearHolidayFrameName = {
 						valueType: 'String',
@@ -33,27 +33,27 @@
 						maxLength: 12,
 				};
 			</script>
-			
+
 			<com:stylefile path="../g/cmm007.g.main.css" />
 			<com:scriptfile path="../g/cmm007.g.service.js" />
 			<com:scriptfile path="../g/cmm007.g.vm.js" />
-			
+
 			<com:stylefile path="../e/cmm007.e.main.css" />
 			<com:scriptfile path="../e/cmm007.e.service.js" />
 			<com:scriptfile path="../e/cmm007.e.vm.js" />
-			
+
 			<com:stylefile path="../d/cmm007.d.main.css" />
 			<com:scriptfile path="../d/cmm007.d.service.js" />
 			<com:scriptfile path="../d/cmm007.d.vm.js" />
-			
+
 			<com:stylefile path="../c/cmm007.c.main.css" />
 			<com:scriptfile path="../c/cmm007.c.service.js" />
 			<com:scriptfile path="../c/cmm007.c.vm.js" />
-			
+
 			<com:stylefile path="../b/cmm007.b.main.css" />
 			<com:scriptfile path="../b/cmm007.b.service.js" />
 			<com:scriptfile path="../b/cmm007.b.vm.js" />
-			
+
 			<com:stylefile path="cmm007.a.main.css" />
 			<com:scriptfile path="cmm007.a.vm.js" />
 			<com:scriptfile path="cmm007.a.start.js" />
@@ -62,8 +62,8 @@
 			<ul tabindex="1" class="navigator">
 				<li data-bind="click: onSelectTabB"><a tabindex="-1"
 					href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('CMM007_2')}</a></li>
-				<li data-bind="click: onSelectTabC"><a tabindex="-1" 
-				    href="#tabpanel-2" role="tab-navigator">#{i18n.getText('CMM007_3')}</a></li>
+				<li data-bind="click: onSelectTabC"><a tabindex="-1"
+					href="#tabpanel-2" role="tab-navigator">#{i18n.getText('CMM007_3')}</a></li>
 				<li data-bind="click: onSelectTabD"><a tabindex="-1"
 					href="#tabpanel-3" role="tab-navigator">#{i18n.getText('CMM007_4')}</a></li>
 				<li data-bind="click: onSelectTabE"><a tabindex="-1"
@@ -77,13 +77,16 @@
 			<div id="tabpanel-1" role="tabpanel" data-bind="with: systemDefine()">
 				<ui:include src="../b/index.xhtml" />
 			</div>
-			<div id="tabpanel-2" role="tabpanel" data-bind="with: temporaryAbsenceFr()">
+			<div id="tabpanel-2" role="tabpanel"
+				data-bind="with: temporaryAbsenceFr()">
 				<ui:include src="../c/index.xhtml" />
 			</div>
-			<div id="tabpanel-3" role="tabpanel" data-bind="with: planYearHolidayFr()">
+			<div id="tabpanel-3" role="tabpanel"
+				data-bind="with: planYearHolidayFr()">
 				<ui:include src="../d/index.xhtml" />
 			</div>
-			<div id="tabpanel-4" role="tabpanel" data-bind="with: overtimeWorkFr()">
+			<div id="tabpanel-4" role="tabpanel"
+				data-bind="with: overtimeWorkFr()">
 				<ui:include src="../e/index.xhtml" />
 			</div>
 			<div id="tabpanel-5" role="tabpanel" data-bind="with: workdayoffFr()">

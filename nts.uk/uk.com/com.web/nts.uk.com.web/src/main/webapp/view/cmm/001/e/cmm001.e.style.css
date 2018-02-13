@@ -14,14 +14,14 @@
 #dataAddress_virtualContainer {
 	margin-left: 4px;
 }
-#btn_chooseZipCode{
+
+#btn_chooseZipCode {
 	margin-top: -80px !important;
 	width: 120px;
 	margin-left: -50px !important;
-	
 }
-#btn_close{
+
+#btn_close {
 	margin-top: -35px !important;
 	margin-left: 50px;
-	
 }

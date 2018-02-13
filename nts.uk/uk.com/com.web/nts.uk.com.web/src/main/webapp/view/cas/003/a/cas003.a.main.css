@@ -1,6 +1,7 @@
-html{
+html {
 	overflow: hidden;
 }
+
 #contents-area {
 	margin-left: 8px;
 	width: 100%;
@@ -15,8 +16,9 @@ html{
 .contentPassComplex1 {
 	margin-left: 143px;
 }
+
 .panel {
-     padding: 0px !important; 
+	padding: 0px !important;
 }
 
 .contentsymbol {
