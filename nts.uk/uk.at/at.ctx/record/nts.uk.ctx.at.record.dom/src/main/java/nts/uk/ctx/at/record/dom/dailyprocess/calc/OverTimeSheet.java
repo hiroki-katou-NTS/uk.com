@@ -101,9 +101,9 @@ public class OverTimeSheet {
 		
 		for(OverTimeFrameTimeSheetForCalc overTimeFrameTime : frameTimeSheets) {
 			AttendanceTime calcTime = overTimeFrameTime.correctCalculationTime(Optional.empty(), autoCalcSet);
-			OverTimeFrameTime getListItem = calcOverTimeWorkTimeList.get(overTimeFrameTime.getOverTimeWorkSheetNo().v().intValue() - 1);
+			OverTimeFrameTime getListItem = calcOverTimeWorkTimeList.get(overTimeFrameTime.getFrameTime().getOverWorkFrameNo().v().intValue() - 1);
 			getListItem.addOverTime(calcTime);
-			calcOverTimeWorkTimeList.set(overTimeFrameTime.getOverTimeWorkSheetNo().v().intValue() - 1, getListItem);
+			calcOverTimeWorkTimeList.set(overTimeFrameTime.getFrameTime().getOverWorkFrameNo().v().intValue() - 1, getListItem);
 		}
 		return calcOverTimeWorkTimeList;
 	}

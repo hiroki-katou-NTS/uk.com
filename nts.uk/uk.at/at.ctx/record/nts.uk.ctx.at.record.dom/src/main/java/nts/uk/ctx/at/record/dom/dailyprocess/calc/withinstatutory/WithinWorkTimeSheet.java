@@ -153,7 +153,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		List<EmTimeZoneSet> returnList = new ArrayList<>();
 		Optional<TimeSpanForCalc> duplicatedRange = Optional.empty(); 
 		for(EmTimeZoneSet timeZone:workingHourSet) {
-			duplicatedRange = timeZone.getTimezone().getDuplicatedWith(timeZone.getTimezone().timeSpan());
+			duplicatedRange = timeZone.getTimezone().getDuplicatedWith(timeLeavingWork.getTimespan());
 			if(duplicatedRange.isPresent())
 				returnList.add(new EmTimeZoneSet(timeZone.getEmploymentTimeFrameNo(),
 												 new TimeZoneRounding(duplicatedRange.get().getStart(),

@@ -50,7 +50,7 @@
 										enable: true,
 										showCheckBox: false}">
 							</table>
-							
+
 							<table id="treegrid2-limited"
 								data-bind="ntsTreeGridView:{
 										width: 1000,
@@ -68,8 +68,7 @@
 							</table>
 						</div>
 						<div style="float: left">
-							<br />
-							<br />
+							<br /> <br />
 							<h4>Your single selected code:</h4>
 							<span data-bind="text: singleSelectedCode"></span>
 						</div>
@@ -105,8 +104,7 @@
 							</div>
 						</div>
 						<div style="float: left">
-							<br />
-							<br />
+							<br /> <br />
 							<h4>Your multiple selected code:</h4>
 							<com:ko-foreach bind="selectedCode">
 								<div data-bind="text: $data"></div>
@@ -176,11 +174,10 @@
 									</thead>
 									<tbody>
 										<tr>
-											<td>width<br />
-											<i>(optional)</i></td>
+											<td>width<br /> <i>(optional)</i></td>
 											<td><b>Type:</b> null | string | number<br /> <b>Default:</b>
-												"100%"<br /> <b>Members:</b><br /> <i>null:</i> Will stretch
-												to fit the sum of the columns widths.<br /> <i>number:</i>
+												"100%"<br /> <b>Members:</b><br /> <i>null:</i> Will
+												stretch to fit the sum of the columns widths.<br /> <i>number:</i>
 												The widget width can be set in pixels as a number. Example
 												values: 800, 700.<br /> <i>string:</i> The widget width can
 												be set in pixels (px) or percentage (%). Example values:
@@ -219,18 +216,19 @@
 											<td>columns</td>
 											<td><b>Type:</b> array&lt;column&gt;<br /> An array of
 												column objects:<br /> <i>headerText:</i> Text for header<br />
-												<i>prop / key:</i> Property in data array for column<br /> <i>width:</i>
-												Width for column<br /> <b><i>(*): Can use other
-														properties of columns of tree</i></b></td>
-										</tr><tr>
+												<i>prop / key:</i> Property in data array for column<br />
+												<i>width:</i> Width for column<br /> <b><i>(*): Can
+														use other properties of columns of tree</i></b></td>
+										</tr>
+										<tr>
 											<td>initialExpandDepth</td>
-											<td><b>Type:</b> number<br /> 
-												Set how many child are expanded when initial</td>
+											<td><b>Type:</b> number<br /> Set how many child are
+												expanded when initial</td>
 										</tr>
 										<tr>
 											<td>multiple</td>
-											<td><b>Type:</b> boolean<br /> Enables/disables multiple
-												selection</td>
+											<td><b>Type:</b> boolean<br /> Enables/disables
+												multiple selection</td>
 										</tr>
 										<tr>
 											<td>value</td>
@@ -239,7 +237,8 @@
 										</tr>
 										<tr>
 											<td>rows</td>
-											<td><b>Type:</b> number<br /> max rows are displayed in view and will have scroll and tooltip</td>
+											<td><b>Type:</b> number<br /> max rows are displayed in
+												view and will have scroll and tooltip</td>
 										</tr>
 									</tbody>
 								</table>

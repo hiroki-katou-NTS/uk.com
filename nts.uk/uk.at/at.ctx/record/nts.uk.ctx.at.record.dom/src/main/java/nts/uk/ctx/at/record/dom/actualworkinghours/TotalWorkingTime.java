@@ -130,6 +130,7 @@ public class TotalWorkingTime {
 		val withinStatutoryTimeOfDaily = WithinStatutoryTimeOfDaily.calcStatutoryTime(oneDay);
 		//日別実績の所定外時間
 		val excesstime =ExcessOfStatutoryTimeOfDaily.calculationExcessTime(oneDay, overTimeAutoCalcSet,holidayAutoCalcSetting);
+		//2018.02.14　一時的対応 byホシナ ↓
 		//日別実績の遅刻時間
 		List<LateTimeOfDaily> lateTime = new ArrayList<>();
 		lateTime.add(new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
@@ -158,7 +159,7 @@ public class TotalWorkingTime {
 										  new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
 										  new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
 					));
-		
+		//2018.02.14　一時的対応 byホシナ ↑
 		//日別実績の休憩時間
 		val breakTime = new BreakTimeOfDaily(DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
 																   TimeWithCalculation.sameTime(new AttendanceTime(0)),

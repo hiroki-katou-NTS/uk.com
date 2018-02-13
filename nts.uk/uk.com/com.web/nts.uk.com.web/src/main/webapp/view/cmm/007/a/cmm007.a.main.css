@@ -7,6 +7,6 @@
 	margin-top: 40px;
 }
 
-.main-content > div:NTH-CHILD(2){
+.main-content>div:NTH-CHILD(2) {
 	padding-top: 40px;
 }
