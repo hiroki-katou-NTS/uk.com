@@ -114,11 +114,11 @@ public class EmployeeSearchQueryDto implements Serializable {
 				.includeWorkersOnLeave(this.includeWorkersOnLeave)
 				.jobTitleCodes(this.jobTitleCodes)
 				.nameType(this.nameType)
-				.periodEnd(GeneralDateTime.fromString(this.periodEnd + TIME_DAY_START, DATE_TIME_FORMAT))
-				.periodStart(GeneralDateTime.fromString(this.periodStart + TIME_DAY_START, DATE_TIME_FORMAT))
+				.periodEnd(this.periodEnd == null ? null : GeneralDateTime.fromString(this.periodEnd + TIME_DAY_START, DATE_TIME_FORMAT))
+				.periodStart(this.periodStart == null ? null : GeneralDateTime.fromString(this.periodStart + TIME_DAY_START, DATE_TIME_FORMAT))
 				.referenceRange(this.referenceRange)
-				.retireEnd(GeneralDateTime.fromString(this.retireEnd + TIME_DAY_START, DATE_TIME_FORMAT))
-				.retireStart(GeneralDateTime.fromString(this.retireStart + TIME_DAY_START, DATE_TIME_FORMAT))
+				.retireEnd(this.retireEnd == null ? null : GeneralDateTime.fromString(this.retireEnd + TIME_DAY_START, DATE_TIME_FORMAT))
+				.retireStart(this.retireStart == null ? null : GeneralDateTime.fromString(this.retireStart + TIME_DAY_START, DATE_TIME_FORMAT))
 				.sortOrderNo(this.sortOrderNo)
 				.workplaceCodes(this.workplaceCodes).build();
 	}
