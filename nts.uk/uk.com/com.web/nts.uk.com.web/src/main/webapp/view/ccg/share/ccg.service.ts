@@ -32,14 +32,20 @@ module nts.uk.com.view.ccg.share.ccg {
          * Get personal role future permit
          */
         export function getPersonalRoleFuturePermit(): JQueryPromise<boolean> {
-            return nts.uk.request.ajax('com', servicePath.getPersonalRoleFuturePermit);
+            let dfd = $.Deferred<boolean>();
+            dfd.resolve(false);
+            return dfd.promise();
+            //return nts.uk.request.ajax('com', servicePath.getPersonalRoleFuturePermit);
         }
 
         /**
          * Get personal role future permit
          */
         export function getEmploymentRoleFuturePermit(): JQueryPromise<boolean> {
-            return nts.uk.request.ajax('at', servicePath.getEmploymentRoleFuturePermit);
+            let dfd = $.Deferred<boolean>();
+            dfd.resolve(false);
+            return dfd.promise();
+            //return nts.uk.request.ajax('at', servicePath.getEmploymentRoleFuturePermit);
         }
 
         /**
@@ -136,7 +142,7 @@ module nts.uk.com.view.ccg.share.ccg {
         /**
          * get List WorkPlaceId
          */
-        export function getListWorkplaceId(baseDate: Date, referenceRange: number): JQueryPromise<any> {
+        export function getListWorkplaceId(baseDate: string, referenceRange: number): JQueryPromise<any> {
             return nts.uk.request.ajax('com', servicePath.getListWorkplaceId, { baseDate: baseDate, referenceRange: referenceRange });
         }
         
@@ -154,14 +160,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 workplaceId: string;
 
                 workplaceName: string;
-            }
-
-            export class EmployeeSearchInDto {
-                baseDate: Date;
-                employmentCodes: string[];
-                classificationCodes: string[];
-                jobTitleCodes: string[];
-                workplaceCodes: string[];
             }
 
             export interface GroupOption {
@@ -237,6 +235,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 classificationCodes: Array<any>;
                 filterByJobTitle: boolean;
                 jobTitleCodes: Array<string>;
+                filterByWorktype: boolean;
+                worktypeCodes: Array<string>;
 
                 periodStart: string;
                 periodEnd: string;
