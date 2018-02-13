@@ -26865,8 +26865,17 @@ var nts;
                         open: function () {
                             $(this).closest('.ui-dialog').css('z-index', getMaxZIndex() + 2);
                             $('.ui-widget-overlay').last().css('z-index', getMaxZIndex() + 1);
-                            $(this).parent().find('.ui-dialog-buttonset > button:first-child').focus();
-                            $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
+                            var $buttons = $(this).parent().find('.ui-dialog-buttonset > button')
+                                .removeClass('ui-button ui-corner-all ui-widget');
+                            if ($buttons.filter(".proceed").length === 1) {
+                                $buttons.filter(".proceed").focus();
+                            }
+                            else if ($buttons.filter(".danger").length === 1) {
+                                $buttons.not(".danger").focus();
+                            }
+                            else {
+                                $buttons.eq(0).focus();
+                            }
                             //add header icon if it has
                             if (header && header.icon) {
                                 var $headerContainer = $("<div'></div>").addClass("ui-dialog-titlebar-container");
@@ -26895,41 +26904,7 @@ var nts;
                         .dialog({});
                 }
                 dialog.version = version;
-                /**
-                 * Show information dialog.
-                 *
-                 * @param {String}
-                 *          text information text
-                 * @returns handler
-                 */
-                function info(text) {
-                    var then = $.noop;
-                    var $dialog = PS.$('<div/>').hide();
-                    $(function () {
-                        $dialog.appendTo('body').dialog({
-                            autoOpen: false
-                        });
-                    });
-                    setTimeout(function () {
-                        var $this = createNoticeDialog(text, [{
-                                text: ui_29.toBeResource.close,
-                                "class": "large",
-                                click: function () {
-                                    $this.dialog('close');
-                                    then();
-                                }
-                            }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/infor.png", text: ui_29.toBeResource.info });
-                        $this.find("button").focus();
-                    }, 0);
-                    return {
-                        then: function (callback) {
-                            then = callback;
-                        }
-                    };
-                }
-                dialog.info = info;
-                ;
-                function alertError(message) {
+                function simpleDialog(message, option) {
                     var then = $.noop;
                     var $dialog = PS.$('<div/>').hide();
                     $(function () {
@@ -26945,8 +26920,7 @@ var nts;
                                     $this.dialog('close');
                                     then();
                                 }
-                            }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/error.png", text: ui_29.toBeResource.error });
-                        $this.find("button").focus();
+                            }], { text: option.title });
                     }, 0);
                     return {
                         then: function (callback) {
@@ -26954,49 +26928,28 @@ var nts;
                         }
                     };
                 }
+                function info(message) {
+                    return simpleDialog(message, { title: ui_29.toBeResource.info });
+                }
+                dialog.info = info;
+                function caution(message) {
+                    return simpleDialog(message, { title: ui_29.toBeResource.warn });
+                }
+                dialog.caution = caution;
+                function error(message) {
+                    return simpleDialog(message, { title: ui_29.toBeResource.error });
+                }
+                dialog.error = error;
+                function alertError(message) {
+                    return error(message);
+                }
                 dialog.alertError = alertError;
-                /**
-                 * Show alert dialog.
-                 *
-                 * @param {String}
-                 *          text information text
-                 * @returns handler
-                 */
-                function alert(text) {
-                    var then = $.noop;
-                    var $dialog = PS.$('<div/>').hide();
-                    $(function () {
-                        $dialog.appendTo('body').dialog({
-                            autoOpen: false
-                        });
-                    });
-                    setTimeout(function () {
-                        var $this = createNoticeDialog(text, [{
-                                text: ui_29.toBeResource.close,
-                                "class": "large",
-                                click: function () {
-                                    $this.dialog('close');
-                                    then();
-                                }
-                            }], { text: nts.uk.resource.getText(ui_29.toBeResource.warn) });
-                        $this.find("button").focus();
-                    }, 0);
-                    return {
-                        then: function (callback) {
-                            then = callback;
-                        }
-                    };
+                function alert(message) {
+                    return error(message);
                 }
                 dialog.alert = alert;
                 ;
-                /**
-                 * Show confirm dialog.
-                 *
-                 * @param {String}
-                 *          text information text
-                 * @returns handler
-                 */
-                function confirm(text, option) {
+                function confirm(message, option) {
                     var handleYes = $.noop;
                     var handleNo = $.noop;
                     var handleCancel = $.noop;
@@ -27063,24 +27016,18 @@ var nts;
                                 }
                             });
                         }
-                        var $this = createNoticeDialog(text, buttons);
-                        if (option.buttonStyles.yes === "danger") {
-                            $this.find("button.no").focus();
-                        }
-                        else if (option.buttonStyles.yes === "proceed") {
-                            $this.find("button.yes").focus();
-                        }
+                        var $this = createNoticeDialog(message, buttons);
                     });
                     return handlers;
                 }
                 dialog.confirm = confirm;
                 ;
-                function confirmDanger(text) {
-                    return confirm(text);
+                function confirmDanger(message) {
+                    return confirm(message);
                 }
                 dialog.confirmDanger = confirmDanger;
-                function confirmProceed(text) {
-                    return confirm(text, { buttonStyles: { yes: "proceed" } });
+                function confirmProceed(message) {
+                    return confirm(message, { buttonStyles: { yes: "proceed" } });
                 }
                 dialog.confirmProceed = confirmProceed;
                 function addError(errorBody, error, idx) {
