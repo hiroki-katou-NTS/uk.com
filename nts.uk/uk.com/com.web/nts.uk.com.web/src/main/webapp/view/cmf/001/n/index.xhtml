@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="cmf001.n.style.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="cmf001.n.start.js" />
+			<com:scriptfile path="cmf001.n.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- Go back Style -->
+				<a class="goback"
+					data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('CMF001_430')}</a>
+			</div>
+			<div id="contents-area">
+				<div id="O2_1_wizard" style="width: 1200px"
+					data-bind="ntsWizard: {active: activeStep, steps: stepList, theme: 'yellow'}"
+					class="cf">
+					<div class="header">
+						<div class="image" data-icon="../resource/外部受入アイコン.jpg"></div>
+						<div class="content">#{i18n.getText('CMF001_432')}</div>
+					</div>
+					<div class="steps">
+						<div class="step-1">
+							<span>#{i18n.getText('CMF001_433')}</span><br />
+							└#{i18n.getText('CMF001_434')}
+						</div>
+						<div class="end step-2">#{i18n.getText('CMF001_435')}</div>
+					</div>
+					<div class="contents">
+						<div class="step-1">
+							<div class="label">#{i18n.getText('CMF001_436')}</div>
+							<table style="margin-bottom: 15px">
+								<tr>
+									<td style="padding-left: 20px">
+										<div class="label">#{i18n.getText('CMF001_437')}</div>
+									</td>
+									<td style="padding-left: 20px">
+										<div class="label">ユーザ設定</div>
+									</td>
+									<td style="padding-left: 40px">
+										<div class="label">#{i18n.getText('CMF001_442')}</div>
+									</td>
+									<td style="padding-left: 20px">
+										<div id="combo-box"
+											data-bind="ntsComboBox: {
+													options: itemList,
+													optionsValue: 'code',
+													visibleItemsCount: 5,
+													value: selectedCode,
+													optionsText: 'name',
+													columns: [
+														{ prop: 'name', length: 10 }
+													]}"></div>
+									</td>
+								</tr>
+							</table>
+							<table style="width: 100%;">
+								<tr>
+									<td rowspan="2" style="width: 300px;">
+										<div class="" style="width: 300px; float: left;">
+											<div
+												data-bind="ntsPanel:{width: '260px', height: '450px', direction: 'none', showIcon: true, visible: true}">
+												<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_438')}</div>
+												<div tabindex="7" style="width: 260px"
+													data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'dispItemCode', comId: 'O4_4', 
+													items: listCategoryItem, selected: selectedCategoryItem, selectedKey: 'dispItemCode', fields: ['dispItemName'], mode: 'igGrid'}" />
+												<table id="O4_4"
+													data-bind="ntsGridList: {
+													height: 370,
+													name: '#[CMF001_39]', 
+				 									dataSource: listCategoryItem,
+													primaryKey: 'dispItemCode', 
+				 									columns: [
+										                { headerText: '#{i18n.getText('CMF001_440')}', key: 'dispItemCode', width: 50, formatter: _.escape },
+										                { headerText: '#{i18n.getText('CMF001_441')}', key: 'dispItemName', width: 193, formatter: _.escape }
+										            ], 
+													multiple: false,
+													value: selectedCategoryItem}">
+												</table>
+											</div>
+										</div>
+									</td>
+									<td style="vertical-align: top">
+										<div class="panel panel-frame"
+											style="margin-left: 20px; height: 70px">
+											<table style="margin-bottom: 10px">
+												<tr>
+													<td style="padding: 5px 10px"><label>#{i18n.getText('CMF001_444')}</label>
+													</td>
+													<td style="padding: 5px 10px"><label>001</label></td>
+													<td style="padding: 5px 10px"><label>asdsadsadasd</label>
+													</td>
+												</tr>
+											</table>
+											<table>
+												<tr>
+													<td>
+														<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF001_445')}</div>
+													</td>
+													<td>
+														<div id="file-upload" style="display: inline-block;"
+															data-bind="ntsFileUpload:{
+																	filename: filename,
+																	accept: accept,
+																	text: textId,
+																	aslink: false,
+																	enable: true													
+																}">
+														</div>
+													</td>
+												</tr>
+											</table>											
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td style="vertical-align: bottom; padding-left: 20px;">
+										<button>#{i18n.getText('CMF001_448')}</button>
+										<button class="danger x-large" style="margin-left: 10px">#{i18n.getText('CMF001_449')}</button>
+									</td>
+								</tr>
+							</table>
+						</div>
+						<div class="step-2">contents step2</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
