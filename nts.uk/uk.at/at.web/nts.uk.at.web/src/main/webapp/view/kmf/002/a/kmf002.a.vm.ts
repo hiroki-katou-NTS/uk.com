@@ -204,7 +204,6 @@ module nts.uk.at.view.kmf002.a {
                 var dfd = $.Deferred<any>();
                 
                 let _self = this;
-//                _self.removeValidate();
                 // load all
                 if (typeStart == SideBarTabIndex.THIRD) {
                     nts.uk.ui.errors.clearAll()
