@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/sidebar.xhtml">
+		<ui:define name="sidebar-head">
+			<com:scriptfile set="IGNITE" />
+<!-- 			<com:stylefile path="cas014.a.style.css" /> -->
+<!-- 			<com:scriptfile path="cas014.a.service.js" /> -->
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="cmf001.b.vm.js" />
+			
+<!-- 			<com:scriptfile path="../b/cas014.b.vm.js" /> -->
+<!-- 			<com:scriptfile path="../b/cas014.b.service.js" /> -->
+			
+			<com:scriptfile path="cmf001.b.start.js" />
+		</ui:define>
+		
+		<ui:define name="sidebar">
+			<ul class="navigator">
+				<li><a href="#tabpanel-1" role="tab-navigator" class="active" data-bind="click: nts.uk.ui.errors.clearAll()">#{i18n.getText('CMF001_27')}</a></li>
+				<li><a href="#tabpanel-2" role="tab-navigator" data-bind="click: nts.uk.ui.errors.clearAll()">#{i18n.getText('CMF001_28')}</a></li>
+			</ul>
+		</ui:define>
+
+		<ui:define name="sidebar-content">
+			<div id="tabpanel-1" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span tabindex="-1" class="title">#{i18n.getText('CMF001_27')}</span>
+					<button tabindex="1" >#{i18n.getText('CMF001_29')}</button>
+					<button tabindex="2" class="proceed" >#{i18n.getText('CMF001_30')}</button>
+					<button tabindex="3" >#{i18n.getText('CMF001_31')}</button>
+					<button tabindex="4" >#{i18n.getText('CMF001_33')}</button>
+					<button tabindex="5" class="danger" >#{i18n.getText('CMF001_34')}</button>
+					<label>#{i18n.getText('CMF001_35')}</label>
+					<div tabindex="6" data-bind="ntsComboBox: {
+						options: itemList,
+						optionsValue: 'code',
+						visibleItemsCount: 5,
+						name: '#[CMF001_36]',
+						value: selectedCode,
+						optionsText: 'name',
+						editable: false,
+						enable: true,
+						columns: [
+							{ prop: 'name', length: 8 }
+						]}"></div>
+				</div>
+				<div id="contents-area" class="fixed-flex-layout">
+					<div class="fixed-flex-layout-left">
+						<div data-bind="ntsPanel:{width: '350px', height: '400px', showIcon: true, visible: true}">
+							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_38')}</div>
+							<div tabindex="7" style="width: 350px" data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'dispConditionSettingCode', comId: 'B3_4', 
+								items: listStandardImportSetting, selected: selectedStandardImportSettingCode, selectedKey: 'dispConditionSettingCode', fields: ['dispConditionSettingCode', 'dispConditionSettingName'], mode: 'igGrid'}" />		
+							<table id="B3_4" data-bind="ntsGridList: {
+									height: 320,
+									name: '#[CMF001_39]', 
+ 									dataSource: listStandardImportSetting,
+									primaryKey: 'dispConditionSettingCode', 
+ 									columns: [
+ 										{ headerText: '#{i18n.getText('CMF001_40')}', key: 'a', width: 50, formatter: _.escape },
+						                { headerText: '#{i18n.getText('CMF001_41')}', key: 'dispConditionSettingCode', width: 100, formatter: _.escape },
+						                { headerText: '#{i18n.getText('CMF001_42')}', key: 'dispConditionSettingName', width: 180, formatter: _.escape }
+						            ], 
+									multiple: false,
+									value: selectedStandardImportSettingCode
+								}"></table>
+						</div>
+					</div>
+					<div class="fixed-flex-layout-right" data-bind="with: selectedStandardImportSetting">
+						<div class="label warning">#{i18n.getText('CMF001_50')}</div>
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_51')}</div>
+							<input tabindex="9" id="B4_3" data-bind="ntsTextEditor: {name: '#[CMF001_52]', value: conditionSettingCode, required: true, option: {width: '80px'}}" />
+							<input tabindex="10" id="B4_4" data-bind="ntsTextEditor: {name: '#[CMF001_53]', value: conditionSettingName, required: true}" />
+						</div>
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_54')}</div>
+							<div style="display: inline-block">
+								<div tabindex="11" data-bind="ntsRadioButton: { checked: deleteDetermination, option: $parent.radioItemList()[0], name: '#[CMF001_55]', optionValue: 'code', optionText: 'name', group: 'DeleteDetermination'}"></div>
+								<div tabindex="11" style="display: block" data-bind="ntsRadioButton: { checked: deleteDetermination, option: $parent.radioItemList()[1], name: '#[CMF001_55]', optionValue: 'code', optionText: 'name', group: 'DeleteDetermination'}"></div>
+							</div>
+							<div tabindex="12" data-bind="ntsComboBox: {
+								options: [{code: 1, name: '受入る会社のデータを全て削除してから受入'}, {code: 2, name: '対象データのみ削除してから受入'}],
+								optionsValue: 'code',
+								name: '#[CMF001_58]',
+								value: deleteExistingData,
+								optionsText: 'name',
+								editable: false,
+								enable: true,
+								columns: [
+									{ prop: 'name', length: 12 }
+								]}"></div>
+						</div>
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_59')}</div>
+							<div tabindex="13" class="cf" data-bind="ntsSwitchButton: {
+								options: $parent.acceptModes,
+								name: '#[CMF001_65]',
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: acceptMode,
+								enable: true }"></div>
+						</div>
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_69')}</div>
+							<button tabindex="14" >#{i18n.getText('CMF001_70')}</button>
+							<label>#{i18n.getText('CMF001_71')}</label>
+							<label>standard accept item</label>
+						</div>
+<!-- 						<div class="valign-center control-group"> -->
+<!-- 							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_51')}</div> -->
+<!-- 						</div> -->
+<!-- 						<div class="valign-center control-group"> -->
+<!-- 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_51')}</div> -->
+<!-- 						</div> -->
+					</div>
+				</div>
+			</div>
+			<div id="tabpanel-2" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span tabindex="-1" class="title">#{i18n.getText('CMF001_28')}</span>
+					<button tabindex="1" >#{i18n.getText('CMF001_29')}</button>
+					<button tabindex="2" class="proceed" >#{i18n.getText('CMF001_30')}</button>
+					<button tabindex="3" >#{i18n.getText('CMF001_32')}</button>
+					<button tabindex="4" >#{i18n.getText('CMF001_33')}</button>
+					<button tabindex="5" class="danger" >#{i18n.getText('CMF001_34')}</button>
+				</div>
+				<div class="contents-area-b">
+					
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
