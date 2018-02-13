@@ -416,12 +416,10 @@ module cps002.a.vm {
 
             $("#employeeAvatar").focus();
 
-
-
             service.getSelfRoleAuth().done((result: IRoleAuth) => {
 
                 if (result) {
-                    self.isAllowAvatarUpload(result ? result.allowAvatarUpload == 0 ? false : true : false);
+                    self.isAllowAvatarUpload(result.allowAvatarUpload == 0 ? false : true);
                 }
 
             });
@@ -465,7 +463,6 @@ module cps002.a.vm {
 
                 //start Screen C
 
-
                 self.loadInitSettingData();
 
 
@@ -499,7 +496,6 @@ module cps002.a.vm {
 
                     self.categorySelectedCode(result[0].code);
                 }
-
             }).fail((error) => {
 
                 dialog({ messageId: error.message }).then(() => {
@@ -507,10 +503,7 @@ module cps002.a.vm {
                     self.currentStep(0);
 
                 });
-
             });
-
-
         }
 
         loadInitSettingData() {
@@ -586,14 +579,10 @@ module cps002.a.vm {
                     newEmpInfo.copyEmployeeId = newEmpInfo.copyEmployeeId == '' ? currentEmpInfo.copyEmployeeId : newEmpInfo.copyEmployeeId;
                 } else {
                     newEmpInfo.initialValueCode = newEmpInfo.initialValueCode == '' ? currentEmpInfo.initialValueCode : newEmpInfo.initialValueCode;
-
                 }
 
             }
-
-
-
-
+            
             character.save('NewEmployeeBasicInfo', newEmpInfo);
         }
 
@@ -716,10 +705,6 @@ module cps002.a.vm {
             subModal('/view/cps/009/a/index.xhtml', { title: '', height: 700, width: 1400 }).onClosed(() => {
 
             });
-            //            
-            //            subModal('/view/cps/009/a/index.xhtml', { title: text('CPS002_10') }).onClosed(() => {
-            //                
-            //            });
         }
 
 
