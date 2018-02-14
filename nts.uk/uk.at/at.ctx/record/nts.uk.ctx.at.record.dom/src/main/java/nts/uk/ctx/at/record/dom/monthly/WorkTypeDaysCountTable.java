@@ -194,9 +194,7 @@ public class WorkTypeDaysCountTable {
 		case Absence:
 			if (sumAbsenceNo >= 0){
 				val absenceFrameNo = Integer.valueOf(sumAbsenceNo);
-				if (!this.absenceDaysMap.containsKey(absenceFrameNo)) {
-					this.absenceDaysMap.put(absenceFrameNo, new AggregateAbsenceDays(absenceFrameNo));
-				}
+				this.absenceDaysMap.putIfAbsent(absenceFrameNo, new AggregateAbsenceDays(absenceFrameNo));
 				val targetAbsenceDays = this.absenceDaysMap.get(absenceFrameNo);
 				targetAbsenceDays.addDays(addDays);
 			}

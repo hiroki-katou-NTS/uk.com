@@ -17,17 +17,15 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * 月別実績の所定労働時間
  * @author shuichi_ishida
  */
+@Getter
 public class PrescribedWorkingTimeOfMonthly {
 
 	/** 計画所定労働時間 */
-	@Getter
 	private AttendanceTimeMonth schedulePrescribedWorkingTime;
 	/** 実績所定労働時間 */
-	@Getter
 	private AttendanceTimeMonth recordPrescribedWorkingTime;
 	
 	/** 時系列ワーク */
-	@Getter
 	private List<PrescribedWorkingTimeOfTimeSeries> timeSeriesWorks;
 	
 	/**

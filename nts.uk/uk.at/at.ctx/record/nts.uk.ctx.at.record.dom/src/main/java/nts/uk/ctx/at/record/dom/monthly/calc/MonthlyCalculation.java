@@ -15,7 +15,6 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransf
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalAggrSetOfIrg;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalAggrSetOfReg;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
@@ -143,10 +142,9 @@ public class MonthlyCalculation {
 		*/
 		AttendanceTimeMonth statutoryWorkingTimeWeek = new AttendanceTimeMonth(0);
 		AttendanceTimeMonth statutoryWorkingTimeMonth = new AttendanceTimeMonth(0);
-		
-		// （休暇）加算設定　取得
-		//*****（未）　休暇加算設定は、会社単位なので、ここで取得し、必要な処理に引き継ぐ。仮に空設定。
-		AddSet addSet = new AddSet();
+
+		// 休暇加算時間設定　取得
+		val holidayAdditionOpt = repositories.getHolidayAddition().findByCId(companyId);
 		
 		// 共有項目を集計する
 		this.totalWorkingTime.aggregateSharedItem(datePeriod, attendanceTimeOfDailys);
@@ -158,14 +156,14 @@ public class MonthlyCalculation {
 			// 通常・変形労働勤務の月別実績を集計する
 			this.totalWorkingTime = this.actualWorkingTime.aggregateMonthly(companyId, employeeId,
 					yearMonth, datePeriod, workingSystem, MonthlyAggregateAtr.MONTHLY,
-					aggrSettingMonthly, legalTransferOrderSet, addSet, attendanceTimeOfDailys,
+					aggrSettingMonthly, legalTransferOrderSet, holidayAdditionOpt, attendanceTimeOfDailys,
 					this.totalWorkingTime, statutoryWorkingTimeWeek, repositories);
 			
 			// 通常・変形労働勤務の月単位の時間を集計する
 			this.actualWorkingTime.aggregateMonthlyHours(companyId, employeeId,
 					yearMonth, closureId, closureDate, datePeriod, workingSystem,
 					MonthlyAggregateAtr.MONTHLY, isRetireMonth, workplaceId, employmentCd,
-					aggrSettingMonthly, addSet, this.totalWorkingTime, statutoryWorkingTimeMonth,
+					aggrSettingMonthly, holidayAdditionOpt, this.totalWorkingTime, statutoryWorkingTimeMonth,
 					repositories);
 		}
 		// フレックス時間勤務　の時
@@ -180,8 +178,8 @@ public class MonthlyCalculation {
 					aggrSetOfFlex, attendanceTimeOfDailys, this.totalWorkingTime, repositories);
 			
 			// フレックス勤務の月単位の時間を集計する
-			this.flexTime.aggregateMonthlyHours(companyId, employeeId, yearMonth, datePeriod,
-					workplaceId, employmentCd, aggrSetOfFlex, addSet, this.totalWorkingTime, repositories);
+			this.flexTime.aggregateMonthlyHours(companyId, employeeId, yearMonth, datePeriod, workplaceId,
+					employmentCd, aggrSetOfFlex, holidayAdditionOpt, this.totalWorkingTime, repositories);
 		}
 
 		// 実働時間の集計

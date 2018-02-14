@@ -16,28 +16,19 @@ import nts.uk.ctx.at.record.infra.entity.monthly.calc.flex.KrcdtMonFlexTime;
  */
 @Stateless
 public class JpaFlexTimeOfMonthly extends JpaRepository implements FlexTimeOfMonthlyRepository {
-
-	/** 追加 */
-	@Override
-	public void insert(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey, FlexTimeOfMonthly flexTimeOfMonthly) {
-		this.commandProxy().insert(toEntity(attendanceTimeOfMonthlyKey, flexTimeOfMonthly, false));
-	}
 	
 	/** 更新 */
 	@Override
 	public void update(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey, FlexTimeOfMonthly flexTimeOfMonthly) {
-		this.toEntity(attendanceTimeOfMonthlyKey, flexTimeOfMonthly, true);
+		this.toUpdate(attendanceTimeOfMonthlyKey, flexTimeOfMonthly);
 	}
 	
 	/**
-	 * ドメイン→エンティティ
+	 * データ更新
 	 * @param domainKey キー値：月別実績の勤怠時間
 	 * @param domain ドメイン：月別実績のフレックス時間
-	 * @param execUpdate 更新を実行する
-	 * @return エンティティ：月別実績のフレックス時間
 	 */
-	private KrcdtMonFlexTime toEntity(AttendanceTimeOfMonthlyKey domainKey,
-			FlexTimeOfMonthly domain, boolean execUpdate){
+	private void toUpdate(AttendanceTimeOfMonthlyKey domainKey, FlexTimeOfMonthly domain){
 
 		// 締め日付
 		val closureDate = domainKey.getClosureDate();
@@ -57,14 +48,8 @@ public class JpaFlexTimeOfMonthly extends JpaRepository implements FlexTimeOfMon
 		// 時間外超過のフレックス時間
 		val flexTimeOfExcessOutsideTime = domain.getFlexTimeOfExcessOutsideTime();
 		
-		KrcdtMonFlexTime entity;
-		if (execUpdate){
-			entity = this.queryProxy().find(key, KrcdtMonFlexTime.class).get();
-		}
-		else {
-			entity = new KrcdtMonFlexTime();
-			entity.PK = key;
-		}
+		KrcdtMonFlexTime entity = this.getEntityManager().find(KrcdtMonFlexTime.class, key);
+		if (entity == null) return;
 		entity.flexTime = flexTime.getFlexTime().getTime().v();
 		entity.calcFlexTime = flexTime.getFlexTime().getCalcTime().v();
 		entity.beforeFlexTime = flexTime.getBeforeFlexTime().v();
@@ -78,7 +63,5 @@ public class JpaFlexTimeOfMonthly extends JpaRepository implements FlexTimeOfMon
 		entity.excessFlexAtr = flexTimeOfExcessOutsideTime.getExcessFlexAtr().value;
 		entity.principleTime = flexTimeOfExcessOutsideTime.getPrincipleTime().v();
 		entity.forConvenienceTime = flexTimeOfExcessOutsideTime.getForConvenienceTime().v();
-		if (execUpdate) this.commandProxy().update(entity);
-		return entity;
 	}
 }

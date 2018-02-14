@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,10 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.Irregular
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.TargetPremiumTimeMonthOfIrregular;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.TargetPremiumTimeMonthOfRegular;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtion;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -87,7 +91,7 @@ public class RegularAndIrregularTimeOfMonthly {
 	 * @param aggregateAtr 集計区分
 	 * @param aggrSettingMonthly 月別実績集計設定
 	 * @param legalTransferOrderSet 法定内振替順設定
-	 * @param addSet 加算設定
+	 * @param holidayAdditionOpt 休暇加算時間設定
 	 * @param attendanceTimeOfDailys リスト：日別実績の勤怠時間
 	 * @param aggregateTotalWorkingTime 総労働時間
 	 * @param statutoryWorkingTimeWeek 週間法定労働時間
@@ -103,7 +107,7 @@ public class RegularAndIrregularTimeOfMonthly {
 			MonthlyAggregateAtr aggregateAtr,
 			AggrSettingMonthly aggrSettingMonthly,
 			LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet,
-			AddSet addSet,
+			Optional<HolidayAddtion> holidayAdditionOpt,
 			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			AttendanceTimeMonth statutoryWorkingTimeWeek,
@@ -160,7 +164,7 @@ public class RegularAndIrregularTimeOfMonthly {
 			
 				// 週別実績を集計する
 				this.aggregateOfWeekly(companyId, employeeId, datePeriod, workingSystem, aggregateAtr, ymd,
-						aggrSettingMonthly, addSet, aggregateTotalWorkingTime, statutoryWorkingTimeWeek,
+						aggrSettingMonthly, holidayAdditionOpt, aggregateTotalWorkingTime, statutoryWorkingTimeWeek,
 						weekStart);
 
 				// 集計区分を確認する
@@ -237,7 +241,7 @@ public class RegularAndIrregularTimeOfMonthly {
 	 * @param aggregateAtr 集計区分
 	 * @param procYmd 処理日
 	 * @param aggrSettingMonthly 月別実績集計設定
-	 * @param addSet 加算設定
+	 * @param holidayAdditionOpt 休暇加算時間設定
 	 * @param aggregateTotalWorkingTime 総労働時間
 	 * @param statutoryWorkingTimeWeek 週間法定労働時間
 	 * @param weekStart 週開始
@@ -250,7 +254,7 @@ public class RegularAndIrregularTimeOfMonthly {
 			MonthlyAggregateAtr aggregateAtr,
 			GeneralDate procYmd,
 			AggrSettingMonthly aggrSettingMonthly,
-			AddSet addSet,
+			Optional<HolidayAddtion> holidayAdditionOpt,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			AttendanceTimeMonth statutoryWorkingTimeWeek,
 			WeekStart weekStart){
@@ -260,6 +264,9 @@ public class RegularAndIrregularTimeOfMonthly {
 		if (weekPeriod.start().before(datePeriod.start())) {
 			weekPeriod = new DatePeriod(datePeriod.start(), procYmd);
 		}
+
+		// 加算設定　取得　（割増用）
+		val addSet = GetAddSet.get(workingSystem, PremiumAtr.PREMIUM, holidayAdditionOpt);
 		
 		// 労働制を確認する
 		if (workingSystem == WorkingSystem.REGULAR_WORK){
@@ -420,7 +427,7 @@ public class RegularAndIrregularTimeOfMonthly {
 	 * @param workplaceId 職場ID
 	 * @param employmentCd 雇用コード
 	 * @param aggrSettingMonthly 月別実績集計設定
-	 * @param addSet 加算設定
+	 * @param holidayAdditionOpt 休暇加算時間設定
 	 * @param aggregateTotalWorkingTime 総労働時間
 	 * @param statutoryWorkingTimeMonth 月間法定労働時間
 	 * @param repositories 月次集計が必要とするリポジトリ
@@ -438,11 +445,14 @@ public class RegularAndIrregularTimeOfMonthly {
 			String workplaceId,
 			String employmentCd,
 			AggrSettingMonthly aggrSettingMonthly,
-			AddSet addSet,
+			Optional<HolidayAddtion> holidayAdditionOpt,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			AttendanceTimeMonth statutoryWorkingTimeMonth,
 			RepositoriesRequiredByMonthlyAggr repositories){
 
+		// 加算設定　取得　（割増用）
+		val addSet = GetAddSet.get(workingSystem, PremiumAtr.PREMIUM, holidayAdditionOpt);
+		
 		// 通常勤務の時
 		if (workingSystem == WorkingSystem.REGULAR_WORK){
 			
@@ -464,8 +474,8 @@ public class RegularAndIrregularTimeOfMonthly {
 			// 変形労働勤務の月単位の時間を集計する
 			this.aggregateTimePerMonthOfIrregular(companyId, employeeId,
 					yearMonth, closureId, closureDate, datePeriod, isRetireMonth,
-					aggrSettingMonthly.getIrregularWork(), addSet, aggregateTotalWorkingTime,
-					statutoryWorkingTimeMonth, repositories);
+					aggrSettingMonthly.getIrregularWork(), holidayAdditionOpt,
+					aggregateTotalWorkingTime, statutoryWorkingTimeMonth, repositories);
 		}
 	}
 	
@@ -526,7 +536,7 @@ public class RegularAndIrregularTimeOfMonthly {
 	 * @param datePeriod 期間
 	 * @param isRetireMonth 退職月かどうか
 	 * @param legalAggrSetOfIrg 変形労働時間勤務の法定内集計設定
-	 * @param addSet 加算設定
+	 * @param holidayAdditionOpt 休暇加算時間設定
 	 * @param aggregateTotalWorkingTime 集計総労働時間
 	 * @param statutoryWorkingTimeMonth 月間法定労働時間
 	 * @param repositories 月次集計が必要とするリポジトリ
@@ -540,7 +550,7 @@ public class RegularAndIrregularTimeOfMonthly {
 			DatePeriod datePeriod,
 			boolean isRetireMonth,
 			LegalAggrSetOfIrg legalAggrSetOfIrg,
-			AddSet addSet,
+			Optional<HolidayAddtion> holidayAdditionOpt,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			AttendanceTimeMonth statutoryWorkingTimeMonth,
 			RepositoriesRequiredByMonthlyAggr repositories){
@@ -548,7 +558,8 @@ public class RegularAndIrregularTimeOfMonthly {
 		// 当月の変形期間繰越時間を集計する
 		val irregularPeriodCarryforwardsTime = new IrregularPeriodCarryforwardsTimeOfCurrent();
 		irregularPeriodCarryforwardsTime.aggregate(companyId, employeeId, datePeriod,
-				this.weeklyTotalPremiumTime, addSet, aggregateTotalWorkingTime, statutoryWorkingTimeMonth);
+				this.weeklyTotalPremiumTime, holidayAdditionOpt,
+				aggregateTotalWorkingTime, statutoryWorkingTimeMonth);
 		this.addedVacationUseTime.addMinutesToAddTimePerMonth(
 				irregularPeriodCarryforwardsTime.getAddedVacationUseTime().v());
 		
@@ -613,7 +624,7 @@ public class RegularAndIrregularTimeOfMonthly {
 		
 		// 開始月～前月までの変形期間繰越時間を集計する
 		for (val pastYearMonth : pastYearMonths){
-			val attendanceTimeList = repositories.getAttendanceTimeOfMonthly().findByYearMonth(
+			val attendanceTimeList = repositories.getAttendanceTimeOfMonthly().findByYearMonthOrderByStartYmd(
 					employeeId, pastYearMonth);
 			for (val attendanceTime : attendanceTimeList){
 				val actualWorkingTime = attendanceTime.getMonthlyCalculation().getActualWorkingTime();
