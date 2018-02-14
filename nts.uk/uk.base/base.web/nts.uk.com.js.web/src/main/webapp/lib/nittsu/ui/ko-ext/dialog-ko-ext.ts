@@ -171,7 +171,7 @@ module nts.uk.ui.koExtentions {
                     // Row
                     let $row = $("<tr></tr>");
                     $row.click(function(){
-                        error.$control[0].focus();    
+                        error.$control.eq(0).exposeOnTabPanel().focus();    
                         let $dialogContainer = $dialog.closest("[role='dialog']");
                         let $self = nts.uk.ui.windows.getSelf();
                         let additonalTop = 0;

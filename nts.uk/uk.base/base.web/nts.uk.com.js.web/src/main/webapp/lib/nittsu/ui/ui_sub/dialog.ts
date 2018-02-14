@@ -257,7 +257,7 @@ module nts.uk.ui {
                         let tabId = tab.attr("id");
                         tab.siblings(":first").children("li[aria-controls='" + tabId + "']").children("a").click();
                         tab = tab.parent().closest("[role='tabpanel']");
-                    } 
+                    }
                     element.focus();
                     let $dialogContainer = errorBody.closest(".bundled-errors-alert").closest("[role='dialog']");
                     let $self = nts.uk.ui.windows.getSelf();

@@ -5250,6 +5250,19 @@ var nts;
                         } });
                     return $dialog;
                 };
+                $.fn.exposeOnTabPanel = function () {
+                    var $target = $(this);
+                    var $tabPanel = $target.closest(".ui-tabs-panel");
+                    if ($tabPanel.length === 0) {
+                        return;
+                    }
+                    var tabId = $tabPanel.attr("id");
+                    var $tabsContainer = $tabPanel.closest(".ui-tabs");
+                    // 先に親から
+                    $tabsContainer.exposeOnTabPanel();
+                    $tabsContainer.trigger("change-tab", tabId);
+                    return $target;
+                };
             })(jqueryExtentions = ui_2.jqueryExtentions || (ui_2.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -6627,7 +6640,7 @@ var nts;
                                 // Row
                                 var $row = $("<tr></tr>");
                                 $row.click(function () {
-                                    error.$control[0].focus();
+                                    error.$control.eq(0).exposeOnTabPanel().focus();
                                     var $dialogContainer = $dialog.closest("[role='dialog']");
                                     var $self = nts.uk.ui.windows.getSelf();
                                     var additonalTop = 0;
@@ -9910,6 +9923,11 @@ var nts;
                         container.bind("parentactived", function (evt, dataX) {
                             dataX.child.find("div[role='tabpanel'][aria-hidden='false']:first").removeClass("disappear");
                             //                data.active.valueHasMutated();
+                        });
+                        container.bind("change-tab", function (e, newTabId) {
+                            data.active(newTabId);
+                            // nested tabの場合にpropagationすると困る。tabIdは別なので。
+                            e.stopPropagation();
                         });
                         container.tabs({
                             create: function (event, ui) {

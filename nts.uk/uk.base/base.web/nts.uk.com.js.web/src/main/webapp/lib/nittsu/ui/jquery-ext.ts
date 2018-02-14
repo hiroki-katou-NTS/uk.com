@@ -2,6 +2,7 @@ interface JQuery {
     exposeVertically($target: JQuery);
     onkey(command: "down"|"up"|"press", keyCode: number, handler: (JQueryEventObject) => void): JQuery;
     dialogPositionControl(): JQuery;
+    exposeOnTabPanel(): JQuery;
     
 }
 
@@ -81,5 +82,25 @@ module nts.uk.ui.jqueryExtentions {
         }});
         
         return $dialog;
+    };
+    
+    $.fn.exposeOnTabPanel = function () {
+        
+        let $target = $(this);
+        
+        let $tabPanel = $target.closest(".ui-tabs-panel");
+        if ($tabPanel.length === 0) {
+            return;
+        }
+        
+        let tabId = $tabPanel.attr("id");
+        let $tabsContainer = $tabPanel.closest(".ui-tabs");
+        
+        // 先に親から
+        $tabsContainer.exposeOnTabPanel();
+        
+        $tabsContainer.trigger("change-tab", tabId);
+        
+        return $target;
     };
 }
