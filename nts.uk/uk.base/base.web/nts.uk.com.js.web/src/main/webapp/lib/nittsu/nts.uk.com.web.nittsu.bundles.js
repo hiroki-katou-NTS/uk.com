@@ -6712,6 +6712,57 @@ var nts;
             var koExtentions;
             (function (koExtentions) {
                 var validation = nts.uk.ui.validation;
+                var disable;
+                (function (disable) {
+                    var DATA_API_SET_VALUE = "api-set-value-for-disable";
+                    var DATA_DEFAULT_VALUE = "default-value-for-disable";
+                    function saveApiSetValue($input, value) {
+                        $input.data(DATA_API_SET_VALUE, value);
+                    }
+                    disable.saveApiSetValue = saveApiSetValue;
+                    function saveDefaultValue($input, value) {
+                        $input.data(DATA_DEFAULT_VALUE, value);
+                    }
+                    disable.saveDefaultValue = saveDefaultValue;
+                    function on($input) {
+                        $input.attr('disabled', 'disabled').ntsError("clear");
+                        return $input.data(DATA_DEFAULT_VALUE) !== undefined
+                            ? $input.data(DATA_DEFAULT_VALUE)
+                            : $input.data(DATA_API_SET_VALUE);
+                    }
+                    disable.on = on;
+                    function off($input) {
+                        $input.removeAttr('disabled');
+                    }
+                    disable.off = off;
+                })(disable || (disable = {}));
+                var valueChanging;
+                (function (valueChanging) {
+                    var DATA_CHANGED_BY_USER = "changed-by-user";
+                    var DATA_CURRENT_VALUE = "current-value";
+                    function markUserChange($input) {
+                        $input.data(DATA_CHANGED_BY_USER, true);
+                    }
+                    valueChanging.markUserChange = markUserChange;
+                    function unmarkUserChange($input) {
+                        $input.data(DATA_CHANGED_BY_USER, false);
+                    }
+                    valueChanging.unmarkUserChange = unmarkUserChange;
+                    function setNewValue($input, value) {
+                        $input.data(DATA_CURRENT_VALUE, value);
+                    }
+                    valueChanging.setNewValue = setNewValue;
+                    function isChangingValueByApi($input, newValue) {
+                        return !isUserChange($input) && isChangedValue($input, newValue);
+                    }
+                    valueChanging.isChangingValueByApi = isChangingValueByApi;
+                    function isUserChange($input) {
+                        return $input.data(DATA_CHANGED_BY_USER) === true;
+                    }
+                    function isChangedValue($input, newValue) {
+                        return $input.data(DATA_CURRENT_VALUE) !== newValue;
+                    }
+                })(valueChanging || (valueChanging = {}));
                 /**
                  * BaseEditor Processor
                  */
@@ -6743,7 +6794,10 @@ var nts;
                             var result = validator.validate(newText);
                             if (result.isValid) {
                                 $input.ntsError('clear');
+                                valueChanging.markUserChange($input);
                                 value(result.parsedValue);
+                                // why is valueHasMutated needed?? (kitahira)
+                                valueChanging.markUserChange($input);
                                 value.valueHasMutated();
                             }
                             else {
@@ -6752,6 +6806,7 @@ var nts;
                                     $input.ntsError('clear');
                                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
                                 }
+                                valueChanging.markUserChange($input);
                                 value(newText);
                             }
                         });
@@ -6772,6 +6827,7 @@ var nts;
                                         $input.ntsError('clearKibanError');
                                         $input.ntsError('set', result.errorMessage, result.errorCode, false);
                                     }
+                                    valueChanging.markUserChange($input);
                                     value(newText);
                                 }
                             }
@@ -6785,12 +6841,11 @@ var nts;
                                 $input.ntsError('set', result.errorMessage, result.errorCode, false);
                             }
                         }));
-                        new nts.uk.util.value.DefaultValue().onReset($input, data.value);
                         var tabIndex = $input.attr("tabindex");
                         $input.data("tabindex", tabIndex);
                     };
                     EditorProcessor.prototype.update = function ($input, data) {
-                        var value = data.value;
+                        var value = ko.unwrap(data.value);
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
@@ -6799,13 +6854,19 @@ var nts;
                         var placeholder = this.editorOption.placeholder;
                         var textalign = this.editorOption.textalign;
                         var width = this.editorOption.width;
+                        disable.saveDefaultValue($input, option.defaultValue);
+                        if (valueChanging.isChangingValueByApi($input, value)) {
+                            disable.saveApiSetValue($input, value);
+                        }
+                        valueChanging.setNewValue($input, value);
+                        valueChanging.unmarkUserChange($input);
                         // Properties
                         if (enable !== false) {
-                            $input.removeAttr('disabled');
+                            disable.off($input);
                         }
                         else {
-                            $input.attr('disabled', 'disabled');
-                            new nts.uk.util.value.DefaultValue().applyReset($input, value);
+                            value = disable.on($input);
+                            data.value(value);
                         }
                         if (readonly === false) {
                             $input.removeAttr('readonly');
@@ -6825,7 +6886,7 @@ var nts;
                         if (width.trim() != "")
                             $input.width(width);
                         // Format value
-                        var formatted = $input.ntsError('hasError') ? value() : this.getFormatter(data).format(value());
+                        var formatted = $input.ntsError('hasError') ? value : this.getFormatter(data).format(value);
                         $input.val(formatted);
                         //            $input.trigger("validate");
                     };
@@ -6911,11 +6972,13 @@ var nts;
                                         $input.val(result.parsedValue);
                                     }
                                     else {
+                                        valueChanging.markUserChange($input);
                                         value(result.parsedValue);
                                     }
                                 }
                                 else {
                                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                                    valueChanging.markUserChange($input);
                                     value(newText);
                                 }
                             }
@@ -6937,7 +7000,9 @@ var nts;
                         _super.prototype.update.call(this, $input, data);
                         var textmode = this.editorOption.textmode;
                         $input.attr('type', textmode);
+                        // このif文は何のため？ ユーザが入力操作をしたときしかtrueにならないか？
                         if (!$input.ntsError('hasError') && data.value() !== $input.val()) {
+                            valueChanging.markUserChange($input);
                             data.value($input.val());
                         }
                     };
@@ -12759,6 +12824,343 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
+        (function (ui) {
+            var windows;
+            (function (windows) {
+                var MAIN_WINDOW_ID = 'MAIN_WINDOW';
+                var DEFAULT_DIALOG_OPTIONS = {
+                    autoOpen: false,
+                    draggable: true,
+                    resizable: false,
+                    dialogClass: "no-close"
+                };
+                /**
+                 * Main or Sub Window(dialog)
+                 */
+                var ScreenWindow = (function () {
+                    function ScreenWindow(id, isRoot, parent) {
+                        this.globalContext = null;
+                        this.$dialog = null;
+                        this.$iframe = null;
+                        this.onClosedHandler = $.noop;
+                        this.id = id;
+                        this.isRoot = isRoot;
+                        this.parent = parent;
+                    }
+                    ScreenWindow.createMainWindow = function () {
+                        return new ScreenWindow(MAIN_WINDOW_ID, true, null);
+                    };
+                    ScreenWindow.createSubWindow = function (parent) {
+                        return new ScreenWindow(uk.util.randomId(), false, parent);
+                    };
+                    ScreenWindow.prototype.setGlobal = function (globalContext) {
+                        this.globalContext = globalContext;
+                    };
+                    ScreenWindow.prototype.setTitle = function (newTitle) {
+                        if (this.isRoot) {
+                            this.globalContext.title = newTitle;
+                        }
+                        else {
+                            this.$dialog.dialog('option', { title: newTitle });
+                        }
+                    };
+                    ScreenWindow.prototype.setHeight = function (height) {
+                        if (!isNaN(height)) {
+                            this.$dialog.dialog('option', {
+                                height: height
+                            });
+                            this.$dialog.resize();
+                        }
+                    };
+                    ScreenWindow.prototype.setWidth = function (width) {
+                        if (!isNaN(width)) {
+                            this.$dialog.dialog('option', {
+                                width: width
+                            });
+                            this.$dialog.resize();
+                        }
+                    };
+                    ScreenWindow.prototype.setSize = function (height, width) {
+                        if (!isNaN(width) && !isNaN(height)) {
+                            this.$dialog.dialog('option', {
+                                width: width,
+                                height: height
+                            });
+                            this.$dialog.resize();
+                        }
+                    };
+                    ScreenWindow.prototype.setupAsDialog = function (path, options) {
+                        var _this = this;
+                        options.close = function () {
+                            _this.dispose();
+                        };
+                        this.build$dialog(options);
+                        this.$iframe.bind('load', function () {
+                            _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
+                            var dialogName = _this.globalContext.__viewContext["program"]["programName"];
+                            var title = nts.uk.util.isNullOrEmpty(dialogName) ? "" : dialogName;
+                            var showCloseButton = _this.globalContext.dialogCloseButton === true;
+                            _this.$dialog.dialog('option', {
+                                width: options.width || _this.globalContext.dialogSize.width,
+                                height: options.height || _this.globalContext.dialogSize.height,
+                                title: title,
+                                resizable: options.resizable,
+                                open: function () {
+                                    var $dialog = $(this);
+                                    if (!showCloseButton) {
+                                        $dialog.closest(".ui-dialog").addClass("no-close-btn");
+                                    }
+                                    $dialog.dialogPositionControl();
+                                    //                            if ($(this).parent().height() >= $("#contents-area").height()) {
+                                    //                                $(this).dialog("option", "position", {
+                                    //                                    my: "center top",
+                                    //                                    at: "center top",
+                                    //                                    of: $("#contents-area"),
+                                    //                                    collision: "none"
+                                    //                                })
+                                    //                                $(this).parent().css("position", "absolute");
+                                    //                            }
+                                    var $dialogDocument = $(this).parent();
+                                    var $dialogContentDoc = $(this.lastElementChild.contentDocument);
+                                    // catch press tab key in close button of dialog.
+                                    $dialogDocument.on("keydown", ":tabbable", function (evt) {
+                                        var code = evt.which || evt.keyCode;
+                                        if (code.toString() === "9") {
+                                            var focusableElements = $dialogContentDoc.find(":tabbable");
+                                            if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false) {
+                                                focusableElements.first().focus();
+                                                evt.preventDefault();
+                                            }
+                                            else if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === true) {
+                                                focusableElements.last().focus();
+                                                evt.preventDefault();
+                                            }
+                                        }
+                                    });
+                                    // catch press tab key for component in dialog.
+                                    $dialogContentDoc.on("keydown", ":tabbable", function (evt) {
+                                        var code = evt.which || evt.keyCode;
+                                        if (code.toString() === "9") {
+                                            var focusableElements = $dialogContentDoc.find(":tabbable");
+                                            if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
+                                                focusableElements.first().focus();
+                                                evt.preventDefault();
+                                            }
+                                            else if ($(evt.target).is(focusableElements.first()) && evt.shiftKey === true) {
+                                                focusableElements.last().focus();
+                                                evt.preventDefault();
+                                            }
+                                        }
+                                    });
+                                },
+                                beforeClose: function () {
+                                    //return dialogWindow.__viewContext.dialog.beforeClose();
+                                }
+                            }).dialog('open');
+                            //remove focus on tab key press on the close button on jquery dialog
+                            $('.ui-dialog-titlebar-close').attr('tabindex', '-1');
+                            if (_this.parent !== null)
+                                _this.parent.globalContext.nts.uk.ui.block.clear();
+                            //                    var widget= this.$dialog.dialog("widget");
+                            //                    widget.draggable("option","containment",false);
+                        });
+                        this.globalContext.location.href = path;
+                    };
+                    ScreenWindow.prototype.build$dialog = function (options) {
+                        this.$dialog = $('<div/>')
+                            .css({
+                            padding: '0px',
+                            overflow: 'hidden'
+                        })
+                            .appendTo($('body'))
+                            .dialog(options);
+                        this.$iframe = $('<iframe/>').css({
+                            width: '100%',
+                            height: '100%'
+                        }).appendTo(this.$dialog);
+                        this.setGlobal(this.$iframe[0].contentWindow);
+                    };
+                    ScreenWindow.prototype.onClosed = function (callback) {
+                        this.onClosedHandler = function () {
+                            callback();
+                            windows.container.localShared = {};
+                        };
+                    };
+                    ScreenWindow.prototype.close = function () {
+                        if (this.isRoot) {
+                            window.close();
+                        }
+                        else {
+                            this.$dialog.dialog('close');
+                        }
+                    };
+                    ScreenWindow.prototype.dispose = function () {
+                        var _this = this;
+                        _.defer(function () { return _this.onClosedHandler(); });
+                        // delay 2 seconds to avoid IE error when any JS is running in destroyed iframe
+                        setTimeout(function () {
+                            _this.$iframe.remove();
+                            _this.$dialog.remove();
+                            _this.$dialog = null;
+                            _this.$iframe = null;
+                            _this.globalContext = null;
+                            _this.parent = null;
+                            _this.onClosedHandler = null;
+                        }, 2000);
+                    };
+                    return ScreenWindow;
+                }());
+                windows.ScreenWindow = ScreenWindow;
+                /**
+                 * All ScreenWindows are managed by this container.
+                 * this instance is singleton in one browser-tab.
+                 */
+                var ScreenWindowContainer = (function () {
+                    function ScreenWindowContainer() {
+                        this.windows = {};
+                        this.windows[windows.selfId] = ScreenWindow.createMainWindow();
+                        this.windows[windows.selfId].setGlobal(window);
+                        this.shared = {};
+                        this.localShared = {};
+                    }
+                    /**
+                     * All dialog object is in MainWindow.
+                     */
+                    ScreenWindowContainer.prototype.createDialog = function (path, options, parentId) {
+                        var parentwindow = this.windows[parentId];
+                        var subWindow = ScreenWindow.createSubWindow(parentwindow);
+                        this.windows[subWindow.id] = subWindow;
+                        options = $.extend({}, DEFAULT_DIALOG_OPTIONS, options);
+                        subWindow.setupAsDialog(path, options);
+                        return subWindow;
+                    };
+                    ScreenWindowContainer.prototype.createDialogNotOpen = function (path, options, parentId) {
+                        var parentwindow = this.windows[parentId];
+                        var subWindow = ScreenWindow.createSubWindow(parentwindow);
+                        this.windows[subWindow.id] = subWindow;
+                        return subWindow;
+                    };
+                    ScreenWindowContainer.prototype.mergeOption = function (options) {
+                        return $.extend({}, DEFAULT_DIALOG_OPTIONS, options);
+                    };
+                    ScreenWindowContainer.prototype.getShared = function (key) {
+                        return this.localShared[key] !== undefined ? this.localShared[key] : this.shared[key];
+                    };
+                    ScreenWindowContainer.prototype.setShared = function (key, data, isRoot, persist) {
+                        var transferData;
+                        // Null or Undefined
+                        if (uk.util.isNullOrUndefined(data)) {
+                            transferData = data;
+                        }
+                        else if (!_.isFunction(data) || ko.isObservable(data)) {
+                            transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
+                        }
+                        else {
+                            transferData = data;
+                        }
+                        if (persist || isRoot) {
+                            this.shared[key] = transferData;
+                        }
+                        else {
+                            this.localShared[key] = transferData;
+                        }
+                    };
+                    ScreenWindowContainer.prototype.close = function (id) {
+                        var target = this.windows[id];
+                        delete this.windows[id];
+                        target.close();
+                    };
+                    return ScreenWindowContainer;
+                }());
+                windows.ScreenWindowContainer = ScreenWindowContainer;
+                function rgc() {
+                    return windows.container.windows[MAIN_WINDOW_ID].globalContext;
+                }
+                windows.rgc = rgc;
+                if (uk.util.isInFrame()) {
+                    var parent = window.parent;
+                    windows.container = (parent.nts.uk.ui.windows.container);
+                }
+                else {
+                    windows.selfId = MAIN_WINDOW_ID;
+                    windows.container = new ScreenWindowContainer();
+                }
+                function getShared(key) {
+                    return windows.container.getShared(key);
+                }
+                windows.getShared = getShared;
+                function setShared(key, data, persist) {
+                    windows.container.setShared(key, data, windows.getSelf().isRoot, persist);
+                }
+                windows.setShared = setShared;
+                function getSelf() {
+                    return windows.container.windows[windows.selfId];
+                }
+                windows.getSelf = getSelf;
+                function close(windowId) {
+                    windowId = uk.util.orDefault(windowId, windows.selfId);
+                    windows.container.close(windowId);
+                }
+                windows.close = close;
+                var sub;
+                (function (sub) {
+                    function modal(webAppId, path, options) {
+                        if (typeof arguments[1] !== 'string') {
+                            return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                        }
+                        return dialog(webAppId, path, true, options);
+                    }
+                    sub.modal = modal;
+                    function modeless(webAppId, path, options) {
+                        if (typeof arguments[1] !== 'string') {
+                            return modeless.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                        }
+                        return dialog(webAppId, path, false, options);
+                    }
+                    sub.modeless = modeless;
+                    function dialog(webAppId, path, modal, options) {
+                        options = options || {};
+                        options.modal = modal;
+                        if (webAppId == nts.uk.request.location.currentAppId) {
+                            path = nts.uk.request.resolvePath(path);
+                            return open(path, options);
+                        }
+                        else {
+                            path = nts.uk.request.location.siteRoot
+                                .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                                .mergeRelativePath(path).serialize();
+                            var dialog_1 = createDialog(path, options);
+                            uk.request.login.keepSerializedSession()
+                                .then(function () {
+                                return uk.request.login.restoreSessionTo(webAppId);
+                            })
+                                .then(function () {
+                                dialog_1.setupAsDialog(path, windows.container.mergeOption(options));
+                            });
+                            return dialog_1;
+                        }
+                    }
+                    function open(path, options) {
+                        nts.uk.ui.block.invisible();
+                        return windows.container.createDialog(path, options, windows.selfId);
+                    }
+                    sub.open = open;
+                    function createDialog(path, options) {
+                        nts.uk.ui.block.invisible();
+                        return windows.container.createDialogNotOpen(path, options, windows.selfId);
+                    }
+                    sub.createDialog = createDialog;
+                })(sub = windows.sub || (windows.sub = {}));
+            })(windows = ui.windows || (ui.windows = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
         (function (ui_21) {
             var koExtentions;
             (function (koExtentions) {
@@ -12877,6 +13279,168 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsMonthDays'] = new NtsMonthDaysBindingHandler();
             })(koExtentions = ui_21.koExtentions || (ui_21.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            /**
+             * Utilities for IgniteUI
+             */
+            var ig;
+            (function (ig) {
+                var grid;
+                (function (grid) {
+                    function getScrollContainer($grid) {
+                        var $scroll = $grid.igGrid("scrollContainer");
+                        if ($scroll.length === 1)
+                            return $scroll;
+                        return $("#" + $grid.attr("id") + "_scrollContainer");
+                    }
+                    grid.getScrollContainer = getScrollContainer;
+                    function getRowIdFrom($anyElementInRow) {
+                        return $anyElementInRow.closest('tr').attr('data-id');
+                    }
+                    grid.getRowIdFrom = getRowIdFrom;
+                    function getRowIndexFrom($anyElementInRow) {
+                        return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
+                    }
+                    grid.getRowIndexFrom = getRowIndexFrom;
+                    function expose(targetRow, $grid) {
+                        var $scroll = getScrollContainer($grid);
+                        $scroll.exposeVertically(targetRow.element);
+                    }
+                    grid.expose = expose;
+                    var virtual;
+                    (function (virtual) {
+                        function getDisplayContainer(gridId) {
+                            return $('#' + gridId + '_displayContainer');
+                        }
+                        virtual.getDisplayContainer = getDisplayContainer;
+                        function getVisibleRows(gridId) {
+                            return $('#' + gridId + ' > tbody > tr:visible');
+                        }
+                        virtual.getVisibleRows = getVisibleRows;
+                        function getFirstVisibleRow(gridId) {
+                            var top = getDisplayContainer(gridId).scrollTop();
+                            var visibleRows = getVisibleRows(gridId);
+                            for (var i = 0; i < visibleRows.length; i++) {
+                                var $row = $(visibleRows[i]);
+                                if (visibleRows[i].offsetTop + $row.height() > top) {
+                                    return $row;
+                                }
+                            }
+                        }
+                        virtual.getFirstVisibleRow = getFirstVisibleRow;
+                        function getLastVisibleRow(gridId) {
+                            var $displayContainer = getDisplayContainer(gridId);
+                            var bottom = $displayContainer.scrollTop() + $displayContainer.height();
+                            return getVisibleRows(gridId).filter(function () {
+                                return this.offsetTop < bottom;
+                            }).last();
+                        }
+                        virtual.getLastVisibleRow = getLastVisibleRow;
+                        function expose(targetRow, $grid) {
+                            if (targetRow.index === undefined) {
+                                $grid.igGrid("virtualScrollTo", dataSource.getIndexOfKey(targetRow.id, $grid) + 1);
+                                return;
+                            }
+                            var rowHeight = targetRow.element.outerHeight();
+                            var targetTop = targetRow.index * rowHeight;
+                            var targetBottom = targetTop + rowHeight;
+                            var $scroll = getScrollContainer($grid);
+                            var viewHeight = $scroll.height();
+                            var viewTop = $scroll.scrollTop();
+                            var viewBottom = viewTop + viewHeight;
+                            if (viewTop <= targetTop && targetBottom <= viewBottom) {
+                                return;
+                            }
+                            // when specify 1, top row will be shown.
+                            $grid.igGrid("virtualScrollTo", targetRow.index + 1);
+                        }
+                        virtual.expose = expose;
+                    })(virtual = grid.virtual || (grid.virtual = {}));
+                    var dataSource;
+                    (function (dataSource) {
+                        function getIndexOfKey(targetKey, $grid) {
+                            var option = $grid.igGrid("option");
+                            return _.findIndex(option.dataSource, function (s) { return s[option.primaryKey].toString() === targetKey.toString(); });
+                        }
+                        dataSource.getIndexOfKey = getIndexOfKey;
+                    })(dataSource = grid.dataSource || (grid.dataSource = {}));
+                    var header;
+                    (function (header) {
+                        function getCell(gridId, columnKey) {
+                            var $headers = $('#' + gridId).igGrid("headersTable");
+                            return $headers.find('#' + gridId + '_' + columnKey);
+                        }
+                        header.getCell = getCell;
+                        function getLabel(gridId, columnKey) {
+                            return getCell(gridId, columnKey).find('span');
+                        }
+                        header.getLabel = getLabel;
+                    })(header = grid.header || (grid.header = {}));
+                })(grid = ig.grid || (ig.grid = {}));
+                var tree;
+                (function (tree) {
+                    var grid;
+                    (function (grid) {
+                        function expandTo(targetKey, $treeGrid) {
+                            var option = $treeGrid.igTreeGrid("option");
+                            var ancestorKeys = dataSource.collectAncestorKeys(targetKey, option.dataSource, option.primaryKey, option.childDataKey);
+                            if (ancestorKeys === null) {
+                                return;
+                            }
+                            var expand = function (currentIndex) {
+                                if (currentIndex >= ancestorKeys.length)
+                                    return;
+                                $treeGrid.igTreeGrid("expandRow", ancestorKeys[currentIndex]);
+                                setTimeout(function () { expand(currentIndex + 1); }, 0);
+                            };
+                            expand(0);
+                            setTimeout(function () {
+                                scrollTo(targetKey, $treeGrid);
+                            }, 1);
+                        }
+                        grid.expandTo = expandTo;
+                        function scrollTo(targetKey, $treeGrid) {
+                            var $scroll = $treeGrid.igTreeGrid("scrollContainer");
+                            var $targetNode = $treeGrid.find("tr[data-id='" + targetKey + "']").first();
+                            if ($targetNode.length === 0)
+                                return;
+                            $scroll.exposeVertically($targetNode);
+                        }
+                        grid.scrollTo = scrollTo;
+                    })(grid = tree.grid || (tree.grid = {}));
+                    var dataSource;
+                    (function (dataSource_1) {
+                        function collectAncestorKeys(targetKey, dataSource, primaryKey, childDataKey) {
+                            if (typeof dataSource === "undefined") {
+                                return null;
+                            }
+                            for (var i = 0, len = dataSource.length; i < len; i++) {
+                                var currentData = dataSource[i];
+                                if (currentData[primaryKey] === targetKey) {
+                                    return [targetKey];
+                                }
+                                var children = currentData[childDataKey];
+                                var results = collectAncestorKeys(targetKey, children, primaryKey, childDataKey);
+                                if (results !== null) {
+                                    results.unshift(currentData[primaryKey]);
+                                    return results;
+                                }
+                            }
+                            return null;
+                        }
+                        dataSource_1.collectAncestorKeys = collectAncestorKeys;
+                    })(dataSource = tree.dataSource || (tree.dataSource = {}));
+                })(tree = ig.tree || (ig.tree = {}));
+            })(ig = ui.ig || (ui.ig = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -26714,102 +27278,6 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui) {
-            var jqueryExtentions;
-            (function (jqueryExtentions) {
-                var isNotNull = nts.uk.util.isNullOrUndefined;
-                var ntsImageEditor;
-                (function (ntsImageEditor) {
-                    $.fn.ntsImageEditor = function (method, option) {
-                        var $element = $(this);
-                        switch (method) {
-                            case "upload": {
-                                return uploadImage($element, option);
-                            }
-                            case "uploadOriginal": {
-                                return uploadImageOriginal($element, option);
-                            }
-                            case "selectByFileId": {
-                                return downloadImage($element, option);
-                            }
-                            case "showByUrl": {
-                                return viewByUrl($element, option);
-                            }
-                            case "clear": {
-                                return clear($element);
-                            }
-                            case "getImgStatus": {
-                                return getImgStatus($element);
-                            }
-                            default:
-                                return;
-                        }
-                    };
-                    function getImgStatus($element) {
-                        return $element.data("img-status");
-                    }
-                    function uploadImage($element, option) {
-                        var dataFile = $element.find(".image-preview").attr("src");
-                        return upload($element, option, dataFile, isNotNull($element.data('checkbox')) ? false : $element.data('checkbox').checked());
-                    }
-                    function uploadImageOriginal($element, option) {
-                        return upload($element, option, $element.data("original-img"), false);
-                    }
-                    function upload($element, option, fileData, isCrop) {
-                        var dfd = $.Deferred();
-                        if (!isNotNull(fileData)) {
-                            var cropper = $element.data("cropper");
-                            var cropperData = cropper.getData(true);
-                            var formData = {
-                                "fileName": $element.data("file-name"),
-                                "stereoType": isNotNull(option) ? "image" : option.stereoType,
-                                "file": fileData,
-                                "format": $element.data("file-type"),
-                                "x": cropperData.x,
-                                "y": cropperData.y,
-                                "width": cropperData.width,
-                                "height": cropperData.height,
-                                "crop": isCrop
-                            };
-                            nts.uk.request.ajax("com", "image/editor/cropimage", formData).done(function (data) {
-                                if (nts.uk.util.exception.isBusinessError(data)) {
-                                    dfd.reject(data);
-                                }
-                                else {
-                                    dfd.resolve(data);
-                                }
-                            }).fail(function () {
-                                dfd.reject({ message: "Please check your network", messageId: "1" });
-                            });
-                        }
-                        else {
-                            dfd.reject({ message: "Please select file", messageId: "0" });
-                        }
-                        return dfd.promise();
-                    }
-                    function downloadImage($element, fileId) {
-                        $element.trigger("srcchanging", { url: nts.uk.request.liveView(fileId), isOutSiteUrl: false });
-                    }
-                    function viewByUrl($element, sourceUrl) {
-                        $element.trigger("srcchanging", { url: sourceUrl, isOutSiteUrl: true });
-                    }
-                    function clear($element) {
-                        var cropper = $element.data("cropper");
-                        if (!isNotNull(cropper)) {
-                            cropper.clear();
-                        }
-                    }
-                })(ntsImageEditor || (ntsImageEditor = {}));
-            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
         (function (ui_29) {
             var PS = window.parent;
             /**
@@ -27139,495 +27607,92 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui) {
-            /**
-             * Utilities for IgniteUI
-             */
-            var ig;
-            (function (ig) {
-                var grid;
-                (function (grid) {
-                    function getScrollContainer($grid) {
-                        var $scroll = $grid.igGrid("scrollContainer");
-                        if ($scroll.length === 1)
-                            return $scroll;
-                        return $("#" + $grid.attr("id") + "_scrollContainer");
-                    }
-                    grid.getScrollContainer = getScrollContainer;
-                    function getRowIdFrom($anyElementInRow) {
-                        return $anyElementInRow.closest('tr').attr('data-id');
-                    }
-                    grid.getRowIdFrom = getRowIdFrom;
-                    function getRowIndexFrom($anyElementInRow) {
-                        return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
-                    }
-                    grid.getRowIndexFrom = getRowIndexFrom;
-                    function expose(targetRow, $grid) {
-                        var $scroll = getScrollContainer($grid);
-                        $scroll.exposeVertically(targetRow.element);
-                    }
-                    grid.expose = expose;
-                    var virtual;
-                    (function (virtual) {
-                        function getDisplayContainer(gridId) {
-                            return $('#' + gridId + '_displayContainer');
-                        }
-                        virtual.getDisplayContainer = getDisplayContainer;
-                        function getVisibleRows(gridId) {
-                            return $('#' + gridId + ' > tbody > tr:visible');
-                        }
-                        virtual.getVisibleRows = getVisibleRows;
-                        function getFirstVisibleRow(gridId) {
-                            var top = getDisplayContainer(gridId).scrollTop();
-                            var visibleRows = getVisibleRows(gridId);
-                            for (var i = 0; i < visibleRows.length; i++) {
-                                var $row = $(visibleRows[i]);
-                                if (visibleRows[i].offsetTop + $row.height() > top) {
-                                    return $row;
-                                }
+            var jqueryExtentions;
+            (function (jqueryExtentions) {
+                var isNotNull = nts.uk.util.isNullOrUndefined;
+                var ntsImageEditor;
+                (function (ntsImageEditor) {
+                    $.fn.ntsImageEditor = function (method, option) {
+                        var $element = $(this);
+                        switch (method) {
+                            case "upload": {
+                                return uploadImage($element, option);
                             }
-                        }
-                        virtual.getFirstVisibleRow = getFirstVisibleRow;
-                        function getLastVisibleRow(gridId) {
-                            var $displayContainer = getDisplayContainer(gridId);
-                            var bottom = $displayContainer.scrollTop() + $displayContainer.height();
-                            return getVisibleRows(gridId).filter(function () {
-                                return this.offsetTop < bottom;
-                            }).last();
-                        }
-                        virtual.getLastVisibleRow = getLastVisibleRow;
-                        function expose(targetRow, $grid) {
-                            if (targetRow.index === undefined) {
-                                $grid.igGrid("virtualScrollTo", dataSource.getIndexOfKey(targetRow.id, $grid) + 1);
+                            case "uploadOriginal": {
+                                return uploadImageOriginal($element, option);
+                            }
+                            case "selectByFileId": {
+                                return downloadImage($element, option);
+                            }
+                            case "showByUrl": {
+                                return viewByUrl($element, option);
+                            }
+                            case "clear": {
+                                return clear($element);
+                            }
+                            case "getImgStatus": {
+                                return getImgStatus($element);
+                            }
+                            default:
                                 return;
-                            }
-                            var rowHeight = targetRow.element.outerHeight();
-                            var targetTop = targetRow.index * rowHeight;
-                            var targetBottom = targetTop + rowHeight;
-                            var $scroll = getScrollContainer($grid);
-                            var viewHeight = $scroll.height();
-                            var viewTop = $scroll.scrollTop();
-                            var viewBottom = viewTop + viewHeight;
-                            if (viewTop <= targetTop && targetBottom <= viewBottom) {
-                                return;
-                            }
-                            // when specify 1, top row will be shown.
-                            $grid.igGrid("virtualScrollTo", targetRow.index + 1);
                         }
-                        virtual.expose = expose;
-                    })(virtual = grid.virtual || (grid.virtual = {}));
-                    var dataSource;
-                    (function (dataSource) {
-                        function getIndexOfKey(targetKey, $grid) {
-                            var option = $grid.igGrid("option");
-                            return _.findIndex(option.dataSource, function (s) { return s[option.primaryKey].toString() === targetKey.toString(); });
-                        }
-                        dataSource.getIndexOfKey = getIndexOfKey;
-                    })(dataSource = grid.dataSource || (grid.dataSource = {}));
-                    var header;
-                    (function (header) {
-                        function getCell(gridId, columnKey) {
-                            var $headers = $('#' + gridId).igGrid("headersTable");
-                            return $headers.find('#' + gridId + '_' + columnKey);
-                        }
-                        header.getCell = getCell;
-                        function getLabel(gridId, columnKey) {
-                            return getCell(gridId, columnKey).find('span');
-                        }
-                        header.getLabel = getLabel;
-                    })(header = grid.header || (grid.header = {}));
-                })(grid = ig.grid || (ig.grid = {}));
-                var tree;
-                (function (tree) {
-                    var grid;
-                    (function (grid) {
-                        function expandTo(targetKey, $treeGrid) {
-                            var option = $treeGrid.igTreeGrid("option");
-                            var ancestorKeys = dataSource.collectAncestorKeys(targetKey, option.dataSource, option.primaryKey, option.childDataKey);
-                            if (ancestorKeys === null) {
-                                return;
-                            }
-                            var expand = function (currentIndex) {
-                                if (currentIndex >= ancestorKeys.length)
-                                    return;
-                                $treeGrid.igTreeGrid("expandRow", ancestorKeys[currentIndex]);
-                                setTimeout(function () { expand(currentIndex + 1); }, 0);
+                    };
+                    function getImgStatus($element) {
+                        return $element.data("img-status");
+                    }
+                    function uploadImage($element, option) {
+                        var dataFile = $element.find(".image-preview").attr("src");
+                        return upload($element, option, dataFile, isNotNull($element.data('checkbox')) ? false : $element.data('checkbox').checked());
+                    }
+                    function uploadImageOriginal($element, option) {
+                        return upload($element, option, $element.data("original-img"), false);
+                    }
+                    function upload($element, option, fileData, isCrop) {
+                        var dfd = $.Deferred();
+                        if (!isNotNull(fileData)) {
+                            var cropper = $element.data("cropper");
+                            var cropperData = cropper.getData(true);
+                            var formData = {
+                                "fileName": $element.data("file-name"),
+                                "stereoType": isNotNull(option) ? "image" : option.stereoType,
+                                "file": fileData,
+                                "format": $element.data("file-type"),
+                                "x": cropperData.x,
+                                "y": cropperData.y,
+                                "width": cropperData.width,
+                                "height": cropperData.height,
+                                "crop": isCrop
                             };
-                            expand(0);
-                            setTimeout(function () {
-                                scrollTo(targetKey, $treeGrid);
-                            }, 1);
-                        }
-                        grid.expandTo = expandTo;
-                        function scrollTo(targetKey, $treeGrid) {
-                            var $scroll = $treeGrid.igTreeGrid("scrollContainer");
-                            var $targetNode = $treeGrid.find("tr[data-id='" + targetKey + "']").first();
-                            if ($targetNode.length === 0)
-                                return;
-                            $scroll.exposeVertically($targetNode);
-                        }
-                        grid.scrollTo = scrollTo;
-                    })(grid = tree.grid || (tree.grid = {}));
-                    var dataSource;
-                    (function (dataSource_1) {
-                        function collectAncestorKeys(targetKey, dataSource, primaryKey, childDataKey) {
-                            if (typeof dataSource === "undefined") {
-                                return null;
-                            }
-                            for (var i = 0, len = dataSource.length; i < len; i++) {
-                                var currentData = dataSource[i];
-                                if (currentData[primaryKey] === targetKey) {
-                                    return [targetKey];
+                            nts.uk.request.ajax("com", "image/editor/cropimage", formData).done(function (data) {
+                                if (nts.uk.util.exception.isBusinessError(data)) {
+                                    dfd.reject(data);
                                 }
-                                var children = currentData[childDataKey];
-                                var results = collectAncestorKeys(targetKey, children, primaryKey, childDataKey);
-                                if (results !== null) {
-                                    results.unshift(currentData[primaryKey]);
-                                    return results;
+                                else {
+                                    dfd.resolve(data);
                                 }
-                            }
-                            return null;
-                        }
-                        dataSource_1.collectAncestorKeys = collectAncestorKeys;
-                    })(dataSource = tree.dataSource || (tree.dataSource = {}));
-                })(tree = ig.tree || (ig.tree = {}));
-            })(ig = ui.ig || (ui.ig = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var windows;
-            (function (windows) {
-                var MAIN_WINDOW_ID = 'MAIN_WINDOW';
-                var DEFAULT_DIALOG_OPTIONS = {
-                    autoOpen: false,
-                    draggable: true,
-                    resizable: false,
-                    dialogClass: "no-close"
-                };
-                /**
-                 * Main or Sub Window(dialog)
-                 */
-                var ScreenWindow = (function () {
-                    function ScreenWindow(id, isRoot, parent) {
-                        this.globalContext = null;
-                        this.$dialog = null;
-                        this.$iframe = null;
-                        this.onClosedHandler = $.noop;
-                        this.id = id;
-                        this.isRoot = isRoot;
-                        this.parent = parent;
-                    }
-                    ScreenWindow.createMainWindow = function () {
-                        return new ScreenWindow(MAIN_WINDOW_ID, true, null);
-                    };
-                    ScreenWindow.createSubWindow = function (parent) {
-                        return new ScreenWindow(uk.util.randomId(), false, parent);
-                    };
-                    ScreenWindow.prototype.setGlobal = function (globalContext) {
-                        this.globalContext = globalContext;
-                    };
-                    ScreenWindow.prototype.setTitle = function (newTitle) {
-                        if (this.isRoot) {
-                            this.globalContext.title = newTitle;
-                        }
-                        else {
-                            this.$dialog.dialog('option', { title: newTitle });
-                        }
-                    };
-                    ScreenWindow.prototype.setHeight = function (height) {
-                        if (!isNaN(height)) {
-                            this.$dialog.dialog('option', {
-                                height: height
+                            }).fail(function () {
+                                dfd.reject({ message: "Please check your network", messageId: "1" });
                             });
-                            this.$dialog.resize();
-                        }
-                    };
-                    ScreenWindow.prototype.setWidth = function (width) {
-                        if (!isNaN(width)) {
-                            this.$dialog.dialog('option', {
-                                width: width
-                            });
-                            this.$dialog.resize();
-                        }
-                    };
-                    ScreenWindow.prototype.setSize = function (height, width) {
-                        if (!isNaN(width) && !isNaN(height)) {
-                            this.$dialog.dialog('option', {
-                                width: width,
-                                height: height
-                            });
-                            this.$dialog.resize();
-                        }
-                    };
-                    ScreenWindow.prototype.setupAsDialog = function (path, options) {
-                        var _this = this;
-                        options.close = function () {
-                            _this.dispose();
-                        };
-                        this.build$dialog(options);
-                        this.$iframe.bind('load', function () {
-                            _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
-                            var dialogName = _this.globalContext.__viewContext["program"]["programName"];
-                            var title = nts.uk.util.isNullOrEmpty(dialogName) ? "" : dialogName;
-                            var showCloseButton = _this.globalContext.dialogCloseButton === true;
-                            _this.$dialog.dialog('option', {
-                                width: options.width || _this.globalContext.dialogSize.width,
-                                height: options.height || _this.globalContext.dialogSize.height,
-                                title: title,
-                                resizable: options.resizable,
-                                open: function () {
-                                    var $dialog = $(this);
-                                    if (!showCloseButton) {
-                                        $dialog.closest(".ui-dialog").addClass("no-close-btn");
-                                    }
-                                    $dialog.dialogPositionControl();
-                                    //                            if ($(this).parent().height() >= $("#contents-area").height()) {
-                                    //                                $(this).dialog("option", "position", {
-                                    //                                    my: "center top",
-                                    //                                    at: "center top",
-                                    //                                    of: $("#contents-area"),
-                                    //                                    collision: "none"
-                                    //                                })
-                                    //                                $(this).parent().css("position", "absolute");
-                                    //                            }
-                                    var $dialogDocument = $(this).parent();
-                                    var $dialogContentDoc = $(this.lastElementChild.contentDocument);
-                                    // catch press tab key in close button of dialog.
-                                    $dialogDocument.on("keydown", ":tabbable", function (evt) {
-                                        var code = evt.which || evt.keyCode;
-                                        if (code.toString() === "9") {
-                                            var focusableElements = $dialogContentDoc.find(":tabbable");
-                                            if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false) {
-                                                focusableElements.first().focus();
-                                                evt.preventDefault();
-                                            }
-                                            else if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === true) {
-                                                focusableElements.last().focus();
-                                                evt.preventDefault();
-                                            }
-                                        }
-                                    });
-                                    // catch press tab key for component in dialog.
-                                    $dialogContentDoc.on("keydown", ":tabbable", function (evt) {
-                                        var code = evt.which || evt.keyCode;
-                                        if (code.toString() === "9") {
-                                            var focusableElements = $dialogContentDoc.find(":tabbable");
-                                            if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
-                                                focusableElements.first().focus();
-                                                evt.preventDefault();
-                                            }
-                                            else if ($(evt.target).is(focusableElements.first()) && evt.shiftKey === true) {
-                                                focusableElements.last().focus();
-                                                evt.preventDefault();
-                                            }
-                                        }
-                                    });
-                                },
-                                beforeClose: function () {
-                                    //return dialogWindow.__viewContext.dialog.beforeClose();
-                                }
-                            }).dialog('open');
-                            //remove focus on tab key press on the close button on jquery dialog
-                            $('.ui-dialog-titlebar-close').attr('tabindex', '-1');
-                            if (_this.parent !== null)
-                                _this.parent.globalContext.nts.uk.ui.block.clear();
-                            //                    var widget= this.$dialog.dialog("widget");
-                            //                    widget.draggable("option","containment",false);
-                        });
-                        this.globalContext.location.href = path;
-                    };
-                    ScreenWindow.prototype.build$dialog = function (options) {
-                        this.$dialog = $('<div/>')
-                            .css({
-                            padding: '0px',
-                            overflow: 'hidden'
-                        })
-                            .appendTo($('body'))
-                            .dialog(options);
-                        this.$iframe = $('<iframe/>').css({
-                            width: '100%',
-                            height: '100%'
-                        }).appendTo(this.$dialog);
-                        this.setGlobal(this.$iframe[0].contentWindow);
-                    };
-                    ScreenWindow.prototype.onClosed = function (callback) {
-                        this.onClosedHandler = function () {
-                            callback();
-                            windows.container.localShared = {};
-                        };
-                    };
-                    ScreenWindow.prototype.close = function () {
-                        if (this.isRoot) {
-                            window.close();
                         }
                         else {
-                            this.$dialog.dialog('close');
+                            dfd.reject({ message: "Please select file", messageId: "0" });
                         }
-                    };
-                    ScreenWindow.prototype.dispose = function () {
-                        var _this = this;
-                        _.defer(function () { return _this.onClosedHandler(); });
-                        // delay 2 seconds to avoid IE error when any JS is running in destroyed iframe
-                        setTimeout(function () {
-                            _this.$iframe.remove();
-                            _this.$dialog.remove();
-                            _this.$dialog = null;
-                            _this.$iframe = null;
-                            _this.globalContext = null;
-                            _this.parent = null;
-                            _this.onClosedHandler = null;
-                        }, 2000);
-                    };
-                    return ScreenWindow;
-                }());
-                windows.ScreenWindow = ScreenWindow;
-                /**
-                 * All ScreenWindows are managed by this container.
-                 * this instance is singleton in one browser-tab.
-                 */
-                var ScreenWindowContainer = (function () {
-                    function ScreenWindowContainer() {
-                        this.windows = {};
-                        this.windows[windows.selfId] = ScreenWindow.createMainWindow();
-                        this.windows[windows.selfId].setGlobal(window);
-                        this.shared = {};
-                        this.localShared = {};
+                        return dfd.promise();
                     }
-                    /**
-                     * All dialog object is in MainWindow.
-                     */
-                    ScreenWindowContainer.prototype.createDialog = function (path, options, parentId) {
-                        var parentwindow = this.windows[parentId];
-                        var subWindow = ScreenWindow.createSubWindow(parentwindow);
-                        this.windows[subWindow.id] = subWindow;
-                        options = $.extend({}, DEFAULT_DIALOG_OPTIONS, options);
-                        subWindow.setupAsDialog(path, options);
-                        return subWindow;
-                    };
-                    ScreenWindowContainer.prototype.createDialogNotOpen = function (path, options, parentId) {
-                        var parentwindow = this.windows[parentId];
-                        var subWindow = ScreenWindow.createSubWindow(parentwindow);
-                        this.windows[subWindow.id] = subWindow;
-                        return subWindow;
-                    };
-                    ScreenWindowContainer.prototype.mergeOption = function (options) {
-                        return $.extend({}, DEFAULT_DIALOG_OPTIONS, options);
-                    };
-                    ScreenWindowContainer.prototype.getShared = function (key) {
-                        return this.localShared[key] !== undefined ? this.localShared[key] : this.shared[key];
-                    };
-                    ScreenWindowContainer.prototype.setShared = function (key, data, isRoot, persist) {
-                        var transferData;
-                        // Null or Undefined
-                        if (uk.util.isNullOrUndefined(data)) {
-                            transferData = data;
-                        }
-                        else if (!_.isFunction(data) || ko.isObservable(data)) {
-                            transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
-                        }
-                        else {
-                            transferData = data;
-                        }
-                        if (persist || isRoot) {
-                            this.shared[key] = transferData;
-                        }
-                        else {
-                            this.localShared[key] = transferData;
-                        }
-                    };
-                    ScreenWindowContainer.prototype.close = function (id) {
-                        var target = this.windows[id];
-                        delete this.windows[id];
-                        target.close();
-                    };
-                    return ScreenWindowContainer;
-                }());
-                windows.ScreenWindowContainer = ScreenWindowContainer;
-                function rgc() {
-                    return windows.container.windows[MAIN_WINDOW_ID].globalContext;
-                }
-                windows.rgc = rgc;
-                if (uk.util.isInFrame()) {
-                    var parent = window.parent;
-                    windows.container = (parent.nts.uk.ui.windows.container);
-                }
-                else {
-                    windows.selfId = MAIN_WINDOW_ID;
-                    windows.container = new ScreenWindowContainer();
-                }
-                function getShared(key) {
-                    return windows.container.getShared(key);
-                }
-                windows.getShared = getShared;
-                function setShared(key, data, persist) {
-                    windows.container.setShared(key, data, windows.getSelf().isRoot, persist);
-                }
-                windows.setShared = setShared;
-                function getSelf() {
-                    return windows.container.windows[windows.selfId];
-                }
-                windows.getSelf = getSelf;
-                function close(windowId) {
-                    windowId = uk.util.orDefault(windowId, windows.selfId);
-                    windows.container.close(windowId);
-                }
-                windows.close = close;
-                var sub;
-                (function (sub) {
-                    function modal(webAppId, path, options) {
-                        if (typeof arguments[1] !== 'string') {
-                            return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
-                        }
-                        return dialog(webAppId, path, true, options);
+                    function downloadImage($element, fileId) {
+                        $element.trigger("srcchanging", { url: nts.uk.request.liveView(fileId), isOutSiteUrl: false });
                     }
-                    sub.modal = modal;
-                    function modeless(webAppId, path, options) {
-                        if (typeof arguments[1] !== 'string') {
-                            return modeless.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
-                        }
-                        return dialog(webAppId, path, false, options);
+                    function viewByUrl($element, sourceUrl) {
+                        $element.trigger("srcchanging", { url: sourceUrl, isOutSiteUrl: true });
                     }
-                    sub.modeless = modeless;
-                    function dialog(webAppId, path, modal, options) {
-                        options = options || {};
-                        options.modal = modal;
-                        if (webAppId == nts.uk.request.location.currentAppId) {
-                            path = nts.uk.request.resolvePath(path);
-                            return open(path, options);
-                        }
-                        else {
-                            path = nts.uk.request.location.siteRoot
-                                .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
-                                .mergeRelativePath(path).serialize();
-                            var dialog_1 = createDialog(path, options);
-                            uk.request.login.keepSerializedSession()
-                                .then(function () {
-                                return uk.request.login.restoreSessionTo(webAppId);
-                            })
-                                .then(function () {
-                                dialog_1.setupAsDialog(path, windows.container.mergeOption(options));
-                            });
-                            return dialog_1;
+                    function clear($element) {
+                        var cropper = $element.data("cropper");
+                        if (!isNotNull(cropper)) {
+                            cropper.clear();
                         }
                     }
-                    function open(path, options) {
-                        nts.uk.ui.block.invisible();
-                        return windows.container.createDialog(path, options, windows.selfId);
-                    }
-                    sub.open = open;
-                    function createDialog(path, options) {
-                        nts.uk.ui.block.invisible();
-                        return windows.container.createDialogNotOpen(path, options, windows.selfId);
-                    }
-                    sub.createDialog = createDialog;
-                })(sub = windows.sub || (windows.sub = {}));
-            })(windows = ui.windows || (ui.windows = {}));
+                })(ntsImageEditor || (ntsImageEditor = {}));
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
