@@ -78,7 +78,7 @@ module nts.uk.ui.koExtentions {
                 $checkbox = $element.find('.comfirm-checkbox');
 
             if (!nts.uk.util.isNullOrEmpty($checkbox)) {
-                ko.bindingHandlers["ntsCheckBox"].update($checkbox[0], function() {
+                (<any>ko).bindingHandlers["ntsCheckBox"].update($checkbox[0], function() {
                     return confirm;
                 }, allBindingsAccessor, viewModel, bindingContext);
             }
@@ -292,19 +292,7 @@ module nts.uk.ui.koExtentions {
         }
         
         getXRequest(){
-            if ( typeof XDomainRequest != "undefined" ){
-                // IE8
-                return new XDomainRequest();
-            } else if ( typeof XMLHttpRequest != "undefined" ){
-                // firefox 他
-                return new XMLHttpRequest();
-            } else if ( window.ActiveXObject ) {
-                // IE 7 以前
-                return new ActiveXObject("Microsoft.XMLHTTP");
-            } else {
-                // 未対応ブラウザ
-                return null;
-            }    
+            return new XMLHttpRequest();
         }
 
         buildFileChangeHandler() {

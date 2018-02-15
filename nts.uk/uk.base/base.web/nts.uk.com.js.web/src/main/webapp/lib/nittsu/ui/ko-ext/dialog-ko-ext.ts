@@ -1,6 +1,8 @@
 /// <reference path="../../reference.ts"/>
 
 module nts.uk.ui.koExtentions {
+    
+    let PS: any = window.parent;
 
     /**
      * Dialog binding handler
@@ -85,7 +87,7 @@ module nts.uk.ui.koExtentions {
 
             var $dialog = $("<div id='ntsErrorDialog'></div>");
 
-            parent.$('body').append($dialog);
+            PS.$('body').append($dialog);
             // Create Buttons
             var dialogbuttons = [];
             for (let button of buttons) {
@@ -143,7 +145,7 @@ module nts.uk.ui.koExtentions {
             var autoclose: boolean = ko.unwrap(option.autoclose);
             var show: boolean = ko.unwrap(option.show);
 
-            var $dialog = parent.$("#ntsErrorDialog");
+            var $dialog = PS.$("#ntsErrorDialog");
 
             if (show == true) {
                 

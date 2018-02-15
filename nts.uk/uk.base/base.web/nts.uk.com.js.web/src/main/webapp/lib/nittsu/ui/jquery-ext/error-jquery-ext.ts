@@ -1,7 +1,7 @@
 /// <reference path="../../reference.ts"/>
 
 interface JQuery {
-    ntsError(action: string, param?: any, errorCode?: string): any;
+    ntsError(action: string, param?: any, errorCode?: string, businessError?: boolean): any;
 }
 
 module nts.uk.ui {
