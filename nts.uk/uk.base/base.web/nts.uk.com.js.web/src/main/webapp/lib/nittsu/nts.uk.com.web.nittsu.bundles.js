@@ -6,6 +6,7 @@ var nts;
         (function (KeyCodes) {
             KeyCodes.Tab = 9;
             KeyCodes.Enter = 13;
+            KeyCodes.Ctrl = 17;
         })(KeyCodes = uk.KeyCodes || (uk.KeyCodes = {}));
         var util;
         (function (util) {
@@ -3525,6 +3526,8 @@ var nts;
         (function (ui) {
             var menu;
             (function (menu) {
+                var DATA_TITLEITEM_PGID = "pgid";
+                var DATA_TITLEITEM_PGNAME = "pgname";
                 /** Showing item */
                 var showingItem;
                 /**
@@ -3821,7 +3824,12 @@ var nts;
                                         height += 30;
                                         return;
                                     }
-                                    var $item = $("<li class='title-item'/>").data("path", item.url).text(item.displayName || item.defaultName);
+                                    var nameToShow = item.displayName || item.defaultName;
+                                    var $item = $("<li class='title-item'/>")
+                                        .data("path", item.url)
+                                        .data(DATA_TITLEITEM_PGID, item.programId + item.screenId)
+                                        .data(DATA_TITLEITEM_PGNAME, nameToShow)
+                                        .text(nameToShow);
                                     $item.on(constants.CLICK, function () {
                                         var path = $(this).data("path");
                                         if (path && path.indexOf("http") !== 0) {
@@ -3841,6 +3849,26 @@ var nts;
                     }
                     titleMenu.createTitles = createTitles;
                 })(titleMenu || (titleMenu = {}));
+                $(function () {
+                    var showsName = true;
+                    $(window)
+                        .onkey("down", uk.KeyCodes.Ctrl, function () {
+                        if (!showsName || $(".category-name.opening").length === 0)
+                            return;
+                        $(".title-item").each(function () {
+                            $(this).text($(this).data(DATA_TITLEITEM_PGID));
+                        });
+                        showsName = false;
+                    })
+                        .onkey("up", uk.KeyCodes.Ctrl, function () {
+                        if (showsName)
+                            return;
+                        $(".title-item").each(function () {
+                            $(this).text($(this).data(DATA_TITLEITEM_PGNAME));
+                        });
+                        showsName = true;
+                    });
+                });
                 var constants;
                 (function (constants) {
                     constants.APP_ID = "com";
