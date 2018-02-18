@@ -1,9 +1,12 @@
 package nts.uk.ctx.at.record.dom.monthly.calc;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
@@ -15,6 +18,7 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransf
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalAggrSetOfIrg;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalAggrSetOfReg;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtion;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
@@ -38,9 +42,31 @@ public class MonthlyCalculation {
 	private AggregateTotalWorkingTime totalWorkingTime;
 	/** 総拘束時間 */
 	private AggregateTotalTimeSpentAtWork totalTimeSpentAtWork;
-	
-	/** リポジトリ：日別実績の勤怠時間 */
-	//AttendanceTimeOfDailyPerformanceRepository
+
+	/** 会社ID */
+	private String companyId;
+	/** 職場ID */
+	private String workplaceId;
+	/** 雇用コード */
+	private String employmentCd;
+	/** 退職月度がどうか */
+	private boolean isRetireMonth;
+	/** 月別実績集計設定 */
+	private AggrSettingMonthly aggrSettingMonthly;
+	/** 月次集計の法定内振替順設定 */
+	private LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet;
+	/** 休暇加算時間設定 */
+	private Optional<HolidayAddtion> holidayAdditionOpt;
+	/** 日別実績の勤怠時間リスト */
+	private Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap;
+	/** 週間法定労働時間 */
+	private AttendanceTimeMonth statutoryWorkingTimeWeek;
+	/** 月間法定労働時間 */
+	private AttendanceTimeMonth statutoryWorkingTimeMonth;
+	/** 週間所定労働時間 */
+	private AttendanceTimeMonth prescribedWorkingTimeWeek;
+	/** 月間所定労働時間 */
+	private AttendanceTimeMonth prescribedWorkingTimeMonth;
 	
 	/**
 	 * コンストラクタ
@@ -52,6 +78,20 @@ public class MonthlyCalculation {
 		this.statutoryWorkingTime = new AttendanceTimeMonth(0);
 		this.totalWorkingTime = new AggregateTotalWorkingTime();
 		this.totalTimeSpentAtWork = new AggregateTotalTimeSpentAtWork();
+		
+		this.companyId = "empty";
+		this.workplaceId = "empty";
+		this.employmentCd = "empty";
+		this.isRetireMonth = false;
+		this.aggrSettingMonthly = AggrSettingMonthly.of(
+				new LegalAggrSetOfReg(), new LegalAggrSetOfIrg(), new AggrSettingMonthlyOfFlx());
+		this.legalTransferOrderSet = new LegalTransferOrderSetOfAggrMonthly("empty");
+		this.holidayAdditionOpt = Optional.empty();
+		this.attendanceTimeOfDailyMap = new HashMap<>();
+		this.statutoryWorkingTimeWeek = new AttendanceTimeMonth(0);
+		this.statutoryWorkingTimeMonth = new AttendanceTimeMonth(0);
+		this.prescribedWorkingTimeWeek = new AttendanceTimeMonth(0);
+		this.prescribedWorkingTimeMonth = new AttendanceTimeMonth(0);
 	}
 
 	/**
@@ -80,106 +120,125 @@ public class MonthlyCalculation {
 	}
 	
 	/**
-	 * 履歴ごとに月別実績を集計する
+	 * 月の計算に必要な処理条件を確認する
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
-	 * @param yearMonth 年月（度）
-	 * @param closureId 締めID
-	 * @param closureDate 締め日付
 	 * @param datePeriod 期間
 	 * @param workingSystem 労働制
-	 * @param isRetireMonth 退職月かどうか
+	 * @param isRetireMonth 退職月度かどうか
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void aggregate(String companyId, String employeeId, YearMonth yearMonth,
-			ClosureId closureId, ClosureDate closureDate,
-			DatePeriod datePeriod, WorkingSystem workingSystem,
+	public void confirmProcessCondition(
+			String companyId, String employeeId, DatePeriod datePeriod, WorkingSystem workingSystem,
 			boolean isRetireMonth, RepositoriesRequiredByMonthlyAggr repositories){
+		
+		this.companyId = companyId;
+		this.isRetireMonth = isRetireMonth;
+		
+		// 期間終了日時点の職場コードを取得する
+		val affWorkplaceOpt = repositories.getAffWorkplaceAdapter().findBySid(employeeId, datePeriod.end());
+		if (affWorkplaceOpt.isPresent()){
+			this.workplaceId = affWorkplaceOpt.get().getWorkplaceId();
+		}
+		
+		// 期間終了日時点の雇用コードを取得する
+		val syEmploymentOpt = repositories.getSyEmployment().findByEmployeeId(
+				companyId, employeeId, datePeriod.end());
+		if (syEmploymentOpt.isPresent()){
+			this.employmentCd = syEmploymentOpt.get().getEmploymentCode();
+		}
+		
+		// 月別実績集計設定　取得　（基準：期間終了日）　（設定確認不可時は、空設定を適用）
+		val aggrSettingMonthlyOpt = repositories.getAggrSettingMonthly().get(
+				companyId, this.workplaceId, this.employmentCd, employeeId);
+		if (aggrSettingMonthlyOpt.isPresent()){
+			this.aggrSettingMonthly = aggrSettingMonthlyOpt.get();
+		}
+		
+		// 法定内振替順設定　取得
+		val legalTransferOrderSetOpt = repositories.getLegalTransferOrderSetOfAggrMonthly().find(companyId);
+		this.legalTransferOrderSet = new LegalTransferOrderSetOfAggrMonthly(companyId);
+		if (legalTransferOrderSetOpt.isPresent()){
+			legalTransferOrderSet = legalTransferOrderSetOpt.get();
+		}
+
+		// 休暇加算時間設定　取得
+		this.holidayAdditionOpt = repositories.getHolidayAddition().findByCId(companyId);
 		
 		// 日別実績の勤怠時間　取得
 		// ※　取得期間を　開始日-6日～終了日　とする　（開始週の集計のため）
 		DatePeriod findPeriod = new DatePeriod(datePeriod.start().addDays(-6), datePeriod.end());
-		List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys =
+		val attendanceTimeOfDailys =
 				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
-		
-		// 期間終了日時点の職場コードを取得する
-		String workplaceId = "empty";
-		val affWorkplaceOpt = repositories.getAffWorkplaceAdapter().findBySid(employeeId, datePeriod.end());
-		if (affWorkplaceOpt.isPresent()){
-			workplaceId = affWorkplaceOpt.get().getWorkplaceId();
-		}
-		
-		// 期間終了日時点の雇用コードを取得する
-		String employmentCd = "empty";
-		val syEmploymentOpt = repositories.getSyEmployment().findByEmployeeId(
-				companyId, employeeId, datePeriod.end());
-		if (syEmploymentOpt.isPresent()){
-			employmentCd = syEmploymentOpt.get().getEmploymentCode();
-		}
-		
-		// 月別実績集計設定　取得　（基準：期間終了日）　（設定確認不可時は、空設定を適用）
-		AggrSettingMonthly aggrSettingMonthly = AggrSettingMonthly.of(
-				new LegalAggrSetOfReg(), new LegalAggrSetOfIrg(), new AggrSettingMonthlyOfFlx());
-		val aggrSettingMonthlyOpt = repositories.getAggrSettingMonthly().get(
-				companyId, workplaceId, employmentCd, employeeId);
-		if (aggrSettingMonthlyOpt.isPresent()){
-			aggrSettingMonthly = aggrSettingMonthlyOpt.get();
+		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
+			this.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
 		}
 
-		// 法定内振替順設定　取得
-		val legalTransferOrderSetOpt = repositories.getLegalTransferOrderSetOfAggrMonthly().find(companyId);
-		LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet = new LegalTransferOrderSetOfAggrMonthly(companyId);
-		if (legalTransferOrderSetOpt.isPresent()){
-			legalTransferOrderSet = legalTransferOrderSetOpt.get();
-		}
-		
-		// 週間、月間法定労働時間　取得
+		// 週間、月間法定・所定労働時間　取得
 		//*****（未）　日次での実装位置を確認して、合わせて実装する。
 		//*****（未）　参考（日次用）。このクラスか、別のクラスに、月・週用のメソッドを追加。仮に0設定。
 		/*
 		repositories.getGetOfStatutoryWorkTime().getDailyTimeFromStaturoyWorkTime(WorkingSystem.RegularWork,
 				companyId, workplaceId, employmentCd, employeeId, datePeriod.end());
 		*/
-		AttendanceTimeMonth statutoryWorkingTimeWeek = new AttendanceTimeMonth(0);
-		AttendanceTimeMonth statutoryWorkingTimeMonth = new AttendanceTimeMonth(0);
-
-		// 休暇加算時間設定　取得
-		val holidayAdditionOpt = repositories.getHolidayAddition().findByCId(companyId);
+		this.statutoryWorkingTimeWeek = new AttendanceTimeMonth(0);
+		this.statutoryWorkingTimeMonth = new AttendanceTimeMonth(0);
+		this.prescribedWorkingTimeWeek = new AttendanceTimeMonth(0);
+		this.prescribedWorkingTimeMonth = new AttendanceTimeMonth(0);
+	}
+	
+	/**
+	 * 履歴ごとに月別実績を集計する
+	 * @param employeeId 社員ID
+	 * @param yearMonth 年月（度）
+	 * @param closureId 締めID
+	 * @param closureDate 締め日付
+	 * @param datePeriod 期間
+	 * @param workingSystem 労働制
+	 * @param repositories 月次集計が必要とするリポジトリ
+	 */
+	public void aggregate(String employeeId, YearMonth yearMonth,
+			ClosureId closureId, ClosureDate closureDate,
+			DatePeriod datePeriod, WorkingSystem workingSystem,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 共有項目を集計する
-		this.totalWorkingTime.aggregateSharedItem(datePeriod, attendanceTimeOfDailys);
+		this.totalWorkingTime.aggregateSharedItem(datePeriod, this.attendanceTimeOfDailyMap);
 		
 		// 通常勤務　or　変形労働　の時
 		if (workingSystem == WorkingSystem.REGULAR_WORK ||
 			workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
 			
 			// 通常・変形労働勤務の月別実績を集計する
-			this.totalWorkingTime = this.actualWorkingTime.aggregateMonthly(companyId, employeeId,
+			this.totalWorkingTime = this.actualWorkingTime.aggregateMonthly(this.companyId, employeeId,
 					yearMonth, datePeriod, workingSystem, MonthlyAggregateAtr.MONTHLY,
-					aggrSettingMonthly, legalTransferOrderSet, holidayAdditionOpt, attendanceTimeOfDailys,
-					this.totalWorkingTime, statutoryWorkingTimeWeek, repositories);
+					this.aggrSettingMonthly, this.legalTransferOrderSet, this.holidayAdditionOpt,
+					this.attendanceTimeOfDailyMap, this.statutoryWorkingTimeWeek, repositories);
 			
 			// 通常・変形労働勤務の月単位の時間を集計する
-			this.actualWorkingTime.aggregateMonthlyHours(companyId, employeeId,
+			this.actualWorkingTime.aggregateMonthlyHours(this.companyId, employeeId,
 					yearMonth, closureId, closureDate, datePeriod, workingSystem,
-					MonthlyAggregateAtr.MONTHLY, isRetireMonth, workplaceId, employmentCd,
-					aggrSettingMonthly, holidayAdditionOpt, this.totalWorkingTime, statutoryWorkingTimeMonth,
-					repositories);
+					MonthlyAggregateAtr.MONTHLY, this.isRetireMonth, this.workplaceId, this.employmentCd,
+					this.aggrSettingMonthly, this.holidayAdditionOpt, this.totalWorkingTime,
+					this.statutoryWorkingTimeMonth, repositories);
 		}
 		// フレックス時間勤務　の時
 		else if (workingSystem == WorkingSystem.FLEX_TIME_WORK){
 			
 			// フレックス集計方法を取得する
-			val aggrSetOfFlex = aggrSettingMonthly.getFlexWork();
+			val aggrSetOfFlex = this.aggrSettingMonthly.getFlexWork();
+			val flexAggrMethod = aggrSetOfFlex.getAggregateMethod();
 
 			// フレックス勤務の月別実績を集計する
-			this.totalWorkingTime = this.flexTime.aggregateMonthly(companyId, employeeId,
-					yearMonth, datePeriod, workingSystem, MonthlyAggregateAtr.MONTHLY,
-					aggrSetOfFlex, attendanceTimeOfDailys, this.totalWorkingTime, repositories);
+			this.totalWorkingTime = this.flexTime.aggregateMonthly(this.companyId, employeeId,
+					yearMonth, datePeriod, workingSystem, MonthlyAggregateAtr.MONTHLY, flexAggrMethod,
+					aggrSetOfFlex, this.attendanceTimeOfDailyMap, repositories);
 			
 			// フレックス勤務の月単位の時間を集計する
-			this.flexTime.aggregateMonthlyHours(companyId, employeeId, yearMonth, datePeriod, workplaceId,
-					employmentCd, aggrSetOfFlex, holidayAdditionOpt, this.totalWorkingTime, repositories);
+			this.flexTime.aggregateMonthlyHours(this.companyId, employeeId, yearMonth, datePeriod, flexAggrMethod,
+					this.workplaceId, this.employmentCd, aggrSetOfFlex, this.holidayAdditionOpt,
+					this.totalWorkingTime, this.prescribedWorkingTimeMonth, this.statutoryWorkingTimeMonth,
+					repositories);
 		}
 
 		// 実働時間の集計

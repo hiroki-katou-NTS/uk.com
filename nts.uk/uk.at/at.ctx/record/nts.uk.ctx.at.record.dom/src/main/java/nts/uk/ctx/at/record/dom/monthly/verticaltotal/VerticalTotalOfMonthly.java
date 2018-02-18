@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.vtotalwork.AttendanceStatusMap;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
@@ -136,7 +137,8 @@ public class VerticalTotalOfMonthly {
 		}
 		
 		// 月別実績の縦計方法　取得
-		//*****（未）　設計待ち。特定日設定部分が保留中。
+		//*****（未）　設計待ち。特定日設定部分が保留中。仮に空条件で。
+		VerticalTotalMethodOfMonthly verticalTotalMethod = new VerticalTotalMethodOfMonthly(companyId);
 		
 		// 月別実績の給与項目カウント　取得
 		PayItemCountOfMonthly payItemCount = new PayItemCountOfMonthly(companyId);
@@ -173,7 +175,7 @@ public class VerticalTotalOfMonthly {
 				if (workType != null){
 					
 					// 勤務種類を判断しカウント数を取得する
-					workTypeDaysCountTable = new WorkTypeDaysCountTable(workType, vacationAddSet);
+					workTypeDaysCountTable = new WorkTypeDaysCountTable(workType, vacationAddSet, verticalTotalMethod);
 				}
 				else {
 					workInfoOfDaily = null;

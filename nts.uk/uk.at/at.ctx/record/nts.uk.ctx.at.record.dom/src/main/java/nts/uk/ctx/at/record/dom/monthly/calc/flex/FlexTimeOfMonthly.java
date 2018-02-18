@@ -1,16 +1,18 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.flex;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculationAndMinus;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.AddedVacationUseTime;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
@@ -92,9 +94,9 @@ public class FlexTimeOfMonthly {
 	 * @param datePeriod 期間
 	 * @param workingSystem 労働制
 	 * @param aggregateAtr 集計区分
+	 * @param flexAggregateMethod フレックス集計方法
 	 * @param aggrSetOfFlex フレックス時間勤務の月の集計設定
-	 * @param attendanceTimeOfDailys リスト：日別実績の勤怠時間
-	 * @param aggregateTotalWorkingTime 総労働時間
+	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 * @return 集計総労働時間
 	 */
@@ -105,52 +107,57 @@ public class FlexTimeOfMonthly {
 			DatePeriod datePeriod,
 			WorkingSystem workingSystem,
 			MonthlyAggregateAtr aggregateAtr,
+			FlexAggregateMethod flexAggregateMethod,
 			AggrSettingMonthlyOfFlx aggrSetOfFlex,
-			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
-			AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 集計総労働時間　作成　（返却用）
-		val returnClass = aggregateTotalWorkingTime;
+		val returnClass = new AggregateTotalWorkingTime();
+		
+		// 期間．開始日を処理日にする
+		GeneralDate procDate = datePeriod.start();
 		
 		// 処理をする期間の日数分ループ
-		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
-			val ymd = attendanceTimeOfDaily.getYmd();
+		while (procDate.beforeOrEquals(datePeriod.end())){
 			
-			// 期間外はスキップする
-			if (!datePeriod.contains(ymd)) continue;
+			if (attendanceTimeOfDailyMap.containsKey(procDate)){
+				val attendanceTimeOfDaily = attendanceTimeOfDailyMap.get(procDate);
 			
-			// 処理日の職場コードを取得する
-			String workplaceId = "empty";
-			val affWorkplaceOpt = repositories.getAffWorkplaceAdapter().findBySid(employeeId, ymd);
-			if (affWorkplaceOpt.isPresent()){
-				workplaceId = affWorkplaceOpt.get().getWorkplaceId();
+				// 処理日の職場コードを取得する
+				String workplaceId = "empty";
+				val affWorkplaceOpt = repositories.getAffWorkplaceAdapter().findBySid(employeeId, procDate);
+				if (affWorkplaceOpt.isPresent()){
+					workplaceId = affWorkplaceOpt.get().getWorkplaceId();
+				}
+				
+				// 処理日の雇用コードを取得する
+				String employmentCd = "empty";
+				val syEmploymentOpt = repositories.getSyEmployment().findByEmployeeId(companyId, employeeId, procDate);
+				if (syEmploymentOpt.isPresent()){
+					employmentCd = syEmploymentOpt.get().getEmploymentCode();
+				}
+			
+				// 日別実績を集計する　（フレックス時間勤務用）
+				val flexTimeDaily = returnClass.aggregateDailyForFlex(attendanceTimeOfDaily, companyId,
+						workplaceId, employmentCd, workingSystem, aggregateAtr, aggrSetOfFlex, repositories);
+				
+				// フレックス時間への集計結果を取得する
+				for (val timeSeriesWork : flexTimeDaily.getTimeSeriesWorks().values()){
+					this.flexTime.getTimeSeriesWorks().put(timeSeriesWork.getYmd(), timeSeriesWork);
+				}
+				
+				// フレックス時間を集計する
+				this.flexTime.aggregate(attendanceTimeOfDaily);
+			
+				if (aggregateAtr.isExcessOutsideWork()){
+				
+					// フレックス超過時間を割り当てる
+					//*****（２次）
+				}
 			}
 			
-			// 処理日の雇用コードを取得する
-			String employmentCd = "empty";
-			val syEmploymentOpt = repositories.getSyEmployment().findByEmployeeId(companyId, employeeId, ymd);
-			if (syEmploymentOpt.isPresent()){
-				employmentCd = syEmploymentOpt.get().getEmploymentCode();
-			}
-		
-			// 日別実績を集計する　（フレックス時間勤務用）
-			val flexTimeDaily = returnClass.aggregateDailyForFlex(attendanceTimeOfDaily, companyId,
-					workplaceId, employmentCd, workingSystem, aggregateAtr, aggrSetOfFlex, repositories);
-			
-			// フレックス時間への集計結果を取得する
-			for (val timeSeriesWork : flexTimeDaily.getTimeSeriesWorks().values()){
-				this.flexTime.getTimeSeriesWorks().put(timeSeriesWork.getYmd(), timeSeriesWork);
-			}
-			
-			// フレックス時間を集計する
-			this.flexTime.aggregate(attendanceTimeOfDaily);
-			
-			if (aggregateAtr.isExcessOutsideWork()){
-			
-				// フレックス超過時間を割り当てる
-				//*****（２次）
-			}
+			procDate = procDate.addDays(1);
 		}
 		
 		return returnClass;
@@ -168,26 +175,21 @@ public class FlexTimeOfMonthly {
 	 * @param aggrSetOfFlex フレックス時間勤務の月の集計設定
 	 * @param holidayAdditionOpt 休暇加算時間設定
 	 * @param aggregateTotalWorkingTime 集計総労働時間
+	 * @param prescribedWorkingTimeMonth 月間所定労働時間
+	 * @param statutoryWorkingTimeMonth 月間法定労働時間
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void aggregateMonthlyHours(String companyId, String employeeId,
 			YearMonth yearMonth, DatePeriod datePeriod,
+			FlexAggregateMethod flexAggregateMethod,
 			String workplaceId, String employmentCd,
 			AggrSettingMonthlyOfFlx aggrSetOfFlex,
 			Optional<HolidayAddtion> holidayAdditionOpt,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			AttendanceTimeMonth prescribedWorkingTimeMonth,
+			AttendanceTimeMonth statutoryWorkingTimeMonth,
 			RepositoriesRequiredByMonthlyAggr repositories){
 
-		// 月の所定労働時間・法定労働時間　取得
-		//*****（未）　日次での実装位置を確認して、合わせて実装する。
-		//*****（未）　参考（日次用）。このクラスか、別のクラスに、月・週用のメソッドを追加。仮に0設定。
-		/*
-		repositories.getGetOfStatutoryWorkTime().getDailyTimeFromStaturoyWorkTime(WorkingSystem.RegularWork,
-				companyId, workplaceId, employmentCd, employeeId, datePeriod.end());
-		*/
-		AttendanceTimeMonth prescribedWorkingTimeMonth = new AttendanceTimeMonth(0);
-		AttendanceTimeMonth statutoryWorkingTimeMonth = new AttendanceTimeMonth(0);
-		
 		// 翌月繰越の時
 		if (aggrSetOfFlex.getShortageSet().getCarryforwardSet().isNextMonthCarryforward()){
 		
@@ -209,13 +211,13 @@ public class FlexTimeOfMonthly {
 					new AttendanceTimeMonth(prevFlexShortageTime.v()));
 		}
 		
-		// 便宜上集計の時
-		if (aggrSetOfFlex.getAggregateMethod().isForConvenience()){
+		if (flexAggregateMethod == FlexAggregateMethod.FOR_CONVENIENCE){
 		
 			// 便宜上集計をする
 			this.aggregateForConvenience();
 		}
-		else {
+
+		if (flexAggregateMethod == FlexAggregateMethod.PRINCIPLE){
 			
 			// 原則集計をする
 			this.aggregatePrinciple(

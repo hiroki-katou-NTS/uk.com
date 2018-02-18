@@ -27,6 +27,7 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime.Di
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout.AggregateGoOut;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.medicaltime.MedicalTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.premiumtime.AggregatePremiumTime;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
@@ -120,9 +121,8 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 				continue;
 			}
 			
-			// 月別実績の勤怠時間　初期データ作成
-			val attendanceTime = new AttendanceTimeOfMonthly(employeeId, yearMonth,
-					closureId, closureDate, procPeriod);
+			// 月別実績の勤怠時間　初期設定
+			val attendanceTime = new AttendanceTimeOfMonthly(employeeId, yearMonth, closureId, closureDate, procPeriod);
 			
 			// 労働制を確認する
 			val workingSystem = workingConditionItem.getLaborSystem();
@@ -134,6 +134,9 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			attendanceTime.verticalTotal(companyId, workingSystem, this.repositories);
 			
 			// 時間外超過
+			ExcessOutsideWorkMng excessOutsideWorkMng = new ExcessOutsideWorkMng(companyId, employeeId,
+					yearMonth, closureId, closureDate, procPeriod, workingSystem, attendanceTime);
+			excessOutsideWorkMng.aggregate(attendanceTime.getMonthlyCalculation(), this.repositories);
 
 			// 計算結果を戻り値に蓄積
 			returnValue.getAttendanceTimes().add(attendanceTime);
