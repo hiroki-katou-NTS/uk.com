@@ -90,7 +90,7 @@ module nts.uk.ui.jqueryExtentions {
         
         let $tabPanel = $target.closest(".ui-tabs-panel");
         if ($tabPanel.length === 0) {
-            return;
+            return $target;
         }
         
         let tabId = $tabPanel.attr("id");

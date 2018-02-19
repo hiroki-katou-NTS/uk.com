@@ -6110,7 +6110,7 @@ var nts;
                     var $target = $(this);
                     var $tabPanel = $target.closest(".ui-tabs-panel");
                     if ($tabPanel.length === 0) {
-                        return;
+                        return $target;
                     }
                     var tabId = $tabPanel.attr("id");
                     var $tabsContainer = $tabPanel.closest(".ui-tabs");
@@ -6357,6 +6357,42 @@ var nts;
         (function (ui_5) {
             var koExtentions;
             (function (koExtentions) {
+                var notSelected;
+                (function (notSelected) {
+                    var DATA = "not-selected";
+                    function set($element, value) {
+                        $element.data(DATA, value);
+                    }
+                    notSelected.set = set;
+                    function get($element) {
+                        return $element.data(DATA) === true;
+                    }
+                    notSelected.get = get;
+                })(notSelected || (notSelected = {}));
+                var required;
+                (function (required) {
+                    var DATA = "required";
+                    function set($element, value) {
+                        $element.data(DATA, value);
+                    }
+                    required.set = set;
+                    function get($element) {
+                        return $element.data(DATA) === true;
+                    }
+                    required.get = get;
+                })(required || (required = {}));
+                var controlName;
+                (function (controlName) {
+                    var DATA = "control-name";
+                    function set($element, value) {
+                        $element.data(DATA, value);
+                    }
+                    controlName.set = set;
+                    function get($element) {
+                        return $element.data(DATA);
+                    }
+                    controlName.get = get;
+                })(controlName || (controlName = {}));
                 /**
                  * ComboBox binding handler
                  */
@@ -6382,6 +6418,15 @@ var nts;
                                 evt.preventDefault();
                             }
                         });
+                        container.bind("validate", function () {
+                            if (required.get(container) && notSelected.get(container)) {
+                                container.ntsError("set", uk.resource.getMessage("FND_E_REQ_SELECT", [controlName.get(container)]), "FND_E_REQ_SELECT");
+                            }
+                            else {
+                                container.ntsError("clear");
+                            }
+                        });
+                        ui.bindErrorStyle.useDefaultErrorClass(container);
                     };
                     /**
                      * Update
@@ -6397,6 +6442,7 @@ var nts;
                         var optionText = data.optionsText === undefined ? null : ko.unwrap(data.optionsText);
                         var selectedValue = ko.unwrap(data.value);
                         var editable = ko.unwrap(data.editable);
+                        var isRequired = ko.unwrap(data.required) === true;
                         var enable = data.enable !== undefined ? ko.unwrap(data.enable) : true;
                         var columns = ko.unwrap(data.columns);
                         var visibleItemsCount = data.visibleItemsCount === undefined ? 5 : ko.unwrap(data.visibleItemsCount);
@@ -6410,6 +6456,7 @@ var nts;
                         // Container.
                         var container = $(element);
                         var comboMode = editable ? 'editable' : 'dropdown';
+                        controlName.set(container, ko.unwrap(data.name));
                         // Default values.
                         var distanceColumns = '     ';
                         var fillCharacter = ' '; // Character used fill to the columns.
@@ -6419,10 +6466,19 @@ var nts;
                         var getValue = function (item) {
                             return optionValue === null ? item : item[optionValue];
                         };
-                        // Check selected code.
-                        if (_.find(options, function (item) { return getValue(item) === selectedValue; }) === undefined && !editable) {
-                            selectedValue = options.length > 0 ? getValue(options[0]) : '';
-                            data.value(selectedValue);
+                        // required
+                        required.set(container, isRequired);
+                        // Check if selected code exists in list.
+                        // But "null" and "undefined" are "not-selected" even if the "null" or "undefined" exist in list.
+                        // この仕様は、「未選択」という項目を持つことを許容するためのもの。
+                        var isValidValue = !uk.util.isNullOrUndefined(selectedValue) && _.some(options, function (item) { return getValue(item) === selectedValue; });
+                        notSelected.set(container, !isValidValue);
+                        if (!isValidValue) {
+                            notSelected.set(container, true);
+                        }
+                        else {
+                            notSelected.set(container, false);
+                            container.ntsError("clear");
                         }
                         var haveColumn = columns && columns.length > 0;
                         var isChangeOptions = !_.isEqual(container.data("options"), options);
@@ -6434,6 +6490,9 @@ var nts;
                                 if (haveColumn) {
                                     _.forEach(columns, function (item, i) {
                                         var prop = option[item.prop];
+                                        if (uk.util.isNullOrUndefined(prop)) {
+                                            prop = "";
+                                        }
                                         var length = item.length;
                                         if (i === columns.length - 1) {
                                             newOptionText += prop;
@@ -6531,6 +6590,9 @@ var nts;
                             if (isDropDownWidthSpecified) {
                                 container.find(".ui-igcombo-dropdown").css("width", "auto");
                             }
+                        }
+                        if (notSelected.get(container)) {
+                            container.find("input").val("");
                         }
                     };
                     return ComboBoxBindingHandler;
@@ -12412,6 +12474,22 @@ var nts;
         (function (ui) {
             ui.DATA_SET_ERROR_STYLE = "set-error-style";
             ui.DATA_CLEAR_ERROR_STYLE = "clear-error-style";
+            var bindErrorStyle;
+            (function (bindErrorStyle) {
+                function setError($element, callback) {
+                    $element.data(ui.DATA_SET_ERROR_STYLE, callback);
+                }
+                bindErrorStyle.setError = setError;
+                function clearError($element, callback) {
+                    $element.data(ui.DATA_CLEAR_ERROR_STYLE, callback);
+                }
+                bindErrorStyle.clearError = clearError;
+                function useDefaultErrorClass($element) {
+                    setError($element, function () { $element.addClass("error"); });
+                    clearError($element, function () { $element.removeClass("error"); });
+                }
+                bindErrorStyle.useDefaultErrorClass = useDefaultErrorClass;
+            })(bindErrorStyle = ui.bindErrorStyle || (ui.bindErrorStyle = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
