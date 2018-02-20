@@ -48,17 +48,7 @@ public class WithinStatutoryTimeOfDaily {
 		AttendanceTime workTime = new AttendanceTime(0);
 		DeductionTimeSheet dedSheet = oneDay.getTemporaryDeductionTimeSheet().isPresent()
 												?oneDay.getTemporaryDeductionTimeSheet().get()
-												:new DeductionTimeSheet(Collections.emptyList(), Collections.emptyList(),new BreakTimeManagement(new BreakTimeOfDaily(DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-																TimeWithCalculation.sameTime(new AttendanceTime(0)),
-																TimeWithCalculation.sameTime(new AttendanceTime(0))),
-														DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-																TimeWithCalculation.sameTime(new AttendanceTime(0)),
-																TimeWithCalculation.sameTime(new AttendanceTime(0))),
-														new BreakTimeGoOutTimes(0),
-														new AttendanceTime(0),
-														Collections.emptyList()
-														),
-														Collections.emptyList()));
+												:new DeductionTimeSheet(Collections.emptyList(), Collections.emptyList());
 		if(oneDay.getWithinWorkingTimeSheet().isPresent()) {
 			workTime =  oneDay.getWithinWorkingTimeSheet().get().calcWorkTimeForStatutory(CalculationByActualTimeAtr.CalculationByActualTime,dedSheet);
 		}

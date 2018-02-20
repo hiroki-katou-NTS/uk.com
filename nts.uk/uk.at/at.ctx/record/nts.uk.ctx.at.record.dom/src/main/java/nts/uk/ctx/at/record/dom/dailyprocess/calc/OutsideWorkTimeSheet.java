@@ -115,13 +115,6 @@ public class OutsideWorkTimeSheet {
 //			}
 
 		}
-
-//		return new OutsideWorkTimeSheet(new ExcessOfStatutoryTimeOfDaily(new ExcessOfStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-//																		 new AttendanceTime(0)),
-//				 														 Optional.empty(),
-//				 														 Optional.empty())
-//																		// Optional.of(overTimeWorkSheet.get().getOverWorkTimeOfDaily()),
-//																		// Optional.of(holidayWorkTimeSheet.get().getWorkHolidayTime()))
 		return new OutsideWorkTimeSheet(
 				   Optional.of(new OverTimeSheet(new RaisingSalaryTime(),
 						   						 overTimeWorkFrameTimeSheet,
@@ -132,7 +125,6 @@ public class OutsideWorkTimeSheet {
 						   								holidayWorkFrameTimeSheetForCalc, 
 						   								new SubHolOccurrenceInfo()))
 				   );
-
 	}
 
 	/**
@@ -168,4 +160,42 @@ public class OutsideWorkTimeSheet {
 		// ExcessOfStatutoryTimeOfDaily(totalExcessTime,Optional.empty(),Optional.empty());
 	}
 
+//	public void addtimesheet(OutsideWorkTimeSheet outsideSheet) {
+//		if(this.overTimeWorkSheet.isPresent()) {
+//			
+//		}
+//		else {
+//			this.overTimeWorkSheet = outsideSheet.getOverTimeWorkSheet();
+//		}
+//			
+//	}
+//	
+//	private void addoverTimesheet(OverTime)
+	
+	/**
+	 * 残業時間の中にある控除時間を算出する
+	 * @param dedAtr
+	 * @param atr
+	 * @return 控除時間
+	 */
+	public AttendanceTime caluclationAllOverTimeFrameTime(DeductionAtr dedAtr,ConditionAtr atr) {
+		if(this.overTimeWorkSheet.isPresent()) {
+			this.overTimeWorkSheet.get().calculationAllFrameDeductionTime(dedAtr,atr);
+		}
+		return new AttendanceTime(0);
+	}
+	
+	/**
+	 * 休出時間の中にある控除時間を算出する
+	 * @param dedAtr
+	 * @param atr
+	 * @return　控除時間
+	 */
+	public AttendanceTime caluclationAllHolidayFrameTime(DeductionAtr dedAtr,ConditionAtr atr) {
+		if(this.holidayWorkTimeSheet.isPresent()) {
+			this.holidayWorkTimeSheet.get().calculationAllFrameDeductionTime(dedAtr,atr);
+		}
+		return new AttendanceTime(0);
+	}
+	
 }

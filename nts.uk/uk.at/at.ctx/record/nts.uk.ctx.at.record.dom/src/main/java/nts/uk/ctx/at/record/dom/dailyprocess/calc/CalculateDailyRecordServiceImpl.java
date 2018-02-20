@@ -12,9 +12,17 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
+import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
+import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -60,6 +68,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
@@ -156,10 +165,42 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if(!workType.get().getAttendanceHolidayAttr().equals(AttendanceHolidayAttr.HOLIDAY)) {
 //												WorkTimeDivision workTimeDivision,
 			//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
-			//休憩管理(BreakManagement)
-			DeductionTotalTime deductionTotalTime = DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-																		  TimeWithCalculation.sameTime(new AttendanceTime(0)),
-																		  TimeWithCalculation.sameTime(new AttendanceTime(0)));
+			//休憩時間帯(BreakManagement)
+			List<BreakTimeSheet> breakTimeSheet = new ArrayList<>();
+			breakTimeSheet.add(new BreakTimeSheet(new BreakFrameNo(1),
+												  new WorkStamp(new TimeWithDayAttr(720), new TimeWithDayAttr(720), new WorkLocationCD("01"), StampSourceInfo.TIME_RECORDER),
+												  new WorkStamp(new TimeWithDayAttr(780), new TimeWithDayAttr(780), new WorkLocationCD("01"), StampSourceInfo.TIME_RECORDER),
+												  new AttendanceTime(0)));
+			
+			List<BreakTimeOfDailyPerformance> breakTimeOfDailyList = new ArrayList<>();
+			breakTimeOfDailyList.add(new BreakTimeOfDailyPerformance(employeeId, 
+																	 BreakType.REFER_WORK_TIME, 
+																	 breakTimeSheet, 
+																	 targetDate));
+//			breakTimeOfDailyList.add(new BreakTimeOfDaily(DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+//																				TimeWithCalculation.sameTime(new AttendanceTime(0)), 
+//																				TimeWithCalculation.sameTime(new AttendanceTime(0))),
+//														  DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+//																  				TimeWithCalculation.sameTime(new AttendanceTime(0)), 
+//																  				TimeWithCalculation.sameTime(new AttendanceTime(0))),
+//														  new BreakTimeGoOutTimes(1),
+//														  new AttendanceTime(0),
+//														  breakTimeSheet
+//														
+//					));
+			//外出時間帯
+			WorkStamp goOut = new WorkStamp(new TimeWithDayAttr(780),new TimeWithDayAttr(780),new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET);
+			WorkStamp back  = new WorkStamp(new TimeWithDayAttr(840),new TimeWithDayAttr(840),new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET);
+			List<OutingTimeSheet> outingTimeSheets = new ArrayList<>();
+			outingTimeSheets.add(new OutingTimeSheet(new OutingFrameNo(1),
+													  Optional.of(new TimeActualStamp(goOut,goOut,1)),
+													  new AttendanceTime(0),
+													  new AttendanceTime(60),
+													  GoingOutReason.PUBLIC,
+													  Optional.of(new TimeActualStamp(back, back, 1))
+													 ));
+			OutingTimeOfDailyPerformance goOutTimeSheetList = new OutingTimeOfDailyPerformance(employeeId,targetDate,outingTimeSheets);
+			
 			//流動勤務の休憩時間帯
 			FlowWorkRestTimezone fluRestTime = new FlowWorkRestTimezone(
 													  true,
@@ -169,7 +210,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			
 			//流動固定休憩設定
 			FlowFixedRestSet fluidPrefixBreakTimeSet = new FlowFixedRestSet(false,false,false,FlowFixedRestCalcMethod.REFER_MASTER);
-			
 			/*所定時間設定取得*/
 			Optional<PredetemineTimeSetting> predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
 			if(!predetermineTimeSet.isPresent()) {
@@ -223,15 +263,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 //												RestClockManageAtr clockManage, 固定勤務のみの時間帯計算であるため一旦固定値を渡しておく
 												RestClockManageAtr.IS_CLOCK_MANAGE,
 //												OutingTimeOfDailyPerformance dailyGoOutSheet,
-												new OutingTimeOfDailyPerformance(employeeId,targetDate,Collections.emptyList()),
+												goOutTimeSheetList,
 //												BreakSetOfCommon  commonSet,
 												new CommonRestSetting(RestTimeOfficeWorkCalcMethod.NOT_APPROP_ALL),
 //												FixRestCalcMethod fixedCalc,
 												FixedRestCalculateMethod.MASTER_REF,
 //												FluidBreakTimeOfCalcMethod  fluidSet,
 												FlowRestCalcMethod.REFER_MASTER,
-//												BreakTimeManagement breakmanage,
-												new BreakTimeManagement(BreakTimeOfDaily.sameTotalTime(deductionTotalTime),Collections.emptyList()),
 //												Optional<FluRestTime>  fluRestTime,
 												Optional.of(fluRestTime),
 //												FluidPrefixBreakTimeSet fluidprefixBreakTimeSet,
@@ -274,7 +312,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 //												StatutoryPrioritySet prioritySet
 												StatutoryPrioritySet.priorityNormalOverTimeWork,
 												//WorkTime
-												workTime.get()
+												workTime.get(),
+												//breakTimeSheetList
+												breakTimeOfDailyList
 												);
 
 

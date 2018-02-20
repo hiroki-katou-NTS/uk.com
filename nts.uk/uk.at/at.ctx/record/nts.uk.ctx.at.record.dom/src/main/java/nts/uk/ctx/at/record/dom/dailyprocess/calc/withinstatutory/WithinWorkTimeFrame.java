@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
@@ -51,12 +52,13 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 			EmTimeFrameNo workingHoursTimeNo,
 			TimeZoneRounding timeSheet,
 			TimeSpanForCalc calculationTimeSheet,
+			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets,
 			List<BonusPayTimesheet> bonusPayTimeSheet,
 			Optional<MidNightTimeSheet> midNighttimeSheet,
 			List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet) {
 		
-		super(timeSheet, calculationTimeSheet,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
+		super(timeSheet, calculationTimeSheet,recorddeductionTimeSheets,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
 		this.workingHoursTimeNo = workingHoursTimeNo;
 		this.premiumTimeSheetInPredetermined = Optional.empty();
 	}
@@ -66,6 +68,8 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	public TimeZoneRounding getTimeSheet() {
 		return this.timeSheet;
 	}
+	
+	
 	
 //	
 //	/**
@@ -319,6 +323,24 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		default:
 			throw new RuntimeException("半日専用のメソッドです: " + attr);
 		}
+	}
+	
+	/**
+	 *　指定条件の控除項目だけの控除時間
+	 * @param forcsList
+	 * @param atr
+	 * @return
+	 */
+	public AttendanceTime forcs(ConditionAtr atr,DeductionAtr dedAtr){
+		AttendanceTime dedTotalTime = new AttendanceTime(0);
+		val loopList = (dedAtr.isAppropriate())?this.getRecordedTimeSheet():this.deductionTimeSheet;
+		for(TimeSheetOfDeductionItem deduTimeSheet: loopList) {
+			if(deduTimeSheet.checkIncludeCalculation(atr)) {
+				val addTime = deduTimeSheet.calcTotalTime().valueAsMinutes();
+				dedTotalTime = dedTotalTime.addMinutes(addTime);
+			}
+		}
+		return dedTotalTime;
 	}
 	
 //	

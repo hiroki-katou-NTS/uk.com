@@ -76,11 +76,12 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * @param adjustTime
 	 */
 	public OverTimeFrameTimeSheetForCalc(TimeZoneRounding timeSheet, TimeSpanForCalc calcrange,
+			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimesheet> bonusPayTimeSheet,
 			List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet, Optional<MidNightTimeSheet> midNighttimeSheet,
 			OverTimeFrameTime frameTime, StatutoryAtr withinStatutryAtr, boolean goEarly, EmTimezoneNo overTimeWorkSheetNo,
 			boolean asTreatBindTime, Optional<AttendanceTime> adjustTime) {
-		super(timeSheet, calcrange, deductionTimeSheets, bonusPayTimeSheet, specifiedBonusPayTimeSheet,
+		super(timeSheet, calcrange, recorddeductionTimeSheets,deductionTimeSheets, bonusPayTimeSheet, specifiedBonusPayTimeSheet,
 				midNighttimeSheet);
 		this.frameTime = frameTime;
 		this.withinStatutryAtr = withinStatutryAtr;
@@ -157,13 +158,14 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 	public static OverTimeFrameTimeSheetForCalc createOverWorkFramTimeSheet(OverTimeOfTimeZoneSet overTimeHourSet,TimeSpanForCalc timeSpan) {
 		
 		//TODO: get DeductionTimeSheet
-		DeductionTimeSheet deductionTimeSheet = new DeductionTimeSheet(Collections.emptyList(), Collections.emptyList(), null);/*実働時間の時間帯を跨いだ控除時間帯を分割する*/;
+		DeductionTimeSheet deductionTimeSheet = new DeductionTimeSheet(Collections.emptyList(), Collections.emptyList());/*実働時間の時間帯を跨いだ控除時間帯を分割する*/;
 //		deductionTimeSheet.getForRecordTimeZoneList();/*法定内区分の置き換え*/
 //		deductionTimeSheet.getForDeductionTimeZoneList();/*法定内区分の置き換え*/
 		
 		
 		return new OverTimeFrameTimeSheetForCalc(new TimeZoneRounding(timeSpan.getStart(),timeSpan.getEnd(),overTimeHourSet.getTimezone().getRounding()),
 											  	timeSpan,
+											  	deductionTimeSheet.getForRecordTimeZoneList().stream().map(tc ->tc.createWithExcessAtr()).collect(Collectors.toList()),
 											  	deductionTimeSheet.getForDeductionTimeZoneList().stream().map(tc ->tc.createWithExcessAtr()).collect(Collectors.toList()),
 											  	Collections.emptyList(),
 											  	Collections.emptyList(),
@@ -220,5 +222,20 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 		return calcTime;
 	}
 	
-	
+	/**
+	 *　指定条件の控除項目だけの控除時間
+	 * @param forcsList
+	 * @param atr
+	 * @return
+	 */
+	public AttendanceTime forcs(List<TimeSheetOfDeductionItem> forcsList,ConditionAtr atr,DeductionAtr dedAtr){
+		AttendanceTime dedTotalTime = new AttendanceTime(0);
+		val loopList = (dedAtr.isAppropriate())?this.getRecordedTimeSheet():this.deductionTimeSheet;
+		for(TimeSheetOfDeductionItem deduTimeSheet: loopList) {
+			if(deduTimeSheet.checkIncludeCalculation(atr)) {
+				dedTotalTime.addMinutes(deduTimeSheet.calcTotalTime().valueAsMinutes());
+			}
+		}
+		return dedTotalTime;
+	}
 }

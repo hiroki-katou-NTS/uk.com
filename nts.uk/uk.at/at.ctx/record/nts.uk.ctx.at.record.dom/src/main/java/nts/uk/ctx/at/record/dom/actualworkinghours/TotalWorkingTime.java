@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.breaktimegoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.latetime.IntervalExemptionTime;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
@@ -56,7 +57,6 @@ public class TotalWorkingTime {
 	
 	//日別実績の法定内時間
 	private WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily;
-	// TODO has some class which haven't written
 	
 	//日別実績の所定外時間
 	private ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily;
@@ -71,7 +71,7 @@ public class TotalWorkingTime {
 	private BreakTimeOfDaily breakTimeOfDaily;
 	
 	//日別実績の外出時間	
-	private List<OutingTimeOfDailyPerformance> outingTimeOfDailyPerformance;
+	private List<OutingTimeOfDaily> outingTimeOfDailyPerformance;
 		
 	//加給時間
 	private RaiseSalaryTimeOfDailyPerfor raiseSalaryTimeOfDailyPerfor;
@@ -92,11 +92,27 @@ public class TotalWorkingTime {
 		this.withinStatutoryTimeOfDaily = withinStatutory;
 		this.breakTimeOfDaily = breakTime;
 	}
+	
+	/**
+	 * Construtor
+	 * @param totalTime
+	 * @param totalCalcTime
+	 * @param actualTime
+	 * @param withinStatutoryTimeOfDaily
+	 * @param excessOfStatutoryTimeOfDaily
+	 * @param lateTimeOfDaily
+	 * @param leaveEarlyTimeOfDaily
+	 * @param breakTimeOfDaily
+	 * @param outingTimeOfDailyPerformance
+	 * @param raiseSalaryTimeOfDailyPerfor
+	 * @param workTimes
+	 * @param temporaryTime
+	 */
 	public TotalWorkingTime(AttendanceTime totalTime, AttendanceTime totalCalcTime, AttendanceTime actualTime,
 			WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily,
 			ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily, List<LateTimeOfDaily> lateTimeOfDaily,
 			List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily, BreakTimeOfDaily breakTimeOfDaily,
-			List<OutingTimeOfDailyPerformance> outingTimeOfDailyPerformance,
+			List<OutingTimeOfDaily> outingTimeOfDailyPerformance,
 			RaiseSalaryTimeOfDailyPerfor raiseSalaryTimeOfDailyPerfor, WorkTimes workTimes,
 			TemporaryTimeOfDaily temporaryTime) {
 		super();
@@ -120,16 +136,18 @@ public class TotalWorkingTime {
 	 */
 	public static TotalWorkingTime calcAllDailyRecord(CalculationRangeOfOneDay oneDay,AutoCalculationOfOverTimeWork overTimeAutoCalcSet,AutoCalSetting holidayAutoCalcSetting) {
 		
-		//総労働時間
-		val totalWorkTime = new AttendanceTime(0);
 		//総計算時間
 		val totalCalcTime = new AttendanceTime(0);
 		//実働時間
 		val actualTime = new AttendanceTime(0);
-		/*日別実績の法定内時間*/
+		/*日別実績の法定内時間(就業時間)*/
 		val withinStatutoryTimeOfDaily = WithinStatutoryTimeOfDaily.calcStatutoryTime(oneDay);
 		//日別実績の所定外時間
 		val excesstime =ExcessOfStatutoryTimeOfDaily.calculationExcessTime(oneDay, overTimeAutoCalcSet,holidayAutoCalcSetting);
+		int overWorkTime = excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTotalFrameTime():0;
+		overWorkTime += excesstime.getOverTimeWork().isPresent()?excesstime.getOverTimeWork().get().calcTransTotalFrameTime():0;
+		int holidayWorkTime = excesstime.getWorkHolidayTime().isPresent()?excesstime.getWorkHolidayTime().get().calcTotalFrameTime():0;
+		holidayWorkTime = excesstime.getWorkHolidayTime().isPresent()?excesstime.getWorkHolidayTime().get().calcTransTotalFrameTime():0;
 		//2018.02.14　一時的対応 byホシナ ↓
 		//日別実績の遅刻時間
 		List<LateTimeOfDaily> lateTime = new ArrayList<>();
@@ -161,30 +179,28 @@ public class TotalWorkingTime {
 					));
 		//2018.02.14　一時的対応 byホシナ ↑
 		//日別実績の休憩時間
-		val breakTime = new BreakTimeOfDaily(DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-																   TimeWithCalculation.sameTime(new AttendanceTime(0)),
-																   TimeWithCalculation.sameTime(new AttendanceTime(0))),
-																	DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-																	TimeWithCalculation.sameTime(new AttendanceTime(0)),
-																	TimeWithCalculation.sameTime(new AttendanceTime(0))),
-																	new BreakTimeGoOutTimes(0),
-																	new AttendanceTime(0),
-																	Collections.emptyList());
-		//日別実績の外出時間	
-		val outingTime = Collections.emptyList();
+		val breakTime = BreakTimeOfDaily.calcTotalBreakTime(oneDay);
+
+		//日別実績の外出時間
+		val outingList = new ArrayList<OutingTimeOfDaily>();
+		val outingTime = OutingTimeOfDaily.calcOutingTime(oneDay);
+		outingList.add(outingTime);
 		//加給時間
-		val raiseTime = new RaiseSalaryTimeOfDailyPerfor(Collections.emptyList(),Collections.emptyList());
+		val raiseTime = new RaiseSalaryTimeOfDailyPerfor(Collections.emptyList(),Collections.emptyList());//RaiseSalaryTimeOfDailyPerfor.
 		//勤務回数
 		val workTimes = new WorkTimes(1);
 		/*日別実績の臨時時間*/
 		val tempTime = new TemporaryTimeOfDaily(Collections.emptyList());
 		
+		//総労働時間
+		val totalWorkTime = new AttendanceTime(withinStatutoryTimeOfDaily.getWorkTime().valueAsMinutes()
+						  + withinStatutoryTimeOfDaily.getWithinPrescribedPremiumTime().valueAsMinutes() 
+						  + overWorkTime
+						  + holidayWorkTime
+						  + tempTime.totalTemporaryFrameTime());
 		
 
-		/*日別実績の休憩時間*/
-		//this.breakTimeOfDaily = BreakTimeOfDaily.calcTotalBreakTime(oneDay);
-		//return new TotalWorkingTime(WithinStatutoryTimeOfDaily.calcStatutoryTime(oneDay)
-					 				//,BreakTimeOfDaily.calcTotalBreakTime(oneDay));
+
 		/*日別実績の遅刻時間*/
 		/*日別実績の早退時間(途中)*/
 		/*日別実績の外出時間*/
@@ -210,7 +226,7 @@ public class TotalWorkingTime {
 									Collections.emptyList(),
 									Collections.emptyList(),
 									breakTime,
-									Collections.emptyList(),
+									outingList,
 									raiseTime,
 									workTimes,
 									tempTime);
