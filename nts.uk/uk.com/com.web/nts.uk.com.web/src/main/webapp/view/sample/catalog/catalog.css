@@ -1,4 +1,5 @@
 /* Common Elements */
+<<<<<<< HEAD
 html, body {
 	background-color: #f5f5f5;
 }
@@ -85,6 +86,24 @@ note:before {
 		rgba(255, 255, 255, 0.7) inset;
 	transform: rotate(-8deg);
 }
+=======
+html, body {background-color:#f5f5f5;}
+a,a.link{color:#00B050;text-decoration: none;}
+a.link:hover{text-decoration:underline;}
+b{font-weight:bold;}
+i{font-style: italic;}
+h1{color:#00B050;font-size: 25px; margin:15px 0;}
+h2{color:#00B050;font-size: 22px; margin:15px 0 7px;}
+h3{font-size:15px;margin:5px 0;font-weight:bold;}
+h4{font-size:13px;margin:3px 0;font-weight:bold;}
+hr{margin: 20px 0;}
+pre {box-sizing:border-box;background:#f5f5f5;max-width:100%;padding:5px !important;margin:10px 0;border:none !important;overflow:auto;border-radius:5px;}
+pre {tab-size: 2;}
+pre * {font-family: Consolas;}
+
+note{position:relative;display:block;background:#ffc;box-shadow:1px 2px 3px 0px rgba(0,0,0,0.3);padding:20px;margin:20px 5px;}
+note:before{position:absolute;display:block;content:'';width:50px;height:15px;left:15px;top:-8px;background:rgba(255,255,255,0.35);box-shadow:0 0 2px 1px rgba(0,0,0,0.2), 0 0 1px 1px rgba(255,255,255,0.7) inset;transform: rotate(-8deg);}
+>>>>>>> kiban-master
 
 /* Common Classes */
 .color {
