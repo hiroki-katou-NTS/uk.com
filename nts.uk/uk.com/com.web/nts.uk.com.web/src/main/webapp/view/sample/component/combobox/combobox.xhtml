@@ -1,34 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
 
-<<<<<<< HEAD
-<body>
-
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 300, height: 200 };</script>
-
-			<com:stylefile path="../../catalog/catalog.css" />
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="../../catalog/catalog.js" />
-		</ui:define>
-
-		<ui:define name="content">
-			<div id="functions-area"></div>
-			<div id="contents-area">
-				<div id="side-menu" class="cf"></div>
-				<div id="content" class="cf">
-					<h1>ComboBox</h1>
-					<h2>Overview</h2>
-					<div class="control-group valign-center">
-						<div id="combo-box" tabindex="1"
-							data-bind="ntsComboBox: {options: itemList,
-=======
     <body>
 		
         <ui:composition template="../../../../master/base.xhtml">
@@ -57,7 +33,6 @@
 							<div id="combo-box" tabindex="1" data-bind="ntsComboBox: {
 												name: 'Sample List',
 												options: itemList,
->>>>>>> kiban-master
 												optionsValue: 'code',
 												visibleItemsCount: 5,
 												value: selectedCode,
@@ -69,36 +44,6 @@
 														{ prop: 'code', length: 4 },
 														{ prop: 'name', length: 10 },
 													]}"></div>
-<<<<<<< HEAD
-						<div id="combo-box2" tabindex="2"
-							data-bind="ntsComboBox: {options: itemList,
-												optionsValue: 'code',
-												visibleItemsCount: 5,
-												value: selectedCode,
-												optionsText: 'name',
-												editable: isEditable,
-												enable: isEnable,
-												dropDownAttachedToBody: true,
-												columns: [
-														{ prop: 'code', length: 4 },
-														{ prop: 'name', length: 10 },
-													]}
-												"></div>
-					</div>
-					<div class="status">
-						<span data-bind="ntsCheckBox: { checked: isEnable }">Enable</span>
-						<span tabindex="4"
-							data-bind="ntsCheckBox: { checked: isEditable }">Editable</span>
-					</div>
-					<div>
-						Your selected code: <span data-bind="text:selectedCode"></span>
-					</div>
-
-					<h2>Expand width when dropped down</h2>
-					<div class="control-group valign-center">
-						<div id="combo-box2"
-							data-bind="ntsComboBox: {options: itemList,
-=======
 
 							<div>
 								Your selected code: <input type="text" data-bind="value:selectedCode" style="width: 50px;"/>
@@ -109,7 +54,6 @@
 						<h2>Expand width when dropped down</h2>
 						<div class="control-group valign-center">
 							<div id="combo-box2" data-bind="ntsComboBox: {options: itemList,
->>>>>>> kiban-master
  												optionsValue: 'code',
  												visibleItemsCount: 5,
  												value: selectedCode,
@@ -121,33 +65,22 @@
  														{ prop: 'code', length: 4 },
  														{ prop: 'name', length: 10, lengthDropDown: 20 },
  													]}"></div>
-					</div>
-
-					<article class="cf">
-						<div class="tabs">
-							<ol>
-								<li><a href="#tabs-html">HTML Binding</a></li>
-								<li><a href="#tabs-viewmodel">ViewModel</a></li>
-							</ol>
-							<div id="tabs-html" class="cf">
-								<h2>HTML</h2>
-								<p>
-									Using Ignite library so you must include following line in <i>&lt;ui:define
-										name="htmlHead"&gt;</i>
-								</p>
-								<pre>
-									<![CDATA[<ui:define name="htmlHead">
+						</div>
+						
+						<article class="cf">
+							<div class="tabs">
+								<ol>
+									<li><a href="#tabs-html">HTML Binding</a></li>
+									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+								</ol>
+								<div id="tabs-html" class="cf">
+									<h2>HTML</h2>
+									<p>Using Ignite library so you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
+<pre><![CDATA[<ui:define name="htmlHead">
 	<com:scriptfile set="IGNITE" />
-<<<<<<< HEAD
-</ui:define>]]>
-								</pre>
-								<pre>
-									<![CDATA[<div id="combo-box" data-bind="ntsComboBox: {
-=======
 </ui:define>]]></pre>
 <pre><![CDATA[<div id="combo-box" data-bind="ntsComboBox: {
 	name: 'Sample List',
->>>>>>> kiban-master
 	options: itemListCbb1,
 	optionsValue: 'code',
 	visibleItemsCount: 5,
@@ -159,22 +92,18 @@
 	columns: [
 		{ prop: 'code', length: 4 },
 		{ prop: 'name', length: 10 },
-	]}"></div>]]>
-								</pre>
+	]}"></div>]]></pre>
 
 
-								<h3>Expand width when dropped down</h3>
-								<pre>
-									<![CDATA[<div id="combo-box2" data-bind="ntsComboBox: {
+									<h3>Expand width when dropped down</h3>
+									<pre><![CDATA[<div id="combo-box2" data-bind="ntsComboBox: {
 	...
 	columns: [
 		{ prop: 'code', length: 4 },
 		{ prop: 'name', length: 10, lengthDropDown: 20 },
-	]}"></div>]]>
-								</pre>
-								<h2>TypeScript</h2>
-								<pre>
-									<![CDATA[class ScreenModel {
+	]}"></div>]]></pre>
+									<h2>TypeScript</h2>
+<pre><![CDATA[class ScreenModel {
     itemList: KnockoutObservableArray<ItemModel>;
     selectedCode: KnockoutObservable<string>;
     isEnable: KnockoutObservable<boolean>;
@@ -211,79 +140,6 @@ class ItemModel {
         this.code = code;
         this.name = name;
     }
-<<<<<<< HEAD
-}]]>
-								</pre>
-							</div>
-							<div id="tabs-viewmodel" class="cf">
-								<h2>API</h2>
-								<table class="table">
-									<colgroup>
-										<col width="200px" />
-									</colgroup>
-									<thead>
-										<tr>
-											<th><h4>Name</h4></th>
-											<th><h4>Description</h4></th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>options</td>
-											<td><b>Type:</b> array&lt;any&gt;<br /> List data to
-												generate ComboBox</td>
-										</tr>
-										<tr>
-											<td>optionsValue</td>
-											<td><b>Type:</b> string<br /> Field in data will be set
-												as ComboBox value</td>
-										</tr>
-										<tr>
-											<td>optionsText</td>
-											<td><b>Type:</b> string<br /> Field in data will be set
-												as ComboBox text</td>
-										</tr>
-										<tr>
-											<td>value</td>
-											<td><b>Type:</b> any<br /> Current selected value</td>
-										</tr>
-										<tr>
-											<td>editable</td>
-											<td><b>Type:</b> boolean<br /> <b>Default:</b> false<br />
-												True is ComboBox. Can enter value for this control.<br />
-												False is DropDownList. Can select item only.</td>
-										</tr>
-										<tr>
-											<td>enable</td>
-											<td><b>Type:</b> boolean<br /> <b>Default:</b> true<br />
-												Set enable/disable for MultiCheckBox control</td>
-										</tr>
-										<tr>
-											<td>columns<br />
-											<i>(optional)</i></td>
-											<td><b>Type:</b> array&lt;column&gt;<br /> Array of
-												column object will be displayed in drop down part.<br /> <i>prop:</i>
-												field name of data<br /> <i>length:</i> length of character
-												for this field <br /> <i>lengthDropDown:</i> (optional)
-												length of character when ComboBox is dropped down<br /></td>
-										</tr>
-										<tr>
-											<td>visibleItemsCount<br />
-											<i>(optional)</i></td>
-											<td><b>Type:</b> number<br /> Max visible item. If over,
-												scroll is displayed. Default: 5</td>
-										</tr>
-										<tr>
-											<td>dropDownAttachedToBody<br />
-											<i>(optional)</i></td>
-											<td><b>Type:</b> boolean<br /> <b>Default:</b> false<br />
-												If set to true, the container of the drop-down list is
-												appended to the body.<br /> If set to false, it is appended
-												to the parent element of the combo.</td>
-										</tr>
-									</tbody>
-								</table>
-=======
 }]]></pre>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
@@ -381,17 +237,15 @@ class ItemModel {
 										</tbody>
 									</table>
 								</div>
->>>>>>> kiban-master
 							</div>
+						</article>
+						<div class="footer cf">
+							<button class="previous large">Previous</button>
+							<button class="next proceed large">Next</button>
 						</div>
-					</article>
-					<div class="footer cf">
-						<button class="previous large">Previous</button>
-						<button class="next proceed large">Next</button>
-					</div>
-				</div>
-			</div>
-		</ui:define>
-	</ui:composition>
-</body>
+            		</div>
+           		</div>
+            </ui:define>
+    	</ui:composition>
+   	</body>
 </html>

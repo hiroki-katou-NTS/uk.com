@@ -3,7 +3,7 @@
 }
 
 #contents-area .drag-panel {
-	display: inline-block;
+	display:inline-block;
 	vertical-align: top;
 	border: 1px solid #ccc;
 	border-radius: 10px;
@@ -35,12 +35,12 @@
 	visibility: visible !important;
 }
 
-#contents-area .drag-panel .item-classification.ui-sortable-helper {
+#contents-area .drag-panel .item-classification.ui-sortable-helper{
 	cursor: pointer;
 }
 
-#contents-area .drag-panel .item-classification:hover, #contents-area .drag-panel .item-classification.selected
-	{
+#contents-area .drag-panel .item-classification:hover,
+	#contents-area .drag-panel .item-classification.selected {
 	background-color: #eee;
 	border: 1px dashed #aaa;
 }
@@ -49,11 +49,10 @@
 	vertical-align: top;
 	display: inline-block;
 }
-
 #contents-area .drag-panel .item-classification>hr {
-	padding: 0;
+    padding: 0;
 	margin: 6px 0;
-	margin-right: 20px;
+    margin-right: 20px;
 }
 
 #contents-area .drag-panel .item-classification textarea.nts-editor {
@@ -69,11 +68,13 @@
 	display: none;
 }
 
-#contents-area .drag-panel .item-classification>.close-btn:hover {
+#contents-area .drag-panel .item-classification>.close-btn:hover
+	{
 	color: #f00;
 }
 
-#contents-area .drag-panel .item-classification:hover>.close-btn {
+#contents-area .drag-panel .item-classification:hover>.close-btn
+	{
 	position: absolute;
 	top: 0;
 	right: 5px;
