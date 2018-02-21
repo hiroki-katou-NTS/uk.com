@@ -91,6 +91,9 @@ module cps001.a.vm {
         // resource id for title in category mode
         titleResource: KnockoutObservable<string> = ko.observable(text("CPS001_39"));
 
+        // show or hide tabs
+        hasLayout: KnockoutObservable<boolean> = ko.observable(true);
+
         constructor() {
             let self = this,
                 auth = self.auth(),
@@ -109,6 +112,12 @@ module cps001.a.vm {
                     auth.allowDocRef(false);
                     auth.allowAvatarRef(false);
                     auth.allowMapBrowse(false);
+                }
+            });
+
+            self.hasLayout.subscribe(x => {
+                if (!x) {
+                    self.tab(TABS.CATEGORY);
                 }
             });
 
@@ -292,6 +301,11 @@ module cps001.a.vm {
                             }
                         }
                     }
+
+                    service.getAllLayout(employee.employeeId())
+                        .done((data: Array<any>) => {
+                            self.hasLayout(!!data.length);
+                        });
                 });
             } else {
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
@@ -316,6 +330,11 @@ module cps001.a.vm {
                         }
                         employee.employeeId(self.employees()[0] ? self.employees()[0].employeeId : undefined);
                         setShared(RELOAD_KEY, true);
+
+                        service.getAllLayout(employee.employeeId())
+                            .done((data: Array<any>) => {
+                                self.hasLayout(!!data.length);
+                            });
                     });
                 });
             }
