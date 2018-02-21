@@ -8,6 +8,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class AppTypeBfCommand {
-	List<BfReqSetCommand> beforAfter;
+	List<BfReqSetCommand> beforeAfter;
 	List<AppTypeSetCommand> appType;
 }
