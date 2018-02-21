@@ -5,14 +5,6 @@ package nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular;
  * @author shuichu_ishida
  */
 public interface LegalAggrSetOfIrgForWkpRepository {
-
-	/**
-	 * 追加
-	 * @param companyId 会社ID
-	 * @param workplaceId 職場ID
-	 * @param legalAggrSetOfIrg 変形労働時間勤務の法定内集計設定
-	 */
-	void insert(String companyId, String workplaceId, LegalAggrSetOfIrg legalAggrSetOfIrg);
 	
 	/**
 	 * 更新

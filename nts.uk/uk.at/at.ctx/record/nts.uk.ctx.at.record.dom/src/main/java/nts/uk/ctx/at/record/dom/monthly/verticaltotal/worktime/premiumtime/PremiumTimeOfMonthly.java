@@ -63,9 +63,7 @@ public class PremiumTimeOfMonthly {
 		val domain = new PremiumTimeOfMonthly();
 		for (val premiumTime : premiumTimes){
 			val premiumTimeItemNo = Integer.valueOf(premiumTime.getPremiumTimeItemNo());
-			if (!domain.premiumTime.containsKey(premiumTimeItemNo)) {
-				domain.premiumTime.put(premiumTimeItemNo, premiumTime);
-			}
+			domain.premiumTime.putIfAbsent(premiumTimeItemNo, premiumTime);
 		}
 		domain.midnightTime = midnightTime;
 		domain.legalOutsideWorkTime = legalOutsideWorkTime;
@@ -87,9 +85,7 @@ public class PremiumTimeOfMonthly {
 		val premiumTimeOfDaily = actualWorkingTime.getPremiumTimeOfDailyPerformance();
 		for (val premiumTime : premiumTimeOfDaily.getPremiumTimes()){
 			val premiumTimeNo = premiumTime.getPremiumTimeNo();
-			if (!this.premiumTime.containsKey(premiumTimeNo)) {
-				this.premiumTime.put(premiumTimeNo, new AggregatePremiumTime(premiumTimeNo));
-			}
+			this.premiumTime.putIfAbsent(premiumTimeNo, new AggregatePremiumTime(premiumTimeNo));
 			val targetPremiumTime = this.premiumTime.get(premiumTimeNo);
 			targetPremiumTime.addMinutesToTime(premiumTime.getPremitumTime().v());
 		}

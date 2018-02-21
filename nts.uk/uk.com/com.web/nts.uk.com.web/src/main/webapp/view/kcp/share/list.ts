@@ -239,7 +239,7 @@ module kcp.share.list {
             ko.cleanNode($input[0]);
             
             // Init self data.
-            if (!nts.uk.util.isNullOrUndefined(data.isMultipleUse)) {
+            if (!nts.uk.util.isNullOrUndefined(data) && !nts.uk.util.isNullOrUndefined(data.isMultipleUse)) { 
                 self.isMultipleUse = data.isMultipleUse; 
             }
             self.isMultipleSelect = data.isMultiSelect;
