@@ -166,11 +166,9 @@
 	position: fixed;
 	display: none;
 	overflow: hidden;
-	height: 100%;
 }
 
 #hor-scroll-button-hide {
-	height: 100%;
 	z-index: 998;
 	position: fixed;
 	display: table;
@@ -206,7 +204,6 @@
 }
 
 .ccg-btn-vertical {
-	height: 100%;
 	background-color: #2ECC71;
 	padding-left: 8px;
 	color: white;
@@ -215,18 +212,15 @@
 	display: table;
 	cursor: pointer;
 }
+.ccg-caret.caret-right:after {
+	color: #2ECC71;
+	border-width: 32px 16px;
+	margin-left: 5px;
+}
 .ccg-tabpanel #nts-component-list {
 	padding: 0px !important;
 }
 
-#employeeinfo {
-}
-#tbl-ccg001-tab2 {
-	height: 100%;
-}
-#tbl-ccg001-tab2 td{
-	vertical-align: top;
-}
 #ccg001-btn-apply-search-condition {
 	margin-bottom: 14px;
 	margin-left: 10px;
@@ -235,12 +229,14 @@
 	display: table-cell;
 	vertical-align: middle;
 }
-.ccg001-column {
-	height: 100%;
-	margin-right: 10px;
+.margin-left-10 {
+	margin-left: 10px;
 }
 .ccg-tabpanel {
 	height: calc(100% - 150px);
 	background-color: #F2F2F2;
 	border-radius: 5px;
+}
+.height-maximum {
+	height: 100%;
 }

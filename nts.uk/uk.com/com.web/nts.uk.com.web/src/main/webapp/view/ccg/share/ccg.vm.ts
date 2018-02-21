@@ -645,26 +645,44 @@ module nts.uk.com.view.ccg.share.ccg {
                     return;
                 }
                 $('#component-ccg001').toggle("slide");
-                if (self.isShowEmployeeList && self.isFirstTime) {
-                    self.isFirstTime = false;
-                    const tabContentHeight = $('#tab-1').outerHeight();
-                    const kcp005HeaderHeight = 110;
-                    const rows = (tabContentHeight - kcp005HeaderHeight) / 24;
-                    self.employeeinfo = {
-                        isShowAlreadySet: false,
-                        isMultiSelect: self.isMultiple,
-                        isMultipleUse: true,
-                        listType: ListType.EMPLOYEE,
-                        employeeInputList: ko.observableArray([]),
-                        selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                        selectedCode: self.selectedCodeEmployee,
-                        isDialog: true,
-                        isShowNoSelectRow: false,
-                        maxRows: rows
-                    }
-                    $('#employeeinfo').ntsListComponent(self.employeeinfo);
+                if (self.isAdvancedSearchTab && self.isShowEmployeeList && self.isFirstTime) {
+                    self.loadKcp005();
                 }
                 self.isShow(true);
+            }
+
+            /**
+             * Load component KCP005
+             */
+            private loadKcp005(): void {
+                let self = this;
+
+                // set advanced tab width
+                $('#tab-2').outerWidth(965);
+                $('#component-ccg001').css('overflow-x', 'scroll');
+
+                // update flag isFirstTime
+                self.isFirstTime = false;
+
+                // set KCP005 options
+                const tabContentHeight = $('#tab-1').outerHeight();
+                const kcp005HeaderHeight = 100;
+                const rows = (tabContentHeight - kcp005HeaderHeight) / 24;
+                self.employeeinfo = {
+                    isShowAlreadySet: false,
+                    isMultiSelect: self.isMultiple,
+                    isMultipleUse: true,
+                    listType: ListType.EMPLOYEE,
+                    employeeInputList: ko.observableArray([]),
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectedCode: self.selectedCodeEmployee,
+                    isDialog: true,
+                    isShowNoSelectRow: false,
+                    maxRows: rows
+                }
+
+                // Show KCP005
+                $('#employeeinfo').ntsListComponent(self.employeeinfo);
             }
 
             /**

@@ -3,7 +3,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<div class="cf" id="component-ccg001">
+	<div id="component-ccg001" class="cf height-maximum">
 		<div class="pull-left ccg001-content">
 			<div id="ccg001-header" class="table">
 				<div class="cell">
@@ -120,9 +120,9 @@
 				</div>
 			</com:ko>
 			<com:ko tag="if" bind="isAdvancedSearchTab">
-				<div tabindex="-1" class="tab-content-2" style="height: 100%">
-						<div style="height: 100%">
-							<div class="pull-left ccg001-column" style="padding-right: 15px; overflow: scroll;">
+				<div tabindex="-1" class="tab-content-2 height-maximum">
+						<div class="height-maximum">
+							<div class="pull-left height-maximum" style="padding-right: 15px; overflow: scroll;">
 								<div>
 									<label>#{i18n.getText('CCG001_20')}</label>
 								</div>
@@ -255,24 +255,34 @@
 									</div>
 								</com:ko>
 							</div>
-							<div class="pull-left ccg001-column">
-								<div tabindex="17" class="ccg-btn-vertical" data-bind="click: advancedSearchEmployee">
-									<div class="ccg001-tbl-cell-middle">
-										<div class="ccg-lbl-vertical ccg-lbl-extract-emp">#{i18n.getText('CCG001_25')}</div>
+							<div class="pull-left height-maximum margin-left-10 table">
+								<div class="ccg001-tbl-cell-middle">
+									<div tabindex="17" class="ccg-btn-vertical height-maximum" data-bind="click: advancedSearchEmployee">
+										<div class="ccg001-tbl-cell-middle">
+											<div class="ccg-lbl-vertical ccg-lbl-extract-emp">#{i18n.getText('CCG001_25')}</div>
+										</div>
 									</div>
+								</div>
+								<div class="ccg001-tbl-cell-middle">
+									<span class="ccg-caret caret-right"></span>
 								</div>
 							</div>
 							
 							<com:ko tag="if" bind="isShowEmployeeList">
-								<div class="pull-left ccg001-column">
+								<div class="pull-left height-maximum margin-left-10">
 									<div tabindex="18" id="employeeinfo"></div>
 								</div>
-								<div class="pull-left ccg001-column">
-									<div tabindex="19" class="ccg-btn-vertical" data-bind="click: extractSelectedEmployees">
-										<div class="ccg001-tbl-cell-middle">
-											<i class="icon icon-01-searchmode"></i>
-											<div class="ccg-lbl-vertical ccg-lbl-extract-emp">#{i18n.getText('CCG001_26')}</div>
+								<div class="pull-left height-maximum margin-left-10 table">
+									<div class="ccg001-tbl-cell-middle">
+										<div tabindex="19" class="ccg-btn-vertical height-maximum" data-bind="click: extractSelectedEmployees">
+											<div class="ccg001-tbl-cell-middle">
+												<i class="icon icon-01-searchmode"></i>
+												<div class="ccg-lbl-vertical ccg-lbl-extract-emp">#{i18n.getText('CCG001_26')}</div>
+											</div>
 										</div>
+									</div>
+									<div class="ccg001-tbl-cell-middle">
+										<span class="ccg-caret caret-right"></span>
 									</div>
 								</div>
 							</com:ko>
@@ -284,14 +294,17 @@
 		</div>
 		</div>
 	</div>
-	<div id="hor-scroll-button-hide">
+	<div id="hor-scroll-button-hide" class="height-maximum">
 		<div class="ccg001-tbl-cell-middle">
-			<div id="ccg001-btn-search-drawer" class="ccg-btn-vertical" data-bind="click: showComponent">
+			<div id="ccg001-btn-search-drawer" class="ccg-btn-vertical height-maximum" data-bind="click: showComponent">
 				<div class="ccg001-tbl-cell-middle">
 				<i class="icon icon-01-searchmode"></i>
 				<div class="ccg-lbl-vertical ccg-lbl-search-drawer">#{i18n.getText('CCG001_21')}</div>
 				</div>
 			</div>
+		</div>
+		<div class="ccg001-tbl-cell-middle">
+			<span class="ccg-caret caret-right"></span>
 		</div>
 	</div>
 </ui:composition>
