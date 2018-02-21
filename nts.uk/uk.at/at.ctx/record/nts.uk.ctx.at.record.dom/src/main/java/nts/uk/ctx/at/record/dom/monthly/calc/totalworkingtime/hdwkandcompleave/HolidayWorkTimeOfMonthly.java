@@ -75,8 +75,7 @@ public class HolidayWorkTimeOfMonthly {
 		domain.totalTransferTime = totalTransferTime;
 		for (AggregateHolidayWorkTime aggregateHolidayWorkTime : aggregateHolidayWorkTimeList){
 			val holidayWorkFrameNo = aggregateHolidayWorkTime.getHolidayWorkFrameNo();
-			if (domain.aggregateHolidayWorkTimeMap.containsKey(holidayWorkFrameNo)) continue;
-			domain.aggregateHolidayWorkTimeMap.put(holidayWorkFrameNo, aggregateHolidayWorkTime);
+			domain.aggregateHolidayWorkTimeMap.putIfAbsent(holidayWorkFrameNo, aggregateHolidayWorkTime);
 		}
 		return domain;
 	}
@@ -88,9 +87,7 @@ public class HolidayWorkTimeOfMonthly {
 	 */
 	private AggregateHolidayWorkTime getTargetAggregateHolidayWorkTime(HolidayWorkFrameNo holidayWorkFrameNo){
 
-		if (!this.aggregateHolidayWorkTimeMap.containsKey(holidayWorkFrameNo)){
-			this.aggregateHolidayWorkTimeMap.put(holidayWorkFrameNo, new AggregateHolidayWorkTime(holidayWorkFrameNo));
-		}
+		this.aggregateHolidayWorkTimeMap.putIfAbsent(holidayWorkFrameNo, new AggregateHolidayWorkTime(holidayWorkFrameNo));
 		return this.aggregateHolidayWorkTimeMap.get(holidayWorkFrameNo);
 	}
 	
@@ -216,8 +213,7 @@ public class HolidayWorkTimeOfMonthly {
 		// 休出枠時間リストをマップに組み換え　（枠での検索用）
 		Map<HolidayWorkFrameNo, HolidayWorkFrameTime> holidayWorkFrameTimes = new HashMap<>();
 		for (val holidayWorkFrameTimeSrc : holidayWorkFrameTimeSrcs){
-			if (holidayWorkFrameTimes.containsKey(holidayWorkFrameTimeSrc.getHolidayFrameNo())) continue;
-			holidayWorkFrameTimes.put(holidayWorkFrameTimeSrc.getHolidayFrameNo(), holidayWorkFrameTimeSrc);
+			holidayWorkFrameTimes.putIfAbsent(holidayWorkFrameTimeSrc.getHolidayFrameNo(), holidayWorkFrameTimeSrc);
 		}
 	
 		// 休出・振替の処理順序を取得する

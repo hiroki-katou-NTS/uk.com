@@ -55,11 +55,6 @@ module nts.uk.at.view.kmf002.e {
             public start_page(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var _self = this;
-                if (getShared('conditionSidebar5') == false) {
-//                    blockUI.grayout();
-                } else {
-//                    blockUI.clear();
-                }
                 service.find(_self.commonTableMonthDaySet().fiscalYear()).done((data) => {
                     if (typeof data === "undefined") {
                         /** 
@@ -75,16 +70,10 @@ module nts.uk.at.view.kmf002.e {
                         }
                         _self.enableDelete(true);
                     }
-                    dfd.resolve();
-                    
+                    dfd.resolve();       
                 });
-                
-//                nts.uk.ui.errors.clearAll();
-            
                 return dfd.promise();
             }
-            
-            
        }      
     }
 }

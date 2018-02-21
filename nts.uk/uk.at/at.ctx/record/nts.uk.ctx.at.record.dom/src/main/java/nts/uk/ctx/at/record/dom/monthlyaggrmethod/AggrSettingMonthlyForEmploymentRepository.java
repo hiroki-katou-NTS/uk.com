@@ -17,16 +17,10 @@ public interface AggrSettingMonthlyForEmploymentRepository {
 	Optional<AggrSettingMonthlyForEmployment> find(String companyId, String employmentCd);
 	
 	/**
-	 * 追加
+	 * 登録および更新
 	 * @param aggrSettingMonthlyForEmployment 雇用月別実績集計設定
 	 */
-	void insert(AggrSettingMonthlyForEmployment aggrSettingMonthlyForEmployment);
-	
-	/**
-	 * 更新
-	 * @param aggrSettingMonthlyForEmployment 雇用月別実績集計設定
-	 */
-	void update(AggrSettingMonthlyForEmployment aggrSettingMonthlyForEmployment);
+	void persistAndUpdate(AggrSettingMonthlyForEmployment aggrSettingMonthlyForEmployment);
 	
 	/**
 	 * 削除
