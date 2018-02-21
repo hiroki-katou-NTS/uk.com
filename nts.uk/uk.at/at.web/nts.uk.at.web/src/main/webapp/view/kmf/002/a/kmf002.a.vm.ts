@@ -95,7 +95,7 @@ module nts.uk.at.view.kmf002.a {
                   *    main define variable code 
                 **/
                 _self.publicHolidaySetting = ko.observable(new PublicHolidaySetting(1, 0, new PublicHolidayGrantDate(0),
-                                                                                    new PublicHoliday('', '', 0), 0));
+                                                                                    new PublicHoliday('', '', 1), 0));
                 _self.forwardSetOfPubHD = ko.observable(new ForwardSettingOfPublicHoliday(0, 0));
                 _self.weekHDSet = ko.observable(new WeekHolidaySetting(0, 0, 0));
                 _self.fourWkFourHDNumSet = ko.observable(new FourWeekFourHolidayNumberSetting(0, new OneWeekPublicHoliday(0, 0, new LastWeekHolidayNumberOfOneWeek(0, 0)), 0, new FourWeekPublicHoliday(0, 0, new LastWeekHolidayNumberOfFourWeek(0, 0))));
@@ -204,7 +204,6 @@ module nts.uk.at.view.kmf002.a {
                 var dfd = $.Deferred<any>();
                 
                 let _self = this;
-//                _self.removeValidate();
                 // load all
                 if (typeStart == SideBarTabIndex.THIRD) {
                     nts.uk.ui.errors.clearAll()
@@ -212,6 +211,7 @@ module nts.uk.at.view.kmf002.a {
                     $.when(_self.screenB().start_page()).done(function() {
                         dfd.resolve(_self);
                         blockUI.clear();
+                        $( "#scrB #datePickerYear" ).focus();
                     });    
                 } else if (typeStart == SideBarTabIndex.FIRST) {
                     // Process for screen A (Mother of all screen)
@@ -228,6 +228,7 @@ module nts.uk.at.view.kmf002.a {
                     $.when(_self.screenE().start_page()).done(function() {
                         dfd.resolve(_self);
                         blockUI.clear();
+                        $( "#scrE #datePickerYear" ).focus();
                     });    
                 } else if (typeStart == SideBarTabIndex.FOURTH) {
                     nts.uk.ui.errors.clearAll()
@@ -235,6 +236,7 @@ module nts.uk.at.view.kmf002.a {
                     $.when(_self.screenD().start_page()).done(function() {
                         dfd.resolve(_self);
                         blockUI.clear();
+                        $( "#scrD #datePickerYear" ).focus();
                     });    
                 } else if (typeStart == SideBarTabIndex.FIFTH) {
                     nts.uk.ui.errors.clearAll()
@@ -242,6 +244,7 @@ module nts.uk.at.view.kmf002.a {
                     $.when(_self.screenC().start_page()).done(function() {
                         dfd.resolve(_self);
                         blockUI.clear();
+                        $( "#scrC #datePickerYear" ).focus();
                     });    
                 }
                 
@@ -263,43 +266,59 @@ module nts.uk.at.view.kmf002.a {
             }
             
             public onSelectTabB(): void {
-                $("#sidebar").ntsSideBar("init", {
-                    active: SideBarTabIndex.THIRD,
-                    activate: (event, info) => {
-                        let _self = this;
-                        _self.start_page(SideBarTabIndex.THIRD);
-                    }
-                });
+                let _self = this;
+                if (_self.isDisableTab() == false) {
+                    $("#sidebar").ntsSideBar("init", {
+                        active: SideBarTabIndex.THIRD,
+                        activate: (event, info) => {
+                            _self.start_page(SideBarTabIndex.THIRD);
+                        }
+                    });
+                }
             }
             
             public onSelectTabC(): void {
-                $("#sidebar").ntsSideBar("init", {
-                    active: SideBarTabIndex.FIFTH,
-                    activate: (event, info) => {
-                        let _self = this;
-                        _self.start_page(SideBarTabIndex.FIFTH);
-                    }
-                });
+                let _self = this;
+                if (_self.isDisableTab() == false) {
+                    $("#sidebar").ntsSideBar("init", {
+                        active: SideBarTabIndex.FIFTH,
+                        activate: (event, info) => {
+                            _self.start_page(SideBarTabIndex.FIFTH);
+                        }
+                    });
+                }
             }
             
             public onSelectTabD(): void {
-                $("#sidebar").ntsSideBar("init", {
-                    active: SideBarTabIndex.FOURTH,
-                    activate: (event, info) => {
-                        let _self = this;
-                        _self.start_page(SideBarTabIndex.FOURTH);
-                    }
-                });
+                let _self = this;
+                if (_self.isDisableTab() == false) {
+                    $("#sidebar").ntsSideBar("init", {
+                        active: SideBarTabIndex.FOURTH,
+                        activate: (event, info) => {
+                            _self.start_page(SideBarTabIndex.FOURTH);
+                        }
+                    });    
+                }
             }
             
             public onSelectTabE(): void {
-                $("#sidebar").ntsSideBar("init", {
-                    active: SideBarTabIndex.SECOND,
-                    activate: (event, info) => {
-                        let _self = this;
-                        _self.start_page(SideBarTabIndex.SECOND);
-                    }
-                });
+                let _self = this;
+                if (_self.isDisableTab() == false) {
+                    $("#sidebar").ntsSideBar("init", {
+                        active: SideBarTabIndex.SECOND,
+                        activate: (event, info) => {
+                            _self.start_page(SideBarTabIndex.SECOND);
+                        }
+                    });        
+                }
+            }
+            
+            private isDisableTab(): boolean {
+                let _self = this;
+                if (_self.publicHolidaySetting().isManageComPublicHd() == ManagePubHD.MANAGE) {
+                    return false;
+                }
+                return true;
             }
             
             /**
@@ -315,13 +334,15 @@ module nts.uk.at.view.kmf002.a {
                                         _self.weekHDSet(), _self.fourWkFourHDNumSet())).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         _self.getAllData();
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError(res);
                     });    
                 }
             }
             
             private checkValidate(): void {
                 let _self = this;
-                if ( _self.publicHolidaySetting().isManageComPublicHd() == 0 ) {
+                if ( _self.publicHolidaySetting().isManageComPublicHd() == ManagePubHD.NOT_MANAGE ) {
                     nts.uk.ui.errors.clearAll();    
                 } else {
                     if (_self.publicHolidaySetting().publicHdManagementClassification() == PublicHDPeriod.ONE_MONTH) {
@@ -466,17 +487,17 @@ module nts.uk.at.view.kmf002.a {
             
             private conditionSideBar5(): void {
                 let _self = this;
-                if (_self.publicHolidaySetting().isManageComPublicHd() == 1) {
-//                    $("#sidebar").ntsSideBar("enable", 1);
-//                    $("#sidebar").ntsSideBar("enable", 2);
-//                    $("#sidebar").ntsSideBar("enable", 3);
-//                    $("#sidebar").ntsSideBar("enable", 4);
+                if (_self.publicHolidaySetting().isManageComPublicHd() == ManagePubHD.MANAGE) {
+                    $("#sidebar").ntsSideBar("enable", SideBarTabIndex.SECOND);
+                    $("#sidebar").ntsSideBar("enable", SideBarTabIndex.THIRD);
+                    $("#sidebar").ntsSideBar("enable", SideBarTabIndex.FOURTH);
+                    $("#sidebar").ntsSideBar("enable", SideBarTabIndex.FIFTH);
                     setShared('conditionSidebar5', true);
                 } else {
-//                    $("#sidebar").ntsSideBar("disable", 1);
-//                    $("#sidebar").ntsSideBar("disable", 2);
-//                    $("#sidebar").ntsSideBar("disable", 3);
-//                    $("#sidebar").ntsSideBar("disable", 4);
+                    $("#sidebar").ntsSideBar("disable", SideBarTabIndex.SECOND);
+                    $("#sidebar").ntsSideBar("disable", SideBarTabIndex.THIRD);
+                    $("#sidebar").ntsSideBar("disable", SideBarTabIndex.FOURTH);
+                    $("#sidebar").ntsSideBar("disable", SideBarTabIndex.FIFTH);
                     setShared('conditionSidebar5', false);
                 }
             }

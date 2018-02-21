@@ -21,9 +21,10 @@ input.txtEmpCodeFirstChar {
 	margin: 5px 0px;
 }
 
-#empInitGroup .ntsRadioBox:not(:first-child),#initCardNoGroup .ntsRadioBox:not(:first-child) {
+#empInitGroup .ntsRadioBox:not (:first-child ), #initCardNoGroup .ntsRadioBox:not
+	(:first-child ) {
 	width: 100%;
-    margin-top: 5px;
+	margin-top: 5px;
 }
 
 #empCodeLetter {
@@ -32,13 +33,13 @@ input.txtEmpCodeFirstChar {
 	top: 62px;
 }
 
-#cardNoLetter{
+#cardNoLetter {
 	position: fixed;
-    left: 290px;
-    top: 164px;
-	
+	left: 290px;
+	top: 164px;
 }
-#empInitGroup,#initCardNoGroup {
+
+#empInitGroup, #initCardNoGroup {
 	padding-top: 10px;
 	margin-top: -5px;
 }

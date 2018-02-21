@@ -23,6 +23,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         goSelected1 : KnockoutObservable<number> = ko.observable(0);
         backSelected2 : KnockoutObservable<number> = ko.observable(0);
         goSelected2 : KnockoutObservable<number> = ko.observable(0);
+        goSelected1Value: KnockoutObservable<string> = ko.observable("");
+        backSelected1Value: KnockoutObservable<string> = ko.observable("");
         workState: KnockoutObservable<boolean> = ko.observable(true);
         typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
         // 申請日付

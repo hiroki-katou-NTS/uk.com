@@ -3,15 +3,20 @@
 	width: 800px !important;
 	overflow: hidden;
 }
-#tab_url{
+
+#tab_url {
 	height: 350px;
 }
-.float_left{
-	float:left;
+
+.float_left {
+	float: left;
 }
+
 .switch_btn_style {
 	float: left;
-	margin-bottom: 20px;}
-.padding_top_3{
+	margin-bottom: 20px;
+}
+
+.padding_top_3 {
 	padding-top: 3px;
 }

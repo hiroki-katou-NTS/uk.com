@@ -84,7 +84,8 @@ module nts.uk.at.view.kmk003.a {
                     }
                 });
 
-                self.workTimeSettingLoader = new WorkTimeSettingLoader();
+                self.selectedWorkTimeCode = ko.observable('');
+                self.workTimeSettingLoader = new WorkTimeSettingLoader(self.mainSettingModel.workTimeSetting.worktimeCode);
                 
                 self.workTimeSettings = ko.observableArray([]);
                 self.columnWorktimeSettings = ko.observableArray([
@@ -99,7 +100,6 @@ module nts.uk.at.view.kmk003.a {
                         }
                     }
                 ]);
-                self.selectedWorkTimeCode = ko.observable('');
 
                 //tab mode
                 self.tabModeOptions = ko.observableArray([
@@ -227,13 +227,14 @@ module nts.uk.at.view.kmk003.a {
 
                     // enter update mode if has data
                     if (data && data.length > 0) {
+                        let found = _.find(self.workTimeSettings(), worktime => worktime.worktimeCode == selectedCode);
                         // select first item
-                        if (!selectedCode && !selectedIndex) {
+                        if (!found && !selectedIndex) {
                             self.selectedWorkTimeCode(data[0].worktimeCode);
                         }
 
                         // select item by selected code
-                        if (selectedCode) {
+                        if (found) {
                             self.selectedWorkTimeCode(selectedCode);
                         }
 
@@ -472,6 +473,16 @@ module nts.uk.at.view.kmk003.a {
 
                 let isSameWorkDivision = leftAtr() == rightAtr() && leftMethod() == rightMethod();
 
+                if (leftAtr() == EnumWorkForm.REGULAR && rightAtr() == EnumWorkForm.REGULAR) {
+                    if (leftMethod() == SettingMethod.ALL) {
+                        isSameWorkDivision = true;
+                    }
+                }
+                
+                if (leftAtr() == EnumWorkForm.FLEX && rightAtr() == EnumWorkForm.FLEX) {
+                    isSameWorkDivision = true;
+                }
+                
                 // reload list work time
                 if (loader.isAllWorkAtr() || isSameWorkDivision) {
                     _.defer(() => self.loadListWorktime(self.mainSettingModel.workTimeSetting.worktimeCode()));
@@ -819,19 +830,22 @@ module nts.uk.at.view.kmk003.a {
             workTimeAtrEnums: EnumConstantDto[];
             workTimeMethodEnums: EnumConstantDto[];
             loadListWorktime: (selectedCode?: string, selectedIndex?: number) => JQueryPromise<void>;
-            constructor() {
+            selectedWorktimeCode: KnockoutObservable<string>;
+            constructor(selectedWorktimeCode: KnockoutObservable<string>) {
                 super();
+                let self = this;
+                this.selectedWorktimeCode = selectedWorktimeCode;
                 this.isAbolish(false); // initial value in specs = clear
                 this.workTimeDivision.workTimeDailyAtr(3);
                 this.workTimeDivision.workTimeMethodSet(3);
                 this.workTimeDivision.workTimeDailyAtr.subscribe(() => {
-                    this.loadListWorktime();
+                    this.loadListWorktime(self.selectedWorktimeCode());
                 });
                 this.workTimeDivision.workTimeMethodSet.subscribe(() => {
-                    this.loadListWorktime();
+                    this.loadListWorktime(self.selectedWorktimeCode());
                 });
                 this.isAbolish.subscribe(() => {
-                    this.loadListWorktime();
+                    this.loadListWorktime(self.selectedWorktimeCode());
                 });
             }
 
@@ -891,7 +905,8 @@ module nts.uk.at.view.kmk003.a {
         export enum SettingMethod {
             FIXED,
             DIFFTIME,
-            FLOW
+            FLOW,
+            ALL
         }
         
         export enum TabMode {

@@ -87,7 +87,7 @@ public class AppHolidayWork extends AggregateRoot{
 		this.workTypeCode = new WorkTypeCode(workTypeCode);
 		this.workTimeCode = new WorkTimeCode(workTimeCode);
 		this.workClock1 = HolidayWorkClock.validateTime(workClockStart1, workClockEnd1,goAtr1,backAtr1);
-		this.workClock2 = HolidayWorkClock.validateTime(workClockStart2, workClockEnd2,goAtr2,backAtr2);
+		this.workClock2 = HolidayWorkClock.validateTime2(workClockStart2, workClockEnd2,goAtr2,backAtr2);
 		this.divergenceReason = divergenceReason;
 		this.holidayShiftNight = holidayShiftNight;
 	}

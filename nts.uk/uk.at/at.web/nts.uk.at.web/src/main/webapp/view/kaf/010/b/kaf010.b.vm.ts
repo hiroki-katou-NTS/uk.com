@@ -22,6 +22,8 @@ module nts.uk.at.view.kaf010.b {
             goSelected1 : KnockoutObservable<number> = ko.observable(0);
             backSelected2 : KnockoutObservable<number> = ko.observable(0);
             goSelected2 : KnockoutObservable<number> = ko.observable(0);
+            goSelected1Value: KnockoutObservable<string> = ko.observable("");
+            backSelected1Value: KnockoutObservable<string> = ko.observable("");
             workState: KnockoutObservable<boolean> = ko.observable(true);;
             typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
             // 申請日付
@@ -201,6 +203,8 @@ module nts.uk.at.view.kaf010.b {
                 self.goSelected2(data.goAtr2);
                 self.backSelected1(data.backAtr1);
                 self.backSelected2(data.backAtr2);
+                self.goSelected1Value(data.goAtr1 == 0 ? nts.uk.resource.getText("KAF009_17") : nts.uk.resource.getText("KAF009_16"));
+                self.backSelected1Value(data.goAtr1 == 0 ? nts.uk.resource.getText("KAF009_19") : nts.uk.resource.getText("KAF009_18"));
                 if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
                     let reasonID = data.applicationReasonDtos[0].reasonID;
                     self.selectedReason(reasonID);
@@ -436,20 +440,21 @@ module nts.uk.at.view.kaf010.b {
                     prePostAtr: self.prePostSelected(),
                     applicantSID: self.employeeID,
                     applicationReason: appReason,
-                    appApprovalPhaseCmds: self.approvalList,
                     workTypeCode: self.workTypeCd(),
                     siftTypeCode: self.siftCD(),
-                    workClockFrom1: self.timeStart1(),
-                    workClockTo1: self.timeEnd1(),
-                    workClockFrom2: self.timeStart2(),
-                    workClockTo2: self.timeEnd2(),
-                    breakTimes: ko.mapping.toJS(_.map(self.breakTimes(), item => self.convertOvertimeCaculationToOverTimeInput(item))),
-                    overtimeHours: ko.mapping.toJS(_.map(self.overtimeHours(), item => self.convertOvertimeCaculationToOverTimeInput(item))),
-                    restTime: ko.mapping.toJS(self.restTime()),
-                    bonusTimes: ko.mapping.toJS(_.map(self.bonusTimes(), item => self.convertOvertimeCaculationToOverTimeInput(item))),
-                    overTimeShiftNight: ko.toJS(overTimeShiftNightTmp),
-                    flexExessTime: ko.toJS(flexExessTimeTmp),
-                    overtimeAtr: 0,
+                    workClockStart1: self.timeStart1(),
+                    workClockEnd1: self.timeEnd1(),
+                    workClockStart2: self.timeStart2(),
+                    workClockEnd2: self.timeEnd2(),
+                    goAtr1: self.goSelected1(),
+                    backAtr1: self.backSelected1(),
+                    goAtr2: self.goSelected2(),
+                    backAtr2: self.backSelected2(),
+                    bonusTimes: ko.toJS(self.bonusTimes()),
+                    overtimeHours: ko.toJS(self.overtimeHours()),
+                    breakTimes: ko.toJS(self.breakTimes()),
+                    restTime: ko.toJS(self.restTime()),
+                    holidayWorkShiftNight: ko.toJS(overTimeShiftNightTmp == null ? -1 : overTimeShiftNightTmp),
                     divergenceReasonContent: divergenceReason,
                     sendMail: self.manualSendMailAtr(),
                     calculateFlag: self.calculateFlag()
@@ -532,7 +537,7 @@ module nts.uk.at.view.kaf010.b {
                     param.attendanceID(),
                     param.attendanceName(),
                     param.frameNo(),
-                    param.timeItemTypeAtr(),
+                    "",
                     param.frameName(),
                     null,
                     null,
@@ -644,7 +649,7 @@ module nts.uk.at.view.kaf010.b {
                         }
                     service.getCaculationResult(param).done(function(data){
                            
-                    
+                       self.breakTimes.removeAll();
                        self.overtimeHours.removeAll();
                        self.bonusTimes.removeAll();
                          if(data != null){
@@ -718,7 +723,7 @@ module nts.uk.at.view.kaf010.b {
                          }   
                         }
                         //勤務内容を変更後に計算ボタン押下。計算フラグ=0にする。 
-                        if(!self.isEmptyOverTimeInput(ko.toJS(self.overtimeHours()))){
+                        if(!self.isEmptyOverTimeInput(ko.toJS(self.breakTimes()))){
                             self.calculateFlag(0);
                         }
                          dfd.resolve(data);
