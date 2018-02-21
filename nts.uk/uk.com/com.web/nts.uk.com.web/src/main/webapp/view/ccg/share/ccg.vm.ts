@@ -539,6 +539,12 @@ module nts.uk.com.view.ccg.share.ccg {
                 let dfd = $.Deferred<void>();
                 if (self.showClosure) {
                     service.getClosuresByBaseDate(self.baseDate().format(CcgDateFormat.DEFAULT_FORMAT)).done(data => {
+                        if (self.showAllClosure) {
+                            data.unshift({
+                                closureId: ConfigEnumClosure.CLOSURE_ALL,
+                                closureName: ConfigEnumClosure.CLOSURE_ALL_NAME
+                            });
+                        }
                         self.closureList(data);
                         self.getSelectedClosure().done(selected => {
                             self.selectedClosure(selected);
@@ -917,28 +923,31 @@ module nts.uk.com.view.ccg.share.ccg {
                 // set param
                 self.setAdvancedSearchParam();
 
-                let empRangeSelection = self.employeeRangeSelection ?
-                    self.employeeRangeSelection : new EmployeeRangeSelection();
-                switch (self.systemType) {
-                    case ConfigEnumSystemType.PERSONAL_INFORMATION:
-                        empRangeSelection.personalInfo.selectedClosureId = self.selectedClosure();
-                        break;
-                    case ConfigEnumSystemType.EMPLOYMENT:
-                        empRangeSelection.employmentInfo.selectedClosureId = self.selectedClosure();
-                        break;
-                    case ConfigEnumSystemType.SALARY:
-                        empRangeSelection.salaryInfo.selectedClosureId = self.selectedClosure();
-                        break;
-                    case ConfigEnumSystemType.HUMAN_RESOURCES:
-                        empRangeSelection.humanResourceInfo.selectedClosureId = self.selectedClosure();
-                        break;
-                    default: break; // systemType not found
-                }
-
                 nts.uk.ui.block.invisible(); // block ui
-                service.saveEmployeeRangeSelection(empRangeSelection).done(() => {
+                if (self.showClosure) { // save EmployeeRangeSelection if show closure
+                    let empRangeSelection = self.employeeRangeSelection ?
+                        self.employeeRangeSelection : new EmployeeRangeSelection();
+                    switch (self.systemType) {
+                        case ConfigEnumSystemType.PERSONAL_INFORMATION:
+                            empRangeSelection.personalInfo.selectedClosureId = self.selectedClosure();
+                            break;
+                        case ConfigEnumSystemType.EMPLOYMENT:
+                            empRangeSelection.employmentInfo.selectedClosureId = self.selectedClosure();
+                            break;
+                        case ConfigEnumSystemType.SALARY:
+                            empRangeSelection.salaryInfo.selectedClosureId = self.selectedClosure();
+                            break;
+                        case ConfigEnumSystemType.HUMAN_RESOURCES:
+                            empRangeSelection.humanResourceInfo.selectedClosureId = self.selectedClosure();
+                            break;
+                        default: break; // systemType not found
+                    }
+                    service.saveEmployeeRangeSelection(empRangeSelection).done(() => {
+                        self.findAndReturnListEmployee(true);
+                    });
+                } else {
                     self.findAndReturnListEmployee(true);
-                });
+                }
             }
 
             /**
@@ -1195,6 +1204,7 @@ module nts.uk.com.view.ccg.share.ccg {
         
          export class ConfigEnumClosure{
             static CLOSURE_ALL = 0;
+            static CLOSURE_ALL_NAME = nts.uk.resource.getText("CCG001_64");
         }
         
         export class ConfigEnumReferenceRange{
