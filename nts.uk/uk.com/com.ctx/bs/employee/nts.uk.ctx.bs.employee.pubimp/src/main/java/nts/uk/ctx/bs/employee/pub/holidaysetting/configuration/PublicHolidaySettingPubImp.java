@@ -4,14 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pub.holidaysetting.configuration;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidaySetting;
-import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidaySettingRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class PublicHolidaySettingPubImp.
@@ -21,7 +15,7 @@ public class PublicHolidaySettingPubImp implements PublicHolidaySettingPub{
 
 	/** The pub hd set repo. */
 	@Inject
-	private PublicHolidaySettingRepository pubHdSetRepo;
+//	private PublicHolidaySettingRepository pubHdSetRepo;
 	
 	private static final Integer NOT_MANAGE = 0;
 	private static final Integer MANAGE = 1;
@@ -31,7 +25,7 @@ public class PublicHolidaySettingPubImp implements PublicHolidaySettingPub{
 	 */
 	@Override
 	public PublicHolidaySettingDto FindPublicHolidaySetting() {
-		String companyId = AppContexts.user().companyId();
+		/*String companyId = AppContexts.user().companyId();
 		PublicHolidaySettingDto dto = new PublicHolidaySettingDto();
 		
 		Optional<PublicHolidaySetting> optPubHDSet = this.pubHdSetRepo.findByCID(companyId);
@@ -42,6 +36,7 @@ public class PublicHolidaySettingPubImp implements PublicHolidaySettingPub{
 		} else {
 			dto = null;
 		}
-		return dto;
+		return dto;*/
+		return null;
 	}
 }
