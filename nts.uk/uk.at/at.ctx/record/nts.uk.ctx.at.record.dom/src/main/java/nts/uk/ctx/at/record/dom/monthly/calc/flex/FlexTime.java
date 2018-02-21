@@ -84,9 +84,7 @@ public class FlexTime {
 	private void addFlexTimeInTimeSeriesWork(GeneralDate ymd,
 			Integer timeAsMinutes, Integer calcTimeAsMinutes, Integer beforeApplicationTimeAsMinutes){
 		
-		if (!this.timeSeriesWorks.containsKey(ymd)){
-			this.timeSeriesWorks.put(ymd, new FlexTimeOfTimeSeries(ymd));
-		}
+		this.timeSeriesWorks.putIfAbsent(ymd, new FlexTimeOfTimeSeries(ymd));
 		val targetFlexTime = this.timeSeriesWorks.get(ymd);
 		val flexTimeSrc = targetFlexTime.getFlexTime();
 		targetFlexTime.setFlexTime(new nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime(

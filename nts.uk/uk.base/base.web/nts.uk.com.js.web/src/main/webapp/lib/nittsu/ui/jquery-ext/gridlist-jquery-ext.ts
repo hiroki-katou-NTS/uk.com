@@ -92,10 +92,11 @@ module nts.uk.ui.jqueryExtentions {
                     _.defer(() => { 
                         let selected = getSelectRow($grid);
                         if(!nts.uk.util.isNullOrEmpty(selected)){
-                            if ($grid.igGrid("scrollContainer").length > 0){
+                            let $scrollContainer: any = $grid.igGrid("scrollContainer");
+                            if ($scrollContainer.length > 0){
                                 let firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
                                 let selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
-                                $grid.igGrid("scrollContainer").scrollTop(selectRowOffset - firstRowOffset);
+                                $scrollContainer.scrollTop(selectRowOffset - firstRowOffset);
                             } else { 
                                 let index = $(selected["element"]).attr("data-row-idx");
                                 $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    

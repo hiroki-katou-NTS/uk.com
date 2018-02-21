@@ -13,14 +13,16 @@ public class AnnualLeaveUseTimeOfTimeSeries {
 
 	/** 年月日 */
 	private GeneralDate ymd;
+	
 	/** 年休使用時間 */
 	//private AnnualLeaveOfDaily annualLeaveUseTime;
 	
 	/**
 	 * コンストラクタ
 	 */
-	public AnnualLeaveUseTimeOfTimeSeries(){
+	public AnnualLeaveUseTimeOfTimeSeries(GeneralDate ymd){
 		
+		this.ymd = ymd;
 		//this.annualLeaveUseTime = new AnnualLeaveOfDaily();
 	}
 	
@@ -31,8 +33,7 @@ public class AnnualLeaveUseTimeOfTimeSeries {
 	 */
 	public static AnnualLeaveUseTimeOfTimeSeries of(GeneralDate ymd){
 		
-		val domain = new AnnualLeaveUseTimeOfTimeSeries();
-		domain.ymd = ymd;
+		val domain = new AnnualLeaveUseTimeOfTimeSeries(ymd);
 		return domain;
 	}
 }

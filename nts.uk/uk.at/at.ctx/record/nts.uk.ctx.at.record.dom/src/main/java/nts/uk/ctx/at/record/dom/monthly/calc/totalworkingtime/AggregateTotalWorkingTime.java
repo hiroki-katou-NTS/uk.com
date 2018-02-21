@@ -1,9 +1,10 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime;
 
-import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
@@ -91,19 +92,19 @@ public class AggregateTotalWorkingTime {
 	/**
 	 * 共有項目を集計する
 	 * @param datePeriod 期間
-	 * @param attendanceTimeOfDailys リスト：日別実績の勤怠時間
+	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 */
 	public void aggregateSharedItem(DatePeriod datePeriod,
-			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap){
 		
 		// 就業時間を集計する
-		this.workTime.confirm(datePeriod, attendanceTimeOfDailys);
+		this.workTime.confirm(datePeriod, attendanceTimeOfDailyMap);
 	
 		// 休暇使用時間を集計する
-		this.vacationUseTime.confirm(datePeriod, attendanceTimeOfDailys);
+		this.vacationUseTime.confirm(datePeriod, attendanceTimeOfDailyMap);
 		
 		// 所定労働時間を集計する
-		this.prescribedWorkingTime.confirm(datePeriod, attendanceTimeOfDailys);
+		this.prescribedWorkingTime.confirm(datePeriod, attendanceTimeOfDailyMap);
 	}
 	
 	/**

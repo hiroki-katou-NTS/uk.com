@@ -398,7 +398,7 @@ module nts.uk.request {
                 }
                 
                 ui.windows.setShared("errorInfo", error);
-                let sub = ui.windows.sub.modal("com", "/view/common/error/system/index.xhtml", {
+                let sub = (<any>ui).windows.sub.modal("com", "/view/common/error/system/index.xhtml", {
                     resizable: true
                 });
                 sub.$dialog.addClass("nts-system-error-dialog");
@@ -509,7 +509,7 @@ module nts.uk.request {
         
         export function restoreSessionTo(webAppId: WebAppId) {
             let serializedTicket = uk.sessionStorage.getItem(STORAGE_KEY_SERIALIZED_SESSION).get();
-            return request.ajax(webAppId, "/shr/web/session/restore", serializedTicket, null, false);
+            return (<any>request).ajax(webAppId, "/shr/web/session/restore", serializedTicket, null, false);
         }
     }
     
@@ -528,8 +528,8 @@ module nts.uk.request {
         return destination.rawUrl;
     }
 
-    export function liveView(fileId: string);
-    export function liveView(webAppId: WebAppId, fileId: string): string {
+    export function liveView(fileId?: string): string;
+    export function liveView(webAppId?: WebAppId, fileId?: string): string {
         let liveViewPath = "/webapi/shr/infra/file/storage/liveview/";
         if (typeof arguments[1] !== 'string') {
             return resolvePath(liveViewPath) + _.concat(location.currentAppId, arguments)[1];
