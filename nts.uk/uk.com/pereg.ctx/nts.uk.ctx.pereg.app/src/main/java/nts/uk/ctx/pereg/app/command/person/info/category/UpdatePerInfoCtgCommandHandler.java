@@ -23,11 +23,11 @@ public class UpdatePerInfoCtgCommandHandler extends CommandHandler<UpdatePerInfo
 		UpdatePerInfoCtgCommand perInfoCtgCommand = context.getCommand();
 		String ctgName = perInfoCtgCommand.getCategoryName();
 		if (CheckNameSpace.checkName(ctgName)) {
-			throw new BusinessException(new RawErrorMessage("Msg_928"));
+			throw new BusinessException("Msg_928");
 		}
 		if (!this.perInfoCtgRep.checkCtgNameIsUnique(PersonInfoCategory.ROOT_COMPANY_ID,
 				perInfoCtgCommand.getCategoryName(), perInfoCtgCommand.getId())) {
-			throw new BusinessException(new RawErrorMessage("Msg_215"));
+			throw new BusinessException("Msg_215");
 		}
 		PersonInfoCategory perInfoCtg = this.perInfoCtgRep
 				.getPerInfoCategory(perInfoCtgCommand.getId(), PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
