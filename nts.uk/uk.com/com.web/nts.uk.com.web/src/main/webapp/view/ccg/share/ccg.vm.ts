@@ -117,6 +117,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
             // first time show
             isFirstTime = true;
+            showApplyBtn: KnockoutComputed<boolean>;
 
             /**
              * Init screen model
@@ -202,8 +203,15 @@ module nts.uk.com.view.ccg.share.ccg {
                     { headerText: nts.uk.resource.getText('CCG001_61'), prop: 'name', width: 200 }
                 ]);
                 
+                //check show button Apply
+                self.showApplyBtn = ko.computed(() => {
+                    return self.baseDate() && self.periodStartDate() && self.periodEndDate() ? true : false;
+                });
             }
-
+            
+            /**
+             * Set QuickSearchParam
+             */
             private setQuickSearchParam(): JQueryPromise<void> {
                 let dfd = $.Deferred<void>();
                 let self = this;
@@ -486,11 +494,11 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.showPeriodYM = options.periodFormatYM;
 
                 /** Required parameter */
-                self.baseDate = ko.observable(moment()); //TODO: mock data
-                self.periodStartDate = ko.observable(moment());
-                self.periodEndDate = ko.observable(moment());
-                self.periodStartYm = ko.observable(moment());
-                self.periodEndYm = ko.observable(moment());
+                self.baseDate(moment()); //TODO: mock data
+                self.periodStartDate(moment());
+                self.periodEndDate(moment());
+                self.periodStartYm(moment());
+                self.periodEndYm(moment());
                 self.selectedIncumbent(options.inService);
                 self.selectedLeave(options.leaveOfAbsence);
                 self.selectedClosed(options.closed);
@@ -781,6 +789,10 @@ module nts.uk.com.view.ccg.share.ccg {
                     .done((selectedCodes, workTypeList: Array<WorkType>) => {
                         self.selectedCodeWorkplace(selectedCodes);
                         self.listWorkType(workTypeList);
+                        _.forEach(workTypeList, item => {
+                            self.selectedWorkTypeCode.push(item.workTypeCode)
+                        });
+                        
                         self.reloadDataSearch();
 
                         if (self.showEmployment) {
