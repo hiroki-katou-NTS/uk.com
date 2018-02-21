@@ -28,7 +28,8 @@ module nts.uk.com.view.ccg015.a {
                 self.isNewMode = ko.observable(true);
                 self.toppageSelectedCode.subscribe(function(selectedTopPageCode: string) {
                     if(!self.isNewMode() && selectedTopPageCode === ''){
-                        self.isNewMode(true);
+                        //self.isNewMode(true);
+                        self.newTopPage();
                         return;    
                     }
                     if (selectedTopPageCode && selectedTopPageCode != "") {
@@ -64,11 +65,12 @@ module nts.uk.com.view.ccg015.a {
                 //end constructor
 
                 $("#preview-iframe").on("load", function() {
-                    console.log("done");
-                    if (self.isNewMode() == true)
+                    if (self.isNewMode() == true){
+                        $('#inp_code').ntsError('clear');
                         $("#inp_code").focus();
-                    else
-                        $("#inp_name").focus();
+                    } else {
+                        $("#inp_name").focus();    
+                    }
                 });
 
             }

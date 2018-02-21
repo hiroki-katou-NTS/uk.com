@@ -24,7 +24,7 @@ module ccg014.a.viewmodel {
             self.selectedTitleMenuCD = ko.observable(null);
             self.selectedTitleMenuCD.subscribe((value) => {
                 if(value === '' && !self.isCreate()){
-                    self.isCreate(true);
+                    self.createButtonClick();
                     return;
                 }
                 self.findSelectedTitleMenu(value);
@@ -46,10 +46,13 @@ module ccg014.a.viewmodel {
             });
             
             $("#preview-iframe").on("load", function() {
-                if (self.isCreate() == true)
+                if (self.isCreate() == true){
+                    
                     $("#titleMenuCD").focus();
-                else
-                    $("#titleMenuName").focus();
+                } else{
+                    $("#titleMenuName").focus();    
+                }
+                    
             });
             
         }
