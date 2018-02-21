@@ -91,9 +91,9 @@ module nts.uk.com.view.cps005.a {
                             block.clear();
                         });
                     }).fail(res => {
-                        if (res.message == 'Msg_928') {
+                        if (res.messageId == 'Msg_928') {
                             alertError({
-                                messageId: res.message,
+                                messageId: res.messageId,
                                 messageParams: ["個人情報カテゴリ"]
                             }).then(() => {
                                 $("#category-name-control").focus();
@@ -133,9 +133,9 @@ module nts.uk.com.view.cps005.a {
                         });
                     }).fail(res => {
 
-                        if (res.message == 'Msg_928') {
+                        if (res.messageId == 'Msg_928') {
                             alertError({
-                                messageId: res.message,
+                                messageId: res.messageId,
                                 messageParams: ["個人情報カテゴリ"]
                             }).then(() => {
                                 $("#category-name-control").focus();

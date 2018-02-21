@@ -52,9 +52,8 @@ public interface PerInfoItemDefRepositoty {
 
 	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryIdWithoutSetItem(String perInfoCtgId,
 			String contractCd);
-
-	List<PersonInfoItemDefinition> getAllItemFromCodeList(String companyId, String categoryCd,
-			List<String> itemCodeList);
+	
+	List<PersonInfoItemDefinitionSimple> getRequiredItemFromCtgCdLst(String  contractCd,String companyId, List<String> CtgCodeList);
 
 	// Sonnlb Code
 
