@@ -12,6 +12,8 @@ import lombok.Value;
 @Value
 public class ApproverStateImport_New {
 	
+	private String approverID;
+	
 	private String approver;
 	
 	private String representer;

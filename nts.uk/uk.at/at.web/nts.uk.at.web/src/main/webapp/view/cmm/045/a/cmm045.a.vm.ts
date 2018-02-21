@@ -8,15 +8,31 @@ module cmm045.a.viewmodel {
         displaySet: KnockoutObservable<vmbase.ApprovalListDisplaySetDto> = ko.observable(null);
         approvalMode:  KnockoutObservable<boolean> = ko.observable(false);
         approvalCount: KnockoutObservable<vmbase.ApplicationStatus> = ko.observable(new vmbase.ApplicationStatus(0,0,0,0,0,0));
+        itemList: KnockoutObservableArray<any>;
+        selectedIds: KnockoutObservableArray<any> = ko.observableArray([]);
+        dateValue: KnockoutObservable<any> = ko.observable({});
+        itemApplication: KnockoutObservableArray<vmbase.ChoseApplicationList>;
+        selectedCode: KnockoutObservable<number> = ko.observable(1);
         constructor(){
             let self = this;
-            
+            self.itemList = ko.observableArray([
+                {id: 1, name: getText('CMM045_20')},
+                {id: 2, name: getText('CMM045_21')},
+                {id: 3, name: getText('CMM045_22')},
+                {id: 4, name: getText('CMM045_23')},
+                {id: 5, name: getText('CMM045_24')},
+                {id: 6, name: getText('CMM045_25')}
+            ]);
+            self.itemApplication = ko.observableArray([
+                new vmbase.ChoseApplicationList(0, '全件表示'),
+                new vmbase.ChoseApplicationList(1, '残業申請'),
+            ]);
         }
    
         start(): JQueryPromise<any>{
             let self = this;
             var dfd = $.Deferred();
-            let param: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto('2017-12-01', '2018-06-01', 1,
+            let param: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto('2018-01-18', '2018-01-20', 1,
                     null, true, true, true, true, true, true, 1, [], '');
             service.getApplicationDisplayAtr().done(function(data){
                 _.each(data, function(obj){
