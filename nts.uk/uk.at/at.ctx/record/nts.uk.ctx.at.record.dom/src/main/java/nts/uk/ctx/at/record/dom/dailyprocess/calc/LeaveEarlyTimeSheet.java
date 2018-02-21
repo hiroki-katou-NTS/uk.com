@@ -1,42 +1,36 @@
-//package nts.uk.ctx.at.record.dom.dailyprocess.calc;
-//
-//import java.util.Optional;
-//
-//import lombok.AllArgsConstructor;
-//import lombok.Getter;
-//import lombok.val;
-//import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LateDecisionClock;
-//import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LeaveEarlyDecisionClock;
-//import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
-//import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
-//import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-//import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
-//import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSheetSetting;
-//import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.LateLeaveEarlyClassification;
-//import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeCommonSet;
-//import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
-//import nts.uk.shr.com.time.TimeWithDayAttr;
-//
-///**
-// * 早退時間帯
-// * @author ken_takasu
-// *
-// */
-//
-//public class LeaveEarlyTimeSheet {
-//	
-//	//早退していない場合はempty
-//	
-//	private Optional<TimeSpanForCalc> forRecordTimeSheet;
-//	@Getter
-//	private Optional<TimeSpanForCalc> forDeducationTimeSheet;
-//	
-//	public LeaveEarlyTimeSheet(
-//			Optional<TimeSpanForCalc> recordTimeSheet,
-//			Optional<TimeSpanForCalc> deductionTimeSheet) {
-//		this.forRecordTimeSheet = recordTimeSheet;
-//		this.forDeducationTimeSheet = deductionTimeSheet;
-//	}
+package nts.uk.ctx.at.record.dom.dailyprocess.calc;
+
+import java.util.Optional;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.val;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LateDecisionClock;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LeaveEarlyDecisionClock;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.shr.com.time.TimeWithDayAttr;
+
+/**
+ * 早退時間帯
+ * @author ken_takasu
+ *
+ */
+@Getter
+public class LeaveEarlyTimeSheet {
+	
+	//早退していない場合はempty
+	
+	private Optional<TimeSpanForCalc> forRecordTimeSheet;
+	private Optional<TimeSpanForCalc> forDeducationTimeSheet;
+
+	public LeaveEarlyTimeSheet(
+			Optional<TimeSpanForCalc> recordTimeSheet,
+			Optional<TimeSpanForCalc> deductionTimeSheet) {
+		this.forRecordTimeSheet = recordTimeSheet;
+		this.forDeducationTimeSheet = deductionTimeSheet;
+	}
 //	
 //	public static LeaveEarlyTimeSheet createAsLeaveEarly(TimeSpanForCalc timeSheet) {
 //		return new LeaveEarlyTimeSheet(Optional.of(timeSheet), Optional.of(timeSheet));
@@ -221,7 +215,4 @@
 //		
 //	}
 //	
-//}
-//
-//
-//
+}

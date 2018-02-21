@@ -13,6 +13,8 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
+import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -536,5 +538,32 @@ public class DeductionTimeSheet {
 //		//控除時間帯をソート
 //		
 //	}
+	
+	/**
+	 * 控除時間中の時間休暇相殺時間の計算
+	 * @return
+	 */
+	public DeductionOffSetTime calcTotalDeductionOffSetTime(
+			LateTimeOfDaily lateTimeOfDaily,
+			LateTimeSheet lateTimeSheet,
+			LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
+			LeaveEarlyTimeSheet leaveEarlyTimeSheet
+			) {
+		
+		//遅刻相殺時間の計算
+		//DeductionOffSetTime lateDeductionSffSetTime = lateTimeSheet.calcDeductionOffSetTime(lateTimeOfDaily.getTimePaidUseTime(),DeductionAtr.Appropriate);
+		DeductionOffSetTime lateDeductionSffSetTime = new DeductionOffSetTime(new AttendanceTime(0),
+																			  new AttendanceTime(0),
+																			  new AttendanceTime(0),
+																			  new AttendanceTime(0));
+		//早退相殺時間の計算
+		
+		//外出相殺時間の計算
+		
+		//3つの相殺時間を合算する
+		DeductionOffSetTime timeVacationOffSetTime = lateDeductionSffSetTime/* + 早退相殺時間 + 外出相殺時間*/;//合算するメソッドは別途考慮
+		
+		return timeVacationOffSetTime;
+	}
 	
 }
