@@ -30,7 +30,7 @@ public class AttendanceStatusMap {
 		this.map = new HashMap<>();
 		for (val attendanceTime : attendanceTimeOfDailys){
 			val ymd = attendanceTime.getYmd();
-			if (!this.map.containsKey(ymd)) this.map.put(ymd, new AttendanceStatus(ymd));
+			this.map.putIfAbsent(ymd, new AttendanceStatus(ymd));
 			
 			// 総労働時間の確認
 			val totalWorkingTime = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime();
@@ -38,7 +38,7 @@ public class AttendanceStatusMap {
 		}
 		for (val timeLeaving : timeLeaveingOfDailys){
 			val ymd = timeLeaving.getYmd();
-			if (!this.map.containsKey(ymd)) this.map.put(ymd, new AttendanceStatus(ymd));
+			this.map.putIfAbsent(ymd, new AttendanceStatus(ymd));
 		
 			// 出退勤の確認
 			val timeLeavingWorks = timeLeaving.getTimeLeavingWorks();

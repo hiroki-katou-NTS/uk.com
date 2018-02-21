@@ -63,7 +63,7 @@ public class TimeLeavingOfDailyPerformanceDto implements ConvertibleAttendanceIt
 		return c == null ? null
 				: new TimeStampDto(c.getTimeWithDay() == null ? null : c.getTimeWithDay().valueAsMinutes(),
 						c.getAfterRoundingTime() == null ? null : c.getAfterRoundingTime().valueAsMinutes(),
-						c.getLocationCode() == null ? null : c.getLocationCode().v(), c.getStampSourceInfo().value);
+						c.getLocationCode() == null ? null : c.getLocationCode().v(),  c.getStampSourceInfo() == null ? null : c.getStampSourceInfo().value);
 
 	}
 

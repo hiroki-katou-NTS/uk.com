@@ -1,37 +1,33 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:com="http://xmlns.jcp.org/jsf/component"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
 
-<body>
-
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 300, height: 200 };</script>
-			<com:stylefile path="../../catalog/catalog.css" />
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile
-				path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"
-				of="/nts.uk.com.js.web" />
-			<com:scriptfile
-				path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"
-				of="/nts.uk.com.js.web" />
-			<com:scriptfile path="../../catalog/catalog.js" />
-			<com:scriptfile path="start.js" />
-		</ui:define>
-
-		<ui:define name="content">
-			<div id="functions-area"></div>
-			<div id="contents-area">
-				<div id="side-menu" class="cf"></div>
-				<div id="content" class="cf">
-					<h1>Custom NtsComponents on igGrid</h1>
-					<h2>Overview</h2>
-					<br />
-
-					<!--<table id="grid1" data-bind="igGrid: {
+	<body>
+		
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 300, height: 200 };</script>
+				<com:stylefile path="../../catalog/catalog.css" />
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"  of="/nts.uk.com.js.web"/>
+				<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"  of="/nts.uk.com.js.web"/>
+				<com:scriptfile path="../../catalog/catalog.js" />		
+				<com:scriptfile path="start.js" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="functions-area"></div>
+				<div id="contents-area">
+					<div id="side-menu" class="cf"></div>
+					<div id="content" class="cf">
+						<h1>Custom NtsComponents on igGrid</h1>
+						<h2>Overview</h2>
+						<br />
+						
+						<!--<table id="grid1" data-bind="igGrid: {
 					        width: '600px',
 					        height: '400px',
 					        dataSource: items,
@@ -45,104 +41,105 @@
 					        ],
 					        rowsRendered: rowsRendered
 						}"></table>-->
-
-					<div id="tab-panel"
-						data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab }">
-						<div class="tab-content-1">
-							<table id="grid0"></table>
-						</div>
-						<div class="tab-content-2">
-							<div style="width: 300px"
-								data-bind="ntsSearchBox: { targetKey: 'id', mode: 'igGrid', comId: 'grid2', items: items, selectedKey: 'id', fields: ['id']}" />
-							<table id="grid2"></table>
-							<button id="run">Run</button>
-							<button id="update-row">updateRow</button>
-							<button id="enable-ctrl">Enable</button>
-							<button id="disable-ctrl">Disable</button>
-							<button id="disable-all">Disable All</button>
-							<button id="enable-all">Enable All</button>
-						</div>
-					</div>
-					<article class="cf">
-						<div class="tabs">
-							<ol>
-								<li><a href="#tabs-html">HTML Binding</a></li>
-								<li><a href="#tabs-viewmodel">ViewModel</a></li>
-								<li><a href="#tabs-method">Methods</a></li>
-							</ol>
-							<div id="tabs-html" class="cf">
-								<h2>HTML</h2>
-								<p>
-									Using Ignite library so you must include following line in <i>&lt;ui:define
-										name="htmlHead"&gt;</i>
-								</p>
-								<pre>
-									<![CDATA[<ui:define name="htmlHead">
-	<com:scriptfile set="IGNITE" />
-</ui:define>]]>
-								</pre>
-								<pre>
-									<![CDATA[<table id="grid2"></table>]]>
-								</pre>
-								<h2>API</h2>
-								<table>
-									<colgroup>
-										<col width="200px" />
-									</colgroup>
-									<thead>
-										<tr>
-											<th><h4>Binding</h4></th>
-											<th><h4>Description</h4></th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>width</td>
-											<td><b>Type:</b> null | string | number<br /> <b>Members:</b><br />
-												<i>null:</i> Will stretch to fit the sum of the columns
-												widths.<br /> <i>number:</i> The widget width can be set in
-												pixels as a number. Example values: 800, 700.<br /> <i>string:</i>
-												The widget width can be set in pixels (px) or percentage
-												(%). Example values: "800px", "800" (defaults to pixels),
-												"100%".</td>
-										</tr>
-										<tr>
-											<td>height</td>
-											<td><b>Type:</b> null | string | number<br /> <b>Members:</b><br />
-												<i>null:</i> Will stretch vertically to fit data.<br /> <i>string:</i>
-												The widget height can be set in pixels (px) and percentage
-												(%).<br /> <i>number:</i> The height can be set as a number
-												in pixels.</td>
-										</tr>
-										<tr>
-											<td>dataSource</td>
-											<td><b>Type:</b> array&lt;any&gt;<br /> Data list to
-												fill in ntsGrid.</td>
-										</tr>
-										<tr>
-											<td>primaryKey</td>
-											<td><b>Type:</b> string<br /> Data field that is set as
-												primary key.</td>
-										</tr>
-										<tr>
-											<td>columns</td>
-											<td><b>Type:</b> array&lt;column&gt;<br /> An array of
-												column objects:<br /> <i>headerText:</i> Text for header<br />
-												<i>ntsControl:</i> Control type<br /> <i>width:</i> Width
-												for column</td>
-										</tr>
-										<tr>
-											<td>ntsControls</td>
-											<td><b>Type:</b> array&lt;control&gt;<br /> An array of
-												ntsControls used in ntsGrid.</td>
-										</tr>
-									</tbody>
-								</table>
+						
+						<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab }">
+							<div class="tab-content-1">
+								<table id="grid0"></table>
 							</div>
-							<div id="tabs-viewmodel" class="cf">
-								<h2>TypeScript</h2>
-								<pre>
-									<![CDATA[class ScreenModel {
+							<div class="tab-content-2">
+								<div style="width: 300px" data-bind="ntsSearchBox: { targetKey: 'id', mode: 'igGrid', comId: 'grid2', items: items, selectedKey: 'id', fields: ['id']}" />
+								<table id="grid2"></table>
+								<button id="run">Run</button>
+								<button id="update-row">updateRow</button>
+								<button id="enable-ctrl">Enable</button>
+								<button id="disable-ctrl">Disable</button>
+								<button id="disable-all">Disable All</button>
+								<button id="enable-all">Enable All</button>
+							</div>
+						</div>
+						<article class="cf">
+							<div class="tabs">
+								<ol>
+									<li><a href="#tabs-html">HTML Binding</a></li>
+									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+									<li><a href="#tabs-method">Methods</a></li>
+								</ol>
+								<div id="tabs-html" class="cf">
+									<h2>HTML</h2>
+									<p>Using Ignite library so you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
+<pre><![CDATA[<ui:define name="htmlHead">
+	<com:scriptfile set="IGNITE" />
+</ui:define>]]></pre>
+<pre><![CDATA[<table id="grid2"></table>]]></pre>
+									<h2>API</h2>
+									<table>
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Binding</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>width</td>
+												<td>
+													<b>Type:</b> null | string | number<br/>
+													<b>Members:</b><br/>
+													<i>null:</i> Will stretch to fit the sum of the columns widths.<br/>
+													<i>number:</i> The widget width can be set in pixels as a number. Example values: 800, 700.<br/>
+													<i>string:</i> The widget width can be set in pixels (px) or percentage (%). Example values: "800px", "800" (defaults to pixels), "100%".
+												</td>
+											</tr>
+											<tr>
+												<td>height</td>
+												<td>
+													<b>Type:</b> null | string | number<br/>
+													<b>Members:</b><br/>
+													<i>null:</i> Will stretch vertically to fit data.<br/>
+													<i>string:</i> The widget height can be set in pixels (px) and percentage (%).<br/>
+													<i>number:</i> The height can be set as a number in pixels.
+												</td>
+											</tr>
+											<tr>
+												<td>dataSource</td>
+												<td>
+													<b>Type:</b> array&lt;any&gt;<br/>
+													Data list to fill in ntsGrid.
+												</td>
+											</tr>
+											<tr>
+												<td>primaryKey</td>
+												<td>
+													<b>Type:</b> string<br/>
+													Data field that is set as primary key.
+												</td>
+											</tr>
+											<tr>
+												<td>columns</td>
+												<td>
+													<b>Type:</b> array&lt;column&gt;<br/>
+													An array of column objects:<br/>
+													<i>headerText:</i> Text for header<br/>
+													<i>ntsControl:</i> Control type<br/>
+													<i>width:</i> Width for column
+												</td>
+											</tr>
+											<tr>
+												<td>ntsControls</td>
+												<td>
+													<b>Type:</b> array&lt;control&gt;<br/>
+													An array of ntsControls used in ntsGrid.
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div id="tabs-viewmodel" class="cf">
+									<h2>TypeScript</h2>
+<pre><![CDATA[class ScreenModel {
     items = (function () {
         var list = [];
         for (var i = 0; i < 500; i++) {
@@ -202,60 +199,62 @@ $("#grid2").ntsGrid({
                                     { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
                                     { name: 'Button', text: 'Open', click: function() { alert("Button!!"); }, controlType: 'Button' },
                                     { name: 'DeleteButton', text: 'Delete', controlType: 'DeleteButton', enable: true }]
-                    });]]>
-								</pre>
+                    });]]></pre>
+								</div>
+								<div id="tabs-method" class="cf">
+									<table>
+										<colgroup>
+											<col width="400px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Methods</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>$(".selector").ntsGrid("updateRow", rowId, newObject);</td>
+												<td>
+													Update row of rowId with data from newObject.
+												</td>
+											</tr>
+											<tr>
+												<td>$(".selector").ntsGrid("enableNtsControlAt", rowId, columnKey, controlType);</td>
+												<td>
+													Enable control in the cell corresponding to rowId and columnKey.
+												</td>
+											</tr>											
+											<tr>
+												<td>$(".selector").ntsGrid("disableNtsControlAt", rowId, columnKey, controlType);</td>
+												<td>
+													Disable control in the cell corresponding to rowId and columnKey.
+												</td>
+											</tr>
+											<tr>
+												<td>$(".selector").ntsGrid("enableNtsControls", columnKey, controlType);</td>
+												<td>
+													Enable controls in a column of columnKey.
+												</td>
+											</tr>											
+											<tr>
+												<td>$(".selector").ntsGrid("disableNtsControls", columnKey, controlType);</td>
+												<td>
+													Disable controls in a column of columnKey.
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
 							</div>
-							<div id="tabs-method" class="cf">
-								<table>
-									<colgroup>
-										<col width="400px" />
-									</colgroup>
-									<thead>
-										<tr>
-											<th><h4>Methods</h4></th>
-											<th><h4>Description</h4></th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>$(".selector").ntsGrid("updateRow", rowId,
-												newObject);</td>
-											<td>Update row of rowId with data from newObject.</td>
-										</tr>
-										<tr>
-											<td>$(".selector").ntsGrid("enableNtsControlAt", rowId,
-												columnKey, controlType);</td>
-											<td>Enable control in the cell corresponding to rowId
-												and columnKey.</td>
-										</tr>
-										<tr>
-											<td>$(".selector").ntsGrid("disableNtsControlAt", rowId,
-												columnKey, controlType);</td>
-											<td>Disable control in the cell corresponding to rowId
-												and columnKey.</td>
-										</tr>
-										<tr>
-											<td>$(".selector").ntsGrid("enableNtsControls",
-												columnKey, controlType);</td>
-											<td>Enable controls in a column of columnKey.</td>
-										</tr>
-										<tr>
-											<td>$(".selector").ntsGrid("disableNtsControls",
-												columnKey, controlType);</td>
-											<td>Disable controls in a column of columnKey.</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
+						</article>
+						<div class="footer cf">
+							<button class="previous large">Previous</button>
+							<button class="next proceed large">Next</button>
 						</div>
-					</article>
-					<div class="footer cf">
-						<button class="previous large">Previous</button>
-						<button class="next proceed large">Next</button>
 					</div>
-				</div>
-			</div>
-		</ui:define>
-	</ui:composition>
-</body>
+		   		</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
 </html>
