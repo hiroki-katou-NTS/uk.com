@@ -23,7 +23,7 @@ public class JpaSettlementPeriodOfIrgForEmp extends JpaRepository implements Set
 	/** 追加 */
 	@Override
 	public void insert(String companyId, String employmentCd, SettlementPeriod settlementPeriod) {
-		this.commandProxy().insert(toEntity(companyId, employmentCd, settlementPeriod, false));
+		this.getEntityManager().persist(toEntity(companyId, employmentCd, settlementPeriod, false));
 	}
 	
 	/** 更新 */
@@ -36,9 +36,9 @@ public class JpaSettlementPeriodOfIrgForEmp extends JpaRepository implements Set
 	@Override
 	public void removeByParentPK(String companyId, String employmentCd) {
 		this.getEntityManager().createQuery(DELETE_BY_PARENT_PK)
-			.setParameter("companyId", companyId)
-			.setParameter("employmentCd", employmentCd)
-			.executeUpdate();
+				.setParameter("companyId", companyId)
+				.setParameter("employmentCd", employmentCd)
+				.executeUpdate();
 	}
 	
 	/**
@@ -57,14 +57,13 @@ public class JpaSettlementPeriodOfIrgForEmp extends JpaRepository implements Set
 		
 		KrcstMonsetEmpIrgSetl entity;
 		if (execUpdate){
-			entity = this.queryProxy().find(key, KrcstMonsetEmpIrgSetl.class).get();
+			entity = this.getEntityManager().find(KrcstMonsetEmpIrgSetl.class, key);
 		}
 		else {
 			entity = new KrcstMonsetEmpIrgSetl();
 			entity.PK = key;
 		}
 		entity.setValue.endMonth = domain.getEndMonth().v();
-		if (execUpdate) this.commandProxy().update(entity);
 		return entity;
 	}
 }

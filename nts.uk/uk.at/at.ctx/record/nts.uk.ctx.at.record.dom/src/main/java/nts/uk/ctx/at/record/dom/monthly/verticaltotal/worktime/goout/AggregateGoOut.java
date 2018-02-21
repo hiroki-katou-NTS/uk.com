@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout;
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;

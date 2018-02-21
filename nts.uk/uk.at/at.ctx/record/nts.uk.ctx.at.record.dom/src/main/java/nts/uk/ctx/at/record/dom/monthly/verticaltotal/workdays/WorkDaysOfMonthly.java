@@ -16,9 +16,12 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.Temporar
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.TwoTimesWorkTimesOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.WorkTimesOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthly;
+import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * 月別実績の勤務日数
@@ -120,18 +123,24 @@ public class WorkDaysOfMonthly {
 	/**
 	 * 集計
 	 * @param workingSystem 労働制
+	 * @param workType 勤務種類
 	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
 	 * @param temporaryTimeOfDaily 日別実績の臨時出退勤
+	 * @param specificDateAttrOfDaily 日別実績の特定日区分
 	 * @param workTypeDaysCountTable 勤務種類の日数カウント表
+	 * @param payItemCount 月別実績の給与項目カウント
 	 * @param predetermineTimeSet 所定時間設定
 	 * @param isAttendanceDay 出勤しているかどうか
 	 * @param isTwoTimesStampExists 2回目の打刻が存在するかどうか
 	 */
 	public void aggregate(
 			WorkingSystem workingSystem,
+			WorkType workType,
 			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			TemporaryTimeOfDailyPerformance temporaryTimeOfDaily,
+			SpecificDateAttrOfDailyPerfor specificDateAttrOfDaily,
 			WorkTypeDaysCountTable workTypeDaysCountTable,
+			PayItemCountOfMonthly payItemCount,
 			PredetemineTimeSetting predetermineTimeSet,
 			boolean isAttendanceDay,
 			boolean isTwoTimesStampExists){
@@ -140,7 +149,7 @@ public class WorkDaysOfMonthly {
 		this.attendanceDays.aggregate(workingSystem, workTypeDaysCountTable, isAttendanceDay);
 		
 		// 欠勤日数の集計
-		this.absenceDays.aggregate(workTypeDaysCountTable);
+		this.absenceDays.aggregate(workingSystem, workType, workTypeDaysCountTable, isAttendanceDay);
 		
 		// 所定日数の集計
 		//*****（未）　付与前・付与後の振り分けは、年休残数管理が実装されるまで、保留。
@@ -153,13 +162,14 @@ public class WorkDaysOfMonthly {
 		this.holidayDays.aggregate(workTypeDaysCountTable);
 		
 		// 特定日日数の集計
-		//*****（未）　設計見直し中。設計完了後に実装。
+		//*****（未）　月別実績の縦計方法の設計待ち。特定日集計に該当する勤務種類かを、方法から判定する必要がある。
+		this.specificDays.aggregate(workingSystem, workType, specificDateAttrOfDaily, isAttendanceDay);
 		
 		// 休出日数の集計
 		this.holidayWorkDays.aggregate(workingSystem, workTypeDaysCountTable, isAttendanceDay);
 		
 		// 給与支払い基礎日数の集計
-		//*****（未）　回数集計（マスタ）の利用・判断方法、続く勤務種類の判断方法の設計確認要。
+		this.payDays.aggregate(workType, payItemCount);
 		
 		// 勤務回数の集計
 		this.workTimes.aggregate(attendanceTimeOfDaily);

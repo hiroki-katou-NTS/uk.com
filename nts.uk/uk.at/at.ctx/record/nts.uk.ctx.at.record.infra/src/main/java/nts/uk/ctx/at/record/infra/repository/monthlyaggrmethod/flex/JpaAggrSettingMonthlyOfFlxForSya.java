@@ -15,29 +15,20 @@ import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.employee.KrcstMonsetS
  */
 @Stateless
 public class JpaAggrSettingMonthlyOfFlxForSya extends JpaRepository implements AggrSettingMonthlyOfFlxForSyaRepository {
-
-	/** 追加 */
-	@Override
-	public void insert(String companyId, String employeeId, AggrSettingMonthlyOfFlx aggrSettingMonthlyOfFlx) {
-		this.commandProxy().insert(toEntity(companyId, employeeId, aggrSettingMonthlyOfFlx, false));
-	}
 	
 	/** 更新 */
 	@Override
 	public void update(String companyId, String employeeId, AggrSettingMonthlyOfFlx aggrSettingMonthlyOfFlx) {
-		this.toEntity(companyId, employeeId, aggrSettingMonthlyOfFlx, true);
+		this.toUpdate(companyId, employeeId, aggrSettingMonthlyOfFlx);
 	}
 	
 	/**
-	 * ドメイン→エンティティ
+	 * データ更新
 	 * @param companyId キー値：会社ID
 	 * @param employeeId キー値：社員ID
 	 * @param domain ドメイン：フレックス時間勤務の月の集計設定
-	 * @param execUpdate 更新を実行する
-	 * @return エンティティ：会社のフレックス時間勤務の月の集計設定
 	 */
-	private KrcstMonsetSyaFlxAggr toEntity(String companyId, String employeeId,
-			AggrSettingMonthlyOfFlx domain, boolean execUpdate){
+	private void toUpdate(String companyId, String employeeId, AggrSettingMonthlyOfFlx domain){
 		
 		// キー
 		val key = new KrcstMonsetSyaRegAggrPK(companyId, employeeId);
@@ -53,21 +44,13 @@ public class JpaAggrSettingMonthlyOfFlxForSya extends JpaRepository implements A
 		// 36協定集計方法
 		val aggrMethod36Agreement = domain.getArrgMethod36Agreement();
 		
-		KrcstMonsetSyaFlxAggr entity;
-		if (execUpdate){
-			entity = this.queryProxy().find(key, KrcstMonsetSyaFlxAggr.class).get();
-		}
-		else {
-			entity = new KrcstMonsetSyaFlxAggr();
-			entity.PK = key;
-		}
+		KrcstMonsetSyaFlxAggr entity = this.getEntityManager().find(KrcstMonsetSyaFlxAggr.class, key);
+		if (entity == null) return;
 		entity.setValue.aggregateMethod = domain.getAggregateMethod().value;
 		entity.setValue.includeOverTime = (domain.isIncludeOverTime() ? 1 : 0);
 		entity.setValue.carryforwardSet = shortageSet.getCarryforwardSet().value;
 		entity.setValue.aggregateSet = aggrTimeSet.getAggregateSet().value;
 		entity.setValue.excessOutsideTimeTargetSet = excessOutsideTimeSet.getExcessOutsideTimeTargetSet().value;
 		entity.setValue.aggregateMethodOf36AgreementTime = aggrMethod36Agreement.getAggregateMethod().value;
-		if (execUpdate) this.commandProxy().update(entity);
-		return entity;
 	}
 }

@@ -6,7 +6,7 @@ module nts.uk.ui.koExtentions {
      * SearchBox Binding Handler
      */
     
-    class SearchBox {
+    export class SearchBox {
         childField: string;
         searchField: Array<string>;
         source: Array<any>;
@@ -56,7 +56,7 @@ module nts.uk.ui.koExtentions {
         }
     }
     
-    class SearchResult {
+    export class SearchResult {
         options: Array<any>;
         selectItems: Array<any>;  
         
@@ -131,7 +131,7 @@ module nts.uk.ui.koExtentions {
         /**
          * Init.
          */
-        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
             let minusWidth = 0;
             
             var data = ko.unwrap(valueAccessor());
@@ -165,7 +165,7 @@ module nts.uk.ui.koExtentions {
             if(!nts.uk.util.isNullOrEmpty(label)){
                 var $formLabel = $("<div>", { text: label });
                 $formLabel.prependTo($container);
-                ko.bindingHandlers["ntsFormLabel"].init($formLabel, function() {
+                (<any>ko).bindingHandlers["ntsFormLabel"].init($formLabel, function() {
                     return {};　
                 }, allBindingsAccessor, viewModel, bindingContext);
                 minusWidth += $formLabel.outerWidth(true);
