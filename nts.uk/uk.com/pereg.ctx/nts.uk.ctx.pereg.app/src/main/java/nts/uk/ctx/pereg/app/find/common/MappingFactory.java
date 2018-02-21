@@ -131,13 +131,11 @@ public class MappingFactory {
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
 			for (Object item : classItem.getItems()) {
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-
-				// recordId
-				valueItem.setRecordId(recordId);
-
 				// data
 				for (PersonOptionalDto dataItem : dataItems) {
 					if (valueItem.getItemCode().equals(dataItem.getItemCode())) {
+						// recordId
+						valueItem.setRecordId(recordId);
 						valueItem.setValue(dataItem.getValue());
 					}
 				}
@@ -151,13 +149,11 @@ public class MappingFactory {
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
 			for (Object item : classItem.getItems()) {
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-
-				// recordId
-				valueItem.setRecordId(recordId);
-
 				// data
 				for (EmpOptionalDto dataItem : dataItems) {
 					if (valueItem.getItemCode().equals(dataItem.getItemCode())) {
+						// recordId
+						valueItem.setRecordId(recordId);
 						valueItem.setValue(dataItem.getValue());
 					}
 				}
