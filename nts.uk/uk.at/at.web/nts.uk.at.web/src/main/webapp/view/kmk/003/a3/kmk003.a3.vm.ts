@@ -602,7 +602,7 @@ module a3 {
             var dataDTO: FlOTTimezoneDto = {
                 worktimeNo: worktimeNo,
                 restrictTime: false,
-                otFrameNo: 1,
+                otFrameNo: dataModel.otFrameNo(),
                 flowTimeSetting: flowTimeSetting,
                 inLegalOTFrameNo: dataModel.inLegalOTFrameNo?dataModel.inLegalOTFrameNo():1,
                 settlementOrder: dataModel.settlementOrder?dataModel.settlementOrder():1
