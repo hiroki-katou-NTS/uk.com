@@ -21,15 +21,15 @@ module nts.uk.at.view.kmf002.d {
             command.year = year;
             command.publicHolidayMonthSettings = employmentMonthDaySetting.publicHolidayMonthSettingDto;
             command.empCd = empCd;
-            return nts.uk.request.ajax("com", path.save, command);
+            return nts.uk.request.ajax("at", path.save, command);
         }
         
         export function find(year: string, employmentCode: string): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.find + "/" + year + "/" + employmentCode);
+            return nts.uk.request.ajax("at", path.find + "/" + year + "/" + employmentCode);
         }
         
         export function findAllEmpRegister(): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.findAllEmpRegister);
+            return nts.uk.request.ajax("at", path.findAllEmpRegister);
         }
         
         export function remove(year: string, employmentCode: string): JQueryPromise<any> {
@@ -37,7 +37,7 @@ module nts.uk.at.view.kmf002.d {
             let command: any = {};
             command.year = year;
             command.empCd = employmentCode;
-            return nts.uk.request.ajax("com", path.remove, command);
+            return nts.uk.request.ajax("at", path.remove, command);
         }
         
         export function findFirstMonth(): JQueryPromise<any>{

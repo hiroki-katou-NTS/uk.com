@@ -21,22 +21,22 @@ module nts.uk.at.view.kmf002.c {
             command.year = year;
             command.publicHolidayMonthSettings = employeeMonthDaySetting.publicHolidayMonthSettingDto;
             command.employeeID = sId;
-            return nts.uk.request.ajax("com", path.save, command);
+            return nts.uk.request.ajax("at", path.save, command);
         }
         
         export function find(year: string, employeeId: string): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.find + "/" + year + "/" + employeeId);
+            return nts.uk.request.ajax("at", path.find + "/" + year + "/" + employeeId);
         }
         
         export function findAllEmployeeRegister(): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.findAllEmployeeRegister);
+            return nts.uk.request.ajax("at", path.findAllEmployeeRegister);
         }
         
         export function remove(year: string, sId: string): JQueryPromise<any> {
             let command: any = {};
             command.year = year;
             command.employeeId = sId;
-            return nts.uk.request.ajax("com", path.remove, command);
+            return nts.uk.request.ajax("at", path.remove, command);
         }
         
         export function findFirstMonth(): JQueryPromise<any>{
