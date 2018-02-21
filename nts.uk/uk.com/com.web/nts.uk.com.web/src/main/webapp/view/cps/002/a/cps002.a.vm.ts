@@ -28,7 +28,7 @@ module cps002.a.vm {
 
         itemSettingList: KnockoutObservableArray<SettingItem> = ko.observableArray([]);
 
-        createTypeId: KnockoutObservable<number> = ko.observable(1);
+        createTypeId: KnockoutObservable<number> = ko.observable(3);
 
         currentEmployee: KnockoutObservable<Employee> = ko.observable(new Employee());
 
