@@ -582,7 +582,7 @@ module cps002.a.vm {
                 }
 
             }
-            
+
             character.save('NewEmployeeBasicInfo', newEmpInfo);
         }
 
@@ -614,7 +614,7 @@ module cps002.a.vm {
 
                 }).fail(error => {
 
-                    dialog({ messageId: error.messageId });
+                    dialog({ messageId: error.messageId, messageParams: error.parameterIds });
 
                 })
             }
