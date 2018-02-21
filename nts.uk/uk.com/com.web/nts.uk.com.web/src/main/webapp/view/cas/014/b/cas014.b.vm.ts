@@ -161,7 +161,7 @@ module nts.uk.com.view.cas014.b {
             registerRoleSetPerson() {
                 let self = this, data: RoleSetPerson = ko.toJS(self.roleSetPerson);
                 $(".ntsDateRange_Component").trigger("validate");
-                if (!nts.uk.ui.errors.hasError() && data.employeeId) {
+                if (!nts.uk.ui.errors.hasError()) {
                     let command: any = {
                         roleSetCd: data.roleSetCd,
                         employeeId: data.employeeId,
