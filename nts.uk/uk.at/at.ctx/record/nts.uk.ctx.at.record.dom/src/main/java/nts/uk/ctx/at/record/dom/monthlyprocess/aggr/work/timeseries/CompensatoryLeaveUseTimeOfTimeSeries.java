@@ -13,14 +13,16 @@ public class CompensatoryLeaveUseTimeOfTimeSeries {
 
 	/** 年月日 */
 	private GeneralDate ymd;
+	
 	/** 代休使用時間 */
 	//private CompensatoryLeaveOfDaily compensatoryLeaveUseTime;
 
 	/**
 	 * コンストラクタ
 	 */
-	public CompensatoryLeaveUseTimeOfTimeSeries(){
+	public CompensatoryLeaveUseTimeOfTimeSeries(GeneralDate ymd){
 		
+		this.ymd = ymd;
 		//this.compensatoryLeaveUseTime = new CompensatoryLeaveOfDaily();
 	}
 
@@ -31,8 +33,7 @@ public class CompensatoryLeaveUseTimeOfTimeSeries {
 	 */
 	public static CompensatoryLeaveUseTimeOfTimeSeries of(GeneralDate ymd){
 		
-		val domain = new CompensatoryLeaveUseTimeOfTimeSeries();
-		domain.ymd = ymd;
+		val domain = new CompensatoryLeaveUseTimeOfTimeSeries(ymd);
 		return domain;
 	}
 }

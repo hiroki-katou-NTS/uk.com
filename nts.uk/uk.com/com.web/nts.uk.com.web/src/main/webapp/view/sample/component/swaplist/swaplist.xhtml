@@ -23,8 +23,7 @@
 				<div id="side-menu" class="cf"></div>
 				<div id="content" class="cf">
 					<h1>SwapList</h1>
-					<div
-						data-bind="ntsCheckBox: { checked: disableMoveButton, text: 'Disable Move Button' }"></div>
+					<div data-bind="ntsCheckBox: { checked: disableMoveButton, text: 'Disable Move Button' }"></div>
 					<div>
 						<div style="display: inline-block;">
 							<div id="swap-list"
@@ -81,13 +80,11 @@
 									Using Ignite library so you must include following line in <i>&lt;ui:define
 										name="htmlHead"&gt;</i>
 								</p>
-								<pre>
-									<![CDATA[<ui:define name="htmlHead">
+<pre><![CDATA[<ui:define name="htmlHead">
 	<com:scriptfile set="IGNITE" />
 </ui:define>]]>
 </pre>
-								<pre>
-									<![CDATA[<div id="swap-list" data-bind="ntsSwapList: {
+<pre><![CDATA[<div id="swap-list" data-bind="ntsSwapList: {
 	showSearchBox: { showLeft : true, showRight: true},
 	height: 300,
 	dataSource: itemsSwap,
@@ -111,13 +108,11 @@
 			comId: '#swap-list',
 			type: 'swap',
 			swapTarget: 'right'
-		}"></div>]]>
-								</pre>
+		}"></div>]]></pre>
 							</div>
 							<div id="tabs-viewmodel" class="cf">
 								<h2>TypeScript</h2>
-								<pre>
-									<![CDATA[
+<pre><![CDATA[
 class ScreenModel {
        itemsSwap: KnockoutObservableArray<ItemModel>;
        columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
@@ -161,125 +156,122 @@ class ScreenModel {
            this.deletable = code % 3 === 0;
        }
    }
-]]>
-								</pre>
+]]></pre>
+								</div>
+								<div id="tabs-api" class="cf">
+									<h2>Properties</h2>
+									<table class="table">
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Binding</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>width</td>
+												<td><b>Type:</b> null | string | number<br /> <b>Members:</b><br />
+													<i>null:</i> Will stretch to fit the sum of the columns widths.<br />
+													<i>number:</i> The widget width can be set in pixels as a
+													number. Example values: 800, 700.<br /> <i>string:</i> The
+													widget width can be set in pixels (px) or percentage (%).
+													Example values: "800px", "800" (defaults to pixels), "100%".</td>
+											</tr>
+											<tr>
+												<td>height</td>
+												<td><b>Type:</b> null | string | number<br /> <b>Members:</b><br />
+													<i>null:</i> Will stretch vertically to fit data.<br /> <i>string:</i>
+													The widget height can be set in pixels (px) and percentage (%).<br />
+													<i>number:</i> The height can be set as a number in pixels.</td>
+											</tr>
+											<tr>
+												<td>showSearchBox</td>
+												<td><b>Type:</b> Object, is text box and search button
+													showed.<br /> <b>Options:</b> { showLeft : boolean, showRight:
+													boolean}<br /> <i>Default:</i> {}.</td>
+											</tr>
+											<tr>
+												<td>showSort</td>
+												<td><b>Type:</b> Object, is text box and search button
+													showed.<br /> <b>Options:</b> { showLeft : boolean, showRight:
+													boolean}<br /> <i>Default:</i> {}.</td>
+											</tr>
+											<tr>
+												<td>disableMoveButton</td>
+												<td><b>Type:</b> boolean<br /> Disable move button for swap
+													list</td>
+											</tr>
+											<tr>
+												<td>options / dataSource</td>
+												<td><b>Type:</b> array&lt;any&gt;<br /> List data to
+													generate original GridList at left</td>
+											</tr>
+											<tr>
+												<td>optionsValue / primaryKey</td>
+												<td><b>Type:</b> string<br /> Field in data will be set as
+													primaryKey</td>
+											</tr>
+											<tr>
+												<td>columns</td>
+												<td><b>Type:</b> array&lt;column&gt;<br /> An array of
+													column objects:<br /> <i>headerText:</i> Text for header<br />
+													<i>prop/ key:</i> Property in data array for column<br /> <i>width:</i>
+													Width for column<br /> <b><i>(*): Can use other
+															properties of columns of iggrid</i></b></td>
+											</tr>
+											<tr>
+												<td>value</td>
+												<td><b>Type:</b> array&lt;any&gt;<br /> List selected value
+													from left grid and is showed in right grid.</td>
+											</tr>
+											<tr>
+												<td>beforeMoveLeft</td>
+												<td><b>Type:</b> function<br /> 
+													action before move to left. Return false if cancel move</td>
+											</tr>
+											<tr>
+												<td>beforeMoveRight</td>
+												<td><b>Type:</b> function<br /> 
+													action before move to right. Return false if cancel move</td>
+											</tr>
+											<tr>
+												<td>beforeAllLeft</td>
+												<td><b>Type:</b> function<br /> 
+													action before move all to left. Return false if cancel move</td>
+											</tr>
+											<tr>
+												<td>beforeAllRight</td>
+												<td><b>Type:</b> function<br /> 
+													action before move all to right. Return false if cancel move</td>
+											</tr>
+											<tr>
+												<td>afterMoveLeft</td>
+												<td><b>Type:</b> function<br /> 
+													action after move to left.</td>
+											</tr>
+											<tr>
+												<td>afterMoveRight</td>
+												<td><b>Type:</b> function<br /> 
+													action after move to right.</td>
+											</tr>
+											<tr>
+												<td>afterAllLeft</td>
+												<td><b>Type:</b> function<br /> 
+													action after move all to left.</td>
+											</tr>
+											<tr>
+												<td>afterAllRight</td>
+												<td><b>Type:</b> function<br /> 
+													action after move all to right.</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
 							</div>
-							<div id="tabs-api" class="cf">
-								<h2>Properties</h2>
-								<table class="table">
-									<colgroup>
-										<col width="200px" />
-									</colgroup>
-									<thead>
-										<tr>
-											<th><h4>Binding</h4></th>
-											<th><h4>Description</h4></th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>width</td>
-											<td><b>Type:</b> null | string | number<br /> <b>Members:</b><br />
-												<i>null:</i> Will stretch to fit the sum of the columns
-												widths.<br /> <i>number:</i> The widget width can be set in
-												pixels as a number. Example values: 800, 700.<br /> <i>string:</i>
-												The widget width can be set in pixels (px) or percentage
-												(%). Example values: "800px", "800" (defaults to pixels),
-												"100%".</td>
-										</tr>
-										<tr>
-											<td>height</td>
-											<td><b>Type:</b> null | string | number<br /> <b>Members:</b><br />
-												<i>null:</i> Will stretch vertically to fit data.<br /> <i>string:</i>
-												The widget height can be set in pixels (px) and percentage
-												(%).<br /> <i>number:</i> The height can be set as a number
-												in pixels.</td>
-										</tr>
-										<tr>
-											<td>showSearchBox</td>
-											<td><b>Type:</b> Object, is text box and search button
-												showed.<br /> <b>Options:</b> { showLeft : boolean,
-												showRight: boolean}<br /> <i>Default:</i> {}.</td>
-										</tr>
-										<tr>
-											<td>showSort</td>
-											<td><b>Type:</b> Object, is text box and search button
-												showed.<br /> <b>Options:</b> { showLeft : boolean,
-												showRight: boolean}<br /> <i>Default:</i> {}.</td>
-										</tr>
-										<tr>
-											<td>disableMoveButton</td>
-											<td><b>Type:</b> boolean<br /> Disable move button for
-												swap list</td>
-										</tr>
-										<tr>
-											<td>options / dataSource</td>
-											<td><b>Type:</b> array&lt;any&gt;<br /> List data to
-												generate original GridList at left</td>
-										</tr>
-										<tr>
-											<td>optionsValue / primaryKey</td>
-											<td><b>Type:</b> string<br /> Field in data will be set
-												as primaryKey</td>
-										</tr>
-										<tr>
-											<td>columns</td>
-											<td><b>Type:</b> array&lt;column&gt;<br /> An array of
-												column objects:<br /> <i>headerText:</i> Text for header<br />
-												<i>prop/ key:</i> Property in data array for column<br /> <i>width:</i>
-												Width for column<br /> <b><i>(*): Can use other
-														properties of columns of iggrid</i></b></td>
-										</tr>
-										<tr>
-											<td>value</td>
-											<td><b>Type:</b> array&lt;any&gt;<br /> List selected
-												value from left grid and is showed in right grid.</td>
-										</tr>
-										<tr>
-											<td>beforeMoveLeft</td>
-											<td><b>Type:</b> function<br /> action before move to
-												left. Return false if cancel move</td>
-										</tr>
-										<tr>
-											<td>beforeMoveRight</td>
-											<td><b>Type:</b> function<br /> action before move to
-												right. Return false if cancel move</td>
-										</tr>
-										<tr>
-											<td>beforeAllLeft</td>
-											<td><b>Type:</b> function<br /> action before move all
-												to left. Return false if cancel move</td>
-										</tr>
-										<tr>
-											<td>beforeAllRight</td>
-											<td><b>Type:</b> function<br /> action before move all
-												to right. Return false if cancel move</td>
-										</tr>
-										<tr>
-											<td>afterMoveLeft</td>
-											<td><b>Type:</b> function<br /> action after move to
-												left.</td>
-										</tr>
-										<tr>
-											<td>afterMoveRight</td>
-											<td><b>Type:</b> function<br /> action after move to
-												right.</td>
-										</tr>
-										<tr>
-											<td>afterAllLeft</td>
-											<td><b>Type:</b> function<br /> action after move all
-												to left.</td>
-										</tr>
-										<tr>
-											<td>afterAllRight</td>
-											<td><b>Type:</b> function<br /> action after move all
-												to right.</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</article>
+						</article>
 					<div class="footer cf">
 						<button class="previous large">Previous</button>
 						<button class="next proceed large">Next</button>

@@ -13,14 +13,16 @@ public class SpecialHolidayUseTimeOfTimeSeries {
 
 	/** 年月日 */
 	private GeneralDate ymd;
+	
 	/** 特別休暇使用時間 */
 	//private SpecialHolidayOfDaily specialHolidayUseTime;
 
 	/**
 	 * コンストラクタ
 	 */
-	public SpecialHolidayUseTimeOfTimeSeries(){
+	public SpecialHolidayUseTimeOfTimeSeries(GeneralDate ymd){
 		
+		this.ymd = ymd;
 		//this.specialHolidayUseTime = new SpecialHolidayOfDaily();
 	}
 
@@ -31,8 +33,7 @@ public class SpecialHolidayUseTimeOfTimeSeries {
 	 */
 	public static SpecialHolidayUseTimeOfTimeSeries of(GeneralDate ymd){
 		
-		val domain = new SpecialHolidayUseTimeOfTimeSeries();
-		domain.ymd = ymd;
+		val domain = new SpecialHolidayUseTimeOfTimeSeries(ymd);
 		return domain;
 	}
 }

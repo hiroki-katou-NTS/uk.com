@@ -4,6 +4,7 @@ __viewContext.ready(function() {
         selectedCode: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
+        isRequired: KnockoutObservable<boolean>
 
         /**
          * Constructor.
@@ -19,6 +20,7 @@ __viewContext.ready(function() {
             self.selectedCode = ko.observable('1');
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
+            self.isRequired = ko.observable(true);
         }
 
         setDefault() {
@@ -26,6 +28,13 @@ __viewContext.ready(function() {
             nts.uk.util.value.reset($("#combo-box, #A_SEL_001"), self.defaultValue() !== '' ? self.defaultValue() : undefined);
         }
 
+        validate() {
+            $("#combo-box").trigger("validate");
+        }
+        
+        setInvalidValue() {
+            this.selectedCode('aaa');
+        }
     };
 
     class ItemModel {

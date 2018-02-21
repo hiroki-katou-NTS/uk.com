@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime;
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
@@ -15,7 +14,7 @@ public class AggregateBonusPayTime {
 	/** 加給枠No */
 	private int bonusPayFrameNo;
 	/** 加給時間 */
-	private AttendanceTimeMonth bonusPay;
+	private AttendanceTimeMonth bonusPayTime;
 	/** 特定加給時間 */
 	private AttendanceTimeMonth specificBonusPayTime;
 	/** 休出加給時間 */
@@ -29,7 +28,7 @@ public class AggregateBonusPayTime {
 	public AggregateBonusPayTime(int bonusPayFrameNo){
 		
 		this.bonusPayFrameNo = bonusPayFrameNo;
-		this.bonusPay = new AttendanceTimeMonth(0);
+		this.bonusPayTime = new AttendanceTimeMonth(0);
 		this.specificBonusPayTime = new AttendanceTimeMonth(0);
 		this.holidayWorkBonusPayTime = new AttendanceTimeMonth(0);
 		this.holidayWorkSpecificBonusPayTime = new AttendanceTimeMonth(0);
@@ -38,7 +37,7 @@ public class AggregateBonusPayTime {
 	/**
 	 * ファクトリー
 	 * @param bonusPayFrameNo 加給時間枠No
-	 * @param bonusPay 加給時間
+	 * @param bonusPayTime 加給時間
 	 * @param specificBonusPayTime 特定加給時間
 	 * @param holidayWorkBonusPayTime 休出加給時間
 	 * @param holidayWorkSpecificBonusPayTime 休出特定加給時間
@@ -46,13 +45,13 @@ public class AggregateBonusPayTime {
 	 */
 	public static AggregateBonusPayTime of(
 			int bonusPayFrameNo,
-			AttendanceTimeMonth bonusPay,
+			AttendanceTimeMonth bonusPayTime,
 			AttendanceTimeMonth specificBonusPayTime,
 			AttendanceTimeMonth holidayWorkBonusPayTime,
 			AttendanceTimeMonth holidayWorkSpecificBonusPayTime){
 		
 		val domain = new AggregateBonusPayTime(bonusPayFrameNo);
-		domain.bonusPay = bonusPay;
+		domain.bonusPayTime = bonusPayTime;
 		domain.specificBonusPayTime = specificBonusPayTime;
 		domain.holidayWorkBonusPayTime = holidayWorkBonusPayTime;
 		domain.holidayWorkSpecificBonusPayTime = holidayWorkSpecificBonusPayTime;
@@ -63,8 +62,8 @@ public class AggregateBonusPayTime {
 	 * 加給時間に分を加算する
 	 * @param minutes 分
 	 */
-	public void addMinutesToBonusPay(int minutes){
-		this.bonusPay = this.bonusPay.addMinutes(minutes);
+	public void addMinutesToBonusPayTime(int minutes){
+		this.bonusPayTime = this.bonusPayTime.addMinutes(minutes);
 	}
 	
 	/**

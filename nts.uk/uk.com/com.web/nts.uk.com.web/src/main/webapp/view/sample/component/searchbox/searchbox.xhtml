@@ -1,44 +1,37 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:com="http://xmlns.jcp.org/jsf/component"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
 
-<body>
-
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 300, height: 200 };</script>
-
-			<com:stylefile path="../../catalog/catalog.css" />
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="../../catalog/catalog.js" />
-		</ui:define>
-
-		<ui:define name="content">
-			<div id="functions-area"></div>
-			<div id="contents-area">
-				<div id="side-menu" class="cf"></div>
-				<div id="content" class="cf">
-					<h1>SearchBox Sample</h1>
-					<h3>
-						This is TreeGrid version, for GridList, view <a
-							href="searchbox-gridlist.xhtml">THIS PAGE</a>
-					</h3>
-					<h3>
-						for igGrid version (igGrid without binding), view <a
-							href="searchbox-igGrid.xhtml">THIS PAGE</a>
-					</h3>
-					<h2>Overview</h2>
-					<div class="cf">
-						<h2>ListBox</h2>
-						<div style="width: 422px"
-							data-bind="ntsSearchBox: {label: 'コード・名称', searchMode: 'highlight', targetKey: 'code', comId: 'multi-list2', 
-							items: items, selectedKey: 'code', fields: ['name', 'code'], mode: 'listbox'}" />
-						<table id="multi-list2"
-							data-bind="ntsListBox: {
+	<body>
+		
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 300, height: 200 };</script>
+				
+				<com:stylefile path="../../catalog/catalog.css" />
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="../../catalog/catalog.js" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="functions-area">
+				</div>
+				<div id="contents-area">
+					<div id="side-menu" class="cf"></div>
+					<div id="content" class="cf">
+						<h1>SearchBox Sample</h1>
+						<h3>This is TreeGrid version, for GridList, view <a href="searchbox-gridlist.xhtml">THIS PAGE</a></h3>
+						<h3>for igGrid version (igGrid without binding), view <a href="searchbox-igGrid.xhtml">THIS PAGE</a></h3>				
+						<h2>Overview</h2>						
+						<div class="cf">
+							<h2>ListBox</h2>
+							<div style="width: 422px" data-bind="ntsSearchBox: {label: 'コード・名称', searchMode: 'highlight', targetKey: 'code', comId: 'multi-list2', 
+							items: items, selectedKey: 'code', fields: ['name', 'code'], mode: 'listbox'}" />																																														
+							<table id="multi-list2" data-bind="ntsListBox: {
 									options: items,
 									optionsValue: 'code',
 									multiple: true,
@@ -50,15 +43,13 @@
 										{ key: 'description', length: 10 }
 									]
 								}"></table>
-						<hr />
-						<h2>GridList</h2>
-						<h3>Search mode: filter</h3>
-						<button data-bind="click:rebind">rebind</button>
-						<div style="width: 852px"
-							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
-								items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
-						<table id="multi-list"
-							data-bind="ntsGridList: {
+							<hr/>
+							<h2>GridList</h2>
+							<h3>Search mode: filter</h3>
+							<button data-bind="click:rebind"> rebind</button>
+							<div style="width: 852px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
+								items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />																																														
+							<table id="multi-list" data-bind="ntsGridList: {
 									height: 320,
 									options: items,
 									optionsValue: 'code',
@@ -66,15 +57,14 @@
 									multiple: true,
 									value: currentCodeList
 								}"></table>
-						<hr />
-						<h2>TreeGrid</h2>
-						<h3>Search mode: highlight</h3>
-						<span data-bind="ntsCheckBox: { checked: enable }">Enable</span>
-						<div style="width: 700px;"
-							data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource, 
-									searchText: 'test',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code'], enable: enable} " />
-						<table id="treegrid1"
-							data-bind="ntsTreeGridView:{
+							<hr/>
+							<h2>TreeGrid</h2>
+							<h3>Search mode: highlight</h3>
+							<span data-bind="ntsCheckBox: { checked: enable }">Enable</span>																
+							<div style="width: 700px;" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource, 
+									searchText: 'test',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code'], enable: enable} " />																																														
+							<table id="treegrid1"
+								data-bind="ntsTreeGridView:{
 									width: 700,
 									height: 250,
 									options: dataSource,
@@ -85,14 +75,13 @@
 									multiple: false,
 									enable: true,										
 									showCheckBox: false}">
-						</table>
-						<label data-bind="text: singleSelectedCode()"></label>
-						<hr />
-						<h2>Multi Selection TreeGrid</h2>
-						<div style="width: 700px"
-							data-bind="ntsSearchBox: {label: '全部', targetKey: 'code', mode:'igTree', comId:'treegrid2', items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />
-						<table id="treegrid2"
-							data-bind="ntsTreeGridView:{
+							</table>
+							<label data-bind="text: singleSelectedCode()"></label>
+							<hr/>
+							<h2>Multi Selection TreeGrid</h2>
+							<div style="width: 700px" data-bind="ntsSearchBox: {label: '全部', targetKey: 'code', mode:'igTree', comId:'treegrid2', items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />																																														
+							<table id="treegrid2"
+								data-bind="ntsTreeGridView:{
 									width: 700,
 									height: 250,
 									options: dataSource2,
@@ -103,19 +92,18 @@
 									multiple: true,
 									enable: true,										
 									showCheckBox: true}">
-						</table>
-						<label data-bind="text: selectedCodes2()"></label>
-					</div>
-					<article class="cf">
-						<div class="tabs">
-							<ol>
-								<li><a href="#tabs-html">HTML Binding</a></li>
-								<li><a href="#tabs-viewmodel">ViewModel</a></li>
-							</ol>
-							<div id="tabs-html" class="cf">
-								<h2>HTML</h2>
-								<pre>
-									<![CDATA[<!--SINGLESELECT HIGHLIGHT MODE EXAMPLE-->
+							</table>
+							<label data-bind="text: selectedCodes2()"></label>
+						</div>
+						<article class="cf">
+							<div class="tabs">
+								<ol>
+									<li><a href="#tabs-html">HTML Binding</a></li>
+									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+								</ol>
+								<div id="tabs-html" class="cf">
+									<h2>HTML</h2>
+<pre><![CDATA[<!--SINGLESELECT HIGHLIGHT MODE EXAMPLE-->
 <div class="cf">
 	<div style="float:left">																					
 		<div style="width: 700px" data-bind="ntsSearchBox: {label: 'コード・名称', targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource, 
@@ -178,101 +166,118 @@
 		<span data-bind="text: selectedCodes2"></span>
 	</div>
 </div>
-]]>
-								</pre>
-								<h2>API</h2>
-								<table>
-									<colgroup>
-										<col width="200px" />
-									</colgroup>
-									<thead>
-										<tr>
-											<th><h4>Binding</h4></th>
-											<th><h4>Description</h4></th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>comId</td>
-											<td><b>Type:</b> String, the ID of the component that
-												SearchBox works with<br /> <i>required:</i> SearchBox will
-												trigger 'selectChange' on each search call<br /></td>
-										</tr>
-										<tr>
-											<td>items</td>
-											<td><b>Type:</b> array of items, data source of grid<br />
-												<i>item:</i> object class that store our data<br /></td>
-										</tr>
-										<tr>
-											<td>mode</td>
-											<td><b>Type:</b> string<br /> <i>Description:</i> type
-												of target view. Current support igGrid and igTree, ListBox<br />
-											</td>
-										</tr>
-										<tr>
-											<td>targetKey</td>
-											<td><b>Type:</b> string<br /> <i>Description:</i>
-												primary key of target view<br /></td>
-										</tr>
-										<tr>
-											<td>searchMode</td>
-											<td><b>Type:</b> string<br /> <i>Description:</i> search
-												mode. Current there are 'highlight' and 'filter'<br /></td>
-										</tr>
-										<tr>
-											<td>label</td>
-											<td><b>Type:</b> string<br /> <i>Description:</i> Show
-												label in left of input text search box. Default: not show<br />
-											</td>
-										</tr>
-										<tr>
-											<td>placeHolder</td>
-											<td><b>Type:</b> string<br /> <i>Default:</i>
-												"コード・名称で検索・・・"<br /></td>
-										</tr>
-										<tr>
-											<td>searchText</td>
-											<td><b>Type:</b> String, text is showed in button<br />
-												<i>default:</i> "検索"<br /></td>
-										</tr>
-										<tr>
-											<td>selected</td>
-											<td><b>Type:</b> your correspond selectedCodes or
-												singleSelectedCode<br /> This is required. For the search
-												box processing function to compare with current selection</td>
-										</tr>
-										<tr>
-											<td>selectedKey</td>
-											<td><b>Type:</b> the attribute of Item objects that we
-												use to store current selection<br /> In the above example,
-												this is 'code' attribute as our selection result in
-												singleSelectedCode/selectedCodes If not provided, the
-												selection will be treat as Object</td>
-										</tr>
-										<tr>
-											<td>childField</td>
-											<td><b>Type:</b> the attribute of Item objects that we
-												use to store each Item childField<br /> If not provided,
-												only level 1 nodes will be searched</td>
-										</tr>
-										<tr>
-											<td>fields</td>
-											<td><b>Type:</b> array of attribute to search on<br />
-												Required. searchbox used this array to compare string on
-												each field. This array is priority descending order</td>
-										</tr>
-										<tr>
-											<td>enable</td>
-											<td><b>Type:</b> boolean<br /> Set enable/ disable for
-												searchbox</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-							<div id="tabs-viewmodel" class="cf">
+]]></pre>
+									<h2>API</h2>
+									<table>
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Binding</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>comId</td>
+												<td>
+													<b>Type:</b> String, the ID of the component that SearchBox works with<br/>													
+													<i>required:</i> SearchBox will trigger 'selectChange' on each search call<br/>
+												</td>
+											</tr>								
+											<tr>
+												<td>items</td>
+												<td>
+													<b>Type:</b> array of items, data source of grid<br/>													
+													<i>item:</i> object class that store our data<br/>
+												</td>
+											</tr>									
+											<tr>
+												<td>mode</td>
+												<td>
+													<b>Type:</b> string<br/>													
+													<i>Description:</i> type of target view. Current support igGrid and igTree, ListBox<br/>
+												</td>
+											</tr>									
+											<tr>
+												<td>targetKey</td>
+												<td>
+													<b>Type:</b> string<br/>													
+													<i>Description:</i> primary key of target view<br/>
+												</td>
+											</tr>									
+											<tr>
+												<td>searchMode</td>
+												<td>
+													<b>Type:</b> string<br/>													
+													<i>Description:</i> search mode. Current there are 'highlight' and 'filter'<br/>
+												</td>
+											</tr>								
+											<tr>
+												<td>label</td>
+												<td>
+													<b>Type:</b> string<br/>													
+													<i>Description:</i> Show label in left of input text search box. Default: not show<br/>
+												</td>
+											</tr>
+											<tr>
+												<td>placeHolder</td>
+												<td>
+													<b>Type:</b> string<br/>													
+													<i>Default:</i> "コード・名称で検索・・・"<br/>
+												</td>
+											</tr>								
+											<tr>
+												<td>searchText</td>
+												<td>
+													<b>Type:</b> String, text is showed in button<br/>													
+													<i>default:</i> "検索"<br/>
+												</td>
+											</tr>											
+											<tr>
+												<td>selected</td>
+												<td>
+													<b>Type:</b> your correspond selectedCodes or singleSelectedCode<br/>
+													This is required. For the search box processing function to compare with current selection													
+												</td>
+											</tr>
+											<tr>
+												<td>selectedKey</td>
+												<td>
+													<b>Type:</b> the attribute of Item objects that we use to store current selection<br/>
+													In the above example, this is 'code' attribute as our selection result in singleSelectedCode/selectedCodes
+													If not provided, the selection will be treat as Object										
+												</td>
+											</tr>
+											<tr>
+												<td>childField</td>
+												<td>
+													<b>Type:</b> the attribute of Item objects that we use to store each Item childField<br/>													
+													If not provided, only level 1 nodes will be searched									
+												</td>
+											</tr>
+											<tr>
+												<td>fields</td>
+												<td>
+													<b>Type:</b> array of attribute to search on<br/>													
+													Required. searchbox used this array to compare string on each field.
+													This array is priority descending order						
+												</td>
+											</tr>	
+											<tr>
+												<td>enable</td>
+												<td>
+													<b>Type:</b> boolean<br/>													
+													Set enable/ disable for searchbox						
+												</td>
+											</tr>													
+										</tbody>
+									</table>
+								</div>
+								<div id="tabs-viewmodel" class="cf">
 								The data with form "DATA" + "2" is for multi select mode example
-								<pre>
-									<![CDATA[class ScreenModel {
+<pre><![CDATA[class ScreenModel {
         dataSource: any;
         dataSource2: any;      
         singleSelectedCode: any;
@@ -359,18 +364,17 @@
             this.other1 = other1;
             this.other2 = other2 || other1;         
         }
-    } ]]>
-								</pre>
+    } ]]></pre>
+								</div>
 							</div>
+						</article>
+						<div class="footer cf">
+							<button class="previous large">Previous</button>
+							<button class="next proceed large">Next</button>
 						</div>
-					</article>
-					<div class="footer cf">
-						<button class="previous large">Previous</button>
-						<button class="next proceed large">Next</button>
 					</div>
-				</div>
-			</div>
-		</ui:define>
-	</ui:composition>
-</body>
+		   		</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
 </html>
