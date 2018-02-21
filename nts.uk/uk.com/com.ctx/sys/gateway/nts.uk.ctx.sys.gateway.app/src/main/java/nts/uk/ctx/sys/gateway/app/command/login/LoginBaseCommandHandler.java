@@ -192,6 +192,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 			Optional<EmployeeImport> opEm = this.employeeAdapter
 					.getByPid(lstCompanyId.get(FIST_COMPANY), user.getAssociatePersonId());
 
+			// Check employee deleted status.
+			this.checkEmployeeDelStatus(lstCompanyId.get(FIST_COMPANY), user.getAssociatePersonId());
+			
 			// save to session
 			CompanyInformationImport companyInformation = this.companyInformationAdapter
 					.findById(opEm.get().getCompanyId());
