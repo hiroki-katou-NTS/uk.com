@@ -449,7 +449,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }else{
                  nts.uk.ui.block.clear(); 
             }
-            debugger;
         }
         
         proceedSave() {
@@ -514,7 +513,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }else{
                   nts.uk.ui.block.clear();
             }
-            debugger;
         }
         checkIsColumn(dataCell: any, key: any): boolean {
             let check = false;
