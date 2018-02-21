@@ -225,10 +225,6 @@
 	margin-bottom: 14px;
 	margin-left: 10px;
 }
-.ccg001-tbl-cell-middle {
-	display: table-cell;
-	vertical-align: middle;
-}
 .margin-left-10 {
 	margin-left: 10px;
 }
@@ -239,4 +235,16 @@
 }
 .height-maximum {
 	height: 100%;
+}
+.ccg001-table {
+	display: table;
+}
+.ccg001-cell {
+	display: table-cell;
+}
+.ccg001-cell.mid {
+	vertical-align: middle;
+}
+.ccg001-cell.bot {
+	vertical-align: bottom;
 }
