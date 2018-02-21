@@ -47,7 +47,7 @@ module ccg014.a.viewmodel {
             
             $("#preview-iframe").on("load", function() {
                 if (self.isCreate() == true){
-                    
+                    $('#titleMenuCD').ntsError('clear');
                     $("#titleMenuCD").focus();
                 } else{
                     $("#titleMenuName").focus();    
