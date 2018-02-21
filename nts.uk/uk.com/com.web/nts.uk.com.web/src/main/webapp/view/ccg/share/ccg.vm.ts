@@ -113,10 +113,10 @@ module nts.uk.com.view.ccg.share.ccg {
             // List WorkType
             listWorkType: KnockoutObservableArray<WorkType>;
             selectedWorkTypeCode: KnockoutObservableArray<string>;
-            
             workTypeColumns: KnockoutObservableArray<any>;
-            
-            employeeList: KnockoutObservableArray<EmployeeDto>;
+
+            // first time show
+            isFirstTime = true;
 
             /**
              * Init screen model
@@ -202,7 +202,6 @@ module nts.uk.com.view.ccg.share.ccg {
                     { headerText: nts.uk.resource.getText('CCG001_61'), prop: 'name', width: 200 }
                 ]);
                 
-                self.employeeList = ko.observableArray([]);
             }
 
             private setQuickSearchParam(): JQueryPromise<void> {
@@ -646,6 +645,25 @@ module nts.uk.com.view.ccg.share.ccg {
                     return;
                 }
                 $('#component-ccg001').toggle("slide");
+                if (self.isShowEmployeeList && self.isFirstTime) {
+                    self.isFirstTime = false;
+                    const tabContentHeight = $('#tab-1').outerHeight();
+                    const kcp005HeaderHeight = 110;
+                    const rows = (tabContentHeight - kcp005HeaderHeight) / 24;
+                    self.employeeinfo = {
+                        isShowAlreadySet: false,
+                        isMultiSelect: self.isMultiple,
+                        isMultipleUse: true,
+                        listType: ListType.EMPLOYEE,
+                        employeeInputList: ko.observableArray([]),
+                        selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                        selectedCode: self.selectedCodeEmployee,
+                        isDialog: true,
+                        isShowNoSelectRow: false,
+                        maxRows: rows
+                    }
+                    $('#employeeinfo').ntsListComponent(self.employeeinfo);
+                }
                 self.isShow(true);
             }
 
@@ -758,9 +776,6 @@ module nts.uk.com.view.ccg.share.ccg {
                         }
                         if (self.showWorkplace) {
                             $('#workplaceList').ntsTreeComponent(self.workplaces);
-                        }
-                        if (self.isShowEmployeeList) {
-                            $('#employeeinfo').ntsListComponent(self.employeeinfo);
                         }
                         nts.uk.ui.block.clear();
                         dfd.resolve();
@@ -1166,18 +1181,6 @@ module nts.uk.com.view.ccg.share.ccg {
                         isDialog: true
                     }
 
-                    self.employeeinfo = {
-                        isShowAlreadySet: false,
-                        isMultiSelect: self.isMultiple,
-                        isMultipleUse: true,
-                        listType: ListType.EMPLOYEE,
-                        employeeInputList: ko.observableArray([]),
-                        selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                        selectedCode: self.selectedCodeEmployee,
-                        isDialog: true,
-                        isShowNoSelectRow: false,
-                        maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYEE
-                    }
                 }
             }
         }
@@ -1187,7 +1190,6 @@ module nts.uk.com.view.ccg.share.ccg {
             static MAX_ROWS_CLASSIFICATION = 10;
             static MAX_ROWS_JOBTITLE = 10;
             static MAX_ROWS_WORKPLACE = 10;
-            static MAX_ROWS_EMPLOYEE = 20;    
         }
         
         export class ConfigEnumSystemType{

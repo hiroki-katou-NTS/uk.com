@@ -233,7 +233,10 @@
 	display: table-cell;
 	vertical-align: middle;
 }
-
+.ccg001-column {
+	height: 100%;
+	margin-right: 10px;
+}
 .ccg-tabpanel {
 	height: calc(100% - 150px);
 	background-color: #F2F2F2;

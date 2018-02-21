@@ -5,7 +5,7 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 	<div class="cf" id="component-ccg001">
 		<div class="pull-left ccg001-content">
-			<div class="table">
+			<div id="ccg001-header" class="table">
 				<div class="cell">
 					<com:ko tag="if" bind="showBaseDate">
 						<div class="control-group ccg001-control-group">
@@ -120,7 +120,7 @@
 			<com:ko tag="if" bind="isAdvancedSearchTab">
 				<div tabindex="-1" class="tab-content-2" style="height: 100%">
 						<div style="height: 100%">
-							<div class="pull-left" style="padding-right: 15px; height: 100%; overflow: scroll;">
+							<div class="pull-left ccg001-column" style="padding-right: 15px; overflow: scroll;">
 								<div>
 									<label>#{i18n.getText('CCG001_20')}</label>
 								</div>
@@ -253,7 +253,7 @@
 									</div>
 								</com:ko>
 							</div>
-							<div class="pull-left" style="height: 100%">
+							<div class="pull-left ccg001-column">
 								<div tabindex="17" class="ccg-btn-vertical" data-bind="click: advancedSearchEmployee">
 									<div class="ccg001-tbl-cell-middle">
 										<div class="ccg-lbl-vertical ccg-lbl-extract-emp">#{i18n.getText('CCG001_25')}</div>
@@ -262,11 +262,10 @@
 							</div>
 							
 							<com:ko tag="if" bind="isShowEmployeeList">
-								<div class="pull-left" style="height: 100%">
-									<div tabindex="18" class="contentkcp"
-										id="employeeinfo"></div>
+								<div class="pull-left ccg001-column">
+									<div tabindex="18" id="employeeinfo"></div>
 								</div>
-								<div class="pull-left" style="height: 100%">
+								<div class="pull-left ccg001-column">
 									<div tabindex="19" class="ccg-btn-vertical" data-bind="click: extractSelectedEmployees">
 										<div class="ccg001-tbl-cell-middle">
 											<i class="icon icon-01-searchmode"></i>
