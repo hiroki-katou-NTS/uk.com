@@ -250,7 +250,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		List<Application_New> lstApp = new ArrayList<>();
 //		if(!param.getAppDisplayAtr().equals(ApplicationDisplayAtr.PRIOR_NOTICE) || !param.getAppDisplayAtr().equals(ApplicationDisplayAtr.CONSIDER_INSTRUCT)){//「事前通知」または「検討指示」以外
 			//ドメインモデル「代行者管理」を取得する-(Lấy dữ liệu domain 代行者管理) - wait request 244
-			List<AgentDataRequestPubImport> lstAgent = agentAdapter.lstAgentData(companyId, sID, baseDate);
+			List<AgentDataRequestPubImport> lstAgent = agentAdapter.lstAgentData(companyId, sID, param.getStartDate(), param.getEndDate());
 			List<String> lstEmp = new ArrayList<>();
 			for (AgentDataRequestPubImport agent : lstAgent) {
 				lstEmp.add(agent.getEmployeeId());
