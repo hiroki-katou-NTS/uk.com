@@ -644,6 +644,11 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (self.isShow()) {
                     return;
                 }
+                let componentElement = document.getElementById('component-ccg001');
+                if (componentElement.style.visibility == 'hidden') {
+                    componentElement.style.removeProperty('visibility');
+                    componentElement.style.display = 'none';
+                }
                 $('#component-ccg001').toggle("slide");
                 if (self.isAdvancedSearchTab && self.isShowEmployeeList && self.isFirstTime) {
                     self.loadKcp005();
@@ -656,10 +661,6 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             private loadKcp005(): void {
                 let self = this;
-
-                // set advanced tab width
-                $('#tab-2').outerWidth(965);
-                $('#component-ccg001').css('overflow-x', 'scroll');
 
                 // update flag isFirstTime
                 self.isFirstTime = false;
@@ -679,6 +680,16 @@ module nts.uk.com.view.ccg.share.ccg {
                     isDialog: true,
                     isShowNoSelectRow: false,
                     maxRows: rows
+                }
+
+                // set advanced tab width
+                const tabContent2Width = 950;
+                $('#ccg001-tab-content-2').outerWidth(tabContent2Width);
+                const componentWidth = window.innerWidth - $('#hor-scroll-button-hide').offset().left;
+                if (componentWidth <= tabContent2Width) {
+                    const margin = 30;
+                    $('#tab-2').outerWidth(componentWidth - margin);
+                    $('#tab-2').css('overflow-x', 'scroll');
                 }
 
                 // Show KCP005
