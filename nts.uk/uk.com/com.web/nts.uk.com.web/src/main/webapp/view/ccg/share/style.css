@@ -147,7 +147,9 @@
 .ccg001-control-group {
 	margin-left: 5px;
 }
-
+.ccg001-label {
+	width: 85px;
+}
 .ccg-tabpanel #tab-1 {
 	height: calc(100% - 70px);
 	background-color: white;

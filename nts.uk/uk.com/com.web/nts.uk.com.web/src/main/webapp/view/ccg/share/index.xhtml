@@ -9,7 +9,7 @@
 				<div class="cell">
 					<com:ko tag="if" bind="showBaseDate">
 						<div class="control-group ccg001-control-group">
-							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_27')}</div>
+							<div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_27')}</div>
 							<div id="inp_baseDate" tabindex="1"
 								data-bind="ntsDatePicker: {
 								name: '#[CCG001_27]',
@@ -20,7 +20,7 @@
 					</com:ko>
 					<com:ko tag="if" bind="showClosure">
 						<div class="control-group ccg001-control-group">
-							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_28')}</div>
+							<div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_28')}</div>
 							<div id="cbb-closure" tabindex="2" style="display: inline-table"
 								data-bind="ntsComboBox: {
 									name: '#[CCG001_28]',
@@ -38,7 +38,7 @@
 					</com:ko>
 					<com:ko tag="if" bind="showPeriod">
 						<div class="control-group ccg001-control-group">
-							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_29')}</div>
+							<div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_29')}</div>
 							<com:ko tag="ifnot" bind="showPeriodYM">
 								<div id="inp-period-startYMD" tabindex="3"
 									data-bind="ntsDatePicker: {
@@ -46,6 +46,7 @@
 										dateFormat: 'YYYY/MM/DD',
 										value: periodStartDate,
 										required: true }"></div>
+								<label>～</label>
 								<div id="inp-period-endYMD" tabindex="3"
 									data-bind="ntsDatePicker: {
 										name: '#[CCG001_31]',
@@ -60,6 +61,7 @@
 										dateFormat: 'YYYY/MM',
 										value: periodStartYm,
 										required: true }"></div>
+								<label>～</label>
 								<div id="inp-period-endYM" tabindex="3"
 									data-bind="ntsDatePicker: {
 										name: '#[CCG001_31]',

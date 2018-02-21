@@ -852,10 +852,12 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (self.isInvalidBaseDate()) {
                     return;
                 }
+                nts.uk.ui.block.invisible(); // block ui
                 service.searchEmployeeByLogin(self.baseDate().toDate()).done(data => {
                     if (data.length > 0) {
                         self.onSearchOnlyClicked(data[0]);
                         self.hideComponent();
+                        nts.uk.ui.block.clear(); // clear block UI
                     }
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
