@@ -131,7 +131,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.selectedCodeEmployee = ko.observableArray([]);
 
                 // status of employment period
-                self.statusPeriodStart = ko.observable(moment());
+                self.statusPeriodStart = ko.observable(moment.utc("1900/01/01", "YYYY/MM/DD"));
                 self.statusPeriodEnd = ko.observable(moment());
 
                 self.tabs = ko.observableArray([
@@ -259,7 +259,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     // push tab 1
                     arrTabs.push({
                         id: 'tab-1',
-                        title: nts.uk.resource.getText("CCG001_3"),
+                        title: nts.uk.resource.getText("CCG001_22"),
                         content: '.tab-content-1',
                         enable: ko.observable(true),
                         visible: ko.observable(true)
@@ -270,7 +270,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     // push tab 2
                     arrTabs.push({
                         id: 'tab-2',
-                        title: nts.uk.resource.getText("CCG001_4"),
+                        title: nts.uk.resource.getText("CCG001_23"),
                         content: '.tab-content-2',
                         enable: ko.observable(true),
                         visible: ko.observable(true)
