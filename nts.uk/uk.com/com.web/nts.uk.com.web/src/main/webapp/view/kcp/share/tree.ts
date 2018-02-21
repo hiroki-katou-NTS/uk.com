@@ -157,6 +157,7 @@ module kcp.share.tree {
         data: TreeComponentOption
         maxRows: number;
         systemType: SystemType;
+        isFullView: KnockoutObservable<boolean>;
 
         isSetTabindex: KnockoutObservable<boolean>;
         tabindex: number;
@@ -185,9 +186,10 @@ module kcp.share.tree {
             self.levelSelected = ko.observable(10);
             self.isMultipleUse = false;
             self.isMultiSelect = false;
+            self.isFullView = ko.observable(false);
             
             self.treeStyle = {
-                width: 410,
+                width: 412,
                 height: 0
             };
         }
@@ -355,6 +357,14 @@ module kcp.share.tree {
             
             // calculate height tree
             self.treeStyle.height = heightRow * (self.maxRows + 1) + heightScrollX;
+            if (self.isFullView()) {
+                self.treeStyle.width = widthColText + 70 + 30;
+
+                // if width tree is small than 412 -> set to 412.
+                self.treeStyle.width = self.treeStyle.width < 412 ? 412 : self.treeStyle.width;
+            } else {
+                self.treeStyle.width = 412;
+            }
         }
 
         /**
@@ -376,7 +386,7 @@ module kcp.share.tree {
          */
         private getMaxSizeOfTextList(textArray: Array<any>): number {
             var max = 0;
-            var paddingPerLevel = 32;
+            var paddingPerLevel = 16;
             var defaultFontSize = 14;
             var defaultFontFamily = ['DroidSansMono', 'Meiryo'];
             _.forEach(textArray, function(item) {
@@ -386,7 +396,7 @@ module kcp.share.tree {
                         'font-size': defaultFontSize, 'font-family': defaultFontFamily
                     })
                     .appendTo($('body'))
-                var w = o.width() + item.level * paddingPerLevel + 10;
+                var w = o.width() + item.level * paddingPerLevel + 30;
                 if (w > max) {
                     max = w;
                 }
@@ -516,7 +526,9 @@ module kcp.share.tree {
                 self.itemList(subItemList);
                 self.initSelectedValue(self.itemList());
                 ko.cleanNode($('#' + self.getComIdSearchBox())[0]);
+                self.addColToGrid(self.data, self.itemList());
                 ko.applyBindings(self, $('#' + self.getComIdSearchBox())[0]);
+                self.createGlobalVarDataList();
             }
         }
 
@@ -535,6 +547,17 @@ module kcp.share.tree {
                 self.createGlobalVarDataList();
                 $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
                     return window['dataList' + this.attr('id').replace(/-/gi, '')];
+                }
+                
+                // Create method to full view.
+                $.fn.fullView = function() {
+                    self.isFullView(true);
+                    self.filterData();
+                }
+                
+                $.fn.scrollView = function() {
+                    self.isFullView(false);
+                    self.filterData();
                 }
                 dfd.resolve();
             });
@@ -759,12 +782,22 @@ interface JQuery {
      * Focus component.
      */
     focusTreeGridComponent(): void;
+    
+    /**
+     * Go to full view mode.
+     */
+    fullView(): void;
+    
+    /**
+     * Go to scroll
+     */
+    scrollView(): void;
 }
 
 (function($: any) {
     $.fn.ntsTreeComponent = function(option: kcp.share.tree.TreeComponentOption): JQueryPromise<void> {
 
         // Return.
-        return new kcp.share.tree.TreeComponentScreenModel().init(this, option);;
+        return new kcp.share.tree.TreeComponentScreenModel().init(this, option);
     }
 } (jQuery));
