@@ -259,7 +259,38 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			//ドメインモデル「申請」を取得する-(Lấy dữ liệu domain 申請) - get List App By Reflect
 			lstApp = repoApp.getListAppByReflect(companyId, param.getStartDate(), param.getEndDate());
 			//loc du lieu
-			//条件１：ログイン者の表示対象の基本条件
+			//条件１： ログイン者の表示対象の基本条件
+			List<Application_New> lstAppFilter1 = lstApp.stream().filter(c -> this.filterConditions1(c)).collect(Collectors.toList());
+			//条件2: 申請者の指定条件
+			List<Application_New> lstAppFilter2 = new ArrayList<>();
+			for (Application_New app : lstAppFilter1) {
+				//「全て」の場合
+				if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.ALL_APP)){
+					lstAppFilter2.add(app);
+				}
+				//「自分の申請」の場合
+				if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_MYSELF)){
+					if(app.getEmployeeID().equals(AppContexts.user().employeeId())){
+						lstAppFilter2.add(app);
+					}
+				}
+				//「部下の申請」の場合
+				if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_SUB)){
+					if(app.getEmployeeID().equals(AppContexts.user().employeeId())){
+						lstAppFilter2.add(app);
+					}
+				}
+				//「承認する申請」の場合
+				// TODO Auto-generated method stub
+			}
+			//条件３：承認区分の指定条件
+			
+			
+			
+			
+			
+			
+			
 			List<Application_New> lstOverTime = lstApp.stream().filter(c -> c.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION))
 					.collect(Collectors.toList());
 			List<Application_New> lstGoBack = lstApp.stream().filter(d -> d.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION))
@@ -687,7 +718,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	private boolean checkExistEmp(List<ApproverStateImport_New> listApprover, String sID){
 		boolean check = false;
 		for (ApproverStateImport_New approver : listApprover) {
-			if(approver.getApprover().equals(sID)){
+			if(approver.getApproverID().equals(sID)){
 				check = true;
 				break;
 			}
@@ -938,9 +969,60 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				return 0;
 		}
 	}
-//	//convert time
-//	private String convertTime(int time){
-//		TimeWithDayAttr timeConvert = new TimeWithDayAttr(time);
-//		return timeConvert.getDayDivision().description + timeConvert.getInDayTimeWithFormat();
-//	}
+	
+	private boolean filterConditions1(Application_New app){
+		//dk1
+		String companyID = AppContexts.user().companyId();
+		List<ApprovalPhaseStateImport_New> lstPhase = approvalRootStateAdapter.getApprovalRootContent(companyID, 
+				app.getEmployeeID(), app.getAppType().value, app.getAppDate(), app.getAppID(), false).getApprovalRootState().getListApprovalPhaseState();
+		boolean check = false;
+		for (ApprovalPhaseStateImport_New appPhase : lstPhase) {
+			for (ApprovalFrameImport_New frame : appPhase.getListApprovalFrame()) {
+				//承認枠.承認区分!=未承認 
+				if(frame.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
+					if(this.checkDifNotAppv(frame)){
+						check = true;
+						break;
+					}
+				}else{
+					if(this.checkNotAppv(frame)){
+						check = true;
+						break;
+					}
+				}
+			}
+			
+		}
+		return check;
+	}
+	
+	private boolean checkDifNotAppv(ApprovalFrameImport_New frame){
+		String sID = AppContexts.user().employeeId();
+		if(frame.getApproverID().equals(sID)){
+			return true;
+		}
+		if(frame.getRepresenterID().equals(sID)){
+			return true;
+		}
+		if(this.checkExistEmp(frame.getListApprover(), sID)){
+			return true;
+		}
+		return false;
+	}
+	private boolean checkNotAppv(ApprovalFrameImport_New frame){
+		String sID = AppContexts.user().employeeId();
+		if(this.checkExistEmp(frame.getListApprover(), sID)){
+			return true;
+		}
+		return false;
+	}
+
+	private boolean filterConditions3(int approvalAtr){
+		//dk3
+		return true;
+	}
+	private boolean filterConditions4(int approvalAtr){
+		//dk4
+		return true;
+	}
 }
