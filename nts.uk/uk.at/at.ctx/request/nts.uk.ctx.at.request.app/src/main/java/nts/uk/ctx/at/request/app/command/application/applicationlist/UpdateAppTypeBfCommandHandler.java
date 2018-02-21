@@ -34,7 +34,7 @@ public class UpdateAppTypeBfCommandHandler extends CommandHandler<AppTypeBfComma
 		List<ReceptionRestrictionSetting> beforeList = new ArrayList<>();
 		List<AppTypeSetting> appList = new ArrayList<>();
 		// convert list before after from command to domain
-		for(BfReqSetCommand item : data.getBeforAfter()){
+		for(BfReqSetCommand item : data.getBeforeAfter()){
 			ReceptionRestrictionSetting bfDomain = ReceptionRestrictionSetting.toDomain(item.getAppType(), 
 					BeforehandRestriction.toDomain(item.getRetrictPreMethodFlg(), 
 													item.getRetrictPreUseFlg(), 
