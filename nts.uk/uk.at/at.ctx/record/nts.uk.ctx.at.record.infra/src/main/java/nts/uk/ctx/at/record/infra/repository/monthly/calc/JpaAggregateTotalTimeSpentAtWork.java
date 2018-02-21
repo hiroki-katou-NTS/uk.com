@@ -17,31 +17,20 @@ import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonAggrTotalSpt;
 @Stateless
 public class JpaAggregateTotalTimeSpentAtWork extends JpaRepository implements AggregateTotalTimeSpentAtWorkRepository {
 
-	/** 追加 */
-	@Override
-	public void insert(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
-			AggregateTotalTimeSpentAtWork aggregateTotalTimeSpentAtWork) {
-		
-		this.commandProxy().insert(toEntity(attendanceTimeOfMonthlyKey, aggregateTotalTimeSpentAtWork, false));
-	}
-	
 	/** 更新 */
 	@Override
 	public void update(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
 			AggregateTotalTimeSpentAtWork aggregateTotalTimeSpentAtWork) {
 		
-		this.toEntity(attendanceTimeOfMonthlyKey, aggregateTotalTimeSpentAtWork, true);
+		this.toUpdate(attendanceTimeOfMonthlyKey, aggregateTotalTimeSpentAtWork);
 	}
 	
 	/**
-	 * ドメイン→エンティティ
+	 * データ更新
 	 * @param domainKey キー値：月別実績の勤怠時間
 	 * @param domain ドメイン：集計総拘束時間
-	 * @param execUpdate 更新を実行する
-	 * @return エンティティ：集計総拘束時間
 	 */
-	private KrcdtMonAggrTotalSpt toEntity(AttendanceTimeOfMonthlyKey domainKey,
-			AggregateTotalTimeSpentAtWork domain, boolean execUpdate){
+	private void toUpdate(AttendanceTimeOfMonthlyKey domainKey, AggregateTotalTimeSpentAtWork domain){
 
 		// 締め日付
 		val closureDate = domainKey.getClosureDate();
@@ -54,20 +43,12 @@ public class JpaAggregateTotalTimeSpentAtWork extends JpaRepository implements A
 				closureDate.getClosureDay().v(),
 				(closureDate.getLastDayOfMonth() ? 1 : 0));
 		
-		KrcdtMonAggrTotalSpt entity;
-		if (execUpdate){
-			entity = this.queryProxy().find(key, KrcdtMonAggrTotalSpt.class).get();
-		}
-		else{
-			entity = new KrcdtMonAggrTotalSpt();
-			entity.PK = key;
-		}
+		KrcdtMonAggrTotalSpt entity = this.queryProxy().find(key, KrcdtMonAggrTotalSpt.class).get();
+		if (entity == null) return;
 		entity.overTimeSpentAtWork = domain.getOverTimeSpentAtWork().v();
 		entity.midnightTimeSpentAtWork = domain.getMidnightTimeSpentAtWork().v();
 		entity.holidayTimeSpentAtWork = domain.getHolidayTimeSpentAtWork().v();
 		entity.varienceTimeSpentAtWork = domain.getVarienceTimeSpentAtWork().v();
 		entity.totalTimeSpentAtWork = domain.getTotalTimeSpentAtWork().v();
-		if (execUpdate) this.commandProxy().update(entity);
-		return entity;
 	}
 }

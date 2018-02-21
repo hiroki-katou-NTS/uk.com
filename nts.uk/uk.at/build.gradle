@@ -113,8 +113,8 @@ subprojects {
 		// https://mvnrepository.com/artifact/org.quartz-scheduler/quartz
 		compile group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.0'
 		
-        compile group: 'nts.gul', name: 'nts.gul', version: '0.43'
-        compile group: 'nts.arc', name: 'nts.arc', version: '0.56.1'
+        compile group: 'nts.gul', name: 'nts.gul', version: '0.44'
+        compile group: 'nts.arc', name: 'nts.arc', version: '0.57'
 		
 		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.7.32'
 	}

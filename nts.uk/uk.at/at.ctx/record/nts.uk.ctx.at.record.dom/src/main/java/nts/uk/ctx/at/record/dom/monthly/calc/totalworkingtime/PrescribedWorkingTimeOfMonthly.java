@@ -2,9 +2,11 @@ package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
@@ -17,17 +19,15 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * 月別実績の所定労働時間
  * @author shuichi_ishida
  */
+@Getter
 public class PrescribedWorkingTimeOfMonthly {
 
 	/** 計画所定労働時間 */
-	@Getter
 	private AttendanceTimeMonth schedulePrescribedWorkingTime;
 	/** 実績所定労働時間 */
-	@Getter
 	private AttendanceTimeMonth recordPrescribedWorkingTime;
 	
 	/** 時系列ワーク */
-	@Getter
 	private List<PrescribedWorkingTimeOfTimeSeries> timeSeriesWorks;
 	
 	/**
@@ -59,12 +59,12 @@ public class PrescribedWorkingTimeOfMonthly {
 	/**
 	 * 所定労働時間を確認する
 	 * @param datePeriod 期間
-	 * @param attendanceTimeOfDailys リスト：日別実績の勤怠時間
+	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 */
 	public void confirm(DatePeriod datePeriod,
-			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap){
 		
-		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
+		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.values()){
 
 			// 期間外はスキップする
 			if (!datePeriod.contains(attendanceTimeOfDaily.getYmd())) continue;
@@ -100,5 +100,21 @@ public class PrescribedWorkingTimeOfMonthly {
 			this.schedulePrescribedWorkingTime.addMinutes(prescribedWorkingTime.getSchedulePrescribedLaborTime().valueAsMinutes());
 			this.recordPrescribedWorkingTime.addMinutes(prescribedWorkingTime.getRecordPrescribedLaborTime().valueAsMinutes());
 		}
+	}
+
+	/**
+	 * 実績所定労働合計時間を取得する
+	 * @param datePeriod 期間
+	 * @return 実績所定労働合計時間
+	 */
+	public AttendanceTimeMonth getTotalRecordPrescribedWorkingTime(DatePeriod datePeriod){
+		
+		AttendanceTimeMonth returnTime = new AttendanceTimeMonth(0);
+		for (val timeSeriesWork : this.timeSeriesWorks){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
+			val prescribedWorkingTime = timeSeriesWork.getPrescribedWorkingTime();
+			returnTime.addMinutes(prescribedWorkingTime.getRecordPrescribedLaborTime().valueAsMinutes());
+		}
+		return returnTime;
 	}
 }

@@ -17,31 +17,20 @@ import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.KrcdtMonA
 @Stateless
 public class JpaAggregateTotalWorkingTime extends JpaRepository implements AggregateTotalWorkingTimeRepository {
 
-	/** 追加 */
-	@Override
-	public void insert(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
-			AggregateTotalWorkingTime aggregateTotalWorkingTime) {
-		
-		this.commandProxy().insert(toEntity(attendanceTimeOfMonthlyKey, aggregateTotalWorkingTime, false));
-	}
-	
 	/** 更新 */
 	@Override
 	public void update(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime) {
 
-		this.toEntity(attendanceTimeOfMonthlyKey, aggregateTotalWorkingTime, true);
+		this.toUpdate(attendanceTimeOfMonthlyKey, aggregateTotalWorkingTime);
 	}
 	
 	/**
-	 * ドメイン→エンティティ
+	 * データ更新
 	 * @param domainKey キー値：月別実績の勤怠時間
 	 * @param domain ドメイン：集計総労働時間
-	 * @param execUpdate 更新を実行する
-	 * @return エンティティ：集計総労働時間
 	 */
-	private KrcdtMonAggrTotalWrk toEntity(AttendanceTimeOfMonthlyKey domainKey,
-			AggregateTotalWorkingTime domain, boolean execUpdate){
+	private void toUpdate(AttendanceTimeOfMonthlyKey domainKey, AggregateTotalWorkingTime domain){
 
 		// 締め日付
 		val closureDate = domainKey.getClosureDate();
@@ -59,20 +48,12 @@ public class JpaAggregateTotalWorkingTime extends JpaRepository implements Aggre
 		// 月別実績の所定労働時間
 		val prescribedWorkingTime = domain.getPrescribedWorkingTime();
 		
-		KrcdtMonAggrTotalWrk entity;
-		if (execUpdate){
-			entity = this.queryProxy().find(key, KrcdtMonAggrTotalWrk.class).get();
-		}
-		else {
-			entity = new KrcdtMonAggrTotalWrk();
-			entity.PK = key;
-		}
+		KrcdtMonAggrTotalWrk entity = this.getEntityManager().find(KrcdtMonAggrTotalWrk.class, key);
+		if (entity == null) return;
 		entity.totalWorkingTime = domain.getTotalWorkingTime().v();
 		entity.workTime = workTime.getWorkTime().v();
 		entity.withinPrescribedPremiumTime = workTime.getWithinPrescribedPremiumTime().v();
 		entity.schedulePrescribedWorkingTime = prescribedWorkingTime.getSchedulePrescribedWorkingTime().v();
 		entity.recordPrescribedWorkingTime = prescribedWorkingTime.getRecordPrescribedWorkingTime().v();
-		if (execUpdate) this.commandProxy().update(entity);
-		return entity;
 	}
 }
