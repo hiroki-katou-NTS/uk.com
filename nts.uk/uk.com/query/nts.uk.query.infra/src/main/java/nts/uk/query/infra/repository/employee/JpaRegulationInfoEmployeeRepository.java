@@ -210,6 +210,8 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 		// sort by employee code
 		orders.add(cb.asc(root.get(EmployeeDataView_.scd)));
+		// sort by worktype code
+		orders.add(cb.asc(root.get(EmployeeDataView_.workTypeCd)));
 		cq.orderBy(orders);
 
 		// execute query & add to resultList
