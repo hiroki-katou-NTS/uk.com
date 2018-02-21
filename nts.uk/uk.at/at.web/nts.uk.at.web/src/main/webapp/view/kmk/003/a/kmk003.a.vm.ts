@@ -62,6 +62,7 @@ module nts.uk.at.view.kmk003.a {
 
             constructor() {
                 let self = this;
+                self.isDetailMode = ko.observable(false);
                 self.useHalfDay = ko.observable(false); // A5_19 initial value = false
                 self.useHalfDay.subscribe(() => {
                     self.clearAllError();

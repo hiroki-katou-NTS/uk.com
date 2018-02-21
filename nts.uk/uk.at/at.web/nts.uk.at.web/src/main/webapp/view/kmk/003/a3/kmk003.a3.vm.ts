@@ -10,6 +10,7 @@ module a3 {
     import OverTimeOfTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.OverTimeOfTimeZoneSetModel;
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
     import OvertimeWorkFrameFindDto = nts.uk.at.view.kmk003.a3.service.model.OvertimeWorkFrameFindDto;
+    import SettingMethod = nts.uk.at.view.kmk003.a.viewmodel.SettingMethod;
     class ScreenModel {
 
         fixTableOptionOnedayFixed: any;
@@ -47,13 +48,16 @@ module a3 {
         
         //define for 精算順序 primitive value
         lstSettlementOrder: any[];
-
+        screenSettingMode: KnockoutObservable<number>;
+        isNewMode: KnockoutObservable<boolean>;
         /**
         * Constructor.
         */
         constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, 
-        isLoading: KnockoutObservable<boolean>, isDetailMode: KnockoutObservable<boolean>, isUseHalfDay: KnockoutObservable<boolean>) {
+        isLoading: KnockoutObservable<boolean>, isDetailMode: KnockoutObservable<boolean>, isUseHalfDay: KnockoutObservable<boolean>,isNewMode: KnockoutObservable<boolean>) {
             let self = this;
+            self.isNewMode = isNewMode;
+            self.screenSettingMode = ko.observable(0);
             self.settingEnum = settingEnum;
             self.mainSettingModel = mainSettingModel;
             self.isLoading = isLoading;
@@ -63,7 +67,6 @@ module a3 {
             self.isFlowMode = self.mainSettingModel.workTimeSetting.isFlow;
             self.isFixedMode = self.mainSettingModel.workTimeSetting.isFixed;
             self.isDiffTimeMode = self.mainSettingModel.workTimeSetting.isDiffTime;
-            
             
             self.autoCalUseAttrs = ko.observableArray([
                 { code: 1, name: nts.uk.resource.getText("KMK003_142") },
@@ -90,11 +93,6 @@ module a3 {
             self.dataSourceOnedayFlex = ko.observableArray([]);
             self.dataSourceMorningFlex = ko.observableArray([]);
             self.dataSourceAfternoonFlex = ko.observableArray([]);
-            self.isLoading.subscribe(function(isLoading: boolean) {
-                if (isLoading) {
-                    self.updateDataModel();
-                }
-            });
 
             self.selectedCodeAutoCalUse = ko.observable('1');
             
@@ -203,31 +201,87 @@ module a3 {
             });
             
             self.isDetailMode.subscribe((v) => {
-                if (self.isFixedMode()) {
-                    if (v) {
-                        self.fixTableOptionOnedayFixed.columns = self.columnSettingFixedAndDiffTime();
-                    }
-                    else {
-                        self.fixTableOptionOnedayFixed.columns = self.columnSettingFlex();
+                //if is new mode
+                if (self.isNewMode()) {
+                    switch (self.screenSettingMode()) {
+                        case SettingMethod.FIXED:
+                            if (self.fixTableOptionOnedayFixed) {
+                                if (v) {
+                                    self.fixTableOptionOnedayFixed.columns = self.columnSettingFixedAndDiffTime();
+                                }
+                                else {
+                                    self.fixTableOptionOnedayFixed.columns = self.columnSettingFlex();
+                                }
+                            }
+                            break;
+                        case SettingMethod.FLOW:
+                            if (self.fixTableOptionOvertimeFlow) {
+                                if (v) {
+                                    self.fixTableOptionOvertimeFlow.columns = self.columnSettingOvertimeFlow();
+                                }
+                                else {
+                                    self.fixTableOptionOvertimeFlow.columns = self.columnSettingFlowSimple();
+                                }
+                            }
+                            break;
+                        case SettingMethod.DIFFTIME:
+                            if (self.fixTableOptionOnedayDiffTime) {
+                                if (v) {
+                                    self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFixedAndDiffTime();
+                                }
+                                else {
+                                    self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFlex();
+                                }
+                            }
+                            break;
+                        default: break;
                     }
                 }
-                
-                if (self.isFlowMode()) {
-                    if (v) {
-                        self.fixTableOptionOvertimeFlow.columns = self.columnSettingOvertimeFlow();
+                else {
+                    if (self.isFixedMode()) {
+                        if (v) {
+                            self.fixTableOptionOnedayFixed.columns = self.columnSettingFixedAndDiffTime();
+                        }
+                        else {
+                            self.fixTableOptionOnedayFixed.columns = self.columnSettingFlex();
+                        }
                     }
-                    else {
-                        self.fixTableOptionOvertimeFlow.columns = self.columnSettingFlowSimple();
+
+                    if (self.isFlowMode()) {
+                        if (v) {
+                            self.fixTableOptionOvertimeFlow.columns = self.columnSettingOvertimeFlow();
+                        }
+                        else {
+                            self.fixTableOptionOvertimeFlow.columns = self.columnSettingFlowSimple();
+                        }
+                    }
+                    if (self.isDiffTimeMode()) {
+                        if (v) {
+                            self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFixedAndDiffTime();
+                        }
+                        else {
+                            self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFlex();
+                        }
                     }
                 }
-                if(self.isDiffTimeMode())
-                {
-                    if (v) {
-                        self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFixedAndDiffTime();
-                    }
-                    else {
-                        self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFlex();
-                    }
+            });
+            
+            self.isNewMode.subscribe((v) => {
+                if (v) {
+                    self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.valueHasMutated();
+                }
+            });
+            self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe((v) => {
+                if (self.isNewMode()) {
+                    self.screenSettingMode(v);
+                    self.isDetailMode.notifySubscribers(self.isDetailMode());
+                }
+            });
+            
+            self.isLoading.subscribe(function(isLoading: boolean) {
+                if (isLoading) {
+                    self.updateDataModel();
+                    self.isDetailMode.notifySubscribers(self.isDetailMode());
                 }
             });
         }
@@ -816,7 +870,8 @@ module a3 {
             var isDetailMode:  KnockoutObservable<boolean> = input.isDetailMode;
             var useHalfDay:  KnockoutObservable<boolean> = input.useHalfDay;
             var isClickSave: KnockoutObservable<boolean> = input.isClickSave;
-            let screenModel = new ScreenModel(settingEnum, mainSettingModel, isLoading, isDetailMode, useHalfDay);
+            var isNewMode: KnockoutObservable<boolean> = input.isNewMode;
+            let screenModel = new ScreenModel(settingEnum, mainSettingModel, isLoading, isDetailMode, useHalfDay,isNewMode);
             nts.uk.at.view.kmk003.a3.service.findAllOvertimeWorkFrame().done(function(data) {
                 screenModel.lstOvertimeWorkFrame = data;
                 screenModel.initDataModel();
