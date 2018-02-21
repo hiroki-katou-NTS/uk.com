@@ -665,10 +665,25 @@ module nts.uk.com.view.ccg.share.ccg {
                 // update flag isFirstTime
                 self.isFirstTime = false;
 
-                // set KCP005 options
+                // set advanced tab width
+                const tabContent2Width = 950;
+                $('#ccg001-tab-content-2').outerWidth(tabContent2Width);
+
+                // set KCP005 rows
                 const tabContentHeight = $('#tab-1').outerHeight();
                 const kcp005HeaderHeight = 100;
-                const rows = (tabContentHeight - kcp005HeaderHeight) / 24;
+                let rows = (tabContentHeight - kcp005HeaderHeight) / 24;
+
+                // fix component width
+                const componentWidth = window.innerWidth - $('#hor-scroll-button-hide').offset().left;
+                if (componentWidth <= tabContent2Width) {
+                    const margin = 30;
+                    $('#tab-2').outerWidth(componentWidth - margin);
+                    $('#tab-2').css('overflow-x', 'auto');
+                    rows = rows - 1;
+                }
+
+                // set KCP005 options
                 self.employeeinfo = {
                     isShowAlreadySet: false,
                     isMultiSelect: self.isMultiple,
@@ -680,16 +695,6 @@ module nts.uk.com.view.ccg.share.ccg {
                     isDialog: true,
                     isShowNoSelectRow: false,
                     maxRows: rows
-                }
-
-                // set advanced tab width
-                const tabContent2Width = 950;
-                $('#ccg001-tab-content-2').outerWidth(tabContent2Width);
-                const componentWidth = window.innerWidth - $('#hor-scroll-button-hide').offset().left;
-                if (componentWidth <= tabContent2Width) {
-                    const margin = 30;
-                    $('#tab-2').outerWidth(componentWidth - margin);
-                    $('#tab-2').css('overflow-x', 'scroll');
                 }
 
                 // Show KCP005
