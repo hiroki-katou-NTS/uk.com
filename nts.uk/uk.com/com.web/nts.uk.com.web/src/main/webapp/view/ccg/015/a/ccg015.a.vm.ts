@@ -176,7 +176,6 @@ module nts.uk.com.view.ccg015.a {
                 nts.uk.ui.windows.setShared('layoutId', self.topPageModel().layoutId());
                 nts.uk.ui.windows.sub.modal("/view/ccg/015/c/index.xhtml", {
                     height: 320, width: 800,
-                    title: "他のトップページコピー",
                     dialogClass: 'no-close'
                 }).onClosed(() => {
                     var codeOfNewTopPage = nts.uk.ui.windows.getShared("codeOfNewTopPage");
@@ -191,7 +190,6 @@ module nts.uk.com.view.ccg015.a {
                 nts.uk.ui.windows.setShared('topPageCode', self.topPageModel().topPageCode());
                 nts.uk.ui.windows.setShared('topPageName', self.topPageModel().topPageName());
                 nts.uk.ui.windows.sub.modal("/view/ccg/030/a/index.xhtml", {
-                    title: "フローメニューの設定",
                     dialogClass: 'no-close'
                 }).onClosed(() => {
                 });
@@ -204,7 +202,6 @@ module nts.uk.com.view.ccg015.a {
                 var transferData: commonModel.TransferLayoutInfo = { parentCode: topPageCode, layoutID: layoutId, pgType: 0 };
                 nts.uk.ui.windows.setShared('layout', transferData);
                 nts.uk.ui.windows.sub.modal("/view/ccg/031/a/index.xhtml", {
-                    title: "レイアウトの設定",
                     dialogClass: 'no-close'
                 }).onClosed(() => {
                     let returnInfo: commonModel.TransferLayoutInfo = nts.uk.ui.windows.getShared("layout");

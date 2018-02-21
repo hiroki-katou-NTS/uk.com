@@ -95,5 +95,5 @@ public interface AgentRepository {
 	 * @param baseDate
 	 * @return
 	 */
-	public List<Agent> findBySidDate(String companyId, String employeeId, GeneralDate baseDate);
+	public List<Agent> findBySidDate(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate);
 }
