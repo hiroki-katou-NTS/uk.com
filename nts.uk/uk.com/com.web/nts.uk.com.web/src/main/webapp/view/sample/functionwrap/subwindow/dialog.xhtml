@@ -7,8 +7,8 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 650, height: 400 };</script>
-			<com:scriptfile path="dialog.start.js" />
+		<script>var dialogSize = { width: 650, height: 400 };</script>
+		<com:scriptfile path="dialog.start.js"/>
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area"></div>
@@ -17,12 +17,10 @@
 					<button id="register" class="proceed">登録</button>
 					<button id="print">印刷</button>
 				</div>
-				<br /> <input id="text"
-					data-bind="ntsTextEditor: {value: ResidentCode}"></input>
-				<button id="set-error" data-bind="click: setError">Set
-					Error</button>
-				<button id="clear-error" data-bind="click: clearError">Clear
-					Error</button>
+				<br/>
+				<input id="text" data-bind="ntsTextEditor: {value: ResidentCode}"></input>
+				<button id="set-error" data-bind="click: setError">Set Error</button>
+				<button id="clear-error" data-bind="click: clearError">Clear Error</button>
 			</div>
 		</ui:define>
 	</ui:composition>

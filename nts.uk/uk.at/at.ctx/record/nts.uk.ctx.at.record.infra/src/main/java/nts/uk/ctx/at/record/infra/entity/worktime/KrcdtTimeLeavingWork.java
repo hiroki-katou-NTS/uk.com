@@ -50,7 +50,7 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 	public String attendanceActualPlaceCode;
 
 	@Column(name = "ATD_ACTUAL_SOURCE_INFO")
-	public Integer attendanceActualSourceInfo;
+	public int attendanceActualSourceInfo;
 
 	@Column(name = "ATD_STAMP_ROUDING_TIME_DAY")
 	public Integer attendanceStampRoudingTime;
@@ -62,10 +62,10 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 	public String attendanceStampPlaceCode;
 
 	@Column(name = "ATD_STAMP_SOURCE_INFO")
-	public Integer attendanceStampSourceInfo;
+	public int attendanceStampSourceInfo;
 
 	@Column(name = "ATD_NUMBER_STAMP")
-	public Integer attendanceNumberStamp;
+	public int attendanceNumberStamp;
 
 	@Column(name = "LWK_ACTUAL_ROUDING_TIME_DAY")
 	public Integer leaveWorkActualRoundingTime;
@@ -77,7 +77,7 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 	public String leaveWorkActualPlaceCode;
 
 	@Column(name = "LWK_ACTUAL_SOURCE_INFO")
-	public Integer leaveActualSourceInfo;
+	public int leaveActualSourceInfo;
 
 	@Column(name = "LWK_STAMP_ROUDING_TIME_DAY")
 	public Integer leaveWorkStampRoundingTime;
@@ -89,10 +89,10 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 	public String leaveWorkStampPlaceCode;
 
 	@Column(name = "LWK_STAMP_SOURCE_INFO")
-	public Integer leaveWorkStampSourceInfo;
+	public int leaveWorkStampSourceInfo;
 
 	@Column(name = "LWK_NUMBER_STAMP")
-	public Integer leaveWorkNumberStamp;
+	public int leaveWorkNumberStamp;
 
 	public TimeLeavingWork toDomain() {
 		TimeLeavingWork domain = new TimeLeavingWork(new WorkNo(this.krcdtTimeLeavingWorkPK.workNo),
@@ -111,12 +111,12 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 		return domain;
 	}
 
-	private WorkStamp getWorkStamp(Integer roudingTime, Integer time, String placeCode, Integer sourceInfo) {
+	private WorkStamp getWorkStamp(Integer roudingTime, Integer time, String placeCode, int sourceInfo) {
 		return new WorkStamp(
 				roudingTime == null ? null : new TimeWithDayAttr(roudingTime),
 				time == null ? null : new TimeWithDayAttr(time),
 				placeCode == null ? null : new WorkLocationCD(placeCode),
-				sourceInfo == null ? null : EnumAdaptor.valueOf(sourceInfo, StampSourceInfo.class));
+			    EnumAdaptor.valueOf(sourceInfo, StampSourceInfo.class));
 	}
 
 	public static KrcdtTimeLeavingWork toEntity(String employeeId, GeneralDate ymd, TimeLeavingWork domain, int type) {
