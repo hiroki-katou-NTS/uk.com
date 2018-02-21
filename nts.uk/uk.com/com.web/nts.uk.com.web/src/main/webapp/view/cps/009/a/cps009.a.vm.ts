@@ -257,7 +257,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     });
                     if (itemSelected.lstItem.length > 0) {
                         _.each(itemSelected.lstItem, function(item) {
-                            let i: number = _.indexOf(itemLst , item);
+                            let i: number = _.indexOf(itemLst, item);
                             if (i > -1) {
                                 self.currentCategory().itemList()[i].selectedRuleCode(Number(itemSelected.refMethodType));
                             }
@@ -841,7 +841,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.dateType = params.dateType || undefined;
 
-            if (params.dataType === 3 || params.dataType === 4 || params.dataType === 5) {
+            if (params.dataType === 3) {
                 self.listComboItem = ko.observableArray([
                     { code: 1, name: ReferenceMethodType.NOSETTING },
                     { code: 2, name: ReferenceMethodType.FIXEDVALUE },
@@ -956,7 +956,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         constructor(params: number, params2: INumbericItem) {
             let self = this;
             if (params === 2) {
-                
+
                 this.numberIntegerPart = params2.numberIntegerPart;
                 this.numberDecimalPart = params2.numberDecimalPart;
             }
