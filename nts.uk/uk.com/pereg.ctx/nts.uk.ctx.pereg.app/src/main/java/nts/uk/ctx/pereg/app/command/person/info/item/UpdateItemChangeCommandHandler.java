@@ -37,6 +37,11 @@ public class UpdateItemChangeCommandHandler extends CommandHandler<UpdateItemCha
 		
 		PersonInfoItemDefinition itemDef = this.pernfoItemDefRep
 				.getPerInfoItemDefById(command.getId(), AppContexts.user().contractCode()).get();
+		
+		if (!this.pernfoItemDefRep.checkItemNameIsUnique(itemDef.getPerInfoCategoryId(), command.getItemName(),
+				itemDef.getPerInfoItemDefId())) {
+			throw new BusinessException("Msg_358");
+		}
 
 		List<Selection> selection = new ArrayList<>();
 		if (command.getDataType() == 6) {
@@ -53,7 +58,7 @@ public class UpdateItemChangeCommandHandler extends CommandHandler<UpdateItemCha
 			}
 			if (selection == null || selection.size() == 0) {
 
-				throw new BusinessException(new RawErrorMessage("Msg_587"));
+				throw new BusinessException("Msg_587");
 
 			}
 		}
