@@ -6,9 +6,39 @@ module nts.custombinding {
             .layout-multi-control {
                 
             }
-
+            
             .layout-multi-control .ui-igcombo-wrapper {
                 display: block;
+                width: initial;
+                width: auto;
+            }
+            
+            .layout-multi-control .ui-igcombo-wrapper .ui-igcombo {
+                border-color: transparent;
+                border-radius: 0;
+            }
+
+            .layout-multi-control .ui-iggrid .ui-iggrid-tablebody td {
+                padding: 0;
+            }
+
+            .layout-multi-control .ui-iggrid>.ui-widget-header table tr th:first-child, 
+            .layout-multi-control .ui-iggrid>.ui-widget-header table tr th.ui-iggrid-header:first-child,
+            .layout-multi-control .ui-igcombo-wrapper .ui-igcombo .ui-igcombo-button {
+                border-left: 0;
+            }
+
+            .layout-multi-control .ui-iggrid table tr td,
+            .layout-multi-control .ui-iggrid table tr th {
+                border-top: 0;
+                border-right: 0;
+                height: 32px;
+                min-height: 32px;
+            }
+
+            .layout-multi-control .ui-iggrid-fixedcontainer-left {
+                border-right: 2px solid #cccccc !important;
+                border-bottom: none;
             }
             </style>`;
 
@@ -91,6 +121,10 @@ module nts.custombinding {
                 render = self.render,
                 $element = $(element);
 
+            if (element.tagName != 'DIV') {
+                throw new Error('Bind this control to <div> element, plz!');
+            }
+
             if (!element.id) {
                 element.id = random().replace(/[-_]/g, '');
             }
@@ -103,10 +137,16 @@ module nts.custombinding {
             $element
                 .addClass("layout-multi-control")
                 .igGrid({
-                    height: 300,
-                    avgRowHeight: "35px",
+                    width: "100%",
+                    height: "600px",
+                    avgRowHeight: "32px",
+                    primaryKey: "ProductID",
                     enableHoverStyles: false,
                     features: [
+                        {
+                            name: "ColumnFixing",
+                            showFixButtons: false
+                        },
                         {
                             'name': "Sorting",
                             'type': "local"
@@ -148,39 +188,52 @@ module nts.custombinding {
             $element.igGrid("option", "columns", [
                 {
                     headerText: "Product ID",
+                    width: "75px",
                     key: "ProductID",
                     dataType: "number",
-                    template: "<div class='checkbox'>${ProductID}</div>"
+                    template: "<div class='checkbox' data-pid='${ProductID}'>${ProductID}</div>"
                 },
                 {
                     headerText: "Product Name",
                     key: "Name",
+                    width: "275px",
                     dataType: "string",
-                    template: "<input class='textbox' />"
+                    template: "<input class='textbox' data-pid='${ProductID}'/>"
                 },
                 {
                     headerText: "ProductNumber",
                     key: "ProductNumber",
+                    width: "275px",
                     dataType: "string",
-                    template: "<div data-control='combobox' class='combobox'></div>"
+                    template: "<div data-control='combobox' class='combobox' data-pid='${ProductID}'></div>"
                 },
                 {
                     headerText: "Color",
                     key: "Color",
+                    width: "275px",
                     dataType: "string",
-                    unbound: true,
-                    template: "<div data-control='combobox' class='combobox'></div>"
+                    template: "<div data-control='combobox' class='combobox' data-pid='${ProductID}'></div>"
                 },
                 {
                     headerText: "StandardCost",
                     key: "StandardCost",
+                    width: "275px",
                     dataType: "number",
-                    unbound: true,
-                    template: "<div data-control='combobox' class='combobox'></div>"
+                    template: "<div data-control='combobox' class='combobox' data-pid='${ProductID}'></div>"
                 },
             ]);
 
             $element.igGrid("option", "dataSource", inData);
+
+            setTimeout(() => {
+                let $grid = $element.find('.ui-iggrid-table');
+
+                $grid.igGridColumnFixing("unfixAllColumns");
+
+                $grid.igGridColumnFixing("fixColumn", "ProductID");
+                $grid.igGridColumnFixing("fixColumn", "Name");
+                debugger;
+            }, 0);
         }
     }
 
