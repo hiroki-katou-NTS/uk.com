@@ -2,6 +2,62 @@
 
 module nts.uk.ui.koExtentions {
     import validation = nts.uk.ui.validation;
+    
+    module disable {
+        
+        let DATA_API_SET_VALUE = "api-set-value-for-disable";
+        let DATA_DEFAULT_VALUE = "default-value-for-disable";
+        
+        export function saveApiSetValue($input: JQuery, value: any) {
+            $input.data(DATA_API_SET_VALUE, value);
+        }
+        
+        export function saveDefaultValue($input: JQuery, value: any) {
+            $input.data(DATA_DEFAULT_VALUE, value);
+        }
+        
+        export function on($input: JQuery) {
+            $input.attr('disabled', 'disabled').ntsError("clear");
+            return $input.data(DATA_DEFAULT_VALUE) !== undefined
+                ? $input.data(DATA_DEFAULT_VALUE)
+                : $input.data(DATA_API_SET_VALUE);
+        }
+        
+        export function off($input: JQuery) {
+            $input.removeAttr('disabled');
+        }
+    }
+    
+    module valueChanging {
+        
+        let DATA_CHANGED_BY_USER = "changed-by-user";
+        let DATA_CURRENT_VALUE = "current-value";
+        
+        export function markUserChange($input: JQuery) {
+            $input.data(DATA_CHANGED_BY_USER, true);
+        }
+        
+        export function unmarkUserChange($input: JQuery) {
+            $input.data(DATA_CHANGED_BY_USER, false);
+        }
+        
+        export function setNewValue($input: JQuery, value: any) {
+            $input.data(DATA_CURRENT_VALUE, value);
+        }
+        
+        export function isChangingValueByApi($input: JQuery, newValue: any) {
+            return !isUserChange($input) && isChangedValue($input, newValue);
+        }
+        
+        function isUserChange($input: JQuery) {
+            return $input.data(DATA_CHANGED_BY_USER) === true;
+        }
+        
+        function isChangedValue($input: JQuery, newValue: any) {
+            return $input.data(DATA_CURRENT_VALUE) !== newValue;
+        }
+    }
+    
 
     /**
      * BaseEditor Processor
@@ -30,12 +86,18 @@ module nts.uk.ui.koExtentions {
             setEnterHandlerIfRequired($input, data);
 
             $input.on(valueUpdate, (e) => {
+                
                 var newText = $input.val();
                 let validator = this.getValidator(data);
                 var result = validator.validate(newText);
                 if (result.isValid) {
                     $input.ntsError('clear');
+                    
+                    valueChanging.markUserChange($input);
                     value(result.parsedValue);
+                    
+                    // why is valueHasMutated needed?? (kitahira)
+                    valueChanging.markUserChange($input);
                     value.valueHasMutated();
                 } else {
                     let error = $input.ntsError('getError');
@@ -43,6 +105,8 @@ module nts.uk.ui.koExtentions {
                         $input.ntsError('clear');
                         $input.ntsError('set', result.errorMessage, result.errorCode, false);
                     }
+                    
+                    valueChanging.markUserChange($input);
                     value(newText);
                 }
             });
@@ -64,6 +128,8 @@ module nts.uk.ui.koExtentions {
                             $input.ntsError('clearKibanError');
                             $input.ntsError('set', result.errorMessage, result.errorCode, false);
                         }
+                        
+                        valueChanging.markUserChange($input);
                         value(newText);
                     }
                 }
@@ -79,14 +145,12 @@ module nts.uk.ui.koExtentions {
                 }
             }));
                
-            new nts.uk.util.value.DefaultValue().onReset($input, data.value);
-            
             let tabIndex = $input.attr("tabindex");
             $input.data("tabindex", tabIndex);
         }
 
         update($input: JQuery, data: any) {
-            var value: (val?: any) => string = data.value;
+            var value = ko.unwrap(data.value);
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
@@ -95,12 +159,21 @@ module nts.uk.ui.koExtentions {
             var placeholder: string = this.editorOption.placeholder;
             var textalign: string = this.editorOption.textalign;
             var width: string = this.editorOption.width;
+            
+            disable.saveDefaultValue($input, option.defaultValue);
+            
+            if (valueChanging.isChangingValueByApi($input, value)) {
+                disable.saveApiSetValue($input, value);
+            }
+            valueChanging.setNewValue($input, value);
+            valueChanging.unmarkUserChange($input);
+            
             // Properties
             if (enable !== false) {
-               $input.removeAttr('disabled');
+                disable.off($input);
             } else {
-               $input.attr('disabled', 'disabled');
-               new nts.uk.util.value.DefaultValue().applyReset($input, value);
+                value = disable.on($input);
+                data.value(value);
             }
             if (readonly === false) {
                 $input.removeAttr('readonly'); 
@@ -118,7 +191,7 @@ module nts.uk.ui.koExtentions {
             if (width.trim() != "")
                 $input.width(width);
             // Format value
-            var formatted = $input.ntsError('hasError') ? value() : this.getFormatter(data).format(value());
+            var formatted = $input.ntsError('hasError') ? value : this.getFormatter(data).format(value);
             $input.val(formatted);
 //            $input.trigger("validate");
         }
@@ -206,10 +279,12 @@ module nts.uk.ui.koExtentions {
                         if (value() === result.parsedValue) {
                             $input.val(result.parsedValue);
                         } else {
+                            valueChanging.markUserChange($input);
                             value(result.parsedValue);
                         }
                     } else {
                         $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                        valueChanging.markUserChange($input);
                         value(newText);
                     } 
                 }
@@ -236,7 +311,9 @@ module nts.uk.ui.koExtentions {
             var textmode: string = this.editorOption.textmode;
             $input.attr('type', textmode);
             
+            // このif文は何のため？ ユーザが入力操作をしたときしかtrueにならないか？
             if (!$input.ntsError('hasError') && data.value() !== $input.val()) { 
+                valueChanging.markUserChange($input);
                 data.value($input.val());
             }
         }

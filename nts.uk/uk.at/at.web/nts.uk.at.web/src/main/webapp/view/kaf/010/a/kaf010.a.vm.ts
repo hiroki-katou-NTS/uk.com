@@ -23,6 +23,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         goSelected1 : KnockoutObservable<number> = ko.observable(0);
         backSelected2 : KnockoutObservable<number> = ko.observable(0);
         goSelected2 : KnockoutObservable<number> = ko.observable(0);
+        goSelected1Value: KnockoutObservable<string> = ko.observable("");
+        backSelected1Value: KnockoutObservable<string> = ko.observable("");
         workState: KnockoutObservable<boolean> = ko.observable(true);
         typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
         // 申請日付
@@ -639,9 +641,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             let overtimeDto = data;
             self.displayCaculationTime(overtimeDto.displayCaculationTime);
             self.restTimeDisFlg(self.restTimeDisFlg());
-            if (overtimeDto.siftType != null) {
-                self.siftCD(overtimeDto.siftType.siftCode);
-                self.siftName(overtimeDto.siftType.siftName);
+            if (overtimeDto.workTime != null) {
+                self.siftCD(overtimeDto.workTime.siftCode);
+                self.siftName(overtimeDto.workTime.siftName);
             }
             if (overtimeDto.workType != null) {
                 self.workTypeCd(overtimeDto.workType.workTypeCode);
@@ -653,8 +655,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             self.timeEnd2(data.workClockEnd2);
            
             
-            self.instructInforFlag(overtimeDto.displayOvertimeInstructInforFlg);
-            self.instructInfor(overtimeDto.overtimeInstructInformation);
+            self.instructInforFlag(data.displayHolidayInstructInforFlg);
+            self.instructInfor(data.holidayInstructInformation);
             // preAppOvertime
             //self.convertpreAppOvertimeDto(overtimeDto);
             self.referencePanelFlg(data.referencePanelFlg);

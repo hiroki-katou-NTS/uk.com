@@ -54,6 +54,9 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 	final static String ZEZO_TIME = "00:00";
 	final static String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm";
 	final static String SPACE = " ";
+	final static String MESSAGE = "の休出指示はありません。";
+	final static String ZEZO = "0";
+	final static String COLON = ":";
 	@Inject
 	private HolidayInstructRepository holidayInstructRepository;
 	@Inject
@@ -83,7 +86,7 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 		HolidayWorkInstruction holidayInstructInformation = new HolidayWorkInstruction();
 		if (appCommonSettingOutput != null) {
 			if(appCommonSettingOutput.approvalFunctionSetting != null){
-				int useAtr = appCommonSettingOutput.approvalFunctionSetting.getInstructionUseSetting().getInstructionAtr().value;
+				int useAtr = appCommonSettingOutput.approvalFunctionSetting.getInstructionUseSetting().getInstructionUseDivision().value;
 				if (useAtr == UseAtr.USE.value && appCommonSettingOutput.approvalFunctionSetting.getInstructionUseSetting().getInstructionAtr().value == InstructionCategory.HOLIDAYWORK.value) {
 					if (appDate != null) {
 						holidayInstructInformation.setDisplayHolidayWorkInstructInforFlg(true);
@@ -104,7 +107,7 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 											+ employeeAdapter.getEmployeeName(overtimeInstruct.getInstructor()) + ")");
 						} else {
 							holidayInstructInformation.setHolidayWorkInstructInfomation(
-									GeneralDate.fromString(appDate, DATE_FORMAT) + "の残業指示はありません。");
+									GeneralDate.fromString(appDate, DATE_FORMAT) + MESSAGE);
 						}
 					}
 				} else {
@@ -125,7 +128,7 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 			int hour = minute / 60;
 			int hourInDay = hour % 24;
 			int minutes = minute % 60;
-			hourminute = (hourInDay < 10 ? ("0" + hourInDay) : hourInDay) + ":" + (minutes < 10 ? ("0" + minutes) : minutes);
+			hourminute = (hourInDay < 10 ? (ZEZO + hourInDay) : hourInDay) + COLON + (minutes < 10 ? (ZEZO + minutes) : minutes);
 		}
 		return hourminute;
 	}

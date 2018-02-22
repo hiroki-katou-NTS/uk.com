@@ -1,5 +1,6 @@
 module cmm045.shr {
     export module vmbase {
+        import getText = nts.uk.resource.getText;
         export class ApplicationDisplayAtr{
             code: number;
             name: string;
@@ -84,6 +85,8 @@ module cmm045.shr {
         //data fill grid list mode application
         export class DataModeApp{
             appId: string;
+            appType: number;
+            check: boolean;
             details: string;
             applicant: string;
             appName: string;
@@ -93,11 +96,13 @@ module cmm045.shr {
             inputDate: string;
             appStatus: string;
             displayAppStatus: string;
-            constructor(appId: string, details: string, applicant: string,
+            constructor(appId: string,appType: number,  details: string, applicant: string,
                 appName: string, appAtr: string, appDate: string,
                 appContent: string, inputDate: string, appStatus: string,
                 displayAppStatus: string){
                 this.appId = appId;
+                this.appType = appType;
+                this.check = appType == 0 ? true : false;
                 this.details = details;
                 this.applicant = applicant;
                 this.appName = appName;
@@ -166,7 +171,7 @@ module cmm045.shr {
                 reversionReason: string, applicationDate: string, applicationReason: string, applicationType: number,
                 applicantSID: string, reflectPlanScheReason: number, reflectPlanTime: string, reflectPlanState: number,
                 reflectPlanEnforce: number, reflectPerScheReason: number, reflectPerTime: string, reflectPerState: number,
-                reflectPerEnforce: string, startDate: string, endDate: string)
+                reflectPerEnforce: number, startDate: string, endDate: string)
             {
                 this.applicationID = applicationID;
                 this.prePostAtr = prePostAtr; 
@@ -192,13 +197,13 @@ module cmm045.shr {
         export class AppOverTimeInfoFull{
             appID: string;
             /**勤務時間From1*/
-            workClockFrom1: number;
+            workClockFrom1: string;
             /**勤務時間To1*/
-            workClockTo1: number;
+            workClockTo1: string;
             /**勤務時間From2*/
-            workClockFrom2: number;
+            workClockFrom2: string;
             /**勤務時間To2*/
-            workClockTo2: number;
+            workClockTo2: string;
             /**残業時間合計 - wait loivt*/
             total: number;
             lstFrame: Array<OverTimeFrame>;
@@ -206,8 +211,8 @@ module cmm045.shr {
             overTimeShiftNight: number;
             /**フレックス超過時間*/
             flexExessTime: number;
-            constructor(appID: string, workClockFrom1: number, workClockTo1: number, workClockFrom2: number,
-                workClockTo2: number, total: number, lstFrame: Array<OverTimeFrame>,
+            constructor(appID: string, workClockFrom1: string, workClockTo1: string, workClockFrom2: string,
+                workClockTo2: string, total: number, lstFrame: Array<OverTimeFrame>,
                 overTimeShiftNight: number, flexExessTime: number)
             {
                 this.appID = appID;
@@ -248,22 +253,22 @@ module cmm045.shr {
             /**勤務直行1*/
             goWorkAtr1: number;
             /**勤務時間開始1*/
-            workTimeStart1: number;
+            workTimeStart1: string;
             /**勤務直帰1*/
             backHomeAtr1: number;
             /**勤務時間終了1*/
-            workTimeEnd1: number;
+            workTimeEnd1: string;
             /**勤務直行2*/
             goWorkAtr2: number;
             /**勤務時間開始2*/
-            workTimeStart2: number;
+            workTimeStart2: string;
             /**勤務直帰2*/
             backHomeAtr2: number;
             /**勤務時間終了2*/
-            workTimeEnd2: number;
-            constructor(appID: string, goWorkAtr1: number, workTimeStart1: number, backHomeAtr1: number,
-                workTimeEnd1: number, goWorkAtr2: number, workTimeStart2: number,
-                backHomeAtr2: number, workTimeEnd2: number)
+            workTimeEnd2: string;
+            constructor(appID: string, goWorkAtr1: number, workTimeStart1: string, backHomeAtr1: number,
+                workTimeEnd1: string, goWorkAtr2: number, workTimeStart2: string,
+                backHomeAtr2: number, workTimeEnd2: string)
             {
                 this.appID = appID;
                 this.goWorkAtr1 = goWorkAtr1;
@@ -308,4 +313,33 @@ module cmm045.shr {
                 this.warningDateDisAtr = warningDateDisAtr;
                 this.appReasonDisAtr = appReasonDisAtr;
             }
+        }
+        export class ApplicationStatus {
+            unApprovalNumber: string;
+            approvalNumber: string;
+            approvalAgentNumber: string;
+            cancelNumber: string;
+            remandNumner: string;
+            denialNumber: string;
+            constructor(unApprovalNumber: number, approvalNumber: number,
+                approvalAgentNumber: number, cancelNumber: number,
+                remandNumner: number,denialNumber: number)
+            {
+                this.unApprovalNumber = getText('CMM045_12') + ' ' + unApprovalNumber + getText('CMM045_18');
+                this.approvalNumber = getText('CMM045_13') + ' ' + approvalNumber + getText('CMM045_18');
+                this.approvalAgentNumber = getText('CMM045_14') + ' ' + approvalAgentNumber + getText('CMM045_18');
+                this.cancelNumber = getText('CMM045_15') + ' ' + cancelNumber + getText('CMM045_18');
+                this.remandNumner = getText('CMM045_16') + ' ' + remandNumner + getText('CMM045_18');
+                this.denialNumber = getText('CMM045_17') + ' ' + denialNumber + getText('CMM045_18');        
+            }
+        }
+        export class ChoseApplicationList{
+            appId: number;
+            appName: string;
+            constructor(appId: number, appName: string){
+                this.appId = appId;
+                this.appName = appName;
+            }    
+        }
+    }
 }

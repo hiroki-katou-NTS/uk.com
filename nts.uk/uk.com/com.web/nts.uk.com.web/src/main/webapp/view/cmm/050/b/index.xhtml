@@ -17,7 +17,7 @@
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
-			
+
 			<com:stylefile path="cmm050.b.main.css" />
 			<com:scriptfile path="cmm050.b.service.js" />
 			<com:scriptfile path="cmm050.b.start.js" />
@@ -26,9 +26,12 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-			 	<p style="margin: 10px 0 10px 45px" data-bind="text: getLabelPreview().first"></p>
-			 	<p style="margin: 10px 0 10px 45px" data-bind="text: getLabelPreview().second"></p>
-			 	<p style="margin: 10px 0 20px 45px" data-bind="text: getLabelPreview().third"></p>
+				<p style="margin: 10px 0 10px 45px"
+					data-bind="text: getLabelPreview().first"></p>
+				<p style="margin: 10px 0 10px 45px"
+					data-bind="text: getLabelPreview().second"></p>
+				<p style="margin: 10px 0 20px 45px"
+					data-bind="text: getLabelPreview().third"></p>
 				<div class="form-input">
 					<div class="label_style">
 						<div
@@ -37,14 +40,13 @@
 								required: true }">#{i18n.getText('CMM050_27')}</div>
 					</div>
 					<div class="input">
-						<input id="email1"
-							tabindex="1"
+						<input id="email1" tabindex="1"
 							data-bind="ntsTextEditor: {
 								name: '#[CMM050_27]',
 								value: emailFrom,
 								option: emailAuthOption,
                                 constraint: 'EmailAuthentication'}" />
-                    </div>
+					</div>
 				</div>
 				<div class="form-input">
 					<div class="label_style">
@@ -54,9 +56,8 @@
 								required: true }">#{i18n.getText('CMM050_28')}</div>
 					</div>
 					<div class="input">
-						
-						<input id="email2"
-							tabindex="2"
+
+						<input id="email2" tabindex="2"
 							data-bind="ntsTextEditor: {
 								name: '#[CMM050_28]',
 								value: emailTo,
@@ -67,7 +68,9 @@
 			</div>
 			<div id="ruled-line" style="border: 1px solid;"></div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click: testSendMail, enable: testButtonEnable" tabindex="3">#{i18n.getText('CMM050_29')}</button>
+				<button class="proceed x-large"
+					data-bind="click: testSendMail, enable: testButtonEnable"
+					tabindex="3">#{i18n.getText('CMM050_29')}</button>
 				<button data-bind="click: closeDialog" tabindex="4">#{i18n.getText('CMM050_30')}</button>
 			</div>
 		</ui:define>

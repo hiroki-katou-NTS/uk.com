@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.breakorgoout.enums;
 
 import lombok.AllArgsConstructor;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 
 /**
  * 
@@ -69,5 +70,25 @@ public enum GoingOutReason {
 	 */
 	public boolean isUnion() {
 		return UNION.equals(this);
+	}
+	
+	/**
+	 * 条件と外出理由が一致しているかを判定
+	 * @param atr　条件
+	 * @return　一致している
+	 */
+	public boolean equalReason(ConditionAtr atr) {
+		switch(atr) {
+		case PrivateGoOut:
+			return PRIVATE.equals(this);
+		case PublicGoOut:
+			return PUBLIC.equals(this);
+		case UnionGoOut:
+			return UNION.equals(this);
+		case CompesationGoOut:
+			return COMPENSATION.equals(this);
+		default:
+			return false;
+		}
 	}
 }

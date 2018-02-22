@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheet;
 
 /**
  * 
@@ -46,6 +48,14 @@ public class BreakTimeOfDailyPerformance extends AggregateRoot {
 		
 		return this.breakTimeSheets.stream()
 				.collect(Collectors.summingInt(b -> b.calculateMinutesDuplicatedWith(baseTimeSheet)));
+	}
+	
+	/**
+	 * 休憩時間帯を全て控除項目の時間帯に変換する(パラメータ固定)
+	 * @return
+	 */
+	public List<TimeSheetOfDeductionItem> changeAllTimeSheetToDeductionItem(){
+		return this.breakTimeSheets.stream().map(tc -> tc.toTimeSheetOfDeductionItem()).collect(Collectors.toList());
 	}
 
 }

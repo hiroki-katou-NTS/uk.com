@@ -26,6 +26,8 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWork
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
@@ -45,7 +47,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	
 	private boolean TreatAsTimeSpentAtWork;
 	
-	private BreakFrameNo HolidayWorkTimeSheetNo; 
+	private EmTimezoneNo HolidayWorkTimeSheetNo; 
 	
 	private Finally<StaturoryAtrOfHolidayWork> statutoryAtr;
 	
@@ -61,11 +63,12 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * @param holidayWorkTimeSheetNo
 	 */
 	public HolidayWorkFrameTimeSheetForCalc(TimeZoneRounding timeSheet, TimeSpanForCalc calcrange,
+			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimesheet> bonusPayTimeSheet,
 			List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet, Optional<MidNightTimeSheet> midNighttimeSheet,
-			HolidayWorkFrameTime frameTime, boolean treatAsTimeSpentAtWork, BreakFrameNo holidayWorkTimeSheetNo,
+			HolidayWorkFrameTime frameTime, boolean treatAsTimeSpentAtWork, EmTimezoneNo holidayWorkTimeSheetNo,
 			Finally<StaturoryAtrOfHolidayWork> statutoryAtr) {
-		super(timeSheet, calcrange, deductionTimeSheets, bonusPayTimeSheet, specifiedBonusPayTimeSheet,
+		super(timeSheet, calcrange, recorddeductionTimeSheets, deductionTimeSheets, bonusPayTimeSheet, specifiedBonusPayTimeSheet,
 				midNighttimeSheet);
 		this.frameTime = frameTime;
 		TreatAsTimeSpentAtWork = treatAsTimeSpentAtWork;
@@ -118,13 +121,14 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 													Collections.emptyList(),
 													Collections.emptyList(),
 													Collections.emptyList(),
+													Collections.emptyList(),
 													Optional.empty(),
 													new HolidayWorkFrameTime(new HolidayWorkFrameNo(breakFrameNo.v().intValue()),
 										  					Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
 										  					Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
 										  					Finally.of(new AttendanceTime(0))),
 													false,
-													breakFrameNo,
+													new EmTimezoneNo(holidayWorkFrameTimeSheet.getWorkTimeNo()),
 													Finally.of(StaturoryAtrOfHolidayWork.deicisionAtrByHolidayAtr(today.getWorkTypeSetList().get(0).getHolidayAtr())));
 	}
 	/**
@@ -167,6 +171,23 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 			//calcTime = new AttendanceTime(0);
 		}
 		return calcTime;
+	}
+	
+	/**
+	 *　指定条件の控除項目だけの控除時間
+	 * @param forcsList
+	 * @param atr
+	 * @return
+	 */
+	public AttendanceTime forcs(List<TimeSheetOfDeductionItem> forcsList,ConditionAtr atr,DeductionAtr dedAtr){
+		AttendanceTime dedTotalTime = new AttendanceTime(0);
+		val loopList = (dedAtr.isAppropriate())?this.getRecordedTimeSheet():this.deductionTimeSheet;
+		for(TimeSheetOfDeductionItem deduTimeSheet: loopList) {
+			if(deduTimeSheet.checkIncludeCalculation(atr)) {
+				dedTotalTime.addMinutes(deduTimeSheet.calcTotalTime().valueAsMinutes());
+			}
+		}
+		return dedTotalTime;
 	}
 	
 	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊

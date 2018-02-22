@@ -7,13 +7,6 @@ package nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex;
 public interface AggrSettingMonthlyOfFlxForCmpRepository {
 	
 	/**
-	 * 追加
-	 * @param companyId 会社ID
-	 * @param aggrSettingMonthlyOfFlx フレックス時間勤務の月の集計設定
-	 */
-	void insert(String companyId, AggrSettingMonthlyOfFlx aggrSettingMonthlyOfFlx);
-	
-	/**
 	 * 更新
 	 * @param companyId 会社ID
 	 * @param aggrSettingMonthlyOfFlx フレックス時間勤務の月の集計設定

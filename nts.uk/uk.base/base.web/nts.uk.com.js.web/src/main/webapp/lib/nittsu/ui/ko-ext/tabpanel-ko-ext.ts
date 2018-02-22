@@ -41,6 +41,13 @@ module nts.uk.ui.koExtentions {
 //                data.active.valueHasMutated();
             });
             
+            container.bind("change-tab", function(e, newTabId) {
+                data.active(newTabId);
+                
+                // nested tabの場合にpropagationすると困る。tabIdは別なので。
+                e.stopPropagation();
+            });
+            
             container.tabs({
                 create: function(event: Event, ui: any) {
                     container.find('.ui-tabs-panel').addClass('disappear');

@@ -169,17 +169,6 @@ public class UserInfoFinder {
 				}
 			});
 
-			// listUserMap.forEach(w -> {
-			// Optional<OtherSysAccount> opOtherSysAcc =
-			// otherSysAccountRepository.findByUserId(w.getUserId());
-			// if(opOtherSysAcc.isPresent() &&
-			// opOtherSysAcc.get().getUseAtr().value == UseAtr.Use.value ){
-			// w.setIsSetting(true);
-			// }else if(!opOtherSysAcc.isPresent() ||
-			// opOtherSysAcc.get().getUseAtr().value == UseAtr.NotUse.value){
-			// w.setIsSetting(false);
-			// }
-			// });
 
 		} else {
 
@@ -188,8 +177,6 @@ public class UserInfoFinder {
 			List<WindowAccount> listWindowAccount = windowAccountRepository.findByListUserId(listUserID);
 
 			listUserMap.forEach(w -> {
-				// List<WindowAccount> winAcc =
-				// this.windowAccountRepository.findByUserId(w.getUserId());
 				List<WindowAccount> winAcc = listWindowAccount.stream()
 						.filter(w2 -> w2.getUserId().equals(w.getUserId())).collect(Collectors.toList());
 

@@ -90,7 +90,7 @@ module ccg030.a.viewmodel {
                             });
                         });
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage({ messageId: "Msg_3" }));
+                        nts.uk.ui.dialog.alertError(res);
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });
@@ -101,6 +101,8 @@ module ccg030.a.viewmodel {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                             self.focusToInput();
                         });
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alertError(res);
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });

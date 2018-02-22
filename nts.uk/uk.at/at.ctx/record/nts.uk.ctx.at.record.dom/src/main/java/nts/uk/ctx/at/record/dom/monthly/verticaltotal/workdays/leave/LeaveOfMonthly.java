@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
+import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 
 /**
  * 月別実績の休業
@@ -17,7 +18,7 @@ import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
 public class LeaveOfMonthly {
 
 	/** 固定休業日数 */
-	private Map<Integer, AggregateLeaveDays> fixLeaveDays;
+	private Map<CloseAtr, AggregateLeaveDays> fixLeaveDays;
 	/** 任意休業日数 */
 	private Map<Integer, AnyLeave> anyLeaveDays;
 	
@@ -42,15 +43,13 @@ public class LeaveOfMonthly {
 		
 		val domain = new LeaveOfMonthly();
 		for (val fixLeaveDays : fixLeaveDaysList){
-			val leaveAtr = Integer.valueOf(fixLeaveDays.getLeaveAtr());
-			if (domain.fixLeaveDays.containsKey(leaveAtr)) continue;
-			domain.fixLeaveDays.put(leaveAtr, AggregateLeaveDays.of(
+			val leaveAtr = fixLeaveDays.getLeaveAtr();
+			domain.fixLeaveDays.putIfAbsent(leaveAtr, AggregateLeaveDays.of(
 					leaveAtr, new AttendanceDaysMonth(fixLeaveDays.getDays().v())));
 		}
 		for (val anyLeaveDays : anyLeaveDaysList){
 			val anyLeaveNo = Integer.valueOf(anyLeaveDays.getAnyLeaveNo());
-			if (domain.anyLeaveDays.containsKey(anyLeaveNo)) continue;
-			domain.anyLeaveDays.put(anyLeaveNo, AnyLeave.of(
+			domain.anyLeaveDays.putIfAbsent(anyLeaveNo, AnyLeave.of(
 					anyLeaveNo, new AttendanceDaysMonth(anyLeaveDays.getDays().v())));
 		}
 		return domain;
@@ -64,9 +63,9 @@ public class LeaveOfMonthly {
 
 		if (workTypeDaysCountTable == null) return;
 		
-		//*****（未）　仮に、固定休業区分1に加算する。固定休業・任意休業の振り分けが必要。
-		if (!this.fixLeaveDays.containsKey(1)) this.fixLeaveDays.put(1, new AggregateLeaveDays(1));
-		val targetDays = this.fixLeaveDays.get(1);
+		//*****（未）　仮に、固定の休業区分＝産前休業に加算する。固定休業・任意休業の振り分けが必要。
+		this.fixLeaveDays.putIfAbsent(CloseAtr.PRENATAL, new AggregateLeaveDays(CloseAtr.PRENATAL));
+		val targetDays = this.fixLeaveDays.get(CloseAtr.PRENATAL);
 		targetDays.addDays(workTypeDaysCountTable.getLeaveDays().v());
 	}
 }

@@ -1,9 +1,10 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime;
 
-import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -59,22 +60,22 @@ public class VacationUseTimeOfMonthly {
 	/**
 	 * 休暇使用時間を確認する
 	 * @param datePeriod 期間
-	 * @param attendanceTimeOfDailys リスト：日別実績の勤怠時間
+	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 */
 	public void confirm(DatePeriod datePeriod,
-			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap){
 		
 		// 年休使用時間を確認する
-		this.annualLeave.confirm(datePeriod, attendanceTimeOfDailys);
+		this.annualLeave.confirm(datePeriod, attendanceTimeOfDailyMap);
 
 		// 積立年休使用時間を確認する
-		this.retentionYearly.confirm(datePeriod, attendanceTimeOfDailys);
+		this.retentionYearly.confirm(datePeriod, attendanceTimeOfDailyMap);
 
 		// 特別休暇使用時間を確認する
-		this.specialHoliday.confirm(datePeriod, attendanceTimeOfDailys);
+		this.specialHoliday.confirm(datePeriod, attendanceTimeOfDailyMap);
 
 		// 代休使用時間を確認する
-		this.compensatoryLeave.confirm(datePeriod, attendanceTimeOfDailys);
+		this.compensatoryLeave.confirm(datePeriod, attendanceTimeOfDailyMap);
 	}
 	
 	/**
