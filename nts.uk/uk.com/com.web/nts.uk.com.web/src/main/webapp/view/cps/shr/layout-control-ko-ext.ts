@@ -743,7 +743,6 @@ module nts.custombinding {
                                     constraint: nameid,
                                     required: required,
                                     option: {
-                                        grouplength: 3,
                                         textalign: 'left',
                                         decimallength: Number(item.decimalPart)
                                     },
@@ -1302,7 +1301,7 @@ module nts.custombinding {
                                         constraint.valueType = "Integer";
 
                                         constraint.min = 0;
-                                        constraint.max = Math.pow(10, dts.maxLength || 0) - 1;
+                                        constraint.max = Math.pow(10, dts.stringItemLength || 0) - 1;
                                         break;
                                     case ITEM_STRING_TYPE.KANA:
                                         constraint.charType = 'Kana';
