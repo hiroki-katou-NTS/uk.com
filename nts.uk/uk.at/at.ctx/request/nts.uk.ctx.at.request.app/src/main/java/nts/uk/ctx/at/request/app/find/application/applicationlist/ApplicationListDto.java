@@ -19,5 +19,5 @@ public class ApplicationListDto {
 	private List<AppGoBackInfoFull> lstAppGoBack;
 	//TH: approval (count)
 	private	ApplicationStatus appStatusCount;
-	private List<AppStatusApproval> lstStatusApproval;
+//	private List<AppStatusApproval> lstStatusApproval;
 }

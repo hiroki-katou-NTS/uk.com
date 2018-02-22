@@ -73,7 +73,21 @@ public class ApplicationListFinder {
 		for (ApplicationFullOutput app : lstFil) {
 			lstStatusApproval.add(new AppStatusApproval(app.getApplication().getAppID(), app.getStatus()));
 		}
+		if(param.getAppListAtr() == 1){//mode approval
+			for (ApplicationDto_New appDto : lstAppDto) {
+				appDto.setReflectPerState(this.findStatusAppv(lstStatusApproval, appDto.getApplicationID()));
+			}
+		}
 		return new ApplicationListDto(displaySet, lstApp.getLstMasterInfo(),lstAppDto,lstApp.getLstAppOt(),lstApp.getLstAppGoBack(),
-				lstApp.getAppStatusCount(), lstStatusApproval);
+				lstApp.getAppStatusCount());
+	}
+	
+	private Integer findStatusAppv(List<AppStatusApproval> lstStatusApproval, String appID){
+		for (AppStatusApproval appStatus : lstStatusApproval) {
+			if(appStatus.getAppId().equals(appID)){
+				return appStatus.getStatusApproval();
+			}
+		}
+		return null;
 	}
 }

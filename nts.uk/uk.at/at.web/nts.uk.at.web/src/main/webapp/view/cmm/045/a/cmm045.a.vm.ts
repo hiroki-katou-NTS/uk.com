@@ -13,7 +13,6 @@ module cmm045.a.viewmodel {
         dateValue: KnockoutObservable<any> = ko.observable({});
         itemApplication: KnockoutObservableArray<vmbase.ChoseApplicationList>;
         selectedCode: KnockoutObservable<number> = ko.observable(1);
-        lstStatusApproval: KnockoutObservableArray<any> = ko.observableArray([]);
         mode: KnockoutObservable<number> = ko.observable(1);
         constructor(){
             let self = this;
@@ -42,7 +41,6 @@ module cmm045.a.viewmodel {
                 });
                 service.getApplicationList(param).done(function(data){
                     console.log(data);
-                    self.lstStatusApproval(data.lstStatusApproval);
                     let lstApp: Array<vmbase.ApplicationDto_New> = [];
                     let lstMaster: Array<vmbase.AppMasterInfo> = []
                     let lstGoBack: Array<vmbase.AppGoBackInfoFull> = [];
@@ -81,14 +79,7 @@ module cmm045.a.viewmodel {
                         self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber, 
                             data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner, 
                             data.appStatusCount.denialNumber));
-//                    }else{
-//                        self.approvalCount(new vmbase.ApplicationStatus(0,0,0,0,0,0));
                     }
-                    
-                    
-                    
-                    
-                    
                     self.reloadGridApproval();
                     dfd.resolve();
                 });
@@ -208,11 +199,6 @@ module cmm045.a.viewmodel {
                 }
             });
         }
-        findStatusApproval(appId: string): any{
-            return _.find(this.lstStatusApproval(), function(item){
-                return item.appId = appId;
-            });
-        }
         /**
          * format data: over time before
          */
@@ -224,7 +210,7 @@ module cmm045.a.viewmodel {
             let appContent1111: string = getText('CMM045_268') + ' ' + overTime.workClockFrom1 + getText('CMM045_100')+ overTime.workClockTo1 + ' 残業合計' + '4:00' + reason;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                         masterInfo.dispName, app.prePostAtr == 0 ? '事前' : '事後', self.convertDate(app.applicationDate),appContent1111, self.convertDateTime(app.inputDate), 
-                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatus(self.findStatusApproval(app.applicationID)),'');
+                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatusAppv(app.reflectPerState),'');
             return a;
         }
         /**
@@ -232,7 +218,7 @@ module cmm045.a.viewmodel {
          * format data: over time after
          */
         fomartOverTimeAf(overtime: any){
-            
+             
         }
         
         formatGoBack(app: vmbase.ApplicationDto_New, goBack: vmbase.AppGoBackInfoFull, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp{
@@ -246,7 +232,7 @@ module cmm045.a.viewmodel {
             let appContent2222 = getText('CMM045_258') + go + back + reason;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                         masterInfo.dispName, app.prePostAtr == 0 ? '事前' : '事後', self.convertDate(app.applicationDate),appContent2222, self.convertDateTime(app.inputDate), 
-                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatus(self.findStatusApproval(app.applicationID)),'');
+                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatusAppv(app.reflectPerState),'');
             return a;
         }
         
@@ -303,6 +289,28 @@ module cmm045.a.viewmodel {
                     return '否認';
                 default: 
                     return '';
+            }
+        }
+    //UNAPPROVED:5
+    //APPROVED: 4
+    //CANCELED: 3
+    //REMAND: 2
+    //DENIAL: 1
+    //-: 0
+        convertStatusAppv(status: number):string{
+            switch(status){
+                case 1:  //DENIAL: 1
+                    return '否';
+                case 2: //REMAND: 2
+                    return '差戻';
+                case 3: //CANCELED: 3
+                    return '取消';
+                case 4: //APPROVED: 4
+                    return '承認済み';
+                case 5: //UNAPPROVED:5
+                    return '未';
+                default: //-: 0
+                    return '-';
             }
         }
         //yyyy/MM/dd
