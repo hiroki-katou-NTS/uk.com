@@ -100,7 +100,7 @@ module nts.uk.com.view.cps005.a {
                             });
                         } else {
 
-                            alertError({ messageId: res.message });
+                            alertError({ messageId: res.messageId });
                         }
                         block.clear();
                     });
@@ -141,7 +141,7 @@ module nts.uk.com.view.cps005.a {
                                 $("#category-name-control").focus();
                             });
                         } else {
-                            alertError({ messageId: res.message });
+                            alertError({ messageId: res.messageId });
                         }
                         block.clear();
                     });

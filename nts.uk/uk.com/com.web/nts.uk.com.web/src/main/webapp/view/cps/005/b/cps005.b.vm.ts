@@ -103,15 +103,15 @@ module nts.uk.com.view.cps005.b {
                         self.currentItemData().perInfoItemSelectCode.valueHasMutated();
                     }).fail(error => {
 
-                        if (error.message == 'Msg_928') {
+                        if (error.messageId == 'Msg_928') {
                             alertError({
-                                messageId: error.message,
+                                messageId: error.messageId,
                                 messageParams: ["項目"]
                             }).then(() => {
                                 $('#item-name-control').focus();
                             });
                         } else {
-                            alertError({ messageId: error.message }).then(() => {
+                            alertError({ messageId: error.messageId }).then(() => {
                             });
                         }
                         block.clear();
@@ -131,15 +131,15 @@ module nts.uk.com.view.cps005.b {
                         });
                         info({ messageId: "Msg_15" }).then(() => { block.clear(); });
                     }).fail(error => {
-                        if (error.message == 'Msg_928') {
+                        if (error.messageId == 'Msg_928') {
                             alertError({
-                                messageId: error.message,
+                                messageId: error.messageId,
                                 messageParams: ["項目"]
                             }).then(() => {
                                 $('#item-name-control').focus();
                             });
                         } else {
-                            alertError({ messageId: error.message });
+                            alertError({ messageId: error.messageId });
                         }
                         block.clear();
 
@@ -181,7 +181,7 @@ module nts.uk.com.view.cps005.b {
                         info({ messageId: "Msg_16" }).then(() => { block.clear(); });
 
                     }).fail(error => {
-                        alertError({ messageId: error.message });
+                        alertError({ messageId: error.messageId });
                         block.clear();
                     });
                 }).ifNo(() => {
