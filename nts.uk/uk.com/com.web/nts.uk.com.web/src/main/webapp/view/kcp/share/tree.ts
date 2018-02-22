@@ -316,7 +316,7 @@ module kcp.share.tree {
             let maxSizeNameCol = Math.max(self.getMaxSizeOfTextList(self.convertTreeToArray(dataList)), 250);
             
             // calculate height tree
-            self.calHeightTree(maxSizeNameCol);
+            self.calHeightTree(maxSizeNameCol, data);
             
             self.treeComponentColumn = [
                 { headerText: "", key: 'workplaceId', dataType: "string", hidden: true },
@@ -346,7 +346,7 @@ module kcp.share.tree {
         /**
          * calHeightTree
          */
-        private calHeightTree(widthColText: number) {
+        private calHeightTree(widthColText: number, data) {
             let self = this;
             let heightRow = 24, heightScrollX = 0;
             
@@ -358,7 +358,7 @@ module kcp.share.tree {
             // calculate height tree
             self.treeStyle.height = heightRow * (self.maxRows + 1) + heightScrollX;
             if (self.isFullView()) {
-                self.treeStyle.width = widthColText + 70 + 30;
+                self.treeStyle.width = widthColText + data.isShowAlreadySet ? 100 : 30;
 
                 // if width tree is small than 412 -> set to 412.
                 self.treeStyle.width = self.treeStyle.width < 412 ? 412 : self.treeStyle.width;

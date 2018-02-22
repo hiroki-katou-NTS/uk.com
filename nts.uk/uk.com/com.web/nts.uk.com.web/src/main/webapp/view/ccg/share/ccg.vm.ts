@@ -118,6 +118,7 @@ module nts.uk.com.view.ccg.share.ccg {
             // first time show
             isFirstTime = true;
             showApplyBtn: KnockoutComputed<boolean>;
+            isExpanded: KnockoutObservable<boolean>;
 
             /**
              * Init screen model
@@ -207,6 +208,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.showApplyBtn = ko.computed(() => {
                     return self.baseDate() && self.periodStartDate() && self.periodEndDate() ? true : false;
                 });
+                self.isExpanded = ko.observable(false);
             }
             
             /**
@@ -393,12 +395,17 @@ module nts.uk.com.view.ccg.share.ccg {
                 // set component properties
                 self.setProperties(data);
 
-                self.tabs(self.updateTabs());
-                self.selectedTab(self.updateSelectedTab());
-
                 // start component
                 nts.uk.ui.block.invisible(); // block ui
                 self.startComponent().done(() => {
+                    // set advanced search tab flag
+                    self.isAdvancedSearchTab = data.isAdvancedSearchTab &&
+                        (self.referenceRange != ConfigEnumReferenceRange.ONLY_MYSELF);
+
+                    // Initial tab panel
+                    self.tabs(self.updateTabs());
+                    self.selectedTab(self.updateSelectedTab());
+
                     // init view
                     let webserviceLocator = nts.uk.request.location.siteRoot
                         .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
@@ -486,7 +493,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.systemType = options.systemType;
                 // always show quick search if advanced search is hidden
                 self.isQuickSearchTab = options.isAdvancedSearchTab ? options.isQuickSearchTab : true;
-                self.isAdvancedSearchTab = options.isAdvancedSearchTab;
                 self.showBaseDate = options.showBaseDate;
                 self.showClosure = options.showClosure;
                 self.showAllClosure = options.showAllClosure;
@@ -833,17 +839,41 @@ module nts.uk.com.view.ccg.share.ccg {
             /**
              * function click by button detail work place (open dialog)
              */
-            
             detailWorkplace(): void {
-                var self = this;
-                nts.uk.ui.windows.setShared('baseDate', self.baseDate());
-                nts.uk.ui.windows.setShared('selectedCodeWorkplace', self.selectedCodeWorkplace());
-                
-                nts.uk.ui.windows.sub.modal('com','/view/ccg/share/dialog/index.xhtml').onClosed(function() {
-                    self.selectedCodeWorkplace(nts.uk.ui.windows.getShared('selectedCodeWorkplace'));
-                    self.reloadDataSearch();
+                let self = this;
+                let inputCDL008 = {
+                    baseDate: moment.utc(self.queryParam.baseDate, 'YYYY-MM-DD').toDate(),
+                    isMultiple: true,
+                    selectedCodes: self.selectedCodeWorkplace()
+                };
+                nts.uk.ui.windows.setShared('inputCDL008', inputCDL008);
+                nts.uk.ui.windows.sub.modal('com',"/view/cdl/008/a/index.xhtml").onClosed(() => {
+                    if (nts.uk.ui.windows.getShared('CDL008Cancel')) {
+                        return;
+                    }
+                    self.selectedCodeWorkplace(nts.uk.ui.windows.getShared('outputCDL008'));
+                    // reload KCP004
+                    self.workplaces.selectType = SelectType.SELECT_BY_SELECTED_CODE;
                     $('#workplaceList').ntsTreeComponent(self.workplaces);
                 });
+            }
+
+            /**
+             * Expand KCP004
+             */
+            public expand(): void {
+                let self = this;
+                $('#workplaceList').fullView();
+                _.defer(() => self.isExpanded(true));
+            }
+
+            /**
+             * Collapse KCP004
+             */
+            public collapse(): void {
+                let self = this;
+                $('#workplaceList').scrollView();
+                _.defer(() => self.isExpanded(false));
             }
 
             /**
@@ -1223,10 +1253,10 @@ module nts.uk.com.view.ccg.share.ccg {
                     self.workplaces = {
                         isShowAlreadySet: false,
                         systemType: self.systemType,
-                        isMultipleUse: false,
+                        isMultipleUse: true,
                         isMultiSelect: true,
                         treeType: TreeType.WORK_PLACE,
-                        selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                        selectType: SelectType.SELECT_ALL,
                         isShowSelectButton: true,
                         selectedWorkplaceId: self.selectedCodeWorkplace,
                         baseDate: ko.observable(self.baseDate().toDate()),

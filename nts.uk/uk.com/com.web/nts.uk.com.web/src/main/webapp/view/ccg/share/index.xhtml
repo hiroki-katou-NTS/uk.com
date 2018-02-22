@@ -204,6 +204,29 @@
 										</div>
 									</div>
 								</com:ko>
+								<com:ko tag="if" bind="showWorkplace">
+									<div tabindex="21" class="accordion" id="WorkplaceList"
+										data-bind="ntsAccordion: {enable: true}">
+										<h3>
+											<label>#{i18n.getText('CCG001_8', ["Com_Workplace"])}</label>
+										</h3>
+										<div class="contentkcpWorkplace">
+											<div tabindex="22" id="workplaceList"></div>
+											<button tabindex="23" id="btnDetailWorkplace"
+												data-bind="click: detailWorkplace">#{i18n.getText('CCG001_55')}</button>
+											<com:ko tag="ifnot" bind="isExpanded">
+												<button style="margin-left: 130px" tabindex="24" data-bind="click: expand">
+													<i class="icon icon-28-expand"></i>#{i18n.getText('CCG001_56')}
+												</button>
+											</com:ko>
+											<com:ko tag="if" bind="isExpanded">
+												<button style="margin-left: 160px" tabindex="24" data-bind="click: collapse">
+													<i class="icon icon-29-collapse"></i>#{i18n.getText('CCG001_62')}
+												</button>
+											</com:ko>
+										</div>
+									</div>
+								</com:ko>
 								<com:ko tag="if" bind="showClassification">
 									<div tabindex="19" class="accordion" id="ClassificationList"
 										data-bind="ntsAccordion: {enable: true}">
@@ -223,19 +246,6 @@
 										</h3>
 										<div class="contentkcp">
 											<div tabindex="20" id="jobtitleList"></div>
-										</div>
-									</div>
-								</com:ko>
-								<com:ko tag="if" bind="showWorkplace">
-									<div tabindex="21" class="accordion" id="WorkplaceList"
-										data-bind="ntsAccordion: {enable: true}">
-										<h3>
-											<label>#{i18n.getText('CCG001_8', ["Com_Workplace"])}</label>
-										</h3>
-										<div class="contentkcpWorkplace">
-											<div tabindex="22" id="workplaceList"></div>
-											<button tabindex="23" id="btnDetailWorkplace"
-												data-bind="click: detailWorkplace">#{i18n.getText('CCG001_55')}</button>
 										</div>
 									</div>
 								</com:ko>
@@ -281,7 +291,7 @@
 									<div class="ccg001-cell mid">
 										<div tabindex="27" class="ccg-btn-vertical height-maximum" data-bind="click: extractSelectedEmployees">
 											<div class="ccg001-cell mid">
-												<i class="icon icon-01-searchmode"></i>
+												<i class="icon icon-47-white-check-mark"></i>
 												<div class="ccg-lbl-vertical ccg-lbl-extract-emp">#{i18n.getText('CCG001_26')}</div>
 											</div>
 										</div>
