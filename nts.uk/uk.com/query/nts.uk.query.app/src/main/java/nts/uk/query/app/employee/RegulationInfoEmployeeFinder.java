@@ -38,8 +38,12 @@ public class RegulationInfoEmployeeFinder {
 	 */
 	public List<RegulationInfoEmployeeDto> find(EmployeeSearchQueryDto queryDto) {
 		return this.repo.find(AppContexts.user().companyId(), queryDto.toQueryModel()).stream()
-				.map(model -> RegulationInfoEmployeeDto.builder().employeeCode(model.getEmployeeCode())
-						.employeeId(model.getEmployeeID()).employeeName(model.getName().orElse("")).build())
+				.map(model -> RegulationInfoEmployeeDto.builder()
+						.employeeCode(model.getEmployeeCode())
+						.employeeId(model.getEmployeeID())
+						.employeeName(model.getName().orElse(""))
+						.workplaceName(model.getWorkplaceName().orElse(""))
+						.build())
 				.collect(Collectors.toList());
 	}
 	

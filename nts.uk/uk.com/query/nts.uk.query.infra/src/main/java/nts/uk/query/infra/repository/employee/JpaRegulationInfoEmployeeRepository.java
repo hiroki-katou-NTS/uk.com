@@ -223,8 +223,9 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		return resultList.stream().map(entity -> RegulationInfoEmployee.builder()
 				.classificationCode(Optional.ofNullable(entity.getClassificationCode())).employeeCode(entity.getScd())
 				.employeeID(entity.getSid()).employmentCode(Optional.ofNullable(entity.getEmpCd()))
-				.hireDate(Optional.of(entity.getComStrDate())).jobTitleCode(Optional.ofNullable(entity.getJobCd()))
+				.hireDate(Optional.ofNullable(entity.getComStrDate())).jobTitleCode(Optional.ofNullable(entity.getJobCd()))
 				.name(Optional.ofNullable(entity.getBusinessName())).workplaceCode(Optional.ofNullable(entity.getWplCd()))
+				.workplaceName(Optional.ofNullable(entity.getWplName()))
 				.build()).collect(Collectors.toList());
 	}
 
