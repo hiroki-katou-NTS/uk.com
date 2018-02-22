@@ -5,6 +5,7 @@ import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -41,7 +42,7 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 	/** 休暇 */
 	//holiday
 	/** 時間外超過 */
-	//excessOutsideTime
+	private ExcessOutsideWorkOfMonthly excessOutsideWork;
 	/** 任意項目 */
 	//anyItem
 
@@ -65,6 +66,7 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 		this.monthlyCalculation = new MonthlyCalculation();
 		this.verticalTotal = new VerticalTotalOfMonthly();
 		this.aggregateDays = new AttendanceDaysMonth(0.0);
+		this.excessOutsideWork = new ExcessOutsideWorkOfMonthly();
 	}
 	
 	/**
@@ -100,14 +102,19 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 	 * 履歴ごとに月別実績を集計する
 	 * @param companyId 会社ID
 	 * @param workingSystem 労働制
-	 * @param isRetireMonth 退職月かどうか
+	 * @param isRetireMonth 退職月度かどうか
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void aggregate(String companyId, WorkingSystem workingSystem, boolean isRetireMonth,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
-		this.monthlyCalculation.aggregate(companyId, this.employeeId, this.yearMonth,
-				this.closureId, this.closureDate, this.datePeriod, workingSystem, isRetireMonth, repositories);
+		// 月の計算に必要な条件を確認する
+		this.monthlyCalculation.confirmProcessCondition(
+				companyId, this.employeeId, this.datePeriod, workingSystem, isRetireMonth, repositories);
+		
+		// 履歴ごとに月別実績を集計する
+		this.monthlyCalculation.aggregate(this.employeeId, this.yearMonth, this.closureId, this.closureDate,
+				this.datePeriod, workingSystem, repositories);
 	}
 	
 	/**

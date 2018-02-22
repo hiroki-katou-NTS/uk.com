@@ -1,12 +1,20 @@
 package nts.uk.ctx.at.record.dom.daily.breaktimegoout;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import lombok.Getter;
+import lombok.val;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
+import nts.uk.ctx.at.record.dom.daily.overtimework.enums.StatutoryAtr;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationDeductionTimeService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetRoundingAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
@@ -26,6 +34,9 @@ public class BreakTimeOfDaily {
 	private AttendanceTime workTime;
 	/** 補正後時間帯: 休憩時間帯 */
 	private List<BreakTimeSheet> breakTimeSheet;
+	
+	@Inject
+	private CalculationDeductionTimeService calculationDeductionTimeService; 
 	
 	
 	
@@ -58,14 +69,47 @@ public class BreakTimeOfDaily {
 	}
 	
 	/**
-	 * 日別実績の休憩時間
+	 * 全ての休憩時間を算出する指示クラス
 	 * @param oneDay 1日の計算範囲
 	 * @return 日別実績の休憩時間
 	 */
 	public static BreakTimeOfDaily calcTotalBreakTime(CalculationRangeOfOneDay oneDay) {
-		return new BreakTimeOfDaily(oneDay.getTemporaryDeductionTimeSheet().get().getTotalBreakTime(DeductionAtr.Deduction),
-									oneDay.getTemporaryDeductionTimeSheet().get().getTotalBreakTime(DeductionAtr.Appropriate));
+		//計上用計算時間
+		val recordCalcTime = calculationDedBreakTime(DeductionAtr.Appropriate,oneDay);
+		//控除用計算時間
+		val dedCalcTime = calculationDedBreakTime(DeductionAtr.Deduction,oneDay);
+		//休憩回数
+		BreakTimeGoOutTimes goOutTimes = new BreakTimeGoOutTimes(1);
+		//勤務間時間
+		AttendanceTime duringTime = new AttendanceTime(0);
+		//補正後時間帯
+		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
+		
+		return new BreakTimeOfDaily(recordCalcTime,dedCalcTime,goOutTimes,duringTime,breakTimeSheets);
 	}
+
+	/**
+	 *　合計時間算出
+	 * @param oneDay 
+	 * @return
+	 */
+	private static DeductionTotalTime calculationDedBreakTime(DeductionAtr dedAtr, CalculationRangeOfOneDay oneDay) {
+		return createDudAllTime(ConditionAtr.BREAK,dedAtr,TimeSheetRoundingAtr.PerTimeSheet,oneDay);
+	}
+	
+	private static DeductionTotalTime createDudAllTime(ConditionAtr conditionAtr, DeductionAtr dedAtr,
+			TimeSheetRoundingAtr pertimesheet, CalculationRangeOfOneDay oneDay) {
+		val withinDedTime = oneDay.calcWithinTotalTime(conditionAtr,dedAtr,StatutoryAtr.Statutory,pertimesheet);
+		val excessDedTime = oneDay.calcWithinTotalTime(conditionAtr,dedAtr,StatutoryAtr.Excess,pertimesheet);
+		return DeductionTotalTime.of(withinDedTime.addMinutes(excessDedTime.getTime(), excessDedTime.getCalcTime()),
+									  withinDedTime,
+									  excessDedTime);
+	}
+
+
+	
+	
+	
 
 
 	

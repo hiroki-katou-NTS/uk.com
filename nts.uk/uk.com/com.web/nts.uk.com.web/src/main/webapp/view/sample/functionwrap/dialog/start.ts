@@ -4,19 +4,43 @@ __viewContext.ready(function() {
         constructor() {
             var self = this;
         }
-
-        Alert() {
-            nts.uk.ui.dialog.alert({ messageId: "Msg_3" });
+        
+        info() {
+            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
         }
-
-        AlertInfor() {
-            nts.uk.ui.dialog.info({ messageId: "Msg_3" });
+        
+        caution() {
+            nts.uk.ui.dialog.caution({ messageId: "Msg_983" }).then(() => {
+                alert("OK");
+            });
         }
-        AlertError() {
-            nts.uk.ui.dialog.alertError({messageId: "Msg_175", messageParams: ["1", "2"]})
+        
+        error() {
+            nts.uk.ui.dialog.error({ messageId: "Msg_59", messageParams: ["X", "Y"] });
         }
-        Confirm() {
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_3" });
+        
+        confirmDanger() {
+            nts.uk.ui.dialog.confirmDanger({ messageId: "Msg_386", messageParams: ["ABC"] }).ifYes(() => {
+                alert("YES!");
+            });
+        }
+        
+        confirmProceed() {
+            nts.uk.ui.dialog.confirmProceed({ messageId: "Msg_749" }).ifYes(() => {
+                alert("YES!");
+            }).ifNo(() => {
+                alert("NO!");
+            });
+        }
+        
+        confirmFull() {
+            nts.uk.ui.dialog.confirm("Use all confirm handlers").ifYes(() => {
+                alert("YES!");
+            }).ifNo(() => {
+                alert("NO!");
+            }).then(() => {
+                alert("You choiced anything");
+            });
         }
     }
 

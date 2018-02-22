@@ -2,6 +2,7 @@
 
 interface JQuery {
     ntsTreeView(action: string, param?: any): any;
+    ntsTreeDrag(action: string, param?: any): any;
 }
 
 module nts.uk.ui.jqueryExtentions {
@@ -95,7 +96,7 @@ module nts.uk.ui.jqueryExtentions {
                 });  
                 return values;
             } else {
-                let value = $tree.igTree("selectedNode");
+                let value: any = $tree.igTree("selectedNode");
                 value["id"] = value.data[value.binding.valueKey]; 
                 return value;      
             }

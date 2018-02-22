@@ -27,27 +27,23 @@
 				<div id="side-menu" class="cf"></div>
 				<div id="content" class="cf">
 					<h1>Function Panel</h1>
-					<div
-						data-bind="ntsFunctionPanel: {width: 200, headerText: 'test super', dataSource: functionItems}"></div>
-					<br />
+					<div data-bind="ntsFunctionPanel: {width: 200, headerText: 'test super', dataSource: functionItems}"></div>
+					<br/>
 					<button data-bind="click: remove">Remove Item</button>
 					<div>
-						<article class="cf">
-							<div class="tabs">
-								<ol>
-									<li><a href="#tabs-html">HTML Binding</a></li>
-									<li><a href="#tabs-viewmodel">ViewModel</a></li>
-								</ol>
-								<div id="tabs-html" class="cf">
-									<h2>HTML</h2>
-									<pre>
-										<![CDATA[<div data-bind="ntsFunctionPanel: {width: 200, headerText: 'test super', dataSource: functionItems}"></div>]]>
-									</pre>
-								</div>
-								<div id="tabs-viewmodel" class="cf">
-									<h2>TypeScript</h2>
-									<pre>
-										<![CDATA[
+					<article class="cf">
+								<div class="tabs">
+									<ol>
+										<li><a href="#tabs-html">HTML Binding</a></li>
+										<li><a href="#tabs-viewmodel">ViewModel</a></li>
+									</ol>
+									<div id="tabs-html" class="cf">
+										<h2>HTML</h2>
+	<pre><![CDATA[<div data-bind="ntsFunctionPanel: {width: 200, headerText: 'test super', dataSource: functionItems}"></div>]]></pre>
+									</div>
+									<div id="tabs-viewmodel" class="cf">
+										<h2>TypeScript</h2>
+	<pre><![CDATA[
 	class ScreenModel {
         functionItems: KnockoutObservableArray<any>;
         
@@ -68,11 +64,10 @@
             this.functionItems.shift();            
         }
     }
-	]]>
-									</pre>
+	]]></pre>
+									</div>
 								</div>
-							</div>
-						</article>
+							</article>
 					</div>
 					<div>
 						<h2>API</h2>
@@ -89,7 +84,7 @@
 							<tbody>
 								<tr>
 									<td>width</td>
-									<td><b>Type:</b> number. <br />Width for component</td>
+									<td><b>Type:</b> number. <br/>Width for component</td>
 								</tr>
 								<tr>
 									<td>headerText</td>
@@ -97,10 +92,12 @@
 								</tr>
 								<tr>
 									<td>dataSource</td>
-									<td><b>Type:</b> array. <br /> Source for item in panel.
-										<br /> Each item in source will have 3 properties are: <br />
-										<i>text: text to display</i><br /> <i>action: action for
-											binding with click event</i><br /> <i>icon: icon to display</i></td>
+									<td><b>Type:</b> array. <br /> Source for item in panel. <br/>
+										Each item in source will have 3 properties are: <br/>
+										<i>text: text to display</i><br/>
+										<i>action: action for binding with click event</i><br/>
+										<i>icon: icon to display</i>
+									</td>
 								</tr>
 							</tbody>
 						</table>

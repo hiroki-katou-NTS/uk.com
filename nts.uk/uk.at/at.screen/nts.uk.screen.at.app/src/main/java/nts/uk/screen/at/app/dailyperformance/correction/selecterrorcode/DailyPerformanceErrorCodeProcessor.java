@@ -174,7 +174,7 @@ public class DailyPerformanceErrorCodeProcessor {
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
 						.getErrorSetting(lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
 				// Seperate Error and Alarm
-				screenDto.addErrorToResponseData(lstError, lstErrorSetting);
+				//screenDto.addErrorToResponseData(lstError, lstErrorSetting);
 			}
 		}
 
@@ -409,7 +409,7 @@ public class DailyPerformanceErrorCodeProcessor {
 				for (int i = 0; i < lstDate.size(); i++) {
 					GeneralDate filterDate = lstDate.get(i);
 					result.add(new DPDataDto(employee.getId()+"_"+dataId, "", "", filterDate, false, employee.getId(), employee.getCode(),
-							employee.getBusinessName(), employee.getWorkplaceId()));
+							employee.getBusinessName(), employee.getWorkplaceId(), "", ""));
 					dataId++;
 				}
 			}
