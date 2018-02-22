@@ -215,10 +215,14 @@
 											<button tabindex="23" id="btnDetailWorkplace"
 												data-bind="click: detailWorkplace">#{i18n.getText('CCG001_55')}</button>
 											<com:ko tag="ifnot" bind="isExpanded">
-												<button tabindex="24" data-bind="click: expand">Xo ra</button>
+												<button tabindex="24" data-bind="click: expand">
+													<i class="icon icon-28-expand"></i>#{i18n.getText('CCG001_56')}
+												</button>
 											</com:ko>
 											<com:ko tag="if" bind="isExpanded">
-												<button tabindex="24" data-bind="click: collapse">Dong vao</button>
+												<button tabindex="24" data-bind="click: collapse">
+													<i class="icon icon-29-collapse"></i>#{i18n.getText('CCG001_62')}
+												</button>
 											</com:ko>
 										</div>
 									</div>
@@ -287,7 +291,7 @@
 									<div class="ccg001-cell mid">
 										<div tabindex="27" class="ccg-btn-vertical height-maximum" data-bind="click: extractSelectedEmployees">
 											<div class="ccg001-cell mid">
-												<i class="icon icon-01-searchmode"></i>
+												<i class="icon icon-47-white-check-mark"></i>
 												<div class="ccg-lbl-vertical ccg-lbl-extract-emp">#{i18n.getText('CCG001_26')}</div>
 											</div>
 										</div>
