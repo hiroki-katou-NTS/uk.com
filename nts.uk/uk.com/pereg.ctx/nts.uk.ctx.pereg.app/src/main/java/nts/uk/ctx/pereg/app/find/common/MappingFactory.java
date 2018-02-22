@@ -63,6 +63,7 @@ public class MappingFactory {
 		String recordId = peregDto.getDomainDto().getRecordId();
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
 			for (Object item : classItem.getItems()) {
+				
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
 				Object value = itemCodeValueMap.get(valueItem.getItemCode());
 				if (valueItem.getItem() != null) {
@@ -74,6 +75,10 @@ public class MappingFactory {
 					}
 				}
 				valueItem.setValue(value);
+				
+				// update 2018/02/22 bug 87560
+				valueItem.setShowColor(false);
+				
 				boolean optionItemNoValue = itemCodeValueMap.containsKey(valueItem.getItemCode());
 				if (optionItemNoValue) {
 					valueItem.setRecordId(recordId);
@@ -131,6 +136,10 @@ public class MappingFactory {
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
 			for (Object item : classItem.getItems()) {
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+				
+				// update 2018/02/22 bug 87560
+				valueItem.setShowColor(false);
+				
 				// data
 				for (PersonOptionalDto dataItem : dataItems) {
 					if (valueItem.getItemCode().equals(dataItem.getItemCode())) {
@@ -149,6 +158,10 @@ public class MappingFactory {
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
 			for (Object item : classItem.getItems()) {
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+				
+				// update 2018/02/22 bug 87560
+				valueItem.setShowColor(false);
+				
 				// data
 				for (EmpOptionalDto dataItem : dataItems) {
 					if (valueItem.getItemCode().equals(dataItem.getItemCode())) {
