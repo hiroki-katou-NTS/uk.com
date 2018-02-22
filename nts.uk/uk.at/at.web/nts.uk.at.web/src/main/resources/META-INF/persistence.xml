@@ -8,7 +8,7 @@
 		<jta-data-source>java:jboss/datasources/UK</jta-data-source>
 		<jar-file>lib/nts.uk.ctx.basic.infra-0.4.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.bs.company.infra-0.8.1.jar</jar-file>
-		<jar-file>lib/nts.uk.ctx.bs.employee.infra-0.10.32.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.bs.employee.infra-0.10.32.1.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.bs.person.infra-0.6.4.jar</jar-file>
 
 		<jar-file>lib/nts.uk.ctx.pereg.infra-0.1.6.jar</jar-file>
