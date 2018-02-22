@@ -33,22 +33,25 @@
 				<div id="content" class="cf">
 					<div id="ccgcomponent"></div>
 					<h1>CCG001 社員範囲選択 （共通部品） Employee range selection</h1>
-					<div class="table">
-					<div class="cell" style="width: 280px;">
+					<div class="table" style="margin-left: 100px; margin-bottom:  30px;">
+					<div style="display: table-row">
+						<div class="cell" style="width: 500px">
 						<h2>Common properties:</h2>
 						<div data-bind="ntsCheckBox:{checked: isSelectAllEmployee}">Show EmployeeList (検索タイプ)</div><br/>
-						<span>systemType (システム区分):</span>
-						<div tabindex="2" data-bind="ntsComboBox: {
-									name: '#[CCG001_28]',
-									options: systemTypes,
-									optionsValue: 'value',
-									value: systemType,
-									optionsText: 'name',
-									editable: false,
-									enable: true,
-									columns: [
-										{ prop: 'name', length: 5 },
-									]}"></div>
+						<div style="display: flex; padding: 5px;">
+							<div data-bind="ntsFormLabel: {}">SystemType (システム区分):</div>
+							<div tabindex="2" data-bind="ntsComboBox: {
+										name: '#[CCG001_28]',
+										options: systemTypes,
+										optionsValue: 'value',
+										value: systemType,
+										optionsText: 'name',
+										editable: false,
+										enable: true,
+										columns: [
+											{ prop: 'name', length: 5 },
+										]}"></div>
+						</div>
 						<div data-bind="ntsCheckBox:{checked: isQuickSearchTab}">Show QuickSearch (クイック検索)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: isAdvancedSearchTab}">Show AdvancedSearch (詳細検索タブ)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: showBaseDate}">Show BaseDate (基準日利用)</div><br/>
@@ -56,46 +59,61 @@
 						<div data-bind="ntsCheckBox:{checked: showAllClosure}">Show All Closure (全締め表示)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: showPeriod}">Show Period (対象期間利用)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: periodFormatYM}">Show period format: YM(対象期間精度)</div><br/>
-					</div>
-					<div class="cell" style="width: 280px;">
-						<h2>Required param properties:</h2>
-						basedate:<div tabindex="3"
-									data-bind="ntsDatePicker: {
-										dateFormat: 'YYYY/MM/DD',
-										value: baseDate }"></div><br/>
+						</div>
+						<div class="cell" style="width: 500px">
+							<h2>Required param properties:</h2>
+						<div style="padding-bottom: 5px;">
+							<div data-bind="ntsFormLabel: {}">Base Date:</div> 
+							<div tabindex="3"
+										data-bind="ntsDatePicker: {
+											dateFormat: 'YYYY/MM/DD',
+											value: baseDate }"></div><br/></div>
 						<com:ko tag="ifnot" bind="periodFormatYM">
-							period start:<div tabindex="3"
-										data-bind="ntsDatePicker: {
-											dateFormat: 'YYYY/MM/DD',
-											value: periodStartDate }"></div><br/>
-							period end:<div tabindex="3"
-										data-bind="ntsDatePicker: {
-											dateFormat: 'YYYY/MM/DD',
-											value: periodEndDate }"></div><br/>
+							<div style="padding-bottom: 5px;">
+								<div data-bind="ntsFormLabel: {}">Period start:</div>  
+								<div tabindex="3"
+											data-bind="ntsDatePicker: {
+												dateFormat: 'YYYY/MM/DD',
+												value: periodStartDate }"></div><br/>
+							</div>
+							<div style="padding-bottom:  5px;">
+								<div data-bind="ntsFormLabel: {}">Period end:</div>  
+								<div tabindex="3" data-bind="ntsDatePicker: {
+												dateFormat: 'YYYY/MM/DD',
+												value: periodEndDate }"></div><br/>
+							</div>
 						</com:ko>
 						<com:ko tag="if" bind="periodFormatYM">
-							period start:<div tabindex="3"
-										data-bind="ntsDatePicker: {
-											dateFormat: 'YYYY/MM',
-											value: periodStartDate }"></div><br/>
-							period end:<div tabindex="3"
-										data-bind="ntsDatePicker: {
-											dateFormat: 'YYYY/MM',
-											value: periodEndDate }"></div><br/>
+							<div style="padding-bottom:  5px;">
+								<div data-bind="ntsFormLabel: {}">Period start:</div>
+								<div tabindex="3"
+											data-bind="ntsDatePicker: {
+												dateFormat: 'YYYY/MM',
+												value: periodStartDate }"></div><br/>
+							</div>
+							<div style="padding-bottom:  5px;">
+								<div data-bind="ntsFormLabel: {}">Period end:</div>  
+								<div tabindex="3"
+											data-bind="ntsDatePicker: {
+												dateFormat: 'YYYY/MM',
+												value: periodEndDate }"></div><br/>
+							</div>
 						</com:ko>
 						<div data-bind="ntsCheckBox:{checked: inService}">In service (在職区分)</div><br/>
-						<div data-bind="ntsCheckBox:{checked: leaveOfAbsence}">Leave of absence (休職区分)</div>
-						<div data-bind="ntsCheckBox:{checked: closed}">Close (休業区分)</div>
-						<div data-bind="ntsCheckBox:{checked: retirement}">Retirement (退職区分)</div>
+						<div data-bind="ntsCheckBox:{checked: leaveOfAbsence}">Leave of absence (休職区分)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: closed}">Close (休業区分)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: retirement}">Retirement (退職区分)</div><br/>
+						</div>
 					</div>
-					<div class="cell" style="width: 280px;">
+					<div style="display: table-row">
+					<div class="cell">
 						<h2>Quick search properties:</h2>
 						<div data-bind="ntsCheckBox:{checked: isAllReferableEmployee}">Show AllReferableEmployee (参照可能な社員すべて)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: isOnlyMe}">Show Only me (自分だけ)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: isEmployeeOfWorkplace}">Show Employee of workplace (同じ職場の社員)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: isEmployeeWorkplaceFollow}">Show Employee of workplace follow (同じ職場とその配下の社員)</div><br/>
-					</div>
-					<div class="cell" style="width: 280px;">
+						</div>
+						<div class="cell">
 						<h2>Advanced search properties:</h2>
 						<div data-bind="ntsCheckBox:{checked: showEmployment}">Show Employment (雇用条件)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: showWorkplace}">Show workplace (職場条件)</div><br/>
@@ -104,6 +122,8 @@
 						<div data-bind="ntsCheckBox:{checked: showWorktype}">Show worktype (勤種条件)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: isMutipleCheck}">Enable multiple selection (選択モード)</div><br/>
 					</div>
+					</div>
+						
 					</div>
 					<div class="table" style="width: auto; margin: auto">
 						<button data-bind="click: reloadCcg001">Reload Component</button>

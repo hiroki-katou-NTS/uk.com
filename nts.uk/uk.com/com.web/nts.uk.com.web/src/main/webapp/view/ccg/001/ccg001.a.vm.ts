@@ -41,10 +41,7 @@ module nts.uk.com.view.ccg001.a {
                 var self = this;
                 self.systemTypes = ko.observableArray([
                     { name: 'システム管理者', value: 1 }, // PERSONAL_INFORMATION
-                    { name: '就業', value: 2 }, // EMPLOYMENT
-                    { name: '給与', value: 3 }, // SALARY
-                    { name: '人事', value: 4 }, // HUMAN_RESOURCES
-                    { name: '管理者', value: 5 }, // ADMINISTRATOR
+                    { name: '就業', value: 2 } // EMPLOYMENT
                 ]);
                 self.selectedEmployee = ko.observableArray([]);
 
