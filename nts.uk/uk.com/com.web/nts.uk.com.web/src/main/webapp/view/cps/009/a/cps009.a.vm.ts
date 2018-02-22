@@ -694,6 +694,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         stringItemDataType?: number;
         fixedItem: boolean;
+        // dung de phan biet category thuoc dang lich su lien tuc thi cot 2
+        // cua itemList se ko hoat dong
+        categoryType: number;
     }
 
     export class PerInfoInitValueSettingItemDto {
@@ -759,8 +762,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         stringItemDataType: number;
         getTitle: KnockoutObservable<string> = ko.observable("");
+        
+        categoryType: number;
         constructor(params: IPerInfoInitValueSettingItemDto) {
             let self = this;
+            
+            self.categoryType = params.categoryType;
             self.getTitle(self.getWidthText(params.itemName) > 200 ? params.itemName : "");
             self.fixedItem = params.fixedItem;
             self.perInfoItemDefId = ko.observable(params.perInfoItemDefId || "");
