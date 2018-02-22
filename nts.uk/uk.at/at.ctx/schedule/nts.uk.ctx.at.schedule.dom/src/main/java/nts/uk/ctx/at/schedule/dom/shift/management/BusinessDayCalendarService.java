@@ -25,9 +25,6 @@ public class BusinessDayCalendarService {
 	private PublicHolidayRepository publicHolidayRepository;
 	
 	@Inject
-	private TargetDaysRepository targetDaysRepository;
-	
-	@Inject
 	private CalendarWorkPlaceRepository calendarWorkPlaceRepository;
 	
 	@Inject
@@ -40,7 +37,8 @@ public class BusinessDayCalendarService {
 		// 取得した件数をチェック
 		if(publicHoliday.isPresent()) {
 			// 終了状態：成功　を返す
-			return targetDaysRepository.getTargetHoliday(HolidayCls.PUBLIC_HOLIDAY, date);
+			TargetDaysHDCls target = new TargetDaysHDCls(HolidayCls.PUBLIC_HOLIDAY, date);
+			return Optional.of(target);
 		} else {
 			// ドメインモデル「職場営業日カレンダー日次」を取得する
 			Optional<CalendarWorkplace> calendarWorkplace = calendarWorkPlaceRepository.findCalendarWorkplaceByDate(workPlaceId, date);
@@ -51,10 +49,12 @@ public class BusinessDayCalendarService {
 				// 取得したドメインモデル「職場営業日カレンダー日次」.稼働日区分
 				if(calendarWorkplace.get().getWorkingDayAtr() == UseSet.nonWorkingDay_inlaw) {
 					// 非稼働日(法内)　→　休日区分　=　法定休日
-					return targetDaysRepository.getTargetHoliday(HolidayCls.STATUTORY_HOLIDAYS, date);
+					TargetDaysHDCls target = new TargetDaysHDCls(HolidayCls.STATUTORY_HOLIDAYS, date);
+					return Optional.of(target);
 				} else if(calendarWorkplace.get().getWorkingDayAtr() == UseSet.nonWorkingDay_Outrage) {
 					// 非稼働日(法外)　→　休日区分　=　法定外休日
-					return targetDaysRepository.getTargetHoliday(HolidayCls.NON_STATUTORY_HOLIDAYS, date);
+					TargetDaysHDCls target = new TargetDaysHDCls(HolidayCls.NON_STATUTORY_HOLIDAYS, date);
+					return Optional.of(target);
 				}				
 			} else {
 				// ドメインモデル「会社営業日カレンダー日次」を取得する
@@ -66,10 +66,12 @@ public class BusinessDayCalendarService {
 					// 取得したドメインモデル「会社営業日カレンダー日次」.稼働日区分
 					if(calendarCompany.get().getWorkingDayAtr() == UseSet.nonWorkingDay_inlaw) {
 						// 非稼働日(法内)　→　休日区分　=　法定休日
-						return targetDaysRepository.getTargetHoliday(HolidayCls.STATUTORY_HOLIDAYS, date);
+						TargetDaysHDCls target = new TargetDaysHDCls(HolidayCls.STATUTORY_HOLIDAYS, date);
+						return Optional.of(target);
 					} else if(calendarCompany.get().getWorkingDayAtr() == UseSet.nonWorkingDay_Outrage) {
 						// 非稼働日(法外)　→　休日区分　=　法定外休日
-						return targetDaysRepository.getTargetHoliday(HolidayCls.NON_STATUTORY_HOLIDAYS, date);
+						TargetDaysHDCls target = new TargetDaysHDCls(HolidayCls.NON_STATUTORY_HOLIDAYS, date);
+						return Optional.of(target);
 					}	
 				} else {
 					// 終了状態：失敗　を返す
