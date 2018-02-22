@@ -95,16 +95,9 @@ module nts.uk.at.view.kmf002.d {
             public start_page(): JQueryPromise<void> {
                 let _self = this;
                 var dfd = $.Deferred<void>();
-                
-                if (getShared('conditionSidebar5') == false) {
-//                    blockUI.grayout();
-                } else {
-//                    blockUI.clear();
-                }
                 $('#empt-list-setting').ntsListComponent(_self.listComponentOption).done(function(){
                     _self.catchChangeSelectEmp();
                     _self.getDataFromService();
-//                    nts.uk.ui.errors.clearAll();
                     dfd.resolve();    
                 });
                 return dfd.promise();

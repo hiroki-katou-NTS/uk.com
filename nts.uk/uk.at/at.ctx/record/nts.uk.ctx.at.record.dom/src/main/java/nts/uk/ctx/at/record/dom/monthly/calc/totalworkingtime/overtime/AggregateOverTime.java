@@ -88,9 +88,7 @@ public class AggregateOverTime {
 	 */
 	public OverTimeOfTimeSeries getTimeSeriesWork(GeneralDate ymd){
 		
-		if (!this.timeSeriesWorks.containsKey(ymd)){
-			this.timeSeriesWorks.put(ymd, new OverTimeOfTimeSeries(ymd, this.overTimeFrameNo));
-		}
+		this.timeSeriesWorks.putIfAbsent(ymd, new OverTimeOfTimeSeries(ymd, this.overTimeFrameNo));
 		return this.timeSeriesWorks.get(ymd);
 	}
 	
@@ -101,9 +99,7 @@ public class AggregateOverTime {
 	 */
 	public void addOverTimeInTimeSeriesWork(GeneralDate ymd, OverTimeFrameTime overTime){
 		
-		if (!this.timeSeriesWorks.containsKey(ymd)){
-			this.timeSeriesWorks.put(ymd, new OverTimeOfTimeSeries(ymd, overTime.getOverWorkFrameNo()));
-		}
+		this.timeSeriesWorks.putIfAbsent(ymd, new OverTimeOfTimeSeries(ymd, overTime.getOverWorkFrameNo()));
 		val targetTimeSeriesWork = this.timeSeriesWorks.get(ymd);
 		
 		targetTimeSeriesWork.addOverTime(overTime);
@@ -116,9 +112,7 @@ public class AggregateOverTime {
 	 */
 	public void addLegalOverTimeInTimeSeriesWork(GeneralDate ymd, OverTimeFrameTime legalOverTime){
 		
-		if (!this.timeSeriesWorks.containsKey(ymd)){
-			this.timeSeriesWorks.put(ymd, new OverTimeOfTimeSeries(ymd, legalOverTime.getOverWorkFrameNo()));
-		}
+		this.timeSeriesWorks.putIfAbsent(ymd, new OverTimeOfTimeSeries(ymd, legalOverTime.getOverWorkFrameNo()));
 		val targetTimeSeriesWork = this.timeSeriesWorks.get(ymd);
 		
 		targetTimeSeriesWork.addLegalOverTime(legalOverTime);

@@ -50,52 +50,32 @@
 							</ol>
 							<div id="tabs-call" class="cf">
 								<h3>Set error for a control</h3>
-								<pre>
-									<![CDATA[$('#residence-code').ntsError('set', 'えらーです');]]>
-								</pre>
+								<pre><![CDATA[$('#residence-code').ntsError('set', 'えらーです');]]></pre>
 								<h3>Set error for a control by message id</h3>
-								<pre>
-									<![CDATA[$('#residence-code').ntsError('set', {messageId:"Msg_001"});
+								<pre><![CDATA[$('#residence-code').ntsError('set', {messageId:"Msg_001"});
 // Set message parameters
 $('#residence-code').ntsError('set', {messageId:'Msg_175',messageParams:['param']});
 // Show business exception
 nts.uk.request.ajax('').fail(function(err){
 	$('#residence-code').ntsError('set', err);
-})]]>
-								</pre>
+})]]></pre>
 								<h3>Clear errors of a control</h3>
-								<pre>
-									<![CDATA[$('#residence-code').ntsError('clear');]]>
-								</pre>
+								<pre><![CDATA[$('#residence-code').ntsError('clear');]]></pre>
 								<h3>Clear grouping errors</h3>
-								<pre>
-									<![CDATA[<input id="residence-code" class="save-error" ... />
-<input id="number" class="save-error" ... />]]>
-								</pre>
-								<pre>
-									<![CDATA[// clear all errors of controls have class 'save-error'
-$('.save-error').ntsError('clear');]]>
-								</pre>
+								<pre><![CDATA[<input id="residence-code" class="save-error" ... />
+<input id="number" class="save-error" ... />]]></pre>
+								<pre><![CDATA[// clear all errors of controls have class 'save-error'
+$('.save-error').ntsError('clear');]]></pre>
 								<h3>Clear all errors</h3>
-								<pre>
-									<![CDATA[nts.uk.ui.errors.clearAll()]]>
-								</pre>
+								<pre><![CDATA[nts.uk.ui.errors.clearAll()]]></pre>
 								<h3>Validate</h3>
-								<pre>
-									<![CDATA[$('#residence-code').ntsError('check');]]>
-								</pre>
+								<pre><![CDATA[$('#residence-code').ntsError('check');]]></pre>
 								<h3>Check if has any error</h3>
-								<pre>
-									<![CDATA[nts.uk.ui.errors.hasError()]]>
-								</pre>
+								<pre><![CDATA[nts.uk.ui.errors.hasError()]]></pre>
 								<h3>Get viewmodel</h3>
-								<pre>
-									<![CDATA[nts.uk.ui.errors.errorsViewModel()]]>
-								</pre>
+								<pre><![CDATA[nts.uk.ui.errors.errorsViewModel()]]></pre>
 								<h3>Binding in HTML</h3>
-								<pre>
-									<![CDATA[<button class="proceed" data-bind="enable: $root.errors.isEmpty">登録</button>]]>
-								</pre>
+								<pre><![CDATA[<button class="proceed" data-bind="enable: $root.errors.isEmpty">登録</button>]]></pre>
 							</div>
 							<div id="tabs-api" class="cf">
 								<article>
@@ -169,8 +149,8 @@ $('.save-error').ntsError('clear');]]>
 																<td>option</td>
 																<td><b>Type:</b>
 																	ko.mapping.fromJS&lt;ErrorDialogOption&gt;<br /> <b>Default:</b>
-																	ko.mapping.fromJS&lt;ErrorDialogOption&gt;<br />
-																	Option for Error Dialog
+																	ko.mapping.fromJS&lt;ErrorDialogOption&gt;<br /> Option
+																	for Error Dialog
 																	<div class="catalog-accordion">
 																		<a href="#">ErrorDialogOption</a>
 																		<table class="table">
@@ -211,7 +191,8 @@ $('.save-error').ntsError('clear');]]>
 																				</tr>
 																			</tbody>
 																		</table>
-																	</div></td>
+																	</div>
+																</td>
 															</tr>
 														</tbody>
 													</table>
@@ -247,8 +228,8 @@ $('.save-error').ntsError('clear');]]>
 										<tr>
 											<td>$(selector).ntsError("validate")</td>
 											<td><b>Return:</b> JQuery<br /> <b>Agruments:</b><br />
-												<i>selector: string</i> Jquery selector<br /> Validate
-												control(s) specified by selector</td>
+												<i>selector: string</i> Jquery selector<br /> Validate control(s) specified by selector
+											</td>
 										</tr>
 										<tr>
 											<td>$(selector).ntsError("hasError")</td>

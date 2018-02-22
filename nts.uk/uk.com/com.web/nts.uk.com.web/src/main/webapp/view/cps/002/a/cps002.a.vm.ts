@@ -28,7 +28,7 @@ module cps002.a.vm {
 
         itemSettingList: KnockoutObservableArray<SettingItem> = ko.observableArray([]);
 
-        createTypeId: KnockoutObservable<number> = ko.observable(1);
+        createTypeId: KnockoutObservable<number> = ko.observable(3);
 
         currentEmployee: KnockoutObservable<Employee> = ko.observable(new Employee());
 
@@ -229,19 +229,11 @@ module cps002.a.vm {
                 });
             }
         }
-        clearEmployeeData() {
-            let self = this;
-            self.currentEmployee().employeeName("");
-            self.currentEmployee().employeeCode("");
-            self.currentEmployee().loginId("");
-            self.currentEmployee().password("");
-            self.currentEmployee().avatarId("");
-        }
 
         start() {
 
             let self = this;
-            self.clearEmployeeData();
+            self.currentEmployee().clearData();
 
             nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
                 self.employeeBasicInfo(data);
@@ -424,12 +416,10 @@ module cps002.a.vm {
 
             $("#employeeAvatar").focus();
 
-
-
             service.getSelfRoleAuth().done((result: IRoleAuth) => {
 
                 if (result) {
-                    self.isAllowAvatarUpload(result ? result.allowAvatarUpload == 0 ? false : true : false);
+                    self.isAllowAvatarUpload(result.allowAvatarUpload == 0 ? false : true);
                 }
 
             });
@@ -473,7 +463,6 @@ module cps002.a.vm {
 
                 //start Screen C
 
-
                 self.loadInitSettingData();
 
 
@@ -507,7 +496,6 @@ module cps002.a.vm {
 
                     self.categorySelectedCode(result[0].code);
                 }
-
             }).fail((error) => {
 
                 dialog({ messageId: error.message }).then(() => {
@@ -515,10 +503,7 @@ module cps002.a.vm {
                     self.currentStep(0);
 
                 });
-
             });
-
-
         }
 
         loadInitSettingData() {
@@ -594,14 +579,10 @@ module cps002.a.vm {
                     newEmpInfo.copyEmployeeId = newEmpInfo.copyEmployeeId == '' ? currentEmpInfo.copyEmployeeId : newEmpInfo.copyEmployeeId;
                 } else {
                     newEmpInfo.initialValueCode = newEmpInfo.initialValueCode == '' ? currentEmpInfo.initialValueCode : newEmpInfo.initialValueCode;
-
                 }
 
             }
-
-
-
-
+            
             character.save('NewEmployeeBasicInfo', newEmpInfo);
         }
 
@@ -724,10 +705,6 @@ module cps002.a.vm {
             subModal('/view/cps/009/a/index.xhtml', { title: '', height: 700, width: 1400 }).onClosed(() => {
 
             });
-            //            
-            //            subModal('/view/cps/009/a/index.xhtml', { title: text('CPS002_10') }).onClosed(() => {
-            //                
-            //            });
         }
 
 
@@ -752,6 +729,15 @@ module cps002.a.vm {
         avatarId: KnockoutObservable<string> = ko.observable("");
         loginId: KnockoutObservable<string> = ko.observable("");
         password: KnockoutObservable<string> = ko.observable("");
+        clearData() {
+            let self = this;
+            self.employeeName("");
+            self.employeeCode("");
+            self.avatarId("");
+            self.loginId("");
+            self.password("");
+
+        }
     }
 
 
@@ -889,7 +875,7 @@ module cps002.a.vm {
                 return this.genDateString(this.saveData.value, this.dateType);
             }
 
-            if (this.dataType === "TIME" && this.saveData.value) {
+            if (this.dataType === "TIME" && this.saveData.value || this.dataType === "TIMEPOINT" && this.saveData.value) {
                 return this.genTimeString(this.saveData.value, this.dateType);
             }
 

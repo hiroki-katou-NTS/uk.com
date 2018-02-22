@@ -24,7 +24,10 @@ module ccg014.a.viewmodel {
             self.selectedTitleMenuCD = ko.observable(null);
             self.selectedTitleMenuCD.subscribe((value) => {
                 if(value === '' && !self.isCreate()){
+                    //self.createButtonClick();
+                    self.selectedTitleMenu(new model.TitleMenu("", "", ""));
                     self.isCreate(true);
+                    $("#preview-iframe").trigger("load");
                     return;
                 }
                 self.findSelectedTitleMenu(value);
@@ -37,19 +40,22 @@ module ccg014.a.viewmodel {
             // TitleMenu Details
             self.selectedTitleMenu = ko.observable(null);
             self.isCreate = ko.observable(null);
-            self.isCreate.subscribe((value) => {
-                self.changeInitMode(value);
-            });
+//            self.isCreate.subscribe((value) => {
+//                self.changeInitMode(value);
+//            });
             // Enable Copy
             self.enableCopy = ko.computed(() => {
                 return (!self.isCreate() && !util.isNullOrEmpty(self.selectedTitleMenuCD()));
             });
             
             $("#preview-iframe").on("load", function() {
-                if (self.isCreate() == true)
+                if (self.isCreate()){
                     $("#titleMenuCD").focus();
-                else
-                    $("#titleMenuName").focus();
+                    errors.clearAll();
+                } else {
+                    $("#titleMenuName").focus();    
+                }
+                    
             });
             
         }

@@ -34,6 +34,7 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 	public OverTimeWorkFrameTimeSheet(
 			TimeZoneRounding timesheet,
 			TimeSpanForCalc calculationTimeSheet,
+			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets,
 			List<BonusPayTimesheet> bonusPayTimeSheet,
 			List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet,
@@ -41,7 +42,7 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 			,int frameNo
 			,OverTimeFrameTime overTimeWorkFrameTime
 ) {
-		super(timesheet,calculationTimeSheet,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
+		super(timesheet,calculationTimeSheet,recorddeductionTimeSheets,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
 		this.frameNo = frameNo;
 		this.overWorkFrameTime = overTimeWorkFrameTime;
 	}
@@ -55,6 +56,7 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 	public OverTimeWorkFrameTimeSheet reCreate(StatutoryAtr statutoryAtr, TimeSpanForCalc newTimeSpan) {
 		return new OverTimeWorkFrameTimeSheet(this.getTimeSheet(),
 				  							  newTimeSpan,
+				  							  this.recordedTimeSheet,
 											  this.deductionTimeSheet,
 											  this.bonusPayTimeSheet,
 											  this.specBonusPayTimesheet,
@@ -79,6 +81,7 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 		
 		return new OverTimeWorkFrameTimeSheet(overTimeHourSet.getTimezone(),
 											  timeSpan,
+											  deductionTimeSheet.getForRecordTimeZoneList().stream().map(tc ->tc.createWithExcessAtr()).collect(Collectors.toList()),
 											  deductionTimeSheet.getForDeductionTimeZoneList().stream().map(tc ->tc.createWithExcessAtr()).collect(Collectors.toList()),
 											  Collections.emptyList(),
 											  Collections.emptyList(),
@@ -150,6 +153,7 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 		else {
 			returnList.add(new OverTimeWorkFrameTimeSheet(this.timeSheet
 														 ,new TimeSpanForCalc(this.calcrange.getStart(), baseTime)
+														 ,this.recordedTimeSheet
 														 ,this.deductionTimeSheet
 														 ,this.bonusPayTimeSheet
 														 ,this.specBonusPayTimesheet

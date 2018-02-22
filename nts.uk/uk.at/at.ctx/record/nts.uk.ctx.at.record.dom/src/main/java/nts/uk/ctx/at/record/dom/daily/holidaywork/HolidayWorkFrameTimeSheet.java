@@ -55,6 +55,7 @@ public class HolidayWorkFrameTimeSheet extends CalculationTimeSheet{
 	public HolidayWorkFrameTimeSheet(
 			TimeZoneRounding timeSheet,
 			TimeSpanForCalc calculationTimeSheet,
+			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets,
 			List<BonusPayTimesheet> bonusPayTimeSheet, 
 			List<SpecBonusPayTimesheet> specifiedbonusPayTimeSheet,
@@ -62,7 +63,7 @@ public class HolidayWorkFrameTimeSheet extends CalculationTimeSheet{
 			HolidayWorkFrameTime frameTime,
 			boolean treatAsTimeSpentAtWork,
 			HolidayWorkFrameNo holidayWorkTimeSheetNo) {
-		super(timeSheet, calculationTimeSheet, deductionTimeSheets, bonusPayTimeSheet,specifiedbonusPayTimeSheet, midNighttimeSheet);
+		super(timeSheet, calculationTimeSheet, recorddeductionTimeSheets, deductionTimeSheets, bonusPayTimeSheet,specifiedbonusPayTimeSheet, midNighttimeSheet);
 		this.frameTime = frameTime;
 		this.TreatAsTimeSpentAtWork = treatAsTimeSpentAtWork;
 		this.HolidayWorkTimeSheetNo = holidayWorkTimeSheetNo;
