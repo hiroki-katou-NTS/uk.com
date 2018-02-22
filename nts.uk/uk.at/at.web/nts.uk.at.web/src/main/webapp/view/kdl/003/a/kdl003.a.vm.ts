@@ -422,10 +422,14 @@ module nts.uk.at.view.kdl003.a {
              */
             public search(): void {
                 var self = this;
-                if (!self.startTime() && !self.endTime()) {
+                if (nts.uk.util.isNullOrEmpty(self.startTime()) && nts.uk.util.isNullOrEmpty(self.endTime())) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_53" });
                     return;
                 }
+                if (nts.uk.util.isNullOrUndefined(self.startTime()) || nts.uk.util.isNullOrUndefined(self.endTime())) {
+                    return;
+                }
+                
                 if ($('#inputEndTime').ntsError('hasError') ||
                     $('#inputStartTime').ntsError('hasError')) {
                     return;
