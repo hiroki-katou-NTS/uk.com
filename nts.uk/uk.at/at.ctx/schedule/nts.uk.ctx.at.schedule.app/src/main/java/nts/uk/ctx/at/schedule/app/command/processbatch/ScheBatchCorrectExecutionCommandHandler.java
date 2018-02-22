@@ -161,7 +161,7 @@ public class ScheBatchCorrectExecutionCommandHandler
 					// Create and add error content to the errors list
 					ErrorContentDto errorContentDto = new ErrorContentDto();
 					errorContentDto.setMessage(optErrorMsg.get());
-					errorContentDto.setEmployeeCode(employeeId);
+					errorContentDto.setEmployeeCode(employeeDto.getEmployeeCode());
 					errorContentDto.setEmployeeName(employeeDto.getEmployeeName());
 					errorContentDto.setDateYMD(currentDateCheck);
 					errorList.add(errorContentDto);
@@ -295,7 +295,7 @@ public class ScheBatchCorrectExecutionCommandHandler
 		GeneralDate endDate;
 		
 		// 締め変更履歴と当月をチェックする
-		if (optionalClosureHistory.get().getStartYearMonth().compareTo(optionalClosure.get().getClosureMonth().getProcessingYm()) != 0) {
+//		if (optionalClosureHistory.get().getStartYearMonth().compareTo(optionalClosure.get().getClosureMonth().getProcessingYm()) != 0) {
 			// 当月　≠　締め変更履歴．開始年月
 			
 			// 日付の末日とするをチェック
@@ -317,17 +317,17 @@ public class ScheBatchCorrectExecutionCommandHandler
 				// 算出日を締め期間の終了年月日に設定する
 				endDate = checkClosureDateTime(optionalClosure.get().getClosureMonth().getProcessingYm(), optionalClosureHistory.get().toClosureDate());
 			}
-		}
-		else {
-			// 当月　＝　締め変更履歴．開始年月
-			
-			// アルゴリズム「締め日変更時の期間を算出」を実行する
-			ClosurePeriod closurePeriod = calculateClosurePeriod(companyId, optionalClosure.get(), optionalClosureHistory.get());
-			
-			// Set to start date and end date
-			startDate = closurePeriod.getStartTime();
-			endDate = closurePeriod.getEndTime();
-		}
+//		}
+//		else {
+//			// 当月　＝　締め変更履歴．開始年月
+//			
+//			// アルゴリズム「締め日変更時の期間を算出」を実行する
+//			ClosurePeriod closurePeriod = calculateClosurePeriod(companyId, optionalClosure.get(), optionalClosureHistory.get());
+//			
+//			// Set to start date and end date
+//			startDate = closurePeriod.getStartTime();
+//			endDate = closurePeriod.getEndTime();
+//		}
 		
 		/**
 		 *  Check processing date (処理中年月日)
