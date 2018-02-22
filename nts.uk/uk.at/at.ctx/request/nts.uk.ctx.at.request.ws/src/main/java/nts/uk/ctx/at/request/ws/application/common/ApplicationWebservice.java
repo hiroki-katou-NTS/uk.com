@@ -163,6 +163,12 @@ public class ApplicationWebservice extends WebService {
 	}
 	
 	@POST
+	@Path("getAppInfoByAppID")
+	public ApplicationMetaDto getAppInfo(String appID){
+		return this.finderApp.getAppByID(appID);
+	}
+	
+	@POST
 	@Path("getAppDataByDate")
 	public AppDateDataDto getAppDataByDate(AppDateParam param){
 		return appDataDateFinder.getAppDataByDate(param.getAppTypeValue(), param.getAppDate(), param.getIsStartup(), param.getAppID());
