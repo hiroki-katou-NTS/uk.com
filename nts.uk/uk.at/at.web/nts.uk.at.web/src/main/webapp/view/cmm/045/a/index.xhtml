@@ -22,6 +22,7 @@
 				<button>#{i18n.getText('CMM045_3')}</button>
 				<!-- A1_2: Button 印刷 -->
 				<button>#{i18n.getText('CMM045_4')}</button>
+				<!-- A2 -->
 				<div data-bind="ntsSwitchButton: {
 					options: roundingRules,
 					optionsValue: 'code',
@@ -30,16 +31,40 @@
 					enable: true }"></div>
 			</div>
 			<div id="content-area">
+				<!-- A3 -->
+				<div style = "margin-top: 30px; margin-left: 30px" data-bind = "with: approvalCount">
+					<!-- A3_1 -->
+					<div data-bind = "text: unApprovalNumber"></div>
+					<!-- A3_2 -->
+					<div data-bind = "text: approvalNumber"></div>
+					<!-- A3_3 -->
+					<div data-bind = "text: approvalAgentNumber"></div>
+					<!-- A3_4 -->
+					<div data-bind = "text: cancelNumber"></div>
+					<!-- A3_5 -->
+					<div data-bind = "text: remandNumner"></div>
+					<!-- A3_6 -->
+					<div data-bind = "text: denialNumber"></div>
+				</div>
+				<!-- A4 -->
+				<div >
+					<!-- A4_1 -->
+					<div></div>
+					<!-- A4_1 -->
+					<div></div>
+					<!-- A4_1 -->
+					<div></div>
+				</div>
 				<div>
 					<!-- <div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM045_29')}</div> -->
 					
 				</div>
 				<div style = "margin-left: 20px; margin-top: 50px;" class="compact-grid">
 					<table id="grid1"></table>
-			</div>
-			<div style = "margin-left: 20px; margin-top: 50px;" class="compact-grid">
-					<table id="grid2"></table>
-			</div>
+				</div>
+				<div style = "margin-left: 20px; margin-top: 50px;" class="compact-grid">
+						<table id="grid2"></table>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
