@@ -1,7 +1,6 @@
 package nts.uk.ctx.pereg.app.command.addemployee;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -77,6 +76,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		List<String> ctgCodes = inputs.stream().map(x -> x.getCategoryCd()).collect(Collectors.toList());
 
+		// làm phẳng data truyền vào để dễ thao tác
 		List<ItemValue> items = new ArrayList<ItemValue>();
 
 		inputs.forEach(ctg -> {
@@ -84,17 +84,28 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			items.addAll(ctg.getItems());
 
 		});
-
+		// lấy item system required để so sánh
 		List<PersonInfoItemDefinitionSimple> requiredItems = perInfoItemRepo
 				.getRequiredItemFromCtgCdLst(AppContexts.user().contractCode(), companyId, ctgCodes);
 
 		List<String> nodataItems = new ArrayList<String>();
 		requiredItems.forEach(item -> {
-			if (!items.stream().filter(x -> x.itemCode().equals(item.getItemCode().v())).findFirst().isPresent()) {
+			Optional<ItemValue> requiredItemOpt = items.stream()
+					.filter(x -> x.itemCode().equals(item.getItemCode().v())).findFirst();
+			// kiểm tra item đó có trong data list truyền vào không
+			if (requiredItemOpt.isPresent()) {
+				ItemValue requiredItem = requiredItemOpt.get();
+				// kiểm tra xem giá trị của nó có bị null không
+				if (requiredItem.value().equals(null)) {
+					// nếu null thì thêm nó vào list lỗi
+					nodataItems.add(item.getItemName().v());
+				}
+
+			} else {
 				nodataItems.add(item.getItemName().v());
 			}
 		});
-
+		// kiểm tra list lỗi để trả về thông báo
 		if (!CollectionUtil.isEmpty(nodataItems)) {
 			throw new BusinessException("Msg_925", String.join(",", nodataItems));
 
