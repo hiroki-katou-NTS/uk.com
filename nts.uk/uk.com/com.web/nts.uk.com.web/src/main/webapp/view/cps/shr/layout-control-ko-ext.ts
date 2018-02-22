@@ -2094,6 +2094,10 @@ module nts.custombinding {
                                                     if (item.id === "COM1_00000000000000000000000_CS00003") {
                                                         return f.id !== "COM1_000000000000000_CS00003_IS00020";
                                                     }
+
+                                                    if (item.id === "COM1_00000000000000000000000_CS00001") {
+                                                        return f.id !== "COM1_000000000000000_CS00001_IS00001";
+                                                    }
                                                 }
 
                                                 return true;
