@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDate;
  * @author tanlv
  *
  */
-public interface DefaultIBusinessDayCalendarService {
+public interface DefaultBusinessDayCalendarService {
 	/**
 	 * 対象日の休日区分を取得する
 	 * @param companyId company Id

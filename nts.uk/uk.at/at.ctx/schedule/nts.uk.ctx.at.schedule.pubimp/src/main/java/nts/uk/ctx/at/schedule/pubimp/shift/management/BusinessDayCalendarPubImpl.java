@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.management.DefaultIBusinessDayCalendarService;
+import nts.uk.ctx.at.schedule.dom.shift.management.DefaultBusinessDayCalendarService;
 import nts.uk.ctx.at.schedule.dom.shift.management.TargetDaysHDCls;
 import nts.uk.ctx.at.schedule.pub.shift.management.BusinessDayCalendarExport;
 import nts.uk.ctx.at.schedule.pub.shift.management.BusinessDayCalendarPub;
@@ -21,7 +21,7 @@ import nts.uk.ctx.at.schedule.pub.shift.management.HolidayClsExport;
 @Stateless
 public class BusinessDayCalendarPubImpl implements BusinessDayCalendarPub {
 	@Inject
-	private DefaultIBusinessDayCalendarService businessDayCalendarService;
+	private DefaultBusinessDayCalendarService businessDayCalendarService;
 
 	@Override
 	public Optional<BusinessDayCalendarExport> acquiredHolidayClsOfTargetDate(String companyId, String workPlaceId, GeneralDate date) {
