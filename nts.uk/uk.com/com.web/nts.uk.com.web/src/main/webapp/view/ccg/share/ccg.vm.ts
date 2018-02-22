@@ -853,6 +853,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     }
                     self.selectedCodeWorkplace(nts.uk.ui.windows.getShared('outputCDL008'));
                     // reload KCP004
+                    self.workplaces.selectType = SelectType.SELECT_BY_SELECTED_CODE;
                     $('#workplaceList').ntsTreeComponent(self.workplaces);
                 });
             }
