@@ -46,7 +46,7 @@ module a3 {
         mainSettingModel: MainSettingModel;
         lstOvertimeWorkFrame: OvertimeWorkFrameFindDto[];
         
-        //define for 精算順序 primitive value
+        //define for 精算�primitive value
         lstSettlementOrder: any[];
         screenSettingMode: KnockoutObservable<number>;
         isNewMode: KnockoutObservable<boolean>;
@@ -602,7 +602,7 @@ module a3 {
             var dataDTO: FlOTTimezoneDto = {
                 worktimeNo: worktimeNo,
                 restrictTime: false,
-                otFrameNo: dataModel.otFrameNo(),
+                otFrameNo: dataModel.otFrameNo?dataModel.otFrameNo():1,
                 flowTimeSetting: flowTimeSetting,
                 inLegalOTFrameNo: dataModel.inLegalOTFrameNo?dataModel.inLegalOTFrameNo():1,
                 settlementOrder: dataModel.settlementOrder?dataModel.settlementOrder():1
@@ -628,7 +628,7 @@ module a3 {
                     dataSource: self.lstOvertimeWorkFrame,
                     defaultValue: ko.observable(1),
                     width: 120,
-                    template: `<div data-key="inLegalOTFrameNo" class="column-combo-box" data-bind="ntsComboBox: {
+                    template: `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
                                     visibleItemsCount: 10,
                                     optionsText: 'overtimeWorkFrName',
