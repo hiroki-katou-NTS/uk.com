@@ -443,10 +443,10 @@ module cps001.a.vm {
 
                 // push data layout to webservice
                 block();
-                service.saveCurrentLayout(command).done(() => {
+                service.saveCurrentLayout(command).done((selected: string) => {
                     let firstData: MultiData = _.first(self.multipleData()) || new MultiData(),
                         saveData: IReloadData = {
-                            id: firstData.id(),
+                            id: selected || firstData.id(),
                             infoId: firstData.infoId(),
                             categoryId: firstData.categoryId()
                         };
