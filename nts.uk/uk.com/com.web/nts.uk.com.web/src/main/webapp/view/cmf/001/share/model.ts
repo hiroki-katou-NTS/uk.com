@@ -261,5 +261,14 @@ module nts.uk.com.view.cmf001.share.model {
             this.errorCount(errorCount);
         }
     }
+    
+    //screen R, screen S
+    export class ImExExecuteResultLog {
+        
+    }
+    
+    export class ImExErrorLog {
+        
+    }
 
 }
