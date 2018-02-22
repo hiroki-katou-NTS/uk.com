@@ -1,6 +1,7 @@
 module cmm045.a.viewmodel {
     import vmbase = cmm045.shr.vmbase;
     import getText = nts.uk.resource.getText;
+    import block = nts.uk.ui.block;
     export class ScreenModel {
         roundingRules: KnockoutObservableArray<vmbase.ApplicationDisplayAtr> = ko.observableArray([]);
         selectedRuleCode: KnockoutObservable<any> = ko.observable(1);
@@ -28,13 +29,20 @@ module cmm045.a.viewmodel {
                 new vmbase.ChoseApplicationList(0, '全件表示'),
                 new vmbase.ChoseApplicationList(1, '残業申請'),
             ]);
+            self.selectedRuleCode.subscribe(function(codeChanged) {
+                self.filter();
+            });
+            self.selectedCode.subscribe(function(codeChanged){
+                
+            });
         }
    
         start(): JQueryPromise<any>{
+            block.invisible();
             let self = this;
             var dfd = $.Deferred();
-            let param: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto('2018-01-18', '2018-01-20', 1,
-                    null, true, true, true, true, true, true, 0, [], '');
+            let param: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto('2018/01/18', '2018/01/20', self.mode(),
+                    null, true, true, true, true, true, true, self.selectedRuleCode(), [], '');
             service.getApplicationDisplayAtr().done(function(data){
                 _.each(data, function(obj){
                     self.roundingRules.push(new vmbase.ApplicationDisplayAtr(obj.value, obj.localizedName));
@@ -83,6 +91,8 @@ module cmm045.a.viewmodel {
                     self.reloadGridApproval();
                     dfd.resolve();
                 });
+            }).always(()=>{
+                    block.clear(); 
             });
             return dfd.promise();
         }
@@ -97,7 +107,7 @@ module cmm045.a.viewmodel {
             virtualization: true,
             virtualizationMode: 'continuous',
             columns: [
-                { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '50px', unbound: false, ntsControl: 'Button' },
+                { headerText: getText('CMM045_50'), key: 'appId', dataType: 'string', width: '50px', unbound: false, ntsControl: 'Button' },
                 { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
                 { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '120px' },
                 { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '120px' },
@@ -115,27 +125,12 @@ module cmm045.a.viewmodel {
                         }
             ],
             ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                        { name: 'Button', text: getText('CMM045_50'), click: function() { alert("Button!!"); }, controlType: 'Button' , enable: true}, 
+                        { name: 'Button', text: getText('CMM045_50'), controlType: 'Button' , enable: true}, 
             ]});
-                        $("#grid2").setupSearchScroll("igGrid", true);
-            $("#run").on("click", function() {
-                var source = $("#grid2").igGrid("option", "dataSource");
-                alert(source[1].details);
-            });
-            $("#update-row").on("click", function() {
-                $("#grid2").ntsGrid("updateRow", 0, { flag: false, ruleCode: '2', combo: '3' });
-            });
-            $("#enable-ctrl").on("click", function() {
-                $("#grid2").ntsGrid("enableNtsControlAt", 1, "combo", "ComboBox");
-            });
-            $("#disable-ctrl").on("click", function() {
-                $("#grid2").ntsGrid("disableNtsControlAt", 1, "combo", "ComboBox");
-            });
-            $("#disable-all").on("click", function() {
-                $("#grid2").ntsGrid("disableNtsControls", "ruleCode", "SwitchButtons");
-            });
-            $("#enable-all").on("click", function() {
-                $("#grid2").ntsGrid("enableNtsControls", "ruleCode", "SwitchButtons");
+            $("#grid2").on("click", ".ntsButton", function(evt, ui){
+                let _this = $(this);
+                let id = _this.parents('tr').data('id');
+                nts.uk.request.jump("../view/kaf/000/b/index.xhtml", { 'appID': id });
             });
         }
         
@@ -157,8 +152,8 @@ module cmm045.a.viewmodel {
                 { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '150px' },
                 { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '200px' },
                 { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '120px' },
-                { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '120px' },
-                { headerText: getText('CMM045_58'), key: 'appStatus', dataType: 'string', width: '120px' },
+                { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '120px',ntsControl: 'Label' },
+                { headerText: getText('CMM045_58'), key: 'displayAppStatus', dataType: 'string', width: '120px' },
                 { headerText: 'ID', key: 'appId', dataType: 'string', width: '50px', ntsControl: 'Label', hidden: true}
             ], 
             features: [{ name: 'Resizing' },
@@ -169,33 +164,35 @@ module cmm045.a.viewmodel {
                         }
             ],
             ntsControls: [{ name: 'Checkbox', options: { value: 1, text:'' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox' },
-                        { name: 'Button', text: getText('CMM045_50'), click: function() { alert("Button!!"); }, controlType: 'Button' , enable: true}, 
-            ]});
-            $("#grid1").setupSearchScroll("igGrid", true);
-            $("#run").on("click", function() {
-                var source = $("#grid1").igGrid("option", "dataSource");
-                alert(source[1].details);
-            });
-            $("#update-row").on("click", function() {
-                $("#grid1").ntsGrid("updateRow", 0, { flag: false, ruleCode: '2', combo: '3' });
-            });
-            $("#enable-ctrl").on("click", function() {
-                $("#grid1").ntsGrid("enableNtsControlAt", 1, "combo", "ComboBox");
-            });
-            $("#disable-ctrl").on("click", function() {
-                $("#grid1").ntsGrid("disableNtsControlAt", 1, "combo", "ComboBox");
-            });
-            $("#disable-all").on("click", function() {
-                $("#grid1").ntsGrid("disableNtsControls", "ruleCode", "SwitchButtons");
-            });
-            $("#enable-all").on("click", function() {
-                $("#grid1").ntsGrid("enableNtsControls", "ruleCode", "SwitchButtons");
+                        { name: 'Button', text: getText('CMM045_50'), controlType: 'Button' , enable: true}], 
             });
             
+            $("#grid1").on("click", ".ntsButton", function(evt, ui){
+                let _this = $(this);
+                let id = _this.parents('tr').data('id');
+                nts.uk.request.jump("../../../kaf/000/b/index.xhtml", { 'appID': id });
+            });
+            
+            $("#grid1").setupSearchScroll("igGrid", true);
             
             _.each(self.items(), function(item){
                 if(item.check == false){
                     $(".nts-grid-control-check-"+ item.appId).css("display", "none");
+                }
+                if (item.appStatus == '未') {
+                    $(".nts-grid-control-appStatus-" + item.appId).addClass('unapprovalCell');
+                }
+                if(item.appStatus == '承認済み'){
+                    $(".nts-grid-control-appStatus-" + item.appId).addClass('approvalCell');
+                }
+                if(item.appStatus == '取消'){
+                    $(".nts-grid-control-appStatus-" + item.appId).addClass('cancelCell');
+                }
+                if(item.appStatus == '差戻'){
+                    $(".nts-grid-control-appStatus-" + item.appId).addClass('remandCell');
+                }
+                if(item.appStatus == '否'){
+                    $(".nts-grid-control-appStatus-" + item.appId).addClass('denialCell');
                 }
             });
         }
@@ -291,12 +288,12 @@ module cmm045.a.viewmodel {
                     return '';
             }
         }
-    //UNAPPROVED:5
-    //APPROVED: 4
-    //CANCELED: 3
-    //REMAND: 2
-    //DENIAL: 1
-    //-: 0
+        //UNAPPROVED:5
+        //APPROVED: 4
+        //CANCELED: 3
+        //REMAND: 2
+        //DENIAL: 1
+        //-: 0
         convertStatusAppv(status: number):string{
             switch(status){
                 case 1:  //DENIAL: 1
@@ -340,9 +337,71 @@ module cmm045.a.viewmodel {
             let time = dateTime.split(" ")[1];
             return this.convertDate(date) + ' ' + time;
         }
-        
-        
-        
+        /**
+         * when click button 検索
+         */
+        filter(){
+            block.invisible();
+            let self = this;
+            let param: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
+                    null, self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
+                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
+            service.getApplicationList(param).done(function(data){
+                console.log(data);
+                let lstApp: Array<vmbase.ApplicationDto_New> = [];
+                let lstMaster: Array<vmbase.AppMasterInfo> = []
+                let lstGoBack: Array<vmbase.AppGoBackInfoFull> = [];
+                let lstOverTime: Array<vmbase.AppOverTimeInfoFull> = [];
+                self.displaySet(new vmbase.ApprovalListDisplaySetDto(data.displaySet.advanceExcessMessDisAtr,
+                        data.displaySet.hwAdvanceDisAtr,  data.displaySet.hwActualDisAtr, 
+                        data.displaySet.actualExcessMessDisAtr, data.displaySet.otAdvanceDisAtr, 
+                        data.displaySet.otActualDisAtr, data.displaySet.warningDateDisAtr, data.displaySet.appReasonDisAtr));
+                _.each(data.lstApp, function(app){
+                    lstApp.push(new vmbase.ApplicationDto_New(app.applicationID, app.prePostAtr, app.inputDate, app.enteredPersonSID, 
+                    app.reversionReason, app.applicationDate, app.applicationReason, app.applicationType, app.applicantSID,
+                    app.reflectPlanScheReason, app.reflectPlanTime, app.reflectPlanState, app.reflectPlanEnforce,
+                    app.reflectPerScheReason, app.reflectPerTime, app.reflectPerState, app.reflectPerEnforce,
+                    app.startDate, app.endDate));
+                });
+                _.each(data.lstMasterInfo, function(master){
+                    lstMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName, master.workplaceName));
+                });
+                _.each(data.lstAppGoBack, function(goback){
+                    lstGoBack.push(new vmbase.AppGoBackInfoFull(goback.appID, goback.goWorkAtr1, goback.workTimeStart1,
+                        goback.backHomeAtr1, goback.workTimeEnd1, goback.goWorkAtr2, goback.workTimeStart2, goback.backHomeAtr2, goback.workTimeEnd2));
+                });
+                _.each(data.lstAppOt, function(overTime){
+                    let lstFrame: Array<vmbase.OverTimeFrame> = []
+                    _.each(overTime.lstFrame, function(frame){
+                        lstFrame.push(new vmbase.OverTimeFrame(frame.attendanceType, frame.frameNo, frame.name,
+                                        frame.timeItemTypeAtr, frame.applicationTime));
+                    });
+                    lstOverTime.push(new vmbase.AppOverTimeInfoFull(overTime.appID, overTime.workClockFrom1, overTime.workClockTo1, overTime.workClockFrom2,
+                            overTime.workClockTo2, overTime.total, lstFrame, overTime.overTimeShiftNight, overTime.flexExessTime));
+                });
+                let lstData = self.mapData(lstApp, lstMaster, lstGoBack, lstOverTime);
+                self.items(lstData);
+                //mode approval - count
+                if(data.appStatusCount != null){
+                    self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber, 
+                        data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner, 
+                        data.appStatusCount.denialNumber));
+                }
+                $("#grid1").ntsGrid("destroy");
+                self.reloadGridApproval();      
+            }).always(()=>{
+                    block.clear(); 
+            });
+        }
+        findcheck(selectedIds: Array<any>, idCheck: number): boolean{
+            let check = false;
+            _.each(selectedIds, function(id){
+                if(id == idCheck){
+                    check = true;
+                }
+            });
+            return check;
+        }
     } 
     
 }

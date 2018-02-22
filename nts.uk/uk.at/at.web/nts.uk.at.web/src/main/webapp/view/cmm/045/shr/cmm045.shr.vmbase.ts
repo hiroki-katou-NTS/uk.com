@@ -58,30 +58,6 @@ module cmm045.shr {
                     this.empRefineCondition = empRefineCondition;
             }
         }
-        export class GridItem {
-            id: number;
-            flag: boolean;
-            ruleCode: string;
-            combo: string;
-            text1: string;
-            constructor(index: number) {
-                this.id = index;
-                this.flag = index % 2 == 0;
-                this.ruleCode = String(index % 3 + 1);
-                this.combo = String(index % 3 + 1);
-                this.text1 = "TEXT";
-            }
-        }
-        
-        export class ItemModel {
-            code: string;
-            name: string;
-    
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
-            }
-        }
         //data fill grid list mode application
         export class DataModeApp{
             appId: string;

@@ -63,14 +63,13 @@
 									<td><div>#{i18n.getText('CMM045_19')}</div></td>
 									<td>
 										<!-- A4_1 -->
-										<div
-											data-bind="ntsMultiCheckBox: {
-									options: itemList,
-									optionsValue: 'id',
-									optionsText: 'name',
-									value: selectedIds,
-									enable: true}"></div>
-									</td>
+										<div data-bind="ntsMultiCheckBox: {
+											options: itemList,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedIds,
+											enable: true}"></div>
+										</td>
 								</tr>
 								<tr>
 									<td><div>#{i18n.getText('CMM045_26')}</div></td>
@@ -86,7 +85,7 @@
 									<td></td>
 									<td>
 										<!-- A4_3_4: button 検索 -->
-										<button>#{i18n.getText('CMM045_32')}</button>
+										<button data-bind = "click: filter">#{i18n.getText('CMM045_32')}</button>
 									</td>
 								</tr>
 								<tr>
