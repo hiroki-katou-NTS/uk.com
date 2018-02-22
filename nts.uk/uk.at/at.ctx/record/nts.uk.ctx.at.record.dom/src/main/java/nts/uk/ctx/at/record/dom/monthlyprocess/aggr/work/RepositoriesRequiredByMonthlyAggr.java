@@ -18,7 +18,12 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeave
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetOfStatutoryWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetWeekStart;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 /**
@@ -51,6 +56,17 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	/** 勤務情報の取得 */
 	WorkTypeRepository getWorkType();
 	
+	/** 就業時間帯の設定の取得 */
+	WorkTimeSettingRepository getWorkTimeSet();
+	/** 固定勤務設定の取得 */
+	FixedWorkSettingRepository getFixedWorkSet();
+	/** 流動勤務設定の取得 */
+	FlowWorkSettingRepository getFlowWorkSet();
+	/** 時差勤務設定の取得 */
+	DiffTimeWorkSettingRepository getDiffWorkSet();
+	/** フレックス勤務設定の取得 */
+	FlexWorkSettingRepository getFlexWorkSet();
+	
 	/** 所定時間設定の取得 */
 	PredetemineTimeSettingRepository getPredetermineTimeSet();
 
@@ -67,7 +83,7 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	LegalTransferOrderSetOfAggrMonthlyRepository getLegalTransferOrderSetOfAggrMonthly();
 	
 	/** 月別実績の縦計方法の取得 */
-	//
+	//*****(未)　特定日の振り分け方法の設計待ち。
 	
 	/** 月別実績の給与項目カウントの取得 */
 	PayItemCountOfMonthlyRepository getPayItemCountOfMonthly();
@@ -89,9 +105,6 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	
 	/** 特別休暇設定 */
 	//SpecialHolidayRepository getSpecialHolidaySet();
-	
-	/** 代休時間設定の取得 */
-	//CompensatoryOccurrenceSettingGetMemento getCompensatoryOccurrenceSet();
 	
 	/** 週開始の取得 */
 	GetWeekStart getGetWeekStart();
