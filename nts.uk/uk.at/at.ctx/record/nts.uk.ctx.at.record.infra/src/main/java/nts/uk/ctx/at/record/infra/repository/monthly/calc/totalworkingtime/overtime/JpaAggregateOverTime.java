@@ -29,7 +29,7 @@ public class JpaAggregateOverTime extends JpaRepository implements AggregateOver
 	public void insert(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
 			AggregateOverTime aggregateOverTimeWork) {
 		
-		this.commandProxy().insert(toEntity(attendanceTimeOfMonthlyKey, aggregateOverTimeWork, false));
+		this.getEntityManager().persist(toEntity(attendanceTimeOfMonthlyKey, aggregateOverTimeWork, false));
 	}
 
 	/** 更新 */
@@ -48,12 +48,12 @@ public class JpaAggregateOverTime extends JpaRepository implements AggregateOver
 		val closureDate = attendanceTimeOfMonthlyKey.getClosureDate();
 		
 		this.getEntityManager().createQuery(DELETE_BY_PARENT_PK)
-			.setParameter("employeeID", attendanceTimeOfMonthlyKey.getEmployeeId())
-			.setParameter("yearMonth", attendanceTimeOfMonthlyKey.getYearMonth().v())
-			.setParameter("closureId", attendanceTimeOfMonthlyKey.getClosureId().value)
-			.setParameter("closureDay", closureDate.getClosureDay().v())
-			.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
-			.executeUpdate();
+				.setParameter("employeeID", attendanceTimeOfMonthlyKey.getEmployeeId())
+				.setParameter("yearMonth", attendanceTimeOfMonthlyKey.getYearMonth().v())
+				.setParameter("closureId", attendanceTimeOfMonthlyKey.getClosureId().value)
+				.setParameter("closureDay", closureDate.getClosureDay().v())
+				.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+				.executeUpdate();
 	}
 	
 	/**
@@ -80,7 +80,7 @@ public class JpaAggregateOverTime extends JpaRepository implements AggregateOver
 		
 		KrcdtMonAggrOverTime entity;
 		if (execUpdate){
-			entity = this.queryProxy().find(key, KrcdtMonAggrOverTime.class).get();
+			entity = this.getEntityManager().find(KrcdtMonAggrOverTime.class, key);
 		}
 		else {
 			entity = new KrcdtMonAggrOverTime();
@@ -93,7 +93,6 @@ public class JpaAggregateOverTime extends JpaRepository implements AggregateOver
 		entity.calcTransferOverTime = domain.getTransferOverTime().getCalcTime().v();
 		entity.legalOverTime = domain.getLegalOverTime().v();
 		entity.legalTransferOverTime = domain.getLegalTransferOverTime().v();
-		if (execUpdate) this.commandProxy().update(entity);
 		return entity;
 	}
 }

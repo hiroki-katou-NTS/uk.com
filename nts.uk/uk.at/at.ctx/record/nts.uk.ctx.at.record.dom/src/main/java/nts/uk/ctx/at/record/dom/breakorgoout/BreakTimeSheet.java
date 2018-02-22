@@ -1,12 +1,21 @@
 package nts.uk.ctx.at.record.dom.breakorgoout;
 
+import java.util.Collections;
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.BreakClassification;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionClassification;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 
 /**
  * 
@@ -39,5 +48,23 @@ public class BreakTimeSheet extends DomainObject {
 		return baseTimeSheet.getDuplicatedWith(baseTimeSheet)
 				.map(ts -> ts.lengthAsMinutes())
 				.orElse(0);
+	}
+	
+	/**
+	 * 自分自身を控除項目の時間帯に変換する
+	 * @return 控除項目の時間帯
+	 */
+	public TimeSheetOfDeductionItem toTimeSheetOfDeductionItem() {
+		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeZoneRounding(this.startTime.getTimeWithDay(), this.endTime.getTimeWithDay(), null),
+																			  new TimeSpanForCalc(this.startTime.getTimeWithDay(), this.endTime.getTimeWithDay()),
+																			  Collections.emptyList(),
+																			  Collections.emptyList(),
+																			  Collections.emptyList(),
+																			  Collections.emptyList(),
+																			  Optional.empty(),
+																			  Finally.empty(),
+																			  Finally.of(BreakClassification.BREAK),
+																			  DeductionClassification.BREAK
+																			  );
 	}
 }

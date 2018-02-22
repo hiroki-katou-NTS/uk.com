@@ -41,7 +41,7 @@ public class SpecBonusPayTimesheet {
 	
 	private SpecBonusPayNumber specBonusPayNumber;
 
-	private SpecBonusPayTimesheet(
+	public SpecBonusPayTimesheet(
 			int timeSheetId, UseAtr useAtr, int timeItemId,
 			AttendanceClock startTime, AttendanceClock endTime, UnitAtr roundingTimeAtr,
 			RoundingAtr roundingAtr, int dateCode,SpecBonusPayNumber specBonusPayNumber) {

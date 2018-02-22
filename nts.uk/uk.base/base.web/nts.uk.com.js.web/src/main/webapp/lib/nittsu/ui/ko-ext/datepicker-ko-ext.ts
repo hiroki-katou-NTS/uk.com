@@ -677,7 +677,7 @@ module nts.uk.ui.koExtentions {
         }
         
         parseDate(date: string): any {
-            var exp = new RegExp(/\d+(\/\d+)?(\/\d+)?/);
+            var exp = /\d+(\/\d+)?(\/\d+)?/;
             if (exp.test(date) === false) return;
             var dateParts = date.split(this.DATE_SPLITTER);
             return {

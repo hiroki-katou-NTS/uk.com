@@ -1,20 +1,48 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 
+import java.util.Random;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
+import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave.AggregateLeaveDays;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave.AnyLeave;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime.AggregateBonusPayTime;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime.AggregateDivergenceTime;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime.DivergenceAtrOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout.AggregateGoOut;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.medicaltime.MedicalTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.premiumtime.AggregatePremiumTime;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
+import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
+import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 
 /**
  * ドメインサービス：月別実績を集計する
@@ -67,7 +95,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		
 		// 項目の数だけループ
 		for (val workingConditionItem : workingConditionItems){
-			
+
 			// 「労働条件」の該当履歴から期間を取得
 			val historyId = workingConditionItem.getHistoryId();
 			val workingConditionOpt = this.workingConditionRepository.getByHistoryId(historyId);
@@ -96,26 +124,31 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 				continue;
 			}
 			
-			// 月別実績の勤怠時間　初期データ作成
-			val attendanceTime = new AttendanceTimeOfMonthly(employeeId, yearMonth,
-					closureId, closureDate, procPeriod);
-			
 			// 労働制を確認する
 			val workingSystem = workingConditionItem.getLaborSystem();
 			
+			// 月別実績の勤怠時間　初期設定
+			val attendanceTime = new AttendanceTimeOfMonthly(employeeId, yearMonth, closureId, closureDate, procPeriod);
+			attendanceTime.prepareAggregation(companyId, procPeriod, workingSystem, isRetireMonth, this.repositories);
+			
 			// 月の計算
-			attendanceTime.aggregate(companyId, workingSystem, isRetireMonth, this.repositories);
+			val monthlyCalculation = attendanceTime.getMonthlyCalculation();
+			monthlyCalculation.aggregate(this.repositories);
 			
 			// 縦計
-			attendanceTime.verticalTotal(companyId, workingSystem, this.repositories);
+			val verticalTotal = attendanceTime.getVerticalTotal();
+			verticalTotal.verticalTotal(companyId, employeeId, procPeriod, workingSystem, this.repositories);
 			
 			// 時間外超過
+			ExcessOutsideWorkMng excessOutsideWorkMng = new ExcessOutsideWorkMng(monthlyCalculation);
+			excessOutsideWorkMng.aggregate(this.repositories);
+			attendanceTime.setExcessOutsideWork(excessOutsideWorkMng.getExcessOutsideWork());
 
 			// 計算結果を戻り値に蓄積
 			returnValue.getAttendanceTimes().add(attendanceTime);
 		}
 		
-		//*****（テスト）　2017/12検収テスト用。仮データ設定。
+		//*****start（テスト shuichi_ishida）　2017.12 検収用。仮データ設定。
 		/*
 		Random random = new Random();
 		val randomVal = random.nextInt(9) + 1;		// 1～9の乱数発生
@@ -148,6 +181,8 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			totalWorkingTime.getOverTime().getAggregateOverTimeMap().put(
 					aggrOvertime2.getOverTimeFrameNo(), aggrOvertime2);
 		}
+		totalWorkingTime.getOverTime().setTotalOverTime(new TimeMonthWithCalculation(
+				new AttendanceTimeMonth(440 + randomVal), new AttendanceTimeMonth(0)));
 		val aggrHdwktime1 = AggregateHolidayWorkTime.of(
 				new HolidayWorkFrameNo(1),
 				new TimeMonthWithCalculation(
@@ -175,10 +210,104 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		val actualWorkingTime = monthlyCalculation.getActualWorkingTime();
 		actualWorkingTime.setWeeklyTotalPremiumTime(new AttendanceTimeMonth(540 + randomVal));
 		actualWorkingTime.setMonthlyTotalPremiumTime(new AttendanceTimeMonth(2460 + randomVal));
+		
+		// 縦計分追加　2018.2.8
+		val verticalTotal = attendanceTime.getVerticalTotal();
+		val vWorkTime = verticalTotal.getWorkTime();
+		val vBonusPayTime = vWorkTime.getBonusPayTime();
+		val vBonusPayTimeMap = vBonusPayTime.getBonusPayTime();
+		val aggrBonusPayTime01 = AggregateBonusPayTime.of(1,
+				new AttendanceTimeMonth(3110 + randomVal),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0));
+		val aggrBonusPayTime02 = AggregateBonusPayTime.of(1,
+				new AttendanceTimeMonth(3120 + randomVal),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0));
+		vBonusPayTimeMap.put(1, aggrBonusPayTime01);
+		if (randomVal >= 6) vBonusPayTimeMap.put(2, aggrBonusPayTime02);
+		val vDivergenceTime = vWorkTime.getDivergenceTime();
+		val vDivergenceTimeMap = vDivergenceTime.getDivergenceTimeList();
+		val aggrDivergenceTime01 = AggregateDivergenceTime.of(1,
+				new AttendanceTimeMonth(3210 + randomVal),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
+				DivergenceAtrOfMonthly.NORMAL);
+		val aggrDivergenceTime02 = AggregateDivergenceTime.of(2,
+				new AttendanceTimeMonth(3220 + randomVal),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
+				DivergenceAtrOfMonthly.NORMAL);
+		vDivergenceTimeMap.put(1, aggrDivergenceTime01);
+		if (randomVal >= 6) vDivergenceTimeMap.put(2, aggrDivergenceTime02);
+		val vGoOut = vWorkTime.getGoOut();
+		val vGoOuts = vGoOut.getGoOuts();
+		val aggrGoOut01 = AggregateGoOut.of(GoingOutReason.PRIVATE,
+				new AttendanceTimesMonth(10 + randomVal),
+				TimeMonthWithCalculation.ofSameTime(0),
+				TimeMonthWithCalculation.ofSameTime(0),
+				TimeMonthWithCalculation.ofSameTime(0));
+		val aggrGoOut02 = AggregateGoOut.of(GoingOutReason.PUBLIC,
+				new AttendanceTimesMonth(20 + randomVal),
+				TimeMonthWithCalculation.ofSameTime(0),
+				TimeMonthWithCalculation.ofSameTime(0),
+				TimeMonthWithCalculation.ofSameTime(0));
+		vGoOuts.put(GoingOutReason.PRIVATE, aggrGoOut01);
+		if (randomVal >= 6) vGoOuts.put(GoingOutReason.PUBLIC, aggrGoOut02);
+		val vPremiumTime = vWorkTime.getPremiumTime();
+		val vPremiumTimeMap = vPremiumTime.getPremiumTime();
+		val aggrPremiumTime01 = AggregatePremiumTime.of(1, new AttendanceTimeMonth(3410 + randomVal));
+		val aggrPremiumTime02 = AggregatePremiumTime.of(2, new AttendanceTimeMonth(3420 + randomVal));
+		vPremiumTimeMap.put(1, aggrPremiumTime01);
+		if (randomVal >= 6) vPremiumTimeMap.put(2, aggrPremiumTime02);
+		val medicalTime = vWorkTime.getMedicalTime();
+		val medicalTime01 = MedicalTimeOfMonthly.of(WorkTimeNightShift.DAY_SHIFT,
+				new AttendanceTimeMonth(3510 + randomVal),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0));
+		val medicalTime02 = MedicalTimeOfMonthly.of(WorkTimeNightShift.NIGHT_SHIFT,
+				new AttendanceTimeMonth(3520 + randomVal),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0));
+		medicalTime.put(WorkTimeNightShift.DAY_SHIFT, medicalTime01);
+		if (randomVal >= 6) medicalTime.put(WorkTimeNightShift.NIGHT_SHIFT, medicalTime02);
+		val vWorkDays = verticalTotal.getWorkDays();
+		val vAbsenceDays = vWorkDays.getAbsenceDays();
+		val vAbsenceDaysMap = vAbsenceDays.getAbsenceDaysList();
+		val aggrAbsenceDays01 = AggregateAbsenceDays.of(1, new AttendanceDaysMonth(10.0 + randomVal));
+		val aggrAbsenceDays02 = AggregateAbsenceDays.of(2, new AttendanceDaysMonth(20.0 + randomVal));
+		vAbsenceDaysMap.put(1, aggrAbsenceDays01);
+		if (randomVal >= 6) vAbsenceDaysMap.put(2, aggrAbsenceDays02);
+		val vSpecificDays = vWorkDays.getSpecificDays();
+		val vSpecificDaysMap = vSpecificDays.getSpecificDays();
+		val specificDays01 = AggregateSpecificDays.of(new SpecificDateItemNo(1),
+				new AttendanceDaysMonth(30.0 + randomVal),
+				new AttendanceDaysMonth(0.0));
+		val specificDays02 = AggregateSpecificDays.of(new SpecificDateItemNo(2),
+				new AttendanceDaysMonth(40.0 + randomVal),
+				new AttendanceDaysMonth(0.0));
+		vSpecificDaysMap.put(new SpecificDateItemNo(1), specificDays01);
+		if (randomVal >= 6) vSpecificDaysMap.put(new SpecificDateItemNo(2), specificDays02);
+		val vLeave = vWorkDays.getLeave();
+		val fixLeaveDays = vLeave.getFixLeaveDays();
+		val anyLeaveDays = vLeave.getAnyLeaveDays();
+		val aggrLeaveDays01 = AggregateLeaveDays.of(CloseAtr.PRENATAL, new AttendanceDaysMonth(10.0 + randomVal));
+		val aggrLeaveDays02 = AggregateLeaveDays.of(CloseAtr.POSTPARTUM, new AttendanceDaysMonth(20.0 + randomVal));
+		val anyLeave01 = AnyLeave.of(1, new AttendanceDaysMonth(30.0 + randomVal));
+		val anyLeave02 = AnyLeave.of(2, new AttendanceDaysMonth(40.0 + randomVal));
+		fixLeaveDays.put(CloseAtr.PRENATAL, aggrLeaveDays01);
+		if (randomVal >= 6) fixLeaveDays.put(CloseAtr.POSTPARTUM, aggrLeaveDays02);
+		anyLeaveDays.put(0, anyLeave01);
+		if (randomVal >= 6) anyLeaveDays.put(1, anyLeave02);
+		vWorkDays.getWorkDays().setDays(new AttendanceDaysMonth(20.0 +  randomVal));
+		
 		returnValue.getAttendanceTimes().add(attendanceTime);
 		*/
+		//*****end（テスト shuichi_ishida）　2017.12 検収用。仮データ設定。
 		
-		//*****（テスト）　2017/12集計設定読み込み
+		//*****（テスト 2017.12 shuichi_ichida）　集計設定読み込み
 		/*
 		val aggrSet = this.repositories.getAggrSettingMonthly().get("TESTCMP", "TESTWKP", "XM", "XESTSYA");
 		val otlist = aggrSet.getRegularWork().getAggregateTimeSet().getTreatOverTimeOfLessThanCriteriaPerDay().getAutoExcludeOverTimeFrames();

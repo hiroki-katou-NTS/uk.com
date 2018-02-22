@@ -952,7 +952,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 		}
 		
 		if(scheduleMethod.getBasicCreateMethod() != WorkScheduleBasicCreMethod.PERSONAL_DAY_OF_WEEK) {
-			if(scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent())
+			if(scheduleMethod.getWorkScheduleBusCal().isPresent())
 				dto.setReferenceType(scheduleMethod.getWorkScheduleBusCal().get().getReferenceWorkingHours().value);
 		}
 //		if(scheduleMethod.getBasicCreateMethod() == WorkScheduleBasicCreMethod.MONTHLY_PATTERN)
@@ -960,7 +960,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 //			if(scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent())
 //				dto.setReferenceType(scheduleMethod.getMonthlyPatternWorkScheduleCre().get().getReferenceType().value);
 //		}else if(scheduleMethod.getBasicCreateMethod() == WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR) {
-//			if(scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent())
+//			if(scheduleMethod.getWorkScheduleBusCal().isPresent())
 //				dto.setReferenceType(scheduleMethod.getWorkScheduleBusCal().get().getReferenceWorkingHours().value);
 //		}
 	}

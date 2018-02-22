@@ -37,9 +37,7 @@ public class BonusPayTimeOfMonthly {
 		val domain = new BonusPayTimeOfMonthly();
 		for (val aggrBonusPayTime : bonusPayTime){
 			val bonusPayFrameNo = Integer.valueOf(aggrBonusPayTime.getBonusPayFrameNo());
-			if (!domain.bonusPayTime.containsKey(bonusPayFrameNo)){
-				domain.bonusPayTime.put(bonusPayFrameNo, aggrBonusPayTime);
-			}
+			domain.bonusPayTime.putIfAbsent(bonusPayFrameNo, aggrBonusPayTime);
 		}
 		return domain;
 	}
@@ -67,9 +65,7 @@ public class BonusPayTimeOfMonthly {
 		// 加給時間ごとの集計
 		for (val bonusPayTime : bonusPayTimes){
 			val bonusPayNo = Integer.valueOf(bonusPayTime.getBonusPayTimeItemNo());
-			if (!this.bonusPayTime.containsKey(bonusPayNo)) {
-				this.bonusPayTime.put(bonusPayNo, new AggregateBonusPayTime(bonusPayNo.intValue()));
-			}
+			this.bonusPayTime.putIfAbsent(bonusPayNo, new AggregateBonusPayTime(bonusPayNo.intValue()));
 			val targetBonusPayTime = this.bonusPayTime.get(bonusPayNo);
 			
 			if (isHolidayWork){
@@ -83,9 +79,7 @@ public class BonusPayTimeOfMonthly {
 		// 特定日加給時間ごとの集計
 		for (val specDayBonusPayTime : specDayBonusPayTimes){
 			val bonusPayNo = Integer.valueOf(specDayBonusPayTime.getBonusPayTimeItemNo());
-			if (!this.bonusPayTime.containsKey(bonusPayNo)) {
-				this.bonusPayTime.put(bonusPayNo, new AggregateBonusPayTime(bonusPayNo.intValue()));
-			}
+			this.bonusPayTime.putIfAbsent(bonusPayNo, new AggregateBonusPayTime(bonusPayNo.intValue()));
 			val targetBonusPayTime = this.bonusPayTime.get(bonusPayNo);
 			
 			if (isHolidayWork){
