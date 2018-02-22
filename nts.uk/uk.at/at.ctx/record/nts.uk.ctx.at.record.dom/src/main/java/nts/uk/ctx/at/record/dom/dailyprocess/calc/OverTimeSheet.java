@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.SubHolOccurrenceInfo;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaisingSalaryTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -106,6 +107,19 @@ public class OverTimeSheet {
 			calcOverTimeWorkTimeList.set(overTimeFrameTime.getFrameTime().getOverWorkFrameNo().v().intValue() - 1, getListItem);
 		}
 		return calcOverTimeWorkTimeList;
+	}
+	
+	/**
+	 * 全枠の中に入っている控除時間(控除区分に従って)を合計する
+	 * @return 控除合計時間
+	 */
+	public AttendanceTime calculationAllFrameDeductionTime(DeductionAtr dedAtr,ConditionAtr atr) {
+		AttendanceTime totalTime = new AttendanceTime(0);
+		List<TimeSheetOfDeductionItem> forcsList = new ArrayList<>(); 
+		for(OverTimeFrameTimeSheetForCalc frameTime : this.frameTimeSheets) {
+			totalTime.addMinutes(frameTime.forcs(forcsList,atr,dedAtr).valueAsMinutes());
+		}
+		return totalTime;
 	}
 	
 	/**
