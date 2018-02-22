@@ -22,7 +22,6 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicScheduleHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTimeHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.WorkTimeSetGetterCommand;
-import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommand;
 import nts.uk.ctx.at.schedule.dom.adapter.employment.EmploymentHistoryImported;
 import nts.uk.ctx.at.schedule.dom.adapter.employment.ScEmploymentAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
@@ -33,7 +32,6 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.closure.ClosurePeriod;
-import nts.uk.ctx.at.shared.app.command.worktime.predset.dto.PrescribedTimezoneSettingDto;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
@@ -104,6 +102,11 @@ public class ScheBatchCorrectExecutionCommandHandler
 	/** The Constant DAY_ONE. */
 	private static final int DAY_ONE = 1;
 	
+	/** The Constant DATA_PREFIX. */
+	private static final String DATA_PREFIX = "DATA_";
+	
+	/** The Constant MAX_ERROR_RECORD. */
+	private static final int MAX_ERROR_RECORD = 5;
 	
 			
 	/*
@@ -141,6 +144,9 @@ public class ScheBatchCorrectExecutionCommandHandler
 		
 		int countSuccess = DEFAULT_VALUE;
 		
+		// Variable to count amount of list of error records sent to DB
+		int errorRecordCount = DEFAULT_VALUE;
+		
 		setter.setData(DATA_EXECUTION, dto);
 		setter.setData(NUMBER_OF_SUCCESS, countSuccess);
 		setter.setData(NUMBER_OF_ERROR, DEFAULT_VALUE);
@@ -164,19 +170,34 @@ public class ScheBatchCorrectExecutionCommandHandler
 					errorContentDto.setEmployeeCode(employeeDto.getEmployeeCode());
 					errorContentDto.setEmployeeName(employeeDto.getEmployeeName());
 					errorContentDto.setDateYMD(currentDateCheck);
+					
+					// Add to error list (save to DB every 5 error records)
+					if (errorList.size() >= MAX_ERROR_RECORD) {
+						errorRecordCount++;
+						setter.setData(DATA_PREFIX + errorRecordCount, dto);
+						
+						// Clear the list for the new batch of error record
+						errorList.clear();
+					}
 					errorList.add(errorContentDto);
 				} else {
 					countSuccess++;
 					setter.updateData(NUMBER_OF_SUCCESS, countSuccess);
 				}
-				setter.updateData(DATA_EXECUTION, dto);
+				//setter.updateData(DATA_EXECUTION, dto);
 				
 				// Add 1 more day to current day
 				currentDateCheck = currentDateCheck.nextValue(true);
 			}
 		}
 		
-		// Count emount of error
+		// Send the last batch of errors if there is still records unsent
+		if (!errorList.isEmpty()) {
+			errorRecordCount++;
+			setter.setData(DATA_PREFIX + errorRecordCount, dto);
+		}
+		
+		// Count amount of error
 		if (errorList.size() > 0) {
 			dto.setWithError(WithError.WITH_ERROR);
 			setter.updateData(NUMBER_OF_ERROR, errorList.size());
@@ -188,7 +209,7 @@ public class ScheBatchCorrectExecutionCommandHandler
 
 		dto.setEndTime(GeneralDateTime.now());
 		dto.setExecutionState(ExecutionState.DONE);
-		setter.updateData(DATA_EXECUTION, dto);
+		//setter.updateData(DATA_EXECUTION, dto);
 	}
 	
 	/**
