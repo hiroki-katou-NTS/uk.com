@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.query.infra.repository.employee;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole;
 import nts.uk.query.model.employee.EmployeeReferenceRange;
@@ -13,6 +15,7 @@ import nts.uk.query.model.employee.EmployeeRoleRepository;
 /**
  * The Class JpaEmployeeRoleRepository.
  */
+@Stateless
 public class JpaEmployeeRoleRepository extends JpaRepository implements EmployeeRoleRepository {
 
 	/* (non-Javadoc)
