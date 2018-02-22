@@ -864,7 +864,7 @@ module nts.uk.com.view.ccg.share.ccg {
             public expand(): void {
                 let self = this;
                 $('#workplaceList').fullView();
-                self.isExpanded(true);
+                _.defer(() => self.isExpanded(true));
             }
 
             /**
@@ -873,7 +873,7 @@ module nts.uk.com.view.ccg.share.ccg {
             public collapse(): void {
                 let self = this;
                 $('#workplaceList').scrollView();
-                self.isExpanded(false);
+                _.defer(() => self.isExpanded(false));
             }
 
             /**
