@@ -240,15 +240,17 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 	@Override
 	public void update(List<ReceptionRestrictionSetting> receiption, List<AppTypeSetting> appType) {
 		String companyId = AppContexts.user().companyId();
+		List<Integer> listInsert = new ArrayList<>();
+		List<AppTypeSetting> listFilter = new ArrayList<>();
 		// update before and after 
 		for(ReceptionRestrictionSetting item: receiption){ 
 			Optional<KrqstAppTypeDiscrete> oldEntity1 = this.queryProxy().find(new KrqstAppTypeDiscretePK(companyId, item.getAppType().value), KrqstAppTypeDiscrete.class);
 			// if don't exist => insert 
 			if(!oldEntity1.isPresent()){
-					Optional<AppTypeSetting> temp = appType.stream().filter(c -> c.getAppType().equals(item.getAppType())).findFirst();
-					KrqstAppTypeDiscrete entity = toEntityDiscrete(item, temp.get());
-					this.commandProxy().insert(entity);
-					return;
+				listInsert.add(item.getAppType().value);
+				Optional<AppTypeSetting> temp = appType.stream().filter(c -> c.getAppType().equals(item.getAppType())).findFirst();
+				KrqstAppTypeDiscrete entity = toEntityDiscrete(item, temp.get());
+				this.commandProxy().insert(entity);
 			}
 			// if exist => update
 			else{
@@ -262,24 +264,33 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 				oldEntity1.get().retrictPreTimeDay = item.getBeforehandRestriction().getTimeBeforehandRestriction().v();
 				// 未来日許可しない - retrictPostAllowFutureFlg - RETRICT_POST_ALLOW_FUTURE_FLG
 				oldEntity1.get().retrictPostAllowFutureFlg = item.getAfterhandRestriction().getAllowFutureDay() == true ? 1: 0;
-				this.commandProxy().update(oldEntity1);
-				for(AppTypeSetting app : appType){
-					KrqstAppTypeDiscrete oldEntity2 = this.queryProxy().find(new KrqstAppTypeDiscretePK(companyId, app.getAppType().value), KrqstAppTypeDiscrete.class).get();
-					// 定型理由の表示  - displayFixedReason - TYPICAL_REASON_DISPLAY_FLG (map domain AppTypeDiscreteSetting)
-					oldEntity2.typicalReasonDisplayFlg = app.getDisplayFixedReason().value;
-					// 申請理由の表示  - displayAppReason - DISPLAY_REASON_FLG
-					oldEntity2.displayReasonFlg = app.getDisplayAppReason().value;
-					// 新規登録時に自動でメールを送信する - sendMailWhenRegisterFlg - SEND_MAIL_WHEN_REGISTER_FLG
-					oldEntity2.sendMailWhenRegisterFlg = app.getSendMailWhenRegister() ? 1 : 0;
-					// 承認処理時に自動でメールを送信する -  - SEND_MAIL_WHEN_APPROVAL_FLG
-					oldEntity2.sendMailWhenApprovalFlg = app.getSendMailWhenApproval() ? 1 : 0;
-					// 事前事後区分の初期表示 - prePostInitAtr - PRE_POST_INIT_ATR
-					oldEntity2.prePostInitAtr = app.getDisplayInitialSegment().value;
-					// 事前事後区分を変更できる - prePostCanChangeFlg - PRE_POST_CAN_CHANGE_FLG
-					oldEntity2.prePostCanChangeFlg = app.getCanClassificationChange() ? 1 : 0;
-					this.commandProxy().update(oldEntity2);
-				}
+				this.commandProxy().update(oldEntity1.get());
 			}
+		}
+		// filter list app type setting need update (if list insert don't need update)
+		if(listInsert.isEmpty()){
+			listFilter = appType;
+		}else{
+			for(Integer i : listInsert){
+				listFilter = appType.stream().filter(c -> !c.getAppType().equals(i))
+																	.collect(Collectors.toList());
+			}
+		}
+		for(AppTypeSetting app : listFilter){
+			KrqstAppTypeDiscrete oldEntity2 = this.queryProxy().find(new KrqstAppTypeDiscretePK(companyId, app.getAppType().value), KrqstAppTypeDiscrete.class).get();
+			// 定型理由の表示  - displayFixedReason - TYPICAL_REASON_DISPLAY_FLG (map domain AppTypeDiscreteSetting)
+			oldEntity2.typicalReasonDisplayFlg = app.getDisplayFixedReason().value;
+			// 申請理由の表示  - displayAppReason - DISPLAY_REASON_FLG
+			oldEntity2.displayReasonFlg = app.getDisplayAppReason().value;
+			// 新規登録時に自動でメールを送信する - sendMailWhenRegisterFlg - SEND_MAIL_WHEN_REGISTER_FLG
+			oldEntity2.sendMailWhenRegisterFlg = app.getSendMailWhenRegister() ? 1 : 0;
+			// 承認処理時に自動でメールを送信する -  - SEND_MAIL_WHEN_APPROVAL_FLG
+			oldEntity2.sendMailWhenApprovalFlg = app.getSendMailWhenApproval() ? 1 : 0;
+			// 事前事後区分の初期表示 - prePostInitAtr - PRE_POST_INIT_ATR
+			oldEntity2.prePostInitAtr = app.getDisplayInitialSegment().value;
+			// 事前事後区分を変更できる - prePostCanChangeFlg - PRE_POST_CAN_CHANGE_FLG
+			oldEntity2.prePostCanChangeFlg = app.getCanClassificationChange() ? 1 : 0;
+			this.commandProxy().update(oldEntity2);
 		}
 	}
 }
