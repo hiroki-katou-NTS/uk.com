@@ -1,10 +1,12 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.auth.pub.role;
 
 import java.util.List;
+
+import nts.arc.time.GeneralDate;
 
 /**
  * The Interface RoleExportRepo.
@@ -44,4 +46,15 @@ public interface RoleExportRepo {
 	 * @return the workplace id export
 	 */
 	WorkplaceIdExport findWorkPlaceIdNoRole(Integer systemType);
+	
+	/**
+	 * Gets the work place id by employee reference range.
+	 *
+	 * @param baseDate the base date
+	 * @param employeeReferenceRange the employee reference range
+	 * @return the work place id by employee reference range
+	 */
+	// Request #159 
+	// 指定条件から参照可能な職場リストを取得する
+	List<String> getWorkPlaceIdByEmployeeReferenceRange(GeneralDate baseDate, Integer employeeReferenceRange);
 }

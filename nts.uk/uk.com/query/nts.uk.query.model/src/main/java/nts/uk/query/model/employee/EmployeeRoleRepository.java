@@ -14,5 +14,5 @@ public interface EmployeeRoleRepository {
 	 *
 	 * @return the employee role imported
 	 */
-	EmployeeRoleImported findRoleById();
+	EmployeeRoleImported findRoleById(String roleId);
 }
