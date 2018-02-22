@@ -97,7 +97,7 @@ public class InitDefaultValue {
 	private String getFirstValueText(String itemValue) {
 		String resultText = wtRepo.acquireWorkTypeName(itemValue);
 		if(resultText == null) {
-			resultText = itemValue + SPACE_JP +  ukResouce.getRawContent("CPS001_107").get();
+			resultText = ukResouce.getRawContent("CPS001_107").get();
 		}
 		return resultText;
 	}
@@ -106,7 +106,7 @@ public class InitDefaultValue {
 	private String getSecValueText(String itemValue, String companyId) {
 		String resultText = wtsRepo.getWorkTimeSettingName(companyId, itemValue);
 		if(resultText == null) {
-			resultText = itemValue + SPACE_JP +  ukResouce.getRawContent("CPS001_107").get();
+			resultText = ukResouce.getRawContent("CPS001_107").get();
 		}
 		return resultText;
 	}
