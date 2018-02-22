@@ -719,18 +719,6 @@ module cps001.a.vm {
                                 layout.showColor(true);
                                 layout.standardDate(data.standardDate || undefined);
 
-                                _.each(data.classificationItems, x => {
-                                    if ([IT_CLA_TYPE.ITEM].indexOf(x.layoutItemType) > -1) {
-                                        _.each(x.items, m => {
-                                            if (!_.isNil(m.value) && !_.isEmpty(m.value)) {
-                                                m.showColor = true;
-                                            } else {
-                                                m.showColor = false;
-                                            }
-                                        });
-                                    }
-                                });
-
                                 lv.removeDoubleLine(data.classificationItems);
                                 layout.listItemCls(data.classificationItems || []);
 
