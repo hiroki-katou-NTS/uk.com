@@ -1918,9 +1918,7 @@ module nts.custombinding {
                         case IT_CLA_TYPE.ITEM:
                             _.each((x.items()), (def, i) => {
                                 def.index = i;
-                                console.log(def.showColor);
                                 modifitem(def);
-                                console.log(def.showColor);
                             });
                             break;
                         case IT_CLA_TYPE.LIST:
