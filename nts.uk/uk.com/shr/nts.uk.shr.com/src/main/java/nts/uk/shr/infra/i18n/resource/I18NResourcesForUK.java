@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -37,8 +36,7 @@ public class I18NResourcesForUK implements I18NResources, I18NResourceCustomizer
 	private I18NResourceContentProcessor contentProcessor = new I18NResourceContentProcessor(
 			id -> this.localize(id).orElse(id));
 	
-	@PostConstruct
-	private void initialize() {
+	public void initialize() {
 		log.info("[INIT START] nts.uk.shr.infra.i18n.resource.I18NResourcesForUK");
 		
 		this.languageRepository.getSystemLanguages().stream()
