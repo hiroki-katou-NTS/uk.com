@@ -11,7 +11,6 @@ module nts.uk.at.view.kmk003.a {
     import FlexHalfDayWorkTimeDto = service.model.flexset.FlexHalfDayWorkTimeDto;
     import FlexCalcSettingDto = service.model.flexset.FlexCalcSettingDto;
     import FlexOffdayWorkTimeDto = service.model.flexset.FlexOffdayWorkTimeDto;
-    import FlexWorkSettingDto = service.model.flexset.FlexWorkSettingDto;
 
     import EmTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.EmTimeZoneSetModel;
     import OverTimeOfTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.OverTimeOfTimeZoneSetModel;
@@ -23,6 +22,10 @@ module nts.uk.at.view.kmk003.a {
     import FixedWorkTimezoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixedWorkTimezoneSetModel;
     import OffdayWorkTimeConverter = nts.uk.at.view.kmk003.a.viewmodel.common.OffdayWorkTimeConverter;
 
+    import FlexWorkSettingDto = service.model.flexset.FlexWorkSettingDto;
+    import FixedWorkSettingDto = service.model.fixedset.FixedWorkSettingDto;
+    import DiffTimeWorkSettingDto = nts.uk.at.view.kmk003.a.service.model.difftimeset.DiffTimeWorkSettingDto;
+    import FlWorkSettingDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlWorkSettingDto;
     export module viewmodel {
         export module flexset {
             
@@ -338,6 +341,63 @@ module nts.uk.at.view.kmk003.a {
                         calculateSetting: this.calculateSetting.toDto()
                     };
                     return dataDTO;    
+                }
+                
+                fromFixed(fixedDto: FixedWorkSettingDto)
+                {
+                    let common: WorkTimezoneCommonSetModel = new WorkTimezoneCommonSetModel();
+                    common.updateData(fixedDto.commonSetting);
+                    let flexDto: FlexWorkSettingDto = this.toDto(common);
+                    //list half
+                    flexDto.lstHalfDayWorkTimezone.forEach(function(item, index) {
+                        let halfDay = fixedDto.lstHalfDayWorkTimezone.filter((item) => { return item.dayAtr == item.dayAtr; })[0];
+                        flexDto.lstHalfDayWorkTimezone[index].workTimezone.lstWorkingTimezone = halfDay.workTimezone.lstWorkingTimezone;
+                        flexDto.lstHalfDayWorkTimezone[index].workTimezone.lstOTTimezone = halfDay.workTimezone.lstOTTimezone;
+                        //rest time flex # fixed
+                        //                        flexDto.lstHalfDayWorkTimezone[index].restTimezone.fixRestTime = halfDay.restTimezone;
+                    });
+                    
+                    //off day
+                    flexDto.offdayWorkTime.lstWorkTimezone = fixedDto.offdayWorkTimezone.lstWorkTimezone;
+                    //rest flex # fixed 
+                    //                    flexDto.offdayWorkTime.restTimezone. = fixedDto.offdayWorkTimezone.restTimezone.lstTimezone;
+                    //
+                    this.updateData(flexDto);
+                }
+                
+                fromDiffTime(difftimeDto: DiffTimeWorkSettingDto)
+                {
+                    //TODO
+                let common: WorkTimezoneCommonSetModel = new WorkTimezoneCommonSetModel();
+                    common.updateData(difftimeDto.commonSet);
+                    let flexDto: FlexWorkSettingDto = this.toDto(common);
+                    //list half
+                    flexDto.lstHalfDayWorkTimezone.forEach((item,index) =>{
+                        let halfDay = difftimeDto.halfDayWorkTimezones.filter((half) => { return half.amPmAtr == item.ampmAtr; })[0];
+                        flexDto.lstHalfDayWorkTimezone[index].workTimezone.lstWorkingTimezone = halfDay.workTimezone.employmentTimezones;
+                        flexDto.lstHalfDayWorkTimezone[index].workTimezone.lstOTTimezone = halfDay.workTimezone.lstOtTimezone;
+                    });
+                    
+                    //off day
+                    flexDto.offdayWorkTime.lstWorkTimezone = difftimeDto.dayoffWorkTimezone.workTimezones;
+                }
+                
+                fromFlow(flowDto: FlWorkSettingDto)
+                {
+//                    //TODO
+//                    let common: WorkTimezoneCommonSetModel = new WorkTimezoneCommonSetModel();
+//                    common.updateData(flowDto.commonSetting);
+//                    let flexDto: FlexWorkSettingDto = this.toDto(common);
+//                    //list half
+//                    flexDto.lstHalfDayWorkTimezone.forEach((item, index) => {
+//                        let halfDay = flowDto.halfDayWorkTimezone.filter((half) => { return half.amPmAtr == item.ampmAtr; })[0];
+//                        flexDto.lstHalfDayWorkTimezone[index].workTimezone.lstWorkingTimezone = halfDay.workTimezone.employmentTimezones;
+//                        flexDto.lstHalfDayWorkTimezone[index].workTimezone.lstOTTimezone = halfDay.workTimezone.lstOtTimezone;
+//                    });
+//
+//                    //off day
+//                    //TODO convert to list work  time zone 
+//                    flexDto.offdayWorkTime.lstWorkTimezone = flowDto.offdayWorkTimezone.lstWorkTimezone;
                 }
             }
             

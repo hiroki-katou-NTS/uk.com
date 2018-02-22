@@ -12,7 +12,6 @@ module nts.uk.at.view.kmk003.a {
     import FlOTSetDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlOTSetDto;
     import FlStampReflectTzDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlStampReflectTzDto;
     import FlWorkDedSettingDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlWorkDedSettingDto;
-    import FlWorkSettingDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlWorkSettingDto;
 
     import TimeRoundingSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRoundingSettingModel;
     import FlowWorkRestTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowWorkRestTimezoneModel;
@@ -20,7 +19,11 @@ module nts.uk.at.view.kmk003.a {
     import FlowWorkRestSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowWorkRestSettingModel;
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
     import FixedTableDataConverter = nts.uk.at.view.kmk003.a.viewmodel.common.FixedTableDataConverter;
-
+    
+    import FlexWorkSettingDto = service.model.flexset.FlexWorkSettingDto;
+    import FixedWorkSettingDto = service.model.fixedset.FixedWorkSettingDto;
+    import DiffTimeWorkSettingDto = nts.uk.at.view.kmk003.a.service.model.difftimeset.DiffTimeWorkSettingDto;
+    import FlWorkSettingDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlWorkSettingDto;
     export module viewmodel {
 
         export module flowset {
@@ -445,6 +448,22 @@ module nts.uk.at.view.kmk003.a {
                     this.stampReflectTimezone.resetData();
                     this.designatedSetting(0);
                     this.flowSetting.resetData();
+                }
+                
+                fromFlex(flexDto: FlexWorkSettingDto) {
+                    //TODO
+                }
+
+                fromFlow(flowDto: FlWorkSettingDto) {
+                    //TODO
+                }
+                
+                fromFixed(fixedDto: FixedWorkSettingDto) {
+                    //TODO
+                }
+                
+                fromDiffTime(difftimeDto: DiffTimeWorkSettingDto) {
+                    //TODO
                 }
             }
             
