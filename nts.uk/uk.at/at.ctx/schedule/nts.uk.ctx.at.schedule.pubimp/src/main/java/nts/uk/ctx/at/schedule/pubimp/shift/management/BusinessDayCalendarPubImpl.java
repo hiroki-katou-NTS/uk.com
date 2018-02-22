@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.management.IBusinessDayCalendarService;
+import nts.uk.ctx.at.schedule.dom.shift.management.DefaultIBusinessDayCalendarService;
 import nts.uk.ctx.at.schedule.dom.shift.management.TargetDaysHDCls;
 import nts.uk.ctx.at.schedule.pub.shift.management.BusinessDayCalendarExport;
 import nts.uk.ctx.at.schedule.pub.shift.management.BusinessDayCalendarPub;
@@ -21,14 +21,14 @@ import nts.uk.ctx.at.schedule.pub.shift.management.HolidayClsExport;
 @Stateless
 public class BusinessDayCalendarPubImpl implements BusinessDayCalendarPub {
 	@Inject
-	private IBusinessDayCalendarService businessDayCalendarService;
+	private DefaultIBusinessDayCalendarService businessDayCalendarService;
 
 	@Override
 	public Optional<BusinessDayCalendarExport> acquiredHolidayClsOfTargetDate(String companyId, String workPlaceId, GeneralDate date) {
 		Optional<TargetDaysHDCls> output = businessDayCalendarService.acquiredHolidayClsOfTargetDate(companyId, workPlaceId, date);
 		if(output.isPresent()) {
-			BusinessDayCalendarExport e = new BusinessDayCalendarExport(EnumAdaptor.valueOf(output.get().holidayCls.value, HolidayClsExport.class), output.get().targetDate);
-			return Optional.of(e);
+			BusinessDayCalendarExport businessDayCal = new BusinessDayCalendarExport(EnumAdaptor.valueOf(output.get().holidayCls.value, HolidayClsExport.class), output.get().targetDate);
+			return Optional.of(businessDayCal);
 		}
 		
 		return Optional.empty();
