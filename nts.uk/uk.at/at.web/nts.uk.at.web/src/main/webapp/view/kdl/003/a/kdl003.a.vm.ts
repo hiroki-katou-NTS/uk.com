@@ -426,7 +426,7 @@ module nts.uk.at.view.kdl003.a {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_53" });
                     return;
                 }
-                if (nts.uk.util.isNullOrUndefined(self.startTime()) || nts.uk.util.isNullOrUndefined(self.endTime())) {
+                if (nts.uk.util.isNullOrEmpty(self.startTime()) || nts.uk.util.isNullOrEmpty(self.endTime())) {
                     return;
                 }
                 
