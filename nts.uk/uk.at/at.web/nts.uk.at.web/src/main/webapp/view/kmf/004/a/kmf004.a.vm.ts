@@ -364,6 +364,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             }
             else {
                 service.updateSpecialHoliday(specialHoliday).done(function(errors) {
+                    debugger;
                     if (errors && errors.length > 0) {
                         self.addListError(errors);
                     } else {

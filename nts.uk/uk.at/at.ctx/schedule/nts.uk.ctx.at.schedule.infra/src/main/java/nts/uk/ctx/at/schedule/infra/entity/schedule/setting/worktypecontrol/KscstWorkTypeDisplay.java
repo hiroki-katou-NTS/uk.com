@@ -31,6 +31,7 @@ public class KscstWorkTypeDisplay extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KscstWorkTypeDisplayPK kscstWorkTypeDisplayPk;
 
+	/** 制御使用区分 **/
 	@Column(name = "USE_ATR")
 	public int useAtr;
 

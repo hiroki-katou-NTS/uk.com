@@ -3,7 +3,11 @@ package nts.uk.ctx.at.schedule.app.find.schedule.setting.worktypedisplay;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.WorkTypeDisplaySetting;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Data
 @AllArgsConstructor
 public class WorktypeDisplaySetDto {
