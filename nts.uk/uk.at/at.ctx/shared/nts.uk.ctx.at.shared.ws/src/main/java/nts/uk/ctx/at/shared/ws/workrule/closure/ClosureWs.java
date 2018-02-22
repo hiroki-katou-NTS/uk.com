@@ -298,7 +298,7 @@ public class ClosureWs {
 	@POST
 	@Path("calculateperiod/{closureid}/{yearmonth}")
 	public String calculatePeriod(@PathParam("closureid") int closureId, @PathParam("yearmonth") int yearMonth) {
-		return this.closureService.getClosurePeriod(closureId, YearMonth.of(yearMonth)).end().toString(); //TODO dung tam. ko biet dung hay khong
+		return this.closureService.getClosurePeriod(closureId, YearMonth.of(yearMonth)).end().toString();
 	}
 
 	@POST

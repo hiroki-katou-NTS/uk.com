@@ -28,7 +28,7 @@ public class BsymtEmpOrderCondPK implements Serializable {
 	private String cid;
 
 	/** The no. */
-	@Column(name = "[NO]")
+	@Column(name = "NO")
 	private Integer no;
 
 	/** The search type. */

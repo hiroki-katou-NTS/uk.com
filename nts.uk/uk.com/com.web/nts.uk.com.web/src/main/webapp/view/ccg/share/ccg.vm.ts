@@ -206,8 +206,13 @@ module nts.uk.com.view.ccg.share.ccg {
                 
                 //check show button Apply
                 self.showApplyBtn = ko.computed(() => {
-                    return self.baseDate() && self.periodStartDate() && self.periodEndDate() ? true : false;
+                    if (self.showPeriodYM){
+                        return self.baseDate() && self.periodStartYm() && self.periodEndYm() ? true : false;
+                    } else { 
+                         return self.baseDate() && self.periodStartDate() && self.periodEndDate() ? true : false;
+                    }
                 });
+                
                 self.isExpanded = ko.observable(false);
             }
             
@@ -500,11 +505,11 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.showPeriodYM = options.periodFormatYM;
 
                 /** Required parameter */
-                self.baseDate = ko.observable(moment.utc(options.baseDate));
-                self.periodStartDate = ko.observable(moment.utc(options.periodStartDate));
-                self.periodEndDate = ko.observable(moment.utc(options.periodEndDate));
-                self.periodStartYm = ko.observable(moment.utc(options.periodStartDate));
-                self.periodEndYm = ko.observable(moment.utc(options.periodEndDate));
+                self.baseDate(moment.utc(options.baseDate));
+                self.periodStartDate(moment.utc(options.periodStartDate));
+                self.periodEndDate(moment.utc(options.periodEndDate));
+                self.periodStartYm(moment.utc(options.periodStartDate));
+                self.periodEndYm(moment.utc(options.periodEndDate));
                 self.selectedIncumbent(options.inService);
                 self.selectedLeave(options.leaveOfAbsence);
                 self.selectedClosed(options.closed);
