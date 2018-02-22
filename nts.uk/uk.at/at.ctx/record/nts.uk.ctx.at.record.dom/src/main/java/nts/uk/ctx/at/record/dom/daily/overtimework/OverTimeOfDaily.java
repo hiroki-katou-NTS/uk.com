@@ -155,6 +155,18 @@ public class OverTimeOfDaily {
 	}
 	
 	/**
+	 * 全枠の振替残業時間の合計の算出
+	 * @return　振替残業時間
+	 */
+	public int calcTransTotalFrameTime() {
+		int transTotalTime = 0;
+		for(OverTimeFrameTime overTimeWorkFrameTime :overTimeWorkFrameTime) {
+			transTotalTime += overTimeWorkFrameTime.getTransferTime().getTime().valueAsMinutes();
+		}
+		return transTotalTime;
+	}
+	
+	/**
 	 * 早出・普通の設定(優先順位)を見て並び替える
 	 * @param overTimeWorkFrameTimeSheetList
 	 * @param prioritySet

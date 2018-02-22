@@ -2,10 +2,12 @@ package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
@@ -63,12 +65,12 @@ public class WorkTimeOfMonthly {
 	/**
 	 * 就業時間を確認する
 	 * @param datePeriod 期間
-	 * @param attendanceTimeOfDailys リスト：日別実績の勤怠時間
+	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 */
 	public void confirm(DatePeriod datePeriod,
-			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap){
 		
-		for (val attendanceTimeOfDaily : attendanceTimeOfDailys) {
+		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.values()) {
 			
 			// 期間外はスキップする
 			if (!datePeriod.contains(attendanceTimeOfDaily.getYmd())) continue;

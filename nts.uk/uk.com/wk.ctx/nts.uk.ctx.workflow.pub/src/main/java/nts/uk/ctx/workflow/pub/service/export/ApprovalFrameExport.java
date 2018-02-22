@@ -17,6 +17,8 @@ public class ApprovalFrameExport {
 	
 	private Integer frameOrder;
 	
+	private Integer approvalAtr_Enum;
+	
 	private String approvalAtr;
 	
 	private List<ApproverStateExport> listApprover;

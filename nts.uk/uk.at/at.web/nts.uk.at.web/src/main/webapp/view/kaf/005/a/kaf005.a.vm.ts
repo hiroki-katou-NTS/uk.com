@@ -660,16 +660,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if (overtimeDto.siftType != null) {
                 self.siftCD(overtimeDto.siftType.siftCode);
                 self.siftName(overtimeDto.siftType.siftName);
-            }else{
-                 self.siftCD('');
-                 self.siftName('');
             }
             if (overtimeDto.workType != null) {
                 self.workTypeCd(overtimeDto.workType.workTypeCode);
                 self.workTypeName(overtimeDto.workType.workTypeName);
-            }else{
-              self.workTypeCd('');
-              self.workTypeName('');  
             }
             self.timeStart1(data.workClockFrom1);
             self.timeEnd1(data.workClockTo1);

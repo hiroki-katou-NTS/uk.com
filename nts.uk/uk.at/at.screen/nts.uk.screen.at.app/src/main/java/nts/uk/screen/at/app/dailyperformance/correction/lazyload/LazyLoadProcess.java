@@ -431,7 +431,7 @@ public class LazyLoadProcess {
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
 						.getErrorSetting(lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
 				// Seperate Error and Alarm
-				screenDto.addErrorToResponseData(lstError, lstErrorSetting);
+				//screenDto.addErrorToResponseData(lstError, lstErrorSetting);
 			}
 		}
 		return lstError.stream().collect(Collectors.toMap(e -> e.getEmployeeId(), e -> ""));
@@ -643,7 +643,7 @@ public class LazyLoadProcess {
 				for (int i = 0; i < lstDate.size(); i++) {
 					GeneralDate filterDate = lstDate.get(i);
 					result.add(new DPDataDto("1"+"_"+employee.getId()+"_"+converDateToString(filterDate)+"_"+converDateToString(dateRange.getEndDate()), "", "", filterDate, false, employee.getId(), employee.getCode(),
-							employee.getBusinessName(),  employee.getWorkplaceId()));
+							employee.getBusinessName(),  employee.getWorkplaceId(), "", ""));
 					dataId++;
 				}
 			}

@@ -12,10 +12,11 @@
 			<table id="employ_view">
 				<tr id="function-tr">
 					<td class="bg-green border-left employment-tdpad" id="tbl_left"><button
-							id="btn_show_list" data-bind="text: targetBtnText, attr: {tabindex: tabIndex}"></button>
-							<!-- #{i18n.getText('KCP009_3')} -->
-					</td>
-					<td class="bg-green none_border employment-tdpad"><button class="btn_select" id="prev-btn"
+							id="btn_show_list"
+							data-bind="text: targetBtnText, attr: {tabindex: tabIndex}"></button>
+						<!-- #{i18n.getText('KCP009_3')} --></td>
+					<td class="bg-green none_border employment-tdpad"><button
+							class="btn_select" id="prev-btn"
 							data-bind="click: previousEmp, enable: isActivePreviousBtn(), attr: {tabindex: tabIndex}">
 							<!-- <span class="caret-left caret-inline"></span> -->
 						</button></td>
@@ -41,31 +42,34 @@
 					<td class="none_border em_display employment-tdpad"><div>
 							<span data-bind="text: selectedNumberOfPeople"></span><span>#{i18n.getText('KCP009_1')}</span>
 						</div></td>
-					<td class="border-right employment-tdpad"><input
-						type="search"
+					<td class="border-right employment-tdpad"><input type="search"
 						id="search-input"
 						data-bind=" ntsTextEditor: {
 								value: keySearch,
 								name: '#[KCP009_2]',
 								option: {enable: true}
-								}, attr: {tabindex: tabIndex}, valueUpdate: 'afterkeydown'"  />
+								}, attr: {tabindex: tabIndex}, valueUpdate: 'afterkeydown'" />
 					</td>
-					<td id="wkp_title_text" class="bg-green border-left border-right employment-tdpad"
+					<td id="wkp_title_text"
+						class="bg-green border-left border-right employment-tdpad"
 						data-bind="visible: isDisplayOrganizationName">
 						<div>
 							<span data-bind="text: organizationDesignation"></span>
 						</div>
 					</td>
-					<td class="employment-tdpad border-right" id="wkp_text" data-bind="visible: isDisplayOrganizationName">
+					<td class="employment-tdpad border-right" id="wkp_text"
+						data-bind="visible: isDisplayOrganizationName">
 						<div style="width: 150px">
-							<span class ="limited-label" data-bind="text: organizationName"></span>
-						</div></td>
+							<span class="limited-label" data-bind="text: organizationName"></span>
+						</div>
+					</td>
 				</tr>
 			</table>
 		</div>
 		<div id="items-list" style="visibility: hidden;">
-				
-				<div id="list-box" data-bind="ntsListBox: {
+
+			<div id="list-box"
+				data-bind="ntsListBox: {
 					options: empList,
 					optionsValue: 'id',
 					optionsText: 'code',

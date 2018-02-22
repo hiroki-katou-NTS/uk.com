@@ -11,7 +11,7 @@
 				nts.uk.ctx.sys.portal.dom.toppage.TopPageCode
 				nts.uk.ctx.sys.portal.dom.toppage.TopPageName
   			</com:ValidatorScript>
-  			<script>var dialogSize = { width: 310, height: 430 };</script>
+			<script>var dialogSize = { width: 310, height: 430 };</script>
 			<com:stylefile path="ccg008.c.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="ccg008.c.start.js" />
@@ -35,19 +35,19 @@
 									columns: columns,
 									value: selectedCode}">
 					</table>
-				</div>		
 				</div>
-				<div id="functions-area-bottom">
-					<div id="process">
+			</div>
+			<div id="functions-area-bottom">
+				<div id="process">
 					<!-- C1_005 -->
-						<button id="btnSave" class="x-large proceed"
-							data-bind="click: register" tabindex="3">#{i18n.getText('CCG008_9')}</button>
-						<!-- C1_006 -->
-						<button id="btnCancel" class="large" data-bind="click: closeDialog"
-							tabindex="4">#{i18n.getText('CCG008_10')}</button>
-					</div>
-				</div>					
-			
+					<button id="btnSave" class="x-large proceed"
+						data-bind="click: register" tabindex="3">#{i18n.getText('CCG008_9')}</button>
+					<!-- C1_006 -->
+					<button id="btnCancel" class="large" data-bind="click: closeDialog"
+						tabindex="4">#{i18n.getText('CCG008_10')}</button>
+				</div>
+			</div>
+
 		</ui:define>
 	</ui:composition>
 </body>

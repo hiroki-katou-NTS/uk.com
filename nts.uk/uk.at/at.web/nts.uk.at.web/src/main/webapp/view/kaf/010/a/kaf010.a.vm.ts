@@ -23,6 +23,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         goSelected1 : KnockoutObservable<number> = ko.observable(0);
         backSelected2 : KnockoutObservable<number> = ko.observable(0);
         goSelected2 : KnockoutObservable<number> = ko.observable(0);
+        goSelected1Value: KnockoutObservable<string> = ko.observable("");
+        backSelected1Value: KnockoutObservable<string> = ko.observable("");
         workState: KnockoutObservable<boolean> = ko.observable(true);
         typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
         // 申請日付
@@ -127,18 +129,19 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         calculateFlag: KnockoutObservable<number> = ko.observable(1);
         preWorkContent: common.WorkContent;
         constructor() {
-            let self = this;             
+            let self = this;  
+                    
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 010a AFTER start 000_A
             self.startPage().done(function() {
                 self.kaf000_a.start(self.employeeID, 1, 0, moment(new Date()).format(self.DATE_FORMAT)).done(function() {                    
-                    $("#fixed-table").ntsFixedTable({ height: 120 });
-                    $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
-                    $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
-                    $("#fixed-bonus_time-table").ntsFixedTable({ height: 120 });
-                    $("#fixed-table-indicate").ntsFixedTable({ height: 120 });
-                    $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC')
+                    $("#fixed-table-holiday").ntsFixedTable({ height: 120 });
+                    $("#fixed-overtime-hour-table-holiday").ntsFixedTable({ height: self.heightOvertimeHours() });
+                    $("#fixed-break_time-table-holiday").ntsFixedTable({ height: 120 });
+                    $("#fixed-bonus_time-table-holiday").ntsFixedTable({ height: 120 });
+                    $("#fixed-table-indicate-holiday").ntsFixedTable({ height: 120 });
+                    $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');
                 })
             })
 
@@ -641,16 +644,10 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             if (overtimeDto.siftType != null) {
                 self.siftCD(overtimeDto.siftType.siftCode);
                 self.siftName(overtimeDto.siftType.siftName);
-            }else{
-                 self.siftCD('');
-                 self.siftName('');
             }
             if (overtimeDto.workType != null) {
                 self.workTypeCd(overtimeDto.workType.workTypeCode);
                 self.workTypeName(overtimeDto.workType.workTypeName);
-            }else{
-              self.workTypeCd('');
-              self.workTypeName('');  
             }
             self.timeStart1(data.workClockStart1);
             self.timeEnd1(data.workClockEnd1);

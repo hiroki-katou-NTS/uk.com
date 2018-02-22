@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * 
  * @author hoatt
@@ -45,8 +46,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		AppOverTime appOt = appOtOp.get();
 		List<OverTimeInput> lstOverTimeInput = appOt.getOverTimeInput();
 		
-		List<Integer> lstWorkDay = new ArrayList<>();
-		List<Integer> lstOverTime = new ArrayList<>();
+//		List<Integer> lstWorkDay = new ArrayList<>();
+		
 		List<OverTimeFrame> lstFrame = new ArrayList<>();
 		for (OverTimeInput overTime : lstOverTimeInput) {
 			List<Integer> lstFrameNo = new ArrayList<>();
@@ -57,16 +58,24 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 						lstFramBonus.get(0).getTimeItemTypeAtr().value, overTime.getApplicationTime().v()));
 			}
 			if(overTime.getAttendanceType().equals(AttendanceType.BREAKTIME)){
-				lstWorkDay.add(overTime.getFrameNo());
-				List<WorkdayoffFrame> lstFramWork = repoWork.getWorkdayoffFrameBy(companyId,lstWorkDay);
+				lstFrameNo.add(overTime.getFrameNo());
+				List<WorkdayoffFrame> lstFramWork = repoWork.getWorkdayoffFrameBy(companyId,lstFrameNo);
 				lstFrame.add(new OverTimeFrame(2, lstFramWork.get(0).getWorkdayoffFrNo().v().intValue(), 
 						lstFramWork.get(0).getWorkdayoffFrName().v(), null, overTime.getApplicationTime().v()));
 			}
 			if(overTime.getAttendanceType().equals(AttendanceType.NORMALOVERTIME)){
-				lstOverTime.add(overTime.getFrameNo());
-				List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(companyId, lstOverTime);
-				lstFrame.add(new OverTimeFrame(1, lstFramOt.get(0).getOvertimeWorkFrNo().v().intValue(), 
-						lstFramOt.get(0).getOvertimeWorkFrName().v(), null, overTime.getApplicationTime().v()));
+				String name = "";
+				if(overTime.getFrameNo() == 11){
+					name = "時間外深夜時間";
+				}else if(overTime.getFrameNo() == 12){
+					name = "ﾌﾚｯｸｽ超過";
+				}else{
+				lstFrameNo.add(overTime.getFrameNo());
+				List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(companyId, lstFrameNo);
+				name = lstFramOt.get(0).getOvertimeWorkFrName().v();
+				}
+				lstFrame.add(new OverTimeFrame(1, overTime.getFrameNo(), 
+						name, null, overTime.getApplicationTime().v()));
 			}
 		}
 //		List<BonusPayTimeItem> lstFramBonus = repoBonusTime.getListBonusPayTimeItemName(companyId, lstBonus);
@@ -81,8 +90,11 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 //		for (OvertimeWorkFrame normal : lstFramOt) {
 //			lstFrame.add(new OverTimeFrame(1, normal.getOvertimeWorkFrNo().v().intValue(), normal.getOvertimeWorkFrName().v(), null));
 //		}
-		return new AppOverTimeInfoFull(appOt.getWorkClockFrom1(), appOt.getWorkClockTo1(),
-				appOt.getWorkClockFrom2(), appOt.getWorkClockTo2(),
+		return new AppOverTimeInfoFull(appId, 
+				this.convertTime(appOt.getWorkClockFrom1()),
+				this.convertTime(appOt.getWorkClockTo1()),
+				this.convertTime(appOt.getWorkClockFrom2()),
+				this.convertTime(appOt.getWorkClockTo2()),
 				0, lstFrame, appOt.getOverTimeShiftNight(),
 				appOt.getFlexExessTime());
 	}
@@ -91,11 +103,22 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	public AppGoBackInfoFull getAppGoBackInfo(String companyID, String appId) {
 		Optional<GoBackDirectly> appGoBackOp = repoGoBack.findByApplicationID(companyID, appId);
 		GoBackDirectly appGoBack = appGoBackOp.get();
-		return new AppGoBackInfoFull(appGoBack.getGoWorkAtr1().value,
-				appGoBack.getWorkTimeStart1().v(), appGoBack.getBackHomeAtr1().value, 
-				appGoBack.getWorkTimeEnd1().v(), appGoBack.getGoWorkAtr2().value,
-				appGoBack.getWorkTimeStart2().v(), appGoBack.getBackHomeAtr2().value,
-				appGoBack.getWorkTimeEnd2().v());
+		return new AppGoBackInfoFull(appId, appGoBack.getGoWorkAtr1().value,
+				this.convertTime(appGoBack.getWorkTimeStart1().v()),
+				appGoBack.getBackHomeAtr1().value, 
+				this.convertTime(appGoBack.getWorkTimeEnd1().v()),
+				appGoBack.getGoWorkAtr2().value,
+				this.convertTime(appGoBack.getWorkTimeStart2().v()),
+				appGoBack.getBackHomeAtr2().value,
+				this.convertTime(appGoBack.getWorkTimeEnd2().v()));
+	}
+	//convert time
+	private String convertTime(Integer time){
+		if(time == null){
+			return "";
+		}
+		TimeWithDayAttr timeConvert = new TimeWithDayAttr(time);
+		return timeConvert.getDayDivision().description + timeConvert.getInDayTimeWithFormat();
 	}
 
 }

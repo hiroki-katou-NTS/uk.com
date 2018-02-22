@@ -9,6 +9,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.infra.entity.application.common.KrqdpApplicationPK_New;
+import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_New;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolidayWork;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolidayWorkPK;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtHolidayWorkInput;
@@ -71,5 +73,39 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 				domain.getWorkClock2().getBackAtr().value,
 				domain.getDivergenceReason(),
 				domain.getHolidayShiftNight(), overtimeInputs);
+	}
+	@Override
+	public Optional<AppHolidayWork> getFullAppHolidayWork(String companyID, String appID) {
+		Optional<KrqdtAppHolidayWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHolidayWork.class);
+		Optional<KrqdtApplication_New> opKafdtApplication = this.queryProxy().find(new KrqdpApplicationPK_New(companyID, appID), KrqdtApplication_New.class);
+		if(!opKrqdtAppHolidayWork.isPresent()||!opKafdtApplication.isPresent()){
+			return Optional.ofNullable(null);
+		}
+		KrqdtAppHolidayWork krqdtAppHolidaWork = opKrqdtAppHolidayWork.get();
+		KrqdtApplication_New kafdtApplication = opKafdtApplication.get();
+		AppHolidayWork appHolidayWork = krqdtAppHolidaWork.toDomain();
+		appHolidayWork.setApplication(kafdtApplication.toDomain());
+		return Optional.of(appHolidayWork);
+	}
+	@Override
+	public void update(AppHolidayWork domain) {
+		String companyID = domain.getCompanyID();
+		String appID = domain.getAppID();
+		Optional<KrqdtAppHolidayWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHolidayWork.class);
+		if(!opKrqdtAppHolidayWork.isPresent()){
+			throw new RuntimeException("khong ton tai doi tuong de update");
+		}
+		KrqdtAppHolidayWork krqdtAppHolidayWork = opKrqdtAppHolidayWork.get();
+		krqdtAppHolidayWork.fromDomainValue(domain);
+		this.commandProxy().update(krqdtAppHolidayWork);
+		
+	}
+	@Override
+	public void delete(String companyID, String appID) {
+		Optional<KrqdtAppHolidayWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHolidayWork.class);
+		if(!opKrqdtAppHolidayWork.isPresent()){
+			throw new RuntimeException("khong ton tai doi tuong de update");
+		}
+		this.commandProxy().remove(KrqdtAppHolidayWork.class, new KrqdtAppHolidayWorkPK(companyID, appID));
 	}
 }

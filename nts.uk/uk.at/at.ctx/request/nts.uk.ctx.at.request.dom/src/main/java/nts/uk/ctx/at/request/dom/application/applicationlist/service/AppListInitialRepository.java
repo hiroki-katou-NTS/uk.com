@@ -40,13 +40,13 @@ public interface AppListInitialRepository {
 	 * @param displaySet
 	 * @return
 	 */
-	public List<Application_New> getAppListByApproval(AppListExtractCondition param, ApprovalListDisplaySetting displaySet);
+	public AppListOutPut getAppListByApproval(AppListExtractCondition param, ApprovalListDisplaySetting displaySet);
 	/**
 	 * 4 - 申請一覧リスト取得承認件数
 	 * @param lstApp
 	 * @return
 	 */
-	public ApplicationStatus countAppListApproval(List<Application_New> lstApp);
+	public AppInfoStatus countAppListApproval(List<Application_New> lstApp);
 	/**
 	 * 5 - 申請一覧リスト取得実績
 	 * @param lstApp

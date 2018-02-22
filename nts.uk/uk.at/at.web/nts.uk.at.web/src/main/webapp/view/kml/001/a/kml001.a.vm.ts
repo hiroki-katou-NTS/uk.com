@@ -135,14 +135,27 @@ module nts.uk.at.view.kml001.a {
                 
                 if(self.personCostList()!=null) {
                     let historyID = self.personCostList()[index].historyID();
-                    servicebase.findByHistoryID(historyID).done(data => {
-                        self.currentPersonCost(vmbase.ProcessHandler.createPersonCostCalFromValue(data, self.premiumItems()));      
-                        self.checkLastItem();
-                        self.currentGridPersonCost(self.currentPersonCost().startDate() + self.textKML001_40 + self.currentPersonCost().endDate());
+                    let lastHistoryID = _.first(self.personCostList()).historyID();
+                    $.when(servicebase.findByHistoryID(historyID), servicebase.findByHistoryID(lastHistoryID))
+                    .done((currentData, lastData) => {
                         let allRequest = [];
+                        self.currentPersonCost(vmbase.ProcessHandler.createPersonCostCalFromValue(currentData, self.premiumItems()));  
+                        self.personCostList()[0] = vmbase.ProcessHandler.createPersonCostCalFromValue(lastData, self.premiumItems());    
+                        self.personCostList.valueHasMutated();
+                        self.checkLastItem();
+                        self.newStartDate(self.currentPersonCost().startDate());
+                        self.currentGridPersonCost(self.currentPersonCost().startDate() + self.textKML001_40 + self.currentPersonCost().endDate());
                         ko.utils.arrayForEach(self.currentPersonCost().premiumSets(), function(premiumSet, i) {
                             let iDList = [];
                             self.currentPersonCost().premiumSets()[i].attendanceItems().forEach(function(item) {
+                                iDList.push(item.shortAttendanceID);
+                            });
+                            let request = self.getItem(iDList, i);
+                            allRequest.push(request);
+                        });
+                        ko.utils.arrayForEach(self.personCostList()[0].premiumSets(), function(premiumSet, i) {
+                            let iDList = [];
+                            self.personCostList()[0].premiumSets()[i].attendanceItems().forEach(function(item) {
                                 iDList.push(item.shortAttendanceID);
                             });
                             let request = self.getItem(iDList, i);
@@ -154,7 +167,7 @@ module nts.uk.at.view.kml001.a {
                         if (_.size(self.personCostList()) == 0) {
                             self.lastStartDate = "1900/01/01";
                         } else {
-                            self.lastStartDate = _.last(self.personCostList()).startDate();
+                            self.lastStartDate = _.first(self.personCostList()).startDate();
                         }  
                     }).fail(res => {
                         dfd.reject();        
@@ -162,7 +175,6 @@ module nts.uk.at.view.kml001.a {
                 } else {
                     dfd.resolve();    
                 }
-                self.newStartDate(self.currentPersonCost().startDate());
                 return dfd.promise();
             }
             
@@ -207,7 +219,6 @@ module nts.uk.at.view.kml001.a {
                 if (!nts.uk.ui.errors.hasError())
                 {
                     if (self.isInsert()) {
-                        let index = _.findLastIndex(self.personCostList()) + 1;
                         if (moment(self.newStartDate()).isAfter(moment(self.lastStartDate))) {
                             // insert new data if startDate have no error
                             let ymd = self.newStartDate();
@@ -340,7 +351,7 @@ module nts.uk.at.view.kml001.a {
                         let copyDataFlag: boolean = nts.uk.ui.windows.getShared('copyDataFlag');
                         if (_.size(self.personCostList()) != 0) { // when PersonCostCalculation list not empty
                             if (copyDataFlag) { // when new data is copy
-                                let lastItem = self.clonePersonCostCalculation(_.last(self.personCostList()));
+                                let lastItem = self.clonePersonCostCalculation(_.first(self.personCostList()));
                                 self.currentPersonCost(
                                     new vmbase.PersonCostCalculation(
                                         lastItem.companyID(),

@@ -1,32 +1,35 @@
 input {
 	border-radius: 3px;
-    padding: 6px 12px;
-    border-width: 1px;
+	padding: 6px 12px;
+	border-width: 1px;
 }
+
 td {
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
 
-#mail_setting_register{
-    margin-left: 25px;
+#mail_setting_register {
+	margin-left: 25px;
 }
-#right-content{
+
+#right-content {
 	margin-left: 45px;
 }
 
 .input_002 {
 	display: inline-block;
 }
-.input_002 > input {
+
+.input_002>input {
 	margin-right: 5px;
 }
 
-#test_send_mail{
+#test_send_mail {
 	display: inline-block
 }
 
-.method_info{
+.method_info {
 	width: 650px;
 	margin-top: 50px;
 	border: 1px solid #cccccc;
@@ -34,15 +37,18 @@ td {
 	padding: 20px 35px;
 }
 
-.table_content_smtp{
+.table_content_smtp {
 	margin-left: 25px;
 }
-.table_content_imap{
+
+.table_content_imap {
 	margin-left: 25px;
 }
-.table_content_pop{
+
+.table_content_pop {
 	margin-left: 25px;
 }
-.table_content_setting_encrypt{
+
+.table_content_setting_encrypt {
 	margin-left: 25px;
 }

@@ -111,10 +111,7 @@ module nts.uk.at.view.kmf002.c {
                         _self.findAllEmployeeRegister();
                     }
                 }
-
-//                $('#ccgcomponent').ntsGroupComponent(_self.ccgcomponent);
                 /* end declare variable CCG001 */
-                
                 
                 /* start declare variable KCP005 */
                 _self.baseDate = ko.observable(new Date());
@@ -142,9 +139,6 @@ module nts.uk.at.view.kmf002.c {
                     isShowSelectAllButton: _self.isShowSelectAllButton(),
                     maxRows: 26
                 };
-                
-//                $('#component-items-list').ntsListComponent(_self.listComponentOption);
-                
                 /* end declare variable KCP005 */
                 
                 /* include table */
@@ -187,15 +181,9 @@ module nts.uk.at.view.kmf002.c {
             public start_page(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 let _self = this;
-                if (getShared('conditionSidebar5') == false) {
-//                    blockUI.grayout();
-                } else {
-//                    blockUI.clear();
-                }
                 _self.getDataFromService();
                  $.when($('#ccgcomponent').ntsGroupComponent(_self.ccgcomponent), 
-                        $('#component-items-list').ntsListComponent(_self.listComponentOption)).done(function(data: any) {
-//                    nts.uk.ui.errors.clearAll();    
+                        $('#component-items-list').ntsListComponent(_self.listComponentOption)).done(function(data: any) {    
                     dfd.resolve();    
                 });
                 return dfd.promise();

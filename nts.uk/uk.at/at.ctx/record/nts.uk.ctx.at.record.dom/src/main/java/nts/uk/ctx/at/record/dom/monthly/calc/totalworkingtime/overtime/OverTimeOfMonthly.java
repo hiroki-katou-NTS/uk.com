@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
@@ -34,6 +35,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class OverTimeOfMonthly {
 
 	/** 残業合計時間 */
+	@Setter
 	private TimeMonthWithCalculation totalOverTime;
 	/** 事前残業時間 */
 	private AttendanceTimeMonth beforeOverTime;
@@ -73,8 +75,7 @@ public class OverTimeOfMonthly {
 		domain.totalTransferOverTime = totalTransferOverTime;
 		for (AggregateOverTime aggregateOverTime : aggregateOverTimeList){
 			val overTimeFrameNo = aggregateOverTime.getOverTimeFrameNo();
-			if (domain.aggregateOverTimeMap.containsKey(overTimeFrameNo)) continue;
-			domain.aggregateOverTimeMap.put(overTimeFrameNo, aggregateOverTime);
+			domain.aggregateOverTimeMap.putIfAbsent(overTimeFrameNo, aggregateOverTime);
 		}
 		return domain;
 	}
@@ -86,9 +87,7 @@ public class OverTimeOfMonthly {
 	 */
 	private AggregateOverTime getTargetAggregateOverTime(OverTimeFrameNo overTimeFrameNo){
 		
-		if (!this.aggregateOverTimeMap.containsKey(overTimeFrameNo)){
-			this.aggregateOverTimeMap.put(overTimeFrameNo, new AggregateOverTime(overTimeFrameNo));
-		}
+		this.aggregateOverTimeMap.putIfAbsent(overTimeFrameNo, new AggregateOverTime(overTimeFrameNo));
 		return this.aggregateOverTimeMap.get(overTimeFrameNo);
 	}
 	
@@ -169,8 +168,7 @@ public class OverTimeOfMonthly {
 		// 残業枠時間リストをマップに組み換え　（枠での検索用）
 		Map<OverTimeFrameNo, OverTimeFrameTime> overTimeFrameTimeMap = new HashMap<>();
 		for (val overTimeFrameTimeSrc : overTimeFrameTimeSrcs){
-			if (overTimeFrameTimeMap.containsKey(overTimeFrameTimeSrc.getOverWorkFrameNo())) continue;
-			overTimeFrameTimeMap.put(overTimeFrameTimeSrc.getOverWorkFrameNo(), overTimeFrameTimeSrc);
+			overTimeFrameTimeMap.putIfAbsent(overTimeFrameTimeSrc.getOverWorkFrameNo(), overTimeFrameTimeSrc);
 		}
 	
 		// 残業・振替の処理順序を取得する

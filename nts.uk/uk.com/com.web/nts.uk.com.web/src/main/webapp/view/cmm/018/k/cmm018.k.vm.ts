@@ -244,6 +244,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
          */
         applyDataSearch(): void {
              let self = this;
+            if (nts.uk.ui.errors.hasError()){return;}
             if(self.selectTypeSet() == 0){
                 self.treeGrid.baseDate(this.standardDate());
                 $('#tree-grid').ntsTreeComponent(self.treeGrid);

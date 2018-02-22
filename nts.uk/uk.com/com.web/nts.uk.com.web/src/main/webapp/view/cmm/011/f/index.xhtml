@@ -13,9 +13,9 @@
 					height : 320
 				};
 			</script>
-			
+
 			<com:scriptfile set="IGNITE" />
-			
+
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="../_base/cmm011.base.js" />
 			<com:scriptfile path="cmm011.f.vm.js" />
@@ -25,15 +25,15 @@
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 			<div style="padding: 25px;">
-				<div style="margin-right: 30px;"
-					data-bind="ntsFormLabel: {}">#{i18n.getText('CMM011_31',
+				<div style="margin-right: 30px;" data-bind="ntsFormLabel: {}">#{i18n.getText('CMM011_31',
 					['Com_Workplace'])}</div>
 				<span>#{i18n.getText('CMM011_32')}</span> <span
 					style="margin-right: 10px;" data-bind="text: workplaceCode"></span>
 				<span data-bind="text: workplaceName"></span>
 			</div>
 
-			<div id="radio-group-box" tabindex="1" style="width: 350px" data-bind="ntsRadioBoxGroup: {
+			<div id="radio-group-box" tabindex="1" style="width: 350px"
+				data-bind="ntsRadioBoxGroup: {
 				name: '#[CMM011_31]',
 				options: itemList,
 				optionsValue: 'value',

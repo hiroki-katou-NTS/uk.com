@@ -37,9 +37,8 @@ public class EmployeeInfoFinder {
 	}
 
 	public void validateEmpInfo(EmpInfoDto empInfo) {
-
-		Boolean isDuplicateEmpCode = this.empDataRepo
-				.getEmployeeByCidScd(AppContexts.user().companyId(), empInfo.getEmployeeCode()).isPresent();
+		Boolean isDuplicateEmpCode = !CollectionUtil.isEmpty(this.empDataRepo
+				.getEmployeeNotDeleteInCompany(AppContexts.user().companyId(), empInfo.getEmployeeCode()));
 
 		if (isDuplicateEmpCode) {
 			throw new BusinessException("Msg_345");

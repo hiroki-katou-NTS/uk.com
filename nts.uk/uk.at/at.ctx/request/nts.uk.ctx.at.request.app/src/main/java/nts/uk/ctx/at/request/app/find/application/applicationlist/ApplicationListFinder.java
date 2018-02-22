@@ -1,14 +1,21 @@
 package nts.uk.ctx.at.request.app.find.application.applicationlist;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
+import nts.uk.ctx.at.request.app.find.setting.company.request.approvallistsetting.ApprovalListDisplaySetDto;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListInitialRepository;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListOutPut;
+import nts.uk.ctx.at.request.dom.application.applicationlist.service.ApplicationFullOutput;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
@@ -33,8 +40,10 @@ public class ApplicationListFinder {
 		//ドメインモデル「承認一覧表示設定」を取得する-(Lấy domain Approval List display Setting)
 		Optional<RequestSetting> requestSet = repoRequestSet.findByCompany(companyId);
 		ApprovalListDisplaySetting appDisplaySet = null;
+		ApprovalListDisplaySetDto displaySet = null;
 		if(requestSet.isPresent()){
 			appDisplaySet = requestSet.get().getApprovalListDisplaySetting();
+			displaySet = ApprovalListDisplaySetDto.fromDomain(appDisplaySet);
 		}
 		//URパラメータが存在する-(Check param)
 		if(param.getAppListAtr() != null){//存在する場合
@@ -55,6 +64,16 @@ public class ApplicationListFinder {
 		//アルゴリズム「申請一覧リスト取得」を実行する-(Thực hiện thuật toán Application List get): 1-申請一覧リスト取得
 		AppListExtractCondition appListExCon = param.convertDtotoDomain(param);
 		AppListOutPut lstApp = repoAppListInit.getApplicationList(appListExCon, appDisplaySet);
-		return new ApplicationListDto(lstApp);
+		List<ApplicationDto_New> lstAppDto = new ArrayList<>();
+		for (Application_New app : lstApp.getLstApp()) {
+			lstAppDto.add(ApplicationDto_New.fromDomain(app));
+		}
+		List<AppStatusApproval> lstStatusApproval = new ArrayList<>();
+		List<ApplicationFullOutput> lstFil = lstApp.getLstAppFull().stream().filter(c -> c.getStatus() != null).collect(Collectors.toList());
+		for (ApplicationFullOutput app : lstFil) {
+			lstStatusApproval.add(new AppStatusApproval(app.getApplication().getAppID(), app.getStatus()));
+		}
+		return new ApplicationListDto(displaySet, lstApp.getLstMasterInfo(),lstAppDto,lstApp.getLstAppOt(),lstApp.getLstAppGoBack(),
+				lstApp.getAppStatusCount(), lstStatusApproval);
 	}
 }

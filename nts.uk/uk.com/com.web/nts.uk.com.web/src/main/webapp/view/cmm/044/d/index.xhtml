@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = { width: 1115, height: 550 };
-			</script>			
+			</script>
 			<com:stylefile path="cmm044.d.main.css" />
 			<com:scriptfile path="cmm044.d.start.js" />
 			<com:scriptfile path="cmm044.d.vm.js" />
@@ -28,7 +28,7 @@
 					<label>#{i18n.getText('CMM044_10')}</label>
 				</div>
 				<div id="daterangepicker"
-				data-bind="ntsDateRangePicker: { 
+					data-bind="ntsDateRangePicker: { 
 							enable: true, 
 							value: dateValue, 
 							maxRange: 'none'}" />
@@ -60,20 +60,31 @@
 					</thead>
 					<tbody data-bind="foreach: personList">
 						<tr>
-							<td><span class="limited-label" data-bind="text: $data.employeeCode"></span></td>
-							<td><span class="limited-label" data-bind="text: $data.employeeName"></span></td>
-							<td><span class="limited-label" data-bind="text: $data.workPlaceCode"></span></td>
-							<td><span class="limited-label" data-bind="text: $data.workPlaceName"></span></td>
-							<td><span class="limited-label" data-bind="text: $data.position"></span></td>
-							<td><span class="limited-label" data-bind="text: $data.startDate"></span></td>
-							<td><span class="limited-label" data-bind="text: $data.endDate"></span></td>
-							<td><span class="limited-label" data-bind="text: $data.agentTarget"></span></td>
+							<td><span class="limited-label"
+								data-bind="text: $data.employeeCode"></span></td>
+							<td><span class="limited-label"
+								data-bind="text: $data.employeeName"></span></td>
+							<td><span class="limited-label"
+								data-bind="text: $data.workPlaceCode"></span></td>
+							<td><span class="limited-label"
+								data-bind="text: $data.workPlaceName"></span></td>
+							<td><span class="limited-label"
+								data-bind="text: $data.position"></span></td>
+							<td><span class="limited-label"
+								data-bind="text: $data.startDate"></span></td>
+							<td><span class="limited-label"
+								data-bind="text: $data.endDate"></span></td>
+							<td><span class="limited-label"
+								data-bind="text: $data.agentTarget"></span></td>
 							<com:ko-if bind="$data.hasColSpan">
-								<td colspan="2"><span class="limited-label" data-bind="text: $data.agentCode"></span></td>
+								<td colspan="2"><span class="limited-label"
+									data-bind="text: $data.agentCode"></span></td>
 							</com:ko-if>
 							<com:ko-if bind="!$data.hasColSpan()">
-								<td><span class="limited-label" data-bind="text: $data.agentCode"></span></td>
-								<td><span class="limited-label" data-bind="text: $data.agentName"></span></td>
+								<td><span class="limited-label"
+									data-bind="text: $data.agentCode"></span></td>
+								<td><span class="limited-label"
+									data-bind="text: $data.agentName"></span></td>
 							</com:ko-if>
 						</tr>
 					</tbody>

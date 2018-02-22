@@ -59,7 +59,8 @@
 								#{i18n.getText('CAS003_6')}</div>
 
 							<div class="contentPassComplex">
-								<label>#{i18n.getText('CAS003_7')}</label> <input tabindex="4" id="txtAlphabetDigit"
+								<label>#{i18n.getText('CAS003_7')}</label> <input tabindex="4"
+									id="txtAlphabetDigit"
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_7]',
 														value: alphabetDigit, 
@@ -67,10 +68,12 @@
 														option: { width: '60px' },
 														required: true, 
 														enable: passPolicyCheck}" />
-								<label>#{i18n.getText('CAS003_8')}</label> <label class="labelInfo">#{i18n.getText('CAS003_9')}</label>
+								<label>#{i18n.getText('CAS003_8')}</label> <label
+									class="labelInfo">#{i18n.getText('CAS003_9')}</label>
 							</div>
 							<div class="contentPassComplex">
-								<label>#{i18n.getText('CAS003_10')}</label> <input tabindex="5" id="txtNumberOfDigit"
+								<label>#{i18n.getText('CAS003_10')}</label> <input tabindex="5"
+									id="txtNumberOfDigit"
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_10]',
 														value: numberOfDigits, 
@@ -78,11 +81,13 @@
 														option: { width: '60px' },
 														required: true, 
 														enable: passPolicyCheck}" />
-								<label>#{i18n.getText('CAS003_11')}</label> <label class="labelInfo">#{i18n.getText('CAS003_12')}</label>
+								<label>#{i18n.getText('CAS003_11')}</label> <label
+									class="labelInfo">#{i18n.getText('CAS003_12')}</label>
 
 							</div>
 							<div class="contentPassComplex">
-								<label>#{i18n.getText('CAS003_13')}</label> <input tabindex="6" id="txtSymbolCharacters"
+								<label>#{i18n.getText('CAS003_13')}</label> <input tabindex="6"
+									id="txtSymbolCharacters"
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_13]',
 														value: symbolCharacters, 
@@ -90,7 +95,8 @@
 														option: { width: '60px' },
 														required: true, 
 														enable: passPolicyCheck}" />
-								<label>#{i18n.getText('CAS003_14')}</label> <label class="labelInfo">#{i18n.getText('CAS003_15')}</label>
+								<label>#{i18n.getText('CAS003_14')}</label> <label
+									class="labelInfo">#{i18n.getText('CAS003_15')}</label>
 							</div>
 						</div>
 
@@ -107,7 +113,8 @@
 														option: { width: '60px' },
 														required: true, 
 														enable: passPolicyCheck}" />
-								<label>#{i18n.getText('CAS003_17')}</label> <label class="labelInfo">#{i18n.getText('CAS003_18')}</label>
+								<label>#{i18n.getText('CAS003_17')}</label> <label
+									class="labelInfo">#{i18n.getText('CAS003_18')}</label>
 							</div>
 
 						</div>
@@ -125,7 +132,8 @@
 														option: { width: '60px' },
 														required: true, 
 														enable: passPolicyCheck}" />
-								<label>#{i18n.getText('CAS003_20')}</label> <label class="labelInfo">#{i18n.getText('CAS003_21')}</label>
+								<label>#{i18n.getText('CAS003_20')}</label> <label
+									class="labelInfo">#{i18n.getText('CAS003_21')}</label>
 							</div>
 
 						</div>
@@ -143,7 +151,8 @@
 														option: { width: '60px' },
 														required: true, 
 														enable: passPolicyCheck}" />
-								<label>#{i18n.getText('CAS003_23')}</label> <label class="labelInfo1">#{i18n.getText('CAS003_24')}</label>
+								<label>#{i18n.getText('CAS003_23')}</label> <label
+									class="labelInfo1">#{i18n.getText('CAS003_24')}</label>
 							</div>
 
 						</div>
@@ -168,7 +177,8 @@
 								data-bind="ntsFormLabel: { required: true , constraint: ['LockInterval','ErrorCount']}">
 								#{i18n.getText('CAS003_28')}</div>
 							<div class="contentPassComplex">
-								<label>#{i18n.getText('CAS003_29')}</label> <input tabindex="13" id="txtLockInterval"
+								<label>#{i18n.getText('CAS003_29')}</label> <input tabindex="13"
+									id="txtLockInterval"
 									data-bind="ntsTimeEditor: {
 														name: '#[CAS003_28]',
 														value: lockInterval,
@@ -178,9 +188,12 @@
 														option: { width: '60px' },
 														required: true, 
 														enable: accLockCheck}" />
+								<!-- A3_008 -->
+								<label>#{i18n.getText('CAS003_31')}</label>
 							</div>
 							<div class="contentPassComplex1">
-								<label>#{i18n.getText('CAS003_30')}</label> <input tabindex="14" id="txtErrorCount"
+								<label>#{i18n.getText('CAS003_30')}</label> <input tabindex="14"
+									id="txtErrorCount"
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_28]',
 														value: errorCount, 
@@ -188,15 +201,17 @@
 														option: { width: '60px' },
 														required: true, 
 														enable: accLockCheck}" />
-								<label>#{i18n.getText('CAS003_31')}</label> <label class="labelInfo1">#{i18n.getText('CAS003_32')}</label>
-								<!-- CAS003_31 va CAS003_32 chua dung -->
+								<!-- A3_007 -->
+								<label>#{i18n.getText('CAS003_33')}</label>
 							</div>
 						</div>
 
 						<div class="component-area">
-							<div class="form1" data-bind="ntsFormLabel: { required: true, constraint: 'LockOutMessage' }">
+							<div class="form1"
+								data-bind="ntsFormLabel: { required: true, constraint: 'LockOutMessage' }">
 								#{i18n.getText('CAS003_32')}</div>
-							<textarea class="textAreaSize" tabindex="15" id="txtLockOutMessage"
+							<textarea class="textAreaSize" tabindex="15"
+								id="txtLockOutMessage"
 								data-bind="ntsMultilineEditor: { value: lockOutMessage, name: '#[CAS003_32]', constraint: 'LockOutMessage', option: { width: '700px'}, enable: accLockCheck}"></textarea>
 						</div>
 

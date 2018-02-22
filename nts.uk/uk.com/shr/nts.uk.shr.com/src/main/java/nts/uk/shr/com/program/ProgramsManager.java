@@ -1456,6 +1456,9 @@ public class ProgramsManager {
 	/**	 KAF007A*/
 	public static final Program KAF009A = new Program(WebAppId.AT, ProgramIdConsts.KAF009A, null,
 			"/view/kaf/009/a/index.xhtml");
+	/**	 KAF010A*/
+	public static final Program KAF010A = new Program(WebAppId.AT, ProgramIdConsts.KAF010A, "LAF010_1",
+			"/view/kaf/010/a/index.xhtml");
 	// TODO: Define new programs here.
 	/**
 	 * CMM051A
@@ -1492,6 +1495,9 @@ public class ProgramsManager {
 			"/view/kal/004/b/index.xhtml");
 	public static final Program KAL004F = new Program(WebAppId.AT, ProgramIdConsts.KAL004F, "KAL004_2",
 			"/view/kal/004/f/index.xhtml");
+	/**  KDW004 */
+	public static final Program KDW004A= new Program(WebAppId.AT, ProgramIdConsts.KDW004A, null,
+			"/view/kdw/004/a/index.xhtml");
 	
 	/**
 	 * All programs map.
