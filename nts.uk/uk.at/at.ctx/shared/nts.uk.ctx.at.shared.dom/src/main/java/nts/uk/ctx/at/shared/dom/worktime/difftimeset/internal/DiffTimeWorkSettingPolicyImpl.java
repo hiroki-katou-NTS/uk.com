@@ -66,7 +66,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 				.forEach(halfDay -> this.diffTimeHalfPolicy.validate(be, halfDay, pred));
 
 		// validate EmTimezoneChangeExtent
-		this.validateEmTimezoneChangeExtent(be,pred, diffTimeWorkSetting);
+		this.validateEmTimezoneChangeExtent(be, pred, diffTimeWorkSetting);
 
 		// validate common setting
 		this.commonWorkTimePolicy.validate(be, pred, diffTimeWorkSetting.getCommonSet());
@@ -87,27 +87,31 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	 *            the diff time work setting
 	 */
 	// TODO Not use because not mapping to screen
-//	private void validateStampReflectTimezone(BundledBusinessException be, PredetemineTimeSetting pred,
-//			DiffTimeWorkSetting diffTimeWorkSetting) {
-//		diffTimeWorkSetting.getStampReflectTimezone().getStampReflectTimezone().stream().forEach(item -> {
-//			// get start and end time
-//			TimeWithDayAttr start = item.getStartTime();
-//			TimeWithDayAttr end = item.getEndTime();
-//			// validate
-//			if (!this.predeteminePolicyService.validateOneDay(pred, start, end)) {
-//				// throw new BusinessException("Msg_516");
-//			}
-//		});
-//
-//		// get start and end time
-//		// TimeWithDayAttr start =
-//		// diffTimeWorkSetting.getStampReflectTimezone().getStampReflectTimezone();
-//		// TimeWithDayAttr end =
-//		// diffTimeWorkSetting.getStampReflectTimezone().getStampReflectTimezone().getEndTime();
-//
-//		// validate
-//		// this.predeteminePolicyService.validateOneDay(pred, start, end);
-//	}
+	// private void validateStampReflectTimezone(BundledBusinessException be,
+	// PredetemineTimeSetting pred,
+	// DiffTimeWorkSetting diffTimeWorkSetting) {
+	// diffTimeWorkSetting.getStampReflectTimezone().getStampReflectTimezone().stream().forEach(item
+	// -> {
+	// // get start and end time
+	// TimeWithDayAttr start = item.getStartTime();
+	// TimeWithDayAttr end = item.getEndTime();
+	// // validate
+	// if (!this.predeteminePolicyService.validateOneDay(pred, start, end)) {
+	// // throw new BusinessException("Msg_516");
+	// }
+	// });
+	//
+	// // get start and end time
+	// // TimeWithDayAttr start =
+	// //
+	// diffTimeWorkSetting.getStampReflectTimezone().getStampReflectTimezone();
+	// // TimeWithDayAttr end =
+	// //
+	// diffTimeWorkSetting.getStampReflectTimezone().getStampReflectTimezone().getEndTime();
+	//
+	// // validate
+	// // this.predeteminePolicyService.validateOneDay(pred, start, end);
+	// }
 
 	/**
 	 * Validate diff timezone set.
@@ -124,14 +128,15 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 		// validate restime vs pred
 		diffTimeWorkSetting.getDayoffWorkTimezone().getRestTimezone().getRestTimezones().stream().forEach(item -> {
 			if (this.predeteminePolicyService.validateOneDay(pred, item.getStart(), item.getEnd())) {
-				be.addMessage("Msg_516","KMK003_21");
+				be.addMessage("Msg_516", "KMK003_21");
 			}
 		});
-		
+
 		// validate work time vs pred
 		diffTimeWorkSetting.getDayoffWorkTimezone().getWorkTimezones().stream().forEach(item -> {
-			if (this.predeteminePolicyService.validateOneDay(pred, item.getTimezone().getStart(), item.getTimezone().getEnd())) {
-				be.addMessage("Msg_516","KMK003_90");
+			if (this.predeteminePolicyService.validateOneDay(pred, item.getTimezone().getStart(),
+					item.getTimezone().getEnd())) {
+				be.addMessage("Msg_516", "KMK003_90");
 			}
 		});
 	}
@@ -153,7 +158,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 
 		int aheadChange = diffTimeWorkSetting.getChangeExtent().getAheadChange().valueAsMinutes();
 		int behindChange = diffTimeWorkSetting.getChangeExtent().getBehindChange().valueAsMinutes();
-		
+
 		diffTimeWorkSetting.getHalfDayWorkTimezones().stream().forEach(halfDay -> {
 			halfDay.getWorkTimezone().getEmploymentTimezones().stream().forEach(item -> {
 				boolean isInvalidAheadChange = item.getTimezone().getStart().valueAsMinutes() - aheadChange < startTime;
@@ -193,57 +198,21 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 			});
 		});
 
-		//validate Msg_994 for work time of halfday
+		// validate Msg_994 for work time of halfday
 		diffTimeWorkSetting.getHalfDayWorkTimezones().stream().forEach(item -> {
-//			List<DiffTimeOTTimezoneSet> lstEarlyOT = item.getWorkTimezone().getOTTimezones().stream()
-//					.filter(ot -> ot.isEarlyOTUse())
-//					.filter(ot -> !ot.isUpdateStartTime())
-//					.sorted((a, b) -> a.getTimezone().getStart().compareTo(b.getTimezone().getStart()))
-//					.collect(Collectors.toList());
-//			List<DiffTimeOTTimezoneSet> lstLateOT = item.getWorkTimezone().getOTTimezones().stream()
-//					.filter(ot -> !ot.isEarlyOTUse())
-//					.filter(ot -> !ot.isUpdateStartTime())
-//					.sorted((a, b) -> a.getTimezone().getStart().compareTo(b.getTimezone().getStart()))
-//					.collect(Collectors.toList());
-//			if (!CollectionUtil.isEmpty(lstEarlyOT)) {
-//				int earlyOTEndTime = lstEarlyOT.get(0).getTimezone().getEnd().v();
-//				List<EmTimeZoneSet> invalidList = item.getWorkTimezone().getEmploymentTimezones().stream()
-//						.filter(work -> work.getTimezone().getStart().v() - aheadChange < earlyOTEndTime)
-//						.collect(Collectors.toList());
-//				if (!CollectionUtil.isEmpty(invalidList)) {
-////					be.addMessage("Msg_783");
-//					be.addMessage("Msg_994");
-//				}
-//			}
-//			if (!CollectionUtil.isEmpty(lstLateOT)) {
-//				int lateOTStartTime = lstLateOT.get(lstLateOT.size() - 1).getTimezone().getStart().v();
-//				List<EmTimeZoneSet> invalidList = item.getWorkTimezone().getEmploymentTimezones().stream()
-//						.filter(work -> work.getTimezone().getEnd().v() + behindChange > lateOTStartTime)
-//						.collect(Collectors.toList());
-//				if (!CollectionUtil.isEmpty(invalidList)) {
-////					be.addMessage("Msg_783");
-//					be.addMessage("Msg_994");
-//				}
-//			}
-			
-			
 			item.getWorkTimezone().getEmploymentTimezones().stream().forEach(work -> {
 				this.validateLeftOfWork(work, item.getWorkTimezone().getOTTimezones(), aheadChange, be);
 				this.validateRightOfWork(work, item.getWorkTimezone().getOTTimezones(), behindChange, be);
 			});
 		});
-
-		//TODO validate Msg_784
 	}
-	
 
-	//get left Ot of work
+	// get left Ot of work
 	private void validateLeftOfWork(EmTimeZoneSet work, List<DiffTimeOTTimezoneSet> lstOT, int aheadChange,
 			BundledBusinessException be) {
 		List<DiffTimeOTTimezoneSet> lstLeft = lstOT.stream()
 				.filter(ot -> ot.getTimezone().getEnd().v() <= work.getTimezone().getStart().v())
-				.filter(ot -> ot.isEarlyOTUse())
-				.filter(ot -> !ot.isUpdateStartTime())
+				.filter(ot -> ot.isEarlyOTUse()).filter(ot -> !ot.isUpdateStartTime())
 				.sorted((a, b) -> a.getTimezone().getStart().compareTo(b.getTimezone().getStart()))
 				.collect(Collectors.toList());
 
@@ -255,13 +224,12 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 		}
 	}
 
-	//get right Ot of work
+	// get right Ot of work
 	private void validateRightOfWork(EmTimeZoneSet work, List<DiffTimeOTTimezoneSet> lstOT, int behindChange,
 			BundledBusinessException be) {
 		List<DiffTimeOTTimezoneSet> lstRight = lstOT.stream()
 				.filter(ot -> ot.getTimezone().getStart().v() >= work.getTimezone().getEnd().v())
-				.filter(ot -> !ot.isEarlyOTUse())
-				.filter(ot -> !ot.isUpdateStartTime())
+				.filter(ot -> !ot.isEarlyOTUse()).filter(ot -> !ot.isUpdateStartTime())
 				.sorted((a, b) -> a.getTimezone().getStart().compareTo(b.getTimezone().getStart()))
 				.collect(Collectors.toList());
 
@@ -272,15 +240,14 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 			}
 		}
 	}
-	
-	//check if rest time in work time
-	private boolean restIsInWorkTime(DiffTimeDeductTimezone restTime,List<EmTimeZoneSet> lstWorkTime)
-	{
+
+	// check if rest time in work time
+	private boolean restIsInWorkTime(DiffTimeDeductTimezone restTime, List<EmTimeZoneSet> lstWorkTime) {
 		List<EmTimeZoneSet> lst = lstWorkTime.stream()
 				.filter(work -> (work.getTimezone().getStart().v() <= restTime.getStart().v())
 						&& (work.getTimezone().getEnd().v() >= restTime.getEnd().v()))
 				.collect(Collectors.toList());
-		//if have rest time valid
+		// if have rest time valid
 		return lst.size() > 0;
 	}
 }
