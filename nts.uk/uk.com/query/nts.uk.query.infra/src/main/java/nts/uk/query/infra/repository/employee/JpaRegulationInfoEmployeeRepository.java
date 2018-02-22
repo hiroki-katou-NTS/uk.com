@@ -105,7 +105,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			conditions
 					.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.jobInfoEndDate), paramQuery.getBaseDate()));
 		}
-		if (paramQuery.getFilterByWorktype()) {
+		if (paramQuery.getSystemType() == SystemType.EMPLOYMENT.value && paramQuery.getFilterByWorktype()) {
 			if (!worktypeCodes.isEmpty()) {
 				conditions.add(root.get(EmployeeDataView_.workTypeCd).in(worktypeCodes));
 			}
@@ -208,10 +208,13 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			}
 		});
 
+		// sort by worktype code
+		if (paramQuery.getSystemType() == SystemType.EMPLOYMENT.value) {
+			orders.add(cb.asc(root.get(EmployeeDataView_.workTypeCd)));
+		}
+
 		// sort by employee code
 		orders.add(cb.asc(root.get(EmployeeDataView_.scd)));
-		// sort by worktype code
-		orders.add(cb.asc(root.get(EmployeeDataView_.workTypeCd)));
 		cq.orderBy(orders);
 
 		// execute query & add to resultList
@@ -237,6 +240,69 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		BsymtEmployeeOrderPK pk = new BsymtEmployeeOrderPK(comId, sortOrderNo, systemType);
 		Optional<BsymtEmployeeOrder> empOrder = this.queryProxy().find(pk, BsymtEmployeeOrder.class);
 		return empOrder.isPresent() ? empOrder.get().getLstBsymtEmpOrderCond() : Collections.emptyList();
+	}
+
+	/**
+	 * The Enum SystemType.
+	 */
+	public enum SystemType {
+
+		/** The personal information. */
+		// システム管理者
+		PERSONAL_INFORMATION(1),
+
+		/** The employment. */
+		// 就業
+		EMPLOYMENT(2),
+
+		/** The salary. */
+		// 給与
+		SALARY(3),
+
+		/** The human resources. */
+		// 人事
+		HUMAN_RESOURCES(4),
+
+		/** The administrator. */
+		// 管理者
+		ADMINISTRATOR(5);
+
+		/** The value. */
+		public final int value;
+
+		/** The Constant values. */
+		private final static SystemType[] values = SystemType.values();
+
+		/**
+		 * Instantiates a new system type.
+		 *
+		 * @param value the value
+		 */
+		private SystemType(int value) {
+			this.value = value;
+		}
+
+		/**
+		 * Value of.
+		 *
+		 * @param value the value
+		 * @return the system type
+		 */
+		public static SystemType valueOf(Integer value) {
+			// Invalid object.
+			if (value == null) {
+				return null;
+			}
+
+			// Find value.
+			for (SystemType val : SystemType.values) {
+				if (val.value == value) {
+					return val;
+				}
+			}
+			// Not found.
+			return null;
+		}
 	}
 
 }
