@@ -24,10 +24,7 @@ module nts.uk.at.view.kmk003.a {
     import OtherFlowColumnSetting = nts.uk.at.view.kmk003.a.viewmodel.common.OtherFlowColumnSetting;
     import OffdayWorkTimeConverter = nts.uk.at.view.kmk003.a.viewmodel.common.OffdayWorkTimeConverter;
     
-    import FlexWorkSettingDto = service.model.flexset.FlexWorkSettingDto;
     import FixedWorkSettingDto = service.model.fixedset.FixedWorkSettingDto;
-    import DiffTimeWorkSettingDto = nts.uk.at.view.kmk003.a.service.model.difftimeset.DiffTimeWorkSettingDto;
-    import FlWorkSettingDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlWorkSettingDto;
     export module viewmodel {
         export module fixedset {
             
@@ -258,35 +255,7 @@ module nts.uk.at.view.kmk003.a {
                     //update ver7.2 
                     this.legalOTSetting(0);
                 }
-                
-                fromFlex(flexDto: FlexWorkSettingDto) {
-                    let self= this;
-                    let common = new WorkTimezoneCommonSetModel();
-                    common.updateData(flexDto.commonSetting);
-                    let fixedDto = self.toDto(common);
-                    //half day
-                    flexDto.lstHalfDayWorkTimezone.forEach(function(item, index) {
-                        let halfDay = flexDto.lstHalfDayWorkTimezone.filter((half) => { return half.ampmAtr == item.ampmAtr; })[0];
-                        fixedDto.lstHalfDayWorkTimezone[index].workTimezone.lstWorkingTimezone = halfDay.workTimezone.lstWorkingTimezone;
-                        fixedDto.lstHalfDayWorkTimezone[index].workTimezone.lstOTTimezone = halfDay.workTimezone.lstOTTimezone;
-                    });
-                    
-                    //off day
-                    fixedDto.offdayWorkTimezone.lstWorkTimezone = flexDto.offdayWorkTime.lstWorkTimezone;
-                    
-                    //bind dto to model
-                    self.updateData(fixedDto);  
-                }
-                
-                fromFlow(flowDto: FlWorkSettingDto) {
-                    //TODO
-                }
-                
-                fromDiffTime(difftimeDto: DiffTimeWorkSettingDto) {
-                    //TODO
-                }
             }
-            
         }
     }
 }

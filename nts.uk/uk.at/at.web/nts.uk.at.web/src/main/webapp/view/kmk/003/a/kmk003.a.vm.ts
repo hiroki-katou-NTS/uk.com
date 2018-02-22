@@ -68,24 +68,22 @@ module nts.uk.at.view.kmk003.a {
                     self.clearAllError();
                 });
                 self.mainSettingModel = new MainSettingModel(self.useHalfDay);
-                self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe((v) => {
+                self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(() => {
                     if (self.isNewMode()) {
                         self.clearAllError();
                         self.isLoading(false);
                         self.mainSettingModel.resetData(self.isNewMode());
                         self.isLoading(true);
-                        self.mainSettingModel.convertWorkFormModel(v);
                     }
                 });
-                self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe((oldVal) => {
+                self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(() => {
                     if (self.isNewMode()) {
                         self.clearAllError();
                         self.isLoading(false);
                         self.mainSettingModel.resetData(self.isNewMode());
                         self.isLoading(true);
-                        self.mainSettingModel.convertSettingMethodModel(false,oldVal);
                     }
-                }, this, "beforeChange");
+                });
 
                 self.selectedWorkTimeCode = ko.observable('');
                 self.workTimeSettingLoader = new WorkTimeSettingLoader(self.mainSettingModel.workTimeSetting.worktimeCode);
@@ -816,98 +814,16 @@ module nts.uk.at.view.kmk003.a {
             resetData(isNewMode?: boolean) {
                 let self = this;
                 self.useHalfDay(false);
-//                self.fixedWorkSetting.resetData();
-//                self.flowWorkSetting.resetData();
-//                self.flexWorkSetting.resetData();
-//                self.diffWorkSetting.resetData();
+                self.fixedWorkSetting.resetData();
+                self.flowWorkSetting.resetData();
+                self.flexWorkSetting.resetData();
+                self.diffWorkSetting.resetData();
                 if (!isNewMode) {
                     //check change mode to convert data
                     self.commonSetting.resetData();
                     self.predetemineTimeSetting.resetData();
                     self.workTimeSetting.resetData();
                     self.workTimeSetting.resetWorkTimeDivision();
-                }
-            }
-            
-            convertWorkFormModel(workForm: any) {
-                let self = this;
-                //from flex to other
-                if (workForm == EnumWorkForm.REGULAR) {
-                    self.convertSettingMethodModel(true, self.workTimeSetting.workTimeDivision.workTimeMethodSet());
-                }
-                else {
-                    //else convert form other to flex
-                    switch (self.workTimeSetting.workTimeDivision.workTimeMethodSet()) {
-                        case SettingMethod.FIXED:
-                            //from fixed to flex
-                            this.flexWorkSetting.fromFixed(self.fixedWorkSetting.toDto(self.commonSetting));
-                            break;
-                        case SettingMethod.DIFFTIME:
-                            this.flexWorkSetting.fromDiffTime(self.diffWorkSetting.toDto(self.commonSetting));
-                            break;
-                        case SettingMethod.FLOW:
-                            this.flexWorkSetting.fromFlow(self.flowWorkSetting.toDto(self.commonSetting));
-                            break;
-                        default: break;
-                    }
-                }
-            }
-            
-            convertSettingMethodModel(isFromFlex:boolean,oldSettingMethod: any) {
-                let self = this;
-                let currentSettingMethod: number = self.workTimeSetting.workTimeDivision.workTimeMethodSet();
-                if (isFromFlex) {
-                    switch (currentSettingMethod) {
-                        case SettingMethod.FIXED:
-                            //convert from flex to fix
-                            self.fixedWorkSetting.fromFlex(self.flexWorkSetting.toDto(self.commonSetting));
-                            break;
-                        case SettingMethod.DIFFTIME:
-                            //convert from flex to difftime
-                            self.diffWorkSetting.fromFlex(self.flexWorkSetting.toDto(self.commonSetting));
-                            break;
-                        case SettingMethod.FLOW:
-                            //convert from flex to flow
-                            self.flowWorkSetting.fromFlex(self.flexWorkSetting.toDto(self.commonSetting));
-                            break;
-                        default: break;
-                    }
-                }
-                else {
-                    //covert in regular
-                    switch (oldSettingMethod) {
-                        case SettingMethod.FIXED:
-                            //to diff
-                            if (currentSettingMethod == SettingMethod.DIFFTIME) {
-                                self.diffWorkSetting.fromFixed(self.fixedWorkSetting.toDto(self.commonSetting));
-                            }
-                            //to flow
-                            if (currentSettingMethod == SettingMethod.FLOW) {
-                                self.flowWorkSetting.fromFixed(self.fixedWorkSetting.toDto(self.commonSetting));
-                            }
-                            break;
-                        case SettingMethod.DIFFTIME:
-                            //to fixed
-                            if (currentSettingMethod == SettingMethod.FIXED) {
-                                self.fixedWorkSetting.fromDiffTime(self.diffWorkSetting.toDto(self.commonSetting));
-                            }
-                            //to flow
-                            if (currentSettingMethod == SettingMethod.FLOW) {
-                                self.flowWorkSetting.fromDiffTime(self.diffWorkSetting.toDto(self.commonSetting));
-                            }
-                            break;
-                        case SettingMethod.FLOW:
-                            //to diff
-                            if (currentSettingMethod == SettingMethod.DIFFTIME) {
-                                self.diffWorkSetting.fromFlow(self.flowWorkSetting.toDto(self.commonSetting));
-                            }
-                            //to fixed
-                            if (currentSettingMethod == SettingMethod.FIXED) {
-                                self.fixedWorkSetting.fromFlow(self.flowWorkSetting.toDto(self.commonSetting));
-                            }
-                            break;
-                        default: break;
-                    }     
                 }
             }
         }
