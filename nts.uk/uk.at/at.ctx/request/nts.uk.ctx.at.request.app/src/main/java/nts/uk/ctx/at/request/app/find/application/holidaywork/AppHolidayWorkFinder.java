@@ -185,8 +185,9 @@ public class AppHolidayWorkFinder {
 		result.setDisplayHolidayInstructInforFlg(holidayWorkInstruction.isDisplayHolidayWorkInstructInforFlg());
 		result.setHolidayInstructInformation(holidayWorkInstruction.getHolidayWorkInstructInfomation());
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
+		
 		// 01-09_事前申請を取得
-		getPreAppPanel(overtimeRestAppCommonSet,companyID,employeeID,result,appDate);
+		getPreAppPanel(overtimeRestAppCommonSet,companyID,employeeID,result,appDate,prePostAtr);
 		//01-18_実績内容を取得（新規） : TODO
 		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする ( Domain model "application setting". Check base date of approval route )
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
@@ -452,7 +453,7 @@ public class AppHolidayWorkFinder {
 		// 01-08_乖離定型理由を取得, 01-07_乖離理由を取得
 		getDivigenceReason(overtimeRestAppCommonSet,result,companyID);
 		// 01-09_事前申請を取得
-		//getPreAppPanel(overtimeRestAppCommonSet,companyID,employeeID,result,appDate);
+		//getPreAppPanel(overtimeRestAppCommonSet,companyID,employeeID,result,appDate,result.getApplication().getPrePostAtr());
 	}
 	/**
 	 * 01-03_休出時間を取得
@@ -477,15 +478,15 @@ public class AppHolidayWorkFinder {
 	 * @param result
 	 * @param appDate
 	 */
-	private void getPreAppPanel(Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet, String companyID,String employeeID,AppHolidayWorkDto result,String appDate){
+	private void getPreAppPanel(Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet, String companyID,String employeeID,AppHolidayWorkDto result,String appDate,int prePost){
 		// xu li hien thi du lieu xin truoc
 				if(overtimeRestAppCommonSet.isPresent()){
 					// hien thi du lieu thuc te
-					if(result.getApplication().getPrePostAtr() == InitValueAtr.POST.value && overtimeRestAppCommonSet.get().getPerformanceDisplayAtr().value == UseAtr.USE.value){
+					if(prePost == InitValueAtr.POST.value && overtimeRestAppCommonSet.get().getPerformanceDisplayAtr().value == UseAtr.USE.value){
 						result.setReferencePanelFlg(true);
 					}
 					// hien thi don xin truoc
-					if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.NOTUSE.value && result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value){
+					if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.NOTUSE.value && prePost  == PrePostAtr.POSTERIOR.value){
 						result.setAllPreAppPanelFlg(false);
 					}else{
 						result.setAllPreAppPanelFlg(true);
@@ -494,9 +495,9 @@ public class AppHolidayWorkFinder {
 				// 01-09_事前申請を取得
 				if(result.isAllPreAppPanelFlg()){
 					//01-09_事前申請を取得
-					if(result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value ){
+					if(prePost  == PrePostAtr.POSTERIOR.value ){
 						result.setPreAppPanelFlg(false);
-						AppHolidayWorkPreAndReferDto appHolidayWork = holidayPreProcess.getPreApplicationHoliday(companyID, employeeID,overtimeRestAppCommonSet, appDate,result.getApplication().getPrePostAtr());
+						AppHolidayWorkPreAndReferDto appHolidayWork = holidayPreProcess.getPreApplicationHoliday(companyID, employeeID,overtimeRestAppCommonSet, appDate,prePost);
 						if(appHolidayWork != null){
 							result.setPreAppPanelFlg(true);
 							result.setPreAppHolidayWorkDto(appHolidayWork);

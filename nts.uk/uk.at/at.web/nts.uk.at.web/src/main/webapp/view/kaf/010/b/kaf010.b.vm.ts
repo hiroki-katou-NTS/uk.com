@@ -616,7 +616,7 @@ module nts.uk.at.view.kaf010.b {
             }
             //Validate input time
             validateTime(startTime: number, endTime: number, elementId: string): boolean{            
-                if(startTime > endTime){
+                if(startTime >= endTime){
                     dialog.alertError({messageId:"Msg_307"})
                      $(elementId).focus();
                     return false;

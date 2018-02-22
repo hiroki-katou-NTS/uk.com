@@ -253,10 +253,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             }
             self.workTypecodes(data.workTypes);
             self.workTimecodes(data.siftTypes);
-            self.timeStart1(data.workClockFrom1 == -1 ? null : data.workClockFrom1);
-            self.timeEnd1(data.workClockTo1 == -1 ? null : data.workClockTo1);
-            self.timeStart2(data.workClockFrom2 == -1 ? null : data.workClockFrom2);
-            self.timeEnd2(data.workClockTo2 == -1 ? null : data.workClockTo2);
+            self.timeStart1(data.workClockFrom1 == null ? null : data.workClockFrom1);
+            self.timeEnd1(data.workClockTo1 == null ? null : data.workClockTo1);
+            self.timeStart2(data.workClockFrom2 == null ? null : data.workClockFrom2);
+            self.timeEnd2(data.workClockTo2 == null ? null : data.workClockTo2);
             if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
                 let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
                 self.reasonCombo(lstReasonCombo);
@@ -479,15 +479,18 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 let endTime = self.restTime()[i].endTime();
                 let attendanceId = self.restTime()[i].attendanceID();
                 let frameNo = self.restTime()[i].frameNo();
-                if(!self.validateTime(startTime, endTime, 'input#restTimeStart_'+attendanceId+'_'+frameNo)){
+                if(!nts.uk.util.isNullOrEmpty(startTime) && startTime != ""){
+                    if(!self.validateTime(startTime, endTime, 'input#restTimeStart_'+attendanceId+'_'+frameNo)){
                     return false;
                 };
+                }
+                
             }
             return true;            
         }
         //Validate input time
         validateTime(startTime: number, endTime: number, elementId: string): boolean{            
-            if(startTime > endTime){
+            if(startTime >= endTime){
                 dialog.alertError({messageId:"Msg_307"})
                  $(elementId).focus();
                 return false;
@@ -632,10 +635,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             overtimeHours: ko.toJS(self.overtimeHours)
                         }
                     ).done(data => {
-                        self.timeStart1(data.startTime1 == -1 ? null : data.startTime1);
-                        self.timeEnd1(data.endTime1 == -1 ? null : data.endTime1);
-                        self.timeStart2(data.startTime2 == -1 ? null : data.startTime2);
-                        self.timeEnd2(data.endTime2 == -1 ? null : data.endTime2);
+                        self.timeStart1(data.startTime1 == null ? null : data.startTime1);
+                        self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
+                        self.timeStart2(data.startTime2 == null ? null : data.startTime2);
+                        self.timeEnd2(data.endTime2 == null ? null : data.endTime2);
                         self.convertAppOvertimeReferDto(data);
                     });
                 }

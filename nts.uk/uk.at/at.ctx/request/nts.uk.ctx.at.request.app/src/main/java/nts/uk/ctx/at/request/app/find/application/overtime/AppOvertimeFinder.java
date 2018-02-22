@@ -255,8 +255,12 @@ public class AppOvertimeFinder {
 				}
 				overTimeDto.setSiftTypes(siftCodes);
 				
-				WorkTimeSetting workTime = workTimeRepository.findByCode(companyID, appOverTime.getSiftCode().v()).get();
-				overTimeDto.setSiftType(new SiftType(workTime.getWorktimeCode().v(), workTime.getWorkTimeDisplayName().getWorkTimeName().v()));
+				WorkTimeSetting workTime = workTimeRepository.findByCode(companyID, appOverTime.getSiftCode().v()).isPresent() ? workTimeRepository.findByCode(companyID, appOverTime.getSiftCode().v()).get() : null;
+				if(workTime != null){
+					overTimeDto.setSiftType(new SiftType(workTime.getWorktimeCode().v(), workTime.getWorkTimeDisplayName().getWorkTimeName().v()));
+				}else{
+					overTimeDto.setSiftType(new SiftType("", ""));
+				}
 				
 				// 01-17_休憩時間取得(lay thoi gian nghi ngoi)
 				boolean displayRestTime = iOvertimePreProcess.getRestTime(approvalFunctionSetting);

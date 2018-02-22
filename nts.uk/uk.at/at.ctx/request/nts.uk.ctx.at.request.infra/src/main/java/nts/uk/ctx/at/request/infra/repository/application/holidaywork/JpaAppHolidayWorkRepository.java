@@ -23,7 +23,7 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 	static {
 		StringBuilder query = new StringBuilder();
 		query.append(FIND_ALL);
-		query.append(" WHERE e.krqdtAppHolidayWorkPk.cid = :companyID");
+		query.append(" WHERE e.krqdtAppHolidayWorkPK.cid = :companyID");
 		query.append(" AND e.krqdtAppHolidayWorkPK.appId = :appID");
 		FIND_BY_APPID = query.toString();
 	}
