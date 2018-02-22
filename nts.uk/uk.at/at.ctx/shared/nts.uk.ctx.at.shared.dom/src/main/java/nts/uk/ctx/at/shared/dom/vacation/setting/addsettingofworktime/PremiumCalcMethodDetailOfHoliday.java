@@ -8,6 +8,13 @@ import lombok.Getter;
  *
  */
 public class PremiumCalcMethodDetailOfHoliday {
+	
+	public PremiumCalcMethodDetailOfHoliday(IncludeHolidaysPremiumCalcDetailSet includeHolidaysSet) {
+		super();
+		this.includeHolidaysSet = includeHolidaysSet;
+	}//休暇分を含める設定
+	
 	@Getter
-	private IncludeHolidaysPremiumCalcDetailSet includeHolidaysSet;//休暇分を含める設定
+	private IncludeHolidaysPremiumCalcDetailSet includeHolidaysSet;
+
 }
