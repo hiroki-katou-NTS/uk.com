@@ -9,11 +9,13 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculationAndMinus;
+import nts.uk.ctx.at.record.dom.monthly.calc.AggregateMonthlyValue;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.AddedVacationUseTime;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
@@ -97,10 +99,12 @@ public class FlexTimeOfMonthly {
 	 * @param flexAggregateMethod フレックス集計方法
 	 * @param aggrSetOfFlex フレックス時間勤務の月の集計設定
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
+	 * @param aggregateTotalWorkingTime 集計総労働時間
+	 * @param excessOutsideWorkMng 時間外超過管理
 	 * @param repositories 月次集計が必要とするリポジトリ
-	 * @return 集計総労働時間
+	 * @return 戻り値：月別実績を集計する
 	 */
-	public AggregateTotalWorkingTime aggregateMonthly(
+	public AggregateMonthlyValue aggregateMonthly(
 			String companyId,
 			String employeeId,
 			YearMonth yearMonth,
@@ -110,10 +114,9 @@ public class FlexTimeOfMonthly {
 			FlexAggregateMethod flexAggregateMethod,
 			AggrSettingMonthlyOfFlx aggrSetOfFlex,
 			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
+			AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			ExcessOutsideWorkMng excessOutsideWorkMng,
 			RepositoriesRequiredByMonthlyAggr repositories){
-		
-		// 集計総労働時間　作成　（返却用）
-		val returnClass = new AggregateTotalWorkingTime();
 		
 		// 期間．開始日を処理日にする
 		GeneralDate procDate = datePeriod.start();
@@ -139,7 +142,7 @@ public class FlexTimeOfMonthly {
 				}
 			
 				// 日別実績を集計する　（フレックス時間勤務用）
-				val flexTimeDaily = returnClass.aggregateDailyForFlex(attendanceTimeOfDaily, companyId,
+				val flexTimeDaily = aggregateTotalWorkingTime.aggregateDailyForFlex(attendanceTimeOfDaily, companyId,
 						workplaceId, employmentCd, workingSystem, aggregateAtr, aggrSetOfFlex, repositories);
 				
 				// フレックス時間への集計結果を取得する
@@ -150,7 +153,7 @@ public class FlexTimeOfMonthly {
 				// フレックス時間を集計する
 				this.flexTime.aggregate(attendanceTimeOfDaily);
 			
-				if (aggregateAtr.isExcessOutsideWork()){
+				if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
 				
 					// フレックス超過時間を割り当てる
 					//*****（２次）
@@ -160,7 +163,7 @@ public class FlexTimeOfMonthly {
 			procDate = procDate.addDays(1);
 		}
 		
-		return returnClass;
+		return AggregateMonthlyValue.of(aggregateTotalWorkingTime, excessOutsideWorkMng);
 	}
 	
 	/**

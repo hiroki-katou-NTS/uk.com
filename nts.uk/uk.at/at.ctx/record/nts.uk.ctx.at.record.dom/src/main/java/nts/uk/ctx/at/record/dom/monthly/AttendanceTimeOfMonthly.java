@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
@@ -42,6 +43,7 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 	/** 休暇 */
 	//holiday
 	/** 時間外超過 */
+	@Setter
 	private ExcessOutsideWorkOfMonthly excessOutsideWork;
 	/** 任意項目 */
 	//anyItem
@@ -97,44 +99,19 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 		domain.aggregateDays = aggregateDays;
 		return domain;
 	}
-	
+
 	/**
-	 * 履歴ごとに月別実績を集計する
+	 * 集計準備
 	 * @param companyId 会社ID
+	 * @param datePeriod 期間
 	 * @param workingSystem 労働制
 	 * @param isRetireMonth 退職月度かどうか
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void aggregate(String companyId, WorkingSystem workingSystem, boolean isRetireMonth,
-			RepositoriesRequiredByMonthlyAggr repositories){
+	public void prepareAggregation(String companyId, DatePeriod datePeriod, WorkingSystem workingSystem,
+			boolean isRetireMonth, RepositoriesRequiredByMonthlyAggr repositories){
 		
-		// 月の計算に必要な条件を確認する
-		this.monthlyCalculation.confirmProcessCondition(
-				companyId, this.employeeId, this.datePeriod, workingSystem, isRetireMonth, repositories);
-		
-		// 履歴ごとに月別実績を集計する
-		this.monthlyCalculation.aggregate(this.employeeId, this.yearMonth, this.closureId, this.closureDate,
-				this.datePeriod, workingSystem, repositories);
-	}
-	
-	/**
-	 * 縦計
-	 * @param companyId 会社ID
-	 * @param workingSystem 労働制
-	 * @param repositories 月次集計が必要とするリポジトリ
-	 */
-	public void verticalTotal(String companyId, WorkingSystem workingSystem,
-			RepositoriesRequiredByMonthlyAggr repositories){
-	
-		// 月の縦計
-		this.verticalTotal.verticalTotal(companyId, this.employeeId, this.datePeriod,
-				workingSystem, repositories);
-		
-		// 開始週の終了日を計算
-		
-		// 週の縦計
-		
-		// 次の週の期間を計算
-		
+		this.monthlyCalculation.prepareAggregation(companyId, this.employeeId, this.yearMonth,
+				this.closureId, this.closureDate, datePeriod, workingSystem, isRetireMonth, repositories);
 	}
 }

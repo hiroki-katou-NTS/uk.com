@@ -46,7 +46,7 @@ public interface AppListInitialRepository {
 	 * @param lstApp
 	 * @return
 	 */
-	public ApplicationStatus countAppListApproval(List<Application_New> lstApp);
+	public AppInfoStatus countAppListApproval(List<Application_New> lstApp);
 	/**
 	 * 5 - 申請一覧リスト取得実績
 	 * @param lstApp

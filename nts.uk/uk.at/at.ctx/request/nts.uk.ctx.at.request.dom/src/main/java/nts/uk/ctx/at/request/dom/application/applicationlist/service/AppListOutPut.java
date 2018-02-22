@@ -11,4 +11,7 @@ public class AppListOutPut {
 	private List<Application_New> lstApp;
 	List<AppOverTimeInfoFull> lstAppOt;
 	List<AppGoBackInfoFull> lstAppGoBack;
+	//TH: approval (count)
+	private ApplicationStatus appStatusCount;
+	private List<ApplicationFullOutput> lstAppFull;
 }

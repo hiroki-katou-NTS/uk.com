@@ -3,15 +3,23 @@ package nts.uk.ctx.at.record.dom.breakorgoout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AcquisitionConditionsAtr;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.BreakClassification;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionClassification;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 
@@ -34,31 +42,31 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 
 	
 	
-	/**
-	 * 勤務形態を見て外出時間帯の取得
-	 * @return
-	 */
-	public List<TimeSheetOfDeductionItem> getGoOutTimeSheet(AcquisitionConditionsAtr acqAtr ,WorkTimeMethodSet workTimeMethodSet
-												 		  ,Optional<FlowWorkRestTimezone> fluRestTime,FlowFixedRestSet fluidprefixBreakTimeSet){
-		val goOutTimeSheetList = removeUnuseItemBaseOnAtr(acqAtr,workTimeMethodSet,fluRestTime,fluidprefixBreakTimeSet);
-		switch(workTimeMethodSet) {
-		case FLOW_WORK:
-			if(fluRestTime.isPresent()) {
-				if(fluRestTime.get().isFixRestTime()) {
-					return convertFromgoOutTimeToBreakTime(fluidprefixBreakTimeSet, goOutTimeSheetList);
-				}
-			}
-			else {
-				throw new RuntimeException("faild get FluidSet");
-			}
-		case FIXED_WORK:
-		case DIFFTIME_WORK:
-//		case Enum_Overtime_Work:
-			return goOutTimeSheetList;
-		default:
-			throw new RuntimeException("unknown workTimeMethodSet:"+workTimeMethodSet);
-		}
-	}
+//	/**
+//	 * 勤務形態を見て外出時間帯の取得
+//	 * @return
+//	 */
+//	public List<TimeSheetOfDeductionItem> getGoOutTimeSheet(AcquisitionConditionsAtr acqAtr ,WorkTimeMethodSet workTimeMethodSet
+//												 		  ,Optional<FlowWorkRestTimezone> fluRestTime,FlowFixedRestSet fluidprefixBreakTimeSet){
+//		val goOutTimeSheetList = removeUnuseItemBaseOnAtr(acqAtr,workTimeMethodSet,fluRestTime,fluidprefixBreakTimeSet);
+//		switch(workTimeMethodSet) {
+//		case FLOW_WORK:
+//			if(fluRestTime.isPresent()) {
+//				if(fluRestTime.get().isFixRestTime()) {
+//					return convertFromgoOutTimeToBreakTime(fluidprefixBreakTimeSet, goOutTimeSheetList);
+//				}
+//			}
+//			else {
+//				throw new RuntimeException("faild get FluidSet");
+//			}
+//		case FIXED_WORK:
+//		case DIFFTIME_WORK:
+////		case Enum_Overtime_Work:
+//			return goOutTimeSheetList;
+//		default:
+//			throw new RuntimeException("unknown workTimeMethodSet:"+workTimeMethodSet);
+//		}
+//	}
 	
 	
 	/**
@@ -67,17 +75,22 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 	 * @param 取得条件区分 
 	 * @return 不要な項目を削除した時間帯
 	 */
-	public List<TimeSheetOfDeductionItem> removeUnuseItemBaseOnAtr(AcquisitionConditionsAtr acqAtr ,WorkTimeMethodSet workTimeMethodSet,Optional<FlowWorkRestTimezone> fluRestTime,FlowFixedRestSet fluidprefixBreakTimeSet) {
+	public List<TimeSheetOfDeductionItem> removeUnuseItemBaseOnAtr(AcquisitionConditionsAtr acqAtr ,WorkTimeMethodSet workTimeMethodSet,Optional<FlowWorkRestTimezone> fluRestTime,FlowFixedRestSet fluidprefixBreakTimeSet,FlowRestCalcMethod flowRestSet) {
 		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
-//		if(/*流動勤務の場合*/) {
-//			if((fluidprefixBreakTimeSet.getCalcMethod().isStampWithoutReference() && fluRestTime.get().getUseFixedRestTime())
-//					||(fluRestTime.get()  && fluRestTime.get().getUseFixedRestTime())) {
-//					for(OutingTimeSheet goOutTimeSheet:
-//						outingTimeSheets.stream().filter(tg -> tg.getReasonForGoOut().isPrivateOrUnion()).collect(Collectors.toList())){
-//						returnList.add(getToOutTimeSheet(acqAtr ,workTimeMethodSet, fluRestTime, fluidprefixBreakTimeSet));
-//				}
-//			}
-//		}
+		List<TimeSheetOfDeductionItem> loopList = (acqAtr.isForDeduction())?
+														this.outingTimeSheets.stream()
+																			 .filter(tc->tc.getReasonForGoOut().isPrivateOrUnion())
+																			 .map(tc -> tc.toTimeSheetOfDeductionItem())
+																			 .collect(Collectors.toList()):
+														this.outingTimeSheets.stream()
+																			 .map(tc -> tc.toTimeSheetOfDeductionItem())
+																			 .collect(Collectors.toList());
+		if(workTimeMethodSet.isFluidWork()) {
+			if((fluidprefixBreakTimeSet.getCalculateMethod().isStampWithoutReference() && fluRestTime.get().isFixRestTime())
+					||(!fluRestTime.get().isFixRestTime()  && fluidprefixBreakTimeSet.isReferRestTime())) {
+					returnList.addAll(convertFromgoOutTimeToBreakTime(fluidprefixBreakTimeSet,loopList));
+			}
+		}
 			
 		/*ここに外出から休憩に変化する↓のロジックを呼ぶ*/
 		return returnList;
@@ -92,18 +105,32 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 		
 		for(TimeSheetOfDeductionItem deductionItem : deductionList) {
 			//休憩へ変換する
-//			if((fluidprefixBreakTimeSet.isPrivateGoOutTreatBreakTime() && deductionItem.getGoOutReason().get().isPrivate())
-//				||(fluidprefixBreakTimeSet.isUnionGoOutTreatBreakTime() && deductionItem.getGoOutReason().get().isUnion())) {
-//				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(deductionItem.getTimeSheet(),deductionItem.getCalcrange(),deductionItem.getDeductionTimeSheet()
-//						       ,deductionItem.getBonusPayTimeSheet(),deductionItem.getSpecBonusPayTimesheet(),deductionItem.getMidNightTimeSheet(),deductionItem.getGoOutReason()
-//						       ,Optional.of(BreakClassification.BREAK_STAMP),DeductionClassification.BREAK));
-//			}
-//			//外出のまま
-//			else {
-//				returnList.add(deductionItem);
-//			}
+			if((fluidprefixBreakTimeSet.isUsePrivateGoOutRest() && deductionItem.getGoOutReason().get().isPrivate())
+				||(fluidprefixBreakTimeSet.isUseAssoGoOutRest() && deductionItem.getGoOutReason().get().isUnion())) {
+				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(deductionItem.getTimeSheet(),
+																							  deductionItem.getCalcrange(),
+																							  deductionItem.getRecordedTimeSheet(),
+																							  deductionItem.getDeductionTimeSheet(),
+																							  deductionItem.getBonusPayTimeSheet(),
+																							  deductionItem.getSpecBonusPayTimesheet(),
+																							  deductionItem.getMidNightTimeSheet(),
+																							  deductionItem.getGoOutReason(),
+																							  Finally.of(BreakClassification.BREAK_STAMP),
+																							  DeductionClassification.BREAK));
+			}
+			//修正しない
+			else {
+				returnList.add(deductionItem);
+			}
 		}
 		
 		return returnList;
+	}
+	/**
+	 * 外出時間帯を全て控除項目の時間帯に変換する(パラメータ固定)
+	 * @return
+	 */
+	public List<TimeSheetOfDeductionItem> changeAllTimeSheetToDeductionItem(){
+		return this.outingTimeSheets.stream().map(tc -> tc.toTimeSheetOfDeductionItem()).collect(Collectors.toList());
 	}
 }

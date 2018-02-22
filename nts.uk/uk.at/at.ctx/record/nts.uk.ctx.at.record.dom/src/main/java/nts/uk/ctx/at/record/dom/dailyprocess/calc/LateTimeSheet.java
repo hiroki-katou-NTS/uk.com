@@ -1,67 +1,59 @@
-//package nts.uk.ctx.at.record.dom.dailyprocess.calc;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Optional;
-//import java.util.stream.Collectors;
-//
-//import static java.util.Comparator.*;
-//
-//import lombok.AllArgsConstructor;
-//import lombok.Getter;
-//import lombok.val;
-//import nts.gul.util.value.Finally;
-//import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
-//import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LateDecisionClock;
-//import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
-//import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
-//import nts.uk.ctx.at.shared.dom.DeductionAtr;
-//import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-//import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
-//import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSheetSetting;
-//import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.LateLeaveEarlyClassification;
-//import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.LateLeaveEarlySettingOfWorkTime;
-//import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeCommonSet;
-//import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
-//import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.TimeRoundingSetting;
-//import nts.uk.shr.com.time.TimeWithDayAttr;
-//
-///**
-// * 遅刻時間帯
-// * @author keisuke_hoshina
-// *
-// */
-//public class LateTimeSheet{
-//	
-//	// 遅刻していない場合はempty
-//	@Getter
-//	private Optional<LateLeaveEarlyTimeSheet> forRecordTimeSheet;
-//	
-//	@Getter
-//	private Optional<LateLeaveEarlyTimeSheet> forDeducationTimeSheet;
-//	
-//	@Getter
-//	//今は一時的にint型で作成しているが、本来はworkNo型
-//	private int workNo;
-//	
-//	private Optional<LateTimeOfDaily> lateTime;
-//	
-//	private Optional<DeductionOffSetTime> OffsetTime;
-//	
-//	
-//	private LateTimeSheet(
-//			Optional<LateLeaveEarlyTimeSheet> recordTimeSheet,
-//			Optional<LateLeaveEarlyTimeSheet> deductionTimeSheet,
-//			int workNo,
-//			Optional<LateTimeOfDaily> lateTime,
-//			Optional<DeductionOffSetTime> OffsetTime) {
-//		
-//		this.forRecordTimeSheet = recordTimeSheet;
-//		this.forDeducationTimeSheet = deductionTimeSheet;
-//		this.workNo = workNo;
-//		this.lateTime = lateTime;
-//		this.OffsetTime = OffsetTime;
-//	}
+package nts.uk.ctx.at.record.dom.dailyprocess.calc;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static java.util.Comparator.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.val;
+import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LateDecisionClock;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.shr.com.time.TimeWithDayAttr;
+
+/**
+ * 遅刻時間帯
+ * @author keisuke_hoshina
+ *
+ */
+public class LateTimeSheet{
+	
+	// 遅刻していない場合はempty
+	@Getter
+	private Optional<LateLeaveEarlyTimeSheet> forRecordTimeSheet;
+	
+	@Getter
+	private Optional<LateLeaveEarlyTimeSheet> forDeducationTimeSheet;
+	
+	@Getter
+	//今は一時的にint型で作成しているが、本来はworkNo型
+	private int workNo;
+	
+	private Optional<LateTimeOfDaily> lateTime;
+	
+	private Optional<DeductionOffSetTime> OffsetTime;
+	
+	
+	public LateTimeSheet(
+			Optional<LateLeaveEarlyTimeSheet> recordTimeSheet,
+			Optional<LateLeaveEarlyTimeSheet> deductionTimeSheet,
+			int workNo,
+			Optional<LateTimeOfDaily> lateTime,
+			Optional<DeductionOffSetTime> OffsetTime) {
+		
+		this.forRecordTimeSheet = recordTimeSheet;
+		this.forDeducationTimeSheet = deductionTimeSheet;
+		this.workNo = workNo;
+		this.lateTime = lateTime;
+		this.OffsetTime = OffsetTime;
+	}
 //	
 //	public static LateTimeSheet createAsLate(LateLeaveEarlyTimeSheet recordTimeSheet,LateLeaveEarlyTimeSheet deductionTimeSheet,int workNo,Optional<LateTimeOfDaily> lateTime,Optional<DeductionOffSetTime> OffsetTime) {
 //		return new LateTimeSheet(Optional.of(recordTimeSheet), Optional.of(deductionTimeSheet),workNo,lateTime,OffsetTime);
@@ -361,4 +353,4 @@
 //		
 //	}
 //	
-//}
+}
