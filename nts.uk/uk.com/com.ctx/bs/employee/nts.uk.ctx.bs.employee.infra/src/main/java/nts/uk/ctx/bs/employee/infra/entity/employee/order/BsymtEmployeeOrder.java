@@ -45,7 +45,7 @@ public class BsymtEmployeeOrder extends UkJpaEntity implements Serializable {
 	/** The lst bsymt emp order cond. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-			@JoinColumn(name = "[NO]", referencedColumnName = "[NO]", insertable = false, updatable = false), 
+			@JoinColumn(name = "NO", referencedColumnName = "NO", insertable = false, updatable = false), 
 			@JoinColumn(name = "SEARCH_TYPE", referencedColumnName = "SEARCH_TYPE", insertable = false, updatable = false) 
 	})
 	private List<BsymtEmpOrderCond> lstBsymtEmpOrderCond;
