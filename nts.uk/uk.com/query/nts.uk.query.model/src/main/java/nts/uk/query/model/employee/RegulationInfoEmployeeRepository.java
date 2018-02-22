@@ -1,10 +1,12 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.query.model.employee;
 
 import java.util.List;
+
+import nts.arc.time.GeneralDateTime;
 
 /**
  * The Interface EmployeeQueryModelRepository.
@@ -19,5 +21,14 @@ public interface RegulationInfoEmployeeRepository {
 	 * @return the list
 	 */
 	public List<RegulationInfoEmployee> find(String comId, EmployeeSearchQuery paramQuery);
+	
+	/**
+	 * Find work place id by role.
+	 *
+	 * @param baseDate the base date
+	 * @param referenceRange the reference range
+	 * @return the list
+	 */
+	public List<String> findWorkPlaceIdByRole(GeneralDateTime baseDate, Integer referenceRange);
 
 }

@@ -100,6 +100,8 @@ public class EmployeeSearchQueryDto implements Serializable {
 
 	/** The system type. */
 	private Integer systemType;
+	
+	private String roleId;
 
 	/**
 	 * To query model.
@@ -132,6 +134,8 @@ public class EmployeeSearchQueryDto implements Serializable {
 				.retireStart(this.retireStart == null ? null : GeneralDateTime.fromString(this.retireStart + TIME_DAY_START, DATE_TIME_FORMAT))
 				.sortOrderNo(this.sortOrderNo)
 				.workplaceCodes(this.workplaceCodes)
-				.systemType(this.systemType).build();
+				.systemType(this.systemType)
+				.roleId(this.roleId)
+				.build();
 	}
 }

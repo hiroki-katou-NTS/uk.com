@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.query.model.employee;
@@ -94,4 +94,7 @@ public class EmployeeSearchQuery implements Serializable {
 
 	/** The system type. */
 	private Integer systemType;
+	
+	/** The role id. */
+	private String roleId;
 }
