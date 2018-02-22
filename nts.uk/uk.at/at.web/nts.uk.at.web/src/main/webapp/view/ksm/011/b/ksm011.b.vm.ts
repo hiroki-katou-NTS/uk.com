@@ -275,7 +275,7 @@ module nts.uk.at.view.ksm011.b.viewmodel {
                 symbolAtr: self.selectedEmpSignCls(),
                 pubHolidayExcessAtr: self.selectedObtain(),
                 pubHolidayShortageAtr: self.selectedInsufficient(),
-                symbolHalfDayName: "",
+                symbolHalfDayName: " ",
                 schePerInfoAtr: schePerInfoAtrData.length > 0 ? schePerInfoAtrData : null,
                 scheQualifySet: scheQualifySetData.length > 0 ? scheQualifySetData : null
             });

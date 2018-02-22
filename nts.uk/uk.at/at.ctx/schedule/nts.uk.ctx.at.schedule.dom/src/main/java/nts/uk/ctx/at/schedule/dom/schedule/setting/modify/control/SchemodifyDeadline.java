@@ -4,7 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.UseAtr;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Getter
 @AllArgsConstructor
 public class SchemodifyDeadline {

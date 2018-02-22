@@ -35,7 +35,7 @@ public class KshmtWorkTypeSet extends UkJpaEntity implements Serializable {
 	public int countHoliday;
 	
 	@Column(name = "CLOSE_ATR")
-	public int closeAtr;
+	public Integer closeAtr;
 	
 	@Column(name = "SUM_ABSENSE_NO")
 	public int sumAbsenseNo;
@@ -68,7 +68,7 @@ public class KshmtWorkTypeSet extends UkJpaEntity implements Serializable {
 	}
 
 	public KshmtWorkTypeSet(KshmtWorkTypeSetPK kshmtWorkTypeSetPK, int digestPublicHd, int hodidayAtr, int countHoliday,
-			int closeAtr, int sumAbsenseNo, int sumSpHolidayNo, int timeLeaveWork, int attendanceTime,
+			Integer closeAtr, int sumAbsenseNo, int sumSpHolidayNo, int timeLeaveWork, int attendanceTime,
 			int genSubHoliday, int dayNightTimeAsk) {
 		super();
 		this.kshmtWorkTypeSetPK = kshmtWorkTypeSetPK;

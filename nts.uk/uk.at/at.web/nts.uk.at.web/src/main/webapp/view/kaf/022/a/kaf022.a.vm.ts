@@ -137,20 +137,8 @@ module nts.uk.at.view.kmf022 {
             selectedIdA17_5: KnockoutObservable<number>;
             //a6
             listDataA6: KnockoutObservableArray<any>;
-            texteditorA6_24: any;
-            texteditorA6_26: any;
-            texteditorA6_35: any;
-            texteditorA6_36: any;
-            texteditorA6_37: any;
-            texteditorA6_38: any;
-            texteditorA6_39: any;
-            texteditorA6_40: any;
-            texteditorA6_41: any;
-            texteditorA6_42: any;
-            texteditorA6_43: any;
-            texteditorA6_44: any;
-            texteditorA6_45: any;
-
+            //a7
+            listDataA7:KnockoutObservableArray<any>;
             enableA7_17: KnockoutObservable<boolean>;
             enableA7_26: KnockoutObservable<boolean>;
             enableA7_31: KnockoutObservable<boolean>;
@@ -194,6 +182,7 @@ module nts.uk.at.view.kmf022 {
             selectedCodeA7_40: KnockoutObservable<number>;
             selectedCodeA7_41: KnockoutObservable<number>;
             //a8
+            listDataA8:KnockoutObservableArray<any>;
             enableA8_29: KnockoutObservable<boolean>;
             enableA8_35: KnockoutObservable<boolean>;
             enableA8_36: KnockoutObservable<boolean>;
@@ -700,176 +689,9 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdA17_5 = ko.observable(0);
                 //a6
                 self.listDataA6 = ko.observableArray([]);
-                self.texteditorA6_24 = {
-                    value: ko.observable(''),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: " ",
-                        width: "300px",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
-                self.texteditorA6_26 = {
-                    value: ko.observable(''),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: " ",
-                        width: "300px",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
-                self.texteditorA6_35 = {
-                    value: ko.observable(''),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: " ",
-                        width: "300px",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
-                self.texteditorA6_36 = {
-                    value: ko.observable(''),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: " ",
-                        width: "300px",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
-                self.texteditorA6_37 = {
-                    value: ko.observable(''),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: " ",
-                        width: "300px",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
-                self.texteditorA6_38 = {
-                    value: ko.observable(''),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: " ",
-                        width: "300px",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
-                self.texteditorA6_39 = {
-                    value: ko.observable(''),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: " ",
-                        width: "300px",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
-                self.texteditorA6_40 = {
-                    value: ko.observable(''),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: " ",
-                        width: "300px",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
-                self.texteditorA6_41 = {
-                    value: ko.observable(''),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: " ",
-                        width: "300px",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
-                self.texteditorA6_42 = {
-                    value: ko.observable(''),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: " ",
-                        width: "300px",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
-                self.texteditorA6_43 = {
-                    value: ko.observable(''),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: " ",
-                        width: "300px",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
-                self.texteditorA6_44 = {
-                    value: ko.observable(''),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: " ",
-                        width: "300px",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
-                self.texteditorA6_45 = {
-                    value: ko.observable(''),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: " ",
-                        width: "300px",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
+                
                 //a7
+                self.listDataA7 = ko.observableArray([]);
                 self.enableA7_17 = ko.observable(false);
                 self.enableA7_26 = ko.observable(false);
                 self.enableA7_31 = ko.observable(false);
@@ -932,6 +754,7 @@ module nts.uk.at.view.kmf022 {
                 self.selectedCodeA7_40 = ko.observable(0);
                 self.selectedCodeA7_41 = ko.observable(0);
                 //a8
+                self.listDataA8 = ko.observableArray([]);
                 self.enableA8_29 = ko.observable(false);
                 self.enableA8_35 = ko.observable(false);
                 self.enableA8_36 = ko.observable(false);
@@ -1819,6 +1642,7 @@ module nts.uk.at.view.kmf022 {
                 self.initDataA4();
                 self.initDataA5();
                 self.initDataA6();
+                self.initDataA7AndA8();
                 self.initDataA10();
                 self.initDataA14();
                 self.initDataA16();
@@ -1886,6 +1710,29 @@ module nts.uk.at.view.kmf022 {
                         }
                     });
                 });
+            }
+            initDataA7AndA8():void{
+                let  self = this;
+                let listAppType = __viewContext.enums.ApplicationType;
+                service.findBfReqSet().done(data=>{
+                    _.forEach(listAppType, (appType) => {
+                        let obj: any = _.find(data.beforeAfter, ['appType', appType.value]);
+                        if (obj) {
+                            self.listDataA7.push(new ItemA7(self.companyId, appType.name, appType.value, obj.retrictPreUseFlg, obj.retrictPreMethodFlg,
+                                obj.retrictPreDay, obj.retrictPreTimeDay, obj.retrictPostAllowFutureFlg));
+                        } else {
+                            self.listDataA7.push(new ItemA7(self.companyId, appType.name, appType.value, 0, 0, 0, 0, 0));
+                        }
+                        let obj1 :any = _.find(data.appType,['appType', appType.value]);
+                        if (obj1) {
+                            self.listDataA8.push(new ItemA8(self.companyId(), appType.value, obj1.displayFixedReason, obj1.displayAppReason,
+                                obj1.sendMailWhenRegister, obj1.sendMailWhenApproval, obj1.displayInitialSegment,
+                                obj1.canClassificationChange, appType.name));
+                        } else {
+                            self.listDataA8.push(new ItemA8(self.companyId(), appType.value, 0, 0, 0, 0, 0, 0, appType.name));
+                        }
+                    });   
+                }
             }
             initDataA10(): void {
                 let self = this;
@@ -2405,6 +2252,21 @@ module nts.uk.at.view.kmf022 {
                     showResult: self.selectedIdI4()
                     //done
                 };
+                data.appBf = {
+                    beforeAfter: _.map(ko.toJS(self.listDataA7()), (x: any) => {
+                        x.retrictPreMethodFlg = x.retrictPreMethodFlg ? 1 : 0;
+                        x.retrictPostAllowFutureFlg = x.retrictPostAllowFutureFlg ? 1 : 0;
+                        return x;
+                    }),
+                    appType: _.map(ko.toJS(self.listDataA8()), (x: any) => {
+                        x.displayFixedReason = x.displayFixedReason ? 1 : 0;
+                        x.displayAppReason = x.displayAppReason ? 1 : 0;
+                        x.sendMailWhenRegister = x.sendMailWhenRegister ? 1 : 0;
+                        x.sendMailWhenApproval = x.sendMailWhenApproval ? 1 : 0;
+                        x.canClassificationChange = x.canClassificationChange ? 1 : 0;
+                        return x;
+                    })
+                }
                 service.update(data).done();
             }
 
@@ -2481,6 +2343,51 @@ module nts.uk.at.view.kmf022 {
                 this.dispName = ko.observable(dispName);
                 this.appType = ko.observable(appType);
             }
+        }
+        class ItemA7 {
+            companyId: KnockoutObservable<string>;
+            appType: KnockoutObservable<number>;
+            retrictPreMethodFlg: KnockoutObservable<boolean>;
+            retrictPreUseFlg: KnockoutObservable<number>;
+            retrictPreDay: KnockoutObservable<number>;
+            retrictPreTimeDay: KnockoutObservable<number>;
+            retrictPostAllowFutureFlg: KnockoutObservable<boolean>;
+            appTypeName: KnockoutObservable<string>;
+            constructor(companyId: string, appTypeName: string, appType: number, retrictPreUseFlg: number, retrictPreMethodFlg: number,
+                retrictPreDay: number, retrictPreTimeDay: number, retrictPostAllowFutureFlg: number) {
+                this.companyId = ko.observable(companyId);
+                this.appTypeName = ko.observable(appTypeName);
+                this.appType = ko.observable(appType);
+                this.retrictPreMethodFlg = ko.observable(retrictPreMethodFlg==1 ? true:false);
+                this.retrictPreUseFlg = ko.observable(retrictPreUseFlg);
+                this.retrictPreDay = ko.observable(retrictPreDay);
+                this.retrictPreTimeDay = ko.observable(retrictPreTimeDay);
+                this.retrictPostAllowFutureFlg = ko.observable(retrictPostAllowFutureFlg==1 ? true:false);
+            }
+        }
+        class ItemA8{
+            companyId: KnockoutObservable<string>;
+            appType: KnockoutObservable<number>;
+            displayFixedReason: KnockoutObservable<boolean>;
+            displayAppReason: KnockoutObservable<boolean>;
+            sendMailWhenRegister: KnockoutObservable<boolean>;
+            sendMailWhenApproval: KnockoutObservable<boolean>;
+            displayInitialSegment: KnockoutObservable<number>;
+            canClassificationChange: KnockoutObservable<boolean>;
+            appTypeName: KnockoutObservable<string>;
+            constructor(companyId:string,appType: number,displayFixedReason:number,displayAppReason:number,
+            sendMailWhenRegister:number,sendMailWhenApproval:number,displayInitialSegment:number,
+            canClassificationChange:number,appTypeName:string){
+                this.companyId= ko.observable(companyId);
+                this.appType = ko.observable(appType);
+                this.displayFixedReason= ko.observable(displayFixedReason==1?true:false);
+                this.displayAppReason=ko.observable(displayAppReason== 1 ? true : false);
+                this.sendMailWhenRegister=ko.observable(sendMailWhenRegister== 1 ? true : false);
+                this.sendMailWhenApproval=ko.observable(sendMailWhenApproval== 1 ? true : false);
+                this.displayInitialSegment=ko.observable(displayInitialSegment);
+                this.canClassificationChange=ko.observable(canClassificationChange== 1 ? true : false);
+                this.appTypeName=ko.observable(appTypeName);
+            }   
         }
         class ItemA15 {
             name: KnockoutObservable<string>;

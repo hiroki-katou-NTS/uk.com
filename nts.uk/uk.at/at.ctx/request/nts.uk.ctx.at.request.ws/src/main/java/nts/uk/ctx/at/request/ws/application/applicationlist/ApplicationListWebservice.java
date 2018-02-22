@@ -10,11 +10,13 @@ import javax.ws.rs.Produces;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.AppTypeBfCommand;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.UpdateAppTypeBfCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListExtractConditionDto;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfDto;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfFinder;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListFinder;
-import nts.uk.ctx.at.request.app.find.application.applicationlist.BfReqSetDto;
-import nts.uk.ctx.at.request.app.find.application.applicationlist.BfReqSetFinder;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.ApplicationDisplayAtr;
 
 /**
@@ -30,7 +32,10 @@ public class ApplicationListWebservice extends WebService{
 	private ApplicationListFinder appListFinder;
 	
 	@Inject
-	private BfReqSetFinder bfreqFinder;
+	private AppTypeBfFinder bfreqFinder;
+	
+	@Inject
+	private UpdateAppTypeBfCommandHandler update;
 	
 	@POST
 	/**
@@ -50,8 +55,18 @@ public class ApplicationListWebservice extends WebService{
 	 */
 	@POST
 	@Path("getappDisp")
-	public List<BfReqSetDto> getBeforAfer() {
+	public AppTypeBfDto getBeforAfer() {
 		return this.bfreqFinder.findByCom();
+	}
+	/**
+	 * update after, before and apptype set
+	 * @return
+	 * @author yennth
+	 */
+	@POST
+	@Path("update")
+	public void update(AppTypeBfCommand cm) {
+		this.update.handle(cm);
 	}
 	
 	/**

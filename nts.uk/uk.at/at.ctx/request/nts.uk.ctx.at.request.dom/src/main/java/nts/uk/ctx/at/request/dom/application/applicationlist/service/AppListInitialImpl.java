@@ -284,16 +284,68 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				// TODO Auto-generated method stub
 			}
 			//条件３：承認区分の指定条件
+			List<Application_New> lstAppFilter3 = new ArrayList<>();
+			List<ApplicationFullOutput> lstAppFullFilter3 = this.mergeAppAndPhase(lstAppFilter2);
+			for (ApplicationFullOutput appFull : lstAppFullFilter3) {
+				ReflectedState_New state = appFull.getApplication().getReflectionInformation().getStateReflectionReal();
+				PhaseFrameStatus status = this.findPhaseFrameStatus(appFull.getLstPhaseState(), sID);
+				boolean check = false;
+				if(status.getFrameStatus() == null && status.getPhaseStatus() == null){
+					continue;
+				}
+				//申請一覧共通設定.承認状況＿未承認がチェックあり(True)の場合 - A4_1_1: check
+				if(param.isUnapprovalStatus() && state.equals(ReflectedState_New.NOTREFLECTED)){
+					if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.REMAND)
+							&& status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
+						check = true;
+					}
+				}
+				//申請一覧共通設定.承認状況＿承認がチェックあり(True)の場合 - A4_1_2: check
+				if(param.isApprovalStatus()){
+					if(state.equals(ReflectedState_New.NOTREFLECTED) && status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED) 
+							&& status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
+						check = true;
+					}
+					if(state.equals(ReflectedState_New.NOTREFLECTED) 
+							&& state.equals(ReflectedState_New.REFLECTED)){
+						if((status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED) || status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED))
+								&& status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){
+							check = true;
+						}
+					}
+				}
+				//申請一覧共通設定.承認状況＿否認がチェックあり(True)の場合 - A4_1_3: check
+				if(param.isDenialStatus() && state.equals(ReflectedState_New.DENIAL)){
+					check = true;
+				}
+				//申請一覧共通設定.承認状況＿代行承認済がチェックあり(True)の場合 - A4_1_4: check
+				if(param.isAgentApprovalStatus()){
+					check = true;
+				}
+				//申請一覧共通設定.承認状況＿差戻がチェックあり(True)の場合 - A4_1_5: check
+				if(param.isRemandStatus() && state.equals(ReflectedState_New.NOTREFLECTED)){
+					if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.REMAND)){
+						check = true;
+					}
+				}
+				//申請一覧共通設定.承認状況＿取消がチェックあり(True)の場合 - A4_1_6: check
+				if(param.isCancelStatus() && (state.equals(ReflectedState_New.CANCELED) ||
+								state.equals(ReflectedState_New.WAITCANCEL))){//反映状態.実績反映状態　＝　取消または取消待ち
+					check = true;
+				}
+				if(check){
+					lstAppFilter3.add(appFull.getApplication());
+				}
+			}
+			//条件５：重複承認の対応条件
 			
 			
 			
 			
 			
-			
-			
-			List<Application_New> lstOverTime = lstApp.stream().filter(c -> c.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION))
+			List<Application_New> lstOverTime = lstAppFilter3.stream().filter(c -> c.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION))
 					.collect(Collectors.toList());
-			List<Application_New> lstGoBack = lstApp.stream().filter(d -> d.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION))
+			List<Application_New> lstGoBack = lstAppFilter3.stream().filter(d -> d.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION))
 					.collect(Collectors.toList());
 			List<AppOverTimeInfoFull> lstAppOt = new ArrayList<>();
 			List<AppGoBackInfoFull> lstAppGoBack = new ArrayList<>();
@@ -321,12 +373,12 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//imported(申請承認）「稟議書」を取得する - wait request : return list app - tam thoi bo qua
 		// TODO Auto-generated method stub
 		//アルゴリズム「申請一覧リスト取得マスタ情報」を実行する(get List App Master Info): 9 - 申請一覧リスト取得マスタ情報
-		List<AppMasterInfo> lstMaster = this.getListAppMasterInfo(lstAppFilter);
+		List<AppMasterInfo> lstMaster = this.getListAppMasterInfo(lstAppFilter3);
 		//アルゴリズム「申請一覧リスト取得実績」を実行する-(get App List Achievement): 5 - 申請一覧リスト取得実績
-		AppListAtrOutput timeOutput = this.getAppListAchievement(lstApp, displaySet);
+		AppListAtrOutput timeOutput = this.getAppListAchievement(lstAppFilter3, displaySet);
 		//承認一覧に稟議書リスト追加し、申請日付順に整列する - phu thuoc vao request
 		// TODO Auto-generated method stub
-		return new AppListOutPut(lstMaster, lstAppFilter, lstAppOt, lstAppGoBack, timeOutput.getAppStatus(), timeOutput.getLstAppFull());
+		return new AppListOutPut(lstMaster, lstAppFilter3, lstAppOt, lstAppGoBack, timeOutput.getAppStatus(), timeOutput.getLstAppFull());
 	}
 	/**
 	 * lam o ui
@@ -433,7 +485,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 //			this.getListAppAbsence(appDif);
 //		}
 		//アルゴリズム「申請一覧リスト取得承認件数」を実行する(countAppListApproval): 4 -   申請一覧リスト取得承認件数
-		AppInfoStatus appStatus = this.countAppListApproval(lstPost);
+		AppInfoStatus appStatus = this.countAppListApproval(lstApp);
 		// TODO Auto-generated method stub
 		return new AppListAtrOutput(appStatus.getLstAppFull(), appStatus.getCount(), appStatus.getCount());
 	}
