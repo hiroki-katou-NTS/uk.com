@@ -100,7 +100,7 @@ public class RoleExportRepoImpl implements RoleExportRepo{
 		WorkplaceParam param = new WorkplaceParam();
 		param.setBaseDate(baseDate.toString());
 		param.setReferenceRange(employeeReferenceRange);
-		return this.roleWorkplaceIDFinder.findListWkpId(param);
+		return this.roleWorkplaceIDFinder.findListWorkplaceId(param);
 	}
 	
 }
