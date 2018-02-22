@@ -63,14 +63,26 @@
 									data-bind="ntsDatePicker: {
 										dateFormat: 'YYYY/MM/DD',
 										value: baseDate }"></div><br/>
-						period start:<div tabindex="3"
-									data-bind="ntsDatePicker: {
-										dateFormat: 'YYYY/MM/DD',
-										value: periodStartDate }"></div><br/>
-						period end:<div tabindex="3"
-									data-bind="ntsDatePicker: {
-										dateFormat: 'YYYY/MM/DD',
-										value: periodEndDate }"></div><br/>
+						<com:ko tag="ifnot" bind="periodFormatYM">
+							period start:<div tabindex="3"
+										data-bind="ntsDatePicker: {
+											dateFormat: 'YYYY/MM/DD',
+											value: periodStartDate }"></div><br/>
+							period end:<div tabindex="3"
+										data-bind="ntsDatePicker: {
+											dateFormat: 'YYYY/MM/DD',
+											value: periodEndDate }"></div><br/>
+						</com:ko>
+						<com:ko tag="if" bind="periodFormatYM">
+							period start:<div tabindex="3"
+										data-bind="ntsDatePicker: {
+											dateFormat: 'YYYY/MM',
+											value: periodStartDate }"></div><br/>
+							period end:<div tabindex="3"
+										data-bind="ntsDatePicker: {
+											dateFormat: 'YYYY/MM',
+											value: periodEndDate }"></div><br/>
+						</com:ko>
 						<div data-bind="ntsCheckBox:{checked: inService}">In service (在職区分)</div><br/>
 						<div data-bind="ntsCheckBox:{checked: leaveOfAbsence}">Leave of absence (休職区分)</div>
 						<div data-bind="ntsCheckBox:{checked: closed}">Close (休業区分)</div>

@@ -107,9 +107,9 @@ module nts.uk.com.view.ccg001.a {
                     periodFormatYM: self.periodFormatYM(), // 対象期間精度
 
                     /** Required parameter */
-                    baseDate: self.baseDate().format('YYYY-MM-DD'), // 基準日
-                    periodStartDate: self.periodStartDate().format('YYYY-MM-DD'), // 対象期間開始日
-                    periodEndDate: self.periodEndDate().format('YYYY-MM-DD'), // 対象期間終了日
+                    baseDate: self.baseDate().toISOString(), // 基準日
+                    periodStartDate: self.periodStartDate().toISOString(), // 対象期間開始日
+                    periodEndDate: self.periodEndDate().toISOString(), // 対象期間終了日
                     inService: self.inService(), // 在職区分
                     leaveOfAbsence: self.leaveOfAbsence(), // 休職区分
                     closed: self.closed(), // 休業区分

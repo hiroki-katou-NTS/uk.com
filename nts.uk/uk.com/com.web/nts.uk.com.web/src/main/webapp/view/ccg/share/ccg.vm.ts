@@ -494,11 +494,11 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.showPeriodYM = options.periodFormatYM;
 
                 /** Required parameter */
-                self.baseDate(moment()); //TODO: mock data
-                self.periodStartDate(moment());
-                self.periodEndDate(moment());
-                self.periodStartYm(moment());
-                self.periodEndYm(moment());
+                self.baseDate = ko.observable(moment.utc(options.baseDate));
+                self.periodStartDate = ko.observable(moment.utc(options.periodStartDate));
+                self.periodEndDate = ko.observable(moment.utc(options.periodEndDate));
+                self.periodStartYm = ko.observable(moment.utc(options.periodStartDate));
+                self.periodEndYm = ko.observable(moment.utc(options.periodEndDate));
                 self.selectedIncumbent(options.inService);
                 self.selectedLeave(options.leaveOfAbsence);
                 self.selectedClosed(options.closed);
@@ -952,7 +952,12 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 const periodStart = self.getPeriodStart();
                 const periodEnd = self.getPeriodEnd();
-                if (self.baseDate().isBefore(periodStart) || self.baseDate().isAfter(periodEnd)) {
+                let baseDate = self.baseDate();
+                if(self.showPeriodYM){
+                    baseDate = moment.utc((self.baseDate()).format("YYYY/MM"), "YYYY/MM"); 
+                } 
+                
+                if (baseDate.isBefore(periodStart) || baseDate.isAfter(periodEnd)) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_765" });
                     return false;
                 }
