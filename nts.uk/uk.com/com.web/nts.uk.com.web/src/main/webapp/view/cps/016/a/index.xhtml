@@ -29,19 +29,23 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button id="A_BTN_NEW"
-					data-bind="click : registerDataSelectioItem, enable: checkCreate()==false" tabindex="1" >#{i18n.getText('CPS016_1')}</button>
+					data-bind="click : registerDataSelectioItem, enable: checkCreate()==false"
+					tabindex="1">#{i18n.getText('CPS016_1')}</button>
 				<button id="A_BTN_REGISTER" class="proceed"
-					data-bind="click : addDataSelectioItem, enable: $root.errors.isEmpty" tabindex="2" >#{i18n.getText('CPS016_2')}</button>
+					data-bind="click : addDataSelectioItem, enable: $root.errors.isEmpty"
+					tabindex="2">#{i18n.getText('CPS016_2')}</button>
 				<button id="A_BTN_COPPY" tabindex="3">マスタ修正ログ</button>
 				<button id="A_BTN_DELETE" class="danger"
-					data-bind="click : removeDataSelectioItem, enable: checkCreate()==false &amp;&amp; $root.errors.isEmpty" tabindex="4" >#{i18n.getText('CPS016_3')}</button>
-				
- 				<button class="goout" id="A_BTN_JUMP"
-					data-bind="click:OpenCPS017, enable: checkCreate()==false" tabindex="6" >#{i18n.getText('CPS016_23')}</button>
-			 
-			 	<button tabindex="5" id="A_BTN_CPS016_4"
-						data-bind="click: closeDialog, visible: isDialog ">#{i18n.getText('CPS016_4')}</button> 
-			 
+					data-bind="click : removeDataSelectioItem, enable: checkCreate()==false &amp;&amp; $root.errors.isEmpty"
+					tabindex="4">#{i18n.getText('CPS016_3')}</button>
+
+				<button class="goout" id="A_BTN_JUMP"
+					data-bind="click:OpenCPS017, enable: checkCreate()==false"
+					tabindex="6">#{i18n.getText('CPS016_23')}</button>
+
+				<button tabindex="5" id="A_BTN_CPS016_4"
+					data-bind="click: closeDialog, visible: isDialog ">#{i18n.getText('CPS016_4')}</button>
+
 			</div>
 
 			<div id="contents-area">
@@ -51,7 +55,6 @@
 					<div class="cf">
 						<div style="float: left">
 							<div style="width: 395px"
-							
 								data-bind="ntsSearchBox: {       
    									searchMode: 'filter',       
    									targetKey: 'selectionItemId',        
@@ -85,7 +88,7 @@
 						<div class="row">
 							<div class="coll"
 								data-bind="ntsFormLabel: {  constraint: 'SelectionItemName',required: true }">#{i18n.getText('CPS016_8')}</div>
-							<input id='selectionItemName' style="width: 320px; "
+							<input id='selectionItemName' style="width: 320px;"
 								data-bind="ntsTextEditor: {
 									name: '#[CPS016_10]',
 									value: selectionItemName,

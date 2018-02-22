@@ -61,7 +61,7 @@ public class HolidayWorkTimeSheet{
 		
 		for(HolidayWorkFrameTimeSheetForCalc holidayWorkFrameTime:workHolidayTime) {
 			AttendanceTime calcTime = holidayWorkFrameTime.correctCalculationTime(holidayAutoCalcSetting); 
-			HolidayWorkFrameTime getListItem = calcHolidayTimeWorkTimeList.get(holidayWorkFrameTime.getHolidayWorkTimeSheetNo().v().intValue() - 1);
+			HolidayWorkFrameTime getListItem = calcHolidayTimeWorkTimeList.get(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v() - 1);
 			getListItem.addHolidayTime(calcTime);
 			calcHolidayTimeWorkTimeList.set(holidayWorkFrameTime.getHolidayWorkTimeSheetNo().v().intValue() - 1, getListItem);
 		}
@@ -76,6 +76,19 @@ public class HolidayWorkTimeSheet{
 		return this.workHolidayTime.stream().map(tc -> tc.changeNotWorkFrameTimeSheet())
 											.sorted((first,second) -> first.getHolidayWorkTimeSheetNo().v().compareTo(second.getHolidayWorkTimeSheetNo().v()))
 											.collect(Collectors.toList());
+	}
+	
+	/**
+	 * 全枠の中に入っている控除時間(控除区分に従って)を合計する
+	 * @return 控除合計時間
+	 */
+	public AttendanceTime calculationAllFrameDeductionTime(DeductionAtr dedAtr,ConditionAtr atr) {
+		AttendanceTime totalTime = new AttendanceTime(0);
+		List<TimeSheetOfDeductionItem> forcsList = new ArrayList<>(); 
+		for(HolidayWorkFrameTimeSheetForCalc frameTime : this.workHolidayTime) {
+			totalTime.addMinutes(frameTime.forcs(forcsList,atr,dedAtr).valueAsMinutes());
+		}
+		return totalTime;
 	}
 
 //	

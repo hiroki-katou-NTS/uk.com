@@ -16,32 +16,40 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div data-bind="with: myPageSettingModel" id="contents-left">
-					<div>#{i18n.getText('CCG015_21')}</div><BR />
-					<div class = "float_left" id="lbl_code_name" data-bind="ntsFormLabel: {required: true}">
+					<div>#{i18n.getText('CCG015_21')}</div>
+					<BR />
+					<div class="float_left" id="lbl_code_name"
+						data-bind="ntsFormLabel: {required: true}">
 						<label>#{i18n.getText('CCG015_20')}<br /></label>
 					</div>
-					<div tabindex ="1" class="padding_top_3 cf float_left"
+					<div tabindex="1" class="padding_top_3 cf float_left"
 						data-bind="ntsSwitchButton: {
 						options: $parent.useDivisionOptions,
 						optionsValue: 'code',
 						optionsText: 'name',
 						value: useMyPage,
 						enable: true }"></div>
-						<BR /><BR /><BR />
+					<BR />
+					<BR />
+					<BR />
 					<div>
-						<div tabindex ="2" id="tab-panel" class="cf"
+						<div tabindex="2" id="tab-panel" class="cf"
 							data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.selectedTab, direction: 'vertical' }">
-							<div id="widget" >
-								<com:ko tag="template" bind="{name: 'widget-template', data: topPagePartSettingItems()[0]}"></com:ko>
+							<div id="widget">
+								<com:ko tag="template"
+									bind="{name: 'widget-template', data: topPagePartSettingItems()[0]}"></com:ko>
 							</div>
-							<div id="dash_board" >
-								<com:ko tag="template" bind="{name: 'dashboard-template', data: topPagePartSettingItems()[1]}"></com:ko>
+							<div id="dash_board">
+								<com:ko tag="template"
+									bind="{name: 'dashboard-template', data: topPagePartSettingItems()[1]}"></com:ko>
 							</div>
 							<div id="flow_menu">
-								<com:ko tag="template" bind="{name: 'flow-template', data: topPagePartSettingItems()[2]}"></com:ko>
-							</div>	
-							<div id="url" >
-								<com:ko tag="template" bind="{name: 'tab-URL-template', data: topPagePartSettingItems()[3]}"></com:ko>
+								<com:ko tag="template"
+									bind="{name: 'flow-template', data: topPagePartSettingItems()[2]}"></com:ko>
+							</div>
+							<div id="url">
+								<com:ko tag="template"
+									bind="{name: 'tab-URL-template', data: topPagePartSettingItems()[3]}"></com:ko>
 							</div>
 						</div>
 					</div>
@@ -51,7 +59,8 @@
 				<span>
 					<button data-bind="click : updateMyPageSetting"
 						class="btn-default proceed x-large">#{i18n.getText('CCG015_30')}</button>
-				</span> <span class = "padding_left_20"><button onclick="nts.uk.ui.windows.close()">#{i18n.getText('CCG015_31')}</button></span>
+				</span> <span class="padding_left_20"><button
+						onclick="nts.uk.ui.windows.close()">#{i18n.getText('CCG015_31')}</button></span>
 			</div>
 			<script type="text/html" id="widget-template">
 					<div class="float_left" id="widget_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
@@ -79,7 +88,7 @@
 					</div>
 			
 			</script>
-			
+
 			<script type="text/html" id="dashboard-template">
 					<div class = "float_left" id="dashboard_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
 						<label>#{i18n.getText('CCG015_28')}<br /></label>
@@ -106,7 +115,7 @@
 					</div>
 			
 			</script>
-			
+
 			<script type="text/html" id="flow-template">
 					<div class = "float_left" id="flow_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
 						<label>#{i18n.getText('CCG015_28')}<br /></label>
@@ -133,7 +142,7 @@
 					</div>
 			
 			</script>
-			
+
 			<script type="text/html" id="tab-URL-template">
 					<div class = "float_left" id="lbl_code_name" data-bind="ntsFormLabel: {required: true}">
 						<label>#{i18n.getText('CCG015_32')}<br /></label>
@@ -146,7 +155,7 @@
 						value: usePart,
 						enable: true }"></div>
 			</script>
-			
+
 		</ui:define>
 	</ui:composition>
 </body>

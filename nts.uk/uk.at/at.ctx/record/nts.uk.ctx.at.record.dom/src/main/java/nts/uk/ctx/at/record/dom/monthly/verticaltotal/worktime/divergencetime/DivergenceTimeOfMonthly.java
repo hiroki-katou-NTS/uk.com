@@ -37,9 +37,7 @@ public class DivergenceTimeOfMonthly {
 		val domain = new DivergenceTimeOfMonthly();
 		for (val divergenceTime : divergenceTimeList){
 			val divergenceTimeNo = Integer.valueOf(divergenceTime.getDivergenceTimeNo());
-			if (!domain.divergenceTimeList.containsKey(divergenceTimeNo)) {
-				domain.divergenceTimeList.put(divergenceTimeNo, divergenceTime);
-			}
+			domain.divergenceTimeList.putIfAbsent(divergenceTimeNo, divergenceTime);
 		}
 		return domain;
 	}
@@ -57,9 +55,7 @@ public class DivergenceTimeOfMonthly {
 		val divergenceTimeOfDaily = actualWorkingTime.getDivTime();
 		for (val divergenceTime : divergenceTimeOfDaily.getDivergenceTime()){
 			val divTimeNo = Integer.valueOf(divergenceTime.getDivTimeId());
-			if (!this.divergenceTimeList.containsKey(divTimeNo)) {
-				this.divergenceTimeList.put(divTimeNo, new AggregateDivergenceTime(divTimeNo.intValue()));
-			}
+			this.divergenceTimeList.putIfAbsent(divTimeNo, new AggregateDivergenceTime(divTimeNo.intValue()));
 			val targetDivergenceTime = this.divergenceTimeList.get(divTimeNo);
 			
 			targetDivergenceTime.addMinutesToDivergenceTime(divergenceTime.getDivTime().v());

@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf009.b {
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     export module viewmodel{
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
+            isNewScreen: KnockoutObservable<boolean> = ko.observable(false);
             DATE_FORMAT: string = 'YYYY/MM/DD';
             screenModeNew: KnockoutObservable<boolean> = ko.observable(false);
             //画面モード(表示/編集)
@@ -111,8 +112,8 @@ module nts.uk.at.view.kaf009.b {
                 let change = 3; //3:変更する
                 //get Common Setting
                 service.getGoBackSetting().done(function(settingData: any) {
-                    self.displayTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg);
-                    self.displayReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg);
+                    self.displayTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false);
+                    self.displayReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false);
                     self.employeeID = settingData.sid;
                     //get Reason
                     self.setReasonControl(settingData.listReasonDto);

@@ -9,14 +9,6 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 public interface VacationUseTimeOfMonthlyRepository {
 
 	/**
-	 * 追加
-	 * @param attendanceTimeOfMonthlyKey キー値：月別実績の勤怠時間
-	 * @param vacationUseTimeOfMonthly 月別実績の休暇使用時間
-	 */
-	void insert(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
-			VacationUseTimeOfMonthly vacationUseTimeOfMonthly);
-
-	/**
 	 * 更新
 	 * @param attendanceTimeOfMonthlyKey キー値：月別実績の勤怠時間
 	 * @param vacationUseTimeOfMonthly 月別実績の休暇使用時間

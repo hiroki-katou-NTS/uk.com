@@ -76,12 +76,17 @@ module nts.uk.at.view.kmf002.d {
                     _self.commonTableMonthDaySet().infoSelect3(_self.findEmploymentSelect(codeEmployee));
                     _self.getDataFromService();
                     
-                    if (_.isUndefined(_self.selectedCode()) || _.isEmpty(_self.selectedCode())) {
-                        _self.enableDelete(false);    
+                    if (_.isUndefined(_self.selectedCode()) || _.isEmpty(_self.selectedCode()) 
+                            || _.isNull(_self.selectedCode())) {
+                        _self.enableDelete(false);
+                        _self.enableSave(false);    
                     } else {
                         _self.enableDelete(true);
+                        _self.enableSave(true);
                     }
                 });
+                
+                _self.selectedCode.valueHasMutated();
             }
 
             /**
@@ -90,16 +95,9 @@ module nts.uk.at.view.kmf002.d {
             public start_page(): JQueryPromise<void> {
                 let _self = this;
                 var dfd = $.Deferred<void>();
-                
-                if (getShared('conditionSidebar5') == false) {
-//                    blockUI.grayout();
-                } else {
-//                    blockUI.clear();
-                }
                 $('#empt-list-setting').ntsListComponent(_self.listComponentOption).done(function(){
                     _self.catchChangeSelectEmp();
                     _self.getDataFromService();
-//                    nts.uk.ui.errors.clearAll();
                     dfd.resolve();    
                 });
                 return dfd.promise();

@@ -263,6 +263,7 @@ module kcp.share.tree {
                             // filter data, not change selected workplace id
                             let subItemList = self.filterByLevel(self.backupItemList(), self.levelSelected(), new Array<UnitModel>());
                             self.itemList(subItemList);
+                            self.createGlobalVarDataList();
                         });
                     }
 

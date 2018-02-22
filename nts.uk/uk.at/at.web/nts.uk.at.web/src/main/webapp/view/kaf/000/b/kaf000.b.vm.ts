@@ -65,6 +65,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         enableCancelButton: KnockoutObservable<boolean> = ko.observable(false);
         displayApprovalLabel: KnockoutObservable<boolean> = ko.observable(false);
         displayDenyLabel: KnockoutObservable<boolean> = ko.observable(false);
+        displayApprovalReason: KnockoutObservable<boolean> = ko.observable(false);
+        enableApprovalReason: KnockoutObservable<boolean> = ko.observable(false);
+        displayReturnReasonPanel: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor(listAppMetadata: Array<shrvm.model.ApplicationMetadata>, currentApp: shrvm.model.ApplicationMetadata) {
             let self = this;
@@ -107,6 +110,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.dataApplication(data.applicationDto);
                 self.appType(data.applicationDto.applicationType);
                 self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
+                self.displayReturnReasonPanel(!nts.uk.util.isNullOrEmpty(data.applicationDto.reversionReason));
                 let deadlineMsg = data.outputMessageDeadline;
                 if (!nts.uk.text.isNullOrEmpty(deadlineMsg.message)) {
                     self.messageDeadlineTop(self.reasonAppMess + deadlineMsg.message);
@@ -176,6 +180,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
             self.displayDenyLabel((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER)
                 && (approvalAtrValue == ApprovalAtr.DENIAL));
+            
+            self.displayApprovalReason((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER));
+            self.enableApprovalReason((state == Status.DENIAL || state == Status.WAITREFLECTION || state == Status.NOTREFLECTED || state == Status.REMAND)
+                && canApprove
+                && !expired);
         }
 
         //補足1

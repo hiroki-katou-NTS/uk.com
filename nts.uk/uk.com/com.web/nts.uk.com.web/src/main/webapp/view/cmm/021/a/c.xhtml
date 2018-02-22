@@ -9,23 +9,27 @@
 				nts.uk.ctx.sys.gateway.dom.singlesignon.UserName				
 				nts.uk.ctx.sys.gateway.dom.singlesignon.CompanyCode
 	</com:ValidatorScript>
-	<div class="screen-c-mode">		
-		<table>	
+	<div class="screen-c-mode">
+		<table>
 			<tr>
 				<!-- C1_1 -->
 				<td class="padding-checkbox">
-					<div tabindex="-1" data-bind="ntsCheckBox: { checked: enable_otherAcc }">#{i18n.getText('CMM021_37')}</div>
+					<div tabindex="-1"
+						data-bind="ntsCheckBox: { checked: enable_otherAcc }">#{i18n.getText('CMM021_37')}</div>
 				</td>
 			</tr>
 			<!-- C1_2 -->
-			<tr><td colspan="2" class='td-hr'><hr /></td></tr>
+			<tr>
+				<td colspan="2" class='td-hr'><hr /></td>
+			</tr>
 			<tr>
 				<!-- C1_3 -->
 				<td class="padding-scr-c">
 					<div>#{i18n.getText('CMM021_38')}</div>
 				</td>
 				<!-- C1_4 -->
-				<td class="padding-scr-c"><input id="focus-CompanyCode" tabindex="8"
+				<td class="padding-scr-c"><input id="focus-CompanyCode"
+					tabindex="8"
 					data-bind="ntsTextEditor: {
 									value: companyCode6,
 									name: '#[CMM021_38]',

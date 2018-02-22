@@ -12,10 +12,10 @@
 					nts.uk.ctx.bs.employee.dom.classification.ClassificationName
 					nts.uk.shr.com.primitive.Memo
 			</com:ValidatorScript>
-			
+
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
-			
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+
 			<com:stylefile path="cmm014.a.main.css" />
 			<com:scriptfile path="cmm014.a.service.js" />
 			<com:scriptfile path="cmm014.a.vm.js" />
@@ -60,7 +60,7 @@
 							<td class="valign-center">
 								<div>
 									<div class="input_002">
-										<input id= "clfCode" tabindex="6"
+										<input id="clfCode" tabindex="6"
 											data-bind="ntsTextEditor: {
 											name: '#[CMM014_6]',
                                             value: classificationCode,
@@ -70,7 +70,7 @@
 									</div>
 
 									<div class="input_002">
-										<input id= "clfName" tabindex="7"
+										<input id="clfName" tabindex="7"
 											data-bind="ntsTextEditor: {
 												name: '#[CMM014_7]',
 	                                            value: classificationName,
@@ -90,7 +90,8 @@
 							</td>
 							<td class="valign-center">
 								<div>
-									<textarea id="memo" tabindex="8" style="margin-top: 20px; width: 446px; height: 180px"
+									<textarea id="memo" tabindex="8"
+										style="margin-top: 20px; width: 446px; height: 180px"
 										data-bind="ntsMultilineEditor: {
 											name: '#[CMM014_8]',
 											value: memo,

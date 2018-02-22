@@ -83,9 +83,9 @@ module nts.uk.ui.koExtentions {
                             || mousePosition.top > droppableNode.offset().top + droppableNode.height();
                         
                         let dragParent = $tree.igTree("parentNode", element);
-                        let targetParent = $tree.igTree("parentNode", droppableNode);
+                        let targetParent: any = $tree.igTree("parentNode", droppableNode);
                         
-                        let targetNode = $tree.igTree("nodeFromElement", droppableNode);
+                        let targetNode: any = $tree.igTree("nodeFromElement", droppableNode);
                         if(!isOutTarget){
                             if(!nts.uk.util.isNullOrEmpty(targetNode.path)){
                                 let targetDeep: number = (targetNode.path.match(/_/g) || []).length;
