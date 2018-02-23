@@ -333,5 +333,13 @@ module cmm045.shr {
                 this.denialNumber = getText('CMM045_17') + ' ' + denialNumber + getText('CMM045_18');        
             }
         }
+        export class ChoseApplicationList{
+            appId: number;
+            appName: string;
+            constructor(appId: number, appName: string){
+                this.appId = appId;
+                this.appName = appName;
+            }    
+        }
     }
 }

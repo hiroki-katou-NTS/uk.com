@@ -22,7 +22,12 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeave
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetOfStatutoryWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetWeekStart;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 /**
@@ -64,6 +69,22 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 勤務情報の取得 */
 	@Inject
 	public WorkTypeRepository workType;
+	
+	/** 就業時間帯の設定の取得 */
+	@Inject
+	public WorkTimeSettingRepository workTimeSet;
+	/** 固定勤務設定の取得 */
+	@Inject
+	public FixedWorkSettingRepository fixedWorkSet;
+	/** 流動勤務設定の取得 */
+	@Inject
+	public FlowWorkSettingRepository flowWorkSet;
+	/** 時差勤務設定の取得 */
+	@Inject
+	public DiffTimeWorkSettingRepository diffWorkSet;
+	/** フレックス勤務設定の取得 */
+	@Inject
+	public FlexWorkSettingRepository flexWorkSet;
 	
 	/** 所定時間設定の取得 */
 	@Inject
@@ -115,10 +136,6 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 特別休暇設定 */
 	//@Inject
 	//public SpecialHolidayRepository specialHolidaySet;
-	
-	/** 代休時間設定の取得 */
-	//@Inject
-	//public CompensatoryOccurrenceSettingGetMemento compensatoryOccurrenceSet;
 	
 	/** 週開始の取得 */
 	@Inject

@@ -14,5 +14,5 @@ public interface AgentAdapter {
 	
 	AgentPubImport getApprovalAgencyInformation(String companyID, List<String> approver);
 	
-	List<AgentDataRequestPubImport> lstAgentData(String companyId, String employeeId, GeneralDate baseDate);
+	List<AgentDataRequestPubImport> lstAgentData(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate);
 }

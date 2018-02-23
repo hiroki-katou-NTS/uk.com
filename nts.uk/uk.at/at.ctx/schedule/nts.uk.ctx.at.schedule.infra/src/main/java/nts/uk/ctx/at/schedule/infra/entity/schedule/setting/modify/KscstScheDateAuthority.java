@@ -11,7 +11,11 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -27,8 +31,6 @@ public class KscstScheDateAuthority  extends UkJpaEntity implements Serializable
 			@Column(name = "AVAILABLE_DATE")
 			public int availableDate;
 			
-
-
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
