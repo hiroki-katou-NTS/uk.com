@@ -552,9 +552,6 @@ module ccg013.a.viewmodel {
             modal("/view/ccg/013/e/index.xhtml").onClosed(function() {
                 let newWebMenuCode = getShared("CCG013E_WEB_CODE_COPY");
                 self.getWebMenu().done(() => {
-                    // Fix bug #88087
-                    nts.uk.ui.errors.clearAll();
-                    
                     if (newWebMenuCode != undefined) {
                         self.currentWebMenuCode("");
                         self.currentWebMenuCode(newWebMenuCode);
