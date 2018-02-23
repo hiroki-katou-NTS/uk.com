@@ -109,7 +109,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         i = i + 1;
                         return new PerInfoInitValueSettingItemDto({
                             categoryType: currentCtg.categoryType,
-                            index : i ,    
+                            indexItem : i ,    
                             fixedItem: obj.fixedItem,
                             perInfoItemDefId: obj.perInfoItemDefId,
                             settingId: obj.settingId,
@@ -777,7 +777,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             let self = this;
             
             self.categoryType = params.categoryType;
-            self.indexItem = params.index;
+            self.indexItem = params.indexItem;
             self.getTitle(self.getWidthText(params.itemName) > 200 ? params.itemName : "");
             self.fixedItem = params.fixedItem;
             self.perInfoItemDefId = ko.observable(params.perInfoItemDefId || "");
