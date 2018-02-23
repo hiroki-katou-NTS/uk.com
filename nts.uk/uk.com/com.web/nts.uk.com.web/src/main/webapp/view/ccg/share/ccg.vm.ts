@@ -749,6 +749,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 // validate input base date
                 if (self.isInvalidBaseDate()) {
                     dfd.reject();
+                    return dfd.promise();
                 }
 
                 nts.uk.ui.block.invisible(); // block ui
@@ -998,7 +999,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         return service.getEmploymentRoleFuturePermit();
                     default: 
                         let dfd = $.Deferred<boolean>();
-                        dfd.reject;
+                        dfd.reject();
                         return dfd.promise();// systemType not found
                 }
             }
