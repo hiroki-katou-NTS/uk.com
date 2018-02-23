@@ -24,10 +24,10 @@ module nts.uk.com.view.ccg.share.ccg {
             employeeRangeSelection: EmployeeRangeSelection;
 
             /** Common properties */
-            isShowEmployeeList: boolean; // 検索タイプ
+            showEmployeeSelection: boolean; // 検索タイプ
             systemType: number; // システム区分
-            isQuickSearchTab: boolean; // クイック検索
-            isAdvancedSearchTab: boolean; // 詳細検索
+            showQuickSearchTab: boolean; // クイック検索
+            showAdvancedSearchTab: boolean; // 詳細検索
             showBaseDate: boolean; // 基準日利用
             showClosure: boolean; // 就業締め日利用
             showAllClosure: boolean; // 全締め表示
@@ -40,10 +40,10 @@ module nts.uk.com.view.ccg.share.ccg {
             periodEnd: KnockoutObservable<moment.Moment>;
 
             /** Quick search tab options */
-            isAllReferableEmployee: boolean; // 参照可能な社員すべて
-            isOnlyMe: boolean; // 自分だけ
-            isEmployeeOfWorkplace: boolean; // 同じ職場の社員
-            isEmployeeWorkplaceFollow: boolean; // 同じ職場とその配下の社員
+            showAllReferableEmployee: boolean; // 参照可能な社員すべて
+            showOnlyMe: boolean; // 自分だけ
+            showSameWorkplace: boolean; // 同じ職場の社員
+            showSameWorkplaceAndChild: boolean; // 同じ職場とその配下の社員
 
             /** Advanced search properties */
             showEmployment: boolean; // 雇用条件
@@ -259,7 +259,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 let arrTabs = [];
                 // is quick search tab
-                if (self.isQuickSearchTab) {
+                if (self.showQuickSearchTab) {
                     // push tab 1
                     arrTabs.push({
                         id: 'tab-1',
@@ -270,7 +270,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     });
                 }
                 // is advanced search tab
-                if (self.isAdvancedSearchTab) {
+                if (self.showAdvancedSearchTab) {
                     // push tab 2
                     arrTabs.push({
                         id: 'tab-2',
@@ -291,11 +291,11 @@ module nts.uk.com.view.ccg.share.ccg {
             public updateSelectedTab(): string {
                 var self = this;
                 // res tab 1
-                if (self.isQuickSearchTab) {
+                if (self.showQuickSearchTab) {
                     return 'tab-1';
                 }
                 // res tab 2
-                if (self.isAdvancedSearchTab) {
+                if (self.showAdvancedSearchTab) {
                     return 'tab-2';
                 }
                 // res none tab
@@ -327,7 +327,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     self.isOpenWorkTypeList(!self.isOpenWorkTypeList());
                 });
                 $("[tabindex='10']").on('keydown', function(e) {
-                    if (e.which == 9 && self.isAdvancedSearchTab) {
+                    if (e.which == 9 && self.showAdvancedSearchTab) {
                         self.selectedTab('tab-2');
                         if (!self.isOpenStatusOfEmployeeList()) {
                             $('#tab-2').find('#StatusOfEmployeeList').find('.ui-accordion-header').click();
@@ -393,7 +393,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 nts.uk.ui.block.invisible(); // block ui
                 self.startComponent().done(() => {
                     // set advanced search tab flag
-                    self.isAdvancedSearchTab = data.isAdvancedSearchTab &&
+                    self.showAdvancedSearchTab = data.showAdvancedSearchTab &&
                         (self.referenceRange != ConfigEnumReferenceRange.ONLY_MYSELF);
 
                     // Initial tab panel
@@ -482,10 +482,10 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
 
                 /** Common properties */
-                self.isShowEmployeeList = options.isSelectAllEmployee;
+                self.showEmployeeSelection = options.showEmployeeSelection;
                 self.systemType = options.systemType;
                 // always show quick search if advanced search is hidden
-                self.isQuickSearchTab = options.isAdvancedSearchTab ? options.isQuickSearchTab : true;
+                self.showQuickSearchTab = options.showAdvancedSearchTab ? options.showQuickSearchTab : true;
                 self.showBaseDate = options.showBaseDate;
                 self.showClosure = options.showClosure;
                 self.showAllClosure = options.showAllClosure;
@@ -502,10 +502,10 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.selectedRetirement(options.retirement);
 
                 /** Quick search tab options */
-                self.isAllReferableEmployee = options.isAllReferableEmployee;
-                self.isOnlyMe = options.isOnlyMe;
-                self.isEmployeeOfWorkplace = options.isEmployeeOfWorkplace;
-                self.isEmployeeWorkplaceFollow = options.isEmployeeWorkplaceFollow;
+                self.showAllReferableEmployee = options.showAllReferableEmployee;
+                self.showOnlyMe = options.showOnlyMe;
+                self.showSameWorkplace = options.showSameWorkplace;
+                self.showSameWorkplaceAndChild = options.showSameWorkplaceAndChild;
 
                 /** Advanced search properties */
                 self.showEmployment = options.showEmployment;
@@ -651,7 +651,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     componentElement.style.display = 'none';
                 }
                 $('#component-ccg001').toggle("slide");
-                if (self.isAdvancedSearchTab && self.isShowEmployeeList && self.isFirstTime) {
+                if (self.showAdvancedSearchTab && self.showEmployeeSelection && self.isFirstTime) {
                     self.loadKcp005();
                 }
                 self.isShow(true);
@@ -759,7 +759,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         if (permit || self.isNotFutureDate(acquiredDate)) {
                             // has permission or acquiredDate is not future
                             self.queryParam.baseDate = acquiredDate;
-                            if (self.isAdvancedSearchTab) {
+                            if (self.showAdvancedSearchTab) {
                                 self.reloadAdvanceSearchTab().done(() => nts.uk.ui.block.clear()); // clear block UI
                             } else {
                                 nts.uk.ui.block.clear(); // clear block UI
@@ -957,10 +957,10 @@ module nts.uk.com.view.ccg.share.ccg {
             private combineData(listEmployee: Array<EmployeeSearchDto>): Ccg001ReturnedData {
                 let self = this;
                 let dto = <Ccg001ReturnedData>{};
-                dto.baseDate = self.queryParam.baseDate;
+                dto.baseDate = moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toISOString();
                 dto.closureId = self.showClosure ? self.selectedClosure() : undefined;
-                dto.periodStart = self.periodStart().toISOString();
-                dto.periodEnd = self.periodEnd().toISOString();
+                dto.periodStart = moment.utc(self.queryParam.periodStart).toISOString();
+                dto.periodEnd = moment.utc(self.queryParam.periodEnd).toISOString();
                 dto.listEmployee = listEmployee;
                 return dto;
             }
@@ -1164,7 +1164,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     }
 
                     // Data found
-                    if (isAdvancedSearch && self.isShowEmployeeList) {
+                    if (isAdvancedSearch && self.showEmployeeSelection) {
                         self.employeeinfo.employeeInputList(self.toUnitModelList(data));
                     } else {
                         self.returnDataFromCcg001(self.combineData(data));
@@ -1182,7 +1182,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
             public reloadDataSearch(): void {
                 var self = this;
-                if (self.isAdvancedSearchTab) {
+                if (self.showAdvancedSearchTab) {
                     self.employments = {
                         isShowAlreadySet: false,
                         isMultiSelect: true,

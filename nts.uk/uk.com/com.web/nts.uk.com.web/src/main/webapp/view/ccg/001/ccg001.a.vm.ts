@@ -95,9 +95,9 @@ module nts.uk.com.view.ccg001.a {
                 self.ccgcomponent = {
                     /** Common properties */
                     systemType: self.systemType(), // システム区分
-                    isSelectAllEmployee: self.isSelectAllEmployee(), // 検索タイプ
-                    isQuickSearchTab: self.isQuickSearchTab(), // クイック検索
-                    isAdvancedSearchTab: self.isAdvancedSearchTab(), // 詳細検索
+                    showEmployeeSelection: self.isSelectAllEmployee(), // 検索タイプ
+                    showQuickSearchTab: self.isQuickSearchTab(), // クイック検索
+                    showAdvancedSearchTab: self.isAdvancedSearchTab(), // 詳細検索
                     showBaseDate: self.showBaseDate(), // 基準日利用
                     showClosure: self.showClosure(), // 就業締め日利用
                     showAllClosure: self.showAllClosure(), // 全締め表示
@@ -114,10 +114,10 @@ module nts.uk.com.view.ccg001.a {
                     retirement: self.retirement(), // 退職区分
 
                     /** Quick search tab options */
-                    isAllReferableEmployee: self.isAllReferableEmployee(), // 参照可能な社員すべて
-                    isOnlyMe: self.isOnlyMe(), // 自分だけ
-                    isEmployeeOfWorkplace: self.isEmployeeOfWorkplace(), // 同じ職場の社員
-                    isEmployeeWorkplaceFollow: self.isEmployeeWorkplaceFollow(), // 同じ職場とその配下の社員
+                    showAllReferableEmployee: self.isAllReferableEmployee(), // 参照可能な社員すべて
+                    showOnlyMe: self.isOnlyMe(), // 自分だけ
+                    showSameWorkplace: self.isEmployeeOfWorkplace(), // 同じ職場の社員
+                    showSameWorkplaceAndChild: self.isEmployeeWorkplaceFollow(), // 同じ職場とその配下の社員
 
                     /** Advanced search properties */
                     showEmployment: self.showEmployment(), // 雇用条件

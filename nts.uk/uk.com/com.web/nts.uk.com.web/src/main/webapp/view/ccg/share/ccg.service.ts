@@ -152,10 +152,10 @@ module nts.uk.com.view.ccg.share.ccg {
             export interface GroupOption {
 
                 /** Common properties */
-                isSelectAllEmployee: boolean; // 検索タイプ
+                showEmployeeSelection: boolean; // 検索タイプ
                 systemType: number; // システム区分
-                isQuickSearchTab: boolean; // クイック検索
-                isAdvancedSearchTab: boolean; // 詳細検索
+                showQuickSearchTab: boolean; // クイック検索
+                showAdvancedSearchTab: boolean; // 詳細検索
                 showBaseDate: boolean; // 基準日利用
                 showClosure: boolean; // 就業締め日利用
                 showAllClosure: boolean; // 全締め表示
@@ -172,10 +172,10 @@ module nts.uk.com.view.ccg.share.ccg {
                 retirement: boolean; // 退職区分
 
                 /** Quick search tab options */
-                isAllReferableEmployee: boolean; // 参照可能な社員すべて
-                isOnlyMe: boolean; // 自分だけ
-                isEmployeeOfWorkplace: boolean; // 同じ職場の社員
-                isEmployeeWorkplaceFollow: boolean; // 同じ職場とその配下の社員
+                showAllReferableEmployee: boolean; // 参照可能な社員すべて
+                showOnlyMe: boolean; // 自分だけ
+                showSameWorkplace: boolean; // 同じ職場の社員
+                showSameWorkplaceAndChild: boolean; // 同じ職場とその配下の社員
 
                 /** Advanced search properties */
                 showEmployment: boolean; // 雇用条件
