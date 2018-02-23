@@ -96,7 +96,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			if (requiredItemOpt.isPresent()) {
 				ItemValue requiredItem = requiredItemOpt.get();
 				// kiểm tra xem giá trị của nó có bị null không
-				if (requiredItem.value().equals(null)) {
+				if (requiredItem.value() == null) {
 					// nếu null thì thêm nó vào list lỗi
 					nodataItems.add(item.getItemName().v());
 				}
