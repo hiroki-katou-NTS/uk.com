@@ -170,7 +170,8 @@ module nts.uk.at.view.kmf002.c {
                 _self.commonTableMonthDaySet().fiscalYear.subscribe(function(newValue) {
                     // change year
                     if (!nts.uk.ui.errors.hasError()) {
-                        _self.getDataFromService();    
+                        _self.getDataFromService(); 
+                        _self.findAllEmployeeRegister();
                     }
                 });
             }
@@ -215,7 +216,7 @@ module nts.uk.at.view.kmf002.c {
             private findAllEmployeeRegister(): JQueryPromise<any> {
                 var dfd = $.Deferred<void>();
                 let _self = this;
-                $.when(service.findAllEmployeeRegister()).done(function(data: any) {
+                $.when(service.findAllEmployeeRegister(_self.commonTableMonthDaySet().fiscalYear())).done(function(data: any) {
                     _self.alreadySettingList.removeAll();
                     _.forEach(data, function(code) {
                         _self.alreadySettingList.push({code: code, isAlreadySetting: true});

@@ -4,16 +4,16 @@ module nts.uk.at.view.kmf002.a {
          * define path to service
          */
         var path: any = {
-                save: "bs/employee/holidaysetting/config/save",
-                findAll: "bs/employee/holidaysetting/config/find",
-                getPubHDPeriodEnum: "bs/employee/holidaysetting/config/enum/publicholidayperiod",
-                getDayOfPubHDEnum: "bs/employee/holidaysetting/config/enum/dayofpublicholiday",
-                getPubHDManageClassificationEnum: "bs/employee/holidaysetting/config/enum/pubhdmanagementatr",
-                getPublicHolidayCarryOverDeadline: "bs/employee/holidaysetting/config/enum/publicholidaycarryoverdeadline",
-                getDaysOfTheWeek: "bs/employee/holidaysetting/config/enum/dayofweek",
-                findAllManageUseUnit: "bs/employee/publicholidaymanagementusageunit/find",
-                saveManageUnit: "bs/employee/publicholidaymanagementusageunit/save",
-                getManageEnum: "bs/employee/holidaysetting/config/enum/manage"
+                save: "at/shared/holidaysetting/config/save",
+                findAll: "at/shared/holidaysetting/config/find",
+                getPubHDPeriodEnum: "at/shared/holidaysetting/config/enum/publicholidayperiod",
+                getDayOfPubHDEnum: "at/shared/holidaysetting/config/enum/dayofpublicholiday",
+                getPubHDManageClassificationEnum: "at/shared/holidaysetting/config/enum/pubhdmanagementatr",
+                getPublicHolidayCarryOverDeadline: "at/shared/holidaysetting/config/enum/publicholidaycarryoverdeadline",
+                getDaysOfTheWeek: "at/shared/holidaysetting/config/enum/dayofweek",
+                findAllManageUseUnit: "at/shared/publicholidaymanagementusageunit/find",
+                saveManageUnit: "at/shared/publicholidaymanagementusageunit/save",
+                getManageEnum: "at/shared/holidaysetting/config/enum/manage"
             };
         
         export function save(pubHdSet: any, forwardSetOfPubHD: any, weekHDSet: any, fourWkFourHDNumSet: any): JQueryPromise<any> {

@@ -4,10 +4,10 @@ module nts.uk.at.view.kmf002.e {
          * define path to service
          */
         var path: any = {
-                find: "bs/employee/holidaysetting/company/findCompanyMonthDaySetting",
-                save: "bs/employee/holidaysetting/company/save",
+                find: "at/shared/holidaysetting/company/findCompanyMonthDaySetting",
+                save: "at/shared/holidaysetting/company/save",
                 findFirstMonth: "basic/company/beginningmonth/find",
-                remove: "bs/employee/holidaysetting/company/remove"
+                remove: "at/shared/holidaysetting/company/remove"
             };
         
         /**

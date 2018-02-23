@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.pub.holidaysetting.configuration;
+package nts.uk.ctx.at.shared.pub.holidaymanagement.publicholiday;
 
 import lombok.Data;
 

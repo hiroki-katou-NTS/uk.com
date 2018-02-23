@@ -26,7 +26,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Pu
 /**
  * The Class HolidaySettingConfigWebService.
  */
-@Path("bs/employee/holidaysetting/config")
+@Path("at/shared/holidaysetting/config")
 @Produces(MediaType.APPLICATION_JSON)
 public class HolidaySettingConfigWebService extends WebService {
 	
