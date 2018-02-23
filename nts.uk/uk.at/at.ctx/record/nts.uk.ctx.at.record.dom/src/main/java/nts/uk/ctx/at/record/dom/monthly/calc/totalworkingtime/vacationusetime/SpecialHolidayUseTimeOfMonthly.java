@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Getter;
@@ -24,7 +23,7 @@ public class SpecialHolidayUseTimeOfMonthly {
 	private AttendanceTimeMonth useTime;
 	/** 時系列ワーク */
 	@Getter
-	private List<SpecialHolidayUseTimeOfTimeSeries> timeSeriesWorks;
+	private Map<GeneralDate, SpecialHolidayUseTimeOfTimeSeries> timeSeriesWorks;
 	
 	/** 集計済 */
 	private boolean isAggregated;
@@ -35,7 +34,7 @@ public class SpecialHolidayUseTimeOfMonthly {
 	public SpecialHolidayUseTimeOfMonthly(){
 
 		this.useTime = new AttendanceTimeMonth(0);
-		this.timeSeriesWorks = new ArrayList<>();
+		this.timeSeriesWorks = new HashMap<>();
 		this.isAggregated = false;
 	}
 
@@ -62,9 +61,10 @@ public class SpecialHolidayUseTimeOfMonthly {
 			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap){
 
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.values()) {
+			val ymd = attendanceTimeOfDaily.getYmd();
 			
 			// 期間外はスキップする
-			if (!datePeriod.contains(attendanceTimeOfDaily.getYmd())) continue;
+			if (!datePeriod.contains(ymd)) continue;
 			
 			// 「日別実績の特別休暇」を取得する
 			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -75,7 +75,8 @@ public class SpecialHolidayUseTimeOfMonthly {
 			
 			// 取得した使用時間を「月別実績の特別休暇使用時間」に入れる
 			//*****（未）　「日別実績の特別休暇」クラスをnewして、値を入れて、それをset？
-			this.timeSeriesWorks.add(SpecialHolidayUseTimeOfTimeSeries.of(attendanceTimeOfDaily.getYmd()));
+			val specialHolidayUseTimeOfTimeSeries = SpecialHolidayUseTimeOfTimeSeries.of(ymd);
+			this.timeSeriesWorks.putIfAbsent(ymd, specialHolidayUseTimeOfTimeSeries);
 		}
 	}
 	
@@ -89,7 +90,7 @@ public class SpecialHolidayUseTimeOfMonthly {
 		
 		this.useTime = new AttendanceTimeMonth(0);
 		
-		for (val timeSeriesWork : this.timeSeriesWorks){
+		for (val timeSeriesWork : this.timeSeriesWorks.values()){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 			//SpecialHolidayOfDaily specialHolidayUseTime = timeSeriesWork.getSpecialHolidayUseTime();
 			//this.useTime.addMinutes(specialHolidayUseTime.getUseTime().valueAsMinutes());

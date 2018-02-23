@@ -1,15 +1,18 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import lombok.Getter;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.FlexTimeOfTimeSeries;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.HolidayWorkTimeOfTimeSeries;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.MonthlyPremiumTimeOfTimeSeries;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.OverTimeOfTimeSeries;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.WeeklyPremiumTimeOfTimeSeries;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.WorkTimeOfTimeSeries;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
 /**
  * 時間外超過明細
@@ -18,32 +21,32 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.WorkTimeOfTi
 @Getter
 public class ExcessOutsideWorkDetail {
 
+	/** 就業時間 */
+	private Map<GeneralDate, WorkTimeOfTimeSeries> workTime;
+	/** 残業時間 */
+	private Map<OverTimeFrameNo, AggregateOverTime> overTime;
+	/** 休出時間 */
+	private Map<HolidayWorkFrameNo, AggregateHolidayWorkTime> holidayWorkTime;
+	/** フレックス超過時間 */
+	private Map<GeneralDate, FlexTimeOfTimeSeries> flexExcessTime;
+	/** 週割増時間 */
+	private Map<GeneralDate, WeeklyPremiumTimeOfTimeSeries> weeklyPremiumTime;
+	/** 月割増時間 */
+	private Map<GeneralDate, MonthlyPremiumTimeOfTimeSeries> monthlyPremiumTime;
 	/** 合計時間 */
 	private TotalTime totalTimeAfterRound;
-	/** フレックス超過時間 */
-	private List<FlexTimeOfTimeSeries> flexExcessTime;
-	/** 残業時間 */
-	private List<OverTimeOfTimeSeries> overTime;
-	/** 休出時間 */
-	private List<HolidayWorkTimeOfTimeSeries> holidayWorkTime;
-	/** 就業時間 */
-	private List<WorkTimeOfTimeSeries> workTime;
-	/** 週割増時間 */
-	private List<WeeklyPremiumTimeOfTimeSeries> weeklyPremiumTime;
-	/** 月割増時間 */
-	private List<MonthlyPremiumTimeOfTimeSeries> monthlyPremiumTime;
 	
 	/**
 	 * コンストラクタ
 	 */
 	public ExcessOutsideWorkDetail(){
 
+		this.workTime = new HashMap<>();
+		this.overTime = new HashMap<>();
+		this.holidayWorkTime = new HashMap<>();
+		this.flexExcessTime = new HashMap<>();
+		this.weeklyPremiumTime = new HashMap<>();
+		this.monthlyPremiumTime = new HashMap<>();
 		this.totalTimeAfterRound = new TotalTime();
-		this.flexExcessTime = new ArrayList<>();
-		this.overTime = new ArrayList<>();
-		this.holidayWorkTime = new ArrayList<>();
-		this.workTime = new ArrayList<>();
-		this.weeklyPremiumTime = new ArrayList<>();
-		this.monthlyPremiumTime = new ArrayList<>();
 	}
 }

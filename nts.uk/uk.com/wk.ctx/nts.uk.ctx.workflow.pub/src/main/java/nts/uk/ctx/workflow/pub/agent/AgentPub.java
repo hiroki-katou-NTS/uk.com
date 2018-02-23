@@ -14,7 +14,7 @@ public interface AgentPub {
 	 * @param baseDate
 	 * @return 代行者、期間から承認代行情報を取得する
 	 */
-	List<AgentDataPubExport> getBySidDate(String companyId, String employeeId, GeneralDate baseDate);
+	List<AgentDataPubExport> getBySidDate(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate);
 
 	List<AgentExport> getApprovalAgencyInfoByPeriod(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate);
 }

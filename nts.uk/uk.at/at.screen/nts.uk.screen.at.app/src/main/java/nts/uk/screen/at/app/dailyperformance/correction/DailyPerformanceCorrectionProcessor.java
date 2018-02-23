@@ -151,7 +151,7 @@ public class DailyPerformanceCorrectionProcessor {
 							displayFormat + "_" + employee.getId() + "_" + converDateToString(lstDate.get(i)) + "_"
 									+ converDateToString(lstDate.get(lstDate.size() - 1)) + "_" + dataId,
 							"", "", lstDate.get(i), false, employee.getId(), employee.getCode(),
-							employee.getBusinessName(), employee.getWorkplaceId()));
+							employee.getBusinessName(), employee.getWorkplaceId(), "", ""));
 					dataId++;
 				}
 			}
@@ -223,9 +223,10 @@ public class DailyPerformanceCorrectionProcessor {
 		// --List<DailyRecEditSetDto> dailyRecEditSets =
 		/// repo.getDailyRecEditSet(listEmployeeId, dateRange);
 		/// アルゴリズム「実績エラーをすべて取得する」を実行する | Execute "Acquire all actual errors"
+		List<DPErrorDto> lstError = getErrorList(screenDto, listEmployeeId);
+		Map<String, String> listEmployeeError = lstError.stream().collect(Collectors.toMap(e -> e.getEmployeeId(), e -> "", (x, y) -> x));
 		if (displayFormat == 2) {
 			// only filter data error
-			Map<String, String> listEmployeeError = processErrorList(screenDto, listEmployeeId);
 			listEmployeeId = listEmployeeId.stream().filter(x -> listEmployeeError.containsKey(x))
 					.collect(Collectors.toList());
 			screenDto.setLstData(screenDto.getLstData().stream()
@@ -286,6 +287,18 @@ public class DailyPerformanceCorrectionProcessor {
 				? dPControlDisplayItem.getLstAttendanceItem().stream()
 						.collect(Collectors.toMap(DPAttendanceItem::getId, x -> x))
 				: new HashMap<>();
+						
+		//set error, alarm
+		if (screenDto.getLstEmployee().size() > 0) {
+			if (lstError.size() > 0) {
+				// Get list error setting
+				List<DPErrorSettingDto> lstErrorSetting = this.repo
+						.getErrorSetting(lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+				// Seperate Error and Alarm
+				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
+			}
+		}
+
 		Set<Integer> types = dPControlDisplayItem.getLstAttendanceItem() == null ? new HashSet<>()
 				: dPControlDisplayItem.getLstAttendanceItem().stream().map(x -> x.getTypeGroup()).filter(x -> x != null)
 						.collect(Collectors.toSet());
@@ -314,7 +327,7 @@ public class DailyPerformanceCorrectionProcessor {
 		// set cell data
 		long start2 = System.currentTimeMillis();
 		for (DPDataDto data : screenDto.getLstData()) {
-			
+			data.setEmploymentCode(screenDto.getEmploymentCode());
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
 			if (resultOfOneRow != null && !isDataWorkInfoEmpty(resultOfOneRow.getItems())) {
 				lockData(sId, screenDto, dailyRecOpeFun, data);
@@ -359,6 +372,7 @@ public class DailyPerformanceCorrectionProcessor {
 			Map<Integer, Map<String, String>> mapGetName, Map<String, ItemValue> itemValueMap, DPDataDto data,
 			boolean lock) {
 		List<DPCellDataDto> cellDatas = new ArrayList<>();
+		String typeGroup ="";
 		if (dPControlDisplayItem.getLstAttendanceItem() != null) {
 			for (DPAttendanceItem item : dPControlDisplayItem.getLstAttendanceItem()) {
 				DPAttendanceItem dpAttenItem = mapDP.get(item.getId());
@@ -375,6 +389,7 @@ public class DailyPerformanceCorrectionProcessor {
 					String nameColKey = mergeString(NAME, itemIdAsString);
 					if (attendanceAtr == DailyAttendanceAtr.Code.value) {
 						String codeColKey = mergeString(CODE, itemIdAsString);
+						typeGroup = typeGroup + mergeString(String.valueOf(item.getId()),":", String.valueOf(groupType), "|");
 						if (lock) {
 							screenDto.setLock(data.getId(), codeColKey);
 							screenDto.setLock(data.getId(), nameColKey);
@@ -434,6 +449,7 @@ public class DailyPerformanceCorrectionProcessor {
 				}
 			}
 		}
+		data.setTypeGroup(typeGroup);
 		data.setCellDatas(cellDatas);
 	}
     
@@ -573,7 +589,7 @@ public class DailyPerformanceCorrectionProcessor {
 		return findDailyRecOpeFun;
 	}
 
-	private Map<String, String> processErrorList(DailyPerformanceCorrectionDto screenDto, List<String> listEmployeeId) {
+	private List<DPErrorDto> getErrorList(DailyPerformanceCorrectionDto screenDto, List<String> listEmployeeId) {
 		List<DPErrorDto> lstError = new ArrayList<>();
 		if (screenDto.getLstEmployee().size() > 0) {
 			/// ドメインモデル「社員の日別実績エラー一覧」をすべて取得する +
@@ -581,17 +597,11 @@ public class DailyPerformanceCorrectionProcessor {
 			/// Acquire all domain model "employee's daily performance error
 			/// list" + "work error error alarm" | lay loi thanh tich trong
 			/// khoang thoi gian
-			lstError = listEmployeeId.isEmpty() ? new ArrayList<>()
+			return listEmployeeId.isEmpty() ? new ArrayList<>()
 					: repo.getListDPError(screenDto.getDateRange(), listEmployeeId);
-			if (lstError.size() > 0) {
-				// Get list error setting
-				List<DPErrorSettingDto> lstErrorSetting = this.repo
-						.getErrorSetting(lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
-				// Seperate Error and Alarm
-				screenDto.addErrorToResponseData(lstError, lstErrorSetting);
-			}
+		}else{
+			return lstError;
 		}
-		return lstError.stream().collect(Collectors.toMap(e -> e.getEmployeeId(), e -> "", (x, y) -> x));
 	}
 
 	private List<DailyPerformanceEmployeeDto> extractEmployeeData(Integer initScreen, String sId,

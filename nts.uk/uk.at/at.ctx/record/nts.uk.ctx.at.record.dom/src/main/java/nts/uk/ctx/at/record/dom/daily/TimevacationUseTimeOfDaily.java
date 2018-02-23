@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.daily;
 
+import lombok.Getter;
 import lombok.Value;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionOffSetTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
@@ -8,11 +10,42 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  * @author ken_takasu
  *
  */
-@Value
+@Getter
 public class TimevacationUseTimeOfDaily {
 	
 	private AttendanceTime TimeAnnualLeaveUseTime;
 	private AttendanceTime TimeCompensatoryLeaveUseTime;
 	private AttendanceTime sixtyHourExcessHolidayUseTime;
 	private AttendanceTime TimeSpecialHolidayUseTime;
+	
+	/**
+	 * Constructor 
+	 */
+	public TimevacationUseTimeOfDaily(AttendanceTime timeAnnualLeaveUseTime,
+			AttendanceTime timeCompensatoryLeaveUseTime, AttendanceTime sixtyHourExcessHolidayUseTime,
+			AttendanceTime timeSpecialHolidayUseTime) {
+		super();
+		TimeAnnualLeaveUseTime = timeAnnualLeaveUseTime;
+		TimeCompensatoryLeaveUseTime = timeCompensatoryLeaveUseTime;
+		this.sixtyHourExcessHolidayUseTime = sixtyHourExcessHolidayUseTime;
+		TimeSpecialHolidayUseTime = timeSpecialHolidayUseTime;
+	}
+	
+	
+	/**
+	 * 各使用時間から相殺時間を控除する
+	 * 
+	 * @param deductionOffSetTime
+	 */
+	public void subtractionDeductionOffSetTime(DeductionOffSetTime deductionOffSetTime) {
+		this.TimeAnnualLeaveUseTime = new AttendanceTime(this.TimeAnnualLeaveUseTime.valueAsMinutes() - deductionOffSetTime.getAnnualLeave().valueAsMinutes());
+		this.TimeCompensatoryLeaveUseTime = new AttendanceTime(this.TimeCompensatoryLeaveUseTime.valueAsMinutes() - deductionOffSetTime.getCompensatoryLeave().valueAsMinutes());
+		this.sixtyHourExcessHolidayUseTime = new AttendanceTime(this.sixtyHourExcessHolidayUseTime.valueAsMinutes() - deductionOffSetTime.getRetentionYearly().valueAsMinutes());
+		this.TimeSpecialHolidayUseTime = new AttendanceTime(this.TimeSpecialHolidayUseTime.valueAsMinutes() - deductionOffSetTime.getSpecialHoliday().valueAsMinutes());
+	}
+
+
+
+
+
 }

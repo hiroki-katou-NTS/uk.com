@@ -1495,6 +1495,9 @@ public class ProgramsManager {
 			"/view/kal/004/b/index.xhtml");
 	public static final Program KAL004F = new Program(WebAppId.AT, ProgramIdConsts.KAL004F, "KAL004_2",
 			"/view/kal/004/f/index.xhtml");
+	/**  KDW004 */
+	public static final Program KDW004A= new Program(WebAppId.AT, ProgramIdConsts.KDW004A, null,
+			"/view/kdw/004/a/index.xhtml");
 	
 	/**
 	 * All programs map.

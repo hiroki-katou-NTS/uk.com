@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Getter;
@@ -34,7 +33,7 @@ public class WorkTimeOfMonthly {
 	private AttendanceTimeMonth withinPrescribedPremiumTime;
 	
 	/** 時系列ワーク */
-	private List<WorkTimeOfTimeSeries> timeSeriesWorks;
+	private Map<GeneralDate, WorkTimeOfTimeSeries> timeSeriesWorks;
 	
 	/**
 	 * コンストラクタ
@@ -43,7 +42,7 @@ public class WorkTimeOfMonthly {
 		
 		this.workTime = new AttendanceTimeMonth(0);
 		this.withinPrescribedPremiumTime = new AttendanceTimeMonth(0);
-		this.timeSeriesWorks = new ArrayList<>();
+		this.timeSeriesWorks = new HashMap<>();
 	}
 
 	/**
@@ -71,9 +70,10 @@ public class WorkTimeOfMonthly {
 			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap){
 		
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.values()) {
+			val ymd = attendanceTimeOfDaily.getYmd();
 			
 			// 期間外はスキップする
-			if (!datePeriod.contains(attendanceTimeOfDaily.getYmd())) continue;
+			if (!datePeriod.contains(ymd)) continue;
 			
 			// ドメインモデル「日別実績の所定内時間」を取得する
 			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -95,15 +95,15 @@ public class WorkTimeOfMonthly {
 			}
 	
 			// 時系列ワークに追加
-			this.timeSeriesWorks.add(WorkTimeOfTimeSeries.of(
-					attendanceTimeOfDaily.getYmd(),
+			val workTimeOfTimeSeries = WorkTimeOfTimeSeries.of(ymd,
 					WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
 							workTime,
 							withinPrescribedTimeOfDaily.getWorkTimeIncludeVacationTime(),
 							withinPrescribedPremiumTime,
 							withinPrescribedTimeOfDaily.getWithinStatutoryMidNightTime(),
 							withinPrescribedTimeOfDaily.getVacationAddTime())
-					));
+					);
+			this.timeSeriesWorks.putIfAbsent(ymd, workTimeOfTimeSeries);
 		}
 	}
 	
@@ -115,7 +115,7 @@ public class WorkTimeOfMonthly {
 	public AttendanceTimeMonth getTimeSeriesTotalLegalTime(DatePeriod datePeriod){
 		
 		AttendanceTimeMonth returnTime = new AttendanceTimeMonth(0);
-		for (val timeSeriesWork : this.timeSeriesWorks){
+		for (val timeSeriesWork : this.timeSeriesWorks.values()){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 			returnTime = returnTime.addMinutes(timeSeriesWork.getLegalTime().getWorkTime().v());
 		}
@@ -142,7 +142,7 @@ public class WorkTimeOfMonthly {
 		// 就業時間を集計する
 		this.workTime = new AttendanceTimeMonth(0);
 		this.withinPrescribedPremiumTime = new AttendanceTimeMonth(0);
-		for (val timeSeriesWork : this.timeSeriesWorks){
+		for (val timeSeriesWork : this.timeSeriesWorks.values()){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 			val legalTime = timeSeriesWork.getLegalTime();
 			this.workTime = this.workTime.addMinutes(legalTime.getWorkTime().v());

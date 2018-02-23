@@ -76,6 +76,13 @@ module nts.uk.at.view.kmf022.a.service {
 //        add: 'at/shared/yearservicecom/add',
         // update kaf022
         update: 'screen/at/kaf022/update',
+        
+        // A7, A8. A7 là list beforeAfter, A8 là list appType
+        findBfReqSet: "at/request/application/applist/getappDisp",
+    }
+    
+    export function findBfReqSet() {
+        return nts.uk.request.ajax("at", paths.findBfReqSet); 
     }
     
     export function findJobTitleSearchList(param: any): JQueryPromise<void>{

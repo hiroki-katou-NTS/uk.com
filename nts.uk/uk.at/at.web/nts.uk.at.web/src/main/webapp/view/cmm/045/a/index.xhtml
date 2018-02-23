@@ -8,8 +8,12 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"  of="/nts.uk.com.js.web"/>
-			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"  of="/nts.uk.com.js.web"/>
+			<com:scriptfile
+				path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"
+				of="/nts.uk.com.js.web" />
+			<com:scriptfile
+				path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"
+				of="/nts.uk.com.js.web" />
 			<com:stylefile path="cmm045.a.main.css" />
 			<com:scriptfile path="../shr/cmm045.shr.vmbase.js" />
 			<com:scriptfile path="cmm045.a.vm.js" />
@@ -22,24 +26,99 @@
 				<button>#{i18n.getText('CMM045_3')}</button>
 				<!-- A1_2: Button 印刷 -->
 				<button>#{i18n.getText('CMM045_4')}</button>
-				<div data-bind="ntsSwitchButton: {
-					options: roundingRules,
-					optionsValue: 'code',
-					optionsText: 'name',
-					value: selectedRuleCode,
-					enable: true }"></div>
 			</div>
 			<div id="content-area">
+				<div class="control-group table" style ="margin-top: 20px; margin-left: 20px">
+					<!-- A3 -->
+					<div class = "cell" data-bind="with: approvalCount">
+						<!-- A3_1 -->
+						<div data-bind="text: unApprovalNumber"></div>
+						<!-- A3_2 -->
+						<div data-bind="text: approvalNumber"></div>
+						<!-- A3_3 -->
+						<div data-bind="text: approvalAgentNumber"></div>
+						<!-- A3_4 -->
+						<div data-bind="text: cancelNumber"></div>
+						<!-- A3_5 -->
+						<div data-bind="text: remandNumner"></div>
+						<!-- A3_6 -->
+						<div data-bind="text: denialNumber"></div>
+					</div>
+					<div class = "cell" style ="padding-left: 20px">
+						<!-- A2: Switch button -->
+						<div data-bind="ntsSwitchButton: {
+							options: roundingRules,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: selectedRuleCode,
+							enable: true }"></div>
+						<!-- A4_1 -->
+						<div>
+							<table>
+								<colgroup>
+									<col width="100px" />
+									<col width="*" />
+								</colgroup>
+								<tr>
+									<td><div>#{i18n.getText('CMM045_19')}</div></td>
+									<td>
+										<!-- A4_1 -->
+										<div
+											data-bind="ntsMultiCheckBox: {
+									options: itemList,
+									optionsValue: 'id',
+									optionsText: 'name',
+									value: selectedIds,
+									enable: true}"></div>
+									</td>
+								</tr>
+								<tr>
+									<td><div>#{i18n.getText('CMM045_26')}</div></td>
+									<td><div id="daterangepicker" tabindex="1"
+											data-bind="ntsDateRangePicker:
+											{required: false,
+											enable: true,
+											showNextPrevious: false,
+											value: dateValue}"></div>
+									</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td>
+										<!-- A4_3_4: button 検索 -->
+										<button>#{i18n.getText('CMM045_32')}</button>
+									</td>
+								</tr>
+								<tr>
+									<!-- A4_4: label 申請種類 -->
+									<td><div>#{i18n.getText('CMM045_33')}</div></td>
+									<td>
+										<div id="combo-box"
+											data-bind="ntsComboBox: {
+												options: itemApplication,
+												optionsValue: 'appId',
+												value: selectedCode,
+												optionsText: 'appName',
+												enable: true,
+												columns: [{ prop: 'appName'}]}"></div>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
 				<div>
 					<!-- <div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM045_29')}</div> -->
-					
+
 				</div>
-				<div style = "margin-left: 20px; margin-top: 50px;" class="compact-grid">
+				<div style="margin-left: 20px; margin-top: 50px;"
+					class="compact-grid">
 					<table id="grid1"></table>
-			</div>
-			<div style = "margin-left: 20px; margin-top: 50px;" class="compact-grid">
+				</div>
+				<div style="margin-left: 20px; margin-top: 50px;"
+					class="compact-grid">
 					<table id="grid2"></table>
-			</div>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

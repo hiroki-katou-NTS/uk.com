@@ -42,8 +42,8 @@ public class AgentPubImpl implements AgentPub {
 	}
 
 	@Override
-	public List<AgentDataPubExport> getBySidDate(String companyId, String employeeId, GeneralDate baseDate) {
-		List<AgentDataPubExport> lstData = agentRepository.findBySidDate(companyId, employeeId, baseDate)
+	public List<AgentDataPubExport> getBySidDate(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate) {
+		List<AgentDataPubExport> lstData = agentRepository.findBySidDate(companyId, employeeId, startDate, endDate)
 				.stream()
 				.map(x -> new AgentDataPubExport(companyId, 
 						x.getEmployeeId(), 

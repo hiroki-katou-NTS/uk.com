@@ -18,7 +18,7 @@ public class WorkTypeSetDto {
 
 	private int countHodiday;
 
-	private int closeAtr;
+	private Integer closeAtr;
 
 	private int sumAbsenseNo;
 
@@ -41,7 +41,7 @@ public class WorkTypeSetDto {
         		domain.getDigestPublicHd().value, 
         		domain.getHolidayAtr().value, 
         		domain.getCountHodiday().value, 
-        		domain.getCloseAtr().value, 
+        		domain.getCloseAtr() !=null ? domain.getCloseAtr().value : null, 
         		domain.getSumAbsenseNo(), 
         		domain.getSumSpHodidayNo(), 
         		domain.getTimeLeaveWork().value, 
