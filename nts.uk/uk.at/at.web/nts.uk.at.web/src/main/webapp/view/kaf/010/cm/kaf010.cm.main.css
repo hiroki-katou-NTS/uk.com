@@ -65,6 +65,9 @@ div#combo-box.reset-element.ui-igcombo-wrapper {
 textarea.nts-editor.nts-input.reset-element {
 	height: 120px;
 }
+.textarea-kaf010{
+	height: 120px !important;
+}
 
 #multiline {
 	display: inline-block;
