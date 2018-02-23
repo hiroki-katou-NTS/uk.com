@@ -256,23 +256,33 @@ module nts.layout {
                             workTimeCodes: _.map(timeCodes, x => x.optionValue),
                             selectedWorkTimeCode: timeCode
                         }, true);
+                        if(btnItem.data.itemCode != "IS00128"){
+                            modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                                let childData: IChildData = getShared('childData');
 
-                        modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                            let childData: IChildData = getShared('childData');
+                                if (childData) {
+                                    self.setItemData(wkTypeItem, childData.selectedWorkTypeCode);
+                                    self.setItemName(wkTypeItem, childData.selectedWorkTypeName);
+                                    self.setItemData(wkTimeItem, childData.selectedWorkTimeCode);
+                                    self.setItemName(wkTimeItem, childData.selectedWorkTimeName);
+                                    self.setItemData(startItem1, childData.first && childData.first.start);
+                                    self.setItemData(endItem1, childData.first && childData.first.end);
+                                    self.setItemData(startItem2, childData.second && childData.second.start);
+                                    self.setItemData(endItem2, childData.second && childData.second.end);
 
-                            if (childData) {
-                                self.setItemData(wkTypeItem, childData.selectedWorkTypeCode);
-                                self.setItemName(wkTypeItem, childData.selectedWorkTypeName);
-                                self.setItemData(wkTimeItem, childData.selectedWorkTimeCode);
-                                self.setItemName(wkTimeItem, childData.selectedWorkTimeName);
-                                self.setItemData(startItem1, childData.first && childData.first.start);
-                                self.setItemData(endItem1, childData.first && childData.first.end);
-                                self.setItemData(startItem2, childData.second && childData.second.start);
-                                self.setItemData(endItem2, childData.second && childData.second.end);
+                                    validateEditable(wkTimeItem != null ? wkTimeItem.data.value : '');
+                                }
+                            });
+                        }   else{
+                            modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
+                                let childData: IChildData = getShared('KDL002_SelectedNewItem');
 
-                                validateEditable(wkTimeItem != null ? wkTimeItem.data.value : '');
-                            }
-                        });
+                                if (childData) {
+                                    self.setItemData(wkTypeItem, childData.code);
+                                    self.setItemName(wkTypeItem, childData.name);
+                                }
+                            });
+                        }                            
                     });
                 }
             });
