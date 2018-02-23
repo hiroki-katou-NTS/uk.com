@@ -1,3 +1,18 @@
-#O2_1_wizard.nts-wizard.vertical > .content{
-	height: 43em;
+#ex_accept_wizard {
+	width: 1200px;
+}
+#ex_accept_wizard > .steps{
+	width: 250px;
+	height: 620px;
+}
+#ex_accept_wizard > .content{
+	width: 850px;
+	height: 620px;
+	background: none;
+}
+#file-upload{
+	width: 300px;
+}
+#grd_Acquisition > tbody > tr > td:nth-child(5), #grd_Acquisition > tbody > tr > td:nth-child(6){
+	text-align: center;
 }
