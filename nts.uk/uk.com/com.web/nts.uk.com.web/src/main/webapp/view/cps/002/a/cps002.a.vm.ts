@@ -137,7 +137,7 @@ module cps002.a.vm {
                                     return item.categoryCd == currentCtgCode;
                                 });
                                 if (currentCtg) {
-                                    self.categorySelectedCode(currentCtgCode);
+                                    self.categorySelectedCode.valueHasMutated()
                                 } else {
                                     self.categorySelectedCode(result[0].categoryCd);
                                 }
