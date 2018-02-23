@@ -29,7 +29,7 @@ module nts.uk.at.view.kal001.b {
                 
                 self.columns = ko.observableArray([
                     { headerText: '', key: 'GUID', width: 1 ,hidden :true },
-                    { headerText: getText('KAL001_20'), key: 'workplaceID', width: 100, enableTooltip : true },
+                    { headerText: getText('KAL001_20'), key: 'workplaceID', width: 100 },
                     { headerText: getText('KAL001_13'), key: 'employeeCode', width: 100 },
                     { headerText: getText('KAL001_14'), key: 'employeeName', width: 150 },
                     { headerText: getText('KAL001_15'), key: 'alarmValueDate', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },
@@ -46,7 +46,13 @@ module nts.uk.at.view.kal001.b {
                     virtualization: true,
                     virtualizationMode: 'continuous',
                     columns: self.columns(), 
-                    features: [{ name: 'Paging', type: 'local',pageSize: 10,style: "popover" }],
+                    features: [{ name: 'Paging', type: 'local',pageSize: 10 },
+                    {
+                        name: "Tooltips",
+                            columnSettings: [
+                                { columnKey: "workplaceID", allowTooltips: true }
+                            ]
+                    }],
                     avgRowHeight: "26px",
                     enableTooltip : true
                     });
