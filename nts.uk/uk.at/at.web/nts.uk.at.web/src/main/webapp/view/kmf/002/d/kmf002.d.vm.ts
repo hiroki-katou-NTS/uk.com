@@ -49,7 +49,13 @@ module nts.uk.at.view.kmf002.d {
                 _self.commonTableMonthDaySet().fiscalYear.subscribe(function(newValue) {
                     // change year
                     if (!nts.uk.ui.errors.hasError()) {
-                        _self.getDataFromService();    
+                        _self.getDataFromService();
+                        service.findAllEmpRegister(_self.commonTableMonthDaySet().fiscalYear()).done(function(data: any) {
+                            _self.alreadySettingList.removeAll();
+                            _.forEach(data, function(code) {
+                                _self.alreadySettingList.push({code: code, isAlreadySetting: true});
+                            });                            
+                        })
                     }
                 });
                 _self.commonTableMonthDaySet().visibleInfoSelect(true);
@@ -72,9 +78,9 @@ module nts.uk.at.view.kmf002.d {
             private catchChangeSelectEmp(): void {
                 let _self = this;
                 _self.selectedCode.subscribe(function(codeEmployee) {
-                    if (_.isEmpty(codeEmployee)) {
-                        return;
-                    }
+//                    if (_.isEmpty(codeEmployee)) {
+//                        return;
+//                    }
                     _self.commonTableMonthDaySet().infoSelect2(codeEmployee);
                     _self.commonTableMonthDaySet().infoSelect3(_self.findEmploymentSelect(codeEmployee));
                     _self.getDataFromService();
@@ -89,7 +95,7 @@ module nts.uk.at.view.kmf002.d {
                     }
                 });
                 
-                _self.selectedCode.valueHasMutated();
+//                _self.selectedCode.valueHasMutated();
             }
 
             /**
@@ -98,11 +104,20 @@ module nts.uk.at.view.kmf002.d {
             public start_page(): JQueryPromise<void> {
                 let _self = this;
                 var dfd = $.Deferred<void>();
-                $('#empt-list-setting').ntsListComponent(_self.listComponentOption).done(function(){
+                $.when($('#empt-list-setting').ntsListComponent(_self.listComponentOption),
+                        service.findAllEmpRegister(_self.commonTableMonthDaySet().fiscalYear())).done(function(data: any, data2: any){
                     _self.catchChangeSelectEmp();
                     _self.getDataFromService();
+                    _.forEach(data2, function(code) {
+                        _self.alreadySettingList.push({code: code, isAlreadySetting: true});
+                    });
                     dfd.resolve();    
-                });
+                })
+//                $('#empt-list-setting').ntsListComponent(_self.listComponentOption).done(function(){
+//                    _self.catchChangeSelectEmp();
+////                    _self.getDataFromService();
+//                    dfd.resolve();    
+//                });
                 return dfd.promise();
             }
 
@@ -111,6 +126,7 @@ module nts.uk.at.view.kmf002.d {
                 if (!nts.uk.ui.errors.hasError()) {
                     service.save(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth(), _self.selectedCode()).done((data) => {
                         _self.getDataFromService();
+                        _self.alreadySettingList.push({code: _self.selectedCode(), isAlreadySetting: true});
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     });    
                 }
@@ -120,6 +136,7 @@ module nts.uk.at.view.kmf002.d {
                 let _self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     service.remove(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()).done(() => {
+                        _self.alreadySettingList.remove(function(s) { return s.code == _self.selectedCode() });
                         _self.getDataFromService();
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     });
@@ -134,10 +151,10 @@ module nts.uk.at.view.kmf002.d {
                  $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()), 
                                     service.findFirstMonth(),
                                     service.findAllEmpRegister(_self.commonTableMonthDaySet().fiscalYear())).done(function(data: any, data2: any, data3: any) {
-                    _self.alreadySettingList.removeAll();
-                    _.forEach(data3, function(code) {
-                        _self.alreadySettingList.push({code: code, isAlreadySetting: true});
-                    });
+//                    _self.alreadySettingList.removeAll();
+//                    _.forEach(data3, function(code) {
+//                        _self.alreadySettingList.push({code: code, isAlreadySetting: true});
+//                    });
                     if (typeof data === "undefined") {
                         /** 
                          *   create value null for prepare create new 

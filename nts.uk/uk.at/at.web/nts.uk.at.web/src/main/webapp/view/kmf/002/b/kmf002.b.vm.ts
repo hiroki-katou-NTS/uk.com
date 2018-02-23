@@ -66,7 +66,14 @@ module nts.uk.at.view.kmf002.b {
                 _self.commonTableMonthDaySet().fiscalYear.subscribe(function(newValue) {
                     // change year
                     if (!nts.uk.ui.errors.hasError()) {
-                        _self.getDataFromService();    
+                        _self.getDataFromService();  
+                        $.when(service.findAll(_self.commonTableMonthDaySet().fiscalYear())).done(function(data3: any) {
+                                _self.alreadySettingList.removeAll();
+                                _.forEach(data3, function(wkpID) {
+                                _self.alreadySettingList.push({'workplaceId': wkpID, 'isAlreadySetting': true});
+                            });        
+                        })
+                          
                     }
                 });
             }
@@ -123,6 +130,7 @@ module nts.uk.at.view.kmf002.b {
                                     _self.commonTableMonthDaySet().arrMonth(), 
                                     $('#tree-grid').getRowSelected()[0].workplaceId).done((data) => {
                     _self.getDataFromService();
+                    _self.alreadySettingList.push({'workplaceId': _self.multiSelectedWorkplaceId(), 'isAlreadySetting': true});                    
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 });    
                 }  
@@ -134,6 +142,8 @@ module nts.uk.at.view.kmf002.b {
                     service.remove(_self.commonTableMonthDaySet().fiscalYear(), 
                                     $('#tree-grid').getRowSelected()[0].workplaceId).done(() => {
                         _self.getDataFromService();
+//                        _self.alreadySettingList.push({'workplaceId': _self.multiSelectedWorkplaceId(), 'isAlreadySetting': true});      
+                        _self.alreadySettingList.remove(function(s) { return s.workplaceId == _self.multiSelectedWorkplaceId() });           
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     });  
                 }).ifNo(() => {
@@ -148,10 +158,10 @@ module nts.uk.at.view.kmf002.b {
                     $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(),$('#tree-grid').getRowSelected()[0].workplaceId), 
                             service.findFirstMonth(),
                             service.findAll(_self.commonTableMonthDaySet().fiscalYear())).done(function(data: any, data2: any, data3: any) {
-                        _self.alreadySettingList.removeAll();
-                        _.forEach(data3, function(wkpID) {
-                            _self.alreadySettingList.push({'workplaceId': wkpID, 'isAlreadySetting': true});
-                        });
+//                        _self.alreadySettingList.removeAll();
+//                        _.forEach(data3, function(wkpID) {
+//                            _self.alreadySettingList.push({'workplaceId': wkpID, 'isAlreadySetting': true});
+//                        });
                         if (typeof data === "undefined") {
                             /** 
                              *   create value null for prepare create new 

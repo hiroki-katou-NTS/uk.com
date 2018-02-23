@@ -70,7 +70,7 @@ module nts.uk.at.view.kmf002.c {
                         _.forEach(dataList, function(value: any) {
                             _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
                         });  
-                        _self.findAllEmployeeRegister();
+//                        _self.findAllEmployeeRegister();
                     },
                     onSearchOnlyClicked: function(data: EmployeeSearchDto) {
                         _self.showinfoSelectedEmployee(true);
@@ -81,7 +81,7 @@ module nts.uk.at.view.kmf002.c {
                         _.forEach(data, function(value: any) {
                             _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
                         });
-                        _self.findAllEmployeeRegister();
+//                        _self.findAllEmployeeRegister();
                     },
                     onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
                         _self.showinfoSelectedEmployee(true);
@@ -90,7 +90,7 @@ module nts.uk.at.view.kmf002.c {
                         _.forEach(dataList, function(value: any) {
                             _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
                         });
-                        _self.findAllEmployeeRegister();
+//                        _self.findAllEmployeeRegister();
                     },
                     onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
                         _self.showinfoSelectedEmployee(true);
@@ -99,7 +99,7 @@ module nts.uk.at.view.kmf002.c {
                         _.forEach(dataList, function(value: any) {
                             _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
                         });
-                        _self.findAllEmployeeRegister();
+//                        _self.findAllEmployeeRegister();
                     },
                     onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
                         _self.showinfoSelectedEmployee(true);
@@ -108,7 +108,7 @@ module nts.uk.at.view.kmf002.c {
                         _.forEach(dataEmployee, function(value: any) {
                             _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
                         });
-                        _self.findAllEmployeeRegister();
+//                        _self.findAllEmployeeRegister();
                     }
                 }
                 /* end declare variable CCG001 */
@@ -164,6 +164,11 @@ module nts.uk.at.view.kmf002.c {
                     } else {
                         _self.enableDelete(true);
                     }
+                    
+//                    if (_self.selectedCode() == newValue) {
+//                        return;
+//                    }
+                    
                     _self.getDataFromService();
                 });
                 
@@ -195,6 +200,7 @@ module nts.uk.at.view.kmf002.c {
                 if (!nts.uk.ui.errors.hasError()) {
                     service.save(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth(), _self.selectedCode()).done((data) => {
                         _self.getDataFromService();
+                        _self.alreadySettingList.push({code: _self.selectedCode(), isAlreadySetting: true});
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     });    
                 } 
@@ -205,6 +211,7 @@ module nts.uk.at.view.kmf002.c {
                  nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     service.remove(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()).done((data) => {
                         _self.getDataFromService();
+                        _self.alreadySettingList.remove(function(s) { return s.code == _self.selectedCode() });
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     });   
                 }).ifNo(() => {
@@ -231,8 +238,9 @@ module nts.uk.at.view.kmf002.c {
                 let _self = this;
                 if (!_.isNull(_self.selectedCode()) && !_.isEmpty(_self.selectedCode())) {
                     $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()), 
-                            service.findFirstMonth(),
-                            _self.findAllEmployeeRegister()).done(function(data: any, data2: any) {
+                            service.findFirstMonth()
+//                            ,_self.findAllEmployeeRegister()
+                            ).done(function(data: any, data2: any) {
                         if (typeof data === "undefined") {
                             /** 
                              *   create value null for prepare create new 
