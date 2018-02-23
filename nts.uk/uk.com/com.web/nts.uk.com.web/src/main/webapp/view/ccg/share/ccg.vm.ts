@@ -761,6 +761,8 @@ module nts.uk.com.view.ccg.share.ccg {
                             self.queryParam.baseDate = acquiredDate;
                             if (self.isAdvancedSearchTab) {
                                 self.reloadAdvanceSearchTab().done(() => nts.uk.ui.block.clear()); // clear block UI
+                            } else {
+                                nts.uk.ui.block.clear(); // clear block UI
                             }
                             dfd.resolve();
                         } else {
