@@ -486,9 +486,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 let endTime = self.restTime()[i].endTime();
                 let attendanceId = self.restTime()[i].attendanceID();
                 let frameNo = self.restTime()[i].frameNo();
-                if(!self.validateTime(startTime, endTime, 'input#restTimeStart_'+attendanceId+'_'+frameNo)){
-                    return false;
-                };
+                if(!nts.uk.util.isNullOrEmpty(startTime) && startTime != ""){
+                    if(!self.validateTime(startTime, endTime, 'input#restTimeStart_'+attendanceId+'_'+frameNo)){
+                        return false;
+                    };
+                }
             }
             return true;            
         }
@@ -619,10 +621,10 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                             overtimeHours: ko.toJS(self.overtimeHours)
                         }
                     ).done(data => {
-                        self.timeStart1(data.startTime1 == -1 ? null : data.startTime1);
-                        self.timeEnd1(data.endTime1 == -1 ? null : data.endTime1);
-                        self.timeStart2(data.startTime2 == -1 ? null : data.startTime2);
-                        self.timeEnd2(data.endTime2 == -1 ? null : data.endTime2);
+                        self.timeStart1(data.startTime1 == null ? null : data.startTime1);
+                        self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
+                        self.timeStart2(data.startTime2 == null ? null : data.startTime2);
+                        self.timeEnd2(data.endTime2 == null ? null : data.endTime2);
                         self.convertAppOvertimeReferDto(data);
                     });
                 }
