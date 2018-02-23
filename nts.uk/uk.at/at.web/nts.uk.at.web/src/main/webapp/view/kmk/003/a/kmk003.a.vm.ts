@@ -115,9 +115,9 @@ module nts.uk.at.view.kmk003.a {
                     } else {                       
                         self.changeTabMode(false);
                     }   
-                    if (self.isUpdateMode()) {
-                        self.reloadWorktimeSetting();
-                    }
+//                    if (self.isUpdateMode()) {
+//                        self.reloadWorktimeSetting();
+//                    }
                 });
 
                 self.useHalfDayOptions = ko.observableArray([

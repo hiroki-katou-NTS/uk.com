@@ -247,6 +247,7 @@ module a3 {
                     if (self.isFixedMode()) {
                         if (v) {
                             self.fixTableOptionOnedayFixed.columns = self.columnSettingFixedAndDiffTime();
+                            self.updateDataModel();
                         }
                         else {
                             self.fixTableOptionOnedayFixed.columns = self.columnSettingFlex();
@@ -256,6 +257,7 @@ module a3 {
                     if (self.isFlowMode()) {
                         if (v) {
                             self.fixTableOptionOvertimeFlow.columns = self.columnSettingOvertimeFlow();
+                            self.updateDataModel();
                         }
                         else {
                             self.fixTableOptionOvertimeFlow.columns = self.columnSettingFlowSimple();
@@ -264,6 +266,7 @@ module a3 {
                     if (self.isDiffTimeMode()) {
                         if (v) {
                             self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFixedAndDiffTime();
+                            self.updateDataModel();
                         }
                         else {
                             self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFlex();
