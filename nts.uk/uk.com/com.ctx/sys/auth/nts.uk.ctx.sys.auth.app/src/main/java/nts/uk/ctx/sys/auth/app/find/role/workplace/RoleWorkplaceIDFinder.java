@@ -131,16 +131,18 @@ public class RoleWorkplaceIDFinder {
 
 		List<String> listWkpId = new ArrayList<>();
 		WorkplaceIdDto workplaceIdDto = new WorkplaceIdDto();
-
-			if (param.getReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE.value) {
-				listWkpId = workplaceAdapter.findListWkpIdByBaseDate(GeneralDate.fromString(param.getBaseDate(), "yyyy-MM-dd"));
-				workplaceIdDto.setListWorkplaceIds(listWkpId);
-				workplaceIdDto.setIsAllEmp(true);
-			} else {
-				listWkpId = this.findListWkpId(param);
-				workplaceIdDto.setListWorkplaceIds(listWkpId);
-				workplaceIdDto.setIsAllEmp(false);
-			}
+		//check ReferenceRange 
+		if (param.getReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE.value) {
+			//get list WorkplaceId by WorkplaceAdapter
+			listWkpId = workplaceAdapter.findListWkpIdByBaseDate(GeneralDate.fromString(param.getBaseDate(), "yyyy-MM-dd"));
+			workplaceIdDto.setListWorkplaceIds(listWkpId);
+			workplaceIdDto.setIsAllEmp(true);
+		} else {
+			//get list WorkplaceId by function findListWkpId
+			listWkpId = this.findListWkpId(param);
+			workplaceIdDto.setListWorkplaceIds(listWkpId);
+			workplaceIdDto.setIsAllEmp(false);
+		}
 		return listWkpId;
 
 	}
@@ -159,7 +161,8 @@ public class RoleWorkplaceIDFinder {
 		String companyId = AppContexts.user().companyId();
 		
 		// get workplace manager 
-		List<WorkplaceManager> listWkpManager = workplaceManagerRepository.findListWkpManagerByEmpIdAndBaseDate(employeeId, GeneralDate.fromString(param.getBaseDate(), "yyyy-MM-dd"));
+		GeneralDate baseDate = GeneralDate.fromString(param.getBaseDate(), "yyyy-MM-dd");
+		List<WorkplaceManager> listWkpManager = workplaceManagerRepository.findListWkpManagerByEmpIdAndBaseDate(employeeId, baseDate);
 		
 		// add wkpId to listWkpId
 		listWkpId = listWkpManager.stream().map(m -> m.getWorkplaceId()).collect(Collectors.toList());
