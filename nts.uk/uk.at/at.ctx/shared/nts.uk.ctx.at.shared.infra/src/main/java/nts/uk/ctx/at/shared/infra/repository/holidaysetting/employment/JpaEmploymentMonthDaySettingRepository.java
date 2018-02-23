@@ -141,8 +141,8 @@ public class JpaEmploymentMonthDaySettingRepository extends JpaRepository implem
 	 * @see nts.uk.ctx.bs.employee.dom.holidaysetting.employment.EmploymentMonthDaySettingRepository#findAllEmpRegister(nts.uk.ctx.bs.employee.dom.common.CompanyId)
 	 */
 	@Override
-	public List<String> findAllEmpRegister(CompanyId companyId) {
-		 List<KshmtEmpMonthDaySet> result = this.findBy(companyId, null, null, null);
+	public List<String> findAllEmpRegister(CompanyId companyId, Year year) {
+		 List<KshmtEmpMonthDaySet> result = this.findBy(companyId, null, year, null);
 		
 		// Check exist
 		if (result != null && !result.isEmpty()) {

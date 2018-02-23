@@ -54,8 +54,8 @@ public class JpaEmployeeMonthDaySettingRepository extends JpaRepository implemen
 	 *
 	 * @return the list
 	 */
-	public List<String> findAllEmployeeRegister(CompanyId companyId) {
-		List<KshmtEmployeeMonthDaySet> result = this.findBy(companyId, null, null, null);
+	public List<String> findAllEmployeeRegister(CompanyId companyId, Year year) {
+		List<KshmtEmployeeMonthDaySet> result = this.findBy(companyId, null, year, null);
 		// Check exist
 		if (result != null && !result.isEmpty()) {
 			return result.stream()

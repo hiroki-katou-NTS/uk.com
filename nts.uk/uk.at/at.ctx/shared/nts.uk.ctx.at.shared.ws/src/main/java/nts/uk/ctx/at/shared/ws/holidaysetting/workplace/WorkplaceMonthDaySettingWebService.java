@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.app.find.holidaysetting.workplace.WorkplaceMonthDayS
 /**
  * The Class WorkplaceMonthDaySettingWebService.
  */
-@Path("bs/employee/holidaysetting/workplace")
+@Path("at/shared/holidaysetting/workplace")
 @Produces(MediaType.APPLICATION_JSON)
 public class WorkplaceMonthDaySettingWebService extends WebService {
 	/** The finder. */
@@ -57,10 +57,10 @@ public class WorkplaceMonthDaySettingWebService extends WebService {
 	 *
 	 * @return the list
 	 */
-	@Path("findWorkplaceMonthDaySetting")
+	@Path("findWorkplaceMonthDaySetting/{year}")
 	@POST
-	public List<String> findAllWkpRegister(){
-		return this.finder.findAllByYear();
+	public List<String> findAllWkpRegister(@PathParam("year") int year){
+		return this.finder.findAllByYear(year);
 	}
 	
 	/**
