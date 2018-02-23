@@ -15,5 +15,5 @@ public class AppListAtrOutput {
 
 	private List<ApplicationFullOutput> lstAppFull;
 	private ApplicationStatus appStatus;
-	private ApplicationStatus appColor;
+	private List<String> lstAppColor;
 }

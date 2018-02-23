@@ -46,7 +46,6 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
@@ -229,7 +228,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		
 		//get status app
 //		List<ApplicationFullOutput> lstAppFull = this.findStatusAPp(lstAppFilter);
-		return new AppListOutPut(lstAppMasterInfo, lstAppFilter, lstAppOt, lstAppGoBack, null, null);// NOTE
+		return new AppListOutPut(lstAppMasterInfo, lstAppFilter, lstAppOt, lstAppGoBack, null, null, null);// NOTE
 	}
 	/**
 	 * 3 - 申請一覧リスト取得承認
@@ -378,7 +377,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		AppListAtrOutput timeOutput = this.getAppListAchievement(lstAppFilter3, displaySet);
 		//承認一覧に稟議書リスト追加し、申請日付順に整列する - phu thuoc vao request
 		// TODO Auto-generated method stub
-		return new AppListOutPut(lstMaster, lstAppFilter3, lstAppOt, lstAppGoBack, timeOutput.getAppStatus(), timeOutput.getLstAppFull());
+		return new AppListOutPut(lstMaster, lstAppFilter3, lstAppOt, lstAppGoBack, timeOutput.getAppStatus(), timeOutput.getLstAppFull(), timeOutput.getLstAppColor());
 	}
 	/**
 	 * lam o ui
@@ -447,6 +446,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		List<Application_New> lstPost = lstOtPost;
 		lstPost.addAll(lstBrPost);
 		List<Application_New> lstDif = lstApp.stream().filter(s -> !lstPost.contains(s)).collect(Collectors.toList());
+		List<String> lstColor = new ArrayList<>();
 		//事後申請で且申請種類が「残業申請」または「休出時間申請」の場合 (Xin sau của xin làm thêm hoặc làm ngày nghỉ)
 		for (Application_New appPost : lstPost) {
 			if(appPost.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)){//残業申請の場合
@@ -457,8 +457,13 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				}
 				//承認一覧表示設定.残業の実績
 				if(displaySet.getOtActualDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
+					AppOverTimeInfoFull appOt = repoAppDetail.getAppOverTimeInfo(AppContexts.user().companyId(), appPost.getAppID());
 					//アルゴリズム「申請一覧リスト取得実績残業申請」を実行する-(5.2)
-					this.getAppListAchievementOverTime(appPost.getEmployeeID(), appPost.getAppDate());
+					List<OverTimeFrame> time = appOt.getLstFrame();
+					boolean checkColor = this.getAppListAchievementOverTime(appPost.getEmployeeID(), appPost.getAppDate(), time);
+					if(checkColor){
+						lstColor.add(appPost.getAppID());
+					}
 					// TODO Auto-generated method stub
 				}
 			}else{//休出時間申請の場合
@@ -487,7 +492,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//アルゴリズム「申請一覧リスト取得承認件数」を実行する(countAppListApproval): 4 -   申請一覧リスト取得承認件数
 		AppInfoStatus appStatus = this.countAppListApproval(lstApp);
 		// TODO Auto-generated method stub
-		return new AppListAtrOutput(appStatus.getLstAppFull(), appStatus.getCount(), appStatus.getCount());
+		return new AppListAtrOutput(appStatus.getLstAppFull(), appStatus.getCount(), lstColor);
 	}
 	/**
 	 * 5.1 - 申請一覧リスト取得実績休出申請
@@ -505,47 +510,57 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * 5.2 - 申請一覧リスト取得実績残業申請
 	 */
 	@Override
-	public Boolean getAppListAchievementOverTime(String sID, GeneralDate date) {
+	public boolean getAppListAchievementOverTime(String sID, GeneralDate date, List<OverTimeFrame> time) {
 		//Imported(申請承認)「勤務実績」を取得する - req #5
 		RecordWorkInfoImport record = recordWkpInfoAdapter.getRecordWorkInfo(sID, date);
 		DailyAttendanceTimeCaculationImport cal = calTime.getCalculation(sID, date, record.getWorkTypeCode(), record.getWorkTimeCode(), 0, 0, 0, 0);
 		//Imported(申請承認)「計算残業時間」を取得する - req #23
-		List<Integer> lstFrameNo = new ArrayList<>();
-		
+		boolean checkColor = false;
 		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getOverTime().entrySet()){
-			for(Integer i : lstFrameNo){
-				if(i == entry.getKey()){
-				int a =	entry.getValue().getCalTime();
+			for(OverTimeFrame i : time){
+				if(i.getFrameNo() == entry.getKey()){
+					int a =	entry.getValue().getCalTime();
+					if(a < i.getApplicationTime()){
+						checkColor = true;
+					}
 				}
 			}
 		}
 		// TODO Auto-generated method stub
 		//Imported(申請承認)「計算休出時間」を取得する - req #23
 		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getHolidayWorkTime().entrySet()){
-			for(Integer i : lstFrameNo){
-				if(i == entry.getKey()){
-				int a =	entry.getValue().getCalTime();
+			for(OverTimeFrame i : time){
+				if(i.getFrameNo() == entry.getKey()){
+					int a =	entry.getValue().getCalTime();
+					if(a < i.getApplicationTime()){
+						checkColor = true;
+					}
 				}
 			}
 		}
 		// TODO Auto-generated method stub
 		//Imported(申請承認)「計算加給時間」を取得する - req #23
 		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getBonusPayTime().entrySet()){
-			for(Integer i : lstFrameNo){
-				if(i == entry.getKey()){
-				int a =	entry.getValue().getCalTime();
+			for(OverTimeFrame i : time){
+				if(i.getFrameNo() == entry.getKey()){
+					int a =	entry.getValue().getCalTime();
+					if(a < i.getApplicationTime()){
+						checkColor = true;
+					}
 				}
 			}
 		}
 		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getSpecBonusPayTime().entrySet()){
-			for(Integer i : lstFrameNo){
-				if(i == entry.getKey()){
-				int a =	entry.getValue().getCalTime();
+			for(OverTimeFrame i : time){
+				if(i.getFrameNo() == entry.getKey()){
+					int a =	entry.getValue().getCalTime();
+					if(a < i.getApplicationTime()){
+						checkColor = true;
+					}
 				}
 			}
 		}
-		// TODO Auto-generated method stub
-		return null;
+		return checkColor;
 	}
 	/**
 	 * 6 - 申請一覧リスト取得振休振出

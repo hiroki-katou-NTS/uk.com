@@ -30,20 +30,23 @@
 			<div id="content-area">
 				<div class="control-group table" style ="margin-top: 20px; margin-left: 20px">
 					<!-- A3 -->
-					<div class = "cell" data-bind="with: approvalCount">
-						<!-- A3_1 -->
-						<div data-bind="text: unApprovalNumber"></div>
-						<!-- A3_2 -->
-						<div data-bind="text: approvalNumber"></div>
-						<!-- A3_3 -->
-						<div data-bind="text: approvalAgentNumber"></div>
-						<!-- A3_4 -->
-						<div data-bind="text: cancelNumber"></div>
-						<!-- A3_5 -->
-						<div data-bind="text: remandNumner"></div>
-						<!-- A3_6 -->
-						<div data-bind="text: denialNumber"></div>
+					<div class = "cell" data-bind = "visible: mode()==1">
+						<div data-bind="with: approvalCount">
+							<!-- A3_1 -->
+							<div data-bind="text: unApprovalNumber"></div>
+							<!-- A3_2 -->
+							<div data-bind="text: approvalNumber"></div>
+							<!-- A3_3 -->
+							<div data-bind="text: approvalAgentNumber"></div>
+							<!-- A3_4 -->
+							<div data-bind="text: cancelNumber"></div>
+							<!-- A3_5 -->
+							<div data-bind="text: remandNumner"></div>
+							<!-- A3_6 -->
+							<div data-bind="text: denialNumber"></div>
+						</div>
 					</div>
+					
 					<div class = "cell" style ="padding-left: 20px">
 						<!-- A2: Switch button -->
 						<div data-bind="ntsSwitchButton: {

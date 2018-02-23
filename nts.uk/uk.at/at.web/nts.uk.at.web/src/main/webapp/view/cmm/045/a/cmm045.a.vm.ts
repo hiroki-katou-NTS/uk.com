@@ -2,6 +2,7 @@ module cmm045.a.viewmodel {
     import vmbase = cmm045.shr.vmbase;
     import getText = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
+    import character = nts.uk.characteristics;
     export class ScreenModel {
         roundingRules: KnockoutObservableArray<vmbase.ApplicationDisplayAtr> = ko.observableArray([]);
         selectedRuleCode: KnockoutObservable<any> = ko.observable(1);
@@ -41,9 +42,18 @@ module cmm045.a.viewmodel {
             block.invisible();
             let self = this;
             var dfd = $.Deferred();
+            //get param url
+            let url = $(location).attr('search');
+            let urlParam :number = url.split("=")[1];
+            self.mode(urlParam);
+            character.restore("AppListExtractCondition").done((data) => {
+                let a = data;
+            });
             let param: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto('2018/01/18', '2018/01/20', self.mode(),
                     null, true, true, true, true, true, true, self.selectedRuleCode(), [], '');
             service.getApplicationDisplayAtr().done(function(data){
+                //luu
+                character.save('AppListExtractCondition', param);
                 _.each(data, function(obj){
                     self.roundingRules.push(new vmbase.ApplicationDisplayAtr(obj.value, obj.localizedName));
                 });
@@ -130,7 +140,7 @@ module cmm045.a.viewmodel {
             $("#grid2").on("click", ".ntsButton", function(evt, ui){
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
-                nts.uk.request.jump("../view/kaf/000/b/index.xhtml", { 'appID': id });
+                nts.uk.request.jump("../../../kaf/000/b/index.xhtml", { 'appID': id });
             });
         }
         
@@ -348,6 +358,8 @@ module cmm045.a.viewmodel {
                     self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
             service.getApplicationList(param).done(function(data){
                 console.log(data);
+                //luu
+                character.save('AppListExtractCondition', param);
                 let lstApp: Array<vmbase.ApplicationDto_New> = [];
                 let lstMaster: Array<vmbase.AppMasterInfo> = []
                 let lstGoBack: Array<vmbase.AppGoBackInfoFull> = [];
