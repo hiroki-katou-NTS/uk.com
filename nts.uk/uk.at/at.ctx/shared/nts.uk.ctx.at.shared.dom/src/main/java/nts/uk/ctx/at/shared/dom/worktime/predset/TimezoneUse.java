@@ -30,6 +30,15 @@ public class TimezoneUse extends TimeZone {
 	public static Integer SHIFT_TWO = 2;
 
 	/**
+	 * Constructor 
+	 */
+	public TimezoneUse(TimeWithDayAttr start, TimeWithDayAttr end, UseSetting useAtr, int workNo) {
+		super(start, end);
+		this.useAtr = useAtr;
+		this.workNo = workNo;
+	}
+	
+	/**
 	 * Update start time.
 	 *
 	 * @param start the start
@@ -145,4 +154,6 @@ public class TimezoneUse extends TimeZone {
 	public boolean isUsed() {
 		return this.useAtr == UseSetting.USE;
 	}
+
+
 }

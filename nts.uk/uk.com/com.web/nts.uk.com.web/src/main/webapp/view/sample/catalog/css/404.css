@@ -5,10 +5,10 @@
 }
 
 #fof div {
-	
 }
 
-#fof canvas, #fof img {
+#fof canvas,
+#fof img {
 	position: relative;
 	width: 1000px;
 	height: 500px;

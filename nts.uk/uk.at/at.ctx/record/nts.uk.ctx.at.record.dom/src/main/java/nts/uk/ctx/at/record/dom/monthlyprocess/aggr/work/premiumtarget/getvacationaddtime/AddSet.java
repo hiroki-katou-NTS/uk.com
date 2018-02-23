@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.val;
 
 /**
- * 加算設定
+ * 加算設定　（割増計算用）
  * @author shuichu_ishida
  */
 @Getter

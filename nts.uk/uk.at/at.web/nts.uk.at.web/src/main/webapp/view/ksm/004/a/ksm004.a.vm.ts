@@ -469,7 +469,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.getCalendarCompanySet(self.yearMonthPicked().toString())
                 .done(data => {
                     if(!nts.uk.util.isNullOrEmpty(data)) {
-                        a = {};
+                        let a = {};
                         a[Math.floor(self.yearMonthPicked()/100)] = data;
                         self.cssRangerYM(a);
                         $("#yearMonthPicker1").datepicker("hide");
@@ -488,7 +488,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.getCalendarWorkplaceSet(value,self.yearMonthPicked1().toString())
                 .done(data => {
                     if(!nts.uk.util.isNullOrEmpty(data)) {
-                        a = {};
+                        let a = {};
                         a[Math.floor(self.yearMonthPicked()/100)] = data;
                         self.cssRangerYM1(a);
                     }else{
@@ -509,7 +509,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.getCalendarClassSet(value,self.yearMonthPicked2().toString())
                 .done(data => {
                     if(!nts.uk.util.isNullOrEmpty(data)) {
-                        a = {};
+                        let a = {};
                         a[Math.floor(self.yearMonthPicked()/100)] = data;
                         self.cssRangerYM2(a);
                     }else{
@@ -853,7 +853,7 @@ module nts.uk.at.view.ksm004.a {
                 convert enum string nam to number value
             */
             convertEnumNametoNumber(name){
-                let n = '';
+                let n: number;
                 switch(name) {
                     case WorkingDayAtr.WorkingDayAtr_WorkPlace: n = 1; break;
                     case WorkingDayAtr.WorkingDayAtr_Class: n = 2; break;
@@ -1025,7 +1025,7 @@ module nts.uk.at.view.ksm004.a {
             start: string;
             textColor: string;
             backgroundColor: string;
-            listText: [];
+            listText: Array<any>;
             constructor(start: number, listText: number) {
                 this.start = moment(start.toString()).format('YYYY-MM-DD');
                 this.backgroundColor = 'white';

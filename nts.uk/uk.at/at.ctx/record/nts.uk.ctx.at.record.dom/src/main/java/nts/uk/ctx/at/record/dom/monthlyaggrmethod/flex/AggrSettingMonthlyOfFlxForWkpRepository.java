@@ -7,14 +7,6 @@ package nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex;
 public interface AggrSettingMonthlyOfFlxForWkpRepository {
 	
 	/**
-	 * 追加
-	 * @param companyId 会社ID
-	 * @param workplaceId 職場ID
-	 * @param aggrMonthlySettingOfFlx フレックス時間勤務の月の集計設定
-	 */
-	void insert(String companyId, String workplaceId, AggrSettingMonthlyOfFlx aggrMonthlySettingOfFlx);
-	
-	/**
 	 * 更新
 	 * @param companyId 会社ID
 	 * @param workplaceId 職場ID

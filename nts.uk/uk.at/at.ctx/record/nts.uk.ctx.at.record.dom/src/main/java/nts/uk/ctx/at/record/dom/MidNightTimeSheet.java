@@ -23,9 +23,9 @@ public class MidNightTimeSheet extends CalculationTimeSheet{
 //	private TimeWithDayAttr end;
 //	private TimeSpanForCalc timeSpan;
 	
-	public MidNightTimeSheet(TimeZoneRounding timeSheet, TimeSpanForCalc calculationTimeSheet,List<TimeSheetOfDeductionItem> deductionSheets,
+	public MidNightTimeSheet(TimeZoneRounding timeSheet, TimeSpanForCalc calculationTimeSheet,List<TimeSheetOfDeductionItem> recorddeductionSheets,List<TimeSheetOfDeductionItem> deductionSheets,
 			List<BonusPayTimesheet> bonusPayTimeSheet,List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet,Optional<MidNightTimeSheet> midNighttimeSheet) {
-		super(timeSheet, calculationTimeSheet,deductionSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
+		super(timeSheet, calculationTimeSheet,recorddeductionSheets,deductionSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
 	}
 	
 	/**
@@ -64,7 +64,7 @@ public class MidNightTimeSheet extends CalculationTimeSheet{
 		List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet = this.recreateSpecifiedBonusPayListBeforeBase(baseTime, isDateBefore);
 		Optional<MidNightTimeSheet>    midNighttimeSheet = this.recreateMidNightTimeSheetBeforeBase(baseTime,isDateBefore);
 		TimeSpanForCalc renewSpan = decisionNewSpan(this.getCalcrange(),baseTime,isDateBefore);
-		return Optional.of(new MidNightTimeSheet(this.getTimeSheet(),renewSpan,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet));
+		return Optional.of(new MidNightTimeSheet(this.getTimeSheet(),renewSpan,deductionTimeSheets,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet));
 	}
 	
 	

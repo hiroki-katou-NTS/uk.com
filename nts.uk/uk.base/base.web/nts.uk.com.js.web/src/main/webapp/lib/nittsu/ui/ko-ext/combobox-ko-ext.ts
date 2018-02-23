@@ -1,6 +1,36 @@
 /// <reference path="../../reference.ts"/>
 
 module nts.uk.ui.koExtentions {
+    
+    module notSelected {
+        let DATA = "not-selected";
+        export function set($element: JQuery, value: boolean) {
+            $element.data(DATA, value);
+        }
+        export function get($element: JQuery) {
+            return $element.data(DATA) === true;
+        }
+    }
+    
+    module required {
+        let DATA = "required";
+        export function set($element: JQuery, value: boolean) {
+            $element.data(DATA, value);
+        }
+        export function get($element: JQuery) {
+            return $element.data(DATA) === true;
+        }
+    }
+    
+    module controlName {
+        let DATA = "control-name";
+        export function set($element: JQuery, value: boolean) {
+            $element.data(DATA, value);
+        }
+        export function get($element: JQuery) {
+            return $element.data(DATA);
+        }
+    }
 
     /**
      * ComboBox binding handler
@@ -31,6 +61,16 @@ module nts.uk.ui.koExtentions {
 //                    $('html, body').scrollTop(container.first().offset().top - 200);      
                 } 
             });
+            
+            container.bind("validate", function () {
+                if (required.get(container) && notSelected.get(container)) {
+                    container.ntsError("set", resource.getMessage("FND_E_REQ_SELECT", [controlName.get(container)]), "FND_E_REQ_SELECT");
+                } else {
+                    container.ntsError("clear");
+                }
+            });
+            
+            ui.bindErrorStyle.useDefaultErrorClass(container);
         }
 
         /** 
@@ -49,6 +89,7 @@ module nts.uk.ui.koExtentions {
             var optionText = data.optionsText === undefined ? null : ko.unwrap(data.optionsText);
             var selectedValue = ko.unwrap(data.value);
             var editable = ko.unwrap(data.editable);
+            var isRequired = ko.unwrap(data.required) === true;
             var enable: boolean = data.enable !== undefined ? ko.unwrap(data.enable) : true;
             var columns: Array<any> = ko.unwrap(data.columns);
             var visibleItemsCount = data.visibleItemsCount === undefined ? 5 : ko.unwrap(data.visibleItemsCount);
@@ -63,6 +104,8 @@ module nts.uk.ui.koExtentions {
             // Container.
             var container = $(element);
             var comboMode: string = editable ? 'editable' : 'dropdown';
+            
+            controlName.set(container, ko.unwrap(data.name));
 
             // Default values.
             var distanceColumns = '     ';
@@ -71,14 +114,24 @@ module nts.uk.ui.koExtentions {
             
             // Default value
             var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
-            var getValue = function (item){
+            
+            var getValue = function (item) {
                 return optionValue === null ? item : item[optionValue];        
             };
             
-            // Check selected code.
-            if (_.find(options, item => getValue(item) === selectedValue) === undefined && !editable) {
-                selectedValue = options.length > 0 ?getValue(options[0]) : '';
-                data.value(selectedValue);
+            // required
+            required.set(container, isRequired);
+            
+            // Check if selected code exists in list.
+            // But "null" and "undefined" are "not-selected" even if the "null" or "undefined" exist in list.
+            // この仕様は、「未選択」という項目を持つことを許容するためのもの。
+            let isValidValue = !util.isNullOrUndefined(selectedValue) && _.some(options, item => getValue(item) === selectedValue);
+            notSelected.set(container, !isValidValue);
+            if (!isValidValue) {
+                notSelected.set(container, true);
+            } else {
+                notSelected.set(container, false);
+                container.ntsError("clear");
             }
 
             var haveColumn = columns && columns.length > 0;
@@ -93,6 +146,11 @@ module nts.uk.ui.koExtentions {
                     if (haveColumn) {
                         _.forEach(columns, function(item, i) {
                             var prop: string = option[item.prop];
+                            
+                            if (util.isNullOrUndefined(prop)) {
+                                prop = "";
+                            }
+                            
                             var length: number = item.length;
 
                             if (i === columns.length - 1) {
@@ -196,6 +254,10 @@ module nts.uk.ui.koExtentions {
                 if (isDropDownWidthSpecified) {
                     container.find(".ui-igcombo-dropdown").css("width", "auto");
                 }
+            }
+            
+            if (notSelected.get(container)) {
+                container.find("input").val("");
             }
         }
     }
