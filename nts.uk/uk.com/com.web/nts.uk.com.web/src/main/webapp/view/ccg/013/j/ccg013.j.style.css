@@ -54,11 +54,6 @@ table.control {
 	display: inline-block;
 }
 
-.text-blue-underline {
-	color: blue;
-	text-decoration: underline;
-}
-
 .description {
 	height: 30px;
 }
