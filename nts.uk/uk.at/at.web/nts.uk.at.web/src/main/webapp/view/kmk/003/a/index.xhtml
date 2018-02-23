@@ -319,7 +319,9 @@
 											data-bind="ntsTabPanel: {width:250, dataSource: tabs, 
 											active: selectedTab,direction: 'vertical' }">
 											<div tabindex="22" class="tab-a1">
-												<div data-bind="ntsKMK003A1: {isDetailMode: isDetailMode,
+												<div data-bind="ntsKMK003A1: {
+													selectedTab: selectedTab,
+													isDetailMode: isDetailMode,
 													useHalfDay: useHalfDay,
 													enum: settingEnum,
 													mainSettingModel: mainSettingModel}">
@@ -343,6 +345,7 @@
 											</div>
 											<div tabindex="60" class="tab-a4">
 												<div class="tab-outline" data-bind="ntsKMK003A4: { 
+													selectedTab: selectedTab,
 													tabMode: tabMode, 
 													mainSettingModel: mainSettingModel,
 													enum: settingEnum,
@@ -372,6 +375,7 @@
 											</div>
 											<div tabindex="98" class="tab-a8">
 												<div class="tab-outline" data-bind="ntsKMK003A8: { 
+													selectedTab: selectedTab,
 													screenMode: tabMode,
 													model: mainSettingModel,
 													enum: settingEnum

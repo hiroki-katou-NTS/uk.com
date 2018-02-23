@@ -236,7 +236,7 @@
 					<tr data-bind="with: pubHolWorkTimePersonDeductTimeSetting">
 						<!-- deductTime -->
 						<td class="tab_8_radio_cell">
-							<div tabindex="117" class="tab_8_radio_setting" data-bind="ntsRadioBoxGroup: {
+							<div tabindex="117" class="tab_8_radio_setting" data-bind="event: { keydown: function(data, event) { $parent.changeWorkingTab($parent, data, event) }}, ntsRadioBoxGroup: {
 									name: '#[KMK003_169]',
 									options: listRoundingBreakTime,
 									optionsValue: 'value',
@@ -257,7 +257,7 @@
 									enable: isEnable }"></div>
 						</td>
 						<td width="160px" style="padding-left: 10px; padding-right: 10px;">
-							<div tabindex="119" class="cf" data-bind="ntsSwitchButton: {
+							<div tabindex="119" class="cf" data-bind="event: { keydown: function(data, event) { $parent.changeWorkingTab($parent, data, event) }}, ntsSwitchButton: {
 									name: '#[KMK003_171]',
 									options: listRoundingValue,
 									optionsValue: 'value',
@@ -353,7 +353,7 @@
 						<td width="100px"><label>#{i18n.getText('KMK003_90')}</label></td>
 						<!-- approTime -->
 						<td class="tab_8_radio_cell">
-							<div tabindex="127" class="tab_8_radio_setting" data-bind="ntsRadioBoxGroup: {
+							<div tabindex="127" class="tab_8_radio_setting" data-bind="event: { keydown: function(data, event) { $parent.changeTab($parent, data, event) }}, ntsRadioBoxGroup: {
 									name: '#[KMK003_169]',
 									options: listRoundingBreakTime,
 									optionsValue: 'value',
@@ -374,7 +374,7 @@
 									enable: isEnable }"></div>
 						</td>
 						<td width="160px" style="padding-left: 10px; padding-right: 10px;">
-							<div tabindex="129" class="cf" data-bind="ntsSwitchButton: {
+							<div tabindex="129" class="cf" data-bind="event: { keydown: function(data, event) { $parent.changeTab($parent, data, event) }}, ntsSwitchButton: {
 									name: '#[KMK003_171]',
 									options: listRoundingValue,
 									optionsValue: 'value',

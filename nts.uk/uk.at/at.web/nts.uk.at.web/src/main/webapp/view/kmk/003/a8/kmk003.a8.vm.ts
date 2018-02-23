@@ -21,6 +21,8 @@ module a8 {
      */
     class ScreenModel {
 
+        selectedTab: KnockoutObservable<string>;
+        
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
         
@@ -58,8 +60,9 @@ module a8 {
         /**
          * Constructor.
          */
-        constructor(screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
+        constructor(selectedTab: KnockoutObservable<string>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
             let _self = this;
+            _self.selectedTab = selectedTab;
             
             // Check exist
             if (nts.uk.util.isNullOrUndefined(model) || nts.uk.util.isNullOrUndefined(settingEnum)) {
@@ -151,6 +154,47 @@ module a8 {
             _self.workTimePublicApproTimeSetting.updateBinding(goOutSet.diffTimezoneSetting.workTimezone.officalUseCompenGoOut.approTimeRoundingSetting);
             _self.pubHolWorkTimePublicApproTimeSetting.updateBinding(goOutSet.diffTimezoneSetting.pubHolWorkTimezone.officalUseCompenGoOut.approTimeRoundingSetting);         
         }
+        
+        /**
+         * Handle when using tab button (switch child tab)
+         */
+        public changeWorkingTab(parent: any, data: any, e: any) {
+            if (e.which == 9) {
+                let tabindex = e.target.attributes.tabindex.value;
+                if (nts.uk.util.isNullOrUndefined(tabindex)) {
+                    return;    
+                } 
+                
+                if (tabindex === '117' && parent.pubHolWorkTimePersonDeductTimeSetting.timeRoundingMethod() === 0) {
+                    parent.workTimeSelectedTab('official-setting-tab'); 
+                } else if (tabindex === '119') {
+                    parent.workTimeSelectedTab('official-setting-tab'); 
+                } else {      
+                    $("[tabindex='" + (Number(tabindex) + 1).toString() + "']").focus();                                        
+                }                          
+            }
+        }
+        
+        /**
+         * Handle when using tab button
+         */
+        public changeTab(parent: any, data: any, e: any) {
+            let _self = this;
+            if (e.which == 9) {
+                let tabindex = e.target.attributes.tabindex.value;
+                if (nts.uk.util.isNullOrUndefined(tabindex)) {
+                    return;    
+                } 
+                
+                if (tabindex === '127' && parent.pubHolWorkTimePublicApproTimeSetting.timeRoundingMethod() === 0) {
+                    parent.selectedTab('tab-9'); 
+                } else if (tabindex === '129') {
+                    parent.selectedTab('tab-9'); 
+                } else {      
+                    $("[tabindex='" + (Number(tabindex) + 1).toString() + "']").focus();                                        
+                } 
+            }
+        }
     }
     
     class TimeRoundingSetting {
@@ -226,7 +270,7 @@ module a8 {
             let model = input.model;
             let settingEnum = input.enum;
 
-            let screenModel = new ScreenModel(screenMode, model, settingEnum);
+            let screenModel = new ScreenModel(input.selectedTab, screenMode, model, settingEnum);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
