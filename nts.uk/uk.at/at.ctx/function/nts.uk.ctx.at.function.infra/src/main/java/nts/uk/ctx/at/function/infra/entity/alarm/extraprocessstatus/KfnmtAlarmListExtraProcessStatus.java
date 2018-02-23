@@ -21,7 +21,7 @@ public class KfnmtAlarmListExtraProcessStatus  extends UkJpaEntity implements Se
 	@EmbeddedId
 	public KfnmtAlarmListExtraProcessStatusPK kfnmtAlarmListExtraProcessStatusPK;
 	
-	@Column(name = "EMPLPOYEE_ID")
+	@Column(name = "SID")
 	public String employeeID;
 	
 	@Column(name = "END_DATE")
