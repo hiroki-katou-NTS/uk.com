@@ -211,6 +211,7 @@ module a3 {
                             if (self.fixTableOptionOnedayFixed) {
                                 if (v) {
                                     self.fixTableOptionOnedayFixed.columns = self.columnSettingFixedAndDiffTime();
+                                    self.updateDataModel();
                                 }
                                 else {
                                     self.fixTableOptionOnedayFixed.columns = self.columnSettingFlex();
@@ -221,6 +222,7 @@ module a3 {
                             if (self.fixTableOptionOvertimeFlow) {
                                 if (v) {
                                     self.fixTableOptionOvertimeFlow.columns = self.columnSettingOvertimeFlow();
+                                    self.updateDataModel();
                                 }
                                 else {
                                     self.fixTableOptionOvertimeFlow.columns = self.columnSettingFlowSimple();
@@ -231,6 +233,7 @@ module a3 {
                             if (self.fixTableOptionOnedayDiffTime) {
                                 if (v) {
                                     self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFixedAndDiffTime();
+                                    self.updateDataModel();
                                 }
                                 else {
                                     self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFlex();
@@ -525,8 +528,8 @@ module a3 {
                 timezone: timezone,
                 otFrameNo: dataModel.otFrameNo(),
                 earlyOTUse: dataModel.earlyOTUse(),
-                legalOTframeNo: dataModel.legalOTframeNo(),
-                settlementOrder: dataModel.settlementOrder(),
+                legalOTframeNo: dataModel.legalOTframeNo?dataModel.legalOTframeNo():1,
+                settlementOrder: dataModel.settlementOrder?dataModel.settlementOrder():1,
                 isUpdateStartTime: false
             };
             return dataDTO;
