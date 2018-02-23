@@ -32,20 +32,14 @@ module nts.uk.com.view.ccg.share.ccg {
          * Get personal role future permit
          */
         export function getPersonalRoleFuturePermit(): JQueryPromise<boolean> {
-            let dfd = $.Deferred<boolean>();
-            dfd.resolve(false);
-            return dfd.promise();
-            //return nts.uk.request.ajax('com', servicePath.getPersonalRoleFuturePermit);
+            return nts.uk.request.ajax('com', servicePath.getPersonalRoleFuturePermit);
         }
 
         /**
          * Get personal role future permit
          */
         export function getEmploymentRoleFuturePermit(): JQueryPromise<boolean> {
-            let dfd = $.Deferred<boolean>();
-            dfd.resolve(false);
-            return dfd.promise();
-            //return nts.uk.request.ajax('at', servicePath.getEmploymentRoleFuturePermit);
+            return nts.uk.request.ajax('at', servicePath.getEmploymentRoleFuturePermit);
         }
 
         /**
@@ -59,10 +53,7 @@ module nts.uk.com.view.ccg.share.ccg {
          * Get Reference Range By System Type
          */
         export function getRefRangeBySysType(sysType: number): JQueryPromise<number> {
-            let dfd = $.Deferred<number>();
-            dfd.resolve(1);
-            return dfd.promise();
-            //return nts.uk.request.ajax('com', servicePath.getRefRangeBySysType + '/' + sysType);
+            return nts.uk.request.ajax('com', servicePath.getRefRangeBySysType + '/' + sysType);
         }
 
         /**

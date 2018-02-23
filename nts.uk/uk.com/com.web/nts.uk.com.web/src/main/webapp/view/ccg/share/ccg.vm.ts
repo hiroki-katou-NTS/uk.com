@@ -426,10 +426,9 @@ module nts.uk.com.view.ccg.share.ccg {
                         // set component height
                         self.setComponentHeight();
 
-                        self.applyDataSearch().always(() => {
-                            nts.uk.ui.block.clear(); // clear block UI
-                            dfd.resolve();
-                        });
+                        nts.uk.ui.block.clear(); // clear block UI
+
+                        _.defer(() => self.applyDataSearch().always(() => dfd.resolve()));
                     });
                 });
 
@@ -780,6 +779,8 @@ module nts.uk.com.view.ccg.share.ccg {
                     dfd.reject();
                 }
 
+                nts.uk.ui.block.invisible(); // block ui
+
                 // Check future reference permission
                 $.when(self.acquireBaseDate(), self.getFuturePermit())
                     .always((acquiredDate, permit) => {
@@ -787,12 +788,13 @@ module nts.uk.com.view.ccg.share.ccg {
                             // has permission or acquiredDate is not future
                             self.queryParam.baseDate = acquiredDate;
                             if (self.isAdvancedSearchTab) {
-                                self.reloadAdvanceSearchTab();
+                                self.reloadAdvanceSearchTab().done(() => nts.uk.ui.block.clear()); // clear block UI
                             }
                             dfd.resolve();
                         } else {
                             // no permission and acquiredDate is future
                             dfd.reject();
+                            nts.uk.ui.block.clear(); // clear block UI
                         }
                     }).fail(err => nts.uk.ui.dialog.alertError(err));
 
@@ -809,7 +811,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.queryParam.retireEnd = self.statusPeriodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
 
                 // reload advanced search tab.
-                nts.uk.ui.block.invisible(); // block ui
                 $.when(service.searchWorkplaceOfEmployee(self.baseDate().toDate()),
                     service.searchAllWorkType())
                     .done((selectedCodes, workTypeList: Array<WorkType>) => {
@@ -833,7 +834,6 @@ module nts.uk.com.view.ccg.share.ccg {
                         if (self.showWorkplace) {
                             $('#workplaceList').ntsTreeComponent(self.workplaces);
                         }
-                        nts.uk.ui.block.clear();
                         dfd.resolve();
 
                     });
