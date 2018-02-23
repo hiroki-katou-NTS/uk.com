@@ -33,5 +33,10 @@ public class RoleWorkPlaceAdapterImpl implements RoleWorkPlaceAdapter {
 	public List<String> getWorkPlaceIdByEmployeeReferenceRange(GeneralDate baseDate, Integer employeeReferenceRange) {
 		return this.roleExportRepo.getWorkPlaceIdByEmployeeReferenceRange(baseDate, employeeReferenceRange);
 	}
+	
+	@Override
+	public String findRoleIdBySystemType(Integer systemType) {
+		return this.roleExportRepo.findRoleIdBySystemType(systemType);
+	}
 
 }

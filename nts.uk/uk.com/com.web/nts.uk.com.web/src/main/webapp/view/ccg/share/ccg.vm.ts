@@ -1137,79 +1137,25 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public findAndReturnListEmployee(isAdvancedSearch: boolean): void {
                 let self = this;
-                self.changeListWorkplaceId().done(() => {
-                    service.findRegulationInfoEmployee(self.queryParam).done(data => {
-                        // Data not found
-                        if (nts.uk.util.isNullOrEmpty(data)) {
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_317" });
-                            return;
-                        }
+                service.findRegulationInfoEmployee(self.queryParam).done(data => {
+                    // Data not found
+                    if (nts.uk.util.isNullOrEmpty(data)) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_317" });
+                        return;
+                    }
 
-                        // Data found
-                        if (isAdvancedSearch && self.isShowEmployeeList) {
-                            self.employeeinfo.employeeInputList(self.toUnitModelList(data));
-                        } else {
-                            self.onApplyEmployee(data);
-                            // Hide component.
-                            self.hideComponent();
-                        }
-                        nts.uk.ui.block.clear(); // clear block UI
-                    });
+                    // Data found
+                    if (isAdvancedSearch && self.isShowEmployeeList) {
+                        self.employeeinfo.employeeInputList(self.toUnitModelList(data));
+                    } else {
+                        self.onApplyEmployee(data);
+                        // Hide component.
+                        self.hideComponent();
+                    }
+                    nts.uk.ui.block.clear(); // clear block UI
                 });
             }
             
-            /**
-             * Change workplace list
-             */
-            // Algorithm: 検索条件の職場一覧を参照範囲に基いて変更する
-            public changeListWorkplaceId(): JQueryPromise<void> {
-                let dfd = $.Deferred<void>();
-                let self = this;
-                let referenceRangeOfCurrentRole = self.referenceRange;
-
-                switch (self.queryParam.referenceRange) {
-                    case ConfigEnumReferenceRange.ONLY_MYSELF:
-                        dfd.reject(); // stop execution
-                        break;
-                    case ConfigEnumReferenceRange.ALL_EMPLOYEE:
-                        if (referenceRangeOfCurrentRole == ConfigEnumReferenceRange.ALL_EMPLOYEE) {
-                            dfd.resolve(); // continue execution without change
-                        } else {
-                            self.changeListWorkplaces().done(() => dfd.resolve());
-                        }
-                        break;
-                    case ConfigEnumReferenceRange.DEPARTMENT_ONLY:
-                        self.changeListWorkplaces().done(() => dfd.resolve());
-                        break;
-                    case ConfigEnumReferenceRange.DEPARTMENT_AND_CHILD:
-                        if (referenceRangeOfCurrentRole == ConfigEnumReferenceRange.DEPARTMENT_AND_CHILD) {
-                            self.changeListWorkplaces().done(() => dfd.resolve());
-                        } else {
-                            self.queryParam.referenceRange = ConfigEnumReferenceRange.DEPARTMENT_ONLY;
-                            self.changeListWorkplaces().done(() => dfd.resolve());
-                        }
-                        break;
-                    default: break;
-                }
-                return dfd.promise();
-            }
-
-            private changeListWorkplaces(): JQueryPromise<void> {
-                let dfd = $.Deferred<void>();
-                let self = this;
-                service.getListWorkplaceId(self.queryParam.baseDate, self.referenceRange).done(wkplist => {
-                    //check param filterByWorkplace
-                    if (self.queryParam.filterByWorkplace) {
-                        // merge list workplaces
-                        self.queryParam.workplaceCodes = _.intersection(self.queryParam.workplaceCodes, wkplist);
-                    } else {
-                        self.queryParam.filterByWorkplace = true;
-                        self.queryParam.workplaceCodes = wkplist;
-                    }
-                    dfd.resolve();
-                });
-                return dfd.promise();
-            }
 
             /**
              * function reload page (init tab 2)

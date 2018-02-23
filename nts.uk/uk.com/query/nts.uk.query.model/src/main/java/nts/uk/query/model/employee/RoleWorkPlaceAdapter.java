@@ -21,4 +21,12 @@ public interface RoleWorkPlaceAdapter {
 	 * @return the work place id by employee reference range
 	 */
 	List<String> getWorkPlaceIdByEmployeeReferenceRange(GeneralDate baseDate, Integer employeeReferenceRange);
+	
+	/**
+	 * Find role id by system type.
+	 *
+	 * @param systemType the system type
+	 * @return the string
+	 */
+	String findRoleIdBySystemType(Integer systemType);
 }

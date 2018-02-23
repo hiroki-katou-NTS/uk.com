@@ -32,7 +32,7 @@ public class RoleExportRepoImpl implements RoleExportRepo{
 	
 	@Inject
 	private RoleWorkplaceIDFinder roleWorkplaceIDFinder;
-
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#findByListRoleId(java.lang.String, java.util.List)
 	 */
@@ -103,4 +103,11 @@ public class RoleExportRepoImpl implements RoleExportRepo{
 		return this.roleWorkplaceIDFinder.findListWorkplaceId(param);
 	}
 	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#findRoleIdBySystemType(java.lang.Integer)
+	 */
+	@Override
+	public String findRoleIdBySystemType(Integer systemType) {
+		return this.roleWorkplaceIDFinder.findRoleIdBySystemType(systemType);
+	}
 }

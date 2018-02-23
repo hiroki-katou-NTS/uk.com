@@ -223,6 +223,7 @@ module nts.uk.com.view.ccg.share.ccg {
             }
 
             export interface EmployeeQueryParam {
+                roleId: string;
                 baseDate: string;
                 referenceRange: number;
                 filterByEmployment: boolean;

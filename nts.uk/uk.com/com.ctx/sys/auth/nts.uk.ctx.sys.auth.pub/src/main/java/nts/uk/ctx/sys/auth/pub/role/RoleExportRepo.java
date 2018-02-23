@@ -57,4 +57,13 @@ public interface RoleExportRepo {
 	// Request #159 
 	// 指定条件から参照可能な職場リストを取得する
 	List<String> getWorkPlaceIdByEmployeeReferenceRange(GeneralDate baseDate, Integer employeeReferenceRange);
+	
+	/**
+	 * Find role id by system type.
+	 *
+	 * @param systemType the system type
+	 * @return the string
+	 */
+	//Get RoleId 
+	String findRoleIdBySystemType(Integer systemType);
 }
