@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.app.find.alarm.alarmlist;
+package nts.uk.ctx.at.function.dom.alarm.alarmlist;
 
 import java.util.Comparator;
 import java.util.List;
@@ -15,6 +15,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.algorithm.aggregationprocess.AggregationProcess;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
@@ -27,11 +28,11 @@ public class CheckOutputAlarmList {
 
 	@Inject
 	private AlarmListExtraProcessStatusRepository alListExtraProcessStatusRepo;
-
+	
 	@Inject
-	private AlarmPatternSettingRepository alPatternSettingRepo;
+	private AggregationProcess aggregationProcess;
 
-	public List<AlarmExtraValueWorkRecordDto> checkOutputAlarmList(List<String> listEmployee, String checkPatternCode,
+	public List<AlarmExtraValueWkReDto> checkOutputAlarmList(List<String> listEmployee, String checkPatternCode,
 			List<OutputScreenA> listOutputScreenA) {
 		String companyID = AppContexts.user().companyId();
 		String userLogin = AppContexts.user().userId();
@@ -56,20 +57,20 @@ public class CheckOutputAlarmList {
 				userLogin, null, null);
 		this.alListExtraProcessStatusRepo.addAlListExtaProcess(alarmExtraProcessStatus);
 		// 勤務実績のアラームリストの集計処理を行う
-		List<AlarmExtraValueWorkRecordDto> listAlarmExtraValueWR = processAlarmListWorkRecord(listEmployee,
+		List<AlarmExtraValueWkReDto> listAlarmExtraValueWR = this.aggregationProcess.processAlarmListWorkRecord(listEmployee,
 				checkPatternCode, listOutputScreenA);
 		// ドメインモデル「アラームリスト抽出処理状況」を更新する
 		alarmExtraProcessStatus.setEndDateAndEndTime(GeneralDate.today(), GeneralDateTime.now().seconds());
 		this.alListExtraProcessStatusRepo.updateAlListExtaProcess(alarmExtraProcessStatus);
 
 		// 集計結果を確認する sort list
-		Comparator<AlarmExtraValueWorkRecordDto> comparator = Comparator.comparing(AlarmExtraValueWorkRecordDto::getWorkplaceID);
-		comparator = comparator.thenComparing(Comparator.comparing(AlarmExtraValueWorkRecordDto::getEmployeeCode));
-		comparator = comparator.thenComparing(Comparator.comparing(AlarmExtraValueWorkRecordDto::getAlarmValueDate));
-		comparator = comparator.thenComparing(Comparator.comparing(AlarmExtraValueWorkRecordDto::getCategory));
-		comparator = comparator.thenComparing(Comparator.comparing(AlarmExtraValueWorkRecordDto::getAlarmItem));
-		Stream<AlarmExtraValueWorkRecordDto> alarmExtraValueStream = listAlarmExtraValueWR.stream().sorted(comparator);
-		List<AlarmExtraValueWorkRecordDto> sortedAlarmExtraValue = alarmExtraValueStream.collect(Collectors.toList());
+		Comparator<AlarmExtraValueWkReDto> comparator = Comparator.comparing(AlarmExtraValueWkReDto::getWorkplaceID);
+		comparator = comparator.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getEmployeeCode));
+		comparator = comparator.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getAlarmValueDate));
+		comparator = comparator.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getCategory));
+		comparator = comparator.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getAlarmItem));
+		Stream<AlarmExtraValueWkReDto> alarmExtraValueStream = listAlarmExtraValueWR.stream().sorted(comparator);
+		List<AlarmExtraValueWkReDto> sortedAlarmExtraValue = alarmExtraValueStream.collect(Collectors.toList());
 		// 集計データが無い場合
 		if (listAlarmExtraValueWR.isEmpty()) {
 			// 情報メッセージ(#Msg_835) を表示する
@@ -79,52 +80,6 @@ public class CheckOutputAlarmList {
 		// B画面 ダイアログ「アラームリスト」を起動する
 		return sortedAlarmExtraValue;
 
-	}
-
-	/**
-	 * @param listEmployee 従業員(List)
-	 * @param checkPatternCode パターンコード
-	 * @param listOutputScreenA カテゴリ別期間(List)
-	 * @return
-	 */
-	private List<AlarmExtraValueWorkRecordDto> processAlarmListWorkRecord(List<String> listEmployee,
-			String checkPatternCode, List<OutputScreenA> listOutputScreenA) {
-		String companyID = AppContexts.user().companyId();
-		// パラメータ．パターンコードをもとにドメインモデル「アラームリストパターン設定」を取得する
-		Optional<AlarmPatternSetting> alarmPatternSetting = this.alPatternSettingRepo.findByAlarmPatternCode(companyID,
-				checkPatternCode);
-		// 従業員ごと に行う(for list employee)
-		for (String employee : listEmployee) {
-			// 次のチェック条件コードで集計する(loop list by category)
-			for (CheckCondition checkCondition : alarmPatternSetting.get().getCheckConList()) {
-				// get Period by category
-				Optional<OutputScreenA> outputScreenA = listOutputScreenA.stream()
-						.filter(c -> c.getCategory() == checkCondition.getAlarmCategory().value).findFirst();
-				for (String checkConditionCode : checkCondition.getCheckConditionList()) {
-
-					// カテゴリ：日次のチェック条件( daily)
-					if (checkCondition.getAlarmCategory().equals(AlarmCategory.DAILY)) {
-
-						// アルゴリズム「日次の集計処理」を実行する
-						DailyAggregationProcess(checkConditionCode, outputScreenA.get(), employee);
-					}
-					// カテゴリ：4週4休のチェック条件(4 week 4 day)
-					if (checkCondition.getAlarmCategory().equals(AlarmCategory.SCHEDULE_4WEEK)) {
-						// アルゴリズム「4週4休の集計処理」を実行する
-						TotalProcess4Week4Day(checkConditionCode, outputScreenA.get(), employee);
-
-					}
-					// カテゴリ：月次のチェック条件 (month
-					if (checkCondition.getAlarmCategory().equals(AlarmCategory.MONTHLY)) {
-						// tạm thời chưa làm
-					}
-				}
-
-			}
-
-		}
-
-		return null;
 	}
 	
 	@Inject
