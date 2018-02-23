@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.find.application.applicationlist;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListInitialRepository;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListOutPut;
+import nts.uk.ctx.at.request.dom.application.applicationlist.service.ApplicationFullOutput;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
@@ -66,6 +68,12 @@ public class ApplicationListFinder {
 		for (Application_New app : lstApp.getLstApp()) {
 			lstAppDto.add(ApplicationDto_New.fromDomain(app));
 		}
-		return new ApplicationListDto(displaySet, lstApp.getLstMasterInfo(),lstAppDto,lstApp.getLstAppOt(),lstApp.getLstAppGoBack());
+		List<AppStatusApproval> lstStatusApproval = new ArrayList<>();
+		List<ApplicationFullOutput> lstFil = lstApp.getLstAppFull().stream().filter(c -> c.getStatus() != null).collect(Collectors.toList());
+		for (ApplicationFullOutput app : lstFil) {
+			lstStatusApproval.add(new AppStatusApproval(app.getApplication().getAppID(), app.getStatus()));
+		}
+		return new ApplicationListDto(displaySet, lstApp.getLstMasterInfo(),lstAppDto,lstApp.getLstAppOt(),lstApp.getLstAppGoBack(),
+				lstApp.getAppStatusCount(), lstStatusApproval);
 	}
 }

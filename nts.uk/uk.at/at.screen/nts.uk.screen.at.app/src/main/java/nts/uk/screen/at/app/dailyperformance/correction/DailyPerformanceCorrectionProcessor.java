@@ -327,7 +327,7 @@ public class DailyPerformanceCorrectionProcessor {
 		// set cell data
 		long start2 = System.currentTimeMillis();
 		for (DPDataDto data : screenDto.getLstData()) {
-			data.setEmployeeCode(screenDto.getEmploymentCode());
+			data.setEmploymentCode(screenDto.getEmploymentCode());
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
 			if (resultOfOneRow != null && !isDataWorkInfoEmpty(resultOfOneRow.getItems())) {
 				lockData(sId, screenDto, dailyRecOpeFun, data);
