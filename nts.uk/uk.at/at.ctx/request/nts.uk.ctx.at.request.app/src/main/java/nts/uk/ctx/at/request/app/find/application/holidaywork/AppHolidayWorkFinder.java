@@ -195,7 +195,8 @@ public class AppHolidayWorkFinder {
 			if(approvalFunctionSetting != null){
 				// 時刻計算利用チェック
 				if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
-						getWorkTypeAndWorkTime(companyID,employeeID,appDate,appCommonSettingOutput,result);
+						getWorkTypeAndWorkTime(companyID,employeeID,appCommonSettingOutput,result);
+							siftCD = result.getWorkTime().getSiftCode();
 					}
 				}
 		}
@@ -420,7 +421,7 @@ public class AppHolidayWorkFinder {
 		applicationDto.setPrePostAtr(displayPrePost.getPrePostAtr());
 		result.setApplication(applicationDto);
 		//4.勤務種類を取得する, 5.就業時間帯を取得する, 01-17_休憩時間取得
-		getWorkTypeAndWorkTime(companyID,employeeID,appDate,appCommonSettingOutput,result);
+		getWorkTypeAndWorkTime(companyID,employeeID,appCommonSettingOutput,result);
 		//01-14_勤務時間取得
 		getWorkingHour(companyID,employeeID,appDate,appCommonSettingOutput,result,"");
 		// 01-03_休出時間を取得
@@ -513,7 +514,7 @@ public class AppHolidayWorkFinder {
 	 * @param appCommonSettingOutput
 	 * @param result
 	 */
-	private void getWorkTypeAndWorkTime(String companyID,String employeeID,String appDate,AppCommonSettingOutput appCommonSettingOutput,AppHolidayWorkDto result){
+	private void getWorkTypeAndWorkTime(String companyID,String employeeID,AppCommonSettingOutput appCommonSettingOutput,AppHolidayWorkDto result){
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
 		result.setDisplayCaculationTime(false);
 		if(approvalFunctionSetting != null){
