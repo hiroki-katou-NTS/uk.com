@@ -7,6 +7,7 @@ module nts.uk.com.view.ccg.share.ccg {
     import SelectType = kcp.share.list.SelectType;
     import UnitModel = kcp.share.list.UnitModel;
     import EmployeeSearchDto = service.model.EmployeeSearchDto;
+    import Ccg001ReturnedData = service.model.Ccg001ReturnedData;
     import GroupOption = service.model.GroupOption;
     import EmployeeRangeSelection = service.model.EmployeeRangeSelection;
     import EmployeeQueryParam = service.model.EmployeeQueryParam;
@@ -103,12 +104,8 @@ module nts.uk.com.view.ccg.share.ccg {
             retirementDatasource: KnockoutObservableArray<any>;
             selectedRetirement: KnockoutObservable<boolean>; // 退職区分
 
-            // functions
-            onSearchAllClicked: (data: EmployeeSearchDto[]) => void;
-            onSearchOnlyClicked: (data: EmployeeSearchDto) => void;
-            onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
-            onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
-            onApplyEmployee: (data: EmployeeSearchDto[]) => void;
+            // return function
+            returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
 
             // List WorkType
             listWorkType: KnockoutObservableArray<WorkType>;
@@ -529,12 +526,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.showWorktype = options.showWorktype;
                 self.isMultiple = options.isMutipleCheck;
 
-                // functions
-                self.onSearchAllClicked = options.onSearchAllClicked;
-                self.onSearchOnlyClicked = options.onSearchOnlyClicked;
-                self.onSearchOfWorkplaceClicked = options.onSearchOfWorkplaceClicked;
-                self.onSearchWorkplaceChildClicked = options.onSearchWorkplaceChildClicked;
-                self.onApplyEmployee = options.onApplyEmployee;
+                // return data function
+                self.returnDataFromCcg001 = options.returnDataFromCcg001;
             }
 
             /**
@@ -685,22 +678,16 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.isFirstTime = false;
 
                 // set advanced tab width
-                const tabContent2Width = 950;
+                const tabContent2Width = 960;
                 $('#ccg001-tab-content-2').outerWidth(tabContent2Width);
+
+                // fix component width
+                self.fixComponentWidth();
 
                 // set KCP005 rows
                 const tabContentHeight = $('#tab-1').outerHeight();
                 const kcp005HeaderHeight = 100;
                 let rows = (tabContentHeight - kcp005HeaderHeight) / 24;
-
-                // fix component width
-                const componentWidth = window.innerWidth - $('#hor-scroll-button-hide').offset().left;
-                if (componentWidth <= tabContent2Width) {
-                    const margin = 30;
-                    $('#tab-2').outerWidth(componentWidth - margin);
-                    $('#tab-2').css('overflow-x', 'auto');
-                    rows = rows - 1;
-                }
 
                 // set KCP005 options
                 self.employeeinfo = {
@@ -718,6 +705,18 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // Show KCP005
                 $('#employeeinfo').ntsListComponent(self.employeeinfo);
+            }
+
+            /**
+             * Fix component width if screen width is smaller than component
+             */
+            private fixComponentWidth(): void {
+                const componentWidth = window.innerWidth - $('#hor-scroll-button-hide').offset().left;
+                if (componentWidth <= $('#ccg001-tab-content-2').outerWidth()) {
+                    const margin = 30;
+                    $('.tab-content-2.height-maximum').outerWidth(componentWidth - margin);
+                    $('.tab-content-2.height-maximum').css('overflow-x', 'auto');
+                }
             }
 
             /**
@@ -869,7 +868,29 @@ module nts.uk.com.view.ccg.share.ccg {
             public expand(): void {
                 let self = this;
                 $('#workplaceList').fullView();
-                _.defer(() => self.isExpanded(true));
+                const KCP004Width = $('#multiple-tree-grid_scroll').outerWidth();
+                const KCPMargin = 20;
+                const expandedWidth = KCP004Width + KCPMargin;
+                const originalWidth = $('.accordion').outerWidth();
+
+                // update tab 2 width
+                $('#ccg001-tab-content-2').outerWidth($('#ccg001-tab-content-2').outerWidth() + expandedWidth - originalWidth);
+
+                // fix component width
+                self.fixComponentWidth();
+
+                // update accordion width
+                $('.accordion').width(expandedWidth);
+
+                _.defer(() => {
+                    const btnCollapseMargin = KCP004Width - $('#btnDetailWorkplace').outerWidth() - 110;
+
+                    // update flag
+                    self.isExpanded(true);
+
+                    // set button collapse margin
+                    $('#ccg-001-btn-collapse').css('margin-left', btnCollapseMargin);
+                });
             }
 
             /**
@@ -878,6 +899,19 @@ module nts.uk.com.view.ccg.share.ccg {
             public collapse(): void {
                 let self = this;
                 $('#workplaceList').scrollView();
+
+                // update accordion width
+                $('.accordion').width(380);
+
+                // update tab 2 width
+                let totalWidth = 0;
+                $('#ccg001-tab-content-2').children('div.pull-left.height-maximum').each((i, e) => totalWidth += $(e).outerWidth(true));
+                $('#ccg001-tab-content-2').outerWidth(totalWidth);
+
+                // fix component width
+                self.fixComponentWidth();
+
+                // update flag
                 _.defer(() => self.isExpanded(false));
             }
 
@@ -894,7 +928,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 service.getOfSelectedEmployee(
                     moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate(), self.getSelectedCodeEmployee())
                     .done(selectedEmps => {
-                        self.onApplyEmployee(selectedEmps);
+                        self.returnDataFromCcg001(self.combineData(selectedEmps));
                         // Hide component.
                         self.hideComponent();
                         nts.uk.ui.block.clear(); // clear block UI
@@ -935,14 +969,26 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
                 nts.uk.ui.block.invisible(); // block ui
                 service.searchEmployeeByLogin(self.baseDate().toDate()).done(data => {
-                    if (data.length > 0) {
-                        self.onSearchOnlyClicked(data[0]);
-                        self.hideComponent();
-                        nts.uk.ui.block.clear(); // clear block UI
-                    }
+                    self.returnDataFromCcg001(self.combineData(data));
+                    self.hideComponent();
+                    nts.uk.ui.block.clear(); // clear block UI
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
                 });
+            }
+
+            /**
+             * Combine return data
+             */
+            private combineData(listEmployee: Array<EmployeeSearchDto>): Ccg001ReturnedData {
+                let self = this;
+                let dto = <Ccg001ReturnedData>{};
+                dto.baseDate = self.queryParam.baseDate;
+                dto.closureId = self.showClosure ? self.selectedClosure() : undefined;
+                dto.periodStart = self.periodStartDate().toISOString();
+                dto.periodEnd = self.periodEndDate().toISOString();
+                dto.listEmployee = listEmployee;
+                return dto;
             }
 
             /**
@@ -1148,7 +1194,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     if (isAdvancedSearch && self.isShowEmployeeList) {
                         self.employeeinfo.employeeInputList(self.toUnitModelList(data));
                     } else {
-                        self.onApplyEmployee(data);
+                        self.returnDataFromCcg001(self.combineData(data));
                         // Hide component.
                         self.hideComponent();
                     }

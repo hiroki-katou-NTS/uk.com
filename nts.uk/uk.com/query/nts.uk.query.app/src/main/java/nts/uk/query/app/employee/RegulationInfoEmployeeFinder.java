@@ -178,9 +178,9 @@ public class RegulationInfoEmployeeFinder {
 		List<String> listWorkplaceFinal = new ArrayList<>();
 		
 		//get List Workplace
+		GeneralDate date = GeneralDate.localDate(queryParam.getBaseDate().toLocalDate());
 		List<String> wkplist = this.workPlaceAdapter.
-				getWorkPlaceIdByEmployeeReferenceRange(GeneralDate.localDate(queryParam.getBaseDate().toLocalDate()), 
-						queryParam.getReferenceRange());
+				getWorkPlaceIdByEmployeeReferenceRange(date, queryParam.getReferenceRange());
         
 		//check param filterByWorkplace
         if (queryParam.getFilterByWorkplace()) {
