@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.app.find.holidaysetting.company.CompanyMonthDaySetti
 /**
  * The Class CompanyMonthDaySettingWebService.
  */
-@Path("bs/employee/holidaysetting/company")
+@Path("at/shared/holidaysetting/company")
 @Produces(MediaType.APPLICATION_JSON)
 public class CompanyMonthDaySettingWebService extends WebService {
 	/** The finder. */

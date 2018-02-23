@@ -4,8 +4,8 @@ module nts.uk.at.view.kmf002.f {
          * define path to service
          */
         var path: any = {
-            save: "bs/employee/publicholidaymanagementusageunit/save",
-            findAll: "bs/employee/publicholidaymanagementusageunit/find",            
+            save: "at/shared/publicholidaymanagementusageunit/save",
+            findAll: "at/shared/publicholidaymanagementusageunit/find",            
         };
         
         export function save(): JQueryPromise<any> {

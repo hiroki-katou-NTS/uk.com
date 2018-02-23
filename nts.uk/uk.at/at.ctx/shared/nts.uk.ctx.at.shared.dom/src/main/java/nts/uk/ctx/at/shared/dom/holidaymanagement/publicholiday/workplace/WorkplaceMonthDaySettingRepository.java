@@ -32,7 +32,7 @@ public interface WorkplaceMonthDaySettingRepository {
 	 * @param year the year
 	 * @return the workplace month day setting
 	 */
-	List<String> findWkpRegisterByYear(CompanyId companyId);
+	List<String> findWkpRegisterByYear(CompanyId companyId, Year year);
 	
 	/**
 	 * Adds the.

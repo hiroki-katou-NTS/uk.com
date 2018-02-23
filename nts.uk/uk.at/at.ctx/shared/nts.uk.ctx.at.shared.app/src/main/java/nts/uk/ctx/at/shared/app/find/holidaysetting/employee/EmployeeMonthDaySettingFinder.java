@@ -55,10 +55,10 @@ public class EmployeeMonthDaySettingFinder {
 	 *
 	 * @return the list
 	 */
-	public List<String> findAllEmployeeRegister() {
+	public List<String> findAllEmployeeRegister(int year) {
 		String companyId = AppContexts.user().companyId();
 		
-		List<String> lstEmployee = this.repository.findAllEmployeeRegister(new CompanyId(companyId));
+		List<String> lstEmployee = this.repository.findAllEmployeeRegister(new CompanyId(companyId), new Year(year));
 		
 		if (lstEmployee != null && !lstEmployee.isEmpty()) {
 			return lstEmployee;

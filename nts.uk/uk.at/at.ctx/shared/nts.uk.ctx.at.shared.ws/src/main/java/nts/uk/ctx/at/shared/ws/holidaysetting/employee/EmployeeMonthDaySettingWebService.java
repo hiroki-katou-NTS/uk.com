@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.app.find.holidaysetting.employee.EmployeeMonthDaySet
 /**
  * The Class EmployeeMonthDaySettingWebService.
  */
-@Path("bs/employee/holidaysetting/employee")
+@Path("at/shared/holidaysetting/employee")
 @Produces(MediaType.APPLICATION_JSON)
 public class EmployeeMonthDaySettingWebService extends WebService {
 	/** The finder. */
@@ -58,10 +58,10 @@ public class EmployeeMonthDaySettingWebService extends WebService {
 	 *
 	 * @return the list
 	 */
-	@Path("findEmployeeMonthDaySetting/findAllEmployeeRegister")
+	@Path("findEmployeeMonthDaySetting/findAllEmployeeRegister/{year}")
 	@POST
-	public List<String> findAllEmployeeRegister(){
-		return this.finder.findAllEmployeeRegister();
+	public List<String> findAllEmployeeRegister(@PathParam("year") int year){
+		return this.finder.findAllEmployeeRegister(year);
 	}
 	
 	/**

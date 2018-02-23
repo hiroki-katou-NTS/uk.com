@@ -4,11 +4,11 @@ module nts.uk.at.view.kmf002.d {
          * define path to service
          */
         var path: any = {
-                save: "bs/employee/holidaysetting/employment/save",
-                find: "bs/employee/holidaysetting/employment/findEmploymentMonthDaySetting",
-                remove: "bs/employee/holidaysetting/employment/remove",
+                save: "at/shared/holidaysetting/employment/save",
+                find: "at/shared/holidaysetting/employment/findEmploymentMonthDaySetting",
+                remove: "at/shared/holidaysetting/employment/remove",
                 findFirstMonth: "basic/company/beginningmonth/find",
-                findAllEmpRegister: "bs/employee/holidaysetting/employment/findEmploymentMonthDaySetting/findAllEmpRegister"
+                findAllEmpRegister: "at/shared/holidaysetting/employment/findEmploymentMonthDaySetting/findAllEmpRegister"
             };
         
         /**
@@ -25,11 +25,12 @@ module nts.uk.at.view.kmf002.d {
         }
         
         export function find(year: string, employmentCode: string): JQueryPromise<any> {
+            employmentCode = _.isNull(employmentCode) || _.isEmpty(employmentCode) ? null : employmentCode;
             return nts.uk.request.ajax("at", path.find + "/" + year + "/" + employmentCode);
         }
         
-        export function findAllEmpRegister(): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", path.findAllEmpRegister);
+        export function findAllEmpRegister(year: string): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", path.findAllEmpRegister + "/" + year);
         }
         
         export function remove(year: string, employmentCode: string): JQueryPromise<any> {
