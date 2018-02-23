@@ -25,6 +25,7 @@ import nts.uk.ctx.at.request.app.command.setting.company.request.stamp.StampRequ
 import nts.uk.ctx.at.request.app.command.setting.company.vacationapplicationsetting.HdAppSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.request.ApplicationDeadlineCommand;
 import nts.uk.ctx.at.request.app.command.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingCommand;
+import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.JobtitleSearchSetCommand;
 
 @Data
 @AllArgsConstructor
@@ -52,4 +53,6 @@ public class Kaf022AddCommand {
 	private LateEarlyRequestCommand lateEarly;
 	// a7, 8
 	private AppTypeBfCommand appBf;
+	// A15_4
+	private List<JobtitleSearchSetCommand> jobSearch;
 }
