@@ -7,7 +7,7 @@ import javax.enterprise.inject.spi.CDI;
 
 import lombok.extern.slf4j.Slf4j;
 import nts.arc.layer.ws.exception.ServerError;
-import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
+import nts.uk.shr.com.system.config.InitializeWhenDeploy;
 
 @ApplicationScoped
 @Slf4j
@@ -19,7 +19,7 @@ public class ApplicationInitializer {
 		
 		ServerError.EXPOSES_DEFAILS_OF_ERROR = true;
 		
-		CDI.current().select(I18NResourcesForUK.class).get().initialize();
+		CDI.current().select(InitializeWhenDeploy.class).forEach(obj -> obj.initialize());
 
 		log.info("ApplicationInitializer END");
 	}

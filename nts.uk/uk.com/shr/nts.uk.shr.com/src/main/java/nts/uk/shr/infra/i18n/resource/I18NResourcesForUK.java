@@ -16,12 +16,13 @@ import nts.uk.shr.com.constants.DefaultSettingKeys;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.LanguageConsts;
 import nts.uk.shr.com.i18n.resource.I18NResourceCustomizer;
+import nts.uk.shr.com.system.config.InitializeWhenDeploy;
 import nts.uk.shr.infra.i18n.loading.LanguageMasterRepository;
 import nts.uk.shr.infra.i18n.resource.container.I18NResourcesRepository;
 
 @ApplicationScoped
 @Slf4j
-public class I18NResourcesForUK implements I18NResources, I18NResourceCustomizer {
+public class I18NResourcesForUK implements I18NResources, I18NResourceCustomizer, InitializeWhenDeploy {
 
 	@Inject
 	private I18NResourcesRepository resourcesRepository;
@@ -36,6 +37,7 @@ public class I18NResourcesForUK implements I18NResources, I18NResourceCustomizer
 	private I18NResourceContentProcessor contentProcessor = new I18NResourceContentProcessor(
 			id -> this.localize(id).orElse(id));
 	
+	@Override
 	public void initialize() {
 		log.info("[INIT START] nts.uk.shr.infra.i18n.resource.I18NResourcesForUK");
 		
