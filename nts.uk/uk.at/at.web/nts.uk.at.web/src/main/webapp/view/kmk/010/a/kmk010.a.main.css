@@ -63,6 +63,7 @@
 
 .overtimeSettingDetail {
 	margin-top: 20px;
+	width: 100%;
 }
 
 .overtimeDetail {
@@ -209,4 +210,9 @@
 }
 #functions-area {
 	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-box;
+	display: box;}
+.fixed-flex-layout-left {
+	width: 100%;
 }
