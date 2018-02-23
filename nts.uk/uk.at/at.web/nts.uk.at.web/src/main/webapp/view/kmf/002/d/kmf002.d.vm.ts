@@ -95,7 +95,7 @@ module nts.uk.at.view.kmf002.d {
                     }
                 });
                 
-//                _self.selectedCode.valueHasMutated();
+                _self.selectedCode.valueHasMutated();
             }
 
             /**

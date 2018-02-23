@@ -148,21 +148,23 @@ module nts.uk.at.view.kmf002.c {
 //                _self.commonTableMonthDaySet.infoSelect3(_self.employeeList()[0].name);
                 
                 _self.selectedCode.subscribe(function(newValue: any) {
-                    if (_.isNull(newValue)) {
-                        _self.enableSave(false);
-                    } else {
-                        _self.enableSave(true);
-                    }
+//                    if (_.isNull(newValue)) {
+//                        _self.enableSave(false);
+//                    } else {
+//                        _self.enableSave(true);
+//                    }
                      _.forEach(_self.employeeList(), function(value: any) {
                         if (value.code == newValue) {
                             _self.commonTableMonthDaySet().infoSelect2(newValue);
                             _self.commonTableMonthDaySet().infoSelect3(value.name);
                         }
                     });   
-                    if (_.isUndefined(_self.selectedCode()) || _.isEmpty(_self.selectedCode())) {
+                    if (_.isUndefined(_self.selectedCode()) || _.isEmpty(_self.selectedCode()) || _.isNull(newValue)) {
                         _self.enableDelete(false);
+                        _self.enableSave(false);
                     } else {
                         _self.enableDelete(true);
+                        _self.enableSave(true);
                     }
                     
 //                    if (_self.selectedCode() == newValue) {
