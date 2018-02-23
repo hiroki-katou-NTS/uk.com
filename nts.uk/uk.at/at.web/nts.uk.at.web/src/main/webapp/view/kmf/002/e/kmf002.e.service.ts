@@ -21,6 +21,9 @@ module nts.uk.at.view.kmf002.e {
         
         export function save(year: string, data: any): JQueryPromise<any> {
             let sysResourceDto: model.SystemResourceDto= new model.SystemResourceDto(year, []);
+//            data.sort(function (left, right) { 
+//                return left.month == right.month ? 0 : (left.month < right.month ? -1 : 1) 
+//            })
             sysResourceDto.toDto(data);
             let command: any = {};
             command.year = year;
