@@ -9,13 +9,6 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 public interface VerticalTotalOfMonthlyRepository {
 
 	/**
-	 * 追加
-	 * @param attendanceTimeOfMonthlyKey キー値：月別実績の勤怠時間
-	 * @param verticalTotalOfMonthly 月別実績の縦計
-	 */
-	void insert(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey, VerticalTotalOfMonthly verticalTotalOfMonthly);
-
-	/**
 	 * 更新
 	 * @param attendanceTimeOfMonthlyKey キー値：月別実績の勤怠時間
 	 * @param verticalTotalOfMonthly 月別実績の縦計

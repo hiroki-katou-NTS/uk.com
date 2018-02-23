@@ -18,18 +18,18 @@ module nts.uk.at.view.kmf002.b {
             command.year = year;
             command.publicHolidayMonthSettings = workplaceMonthDaySetting.publicHolidayMonthSettingDto;
             command.workplaceId = workplaceId;
-            return nts.uk.request.ajax("com", path.save, command);
+            return nts.uk.request.ajax("at", path.save, command);
         }
         
         export function find(year: string, workplaceId: string): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.find + "/" + year + "/" + workplaceId);
+            return nts.uk.request.ajax("at", path.find + "/" + year + "/" + workplaceId);
         }
         
         export function remove(year: string, workplaceId: string): JQueryPromise<any> {
             let command: any = {};
             command.year = year;
             command.workplaceId = workplaceId;
-            return nts.uk.request.ajax("com", path.remove, command);
+            return nts.uk.request.ajax("at", path.remove, command);
         }
         
         export function findFirstMonth(): JQueryPromise<any>{
@@ -37,7 +37,7 @@ module nts.uk.at.view.kmf002.b {
         }
         
         export function findAll(): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.findAll);
+            return nts.uk.request.ajax("at", path.findAll);
         }
         
     }

@@ -138,7 +138,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 														representerName = personAdapter.getPersonInfo(approvalRepresenterOutput.getListAgent().get(0)).getEmployeeName();
 													}
 												}
-												return new ApproverStateExport(approverName, representerName);
+												return new ApproverStateExport(z.getApproverID(), approverName, representerName);
 											}).collect(Collectors.toList()), 
 											Strings.isBlank(y.getApproverID()) ? "" : personAdapter.getPersonInfo(y.getApproverID()).getEmployeeName(), 
 											Strings.isBlank(y.getRepresenterID()) ? "" : personAdapter.getPersonInfo(y.getRepresenterID()).getEmployeeName(),

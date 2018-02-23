@@ -14,7 +14,7 @@ module nts.uk.at.view.kmf002.e {
          * 
          */
         export function find(year: string): JQueryPromise<any>{
-            return nts.uk.request.ajax("com",path.find + "/" + year);
+            return nts.uk.request.ajax("at",path.find + "/" + year);
         }
 
         
@@ -25,7 +25,7 @@ module nts.uk.at.view.kmf002.e {
             let command: any = {};
             command.year = year;
             command.publicHolidayMonthSettings = sysResourceDto.publicHolidayMonthSettings
-            return nts.uk.request.ajax("com", path.save, command);
+            return nts.uk.request.ajax("at", path.save, command);
         }
         
         export function findFirstMonth(): JQueryPromise<any>{
@@ -35,7 +35,7 @@ module nts.uk.at.view.kmf002.e {
         export function remove(year: string): JQueryPromise<any> {
             let command: any = {};
             command.year = year;
-            return nts.uk.request.ajax("com", path.remove, command);
+            return nts.uk.request.ajax("at", path.remove, command);
         }
     }
     

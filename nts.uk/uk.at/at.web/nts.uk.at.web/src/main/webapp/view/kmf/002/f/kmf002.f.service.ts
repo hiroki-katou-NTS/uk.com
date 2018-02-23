@@ -9,11 +9,11 @@ module nts.uk.at.view.kmf002.f {
         };
         
         export function save(): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.save);
+            return nts.uk.request.ajax("at", path.save);
         }
         
         export function findAll(): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.findAll);
+            return nts.uk.request.ajax("at", path.findAll);
         }  
     }
 }

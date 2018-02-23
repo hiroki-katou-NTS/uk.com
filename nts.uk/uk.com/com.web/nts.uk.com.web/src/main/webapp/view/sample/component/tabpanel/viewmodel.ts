@@ -10,6 +10,8 @@ module nts.uk.ui.tabpanel.viewmodel {
 		columns: KnockoutObservableArray<NtsGridListColumn>;
 		currentCode: KnockoutObservable<any>;
 		currentCodeList: KnockoutObservableArray<any>;
+        
+        commonAmount: KnockoutObservable<number>;
 
 		constructor() {
 			var self = this;
@@ -55,6 +57,8 @@ module nts.uk.ui.tabpanel.viewmodel {
 			    	 { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: false }
 			     ]
 			 });
+            
+            self.commonAmount = ko.observable(10);
 		}
 	}
 	

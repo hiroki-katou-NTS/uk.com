@@ -6,6 +6,7 @@ var nts;
         (function (KeyCodes) {
             KeyCodes.Tab = 9;
             KeyCodes.Enter = 13;
+            KeyCodes.Ctrl = 17;
         })(KeyCodes = uk.KeyCodes || (uk.KeyCodes = {}));
         var util;
         (function (util) {
@@ -3525,6 +3526,8 @@ var nts;
         (function (ui) {
             var menu;
             (function (menu) {
+                var DATA_TITLEITEM_PGID = "pgid";
+                var DATA_TITLEITEM_PGNAME = "pgname";
                 /** Showing item */
                 var showingItem;
                 /**
@@ -3821,7 +3824,12 @@ var nts;
                                         height += 30;
                                         return;
                                     }
-                                    var $item = $("<li class='title-item'/>").data("path", item.url).text(item.displayName || item.defaultName);
+                                    var nameToShow = item.displayName || item.defaultName;
+                                    var $item = $("<li class='title-item'/>")
+                                        .data("path", item.url)
+                                        .data(DATA_TITLEITEM_PGID, item.programId + item.screenId)
+                                        .data(DATA_TITLEITEM_PGNAME, nameToShow)
+                                        .text(nameToShow);
                                     $item.on(constants.CLICK, function () {
                                         var path = $(this).data("path");
                                         if (path && path.indexOf("http") !== 0) {
@@ -3841,6 +3849,26 @@ var nts;
                     }
                     titleMenu.createTitles = createTitles;
                 })(titleMenu || (titleMenu = {}));
+                $(function () {
+                    var showsName = true;
+                    $(window)
+                        .onkey("down", uk.KeyCodes.Ctrl, function () {
+                        if (!showsName || $(".category-name.opening").length === 0)
+                            return;
+                        $(".title-item").each(function () {
+                            $(this).text($(this).data(DATA_TITLEITEM_PGID));
+                        });
+                        showsName = false;
+                    })
+                        .onkey("up", uk.KeyCodes.Ctrl, function () {
+                        if (showsName)
+                            return;
+                        $(".title-item").each(function () {
+                            $(this).text($(this).data(DATA_TITLEITEM_PGNAME));
+                        });
+                        showsName = true;
+                    });
+                });
                 var constants;
                 (function (constants) {
                     constants.APP_ID = "com";
@@ -4517,7 +4545,8 @@ var nts;
                                     if (error.$control.length > 0) {
                                         var controlNameId = error.$control.eq(0).attr("data-name");
                                         if (controlNameId) {
-                                            error.messageText = nts.uk.resource.getMessage(error.message.messageId, nts.uk.resource.getText(controlNameId), error.message.messageParams);
+                                            var params = _.concat(nts.uk.resource.getText(controlNameId), error.message.messageParams);
+                                            error.messageText = nts.uk.resource.getMessage(error.message.messageId, params);
                                         }
                                         else {
                                             error.messageText = nts.uk.resource.getMessage(error.message.messageId, error.message.messageParams);
@@ -4725,7 +4754,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_1) {
+        (function (ui) {
             var toBeResource;
             (function (toBeResource) {
                 toBeResource.yes = "はい";
@@ -4740,7 +4769,159 @@ var nts;
                 toBeResource.errorCode = "エラーコード";
                 toBeResource.errorList = "エラー一覧";
                 toBeResource.plzWait = "お待ちください";
-            })(toBeResource = ui_1.toBeResource || (ui_1.toBeResource = {}));
+            })(toBeResource = ui.toBeResource || (ui.toBeResource = {}));
+            function localize(textId) {
+                return textId;
+            }
+            ui.localize = localize;
+            ui.confirmSave = function (dirtyChecker) {
+                var frame = ui.windows.getSelf();
+                if (frame.$dialog === undefined || frame.$dialog === null) {
+                    confirmSaveWindow(dirtyChecker);
+                }
+                else {
+                    confirmSaveDialog(dirtyChecker, frame.$dialog);
+                }
+            };
+            function confirmSaveWindow(dirtyChecker) {
+                var beforeunloadHandler = function (e) {
+                    if (dirtyChecker.isDirty()) {
+                        return "ban co muon save hok?";
+                    }
+                };
+                confirmSaveEnable(beforeunloadHandler);
+            }
+            function confirmSaveDialog(dirtyChecker, dialog) {
+                //dialog* any;
+                var beforeunloadHandler = function (e) {
+                    if (dirtyChecker.isDirty()) {
+                        e.preventDefault();
+                        nts.uk.ui.dialog.confirm("Are you sure you want to leave the page?")
+                            .ifYes(function () {
+                            dirtyChecker.reset();
+                            dialog.dialog("close");
+                        }).ifNo(function () {
+                        });
+                    }
+                };
+                confirmSaveEnableDialog(beforeunloadHandler, dialog);
+            }
+            function confirmSaveEnableDialog(beforeunloadHandler, dialog) {
+                dialog.on("dialogbeforeclose", beforeunloadHandler);
+            }
+            ui.confirmSaveEnableDialog = confirmSaveEnableDialog;
+            ;
+            function confirmSaveDisableDialog(dialog) {
+                dialog.on("dialogbeforeclose", function () { });
+            }
+            ui.confirmSaveDisableDialog = confirmSaveDisableDialog;
+            ;
+            function confirmSaveEnable(beforeunloadHandler) {
+                $(window).bind('beforeunload', beforeunloadHandler);
+            }
+            ui.confirmSaveEnable = confirmSaveEnable;
+            ;
+            function confirmSaveDisable() {
+                $(window).unbind('beforeunload');
+            }
+            ui.confirmSaveDisable = confirmSaveDisable;
+            ;
+            /**
+             * Block UI Module
+             * Using for blocking UI when action in progress
+             */
+            var block;
+            (function (block) {
+                function invisible() {
+                    var rect = calcRect();
+                    $.blockUI({
+                        message: null,
+                        overlayCSS: { opacity: 0 },
+                        css: {
+                            width: rect.width,
+                            left: rect.left
+                        }
+                    });
+                }
+                block.invisible = invisible;
+                function grayout() {
+                    var rect = calcRect();
+                    $.blockUI({
+                        message: '<div class="block-ui-message">' + toBeResource.plzWait + '</div>',
+                        fadeIn: 200,
+                        css: {
+                            width: rect.width,
+                            left: rect.left
+                        }
+                    });
+                }
+                block.grayout = grayout;
+                function clear() {
+                    $.unblockUI({
+                        fadeOut: 200
+                    });
+                }
+                block.clear = clear;
+                function calcRect() {
+                    var width = 220;
+                    var left = ($(window).width() - width) / 2;
+                    return {
+                        width: width,
+                        left: left
+                    };
+                }
+            })(block = ui.block || (ui.block = {}));
+            var DirtyChecker = (function () {
+                function DirtyChecker(targetViewModelObservable) {
+                    this.targetViewModel = targetViewModelObservable;
+                    this.initialState = this.getCurrentState();
+                }
+                DirtyChecker.prototype.getCurrentState = function () {
+                    return ko.toJSON(this.targetViewModel());
+                };
+                DirtyChecker.prototype.reset = function () {
+                    this.initialState = this.getCurrentState();
+                };
+                DirtyChecker.prototype.isDirty = function () {
+                    return this.initialState !== this.getCurrentState();
+                };
+                return DirtyChecker;
+            }());
+            ui.DirtyChecker = DirtyChecker;
+            var smallExtensions;
+            (function (smallExtensions) {
+                $(function () {
+                    $(document).on('mouseenter', '.limited-label', function (e) {
+                        var $label = $(e.target);
+                        // Check if contents is overflow
+                        if ($label.outerWidth() < $label[0].scrollWidth) {
+                            var $view_1 = $('<div />').addClass('limited-label-view')
+                                .text($label.text())
+                                .appendTo('body')
+                                .position({
+                                my: 'left top',
+                                at: 'left bottom',
+                                of: $label,
+                                collision: 'flip'
+                            });
+                            $label.bind('mouseleave.limitedlabel', function () {
+                                $label.unbind('mouseleave.limitedlabel');
+                                $view_1.remove();
+                            });
+                        }
+                    });
+                });
+            })(smallExtensions || (smallExtensions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
             var windows;
             (function (windows) {
                 var MAIN_WINDOW_ID = 'MAIN_WINDOW';
@@ -5067,11 +5248,18 @@ var nts;
                     }
                     sub.createDialog = createDialog;
                 })(sub = windows.sub || (windows.sub = {}));
-            })(windows = ui_1.windows || (ui_1.windows = {}));
-            function localize(textId) {
-                return textId;
-            }
-            ui_1.localize = localize;
+            })(windows = ui.windows || (ui.windows = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui_1) {
+            var PS = window.parent;
             /**
              * Dialog Module
              * Using for display info or confirm dialog
@@ -5079,7 +5267,7 @@ var nts;
             var dialog;
             (function (dialog) {
                 function getMaxZIndex() {
-                    var overlayElements = parent.$(".ui-widget-overlay");
+                    var overlayElements = PS.$(".ui-widget-overlay");
                     var max = 12000;
                     if (overlayElements.length > 0) {
                         var zIndexs = _.map(overlayElements, function (element) { return parseInt($(element).css("z-index")); });
@@ -5109,7 +5297,7 @@ var nts;
                         text = message;
                     }
                     text = text.replace(/\n/g, '<br />');
-                    var $this = window.parent.$('<div/>').addClass('notice-dialog')
+                    var $this = PS.$('<div/>').addClass('notice-dialog')
                         .append($('<div/>').addClass('text').append(text))
                         .append($control)
                         .appendTo('body')
@@ -5125,8 +5313,17 @@ var nts;
                         open: function () {
                             $(this).closest('.ui-dialog').css('z-index', getMaxZIndex() + 2);
                             $('.ui-widget-overlay').last().css('z-index', getMaxZIndex() + 1);
-                            $(this).parent().find('.ui-dialog-buttonset > button:first-child').focus();
-                            $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
+                            var $buttons = $(this).parent().find('.ui-dialog-buttonset > button')
+                                .removeClass('ui-button ui-corner-all ui-widget');
+                            if ($buttons.filter(".proceed").length === 1) {
+                                $buttons.filter(".proceed").focus();
+                            }
+                            else if ($buttons.filter(".danger").length === 1) {
+                                $buttons.not(".danger").focus();
+                            }
+                            else {
+                                $buttons.eq(0).focus();
+                            }
                             //add header icon if it has
                             if (header && header.icon) {
                                 var $headerContainer = $("<div'></div>").addClass("ui-dialog-titlebar-container");
@@ -5136,8 +5333,8 @@ var nts;
                             }
                         },
                         close: function (event) {
-                            window.parent.$(this).dialog('destroy');
-                            window.parent.$(event.target).remove();
+                            PS.$(this).dialog('destroy');
+                            PS.$(event.target).remove();
                         }
                     });
                     $this.dialogPositionControl();
@@ -5149,48 +5346,15 @@ var nts;
                 }
                 function version() {
                     var versinText = "AP version: ...";
-                    var $this = window.parent.$('<div/>').addClass('version-dialog')
+                    var $this = PS.$('<div/>').addClass('version-dialog')
                         .append($('<div/>').addClass('text').append(versinText))
                         .appendTo('body')
                         .dialog({});
                 }
                 dialog.version = version;
-                /**
-                 * Show information dialog.
-                 *
-                 * @param {String}
-                 *			text information text
-                 * @returns handler
-                 */
-                function info(text) {
+                function simpleDialog(message, option) {
                     var then = $.noop;
-                    var $dialog = window.parent.$('<div/>').hide();
-                    $(function () {
-                        $dialog.appendTo('body').dialog({
-                            autoOpen: false
-                        });
-                    });
-                    setTimeout(function () {
-                        var $this = createNoticeDialog(text, [{
-                                text: toBeResource.close,
-                                "class": "large",
-                                click: function () {
-                                    $this.dialog('close');
-                                    then();
-                                }
-                            }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/infor.png", text: toBeResource.info });
-                    }, 0);
-                    return {
-                        then: function (callback) {
-                            then = callback;
-                        }
-                    };
-                }
-                dialog.info = info;
-                ;
-                function alertError(message) {
-                    var then = $.noop;
-                    var $dialog = window.parent.$('<div/>').hide();
+                    var $dialog = PS.$('<div/>').hide();
                     $(function () {
                         $dialog.appendTo('body').dialog({
                             autoOpen: false
@@ -5198,13 +5362,13 @@ var nts;
                     });
                     setTimeout(function () {
                         var $this = createNoticeDialog(message, [{
-                                text: toBeResource.close,
+                                text: ui_1.toBeResource.close,
                                 "class": "large",
                                 click: function () {
                                     $this.dialog('close');
                                     then();
                                 }
-                            }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/error.png", text: toBeResource.error });
+                            }], { text: option.title });
                     }, 0);
                     return {
                         then: function (callback) {
@@ -5212,54 +5376,37 @@ var nts;
                         }
                     };
                 }
+                function info(message) {
+                    return simpleDialog(message, { title: ui_1.toBeResource.info });
+                }
+                dialog.info = info;
+                function caution(message) {
+                    return simpleDialog(message, { title: ui_1.toBeResource.warn });
+                }
+                dialog.caution = caution;
+                function error(message) {
+                    return simpleDialog(message, { title: ui_1.toBeResource.error });
+                }
+                dialog.error = error;
+                function alertError(message) {
+                    return error(message);
+                }
                 dialog.alertError = alertError;
-                /**
-                 * Show alert dialog.
-                 *
-                 * @param {String}
-                 *			text information text
-                 * @returns handler
-                 */
-                function alert(text) {
-                    var then = $.noop;
-                    var $dialog = parent.$('<div/>').hide();
-                    $(function () {
-                        $dialog.appendTo('body').dialog({
-                            autoOpen: false
-                        });
-                    });
-                    setTimeout(function () {
-                        var $this = createNoticeDialog(text, [{
-                                text: toBeResource.close,
-                                "class": "large",
-                                click: function () {
-                                    $this.dialog('close');
-                                    then();
-                                }
-                            }], { text: nts.uk.resource.getText(toBeResource.warn) });
-                    }, 0);
-                    return {
-                        then: function (callback) {
-                            then = callback;
-                        }
-                    };
+                function alert(message) {
+                    return error(message);
                 }
                 dialog.alert = alert;
                 ;
-                /**
-                 * Show confirm dialog.
-                 *
-                 * @param {String}
-                 *			text information text
-                 * @returns handler
-                 */
-                function confirm(text) {
+                function confirm(message, option) {
                     var handleYes = $.noop;
                     var handleNo = $.noop;
                     var handleCancel = $.noop;
                     var handleThen = $.noop;
                     var hasNoButton = true;
                     var hasCancelButton = false;
+                    var option = option || {
+                        buttonStyles: { yes: "danger" }
+                    };
                     var handlers = {
                         ifYes: function (handler) {
                             handleYes = handler;
@@ -5285,8 +5432,8 @@ var nts;
                         var buttons = [];
                         // yes button
                         buttons.push({
-                            text: toBeResource.yes,
-                            "class": "yes large danger",
+                            text: ui_1.toBeResource.yes,
+                            "class": "yes large " + (option.buttonStyles.yes || ""),
                             click: function () {
                                 $this.dialog('close');
                                 handleYes();
@@ -5296,8 +5443,8 @@ var nts;
                         // no button
                         if (hasNoButton) {
                             buttons.push({
-                                text: toBeResource.no,
-                                "class": "no large",
+                                text: ui_1.toBeResource.no,
+                                "class": "no large " + (option.buttonStyles.no || ""),
                                 click: function () {
                                     $this.dialog('close');
                                     handleNo();
@@ -5308,7 +5455,7 @@ var nts;
                         // cancel button
                         if (hasCancelButton) {
                             buttons.push({
-                                text: toBeResource.cancel,
+                                text: ui_1.toBeResource.cancel,
                                 "class": "cancel large",
                                 click: function () {
                                     $this.dialog('close');
@@ -5317,12 +5464,20 @@ var nts;
                                 }
                             });
                         }
-                        var $this = createNoticeDialog(text, buttons);
+                        var $this = createNoticeDialog(message, buttons);
                     });
                     return handlers;
                 }
                 dialog.confirm = confirm;
                 ;
+                function confirmDanger(message) {
+                    return confirm(message);
+                }
+                dialog.confirmDanger = confirmDanger;
+                function confirmProceed(message) {
+                    return confirm(message, { buttonStyles: { yes: "proceed" } });
+                }
+                dialog.confirmProceed = confirmProceed;
                 function addError(errorBody, error, idx) {
                     var row = $("<tr/>");
                     row.append("<td style='display: none;'>" + idx + "/td><td>" + error["message"] + "</td><td>" + error["messageId"] + "</td>");
@@ -5375,8 +5530,8 @@ var nts;
                     var then = $.noop;
                     var id = uk.util.randomId();
                     var container = $("<div id='" + id + "' class='bundled-errors-alert'/>"), functionArea = $("<div id='functions-area-bottom'/>"), errorBoard = $("<div id='error-board'>    <table> <thead> <tr>    <th style='width: auto;'>"
-                        + toBeResource.errorContent + "</th><th style='display: none;'/>    <th style='width: 150px;'>"
-                        + toBeResource.errorCode + "</th>   </tr>   </thead>    <tbody/>    </table> </div>"), closeButton = $("<button class='ntsButton ntsClose large'/>");
+                        + ui_1.toBeResource.errorContent + "</th><th style='display: none;'/>    <th style='width: 150px;'>"
+                        + ui_1.toBeResource.errorCode + "</th>   </tr>   </thead>    <tbody/>    </table> </div>"), closeButton = $("<button class='ntsButton ntsClose large'/>");
                     var errorBody = errorBoard.find("tbody");
                     if ($.isArray(errors["errors"])) {
                         _.forEach(errors["errors"], function (error, idx) {
@@ -5392,7 +5547,7 @@ var nts;
                     container.appendTo(getRoot());
                     setTimeout(function () {
                         container.dialog({
-                            title: toBeResource.errorList,
+                            title: ui_1.toBeResource.errorList,
                             dialogClass: "no-close-btn",
                             modal: false,
                             resizable: false,
@@ -5402,7 +5557,7 @@ var nts;
                             open: function () {
                                 errorBoard.css({ "overflow": "auto", "max-height": "300px", "margin-bottom": "65px" });
                                 functionArea.css({ "left": "0px" });
-                                closeButton.text(toBeResource.close).click(function (evt) {
+                                closeButton.text(ui_1.toBeResource.close).click(function (evt) {
                                     container.dialog("destroy");
                                     container.remove();
                                     then();
@@ -5422,120 +5577,16 @@ var nts;
                 dialog.bundledErrors = bundledErrors;
                 ;
             })(dialog = ui_1.dialog || (ui_1.dialog = {}));
-            ui_1.confirmSave = function (dirtyChecker) {
-                var frame = windows.getSelf();
-                if (frame.$dialog === undefined || frame.$dialog === null) {
-                    confirmSaveWindow(dirtyChecker);
-                }
-                else {
-                    confirmSaveDialog(dirtyChecker, frame.$dialog);
-                }
-            };
-            function confirmSaveWindow(dirtyChecker) {
-                var beforeunloadHandler = function (e) {
-                    if (dirtyChecker.isDirty()) {
-                        return "ban co muon save hok?";
-                    }
-                };
-                confirmSaveEnable(beforeunloadHandler);
-            }
-            function confirmSaveDialog(dirtyChecker, dialog) {
-                //dialog* any;
-                var beforeunloadHandler = function (e) {
-                    if (dirtyChecker.isDirty()) {
-                        e.preventDefault();
-                        nts.uk.ui.dialog.confirm("Are you sure you want to leave the page?")
-                            .ifYes(function () {
-                            dirtyChecker.reset();
-                            dialog.dialog("close");
-                        }).ifNo(function () {
-                        });
-                    }
-                };
-                confirmSaveEnableDialog(beforeunloadHandler, dialog);
-            }
-            function confirmSaveEnableDialog(beforeunloadHandler, dialog) {
-                dialog.on("dialogbeforeclose", beforeunloadHandler);
-            }
-            ui_1.confirmSaveEnableDialog = confirmSaveEnableDialog;
-            ;
-            function confirmSaveDisableDialog(dialog) {
-                dialog.on("dialogbeforeclose", function () { });
-            }
-            ui_1.confirmSaveDisableDialog = confirmSaveDisableDialog;
-            ;
-            function confirmSaveEnable(beforeunloadHandler) {
-                $(window).bind('beforeunload', beforeunloadHandler);
-            }
-            ui_1.confirmSaveEnable = confirmSaveEnable;
-            ;
-            function confirmSaveDisable() {
-                $(window).unbind('beforeunload');
-            }
-            ui_1.confirmSaveDisable = confirmSaveDisable;
-            ;
-            /**
-             * Block UI Module
-             * Using for blocking UI when action in progress
-             */
-            var block;
-            (function (block) {
-                function invisible() {
-                    var rect = calcRect();
-                    $.blockUI({
-                        message: null,
-                        overlayCSS: { opacity: 0 },
-                        css: {
-                            width: rect.width,
-                            left: rect.left
-                        }
-                    });
-                }
-                block.invisible = invisible;
-                function grayout() {
-                    var rect = calcRect();
-                    $.blockUI({
-                        message: '<div class="block-ui-message">' + toBeResource.plzWait + '</div>',
-                        fadeIn: 200,
-                        css: {
-                            width: rect.width,
-                            left: rect.left
-                        }
-                    });
-                }
-                block.grayout = grayout;
-                function clear() {
-                    $.unblockUI({
-                        fadeOut: 200
-                    });
-                }
-                block.clear = clear;
-                function calcRect() {
-                    var width = 220;
-                    var left = ($(window).width() - width) / 2;
-                    return {
-                        width: width,
-                        left: left
-                    };
-                }
-            })(block = ui_1.block || (ui_1.block = {}));
-            var DirtyChecker = (function () {
-                function DirtyChecker(targetViewModelObservable) {
-                    this.targetViewModel = targetViewModelObservable;
-                    this.initialState = this.getCurrentState();
-                }
-                DirtyChecker.prototype.getCurrentState = function () {
-                    return ko.toJSON(this.targetViewModel());
-                };
-                DirtyChecker.prototype.reset = function () {
-                    this.initialState = this.getCurrentState();
-                };
-                DirtyChecker.prototype.isDirty = function () {
-                    return this.initialState !== this.getCurrentState();
-                };
-                return DirtyChecker;
-            }());
-            ui_1.DirtyChecker = DirtyChecker;
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
             /**
              * Utilities for IgniteUI
              */
@@ -5687,31 +5738,7 @@ var nts;
                         dataSource_1.collectAncestorKeys = collectAncestorKeys;
                     })(dataSource = tree.dataSource || (tree.dataSource = {}));
                 })(tree = ig.tree || (ig.tree = {}));
-            })(ig = ui_1.ig || (ui_1.ig = {}));
-            var smallExtensions;
-            (function (smallExtensions) {
-                $(function () {
-                    $(document).on('mouseenter', '.limited-label', function (e) {
-                        var $label = $(e.target);
-                        // Check if contents is overflow
-                        if ($label.outerWidth() < $label[0].scrollWidth) {
-                            var $view_1 = $('<div />').addClass('limited-label-view')
-                                .text($label.text())
-                                .appendTo('body')
-                                .position({
-                                my: 'left top',
-                                at: 'left bottom',
-                                of: $label,
-                                collision: 'flip'
-                            });
-                            $label.bind('mouseleave.limitedlabel', function () {
-                                $label.unbind('mouseleave.limitedlabel');
-                                $view_1.remove();
-                            });
-                        }
-                    });
-                });
-            })(smallExtensions || (smallExtensions = {}));
+            })(ig = ui.ig || (ui.ig = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6079,6 +6106,19 @@ var nts;
                         } });
                     return $dialog;
                 };
+                $.fn.exposeOnTabPanel = function () {
+                    var $target = $(this);
+                    var $tabPanel = $target.closest(".ui-tabs-panel");
+                    if ($tabPanel.length === 0) {
+                        return $target;
+                    }
+                    var tabId = $tabPanel.attr("id");
+                    var $tabsContainer = $tabPanel.closest(".ui-tabs");
+                    // 先に親から
+                    $tabsContainer.exposeOnTabPanel();
+                    $tabsContainer.trigger("change-tab", tabId);
+                    return $target;
+                };
             })(jqueryExtentions = ui_3.jqueryExtentions || (ui_3.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -6317,6 +6357,42 @@ var nts;
         (function (ui_5) {
             var koExtentions;
             (function (koExtentions) {
+                var notSelected;
+                (function (notSelected) {
+                    var DATA = "not-selected";
+                    function set($element, value) {
+                        $element.data(DATA, value);
+                    }
+                    notSelected.set = set;
+                    function get($element) {
+                        return $element.data(DATA) === true;
+                    }
+                    notSelected.get = get;
+                })(notSelected || (notSelected = {}));
+                var required;
+                (function (required) {
+                    var DATA = "required";
+                    function set($element, value) {
+                        $element.data(DATA, value);
+                    }
+                    required.set = set;
+                    function get($element) {
+                        return $element.data(DATA) === true;
+                    }
+                    required.get = get;
+                })(required || (required = {}));
+                var controlName;
+                (function (controlName) {
+                    var DATA = "control-name";
+                    function set($element, value) {
+                        $element.data(DATA, value);
+                    }
+                    controlName.set = set;
+                    function get($element) {
+                        return $element.data(DATA);
+                    }
+                    controlName.get = get;
+                })(controlName || (controlName = {}));
                 /**
                  * ComboBox binding handler
                  */
@@ -6342,6 +6418,15 @@ var nts;
                                 evt.preventDefault();
                             }
                         });
+                        container.bind("validate", function () {
+                            if (required.get(container) && notSelected.get(container)) {
+                                container.ntsError("set", uk.resource.getMessage("FND_E_REQ_SELECT", [controlName.get(container)]), "FND_E_REQ_SELECT");
+                            }
+                            else {
+                                container.ntsError("clear");
+                            }
+                        });
+                        ui.bindErrorStyle.useDefaultErrorClass(container);
                     };
                     /**
                      * Update
@@ -6357,6 +6442,7 @@ var nts;
                         var optionText = data.optionsText === undefined ? null : ko.unwrap(data.optionsText);
                         var selectedValue = ko.unwrap(data.value);
                         var editable = ko.unwrap(data.editable);
+                        var isRequired = ko.unwrap(data.required) === true;
                         var enable = data.enable !== undefined ? ko.unwrap(data.enable) : true;
                         var columns = ko.unwrap(data.columns);
                         var visibleItemsCount = data.visibleItemsCount === undefined ? 5 : ko.unwrap(data.visibleItemsCount);
@@ -6370,6 +6456,7 @@ var nts;
                         // Container.
                         var container = $(element);
                         var comboMode = editable ? 'editable' : 'dropdown';
+                        controlName.set(container, ko.unwrap(data.name));
                         // Default values.
                         var distanceColumns = '     ';
                         var fillCharacter = ' '; // Character used fill to the columns.
@@ -6379,10 +6466,19 @@ var nts;
                         var getValue = function (item) {
                             return optionValue === null ? item : item[optionValue];
                         };
-                        // Check selected code.
-                        if (_.find(options, function (item) { return getValue(item) === selectedValue; }) === undefined && !editable) {
-                            selectedValue = options.length > 0 ? getValue(options[0]) : '';
-                            data.value(selectedValue);
+                        // required
+                        required.set(container, isRequired);
+                        // Check if selected code exists in list.
+                        // But "null" and "undefined" are "not-selected" even if the "null" or "undefined" exist in list.
+                        // この仕様は、「未選択」という項目を持つことを許容するためのもの。
+                        var isValidValue = !uk.util.isNullOrUndefined(selectedValue) && _.some(options, function (item) { return getValue(item) === selectedValue; });
+                        notSelected.set(container, !isValidValue);
+                        if (!isValidValue) {
+                            notSelected.set(container, true);
+                        }
+                        else {
+                            notSelected.set(container, false);
+                            container.ntsError("clear");
                         }
                         var haveColumn = columns && columns.length > 0;
                         var isChangeOptions = !_.isEqual(container.data("options"), options);
@@ -6394,6 +6490,9 @@ var nts;
                                 if (haveColumn) {
                                     _.forEach(columns, function (item, i) {
                                         var prop = option[item.prop];
+                                        if (uk.util.isNullOrUndefined(prop)) {
+                                            prop = "";
+                                        }
                                         var length = item.length;
                                         if (i === columns.length - 1) {
                                             newOptionText += prop;
@@ -6491,6 +6590,9 @@ var nts;
                             if (isDropDownWidthSpecified) {
                                 container.find(".ui-igcombo-dropdown").css("width", "auto");
                             }
+                        }
+                        if (notSelected.get(container)) {
+                            container.find("input").val("");
                         }
                     };
                     return ComboBoxBindingHandler;
@@ -7152,7 +7254,7 @@ var nts;
                         }
                     };
                     DatePickerNormalizer.prototype.parseDate = function (date) {
-                        var exp = new RegExp(/\d+(\/\d+)?(\/\d+)?/);
+                        var exp = /\d+(\/\d+)?(\/\d+)?/;
                         if (exp.test(date) === false)
                             return;
                         var dateParts = date.split(this.DATE_SPLITTER);
@@ -7289,6 +7391,7 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
+                var PS = window.parent;
                 /**
                  * Dialog binding handler
                  */
@@ -7373,7 +7476,7 @@ var nts;
                         var show = ko.unwrap(option.show);
                         var buttons = ko.unwrap(option.buttons);
                         var $dialog = $("<div id='ntsErrorDialog'></div>");
-                        parent.$('body').append($dialog);
+                        PS.$('body').append($dialog);
                         // Create Buttons
                         var dialogbuttons = [];
                         var _loop_2 = function(button) {
@@ -7433,7 +7536,7 @@ var nts;
                         //var maxrows: number = ko.unwrap(option.maxrows);
                         var autoclose = ko.unwrap(option.autoclose);
                         var show = ko.unwrap(option.show);
-                        var $dialog = parent.$("#ntsErrorDialog");
+                        var $dialog = PS.$("#ntsErrorDialog");
                         if (show == true) {
                             // Create Error Table
                             var $errorboard = $("<div id='error-board'></div>");
@@ -7456,7 +7559,7 @@ var nts;
                                 // Row
                                 var $row = $("<tr></tr>");
                                 $row.click(function () {
-                                    error.$control[0].focus();
+                                    error.$control.eq(0).exposeOnTabPanel().focus();
                                     var $dialogContainer = $dialog.closest("[role='dialog']");
                                     var $self = nts.uk.ui.windows.getSelf();
                                     var additonalTop = 0;
@@ -7541,6 +7644,57 @@ var nts;
             var koExtentions;
             (function (koExtentions) {
                 var validation = nts.uk.ui.validation;
+                var disable;
+                (function (disable) {
+                    var DATA_API_SET_VALUE = "api-set-value-for-disable";
+                    var DATA_DEFAULT_VALUE = "default-value-for-disable";
+                    function saveApiSetValue($input, value) {
+                        $input.data(DATA_API_SET_VALUE, value);
+                    }
+                    disable.saveApiSetValue = saveApiSetValue;
+                    function saveDefaultValue($input, value) {
+                        $input.data(DATA_DEFAULT_VALUE, value);
+                    }
+                    disable.saveDefaultValue = saveDefaultValue;
+                    function on($input) {
+                        $input.attr('disabled', 'disabled').ntsError("clear");
+                        return $input.data(DATA_DEFAULT_VALUE) !== undefined
+                            ? $input.data(DATA_DEFAULT_VALUE)
+                            : $input.data(DATA_API_SET_VALUE);
+                    }
+                    disable.on = on;
+                    function off($input) {
+                        $input.removeAttr('disabled');
+                    }
+                    disable.off = off;
+                })(disable || (disable = {}));
+                var valueChanging;
+                (function (valueChanging) {
+                    var DATA_CHANGED_BY_USER = "changed-by-user";
+                    var DATA_CURRENT_VALUE = "current-value";
+                    function markUserChange($input) {
+                        $input.data(DATA_CHANGED_BY_USER, true);
+                    }
+                    valueChanging.markUserChange = markUserChange;
+                    function unmarkUserChange($input) {
+                        $input.data(DATA_CHANGED_BY_USER, false);
+                    }
+                    valueChanging.unmarkUserChange = unmarkUserChange;
+                    function setNewValue($input, value) {
+                        $input.data(DATA_CURRENT_VALUE, value);
+                    }
+                    valueChanging.setNewValue = setNewValue;
+                    function isChangingValueByApi($input, newValue) {
+                        return !isUserChange($input) && isChangedValue($input, newValue);
+                    }
+                    valueChanging.isChangingValueByApi = isChangingValueByApi;
+                    function isUserChange($input) {
+                        return $input.data(DATA_CHANGED_BY_USER) === true;
+                    }
+                    function isChangedValue($input, newValue) {
+                        return $input.data(DATA_CURRENT_VALUE) !== newValue;
+                    }
+                })(valueChanging || (valueChanging = {}));
                 /**
                  * BaseEditor Processor
                  */
@@ -7572,7 +7726,10 @@ var nts;
                             var result = validator.validate(newText);
                             if (result.isValid) {
                                 $input.ntsError('clear');
+                                valueChanging.markUserChange($input);
                                 value(result.parsedValue);
+                                // why is valueHasMutated needed?? (kitahira)
+                                valueChanging.markUserChange($input);
                                 value.valueHasMutated();
                             }
                             else {
@@ -7581,6 +7738,7 @@ var nts;
                                     $input.ntsError('clear');
                                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
                                 }
+                                valueChanging.markUserChange($input);
                                 value(newText);
                             }
                         });
@@ -7601,6 +7759,7 @@ var nts;
                                         $input.ntsError('clearKibanError');
                                         $input.ntsError('set', result.errorMessage, result.errorCode, false);
                                     }
+                                    valueChanging.markUserChange($input);
                                     value(newText);
                                 }
                             }
@@ -7614,12 +7773,11 @@ var nts;
                                 $input.ntsError('set', result.errorMessage, result.errorCode, false);
                             }
                         }));
-                        new nts.uk.util.value.DefaultValue().onReset($input, data.value);
                         var tabIndex = $input.attr("tabindex");
                         $input.data("tabindex", tabIndex);
                     };
                     EditorProcessor.prototype.update = function ($input, data) {
-                        var value = data.value;
+                        var value = ko.unwrap(data.value);
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
@@ -7628,13 +7786,19 @@ var nts;
                         var placeholder = this.editorOption.placeholder;
                         var textalign = this.editorOption.textalign;
                         var width = this.editorOption.width;
+                        disable.saveDefaultValue($input, option.defaultValue);
+                        if (valueChanging.isChangingValueByApi($input, value)) {
+                            disable.saveApiSetValue($input, value);
+                        }
+                        valueChanging.setNewValue($input, value);
+                        valueChanging.unmarkUserChange($input);
                         // Properties
                         if (enable !== false) {
-                            $input.removeAttr('disabled');
+                            disable.off($input);
                         }
                         else {
-                            $input.attr('disabled', 'disabled');
-                            new nts.uk.util.value.DefaultValue().applyReset($input, value);
+                            value = disable.on($input);
+                            data.value(value);
                         }
                         if (readonly === false) {
                             $input.removeAttr('readonly');
@@ -7654,7 +7818,7 @@ var nts;
                         if (width.trim() != "")
                             $input.width(width);
                         // Format value
-                        var formatted = $input.ntsError('hasError') ? value() : this.getFormatter(data).format(value());
+                        var formatted = $input.ntsError('hasError') ? value : this.getFormatter(data).format(value);
                         $input.val(formatted);
                         //            $input.trigger("validate");
                     };
@@ -7740,11 +7904,13 @@ var nts;
                                         $input.val(result.parsedValue);
                                     }
                                     else {
+                                        valueChanging.markUserChange($input);
                                         value(result.parsedValue);
                                     }
                                 }
                                 else {
                                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                                    valueChanging.markUserChange($input);
                                     value(newText);
                                 }
                             }
@@ -7766,7 +7932,9 @@ var nts;
                         _super.prototype.update.call(this, $input, data);
                         var textmode = this.editorOption.textmode;
                         $input.attr('type', textmode);
+                        // このif文は何のため？ ユーザが入力操作をしたときしかtrueにならないか？
                         if (!$input.ntsError('hasError') && data.value() !== $input.val()) {
+                            valueChanging.markUserChange($input);
                             data.value($input.val());
                         }
                     };
@@ -8255,9 +8423,11 @@ var nts;
                         if (data.multiple) {
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
-                            var isIE = false || !!document.documentMode;
+                            var _document = document;
+                            var isIE = false || !!_document.documentMode;
                             // Edge 20+
-                            var isEdge = !isIE && !!window.StyleMedia;
+                            var _window = window;
+                            var isEdge = !isIE && !!_window.StyleMedia;
                             if (isIE || isEdge) {
                                 DIFF_NUMBER = -2;
                             }
@@ -9293,6 +9463,7 @@ var nts;
                     };
                     return SearchBox;
                 }());
+                koExtentions.SearchBox = SearchBox;
                 var SearchResult = (function () {
                     function SearchResult() {
                         this.options = [];
@@ -9300,6 +9471,7 @@ var nts;
                     }
                     return SearchResult;
                 }());
+                koExtentions.SearchResult = SearchResult;
                 var SearchPub = (function () {
                     function SearchPub(key, mode, source, searchField, childField) {
                         this.seachBox = new SearchBox(source, searchField, childField);
@@ -10675,6 +10847,11 @@ var nts;
                             dataX.child.find("div[role='tabpanel'][aria-hidden='false']:first").removeClass("disappear");
                             //                data.active.valueHasMutated();
                         });
+                        container.bind("change-tab", function (e, newTabId) {
+                            data.active(newTabId);
+                            // nested tabの場合にpropagationすると困る。tabIdは別なので。
+                            e.stopPropagation();
+                        });
                         container.tabs({
                             create: function (event, ui) {
                                 container.find('.ui-tabs-panel').addClass('disappear');
@@ -11942,6 +12119,9 @@ var nts;
 /// <reference path="ui/validation.ts"/>
 /// <reference path="ui/errors.ts"/>
 /// <reference path="ui/ui.ts"/>
+/// <reference path="ui/ui_sub/windows.ts"/>
+/// <reference path="ui/ui_sub/dialog.ts"/>
+/// <reference path="ui/ui_sub/ig.ts"/>
 /// <reference path="ui/dialog-options.ts"/>
 /// <reference path="ui/textbox-options.ts"/>
 /// <reference path="ui/jquery-ext.ts"/>
@@ -12294,6 +12474,22 @@ var nts;
         (function (ui) {
             ui.DATA_SET_ERROR_STYLE = "set-error-style";
             ui.DATA_CLEAR_ERROR_STYLE = "clear-error-style";
+            var bindErrorStyle;
+            (function (bindErrorStyle) {
+                function setError($element, callback) {
+                    $element.data(ui.DATA_SET_ERROR_STYLE, callback);
+                }
+                bindErrorStyle.setError = setError;
+                function clearError($element, callback) {
+                    $element.data(ui.DATA_CLEAR_ERROR_STYLE, callback);
+                }
+                bindErrorStyle.clearError = clearError;
+                function useDefaultErrorClass($element) {
+                    setError($element, function () { $element.addClass("error"); });
+                    clearError($element, function () { $element.removeClass("error"); });
+                }
+                bindErrorStyle.useDefaultErrorClass = useDefaultErrorClass;
+            })(bindErrorStyle = ui.bindErrorStyle || (ui.bindErrorStyle = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -12587,10 +12783,11 @@ var nts;
                                 _.defer(function () {
                                     var selected = getSelectRow($grid);
                                     if (!nts.uk.util.isNullOrEmpty(selected)) {
-                                        if ($grid.igGrid("scrollContainer").length > 0) {
+                                        var $scrollContainer = $grid.igGrid("scrollContainer");
+                                        if ($scrollContainer.length > 0) {
                                             var firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
                                             var selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
-                                            $grid.igGrid("scrollContainer").scrollTop(selectRowOffset - firstRowOffset);
+                                            $scrollContainer.scrollTop(selectRowOffset - firstRowOffset);
                                         }
                                         else {
                                             var index = $(selected["element"]).attr("data-row-idx");
@@ -13951,22 +14148,7 @@ var nts;
                         self.$root.data("cropper", self.cropper);
                     };
                     ImageEditorConstructSite.prototype.getXRequest = function () {
-                        if (typeof XDomainRequest != "undefined") {
-                            // IE8
-                            return new XDomainRequest();
-                        }
-                        else if (typeof XMLHttpRequest != "undefined") {
-                            // firefox 他
-                            return new XMLHttpRequest();
-                        }
-                        else if (window.ActiveXObject) {
-                            // IE 7 以前
-                            return new ActiveXObject("Microsoft.XMLHTTP");
-                        }
-                        else {
-                            // 未対応ブラウザ
-                            return null;
-                        }
+                        return new XMLHttpRequest();
                     };
                     ImageEditorConstructSite.prototype.buildFileChangeHandler = function () {
                         var self = this;
