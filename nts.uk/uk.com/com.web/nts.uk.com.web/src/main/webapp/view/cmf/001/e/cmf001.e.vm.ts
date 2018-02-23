@@ -12,36 +12,26 @@ module nts.uk.com.view.cmf001.e.viewmodel {
     export class ScreenModel {
         listCategoryItem: KnockoutObservableArray<model.ExternalAcceptanceCategoryItemData>;
         selectedCategoryItem: KnockoutObservable<string>;
+        
         constructor() {
             var self = this;
-            self.listCategoryItem = ko.observableArray([
-                new model.ExternalAcceptanceCategoryItemData('001', 'Item 1'),
-                new model.ExternalAcceptanceCategoryItemData('002', 'Item 2'),
-                new model.ExternalAcceptanceCategoryItemData('003', 'Item 3'),
-                new model.ExternalAcceptanceCategoryItemData('004', 'Item 4'),
-                new model.ExternalAcceptanceCategoryItemData('005', 'Item 5'),
-                new model.ExternalAcceptanceCategoryItemData('006', 'Item 6'),
-                new model.ExternalAcceptanceCategoryItemData('007', 'Item 7'),
-                new model.ExternalAcceptanceCategoryItemData('008', 'Item 8'),
-                new model.ExternalAcceptanceCategoryItemData('009', 'Item 9'),
-                new model.ExternalAcceptanceCategoryItemData('010', 'Item 10'),
-                new model.ExternalAcceptanceCategoryItemData('011', 'Item 11'),
-                new model.ExternalAcceptanceCategoryItemData('012', 'Item 12'),
-                new model.ExternalAcceptanceCategoryItemData('013', 'Item 13'),
-                new model.ExternalAcceptanceCategoryItemData('014', 'Item 14'),
-                new model.ExternalAcceptanceCategoryItemData('015', 'Item 15')
-            ]);
-            self.selectedCategoryItem = ko.observable('001');
-        }
-        open001E(){
-            var self =this;
-            nts.uk.ui.windows.sub.modal("/view/cmf/001/e/index.xhtml");
+            let selectedCategoryItem = getShared("selectedCategoryItem");
+            //alert(selectedCategoryItem);\
+            self.listCategoryItem(getShared("listCategory"));
+            if(_.isEqual(selectedCategoryItem, self.selectedCategoryItem)){
+                self.selectedCategoryItem = ko.observable(selectedCategoryItem);
+            }else{
+                self.selectedCategoryItem = ko.observable('001');
+            }
         }
         cancel(){
             nts.uk.ui.windows.close();
         }
-        setCategory(){
-            alert("save");    
+        save(){
+            var self = this;
+            setShared("selectedCategoryItem", self.selectedCategoryItem);
+            alert(self.selectedCategoryItem);
+            nts.uk.ui.windows.close();  
         }
      }
 }
