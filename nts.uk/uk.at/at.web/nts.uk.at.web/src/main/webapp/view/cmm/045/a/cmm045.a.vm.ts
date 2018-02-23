@@ -13,6 +13,8 @@ module cmm045.a.viewmodel {
         dateValue: KnockoutObservable<any> = ko.observable({});
         itemApplication: KnockoutObservableArray<vmbase.ChoseApplicationList>;
         selectedCode: KnockoutObservable<number> = ko.observable(1);
+        lstStatusApproval: KnockoutObservableArray<any> = ko.observableArray([]);
+        mode: KnockoutObservable<number> = ko.observable(1);
         constructor(){
             let self = this;
             self.itemList = ko.observableArray([
@@ -33,13 +35,14 @@ module cmm045.a.viewmodel {
             let self = this;
             var dfd = $.Deferred();
             let param: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto('2018-01-18', '2018-01-20', 1,
-                    null, true, true, true, true, true, true, 1, [], '');
+                    null, true, true, true, true, true, true, 0, [], '');
             service.getApplicationDisplayAtr().done(function(data){
                 _.each(data, function(obj){
                     self.roundingRules.push(new vmbase.ApplicationDisplayAtr(obj.value, obj.localizedName));
                 });
                 service.getApplicationList(param).done(function(data){
                     console.log(data);
+                    self.lstStatusApproval(data.lstStatusApproval);
                     let lstApp: Array<vmbase.ApplicationDto_New> = [];
                     let lstMaster: Array<vmbase.AppMasterInfo> = []
                     let lstGoBack: Array<vmbase.AppGoBackInfoFull> = [];
@@ -205,17 +208,11 @@ module cmm045.a.viewmodel {
                 }
             });
         }
-//        convertTime_Short_HM(time: number): string{
-//            let hh = time/60;
-//            let min1: string = time%60;
-//            let min = '';
-//            if(min1.length == 2){
-//                min = min1;
-//            }else{
-//                min = '0' + min1;    
-//            }
-//            return hh + ':' + min;
-//        }
+        findStatusApproval(appId: string): any{
+            return _.find(this.lstStatusApproval(), function(item){
+                return item.appId = appId;
+            });
+        }
         /**
          * format data: over time before
          */
@@ -226,7 +223,8 @@ module cmm045.a.viewmodel {
 //            let appContent: string = getText('CMM045_268') + ' ' + self.convertTime_Short_HM(overTime.workClockFrom1) + getText('CMM045_100')+ self.convertTime_Short_HM(overTime.workClockTo1) + ' 残業合計' + '4:00' + reason;
             let appContent1111: string = getText('CMM045_268') + ' ' + overTime.workClockFrom1 + getText('CMM045_100')+ overTime.workClockTo1 + ' 残業合計' + '4:00' + reason;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                        masterInfo.dispName, app.prePostAtr == 0 ? '事前' : '事後', self.convertDate(app.applicationDate),appContent1111, self.convertDateTime(app.inputDate), self.convertStatus(app.reflectPerState),'');
+                        masterInfo.dispName, app.prePostAtr == 0 ? '事前' : '事後', self.convertDate(app.applicationDate),appContent1111, self.convertDateTime(app.inputDate), 
+                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatus(self.findStatusApproval(app.applicationID)),'');
             return a;
         }
         /**
@@ -247,7 +245,8 @@ module cmm045.a.viewmodel {
             let reason = self.displaySet().appReasonDisAtr == 1 ? ' ' + app.applicationReason : '';
             let appContent2222 = getText('CMM045_258') + go + back + reason;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                        masterInfo.dispName, app.prePostAtr == 0 ? '事前' : '事後', self.convertDate(app.applicationDate),appContent2222, self.convertDateTime(app.inputDate), self.convertStatus(app.reflectPerState),'');
+                        masterInfo.dispName, app.prePostAtr == 0 ? '事前' : '事後', self.convertDate(app.applicationDate),appContent2222, self.convertDateTime(app.inputDate), 
+                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatus(self.findStatusApproval(app.applicationID)),'');
             return a;
         }
         
@@ -269,9 +268,6 @@ module cmm045.a.viewmodel {
                 lstData.push(data);
             });
             return lstData;
-            
-            
-            
         }
         findOverTimeById(appID: string, lstOverTime: Array<vmbase.AppOverTimeInfoFull>){
             return _.find(lstOverTime, function(master){

@@ -13,7 +13,7 @@ public class WorkTypeSetBase {
 	private int digestPublicHd;
 	private int holidayAtr;
 	private int countHodiday;
-	private int closeAtr;
+	private Integer closeAtr;
 	private int sumAbsenseNo ;
 	private int sumSpHodidayNo;
 	private int timeLeaveWork;
