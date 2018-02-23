@@ -6,9 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
@@ -26,7 +24,6 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondPK;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondPK_;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond_;
 
@@ -200,53 +197,18 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	@Override
 	@Transactional
 	public void save(WorkingCondition workingCondition) {
-		// this.deleteAll(workingCondition);
-		// this.add(workingCondition);
-		// // Using for insert/update/delete
-		// Optional<WorkingCondition> oldDomain =
-		// this.getBySid(workingCondition.getCompanyId(),
-		// workingCondition.getEmployeeId());
-		// if (oldDomain.isPresent()) {
-		// // Update
-		// this.update(workingCondition);
-		// return;
-		// }
-		// // Add
-		// this.add(workingCondition);
-		List<KshmtWorkingCond> domainEntities = new ArrayList<>();
-		List<KshmtWorkingCond> insertWorkingConds = new ArrayList<>();
-		List<KshmtWorkingCond> updateWorkingConds = new ArrayList<>();
-		List<KshmtWorkingCond> deleteWorkingConds = new ArrayList<>();
-
 		List<KshmtWorkingCond> entities = this.findBy(workingCondition.getCompanyId(), workingCondition.getEmployeeId(),
-				null);
+		null);
+		
+		List<KshmtWorkingCond> newWorkingCondition = entities;
 
-		workingCondition.saveToMemento(new JpaWorkingConditionSetMemento(domainEntities));
+		workingCondition.saveToMemento(new JpaWorkingConditionSetMemento(newWorkingCondition));
+		
+//		this.add(newWorkingCondition.stream().filter(item ->  !entities.contains(item)).collect(Collectors.toList()));
 
-		Map<KshmtWorkingCondPK, KshmtWorkingCond> mapEntity = entities.stream()
-				.collect(Collectors.toMap(KshmtWorkingCond::getKshmtWorkingCondPK, Function.identity()));
-
-		Map<KshmtWorkingCondPK, KshmtWorkingCond> mapDomain = domainEntities.stream()
-				.collect(Collectors.toMap(KshmtWorkingCond::getKshmtWorkingCondPK, Function.identity()));
-
-		for (KshmtWorkingCond wCondEntity : entities) {
-			KshmtWorkingCond wCondDomain = mapDomain.get(wCondEntity.getKshmtWorkingCondPK());
-			if (wCondDomain != null) {
-				updateWorkingConds.add(wCondDomain);
-			} else {
-				deleteWorkingConds.add(wCondDomain);
-			}
-		}
-		for (KshmtWorkingCond wCondEntity : domainEntities) {
-			KshmtWorkingCond wCondDomain = mapEntity.get(wCondEntity.getKshmtWorkingCondPK());
-			if (wCondDomain == null) {
-				insertWorkingConds.add(wCondDomain);
-			}
-		}
-
-		this.deleteAll(deleteWorkingConds);
-		this.update(updateWorkingConds);
-		this.add(insertWorkingConds);
+		this.update(newWorkingCondition);
+		
+		this.deleteAll(entities.stream().filter(item ->  !newWorkingCondition.contains(item)).collect(Collectors.toList()));
 	}
 
 	/*
