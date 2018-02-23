@@ -156,3 +156,6 @@ div.form-label.broken {
 	position: relative;
 	z-index: 1;
 }
+.inputTime-kaf010{
+	width: 85px !important;
+}
