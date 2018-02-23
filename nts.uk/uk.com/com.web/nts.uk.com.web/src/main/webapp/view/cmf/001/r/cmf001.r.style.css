@@ -1,0 +1,34 @@
+.contents-area{
+	margin:10px;
+}
+.cmf001_485{
+	font-size: large;
+	margin-bottom: 3px;
+}
+.cmf001_486{
+	font-size: large;
+	margin-bottom: 3px;
+}
+.settingzyouho{
+	margin-bottom: 15px;
+}
+
+.setting-zyouhou {
+	margin: 5px;
+	box-sizing: border-box;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+.kekka {
+	margin: 5px;
+	box-sizing: border-box;
+}
+.kekkanaiyou{
+	margin-bottom: 30px;
+}
+.button {
+	text-align:center;
+}
