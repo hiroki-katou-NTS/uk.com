@@ -134,7 +134,7 @@ public class RoleWorkplaceIDFinder {
 		//check ReferenceRange 
 		if (param.getReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE.value) {
 			//get list WorkplaceId by WorkplaceAdapter
-			listWkpId = workplaceAdapter.findListWkpIdByBaseDate(GeneralDate.fromString(param.getBaseDate(), "yyyy-MM-dd"));
+			listWkpId = workplaceAdapter.findListWkpIdByBaseDate(param.getBaseDate());
 			workplaceIdDto.setListWorkplaceIds(listWkpId);
 			workplaceIdDto.setIsAllEmp(true);
 		} else {
@@ -161,15 +161,14 @@ public class RoleWorkplaceIDFinder {
 		String companyId = AppContexts.user().companyId();
 		
 		// get workplace manager 
-		GeneralDate baseDate = GeneralDate.fromString(param.getBaseDate(), "yyyy-MM-dd");
-		List<WorkplaceManager> listWkpManager = workplaceManagerRepository.findListWkpManagerByEmpIdAndBaseDate(employeeId, baseDate);
+		List<WorkplaceManager> listWkpManager = workplaceManagerRepository.findListWkpManagerByEmpIdAndBaseDate(employeeId, param.getBaseDate());
 		
 		// add wkpId to listWkpId
 		listWkpId = listWkpManager.stream().map(m -> m.getWorkplaceId()).collect(Collectors.toList());
 				
 		// requestList #30 get aff workplace history
 		Optional<AffWorkplaceHistImport> opAffWorkplaceHistImport = workplaceAdapter
-				.findWkpByBaseDateAndEmployeeId(GeneralDate.fromString(param.getBaseDate(), "yyyy-MM-dd"), employeeId);
+				.findWkpByBaseDateAndEmployeeId(param.getBaseDate(), employeeId);
 
 		// add wkpId to listWkpId
 		if (opAffWorkplaceHistImport.isPresent()) {
@@ -183,8 +182,7 @@ public class RoleWorkplaceIDFinder {
 
 		// action RequestList #154
 		if (param.getReferenceRange() == EmployeeReferenceRange.DEPARTMENT_AND_CHILD.value && workplaceId != null) {
-			List<String> list = workplaceAdapter.findListWorkplaceIdByCidAndWkpIdAndBaseDate(companyId, workplaceId,
-					GeneralDate.fromString(param.getBaseDate(), "yyyy-MM-dd"));
+			List<String> list = workplaceAdapter.findListWorkplaceIdByCidAndWkpIdAndBaseDate(companyId, workplaceId, param.getBaseDate());
 			listWkpId.addAll(list);
 		}
 

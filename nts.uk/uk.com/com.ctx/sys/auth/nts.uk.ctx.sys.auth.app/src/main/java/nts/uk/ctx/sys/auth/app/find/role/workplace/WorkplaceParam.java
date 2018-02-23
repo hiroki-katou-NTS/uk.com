@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 
 @Getter
 @Setter
@@ -14,7 +15,7 @@ public class WorkplaceParam implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/** The base date. */
-	private String baseDate;
+	private GeneralDate baseDate;
 	
 	/** The reference range. */
 	private Integer referenceRange;

@@ -66,45 +66,6 @@ public class RegulationInfoEmployeeFinder {
 	}
 	
 	/**
-	 * Gets the role id.
-	 *
-	 * @return the role id
-	 */
-	//get RoleId by AppContext
-	private String getRoleId(){
-		
-		LoginUserRoles roles = AppContexts.user().roles();
-		if (roles.forAttendance() != null){
-			return roles.forAttendance();
-		}
-		
-		if (roles.forCompanyAdmin() != null){
-			return roles.forCompanyAdmin();
-		}
-		
-		if (roles.forOfficeHelper() != null){
-			return roles.forOfficeHelper();
-		}
-		
-		if (roles.forPayroll() != null){
-			return roles.forPayroll();
-		}
-		
-		if (roles.forPersonalInfo() != null){
-			return roles.forPersonalInfo();
-		}
-		
-		if (roles.forPersonnel() != null){
-			return roles.forPersonnel();
-		}
-		
-		if (roles.forSystemAdmin() != null){
-			return roles.forSystemAdmin();
-		}
-		return null;
-	}
-	
-	/**
 	 * Change workplace list by role.
 	 *
 	 * @param queryDto the query dto
@@ -113,10 +74,7 @@ public class RegulationInfoEmployeeFinder {
 	// 検索条件の職場一覧を参照範囲に基いて変更する
 	private List<String> changeWorkplaceListByRole(EmployeeSearchQueryDto queryDto) {
 		//get RoleId
-//		String roleId = this.workPlaceAdapter.findRoleIdBySystemType(queryDto.getSystemType());
-		
-		//fake Role(Xoa sau nay)
-		String roleId = this.getRoleId();
+		String roleId = this.workPlaceAdapter.findRoleIdBySystemType(queryDto.getSystemType());
 		
 		//check RoleId
 		if(roleId == null) {
@@ -179,8 +137,7 @@ public class RegulationInfoEmployeeFinder {
 		
 		//get List Workplace
 		GeneralDate date = GeneralDate.localDate(queryParam.getBaseDate().toLocalDate());
-		List<String> wkplist = this.workPlaceAdapter.
-				getWorkPlaceIdByEmployeeReferenceRange(date, queryParam.getReferenceRange());
+		List<String> wkplist = this.workPlaceAdapter.getWorkPlaceIdByEmployeeReferenceRange(date, queryParam.getReferenceRange());
         
 		//check param filterByWorkplace
         if (queryParam.getFilterByWorkplace()) {
