@@ -435,7 +435,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 $.when(service.getRefRangeBySysType(self.systemType),
                     self.loadClosure()
-                ).always((refRange, noValue) => {
+                ).done((refRange, noValue) => {
                     self.referenceRange = refRange;
                     dfd.resolve();
                 }).fail(err => nts.uk.ui.dialog.alertError(err));
@@ -755,7 +755,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // Check future reference permission
                 $.when(self.acquireBaseDate(), self.getFuturePermit())
-                    .always((acquiredDate, permit) => {
+                    .done((acquiredDate, permit) => {
                         if (permit || self.isNotFutureDate(acquiredDate)) {
                             // has permission or acquiredDate is not future
                             self.queryParam.baseDate = acquiredDate;

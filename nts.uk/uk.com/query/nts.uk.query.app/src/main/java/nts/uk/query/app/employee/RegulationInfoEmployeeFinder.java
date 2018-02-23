@@ -19,7 +19,6 @@ import nts.uk.query.model.employee.EmployeeSearchQuery;
 import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
 import nts.uk.query.model.employee.RoleWorkPlaceAdapter;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 /**
  * The Class RegulationInfoEmployeeFinder.
@@ -52,6 +51,7 @@ public class RegulationInfoEmployeeFinder {
 		if (!queryDto.getFilterByWorkplace()) {
         	queryDto.setFilterByWorkplace(true);
         }
+
 		//Change WorkplaceCodes
 		queryDto.setWorkplaceCodes(lstWorkplaceChange);
 		

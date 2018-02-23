@@ -291,7 +291,7 @@ public class ClosureWs {
 	 */
 	@POST
 	@Path("getclosuretiedbyemployment/{employmentcode}")
-	public int getClosureTiedByEmployment(@PathParam("employmentcode") String employmentCode) {
+	public Integer getClosureTiedByEmployment(@PathParam("employmentcode") String employmentCode) {
 		return this.finder.getClosureIdByEmploymentCode(employmentCode);
 	}
 
