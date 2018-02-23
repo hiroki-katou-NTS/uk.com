@@ -38,8 +38,11 @@ public class EmploymentHistoryItemFinder {
 		DateHistoryItem historyItem = this.empHisRepo
 				.getByEmployeeIdAndStandardDate(AppContexts.user().employeeId(), GeneralDate.today()).get();
 		EmploymentHistoryItem empHisItem = this.empHisItemRepo.getByHistoryId(historyItem.identifier()).get();
-		return EmploymentHistoryItemDto.builder().employeeId(empHisItem.getEmployeeId())
-				.employmentCode(empHisItem.getEmploymentCode().v()).historyId(empHisItem.getHistoryId())
+
+		return EmploymentHistoryItemDto.builder()
+				.employeeId(empHisItem.getEmployeeId())
+				.employmentCode(empHisItem.getEmploymentCode().v())
+				.historyId(empHisItem.getHistoryId())
 				.salarySegment(empHisItem.getSalarySegment().value).build();
 	}
 }

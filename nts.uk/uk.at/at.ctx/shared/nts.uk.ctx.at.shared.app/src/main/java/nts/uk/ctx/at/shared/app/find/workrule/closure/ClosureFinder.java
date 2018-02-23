@@ -323,8 +323,12 @@ public class ClosureFinder {
 	 * @param employmentCode the employment code
 	 * @return the closure id by employment code
 	 */
-	public int getClosureIdByEmploymentCode(String employmentCode) {
-		return this.closureEmpRepo.findByEmploymentCD(AppContexts.user().companyId(), employmentCode).get()
-				.getClosureId();
+	public Integer getClosureIdByEmploymentCode(String employmentCode) {
+		Optional<ClosureEmployment> closureEmp = this.closureEmpRepo.findByEmploymentCD(AppContexts.user().companyId(),
+				employmentCode);
+		if (closureEmp.isPresent()) {
+			return closureEmp.get().getClosureId();
+		}
+		return null;
 	}
 }

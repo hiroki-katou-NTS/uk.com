@@ -35,9 +35,6 @@ import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
 @Stateless
 public class JpaRegulationInfoEmployeeRepository extends JpaRepository implements RegulationInfoEmployeeRepository {
 
-	/** The Constant LIST_MAX_QUERY_IN. */
-	private static final int LIST_MAX_QUERY_IN = 1000;
-
 	/** The Constant LEAVE_ABSENCE_QUOTA_NO. */
 	private static final int LEAVE_ABSENCE_QUOTA_NO = 1;
 
