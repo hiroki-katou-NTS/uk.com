@@ -7,6 +7,7 @@ module nts.uk.com.view.ccg.share.ccg {
     import SelectType = kcp.share.list.SelectType;
     import UnitModel = kcp.share.list.UnitModel;
     import EmployeeSearchDto = service.model.EmployeeSearchDto;
+    import Ccg001ReturnedData = service.model.Ccg001ReturnedData;
     import GroupOption = service.model.GroupOption;
     import EmployeeRangeSelection = service.model.EmployeeRangeSelection;
     import EmployeeQueryParam = service.model.EmployeeQueryParam;
@@ -103,12 +104,8 @@ module nts.uk.com.view.ccg.share.ccg {
             retirementDatasource: KnockoutObservableArray<any>;
             selectedRetirement: KnockoutObservable<boolean>; // 退職区分
 
-            // functions
-            onSearchAllClicked: (data: EmployeeSearchDto[]) => void;
-            onSearchOnlyClicked: (data: EmployeeSearchDto) => void;
-            onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
-            onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
-            onApplyEmployee: (data: EmployeeSearchDto[]) => void;
+            // return function
+            returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
 
             // List WorkType
             listWorkType: KnockoutObservableArray<WorkType>;
@@ -529,12 +526,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.showWorktype = options.showWorktype;
                 self.isMultiple = options.isMutipleCheck;
 
-                // functions
-                self.onSearchAllClicked = options.onSearchAllClicked;
-                self.onSearchOnlyClicked = options.onSearchOnlyClicked;
-                self.onSearchOfWorkplaceClicked = options.onSearchOfWorkplaceClicked;
-                self.onSearchWorkplaceChildClicked = options.onSearchWorkplaceChildClicked;
-                self.onApplyEmployee = options.onApplyEmployee;
+                // return data function
+                self.returnDataFromCcg001 = options.returnDataFromCcg001;
             }
 
             /**
@@ -935,7 +928,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 service.getOfSelectedEmployee(
                     moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate(), self.getSelectedCodeEmployee())
                     .done(selectedEmps => {
-                        self.onApplyEmployee(selectedEmps);
+                        self.returnDataFromCcg001(self.combineData(selectedEmps));
                         // Hide component.
                         self.hideComponent();
                         nts.uk.ui.block.clear(); // clear block UI
@@ -976,14 +969,26 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
                 nts.uk.ui.block.invisible(); // block ui
                 service.searchEmployeeByLogin(self.baseDate().toDate()).done(data => {
-                    if (data.length > 0) {
-                        self.onSearchOnlyClicked(data[0]);
-                        self.hideComponent();
-                        nts.uk.ui.block.clear(); // clear block UI
-                    }
+                    self.returnDataFromCcg001(self.combineData(data));
+                    self.hideComponent();
+                    nts.uk.ui.block.clear(); // clear block UI
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
                 });
+            }
+
+            /**
+             * Combine return data
+             */
+            private combineData(listEmployee: Array<EmployeeSearchDto>): Ccg001ReturnedData {
+                let self = this;
+                let dto = <Ccg001ReturnedData>{};
+                dto.baseDate = self.queryParam.baseDate;
+                dto.closureId = self.showClosure ? self.selectedClosure() : undefined;
+                dto.periodStart = self.periodStartDate().toISOString();
+                dto.periodEnd = self.periodEndDate().toISOString();
+                dto.listEmployee = listEmployee;
+                return dto;
             }
 
             /**
@@ -1190,7 +1195,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         if (isAdvancedSearch && self.isShowEmployeeList) {
                             self.employeeinfo.employeeInputList(self.toUnitModelList(data));
                         } else {
-                            self.onApplyEmployee(data);
+                            self.returnDataFromCcg001(self.combineData(data));
                             // Hide component.
                             self.hideComponent();
                         }

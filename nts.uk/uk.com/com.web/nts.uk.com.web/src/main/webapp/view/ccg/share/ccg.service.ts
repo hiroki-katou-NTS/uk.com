@@ -155,10 +155,6 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 employeeName: string;
 
-                workplaceCode: string;
-
-                workplaceId: string;
-
                 workplaceName: string;
             }
 
@@ -201,15 +197,15 @@ module nts.uk.com.view.ccg.share.ccg {
                 // showDelivery: boolean; not covered
 
                 /** Data returned */
-                onSearchAllClicked: (data: EmployeeSearchDto[]) => void;
+                returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
+            }
 
-                onSearchOnlyClicked: (data: EmployeeSearchDto) => void;
-                
-                onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
-                
-                onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
-                
-                onApplyEmployee: (data: EmployeeSearchDto[]) => void;
+            export interface Ccg001ReturnedData {
+                baseDate: string; // 基準日
+                closureId?: number; // 締めID
+                periodStart: string; // 対象期間（開始)
+                periodEnd: string; // 対象期間（終了）
+                listEmployee: Array<EmployeeSearchDto>; // 検索結果
             }
 
             export class SelectedInformation {

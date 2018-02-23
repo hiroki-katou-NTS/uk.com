@@ -1,6 +1,6 @@
 module nts.uk.com.view.ccg001.a {  
 
-    import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
+    import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
     export module viewmodel {
         export class ScreenModel {
@@ -126,25 +126,9 @@ module nts.uk.com.view.ccg001.a {
                     showWorktype: self.showWorktype(), // 勤種条件
                     isMutipleCheck: self.isMutipleCheck(), // 選択モード
 
-                    onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
-                        self.selectedEmployee(dataList);
-                    },
-                    onSearchOnlyClicked: function(data: EmployeeSearchDto) {
-                        var dataEmployee: EmployeeSearchDto[] = [];
-                        dataEmployee.push(data);
-                        
-                        
-                        self.selectedEmployee(dataEmployee);
-                    },
-                    onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
-                        self.selectedEmployee(dataList);
-                    },
-
-                    onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
-                        self.selectedEmployee(dataList);
-                    },
-                    onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
-                        self.selectedEmployee(dataEmployee);
+                    /** Return data */
+                    returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                        self.selectedEmployee(data.listEmployee);
                     }
 
                 }
