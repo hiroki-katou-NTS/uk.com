@@ -7,7 +7,6 @@ module cmm045.shr {
             constructor(code: number, name: string){
                 this.code = code;
                 this.name = name;
-                
             } 
         }
         //parameter filter
@@ -72,13 +71,15 @@ module cmm045.shr {
             inputDate: string;
             appStatus: string;
             displayAppStatus: string;
+            checkAtr: boolean;
             constructor(appId: string,appType: number,  details: string, applicant: string,
                 appName: string, appAtr: string, appDate: string,
                 appContent: string, inputDate: string, appStatus: string,
-                displayAppStatus: string){
+                displayAppStatus: string, checkAtr: boolean){
                 this.appId = appId;
                 this.appType = appType;
-                this.check = appType == 0 ? true : false;
+//                this.check = appType == 0 ? true : false;
+                this.check = false;
                 this.details = details;
                 this.applicant = applicant;
                 this.appName = appName;
@@ -88,6 +89,7 @@ module cmm045.shr {
                 this.inputDate = inputDate;
                 this.appStatus = appStatus;
                 this.displayAppStatus = displayAppStatus;
+                this.checkAtr = checkAtr;
             }
         }  
         
@@ -97,13 +99,15 @@ module cmm045.shr {
             dispName: string;
             empName: string;
             workplaceName: string;
-            constructor(appID: string, appType: number, dispName: string, empName: string, workplaceName: string)
+            statusFrameAtr: boolean;
+            constructor(appID: string, appType: number, dispName: string, empName: string, workplaceName: string, statusFrameAtr: boolean)
             {
                 this.appID = appID;
                 this.appType = appType;
                 this.dispName = dispName;
                 this.empName = empName;
                 this.workplaceName = workplaceName;
+                this.statusFrameAtr = statusFrameAtr;
             }
         }
         export class ApplicationDto_New{

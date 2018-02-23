@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.applicationlist.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @AllArgsConstructor
@@ -13,4 +14,6 @@ public class AppMasterInfo {
 	private String dispName;
 	private String empName;
 	private String workplaceName;
+	@Setter
+	private boolean statusFrameAtr;
 }

@@ -14,5 +14,6 @@ public class AppListOutPut {
 	//TH: approval (count)
 	private ApplicationStatus appStatusCount;
 	private List<ApplicationFullOutput> lstAppFull;
-	private List<String> lstAppColor; 
+	private List<String> lstTimeColor; 
+	private List<String> lstFramStatus; 
 }

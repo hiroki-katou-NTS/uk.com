@@ -75,7 +75,7 @@ module cmm045.a.viewmodel {
                         app.startDate, app.endDate));
                     });
                     _.each(data.lstMasterInfo, function(master){
-                        lstMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName, master.workplaceName));
+                        lstMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName, master.workplaceName, master.statusFrameAtr));
                     });
                     _.each(data.lstAppGoBack, function(goback){
                         lstGoBack.push(new vmbase.AppGoBackInfoFull(goback.appID, goback.goWorkAtr1, goback.workTimeStart1,
@@ -186,7 +186,7 @@ module cmm045.a.viewmodel {
             $("#grid1").setupSearchScroll("igGrid", true);
             
             _.each(self.items(), function(item){
-                if(item.check == false){
+                if(item.checkAtr == true){
                     $(".nts-grid-control-check-"+ item.appId).css("display", "none");
                 }
                 if (item.appStatus == '未') {
@@ -217,7 +217,7 @@ module cmm045.a.viewmodel {
             let appContent1111: string = getText('CMM045_268') + ' ' + overTime.workClockFrom1 + getText('CMM045_100')+ overTime.workClockTo1 + ' 残業合計' + '4:00' + reason;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                         masterInfo.dispName, app.prePostAtr == 0 ? '事前' : '事後', self.convertDate(app.applicationDate),appContent1111, self.convertDateTime(app.inputDate), 
-                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatusAppv(app.reflectPerState),'');
+                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatusAppv(app.reflectPerState),'', masterInfo.statusFrameAtr);
             return a;
         }
         /**
@@ -239,7 +239,7 @@ module cmm045.a.viewmodel {
             let appContent2222 = getText('CMM045_258') + go + back + reason;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                         masterInfo.dispName, app.prePostAtr == 0 ? '事前' : '事後', self.convertDate(app.applicationDate),appContent2222, self.convertDateTime(app.inputDate), 
-                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatusAppv(app.reflectPerState),'');
+                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatusAppv(app.reflectPerState),'', masterInfo.statusFrameAtr);
             return a;
         }
         
@@ -376,7 +376,7 @@ module cmm045.a.viewmodel {
                     app.startDate, app.endDate));
                 });
                 _.each(data.lstMasterInfo, function(master){
-                    lstMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName, master.workplaceName));
+                    lstMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName, master.workplaceName, master.statusFrameAtr));
                 });
                 _.each(data.lstAppGoBack, function(goback){
                     lstGoBack.push(new vmbase.AppGoBackInfoFull(goback.appID, goback.goWorkAtr1, goback.workTimeStart1,
@@ -413,6 +413,10 @@ module cmm045.a.viewmodel {
                 }
             });
             return check;
+        }
+        
+        approval(){
+            
         }
     } 
     

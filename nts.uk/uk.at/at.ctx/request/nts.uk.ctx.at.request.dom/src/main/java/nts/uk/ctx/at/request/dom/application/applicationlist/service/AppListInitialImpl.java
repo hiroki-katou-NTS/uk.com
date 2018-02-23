@@ -228,7 +228,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		
 		//get status app
 //		List<ApplicationFullOutput> lstAppFull = this.findStatusAPp(lstAppFilter);
-		return new AppListOutPut(lstAppMasterInfo, lstAppFilter, lstAppOt, lstAppGoBack, null, null, null);// NOTE
+		return new AppListOutPut(lstAppMasterInfo, lstAppFilter, lstAppOt, lstAppGoBack, null, null, null, null);// NOTE
 	}
 	/**
 	 * 3 - 申請一覧リスト取得承認
@@ -284,6 +284,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			}
 			//条件３：承認区分の指定条件
 			List<Application_New> lstAppFilter3 = new ArrayList<>();
+			List<String> lstFrameUn = new ArrayList<>();
 			List<ApplicationFullOutput> lstAppFullFilter3 = this.mergeAppAndPhase(lstAppFilter2);
 			for (ApplicationFullOutput appFull : lstAppFullFilter3) {
 				ReflectedState_New state = appFull.getApplication().getReflectionInformation().getStateReflectionReal();
@@ -334,6 +335,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				}
 				if(check){
 					lstAppFilter3.add(appFull.getApplication());
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
+						lstFrameUn.add(appFull.getApplication().getAppID());
+					}
 				}
 			}
 			//条件５：重複承認の対応条件
@@ -377,7 +381,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		AppListAtrOutput timeOutput = this.getAppListAchievement(lstAppFilter3, displaySet);
 		//承認一覧に稟議書リスト追加し、申請日付順に整列する - phu thuoc vao request
 		// TODO Auto-generated method stub
-		return new AppListOutPut(lstMaster, lstAppFilter3, lstAppOt, lstAppGoBack, timeOutput.getAppStatus(), timeOutput.getLstAppFull(), timeOutput.getLstAppColor());
+		return new AppListOutPut(lstMaster, lstAppFilter3, lstAppOt, lstAppGoBack, timeOutput.getAppStatus(), timeOutput.getLstAppFull(), timeOutput.getLstAppColor(), lstFrameUn);
 	}
 	/**
 	 * lam o ui
@@ -648,7 +652,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			if(appDispName.isPresent()){
 				appDispNameStr = appDispName.get().getDispName().v();
 			}
-			lstAppMasterInfo.add(new AppMasterInfo(app.getAppID(), app.getAppType().value, appDispNameStr, empName, wkp.getWkpDisplayName()));
+			lstAppMasterInfo.add(new AppMasterInfo(app.getAppID(), app.getAppType().value, appDispNameStr, empName, wkp.getWkpDisplayName(), false));
 		}
 		return lstAppMasterInfo;
 	}
@@ -1046,7 +1050,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		for (ApprovalPhaseStateImport_New appPhase : lstPhase) {
 			for (ApprovalFrameImport_New frame : appPhase.getListApprovalFrame()) {
 				//承認枠.承認区分!=未承認 
-				if(frame.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
+				if(!frame.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
 					if(this.checkDifNotAppv(frame)){
 						check = true;
 						break;

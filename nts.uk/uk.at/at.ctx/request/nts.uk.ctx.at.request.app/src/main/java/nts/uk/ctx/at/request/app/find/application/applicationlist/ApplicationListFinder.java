@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListInitialRepository;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListOutPut;
+import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppMasterInfo;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.ApplicationFullOutput;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
@@ -77,9 +78,12 @@ public class ApplicationListFinder {
 			for (ApplicationDto_New appDto : lstAppDto) {
 				appDto.setReflectPerState(this.findStatusAppv(lstStatusApproval, appDto.getApplicationID()));
 			}
+			for (AppMasterInfo master : lstApp.getLstMasterInfo()) {
+				master.setStatusFrameAtr(this.findStatusFrame(lstApp.getLstFramStatus(), master.getAppID()));
+			}
 		}
 		return new ApplicationListDto(displaySet, lstApp.getLstMasterInfo(),lstAppDto,lstApp.getLstAppOt(),lstApp.getLstAppGoBack(),
-				lstApp.getAppStatusCount(), lstApp.getLstAppColor());
+				lstApp.getAppStatusCount(), lstApp.getLstTimeColor());
 	}
 	
 	private Integer findStatusAppv(List<AppStatusApproval> lstStatusApproval, String appID){
@@ -89,5 +93,13 @@ public class ApplicationListFinder {
 			}
 		}
 		return null;
+	}
+	private boolean findStatusFrame(List<String> lstFramStatus, String appID){
+		for (String id : lstFramStatus) {
+			if(id.equals(appID)){
+				return true;
+			}
+		}
+		return false;
 	}
 }
