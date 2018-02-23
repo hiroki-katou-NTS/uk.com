@@ -1,27 +1,43 @@
 .contents-area{
 	margin:10px;
 }
-.cmf001_485{
-	font-size: large;
+.cmf001_505{
 	margin-bottom: 3px;
 }
-.cmf001_486{
-	font-size: large;
+.cmf001_508{
 	margin-bottom: 3px;
+}
+.cmf001_515{
+	margin-bottom: 3px;
+}
+.error-ichiran{
+	margin: 5px;
 }
 .settingzyouho{
 	margin-bottom: 15px;
 }
-
+.kekkanaiyou{
+	margin-bottom: 15px;
+}
 .setting-zyouhou {
-	margin: 5px;
+	margin: 10px;
 	box-sizing: border-box;
 }
-
+.kekka-naiyou {
+	margin: 10px;
+	box-sizing: border-box;
+}
+.ichi-ran{
+	margin: 10px;
+}
 table, th, td {
     border: 1px solid black;
 }
-
+.label-4{
+	margin-top: 20px;
+	margin-left: 10px;
+	margin-bottom: 20px;
+}
 .kekka {
 	margin: 5px;
 	box-sizing: border-box;
@@ -31,4 +47,9 @@ table, th, td {
 }
 .button {
 	text-align:center;
+}
+.btn-error-export{
+	float: right;
+	margin-right: 0 !important;
+	margin-bottom: 10px;
 }

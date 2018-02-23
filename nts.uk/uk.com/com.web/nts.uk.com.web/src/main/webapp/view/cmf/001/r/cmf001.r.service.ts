@@ -1,4 +1,4 @@
-module nts.uk.com.view.cmf.q.service {
+module nts.uk.com.view.cmf.r.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths = {

@@ -264,11 +264,37 @@ module nts.uk.com.view.cmf001.share.model {
     
     //screen R, screen S
     export class ImExExecuteResultLog {
+        condCode: KnockoutObservable<string>;
+        condName: KnockoutObservable<string>;
+        startTime: KnockoutObservable<string>;
+        totalCount: KnockoutObservable<string>;
+        normalCount: KnockoutObservable<string>;
+        errorCount: KnockoutObservable<string>;
+        
+        constructor(condCode: string, condName: string, startTime: string, totalCount: string, normalCount: string, errorCount: string) {
+            this.condCode = ko.observable(condCode);
+            this.condName = ko.observable(condName);
+            this.startTime = ko.observable(startTime);
+            this.totalCount = ko.observable(totalCount);
+            this.normalCount = ko.observable(normalCount);
+            this.errorCount = ko.observable(errorCount);
+        }
         
     }
     
     export class ImExErrorLog {
-        
+        recordNumber: number;
+        csvFieldName: string;
+        fieldName: string;
+        fieldValue: string;
+        errorDesciption: string;
+        constructor(recordNumber: number, csvFieldName: string,fieldName: string, fieldValue: string, errorDesciption: string ) {
+            this.recordNumber = recordNumber;
+            this.csvFieldName = csvFieldName;
+            this.fieldName = fieldName;
+            this.fieldValue = fieldValue;
+            this.errorDesciption = errorDesciption;
+        }
     }
 
 }

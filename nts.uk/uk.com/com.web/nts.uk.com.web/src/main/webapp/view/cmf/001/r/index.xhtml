@@ -7,89 +7,93 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 550, height: 620 };</script>
+			<script>var dialogSize = { width: 750, height: 550 };</script>
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="cmf001.q.vm.js" />
-			<com:scriptfile path="cmf001.q.start.js" />
-			<com:scriptfile path="cmf001.q.service.js" />
-			<com:stylefile path="cmf001.q.style.css" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="cmf001.r.vm.js" />
+			<com:scriptfile path="cmf001.r.start.js" />
+			<com:stylefile path="cmf001.r.style.css" />
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area" style="width:400px; height:550px;">
-			 	<com:ko-if bind="isCheckMode() == true">
-					<div><label class="cmf001_485">#{i18n.getText('CMF001_485')}</label></div>
-				</com:ko-if>
-				<com:ko-if bind="isCheckMode() == false">
-				<div><label class="cmf001_486">#{i18n.getText('CMF001_486')}</label></div>
-				</com:ko-if>
-				<div><label class="cmf001_487">#{i18n.getText('CMF001_487')}</label></div>
-				<div class="settingzyouho">
+			<div class="contents-area" style="width:750px; height:550px;">
+			 	<div class="settingzyouho">
+					<div><label class="cmf001_505">#{i18n.getText('CMF001_505')}</label></div>
 					<table class="setting-zyouhou">
 						<tbody>
 							<tr>
-								<td class="bg-green" width='100px'>
-									<label>#{i18n.getText('CMF001_488')}</label>
+								<td class="bg-green" width='150px'>
+									<label>#{i18n.getText('CMF001_506')}</label>
 								</td>
 								<td width='300px'>
-									<label data-bind="text : ankenCode"></label>
-									<label data-bind="text : ankenField"></label>
+									<label data-bind="text : imExExecuteResultLog().condCode"></label>
+									<label data-bind="text : imExExecuteResultLog().condName"></label>
+								</td>
+							</tr>
+							<tr>
+								<td class="bg-green" width='150px'>
+									<label>#{i18n.getText('CMF001_507')}</label>
+								</td>
+								<td width='300px'>
+									<label data-bind="text : imExExecuteResultLog().startTime"></label>
 								</td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
-				<div><label class= "cmf001_489">#{i18n.getText('CMF001_489')}</label></div>
+				
 				<div class="kekkanaiyou">
-					<table class="kekka">
+					<div><label class="cmf001_508">#{i18n.getText('CMF001_508')}</label></div>
+					<table class="kekka-naiyou">
 						<tbody>
 							<tr>
-								<td class="bg-green" width='100px'>
-									<label>#{i18n.getText('CMF001_490')}</label>
+								<td class="bg-green" width='150px'>
+									<label>#{i18n.getText('CMF001_509')}</label>
 								</td>
 								<td width='300px'>
-									<label data-bind="text : keikazikan"></label>
+									<label data-bind="text : imExExecuteResultLog().totalCount"></label>
 								</td>
 							</tr>
 							<tr>
-								<td class="bg-green" width='100px' >
-									<label>#{i18n.getText('CMF001_491')}</label>
+								<td class="bg-green" width='150px'>
+									<label>#{i18n.getText('CMF001_510')}</label>
 								</td>
 								<td width='300px'>
-									<label data-bind="text : shorizyotai"></label>
-									<label data-bind="text : kensuu"></label>
-									<label data-bind="text : kugiri"></label>
-									<label data-bind="text : sou"></label>
-									<label>#{i18n.getText('CMF001_492')}</label>
+									<label data-bind="text : imExExecuteResultLog().normalCount"></label>
 								</td>
 							</tr>
 							<tr>
-								<td class="bg-green" width='100px'>
-									<label>#{i18n.getText('CMF001_493')}</label>
+								<td class="bg-green" width='150px'>
+									<label>#{i18n.getText('CMF001_511')}</label>
 								</td>
 								<td width='300px'>
-									<label data-bind="text : ken"></label>
-									<label>#{i18n.getText('CMF001_494')}</label>
+									<label data-bind="text : imExExecuteResultLog().errorCount"></label>
 								</td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
+				<div class="error-ichiran">
+					<div>
+						<label class="cmf001_515">#{i18n.getText('CMF001_515')}</label>
+						<button id="BTN_ERROR_EXPORT" class="btn-error-export" data-bind="click : errorExport" tabindex="2">#{i18n.getText('CMF001_516')}</button>
+					</div>
+					<div class="ichi-ran" style="margin-left:10px; margin-right:auto" >
+						<table id="single-list" data-bind="ntsGridList: {								
+							height: 350,
+							dataSource: imExErrorLog,
+							columns: columns,
+							showNumbering: true,
+							rows: 13
+						}"></table>
+					</div>
+				</div>
+				<div class="label-4">
+					<div><label>#{i18n.getText('CMF001_523')}</label></div>
+					<div><label>#{i18n.getText('CMF001_524')}</label></div>
+				</div>
 				<div class ="button">
-					<com:ko-if bind="isStopMode() == false">
- 						<button id="BTN_STOP" data-bind="click : stop" tabindex="1">#{i18n.getText('CMF001_495')}</button> 
- 					</com:ko-if>
- 					<com:ko-if bind="isStopMode() == true">
-	 						<com:ko-if bind="isCheckMode() == true">
-								<button id="BTN_IMPORT" data-bind="click : importFile" class="proceed" tabindex="2">#{i18n.getText('CMF001_496')}</button>
-								<button id="BTN_ERROR" data-bind="click : gotoErrorList" tabindex="3">#{i18n.getText('CMF001_497')}</button>
-								<button id="BTN_CLOSE" data-bind="click : close" tabindex="4">#{i18n.getText('CMF001_498')}</button>
-							</com:ko-if>
-							<com:ko-if bind="isCheckMode() == false">
-								<button id="BTN_ERROR" data-bind="click : gotoErrorList" tabindex="3">#{i18n.getText('CMF001_497')}</button>
-								<button id="BTN_CLOSE" data-bind="click : close" tabindex="4">#{i18n.getText('CMF001_498')}</button>
-							</com:ko-if>
-					</com:ko-if>
+					<button id="BTN_CLOSE" class="btn-close" data-bind="click : close" tabindex="1">#{i18n.getText('CMF001_526')}</button>
 				</div>
 			</div>
 		</ui:define>
