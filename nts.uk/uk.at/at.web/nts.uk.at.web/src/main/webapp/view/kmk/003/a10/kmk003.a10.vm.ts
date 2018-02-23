@@ -87,7 +87,7 @@ module a10 {
         
         private bindingNameByCode(code: string) {
             let _self = this;
-            if (code && code != "") {
+            if (!nts.uk.util.isNullOrUndefined(code) && (code != "") && (typeof code == 'string')) {
                 //filter to get name by code
                 let itemPaySetting: any = _.filter(_self.lstBonusPaysetting(), item => item.code == code);
                 _self.bonusPaySettingName(itemPaySetting[0].name);
@@ -110,7 +110,7 @@ module a10 {
             nts.uk.ui.windows.setShared('KDL007_PARAM', param, true);
             nts.uk.ui.windows.sub.modal('/view/kdl/007/a/index.xhtml').onClosed(() => {
                 let listResult = nts.uk.ui.windows.getShared('KDL007_VALUES');
-                if (listResult && listResult.selecteds && !nts.uk.util.isNullOrEmpty(listResult.selecteds[0])) {
+                if (listResult && listResult.selecteds && !nts.uk.util.isNullOrEmpty(listResult.selecteds[0]) && (typeof listResult.selecteds[0] == 'string')) {
                     _self.bonusPaySettingCode(listResult.selecteds[0]);
 //                    _self.bonusPaySettingName(listResult.selecteds[0]);
                 } else {
