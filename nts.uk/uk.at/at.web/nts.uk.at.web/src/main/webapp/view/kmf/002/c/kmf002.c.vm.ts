@@ -170,7 +170,8 @@ module nts.uk.at.view.kmf002.c {
                 _self.commonTableMonthDaySet().fiscalYear.subscribe(function(newValue) {
                     // change year
                     if (!nts.uk.ui.errors.hasError()) {
-                        _self.getDataFromService();    
+                        _self.getDataFromService(); 
+                        _self.findAllEmployeeRegister();
                     }
                 });
             }
