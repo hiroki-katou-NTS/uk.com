@@ -1187,6 +1187,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     // Data not found
                     if (nts.uk.util.isNullOrEmpty(data)) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_317" });
+                        nts.uk.ui.block.clear(); // clear block UI
                         return;
                     }
 
