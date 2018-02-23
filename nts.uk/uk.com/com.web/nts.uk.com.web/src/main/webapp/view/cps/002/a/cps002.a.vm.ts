@@ -526,6 +526,8 @@ module cps002.a.vm {
                     } else {
                         if (!_.find(result, ctg => { return self.initSettingSelectedCode() == ctg.settingCode; })) {
                             self.initSettingSelectedCode(result[0].settingCode);
+                        } else {
+                            self.initSettingSelectedCode.valueHasMutated();
                         }
 
                     }
