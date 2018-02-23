@@ -1,48 +1,53 @@
-module nts.uk.com.view.cmf001.n.viewmodel {
+module nts.uk.com.view.cmf001.o.viewmodel {
     import model = cmf001.share.model;
+    import getText = nts.uk.resource.getText;
+    import lv = nts.layout.validate;
+    import vc = nts.layout.validation;
+
     export class ScreenModel {
+        //wizard
+        stepList: Array<NtsWizardStep> = [];
+        stepSelected: KnockoutObservable<NtsWizardStep> = ko.observable(null);
+        activeStep: KnockoutObservable<number> = ko.observable(0);
 
-        stepList: Array<NtsWizardStep>;
-        stepSelected: KnockoutObservable<NtsWizardStep>;
-        activeStep: KnockoutObservable<number>;
+        listSysType: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
+        selectedSysType: KnockoutObservable<string> = ko.observable('');
 
-        itemList: KnockoutObservableArray<ItemModel>;
-        selectedCode: KnockoutObservable<string>;
-
-        listCategoryItem: KnockoutObservableArray<model.ExternalAcceptanceCategoryItemData>;
-        selectedCategoryItem: KnockoutObservable<string>;
+        listCondition: KnockoutObservableArray<model.ExternalAcceptanceCategoryItemData> = ko.observableArray([]);
+        selectedCategoryItem: KnockoutObservable<string> = ko.observable('');
+        selectedCategoryItemName: KnockoutObservable<string> = ko.observable('');
 
         //upload file
-        stereoType: KnockoutObservable<string>;
-        fileId: KnockoutObservable<string>;
-        filename: KnockoutObservable<string>;
-        fileInfo: KnockoutObservable<any>;
-        textId: KnockoutObservable<string>;
-        accept: KnockoutObservableArray<string>;
-        asLink: KnockoutObservable<boolean>;
-        enable: KnockoutObservable<boolean>;
-        immediate: KnockoutObservable<boolean>;
-        //        onchange: (filename) => void;
-        //        onfilenameclick: (filename) => void;
+        stereoType: KnockoutObservable<string> = ko.observable('');
+        fileId: KnockoutObservable<string> = ko.observable('');
+        filename: KnockoutObservable<string> = ko.observable('');
+        fileInfo: KnockoutObservable<any> = ko.observable("");
+        textId: KnockoutObservable<string> = ko.observable("CMF001_447");
+        accept: KnockoutObservableArray<string> = ko.observableArray(['.csv']);
+        asLink: KnockoutObservable<boolean> = ko.observable(false);
+        enable: KnockoutObservable<boolean> = ko.observable(true);
+
+        //gridlist step2   
+        acquisitionItems: KnockoutObservableArray<AcquisitionItems> = ko.observableArray([]);
+        count: number = 0;
 
         constructor() {
             var self = this;
             self.stepList = [
                 { content: '.step-1' },
-                { content: '.step-2' } 
+                { content: '.step-2' }
             ];
-            self.activeStep = ko.observable(0);
             self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
 
-            self.itemList = ko.observableArray([
+            self.listSysType = ko.observableArray([
                 new model.ItemModel(1, '基本給'),
                 new model.ItemModel(2, '役職手当'),
                 new model.ItemModel(3, '基本給ながい文字列ながい文字列ながい文字列')
             ]);
 
-            self.selectedCode = ko.observable('1');
+            self.selectedSysType = ko.observable(self.listSysType()[0].code);
 
-            self.listCategoryItem = ko.observableArray([
+            self.listCondition = ko.observableArray([
                 new model.ExternalAcceptanceCategoryItemData('001', 'Item 1'),
                 new model.ExternalAcceptanceCategoryItemData('002', 'Item 2'),
                 new model.ExternalAcceptanceCategoryItemData('003', 'Item 3'),
@@ -64,43 +69,70 @@ module nts.uk.com.view.cmf001.n.viewmodel {
                 new model.ExternalAcceptanceCategoryItemData('019', 'Item 4'),
                 new model.ExternalAcceptanceCategoryItemData('020', 'Item 5')
             ]);
-            self.selectedCategoryItem = ko.observable('001');
 
-            //upload file
-            this.fileId = ko.observable("");
-            this.filename = ko.observable("");
-            this.fileInfo = ko.observable("");
-            this.accept = ko.observableArray([".png", '.gif', '.jpg', '.jpeg']);
-            this.textId = ko.observable("CMF001_447");
-            this.asLink = ko.observable(false);
-            this.enable = ko.observable(true); 
-            //            this.onchange = (filename) => {
-            //                console.log(filename);
-            //            };
-            //            this.onfilenameclick = (filename) => {
-            //                alert(filename);
-            //            };
+            self.selectedCategoryItem = ko.observable(self.listCondition()[0].itemCode());
+            self.selectedCategoryItemName = ko.observable(self.listCondition()[0].itemName());
+            self.selectedCategoryItem.subscribe(function(data: any) {
+                if (data) {
+                    let item = _.find(ko.toJS(self.listCondition), (x: model.ExternalAcceptanceCategoryItemData) => x.itemCode == data);
+                    self.selectedCategoryItemName(item.itemName);
+                }
+            });
+
+            //grid list step2
+            self.count = 0;
+            self.acquisitionItems = ko.observableArray([]);
+            for (let i = 1; i < 12; i++) {
+                self.acquisitionItems.push(new AcquisitionItems('00' + i, '基本給', "description " + i, "基本給" + i, "基本給" + i + i));
+            }
+            self.count = self.acquisitionItems().length;
+            $("#grd_Acquisition").ntsGrid({
+                height: '384',
+                dataSource: this.acquisitionItems(),
+                primaryKey: 'id',
+                multiple: false,
+                showNumbering: true,
+                columns: [
+                    { headerText: '', key: 'id', width: 50, hidden: true },
+                    { headerText: getText('CMF001_471'), key: 'infoName', width: 130 },
+                    { headerText: getText('CMF001_472'), key: 'itemName', width: 180 },
+                    { headerText: getText('CMF001_473'), key: 'sampleData', width: 120 },
+                    { headerText: getText('CMF001_474'), key: 'itemType', width: 120 },
+                    { headerText: getText('CMF001_475'), key: 'id', width: 100, unbound: true, template: '<i data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: previous"></i>' },
+                    { headerText: getText('CMF001_476'), key: 'id', width: 100, unbound: true, template: '<i data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: aa"></i>' }
+                ]
+            })
         }
 
-        begin() {
-            $('#O2_1_wizard').ntsWizard("begin");
+        //wizard
+        isError() {
+            let self = this;
+            debugger;
+            if (self.activeStep() == 0) {
+                $(".form_step0").trigger("validate");
+            } else {
+         
+            }
+            if (nts.uk.ui.errors.hasError()) {
+                return true;
+            }
+            return false;
         }
-        end() {
-            $('#O2_1_wizard').ntsWizard("end");
-        }
+
         next() {
-            $('#O2_1_wizard').ntsWizard("next");
+            let self = this;
+            if (!self.isError()) {
+                $('#ex_accept_wizard').ntsWizard("next");
+            }
+
         }
         previous() {
-            $('#O2_1_wizard').ntsWizard("prev");
+            $('#ex_accept_wizard').ntsWizard("prev");
         }
-        getCurrentStep() {
-            alert($('#O2_1_wizard').ntsWizard("getCurrentStep"));
-        }
-        goto() {
-            var index = this.stepList.indexOf(this.stepSelected());
-            $('#O2_1_wizard').ntsWizard("goto", index);
-        }
+
+        //        getCurrentStep() {
+        //            return $('#ex_accept_wizard').ntsWizard("getCurrentStep")
+        //        }
 
         //file upload
         upload() {
@@ -110,6 +142,26 @@ module nts.uk.com.view.cmf001.n.viewmodel {
             }).fail(function(err) {
                 nts.uk.ui.dialog.alertError(err);
             });
+        }
+
+        //gridlist step2
+        aa(id) {
+            alert("hey");
+        }
+    }
+
+    class AcquisitionItems {
+        id: string;
+        infoName: string;
+        itemName: string;
+        sampleData: string;
+        itemType: string;
+        constructor(id: string, infoName: string, itemName: string, sampleData: string, itemType: string) {
+            this.id = id;
+            this.infoName = infoName;
+            this.itemName = itemName;
+            this.sampleData = sampleData;
+            this.itemType = itemType;
         }
     }
 }

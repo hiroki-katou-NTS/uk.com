@@ -144,12 +144,16 @@ module nts.uk.com.view.cmf001.share.model {
     export class AcceptanceCodeConvert {
         convertCode: KnockoutObservable<string>;
         convertName: KnockoutObservable<string>;
+        dispConvertCode: string;
+        dispConvertName: string;
         convertDetails: KnockoutObservableArray<CodeConvertDetail>;
         acceptCodeWithoutSettings: KnockoutObservable<number>;
         
         constructor(code: string, name: string, details: Array<CodeConvertDetail>, acceptWithoutSettings: number) {
             this.convertCode = ko.observable(code);
             this.convertName = ko.observable(name);
+            this.dispConvertCode = code;
+            this.dispConvertName = name;
             this.convertDetails = ko.observableArray(details);
             this.acceptCodeWithoutSettings = ko.observable(acceptWithoutSettings);
         }

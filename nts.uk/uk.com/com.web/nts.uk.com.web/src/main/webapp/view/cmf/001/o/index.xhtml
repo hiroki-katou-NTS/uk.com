@@ -7,21 +7,21 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:stylefile path="cmf001.n.style.css" />
+			<com:stylefile path="cmf001.o.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
-			<com:scriptfile path="cmf001.n.start.js" />
-			<com:scriptfile path="cmf001.n.vm.js" />
+			<com:scriptfile path="cmf001.o.start.js" />
+			<com:scriptfile path="cmf001.o.vm.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- Go back Style -->
 				<a class="goback"
-					data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('CMF001_430')}</a>
+					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF001_430')}</a>
 			</div>
 			<div id="contents-area">
-				<div id="O2_1_wizard" style="width: 1200px"
+				<div id="ex_accept_wizard"
 					data-bind="ntsWizard: {active: activeStep, steps: stepList, theme: 'yellow'}"
 					class="cf">
 					<div class="header">
@@ -37,25 +37,19 @@
 					</div>
 					<div class="contents">
 						<div class="step-1">
-							<div class="label">#{i18n.getText('CMF001_436')}</div>
-							<table style="margin-bottom: 15px">
+							<div class="label" style="margin-bottom: 15px;">#{i18n.getText('CMF001_436')}</div>
+							<table style="margin-bottom: 15px; margin-left: 20px">
 								<tr>
-									<td style="padding-left: 20px">
-										<div class="label">#{i18n.getText('CMF001_437')}</div>
-									</td>
-									<td style="padding-left: 20px">
-										<div class="label">ユーザ設定</div>
-									</td>
-									<td style="padding-left: 40px">
+									<td style="padding-right: 20px;">
 										<div class="label">#{i18n.getText('CMF001_442')}</div>
 									</td>
-									<td style="padding-left: 20px">
-										<div id="combo-box"
+									<td>
+										<div id="cbbSysType"
 											data-bind="ntsComboBox: {
-													options: itemList,
+													options: listSysType,
 													optionsValue: 'code',
 													visibleItemsCount: 5,
-													value: selectedCode,
+													value: selectedSysType,
 													optionsText: 'name',
 													columns: [
 														{ prop: 'name', length: 10 }
@@ -65,23 +59,24 @@
 							</table>
 							<table style="width: 100%;">
 								<tr>
-									<td rowspan="2" style="width: 300px;">
-										<div class="" style="width: 300px; float: left;">
+									<td rowspan="2" style="width: 360px;">
+										<div class="" style="width: 360px; float: left;">
 											<div
-												data-bind="ntsPanel:{width: '260px', height: '450px', direction: 'none', showIcon: true, visible: true}">
+												data-bind="ntsPanel:{width: '320px', height: '464px', direction: 'none', showIcon: true, visible: true}">
 												<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_438')}</div>
-												<div tabindex="7" style="width: 260px"
+												<div tabindex="7" style="width: 320px"
 													data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'dispItemCode', comId: 'O4_4', 
-													items: listCategoryItem, selected: selectedCategoryItem, selectedKey: 'dispItemCode', fields: ['dispItemName'], mode: 'igGrid'}" />
+													items: listCondition, selected: selectedCategoryItem, selectedKey: 'dispItemCode', fields: ['dispItemCode', 'dispItemName'], mode: 'igGrid'}" />
 												<table id="O4_4"
 													data-bind="ntsGridList: {
-													height: 370,
+													height: 384,
 													name: '#[CMF001_39]', 
-				 									dataSource: listCategoryItem,
+				 									dataSource: listCondition,
 													primaryKey: 'dispItemCode', 
+													showNumbering: true,
 				 									columns: [
-										                { headerText: '#{i18n.getText('CMF001_440')}', key: 'dispItemCode', width: 50, formatter: _.escape },
-										                { headerText: '#{i18n.getText('CMF001_441')}', key: 'dispItemName', width: 193, formatter: _.escape }
+										                { headerText: '#{i18n.getText('CMF001_440')}', key: 'dispItemCode', width: 60, formatter: _.escape },
+										                { headerText: '#{i18n.getText('CMF001_441')}', key: 'dispItemName', width: 220, formatter: _.escape }
 										            ], 
 													multiple: false,
 													value: selectedCategoryItem}">
@@ -91,13 +86,17 @@
 									</td>
 									<td style="vertical-align: top">
 										<div class="panel panel-frame"
-											style="margin-left: 20px; height: 70px">
+											style="margin-left: 20px; height: 75px">
 											<table style="margin-bottom: 10px">
 												<tr>
 													<td style="padding: 5px 10px"><label>#{i18n.getText('CMF001_444')}</label>
 													</td>
-													<td style="padding: 5px 10px"><label>001</label></td>
-													<td style="padding: 5px 10px"><label>asdsadsadasd</label>
+													<td style="padding: 5px 10px">
+														<div class="label" data-bind="text: selectedCategoryItem"></div>
+													</td>
+													<td style="padding: 5px 10px">
+														<div class="label"
+															data-bind="text: selectedCategoryItemName"></div>
 													</td>
 												</tr>
 											</table>
@@ -107,30 +106,100 @@
 														<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF001_445')}</div>
 													</td>
 													<td>
-														<div id="file-upload" style="display: inline-block;"
+														<div id="file-upload" class="form_step0" style="display: inline-block;"
 															data-bind="ntsFileUpload:{
 																	filename: filename,
 																	accept: accept,
 																	text: textId,
 																	aslink: false,
-																	enable: true													
+																	enable: true,
+																	required:true											
 																}">
 														</div>
 													</td>
 												</tr>
-											</table>											
+											</table>
 										</div>
 									</td>
 								</tr>
 								<tr>
-									<td style="vertical-align: bottom; padding-left: 20px;">
-										<button>#{i18n.getText('CMF001_448')}</button>
-										<button class="danger x-large" style="margin-left: 10px">#{i18n.getText('CMF001_449')}</button>
+									<td style="vertical-align: bottom; padding-left: 10px;">
+										<button class="proceed x-large" style="margin-left: 10px"
+											data-bind="click: next">#{i18n.getText('CMF001_449')}</button>
 									</td>
 								</tr>
 							</table>
 						</div>
-						<div class="step-2">contents step2</div>
+						<div class="step-2">
+							<div class="label">#{i18n.getText('CMF001_461')}</div>
+							<table style="margin: 0 20px 15px 20px; width: calc(100% - 40px)">
+								<colgroup>
+									<col width="110px" />
+									<col width="50px" />
+									<col width="160px" />
+									<col width="160px" />
+									<col width="25px" />
+									<col width="150px" />
+								</colgroup>
+								<tr>  
+									<td style="padding: 5px 0;">
+										<div class="label">#{i18n.getText('CMF001_462')}</div>
+									</td>
+									<td>
+										<div class="label" data-bind="text: selectedCategoryItem"></div>
+									</td>
+									<td>
+										<div class="label" data-bind="text: selectedCategoryItemName"></div>
+									</td>
+									<td>
+										<div class="label">#{i18n.getText('CMF001_463')}</div>
+									</td>
+									<td>
+										<div class="label">2</div>
+									</td>
+									<td>
+										<div class="label">#{i18n.getText('CMF001_464')}</div>
+									</td>
+								</tr>
+								<tr>
+									<td style="padding: 5px 0;">
+										<div class="label">#{i18n.getText('CMF001_465')}</div>
+									</td>
+									<td colspan="2">
+										<div class="label" data-bind="text: filename"></div>
+									</td>
+									<td style="">
+										<div class="label">#{i18n.getText('CMF001_466')}</div>
+									</td>
+									<td style="">
+										<div class="label">3</div>
+									</td>
+									<td style="">
+										<div class="label">#{i18n.getText('CMF001_467')}</div>
+									</td>
+								</tr>
+							</table>
+							<div class="label" style="margin-bottom: 5px;">#{i18n.getText('CMF001_468')}</div>
+							<table id="grd_Acquisition"></table>
+							
+							<table style="margin-top: 5px; margin-bottom: 10px;">
+								<tr>
+									<td width="80"><div class="label">#{i18n.getText('CMF001_477')}</div></td>
+									<td style="padding-right: 5px;"><div class="label"
+											style="font-size: 1.5em;" data-bind="text: count"></div></td>
+									<td><div class="label">#{i18n.getText('CMF001_478')}</div></td>
+								</tr>
+							</table>
+							<table style="width: 100%">
+								<tr>
+									<td style="text-align: center;">
+										<button data-bind="click: previous">#{i18n.getText('CMF001_479')}</button>
+										<button class="proceed x-large" style="margin-left: 10px"
+											data-bind="click: next">#{i18n.getText('CMF001_480')}</button>
+									</td>
+								</tr>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
