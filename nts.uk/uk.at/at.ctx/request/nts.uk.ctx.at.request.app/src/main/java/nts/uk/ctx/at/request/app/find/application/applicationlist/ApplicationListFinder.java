@@ -79,7 +79,7 @@ public class ApplicationListFinder {
 			}
 		}
 		return new ApplicationListDto(displaySet, lstApp.getLstMasterInfo(),lstAppDto,lstApp.getLstAppOt(),lstApp.getLstAppGoBack(),
-				lstApp.getAppStatusCount());
+				lstApp.getAppStatusCount(), lstApp.getLstAppColor());
 	}
 	
 	private Integer findStatusAppv(List<AppStatusApproval> lstStatusApproval, String appID){
