@@ -1010,7 +1010,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     baseDate = moment.utc((self.baseDate()).format("YYYY/MM"), "YYYY/MM"); 
                 } 
                 
-                if (baseDate.isBefore(self.periodStart) || baseDate.isAfter(self.periodEnd)) {
+                if (baseDate.isBefore(self.periodStart()) || baseDate.isAfter(self.periodEnd())) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_765" });
                     return false;
                 }
