@@ -209,10 +209,8 @@
 	float: left;
 }
 #functions-area {
-	display: -webkit-box;
-	display: -moz-box;
-	display: -ms-box;
-	display: box;}
+	display: flex;
+}
 .fixed-flex-layout-left {
 	width: 100%;
 }
