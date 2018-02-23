@@ -36,10 +36,8 @@ module nts.uk.com.view.ccg.share.ccg {
 
             /** Required parameter */
             baseDate: KnockoutObservable<moment.Moment>;
-            periodStartDate: KnockoutObservable<moment.Moment>;
-            periodEndDate: KnockoutObservable<moment.Moment>;
-            periodStartYm: KnockoutObservable<moment.Moment>;
-            periodEndYm: KnockoutObservable<moment.Moment>;
+            periodStart: KnockoutObservable<moment.Moment>;
+            periodEnd: KnockoutObservable<moment.Moment>;
 
             /** Quick search tab options */
             isAllReferableEmployee: boolean; // 参照可能な社員すべて
@@ -162,10 +160,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.selectedClosure = ko.observable(null);
 
                 self.baseDate = ko.observable(moment());
-                self.periodStartDate = ko.observable(moment());
-                self.periodEndDate = ko.observable(moment());
-                self.periodStartYm = ko.observable(moment());
-                self.periodEndYm = ko.observable(moment());
+                self.periodStart = ko.observable(moment());
+                self.periodEnd = ko.observable(moment());
                 
                 self.incumbentDatasource = ko.observableArray([
                     { code: true, name: nts.uk.resource.getText("CCG001_40") },
@@ -203,11 +199,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 
                 //check show button Apply
                 self.showApplyBtn = ko.computed(() => {
-                    if (self.showPeriodYM){
-                        return self.baseDate() && self.periodStartYm() && self.periodEndYm() ? true : false;
-                    } else { 
-                         return self.baseDate() && self.periodStartDate() && self.periodEndDate() ? true : false;
-                    }
+                    return self.baseDate() && self.periodStart() && self.periodEnd() ? true : false;
                 });
                 
                 self.isExpanded = ko.observable(false);
@@ -502,10 +494,8 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 /** Required parameter */
                 self.baseDate(moment.utc(options.baseDate));
-                self.periodStartDate(moment.utc(options.periodStartDate));
-                self.periodEndDate(moment.utc(options.periodEndDate));
-                self.periodStartYm(moment.utc(options.periodStartDate));
-                self.periodEndYm(moment.utc(options.periodEndDate));
+                self.periodStart(moment.utc(options.periodStartDate));
+                self.periodEnd(moment.utc(options.periodEndDate));
                 self.selectedIncumbent(options.inService);
                 self.selectedLeave(options.leaveOfAbsence);
                 self.selectedClosed(options.closed);
@@ -737,33 +727,15 @@ module nts.uk.com.view.ccg.share.ccg {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_853" });
                     return false;
                 }
-                if (self.isFutureDate(self.getPeriodEnd())) {
+                if (self.isFutureDate(self.periodEnd())) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_860" });
                     return false;
                 }
                 return true;
             }
 
-            private getPeriodStart(): moment.Moment {
-                let self = this;
-                if (self.showPeriodYM) {
-                    return self.periodStartYm();
-                } else {
-                    return self.periodStartDate();
-                }
-            }
-
             private isFutureDate(date: moment.Moment): boolean {
                 return date.isAfter(moment());
-            }
-
-            private getPeriodEnd(): moment.Moment {
-                let self = this;
-                if (self.showPeriodYM) {
-                    return self.periodEndYm();
-                } else {
-                    return self.periodEndDate();
-                }
             }
 
             /**
@@ -805,8 +777,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 let dfd = $.Deferred<void>();
                 let self = this;
                 // set advanced search param
-                self.queryParam.periodStart = self.getPeriodStart().format(CcgDateFormat.DEFAULT_FORMAT);
-                self.queryParam.periodEnd = self.getPeriodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
+                self.queryParam.periodStart = self.periodStart().format(CcgDateFormat.DEFAULT_FORMAT);
+                self.queryParam.periodEnd = self.periodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
                 self.queryParam.retireStart = self.statusPeriodStart().format(CcgDateFormat.DEFAULT_FORMAT);
                 self.queryParam.retireEnd = self.statusPeriodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
 
@@ -985,8 +957,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 let dto = <Ccg001ReturnedData>{};
                 dto.baseDate = self.queryParam.baseDate;
                 dto.closureId = self.showClosure ? self.selectedClosure() : undefined;
-                dto.periodStart = self.periodStartDate().toISOString();
-                dto.periodEnd = self.periodEndDate().toISOString();
+                dto.periodStart = self.periodStart().toISOString();
+                dto.periodEnd = self.periodEnd().toISOString();
                 dto.listEmployee = listEmployee;
                 return dto;
             }
@@ -1001,12 +973,12 @@ module nts.uk.com.view.ccg.share.ccg {
                     dfd.resolve(self.baseDate().format(CcgDateFormat.DEFAULT_FORMAT));
                 } else {
                     if (self.showPeriodYM) { // Period accuracy is YM 
-                        service.calculatePeriod(self.selectedClosure(), parseInt(self.periodEndYm().format('YYYYMM')))
+                        service.calculatePeriod(self.selectedClosure(), parseInt(self.periodEnd().format('YYYYMM')))
                             .done(date => {
                                 return dfd.resolve(date);
                             });
                     } else { // Period accuracy is YMD
-                        dfd.resolve(self.periodEndDate().format(CcgDateFormat.DEFAULT_FORMAT));
+                        dfd.resolve(self.periodEnd().format(CcgDateFormat.DEFAULT_FORMAT));
                     }
                 }
                 return dfd.promise();
@@ -1031,14 +1003,12 @@ module nts.uk.com.view.ccg.share.ccg {
 
             public isBaseDateInTargetPeriod(): boolean {
                 let self = this;
-                const periodStart = self.getPeriodStart();
-                const periodEnd = self.getPeriodEnd();
                 let baseDate = self.baseDate();
                 if(self.showPeriodYM){
                     baseDate = moment.utc((self.baseDate()).format("YYYY/MM"), "YYYY/MM"); 
                 } 
                 
-                if (baseDate.isBefore(periodStart) || baseDate.isAfter(periodEnd)) {
+                if (baseDate.isBefore(self.periodStart) || baseDate.isAfter(self.periodEnd)) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_765" });
                     return false;
                 }

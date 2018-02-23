@@ -44,14 +44,14 @@
 									data-bind="ntsDatePicker: {
 										name: '#[CCG001_30]',
 										dateFormat: 'YYYY/MM/DD',
-										value: periodStartDate,
+										value: periodStart,
 										required: true }"></div>
 								<label>～</label>
 								<div id="inp-period-endYMD" tabindex="3"
 									data-bind="ntsDatePicker: {
 										name: '#[CCG001_31]',
 										dateFormat: 'YYYY/MM/DD',
-										value: periodEndDate,
+										value: periodEnd,
 										required: true }"></div>
 							</com:ko>
 							<com:ko tag="if" bind="showPeriodYM">
@@ -59,14 +59,14 @@
 									data-bind="ntsDatePicker: {
 										name: '#[CCG001_30]',
 										dateFormat: 'YYYY/MM',
-										value: periodStartYm,
+										value: periodStart,
 										required: true }"></div>
 								<label>～</label>
 								<div id="inp-period-endYM" tabindex="3"
 									data-bind="ntsDatePicker: {
 										name: '#[CCG001_31]',
 										dateFormat: 'YYYY/MM',
-										value: periodEndYm,
+										value: periodEnd,
 										required: true }"></div>
 							</com:ko>
 						</div>
