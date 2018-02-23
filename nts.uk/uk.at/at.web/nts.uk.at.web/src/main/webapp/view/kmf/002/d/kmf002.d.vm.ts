@@ -72,6 +72,9 @@ module nts.uk.at.view.kmf002.d {
             private catchChangeSelectEmp(): void {
                 let _self = this;
                 _self.selectedCode.subscribe(function(codeEmployee) {
+                    if (_.isEmpty(codeEmployee)) {
+                        return;
+                    }
                     _self.commonTableMonthDaySet().infoSelect2(codeEmployee);
                     _self.commonTableMonthDaySet().infoSelect3(_self.findEmploymentSelect(codeEmployee));
                     _self.getDataFromService();

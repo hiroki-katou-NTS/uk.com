@@ -25,6 +25,7 @@ module nts.uk.at.view.kmf002.d {
         }
         
         export function find(year: string, employmentCode: string): JQueryPromise<any> {
+            employmentCode = _.isNull(employmentCode) || _.isEmpty(employmentCode) ? null : employmentCode;
             return nts.uk.request.ajax("at", path.find + "/" + year + "/" + employmentCode);
         }
         
