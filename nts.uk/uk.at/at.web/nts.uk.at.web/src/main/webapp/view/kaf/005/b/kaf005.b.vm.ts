@@ -572,9 +572,12 @@ module nts.uk.at.view.kaf005.b {
                     let endTime = self.restTime()[i].endTime();
                     let attendanceId = self.restTime()[i].attendanceID();
                     let frameNo = self.restTime()[i].frameNo();
-                    if(!self.validateTime(startTime, endTime, 'input#restTimeStart_'+attendanceId+'_'+frameNo)){
-                        return false;
-                    };
+                    if(!nts.uk.util.isNullOrEmpty(startTime) && startTime != ""){
+                        if(!self.validateTime(startTime, endTime, 'input#restTimeStart_'+attendanceId+'_'+frameNo)){
+                            return false;
+                        };
+                    }
+                    
                 }
                 return true;            
             }
