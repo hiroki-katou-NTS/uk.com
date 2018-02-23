@@ -196,27 +196,62 @@
 										</tr>
 									</thead>
 									<tbody data-bind="foreach: currentCategory().itemList()">
-												<td id="name" class='input-units-1'
-													data-bind="css:{ 
-											requiredCell: isRequired(), 
-											notrequiredCell:!isRequired()}">
+												<td id="name" class='input-units-1' data-bind="css:{ 
+													requiredCell: isRequired(), 
+													notrequiredCell:!isRequired()}">
 													<abbr data-bind="attr:{'title': getTitle}"><span class="months-input" data-bind="text: itemName" /></abbr>
 												</td>
 												<td class="input-units-2">
+												    <com:ko-if bind ="(categoryType === 3) &amp; (index === 2) ">
 													<div id="combo-box"
 														data-bind="ntsComboBox: {
-												options: listComboItem,
-												optionsValue: 'code',
-												value: selectedRuleCode,
-												optionsText: 'name',
-												editable: false,
-												visibleItemsCount: 5,
-												enable: true,
-												dropDownAttachedToBody:true,
-												columns: [
-													{ prop: 'name', length: 10 },
-												]}"></div>
-
+														options: listComboItem,
+														optionsValue: 'code',
+														value: selectedRuleCode,
+														optionsText: 'name',
+														editable: false,
+														visibleItemsCount: 5,
+														enable: false,
+														dropDownAttachedToBody:true,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}">
+													</div>
+													</com:ko-if>
+													
+												    <com:ko-if bind ="(categoryType === 3) &amp; (index !== 2) ">
+													<div id="combo-box"
+														data-bind="ntsComboBox: {
+														options: listComboItem,
+														optionsValue: 'code',
+														value: selectedRuleCode,
+														optionsText: 'name',
+														editable: false,
+														visibleItemsCount: 5,
+														enable: false,
+														dropDownAttachedToBody:true,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}">
+													</div>
+													</com:ko-if>
+																										
+												    <com:ko-if bind ="[ 1, 2, 3, 4, 5, 6, undefined].indexOf(categoryType) >  -1 ">
+													<div id="combo-box"
+														data-bind="ntsComboBox: {
+														options: listComboItem,
+														optionsValue: 'code',
+														value: selectedRuleCode,
+														optionsText: 'name',
+														editable: false,
+														visibleItemsCount: 5,
+														enable: true,
+														dropDownAttachedToBody:true,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}">
+													</div>
+													</com:ko-if>													
 												</td>
 
 												<com:ko-if

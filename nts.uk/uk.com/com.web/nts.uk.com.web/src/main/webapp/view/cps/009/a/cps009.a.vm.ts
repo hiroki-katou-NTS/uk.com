@@ -98,13 +98,18 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         // get item list
         getItemList(settingId: string, ctgId: string) {
-            let self = this;
+            let self = this,
+            i: number = 0;
+            currentCtg = self.findCtg(self.currentCategory().ctgList(), ctgId);
             self.currentCategory().itemList.removeAll();
             service.getAllItemByCtgId(settingId, ctgId).done((item: Array<IPerInfoInitValueSettingItemDto>) => {
                 if (item.length > 0) {
                     let itemConvert = _.map(item, function(obj: IPerInfoInitValueSettingItemDto) {
                         primitiveConst(obj);
+                        i = i + 1;
                         return new PerInfoInitValueSettingItemDto({
+                            categoryType: currentCtg.categoryType,
+                            index : i ,    
                             fixedItem: obj.fixedItem,
                             perInfoItemDefId: obj.perInfoItemDefId,
                             settingId: obj.settingId,
@@ -138,6 +143,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             stringItemLength: obj.stringItemLength,
                             stringItemDataType: obj.stringItemDataType
                         });
+                        
                     });
 
                     self.currentCategory().itemList.removeAll();
@@ -697,6 +703,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
         // dung de phan biet category thuoc dang lich su lien tuc thi cot 2
         // cua itemList se ko hoat dong
         categoryType: number;
+        
+        indexItem : number;
     }
 
     export class PerInfoInitValueSettingItemDto {
@@ -764,10 +772,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
         getTitle: KnockoutObservable<string> = ko.observable("");
         
         categoryType: number;
+        indexItem: number = 0;
         constructor(params: IPerInfoInitValueSettingItemDto) {
             let self = this;
             
             self.categoryType = params.categoryType;
+            self.indexItem = params.index;
             self.getTitle(self.getWidthText(params.itemName) > 200 ? params.itemName : "");
             self.fixedItem = params.fixedItem;
             self.perInfoItemDefId = ko.observable(params.perInfoItemDefId || "");
