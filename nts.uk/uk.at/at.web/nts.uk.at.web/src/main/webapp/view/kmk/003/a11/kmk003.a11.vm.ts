@@ -19,8 +19,11 @@ module a11 {
      */
     class ScreenModel {
 
+        selectedTab: KnockoutObservable<string>;
+        
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
+        isSimpleMode: KnockoutObservable<boolean>;
         
         // Screen data model
         model: MainSettingModel;
@@ -52,8 +55,9 @@ module a11 {
         /**
         * Constructor.
         */
-        constructor(screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
-            let _self = this;
+        constructor(selectedTab: KnockoutObservable<string>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
+            let _self = this;           
+            _self.selectedTab = selectedTab;
             
             // Check exist
             if (nts.uk.util.isNullOrUndefined(model) || nts.uk.util.isNullOrUndefined(settingEnum)) {
@@ -74,9 +78,15 @@ module a11 {
             _self.settingEnum = settingEnum;
             _self.bindingData();   
     
-            // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);
             _self.isDetailMode.subscribe(newValue => {
+                // Nothing to do
+                if ($('.nts-editor').ntsError("hasError") == true) {
+                    $('.nts-input').ntsError('clear');
+                }
+            });                                  
+            _self.isSimpleMode = ko.observable(null);
+            _self.isSimpleMode.subscribe(newValue => {
                 // Nothing to do
                 if ($('.nts-editor').ntsError("hasError") == true) {
                     $('.nts-input').ntsError('clear');
@@ -85,6 +95,7 @@ module a11 {
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
                 value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
+                value == TabMode.SIMPLE ? _self.isSimpleMode(true) : _self.isSimpleMode(false); 
             });                  
             
             _self.model.isChangeItemTable.subscribe(newValue => {
@@ -97,7 +108,8 @@ module a11 {
          */
         public startTab(screenMode: any): void {
             let _self = this;
-            screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);          
+            screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false); 
+            screenMode() == TabMode.SIMPLE ? _self.isSimpleMode(true) : _self.isSimpleMode(false);         
         }
         
         /**
@@ -156,7 +168,38 @@ module a11 {
                     }
                 }
             });
-        }   
+        }  
+        
+        /**
+         * Handle when using tab button
+         */
+        public changeTab(data: any, e: any) {
+            let _self = this;
+            if (e.which == 9) {
+                if (_self.isDetailMode()) {
+                    let tabindex = e.target.attributes.tabindex.value;
+                    if (nts.uk.util.isNullOrUndefined(tabindex)) {
+                        return;    
+                    } 
+                    
+                    if (tabindex === '145' && !_self.fromOverTimeUseDivision()) {
+                        _self.selectedTab('tab-12');  
+                    } else if (tabindex === '147' && _self.fromOverTimeUseDivision() && _self.fromOverTimeSubHolTransferSetAtr() === 0) {
+                        _self.selectedTab('tab-12');  
+                    } else if (tabindex === '148' && _self.fromOverTimeUseDivision() && _self.fromOverTimeSubHolTransferSetAtr() === 1) {
+                        _self.selectedTab('tab-12');  
+                    } else {      
+                        if (_self.fromOverTimeSubHolTransferSetAtr() === 1) {
+                            $("[tabindex='148']").focus();
+                        } else {
+                            $("[tabindex='" + (Number(tabindex) + 1).toString() + "']").focus();
+                        }                                         
+                    }  
+                } else {
+                    _self.selectedTab('tab-12');  
+                }              
+            }
+        }
     }     
    
     /**
@@ -191,7 +234,7 @@ module a11 {
             let model = input.model;
             let settingEnum = input.enum;
     
-            let screenModel = new ScreenModel(screenMode, model, settingEnum);
+            let screenModel = new ScreenModel(input.selectedTab, screenMode, model, settingEnum);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

@@ -7,7 +7,7 @@
 	<div class="tab-rows">
 		<div style="width: 150px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_122')}</div>			
 		<div class="tab-inline-item">
-			<div tabindex="166" class="cf" data-bind="ntsSwitchButton: {
+			<div tabindex="166" class="cf" data-bind="event: { keydown: changeTab }, ntsSwitchButton: {
 				name: '#[KMK003_122]',
 				options: listZeroHStraddCalculateSetting,
 				optionsValue: 'value',

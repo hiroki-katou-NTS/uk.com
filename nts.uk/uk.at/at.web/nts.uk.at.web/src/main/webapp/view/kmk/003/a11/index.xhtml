@@ -9,7 +9,7 @@
    	</com:ValidatorScript>	
 	
 	<!-- DETAIL MODE -->
-	<com:ko tag="if" bind="isDetailMode()">
+	<com:ko tag="if" bind="isDetailMode">
 	<div class="tab-rows">
 		<div style="width: 300px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_104')}</div>		
 	</div>
@@ -90,7 +90,7 @@
 					<div tabindex="144" data-bind="ntsCheckBox: { 
 							name: '#[KMK003_109]',
 							checked: fromOverTimeUseDivision }">#{i18n.getText('KMK003_109')}</div>
-					<div tabindex="145">
+					<div tabindex="145" data-bind="event: { keydown: changeTab }">
 						<div class="padding-radio">
 							<label class="ntsRadioBox">
 								<input class="inputRadioOT" type="radio" data-bind="checkedValue: 0, 
@@ -115,7 +115,7 @@
 								<div class="tab-inline-item" style="width: 60px; text-align: center;">
 									<label>#{i18n.getText('KMK003_107')}</label>
 								</div>
-								<input id="haflDayTimeOT" tabindex="147" style="width: 60px;" data-bind="ntsTimeEditor: {
+								<input id="haflDayTimeOT" tabindex="147" style="width: 60px;" data-bind="event: { keydown: changeTab }, ntsTimeEditor: {
 									name:'#[KMK003_107]',
 									value: fromOverTimeHalfDayTime,
 									constraint:'OneDayTime',
@@ -136,7 +136,7 @@
 							<div class="padding-time">
 								<div class="tab-inline-item" style="width: 60px; text-align: center;">
 								</div>
-								<input id="certainDayTimeOT" tabindex="148" style="width: 60px;" data-bind="ntsTimeEditor: {
+								<input id="certainDayTimeOT" tabindex="148" style="width: 60px;" data-bind="event: { keydown: changeTab }, ntsTimeEditor: {
 									name:'#[KMK003_108]',
 									value: fromOverTimeCertainTime,
 									constraint:'OneDayTime',
@@ -154,7 +154,7 @@
 	</com:ko>
 	
 	<!-- SIMPLE MODE -->
-	<com:ko tag="ifnot" bind="isDetailMode()">
+	<com:ko tag="if" bind="isSimpleMode">
 	<div class="tab-rows">
 		<div style="width: 300px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_104')}</div>		
 	</div>
@@ -172,7 +172,7 @@
 				<div class="tab-inline-item" style="width: 50px;">
 					<label>#{i18n.getText('KMK003_42')}</label>
 				</div>
-				<input id="oneDayTimeHol" tabindex="2" style="width: 60px;" data-bind="ntsTimeEditor: {
+				<input id="oneDayTimeHol" tabindex="139" style="width: 60px;" data-bind="ntsTimeEditor: {
 						name:'#[KMK003_42]',
 						value: workdayOffTimeOneDayTime,
 						constraint:'OneDayTime',
@@ -184,7 +184,7 @@
 				<div class="tab-inline-item" style="width: 50px;">
 					<label>#{i18n.getText('KMK003_107')}</label>
 				</div>				
-				<input id="haflDayTimeHol" tabindex="3" style="width: 60px;" data-bind="ntsTimeEditor: {
+				<input id="haflDayTimeHol" tabindex="140" style="width: 60px;" data-bind="event: { keydown: changeTab }, ntsTimeEditor: {
 						name:'#[KMK003_107]',
 						value: workdayOffTimeHalfDayTime,
 						constraint:'OneDayTime',
