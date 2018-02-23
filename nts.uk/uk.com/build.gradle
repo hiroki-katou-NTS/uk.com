@@ -864,13 +864,13 @@ project (':com.web:nts.uk.com.web') {
 		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pubimp', version: '0.5.18.2'
 		
 		// shr find implement
-		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: '0.1'
-		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.app', version: '0.1'
-		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.dom', version: '0.1'
-		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.infra', version: '0.1'
-		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pub', version: '0.1'
-		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pubimp', version: '0.1'
-		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ac', version: '0.1'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: '0.2'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.app', version: '0.2'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.dom', version: '0.2'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.infra', version: '0.2'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pub', version: '0.2'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pubimp', version: '0.2'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ac', version: '0.2'
 		
 		//runtime group: 'pr.report', name: 'nts.uk.ctx.pr.report.ws', version: '0.1'
 		//runtime group: 'pr.report', name: 'nts.uk.ctx.pr.report.app', version: '0.1'
