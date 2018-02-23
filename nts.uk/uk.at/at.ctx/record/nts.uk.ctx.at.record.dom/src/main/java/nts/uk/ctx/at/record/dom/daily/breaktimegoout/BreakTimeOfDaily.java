@@ -10,7 +10,6 @@ import lombok.val;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.enums.StatutoryAtr;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationDeductionTimeService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
@@ -36,9 +35,6 @@ public class BreakTimeOfDaily {
 	private List<BreakTimeSheet> breakTimeSheet;
 	
 	@Inject
-	private CalculationDeductionTimeService calculationDeductionTimeService; 
-	
-	
 	
 	/**
 	 * Constructor

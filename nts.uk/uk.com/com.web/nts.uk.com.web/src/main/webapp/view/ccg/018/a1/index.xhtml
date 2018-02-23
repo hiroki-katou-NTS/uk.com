@@ -22,7 +22,7 @@
 			<div tabindex="1" id="A2-2"
 				data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD', required: true, name : referenceDate}"></div>
 			<button tabindex="2" id="A2-3" class="caret-bottom"
-				data-bind="click : searchByDate">#{i18n.getText('CCG018_7')}</button>
+				data-bind="click : searchByDate, enable: isEmpty">#{i18n.getText('CCG018_7')}</button>
 		</div>
 		<div id="A2-4">
 			<table class="table1">

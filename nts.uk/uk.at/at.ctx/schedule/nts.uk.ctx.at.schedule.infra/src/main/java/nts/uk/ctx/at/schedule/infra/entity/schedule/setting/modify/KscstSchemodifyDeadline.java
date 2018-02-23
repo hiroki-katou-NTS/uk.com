@@ -10,7 +10,11 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -29,7 +33,6 @@ public class KscstSchemodifyDeadline  extends UkJpaEntity implements Serializabl
 			/** 修正期限*/
 			@Column(name = "CORRECT_DEADLINE")
 			public int correctDeadline;
-
 
 	@Override
 	protected Object getKey() {

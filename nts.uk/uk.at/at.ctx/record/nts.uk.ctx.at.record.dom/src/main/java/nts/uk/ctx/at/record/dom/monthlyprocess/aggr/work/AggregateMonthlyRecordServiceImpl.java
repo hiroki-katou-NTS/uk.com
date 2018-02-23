@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
@@ -32,8 +33,10 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemN
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
@@ -92,7 +95,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		
 		// 項目の数だけループ
 		for (val workingConditionItem : workingConditionItems){
-			
+
 			// 「労働条件」の該当履歴から期間を取得
 			val historyId = workingConditionItem.getHistoryId();
 			val workingConditionOpt = this.workingConditionRepository.getByHistoryId(historyId);
@@ -121,22 +124,25 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 				continue;
 			}
 			
-			// 月別実績の勤怠時間　初期設定
-			val attendanceTime = new AttendanceTimeOfMonthly(employeeId, yearMonth, closureId, closureDate, procPeriod);
-			
 			// 労働制を確認する
 			val workingSystem = workingConditionItem.getLaborSystem();
 			
+			// 月別実績の勤怠時間　初期設定
+			val attendanceTime = new AttendanceTimeOfMonthly(employeeId, yearMonth, closureId, closureDate, procPeriod);
+			attendanceTime.prepareAggregation(companyId, procPeriod, workingSystem, isRetireMonth, this.repositories);
+			
 			// 月の計算
-			attendanceTime.aggregate(companyId, workingSystem, isRetireMonth, this.repositories);
+			val monthlyCalculation = attendanceTime.getMonthlyCalculation();
+			monthlyCalculation.aggregate(this.repositories);
 			
 			// 縦計
-			attendanceTime.verticalTotal(companyId, workingSystem, this.repositories);
+			val verticalTotal = attendanceTime.getVerticalTotal();
+			verticalTotal.verticalTotal(companyId, employeeId, procPeriod, workingSystem, this.repositories);
 			
 			// 時間外超過
-			ExcessOutsideWorkMng excessOutsideWorkMng = new ExcessOutsideWorkMng(companyId, employeeId,
-					yearMonth, closureId, closureDate, procPeriod, workingSystem, attendanceTime);
-			excessOutsideWorkMng.aggregate(attendanceTime.getMonthlyCalculation(), this.repositories);
+			ExcessOutsideWorkMng excessOutsideWorkMng = new ExcessOutsideWorkMng(monthlyCalculation);
+			excessOutsideWorkMng.aggregate(this.repositories);
+			attendanceTime.setExcessOutsideWork(excessOutsideWorkMng.getExcessOutsideWork());
 
 			// 計算結果を戻り値に蓄積
 			returnValue.getAttendanceTimes().add(attendanceTime);
