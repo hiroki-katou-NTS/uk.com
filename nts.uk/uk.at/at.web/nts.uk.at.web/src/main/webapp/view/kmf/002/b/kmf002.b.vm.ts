@@ -147,7 +147,7 @@ module nts.uk.at.view.kmf002.b {
                 if ($('#tree-grid').getRowSelected()[0] != null) {
                     $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(),$('#tree-grid').getRowSelected()[0].workplaceId), 
                             service.findFirstMonth(),
-                            service.findAll()).done(function(data: any, data2: any, data3: any) {
+                            service.findAll(_self.commonTableMonthDaySet().fiscalYear())).done(function(data: any, data2: any, data3: any) {
                         _self.alreadySettingList.removeAll();
                         _.forEach(data3, function(wkpID) {
                             _self.alreadySettingList.push({'workplaceId': wkpID, 'isAlreadySetting': true});

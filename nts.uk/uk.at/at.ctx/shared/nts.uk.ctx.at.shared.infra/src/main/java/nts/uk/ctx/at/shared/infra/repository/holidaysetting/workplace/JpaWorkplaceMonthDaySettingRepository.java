@@ -142,8 +142,8 @@ public class JpaWorkplaceMonthDaySettingRepository extends JpaRepository impleme
 	 * @see nts.uk.ctx.bs.employee.dom.holidaysetting.workplace.WorkplaceMonthDaySettingRepository#findWkpRegisterByYear(nts.uk.ctx.bs.employee.dom.common.CompanyId, nts.uk.ctx.bs.employee.dom.holidaysetting.common.Year)
 	 */
 	@Override
-	public List<String> findWkpRegisterByYear(CompanyId companyId) {
-		List<KshmtWkpMonthDaySet> result = this.findBy(companyId, null, null, null);
+	public List<String> findWkpRegisterByYear(CompanyId companyId, Year year) {
+		List<KshmtWkpMonthDaySet> result = this.findBy(companyId, null, year, null);
 		
 		// Check exist
 		if (result.isEmpty()) {

@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.app.find.holidaysetting.configuration.PublicHolidayM
 /**
  * The Class PublicHolidayManagementUsageUnitWs.
  */
-@Path("bs/employee/publicholidaymanagementusageunit")
+@Path("at/shared/publicholidaymanagementusageunit")
 @Produces(MediaType.APPLICATION_JSON)
 public class PublicHolidayManagementUsageUnitWs extends WebService {
 	

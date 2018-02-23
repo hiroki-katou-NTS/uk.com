@@ -32,7 +32,7 @@ public interface EmployeeMonthDaySettingRepository {
 	 * @param companyId the company id
 	 * @return the list
 	 */
-	List<String> findAllEmployeeRegister(CompanyId companyId);
+	List<String> findAllEmployeeRegister(CompanyId companyId, Year year);
 	
 	/**
 	 * Adds the.

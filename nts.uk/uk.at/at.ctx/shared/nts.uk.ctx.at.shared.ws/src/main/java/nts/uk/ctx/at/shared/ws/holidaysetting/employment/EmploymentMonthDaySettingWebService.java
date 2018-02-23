@@ -50,8 +50,8 @@ public class EmploymentMonthDaySettingWebService extends WebService {
 	
 	@Path("findEmploymentMonthDaySetting/findAllEmpRegister")
 	@POST
-	public List<String> findAllEmpRegister(){
-		return this.finder.findAllEmpRegister();
+	public List<String> findAllEmpRegister(@PathParam("year") int year){
+		return this.finder.findAllEmpRegister(year);
 	}
 	
 	/**

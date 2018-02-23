@@ -55,10 +55,10 @@ public class WorkplaceMonthDaySettingFinder {
 	 * @param year the year
 	 * @return the list
 	 */
-	public List<String> findAllByYear() {
+	public List<String> findAllByYear(int year) {
 		String companyId = AppContexts.user().companyId();
 		
-		List<String> lstWpk = this.repository.findWkpRegisterByYear(new CompanyId(companyId));
+		List<String> lstWpk = this.repository.findWkpRegisterByYear(new CompanyId(companyId), new Year(year));
 		if (lstWpk != null && !lstWpk.isEmpty()) {
 			return lstWpk;
 		} 

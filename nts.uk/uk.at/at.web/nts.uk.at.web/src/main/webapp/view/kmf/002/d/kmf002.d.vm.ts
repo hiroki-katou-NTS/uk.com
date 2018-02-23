@@ -130,7 +130,7 @@ module nts.uk.at.view.kmf002.d {
                 let _self = this;
                  $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()), 
                                     service.findFirstMonth(),
-                                    service.findAllEmpRegister()).done(function(data: any, data2: any, data3: any) {
+                                    service.findAllEmpRegister(_self.commonTableMonthDaySet().fiscalYear())).done(function(data: any, data2: any, data3: any) {
                     _self.alreadySettingList.removeAll();
                     _.forEach(data3, function(code) {
                         _self.alreadySettingList.push({code: code, isAlreadySetting: true});
