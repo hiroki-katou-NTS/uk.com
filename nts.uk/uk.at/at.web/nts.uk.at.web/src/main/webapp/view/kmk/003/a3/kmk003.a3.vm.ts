@@ -50,12 +50,15 @@ module a3 {
         lstSettlementOrder: any[];
         screenSettingMode: KnockoutObservable<number>;
         isNewMode: KnockoutObservable<boolean>;
+        
+        rebind: KnockoutObservable<boolean>;
         /**
         * Constructor.
         */
         constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, 
         isLoading: KnockoutObservable<boolean>, isDetailMode: KnockoutObservable<boolean>, isUseHalfDay: KnockoutObservable<boolean>,isNewMode: KnockoutObservable<boolean>) {
             let self = this;
+            self.rebind = ko.observable(true);
             self.isNewMode = isNewMode;
             self.screenSettingMode = ko.observable(0);
             self.settingEnum = settingEnum;
@@ -264,6 +267,10 @@ module a3 {
                         }
                     }
                 }
+                setTimeout(() => {
+                    self.rebind(false);
+                    self.rebind(true);
+                }, 500);
             });
             
             self.isNewMode.subscribe((v) => {
@@ -275,13 +282,26 @@ module a3 {
                 if (self.isNewMode()) {
                     self.screenSettingMode(v);
                     self.isDetailMode.notifySubscribers(self.isDetailMode());
+                    if (v == SettingMethod.FLOW) {
+                        self.dataSourceOvertimeFlow.valueHasMutated();
+                    }
+                }
+            });
+            
+            self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe((v) => {
+                if (self.isNewMode()) {
+                    self.screenSettingMode(v);
+                    if(v == SettingMethod.FLOW) {
+                        self.dataSourceOvertimeFlow.valueHasMutated();
+                    }
+                    self.isDetailMode.notifySubscribers(self.isDetailMode());
                 }
             });
             
             self.isLoading.subscribe(function(isLoading: boolean) {
                 if (isLoading) {
                     self.updateDataModel();
-                    self.isDetailMode.notifySubscribers(self.isDetailMode());
+//                    self.isDetailMode.notifySubscribers(self.isDetailMode());
                 }
             });
         }
