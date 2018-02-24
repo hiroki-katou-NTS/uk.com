@@ -5,8 +5,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class TimeHdAppSetCommand {
-	// 会社ID
-	private String companyId;
 	// 1日休超過をチェックする
 	private int checkDay;
 	// 60H超休を利用する

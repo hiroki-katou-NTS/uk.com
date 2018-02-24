@@ -6,8 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class AppDispNameCommand {
-	// 会社ID
-	private String companyId;
 	// 申請種類
 	private int appType;
 	// 表示名
