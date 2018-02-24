@@ -1772,9 +1772,9 @@ module nts.uk.at.view.kmf022 {
                             _.forEach(data, element => {
                                 let finder = _.find(obj, ['jobId', element.id]);
                                 if (finder) {
-                                    self.listDataA15.push(new ItemA15(element.name, finder.searchSetFlg));
+                                    self.listDataA15.push(new ItemA15(element.name, finder.searchSetFlg,element.id));
                                 } else {
-                                    self.listDataA15.push(new ItemA15(element.name, 1));
+                                    self.listDataA15.push(new ItemA15(element.name, 1,element.id));
                                 }
                             });
                         });
@@ -2308,6 +2308,7 @@ module nts.uk.at.view.kmf022 {
                         return x;
                     })
                 }
+                data.jobSearch = ko.toJS(self.listDataA15());
                 service.update(data).done();
             }
 
@@ -2432,10 +2433,12 @@ module nts.uk.at.view.kmf022 {
         }
         class ItemA15 {
             name: KnockoutObservable<string>;
-            selectedId: KnockoutObservable<number>;
-            constructor(name: string, selectedId: number) {
+            searchSetFlg: KnockoutObservable<number>;
+            jobId:KnockoutObservable<string>;
+            constructor(name: string, searchSetFlg: number,jobId:string) {
                 this.name = ko.observable(name);
-                this.selectedId = ko.observable(selectedId);
+                this.searchSetFlg = ko.observable(searchSetFlg);
+                this.jobId = ko.observable(jobId);
             }
         }
 
