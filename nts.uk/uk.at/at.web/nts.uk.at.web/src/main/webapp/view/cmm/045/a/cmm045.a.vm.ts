@@ -5,16 +5,16 @@ module cmm045.a.viewmodel {
     import character = nts.uk.characteristics;
     export class ScreenModel {
         roundingRules: KnockoutObservableArray<vmbase.ApplicationDisplayAtr> = ko.observableArray([]);
-        selectedRuleCode: KnockoutObservable<any> = ko.observable(1);
+        selectedRuleCode: KnockoutObservable<any> = ko.observable(1);// switch button
         items: KnockoutObservableArray<vmbase.DataModeApp> = ko.observableArray([]);
         displaySet: KnockoutObservable<vmbase.ApprovalListDisplaySetDto> = ko.observable(null);
         approvalMode:  KnockoutObservable<boolean> = ko.observable(false);
         approvalCount: KnockoutObservable<vmbase.ApplicationStatus> = ko.observable(new vmbase.ApplicationStatus(0,0,0,0,0,0));
         itemList: KnockoutObservableArray<any>;
-        selectedIds: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectedIds: KnockoutObservableArray<any> = ko.observableArray([]);// check box
         dateValue: KnockoutObservable<any> = ko.observable({});
         itemApplication: KnockoutObservableArray<vmbase.ChoseApplicationList>;
-        selectedCode: KnockoutObservable<number> = ko.observable(1);
+        selectedCode: KnockoutObservable<number> = ko.observable(1);// combo box
         mode: KnockoutObservable<number> = ko.observable(1);
         constructor(){
             let self = this;
@@ -45,12 +45,40 @@ module cmm045.a.viewmodel {
             //get param url
             let url = $(location).attr('search');
             let urlParam :number = url.split("=")[1];
-            self.mode(urlParam);
+            let characterData = null;
             character.restore("AppListExtractCondition").done((data) => {
-                let a = data;
+                characterData = data;
+                self.dateValue(data.startDate, data.endDate);
+                self.selectedIds([]);
+                if(data.unapprovalStatus){//未承認
+                    self.selectedIds.push(1);
+                }
+                if(data.approvalStatus){//承認済み
+                    self.selectedIds.push(2);
+                }
+                if(data.denialStatus){//否認
+                    self.selectedIds.push(3);
+                }
+                if(data.agentApprovalStatus){//代行承認済み
+                    self.selectedIds.push(4);
+                }
+                if(data.remandStatus){//差戻
+                    self.selectedIds.push(5);
+                }
+                if(data.cancelStatus){//取消
+                    self.selectedIds.push(6);
+                }
+                self.selectedRuleCode(data.appDisplayAtr);
             });
+            if(urlParam == undefined){
+                self.mode(characterData.appListAtr);
+            }else{
+                self.mode(urlParam);
+            }
+            
             let param: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto('2018/01/18', '2018/01/20', self.mode(),
-                    null, true, true, true, true, true, true, self.selectedRuleCode(), [], '');
+                    null, self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
+                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
             service.getApplicationDisplayAtr().done(function(data){
                 //luu
                 character.save('AppListExtractCondition', param);
@@ -72,10 +100,10 @@ module cmm045.a.viewmodel {
                         app.reversionReason, app.applicationDate, app.applicationReason, app.applicationType, app.applicantSID,
                         app.reflectPlanScheReason, app.reflectPlanTime, app.reflectPlanState, app.reflectPlanEnforce,
                         app.reflectPerScheReason, app.reflectPerTime, app.reflectPerState, app.reflectPerEnforce,
-                        app.startDate, app.endDate));
+                        app.startDate, app.endDate, app.version));
                     });
                     _.each(data.lstMasterInfo, function(master){
-                        lstMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName, master.workplaceName, master.statusFrameAtr));
+                        lstMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName, master.workplaceName, master.statusFrameAtr, master.phaseStatus));
                     });
                     _.each(data.lstAppGoBack, function(goback){
                         lstGoBack.push(new vmbase.AppGoBackInfoFull(goback.appID, goback.goWorkAtr1, goback.workTimeStart1,
@@ -186,7 +214,7 @@ module cmm045.a.viewmodel {
             $("#grid1").setupSearchScroll("igGrid", true);
             
             _.each(self.items(), function(item){
-                if(item.checkAtr == true){
+                if(item.checkAtr == false){
                     $(".nts-grid-control-check-"+ item.appId).css("display", "none");
                 }
                 if (item.appStatus == '未') {
@@ -217,7 +245,7 @@ module cmm045.a.viewmodel {
             let appContent1111: string = getText('CMM045_268') + ' ' + overTime.workClockFrom1 + getText('CMM045_100')+ overTime.workClockTo1 + ' 残業合計' + '4:00' + reason;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                         masterInfo.dispName, app.prePostAtr == 0 ? '事前' : '事後', self.convertDate(app.applicationDate),appContent1111, self.convertDateTime(app.inputDate), 
-                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatusAppv(app.reflectPerState),'', masterInfo.statusFrameAtr);
+                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatusAppv(app.reflectPerState),masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version);
             return a;
         }
         /**
@@ -239,7 +267,7 @@ module cmm045.a.viewmodel {
             let appContent2222 = getText('CMM045_258') + go + back + reason;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                         masterInfo.dispName, app.prePostAtr == 0 ? '事前' : '事後', self.convertDate(app.applicationDate),appContent2222, self.convertDateTime(app.inputDate), 
-                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatusAppv(app.reflectPerState),'', masterInfo.statusFrameAtr);
+                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatusAppv(app.reflectPerState),masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version);
             return a;
         }
         
@@ -353,6 +381,17 @@ module cmm045.a.viewmodel {
         filter(){
             block.invisible();
             let self = this;
+            //check filter
+            if(self.dateValue.startDate() == undefined || self.dateValue.endDate() == undefined){//期間開始日付または期間終了日付が入力されていない
+                nts.uk.ui.dialog.error({ messageId: "Msg_360"});
+                block.clear();
+                return;
+            }
+            if(self.selectedIds().length == 0){//承認状況のチェックの確認
+                nts.uk.ui.dialog.error({ messageId: "Msg_360"});
+                block.clear();
+                return;
+            }
             let param: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                     null, self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
                     self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
@@ -373,10 +412,10 @@ module cmm045.a.viewmodel {
                     app.reversionReason, app.applicationDate, app.applicationReason, app.applicationType, app.applicantSID,
                     app.reflectPlanScheReason, app.reflectPlanTime, app.reflectPlanState, app.reflectPlanEnforce,
                     app.reflectPerScheReason, app.reflectPerTime, app.reflectPerState, app.reflectPerEnforce,
-                    app.startDate, app.endDate));
+                    app.startDate, app.endDate, app.version));
                 });
                 _.each(data.lstMasterInfo, function(master){
-                    lstMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName, master.workplaceName, master.statusFrameAtr));
+                    lstMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName, master.workplaceName, master.statusFrameAtr, master.phaseStatus));
                 });
                 _.each(data.lstAppGoBack, function(goback){
                     lstGoBack.push(new vmbase.AppGoBackInfoFull(goback.appID, goback.goWorkAtr1, goback.workTimeStart1,
@@ -416,7 +455,23 @@ module cmm045.a.viewmodel {
         }
         
         approval(){
-            
+            block.invisible();
+            let self = this;
+            let data = null;
+            console.log(self.items());
+            let lstApp = [];
+            _.each(self.items(), function(item){
+                if(item.check){
+                    lstApp.push({appId: item.appId, version: item.version});
+                }
+            });
+            service.approvalListApp(lstApp).done(function(){
+                self.filter();
+            }).fail(function(res){
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+            }).always(()=>{
+                block.clear();    
+            });
         }
     } 
     
