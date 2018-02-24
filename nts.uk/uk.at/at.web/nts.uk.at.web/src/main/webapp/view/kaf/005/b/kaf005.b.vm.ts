@@ -102,7 +102,7 @@ module nts.uk.at.view.kaf005.b {
             flexExessTimePre: KnockoutObservable<number> = ko.observable(null);
             
             // AppOvertimeReference
-            appDateReference: KnockoutObservable<string> = ko.observable(moment().format(this.DATEFORMART));
+            appDateReference: KnockoutObservable<string> = ko.observable(moment().format(this.DATE_FORMAT));
             workTypeCodeReference:  KnockoutObservable<string> = ko.observable("");
             workTypeNameReference:  KnockoutObservable<string> = ko.observable("");
             siftCodeReference:  KnockoutObservable<string> = ko.observable("");
@@ -228,10 +228,10 @@ module nts.uk.at.view.kaf005.b {
                         self.siftCodePre(data.preAppOvertimeDto.siftTypePre.siftCode);
                         self.siftNamePre(data.preAppOvertimeDto.siftTypePre.siftName);
                     }
-                    if(data.preAppOvertimeDto.workClockFrom1Pre != -1 || data.preAppOvertimeDto.workClockTo1Pre!= -1){
+                    if(data.preAppOvertimeDto.workClockFrom1Pre != null || data.preAppOvertimeDto.workClockTo1Pre!= null){
                         self.workClockFrom1To1Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockFrom1Pre) + " "+ nts.uk.resource.getText("KAF005_126") +" "+self.convertIntToTime(data.preAppOvertimeDto.workClockTo1Pre));
                     }
-                    if(data.preAppOvertimeDto.workClockFrom2Pre != -1 || data.preAppOvertimeDto.workClockTo2Pre!= -1){
+                    if(data.preAppOvertimeDto.workClockFrom2Pre != null || data.preAppOvertimeDto.workClockTo2Pre!= null){
                         self.workClockFrom2To2Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockFrom2Pre) +" "+ nts.uk.resource.getText("KAF005_126") +" "+ self.convertIntToTime(data.preAppOvertimeDto.workClockTo2Pre));
                     }
                     if(self.workClockFrom2To2Pre () == null){

@@ -733,10 +733,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.siftCodePre(data.preAppOvertimeDto.siftTypePre.siftCode);
                 self.siftNamePre(data.preAppOvertimeDto.siftTypePre.siftName);
             }
-            if(nts.uk.util.isNullOrEmpty(data.preAppOvertimeDto.workClockFrom1Pre) || nts.uk.util.isNullOrEmpty(data.preAppOvertimeDto.workClockTo1Pre)){
+            if(!nts.uk.util.isNullOrEmpty(data.preAppOvertimeDto.workClockFrom1Pre) && !nts.uk.util.isNullOrEmpty(data.preAppOvertimeDto.workClockTo1Pre)){
                  self.workClockFrom1To1Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockFrom1Pre) + " "+ nts.uk.resource.getText("KAF005_126") +" "+self.convertIntToTime(data.preAppOvertimeDto.workClockTo1Pre));
             }
-            if(nts.uk.util.isNullOrEmpty(data.preAppOvertimeDto.workClockFrom2Pre) || nts.uk.util.isNullOrEmpty(data.preAppOvertimeDto.workClockTo2Pre)){
+            if(!nts.uk.util.isNullOrEmpty(data.preAppOvertimeDto.workClockFrom2Pre) || !nts.uk.util.isNullOrEmpty(data.preAppOvertimeDto.workClockTo2Pre)){
                 self.workClockFrom2To2Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockFrom2Pre) +" "+ nts.uk.resource.getText("KAF005_126") +" "+ self.convertIntToTime(data.preAppOvertimeDto.workClockTo2Pre));
             }
             if(self.workClockFrom2To2Pre () == null){

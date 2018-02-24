@@ -108,7 +108,7 @@ module nts.uk.at.view.kaf010.b {
             flexExessTimePre: KnockoutObservable<number> = ko.observable(null);
             
             // AppOvertimeReference
-            appDateReference: KnockoutObservable<string> = ko.observable(moment().format(this.DATEFORMART));
+            appDateReference: KnockoutObservable<string> = ko.observable(moment().format(this.DATE_FORMAT));
             workTypeCodeReference:  KnockoutObservable<string> = ko.observable("");
             workTypeNameReference:  KnockoutObservable<string> = ko.observable("");
             siftCodeReference:  KnockoutObservable<string> = ko.observable("");
@@ -240,10 +240,10 @@ module nts.uk.at.view.kaf010.b {
                     self.siftCodePre(data.preAppHolidayWorkDto.workTime.siftCode);
                     self.siftNamePre(data.preAppHolidayWorkDto.workTime.siftName);
                 }
-                if (nts.uk.util.isNullOrEmpty(data.preAppHolidayWorkDto.workClockStart1) || nts.uk.util.isNullOrEmpty(data.preAppHolidayWorkDto.workClockEnd1)) {
+                if (!nts.uk.util.isNullOrEmpty(data.preAppHolidayWorkDto.workClockStart1) || !nts.uk.util.isNullOrEmpty(data.preAppHolidayWorkDto.workClockEnd1)) {
                     self.workClockFrom1To1Pre(self.convertIntToTime(data.preAppHolidayWorkDto.workClockStart1) + " " + nts.uk.resource.getText("KAF005_126") + " " + self.convertIntToTime(data.preAppHolidayWorkDto.workClockEnd1));
                 }
-                if (nts.uk.util.isNullOrEmpty(data.preAppHolidayWorkDto.workClockStart2) || nts.uk.util.isNullOrEmpty(data.preAppHolidayWorkDto.workClockEnd2)) {
+                if (!nts.uk.util.isNullOrEmpty(data.preAppHolidayWorkDto.workClockStart2) || !nts.uk.util.isNullOrEmpty(data.preAppHolidayWorkDto.workClockEnd2)) {
                     self.workClockFrom2To2Pre(self.convertIntToTime(data.preAppHolidayWorkDto.workClockStart2) + " " + nts.uk.resource.getText("KAF005_126") + " " + self.convertIntToTime(data.preAppHolidayWorkDto.workClockEnd2));
                 }
                 if (self.workClockFrom2To2Pre() == null) {
@@ -751,10 +751,10 @@ module nts.uk.at.view.kaf010.b {
                     self.siftCodeReference(data.appOvertimeReference.siftTypeRefer.siftCode);
                     self.siftNameReference(data.appOvertimeReference.siftTypeRefer.siftName);
                 }
-                if(data.appOvertimeReference.workClockFrom1Refer != -1 || data.appOvertimeReference.workClockTo1Refer!= -1){
+                if(data.appOvertimeReference.workClockFrom1Refer != null || data.appOvertimeReference.workClockTo1Refer!= null){
                      self.workClockFrom1To1Reference(self.convertIntToTime(data.appOvertimeReference.workClockFrom1Refer) + " "+ nts.uk.resource.getText("KAF005_126") +" "+self.convertIntToTime(data.appOvertimeReference.workClockTo1Refer));
                 }
-                if(data.appOvertimeReference.workClockFrom2Refer != -1 || data.appOvertimeReference.workClockTo2Refer!= -1){
+                if(data.appOvertimeReference.workClockFrom2Refer != null || data.appOvertimeReference.workClockTo2Refer != null){
                     self.workClockFrom2To2Reference(self.convertIntToTime(data.appOvertimeReference.workClockFrom2Refer) +" "+ nts.uk.resource.getText("KAF005_126") +" "+ self.convertIntToTime(data.appOvertimeReference.workClockTo2Refer));
                 }
                 if(self.workClockFrom2To2Reference () == null){
