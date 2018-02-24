@@ -3,15 +3,20 @@ module nts.uk.com.view.cas012.c.viewmodel {
         checkSetAdminFlag: KnockoutObservable<boolean>;
         listCompany: KnockoutObservableArray<any>;
         selectedCompany: KnockoutObservable<string>;
-        
+        isRequired :  KnockoutObservable<boolean>;
         constructor() {
             let self = this;
             self.checkSetAdminFlag = ko.observable(false);
+            self.isRequired = ko.observable(false);
             self.listCompany = ko.observableArray([]);
             self.selectedCompany = ko.observable('1');
+            self.checkSetAdminFlag.subscribe(function (value) {
+                self.isRequired(value);
+            });
             nts.uk.ui.windows.setShared('CAS012CResult', {
                 decisionCompanyID: null,
-                setRoleAdminFlag: false
+                setRoleAdminFlag: false,
+                isCancel : false
             });
         }
 
@@ -28,14 +33,21 @@ module nts.uk.com.view.cas012.c.viewmodel {
         decision() {
             let self = this;
             let dataSetShare = {
-                decisionCompanyID: self.checkSetAdminFlag() ? self.selectedCompany() : null,
-                setRoleAdminFlag: self.checkSetAdminFlag()
+                decisionCompanyID: self.selectedCompany(),
+                setRoleAdminFlag: self.checkSetAdminFlag(),
+                isCancel : false  
             };
             nts.uk.ui.windows.setShared('CAS012CResult', dataSetShare);
-            self.cancel_Dialog();
-        }
+            nts.uk.ui.windows.close();
+        } 
 
         cancel_Dialog(): any {
+            let self = this;
+            nts.uk.ui.windows.setShared('CAS012CResult', {
+                decisionCompanyID: null,
+                setRoleAdminFlag: false,
+                isCancel : true 
+            });
             nts.uk.ui.windows.close();
         }
     }

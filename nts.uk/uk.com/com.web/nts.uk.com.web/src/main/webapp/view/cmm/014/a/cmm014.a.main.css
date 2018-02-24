@@ -57,3 +57,6 @@
 .input_002 {
 	display: inline-block;
 }
+#contents-area{
+	overflow-y: hidden;
+}

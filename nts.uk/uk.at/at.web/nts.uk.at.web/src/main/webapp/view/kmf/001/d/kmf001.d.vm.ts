@@ -113,11 +113,6 @@ module nts.uk.pr.view.kmf001.d {
                 return dfd.promise();
             }
             
-            // Back to Main Screen
-            private backToHistorySelection() {
-                nts.uk.request.jump("/view/kmf/001/a/index.xhtml");
-            }
-            
             // Find Yearly Retention
             private findRetentionYearly(): void {
                 var self = this;
