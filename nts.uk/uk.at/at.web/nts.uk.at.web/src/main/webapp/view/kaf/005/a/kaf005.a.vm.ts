@@ -480,7 +480,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 let endTime = self.restTime()[i].endTime();
                 let attendanceId = self.restTime()[i].attendanceID();
                 let frameNo = self.restTime()[i].frameNo();
-                if(!nts.uk.util.isNullOrEmpty(startTime) && startTime != ""){
+                if(!nts.uk.util.isNullOrEmpty(startTime)){
                     if(!self.validateTime(startTime, endTime, 'input#restTimeStart_'+attendanceId+'_'+frameNo)){
                     return false;
                 };

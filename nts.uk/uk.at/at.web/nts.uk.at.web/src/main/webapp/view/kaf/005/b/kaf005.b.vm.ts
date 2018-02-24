@@ -255,7 +255,7 @@ module nts.uk.at.view.kaf005.b {
                 self.bonusTimes.removeAll();
                 if(nts.uk.util.isNullOrEmpty(dataRestTime)){
                     for (let i = 0; i < 11; i++) {
-                        self.restTime.push(new common.OverTimeInput("", "", 0, "", i,0, i.toString(), null, null, null,"", ""));
+                        self.restTime.push(new common.OverTimeInput("", "", 0, "", i,0, i.toString(), null, null, null,""));
                     }    
                 } else {
                     _.forEach(dataRestTime, (item) => { 
