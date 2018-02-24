@@ -1,4 +1,4 @@
-module nts.uk.at.view.kaf011.a.viewmodel {
+module nts.uk.at.view.kaf011.b.viewmodel {
 
     import dialog = nts.uk.ui.dialog;
     import text = nts.uk.resource.getText;
