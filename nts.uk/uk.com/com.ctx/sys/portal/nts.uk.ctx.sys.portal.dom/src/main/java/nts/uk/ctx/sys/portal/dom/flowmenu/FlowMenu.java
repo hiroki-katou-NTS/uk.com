@@ -6,6 +6,7 @@ package nts.uk.ctx.sys.portal.dom.flowmenu;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartCode;
@@ -45,10 +46,16 @@ public class FlowMenu extends TopPagePart {
 		);
 	}
 
-	
 	/** Set FlowMenu DefClassAtr */
 	public void setDefClassAtr(int defClassAtr) {
 		this.defClassAtr = EnumAdaptor.valueOf(defClassAtr, DefClassAtr.class);
+	}
+	
+	@Override
+	public void validate() {
+		super.validate();
+		if (this.getWidth().v() < 3 || this.getHeight().v() < 3)
+			throw new BusinessException("Msg_1004");
 	}
 
 }

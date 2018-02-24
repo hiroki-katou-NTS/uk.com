@@ -24,17 +24,19 @@ import nts.uk.ctx.sys.gateway.dom.login.SystemConfigRepository;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.ListCompanyAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleFromUserIdAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleIndividualGrantAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleType;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
+import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
+import nts.uk.ctx.sys.gateway.dom.login.dto.SDelAtr;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
 /**
  * The Class LoginBaseCommandHandler.
  *
- * @param <T> the generic type
+ * @param <T>
+ *            the generic type
  */
 @Stateless
 public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
@@ -42,7 +44,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	/** The employee adapter. */
 	@Inject
 	private SysEmployeeAdapter employeeAdapter;
-	
+
 	/** The company information adapter. */
 	@Inject
 	private CompanyInformationAdapter companyInformationAdapter;
@@ -50,25 +52,26 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	/** The list company adapter. */
 	@Inject
 	private ListCompanyAdapter listCompanyAdapter;
-	
+
 	/** The manager. */
 	@Inject
 	private LoginUserContextManager manager;
-	
+
 	/** The system config repository. */
 	@Inject
 	private SystemConfigRepository systemConfigRepository;
-	
+
 	/** The contract repository. */
 	@Inject
 	private ContractRepository contractRepository;
-	
+
 	/** The role from user id adapter. */
 	@Inject
 	private RoleFromUserIdAdapter roleFromUserIdAdapter;
-	
+
 	/** The Constant FIST_COMPANY. */
 	private static final Integer FIST_COMPANY = 0;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -88,7 +91,6 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	 */
 	protected abstract void internalHanler(CommandHandlerContext<T> context);
 
-	
 	protected void reCheckContract(String contractCode, String contractPassword) {
 		SystemConfig systemConfig = this.getSystemConfig();
 		// case Cloud
@@ -117,6 +119,22 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	}
 
 	/**
+	 * Check employee del status.
+	 *
+	 * @param sId the s id
+	 */
+	protected void checkEmployeeDelStatus(String cid, String pid) {
+		// get Employee status
+		Optional<EmployeeDataMngInfoImport> optMngInfo = this.employeeAdapter.getSdataMngInfo(cid, pid);
+
+		if (!optMngInfo.isPresent()
+				|| !SDelAtr.NOTDELETED.equals(optMngInfo.get().getDeletedStatus())) {
+			// TODO: confirm lại về messege sẽ bắn ra
+			throw new RuntimeException();
+		}
+	}
+
+	/**
 	 * Contract acc auth.
 	 *
 	 * @param command
@@ -139,36 +157,44 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 			throw new RuntimeException();
 		}
 	}
-	
+
 	/**
 	 * Sets the logged info.
 	 *
-	 * @param user the user
-	 * @param em the em
-	 * @param companyCode the company code
+	 * @param user
+	 *            the user
+	 * @param em
+	 *            the em
+	 * @param companyCode
+	 *            the company code
 	 */
 	protected void setLoggedInfo(UserImport user, EmployeeImport em, String companyCode) {
-		//set info to session 
-		manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode(), em.getCompanyId(),
-				companyCode, em.getEmployeeId(), em.getEmployeeCode());
+		// set info to session
+		manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode(),
+				em.getCompanyId(), companyCode, em.getEmployeeId(), em.getEmployeeCode());
 	}
-	
+
 	/**
 	 * Inits the session.
 	 *
-	 * @param user the user
+	 * @param user
+	 *            the user
 	 */
-	//init session 
+	// init session
 	protected void initSession(UserImport user) {
-		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(), user.getAssociatePersonId());
+		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(),
+				user.getAssociatePersonId());
 		if (lstCompanyId.isEmpty()) {
-			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId(), user.getContractCode(), null,
-					null, null, null);
+			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId(),
+					user.getContractCode(), null, null, null, null);
 		} else {
 			// get employee
-			Optional<EmployeeImport> opEm = this.employeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
-					user.getAssociatePersonId());
+			Optional<EmployeeImport> opEm = this.employeeAdapter
+					.getByPid(lstCompanyId.get(FIST_COMPANY), user.getAssociatePersonId());
 
+			// Check employee deleted status.
+			this.checkEmployeeDelStatus(lstCompanyId.get(FIST_COMPANY), user.getAssociatePersonId());
+			
 			// save to session
 			CompanyInformationImport companyInformation = this.companyInformationAdapter
 					.findById(opEm.get().getCompanyId());
@@ -177,15 +203,15 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 		}
 		this.setRoleId(user.getUserId());
 	}
-	
+
 	/**
 	 * Sets the role id.
 	 *
-	 * @param userId the new role id
+	 * @param userId
+	 *            the new role id
 	 */
-	//set roll id into login user context 
-	protected void setRoleId(String userId)
-	{
+	// set roll id into login user context
+	protected void setRoleId(String userId) {
 		String humanResourceRoleId = this.getRoleId(userId, RoleType.HUMAN_RESOURCE);
 		String employmentRoleId = this.getRoleId(userId, RoleType.EMPLOYMENT);
 		String salaryRoleId = this.getRoleId(userId, RoleType.SALARY);
@@ -230,18 +256,21 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	/**
 	 * Gets the role id.
 	 *
-	 * @param userId the user id
-	 * @param roleType the role type
+	 * @param userId
+	 *            the user id
+	 * @param roleType
+	 *            the role type
 	 * @return the role id
 	 */
 	protected String getRoleId(String userId, RoleType roleType) {
-		String roleId = roleFromUserIdAdapter.getRoleFromUser(userId, roleType.value, GeneralDate.today());
+		String roleId = roleFromUserIdAdapter.getRoleFromUser(userId, roleType.value,
+				GeneralDate.today());
 		if (roleId == null || roleId.isEmpty()) {
 			return null;
 		}
 		return roleId;
 	}
-	
+
 	/**
 	 * Gets the system config.
 	 *
