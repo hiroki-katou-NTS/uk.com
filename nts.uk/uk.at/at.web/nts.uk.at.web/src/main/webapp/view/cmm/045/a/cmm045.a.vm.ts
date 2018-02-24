@@ -12,7 +12,7 @@ module cmm045.a.viewmodel {
         approvalCount: KnockoutObservable<vmbase.ApplicationStatus> = ko.observable(new vmbase.ApplicationStatus(0,0,0,0,0,0));
         itemList: KnockoutObservableArray<any>;
         selectedIds: KnockoutObservableArray<any> = ko.observableArray([]);// check box
-        dateValue: KnockoutObservable<any> = ko.observable({});
+        dateValue: KnockoutObservable<any> = ko.observable({startDate: '', endDate: ''});
         itemApplication: KnockoutObservableArray<vmbase.ChoseApplicationList>;
         selectedCode: KnockoutObservable<number> = ko.observable(1);// combo box
         mode: KnockoutObservable<number> = ko.observable(1);
@@ -48,7 +48,7 @@ module cmm045.a.viewmodel {
             let characterData = null;
             character.restore("AppListExtractCondition").done((data) => {
                 characterData = data;
-                self.dateValue(data.startDate, data.endDate);
+                self.dateValue = ko.observable({startDate: data.startDate, endDate: data.endDate});
                 self.selectedIds([]);
                 if(data.unapprovalStatus){//未承認
                     self.selectedIds.push(1);
@@ -382,7 +382,7 @@ module cmm045.a.viewmodel {
             block.invisible();
             let self = this;
             //check filter
-            if(self.dateValue.startDate() == undefined || self.dateValue.endDate() == undefined){//期間開始日付または期間終了日付が入力されていない
+            if(self.dateValue().startDate == undefined || self.dateValue().endDate == undefined){//期間開始日付または期間終了日付が入力されていない
                 nts.uk.ui.dialog.error({ messageId: "Msg_360"});
                 block.clear();
                 return;
