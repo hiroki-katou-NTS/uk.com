@@ -149,6 +149,9 @@ div.form-label.broken {
 .fix-margin-left{
 	margin-left:13px;
 }
+.fix-margin-left-kaf010{
+	margin-left:10px;
+}
 .cm-column {
 	width: 130px;
 }
@@ -161,4 +164,7 @@ div.form-label.broken {
 }
 .inputTime-kaf010{
 	width: 85px !important;
+}
+.fix-margin-left-emp-kaf010{
+	margin-left: 14px;
 }

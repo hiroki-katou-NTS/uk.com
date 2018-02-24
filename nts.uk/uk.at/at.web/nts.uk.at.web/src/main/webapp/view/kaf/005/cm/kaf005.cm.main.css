@@ -159,3 +159,6 @@ div.form-label.broken {
 .textarea-kaf005{
 	height: 120px !important;
 }
+.fix-margin-left-kaf005{
+	margin-left:10px;
+}
