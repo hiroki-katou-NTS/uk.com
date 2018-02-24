@@ -144,7 +144,7 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		
 		this.updateBf.handle(kaf022.getAppBf());
 		// update list for A15_4
-//		this.updateJobSearch.handle(kaf022.getJobSearch());
+		this.updateJobSearch.handle(kaf022.getJobSearch());
 	}
 
 }
