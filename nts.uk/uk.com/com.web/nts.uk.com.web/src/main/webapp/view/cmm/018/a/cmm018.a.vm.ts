@@ -439,7 +439,7 @@ module nts.uk.com.view.cmm018.a {
                     self.employeeId(transferData.employeeId);
                     param = new vmbase.ParamDto(vmbase.RootType.PERSON,'',self.employeeId());
                     servicebase.getInfoEmployee(transferData.employeeId).done(function(employeeInfo){
-                        let emp: string = '対象者:' + ' ' + employeeInfo.employeeCode + ' ' + employeeInfo.employeeName;
+                        let emp: string = '対象者：' + employeeInfo.employeeCode + '　' + employeeInfo.employeeName;
                         self.empInfoLabel(emp);
                         self.selectedItem(employeeInfo.sid);
 //                        self.employeeInputList.push(new vmbase.EmployeeKcp009(employeeInfo.sid,
