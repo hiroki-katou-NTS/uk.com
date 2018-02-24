@@ -400,6 +400,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         self.registerData(overtime);
                     }
                 } else if (data.errorCode == 1){
+                    self.calculateFlag(1);
                     if(data.frameNo == -1){
                         let frameName = "";
                         //Setting color for item error
@@ -657,6 +658,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             let overtimeDto = data;
             self.manualSendMailAtr(overtimeDto.manualSendMailAtr);
             self.prePostSelected(overtimeDto.application.prePostAtr);
+            self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
             self.displayCaculationTime(overtimeDto.displayCaculationTime);
             self.restTimeDisFlg(self.restTimeDisFlg());
             self.employeeName(overtimeDto.employeeName);

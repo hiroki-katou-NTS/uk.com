@@ -477,6 +477,7 @@ module nts.uk.at.view.kaf010.b {
                             self.updateOvertime(command);
                         }
                     } else if (data.errorCode == 1){
+                        self.calculateFlag(1);
                         if(data.frameNo == -1){
                             let frameName = "";
                             //Setting color for item error
@@ -566,21 +567,25 @@ module nts.uk.at.view.kaf010.b {
                         self.workTypeName(childData.selectedWorkTypeName);
                         self.siftCD(childData.selectedWorkTimeCode);
                         self.siftName(childData.selectedWorkTimeName);
-                        service.getRecordWork(
-                            {
-                                employeeID: self.employeeID(), 
-                                appDate: moment(self.appDate()).format("YYYY/MM/DD"),
-                                siftCD: self.siftCD(),
-                                prePostAtr: self.prePostSelected(),
-                                overtimeHours: ko.toJS(self.overtimeHours)
-                            }
-                        ).done(data => {
-                            self.timeStart1(data.startTime1 == null ? null : data.startTime1);
-                            self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
-                            self.timeStart2(data.startTime2 == null ? null : data.startTime2);
-                            self.timeEnd2(data.endTime2 == null ? null : data.endTime2); 
-                            self.convertAppOvertimeReferDto(data);  
-                        });
+                        self.timeStart1(childData.firstStartTime);
+                        self.timeEnd1(childData.firstEndTime);
+                        self.timeStart2(childData.secondStartTime);
+                        self.timeEnd2(childData.secondEndTime);
+                        //                    service.getRecordWork(
+                        //                        {
+                        //                            employeeID: self.employeeID(), 
+                        //                            appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
+                        //                            siftCD: self.siftCD(),
+                        //                            prePostAtr: self.prePostSelected(),
+                        //                            overtimeHours: ko.toJS(self.breakTimes())
+                        //                        }
+                        //                    ).done(data => {
+                        //                        self.timeStart1(data.startTime1 == null ? null : data.startTime1);
+                        //                        self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
+                        //                        self.timeStart2(data.startTime2 == null ? null : data.startTime2);
+                        //                        self.timeEnd2(data.endTime2 == null ? null : data.endTime2);
+                        //                        self.convertAppOvertimeReferDto(data);
+                        //                    });
                     }
                 })
             }

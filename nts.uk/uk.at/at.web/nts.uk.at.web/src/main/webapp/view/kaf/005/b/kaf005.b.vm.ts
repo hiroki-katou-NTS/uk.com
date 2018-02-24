@@ -441,6 +441,7 @@ module nts.uk.at.view.kaf005.b {
                             self.updateOvertime(command);
                         }
                     } else if (data.errorCode == 1){
+                        self.calculateFlag(1);
                         if(data.frameNo == -1){
                             let frameName = "";
                             //Setting color for item error
