@@ -72,10 +72,11 @@ module cmm045.shr {
             appStatus: string;
             displayAppStatus: string;
             checkAtr: boolean;
+            version: number;
             constructor(appId: string,appType: number,  details: string, applicant: string,
                 appName: string, appAtr: string, appDate: string,
                 appContent: string, inputDate: string, appStatus: string,
-                displayAppStatus: string, checkAtr: boolean){
+                displayAppStatus: string, checkAtr: boolean, version: number){
                 this.appId = appId;
                 this.appType = appType;
 //                this.check = appType == 0 ? true : false;
@@ -90,6 +91,7 @@ module cmm045.shr {
                 this.appStatus = appStatus;
                 this.displayAppStatus = displayAppStatus;
                 this.checkAtr = checkAtr;
+                this.version = version;
             }
         }  
         
@@ -100,7 +102,8 @@ module cmm045.shr {
             empName: string;
             workplaceName: string;
             statusFrameAtr: boolean;
-            constructor(appID: string, appType: number, dispName: string, empName: string, workplaceName: string, statusFrameAtr: boolean)
+            phaseStatus: string;
+            constructor(appID: string, appType: number, dispName: string, empName: string, workplaceName: string, statusFrameAtr: boolean, phaseStatus: string)
             {
                 this.appID = appID;
                 this.appType = appType;
@@ -108,6 +111,7 @@ module cmm045.shr {
                 this.empName = empName;
                 this.workplaceName = workplaceName;
                 this.statusFrameAtr = statusFrameAtr;
+                this.phaseStatus = phaseStatus;
             }
         }
         export class ApplicationDto_New{
@@ -147,11 +151,12 @@ module cmm045.shr {
             reflectPerEnforce: number;
             startDate: string;
             endDate: string;
+            version: number;
             constructor(applicationID: string,prePostAtr: number, inputDate: string, enteredPersonSID: string,
                 reversionReason: string, applicationDate: string, applicationReason: string, applicationType: number,
                 applicantSID: string, reflectPlanScheReason: number, reflectPlanTime: string, reflectPlanState: number,
                 reflectPlanEnforce: number, reflectPerScheReason: number, reflectPerTime: string, reflectPerState: number,
-                reflectPerEnforce: number, startDate: string, endDate: string)
+                reflectPerEnforce: number, startDate: string, endDate: string, version: number)
             {
                 this.applicationID = applicationID;
                 this.prePostAtr = prePostAtr; 
@@ -172,6 +177,7 @@ module cmm045.shr {
                 this.reflectPerEnforce = reflectPerEnforce;
                 this.startDate = startDate;
                 this.endDate = endDate;
+                this.version = version;
             }
     }
         export class AppOverTimeInfoFull{

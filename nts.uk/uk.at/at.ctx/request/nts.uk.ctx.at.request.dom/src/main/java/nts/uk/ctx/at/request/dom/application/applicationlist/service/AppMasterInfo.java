@@ -16,4 +16,6 @@ public class AppMasterInfo {
 	private String workplaceName;
 	@Setter
 	private boolean statusFrameAtr;
+	@Setter
+	private String phaseStatus;
 }

@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListInit
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListOutPut;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppMasterInfo;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.ApplicationFullOutput;
+import nts.uk.ctx.at.request.dom.application.applicationlist.service.PhaseStatus;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
@@ -80,6 +81,7 @@ public class ApplicationListFinder {
 			}
 			for (AppMasterInfo master : lstApp.getLstMasterInfo()) {
 				master.setStatusFrameAtr(this.findStatusFrame(lstApp.getLstFramStatus(), master.getAppID()));
+				master.setPhaseStatus(this.findStatusPhase(lstApp.getLstPhaseStatus(), master.getAppID()));
 			}
 		}
 		return new ApplicationListDto(displaySet, lstApp.getLstMasterInfo(),lstAppDto,lstApp.getLstAppOt(),lstApp.getLstAppGoBack(),
@@ -101,5 +103,13 @@ public class ApplicationListFinder {
 			}
 		}
 		return false;
+	}
+	private String findStatusPhase(List<PhaseStatus> phaseState, String appId){
+		for (PhaseStatus phaseStatus : phaseState) {
+			if(phaseStatus.getAppID().equals(appId)){
+				return phaseStatus.getPhaseStatus();
+			}
+		}
+		return null;
 	}
 }
