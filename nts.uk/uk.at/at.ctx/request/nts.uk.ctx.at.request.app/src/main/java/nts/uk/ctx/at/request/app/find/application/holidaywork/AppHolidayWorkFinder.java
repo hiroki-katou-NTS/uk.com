@@ -71,7 +71,6 @@ import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
-import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -149,6 +148,7 @@ public class AppHolidayWorkFinder {
 		 if(appDateInput != null){
 			 //13.実績の取得
 			 AchievementOutput achievementOutput = collectAchievement.getAchievement(companyID, employeeID,  GeneralDate.fromString(appDateInput, DATE_FORMAT));
+			
 		 }
 		 // アルゴリズム「初期データの取得」を実行する
 		 getData(companyID,employeeID,appDateInput,appCommonSettingOutput,result,uiType);
@@ -189,6 +189,19 @@ public class AppHolidayWorkFinder {
 		// 01-09_事前申請を取得
 		getPreAppPanel(overtimeRestAppCommonSet,companyID,employeeID,result,appDate,prePostAtr);
 		//01-18_実績内容を取得（新規） : TODO
+		// ドメインモデル「申請表示設定」．事前事後区分表示をチェックする
+		if (appCommonSettingOutput.applicationSetting.getDisplayPrePostFlg().value == AppDisplayAtr.NOTDISPLAY.value) {
+			result.setDisplayPrePostFlg(AppDisplayAtr.NOTDISPLAY.value);
+			// 3.事前事後の判断処理(事前事後非表示する場合)
+			PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(
+					EnumAdaptor.valueOf(ApplicationType.BREAK_TIME_APPLICATION.value, ApplicationType.class),
+					appCommonSettingOutput.generalDate);
+			if(prePostAtrJudgment != null){
+				prePostAtr = prePostAtrJudgment.value;
+			}
+		}else{
+			result.setDisplayPrePostFlg(AppDisplayAtr.DISPLAY.value);
+		}
 		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする ( Domain model "application setting". Check base date of approval route )
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
 		if(appCommonSettingOutput.applicationSetting.getBaseDateFlg().value == BaseDateFlg.APP_DATE.value){

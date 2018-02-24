@@ -33,6 +33,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.Colle
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.output.ApprovalRootPattern;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
@@ -114,6 +115,8 @@ public class AppOvertimeFinder {
 	private CollectApprovalRootPatternService collectApprovalRootPatternService;
 	@Inject
 	private StartupErrorCheckService startupErrorCheckService;
+	@Inject
+	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
 	/**
 	 * @param url
@@ -506,10 +509,14 @@ public class AppOvertimeFinder {
 		
 		
 		// ドメインモデル「申請表示設定」．事前事後区分表示をチェックする
-//		if(appCommonSettingOutput.applicationSetting.getDisplayPrePostFlg().value == AppDisplayAtr.NOTDISPLAY.value){
-//			// 3.事前事後の判断処理(事前事後非表示する場合)
-//			PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), GeneralDate.fromString(appDate, DATE_FORMAT));
-//		}
+		if(appCommonSettingOutput.applicationSetting.getDisplayPrePostFlg().value == AppDisplayAtr.NOTDISPLAY.value){
+			result.setDisplayPrePostFlg(AppDisplayAtr.NOTDISPLAY.value);
+			// 3.事前事後の判断処理(事前事後非表示する場合)
+			PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), GeneralDate.fromString(appDate, DATE_FORMAT));
+			if(prePostAtrJudgment != null){
+				prePostAtr = prePostAtrJudgment.value;
+			}
+		}
 		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする ( Domain model "application setting". Check base date of approval route )
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
 			
