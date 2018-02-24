@@ -481,22 +481,22 @@ module nts.uk.at.view.kaf010.b {
                         if(data.frameNo == -1){
                             let frameName = "";
                             //Setting color for item error
-                            for (let i = 0; i < self.overtimeHours().length; i++) {
-                                self.changeColor( self.overtimeHours()[i].attendanceID(), self.overtimeHours()[i].frameNo());
-                                if(self.overtimeHours().length == 1){
-                                    frameName = self.overtimeHours()[i].frameName();
+                            for (let i = 0; i < self.breakTimes().length; i++) {
+                                self.changeColor( self.breakTimes()[i].attendanceID(), self.breakTimes()[i].frameNo(),data.errorCode);
+                                if(self.breakTimes().length == 1){
+                                    frameName = self.breakTimes()[i].frameName();
                                 }else{
                                     if(i == 0){
-                                        frameName = self.overtimeHours()[0].frameName();
+                                        frameName = self.breakTimes()[0].frameName();
                                     }else{
-                                        frameName += "、"+ self.overtimeHours()[i].frameName();
+                                        frameName += "、"+ self.breakTimes()[i].frameName();
                                     }
                                 }
                             }
                             dialog.alertError({messageId:"Msg_424", messageParams: [self.employeeName(),frameName]}) .then(function() { nts.uk.ui.block.clear(); }); 
                         }else{
                           //Change background color
-                            self.changeColor( data.attendanceId, data.frameNo);
+                            self.changeColor( data.attendanceId, data.frameNo,data.errorCode);
                             dialog.alertError({messageId:"Msg_424", messageParams: [self.employeeName(),$('#overtimeHoursHeader_'+data.attendanceId+'_'+data.frameNo).text()]}) .then(function() { nts.uk.ui.block.clear(); }); 
                         }
                     }
