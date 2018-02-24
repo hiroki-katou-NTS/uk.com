@@ -446,7 +446,7 @@ module nts.uk.at.view.kaf005.b {
                             let frameName = "";
                             //Setting color for item error
                             for (let i = 0; i < self.overtimeHours().length; i++) {
-                                self.changeColor( self.overtimeHours()[i].attendanceID(), self.overtimeHours()[i].frameNo());
+                                self.changeColor( self.overtimeHours()[i].attendanceID(), self.overtimeHours()[i].frameNo(),data.errorCode);
                                 if(self.overtimeHours().length == 1){
                                     frameName = self.overtimeHours()[i].frameName();
                                 }else{
@@ -460,7 +460,7 @@ module nts.uk.at.view.kaf005.b {
                             dialog.alertError({messageId:"Msg_424", messageParams: [self.employeeName(),frameName]}) .then(function() { nts.uk.ui.block.clear(); }); 
                         }else{
                           //Change background color
-                            self.changeColor( data.attendanceId, data.frameNo);
+                            self.changeColor( data.attendanceId, data.frameNo,data.errorCode);
                             dialog.alertError({messageId:"Msg_424", messageParams: [self.employeeName(),$('#overtimeHoursHeader_'+data.attendanceId+'_'+data.frameNo).text()]}) .then(function() { nts.uk.ui.block.clear(); }); 
                         }
                     }
