@@ -25,9 +25,6 @@ public class SpecialHolidayUseTimeOfMonthly {
 	@Getter
 	private Map<GeneralDate, SpecialHolidayUseTimeOfTimeSeries> timeSeriesWorks;
 	
-	/** 集計済 */
-	private boolean isAggregated;
-	
 	/**
 	 * コンストラクタ
 	 */
@@ -35,7 +32,6 @@ public class SpecialHolidayUseTimeOfMonthly {
 
 		this.useTime = new AttendanceTimeMonth(0);
 		this.timeSeriesWorks = new HashMap<>();
-		this.isAggregated = false;
 	}
 
 	/**
@@ -86,8 +82,6 @@ public class SpecialHolidayUseTimeOfMonthly {
 	 */
 	public void aggregate(DatePeriod datePeriod){
 		
-		if (this.isAggregated) return;
-		
 		this.useTime = new AttendanceTimeMonth(0);
 		
 		for (val timeSeriesWork : this.timeSeriesWorks.values()){
@@ -95,6 +89,5 @@ public class SpecialHolidayUseTimeOfMonthly {
 			//SpecialHolidayOfDaily specialHolidayUseTime = timeSeriesWork.getSpecialHolidayUseTime();
 			//this.useTime.addMinutes(specialHolidayUseTime.getUseTime().valueAsMinutes());
 		}
-		this.isAggregated = true;
 	}
 }

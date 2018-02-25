@@ -6,7 +6,6 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 
@@ -44,13 +43,11 @@ public class LeaveOfMonthly {
 		val domain = new LeaveOfMonthly();
 		for (val fixLeaveDays : fixLeaveDaysList){
 			val leaveAtr = fixLeaveDays.getLeaveAtr();
-			domain.fixLeaveDays.putIfAbsent(leaveAtr, AggregateLeaveDays.of(
-					leaveAtr, new AttendanceDaysMonth(fixLeaveDays.getDays().v())));
+			domain.fixLeaveDays.putIfAbsent(leaveAtr, AggregateLeaveDays.of(leaveAtr, fixLeaveDays.getDays()));
 		}
 		for (val anyLeaveDays : anyLeaveDaysList){
 			val anyLeaveNo = Integer.valueOf(anyLeaveDays.getAnyLeaveNo());
-			domain.anyLeaveDays.putIfAbsent(anyLeaveNo, AnyLeave.of(
-					anyLeaveNo, new AttendanceDaysMonth(anyLeaveDays.getDays().v())));
+			domain.anyLeaveDays.putIfAbsent(anyLeaveNo, AnyLeave.of(anyLeaveNo, anyLeaveDays.getDays()));
 		}
 		return domain;
 	}
