@@ -130,18 +130,13 @@ public class RoleWorkplaceIDFinder {
 	public List<String> findListWorkplaceId(WorkplaceParam param) {
 
 		List<String> listWkpId = new ArrayList<>();
-		WorkplaceIdDto workplaceIdDto = new WorkplaceIdDto();
 		//check ReferenceRange 
 		if (param.getReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE.value) {
 			//get list WorkplaceId by WorkplaceAdapter
 			listWkpId = workplaceAdapter.findListWkpIdByBaseDate(param.getBaseDate());
-			workplaceIdDto.setListWorkplaceIds(listWkpId);
-			workplaceIdDto.setIsAllEmp(true);
 		} else {
 			//get list WorkplaceId by function findListWkpId
 			listWkpId = this.findListWkpId(param);
-			workplaceIdDto.setListWorkplaceIds(listWkpId);
-			workplaceIdDto.setIsAllEmp(false);
 		}
 		return listWkpId;
 
