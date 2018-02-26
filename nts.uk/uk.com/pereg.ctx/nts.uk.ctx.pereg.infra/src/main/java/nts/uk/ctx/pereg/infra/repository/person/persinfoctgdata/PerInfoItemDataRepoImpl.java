@@ -52,7 +52,7 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON ic.pInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " WHERE ic.pInfoCtgId = :ctgid AND ic.pId = :pid";
 	
-	private static final String SEL_ALL_ITEM_BY_CTG_IDS = "SELECT id.ppemtEmpInfoItemDataPk.perInfoDefId"
+	private static final String SEL_ALL_ITEM_BY_CTG_IDS = "SELECT id.primaryKey.perInfoDefId"
 			+ " FROM PpemtPerInfoItemData id"
 			+ " INNER JOIN PpemtPerInfoItem pi ON id.primaryKey.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
 			+ " INNER JOIN PpemtPerInfoCtg pc ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
@@ -204,7 +204,7 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 	@Override
 	public boolean isExitedItem(List<String> ctgId, String itemCd) {
 		List<Object[]> itemLst = this.queryProxy().query(SEL_ALL_ITEM_BY_CTG_IDS,  Object[].class)
-				.setParameter("ctgid", ctgId)
+				.setParameter("perInfoCtgId", ctgId)
 				.setParameter("itemCd", itemCd)
 				.getList();
 		if(itemLst != null && itemLst.size() > 0) {

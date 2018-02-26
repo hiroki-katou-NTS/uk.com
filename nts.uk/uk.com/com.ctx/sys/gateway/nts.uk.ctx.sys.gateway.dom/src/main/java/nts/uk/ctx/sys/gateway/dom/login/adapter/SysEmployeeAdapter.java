@@ -39,5 +39,5 @@ public interface SysEmployeeAdapter {
 	 * @param pid the pid
 	 * @return the sdata mng info
 	 */
-	Optional<EmployeeDataMngInfoImport> getSdataMngInfo(String cid, String pid);
+	Optional<EmployeeDataMngInfoImport> getSdataMngInfo(String sid);
 }

@@ -379,9 +379,9 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	 * @see nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub#getSdataMngInfo(java.lang.String)
 	 */
 	@Override
-	public Optional<EmployeeDataMngInfoExport> getSdataMngInfo(String cid, String pid) {
+	public Optional<EmployeeDataMngInfoExport> getSdataMngInfo(String sid) {
 		Optional<EmployeeDataMngInfo> optEmployeeDataMngInfo = this.sDataMngInfoRepo
-				.findByCidPid(cid, pid);
+				.findByEmpId(sid);
 
 		// Check exist
 		if (!optEmployeeDataMngInfo.isPresent()) {

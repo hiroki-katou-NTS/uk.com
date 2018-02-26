@@ -78,10 +78,11 @@ public class PeregCommandFacade {
 	 *            inputs
 	 */
 	@Transactional
-	public void add(PeregInputContainer container) {
+	public String add(PeregInputContainer container) {
 		// Filter input category
 		List<ItemsByCategory> addInputs = container.getInputs().stream().filter(p->StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
 		PeregInputContainer addPeregInputContainer = new PeregInputContainer(container.getPersonId(), container.getEmployeeId(), addInputs);
+		List<String> recordIds = new ArrayList<String>();
 		
 		addPeregInputContainer.getInputs().forEach(itemsByCategory -> {
 			val handler = this.addHandlers.get(itemsByCategory.getCategoryCd());
@@ -105,7 +106,15 @@ public class PeregCommandFacade {
 					recordId, itemsByCategory);
 
 			this.userDefAdd.handle(commandForUserDef);
+			
+			// Keep record id to focus in UI
+			recordIds.add(recordId);
 		});
+		
+		if (recordIds.size() == 1){
+			return recordIds.get(0);
+		}
+		return null;
 	}
 
 	/**
