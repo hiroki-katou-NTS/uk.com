@@ -112,6 +112,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
             // first time show
             isFirstTime = true;
+            isHeightFixed = false;
             showApplyBtn: KnockoutComputed<boolean>;
             isExpanded: KnockoutObservable<boolean>;
 
@@ -683,12 +684,9 @@ module nts.uk.com.view.ccg.share.ccg {
             private loadKcp005(): void {
                 let self = this;
 
-                // update flag isFirstTime
-                self.isFirstTime = false;
-
                 // set KCP005 rows
-                const tabContentHeight = $('#tab-1').outerHeight();
-                const kcp005HeaderHeight = 100;
+                const tabContentHeight = parseInt(document.querySelector('.ccg-tabpanel>#tab-2').style.height);
+                const kcp005HeaderHeight = 70;
                 let rows = (tabContentHeight - kcp005HeaderHeight) / 24;
 
                 // set KCP005 options
@@ -707,12 +705,18 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // Show KCP005
                 $('#employeeinfo').ntsListComponent(self.employeeinfo).done(() => self.fixComponentWidth());
+
+                // update flag isFirstTime
+                if (self.isFirstTime) {
+                    self.isFirstTime = false;
+                }
             }
 
             /**
              * Fix component width according to screen width
              */
             private fixComponentWidth(): void {
+                let self = this;
                 // update tab 2 width
                 let totalWidth = 0;
                 $('#ccg001-tab-content-2').children('div.pull-left.height-maximum').each((i, e) => totalWidth += $(e).outerWidth(true));
@@ -722,8 +726,16 @@ module nts.uk.com.view.ccg.share.ccg {
                 const componentWidth = window.innerWidth - $('#hor-scroll-button-hide').offset().left;
                 if (componentWidth <= $('#ccg001-tab-content-2').outerWidth()) {
                     const margin = 30;
+                    // fix width and show scrollbar
                     $('.tab-content-2.height-maximum').outerWidth(componentWidth - margin);
                     $('.tab-content-2.height-maximum').css('overflow-x', 'auto');
+
+                    // fix height
+                    if (!self.isHeightFixed) {
+                        const fixedTabHeight = parseInt(document.querySelector('.ccg-tabpanel>#tab-2').style.height) + 15;
+                        $('.ccg-tabpanel>#tab-2').css('height', fixedTabHeight);
+                        self.isHeightFixed = true;
+                    }
                 }
             }
 
