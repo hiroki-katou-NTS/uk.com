@@ -22,4 +22,8 @@ public class StdAcceptCondSetFinder
                 .collect(Collectors.toList());
     }
 
+    public List<StdAcceptCondSetDto> getStdAcceptCondSetBySystemType(int systemType){
+        return finder.getStdAcceptCondSetBySysType(systemType).stream().map(item -> StdAcceptCondSetDto.fromDomain(item))
+                .collect(Collectors.toList());
+    }
 }

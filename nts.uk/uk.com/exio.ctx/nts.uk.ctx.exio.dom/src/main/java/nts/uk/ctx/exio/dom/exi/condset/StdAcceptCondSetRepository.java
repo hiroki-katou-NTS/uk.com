@@ -19,4 +19,5 @@ public interface StdAcceptCondSetRepository
 
     void remove(String cid, String conditionSetCd);
 
+    List<StdAcceptCondSet> getStdAcceptCondSetBySysType(int sysType);
 }

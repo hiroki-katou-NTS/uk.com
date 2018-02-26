@@ -70,4 +70,11 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
         return new OiomtStdAcceptCondSet(domain.getVersion(), new OiomtStdAcceptCondSetPk(domain.getCid(), domain.getConditionSetCd()), domain.getCategoryId(), domain.getCsvDataLineNumber(), domain.getSystemType(), domain.getDeleteExistData(), domain.getCsvDataStartLine(), domain.getAcceptMode(), domain.getConditionSetName(), domain.getCheckCompleted(), domain.getDeleteExtDataMethod());
     }
 
+    private static final String SELECT_BY_SYS_TYPE = SELECT_ALL_QUERY_STRING + " WHERE  f.systemType =:systemType ";
+    @Override
+    public List<StdAcceptCondSet> getStdAcceptCondSetBySysType(int systemType){
+    	return this.queryProxy().query(SELECT_BY_SYS_TYPE, OiomtStdAcceptCondSet.class)
+    			.setParameter("systemType", systemType)
+                .getList(item -> toDomain(item));
+    }
 }
