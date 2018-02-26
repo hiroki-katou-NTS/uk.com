@@ -17,9 +17,20 @@ public class ExacErrorLogFinder
     @Inject
     private ExacErrorLogRepository finder;
 
+    /**
+     * @return
+     */
     public List<ExacErrorLogDto> getAllExacErrorLog(){
         return finder.getAllExacErrorLog().stream().map(item -> ExacErrorLogDto.fromDomain(item))
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @param exacProcessId
+     * @return
+     */
+    public List<ExacErrorLogDto> getExacErrorLogByProcessId(String exacProcessId) {
+    	return finder.getExacErrorLogByProcessId(exacProcessId).stream().map(item -> ExacErrorLogDto.fromDomain(item))
+                .collect(Collectors.toList());
+    }
 }
