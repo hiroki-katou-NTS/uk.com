@@ -143,24 +143,24 @@ module nts.uk.at.view.kmk003.a {
 
                 //
                 self.tabs = ko.observableArray([]);
-                self.tabs.push(new TabItem('tab-1', nts.uk.resource.getText("KMK003_17"), '.tab-a1', true, true));
-                self.tabs.push(new TabItem('tab-2', nts.uk.resource.getText("KMK003_18"), '.tab-a2', true, true));
-                self.tabs.push(new TabItem('tab-3', nts.uk.resource.getText("KMK003_89"), '.tab-a3', true, true));
-                self.tabs.push(new TabItem('tab-4', nts.uk.resource.getText("KMK003_19"), '.tab-a4', true, true));
-                self.tabs.push(new TabItem('tab-5', nts.uk.resource.getText("KMK003_20"), '.tab-a5', true, true));
-                self.tabs.push(new TabItem('tab-6', nts.uk.resource.getText("KMK003_90"), '.tab-a6', true, true));
-                self.tabs.push(new TabItem('tab-7', nts.uk.resource.getText("KMK003_21"), '.tab-a7', true, true));
-                self.tabs.push(new TabItem('tab-8', nts.uk.resource.getText("KMK003_200"), '.tab-a8', true, true));
-                self.tabs.push(new TabItem('tab-9', nts.uk.resource.getText("KMK003_23"), '.tab-a9', true, true));
-                self.tabs.push(new TabItem('tab-10', nts.uk.resource.getText("KMK003_24"), '.tab-a10', true, true));
-                self.tabs.push(new TabItem('tab-11', nts.uk.resource.getText("KMK003_25"), '.tab-a11', true, true));
-                self.tabs.push(new TabItem('tab-12', nts.uk.resource.getText("KMK003_26"), '.tab-a12', true, true));
-                self.tabs.push(new TabItem('tab-13', nts.uk.resource.getText("KMK003_27"), '.tab-a13', true, true));
-                self.tabs.push(new TabItem('tab-14', nts.uk.resource.getText("KMK003_28"), '.tab-a14', true, true));
-                self.tabs.push(new TabItem('tab-15', nts.uk.resource.getText("KMK003_29"), '.tab-a15', true, true));
-                self.tabs.push(new TabItem('tab-16', nts.uk.resource.getText("KMK003_30"), '.tab-a16', true, true));
+                self.tabs.push(new TabItem(TabID.TAB1, nts.uk.resource.getText("KMK003_17"), '.tab-a1', true, true));
+                self.tabs.push(new TabItem(TabID.TAB2, nts.uk.resource.getText("KMK003_18"), '.tab-a2', true, true));
+                self.tabs.push(new TabItem(TabID.TAB3, nts.uk.resource.getText("KMK003_89"), '.tab-a3', true, true));
+                self.tabs.push(new TabItem(TabID.TAB4, nts.uk.resource.getText("KMK003_19"), '.tab-a4', true, true));
+                self.tabs.push(new TabItem(TabID.TAB5, nts.uk.resource.getText("KMK003_20"), '.tab-a5', true, true));
+                self.tabs.push(new TabItem(TabID.TAB6, nts.uk.resource.getText("KMK003_90"), '.tab-a6', true, true));
+                self.tabs.push(new TabItem(TabID.TAB7, nts.uk.resource.getText("KMK003_21"), '.tab-a7', true, true));
+                self.tabs.push(new TabItem(TabID.TAB8, nts.uk.resource.getText("KMK003_200"), '.tab-a8', true, true));
+                self.tabs.push(new TabItem(TabID.TAB9, nts.uk.resource.getText("KMK003_23"), '.tab-a9', true, true));
+                self.tabs.push(new TabItem(TabID.TAB10, nts.uk.resource.getText("KMK003_24"), '.tab-a10', true, true));
+                self.tabs.push(new TabItem(TabID.TAB11, nts.uk.resource.getText("KMK003_25"), '.tab-a11', true, true));
+                self.tabs.push(new TabItem(TabID.TAB12, nts.uk.resource.getText("KMK003_26"), '.tab-a12', true, true));
+                self.tabs.push(new TabItem(TabID.TAB13, nts.uk.resource.getText("KMK003_27"), '.tab-a13', true, true));
+                self.tabs.push(new TabItem(TabID.TAB14, nts.uk.resource.getText("KMK003_28"), '.tab-a14', true, true));
+                self.tabs.push(new TabItem(TabID.TAB15, nts.uk.resource.getText("KMK003_29"), '.tab-a15', true, true));
+                self.tabs.push(new TabItem(TabID.TAB16, nts.uk.resource.getText("KMK003_30"), '.tab-a16', true, true));
                 
-                self.selectedTab = ko.observable('tab-1');
+                self.selectedTab = ko.observable(TabID.TAB1);
 
                 //data get from service
                 self.isClickSave = ko.observable(false);
@@ -356,7 +356,7 @@ module nts.uk.at.view.kmk003.a {
                 if (isDetail) {
                     _.forEach(_self.tabs(), tab => tab.setVisible(true));
                 } else {
-                    let simpleTabsId: string[] = ['tab-1','tab-2','tab-3','tab-4','tab-5','tab-6','tab-7','tab-9','tab-10','tab-11','tab-12'];
+                    let simpleTabsId: string[] = [TabID.TAB1, TabID.TAB2, TabID.TAB3, TabID.TAB4, TabID.TAB5, TabID.TAB6, TabID.TAB7, TabID.TAB9, TabID.TAB10, TabID.TAB11, TabID.TAB12];
                     _.forEach(_self.tabs(), tab => {
                         if (_.findIndex(simpleTabsId, id => tab.id === id) === -1) {
                             tab.setVisible(false);
@@ -437,9 +437,15 @@ module nts.uk.at.view.kmk003.a {
                         self.loadWorktimeSetting(self.selectedWorkTimeCode());
                     }).fail((err) => {
                         self.isClickSave(false);
-                        let errors = _.uniqBy(err.errors, function(v) {
-                            return v.messageId + ' ' + v.parameterIds[0];
+                        console.log(err.errors);
+                        let errors = _.uniqBy(err.errors, (v: any) => {
+                            let key = v.messageId;
+                            for (let param of v.parameterIds) {
+                                key = key + ' ' + param;
+                            }
+                            return key;
                         });
+                        console.log(errors);
                         err.errors = errors;
                         self.showMessageError(err);
                     });
@@ -924,6 +930,26 @@ module nts.uk.at.view.kmk003.a {
             NEW,
             UPDATE,
             COPY
+        }
+        
+        export class TabID {
+            static TAB1 = "tab-1";
+            static TAB2 = "tab-2";
+            static TAB3 = "tab-3";
+            static TAB4 = "tab-4";
+            static TAB5 = "tab-5";
+            static TAB6 = "tab-6";
+            static TAB7 = "tab-7";
+            static TAB8 = "tab-8";
+            static TAB9 = "tab-9";
+            static TAB10 = "tab-10";
+            static TAB11 = "tab-11";
+            static TAB12 = "tab-12";
+            static TAB13 = "tab-13";
+            static TAB14 = "tab-14";
+            static TAB15 = "tab-15";
+            static TAB16 = "tab-16";
+            static TAB17 = "tab-17";
         }
     }
 }
