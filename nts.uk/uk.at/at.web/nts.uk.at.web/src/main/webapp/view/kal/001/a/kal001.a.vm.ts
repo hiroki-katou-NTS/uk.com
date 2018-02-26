@@ -130,11 +130,11 @@ module nts.uk.at.view.kal001.a.model {
                     self.alarmCodeChange();
                     dfd.resolve();
                 }).fail((errorCheckTime) =>{
-                    
+                    alertError(errorCheckTime);
                 });
                 
             }).fail((errorAlarm)=>{
-
+                 alertError(errorAlarm);
             });
             
 
@@ -181,6 +181,14 @@ module nts.uk.at.view.kal001.a.model {
 
             
                             
+        }
+        
+        public open_Dialog(): any {
+            let self = this;
+            nts.uk.ui.windows.setShared("alarmCode", self.currentAlarmCode());
+            modal("/view/kal/001/b/index.xhtml").onClosed(() => {
+                
+            });
         }
 
     }
