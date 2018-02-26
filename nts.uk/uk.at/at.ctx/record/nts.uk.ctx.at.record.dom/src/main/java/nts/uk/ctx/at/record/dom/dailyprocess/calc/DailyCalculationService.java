@@ -18,7 +18,6 @@ public interface DailyCalculationService {
 	/**
 	 * Managerクラス
 	 * @param asyncContext 同期コマンドコンテキスト
-	 * @param companyId 会社ID
 	 * @param employeeIds 社員IDリスト
 	 * @param datePeriod 期間
 	 * @param executionAttr 実行区分　（手動、自動）
@@ -26,6 +25,6 @@ public interface DailyCalculationService {
 	 * @param executionLog 実行ログ
 	 */
 	ProcessState manager(AsyncCommandHandlerContext asyncContext,
-			String companyId, List<String> employeeIds, DatePeriod datePeriod,
+			List<String> employeeIds, DatePeriod datePeriod,
 			ExecutionAttr executionAttr, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog);
 }
