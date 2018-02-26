@@ -12,7 +12,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class BfReqSetCommand {
-	private String companyId;
 	// 申請種類
 	private Integer appType;
 	// チェック方法

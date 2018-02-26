@@ -49,14 +49,16 @@ public class AffWorkplaceAdapterImpl implements AffWorkplaceAdapter {
 	public Optional<AffWorkPlaceSidImport> findBySidAndDate(String employeeId, GeneralDate baseDate) {
 		Optional<SWkpHistExport> opSWkpHistExport = this.wkpPub.findBySid(employeeId, baseDate);
 		AffWorkPlaceSidImport affWorkPlaceSidImport = new AffWorkPlaceSidImport();
-		if(opSWkpHistExport.isPresent()){
+		if(opSWkpHistExport.isPresent() && opSWkpHistExport != null){
 			affWorkPlaceSidImport = new AffWorkPlaceSidImport(opSWkpHistExport.get().getDateRange(),
 					opSWkpHistExport.get().getEmployeeId(),
 					opSWkpHistExport.get().getWorkplaceId(),
 					opSWkpHistExport.get().getWorkplaceCode(),
 					opSWkpHistExport.get().getWorkplaceName(),
 					opSWkpHistExport.get().getWkpDisplayName());
-			}
+		} else {
+			return Optional.empty();
+		}
 		
 		return Optional.of(affWorkPlaceSidImport);
 	}
