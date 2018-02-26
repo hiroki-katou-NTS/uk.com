@@ -33,6 +33,7 @@ module nts.uk.com.view.cmf001.q.viewmodel {
             self.sou = ko.observable('100');
             self.ken = ko.observable(' 11');
         }
+        // 中断ボタン
         stop() {
             let self = this;
             self.isStopMode(true);
@@ -44,15 +45,26 @@ module nts.uk.com.view.cmf001.q.viewmodel {
             }
         }
         
+        // 受け入れボタン
         importFile() {
             let self = this;
             self.isCheckMode(false);
             self.isStopMode(false);
             self.shorizyotai('　受入中。。。');
         }
+        
+        //エラーボタン
         gotoErrorList(){
+            let self = this;
+            setShared('CMD001-R', {
+                // add after test
+                imexProcessId: null,
+            }, true);
+            
             nts.uk.ui.windows.sub.modal("/view/cmf/001/r/index.xhtml");
         }
+        
+        // 閉じる
         close(){
              nts.uk.ui.windows.close();
         }

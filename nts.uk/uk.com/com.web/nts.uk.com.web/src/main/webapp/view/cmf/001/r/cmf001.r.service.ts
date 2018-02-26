@@ -2,37 +2,23 @@ module nts.uk.com.view.cmf.r.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths = {
-        getAllSelectionItems: "ctx/pereg/person/info/setting/selection/findAll/false",
-        getPerInfoSelectionItem: "ctx/pereg/person/info/setting/selection/findItem/{0}",
-        saveDataSelectionItem: "ctx/pereg/person/info/setting/selection/addSelectionItem",
-        updateDataSelectionItem: "ctx/pereg/person/info/setting/selection/updateSelectionItem",
-        removeDataSelectionItem: "ctx/pereg/person/info/setting/selection/removeSelectionItem",
-        checkExistedSelectionItemId: "ctx/pereg/person/info/ctgItem/checkExistItem/{0}"
-
+        getLogResults: "ctx/pereg/person/info/setting/selection/getLogResults",
+        getErrorLogs: "ctx/pereg/person/info/setting/selection/getErrorLogs",
+        exportDatatoCsv: "ctx/pereg/person/info/setting/selection/exportDatatoCsv",
     }
 
-    export function getAllSelectionItems() {
-        return ajax(paths.getAllSelectionItems);
-    }
-
-    export function getPerInfoSelectionItem(selectionItemId: string) {
-        let _path = format(paths.getPerInfoSelectionItem, selectionItemId);
+    export function getLogResult(imexProcessID: string) {
+        let _path = format(paths.getLogResults, imexProcessID);
         return nts.uk.request.ajax("com", _path);
     }
 
-    export function saveDataSelectionItem(command) {
-        return ajax(paths.saveDataSelectionItem, command);
+    export function getPerInfoSelectionItem(imexProcessID: string) {
+        let _path = format(paths.getErrorLogs, imexProcessID);
+        return nts.uk.request.ajax("com", _path);
     }
-
-    export function updateDataSelectionItem(command) {
-        return ajax(paths.updateDataSelectionItem, command);
-    }
-
-    export function removeDataSelectionItem(command) {
-        return ajax(paths.removeDataSelectionItem, command);
-    }
-    export function checkExistedSelectionItemId(selectionItemId: string) {
-        let _path = format(paths.checkExistedSelectionItemId, selectionItemId);
+    
+    export function exportDatatoCsv(imexProcessID: string) {
+        let _path = format(paths.exportDatatoCsv, imexProcessID);
         return nts.uk.request.ajax("com", _path);
     }
 }

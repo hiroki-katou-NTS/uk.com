@@ -11,12 +11,13 @@ module nts.uk.com.view.cmf001.r.viewmodel {
     
     export class ScreenModel {
         currentCode: KnockoutObservable<model.ImExErrorLog>;
-        imExExecuteResultLog: KnockoutObservable<model.ImExExecuteResultLog>;
+        imExExecuteResultLog: KnockoutObservable<model.ImExExecuteResultLogR>;
         imExErrorLog: KnockoutObservableArray<model.ImExErrorLog>
         columns: KnockoutObservableArray<NtsGridListColumn>;
+        
         constructor() {
             let self = this;
-            self.imExExecuteResultLog =  ko.observable(new model.ImExExecuteResultLog('001', 'A社人事管理情報', '2018/3/15 14:52:00', '    100件', '    92件', '     8件'));
+            self.imExExecuteResultLog =  ko.observable(new model.ImExExecuteResultLogR('001', 'A社人事管理情報', '2018/3/15 14:52:00', '    100件', '    92件', '     8件'));
             self.imExErrorLog = ko.observableArray([
                 new model.ImExErrorLog(3, '' ,'' , '','' ),
                 new model.ImExErrorLog(5, '' ,'' , '','' ),
@@ -36,8 +37,11 @@ module nts.uk.com.view.cmf001.r.viewmodel {
                 { headerText: '値', key: 'fieldValue', width: 150},
                 { headerText: 'エラーメッセージ', key: 'errorDesciption', width: 150} 
             ]); 
+            
+            //let imexProcessID = getShared ("CMD001-R");
         }
         
+        // エラー出力
         errorExport(){
             confirm({ messageId: "Msg_912" }).ifYes(() => {
                         return;
@@ -45,6 +49,7 @@ module nts.uk.com.view.cmf001.r.viewmodel {
                         return;
                     })
         }
+        //　閉じる
         close(){
              nts.uk.ui.windows.close();
         }
