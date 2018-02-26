@@ -10,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTemp;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTempRepository;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * update approval template
  * @author yennth
@@ -23,9 +24,10 @@ public class UpdateApprovalTempCommandHandler extends CommandHandler<ApprovalTem
 
 	@Override
 	protected void handle(CommandHandlerContext<ApprovalTempCommand> context) {
+		String companyId = AppContexts.user().companyId();
 		ApprovalTempCommand data = context.getCommand();
 		Optional<ApprovalTemp> appTemp = appRep.getAppTem();
-		ApprovalTemp app = ApprovalTemp.createFromJavaType(data.getCompanyId(), data.getContent());
+		ApprovalTemp app = ApprovalTemp.createFromJavaType(companyId, data.getContent());
 		if(appTemp.isPresent()){
 			appRep.update(app);
 			return;

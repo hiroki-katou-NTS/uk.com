@@ -12,3 +12,9 @@
 .control-group{
 	margin-top: 100px;
 }
+.check_column{
+	text-align: center !important;
+}
+.periodTime{
+	padding-left: 15px !important;
+}
