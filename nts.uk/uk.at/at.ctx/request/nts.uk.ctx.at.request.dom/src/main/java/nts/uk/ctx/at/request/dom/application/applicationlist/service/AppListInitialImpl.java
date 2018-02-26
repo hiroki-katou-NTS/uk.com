@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
@@ -1083,10 +1085,11 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 */
 	private boolean checkDifNotAppv(ApprovalFrameImport_New frame){
 		String sID = AppContexts.user().employeeId();
-		if(frame.getApproverID().equals(sID)){
+		
+		if(Strings.isNotBlank(frame.getApproverID())&& frame.getApproverID().equals(sID)){
 			return true;
 		}
-		if(frame.getRepresenterID().equals(sID)){
+		if(Strings.isNotBlank(frame.getRepresenterID())&& frame.getRepresenterID().equals(sID)){
 			return true;
 		}
 		if(this.checkExistEmp(frame.getListApprover(), sID)){

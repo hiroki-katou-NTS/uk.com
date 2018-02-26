@@ -16,6 +16,8 @@ module cmm045.a.viewmodel {
         itemApplication: KnockoutObservableArray<vmbase.ChoseApplicationList>;
         selectedCode: KnockoutObservable<number> = ko.observable(1);// combo box
         mode: KnockoutObservable<number> = ko.observable(1);
+        startDateString: KnockoutObservable<string> = ko.observable("");
+        endDateString: KnockoutObservable<string> = ko.observable("");
         constructor(){
             let self = this;
             self.itemList = ko.observableArray([
@@ -48,7 +50,7 @@ module cmm045.a.viewmodel {
             let characterData = null;
             character.restore("AppListExtractCondition").done((data) => {
                 characterData = data;
-                self.dateValue = ko.observable({startDate: data.startDate, endDate: data.endDate});
+                self.dateValue.push({startDate: data.startDate, endDate: data.endDate});
                 self.selectedIds([]);
                 if(data.unapprovalStatus){//未承認
                     self.selectedIds.push(1);
@@ -126,7 +128,12 @@ module cmm045.a.viewmodel {
                             data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner, 
                             data.appStatusCount.denialNumber));
                     }
-                    self.reloadGridApproval();
+                    if(self.mode() == 1){
+                        self.reloadGridApproval();
+                    }else{
+                        self.reloadGridApplicaion()
+                    }
+                    
                     dfd.resolve();
                 });
             }).always(()=>{
@@ -138,8 +145,8 @@ module cmm045.a.viewmodel {
         reloadGridApplicaion(){
             var self = this;
             $("#grid2").ntsGrid({
-            width: '1200px',
-            height: '700px',
+            width: '1150px',
+            height: '500px',
             dataSource: self.items(),
             primaryKey: 'appId',
             virtualization: true,
@@ -148,12 +155,12 @@ module cmm045.a.viewmodel {
                 { headerText: getText('CMM045_50'), key: 'appId', dataType: 'string', width: '50px', unbound: false, ntsControl: 'Button' },
                 { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
                 { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '120px' },
-                { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '120px' },
+                { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '80px' },
                 { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '150px' },
-                { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '200px' },
-                { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '120px' },
-                { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '120px' },
-                { headerText: 'ID', key: 'appId', dataType: 'string', width: '50px', ntsControl: 'Label', hidden: true}
+                { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '240px' },
+                { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '180px' },
+                { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '100px' },
+                { headerText: 'ID', key: 'appId', dataType: 'string', width: '10px', ntsControl: 'Label', hidden: true}
             ], 
             features: [{ name: 'Resizing' },
                         { 
@@ -175,7 +182,7 @@ module cmm045.a.viewmodel {
         reloadGridApproval(){
             var self = this;
             $("#grid1").ntsGrid({
-            width: '1200px',
+            width: '1280px',
             height: '700px',
             dataSource: self.items(),
             primaryKey: 'appId',
@@ -188,11 +195,11 @@ module cmm045.a.viewmodel {
                 { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '120px' },
                 { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '120px' },
                 { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '150px' },
-                { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '200px' },
-                { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '120px' },
+                { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '240px' },
+                { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '180px' },
                 { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '120px',ntsControl: 'Label' },
                 { headerText: getText('CMM045_58'), key: 'displayAppStatus', dataType: 'string', width: '120px' },
-                { headerText: 'ID', key: 'appId', dataType: 'string', width: '50px', ntsControl: 'Label', hidden: true}
+                { headerText: 'ID', key: 'appId', dataType: 'string', width: '0px', ntsControl: 'Label', hidden: true}
             ], 
             features: [{ name: 'Resizing' },
                         { 
@@ -252,8 +259,19 @@ module cmm045.a.viewmodel {
          * 
          * format data: over time after
          */
-        fomartOverTimeAf(overtime: any){
-             
+        fomartOverTimeAf(app: vmbase.ApplicationDto_New, goBack: vmbase.AppGoBackInfoFull, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp{
+             let self = this;
+            let applicant: string = masterInfo.workplaceName + ' ' + masterInfo.empName;
+            let go = goBack.goWorkAtr1 == 0 ? '' : ' ' + getText('CMM045_259')+ goBack.workTimeStart1;
+//                        + self.convertTime_Short_HM(goBack.workTimeStart1);
+            let back = goBack.backHomeAtr1 == 0 ? '' : ' ' + getText('CMM045_260') + goBack.workTimeEnd1;
+//                        + self.convertTime_Short_HM(goBack.workTimeEnd1);
+            let reason = self.displaySet().appReasonDisAtr == 1 ? ' ' + app.applicationReason : '';
+            let appContent2222 = getText('CMM045_272') + getText('CMM045_258') + go + back + reason;
+            let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
+                        masterInfo.dispName, app.prePostAtr == 0 ? '事前' : '事後', self.convertDate(app.applicationDate),appContent2222, self.convertDateTime(app.inputDate), 
+                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatusAppv(app.reflectPerState),masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version);
+            return a;
         }
         
         formatGoBack(app: vmbase.ApplicationDto_New, goBack: vmbase.AppGoBackInfoFull, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp{
@@ -280,7 +298,12 @@ module cmm045.a.viewmodel {
                 let data: vmbase.DataModeApp;
                 if(app.applicationType == 0){//over time
                     let overtTime = self.findOverTimeById(app.applicationID, lstOverTime);
-                    data = self.fomartOverTimeBf(app, overtTime ,masterInfo);
+                    
+                    if(app.prePostAtr == 0){
+                        data = self.fomartOverTimeBf(app, overtTime ,masterInfo);
+                    }else{
+                        data = self.fomartOverTimeAf(app, overtTime ,masterInfo);
+                    }
                 }
                 if(app.applicationType == 4){//goback
                     let goBack = self.findGoBack(app.applicationID, lstGoBack);
@@ -387,7 +410,7 @@ module cmm045.a.viewmodel {
                 block.clear();
                 return;
             }
-            if(self.selectedIds().length == 0){//承認状況のチェックの確認
+            if(self.mode() == 1 && self.selectedIds().length == 0){//承認状況のチェックの確認
                 nts.uk.ui.dialog.error({ messageId: "Msg_360"});
                 block.clear();
                 return;
@@ -438,8 +461,14 @@ module cmm045.a.viewmodel {
                         data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner, 
                         data.appStatusCount.denialNumber));
                 }
-                $("#grid1").ntsGrid("destroy");
-                self.reloadGridApproval();      
+                if(self.mode() == 1){
+                    $("#grid1").ntsGrid("destroy");
+                    self.reloadGridApproval();
+                }else{
+                    $("#grid2").ntsGrid("destroy");
+                    self.reloadGridApplicaion();
+                }
+                      
             }).always(()=>{
                     block.clear(); 
             });
