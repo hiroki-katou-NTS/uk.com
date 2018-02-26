@@ -159,7 +159,7 @@
 .ccg-tabpanel #tab-2 {
 	height: calc(100% - 70px);
 	background-color: white;
-	padding-right: 5px;
+	padding-right: 8px;
 }
 
 #component-ccg001 {
