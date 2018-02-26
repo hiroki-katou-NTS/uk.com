@@ -162,8 +162,7 @@ module nts.uk.at.view.kmf002.b {
                 let _self = this;
                 if ($('#tree-grid').getRowSelected()[0] != null) {
                     $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(),$('#tree-grid').getRowSelected()[0].workplaceId), 
-                            service.findFirstMonth(),
-                            service.findAll(_self.commonTableMonthDaySet().fiscalYear())).done(function(data: any, data2: any, data3: any) {
+                            service.findFirstMonth()).done(function(data: any, data2: any) {
                         if (typeof data === "undefined") {
                             /** 
                              *   create value null for prepare create new 

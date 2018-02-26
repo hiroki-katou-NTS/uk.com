@@ -141,8 +141,7 @@ module nts.uk.at.view.kmf002.d {
             public getDataFromService(): void {
                 let _self = this;
                  $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()), 
-                                    service.findFirstMonth(),
-                                    service.findAllEmpRegister(_self.commonTableMonthDaySet().fiscalYear())).done(function(data: any, data2: any, data3: any) {
+                                    service.findFirstMonth()).done(function(data: any, data2: any) {
                     if (typeof data === "undefined") {
                         /** 
                          *   create value null for prepare create new 
