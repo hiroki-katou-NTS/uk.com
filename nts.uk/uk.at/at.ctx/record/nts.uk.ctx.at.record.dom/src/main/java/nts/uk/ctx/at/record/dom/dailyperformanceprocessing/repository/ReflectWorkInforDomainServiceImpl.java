@@ -171,6 +171,14 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			String empCalAndSumExecLogID, ExecutionType reCreateAttr) {
 
 		AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor = new AffiliationInforOfDailyPerfor();
+
+		// Get Data
+		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
+
+		// Imported(就業．勤務実績)「所属職場履歴」を取得する
+		Optional<AffWorkPlaceSidImport> workPlaceHasData = this.affWorkplaceAdapter.findBySidAndDate(employeeId, day);
+
+		AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor = new AffiliationInforOfDailyPerfor();
 		
 		// ドメインモデル「日別実績の勤務情報」を削除する - rerun
 		if (reCreateAttr == ExecutionType.RERUN) {
@@ -196,7 +204,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			
 			if (affiliationInforOfDailyPerforState.getErrMesInfos().isEmpty()) {
 				// Imported(就業.勤務実績)「社員の勤務予定管理」を取得する
+				this.workschedule(companyId, employeeId, day, empCalAndSumExecLogID, affiliationInforOfDailyPerfor,
+						workPlaceHasData, reCreateAttr);
 				this.workschedule(companyId, employeeId, day, empCalAndSumExecLogID, affiliationInforOfDailyPerfor,reCreateAttr);
+				this.workschedule(companyId, employeeId, day, empCalAndSumExecLogID, 
+								  affiliationInforOfDailyPerforState.getAffiliationInforOfDailyPerfor().get(),reCreateAttr);
 			} else {
 				affiliationInforOfDailyPerforState.getErrMesInfos().forEach(action -> {
 					this.errMessageInfoRepository.add(action);
@@ -204,7 +216,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			}
 		}
 	}
-		
+
+		
 	/**
 	 * Importクラスを取得し日別実績の所属情報を作成する
 	 * @param companyId　the companyId
@@ -271,8 +284,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	}
 	
 	
+
 	private void workschedule(String companyId, String employeeID, GeneralDate day, String empCalAndSumExecLogID,
-			AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor,ExecutionType reCreateAttr) {
+			AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor, ExecutionType reCreateAttr) {
 
 		// status
 		// 正常終了 : 0

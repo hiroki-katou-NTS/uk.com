@@ -218,6 +218,7 @@ public class MonthlyCalculation {
 		// 週間、月間法定・所定労働時間　取得
 		//*****（未）　日次での実装位置を確認して、合わせて実装する。
 		//*****（未）　参考（日次用）。このクラスか、別のクラスに、月・週用のメソッドを追加。仮に0設定。
+		//*****（未）　フレックスの場合、労働制を判断して、Month側だけに対象時間を入れる。
 		/*
 		repositories.getGetOfStatutoryWorkTime().getDailyTimeFromStaturoyWorkTime(WorkingSystem.RegularWork,
 				companyId, workplaceId, employmentCd, employeeId, datePeriod.end());
@@ -272,8 +273,8 @@ public class MonthlyCalculation {
 			// フレックス勤務の月別実績を集計する
 			val aggrValue = this.flexTime.aggregateMonthly(this.companyId, this.employeeId,
 					this.yearMonth, this.datePeriod, this.workingSystem, MonthlyAggregateAtr.MONTHLY, flexAggrMethod,
-					aggrSetOfFlex, this.attendanceTimeOfDailyMap,
-					this.totalWorkingTime, null, repositories);
+					aggrSetOfFlex, this.attendanceTimeOfDailyMap, this.totalWorkingTime, null,
+					this.prescribedWorkingTimeMonth, this.statutoryWorkingTimeMonth, repositories);
 			this.totalWorkingTime = aggrValue.getAggregateTotalWorkingTime();
 			
 			// フレックス勤務の月単位の時間を集計する

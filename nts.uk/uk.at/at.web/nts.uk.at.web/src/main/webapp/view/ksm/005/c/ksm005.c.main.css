@@ -36,4 +36,5 @@
 }
 #list-box_grid {
 	height: 83.6px !important;
+	overflow: hidden;
 }

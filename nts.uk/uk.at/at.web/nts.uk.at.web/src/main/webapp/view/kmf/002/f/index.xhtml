@@ -23,23 +23,23 @@
 			<div tabindex="-1" id="contents-area" class="scrE" >
 				<div class="title-content">
 					<!-- F1_1 -->
-					<pre>#{i18n.getText('KMF002_28')}</pre>
+					<pre tabindex="-1">#{i18n.getText('KMF002_28')}</pre>
 				</div>
 				<div style="display: flex; flex-direction: row" class="option-select-content">
 					<div id="manage_unit">
-						<div>
+						<div tabindex="-1">
 							<!-- F2_1 -->
 							<span>#{i18n.getText('Com_Company')}</span>
 						</div>
 						<!-- F2_2 -->
-						<div id="selectUnitCheck" data-bind="ntsCheckBox: { checked: selectUnitCheck, 
+						<div tabindex="-1" id="selectUnitCheck" data-bind="ntsCheckBox: { checked: selectUnitCheck, 
 														enable: true, 
 														text: '#{i18n.getText('KMF002_31')}'}"></div>
 						
 						<!-- F2_3 -->
 						<div>
 							<!-- F2_4, F2_5 -->
-							<div id="radioBoxTypeSelectScrF" data-bind="ntsRadioBoxGroup: {
+							<div tabindex="-1" id="radioBoxTypeSelectScrF" data-bind="ntsRadioBoxGroup: {
 																options: typeSelectUnitRadioBox,
 																optionsValue: 'id',
 																optionsText: 'name',
@@ -48,7 +48,7 @@
 							</div>
 						<div>
 							<!-- F2_6 -->
-							<div data-bind="ntsCheckBox: { checked: selectEmployee, 
+							<div tabindex="-1" data-bind="ntsCheckBox: { checked: selectEmployee, 
 															enable: true, 
 															text: '#{i18n.getText('Com_Person')}' }"></div>
 						</div>
@@ -62,11 +62,11 @@
 					</div>
 				</div>
 			</div>
-			<div  tabindex="-1" id="functions-area-bottom">
+			<div id="functions-area-bottom">
 				<!-- F4_2 -->
-				<button data-bind="click: closeSaveDialog" class="x-large proceed">#{i18n.getText('KMF002_20')}</button>
+				<button tabindex="-1" data-bind="click: closeSaveDialog" class="x-large proceed">#{i18n.getText('KMF002_20')}</button>
 				<!-- F4_3 -->
-				<button data-bind="click: closeDialog">#{i18n.getText('KMF002_33')}</button>
+				<button tabindex="-1" data-bind="click: closeDialog">#{i18n.getText('KMF002_33')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

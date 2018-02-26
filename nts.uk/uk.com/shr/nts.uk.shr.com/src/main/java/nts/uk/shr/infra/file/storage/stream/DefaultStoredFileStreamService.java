@@ -108,7 +108,10 @@ public class DefaultStoredFileStreamService implements StoredFileStreamService {
 		String packId = this.packInfoRepository.getPackId(entryInfo.getId())
 				.orElseThrow(() -> new RuntimeException("pack not found"));
 		
+		String packsDirectory = "packs";
+		
 		return new File(ServerSystemProperties.fileStoragePath()).toPath()
+				.resolve(packsDirectory)
 				.resolve(packId)
 				.resolve(entryInfo.getOriginalName());
 	}
