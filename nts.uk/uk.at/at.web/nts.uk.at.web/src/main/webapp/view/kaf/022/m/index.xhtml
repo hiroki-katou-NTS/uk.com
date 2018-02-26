@@ -1,5 +1,5 @@
 <div id="contents-area" class="fixed-flex-layout">
-	<div class="fixed-flex-layout-left">
+ 	<div class="fixed-flex-layout-left"> 
 	<div id="wkp-list"></div>
 	</div>
 	<div class="fixed-flex-layout-right">
@@ -41,7 +41,7 @@
 							optionsText: 'name',
 							value: $data.useAtr,
 							enable: true}"></div><br/>
-						<div data-bind="ntsCheckBox: { checked: $data.requiredInstructionFlg, enable: $data.useAtr() == 1 }">#{i18n.getText('KAF022_288')}</div>
+						<div style = "margin-left: -4px" data-bind="ntsCheckBox: { checked: $data.requiredInstructionFlg, enable: $data.useAtr() == 1 }">#{i18n.getText('KAF022_288')}</div>
 					</td>
 					<td>
 						<div data-bind="ntsRadioBoxGroup: {
@@ -58,8 +58,8 @@
 							optionsText: 'name',
 							value: $data.timeCalUseAtr,
 							enable: true}"></div><br/>
-						<div data-bind="ntsCheckBox: { checked: $data.breakInputFieldDisFlg, enable: $data.timeCalUseAtr() == 1 }">#{i18n.getText('KAF022_297')}</div><br/>
-						<div data-bind="ntsCheckBox: { checked: $data.goOutTimeBeginDisFlg, enable: $data.timeCalUseAtr() == 1 }">#{i18n.getText('KAF022_298')}</div><br/>
+						<div style = "margin-left: -4px" data-bind="ntsCheckBox: { checked: $data.breakInputFieldDisFlg, enable: $data.timeCalUseAtr() == 1 }">#{i18n.getText('KAF022_297')}</div><br/>
+						<div style = "margin-left: -4px" data-bind="ntsCheckBox: { checked: $data.goOutTimeBeginDisFlg, enable: $data.timeCalUseAtr() == 1 }">#{i18n.getText('KAF022_298')}</div><br/>
 						<span>#{i18n.getText('KAF022_299')}</span><br/>
 						<div style="margin-left: 5px;" data-bind="ntsRadioBoxGroup: {
 							options: $root.content.viewmodelM.atWorkAtr,
@@ -156,7 +156,7 @@
 							optionsText: 'name',
 							value: $data.useAtr,
 							enable: true}"></div><br/>
-						<div data-bind="ntsCheckBox: { checked: $data.requiredInstructionFlg, enable: $data.useAtr() == 1 }">#{i18n.getText('KAF022_288')}</div>
+						<div style = "margin-left: -4px" data-bind="ntsCheckBox: { checked: $data.requiredInstructionFlg, enable: $data.useAtr() == 1 }">#{i18n.getText('KAF022_288')}</div>
 					</td>
 					<td>
 						<div data-bind="ntsRadioBoxGroup: {
@@ -173,8 +173,8 @@
 							optionsText: 'name',
 							value: $data.timeCalUseAtr,
 							enable: true}"></div><br/>
-						<div data-bind="ntsCheckBox: { checked: $data.breakInputFieldDisFlg, enable: $data.timeCalUseAtr() == 1 }">#{i18n.getText('KAF022_297')}</div><br/>
-						<div data-bind="ntsCheckBox: { checked: $data.goOutTimeBeginDisFlg, enable: $data.timeCalUseAtr() == 1 }">#{i18n.getText('KAF022_298')}</div><br/>
+						<div style = "margin-left: -4px" data-bind="ntsCheckBox: { checked: $data.breakInputFieldDisFlg, enable: $data.timeCalUseAtr() == 1 }">#{i18n.getText('KAF022_297')}</div><br/>
+						<div style = "margin-left: -4px" data-bind="ntsCheckBox: { checked: $data.goOutTimeBeginDisFlg, enable: $data.timeCalUseAtr() == 1 }">#{i18n.getText('KAF022_298')}</div><br/>
 						<span>#{i18n.getText('KAF022_299')}</span><br/>
 						<div style="margin-left: 5px;" data-bind="ntsRadioBoxGroup: {
 							options: $root.content.viewmodelM.atWorkAtr,

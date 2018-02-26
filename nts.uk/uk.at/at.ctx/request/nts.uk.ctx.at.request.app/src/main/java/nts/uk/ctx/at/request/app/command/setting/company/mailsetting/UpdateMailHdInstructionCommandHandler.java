@@ -10,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.MailHdInstruction;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.MailHdInstructionRepository;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * update mail holiday instruction
  * @author yennth
@@ -23,9 +24,10 @@ public class UpdateMailHdInstructionCommandHandler extends CommandHandler<MailHd
 
 	@Override
 	protected void handle(CommandHandlerContext<MailHdInstructionCommand> context) {
+		String companyId = AppContexts.user().companyId();
 		MailHdInstructionCommand data = context.getCommand();
 		Optional<MailHdInstruction> mail = mailRep.getMail();
-		MailHdInstruction mailHd = MailHdInstruction.createFromJavaType(data.getCompanyId(), data.getSubject(), data.getContent());
+		MailHdInstruction mailHd = MailHdInstruction.createFromJavaType(companyId, data.getSubject(), data.getContent());
 		if(mail.isPresent()){
 			mailRep.update(mailHd);
 			return;

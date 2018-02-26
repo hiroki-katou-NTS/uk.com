@@ -138,7 +138,7 @@ public class WorkTypeSet {
 	 * @return
 	 */
 	public static WorkTypeSet createSimpleFromJavaType(String companyId, String workTypeCd, int workAtr, int digestPublicHd,
-			int holidayAtr, int countHodiday, int closeAtr, int sumAbsenseNo,
+			int holidayAtr, int countHodiday, Integer closeAtr, int sumAbsenseNo,
 			int sumSpHodidayNo, int timeLeaveWork, int attendanceTime,
 			int genSubHodiday, int dayNightTimeAsk) {
 		return new WorkTypeSet(companyId, 
@@ -147,7 +147,7 @@ public class WorkTypeSet {
 				EnumAdaptor.valueOf(digestPublicHd, WorkTypeSetCheck.class), 
 				EnumAdaptor.valueOf(holidayAtr, HolidayAtr.class), 
 				EnumAdaptor.valueOf(countHodiday, WorkTypeSetCheck.class), 
-				EnumAdaptor.valueOf(closeAtr, CloseAtr.class), 
+				closeAtr !=null ? EnumAdaptor.valueOf(closeAtr, CloseAtr.class) : null, 
 				sumAbsenseNo, 
 				sumSpHodidayNo, 
 				EnumAdaptor.valueOf(timeLeaveWork, WorkTypeSetCheck.class), 
@@ -155,5 +155,12 @@ public class WorkTypeSet {
 				EnumAdaptor.valueOf(genSubHodiday, WorkTypeSetCheck.class), 
 				EnumAdaptor.valueOf(dayNightTimeAsk, WorkTypeSetCheck.class));
 	}
-
+	
+	/**
+	 * change value of closeAtr(休業区分)
+	 * @param closeAtr
+	 */
+	public void changeCloseAtr(CloseAtr closeAtr) {
+		this.closeAtr = closeAtr;
+	}
 }

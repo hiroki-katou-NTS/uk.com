@@ -10,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyRequest;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyRequestRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * Update Late Early Request Command Handler
@@ -24,19 +25,17 @@ public class UpdateLateEarReqHandler extends CommandHandler<LateEarlyRequestComm
 
 	@Override
 	protected void handle(CommandHandlerContext<LateEarlyRequestCommand> context) {
+		String companyId = AppContexts.user().companyId();
 		LateEarlyRequestCommand command = context.getCommand();
 		Optional<LateEarlyRequest> lateEarlyRequest = repository.getLateEarlyRequest();
-		
 		LateEarlyRequest data = LateEarlyRequest.createFromJavaType(
-				command.getCompanyId(), 
+				companyId, 
 				command.getShowResult()
 		);
-		
 		if(lateEarlyRequest.isPresent()){
 			repository.updateLateEarlyRequest(data);
 			return;
 		}
-		
 		repository.addLateEarlyRequest(data);
 	};
 }

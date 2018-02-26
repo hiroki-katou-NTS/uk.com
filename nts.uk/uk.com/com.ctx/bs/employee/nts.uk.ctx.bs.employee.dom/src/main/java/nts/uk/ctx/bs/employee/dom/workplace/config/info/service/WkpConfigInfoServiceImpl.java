@@ -131,9 +131,9 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
                 continue;
             }
             // update hierarchyCd child
-            if (this.isChangedHierarchyChild(hierarchyCd, hierarchyCdSelected, createType)) {
-                String newHierarchyCd = hierarchyCd.replace(hierarchyCdSelected,
-                        this.getNewHierarchyCd(hierarchyCdSelected));
+            if (this.isChangedHierarchyChild(hierarchyCd, hierarchyCdSelected, createType)) { 
+            	String newParentCode = this.getNewHierarchyCd(hierarchyCd.substring(0, 3));
+                String newHierarchyCd = newParentCode + hierarchyCd.substring(0, 3);
                 wkpHierarchy.setHierarchyCode(new HierarchyCode(newHierarchyCd));
                 continue;
             }

@@ -10,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * Update WithDrawal Request Setting Command Handler
@@ -24,10 +25,10 @@ public class UpdateWithDrawalReqSetHandler extends CommandHandler<UpdateWithDraw
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateWithDrawalReqSetCommand> context) {
+		String companyId = AppContexts.user().companyId();
 		UpdateWithDrawalReqSetCommand data = context.getCommand();
 		Optional<WithDrawalReqSet> withDrawalReqSet = repository.getWithDrawalReqSet();
-		
-		WithDrawalReqSet item = WithDrawalReqSet.createFromJavaType(data.getCompanyId(),
+		WithDrawalReqSet item = WithDrawalReqSet.createFromJavaType(companyId,
 																	data.getPermissionDivision(),
 																	data.getAppliDateContrac(),
 																	data.getUseAtr(),
@@ -41,12 +42,10 @@ public class UpdateWithDrawalReqSetHandler extends CommandHandler<UpdateWithDraw
 																	data.getDeferredWorkTimeSelect(),
 																	data.getSimulAppliReq(),
 																	data.getLettleSuperLeave());
-		
 		if(withDrawalReqSet.isPresent()){
 			repository.updateWithDrawalReqSet(item);
 			return;
 		}
-		
 		repository.addWithDrawalReqSet(item);
 	};
 }
