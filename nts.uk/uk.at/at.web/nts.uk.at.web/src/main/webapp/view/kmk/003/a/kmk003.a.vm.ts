@@ -437,7 +437,6 @@ module nts.uk.at.view.kmk003.a {
                         self.loadWorktimeSetting(self.selectedWorkTimeCode());
                     }).fail((err) => {
                         self.isClickSave(false);
-                        console.log(err.errors);
                         let errors = _.uniqBy(err.errors, (v: any) => {
                             let key = v.messageId;
                             for (let param of v.parameterIds) {
@@ -445,7 +444,6 @@ module nts.uk.at.view.kmk003.a {
                             }
                             return key;
                         });
-                        console.log(errors);
                         err.errors = errors;
                         self.showMessageError(err);
                     });
