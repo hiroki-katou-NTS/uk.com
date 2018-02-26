@@ -10,6 +10,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -123,14 +124,13 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	 *
 	 * @param sId the s id
 	 */
-	protected void checkEmployeeDelStatus(String cid, String pid) {
+	protected void checkEmployeeDelStatus(String sid) {
 		// get Employee status
-		Optional<EmployeeDataMngInfoImport> optMngInfo = this.employeeAdapter.getSdataMngInfo(cid, pid);
+		Optional<EmployeeDataMngInfoImport> optMngInfo = this.employeeAdapter.getSdataMngInfo(sid);
 
 		if (!optMngInfo.isPresent()
 				|| !SDelAtr.NOTDELETED.equals(optMngInfo.get().getDeletedStatus())) {
-			// TODO: confirm lại về messege sẽ bắn ra
-			throw new RuntimeException();
+			throw new BusinessException("Msg_301");
 		}
 	}
 
@@ -193,7 +193,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 					.getByPid(lstCompanyId.get(FIST_COMPANY), user.getAssociatePersonId());
 
 			// Check employee deleted status.
-			this.checkEmployeeDelStatus(lstCompanyId.get(FIST_COMPANY), user.getAssociatePersonId());
+			this.checkEmployeeDelStatus(opEm.get().getEmployeeId());
 			
 			// save to session
 			CompanyInformationImport companyInformation = this.companyInformationAdapter
