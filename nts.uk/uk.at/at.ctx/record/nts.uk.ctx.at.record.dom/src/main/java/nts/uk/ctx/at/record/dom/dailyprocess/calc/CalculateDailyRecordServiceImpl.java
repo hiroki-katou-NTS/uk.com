@@ -8,6 +8,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.eclipse.persistence.internal.oxm.schema.model.Content;
+
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
@@ -104,6 +106,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -140,7 +143,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 
 	/**
 	 * 勤務情報を取得して計算
-	 * @param companyId 会社ID
 	 * @param placeId 職場ID
 	 * @param employmentCd 雇用コード
 	 * @param employeeId 社員ID
@@ -149,12 +151,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * @return 日別実績(Work)
 	 */
 	@Override
-	public IntegrationOfDaily calculate(String companyId,String placeId, String employmentCd, String employeeId, GeneralDate targetDate, IntegrationOfDaily integrationOfDaily) {
+	//public IntegrationOfDaily calculate(String placeId, String employmentCd, String employeeId, GeneralDate targetDate, IntegrationOfDaily integrationOfDaily) {
+	public IntegrationOfDaily calculate(IntegrationOfDaily integrationOfDaily) {
 		/*日別実績(Work)の退避*/
 		val copyIntegrationOfDaily = integrationOfDaily;
-		if((employeeId == null)||(placeId == null)||(employmentCd == null)) return integrationOfDaily;
+		if (integrationOfDaily.getAffiliationInfor().equals(null)) return integrationOfDaily;
 		// 実績データの計算
-		return this.calculateRecord(companyId,placeId, employmentCd, employeeId, targetDate, integrationOfDaily);
+		return this.calculateRecord(integrationOfDaily);
 	}
 
 	/**
@@ -164,10 +167,15 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * @param targetDate 対象日
 	 * @param integrationOfDaily 
 	 */
-	private IntegrationOfDaily calculateRecord(String companyId,String placeId,String employmentCd,String employeeId,GeneralDate targetDate, IntegrationOfDaily integrationOfDaily) {
-
+	private IntegrationOfDaily calculateRecord(IntegrationOfDaily integrationOfDaily) {
+		String companyId = AppContexts.user().companyId();
+		String placeId = integrationOfDaily.getAffiliationInfor().getWplID();
+		String employmentCd = integrationOfDaily.getAffiliationInfor().getEmploymentCode().toString();
+		String employeeId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
+		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd(); 
+		
 		/*1日の計算範囲クラスを作成*/
-		val oneRange = createOneDayRange(companyId,employeeId,targetDate,integrationOfDaily);
+		val oneRange = createOneDayRange(integrationOfDaily);
 		/*勤務種類の取得*/
 		val workInfo = integrationOfDaily.getWorkInformation();
 		//val workType = this.workTypeRepository.findByPK(companyId, "001").get();
@@ -180,11 +188,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
 		if(!workTime.isPresent()) return integrationOfDaily;
 		/*労働制*/
-		DailyCalculationPersonalInformation personalInfo = getPersonInfomation(companyId
-																				, placeId
-																				, employmentCd
-																				, employeeId
-																				, targetDate);
+		DailyCalculationPersonalInformation personalInfo = getPersonInfomation(integrationOfDaily);
 		
 		
 		
@@ -439,8 +443,12 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @return 1日の計算範囲
 	 */
-	private CalculationRangeOfOneDay createOneDayRange(String companyId, String employeeId, GeneralDate targetDate,IntegrationOfDaily integrationOfDaily) {
-		
+	private CalculationRangeOfOneDay createOneDayRange(IntegrationOfDaily integrationOfDaily) {
+		String companyId = AppContexts.user().companyId();
+		String placeId = integrationOfDaily.getAffiliationInfor().getWplID();
+		String employmentCd = integrationOfDaily.getAffiliationInfor().getEmploymentCode().toString();
+		String employeeId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
+		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd(); 
 		/*所定時間設定取得*/
 		//val predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId,"901");// integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
 		Optional<PredetemineTimeSetting> predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
@@ -466,7 +474,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 //		boolean justLate        = /*就業時間帯から固定・流動・フレックスの設定を取得してくるロジック*/;
 //		boolean justEarlyLeave  = /*就業時間帯から固定・流動・フレックスの設定を取得してくるロジック*/;
 //		/*日別実績の出退勤時刻セット*/
-		Optional<TimeLeavingOfDailyPerformance> timeLeavingOfDailyPerformance = Optional.of(integrationOfDaily.getAttendanceLeave());
+		Optional<TimeLeavingOfDailyPerformance> timeLeavingOfDailyPerformance = integrationOfDaily.getAttendanceLeave();
 		if(!timeLeavingOfDailyPerformance.isPresent()) {
 			//TimeLeavingOfDailyPerformance attendanceLeavingOfDaily = timeLeavingOfDailyPerformanceRepository.
 			WorkStamp attendance = new WorkStamp(new TimeWithDayAttr(0),new TimeWithDayAttr(0), new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET );
@@ -490,7 +498,12 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * 労働制を取得する
 	 * @return 日別計算用の個人情報
 	 */
-	private DailyCalculationPersonalInformation getPersonInfomation(String companyId,String placeId,String employmentCd,String employeeId,GeneralDate targetDate) {
+	private DailyCalculationPersonalInformation getPersonInfomation(IntegrationOfDaily integrationOfDaily) {
+		String companyId = AppContexts.user().companyId();
+		String placeId = integrationOfDaily.getAffiliationInfor().getWplID();
+		String employmentCd = integrationOfDaily.getAffiliationInfor().getEmploymentCode().toString();
+		String employeeId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
+		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd(); 
 		//Optional<EmploymentContractHistory> employmentContractHistory = this.employmentContractHistoryAdopter.findByEmployeeIdAndBaseDate(employeeId, targetDate);
 		Optional<EmploymentContractHistory> employmentContractHistory = Optional.of(new EmploymentContractHistory(employeeId,WorkingSystem.RegularWork));
 		if(!employmentContractHistory.isPresent()) {
