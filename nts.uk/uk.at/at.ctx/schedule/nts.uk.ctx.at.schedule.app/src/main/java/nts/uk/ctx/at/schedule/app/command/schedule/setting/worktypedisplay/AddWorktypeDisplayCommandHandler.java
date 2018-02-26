@@ -32,7 +32,6 @@ public class AddWorktypeDisplayCommandHandler extends CommandHandler<AddWorktype
 
 		if (optional.isPresent()) {
 			// update Worktype Display
-
 			this.repository.update(dis);
 		} else {
 			// add Worktype Display

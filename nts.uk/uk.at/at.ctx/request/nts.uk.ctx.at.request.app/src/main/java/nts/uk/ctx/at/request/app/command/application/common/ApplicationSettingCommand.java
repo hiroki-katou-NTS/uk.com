@@ -12,7 +12,6 @@ import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.
 @Data
 @AllArgsConstructor
 public class ApplicationSettingCommand {
-	public String companyID;
 	public Integer appActLockFlg;
 	public Integer appEndWorkFlg;
 	public Integer appActConfirmFlg;
@@ -35,19 +34,4 @@ public class ApplicationSettingCommand {
 	public Integer scheReflectFlg;
 	public Integer priorityTimeReflectFlg;
 	public Integer attendentTimeReflectFlg;
-	private ApplicationSetting toDomain(){
-		ApplicationSetting appli = ApplicationSetting.createFromJavaType(companyID, this.getAppActLockFlg(),
-				this.getAppEndWorkFlg(), this.getAppActConfirmFlg(), 
-				this.getAppOvertimeNightFlg(), this.getAppActMonthConfirmFlg(), 
-				this.getRequireAppReasonFlg(), this.getDisplayPrePostFlg(), 
-				this.getDisplaySearchTimeFlg(), this.getManualSendMailAtr(), 
-				this.getBaseDateFlg(), this.getAdvanceExcessMessDispAtr(), 
-				this.getHwAdvanceDispAtr(), this.getHwActualDispAtr(), 
-				this.getActualExcessMessDispAtr(), this.getOtAdvanceDispAtr(), 
-				this.getOtActualDispAtr(), this.getWarningDateDispAtr(), 
-				this.getAppReasonDispAtr(), this.getAppContentChangeFlg(), 
-				this.getScheReflectFlg(), this.getPriorityTimeReflectFlg(), 
-				this.getAttendentTimeReflectFlg());
-		return appli;
-	}
 }

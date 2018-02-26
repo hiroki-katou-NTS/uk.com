@@ -597,7 +597,7 @@ public class RegularAndIrregularTimeOfMonthly {
 		if (isSettlementMonth){
 			
 			// 精算月の時、月割増合計時間に集計結果を入れる
-			this.monthlyTotalPremiumTime = new AttendanceTimeMonth(totalIrregularPeriodCarryforwardsTime.v());
+			this.monthlyTotalPremiumTime = totalIrregularPeriodCarryforwardsTime;
 			
 			// 変形期間繰越時間を 0 にする
 			this.irregularWorkingTime.setIrregularPeriodCarryforwardTime(new AttendanceTimeMonth(0));
@@ -605,8 +605,7 @@ public class RegularAndIrregularTimeOfMonthly {
 		else{
 			
 			// 精算月でない時、複数月変形途中時間・変形期間繰越時間に集計結果を入れる
-			this.irregularWorkingTime.setMultiMonthIrregularMiddleTime(
-					new AttendanceTimeMonth(totalIrregularPeriodCarryforwardsTime.v()));
+			this.irregularWorkingTime.setMultiMonthIrregularMiddleTime(totalIrregularPeriodCarryforwardsTime);
 			this.irregularWorkingTime.setIrregularPeriodCarryforwardTime(
 					new AttendanceTimeMonth(irregularPeriodCarryforwardsTime.getTime().v()));
 		}

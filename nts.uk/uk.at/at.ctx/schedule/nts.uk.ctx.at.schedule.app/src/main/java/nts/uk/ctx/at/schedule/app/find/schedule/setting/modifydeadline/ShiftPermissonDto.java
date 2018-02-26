@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.schedule.app.find.schedule.setting.modifydeadline;
 
 import lombok.Data;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Data
 public class ShiftPermissonDto {
 	/** 会社ID*/
@@ -10,9 +14,9 @@ public class ShiftPermissonDto {
 	/** ロールID*/	
 	private String roleId;
 	
-	/** 利用区分*/
+	/** シフト別権限制御: 利用区分*/
 	private int availableShift;
 	
-	/** 修正期限*/
+	/** シフト別権限制御: 修正期限*/
 	private Integer functionNoShift;
 }

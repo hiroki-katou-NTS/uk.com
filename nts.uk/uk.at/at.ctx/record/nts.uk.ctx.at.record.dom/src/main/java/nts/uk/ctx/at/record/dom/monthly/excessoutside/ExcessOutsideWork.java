@@ -39,7 +39,7 @@ public class ExcessOutsideWork {
 		
 		ExcessOutsideWork domain = new ExcessOutsideWork(breakdownNo);
 		domain.excessNo = excessNo;
-		domain.excessTime = new AttendanceTimeMonth(excessTime.v());
+		domain.excessTime = excessTime;
 		return domain;
 	}
 }

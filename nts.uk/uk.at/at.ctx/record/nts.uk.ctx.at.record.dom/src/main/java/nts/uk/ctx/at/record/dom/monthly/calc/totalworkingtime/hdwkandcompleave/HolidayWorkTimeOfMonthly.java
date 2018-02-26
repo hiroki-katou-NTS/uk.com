@@ -360,7 +360,7 @@ public class HolidayWorkTimeOfMonthly {
 			
 			// 対象の時系列ワークを確認する
 			val targetHolidayWorkTime = this.getTargetAggregateHolidayWorkTime(holidayWorkFrameNo);
-			val timeSeriesWork = targetHolidayWorkTime.getTimeSeriesWork(ymd);
+			val timeSeriesWork = targetHolidayWorkTime.getAndPutTimeSeriesWork(ymd);
 			
 			// 自動的に除く休出枠か確認する
 			if (autoExcludeHolidayWorkFrameList.contains(holidayWorkFrameNo)){

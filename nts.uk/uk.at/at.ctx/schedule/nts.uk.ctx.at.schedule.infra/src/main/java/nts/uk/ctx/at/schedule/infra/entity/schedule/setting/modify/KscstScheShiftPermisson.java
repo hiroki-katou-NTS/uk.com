@@ -10,7 +10,11 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,8 +30,6 @@ public class KscstScheShiftPermisson  extends UkJpaEntity implements Serializabl
 			/** 利用できる*/
 			@Column(name = "AVAILABLE_SHIFT")
 			public int availableShift;
-			
-
 
 	@Override
 	protected Object getKey() {

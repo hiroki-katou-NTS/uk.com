@@ -6,8 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class HdAppSetCommand {
-	/** 会社ID **/
-	public String companyId;
 	
 	/** 60H超休を利用する名 */
 	public int use60h;
