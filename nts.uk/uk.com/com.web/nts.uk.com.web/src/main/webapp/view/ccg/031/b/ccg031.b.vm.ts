@@ -61,7 +61,7 @@ module nts.uk.com.view.ccg031.b.viewmodel {
                 // Binding TopPage Part
                 self.allPart(data.listTopPagePart);
                 // Default value
-                self.selectedPartType(0);
+                self.selectedPartType(data.listTopPagePartType[0].value);
                 self.selectFirstPart();
                 dfd.resolve();
             }).fail((res) => {
@@ -137,7 +137,7 @@ module nts.uk.com.view.ccg031.b.viewmodel {
             var url: string = self.url();
 
             // In case is TopPagePart
-            if (self.selectedPartType() !== 3) {
+            if (self.selectedPartType() !== 4) {
                 if (!util.isNullOrUndefined(self.selectedPart())) {
                     name = self.selectedPart().name;
                     width = self.selectedPart().width;
