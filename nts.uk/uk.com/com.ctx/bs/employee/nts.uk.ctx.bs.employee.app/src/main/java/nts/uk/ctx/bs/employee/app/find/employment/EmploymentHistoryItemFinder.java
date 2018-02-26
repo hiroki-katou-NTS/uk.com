@@ -43,6 +43,7 @@ public class EmploymentHistoryItemFinder {
 				.employeeId(empHisItem.getEmployeeId())
 				.employmentCode(empHisItem.getEmploymentCode().v())
 				.historyId(empHisItem.getHistoryId())
-				.salarySegment(empHisItem.getSalarySegment().value).build();
+				.salarySegment(empHisItem.getSalarySegment() == null ? null : empHisItem.getSalarySegment().value)
+				.build();
 	}
 }
