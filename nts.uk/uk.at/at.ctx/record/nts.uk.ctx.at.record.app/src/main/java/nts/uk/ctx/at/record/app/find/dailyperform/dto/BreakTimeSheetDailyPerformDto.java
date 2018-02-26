@@ -52,14 +52,14 @@ public class BreakTimeSheetDailyPerformDto {
 						domain.getBreakTimeSheet() == null ? new ArrayList<>() : 
 							ConvertHelper.mapTo(domain.getBreakTimeSheet(),
 								(c) -> new BreakTimeSheetDto(
-										getAttendanceTime(c.getStartTime().getAfterRoundingTime()),
-										getAttendanceTime(c.getEndTime().getAfterRoundingTime()), 
+										getTime(c.getStartTime()),
+										getTime(c.getEndTime()), 
 										getAttendanceTime(c.getBreakTime()),
 										c.getBreakFrameNo().v().intValue())),
 						domain.getGooutTimes() == null ? null : domain.getGooutTimes().v());
 	}
 	
-	private static Integer getAttendanceTime(TimeWithDayAttr domain) {
+	private static Integer getTime(TimeWithDayAttr domain) {
 		return domain == null ? null : domain.valueAsMinutes();
 	}
 	
