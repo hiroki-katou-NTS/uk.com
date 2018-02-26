@@ -286,6 +286,7 @@ module nts.uk.com.view.cmf001.share.model {
         
     }
     
+    
     export class ImExErrorLog {
         recordNumber: number;
         csvFieldName: string;

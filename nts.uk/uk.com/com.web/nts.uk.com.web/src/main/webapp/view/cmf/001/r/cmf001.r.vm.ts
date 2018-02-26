@@ -10,6 +10,7 @@ module nts.uk.com.view.cmf001.r.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     
     export class ScreenModel {
+        currentCode: KnockoutObservable<model.ImExErrorLog>;
         imExExecuteResultLog: KnockoutObservable<model.ImExExecuteResultLog>;
         imExErrorLog: KnockoutObservableArray<model.ImExErrorLog>
         columns: KnockoutObservableArray<NtsGridListColumn>;
@@ -27,7 +28,7 @@ module nts.uk.com.view.cmf001.r.viewmodel {
                 new model.ImExErrorLog(83, '' ,'' , '','' ),
                 
                 ]);
-            
+            self.currentCode = ko.observable(new model.ImExErrorLog(3, '' ,'' , '','' ));
             self.columns = ko.observableArray([
                 { headerText: 'レコード番号', key: 'recordNumber', width: 100 },
                 { headerText: 'CSV項目名', key: 'csvFieldName', width: 150 }, 

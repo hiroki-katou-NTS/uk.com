@@ -47,6 +47,7 @@ table, th, td {
 }
 .button {
 	text-align:center;
+	margin-bottom: 10px;
 }
 .btn-error-export{
 	float: right;

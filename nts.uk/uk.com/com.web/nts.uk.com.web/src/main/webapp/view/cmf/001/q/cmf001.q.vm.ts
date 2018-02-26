@@ -51,8 +51,7 @@ module nts.uk.com.view.cmf001.q.viewmodel {
             self.shorizyotai('　受入中。。。');
         }
         gotoErrorList(){
-            modal('/view/cmf/001/r/index.xhtml', { title: '', height: 900, width: 1500 }).onClosed(function(): any {
-            });
+            nts.uk.ui.windows.sub.modal("/view/cmf/001/r/index.xhtml");
         }
         close(){
              nts.uk.ui.windows.close();

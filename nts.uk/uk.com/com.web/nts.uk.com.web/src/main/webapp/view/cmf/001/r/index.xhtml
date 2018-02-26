@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 750, height: 550 };</script>
+			<script>var dialogSize = { width: 850, height: 550 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf001.r.vm.js" />
@@ -84,7 +84,8 @@
 							dataSource: imExErrorLog,
 							columns: columns,
 							showNumbering: true,
-							rows: 13
+							rows: 13,
+							value: currentCode
 						}"></table>
 					</div>
 				</div>
