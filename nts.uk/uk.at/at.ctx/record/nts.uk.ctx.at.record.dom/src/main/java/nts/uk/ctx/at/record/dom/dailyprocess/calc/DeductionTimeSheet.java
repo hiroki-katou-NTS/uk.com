@@ -461,46 +461,46 @@ public class DeductionTimeSheet {
 														,List<BreakTimeOfDailyPerformance> breakTimeOfDailyList) {
 		
 		//固定休憩か流動休憩か確認する
-		if(getHalfDayWorkTimezone().getRestTimezone().isFixRestTime()) {//固定休憩の場合
-			switch(getRestSetting().getFlowRestSetting().getFlowFixedRestSetting().getCalculateMethod()) {
-				//マスタを参照する
-				case REFER_MASTER:
-					createDedctionTimeSheet(dedAtr,WorkTimeMethodSet.FLOW_WORK,
-						fluidWorkSetting.getRestSetting().getFlowRestSetting().getFlowRestSetting().getTimeManagerSetAtr(),
-						outingTimeSheetofDaily,oneDayTimeSpan,fluidWorkSetting.getRestSetting().getCommonRestSetting(), attendanceLeaveWork
-						,Optional.empty(),workTimeDivision,Optional.of(fluidWorkSetting.getRestSetting().getFlowRestSetting().getFlowFixedRestSetting()), 
-						Optional.of(fluidWorkSetting.getRestSetting().getFlowRestSetting().getFlowRestSetting().getCalculateMethod())
-						,Optional.of(fluidWorkSetting.getHalfDayWorkTimezone().getRestTimezone()),breakTimeOfDailyList);
-				//予定を参照する
-				case REFER_SCHEDULE:
-					createDedctionTimeSheet(dedAtr,WorkTimeMethodSet.FLOW_WORK,
-						fluidWorkSetting.getRestSetting().getFlowRestSetting().getFlowRestSetting().getTimeManagerSetAtr(),
-						outingTimeSheetofDaily,oneDayTimeSpan,fluidWorkSetting.getRestSetting().getCommonRestSetting(), attendanceLeaveWork
-						,Optional.empty(),workTimeDivision,Optional.of(fluidWorkSetting.getRestSetting().getFlowRestSetting().getFlowFixedRestSetting()), 
-						Optional.of(fluidWorkSetting.getRestSetting().getFlowRestSetting().getFlowRestSetting().getCalculateMethod())
-						,Optional.of(fluidWorkSetting.getHalfDayWorkTimezone().getRestTimezone()),breakTimeOfDailyList);
-				//参照せずに打刻する
-				case STAMP_WHITOUT_REFER:
-					createDedctionTimeSheet(dedAtr,WorkTimeMethodSet.FLOW_WORK,
-						fluidWorkSetting.getRestSetting().getFlowRestSetting().getFlowRestSetting().getTimeManagerSetAtr(),
-						outingTimeSheetofDaily,oneDayTimeSpan,fluidWorkSetting.getRestSetting().getCommonRestSetting(), attendanceLeaveWork
-						,Optional.empty(),workTimeDivision,Optional.of(fluidWorkSetting.getRestSetting().getFlowRestSetting().getFlowFixedRestSetting()), 
-						Optional.of(fluidWorkSetting.getRestSetting().getFlowRestSetting().getFlowRestSetting().getCalculateMethod())
-						,Optional.of(fluidWorkSetting.getHalfDayWorkTimezone().getRestTimezone()),breakTimeOfDailyList);
-			}
-		}else{//流動休憩の場合
-//			switch(fluidWorkSetting.getRestSetting().getFluidWorkBreakSettingDetail().getFluidBreakTimeSet().getCalcMethod()) {
+//		if(getHalfDayWorkTimezone().getRestTimezone().isFixRestTime()) {//固定休憩の場合
+//			switch(getRestSetting().getFlowRestSetting().getFlowFixedRestSetting().getCalculateMethod()) {
 //				//マスタを参照する
-//				case ReferToMaster:
-//				
-//				//マスタと打刻を併用する	
-//				case ConbineMasterWithStamp:
-//				
-//				//参照せずに打刻する	
-//				//case StampWithoutReference:
-//			
+//				case REFER_MASTER:
+//					createDedctionTimeSheet(dedAtr,WorkTimeMethodSet.FLOW_WORK,
+//						fluidWorkSetting.getRestSetting().getFlowRestSetting().getFlowRestSetting().getTimeManagerSetAtr(),
+//						outingTimeSheetofDaily,oneDayTimeSpan,fluidWorkSetting.getRestSetting().getCommonRestSetting(), attendanceLeaveWork
+//						,Optional.empty(),workTimeDivision,Optional.of(fluidWorkSetting.getRestSetting().getFlowRestSetting().getFlowFixedRestSetting()), 
+//						Optional.of(fluidWorkSetting.getRestSetting().getFlowRestSetting().getFlowRestSetting().getCalculateMethod())
+//						,Optional.of(fluidWorkSetting.getHalfDayWorkTimezone().getRestTimezone()),breakTimeOfDailyList);
+//				//予定を参照する
+//				case REFER_SCHEDULE:
+//					createDedctionTimeSheet(dedAtr,WorkTimeMethodSet.FLOW_WORK,
+//						fluidWorkSetting.getRestSetting().getFlowRestSetting().getFlowRestSetting().getTimeManagerSetAtr(),
+//						outingTimeSheetofDaily,oneDayTimeSpan,fluidWorkSetting.getRestSetting().getCommonRestSetting(), attendanceLeaveWork
+//						,Optional.empty(),workTimeDivision,Optional.of(fluidWorkSetting.getRestSetting().getFlowRestSetting().getFlowFixedRestSetting()), 
+//						Optional.of(fluidWorkSetting.getRestSetting().getFlowRestSetting().getFlowRestSetting().getCalculateMethod())
+//						,Optional.of(fluidWorkSetting.getHalfDayWorkTimezone().getRestTimezone()),breakTimeOfDailyList);
+//				//参照せずに打刻する
+//				case STAMP_WHITOUT_REFER:
+//					createDedctionTimeSheet(dedAtr,WorkTimeMethodSet.FLOW_WORK,
+//						fluidWorkSetting.getRestSetting().getFlowRestSetting().getFlowRestSetting().getTimeManagerSetAtr(),
+//						outingTimeSheetofDaily,oneDayTimeSpan,fluidWorkSetting.getRestSetting().getCommonRestSetting(), attendanceLeaveWork
+//						,Optional.empty(),workTimeDivision,Optional.of(fluidWorkSetting.getRestSetting().getFlowRestSetting().getFlowFixedRestSetting()), 
+//						Optional.of(fluidWorkSetting.getRestSetting().getFlowRestSetting().getFlowRestSetting().getCalculateMethod())
+//						,Optional.of(fluidWorkSetting.getHalfDayWorkTimezone().getRestTimezone()),breakTimeOfDailyList);
 //			}
-		}
+//		}else{//流動休憩の場合
+////			switch(fluidWorkSetting.getRestSetting().getFluidWorkBreakSettingDetail().getFluidBreakTimeSet().getCalcMethod()) {
+////				//マスタを参照する
+////				case ReferToMaster:
+////				
+////				//マスタと打刻を併用する	
+////				case ConbineMasterWithStamp:
+////				
+////				//参照せずに打刻する	
+////				//case StampWithoutReference:
+////			
+////			}
+//		}
 		
 	}
 //	

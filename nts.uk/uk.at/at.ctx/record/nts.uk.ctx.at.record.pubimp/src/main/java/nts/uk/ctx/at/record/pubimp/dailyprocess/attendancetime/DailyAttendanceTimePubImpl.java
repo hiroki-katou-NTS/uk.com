@@ -49,11 +49,11 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 		
 		//休憩時間帯の作成
 		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
-		//一時的な作成
-		WorkStamp attendance = new WorkStamp(new TimeWithDayAttr(imp.getBreakStartTime().valueAsMinutes()), new TimeWithDayAttr(imp.getBreakStartTime().valueAsMinutes()), new WorkLocationCD("01"), StampSourceInfo.GO_STRAIGHT);
-		WorkStamp leave = new WorkStamp(new TimeWithDayAttr(imp.getBreakEndTime().valueAsMinutes()), new TimeWithDayAttr(imp.getBreakEndTime().valueAsMinutes()), new WorkLocationCD("01"), StampSourceInfo.GO_STRAIGHT);
 		//-----------
-		breakTimeSheets.add(new BreakTimeSheet(new BreakFrameNo(1),attendance , leave, imp.getBreakEndTime().minusMinutes(imp.getBreakStartTime().valueAsMinutes())));
+		breakTimeSheets.add(new BreakTimeSheet(new BreakFrameNo(1),
+							new TimeWithDayAttr(imp.getBreakStartTime().valueAsMinutes()),
+							new TimeWithDayAttr(imp.getBreakEndTime().valueAsMinutes()),
+							imp.getBreakEndTime().minusMinutes(imp.getBreakStartTime().valueAsMinutes())));
 		
 		val calculateResult = provisionalCalculationService.calculation(imp.getEmployeeid(),
 																		imp.getYmd(),
