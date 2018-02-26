@@ -23,6 +23,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearly
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetOfStatutoryWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetWeekStart;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetHolidayWorkAndTransferOrder;
+import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetOverTimeAndTransferOrder;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
@@ -104,6 +106,13 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 時間外超過設定の取得 */
 	@Inject
 	public OutsideOTSettingRepository outsideOTSet;
+
+	/** 残業・振替の処理順序を取得する */
+	@Inject
+	public GetOverTimeAndTransferOrder overTimeAndTransferOrder;
+	/** 休出・振替の処理順序を取得する */
+	@Inject
+	public GetHolidayWorkAndTransferOrder holidayWorkAndTransferOrder;
 	
 	/** 休日加算設定 */
 	@Inject
