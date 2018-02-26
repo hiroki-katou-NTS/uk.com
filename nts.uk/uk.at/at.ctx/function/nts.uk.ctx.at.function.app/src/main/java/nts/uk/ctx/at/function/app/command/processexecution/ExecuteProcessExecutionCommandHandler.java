@@ -522,7 +522,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					try {
 						Optional<ExecutionLog> dailyCalculationLog =
 								Optional.of(logsMap.get(ExecutionContent.DAILY_CALCULATION));
-						finalStatus = this.dailyCalculationService.manager(asyncContext, companyId, sidList,
+						finalStatus = this.dailyCalculationService.manager(asyncContext, sidList,
 								createPeriod, ExecutionAttr.MANUAL, execId, dailyCalculationLog);
 						
 						if (finalStatus == ProcessState.SUCCESS) {

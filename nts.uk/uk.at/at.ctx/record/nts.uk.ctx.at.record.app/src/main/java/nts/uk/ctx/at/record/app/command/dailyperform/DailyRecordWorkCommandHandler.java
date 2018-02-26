@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.dailyperform;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -194,16 +195,11 @@ public class DailyRecordWorkCommandHandler {
 	private void calcIfNeed(Set<String> group, DailyRecordWorkCommand command){
 		if(group.contains("I") || group.contains("G")){
 			IntegrationOfDaily calced = calcService.calculate(
-					AppContexts.user().companyId(), 
-					command.getAffiliationInfo().getData().getWplID(),
-					command.getAffiliationInfo().getData().getEmploymentCode() == null  ? null 
-							: command.getAffiliationInfo().getData().getEmploymentCode().v(), 
-					command.getEmployeeId(),
-					command.getWorkDate(),
-					new IntegrationOfDaily(
-							command.getWorkInfo().getData(),
-							command.getTimeLeaving().getData().orElse(null), 
-							command.getAttendanceTime().getData().orElse(null)));
+					new IntegrationOfDaily(command.getWorkInfo().getData(), command.getCalcAttr().getData(), command.getAffiliationInfo().getData(), 
+							Optional.empty(), Optional.ofNullable(command.getErrors().getData()), command.getOutingTime().getData(), command.getBreakTime().getData(), 
+							command.getAttendanceTime().getData(), command.getAttendanceTimeByWork().getData(), command.getTimeLeaving().getData(), 
+							command.getShortWorkTime().getData(), command.getSpecificDateAttr().getData(), command.getAttendanceLeavingGate().getData(), 
+							command.getOptionalItem().getData(), command.getEditState().getData(), command.getTemporaryTime().getData()));
 			command.getTimeLeaving().updateData(calced.getAttendanceLeave());
 			command.getAttendanceTime().updateData(calced.getAttendanceTimeOfDailyPerformance());
 			group.add("I");
