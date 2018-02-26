@@ -13,6 +13,19 @@
 #file-upload{
 	width: 300px;
 }
-#grd_Acquisition > tbody > tr > td:nth-child(5), #grd_Acquisition > tbody > tr > td:nth-child(6){
-	text-align: center;
+
+#grd_Acquisition{
+  counter-reset: rowNumber;
+}
+#grd_Acquisition tr {
+  counter-increment: rowNumber;
+}
+
+#grd_Acquisition tr td:first-child::before {
+  content: counter(rowNumber);
+  margin-left: 0.5em;
+}
+
+#grd_Acquisition tr td:first-child {
+	background-color: #CFF1A5;
 }

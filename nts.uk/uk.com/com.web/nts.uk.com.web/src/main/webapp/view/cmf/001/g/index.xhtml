@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 650, height: 500 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="cmf001.g.vm.js" />
+			<com:stylefile path = "cmf001.g.style.css"/>
+			<com:scriptfile path="cmf001.g.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div class="contents-area" style = "width:550px; height: 400px;">
+				<div class = "label" style = "margin-left: 20px; margin-top: 10px;" >#{i18n.getText('CMF001_220')}</div>
+				<div class = "div-table" style = "margin-left: 30px; margin-top: 20px;">
+					<div class = "div-table-row">	
+						<div class = "div-table-col-2" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_221')}</div>
+						<div class= "div-table-col">
+							<div>
+								<div class = "div-table-col" data-bind="ntsRadioButton: {checked: effectDigit, optionValue: true, optionText: '#{i18n.getText('CMF001_223')}', group: 'effectDigitCls'}"></div>
+							</div>
+							<div>
+								<div style = "margin-top:15px; " class = "div-table-col" data-bind="ntsRadioButton: {checked: deffectDigit, optionValue: false, optionText: '#{i18n.getText('CMF001_224')}', group: 'effectDigitCls' }"></div>
+							</div>
+						</div>
+						<div class = "div-table-col" >
+							<input  data-bind="ntsTextEditor: {
+								value: startDigit,
+								option : {width : '30px'},
+								enable: effectDigit}" />
+							<div  class = "label" style= "display:inline">#{i18n.getText('CMF001_226')}</div>
+						</div>
+						<div  class = "div-table-col" >
+							<input  data-bind="ntsTextEditor: {
+								value: endDigit,
+								option : {width : '30px'},
+								enable: effectDigit}" />
+						<div class =" label" style= "display:inline">#{i18n.getText('CMF001_229')}</div>
+						</div>
+					</div>
+					
+					<div class= "div-table-row">
+						<div class = "div-table-col-2">
+							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_231')}</div>
+						</div>
+						<div class = "div-table-col">
+							<div>
+								<div data-bind="ntsRadioButton: {checked: effectMinority, optionValue: false, optionText: '#{i18n.getText('CMF001_232')}', group: 'minorityDigitCls' }"></div>
+							</div>
+							<div>
+								<div style = "margin-top:15px;" data-bind="ntsRadioButton: {checked: deffectMinority, optionValue: false, optionText: '#{i18n.getText('CMF001_233')}', group: 'minorityDigitCls' }"></div>
+							</div>
+						</div>
+						<div class = "div-table-col">
+							<div style = "display:inline " class="label">#{i18n.getText('CMF001_234')}</div>
+							<input  data-bind="ntsTextEditor: {
+								value: minorityDigit,
+								option : {width : '30px'}}" />
+							<div style = "margin-top: 5px;">
+								<div id="G3_9" style = "display:inline-block; width :150px;" data-bind="ntsComboBox: {
+									options: [
+									{code: '001', name: '#{i18n.getText('CMF001_236')}'},
+									{code: '002', name: '#{i18n.getText('CMF001_236')}'},
+									{code: '003', name: '#{i18n.getText('CMF001_236')}'}
+									],
+									optionsValue: 'code',
+									visibleItemsCount: 5,
+									value: selectedPointIndicator,
+									optionsText: 'name',
+									enable: true}">
+								</div>
+						
+							</div>
+						</div>
+						<div class = "div-table-col1">
+							<div style = "width:20px;     top: -11px; position: relative; " class="label">#{i18n.getText('CMF001_236')}</div>
+							<div style = "display:inline-block; width :200px;" id="G3_8" data-bind="ntsComboBox: {
+									options: [
+									{code: '001', name: '#{i18n.getText('CMF001_236')}'},
+									{code: '002', name: '#{i18n.getText('CMF001_236')}'},
+									{code: '003', name: '#{i18n.getText('CMF001_236')}'}
+									],
+									editable: false,
+									optionsValue: 'code',
+									visibleItemsCount: 5,
+									value: selectedFraction ,
+									optionsText: 'name',
+									enable: true}">
+							</div>
+						</div>
+					</div>
+					<div class = "div-table-row">
+						<div class = "div-table-col-2">
+							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_250')}</div>
+						</div>
+						<div class = "div-table-col">
+							<button style="display: inline; position:relative; top : 10px;	" data-bind="click: open001_K">#{i18n.getText('CMF001_251')}</button>
+						</div>
+						<div id = "G4_3" style="display: inline; position:relative; top : 10px;	" class="label">コード</div>
+						<div id = "G4_4" style="display: inline; position:relative; top : 10px;	margin-left: 15px;" class="label">コード変換名</div>
+					</div>
+					<div class = "div-table-row">
+						<div class = "div-table-col-2">
+							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_221')}</div>
+						</div>
+						<div class = "div-table-col">
+							<div>
+								<div data-bind="ntsRadioButton: {checked: effectFixedVal, optionValue: false, optionText: '#{i18n.getText('CMF001_254')}', group: 'fixedValCls' }"></div>
+							</div>
+							<div>
+								<div style = "margin-top:15px;" data-bind="ntsRadioButton: {checked: deffectFixedVal, optionValue: false, optionText: '#{i18n.getText('CMF001_255')}', group: 'fixedValCls' }"></div>
+							</div>
+						</div>
+						<div style="display: inline">
+							<input  data-bind="ntsTextEditor: {
+								value: fixedVal,
+								option : {width : '200px'}}" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button id="btn_G6_1" class="x-large proceed " data-bind="click: saveNumericSetting">#{i18n.getText('CMF001_257')}</button>
+				<button id="btn_G6_2" class="large" data-bind="click: cancelNumericSetting">#{i18n.getText('CMF001_268')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
