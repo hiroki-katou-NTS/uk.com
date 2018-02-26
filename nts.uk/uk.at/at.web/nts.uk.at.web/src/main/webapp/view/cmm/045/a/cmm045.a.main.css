@@ -22,3 +22,6 @@
 .preExcess {
 	background-color: #ffc0cb;
 }
+table#grid2 tbody tr {
+	max-height: 50px !important;
+}

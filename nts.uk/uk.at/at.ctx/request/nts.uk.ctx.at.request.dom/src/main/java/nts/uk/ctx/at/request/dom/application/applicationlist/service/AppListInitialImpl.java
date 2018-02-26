@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
@@ -759,7 +761,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			FrameOutput frame = this.checkPhaseCurrent(appPhase, sID);
 			if(frame.getFrameStatus() != null){
 				status.setFrameStatus(EnumAdaptor.valueOf(frame.getFrameStatus(), ApprovalBehaviorAtrImport_New.class));
-				status.setPhaseStatus(appPhase.getApprovalAtr_Enum());
+				status.setPhaseStatus(appPhase.getApprovalAtr());
 				status.setAgentId(frame.getAgentId());
 				break;
 			}
@@ -779,7 +781,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		FrameOutput statusFrame = new FrameOutput();
 		for (ApprovalFrameImport_New frame : lstFrame) {
 			if(this.checkExistEmp(frame.getListApprover(), sID)){
-				statusFrame.setFrameStatus(frame.getApprovalAtr_Enum().value);
+				statusFrame.setFrameStatus(frame.getApprovalAtr().value);
 				statusFrame.setAgentId(frame.getRepresenterID());
 				break;
 			}
@@ -1083,10 +1085,11 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 */
 	private boolean checkDifNotAppv(ApprovalFrameImport_New frame){
 		String sID = AppContexts.user().employeeId();
-		if(frame.getApproverID().equals(sID)){
+		
+		if(Strings.isNotBlank(frame.getApproverID())&& frame.getApproverID().equals(sID)){
 			return true;
 		}
-		if(frame.getRepresenterID().equals(sID)){
+		if(Strings.isNotBlank(frame.getRepresenterID())&& frame.getRepresenterID().equals(sID)){
 			return true;
 		}
 		if(this.checkExistEmp(frame.getListApprover(), sID)){
@@ -1121,7 +1124,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	private Integer findPhaseStatus(List<ApprovalPhaseStateImport_New> lstPhaseState, int order){
 		for (ApprovalPhaseStateImport_New phase : lstPhaseState) {
 			if(phase.getPhaseOrder().equals(order)){
-				return phase.getApprovalAtr_Enum().value;
+				return phase.getApprovalAtr().value;
 			}
 		}
 		return null;

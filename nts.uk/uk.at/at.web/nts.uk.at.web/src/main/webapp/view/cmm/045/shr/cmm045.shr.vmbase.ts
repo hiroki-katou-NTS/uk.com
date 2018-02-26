@@ -311,12 +311,12 @@ module cmm045.shr {
                 approvalAgentNumber: number, cancelNumber: number,
                 remandNumner: number,denialNumber: number)
             {
-                this.unApprovalNumber = getText('CMM045_12') + ' ' + unApprovalNumber + getText('CMM045_18');
-                this.approvalNumber = getText('CMM045_13') + ' ' + approvalNumber + getText('CMM045_18');
-                this.approvalAgentNumber = getText('CMM045_14') + ' ' + approvalAgentNumber + getText('CMM045_18');
-                this.cancelNumber = getText('CMM045_15') + ' ' + cancelNumber + getText('CMM045_18');
-                this.remandNumner = getText('CMM045_16') + ' ' + remandNumner + getText('CMM045_18');
-                this.denialNumber = getText('CMM045_17') + ' ' + denialNumber + getText('CMM045_18');        
+                this.unApprovalNumber = getText('CMM045_12') + ' ' + getText('CMM045_18', [unApprovalNumber]); 
+                this.approvalNumber = getText('CMM045_13') + ' ' + getText('CMM045_18', [approvalNumber]);
+                this.approvalAgentNumber = getText('CMM045_14') + ' ' + getText('CMM045_18', [approvalAgentNumber]);
+                this.cancelNumber = getText('CMM045_15') + ' ' + getText('CMM045_18', [cancelNumber]);
+                this.remandNumner = getText('CMM045_16') + ' ' + getText('CMM045_18', [remandNumner]);
+                this.denialNumber = getText('CMM045_17') + ' ' + getText('CMM045_18', [denialNumber]);        
             }
         }
         export class ChoseApplicationList{

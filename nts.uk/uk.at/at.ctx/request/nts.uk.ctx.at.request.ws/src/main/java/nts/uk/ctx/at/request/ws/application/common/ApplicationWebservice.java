@@ -11,6 +11,8 @@ import javax.ws.rs.Produces;
 import lombok.Value;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.command.application.common.RemandApplicationHandler;
+import nts.uk.ctx.at.request.app.command.application.common.RemandCommand;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationApproveHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCancelHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommonCmd;
@@ -57,6 +59,9 @@ public class ApplicationWebservice extends WebService {
 	private UpdateApplicationDenyHandler denyApp;
 	
 	@Inject
+	private RemandApplicationHandler remandApplicationHandler;
+	
+	@Inject
 	private UpdateApplicationReleaseHandler releaseApp;
 	
 	@Inject
@@ -91,6 +96,16 @@ public class ApplicationWebservice extends WebService {
 	@Path("denyapp")
 	public JavaTypeResult<String> denyApp(InputCommonData command){
 		return new JavaTypeResult<String>(this.denyApp.handle(command));
+	}
+	
+	/**
+	 * remand application
+	 * @return
+	 */
+	@POST
+	@Path("remandapp")
+	public String remandApp(RemandCommand command){
+		return remandApplicationHandler.handle(command);
 	}
 	
 	/**
