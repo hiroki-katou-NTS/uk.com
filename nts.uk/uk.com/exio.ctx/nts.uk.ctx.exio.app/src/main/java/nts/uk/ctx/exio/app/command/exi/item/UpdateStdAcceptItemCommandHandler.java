@@ -20,7 +20,7 @@ public class UpdateStdAcceptItemCommandHandler extends CommandHandler<StdAcceptI
     @Override
     protected void handle(CommandHandlerContext<StdAcceptItemCommand> context) {
         StdAcceptItemCommand updateCommand = context.getCommand();
-        repository.update(StdAcceptItem.createFromJavaType(0L, updateCommand.getCid(), updateCommand.getConditionSetCd(), updateCommand.getCategoryId(), updateCommand.getAcceptItemNumber(), updateCommand.getSystemType(), updateCommand.getCsvItemNumber(), updateCommand.getCsvItemName(), updateCommand.getItemType(), updateCommand.getCategoryItemNo()));
+        repository.update(StdAcceptItem.createFromJavaType(updateCommand.getVersion(), updateCommand.getCid(), updateCommand.getConditionSetCd(), updateCommand.getCategoryId(), updateCommand.getAcceptItemNumber(), updateCommand.getSystemType(), updateCommand.getCsvItemNumber(), updateCommand.getCsvItemName(), updateCommand.getItemType(), updateCommand.getCategoryItemNo()));
     
     }
 }

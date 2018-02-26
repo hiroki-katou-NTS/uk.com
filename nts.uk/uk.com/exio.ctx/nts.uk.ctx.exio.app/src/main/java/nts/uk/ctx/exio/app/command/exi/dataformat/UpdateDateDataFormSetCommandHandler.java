@@ -20,7 +20,7 @@ public class UpdateDateDataFormSetCommandHandler extends CommandHandler<DateData
     @Override
     protected void handle(CommandHandlerContext<DateDataFormSetCommand> context) {
         DateDataFormSetCommand updateCommand = context.getCommand();
-        repository.update(DateDataFormSet.createFromJavaType(0L, updateCommand.getCid(), updateCommand.getConditionSetCd(), updateCommand.getAcceptItemNum(), updateCommand.getFixedValue(), updateCommand.getValueOfFixedValue(), updateCommand.getFormatSelection()));
+        repository.update(DateDataFormSet.createFromJavaType(updateCommand.getVersion(), updateCommand.getCid(), updateCommand.getConditionSetCd(), updateCommand.getAcceptItemNum(), updateCommand.getFixedValue(), updateCommand.getValueOfFixedValue(), updateCommand.getFormatSelection()));
     
     }
 }

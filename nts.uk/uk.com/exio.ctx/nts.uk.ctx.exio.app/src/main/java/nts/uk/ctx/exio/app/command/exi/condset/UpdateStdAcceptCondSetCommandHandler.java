@@ -20,7 +20,7 @@ public class UpdateStdAcceptCondSetCommandHandler extends CommandHandler<StdAcce
     @Override
     protected void handle(CommandHandlerContext<StdAcceptCondSetCommand> context) {
         StdAcceptCondSetCommand updateCommand = context.getCommand();
-        repository.update(StdAcceptCondSet.createFromJavaType(0L, updateCommand.getCid(), updateCommand.getConditionSetCd(), updateCommand.getCategoryId(), updateCommand.getCsvDataLineNumber(), updateCommand.getSystemType(), updateCommand.getDeleteExistData(), updateCommand.getCsvDataStartLine(), updateCommand.getAcceptMode(), updateCommand.getConditionSetName(), updateCommand.getCheckCompleted(), updateCommand.getDeleteExtDataMethod()));
+        repository.update(StdAcceptCondSet.createFromJavaType(updateCommand.getVersion(), updateCommand.getCid(), updateCommand.getConditionSetCd(), updateCommand.getCategoryId(), updateCommand.getCsvDataLineNumber(), updateCommand.getSystemType(), updateCommand.getDeleteExistData(), updateCommand.getCsvDataStartLine(), updateCommand.getAcceptMode(), updateCommand.getConditionSetName(), updateCommand.getCheckCompleted(), updateCommand.getDeleteExtDataMethod()));
     
     }
 }

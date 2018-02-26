@@ -20,7 +20,7 @@ public class UpdateExAcpCategoryCommandHandler extends CommandHandler<ExAcpCateg
     @Override
     protected void handle(CommandHandlerContext<ExAcpCategoryCommand> context) {
         ExAcpCategoryCommand updateCommand = context.getCommand();
-        repository.update(ExAcpCategory.createFromJavaType(0L, updateCommand.getCategoryId(), updateCommand.getCategoryName()));
+        repository.update(ExAcpCategory.createFromJavaType(updateCommand.getVersion(), updateCommand.getCategoryId(), updateCommand.getCategoryName()));
     
     }
 }

@@ -20,7 +20,7 @@ public class UpdateExAcOpManageCommandHandler extends CommandHandler<ExAcOpManag
     @Override
     protected void handle(CommandHandlerContext<ExAcOpManageCommand> context) {
         ExAcOpManageCommand updateCommand = context.getCommand();
-        repository.update(ExAcOpManage.createFromJavaType(0L, updateCommand.getCid(), updateCommand.getProcessId(), updateCommand.getErrorCount(), updateCommand.getInterruption(), updateCommand.getProcessCount(), updateCommand.getProcessTotalCount(), updateCommand.getStateBehavior()));
+        repository.update(ExAcOpManage.createFromJavaType(updateCommand.getVersion(), updateCommand.getCid(), updateCommand.getProcessId(), updateCommand.getErrorCount(), updateCommand.getInterruption(), updateCommand.getProcessCount(), updateCommand.getProcessTotalCount(), updateCommand.getStateBehavior()));
     
     }
 }
