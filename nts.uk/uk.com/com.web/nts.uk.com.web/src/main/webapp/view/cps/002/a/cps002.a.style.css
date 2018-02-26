@@ -187,7 +187,6 @@
 .table_item, th, td {
 	border: 1px solid black;
 	padding: 5px;
-	min-height: 20px;
 }
 
 .table_item th {

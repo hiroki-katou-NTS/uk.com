@@ -33,10 +33,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
-import nts.uk.ctx.at.shared.dom.worktype.algorithm.AttendanceWorkTypeService;
-import nts.uk.ctx.at.shared.dom.worktype.algorithm.HolidayWorkTypeService;
-import nts.uk.ctx.at.shared.dom.worktype.algorithm.LeaveSystemWorkTypeService;
-import nts.uk.ctx.at.shared.dom.worktype.algorithm.PublicHolidaysWorkTypeService;
 import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemDto;
 import nts.uk.ctx.bs.employee.app.find.workplace.config.info.WorkplaceConfigInfoFinder;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
@@ -229,10 +225,6 @@ public class ComboBoxRetrieveFactory {
 							businessType.getBusinessTypeCode().v() + JP_SPACE + businessType.getBusinessTypeName().v()))
 					.collect(Collectors.toList());
 		case "M00008":
-		case "M00010":
-		case "M00011":
-		case "M00012":
-		case "M00013":
 			// 勤務種類マスタ
 			List<List<String>> lstWTDomain = workTypeRepo.findCodeAndNameOfWorkTypeByCompanyId(companyId);
 			List<ComboBoxObject> lstReturn = lstWTDomain.stream()
@@ -255,43 +247,43 @@ public class ComboBoxRetrieveFactory {
 									+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v()))
 					.collect(Collectors.toList());
 
-//		case "M00010":
-//			// 出勤系の勤務種類を取得する
-//			return workTypeRepo.getAcquiredAttendanceWorkTypes(companyId).stream()
-//					.map(attWkType -> new ComboBoxObject(attWkType.getWorkTypeCode().v(),
-//							attWkType.getWorkTypeCode().v() + JP_SPACE + attWkType.getName().v()))
-//					.collect(Collectors.toList());
-//		case "M00011":
-//			// 休日系の勤務種類を取得する
-//			return workTypeRepo.getAcquiredHolidayWorkTypes(companyId).stream()
-//					.map(attWkType -> new ComboBoxObject(attWkType.getWorkTypeCode().v(),
-//							attWkType.getWorkTypeCode().v() + JP_SPACE + attWkType.getName().v()))
-//					.collect(Collectors.toList());
-//
-//		case "M00012":
-//			// 休出系の勤務種類を取得する
-//			return workTypeRepo.getAcquiredLeaveSystemWorkTypes(companyId).stream()
-//					.map(attWkType -> new ComboBoxObject(attWkType.getWorkTypeCode().v(),
-//							attWkType.getWorkTypeCode().v() + JP_SPACE + attWkType.getName().v()))
-//					.collect(Collectors.toList());
-//
-//		case "M00013":
-//			// 休日系の勤務種類を取得する
-//			List<WorkType> workType = workTypeRepo.getAcquiredHolidayWorkTypes(companyId);
-//
-//			List<WorkType> workTypeNew = new ArrayList<WorkType>();
-//
-//			workType.forEach((item -> {
-//				WorkTypeSet workTypeSet = item.getWorkTypeSetList().get(0);
-//				if (workTypeSet.getDigestPublicHd() == WorkTypeSetCheck.CHECK) {
-//					workTypeNew.add(item);
-//				}
-//			}));
-//
-//			return workType.stream()
-//					.map(attWkType -> new ComboBoxObject(attWkType.getWorkTypeCode().v(),
-//							attWkType.getWorkTypeCode().v() + JP_SPACE + attWkType.getName().v()))
-//					.collect(Collectors.toList());
+		case "M00010":
+			// 出勤系の勤務種類を取得する
+			return workTypeRepo.getAcquiredAttendanceWorkTypes(companyId).stream()
+					.map(attWkType -> new ComboBoxObject(attWkType.getWorkTypeCode().v(),
+							attWkType.getWorkTypeCode().v() + JP_SPACE + attWkType.getName().v()))
+					.collect(Collectors.toList());
+		case "M00011":
+			// 休日系の勤務種類を取得する
+			return workTypeRepo.getAcquiredHolidayWorkTypes(companyId).stream()
+					.map(attWkType -> new ComboBoxObject(attWkType.getWorkTypeCode().v(),
+							attWkType.getWorkTypeCode().v() + JP_SPACE + attWkType.getName().v()))
+					.collect(Collectors.toList());
+
+		case "M00012":
+			// 休出系の勤務種類を取得する
+			return workTypeRepo.getAcquiredLeaveSystemWorkTypes(companyId).stream()
+					.map(attWkType -> new ComboBoxObject(attWkType.getWorkTypeCode().v(),
+							attWkType.getWorkTypeCode().v() + JP_SPACE + attWkType.getName().v()))
+					.collect(Collectors.toList());
+
+		case "M00013":
+			// 休日系の勤務種類を取得する
+			List<WorkType> workType = workTypeRepo.getAcquiredHolidayWorkTypes(companyId);
+
+			List<WorkType> workTypeNew = new ArrayList<WorkType>();
+
+			workType.forEach((item -> {
+				WorkTypeSet workTypeSet = item.getWorkTypeSetList().get(0);
+				if (workTypeSet.getDigestPublicHd() == WorkTypeSetCheck.CHECK) {
+					workTypeNew.add(item);
+				}
+			}));
+
+			return workType.stream()
+					.map(attWkType -> new ComboBoxObject(attWkType.getWorkTypeCode().v(),
+							attWkType.getWorkTypeCode().v() + JP_SPACE + attWkType.getName().v()))
+					.collect(Collectors.toList());
 
 		case "M00014":
 			// 月間パターンマスタ
