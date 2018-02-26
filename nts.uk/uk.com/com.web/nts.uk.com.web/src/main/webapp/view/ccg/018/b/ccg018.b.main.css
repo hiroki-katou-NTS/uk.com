@@ -1,19 +1,16 @@
 @CHARSET "UTF-8";
 
-#part-1, #part-2, #part-3 {
-	float: left;
+#contents-area {
+	position: static;
+	padding: 0px
 }
 
-#ccgcomponent {
-	z-index: 1000 !important
+#sample-component {
+	margin: 30px 0 0 85px;
 }
 
-#part-2 {
-	margin: 50px 0 0 85px;
-}
-
-#part-3 {
-	margin: 52px 0 0 22px;
+.fixed-flex-layout-right {
+	margin-top: 30px;
 }
 
 #table-1 {
