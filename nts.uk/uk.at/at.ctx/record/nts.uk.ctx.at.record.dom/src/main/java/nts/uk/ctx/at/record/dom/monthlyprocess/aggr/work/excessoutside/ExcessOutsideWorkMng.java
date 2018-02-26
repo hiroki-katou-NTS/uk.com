@@ -15,20 +15,24 @@ import nts.uk.ctx.at.record.dom.monthly.calc.AggregateMonthlyValue;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.ProcAtrHolidayWorkAndTransfer;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.ProcAtrOverTimeAndTransfer;
 import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.AggrSettingMonthly;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.FlexAggregateMethod;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.ExcessOutsideTimeSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.FlexTimeOfTimeSeries;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
 import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtion;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTCalMed;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -245,7 +249,8 @@ public class ExcessOutsideWorkMng {
 			aggrValue = flexTime.aggregateMonthly(this.companyId, this.employeeId,
 					this.yearMonth, this.datePeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					flexAggregateMethod, aggrSetOfFlex, this.attendanceTimeOfDailyMap,
-					aggregateTotalWorkingTime, this, repositories);
+					aggregateTotalWorkingTime, this,
+					this.prescribedWorkingTimeMonth, this.statutoryWorkingTimeMonth, repositories);
 			
 			// フレックス勤務の月単位の時間を集計する
 			flexTime.aggregateMonthlyHours(this.companyId, this.employeeId, this.yearMonth, this.datePeriod,
@@ -317,7 +322,8 @@ public class ExcessOutsideWorkMng {
 			aggrValue = flexTime.aggregateMonthly(this.companyId, this.employeeId,
 					this.yearMonth, this.datePeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					flexAggregateMethod, aggrSetOfFlex, this.attendanceTimeOfDailyMap,
-					aggregateTotalWorkingTime, this, repositories);
+					aggregateTotalWorkingTime, this,
+					this.prescribedWorkingTimeMonth, this.statutoryWorkingTimeMonth, repositories);
 			
 			// フレックス勤務の月単位の時間を集計する
 			flexTime.aggregateMonthlyHours(this.companyId, this.employeeId, this.yearMonth, this.datePeriod,
@@ -367,16 +373,24 @@ public class ExcessOutsideWorkMng {
 		if (!this.outsideOTSetOpt.isPresent()) return;
 		if (this.outsideOTSetOpt.get().getCalculationMethod() != OutsideOTCalMed.TIME_SERIES) return;
 		
+		// 「週単位の週割増時間」を「逆時系列割り当て用の週割増時間」にコピーする
+		AttendanceTimeMonthWithMinus weeklyPTForAssign = new AttendanceTimeMonthWithMinus(weekPremiumTime.v());
+		
 		// 「週単位の週割増時間」を「月別実績の時間外超過」に加算する
-		this.excessOutsideWork.addWeeklyTotalPremiumTime(weekPremiumTime.v());
+		this.excessOutsideWork.addMinutesToWeeklyTotalPremiumTime(weekPremiumTime.v());
 		
 		// 「期間．終了日」を処理日にする
 		GeneralDate procDate = weekPermiumProcPeriod.end();
 		while (procDate.afterOrEquals(weekPermiumProcPeriod.start())){
 			
 			// 週割増時間を日単位で割り当てる
-			this.monthlyDetail.assignWeeklyPremiumTimeByDayUnit(procDate, weekPremiumTime,
+			weeklyPTForAssign = this.monthlyDetail.assignWeeklyPremiumTimeByDayUnit(procDate, weeklyPTForAssign,
 					aggregateTotalWorkingTime, this.workInformationOfDailyMap, this, repositories);
+			
+			// 時間外超過明細の更新
+			this.excessOutsideWorkDetail = this.monthlyDetail.getExcessOutsideWorkMng().getExcessOutsideWorkDetail();
+			
+			if (weeklyPTForAssign.lessThanOrEqualTo(0)) break;
 			
 			// 処理日を更新する
 			procDate = procDate.addDays(-1);
@@ -483,5 +497,140 @@ public class ExcessOutsideWorkMng {
 		}
 		returnOrder.add(ProcAtrHolidayWorkAndTransfer.HOLIDAY_WORK);
 		return returnOrder;
+	}
+	
+	
+	/**
+	 * フレックス超過時間を割り当てる
+	 * @param datePeriod 期間
+	 * @param flexAggregateMethod フレックス集計方法
+	 * @param procDate 処理日
+	 * @param aggrSetOfFlex フレックス時間勤務の月の集計設定
+	 * @param aggregateTotalWorkingTime 集計総労働時間
+	 * @param flexTime フレックス時間
+	 * @param prescribedWorkingTimeMonth 月間所定労働時間
+	 * @param statutoryWorkingTimeMonth 月間法定労働時間
+	 * @param repositories 月次集計が必要とするリポジトリ
+	 */
+	public void assignFlexExcessTime(
+			DatePeriod datePeriod,
+			FlexAggregateMethod flexAggregateMethod,
+			GeneralDate procDate,
+			AggrSettingMonthlyOfFlx aggrSetOfFlex,
+			AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			FlexTime flexTime,
+			AttendanceTimeMonth prescribedWorkingTimeMonth,
+			AttendanceTimeMonth statutoryWorkingTimeMonth,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		// 「フレックス集計方法」を確認する
+		if (flexAggregateMethod == FlexAggregateMethod.FOR_CONVENIENCE) return;
+		
+		// フレックス超過対象時間を求める
+		val targetFlexExcessTime = this.askTargetFlexExcessTime(
+				datePeriod, procDate, aggregateTotalWorkingTime, flexTime);
+		
+		// 「時間外超過対象設定」を確認する
+		val excessOutsideTimeTargetSet =
+				aggrSetOfFlex.getLegalAggregateSet().getExcessOutsideTimeSet().getExcessOutsideTimeTargetSet();
+		AttendanceTimeMonthWithMinus excessTimeUntilDay = new AttendanceTimeMonthWithMinus(0);
+		switch (excessOutsideTimeTargetSet){
+		case ONLY_ILLEGAL_FLEX:
+			
+			// 法定外フレックスのみで当日までの超過時間を求める
+			excessTimeUntilDay = targetFlexExcessTime.minusMinutes(statutoryWorkingTimeMonth.v());
+			break;
+			
+		case INCLUDE_LEGAL_FLEX:
+			
+			// 法定内フレックスを含んで当日までの超過時間を求める
+			excessTimeUntilDay = this.askExcessTimeUntilDayIncludeLegalFlex(
+					targetFlexExcessTime, datePeriod, procDate, aggregateTotalWorkingTime, prescribedWorkingTimeMonth);
+			break;
+		}
+
+		// 前日までの超過時間を求める
+		AttendanceTimeMonthWithMinus excessTimeUntilPrevDay = new AttendanceTimeMonthWithMinus(0);
+		DatePeriod periodUntilPrevDay = new DatePeriod(datePeriod.start(), procDate.addDays(-1)); 
+		if (!periodUntilPrevDay.isReversed()){
+			excessTimeUntilPrevDay = this.excessOutsideWorkDetail.getTotalFlexExcessTime(periodUntilPrevDay);
+		}
+		
+		// 当日の超過時間を計算する
+		val excessTimeOfDay = excessTimeUntilDay.minusMinutes(excessTimeUntilPrevDay.v());
+		
+		// 当日の超過時間を時間外超過明細に加算する
+		val flexExcessTime = this.excessOutsideWorkDetail.getFlexExcessTime();
+		flexExcessTime.putIfAbsent(procDate, new FlexTimeOfTimeSeries(procDate));
+		val targetTimeSeries = flexExcessTime.get(procDate);
+		targetTimeSeries.addMinutesToFlexTimeInFlexTime(excessTimeOfDay.v());
+	}
+	
+	/**
+	 * フレックス超過対象時間を求める
+	 * @param datePeriod 期間
+	 * @param procDate 処理日
+	 * @param aggregateTotalWorkingTime 集計総労働時間
+	 * @param flexTime フレックス時間
+	 * @return フレックス超過対象時間
+	 */
+	private AttendanceTimeMonthWithMinus askTargetFlexExcessTime(
+			DatePeriod datePeriod,
+			GeneralDate procDate,
+			AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			FlexTime flexTime){
+		
+		AttendanceTimeMonthWithMinus targetFlexExcessTime = new AttendanceTimeMonthWithMinus(0);
+
+		// 「月別実績の就業時間」を取得する
+		val workTime = aggregateTotalWorkingTime.getWorkTime();
+		
+		DatePeriod targetPeriod = new DatePeriod(datePeriod.start(), procDate);
+		
+		// 累計就業時間を集計する
+		AttendanceTimeMonthWithMinus totalWorkTime =
+				new AttendanceTimeMonthWithMinus(workTime.getTimeSeriesTotalLegalTime(targetPeriod).v());
+		
+		// 累計フレックス時間を集計する
+		AttendanceTimeMonthWithMinus totalFlexTime =
+				new AttendanceTimeMonthWithMinus(flexTime.getTimeSeriesTotalFlexTime(targetPeriod, false).v());
+		
+		// 「フレックス超過対象時間」を計算する
+		targetFlexExcessTime = totalWorkTime.addMinutes(totalFlexTime.v());
+		
+		return targetFlexExcessTime;
+	}
+	
+	/**
+	 * 法定内フレックスを含んで当日までの超過時間を求める
+	 * @param targetFlexExcessTime フレックス超過対象時間
+	 * @param datePeriod 期間
+	 * @param procDate 処理日
+	 * @param aggregateTotalWorkingTime 集計総労働時間
+	 * @param prescribedWorkingTimeMonth 月間所定労働時間
+	 * @return 当日までの超過時間
+	 */
+	private AttendanceTimeMonthWithMinus askExcessTimeUntilDayIncludeLegalFlex(
+			AttendanceTimeMonthWithMinus targetFlexExcessTime,
+			DatePeriod datePeriod,
+			GeneralDate procDate,
+			AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			AttendanceTimeMonth prescribedWorkingTimeMonth){
+		
+		AttendanceTimeMonthWithMinus excessTimeUntilDay = new AttendanceTimeMonthWithMinus(0);
+
+		// 代休使用時間を求める
+		val compensatoryLeave = aggregateTotalWorkingTime.getVacationUseTime().getCompensatoryLeave();
+		DatePeriod targetPeriod = new DatePeriod(datePeriod.start(), procDate);
+		compensatoryLeave.aggregate(targetPeriod);
+		val compensatoryLeaveUseTime = compensatoryLeave.getUseTime();
+		
+		// 所定労働時間から代休分を引く
+		val diffMinutes = prescribedWorkingTimeMonth.v() - compensatoryLeaveUseTime.v();
+		
+		// 当日までの超過時間を求める
+		excessTimeUntilDay = targetFlexExcessTime.minusMinutes(diffMinutes);
+		
+		return excessTimeUntilDay;
 	}
 }

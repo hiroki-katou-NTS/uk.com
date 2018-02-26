@@ -5,17 +5,20 @@ package nts.uk.ctx.sys.portal.dom.enums;
  */
 public enum TopPagePartType {
 	
-	/** The Widget. */
-	Widget(0),
+	/** The Standard Widget. */
+	StandardWidget(0),
+	
+	/** The Optional Widget. */
+	OptionalWidget(1),
 
 	/** The Dash board. */
-	DashBoard(1),
+	DashBoard(2),
 	
 	/** The Flow menu. */
-	FlowMenu(2),
+	FlowMenu(3),
 
 	/** The External Url. */
-	ExternalUrl(3);
+	ExternalUrl(4);
 	
 	/** The value. */
 	public int value;

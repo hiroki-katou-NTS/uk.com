@@ -9944,26 +9944,16 @@ var nts;
                             .attr("tabindex", tabIndex);
                         $grid2.ntsGridList('setupSelecting');
                         var $moveArea = $swap.find("#" + elementId + "-move-data")
-                            .append("<button class='move-button move-forward-all ntsSwap_Component'><i class='img-icon icon-next-all'></i></button>")
                             .append("<button class='move-button move-forward ntsSwap_Component'><i class='img-icon icon-next'></i></button>")
-                            .append("<button class='move-button move-back ntsSwap_Component'><i class='img-icon icon-prev'></i></button>")
-                            .append("<button class='move-button move-back-all ntsSwap_Component'><i class='img-icon icon-prev-all'></i></button>");
+                            .append("<button class='move-button move-back ntsSwap_Component'><i class='img-icon icon-prev'></i></button>");
                         var $moveForward = $moveArea.find(".move-forward");
-                        var $moveForwardAll = $moveArea.find(".move-forward-all");
                         var $moveBack = $moveArea.find(".move-back");
-                        var $moveBackAll = $moveArea.find(".move-back-all");
                         var swapper = this.swapper;
                         $moveForward.click(function () {
                             swapper.Model.move(true, data.value, false, beforeRight, afterRight);
                         });
                         $moveBack.click(function () {
                             swapper.Model.move(false, data.value, false, beforeLeft, afterLeft);
-                        });
-                        $moveForwardAll.click(function () {
-                            swapper.Model.move(true, data.value, true, beforeAllR, afterAllR);
-                        });
-                        $moveBackAll.click(function () {
-                            swapper.Model.move(false, data.value, true, beforeAllL, afterAllL);
                         });
                         $swap.find(".ntsSwap_Component").attr("tabindex", tabIndex);
                         this.swapper.Model.$container.bind("swaplistgridsizeexceed", function (evt, data) {

@@ -6,8 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class WithdrawalAppSetCommand {
-	// 会社ID
-	private String companyId;
 	// 休憩時間
 	private int breakTime;
 	// 勤務時間（出勤、退勤時刻）

@@ -20,6 +20,7 @@ public class KscstWorkTypeDisplayPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	/** 会社ID **/
 	@Column(name = "CID")
 	public String companyId;
 

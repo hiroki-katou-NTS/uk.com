@@ -34,7 +34,7 @@ public class KrqstAppTypeDiscrete extends UkJpaEntity{
 	public int sendMailWhenApprovalFlg;
 	
 	@Column(name = "SEND_MAIL_WHEN_REGISTER_FLG")
-	public int sendMailWhenRegisterlFlg;
+	public int sendMailWhenRegisterFlg;
 	
 	@Column(name = "DISPLAY_REASON_FLG")
 	public int displayReasonFlg;

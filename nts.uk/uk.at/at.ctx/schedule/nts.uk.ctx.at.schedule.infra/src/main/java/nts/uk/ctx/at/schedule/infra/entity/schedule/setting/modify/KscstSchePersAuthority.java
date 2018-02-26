@@ -11,7 +11,11 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -26,8 +30,6 @@ public class KscstSchePersAuthority  extends UkJpaEntity implements Serializable
 			/** 利用できる*/
 			@Column(name = "AVAILABLE_PERS")
 			public int availablePers;
-			
-
 
 	@Override
 	protected Object getKey() {

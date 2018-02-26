@@ -86,7 +86,7 @@ public class AggregateHolidayWorkTime {
 	 * @param ymd 年月日
 	 * @return 時系列ワーク
 	 */
-	public HolidayWorkTimeOfTimeSeries getTimeSeriesWork(GeneralDate ymd){
+	public HolidayWorkTimeOfTimeSeries getAndPutTimeSeriesWork(GeneralDate ymd){
 		
 		this.timeSeriesWorks.putIfAbsent(ymd, new HolidayWorkTimeOfTimeSeries(ymd, this.holidayWorkFrameNo));
 		return this.timeSeriesWorks.get(ymd);

@@ -1,5 +1,5 @@
-<div class="contents-area-a cf">
-	<div class="left-contents">
+<div id="contents-area" class="fixed-flex-layout">
+	<div class="fixed-flex-layout-left">
 		<div class="grid-area" data-bind="ntsPanel:{width: '250px', height: '370px', direction: 'right', showIcon: false, visible: true}">
 			<table tabindex="-1" id="treegridItems"
 				data-bind="ntsGridList: {
@@ -15,7 +15,7 @@
 		</div>
 	</div>
 	
-	<div class="right-contents">		
+	<div class="fixed-flex-layout-right">		
 		<table class="input-form-a">
 			<tr>
 				<td><div data-bind="ntsFormLabel: { required: true, constraint:['VerticalCalCd','VerticalCalName']}">#{i18n.getText('KML002_8')}</div></td>

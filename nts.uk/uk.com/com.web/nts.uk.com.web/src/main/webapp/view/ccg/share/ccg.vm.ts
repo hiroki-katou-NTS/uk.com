@@ -522,12 +522,20 @@ module nts.uk.com.view.ccg.share.ccg {
              * Set component height
              */
             private setComponentHeight(): void {
+                // set component height
                 const headerHeight = $('#header').outerHeight();
                 const functionAreaHeight = $('#functions-area').length > 0 ? $('#functions-area').outerHeight() : 0;
                 const componentHeight = window.innerHeight - headerHeight - functionAreaHeight - 15;
                 $('#component-ccg001').outerHeight(componentHeight);
                 $('#hor-scroll-button-hide').outerHeight(componentHeight);
                 $('#ccg001-btn-search-drawer').outerHeight(componentHeight / 2);
+
+                // set tab panel height.
+                const tabpanelHeight = componentHeight - $('#ccg001-header').outerHeight(true) - 10;
+                const tabpanelNavHeight = 85;
+                $('.ccg-tabpanel.pull-left').outerHeight(tabpanelHeight);
+                $('.ccg-tabpanel>#tab-1').css('height', tabpanelHeight - tabpanelNavHeight);
+                $('.ccg-tabpanel>#tab-2').css('height', tabpanelHeight - tabpanelNavHeight);
             }
 
             /**
@@ -665,13 +673,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 // update flag isFirstTime
                 self.isFirstTime = false;
 
-                // set advanced tab width
-                const tabContent2Width = 960;
-                $('#ccg001-tab-content-2').outerWidth(tabContent2Width);
-
-                // fix component width
-                self.fixComponentWidth();
-
                 // set KCP005 rows
                 const tabContentHeight = $('#tab-1').outerHeight();
                 const kcp005HeaderHeight = 100;
@@ -692,13 +693,19 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
 
                 // Show KCP005
-                $('#employeeinfo').ntsListComponent(self.employeeinfo);
+                $('#employeeinfo').ntsListComponent(self.employeeinfo).done(() => self.fixComponentWidth());
             }
 
             /**
-             * Fix component width if screen width is smaller than component
+             * Fix component width according to screen width
              */
             private fixComponentWidth(): void {
+                // update tab 2 width
+                let totalWidth = 0;
+                $('#ccg001-tab-content-2').children('div.pull-left.height-maximum').each((i, e) => totalWidth += $(e).outerWidth(true));
+                $('#ccg001-tab-content-2').outerWidth(totalWidth);
+
+                // Fix component width if screen width is smaller than component
                 const componentWidth = window.innerWidth - $('#hor-scroll-button-hide').offset().left;
                 if (componentWidth <= $('#ccg001-tab-content-2').outerWidth()) {
                     const margin = 30;
@@ -844,16 +851,12 @@ module nts.uk.com.view.ccg.share.ccg {
                 const KCP004Width = $('#multiple-tree-grid_scroll').outerWidth();
                 const KCPMargin = 20;
                 const expandedWidth = KCP004Width + KCPMargin;
-                const originalWidth = $('.accordion').outerWidth();
-
-                // update tab 2 width
-                $('#ccg001-tab-content-2').outerWidth($('#ccg001-tab-content-2').outerWidth() + expandedWidth - originalWidth);
-
-                // fix component width
-                self.fixComponentWidth();
 
                 // update accordion width
                 $('.accordion').width(expandedWidth);
+
+                // fix component width
+                self.fixComponentWidth();
 
                 _.defer(() => {
                     const btnCollapseMargin = KCP004Width - $('#btnDetailWorkplace').outerWidth() - 110;
@@ -875,11 +878,6 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // update accordion width
                 $('.accordion').width(380);
-
-                // update tab 2 width
-                let totalWidth = 0;
-                $('#ccg001-tab-content-2').children('div.pull-left.height-maximum').each((i, e) => totalWidth += $(e).outerWidth(true));
-                $('#ccg001-tab-content-2').outerWidth(totalWidth);
 
                 // fix component width
                 self.fixComponentWidth();
