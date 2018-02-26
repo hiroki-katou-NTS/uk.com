@@ -1,0 +1,24 @@
+.div-table {
+  display: table;         
+  width: 600px; 
+  border: 0,
+  background-color: #eee;          
+  border-spacing: 5px; 
+}
+.div-table-row {
+  display: table-row;
+  width: 600px;
+  height:70px;
+  clear: both;
+}
+
+.div-table-col {
+  float: left; 
+  display: table-column;         
+  width: 110px;   
+}
+.div-table-col-2 {
+  float: left; 
+  display: table-column;         
+  width: 130px;   
+}

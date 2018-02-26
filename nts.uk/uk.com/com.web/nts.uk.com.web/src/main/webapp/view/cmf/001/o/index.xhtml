@@ -65,9 +65,16 @@
 												data-bind="ntsPanel:{width: '320px', height: '464px', direction: 'none', showIcon: true, visible: true}">
 												<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_438')}</div>
 												<div tabindex="7" style="width: 320px"
-													data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'dispItemCode', comId: 'O4_4', 
-													items: listCondition, selected: selectedCategoryItem, selectedKey: 'dispItemCode', fields: ['dispItemCode', 'dispItemName'], mode: 'igGrid'}" />
-												<table id="O4_4"
+													data-bind="ntsSearchBox: {
+														searchMode: 'filter', 
+														targetKey: 'dispItemCode', 
+														comId: 'grd_Condition', 
+														items: listCondition, 
+														selected: selectedCategoryItem, 
+														selectedKey: 'dispItemCode', 
+														fields: ['dispItemCode', 'dispItemName'], 
+														mode: 'igGrid'}" />
+												<table id="grd_Condition"
 													data-bind="ntsGridList: {
 													height: 384,
 													name: '#[CMF001_39]', 
@@ -80,7 +87,7 @@
 										            ], 
 													multiple: false,
 													value: selectedCategoryItem}">
-												</table>
+												</table>												
 											</div>
 										</div>
 									</td>
@@ -106,7 +113,8 @@
 														<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF001_445')}</div>
 													</td>
 													<td>
-														<div id="file-upload" class="form_step0" style="display: inline-block;"
+														<div id="file-upload" class="form_step0"
+															style="display: inline-block;"
 															data-bind="ntsFileUpload:{
 																	filename: filename,
 																	accept: accept,
@@ -141,7 +149,7 @@
 									<col width="25px" />
 									<col width="150px" />
 								</colgroup>
-								<tr>  
+								<tr>
 									<td style="padding: 5px 0;">
 										<div class="label">#{i18n.getText('CMF001_462')}</div>
 									</td>
@@ -180,8 +188,46 @@
 								</tr>
 							</table>
 							<div class="label" style="margin-bottom: 5px;">#{i18n.getText('CMF001_468')}</div>
-							<table id="grd_Acquisition"></table>
 							
+							<table id="grd_Accept">
+								<colgroup>
+									<col width="40px" />
+									<col width="130px" />
+									<col width="180px" />
+									<col width="120px" />
+									<col width="120px" />
+									<col width="100px" />
+									<col width="100px" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th class="ui-widget-header"></th>
+										<th class="ui-widget-header">#{i18n.getText('CMF001_471')}</th>
+										<th class="ui-widget-header">#{i18n.getText('CMF001_472')}</th>
+										<th class="ui-widget-header">#{i18n.getText('CMF001_473')}</th>
+										<th class="ui-widget-header">#{i18n.getText('CMF001_474')}</th>
+										<th class="ui-widget-header">#{i18n.getText('CMF001_475')}</th>
+										<th class="ui-widget-header">#{i18n.getText('CMF001_476')}</th>
+									</tr>
+								</thead>
+								<tbody data-bind="foreach: listAccept">
+									<tr>
+										<td style="text-align: right;"></td>
+										<td style="text-align: left;"><div class="label"
+												data-bind="text: infoName"></div></td>
+										<td style="text-align: left;"><div class="label"
+												data-bind="text: itemName"></div></td>
+										<td style="text-align: left;"><div class="label"
+												data-bind="text: sampleData"></div></td>
+										<td style="text-align: left;"><div class="label"
+												data-bind="text: itemType"></div></td>
+										<td style="text-align: center;"><i
+											data-bind="ntsIcon: { no: 5, width: 30, height: 30 }"></i></td>
+										<td style="text-align: center;"><i
+											data-bind="ntsIcon: { no: 5, width: 30, height: 30 }"></i></td>
+									</tr>
+								</tbody>
+							</table>
 							<table style="margin-top: 5px; margin-bottom: 10px;">
 								<tr>
 									<td width="80"><div class="label">#{i18n.getText('CMF001_477')}</div></td>
@@ -195,7 +241,7 @@
 									<td style="text-align: center;">
 										<button data-bind="click: previous">#{i18n.getText('CMF001_479')}</button>
 										<button class="proceed x-large" style="margin-left: 10px"
-											data-bind="click: next">#{i18n.getText('CMF001_480')}</button>
+											data-bind="click: exeAccept">#{i18n.getText('CMF001_480')}</button>
 									</td>
 								</tr>
 							</table>
