@@ -1,26 +1,38 @@
-//package nts.uk.ctx.at.record.dom.dailyprocess.calc;
-//
-//import lombok.Value;
-//import lombok.val;
-//import nts.uk.ctx.at.record.dom.daily.CalcMethodOfNoWorkingDay;
-//import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethod;
-//import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
-//import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-//import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-//import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet;
-//import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
-//import nts.uk.ctx.at.shared.dom.worktype.VacationCategory;
-//import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-//import nts.uk.shr.com.time.TimeWithDayAttr;
-//
-///**
-// * フレックス就業時間内時間帯
-// * @author keisuke_hoshina
-// *
-// */
-//@Value
-//public class FlexWithinWorkTimeSheet {
-//	private TimeSpanForCalc coreTimeSheet;
+package nts.uk.ctx.at.record.dom.dailyprocess.calc;
+
+import java.util.List;
+
+import lombok.Getter;
+import lombok.Value;
+import lombok.val;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
+import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethod;
+import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.worktype.VacationCategory;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.time.TimeWithDayAttr;
+
+/**
+ * フレックス就業時間内時間帯
+ * @author keisuke_hoshina
+ *
+ */
+@Getter
+public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
+	private TimeSpanForCalc coreTimeSheet;
+
+	public FlexWithinWorkTimeSheet(List<WithinWorkTimeFrame> withinWorkTimeFrame, TimeSpanForCalc coreTimeSheet) {
+		super(withinWorkTimeFrame);
+		this.coreTimeSheet = coreTimeSheet;
+	}
+
+
+	
+	
 //	
 //	/**
 //	 * 休日控除時間の計算
@@ -119,4 +131,4 @@
 //		return new StatutoryDeductionForFlex(deductionTime.forLackCalcPredetermineDeduction(flexCalcMethod.getFlexCalcMethod())
 //											,deductionTime.forPremiumCalcPredetermineDeduction(flexCalcMethod.getFlexCalcMethod()));
 //	}
-//}
+}

@@ -43,17 +43,22 @@ import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
@@ -138,10 +143,10 @@ public class CalculationRangeOfOneDay {
 	 */
 	public void createWithinWorkTimeSheet(WorkingSystem workingSystem, WorkTimeMethodSet setMethod,
 			RestClockManageAtr clockManage, OutingTimeOfDailyPerformance dailyGoOutSheet, CommonRestSetting commonSet,
-			FixedRestCalculateMethod fixedCalc, WorkTimeDivision workTimeDivision, FlowRestCalcMethod fluidSet,
+			Optional<FixedRestCalculateMethod> fixedCalc, WorkTimeDivision workTimeDivision, Optional<FlowRestCalcMethod> fluidSet,
 			Optional<FlowWorkRestTimezone> fluRestTime,
-			FlowFixedRestSet fluidPrefixBreakTimeSet, PredetermineTimeSetForCalc predetermineTimeSetForCalc,
-			FixedWorkSetting fixedWorkSetting, WorkTimezoneCommonSet workTimeCommonSet, BonusPaySetting bonusPaySetting,
+			Optional<FlowFixedRestSet> fluidPrefixBreakTimeSet, PredetermineTimeSetForCalc predetermineTimeSetForCalc,
+			FixedWorkSetting fixedWorkSetting, BonusPaySetting bonusPaySetting,
 			List<OverTimeOfTimeZoneSet> overTimeHourSetList, FixOffdayWorkTimezone fixOff, OverDayEndCalcSet dayEndSet,
 			List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem, WorkType beforeDay, WorkType toDay, WorkType afterDay,
 			BreakDownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalculationOfOverTimeWork autoCalculationSet,
@@ -149,7 +154,7 @@ public class CalculationRangeOfOneDay {
 		/* 固定控除時間帯の作成 */
 		DeductionTimeSheet deductionTimeSheet = DeductionTimeSheet.createTimeSheetForFixBreakTime(
 				setMethod, clockManage, dailyGoOutSheet, this.oneDayOfRange, commonSet, attendanceLeavingWork,
-				fixedCalc, workTimeDivision, fluidPrefixBreakTimeSet, fluidSet, setMethod, fluRestTime,breakTimeOfDailyList);
+				fixedCalc, workTimeDivision, fluidPrefixBreakTimeSet, fluidSet,fluRestTime,breakTimeOfDailyList);
 		this.temporaryDeductionTimeSheet = Optional.of(deductionTimeSheet);
 		
 //		DeductionTimeSheet deductionTimeSheet = new DeductionTimeSheet(Collections.emptyList(), Collections.emptyList(),new BreakTimeManagement(new BreakTimeOfDaily(DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
@@ -165,7 +170,10 @@ public class CalculationRangeOfOneDay {
 //																																				Collections.emptyList()));
 		this.temporaryDeductionTimeSheet = Optional.of(deductionTimeSheet);
 		
-		theDayOfWorkTimesLoop(workingSystem, predetermineTimeSetForCalc, fixedWorkSetting, workTimeCommonSet, bonusPaySetting,
+		
+		val fixedWorkTImeZoneSet = new CommonFixedWorkTimezoneSet();
+		fixedWorkTImeZoneSet.forFixed(fixedWorkSetting.getLstHalfDayWorkTimezone());
+		theDayOfWorkTimesLoop(workingSystem, predetermineTimeSetForCalc, fixedWorkTImeZoneSet,fixedWorkSetting.getCommonSetting(), bonusPaySetting,
 				overTimeHourSetList, fixOff, dayEndSet, holidayTimeWorkItem, beforeDay, toDay, afterDay,
 				breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet, deductionTimeSheet,
 				workTime);
@@ -214,7 +222,8 @@ public class CalculationRangeOfOneDay {
 	 *            控除時間帯
 	 */
 	public void theDayOfWorkTimesLoop(WorkingSystem workingSystem, PredetermineTimeSetForCalc predetermineTimeSetForCalc,
-			FixedWorkSetting fixedWorkSetting, WorkTimezoneCommonSet workTimeCommonSet, BonusPaySetting bonusPaySetting,
+			CommonFixedWorkTimezoneSet lstHalfDayWorkTimezone,
+			WorkTimezoneCommonSet workTimeCommonSet, BonusPaySetting bonusPaySetting,
 			List<OverTimeOfTimeZoneSet> overTimeHourSetList, FixOffdayWorkTimezone fixOff, OverDayEndCalcSet dayEndSet,
 			List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem, WorkType beforeDay, WorkType toDay, WorkType afterDay,
 			BreakDownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalculationOfOverTimeWork autoCalculationSet,
@@ -227,7 +236,8 @@ public class CalculationRangeOfOneDay {
 		for (int workNumber = 1; workNumber <= attendanceLeavingWork.getTimeLeavingWorks().size(); workNumber++) {
 			if(workNumber <=1) {
 				/* 就業内の時間帯作成 */
-				val createWithinWorkTimeSheet = WithinWorkTimeSheet.createAsFixed(attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)),toDay, predetermineTimeSetForCalc, fixedWorkSetting,workTimeCommonSet, deductionTimeSheet, bonusPaySetting);
+				val createWithinWorkTimeSheet = WithinWorkTimeSheet.createAsFixed(attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)),toDay, predetermineTimeSetForCalc, 
+																					lstHalfDayWorkTimezone,workTimeCommonSet, deductionTimeSheet, bonusPaySetting);
 				if(withinWorkingTimeSheet.isPresent()) {
 					withinWorkingTimeSheet.get().getWithinWorkTimeFrame().addAll(createWithinWorkTimeSheet.getWithinWorkTimeFrame());
 				}
@@ -250,77 +260,7 @@ public class CalculationRangeOfOneDay {
 
 	}
 
-	/**
-	 * 勤務形態、就業時間帯の設定を判定し時間帯を作成(
-	 * 
-	 * @param workTimeDivision
-	 * @param personalInfo
-	 * @param setMethod
-	 * @param clockManage
-	 * @param dailyGoOutSheet
-	 * @param commonSet
-	 * @param fixedCalc
-	 * @param fluidSet
-	 * @param breakmanage
-	 * @param fluRestTime
-	 * @param fluidprefixBreakTimeSet
-	 * @param predetermineTimeSet
-	 * @param fixedWorkSetting
-	 * @param workTimeCommonSet
-	 * @param bonusPaySetting
-	 * @param overTimeHourSetList
-	 * @param fixOff
-	 * @param dayEndSet
-	 * @param holidayTimeWorkItem
-	 * @param beforeDay
-	 * @param toDay
-	 * @param afterDay
-	 * @param breakdownTimeDay
-	 * @param dailyTime
-	 * @param autoCalculationSet
-	 * @param statutorySet
-	 * @param prioritySet
-	 */
-	public void decisionWorkClassification(WorkTimeDivision workTimeDivision,
-			DailyCalculationPersonalInformation personalInfo, WorkTimeMethodSet setMethod,
-			RestClockManageAtr clockManage, OutingTimeOfDailyPerformance dailyGoOutSheet, CommonRestSetting commonSet,
-			FixedRestCalculateMethod fixedCalc, FlowRestCalcMethod fluidSet, 
-			Optional<FlowWorkRestTimezone> fluRestTime, FlowFixedRestSet fluidprefixBreakTimeSet,
-			PredetermineTimeSetForCalc predetermineTimeSetForCalc, FixedWorkSetting fixedWorkSetting, WorkTimezoneCommonSet workTimeCommonSet,
-			BonusPaySetting bonusPaySetting, List<OverTimeOfTimeZoneSet> overTimeHourSetList, FixOffdayWorkTimezone fixOff,
-			OverDayEndCalcSet dayEndSet, List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem, WorkType beforeDay,
-			WorkType toDay, WorkType afterDay, BreakDownTimeDay breakdownTimeDay, DailyTime dailyTime,
-			AutoCalculationOfOverTimeWork autoCalculationSet, LegalOTSetting statutorySet,
-			StatutoryPrioritySet prioritySet, WorkTimeSetting workTime,List<BreakTimeOfDailyPerformance> breakTimeOfDailyList
-			) {
-		if (workTimeDivision.getWorkTimeDailyAtr().isFlex()) {
-			/* フレックス勤務 */
-		} else {
-			switch (workTimeDivision.getWorkTimeMethodSet()) {
-			case FIXED_WORK:
-				/* 固定 */
-				createWithinWorkTimeSheet(personalInfo.getWorkingSystem(), setMethod, clockManage, dailyGoOutSheet,
-						commonSet, fixedCalc, workTimeDivision, fluidSet, fluRestTime,
-						fluidprefixBreakTimeSet, predetermineTimeSetForCalc, fixedWorkSetting, workTimeCommonSet,
-						bonusPaySetting, overTimeHourSetList, fixOff, dayEndSet, holidayTimeWorkItem, beforeDay, toDay,
-						afterDay, breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet, workTime,breakTimeOfDailyList);
-				break;
-			case FLOW_WORK:
-				/* 流動勤務 */
-				break;
-			case DIFFTIME_WORK:
-				/* 時差勤務 */
-//			case Enum_Overtime_Work:
-				break;
-			default:
-				throw new RuntimeException("unknown workTimeMethodSet" + workTimeDivision.getWorkTimeMethodSet());
 
-			}
-
-		}
-		/* 控除時間帯の作成 */
-		// //
-	}
 	
 	/**
 	 * 各深夜時間の算出結果から深夜時間の合計を算出する
@@ -385,40 +325,57 @@ public class CalculationRangeOfOneDay {
 		return TimeWithCalculation.sameTime(new AttendanceTime(0));
 	}
 
-	// /**
-	// * フレックスの時間帯作成
-	// */
-	// public WithinWorkTimeSheet createTimeSheetAsFlex(FluRestTime
-	// flexTimeSet,CoreTimeSetting coreTimeSetting,WorkType workType,
-	// PredetermineTimeSet predetermineTimeSet,FixedWorkSetting fixedWorkSetting
-	// ,DailyWork dailyWork){
-	// if(!flexTimeSet.getUseFixedRestTime()){
-	// predetermineTimeSetForCalc.correctPredetermineTimeSheet(dailyWork);
-	// /*遅刻早退処理*/
-	// for() {
-	// WithinWorkTimeSheet.createWorkingHourSet(workType,predetermineTimeSet,fixedWorkSetting);
-	// /*遅刻時間の計算*/
-	// /*早退時間の計算*/
-	// }
-	// WithinWorkTimeSheet.createWorkingHourSet(workType,predetermineTimeSet,fixedWorkSetting);
-	// }
-	// provisionalDeterminationOfDeductionTimeSheet();
-	// /*固定勤務の時間帯作成*/
-	// theDayOfWorkTimesLoop();
-	// /*コアタイムのセット*/
-	// return withinWorkingTimeSheet.createWithinFlexTimeSheet(coreTimeSetting);
-	// }
-	//
-	// /**
-	// * 流動休憩用の控除時間帯作成
-	// */
-	// public void createFluidBreakTime(DeductionAtr deductionAtr) {
-	// DeductionTimeSheet.createDedctionTimeSheet(acqAtr, setMethod,
-	// clockManage, dailyGoOutSheet, oneDayRange, CommonSet,
-	// attendanceLeaveWork, fixedCalc, workTimeDivision, noStampSet, fixedSet,
-	// breakTimeSheet);
-	//
-	// }
+	 /**
+	 * フレックスの時間帯作成
+	 */
+	 public void createTimeSheetAsFlex(CoreTimeSetting coreTimeSetting,WorkType workType,
+			 		DailyWork dailyWork,WorkingSystem workingSystem, PredetermineTimeSetForCalc predetermineTimeSetForCalc,
+					WorkTimezoneCommonSet workTimeCommonSet, BonusPaySetting bonusPaySetting,
+					List<OverTimeOfTimeZoneSet> overTimeHourSetList, FixOffdayWorkTimezone fixOff, OverDayEndCalcSet dayEndSet,
+					List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem, WorkType beforeDay, WorkType toDay, WorkType afterDay,
+					BreakDownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalculationOfOverTimeWork autoCalculationSet,
+					LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet,
+					DeductionTimeSheet deductionTimeSheet, WorkTimeSetting workTime,
+					FlexWorkSetting flexWorkSetting,OutingTimeOfDailyPerformance outingTimeSheetofDaily,
+					TimeSpanForCalc oneDayTimeSpan,TimeLeavingOfDailyPerformance attendanceLeaveWork,WorkTimeDivision workTimeDivision
+					,List<BreakTimeOfDailyPerformance> breakTimeOfDailyList){
+		 //if(!flexTimeSet.getUseFixedRestTime()){
+			// predetermineTimeSetForCalc.correctPredetermineTimeSheet(dailyWork);
+			 /*遅刻早退処理*/
+			// for() {
+			//	 WithinWorkTimeSheet.createWorkingHourSet(workType,predetermineTimeSet,fixedWorkSetting);
+				 /*遅刻時間の計算*/
+				 /*早退時間の計算*/
+			// }
+			 //WithinWorkTimeSheet.createWorkingHourSet(workType,predetermineTimeSetForCalc,fixedWorkSetting);
+		 //}
+		 //控除時間帯の作成
+		 provisionalDeterminationOfDeductionTimeSheet(outingTimeSheetofDaily,
+				 oneDayTimeSpan, attendanceLeaveWork, workTimeDivision,breakTimeOfDailyList);
+		 /*固定勤務の時間帯作成*/
+		 val fixedWorkTImeZoneSet = new CommonFixedWorkTimezoneSet();
+		 fixedWorkTImeZoneSet.forFlex(flexWorkSetting.getLstHalfDayWorkTimezone());
+		 theDayOfWorkTimesLoop( workingSystem,  predetermineTimeSetForCalc,
+				 	fixedWorkTImeZoneSet,  workTimeCommonSet,  bonusPaySetting,
+					overTimeHourSetList,  fixOff,  dayEndSet,
+					holidayTimeWorkItem,  beforeDay,  toDay,  afterDay,
+					 breakdownTimeDay,  dailyTime,  autoCalculationSet,
+					 statutorySet,  prioritySet,
+					 deductionTimeSheet,  workTime);
+		 /*コアタイムのセット*/
+		 this.withinWorkingTimeSheet.set(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(coreTimeSetting));
+	 }
+	
+//	 /**
+//	 * 流動休憩用の控除時間帯作成
+//	 */
+//	 public void createFluidBreakTime(DeductionAtr deductionAtr) {
+//	 DeductionTimeSheet.createDedctionTimeSheet(acqAtr, setMethod,
+//	 clockManage, dailyGoOutSheet, oneDayRange, CommonSet,
+//	 attendanceLeaveWork, fixedCalc, workTimeDivision, noStampSet, fixedSet,
+//	 breakTimeSheet);
+//	
+//	 }
 
 	// ＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 	//
@@ -552,17 +509,18 @@ public class CalculationRangeOfOneDay {
 	// }
 	//
 	//
-	// /**
-	// * 控除時間帯の仮確定
-	// */
-	// public void
-	// provisionalDeterminationOfDeductionTimeSheet(DeductionTimeSheet
-	// deductionTimeSheet) {
-	// //控除用
-	// deductionTimeSheet.provisionalDecisionOfDeductionTimeSheet(fluidWorkSetting);
-	// //計上用
-	// deductionTimeSheet.provisionalDecisionOfDeductionTimeSheet(fluidWorkSetting);
-	// }
-	//
+	 /**
+	 * 控除時間帯の仮確定
+	 */
+	 public static void provisionalDeterminationOfDeductionTimeSheet(OutingTimeOfDailyPerformance outingTimeSheetofDaily,
+				TimeSpanForCalc oneDayTimeSpan,TimeLeavingOfDailyPerformance attendanceLeaveWork,WorkTimeDivision workTimeDivision
+				,List<BreakTimeOfDailyPerformance> breakTimeOfDailyList) {
+	 //控除用
+	 DeductionTimeSheet.provisionalDecisionOfDeductionTimeSheet(DeductionAtr.Deduction, outingTimeSheetofDaily,
+				 oneDayTimeSpan, attendanceLeaveWork, workTimeDivision,breakTimeOfDailyList);
+	 //計上用
+	 DeductionTimeSheet.provisionalDecisionOfDeductionTimeSheet(DeductionAtr.Appropriate, outingTimeSheetofDaily,
+			 oneDayTimeSpan, attendanceLeaveWork, workTimeDivision,breakTimeOfDailyList);
+	 }
 
 }
