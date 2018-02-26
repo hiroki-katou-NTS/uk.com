@@ -17,9 +17,22 @@ public class ExacExeResultLogFinder
     @Inject
     private ExacExeResultLogRepository finder;
 
+    /**
+     * @return
+     */
     public List<ExacExeResultLogDto> getAllExacExeResultLog(){
         return finder.getAllExacExeResultLog().stream().map(item -> ExacExeResultLogDto.fromDomain(item))
                 .collect(Collectors.toList());
     }
-
+    
+    /**
+     * @param externalProcessId
+     * @return
+     */
+    public List<ExacExeResultLogDto> getExacExeResultLogByProcessId(String externalProcessId){
+    	return finder.getExacExeResultLogByProcessId(externalProcessId).stream().map(item -> ExacExeResultLogDto.fromDomain(item))
+                .collect(Collectors.toList());
+    }
+    
+    
 }
