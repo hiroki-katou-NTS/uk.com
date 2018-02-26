@@ -3,13 +3,13 @@ module nts.uk.pr.view.kmf001.j {
         import Enum = service.model.Enum;
         import SixtyHourVacationSettingDto = service.model.SixtyHourVacationSettingDto;
         import Emp60HourVacationDto = service.model.Emp60HourVacationDto;
-        import EmploymentSettingDto = service.model.EmploymentSettingDto;
-        import EmploymentSettingFindDto = service.model.EmploymentSettingFindDto;
+//        import EmploymentSettingDto = service.model.EmploymentSettingDto;
+//        import EmploymentSettingFindDto = service.model.EmploymentSettingFindDto;
 
         export class ScreenModel {
             //list component option
             selectedItem: KnockoutObservable<string>;
-            listComponentOption: KnockoutObservable<any>;
+//            listComponentOption: KnockoutObservable<any>;
             alreadySettingList: KnockoutObservableArray<any>;
             // Service.
             service: service.Service;
@@ -25,13 +25,13 @@ module nts.uk.pr.view.kmf001.j {
 
             // Model
             settingModel: KnockoutObservable<SixtyHourVacationSettingModel>;
-            empSettingModel: KnockoutObservable<Emp60HVacationModel>;
+//            empSettingModel: KnockoutObservable<Emp60HVacationModel>;
 
             // 
             isComManaged: KnockoutObservable<boolean>;
-            hasEmp: KnockoutObservable<boolean>;
+//            hasEmp: KnockoutObservable<boolean>;
             isEmpManaged: KnockoutObservable<boolean>;
-            saveDisable : KnockoutObservable<boolean>;
+//            saveDisable : KnockoutObservable<boolean>;
 
             // Dirty checker
             dirtyChecker: nts.uk.ui.DirtyChecker;
@@ -47,59 +47,60 @@ module nts.uk.pr.view.kmf001.j {
                 self.manageDistinctEnums = ko.observableArray([]);
 
                 self.settingModel = ko.observable(null);
-                self.empSettingModel = ko.observable(null);
+//                self.empSettingModel = ko.observable(null);
                 self.settingModel = ko.observable(
                     new SixtyHourVacationSettingModel({
                         isManage: 0,
                         digestiveUnit: 0,
                         sixtyHourExtra: 0
                     }));
-                self.empSettingModel = ko.observable(
-                    new Emp60HVacationModel({
-                        contractTypeCode: "",
-                        isManage: 0,
-                        digestiveUnit: 0,
-                        sixtyHourExtra: 0
-                    }));
+//                self.empSettingModel = ko.observable(
+//                    new Emp60HVacationModel({
+//                        contractTypeCode: "",
+//                        isManage: 0,
+//                        digestiveUnit: 0,
+//                        sixtyHourExtra: 0
+//                    }));
 
                 self.isComManaged = ko.computed(function() {
                     return self.settingModel().isManage() == 1;
                 });
 
-                self.hasEmp = ko.observable(true);
-                self.saveDisable = ko.observable(true);
-                self.isEmpManaged = ko.computed(function() {
-                    return self.hasEmp() && self.empSettingModel().isManage() == 1;
-                });
+//                self.hasEmp = ko.observable(true);
+//                self.saveDisable = ko.observable(true);
+//                self.isEmpManaged = ko.computed(function() {
+//                    return self.hasEmp() && self.empSettingModel().isManage() == 1;
+//                });
 
                 self.selectedContractTypeCode = ko.observable('');
                 self.selectedItem.subscribe(function(data: string) {
                     if (data) {
-                        self.empSettingModel().contractTypeCode(data);
+//                        self.empSettingModel().contractTypeCode(data);
                         self.loadEmpSettingDetails(data);
-                        self.hasEmp(true);
-                        self.saveDisable(true);
-                    } else {
-                        self.hasEmp(false);
-                        self.saveDisable(false);
-                    }
+//                        self.hasEmp(true);
+//                        self.saveDisable(true);
+                    } 
+//                    else {
+//                        self.hasEmp(false);
+//                        self.saveDisable(false);
+//                    }
                 });
                 //list Emp
-                self.listComponentOption = {
-                    isShowAlreadySet: true,
-                    isMultiSelect: false,
-                    listType: ListType.EMPLOYMENT,
-                    selectType: SelectType.SELECT_FIRST_ITEM,
-                    selectedCode: this.selectedItem,
-                    isDialog: false,
-                    alreadySettingList: self.alreadySettingList
-                };
+//                self.listComponentOption = {
+//                    isShowAlreadySet: true,
+//                    isMultiSelect: false,
+//                    listType: ListType.EMPLOYMENT,
+//                    selectType: SelectType.SELECT_FIRST_ITEM,
+//                    selectedCode: this.selectedItem,
+//                    isDialog: false,
+//                    alreadySettingList: self.alreadySettingList
+//                };
             }
 
             /**
              * Start page.
              */
-            private startPage(): JQueryPromise<any> {
+            public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
                 self.employmentList = ko.observableArray<ItemModel>([]);
@@ -117,18 +118,18 @@ module nts.uk.pr.view.kmf001.j {
                 return dfd.promise();
             }
 
-            private checkComManaged(): void {
-                let self = this;
-                let dfd = $.Deferred<any>();
-                $('#left-content').ntsListComponent(this.listComponentOption).done(function() {
-                    if (!$('#left-content').getDataList() || $('#left-content').getDataList().length == 0) {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_146", messageParams: [] });
-                        self.hasEmp(false);
-                        dfd.resolve();
-                    }
-                    $('#employment-manage').focus();
-                });
-            }
+//            private checkComManaged(): void {
+//                let self = this;
+//                let dfd = $.Deferred<any>();
+//                $('#left-content').ntsListComponent(this.listComponentOption).done(function() {
+//                    if (!$('#left-content').getDataList() || $('#left-content').getDataList().length == 0) {
+//                        nts.uk.ui.dialog.info({ messageId: "Msg_146", messageParams: [] });
+//                        self.hasEmp(false);
+//                        dfd.resolve();
+//                    }
+//                    $('#employment-manage').focus();
+//                });
+//            }
             private loadEmploymentList(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
@@ -207,16 +208,17 @@ module nts.uk.pr.view.kmf001.j {
                 this.service.findEmpSetting(contractTypeCode).done(function(res: Emp60HourVacationDto) {
                     if (res) {
 //                        self.empSettingModel().contractTypeCode(res.contractTypeCode);
-                        self.empSettingModel().isManage(res.isManage);
-                        self.empSettingModel().digestiveUnit(res.digestiveUnit);
-                        self.empSettingModel().sixtyHourExtra(res.sixtyHourExtra);
+//                        self.empSettingModel().isManage(res.isManage);
+//                        self.empSettingModel().digestiveUnit(res.digestiveUnit);
+//                        self.empSettingModel().sixtyHourExtra(res.sixtyHourExtra);
                         //re select item
                         self.selectedItem(contractTypeCode);
-                    } else {
-                        self.empSettingModel().isManage(self.manageDistinctEnums()[0].value);
-                        self.empSettingModel().digestiveUnit(self.timeDigestiveUnitEnums()[0].value);
-                        self.empSettingModel().sixtyHourExtra(self.sixtyHourExtraEnums()[0].value);
-                    }
+                    } 
+//                    else {
+//                        self.empSettingModel().isManage(self.manageDistinctEnums()[0].value);
+//                        self.empSettingModel().digestiveUnit(self.timeDigestiveUnitEnums()[0].value);
+//                        self.empSettingModel().sixtyHourExtra(self.sixtyHourExtraEnums()[0].value);
+//                    }
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
@@ -239,18 +241,18 @@ module nts.uk.pr.view.kmf001.j {
                     nts.uk.ui.dialog.alertError(res.message);
                 });
             }
-            public saveEmpSetting(): void {
-                let self = this;
-                if (!self.validateEmpSetting()) {
-                    return;
-                }
-                this.service.saveEmpSetting(self.empSettingModel().toEmp60HourVacationDto()).done(function() {
-                    self.alreadySettingList.push({ "code": self.selectedItem(), "isAlreadySetting": true });
-                    self.loadEmpSettingDetails(self.selectedItem());
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                });
-
-            }
+//            public saveEmpSetting(): void {
+//                let self = this;
+//                if (!self.validateEmpSetting()) {
+//                    return;
+//                }
+//                this.service.saveEmpSetting(self.empSettingModel().toEmp60HourVacationDto()).done(function() {
+//                    self.alreadySettingList.push({ "code": self.selectedItem(), "isAlreadySetting": true });
+//                    self.loadEmpSettingDetails(self.selectedItem());
+//                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+//                });
+//
+//            }
 
             private validateComSetting(): boolean {
                 let self = this;

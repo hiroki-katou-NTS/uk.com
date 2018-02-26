@@ -53,6 +53,7 @@ module nts.uk.pr.view.kmf001.d {
             export class RetentionYearlyFindDto {
                 upperLimitSetting: UpperLimitSettingFindDto;
                 leaveAsWorkDays: boolean;
+                managementCategory: number;
             }
             
             export class UpperLimitSettingDto {
@@ -63,6 +64,7 @@ module nts.uk.pr.view.kmf001.d {
             export class RetentionYearlyDto {
                 upperLimitSettingDto: UpperLimitSettingDto;
                 leaveAsWorkDays: boolean;
+                managementCategory: number;
             }
             
             export class EmploymentSettingDto {

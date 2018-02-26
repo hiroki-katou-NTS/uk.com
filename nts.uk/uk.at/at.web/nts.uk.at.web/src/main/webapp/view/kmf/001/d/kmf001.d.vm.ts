@@ -26,6 +26,7 @@ module nts.uk.pr.view.kmf001.d {
             employmentList: KnockoutObservableArray<ItemModel>;
             managementOption: KnockoutObservableArray<ManagementModel>;
             selectedManagement: KnockoutObservable<number>;
+            selectedComManagement: KnockoutObservable<number>;
             hasSelectedEmp: KnockoutObservable<boolean>;
             leaveAsWorkDays: KnockoutObservable<boolean>;
             leaveAsWorkDaysOpt: KnockoutObservableArray<LeaveAsWorkDaysModel>;
@@ -62,6 +63,7 @@ module nts.uk.pr.view.kmf001.d {
                     new ManagementModel(0, '管理しない')
                 ]);
                 self.selectedManagement = ko.observable(1);
+                self.selectedComManagement = ko.observable(1);
                 self.hasSelectedEmp = ko.observable(false);
                 
                 self.isManaged = ko.computed(function() {
@@ -121,6 +123,7 @@ module nts.uk.pr.view.kmf001.d {
                         self.retentionYearsAmount(null);
                         self.maxDaysCumulation(null);
                         self.leaveAsWorkDays(false);
+                        self.selectedComManagement(0);
                     }
                     else {
                         self.initializeWholeCompanyData(data);
@@ -152,6 +155,7 @@ module nts.uk.pr.view.kmf001.d {
                 self.retentionYearsAmount(data.upperLimitSetting.retentionYearsAmount);
                 self.maxDaysCumulation(data.upperLimitSetting.maxDaysCumulation);
                 self.leaveAsWorkDays(data.leaveAsWorkDays);
+                self.selectedComManagement(data.managementCategory);
             }
             
             // Collect wholeCompany Data
@@ -163,6 +167,7 @@ module nts.uk.pr.view.kmf001.d {
                 upperDto.maxDaysCumulation = self.maxDaysCumulation();
                 dto.upperLimitSettingDto = upperDto;
                 dto.leaveAsWorkDays = self.leaveAsWorkDays();
+                dto.managementCategory = self.selectedComManagement();
                 return dto;
             }
             

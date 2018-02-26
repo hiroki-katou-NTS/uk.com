@@ -50,6 +50,21 @@
 							<TBODY>
 								<tr>
 									<td class="td-style">
+										<div>
+											<span>#{i18n.getText('KMF001_72')}</span>
+										</div>
+									</td>
+									<td>
+										<div id="switch-btn" class="cf" data-bind="ntsSwitchButton: {
+											options: managementOption,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedComManagement,
+											enable: true}" tabindex="4"></div>
+									</td>
+								</tr>
+								<tr>
+									<td class="td-style">
 										<div class="margin-bottom">
 											<span>#{i18n.getText('KMF001_60')}</span>
 										</div>
@@ -88,7 +103,7 @@
 												name: '#[KMF001_61]',
 												constraint: 'MaxDaysRetention',
 												option: {
-										width: '50px',
+										width: '60px',
 										unitID: 'DAYS',
 										textalign: 'center'
 									},
@@ -198,7 +213,7 @@
 													name: '#[KMF001_74]',
 													constraint: 'MaxDaysRetention',
 													option: {
-										width: '50px',
+										width: '60px',
 										unitID: 'DAYS',
 										textalign: 'center'
 									},

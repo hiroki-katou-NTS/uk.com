@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.app.find.vacation.setting.retentionyearly.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.ManagementDistinction;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
 
@@ -25,6 +27,9 @@ public class RetentionYearlyFindDto implements RetentionYearlySettingSetMemento 
 	
 	/** The leave as work days. */
 	private Boolean leaveAsWorkDays;
+	
+	/** The management category. */
+	private Integer managementCategory;
 
 	/*
 	 * (non-Javadoc)
@@ -61,4 +66,14 @@ public class RetentionYearlyFindDto implements RetentionYearlySettingSetMemento 
 		this.leaveAsWorkDays = leaveAsWorkDays;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * RetentionYearlySettingSetMemento#setManagementCategory
+	 * (nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct)
+	 */
+	@Override
+	public void setManagementCategory(ManageDistinct managementCategory) {
+		this.managementCategory = managementCategory.value;
+	}
 }

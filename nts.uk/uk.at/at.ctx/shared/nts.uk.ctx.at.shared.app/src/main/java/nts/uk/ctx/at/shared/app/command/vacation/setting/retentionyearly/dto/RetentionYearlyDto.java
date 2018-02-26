@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.app.command.vacation.setting.retentionyearly.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
@@ -19,6 +20,9 @@ public class RetentionYearlyDto {
 	
 	/** The leave as work days. */
 	private Boolean leaveAsWorkDays;
+	
+	/** The management category. */
+	private Integer managementCategory;
 	
 	/**
 	 * To domain.
@@ -84,7 +88,14 @@ public class RetentionYearlyDto {
 			return dto.leaveAsWorkDays;
 		}
 		
+		/*
+		 * (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+		 * RetentionYearlySettingGetMemento#getManagementCategory()
+		 */
+		@Override
+		public ManageDistinct getManagementCategory() {
+			return ManageDistinct.valueOf(dto.managementCategory);
+		}		
 	}
-	
-
 }

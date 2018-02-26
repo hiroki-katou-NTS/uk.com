@@ -62,6 +62,7 @@ public class RetentionYearlySaveCommandHandler extends CommandHandler<RetentionY
 					retentionYearlySettingDB.getUpperLimitSetting().getMaxDaysCumulation().v());
 			yearlyRetentionDto.getUpperLimitSettingDto().setRetentionYearsAmount(
 					retentionYearlySettingDB.getUpperLimitSetting().getRetentionYearsAmount().v());
+			yearlyRetentionDto.setManagementCategory(retentionYearlySettingDB.getManagementCategory().value);
 		}
 		
 		// To Domain
