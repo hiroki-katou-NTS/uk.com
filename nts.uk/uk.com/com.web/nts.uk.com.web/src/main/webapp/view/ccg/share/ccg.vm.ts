@@ -740,16 +740,6 @@ module nts.uk.com.view.ccg.share.ccg {
             }
 
             /**
-             * function click by search all employee
-             */
-            searchAllEmployee(): void {
-                var self = this;
-                if (self.isInvalidBaseDate()) {
-                    return;
-                }
-            }
-
-            /**
              * Check base date and period whether is future or not
              */
             private isNotFutureDate(acquiredBaseDate: string): boolean {
@@ -950,14 +940,27 @@ module nts.uk.com.view.ccg.share.ccg {
             isInvalidBaseDate(): boolean {
                 let self = this;
                 $("#inp_baseDate").ntsEditor("validate");
+                $("#inp-period-startYMD").ntsEditor("validate");
+                $("#inp-period-endYMD").ntsEditor("validate");
 
-                if ($('#inp_baseDate').ntsError('hasError')) {
+                if ($('#inp_baseDate').ntsError('hasError') ||
+                    $('#inp-period-startYMD').ntsError('hasError') ||
+                    $('#inp-period-endYMD').ntsError('hasError')) {
                     return true;
                 }
+
                 if (self.showPeriod && self.showBaseDate && !self.isBaseDateInTargetPeriod()) {
                     return true;
                 }
                 return false;
+            }
+
+            // validate input
+            private isStatusEmployeePeriodInvalid(): boolean {
+                let self = this;
+                $("#ccg001-partg-start").ntsEditor("validate");
+                $("#ccg001-partg-end").ntsEditor("validate");
+                return $("#ccg001-partg-start").ntsError('hasError') || $("#ccg001-partg-start").ntsError('hasError');
             }
 
             /**
@@ -1046,31 +1049,15 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
                 return true;
             }
-            /**
-             * function click by search employee of work place
-             */
-            searchOfWorkplace(): void {
-                var self = this;
-                if (self.isInvalidBaseDate()) {
-                    return;
-                }
-            }
-
-            /**
-             * function click by search employee of work place child
-             */
-            searchWorkplaceChild(): void {
-                var self = this;
-                if (self.isInvalidBaseDate()) {
-                    return;
-                }
-            }
 
             /**
              * function click apply search employee
              */
             advancedSearchEmployee(): void {
                 let self = this;
+                if (self.isInvalidBaseDate() || self.isStatusEmployeePeriodInvalid()) {
+                    return;
+                }
                 // set param
                 self.setAdvancedSearchParam();
 
@@ -1106,9 +1093,6 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public getSelectedCodeEmployee(): string[]{
                 var self = this;
-                if (self.isInvalidBaseDate()) {
-                    return;
-                }
                 if(self.isMultiple){
                     return self.selectedCodeEmployee();    
                 }
@@ -1137,9 +1121,6 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public searchAllListEmployee(): void {
                 var self = this;
-                if (self.isInvalidBaseDate()) {
-                    return;
-                }
                 self.queryParam.referenceRange = ConfigEnumReferenceRange.ALL_EMPLOYEE;
                 self.quickSearchEmployee();
             }
@@ -1149,9 +1130,6 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public searchEmployeeOfDepOnly(): void {
                 var self = this;
-                if (self.isInvalidBaseDate()) {
-                    return;
-                }
                 self.queryParam.referenceRange = ConfigEnumReferenceRange.DEPARTMENT_ONLY;
                 self.quickSearchEmployee();
             }
@@ -1161,9 +1139,6 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public searchEmployeeOfDepAndChild(): void {
                 var self = this;
-                if (self.isInvalidBaseDate()) {
-                    return;
-                }
                 self.queryParam.referenceRange = ConfigEnumReferenceRange.DEPARTMENT_AND_CHILD;
                 self.quickSearchEmployee();
             }
@@ -1173,6 +1148,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             private quickSearchEmployee(): void {
                 let self = this;
+                if (self.isInvalidBaseDate()) {
+                    return;
+                }
                 nts.uk.ui.block.invisible(); // block ui
                 self.setQuickSearchParam().done(() => {
                     self.findAndReturnListEmployee(false);
