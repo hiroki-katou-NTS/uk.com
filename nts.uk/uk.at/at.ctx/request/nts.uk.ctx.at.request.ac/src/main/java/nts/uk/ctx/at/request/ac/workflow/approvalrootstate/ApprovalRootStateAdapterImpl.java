@@ -169,5 +169,15 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 				EnumAdaptor.valueOf(approverPersonExport.getApprovalAtr().value, ApprovalBehaviorAtrImport_New.class), 
 				approverPersonExport.getExpirationAgentFlag());
 	}
+
+	@Override
+	public List<String> doRemandForApprover(String companyID, String rootStateID, Integer order) {
+		return approvalRootStatePub.doRemandForApprover(companyID, rootStateID, order);
+	}
+
+	@Override
+	public void doRemandForApplicant(String companyID, String rootStateID) {
+		approvalRootStatePub.doRemandForApplicant(companyID, rootStateID);
+	}
 	
 }
