@@ -33,7 +33,8 @@ module nts.uk.at.view.kal001.a.model {
         // right component
         alarmCombobox: KnockoutObservableArray<any> = ko.observableArray([]);
         currentAlarmCode : KnockoutObservable<string> = ko.observable('');
-        periodByCategory : KnockoutObservableArray<any> = ko.observableArray([]);
+        periodByCategory : KnockoutObservableArray<PeriodByCategory> = ko.observableArray([]);
+        checkAll  : KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             
@@ -118,17 +119,20 @@ module nts.uk.at.view.kal001.a.model {
             let dfd = $.Deferred<any>();
             $("#fixed-table").ntsFixedTable({ height: 300, width: 600 });
             service.getAlarmByUser().done((alarmData)=>{
+                
                 self.alarmCombobox(alarmData);                
                 self.currentAlarmCode(self.alarmCombobox()[0].alarmCode);
+                
                 service.getCheckConditionTime(self.currentAlarmCode()).done((checkTimeData)=>{
                     self.periodByCategory(_.map((checkTimeData), (item) =>{
-                        return new PeriodByCategory(item.category, item.categoryName, item.startDate==null? null: self.getFormattedDate(item.startDate),item.endDate==null? null:  self.getFormattedDate(item.endDate));
+                        return new PeriodByCategory(item);
                     }));
-                    console.log(self.periodByCategory());
-                     dfd.resolve();
+                    self.alarmCodeChange();
+                    dfd.resolve();
                 }).fail((errorCheckTime) =>{
                     
                 });
+                
             }).fail((errorAlarm)=>{
 
             });
@@ -136,7 +140,74 @@ module nts.uk.at.view.kal001.a.model {
 
             return dfd.promise();
         }
+        
+        public alarmCodeChange(): void{
+            let self = this;
+            self.currentAlarmCode.subscribe((newCode)=>{
+                    service.getCheckConditionTime(newCode).done((checkTimeData)=>{
+                        self.periodByCategory(_.map((checkTimeData), (item) =>{
+                            return new PeriodByCategory(item);
+                        }));
+                    });    
+            });
+        }
+        
 
+        public clickCheckAll(): void{
+            let self = this;
+            self.checkAll(!self.checkAll());
+            if(self.checkAll()){
+                let periodArr = self.periodByCategory();
+                periodArr.forEach((p: PeriodByCategory) =>{
+                    p.checkBox(true);
+                });
+                self.periodByCategory(periodArr);    
+            }else{
+                let periodArr = self.periodByCategory();
+                periodArr.forEach((p: PeriodByCategory) =>{
+                    p.checkBox(false);
+                });
+                self.periodByCategory(periodArr);        
+            }
+            return;  
+        }
+        
+        public checkBoxAllOrNot(checkBox: boolean): void{
+            var self = this;
+            if(checkBox && self.periodByCategory().filter(e => e.checkBox()==checkBox).length == self.periodByCategory().length)
+                self.checkAll(true);
+            else
+                self.checkAll(false);
+
+            
+                            
+        }
+
+    }
+    
+    
+    export class PeriodByCategory{
+        category : number;
+        categoryName: string;
+        startDate : KnockoutObservable<string>;
+        endDate: KnockoutObservable<string>;
+        checkBox: KnockoutObservable<boolean>;
+        startMonth: KnockoutObservable<string>;
+        endMonth: KnockoutObservable<string>;
+        constructor(dto:  service.CheckConditionTimeDto){
+            this.category = dto.category;
+            this.categoryName = dto.categoryName;
+            this.startDate = ko.observable(dto.startDate);
+            this.endDate = ko.observable(dto.endDate);
+            this.startMonth = ko.observable(dto.startMonth);
+            this.endMonth = ko.observable(dto.endMonth);
+            this.checkBox = ko.observable(false);
+            this.checkBox.subscribe((checkBox)=>{
+                __viewContext["viewmodel"].checkBoxAllOrNot(checkBox);
+            });
+        }
+        
+        
             public  getFormattedDate(date : number) : string {
                 var d = new Date(date),
                     month = '' + (d.getMonth() + 1),
@@ -148,24 +219,6 @@ module nts.uk.at.view.kal001.a.model {
             
                 return [year, month, day].join('/');
             }
- 
-
-
-    }
-    
-    export class PeriodByCategory{
-        category : number;
-        categoryName: string;
-        startDate :   KnockoutObservable<string>;
-        endDate: KnockoutObservable<string>;
-        checkBox: KnockoutObservable<boolean>;
-        constructor( category : number, categoryName: string, startDate :   string, endDate: string){
-            this.category = category;
-            this.categoryName = categoryName;
-            this.startDate = ko.observable(startDate);
-            this.endDate = ko.observable(endDate);
-            this.checkBox = ko.observable(false);
-        }
     }
     
     
