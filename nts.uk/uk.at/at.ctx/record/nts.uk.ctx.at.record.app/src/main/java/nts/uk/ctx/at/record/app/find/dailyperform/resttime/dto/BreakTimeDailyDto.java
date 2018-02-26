@@ -13,9 +13,6 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
@@ -75,10 +72,8 @@ public class BreakTimeDailyDto implements ConvertibleAttendanceItem {
 		return dto;
 	}
 	
-	private static TimeStampDto getTimeStamp(WorkStamp c) {
-		return c == null ? null : new TimeStampDto(c.getTimeWithDay().valueAsMinutes(),
-				c.getAfterRoundingTime().valueAsMinutes(),
-				c.getLocationCode().v(), c.getStampSourceInfo().value);
+	private static TimeStampDto getTimeStamp(TimeWithDayAttr c) {
+		return c == null ? null : new TimeStampDto(c.valueAsMinutes(), null, null, null);
 	}
 
 	@Override
@@ -104,12 +99,7 @@ public class BreakTimeDailyDto implements ConvertibleAttendanceItem {
 					date);
 	}
 
-	private WorkStamp createWorkStamp(TimeStampDto d) {
-		return d == null ? null : new WorkStamp(
-				d.getTimesOfDay() == null ? d.getAfterRoundingTimesOfDay() == null ? null : new TimeWithDayAttr(d.getAfterRoundingTimesOfDay())
-						: new TimeWithDayAttr(d.getTimesOfDay()),
-				d.getTimesOfDay() == null ? null : new TimeWithDayAttr(d.getTimesOfDay()),
-				d.getPlaceCode() == null ? null : new WorkLocationCD(d.getPlaceCode()),
-				d.getStampSourceInfo() == null ? StampSourceInfo.HAND_CORRECTION_BY_MYSELF : EnumAdaptor.valueOf(d.getStampSourceInfo(), StampSourceInfo.class));
+	private TimeWithDayAttr createWorkStamp(TimeStampDto d) {
+		return d == null || d.getTimesOfDay() == null ? null : new TimeWithDayAttr(d.getTimesOfDay());
 	}
 }
