@@ -20,8 +20,8 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         dataTypes: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
             new model.ItemModel(0, 'Numeric'),
             new model.ItemModel(1, 'Character'),
-            new model.ItemModel(1, 'Date'),
-            new model.ItemModel(2, 'Time')
+            new model.ItemModel(2, 'Date'),
+            new model.ItemModel(3, 'Time')
         ]);
         
         selectedDataType: KnockoutObservable<number> = ko.observable(0);
@@ -56,6 +56,9 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 new model.ExternalAcceptanceCategoryItemData('012', 'Item 4'),
                 new model.ExternalAcceptanceCategoryItemData('013', 'Item 5') 
             ]);
+            
+            self.selectedDataType = setShared("selectedDataType");
+            
             self.selectedCategoryItem = ko.observable('001');
             $("#fixed-table").ntsFixedTable({ height: 540 });
             
