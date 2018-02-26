@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -40,11 +41,11 @@ public class IntegrationOfDaily {
 	//日別実績のPCログオン情報
 	private Optional<PCLogOnInfoOfDaily> pcLogOnInfo;
 	//社員の日別実績エラー一覧
-	private Optional<EmployeeDailyPerError> employeeError;
+	private List<EmployeeDailyPerError> employeeError;
 	//日別実績の外出時間帯
 	private Optional<OutingTimeOfDailyPerformance> outingTime;
 	//日別実績の休憩時間帯
-	private Optional<BreakTimeOfDailyPerformance> breakTime;
+	private List<BreakTimeOfDailyPerformance> breakTime;
 	//日別実績の勤怠時間
 	@Setter
 	private Optional<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyPerformance;
@@ -61,10 +62,9 @@ public class IntegrationOfDaily {
 	//日別実績の任意項目
 	private Optional<AnyItemValueOfDaily> anyItemValue;
 	//日別実績の編集状態
-	private Optional<EditStateOfDailyPerformance> editState;
+	private List<EditStateOfDailyPerformance> editState;
 	//日別実績の臨時出退勤
 	private Optional<TemporaryTimeOfDailyPerformance> tempTime;
-
 	
 	/**
 	 * Constructor
@@ -87,14 +87,14 @@ public class IntegrationOfDaily {
 	 */
 	public IntegrationOfDaily(WorkInfoOfDailyPerformance workInformation, CalAttrOfDailyPerformance calAttr,
 			AffiliationInforOfDailyPerfor affiliationInfor, Optional<PCLogOnInfoOfDaily> pcLogOnInfo,
-			Optional<EmployeeDailyPerError> employeeError, Optional<OutingTimeOfDailyPerformance> outingTime,
-			Optional<BreakTimeOfDailyPerformance> breakTime,
+			List<EmployeeDailyPerError> employeeError, Optional<OutingTimeOfDailyPerformance> outingTime,
+			List<BreakTimeOfDailyPerformance> breakTime,
 			Optional<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyPerformance,
 			Optional<AttendanceTimeByWorkOfDaily> attendancetimeByWork,
 			Optional<TimeLeavingOfDailyPerformance> attendanceLeave, Optional<ShortTimeOfDailyPerformance> shortTime,
 			Optional<SpecificDateAttrOfDailyPerfor> specDateAttr,
 			Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGate, Optional<AnyItemValueOfDaily> anyItemValue,
-			Optional<EditStateOfDailyPerformance> editState, Optional<TemporaryTimeOfDailyPerformance> tempTime) {
+			List<EditStateOfDailyPerformance> editState, Optional<TemporaryTimeOfDailyPerformance> tempTime) {
 		super();
 		this.workInformation = workInformation;
 		this.calAttr = calAttr;
@@ -113,6 +113,7 @@ public class IntegrationOfDaily {
 		this.editState = editState;
 		this.tempTime = tempTime;
 	}
+	
 	
 	
 }
