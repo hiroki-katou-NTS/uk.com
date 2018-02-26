@@ -22,3 +22,7 @@
 .nts-datepicker-wrapper .ntsDatepicker.yearmonth-picker{
 	width: 85px;
 }
+
+#fixed-table{
+    overflow-y: scroll
+}
