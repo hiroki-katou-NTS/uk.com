@@ -90,19 +90,18 @@ public class IrregularPeriodCarryforwardsTimeOfCurrent {
 				}
 				
 				// 加算した時間を、加算した休暇使用時間に退避しておく
-				this.addedVacationUseTime = new AttendanceTimeMonth(vacationAddTime.v());
+				this.addedVacationUseTime = vacationAddTime;
 			}
 	
 			// 月割増対象時間（休暇加算後）を当月の変形期間繰越時間に入れる
-			this.time = new AttendanceTimeMonthWithMinus(afterAddVacation.v());
+			this.time = afterAddVacation;
 			break;
 			
 		case NOT_ADD:
 			// 月割増対象時間（休暇加算後）を求める　（休暇加算しない）
 			targetPremiumTimeMonth.askTime(companyId, employeeId, datePeriod, weeklyTotalPremiumTime,
 					addSet, aggregateTotalWorkingTime, statutoryWorkingTimeMonth, false);
-			this.time = new AttendanceTimeMonthWithMinus(
-					targetPremiumTimeMonth.getTime().v());
+			this.time = targetPremiumTimeMonth.getTime();
 			this.addedVacationUseTime = new AttendanceTimeMonth(0);
 			break;
 			
@@ -110,10 +109,8 @@ public class IrregularPeriodCarryforwardsTimeOfCurrent {
 			// 月割増対象時間（休暇加算後）を求める　（休暇加算する）
 			targetPremiumTimeMonth.askTime(companyId, employeeId, datePeriod, weeklyTotalPremiumTime,
 					addSet, aggregateTotalWorkingTime, statutoryWorkingTimeMonth, true);
-			this.time = new AttendanceTimeMonthWithMinus(
-					targetPremiumTimeMonth.getTime().v());
-			this.addedVacationUseTime = new AttendanceTimeMonth(
-					targetPremiumTimeMonth.getAddedVacationUseTime().v());
+			this.time = targetPremiumTimeMonth.getTime();
+			this.addedVacationUseTime = targetPremiumTimeMonth.getAddedVacationUseTime();
 			break;
 		}
 	}

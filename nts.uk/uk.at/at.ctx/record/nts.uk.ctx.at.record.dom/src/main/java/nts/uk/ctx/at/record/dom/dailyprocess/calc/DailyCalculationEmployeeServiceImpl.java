@@ -40,7 +40,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * @param executionType 実行種別　（通常、再実行）
 	 */
 	@Override
-	public ProcessState calculate(AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,
+	public ProcessState calculate(AsyncCommandHandlerContext asyncContext, String employeeId,
 			DatePeriod datePeriod, String empCalAndSumExecLogID, ExecutionType executionType) {
 		
 		ProcessState status = ProcessState.SUCCESS;
@@ -73,9 +73,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			String employmentCd = "dummy";
 			
 			// 計算処理　（勤務情報を取得して計算）
-			val value = this.calculateDailtRecordService.calculate(companyId, placeId, employmentCd,
-					employeeId, integrationOfDaily.getAttendanceTimeOfDailyPerformance().getYmd(),
-					integrationOfDaily);
+			val value = this.calculateDailtRecordService.calculate(integrationOfDaily);
 			/*
 			// 状態確認
 			//*****（未）　IntegrationOfDailyの中に、boolean error;を置いて、処理内でのエラー有無を返し、ここで、エラー処理につなぐ。
@@ -91,7 +89,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			
 			// データ更新
 			//*****（未）　日別実績の勤怠情報だけを更新する場合。まとめて更新するなら、integrationOfDailyを入出できるよう調整する。
-			this.registAttendanceTime(integrationOfDaily.getAttendanceTimeOfDailyPerformance());
+			if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent())
+				this.registAttendanceTime(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get());
 		}
 		return status;
 	}

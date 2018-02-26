@@ -23,9 +23,6 @@ public class AnnualLeaveUseTimeOfMonthly {
 	/** 時系列ワーク */
 	@Getter
 	private Map<GeneralDate, AnnualLeaveUseTimeOfTimeSeries> timeSeriesWorks;
-
-	/** 集計済 */
-	private boolean isAggregated;
 	
 	/**
 	 * コンストラクタ
@@ -34,7 +31,6 @@ public class AnnualLeaveUseTimeOfMonthly {
 	
 		this.useTime = new AttendanceTimeMonth(0);
 		this.timeSeriesWorks = new HashMap<>();
-		this.isAggregated = false;
 	}
 
 	/**
@@ -84,8 +80,6 @@ public class AnnualLeaveUseTimeOfMonthly {
 	 */
 	public void aggregate(DatePeriod datePeriod){
 		
-		if (this.isAggregated) return;
-		
 		this.useTime = new AttendanceTimeMonth(0);
 		
 		for (val timeSeriesWork : this.timeSeriesWorks.values()){
@@ -93,6 +87,5 @@ public class AnnualLeaveUseTimeOfMonthly {
 			//AnnualLeaveOfDaily annualLeaveUseTime = timeSeriesWork.getAnnualLeaveUseTime();
 			//this.useTime.addMinutes(annualLeaveUseTime.getUseTime().valueAsMinutes());
 		}
-		this.isAggregated = true;
 	}
 }

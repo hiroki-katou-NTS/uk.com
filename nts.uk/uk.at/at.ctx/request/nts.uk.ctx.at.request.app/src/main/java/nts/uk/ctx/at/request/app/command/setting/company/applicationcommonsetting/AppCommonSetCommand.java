@@ -10,8 +10,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class AppCommonSetCommand {
-	// 会社ID
-	private String companyId;
 	// 所属職場名表示
 	private int showWkpNameBelong;
 }

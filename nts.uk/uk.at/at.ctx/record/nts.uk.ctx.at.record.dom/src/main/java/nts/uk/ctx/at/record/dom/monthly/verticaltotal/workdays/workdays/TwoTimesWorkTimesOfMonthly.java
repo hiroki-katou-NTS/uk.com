@@ -48,8 +48,6 @@ public class TwoTimesWorkTimesOfMonthly {
 		if (!predetermineTimeSet.getPrescribedTimezoneSetting().isUseShiftTwo()) return;
 		
 		// 2回目の打刻が存在する時、1回加算
-		if (isTwoTimesStampExists){
-			this.times = this.times.addTimes(1);
-		}
+		if (isTwoTimesStampExists) this.times = this.times.addTimes(1);
 	}
 }

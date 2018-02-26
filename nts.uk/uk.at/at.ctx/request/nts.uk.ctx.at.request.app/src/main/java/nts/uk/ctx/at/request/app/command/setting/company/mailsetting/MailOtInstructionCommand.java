@@ -11,8 +11,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class MailOtInstructionCommand {
-	// 会社ID
-	private String companyId;
 	// 件名
 	private String subject;
 	// 本文

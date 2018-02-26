@@ -80,7 +80,6 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                 self.useCls(0);
                 self.correctDeadline(0);
             });
-
         }
 
         /**
@@ -89,11 +88,9 @@ module nts.uk.at.view.ksm011.d.viewmodel {
         start(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-
             $.when(self.getData(), self.getListWorkplace()).done(function() {
                 dfd.resolve();
             });
-
             return dfd.promise();
         }
 
@@ -192,6 +189,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
             let dfd = $.Deferred();
             
             self.component026.roleId(self.component.currentCode());
+            self.listPermissionCommon([]);
             self.component026.startPage().done(function() {
                 self.listPermissionCommon(self.component026.listPermissions());
                 dfd.resolve();
@@ -221,7 +219,6 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                 dfd.resolve();
             });
 
-            return dfd.promise();
         }
 
 
@@ -252,6 +249,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                             item.availability(!!item.availability()) ? 1 : 0;
                         }
                         listCommon.push(item);
+                        self.listPermissionCommon([]);
                         self.listPermissionCommon(listCommon);
 
                         if (author) {
@@ -260,7 +258,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                             self.component026.roleId(roleId);
                         }
                     });
-
+ 
                     var listWorkplace = [];
                     _.forEach(self.listPermissionWorkplace(), function(item) {
                         var author = _.find(permissonTotalArr.perWorkplace, function(a: any) { return a.functionNoWorkplace == item.functionNo });
@@ -337,6 +335,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                         if (permissonTotalArr.schemodifyDeadline.length = 0) {
                             self.useCls(0);
                             self.correctDeadline(0);
+                            
 
                         } else {
                             self.useCls(item.useCls);

@@ -24,9 +24,6 @@ public class CompensatoryLeaveUseTimeOfMonthly {
 	/** 時系列ワーク */
 	@Getter
 	private List<CompensatoryLeaveUseTimeOfTimeSeries> timeSeriesWorks;
-
-	/** 集計済 */
-	private boolean isAggregated;
 	
 	/**
 	 * コンストラクタ
@@ -35,7 +32,6 @@ public class CompensatoryLeaveUseTimeOfMonthly {
 		
 		this.useTime = new AttendanceTimeMonth(0);
 		this.timeSeriesWorks = new ArrayList<>();
-		this.isAggregated = false;
 	}
 	
 	/**
@@ -83,8 +79,6 @@ public class CompensatoryLeaveUseTimeOfMonthly {
 	 */
 	public void aggregate(DatePeriod datePeriod){
 		
-		if (this.isAggregated) return;
-		
 		this.useTime = new AttendanceTimeMonth(0);
 		
 		for (val timeSeriesWork : this.timeSeriesWorks){
@@ -92,6 +86,5 @@ public class CompensatoryLeaveUseTimeOfMonthly {
 			//CompensatoryLeaveOfDaily compensatoryLeaveUseTime = timeSeriesWork.getCompensatoryLeaveUseTime();
 			//this.useTime.addMinutes(compensatoryLeaveUseTime.getUseTime().valueAsMinutes());
 		}
-		this.isAggregated = true;
 	}
 }
