@@ -12,7 +12,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
-import nts.uk.ctx.at.record.dom.monthly.GetWorkTimezoneCommonSet;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
@@ -273,7 +272,7 @@ public class OverTimeOfMonthly {
 		}
 		
 		// 代休振替設定を取得する
-		val workTimezoneCommonSetOpt = GetWorkTimezoneCommonSet.get(companyId, workTimeCd.v(), repositories);
+		val workTimezoneCommonSetOpt = repositories.getCommonSet().get(companyId, workTimeCd.v());
 		if (!workTimezoneCommonSetOpt.isPresent()){
 			returnOrder.add(ProcAtrOverTimeAndTransfer.OVER_TIME);
 			return returnOrder;
