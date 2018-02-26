@@ -440,8 +440,23 @@ module nts.uk.at.view.ksm011 {
                 self.selectedCompFunc.subscribe(function(value) {
                     if(value == 0) {
                         self.optionCompleteEnable(true);
+                        self.alarmCheckEnable(true);
+                        self.alarmMethodEnable(true);
+                        self.openEDialogEnable(true);
+                        self.conditionListEnable(true);
+                        self.unhookingEnable(true);
+                        self.confirmEnable(true);
                     } else {
                         self.optionCompleteEnable(false);
+                        self.alarmCheckEnable(false);
+                        self.alarmMethodEnable(false);
+                        self.openEDialogEnable(false);
+                        self.conditionListEnable(false);
+                        self.unhookingEnable(false);
+                        self.confirmEnable(false);
+                        self.conditionList("");
+                        self.dataE = null;
+                        self.scheFuncCondList([]);
                     }
                 });
                 
@@ -450,10 +465,19 @@ module nts.uk.at.view.ksm011 {
                         self.alarmCheckEnable(false);
                         self.unhookingEnable(false);
                         self.confirmEnable(false);
+                        self.alarmMethodEnable(false);
+                        self.openEDialogEnable(false);
+                        self.conditionListEnable(false);
+                        self.conditionList("");
+                        self.dataE = null;
+                        self.scheFuncCondList([]);
                     } else {
                         self.alarmCheckEnable(true);
                         self.unhookingEnable(true);
                         self.confirmEnable(true);
+                        self.alarmMethodEnable(true);
+                        self.openEDialogEnable(true);
+                        self.conditionListEnable(true);
                     }
                 });
                 
