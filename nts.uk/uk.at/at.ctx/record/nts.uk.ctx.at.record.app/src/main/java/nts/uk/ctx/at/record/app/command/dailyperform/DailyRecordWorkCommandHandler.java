@@ -201,8 +201,8 @@ public class DailyRecordWorkCommandHandler {
 							command.getAttendanceTime().getData(), command.getAttendanceTimeByWork().getData(), command.getTimeLeaving().getData(), 
 							command.getShortWorkTime().getData(), command.getSpecificDateAttr().getData(), command.getAttendanceLeavingGate().getData(), 
 							command.getOptionalItem().getData(), command.getEditState().getData(), command.getTemporaryTime().getData()));
-			command.getTimeLeaving().updateData(calced.getAttendanceLeave());
-			command.getAttendanceTime().updateData(calced.getAttendanceTimeOfDailyPerformance());
+			command.getTimeLeaving().updateData(calced.getAttendanceLeave().orElse(null));
+			command.getAttendanceTime().updateData(calced.getAttendanceTimeOfDailyPerformance().orElse(null));
 			group.add("I");
 			group.add("G");
 		}
