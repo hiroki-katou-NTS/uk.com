@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.dailyperform;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -196,7 +197,7 @@ public class DailyRecordWorkCommandHandler {
 		if(group.contains("I") || group.contains("G")){
 			IntegrationOfDaily calced = calcService.calculate(
 					new IntegrationOfDaily(command.getWorkInfo().getData(), command.getCalcAttr().getData(), command.getAffiliationInfo().getData(), 
-							Optional.empty(), Optional.ofNullable(command.getErrors().getData()), command.getOutingTime().getData(), command.getBreakTime().getData(), 
+							Optional.empty(), Arrays.asList(command.getErrors().getData()), command.getOutingTime().getData(), command.getBreakTime().getData(), 
 							command.getAttendanceTime().getData(), command.getAttendanceTimeByWork().getData(), command.getTimeLeaving().getData(), 
 							command.getShortWorkTime().getData(), command.getSpecificDateAttr().getData(), command.getAttendanceLeavingGate().getData(), 
 							command.getOptionalItem().getData(), command.getEditState().getData(), command.getTemporaryTime().getData()));
