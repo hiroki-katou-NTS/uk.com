@@ -148,7 +148,6 @@ module nts.uk.com.view.ccg.share.ccg {
                     }
                 ]);
                 self.selectedTab = ko.observable('tab-1');
-                self.reloadDataSearch();
                 self.isShow = ko.observable(false);
                 self.isOpenStatusOfEmployeeList = ko.observable(false);
                 self.isOpenEmploymentList = ko.observable(false);
@@ -830,9 +829,8 @@ module nts.uk.com.view.ccg.share.ccg {
                     if (nts.uk.ui.windows.getShared('CDL008Cancel')) {
                         return;
                     }
-                    self.selectedCodeWorkplace(nts.uk.ui.windows.getShared('outputCDL008'));
                     // reload KCP004
-                    self.workplaces.selectType = SelectType.SELECT_BY_SELECTED_CODE;
+                    self.selectedCodeWorkplace(nts.uk.ui.windows.getShared('outputCDL008'));
                     $('#workplaceList').ntsTreeComponent(self.workplaces);
                 });
             }
@@ -1193,7 +1191,8 @@ module nts.uk.com.view.ccg.share.ccg {
                         selectedCode: self.selectedCodeEmployment,
                         isDialog: true,
                         isShowNoSelectRow: false,
-                        maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT
+                        maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT,
+                        selectedClosureId: self.showClosure ? self.selectedClosure : undefined
                     };
 
                     self.classifications = {
@@ -1216,7 +1215,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         selectType: SelectType.SELECT_ALL,
                         selectedCode: self.selectedCodeJobtitle,
                         isDialog: true,
-                        baseDate: ko.observable(self.baseDate().toDate()),
+                        baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
                         isShowNoSelectRow: false,
                         maxRows: ConfigCCGKCP.MAX_ROWS_JOBTITLE
                     }
@@ -1227,10 +1226,10 @@ module nts.uk.com.view.ccg.share.ccg {
                         isMultipleUse: true,
                         isMultiSelect: true,
                         treeType: TreeType.WORK_PLACE,
-                        selectType: SelectType.SELECT_ALL,
+                        selectType: SelectType.SELECT_BY_SELECTED_CODE,
                         isShowSelectButton: true,
                         selectedWorkplaceId: self.selectedCodeWorkplace,
-                        baseDate: ko.observable(self.baseDate().toDate()),
+                        baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
                         maxRows: ConfigCCGKCP.MAX_ROWS_WORKPLACE,
                         isDialog: true
                     }
