@@ -11,7 +11,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
-import nts.uk.ctx.at.record.dom.monthly.GetWorkTimezoneCommonSet;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
@@ -298,7 +297,7 @@ public class HolidayWorkTimeOfMonthly {
 		}
 		
 		// 代休振替設定を取得する
-		val workTimezoneCommonSetOpt = GetWorkTimezoneCommonSet.get(companyId, workTimeCd.v(), repositories);
+		val workTimezoneCommonSetOpt = repositories.getCommonSet().get(companyId, workTimeCd.v());
 		if (!workTimezoneCommonSetOpt.isPresent()){
 			returnOrder.add(ProcAtrHolidayWorkAndTransfer.HOLIDAY_WORK);
 			return returnOrder;

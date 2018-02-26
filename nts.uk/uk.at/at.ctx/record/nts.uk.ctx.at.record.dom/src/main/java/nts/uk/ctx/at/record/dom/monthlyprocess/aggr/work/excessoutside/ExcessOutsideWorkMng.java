@@ -10,7 +10,6 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.monthly.GetWorkTimezoneCommonSet;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateMonthlyValue;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
@@ -416,7 +415,7 @@ public class ExcessOutsideWorkMng {
 		}
 		
 		// 代休振替設定を取得する
-		val workTimezoneCommonSetOpt = GetWorkTimezoneCommonSet.get(this.companyId, workTimeCd.v(), repositories);
+		val workTimezoneCommonSetOpt = repositories.getCommonSet().get(this.companyId, workTimeCd.v());
 		if (!workTimezoneCommonSetOpt.isPresent()){
 			returnOrder.add(ProcAtrOverTimeAndTransfer.OVER_TIME);
 			return returnOrder;
@@ -467,7 +466,7 @@ public class ExcessOutsideWorkMng {
 		}
 		
 		// 代休振替設定を取得する
-		val workTimezoneCommonSetOpt = GetWorkTimezoneCommonSet.get(this.companyId, workTimeCd.v(), repositories);
+		val workTimezoneCommonSetOpt = repositories.getCommonSet().get(this.companyId, workTimeCd.v());
 		if (!workTimezoneCommonSetOpt.isPresent()){
 			returnOrder.add(ProcAtrHolidayWorkAndTransfer.HOLIDAY_WORK);
 			return returnOrder;
