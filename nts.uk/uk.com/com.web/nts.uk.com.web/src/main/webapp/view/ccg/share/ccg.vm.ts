@@ -535,12 +535,20 @@ module nts.uk.com.view.ccg.share.ccg {
              * Set component height
              */
             private setComponentHeight(): void {
+                // set component height
                 const headerHeight = $('#header').outerHeight();
                 const functionAreaHeight = $('#functions-area').length > 0 ? $('#functions-area').outerHeight() : 0;
                 const componentHeight = window.innerHeight - headerHeight - functionAreaHeight - 15;
                 $('#component-ccg001').outerHeight(componentHeight);
                 $('#hor-scroll-button-hide').outerHeight(componentHeight);
                 $('#ccg001-btn-search-drawer').outerHeight(componentHeight / 2);
+
+                // set tab panel height.
+                const tabpanelHeight = componentHeight - $('#ccg001-header').outerHeight(true) - 10;
+                const tabpanelNavHeight = 85;
+                $('.ccg-tabpanel.pull-left').outerHeight(tabpanelHeight);
+                $('.ccg-tabpanel>#tab-1').css('height', tabpanelHeight - tabpanelNavHeight);
+                $('.ccg-tabpanel>#tab-2').css('height', tabpanelHeight - tabpanelNavHeight);
             }
 
             /**
