@@ -10,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.overtimeworkinstructionmail.MailOtInstruction;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.overtimeworkinstructionmail.MailOtInstructionRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * update mail ot instruction
@@ -24,9 +25,11 @@ public class UpdateMailOtInstructionCommandHandler extends CommandHandler<MailOt
 
 	@Override
 	protected void handle(CommandHandlerContext<MailOtInstructionCommand> context) {
+		String companyId = AppContexts.user().companyId();
 		MailOtInstructionCommand data = context.getCommand();
 		Optional<MailOtInstruction> mail = mailRep.getMail();
-		MailOtInstruction mailHd = MailOtInstruction.createFromJavaType(data.getCompanyId(), data.getSubject(), data.getContent());
+		MailOtInstruction mailHd = MailOtInstruction.createFromJavaType(companyId, 
+													data.getSubject(), data.getContent());
 		if(mail.isPresent()){
 			mailRep.update(mailHd);
 			return;
