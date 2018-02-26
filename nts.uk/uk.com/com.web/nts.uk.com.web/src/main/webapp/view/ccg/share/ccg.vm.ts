@@ -121,16 +121,60 @@ module nts.uk.com.view.ccg.share.ccg {
             constructor() {
                 var self = this;
                 self.initQueryParam();
+
+                // init datasource
+                self.initDatasource();
+
+                // init selected values
+                self.selectedTab = ko.observable('tab-1');
                 self.selectedCodeEmployment = ko.observableArray([]);
                 self.selectedCodeClassification = ko.observableArray([]);
                 self.selectedCodeJobtitle = ko.observableArray([]);
                 self.selectedCodeWorkplace = ko.observableArray([]);
                 self.selectedCodeEmployee = ko.observableArray([]);
+                self.closureList = ko.observableArray([]);
+                self.selectedClosure = ko.observable(null);
 
                 // status of employment period
                 self.statusPeriodStart = ko.observable(moment.utc("1900/01/01", "YYYY/MM/DD"));
                 self.statusPeriodEnd = ko.observable(moment());
 
+                // flags
+                self.isExpanded = ko.observable(false);
+                self.isShow = ko.observable(false);
+                self.isOpenStatusOfEmployeeList = ko.observable(false);
+                self.isOpenEmploymentList = ko.observable(false);
+                self.isOpenClassificationList = ko.observable(false);
+                self.isOpenJoptitleList = ko.observable(false);
+                self.isOpenWorkplaceList = ko.observable(false);
+                self.isOpenWorkTypeList = ko.observable(false);
+
+                // search reference date & period
+                self.baseDate = ko.observable(moment());
+                self.periodStart = ko.observable(moment());
+                self.periodEnd = ko.observable(moment());
+
+                // status of employee
+                self.selectedIncumbent = ko.observable(false);
+                self.selectedClosed = ko.observable(false);
+                self.selectedLeave = ko.observable(false);
+                self.selectedRetirement = ko.observable(false);
+                
+                //WorkType
+                self.listWorkType = ko.observableArray([]);
+                self.selectedWorkTypeCode = ko.observableArray([]);
+                
+                //check show button Apply
+                self.showApplyBtn = ko.computed(() => {
+                    return self.baseDate() && self.periodStart() && self.periodEnd() ? true : false;
+                });
+            }
+
+            /**
+             * Init datasource
+             */
+            private initDatasource(): void {
+                let self = this;
                 self.tabs = ko.observableArray([
                     {
                         id: 'tab-1',
@@ -147,61 +191,27 @@ module nts.uk.com.view.ccg.share.ccg {
                         visible: ko.observable(true)
                     }
                 ]);
-                self.selectedTab = ko.observable('tab-1');
-                self.isShow = ko.observable(false);
-                self.isOpenStatusOfEmployeeList = ko.observable(false);
-                self.isOpenEmploymentList = ko.observable(false);
-                self.isOpenClassificationList = ko.observable(false);
-                self.isOpenJoptitleList = ko.observable(false);
-                self.isOpenWorkplaceList = ko.observable(false);
-                self.isOpenWorkTypeList = ko.observable(false);
-                self.closureList = ko.observableArray([]);
-                self.selectedClosure = ko.observable(null);
-
-                self.baseDate = ko.observable(moment());
-                self.periodStart = ko.observable(moment());
-                self.periodEnd = ko.observable(moment());
-                
                 self.incumbentDatasource = ko.observableArray([
                     { code: true, name: nts.uk.resource.getText("CCG001_40") },
                     { code: false, name: nts.uk.resource.getText("CCG001_41") }
                 ]);
-                self.selectedIncumbent = ko.observable(false);
-                
                 self.closedDatasource = ko.observableArray([
                     { code: true, name: nts.uk.resource.getText("CCG001_40") },
                     { code: false, name: nts.uk.resource.getText("CCG001_41") }
                 ]);
-                self.selectedClosed = ko.observable(false);
-                
                 self.leaveOfAbsenceDatasource = ko.observableArray([
                     { code: true, name: nts.uk.resource.getText("CCG001_40") },
                     { code: false, name: nts.uk.resource.getText("CCG001_41") }
                 ]);
-                self.selectedLeave = ko.observable(false);
-                
                 self.retirementDatasource = ko.observableArray([
                     { code: true, name: nts.uk.resource.getText("CCG001_40") },
                     { code: false, name: nts.uk.resource.getText("CCG001_41") }
                 ]);
-                self.selectedRetirement = ko.observable(false);
-                
-                //WorkType
-                self.listWorkType = ko.observableArray([]);
-                self.selectedWorkTypeCode = ko.observableArray([]);
-                
                 // Define gridlist's columns
                 self.workTypeColumns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('CCG001_60'), prop: 'workTypeCode', width: 100 },
                     { headerText: nts.uk.resource.getText('CCG001_61'), prop: 'name', width: 200 }
                 ]);
-                
-                //check show button Apply
-                self.showApplyBtn = ko.computed(() => {
-                    return self.baseDate() && self.periodStart() && self.periodEnd() ? true : false;
-                });
-                
-                self.isExpanded = ko.observable(false);
             }
             
             /**
@@ -442,6 +452,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 return dfd.promise();
             }
 
+            /**
+             * Set advanced search param
+             */
             private setAdvancedSearchParam(): void {
                 let self = this;
                 let param = this.queryParam;
@@ -733,6 +746,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 return true;
             }
 
+            /**
+             * Check future date
+             */
             private isFutureDate(date: moment.Moment): boolean {
                 return date.isAfter(moment());
             }
@@ -775,6 +791,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 return dfd.promise();
             }
 
+            /**
+             * Reload advanced search tab
+             */
             private reloadAdvanceSearchTab(): JQueryPromise<void> {
                 let dfd = $.Deferred<void>();
                 let self = this;
@@ -913,7 +932,6 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             clearValiate() {
                 $('#inp_baseDate').ntsError('clear');
-
             }
 
             /**
@@ -1002,6 +1020,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
             }
 
+            /**
+             * Validate basedate & target period
+             */
             public isBaseDateInTargetPeriod(): boolean {
                 let self = this;
                 let baseDate = self.baseDate();
@@ -1073,7 +1094,6 @@ module nts.uk.com.view.ccg.share.ccg {
             /**
              * function get selected employee to
              */
-            
             public getSelectedCodeEmployee(): string[]{
                 var self = this;
                 if (self.isInvalidBaseDate()) {
@@ -1090,7 +1110,6 @@ module nts.uk.com.view.ccg.share.ccg {
             /**
              * function convert dto to model init data 
              */
-            
             public toUnitModelList(dataList: EmployeeSearchDto[]): Array<UnitModel> {
                 var dataRes: UnitModel[] = [];
 
@@ -1178,7 +1197,6 @@ module nts.uk.com.view.ccg.share.ccg {
             /**
              * function reload page (init tab 2)
              */
-
             public reloadDataSearch(): void {
                 var self = this;
                 if (self.showAdvancedSearchTab) {
