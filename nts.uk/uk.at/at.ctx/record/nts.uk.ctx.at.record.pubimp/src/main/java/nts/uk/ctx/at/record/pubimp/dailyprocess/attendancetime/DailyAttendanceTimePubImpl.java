@@ -84,21 +84,21 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 		val specBonusPays = new HashMap<Integer,TimeWithCalculation>();
 		for(int loopNumber = 1 ; loopNumber <=10 ; loopNumber++ ) {
 			//残業
-			overTimeFrames.put(new OverTimeFrameNo(loopNumber), integrationOfDaily.getAttendanceTimeOfDailyPerformance().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime().get(loopNumber-1).getOverTimeWork());
+			overTimeFrames.put(new OverTimeFrameNo(loopNumber), integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime().get(loopNumber-1).getOverTimeWork());
 			//休出
-			holidayWorkFrames.put(new HolidayWorkFrameNo(loopNumber), integrationOfDaily.getAttendanceTimeOfDailyPerformance().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime().get(loopNumber-1).getHolidayWorkTime().get());
+			holidayWorkFrames.put(new HolidayWorkFrameNo(loopNumber), integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime().get(loopNumber-1).getHolidayWorkTime().get());
 			//加給
-			bonusPays.put(loopNumber, integrationOfDaily.getAttendanceTimeOfDailyPerformance().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes().get(loopNumber-1).getBonusPayTime());
+			bonusPays.put(loopNumber, integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes().get(loopNumber-1).getBonusPayTime());
 			//特定日加給
-			specBonusPays.put(loopNumber, integrationOfDaily.getAttendanceTimeOfDailyPerformance().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getAutoCalRaisingSalarySettings().get(loopNumber-1).getBonusPayTime());
+			specBonusPays.put(loopNumber, integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getAutoCalRaisingSalarySettings().get(loopNumber-1).getBonusPayTime());
 			
 		}
 		return new DailyAttendanceTimePubExport(overTimeFrames,
 				holidayWorkFrames,
 				bonusPays,
 				specBonusPays,
-				integrationOfDaily.getAttendanceTimeOfDailyPerformance().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getNotMinusFlexTime(),
-				integrationOfDaily.getAttendanceTimeOfDailyPerformance().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime().getTime()
+				integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getNotMinusFlexTime(),
+				integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime().getTime()
 			);
 	}
 
