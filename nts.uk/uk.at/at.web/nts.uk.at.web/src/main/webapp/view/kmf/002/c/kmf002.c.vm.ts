@@ -70,7 +70,7 @@ module nts.uk.at.view.kmf002.c {
                         _.forEach(dataList, function(value: any) {
                             _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
                         });  
-//                        _self.findAllEmployeeRegister();
+                        _self.findAllEmployeeRegister();
                     },
                     onSearchOnlyClicked: function(data: EmployeeSearchDto) {
                         _self.showinfoSelectedEmployee(true);
@@ -81,7 +81,7 @@ module nts.uk.at.view.kmf002.c {
                         _.forEach(data, function(value: any) {
                             _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
                         });
-//                        _self.findAllEmployeeRegister();
+                        _self.findAllEmployeeRegister();
                     },
                     onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
                         _self.showinfoSelectedEmployee(true);
@@ -90,7 +90,7 @@ module nts.uk.at.view.kmf002.c {
                         _.forEach(dataList, function(value: any) {
                             _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
                         });
-//                        _self.findAllEmployeeRegister();
+                        _self.findAllEmployeeRegister();
                     },
                     onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
                         _self.showinfoSelectedEmployee(true);
@@ -99,7 +99,7 @@ module nts.uk.at.view.kmf002.c {
                         _.forEach(dataList, function(value: any) {
                             _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
                         });
-//                        _self.findAllEmployeeRegister();
+                        _self.findAllEmployeeRegister();
                     },
                     onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
                         _self.showinfoSelectedEmployee(true);
@@ -108,7 +108,7 @@ module nts.uk.at.view.kmf002.c {
                         _.forEach(dataEmployee, function(value: any) {
                             _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
                         });
-//                        _self.findAllEmployeeRegister();
+                        _self.findAllEmployeeRegister();
                     }
                 }
                 /* end declare variable CCG001 */
@@ -147,31 +147,23 @@ module nts.uk.at.view.kmf002.c {
 //                _self.commonTableMonthDaySet.infoSelect2(_self.employeeList()[0].code);
 //                _self.commonTableMonthDaySet.infoSelect3(_self.employeeList()[0].name);
                 
-                _self.selectedCode.subscribe(function(newValue: any) {
-//                    if (_.isNull(newValue)) {
-//                        _self.enableSave(false);
-//                    } else {
-//                        _self.enableSave(true);
-//                    }
-                     _.forEach(_self.employeeList(), function(value: any) {
-                        if (value.code == newValue) {
-                            _self.commonTableMonthDaySet().infoSelect2(newValue);
-                            _self.commonTableMonthDaySet().infoSelect3(value.name);
-                        }
-                    });   
+                _self.selectedCode.subscribe(function(newValue: any) {   
                     if (_.isUndefined(_self.selectedCode()) || _.isEmpty(_self.selectedCode()) || _.isNull(newValue)) {
                         _self.enableDelete(false);
                         _self.enableSave(false);
+                        _self.commonTableMonthDaySet().infoSelect2('');
+                        _self.commonTableMonthDaySet().infoSelect3('');
                     } else {
+                         _.forEach(_self.employeeList(), function(value: any) {
+                            if (value.code == newValue) {
+                                _self.commonTableMonthDaySet().infoSelect2(newValue);
+                                _self.commonTableMonthDaySet().infoSelect3(value.name);
+                            }
+                        });
                         _self.enableDelete(true);
                         _self.enableSave(true);
+                        _self.getDataFromService();
                     }
-                    
-//                    if (_self.selectedCode() == newValue) {
-//                        return;
-//                    }
-                    
-                    _self.getDataFromService();
                 });
                 
                 _self.commonTableMonthDaySet().fiscalYear.subscribe(function(newValue) {

@@ -78,9 +78,6 @@ module nts.uk.at.view.kmf002.d {
             private catchChangeSelectEmp(): void {
                 let _self = this;
                 _self.selectedCode.subscribe(function(codeEmployee) {
-//                    if (_.isEmpty(codeEmployee)) {
-//                        return;
-//                    }
                     _self.commonTableMonthDaySet().infoSelect2(codeEmployee);
                     _self.commonTableMonthDaySet().infoSelect3(_self.findEmploymentSelect(codeEmployee));
                     _self.getDataFromService();
@@ -113,11 +110,6 @@ module nts.uk.at.view.kmf002.d {
                     });
                     dfd.resolve();    
                 })
-//                $('#empt-list-setting').ntsListComponent(_self.listComponentOption).done(function(){
-//                    _self.catchChangeSelectEmp();
-////                    _self.getDataFromService();
-//                    dfd.resolve();    
-//                });
                 return dfd.promise();
             }
 
@@ -151,10 +143,6 @@ module nts.uk.at.view.kmf002.d {
                  $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()), 
                                     service.findFirstMonth(),
                                     service.findAllEmpRegister(_self.commonTableMonthDaySet().fiscalYear())).done(function(data: any, data2: any, data3: any) {
-//                    _self.alreadySettingList.removeAll();
-//                    _.forEach(data3, function(code) {
-//                        _self.alreadySettingList.push({code: code, isAlreadySetting: true});
-//                    });
                     if (typeof data === "undefined") {
                         /** 
                          *   create value null for prepare create new 
