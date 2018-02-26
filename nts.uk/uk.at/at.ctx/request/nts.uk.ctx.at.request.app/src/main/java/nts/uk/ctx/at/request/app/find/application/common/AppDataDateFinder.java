@@ -133,14 +133,17 @@ public class AppDataDateFinder {
 class ApprovalPhaseStateDto{
 	private Integer phaseOrder;
 	
-	private String approvalAtr;
+	private Integer approvalAtrValue;
+	
+	private String approvalAtrName;
 	
 	private List<ApprovalFrameDto> listApprovalFrame;
 	
 	public static ApprovalPhaseStateDto fromApprovalPhaseStateImport(ApprovalPhaseStateImport_New approvalPhaseStateImport){
 		return new ApprovalPhaseStateDto(
 				approvalPhaseStateImport.getPhaseOrder(), 
-				approvalPhaseStateImport.getApprovalAtr(), 
+				approvalPhaseStateImport.getApprovalAtr().value,
+				approvalPhaseStateImport.getApprovalAtr().name,
 				approvalPhaseStateImport.getListApprovalFrame().stream().map(x -> ApprovalFrameDto.fromApprovalFrameImport(x)).collect(Collectors.toList()));
 	}
 }
@@ -152,13 +155,19 @@ class ApprovalFrameDto {
 	
 	private Integer frameOrder;
 	
-	private String approvalAtr;
+	private Integer approvalAtrValue;
+	
+	private String approvalAtrName;
 	
 	private List<ApproverStateDto> listApprover;
 	
 	private String approverID;
 	
+	private String approverName;
+	
 	private String representerID;
+	
+	private String representerName;
 	
 	private String approvalReason;
 	
@@ -166,10 +175,19 @@ class ApprovalFrameDto {
 		return new ApprovalFrameDto(
 				approvalFrameImport.getPhaseOrder(), 
 				approvalFrameImport.getFrameOrder(), 
-				approvalFrameImport.getApprovalAtr(), 
-				approvalFrameImport.getListApprover().stream().map(x -> new ApproverStateDto(x.getApprover(), x.getRepresenter())).collect(Collectors.toList()), 
-				approvalFrameImport.getApproverID(), 
-				approvalFrameImport.getRepresenterID(), 
+				approvalFrameImport.getApprovalAtr().value,
+				approvalFrameImport.getApprovalAtr().name, 
+				approvalFrameImport.getListApprover().stream()
+					.map(x -> new ApproverStateDto(
+							x.getApproverID(), 
+							x.getApproverName(),
+							x.getRepresenterID(),
+							x.getRepresenterName()))
+					.collect(Collectors.toList()), 
+				approvalFrameImport.getApproverID(),
+				approvalFrameImport.getApproverName(),
+				approvalFrameImport.getRepresenterID(),
+				approvalFrameImport.getRepresenterName(),
 				approvalFrameImport.getApprovalReason());
 	}
 }
@@ -177,9 +195,13 @@ class ApprovalFrameDto {
 @Value
 @AllArgsConstructor
 class ApproverStateDto {
-	private String approver;
+	private String approverID;
 	
-	private String representer;
+	private String approverName;
+	
+	private String representerID;
+	
+	private String representerName;
 }
 
 @Value
