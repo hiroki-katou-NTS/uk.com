@@ -11,9 +11,7 @@ import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.ProcAtrHolidayWorkAndTransfer;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.ProcAtrOverTimeAndTransfer;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.AnnualLeaveUseTimeOfTimeSeries;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.FlexTimeOfTimeSeries;
@@ -26,6 +24,8 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.HolidayWorkAndTransferAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.OverTimeAndTransferAtr;
 
 /**
  * 月次明細
@@ -136,17 +136,18 @@ public class MonthlyDetail {
 		
 		if (!workInformationOfDailyMap.containsKey(procDate)) return weeklyPTAfterAssign;
 		val workInfo = workInformationOfDailyMap.get(procDate);
+		val workTimeCode = workInfo.getWorkTimeCode().v();
 
 		// 休出・振替の処理順序を取得する（逆時系列用）
-		val procAtrHolidayWorkAndTransferList =
-				this.excessOutsideWorkMng.getHolidayWorkAndTransferOrder(workInfo, repositories);
+		val holidayWorkAndTransferAtrs = repositories.getHolidayWorkAndTransferOrder().get(
+				this.excessOutsideWorkMng.getCompanyId(), workTimeCode, true);
 		
 		// 休出・振替のループ
-		for (val procAtrHolidayWorkAndTransfer : procAtrHolidayWorkAndTransferList){
+		for (val holidayWorkAndTransferAtr : holidayWorkAndTransferAtrs){
 		
 			// 休出枠時間のループ処理
 			weeklyPTAfterAssign = this.holidayWorkFrameTimeProcess(
-					procDate, procAtrHolidayWorkAndTransfer, weeklyPTAfterAssign);
+					procDate, holidayWorkAndTransferAtr, weeklyPTAfterAssign);
 			
 			if (weeklyPTAfterAssign.lessThanOrEqualTo(0)) break;
 		}
@@ -156,13 +157,13 @@ public class MonthlyDetail {
 	/**
 	 * 休出枠時間のループ処理（逆時系列用）
 	 * @param procDate 処理日
-	 * @param procAtrHolidayWorkAndTransfer 休出振替区分
+	 * @param holidayWorkAndTransferAtr 休出振替区分
 	 * @param weeklyPTForAssignReverseTimeSeries 逆時系列割り当て用の週割増時間
 	 * @return 逆時系列割り当て用の週割増時間　（割り当て後）
 	 */
 	private AttendanceTimeMonthWithMinus holidayWorkFrameTimeProcess(
 			GeneralDate procDate,
-			ProcAtrHolidayWorkAndTransfer procAtrHolidayWorkAndTransfer,
+			HolidayWorkAndTransferAtr holidayWorkAndTransferAtr,
 			AttendanceTimeMonthWithMinus weeklyPTForAssign){
 		
 		AttendanceTimeMonthWithMinus weeklyPTAfterAssign = new AttendanceTimeMonthWithMinus(weeklyPTForAssign.v());
@@ -185,7 +186,7 @@ public class MonthlyDetail {
 
 			Integer assignMinutes = weeklyPTAfterAssign.v();
 			
-			switch (procAtrHolidayWorkAndTransfer){
+			switch (holidayWorkAndTransferAtr){
 			case HOLIDAY_WORK:
 				
 				// 月次明細を限度として「時系列の週割増時間」に割り当てる
@@ -252,17 +253,18 @@ public class MonthlyDetail {
 		
 		if (!workInformationOfDailyMap.containsKey(procDate)) return weeklyPTAfterAssign;
 		val workInfo = workInformationOfDailyMap.get(procDate);
+		val workTimeCode = workInfo.getWorkTimeCode().v();
 
 		// 残業・振替の処理順序を取得する（逆時系列用）
-		val procAtrOverTimeAndTransferList =
-				this.excessOutsideWorkMng.getOverTimeAndTransferOrder(workInfo, repositories);
+		val overTimeAndTransferAtrs = repositories.getOverTimeAndTransferOrder().get(
+				this.excessOutsideWorkMng.getCompanyId(), workTimeCode, true);
 		
 		// 残業・振替のループ
-		for (val procAtrOverTimeAndTransfer : procAtrOverTimeAndTransferList){
+		for (val overTimeAndTransferAtr : overTimeAndTransferAtrs){
 		
 			// 残業枠時間のループ処理
 			weeklyPTAfterAssign = this.overTimeFrameTimeProcess(
-					procDate, procAtrOverTimeAndTransfer, weeklyPTAfterAssign);
+					procDate, overTimeAndTransferAtr, weeklyPTAfterAssign);
 			
 			if (weeklyPTAfterAssign.lessThanOrEqualTo(0)) break;
 		}
@@ -272,13 +274,13 @@ public class MonthlyDetail {
 	/**
 	 * 残業枠時間のループ処理（逆時系列用）
 	 * @param procDate 処理日
-	 * @param procAtrOverTimeAndTransfer 残業振替区分
+	 * @param overTimeAndTransferAtr 残業振替区分
 	 * @param weeklyPTForAssignReverseTimeSeries 逆時系列割り当て用の週割増時間
 	 * @return 逆時系列割り当て用の週割増時間　（割り当て後）
 	 */
 	private AttendanceTimeMonthWithMinus overTimeFrameTimeProcess(
 			GeneralDate procDate,
-			ProcAtrOverTimeAndTransfer procAtrOverTimeAndTransfer,
+			OverTimeAndTransferAtr overTimeAndTransferAtr,
 			AttendanceTimeMonthWithMinus weeklyPTForAssign){
 		
 		AttendanceTimeMonthWithMinus weeklyPTAfterAssign = new AttendanceTimeMonthWithMinus(weeklyPTForAssign.v());
@@ -301,7 +303,7 @@ public class MonthlyDetail {
 
 			Integer assignMinutes = weeklyPTAfterAssign.v();
 			
-			switch (procAtrOverTimeAndTransfer){
+			switch (overTimeAndTransferAtr){
 			case OVER_TIME:
 				
 				// 月次明細を限度として「時系列の週割増時間」に割り当てる

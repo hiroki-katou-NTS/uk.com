@@ -87,14 +87,14 @@
 									title: text('CPS001_23'), 
 									content: '.layouttab', 
 									enable: ko.observable(true), 
-									visible: ko.observable(true)
+									visible: hasLayout
 								},
 								{
 									id: 'category', 
 									title: text('CPS001_24'), 
 									content: '.categorytab', 
 									enable: ko.observable(true), 
-									visible: ko.observable(true)
+									visible: hasLayout
 								}], 
 							active: tab
 							}">
@@ -135,19 +135,22 @@
 						<div class="categorytab" data-bind="if: tab() == TABS.CATEGORY">
 							<div data-bind="foreach: { data: multipleData, as: 'multiple' }">
 								<div data-bind="if: !$index()">
-									<div class="form-group search-box">
+									<div class="form-group search-box" data-bind="let: { _cid: nts.uk.util.randomId().replace(/-/g, '') }">
 										<button type="button"
 											data-bind="click: function() { multiple.id.valueHasMutated() }"
 											tabindex="8">#{i18n.getText('CPS001_27')}</button>
 										<div
-											data-bind="attr: {id: nts.uk.util.randomId().replace(/-/g, '')}, ntsDropDownList: {
-												value: multiple.id,
-												dataSource: multiple.combobox,
-												textKey: 'optionText',
-												valueKey: 'optionValue',
-												visibleItemsCount: 10,
-												tabIndex: -1
-										 }"
+											data-bind="attr: {
+													id: _cid
+												}, 
+												ntsDropDownList: {
+													value: multiple.id,
+													dataSource: multiple.combobox,
+													textKey: 'optionText',
+													valueKey: 'optionValue',
+													visibleItemsCount: 10,
+													tabIndex: -1
+												 }"
 											tabindex="9"></div>
 									</div>
 									<div
@@ -356,7 +359,7 @@
 						remove: ko.observable()
 					}
 				}">
-				<div class="form-group search-box">
+				<div class="form-group search-box" data-bind="visible: $data.permisions.show()">
 					<button type="button" class="btn-add" data-bind="click: $data.event.add || function() {}, enable: $data.permisions &amp;&amp; $data.permisions.add()" tabindex="10">#{i18n.getText('CPS001_32')}</button>
 					<button type="button" class="btn-repli" data-bind="click: $data.event.replication || function() {}, enable: $data.permisions &amp;&amp; $data.permisions.replace() &amp;&amp; $data.list.value()" tabindex="11">#{i18n.getText('CPS001_33')}</button>
 					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}, enable: $data.permisions &amp;&amp; $data.permisions.remove() &amp;&amp; $data.list.dataSource().length > -1" tabindex="12">#{i18n.getText('CPS001_34')}</button>
@@ -364,7 +367,7 @@
 				<div data-bind="template: {
 						name: 'list-data',
 						data: {
-							rows: 8,
+							rows: $data.permisions.show() ? 8 : 10,
 							value: $data.list.value,
 							dataSource: $data.list.dataSource,
 							primaryKey: $data.list.primaryKey || 'id',

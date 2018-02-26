@@ -12,6 +12,7 @@ import lombok.Setter;
 public class PerInfoInitValueSettingCtg {
 	private String perInfoCtgId;
 	private String categoryName;
+	private int categoryType;
 	private boolean isSetting;
 	
 }
