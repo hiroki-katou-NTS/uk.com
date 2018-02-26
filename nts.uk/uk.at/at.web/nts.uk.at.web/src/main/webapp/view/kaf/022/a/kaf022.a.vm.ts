@@ -346,6 +346,7 @@ module nts.uk.at.view.kmf022 {
 
             //a13
             textEditorA13_4: KnockoutObservable<any>;
+            listDataA13 : KnockoutObservableArray<number>;
 
             //a14
             itemListA14_3: KnockoutObservableArray<ItemModel>;
@@ -943,7 +944,8 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdA12_7 = ko.observable(0);
 
                 //a13
-                self.textEditorA13_4 = ko.observable('aaaa');
+                self.textEditorA13_4 = ko.observable('');
+                self.listDataA13 = ko.observableArray([]);
 
                 //a14
                 self.itemListA14_3 = ko.observableArray([
@@ -961,66 +963,66 @@ module nts.uk.at.view.kmf022 {
                 //a16
                 self.texteditorA16_7 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'Subject',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "468px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
                 self.texteditorA16_8 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'Content',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "468px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
                 self.texteditorA16_9 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'Subject',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "468px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
                 self.texteditorA16_10 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'Content',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "468px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
                 self.texteditorA16_11 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'Content',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "468px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
@@ -1106,105 +1108,105 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdC49 = ko.observable(0);
                 self.texteditorC41 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'ObstacleName',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "100px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
                 self.texteditorC42 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'ObstacleName',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "100px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
                 self.texteditorC43 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'ObstacleName',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "100px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
                 self.texteditorC44 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'ObstacleName',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "100px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
                 self.texteditorC45 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'ObstacleName',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "100px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
                 self.texteditorC46 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'ObstacleName',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "100px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
                 self.texteditorC47 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'ObstacleName',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "100px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
                 self.texteditorC51 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'ObstacleName',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "100px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
@@ -1218,14 +1220,14 @@ module nts.uk.at.view.kmf022 {
                 self.enableD11 = ko.observable(false);
                 self.texteditorD9 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'Comment',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "444px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
@@ -1233,14 +1235,14 @@ module nts.uk.at.view.kmf022 {
                 self.enableD11_1 = ko.observable(false);
                 self.texteditorD12 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'Comment',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "444px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
@@ -1282,14 +1284,14 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdE12 = ko.observable(0);
                 self.texteditorE13 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'Comment',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "444px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
@@ -1297,14 +1299,14 @@ module nts.uk.at.view.kmf022 {
                 self.enableE15 = ko.observable(false);
                 self.texteditorE16 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'Comment',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "444px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
@@ -1328,14 +1330,14 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdF14 = ko.observable(0);
                 self.texteditorF15 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'Comment',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "444px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
@@ -1343,14 +1345,14 @@ module nts.uk.at.view.kmf022 {
                 self.enableF15_2 = ko.observable(false);
                 self.texteditorF16 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'Comment',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "444px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
@@ -1415,79 +1417,79 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdH20 = ko.observable(0);
                 self.texteditorH22 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'NameWork',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "100px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
                 self.texteditorH23_1 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'NameWork',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "100px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
                 self.texteditorH24_1 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'NameWork',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "100px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
                 self.texteditorH25_1 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'NameWork',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "100px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
                 self.texteditorH26_1 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'NameWork',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "100px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
                 self.texteditorH27_1 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'NameWork',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "100px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
@@ -1526,14 +1528,14 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdJ28 = ko.observable(0);
                 self.texteditorJ29 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'Comment',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "444px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
@@ -1541,14 +1543,14 @@ module nts.uk.at.view.kmf022 {
                 self.enableJ31 = ko.observable(false);
                 self.texteditorJ32 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'Comment',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "444px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
@@ -1579,14 +1581,14 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdK16 = ko.observable(0);
                 self.texteditorK17 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'Comment',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "444px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
@@ -1594,14 +1596,14 @@ module nts.uk.at.view.kmf022 {
                 self.enableK19 = ko.observable(false);
                 self.texteditorK20 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'Comment',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "444px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
@@ -1666,12 +1668,16 @@ module nts.uk.at.view.kmf022 {
                 self.dataA4Display([]);
                 self.sizeArrayA4(0);
 
-                service.findAllClosure().done(data => {
+                service.findAllClosure().done( (data : any) => {
                     self.sizeArrayA4(data.length);
                     _.forEach(data, element => {
                         let name = element.id + "." + element.name;
                         service.findApp(element.id).done((obj: any) => {
-                            self.dataA4Display.push(new ItemA4(element.id, name, obj.userAtr, obj.deadlineCriteria, obj.deadline));
+                            if (obj) {
+                                self.dataA4Display.push(new ItemA4(element.id, name, obj.userAtr, obj.deadlineCriteria, obj.deadline));
+                            }else{
+                                self.dataA4Display.push(new ItemA4(element.id, name, 0, 0, 1));    
+                            }
                             if (self.dataA4Display().length == data.length) {
                                 for (let i = data.length + 1; i <= 5; i++) {
                                     self.dataA4Display.push(new ItemA4(i, i + '.', 0, 0, 1));
@@ -1683,7 +1689,7 @@ module nts.uk.at.view.kmf022 {
             }
             initDataA5(): void {
                 let self = this;
-                service.findApproSet().done(data => {
+                service.findApproSet().done((data : any) => {
                     if (data) {
                         self.companyId(data.companyId);
                         self.selectedIdA5_14(data.reasonDisp);
@@ -1702,7 +1708,7 @@ module nts.uk.at.view.kmf022 {
             initDataA6(): void {
                 let self = this;
                 let listAppType = __viewContext.enums.ApplicationType;
-                service.findDisp().done(data => {
+                service.findDisp().done((data : any) => {
                     if (data) {
                         _.forEach(listAppType, (appType) => {
                             let obj: any = _.find(data, ['appType', appType.value]);
@@ -1718,7 +1724,7 @@ module nts.uk.at.view.kmf022 {
             initDataA7AndA8(): void {
                 let self = this;
                 let listAppType = __viewContext.enums.ApplicationType;
-                service.findBfReqSet().done(data => {
+                service.findBfReqSet().done((data: any) => {
                     if (data) {
                         _.forEach(listAppType, (appType) => {
                             let obj: any = _.find(data.beforeAfter, ['appType', appType.value]);
@@ -1742,15 +1748,32 @@ module nts.uk.at.view.kmf022 {
             }
             initDataA10(): void {
                 let self = this;
-                service.findAppCom().done(data => {
+                service.findAppCom().done((data : any) => {
                     if (data) {
                         self.selectedIdA10_3(data.showWkpNameBelong);
                     }
                 });
             }
+            initDataA13():void{
+                let self = this;
+                let listAppType = __viewContext.enums.ApplicationType;
+                serivce.findAllPro().done((data : any)=>{
+                    let dataA13 : string = '';
+                    if(data){
+                        self.listDataA13(_.map(data,['appType']));
+                        _.forEach(listAppType, (appType) => {
+                             let obj: any = _.find(data, ['appType', appType.value]);
+                             if(obj){
+                                dataA13 += appType.name;
+                             }
+                        });   
+                    }
+                    self.textEditorA13_4(dataA13);  
+                })    
+            }
             initDataA14(): void {
                 let self = this;
-                service.findJobAssign().done((data) => {
+                service.findJobAssign().done((data : any) => {
                     if (data) {
                         self.selectedIdA14_3(data.isConcurrently ? 1 : 0);
                     }
@@ -1761,7 +1784,7 @@ module nts.uk.at.view.kmf022 {
                 let date = {
                     baseDate: new Date().toISOString()
                 };
-                service.findJobId(date).done(data => {
+                service.findJobId(date).done((data : any) => {
                     if (data) {
                         let jobIds = _.map(data, 'id');
 
@@ -1784,19 +1807,19 @@ module nts.uk.at.view.kmf022 {
 
             initDataA16(): void {
                 let self = this;
-                service.findMail().done(data => {
+                service.findMail().done((data : any) => {
                     if (data) {
                         self.texteditorA16_7.value(data.subject);
                         self.texteditorA16_8.value(data.content);
                     }
                 });
-                service.findOt().done(data => {
+                service.findOt().done((data : any) => {
                     if (data) {
                         self.texteditorA16_9.value(data.subject);
                         self.texteditorA16_10.value(data.content);
                     }
                 });
-                service.findTemp().done(data => {
+                service.findTemp().done((data : any) => {
                     if (data) {
                         self.texteditorA16_11.value(data.content);
                     }
@@ -1805,12 +1828,12 @@ module nts.uk.at.view.kmf022 {
 
             initDataA17(): void {
                 let self = this;
-                service.findAppro().done(data => {
+                service.findAppro().done((data : any) => {
                     if (data) {
                         self.selectedIdA17_5(data.prinFlg);
                     }
                 });
-                service.findAppSet().done(data => {
+                service.findAppSet().done((data : any) => {
                     if (data) {
                         self.selectedIdA17_4(data.appContentChangeFlg);
                         self.selectedIdA9_5(data.attendentTimeReflectFlg);
@@ -1839,7 +1862,7 @@ module nts.uk.at.view.kmf022 {
             }
             initDataB(): void {
                 let self = this;
-                service.findOvertime().done(data => {
+                service.findOvertime().done((data : any) => {
                     if (data) {
                         self.selectedIdB18(data.flexExcessUseSetAtr);
                         self.selectedIdB19(data.priorityStampSetAtr);
@@ -1860,7 +1883,7 @@ module nts.uk.at.view.kmf022 {
             }
             initDataC(): void {
                 let self = this;
-                service.findAllVaca().done(data => {
+                service.findAllVaca().done((data : any) => {
                     if (data) {
                         self.selectedIdC27(data.wrkHours);
                         self.selectedIdC28(data.actualDisp);
@@ -1891,7 +1914,7 @@ module nts.uk.at.view.kmf022 {
             }
             initDataD(): void {
                 let self = this;
-                service.findWorkChange().done(data => {
+                service.findWorkChange().done((data : any) => {
                     if (data) {
                         self.selectedIdD8(data.displayResultAtr);
                         self.valueD10(data.commentFontColor1);
@@ -1909,7 +1932,7 @@ module nts.uk.at.view.kmf022 {
 
             initDataF(): void {
                 let self = this;
-                service.findDirectlycommon().done(data => {
+                service.findDirectlycommon().done((data : any) => {
                     if (data) {
                         self.selectedIdF10(data.workType);
                         self.selectedIdF11(data.performanceDisplayAtr);
@@ -1928,7 +1951,7 @@ module nts.uk.at.view.kmf022 {
             }
             initDataE(): void {
                 let self = this;
-                service.findTrip().done(data => {
+                service.findTrip().done((data : any) => {
                     if (data) {
                         self.selectedIdE9(data.workType);
                         self.selectedIdE10(data.contractCheck);
@@ -1942,7 +1965,7 @@ module nts.uk.at.view.kmf022 {
             }
             initDataG(): void {
                 let self = this;
-                service.findWith().done(data => {
+                service.findWith().done((data : any) => {
                     if (data) {
                         self.selectedIdG16(data.typePaidLeave);
                         self.selectedIdG18(data.restTime);
@@ -1960,7 +1983,7 @@ module nts.uk.at.view.kmf022 {
             }
             initDataJ(): void {
                 let self = this;
-                service.findStamp().done(data => {
+                service.findStamp().done((data : any) => {
                     if (data) {
                         self.selectedCodeJ18(data.supFrameDispNO);
                         self.selectedIdJ19(data.resultDisp);
@@ -1990,7 +2013,7 @@ module nts.uk.at.view.kmf022 {
             }
             initDataH(): void {
                 let self = this;
-                service.findTimeHd().done(data => {
+                service.findTimeHd().done((data : any) => {
                     if (data) {
                         self.selectedIdH15(data.actualDisp);
                         self.selectedIdH16(data.checkOver);
@@ -2015,7 +2038,7 @@ module nts.uk.at.view.kmf022 {
             }
             initDataK(): void {
                 let self = this;
-                service.findDraw().done(data => {
+                service.findDraw().done((data : any) => {
                     if (data) {
                         self.selectedIdK12(data.deferredWorkTimeSelect);
                         self.selectedIdK13(data.simulAppliReq);
@@ -2035,7 +2058,7 @@ module nts.uk.at.view.kmf022 {
             }
             initDataI(): void {
                 let self = this;
-                service.findLateEarly().done(data => {
+                service.findLateEarly().done((data : any) => {
                     if(data){
                         self.selectedIdI4(data.showResult);
                     }
@@ -2079,7 +2102,7 @@ module nts.uk.at.view.kmf022 {
                 };
                 data.proxy = {
                     companyId: self.companyId(),
-                    appType: [1,2]
+                    appType: ko.toJS(self.listDataA13())
                     //todo A13_4
                 };
                 data.mailHd = {
@@ -2308,44 +2331,10 @@ module nts.uk.at.view.kmf022 {
                         return x;
                     })
                 }
+                data.jobAssign = {
+                    isConcurrently : self.selectedIdA14_3() ? 1 : 0
+                } ;
                 service.update(data).done();
-            }
-
-            saveDataA14(): void {
-                let self = this;
-                let data = {};
-                data.isConcurrently = self.selectedIdA14_3() == 1 ? true : false;
-            }
-            saveDataA15(): void {
-                let self = this;
-                let date = {
-                    baseDate: new Date().toISOString()
-                };
-                service.findJobId(date).done(data => {
-                    let jobIds = _.map(data, 'id');
-                    let id = {
-                        "jobtitleId": jobIds
-                    };
-                    service.findJobTitleSearchList(id).done(obj => {
-                        _.forEach(data, element => {
-                            let finder = _.find(obj, ['jobId', element.id]);
-                            if (finder) {
-                                self.listDataA15.push(new ItemA15(element.name, finder.searchSetFlg));
-                            } else {
-                                self.listDataA15.push(new ItemA15(element.name, 1));
-                            }
-                        });
-                    });
-                });
-            }
-
-            saveDataA17(): void {
-                let self = this;
-                let dataAppro = {};
-                dataAppro.prinFlg = self.selectedIdA17_5();
-                let dataAppSet = {};
-                dataAppSet.appContentChangeFlg = self.selectedIdA17_4();
-                dataAppSet.appContentChangeFlg = self.selectedIdA9_5();
             }
 
         }

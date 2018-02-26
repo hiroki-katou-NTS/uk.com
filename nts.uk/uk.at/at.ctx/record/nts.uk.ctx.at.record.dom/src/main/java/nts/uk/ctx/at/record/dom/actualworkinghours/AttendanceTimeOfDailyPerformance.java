@@ -128,7 +128,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			   AddSettingOfFlexWork addSettingOfFlexWork,
 			   AddSettingOfRegularWork addSettingOfRegularWork,
 			   VacationAddTimeSet vacationAddTimeSet) {
-		integrationOfDaily.setAttendanceTimeOfDailyPerformance(collectCalculationResult(oneDay,overTimeAutoCalcSet,holidayAutoCalcSetting,
+		integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(collectCalculationResult(oneDay,overTimeAutoCalcSet,holidayAutoCalcSetting,
 				   																		personalCondition,
 				   																		 vacationClass,
 				   																		 workType,
@@ -142,7 +142,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				   																		 addSettingOfIrregularWork,
 				   																		 addSettingOfFlexWork,
 				   																		 addSettingOfRegularWork,
-				   																		 vacationAddTimeSet));
+				   																		 vacationAddTimeSet)));
 		return integrationOfDaily;
 	}
 	

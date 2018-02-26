@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.dom.alarm.extractionrange;
 
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -9,6 +8,9 @@ import lombok.Data;
 public class CheckConditionTimeDto {
 	private int category;
 	private String categoryName;
-	private Date startDate;
-	private Date endDate;
+	private String startDate;
+	private String endDate;
+	private String startMonth;
+	private String endMonth;
+	
 }
