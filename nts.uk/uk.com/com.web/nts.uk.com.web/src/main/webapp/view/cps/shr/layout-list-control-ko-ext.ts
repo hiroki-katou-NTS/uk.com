@@ -1,10 +1,15 @@
 module nts.custombinding {
     import random = nts.uk.util.randomId;
+    import text = nts.uk.resource.getText;
 
     export class GridMultipleControl implements KnockoutBindingHandler {
         private style: string = `<style type="text/css" rel="stylesheet" id="multi_grid_style">
             .layout-multi-control {
-                
+                position: relative;
+            }
+
+            .layout-multi-control>.ui-iggrid {
+                border: 1px solid #ccc;
             }
             
             .layout-multi-control .ui-igcombo-wrapper {
@@ -31,14 +36,51 @@ module nts.custombinding {
             .layout-multi-control .ui-iggrid table tr td,
             .layout-multi-control .ui-iggrid table tr th {
                 border-top: 0;
-                border-right: 0;
+                border-left: 0;
                 height: 32px;
                 min-height: 32px;
+                box-sizing: border-box;
             }
 
             .layout-multi-control .ui-iggrid-fixedcontainer-left {
-                border-right: 2px solid #cccccc !important;
-                border-bottom: none;
+                border-bottom: 0;
+                border-right: 2px solid #ccc !important;
+                box-sizing: border-box;
+            }
+
+            .layout-multi-control .ui-iggrid .ui-widget-header.ui-iggrid-toolbar {
+                    width: calc(100% + 2px);
+                    margin: -1px;
+                    margin-bottom: 0;
+                    min-height: 60px;
+                    background-color: #fff;
+                    border-width: 0;
+                    border-bottom-width: 1px;
+                    box-sizing: border-box;
+                    padding: 0;
+            }
+
+            .layout-multi-control .ui-iggrid .ui-iggrid-toolbar.ui-iggrid-toolbar .ui-iggrid-results {
+                float: none;
+                text-align: right;
+                width: calc(100% - 50px);
+                display: block;
+                margin: auto;
+                padding-top: 35px;
+                height: 75px;
+                border: 1px solid #ccc;
+                border-bottom-width: 0;
+                border-radius: 10px 10px 0 0;
+                padding-left: calc(100% - 240px);
+                box-sizing: border-box;
+            }
+
+            .layout-multi-control .ui-iggrid .ui-iggrid-toolbar.ui-iggrid-toolbar .ui-iggrid-results span {
+                line-height: 25px;
+            }
+            
+            .ui-igedit-listitem {
+                border-top-width: 0;
             }
             </style>`;
 
@@ -138,7 +180,7 @@ module nts.custombinding {
                 .addClass("layout-multi-control")
                 .igGrid({
                     width: "100%",
-                    height: "600px",
+                    height: "calc(100vh - 320px)",
                     avgRowHeight: "32px",
                     primaryKey: "ProductID",
                     enableHoverStyles: false,
@@ -155,15 +197,19 @@ module nts.custombinding {
                             'type': "local",
                             'pageSize': 20,
                             'pageSizeList': [15, 20, 50, 100]
+                        }, {
+                            name: 'RowSelectors',
+                            enableCheckBoxes: false,
+                            enableRowNumbering: true, //this feature is not needed
+                            rowSelectorColumnWidth: 100
                         },
                         {
                             name: "Selection",
                             mode: "cell",
                             cellSelectionChanged: function(evt, ui) {
-                                debugger;
                             }
                         }],
-                    dataRendering: function(evt, ui) {
+                    dataRendering: (evt, ui) => {
                         setTimeout(() => {
                             _.each($('.textbox'), m => {
                                 render.text(m, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
@@ -175,66 +221,68 @@ module nts.custombinding {
                                 render.combobox(m, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
                             });
                         }, 0);
+                    },
+                    rendered: (evt, ui) => {
+
+                    }
+                })
+                //Delegate before the igGrid initialization code
+                .on("igcontrolcreated", function(evt, ui) {
+                    //return reference to igGrid
+                    let ctrls = $element
+                        .find('.ui-iggrid-toolbar.ui-widget-header>.ui-iggrid-results>.ui-iggrid-pagesizelabel');
+
+                    if (ctrls.length == 2) {
+                        $(ctrls[0]).text(text('CPS003_31'));
+                        $(ctrls[1]).text(text('CPS003_33'));
                     }
                 });
         }
         update = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
             let $element = $(element),
                 accessor = valueAccessor(),
-                inData = ko.unwrap(accessor.inData),
-                outData = ko.unwrap(accessor.outData);
+                inData: IInData = ko.toJS(ko.unwrap(accessor.inData)),
+                outData = ko.unwrap(accessor.outData),
+                keys = _(inData.employees)
+                    .filter((x, i) => i == 0)
+                    .map(_.keys)
+                    .first(),
+                columns = keys ? keys
+                    .map(key => {
+                        return {
+                            key: key,
+                            headerText: key,
+                            width: '100px',
+                            dataType: 'string',
+                            template: `<div data-pid='\${${key}}'>\${${key}}</div>`,
+                        };
+                    }) : [];
 
+            $element.igGrid("option", "columns", columns);
 
-            $element.igGrid("option", "columns", [
-                {
-                    headerText: "Product ID",
-                    width: "75px",
-                    key: "ProductID",
-                    dataType: "number",
-                    template: "<div class='checkbox' data-pid='${ProductID}'>${ProductID}</div>"
-                },
-                {
-                    headerText: "Product Name",
-                    key: "Name",
-                    width: "275px",
-                    dataType: "string",
-                    template: "<input class='textbox' data-pid='${ProductID}'/>"
-                },
-                {
-                    headerText: "ProductNumber",
-                    key: "ProductNumber",
-                    width: "275px",
-                    dataType: "string",
-                    template: "<div data-control='combobox' class='combobox' data-pid='${ProductID}'></div>"
-                },
-                {
-                    headerText: "Color",
-                    key: "Color",
-                    width: "275px",
-                    dataType: "string",
-                    template: "<div data-control='combobox' class='combobox' data-pid='${ProductID}'></div>"
-                },
-                {
-                    headerText: "StandardCost",
-                    key: "StandardCost",
-                    width: "275px",
-                    dataType: "number",
-                    template: "<div data-control='combobox' class='combobox' data-pid='${ProductID}'></div>"
-                },
-            ]);
+            $element.igGrid("option", "dataSource", inData.employees);
 
-            $element.igGrid("option", "dataSource", inData);
+            let $grid = $element.find('.ui-iggrid-table');
 
-            setTimeout(() => {
-                let $grid = $element.find('.ui-iggrid-table');
-
+            if ($grid.data("ui-igGridColumnFixing")) {
                 $grid.igGridColumnFixing("unfixAllColumns");
 
-                $grid.igGridColumnFixing("fixColumn", "ProductID");
-                $grid.igGridColumnFixing("fixColumn", "Name");
-                debugger;
-            }, 0);
+                if (keys.length >= 4) {
+                    _.each([0, 1, 2, 3], x => $grid.igGridColumnFixing("fixColumn", keys[x]))
+                }
+            }
         }
+    }
+
+    interface IInData {
+        employees: Array<IEmployee>;
+        itemDefitions: Array<any>;
+    }
+
+    interface IEmployee {
+        employeeId: string;
+        employeeCode: string;
+        employeeName: string;
     }
 
     interface IRender {
