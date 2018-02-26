@@ -14,7 +14,9 @@ public class ApproverStateImport_New {
 	
 	private String approverID;
 	
-	private String approver;
+	private String approverName;
 	
-	private String representer;
+	private String representerID;
+	
+	private String representerName;
 }
