@@ -29,7 +29,7 @@ public class ExacErrorLogFinder
      * @param exacProcessId
      * @return
      */
-    public List<ExacErrorLogDto> getExacErrorLogByProcessId(String exacProcessId) {
+    public List<ExacErrorLogDto> getExacExeResultLogByProcessId(String exacProcessId) {
     	return finder.getExacErrorLogByProcessId(exacProcessId).stream().map(item -> ExacErrorLogDto.fromDomain(item))
                 .collect(Collectors.toList());
     }

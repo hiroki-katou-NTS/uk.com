@@ -18,5 +18,6 @@ public interface ExacErrorLogRepository
     void update(ExacErrorLog domain);
 
     void remove(int logSeqNumber, String cid, String externalProcessId);
-
+    
+    List<ExacErrorLog> getExacErrorLogByProcessId(String externalProcessId);
 }
