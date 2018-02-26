@@ -6566,7 +6566,10 @@ var nts;
                             container.igCombo("option", "dataSource", options);
                             container.igCombo("dataBind");
                         }
-                        if (selectedValue !== undefined && selectedValue !== null) {
+                        if (notSelected.get(container) || uk.util.isNullOrUndefined(selectedValue)) {
+                            container.igCombo("value", "");
+                        }
+                        else {
                             container.igCombo("value", selectedValue);
                         }
                         container.data("columns", _.cloneDeep(columns));
@@ -6592,7 +6595,6 @@ var nts;
                             }
                         }
                         if (notSelected.get(container)) {
-                            container.find("input").val("");
                         }
                     };
                     return ComboBoxBindingHandler;
