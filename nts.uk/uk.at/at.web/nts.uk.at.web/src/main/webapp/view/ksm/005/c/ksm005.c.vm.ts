@@ -432,7 +432,7 @@ module nts.uk.at.view.ksm005.c {
                     return;
                 }
                 
-                let dataSource = $('#component-items-list').getDataList();
+                let dataSource = self.employeeList();
                 let itemListSetting = dataSource.filter(e => e.isAlreadySetting == true).map(e => self.findEmployeeIdByCode(e.code));
                 
                 let object: IObjectDuplication = {
