@@ -51,8 +51,7 @@ public class TargetPremiumTimeMonth {
 		val targetPremiumTimeMonthOfIrregular = new TargetPremiumTimeMonthOfIrregular();
 		targetPremiumTimeMonthOfIrregular.askPremiumTimeMonth(
 				companyId, employeeId, datePeriod, addSet, aggregateTotalWorkingTime, isAddVacation);
-		this.addedVacationUseTime = new AttendanceTimeMonth(
-				targetPremiumTimeMonthOfIrregular.getAddedVacationUseTime().v());
+		this.addedVacationUseTime = targetPremiumTimeMonthOfIrregular.getAddedVacationUseTime();
 		
 		// （実績）所定労働時間を取得する
 		val prescribedWorkingTime = aggregateTotalWorkingTime.getPrescribedWorkingTime();

@@ -4,28 +4,31 @@ module nts.uk.at.view.kmf002.e {
          * define path to service
          */
         var path: any = {
-                find: "bs/employee/holidaysetting/company/findCompanyMonthDaySetting",
-                save: "bs/employee/holidaysetting/company/save",
+                find: "at/shared/holidaysetting/company/findCompanyMonthDaySetting",
+                save: "at/shared/holidaysetting/company/save",
                 findFirstMonth: "basic/company/beginningmonth/find",
-                remove: "bs/employee/holidaysetting/company/remove"
+                remove: "at/shared/holidaysetting/company/remove"
             };
         
         /**
          * 
          */
         export function find(year: string): JQueryPromise<any>{
-            return nts.uk.request.ajax("com",path.find + "/" + year);
+            return nts.uk.request.ajax("at",path.find + "/" + year);
         }
 
         
         
         export function save(year: string, data: any): JQueryPromise<any> {
             let sysResourceDto: model.SystemResourceDto= new model.SystemResourceDto(year, []);
+//            data.sort(function (left, right) { 
+//                return left.month == right.month ? 0 : (left.month < right.month ? -1 : 1) 
+//            })
             sysResourceDto.toDto(data);
             let command: any = {};
             command.year = year;
             command.publicHolidayMonthSettings = sysResourceDto.publicHolidayMonthSettings
-            return nts.uk.request.ajax("com", path.save, command);
+            return nts.uk.request.ajax("at", path.save, command);
         }
         
         export function findFirstMonth(): JQueryPromise<any>{
@@ -35,7 +38,7 @@ module nts.uk.at.view.kmf002.e {
         export function remove(year: string): JQueryPromise<any> {
             let command: any = {};
             command.year = year;
-            return nts.uk.request.ajax("com", path.remove, command);
+            return nts.uk.request.ajax("at", path.remove, command);
         }
     }
     

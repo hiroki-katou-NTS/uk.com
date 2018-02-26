@@ -201,8 +201,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//休憩時間帯(BreakManagement)
 		List<BreakTimeSheet> breakTimeSheet = new ArrayList<>();
 		breakTimeSheet.add(new BreakTimeSheet(new BreakFrameNo(1),
-											  new WorkStamp(new TimeWithDayAttr(720), new TimeWithDayAttr(720), new WorkLocationCD("01"), StampSourceInfo.TIME_RECORDER),
-											  new WorkStamp(new TimeWithDayAttr(780), new TimeWithDayAttr(780), new WorkLocationCD("01"), StampSourceInfo.TIME_RECORDER),
+											  new TimeWithDayAttr(720),
+											  new TimeWithDayAttr(780),
 											  new AttendanceTime(0)));
 		
 		List<BreakTimeOfDailyPerformance> breakTimeOfDailyList = new ArrayList<>();

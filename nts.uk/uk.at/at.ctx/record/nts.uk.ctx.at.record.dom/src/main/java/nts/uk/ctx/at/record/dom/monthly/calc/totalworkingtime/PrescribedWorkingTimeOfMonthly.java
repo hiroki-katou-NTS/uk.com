@@ -8,10 +8,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTime;
-import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.PrescribedWorkingTimeOfTimeSeries;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -74,15 +71,7 @@ public class PrescribedWorkingTimeOfMonthly {
 			
 			// 取得した就業時間を「月別実績の所定労働時間」に入れる
 			this.timeSeriesWorks.add(PrescribedWorkingTimeOfTimeSeries.of(
-					attendanceTimeOfDaily.getYmd(),
-					new WorkScheduleTimeOfDaily(
-							new WorkScheduleTime(
-									new AttendanceTime(workScheduleTimeOfDaily.getWorkScheduleTime().getTotal().v()),
-									new AttendanceTime(workScheduleTimeOfDaily.getWorkScheduleTime().getExcessOfStatutoryTime().v()),
-									new AttendanceTime(workScheduleTimeOfDaily.getWorkScheduleTime().getWithinStatutoryTime().v())),
-							new AttendanceTime(workScheduleTimeOfDaily.getSchedulePrescribedLaborTime().v()),
-							new AttendanceTime(workScheduleTimeOfDaily.getRecordPrescribedLaborTime().v()))
-					));
+					attendanceTimeOfDaily.getYmd(), workScheduleTimeOfDaily));
 		}
 	}
 	
@@ -97,8 +86,8 @@ public class PrescribedWorkingTimeOfMonthly {
 		for (val timeSeriesWork : this.timeSeriesWorks){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 			val prescribedWorkingTime = timeSeriesWork.getPrescribedWorkingTime();
-			this.schedulePrescribedWorkingTime.addMinutes(prescribedWorkingTime.getSchedulePrescribedLaborTime().valueAsMinutes());
-			this.recordPrescribedWorkingTime.addMinutes(prescribedWorkingTime.getRecordPrescribedLaborTime().valueAsMinutes());
+			this.schedulePrescribedWorkingTime.addMinutes(prescribedWorkingTime.getSchedulePrescribedLaborTime().v());
+			this.recordPrescribedWorkingTime.addMinutes(prescribedWorkingTime.getRecordPrescribedLaborTime().v());
 		}
 	}
 
@@ -113,7 +102,7 @@ public class PrescribedWorkingTimeOfMonthly {
 		for (val timeSeriesWork : this.timeSeriesWorks){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 			val prescribedWorkingTime = timeSeriesWork.getPrescribedWorkingTime();
-			returnTime.addMinutes(prescribedWorkingTime.getRecordPrescribedLaborTime().valueAsMinutes());
+			returnTime.addMinutes(prescribedWorkingTime.getRecordPrescribedLaborTime().v());
 		}
 		return returnTime;
 	}

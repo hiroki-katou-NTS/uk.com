@@ -335,7 +335,7 @@ public class OverTimeOfMonthly {
 			
 			// 対象の時系列ワークを確認する
 			val targetAggregateOverTime = this.getTargetAggregateOverTime(overTimeFrameNo);
-			val timeSeriesWork = targetAggregateOverTime.getTimeSeriesWork(ymd);
+			val timeSeriesWork = targetAggregateOverTime.getAndPutTimeSeriesWork(ymd);
 			
 			// 自動的に除く残業枠か確認する
 			if (autoExcludeOverTimeFrameList.contains(overTimeFrameNo)){
