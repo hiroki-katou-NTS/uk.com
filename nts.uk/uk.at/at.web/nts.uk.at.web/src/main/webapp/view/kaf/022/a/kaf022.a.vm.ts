@@ -2325,6 +2325,7 @@ module nts.uk.at.view.kmf022 {
                 data.appBf = {
                     beforeAfter: _.map(ko.toJS(self.listDataA7()), (x: any) => {
                         x.retrictPostAllowFutureFlg = x.retrictPostAllowFutureFlg ? 1 : 0;
+                        x.retrictPreUseFlg = x.retrictPreUseFlg ? 1 : 0;
                         return x;
                     }),
                     appType: _.map(ko.toJS(self.listDataA8()), (x: any) => {
@@ -2390,7 +2391,7 @@ module nts.uk.at.view.kmf022 {
             companyId: KnockoutObservable<string>;
             appType: KnockoutObservable<number>;
             retrictPreMethodFlg: KnockoutObservable<number>;
-            retrictPreUseFlg: KnockoutObservable<number>;
+            retrictPreUseFlg: KnockoutObservable<boolean>;
             retrictPreDay: KnockoutObservable<number>;
             retrictPreTimeDay: KnockoutObservable<number>;
             retrictPostAllowFutureFlg: KnockoutObservable<boolean>;
@@ -2401,7 +2402,7 @@ module nts.uk.at.view.kmf022 {
                 this.appTypeName = ko.observable(appTypeName);
                 this.appType = ko.observable(appType);
                 this.retrictPreMethodFlg = ko.observable(retrictPreMethodFlg);
-                this.retrictPreUseFlg = ko.observable(retrictPreUseFlg);
+                this.retrictPreUseFlg = ko.observable(retrictPreUseFlg==1 ? true : false);
                 this.retrictPreDay = ko.observable(retrictPreDay);
                 this.retrictPreTimeDay = ko.observable(retrictPreTimeDay);
                 this.retrictPostAllowFutureFlg = ko.observable(retrictPostAllowFutureFlg == 1 ? true : false);
