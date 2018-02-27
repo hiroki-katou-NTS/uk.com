@@ -144,8 +144,8 @@ module nts.uk.at.view.ksm005.c {
                     
                     /** Return data */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                        self.selectedEmployee(data);
-                        self.applyKCP005ContentSearch(data);
+                        self.selectedEmployee(data.listEmployee);
+                        self.applyKCP005ContentSearch(data.listEmployee);
                     }
 
 
