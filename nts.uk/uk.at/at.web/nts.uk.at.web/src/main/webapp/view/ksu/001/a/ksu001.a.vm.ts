@@ -781,29 +781,29 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#extable").on("extablecellupdated", function() { });
                 $("#extable").on("extablerowupdated", function() { });
 
-                setTimeout($("#extable").exTable("scrollBack", 2), 1000);
+                setTimeout(function() { $("#extable").exTable("scrollBack", 2);}, 1000 );
 
                 /**
                  * validate when stick data in cell
                  */
                 $("#extable").exTable("stickValidate", function(rowIdx, key, data) {
-//                    if (__viewContext.viewModel.viewO.selectedWorkTimeCode() == '000据え置き') {
-//                        let dataS: BasicSchedule =
-//                            _.find(self.dataSource(), { 'date': moment(key, '_YYYYMMDD').format('YYYY/MM/DD'), 'employeeId': self.listSid()[rowIdx] });
-//                        let wTimeCode: string = dataS ? dataS.workTimeCode : null;
-//                        let wTime: any =
-//                            wTimeCode ? _.find(__viewContext.viewModel.viewO.listWorkTime(), { 'workTimeCode': wTimeCode }) : null;
-//                        let wTimeName: string = wTime ? wTime.abName : null;
-//                        $("#extable").exTable("stickData", {
-//                            workTypeCode: data.workTypeCode,
-//                            workTypeName: data.workTypeName,
-//                            workTimeCode: wTimeCode,
-//                            workTimeName: wTimeName,
-//                            startTime: dataS ? dataS.scheduleStartClock : '',
-//                            endTime: dataS ? dataS.scheduleEndClock : ''
-//                        });
-//                        return true;
-//                    }
+                    //                    if (__viewContext.viewModel.viewO.selectedWorkTimeCode() == '000据え置き') {
+                    //                        let dataS: BasicSchedule =
+                    //                            _.find(self.dataSource(), { 'date': moment(key, '_YYYYMMDD').format('YYYY/MM/DD'), 'employeeId': self.listSid()[rowIdx] });
+                    //                        let wTimeCode: string = dataS ? dataS.workTimeCode : null;
+                    //                        let wTime: any =
+                    //                            wTimeCode ? _.find(__viewContext.viewModel.viewO.listWorkTime(), { 'workTimeCode': wTimeCode }) : null;
+                    //                        let wTimeName: string = wTime ? wTime.abName : null;
+                    //                        $("#extable").exTable("stickData", {
+                    //                            workTypeCode: data.workTypeCode,
+                    //                            workTypeName: data.workTypeName,
+                    //                            workTimeCode: wTimeCode,
+                    //                            workTimeName: wTimeName,
+                    //                            startTime: dataS ? dataS.scheduleStartClock : '',
+                    //                            endTime: dataS ? dataS.scheduleEndClock : ''
+                    //                        });
+                    //                        return true;
+                    //                    }
 
                     let stateWorkTypeCd: any = _.find(self.listCheckNeededOfWorkTime(), ['workTypeCode', data.workTypeCode]);
                     // if workTypeCode is not required( state = 2) worktime is needless
@@ -909,7 +909,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
                     //                    $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
 
-                    setTimeout($("#extable").exTable("scrollBack", 2), 1000);
+                    setTimeout(function() { $("#extable").exTable("scrollBack", 2);}, 1000 );
 
                     self.stopRequest(true);
                 });
@@ -978,7 +978,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
                         //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
-                        setTimeout($("#extable").exTable("scrollBack", 2), 1000);
+                        setTimeout(function() { $("#extable").exTable("scrollBack", 2);}, 1000 );
                     });
                 }).always(() => {
                     self.stopRequest(true);
@@ -1048,7 +1048,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
                         //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
-                        setTimeout($("#extable").exTable("scrollBack", 2), 1000);
+                        setTimeout(function() { $("#extable").exTable("scrollBack", 2);}, 1000 );
                     });
                 }).always(() => {
                     self.stopRequest(true);

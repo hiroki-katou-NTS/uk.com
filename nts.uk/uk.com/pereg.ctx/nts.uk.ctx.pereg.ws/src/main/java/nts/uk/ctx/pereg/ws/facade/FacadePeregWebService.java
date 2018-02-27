@@ -43,12 +43,12 @@ public class FacadePeregWebService extends WebService {
 	
 	@POST
 	@Path("register")
-	public void register(PeregInputContainer inputContainer) {
+	public String register(PeregInputContainer inputContainer) {
 		
-		
+		String recordId = null;
 		List<ItemsByCategory> addInputs = inputContainer.getInputs().stream().filter(p->StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
 		if (addInputs!= null && !addInputs.isEmpty()){
-			this.commandFacade.add(inputContainer);
+			recordId= this.commandFacade.add(inputContainer);
 		}
 		
 		List<ItemsByCategory> updateInputs = inputContainer.getInputs().stream().filter(p->!StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
@@ -56,5 +56,7 @@ public class FacadePeregWebService extends WebService {
 			PeregInputContainer registerPeregInputContainer = new PeregInputContainer(inputContainer.getPersonId(), inputContainer.getEmployeeId(), updateInputs);
 			this.commandFacade.update(registerPeregInputContainer);
 		}
+		
+		return recordId;
 	}
 }

@@ -68,7 +68,7 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 		EmployeeImport em = this.getEmployee(companyId, employeeCode);
 		
 		// Check del state
-		this.checkEmployeeDelStatus(companyId, em.getPersonalId());
+		this.checkEmployeeDelStatus(em.getEmployeeId());
 				
 		// Get User by PersonalId
 		UserImport user = this.getUser(em.getPersonalId());
