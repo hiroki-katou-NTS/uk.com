@@ -3,10 +3,14 @@
  */
 package nts.uk.ctx.bs.employee.app.command.classification.affiliate;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.PeregItemValues;
 import nts.uk.shr.pereg.app.PeregRecordId;
 
 /**
@@ -39,5 +43,7 @@ public class UpdateAffClassificationCommand{
 	@PeregItem("IS00028")
 	private String classificationCode;
 	
+	@PeregItemValues
+	private List<ItemValue> items;
 
 }

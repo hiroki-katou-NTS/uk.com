@@ -142,60 +142,34 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 	private void updateEntity(TempAbsenceHisItem domain, BsymtTempAbsHisItem entity) {
 		// Common value
 //		entity.histId = domain.getHistoryId();
-		if (domain.getTempAbsenceFrNo() != null){
-			entity.tempAbsFrameNo = domain.getTempAbsenceFrNo().v().intValue();
-		}
-		if (domain.getRemarks() != null && !domain.getRemarks().v().equals("")){
-			entity.remarks = domain.getRemarks().v();
-		}
-		if (domain.getSoInsPayCategory() != null){
-			entity.soInsPayCategory = domain.getSoInsPayCategory();
-		}
+		entity.tempAbsFrameNo = domain.getTempAbsenceFrNo().v().intValue();
+		entity.remarks = domain.getRemarks().v();
+		entity.soInsPayCategory = domain.getSoInsPayCategory();
 
 		switch (domain.getTempAbsenceFrNo().v().intValue()) {
 		case 1:
 			break;
 		case 2:
 			MidweekClosure midweek = (MidweekClosure) domain;
-			if (midweek.getMultiple() != null){
-				entity.multiple = midweek.getMultiple() ? 1 : 0;
-			}
+			entity.multiple = midweek.getMultiple() ? 1 : 0;
 			break;
 		case 3:
 			AfterChildbirth childBirth = (AfterChildbirth) domain;
-			if (childBirth.getFamilyMemberId() != null){
-				entity.familyMemberId = childBirth.getFamilyMemberId();
-			}
+			entity.familyMemberId = childBirth.getFamilyMemberId();
 			break;
 		case 4:
 			ChildCareHoliday childCare = (ChildCareHoliday) domain;
-			if (childCare.getSameFamily() != null){
-				entity.sameFamily = childCare.getSameFamily() ? 1 : 0;
-			}
-			if (childCare.getChildType() != null){
-				entity.childType = childCare.getChildType();
-			}
-			if (childCare.getFamilyMemberId() != null){
-				entity.familyMemberId = childCare.getFamilyMemberId();
-			}
-			if (childCare.getCreateDate() != null){
-				entity.createDate = childCare.getCreateDate();
-			}
-			if (childCare.getSpouseIsLeave() != null){
-				entity.spouseIsLeave = childCare.getSpouseIsLeave() ? 1 : 0;
-			}
+			entity.sameFamily = childCare.getSameFamily() ? 1 : 0;
+			entity.childType = childCare.getChildType();
+			entity.familyMemberId = childCare.getFamilyMemberId();
+			entity.createDate = childCare.getCreateDate();
+			entity.spouseIsLeave = childCare.getSpouseIsLeave() ? 1 : 0;
 			break;
 		case 5:
 			CareHoliday careLeave = (CareHoliday) domain;
-			if (careLeave.getSameFamily() != null){
-				entity.sameFamily = careLeave.getSameFamily() ? 1 : 0;
-			}
-			if (careLeave.getSameFamilyDays() != null){
-				entity.sameFamilyDays = careLeave.getSameFamilyDays();
-			}
-			if (careLeave.getFamilyMemberId() != null){
-				entity.familyMemberId = careLeave.getFamilyMemberId();
-			}
+			entity.sameFamily = careLeave.getSameFamily() ? 1 : 0;
+			entity.sameFamilyDays = careLeave.getSameFamilyDays();
+			entity.familyMemberId = careLeave.getFamilyMemberId();
 			break;
 		case 6:
 			break;

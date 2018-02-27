@@ -1,9 +1,13 @@
 package nts.uk.ctx.bs.employee.app.command.employee.history;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.PeregItemValues;
 import nts.uk.shr.pereg.app.PeregPersonId;
 import nts.uk.shr.pereg.app.PeregRecordId;
 
@@ -43,4 +47,7 @@ public class UpdateAffCompanyHistoryCommand{
 	
 	@PeregItem("IS00021")
 	private GeneralDate endDate;
+	
+	@PeregItemValues
+	private List<ItemValue> items;
 }
