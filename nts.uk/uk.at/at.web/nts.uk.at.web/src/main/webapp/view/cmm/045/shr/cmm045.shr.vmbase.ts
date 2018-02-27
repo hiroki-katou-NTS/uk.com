@@ -73,10 +73,11 @@ module cmm045.shr {
             displayAppStatus: string;
             checkAtr: boolean;
             version: number;
+            checkTimecolor: boolean;
             constructor(appId: string,appType: number,  details: string, applicant: string,
-                appName: string, appAtr: string, appDate: string,
-                appContent: string, inputDate: string, appStatus: string,
-                displayAppStatus: string, checkAtr: boolean, version: number){
+                appName: string, appAtr: string, appDate: string, appContent: string,
+                inputDate: string, appStatus: string, displayAppStatus: string,
+                checkAtr: boolean, version: number, checkTimecolor: boolean){
                 this.appId = appId;
                 this.appType = appType;
 //                this.check = appType == 0 ? true : false;
@@ -92,6 +93,7 @@ module cmm045.shr {
                 this.displayAppStatus = displayAppStatus;
                 this.checkAtr = checkAtr;
                 this.version = version;
+                this.checkTimecolor = checkTimecolor;
             }
         }  
         
@@ -103,7 +105,11 @@ module cmm045.shr {
             workplaceName: string;
             statusFrameAtr: boolean;
             phaseStatus: string;
-            constructor(appID: string, appType: number, dispName: string, empName: string, workplaceName: string, statusFrameAtr: boolean, phaseStatus: string)
+            //事前、事後の後ろに#CMM045_101(※)を追加
+            checkAddNote: boolean;
+            checkTimecolor: boolean;
+            constructor(appID: string, appType: number, dispName: string, empName: string, workplaceName: string, 
+            statusFrameAtr: boolean, phaseStatus: string, checkAddNote: boolean, checkTimecolor: boolean)
             {
                 this.appID = appID;
                 this.appType = appType;
@@ -112,6 +118,8 @@ module cmm045.shr {
                 this.workplaceName = workplaceName;
                 this.statusFrameAtr = statusFrameAtr;
                 this.phaseStatus = phaseStatus;
+                this.checkAddNote = checkAddNote;
+                this.checkTimecolor = checkTimecolor;
             }
         }
         export class ApplicationDto_New{
@@ -313,10 +321,10 @@ module cmm045.shr {
             {
                 this.unApprovalNumber = getText('CMM045_12') + ' ' + getText('CMM045_18', [unApprovalNumber]); 
                 this.approvalNumber = getText('CMM045_13') + ' ' + getText('CMM045_18', [approvalNumber]);
-                this.approvalAgentNumber = getText('CMM045_14') + ' ' + getText('CMM045_18', [approvalAgentNumber]);
-                this.cancelNumber = getText('CMM045_15') + ' ' + getText('CMM045_18', [cancelNumber]);
+                this.approvalAgentNumber = getText('CMM045_14') + ' ' + getText('CMM045_18', [denialNumber]);
+                this.cancelNumber = getText('CMM045_15') + ' ' + getText('CMM045_18', [approvalAgentNumber]);
                 this.remandNumner = getText('CMM045_16') + ' ' + getText('CMM045_18', [remandNumner]);
-                this.denialNumber = getText('CMM045_17') + ' ' + getText('CMM045_18', [denialNumber]);        
+                this.denialNumber = getText('CMM045_17') + ' ' + getText('CMM045_18', [cancelNumber]);    
             }
         }
         export class ChoseApplicationList{
@@ -326,6 +334,10 @@ module cmm045.shr {
                 this.appId = appId;
                 this.appName = appName;
             }    
+        }
+        export interface Date{
+            startDate: string;
+            endDate: string;
         }
     }
 }

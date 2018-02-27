@@ -20,7 +20,7 @@ public class ApplicationListDto {
 	//TH: approval (count)
 	private	ApplicationStatus appStatusCount;
 //	private List<AppStatusApproval> lstStatusApproval;
-	private List<String> lstTimeColor; 
+//	private List<String> lstTimeColor; 
 //	private List<String> lstFramStatus;
 	
 }
