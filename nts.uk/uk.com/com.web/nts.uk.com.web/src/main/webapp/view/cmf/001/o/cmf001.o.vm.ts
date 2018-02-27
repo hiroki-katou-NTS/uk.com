@@ -6,7 +6,9 @@ module nts.uk.com.view.cmf001.o.viewmodel {
     import dialog = nts.uk.ui.dialog.info;
     import alertError = nts.uk.ui.dialog.alertError;
     import block = nts.uk.ui.block;
-    
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+
     export class ScreenModel {
         //wizard
         stepList: Array<NtsWizardStep> = [];
@@ -26,7 +28,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         stereoType: KnockoutObservable<string> = ko.observable('');
         fileId: KnockoutObservable<string> = ko.observable('');
         filename: KnockoutObservable<string> = ko.observable('');
-        fileInfo: KnockoutObservable<any> = ko.observable("");
+        fileInfo: KnockoutObservable<any> = ko.observable(null);
         textId: KnockoutObservable<string> = ko.observable("CMF001_447");
         accept: KnockoutObservableArray<string> = ko.observableArray(['.csv']);
         asLink: KnockoutObservable<boolean> = ko.observable(false);
@@ -69,7 +71,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             });
 
             //self.loadListAccept();   
-            $("#grd_Accept").ntsFixedTable({ height: 373 });
+            $("#grd_Accept").ntsFixedTable({ height: 373 });           
         }
 
         //次の画面へ遷移する
@@ -82,7 +84,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 dialog({ messageId: "Msg_963" });
                 return;
             }
-
+            
             //受入ファイルがアップロードされているか判別
             if (self.fileId() == '') {
                 //Msg_964　を表示する。受入ファイルがアップロードされていません。
@@ -105,14 +107,27 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             var self = this;
             block.grayout();
             $("#file-upload").ntsFileUpload({ stereoType: "flowmenu" }).done(function(res) {
-                self.fileId(res[0].id);
-
+                //self.fileId(res[0].id);
+                service.getTotalRecord(res[0].id).done(function(totalRecord: any) {
+                    
+                    console.log(res[0].id, totalRecord);
+                    if(self.selectedConditionStartLine() > totalRecord){
+                        self.fileId('');
+                        self.filename('');
+                        dialog({ messageId: "Msg_910" });
+                    }
+                    else{
+                        self.fileId(res[0].id);
+                    }                    
+                }).fail(function(err) {
+                    dialog({ messageId: "Msg_910" });
+                }).always(() => {
+                    block.clear();
+                });
             }).fail(function(err) {
                 self.fileId('');
                 //エラーメッセージ　Msg_910　　ファイルアップロードに失敗しました。
                 dialog({ messageId: "Msg_910" });
-            }).always(() => {
-                block.clear();
             });
         }
 
@@ -178,7 +193,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     //_.each(_rspList, rsp => self.roleSetPersonList.push(rsp));
                     console.log(_rspList);
                     self.listCondition(_rspList);
-                    
+
                     //取得した設定を「条件設定一覧」に表示する
                     self.selectedConditionCd(self.listCondition()[0].conditionSettingCode());
                     self.selectedConditionName(self.listCondition()[0].conditionSettingName());

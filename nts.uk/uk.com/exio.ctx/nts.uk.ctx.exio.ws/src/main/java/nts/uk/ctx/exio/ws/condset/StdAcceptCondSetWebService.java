@@ -1,7 +1,10 @@
 package nts.uk.ctx.exio.ws.condset;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -32,5 +35,11 @@ public class StdAcceptCondSetWebService {
 		} 
 		return list;
 		//return this.stdAcceptCondSetFind.getStdAcceptCondSetBySystemType(1);
+	}
+	
+	@POST
+	@Path("getTotalRecord/{fileId}")
+	public int getTotalRecord(@PathParam("fileId") String fileId) throws IOException {		
+		return stdAcceptCondSetFind.getTotalRecordCsv(fileId);
 	}
 }
