@@ -661,7 +661,7 @@ module nts.uk.at.view.kmf022 {
                     new ItemModel(6, '5'),
                     new ItemModel(7, '6'),
                 ]);
-                self.selectedCodeA5_16 = ko.observable(0);
+                self.selectedCodeA5_16 = ko.observable(1);
                 self.selectedIdA5_18 = ko.observable(0);
                 self.selectedIdA5_19 = ko.observable(0);
                 self.selectedIdA5_20 = ko.observable(0);
