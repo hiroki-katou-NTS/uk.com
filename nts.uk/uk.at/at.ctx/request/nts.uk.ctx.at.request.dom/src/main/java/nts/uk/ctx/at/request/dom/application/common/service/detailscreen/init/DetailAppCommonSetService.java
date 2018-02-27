@@ -6,6 +6,6 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init;
  */
 public interface DetailAppCommonSetService {
 	
-	public void getDetailAppCommonSet(String companyID, String applicationID);
+	public ApplicationMetaOutput getDetailAppCommonSet(String companyID, String applicationID);
 	
 }

@@ -7,7 +7,6 @@ module cmm045.shr {
             constructor(code: number, name: string){
                 this.code = code;
                 this.name = name;
-                
             } 
         }
         //parameter filter
@@ -58,30 +57,6 @@ module cmm045.shr {
                     this.empRefineCondition = empRefineCondition;
             }
         }
-        export class GridItem {
-            id: number;
-            flag: boolean;
-            ruleCode: string;
-            combo: string;
-            text1: string;
-            constructor(index: number) {
-                this.id = index;
-                this.flag = index % 2 == 0;
-                this.ruleCode = String(index % 3 + 1);
-                this.combo = String(index % 3 + 1);
-                this.text1 = "TEXT";
-            }
-        }
-        
-        export class ItemModel {
-            code: string;
-            name: string;
-    
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
-            }
-        }
         //data fill grid list mode application
         export class DataModeApp{
             appId: string;
@@ -96,13 +71,16 @@ module cmm045.shr {
             inputDate: string;
             appStatus: string;
             displayAppStatus: string;
+            checkAtr: boolean;
+            version: number;
             constructor(appId: string,appType: number,  details: string, applicant: string,
                 appName: string, appAtr: string, appDate: string,
                 appContent: string, inputDate: string, appStatus: string,
-                displayAppStatus: string){
+                displayAppStatus: string, checkAtr: boolean, version: number){
                 this.appId = appId;
                 this.appType = appType;
-                this.check = appType == 0 ? true : false;
+//                this.check = appType == 0 ? true : false;
+                this.check = false;
                 this.details = details;
                 this.applicant = applicant;
                 this.appName = appName;
@@ -112,6 +90,8 @@ module cmm045.shr {
                 this.inputDate = inputDate;
                 this.appStatus = appStatus;
                 this.displayAppStatus = displayAppStatus;
+                this.checkAtr = checkAtr;
+                this.version = version;
             }
         }  
         
@@ -121,13 +101,17 @@ module cmm045.shr {
             dispName: string;
             empName: string;
             workplaceName: string;
-            constructor(appID: string, appType: number, dispName: string, empName: string, workplaceName: string)
+            statusFrameAtr: boolean;
+            phaseStatus: string;
+            constructor(appID: string, appType: number, dispName: string, empName: string, workplaceName: string, statusFrameAtr: boolean, phaseStatus: string)
             {
                 this.appID = appID;
                 this.appType = appType;
                 this.dispName = dispName;
                 this.empName = empName;
                 this.workplaceName = workplaceName;
+                this.statusFrameAtr = statusFrameAtr;
+                this.phaseStatus = phaseStatus;
             }
         }
         export class ApplicationDto_New{
@@ -167,11 +151,12 @@ module cmm045.shr {
             reflectPerEnforce: number;
             startDate: string;
             endDate: string;
+            version: number;
             constructor(applicationID: string,prePostAtr: number, inputDate: string, enteredPersonSID: string,
                 reversionReason: string, applicationDate: string, applicationReason: string, applicationType: number,
                 applicantSID: string, reflectPlanScheReason: number, reflectPlanTime: string, reflectPlanState: number,
                 reflectPlanEnforce: number, reflectPerScheReason: number, reflectPerTime: string, reflectPerState: number,
-                reflectPerEnforce: number, startDate: string, endDate: string)
+                reflectPerEnforce: number, startDate: string, endDate: string, version: number)
             {
                 this.applicationID = applicationID;
                 this.prePostAtr = prePostAtr; 
@@ -192,6 +177,7 @@ module cmm045.shr {
                 this.reflectPerEnforce = reflectPerEnforce;
                 this.startDate = startDate;
                 this.endDate = endDate;
+                this.version = version;
             }
     }
         export class AppOverTimeInfoFull{
@@ -325,12 +311,12 @@ module cmm045.shr {
                 approvalAgentNumber: number, cancelNumber: number,
                 remandNumner: number,denialNumber: number)
             {
-                this.unApprovalNumber = getText('CMM045_12') + ' ' + unApprovalNumber + getText('CMM045_18');
-                this.approvalNumber = getText('CMM045_13') + ' ' + approvalNumber + getText('CMM045_18');
-                this.approvalAgentNumber = getText('CMM045_14') + ' ' + approvalAgentNumber + getText('CMM045_18');
-                this.cancelNumber = getText('CMM045_15') + ' ' + cancelNumber + getText('CMM045_18');
-                this.remandNumner = getText('CMM045_16') + ' ' + remandNumner + getText('CMM045_18');
-                this.denialNumber = getText('CMM045_17') + ' ' + denialNumber + getText('CMM045_18');        
+                this.unApprovalNumber = getText('CMM045_12') + ' ' + getText('CMM045_18', [unApprovalNumber]); 
+                this.approvalNumber = getText('CMM045_13') + ' ' + getText('CMM045_18', [approvalNumber]);
+                this.approvalAgentNumber = getText('CMM045_14') + ' ' + getText('CMM045_18', [approvalAgentNumber]);
+                this.cancelNumber = getText('CMM045_15') + ' ' + getText('CMM045_18', [cancelNumber]);
+                this.remandNumner = getText('CMM045_16') + ' ' + getText('CMM045_18', [remandNumner]);
+                this.denialNumber = getText('CMM045_17') + ' ' + getText('CMM045_18', [denialNumber]);        
             }
         }
         export class ChoseApplicationList{

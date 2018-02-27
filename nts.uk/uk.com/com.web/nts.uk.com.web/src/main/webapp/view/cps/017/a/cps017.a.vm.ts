@@ -67,10 +67,11 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     if (selectedObject != undefined) {
                         perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
                         perInfoSelectionItem.selectionCodeCharacter(selectedObject.formatSelection.selectionCodeCharacter);
-
+                        perInfoSelectionItem.selectionItemClassification(selectedObject.selectionItemClassification);
                         self.constraints.selectionCode = selectedObject.formatSelection.selectionCode;
                         self.constraints.selectionName = selectedObject.formatSelection.selectionName;
                         self.constraints.selectionExternalCode = selectedObject.formatSelection.selectionExternalCode;
+
                         //self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
                     }
                     // システム管理者　かつ　選択している選択項目の「選択項目区分」＝社員のとき
@@ -198,13 +199,14 @@ module nts.uk.com.view.cps017.a.viewmodel {
             selection.selectionID.subscribe(x => {
                 if (x) {
                     nts.uk.ui.errors.clearAll();
-                    let selectLists = _.find(self.listSelection(), (item) => {
+                    let selectLists: ISelection = _.find(self.listSelection(), (item) => {
                         return item.selectionID == x;
                     });
                     selection.selectionCD(selectLists.selectionCD);
                     selection.selectionName(selectLists.selectionName);
                     selection.externalCD(selectLists.externalCD);
                     selection.memoSelection(selectLists.memoSelection);
+                    selection.codeType(selectLists.codeType);
                     $("#name").focus();
                 } else {
                     self.registerData();
@@ -283,12 +285,14 @@ module nts.uk.com.view.cps017.a.viewmodel {
             selection.selectionCD('');
             selection.selectionName('');
             selection.memoSelection('');
+            selection.codeType(self.perInfoSelectionItem().selectionCodeCharacter());
             self.checkCreateaaa(true);
             if (self.enableSelName() == true) {
                 self.selectionCd(true);
             } else {
                 self.selectionCd(false);
             }
+
             self.revDisSel02(false);
             self.revDisSel03(false);
             self.revDisSel04(false);
@@ -599,6 +603,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 selCD = self.selection().selectionCD(),
                 selName = self.selection().selectionName(),
                 exCd = self.selection().externalCD(),
+
+                //fibux: 23.2.2018
+                selIteClass = self.perInfoSelectionItem().selectionItemClassification(),
+
                 allValid = true;
             if (!self.constraints) return false;
             if (selCD.length > self.constraints.selectionCode) {
@@ -623,6 +631,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
         selectionItemName: string;
         formatSelection: any;
         reflectedToAllCompanies: number;
+
+        //fixbug: 23.2.2018
+        selectionItemClassification: number;
     }
 
     class SelectionItem {
@@ -630,11 +641,15 @@ module nts.uk.com.view.cps017.a.viewmodel {
         selectionItemName: KnockoutObservable<string> = ko.observable('');
         selectionCodeCharacter: KnockoutObservable<number> = ko.observable(1);
         reflectedToAllCompanies: KnockoutObservable<number> = ko.observable();
+
+        selectionItemClassification: KnockoutObservable<number> = ko.observable();
         constructor(param: ISelectionItem) {
             let self = this;
             self.selectionItemId(param.selectionItemId || '');
             self.selectionItemName(param.selectionItemName || '');
             self.reflectedToAllCompanies(param.reflectedToAllCompanies || '');
+
+            self.selectionItemClassification(param.selectionItemClassification || '');
         }
     }
 
@@ -674,6 +689,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
         externalCD: string;
         memoSelection: string;
         initSelection: number;
+        codeType: number;
     }
     class Selection {
         selectionID: KnockoutObservable<string> = ko.observable('');
@@ -683,6 +699,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
         externalCD: KnockoutObservable<string> = ko.observable('');
         memoSelection: KnockoutObservable<string> = ko.observable('');
         initSelection: KnockoutObservable<number> = ko.observable();
+        codeType: KnockoutObservable<number> = ko.observable(0);
+        codeTypeConstraint: KnockoutObservable<string> = ko.observable('');
         constructor(param: ISelection) {
             let self = this;
             self.selectionID(param.selectionID || '');
@@ -692,6 +710,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             self.externalCD(param.externalCD || '');
             self.memoSelection(param.memoSelection || '');
             self.initSelection(param.initSelection || '');
+            self.codeType(param.codeType || 0);
         }
     }
 
