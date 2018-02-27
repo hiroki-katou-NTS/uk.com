@@ -430,7 +430,11 @@ module nts.uk.com.view.ccg.share.ccg {
 
                         nts.uk.ui.block.clear(); // clear block UI
 
-                        _.defer(() => self.applyDataSearch().always(() => dfd.resolve()));
+                        _.defer(() => self.applyDataSearch().always(() => {
+                            // Set acquired base date to status period end date
+                            self.statusPeriodEnd(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT));
+                            dfd.resolve(); 
+                        }));
                     });
                 });
 
