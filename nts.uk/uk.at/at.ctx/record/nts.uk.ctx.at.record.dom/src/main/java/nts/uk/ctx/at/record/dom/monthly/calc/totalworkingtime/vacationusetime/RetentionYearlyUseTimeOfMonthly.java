@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Getter;
@@ -23,10 +22,7 @@ public class RetentionYearlyUseTimeOfMonthly {
 	private AttendanceTimeMonth useTime;
 	/** 時系列ワーク */
 	@Getter
-	private List<RetentionYearlyUseTimeOfTimeSeries> timeSeriesWorks;
-
-	/** 集計済 */
-	private boolean isAggregated;
+	private Map<GeneralDate, RetentionYearlyUseTimeOfTimeSeries> timeSeriesWorks;
 
 	/**
 	 * コンストラクタ
@@ -34,8 +30,7 @@ public class RetentionYearlyUseTimeOfMonthly {
 	public RetentionYearlyUseTimeOfMonthly(){
 		
 		this.useTime = new AttendanceTimeMonth(0);
-		this.timeSeriesWorks = new ArrayList<>();
-		this.isAggregated = false;
+		this.timeSeriesWorks = new HashMap<>();
 	}
 
 	/**
@@ -60,9 +55,10 @@ public class RetentionYearlyUseTimeOfMonthly {
 			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
 
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailys.values()) {
+			val ymd = attendanceTimeOfDaily.getYmd();
 			
 			// 期間外はスキップする
-			if (!datePeriod.contains(attendanceTimeOfDaily.getYmd())) continue;
+			if (!datePeriod.contains(ymd)) continue;
 			
 			// 「日別実績の積立年休」を取得する
 			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -73,7 +69,8 @@ public class RetentionYearlyUseTimeOfMonthly {
 			
 			// 取得した使用時間を「月別実績の積立年休使用時間」に入れる
 			//*****（未）　「日別実績の積立年休」クラスをnewして、値を入れて、それをset？
-			this.timeSeriesWorks.add(RetentionYearlyUseTimeOfTimeSeries.of(attendanceTimeOfDaily.getYmd()));
+			val retentionYearlyUseTimeOfTimeSeries = RetentionYearlyUseTimeOfTimeSeries.of(ymd);
+			this.timeSeriesWorks.putIfAbsent(ymd, retentionYearlyUseTimeOfTimeSeries);
 		}
 	}
 	
@@ -83,15 +80,12 @@ public class RetentionYearlyUseTimeOfMonthly {
 	 */
 	public void aggregate(DatePeriod datePeriod){
 		
-		if (this.isAggregated) return;
-		
 		this.useTime = new AttendanceTimeMonth(0);
 		
-		for (val timeSeriesWork : this.timeSeriesWorks){
+		for (val timeSeriesWork : this.timeSeriesWorks.values()){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 			//RetentionYearlyOfDaily retentionYearly = timeSeriesWork.getRetentionYearly();
 			//this.useTime.addMinutes(retentionYearly.getUseTime().valueAsMinutes());
 		}
-		this.isAggregated = true;
 	}
 }

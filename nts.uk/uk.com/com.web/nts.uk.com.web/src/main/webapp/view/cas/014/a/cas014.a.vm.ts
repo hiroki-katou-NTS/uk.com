@@ -17,7 +17,7 @@ module nts.uk.com.view.cas014.a {
             roleSetJobTitle: KnockoutObservable<RoleSetJobTitle>;
 
             viewmodelB = new cas014.b.viewmodel.ScreenModel();
-
+            firstLoadTab2: KnockoutObservable<boolean> = ko.observable(true);
             constructor() {
                 let self = this;
                 self.date = ko.observable(new Date().toISOString());
@@ -66,7 +66,7 @@ module nts.uk.com.view.cas014.a {
                     } else {
                         nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                     }
-                    self.viewmodelB.startPage();
+                    
                     $("#A4").focus();
                     dfd.resolve();
                 }).fail(function(error) {
@@ -110,6 +110,15 @@ module nts.uk.com.view.cas014.a {
                 }).always(() => {
                     block.clear();
                 });
+            }
+            
+            loadTab2() {
+                let self = this;
+                error.clearAll();
+                if (self.firstLoadTab2()) {
+                    self.viewmodelB.startPage();
+                    self.firstLoadTab2(false);
+                }
             }
 
         }

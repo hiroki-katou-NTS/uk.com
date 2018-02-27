@@ -3,7 +3,11 @@ package nts.uk.ctx.at.schedule.app.command.schedule.setting.modifydeadline;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.ShiftPermisson;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Data
 @AllArgsConstructor
 public class ShiftPermissonCommand {
@@ -11,10 +15,10 @@ public class ShiftPermissonCommand {
 	/** ロールID*/	
 	private String roleId;
 	
-	/** 利用できる*/
+	/** シフト別権限制御: 利用区分*/
 	private Integer availableShift; 
 	
-	/** 機能NO*/
+	/** シフト別権限制御: 修正期限*/
 	private Integer functionNoShift;
 	
 	public  ShiftPermisson toDomain(String companyId){

@@ -42,12 +42,12 @@ module cps001.e.vm {
                 $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
                     if (!self.isInit) {
                         self.isChange(true);
+                        unblock();
                         return;
                     }
                     self.isInit = false;
+                    unblock();
                 });
-                unblock();
-
             }).fail((mes) => {
                 unblock();
             });

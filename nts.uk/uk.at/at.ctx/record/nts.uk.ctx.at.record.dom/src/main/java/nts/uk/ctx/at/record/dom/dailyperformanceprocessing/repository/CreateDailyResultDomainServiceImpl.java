@@ -25,6 +25,9 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 
 	@Inject
 	private CreateDailyResultEmployeeDomainService createDailyResultEmployeeDomainService;
+	
+	@Inject
+	private TargetPersonRepository targetPersonRepository;
 
 	@Override
 	public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
@@ -56,15 +59,19 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 				if (status == ProcessState.SUCCESS) {
 					dailyCreateCount++;
 					// ログ情報（実行内容の完了状態）を更新する
-					updateExecutionStatusOfDailyCreation(executionAttr.value, empCalAndSumExecLogID);
+					updateExecutionStatusOfDailyCreation(employee, executionAttr.value, empCalAndSumExecLogID);
 					status = ProcessState.SUCCESS;
 					dataSetter.updateData("dailyCreateCount", dailyCreateCount);
 				} else if (status == ProcessState.INTERRUPTION) {
 					status = ProcessState.INTERRUPTION;
 					break;
 				}
+			};
+			if (status == ProcessState.SUCCESS) {
+				if (executionAttr.value == 0) {
+					empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, 0, ExecutionStatus.DONE.value);
+				}
 			}
-			;
 		} else {
 			status = ProcessState.INTERRUPTION;
 		}
@@ -72,10 +79,10 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 		return status;
 	}
 
-	private void updateExecutionStatusOfDailyCreation(int executionAttr, String empCalAndSumExecLogID) {
+	private void updateExecutionStatusOfDailyCreation(String employeeID, int executionAttr, String empCalAndSumExecLogID) {
 
 		if (executionAttr == 0) {
-			empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID,0, ExecutionStatus.DONE.value);
+			targetPersonRepository.update(employeeID, empCalAndSumExecLogID, ExecutionStatus.DONE.value);
 		}
 
 	}

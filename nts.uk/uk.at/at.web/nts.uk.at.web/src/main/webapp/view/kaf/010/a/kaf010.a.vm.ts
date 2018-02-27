@@ -407,6 +407,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                         self.registerData(overtime);
                     }
                 } else if (data.errorCode == 1){
+                    self.calculateFlag(1);
                     if(data.frameNo == -1){
                         let frameName = "";
                         //Setting color for item error
@@ -486,15 +487,17 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 let endTime = self.restTime()[i].endTime();
                 let attendanceId = self.restTime()[i].attendanceID();
                 let frameNo = self.restTime()[i].frameNo();
-                if(!self.validateTime(startTime, endTime, 'input#restTimeStart_'+attendanceId+'_'+frameNo)){
-                    return false;
-                };
+                if(!nts.uk.util.isNullOrEmpty(startTime) && startTime != ""){
+                    if(!self.validateTime(startTime, endTime, 'input#restTimeStart_'+attendanceId+'_'+frameNo)){
+                        return false;
+                    };
+                }
             }
             return true;            
         }
         //Validate input time
         validateTime(startTime: number, endTime: number, elementId: string): boolean{            
-            if(startTime > endTime){
+            if(startTime >= endTime){
                 dialog.alertError({messageId:"Msg_307"})
                  $(elementId).focus();
                 return false;
@@ -610,21 +613,25 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     self.workTypeName(childData.selectedWorkTypeName);
                     self.siftCD(childData.selectedWorkTimeCode);
                     self.siftName(childData.selectedWorkTimeName);
-                    service.getRecordWork(
-                        {
-                            employeeID: self.employeeID(), 
-                            appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
-                            siftCD: self.siftCD(),
-                            prePostAtr: self.prePostSelected(),
-                            overtimeHours: ko.toJS(self.overtimeHours)
-                        }
-                    ).done(data => {
-                        self.timeStart1(data.startTime1 == -1 ? null : data.startTime1);
-                        self.timeEnd1(data.endTime1 == -1 ? null : data.endTime1);
-                        self.timeStart2(data.startTime2 == -1 ? null : data.startTime2);
-                        self.timeEnd2(data.endTime2 == -1 ? null : data.endTime2);
-                        self.convertAppOvertimeReferDto(data);
-                    });
+                    self.timeStart1(childData.firstStartTime);
+                    self.timeEnd1(childData.firstEndTime);
+                    self.timeStart2(childData.secondStartTime);
+                    self.timeEnd2(childData.secondEndTime);
+//                    service.getRecordWork(
+//                        {
+//                            employeeID: self.employeeID(), 
+//                            appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
+//                            siftCD: self.siftCD(),
+//                            prePostAtr: self.prePostSelected(),
+//                            overtimeHours: ko.toJS(self.breakTimes())
+//                        }
+//                    ).done(data => {
+//                        self.timeStart1(data.startTime1 == null ? null : data.startTime1);
+//                        self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
+//                        self.timeStart2(data.startTime2 == null ? null : data.startTime2);
+//                        self.timeEnd2(data.endTime2 == null ? null : data.endTime2);
+//                        self.convertAppOvertimeReferDto(data);
+//                    });
                 }
             })
         }
@@ -640,10 +647,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             var self = this;
             let overtimeDto = data;
             self.displayCaculationTime(overtimeDto.displayCaculationTime);
+            self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
             self.restTimeDisFlg(self.restTimeDisFlg());
-            if (overtimeDto.siftType != null) {
-                self.siftCD(overtimeDto.siftType.siftCode);
-                self.siftName(overtimeDto.siftType.siftName);
+            if (overtimeDto.workTime != null) {
+                self.siftCD(overtimeDto.workTime.siftCode);
+                self.siftName(overtimeDto.workTime.siftName);
             }
             if (overtimeDto.workType != null) {
                 self.workTypeCd(overtimeDto.workType.workTypeCode);
@@ -655,8 +663,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             self.timeEnd2(data.workClockEnd2);
            
             
-            self.instructInforFlag(overtimeDto.displayOvertimeInstructInforFlg);
-            self.instructInfor(overtimeDto.overtimeInstructInformation);
+            self.instructInforFlag(data.displayHolidayInstructInforFlg);
+            self.instructInfor(data.holidayInstructInformation);
             // preAppOvertime
             //self.convertpreAppOvertimeDto(overtimeDto);
             self.referencePanelFlg(data.referencePanelFlg);

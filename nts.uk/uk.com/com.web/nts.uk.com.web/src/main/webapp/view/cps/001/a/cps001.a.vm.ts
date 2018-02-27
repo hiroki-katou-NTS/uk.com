@@ -172,6 +172,11 @@ module cps001.a.vm {
                         default:
                         case TABS.LAYOUT: // layout mode
                             service.getAllLayout(employeeId).done((data: Array<any>) => {
+                                // prevent if slow networks
+                                if (self.tab() != tab) {
+                                    return;
+                                }
+                                
                                 if (data && data.length) {
                                     let sources = data.map(x => {
                                         return {
@@ -192,6 +197,11 @@ module cps001.a.vm {
                             break;
                         case TABS.CATEGORY: // category mode
                             service.getCats(employeeId).done((data: Array<ICategory>) => {
+                                // prevent if slow networks
+                                if (self.tab() != tab) {
+                                    return;
+                                }
+                                
                                 if (data && data.length) {
                                     let sources = data.map(x => {
                                         return {
@@ -267,11 +277,18 @@ module cps001.a.vm {
                 params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined };
 
             if (reload) {
-                let single = self.employees().length == 1,
-                    old_index = _.indexOf(self.employees().map(x => x.employeeId), employee.employeeId());
+                let emps = self.employees(),
+                    zero = emps.length == 0,
+                    single = emps.length == 1,
+                    old_index = _.indexOf(emps.map(x => x.employeeId), employee.employeeId());
 
                 self.employees.removeAll();
-                $('.btn-quick-search[tabindex=3]').click();
+                if (!zero) {
+                    $('.btn-quick-search[tabindex=3]').click();
+                } else {
+                    $('.btn-quick-search[tabindex=4]').click();
+                }
+
                 $.when((() => {
                     let def = $.Deferred(),
                         int = setInterval(() => {

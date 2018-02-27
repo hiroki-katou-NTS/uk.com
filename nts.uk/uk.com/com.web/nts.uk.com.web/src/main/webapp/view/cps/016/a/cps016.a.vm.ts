@@ -139,7 +139,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 _selectionItemName = _.find(listItems, x => x.selectionItemName == currentItem.selectionItemName()),
                 formatSelection = currentItem.formatSelection(),
                 command = ko.toJS(currentItem);
-
+            //command.selectionItemClassification = command.formatSelection.selectionCodeCharacter == 0 ? true : false;
             //「個人情報の選択項目」を登録する
             service.saveDataSelectionItem(command).done(function(selectId) {
                 self.listItems.removeAll();

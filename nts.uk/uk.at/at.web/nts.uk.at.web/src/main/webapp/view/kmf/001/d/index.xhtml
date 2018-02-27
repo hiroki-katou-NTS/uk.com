@@ -33,7 +33,8 @@
 			<div id="whole-company-tab" role="tabpanel" data-bind="if: !isShowEmployment()">
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Company')}</span>
-					<button  data-bind="click: backToHistorySelection" tabindex="2">#{i18n.getText('KMF001_27')}</button>
+<!-- 					<button  data-bind="click: backToHistorySelection" tabindex="2">#{i18n.getText('KMF001_27')}</button> -->
+					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }"  tabindex="2">#{i18n.getText('KMF001_27')}</a>
 					<button class="proceed" data-bind="click: registerWholeCompany, enable: isManaged" tabindex="3">#{i18n.getText('KMF001_28')}</button>
 					<!-- <div class="register-annual-holiday-table"><a href="#register-annual-holiday-table" tabindex="4">#{i18n.getText('KMF001_29')}</a></div> -->
 				</div>
@@ -125,7 +126,8 @@
 			<div id="by-employment-tab" role="tabpanel" data-bind="if: isShowEmployment()">
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Employment')}</span>
-					<button data-bind="click: backToHistorySelection">#{i18n.getText('KMF001_27')}</button>
+<!-- 					<button data-bind="click: backToHistorySelection">#{i18n.getText('KMF001_27')}</button> -->
+					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }">#{i18n.getText('KMF001_27')}</a>
 					<button class="proceed" data-bind="click: registerByEmployment, enable: enableRegister">#{i18n.getText('KMF001_28')}</button>
 					<!-- <div class="register-annual-holiday-table"><a href="#register-annual-holiday-table">#{i18n.getText('KMF001_29')}</a></div> -->
 					

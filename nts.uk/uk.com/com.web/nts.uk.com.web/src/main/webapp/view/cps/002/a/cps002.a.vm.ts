@@ -137,7 +137,7 @@ module cps002.a.vm {
                                     return item.categoryCd == currentCtgCode;
                                 });
                                 if (currentCtg) {
-                                    self.categorySelectedCode(currentCtgCode);
+                                    self.categorySelectedCode.valueHasMutated()
                                 } else {
                                     self.categorySelectedCode(result[0].categoryCd);
                                 }
@@ -347,7 +347,8 @@ module cps002.a.vm {
                 command = {
                     EmployeeCode: employee.employeeCode(),
                     cardNo: employee.cardNo(),
-                    LoginId: employee.loginId()
+                    LoginId: employee.loginId(),
+                    employeeName: employee.employeeName()
                 };
             if (!self.isError()) {
                 service.validateEmpInfo(command).done(() => {
@@ -366,6 +367,9 @@ module cps002.a.vm {
                     switch (messageId) {
                         case "Msg_345":
                             $('#employeeCode').ntsError('set', { messageId: messageId });
+                            break;
+                        case "Msg_924":
+                            $('#employeeName').ntsError('set', { messageId: messageId });
                             break;
                         case "Msg_757":
                             $('#loginId').ntsError('set', { messageId: messageId });
@@ -526,6 +530,8 @@ module cps002.a.vm {
                     } else {
                         if (!_.find(result, ctg => { return self.initSettingSelectedCode() == ctg.settingCode; })) {
                             self.initSettingSelectedCode(result[0].settingCode);
+                        } else {
+                            self.initSettingSelectedCode.valueHasMutated();
                         }
 
                     }

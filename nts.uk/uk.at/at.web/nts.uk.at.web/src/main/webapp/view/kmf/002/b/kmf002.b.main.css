@@ -1,13 +1,13 @@
-#scrB table {
+#scrB #tableCommonMonth table {
 	border-collapse: collapse;
 }
 
-#scrB table th, #scrB table td{
+#scrB #tableCommonMonth table th, #scrB #tableCommonMonth table td{
 	border: 1px solid  black;
 	padding: 5px;
 }
 
-#scrB table td > span > input{
+#scrB #tableCommonMonth table td > span > input{
 	/* background-color:transparent;
     border: 0px solid; */
     text-align: center;
@@ -27,4 +27,8 @@
 #scrB #includeTableMonthlyDay > div:nth-child(2) {
 	padding-top: 20px;
 	padding-bottom: 20px;
+}
+
+#scrB #nts-component-tree {
+	padding: 20px !important;
 }

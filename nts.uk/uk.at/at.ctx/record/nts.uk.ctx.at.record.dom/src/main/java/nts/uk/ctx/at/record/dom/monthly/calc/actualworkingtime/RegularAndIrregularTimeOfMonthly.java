@@ -10,11 +10,13 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
+import nts.uk.ctx.at.record.dom.monthly.calc.AggregateMonthlyValue;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.AggrSettingMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalAggrSetOfIrg;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.AddedVacationUseTime;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.IrregularPeriodCarryforwardsTimeOfCurrent;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.TargetPremiumTimeMonthOfIrregular;
@@ -99,11 +101,14 @@ public class RegularAndIrregularTimeOfMonthly {
 	 * @param legalTransferOrderSet 法定内振替順設定
 	 * @param holidayAdditionOpt 休暇加算時間設定
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
+	 * @param workInformationOfDailyMap 日別実績の勤務情報リスト
 	 * @param statutoryWorkingTimeWeek 週間法定労働時間
+	 * @param aggregateTotalWorkingTime 集計総労働時間
+	 * @param excessOutsideWorkMng 時間外超過管理
 	 * @param repositories 月次集計が必要とするリポジトリ
-	 * @return 集計総労働時間
+	 * @return 戻り値：月別実績を集計する
 	 */
-	public AggregateTotalWorkingTime aggregateMonthly(
+	public AggregateMonthlyValue aggregateMonthly(
 			String companyId,
 			String employeeId,
 			YearMonth yearMonth,
@@ -114,11 +119,11 @@ public class RegularAndIrregularTimeOfMonthly {
 			LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet,
 			Optional<HolidayAddtion> holidayAdditionOpt,
 			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
+			Map<GeneralDate, WorkInformation> workInformationOfDailyMap,
 			AttendanceTimeMonth statutoryWorkingTimeWeek,
+			AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			ExcessOutsideWorkMng excessOutsideWorkMng,
 			RepositoriesRequiredByMonthlyAggr repositories){
-		
-		// 集計総労働時間　作成　（返却用）
-		val returnClass = new AggregateTotalWorkingTime();
 		
 		// 週開始を取得する
 		val weekStartOpt = repositories.getGetWeekStart().get(workingSystem);
@@ -153,13 +158,11 @@ public class RegularAndIrregularTimeOfMonthly {
 				}
 				
 				// 処理日の勤務情報を取得する
-				WorkInformation workInfo = new WorkInformation("non", "non");
-				val workInformationOfDaily = repositories.getWorkInformationOfDaily().find(employeeId, procDate);
-				if (workInformationOfDaily.isPresent()) {
-					workInfo = workInformationOfDaily.get().getRecordWorkInformation();
+				if (workInformationOfDailyMap.containsKey(procDate)) {
+					val workInfo = workInformationOfDailyMap.get(procDate);
 					
 					// 日別実績を集計する　（通常・変形労働時間勤務用）
-					returnClass.aggregateDailyForRegAndIrreg(attendanceTimeOfDaily,
+					aggregateTotalWorkingTime.aggregateDailyForRegAndIrreg(attendanceTimeOfDaily,
 							companyId, workplaceId, employmentCd, workingSystem, aggregateAtr,
 							workInfo, aggrSettingMonthly, legalTransferOrderSet, repositories);
 				}
@@ -170,21 +173,22 @@ public class RegularAndIrregularTimeOfMonthly {
 			
 				// 週別実績を集計する
 				this.aggregateOfWeekly(companyId, employeeId, datePeriod, workingSystem, aggregateAtr, procDate,
-						aggrSettingMonthly, holidayAdditionOpt, returnClass, statutoryWorkingTimeWeek,
+						aggrSettingMonthly, holidayAdditionOpt, aggregateTotalWorkingTime, statutoryWorkingTimeWeek,
 						weekStart);
 
 				// 集計区分を確認する
-				if (aggregateAtr.isExcessOutsideWork()){
+				if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
 				
 					// 週割増時間を逆時系列で割り当てる
-					//*****（２次）
+					excessOutsideWorkMng.assignWeeklyPremiumTimeByReverseTimeSeries(
+							this.weekPermiumProcPeriod, this.weekPremiumTime, aggregateTotalWorkingTime, repositories);
 				}
 			}
 			
 			procDate = procDate.addDays(1);
 		}
 		
-		return returnClass;
+		return AggregateMonthlyValue.of(aggregateTotalWorkingTime, excessOutsideWorkMng);
 	}
 	
 	/**
@@ -282,10 +286,10 @@ public class RegularAndIrregularTimeOfMonthly {
 			
 			// 「週割増・月割増を求める」を取得する
 			boolean isAskPremium = false;
-			if (aggregateAtr.isMonthly()){
+			if (aggregateAtr == MonthlyAggregateAtr.MONTHLY){
 				isAskPremium = regularWorkSet.getAggregateTimeSet().isAskPremium();
 			}
-			if (aggregateAtr.isExcessOutsideWork()){
+			if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
 				isAskPremium = regularWorkSet.getExcessOutsideTimeSet().isAskPremium();
 			}
 			if (isAskPremium){
@@ -593,7 +597,7 @@ public class RegularAndIrregularTimeOfMonthly {
 		if (isSettlementMonth){
 			
 			// 精算月の時、月割増合計時間に集計結果を入れる
-			this.monthlyTotalPremiumTime = new AttendanceTimeMonth(totalIrregularPeriodCarryforwardsTime.v());
+			this.monthlyTotalPremiumTime = totalIrregularPeriodCarryforwardsTime;
 			
 			// 変形期間繰越時間を 0 にする
 			this.irregularWorkingTime.setIrregularPeriodCarryforwardTime(new AttendanceTimeMonth(0));
@@ -601,8 +605,7 @@ public class RegularAndIrregularTimeOfMonthly {
 		else{
 			
 			// 精算月でない時、複数月変形途中時間・変形期間繰越時間に集計結果を入れる
-			this.irregularWorkingTime.setMultiMonthIrregularMiddleTime(
-					new AttendanceTimeMonth(totalIrregularPeriodCarryforwardsTime.v()));
+			this.irregularWorkingTime.setMultiMonthIrregularMiddleTime(totalIrregularPeriodCarryforwardsTime);
 			this.irregularWorkingTime.setIrregularPeriodCarryforwardTime(
 					new AttendanceTimeMonth(irregularPeriodCarryforwardsTime.getTime().v()));
 		}

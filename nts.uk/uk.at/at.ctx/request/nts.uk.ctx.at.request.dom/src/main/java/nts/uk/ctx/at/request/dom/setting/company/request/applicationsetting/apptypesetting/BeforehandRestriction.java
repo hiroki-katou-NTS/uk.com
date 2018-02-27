@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.app
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.time.AttendanceClock;

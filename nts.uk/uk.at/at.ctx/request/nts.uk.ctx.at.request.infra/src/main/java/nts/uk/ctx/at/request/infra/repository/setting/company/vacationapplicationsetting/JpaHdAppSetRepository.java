@@ -44,30 +44,30 @@ public class JpaHdAppSetRepository extends JpaRepository implements HdAppSetRepo
 	private static KrqstHdAppSet toEntity(HdAppSet domain){
 		val entity = new KrqstHdAppSet();
 		entity.krqstHdAppSetPK = new KrqstHdAppSetPK(domain.getCompanyId());
-		entity.absenteeism = domain.getAbsenteeism().v();
+		entity.absenteeism = domain.getAbsenteeism() == null ? null : domain.getAbsenteeism().v();
 		entity.actualDisp = domain.getActualDisp().value;
 		entity.appDateContra = domain.getAppDateContra().value;
 		entity.changeWrkHour = domain.getChangeWrkHour().value;
 		entity.ckuperLimit = domain.getCkuperLimit().value;
 		entity.concheckDateRelease = domain.getConcheckDateRelease().value;
 		entity.concheckOutLegal = domain.getConcheckOutLegal().value;
-		entity.furikyuName = domain.getFurikyuName().v();
-		entity.hdName = domain.getHdName().v();
-		entity.obstacleName = domain.getObstacleName().v();
+		entity.furikyuName = domain.getFurikyuName() == null ? null : domain.getFurikyuName().v();
+		entity.hdName = domain.getHdName() == null ? null : domain.getHdName().v();
+		entity.obstacleName = domain.getObstacleName() == null ? null : domain.getObstacleName().v();
 		entity.pridigCheck = domain.getPridigCheck().value;
 		entity.regisInsuff = domain.getRegisInsuff().value;
 		entity.regisLackPubHd = domain.getRegisLackPubHd().value;
 		entity.regisNumYear = domain.getRegisNumYear().value;
 		entity.regisShortLostHd = domain.getRegisShortLostHd().value;
 		entity.regisShortReser = domain.getRegisShortReser().value;
-		entity.specialVaca = domain.getSpecialVaca().v();
-		entity.timeDigest = domain.getTimeDigest().v();
+		entity.specialVaca = domain.getSpecialVaca() == null ? null : domain.getSpecialVaca().v();
+		entity.timeDigest = domain.getTimeDigest() == null ? null : domain.getTimeDigest().v();
 		entity.use60h = domain.getUse60h().value;
 		entity.useGener = domain.getUseGener().value;
 		entity.useYear = domain.getUseYear().value;
 		entity.wrkHours = domain.getWrkHours().value;
-		entity.yearHdName = domain.getYearHdName().v();
-		entity.yearResig = domain.getYearResig().v();
+		entity.yearHdName = domain.getYearHdName() == null ? null : domain.getYearHdName().v();
+		entity.yearResig = domain.getYearResig() == null ? null : domain.getYearResig().v();
 		return entity;
 	}
 	

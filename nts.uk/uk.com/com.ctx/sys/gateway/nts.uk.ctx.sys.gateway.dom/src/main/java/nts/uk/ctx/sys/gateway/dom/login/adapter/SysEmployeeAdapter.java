@@ -6,6 +6,7 @@ package nts.uk.ctx.sys.gateway.dom.login.adapter;
 
 import java.util.Optional;
 
+import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 
 /**
@@ -30,4 +31,13 @@ public interface SysEmployeeAdapter {
 	 * @return the by pid
 	 */
 	Optional<EmployeeImport> getByPid(String companyId, String pid);
+	
+	/**
+	 * Gets the sdata mng info.
+	 *
+	 * @param cid the cid
+	 * @param pid the pid
+	 * @return the sdata mng info
+	 */
+	Optional<EmployeeDataMngInfoImport> getSdataMngInfo(String sid);
 }

@@ -20,6 +20,7 @@ import nts.arc.time.GeneralDateTime;
 public class ReflectionInformation_New extends DomainObject {
 	
 	// 予定反映状態
+	@Setter
 	private ReflectedState_New stateReflection;
 	
 	// 実績反映状態

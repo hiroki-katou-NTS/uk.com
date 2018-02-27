@@ -225,7 +225,10 @@ module nts.uk.ui.koExtentions {
                 container.igCombo("option", "dataSource", options);
                 container.igCombo("dataBind");
             }
-            if (selectedValue !== undefined && selectedValue !== null) {
+            
+            if (notSelected.get(container) || util.isNullOrUndefined(selectedValue)) {
+                container.igCombo("value", "");
+            } else {
                 container.igCombo("value", selectedValue);
             }
             
@@ -257,7 +260,7 @@ module nts.uk.ui.koExtentions {
             }
             
             if (notSelected.get(container)) {
-                container.find("input").val("");
+                //container.find("input").val("");
             }
         }
     }

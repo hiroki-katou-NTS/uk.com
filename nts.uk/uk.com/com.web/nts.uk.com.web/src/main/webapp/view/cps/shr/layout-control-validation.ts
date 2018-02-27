@@ -274,12 +274,15 @@ module nts.layout {
                                 }
                             });
                         }   else{
+                            setShared("KDL002_Multiple", false, true);
+                            setShared("KDL002_SelectedItemId", btnItem.data.value(), true);
+                            setShared("KDL002_AllItemObj", _.map(btnItem.data.lstComboBoxValue, x=> x.optionValue), true);
                             modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
                                 let childData: IChildData = getShared('KDL002_SelectedNewItem');
 
-                                if (childData) {
-                                    self.setItemData(wkTypeItem, childData.code);
-                                    self.setItemName(wkTypeItem, childData.name);
+                                if (childData[0]) {
+                                    self.setItemData(wkTypeItem, childData[0].code);
+                                    self.setItemName(wkTypeItem, childData[0].name);
                                 }
                             });
                         }                            

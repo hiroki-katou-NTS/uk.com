@@ -25,7 +25,8 @@
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 			<div id="functions-area">
-				<button data-bind="click: backSetupVacation" tabindex="1">#{i18n.getText('KMF001_27')}</button>
+<!-- 				<button data-bind="click: backSetupVacation" tabindex="1">#{i18n.getText('KMF001_27')}</button> -->
+				<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }"  tabindex="1">#{i18n.getText('KMF001_27')}</a>
 				<button class="proceed" data-bind="click: save,enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('KMF001_28')}</button>
 				<div class="pull-right" style="display: inline; margin-right: 15px;">
 					<a class="goout" data-bind="ntsLinkButton: {jump: '/view/kmf/003/a/index.xhtml' }"

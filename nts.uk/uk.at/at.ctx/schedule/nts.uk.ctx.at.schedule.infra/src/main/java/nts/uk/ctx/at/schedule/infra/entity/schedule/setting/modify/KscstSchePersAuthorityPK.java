@@ -8,22 +8,27 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+/**
+ * 
+ * @author phongtq
+ *
+ */
 
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscstSchePersAuthorityPK implements Serializable{
+public class KscstSchePersAuthorityPK implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
-	/** 会社ID*/
+
+	/** 会社ID */
 	@Column(name = "CID")
 	public String companyId;
-	
-	/** ロールID*/
+
+	/** ロールID */
 	@Column(name = "ROLE_ID")
 	public String roleId;
-	
-	/** 機能NO*/
+
+	/** 機能NO */
 	@Column(name = "FUNCTION_NO_PERS")
 	public int functionNoPers;
 }
