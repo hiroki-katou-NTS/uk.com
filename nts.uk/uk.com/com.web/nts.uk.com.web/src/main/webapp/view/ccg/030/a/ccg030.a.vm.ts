@@ -76,8 +76,8 @@ module ccg030.a.viewmodel {
         registryFlowMenu() {
             var self = this;
             $(".nts-input").trigger("validate");
-//            if (util.isNullOrEmpty(self.selectedFlowMenu().fileID()))
-//                $('#file_upload').ntsError('set', '選択されていないファイル');
+            if (util.isNullOrEmpty(self.selectedFlowMenu().fileID()))
+                $('#file_upload').ntsError('set', '選択されていないファイル');
             if (!errors.hasError()) {
                 self.selectedFlowMenu().topPageCode(text.padLeft($("#inpCode").val(), '0', 4));
                 var flowMenu = ko.mapping.toJS(self.selectedFlowMenu);
