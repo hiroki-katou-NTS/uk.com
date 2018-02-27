@@ -632,6 +632,10 @@ module nts.uk.com.view.ccg.share.ccg {
                     if ($(e.target).hasClass('blockUI blockOverlay')) {
                         return;
                     }
+                    // check is click to errors notifier
+                    if (e.target.id == 'func-notifier-errors') {
+                        return;
+                    }
                     // Check is click to dialog.
                     if ($(e.target).parents("[role='dialog']")[0]) {
                         return;
