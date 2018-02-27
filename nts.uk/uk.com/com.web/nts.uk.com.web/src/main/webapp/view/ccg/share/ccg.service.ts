@@ -96,7 +96,7 @@ module nts.uk.com.view.ccg.share.ccg {
         /**
          * Calculate period
          */
-        export function calculatePeriod(closureId: number, yearMonth: number): JQueryPromise<Array<any>> {
+        export function calculatePeriod(closureId: number, yearMonth: number): JQueryPromise<string> {
             const param = '/' + closureId + '/' + yearMonth;
             return nts.uk.request.ajax('at', servicePath.calculatePeriod + param);
         }

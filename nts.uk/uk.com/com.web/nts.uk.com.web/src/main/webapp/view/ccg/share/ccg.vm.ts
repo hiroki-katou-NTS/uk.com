@@ -112,6 +112,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
             // first time show
             isFirstTime = true;
+            isHeightFixed = false;
             showApplyBtn: KnockoutComputed<boolean>;
             isExpanded: KnockoutObservable<boolean>;
 
@@ -535,12 +536,20 @@ module nts.uk.com.view.ccg.share.ccg {
              * Set component height
              */
             private setComponentHeight(): void {
+                // set component height
                 const headerHeight = $('#header').outerHeight();
                 const functionAreaHeight = $('#functions-area').length > 0 ? $('#functions-area').outerHeight() : 0;
                 const componentHeight = window.innerHeight - headerHeight - functionAreaHeight - 15;
                 $('#component-ccg001').outerHeight(componentHeight);
                 $('#hor-scroll-button-hide').outerHeight(componentHeight);
                 $('#ccg001-btn-search-drawer').outerHeight(componentHeight / 2);
+
+                // set tab panel height.
+                const tabpanelHeight = componentHeight - $('#ccg001-header').outerHeight(true) - 10;
+                const tabpanelNavHeight = 85;
+                $('.ccg-tabpanel.pull-left').outerHeight(tabpanelHeight);
+                $('.ccg-tabpanel>#tab-1').css('height', tabpanelHeight - tabpanelNavHeight);
+                $('.ccg-tabpanel>#tab-2').css('height', tabpanelHeight - tabpanelNavHeight);
             }
 
             /**
@@ -675,12 +684,9 @@ module nts.uk.com.view.ccg.share.ccg {
             private loadKcp005(): void {
                 let self = this;
 
-                // update flag isFirstTime
-                self.isFirstTime = false;
-
                 // set KCP005 rows
-                const tabContentHeight = $('#tab-1').outerHeight();
-                const kcp005HeaderHeight = 100;
+                const tabContentHeight = parseInt(document.querySelector('.ccg-tabpanel>#tab-2').style.height);
+                const kcp005HeaderHeight = 70;
                 let rows = (tabContentHeight - kcp005HeaderHeight) / 24;
 
                 // set KCP005 options
@@ -699,12 +705,18 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // Show KCP005
                 $('#employeeinfo').ntsListComponent(self.employeeinfo).done(() => self.fixComponentWidth());
+
+                // update flag isFirstTime
+                if (self.isFirstTime) {
+                    self.isFirstTime = false;
+                }
             }
 
             /**
              * Fix component width according to screen width
              */
             private fixComponentWidth(): void {
+                let self = this;
                 // update tab 2 width
                 let totalWidth = 0;
                 $('#ccg001-tab-content-2').children('div.pull-left.height-maximum').each((i, e) => totalWidth += $(e).outerWidth(true));
@@ -714,18 +726,16 @@ module nts.uk.com.view.ccg.share.ccg {
                 const componentWidth = window.innerWidth - $('#hor-scroll-button-hide').offset().left;
                 if (componentWidth <= $('#ccg001-tab-content-2').outerWidth()) {
                     const margin = 30;
+                    // fix width and show scrollbar
                     $('.tab-content-2.height-maximum').outerWidth(componentWidth - margin);
                     $('.tab-content-2.height-maximum').css('overflow-x', 'auto');
-                }
-            }
 
-            /**
-             * function click by search all employee
-             */
-            searchAllEmployee(): void {
-                var self = this;
-                if (self.isInvalidBaseDate()) {
-                    return;
+                    // fix height
+                    if (!self.isHeightFixed) {
+                        const fixedTabHeight = parseInt(document.querySelector('.ccg-tabpanel>#tab-2').style.height) + 15;
+                        $('.ccg-tabpanel>#tab-2').css('height', fixedTabHeight);
+                        self.isHeightFixed = true;
+                    }
                 }
             }
 
@@ -930,14 +940,27 @@ module nts.uk.com.view.ccg.share.ccg {
             isInvalidBaseDate(): boolean {
                 let self = this;
                 $("#inp_baseDate").ntsEditor("validate");
+                $("#inp-period-startYMD").ntsEditor("validate");
+                $("#inp-period-endYMD").ntsEditor("validate");
 
-                if ($('#inp_baseDate').ntsError('hasError')) {
+                if ($('#inp_baseDate').ntsError('hasError') ||
+                    $('#inp-period-startYMD').ntsError('hasError') ||
+                    $('#inp-period-endYMD').ntsError('hasError')) {
                     return true;
                 }
+
                 if (self.showPeriod && self.showBaseDate && !self.isBaseDateInTargetPeriod()) {
                     return true;
                 }
                 return false;
+            }
+
+            // validate input
+            private isStatusEmployeePeriodInvalid(): boolean {
+                let self = this;
+                $("#ccg001-partg-start").ntsEditor("validate");
+                $("#ccg001-partg-end").ntsEditor("validate");
+                return $("#ccg001-partg-start").ntsError('hasError') || $("#ccg001-partg-start").ntsError('hasError');
             }
 
             /**
@@ -1026,31 +1049,15 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
                 return true;
             }
-            /**
-             * function click by search employee of work place
-             */
-            searchOfWorkplace(): void {
-                var self = this;
-                if (self.isInvalidBaseDate()) {
-                    return;
-                }
-            }
-
-            /**
-             * function click by search employee of work place child
-             */
-            searchWorkplaceChild(): void {
-                var self = this;
-                if (self.isInvalidBaseDate()) {
-                    return;
-                }
-            }
 
             /**
              * function click apply search employee
              */
             advancedSearchEmployee(): void {
                 let self = this;
+                if (self.isInvalidBaseDate() || self.isStatusEmployeePeriodInvalid()) {
+                    return;
+                }
                 // set param
                 self.setAdvancedSearchParam();
 
@@ -1086,9 +1093,6 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public getSelectedCodeEmployee(): string[]{
                 var self = this;
-                if (self.isInvalidBaseDate()) {
-                    return;
-                }
                 if(self.isMultiple){
                     return self.selectedCodeEmployee();    
                 }
@@ -1117,9 +1121,6 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public searchAllListEmployee(): void {
                 var self = this;
-                if (self.isInvalidBaseDate()) {
-                    return;
-                }
                 self.queryParam.referenceRange = ConfigEnumReferenceRange.ALL_EMPLOYEE;
                 self.quickSearchEmployee();
             }
@@ -1129,9 +1130,6 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public searchEmployeeOfDepOnly(): void {
                 var self = this;
-                if (self.isInvalidBaseDate()) {
-                    return;
-                }
                 self.queryParam.referenceRange = ConfigEnumReferenceRange.DEPARTMENT_ONLY;
                 self.quickSearchEmployee();
             }
@@ -1141,9 +1139,6 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public searchEmployeeOfDepAndChild(): void {
                 var self = this;
-                if (self.isInvalidBaseDate()) {
-                    return;
-                }
                 self.queryParam.referenceRange = ConfigEnumReferenceRange.DEPARTMENT_AND_CHILD;
                 self.quickSearchEmployee();
             }
@@ -1153,6 +1148,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             private quickSearchEmployee(): void {
                 let self = this;
+                if (self.isInvalidBaseDate()) {
+                    return;
+                }
                 nts.uk.ui.block.invisible(); // block ui
                 self.setQuickSearchParam().done(() => {
                     self.findAndReturnListEmployee(false);
