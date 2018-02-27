@@ -37,7 +37,7 @@ module nts.uk.at.view.kmf002.d {
                     isShowAlreadySet: _self.isShowAlreadySet(),
                     isMultiSelect: _self.isMultiSelect(),
                     listType: ListType.EMPLOYMENT,
-                    selectType: SelectType.NO_SELECT,
+                    selectType: SelectType.SELECT_FIRST_ITEM,
                     selectedCode: _self.selectedCode,
                     isDialog: _self.isDialog(),
                     isShowNoSelectRow: _self.isShowNoSelectRow(),
