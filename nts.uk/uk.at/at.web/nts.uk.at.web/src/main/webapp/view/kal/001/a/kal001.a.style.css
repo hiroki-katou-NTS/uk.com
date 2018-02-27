@@ -10,11 +10,19 @@
 	padding-left: 15px;
 }
 .control-group{
-	margin-top: 100px;
+	margin-top: 70px;
 }
 .check_column{
 	text-align: center !important;
 }
 .periodTime{
 	padding-left: 15px !important;
+}
+
+.nts-datepicker-wrapper .ntsDatepicker.yearmonth-picker{
+	width: 85px;
+}
+
+#fixed-table{
+    overflow-y: scroll
 }
