@@ -102,8 +102,10 @@
 									<tr>
 										<td class="color-header"><span class="label " data-bind="text: a4_5"></span></td>
 										<td>
-											<div tabindex="1" class="a4_checkbox" id="a4_6"
-												data-bind="ntsCheckBox: { checked: a4_6 }"></div>
+											<div class="a4_checkbox" id="a4_6"
+												data-bind="ntsCheckBox: { checked: a4_6 },attr:{
+														tabindex:1 + $index()*1
+													}"></div>
 											<div tabindex="1" id="a4_7"
 												data-bind="ntsComboBox: {
 													options: $parent.itemListA4_7,
@@ -115,9 +117,12 @@
 													enable: $parent.isEnable,
 													columns: [
 														{ prop: 'name', length: 8 }
-													]}">
+													]},
+													attr:{
+														tabindex:1 + $index()*2
+													}">
 											</div> <span class="label">#{i18n.getText('KAF022_355')}</span>
-											<div tabindex="1" id="a4_8"
+											<div id="a4_8"
 												data-bind="ntsComboBox: {
 													options: $parent.itemListA4_8,
 													optionsValue: 'code',
@@ -128,7 +133,9 @@
 													enable: $parent.isEnable,
 													columns: [
 														{ prop: 'name', length: 4 }
-													]}">
+													]},attr:{
+														tabindex:3 + $index()
+													}">
 											</div> <span class="label">#{i18n.getText('KAF022_356')}</span>
 										</td>
 									</tr>
@@ -382,7 +389,7 @@
 								</thead>
 								<tbody data-bind="foreach:listDataA7">
 									<tr data-bind="if: appType() == 0">
-										<td class="color-header" id="a7_4" data-bind="text:appTypeName">#{i18n.getText('KAF022_3')}</td>
+										<td class="color-header" id="a7_4" data-bind="text:appTypeName"></td>
 										<td><div 
 												data-bind="ntsCheckBox: { checked: retrictPreUseFlg },attr:{
 														tabindex:42 + $index()
@@ -396,7 +403,7 @@
 													<span class="box"></span><span class="label">#{i18n.getText('KAF022_63')}</span>
 											</label>
 										</span>
-											<div  id="a4_7"
+											<span  id="a7_row1"
 												data-bind="ntsComboBox: {
 													options: $parent.itemListA7_20,
 													optionsValue: 'code',
@@ -410,9 +417,9 @@
 													]},attr:{
 														tabindex:44 + $index()
 													}">
-											</div> <span class="label" id="a7_21">#{i18n.getText('KAF022_65')}</span>
+											</span> <span class="label" id="a7_21">#{i18n.getText('KAF022_65')}</span>
 
-											<span class="ntsControl"> <label class="ntsRadioBox">
+											<span class="ntsControl special-a7"> <label class="ntsRadioBox">
 
 													<input  type="radio" name="textRadioA7_18"
 													data-bind="checkedValue: 1, checked: retrictPreMethodFlg, enable: true,,attr:{
@@ -424,9 +431,8 @@
 														data-bind="ntsTimeEditor: {
 													value: retrictPreTimeDay,
 													constraint: 'AttendanceClock',
-													option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
-								                        inputFormat: 'time'
-								                    })),
+								                    inputFormat: 'time',
+								                    mode:'time',
 													required: false,
 													enable: true,
 													readonly: false,
@@ -448,7 +454,7 @@
 														tabindex:48 + $index()
 													}">#{i18n.getText('KAF022_61')}</div></td>
 										<td><span class="label" id="a7_27">#{i18n.getText('KAF022_63')}</span>
-											<div  id="a4_7"
+											<span  id="a4_8"
 												data-bind="ntsComboBox: {
 													options: $parent.itemListA7_20,
 													optionsValue: 'code',
@@ -462,7 +468,7 @@
 													]},attr:{
 														tabindex:49 + $index()
 													}">
-											</div> <span class="label" id="a7_29">#{i18n.getText('KAF022_65')}</span>
+											</span> <span class="label" id="a7_29">#{i18n.getText('KAF022_65')}</span>
 										</td>
 										<td><div 
 												data-bind="ntsCheckBox: { checked: retrictPostAllowFutureFlg },attr:{
