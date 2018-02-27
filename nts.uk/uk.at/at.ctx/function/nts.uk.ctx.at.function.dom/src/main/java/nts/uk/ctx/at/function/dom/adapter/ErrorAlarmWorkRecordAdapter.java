@@ -4,6 +4,7 @@ import java.util.List;
 
 
 
+
 public interface ErrorAlarmWorkRecordAdapter {
 	//get error by eralCheckId
 	ErrorAlarmWorkRecordAdapterDto findByErrorAlamCheckId(String eralCheckId);
@@ -13,4 +14,6 @@ public interface ErrorAlarmWorkRecordAdapter {
 	
 	//	get all error by companyID
 	List<ErrorAlarmWorkRecordAdapterDto> getAllErrorAlarmWorkRecord(String companyID);
+	
+	List<ErrorAlarmWorkRecordAdapterDto> getListErAlByListCode(String companyId, List<String> listCode);
 }
