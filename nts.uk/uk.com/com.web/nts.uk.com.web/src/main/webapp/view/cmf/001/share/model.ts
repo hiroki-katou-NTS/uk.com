@@ -240,8 +240,8 @@ module nts.uk.com.view.cmf001.share.model {
     export class AcceptScreenConditionSetting {
         receiptItemName: KnockoutObservable<string>;
         selectComparisonCondition: KnockoutObservable<number>;
-        //timeConditionValue2: KnockoutObservable<number>;
-        // timeConditionValue1: KnockoutObservable<number>;
+        timeConditionValue2: KnockoutObservable<number>;
+        timeConditionValue1: KnockoutObservable<number>;
         timeMomentConditionValue2: KnockoutObservable<number>;
         timeMomentConditionValue1: KnockoutObservable<number>;
         dateConditionValue2: KnockoutObservable<string>;
@@ -252,12 +252,12 @@ module nts.uk.com.view.cmf001.share.model {
         numberConditionValue1: KnockoutObservable<number>;
         receiptItemNumber: KnockoutObservable<number>;
         
-        constructor(receiptItemName: string, selectComparisonCondition: number, timeMomentConditionValue2:number, timeMomentConditionValue1: number,
+        constructor(receiptItemName: string, selectComparisonCondition: number,timeConditionValue2: number, timeConditionValue1: number, timeMomentConditionValue2:number, timeMomentConditionValue1: number,
         dateConditionValue2: string, dateConditionValue1: string, characterConditionValue2: string, characterConditionValue1: string, numberConditionValue2: number, numberConditionValue1: number) {
             this.receiptItemName = ko.observable(receiptItemName);
             this.selectComparisonCondition = ko.observable(selectComparisonCondition);
-            //this.timeConditionValue2 = ko.observable(timeConditionValue2);
-            //this.timeConditionValue1 = ko.observable(timeConditionValue1);
+            this.timeConditionValue2 = ko.observable(timeConditionValue2);
+            this.timeConditionValue1 = ko.observable(timeConditionValue1);
             this.timeMomentConditionValue2 = ko.observable(timeMomentConditionValue2);
             this.timeMomentConditionValue1 = ko.observable(timeMomentConditionValue1);
             this.dateConditionValue2 = ko.observable(dateConditionValue2);

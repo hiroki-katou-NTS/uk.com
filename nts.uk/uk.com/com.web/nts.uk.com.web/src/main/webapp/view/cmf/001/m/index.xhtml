@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 1275,
-					height : 748
+					width : 550,
+					height : 400
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -27,7 +27,7 @@
 					<div class="title_content">
 						<div class="title_content_left">#{i18n.getText('CMF001_403')}</div>
 						<div class="title_content_right">
-							<label>システム種類</label>
+							<label data-bind="text: selectionType"></label>
 						</div>
 						<div class="title_content_right">
 							<label>人事システム</label>
@@ -45,8 +45,8 @@
 										<label>#{i18n.getText('CMF001_386')}</label>
 									</div>
 								</td>
-								<td class="td_center"><div class="lable">011</div></td>
-								<td class="td_right"><div class="lable">A社会計システム　テーブルA</div></td>
+								<td class="td_center"><div class="lable"><label data-bind="text: conditionCode"></label></div></td>
+								<td class="td_right"><div class="lable"><label data-bind="text: conditionName"></label></div></td>
 							</tr>
 							<tr>
 								<td>
@@ -63,13 +63,13 @@
 								<td class="td_right"><input data-bind="ntsTextEditor: {value: simpleValue}" /></td>
 							</tr>
 						</table>
-						<div class="checkbox_bottom" data-bind="ntsCheckBox: { checked: checked, enable: enable, text: '#{i18n.getText('CMF001_410')}',  style: 'warnpanel' }"></div>
+						<div class="checkbox_bottom" data-bind="ntsCheckBox: { checked: checked, enable: enable, text: '#{i18n.getText('CMF001_410')}',  style: 'warnpanel', click: isOverWriteData}"></div>
 					</div>
 				</div>
 			</div>
  			<div id="functions-area-bottom">
-				<button class="x-large">#{i18n.getText('CMF001_393')}</button>
-				<button class="large">#{i18n.getText('CMF001_394')}</button>
+				<button class="x-large" data-bind="click: saveData">#{i18n.getText('CMF001_393')}</button>
+				<button class="large" data-bind="click: cancelSetting">#{i18n.getText('CMF001_394')}</button>
 			</div> 
 		</ui:define>
 	</ui:composition>
