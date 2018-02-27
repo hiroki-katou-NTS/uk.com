@@ -82,7 +82,51 @@ Result: "http://localhost:8080/nts.uk.com.web/view/sample/requestulitily/request
 								<div>To implement server-side, see SampleAsyncCmmandWebService.</div>
 							</div>
 						</div>
-
+						
+						<div class="feature-box">
+							<div class="header"><h3>"file" module</h3></div>
+							<div class="content">
+								<table class="table">
+									<tr>
+										<td>request.file.download(fileId: string): void</td>
+										<td>
+											Downlaod the file specified by <i>fileId</i>.<br/>
+											compatibility alias: <b>request.specials.downloadFile(fileId: string)</b>
+										</td>
+									</tr>
+									<tr>
+										<td>request.file.liveViewUrl(fileId: string): string</td>
+										<td>
+											Return URL to show content of the file specified by <i>fileId</i> into iframe.<br />
+											compatibility alias: <b>request.liveView(fileId: string)</b>
+										</td>
+									</tr>
+									<tr>
+										<td>request.file.liveViewUrl(fileId: string, entryName: string): string</td>
+										<td>
+											Return URL to show content of the file specified by <i>entryName</i> in the pack(zip) specified by <i>fileId</i> into iframe.
+										</td>
+									</tr>
+									<tr>
+										<td>request.file.remove(fileId: string): JQueryPromise&lt;void&gt;</td>
+										<td>
+											Remove the file specified by <i>fileId</i> from FileStorage.<br/>
+											compatibility alias: <b>request.specials.deleteFile(fileId: string)</b>
+										</td>
+									</tr>
+									<tr>
+										<td>request.file.isExist(fileId: string): JQueryPromise&lt;boolean&gt;</td>
+										<td>
+											Check whether the file exists.
+											<pre><![CDATA[nts.uk.request.file.isExist(fileId).done(isExist => {
+	if (isExist) { ... }
+});]]></pre>
+											compatibility alias: <b>request.specials.isFileExist(fileId: string)</b>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
 
 						<div class="footer cf">
 							<button class="previous large">Previous</button>

@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -17,8 +15,6 @@ import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregul
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.ProcAtrHolidayWorkAndTransfer;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.ProcAtrOverTimeAndTransfer;
 import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.AggrSettingMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
@@ -28,7 +24,6 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.ExcessOuts
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.FlexTimeOfTimeSeries;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
-import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtion;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
@@ -37,8 +32,6 @@ import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
-import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -395,109 +388,6 @@ public class ExcessOutsideWorkMng {
 			procDate = procDate.addDays(-1);
 		}
 	}
-	
-	/**
-	 * 残業・振替の処理順序を取得する（逆時系列用）
-	 * @param workInfo 勤務情報
-	 * @param repositories 月次集計が必要とするリポジトリ
-	 * @return 残業振替区分リスト（処理順）
-	 */
-	public List<ProcAtrOverTimeAndTransfer> getOverTimeAndTransferOrder(
-			WorkInformation workInfo, RepositoriesRequiredByMonthlyAggr repositories){
-		
-		List<ProcAtrOverTimeAndTransfer> returnOrder = new ArrayList<>();
-		
-		// 就業時間帯コードを取得する
-		WorkTimeCode workTimeCd = workInfo.getWorkTimeCode();
-		if (workTimeCd.toString() == "") {
-			returnOrder.add(ProcAtrOverTimeAndTransfer.OVER_TIME);
-			return returnOrder;
-		}
-		
-		// 代休振替設定を取得する
-		val workTimezoneCommonSetOpt = repositories.getCommonSet().get(this.companyId, workTimeCd.v());
-		if (!workTimezoneCommonSetOpt.isPresent()){
-			returnOrder.add(ProcAtrOverTimeAndTransfer.OVER_TIME);
-			return returnOrder;
-		}
-		val subHolTimeSets = workTimezoneCommonSetOpt.get().getSubHolTimeSet();
-		for (val subHolTimeSet : subHolTimeSets){
-			if (subHolTimeSet.getOriginAtr() != CompensatoryOccurrenceDivision.FromOverTime) continue;
-			val subHolTransferSet = subHolTimeSet.getSubHolTimeSet();
-			
-			// 代休振替設定．使用区分を取得する
-			if (!subHolTransferSet.isUseDivision()) break;
-			
-			// 代休振替設定区分を取得する
-			val transferSetAtr = subHolTransferSet.getSubHolTransferSetAtr();
-			if (transferSetAtr == SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
-				// 指定した時間を代休とする時
-				returnOrder.add(ProcAtrOverTimeAndTransfer.OVER_TIME);
-				returnOrder.add(ProcAtrOverTimeAndTransfer.TRANSFER);
-				return returnOrder;
-			}
-			else {
-				// 一定時間を超えたら代休とする時
-				returnOrder.add(ProcAtrOverTimeAndTransfer.TRANSFER);
-				returnOrder.add(ProcAtrOverTimeAndTransfer.OVER_TIME);
-				return returnOrder;
-			}
-		}
-		returnOrder.add(ProcAtrOverTimeAndTransfer.OVER_TIME);
-		return returnOrder;
-	}
-	
-	/**
-	 * 休出・振替の処理順序を取得する（逆時系列用）
-	 * @param workInfo 勤務情報
-	 * @param repositories 月次集計が必要とするリポジトリ
-	 * @return 休出振替区分リスト（処理順）
-	 */
-	public List<ProcAtrHolidayWorkAndTransfer> getHolidayWorkAndTransferOrder(
-			WorkInformation workInfo, RepositoriesRequiredByMonthlyAggr repositories){
-		
-		List<ProcAtrHolidayWorkAndTransfer> returnOrder = new ArrayList<>();
-		
-		// 就業時間帯コードを取得する
-		WorkTimeCode workTimeCd = workInfo.getWorkTimeCode();
-		if (workTimeCd.toString() == "") {
-			returnOrder.add(ProcAtrHolidayWorkAndTransfer.HOLIDAY_WORK);
-			return returnOrder;
-		}
-		
-		// 代休振替設定を取得する
-		val workTimezoneCommonSetOpt = repositories.getCommonSet().get(this.companyId, workTimeCd.v());
-		if (!workTimezoneCommonSetOpt.isPresent()){
-			returnOrder.add(ProcAtrHolidayWorkAndTransfer.HOLIDAY_WORK);
-			return returnOrder;
-		}
-		val subHolTimeSets = workTimezoneCommonSetOpt.get().getSubHolTimeSet();
-		for (val subHolTimeSet : subHolTimeSets){
-			if (subHolTimeSet.getOriginAtr() != CompensatoryOccurrenceDivision.WorkDayOffTime) continue;
-			val subHolTransferSet = subHolTimeSet.getSubHolTimeSet();
-			
-			// 代休振替設定．使用区分を取得する
-			if (!subHolTransferSet.isUseDivision()) break;
-			
-			// 代休振替設定区分を取得する
-			val transferSetAtr = subHolTransferSet.getSubHolTransferSetAtr();
-			if (transferSetAtr == SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
-				// 指定した時間を代休とする時
-				returnOrder.add(ProcAtrHolidayWorkAndTransfer.HOLIDAY_WORK);
-				returnOrder.add(ProcAtrHolidayWorkAndTransfer.TRANSFER);
-				return returnOrder;
-			}
-			else {
-				// 一定時間を超えたら代休とする時
-				returnOrder.add(ProcAtrHolidayWorkAndTransfer.TRANSFER);
-				returnOrder.add(ProcAtrHolidayWorkAndTransfer.HOLIDAY_WORK);
-				return returnOrder;
-			}
-		}
-		returnOrder.add(ProcAtrHolidayWorkAndTransfer.HOLIDAY_WORK);
-		return returnOrder;
-	}
-	
 	
 	/**
 	 * フレックス超過時間を割り当てる
