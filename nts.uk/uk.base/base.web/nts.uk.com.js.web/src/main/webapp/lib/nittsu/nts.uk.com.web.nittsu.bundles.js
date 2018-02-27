@@ -15699,6 +15699,8 @@ var nts;
                     })(feature || (feature = {}));
                     var updating;
                     (function (updating) {
+                        updating.INPUT_CURR_SYM = "input-currency-symbol";
+                        updating.CURR_SYM = "currency-symbol";
                         /**
                          * Add feature
                          */
@@ -15753,8 +15755,8 @@ var nts;
                             if (uk.util.isNullOrUndefined(selectedCell) || !utils.selectable($(evt.target)))
                                 return;
                             var $cell = $(selectedCell.element);
-                            if ($cell.hasClass("currency-symbol"))
-                                $cell.removeClass("currency-symbol");
+                            if ($cell.hasClass(updating.CURR_SYM))
+                                $cell.removeClass(updating.CURR_SYM);
                             return true;
                         }
                         /**
@@ -15774,6 +15776,7 @@ var nts;
                                     }
                                     setTimeout(function () {
                                         var $editor = $(ui.editor.find("input")[0]);
+                                        $editor.css("text-align", "right");
                                         $editor.val(formatted_1).select();
                                     }, 140);
                                 }
@@ -15781,7 +15784,7 @@ var nts;
                                     var groupSeparator = validation.getGroupSeparator($grid, ui.columnKey) || ",";
                                     var value_1 = uk.text.replaceAll(ui.value, groupSeparator, "");
                                     setTimeout(function () {
-                                        ui.editor.addClass("input-currency-symbol");
+                                        ui.editor.addClass(updating.INPUT_CURR_SYM);
                                         var $editor = $(ui.editor.find("input")[0]);
                                         var numb = Number(value_1);
                                         $editor.val(isNaN(numb) ? value_1 : numb).css("text-align", "right").select();
@@ -15789,7 +15792,7 @@ var nts;
                                 }
                             }
                             else if (valueType === "Currency") {
-                                ui.editor.addClass("input-currency-symbol");
+                                ui.editor.addClass(updating.INPUT_CURR_SYM);
                                 var $editor = $(ui.editor.find("input")[0]);
                                 $editor.css("text-align", "right");
                             }
@@ -15822,13 +15825,8 @@ var nts;
                             var $targetGrid = fixedColumns.realGridOf($(grid));
                             if (utils.isEditMode($targetGrid) || utils.disabled($(cell.element)))
                                 return;
-                            if (utils.isAlphaNumeric(evt) || utils.isMinusSymbol(evt)) {
-                                startEdit(evt, cell);
-                            }
-                            if (utils.isDeleteKey(evt)) {
-                                $targetGrid.one(events.Handler.GRID_EDIT_CELL_STARTED, function (evt, ui) {
-                                    $(ui.editor).find("input").val("");
-                                });
+                            if (utils.isAlphaNumeric(evt) || utils.isMinusSymbol(evt)
+                                || utils.isDeleteKey(evt)) {
                                 startEdit(evt, cell);
                             }
                         }
@@ -15841,8 +15839,8 @@ var nts;
                             if (!utils.updatable($targetGrid))
                                 return;
                             var $cell = $(cell.element);
-                            if ($cell.hasClass("currency-symbol"))
-                                $cell.removeClass("currency-symbol");
+                            if ($cell.hasClass(updating.CURR_SYM))
+                                $cell.removeClass(updating.CURR_SYM);
                             utils.startEdit($targetGrid, cell);
                             // Keep text contents if any, otherwise set input value
                             //                if ($(cell.element).text().trim() !== "") evt.preventDefault();
@@ -15854,13 +15852,20 @@ var nts;
                                         var newText = $editor.igTextEditor("value");
                                         newText = newText.substr(newText.length - 1);
                                         $editor.igTextEditor("value", newText.trim());
+                                        var input = $editor.find("input")[0];
+                                        var len = input.value.length;
+                                        input.setSelectionRange(len, len);
                                         cellValue = newText;
                                     }
                                     else if (!uk.util.isNullOrUndefined($editor.data("igNumericEditor"))) {
-                                        var newValue = $editor.igNumericEditor("value");
-                                        var numericStr = String(newValue);
-                                        numericStr = numericStr.substr(numericStr.length - 1);
-                                        $editor.igNumericEditor("value", parseInt(numericStr));
+                                        var numericStr = "-";
+                                        if (!utils.isMinusSymbol(evt)) {
+                                            numericStr = String.fromCharCode(evt.keyCode);
+                                            $editor.igNumericEditor("value", parseInt(numericStr));
+                                        }
+                                        else {
+                                            $editor.igNumericEditor("value", numericStr);
+                                        }
                                         setTimeout(function () {
                                             var length = String($editor.igNumericEditor("value")).length;
                                             $editor.igNumericEditor("select", length, length);
@@ -15878,7 +15883,13 @@ var nts;
                                     if (!result.isValid) {
                                         errors.set($targetGrid, cell, result.errorMessage);
                                     }
-                                }, 100);
+                                }, 200);
+                            }
+                            else {
+                                setTimeout(function () {
+                                    var $editor = $targetGrid.igGridUpdating("editorForCell", $(cell.element));
+                                    $editor.find("input").val("");
+                                }, 200);
                             }
                             evt.stopImmediatePropagation();
                         }
@@ -15914,8 +15925,8 @@ var nts;
                             if ($editorContainer.length > 0)
                                 $editorContainer.css(errors.NO_ERROR_STL);
                             specialColumn.tryDo($grid, selectedCell, ui.value);
-                            if (ui.editor.hasClass("input-currency-symbol")) {
-                                $(selectedCell.element).addClass("currency-symbol");
+                            if (ui.editor.hasClass(updating.INPUT_CURR_SYM)) {
+                                $(selectedCell.element).addClass(updating.CURR_SYM);
                             }
                             return true;
                         }
@@ -16072,8 +16083,8 @@ var nts;
                             if ($editorContainer.length > 0)
                                 $editorContainer.css(errors.NO_ERROR_STL);
                             specialColumn.tryDo($grid, selectedCell, value);
-                            if ($editorContainer.find("span").hasClass("input-currency-symbol")) {
-                                $selectedCell.addClass("currency-symbol");
+                            if ($editorContainer.find("span").hasClass(updating.INPUT_CURR_SYM)) {
+                                $selectedCell.addClass(updating.CURR_SYM);
                             }
                             $grid.igGridUpdating("endEdit");
                         }
@@ -16648,6 +16659,7 @@ var nts;
                         functions.DIRECT_ENTER = "directEnter";
                         functions.CHECK_ALL = "checkAll";
                         functions.UNCHECK_ALL = "uncheckAll";
+                        functions.HEADER_TEXT = "headerText";
                         functions.DESTROY = "destroy";
                         /**
                          * Actions
@@ -16685,6 +16697,9 @@ var nts;
                                     break;
                                 case functions.UNCHECK_ALL:
                                     uncheckAll($grid, params[0]);
+                                    break;
+                                case functions.HEADER_TEXT:
+                                    setHeaderText($grid, params[0], params[1]);
                                     break;
                                 case functions.DESTROY:
                                     destroy($grid);
@@ -16780,6 +16795,21 @@ var nts;
                                 var id = ds[i][primaryKey];
                                 updating.updateCell($grid, id, key, false, undefined, true);
                             }
+                        }
+                        /**
+                         * Set header text.
+                         */
+                        function setHeaderText($grid, key, text) {
+                            var setting = $grid.data(internal.SETTINGS);
+                            if (!setting || !setting.descriptor || !setting.descriptor.colIdxes
+                                || !setting.descriptor.headerCells)
+                                return;
+                            var colIdx = setting.descriptor.colIdxes[key];
+                            var fixedColsLen = setting.descriptor.headerCells.length - Object.keys(setting.descriptor.colIdxes).length;
+                            var headerCell = setting.descriptor.headerCells[colIdx + fixedColsLen];
+                            if (!headerCell)
+                                return;
+                            $(headerCell.find("span")[1]).html(text);
                         }
                         /**
                          * Destroy
@@ -17359,9 +17389,9 @@ var nts;
                                         return validation.parseTime(value, constraint.format);
                                     case "HalfInt":
                                         if (uk.ntsNumber.isHalfInt(value)) {
-                                            return new validation.Result.OK(value);
+                                            return validation.Result.OK(value);
                                         }
-                                        return new validation.Result.invalid("FND_E_HALFINT");
+                                        return validation.Result.invalid("FND_E_HALFINT");
                                     case "String":
                                         return validation.Result.OK(value);
                                 }
@@ -17381,6 +17411,7 @@ var nts;
                         var Label = (function (_super) {
                             __extends(Label, _super);
                             function Label(action) {
+                                _super.call(this);
                                 this.action = action;
                             }
                             Label.prototype.containerClass = function () {
@@ -17743,6 +17774,18 @@ var nts;
                                     if (!utils.isPastableControls(self.$grid, cell.columnKey)
                                         || utils.isDisabled($(cell.element)))
                                         return;
+                                    if (utils.isEditMode(self.$grid)) {
+                                        var editor = self.$grid.igGridUpdating("editorForCell", cell.element);
+                                        if (cell.element.has(editor).length > 0) {
+                                            var inputs_1 = editor.find("input");
+                                            inputs_1[0].value = cbData;
+                                            inputs_1[1].value = cbData;
+                                            setTimeout(function () {
+                                                inputs_1[0].focus();
+                                            }, 0);
+                                            return;
+                                        }
+                                    }
                                     var rowIndex = cell.rowIndex;
                                     var columnIndex = cell.index;
                                     var $gridRow = utils.rowAt(cell);
@@ -19043,7 +19086,9 @@ var nts;
                                     columns = getSheetColumns(options.columns, sheet[0], options.features);
                                     sheetMng.sheetColumns[sheet[0].name] = columns.all;
                                     var idxes_2 = {};
-                                    utils.analyzeColumns(columns.unfixed).forEach(function (c, i) {
+                                    utils.analyzeColumns(columns.unfixed)
+                                        .filter(function (c) { return c.hidden !== true; })
+                                        .forEach(function (c, i) {
                                         idxes_2[c.key] = i;
                                     });
                                     var setting = $grid.data(internal.SETTINGS);
@@ -19087,7 +19132,9 @@ var nts;
                                             columns = getSheetColumns(options.columns, sheet, options.features);
                                             sheetMng.sheetColumns[sheet.name] = columns.all;
                                             var idxes_3 = {};
-                                            utils.analyzeColumns(columns.unfixed).forEach(function (c, i) {
+                                            utils.analyzeColumns(columns.unfixed)
+                                                .filter(function (c) { return c.hidden !== true; })
+                                                .forEach(function (c, i) {
                                                 idxes_3[c.key] = i;
                                             });
                                             settings.descriptor.colIdxes = idxes_3;
@@ -19098,7 +19145,9 @@ var nts;
                                             var fixedColumns_3 = settings.descriptor.fixedColumns;
                                             if (fixedColumns_3) {
                                                 var unfixed = columns.slice(fixedColumns_3.length);
-                                                utils.analyzeColumns(unfixed).forEach(function (c, i) {
+                                                utils.analyzeColumns(unfixed)
+                                                    .filter(function (c) { return c.hidden !== true; })
+                                                    .forEach(function (c, i) {
                                                     idxes_4[c.key] = i;
                                                 });
                                                 settings.descriptor.colIdxes = idxes_4;
@@ -19408,6 +19457,7 @@ var nts;
                                     setting.descriptor = descriptor;
                                     setting.descriptor.fixedColumns = owner._fixedColumns;
                                     setting.descriptor.fixedTable = owner._fixedTable;
+                                    setting.descriptor.headerCells = owner._headerCells;
                                     return;
                                 }
                                 setting.descriptor.update(startRow, owner._virtualRowCount, owner._virtualDom);
@@ -19421,9 +19471,12 @@ var nts;
                                     }
                                     setting.descriptor.keyIdxes = keyIdxes_2;
                                     setting.descriptor.fixedTable = owner._fixedTable;
+                                    setting.descriptor.headerCells = owner._headerCells;
                                 }
-                                if (rebuild)
+                                if (rebuild) {
                                     setting.descriptor.fixedTable = owner._fixedTable;
+                                    setting.descriptor.headerCells = owner._headerCells;
+                                }
                             });
                         }
                         settings.build = build;
