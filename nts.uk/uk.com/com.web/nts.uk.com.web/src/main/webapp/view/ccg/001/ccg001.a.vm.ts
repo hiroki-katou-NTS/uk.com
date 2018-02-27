@@ -6,7 +6,7 @@ module nts.uk.com.view.ccg001.a {
     export module viewmodel {
         export class ScreenModel {
            
-            ccgcomponent: GroupOption;
+            ccg001ComponentOption: GroupOption;
             systemTypes: KnockoutObservableArray<any>;
 
             // Options
@@ -52,6 +52,11 @@ module nts.uk.com.view.ccg001.a {
                 // Init component.
                 self.reloadCcg001();
                 
+                self.periodFormatYM.subscribe(item => {
+                    if (item){
+                        self.showClosure(true);    
+                    }
+                });
             }
 
             /**
@@ -91,8 +96,15 @@ module nts.uk.com.view.ccg001.a {
              * Reload component CCG001
              */
             public reloadCcg001(): void {
-                var self = this;
-                self.ccgcomponent = {
+                let self = this;
+                if ($('.ccg-sample-has-error').ntsError('hasError')) {
+                    return;
+                }
+                if (!self.showBaseDate() && !self.showClosure() && !self.showPeriod()){
+                    nts.uk.ui.dialog.alertError("Base Date or Closure or Period must be shown!" );
+                    return;
+                }
+                self.ccg001ComponentOption = {
                     /** Common properties */
                     systemType: self.systemType(), // システム区分
                     showEmployeeSelection: self.isSelectAllEmployee(), // 検索タイプ
@@ -131,9 +143,10 @@ module nts.uk.com.view.ccg001.a {
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         self.selectedEmployee(data.listEmployee);
                     }
-
                 }
-                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+
+                // Start component
+                $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
             }
             
             

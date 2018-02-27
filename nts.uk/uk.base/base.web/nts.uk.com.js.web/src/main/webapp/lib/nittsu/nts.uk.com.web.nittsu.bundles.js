@@ -6124,6 +6124,20 @@ var nts;
                     $tabsContainer.trigger("change-tab", tabId);
                     return $target;
                 };
+                $.fn.ctState = function (name, method, value) {
+                    var $this = $(this);
+                    var dataName = {
+                        selected: "ctstate-selected",
+                        required: "ctstate-required",
+                        name: "ctstate-name"
+                    }[name];
+                    switch (method) {
+                        case "set":
+                            return $this.data(dataName, value);
+                        case "get":
+                            return $this.data(dataName);
+                    }
+                };
             })(jqueryExtentions = ui_3.jqueryExtentions || (ui_3.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -10671,7 +10685,6 @@ var nts;
                         if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
                             container.attr("tabindex", "0");
                         container.data("tabindex", container.attr("tabindex"));
-                        var container = $(element);
                         container.keydown(function (evt, ui) {
                             var code = evt.which || evt.keyCode;
                             if (code === 32) {
@@ -10709,6 +10722,15 @@ var nts;
                         });
                         // Default value.
                         var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
+                        container.bind("validate", function () {
+                            if (container.ctState("required", "get") && !container.ctState("selected", "get")) {
+                                container.ntsError("set", uk.resource.getMessage("FND_E_REQ_SELECT", [container.ctState("name", "get")]), "FND_E_REQ_SELECT");
+                            }
+                            else {
+                                container.ntsError("clear");
+                            }
+                        });
+                        ui.bindErrorStyle.useDefaultErrorClass(container);
                     };
                     /**
                      * Update
@@ -10728,6 +10750,8 @@ var nts;
                         var container = $(element);
                         container.data("enable", enable);
                         container.addClass("ntsControl switchButton-wrapper");
+                        container.ctState("required", "set", ko.unwrap(data.required) === true);
+                        container.ctState("name", "set", ko.unwrap(data.name));
                         // Remove deleted button.
                         $('button', container).each(function (index, btn) {
                             var $btn = $(btn);
@@ -10780,6 +10804,7 @@ var nts;
                     };
                     NtsSwitchButtonBindingHandler.setSelectedClass = function ($container, selectedCssClass, selectedValue, optValue) {
                         var targetBtn;
+                        $container.ctState("selected", "set", false);
                         $('button', $container).each(function (index, btn) {
                             var btnValue = $(btn).data('swbtn');
                             if (btnValue == optValue) {
@@ -10787,6 +10812,8 @@ var nts;
                             }
                             if (btnValue == selectedValue) {
                                 $(btn).addClass(selectedCssClass);
+                                $container.ctState("selected", "set", true);
+                                $container.ntsError("clear");
                             }
                             else {
                                 $(btn).removeClass(selectedCssClass);

@@ -12,13 +12,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
-import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
-import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.algorithm.aggregationprocess.AggregationProcess;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatus;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatusRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -79,41 +73,6 @@ public class CheckOutputAlarmList {
 		// 集計データがある場合
 		// B画面 ダイアログ「アラームリスト」を起動する
 		return sortedAlarmExtraValue;
-
-	}
-	
-	@Inject
-	private AlarmCheckConditionByCategoryRepository alCheckConByCategoryRepo;
-
-	/**
-	 * 「日次の集計処理」
-	 * 
-	 * @param patternCode
-	 * @param outputScreenA
-	 * @param employee
-	 */
-	private void DailyAggregationProcess(String patternCode, OutputScreenA outputScreenA, String employee) {
-		String companyID = AppContexts.user().companyId();
-		//ドメインモデル「カテゴリ別アラームチェック条件」を取得する
-		Optional<AlarmCheckConditionByCategory> alCheckConByCategory = alCheckConByCategoryRepo.find(companyID, AlarmCategory.DAILY.value, patternCode);
-		//対象者を絞り込む
-		 List<String>  listEmployeeID =  collapseTargetPerson(GeneralDate.today());
-		
-	}	
-	
-	private List<String> collapseTargetPerson( GeneralDate today) {
-		
-		return null;
-	}
-	
-	
-	/**
-	 * 「4週4休の集計処理」
-	 * @param patternCode
-	 * @param outputScreenA
-	 * @param employee
-	 */
-	private void TotalProcess4Week4Day(String patternCode, OutputScreenA outputScreenA, String employee) {
 
 	}
 
