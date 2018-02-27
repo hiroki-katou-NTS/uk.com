@@ -66,49 +66,39 @@ module nts.uk.at.view.kmf002.c {
                     onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
                         _self.showinfoSelectedEmployee(true);
                         _self.selectedEmployee(dataList);
-                        _self.employeeList.removeAll();
-                        _.forEach(dataList, function(value: any) {
-                            _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
-                        });  
+                        _self.addDataToKCP004(dataEmployee);
                         _self.findAllEmployeeRegister();
+                         _self.initKCP004();
                     },
                     onSearchOnlyClicked: function(data: EmployeeSearchDto) {
                         _self.showinfoSelectedEmployee(true);
                         var dataEmployee: EmployeeSearchDto[] = [];
                         dataEmployee.push(data);
                         _self.selectedEmployee(dataEmployee);
-                        _self.employeeList.removeAll();
-                        _.forEach(data, function(value: any) {
-                            _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
-                        });
+                        _self.addDataToKCP004(dataEmployee);
                         _self.findAllEmployeeRegister();
+                        _self.initKCP004();
                     },
                     onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
                         _self.showinfoSelectedEmployee(true);
                         _self.selectedEmployee(dataList);
-                        _self.employeeList.removeAll();
-                        _.forEach(dataList, function(value: any) {
-                            _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
-                        });
+                        _self.addDataToKCP004(dataEmployee);
                         _self.findAllEmployeeRegister();
+                        _self.initKCP004();
                     },
                     onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
                         _self.showinfoSelectedEmployee(true);
                         _self.selectedEmployee(dataList);
-                        _self.employeeList.removeAll();
-                        _.forEach(dataList, function(value: any) {
-                            _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
-                        });
+                        _self.addDataToKCP004(dataEmployee);
                         _self.findAllEmployeeRegister();
+                        _self.initKCP004();
                     },
                     onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
                         _self.showinfoSelectedEmployee(true);
                         _self.selectedEmployee(dataEmployee);
-                        _self.employeeList.removeAll();
-                        _.forEach(dataEmployee, function(value: any) {
-                            _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
-                        });
+                        _self.addDataToKCP004(dataEmployee);
                         _self.findAllEmployeeRegister();
+                        _self.initKCP004();
                     }
                 }
                 /* end declare variable CCG001 */
@@ -130,7 +120,7 @@ module nts.uk.at.view.kmf002.c {
                     isMultiSelect: _self.isMultiSelect(),
                     listType: ListType.EMPLOYEE,
                     employeeInputList: _self.employeeList,
-                    selectType: SelectType.NO_SELECT,
+                    selectType: SelectType.SELECT_FIRST_ITEM,
                     selectedCode: _self.selectedCode,
                     isDialog: _self.isDialog(),
                     isShowNoSelectRow: _self.isShowNoSelectRow(),
@@ -172,6 +162,19 @@ module nts.uk.at.view.kmf002.c {
                         _self.getDataFromService(); 
                         _self.findAllEmployeeRegister();
                     }
+                });
+            }
+            
+            private initKCP004(): void {
+                $('#component-items-list').ntsListComponent(_self.listComponentOption)).done(function(data: any) {            
+                });
+            }
+            
+            private addDataToKCP004(dataEmployee: any): void {
+                let _self = this;
+                _self.employeeList.removeAll();
+                _.forEach(dataEmployee, function(value: any) {
+                    _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
                 });
             }
 
