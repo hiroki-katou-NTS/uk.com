@@ -20,6 +20,8 @@ module ccg030.a.viewmodel {
         listMessage: KnockoutObservableArray<ItemMessage>;
         //old file name
         oldFileName: KnockoutObservable<string>;
+        zipID: KnockoutObservable<string> = ko.observable("");
+        
 
         constructor() {
             var self = this;
@@ -136,91 +138,20 @@ module ccg030.a.viewmodel {
             }
         }
 
-        /** Upload File */
-        uploadFile(): void {
+        uploadFinish(fileInfo: any): void {
             var self = this;
-            
-            nts.uk.ui.block.invisible();
-            if (self.isCreate() === true) {
-                self.uploadFileProcess();
-            }
-            else {
-                service.getFlowMenuById(self.selectedFlowMenu().toppagePartID()).done(function(res) {
-                    if (res.defClassAtr === 1) {
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_84" });
-                        nts.uk.ui.block.clear();
-                    }
-                    else {
-                        self.uploadFileProcess();
-                    }
-                });
-            }
+            self.tempFileID(fileInfo.id);   
+            self.selectedFlowMenu().fileID(fileInfo.id);
+            self.selectedFlowMenu().fileName(fileInfo.originalName.length === 0 ? '未設定' : fileInfo.originalName);
+            self.isDelete(true);
+            errors.clearAll();
         }
 
-        private uploadFileProcess(): void {
-            var self = this;
-            var option = {
-                stereoType: "flowmenu",
-                onSuccess: function() { },
-                onFail: function() { }
-            }
-            
-            nts.uk.ui.block.invisible();
-            
-            $("#file_upload").ntsFileUpload(option).done(function(res) {
-                self.tempFileID(res[0].id);
-                self.selectedFlowMenu().fileID(res[0].id);
-                self.selectedFlowMenu().fileName(res[0].originalName.length === 0 ? '未設定' : res[0].originalName);
-                self.isDelete(true);
-                errors.clearAll();
-            }).fail(function(err) {
-                self.selectedFlowMenu().fileName("");
-                self.selectedFlowMenu().fileName(self.oldFileName().length === 0 ? '未設定' : self.oldFileName());
-                nts.uk.ui.dialog.alertError(err.message);
-            }).always(() => {
-                nts.uk.ui.block.clear();
-            });
-        }
-
-        deleteButtonClick(): void {
-            var self = this;
-            var toppagePartID = self.selectedFlowMenu().toppagePartID();
-            if (toppagePartID) {
-                service.getFlowMenuById(self.selectedFlowMenu().toppagePartID()).done(function(res) {
-                    if (res.defClassAtr === 1) {
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_83" });
-                    }
-                    else {
-                        self.tempFileID(self.selectedFlowMenu().fileID());
-                        self.selectedFlowMenu().fileID('');
-                        self.selectedFlowMenu().fileName('未設定');
-                        self.isDelete(false);
-                    }
-                })
-            } else {
-                self.tempFileID(self.selectedFlowMenu().fileID());
-                self.selectedFlowMenu().fileID('');
-                self.selectedFlowMenu().fileName('未設定');
-                self.isDelete(false);
-            }
-        }
-
-        private deleteFile(): void {
-            var self = this;
-            nts.uk.ui.block.invisible();
-            service.deleteFile(self.tempFileID()).done((data) => {
-                self.selectedFlowMenu().fileID('');
-                self.selectedFlowMenu().fileName('未設定');
-            }).fail(function(error) {
-                nts.uk.ui.dialog.alertError(error.message);
-            }).always(() => {
-                nts.uk.ui.block.clear();
-            });
-        }
-
-        downloadFile(): void {
-            var self = this;
-            nts.uk.request.specials.donwloadFile(self.selectedFlowMenu().fileID());
+        download() {
+              var self = this;
+            if (!_.isEmpty(this.zipID())) 
+                nts.uk.request.specials.donwloadFile(self.selectedFlowMenu().fileID() + "/" + this.zipID());
+            else nts.uk.request.specials.donwloadFile(self.selectedFlowMenu().fileID());
         }
         /** Close Dialog */
         closeDialog(): void {
