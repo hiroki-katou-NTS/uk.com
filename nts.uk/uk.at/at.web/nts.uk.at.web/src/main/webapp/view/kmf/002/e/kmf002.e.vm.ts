@@ -19,20 +19,7 @@ module nts.uk.at.view.kmf002.e {
                 _self.commonTableMonthDaySet().fiscalYear.subscribe(function(newValue) {
                     // change year
                     if (!nts.uk.ui.errors.hasError()) {
-                        $.when(_self.start_page(), service.findFirstMonth()).done(function(data: any, data2: any) {
-//                            _self.commonTableMonthDaySet().arrMonth.removeAll();
-//                            for (let i=data2.startMonth-1; i<12; i++) {
-//                                _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 
-//                                                                              'day': ko.observable(data.publicHolidayMonthSettings[i].inLegalHoliday), 
-//                                                                              'enable': ko.observable(true)});    
-//                            }
-//                            for (let i=0; i<data2.startMonth-1; i++) {
-//                                _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 
-//                                                                              'day': ko.observable(data.publicHolidayMonthSettings[i].inLegalHoliday), 
-//                                                                              'enable': ko.observable(true)});    
-//                            }
-                            
-                            
+                        $.when(_self.start_page()).done(function(data: any) {
                         });    
                     }  
                 });
@@ -78,10 +65,9 @@ module nts.uk.at.view.kmf002.e {
                         });
                         _self.enableDelete(false);
                     } else {
-//                        for (let i=0; i<data.publicHolidayMonthSettings.length; i++) {
-//                            _self.commonTableMonthDaySet().arrMonth()[i].day(data.publicHolidayMonthSettings[i].inLegalHoliday);
-//                        }
-                        
+                        if (_.isEmpty(data2)) {
+                            data2.startMonth = 0;
+                        }
                         _self.commonTableMonthDaySet().arrMonth.removeAll();
                         for (let i=data2.startMonth-1; i<12; i++) {
                             _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 
