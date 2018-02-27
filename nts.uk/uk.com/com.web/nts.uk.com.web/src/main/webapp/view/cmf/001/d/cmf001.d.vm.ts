@@ -10,13 +10,21 @@ module nts.uk.com.view.cmf001.d.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
+        systemTypes: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
+            new model.ItemModel(0, 'HR System'),
+            new model.ItemModel(1, 'Attendance System'),
+            new model.ItemModel(2, 'Payroll System'),
+            new model.ItemModel(3, 'Office Helper')
+        ]);
+        systemType: model.ItemModel;
+        
         listCategory: KnockoutObservableArray<model.ExternalAcceptanceCategory>;
         selectedCategory: KnockoutObservable<string>;
         
         listCategoryItem: KnockoutObservableArray<model.ExternalAcceptanceCategoryItemData>;
         selectedCategoryItem: KnockoutObservable<string>;
         
-        selectedStandardImportSetting: KnockoutObservable<model.StandardAcceptanceConditionSetting> = ko.observable(new model.StandardAcceptanceConditionSetting('001', 'Import Setting 1', 2, 0, 0, 1));
+        selectedStandardImportSetting: KnockoutObservable<model.StandardAcceptanceConditionSetting>;
         dataTypes: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
             new model.ItemModel(0, 'Numeric'),
             new model.ItemModel(1, 'Character'),
@@ -32,8 +40,12 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         fileInfo: KnockoutObservable<any>;
         accept: KnockoutObservableArray<string>;
         onchange: (filename) => void;
-        constructor() {
+        constructor(data: any) {
             var self = this;
+            let item = _.find(self.systemTypes(), x => {return x.code == data.systemType;});
+            self.systemType = item;
+            self.selectedStandardImportSetting = ko.observable(new model.StandardAcceptanceConditionSetting(data.conditionSetting.conditionSettingCode, data.conditionSetting.conditionSettingName, data.conditionSetting.deleteExistData, data.conditionSetting.acceptMode, data.conditionSetting.csvDataItemLineNumber, data.conditionSetting.csvDataStartLine, data.conditionSetting.deleteExistDataMethod));
+            
             self.listCategory = ko.observableArray([
                 new model.ExternalAcceptanceCategory('1', 'Category 1'),
                 new model.ExternalAcceptanceCategory('2', 'Category 2'),
