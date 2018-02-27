@@ -823,15 +823,13 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.queryParam.retireEnd = self.statusPeriodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
 
                 // reload advanced search tab.
-                $.when(service.searchWorkplaceOfEmployee(self.baseDate().toDate()),
+                $.when(service.searchWorkplaceOfEmployee(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
                     service.searchAllWorkType())
                     .done((selectedCodes, workTypeList: Array<WorkType>) => {
                         self.selectedCodeWorkplace(selectedCodes);
                         self.listWorkType(workTypeList);
-                        _.forEach(workTypeList, item => {
-                            self.selectedWorkTypeCode.push(item.workTypeCode)
-                        });
-                        
+                        self.selectedWorkTypeCode(_.map(workTypeList, vl => vl.workTypeCode));
+
                         self.reloadDataSearch();
 
                         if (self.showEmployment) {
