@@ -195,6 +195,7 @@ module nts.uk.at.view.kmf002.c {
                     _self.enableSave(false);
                     _self.commonTableMonthDaySet().infoSelect2('');
                     _self.commonTableMonthDaySet().infoSelect3('');
+                    _self.setDefaultMonthDay();
                 } else {
                      _.forEach(_self.employeeList(), function(value: any) {
                         if (value.code == newValue) {
@@ -217,6 +218,13 @@ module nts.uk.at.view.kmf002.c {
             });
             }
             
+            private setDefaultMonthDay(): void {
+                let _self = this;
+                for (let i=0; i<_self.commonTableMonthDaySet().arrMonth().length; i++) {
+                    _self.commonTableMonthDaySet().arrMonth()[i].day(0); 
+                }     
+            }
+        
             private initKCP004(): void {
                 let _self = this;
                 $('#component-items-list').ntsListComponent(_self.listComponentOption).done(function(data: any) {            

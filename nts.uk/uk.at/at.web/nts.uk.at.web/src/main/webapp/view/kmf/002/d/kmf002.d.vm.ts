@@ -74,6 +74,13 @@ module nts.uk.at.view.kmf002.d {
 
                 return nameEmpSelected;
             }
+            
+            private setDefaultMonthDay(): void {
+                let _self = this;
+                for (let i=0; i<_self.commonTableMonthDaySet().arrMonth().length; i++) {
+                    _self.commonTableMonthDaySet().arrMonth()[i].day(0); 
+                }     
+            }
 
             private catchChangeSelectEmp(): void {
                 let _self = this;
@@ -85,7 +92,8 @@ module nts.uk.at.view.kmf002.d {
                     if (_.isUndefined(_self.selectedCode()) || _.isEmpty(_self.selectedCode()) 
                             || _.isNull(_self.selectedCode())) {
                         _self.enableDelete(false);
-                        _self.enableSave(false);    
+                        _self.enableSave(false);
+                        _self.setDefaultMonthDay();    
                     } else {
                         _self.enableDelete(true);
                         _self.enableSave(true);
