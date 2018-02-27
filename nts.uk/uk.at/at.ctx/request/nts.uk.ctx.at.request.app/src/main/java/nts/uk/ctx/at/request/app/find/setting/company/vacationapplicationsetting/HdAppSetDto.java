@@ -86,14 +86,21 @@ public class HdAppSetDto {
 	
 	public static HdAppSetDto convertToDto(HdAppSet domain){
 		return new HdAppSetDto(domain.getCompanyId(), 
-				domain.getUse60h().value, domain.getObstacleName().v(), 
-				domain.getRegisShortLostHd().value, domain.getHdName().v(), domain.getRegisLackPubHd().value,
+				domain.getUse60h().value, domain.getObstacleName() == null ? null : domain.getObstacleName().v(), 
+				domain.getRegisShortLostHd().value, 
+				domain.getHdName() == null ? null : domain.getHdName().v(), domain.getRegisLackPubHd().value,
 				domain.getChangeWrkHour().value, domain.getCkuperLimit().value, domain.getActualDisp().value, 
-				domain.getWrkHours().value, domain.getPridigCheck().value, domain.getYearHdName().v(), 
-				domain.getRegisNumYear().value, domain.getFurikyuName().v(), domain.getRegisInsuff().value, 
-				domain.getUseGener().value, domain.getUseYear().value, domain.getTimeDigest().v(), 
-				domain.getAbsenteeism().v(), domain.getConcheckOutLegal().value, domain.getSpecialVaca().v(), 
-				domain.getConcheckDateRelease().value, domain.getAppDateContra().value, domain.getYearResig().v(),
+				domain.getWrkHours().value, domain.getPridigCheck().value, 
+				domain.getYearHdName() == null ? null : domain.getYearHdName().v(), 
+				domain.getRegisNumYear().value, 
+				domain.getFurikyuName() == null ? null : domain.getFurikyuName().v(), domain.getRegisInsuff().value, 
+				domain.getUseGener().value, domain.getUseYear().value, 
+				domain.getTimeDigest() == null ? null : domain.getTimeDigest().v(), 
+				domain.getAbsenteeism() == null ? null : domain.getAbsenteeism().v(), 
+				domain.getConcheckOutLegal().value, 
+				domain.getSpecialVaca() == null ? null : domain.getSpecialVaca().v(), 
+				domain.getConcheckDateRelease().value, domain.getAppDateContra().value, 
+				domain.getYearResig() == null ? null : domain.getYearResig().v(),
 				domain.getRegisShortReser().value);
 	}
 }
