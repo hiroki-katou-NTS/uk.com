@@ -62,6 +62,9 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		List<String> jobTitleCodes = paramQuery.getJobTitleCodes();
 		List<String> worktypeCodes = paramQuery.getWorktypeCodes();
 
+		// Add company condition 
+		conditions.add(cb.equal(root.get(EmployeeDataView_.cid), comId));
+
 		// employment condition
 		if (paramQuery.getFilterByEmployment()) {
 			// return empty list if condition code list is empty
