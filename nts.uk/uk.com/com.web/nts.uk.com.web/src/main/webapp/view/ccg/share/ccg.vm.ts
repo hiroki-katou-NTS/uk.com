@@ -1177,7 +1177,11 @@ module nts.uk.com.view.ccg.share.ccg {
 
                     // Data found
                     if (isAdvancedSearch && self.showEmployeeSelection) {
+                        // Load list employee to KCP005
                         self.employeeinfo.employeeInputList(self.toUnitModelList(data));
+
+                        // Reset selected employees on KCP005
+                        self.selectedCodeEmployee([]);
                     } else {
                         self.returnDataFromCcg001(self.combineData(data));
                         // Hide component.
