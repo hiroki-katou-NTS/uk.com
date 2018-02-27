@@ -499,7 +499,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.systemType = options.systemType;
                 // always show quick search if advanced search is hidden
                 self.showQuickSearchTab = options.showAdvancedSearchTab ? options.showQuickSearchTab : true;
-                self.showBaseDate = options.showBaseDate;
+                self.showBaseDate = !options.showBaseDate && !options.showPeriod ? true : options.showBaseDate;
                 self.showClosure = options.showClosure;
                 self.showAllClosure = options.showAllClosure;
                 self.showPeriod = options.showPeriod;
@@ -507,8 +507,10 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 /** Required parameter */
                 self.baseDate(moment.utc(options.baseDate));
-                self.periodStart(moment.utc(options.periodStartDate));
-                self.periodEnd(moment.utc(options.periodEndDate));
+                self.periodStart(options.periodFormatYM ?
+                    moment.utc(options.periodStartDate).startOf('month') : moment.utc(options.periodStartDate).startOf('day'));
+                self.periodEnd(options.periodFormatYM ?
+                    moment.utc(options.periodEndDate).startOf('month') : moment.utc(options.periodEndDate).startOf('day'));
                 self.selectedIncumbent(options.inService);
                 self.selectedLeave(options.leaveOfAbsence);
                 self.selectedClosed(options.closed);
