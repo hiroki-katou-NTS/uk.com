@@ -64,9 +64,13 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 		// employment condition
 		if (paramQuery.getFilterByEmployment()) {
-			if (!employmentCodes.isEmpty()) {
-				conditions.add(root.get(EmployeeDataView_.empCd).in(employmentCodes));
+			// return empty list if condition code list is empty
+			if (employmentCodes.isEmpty()) {
+				return Collections.emptyList();
 			}
+
+			// update query conditions
+			conditions.add(root.get(EmployeeDataView_.empCd).in(employmentCodes));
 			conditions
 					.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.employmentStrDate), paramQuery.getBaseDate()));
 			conditions.add(
@@ -74,9 +78,13 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		}
 		// workplace condition
 		if (paramQuery.getFilterByWorkplace()) {
-			if (!workplaceCodes.isEmpty()) {
-				conditions.add(root.get(EmployeeDataView_.workplaceId).in(workplaceCodes));
+			// return empty list if condition code list is empty
+			if (workplaceCodes.isEmpty()) {
+				return Collections.emptyList();
 			}
+
+			// update query conditions
+			conditions.add(root.get(EmployeeDataView_.workplaceId).in(workplaceCodes));
 			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wplStrDate), paramQuery.getBaseDate()));
 			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wplEndDate), paramQuery.getBaseDate()));
 			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wplInfoStrDate), paramQuery.getBaseDate()));
@@ -85,17 +93,25 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		}
 		// classification condition
 		if (paramQuery.getFilterByClassification()) {
-			if (!classificationCodes.isEmpty()) {
-				conditions.add(root.get(EmployeeDataView_.classificationCode).in(classificationCodes));
+			// return empty list if condition code list is empty
+			if (classificationCodes.isEmpty()) {
+				return Collections.emptyList();
 			}
+
+			// update query conditions
+			conditions.add(root.get(EmployeeDataView_.classificationCode).in(classificationCodes));
 			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.classStrDate), paramQuery.getBaseDate()));
 			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.classEndDate), paramQuery.getBaseDate()));
 		}
 		// jobtitle condition
 		if (paramQuery.getFilterByJobTitle()) {
-			if (!jobTitleCodes.isEmpty()) {
-				conditions.add(root.get(EmployeeDataView_.jobTitleId).in(jobTitleCodes));
+			// return empty list if condition code list is empty
+			if (jobTitleCodes.isEmpty()) {
+				return Collections.emptyList();
 			}
+
+			// update query conditions
+			conditions.add(root.get(EmployeeDataView_.jobTitleId).in(jobTitleCodes));
 			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.jobStrDate), paramQuery.getBaseDate()));
 			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.jobEndDate), paramQuery.getBaseDate()));
 			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.jobInfoStrDate), paramQuery.getBaseDate()));
@@ -103,9 +119,13 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 					.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.jobInfoEndDate), paramQuery.getBaseDate()));
 		}
 		if (paramQuery.getSystemType() == SystemType.EMPLOYMENT.value && paramQuery.getFilterByWorktype()) {
-			if (!worktypeCodes.isEmpty()) {
-				conditions.add(root.get(EmployeeDataView_.workTypeCd).in(worktypeCodes));
+			// return empty list if condition code list is empty
+			if (worktypeCodes.isEmpty()) {
+				return Collections.emptyList();
 			}
+
+			// update query conditions
+			conditions.add(root.get(EmployeeDataView_.workTypeCd).in(worktypeCodes));
 			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.workTypeStrDate),
 					GeneralDate.localDate(paramQuery.getBaseDate().toLocalDate())));
 			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.workTypeEndDate),
@@ -131,6 +151,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 					cb.greaterThan(root.get(EmployeeDataView_.absEndDate), paramQuery.getPeriodStart()));
 			incumbentCondition = cb.and(comDateCondition, absDateCondition);
 		}
+
 		// include workers on leave condition
 		if (paramQuery.getIncludeWorkersOnLeave()) {
 			Predicate comDateCondition = cb.or(
@@ -146,6 +167,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			Predicate frameNoCondition = cb.equal(root.get(EmployeeDataView_.tempAbsFrameNo), LEAVE_ABSENCE_QUOTA_NO);
 			workerOnLeaveCondition = cb.and(comDateCondition, absDateCondition, frameNoCondition);
 		}
+
 		// include occupancy condition
 		if (paramQuery.getIncludeOccupancy()) {
 			Predicate comDateCondition = cb.or(
@@ -161,8 +183,8 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			Predicate frameNoCondition = cb.notEqual(root.get(EmployeeDataView_.tempAbsFrameNo),
 					LEAVE_ABSENCE_QUOTA_NO);
 			occupancyCondition = cb.and(comDateCondition, absDateCondition, frameNoCondition);
-
 		}
+
 		// include retire condition
 		if (paramQuery.getIncludeRetirees()) {
 			retireCondition = cb.greaterThan(root.get(EmployeeDataView_.comEndDate), paramQuery.getRetireStart());
