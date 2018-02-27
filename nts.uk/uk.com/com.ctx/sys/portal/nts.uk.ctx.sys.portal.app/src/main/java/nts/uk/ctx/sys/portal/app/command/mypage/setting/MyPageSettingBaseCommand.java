@@ -28,7 +28,7 @@ public class MyPageSettingBaseCommand {
 	/** The use my page. */
 	private Integer useMyPage;
 
-	/** The use Standar widget. */
+	/** The use Standard widget. */
 	private Integer useStandardWidget;
 	
 	/** The use Optional Widget. */

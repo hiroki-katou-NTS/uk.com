@@ -3,7 +3,7 @@ interface JQuery {
     onkey(command: "down"|"up"|"press", keyCode: number, handler: (JQueryEventObject) => void): JQuery;
     dialogPositionControl(): JQuery;
     exposeOnTabPanel(): JQuery;
-    
+    ctState(name: "selected"|"required"|"name", method: "set"|"get", value?: any): any; 
 }
 
 module nts.uk.ui.jqueryExtentions {
@@ -103,4 +103,22 @@ module nts.uk.ui.jqueryExtentions {
         
         return $target;
     };
+    
+    $.fn.ctState = function (name: string, method: string, value: any): any {
+        
+        let $this = $(this);
+        
+        let dataName = {
+            selected: "ctstate-selected",
+            required: "ctstate-required",
+            name: "ctstate-name"
+        }[name];
+        
+        switch (method) {
+            case "set":
+                return $this.data(dataName, value);
+            case "get":
+                return $this.data(dataName);
+        }
+    }
 }

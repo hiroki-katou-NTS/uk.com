@@ -32,6 +32,45 @@ module nts.uk.at.view.ksm011.d.viewmodel {
             let dfd = $.Deferred();
             self.roleId = ko.observable();
             self.currentCodeItem = ko.observable();
+
+            self.initComponent();
+
+            self.listPermissionCommon = ko.observableArray([]);
+            self.listPermissionWorkplace = ko.observableArray([]);
+            self.listPermissionEmployee = ko.observableArray([]);
+            self.listPermissionDate = ko.observableArray([]);
+            self.listPermissionShift = ko.observableArray([]);
+            self.listDeadline = ko.observableArray([]);
+            self.outputAtr = ko.observableArray([
+                { code: 0, name: nts.uk.resource.getText("KSM011_8") },
+                { code: 1, name: nts.uk.resource.getText("KSM011_9") }
+            ]);
+            self.currentItem = ko.observable(new PermissonDto({}));
+            self.items = ko.observableArray([]);
+            self.useCls = ko.observable(0);
+            self.correctDeadline = ko.observable(0);
+            self.component.currentCode.subscribe(function(codeChanged) {
+                self.findAll(codeChanged);
+                self.useCls(0);
+                self.correctDeadline(0);
+            });
+        }
+
+        /**
+         * Start page.
+         */
+        start(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            self.getListWorkplace();
+            $.when(self.getData()).done(function() {
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+
+        initComponent() {
+            let self = this;
             self.component = new ccg.component.viewmodel.ComponentModel({
                 roleType: 1,
                 multiple: false
@@ -61,37 +100,24 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                 maxRow: 3
             });
 
-            self.listPermissionCommon = ko.observableArray([]);
-            self.listPermissionWorkplace = ko.observableArray([]);
-            self.listPermissionEmployee = ko.observableArray([]);
-            self.listPermissionDate = ko.observableArray([]);
-            self.listPermissionShift = ko.observableArray([]);
-            self.listDeadline = ko.observableArray([]);
-            self.outputAtr = ko.observableArray([
-                { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                { code: 1, name: nts.uk.resource.getText("KSM011_9") }
-            ]);
-            self.currentItem = ko.observable(new PermissonDto({}));
-            self.items = ko.observableArray([]);
-            self.useCls = ko.observable(0);
-            self.correctDeadline = ko.observable(0);
-            self.component.currentCode.subscribe(function(codeChanged) {
-                self.findAll(codeChanged);
-                self.useCls(0);
-                self.correctDeadline(0);
+            self.component026.startPage().done(function() {
+                self.listPermissionCommon(self.component026.listPermissions());
+            }).then(() => {
+                self.componentWorkplace.startPage().done(function() {
+                    self.listPermissionWorkplace(self.componentWorkplace.listPermissions());
+                });
+            }).then(() => {
+                self.componentEmployee.startPage().done(function() {
+                    self.listPermissionEmployee(self.componentEmployee.listPermissions());
+                });
+            }).then(() => {
+                self.componentDate.startPage().done(function() {
+                    self.listPermissionDate(self.componentDate.listPermissions());
+                });
+            }).then(() => {
+                self.componentShift.startPage().done(function() {
+                });
             });
-        }
-
-        /**
-         * Start page.
-         */
-        start(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            $.when(self.getData(), self.getListWorkplace()).done(function() {
-                dfd.resolve();
-            });
-            return dfd.promise();
         }
 
         registration() {
@@ -163,13 +189,13 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                 shiftPermisson: shiftPermisson,
                 schemodifyDeadline: schemodifyDeadline
             });
-                service.add(ko.toJS(permissonData)).done(function() {
-                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message);
-                }).always(function() {
-                    nts.uk.ui.block.clear();
-                })
+            service.add(ko.toJS(permissonData)).done(function() {
+                nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alertError(res.message);
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            })
         }
 
         private getData() {
@@ -181,44 +207,19 @@ module nts.uk.at.view.ksm011.d.viewmodel {
             });
             return dfd.promise();
         }
+
         /**
          * get list workplace
          */
         private getListWorkplace() {
             let self = this;
             let dfd = $.Deferred();
-            
-            self.component026.roleId(self.component.currentCode());
-            self.listPermissionCommon([]);
-            self.component026.startPage().done(function() {
-                self.listPermissionCommon(self.component026.listPermissions());
-                dfd.resolve();
-            });
 
             self.componentWorkplace.roleId(self.component.currentCode());
-            self.componentWorkplace.startPage().done(function() {
-                self.listPermissionWorkplace(self.componentWorkplace.listPermissions());
-                dfd.resolve();
-            });
-
+            self.component026.roleId(self.component.currentCode());
             self.componentEmployee.roleId(self.component.currentCode());
-            self.componentEmployee.startPage().done(function() {
-                self.listPermissionEmployee(self.componentEmployee.listPermissions());
-                dfd.resolve();
-            });
-
             self.componentDate.roleId(self.component.currentCode());
-            self.componentDate.startPage().done(function() {
-                self.listPermissionDate(self.componentDate.listPermissions());
-                dfd.resolve();
-            });
-
             self.componentShift.roleId(self.component.currentCode());
-            self.componentShift.startPage().done(function() {
-                self.listPermissionShift(self.componentShift.listPermissions());
-                dfd.resolve();
-            });
-
         }
 
 
@@ -238,7 +239,6 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                     };
                     self.items.push(new PermissonDto(totalTime));
 
-
                     var listCommon = [];
                     _.forEach(self.listPermissionCommon(), function(item) {
                         var author = _.find(permissonTotalArr.commonAuthor, function(a: any) { return a.functionNoCommon == item.functionNo });
@@ -249,7 +249,6 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                             item.availability(!!item.availability()) ? 1 : 0;
                         }
                         listCommon.push(item);
-                        self.listPermissionCommon([]);
                         self.listPermissionCommon(listCommon);
 
                         if (author) {
@@ -258,7 +257,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                             self.component026.roleId(roleId);
                         }
                     });
- 
+
                     var listWorkplace = [];
                     _.forEach(self.listPermissionWorkplace(), function(item) {
                         var author = _.find(permissonTotalArr.perWorkplace, function(a: any) { return a.functionNoWorkplace == item.functionNo });
@@ -335,7 +334,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                         if (permissonTotalArr.schemodifyDeadline.length = 0) {
                             self.useCls(0);
                             self.correctDeadline(0);
-                            
+
 
                         } else {
                             self.useCls(item.useCls);

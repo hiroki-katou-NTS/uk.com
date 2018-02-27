@@ -57,4 +57,10 @@ button.nts-switch-button {
 	  	box-shadow: 0 0 1px 1px $focused_color;
 	  	border-radius: 2px;
 	}
+	
+	&.error {
+		button {
+			border-color: #ff6666;
+		}
+	}
 }

@@ -46,7 +46,8 @@ module nts.uk.pr.view.ccg015.b {
             export interface MyPageSettingDto {
                 companyId: string;
                 useMyPage: number;
-                useWidget: number;
+                useStandarWidget: number;
+                useOptionalWidget: number;
                 useDashboard: number;
                 useFlowMenu: number;
                 externalUrlPermission: number;
