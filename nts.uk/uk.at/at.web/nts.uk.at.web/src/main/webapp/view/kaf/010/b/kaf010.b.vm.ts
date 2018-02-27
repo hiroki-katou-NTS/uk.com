@@ -108,7 +108,7 @@ module nts.uk.at.view.kaf010.b {
             flexExessTimePre: KnockoutObservable<number> = ko.observable(null);
             
             // AppOvertimeReference
-            appDateReference: KnockoutObservable<string> = ko.observable(moment().format(this.DATEFORMART));
+            appDateReference: KnockoutObservable<string> = ko.observable(moment().format(this.DATE_FORMAT));
             workTypeCodeReference:  KnockoutObservable<string> = ko.observable("");
             workTypeNameReference:  KnockoutObservable<string> = ko.observable("");
             siftCodeReference:  KnockoutObservable<string> = ko.observable("");
@@ -240,10 +240,10 @@ module nts.uk.at.view.kaf010.b {
                     self.siftCodePre(data.preAppHolidayWorkDto.workTime.siftCode);
                     self.siftNamePre(data.preAppHolidayWorkDto.workTime.siftName);
                 }
-                if (nts.uk.util.isNullOrEmpty(data.preAppHolidayWorkDto.workClockStart1) || nts.uk.util.isNullOrEmpty(data.preAppHolidayWorkDto.workClockEnd1)) {
+                if (!nts.uk.util.isNullOrEmpty(data.preAppHolidayWorkDto.workClockStart1) || !nts.uk.util.isNullOrEmpty(data.preAppHolidayWorkDto.workClockEnd1)) {
                     self.workClockFrom1To1Pre(self.convertIntToTime(data.preAppHolidayWorkDto.workClockStart1) + " " + nts.uk.resource.getText("KAF005_126") + " " + self.convertIntToTime(data.preAppHolidayWorkDto.workClockEnd1));
                 }
-                if (nts.uk.util.isNullOrEmpty(data.preAppHolidayWorkDto.workClockStart2) || nts.uk.util.isNullOrEmpty(data.preAppHolidayWorkDto.workClockEnd2)) {
+                if (!nts.uk.util.isNullOrEmpty(data.preAppHolidayWorkDto.workClockStart2) || !nts.uk.util.isNullOrEmpty(data.preAppHolidayWorkDto.workClockEnd2)) {
                     self.workClockFrom2To2Pre(self.convertIntToTime(data.preAppHolidayWorkDto.workClockStart2) + " " + nts.uk.resource.getText("KAF005_126") + " " + self.convertIntToTime(data.preAppHolidayWorkDto.workClockEnd2));
                 }
                 if (self.workClockFrom2To2Pre() == null) {
@@ -477,25 +477,26 @@ module nts.uk.at.view.kaf010.b {
                             self.updateOvertime(command);
                         }
                     } else if (data.errorCode == 1){
+                        self.calculateFlag(1);
                         if(data.frameNo == -1){
                             let frameName = "";
                             //Setting color for item error
-                            for (let i = 0; i < self.overtimeHours().length; i++) {
-                                self.changeColor( self.overtimeHours()[i].attendanceID(), self.overtimeHours()[i].frameNo());
-                                if(self.overtimeHours().length == 1){
-                                    frameName = self.overtimeHours()[i].frameName();
+                            for (let i = 0; i < self.breakTimes().length; i++) {
+                                self.changeColor( self.breakTimes()[i].attendanceID(), self.breakTimes()[i].frameNo(),data.errorCode);
+                                if(self.breakTimes().length == 1){
+                                    frameName = self.breakTimes()[i].frameName();
                                 }else{
                                     if(i == 0){
-                                        frameName = self.overtimeHours()[0].frameName();
+                                        frameName = self.breakTimes()[0].frameName();
                                     }else{
-                                        frameName += "、"+ self.overtimeHours()[i].frameName();
+                                        frameName += "、"+ self.breakTimes()[i].frameName();
                                     }
                                 }
                             }
                             dialog.alertError({messageId:"Msg_424", messageParams: [self.employeeName(),frameName]}) .then(function() { nts.uk.ui.block.clear(); }); 
                         }else{
                           //Change background color
-                            self.changeColor( data.attendanceId, data.frameNo);
+                            self.changeColor( data.attendanceId, data.frameNo,data.errorCode);
                             dialog.alertError({messageId:"Msg_424", messageParams: [self.employeeName(),$('#overtimeHoursHeader_'+data.attendanceId+'_'+data.frameNo).text()]}) .then(function() { nts.uk.ui.block.clear(); }); 
                         }
                     }
@@ -566,21 +567,25 @@ module nts.uk.at.view.kaf010.b {
                         self.workTypeName(childData.selectedWorkTypeName);
                         self.siftCD(childData.selectedWorkTimeCode);
                         self.siftName(childData.selectedWorkTimeName);
-                        service.getRecordWork(
-                            {
-                                employeeID: self.employeeID(), 
-                                appDate: moment(self.appDate()).format("YYYY/MM/DD"),
-                                siftCD: self.siftCD(),
-                                prePostAtr: self.prePostSelected(),
-                                overtimeHours: ko.toJS(self.overtimeHours)
-                            }
-                        ).done(data => {
-                            self.timeStart1(data.startTime1 == -1 ? null : data.startTime1);
-                            self.timeEnd1(data.endTime1 == -1 ? null : data.endTime1);
-                            self.timeStart2(data.startTime2 == -1 ? null : data.startTime2);
-                            self.timeEnd2(data.endTime2 == -1 ? null : data.endTime2); 
-                            self.convertAppOvertimeReferDto(data);  
-                        });
+                        self.timeStart1(childData.firstStartTime);
+                        self.timeEnd1(childData.firstEndTime);
+                        self.timeStart2(childData.secondStartTime);
+                        self.timeEnd2(childData.secondEndTime);
+                        //                    service.getRecordWork(
+                        //                        {
+                        //                            employeeID: self.employeeID(), 
+                        //                            appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
+                        //                            siftCD: self.siftCD(),
+                        //                            prePostAtr: self.prePostSelected(),
+                        //                            overtimeHours: ko.toJS(self.breakTimes())
+                        //                        }
+                        //                    ).done(data => {
+                        //                        self.timeStart1(data.startTime1 == null ? null : data.startTime1);
+                        //                        self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
+                        //                        self.timeStart2(data.startTime2 == null ? null : data.startTime2);
+                        //                        self.timeEnd2(data.endTime2 == null ? null : data.endTime2);
+                        //                        self.convertAppOvertimeReferDto(data);
+                        //                    });
                     }
                 })
             }
@@ -608,15 +613,17 @@ module nts.uk.at.view.kaf010.b {
                     let endTime = self.restTime()[i].endTime();
                     let attendanceId = self.restTime()[i].attendanceID();
                     let frameNo = self.restTime()[i].frameNo();
-                    if(!self.validateTime(startTime, endTime, 'input#restTimeStart_'+attendanceId+'_'+frameNo)){
-                        return false;
-                    };
+                    if(!nts.uk.util.isNullOrEmpty(startTime) && startTime != ""){
+                        if(!self.validateTime(startTime, endTime, 'input#restTimeStart_'+attendanceId+'_'+frameNo)){
+                            return false;
+                        };
+                    }
                 }
                 return true;            
             }
             //Validate input time
             validateTime(startTime: number, endTime: number, elementId: string): boolean{            
-                if(startTime > endTime){
+                if(startTime >= endTime){
                     dialog.alertError({messageId:"Msg_307"})
                      $(elementId).focus();
                     return false;
@@ -744,10 +751,10 @@ module nts.uk.at.view.kaf010.b {
                     self.siftCodeReference(data.appOvertimeReference.siftTypeRefer.siftCode);
                     self.siftNameReference(data.appOvertimeReference.siftTypeRefer.siftName);
                 }
-                if(data.appOvertimeReference.workClockFrom1Refer != -1 || data.appOvertimeReference.workClockTo1Refer!= -1){
+                if(data.appOvertimeReference.workClockFrom1Refer != null || data.appOvertimeReference.workClockTo1Refer!= null){
                      self.workClockFrom1To1Reference(self.convertIntToTime(data.appOvertimeReference.workClockFrom1Refer) + " "+ nts.uk.resource.getText("KAF005_126") +" "+self.convertIntToTime(data.appOvertimeReference.workClockTo1Refer));
                 }
-                if(data.appOvertimeReference.workClockFrom2Refer != -1 || data.appOvertimeReference.workClockTo2Refer!= -1){
+                if(data.appOvertimeReference.workClockFrom2Refer != null || data.appOvertimeReference.workClockTo2Refer != null){
                     self.workClockFrom2To2Reference(self.convertIntToTime(data.appOvertimeReference.workClockFrom2Refer) +" "+ nts.uk.resource.getText("KAF005_126") +" "+ self.convertIntToTime(data.appOvertimeReference.workClockTo2Refer));
                 }
                 if(self.workClockFrom2To2Reference () == null){

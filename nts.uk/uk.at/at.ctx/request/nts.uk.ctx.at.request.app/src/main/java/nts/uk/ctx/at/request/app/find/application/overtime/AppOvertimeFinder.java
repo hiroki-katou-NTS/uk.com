@@ -33,6 +33,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.Colle
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.output.ApprovalRootPattern;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
@@ -114,6 +115,8 @@ public class AppOvertimeFinder {
 	private CollectApprovalRootPatternService collectApprovalRootPatternService;
 	@Inject
 	private StartupErrorCheckService startupErrorCheckService;
+	@Inject
+	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
 	/**
 	 * @param url
@@ -255,8 +258,12 @@ public class AppOvertimeFinder {
 				}
 				overTimeDto.setSiftTypes(siftCodes);
 				
-				WorkTimeSetting workTime = workTimeRepository.findByCode(companyID, appOverTime.getSiftCode().v()).get();
-				overTimeDto.setSiftType(new SiftType(workTime.getWorktimeCode().v(), workTime.getWorkTimeDisplayName().getWorkTimeName().v()));
+				WorkTimeSetting workTime = workTimeRepository.findByCode(companyID, appOverTime.getSiftCode().v()).isPresent() ? workTimeRepository.findByCode(companyID, appOverTime.getSiftCode().v()).get() : null;
+				if(workTime != null){
+					overTimeDto.setSiftType(new SiftType(workTime.getWorktimeCode().v(), workTime.getWorkTimeDisplayName().getWorkTimeName().v()));
+				}else{
+					overTimeDto.setSiftType(new SiftType("", ""));
+				}
 				
 				// 01-17_休憩時間取得(lay thoi gian nghi ngoi)
 				boolean displayRestTime = iOvertimePreProcess.getRestTime(approvalFunctionSetting);
@@ -502,10 +509,14 @@ public class AppOvertimeFinder {
 		
 		
 		// ドメインモデル「申請表示設定」．事前事後区分表示をチェックする
-//		if(appCommonSettingOutput.applicationSetting.getDisplayPrePostFlg().value == AppDisplayAtr.NOTDISPLAY.value){
-//			// 3.事前事後の判断処理(事前事後非表示する場合)
-//			PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), GeneralDate.fromString(appDate, DATE_FORMAT));
-//		}
+		if(appCommonSettingOutput.applicationSetting.getDisplayPrePostFlg().value == AppDisplayAtr.NOTDISPLAY.value){
+			result.setDisplayPrePostFlg(AppDisplayAtr.NOTDISPLAY.value);
+			// 3.事前事後の判断処理(事前事後非表示する場合)
+			PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), GeneralDate.fromString(appDate, DATE_FORMAT));
+			if(prePostAtrJudgment != null){
+				prePostAtr = prePostAtrJudgment.value;
+			}
+		}
 		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする ( Domain model "application setting". Check base date of approval route )
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
 			

@@ -14,7 +14,7 @@ public interface IFactoryHolidayWork {
 
 		// 残業申請
 		AppHolidayWork buildHolidayWork(String companyID, String appID, String workTypeCode, String siftCode,
-				int workClockStart1, int workClockEnd1, int goAtr1,int backAtr1,int workClockStart2, int workClockEnd2,int goAtr2, int backAtr2, String divergenceReason,
+				Integer workClockStart1, Integer workClockEnd1, Integer workClockStart2, Integer workClockEnd2,int goAtr1,int backAtr1,int goAtr2, int backAtr2, String divergenceReason,
 				int overTimeShiftNight, List<HolidayWorkInput> holidayWorkInputs);
 
 }
