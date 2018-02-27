@@ -1,0 +1,248 @@
+<div id="container">
+	<div id="content_left">
+		<div class="div_line" id='number_Info'>
+			<div class="div_line_col_1">
+				<label data-bind="text : '#{i18n.getText('KAF011_64')}'"></label>
+			</div>
+			<div class="div_line_col_2">
+				<table id="number_Info">
+					<tr>
+						<th class="bg-green">HEADER1</th>
+					</tr>
+					<tr>
+						<td>CELL1</td>
+					</tr>
+				</table>
+			</div>
+			<div></div>
+		</div>
+
+		<div class="div_line">
+			<div class="div_line_col_1">
+				<div data-bind="ntsFormLabel: {  }">#{i18n.getText('KAF011_11')}</div>
+			</div>
+			<div class="div_line_col_2"></div>
+		</div>
+		<div class="div_line">
+			<div class="div_line_col_1">
+				<div data-bind="ntsFormLabel: {  }">#{i18n.getText('KAF011_13')}</div>
+			</div>
+			<div class="div_line_col_2">
+				<div id="swb_pre_post_type" class="cf"
+					data-bind="ntsSwitchButton: {
+							options: prePostTypes ,
+							optionsValue: 'code',
+							optionsText: 'text',
+							value: prePostSelectedCode ,
+							enable: true }"></div>
+
+			</div>
+		</div>
+		<div class="div_line">
+			<div class="div_line_col_1">
+				<div data-bind="ntsFormLabel: {  }">#{i18n.getText('KAF011_18')}</div>
+			</div>
+			<div class="div_line_col_2">
+				<div id="swb_app_com" class="cf"
+					data-bind="ntsSwitchButton: {
+							options: appComItems ,
+							optionsValue: 'code',
+							optionsText: 'text',
+							value: appComSelectedCode ,
+							enable: true }"></div>
+			</div>
+		</div>
+		<!-- app rec -->
+		<div id="app_rec_container" class="div_line">
+			<div id="app_rec_header" class="div_line app_header">
+				#{i18n.getText('KAF011_1')}</div>
+
+			<div class="div_line">
+				<hr style="float: none;" />
+			</div>
+
+			<div class="div_line">
+				<div class="div_line_col_1">
+					<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('KAF011_22')}</div>
+				</div>
+				<div class="div_line_col_2">
+					<div
+						data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
+				</div>
+			</div>
+			<div class="div_line">
+				<div class="div_line_col_1">
+					<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('KAF011_28')}</div>
+				</div>
+				<div class="div_line_col_2">
+					<div tabindex="7" id="combo-box"
+						data-bind="ntsComboBox: {
+										name: '#{i18n.getText('KAF011_28')}',
+										options: dutyTypes ,
+										optionsValue: 'value' ,
+										visibleItemsCount: 5 ,
+										value: dutySelectedType ,
+										optionsText: 'name',
+										editable: false,
+										enable: true,
+										columns: [
+											{ prop: 'name', length: 10 },
+										]}">
+					</div>
+
+				</div>
+			</div>
+			<div class="div_line">
+				<div class="div_line_col_1">
+					<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_30')}</div>
+				</div>
+				<div class="div_line_col_2 working_hour">
+					<button data-bind=" click: openKDL003" tabindex="1">#{i18n.getText('KAF011_5')}</button>
+					<div data-bind='text:genWorkingText()'></div>
+				</div>
+			</div>
+			<div class="div_line">
+				<div class="div_line_col_1">
+					<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_31')}</div>
+				</div>
+				<div class="div_line_col_2 working_hour"
+					data-bind='with: workingHour '>
+					<input
+						data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
+							value: startTime , enable: true , readonly: false , required: false ,option: timeOption }" />
+					<div class="cf"
+						data-bind="ntsSwitchButton: {
+							options: startTypes ,
+							optionsValue: 'code',
+							optionsText: 'text',
+							value: startType ,
+							enable: true }"></div>
+					<div>#{i18n.getText('KAF011_37')}</div>
+					<input
+						data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
+							value: endTime , enable: true , readonly: false , required: false,option: timeOption }" />
+
+					<div class="cf"
+						data-bind="ntsSwitchButton: {
+							options: endTypes ,
+							optionsValue: 'code',
+							optionsText: 'text',
+							value: endType ,
+							enable: true }"></div>
+				</div>
+			</div>
+			<div id="app_rec_des" class="div_line">description</div>
+
+		</div>
+
+		<!-- app break -->
+		<div id="app_break_container">
+			<div id="app_break_header" class="div_line app_header">
+				#{i18n.getText('KAF011_2')}</div>
+
+			<div class="div_line">
+				<hr style="float: none;" />
+			</div>
+
+			<div class="div_line">
+				<div class="div_line_col_1">
+					<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('KAF011_22')}</div>
+				</div>
+				<div class="div_line_col_2">
+					<div
+						data-bind="ntsDatePicker: {value: appDate , dateFormat: 'YYYY/MM/DD' ,required:true,name:'#{i18n.getText('KAF011_22')}'}"></div>
+				</div>
+			</div>
+			<div class="div_line">
+				<div class="div_line_col_1">
+					<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('KAF011_28')}</div>
+				</div>
+				<div class="div_line_col_2">
+					<div tabindex="7" id="combo-box"
+						data-bind="ntsComboBox: {
+										name: '#{i18n.getText('KAF011_28')}',
+										options: dutyTypes ,
+										optionsValue: 'value' ,
+										visibleItemsCount: 5 ,
+										value: dutySelectedType ,
+										optionsText: 'name',
+										editable: false,
+										enable: true,
+										columns: [
+											{ prop: 'name', length: 10 },
+										]}">
+					</div>
+
+				</div>
+			</div>
+			<div class="div_line change_woking_hours">
+				<div class="div_line">
+					<div data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KAF011_29')}</div>
+				</div>
+				<div class="div_line">
+					<div class="div_line_col_1">
+						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_30')}</div>
+					</div>
+					<div class="div_line_col_2 working_hour">
+						<button data-bind=" click: openKDL003" tabindex="1">#{i18n.getText('KAF011_5')}</button>
+						<div data-bind='text:genWorkingText()'></div>
+					</div>
+				</div>
+				<div class="div_line">
+					<div class="div_line_col_1">
+						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_31')}</div>
+					</div>
+					<div class="div_line_col_2 working_hour"
+						data-bind='with: workingHour '>
+						<input
+							data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
+							value: startTime , enable: true , readonly: false , required: false,option: timeOption }" />
+
+						<div>#{i18n.getText('KAF011_37')}</div>
+						<input
+							data-bind="ntsTimeWithDayEditor: { name: '#{i18n.getText('KAF011_32')}', 
+							value: endTime , enable: true , readonly: false , required: false  ,option: timeOption}" />
+
+					</div>
+				</div>
+			</div>
+			<div id="app_break_des" class="div_line">description</div>
+		</div>
+
+		<div class="div_line">
+			<div class="div_line_col_1">
+				<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_16')}</div>
+			</div>
+			<div class="div_line_col_2">
+				<div tabindex="7" id="combo-box"
+					data-bind="ntsComboBox: {
+										name: '#{i18n.getText('KAF011_28')}',
+										options: stereoTypes ,
+										optionsValue: 'value' ,
+										visibleItemsCount: 5 ,
+										value: stereoSelectedType ,
+										optionsText: 'name',
+										editable: false,
+										enable: true,
+										columns: [
+											{ prop: 'name', length: 10 },
+										]}">
+				</div>
+			</div>
+		</div>
+		<div class="div_line">
+			<div class="div_line_col_1">
+				<div data-bind="ntsFormLabel: { }">#{i18n.getText('KAF011_17')}</div>
+			</div>
+			<div class="div_line_col_2">
+				<textarea style="height: 100px"
+					data-bind="ntsMultilineEditor: {value: reason ,name: '#{i18n.getText('KAF011_17')}',
+									option: {
+									resizeable: false ,
+			                    	width: '500'
+			                    	}
+			                   	}" />
+			</div>
+		</div>
+	</div>
+</div>

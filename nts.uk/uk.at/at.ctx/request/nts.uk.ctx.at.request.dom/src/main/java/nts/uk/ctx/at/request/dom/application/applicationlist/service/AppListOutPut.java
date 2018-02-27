@@ -9,9 +9,12 @@ public class AppListOutPut {
 
 	private List<AppMasterInfo> lstMasterInfo;
 	private List<Application_New> lstApp;
-	List<AppOverTimeInfoFull> lstAppOt;
-	List<AppGoBackInfoFull> lstAppGoBack;
+	private List<AppOverTimeInfoFull> lstAppOt;
+	private List<AppGoBackInfoFull> lstAppGoBack;
 	//TH: approval (count)
 	private ApplicationStatus appStatusCount;
 	private List<ApplicationFullOutput> lstAppFull;
+	private List<String> lstTimeColor; 
+	private List<String> lstFramStatus; 
+	private List<PhaseStatus> lstPhaseStatus;
 }
