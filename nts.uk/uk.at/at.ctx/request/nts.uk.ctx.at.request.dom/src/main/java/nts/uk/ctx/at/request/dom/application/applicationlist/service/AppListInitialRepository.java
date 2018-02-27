@@ -4,7 +4,9 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.AppListExtractCondition;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSet;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
@@ -65,9 +67,10 @@ public interface AppListInitialRepository {
 	 * 5.2 - 申請一覧リスト取得実績残業申請
 	 * @param sID
 	 * @param date
+	 * @param time
 	 * @return
 	 */
-	public Boolean getAppListAchievementOverTime(String sID, GeneralDate date);
+	public boolean getAppListAchievementOverTime(String sID, GeneralDate date, List<OverTimeFrame> time);
 	/**
 	 * 6 - 申請一覧リスト取得振休振出
 	 * @param application

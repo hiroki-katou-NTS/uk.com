@@ -76,18 +76,11 @@ public class GetDataAppCfDetailFinder {
 		}
 		String employmentCD = empHistImport.getEmploymentCode();
 		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(companyID, employmentCD);
-		if(!closureEmployment.isPresent()){
-			throw new RuntimeException("締めがない。");
-		}
-		//closureEmployment.get().getClosureId()
 		Optional<ApplicationDeadline> applicationDeadline = applicationDeadlineRepository.getDeadlineByClosureId(companyID, closureEmployment.get().getClosureId());
 		ApplicationDeadline appDeadline = applicationDeadline.get();
 		//申請種類別設定 - 受付制限設定
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepo
 				.getAppTypeDiscreteSettingByAppType(companyID, metaDto.getAppType());
-		if(!appTypeDiscreteSettingOp.isPresent()){
-			throw new BusinessException("申請利用設定がありません。");
-		}
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
 		//「申請利用設定」．備考に内容なし &&  「申請締切設定」．利用区分が利用しない  &&  「事前の受付制限」．利用区分が利用しない  &&  「事後の受付制限」．未来日許可しないがfalse
 		if(approvalFunctionSetting.getAppUseSetting().getMemo().v().isEmpty()
@@ -130,10 +123,7 @@ public class GetDataAppCfDetailFinder {
 		}
 		
 		//全部利用する
-		if(!approvalFunctionSetting.getAppUseSetting().getMemo().v().isEmpty()
-				&& appDeadline.getUserAtr() == UseAtr.USE
-				&& appTypeDiscreteSetting.getRetrictPreUseFlg() == UseAtr.USE
-				&& appTypeDiscreteSetting.getRetrictPostAllowFutureFlg() == AllowAtr.NOTALLOW) {
+		if(appDeadline.getUserAtr() == UseAtr.USE) {
 			message = approvalFunctionSetting.getAppUseSetting().getMemo().v();				
 			//締め切り期限日
 			GeneralDate endDate =  otherCommonAlgorithm.employeePeriodCurrentMonthCalculate(companyID, sid, metaDto.getAppDate()).getEndDate();

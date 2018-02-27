@@ -14,6 +14,6 @@ public interface IFactoryOvertime {
 
 	// 残業申請
 	AppOverTime buildAppOverTime(String companyID, String appID, int overTimeAtr, String workTypeCode, String siftCode,
-			int workClockFrom1, int workClockTo1, int workClockFrom2, int workClockTo2, String divergenceReason,
+			Integer workClockFrom1, Integer workClockTo1, Integer workClockFrom2, Integer workClockTo2, String divergenceReason,
 			int flexExessTime, int overTimeShiftNight, List<OverTimeInput> overtimeInputs);
 }

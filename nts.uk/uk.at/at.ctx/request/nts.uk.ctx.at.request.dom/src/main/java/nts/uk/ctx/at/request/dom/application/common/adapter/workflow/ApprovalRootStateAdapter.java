@@ -39,4 +39,8 @@ public interface ApprovalRootStateAdapter {
 	
 	public ApproverPersonImport judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID);
 	
+	public List<String> doRemandForApprover(String companyID, String rootStateID, Integer order);
+
+	public void doRemandForApplicant(String companyID, String rootStateID);
+	
 }
