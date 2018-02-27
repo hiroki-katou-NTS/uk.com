@@ -1,4 +1,4 @@
-#a4_7, #a4_8, #a5_16 {
+#a4_7, #a4_8, #a5_16, #a7_row1 {
 	width: 80px;
 }
 
@@ -35,93 +35,137 @@
 	white-space: normal;
 	font-size: 13px;
 }
+
 .a9_9 .ntsRadioBox span.label {
 	padding-right: 60px;
 }
+
 .a12_5 .ntsRadioBox span.label {
 	padding-right: 114px;
 }
+
 #b19 .ntsRadioBox {
-     display: block;
+	display: block;
 }
+
 .blockrow.ntsControl {
-    display: block;
+	display: block;
 }
+
 .blockrow span.label {
-    padding-right: 111px;
+	padding-right: 111px;
 }
+
 #b29 span.label {
-    padding-right: 111px;
+	padding-right: 111px;
 }
+
 #fixed-table-c span.label {
-    padding-right:100px;
+	padding-right: 100px;
 }
+
 #e11_5 {
 	padding-left: 28px;
 }
+#b18 .ntsRadioBox span.label {
+	padding-right: 72px;
+}
+
 .e11-radio_1 .ntsRadioBox span.label {
 	padding-right: 45px;
 }
+
 .e11-radio_2 .ntsRadioBox span.label {
 	padding-right: 69px;
 }
+
 .e11-radio_3 .ntsRadioBox span.label {
 	padding-right: 118px;
 }
+
 .g11-radio_4 .ntsRadioBox span.label {
 	padding-right: 145px;
 }
+
 .g11-radio_5 .ntsRadioBox span.label {
 	padding-right: 96px;
 }
-#g24 .ntsRadioBox{
+
+#g24 .ntsRadioBox {
 	display: block;
 }
-#g25 .ntsRadioBox{
+
+#g25 .ntsRadioBox {
 	display: block;
 }
+
 .j4-radio_1 .ntsRadioBox span.label {
 	padding-right: 73px;
 }
+
 .k12-radio_1 .ntsRadioBox span.label {
 	padding-right: 90px;
 }
+
 .k13-radio_1 .ntsRadioBox span.label {
 	padding-right: 118px;
 }
+
 .k14-radio_1 .ntsRadioBox span.label {
 	padding-right: 90px;
 }
+
 .k16-radio_1 .ntsRadioBox span.label {
 	padding-right: 69px;
 }
+
 .k21-radio_1 .ntsRadioBox span.label {
 	padding-right: 69px;
 }
-.color-header{
+
+.color-header {
 	background-color: #CFF1A5;
 }
-.viewmodel-a{
+
+.viewmodel-a {
 	margin-bottom: 20px;
 }
+
 #c27 .ntsRadioBox span.label {
 	padding-right: 66px;
 }
+
 #c29 .ntsRadioBox span.label {
 	padding-right: 51px;
 }
+
 #c30 .ntsRadioBox span.label {
 	padding-right: 51px;
 }
+
 #c31 .ntsRadioBox span.label {
 	padding-right: 51px;
 }
+
 #c32 .ntsRadioBox span.label {
 	padding-right: 51px;
 }
+
 #c49 .ntsRadioBox span.label {
 	padding-right: 51px;
 }
+
 div.form-label {
-    border-width: 0 0 0 0px;
+	border-width: 0 0 0 0px;
+}
+
+/* #fixed-table-a4 .ntsCheckBox span.box {
+	margin-bottom: 5px;
+} */
+#a7_row1 {
+	position: absolute;
+}
+
+.special-a7 {
+	padding-left: 49px;
 }
