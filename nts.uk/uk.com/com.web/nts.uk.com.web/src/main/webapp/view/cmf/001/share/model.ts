@@ -107,8 +107,13 @@ module nts.uk.com.view.cmf001.share.model {
         acceptItemName: KnockoutObservable<string>;
         conditionSettingCode: KnockoutObservable<string>;
 
-        constructor() {
-
+        constructor(csvItemName: string, csvItemNumber: number, itemType: number, acceptItemNumber: number, acceptItemName: string, conditionCode: string) {
+            this.csvItemName = ko.observable(csvItemName);
+            this.csvItemNumber = ko.observable(csvItemNumber);
+            this.itemType = ko.observable(itemType);
+            this.acceptItemNumber = ko.observable(acceptItemNumber);
+            this.acceptItemName = ko.observable(acceptItemName);
+            this.conditionSettingCode = ko.observable(conditionCode);
         }
     }
 
