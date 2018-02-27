@@ -138,7 +138,7 @@ module nts.uk.at.view.kmf022 {
             //a6
             listDataA6: KnockoutObservableArray<any>;
             //a7
-            listDataA7:KnockoutObservableArray<any>;
+            listDataA7: KnockoutObservableArray<any>;
             enableA7_17: KnockoutObservable<boolean>;
             enableA7_26: KnockoutObservable<boolean>;
             enableA7_31: KnockoutObservable<boolean>;
@@ -182,7 +182,7 @@ module nts.uk.at.view.kmf022 {
             selectedCodeA7_40: KnockoutObservable<number>;
             selectedCodeA7_41: KnockoutObservable<number>;
             //a8
-            listDataA8:KnockoutObservableArray<any>;
+            listDataA8: KnockoutObservableArray<any>;
             enableA8_29: KnockoutObservable<boolean>;
             enableA8_35: KnockoutObservable<boolean>;
             enableA8_36: KnockoutObservable<boolean>;
@@ -346,7 +346,7 @@ module nts.uk.at.view.kmf022 {
 
             //a13
             textEditorA13_4: KnockoutObservable<any>;
-            listDataA13 : KnockoutObservableArray<number>;
+            listDataA13: KnockoutObservableArray<number>;
 
             //a14
             itemListA14_3: KnockoutObservableArray<ItemModel>;
@@ -540,7 +540,7 @@ module nts.uk.at.view.kmf022 {
             selectedIdK21: KnockoutObservable<number>;
             itemListK22: KnockoutObservableArray<ItemModel>;
             selectedIdK22: KnockoutObservable<number>;
-            
+
             //appliSet 
             baseDateFlg: KnockoutObservable<number>;
             advanceExcessMessDispAtr: KnockoutObservable<number>;
@@ -641,7 +641,7 @@ module nts.uk.at.view.kmf022 {
                 self.selectedCodeA4_7 = ko.observable(0);
                 self.selectedCodeA4_8 = ko.observable(0);
                 self.isEnable = ko.observable(true);
-                self.isEditable = ko.observable(true);
+                self.isEditable = ko.observable(false);
                 self.dataA4Display = ko.observableArray([]);
                 self.sizeArrayA4 = ko.observable(0);
 
@@ -653,14 +653,13 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdA5_14 = ko.observable(0);
                 self.enableA5_14 = ko.observable(true);
                 self.itemListA5_16 = ko.observableArray([
-                    new ItemModel(0, '0'),
-                    new ItemModel(1, '1'),
-                    new ItemModel(2, '2'),
-                    new ItemModel(3, '3'),
-                    new ItemModel(4, '4'),
-                    new ItemModel(5, '5'),
-                    new ItemModel(6, '6'),
-                    new ItemModel(7, '7'),
+                    new ItemModel(1, '0'),
+                    new ItemModel(2, '1'),
+                    new ItemModel(3, '2'),
+                    new ItemModel(4, '3'),
+                    new ItemModel(5, '4'),
+                    new ItemModel(6, '5'),
+                    new ItemModel(7, '6'),
                 ]);
                 self.selectedCodeA5_16 = ko.observable(0);
                 self.selectedIdA5_18 = ko.observable(0);
@@ -690,7 +689,7 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdA17_5 = ko.observable(0);
                 //a6
                 self.listDataA6 = ko.observableArray([]);
-                
+
                 //a7
                 self.listDataA7 = ko.observableArray([]);
                 self.enableA7_17 = ko.observable(false);
@@ -1628,7 +1627,7 @@ module nts.uk.at.view.kmf022 {
                 self.appReasonDispAtr = ko.observable(0);
                 self.scheReflectFlg = ko.observable(0);
                 self.priorityTimeReflectFlg = ko.observable(0);
-                
+
                 self.start();
             }
 
@@ -1636,16 +1635,17 @@ module nts.uk.at.view.kmf022 {
                 var self = this;
                 var dfd = $.Deferred();
                 dfd.resolve();
-                self.initData();
+                self.loadData();
                 return dfd.promise();
             }
-            initData(): void {
+            loadData(): void {
                 let self = this;
                 self.initDataA4();
                 self.initDataA5();
                 self.initDataA6();
                 self.initDataA7AndA8();
                 self.initDataA10();
+                self.initDataA13();
                 self.initDataA14();
                 self.initDataA16();
                 self.initDataA15();
@@ -1668,15 +1668,15 @@ module nts.uk.at.view.kmf022 {
                 self.dataA4Display([]);
                 self.sizeArrayA4(0);
 
-                service.findAllClosure().done( (data : any) => {
+                service.findAllClosure().done((data: any) => {
                     self.sizeArrayA4(data.length);
                     _.forEach(data, element => {
                         let name = element.id + "." + element.name;
                         service.findApp(element.id).done((obj: any) => {
                             if (obj) {
                                 self.dataA4Display.push(new ItemA4(element.id, name, obj.userAtr, obj.deadlineCriteria, obj.deadline));
-                            }else{
-                                self.dataA4Display.push(new ItemA4(element.id, name, 0, 0, 1));    
+                            } else {
+                                self.dataA4Display.push(new ItemA4(element.id, name, 0, 0, 1));
                             }
                             if (self.dataA4Display().length == data.length) {
                                 for (let i = data.length + 1; i <= 5; i++) {
@@ -1689,7 +1689,7 @@ module nts.uk.at.view.kmf022 {
             }
             initDataA5(): void {
                 let self = this;
-                service.findApproSet().done((data : any) => {
+                service.findApproSet().done((data: any) => {
                     if (data) {
                         self.companyId(data.companyId);
                         self.selectedIdA5_14(data.reasonDisp);
@@ -1708,7 +1708,8 @@ module nts.uk.at.view.kmf022 {
             initDataA6(): void {
                 let self = this;
                 let listAppType = __viewContext.enums.ApplicationType;
-                service.findDisp().done((data : any) => {
+                self.listDataA6([]);
+                service.findDisp().done((data: any) => {
                     if (data) {
                         _.forEach(listAppType, (appType) => {
                             let obj: any = _.find(data, ['appType', appType.value]);
@@ -1724,15 +1725,17 @@ module nts.uk.at.view.kmf022 {
             initDataA7AndA8(): void {
                 let self = this;
                 let listAppType = __viewContext.enums.ApplicationType;
+                self.listDataA7([]);
+                self.listDataA8([])
                 service.findBfReqSet().done((data: any) => {
                     if (data) {
-                        _.forEach(listAppType, (appType) => {
+                        _.forEach(listAppType, (appType: any) => {
                             let obj: any = _.find(data.beforeAfter, ['appType', appType.value]);
                             if (obj) {
-                                self.listDataA7.push(new ItemA7(self.companyId, appType.name, appType.value, obj.retrictPreUseFlg, obj.retrictPreMethodFlg,
+                                self.listDataA7.push(new ItemA7(self.companyId(), appType.name, appType.value, obj.retrictPreUseFlg, obj.retrictPreMethodFlg,
                                     obj.retrictPreDay, obj.retrictPreTimeDay, obj.retrictPostAllowFutureFlg));
                             } else {
-                                self.listDataA7.push(new ItemA7(self.companyId, appType.name, appType.value, 0, 0, 0, 0, 0));
+                                self.listDataA7.push(new ItemA7(self.companyId(), appType.name, appType.value, 0, 0, 0, 0, 0));
                             }
                             let obj1: any = _.find(data.appType, ['appType', appType.value]);
                             if (obj1) {
@@ -1744,36 +1747,37 @@ module nts.uk.at.view.kmf022 {
                             }
                         });
                     }
-                }
+                });
             }
             initDataA10(): void {
                 let self = this;
-                service.findAppCom().done((data : any) => {
+                service.findAppCom().done((data: any) => {
                     if (data) {
                         self.selectedIdA10_3(data.showWkpNameBelong);
                     }
                 });
             }
-            initDataA13():void{
+            initDataA13(): void {
                 let self = this;
                 let listAppType = __viewContext.enums.ApplicationType;
-                serivce.findAllPro().done((data : any)=>{
-                    let dataA13 : string = '';
-                    if(data){
-                        self.listDataA13(_.map(data,['appType']));
+                self.listDataA13([]);
+                service.findAllPro().done((data: any) => {
+                    let dataA13: Array<any> = [];
+                    if (data) {
+                        self.listDataA13(_.map(data, 'appType'));
                         _.forEach(listAppType, (appType) => {
-                             let obj: any = _.find(data, ['appType', appType.value]);
-                             if(obj){
-                                dataA13 += appType.name;
-                             }
-                        });   
+                            let obj: any = _.find(data, ['appType', appType.value]);
+                            if (obj) {
+                                dataA13.push(appType.name);
+                            }
+                        });
                     }
-                    self.textEditorA13_4(dataA13);  
-                })    
+                    self.textEditorA13_4(dataA13.join(" + "));
+                });
             }
             initDataA14(): void {
                 let self = this;
-                service.findJobAssign().done((data : any) => {
+                service.findJobAssign().done((data: any) => {
                     if (data) {
                         self.selectedIdA14_3(data.isConcurrently ? 1 : 0);
                     }
@@ -1784,7 +1788,8 @@ module nts.uk.at.view.kmf022 {
                 let date = {
                     baseDate: new Date().toISOString()
                 };
-                service.findJobId(date).done((data : any) => {
+                self.listDataA15([]);
+                service.findJobId(date).done((data: any) => {
                     if (data) {
                         let jobIds = _.map(data, 'id');
 
@@ -1795,9 +1800,9 @@ module nts.uk.at.view.kmf022 {
                             _.forEach(data, element => {
                                 let finder = _.find(obj, ['jobId', element.id]);
                                 if (finder) {
-                                    self.listDataA15.push(new ItemA15(element.name, finder.searchSetFlg));
+                                    self.listDataA15.push(new ItemA15(element.id, element.name, finder.searchSetFlg));
                                 } else {
-                                    self.listDataA15.push(new ItemA15(element.name, 1));
+                                    self.listDataA15.push(new ItemA15(element.id, element.name, 1));
                                 }
                             });
                         });
@@ -1807,19 +1812,19 @@ module nts.uk.at.view.kmf022 {
 
             initDataA16(): void {
                 let self = this;
-                service.findMail().done((data : any) => {
+                service.findMail().done((data: any) => {
                     if (data) {
                         self.texteditorA16_7.value(data.subject);
                         self.texteditorA16_8.value(data.content);
                     }
                 });
-                service.findOt().done((data : any) => {
+                service.findOt().done((data: any) => {
                     if (data) {
                         self.texteditorA16_9.value(data.subject);
                         self.texteditorA16_10.value(data.content);
                     }
                 });
-                service.findTemp().done((data : any) => {
+                service.findTemp().done((data: any) => {
                     if (data) {
                         self.texteditorA16_11.value(data.content);
                     }
@@ -1828,12 +1833,12 @@ module nts.uk.at.view.kmf022 {
 
             initDataA17(): void {
                 let self = this;
-                service.findAppro().done((data : any) => {
+                service.findAppro().done((data: any) => {
                     if (data) {
                         self.selectedIdA17_5(data.prinFlg);
                     }
                 });
-                service.findAppSet().done((data : any) => {
+                service.findAppSet().done((data: any) => {
                     if (data) {
                         self.selectedIdA17_4(data.appContentChangeFlg);
                         self.selectedIdA9_5(data.attendentTimeReflectFlg);
@@ -1862,7 +1867,7 @@ module nts.uk.at.view.kmf022 {
             }
             initDataB(): void {
                 let self = this;
-                service.findOvertime().done((data : any) => {
+                service.findOvertime().done((data: any) => {
                     if (data) {
                         self.selectedIdB18(data.flexExcessUseSetAtr);
                         self.selectedIdB19(data.priorityStampSetAtr);
@@ -1883,7 +1888,7 @@ module nts.uk.at.view.kmf022 {
             }
             initDataC(): void {
                 let self = this;
-                service.findAllVaca().done((data : any) => {
+                service.findAllVaca().done((data: any) => {
                     if (data) {
                         self.selectedIdC27(data.wrkHours);
                         self.selectedIdC28(data.actualDisp);
@@ -1914,7 +1919,7 @@ module nts.uk.at.view.kmf022 {
             }
             initDataD(): void {
                 let self = this;
-                service.findWorkChange().done((data : any) => {
+                service.findWorkChange().done((data: any) => {
                     if (data) {
                         self.selectedIdD8(data.displayResultAtr);
                         self.valueD10(data.commentFontColor1);
@@ -1932,7 +1937,7 @@ module nts.uk.at.view.kmf022 {
 
             initDataF(): void {
                 let self = this;
-                service.findDirectlycommon().done((data : any) => {
+                service.findDirectlycommon().done((data: any) => {
                     if (data) {
                         self.selectedIdF10(data.workType);
                         self.selectedIdF11(data.performanceDisplayAtr);
@@ -1951,7 +1956,7 @@ module nts.uk.at.view.kmf022 {
             }
             initDataE(): void {
                 let self = this;
-                service.findTrip().done((data : any) => {
+                service.findTrip().done((data: any) => {
                     if (data) {
                         self.selectedIdE9(data.workType);
                         self.selectedIdE10(data.contractCheck);
@@ -1965,7 +1970,7 @@ module nts.uk.at.view.kmf022 {
             }
             initDataG(): void {
                 let self = this;
-                service.findWith().done((data : any) => {
+                service.findWith().done((data: any) => {
                     if (data) {
                         self.selectedIdG16(data.typePaidLeave);
                         self.selectedIdG18(data.restTime);
@@ -1983,7 +1988,7 @@ module nts.uk.at.view.kmf022 {
             }
             initDataJ(): void {
                 let self = this;
-                service.findStamp().done((data : any) => {
+                service.findStamp().done((data: any) => {
                     if (data) {
                         self.selectedCodeJ18(data.supFrameDispNO);
                         self.selectedIdJ19(data.resultDisp);
@@ -2013,7 +2018,7 @@ module nts.uk.at.view.kmf022 {
             }
             initDataH(): void {
                 let self = this;
-                service.findTimeHd().done((data : any) => {
+                service.findTimeHd().done((data: any) => {
                     if (data) {
                         self.selectedIdH15(data.actualDisp);
                         self.selectedIdH16(data.checkOver);
@@ -2038,7 +2043,7 @@ module nts.uk.at.view.kmf022 {
             }
             initDataK(): void {
                 let self = this;
-                service.findDraw().done((data : any) => {
+                service.findDraw().done((data: any) => {
                     if (data) {
                         self.selectedIdK12(data.deferredWorkTimeSelect);
                         self.selectedIdK13(data.simulAppliReq);
@@ -2058,8 +2063,8 @@ module nts.uk.at.view.kmf022 {
             }
             initDataI(): void {
                 let self = this;
-                service.findLateEarly().done((data : any) => {
-                    if(data){
+                service.findLateEarly().done((data: any) => {
+                    if (data) {
                         self.selectedIdI4(data.showResult);
                     }
                 });
@@ -2069,6 +2074,7 @@ module nts.uk.at.view.kmf022 {
                 self.saveDataAt();
             }
             saveDataAt(): void {
+                nts.uk.ui.block.invisible();
                 let self = this;
                 let data: any = {};
                 let dataA4 = [];
@@ -2124,17 +2130,17 @@ module nts.uk.at.view.kmf022 {
                 };
                 data.appliSet = {
                     companyId: self.companyId(),
-                    baseDateFlg:self.baseDateFlg(),
-                    advanceExcessMessDispAtr:self.advanceExcessMessDispAtr(),
-                    hwAdvanceDispAtr:self.hwAdvanceDispAtr(),
-                    hwActualDispAtr:self.hwActualDispAtr(),
-                    actualExcessMessDispAtr:self.actualExcessMessDispAtr(),
-                    otAdvanceDispAtr:self.otAdvanceDispAtr(),
-                    otActualDispAtr:self.otActualDispAtr(),
-                    warningDateDispAtr:self.warningDateDispAtr(),
-                    appReasonDispAtr:self.appReasonDispAtr(),
-                    scheReflectFlg:self.scheReflectFlg(),
-                    priorityTimeReflectFlg:self.priorityTimeReflectFlg(),
+                    baseDateFlg: self.baseDateFlg(),
+                    advanceExcessMessDispAtr: self.advanceExcessMessDispAtr(),
+                    hwAdvanceDispAtr: self.hwAdvanceDispAtr(),
+                    hwActualDispAtr: self.hwActualDispAtr(),
+                    actualExcessMessDispAtr: self.actualExcessMessDispAtr(),
+                    otAdvanceDispAtr: self.otAdvanceDispAtr(),
+                    otActualDispAtr: self.otActualDispAtr(),
+                    warningDateDispAtr: self.warningDateDispAtr(),
+                    appReasonDispAtr: self.appReasonDispAtr(),
+                    scheReflectFlg: self.scheReflectFlg(),
+                    priorityTimeReflectFlg: self.priorityTimeReflectFlg(),
                     appContentChangeFlg: self.selectedIdA17_4(),
                     attendentTimeReflectFlg: self.selectedIdA9_5(),
                     appActMonthConfirmFlg: self.selectedIdA11_8(),
@@ -2148,7 +2154,7 @@ module nts.uk.at.view.kmf022 {
                     manualSendMailAtr: self.selectedIdA12_7(),
                     //todo wait -check 
                 };
-                data.appName = ko.toJS(self.listDataA6()); 
+                data.appName = ko.toJS(self.listDataA6());
                 data.stampReq = {
                     companyId: self.companyId(),
                     supFrameDispNO: self.selectedCodeJ18(),
@@ -2239,7 +2245,7 @@ module nts.uk.at.view.kmf022 {
                     commentFontWeight1: self.enableD11() ? 1 : 0,
                     commentContent1: self.texteditorD9.value(),
                     commentFontColor2: self.valueD10_1(),
-                    commentFontWeight2: self.enableD11_1() ? 1 : 0 ,
+                    commentFontWeight2: self.enableD11_1() ? 1 : 0,
                     commentContent2: self.texteditorD12.value(),
                     workChangeTimeAtr: self.selectedValueD13(),
                     initDisplayWorktime: self.selectedIdD15(),
@@ -2303,10 +2309,10 @@ module nts.uk.at.view.kmf022 {
                     checkUpLimitHalfDayHD: self.selectedIdK16(),
                     pickUpComment: self.texteditorK17.value(),
                     pickUpLettleColor: self.valueK18(),
-                    pickUpBold: self.enableK19() ? 1 : 0 ,
+                    pickUpBold: self.enableK19() ? 1 : 0,
                     deferredComment: self.texteditorK20.value(),
                     deferredLettleColor: self.valueK18_1(),
-                    deferredBold: self.enableK19_1() ? 1 : 0 ,
+                    deferredBold: self.enableK19_1() ? 1 : 0,
                     permissionDivision: self.selectedIdK21(),
                     appliDateContrac: self.selectedIdK22(),
                     //done                    
@@ -2318,7 +2324,6 @@ module nts.uk.at.view.kmf022 {
                 };
                 data.appBf = {
                     beforeAfter: _.map(ko.toJS(self.listDataA7()), (x: any) => {
-                        x.retrictPreMethodFlg = x.retrictPreMethodFlg ? 1 : 0;
                         x.retrictPostAllowFutureFlg = x.retrictPostAllowFutureFlg ? 1 : 0;
                         return x;
                     }),
@@ -2330,11 +2335,18 @@ module nts.uk.at.view.kmf022 {
                         x.canClassificationChange = x.canClassificationChange ? 1 : 0;
                         return x;
                     })
-                }
+                };
                 data.jobAssign = {
-                    isConcurrently : self.selectedIdA14_3() ? 1 : 0
-                } ;
-                service.update(data).done();
+                    isConcurrently: self.selectedIdA14_3() ? 1 : 0
+                };
+                data.jobSearch = ko.toJS(self.listDataA15());
+                service.update(data).done(() => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        //Load data setting
+                        self.loadData();
+                        nts.uk.ui.block.clear();
+                    });
+                }).fail();
             }
 
         }
@@ -2377,7 +2389,7 @@ module nts.uk.at.view.kmf022 {
         class ItemA7 {
             companyId: KnockoutObservable<string>;
             appType: KnockoutObservable<number>;
-            retrictPreMethodFlg: KnockoutObservable<boolean>;
+            retrictPreMethodFlg: KnockoutObservable<number>;
             retrictPreUseFlg: KnockoutObservable<number>;
             retrictPreDay: KnockoutObservable<number>;
             retrictPreTimeDay: KnockoutObservable<number>;
@@ -2388,14 +2400,14 @@ module nts.uk.at.view.kmf022 {
                 this.companyId = ko.observable(companyId);
                 this.appTypeName = ko.observable(appTypeName);
                 this.appType = ko.observable(appType);
-                this.retrictPreMethodFlg = ko.observable(retrictPreMethodFlg==1 ? true:false);
+                this.retrictPreMethodFlg = ko.observable(retrictPreMethodFlg);
                 this.retrictPreUseFlg = ko.observable(retrictPreUseFlg);
                 this.retrictPreDay = ko.observable(retrictPreDay);
                 this.retrictPreTimeDay = ko.observable(retrictPreTimeDay);
-                this.retrictPostAllowFutureFlg = ko.observable(retrictPostAllowFutureFlg==1 ? true:false);
+                this.retrictPostAllowFutureFlg = ko.observable(retrictPostAllowFutureFlg == 1 ? true : false);
             }
         }
-        class ItemA8{
+        class ItemA8 {
             companyId: KnockoutObservable<string>;
             appType: KnockoutObservable<number>;
             displayFixedReason: KnockoutObservable<boolean>;
@@ -2405,26 +2417,28 @@ module nts.uk.at.view.kmf022 {
             displayInitialSegment: KnockoutObservable<number>;
             canClassificationChange: KnockoutObservable<boolean>;
             appTypeName: KnockoutObservable<string>;
-            constructor(companyId:string,appType: number,displayFixedReason:number,displayAppReason:number,
-            sendMailWhenRegister:number,sendMailWhenApproval:number,displayInitialSegment:number,
-            canClassificationChange:number,appTypeName:string){
-                this.companyId= ko.observable(companyId);
+            constructor(companyId: string, appType: number, displayFixedReason: number, displayAppReason: number,
+                sendMailWhenRegister: number, sendMailWhenApproval: number, displayInitialSegment: number,
+                canClassificationChange: number, appTypeName: string) {
+                this.companyId = ko.observable(companyId);
                 this.appType = ko.observable(appType);
-                this.displayFixedReason= ko.observable(displayFixedReason==1?true:false);
-                this.displayAppReason=ko.observable(displayAppReason== 1 ? true : false);
-                this.sendMailWhenRegister=ko.observable(sendMailWhenRegister== 1 ? true : false);
-                this.sendMailWhenApproval=ko.observable(sendMailWhenApproval== 1 ? true : false);
-                this.displayInitialSegment=ko.observable(displayInitialSegment);
-                this.canClassificationChange=ko.observable(canClassificationChange== 1 ? true : false);
-                this.appTypeName=ko.observable(appTypeName);
-            }   
+                this.displayFixedReason = ko.observable(displayFixedReason == 1 ? true : false);
+                this.displayAppReason = ko.observable(displayAppReason == 1 ? true : false);
+                this.sendMailWhenRegister = ko.observable(sendMailWhenRegister == 1 ? true : false);
+                this.sendMailWhenApproval = ko.observable(sendMailWhenApproval == 1 ? true : false);
+                this.displayInitialSegment = ko.observable(displayInitialSegment);
+                this.canClassificationChange = ko.observable(canClassificationChange == 1 ? true : false);
+                this.appTypeName = ko.observable(appTypeName);
+            }
         }
         class ItemA15 {
+            jobId: KnockoutObservable<string>;
             name: KnockoutObservable<string>;
-            selectedId: KnockoutObservable<number>;
-            constructor(name: string, selectedId: number) {
+            searchSetFlg: KnockoutObservable<number>;
+            constructor(jobId: string, name: string, searchSetFlg: number) {
+                this.jobId = ko.observable(jobId);
                 this.name = ko.observable(name);
-                this.selectedId = ko.observable(selectedId);
+                this.searchSetFlg = ko.observable(searchSetFlg);
             }
         }
 
