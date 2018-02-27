@@ -3204,6 +3204,19 @@ var nts;
                     return dfd.promise();
                 }
                 file.donwload = donwload;
+                function liveViewUrl(fileId, entryName) {
+                    var liveViewPath = "/webapi/shr/infra/file/storage/liveview/";
+                    var locator = location.siteRoot
+                        .mergeRelativePath(request.WEB_APP_NAME.com + '/')
+                        .mergeRelativePath(liveViewPath);
+                    if (arguments.length === 1) {
+                        return locator.mergeRelativePath(fileId).serialize();
+                    }
+                    else if (arguments.length === 2) {
+                        return locator.mergeRelativePath(fileId + "/").mergeRelativePath(entryName).serialize();
+                    }
+                }
+                file.liveViewUrl = liveViewUrl;
                 function remove(fileId) {
                     return ajax("com", "/shr/infra/file/storage/delete/" + fileId);
                 }
@@ -3217,6 +3230,10 @@ var nts;
                 }
                 file.pathToGet = pathToGet;
             })(file = request.file || (request.file = {}));
+            function liveView(fileId) {
+                return file.liveViewUrl(fileId);
+            }
+            request.liveView = liveView;
             var specials;
             (function (specials) {
                 function getAsyncTaskInfo(taskId) {
@@ -3360,18 +3377,6 @@ var nts;
                 return destination.rawUrl;
             }
             request.resolvePath = resolvePath;
-            function liveView(webAppId, fileId) {
-                var liveViewPath = "/webapi/shr/infra/file/storage/liveview/";
-                if (typeof arguments[1] !== 'string') {
-                    return resolvePath(liveViewPath) + _.concat(location.currentAppId, arguments)[1];
-                }
-                var webserviceLocator = location.siteRoot
-                    .mergeRelativePath(request.WEB_APP_NAME[webAppId] + '/')
-                    .mergeRelativePath(liveViewPath);
-                var fullPath = webserviceLocator.serialize() + fileId;
-                return fullPath;
-            }
-            request.liveView = liveView;
             var location;
             (function (location) {
                 location.current = new Locator(window.location.href);
