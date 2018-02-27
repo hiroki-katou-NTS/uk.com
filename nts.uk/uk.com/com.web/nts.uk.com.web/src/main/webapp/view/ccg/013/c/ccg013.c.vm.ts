@@ -55,15 +55,7 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             self.isDelete = ko.observable(false);
             //image upload
             self.filename = ko.observable(''); //file name
-            self.imageName = ko.observable('未設定。非活性。');
-            self.imageName.subscribe((newValue) => {
-                if (newValue != '未設定。非活性。') {
-                    $('#imageName').addClass('text-blue-underline');
-                } else {
-                    $('#imageName').removeClass('text-blue-underline');
-                }
-            });
-
+            self.imageName = ko.observable('未設定。');
             self.imageSize = ko.observable(nts.uk.text.format(resource.getText('CCG013_44'), 0));
             self.accept = ko.observableArray([".png"]); //supported extension
             self.textId = ko.observable("CCG013_42"); // file browser button text id
@@ -135,7 +127,7 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
 
         private deleteFile(): void {
             var self = this;
-            self.imageName('未設定。非活性。');
+            self.imageName('未設定。');
             self.imageSize(nts.uk.text.format(resource.getText('CCG013_44'), 0));
             $("#liveview").html('');
             self.isDelete(false);

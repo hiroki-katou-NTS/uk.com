@@ -34,6 +34,7 @@ public class JpaStampRequestSettingRepository extends JpaRepository implements S
 		entity.companyID = companyId;
 		entity.resultDisp = domain.getResultDisp().value;
 		entity.stampAtr_Care_Disp = domain.getStampDisplayControl().getStampAtrCareDisp().value;
+		entity.stampAtr_Child_Care_Disp = domain.getStampDisplayControl().getStampAtrChildCareDisp().value;
 		entity.stampAtr_GoOut_Disp = domain.getStampDisplayControl().getStampAtrGoOutDisp().value;
 		entity.stampAtr_Sup_Disp = domain.getStampDisplayControl().getStampAtrSupDisp().value;
 		entity.stampAtr_Work_Disp = domain.getStampDisplayControl().getStampAtrWorkDisp().value;

@@ -122,3 +122,6 @@
 #c49 .ntsRadioBox span.label {
 	padding-right: 51px;
 }
+div.form-label {
+    border-width: 0 0 0 0px;
+}

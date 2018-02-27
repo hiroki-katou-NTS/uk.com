@@ -9,22 +9,6 @@ public enum AggrMethodOfFlex36AgreementTime {
 	FROM_PREDETERMINE_WORKING_TIME(0),
 	/** 法定労働時間から集計 */
 	FROM_STATUTORY_WORKING_TIME(1);
-
-	/**
-	 * 所定労働時間から集計か判定する
-	 * @return true：所定労働時間から集計、false：所定労働時間から集計でない
-	 */
-	public boolean isFromPrescribedWorkingTime(){
-		return this.equals(FROM_PREDETERMINE_WORKING_TIME);
-	}
-	
-	/**
-	 * 法定労働時間から集計か判定する
-	 * @return true：法定労働時間から集計、false：法定労働時間から集計でない
-	 */
-	public boolean isFromStatutoryWorkingTime(){
-		return this.equals(FROM_STATUTORY_WORKING_TIME);
-	}
 	
 	public int value;
 	private AggrMethodOfFlex36AgreementTime(int value){

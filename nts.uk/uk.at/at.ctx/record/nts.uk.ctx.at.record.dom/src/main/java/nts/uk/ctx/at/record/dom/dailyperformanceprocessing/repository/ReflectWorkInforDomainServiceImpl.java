@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
@@ -36,6 +38,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerform
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.enums.AutoStampForFutureDayClass;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.AffiliationInforState;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.AutomaticStampSetDetailOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeActualStampOutPut;
@@ -167,14 +170,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	public void reflectWorkInformation(String companyId, String employeeId, GeneralDate day,
 			String empCalAndSumExecLogID, ExecutionType reCreateAttr) {
 
-		AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor = new AffiliationInforOfDailyPerfor();
-
-		// Get Data
-		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
-
-		// Imported(就業．勤務実績)「所属職場履歴」を取得する
-		Optional<AffWorkPlaceSidImport> workPlaceHasData = this.affWorkplaceAdapter.findBySidAndDate(employeeId, day);
-
 		// ドメインモデル「日別実績の勤務情報」を削除する - rerun
 		if (reCreateAttr == ExecutionType.RERUN) {
 			this.workInformationRepository.delete(employeeId, day);
@@ -195,67 +190,88 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		// ドメインモデル「日別実績の勤務情報」を取得する - not rerun
 		if (!this.workInformationRepository.find(employeeId, day).isPresent()) {
 
-			// Imported(就業．勤務実績)「所属雇用履歴」を取得する
-			Optional<SyEmploymentImport> employmentHasData = this.syEmploymentAdapter.findByEmployeeId(companyId,
-					employeeId, day);
-
-			// Imported(就業．勤務実績)「所属分類履歴」を取得する
-			Optional<AffClassificationSidImport> classificationHasData = this.affClassificationAdapter
-					.findByEmployeeId(companyId, employeeId, day);
-
-			// Imported(就業．勤務実績)「所属職位履歴」を取得する
-			Optional<AffJobTitleSidImport> jobTitleHasData = this.affJobTitleAdapter.findByEmployeeId(employeeId, day);
-
-			// 取得したImported(就業．勤務実績)「所属雇用履歴」が存在するか確認する
-			// 存在しない - no data
-			if (!employmentHasData.isPresent()) {
-				ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
-						new ErrMessageResource("001"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
-						new ErrMessageContent(TextResource.localize("Msg_426")));
-				errMesInfos.add(employmentErrMes);
-			}
-			if (!workPlaceHasData.isPresent()) {
-				ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
-						new ErrMessageResource("002"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
-						new ErrMessageContent(TextResource.localize("Msg_427")));
-				errMesInfos.add(employmentErrMes);
-			}
-			if (!classificationHasData.isPresent()) {
-				ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
-						new ErrMessageResource("003"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
-						new ErrMessageContent(TextResource.localize("Msg_428")));
-				errMesInfos.add(employmentErrMes);
-			}
-			if (!jobTitleHasData.isPresent()) {
-				ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
-						new ErrMessageResource("004"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
-						new ErrMessageContent(TextResource.localize("Msg_429")));
-				errMesInfos.add(employmentErrMes);
-			}
-
-			// 存在する - has data
-			if (employmentHasData.isPresent() && workPlaceHasData.isPresent() && classificationHasData.isPresent()
-					&& jobTitleHasData.isPresent()) {
-				affiliationInforOfDailyPerfor = new AffiliationInforOfDailyPerfor(
-						new EmploymentCode(employmentHasData.get().getEmploymentCode()), employeeId,
-						jobTitleHasData.get().getJobTitleId(), workPlaceHasData.get().getWorkplaceId(), day,
-						new ClassificationCode(classificationHasData.get().getClassificationCode()), null);
-			}
-			if (errMesInfos.isEmpty()) {
+			val affiliationInforOfDailyPerforState = createAffiliationInforOfDailyPerfor(companyId, employeeId, day, empCalAndSumExecLogID);
+			
+			if (affiliationInforOfDailyPerforState.getErrMesInfos().isEmpty()) {
 				// Imported(就業.勤務実績)「社員の勤務予定管理」を取得する
-				this.workschedule(companyId, employeeId, day, empCalAndSumExecLogID, affiliationInforOfDailyPerfor,
-						workPlaceHasData, reCreateAttr);
+				this.workschedule(companyId, employeeId, day, empCalAndSumExecLogID, 
+								  affiliationInforOfDailyPerforState.getAffiliationInforOfDailyPerfor().get(),reCreateAttr);
 			} else {
-				errMesInfos.forEach(action -> {
+				affiliationInforOfDailyPerforState.getErrMesInfos().forEach(action -> {
 					this.errMessageInfoRepository.add(action);
 				});
 			}
 		}
 	}
 
+		
+	/**
+	 * Importクラスを取得し日別実績の所属情報を作成する
+	 * @param companyId　the companyId
+	 * @param employeeId the employeeId
+	 * @param day the day
+	 * @param empCalAndSumExecLogID 
+	 * @return AffiliationInforState(nts.uk.ctx.at.record.dom.dailyperformanceprocessing)
+	 */
+	public AffiliationInforState createAffiliationInforOfDailyPerfor(String companyId, String employeeId, GeneralDate day,
+																	String empCalAndSumExecLogID) {
+		
+		// Imported(就業．勤務実績)「所属雇用履歴」を取得する
+		Optional<SyEmploymentImport> employmentHasData = this.syEmploymentAdapter.findByEmployeeId(companyId,
+				employeeId, day);
+
+		// Imported(就業．勤務実績)「所属職場履歴」を取得する
+		Optional<AffWorkPlaceSidImport> workPlaceHasData = this.affWorkplaceAdapter.findBySidAndDate(employeeId, day);
+
+		// Imported(就業．勤務実績)「所属分類履歴」を取得する
+		Optional<AffClassificationSidImport> classificationHasData = this.affClassificationAdapter
+				.findByEmployeeId(companyId, employeeId, day);
+
+		// Imported(就業．勤務実績)「所属職位履歴」を取得する
+		Optional<AffJobTitleSidImport> jobTitleHasData = this.affJobTitleAdapter.findByEmployeeId(employeeId, day);
+		// Get Data
+		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
+		// 存在しない - no data
+		if (!employmentHasData.isPresent()) {
+			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
+			new ErrMessageResource("001"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
+					new ErrMessageContent(TextResource.localize("Msg_426")));
+			errMesInfos.add(employmentErrMes);
+		}
+		if (!workPlaceHasData.isPresent()) {
+			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
+					new ErrMessageResource("002"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
+					new ErrMessageContent(TextResource.localize("Msg_427")));
+			errMesInfos.add(employmentErrMes);
+		}
+		if (!classificationHasData.isPresent()) {
+			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
+					new ErrMessageResource("003"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
+					new ErrMessageContent(TextResource.localize("Msg_428")));
+			errMesInfos.add(employmentErrMes);
+		}
+		if (!jobTitleHasData.isPresent()) {
+			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
+					new ErrMessageResource("004"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
+					new ErrMessageContent(TextResource.localize("Msg_429")));
+			errMesInfos.add(employmentErrMes);
+		}
+		// 存在する - has data
+		if (employmentHasData.isPresent() && workPlaceHasData.isPresent() && classificationHasData.isPresent()
+				&& jobTitleHasData.isPresent()) {
+			return  new AffiliationInforState(Collections.emptyList(),
+					Optional.of(new AffiliationInforOfDailyPerfor(
+					new EmploymentCode(employmentHasData.get().getEmploymentCode()), employeeId,
+					jobTitleHasData.get().getJobTitleId(), workPlaceHasData.get().getWorkplaceId(), day,
+					new ClassificationCode(classificationHasData.get().getClassificationCode()), null)));
+		}
+		else {
+			return new AffiliationInforState(errMesInfos, Optional.empty());
+		}
+	}
+
 	private void workschedule(String companyId, String employeeID, GeneralDate day, String empCalAndSumExecLogID,
-			AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor,
-			Optional<AffWorkPlaceSidImport> workPlaceHasData, ExecutionType reCreateAttr) {
+			AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor, ExecutionType reCreateAttr) {
 
 		// status
 		// 正常終了 : 0

@@ -96,7 +96,7 @@ public class RoleIndividualFinder {
 	
 	public RoleIndividualGrantMetaDto getMetadata() {
 		LoginUserContext user = AppContexts.user();
-		if (!user.roles().have().companyAdmin() && !user.roles().have().systemAdmin())
+		if (!user.roles().have().systemAdmin())
 			return null;
 		
 		// Get List Enum RoleType

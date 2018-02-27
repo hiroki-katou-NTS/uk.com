@@ -12,7 +12,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class AppTypeSetCommand {
-	private String companyId;
 	// 申請種類
 	private Integer appType;
 	// 定型理由の表示

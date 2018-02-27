@@ -91,6 +91,9 @@ module cps001.a.vm {
         // resource id for title in category mode
         titleResource: KnockoutObservable<string> = ko.observable(text("CPS001_39"));
 
+        // show or hide tabs
+        hasLayout: KnockoutObservable<boolean> = ko.observable(true);
+
         constructor() {
             let self = this,
                 auth = self.auth(),
@@ -109,6 +112,12 @@ module cps001.a.vm {
                     auth.allowDocRef(false);
                     auth.allowAvatarRef(false);
                     auth.allowMapBrowse(false);
+                }
+            });
+
+            self.hasLayout.subscribe(x => {
+                if (!x) {
+                    self.tab(TABS.CATEGORY);
                 }
             });
 
@@ -292,6 +301,11 @@ module cps001.a.vm {
                             }
                         }
                     }
+
+                    service.getAllLayout(employee.employeeId())
+                        .done((data: Array<any>) => {
+                            self.hasLayout(!!data.length);
+                        });
                 });
             } else {
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
@@ -316,6 +330,11 @@ module cps001.a.vm {
                         }
                         employee.employeeId(self.employees()[0] ? self.employees()[0].employeeId : undefined);
                         setShared(RELOAD_KEY, true);
+
+                        service.getAllLayout(employee.employeeId())
+                            .done((data: Array<any>) => {
+                                self.hasLayout(!!data.length);
+                            });
                     });
                 });
             }
@@ -424,10 +443,10 @@ module cps001.a.vm {
 
                 // push data layout to webservice
                 block();
-                service.saveCurrentLayout(command).done(() => {
+                service.saveCurrentLayout(command).done((selected: string) => {
                     let firstData: MultiData = _.first(self.multipleData()) || new MultiData(),
                         saveData: IReloadData = {
-                            id: firstData.id(),
+                            id: selected || firstData.id(),
                             infoId: firstData.infoId(),
                             categoryId: firstData.categoryId()
                         };
@@ -460,6 +479,7 @@ module cps001.a.vm {
     }
 
     interface Permisions {
+        show: KnockoutObservable<boolean>;
         add: KnockoutObservable<boolean>;
         remove: KnockoutObservable<boolean>;
         replace: KnockoutObservable<boolean>;
@@ -554,12 +574,27 @@ module cps001.a.vm {
                 permision4Cat(roleId, catId).done((perm: ICatAuth) => {
                     if (perm && !!(selEmId == logInId ? perm.selfAllowDelHis : perm.otherAllowDelHis)) {
                         confirm({ messageId: "Msg_18" }).ifYes(() => {
-                            let query = {
-                                recordId: self.infoId(),
-                                personId: self.personId(),
-                                employeeId: self.employeeId(),
-                                categoryId: category.categoryCode()
-                            };
+
+                            let id = self.infoId(),
+                                values = _(ko.toJS(self.gridlist))
+                                    .map((x: IListData) => x.optionValue)
+                                    .value(),
+                                index = _(values).indexOf(id),
+                                selected = index + 1 == values.length ? values[index - 1] : values[index + 1],
+                                saveData: IReloadData = {
+                                    id: self.id(),
+                                    infoId: selected,
+                                    categoryId: self.categoryId()
+                                },
+                                query = {
+                                    recordId: self.infoId(),
+                                    personId: self.personId(),
+                                    employeeId: self.employeeId(),
+                                    categoryId: category.categoryCode()
+                                };
+
+                            setShared(RELOAD_DT_KEY, saveData);
+                            setShared(REPL_KEY, REPL_KEYS.NORMAL);
 
                             service.removeCurrentCategoryData(query).done(x => {
                                 info({ messageId: "Msg_16" }).then(() => {
@@ -602,6 +637,7 @@ module cps001.a.vm {
         }
 
         permisions: Permisions = {
+            show: ko.observable(true),
             add: ko.observable(false),
             remove: ko.observable(false),
             replace: ko.observable(false)
@@ -682,18 +718,6 @@ module cps001.a.vm {
                             if (data) {
                                 layout.showColor(true);
                                 layout.standardDate(data.standardDate || undefined);
-
-                                _.each(data.classificationItems, x => {
-                                    if ([IT_CLA_TYPE.ITEM].indexOf(x.layoutItemType) > -1) {
-                                        _.each(x.items, m => {
-                                            if (!_.isNil(m.value) && !_.isEmpty(m.value)) {
-                                                m.showColor = true;
-                                            } else {
-                                                m.showColor = false;
-                                            }
-                                        });
-                                    }
-                                });
 
                                 lv.removeDoubleLine(data.classificationItems);
                                 layout.listItemCls(data.classificationItems || []);
@@ -882,7 +906,14 @@ module cps001.a.vm {
                             });
 
                             let roleId = self.roleId(),
-                                catId = self.categoryId() || self.id();
+                                catId = self.categoryId() || self.id(),
+                                category: ICategory = ko.toJS(self.category);
+
+                            if (category.categoryCode != "CS00003") {
+                                self.permisions.show(true);
+                            } else {
+                                self.permisions.show(false);
+                            }
 
                             permision4Cat(roleId, catId).done((perm: ICatAuth) => {
                                 let selEmId: string = self.employeeId(),

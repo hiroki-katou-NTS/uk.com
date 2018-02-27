@@ -1,15 +1,19 @@
 package nts.uk.ctx.sys.auth.app.find.wkpmanager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.app.find.wkpmanager.dto.WorkplaceManagerDto;
+import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.dom.EmpBasicInfoImport;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class WorkplaceManagerFinder {
@@ -49,5 +53,19 @@ public class WorkplaceManagerFinder {
 					WorkplaceManagerDto dto = WorkplaceManagerDto.fromDomain(a);
 					return dto;
 				}).collect(Collectors.toList());
+	}
+	
+	public List<String> findAllWorkplaceId(GeneralDate referenceDate) {
+		String employeeId = AppContexts.user().employeeId();
+		
+		List<String> listWkpId = new ArrayList<>();
+		
+		// get workplace manager 
+		List<WorkplaceManager> listWkpManager = wkpManagerRepo.findListWkpManagerByEmpIdAndBaseDate(employeeId, referenceDate);
+		
+		// add wkpId to listWkpId
+		listWkpId = listWkpManager.stream().map(m -> m.getWorkplaceId()).collect(Collectors.toList());
+
+		return listWkpId;
 	}
 }

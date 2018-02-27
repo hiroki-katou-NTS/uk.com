@@ -48,20 +48,6 @@ public interface WorkingConditionRepository {
 	Optional<WorkingCondition> getBySidAndStandardDate(String employeeId, GeneralDate baseDate);
 
 	/**
-	 * Adds the.
-	 *
-	 * @param workingCondition the working condition
-	 */
-	void add(WorkingCondition workingCondition);
-
-	/**
-	 * Update.
-	 *
-	 * @param workingCondition the working condition
-	 */
-	void update(WorkingCondition workingCondition);
-
-	/**
 	 * Save.
 	 *
 	 * @param workingCondition the working condition
