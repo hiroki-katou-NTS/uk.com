@@ -218,7 +218,8 @@ module nts.uk.at.view.kmf002.c {
             }
             
             private initKCP004(): void {
-                $('#component-items-list').ntsListComponent(_self.listComponentOption)).done(function(data: any) {            
+                let _self = this;
+                $('#component-items-list').ntsListComponent(_self.listComponentOption).done(function(data: any) {            
                 });
             }
             
