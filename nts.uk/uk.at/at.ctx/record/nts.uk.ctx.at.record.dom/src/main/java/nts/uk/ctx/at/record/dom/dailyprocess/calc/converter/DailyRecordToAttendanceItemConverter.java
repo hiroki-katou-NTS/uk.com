@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.converter;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,5 +10,5 @@ public interface DailyRecordToAttendanceItemConverter {
 
 	Optional<ItemValue> convert(int attendanceItemId);
 
-	List<ItemValue> convert(List<Integer> attendanceItemIds);
+	List<ItemValue> convert(Collection<Integer> attendanceItemIds);
 }

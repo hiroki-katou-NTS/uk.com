@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,7 +59,7 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 	}
 
 	@Override
-	public List<ItemValue> convert(List<Integer> attendanceItemIds) {
+	public List<ItemValue> convert(Collection<Integer> attendanceItemIds) {
 		return AttendanceItemUtil.toItemValues(this.dailyRecord, attendanceItemIds);
 	}
 
