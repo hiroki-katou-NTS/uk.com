@@ -256,6 +256,14 @@
 											<label>#{i18n.getText('CCG001_58')}</label>
 										</h3>
 										<div class="contentkcp">
+											<div style="width: 340px" tabindex="1" data-bind="ntsSearchBox: {
+												searchMode: 'highlight',
+												targetKey: 'workTypeCode',
+												comId: 'list-worktype', 
+												items: listWorkType,
+												selectedKey: 'workTypeCode',
+												fields: ['workTypeCode', 'name'],
+												mode: 'listbox'}" />
 											<table id="list-worktype" tabindex="2"
 											data-bind="ntsGridList: {
 												name: '#[CCG001_59]',
