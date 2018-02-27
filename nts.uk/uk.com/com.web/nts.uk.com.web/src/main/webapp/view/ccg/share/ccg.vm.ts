@@ -1017,7 +1017,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     if (self.showPeriodYM) { // Period accuracy is YM 
                         service.calculatePeriod(self.selectedClosure(), parseInt(self.periodEnd().format('YYYYMM')))
                             .done(date => {
-                                return dfd.resolve(date);
+                                return dfd.resolve(date[0]);
                             });
                     } else { // Period accuracy is YMD
                         dfd.resolve(self.periodEnd().format(CcgDateFormat.DEFAULT_FORMAT));
