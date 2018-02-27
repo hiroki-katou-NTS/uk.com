@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 /**
  * 休暇申請設定
  * @author yennth
@@ -74,27 +75,28 @@ public class HdAppSet extends AggregateRoot {
 												int appDateContra, String yearResig, int regisShortReser){
 		return new HdAppSet(companyId, 
 				EnumAdaptor.valueOf(use60h, UseAtr.class), 
-				new ObstacleName(obstacleName), 
+				StringUtil.isNullOrEmpty(obstacleName, true) ? null : new ObstacleName(obstacleName), 
 				EnumAdaptor.valueOf(regisShortLostHd, UseAtr.class), 
-				new ObstacleName(hdName), EnumAdaptor.valueOf(regisLackPubHd, UseAtr.class), 
+				StringUtil.isNullOrEmpty(hdName, true) ? null : new ObstacleName(hdName), 
+				EnumAdaptor.valueOf(regisLackPubHd, UseAtr.class), 
 				EnumAdaptor.valueOf(changeWrkHour, UseAtr.class), 
 				EnumAdaptor.valueOf(ckuperLimit, CheckUper.class), 
 				EnumAdaptor.valueOf(actualDisp, UseAtr.class), 
 				EnumAdaptor.valueOf(wrkHours, WorkUse.class), 
 				EnumAdaptor.valueOf(pridigCheck, AppliedDate.class), 
-				new ObstacleName(yearHdName), 
+				StringUtil.isNullOrEmpty(yearHdName, true) ? null : new ObstacleName(yearHdName), 
 				EnumAdaptor.valueOf(regisNumYear, UseAtr.class), 
-				new ObstacleName(furikyuName), 
+				StringUtil.isNullOrEmpty(furikyuName, true) ? null : new ObstacleName(furikyuName), 
 				EnumAdaptor.valueOf(regisInsuff, UseAtr.class), 
 				EnumAdaptor.valueOf(useGener, UseAtr.class), 
 				EnumAdaptor.valueOf(useYear, UseAtr.class), 
-				new ObstacleName(timeDigest), 
-				new ObstacleName(absenteeism), 
+				StringUtil.isNullOrEmpty(timeDigest, true) ? null : new ObstacleName(timeDigest), 
+				StringUtil.isNullOrEmpty(absenteeism, true) ? null : new ObstacleName(absenteeism), 
 				EnumAdaptor.valueOf(concheckOutLegal, AppliedDate.class), 
-				new ObstacleName(specialVaca), 
+				StringUtil.isNullOrEmpty(specialVaca, true) ? null : new ObstacleName(specialVaca), 
 				EnumAdaptor.valueOf(concheckDateRelease, AppliedDate.class), 
 				EnumAdaptor.valueOf(appDateContra, AppliedDate.class), 
-				new ObstacleName(yearResig), 
+				StringUtil.isNullOrEmpty(yearResig, true) ? null : new ObstacleName(yearResig), 
 				EnumAdaptor.valueOf(regisShortReser, UseAtr.class));
 	}
 }

@@ -79,6 +79,6 @@ public interface SyEmployeePub {
 	 * @return the sdata mng info
 	 */
 	// Redmine #87534
-	Optional<EmployeeDataMngInfoExport> getSdataMngInfo(String cid, String pid);
+	Optional<EmployeeDataMngInfoExport> getSdataMngInfo(String sid);
 	
 }

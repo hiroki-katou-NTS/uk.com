@@ -79,9 +79,9 @@ public class SysEmployeeAdapterImpl implements SysEmployeeAdapter {
 	 * @see nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter#getSdataMngInfo(java.lang.String)
 	 */
 	@Override
-	public Optional<EmployeeDataMngInfoImport> getSdataMngInfo(String cid, String pid) {
+	public Optional<EmployeeDataMngInfoImport> getSdataMngInfo(String sid) {
 		
-		Optional<EmployeeDataMngInfoExport> optEmployeeDataMngInfoExport = syEmployeePub.getSdataMngInfo(cid, pid);
+		Optional<EmployeeDataMngInfoExport> optEmployeeDataMngInfoExport = syEmployeePub.getSdataMngInfo(sid);
 		
 		if(!optEmployeeDataMngInfoExport.isPresent()) {
 			return Optional.empty();

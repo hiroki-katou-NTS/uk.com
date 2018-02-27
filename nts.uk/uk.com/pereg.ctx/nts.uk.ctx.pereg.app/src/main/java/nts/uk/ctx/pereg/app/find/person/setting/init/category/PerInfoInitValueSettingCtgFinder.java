@@ -53,6 +53,7 @@ public class PerInfoInitValueSettingCtgFinder {
 				PerInfoInitValueSettingCtg ctg = new PerInfoInitValueSettingCtg();
 				ctg.setCategoryName(c.getCategoryName());
 				ctg.setPerInfoCtgId(c.getPerInfoCtgId());
+				ctg.setCategoryType(c.getCategoryType());
 				
 				ctg.setSetting(this.settingItemRepo.isExist(settingId, c.getPerInfoCtgId()));
 				return ctg;
