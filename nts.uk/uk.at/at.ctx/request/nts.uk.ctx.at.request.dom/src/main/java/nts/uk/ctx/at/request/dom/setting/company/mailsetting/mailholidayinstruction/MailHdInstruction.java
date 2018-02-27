@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 
 /**
  * 休出指示のメール内容
@@ -22,6 +23,8 @@ public class MailHdInstruction extends AggregateRoot{
 	private Content content;
 	
 	public static MailHdInstruction createFromJavaType(String companyId, String subject, String content){
-		return new MailHdInstruction(companyId, new Subject(subject), new Content(content));
+		return new MailHdInstruction(companyId, 
+					StringUtil.isNullOrEmpty(subject, true) ?  null : new Subject(subject), 
+					StringUtil.isNullOrEmpty(content, true) ? null : new Content(content));
 	}
 }
