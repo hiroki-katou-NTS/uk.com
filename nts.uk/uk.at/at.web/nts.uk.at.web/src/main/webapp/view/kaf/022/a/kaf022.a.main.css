@@ -127,7 +127,11 @@
 	background-color: #CFF1A5;
 }
 
-.viewmodel-a {
+/* .viewmodel-a {
+	margin-bottom: 20px;
+} */
+
+.nts-fixed-table {
 	margin-bottom: 20px;
 }
 
@@ -168,4 +172,8 @@ div.form-label {
 
 .special-a7 {
 	padding-left: 49px;
+}
+
+#fixed-table-a7 span.label-a27 {
+	margin-left: 29px;
 }
