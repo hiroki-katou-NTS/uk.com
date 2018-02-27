@@ -145,7 +145,7 @@ module nts.uk.at.view.kmf002.c {
                     _self.selectedEmployee(data.listEmployee);
                     _self.employeeList.removeAll();
                     _.forEach(data.listEmployee, function(value: any) {
-                        _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
+                        _self.employeeList.push({ code: value.employeeCode, name: value.employeeName, workplaceName: value.workplaceName});  
                     });
                     _self.findAllEmployeeRegister();
                     _self.initKCP004();
