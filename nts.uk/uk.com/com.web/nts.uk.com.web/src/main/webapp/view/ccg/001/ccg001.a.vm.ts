@@ -97,6 +97,9 @@ module nts.uk.com.view.ccg001.a {
              */
             public reloadCcg001(): void {
                 let self = this;
+                if ($('.ccg-sample-has-error').ntsError('hasError')) {
+                    return;
+                }
                 if (!self.showBaseDate() && !self.showClosure() && !self.showPeriod()){
                     nts.uk.ui.dialog.alertError("Base Date or Closure or Period must be shown!" );
                     return;

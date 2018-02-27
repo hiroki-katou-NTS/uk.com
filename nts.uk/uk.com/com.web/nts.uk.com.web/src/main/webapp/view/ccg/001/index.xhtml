@@ -28,6 +28,7 @@
 		</ui:define>
 
 		<ui:define name="content">
+			<div id="functions-area"></div>
 			<div id="contents-area">
 				<div id="side-menu" class="cf"></div>
 				<div id="content" class="cf">
@@ -66,21 +67,22 @@
 							<h2>Required param properties:</h2>
 						<div style="padding-bottom: 5px;">
 							<div data-bind="ntsFormLabel: {}">Base Date:</div> 
-							<div tabindex="3"
-										data-bind="ntsDatePicker: {
+							<div class="ccg-sample-has-error" data-bind="ntsDatePicker: {
+											required: true,
 											dateFormat: 'YYYY/MM/DD',
 											value: baseDate }"></div><br/></div>
 						<com:ko tag="ifnot" bind="periodFormatYM">
 							<div style="padding-bottom: 5px;">
 								<div data-bind="ntsFormLabel: {}">Period start:</div>  
-								<div tabindex="3"
-											data-bind="ntsDatePicker: {
+								<div class="ccg-sample-has-error" data-bind="ntsDatePicker: {
+												required: true,
 												dateFormat: 'YYYY/MM/DD',
 												value: periodStartDate }"></div><br/>
 							</div>
 							<div style="padding-bottom:  5px;">
 								<div data-bind="ntsFormLabel: {}">Period end:</div>  
-								<div tabindex="3" data-bind="ntsDatePicker: {
+								<div class="ccg-sample-has-error" data-bind="ntsDatePicker: {
+												required: true,
 												dateFormat: 'YYYY/MM/DD',
 												value: periodEndDate }"></div><br/>
 							</div>
@@ -88,15 +90,15 @@
 						<com:ko tag="if" bind="periodFormatYM">
 							<div style="padding-bottom:  5px;">
 								<div data-bind="ntsFormLabel: {}">Period start:</div>
-								<div tabindex="3"
-											data-bind="ntsDatePicker: {
+								<div class="ccg-sample-has-error" data-bind="ntsDatePicker: {
+												required: true,
 												dateFormat: 'YYYY/MM',
 												value: periodStartDate }"></div><br/>
 							</div>
 							<div style="padding-bottom:  5px;">
 								<div data-bind="ntsFormLabel: {}">Period end:</div>  
-								<div tabindex="3"
-											data-bind="ntsDatePicker: {
+								<div class="ccg-sample-has-error" data-bind="ntsDatePicker: {
+												required: true,
 												dateFormat: 'YYYY/MM',
 												value: periodEndDate }"></div><br/>
 							</div>
@@ -273,15 +275,15 @@ $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);]]>
 										</tr>
 										<tr>
 											<td>baseDate<br/><i>(required if showBaseDate = true)</i></td>
-											<td><b>Type:</b> boolean<br /> Search reference date</td>
+											<td><b>Type:</b> string(ISO 8601 Formats)<br /> Search reference date</td>
 										</tr>
 										<tr>
 											<td>periodStartDate<br/><i>(required if showPeriod = true)</i></td>
-											<td><b>Type:</b> boolean<br /> Search start date</td>
+											<td><b>Type:</b> string(ISO 8601 Formats)<br /> Search start date</td>
 										</tr>
 										<tr>
 											<td>periodEndDate<br/><i>(required if showPeriod = true)</i></td>
-											<td><b>Type:</b> boolean<br /> Search end date</td>
+											<td><b>Type:</b> string(ISO 8601 Formats)<br /> Search end date</td>
 										</tr>
 										<tr>
 											<td>inService</td>
@@ -364,7 +366,7 @@ $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);]]>
 									<tbody>
 										<tr>
 											<td>baseDate</td>
-											<td><b>Type:</b> string<br /> Search reference date</td>
+											<td><b>Type:</b> string(ISO 8601 Formats)<br /> Search reference date</td>
 										</tr>
 										<tr>
 											<td>closureId</td>
@@ -372,11 +374,11 @@ $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);]]>
 										</tr>
 										<tr>
 											<td>periodStart</td>
-											<td><b>Type:</b> string<br /> Period start date</td>
+											<td><b>Type:</b> string(ISO 8601 Formats)<br /> Period start date</td>
 										</tr>
 										<tr>
 											<td>periodEnd</td>
-											<td><b>Type:</b> string<br /> Period end date</td>
+											<td><b>Type:</b> string(ISO 8601 Formats)<br /> Period end date</td>
 										</tr>
 										<tr>
 											<td>listEmployee</td>
@@ -387,10 +389,6 @@ $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);]]>
 							</div>
 						</div>
 					</article>
-					<div class="footer cf">
-						<button class="previous large">Previous</button>
-						<button class="next proceed large">Next</button>
-					</div>
 				</div>
 			</div>
 		</ui:define>
