@@ -31,7 +31,7 @@ module nts.uk.pr.view.ccg015.b {
                     { id: 'tab_flow_menu', title: nts.uk.resource.getText("Enum_TopPagePartType_FlowMenu"), content: '#flow_menu', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab_url', title: nts.uk.resource.getText("Enum_TopPagePartType_ExternalUrl"), content: '#url', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
-                self.selectedTab = ko.observable('tab_widget');
+                self.selectedTab = ko.observable('tab_standar_widget');
                 self.myPageSettingModel = ko.observable(new MyPageSettingModel());
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("CCG015_11"), width: "70px", key: 'itemCode', dataType: "string", hidden: false },
@@ -74,6 +74,7 @@ module nts.uk.pr.view.ccg015.b {
                 self.myPageSettingModel().topPagePartSettingItems()[1].settingItems([]);
                 self.myPageSettingModel().topPagePartSettingItems()[2].settingItems([]);
                 self.myPageSettingModel().topPagePartSettingItems()[3].settingItems([]);
+                self.myPageSettingModel().topPagePartSettingItems()[4].settingItems([]);
 
                 self.myPageSettingModel().useMyPage(data.useMyPage);
                 self.myPageSettingModel().topPagePartSettingItems()[0].usePart(data.useStandarWidget);
