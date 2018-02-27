@@ -60,7 +60,7 @@ module nts.uk.at.view.ksu007.a {
             workTimeCode: KnockoutObservable<string>;
             scheduleBatchCorrectSettingInfo: KnockoutObservable<ScheduleBatchCorrectSetting>;
             
-            periodDate:KnockoutObservable<any>;
+            periodDate: KnockoutObservable<any>;
             copyStartDate: KnockoutObservable<Date>;
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
@@ -104,10 +104,8 @@ module nts.uk.at.view.ksu007.a {
                 
                 self.startDateString = ko.observable("");
                 self.endDateString = ko.observable("");
-                self.selectedEmployee = ko.observableArray([]);
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
-                self.baseDate = ko.observable(new Date());
                 
                 self.periodDate = ko.observable({});
                 self.checkReCreateAtrOnlyUnConfirm = ko.observable(false);
