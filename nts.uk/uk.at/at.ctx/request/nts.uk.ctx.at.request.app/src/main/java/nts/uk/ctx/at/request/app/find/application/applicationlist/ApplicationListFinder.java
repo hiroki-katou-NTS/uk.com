@@ -8,9 +8,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.setting.company.request.approvallistsetting.ApprovalListDisplaySetDto;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListInitialRepository;
@@ -18,6 +22,8 @@ import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListOutP
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppMasterInfo;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.ApplicationFullOutput;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.PhaseStatus;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
@@ -36,6 +42,12 @@ public class ApplicationListFinder {
 	private AppListInitialRepository repoAppListInit;
 	@Inject
 	private RequestSettingRepository repoRequestSet;
+	@Inject
+	private ApplicationRepository_New applicationRepository_New;
+	@Inject
+	private AppDispNameRepository appDispNameRepository;
+	@Inject
+	private HdAppDispNameRepository hdAppDispNameRepository;
 	
 	public ApplicationListDto getAppList(AppListExtractConditionDto param){
 		String companyId = AppContexts.user().companyId();
@@ -120,4 +132,38 @@ public class ApplicationListFinder {
 		}
 		return null;
 	}
+	/**
+	 * requestList #26
+	 * getApplicationBySID 
+	 * @param employeeID
+	 * @param startDate
+	 * @param endDate
+	 * @return list<ApplicationExport>
+	 */
+	public List<ApplicationExportDto> getApplicationBySID(List<String> employeeID, GeneralDate startDate, GeneralDate endDate){
+		List<ApplicationExportDto> applicationExports = new ArrayList<>();
+		List<Application_New> application = this.applicationRepository_New.getApplicationBySIDs(employeeID, startDate, endDate);
+		if(CollectionUtil.isEmpty(application)){
+			return applicationExports;
+		}
+		List<Application_New> applicationExcessHoliday = application.stream().filter(x -> x.getAppType().value != ApplicationType.ABSENCE_APPLICATION.value).collect(Collectors.toList());
+		for(Application_New app : applicationExcessHoliday){
+			ApplicationExportDto applicationExport = new ApplicationExportDto();
+			applicationExport.setAppDate(app.getAppDate());
+			applicationExport.setAppType(app.getAppType().value);
+			applicationExport.setEmployeeID(app.getEmployeeID());
+			applicationExport.setAppTypeName(appDispNameRepository.getDisplay(app.getAppType().value).isPresent() ? appDispNameRepository.getDisplay(app.getAppType().value).get().getDispName().toString() : "" );
+			applicationExports.add(applicationExport);
+		}
+		List<Application_New> applicationHoliday = application.stream().filter(x -> x.getAppType().value == ApplicationType.ABSENCE_APPLICATION.value).collect(Collectors.toList());
+		for(Application_New app : applicationHoliday){
+			ApplicationExportDto applicationExport = new ApplicationExportDto();
+			applicationExport.setAppDate(app.getAppDate());
+			applicationExport.setAppType(app.getAppType().value);
+			applicationExport.setEmployeeID(app.getEmployeeID());
+			applicationExport.setAppTypeName(hdAppDispNameRepository.getHdApp(app.getAppType().value).isPresent() ? hdAppDispNameRepository.getHdApp(app.getAppType().value).get().getDispName().toString() : "" );
+			applicationExports.add(applicationExport);
+		}
+		return applicationExports;
+	} 
 }

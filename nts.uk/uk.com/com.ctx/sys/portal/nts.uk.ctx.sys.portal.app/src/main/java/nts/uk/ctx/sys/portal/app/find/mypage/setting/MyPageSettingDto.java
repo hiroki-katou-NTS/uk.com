@@ -22,8 +22,11 @@ public class MyPageSettingDto {
 	/** The use my page. */
 	private Integer useMyPage;
 
-	/** The use widget. */
-	private Integer useWidget;
+	/** The use Standar widget. */
+	private Integer useStandardWidget;
+	
+	/** The use Optional Widget. */
+	private Integer useOptionalWidget;
 
 	/** The use dashboard. */
 	private Integer useDashboard;
@@ -46,7 +49,8 @@ public class MyPageSettingDto {
 	public static MyPageSettingDto fromDomain(MyPageSetting myPageSetting) {
 		MyPageSettingDto myPageSettingDto = new MyPageSettingDto();
 		myPageSettingDto.useMyPage = myPageSetting.getUseMyPage().value;
-		myPageSettingDto.useWidget = myPageSetting.getUseWidget().value;
+		myPageSettingDto.useStandardWidget = myPageSetting.getUseStandardWidget().value;
+		myPageSettingDto.useOptionalWidget = myPageSetting.getUseOptionalWidget().value;
 		myPageSettingDto.useDashboard = myPageSetting.getUseDashboard().value;
 		myPageSettingDto.useFlowMenu = myPageSetting.getUseFlowMenu().value;
 		myPageSettingDto.externalUrlPermission = myPageSetting.getExternalUrlPermission().value;

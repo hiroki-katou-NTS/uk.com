@@ -21,8 +21,7 @@ input.txtEmpCodeFirstChar {
 	margin: 5px 0px;
 }
 
-#empInitGroup .ntsRadioBox:not (:first-child ), #initCardNoGroup .ntsRadioBox:not
-	(:first-child ) {
+#empInitGroup .ntsRadioBox:not(:first-child), #initCardNoGroup .ntsRadioBox:not(:first-child){
 	width: 100%;
 	margin-top: 5px;
 }

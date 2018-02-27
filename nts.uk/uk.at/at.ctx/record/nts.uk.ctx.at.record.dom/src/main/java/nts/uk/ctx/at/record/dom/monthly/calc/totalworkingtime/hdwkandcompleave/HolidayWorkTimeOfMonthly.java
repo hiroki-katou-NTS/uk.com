@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +10,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
-import nts.uk.ctx.at.record.dom.monthly.GetWorkTimezoneCommonSet;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
@@ -20,13 +18,11 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.ExcessOuts
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.TreatHolidayWorkTimeOfLessThanCriteriaPerWeek;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
-import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
-import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.HolidayWorkAndTransferAtr;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -211,13 +207,15 @@ public class HolidayWorkTimeOfMonthly {
 		}
 	
 		// 休出・振替の処理順序を取得する
-		val procAtrHolidayWorkAndTransferList = this.getHolidayWorkAndTransferOrder(companyId, workInfo, repositories);
+		val workTimeCode = workInfo.getWorkTimeCode().v();
+		val holidayWorkAndTransferAtrs = repositories.getHolidayWorkAndTransferOrder().get(
+				companyId, workTimeCode, false);
 		
 		// 休出・振替のループ
-		for (val procAtrHolidayWorkAndTransfer : procAtrHolidayWorkAndTransferList){
+		for (val holidayWorkAndTransferAtr : holidayWorkAndTransferAtrs){
 		
 			// 休出枠時間のループ処理
-			canLegalHolidayWork = this.holidayWorkFrameTimeProcess(procAtrHolidayWorkAndTransfer,
+			canLegalHolidayWork = this.holidayWorkFrameTimeProcess(holidayWorkAndTransferAtr,
 					legalHolidayWorkTransferOrder, canLegalHolidayWork,
 					autoExcludeHolidayWorkFrames, holidayWorkFrameTimes, attendanceTimeOfDaily.getYmd());
 		}
@@ -279,60 +277,8 @@ public class HolidayWorkTimeOfMonthly {
 	}
 	
 	/**
-	 * 休出・振替の処理順序を取得する
-	 * @param companyId 会社ID
-	 * @param workInfo 勤務情報
-	 * @param repositories 月次集計が必要とするリポジトリ
-	 * @return 休出振替区分リスト（処理順）
-	 */
-	private List<ProcAtrHolidayWorkAndTransfer> getHolidayWorkAndTransferOrder(
-			String companyId, WorkInformation workInfo, RepositoriesRequiredByMonthlyAggr repositories){
-		
-		List<ProcAtrHolidayWorkAndTransfer> returnOrder = new ArrayList<>();
-		
-		// 就業時間帯コードを取得する
-		WorkTimeCode workTimeCd = workInfo.getWorkTimeCode();
-		if (workTimeCd.toString() == "") {
-			returnOrder.add(ProcAtrHolidayWorkAndTransfer.HOLIDAY_WORK);
-			return returnOrder;
-		}
-		
-		// 代休振替設定を取得する
-		val workTimezoneCommonSetOpt = GetWorkTimezoneCommonSet.get(companyId, workTimeCd.v(), repositories);
-		if (!workTimezoneCommonSetOpt.isPresent()){
-			returnOrder.add(ProcAtrHolidayWorkAndTransfer.HOLIDAY_WORK);
-			return returnOrder;
-		}
-		val subHolTimeSets = workTimezoneCommonSetOpt.get().getSubHolTimeSet();
-		for (val subHolTimeSet : subHolTimeSets){
-			if (subHolTimeSet.getOriginAtr() != CompensatoryOccurrenceDivision.WorkDayOffTime) continue;
-			val subHolTransferSet = subHolTimeSet.getSubHolTimeSet();
-			
-			// 代休振替設定．使用区分を取得する
-			if (!subHolTransferSet.isUseDivision()) break;
-			
-			// 代休振替設定区分を取得する
-			val transferSetAtr = subHolTransferSet.getSubHolTransferSetAtr();
-			if (transferSetAtr == SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
-				// 指定した時間を代休とする時
-				returnOrder.add(ProcAtrHolidayWorkAndTransfer.TRANSFER);
-				returnOrder.add(ProcAtrHolidayWorkAndTransfer.HOLIDAY_WORK);
-				return returnOrder;
-			}
-			else {
-				// 一定時間を超えたら代休とする時
-				returnOrder.add(ProcAtrHolidayWorkAndTransfer.HOLIDAY_WORK);
-				returnOrder.add(ProcAtrHolidayWorkAndTransfer.TRANSFER);
-				return returnOrder;
-			}
-		}
-		returnOrder.add(ProcAtrHolidayWorkAndTransfer.HOLIDAY_WORK);
-		return returnOrder;
-	}
-	
-	/**
 	 * 休出枠時間のループ処理
-	 * @param procAtr 休出振替区分
+	 * @param holidayWorkAndTransferAtr 休出振替区分
 	 * @param legalHolidayWorkTransferOrderOfAggrMonthly 法定内休出振替順
 	 * @param canLegalHolidayWork 法定内休出に出来る時間
 	 * @param autoExcludeHolidayWorkFrameList 自動的に除く休出枠
@@ -341,7 +287,7 @@ public class HolidayWorkTimeOfMonthly {
 	 * @return 法定内休出に出来る時間　（計算後）
 	 */
 	private AttendanceTime holidayWorkFrameTimeProcess(
-			ProcAtrHolidayWorkAndTransfer procAtr,
+			HolidayWorkAndTransferAtr holidayWorkAndTransferAtr,
 			LegalHolidayWorkTransferOrderOfAggrMonthly legalHolidayWorkTransferOrderOfAggrMonthly,
 			AttendanceTime canLegalHolidayWork,
 			List<HolidayWorkFrameNo> autoExcludeHolidayWorkFrameList,
@@ -360,13 +306,13 @@ public class HolidayWorkTimeOfMonthly {
 			
 			// 対象の時系列ワークを確認する
 			val targetHolidayWorkTime = this.getTargetAggregateHolidayWorkTime(holidayWorkFrameNo);
-			val timeSeriesWork = targetHolidayWorkTime.getTimeSeriesWork(ymd);
+			val timeSeriesWork = targetHolidayWorkTime.getAndPutTimeSeriesWork(ymd);
 			
 			// 自動的に除く休出枠か確認する
 			if (autoExcludeHolidayWorkFrameList.contains(holidayWorkFrameNo)){
 				
 				// 取得した休出枠時間を集計休出時間に入れる　（入れた時間分を法定内休出にできる時間から引く）
-				switch (procAtr){
+				switch (holidayWorkAndTransferAtr){
 				case HOLIDAY_WORK:
 					AttendanceTime legalHolidayWorkTime =
 						new AttendanceTime(holidayWorkFrameTime.getHolidayWorkTime().get().getTime().v());
@@ -410,7 +356,7 @@ public class HolidayWorkTimeOfMonthly {
 			else {
 				
 				// 取得した休出枠時間を集計休出時間に入れる
-				switch (procAtr){
+				switch (holidayWorkAndTransferAtr){
 				case HOLIDAY_WORK:
 					timeSeriesWork.addHolidayWorkTimeInHolidayWorkTime(holidayWorkFrameTime.getHolidayWorkTime().get());
 					break;

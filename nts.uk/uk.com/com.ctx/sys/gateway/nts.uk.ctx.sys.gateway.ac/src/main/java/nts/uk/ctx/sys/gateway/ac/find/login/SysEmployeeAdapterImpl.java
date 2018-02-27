@@ -9,13 +9,16 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.pub.employee.EmployeeDataMngInfoExport;
+import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoByCidSidExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoByCidSidPub;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
+import nts.uk.ctx.sys.gateway.dom.login.dto.SDelAtr;
 
 /**
  * The Class SysEmployeeAdapterImpl.
@@ -30,6 +33,12 @@ public class SysEmployeeAdapterImpl implements SysEmployeeAdapter {
 	/** The emp info by cid sid pub. */
 	@Inject
 	private EmpInfoByCidSidPub empInfoByCidSidPub;
+	
+	/** The sy employee pub. */
+	@Inject
+	private SyEmployeePub syEmployeePub;
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -64,5 +73,46 @@ public class SysEmployeeAdapterImpl implements SysEmployeeAdapter {
 		EmployeeImport emImport = new EmployeeImport(emExport.getCid(), emExport.getPid(), emExport.getSid(),
 				emExport.getScd());
 		return Optional.of(emImport);
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter#getSdataMngInfo(java.lang.String)
+	 */
+	@Override
+	public Optional<EmployeeDataMngInfoImport> getSdataMngInfo(String sid) {
+		
+		Optional<EmployeeDataMngInfoExport> optEmployeeDataMngInfoExport = syEmployeePub.getSdataMngInfo(sid);
+		
+		if(!optEmployeeDataMngInfoExport.isPresent()) {
+			return Optional.empty();
+		}
+		
+		EmployeeDataMngInfoExport infoExport = optEmployeeDataMngInfoExport.get();
+		
+		return Optional.of(EmployeeDataMngInfoImport.builder()
+				.companyId(infoExport.getCompanyId())
+				.personId(infoExport.getPersonId()).employeeId(infoExport.getEmployeeId())
+				.employeeCode(infoExport.getEmployeeCode())
+				.deletedStatus(this.convertToDelAtr(infoExport.getDeletedStatus()))
+				.deleteDateTemporary(infoExport.getDeleteDateTemporary())
+				.removeReason(infoExport.getRemoveReason())
+				.externalCode(infoExport.getExternalCode())
+				.build());
+	}
+	
+	/**
+	 * Convert to del atr.
+	 *
+	 * @param employeeDeletionAttr the employee deletion attr
+	 * @return the s del atr
+	 */
+	private SDelAtr convertToDelAtr(int employeeDeletionAttr) {
+		switch (employeeDeletionAttr) {
+		case 0:
+			return SDelAtr.NOTDELETED;
+
+		default:
+			return SDelAtr.DELETED;
+		}
 	}
 }

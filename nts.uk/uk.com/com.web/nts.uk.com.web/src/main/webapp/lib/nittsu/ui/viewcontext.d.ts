@@ -9,6 +9,7 @@ interface ViewContext {
     codeNames: { [key: string]: string };
     messages: { [key: string]: string };
     systemLanguage: string;
+    user: any
 
     title: string;
     transferred: nts.uk.util.optional.Optional<any>;

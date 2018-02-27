@@ -41,6 +41,10 @@ public class StampIncorrectOrderAlgorithm {
 		if(timeLeavingOfDailyPerformance != null && !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty() && timeLeavingOfDailyPerformance.getTimeLeavingWorks().size() >= 2){
 
 			List<Integer> attendanceItemIds = new ArrayList<>();
+			attendanceItemIds.add(31);
+			attendanceItemIds.add(34);
+			attendanceItemIds.add(41);
+			attendanceItemIds.add(44);
 	
 			// TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance =
 			// timeLeavingOfDailyPerformanceRepository
@@ -102,7 +106,7 @@ public class StampIncorrectOrderAlgorithm {
 					}
 				} else {
 					this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
-							new ErrorAlarmWorkRecordCode(SystemFixedErrorAlarm.INCORRECT_STAMP.name()), attendanceItemIds);
+							new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
 				}
 			}
 		}

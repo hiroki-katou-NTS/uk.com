@@ -3,9 +3,7 @@ package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * 時系列の所定労働時間
@@ -39,13 +37,7 @@ public class PrescribedWorkingTimeOfTimeSeries {
 			GeneralDate ymd, WorkScheduleTimeOfDaily prescribedWorkingTime){
 		
 		val domain = new PrescribedWorkingTimeOfTimeSeries(ymd);
-		domain.prescribedWorkingTime = new WorkScheduleTimeOfDaily(
-				new WorkScheduleTime(
-						new AttendanceTime(prescribedWorkingTime.getWorkScheduleTime().getTotal().v()),
-						new AttendanceTime(prescribedWorkingTime.getWorkScheduleTime().getExcessOfStatutoryTime().v()),
-						new AttendanceTime(prescribedWorkingTime.getWorkScheduleTime().getWithinStatutoryTime().v())),
-				new AttendanceTime(prescribedWorkingTime.getSchedulePrescribedLaborTime().v()),
-				new AttendanceTime(prescribedWorkingTime.getRecordPrescribedLaborTime().v()));
+		domain.prescribedWorkingTime = prescribedWorkingTime;
 		return domain;
 	}
 }

@@ -81,9 +81,8 @@ public class WorkTimeOfMonthly {
 			val withinPrescribedTimeOfDaily = totalWorkingTime.getWithinStatutoryTimeOfDaily();
 	
 			// 取得した就業時間・所定内割増時間を確認する
-			val workTime = new AttendanceTime(withinPrescribedTimeOfDaily.getWorkTime().v());
-			val withinPrescribedPremiumTime =
-					new AttendanceTime(withinPrescribedTimeOfDaily.getWithinPrescribedPremiumTime().v());
+			AttendanceTime workTime = new AttendanceTime(withinPrescribedTimeOfDaily.getWorkTime().v());
+			val withinPrescribedPremiumTime = withinPrescribedTimeOfDaily.getWithinPrescribedPremiumTime();
 			
 			// ドメインモデル「日別実績の残業時間」を取得する
 			val illegalTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
@@ -91,7 +90,7 @@ public class WorkTimeOfMonthly {
 				val overTimeOfDaily = illegalTimeOfDaily.getOverTimeWork().get();
 				
 				// 変形法定内残業を就業時間に加算
-				workTime.addMinutes(overTimeOfDaily.getIrregularWithinPrescribedOverTimeWork().valueAsMinutes());
+				workTime = workTime.addMinutes(overTimeOfDaily.getIrregularWithinPrescribedOverTimeWork().v());
 			}
 	
 			// 時系列ワークに追加

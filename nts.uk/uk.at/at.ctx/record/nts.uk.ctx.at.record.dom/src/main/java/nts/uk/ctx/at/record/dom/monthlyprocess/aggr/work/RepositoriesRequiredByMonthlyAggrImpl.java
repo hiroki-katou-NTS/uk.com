@@ -22,12 +22,10 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeave
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetOfStatutoryWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetWeekStart;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetHolidayWorkAndTransferOrder;
+import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetOverTimeAndTransferOrder;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 /**
@@ -70,21 +68,9 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	@Inject
 	public WorkTypeRepository workType;
 	
-	/** 就業時間帯の設定の取得 */
+	/** 就業時間帯：共通設定の取得 */
 	@Inject
-	public WorkTimeSettingRepository workTimeSet;
-	/** 固定勤務設定の取得 */
-	@Inject
-	public FixedWorkSettingRepository fixedWorkSet;
-	/** 流動勤務設定の取得 */
-	@Inject
-	public FlowWorkSettingRepository flowWorkSet;
-	/** 時差勤務設定の取得 */
-	@Inject
-	public DiffTimeWorkSettingRepository diffWorkSet;
-	/** フレックス勤務設定の取得 */
-	@Inject
-	public FlexWorkSettingRepository flexWorkSet;
+	public GetCommonSet commonSet;
 	
 	/** 所定時間設定の取得 */
 	@Inject
@@ -120,6 +106,13 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 時間外超過設定の取得 */
 	@Inject
 	public OutsideOTSettingRepository outsideOTSet;
+
+	/** 残業・振替の処理順序を取得する */
+	@Inject
+	public GetOverTimeAndTransferOrder overTimeAndTransferOrder;
+	/** 休出・振替の処理順序を取得する */
+	@Inject
+	public GetHolidayWorkAndTransferOrder holidayWorkAndTransferOrder;
 	
 	/** 休日加算設定 */
 	@Inject

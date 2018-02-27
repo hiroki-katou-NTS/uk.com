@@ -743,7 +743,6 @@ module nts.custombinding {
                                     constraint: nameid,
                                     required: required,
                                     option: {
-                                        grouplength: 3,
                                         textalign: 'left',
                                         decimallength: Number(item.decimalPart)
                                     },
@@ -1302,7 +1301,7 @@ module nts.custombinding {
                                         constraint.valueType = "Integer";
 
                                         constraint.min = 0;
-                                        constraint.max = Math.pow(10, dts.maxLength || 0) - 1;
+                                        constraint.max = Math.pow(10, dts.stringItemLength || 0) - 1;
                                         break;
                                     case ITEM_STRING_TYPE.KANA:
                                         constraint.charType = 'Kana';
@@ -1530,7 +1529,6 @@ module nts.custombinding {
 
             $element
                 .append(self.tmp)
-                .disableSelection()
                 .addClass('ntsControl layout-control');
 
 
@@ -1546,7 +1544,7 @@ module nts.custombinding {
             }
 
             // change color text
-            if (access.showColor) {
+            if (_.has(access, "showColor")) {
                 $.extend(opts.sortable, { showColor: access.showColor });
             }
 
@@ -2087,6 +2085,10 @@ module nts.custombinding {
                                             .filter(m => !m.isAbolition)
                                             .filter(f => {
                                                 if (location.href.indexOf('/view/cps/007/a/') > -1) {
+                                                    if (item.id === "COM1_00000000000000000000000_CS00001") {
+                                                        return f.id !== "COM1_000000000000000_CS00001_IS00001";
+                                                    }
+
                                                     if (item.id === "COM1_00000000000000000000000_CS00002") {
                                                         return f.id !== "COM1_000000000000000_CS00002_IS00003";
                                                     }

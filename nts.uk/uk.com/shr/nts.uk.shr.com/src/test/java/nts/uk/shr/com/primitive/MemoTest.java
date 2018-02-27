@@ -21,10 +21,8 @@ public class MemoTest {
 
 	private static String create500CharsFullWidth() {
 		val sb = new StringBuilder();
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 10; j++) {
-				sb.append("１２３４５６７８９０");
-			}
+		for (int i = 0; i < 50; i++) {
+			sb.append("１２３４５");
 		}
 		return sb.toString();
 	}

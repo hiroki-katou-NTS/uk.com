@@ -63,7 +63,7 @@ public class ExcessOutsideWorkOfMonthly {
 	 * 週割増合計時間に分を加算する
 	 * @param minutes 分
 	 */
-	public void addWeeklyTotalPremiumTime(int minutes){
+	public void addMinutesToWeeklyTotalPremiumTime(int minutes){
 		this.weeklyTotalPremiumTime = this.weeklyTotalPremiumTime.addMinutes(minutes);
 	}
 	
@@ -71,7 +71,7 @@ public class ExcessOutsideWorkOfMonthly {
 	 * 月割増合計時間に分を加算する
 	 * @param minutes 分
 	 */
-	public void addMonthlyTotalPremiumTime(int minutes){
+	public void addMinutesToMonthlyTotalPremiumTime(int minutes){
 		this.monthlyTotalPremiumTime = this.monthlyTotalPremiumTime.addMinutes(minutes);
 	}
 	
@@ -79,7 +79,7 @@ public class ExcessOutsideWorkOfMonthly {
 	 * 変形繰越時間に分を加算する
 	 * @param minutes 分
 	 */
-	public void addDeformationCarryforwardTime(int minutes){
+	public void addMinutesToDeformationCarryforwardTime(int minutes){
 		this.deformationCarryforwardTime = this.deformationCarryforwardTime.addMinutes(minutes);
 	}
 }

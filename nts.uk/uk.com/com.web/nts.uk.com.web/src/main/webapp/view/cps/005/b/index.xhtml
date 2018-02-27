@@ -276,6 +276,7 @@
 												constraint: 'NumericItemMin',
 												option:  new nts.uk.ui.option.NumberEditorOption({
 												grouplength: 3,
+												decimalPart>8?8:decimalPart,
 									            	placeholder: '',
 									            	width: '80px',
 									            	textalign: 'left'
@@ -292,6 +293,7 @@
 												constraint: 'NumericItemMax',
 												option:  new nts.uk.ui.option.NumberEditorOption({
 												grouplength: 3,
+												decimalPart>8?8:decimalPart,
 									            	placeholder: '',
 									            	width: '80px',
 									            	textalign: 'left'
@@ -328,12 +330,13 @@
 												constraint: 'NumericItemMax',
 												option:  new nts.uk.ui.option.CurrencyEditorOption({
 													grouplength: 3,
-									            	decimallength: decimalPart>8?8:decimalPart ,
+									            	decimallength: decimalPart>8?8:decimalPart,
 									            	width: '70px',
 									            	textalign: 'left',
 									            	currencyformat: 'JPY',
 									            	currencyposition:'right'
 									            }),
+									            
 												required: false,
 												enable: true,
 												readonly: false}"
@@ -353,6 +356,7 @@
 												option:  new nts.uk.ui.option.CurrencyEditorOption({
 													grouplength: 3,
 									            	decimallength: decimalPart>8?8:decimalPart,
+									            	 mantissaMaxLength: decimalPart>8?8:decimalPart,
 									            	width: '70px',
 									            	textalign: 'left',
 									            	currencyformat: 'JPY',
@@ -370,7 +374,8 @@
 												constraint: 'NumericItemMax',
 												option:  new nts.uk.ui.option.CurrencyEditorOption({
 													grouplength: 3,
-									            	decimallength: decimalPart>8?8:decimalPart ,
+									            	decimallength: decimalPart>8?8:decimalPart,
+									            	 mantissaMaxLength: decimalPart>8?8:decimalPart,
 									            	width: '70px',
 									            	textalign: 'left',
 									            	currencyformat: 'JPY',
@@ -391,7 +396,7 @@
 												constraint: 'NumericItemMin',
 												option: new nts.uk.ui.option.NumberEditorOption({
 							                        grouplength: 3,
-							                        decimallength: decimalPart>8?8:decimalPart,
+							                       decimallength: decimalPart>8?8:decimalPart,
 							                        width: '75px',
 							                        textalign: 'left'
 							                    }),

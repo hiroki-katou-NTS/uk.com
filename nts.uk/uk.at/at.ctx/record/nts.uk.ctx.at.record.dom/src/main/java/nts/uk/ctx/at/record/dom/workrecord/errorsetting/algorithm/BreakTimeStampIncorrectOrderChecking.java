@@ -35,14 +35,12 @@ public class BreakTimeStampIncorrectOrderChecking {
 
 			List<BreakTimeSheet> breakTimeSheets = breakTimeOfDailyPerformance.getBreakTimeSheets();
 
-			breakTimeSheets.sort((e1, e2) -> e1.getStartTime().getTimeWithDay().v()
-					.compareTo(e2.getStartTime().getTimeWithDay().v()));
+			breakTimeSheets.sort((e1, e2) -> e1.getStartTime().v()
+					.compareTo(e2.getStartTime().v()));
 
 			int breakFrameNo = 1;
 			for (BreakTimeSheet item : breakTimeSheets) {
-				WorkStamp startTime = item.getStartTime();
-				WorkStamp endTime = item.getEndTime();
-				item = new BreakTimeSheet(new BreakFrameNo(breakFrameNo), startTime, endTime, item.getBreakTime());
+				item = new BreakTimeSheet(new BreakFrameNo(breakFrameNo), item.getStartTime(), item.getEndTime(), item.getBreakTime());
 				breakFrameNo++;
 			}
 
@@ -82,7 +80,7 @@ public class BreakTimeStampIncorrectOrderChecking {
 					attendanceItemIDList.add(213);
 				}
 				
-				if(breakTimeSheet.getStartTime().getTimeWithDay().greaterThan(breakTimeSheet.getEndTime().getTimeWithDay())){
+				if(breakTimeSheet.getStartTime().greaterThan(breakTimeSheet.getEndTime())){
 					createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId, processingDate,
 							new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
 				}

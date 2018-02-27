@@ -4,11 +4,11 @@ module nts.uk.at.view.kmf002.c {
          * define path to service
          */
         var path: any = {
-                save: "bs/employee/holidaysetting/employee/save",
-                find: "bs/employee/holidaysetting/employee/findEmployeeMonthDaySetting",
-                remove: "bs/employee/holidaysetting/employee/remove",
+                save: "at/shared/holidaysetting/employee/save",
+                find: "at/shared/holidaysetting/employee/findEmployeeMonthDaySetting",
+                remove: "at/shared/holidaysetting/employee/remove",
                 findFirstMonth: "basic/company/beginningmonth/find",
-                findAllEmployeeRegister: "bs/employee/holidaysetting/employee/findEmployeeMonthDaySetting/findAllEmployeeRegister",
+                findAllEmployeeRegister: "at/shared/holidaysetting/employee/findEmployeeMonthDaySetting/findAllEmployeeRegister",
             };
         
         /**
@@ -21,22 +21,22 @@ module nts.uk.at.view.kmf002.c {
             command.year = year;
             command.publicHolidayMonthSettings = employeeMonthDaySetting.publicHolidayMonthSettingDto;
             command.employeeID = sId;
-            return nts.uk.request.ajax("com", path.save, command);
+            return nts.uk.request.ajax("at", path.save, command);
         }
         
         export function find(year: string, employeeId: string): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.find + "/" + year + "/" + employeeId);
+            return nts.uk.request.ajax("at", path.find + "/" + year + "/" + employeeId);
         }
         
-        export function findAllEmployeeRegister(): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.findAllEmployeeRegister);
+        export function findAllEmployeeRegister(year: string): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", path.findAllEmployeeRegister + "/" + year);
         }
         
         export function remove(year: string, sId: string): JQueryPromise<any> {
             let command: any = {};
             command.year = year;
             command.employeeId = sId;
-            return nts.uk.request.ajax("com", path.remove, command);
+            return nts.uk.request.ajax("at", path.remove, command);
         }
         
         export function findFirstMonth(): JQueryPromise<any>{
