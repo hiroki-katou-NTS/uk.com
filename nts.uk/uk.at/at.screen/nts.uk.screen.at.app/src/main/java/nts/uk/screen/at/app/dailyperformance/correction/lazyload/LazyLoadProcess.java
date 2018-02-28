@@ -244,7 +244,7 @@ public class LazyLoadProcess {
 			DPControlDisplayItem dPControlDisplayItem, Map<Integer, DPAttendanceItem> mapDP,
 			Map<Integer, Map<String, String>> mapGetName, Map<String, ItemValue> itemValueMap, DPDataDto data,
 			boolean lock) {
-		List<DPCellDataDto> cellDatas = new ArrayList<>();
+		Set<DPCellDataDto> cellDatas = new HashSet<>();
 		if (dPControlDisplayItem.getLstAttendanceItem() != null) {
 			for (DPAttendanceItem item : dPControlDisplayItem.getLstAttendanceItem()) {
 				DPAttendanceItem dpAttenItem = mapDP.get(item.getId());
@@ -524,7 +524,11 @@ public class LazyLoadProcess {
 				// アルゴリズム「社員の勤務種別に対応する表示項目を取得する」を実行する
 				/// アルゴリズム「社員の勤務種別をすべて取得する」を実行する
 				List<String> lstBusinessTypeCode = this.repo.getListBusinessType(lstEmployeeId, dateRange);
-
+				List<DPBusinessTypeControl> lstDPBusinessTypeControl = new ArrayList<>();
+				if (lstFormat.size() > 0) {
+					lstDPBusinessTypeControl = this.repo.getListBusinessTypeControl(lstBusinessTypeCode,
+							lstAtdItemUnique);
+				}
 				// Create header & sheet
 				if (lstBusinessTypeCode.size() > 0) {
 
@@ -539,7 +543,7 @@ public class LazyLoadProcess {
 					lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList());
 					lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().collect(Collectors.toList());
 				}
-				result.setLstBusinessTypeCode(lstBusinessTypeCode);
+				result.setLstBusinessTypeCode(lstDPBusinessTypeControl);
 			}
 			result.setLstFormat(lstFormat);
 			result.setLstSheet(lstSheet);
@@ -573,7 +577,7 @@ public class LazyLoadProcess {
 		}
 		result.createSheets(disItem.getLstSheet());
 		mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
-		result.addColumnsToSheet(lstFormat, mapDP);
+		result.addColumnsToSheet(lstFormat, mapDP, true);
 		List<DPHeaderDto> lstHeader = new ArrayList<>();
 		for (FormatDPCorrectionDto dto : lstFormat) {
 			lstHeader.add(DPHeaderDto.createSimpleHeader(mergeString(ADD_CHARACTER, String.valueOf(dto.getAttendanceItemId())),
@@ -581,15 +585,10 @@ public class LazyLoadProcess {
 		}
 		result.setLstHeader(lstHeader);
 		if (!disItem.isSettingUnit()) {
-			List<DPBusinessTypeControl> lstDPBusinessTypeControl = new ArrayList<>();
-			if (lstFormat.size() > 0) {
-				lstDPBusinessTypeControl = this.repo.getListBusinessTypeControl(disItem.getLstBusinessTypeCode(),
-						lstAtdItemUnique);
-			}
-			if (lstDPBusinessTypeControl.size() > 0) {
+			if (disItem.getLstBusinessTypeCode().size() > 0) {
 				// set header access modifier
 				// only user are login can edit or others can edit
-				result.setColumnsAccessModifier(lstDPBusinessTypeControl);
+				result.setColumnsAccessModifier(disItem.getLstBusinessTypeCode());
 			}
 		}
 		for (DPHeaderDto key : result.getLstHeader()) {
