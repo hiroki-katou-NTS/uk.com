@@ -611,7 +611,13 @@ module nts.uk.com.view.ccg.share.ccg {
                         }
                     } else {
                         service.getCurrentHistoryItem().done(item => {
-                            service.getClosureTiedByEmployment(item.employmentCode).done(id => dfd.resolve(id));
+                            if (item) {
+                                service.getClosureTiedByEmployment(item.employmentCode).done(id => dfd.resolve(id));
+                            } else {
+                                const DEFAULT_VALUE = 1;
+                                // Q&A: #88282 (update specs)
+                                dfd.resolve(DEFAULT_VALUE);
+                            }
                         });
                     }
                 });
