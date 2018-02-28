@@ -68,7 +68,7 @@ public class FacadePeregWebService extends WebService {
 				List<String> itemVisible = itemByCategory.getItems().stream().map(ItemValue::itemCode).collect(Collectors.toList());
 				
 				// List item invisible
-				List<ItemValue> itemInvisible = fullItems.stream().filter(i->!itemVisible.contains(i.itemCode())).collect(Collectors.toList());
+				List<ItemValue> itemInvisible = fullItems.stream().filter(i->!itemVisible.contains(i.itemCode()) && i.itemCode().charAt(1) == 'S').collect(Collectors.toList());
 				itemInvisible.addAll(itemByCategory.getItems());
 				
 				itemByCategory.setItems(itemInvisible);
