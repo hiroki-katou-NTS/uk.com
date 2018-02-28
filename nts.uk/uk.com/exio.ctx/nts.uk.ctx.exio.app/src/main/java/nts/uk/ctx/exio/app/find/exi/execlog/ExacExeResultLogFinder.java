@@ -17,9 +17,6 @@ public class ExacExeResultLogFinder
     @Inject
     private ExacExeResultLogRepository finder;
 
-    /**
-     * @return
-     */
     public List<ExacExeResultLogDto> getAllExacExeResultLog(){
         return finder.getAllExacExeResultLog().stream().map(item -> ExacExeResultLogDto.fromDomain(item))
                 .collect(Collectors.toList());
@@ -33,6 +30,5 @@ public class ExacExeResultLogFinder
     	return finder.getExacExeResultLogByProcessId(externalProcessId).stream().map(item -> ExacExeResultLogDto.fromDomain(item))
                 .collect(Collectors.toList());
     }
-    
     
 }

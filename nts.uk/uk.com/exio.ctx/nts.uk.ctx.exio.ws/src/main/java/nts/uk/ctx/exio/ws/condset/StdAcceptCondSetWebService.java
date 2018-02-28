@@ -12,6 +12,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.exio.app.find.exi.category.ExAcpCategoryDto;
+import nts.uk.ctx.exio.app.find.exi.category.ExAcpCtgItemDatDto;
 import nts.uk.ctx.exio.app.find.exi.condset.StdAcceptCondSetDto;
 import nts.uk.ctx.exio.app.find.exi.condset.StdAcceptCondSetFinder;
 
@@ -20,7 +22,7 @@ import nts.uk.ctx.exio.app.find.exi.condset.StdAcceptCondSetFinder;
 public class StdAcceptCondSetWebService {
 	@Inject
 	private StdAcceptCondSetFinder stdAcceptCondSetFind;
-
+	
 	@POST
 	@Path("getConditionBySystemType/{systemType}")
 	public List<StdAcceptCondSetDto> getConditionBySystemType(@PathParam("systemType") int systemType) {
@@ -41,5 +43,25 @@ public class StdAcceptCondSetWebService {
 	@Path("getTotalRecord/{fileId}")
 	public int getTotalRecord(@PathParam("fileId") String fileId) {
 		return stdAcceptCondSetFind.getTotalRecordCsv(fileId);
+	}
+	
+	/**
+	 * Dummy data category item data
+	 * @param categoryId
+	 * @return
+	 */
+	@POST
+	@Path("getCategoryItemData/{categoryId}")
+	public List<ExAcpCtgItemDatDto> getCategoryItemData(@PathParam("categoryId") String categoryId) {
+		return stdAcceptCondSetFind.getCategoryItemData(categoryId);
+	}
+	/**
+	 * Dummy data category
+	 * @return
+	 */
+	@POST
+	@Path("getAllCategory")
+	public List<ExAcpCategoryDto> getAllCategory() {
+		return stdAcceptCondSetFind.getAllCategory();
 	}
 }

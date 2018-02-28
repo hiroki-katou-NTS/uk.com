@@ -17,7 +17,8 @@ public class JpaExacErrorLogRepository extends JpaRepository implements ExacErro
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtExacErrorLog f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.exacErrorLogPk.logSeqNumber =:logSeqNumber AND  f.exacErrorLogPk.cid =:cid AND  f.exacErrorLogPk.externalProcessId =:externalProcessId ";
-
+    private static final String SELECT_BY_PROCESS_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.exacErrorLogPk.externalProcessId =:externalProcessId ";
+    
     @Override
     public List<ExacErrorLog> getAllExacErrorLog(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtExacErrorLog.class)
@@ -68,5 +69,15 @@ public class JpaExacErrorLogRepository extends JpaRepository implements ExacErro
     private OiomtExacErrorLog toEntity(ExacErrorLog domain) {
         return new OiomtExacErrorLog(domain.getVersion(), new OiomtExacErrorLogPk(domain.getLogSeqNumber(), domain.getCid(), domain.getExternalProcessId()), domain.getCsvErrorItemName(), domain.getCsvAcceptedValue(), domain.getErrorContents(), domain.getRecordNumber(), domain.getLogRegDateTime(), domain.getItemName(), domain.getErrorAtr());
     }
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLogRepository#getExacErrorLogByProcessId(java.lang.String)
+	 */
+	@Override
+	public List<ExacErrorLog> getExacErrorLogByProcessId(String externalProcessId) {
+		return  this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtExacErrorLog.class)
+		.setParameter("externalProcessId", externalProcessId)
+        .getList(item -> toDomain(item));
+	}
 
 }
