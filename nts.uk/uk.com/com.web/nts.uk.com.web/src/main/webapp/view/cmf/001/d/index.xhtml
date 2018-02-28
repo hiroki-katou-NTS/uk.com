@@ -121,7 +121,7 @@
 							<col width="150px"/>
 							<col width="200px"/>
 							<col width="110px"/>
-							<col width="100px"/>
+							<col width="200px"/>
 							<col width="100px"/>
 							<col width="100px"/>
 						</colgroup>
@@ -138,13 +138,13 @@
 						</thead>
 						<tbody data-bind="foreach: listAcceptItem">
 							<tr data-bind="attr: { 'data-id': acceptItemNumber }">
-								<td style ="text-align: right;"><span data-bind="text: acceptItemNumber"></span></td>
-								<td><span data-bind="text: acceptItemName"></span></td>
+								<td style ="text-align: right;"><span class="label" data-bind="text: acceptItemNumber"></span></td>
+								<td><span class="label" data-bind="text: acceptItemName"></span></td>
 								<td>
 									<span class="label" data-bind="text: csvItemName"></span>
 									<button class="pull-right">#{i18n.getText('CMF001_167')}</button>
 								</td>
-								<td>Sample Data From File</td>
+								<td><span class="label" data-bind="text: 'Sample Data From File'"></span></td>
 								<td>
 									<div data-bind="ntsComboBox: {
 										options: $parent.dataTypes,
@@ -154,7 +154,7 @@
 										value: itemType,
 										optionsText: 'name',
 										columns: [
-											{ prop: 'name', length: 4 }
+											{ prop: 'name', length: 1 }
 										]}"></div>
 								</td>
 								<td style ="text-align: center;">
@@ -169,17 +169,7 @@
 				</div>
 				</div>
 			</div>
-<!-- 			<div class="contents-area"> -->
-				
-<!-- 				<div class="container"> -->
-<!-- 					<div class="left-content"> -->
-						
-<!-- 					</div> -->
-<!-- 					<div class="right-content"> -->
-						
-<!-- 					</div> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
+
 		</ui:define>
 	</ui:composition>
 </body>

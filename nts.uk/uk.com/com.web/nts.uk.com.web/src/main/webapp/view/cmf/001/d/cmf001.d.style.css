@@ -38,3 +38,12 @@
 .fixed-flex-layout-right {
 	flex: 1;
 }
+
+.my-active-row {
+    background: #007fff !important;
+    color: #ffffff;
+}
+
+.my-active-row:hover {
+    color: #000000;
+}
