@@ -6,6 +6,7 @@ module cmm044.a.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import formatym = nts.uk.time.parseYearMonthDate;
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
+    import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
 
     export class ScreenModel {
@@ -14,11 +15,11 @@ module cmm044.a.viewmodel {
         systemReference: KnockoutObservable<number>;
         isDisplayOrganizationName: KnockoutObservable<boolean>;
         targetBtnText: string;
-        
+
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<any>;
         tabindex: number;
-        
+
         // Phong
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         itemList: KnockoutObservableArray<any>;
@@ -61,14 +62,14 @@ module cmm044.a.viewmodel {
         selectedCode: KnockoutObservableArray<any>;
         showinfoSelectedEmployee: KnockoutObservable<boolean>;
         selectedEmployee: KnockoutObservableArray<any>;
-        baseDate: KnockoutObservable<Date>;
+        baseDate: KnockoutObservable<Date> = ko.observable(new Date());;
         isShow: KnockoutObservable<boolean>;
 
         constructor() {
             let self = this;
             // THU NGHIEM  KCP_009 
             self.employeeInputList = ko.observableArray([]);
-            
+
             self.systemReference = ko.observable(SystemType.EMPLOYMENT);
             self.isDisplayOrganizationName = ko.observable(true);
             self.targetBtnText = nts.uk.resource.getText("KCP009_3");
@@ -203,8 +204,8 @@ module cmm044.a.viewmodel {
                     if (data.length > 0) {
                         self.searchEmployee(data);
                     }
-                    
-//                    self.initKCP009();
+
+                    //                    self.initKCP009();
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
                 });
@@ -213,8 +214,8 @@ module cmm044.a.viewmodel {
             return dfd.promise();
 
         }
-        
-        findEmployeeName(sId) : JQueryPromise<string>{
+
+        findEmployeeName(sId): JQueryPromise<string> {
             var self = this;
             var dfd = $.Deferred();
             service.findEmployeeName(sId).done(function(response) {
@@ -223,7 +224,7 @@ module cmm044.a.viewmodel {
                 dfd.resolve("");
             });
 
-            return dfd.promise();  
+            return dfd.promise();
         }
 
         /**
@@ -439,11 +440,11 @@ module cmm044.a.viewmodel {
         openCDL021(tab: number, empId: string) {
             let self = this;
             nts.uk.ui.block.invisible();
-            var selectedId = []; 
-//            if (!empId) {
-//                selectedId.push(empId);
-//            }
-            if (tab == 1){
+            var selectedId = [];
+            //            if (!empId) {
+            //                selectedId.push(empId);
+            //            }
+            if (tab == 1) {
                 selectedId.push(self.currentItem().agentSid1());
             }
             // Set Param
@@ -487,7 +488,7 @@ module cmm044.a.viewmodel {
                         });
                     }
                 }
-                nts.uk.ui.block.clear();  
+                nts.uk.ui.block.clear();
             });
         }
 
@@ -497,58 +498,103 @@ module cmm044.a.viewmodel {
             isOnlyMe: ko.observable(false);
         }
 
-        initCCG001() {
-            let self = this;
-            self.ccgcomponent = {
-                baseDate: ko.observable(new Date()),
-                // Show/hide options 
-                isQuickSearchTab: true,
-                isAdvancedSearchTab: true,
-                isAllReferableEmployee: true,
-                isOnlyMe: true,
-                isEmployeeOfWorkplace: true,
-                isEmployeeWorkplaceFollow: true,
-                isMutipleCheck: true,
-                isSelectAllEmployee: true,
+//        initCCG001() {
+//            let self = this;
+//            self.ccgcomponent = {
+//                baseDate: ko.observable(new Date()),
+//                // Show/hide options 
+//                isQuickSearchTab: true,
+//                isAdvancedSearchTab: true,
+//                isAllReferableEmployee: true,
+//                isOnlyMe: true,
+//                isEmployeeOfWorkplace: true,
+//                isEmployeeWorkplaceFollow: true,
+//                isMutipleCheck: true,
+//                isSelectAllEmployee: true,
+//
+//                //Event options
+//                /**
+//                * @param dataList: list employee returned from component.
+//                * Define how to use this list employee by yourself in the function's body.
+//                */
+//                onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
+//                    self.searchEmployee(dataList);
+//                },
+//                onSearchOnlyClicked: function(data: EmployeeSearchDto) {
+//                    self.showinfoSelectedEmployee(true);
+//                    var dataEmployee: EmployeeSearchDto[] = [];
+//                    dataEmployee.push(data);
+//                    self.searchEmployee(dataEmployee);
+//                },
+//                onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
+//                    self.searchEmployee(dataList);
+//                },
+//                onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
+//                    self.searchEmployee(dataList);
+//                },
+//                onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
+//                    self.searchEmployee(dataEmployee);
+//                }
+//            }
+//            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+//        }
 
-                //Event options
-                /**
-                * @param dataList: list employee returned from component.
-                * Define how to use this list employee by yourself in the function's body.
-                */
-                onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
-                    self.searchEmployee(dataList);
-                },
-                onSearchOnlyClicked: function(data: EmployeeSearchDto) {
-                    self.showinfoSelectedEmployee(true);
-                    var dataEmployee: EmployeeSearchDto[] = [];
-                    dataEmployee.push(data);
-                    self.searchEmployee(dataEmployee);
-                },
-                onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
-                    self.searchEmployee(dataList);
-                },
-                onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
-                    self.searchEmployee(dataList);
-                },
-                onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
-                    self.searchEmployee(dataEmployee);
+        initCCG001(): void {
+            var self = this;
+            // Component option
+            self.ccgcomponent = {
+                /** Common properties */
+                systemType: 2, // システム区分
+                showEmployeeSelection: false, // 検索タイプ
+                showQuickSearchTab: true, // クイック検索
+                showAdvancedSearchTab: true, // 詳細検索
+                showBaseDate: true, // 基準日利用
+                showClosure: false, // 就業締め日利用
+                showAllClosure: false, // 全締め表示
+                showPeriod: false, // 対象期間利用
+                periodFormatYM: true, // 対象期間精度
+
+                /** Required parameter */
+                baseDate: self.baseDate().toISOString(), // 基準日
+                inService: true, // 在職区分
+                leaveOfAbsence: true, // 休職区分
+                closed: true, // 休業区分
+                retirement: true, // 退職区分
+
+                /** Quick search tab options */
+                showAllReferableEmployee: true, // 参照可能な社員すべて
+                showOnlyMe: false, // 自分だけ
+                showSameWorkplace: true, // 同じ職場の社員
+                showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
+
+                /** Advanced search properties */
+                showEmployment: false, // 雇用条件
+                showWorkplace: true, // 職場条件
+                showClassification: false, // 分類条件
+                showJobTitle: false, // 職位条件
+                showWorktype: false, // 勤種条件
+                isMutipleCheck: true, // 選択モード
+
+                /** Return data */
+                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                    self.selectedEmployee(data.listEmployee);
                 }
             }
+            // Start component
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
         }
-        
+
         initKCP009() {
             var self = this;
-            var listComponentOption : ComponentOption = {
-                    systemReference: self.systemReference(),
-                    isDisplayOrganizationName: false,
-                    employeeInputList: self.employeeInputList,
-                    targetBtnText: self.targetBtnText,
-                    selectedItem: self.selectedItem,
-                    tabIndex: self.tabindex
-                };
-            $('#emp-component').ntsLoadListComponent(listComponentOption);    
+            var listComponentOption: ComponentOption = {
+                systemReference: self.systemReference(),
+                isDisplayOrganizationName: false,
+                employeeInputList: self.employeeInputList,
+                targetBtnText: self.targetBtnText,
+                selectedItem: self.selectedItem,
+                tabIndex: self.tabindex
+            };
+            $('#emp-component').ntsLoadListComponent(listComponentOption);
         }
 
         searchEmployee(dataEmployee: EmployeeSearchDto[]) {
@@ -561,16 +607,16 @@ module cmm044.a.viewmodel {
                     businessName: item.employeeName,
                 }));
             });
-            
+
             self.initKCP009();
         }
     }
 
     interface IPersonModel {
-//        personId: string;
-//        code: string;
-//        name: string;
-//        baseDate?: number;
+        //        personId: string;
+        //        code: string;
+        //        name: string;
+        //        baseDate?: number;
         id: string;
         code: string;
         businessName: string;
@@ -606,7 +652,7 @@ module cmm044.a.viewmodel {
             self.name = name;
         }
     }
-    
+
     // THU NGHIEM KCP_009
     export interface ComponentOption {
         systemReference: SystemType;
@@ -630,7 +676,7 @@ module cmm044.a.viewmodel {
         static ACCOUNTING = 4;
         static OH = 6;
     }
-    
+
     //  Phong
     export module model {
         export class AgentDto {
