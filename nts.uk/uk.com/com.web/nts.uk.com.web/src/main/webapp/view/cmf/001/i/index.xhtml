@@ -27,27 +27,31 @@
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_301')}</div>
 						</td>
 						<td style="vertical-align: top; padding: 5px">
-							<div
-								data-bind="ntsRadioBoxGroup: {
-								options: listRadioBox1,
-								optionsValue: 'code',
-								optionsText: 'name',
-								value: selectedValue1}"></div>
+							<div data-bind="foreach: items1">
+								<span class="ntsControl" style="padding-bottom: 10px">
+									<label class="ntsRadioBox">
+										<input type="radio" name="textRadio1" data-bind="checkedValue: value, checked: $parent.selectedValue1, enable: $parent.enable" />
+										<span class="box"></span><span class="label" data-bind="text: text"></span>
+									</label>
+								</span>
+							</div>
 						</td>
 					</tr>
 					<tr>
-						<td style="vertical-align: top; padding: 10px 5px 5px 5px">
+						<td style="vertical-align: top; padding: 15px 5px 5px 5px">
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_320')}</div>
 						</td>
-						<td style="vertical-align: top; padding: 10px 5px 5px 5px">
-							<div
-								data-bind="ntsRadioBoxGroup: {
-								options: listRadioBox2,
-								optionsValue: 'code',
-								optionsText: 'name',
-								value: selectedValue2}"></div>
+						<td style="vertical-align: top; padding: 15px 5px 5px 5px">
+							<div data-bind="foreach: items2">
+								<span class="ntsControl" style="padding-bottom: 10px">
+									<label class="ntsRadioBox">
+										<input type="radio" name="textRadio2" data-bind="checkedValue: value, checked: $parent.selectedValue2, enable: $parent.enable" />
+										<span class="box"></span><span class="label" data-bind="text: text"></span>
+									</label>
+								</span>
+							</div>
 						</td>
-						<td style="vertical-align: top; padding: 10px 5px 5px 5px"><input
+						<td style="vertical-align: top; padding: 15px 5px 5px 5px"><input
 							data-bind="ntsTextEditor: {
 									value: valueTexBox,
 									option : {width : '100px'}" />
