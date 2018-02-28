@@ -133,6 +133,7 @@
 								</tr>
 								<tr>
 									<td style="vertical-align: bottom; padding-left: 10px;">
+										<button data-bind="click: previous">#{i18n.getText('CMF001_448')}</button>
 										<button class="proceed x-large" style="margin-left: 10px"
 											data-bind="click: next">#{i18n.getText('CMF001_449')}</button>
 									</td>
@@ -223,9 +224,9 @@
 										<td style="text-align: left;"><div class="label"
 												data-bind="text: itemType"></div></td>
 										<td style="text-align: center;"><i
-											data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: $parent.editIngestion"></i></td>
+											data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: function() {$parent.editIngestion($data)}"></i></td>
 										<td style="text-align: center;"><i
-											data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: $parent.receiveCondition"></i></td>
+											data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: function() {$parent.receiveCondition}"></i></td>
 									</tr>
 								</tbody>
 							</table>

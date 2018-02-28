@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 650, height: 500 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="cmf001.i.vm.js" />
+			<com:scriptfile path="cmf001.i.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div class="contents-area" style="width: 550px; height: 400px;">
+				<div class="label" style="margin-left: 20px; margin-top: 10px;">#{i18n.getText('CMF001_300')}</div>
+				<table style="margin-left: 30px; margin-top: 20px;">
+					<col width="150px" />
+					<col width="135px" />
+					<col width="160px" />
+					<tr>
+						<td style="vertical-align: top; padding: 5px">
+							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_301')}</div>
+						</td>
+						<td style="vertical-align: top; padding: 5px">
+							<div
+								data-bind="ntsRadioBoxGroup: {
+								options: listRadioBox1,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedValue1}"></div>
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align: top; padding: 10px 5px 5px 5px">
+							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_320')}</div>
+						</td>
+						<td style="vertical-align: top; padding: 10px 5px 5px 5px">
+							<div
+								data-bind="ntsRadioBoxGroup: {
+								options: listRadioBox2,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedValue2}"></div>
+						</td>
+						<td style="vertical-align: top; padding: 10px 5px 5px 5px"><input
+							data-bind="ntsTextEditor: {
+									value: valueTexBox,
+									option : {width : '100px'}" />
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div id="functions-area-bottom">
+				<button id="btn_I5_1" class="x-large proceed "
+					data-bind="click: saveNumericSetting">#{i18n.getText('CMF001_325')}</button>
+				<button id="btn_I5_2" class="large"
+					data-bind="click: cancelNumericSetting">#{i18n.getText('CMF001_326')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
