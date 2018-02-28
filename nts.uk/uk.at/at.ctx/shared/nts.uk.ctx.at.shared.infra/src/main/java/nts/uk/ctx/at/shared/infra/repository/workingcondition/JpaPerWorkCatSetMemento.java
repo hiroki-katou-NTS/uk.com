@@ -63,9 +63,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	@Override
 	public void setHolidayWork(SingleDaySchedule holidayWork) {
-		if (holidayWork != null) {
-			this.toEntity(holidayWork, WorkCategoryAtr.HOLIDAY_WORK.value);
-		}		
+		this.toEntity(holidayWork, WorkCategoryAtr.HOLIDAY_WORK.value);
 	}
 
 	/*
@@ -78,9 +76,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	@Override
 	public void setHolidayTime(SingleDaySchedule holidayTime) {
-		if (holidayTime != null) {
-			this.toEntity(holidayTime, WorkCategoryAtr.HOLIDAY_TIME.value);
-		}	
+		this.toEntity(holidayTime, WorkCategoryAtr.HOLIDAY_TIME.value);
 	}
 
 	/*
@@ -93,9 +89,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	@Override
 	public void setWeekdayTime(SingleDaySchedule weekdayTime) {
-		if (weekdayTime != null) {
-			this.toEntity(weekdayTime, WorkCategoryAtr.WEEKDAY_TIME.value);
-		}
+		this.toEntity(weekdayTime, WorkCategoryAtr.WEEKDAY_TIME.value);
 	}
 
 	/*
