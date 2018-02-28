@@ -10,12 +10,6 @@ module nts.uk.com.view.cmf001.d.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
-        systemTypes: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
-            new model.ItemModel(0, 'HR System'),
-            new model.ItemModel(1, 'Attendance System'),
-            new model.ItemModel(2, 'Payroll System'),
-            new model.ItemModel(3, 'Office Helper')
-        ]);
         systemType: model.ItemModel;
         
         listCategory: KnockoutObservableArray<model.ExternalAcceptanceCategory>;
@@ -46,7 +40,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         onchange: (filename) => void;
         constructor(data: any) {
             var self = this;
-            let item = _.find(self.systemTypes(), x => {return x.code == data.systemType;});
+            let item = _.find(model.getSystemTypes(), x => {return x.code == data.systemType;});
             self.systemType = item;
             self.selectedStandardImportSetting = ko.observable(new model.StandardAcceptanceConditionSetting(data.conditionSetting.conditionSettingCode, data.conditionSetting.conditionSettingName, data.conditionSetting.deleteExistData, data.conditionSetting.acceptMode, data.conditionSetting.csvDataItemLineNumber, data.conditionSetting.csvDataStartLine, data.conditionSetting.deleteExistDataMethod));
             
