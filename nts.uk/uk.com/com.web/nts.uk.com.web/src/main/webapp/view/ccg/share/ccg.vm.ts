@@ -106,7 +106,7 @@ module nts.uk.com.view.ccg.share.ccg {
             returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
 
             // List WorkType
-            listWorkType: KnockoutObservableArray<WorkType>;
+            listWorkType: KnockoutObservableArray<BusinessType>;
             selectedWorkTypeCode: KnockoutObservableArray<string>;
             workTypeColumns: KnockoutObservableArray<any>;
 
@@ -210,8 +210,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 ]);
                 // Define gridlist's columns
                 self.workTypeColumns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('CCG001_60'), prop: 'workTypeCode', width: 100 },
-                    { headerText: nts.uk.resource.getText('CCG001_61'), prop: 'name', width: 200 }
+                    { headerText: nts.uk.resource.getText('CCG001_60'), prop: 'businessTypeCode', width: 100 },
+                    { headerText: nts.uk.resource.getText('CCG001_61'), prop: 'businessTypeName', width: 200 }
                 ]);
             }
             
@@ -834,10 +834,10 @@ module nts.uk.com.view.ccg.share.ccg {
                 // reload advanced search tab.
                 $.when(service.searchWorkplaceOfEmployee(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
                     service.searchAllWorkType())
-                    .done((selectedCodes, workTypeList: Array<WorkType>) => {
+                    .done((selectedCodes, workTypeList: Array<BusinessType>) => {
                         self.selectedCodeWorkplace(selectedCodes);
                         self.listWorkType(workTypeList);
-                        self.selectedWorkTypeCode(_.map(workTypeList, vl => vl.workTypeCode));
+                        self.selectedWorkTypeCode(_.map(workTypeList, vl => vl.businessTypeCode));
 
                         self.reloadDataSearch();
 
@@ -1296,15 +1296,9 @@ module nts.uk.com.view.ccg.share.ccg {
             static ONLY_MYSELF = 3;
         }
 
-        interface WorkType {
-            abbreviationName: string;
-            companyId: string;
-            displayAtr: number;
-            memo: string;
-            name: string;
-            sortOrder: number;
-            symbolicName: string;
-            workTypeCode: string;
+        interface BusinessType {
+            businessTypeCode: string;
+            businessTypeName: string;
         }
     }
 }

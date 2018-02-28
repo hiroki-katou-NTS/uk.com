@@ -8,7 +8,7 @@ module nts.uk.com.view.ccg.share.ccg {
             searchEmployeeByLogin: "basic/organization/employee/onlyemployee",
             searchWorkplaceOfEmployee: "basic/organization/employee/workplaceemp",
             getOfSelectedEmployee: "basic/organization/employee/getoffselect",
-            searchAllWorkType: "at/share/worktype/findNotDeprecated",
+            searchAllWorkType: "at/record/businesstype/findAll",
             getEmploymentCodeByClosureId: "ctx/at/shared/workrule/closure/findEmpByClosureId",
             getRefRangeBySysType: "ctx/sys/auth/role/getrefrangebysystype",
             getClosuresByBaseDate: "ctx/at/shared/workrule/closure/getclosuresbybasedate",
