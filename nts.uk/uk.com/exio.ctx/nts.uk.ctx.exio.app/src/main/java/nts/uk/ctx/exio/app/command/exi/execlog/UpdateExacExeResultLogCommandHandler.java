@@ -20,7 +20,7 @@ public class UpdateExacExeResultLogCommandHandler extends CommandHandler<ExacExe
     @Override
     protected void handle(CommandHandlerContext<ExacExeResultLogCommand> context) {
         ExacExeResultLogCommand updateCommand = context.getCommand();
-        repository.update(ExacExeResultLog.createFromJavaType(0L, updateCommand.getCid(), updateCommand.getConditionSetCd(), updateCommand.getExternalProcessId(), updateCommand.getExecutorId(), updateCommand.getUserId(), updateCommand.getProcessStartDatetime(), updateCommand.getStandardAtr(), updateCommand.getExecuteForm(), updateCommand.getTargetCount(), updateCommand.getErrorCount(), updateCommand.getFileName(), updateCommand.getSystemType(), updateCommand.getResultStatus(), updateCommand.getProcessEndDatetime(), updateCommand.getProcessAtr()));
+        repository.update(ExacExeResultLog.createFromJavaType(updateCommand.getVersion(), updateCommand.getCid(), updateCommand.getConditionSetCd(), updateCommand.getExternalProcessId(), updateCommand.getExecutorId(), updateCommand.getUserId(), updateCommand.getProcessStartDatetime(), updateCommand.getStandardAtr(), updateCommand.getExecuteForm(), updateCommand.getTargetCount(), updateCommand.getErrorCount(), updateCommand.getFileName(), updateCommand.getSystemType(), updateCommand.getResultStatus(), updateCommand.getProcessEndDatetime(), updateCommand.getProcessAtr()));
     
     }
 }

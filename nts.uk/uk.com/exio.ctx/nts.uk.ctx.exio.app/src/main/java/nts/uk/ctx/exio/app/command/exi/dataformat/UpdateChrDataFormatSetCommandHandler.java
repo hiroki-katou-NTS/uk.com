@@ -20,7 +20,7 @@ public class UpdateChrDataFormatSetCommandHandler extends CommandHandler<ChrData
     @Override
     protected void handle(CommandHandlerContext<ChrDataFormatSetCommand> context) {
         ChrDataFormatSetCommand updateCommand = context.getCommand();
-        repository.update(ChrDataFormatSet.createFromJavaType(0L, updateCommand.getCid(), updateCommand.getConditionSetCd(), updateCommand.getAcceptItemNum(), updateCommand.getCdEditing(), updateCommand.getFixedValue(), updateCommand.getEffectiveDigitLength(), updateCommand.getCdConvertCd(), updateCommand.getCdEditMethod(), updateCommand.getCdEditDigit(), updateCommand.getFixedVal(), updateCommand.getStartDigit(), updateCommand.getEndDigit()));
+        repository.update(ChrDataFormatSet.createFromJavaType(updateCommand.getVersion(), updateCommand.getCid(), updateCommand.getConditionSetCd(), updateCommand.getAcceptItemNum(), updateCommand.getCdEditing(), updateCommand.getFixedValue(), updateCommand.getEffectiveDigitLength(), updateCommand.getCdConvertCd(), updateCommand.getCdEditMethod(), updateCommand.getCdEditDigit(), updateCommand.getFixedVal(), updateCommand.getStartDigit(), updateCommand.getEndDigit()));
     
     }
 }

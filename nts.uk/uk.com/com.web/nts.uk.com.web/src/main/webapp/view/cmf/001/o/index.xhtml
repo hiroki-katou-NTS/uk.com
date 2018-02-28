@@ -11,6 +11,7 @@
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf001.o.start.js" />
+			<com:scriptfile path="cmf001.o.service.js" />
 			<com:scriptfile path="cmf001.o.vm.js" />
 		</ui:define>
 
@@ -67,26 +68,26 @@
 												<div tabindex="7" style="width: 320px"
 													data-bind="ntsSearchBox: {
 														searchMode: 'filter', 
-														targetKey: 'dispItemCode', 
+														targetKey: 'dispConditionSettingCode', 
 														comId: 'grd_Condition', 
 														items: listCondition, 
-														selected: selectedCategoryItem, 
-														selectedKey: 'dispItemCode', 
-														fields: ['dispItemCode', 'dispItemName'], 
+														selected: selectedConditionCd, 
+														selectedKey: 'dispConditionSettingCode', 
+														fields: ['dispConditionSettingCode', 'dispConditionSettingName'], 
 														mode: 'igGrid'}" />
 												<table id="grd_Condition"
 													data-bind="ntsGridList: {
 													height: 384,
 													name: '#[CMF001_39]', 
 				 									dataSource: listCondition,
-													primaryKey: 'dispItemCode', 
+													primaryKey: 'dispConditionSettingCode', 
 													showNumbering: true,
 				 									columns: [
-										                { headerText: '#{i18n.getText('CMF001_440')}', key: 'dispItemCode', width: 60, formatter: _.escape },
-										                { headerText: '#{i18n.getText('CMF001_441')}', key: 'dispItemName', width: 220, formatter: _.escape }
+										                { headerText: '#{i18n.getText('CMF001_440')}', key: 'dispConditionSettingCode', width: 60, formatter: _.escape },
+										                { headerText: '#{i18n.getText('CMF001_441')}', key: 'dispConditionSettingName', width: 220, formatter: _.escape }
 										            ], 
 													multiple: false,
-													value: selectedCategoryItem}">
+													value: selectedConditionCd}">
 												</table>												
 											</div>
 										</div>
@@ -99,11 +100,11 @@
 													<td style="padding: 5px 10px"><label>#{i18n.getText('CMF001_444')}</label>
 													</td>
 													<td style="padding: 5px 10px">
-														<div class="label" data-bind="text: selectedCategoryItem"></div>
+														<div class="label" data-bind="text: selectedConditionCd"></div>
 													</td>
 													<td style="padding: 5px 10px">
 														<div class="label"
-															data-bind="text: selectedCategoryItemName"></div>
+															data-bind="text: selectedConditionName"></div>
 													</td>
 												</tr>
 											</table>
@@ -119,10 +120,10 @@
 																	filename: filename,
 																	accept: accept,
 																	text: textId,
-																	aslink: false,
-																	enable: true,
-																	required:true											
-																}">
+																	aslink: asLink,
+																	enable: enable,
+																	required: true,
+																	onchange: uploadFile.bind($data)}">
 														</div>
 													</td>
 												</tr>
@@ -154,16 +155,16 @@
 										<div class="label">#{i18n.getText('CMF001_462')}</div>
 									</td>
 									<td>
-										<div class="label" data-bind="text: selectedCategoryItem"></div>
+										<div class="label" data-bind="text: selectedConditionCd"></div>
 									</td>
 									<td>
-										<div class="label" data-bind="text: selectedCategoryItemName"></div>
+										<div class="label" data-bind="text: selectedConditionName"></div>
 									</td>
 									<td>
 										<div class="label">#{i18n.getText('CMF001_463')}</div>
 									</td>
 									<td>
-										<div class="label">2</div>
+										<div class="label" data-bind="text: selectedConditionLineNumber"></div>
 									</td>
 									<td>
 										<div class="label">#{i18n.getText('CMF001_464')}</div>
@@ -180,7 +181,7 @@
 										<div class="label">#{i18n.getText('CMF001_466')}</div>
 									</td>
 									<td style="">
-										<div class="label">3</div>
+										<div class="label" data-bind="text: selectedConditionStartLine"></div>
 									</td>
 									<td style="">
 										<div class="label">#{i18n.getText('CMF001_467')}</div>
@@ -222,9 +223,9 @@
 										<td style="text-align: left;"><div class="label"
 												data-bind="text: itemType"></div></td>
 										<td style="text-align: center;"><i
-											data-bind="ntsIcon: { no: 5, width: 30, height: 30 }"></i></td>
+											data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: $parent.editIngestion"></i></td>
 										<td style="text-align: center;"><i
-											data-bind="ntsIcon: { no: 5, width: 30, height: 30 }"></i></td>
+											data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: $parent.receiveCondition"></i></td>
 									</tr>
 								</tbody>
 							</table>

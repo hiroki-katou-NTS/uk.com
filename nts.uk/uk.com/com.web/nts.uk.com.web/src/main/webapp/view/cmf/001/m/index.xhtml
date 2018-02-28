@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script type='text/javascript'>
+				var dialogSize = {
+					width : 550,
+					height : 400
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:stylefile path="cmf001.m.style.css" />
+			<com:scriptfile path="cmf001.m.vm.js" />
+			<com:scriptfile path="cmf001.m.start.js" />
+			
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div>
+					<div class="title_content">
+						<div class="title_content_left">#{i18n.getText('CMF001_403')}</div>
+						<div class="title_content_right">
+							<label data-bind="text: selectionType"></label>
+						</div>
+						<div class="title_content_right">
+							<label>人事システム</label>
+						</div>
+						<div class="clear"></div>
+					</div>
+					
+					<div class="content_center">
+						<div class="label_top">#{i18n.getText('CMF001_404')}</div>
+						<table id="table_content">
+						<!-- row1 -->
+							<tr>
+								<td class="td_left">
+									<div style="border-color: #00B050"  data-bind="ntsFormLabel: {required: true }" class="form-label enable">
+										<label>#{i18n.getText('CMF001_386')}</label>
+									</div>
+								</td>
+								<td class="td_center"><div class="lable"><label data-bind="text: conditionCode"></label></div></td>
+								<td class="td_right"><div class="lable"><label data-bind="text: conditionName"></label></div></td>
+							</tr>
+							<tr>
+								<td>
+									<div class="label_top">#{i18n.getText('CMF001_406')}</div>
+								</td>
+							</tr>
+							<tr>
+								<td class="td_left">
+									<div data-bind="ntsFormLabel: {required: true }" class="form-label enable" >
+										<label>#{i18n.getText('CMF001_407')}</label>
+									</div>
+								</td>
+								<td><input data-bind="ntsTextEditor: {value: simpleValue}" class="td_center_sp" /></td>
+								<td class="td_right"><input data-bind="ntsTextEditor: {value: simpleValue}" /></td>
+							</tr>
+						</table>
+						<div class="checkbox_bottom" data-bind="ntsCheckBox: { checked: checked, enable: enable, text: '#{i18n.getText('CMF001_410')}',  style: 'warnpanel'}"></div>
+					</div>
+				</div>
+			</div>
+ 			<div id="functions-area-bottom">
+				<button class="x-large" data-bind="click: saveData">#{i18n.getText('CMF001_393')}</button>
+				<button class="large" data-bind="click: cancelSetting">#{i18n.getText('CMF001_394')}</button>
+			</div> 
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

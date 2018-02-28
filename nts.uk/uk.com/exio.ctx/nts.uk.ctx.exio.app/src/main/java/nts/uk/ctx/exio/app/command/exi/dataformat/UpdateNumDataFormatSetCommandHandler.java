@@ -20,7 +20,7 @@ public class UpdateNumDataFormatSetCommandHandler extends CommandHandler<NumData
     @Override
     protected void handle(CommandHandlerContext<NumDataFormatSetCommand> context) {
         NumDataFormatSetCommand updateCommand = context.getCommand();
-        repository.update(NumDataFormatSet.createFromJavaType(0L, updateCommand.getCid(), updateCommand.getConditionSetCd(), updateCommand.getAcceptItemNum(), updateCommand.getFixedValue(), updateCommand.getDecimalDivision(), updateCommand.getEffectiveDigitLength(), updateCommand.getCdConvertCd(), updateCommand.getValueOfFixedValue(), updateCommand.getDecimalDigitNum(), updateCommand.getStartDigit(), updateCommand.getEndDigit(), updateCommand.getDecimalPointCls(), updateCommand.getDecimalFraction()));
+        repository.update(NumDataFormatSet.createFromJavaType(updateCommand.getVersion(), updateCommand.getCid(), updateCommand.getConditionSetCd(), updateCommand.getAcceptItemNum(), updateCommand.getFixedValue(), updateCommand.getDecimalDivision(), updateCommand.getEffectiveDigitLength(), updateCommand.getCdConvertCd(), updateCommand.getValueOfFixedValue(), updateCommand.getDecimalDigitNum(), updateCommand.getStartDigit(), updateCommand.getEndDigit(), updateCommand.getDecimalPointCls(), updateCommand.getDecimalFraction()));
     
     }
 }

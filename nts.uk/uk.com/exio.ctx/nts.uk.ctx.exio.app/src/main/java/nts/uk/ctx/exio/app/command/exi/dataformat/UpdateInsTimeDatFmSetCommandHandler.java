@@ -20,7 +20,7 @@ public class UpdateInsTimeDatFmSetCommandHandler extends CommandHandler<InsTimeD
     @Override
     protected void handle(CommandHandlerContext<InsTimeDatFmSetCommand> context) {
         InsTimeDatFmSetCommand updateCommand = context.getCommand();
-        repository.update(InsTimeDatFmSet.createFromJavaType(0L, updateCommand.getCid(), updateCommand.getConditionSetCd(), updateCommand.getAcceptItemNum(), updateCommand.getDelimiterSet(), updateCommand.getFixedValue(), updateCommand.getHourMinSelect(), updateCommand.getEffectiveDigitLength(), updateCommand.getRoundProc(), updateCommand.getDecimalSelect(), updateCommand.getValueOfFixedValue(), updateCommand.getStartDigit(), updateCommand.getEndDigit(), updateCommand.getRoundProcCls()));
+        repository.update(InsTimeDatFmSet.createFromJavaType(updateCommand.getVersion(), updateCommand.getCid(), updateCommand.getConditionSetCd(), updateCommand.getAcceptItemNum(), updateCommand.getDelimiterSet(), updateCommand.getFixedValue(), updateCommand.getHourMinSelect(), updateCommand.getEffectiveDigitLength(), updateCommand.getRoundProc(), updateCommand.getDecimalSelect(), updateCommand.getValueOfFixedValue(), updateCommand.getStartDigit(), updateCommand.getEndDigit(), updateCommand.getRoundProcCls()));
     
     }
 }

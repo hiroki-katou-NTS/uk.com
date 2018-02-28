@@ -17,6 +17,11 @@
   display: table-column;         
   width: 110px;   
 }
+.div-table-col-1 {
+  float: left; 
+  display: table-column;         
+  width: 200px;   
+}
 .div-table-col-2 {
   float: left; 
   display: table-column;         
