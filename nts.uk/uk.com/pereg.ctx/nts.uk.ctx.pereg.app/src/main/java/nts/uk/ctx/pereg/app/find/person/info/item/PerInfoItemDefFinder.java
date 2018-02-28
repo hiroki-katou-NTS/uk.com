@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -360,5 +361,41 @@ public class PerInfoItemDefFinder {
 
 		return this.pernfoItemDefRep.checkExistedSelectionItemId(selectionItemId);
 	}
+
+	// lanlt start
+	// return list id of item definition if it's require;
+	public List<ItemRequiredBackGroud> getAllRequiredIds() {
+		String companyId = AppContexts.user().companyId();
+		String contractCd = AppContexts.user().contractCode();
+		List<ItemRequiredBackGroud> itemRequiredLst = new ArrayList<>();
+		this.pernfoItemDefRep.getAllRequiredIds(contractCd, companyId).stream().forEach(item -> {
+
+			ItemRequiredBackGroud itemNameRequired = new ItemRequiredBackGroud();
+			itemNameRequired.setRowId(item);
+			itemNameRequired.setColumnKey("itemName");
+			itemNameRequired.setState(toList("ntsgrid-alarm"));
+			
+			ItemRequiredBackGroud setting = new ItemRequiredBackGroud();
+			setting.setRowId(item);
+			setting.setColumnKey("setting");
+			setting.setState(toList("ntsgrid-alarm"));
+			
+			ItemRequiredBackGroud other = new ItemRequiredBackGroud();
+			other.setRowId(item);
+			other.setColumnKey("otherAuth");
+			other.setState(toList("ntsgrid-alarm"));
+			
+			itemRequiredLst.add(itemNameRequired);
+			itemRequiredLst.add(setting);
+			itemRequiredLst.add(other);
+
+		});
+		return itemRequiredLst;
+	}
+
+	private List<String> toList(String... item) {
+		return Stream.of(item).collect(Collectors.toCollection(ArrayList::new));
+	}
+	// lanlt end
 
 }
