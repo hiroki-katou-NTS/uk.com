@@ -246,8 +246,17 @@ module nts.uk.com.view.cmf001.share.model {
         startDigit: KnockoutObservable<number>;
         endDigit: KnockoutObservable<number>;
 
-        constructor() {
-
+        constructor(effectDigitLength: number, startDigit: number, endDigit: number, codeEditing: number, codeEditDigit: number,
+         codeEditingMethod: number, codeConvertCode: string, fixedValue: number, valueOfFixed: string) {
+            this.fixedValue = ko.observable(fixedValue);
+            this.codeEditing = ko.observable(codeEditing);
+            this.effectiveDigitLength = ko.observable(effectDigitLength);
+            this.codeConvertCode = ko.observable(codeConvertCode);
+            this.valueOfFixed = ko.observable(valueOfFixed);
+            this.codeEditDigit = ko.observable(codeEditDigit);
+            this.startDigit = ko.observable(startDigit);
+            this.endDigit = ko.observable(endDigit);
+            this.codeEditingMethod = ko.observable(codeEditingMethod);
         }
     }
 
