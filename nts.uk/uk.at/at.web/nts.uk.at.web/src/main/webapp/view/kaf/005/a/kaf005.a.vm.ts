@@ -650,7 +650,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
          */
         openCMM018() {
             let self = this;
-            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", { screen: 'Application', employeeId: self.employeeID() });
+            uk.sessionStorage.removeItem(request.STORAGE_KEY_TRANSFER_DATA);
+            uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, { screen: 'Application', employeeId: self.employeeID() });
+            window.location.href = "../../../../../nts.uk.com.web/view/cmm/018/a/index.xhtml";
         }
         
         findBychangeAppDateData(data: any) {
