@@ -61,6 +61,22 @@ module nts.uk.com.view.cmf001.share.model {
         SPACE_BEFORE = 2,
         SPACE_AFTER = 3
     }
+    
+    export enum M_ACTIVATION {
+        Duplicate_Standard = 0,
+        Duplicate_User_Settings = 1,
+        Duplicate_From_Standard_To_User_Setting = 2,
+        Duplicate_From_User_Setting_To_Standard = 3
+    }
+    
+    export function getSystemTypes(): Array<ItemModel> {
+        return [
+            new model.ItemModel(0, 'HR System'),
+            new model.ItemModel(1, 'Attendance System'),
+            new model.ItemModel(2, 'Payroll System'),
+            new model.ItemModel(3, 'Office Helper')
+        ];
+    }
 
     export class StandardAcceptanceConditionSetting {
         conditionSettingCode: KnockoutObservable<string>;

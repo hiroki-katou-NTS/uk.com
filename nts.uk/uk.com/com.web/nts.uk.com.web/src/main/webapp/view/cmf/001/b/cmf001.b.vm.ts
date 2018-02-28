@@ -10,7 +10,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
-        systemTypes: KnockoutObservableArray<model.ItemModel>;
+        systemTypes: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSystemTypes());
         systemType: KnockoutObservable<number>;
         radioItemList: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
             new model.ItemModel(1, getText('CMF001_56')),
@@ -27,12 +27,6 @@ module nts.uk.com.view.cmf001.b.viewmodel {
         selectedStandardImportSetting: KnockoutObservable<model.StandardAcceptanceConditionSetting>;
         constructor() {
             var self = this;
-            self.systemTypes = ko.observableArray([
-                new model.ItemModel(0, 'HR System'),
-                new model.ItemModel(1, 'Attendance System'),
-                new model.ItemModel(2, 'Payroll System'),
-                new model.ItemModel(3, 'Office Helper')
-            ]);
             self.systemType = ko.observable(0);
             
             self.listStandardImportSetting = ko.observableArray([
@@ -70,5 +64,22 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             });
         }
         
+        openCMF001m() {
+            let self = this;
+            setShared('CMF001mParams', {
+                activation: model.M_ACTIVATION.Duplicate_Standard,
+                systemType: self.systemType(),
+                conditionCode: self.selectedStandardImportSetting().conditionSettingCode(),
+                conditionName: self.selectedStandardImportSetting().conditionSettingName()
+            }, true);
+            
+            modal("/view/cmf/001/m/index.xhtml").onClosed(function() {
+                var output = getShared('CMF001mOutput');
+                if (output) {
+                    self.selectedStandardImportSetting().conditionSettingCode(output.code);
+                    self.selectedStandardImportSetting().conditionSettingName(output.name);
+                }
+            });
+        }
     }
 }

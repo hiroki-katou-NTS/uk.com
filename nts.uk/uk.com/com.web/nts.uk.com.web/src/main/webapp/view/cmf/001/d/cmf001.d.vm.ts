@@ -10,12 +10,6 @@ module nts.uk.com.view.cmf001.d.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
-        systemTypes: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
-            new model.ItemModel(0, 'HR System'),
-            new model.ItemModel(1, 'Attendance System'),
-            new model.ItemModel(2, 'Payroll System'),
-            new model.ItemModel(3, 'Office Helper')
-        ]);
         systemType: model.ItemModel;
         
         listCategory: KnockoutObservableArray<model.ExternalAcceptanceCategory>;
@@ -46,7 +40,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         onchange: (filename) => void;
         constructor(data: any) {
             var self = this;
-            let item = _.find(self.systemTypes(), x => {return x.code == data.systemType;});
+            let item = _.find(model.getSystemTypes(), x => {return x.code == data.systemType;});
             self.systemType = item;
             self.selectedStandardImportSetting = ko.observable(new model.StandardAcceptanceConditionSetting(data.conditionSetting.conditionSettingCode, data.conditionSetting.conditionSettingName, data.conditionSetting.deleteExistData, data.conditionSetting.acceptMode, data.conditionSetting.csvDataItemLineNumber, data.conditionSetting.csvDataStartLine, data.conditionSetting.deleteExistDataMethod));
             
@@ -88,8 +82,8 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             };
             
             self.selectedAcceptItem.subscribe((data) => {
-                $("#fixed-table tr").removeClass("ui-state-active");
-                $("#fixed-table tr[data-id='" + data + "']").addClass("ui-state-active");
+                $("#fixed-table tr").removeClass("my-active-row");
+                $("#fixed-table tr[data-id='" + data + "']").addClass("my-active-row");
             });
         }
         
@@ -126,14 +120,15 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 let selectedCItem = _.find(self.listSelectedCategoryItem(), x => {return x.itemName() == selectedAItem.acceptItemName();});
                 self.listAcceptItem.remove(selectedAItem);
                 self.listCategoryItem.push(selectedCItem);
+                self.listCategoryItem(_.sortBy(self.listCategoryItem(), ['dispItemCode'])); 
                 self.listSelectedCategoryItem.remove(selectedCItem);
                 for (var i = 0; i < self.listAcceptItem().length; i++) {
                     self.listAcceptItem()[i].acceptItemNumber(i + 1);
                 }
-                if (self.selectedAcceptItem() >= self.listAcceptItem().length) {
+                if (self.selectedAcceptItem() >= self.listAcceptItem().length) 
                     self.selectedAcceptItem(self.listAcceptItem().length);
-                }
-                self.selectedAcceptItem.valueHasMutated();
+                else
+                    self.selectedAcceptItem.valueHasMutated();
             }
         }
         
