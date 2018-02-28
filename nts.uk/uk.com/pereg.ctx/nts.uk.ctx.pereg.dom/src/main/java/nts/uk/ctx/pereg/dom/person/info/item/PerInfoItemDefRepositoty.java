@@ -87,6 +87,8 @@ public interface PerInfoItemDefRepositoty {
 	 * 
 	 */
 	List<PersonInfoItemDefinition> getAllItemUsedByCtgId(List<String> ctgId);
+	
+	List<String> getAllRequiredIds(String contractCd, String companyId);
 
 	
 }

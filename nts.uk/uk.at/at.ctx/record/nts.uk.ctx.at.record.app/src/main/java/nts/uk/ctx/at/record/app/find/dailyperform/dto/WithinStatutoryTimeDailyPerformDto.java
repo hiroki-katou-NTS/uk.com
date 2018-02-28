@@ -56,9 +56,7 @@ public class WithinStatutoryTimeDailyPerformDto {
 	}
 
 	private static CalcAttachTimeDto getWithStatutory(WithinStatutoryMidNightTime domain) {
-		return domain == null || domain.getTime() == null ? null : new CalcAttachTimeDto(
-				getAttendanceTime(domain.getTime().getCalcTime()),
-				getAttendanceTime(domain.getTime().getTime()));
+		return domain == null || domain.getTime() == null ? null : CalcAttachTimeDto.toTimeWithCal(domain.getTime());
 	}
 
 	public WithinStatutoryTimeOfDaily toDomain() {

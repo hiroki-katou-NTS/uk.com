@@ -178,45 +178,97 @@
 </pre>
 <h2>TypeScript</h2>
 								<pre>
-<![CDATA[// Set component option
-self.ccg001ComponentOption = {
+<![CDATA[//Interfaces
+export interface GroupOption {
+    /** Common properties */
+    showEmployeeSelection: boolean; // 検索タイプ
+    systemType: number; // システム区分
+    showQuickSearchTab: boolean; // クイック検索
+    showAdvancedSearchTab: boolean; // 詳細検索
+    showBaseDate: boolean; // 基準日利用
+    showClosure: boolean; // 就業締め日利用
+    showAllClosure: boolean; // 全締め表示
+    showPeriod: boolean; // 対象期間利用
+    periodFormatYM: boolean; // 対象期間精度
+
+    /** Required parameter */
+    baseDate?: string; // 基準日
+    periodStartDate?: string; // 対象期間開始日
+    periodEndDate?: string; // 対象期間終了日
+    inService: boolean; // 在職区分
+    leaveOfAbsence: boolean; // 休職区分
+    closed: boolean; // 休業区分
+    retirement: boolean; // 退職区分
+
+    /** Quick search tab options */
+    showAllReferableEmployee: boolean; // 参照可能な社員すべて
+    showOnlyMe: boolean; // 自分だけ
+    showSameWorkplace: boolean; // 同じ職場の社員
+    showSameWorkplaceAndChild: boolean; // 同じ職場とその配下の社員
+
+    /** Advanced search properties */
+    showEmployment: boolean; // 雇用条件
+    showWorkplace: boolean; // 職場条件
+    showClassification: boolean; // 分類条件
+    showJobTitle: boolean; // 職位条件
+    showWorktype: boolean; // 勤種条件
+    isMutipleCheck: boolean; // 選択モード
+    // showDepartment: boolean; // 部門条件 not covered
+    // showDelivery: boolean; not covered
+
+    /** Data returned */
+    returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
+}
+export interface Ccg001ReturnedData {
+    baseDate: string; // 基準日
+    closureId?: number; // 締めID
+    periodStart: string; // 対象期間（開始)
+    periodEnd: string; // 対象期間（終了）
+    listEmployee: Array<EmployeeSearchDto>; // 検索結果
+}
+
+// Set component option
+ccg001ComponentOption: GroupOption;
+ccg001ComponentOption = {
 	/** Common properties */
-	systemType: self.systemType(), // システム区分
-	showEmployeeSelection: self.isSelectAllEmployee(), // 検索タイプ
-	showQuickSearchTab: self.isQuickSearchTab(), // クイック検索
-	showAdvancedSearchTab: self.isAdvancedSearchTab(), // 詳細検索
-	showBaseDate: self.showBaseDate(), // 基準日利用
-	showClosure: self.showClosure(), // 就業締め日利用
-	showAllClosure: self.showAllClosure(), // 全締め表示
-	showPeriod: self.showPeriod(), // 対象期間利用
-	periodFormatYM: self.periodFormatYM(), // 対象期間精度
+	systemType: 1,
+	showEmployeeSelection: true,
+	showQuickSearchTab: true,
+	showAdvancedSearchTab: true,
+	showBaseDate: true,
+	showClosure: true,
+	showAllClosure: true,
+	showPeriod: true,
+	periodFormatYM: false,
 	
 	/** Required parameter */
-	baseDate: moment(self.baseDate()).format("YYYY-MM-DD"), // 基準日
-	periodStartDate: periodStartDate, // 対象期間開始日
-	periodEndDate: periodEndDate, // 対象期間終了日
-	inService: self.inService(), // 在職区分
-	leaveOfAbsence: self.leaveOfAbsence(), // 休職区分
-	closed: self.closed(), // 休業区分
-	retirement: self.retirement(), // 退職区分
+	baseDate: moment().toISOString(),
+	periodStartDate: moment().toISOString(),
+	periodEndDate: moment().toISOString(),
+	inService: true,
+	leaveOfAbsence: true,
+	closed: true,
+	retirement: true,
 	
 	/** Quick search tab options */
-	showAllReferableEmployee: self.isAllReferableEmployee(), // 参照可能な社員すべて
-	showOnlyMe: self.isOnlyMe(), // 自分だけ
-	showSameWorkplace: self.isEmployeeOfWorkplace(), // 同じ職場の社員
-	showSameWorkplaceAndChild: self.isEmployeeWorkplaceFollow(), // 同じ職場とその配下の社員
+	showAllReferableEmployee: true,
+	showOnlyMe: true,
+	showSameWorkplace: true,
+	showSameWorkplaceAndChild: true,
 	
 	/** Advanced search properties */
-	showEmployment: self.showEmployment(), // 雇用条件
-	showWorkplace: self.showWorkplace(), // 職場条件
-	showClassification: self.showClassification(), // 分類条件
-	showJobTitle: self.showJobTitle(), // 職位条件
-	showWorktype: self.showWorktype(), // 勤種条件
-	isMutipleCheck: self.isMutipleCheck(), // 選択モード
+	showEmployment: true,
+	showWorkplace: true,
+	showClassification: true,
+	showJobTitle: true,
+	showWorktype: true,
+	isMutipleCheck: true,
 	
-	/** Return data */
+	/**
+	* Self-defined function: Return data from CCG001
+	* @param: data: the data return from CCG001
+	*/
 	returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-	    self.selectedEmployee(data.listEmployee);
 	}
 }
 
@@ -238,7 +290,7 @@ $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);]]>
 									</thead>
 									<tbody>
 										<tr>
-											<td>isSelectAllEmployee</td>
+											<td>showEmployeeSelection</td>
 											<td><b>Type:</b> boolean<br /> Show KCP005</td>
 										</tr>
 										<tr>
@@ -246,11 +298,11 @@ $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);]]>
 											<td><b>Type:</b> number<br /> Current system type</td>
 										</tr>
 										<tr>
-											<td>isQuickSearchTab</td>
+											<td>showQuickSearchTab</td>
 											<td><b>Type:</b> boolean<br /> Show quick search tab</td>
 										</tr>
 										<tr>
-											<td>isAdvancedSearchTab</td>
+											<td>showAdvancedSearchTab</td>
 											<td><b>Type:</b> boolean<br /> Show advanced search tab</td>
 										</tr>
 										<tr>
@@ -270,7 +322,7 @@ $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);]]>
 											<td><b>Type:</b> boolean<br /> Show search period</td>
 										</tr>
 										<tr>
-											<td>periodFormatYM</td>
+											<td>showPeriodYM</td>
 											<td><b>Type:</b> boolean<br /> Search period format is year/month(true) or year/month/date(false)</td>
 										</tr>
 										<tr>
@@ -302,21 +354,21 @@ $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);]]>
 											<td><b>Type:</b> boolean<br />Employee status: retirement</td>
 										</tr>
 										<tr>
-											<td>isAllReferableEmployee</td>
+											<td>showAllReferableEmployee</td>
 											<td><b>Type:</b> boolean<br />Show button
 												参照可能な社員すべて</td>
 										</tr>
 										<tr>
-											<td>isOnlyMe</td>
+											<td>showOnlyMe</td>
 											<td><b>Type:</b> boolean<br /> Show button 自分だけ</td>
 										</tr>
 										<tr>
-											<td>isEmployeeOfDepartment</td>
+											<td>showSameWorkplace</td>
 											<td><b>Type:</b> boolean<br /> Show/ button
 												おなじ職場の社員</td>
 										</tr>
 										<tr>
-											<td>isEmployeeDepartmentFollow</td>
+											<td>showSameWorkplaceAndChild</td>
 											<td><b>Type:</b> boolean<br /> Show button
 												おなじ＋配下の職場の社員</td>
 										</tr>
