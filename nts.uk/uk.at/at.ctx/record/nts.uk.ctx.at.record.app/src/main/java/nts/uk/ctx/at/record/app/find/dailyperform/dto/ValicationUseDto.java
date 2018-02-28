@@ -3,9 +3,11 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * 日別実績の時間休暇使用時間
@@ -34,4 +36,12 @@ public class ValicationUseDto {
 	@AttendanceItemLayout(layout = "D", jpPropertyName = "時間代休使用時間")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer timeCompensatoryLeaveUseTime;
+	
+	public TimevacationUseTimeOfDaily toDomain(){
+		return new TimevacationUseTimeOfDaily(
+						timeAnnualLeaveUseTime == null ? null : new AttendanceTime(timeAnnualLeaveUseTime), 
+						timeCompensatoryLeaveUseTime == null ? null : new AttendanceTime(timeCompensatoryLeaveUseTime), 
+						excessHolidayUseTime == null ? null : new AttendanceTime(excessHolidayUseTime), 
+						timeSpecialHolidayUseTime == null ? null : new AttendanceTime(timeSpecialHolidayUseTime));
+	}
 }
