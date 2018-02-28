@@ -60,8 +60,10 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     let item = _.find(ko.toJS(self.listCondition), (x: model.StandardAcceptanceConditionSetting) => x.dispConditionSettingCode == data);
                     //選択したカレント行の「条件コード/名称」を画面右側の「条件コード/名称」にセットする
                     self.selectedConditionName(item.dispConditionSettingName);
-                    self.selectedConditionLineNumber(item.csvDataItemLineNumber);
-                    self.selectedConditionStartLine(item.csvDataStartLine);
+                    let lineNumber = item.csvDataItemLineNumber;
+                    let startLine = item.csvDataStartLine
+                    self.selectedConditionLineNumber(lineNumber);
+                    self.selectedConditionStartLine(startLine);
                 }
                 else {
                     self.selectedConditionName('');
@@ -109,16 +111,11 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             $("#file-upload").ntsFileUpload({ stereoType: "flowmenu" }).done(function(res) {
                 //self.fileId(res[0].id);
                 service.getTotalRecord(res[0].id).done(function(totalRecord: any) {
-                    
+                    self.fileId(res[0].id);
                     console.log(res[0].id, totalRecord);
                     if(self.selectedConditionStartLine() > totalRecord){
-                        self.fileId('');
-                        self.filename('');
                         dialog({ messageId: "Msg_910" });
-                    }
-                    else{
-                        self.fileId(res[0].id);
-                    }                    
+                    }                   
                 }).fail(function(err) {
                     dialog({ messageId: "Msg_910" });
                 }).always(() => {
@@ -189,9 +186,6 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     let _rspList: Array<model.StandardAcceptanceConditionSetting> = _.map(data, rsp => {
                         return new model.StandardAcceptanceConditionSetting(rsp.conditionSetCd, rsp.conditionSetName, rsp.deleteExistData, rsp.acceptMode, rsp.csvDataLineNumber, rsp.csvDataStartLine, rsp.deleteExtDataMethod);
                     });
-                    //_rspList = _.sortBy(_rspList, ['employeeCd']);
-                    //_.each(_rspList, rsp => self.roleSetPersonList.push(rsp));
-                    console.log(_rspList);
                     self.listCondition(_rspList);
 
                     //取得した設定を「条件設定一覧」に表示する
