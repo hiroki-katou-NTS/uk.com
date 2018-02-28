@@ -18,7 +18,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class DailyAggregationProcess {
+public class DailyAggregationProcessService {
 
 	@Inject
 	private AlarmCheckConditionByCategoryRepository alCheckConByCategoryRepo;
