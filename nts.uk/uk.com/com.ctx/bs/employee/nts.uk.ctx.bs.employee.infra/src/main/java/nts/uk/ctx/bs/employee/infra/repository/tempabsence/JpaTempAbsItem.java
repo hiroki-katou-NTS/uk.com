@@ -151,7 +151,11 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 			break;
 		case 2:
 			MidweekClosure midweek = (MidweekClosure) domain;
-			entity.multiple = midweek.getMultiple() ? 1 : 0;
+			if (midweek.getMultiple() != null){
+				entity.multiple = midweek.getMultiple() ? 1 : 0;
+			}else {
+				entity.multiple = null;
+			}
 			break;
 		case 3:
 			AfterChildbirth childBirth = (AfterChildbirth) domain;
@@ -159,15 +163,27 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 			break;
 		case 4:
 			ChildCareHoliday childCare = (ChildCareHoliday) domain;
-			entity.sameFamily = childCare.getSameFamily() ? 1 : 0;
+			if (childCare.getSameFamily() != null){
+				entity.sameFamily = childCare.getSameFamily() ? 1 : 0;
+			} else {
+				entity.sameFamily = null;
+			}
 			entity.childType = childCare.getChildType();
 			entity.familyMemberId = childCare.getFamilyMemberId();
 			entity.createDate = childCare.getCreateDate();
-			entity.spouseIsLeave = childCare.getSpouseIsLeave() ? 1 : 0;
+			if (childCare.getSpouseIsLeave() != null){
+				entity.spouseIsLeave = childCare.getSpouseIsLeave() ? 1 : 0;
+			} else {
+				entity.spouseIsLeave = null;
+			}
 			break;
 		case 5:
 			CareHoliday careLeave = (CareHoliday) domain;
-			entity.sameFamily = careLeave.getSameFamily() ? 1 : 0;
+			if (careLeave.getSameFamily() != null){
+				entity.sameFamily = careLeave.getSameFamily() ? 1 : 0;
+			} else {
+				entity.sameFamily = null;
+			}
 			entity.sameFamilyDays = careLeave.getSameFamilyDays();
 			entity.familyMemberId = careLeave.getFamilyMemberId();
 			break;
