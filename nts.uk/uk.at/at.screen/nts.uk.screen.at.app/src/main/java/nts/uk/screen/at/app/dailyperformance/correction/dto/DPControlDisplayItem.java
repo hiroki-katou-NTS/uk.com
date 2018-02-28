@@ -86,7 +86,7 @@ public class DPControlDisplayItem {
 		}
 	}
 
-	public void addColumnsToSheet(List<FormatDPCorrectionDto> lstFormat, Map<Integer,DPAttendanceItem>  mapDP) {
+	public void addColumnsToSheet(List<FormatDPCorrectionDto> lstFormat, Map<Integer,DPAttendanceItem>  mapDP, boolean showButton) {
 		lstFormat.forEach(f -> {
 			this.lstSheet.forEach(s -> {
 				if (f.getSheetNo().equals(s.getName()) && !s.isExistColumn(String.valueOf(f.getAttendanceItemId()))) {
@@ -98,6 +98,10 @@ public class DPControlDisplayItem {
 					}else{
 						s.addColumn("A"+String.valueOf(f.getAttendanceItemId()));
 					}
+				}
+				if(showButton){
+					s.addColumn("Submitted");
+					s.addColumn("Application");
 				}
 			});
 		});

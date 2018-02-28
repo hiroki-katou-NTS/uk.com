@@ -54,12 +54,16 @@ public class DailyPerformanceCorrectionDto {
 
 	// A13_1 コメント
 	private String comment;
+	
+	private Integer typeBussiness;
 
 	private Set<ItemValue> itemValues;
 
 	private Boolean showPrincipal;
 	
 	private Map<String, String > data;
+	
+	private List<DPErrorDto> dPErrorDto;
 
 	public DailyPerformanceCorrectionDto() {
 		super();
@@ -68,6 +72,7 @@ public class DailyPerformanceCorrectionDto {
 		this.lstControlDisplayItem = new DPControlDisplayItem();
 		this.itemValues = new HashSet<>();
 		this.data = new HashMap<>();
+		this.dPErrorDto = new ArrayList<>();
 	}
 
 	/** Check if employeeId is login user */
@@ -97,6 +102,7 @@ public class DailyPerformanceCorrectionDto {
 //		if (existedCellState.isPresent()) {
 //			existedCellState.get().addState("ntsgrid-disable");
 //		} else {
+		   if(!header.getKey().equals("Application") && !header.getKey().equals("Submitted")){
 			int attendanceAtr = mapDP.get(Integer.parseInt(getID(header.getKey()))).getAttendanceAtr();
 			if (attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value) {
 				if (attendanceAtr == DailyAttendanceAtr.Classification.value) {
@@ -108,6 +114,7 @@ public class DailyPerformanceCorrectionDto {
 			} else {
 				this.lstCellState.add(new DPCellStateDto("_" + data.getId(), header.getKey(), toList("ntsgrid-disable")));
 			}
+		   }
 //		}
 	}
 

@@ -414,7 +414,7 @@ project (':at.ctx:request:nts.uk.ctx.at.request.ac') {
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.app')
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.dom')
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.app')
-		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.12.10')
+		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.12.11')
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.34')
 	}
 }
@@ -456,7 +456,7 @@ project (':at.screen:nts.uk.screen.at.app') {
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.dom', version: '0.8.2')
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: '0.10.34')
 		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.dom', version: '0.6.4')
-		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.app', version: '0.12.10')
+		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.app', version: '0.12.11')
 	}
 }
 
@@ -593,12 +593,12 @@ project (':at.web:nts.uk.at.web') {
 		runtime project (':at.file:nts.uk.file.at.app')
 		runtime project (':at.file:nts.uk.file.at.infra')
 		
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.12.10')
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pubimp', version: '0.12.10')
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.ac', version: '0.12.10')
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.app', version: '0.12.10')
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.dom', version: '0.12.10')
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.infra', version: '0.12.10')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.12.11')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pubimp', version: '0.12.11')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.ac', version: '0.12.11')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.app', version: '0.12.11')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.dom', version: '0.12.11')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.infra', version: '0.12.11')
 		
 		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.app', version: '0.1.6')
 		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.dom', version: '0.1.6')

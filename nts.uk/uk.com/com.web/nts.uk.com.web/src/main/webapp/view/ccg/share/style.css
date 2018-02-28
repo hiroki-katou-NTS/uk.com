@@ -152,12 +152,10 @@
 	width: 85px;
 }
 .ccg-tabpanel #tab-1 {
-	height: calc(100% - 70px);
 	background-color: white;
 }
 
 .ccg-tabpanel #tab-2 {
-	height: calc(100% - 70px);
 	background-color: white;
 	padding-right: 8px;
 }
@@ -249,7 +247,6 @@
 	margin-left: 10px;
 }
 .ccg-tabpanel {
-	height: calc(100% - 150px);
 	background-color: #F2F2F2;
 	border-radius: 5px;
 }
