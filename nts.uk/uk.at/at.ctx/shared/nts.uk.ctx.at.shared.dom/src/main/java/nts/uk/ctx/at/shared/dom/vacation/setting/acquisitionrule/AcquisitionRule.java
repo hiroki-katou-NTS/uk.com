@@ -30,6 +30,14 @@ public class AcquisitionRule extends DomainObject {
 	/** The acquisition order. */
 	@Setter
 	private List<AcquisitionOrder> acquisitionOrder;
+	
+	/**年休より優先する休暇*/
+	@Setter
+	private AnnualHoliday annualHoliday;
+	
+	/**時間年休より優先する休暇*/
+	@Setter
+	private HoursHoliday hoursHoliday;
 
 	/**
 	 * Instantiates a new vacation acquisition rule.
@@ -42,6 +50,8 @@ public class AcquisitionRule extends DomainObject {
 		this.companyId = memento.getCompanyId();
 		this.category = memento.getCategory();
 		this.acquisitionOrder = memento.getAcquisitionOrder();
+		this.annualHoliday = memento.getAnnualHoliday();
+		this.hoursHoliday = memento.getHoursHoliday();
 
 	}
 
@@ -55,6 +65,7 @@ public class AcquisitionRule extends DomainObject {
 		memento.setCompanyId(this.companyId);
 		memento.setCategory(this.category);
 		memento.setAcquisitionOrder(this.acquisitionOrder);
+		memento.setAnnualHoliday(this.annualHoliday);
+		memento.setHoursHoliday(this.hoursHoliday);
 	}
-
 }

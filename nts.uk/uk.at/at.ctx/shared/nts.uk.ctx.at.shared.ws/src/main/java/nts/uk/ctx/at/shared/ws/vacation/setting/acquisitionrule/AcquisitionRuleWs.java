@@ -21,7 +21,6 @@ import nts.uk.ctx.at.shared.app.find.vacation.setting.acquisitionrule.Acquisitio
 import nts.uk.ctx.at.shared.app.find.vacation.setting.acquisitionrule.ApplySettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionType;
-import nts.uk.ctx.at.shared.dom.vacation.setting.holidaytime.HolidayTimeType;
 
 /**
  * The Class AcquisitionRuleWs.
@@ -94,9 +93,9 @@ public class AcquisitionRuleWs extends WebService {
 		return EnumAdaptor.convertToValueNameList(AcquisitionType.class);
 	}
 	
-	@POST
-	@Path("enum/holiday")
-	public List<EnumConstant> getValidayTimeTypeEnum() {
-		return EnumAdaptor.convertToValueNameList(HolidayTimeType.class);
-	}
+//	@POST
+//	@Path("enum/holiday")
+//	public List<EnumConstant> getValidayTimeTypeEnum() {
+//		return EnumAdaptor.convertToValueNameList(HolidayTimeType.class);
+//	}
 }

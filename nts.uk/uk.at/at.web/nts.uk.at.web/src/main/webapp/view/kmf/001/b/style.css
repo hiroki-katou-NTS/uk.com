@@ -1,7 +1,7 @@
 @CHARSET "UTF-8";
 
 #priorityTable  th, td {
-	border: 1px solid #555555;
+/* 	border: 1px solid #555555; */
 	padding-left: 4px;
 	font-size: 20px;
 }

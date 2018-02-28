@@ -33,5 +33,17 @@ public interface AcquisitionRuleSetMemento {
 	 * @param listVacationAcquisitionOrder the new acquisition order
 	 */
 	void  setAcquisitionOrder(List<AcquisitionOrder> listVacationAcquisitionOrder);
-
+	
+	/**
+	 * Sets the AnnualHoliday.
+	 * @param annualHoliday
+	 */
+	void  setAnnualHoliday(AnnualHoliday annualHoliday);
+	
+	/**
+	 * Sets the HoursHoliday.
+	 *
+	 * @param hoursHoliday
+	 */
+	void  setHoursHoliday(HoursHoliday hoursHoliday);
 }

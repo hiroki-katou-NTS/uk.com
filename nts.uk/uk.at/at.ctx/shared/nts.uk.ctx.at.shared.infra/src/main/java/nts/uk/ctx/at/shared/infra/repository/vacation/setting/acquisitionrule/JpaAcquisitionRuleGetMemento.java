@@ -11,6 +11,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionOrder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionType;
+import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AnnualHoliday;
+import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.HoursHoliday;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.acquisitionrule.KarstAcquisitionRule;
 
 /**
@@ -107,4 +109,49 @@ public class JpaAcquisitionRuleGetMemento implements AcquisitionRuleGetMemento {
 		return acOrder;
 	}
 
+	@Override
+	public AnnualHoliday getAnnualHoliday() {
+		
+		AnnualHoliday annualHoliday = new AnnualHoliday();
+		
+		if(this.typeValue.getCompensatoryDayOff() == 0) {
+			annualHoliday.setPriorityPause(false);
+		} else {
+			annualHoliday.setPriorityPause(true);
+		}
+		
+		if(this.typeValue.getSabstituteHoliday() == 0) {
+			annualHoliday.setPrioritySubstitute(false);
+		} else {
+			annualHoliday.setPrioritySubstitute(true);
+		}
+		
+		if(this.typeValue.getFundedPaidHoliday() == 0) {
+			annualHoliday.setSixtyHoursOverrideHoliday(false);
+		} else {
+			annualHoliday.setSixtyHoursOverrideHoliday(true);
+		}
+		
+		return annualHoliday;
+	}
+
+	@Override
+	public HoursHoliday getHoursHoliday() {
+		
+		HoursHoliday hoursHoliday = new HoursHoliday();
+		
+		if(this.typeValue.getExcessHoliday() == 0) {
+			hoursHoliday.setPriorityOverpaid(false);
+		} else {
+			hoursHoliday.setPriorityOverpaid(true);
+		}
+		
+		if(this.typeValue.getOverrideHoliday() == 0) {
+			hoursHoliday.setSixtyHoursOverrideHoliday(false);
+		} else {
+			hoursHoliday.setSixtyHoursOverrideHoliday(true);
+		}
+		
+		return hoursHoliday;
+	}
 }

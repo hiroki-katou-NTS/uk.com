@@ -17,6 +17,12 @@ module nts.uk.pr.view.kmf001.b {
             exsessHoliday: KnockoutObservable<number>;
             specialHoliday: KnockoutObservable<number>;
             
+            priorityPause: KnockoutObservable<boolean>;
+            prioritySubstitute: KnockoutObservable<boolean>;
+            sixtyHoursOverrideHoliday: KnockoutObservable<boolean>;
+            priorityOverpaid: KnockoutObservable<boolean>;
+            sixtyHoursTimeOverrideHoliday: KnockoutObservable<boolean>;
+            
             paidLeaveSetting: KnockoutObservable<boolean>;
             retentionYearlySetting: KnockoutObservable<boolean>;
             compensLeaveComSetSetting: KnockoutObservable<boolean>;
@@ -37,7 +43,7 @@ module nts.uk.pr.view.kmf001.b {
 
                 self.categoryEnums = ko.observableArray([]);
                 
-                self.acquisitionTypeEnums = ko.observableArray([]);
+                self.acquisitionTypeEnums = ko.observableArray([]);              
 
                 self.selectedPriority = ko.observable(1);
                 self.enableInputPriority = ko.computed(function() {
@@ -50,6 +56,12 @@ module nts.uk.pr.view.kmf001.b {
                 self.fundedPaidHoliday = ko.observable(null);
                 self.exsessHoliday = ko.observable(null);
                 self.specialHoliday = ko.observable(null);
+                
+                self.priorityPause = ko.observable(false);
+                self.prioritySubstitute = ko.observable(false);
+                self.sixtyHoursOverrideHoliday = ko.observable(false);
+                self.priorityOverpaid = ko.observable(false);
+                self.sixtyHoursTimeOverrideHoliday = ko.observable(false);
                 
                 self.paidLeaveSetting = ko.observable(false);
                 self.retentionYearlySetting = ko.observable(false);
@@ -64,7 +76,7 @@ module nts.uk.pr.view.kmf001.b {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                $.when(self.loadApplySetting(),self.loadCategoryEnums(), self.loadAcquisitionTypeEnums()).done(function(res) {
+                $.when(self.loadApplySetting(),self.loadCategoryEnums()).done(function(res) {
                     self.loadAcquisitionRule();
                     $('#priority').focus();
                     dfd.resolve();
@@ -114,19 +126,19 @@ module nts.uk.pr.view.kmf001.b {
                 return dfd.promise();
             }
             
-            private loadAcquisitionTypeEnums(): JQueryPromise<Array<Enum>> {
-                let self = this;
-
-                let dfd = $.Deferred();
-                service.acquisitionTypeEnum().done(function(res: Array<Enum>) {
-                    self.acquisitionTypeEnums(res);
-                    dfd.resolve();
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message);
-                });
-
-                return dfd.promise();
-            }
+//            private loadAcquisitionTypeEnums(): JQueryPromise<Array<Enum>> {
+//                let self = this;
+//
+//                let dfd = $.Deferred();
+//                service.acquisitionTypeEnum().done(function(res: Array<Enum>) {
+//                    self.acquisitionTypeEnums(res);
+//                    dfd.resolve();
+//                }).fail(function(res) {
+//                    nts.uk.ui.dialog.alertError(res.message);
+//                });
+//
+//                return dfd.promise();
+//            }           
             
             //CLOSE DIALOG
             public closeDialog(): void {
@@ -153,7 +165,14 @@ module nts.uk.pr.view.kmf001.b {
                 //if find data exist
                 if (res) {
                     //if use Priority
-                    self.selectedPriority(res.category);
+                    self.selectedPriority(res.category); 
+                    
+                    self.priorityPause(res.annualHolidayShow.priorityPause);
+                    self.prioritySubstitute(res.annualHolidayShow.prioritySubstitute);
+                    self.sixtyHoursOverrideHoliday(res.annualHolidayShow.sixtyHoursOverrideHoliday);
+                    self.priorityOverpaid(res.hoursHolidayShow.priorityOverpaid);
+                    self.sixtyHoursTimeOverrideHoliday(res.hoursHolidayShow.sixtyHoursOverrideHoliday);
+                       
                     //set list priority
                     res.vaAcOrders.forEach(item => {
                         if (item.vacationType == 1) {
@@ -309,8 +328,19 @@ module nts.uk.pr.view.kmf001.b {
                     acquisitionSpecialHoliday.priority = 1;
                 }
                 acquisitionOrderList.push(acquisitionSpecialHoliday);
+                
+                let annualHoliday: any = {};
+                annualHoliday.priorityPause = self.priorityPause();
+                annualHoliday.prioritySubstitute = self.prioritySubstitute();
+                annualHoliday.sixtyHoursOverrideHoliday = self.sixtyHoursOverrideHoliday();
+                
+                let hoursHoliday: any = {};
+                hoursHoliday.priorityOverpaid = self.priorityOverpaid();
+                hoursHoliday.sixtyHoursOverrideHoliday = self.sixtyHoursTimeOverrideHoliday();
 
                 command.vaAcRule = acquisitionOrderList;
+                command.annualHoliday = annualHoliday;
+                command.hoursHoliday = hoursHoliday;
                 return command;
             }
 

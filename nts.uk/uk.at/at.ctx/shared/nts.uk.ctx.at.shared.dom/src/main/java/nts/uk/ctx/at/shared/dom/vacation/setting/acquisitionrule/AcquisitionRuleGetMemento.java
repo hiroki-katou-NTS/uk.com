@@ -33,4 +33,18 @@ public interface AcquisitionRuleGetMemento {
 	 * @return the acquisition order
 	 */
 	List<AcquisitionOrder> getAcquisitionOrder();
+	
+	/**
+	 * Gets the acquisition order.
+	 *
+	 * @return the acquisition order
+	 */
+	AnnualHoliday getAnnualHoliday();
+	
+	/**
+	 * Gets the acquisition order.
+	 *
+	 * @return the acquisition order
+	 */
+	HoursHoliday getHoursHoliday();
 }

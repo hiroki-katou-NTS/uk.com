@@ -7,9 +7,11 @@ module nts.uk.pr.view.kmf001.b {
             updateAcquisitionRule: 'ctx/at/share/vacation/setting/acquisitionrule/update',
             findAcquisitionRule: 'ctx/at/share/vacation/setting/acquisitionrule/find',
             categoryEnum: 'ctx/at/share/vacation/setting/acquisitionrule/enum/category',
-            acquisitionTypeEnum: 'ctx/at/share/vacation/setting/acquisitionrule/enum/type',
+//            acquisitionTypeEnum: 'ctx/at/share/vacation/setting/acquisitionrule/enum/type',
+//            holidayTimeTypeEnum: 'ctx/at/share/vacation/setting/acquisitionrule/enum/holiday',
             findSettingAll: 'ctx/at/share/vacation/setting/acquisitionrule/find/setting',
-        };
+        };        
+        
         /**
              * Update Acquisition Rule
              */
@@ -34,9 +36,9 @@ module nts.uk.pr.view.kmf001.b {
         /**
          * Get AcquisitionType Enum.
          */
-        export function acquisitionTypeEnum(): JQueryPromise<model.Enum> {
-            return nts.uk.request.ajax(paths.acquisitionTypeEnum);
-        }
+//        export function acquisitionTypeEnum(): JQueryPromise<model.Enum> {
+//            return nts.uk.request.ajax(paths.acquisitionTypeEnum);
+//        }
 
         /**
          * Find Apply Setting All 
@@ -56,9 +58,22 @@ module nts.uk.pr.view.kmf001.b {
                 specialHoliday: number;
             }
             
+            export interface AnnualHolidayItemDto {
+                priorityPause: boolean;
+                prioritySubstitute: boolean;
+                sixtyHoursOverrideHoliday: boolean;
+            }
+            
+            export interface HoursHolidayItemDto {
+                priorityOverpaid: boolean;
+                sixtyHoursOverrideHoliday: boolean;
+            }
+            
             export interface ListAcquisitionDto {
                 category: number;
                 listAcquisitionDto: AcquisitionOrderDto[];
+                annualHolidayDto: AnnualHolidayItemDto[];
+                hoursHolidayDto: HoursHolidayItemDto[];
             }
             
             export interface ApplySettingDto {

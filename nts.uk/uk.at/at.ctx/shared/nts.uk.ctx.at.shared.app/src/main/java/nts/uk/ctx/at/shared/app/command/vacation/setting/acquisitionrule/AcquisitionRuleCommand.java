@@ -12,6 +12,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionOrder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleGetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AnnualHoliday;
+import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.HoursHoliday;
 
 /**
  * The Class AcquisitionRuleCommand.
@@ -25,6 +27,12 @@ public class AcquisitionRuleCommand {
 
 	/** The va ac rule. */
 	public List<AcquisitionOrder> vaAcRule;
+	
+	/** The annualHoliday. */
+	public AnnualHoliday annualHoliday;
+	
+	/** The hoursHoliday. */
+	public HoursHoliday hoursHoliday;
 
 	/**
 	 * To domain.
@@ -94,5 +102,24 @@ public class AcquisitionRuleCommand {
 			return this.companyId;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.
+		 * AcquisitionRuleGetMemento#getAnnualHoliday()
+		 */
+		@Override
+		public AnnualHoliday getAnnualHoliday() {
+			return this.command.annualHoliday;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.
+		 * AcquisitionRuleGetMemento#getHoursHoliday()
+		 */
+		@Override
+		public HoursHoliday getHoursHoliday() {
+			return this.command.hoursHoliday;
+		}
 	}
 }

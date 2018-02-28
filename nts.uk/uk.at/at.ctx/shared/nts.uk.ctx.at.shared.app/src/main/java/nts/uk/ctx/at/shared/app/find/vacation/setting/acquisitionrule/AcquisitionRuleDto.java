@@ -11,6 +11,8 @@ import lombok.Builder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionOrder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleSetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AnnualHoliday;
+import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.HoursHoliday;
 
 /**
  * The Class VacationAcquisitionRuleDto.
@@ -26,6 +28,12 @@ public class AcquisitionRuleDto implements AcquisitionRuleSetMemento {
 
 	/** The va ac orders. */
 	public List<AcquisitionOrderItemDto> vaAcOrders;
+	
+	/** */
+	public AnnualHolidayItemDto annualHolidayShow;
+	
+	/** */
+	public HoursHolidayItemDto hoursHolidayShow;
 
 	/*
 	 * (non-Javadoc)
@@ -65,5 +73,31 @@ public class AcquisitionRuleDto implements AcquisitionRuleSetMemento {
 			return dto;
 		}).collect(Collectors.toList());
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.
+	 * AcquisitionRuleSetMemento#setAnnualHoliday
+	 * (nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AnnualHoliday)
+	 */
+	@Override
+	public void setAnnualHoliday(AnnualHoliday annualHoliday) {
+		AnnualHolidayItemDto dto = AnnualHolidayItemDto.builder().build();
+		annualHoliday.saveToMemento(dto);
+		this.annualHolidayShow = dto;		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.
+	 * AcquisitionRuleSetMemento#setHoursHoliday
+	 * (nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.HoursHoliday)
+	 */
+	@Override
+	public void setHoursHoliday(HoursHoliday hoursHoliday) {
+		HoursHolidayItemDto dto = HoursHolidayItemDto.builder().build();
+		hoursHoliday.saveToMemento(dto);
+		this.hoursHolidayShow = dto;		
 	}
 }

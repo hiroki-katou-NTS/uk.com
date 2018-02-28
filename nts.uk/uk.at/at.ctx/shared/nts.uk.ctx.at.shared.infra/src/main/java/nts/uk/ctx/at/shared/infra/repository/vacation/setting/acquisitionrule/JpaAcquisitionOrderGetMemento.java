@@ -70,14 +70,14 @@ public class JpaAcquisitionOrderGetMemento implements AcquisitionOrderGetMemento
 		case CompensatoryDayOff:
 			return new Priority(this.typeValue.getCompensatoryDayOff());
 
-		case ExsessHoliday:
-			return new Priority(this.typeValue.getExsessHoliday());
+//		case ExsessHoliday:
+//			return new Priority(this.typeValue.getExsessHoliday());
 
 		case FundedPaidHoliday:
 			return new Priority(this.typeValue.getFundedPaidHoliday());
 
-		case SpecialHoliday:
-			return new Priority(this.typeValue.getSpecialHoliday());
+//		case SpecialHoliday:
+//			return new Priority(this.typeValue.getSpecialHoliday());
 		// case SubstituteHoliday:
 		default:
 			return new Priority(this.typeValue.getSabstituteHoliday());
