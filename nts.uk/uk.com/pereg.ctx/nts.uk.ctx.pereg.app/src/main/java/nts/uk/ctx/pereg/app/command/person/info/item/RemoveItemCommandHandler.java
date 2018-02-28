@@ -6,7 +6,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.pereg.app.command.person.info.category.GetListCompanyOfContract;
@@ -53,7 +52,7 @@ public class RemoveItemCommandHandler extends CommandHandlerWithResult<RemoveIte
 		List<String> perInfoCtgIds = this.perInfoCtgRep.getPerInfoCtgIdList(companyIdList,
 				category.getCategoryCode().v());
 		if (this.empInfoRepo.getAllInfoItem(itemDef.getItemCode().toString(), perInfoCtgIds) || this.perItemRepo.isExitedItem(perInfoCtgIds, itemDef.getItemCode().toString())) {
-			throw  new BusinessException(new RawErrorMessage("Msg_214"));
+			throw  new BusinessException("Msg_214");
 		}
 		perInfoCtgIds.add(itemDef.getPerInfoCategoryId());
 		this.pernfoItemDefRep.removePerInfoItemDefRoot(perInfoCtgIds, category.getCategoryCode().v(), contractCd,

@@ -41,7 +41,7 @@ public class EmployeeWebService extends WebService {
 	@Inject
 	private EmployeeInDesignatedFinder empInDesignatedFinder;
 
-
+	
 	@POST
 	@Path("getPersonIdByEmployeeCode/{employeeCode}/{baseDate}")
 	public EmployeeDto getPersonIdByEmployeeCode(@PathParam("employeeCode") String employeeCode,
@@ -105,7 +105,7 @@ public class EmployeeWebService extends WebService {
 	public List<EmployeeSearchData> searchModeEmployee(EmployeeSearchQuery input) {
 		return this.employeeQueryProcessor.searchModeEmployee(input);
 	}
-
+	
 	/**
 	 * Search of work place.
 	 *

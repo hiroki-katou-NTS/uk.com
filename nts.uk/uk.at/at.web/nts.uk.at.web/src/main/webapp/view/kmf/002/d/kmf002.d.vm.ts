@@ -37,7 +37,7 @@ module nts.uk.at.view.kmf002.d {
                     isShowAlreadySet: _self.isShowAlreadySet(),
                     isMultiSelect: _self.isMultiSelect(),
                     listType: ListType.EMPLOYMENT,
-                    selectType: SelectType.NO_SELECT,
+                    selectType: SelectType.SELECT_FIRST_ITEM,
                     selectedCode: _self.selectedCode,
                     isDialog: _self.isDialog(),
                     isShowNoSelectRow: _self.isShowNoSelectRow(),
@@ -74,6 +74,13 @@ module nts.uk.at.view.kmf002.d {
 
                 return nameEmpSelected;
             }
+            
+            private setDefaultMonthDay(): void {
+                let _self = this;
+                for (let i=0; i<_self.commonTableMonthDaySet().arrMonth().length; i++) {
+                    _self.commonTableMonthDaySet().arrMonth()[i].day(0); 
+                }     
+            }
 
             private catchChangeSelectEmp(): void {
                 let _self = this;
@@ -85,7 +92,8 @@ module nts.uk.at.view.kmf002.d {
                     if (_.isUndefined(_self.selectedCode()) || _.isEmpty(_self.selectedCode()) 
                             || _.isNull(_self.selectedCode())) {
                         _self.enableDelete(false);
-                        _self.enableSave(false);    
+                        _self.enableSave(false);
+                        _self.setDefaultMonthDay();    
                     } else {
                         _self.enableDelete(true);
                         _self.enableSave(true);
@@ -151,6 +159,9 @@ module nts.uk.at.view.kmf002.d {
                         });
                         _self.enableDelete(false);
                     } else {
+                        if (_.isEmpty(data2)) {
+                            data2.startMonth = 0;
+                        }
                         _self.commonTableMonthDaySet().arrMonth.removeAll();
                         for (let i=data2.startMonth-1; i<12; i++) {
                             _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 'day': ko.observable(data.publicHolidayMonthSettings[i].inLegalHoliday), 'enable': ko.observable(true)});    

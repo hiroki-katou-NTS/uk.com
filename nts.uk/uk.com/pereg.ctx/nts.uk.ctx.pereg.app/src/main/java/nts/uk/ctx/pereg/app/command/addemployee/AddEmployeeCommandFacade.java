@@ -11,6 +11,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
@@ -36,7 +38,8 @@ public class AddEmployeeCommandFacade {
 	private RegisterLayoutFinder layoutFinder;
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void addNewFromInputs(AddEmployeeCommand command, String personId, String employeeId, String comHistId,List<ItemsByCategory> inputs) {
+	public void addNewFromInputs(AddEmployeeCommand command, String personId, String employeeId, String comHistId,
+			List<ItemsByCategory> inputs) {
 
 		updateRequiredInputs(command, inputs, personId, employeeId);
 
@@ -156,7 +159,7 @@ public class AddEmployeeCommandFacade {
 
 			String itemCD = x.getItemCode();
 			ItemValue itemVal = getItemById(inputs, itemCD, x.getCategoryCode());
-			x.setDataType(getSaveDataType(x.getDataType(), x,itemVal));
+			x.setDataType(getSaveDataType(x.getDataType(), x, itemVal));
 			if (itemVal != null) {
 				x.setSaveData(new SaveDataDto(x.getSaveData().getSaveDataType(),
 						itemVal.value() != null ? itemVal.value().toString() : ""));
@@ -185,7 +188,7 @@ public class AddEmployeeCommandFacade {
 	}
 
 	private DataTypeValue getSaveDataType(DataTypeValue dataType, SettingItemDto item, ItemValue value) {
-	
+
 		if (dataType.equals(DataTypeValue.SELECTION) || dataType.equals(DataTypeValue.SELECTION_BUTTON)
 				|| dataType.equals(DataTypeValue.SELECTION_RADIO)) {
 			switch (item.getSelectionItemRefType()) {
@@ -195,9 +198,14 @@ public class AddEmployeeCommandFacade {
 				return DataTypeValue.STRING;
 			case DESIGNATED_MASTER:
 				String itemValue = value != null ? value.value() : item.getSaveData().getValue().toString();
-				if (itemValue.chars().allMatch(Character::isDigit)) {
-					return DataTypeValue.NUMERIC;
+				if (NumberUtils.isDigits(itemValue)) {
+					if (String.valueOf(Integer.parseInt(itemValue)) == itemValue) {
+						return DataTypeValue.NUMERIC;
+					} else {
+						return DataTypeValue.STRING;
+					}
 				} else {
+
 					return DataTypeValue.STRING;
 				}
 			default:
