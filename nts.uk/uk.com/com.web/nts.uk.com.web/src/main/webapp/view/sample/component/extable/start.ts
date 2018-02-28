@@ -150,7 +150,8 @@ __viewContext.ready(function () {
     let horzSumContentDs = [], leftHorzContentDs = [], vertSumContentDs = [], newVertSumContentDs = [];
     for (let i = 0; i < 300; i++) {
         detailContentDs.push(new ExItem(i.toString()));
-        leftmostDs.push({　empId: i.toString(), empName: "社員名" + i + "    AAA" });
+        let eName = nts.uk.text.padRight("社員名" + i, " ", 10) + "AAA";
+        leftmostDs.push({　empId: i.toString(), empName: eName });//"社員名" + i + "    AAA" });
         middleDs.push({ empId: i.toString(), cert: "★", over1: 100 + i + "", over2: 1 + i + "" });
         updateMiddleDs.push({ empId: i.toString(), time: "100:00", days: "38", can: "", get: "" });
         if (i % 2 === 0) middleContentDeco.push(new CellColor("over1", i.toString(), "cell-red"));
@@ -411,7 +412,7 @@ __viewContext.ready(function () {
         dataSource: vertSumContentDs,
         primaryKey: "empId"
     };
-    new nts.uk.ui.exTable2.ExTable($("#extable"), { 
+    new nts.uk.ui.exTable.ExTable($("#extable"), { 
             headerHeight: "75px", bodyRowHeight: "50px", bodyHeight: "400px", 
             horizontalSumHeaderHeight: "75px", horizontalSumBodyHeight: "140px",
             horizontalSumBodyRowHeight: "20px",
@@ -419,7 +420,7 @@ __viewContext.ready(function () {
             bodyHeightMode: "dynamic",
             windowXOccupation: 170,
             windowYOccupation: 300,
-            updateMode: "edit",
+            updateMode: "stick",
             pasteOverWrite: true,
             stickOverWrite: true,
             viewMode: "shortName",
@@ -490,7 +491,7 @@ __viewContext.ready(function () {
         dataSource: horzSumContentDs,
         primaryKey: "itemId"
     };
-    new nts.uk.ui.exTable2.ExTable($("#subtable"), { 
+    new nts.uk.ui.exTable.ExTable($("#subtable"), { 
         headerHeight: "75px", bodyRowHeight: "20px", bodyHeight: "140px",
         horizontalSumBodyRowHeight: "20px",
         areaResize: false, 
