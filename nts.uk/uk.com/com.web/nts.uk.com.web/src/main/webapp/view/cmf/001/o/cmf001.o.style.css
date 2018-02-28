@@ -29,3 +29,7 @@
 #grd_Acquisition tr td:first-child {
 	background-color: #CFF1A5;
 }
+
+.img-icon{
+	cursor: pointer;
+}

@@ -38,7 +38,7 @@
 							<span class="label" data-bind="text: dispConditionSettingCode"></span>
 							<span class="label" data-bind="text: dispConditionSettingName"></span>
 							<span class="label">#{i18n.getText('CMF001_135')}</span>
-							<span class="label">item transport</span>
+							<span class="label" data-bind="text: $parent.systemType.name"></span>
 						</div>
 						<div class="valign-center control-group">
 							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_136')}</div>
@@ -110,8 +110,8 @@
 					</div>
 				</div>
 				<div style="margin-right: 10px; margin-top: 260px">
-					<button><i class="icon icon-button-arrow-right"></i></button>
-					<button><i class="icon icon-button-arrow-left"></i></button>
+					<button data-bind="click: btnRightClick"><i class="icon icon-button-arrow-right"></i></button>
+					<button data-bind="click: btnLeftClick"><i class="icon icon-button-arrow-left"></i></button>
 				</div>
 				<div class="fixed-flex-layout-right">
 					<span class="label" style="margin-bottom: 30px; font-size: 1.5rem;">#{i18n.getText('CMF001_160')}</span>
@@ -136,25 +136,23 @@
 								<th class="ui-widget-header">#{i18n.getText('CMF001_166')}</th>
 							</tr>
 						</thead>
-						<tbody>
-							<tr>
-								<td style ="text-align: right;">1</td>
-								<td>asdfasdfs</td>
+						<tbody data-bind="foreach: listAcceptItem">
+							<tr data-bind="attr: { 'data-id': acceptItemNumber }">
+								<td style ="text-align: right;"><span data-bind="text: acceptItemNumber"></span></td>
+								<td><span data-bind="text: acceptItemName"></span></td>
 								<td>
-									<span class="label">item transport</span>
-									<button>#{i18n.getText('CMF001_167')}</button>
+									<span class="label" data-bind="text: csvItemName"></span>
+									<button class="pull-right">#{i18n.getText('CMF001_167')}</button>
 								</td>
-								<td>item transport</td>
+								<td>Sample Data From File</td>
 								<td>
 									<div data-bind="ntsComboBox: {
-										options: dataTypes,
+										options: $parent.dataTypes,
 										optionsValue: 'code',
 										visibleItemsCount: 5,
 										name: '#[CMF001_168]',
-										value: selectedDataType,
+										value: itemType,
 										optionsText: 'name',
-										editable: false,
-										enable: true,
 										columns: [
 											{ prop: 'name', length: 4 }
 										]}"></div>

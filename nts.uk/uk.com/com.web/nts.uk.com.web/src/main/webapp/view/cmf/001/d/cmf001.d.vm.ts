@@ -10,13 +10,25 @@ module nts.uk.com.view.cmf001.d.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
+        systemTypes: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
+            new model.ItemModel(0, 'HR System'),
+            new model.ItemModel(1, 'Attendance System'),
+            new model.ItemModel(2, 'Payroll System'),
+            new model.ItemModel(3, 'Office Helper')
+        ]);
+        systemType: model.ItemModel;
+        
         listCategory: KnockoutObservableArray<model.ExternalAcceptanceCategory>;
         selectedCategory: KnockoutObservable<string>;
         
         listCategoryItem: KnockoutObservableArray<model.ExternalAcceptanceCategoryItemData>;
+        listSelectedCategoryItem: KnockoutObservableArray<model.ExternalAcceptanceCategoryItemData> = ko.observableArray([]);
         selectedCategoryItem: KnockoutObservable<string>;
         
-        selectedStandardImportSetting: KnockoutObservable<model.StandardAcceptanceConditionSetting> = ko.observable(new model.StandardAcceptanceConditionSetting('001', 'Import Setting 1', 2, 0, 0, 1));
+        listAcceptItem: KnockoutObservableArray<model.StandardAcceptItem> = ko.observableArray([]);
+        selectedAcceptItem: KnockoutObservable<number> = ko.observable(0);
+        
+        selectedStandardImportSetting: KnockoutObservable<model.StandardAcceptanceConditionSetting>;
         dataTypes: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
             new model.ItemModel(0, 'Numeric'),
             new model.ItemModel(1, 'Character'),
@@ -32,8 +44,12 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         fileInfo: KnockoutObservable<any>;
         accept: KnockoutObservableArray<string>;
         onchange: (filename) => void;
-        constructor() {
+        constructor(data: any) {
             var self = this;
+            let item = _.find(self.systemTypes(), x => {return x.code == data.systemType;});
+            self.systemType = item;
+            self.selectedStandardImportSetting = ko.observable(new model.StandardAcceptanceConditionSetting(data.conditionSetting.conditionSettingCode, data.conditionSetting.conditionSettingName, data.conditionSetting.deleteExistData, data.conditionSetting.acceptMode, data.conditionSetting.csvDataItemLineNumber, data.conditionSetting.csvDataStartLine, data.conditionSetting.deleteExistDataMethod));
+            
             self.listCategory = ko.observableArray([
                 new model.ExternalAcceptanceCategory('1', 'Category 1'),
                 new model.ExternalAcceptanceCategory('2', 'Category 2'),
@@ -46,15 +62,15 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 new model.ExternalAcceptanceCategoryItemData('002', 'Item 2'),
                 new model.ExternalAcceptanceCategoryItemData('003', 'Item 3'),
                 new model.ExternalAcceptanceCategoryItemData('004', 'Item 4'),
-                new model.ExternalAcceptanceCategoryItemData('005', 'Item 1'),
-                new model.ExternalAcceptanceCategoryItemData('006', 'Item 2'),
-                new model.ExternalAcceptanceCategoryItemData('007', 'Item 3'),
-                new model.ExternalAcceptanceCategoryItemData('008', 'Item 4'),
-                new model.ExternalAcceptanceCategoryItemData('009', 'Item 1'),
-                new model.ExternalAcceptanceCategoryItemData('010', 'Item 2'),
-                new model.ExternalAcceptanceCategoryItemData('011', 'Item 3'),
-                new model.ExternalAcceptanceCategoryItemData('012', 'Item 4'),
-                new model.ExternalAcceptanceCategoryItemData('013', 'Item 5') 
+                new model.ExternalAcceptanceCategoryItemData('005', 'Item 5'),
+                new model.ExternalAcceptanceCategoryItemData('006', 'Item 6'),
+                new model.ExternalAcceptanceCategoryItemData('007', 'Item 7'),
+                new model.ExternalAcceptanceCategoryItemData('008', 'Item 8'),
+                new model.ExternalAcceptanceCategoryItemData('009', 'Item 9'),
+                new model.ExternalAcceptanceCategoryItemData('010', 'Item 10'),
+                new model.ExternalAcceptanceCategoryItemData('011', 'Item 11'),
+                new model.ExternalAcceptanceCategoryItemData('012', 'Item 12'),
+                new model.ExternalAcceptanceCategoryItemData('013', 'Item 13') 
             ]);
             
             self.selectedDataType = setShared("selectedDataType");
@@ -70,6 +86,11 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             this.onchange = (filename) => {
                 console.log(filename);
             };
+            
+            self.selectedAcceptItem.subscribe((data) => {
+                $("#fixed-table tr").removeClass("ui-state-active");
+                $("#fixed-table tr[data-id='" + data + "']").addClass("ui-state-active");
+            });
         }
         
         upload() {
@@ -98,5 +119,46 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             console.log(fileInfo);
         }
         
+        btnLeftClick() {
+            let self = this;
+            if (self.selectedAcceptItem() > 0 && self.selectedAcceptItem() <= self.listAcceptItem().length) {
+                let selectedAItem = _.find(self.listAcceptItem(), x => {return x.acceptItemNumber() == self.selectedAcceptItem();});
+                let selectedCItem = _.find(self.listSelectedCategoryItem(), x => {return x.itemName() == selectedAItem.acceptItemName();});
+                self.listAcceptItem.remove(selectedAItem);
+                self.listCategoryItem.push(selectedCItem);
+                self.listSelectedCategoryItem.remove(selectedCItem);
+                for (var i = 0; i < self.listAcceptItem().length; i++) {
+                    self.listAcceptItem()[i].acceptItemNumber(i + 1);
+                }
+                if (self.selectedAcceptItem() >= self.listAcceptItem().length) {
+                    self.selectedAcceptItem(self.listAcceptItem().length);
+                }
+                self.selectedAcceptItem.valueHasMutated();
+            }
+        }
+        
+        btnRightClick() {
+            let self = this;
+            if (self.selectedCategoryItem()) {
+                let i = self.listAcceptItem().length + 1;
+                let selectedItem = _.find(self.listCategoryItem(), x => {return x.itemCode() == self.selectedCategoryItem();});
+                let selectedIndex = _.findIndex(self.listCategoryItem(), x => { return x.itemCode() == self.selectedCategoryItem(); });
+                let item = new model.StandardAcceptItem("CSV Item Name " + i, i, 0, i, selectedItem.itemName(), self.selectedStandardImportSetting().conditionSettingCode());
+                self.listAcceptItem.push(item);
+                self.listSelectedCategoryItem.push(selectedItem);
+                self.listCategoryItem.remove(selectedItem);
+                if (selectedIndex >= self.listCategoryItem().length && self.listCategoryItem().length > 0)
+                    self.selectedCategoryItem(self.listCategoryItem()[self.listCategoryItem().length - 1].itemCode());
+                else
+                    self.selectedCategoryItem(self.listCategoryItem()[selectedIndex] ? self.listCategoryItem()[selectedIndex].itemCode() : null);
+            }
+        }
     }
 }
+
+$(function() {
+    $("#fixed-table").on("click", "tr", function() {
+        var id = $(this).attr("data-id");
+        nts.uk.ui._viewModel.content.selectedAcceptItem(id);
+    })
+})
