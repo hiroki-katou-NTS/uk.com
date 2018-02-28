@@ -16,6 +16,7 @@
 				nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.OvertimeAppPrimitiveTime
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../../../kdl/034/a/kdl034.a.vm.js" />
 			<com:scriptfile path="../shr/kaf000.shr.vm.js"/>
 			<com:stylefile path="../../002/cm/kaf002.cm.main.css" />
 			<com:stylefile path="../../002/m1/kaf002.m1.main.css" />
@@ -92,7 +93,8 @@
 						</div>
 						<!-- B1_6 -->
 						<div class="controlButtonCell_kaf000" data-bind="if: displayRemandButton">
-							<button class="kaf000-function-btn" data-bind="enable: enableRemandButton() &amp;&amp; $root.errors.isEmpty()
+							<button class="kaf000-function-btn" data-bind="click: btnRemand, 
+										enable: enableRemandButton() &amp;&amp; $root.errors.isEmpty()
 										   ">#{i18n.getText('KAF000_17')}</button>		
 						</div>
 						<!-- B1_7 -->
@@ -164,7 +166,7 @@
 				<div data-bind="if: displayApprovalReason">
 					<!-- row 2 B4_1-->
 					<div style=" margin-top: 16px;float: left;margin-right: 47px">
-						<div  data-bind="ntsFormLabel: {constraint: 'ApproverReason', enable: enableApprovalReason}">#{i18n.getText('KAF000_28')}</div>
+						<div  data-bind="ntsFormLabel: {constraint: 'ApproverReason', enable: true }">#{i18n.getText('KAF000_28')}</div>
 					</div>
 					<!-- row 2 B4_2-->
 					<div style=" margin-top: 16px;">
