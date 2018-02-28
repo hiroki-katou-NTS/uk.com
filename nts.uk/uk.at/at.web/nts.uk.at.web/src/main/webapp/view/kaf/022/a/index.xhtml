@@ -101,10 +101,10 @@
 								<tbody data-bind="foreach : dataA4Display">
 									<tr>
 										<td class="color-header"><span class="label " data-bind="text: a4_5"></span></td>
-										<td>
+										<td class="td-table-a4">
 											<div class="a4_checkbox" id="a4_6"
 												data-bind="ntsCheckBox: { checked: a4_6 },attr:{
-														tabindex:1 + $index()*1
+														tabindex:1 + $index()*3
 													}"></div>
 											<div tabindex="1" id="a4_7"
 												data-bind="ntsComboBox: {
@@ -119,7 +119,7 @@
 														{ prop: 'name', length: 8 }
 													]},
 													attr:{
-														tabindex:1 + $index()*2
+														tabindex:2 + $index()*3
 													}">
 											</div> <span class="label">#{i18n.getText('KAF022_355')}</span>
 											<div id="a4_8"
@@ -134,7 +134,7 @@
 													columns: [
 														{ prop: 'name', length: 4 }
 													]},attr:{
-														tabindex:3 + $index()
+														tabindex:3 + $index()*3
 													}">
 											</div> <span class="label">#{i18n.getText('KAF022_356')}</span>
 										</td>
@@ -392,13 +392,13 @@
 										<td class="color-header" id="a7_4" data-bind="text:appTypeName"></td>
 										<td><div 
 												data-bind="ntsCheckBox: { checked: retrictPreUseFlg },attr:{
-														tabindex:42 + $index()
+														tabindex:42 
 													}">#{i18n.getText('KAF022_61')}</div></td>
 										<td><span class="ntsControl"> <label
 												class="ntsRadioBox"> <input 
 													type="radio" name="textRadioA7_18"
 													data-bind="checkedValue: 0, checked: retrictPreMethodFlg, enable: true,attr:{
-														tabindex:43 + $index()
+														tabindex:43
 													}" />
 													<span class="box"></span><span class="label">#{i18n.getText('KAF022_63')}</span>
 											</label>
@@ -415,7 +415,7 @@
 													columns: [
 														{ prop: 'name', length: 4 }
 													]},attr:{
-														tabindex:44 + $index()
+														tabindex:44 
 													}">
 											</span> <span class="label" id="a7_21">#{i18n.getText('KAF022_65')}</span>
 
@@ -423,7 +423,7 @@
 
 													<input  type="radio" name="textRadioA7_18"
 													data-bind="checkedValue: 1, checked: retrictPreMethodFlg, enable: true,,attr:{
-														tabindex:45 + $index()
+														tabindex:45 
 													}" />
 													<span class="box"></span><span class="label">#{i18n.getText('KAF022_66')}</span>
 													<span> <input
@@ -437,21 +437,21 @@
 													enable: true,
 													readonly: false,
 													immediate: false},attr:{
-														tabindex:46 + $index()
+														tabindex:46 
 													}" />
 												</span> <span class="label" id="a7_24">#{i18n.getText('KAF022_65')}</span>
 											</label>
 										</span></td>
 										<td><div 
 												data-bind="ntsCheckBox: { checked: retrictPostAllowFutureFlg },attr:{
-														tabindex:47 + $index()
+														tabindex:47
 													}">#{i18n.getText('KAF022_68')}</div></td>
 									</tr>
 									<tr data-bind="if: appType()!=0">
 										<td class="color-header" id="a7_5" data-bind="text:appTypeName">#{i18n.getText('KAF022_4')}</td>
 										<td><div 
 												data-bind="ntsCheckBox: { checked: retrictPreUseFlg },attr:{
-														tabindex:48 + $index()
+														tabindex:48 + ($index()-1)*3
 													}">#{i18n.getText('KAF022_61')}</div></td>
 										<td><span class="label label-a27" id="a7_27">#{i18n.getText('KAF022_63')}</span>
 											<span  id="a4_8"
@@ -466,13 +466,13 @@
 													columns: [
 														{ prop: 'name', length: 4 }
 													]},attr:{
-														tabindex:49 + $index()
+														tabindex:49 + ($index()-1)*3
 													}">
 											</span> <span class="label" id="a7_29">#{i18n.getText('KAF022_65')}</span>
 										</td>
 										<td><div 
 												data-bind="ntsCheckBox: { checked: retrictPostAllowFutureFlg },attr:{
-														tabindex:50 + $index()
+														tabindex:50 + ($index()-1)*3
 													}">#{i18n.getText('KAF022_68')}</div></td>
 									</tr>
 								</tbody>
@@ -506,19 +506,19 @@
 										<td class="color-header"><span  id="a8_8" class="label" data-bind="text:appTypeName"></span></td>
 										<td><div 
 												data-bind="ntsCheckBox: { checked: displayFixedReason },attr:{
-														tabindex:84 + $index()
+														tabindex:84 + $index()*6
 													}">#{i18n.getText('KAF022_61')}</div></td>
 										<td><div 
 												data-bind="ntsCheckBox: { checked: displayAppReason },attr:{
-														tabindex:85 + $index()
+														tabindex:85 + $index()*6
 													}">#{i18n.getText('KAF022_61')}</div></td>
 										<td><div 
-												data-bind="ntsCheckBox: { checked: sendMailWhenRegister },,attr:{
-														tabindex:86 + $index()
+												data-bind="ntsCheckBox: { checked: sendMailWhenRegister },attr:{
+														tabindex:86 + $index()*6
 													}">#{i18n.getText('KAF022_75')}</div></td>
 										<td><div 
-												data-bind="ntsCheckBox: { checked: sendMailWhenApproval },,attr:{
-														tabindex:87 + $index()
+												data-bind="ntsCheckBox: { checked: sendMailWhenApproval },attr:{
+														tabindex:87 + $index()*6
 													}">#{i18n.getText('KAF022_75')}</div></td>
 										<td>
 											<div  id="a4_7"
@@ -533,13 +533,13 @@
 													columns: [
 														{ prop: 'name', length: 6 }
 													]},attr:{
-														tabindex:88 + $index()
+														tabindex:88 + $index()*6
 													}">
 											</div>
 										</td>
 										<td><div
-												data-bind="ntsCheckBox: { checked: canClassificationChange },,attr:{
-														tabindex:89 + $index()
+												data-bind="ntsCheckBox: { checked: canClassificationChange },attr:{
+														tabindex:89 + $index()*6
 													}">#{i18n.getText('KAF022_75')}</div></td>
 									</tr>
 			
