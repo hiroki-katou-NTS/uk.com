@@ -430,7 +430,11 @@ module nts.uk.com.view.ccg.share.ccg {
 
                         nts.uk.ui.block.clear(); // clear block UI
 
-                        _.defer(() => self.applyDataSearch().always(() => dfd.resolve()));
+                        _.defer(() => self.applyDataSearch().always(() => {
+                            // Set acquired base date to status period end date
+                            self.statusPeriodEnd(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT));
+                            dfd.resolve(); 
+                        }));
                     });
                 });
 
@@ -791,11 +795,14 @@ module nts.uk.com.view.ccg.share.ccg {
                             // has permission or acquiredDate is not future
                             self.queryParam.baseDate = acquiredDate;
                             if (self.showAdvancedSearchTab) {
-                                self.reloadAdvanceSearchTab().done(() => nts.uk.ui.block.clear()); // clear block UI
+                                self.reloadAdvanceSearchTab().done(() => {
+                                    nts.uk.ui.block.clear();// clear block UI
+                                    dfd.resolve();
+                                });
                             } else {
                                 nts.uk.ui.block.clear(); // clear block UI
+                                dfd.resolve();
                             }
-                            dfd.resolve();
                         } else {
                             // no permission and acquiredDate is future
                             dfd.reject();
@@ -819,15 +826,13 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.queryParam.retireEnd = self.statusPeriodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
 
                 // reload advanced search tab.
-                $.when(service.searchWorkplaceOfEmployee(self.baseDate().toDate()),
+                $.when(service.searchWorkplaceOfEmployee(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
                     service.searchAllWorkType())
                     .done((selectedCodes, workTypeList: Array<WorkType>) => {
                         self.selectedCodeWorkplace(selectedCodes);
                         self.listWorkType(workTypeList);
-                        _.forEach(workTypeList, item => {
-                            self.selectedWorkTypeCode.push(item.workTypeCode)
-                        });
-                        
+                        self.selectedWorkTypeCode(_.map(workTypeList, vl => vl.workTypeCode));
+
                         self.reloadDataSearch();
 
                         if (self.showEmployment) {
@@ -1013,7 +1018,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     if (self.showPeriodYM) { // Period accuracy is YM 
                         service.calculatePeriod(self.selectedClosure(), parseInt(self.periodEnd().format('YYYYMM')))
                             .done(date => {
-                                return dfd.resolve(date);
+                                return dfd.resolve(date[0]);
                             });
                     } else { // Period accuracy is YMD
                         dfd.resolve(self.periodEnd().format(CcgDateFormat.DEFAULT_FORMAT));
