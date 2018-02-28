@@ -75,9 +75,14 @@ public class JpaExacExeResultLogRepository extends JpaRepository implements Exac
         return new OiomtExacExeResultLog(domain.getVersion(), new OiomtExacExeResultLogPk(domain.getCid(), domain.getConditionSetCd(), domain.getExternalProcessId()), domain.getExecutorId(), domain.getUserId(), domain.getProcessStartDatetime(), domain.getStandardAtr(), domain.getExecuteForm(), domain.getTargetCount(), domain.getErrorCount(), domain.getFileName(), domain.getSystemType(), domain.getResultStatus(), domain.getProcessEndDatetime(), domain.getProcessAtr());
     }
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLogRepository#getExacExeResultLogByProcessId(java.lang.String)
+	 */
 	@Override
 	public List<ExacExeResultLog> getExacExeResultLogByProcessId(String externalProcessId) {
-		return null;
+		 return this.queryProxy().query(SELECT_BY_PROCESS_ID, OiomtExacExeResultLog.class)
+				 .setParameter("externalProcessId", externalProcessId)
+	                .getList(item -> toDomain(item));
 	}
     
 

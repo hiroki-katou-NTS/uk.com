@@ -10,44 +10,59 @@ module nts.uk.com.view.cmf001.r.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     
     export class ScreenModel {
-        currentCode: KnockoutObservable<model.ImExErrorLog>;
-        imExExecuteResultLog: KnockoutObservable<model.ImExExecuteResultLogR>;
-        imExErrorLog: KnockoutObservableArray<model.ImExErrorLog>
+        currentCode: KnockoutObservable<model.IImExErrorLog>;
+        imExExecuteResultLog: KnockoutObservable<model.IImExExecuteResultLogR>;
+        imExErrorLog: KnockoutObservableArray<model.IImExErrorLog>
         columns: KnockoutObservableArray<NtsGridListColumn>;
+        
+        nameSetting: KnockoutObservable<string>;
+        imexProcessID: string;
         
         constructor() {
             let self = this;
-            self.imExExecuteResultLog =  ko.observable(new model.ImExExecuteResultLogR('001', 'A社人事管理情報', '2018/3/15 14:52:00', '    100件', '    92件', '     8件'));
-            self.imExErrorLog = ko.observableArray([
-                new model.ImExErrorLog(3, '' ,'' , '','' ),
-                new model.ImExErrorLog(5, '' ,'' , '','' ),
-                new model.ImExErrorLog(12, '' ,'' , '','' ),
-                new model.ImExErrorLog(16, '' ,'' , '','' ),
-                new model.ImExErrorLog(35, '' ,'' , '','' ),
-                new model.ImExErrorLog(37, '' ,'' , '','' ),
-                new model.ImExErrorLog(56, '' ,'' , '','' ),
-                new model.ImExErrorLog(83, '' ,'' , '','' ),
-                
-                ]);
-            self.currentCode = ko.observable(new model.ImExErrorLog(3, '' ,'' , '','' ));
+            self.imExExecuteResultLog =  ko.observable(null);
+            self.imExErrorLog = ko.observableArray([]);
+            self.currentCode = ko.observable(null);
             self.columns = ko.observableArray([
                 { headerText: 'レコード番号', key: 'recordNumber', width: 100 },
-                { headerText: 'CSV項目名', key: 'csvFieldName', width: 150 }, 
-                { headerText: '項目名', key: 'fieldName', width: 150 }, 
-                { headerText: '値', key: 'fieldValue', width: 150},
-                { headerText: 'エラーメッセージ', key: 'errorDesciption', width: 150} 
+                { headerText: 'CSV項目名', key: 'csvErrorItemName', width: 150 }, 
+                { headerText: '項目名', key: 'itemName', width: 150 }, 
+                { headerText: '値', key: 'csvAcceptedValue', width: 150},
+                { headerText: 'エラーメッセージ', key: 'errorContents', width: 150} 
             ]); 
             
             //let imexProcessID = getShared ("CMD001-R");
+            // param receive from Q, S
+            self.nameSetting = ko.observable('  A社人事管理情報');
+        }
+        
+         //開始
+        start(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+
+            nts.uk.ui.errors.clearAll();
+            service.getLogResults(self.imexProcessID).done(itemList: Array<IImExErrorLog>) => {
+               
+                dfd.resolve();
+            });
+            
+            service.getErrorLogs(self.imexProcessID).done((itemList: Array<IImExErrorLog>) => {
+               
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
         
         // エラー出力
         errorExport(){
             confirm({ messageId: "Msg_912" }).ifYes(() => {
-                        return;
-                    }).ifNo(() => {
-                        return;
-                    })
+                nts.uk.request.exportFile('exio/exi/execlog/generateCSV', { value: 'abc' }).done(() => {
+                    console.log('DONE!!');
+                });
+                }).ifNo(() => {
+                    return;
+                })
         }
         //　閉じる
         close(){
