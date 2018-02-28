@@ -795,11 +795,14 @@ module nts.uk.com.view.ccg.share.ccg {
                             // has permission or acquiredDate is not future
                             self.queryParam.baseDate = acquiredDate;
                             if (self.showAdvancedSearchTab) {
-                                self.reloadAdvanceSearchTab().done(() => nts.uk.ui.block.clear()); // clear block UI
+                                self.reloadAdvanceSearchTab().done(() => {
+                                    nts.uk.ui.block.clear();// clear block UI
+                                    dfd.resolve();
+                                });
                             } else {
                                 nts.uk.ui.block.clear(); // clear block UI
+                                dfd.resolve();
                             }
-                            dfd.resolve();
                         } else {
                             // no permission and acquiredDate is future
                             dfd.reject();

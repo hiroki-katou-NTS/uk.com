@@ -41,6 +41,9 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 	/** The Constant LEAVE_ABSENCE_QUOTA_NO. */
 	private static final int LEAVE_ABSENCE_QUOTA_NO = 1;
 
+	/** The Constant NOT_DELETED. */
+	private static final int NOT_DELETED = 0;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -67,6 +70,9 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 		// Add company condition 
 		conditions.add(cb.equal(root.get(EmployeeDataView_.cid), comId));
+
+		// Add NOT_DELETED condition
+		conditions.add(cb.equal(root.get(EmployeeDataView_.delStatusAtr), NOT_DELETED));
 
 		// employment condition
 		if (paramQuery.getFilterByEmployment()) {
