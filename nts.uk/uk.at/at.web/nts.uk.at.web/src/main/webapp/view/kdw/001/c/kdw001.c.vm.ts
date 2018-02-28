@@ -1,5 +1,8 @@
 module nts.uk.at.view.kdw001.c {
     import getText = nts.uk.resource.getText;
+    import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
+    import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
+    import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
 
     export module viewmodel {
         export class ScreenModel {
@@ -28,7 +31,7 @@ module nts.uk.at.view.kdw001.c {
             endDateString: KnockoutObservable<string>;
 
             //Declare employee filter component
-            ccgcomponent: GroupOption;
+            ccg001ComponentOption: GroupOption;
             showinfoSelectedEmployee: KnockoutObservable<boolean>;
             // Options
             baseDate: KnockoutObservable<Date>;
@@ -119,106 +122,171 @@ module nts.uk.at.view.kdw001.c {
                 self.selectedEmployee = ko.observableArray([]);
                 self.showinfoSelectedEmployee = ko.observable(false);
                 self.baseDate = ko.observable(new Date());
-                self.ccgcomponent = {
-                    baseDate: self.baseDate,
-                    //Show/hide options
-                    isQuickSearchTab: true,
-                    isAdvancedSearchTab: true,
-                    isAllReferableEmployee: true,
-                    isOnlyMe: true,
-                    isEmployeeOfWorkplace: true,
-                    isEmployeeWorkplaceFollow: true,
-                    isMutipleCheck: true,
-                    isSelectAllEmployee: true,
-                    /**
-                    * @param dataList: list employee returned from component.
-                    * Define how to use this list employee by yourself in the function's body.
-                    */
-                    onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
+//                self.ccgcomponent = {
+//                    baseDate: self.baseDate,
+//                    //Show/hide options
+//                    isQuickSearchTab: true,
+//                    isAdvancedSearchTab: true,
+//                    isAllReferableEmployee: true,
+//                    isOnlyMe: true,
+//                    isEmployeeOfWorkplace: true,
+//                    isEmployeeWorkplaceFollow: true,
+//                    isMutipleCheck: true,
+//                    isSelectAllEmployee: true,
+//                    /**
+//                    * @param dataList: list employee returned from component.
+//                    * Define how to use this list employee by yourself in the function's body.
+//                    */
+//                    onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
+//                        self.showinfoSelectedEmployee(true);
+//                        self.selectedEmployee(dataList);
+//
+//                        //Convert list Object from server to view model list
+//                        let items = _.map(dataList, item => {
+//                            return new UnitModel(item);
+//                        });
+//                        self.employeeList(items);
+//
+//                        //Fix bug 42, bug 43
+//                        let selectList = _.map(dataList, item => {
+//                            return item.employeeCode;
+//                        });
+//                        self.multiSelectedCode(selectList);
+//                    },
+//                    onSearchOnlyClicked: function(data: EmployeeSearchDto) {
+//                        self.showinfoSelectedEmployee(true);
+//                        var dataEmployee: EmployeeSearchDto[] = [];
+//                        dataEmployee.push(data);
+//                        self.selectedEmployee(dataEmployee);
+//
+//                        //Bug self fix
+//                        let unitModel = new UnitModel(data);
+//                        let listUnitModel: UnitModel[] = [];
+//                        listUnitModel.push(unitModel);
+//                        self.employeeList(listUnitModel);
+//
+//                        //Fix bug 42, bug 43
+//                        let selectList: any = [];
+//                        selectList.push(data.employeeCode);
+//                        self.multiSelectedCode(selectList);
+//                    },
+//                    onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
+//                        self.showinfoSelectedEmployee(true);
+//                        self.selectedEmployee(dataList);
+//
+//                        //Convert list Object from server to view model list
+//                        let items = _.map(dataList, item => {
+//                            return new UnitModel(item);
+//                        });
+//                        self.employeeList(items);
+//
+//                        //Fix bug 42, bug 43
+//                        let selectList = _.map(dataList, item => {
+//                            return item.employeeCode;
+//                        });
+//                        self.multiSelectedCode(selectList);
+//                    },
+//                    onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
+//                        self.showinfoSelectedEmployee(true);
+//                        self.selectedEmployee(dataList);
+//
+//                        //Convert list Object from server to view model list
+//                        let items = _.map(dataList, item => {
+//                            return new UnitModel(item);
+//                        });
+//                        self.employeeList(items);
+//
+//                        //Fix bug 42, bug 43
+//                        let selectList = _.map(dataList, item => {
+//                            return item.employeeCode;
+//                        });
+//                        self.multiSelectedCode(selectList);
+//                    },
+//                    onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
+//                        self.showinfoSelectedEmployee(true);
+//                        self.selectedEmployee(dataEmployee);
+//
+//                        //Convert list Object from server to view model list
+//                        let items = _.map(dataEmployee, item => {
+//                            return new UnitModel(item);
+//                        });
+//                        self.employeeList(items);
+//
+//                        //Fix bug 42, bug 43
+//                        let selectList = _.map(dataEmployee, item => {
+//                            return item.employeeCode;
+//                        });
+//                        self.multiSelectedCode(selectList);
+//                    }
+//
+//                }
+              self.reloadCcg001();      
+
+            }
+
+            public reloadCcg001(): void {
+                let self = this;
+                if ($('.ccg-sample-has-error').ntsError('hasError')) {
+                    return;
+                }
+                //                if (!self.showBaseDate() && !self.showClosure() && !self.showPeriod()){
+                //                    nts.uk.ui.dialog.alertError("Base Date or Closure or Period must be shown!" );
+                //                    return;
+                //                }
+                self.ccg001ComponentOption = {
+                    /** Common properties */
+                    systemType: 2, // システム区分
+                    showEmployeeSelection: true, // 検索タイプ
+                    showQuickSearchTab: true, // クイック検索
+                    showAdvancedSearchTab: true, // 詳細検索
+                    showBaseDate: false, // 基準日利用
+                    showClosure: false, // 就業締め日利用
+                    showAllClosure: true, // 全締め表示
+                    showPeriod: true, // 対象期間利用
+                    periodFormatYM: false, // 対象期間精度
+
+                    /** Required parameter */
+                    baseDate: moment().toISOString(), // 基準日
+                    inService: false, // 在職区分
+                    leaveOfAbsence: false, // 休職区分
+                    closed: false, // 休業区分
+                    retirement: false, // 退職区分
+
+                    /** Quick search tab options */
+                    showAllReferableEmployee: true, // 参照可能な社員すべて
+                    showOnlyMe: true, // 自分だけ
+                    showSameWorkplace: true, // 同じ職場の社員
+                    showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
+
+                    /** Advanced search properties */
+                    showEmployment: false, // 雇用条件
+                    showWorkplace: true, // 職場条件
+                    showClassification: true, // 分類条件
+                    showJobTitle: true, // 職位条件
+                    showWorktype: true, // 勤種条件
+                    isMutipleCheck: false, // 選択モード
+
+                    /** Return data */
+                    returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         self.showinfoSelectedEmployee(true);
-                        self.selectedEmployee(dataList);
+                        self.selectedEmployee(data.listEmployee);
 
                         //Convert list Object from server to view model list
-                        let items = _.map(dataList, item => {
+                        let items = _.map(data.listEmployee, item => {
                             return new UnitModel(item);
                         });
                         self.employeeList(items);
 
                         //Fix bug 42, bug 43
-                        let selectList = _.map(dataList, item => {
-                            return item.employeeCode;
-                        });
-                        self.multiSelectedCode(selectList);
-                    },
-                    onSearchOnlyClicked: function(data: EmployeeSearchDto) {
-                        self.showinfoSelectedEmployee(true);
-                        var dataEmployee: EmployeeSearchDto[] = [];
-                        dataEmployee.push(data);
-                        self.selectedEmployee(dataEmployee);
-
-                        //Bug self fix
-                        let unitModel = new UnitModel(data);
-                        let listUnitModel: UnitModel[] = [];
-                        listUnitModel.push(unitModel);
-                        self.employeeList(listUnitModel);
-
-                        //Fix bug 42, bug 43
-                        let selectList: any = [];
-                        selectList.push(data.employeeCode);
-                        self.multiSelectedCode(selectList);
-                    },
-                    onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
-                        self.showinfoSelectedEmployee(true);
-                        self.selectedEmployee(dataList);
-
-                        //Convert list Object from server to view model list
-                        let items = _.map(dataList, item => {
-                            return new UnitModel(item);
-                        });
-                        self.employeeList(items);
-
-                        //Fix bug 42, bug 43
-                        let selectList = _.map(dataList, item => {
-                            return item.employeeCode;
-                        });
-                        self.multiSelectedCode(selectList);
-                    },
-                    onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
-                        self.showinfoSelectedEmployee(true);
-                        self.selectedEmployee(dataList);
-
-                        //Convert list Object from server to view model list
-                        let items = _.map(dataList, item => {
-                            return new UnitModel(item);
-                        });
-                        self.employeeList(items);
-
-                        //Fix bug 42, bug 43
-                        let selectList = _.map(dataList, item => {
-                            return item.employeeCode;
-                        });
-                        self.multiSelectedCode(selectList);
-                    },
-                    onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
-                        self.showinfoSelectedEmployee(true);
-                        self.selectedEmployee(dataEmployee);
-
-                        //Convert list Object from server to view model list
-                        let items = _.map(dataEmployee, item => {
-                            return new UnitModel(item);
-                        });
-                        self.employeeList(items);
-
-                        //Fix bug 42, bug 43
-                        let selectList = _.map(dataEmployee, item => {
+                        let selectList = _.map(data.listEmployee, item => {
                             return item.employeeCode;
                         });
                         self.multiSelectedCode(selectList);
                     }
-
                 }
 
-
+                // Start component
+//                $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
             }
 
             opendScreenBorJ() {
@@ -242,7 +310,7 @@ module nts.uk.at.view.kdw001.c {
                             var timeDifference = endDate_unixtime - startDate_unixtime;
                             var timeDifferenceInHours = timeDifference / 60 / 60;
                             var timeDifferenceInDays = timeDifferenceInHours / 24;
-    
+
                             if (timeDifferenceInDays > 31) {
                                 nts.uk.ui.dialog.confirm('対象期間が1か月を超えていますがよろしいですか？').ifYes(() => {
                                     let yearPeriodStartDate = self.periodStartDate.split("/")[0];
@@ -255,18 +323,18 @@ module nts.uk.at.view.kdw001.c {
                                         nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
                                         return;
                                     }
-    
-                               
+
+
                                     let listEmpSelectedId = [];
                                     _.forEach(self.selectedEmployee(), function(value) {
-                                        if( _.includes(listEmpSelected,value.employeeCode)){
+                                        if (_.includes(listEmpSelected, value.employeeCode)) {
                                             listEmpSelectedId.push(value.employeeId);
                                         }
                                     });
-    
-    
-    
-    
+
+
+
+
                                     __viewContext["viewmodel"].params.setParamsScreenC({
                                         lstEmployeeID: listEmpSelectedId,
                                         periodStartDate: self.dateValue().startDate,
@@ -275,9 +343,9 @@ module nts.uk.at.view.kdw001.c {
                                     $("#wizard").ntsWizard("next").done(function() {
                                         $('#checkBox1').focus();
                                     });
-    
+
                                 })
-    
+
                             } else {
                                 let monthNow = data.month; // thieu thang hien tai cua  domain 締め
                                 let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
@@ -285,14 +353,14 @@ module nts.uk.at.view.kdw001.c {
                                     nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
                                     return;
                                 }
-    
-                                 let listEmpSelectedId = [];
-                                    _.forEach(self.selectedEmployee(), function(value) {
-                                        if( _.includes(listEmpSelected,value.employeeCode)){
-                                            listEmpSelectedId.push(value.employeeId);
-                                        }
-                                    });
-    
+
+                                let listEmpSelectedId = [];
+                                _.forEach(self.selectedEmployee(), function(value) {
+                                    if (_.includes(listEmpSelected, value.employeeCode)) {
+                                        listEmpSelectedId.push(value.employeeId);
+                                    }
+                                });
+
                                 __viewContext["viewmodel"].params.setParamsScreenC({
                                     lstEmployeeID: listEmpSelectedId,
                                     periodStartDate: self.dateValue().startDate,
@@ -301,7 +369,7 @@ module nts.uk.at.view.kdw001.c {
                                 $("#wizard").ntsWizard("next").done(function() {
                                     $('#checkBox1').focus();
                                 });
-    
+
                             }
                         }
                     });
@@ -311,7 +379,7 @@ module nts.uk.at.view.kdw001.c {
 
             start() {
                 var self = this;
-                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+                $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 $('#component-items-list').ntsListComponent(self.listComponentOption);
             }
 
