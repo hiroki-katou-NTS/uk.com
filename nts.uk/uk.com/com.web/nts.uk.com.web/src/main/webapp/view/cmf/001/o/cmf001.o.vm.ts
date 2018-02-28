@@ -73,7 +73,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             });
 
             //self.loadListAccept();   
-            $("#grd_Accept").ntsFixedTable({ height: 373 });           
+            $("#grd_Accept").ntsFixedTable({ height: 373 });
         }
 
         //次の画面へ遷移する
@@ -86,7 +86,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 dialog({ messageId: "Msg_963" });
                 return;
             }
-            
+
             //受入ファイルがアップロードされているか判別
             if (self.fileId() == '') {
                 //Msg_964　を表示する。受入ファイルがアップロードされていません。
@@ -109,15 +109,21 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             var self = this;
             block.grayout();
             $("#file-upload").ntsFileUpload({ stereoType: "flowmenu" }).done(function(res) {
-                //self.fileId(res[0].id);
                 service.getTotalRecord(res[0].id).done(function(totalRecord: any) {
-                    self.fileId(res[0].id);
                     console.log(res[0].id, totalRecord);
-                    if(self.selectedConditionStartLine() > totalRecord){
-                        dialog({ messageId: "Msg_910" });
-                    }                   
+                    //アップロードCSVが取込開始行に満たない場合
+                    if (totalRecord < self.selectedConditionStartLine()) {
+                        self.fileId('');
+                        self.filename('');
+                        dialog({ messageId: "Msg_1059" });
+                    }
+                    //アップロードCSVが取込開始行以上ある
+                    else {
+                        //基盤からファイルIDを取得する
+                        self.fileId(res[0].id);
+                    }
                 }).fail(function(err) {
-                    dialog({ messageId: "Msg_910" });
+                    dialog({ messageId: "Msg_1059" });
                 }).always(() => {
                     block.clear();
                 });
@@ -209,31 +215,37 @@ module nts.uk.com.view.cmf001.o.viewmodel {
 
             //アップロードしたファイルを読み込む
             self.listAccept([]);
-            for (let i = 1; i < 8; i++) {
-                self.listAccept.push(new AcceptItems('00' + i, '基本給', "description " + i, "基本給" + i, "基本給" + i + i));
+            for (let i = 0; i < 5; i++) {
+                self.listAccept.push(new AcceptItems('00' + i, '基本給', "description " + i, "基本給" + i, i));
             }
             //ファイルの行数を取得する
             self.count(self.listAccept().length);
         }
 
-        editIngestion(item) {
-            console.log('editIngestion', item);
-            switch (item) {
+        editIngestion(item: any) {
+            var self = this;
+            console.log('editIngestion', item, self);
+            
+            switch (item.itemType) {
                 case 0:
                     //数値型の場合                    
                     //G:「数値型設定」ダイアログをモーダルで表示する
+                    nts.uk.ui.windows.sub.modal("/view/cmf/001/g/index.xhtml");
                     break;
                 case 1:
                     //文字型の場合
                     //H:「文字型設定」ダイアログをモーダルで表示する
+                    nts.uk.ui.windows.sub.modal("/view/cmf/001/h/index.xhtml");
                     break;
                 case 2:
                     //日付型の場合  
                     //I:「日付型設定」ダイアログをモーダルで表示する
+                    nts.uk.ui.windows.sub.modal("/view/cmf/001/i/index.xhtml");
                     break;
                 case 3:
                     //時間型の場合, 時刻型の場合 
                     //J:「時刻型・時間型設定」ダイアログをモーダルで表示する
+                    nts.uk.ui.windows.sub.modal("/view/cmf/001/j/index.xhtml");
                     break;
             }
         }
@@ -241,11 +253,31 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         receiveCondition(item) {
             //L:「受入条件設定ダイアログをモーダルで表示する
             console.log('receiveCondition', item);
+            nts.uk.ui.windows.sub.modal("/view/cmf/001/l/index.xhtml");
         }
 
         exeAccept() {
             //Q:「外部受入処理中ダイアログ」をチェック中で起動する 
             console.log('exeAccept');
+        }
+
+        // Open Dialog CDL002
+        private openDialogG() {
+            let self = this;
+            setShared('CMF001Params', {
+                /*isMultiple: '',
+                selectedCodes: '',
+                showNoSelection: '',*/
+            }, true);
+
+            nts.uk.ui.windows.sub.modal("/view/cmf/001/g/index.xhtml").onClosed(function() {
+                /*var isCancel = getShared('CDL002Cancel');
+                if (isCancel) {
+                    return;
+                }
+                var output = getShared('CDL002Output');
+                self.selectedItem(output);*/
+            });
         }
     }
 
@@ -254,8 +286,8 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         infoName: string;
         itemName: string;
         sampleData: string;
-        itemType: string;
-        constructor(id: string, infoName: string, itemName: string, sampleData: string, itemType: string) {
+        itemType: number;
+        constructor(id: string, infoName: string, itemName: string, sampleData: string, itemType: number) {
             this.id = id;
             this.infoName = infoName;
             this.itemName = itemName;

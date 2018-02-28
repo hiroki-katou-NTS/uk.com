@@ -378,38 +378,299 @@ module nts.uk.com.view.cmf001.share.model {
     }
 
     //screen R
-    export class ImExErrorLog {
+    export interface IImExErrorLog{
+        /**
+        * ログ連番
+        */
+       logSeqNumber: number;
+        
+        /**
+        * 会社ID
+        */
+        cid: string;
+        
+        /**
+        * 外部受入処理ID
+        */
+        externalProcessId: string;
+        
+        /**
+        * CSVエラー項目名
+        */
+        csvErrorItemName: string;
+        
+        /**
+        * CSV受入値
+        */
+        csvAcceptedValue: string;
+        
+        /**
+        * エラー内容
+        */
+        errorContents: string;
+        
+        /**
+        * レコード番号
+        */
         recordNumber: number;
-        csvFieldName: string;
-        fieldName: string;
-        fieldValue: string;
-        errorDesciption: string;
-        constructor(recordNumber: number, csvFieldName: string, fieldName: string, fieldValue: string, errorDesciption: string) {
-            this.recordNumber = recordNumber;
-            this.csvFieldName = csvFieldName;
-            this.fieldName = fieldName;
-            this.fieldValue = fieldValue;
-            this.errorDesciption = errorDesciption;
+        
+        /**
+        * ログ登録日時
+        */
+        logRegDateTime: string;
+        
+        /**
+        * 項目名
+        */
+        itemName: string;
+        
+        /**
+        * エラー発生区分
+        */
+        errorAtr: number;
+    }
+    
+    export class ImExErrorLog {
+        /**
+        * ログ連番
+        */
+       logSeqNumber: number;
+        
+        /**
+        * 会社ID
+        */
+        cid: string;
+        
+        /**
+        * 外部受入処理ID
+        */
+        externalProcessId: string;
+        
+        /**
+        * CSVエラー項目名
+        */
+        csvErrorItemName: string;
+        
+        /**
+        * CSV受入値
+        */
+        csvAcceptedValue: string;
+        
+        /**
+        * エラー内容
+        */
+        errorContents: string;
+        
+        /**
+        * レコード番号
+        */
+        recordNumber: number;
+        
+        /**
+        * ログ登録日時
+        */
+        logRegDateTime: string;
+        
+        /**
+        * 項目名
+        */
+        itemName: string;
+        
+        /**
+        * エラー発生区分
+        */
+        errorAtr: number;
+        
+        constructor(param: IImExErrorLog) {
+            let self = this;
+            if (param)
+            {
+                self.logSeqNumber(param.logSeqNumber);
+                self.cid(param.cid);
+                self.externalProcessId(param.externalProcessId);
+                self.csvErrorItemName(param.csvErrorItemName);
+                self.csvAcceptedValue(param.csvAcceptedValue);
+                self.errorContents(param.errorContents);
+                self.recordNumber(param.recordNumber);
+                self.logRegDateTime(param.logRegDateTime);
+                self.errorAtr(param.errorAtr);
+            }
         }
     }
 
+    export interface IImExExecuteResultLogR{
+        /**
+        * 会社ID
+        */
+        cid: string;
+        
+        /**
+        * 条件設定コード
+        */
+        conditionSetCd: string;
+        
+        /**
+        * 外部受入処理ID
+        */
+        externalProcessId: string;
+        
+        /**
+        * 実行者ID
+        */
+        executorId: string;
+        
+        /**
+        * ユーザID
+        */
+        userId: string;
+        
+        /**
+        * 処理開始日時
+        */
+        processStartDatetime: string;
+        
+        /**
+        * 定型区分
+        */
+        standardAtr: number;
+        
+        /**
+        * 実行形態
+        */
+        executeForm: number;
+        
+        /**
+        * 対象件数
+        */
+        targetCount: number;
+        
+        /**
+        * エラー件数
+        */
+        errorCount: number;
+        
+        /**
+        * ファイル名
+        */
+        fileName: string;
+        
+        /**
+        * システム種類
+        */
+        systemType: number;
+        
+        /**
+        * 結果状態
+        */
+        resultStatus: number;
+        
+        /**
+        * 処理終了日時
+        */
+        processEndDatetime: string;
+        
+        /**
+        * 処理区分
+        */
+        processAtr: number;
+    }
+    
     export class ImExExecuteResultLogR {
-        condCode: KnockoutObservable<string>;
-        condName: KnockoutObservable<string>;
-        startTime: KnockoutObservable<string>;
-        totalCount: KnockoutObservable<string>;
-        normalCount: KnockoutObservable<string>;
-        errorCount: KnockoutObservable<string>;
-
-        constructor(condCode: string, condName: string, startTime: string, totalCount: string, normalCount: string, errorCount: string) {
-            this.condCode = ko.observable(condCode);
-            this.condName = ko.observable(condName);
-            this.startTime = ko.observable(startTime);
-            this.totalCount = ko.observable(totalCount);
-            this.normalCount = ko.observable(normalCount);
-            this.errorCount = ko.observable(errorCount);
+        /**
+        * 会社ID
+        */
+        cid: string;
+        
+        /**
+        * 条件設定コード
+        */
+        conditionSetCd: string;
+        
+        /**
+        * 外部受入処理ID
+        */
+        externalProcessId: string;
+        
+        /**
+        * 実行者ID
+        */
+        executorId: string;
+        
+        /**
+        * ユーザID
+        */
+        userId: string;
+        
+        /**
+        * 処理開始日時
+        */
+        processStartDatetime: string;
+        
+        /**
+        * 定型区分
+        */
+        standardAtr: number;
+        
+        /**
+        * 実行形態
+        */
+        executeForm: number;
+        
+        /**
+        * 対象件数
+        */
+        targetCount: number;
+        
+        /**
+        * エラー件数
+        */
+        errorCount: number;
+        
+        /**
+        * ファイル名
+        */
+        fileName: string;
+        
+        /**
+        * システム種類
+        */
+        systemType: number;
+        
+        /**
+        * 結果状態
+        */
+        resultStatus: number;
+        
+        /**
+        * 処理終了日時
+        */
+        processEndDatetime: string;
+        
+        /**
+        * 処理区分
+        */
+        processAtr: number;
+        
+        constructor(param: IImExExecuteResultLogR) {
+            let self = this;
+            if (param){
+                self.cid(param.cid);
+                self.conditionSetCd(param.conditionSetCd);
+                self.externalProcessId(param.externalProcessId);
+                self.executorId(param.executorId);
+                self.userId(param.userId);
+                self.processStartDatetime(param.processStartDatetime);
+                self.standardAtr(param.standardAtr);
+                self.executeForm(param.executeForm);
+                self.targetCount(param.targetCount);
+                self.errorCount(param.errorCount);
+                self.fileName(param.fileName);
+                self.systemType(param.systemType);
+                self.resultStatus(param.resultStatus);
+                self.processEndDatetime(param.processEndDatetime);
+                self.processAtr(param.processAtr);                                
+            }
         }
 
     }
-
 }

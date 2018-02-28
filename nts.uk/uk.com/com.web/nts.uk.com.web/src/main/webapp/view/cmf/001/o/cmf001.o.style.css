@@ -14,19 +14,19 @@
 	width: 300px;
 }
 
-#grd_Acquisition{
+#grd_Accept{
   counter-reset: rowNumber;
 }
-#grd_Acquisition tr {
+#grd_Accept tr {
   counter-increment: rowNumber;
 }
 
-#grd_Acquisition tr td:first-child::before {
+#grd_Accept tr td:first-child::before {
   content: counter(rowNumber);
   margin-left: 0.5em;
 }
 
-#grd_Acquisition tr td:first-child {
+#grd_Accept tr td:first-child {
 	background-color: #CFF1A5;
 }
 

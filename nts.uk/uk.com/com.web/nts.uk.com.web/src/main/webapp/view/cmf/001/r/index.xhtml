@@ -26,8 +26,8 @@
 									<label>#{i18n.getText('CMF001_506')}</label>
 								</td>
 								<td width='300px'>
-									<label data-bind="text : imExExecuteResultLog().condCode"></label>
-									<label data-bind="text : imExExecuteResultLog().condName"></label>
+									<label data-bind="text : imExExecuteResultLog().externalProcessId"></label>
+									<label data-bind="text : nameSetting()"></label>
 								</td>
 							</tr>
 							<tr>
@@ -35,7 +35,7 @@
 									<label>#{i18n.getText('CMF001_507')}</label>
 								</td>
 								<td width='300px'>
-									<label data-bind="text : imExExecuteResultLog().startTime"></label>
+									<label data-bind="text : imExExecuteResultLog().processStartDatetime"></label>
 								</td>
 							</tr>
 						</tbody>
@@ -51,15 +51,8 @@
 									<label>#{i18n.getText('CMF001_509')}</label>
 								</td>
 								<td width='300px'>
-									<label data-bind="text : imExExecuteResultLog().totalCount"></label>
-								</td>
-							</tr>
-							<tr>
-								<td class="bg-green" width='150px'>
+									<label data-bind="text : imExExecuteResultLog().targetCount"></label>
 									<label>#{i18n.getText('CMF001_510')}</label>
-								</td>
-								<td width='300px'>
-									<label data-bind="text : imExExecuteResultLog().normalCount"></label>
 								</td>
 							</tr>
 							<tr>
@@ -67,7 +60,17 @@
 									<label>#{i18n.getText('CMF001_511')}</label>
 								</td>
 								<td width='300px'>
+									<label data-bind="text : imExExecuteResultLog().executeForm"></label>
+									<label>#{i18n.getText('CMF001_512')}</label>
+								</td>
+							</tr>
+							<tr>
+								<td class="bg-green" width='150px'>
+									<label>#{i18n.getText('CMF001_513')}</label>
+								</td>
+								<td width='300px'>
 									<label data-bind="text : imExExecuteResultLog().errorCount"></label>
+									<label>#{i18n.getText('CMF001_514')}</label>
 								</td>
 							</tr>
 						</tbody>
