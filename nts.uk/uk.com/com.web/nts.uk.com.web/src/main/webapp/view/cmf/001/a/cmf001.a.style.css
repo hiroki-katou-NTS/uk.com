@@ -3,7 +3,7 @@
 }
 
 #contents-area{
-	margin:0px 200px 20px 200px;
+	margin:0px 150px 20px 150px;
 }
 
 .image-left{
@@ -13,4 +13,8 @@
 .image-right{
 	float: right;
 	margin-right: 20px;
+}
+
+.clear {
+	clear: both;
 }

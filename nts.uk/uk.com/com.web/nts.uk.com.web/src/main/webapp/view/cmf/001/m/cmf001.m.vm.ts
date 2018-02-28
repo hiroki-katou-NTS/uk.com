@@ -13,7 +13,8 @@ module nts.uk.com.view.cmf001.m.viewmodel {
         required: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
         checked: KnockoutObservable<boolean>;
-        simpleValue: KnockoutObservable<string>;
+        newCondCode: KnockoutObservable<string>;
+        newCondName: KnockoutObservable<string>;
         
         selectionType : string;
         conditionCode: KnockoutObservable<string>;
@@ -21,10 +22,11 @@ module nts.uk.com.view.cmf001.m.viewmodel {
         
         constructor() {
             var self = this;
-            self.simpleValue = ko.observable('123');    
+            self.newCondCode = ko.observable('123');    
+            self.newCondName = ko.observable('A day roi'); 
             self.required = ko.observable(true)
             self.enable = ko.observable(true);
-            self.checked = ko.observable(false);
+            self.checked = ko.observable(true);
             let params = getShared('selectionType'); 
             self.selectionType = params.systemType;
             self.conditionCode = ko.observable(params.conditionCode);
@@ -40,15 +42,16 @@ module nts.uk.com.view.cmf001.m.viewmodel {
             nts.uk.ui.windows.close();
         }
         
-        //設定済みの場合は、データを上書きします。
-        isOverWriteData() {
-            var self = this;
-            self.checked = ko.observable(true);
-        }
-        
         //設定
         saveData() {
-            
+            var self = this;
+            if(self.checked){
+                setShared('dataValue', {
+                    newValCode: ko.toJS(self.newCondCode()),
+                    newValName: ko.toJS(self.newCondName())
+                }, true);
+            }
+            nts.uk.ui.windows.close();
         }
     }
 }

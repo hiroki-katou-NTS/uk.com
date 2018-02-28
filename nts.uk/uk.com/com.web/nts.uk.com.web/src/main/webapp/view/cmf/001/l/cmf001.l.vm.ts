@@ -27,6 +27,7 @@ module nts.uk.com.view.cmf001.l.viewmodel {
         timeVal2: KnockoutObservable<string>;
         selectedDataType: number;
         screenMode: number;
+        
         constructor() {
             var self = this;  
             self.constraint = ko.observable('LayoutCode');
@@ -35,19 +36,7 @@ module nts.uk.com.view.cmf001.l.viewmodel {
             self.enable = ko.observable(true);
             self.readonly = ko.observable(true);
             
-            self.itemList = ko.observableArray([
-            new model.ItemModel(0, '条件としない'),
-            new model.ItemModel(1, '条件値1　＜　値'),
-            new model.ItemModel(2, '条件値1　≦　値'),
-            new model.ItemModel(3, '値　＜　条件値1'),
-            new model.ItemModel(4, '値　≦　条件値1'),
-            new model.ItemModel(5, '条件値1　＜　値　かつ　　値　＜　条件値2'),
-            new model.ItemModel(6, '条件値1　≦　値　かつ　　値　≦　条件値2'),
-            new model.ItemModel(7, '値　＜　条件値1　または　　条件値2　＜　値'),
-            new model.ItemModel(8, '値　≦　条件値1　または　　条件値2　≦　値'),
-            new model.ItemModel(9, '条件値1　＝　値'),
-            new model.ItemModel(10, '条件値1　≠　　値')
-            ]);
+            self.itemList = ko.observableArray(model.getCompareListItem());
             
             self.acceptScreenConditionSetting = ko.observable(new model.AcceptScreenConditionSetting('条件値', 0 , null, null, null, null, null, null,null, null, null, null));
             self.selectedCode = ko.observable(0);
