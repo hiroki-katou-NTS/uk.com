@@ -9,11 +9,5 @@ module cps001.a {
 
         __viewContext['viewModel'] = new vm.ViewModel();
         __viewContext.bind(__viewContext['viewModel']);
-
-        $(document).on('click', '#lefttabs', (evt) => {
-            if ($(evt.target).hasClass('ui-tabs-tab')) {
-                setShared("__RELOAD_DATA", undefined);
-            }
-        });
     });
 }
