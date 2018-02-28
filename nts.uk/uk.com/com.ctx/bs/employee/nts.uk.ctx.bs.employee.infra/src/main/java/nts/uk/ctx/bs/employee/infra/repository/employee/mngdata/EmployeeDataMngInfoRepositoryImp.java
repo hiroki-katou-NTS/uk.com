@@ -5,7 +5,6 @@
 package nts.uk.ctx.bs.employee.infra.repository.employee.mngdata;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -23,9 +22,6 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfoPk;
-import nts.uk.ctx.bs.person.dom.person.info.GenderPerson;
-import nts.uk.ctx.bs.person.dom.person.info.Person;
-import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 
 @Stateless
 public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements EmployeeDataMngInfoRepository {
@@ -110,12 +106,8 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.getSingleOrNull();
 
 		if (entity != null) {
-			if (domain.getEmployeeCode() != null && !domain.getEmployeeCode().v().equals("")) {
-				entity.employeeCode = domain.getEmployeeCode().v();
-			}
-			if (domain.getExternalCode() != null && !domain.getExternalCode().v().equals("")) {
-				entity.extCode = domain.getExternalCode().v();
-			}
+			entity.employeeCode = domain.getEmployeeCode().v();
+			entity.extCode = domain.getExternalCode().v();
 			commandProxy().update(entity);
 		}
 	}

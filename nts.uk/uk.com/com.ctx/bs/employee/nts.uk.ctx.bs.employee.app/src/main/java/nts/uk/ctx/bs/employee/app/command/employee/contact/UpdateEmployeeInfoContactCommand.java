@@ -1,7 +1,11 @@
 package nts.uk.ctx.bs.employee.app.command.employee.contact;
 
+import java.util.List;
+
 import lombok.Getter;
+import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.PeregItemValues;
 import nts.uk.shr.pereg.app.PeregRecordId;
 
 @Getter
@@ -29,4 +33,7 @@ public class UpdateEmployeeInfoContactCommand {
 	//携帯電話番号
 	@PeregItem("IS00271")
 	private String cellPhoneNo;
+	
+	@PeregItemValues
+	private List<ItemValue> items;
 }

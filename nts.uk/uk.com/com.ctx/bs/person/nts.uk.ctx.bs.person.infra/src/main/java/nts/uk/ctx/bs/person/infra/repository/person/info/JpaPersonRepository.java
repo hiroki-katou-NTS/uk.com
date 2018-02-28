@@ -112,83 +112,25 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 	 * @return
 	 */
 	private void updateEntity(Person domain, BpsmtPerson entity) {
-		if (domain.getBirthDate() != null) {
-			entity.birthday = domain.getBirthDate();
-		}
-		if (domain.getBloodType() != null) {
-			entity.bloodType = domain.getBloodType().value;
-		}
-		if (domain.getGender() != null) {
-			entity.gender = domain.getGender().value;
-		}
-		if (domain.getPersonNameGroup().getPersonName() != null
-				&& domain.getPersonNameGroup().getPersonName().getFullName() != null 
-				&& !domain.getPersonNameGroup().getPersonName().getFullName().v().equals("")) {
-			entity.personName = domain.getPersonNameGroup().getPersonName().getFullName().v();
-		}
-		if (domain.getPersonNameGroup().getPersonName() != null
-				&& domain.getPersonNameGroup().getPersonName().getFullNameKana() != null
-				&& !domain.getPersonNameGroup().getPersonName().getFullNameKana().v().equals("")) {
-			entity.personNameKana = domain.getPersonNameGroup().getPersonName().getFullNameKana().v();
-		}
-		if (domain.getPersonNameGroup().getBusinessEnglishName() != null
-				&& !domain.getPersonNameGroup().getBusinessEnglishName().v().equals("")) {
-			entity.businessEnglishName = domain.getPersonNameGroup().getBusinessEnglishName().v();
-		}
-		if (domain.getPersonNameGroup().getBusinessOtherName() != null
-				&& !domain.getPersonNameGroup().getBusinessOtherName().v().equals("")) {
-			entity.businessOtherName = domain.getPersonNameGroup().getBusinessOtherName().v();
-		}
-		if (domain.getPersonNameGroup().getBusinessName() != null
-				&& !domain.getPersonNameGroup().getBusinessName().v().equals("")) {
-			entity.businessName = domain.getPersonNameGroup().getBusinessName().v();
-		}
-		if (domain.getPersonNameGroup().getBusinessNameKana() != null
-				&& !domain.getPersonNameGroup().getBusinessNameKana().v().equals("")) {
-			entity.businessNameKana = domain.getPersonNameGroup().getBusinessNameKana().v();
-		}
-		if (domain.getPersonNameGroup().getOldName() != null
-				&& domain.getPersonNameGroup().getOldName().getFullName() != null
-				&& !domain.getPersonNameGroup().getOldName().getFullName().v().equals("")) {
-			entity.oldName = domain.getPersonNameGroup().getOldName().getFullName().v();
-		}
-		if (domain.getPersonNameGroup().getOldName() != null
-				&& domain.getPersonNameGroup().getOldName().getFullNameKana() != null
-				&& !domain.getPersonNameGroup().getOldName().getFullNameKana().v().equals("")) {
-			entity.oldNameKana = domain.getPersonNameGroup().getOldName().getFullNameKana().v();
-		}
-		if (domain.getPersonNameGroup().getPersonRomanji() != null
-				&& domain.getPersonNameGroup().getPersonRomanji().getFullName() != null
-				&& !domain.getPersonNameGroup().getPersonRomanji().getFullName().v().equals("")) {
-			entity.personRomanji = domain.getPersonNameGroup().getPersonRomanji().getFullName().v();
-		}
-		if (domain.getPersonNameGroup().getPersonRomanji() != null
-				&& domain.getPersonNameGroup().getPersonRomanji().getFullNameKana() != null
-				&& !domain.getPersonNameGroup().getPersonRomanji().getFullNameKana().v().equals("")) {
-			entity.personRomanjiKana = domain.getPersonNameGroup().getPersonRomanji().getFullNameKana().v();
-		}
-		if (domain.getPersonNameGroup().getTodokedeFullName() != null
-				&& domain.getPersonNameGroup().getTodokedeFullName().getFullName() != null
-				&& !domain.getPersonNameGroup().getTodokedeFullName().getFullName().v().equals("")) {
-			entity.todokedeFullName = domain.getPersonNameGroup().getTodokedeFullName().getFullName().v();
-		}
-		if (domain.getPersonNameGroup().getTodokedeFullName() != null
-				&& domain.getPersonNameGroup().getTodokedeFullName().getFullNameKana() != null
-				&& !domain.getPersonNameGroup().getTodokedeFullName().getFullNameKana().v().equals("")) {
-			entity.todokedeFullNameKana = domain.getPersonNameGroup().getTodokedeFullName().getFullNameKana().v();
-		}
-		if (domain.getPersonNameGroup().getPersonalNameMultilingual() != null
-				&& domain.getPersonNameGroup().getPersonalNameMultilingual().getFullName() != null
-				&& !domain.getPersonNameGroup().getPersonalNameMultilingual().getFullName().v().equals("")) {
-			entity.perNameMultilLang = domain.getPersonNameGroup().getPersonalNameMultilingual() == null ? ""
-					: domain.getPersonNameGroup().getPersonalNameMultilingual().getFullName().v();
-		}
-		if (domain.getPersonNameGroup().getPersonalNameMultilingual() != null
-				&& domain.getPersonNameGroup().getPersonalNameMultilingual().getFullNameKana() != null
-				&& !domain.getPersonNameGroup().getPersonalNameMultilingual().getFullNameKana().v().equals("")) {
-			entity.perNameMultilLangKana = domain.getPersonNameGroup().getPersonalNameMultilingual().getFullNameKana()
-					.v();
-		}
+		entity.birthday = domain.getBirthDate();
+		entity.bloodType = domain.getBloodType().value;
+		entity.gender = domain.getGender().value;
+		entity.personName = domain.getPersonNameGroup().getPersonName().getFullName().v();
+		entity.personNameKana = domain.getPersonNameGroup().getPersonName().getFullNameKana().v();
+		entity.businessEnglishName = domain.getPersonNameGroup().getBusinessEnglishName().v();
+		entity.businessOtherName = domain.getPersonNameGroup().getBusinessOtherName().v();
+		entity.businessName = domain.getPersonNameGroup().getBusinessName().v();
+		entity.businessNameKana = domain.getPersonNameGroup().getBusinessNameKana().v();
+		entity.oldName = domain.getPersonNameGroup().getOldName().getFullName().v();
+		entity.oldNameKana = domain.getPersonNameGroup().getOldName().getFullNameKana().v();
+		entity.personRomanji = domain.getPersonNameGroup().getPersonRomanji().getFullName().v();
+		entity.personRomanjiKana = domain.getPersonNameGroup().getPersonRomanji().getFullNameKana().v();
+		entity.todokedeFullName = domain.getPersonNameGroup().getTodokedeFullName().getFullName().v();
+		entity.todokedeFullNameKana = domain.getPersonNameGroup().getTodokedeFullName().getFullNameKana().v();
+		entity.perNameMultilLang = domain.getPersonNameGroup().getPersonalNameMultilingual() == null ? ""
+				: domain.getPersonNameGroup().getPersonalNameMultilingual().getFullName().v();
+		entity.perNameMultilLangKana = domain.getPersonNameGroup().getPersonalNameMultilingual().getFullNameKana()
+				.v();
 	}
 
 	/*

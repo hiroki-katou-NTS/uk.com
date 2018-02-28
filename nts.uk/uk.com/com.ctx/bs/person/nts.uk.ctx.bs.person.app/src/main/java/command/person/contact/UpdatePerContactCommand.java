@@ -1,7 +1,11 @@
 package command.person.contact;
 
+import java.util.List;
+
 import lombok.Getter;
+import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.PeregItemValues;
 import nts.uk.shr.pereg.app.PeregRecordId;
 
 @Getter
@@ -42,4 +46,7 @@ public class UpdatePerContactCommand{
 	
 	@PeregItem("IS00270")
 	private String memo2;
+	
+	@PeregItemValues
+	private List<ItemValue> items;
 }

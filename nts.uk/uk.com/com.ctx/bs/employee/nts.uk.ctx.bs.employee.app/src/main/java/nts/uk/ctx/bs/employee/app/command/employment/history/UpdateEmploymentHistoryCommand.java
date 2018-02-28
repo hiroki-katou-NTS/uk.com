@@ -1,11 +1,14 @@
 package nts.uk.ctx.bs.employee.app.command.employment.history;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.PeregItemValues;
 import nts.uk.shr.pereg.app.PeregRecordId;
 
 @Getter
@@ -35,4 +38,7 @@ public class UpdateEmploymentHistoryCommand{
 	
 	@PeregItem("IS00067")
 	private GeneralDate endDate;
+	
+	@PeregItemValues
+	private List<ItemValue> items;
 }

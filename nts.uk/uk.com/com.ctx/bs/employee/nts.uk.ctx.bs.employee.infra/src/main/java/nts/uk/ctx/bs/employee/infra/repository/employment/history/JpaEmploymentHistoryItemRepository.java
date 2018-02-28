@@ -20,11 +20,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem_;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist_;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
 
 @Stateless
 public class JpaEmploymentHistoryItemRepository extends JpaRepository implements EmploymentHistoryItemRepository {
@@ -92,12 +90,8 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	 * @param entity
 	 */
 	private void updateEntity(EmploymentHistoryItem domain, BsymtEmploymentHistItem entity) {
-		if (domain.getEmploymentCode() != null && !domain.getEmploymentCode().v().equals("")){
-			entity.empCode = domain.getEmploymentCode().v();
-		}
-		if (domain.getSalarySegment() != null){
-			entity.salarySegment = domain.getSalarySegment().value;
-		}
+		entity.empCode = domain.getEmploymentCode().v();
+		entity.salarySegment = domain.getSalarySegment().value;
 	}
 
 	@Override
