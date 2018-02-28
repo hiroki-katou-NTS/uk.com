@@ -1,0 +1,20 @@
+.label-action {
+	margin-bottom: 10px;
+}
+
+#contents-area{
+	margin:0px 150px 20px 150px;
+}
+
+.image-left{
+	float: left;
+	margin-right: 20px;
+}
+.image-right{
+	float: right;
+	margin-right: 20px;
+}
+
+.clear {
+	clear: both;
+}

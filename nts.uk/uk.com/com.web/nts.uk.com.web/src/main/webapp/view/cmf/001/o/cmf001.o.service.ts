@@ -15,7 +15,6 @@ module nts.uk.com.view.cmf001.o {
         };        
         
         export function getTotalRecord(fileId: string): JQueryPromise<any> { 
-            debugger;
             let _path = format(paths.getFileInfo, fileId);
             return ajax('com', _path);
         };

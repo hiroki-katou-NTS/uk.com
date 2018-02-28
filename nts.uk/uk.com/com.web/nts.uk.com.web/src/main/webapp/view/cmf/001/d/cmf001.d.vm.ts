@@ -72,6 +72,9 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 new model.ExternalAcceptanceCategoryItemData('012', 'Item 12'),
                 new model.ExternalAcceptanceCategoryItemData('013', 'Item 13') 
             ]);
+            
+            self.selectedDataType = setShared("selectedDataType");
+            
             self.selectedCategoryItem = ko.observable('001');
             $("#fixed-table").ntsFixedTable({ height: 540 });
             
