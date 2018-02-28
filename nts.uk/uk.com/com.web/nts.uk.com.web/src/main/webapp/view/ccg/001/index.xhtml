@@ -28,50 +28,116 @@
 		</ui:define>
 
 		<ui:define name="content">
+			<div id="functions-area"></div>
 			<div id="contents-area">
 				<div id="side-menu" class="cf"></div>
 				<div id="content" class="cf">
+					<div id="com-ccg001"></div>
 					<h1>CCG001 社員範囲選択 （共通部品） Employee range selection</h1>
-					<h2>Overview</h2>
-					<div id="ccgcomponent"></div>
-					<div class="pull-left left-options" style="margin-right: 100px">
-						<div data-bind="ntsCheckBox:{checked: isQuickSearchTab}">Show/hide
-							tab クイック検索</div>
-						<br />
-						<div data-bind="ntsCheckBox:{checked: isAdvancedSearchTab}">Show/hide
-							tab 詳細検索タブ</div>
-						<br />
-						<div data-bind="ntsCheckBox:{checked: isAllReferableEmployee}">Show/hide
-							button 参照可能な社員すべて</div>
-						<br />
-						<div data-bind="ntsCheckBox:{checked: isOnlyMe}">Show/hide
-							button 自分だけ</div>
-						<br />
+					<div class="table" style="margin-left: 100px; margin-bottom:  30px;">
+					<br/>
+					<button class="large" data-bind="click: reloadCcg001">Reload Component</button>
+					<div style="display: table-row">
+						<div class="cell" style="width: 500px">
+						<h2>Common properties:</h2>
+						<div data-bind="ntsCheckBox:{checked: isSelectAllEmployee}">Show EmployeeList (検索タイプ)</div><br/>
+						<div style="display: flex; padding: 5px;">
+							<div data-bind="ntsFormLabel: {}">SystemType (システム区分):</div>
+							<div tabindex="2" data-bind="ntsComboBox: {
+										name: '#[CCG001_28]',
+										options: systemTypes,
+										optionsValue: 'value',
+										value: systemType,
+										optionsText: 'name',
+										editable: false,
+										enable: true,
+										columns: [
+											{ prop: 'name', length: 5 },
+										]}"></div>
+						</div>
+						<div data-bind="ntsCheckBox:{checked: isQuickSearchTab}">Show QuickSearch (クイック検索)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: isAdvancedSearchTab}">Show AdvancedSearch (詳細検索タブ)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: showBaseDate}">Show BaseDate (基準日利用)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: showClosure}">Show Closure (就業締め日利用)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: showAllClosure}">Show All Closure (全締め表示)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: showPeriod}">Show Period (対象期間利用)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: periodFormatYM}">Show period format: YM(対象期間精度)</div><br/>
+						</div>
+						<div class="cell" style="width: 500px">
+							<h2>Required param properties:</h2>
+						<div style="padding-bottom: 5px;">
+							<div data-bind="ntsFormLabel: {}">Base Date:</div> 
+							<div class="ccg-sample-has-error" data-bind="ntsDatePicker: {
+											required: true,
+											dateFormat: 'YYYY/MM/DD',
+											value: baseDate }"></div><br/></div>
+						<com:ko tag="ifnot" bind="periodFormatYM">
+							<div style="padding-bottom: 5px;">
+								<div data-bind="ntsFormLabel: {}">Period start:</div>  
+								<div class="ccg-sample-has-error" data-bind="ntsDatePicker: {
+												required: true,
+												dateFormat: 'YYYY/MM/DD',
+												value: periodStartDate }"></div><br/>
+							</div>
+							<div style="padding-bottom:  5px;">
+								<div data-bind="ntsFormLabel: {}">Period end:</div>  
+								<div class="ccg-sample-has-error" data-bind="ntsDatePicker: {
+												required: true,
+												dateFormat: 'YYYY/MM/DD',
+												value: periodEndDate }"></div><br/>
+							</div>
+						</com:ko>
+						<com:ko tag="if" bind="periodFormatYM">
+							<div style="padding-bottom:  5px;">
+								<div data-bind="ntsFormLabel: {}">Period start:</div>
+								<div class="ccg-sample-has-error" data-bind="ntsDatePicker: {
+												required: true,
+												dateFormat: 'YYYY/MM',
+												value: periodStartDate }"></div><br/>
+							</div>
+							<div style="padding-bottom:  5px;">
+								<div data-bind="ntsFormLabel: {}">Period end:</div>  
+								<div class="ccg-sample-has-error" data-bind="ntsDatePicker: {
+												required: true,
+												dateFormat: 'YYYY/MM',
+												value: periodEndDate }"></div><br/>
+							</div>
+						</com:ko>
+						<div data-bind="ntsCheckBox:{checked: inService}">In service (在職区分)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: leaveOfAbsence}">Leave of absence (休職区分)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: closed}">Close (休業区分)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: retirement}">Retirement (退職区分)</div><br/>
+						</div>
 					</div>
-					<div class="right-options">
-						<div data-bind="ntsCheckBox:{checked: isEmployeeOfWorkplace}">Show/hide
-							button おなじ職場の社員</div>
-						<br />
-						<div data-bind="ntsCheckBox:{checked: isEmployeeWorkplaceFollow}">Show/hide
-							button おなじ＋配下の職場の社員</div>
-						<br />
-						<div data-bind="ntsCheckBox:{checked: isMutipleCheck}">Enable/disable
-							multiple selection</div>
-						<br />
-						<div data-bind="ntsCheckBox:{checked: isSelectAllEmployee}">Show
-							全社員タイプ / 社員指定タイプ</div>
+					<div style="display: table-row">
+					<div class="cell">
+						<h2>Quick search properties:</h2>
+						<div data-bind="ntsCheckBox:{checked: isAllReferableEmployee}">Show AllReferableEmployee (参照可能な社員すべて)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: isOnlyMe}">Show Only me (自分だけ)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: isEmployeeOfWorkplace}">Show Employee of workplace (同じ職場の社員)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: isEmployeeWorkplaceFollow}">Show Employee of workplace follow (同じ職場とその配下の社員)</div><br/>
+						</div>
+						<div class="cell">
+						<h2>Advanced search properties:</h2>
+						<div data-bind="ntsCheckBox:{checked: showEmployment}">Show Employment (雇用条件)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: showWorkplace}">Show workplace (職場条件)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: showClassification}">Show classification (分類条件)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: showJobTitle}">Show jobtitle (職位条件)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: showWorktype}">Show worktype (勤種条件)</div><br/>
+						<div data-bind="ntsCheckBox:{checked: isMutipleCheck}">Enable multiple selection (選択モード)</div><br/>
+					</div>
+					</div>
 					</div>
 					<hr />
+					<com:ko tag="if" bind="selectedEmployee().length > 0">
 					<div style="margin-left: 100px;">
 						<div class="labelselect">List data returned:</div>
-						<div style="min-height: 370px">
+						<div style="min-height: 30px">
 							<table>
 								<tr>
 									<td><b>EmployeeId</b></td>
 									<td><b>EmployeeCode</b></td>
 									<td><b>EmployeeName</b></td>
-									<td><b>WorkplaceId</b></td>
-									<td><b>WorkplaceCode</b></td>
 									<td><b>WorkplaceName</b></td>
 								</tr>
 								<com:ko-foreach bind="selectedEmployee">
@@ -79,265 +145,250 @@
 										<td data-bind="text: employeeId"></td>
 										<td data-bind="text: employeeCode"></td>
 										<td data-bind="text: employeeName"></td>
-										<td data-bind="text: workplaceId"></td>
-										<td data-bind="text: workplaceCode"></td>
 										<td data-bind="text: workplaceName"></td>
 									</tr>
 								</com:ko-foreach>
 							</table>
 						</div>
 					</div>
+					<hr />
+					</com:ko>
 
-					<article class="cf">
+					<article class="cf" style="margin-left: 100px">
 						<div class="tabs">
 							<ol>
-								<li><a href="#tabs-html">HTML Binding</a></li>
-								<li><a href="#tabs-viewmodel">ViewModel</a></li>
+								<li><a href="#tabs-html">Usage</a></li>
+								<li><a href="#tabs-viewmodel">API</a></li>
 							</ol>
 							<div id="tabs-html" class="cf">
 								<h2>HTML</h2>
-								<p>
-									To use this component, you must include following line in <i>&lt;ui:define
-										name="htmlHead"&gt;</i>
-								</p>
 								<pre>
-									<![CDATA[<ui:define name="htmlHead">
+<![CDATA[<ui:define name="htmlHead">
+	// Must included in header
 	<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 	<com:scriptfile set="IGNITE" />
 	<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 	<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 	<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 	<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+
+	// The component container
+	<div id="com-ccg001"></div>
 </ui:define>]]>
 </pre>
-								<p>The component.</p>
+<h2>TypeScript</h2>
 								<pre>
-									<![CDATA[<div id="ccgcomponent"></div>]]>
+<![CDATA[// Set component option
+self.ccg001ComponentOption = {
+	/** Common properties */
+	systemType: self.systemType(), // システム区分
+	showEmployeeSelection: self.isSelectAllEmployee(), // 検索タイプ
+	showQuickSearchTab: self.isQuickSearchTab(), // クイック検索
+	showAdvancedSearchTab: self.isAdvancedSearchTab(), // 詳細検索
+	showBaseDate: self.showBaseDate(), // 基準日利用
+	showClosure: self.showClosure(), // 就業締め日利用
+	showAllClosure: self.showAllClosure(), // 全締め表示
+	showPeriod: self.showPeriod(), // 対象期間利用
+	periodFormatYM: self.periodFormatYM(), // 対象期間精度
+	
+	/** Required parameter */
+	baseDate: moment(self.baseDate()).format("YYYY-MM-DD"), // 基準日
+	periodStartDate: periodStartDate, // 対象期間開始日
+	periodEndDate: periodEndDate, // 対象期間終了日
+	inService: self.inService(), // 在職区分
+	leaveOfAbsence: self.leaveOfAbsence(), // 休職区分
+	closed: self.closed(), // 休業区分
+	retirement: self.retirement(), // 退職区分
+	
+	/** Quick search tab options */
+	showAllReferableEmployee: self.isAllReferableEmployee(), // 参照可能な社員すべて
+	showOnlyMe: self.isOnlyMe(), // 自分だけ
+	showSameWorkplace: self.isEmployeeOfWorkplace(), // 同じ職場の社員
+	showSameWorkplaceAndChild: self.isEmployeeWorkplaceFollow(), // 同じ職場とその配下の社員
+	
+	/** Advanced search properties */
+	showEmployment: self.showEmployment(), // 雇用条件
+	showWorkplace: self.showWorkplace(), // 職場条件
+	showClassification: self.showClassification(), // 分類条件
+	showJobTitle: self.showJobTitle(), // 職位条件
+	showWorktype: self.showWorktype(), // 勤種条件
+	isMutipleCheck: self.isMutipleCheck(), // 選択モード
+	
+	/** Return data */
+	returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+	    self.selectedEmployee(data.listEmployee);
+	}
+}
+
+// Start component
+$('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);]]>
 								</pre>
-								<p>The data to display.</p>
-								<pre>
-									<![CDATA[<div data-bind="if: showinfoSelectedEmployee()">
-	<br/>
-	<div class="labelselect">List data returned:</div>
-	<br/> 
-	<table>
-		<tr>
-			<td><b>EmployeeId</b></td>
-			<td><b>EmployeeCode</b></td>
-			<td><b>EmployeeName</b></td>
-			<td><b>WorkplaceId</b></td>
-			<td><b>WorkplaceCode</b></td>
-			<td><b>WorkplaceName</b></td>
-		</tr>
-		<com:ko-foreach bind="selectedEmployee">
-			<tr>
-				<td data-bind="text: employeeId"></td>
-				<td data-bind="text: employeeCode"></td>
-				<td data-bind="text: employeeName"></td>
-				<td data-bind="text: workplaceId"></td>
-				<td data-bind="text: workplaceCode"></td>
-				<td data-bind="text: workplaceName"></td>
-			</tr>
-		</com:ko-foreach>
-	</table>
-</div>]]>
-</pre>
 							</div>
 							<div id="tabs-viewmodel" class="cf">
-								<h2>TypeScript</h2>
-								<pre>
-									<![CDATA[export interface EmployeeSearchDto {
-	employeeId: string;
-	
-	employeeCode: string;
-	
-	employeeName: string;
-	
-	workplaceCode: string;
-	
-	workplaceId: string;
-	
-	workplaceName: string;
-}
-
-export interface GroupOption {
-    baseDate?: KnockoutObservable<Date>;
-    // クイック検索タブ
-    isQuickSearchTab: boolean;
-    // 参照可能な社員すべて
-    isAllReferableEmployee: boolean;
-    //自分だけ
-    isOnlyMe: boolean;
-    //おなじ部門の社員
-    isEmployeeOfWorkplace: boolean;
-    //おなじ＋配下部門の社員
-    isEmployeeWorkplaceFollow: boolean;
-
-    
-    // 詳細検索タブ
-    isAdvancedSearchTab: boolean;
-    //複数選択 
-    isMutipleCheck: boolean;
-    
-    //社員指定タイプ or 全社員タイプ
-    isSelectAllEmployee: boolean;
-
-    onSearchAllClicked: (data: EmployeeSearchDto[]) => void;
-
-    onSearchOnlyClicked: (data: EmployeeSearchDto) => void;
-    
-    onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
-    
-    onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
-    
-    onApplyEmployee: (data: EmployeeSearchDto[]) => void;
-}
-    export class ScreenModel {
-        ccgcomponent: GroupOption;
-        showinfoSelectedEmployee: KnockoutObservable<boolean>;
-
-        // Options
-        baseDate: KnockoutObservable<Date>;
-        selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
-        
-		constructor() {
-			var self = this;
-			self.selectedEmployee = ko.observableArray([]);
-			self.showinfoSelectedEmployee = ko.observable(false);
-			self.baseDate = ko.observable(new Date());
-			
-            self.ccgcomponent = {
-               baseDate: self.baseDate,
-               //Show/hide options
-               isQuickSearchTab: true,
-               isAdvancedSearchTab: true,
-               isAllReferableEmployee: true,
-               isOnlyMe: true,
-               isEmployeeOfWorkplace: true,
-               isEmployeeWorkplaceFollow: true,
-               isMutipleCheck: true,
-               isSelectAllEmployee: true,
-               /**
-               * @param dataList: list employee returned from component.
-               * Define how to use this list employee by yourself in the function's body.
-               */
-               onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
-                   self.showinfoSelectedEmployee(true);
-                   self.selectedEmployee(dataList);
-               },
-               onSearchOnlyClicked: function(data: EmployeeSearchDto) {
-                   self.showinfoSelectedEmployee(true);
-                   var dataEmployee: EmployeeSearchDto[] = [];
-                   dataEmployee.push(data);
-                   self.selectedEmployee(dataEmployee);
-               },
-               onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
-                   self.showinfoSelectedEmployee(true);
-                   self.selectedEmployee(dataList);
-               },
-               onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
-                   self.showinfoSelectedEmployee(true);
-                   self.selectedEmployee(dataList);
-               },
-               onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
-                   self.showinfoSelectedEmployee(true);
-                   self.selectedEmployee(dataEmployee);
-               }
-
-           } 
-           
-           $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
-      }
- }]]>
-								</pre>
-								<h2>API</h2>
-								<table>
+								<h2>Component Properties</h2>
+								<table class="table">
 									<colgroup>
 										<col width="200px" />
 									</colgroup>
 									<thead>
 										<tr>
-											<th><h4>Binding</h4></th>
+											<th><h4>Name</h4></th>
+											<th><h4>Description</h4></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>isSelectAllEmployee</td>
+											<td><b>Type:</b> boolean<br /> Show KCP005</td>
+										</tr>
+										<tr>
+											<td>systemType</td>
+											<td><b>Type:</b> number<br /> Current system type</td>
+										</tr>
+										<tr>
+											<td>isQuickSearchTab</td>
+											<td><b>Type:</b> boolean<br /> Show quick search tab</td>
+										</tr>
+										<tr>
+											<td>isAdvancedSearchTab</td>
+											<td><b>Type:</b> boolean<br /> Show advanced search tab</td>
+										</tr>
+										<tr>
+											<td>showBaseDate</td>
+											<td><b>Type:</b> boolean<br /> Show reference date</td>
+										</tr>
+										<tr>
+											<td>showClosure</td>
+											<td><b>Type:</b> boolean<br /> Show closure selection</td>
+										</tr>
+										<tr>
+											<td>showAllClosure</td>
+											<td><b>Type:</b> boolean<br /> Show select all closure option</td>
+										</tr>
+										<tr>
+											<td>showPeriod</td>
+											<td><b>Type:</b> boolean<br /> Show search period</td>
+										</tr>
+										<tr>
+											<td>periodFormatYM</td>
+											<td><b>Type:</b> boolean<br /> Search period format is year/month(true) or year/month/date(false)</td>
+										</tr>
+										<tr>
+											<td>baseDate<br/><i>(required if showBaseDate = true)</i></td>
+											<td><b>Type:</b> string(ISO 8601 Formats)<br /> Search reference date</td>
+										</tr>
+										<tr>
+											<td>periodStartDate<br/><i>(required if showPeriod = true)</i></td>
+											<td><b>Type:</b> string(ISO 8601 Formats)<br /> Search start date</td>
+										</tr>
+										<tr>
+											<td>periodEndDate<br/><i>(required if showPeriod = true)</i></td>
+											<td><b>Type:</b> string(ISO 8601 Formats)<br /> Search end date</td>
+										</tr>
+										<tr>
+											<td>inService</td>
+											<td><b>Type:</b> boolean<br /> Employee status: inService</td>
+										</tr>
+										<tr>
+											<td>leaveOfAbsence</td>
+											<td><b>Type:</b> boolean<br /> Employee status: leaveOfAbsence</td>
+										</tr>
+										<tr>
+											<td>closed</td>
+											<td><b>Type:</b> boolean<br /> Employee status: closed</td>
+										</tr>
+										<tr>
+											<td>retirement</td>
+											<td><b>Type:</b> boolean<br />Employee status: retirement</td>
+										</tr>
+										<tr>
+											<td>isAllReferableEmployee</td>
+											<td><b>Type:</b> boolean<br />Show button
+												参照可能な社員すべて</td>
+										</tr>
+										<tr>
+											<td>isOnlyMe</td>
+											<td><b>Type:</b> boolean<br /> Show button 自分だけ</td>
+										</tr>
+										<tr>
+											<td>isEmployeeOfDepartment</td>
+											<td><b>Type:</b> boolean<br /> Show/ button
+												おなじ職場の社員</td>
+										</tr>
+										<tr>
+											<td>isEmployeeDepartmentFollow</td>
+											<td><b>Type:</b> boolean<br /> Show button
+												おなじ＋配下の職場の社員</td>
+										</tr>
+										<tr>
+											<td>showEmployment</td>
+											<td><b>Type:</b> boolean<br /> Show filter by employment</td>
+										</tr>
+										<tr>
+											<td>showWorkplace</td>
+											<td><b>Type:</b> boolean<br /> Show filter by workplace</td>
+										</tr>
+										<tr>
+											<td>showClassification</td>
+											<td><b>Type:</b> boolean<br /> Show filter by classification</td>
+										</tr>
+										<tr>
+											<td>showJobTitle</td>
+											<td><b>Type:</b> boolean<br /> Show filter by job title</td>
+										</tr>
+										<tr>
+											<td>showWorktype</td>
+											<td><b>Type:</b> boolean<br /> Show filter by work type</td>
+										</tr>
+										<tr>
+											<td>isMutipleCheck</td>
+											<td><b>Type:</b> boolean<br /> Enable multiple
+												selection in KCP005</td>
+										</tr>
+										<tr>
+											<td>returnDataFromCcg001</td>
+											<td><b>Type:</b> function<br />
+											<b>Param:</b> output data<br/>Output data function</td>
+										</tr>
+									</tbody>
+								</table>
+								<h2>Component data output</h2>
+								<table class="table">
+									<colgroup>
+										<col width="200px" />
+									</colgroup>
+									<thead>
+										<tr>
+											<th><h4>Name</h4></th>
 											<th><h4>Description</h4></th>
 										</tr>
 									</thead>
 									<tbody>
 										<tr>
 											<td>baseDate</td>
-											<td><b>Type:</b> KnockoutObservable&lt;Date&gt;<br />Current
-												selected date</td>
+											<td><b>Type:</b> string(ISO 8601 Formats)<br /> Search reference date</td>
 										</tr>
 										<tr>
-											<td>isQuickSearchTab</td>
-											<td><b>Type:</b> boolean<br /> Show/hide tab クイック検索</td>
+											<td>closureId</td>
+											<td><b>Type:</b> number<br /> Selected closure id</td>
 										</tr>
 										<tr>
-											<td>isAllReferableEmployee</td>
-											<td><b>Type:</b> boolean<br />Show/hide button
-												参照可能な社員すべて</td>
+											<td>periodStart</td>
+											<td><b>Type:</b> string(ISO 8601 Formats)<br /> Period start date</td>
 										</tr>
 										<tr>
-											<td>isOnlyMe</td>
-											<td><b>Type:</b> boolean<br /> Show/hide button 自分だけ</td>
+											<td>periodEnd</td>
+											<td><b>Type:</b> string(ISO 8601 Formats)<br /> Period end date</td>
 										</tr>
 										<tr>
-											<td>isEmployeeOfDepartment</td>
-											<td><b>Type:</b> boolean<br /> Show/hide button
-												おなじ職場の社員</td>
-										</tr>
-										<tr>
-											<td>isEmployeeDepartmentFollow</td>
-											<td><b>Type:</b> boolean<br /> Show/hide button
-												おなじ＋配下の職場の社員</td>
-										</tr>
-										<tr>
-											<td>isAdvancedSearchTab</td>
-											<td><b>Type:</b> boolean<br /> Show/hide tab 詳細検索タブ</td>
-										</tr>
-										<tr>
-											<td>isMutipleCheck</td>
-											<td><b>Type:</b> boolean<br /> Enable/disable multiple
-												selection</td>
-										</tr>
-										<tr>
-											<td>isSelectAllEmployee</td>
-											<td><b>Type:</b> boolean<br /> true => 全社員タイプ <br />
-												false => 社員指定タイプ</td>
-										</tr>
-										<tr>
-											<td>onSearchAllClicked</td>
-											<td><b>Type:</b> function<br /> Event on click button
-												参照可能な社員すべて</td>
-										</tr>
-										<tr>
-											<td>onSearchOnlyClicked</td>
-											<td><b>Type:</b> function<br /> Event on click button
-												自分だけ</td>
-										</tr>
-										<tr>
-											<td>onSearchOfWorkplaceClicked</td>
-											<td><b>Type:</b> function<br /> Event on click button
-												おなじ職場の社員</td>
-										</tr>
-										<tr>
-											<td>onSearchWorkplaceChildClicked</td>
-											<td><b>Type:</b> function<br /> Event on click button
-												おなじ＋配下の職場の社員</td>
-										</tr>
-										<tr>
-											<td>onApplyEmployee</td>
-											<td><b>Type:</b> function<br /> Event on click button
-												社員を選択する</td>
+											<td>listEmployee</td>
+											<td><b>Type:</b> Array&lt;EmployeeDto&gt;<br /> List employee dto</td>
 										</tr>
 									</tbody>
 								</table>
 							</div>
 						</div>
 					</article>
-					<div class="footer cf">
-						<button class="previous large">Previous</button>
-						<button class="next proceed large">Next</button>
-					</div>
 				</div>
 			</div>
 		</ui:define>

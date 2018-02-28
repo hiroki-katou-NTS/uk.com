@@ -12,10 +12,6 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDire
 @AllArgsConstructor
 public class GoBackDirectlyCommonSettingCommand {
 	/**
-	 * 会社ID
-	 */
-	private String companyID;
-	/**
 	 * 勤務変更
 	 */
 	private int workChangeFlg;

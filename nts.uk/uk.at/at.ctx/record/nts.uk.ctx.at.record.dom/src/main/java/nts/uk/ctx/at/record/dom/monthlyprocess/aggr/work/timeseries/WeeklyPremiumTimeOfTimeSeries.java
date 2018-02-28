@@ -25,4 +25,12 @@ public class WeeklyPremiumTimeOfTimeSeries {
 		this.ymd = ymd;
 		this.weeklyPremiumTime = new AttendanceTimeMonth(0);
 	}
+
+	/**
+	 * 週割増時間に分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinutesToWeeklyPremiumTime(int minutes){
+		this.weeklyPremiumTime = this.weeklyPremiumTime.addMinutes(minutes);
+	}
 }

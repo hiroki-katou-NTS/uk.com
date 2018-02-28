@@ -21,13 +21,17 @@ public class SelectionItemOrderDto {
 	private String selectionCD;
 	private String externalCD;
 	private String memoSelection;
+	private int codeType;
 
-	public static SelectionItemOrderDto fromSelectionOrder(SelectionItemOrder domain, Selection selectionDomain) {
+	public static SelectionItemOrderDto fromSelectionOrder(SelectionItemOrder domain, Selection selectionDomain,
+			int codeType) {
 		return new SelectionItemOrderDto(domain.getSelectionID(), domain.getHistId(), domain.getDisporder().v(),
 				domain.getInitSelection().value,
 				selectionDomain != null ? selectionDomain.getSelectionName().v() : null,
 				selectionDomain != null ? selectionDomain.getSelectionCD().v() : null,
 				selectionDomain != null ? selectionDomain.getExternalCD().v() : null,
-				selectionDomain != null ? selectionDomain.getMemoSelection().v() : null);
+				selectionDomain != null ? selectionDomain.getMemoSelection().v() : null, 
+				codeType);
 	}
+
 }

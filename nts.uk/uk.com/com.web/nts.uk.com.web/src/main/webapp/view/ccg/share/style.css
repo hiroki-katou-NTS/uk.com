@@ -15,13 +15,10 @@
 }
 
 .contentkcp {
-	min-height: 350px;
-	padding-top: 8px !important;
 	padding-left: 10px !important;
 }
 
 .contentkcpWorkplace {
-	min-height: 475px;
 	padding-top: 8px !important;
 	padding-left: 10px !important;
 }
@@ -75,24 +72,6 @@
 	background-color: #2BBF6A;
 }
 
-.btn_apply {
-	width: 100%;
-	height: 25px;
-	text-align: center;
-	background-color: #2ECC71;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	margin-top: 5px;
-	margin-bottom: 5px;
-	color: white;
-	display: inline-block;
-	cursor: pointer;
-}
-
-.btn_apply:hover {
-	background-color: #2BBF6A;
-}
-
 .caret-background.caret-bottom:after {
 	left: 36%;
 	color: #AEEE60;
@@ -107,6 +86,7 @@
 
 #workplaceList {
 	float: left;
+	width: 420px;
 }
 
 #btnDetailWorkplace {
@@ -156,67 +136,82 @@
 	margin-left: 20px;
 }
 
-.ccg_tab_content_2 {
-	overflow-y: scroll;
-	height: 600px;
+.ccg001-content {
+	background-color: #F2F2F2;
+	overflow: hidden;
+	height: calc(100% - 15px);
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	padding-top: 15px;
 }
 
-.ccg_tab_content_1 {
-	height: 600px;
+.ccg001-control-group {
+	margin-left: 5px;
 }
-
+.ccg001-label {
+	width: 85px;
+}
 .ccg-tabpanel #tab-1 {
 	background-color: white;
 }
 
 .ccg-tabpanel #tab-2 {
 	background-color: white;
-	padding-right: 5px;
+	padding-right: 8px;
 }
 
-#ccg-component {
+#component-ccg001 {
 	z-index: 999;
-	position: absolute;
-}
-
-#hor-scroll-button-show {
-	margin-top: 180px;
+	position: fixed;
+	overflow: hidden;
 }
 
 #hor-scroll-button-hide {
 	z-index: 998;
-	position: absolute;
-	margin-top: 180px;
+	position: fixed;
+	display: table;
 }
 
 .icon-01-searchmode {
-	margin-left: 8px;
 	background: url(icon/01_ShowHideSearch.png);
 	width: 25px;
 	height: 25px;
 	background-size: 25px 25px;
-	margin-top: 110px;
 	cursor: pointer;
 }
-
-.btn_apply .icon-01-searchmode {
-	background: url(icon/01_ShowHideSearch.png);
-	width: 25px;
-	height: 25px;
-	background-size: 25px 25px;
-	margin-top: 0px;
-	margin-right: 10px;
-	cursor: pointer;
+.icon-28-expand {
+	background: url(icon/28.png);
+	width: 22px;
+	height: 22px;
+	background-size: 22px 22px;
+	margin-right: 5px;
+}
+.icon-29-collapse {
+	background: url(icon/29.png);
+	width: 22px;
+	height: 22px;
+	background-size: 22px 22px;
+	margin-right: 5px;
+}
+.icon-47-white-check-mark {
+	background: url(icon/47.png);
+	width: 30px;
+	height: 30px;
+	background-size: 30px 30px;
 }
 
-.labelShowHideButton {
+.ccg-lbl-vertical {
+	width: 40px;
 	cursor: pointer;
-	font-size: 16pt;
-	vertical-align: super;
-	line-height: 38px;
+	font-size: 18pt;
 	writing-mode: vertical-lr;
 	-ms-writing-mode: tb-lr;
-	text-orientation: upright;
+}
+.ccg-lbl-search-drawer {
+	height: 96px;
+}
+.ccg-lbl-extract-emp {
+	height: 50px;
 }
 
 .controlSettingShowHide.caret-right:after {
@@ -226,34 +221,47 @@
 	margin-bottom: 90px;
 }
 
-.btn_showhide {
-	width: 50px;
+.ccg-btn-vertical {
 	background-color: #2ECC71;
 	padding-left: 8px;
 	color: white;
 	border-top-right-radius: 5px;
 	border-bottom-right-radius: 5px;
-	display: inline-block;
-	height: 370px;
+	display: table;
 	cursor: pointer;
 }
-
-.lbl-apply {
-	font-size: 16px;
-	margin-top: 1px;
-	cursor: pointer;
-	vertical-align: super;
+.ccg-caret.caret-right:after {
+	color: #2ECC71;
+	border-width: 32px 16px;
+	margin-left: 5px;
 }
-
 .ccg-tabpanel #nts-component-list {
 	padding: 0px !important;
 }
 
-#employeeinfo {
-	margin-top: 30px;
+#ccg001-btn-apply-search-condition {
+	margin-bottom: 14px;
+	margin-left: 10px;
 }
-
+.margin-left-10 {
+	margin-left: 10px;
+}
 .ccg-tabpanel {
 	background-color: #F2F2F2;
 	border-radius: 5px;
+}
+.height-maximum {
+	height: 100%;
+}
+.ccg001-table {
+	display: table;
+}
+.ccg001-cell {
+	display: table-cell;
+}
+.ccg001-cell.mid {
+	vertical-align: middle;
+}
+.ccg001-cell.bot {
+	vertical-align: bottom;
 }

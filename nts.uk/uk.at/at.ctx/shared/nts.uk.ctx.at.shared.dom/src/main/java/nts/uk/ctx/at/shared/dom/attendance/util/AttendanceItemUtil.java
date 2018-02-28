@@ -31,18 +31,18 @@ public class AttendanceItemUtil {
 	}
 
 	public static <T extends ConvertibleAttendanceItem> T fromItemValues(Class<T> classType,
-			List<ItemValue> attendanceItems) {
+			Collection<ItemValue> attendanceItems) {
 		T newObject = ReflectionUtil.newInstance(classType);
 		return fromItemValues(newObject, attendanceItems);
 	}
 
 	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems,
-			List<Integer> itemIds) {
+			Collection<Integer> itemIds) {
 		// return toItemValues(attendanceItems, "", itemIds, 0);
 		return getItemValues(attendanceItems, 0, "", "", "", 0, getItemMap(itemIds, null));
 	}
 
-	public static <T> T fromItemValues(T attendanceItems, List<ItemValue> itemValues) {
+	public static <T> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues) {
 		// return toItemValues(attendanceItems, "", itemIds, 0);
 		Map<Integer, ItemValue> itemMap = itemValues.stream().collect(Collectors.toMap(c -> c.itemId(), c -> c));
 		return fromItemValues(attendanceItems, 0, "", "", 0, false,

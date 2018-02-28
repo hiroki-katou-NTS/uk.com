@@ -3204,6 +3204,19 @@ var nts;
                     return dfd.promise();
                 }
                 file.donwload = donwload;
+                function liveViewUrl(fileId, entryName) {
+                    var liveViewPath = "/webapi/shr/infra/file/storage/liveview/";
+                    var locator = location.siteRoot
+                        .mergeRelativePath(request.WEB_APP_NAME.com + '/')
+                        .mergeRelativePath(liveViewPath);
+                    if (arguments.length === 1) {
+                        return locator.mergeRelativePath(fileId).serialize();
+                    }
+                    else if (arguments.length === 2) {
+                        return locator.mergeRelativePath(fileId + "/").mergeRelativePath(entryName).serialize();
+                    }
+                }
+                file.liveViewUrl = liveViewUrl;
                 function remove(fileId) {
                     return ajax("com", "/shr/infra/file/storage/delete/" + fileId);
                 }
@@ -3217,6 +3230,10 @@ var nts;
                 }
                 file.pathToGet = pathToGet;
             })(file = request.file || (request.file = {}));
+            function liveView(fileId) {
+                return file.liveViewUrl(fileId);
+            }
+            request.liveView = liveView;
             var specials;
             (function (specials) {
                 function getAsyncTaskInfo(taskId) {
@@ -3360,18 +3377,6 @@ var nts;
                 return destination.rawUrl;
             }
             request.resolvePath = resolvePath;
-            function liveView(webAppId, fileId) {
-                var liveViewPath = "/webapi/shr/infra/file/storage/liveview/";
-                if (typeof arguments[1] !== 'string') {
-                    return resolvePath(liveViewPath) + _.concat(location.currentAppId, arguments)[1];
-                }
-                var webserviceLocator = location.siteRoot
-                    .mergeRelativePath(request.WEB_APP_NAME[webAppId] + '/')
-                    .mergeRelativePath(liveViewPath);
-                var fullPath = webserviceLocator.serialize() + fileId;
-                return fullPath;
-            }
-            request.liveView = liveView;
             var location;
             (function (location) {
                 location.current = new Locator(window.location.href);
@@ -6119,6 +6124,20 @@ var nts;
                     $tabsContainer.trigger("change-tab", tabId);
                     return $target;
                 };
+                $.fn.ctState = function (name, method, value) {
+                    var $this = $(this);
+                    var dataName = {
+                        selected: "ctstate-selected",
+                        required: "ctstate-required",
+                        name: "ctstate-name"
+                    }[name];
+                    switch (method) {
+                        case "set":
+                            return $this.data(dataName, value);
+                        case "get":
+                            return $this.data(dataName);
+                    }
+                };
             })(jqueryExtentions = ui_3.jqueryExtentions || (ui_3.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -6566,7 +6585,10 @@ var nts;
                             container.igCombo("option", "dataSource", options);
                             container.igCombo("dataBind");
                         }
-                        if (selectedValue !== undefined && selectedValue !== null) {
+                        if (notSelected.get(container) || uk.util.isNullOrUndefined(selectedValue)) {
+                            container.igCombo("value", "");
+                        }
+                        else {
                             container.igCombo("value", selectedValue);
                         }
                         container.data("columns", _.cloneDeep(columns));
@@ -6592,7 +6614,6 @@ var nts;
                             }
                         }
                         if (notSelected.get(container)) {
-                            container.find("input").val("");
                         }
                     };
                     return ComboBoxBindingHandler;
@@ -9944,26 +9965,16 @@ var nts;
                             .attr("tabindex", tabIndex);
                         $grid2.ntsGridList('setupSelecting');
                         var $moveArea = $swap.find("#" + elementId + "-move-data")
-                            .append("<button class='move-button move-forward-all ntsSwap_Component'><i class='img-icon icon-next-all'></i></button>")
                             .append("<button class='move-button move-forward ntsSwap_Component'><i class='img-icon icon-next'></i></button>")
-                            .append("<button class='move-button move-back ntsSwap_Component'><i class='img-icon icon-prev'></i></button>")
-                            .append("<button class='move-button move-back-all ntsSwap_Component'><i class='img-icon icon-prev-all'></i></button>");
+                            .append("<button class='move-button move-back ntsSwap_Component'><i class='img-icon icon-prev'></i></button>");
                         var $moveForward = $moveArea.find(".move-forward");
-                        var $moveForwardAll = $moveArea.find(".move-forward-all");
                         var $moveBack = $moveArea.find(".move-back");
-                        var $moveBackAll = $moveArea.find(".move-back-all");
                         var swapper = this.swapper;
                         $moveForward.click(function () {
                             swapper.Model.move(true, data.value, false, beforeRight, afterRight);
                         });
                         $moveBack.click(function () {
                             swapper.Model.move(false, data.value, false, beforeLeft, afterLeft);
-                        });
-                        $moveForwardAll.click(function () {
-                            swapper.Model.move(true, data.value, true, beforeAllR, afterAllR);
-                        });
-                        $moveBackAll.click(function () {
-                            swapper.Model.move(false, data.value, true, beforeAllL, afterAllL);
                         });
                         $swap.find(".ntsSwap_Component").attr("tabindex", tabIndex);
                         this.swapper.Model.$container.bind("swaplistgridsizeexceed", function (evt, data) {
@@ -10674,7 +10685,6 @@ var nts;
                         if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
                             container.attr("tabindex", "0");
                         container.data("tabindex", container.attr("tabindex"));
-                        var container = $(element);
                         container.keydown(function (evt, ui) {
                             var code = evt.which || evt.keyCode;
                             if (code === 32) {
@@ -10712,6 +10722,15 @@ var nts;
                         });
                         // Default value.
                         var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
+                        container.bind("validate", function () {
+                            if (container.ctState("required", "get") && !container.ctState("selected", "get")) {
+                                container.ntsError("set", uk.resource.getMessage("FND_E_REQ_SELECT", [container.ctState("name", "get")]), "FND_E_REQ_SELECT");
+                            }
+                            else {
+                                container.ntsError("clear");
+                            }
+                        });
+                        ui.bindErrorStyle.useDefaultErrorClass(container);
                     };
                     /**
                      * Update
@@ -10731,6 +10750,8 @@ var nts;
                         var container = $(element);
                         container.data("enable", enable);
                         container.addClass("ntsControl switchButton-wrapper");
+                        container.ctState("required", "set", ko.unwrap(data.required) === true);
+                        container.ctState("name", "set", ko.unwrap(data.name));
                         // Remove deleted button.
                         $('button', container).each(function (index, btn) {
                             var $btn = $(btn);
@@ -10783,6 +10804,7 @@ var nts;
                     };
                     NtsSwitchButtonBindingHandler.setSelectedClass = function ($container, selectedCssClass, selectedValue, optValue) {
                         var targetBtn;
+                        $container.ctState("selected", "set", false);
                         $('button', $container).each(function (index, btn) {
                             var btnValue = $(btn).data('swbtn');
                             if (btnValue == optValue) {
@@ -10790,6 +10812,8 @@ var nts;
                             }
                             if (btnValue == selectedValue) {
                                 $(btn).addClass(selectedCssClass);
+                                $container.ctState("selected", "set", true);
+                                $container.ntsError("clear");
                             }
                             else {
                                 $(btn).removeClass(selectedCssClass);

@@ -12,7 +12,7 @@ __viewContext.ready(function () {
                 items: [
                     { cssClass: { className: 'bg-red', colorPropertyName: 'background-color' }, labelText: 'RED' },
                     { cssClass: { className: 'bg-green', colorPropertyName: 'background-color' }, labelText: 'GREEN' },
-                    { cssClass: { className: 'bg-blue', colorPropertyName: 'background-color' }, labelText: 'BLUE' }
+                    { cssClass: { className: 'bg-blue', colorPropertyName: 'background-color' }, symbolText: '○', labelText: 'BLUE' }
                 ]
             };
             this.legendWithTemplateOptions = {

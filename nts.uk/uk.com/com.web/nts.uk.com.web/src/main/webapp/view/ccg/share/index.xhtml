@@ -3,134 +3,331 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<div class="cf" id="ccg-component"
-		style="display: none; overflow: hidden;">
-		<div class="pull-left"
-			style="background-color: #F2F2F2; border-radius: 5px; overflow: hidden;">
-			<div class="control-group"
-				style="margin-left: 5px; margin-top: 20px; overflow: hidden;">
-				<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_1')}</div>
-				<div id="inp_baseDate" tabindex="1"
-					data-bind="ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name: '#[CCG001_1]',required: true }"></div>
-				<button tabindex="-1" id="btn_apply"
-					data-bind="click: applyDataSearch">#{i18n.getText('CCG001_2')}</button>
+	<div id="component-ccg001" class="cf height-maximum" style="visibility: hidden;">
+		<div class="pull-left ccg001-content">
+			<div id="ccg001-header" class="ccg001-table">
+				<div class="ccg001-cell">
+					<com:ko tag="if" bind="showBaseDate">
+						<div class="control-group ccg001-control-group">
+							<div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_27')}</div>
+							<div id="inp_baseDate" tabindex="1"
+								data-bind="ntsDatePicker: {
+								name: '#[CCG001_27]',
+								dateFormat: 'YYYY/MM/DD',
+								value: baseDate,
+								required: true }"></div>
+						</div>
+					</com:ko>
+					<com:ko tag="if" bind="showClosure">
+						<div class="control-group ccg001-control-group">
+							<div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_28')}</div>
+							<div id="cbb-closure" tabindex="2" style="display: inline-table"
+								data-bind="ntsComboBox: {
+									name: '#[CCG001_28]',
+									options: closureList,
+									optionsValue: 'closureId',
+									value: selectedClosure,
+									optionsText: 'closureName',
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'closureId', length: 1 },
+										{ prop: 'closureName', length: 5 },
+									]}"></div>
+						</div>
+					</com:ko>
+					<com:ko tag="if" bind="showPeriod">
+						<div class="control-group ccg001-control-group">
+							<div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_29')}</div>
+							<com:ko tag="ifnot" bind="showPeriodYM">
+								<div id="inp-period-startYMD" tabindex="3"
+									data-bind="ntsDatePicker: {
+										name: '#[CCG001_30]',
+										dateFormat: 'YYYY/MM/DD',
+										value: periodStart,
+										required: true }"></div>
+								<label>～</label>
+								<div id="inp-period-endYMD" tabindex="3"
+									data-bind="ntsDatePicker: {
+										name: '#[CCG001_31]',
+										dateFormat: 'YYYY/MM/DD',
+										value: periodEnd,
+										required: true }"></div>
+							</com:ko>
+							<com:ko tag="if" bind="showPeriodYM">
+								<div id="inp-period-startYM" tabindex="3"
+									data-bind="ntsDatePicker: {
+										name: '#[CCG001_30]',
+										dateFormat: 'YYYY/MM',
+										value: periodStart,
+										required: true }"></div>
+								<label>～</label>
+								<div id="inp-period-endYM" tabindex="3"
+									data-bind="ntsDatePicker: {
+										name: '#[CCG001_31]',
+										dateFormat: 'YYYY/MM',
+										value: periodEnd,
+										required: true }"></div>
+							</com:ko>
+						</div>
+					</com:ko>
+				</div>
+				<div class="ccg001-cell bot">
+					<button tabindex="5" id="ccg001-btn-apply-search-condition"
+						class="proceed caret-bottom" data-bind="enable: showApplyBtn, click: applyDataSearch">#{i18n.getText('CCG001_2')}</button>
+				</div>
 			</div>
-			<div tabindex="2" id="tab-panel" class="ccg-tabpanel pull-left"
-				data-bind="if: isQuickSearchTab||isAdvancedSearchTab, ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-				<com:ko tag="if" bind="isQuickSearchTab">
-					<div tabindex="-1" class="tab-content-1 ccg_tab_content_1">
-						<div tabindex="3" class="btn-quick-search"
-							data-bind="if: isAllReferableEmployee, click: searchAllEmployee">
+		<div tabindex="6" id="tab-panel" class="cf ccg-tabpanel pull-left"
+			data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+			<com:ko tag="if" bind="showQuickSearchTab">
+				<div tabindex="-1" class="tab-content-1">
+					<com:ko tag="if" bind="showAllReferableEmployee">
+						<div tabindex="7" class="btn-quick-search" data-bind="click: searchAllListEmployee">
 							<div class="flex valign-center btn_big">
-								<i class="icon icon-28-allemployee"></i> <label
-									class="labelBigButton">#{i18n.getText('CCG001_10')}</label>
+								<i class="icon icon-28-allemployee"></i>
+								<label class="labelBigButton">#{i18n.getText('CCG001_34')}</label> 
 							</div>
 							<span class="controlSettingBg caret-right"></span>
 						</div>
-						<div tabindex="4" class="btn-quick-search"
-							data-bind="if: isOnlyMe, click: getEmployeeLogin">
+					</com:ko>
+					<com:ko tag="if" bind="showOnlyMe">
+						<div tabindex="8" class="btn-quick-search" data-bind="click: getEmployeeLogin">
 							<div class="flex valign-center btn_big">
-								<i class="icon icon-26-onlyemployee"></i> <label
-									class="labelBigButton">#{i18n.getText('CCG001_11')}</label>
+								<i class="icon icon-26-onlyemployee"></i>
+								<label class="labelBigButton">#{i18n.getText('CCG001_35')}</label> 
 							</div>
 							<span class="controlSettingBg caret-right"></span>
 						</div>
-						<div tabindex="5" class="btn-quick-search"
-							data-bind="if: isEmployeeOfWorkplace, click: searchOfWorkplace">
+					</com:ko>
+					<com:ko tag="if" bind="showSameWorkplace">
+						<div tabindex="9" class="btn-quick-search" data-bind="click: searchEmployeeOfDepOnly">
 							<div class="flex valign-center btn_small">
-								<i class="icon icon-48-ofworkplace"></i> <label
-									class="labelSmallButton">#{i18n.getText('CCG001_12')}</label>
+								<i class="icon icon-48-ofworkplace"></i>
+								<label class="labelSmallButton">#{i18n.getText('CCG001_38')}</label> 
 							</div>
 							<span class="controlSetting caret-right"></span>
 						</div>
-						<div tabindex="6" class="btn-quick-search"
-							data-bind="if: isEmployeeWorkplaceFollow, click: searchWorkplaceChild">
+					</com:ko>
+					<com:ko tag="if" bind="showSameWorkplaceAndChild">
+						<div tabindex="10" class="btn-quick-search" data-bind="click: searchEmployeeOfDepAndChild">
 							<div class="flex valign-center btn_small">
-								<i class="icon icon-49-workplacechild"></i> <label
-									class="labelSmallButton">#{i18n.getText('CCG001_13')}</label>
+								<i class="icon icon-49-workplacechild"></i>
+								<label class="labelSmallButton">#{i18n.getText('CCG001_39')}</label> 
 							</div>
 							<span class="controlSetting caret-right"></span>
 						</div>
-					</div>
-				</com:ko>
-				<com:ko tag="if" bind="isAdvancedSearchTab">
-					<div tabindex="-1" class="tab-content-2 ccg_tab_content_2">
-						<div style="padding-right: 15px">
-							<div>
-								<label>#{i18n.getText('CCG001_20')}</label>
+					</com:ko>
+				</div>
+			</com:ko>
+			<com:ko tag="if" bind="showAdvancedSearchTab">
+				<div tabindex="-1" class="tab-content-2 height-maximum">
+						<div id="ccg001-tab-content-2" class="height-maximum">
+							<div class="pull-left height-maximum" style="padding-right: 20px; overflow: overlay;">
+								<div>
+									<label>#{i18n.getText('CCG001_24')}</label>
+								</div>
+								<div tabindex="11" class="accordion" id="StatusOfEmployeeList"
+									data-bind="ntsAccordion: {enable: true}">
+									<h3>
+										<label>#{i18n.getText('CCG001_42')}</label>
+									</h3>
+									<div class="contentkcp">
+										<div style="padding-bottom: 20px;">
+											<label>#{i18n.getText('CCG001_43')}</label>
+											<div tabindex="12" class="pull-right" id="switch-buttons" data-bind="ntsSwitchButton: {
+												name: '#[CCG001_44]',
+												options: incumbentDatasource,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: selectedIncumbent,
+												enable: true }">
+											</div>
+										</div>
+										<div tabindex="13" style="padding-bottom: 20px;">
+											<label>#{i18n.getText('CCG001_47')}</label>
+											<div class="pull-right" id="switch-buttons" data-bind="ntsSwitchButton: {
+												name: '#[CCG001_48]',
+												options: closedDatasource,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: selectedClosed,
+												enable: true }">
+											</div>
+										</div>
+										<div tabindex="14" style="padding-bottom: 20px;">
+											<label>#{i18n.getText('CCG001_45')}</label>
+											<div class="pull-right" id="switch-buttons" data-bind="ntsSwitchButton: {
+												name: '#[CCG001_46]',
+												options: leaveOfAbsenceDatasource,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: selectedLeave,
+												enable: true }">
+											</div>
+										</div>
+										<div tabindex="15" style="padding-bottom: 20px;">
+											<label>#{i18n.getText('CCG001_49')}</label>
+											<div class="pull-right" id="switch-buttons" data-bind="ntsSwitchButton: {
+												name: '#[CCG001_50]',
+												options: retirementDatasource,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: selectedRetirement,
+												enable: true }">
+											</div>
+										</div>
+										<div class="pull-right" style="padding-top: 10px;">
+											<div id="ccg001-partg-start" tabindex="16" data-bind="ntsDatePicker: {
+												name: '#[CCG001_93]',
+												dateFormat: 'YYYY/MM/DD',
+												value: statusPeriodStart,
+												required: true }">
+											</div> 
+											<span> ~ </span>
+											<div id="ccg001-partg-end" tabindex="17" data-bind="ntsDatePicker: {
+												name: '#[CCG001_94]',
+												dateFormat: 'YYYY/MM/DD',
+												value: statusPeriodEnd,
+												required: true }">
+											</div> 
+										</div>
+									</div>
+								</div>
+								<com:ko tag="if" bind="showEmployment">
+									<div tabindex="18" class="accordion" id="EmploymentList"
+										data-bind="ntsAccordion: {enable: true}">
+										<h3>
+											<label>#{i18n.getText('Com_Employment')}</label>
+										</h3>
+										<div class="contentkcp">
+											<div id="employmentList" tabindex="18" style="width: 352px"></div>
+										</div>
+									</div>
+								</com:ko>
+								<com:ko tag="if" bind="showWorkplace">
+									<div tabindex="21" class="accordion" id="WorkplaceList"
+										data-bind="ntsAccordion: {enable: true}">
+										<h3>
+											<label>#{i18n.getText('Com_Workplace')}</label>
+										</h3>
+										<div class="contentkcpWorkplace">
+											<div tabindex="22" id="workplaceList"></div>
+											<button tabindex="23" id="btnDetailWorkplace"
+												data-bind="click: detailWorkplace">#{i18n.getText('CCG001_55')}</button>
+											<com:ko tag="ifnot" bind="isExpanded">
+												<button style="margin-left: 130px" tabindex="24" data-bind="click: expand">
+													<i class="icon icon-28-expand"></i>#{i18n.getText('CCG001_56')}
+												</button>
+											</com:ko>
+											<com:ko tag="if" bind="isExpanded">
+												<button id="ccg-001-btn-collapse" tabindex="24" data-bind="click: collapse">
+													<i class="icon icon-29-collapse"></i>#{i18n.getText('CCG001_62')}
+												</button>
+											</com:ko>
+										</div>
+									</div>
+								</com:ko>
+								<com:ko tag="if" bind="showClassification">
+									<div tabindex="19" class="accordion" id="ClassificationList"
+										data-bind="ntsAccordion: {enable: true}">
+										<h3>
+											<label>#{i18n.getText('Com_Class')}</label>
+										</h3>
+										<div class="contentkcp">
+											<div tabindex="19" id="classificationList"></div>
+										</div>
+									</div>
+								</com:ko>
+								<com:ko tag="if" bind="showJobTitle">
+									<div tabindex="20" class="accordion" id="JoptitleList"
+										data-bind="ntsAccordion: {enable: true}">
+										<h3>
+											<label>#{i18n.getText('Com_Jobtitle')}</label>
+										</h3>
+										<div class="contentkcp">
+											<div tabindex="20" id="jobtitleList"></div>
+										</div>
+									</div>
+								</com:ko>
+								<com:ko tag="if" bind="showWorktype">
+									<div tabindex="24" class="accordion" id="WorkTypeList"
+										data-bind="ntsAccordion: {enable: true}">
+										<h3>
+											<label>#{i18n.getText('CCG001_58')}</label>
+										</h3>
+										<div class="contentkcp">
+											<div style="width: 340px" tabindex="1" data-bind="ntsSearchBox: {
+												searchMode: 'highlight',
+												targetKey: 'workTypeCode',
+												comId: 'list-worktype', 
+												items: listWorkType,
+												selectedKey: 'workTypeCode',
+												fields: ['workTypeCode', 'name'],
+												mode: 'listbox'}" />
+											<table id="list-worktype" tabindex="2"
+											data-bind="ntsGridList: {
+												name: '#[CCG001_59]',
+												height: 235,
+												options: listWorkType,
+												optionsValue: 'workTypeCode',
+												columns: workTypeColumns,
+												multiple: true,
+												value: selectedWorkTypeCode
+											}"></table>
+										</div>
+									</div>
+								</com:ko>
 							</div>
-							<div tabindex="-1" class="accordion" id="EmploymentList"
-								data-bind="ntsAccordion: {enable: true}">
-								<h3>
-									<label>#{i18n.getText('CCG001_5')}</label>
-								</h3>
-								<div class="contentkcp">
-									<div id="employmentList" tabindex="7" style="width: 352px"></div>
+							<div class="pull-left height-maximum margin-left-10 ccg001-table">
+								<div class="ccg001-cell mid">
+									<div tabindex="25" class="ccg-btn-vertical height-maximum" data-bind="click: advancedSearchEmployee">
+										<div class="ccg001-cell mid">
+											<div class="ccg-lbl-vertical ccg-lbl-extract-emp">#{i18n.getText('CCG001_25')}</div>
+										</div>
+									</div>
+								</div>
+								<div class="ccg001-cell mid">
+									<span class="ccg-caret caret-right"></span>
 								</div>
 							</div>
-							<div tabindex="-1" class="accordion" id="ClassificationList"
-								data-bind="ntsAccordion: {enable: true}">
-								<h3>
-									<label>#{i18n.getText('CCG001_6')}</label>
-								</h3>
-								<div class="contentkcp">
-									<div tabindex="8" id="classificationList"></div>
+							
+							<com:ko tag="if" bind="showEmployeeSelection">
+								<div class="pull-left height-maximum margin-left-10">
+									<div tabindex="26" id="employeeinfo"></div>
 								</div>
-							</div>
-							<div tabindex="-1" class="accordion" id="JoptitleList"
-								data-bind="ntsAccordion: {enable: true}">
-								<h3>
-									<label>#{i18n.getText('CCG001_7',["Com_Jobtitle"])}</label>
-								</h3>
-								<div class="contentkcp">
-									<div tabindex="9" id="jobtitleList"></div>
+								<div class="pull-left height-maximum margin-left-10 ccg001-table">
+									<div class="ccg001-cell mid">
+										<div tabindex="27" class="ccg-btn-vertical height-maximum" data-bind="click: extractSelectedEmployees">
+											<div class="ccg001-cell mid">
+												<i class="icon icon-47-white-check-mark"></i>
+												<div class="ccg-lbl-vertical ccg-lbl-extract-emp">#{i18n.getText('CCG001_26')}</div>
+											</div>
+										</div>
+									</div>
+									<div class="ccg001-cell mid">
+										<span class="ccg-caret caret-right"></span>
+									</div>
 								</div>
-							</div>
-							<div tabindex="-1" class="accordion" id="WorkplaceList"
-								data-bind="ntsAccordion: {enable: true}">
-								<h3>
-									<label>#{i18n.getText('CCG001_8')}</label>
-								</h3>
-								<div class="contentkcpWorkplace">
-									<div tabindex="10" id="workplaceList"></div>
-									<button tabindex="11" id="btnDetailWorkplace"
-										data-bind="click: detailWorkplace">#{i18n.getText('CCG001_9')}</button>
-								</div>
-							</div>
-							<div data-bind="if: !isSelectAllEmployee">
-								<hr />
-								<span tabindex="12"
-									class="caret-background caret-bottom btn_apply"
-									data-bind="click: searchDataEmployee"> <i
-									class="icon icon-01-searchmode"></i> <label class="lbl-apply"
-									style="">#{i18n.getText('CCG001_18')}</label>
-								</span>
-								<div tabindex="13" class="contentkcp" id="employeeinfo"></div>
-							</div>
-							<br /> <span tabindex="14" class="btn_apply"
-								data-bind="click: applyEmployee"> <label
-								class="lbl-apply">#{i18n.getText('CCG001_19')}</label>
-							</span>
+							</com:ko>
+							<div class="cf"></div>
 						</div>
+						<div class="cf"></div>
 					</div>
-				</com:ko>
-			</div>
+			</com:ko>
 		</div>
-		<div tabindex="-1" id="hor-scroll-button-show" class="pull-left"
-			data-bind="click: showHide">
-			<div class="flex valign-center btn_showhide">
-				<i class="icon icon-01-searchmode"></i> <label
-					class="labelShowHideButton">#{i18n.getText('CCG001_21')}</label>
-			</div>
-			<span class="controlSettingShowHide caret-right"></span>
 		</div>
 	</div>
-	<div id="hor-scroll-button-hide"
-		data-bind="visible: !isShow(), click: showHide">
-		<div class="flex valign-center btn_showhide">
-			<i class="icon icon-01-searchmode"></i> <label
-				class="labelShowHideButton">#{i18n.getText('CCG001_21')}</label>
+	<div id="hor-scroll-button-hide" class="height-maximum">
+		<div class="ccg001-cell mid">
+			<div id="ccg001-btn-search-drawer" class="ccg-btn-vertical height-maximum" data-bind="click: showComponent">
+				<div class="ccg001-cell mid">
+				<i class="icon icon-01-searchmode"></i>
+				<div class="ccg-lbl-vertical ccg-lbl-search-drawer">#{i18n.getText('CCG001_21')}</div>
+				</div>
+			</div>
 		</div>
-		<span class="controlSettingShowHide caret-right"></span>
+		<div class="ccg001-cell mid">
+			<span class="ccg-caret caret-right"></span>
+		</div>
 	</div>
 </ui:composition>
