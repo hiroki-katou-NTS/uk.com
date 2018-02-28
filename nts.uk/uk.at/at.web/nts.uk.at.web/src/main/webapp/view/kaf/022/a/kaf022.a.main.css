@@ -182,3 +182,7 @@ div.form-label {
 #fixed-table-a7 span.label-a27 {
 	margin-left: 29px;
 }
+textarea {
+   resize: none;
+   height: 85px;
+}
