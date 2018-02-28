@@ -85,8 +85,8 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             };
             
             self.selectedAcceptItem.subscribe((data) => {
-                $("#fixed-table tr").removeClass("ui-state-active");
-                $("#fixed-table tr[data-id='" + data + "']").addClass("ui-state-active");
+                $("#fixed-table tr").removeClass("my-active-row");
+                $("#fixed-table tr[data-id='" + data + "']").addClass("my-active-row");
             });
         }
         
@@ -123,14 +123,15 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 let selectedCItem = _.find(self.listSelectedCategoryItem(), x => {return x.itemName() == selectedAItem.acceptItemName();});
                 self.listAcceptItem.remove(selectedAItem);
                 self.listCategoryItem.push(selectedCItem);
+                self.listCategoryItem(_.sortBy(self.listCategoryItem(), ['dispItemCode'])); 
                 self.listSelectedCategoryItem.remove(selectedCItem);
                 for (var i = 0; i < self.listAcceptItem().length; i++) {
                     self.listAcceptItem()[i].acceptItemNumber(i + 1);
                 }
-                if (self.selectedAcceptItem() >= self.listAcceptItem().length) {
+                if (self.selectedAcceptItem() >= self.listAcceptItem().length) 
                     self.selectedAcceptItem(self.listAcceptItem().length);
-                }
-                self.selectedAcceptItem.valueHasMutated();
+                else
+                    self.selectedAcceptItem.valueHasMutated();
             }
         }
         
