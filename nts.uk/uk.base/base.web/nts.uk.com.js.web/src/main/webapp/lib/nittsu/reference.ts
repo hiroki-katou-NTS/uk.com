@@ -32,6 +32,7 @@
 /// <reference path="ui/ui_sub/ig.ts"/>
 /// <reference path="ui/dialog-options.ts"/>
 /// <reference path="ui/textbox-options.ts"/>
+/// <reference path="ui/extable.ts"/>
 /// <reference path="ui/jquery-ext.ts"/>
 /// <reference path="ui/ko-ext.ts"/>
 /// <reference path="ui/ko-ext/checkbox-ko-ext.ts"/>
