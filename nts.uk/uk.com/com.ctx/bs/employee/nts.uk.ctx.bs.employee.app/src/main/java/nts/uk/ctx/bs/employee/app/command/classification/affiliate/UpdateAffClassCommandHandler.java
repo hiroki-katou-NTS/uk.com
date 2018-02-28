@@ -28,7 +28,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
-
 /**
  * @author danpv
  * @author hop.nt
@@ -47,6 +46,9 @@ public class UpdateAffClassCommandHandler extends CommandHandler<UpdateAffClassi
 	@Inject
 	private AffClassHistoryRepositoryService affClassHistoryRepositoryService;
 
+//	@Inject
+//	private ItemDefFinder itemDefFinder;
+	
 	@Override
 	public String targetCategoryCd() {
 		return "CS00004";
@@ -61,31 +63,6 @@ public class UpdateAffClassCommandHandler extends CommandHandler<UpdateAffClassi
 	protected void handle(CommandHandlerContext<UpdateAffClassificationCommand> context) {
 		UpdateAffClassificationCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		// TODO Get full item (disable, enable, visible, invisible)
-		List<ItemValue> fullItems = new ArrayList<>();
-		ItemValue itemX = new ItemValue("", "IS00003", "M00000", 1);
-		fullItems.add(itemX);
-		itemX = new ItemValue("", "IS00004", "MMMMMM", 1);
-		fullItems.add(itemX);
-		// List item code visible
-		List<String> itemVisible = command.getItems().stream().map(ItemValue::itemCode).collect(Collectors.toList());
-		
-		// List item invisible
-		List<ItemValue> itemInvisible = fullItems.stream().filter(i->!itemVisible.contains(i.itemCode())).collect(Collectors.toList());
-		
-		AnnotationUtil.getStreamOfFieldsAnnotated(UpdateAffClassificationCommand.class, PeregItem.class).forEach(field -> {
-			String itemCode = field.getAnnotation(PeregItem.class).value();
-			// set item values
-			val inputsMap = itemInvisible.stream().collect(Collectors.toMap(item -> item.itemCode(), item -> item));
-			val inputItem = inputsMap.get(itemCode);
-			if (inputItem != null) {
-				if (inputItem.value() != null && field.getType() == String.class) {
-					ReflectionUtil.setFieldValue(field, command, inputItem.value().toString());
-				} else {
-					ReflectionUtil.setFieldValue(field, command, inputItem.value());
-				}
-			}
-		});
 		// In case of date period are exist in the screen
 		if (command.getStartDate() != null){
 			// update history

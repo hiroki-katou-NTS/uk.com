@@ -34,6 +34,4 @@ public class UpdateEmployeeInfoContactCommand {
 	@PeregItem("IS00271")
 	private String cellPhoneNo;
 	
-	@PeregItemValues
-	private List<ItemValue> items;
 }

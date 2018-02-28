@@ -72,6 +72,10 @@ public class ItemValue {
 	}
 
 	public void setValue(Object obj) {
+		if (obj == null){
+			this.value = null;
+			return;
+		}
 		switch (this.itemValueType()) {
 		case NUMERIC:
 		case TIME:

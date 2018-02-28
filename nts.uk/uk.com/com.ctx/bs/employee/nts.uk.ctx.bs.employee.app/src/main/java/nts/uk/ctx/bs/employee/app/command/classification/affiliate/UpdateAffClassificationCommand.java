@@ -42,8 +42,4 @@ public class UpdateAffClassificationCommand{
 	 */
 	@PeregItem("IS00028")
 	private String classificationCode;
-	
-	@PeregItemValues
-	private List<ItemValue> items;
-
 }

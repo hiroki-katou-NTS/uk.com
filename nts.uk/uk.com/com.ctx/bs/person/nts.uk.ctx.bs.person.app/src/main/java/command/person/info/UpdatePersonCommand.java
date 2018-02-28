@@ -2,13 +2,10 @@ package command.person.info;
 
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.PeregItem;
-import nts.uk.shr.pereg.app.PeregItemValues;
 import nts.uk.shr.pereg.app.PeregPersonId;
 
 @Getter
@@ -74,6 +71,4 @@ public class UpdatePersonCommand{
 	@PeregItem("IS00008")
 	private String PersonalNameMultilingualKana;
 	
-	@PeregItemValues
-	private List<ItemValue> items;
 }

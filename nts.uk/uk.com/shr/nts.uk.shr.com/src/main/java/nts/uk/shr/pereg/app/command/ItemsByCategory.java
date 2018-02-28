@@ -14,7 +14,6 @@ import nts.gul.reflection.ReflectionUtil;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
-import nts.uk.shr.pereg.app.PeregItemValues;
 import nts.uk.shr.pereg.app.PeregPersonId;
 import nts.uk.shr.pereg.app.PeregRecordId;
 
@@ -52,11 +51,6 @@ public class ItemsByCategory {
 			ReflectionUtil.setFieldValue(field, command, this.recordId);
 		});
 		
-		// set list itemvalue
-		AnnotationUtil.getFieldAnnotated(commandClass, PeregItemValues.class).ifPresent(field -> {
-			ReflectionUtil.setFieldValue(field, command, this.items);
-		});
-
 		// set item values
 		val inputsMap = this.createInputsMap();
 
