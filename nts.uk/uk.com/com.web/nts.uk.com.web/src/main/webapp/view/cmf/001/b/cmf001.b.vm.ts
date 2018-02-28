@@ -75,8 +75,10 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             
             modal("/view/cmf/001/m/index.xhtml").onClosed(function() {
                 var output = getShared('CMF001mOutput');
-                if (output)
-                    self.selectedItem(output);
+                if (output) {
+                    self.selectedStandardImportSetting().conditionSettingCode(output.code);
+                    self.selectedStandardImportSetting().conditionSettingName(output.name);
+                }
             });
         }
     }
