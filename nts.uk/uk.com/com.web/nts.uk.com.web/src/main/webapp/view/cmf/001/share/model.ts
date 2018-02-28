@@ -191,7 +191,21 @@ module nts.uk.com.view.cmf001.share.model {
             this.systemCode = ko.observable(sysCode);
         }
     }
-
+    
+    //screen E
+    export class MappingListData {
+        csvItemName: KnockoutObservable<string>;
+        csvItemNumber: KnockoutObservable<number>;
+        dispCsvItemName: string;
+        dispCsvItemNumber: number;
+        constructor(itemNumber: number, itemName: string) {
+            this.csvItemName = ko.observable(itemName);
+            this.csvItemNumber = ko.observable(itemNumber);
+            this.dispCsvItemName = itemName;
+            this.dispCsvItemNumber = itemNumber;
+        }
+    }
+    
     //screen G
     export class NumericDataFormatSetting {
         fixedValue: KnockoutObservable<number>;
@@ -205,8 +219,18 @@ module nts.uk.com.view.cmf001.share.model {
         decimalPointClassification: KnockoutObservable<number>;
         decimalFraction: KnockoutObservable<number>;
 
-        constructor() {
-
+        constructor(effectDigitLength: number, startDigit: number, endDigit: number, decimalDivision: number, decimalDigitNumber: number,
+         decimalPointClassification: number, decimalFraction: number, codeConvertCode: string, fixedValue: number, valueOfFixed: string) {
+            this.fixedValue = ko.observable(fixedValue);
+            this.decimalDivision = ko.observable(decimalDivision);
+            this.effectiveDigitLength = ko.observable(effectDigitLength);
+            this.codeConvertCode = ko.observable(codeConvertCode);
+            this.valueOfFixed = ko.observable(valueOfFixed);
+            this.decimalDigitNumber = ko.observable(decimalDigitNumber);
+            this.startDigit = ko.observable(startDigit);
+            this.endDigit = ko.observable(endDigit);
+            this.decimalPointClassification = ko.observable(decimalPointClassification);
+            this.decimalFraction = ko.observable(decimalFraction);
         }
     }
 

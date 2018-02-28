@@ -17,32 +17,33 @@
 		<ui:define name="content">
 			<div class="contents-area" style="width:300px; height:550px;">
 				<div style="margin-top:15px; margin-left:20px;" class="label">#{i18n.getText('CMF001_180')}</div>
-				<div style="margin-left: 30px; margin-top:15px; width = 350px;">
+				<div style="margin-left: 40px; margin-top:15px; width = 350px;">
 					<div  data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_181')}</div>
-					<div  style=" display:inline-block; width: 150px" data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'dispItemCode', comId: 'E1_3', 
-					items: listCategoryItem, placeHolder: '', selected: selectedCategoryItem, selectedKey: 'dispItemCode', fields: ['dispItemName'], mode: 'igGrid'}" />		
+					<div tabindex = "1"  style=" display:inline-block; width: 150px" data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'dispCsvItemNumber', comId: 'E2_1', 
+					items: listCsvItem, placeHolder: '', selected: null, selectedKey: 'disCsvItemNumber', fields: ['dispCsvItemName'], mode: 'igGrid'}" />		
 				
 				</div>
-				<div style="margin-left:50px; margin-right:auto" >
+				<div style="margin-left:40px; margin-right:auto" >
 					<table id="E2_1"  data-bind="ntsGridList: {
-							height: 375,
-							width: 250,
+							height: 420,
+							width: 270,
 							name: '#[CMF001_182]', 
-							dataSource: listCategoryItem,
-							primaryKey: 'dispItemCode',
+							dataSource: listCsvItem,
+							primaryKey: 'dispCsvItemNumber',
 								columns: [
-				                { headerText: '', key: 'dispItemCode', width: 40, hidden: false, formatter: _.escape },
-				                { headerText: '#{i18n.getText('CMF001_183')}', key: 'dispItemName', width: 180, formatter: _.escape }
+				                { headerText: '', key: 'dispCsvItemNumber', width: 40, hidden: true, formatter: _.escape },
+				                { headerText: '#{i18n.getText('CMF001_183')}', key: 'dispCsvItemName', width: 180, formatter: _.escape }
 				            ],
 				            rows: 15,
+				            showNumbering: false,
 							multiple: false,
-							value: selectedCategoryItem
+							value: selectedCsvItemNumber
 						}">
 					</table>
 				</div>
 				<div id="functions-area-bottom">
-					<button id="btn_E3_1" class="x-large proceed " data-bind="click: save">#{i18n.getText('CMF001_184')}</button>
-					<button id="btn_E3_2" class="large" data-bind="click: cancel">#{i18n.getText('CMF001_185')}</button>
+					<button tabindex = "2" id="btn_E3_1" class="x-large proceed " data-bind="click: save">#{i18n.getText('CMF001_184')}</button>
+					<button tabindex = "3" id="btn_E3_2" class="large" data-bind="click: cancel">#{i18n.getText('CMF001_185')}</button>
 				</div>
 			</div>
 		</ui:define>
