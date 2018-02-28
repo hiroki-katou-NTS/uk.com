@@ -797,7 +797,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 // Check future reference permission
                 $.when(self.acquireBaseDate(), self.getFuturePermit())
                     .done((acquiredDate, permit) => {
-                        if (permit || self.isNotFutureDate(acquiredDate)) {
+                        if (!permit || self.isNotFutureDate(acquiredDate)) {
                             // has permission or acquiredDate is not future
                             self.queryParam.baseDate = acquiredDate;
                             if (self.showAdvancedSearchTab) {
