@@ -34,6 +34,8 @@ import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
+import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
+import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.infra.entity.daily.attendanceschedule.KrcdtDayWorkScheTime;
 import nts.uk.ctx.at.record.infra.entity.daily.holidayworktime.KrcdtDayHolidyWork;
@@ -270,7 +272,17 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 								TimeWithCalculation.sameTime(new AttendanceTime(0)))),
 				Collections.emptyList(),
 				new RaiseSalaryTimeOfDailyPerfor(Collections.emptyList(), Collections.emptyList()),
-				new WorkTimes(this.workTimes), new TemporaryTimeOfDaily());
+				new WorkTimes(this.workTimes), new TemporaryTimeOfDaily(),
+				new  ShortWorkTimeOfDaily(new WorkTimes(1),
+						 DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+								 			   TimeWithCalculation.sameTime(new AttendanceTime(0)),
+								 			   TimeWithCalculation.sameTime(new AttendanceTime(0))),
+						 DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+					 			   			   TimeWithCalculation.sameTime(new AttendanceTime(0)),
+					 			   			   TimeWithCalculation.sameTime(new AttendanceTime(0))),
+						 ChildCareAttribute.CARE
+						)
+				);
 
 		// 日別実績の勤務実績時間
 		ActualWorkingTimeOfDaily actual = ActualWorkingTimeOfDaily.of(totalTime, this.midnBindTime, this.totalBindTime,

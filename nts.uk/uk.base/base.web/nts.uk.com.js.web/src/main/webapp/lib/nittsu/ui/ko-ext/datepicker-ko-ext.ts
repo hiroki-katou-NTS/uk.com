@@ -169,6 +169,31 @@ module nts.uk.ui.koExtentions {
             
             new nts.uk.util.value.DefaultValue().onReset($input, data.value);
             container.data("init", false);
+            
+            $input.on('show.datepicker', function (evt, ui, x) { 
+                setTimeout(function (){
+                    let currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
+                    let container = $input.parent();
+                    container.append(currentShowContainer);
+                    currentShowContainer.position({of: container, at: "bottom+142 left+53"});
+                    let ePos = container.offset();
+                    if(ePos.top < 0 && ePos.left < 0){
+                        return;
+                    }
+                    let containerHeight = container.outerHeight(true);
+                    let containerWidth = container.outerWidth(true);
+                    let showContainerHeight = currentShowContainer.outerHeight(true);
+                    let showContainerWidth = currentShowContainer.outerWidth(true);
+                    let documentHeight = document.body.clientHeight;
+                    let documentWidth = document.body.clientWidth;
+                    let headerHeight = $("#functions-area").outerHeight(true) + $("#header").outerHeight(true);
+                    let bottomHeight = $("#functions-area-bottom").outerHeight(true);
+                    let spaceBottom = documentHeight - ePos.top - containerHeight;
+                    if(showContainerHeight <= spaceBottom){
+                        return;
+                    }
+                }, 10);
+            });
         }
 
         /**
