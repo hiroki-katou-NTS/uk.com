@@ -81,10 +81,10 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * 計算用休出枠時間帯リストの作成
 	 * @return
 	 */
-	public static List<HolidayWorkFrameTimeSheetForCalc> createHolidayTimeWorkFrame(TimeLeavingWork attendanceLeave,FixOffdayWorkTimezone holidayWorksetting,WorkType todayWorkType) {
+	public static List<HolidayWorkFrameTimeSheetForCalc> createHolidayTimeWorkFrame(TimeLeavingWork attendanceLeave,List<HDWorkTimeSheetSetting> holidayWorkTimeList,WorkType todayWorkType) {
 		List<HolidayWorkFrameTimeSheetForCalc> returnList = new ArrayList<>();
-		for(HDWorkTimeSheetSetting holidayWorkSheetSetting:holidayWorksetting.getLstWorkTimezone()) {
-			returnList.add(createHolidayTimeWorkFrameTimeSheet(attendanceLeave,holidayWorkSheetSetting,todayWorkType));
+		for(HDWorkTimeSheetSetting holidayWorkTime:holidayWorkTimeList) {
+			returnList.add(createHolidayTimeWorkFrameTimeSheet(attendanceLeave,holidayWorkTime,todayWorkType));
 		}
 		return returnList;
 	}

@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PrevisionalCalculationServiceImpl;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ProvisionalCalculationService;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
@@ -82,16 +83,45 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 		val holidayWorkFrames = new HashMap<HolidayWorkFrameNo,TimeWithCalculation>();
 		val bonusPays = new HashMap<Integer,TimeWithCalculation>();
 		val specBonusPays = new HashMap<Integer,TimeWithCalculation>();
-		for(int loopNumber = 1 ; loopNumber <=10 ; loopNumber++ ) {
-			//残業
-			overTimeFrames.put(new OverTimeFrameNo(loopNumber), integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime().get(loopNumber-1).getOverTimeWork());
-			//休出
-			holidayWorkFrames.put(new HolidayWorkFrameNo(loopNumber), integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime().get(loopNumber-1).getHolidayWorkTime().get());
-			//加給
-			bonusPays.put(loopNumber, integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes().get(loopNumber-1).getBonusPayTime());
-			//特定日加給
-			specBonusPays.put(loopNumber, integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getAutoCalRaisingSalarySettings().get(loopNumber-1).getBonusPayTime());
+		if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			for(int loopNumber = 1 ; loopNumber <=10 ; loopNumber++ ) {
+				//残業
+				if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
+					if(loopNumber < integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime().size()) {
+						overTimeFrames.put(new OverTimeFrameNo(loopNumber), integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime().get(loopNumber - 1).getOverTimeWork());
+					}
+					else {
+						overTimeFrames.put(new OverTimeFrameNo(loopNumber),TimeWithCalculation.sameTime(new AttendanceTime(0)));
+					}
+				}
+				//休出
+				if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()) {
+					if(loopNumber < integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime().size()) {
+						holidayWorkFrames.put(new HolidayWorkFrameNo(loopNumber), integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime().get(loopNumber - 1).getHolidayWorkTime().get());
+					}
+					else {
+						holidayWorkFrames.put(new HolidayWorkFrameNo(loopNumber),TimeWithCalculation.sameTime(new AttendanceTime(0)));
+					}
+				}
+				//加給
+				if(loopNumber < integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes().size()) {
+					
+					bonusPays.put(loopNumber, integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes().get(loopNumber-1).getBonusPayTime());
+				}
+				else {
+					bonusPays.put(loopNumber, TimeWithCalculation.sameTime(new AttendanceTime(0)));
+				}
+				//特定日加給
+				if(loopNumber < integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes().size()) {
+					
+					specBonusPays.put(loopNumber, integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getAutoCalRaisingSalarySettings().get(loopNumber-1).getSpecifiedbonusPayTime());
+				}
+				else {
+					specBonusPays.put(loopNumber, TimeWithCalculation.sameTime(new AttendanceTime(0)));
+				}
+
 			
+			}
 		}
 		return new DailyAttendanceTimePubExport(overTimeFrames,
 				holidayWorkFrames,

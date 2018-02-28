@@ -165,7 +165,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * @return 日別実績(Work)
 	 */
 	@Override
-	//public IntegrationOfDaily calculate(String placeId, String employmentCd, String employeeId, GeneralDate targetDate, IntegrationOfDaily integrationOfDaily) {
 	public IntegrationOfDaily calculate(IntegrationOfDaily integrationOfDaily) {
 		/*日別実績(Work)の退避*/
 		val copyIntegrationOfDaily = integrationOfDaily;
@@ -292,6 +291,21 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if (workTime.get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()) {
 			/* フレックス勤務 */
 			val flexWorkSetOpt = flexWorkSettingRepository.find(companyId,workInfo.getRecordWorkInformation().getWorkTimeCode().v());
+				oneRange.createTimeSheetAsFlex(personalInfo.getWorkingSystem(),oneRange.getPredetermineTimeSetForCalc(),
+												BonusPaySetting.createFromJavaType(companyId,
+														"01"/*ここは聞く*/,
+														"テスト加給設定"/*ここは聞く*/,
+														Collections.emptyList(),
+														Collections.emptyList()
+														),
+												flexWorkSetOpt.get().getOffdayWorkTime().getLstWorkTimezone(),
+											   flexWorkSetOpt.get().getLstHalfDayWorkTimezone().get(0).getWorkTimezone().getLstOTTimezone(),
+											   /*休出時間帯リスト*/Collections.emptyList(),overDayEndCalcSet, yesterDay.get(), workType.get(),tomorrow.get(),
+											   new BreakDownTimeDay(new AttendanceTime(4),new AttendanceTime(4),new AttendanceTime(8)),
+												personalInfo.getStatutoryWorkTime(),autoCalcOverTimeWork,LegalOTSetting.LEGAL_INTERNAL_TIME,StatutoryPrioritySet.priorityNormalOverTimeWork,
+												workTime.get(),flexWorkSetOpt.get(),goOutTimeSheetList,oneRange.getOneDayOfRange(),oneRange.getAttendanceLeavingWork(),
+												workTime.get().getWorkTimeDivision(),breakTimeOfDailyList
+											   );
 		} else {
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
 			case FIXED_WORK:
@@ -300,8 +314,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				oneRange.createWithinWorkTimeSheet(personalInfo.getWorkingSystem(), workTime.get().getWorkTimeDivision().getWorkTimeMethodSet(),
 						RestClockManageAtr.IS_CLOCK_MANAGE, goOutTimeSheetList,
 						new CommonRestSetting(RestTimeOfficeWorkCalcMethod.NOT_APPROP_ALL),
-						Optional.of(FixedRestCalculateMethod.MASTER_REF), workTime.get().getWorkTimeDivision(), Optional.empty(), Optional.empty(),
-						Optional.empty(), oneRange.getPredetermineTimeSetForCalc(), fixedWorkSetting.get(), 
+						Optional.of(FixedRestCalculateMethod.MASTER_REF), workTime.get().getWorkTimeDivision(),
+						oneRange.getPredetermineTimeSetForCalc(), fixedWorkSetting.get(), 
 						BonusPaySetting.createFromJavaType(companyId,
 						"01"/*ここは聞く*/,
 						"テスト加給設定"/*ここは聞く*/,
@@ -309,7 +323,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						Collections.emptyList()
 						)
 						, fixedWorkSetting.get().getLstHalfDayWorkTimezone().get(0).getWorkTimezone().getLstOTTimezone(),
-						fixedWorkSetting.get().getOffdayWorkTimezone(), overDayEndCalcSet, Collections.emptyList(), yesterDay.get(), workType.get(),
+						fixedWorkSetting.get().getOffdayWorkTimezone().getLstWorkTimezone(), overDayEndCalcSet, Collections.emptyList(), yesterDay.get(), workType.get(),
 						tomorrow.get(), new BreakDownTimeDay(new AttendanceTime(4),new AttendanceTime(4),new AttendanceTime(8)),
 						personalInfo.getStatutoryWorkTime(), autoCalcOverTimeWork, fixedWorkSetting.get().getLegalOTSetting(), StatutoryPrioritySet.priorityNormalOverTimeWork, 
 						workTime.get(),breakTimeOfDailyList);
