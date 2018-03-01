@@ -4,8 +4,8 @@
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
@@ -46,8 +46,8 @@ public class DPDataDto {
 		this.cellDatas = new HashSet<DPCellDataDto>();
 	}
 	
-	public void setCellDatas(List<DPCellDataDto> lstCellData) {
-		this.cellDatas = new HashSet<DPCellDataDto>(lstCellData);
+	public void setCellDatas(Set<DPCellDataDto> lstCellData) {
+		this.cellDatas = lstCellData;
 	}
 	
 	public void addCellData(DPCellDataDto cellData) {

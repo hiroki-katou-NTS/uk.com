@@ -68,6 +68,8 @@ module nts.uk.at.view.ksc001.b {
             lstCreateMethod: KnockoutObservableArray<any>;
             lstReCreate: KnockoutObservableArray<any>;
             lstProcessExecution: KnockoutObservableArray<any>;
+            periodStartDate: KnockoutObservable<moment.Moment>;
+            periodEndDate: KnockoutObservable<moment.Moment>;
             
             constructor() {
                 var self = this;
@@ -100,43 +102,84 @@ module nts.uk.at.view.ksc001.b {
                 self.confirm = ko.observable(false);
                 self.checkCreateMethodAtrPersonalInfo = ko.observable(0);
                 self.copyStartDate = ko.observable(new Date());
+                self.periodStartDate = ko.observable(moment());
+                self.periodEndDate = ko.observable(moment());
+                
                 self.ccgcomponent = {
-                    baseDate: self.baseDate,
-                    //Show/hide options
-                    isQuickSearchTab: true,
-                    isAdvancedSearchTab: true,
-                    isAllReferableEmployee: true,
-                    isOnlyMe: true,
-                    isEmployeeOfWorkplace: true,
-                    isEmployeeWorkplaceFollow: true,
-                    isMutipleCheck: true,
-                    isSelectAllEmployee: true,
-                    /**
-                    * @param dataList: list employee returned from component.
-                    * Define how to use this list employee by yourself in the function's body.
-                    */
-                    onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
-                        self.selectedEmployee(dataList);
-                        self.applyKCP005ContentSearch(dataList);
-                    },
-                    onSearchOnlyClicked: function(data: EmployeeSearchDto) {
-                        var dataEmployee: EmployeeSearchDto[] = [];
-                        dataEmployee.push(data);
-                        self.selectedEmployee(dataEmployee);
-                        self.applyKCP005ContentSearch(dataEmployee);
-                    },
-                    onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
-                        self.selectedEmployee(dataList);
-                        self.applyKCP005ContentSearch(dataList);
-                    },
-                    onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
-                        self.selectedEmployee(dataList);
-                        self.applyKCP005ContentSearch(dataList);
-                    },
-                    onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
-                        self.applyKCP005ContentSearch(dataEmployee);
-                    }
+//                    baseDate: self.baseDate,
+//                    //Show/hide options
+//                    isQuickSearchTab: true,
+//                    isAdvancedSearchTab: true,
+//                    isAllReferableEmployee: true,
+//                    isOnlyMe: true,
+//                    isEmployeeOfWorkplace: true,
+//                    isEmployeeWorkplaceFollow: true,
+//                    isMutipleCheck: true,
+//                    isSelectAllEmployee: true,
+//                    /**
+//                    * @param dataList: list employee returned from component.
+//                    * Define how to use this list employee by yourself in the function's body.
+//                    */
+//                    onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
+//                        self.selectedEmployee(dataList);
+//                        self.applyKCP005ContentSearch(dataList);
+//                    },
+//                    onSearchOnlyClicked: function(data: EmployeeSearchDto) {
+//                        var dataEmployee: EmployeeSearchDto[] = [];
+//                        dataEmployee.push(data);
+//                        self.selectedEmployee(dataEmployee);
+//                        self.applyKCP005ContentSearch(dataEmployee);
+//                    },
+//                    onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
+//                        self.selectedEmployee(dataList);
+//                        self.applyKCP005ContentSearch(dataList);
+//                    },
+//                    onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
+//                        self.selectedEmployee(dataList);
+//                        self.applyKCP005ContentSearch(dataList);
+//                    },
+//                    onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
+//                        self.applyKCP005ContentSearch(dataEmployee);
+//                    }
+                    
+                    /** Common properties */
+                    systemType: 1, // システム区分
+                    showEmployeeSelection: false, // 検索タイプ
+                    showQuickSearchTab: false, // クイック検索
+                    showAdvancedSearchTab: false, // 詳細検索
+                    showBaseDate: true, // 基準日利用
+                    showClosure: true, // 就業締め日利用
+                    showAllClosure: false, // 全締め表示
+                    showPeriod: true, // 対象期間利用
+                    periodFormatYM: false, // 対象期間精度
 
+                    /** Required parameter */
+                    baseDate: self.baseDate().toISOString(), // 基準日
+                    periodStartDate: self.periodStartDate().toISOString(), // 対象期間開始日
+                    periodEndDate: self.periodEndDate().toISOString(), // 対象期間終了日
+                    inService: true, // 在職区分
+                    leaveOfAbsence: true, // 休職区分
+                    closed: true, // 休業区分
+                    retirement: true, // 退職区分
+
+                    /** Quick search tab options */
+                    showAllReferableEmployee: true, // 参照可能な社員すべて
+                    showOnlyMe: true, // 自分だけ
+                    showSameWorkplace: true, // 同じ職場の社員
+                    showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
+
+                    /** Advanced search properties */
+                    showEmployment: true, // 雇用条件
+                    showWorkplace: true, // 職場条件
+                    showClassification: true, // 分類条件
+                    showJobTitle: true, // 職位条件
+                    showWorktype: true, // 勤種条件
+                    isMutipleCheck: true, // 選択モード
+
+                    /** Return data */
+                    returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                        self.selectedEmployee(data.listEmployee);
+                    }
                 }
                 self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
                 var lstRadioBoxModelImplementAtr: RadioBoxModel[] = [];
