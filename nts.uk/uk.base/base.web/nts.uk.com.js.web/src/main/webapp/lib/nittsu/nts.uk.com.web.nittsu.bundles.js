@@ -15218,8 +15218,11 @@ var nts;
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
                         setEnterHandlerIfRequired($input, data);
                         $input.on("keyup", function (e) {
+                            if ($input.attr('readonly')) {
+                                return;
+                            }
                             var code = e.keyCode || e.which;
-                            if (!readonly && code.toString() !== '9') {
+                            if (!$input.attr('readonly') && code.toString() !== '9') {
                                 var validator = self.getValidator(data);
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
@@ -22088,6 +22091,94 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var jqueryExtentions;
+            (function (jqueryExtentions) {
+                var ntsDatepicker;
+                (function (ntsDatepicker) {
+                    $.fn.ntsDatepicker = function (action, index) {
+                        var $container = $(this);
+                        if (action === "bindFlip") {
+                            return bindFlip($container);
+                        }
+                        return $container;
+                    };
+                    function bindFlip($input) {
+                        $input.on('show.datepicker', function (evt) {
+                            $input.data("showed", true);
+                            setTimeout(function () {
+                                $input.trigger("flippickercontainer");
+                            }, 10);
+                        });
+                        $input.on('hide.datepicker', function (evt) {
+                            $input.data("showed", false);
+                            //                let currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
+                            //                $("body").append(currentShowContainer);
+                        });
+                        $(window).resize(function () {
+                            if ($input.data("showed")) {
+                                $input.datepicker('hide');
+                                setTimeout(function () {
+                                    $input.datepicker('show');
+                                }, 10);
+                            }
+                        });
+                        $input.bind("flippickercontainer", function (evt, data) {
+                            var currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
+                            var container = $input.parent();
+                            //                container.append(currentShowContainer);
+                            var ePos = container.offset();
+                            if (ePos.top < 0 && ePos.left < 0) {
+                                return;
+                            }
+                            var containerHeight = container.outerHeight(true);
+                            var containerWidth = container.outerWidth(true);
+                            var showContainerHeight = currentShowContainer.outerHeight(true);
+                            var showContainerWidth = currentShowContainer.outerWidth(true);
+                            var documentHeight = document.body.clientHeight;
+                            var documentWidth = document.body.clientWidth;
+                            var headerHeight = $("#functions-area").outerHeight(true) + $("#header").outerHeight(true);
+                            var bottomHeight = $("#functions-area-bottom").outerHeight(true);
+                            var spaceBottom = documentHeight - ePos.top - containerHeight;
+                            var spaceTop = ePos.top - headerHeight;
+                            var spaceRight = documentWidth - ePos.left - containerWidth;
+                            var spaceLeft = ePos.left;
+                            currentShowContainer.removeClass();
+                            currentShowContainer.addClass("datepicker-container datepicker-dropdown");
+                            if (showContainerHeight + 10 <= spaceBottom) {
+                                currentShowContainer.css({ top: containerHeight + 5, left: 0 });
+                                currentShowContainer.addClass("datepicker-top-left");
+                                return;
+                            }
+                            if (showContainerHeight + 10 <= spaceTop) {
+                                currentShowContainer.css({ top: 0 - showContainerHeight - 5, left: 0 });
+                                currentShowContainer.addClass("datepicker-bottom-left");
+                                return;
+                            }
+                            if (showContainerWidth + 10 <= spaceRight) {
+                                currentShowContainer.css({ top: 0, left: containerWidth + 5 + 2 });
+                                currentShowContainer.addClass("datepicker-left-top");
+                                return;
+                            }
+                            if (showContainerWidth + 10 <= spaceLeft) {
+                                currentShowContainer.css({ top: 0, left: 0 - showContainerWidth - 5 - 2 });
+                                currentShowContainer.addClass("datepicker-right-top");
+                                return;
+                            }
+                        });
+                        return $input;
+                    }
+                })(ntsDatepicker || (ntsDatepicker = {}));
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
