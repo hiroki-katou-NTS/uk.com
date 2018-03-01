@@ -13,6 +13,9 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
+/**
+ * The Class CommonWorkTimePolicyImpl.
+ */
 @Stateless
 public class CommonWorkTimePolicyImpl implements CommonWorkTimePolicy {
 
@@ -36,10 +39,6 @@ public class CommonWorkTimePolicyImpl implements CommonWorkTimePolicy {
 				be.addMessage("Msg_517");
 			}
 		});
-
-		// TODO Auto-generated method stub
-		// validate
-
 	}
 
 	// validate 代休振替設定
@@ -58,7 +57,5 @@ public class CommonWorkTimePolicyImpl implements CommonWorkTimePolicy {
 						.valueAsMinutes()) {
 			be.addMessage("Msg_781");
 		}
-
-		// TODO case no msg
 	}
 }

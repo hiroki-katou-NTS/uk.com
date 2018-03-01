@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 /**
  * The Enum FontRearSection.
  */
+//前後区分
 public enum FontRearSection {
 	
 	/** The before. */
