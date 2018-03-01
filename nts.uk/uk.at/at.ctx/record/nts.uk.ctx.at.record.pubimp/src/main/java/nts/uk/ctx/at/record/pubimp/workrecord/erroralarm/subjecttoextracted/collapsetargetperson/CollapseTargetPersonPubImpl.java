@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.pubimp.workrecord.erroralarm.subjecttoextracted.algorithm.collapsetargetperson;
+package nts.uk.ctx.at.record.pubimp.workrecord.erroralarm.subjecttoextracted.collapsetargetperson;
 
 import java.util.Collections;
 import java.util.List;
@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.subjecttoextracted.algorithm.collapsetargetperson.CollapseTargetPerson;
-import nts.uk.ctx.at.record.pub.workrecord.erroralarm.subjecttoextracted.algorithm.collapsetargetperson.CollapseTargetPersonPub;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.subjecttoextracted.collapsetargetperson.CollapseTargetPerson;
+import nts.uk.ctx.at.record.pub.workrecord.erroralarm.subjecttoextracted.collapsetargetperson.CollapseTargetPersonPub;
 
 @Stateless
 public class CollapseTargetPersonPubImpl implements CollapseTargetPersonPub {
