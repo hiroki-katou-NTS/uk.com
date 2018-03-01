@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -38,6 +41,9 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 	/** The Constant LEAVE_ABSENCE_QUOTA_NO. */
 	private static final int LEAVE_ABSENCE_QUOTA_NO = 1;
 
+	/** The Constant NOT_DELETED. */
+	private static final int NOT_DELETED = 0;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -64,6 +70,9 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 		// Add company condition 
 		conditions.add(cb.equal(root.get(EmployeeDataView_.cid), comId));
+
+		// Add NOT_DELETED condition
+		conditions.add(cb.equal(root.get(EmployeeDataView_.delStatusAtr), NOT_DELETED));
 
 		// employment condition
 		if (paramQuery.getFilterByEmployment()) {
@@ -233,7 +242,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		// sort by worktype code
 		if (paramQuery.getSystemType() == SystemType.EMPLOYMENT.value) {
 			orders.add(cb.asc(root.get(EmployeeDataView_.workTypeCd)));
-		}
+		} 
 
 		// sort by employee code
 		orders.add(cb.asc(root.get(EmployeeDataView_.scd)));
@@ -241,12 +250,19 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 		// execute query & add to resultList
 		resultList.addAll(em.createQuery(cq).getResultList());
+		
+		// Distinct employee in result list.
+		resultList = resultList.stream().filter(this.distinctByKey(EmployeeDataView::getSid)).collect(Collectors.toList());
 
 		return resultList.stream().map(entity -> RegulationInfoEmployee.builder()
-				.classificationCode(Optional.ofNullable(entity.getClassificationCode())).employeeCode(entity.getScd())
-				.employeeID(entity.getSid()).employmentCode(Optional.ofNullable(entity.getEmpCd()))
-				.hireDate(Optional.ofNullable(entity.getComStrDate())).jobTitleCode(Optional.ofNullable(entity.getJobCd()))
-				.name(Optional.ofNullable(entity.getBusinessName())).workplaceCode(Optional.ofNullable(entity.getWplCd()))
+				.classificationCode(Optional.ofNullable(entity.getClassificationCode()))
+				.employeeCode(entity.getScd())
+				.employeeID(entity.getSid())
+				.employmentCode(Optional.ofNullable(entity.getEmpCd()))
+				.hireDate(Optional.ofNullable(entity.getComStrDate()))
+				.jobTitleCode(Optional.ofNullable(entity.getJobCd()))
+				.name(Optional.ofNullable(entity.getBusinessName()))
+				.workplaceCode(Optional.ofNullable(entity.getWplCd()))
 				.workplaceName(Optional.ofNullable(entity.getWplName()))
 				.build()).collect(Collectors.toList());
 	}
@@ -263,6 +279,11 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		BsymtEmployeeOrderPK pk = new BsymtEmployeeOrderPK(comId, sortOrderNo, systemType);
 		Optional<BsymtEmployeeOrder> empOrder = this.queryProxy().find(pk, BsymtEmployeeOrder.class);
 		return empOrder.isPresent() ? empOrder.get().getLstBsymtEmpOrderCond() : Collections.emptyList();
+	}
+	
+	private <T> java.util.function.Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+	    Set<Object> seen = ConcurrentHashMap.newKeySet();
+	    return t -> seen.add(keyExtractor.apply(t));
 	}
 
 	/**

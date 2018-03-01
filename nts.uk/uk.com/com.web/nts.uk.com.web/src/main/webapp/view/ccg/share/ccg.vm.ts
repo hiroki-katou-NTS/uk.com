@@ -106,7 +106,7 @@ module nts.uk.com.view.ccg.share.ccg {
             returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
 
             // List WorkType
-            listWorkType: KnockoutObservableArray<WorkType>;
+            listWorkType: KnockoutObservableArray<BusinessType>;
             selectedWorkTypeCode: KnockoutObservableArray<string>;
             workTypeColumns: KnockoutObservableArray<any>;
 
@@ -210,8 +210,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 ]);
                 // Define gridlist's columns
                 self.workTypeColumns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('CCG001_60'), prop: 'workTypeCode', width: 100 },
-                    { headerText: nts.uk.resource.getText('CCG001_61'), prop: 'name', width: 200 }
+                    { headerText: nts.uk.resource.getText('CCG001_60'), prop: 'businessTypeCode', width: 100 },
+                    { headerText: nts.uk.resource.getText('CCG001_61'), prop: 'businessTypeName', width: 200 }
                 ]);
             }
             
@@ -430,7 +430,11 @@ module nts.uk.com.view.ccg.share.ccg {
 
                         nts.uk.ui.block.clear(); // clear block UI
 
-                        _.defer(() => self.applyDataSearch().always(() => dfd.resolve()));
+                        _.defer(() => self.applyDataSearch().always(() => {
+                            // Set acquired base date to status period end date
+                            self.statusPeriodEnd(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT));
+                            dfd.resolve(); 
+                        }));
                     });
                 });
 
@@ -607,7 +611,13 @@ module nts.uk.com.view.ccg.share.ccg {
                         }
                     } else {
                         service.getCurrentHistoryItem().done(item => {
-                            service.getClosureTiedByEmployment(item.employmentCode).done(id => dfd.resolve(id));
+                            if (item) {
+                                service.getClosureTiedByEmployment(item.employmentCode).done(id => dfd.resolve(id));
+                            } else {
+                                const DEFAULT_VALUE = 1;
+                                // Q&A: #88282 (update specs)
+                                dfd.resolve(DEFAULT_VALUE);
+                            }
                         });
                     }
                 });
@@ -791,11 +801,14 @@ module nts.uk.com.view.ccg.share.ccg {
                             // has permission or acquiredDate is not future
                             self.queryParam.baseDate = acquiredDate;
                             if (self.showAdvancedSearchTab) {
-                                self.reloadAdvanceSearchTab().done(() => nts.uk.ui.block.clear()); // clear block UI
+                                self.reloadAdvanceSearchTab().done(() => {
+                                    nts.uk.ui.block.clear();// clear block UI
+                                    dfd.resolve();
+                                });
                             } else {
                                 nts.uk.ui.block.clear(); // clear block UI
+                                dfd.resolve();
                             }
-                            dfd.resolve();
                         } else {
                             // no permission and acquiredDate is future
                             dfd.reject();
@@ -819,15 +832,13 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.queryParam.retireEnd = self.statusPeriodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
 
                 // reload advanced search tab.
-                $.when(service.searchWorkplaceOfEmployee(self.baseDate().toDate()),
+                $.when(service.searchWorkplaceOfEmployee(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
                     service.searchAllWorkType())
-                    .done((selectedCodes, workTypeList: Array<WorkType>) => {
+                    .done((selectedCodes, workTypeList: Array<BusinessType>) => {
                         self.selectedCodeWorkplace(selectedCodes);
                         self.listWorkType(workTypeList);
-                        _.forEach(workTypeList, item => {
-                            self.selectedWorkTypeCode.push(item.workTypeCode)
-                        });
-                        
+                        self.selectedWorkTypeCode(_.map(workTypeList, vl => vl.businessTypeCode));
+
                         self.reloadDataSearch();
 
                         if (self.showEmployment) {
@@ -973,18 +984,18 @@ module nts.uk.com.view.ccg.share.ccg {
              * function click by button employee login
              */
             getEmployeeLogin(): void {
-                var self = this;
+                let self = this;
                 if (self.isInvalidBaseDate()) {
                     return;
                 }
                 nts.uk.ui.block.invisible(); // block ui
-                service.searchEmployeeByLogin(self.baseDate().toDate()).done(data => {
-                    self.returnDataFromCcg001(self.combineData(data));
-                    self.hideComponent();
-                    nts.uk.ui.block.clear(); // clear block UI
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error);
-                });
+                service.searchEmployeeByLogin(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate())
+                    .done(data => {
+                        self.returnDataFromCcg001(self.combineData(data));
+                        self.hideComponent();
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError(error);
+                    }).always(() => nts.uk.ui.block.clear());  // clear block UI
             }
 
             /**
@@ -1013,7 +1024,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     if (self.showPeriodYM) { // Period accuracy is YM 
                         service.calculatePeriod(self.selectedClosure(), parseInt(self.periodEnd().format('YYYYMM')))
                             .done(date => {
-                                return dfd.resolve(date);
+                                return dfd.resolve(date[0]);
                             });
                     } else { // Period accuracy is YMD
                         dfd.resolve(self.periodEnd().format(CcgDateFormat.DEFAULT_FORMAT));
@@ -1285,15 +1296,9 @@ module nts.uk.com.view.ccg.share.ccg {
             static ONLY_MYSELF = 3;
         }
 
-        interface WorkType {
-            abbreviationName: string;
-            companyId: string;
-            displayAtr: number;
-            memo: string;
-            name: string;
-            sortOrder: number;
-            symbolicName: string;
-            workTypeCode: string;
+        interface BusinessType {
+            businessTypeCode: string;
+            businessTypeName: string;
         }
     }
 }

@@ -16,4 +16,5 @@ public class AppListAtrOutput {
 	private List<ApplicationFullOutput> lstAppFull;
 	private ApplicationStatus appStatus;
 	private List<String> lstAppColor;
+	private List<AppPrePostGroup> lstAppGroup;
 }
