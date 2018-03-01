@@ -39,10 +39,10 @@
 							</div>
 						</td>
 						<td><input
-							data-bind="ntsTextEditor: {value: fromDigit, option : {width : '40px'}}" />
+							data-bind="ntsTextEditor: {value: fromDigit, enable: isEditMode, option : {width : '40px'}}" />
 							<label>#{i18n.getText('CMF001_336')}</label> <label>#{i18n.getText('CMF001_337')}</label>
 							<input
-							data-bind="ntsTextEditor: {value: toDigit, option : {width : '40px'}}" />
+							data-bind="ntsTextEditor: {value: toDigit, enable: isEditMode, option : {width : '40px'}}" />
 							<label>#{i18n.getText('CMF001_339')}</label></td>
 					</tr>
 					<tr>
@@ -82,6 +82,7 @@
 								data-bind="ntsComboBox: {
 								options: itemsDelimiterSet,
 								optionsValue: 'code',
+								enable: isEditMode,
 								visibleItemsCount: 5,
 								value: selectedDelimiterSet,
 								optionsText: 'name',
@@ -110,6 +111,7 @@
 								data-bind="ntsComboBox: {
 								options: itemsRoundProcessContent,
 								optionsValue: 'code',
+								enable: isEditMode,
 								visibleItemsCount: 5,
 								value: selectedRoundProcessContent,
 								optionsText: 'name',
@@ -136,6 +138,7 @@
 						<td><input
 							data-bind="ntsTextEditor: {
 									value: fixedValue,
+									enable: isEditMode,
 									option : {width : '200px'}}" />
 						</td>
 					</tr>

@@ -10,8 +10,6 @@ module nts.uk.com.view.cmf001.i.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
-        valueTexBox: KnockoutObservable<any> = ko.observable('');
-
         isEditMode: KnockoutObservable<boolean>;
         
         selectedFormat: KnockoutObservable<any>;
@@ -19,6 +17,8 @@ module nts.uk.com.view.cmf001.i.viewmodel {
 
         selectedFixedValue: KnockoutObservable<any>;
         itemsFixedValue: KnockoutObservableArray<model.ItemModel>;
+        fixedValue: KnockoutObservable<any>;
+        
         constructor() {
             let self = this;
             
@@ -38,6 +38,7 @@ module nts.uk.com.view.cmf001.i.viewmodel {
                 new model.ItemModel(1, getText('CMF001_323'))
             ]);
             self.selectedFixedValue = ko.observable(1);
+            self.fixedValue = ko.observable('');
         }
 
         saveNumericSetting() {
