@@ -61,6 +61,22 @@ module nts.uk.com.view.cmf001.share.model {
         SPACE_BEFORE = 2,
         SPACE_AFTER = 3
     }
+    
+    export enum M_ACTIVATION {
+        Duplicate_Standard = 0,
+        Duplicate_User_Settings = 1,
+        Duplicate_From_Standard_To_User_Setting = 2,
+        Duplicate_From_User_Setting_To_Standard = 3
+    }
+    
+    export function getSystemTypes(): Array<ItemModel> {
+        return [
+            new model.ItemModel(0, 'HR System'),
+            new model.ItemModel(1, 'Attendance System'),
+            new model.ItemModel(2, 'Payroll System'),
+            new model.ItemModel(3, 'Office Helper')
+        ];
+    }
 
     export class StandardAcceptanceConditionSetting {
         conditionSettingCode: KnockoutObservable<string>;
@@ -107,8 +123,13 @@ module nts.uk.com.view.cmf001.share.model {
         acceptItemName: KnockoutObservable<string>;
         conditionSettingCode: KnockoutObservable<string>;
 
-        constructor() {
-
+        constructor(csvItemName: string, csvItemNumber: number, itemType: number, acceptItemNumber: number, acceptItemName: string, conditionCode: string) {
+            this.csvItemName = ko.observable(csvItemName);
+            this.csvItemNumber = ko.observable(csvItemNumber);
+            this.itemType = ko.observable(itemType);
+            this.acceptItemNumber = ko.observable(acceptItemNumber);
+            this.acceptItemName = ko.observable(acceptItemName);
+            this.conditionSettingCode = ko.observable(conditionCode);
         }
     }
 
@@ -168,7 +189,21 @@ module nts.uk.com.view.cmf001.share.model {
             this.systemCode = ko.observable(sysCode);
         }
     }
-
+    
+    //screen E
+    export class MappingListData {
+        csvItemName: KnockoutObservable<string>;
+        csvItemNumber: KnockoutObservable<number>;
+        dispCsvItemName: string;
+        dispCsvItemNumber: number;
+        constructor(itemNumber: number, itemName: string) {
+            this.csvItemName = ko.observable(itemName);
+            this.csvItemNumber = ko.observable(itemNumber);
+            this.dispCsvItemName = itemName;
+            this.dispCsvItemNumber = itemNumber;
+        }
+    }
+    
     //screen G
     export class NumericDataFormatSetting {
         fixedValue: KnockoutObservable<number>;
@@ -182,8 +217,18 @@ module nts.uk.com.view.cmf001.share.model {
         decimalPointClassification: KnockoutObservable<number>;
         decimalFraction: KnockoutObservable<number>;
 
-        constructor() {
-
+        constructor(effectDigitLength: number, startDigit: number, endDigit: number, decimalDivision: number, decimalDigitNumber: number,
+         decimalPointClassification: number, decimalFraction: number, codeConvertCode: string, fixedValue: number, valueOfFixed: string) {
+            this.fixedValue = ko.observable(fixedValue);
+            this.decimalDivision = ko.observable(decimalDivision);
+            this.effectiveDigitLength = ko.observable(effectDigitLength);
+            this.codeConvertCode = ko.observable(codeConvertCode);
+            this.valueOfFixed = ko.observable(valueOfFixed);
+            this.decimalDigitNumber = ko.observable(decimalDigitNumber);
+            this.startDigit = ko.observable(startDigit);
+            this.endDigit = ko.observable(endDigit);
+            this.decimalPointClassification = ko.observable(decimalPointClassification);
+            this.decimalFraction = ko.observable(decimalFraction);
         }
     }
 
@@ -199,8 +244,17 @@ module nts.uk.com.view.cmf001.share.model {
         startDigit: KnockoutObservable<number>;
         endDigit: KnockoutObservable<number>;
 
-        constructor() {
-
+        constructor(effectDigitLength: number, startDigit: number, endDigit: number, codeEditing: number, codeEditDigit: number,
+         codeEditingMethod: number, codeConvertCode: string, fixedValue: number, valueOfFixed: string) {
+            this.fixedValue = ko.observable(fixedValue);
+            this.codeEditing = ko.observable(codeEditing);
+            this.effectiveDigitLength = ko.observable(effectDigitLength);
+            this.codeConvertCode = ko.observable(codeConvertCode);
+            this.valueOfFixed = ko.observable(valueOfFixed);
+            this.codeEditDigit = ko.observable(codeEditDigit);
+            this.startDigit = ko.observable(startDigit);
+            this.endDigit = ko.observable(endDigit);
+            this.codeEditingMethod = ko.observable(codeEditingMethod);
         }
     }
 
@@ -238,14 +292,32 @@ module nts.uk.com.view.cmf001.share.model {
     export class AcceptScreenConditionSetting {
         receiptItemName: KnockoutObservable<string>;
         selectComparisonCondition: KnockoutObservable<number>;
-        conditionValue1: KnockoutObservable<string>;
-        conditionValue2: KnockoutObservable<string>;
-
-        constructor(name: string, compareCondition: number, value1: string, value2: string) {
-            this.receiptItemName = ko.observable(name);
-            this.selectComparisonCondition = ko.observable(compareCondition);
-            this.conditionValue1 = ko.observable(value1);
-            this.conditionValue2 = ko.observable(value2);
+        timeConditionValue2: KnockoutObservable<number>;
+        timeConditionValue1: KnockoutObservable<number>;
+        timeMomentConditionValue2: KnockoutObservable<number>;
+        timeMomentConditionValue1: KnockoutObservable<number>;
+        dateConditionValue2: KnockoutObservable<string>;
+        dateConditionValue1: KnockoutObservable<string>;
+        characterConditionValue2: KnockoutObservable<string>;
+        characterConditionValue1: KnockoutObservable<string>;
+        numberConditionValue2: KnockoutObservable<number>;
+        numberConditionValue1: KnockoutObservable<number>;
+        receiptItemNumber: KnockoutObservable<number>;
+        
+        constructor(receiptItemName: string, selectComparisonCondition: number,timeConditionValue2: number, timeConditionValue1: number, timeMomentConditionValue2:number, timeMomentConditionValue1: number,
+        dateConditionValue2: string, dateConditionValue1: string, characterConditionValue2: string, characterConditionValue1: string, numberConditionValue2: number, numberConditionValue1: number) {
+            this.receiptItemName = ko.observable(receiptItemName);
+            this.selectComparisonCondition = ko.observable(selectComparisonCondition);
+            this.timeConditionValue2 = ko.observable(timeConditionValue2);
+            this.timeConditionValue1 = ko.observable(timeConditionValue1);
+            this.timeMomentConditionValue2 = ko.observable(timeMomentConditionValue2);
+            this.timeMomentConditionValue1 = ko.observable(timeMomentConditionValue1);
+            this.dateConditionValue2 = ko.observable(dateConditionValue2);
+            this.dateConditionValue1 = ko.observable(dateConditionValue1);
+            this.characterConditionValue2 = ko.observable(characterConditionValue2);
+            this.characterConditionValue1 = ko.observable(characterConditionValue1);
+            this.numberConditionValue2 = ko.observable(numberConditionValue2);
+            this.numberConditionValue1 = ko.observable(numberConditionValue1);
         }
     }
 
@@ -304,38 +376,299 @@ module nts.uk.com.view.cmf001.share.model {
     }
 
     //screen R
-    export class ImExErrorLog {
+    export interface IImExErrorLog{
+        /**
+        * ログ連番
+        */
+       logSeqNumber: number;
+        
+        /**
+        * 会社ID
+        */
+        cid: string;
+        
+        /**
+        * 外部受入処理ID
+        */
+        externalProcessId: string;
+        
+        /**
+        * CSVエラー項目名
+        */
+        csvErrorItemName: string;
+        
+        /**
+        * CSV受入値
+        */
+        csvAcceptedValue: string;
+        
+        /**
+        * エラー内容
+        */
+        errorContents: string;
+        
+        /**
+        * レコード番号
+        */
         recordNumber: number;
-        csvFieldName: string;
-        fieldName: string;
-        fieldValue: string;
-        errorDesciption: string;
-        constructor(recordNumber: number, csvFieldName: string, fieldName: string, fieldValue: string, errorDesciption: string) {
-            this.recordNumber = recordNumber;
-            this.csvFieldName = csvFieldName;
-            this.fieldName = fieldName;
-            this.fieldValue = fieldValue;
-            this.errorDesciption = errorDesciption;
+        
+        /**
+        * ログ登録日時
+        */
+        logRegDateTime: string;
+        
+        /**
+        * 項目名
+        */
+        itemName: string;
+        
+        /**
+        * エラー発生区分
+        */
+        errorAtr: number;
+    }
+    
+    export class ImExErrorLog {
+        /**
+        * ログ連番
+        */
+       logSeqNumber: number;
+        
+        /**
+        * 会社ID
+        */
+        cid: string;
+        
+        /**
+        * 外部受入処理ID
+        */
+        externalProcessId: string;
+        
+        /**
+        * CSVエラー項目名
+        */
+        csvErrorItemName: string;
+        
+        /**
+        * CSV受入値
+        */
+        csvAcceptedValue: string;
+        
+        /**
+        * エラー内容
+        */
+        errorContents: string;
+        
+        /**
+        * レコード番号
+        */
+        recordNumber: number;
+        
+        /**
+        * ログ登録日時
+        */
+        logRegDateTime: string;
+        
+        /**
+        * 項目名
+        */
+        itemName: string;
+        
+        /**
+        * エラー発生区分
+        */
+        errorAtr: number;
+        
+        constructor(param: IImExErrorLog) {
+            let self = this;
+            if (param)
+            {
+                self.logSeqNumber(param.logSeqNumber);
+                self.cid(param.cid);
+                self.externalProcessId(param.externalProcessId);
+                self.csvErrorItemName(param.csvErrorItemName);
+                self.csvAcceptedValue(param.csvAcceptedValue);
+                self.errorContents(param.errorContents);
+                self.recordNumber(param.recordNumber);
+                self.logRegDateTime(param.logRegDateTime);
+                self.errorAtr(param.errorAtr);
+            }
         }
     }
 
+    export interface IImExExecuteResultLogR{
+        /**
+        * 会社ID
+        */
+        cid: string;
+        
+        /**
+        * 条件設定コード
+        */
+        conditionSetCd: string;
+        
+        /**
+        * 外部受入処理ID
+        */
+        externalProcessId: string;
+        
+        /**
+        * 実行者ID
+        */
+        executorId: string;
+        
+        /**
+        * ユーザID
+        */
+        userId: string;
+        
+        /**
+        * 処理開始日時
+        */
+        processStartDatetime: string;
+        
+        /**
+        * 定型区分
+        */
+        standardAtr: number;
+        
+        /**
+        * 実行形態
+        */
+        executeForm: number;
+        
+        /**
+        * 対象件数
+        */
+        targetCount: number;
+        
+        /**
+        * エラー件数
+        */
+        errorCount: number;
+        
+        /**
+        * ファイル名
+        */
+        fileName: string;
+        
+        /**
+        * システム種類
+        */
+        systemType: number;
+        
+        /**
+        * 結果状態
+        */
+        resultStatus: number;
+        
+        /**
+        * 処理終了日時
+        */
+        processEndDatetime: string;
+        
+        /**
+        * 処理区分
+        */
+        processAtr: number;
+    }
+    
     export class ImExExecuteResultLogR {
-        condCode: KnockoutObservable<string>;
-        condName: KnockoutObservable<string>;
-        startTime: KnockoutObservable<string>;
-        totalCount: KnockoutObservable<string>;
-        normalCount: KnockoutObservable<string>;
-        errorCount: KnockoutObservable<string>;
-
-        constructor(condCode: string, condName: string, startTime: string, totalCount: string, normalCount: string, errorCount: string) {
-            this.condCode = ko.observable(condCode);
-            this.condName = ko.observable(condName);
-            this.startTime = ko.observable(startTime);
-            this.totalCount = ko.observable(totalCount);
-            this.normalCount = ko.observable(normalCount);
-            this.errorCount = ko.observable(errorCount);
+        /**
+        * 会社ID
+        */
+        cid: string;
+        
+        /**
+        * 条件設定コード
+        */
+        conditionSetCd: string;
+        
+        /**
+        * 外部受入処理ID
+        */
+        externalProcessId: string;
+        
+        /**
+        * 実行者ID
+        */
+        executorId: string;
+        
+        /**
+        * ユーザID
+        */
+        userId: string;
+        
+        /**
+        * 処理開始日時
+        */
+        processStartDatetime: string;
+        
+        /**
+        * 定型区分
+        */
+        standardAtr: number;
+        
+        /**
+        * 実行形態
+        */
+        executeForm: number;
+        
+        /**
+        * 対象件数
+        */
+        targetCount: number;
+        
+        /**
+        * エラー件数
+        */
+        errorCount: number;
+        
+        /**
+        * ファイル名
+        */
+        fileName: string;
+        
+        /**
+        * システム種類
+        */
+        systemType: number;
+        
+        /**
+        * 結果状態
+        */
+        resultStatus: number;
+        
+        /**
+        * 処理終了日時
+        */
+        processEndDatetime: string;
+        
+        /**
+        * 処理区分
+        */
+        processAtr: number;
+        
+        constructor(param: IImExExecuteResultLogR) {
+            let self = this;
+            if (param){
+                self.cid(param.cid);
+                self.conditionSetCd(param.conditionSetCd);
+                self.externalProcessId(param.externalProcessId);
+                self.executorId(param.executorId);
+                self.userId(param.userId);
+                self.processStartDatetime(param.processStartDatetime);
+                self.standardAtr(param.standardAtr);
+                self.executeForm(param.executeForm);
+                self.targetCount(param.targetCount);
+                self.errorCount(param.errorCount);
+                self.fileName(param.fileName);
+                self.systemType(param.systemType);
+                self.resultStatus(param.resultStatus);
+                self.processEndDatetime(param.processEndDatetime);
+                self.processAtr(param.processAtr);                                
+            }
         }
 
     }
-
 }

@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+ <ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cmf001.a.style.css" />
+			<com:scriptfile path="cmf001.a.start.js" />
+			
+		</ui:define>
+		
+		<ui:define name="content">
+			<div id="contents-area" class="button-area">
+				<div class="label-action">
+					#{i18n.getText('CMF001_26')}
+				</div>
+				
+				<div class="image-button">
+					<div class="image-left">
+						<a href="../o/index.xhtml"><img src="../resource/外部受入A1.jpg"/></a>
+					</div>
+					
+					<div class="image-left">
+						<a href="../b/index.xhtml"><img src="../resource/外部受入A2.jpg"/></a>
+					</div>
+					
+					<div class="image-right">
+						<a href="../s/index.xhtm"><img src="../resource/外部受入A3.jpg"/></a>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

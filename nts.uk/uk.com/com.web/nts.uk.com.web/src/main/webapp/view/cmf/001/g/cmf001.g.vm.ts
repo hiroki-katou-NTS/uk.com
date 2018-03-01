@@ -10,50 +10,71 @@ module nts.uk.com.view.cmf001.g.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     
     export class ScreenModel {
+       
+        numDataFormatSetting: KnockoutObservable<model.NumericDataFormatSetting> = ko.observable(new model.NumericDataFormatSetting(0, null, null , 0, null,
+         0, 0, "1", 0, ""));
+        effectDigitItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
+            new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_223')),
+            new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF001_224'))
+        ]);
+        effectMinorityItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
+            new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_232')),
+            new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF001_233'))
+        ]);
+        effectFixedValItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
+            new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_254')),
+            new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF001_255'))
+        ]);
         
-        /* screen */
-        effectDigit: KnockoutObservable<boolean>;
-        deffectDigit: KnockoutObservable<boolean>;
-        effectMinority: KnockoutObservable<boolean>;
-        deffectMinority: KnockoutObservable<boolean>;
-        effectFixedVal: KnockoutObservable<boolean>;
-        deffectFixedVal: KnockoutObservable<boolean>;
+        decimalPointClsItem: KnockoutObservableArray<model.ItemModel>;
+        decimalFractionItem: KnockoutObservableArray<model.ItemModel>;
         
-        selectedFraction: KnockoutObservable<string>;
-        selectedPointIndicator: KnockoutObservable<string>
-        //selectedMinorityEdit: KnockoutObservable<boolean>;
-        enable: KnockoutObservable<boolean>;
-        startDigit: KnockoutObservable<number>;
-        endDigit: KnockoutObservable<number>;
-        minorityDigit: KnockoutObservable<number>;
-        fixedVal: KnockoutObservable<number>;
+        /* value*/
+        inputMode: boolean
         constructor() {
             var self = this;
-            self.effectDigit = ko.observable(false);
-            self.deffectDigit = ko.observable(true);
-            self.effectMinority = ko.observable(false);
-            self.deffectMinority = ko.observable(false);
-            self.effectFixedVal = ko.observable(false);
-            self.deffectFixedVal = ko.observable(false);
-            self.startDigit = ko.observable(1);
-            self.endDigit = ko.observable(8);
-            self.minorityDigit = ko.observable(2);
-            self.fixedVal = ko.observable(12345678901234567890);
-            self.selectedFraction = ko.observable('001');
-            self.selectedPointIndicator = ko.observable('001');
-            self.enable = ko.observable(true);
+            self.decimalPointClsItem = ko.observableArray([
+                new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.NO_OUTPUT_DECIMAL_POINT, 'NO_OUTPUT_DECIMAL_POINT'),
+                new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.OUTPUT_DECIMAL_POINT, 'OUTPUT_DECIMAL_POINT')
+            ]);
+            self.decimalFractionItem = ko.observableArray([
+                new model.ItemModel(model.ROUNDING_METHOD.TRUNCATION, 'TRUNCATION'),
+                new model.ItemModel(model.ROUNDING_METHOD.ROUND_UP, 'ROUND_UP'),
+                new model.ItemModel(model.ROUNDING_METHOD.DOWN_4_UP_5, 'DOWN_4_UP_5')
+            ]);
+            let param = getShared("params_cmf001g");
+            let numFormat = param.numDataFormatSetting;
+            let inputMode = param.inputMode;
+            self.inputMode = inputMode;
+            if(_.isNull(numFormat)){
+                
+            }else{
+                self.numDataFormatSetting = ko.observable(new model.NumericDataFormatSetting(numFormat.effectiveDigitLength, numFormat.startDigit,
+                numFormat.endDigit, numFormat.decimalDivision, numFormat.decimalDigitNumber, numFormat.decimalPointClassification,
+                numFormat.decimalFraction, numFormat.codeConvertCode, numFormat.fixedValue, numFormat.valueOfFixed)); 
+            }
             
         }
         open001_K(){
             var self = this;
-            alert(self.effectDigit);
-            alert(self.deffectDigit);
+            nts.uk.ui.windows.sub.modal("/view/cmf/001/k/index.xhtml").onClosed(()=>{
+                let xxx = getShared("xxx");
+                //get shared
+                alert("CLOSED");
+            });
         }
         saveNumericSetting(){
+            var self = this;
+            if(self.inputMode){
+                setShared("params_cmf001g_res", { numDataFormatSetting: ko.toJS(self.numDataFormatSetting) });
+                nts.uk.ui.windows.close();
+            }else{
+                
+            }
             
         }
         cancelNumericSetting(){
-            
+            nts.uk.ui.windows.close();
         }
     }
     

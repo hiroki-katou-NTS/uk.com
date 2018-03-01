@@ -6,7 +6,9 @@ module nts.uk.com.view.cmf001.o.viewmodel {
     import dialog = nts.uk.ui.dialog.info;
     import alertError = nts.uk.ui.dialog.alertError;
     import block = nts.uk.ui.block;
-    
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+
     export class ScreenModel {
         //wizard
         stepList: Array<NtsWizardStep> = [];
@@ -26,7 +28,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         stereoType: KnockoutObservable<string> = ko.observable('');
         fileId: KnockoutObservable<string> = ko.observable('');
         filename: KnockoutObservable<string> = ko.observable('');
-        fileInfo: KnockoutObservable<any> = ko.observable("");
+        fileInfo: KnockoutObservable<any> = ko.observable(null);
         textId: KnockoutObservable<string> = ko.observable("CMF001_447");
         accept: KnockoutObservableArray<string> = ko.observableArray(['.csv']);
         asLink: KnockoutObservable<boolean> = ko.observable(false);
@@ -58,8 +60,10 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     let item = _.find(ko.toJS(self.listCondition), (x: model.StandardAcceptanceConditionSetting) => x.dispConditionSettingCode == data);
                     //選択したカレント行の「条件コード/名称」を画面右側の「条件コード/名称」にセットする
                     self.selectedConditionName(item.dispConditionSettingName);
-                    self.selectedConditionLineNumber(item.csvDataItemLineNumber);
-                    self.selectedConditionStartLine(item.csvDataStartLine);
+                    let lineNumber = item.csvDataItemLineNumber;
+                    let startLine = item.csvDataStartLine
+                    self.selectedConditionLineNumber(lineNumber);
+                    self.selectedConditionStartLine(startLine);
                 }
                 else {
                     self.selectedConditionName('');
@@ -105,14 +109,28 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             var self = this;
             block.grayout();
             $("#file-upload").ntsFileUpload({ stereoType: "flowmenu" }).done(function(res) {
-                self.fileId(res[0].id);
-
+                service.getTotalRecord(res[0].id).done(function(totalRecord: any) {
+                    console.log(res[0].id, totalRecord);
+                    //アップロードCSVが取込開始行に満たない場合
+                    if (totalRecord < self.selectedConditionStartLine()) {
+                        self.fileId('');
+                        self.filename('');
+                        dialog({ messageId: "Msg_1059" });
+                    }
+                    //アップロードCSVが取込開始行以上ある
+                    else {
+                        //基盤からファイルIDを取得する
+                        self.fileId(res[0].id);
+                    }
+                }).fail(function(err) {
+                    dialog({ messageId: "Msg_1059" });
+                }).always(() => {
+                    block.clear();
+                });
             }).fail(function(err) {
                 self.fileId('');
                 //エラーメッセージ　Msg_910　　ファイルアップロードに失敗しました。
                 dialog({ messageId: "Msg_910" });
-            }).always(() => {
-                block.clear();
             });
         }
 
@@ -174,11 +192,8 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     let _rspList: Array<model.StandardAcceptanceConditionSetting> = _.map(data, rsp => {
                         return new model.StandardAcceptanceConditionSetting(rsp.conditionSetCd, rsp.conditionSetName, rsp.deleteExistData, rsp.acceptMode, rsp.csvDataLineNumber, rsp.csvDataStartLine, rsp.deleteExtDataMethod);
                     });
-                    //_rspList = _.sortBy(_rspList, ['employeeCd']);
-                    //_.each(_rspList, rsp => self.roleSetPersonList.push(rsp));
-                    console.log(_rspList);
                     self.listCondition(_rspList);
-                    
+
                     //取得した設定を「条件設定一覧」に表示する
                     self.selectedConditionCd(self.listCondition()[0].conditionSettingCode());
                     self.selectedConditionName(self.listCondition()[0].conditionSettingName());
@@ -200,31 +215,37 @@ module nts.uk.com.view.cmf001.o.viewmodel {
 
             //アップロードしたファイルを読み込む
             self.listAccept([]);
-            for (let i = 1; i < 8; i++) {
-                self.listAccept.push(new AcceptItems('00' + i, '基本給', "description " + i, "基本給" + i, "基本給" + i + i));
+            for (let i = 0; i < 5; i++) {
+                self.listAccept.push(new AcceptItems('00' + i, '基本給', "description " + i, "基本給" + i, i));
             }
             //ファイルの行数を取得する
             self.count(self.listAccept().length);
         }
 
-        editIngestion(item) {
-            console.log('editIngestion', item);
-            switch (item) {
+        editIngestion(item: any) {
+            var self = this;
+            console.log('editIngestion', item, self);
+            
+            switch (item.itemType) {
                 case 0:
                     //数値型の場合                    
                     //G:「数値型設定」ダイアログをモーダルで表示する
+                    nts.uk.ui.windows.sub.modal("/view/cmf/001/g/index.xhtml");
                     break;
                 case 1:
                     //文字型の場合
                     //H:「文字型設定」ダイアログをモーダルで表示する
+                    nts.uk.ui.windows.sub.modal("/view/cmf/001/h/index.xhtml");
                     break;
                 case 2:
                     //日付型の場合  
                     //I:「日付型設定」ダイアログをモーダルで表示する
+                    nts.uk.ui.windows.sub.modal("/view/cmf/001/i/index.xhtml");
                     break;
                 case 3:
                     //時間型の場合, 時刻型の場合 
                     //J:「時刻型・時間型設定」ダイアログをモーダルで表示する
+                    nts.uk.ui.windows.sub.modal("/view/cmf/001/j/index.xhtml");
                     break;
             }
         }
@@ -232,11 +253,31 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         receiveCondition(item) {
             //L:「受入条件設定ダイアログをモーダルで表示する
             console.log('receiveCondition', item);
+            nts.uk.ui.windows.sub.modal("/view/cmf/001/l/index.xhtml");
         }
 
         exeAccept() {
             //Q:「外部受入処理中ダイアログ」をチェック中で起動する 
             console.log('exeAccept');
+        }
+
+        // Open Dialog CDL002
+        private openDialogG() {
+            let self = this;
+            setShared('CMF001Params', {
+                /*isMultiple: '',
+                selectedCodes: '',
+                showNoSelection: '',*/
+            }, true);
+
+            nts.uk.ui.windows.sub.modal("/view/cmf/001/g/index.xhtml").onClosed(function() {
+                /*var isCancel = getShared('CDL002Cancel');
+                if (isCancel) {
+                    return;
+                }
+                var output = getShared('CDL002Output');
+                self.selectedItem(output);*/
+            });
         }
     }
 
@@ -245,8 +286,8 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         infoName: string;
         itemName: string;
         sampleData: string;
-        itemType: string;
-        constructor(id: string, infoName: string, itemName: string, sampleData: string, itemType: string) {
+        itemType: number;
+        constructor(id: string, infoName: string, itemName: string, sampleData: string, itemType: number) {
             this.id = id;
             this.infoName = infoName;
             this.itemName = itemName;
