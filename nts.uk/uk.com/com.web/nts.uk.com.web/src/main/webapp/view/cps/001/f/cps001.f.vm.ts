@@ -104,8 +104,6 @@ module cps001.f.vm {
                         unblock();
                     });
                 });
-
-                setShared('CPS001F_VALUES', {});
             }
         }
 
@@ -121,8 +119,8 @@ module cps001.f.vm {
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 block();
                 service.deletedata(rowItem.fileId).done(() => {
-                    unblock();
                     self.restart();
+                    unblock();
                 }).fail((mes) => {
                     unblock();
                 });
