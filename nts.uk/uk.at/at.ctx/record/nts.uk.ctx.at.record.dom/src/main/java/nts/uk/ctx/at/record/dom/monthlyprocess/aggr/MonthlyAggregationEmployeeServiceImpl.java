@@ -26,6 +26,8 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	/** ドメインサービス：月別実績を集計する */
 	@Inject
 	private AggregateMonthlyRecordService aggregateMonthlyRecordService;
+	// （2018.3.1 shuichi_ishida）　単純入出力テスト用クラス
+	//private MonthlyRelatedDataInOutTest aggregateMonthlyRecordService;
 	
 	/** リポジトリ：月別実績の勤怠時間 */
 	@Inject
@@ -96,23 +98,5 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 		
 		// 登録および更新
 		this.attendanceTimeRepository.persistAndUpdate(attendanceTime);
-		
-		//*****（テスト　2018.2.5 shuichi_ishida） 子（残業時間）だけ更新してみる
-		/*
-		val monthlyCalculation = attendanceTime.getMonthlyCalculation();
-		val aggregateTotalWorkingTime = monthlyCalculation.getTotalWorkingTime();
-		val overTimeWork = aggregateTotalWorkingTime.getOverTime();
-		val aggregateOverTimeList = overTimeWork.getAggregateOverTimeMap().values();
-		val attendanceTimeKey = new AttendanceTimeOfMonthlyKey(
-				attendanceTime.getEmployeeId(),
-				attendanceTime.getYearMonth(),
-				attendanceTime.getClosureId(),
-				attendanceTime.getClosureDate());
-		this.overTimeRepository.update(attendanceTimeKey, overTimeWork);
-		this.aggregateOverTimeRepository.removeByParentPK(attendanceTimeKey);
-		for (val aggregateOverTime : aggregateOverTimeList){
-			this.aggregateOverTimeRepository.insert(attendanceTimeKey, aggregateOverTime);
-		}
-		*/
 	}
 }

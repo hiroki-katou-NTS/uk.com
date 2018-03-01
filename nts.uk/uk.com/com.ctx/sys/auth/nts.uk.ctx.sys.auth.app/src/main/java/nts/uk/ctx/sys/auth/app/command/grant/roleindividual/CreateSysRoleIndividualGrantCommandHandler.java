@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -16,7 +18,6 @@ import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 
 @Stateless
@@ -53,21 +54,24 @@ public class CreateSysRoleIndividualGrantCommandHandler extends CommandHandlerWi
 		
 		// ドメインモデル「ロール個人別付与」を新規登録する | Register a domain model "Role individual grant"
 		RoleIndividualGrant domain = command.toDomain(sysAdminRole.get(0).getRoleId());
-
+        
 		if (command.isSetRoleAdminFlag() == true) {
-			List<Role> companyManagerRole = roleRepository.findByType(command.getDecisionCompanyID(), RoleType.COMPANY_MANAGER.value);
-			if (companyManagerRole.isEmpty())
-				throw new RuntimeException("No default company manager role exist");
-			
-			RoleIndividualGrant roleIndiGrantSys = RoleIndividualGrant.createFromJavaType(
-					command.getUserID(),
-					companyManagerRole.get(0).getRoleId(),
-					command.getDecisionCompanyID(),
-					RoleType.COMPANY_MANAGER.value,
-					command.getStartValidPeriod(),
-					command.getEndValidPeriod());
-			// ドメインモデル「ロール個人別付与」を新規登録する | Register a domain model "Role individual grant"
-			roleIndividualGrantRepo.add(roleIndiGrantSys);
+			val isExistCompanyRole = roleIndividualGrantRepo.findByUserCompanyRoleType(command.getUserID(), command.getDecisionCompanyID(), RoleType.COMPANY_MANAGER.value);
+			if (!isExistCompanyRole.isPresent()) {
+				List<Role> companyManagerRole = roleRepository.findByType(command.getDecisionCompanyID(), RoleType.COMPANY_MANAGER.value);
+				if (companyManagerRole.isEmpty())
+					throw new RuntimeException("No default company manager role exist");
+				
+				RoleIndividualGrant roleIndiGrantSys = RoleIndividualGrant.createFromJavaType(
+						command.getUserID(),
+						companyManagerRole.get(0).getRoleId(),
+						command.getDecisionCompanyID(),
+						RoleType.COMPANY_MANAGER.value,
+						command.getStartValidPeriod(),
+						command.getEndValidPeriod());
+				// ドメインモデル「ロール個人別付与」を新規登録する | Register a domain model "Role individual grant"
+				roleIndividualGrantRepo.add(roleIndiGrantSys);
+			}
 		}
 		roleIndividualGrantRepo.add(domain);
 		

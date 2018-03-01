@@ -12,9 +12,8 @@ module nts.uk.at.view.kal001.a.model {
     export class ScreenModel {
         
         // search component
-        ccgcomponent: GroupOption;
-        baseDateSearch: KnockoutObservable<Date>;
-        selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
+        ccg001ComponentOption: GroupOption;
+
 
         // employee list component
         listComponentOption: any;
@@ -39,43 +38,44 @@ module nts.uk.at.view.kal001.a.model {
             let self = this;
             
             //search component
-            self.selectedEmployee = ko.observableArray([]);
-            self.baseDateSearch = ko.observable(new Date());            
-            self.ccgcomponent = {
-               baseDate: self.baseDateSearch,
-               //Show/hide options
-               isQuickSearchTab: true,
-               isAdvancedSearchTab: true,
-               isAllReferableEmployee: true,
-               isOnlyMe: true,
-               isEmployeeOfWorkplace: true,
-               isEmployeeWorkplaceFollow: true,
-               isMutipleCheck: true,
-               isSelectAllEmployee: true,
-
-               onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
-                   self.employeeList(_.map(dataList, (data) =>{  return new UnitModelDto(data);}));
-                   console.log(self.employeeList());
-               },
-               onSearchOnlyClicked: function(data: EmployeeSearchDto) {
-                   var dataEmployee: EmployeeSearchDto[] = [];
-                   dataEmployee.push(data);
-                   self.employeeList(_.map(dataEmployee, (data) =>{  return new UnitModelDto(data);}));
-                   console.log(self.employeeList());
-               },
-               onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
-                   self.employeeList(_.map(dataList, (data) =>{  return new UnitModelDto(data);}));
-                   console.log(self.selectedEmployee());
-               },
-               onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
-                   self.employeeList(_.map(dataList, (data) =>{  return new UnitModelDto(data);}));
-                   console.log(self.employeeList());
-               },
-               onApplyEmployee: function(dataList: EmployeeSearchDto[]) {
-                   self.employeeList(_.map(dataList, (data) =>{  return new UnitModelDto(data);}));
-                   console.log(self.employeeList());
-               }
-
+            self.ccg001ComponentOption = {
+                /** Common properties */
+                systemType: 1,
+                showEmployeeSelection: true,
+                showQuickSearchTab: true,
+                showAdvancedSearchTab: true,
+                showBaseDate: true,
+                showClosure: true,
+                showAllClosure: true,
+                showPeriod: true,
+                periodFormatYM: false,
+                
+                /** Required parameter */
+                baseDate: moment().toISOString(),
+                periodStartDate: moment().toISOString(),
+                periodEndDate: moment().toISOString(),
+                inService: true,
+                leaveOfAbsence: true,
+                closed: true,
+                retirement: true,
+                
+                /** Quick search tab options */
+                showAllReferableEmployee: true,
+                showOnlyMe: true,
+                showSameWorkplace: true,
+                showSameWorkplaceAndChild: true,
+                
+                /** Advanced search properties */
+                showEmployment: true,
+                showWorkplace: true,
+                showClassification: true,
+                showJobTitle: true,
+                showWorktype: true,
+                isMutipleCheck: true,
+                
+                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                    self.employeeList(_.map(data.listEmployee, (e) =>{ return new UnitModelDto(e)}));
+                }
             }
                   
             
@@ -130,11 +130,11 @@ module nts.uk.at.view.kal001.a.model {
                     self.alarmCodeChange();
                     dfd.resolve();
                 }).fail((errorCheckTime) =>{
-                    
+                    alertError(errorCheckTime);
                 });
                 
             }).fail((errorAlarm)=>{
-
+                 alertError(errorAlarm);
             });
             
 
@@ -182,6 +182,14 @@ module nts.uk.at.view.kal001.a.model {
             
                             
         }
+        
+        public open_Dialog(): any {
+            let self = this;
+            nts.uk.ui.windows.setShared("alarmCode", self.currentAlarmCode());
+            modal("/view/kal/001/b/index.xhtml").onClosed(() => {
+                
+            });
+        }
 
     }
     
@@ -202,23 +210,24 @@ module nts.uk.at.view.kal001.a.model {
             this.startMonth = ko.observable(dto.startMonth);
             this.endMonth = ko.observable(dto.endMonth);
             this.checkBox = ko.observable(false);
-            this.checkBox.subscribe((checkBox)=>{
-                __viewContext["viewmodel"].checkBoxAllOrNot(checkBox);
-            });
         }
         
+        public setClick() : void{
+            this.checkBox(!this.checkBox());    
+            __viewContext["viewmodel"].checkBoxAllOrNot(this.checkBox());
+        }
         
-            public  getFormattedDate(date : number) : string {
-                var d = new Date(date),
-                    month = '' + (d.getMonth() + 1),
-                    day = '' + d.getDate(),
-                    year = d.getFullYear();
-            
-                if (month.length < 2) month = '0' + month;
-                if (day.length < 2) day = '0' + day;
-            
-                return [year, month, day].join('/');
-            }
+        public  getFormattedDate(date : number) : string {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+        
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+        
+            return [year, month, day].join('/');
+        }
     }
     
     
@@ -232,17 +241,21 @@ module nts.uk.at.view.kal001.a.model {
         }
 
         export interface UnitModel {
+            id: string;
             code: string;
             name?: string;
             workplaceName?: string;
             isAlreadySetting?: boolean;
         }
         export class UnitModelDto implements UnitModel{
+            id: string;
             code: string;
             name: string;
             workplaceName: string;
             isAlreadySetting: boolean;
+            
             constructor(employee : EmployeeSearchDto){
+                this.id = employee.employeeId;
                 this.code = employee.employeeCode;
                 this.name = employee.employeeName;
                 this.workplaceName = employee.workplaceName;    
@@ -264,48 +277,59 @@ module nts.uk.at.view.kal001.a.model {
     // search component
     export interface EmployeeSearchDto {
         employeeId: string;
-        
+
         employeeCode: string;
-        
+
         employeeName: string;
-        
-        workplaceCode: string;
-        
-        workplaceId: string;
-        
+
         workplaceName: string;
     }
     export interface GroupOption {
-        baseDate?: KnockoutObservable<Date>;
-        // クイック検索タブ
-        isQuickSearchTab: boolean;
-        // 参照可能な社員すべて
-        isAllReferableEmployee: boolean;
-        //自分だけ
-        isOnlyMe: boolean;
-        //おなじ部門の社員
-        isEmployeeOfWorkplace: boolean;
-        //おなじ＋配下部門の社員
-        isEmployeeWorkplaceFollow: boolean;
+        /** Common properties */
+        showEmployeeSelection: boolean; // 検索タイプ
+        systemType: number; // システム区分
+        showQuickSearchTab: boolean; // クイック検索
+        showAdvancedSearchTab: boolean; // 詳細検索
+        showBaseDate: boolean; // 基準日利用
+        showClosure: boolean; // 就業締め日利用
+        showAllClosure: boolean; // 全締め表示
+        showPeriod: boolean; // 対象期間利用
+        periodFormatYM: boolean; // 対象期間精度
     
-        
-        // 詳細検索タブ
-        isAdvancedSearchTab: boolean;
-        //複数選択 
-        isMutipleCheck: boolean;
-        
-        //社員指定タイプ or 全社員タイプ
-        isSelectAllEmployee: boolean;
+        /** Required parameter */
+        baseDate?: string; // 基準日
+        periodStartDate?: string; // 対象期間開始日
+        periodEndDate?: string; // 対象期間終了日
+        inService: boolean; // 在職区分
+        leaveOfAbsence: boolean; // 休職区分
+        closed: boolean; // 休業区分
+        retirement: boolean; // 退職区分
     
-        onSearchAllClicked: (data: EmployeeSearchDto[]) => void;
+        /** Quick search tab options */
+        showAllReferableEmployee: boolean; // 参照可能な社員すべて
+        showOnlyMe: boolean; // 自分だけ
+        showSameWorkplace: boolean; // 同じ職場の社員
+        showSameWorkplaceAndChild: boolean; // 同じ職場とその配下の社員
     
-        onSearchOnlyClicked: (data: EmployeeSearchDto) => void;
-        
-        onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
-        
-        onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
-        
-        onApplyEmployee: (data: EmployeeSearchDto[]) => void;
+        /** Advanced search properties */
+        showEmployment: boolean; // 雇用条件
+        showWorkplace: boolean; // 職場条件
+        showClassification: boolean; // 分類条件
+        showJobTitle: boolean; // 職位条件
+        showWorktype: boolean; // 勤種条件
+        isMutipleCheck: boolean; // 選択モード
+        // showDepartment: boolean; // 部門条件 not covered
+        // showDelivery: boolean; not covered
+    
+        /** Data returned */
+        returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
     }
+    export interface Ccg001ReturnedData {
+        baseDate: string; // 基準日
+        closureId?: number; // 締めID
+        periodStart: string; // 対象期間（開始)
+        periodEnd: string; // 対象期間（終了）
+        listEmployee: Array<EmployeeSearchDto>; // 検索結果
+    }    
 }
 

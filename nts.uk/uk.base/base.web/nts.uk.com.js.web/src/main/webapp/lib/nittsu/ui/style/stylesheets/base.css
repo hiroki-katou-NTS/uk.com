@@ -2264,6 +2264,10 @@ button.nts-switch-button[disabled]:hover {
   box-shadow: 0 0 1px 1px #0096f2;
   border-radius: 2px;
 }
+/* line 62, ../sass/components/_switchbutton.scss */
+.switchButton-wrapper.error button {
+  border-color: #ff6666;
+}
 
 @CHARSET "UTF-8";
 /* line 2, ../sass/components/_checkbox.scss */

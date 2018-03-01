@@ -47,16 +47,21 @@ module nts.uk.at.view.kmf002.b {
                 
                 _self.multiSelectedWorkplaceId.subscribe(function(newValue) {
                     try {
-                        _self.commonTableMonthDaySet().infoSelect2($('#tree-grid').getRowSelected()[0].workplaceCode);
-                        _self.getNameWkpSelect($('#tree-grid').getDataList(), 
-                                               $('#tree-grid').getRowSelected()[0].workplaceCode);
-                        
-                        _self.commonTableMonthDaySet().infoSelect3(_self.workplaceNameSelected());
-                        _self.getDataFromService();
-                        _self.isContinueRecurFindName(true);
-                        
-                        if (!_.isNull(newValue) && !_.isEmpty(newValue)) {
-                            _self.enableSave(true);    
+                        if (_.isUndefined(newValue)) {
+                            _self.commonTableMonthDaySet().infoSelect2('');
+                            _self.commonTableMonthDaySet().infoSelect3('');
+                            _self.enableSave(false);
+                            _self.enableDelete(false);     
+                            _self.setDefaultMonthDay();
+                        } else {
+                            _self.commonTableMonthDaySet().infoSelect2($('#tree-grid').getRowSelected()[0].workplaceCode);
+                            _self.getNameWkpSelect($('#tree-grid').getDataList(), 
+                                                   $('#tree-grid').getRowSelected()[0].workplaceCode);
+                            
+                            _self.commonTableMonthDaySet().infoSelect3(_self.workplaceNameSelected());
+                            _self.getDataFromService();
+                            _self.isContinueRecurFindName(true);
+                            _self.enableSave(true);
                         }
                     }
                     catch (e){
@@ -73,9 +78,15 @@ module nts.uk.at.view.kmf002.b {
                                 _self.alreadySettingList.push({'workplaceId': wkpID, 'isAlreadySetting': true});
                             });        
                         })
-                          
                     }
                 });
+            }
+            
+            private setDefaultMonthDay(): void {
+                let _self = this;
+                for (let i=0; i<_self.commonTableMonthDaySet().arrMonth().length; i++) {
+                    _self.commonTableMonthDaySet().arrMonth()[i].day(0); 
+                }     
             }
             
             private getNameWkpSelect(data: any, codeSelect: string): void {
@@ -108,8 +119,12 @@ module nts.uk.at.view.kmf002.b {
             public start_page(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var _self = this;
-               $('#tree-grid').ntsTreeComponent(_self.treeGrid).done(() => {
-                    _self.getDataFromService();
+                 $.when($('#tree-grid').ntsTreeComponent(_self.treeGrid), service.findAll(_self.commonTableMonthDaySet().fiscalYear())).done(function(data: any, data2: any) {
+                    _self.alreadySettingList.removeAll();
+                    _.forEach(data2, function(wkpID) {
+                        _self.alreadySettingList.push({'workplaceId': wkpID, 'isAlreadySetting': true});
+                    });        
+                   _self.getDataFromService();
                    _self.baseDate(new Date(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth()[0].month()-1, 2));
                     
                    if (_.isEmpty($('#tree-grid').getRowSelected())) {
@@ -117,9 +132,8 @@ module nts.uk.at.view.kmf002.b {
                    } else {
                        _self.multiSelectedWorkplaceId.valueHasMutated();
                    }
-                   
-                    dfd.resolve();    
-               });
+                   dfd.resolve();
+                })
                return dfd.promise();   
             }
             
@@ -141,8 +155,7 @@ module nts.uk.at.view.kmf002.b {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     service.remove(_self.commonTableMonthDaySet().fiscalYear(), 
                                     $('#tree-grid').getRowSelected()[0].workplaceId).done(() => {
-                        _self.getDataFromService();
-//                        _self.alreadySettingList.push({'workplaceId': _self.multiSelectedWorkplaceId(), 'isAlreadySetting': true});      
+                        _self.getDataFromService();     
                         _self.alreadySettingList.remove(function(s) { return s.workplaceId == _self.multiSelectedWorkplaceId() });           
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     });  
@@ -156,12 +169,7 @@ module nts.uk.at.view.kmf002.b {
                 let _self = this;
                 if ($('#tree-grid').getRowSelected()[0] != null) {
                     $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(),$('#tree-grid').getRowSelected()[0].workplaceId), 
-                            service.findFirstMonth(),
-                            service.findAll(_self.commonTableMonthDaySet().fiscalYear())).done(function(data: any, data2: any, data3: any) {
-//                        _self.alreadySettingList.removeAll();
-//                        _.forEach(data3, function(wkpID) {
-//                            _self.alreadySettingList.push({'workplaceId': wkpID, 'isAlreadySetting': true});
-//                        });
+                            service.findFirstMonth()).done(function(data: any, data2: any) {
                         if (typeof data === "undefined") {
                             /** 
                              *   create value null for prepare create new 
@@ -171,6 +179,9 @@ module nts.uk.at.view.kmf002.b {
                             });
                             _self.enableDelete(false);
                         } else {
+                            if (_.isNull(data2.startMonth)) {
+                                data2.startMonth = 1;
+                            }
                             _self.commonTableMonthDaySet().arrMonth.removeAll();
                             for (let i=data2.startMonth-1; i<12; i++) {
                                 _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 

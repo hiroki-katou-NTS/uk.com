@@ -62,10 +62,12 @@ public class DefaultFlowMenuService implements FlowMenuService {
 	}
 
 	@Override
-	public void deleteFlowMenu(String companyID, String toppagePartID) {
+	public void deleteFlowMenu(String companyID, String toppagePartID ) {
 		if (isExist(companyID, toppagePartID)) {
+			Optional<FlowMenu> flowMenu = flowMenuRepository.findByCode(companyID, toppagePartID);
 			flowMenuRepository.remove(companyID, toppagePartID);
 			topPagePartService.deleteTopPagePart(companyID, toppagePartID);
+			
 		}
 	}
 
