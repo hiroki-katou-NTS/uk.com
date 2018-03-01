@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.alarm.alarmlist.algorithm.aggregationprocess.daily.dailyaggregationprocess;
+package nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.daily.dailyaggregationprocess;
 
 import java.util.List;
 import java.util.Optional;

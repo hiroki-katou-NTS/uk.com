@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.alarm.alarmlist.algorithm.aggregationprocess;
+package nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +10,7 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.AlarmExtraValueWkReDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.OutputScreenA;
-import nts.uk.ctx.at.function.dom.alarm.alarmlist.algorithm.aggregationprocess.daily.dailyaggregationprocess.DailyAggregationProcessService;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.daily.dailyaggregationprocess.DailyAggregationProcessService;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.shr.com.context.AppContexts;
 
