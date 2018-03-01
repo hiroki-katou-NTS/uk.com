@@ -57,7 +57,7 @@ public class StartupErrorCheckImpl implements StartupErrorCheckService {
 				requestSet = rqOptional.get();
 			}
 		} else {
-				// ドメインモデル「会社別申請承認設定」を取得する ( Acquire the domain model "application approval setting by company" )
+				// ドメインモデル「会社別申請承認設定」を取得する ( Acquire the domain model "application approval setting by workplace" )
 				requestSet = loopResult.get(0);
 		}
 		if (requestSet.getAppUseSetting().getUserAtr().equals(UseAtr.NOTUSE)) {
