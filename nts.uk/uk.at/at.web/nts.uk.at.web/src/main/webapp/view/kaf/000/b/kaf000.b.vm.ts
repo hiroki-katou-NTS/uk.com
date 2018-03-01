@@ -4,6 +4,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
     import UserType = nts.uk.at.view.kaf000.shr.model.UserType;
     import ApprovalAtr = nts.uk.at.view.kaf000.shr.model.ApprovalAtr;
     import Status = nts.uk.at.view.kaf000.shr.model.Status;
+    import Approver = nts.uk.at.view.kdl034.a.viewmodel.Approver;
+    import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
     export abstract class ScreenModel {
         // Metadata
         appID: KnockoutObservable<string>;
@@ -313,6 +316,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
             });
         }
+        
+        btnRemand(){
+            var self = this;
+            let command = self.convertToApproverList();
+            setShared("KDL034_PARAM", command);
+            nts.uk.ui.windows.sub.modal("/view/kdl/034/a/index.xhtml");     
+        }
 
         /**
         *  btn Release //解除
@@ -452,6 +462,24 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }).ifNo(function() {
                 nts.uk.ui.block.clear();
             });
+        }
+        
+        convertToApproverList(): Array<Approver> {
+            var self = this;
+            let listApprover = [];
+            listApprover.push(new Approver(self.appID(), self.employeeName(), null));
+            _.forEach(ko.mapping.toJS(self.approvalRootState()), function(approvalPhase) {
+                _.forEach(approvalPhase, function(approvalFrame) {
+                    if((!nts.uk.util.isNullOrEmpty(approvalFrame.approverID))||(!nts.uk.util.isNullOrEmpty(approvalFrame.representerID))){
+                        if(!nts.uk.util.isNullOrEmpty(approvalFrame.approverID)){
+                            listApprover.push(new Approver(approvalFrame.approverID, approvalFrame.approverName, approvalFrame.phaseOrder));        
+                        } else {
+                            listApprover.push(new Approver(approvalFrame.representerID, approvalFrame.representerName, approvalFrame.phaseOrder));    
+                        }      
+                    }     
+                });
+            });
+            return listApprover;
         }
 
 
