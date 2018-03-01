@@ -36,7 +36,8 @@ module nts.uk.com.view.cmf001.share.model {
         NUMERIC = 0,
         CHARACTER = 1,
         DATE = 2,
-        INS_TIME = 3
+        INS_TIME = 3,
+        TIME = 4
     }
 
     export enum ROUNDING_METHOD {
