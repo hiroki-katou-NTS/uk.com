@@ -67,8 +67,6 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 new model.ExternalAcceptanceCategoryItemData('013', 'Item 13') 
             ]);
             
-            self.selectedDataType = setShared("selectedDataType");
-            
             self.selectedCategoryItem = ko.observable('001');
             $("#fixed-table").ntsFixedTable({ height: 540 });
             
@@ -147,6 +145,57 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 else
                     self.selectedCategoryItem(self.listCategoryItem()[selectedIndex] ? self.listCategoryItem()[selectedIndex].itemCode() : null);
             }
+        }
+        
+        //open screen G, H, I, J
+        dataTypeSetting(data: model.StandardAcceptItem) {
+            let self = this, url = "", params = null;
+            switch(data.itemType()) {
+                case model.ITEM_TYPE.NUMERIC: 
+                    url = "/view/cmf/001/g/index.xhtml";
+                    if (data.numberFormatSetting)
+                        params = data.numberFormatSetting();
+                    break;
+                case model.ITEM_TYPE.CHARACTER: 
+                    url = "/view/cmf/001/h/index.xhtml";
+                    if (data.charFormatSetting)
+                        params = data.charFormatSetting();
+                    break;
+                case model.ITEM_TYPE.DATE: 
+                    url = "/view/cmf/001/i/index.xhtml";
+                    if (data.dateFormatSetting)
+                        params = data.dateFormatSetting();
+                    break;
+                case model.ITEM_TYPE.INS_TIME: 
+                    url = "/view/cmf/001/j/index.xhtml";
+                    if (data.instTimeFormatSetting)
+                        params = data.instTimeFormatSetting();
+                    break;
+            }
+            setShared('CMF001mParams', params, true);
+            
+            modal(url).onClosed(function() {
+                var output = getShared('CMF001mOutput');
+                if (output) {
+                    
+                }
+            });
+        }
+        
+        openCMF001l(data: model.StandardAcceptItem) {
+            let self = this, condition = null;
+            if (data.screenConditionSetting) condition = data.screenConditionSetting();
+            setShared('CMF001lParams', {
+                systemType: self.systemType.code,
+                condition: condition
+            }, true);
+            
+            modal("/view/cmf/001/l/index.xhtml").onClosed(function() {
+                var output = getShared('CMF001lOutput');
+                if (output) {
+                    
+                }
+            });
         }
     }
 }
