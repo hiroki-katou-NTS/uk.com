@@ -31,7 +31,7 @@ module nts.uk.at.view.kdw001.c {
             endDateString: KnockoutObservable<string>;
 
             //Declare employee filter component
-            ccg001ComponentOption: GroupOption;
+            ccg001ComponentOption: any;
             showinfoSelectedEmployee: KnockoutObservable<boolean>;
             // Options
             baseDate: KnockoutObservable<Date>;
