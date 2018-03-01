@@ -92,6 +92,12 @@ public class EmployeeWebService extends WebService {
 	public List<EmployeeSearchData> searchEmployeeByLogin(GeneralDate baseDate) {
 		return this.employeeQueryProcessor.searchEmployeeByLogin(baseDate);
 	}
+	
+	@POST
+	@Path("onlyemployeenew")
+	public List<EmployeeSearchData> searchEmployeeByLoginNew(GeneralDate baseDate) {
+		return this.employeeQueryProcessor.searchOnlyEmployeeByLogin(baseDate);
+	}
 
 	/**
 	 * Search mode employee.
