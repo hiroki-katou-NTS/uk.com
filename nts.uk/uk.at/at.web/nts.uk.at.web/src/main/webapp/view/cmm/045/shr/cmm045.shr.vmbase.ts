@@ -339,5 +339,13 @@ module cmm045.shr {
             startDate: string;
             endDate: string;
         }
+        export class AppPrePostGroup{
+            //事前
+            preAppID: string;
+            //事後
+            postAppID: string;
+            //実績
+            lstFrameRes: Array<vmbase.OverTimeFrame>;
+        }
     }
 }
