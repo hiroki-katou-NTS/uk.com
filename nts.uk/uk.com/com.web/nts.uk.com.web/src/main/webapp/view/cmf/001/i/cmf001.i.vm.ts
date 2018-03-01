@@ -12,37 +12,37 @@ module nts.uk.com.view.cmf001.i.viewmodel {
     export class ScreenModel {
         valueTexBox: KnockoutObservable<any> = ko.observable('');
 
-        enable: KnockoutObservable<boolean>;
+        isEditMode: KnockoutObservable<boolean>;
         
-        selectedValue1: KnockoutObservable<any>;
-        items1: KnockoutObservableArray<any>;
+        selectedFormat: KnockoutObservable<any>;
+        itemsFormat: KnockoutObservableArray<model.ItemModel>;
 
-        selectedValue2: KnockoutObservable<any>;
-        items2: KnockoutObservableArray<any>;
+        selectedFixedValue: KnockoutObservable<any>;
+        itemsFixedValue: KnockoutObservableArray<model.ItemModel>;
         constructor() {
             let self = this;
             
-            self.enable = ko.observable(true);
-            self.items1 = ko.observableArray([
-                { value: 1, text: getText('CMF001_303') },
-                { value: 2, text: getText('CMF001_304') },
-                { value: 3, text: getText('CMF001_305') },
-                { value: 4, text: getText('CMF001_306') },
-                { value: 5, text: getText('CMF001_307') },
-                { value: 6, text: getText('CMF001_308') },
+            self.isEditMode = ko.observable(true);
+            self.itemsFormat = ko.observableArray([
+                new model.ItemModel(0, getText('CMF001_303')),
+                new model.ItemModel(1, getText('CMF001_304')),
+                new model.ItemModel(2, getText('CMF001_305')),
+                new model.ItemModel(3, getText('CMF001_306')),
+                new model.ItemModel(4, getText('CMF001_307')),
+                new model.ItemModel(5, getText('CMF001_308'))
             ]);
-            self.selectedValue1 = ko.observable(1);
+            self.selectedFormat = ko.observable(1);
             
-            self.items2 = ko.observableArray([
-                { value: 0, text: getText('CMF001_322') },
-                { value: 1, text: getText('CMF001_323') }
+            self.itemsFixedValue = ko.observableArray([
+                new model.ItemModel(0, getText('CMF001_322')),
+                new model.ItemModel(1, getText('CMF001_323'))
             ]);
-            self.selectedValue2 = ko.observable(1);
+            self.selectedFixedValue = ko.observable(1);
         }
 
         saveNumericSetting() {
-            console.log(this.selectedValue1());
-            console.log(this.selectedValue2());
+            console.log(this.selectedFormat());
+            console.log(this.selectedFixedValue());
         }
         cancelNumericSetting() {
             nts.uk.ui.windows.close(); //Close current window
