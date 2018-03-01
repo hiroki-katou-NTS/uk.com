@@ -138,10 +138,15 @@ module cps001.a.vm {
                     selectFirstId = (sources: Array<any>, layoutData: any) => {
                         if (loadData) {
                             if (loadData.id) {
-                                if (layoutData.id() == loadData.id) {
-                                    layoutData.id.valueHasMutated();
+                                let exist = _(sources).map(x => x.optionValue).indexOf(loadData.id) != -1;
+                                if (exist) {
+                                    if (layoutData.id() == loadData.id) {
+                                        layoutData.id.valueHasMutated();
+                                    } else {
+                                        layoutData.id(loadData.id);
+                                    }
                                 } else {
-                                    layoutData.id(loadData.id);
+                                    layoutData.id(sources[0].optionValue);
                                 }
                             } else {
                                 if (layoutData.id() == sources[0].optionValue) {
@@ -703,15 +708,13 @@ module cps001.a.vm {
 
                             cat.categoryCode(icat.categoryCode);
                             cat.categoryType(icat.categoryType);
-                        } else {
-                            cat.categoryCode(undefined);
-                            cat.categoryType(undefined);
-                        }
 
-                        if (id) {
                             service.getCatChilds(id).done(data => {
                                 cat.hasChildrens(data.length > 1);
                             });
+                        } else {
+                            cat.categoryCode(undefined);
+                            cat.categoryType(undefined);
                         }
                     }
                     self.categoryId.valueHasMutated();
