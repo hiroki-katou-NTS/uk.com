@@ -18,4 +18,8 @@ public class AppMasterInfo {
 	private boolean statusFrameAtr;
 	@Setter
 	private String phaseStatus;
+	//事前、事後の後ろに#CMM045_101(※)を追加
+	private boolean checkAddNote;
+	@Setter
+	private boolean checkTimecolor;
 }

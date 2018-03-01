@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthlyRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcstMonPayAbsnDays;
 import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcstMonPayAttnDays;
+import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcstMonPayAttnDaysPK;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
@@ -92,15 +93,13 @@ public class JpaPayItemCountOfMonthly extends JpaRepository implements PayItemCo
 		val attendanceDays = payItemCountOfMonthly.getPayAttendanceDays();
 		for (val workTypeCode : attendanceDays){
 			KrcstMonPayAttnDays entity = new KrcstMonPayAttnDays();
-			entity.PK.companyId = companyId;
-			entity.PK.workTypeCode = workTypeCode.v();
+			entity.PK = new KrcstMonPayAttnDaysPK(companyId, workTypeCode.v());
 			this.getEntityManager().persist(entity);
 		}
 		val absenceDays = payItemCountOfMonthly.getPayAbsenceDays();
 		for (val workTypeCode : absenceDays){
 			KrcstMonPayAbsnDays entity = new KrcstMonPayAbsnDays();
-			entity.PK.companyId = companyId;
-			entity.PK.workTypeCode = workTypeCode.v();
+			entity.PK = new KrcstMonPayAttnDaysPK(companyId, workTypeCode.v());
 			this.getEntityManager().persist(entity);
 		}
 	}

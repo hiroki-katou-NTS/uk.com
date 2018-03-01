@@ -176,7 +176,7 @@ module nts.uk.ui.gridlist {
                                                             }
                                             },
 //                                    ],
-                                { headerText: 'Inbound time', key: 'time', dataType: 'string', width: '140px',
+                                { headerText: 'Inbound time', key: 'time', width: '140px', columnCssClass: "halign-right", headerCssClass: "center-align",
                                                 constraint: { 
 //                                                                primitiveValue: 'SampleTimeClock',
                                                                 cDisplayType: "Clock",

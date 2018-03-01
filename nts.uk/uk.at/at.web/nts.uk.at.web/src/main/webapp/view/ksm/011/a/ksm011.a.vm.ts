@@ -642,6 +642,14 @@ module nts.uk.at.view.ksm011 {
                         self.selectedRetrieval(1);
                     }
                     
+                    if(self.selectedCompFunc() == 0) {
+                        self.optionCompleteEnable(true);
+                        if(self.selectedOptionComp() == 0) {
+                            self.alarmCheckEnable(false);
+                            self.alarmMethodEnable(false);
+                        }
+                    }
+                    
                     dfd.resolve();
                 }).fail(function(res) {
                     dfd.reject(res);

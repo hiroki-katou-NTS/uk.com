@@ -108,6 +108,17 @@ public class AggregateTotalWorkingTime {
 	}
 	
 	/**
+	 * 共有項目をコピーする
+	 * @param aggregateTotalWorkingTime 総労働時間
+	 */
+	public void copySharedItem(AggregateTotalWorkingTime aggregateTotalWorkingTime){
+		
+		this.workTime = aggregateTotalWorkingTime.getWorkTime();
+		this.vacationUseTime = aggregateTotalWorkingTime.getVacationUseTime();
+		this.prescribedWorkingTime = aggregateTotalWorkingTime.getPrescribedWorkingTime();
+	}
+	
+	/**
 	 * 日別実績を集計する　（通常・変形労働時間勤務用）
 	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
 	 * @param companyId 会社ID
