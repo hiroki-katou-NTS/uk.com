@@ -984,17 +984,18 @@ module nts.uk.com.view.ccg.share.ccg {
              * function click by button employee login
              */
             getEmployeeLogin(): void {
-                var self = this;
+                let self = this;
                 if (self.isInvalidBaseDate()) {
                     return;
                 }
                 nts.uk.ui.block.invisible(); // block ui
-                service.searchEmployeeByLogin(self.baseDate().toDate()).done(data => {
-                    self.returnDataFromCcg001(self.combineData(data));
-                    self.hideComponent();
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error);
-                }).always(() => nts.uk.ui.block.clear());  // clear block UI
+                service.searchEmployeeByLogin(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate())
+                    .done(data => {
+                        self.returnDataFromCcg001(self.combineData(data));
+                        self.hideComponent();
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError(error);
+                    }).always(() => nts.uk.ui.block.clear());  // clear block UI
             }
 
             /**
