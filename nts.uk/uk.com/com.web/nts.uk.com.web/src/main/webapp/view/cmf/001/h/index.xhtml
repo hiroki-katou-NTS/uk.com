@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 350, height: 620 };</script>
+			<script>var dialogSize = { width: 650, height: 500 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf001.h.vm.js" />
@@ -16,50 +16,47 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area" data-bind="with: characterDataFormatSetting">
-				<div class = "label" style = "margin-left: 20px; margin-top: 10px;" >#{i18n.getText('CMF001_265')}</div>
-				<div class ="div-table">
+			<div class="contents-area dialog-contents" data-bind="with: characterDataFormatSetting">
+				<div id = "H1_1" class = "label dialog-title" >#{i18n.getText('CMF001_265')}</div>
+				<div class = "div-table" >
 					<div class = "div-table-row">
-						<div class = "div-table-col-2" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_266')}</div>
-						<div tabindex = "1" class = "div-table-col">
-							<div tabindex ="-1" class = "div-table-col" data-bind="ntsRadioButton: {checked: effectiveDigitLength, option: $parent.effectDigitItem()[0], name: '#[CMF001_268]', optionValue: 'code', enable: $parent.inputMode, optionText: 'name', group: 'effectDigitCls'}"></div>
-							<div tabindex ="-1" style = "margin-top:15px; " class = "div-table-col" data-bind="ntsRadioButton: {checked: effectiveDigitLength, option: $parent.effectDigitItem()[1], name: '#[CMF001_269]', optionValue: 'code', enable: $parent.inputMode, optionText: 'name', group: 'effectDigitCls' }"></div>
+						<div id = "H2_1" class = "div-table-col-2" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_266')}</div>
+						<div id = "H2_2" tabindex = "1" class = "div-table-col">
+							<div id = "H2_3" tabindex ="-1" class = "div-table-col" data-bind="ntsRadioButton: {checked: effectiveDigitLength, option: $parent.effectDigitItem()[0], name: '#[CMF001_267]', optionValue: 'code', enable: $parent.inputMode, optionText: 'name', group: 'effectDigitCls'}"></div>
+							<div id = "H2_4" tabindex ="-1" class = "div-table-col radio-group" data-bind="ntsRadioButton: {checked: effectiveDigitLength, option: $parent.effectDigitItem()[1], name: '#[CMF001_267]', optionValue: 'code', enable: $parent.inputMode, optionText: 'name', group: 'effectDigitCls' }"></div>
 						</div>
 						<div class = "div-table-col" >
-							<input tabindex = "2" data-bind="ntsTextEditor: {
+							<input id = "H2_5" tabindex = "2" data-bind="ntsTextEditor: {
 								value: startDigit,
 								option : {width : '30px'},
 								enable: !(effectiveDigitLength() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode)}" />
-							<div  class = "label" style= "display:inline">#{i18n.getText('CMF001_270')}</div>
+							<div id = "H2_6"  class = "label" style= "display:inline">#{i18n.getText('CMF001_270')}</div>
 						</div>
 						<div  class = "div-table-col" >
-							<input tabindex = "3"  data-bind="ntsTextEditor: {
+							<input id = "H2_7" tabindex = "3"  data-bind="ntsTextEditor: {
 								value: endDigit,
 								option : {width : '30px'},
 								enable: !(effectiveDigitLength() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode)}" />
-							<div class =" label" style= "display:inline">#{i18n.getText('CMF001_273')}</div>
+							<div id = "H2_8" class =" label" style= "display:inline">#{i18n.getText('CMF001_273')}</div>
 						</div>
 					</div>
 					<div class = "div-table-row">
-						<div class = "div-table-col-2" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_275')}</div>
-						<div tabindex = "4" class = "div-table-col">
-							<div tabindex ="-1" class = "div-table-col" data-bind="ntsRadioButton: {checked: codeEditing, option: $parent.codeEditingItem()[0], name: '#[CMF001_277]', optionValue: 'code', enable: $parent.inputMode, optionText: 'name', group: 'fixedLengCls'}"></div>
-							<div tabindex ="-1" style = "margin-top:15px; " class = "div-table-col" data-bind="ntsRadioButton: {checked: codeEditing, option: $parent.codeEditingItem()[1], name: '#[CMF001_278]', optionValue: 'code', enable: $parent.inputMode, optionText: 'name', group: 'fixedLengCls' }"></div>
+						<div id = "H3_1" class = "div-table-col-2" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_275')}</div>
+						<div id = "H3_2" tabindex = "4" class = "div-table-col">
+							<div id = "H3_3" tabindex ="-1" class = "div-table-col" data-bind="ntsRadioButton: {checked: codeEditing, option: $parent.codeEditingItem()[0], name: '#[CMF001_276]', optionValue: 'code', enable: $parent.inputMode, optionText: 'name', group: 'fixedLengCls'}"></div>
+							<div id = "H3_4" tabindex ="-1" class = "div-table-col radio-group" data-bind="ntsRadioButton: {checked: codeEditing, option: $parent.codeEditingItem()[1], name: '#[CMF001_276]', optionValue: 'code', enable: $parent.inputMode, optionText: 'name', group: 'fixedLengCls' }"></div>
 						</div>
 						<div  class = "div-table-col" >
-							<input tabindex = "5"  data-bind="ntsTextEditor: {
+							<input id = "H3_5" tabindex = "5"  data-bind="ntsTextEditor: {
 								value: codeEditDigit,
 								option : {width : '30px'},
 								enable: !(codeEditing() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode)}" />
-							<div class =" label" style= "display:inline">#{i18n.getText('CMF001_280')}</div>
+							<div id = "H3_6" class =" label" style= "display:inline">#{i18n.getText('CMF001_280')}</div>
 						</div>
 						<div class = "div-table-col">
-							<div tabindex = "6" style = "display:inline-block; width :150px;" id="H3_7" data-bind="ntsComboBox: {
-								options: [
-								{code: 0, name: '#{i18n.getText('CMF001_236')}'},
-								{code: 1, name: '#{i18n.getText('CMF001_236')}'},
-								{code: 2, name: '#{i18n.getText('CMF001_236')}'}
-								],
+							<div id="H3_7" tabindex = "6" style = "display:inline-block; width :150px;" data-bind="ntsComboBox: {
+								name: '#{i18n.getText('CMF001_281')}',
+								options: $parent.fixedLengMethod,
 								editable: false,
 								optionsValue: 'code',
 								visibleItemsCount: 5,
@@ -71,24 +68,24 @@
 					</div>
 					<div class = "div-table-row">
 						<div class = "div-table-col-2">
-							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_290')}</div>
+							<div id = "H4_1" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_290')}</div>
 						</div>
 						<div class = "div-table-col">
-							<button tabindex = "7" style="display: inline; position:relative; top : 10px;	" data-bind="click: $parent.open001_K, enable: $parent.inputMode">#{i18n.getText('CMF001_291')}</button>
+							<button id = "H4_1" tabindex = "7" class ="vertical-align" data-bind="click: $parent.open001_K, enable: $parent.inputMode">#{i18n.getText('CMF001_291')}</button>
 						</div>
-						<div id = "H4_3" style="display: inline; position:relative; top : 10px;	" class="label">コード</div>
-						<div id = "H4_4" style="display: inline; position:relative; top : 10px;	margin-left: 15px;" class="label">コード変換名</div>
+						<div id = "H4_3" class ="label vertical-align" >コード</div>
+						<div id = "H4_4" class ="label vertical-align" style="margin-left: 15px;" >コード変換名</div>
 					</div>
 					<div class = "div-table-row">
 						<div class = "div-table-col-2">
-							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_292')}</div>
+							<div id = "H5_1" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_292')}</div>
 						</div>
-						<div tabindex = "8" class = "div-table-col">
-							<div tabindex ="-1" class = "div-table-col" data-bind="ntsRadioButton: {checked: fixedValue, option: $parent.effectFixedValItem()[0], name: '#[CMF001_294]', optionValue: 'code', enable: $parent.inputMode, optionText: 'name', group: 'fixedValCls'}"></div>
-							<div tabindex ="-1" style = "margin-top:15px; " class = "div-table-col" data-bind="ntsRadioButton: {checked: fixedValue, option: $parent.effectFixedValItem()[1], name: '#[CMF001_295]', optionValue: 'code', enable: $parent.inputMode, optionText: 'name', group: 'fixedValCls' }"></div>
+						<div id = "H5_2" tabindex = "8" class = "div-table-col">
+							<div id = "H5_3" tabindex ="-1" class = "div-table-col" data-bind="ntsRadioButton: {checked: fixedValue, option: $parent.effectFixedValItem()[0], name: '#[CMF001_293]', optionValue: 'code', enable: $parent.inputMode, optionText: 'name', group: 'fixedValCls'}"></div>
+							<div id = "H5_4" tabindex ="-1" class = "div-table-col" data-bind="ntsRadioButton: {checked: fixedValue, option: $parent.effectFixedValItem()[1], name: '#[CMF001_293]', optionValue: 'code', enable: $parent.inputMode, optionText: 'name', group: 'fixedValCls' }"></div>
 						</div>
 						<div style="display: inline">
-							<input tabindex = "9"  data-bind="ntsTextEditor: {
+							<input id = "H5_5" tabindex = "9"  data-bind="ntsTextEditor: {
 								value: valueOfFixed,
 								option : {width : '200px'},
 								enable: !(fixedValue() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode)}" />
