@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.applicationlist.service;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 /**
@@ -11,6 +13,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class AppListAtrOutput {
 
+	private List<ApplicationFullOutput> lstAppFull;
 	private ApplicationStatus appStatus;
-	private ApplicationStatus appColor;
+	private List<String> lstAppColor;
 }

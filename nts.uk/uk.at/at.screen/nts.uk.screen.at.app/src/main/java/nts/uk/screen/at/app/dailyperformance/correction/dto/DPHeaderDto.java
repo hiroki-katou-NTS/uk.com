@@ -91,7 +91,7 @@ public class DPHeaderDto {
 		if(attendanceAtr == DailyAttendanceAtr.Code.value ){
 			List<DPHeaderDto> groups = new ArrayList<>();
 			int withChild = Integer.parseInt(width.substring(0, width.length()-2))/2;
-			groups.add(new DPHeaderDto("コード", "Code"+getCode(key), "String", String.valueOf(withChild)+"px", "",false, "","","search", false, false));
+			groups.add(new DPHeaderDto("コード", "Code"+getCode(key), "String", String.valueOf(withChild)+"px", "",false, "","code","search", false, false));
 			groups.add(new DPHeaderDto("名称", "Name"+getCode(key), "String", String.valueOf(withChild)+"px", "",false, "Link2", false, false));
 			dto.setGroup(groups);
 		} else if(attendanceAtr == DailyAttendanceAtr.Classification.value ){
@@ -121,7 +121,14 @@ public class DPHeaderDto {
 		}
 		return dto;
 	}
-
+    
+	public static DPHeaderDto addHeaderApplication(){
+		return  new DPHeaderDto(TextResource.localize("KDW003_63"), "Application", "String", "90px", "", false, "Button", false, false);
+	}
+	
+	public static DPHeaderDto addHeaderSubmitted(){
+		return  new DPHeaderDto(TextResource.localize("KDW003_62"), "Submitted", "String", "90px", "", false, "Label", false, false);
+	}
 	private static String getCode(String key) {
 		return key.trim().substring(1, key.trim().length());
 	}

@@ -78,6 +78,8 @@ module nts.uk.com.view.cmm018.a {
             //work place Info
             wpCode: KnockoutObservable<string> = ko.observable("");
             wpName: KnockoutObservable<string> = ko.observable("");
+            //emp info: TH goi tu man application
+            empInfoLabel: KnockoutObservable<string> = ko.observable("");
             constructor(transferData: any) {
                 let self = this;
                 //call method start page
@@ -308,8 +310,12 @@ module nts.uk.com.view.cmm018.a {
                                 }else{
                                     if(self.employeeInputList().length == 0){
                                         servicebase.getInfoEmLogin().done(function(employeeInfo){
-                                            self.employeeInputList.push(new vmbase.EmployeeKcp009(employeeInfo.sid,
-                                                employeeInfo.employeeCode, employeeInfo.employeeName, '', ''));
+                                            //can lay thong tin work place name
+                                            servicebase.getWpName().done(function(wpName){
+                                                self.employeeInputList.push(new vmbase.EmployeeKcp009(employeeInfo.sid,
+                                                employeeInfo.employeeCode, employeeInfo.employeeName, wpName.name, wpName.name));
+                                            });
+                                            
                                         });
                                     }
                                     $('#emp-component').ntsLoadListComponent( self.listComponentOption);
@@ -433,8 +439,11 @@ module nts.uk.com.view.cmm018.a {
                     self.employeeId(transferData.employeeId);
                     param = new vmbase.ParamDto(vmbase.RootType.PERSON,'',self.employeeId());
                     servicebase.getInfoEmployee(transferData.employeeId).done(function(employeeInfo){
-                        self.employeeInputList.push(new vmbase.EmployeeKcp009(employeeInfo.sid,
-                                    employeeInfo.employeeCode, employeeInfo.employeeName, '', ''));
+                        let emp: string = '対象者：' + employeeInfo.employeeCode + '　' + employeeInfo.employeeName;
+                        self.empInfoLabel(emp);
+                        self.selectedItem(employeeInfo.sid);
+//                        self.employeeInputList.push(new vmbase.EmployeeKcp009(employeeInfo.sid,
+//                                    employeeInfo.employeeCode, employeeInfo.employeeName, '', ''));
                     });
                 }else{//menu
                     self.visibleTab(true);
@@ -442,8 +451,11 @@ module nts.uk.com.view.cmm018.a {
                     self.tabSelected(vmbase.RootType.COMPANY);
                     param = new vmbase.ParamDto(vmbase.RootType.COMPANY,'','');
                     servicebase.getInfoEmLogin().done(function(employeeInfo){
-                        self.employeeInputList.push(new vmbase.EmployeeKcp009(employeeInfo.sid,
-                                    employeeInfo.employeeCode, employeeInfo.employeeName, '', ''));
+                        //can lay thong tin work place name
+                        servicebase.getWpName().done(function(wpName){
+                            self.employeeInputList.push(new vmbase.EmployeeKcp009(employeeInfo.sid,
+                            employeeInfo.employeeCode, employeeInfo.employeeName, wpName.name, wpName.name));
+                        });
                     });
                 }
                 servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {   
@@ -474,7 +486,7 @@ module nts.uk.com.view.cmm018.a {
                                     self.lstPerson(data.lstPerson);
                                     self.convertHistForPs(data.lstPerson);
                                 }
-                                $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+//                                $('#emp-component').ntsLoadListComponent(self.listComponentOption);
                             }else{
                                 if(data.lstCompany.length == 0){
                                     self.lstCompany([]);

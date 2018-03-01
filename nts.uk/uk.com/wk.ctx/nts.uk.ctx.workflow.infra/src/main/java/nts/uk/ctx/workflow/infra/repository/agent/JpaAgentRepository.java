@@ -73,8 +73,8 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString.append(" OR e.agentSid2 = :employeeId");
 		builderString.append(" OR e.agentSid3 = :employeeId");
 		builderString.append(" OR e.agentSid4 = :employeeId");
-		builderString.append(" AND e.startDate <= :baseDate");
-		builderString.append(" AND e.endDate >= :baseDate");
+		builderString.append(" AND e.startDate <= :startDate");
+		builderString.append(" AND e.endDate >= :endDate");
 		SELECT_AGENT_ALL_DATE = builderString.toString();
 		
 		}
@@ -232,11 +232,12 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	 * Find All Agent by Agent Sid
 	 */
 	@Override
-	public List<Agent> findBySidDate(String companyId, String employeeId, GeneralDate baseDate) {
+	public List<Agent> findBySidDate(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate) {
 		return this.queryProxy().query(SELECT_AGENT_ALL_DATE, CmmmtAgent.class)
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId)
-				.setParameter("baseDate", baseDate)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
 				.getList(c -> convertToDomain(c));
 	}
 

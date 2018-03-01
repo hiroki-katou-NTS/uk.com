@@ -38,14 +38,8 @@ public class ExcessOfStatutoryTimeDailyPerformDto {
 
 	private static ExcessOfStatutoryMidNightTimeDto getExcessStatutory(ExcessOfStatutoryMidNightTime domain) {
 		return domain == null ? null : new ExcessOfStatutoryMidNightTimeDto(
-				getTimeCalc(domain.getTime()), 
+				CalcAttachTimeDto.toTimeWithCal(domain.getTime()), 
 				getAttendanceTime(domain.getBeforeApplicationTime()));
-	}
-
-	private static CalcAttachTimeDto getTimeCalc(TimeWithCalculation domain) {
-		return domain == null ? null : new CalcAttachTimeDto(
-					getAttendanceTime(domain.getCalcTime()),
-					getAttendanceTime(domain.getTime()));
 	}
 	
 	public ExcessOfStatutoryTimeOfDaily toDomain() {

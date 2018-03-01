@@ -9,11 +9,14 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.temporarytime.TemporaryFrameTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.temporarytime.TemporaryTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.latetime.IntervalExemptionTime;
+import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
+import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -73,7 +76,7 @@ public class TotalWorkingTimeDto {
 
 	/** 短時間勤務時間: 日別実績の短時間勤務時間 */
 	@AttendanceItemLayout(layout = "K", jpPropertyName = "短時間勤務時間", enumField = "childCareAndFamilyCareAtr")
-	private ShortWorkTimeDto shortWorkTimeSheet;
+	private ShortWorkTimeDto shortWorkTime;
 
 	/** 加給時間: 日別実績の加給時間 */
 	@AttendanceItemLayout(layout = "L", jpPropertyName = "加給時間")
@@ -102,18 +105,22 @@ public class TotalWorkingTimeDto {
 												getAttendanceTime(c.getTemporaryLateNightTime()),
 												getAttendanceTime(c.getTemporaryTime()))),
 						ConvertHelper.mapTo(domain.getLateTimeOfDaily(),
-								(c) -> new LateTimeDto(getCalcTime(c.getLateTime()),
-										getCalcTime(c.getLateDeductionTime()),
+								(c) -> new LateTimeDto(CalcAttachTimeDto.toTimeWithCal(c.getLateTime()),
+										CalcAttachTimeDto.toTimeWithCal(c.getLateDeductionTime()),
 										getValicationUseDto(c.getTimePaidUseTime()),
 										getAttendanceTime(c.getExemptionTime().getExemptionTime()), c.getWorkNo().v())),
 						ConvertHelper.mapTo(domain.getLeaveEarlyTimeOfDaily(),
-								(c) -> new LeaveEarlyTimeDailyPerformDto(getCalcTime(c.getLeaveEarlyTime()),
-										getCalcTime(c.getLeaveEarlyDeductionTime()),
+								(c) -> new LeaveEarlyTimeDailyPerformDto(CalcAttachTimeDto.toTimeWithCal(c.getLeaveEarlyTime()),
+										CalcAttachTimeDto.toTimeWithCal(c.getLeaveEarlyDeductionTime()),
 										getValicationUseDto(c.getTimePaidUseTime()),
 										getAttendanceTime(c.getIntervalTime().getExemptionTime()), c.getWorkNo().v())),
 						BreakTimeSheetDailyPerformDto.fromBreakTimeOfDaily(domain.getBreakTimeOfDaily()),
 						// TODO: get domain 今回対象外
-						null, null, null, null, domain.getWorkTimes().v());
+						domain.getOutingTimeOfDailyPerformance() == null ? new ArrayList<>() : 
+								ConvertHelper.mapTo(domain.getOutingTimeOfDailyPerformance(), c -> GoOutTimeSheetDailyPerformDto.toDto(c)),
+						ShortWorkTimeDto.toDto(domain.getShotrTimeOfDaily()), 
+						RaisingSalaryTimeDailyPerformDto.toDto(domain.getRaiseSalaryTimeOfDailyPerfor()), 
+						null, domain.getWorkTimes().v());
 	}
 
 	private static ValicationUseDto getValicationUseDto(TimevacationUseTimeOfDaily c) {
@@ -128,31 +135,42 @@ public class TotalWorkingTimeDto {
 		return domain == null ? null : domain.valueAsMinutes();
 	}
 
-	private static CalcAttachTimeDto getCalcTime(TimeWithCalculation c) {
-		return c == null ? null
-				: new CalcAttachTimeDto(c.getCalcTime() == null ? null : c.getCalcTime().valueAsMinutes(),
-						c.getTime() == null ? null : c.getTime().valueAsMinutes());
-	}
-
 	public TotalWorkingTime toDomain() {
 		return new TotalWorkingTime(toAttendanceTime(totalWorkingTime), toAttendanceTime(totalCalcTime),
 				toAttendanceTime(actualTime), withinStatutoryTime == null ? null : withinStatutoryTime.toDomain(),
 				excessOfStatutoryTime == null ? null : excessOfStatutoryTime.toDomain(),
-				lateTime == null ? new ArrayList<>() : ConvertHelper.mapTo(lateTime,
-						(c) -> new LateTimeOfDaily(createTimeWithCalc(c.getLateTime()),
-								createTimeWithCalc(c.getLateDeductionTime()), new WorkNo(c.getWorkNo()),
-								createTimeValication(c.getBreakUse()),
-								new IntervalExemptionTime(null, null, toAttendanceTime(c.getIntervalExemptionTime())))),
-				leaveEarlyTime == null ? new ArrayList<>() : ConvertHelper.mapTo(leaveEarlyTime,
+				lateTime == null ? new ArrayList<>()
+						: ConvertHelper.mapTo(lateTime,
+								(c) -> new LateTimeOfDaily(createTimeWithCalc(c.getLateTime()),
+										createTimeWithCalc(c.getLateDeductionTime()), new WorkNo(c.getWorkNo()),
+										createTimeValication(c.getBreakUse()),
+										new IntervalExemptionTime(null, null,
+												toAttendanceTime(c.getIntervalExemptionTime())))),
+				leaveEarlyTime == null ? new ArrayList<>()
+						: ConvertHelper.mapTo(leaveEarlyTime,
 								(c) -> new LeaveEarlyTimeOfDaily(createTimeWithCalc(c.getLeaveEarlyTime()),
 										createTimeWithCalc(c.getLeaveEarlyDeductionTime()), new WorkNo(c.getWorkNo()),
 										createTimeValication(c.getValicationUseTime()),
 										new IntervalExemptionTime(null, null,
 												toAttendanceTime(c.getIntervalExemptionTime())))),
-				null, null, null, workTimes == null ? null : new WorkTimes(workTimes),
-				new TemporaryTimeOfDaily(temporaryTime == null ? new ArrayList<>() : ConvertHelper.mapTo(temporaryTime,
-						(c) -> new TemporaryFrameTimeOfDaily(new WorkNo(c.getWorkNo()),
-								toAttendanceTime(c.getTemporaryTime()), toAttendanceTime(c.getTemporaryNightTime())))));
+				breakTimeSheet == null ? null : breakTimeSheet.toDmain(), 
+				ConvertHelper.mapTo(goOutTimeSheet, c -> c.toDomain()), 
+				raisingSalaryTime == null ? null : raisingSalaryTime.toDomain(),
+				workTimes == null ? null : new WorkTimes(workTimes),
+				new TemporaryTimeOfDaily(temporaryTime == null ? new ArrayList<>()
+						: ConvertHelper.mapTo(temporaryTime,
+								(c) -> new TemporaryFrameTimeOfDaily(new WorkNo(c.getWorkNo()),
+										toAttendanceTime(c.getTemporaryTime()),
+										toAttendanceTime(c.getTemporaryNightTime())))),
+				shortWorkTime == null ? null : new ShortWorkTimeOfDaily(
+													new WorkTimes(shortWorkTime.getTimes()),
+													createDeductionTime(shortWorkTime.getTotalTime()),
+													createDeductionTime(shortWorkTime.getTotalDeductionTime()),
+													ConvertHelper.getEnum(shortWorkTime.getChildCareAttr(), ChildCareAttribute.class)));
+	}
+
+	private DeductionTotalTime createDeductionTime(TotalDeductionTimeDto dto) {
+		return dto == null ? null : dto.createDeductionTime();
 	}
 
 	private AttendanceTime toAttendanceTime(Integer time) {
@@ -160,13 +178,14 @@ public class TotalWorkingTimeDto {
 	}
 
 	private TimevacationUseTimeOfDaily createTimeValication(ValicationUseDto c) {
-		return c == null ? null : new TimevacationUseTimeOfDaily(toAttendanceTime(c.getTimeAnnualLeaveUseTime()),
+		return c == null ? null
+				: new TimevacationUseTimeOfDaily(toAttendanceTime(c.getTimeAnnualLeaveUseTime()),
 						toAttendanceTime(c.getTimeCompensatoryLeaveUseTime()),
 						toAttendanceTime(c.getExcessHolidayUseTime()),
 						toAttendanceTime(c.getTimeSpecialHolidayUseTime()));
 	}
 
 	private TimeWithCalculation createTimeWithCalc(CalcAttachTimeDto c) {
-		return c == null ? null : TimeWithCalculation.sameTime(toAttendanceTime(c.getTime()));
+		return c == null ? null : c.createTimeWithCalc();
 	}
 }

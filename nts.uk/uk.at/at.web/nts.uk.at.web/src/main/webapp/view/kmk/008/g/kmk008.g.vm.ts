@@ -5,6 +5,9 @@ module nts.uk.at.view.kmk008.g {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
+    import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
+    import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
 
     export module viewmodel {
         export class ScreenModel {
@@ -40,7 +43,7 @@ module nts.uk.at.view.kmk008.g {
             maxRows: number;
 
             //search
-            ccgcomponent: GroupOption;
+            ccg001ComponentOption: GroupOption;
             selectedCode: KnockoutObservableArray<string>;
             showinfoSelectedEmployee: KnockoutObservable<boolean>;
 
@@ -92,81 +95,83 @@ module nts.uk.at.view.kmk008.g {
                 self.selectedEmployee = ko.observableArray([]);
                 self.showinfoSelectedEmployee = ko.observable(false);
                 self.baseDate = ko.observable(new Date());
+                
+                self.reloadCcg001();
 
-                self.ccgcomponent = {
-                    baseDate: self.baseDate,
-
-                    isQuickSearchTab: true,
-                    isAdvancedSearchTab: true,
-                    isAllReferableEmployee: true,
-                    isOnlyMe: true,
-                    isEmployeeOfWorkplace: true,
-                    isEmployeeWorkplaceFollow: true,
-                    isMutipleCheck: true,
-                    isSelectAllEmployee: true,
-
-                    /**
-                    * @param dataList: list employee returned from component.
-                    * Define how to use this list employee by yourself in the function's body.
-                    */
-                    onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
-                        self.showinfoSelectedEmployee(true);
-                        self.selectedEmployee(dataList);
-                        self.employeeList([]);
-                        self.employeeList(_.map(dataList, item => {
-                            return new UnitModel(item.employeeCode, item.employeeName, item.workplaceName, item.employeeId);
-                        }));
-                        if (self.employeeList() && self.employeeList().length > 0){
-                            self.selectedCode(self.employeeList()[0].code);
-                        }
-                    },
-                    onSearchOnlyClicked: function(data: EmployeeSearchDto) {
-                        self.showinfoSelectedEmployee(true);
-                        var dataEmployee: EmployeeSearchDto[] = [];
-                        dataEmployee.push(data);
-                        self.selectedEmployee(dataEmployee);
-                        self.employeeList([]);
-                        self.employeeList.push(new UnitModel(data.employeeCode, data.employeeName, data.workplaceName, data.employeeId));
-                        if (self.employeeList() && self.employeeList().length > 0){
-                            self.selectedCode(self.employeeList()[0].code);
-                        }
-                    },
-                    onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
-                        self.showinfoSelectedEmployee(true);
-                        self.selectedEmployee(dataList);
-                        self.employeeList([]);
-                        self.employeeList(_.map(dataList, item => {
-                            return new UnitModel(item.employeeCode, item.employeeName, item.workplaceName, item.employeeId);
-                        }));
-                        if (self.employeeList() && self.employeeList().length > 0){
-                            self.selectedCode(self.employeeList()[0].code);
-                        }
-                    },
-                    onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
-                        self.showinfoSelectedEmployee(true);
-                        self.selectedEmployee(dataList);
-                        $('#component-items-list').ntsListComponent(self.dataList);
-                        self.employeeList([]);
-                        self.employeeList(_.map(dataList, item => {
-                            return new UnitModel(item.employeeCode, item.employeeName, item.workplaceName, item.employeeId);
-                        }));
-                        if (self.employeeList() && self.employeeList().length > 0){
-                            self.selectedCode(self.employeeList()[0].code);
-                        }
-                    },
-                    onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
-                        self.showinfoSelectedEmployee(true);
-                        self.selectedEmployee(dataEmployee);
-                        $('#component-items-list').ntsListComponent(self.dataEmployee);
-                        self.employeeList([]);
-                        self.employeeList(_.map(dataList, item => {
-                            return new UnitModel(item.employeeCode, item.employeeName, item.workplaceName, item.employeeId);
-                        }));
-                        if (self.employeeList() && self.employeeList().length > 0){
-                            self.selectedCode(self.employeeList()[0].code);
-                        }
-                    }
-                }
+//                self.ccgcomponent = {
+//                    baseDate: self.baseDate,
+//
+//                    isQuickSearchTab: true,
+//                    isAdvancedSearchTab: true,
+//                    isAllReferableEmployee: true,
+//                    isOnlyMe: true,
+//                    isEmployeeOfWorkplace: true,
+//                    isEmployeeWorkplaceFollow: true,
+//                    isMutipleCheck: true,
+//                    isSelectAllEmployee: true,
+//
+//                    /**
+//                    * @param dataList: list employee returned from component.
+//                    * Define how to use this list employee by yourself in the function's body.
+//                    */
+//                    onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
+//                        self.showinfoSelectedEmployee(true);
+//                        self.selectedEmployee(dataList);
+//                        self.employeeList([]);
+//                        self.employeeList(_.map(dataList, item => {
+//                            return new UnitModel(item.employeeCode, item.employeeName, item.workplaceName, item.employeeId);
+//                        }));
+//                        if (self.employeeList() && self.employeeList().length > 0){
+//                            self.selectedCode(self.employeeList()[0].code);
+//                        }
+//                    },
+//                    onSearchOnlyClicked: function(data: EmployeeSearchDto) {
+//                        self.showinfoSelectedEmployee(true);
+//                        var dataEmployee: EmployeeSearchDto[] = [];
+//                        dataEmployee.push(data);
+//                        self.selectedEmployee(dataEmployee);
+//                        self.employeeList([]);
+//                        self.employeeList.push(new UnitModel(data.employeeCode, data.employeeName, data.workplaceName, data.employeeId));
+//                        if (self.employeeList() && self.employeeList().length > 0){
+//                            self.selectedCode(self.employeeList()[0].code);
+//                        }
+//                    },
+//                    onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
+//                        self.showinfoSelectedEmployee(true);
+//                        self.selectedEmployee(dataList);
+//                        self.employeeList([]);
+//                        self.employeeList(_.map(dataList, item => {
+//                            return new UnitModel(item.employeeCode, item.employeeName, item.workplaceName, item.employeeId);
+//                        }));
+//                        if (self.employeeList() && self.employeeList().length > 0){
+//                            self.selectedCode(self.employeeList()[0].code);
+//                        }
+//                    },
+//                    onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
+//                        self.showinfoSelectedEmployee(true);
+//                        self.selectedEmployee(dataList);
+//                        $('#component-items-list').ntsListComponent(self.dataList);
+//                        self.employeeList([]);
+//                        self.employeeList(_.map(dataList, item => {
+//                            return new UnitModel(item.employeeCode, item.employeeName, item.workplaceName, item.employeeId);
+//                        }));
+//                        if (self.employeeList() && self.employeeList().length > 0){
+//                            self.selectedCode(self.employeeList()[0].code);
+//                        }
+//                    },
+//                    onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
+//                        self.showinfoSelectedEmployee(true);
+//                        self.selectedEmployee(dataEmployee);
+//                        $('#component-items-list').ntsListComponent(self.dataEmployee);
+//                        self.employeeList([]);
+//                        self.employeeList(_.map(dataList, item => {
+//                            return new UnitModel(item.employeeCode, item.employeeName, item.workplaceName, item.employeeId);
+//                        }));
+//                        if (self.employeeList() && self.employeeList().length > 0){
+//                            self.selectedCode(self.employeeList()[0].code);
+//                        }
+//                    }
+//                }
 
                 self.tabs = ko.observableArray([
                     { id: 'tab-1', title: '年月', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
@@ -218,6 +223,66 @@ module nts.uk.at.view.kmk008.g {
 
                 });
 
+            }
+            
+            public reloadCcg001(): void {
+                let self = this;
+                if ($('.ccg-sample-has-error').ntsError('hasError')) {
+                    return;
+                }
+//                if (!self.showBaseDate() && !self.showClosure() && !self.showPeriod()){
+//                    nts.uk.ui.dialog.alertError("Base Date or Closure or Period must be shown!" );
+//                    return;
+//                }
+                self.ccg001ComponentOption = {
+                    /** Common properties */
+                    systemType: 2, // システム区分
+                    showEmployeeSelection: true, // 検索タイプ
+                    showQuickSearchTab: false, // クイック検索
+                    showAdvancedSearchTab: true, // 詳細検索
+                    showBaseDate: true, // 基準日利用
+                    showClosure: false, // 就業締め日利用
+                    showAllClosure: false, // 全締め表示
+                    showPeriod: false, // 対象期間利用
+                    periodFormatYM: true, // 対象期間精度
+
+                    /** Required parameter */
+                    baseDate: moment().toISOString(), // 基準日
+                    inService: true, // 在職区分
+                    leaveOfAbsence: false, // 休職区分
+                    closed: false, // 休業区分
+                    retirement: false, // 退職区分
+                    
+                    /** Quick search tab options */
+                    showAllReferableEmployee: false, // 参照可能な社員すべて
+                    showOnlyMe: false, // 自分だけ
+                    showSameWorkplace: false, // 同じ職場の社員
+                    showSameWorkplaceAndChild: false, // 同じ職場とその配下の社員
+
+                    /** Advanced search properties */
+                    showEmployment: true, // 雇用条件
+                    showWorkplace: true, // 職場条件
+                    showClassification: true, // 分類条件
+                    showJobTitle: true, // 職位条件
+                    showWorktype: true, // 勤種条件
+                    isMutipleCheck: true, // 選択モード
+
+                    /** Return data */
+                    returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                        self.selectedEmployee(data.listEmployee);
+                        self.showinfoSelectedEmployee(true);
+                        self.employeeList([]);
+                        self.employeeList(_.map(data.listEmployee, item => {
+                            return new UnitModel(item.employeeCode, item.employeeName, item.workplaceName, item.employeeId);
+                        }));
+                        if (self.employeeList() && self.employeeList().length > 0){
+                            self.selectedCode(self.employeeList()[0].code);
+                        }
+                    }
+                }
+
+                // Start component
+                $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
             }
 
             startPage(): JQueryPromise<any> {

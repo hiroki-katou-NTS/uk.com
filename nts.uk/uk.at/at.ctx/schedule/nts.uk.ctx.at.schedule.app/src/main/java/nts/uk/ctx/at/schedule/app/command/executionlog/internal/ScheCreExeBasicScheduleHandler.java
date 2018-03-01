@@ -439,6 +439,7 @@ public class ScheCreExeBasicScheduleHandler {
 		basicScheduleSaveCommand.setWorktimeCode(basicSchedule.getWorkTimeCode());
 		basicScheduleSaveCommand.setWorktypeCode(basicSchedule.getWorkTypeCode());
 		basicScheduleSaveCommand.setYmd(basicSchedule.getDate());
+		basicScheduleSaveCommand.setWorkScheduleTime(basicSchedule.getWorkScheduleTime());
 		
 		PrescribedTimezoneSetting prescribedTimezoneSetting;
 		

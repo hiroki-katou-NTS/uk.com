@@ -96,7 +96,6 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             }
             
             let a: Array<any> = $("#grid").igGrid("option", "dataSource");
-            var index = 0;
             _.forEach(a, function(item) {
                  var data = {
                     name: '#[CCG013_53]',
@@ -105,10 +104,9 @@ module nts.uk.com.view.ccg013.k.viewmodel {
                     constraint: 'MenuDisplayName'    
                 };
                 
-                var cell = $("#grid").igGrid("cellById", index, "displayName");
+                var cell = $("#grid").igGrid("cellById", item.id, "displayName");
 
                 validateInput($(cell), data);
-                index++;
             }); 
                    
             if (nts.uk.ui.errors.hasError()) {
@@ -117,18 +115,23 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             
             _.defer(() => {
                 if (!nts.uk.ui.errors.hasError() ) {
-                    service.updateStandardMenu(a).done(function() {   
-                        service.getAllStandardMenu().done(function (lst){
+                    service.updateStandardMenu(a).done(function() {
+                        service.getAllStandardMenu().done(function(lst) {
                             self.listStandardMenu(lst);
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            self.getListStandardMenu(self.selectedCode());
+                            $("#grid").igGrid("option", "dataSource", self.list());
+                            if ($("#search").find('input.ntsSearchBox').val()) {
+                                $("button.search-btn").trigger("click");
+                            }
                         });                       
-                        _.remove(self.listStandardMenu(), function(item){                              
-                            return item.system == parseInt(self.selectedCode());                         
-                        });                         
+//                        _.remove(self.listStandardMenu(), function(item){                              
+//                            return item.system == parseInt(self.selectedCode());                         
+//                        });                         
 //                         for(let i = 0; i < a.length; i++)  {   
 //                            self.listStandardMenu().push(new StandardMenu(self.id(self.id()+1), a[i].code, a[i].targetItems, a[i].displayName, a[i].system, a[i].classification));  
 //                         }
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });     
-                        self.getListStandardMenu(self.selectedCode());
+
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error.message);
 //                        self.getListStandardMenu(self.selectedCode());

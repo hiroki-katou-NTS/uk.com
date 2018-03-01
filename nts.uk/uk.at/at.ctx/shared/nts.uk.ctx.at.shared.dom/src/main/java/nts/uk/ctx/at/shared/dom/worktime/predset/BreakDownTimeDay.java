@@ -48,7 +48,7 @@ public class BreakDownTimeDay extends WorkTimeDomainObject {
 		
 		super.validate();
 	}
-
+	
 
 	/**
 	 * Instantiates a new break down time day.
@@ -83,6 +83,14 @@ public class BreakDownTimeDay extends WorkTimeDomainObject {
 		this.oneDay = oneDay;
 		this.morning = morning;
 		this.afternoon = afternoon;
+	}
+	
+	/**
+	 * 所定労働時間の取得
+	 * @return　所定労働時間
+	 */
+	public int getPredetermineWorkTime(){
+		return this.morning.valueAsMinutes() + this.afternoon.valueAsMinutes();
 	}
 	
 }

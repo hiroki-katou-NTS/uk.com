@@ -23,7 +23,9 @@
 					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionCD 
 					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionName
 					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.MemoSelection
-					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.ExternalCD
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.ExternalCdNumeric
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.ExternalCdAlphalNumeric
+					
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
@@ -181,7 +183,7 @@
 						<div class="input">
 							<div>
 								<span
-									data-bind="if: infoSelection().selectionCodeCharacter() == 0">
+									data-bind="if: infoSelection().selectionCodeCharacter() == 1">
 									<input id="code"
 									data-bind="ntsTextEditor: {
 										name: '#[CPS017_21]', 
@@ -192,7 +194,7 @@
 		 								immediate: false									
 										}" />
 								</span> <span
-									data-bind="if: infoSelection().selectionCodeCharacter() == 1">
+									data-bind="if: infoSelection().selectionCodeCharacter() == 0">
 									<input id="code"
 									data-bind="ntsTextEditor: {
 										name: '#[CPS017_21]', 
@@ -215,26 +217,44 @@
 							</div>
 						</div>
 					</div>
-
-					<div class="form-input">
-						<div class="form-lable"
-							data-bind="ntsFormLabel: {constraint: 'ExternalCD', required: false }">
-							<label>#{i18n.getText('CPS017_23')}</label>
-						</div>
-
-						<div class="input">
-							<input id="exCode"
-								data-bind="ntsTextEditor: {
+					<com:ko-if bind="codeType() === 0">
+						<div class="form-input">
+							<div class="form-lable"
+								data-bind="ntsFormLabel: {constraint: 'ExternalCdNumeric' , required: false }">
+								<label>#{i18n.getText('CPS017_23')}</label>
+							</div>
+							<div class="input">
+								<input id="exCode"
+									data-bind="ntsTextEditor: {
 									name: '#[CPS017_24]',
 									value: externalCD,
-									constraint: 'listSelection',
+									constraint: 'ExternalCdNumeric' ,
 									option: '',
 									required: false,
 									enable: $parent.enableSelName,
 									readonly: false}" />
+							</div>
 						</div>
-					</div>
-
+					</com:ko-if>
+					<com:ko-if bind="codeType() === 1">
+						<div class="form-input">
+							<div class="form-lable"
+								data-bind="ntsFormLabel: {constraint: 'ExternalCdAlphalNumeric' , required: false }">
+								<label>#{i18n.getText('CPS017_23')}</label>
+							</div>
+							<div class="input">
+								<input id="exCode"
+									data-bind="ntsTextEditor: {
+									name: '#[CPS017_24]',
+									value: externalCD,
+									constraint: 'ExternalCdAlphalNumeric' ,
+									option: '',
+									required: false,
+									enable: $parent.enableSelName,
+									readonly: false}" />
+							</div>
+						</div>
+					</com:ko-if>
 					<div class="form-input">
 						<div class="form-lable"
 							data-bind="ntsFormLabel: {constraint: 'MemoSelection', required: false }">

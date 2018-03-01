@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2018 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workingcondition;
@@ -46,20 +46,16 @@ public interface WorkingConditionRepository {
 	 * @return the by sid and standard date
 	 */
 	Optional<WorkingCondition> getBySidAndStandardDate(String employeeId, GeneralDate baseDate);
-
+	
 	/**
-	 * Adds the.
+	 * Gets the by sid and standard date.
 	 *
-	 * @param workingCondition the working condition
+	 * @param companyId the company id
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the by sid and standard date
 	 */
-	void add(WorkingCondition workingCondition);
-
-	/**
-	 * Update.
-	 *
-	 * @param workingCondition the working condition
-	 */
-	void update(WorkingCondition workingCondition);
+	Optional<WorkingCondition> getBySidAndStandardDate(String companyId, String employeeId, GeneralDate baseDate);
 
 	/**
 	 * Save.

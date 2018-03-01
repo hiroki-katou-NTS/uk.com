@@ -9,9 +9,17 @@
 		<ui:define name="sidebar-head">
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.PersonSymbolQualify
+				nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.CorrectDeadline
 			</com:ValidatorScript>
-			
 			<com:scriptfile set="IGNITE" />
+			
+			<com:stylefile path="/view/ccg/025/component/component.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/025/component/component.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/025/component/component.vm.js" of="/nts.uk.com.web" />
+			
+			<com:stylefile path="/view/ccg/026/component/component.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/026/component/component.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/026/component/component.vm.js" of="/nts.uk.com.web" />
 				
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:stylefile path="/view/ksm/011/main.css"  of="/nts.uk.at.web"/>
@@ -26,9 +34,7 @@
 			<com:scriptfile path="ksm011.a.service.js" />
 			<com:scriptfile path="ksm011.a.start.js" />
 			
-			<com:stylefile path="/view/ccg/025/component/component.css" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/025/component/component.service.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/025/component/component.vm.js" of="/nts.uk.com.web" />
+			
 		</ui:define>
 
 		<ui:define name="sidebar" tabindex="1">
@@ -155,7 +161,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_80')}</div></td>
-									<td><div tabindex="18" class="cbx-days" data-bind="ntsComboBox: {
+									<td><div id="x" tabindex="18" class="cbx-days" data-bind="ntsComboBox: {
 											options: dayOfWeek,
 											optionsValue: 'code',
 											value: selectedDay,

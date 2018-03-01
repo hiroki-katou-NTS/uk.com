@@ -61,7 +61,9 @@ public abstract class CalculationTimeSheet {
 	 */
 	public CalculationTimeSheet(TimeZoneRounding timeSheet,
 								TimeSpanForCalc calcrange,
+								List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
 								List<TimeSheetOfDeductionItem> deductionTimeSheets,
+								
 								List<BonusPayTimesheet> bonusPayTimeSheet,
 								List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet,
 								Optional<MidNightTimeSheet> midNighttimeSheet
@@ -69,6 +71,7 @@ public abstract class CalculationTimeSheet {
 		this.timeSheet = timeSheet;
 		this.calcrange = calcrange;
 		
+		this.recordedTimeSheet = recorddeductionTimeSheets;
 		this.deductionTimeSheet = deductionTimeSheets;
 		
 		this.bonusPayTimeSheet = bonusPayTimeSheet;
@@ -148,6 +151,14 @@ public abstract class CalculationTimeSheet {
 		//int calcTime = timeSheet.getSpan().lengthAsMinutes() - minusDeductionTime();
 		AttendanceTime calcTime = deductionLengthMinutes();
 		return calcTime;
+	}
+	
+	/**
+	 * 控除時間の計算
+	 * @return 控除時間
+	 */
+	public AttendanceTime calcTotalDeductionTime() {
+		return this.calcTotalTime().minusMinutes(deductionLengthMinutes().valueAsMinutes());
 	}
 	
 	/**
@@ -345,6 +356,7 @@ public abstract class CalculationTimeSheet {
 				return Optional.of(new MidNightTimeSheet(timeSheet,
 										 calcrange.getDuplicatedWith(midNightTimeSheet.get().calcrange).get(),
 										 duplicateTimeSpan(midNightTimeSheet.get().calcrange),
+										 duplicateTimeSpan(midNightTimeSheet.get().calcrange),
 										 bonusPayTimeSheet,
 										 specBonusPayTimesheet,
 										 midNightTimeSheet
@@ -368,6 +380,7 @@ public abstract class CalculationTimeSheet {
 					returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
 																								deductionTimeSheet.timeSheet
 																							   ,deductionTimeSheet.calcrange
+																							   ,deductionTimeSheet.recordedTimeSheet
 																							   ,deductionTimeSheet.deductionTimeSheet
 																							   ,deductionTimeSheet.bonusPayTimeSheet
 																							   ,deductionTimeSheet.specBonusPayTimesheet
@@ -392,7 +405,7 @@ public abstract class CalculationTimeSheet {
 	public List<BonusPayTime> calcBonusPay(ActualWorkTimeSheetAtr actualWorkAtr, BonusPayAutoCalcSet bonusPayCalcSet, CalAttrOfDailyPerformance calcAtrOfDaily) {
 		List<BonusPayTime> bonusPayTimeList = new ArrayList<>();
 		for(BonusPayTimesheet bonusPaySheet : this.bonusPayTimeSheet){
-//			int calcTime = bonusPaySheet.calcTotalTime().valueAsMinutes();
+			//int calcTime = bonusPaySheet.;
 //			bonusPayTimeList.add(new BonusPayTime(bonusPayCalcSet.getBonusPayItemNo()
 //												 ,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))
 //												 ,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.setting.request.application.comment;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringMaxLength(6)
+@StringMaxLength(7)
 public class CommentFontColor extends StringPrimitiveValue<CommentFontColor> {
 
 	/**

@@ -15,7 +15,6 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.RaisingSalaryTime;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
@@ -25,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -68,7 +68,7 @@ public class OutsideWorkTimeSheet {
 			FixOffdayWorkTimezone fixOff, TimeLeavingWork attendanceLeave, int workNo, OverDayEndCalcSet dayEndSet,
 			WorkTimezoneCommonSet overDayEndSet, List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem, WorkType beforeDay,
 			WorkType toDay, WorkType afterDay, WorkTimeSetting workTime, WorkingSystem workingSystem,
-			BreakdownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalculationOfOverTimeWork autoCalculationSet,
+			BreakDownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalculationOfOverTimeWork autoCalculationSet,
 			LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet) {
 		
 		List<HolidayWorkFrameTimeSheetForCalc> holidayWorkFrameTimeSheetForCalc = new ArrayList<>();
@@ -115,13 +115,6 @@ public class OutsideWorkTimeSheet {
 //			}
 
 		}
-
-//		return new OutsideWorkTimeSheet(new ExcessOfStatutoryTimeOfDaily(new ExcessOfStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-//																		 new AttendanceTime(0)),
-//				 														 Optional.empty(),
-//				 														 Optional.empty())
-//																		// Optional.of(overTimeWorkSheet.get().getOverWorkTimeOfDaily()),
-//																		// Optional.of(holidayWorkTimeSheet.get().getWorkHolidayTime()))
 		return new OutsideWorkTimeSheet(
 				   Optional.of(new OverTimeSheet(new RaisingSalaryTime(),
 						   						 overTimeWorkFrameTimeSheet,
@@ -132,7 +125,6 @@ public class OutsideWorkTimeSheet {
 						   								holidayWorkFrameTimeSheetForCalc, 
 						   								new SubHolOccurrenceInfo()))
 				   );
-
 	}
 
 	/**
@@ -168,4 +160,42 @@ public class OutsideWorkTimeSheet {
 		// ExcessOfStatutoryTimeOfDaily(totalExcessTime,Optional.empty(),Optional.empty());
 	}
 
+//	public void addtimesheet(OutsideWorkTimeSheet outsideSheet) {
+//		if(this.overTimeWorkSheet.isPresent()) {
+//			
+//		}
+//		else {
+//			this.overTimeWorkSheet = outsideSheet.getOverTimeWorkSheet();
+//		}
+//			
+//	}
+//	
+//	private void addoverTimesheet(OverTime)
+	
+	/**
+	 * 残業時間の中にある控除時間を算出する
+	 * @param dedAtr
+	 * @param atr
+	 * @return 控除時間
+	 */
+	public AttendanceTime caluclationAllOverTimeFrameTime(DeductionAtr dedAtr,ConditionAtr atr) {
+		if(this.overTimeWorkSheet.isPresent()) {
+			this.overTimeWorkSheet.get().calculationAllFrameDeductionTime(dedAtr,atr);
+		}
+		return new AttendanceTime(0);
+	}
+	
+	/**
+	 * 休出時間の中にある控除時間を算出する
+	 * @param dedAtr
+	 * @param atr
+	 * @return　控除時間
+	 */
+	public AttendanceTime caluclationAllHolidayFrameTime(DeductionAtr dedAtr,ConditionAtr atr) {
+		if(this.holidayWorkTimeSheet.isPresent()) {
+			this.holidayWorkTimeSheet.get().calculationAllFrameDeductionTime(dedAtr,atr);
+		}
+		return new AttendanceTime(0);
+	}
+	
 }

@@ -15,6 +15,7 @@ module nts.uk.at.view.kmf002.b {
             workplaceNameSelected: KnockoutObservable<string>;
             enableSave: KnockoutObservable<boolean>;
             enableDelete: KnockoutObservable<boolean>;
+            isContinueRecurFindName: KnockoutObservable<boolean>;
 
             constructor(){
                 let _self = this;
@@ -24,6 +25,7 @@ module nts.uk.at.view.kmf002.b {
                 _self.enableSave = ko.observable(true);
                 _self.enableDelete = ko.observable(true)
                 _self.workplaceNameSelected = ko.observable("");
+                _self.isContinueRecurFindName = ko.observable(true);
                 
                 _self.baseDate = ko.observable(new Date());
                 _self.multiSelectedWorkplaceId = ko.observableArray([]);
@@ -45,15 +47,21 @@ module nts.uk.at.view.kmf002.b {
                 
                 _self.multiSelectedWorkplaceId.subscribe(function(newValue) {
                     try {
-                        _self.commonTableMonthDaySet().infoSelect2($('#tree-grid').getRowSelected()[0].workplaceCode);
-                        _self.getNameWkpSelect($('#tree-grid').getDataList(), 
-                                               $('#tree-grid').getRowSelected()[0].workplaceCode);
-                        
-                        _self.commonTableMonthDaySet().infoSelect3(_self.workplaceNameSelected());
-                        _self.getDataFromService();
-                        
-                        if (!_.isNull(newValue) && !_.isEmpty(newValue)) {
-                            _self.enableSave(true);    
+                        if (_.isUndefined(newValue)) {
+                            _self.commonTableMonthDaySet().infoSelect2('');
+                            _self.commonTableMonthDaySet().infoSelect3('');
+                            _self.enableSave(false);
+                            _self.enableDelete(false);     
+                            _self.setDefaultMonthDay();
+                        } else {
+                            _self.commonTableMonthDaySet().infoSelect2($('#tree-grid').getRowSelected()[0].workplaceCode);
+                            _self.getNameWkpSelect($('#tree-grid').getDataList(), 
+                                                   $('#tree-grid').getRowSelected()[0].workplaceCode);
+                            
+                            _self.commonTableMonthDaySet().infoSelect3(_self.workplaceNameSelected());
+                            _self.getDataFromService();
+                            _self.isContinueRecurFindName(true);
+                            _self.enableSave(true);
                         }
                     }
                     catch (e){
@@ -63,21 +71,42 @@ module nts.uk.at.view.kmf002.b {
                 _self.commonTableMonthDaySet().fiscalYear.subscribe(function(newValue) {
                     // change year
                     if (!nts.uk.ui.errors.hasError()) {
-                        _self.getDataFromService();    
+                        _self.getDataFromService();  
+                        $.when(service.findAll(_self.commonTableMonthDaySet().fiscalYear())).done(function(data3: any) {
+                                _self.alreadySettingList.removeAll();
+                                _.forEach(data3, function(wkpID) {
+                                _self.alreadySettingList.push({'workplaceId': wkpID, 'isAlreadySetting': true});
+                            });        
+                        })
                     }
                 });
             }
             
+            private setDefaultMonthDay(): void {
+                let _self = this;
+                for (let i=0; i<_self.commonTableMonthDaySet().arrMonth().length; i++) {
+                    _self.commonTableMonthDaySet().arrMonth()[i].day(0); 
+                }     
+            }
+            
             private getNameWkpSelect(data: any, codeSelect: string): void {
                 let _self = this;
-                _.forEach(data, function(value: any) {
-                    if (value.code == codeSelect) {
-                        _self.workplaceNameSelected(value.name);
+                if (_self.isContinueRecurFindName() == false) {
+                    return;
+                }
+                _.forEach(data, function(obj: any) {
+                    if (obj.code == codeSelect) {
+                        _self.workplaceNameSelected(obj.name);
+                        _self.isContinueRecurFindName(false);
                         return false;
                     } else {
-                        if (typeof value.childs !== "undefined" && value.childs.length > 0) {
-                            for (var i=0; i<value.childs.length; i++) {
-                                _self.getNameWkpSelect(value.childs[i], codeSelect);    
+                        if (typeof obj.childs !== "undefined" && obj.childs.length > 0) {
+                            if (obj.code == codeSelect) {
+                                _self.workplaceNameSelected(obj.name);
+                                _self.isContinueRecurFindName(false);
+                                return;
+                            } else {
+                               _self.getNameWkpSelect(obj.childs, codeSelect);    
                             }
                         }    
                     }
@@ -90,16 +119,21 @@ module nts.uk.at.view.kmf002.b {
             public start_page(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var _self = this;
-               $('#tree-grid').ntsTreeComponent(_self.treeGrid).done(() => {
-                    _self.getDataFromService();
+                 $.when($('#tree-grid').ntsTreeComponent(_self.treeGrid), service.findAll(_self.commonTableMonthDaySet().fiscalYear())).done(function(data: any, data2: any) {
+                    _self.alreadySettingList.removeAll();
+                    _.forEach(data2, function(wkpID) {
+                        _self.alreadySettingList.push({'workplaceId': wkpID, 'isAlreadySetting': true});
+                    });        
+                   _self.getDataFromService();
                    _self.baseDate(new Date(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth()[0].month()-1, 2));
                     
                    if (_.isEmpty($('#tree-grid').getRowSelected())) {
-                        _self.enableSave(false);                              
+                        _self.enableSave(false);
+                   } else {
+                       _self.multiSelectedWorkplaceId.valueHasMutated();
                    }
-                   
-                    dfd.resolve();    
-               });
+                   dfd.resolve();
+                })
                return dfd.promise();   
             }
             
@@ -110,6 +144,7 @@ module nts.uk.at.view.kmf002.b {
                                     _self.commonTableMonthDaySet().arrMonth(), 
                                     $('#tree-grid').getRowSelected()[0].workplaceId).done((data) => {
                     _self.getDataFromService();
+                    _self.alreadySettingList.push({'workplaceId': _self.multiSelectedWorkplaceId(), 'isAlreadySetting': true});                    
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 });    
                 }  
@@ -120,7 +155,8 @@ module nts.uk.at.view.kmf002.b {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     service.remove(_self.commonTableMonthDaySet().fiscalYear(), 
                                     $('#tree-grid').getRowSelected()[0].workplaceId).done(() => {
-                        _self.getDataFromService();
+                        _self.getDataFromService();     
+                        _self.alreadySettingList.remove(function(s) { return s.workplaceId == _self.multiSelectedWorkplaceId() });           
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     });  
                 }).ifNo(() => {
@@ -133,12 +169,7 @@ module nts.uk.at.view.kmf002.b {
                 let _self = this;
                 if ($('#tree-grid').getRowSelected()[0] != null) {
                     $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(),$('#tree-grid').getRowSelected()[0].workplaceId), 
-                            service.findFirstMonth(),
-                            service.findAll()).done(function(data: any, data2: any, data3: any) {
-                        _self.alreadySettingList.removeAll();
-                        _.forEach(data3, function(wkpID) {
-                            _self.alreadySettingList.push({'workplaceId': wkpID, 'isAlreadySetting': true});
-                        });
+                            service.findFirstMonth()).done(function(data: any, data2: any) {
                         if (typeof data === "undefined") {
                             /** 
                              *   create value null for prepare create new 
@@ -148,6 +179,9 @@ module nts.uk.at.view.kmf002.b {
                             });
                             _self.enableDelete(false);
                         } else {
+                            if (_.isEmpty(data2)) {
+                                data2.startMonth = 0;
+                            }
                             _self.commonTableMonthDaySet().arrMonth.removeAll();
                             for (let i=data2.startMonth-1; i<12; i++) {
                                 _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 

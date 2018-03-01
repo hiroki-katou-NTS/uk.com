@@ -96,7 +96,7 @@ public class AggregateTotalWorkingTime {
 	 */
 	public void aggregateSharedItem(DatePeriod datePeriod,
 			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap){
-		
+
 		// 就業時間を集計する
 		this.workTime.confirm(datePeriod, attendanceTimeOfDailyMap);
 	
@@ -105,6 +105,17 @@ public class AggregateTotalWorkingTime {
 		
 		// 所定労働時間を集計する
 		this.prescribedWorkingTime.confirm(datePeriod, attendanceTimeOfDailyMap);
+	}
+	
+	/**
+	 * 共有項目をコピーする
+	 * @param aggregateTotalWorkingTime 総労働時間
+	 */
+	public void copySharedItem(AggregateTotalWorkingTime aggregateTotalWorkingTime){
+		
+		this.workTime = aggregateTotalWorkingTime.getWorkTime();
+		this.vacationUseTime = aggregateTotalWorkingTime.getVacationUseTime();
+		this.prescribedWorkingTime = aggregateTotalWorkingTime.getPrescribedWorkingTime();
 	}
 	
 	/**
@@ -120,7 +131,8 @@ public class AggregateTotalWorkingTime {
 	 * @param legalTransferOrderSet 法定内振替順設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void aggregateDailyForRegAndIrreg(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
+	public void aggregateDailyForRegAndIrreg(
+			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String workplaceId, String employmentCd,
 			WorkingSystem workingSystem, MonthlyAggregateAtr aggregateAtr,
 			WorkInformation workInfo,
@@ -144,7 +156,7 @@ public class AggregateTotalWorkingTime {
 			aggregateTimeSet = legalAggrSetOfRegular.getAggregateTimeSet();
 			excessOutsideTimeSet = legalAggrSetOfRegular.getExcessOutsideTimeSet();
 		}
-		if (aggregateAtr.isExcessOutsideWork()){
+		if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
 			// 集計区分＝時間外超過の時、時間外超過設定から参照
 			treatOverTimeOfLessThanCriteriaPerDay = excessOutsideTimeSet.getTreatOverTimeOfLessThanCriteriaPerDay();
 			treatHolidayWorkTimeOfLessThanCriteriaPerWeek =
@@ -180,7 +192,8 @@ public class AggregateTotalWorkingTime {
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 * @return フレックス時間　（当日分のみ）
 	 */
-	public FlexTime aggregateDailyForFlex(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
+	public FlexTime aggregateDailyForFlex(
+			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String workplaceId, String employmentCd,
 			WorkingSystem workingSystem, MonthlyAggregateAtr aggregateAtr,
 			AggrSettingMonthlyOfFlx aggrSetOfFlex,

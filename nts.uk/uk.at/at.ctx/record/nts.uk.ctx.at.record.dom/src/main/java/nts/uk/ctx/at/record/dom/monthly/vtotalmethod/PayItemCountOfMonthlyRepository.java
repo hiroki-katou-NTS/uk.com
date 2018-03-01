@@ -7,6 +7,7 @@ import java.util.Optional;
  * @author shuichu_ishida
  */
 public interface PayItemCountOfMonthlyRepository {
+	
 	/**
 	 * 検索
 	 * @param companyId 会社ID

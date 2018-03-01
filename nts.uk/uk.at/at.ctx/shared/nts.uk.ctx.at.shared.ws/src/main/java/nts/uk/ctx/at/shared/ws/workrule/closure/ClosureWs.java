@@ -1,9 +1,10 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.ws.workrule.closure;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.DayMonthChange;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -44,6 +46,10 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Path("ctx/at/shared/workrule/closure")
 @Produces("application/json")
 public class ClosureWs {
+
+	/** The closure service. */
+	@Inject
+	private ClosureService closureService;
 	
 	/** The finder. */
 	@Inject
@@ -278,4 +284,28 @@ public class ClosureWs {
 		}).collect(Collectors.toList());
 	}
 	
+	/**
+	 * Gets the closure tied by employment.
+	 *
+	 * @param employmentCode the employment code
+	 * @return the closure tied by employment
+	 */
+	@POST
+	@Path("getclosuretiedbyemployment/{employmentcode}")
+	public Integer getClosureTiedByEmployment(@PathParam("employmentcode") String employmentCode) {
+		return this.finder.getClosureIdByEmploymentCode(employmentCode);
+	}
+
+	@POST
+	@Path("calculateperiod/{closureid}/{yearmonth}")
+	public List<String> calculatePeriod(@PathParam("closureid") int closureId, @PathParam("yearmonth") int yearMonth) {
+		return Arrays.asList(
+				this.closureService.getClosurePeriod(closureId, YearMonth.of(yearMonth)).end().toString("yyyy-MM-dd"));
+	}
+
+	@POST
+	@Path("getclosuresbybasedate/{basedate}")
+	public List<ClosureIdNameDto> getClosuresByBaseDate(@PathParam("basedate") String basedate) {
+		return this.finder.getClosuresByBaseDate(GeneralDate.fromString(basedate, "yyyy-MM-dd"));
+	}
 }

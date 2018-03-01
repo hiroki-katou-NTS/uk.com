@@ -138,32 +138,30 @@ module nts.uk.com.view.cas012.a.viewmodel {
             block.invisible();
             if (self.selectedRoleType() == 0) {
                 nts.uk.ui.windows.sub.modal("/view/cas/012/c/index.xhtml").onClosed(() => {
-                    let data = nts.uk.ui.windows.getShared("CAS012CResult");
+                    let data = nts.uk.ui.windows.getShared("CAS012CResult"); 
                     param.setRoleAdminFlag = data.setRoleAdminFlag;
                     param.decisionCompanyID = data.decisionCompanyID;
-                    self.createRoleProcess(param);
+                    if(!data.isCancel){ 
+                        self.createRoleProcess(param);
+                    }
                 });
             } else {
-                self.createRoleProcess(param);
+                self.createRoleProcess(param); 
             }
         }
 
         private createRoleProcess(param: RoleIndividualGrantBaseCommand): void {
-            console.time("Create");
             var self = this;
-            if (param.decisionCompanyID != null) {
-                service.create(param).done((data: any) => {
-                    self.getData().done(() => {
-                        self.selectRoleByKey(data.companyID, data.userID, data.roleType);
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                    });
-                }).fail((res) => {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-                }).always(() => {
-                    block.clear();
+            service.create(param).done((data: any) => {
+                self.getData().done(() => {
+                    self.selectRoleByKey(data.companyID, data.userID, data.roleType);
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                 });
-            }
-            console.timeEnd("Create");
+            }).fail((res) => {
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+            }).always(() => {
+                block.clear();
+            });
         }
 
         private updateRole(): void {

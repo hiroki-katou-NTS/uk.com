@@ -366,6 +366,12 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             self.changeBooleanToNumber(command.oneDay);
             self.changeBooleanToNumber(command.morning);
             self.changeBooleanToNumber(command.afternoon);
+            
+            command.morning.closeAtr = null;
+            command.afternoon.closeAtr = null;
+            if (WorkTypeCls.Closure != workType.oneDayCls()) {
+                command.oneDay.closeAtr = null;
+            }
 
             $("#input-workTypeCode").trigger("validate");
             $("#input-workTypeName").trigger("validate");

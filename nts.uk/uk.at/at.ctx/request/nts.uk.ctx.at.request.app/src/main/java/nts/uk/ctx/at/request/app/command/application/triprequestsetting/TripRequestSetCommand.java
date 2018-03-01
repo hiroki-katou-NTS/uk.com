@@ -6,8 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class TripRequestSetCommand {
-	/** 会社ID */
-	private String companyId;
 	/** コメント１ */
 	private String comment1;
 	/** コメント2 */

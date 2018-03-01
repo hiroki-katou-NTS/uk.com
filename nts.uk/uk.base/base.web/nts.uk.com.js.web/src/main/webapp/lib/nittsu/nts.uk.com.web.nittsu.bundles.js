@@ -3204,6 +3204,19 @@ var nts;
                     return dfd.promise();
                 }
                 file.donwload = donwload;
+                function liveViewUrl(fileId, entryName) {
+                    var liveViewPath = "/webapi/shr/infra/file/storage/liveview/";
+                    var locator = location.siteRoot
+                        .mergeRelativePath(request.WEB_APP_NAME.com + '/')
+                        .mergeRelativePath(liveViewPath);
+                    if (arguments.length === 1) {
+                        return locator.mergeRelativePath(fileId).serialize();
+                    }
+                    else if (arguments.length === 2) {
+                        return locator.mergeRelativePath(fileId + "/").mergeRelativePath(entryName).serialize();
+                    }
+                }
+                file.liveViewUrl = liveViewUrl;
                 function remove(fileId) {
                     return ajax("com", "/shr/infra/file/storage/delete/" + fileId);
                 }
@@ -3217,6 +3230,10 @@ var nts;
                 }
                 file.pathToGet = pathToGet;
             })(file = request.file || (request.file = {}));
+            function liveView(fileId) {
+                return file.liveViewUrl(fileId);
+            }
+            request.liveView = liveView;
             var specials;
             (function (specials) {
                 function getAsyncTaskInfo(taskId) {
@@ -3360,18 +3377,6 @@ var nts;
                 return destination.rawUrl;
             }
             request.resolvePath = resolvePath;
-            function liveView(webAppId, fileId) {
-                var liveViewPath = "/webapi/shr/infra/file/storage/liveview/";
-                if (typeof arguments[1] !== 'string') {
-                    return resolvePath(liveViewPath) + _.concat(location.currentAppId, arguments)[1];
-                }
-                var webserviceLocator = location.siteRoot
-                    .mergeRelativePath(request.WEB_APP_NAME[webAppId] + '/')
-                    .mergeRelativePath(liveViewPath);
-                var fullPath = webserviceLocator.serialize() + fileId;
-                return fullPath;
-            }
-            request.liveView = liveView;
             var location;
             (function (location) {
                 location.current = new Locator(window.location.href);
@@ -6040,12 +6045,7353 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
     (function (uk) {
         var ui;
         (function (ui_3) {
+            var exTable;
+            (function (exTable_1) {
+                var NAMESPACE = "extable";
+                var DISTANCE = 3;
+                var SPACE = 10;
+                var HEADER = "xheader";
+                var HEADER_PRF = "ex-header-";
+                var BODY_PRF = "ex-body-";
+                var HEADER_TBL_PRF = "extable-header-";
+                var BODY_TBL_PRF = "extable-body-";
+                var H_BTN_CLS = "ex-height-btn";
+                var LEFTMOST = "leftmost";
+                var MIDDLE = "middle";
+                var DETAIL = "detail";
+                var VERTICAL_SUM = "vert-sum";
+                var HORIZONTAL_SUM = "horz-sum";
+                var LEFT_HORZ_SUM = "left-horz-sum";
+                var CRUD = "crud";
+                var ADD_ROW = "add-row";
+                var DEL_ROWS = "delete-rows";
+                var H_BTN_HEIGHT = "24px";
+                // Body height setting mode
+                var DYNAMIC = "dynamic";
+                var FIXED = "fixed";
+                // Update mode
+                var COPY_PASTE = "copyPaste";
+                var EDIT = "edit";
+                var STICK = "stick";
+                var Connector = {};
+                var ExTable = (function () {
+                    function ExTable($container, options) {
+                        // dynamic or fixed
+                        this.bodyHeightSetMode = DYNAMIC;
+                        this.windowXOccupation = 0;
+                        this.windowYOccupation = 0;
+                        this.updateMode = EDIT;
+                        this.pasteOverWrite = true;
+                        this.stickOverWrite = true;
+                        this.$container = $container[0];
+                        this.$commander = options.primaryTable ? options.primaryTable[0] : null;
+                        this.$follower = options.secondaryTable ? options.secondaryTable[0] : null;
+                        this.bodyRowHeight = options.bodyRowHeight;
+                        this.headerHeight = options.headerHeight;
+                        this.bodyHeight = options.bodyHeight;
+                        this.horzSumHeaderHeight = options.horizontalSumHeaderHeight;
+                        this.horzSumBodyHeight = options.horizontalSumBodyHeight;
+                        this.horzSumBodyRowHeight = options.horizontalSumBodyRowHeight;
+                        this.areaResize = options.areaResize;
+                        this.heightSetter = options.heightSetter;
+                        this.bodyHeightSetMode = options.bodyHeightMode;
+                        this.windowXOccupation = options.windowXOccupation;
+                        this.windowYOccupation = options.windowYOccupation;
+                        if (options.updateMode) {
+                            this.updateMode = options.updateMode;
+                        }
+                        this.pasteOverWrite = options.pasteOverWrite;
+                        this.stickOverWrite = options.stickOverWrite;
+                        this.viewMode = options.viewMode;
+                        this.determination = options.determination;
+                        this.features = options.features;
+                        $.data(this.$container, internal.X_OCCUPY, this.windowXOccupation);
+                        $.data(this.$container, internal.Y_OCCUPY, this.windowYOccupation);
+                        helper.makeConnector();
+                    }
+                    ExTable.prototype.setUpdateMode = function (updateMode) {
+                        this.updateMode = updateMode;
+                        this.detailContent.updateMode = updateMode;
+                    };
+                    ExTable.prototype.setViewMode = function (mode) {
+                        this.viewMode = mode;
+                        this.detailContent.viewMode = mode;
+                    };
+                    ExTable.prototype.LeftmostHeader = function (leftmostHeader) {
+                        this.leftmostHeader = _.cloneDeep(leftmostHeader);
+                        this.setHeaderClass(this.leftmostHeader, LEFTMOST);
+                        return this;
+                    };
+                    ExTable.prototype.LeftmostContent = function (leftmostContent) {
+                        this.leftmostContent = _.cloneDeep(leftmostContent);
+                        this.setBodyClass(this.leftmostContent, LEFTMOST);
+                        this.leftmostContent.updateMode = this.updateMode;
+                        if (feature.isEnable(this.features, feature.UPDATING)) {
+                            this.leftmostHeader.width = parseInt(this.leftmostHeader.width) + controls.CHECKBOX_COL_WIDTH + "px";
+                            controls.addCheckBoxDef([this.leftmostHeader, this.leftmostContent]);
+                        }
+                        return this;
+                    };
+                    ExTable.prototype.MiddleHeader = function (middleHeader) {
+                        this.middleHeader = _.cloneDeep(middleHeader);
+                        this.setHeaderClass(this.middleHeader, MIDDLE);
+                        this.middleHeader.updateMode = this.updateMode;
+                        return this;
+                    };
+                    ExTable.prototype.MiddleContent = function (middleContent) {
+                        this.middleContent = _.cloneDeep(middleContent);
+                        this.setBodyClass(this.middleContent, MIDDLE);
+                        return this;
+                    };
+                    ExTable.prototype.DetailHeader = function (detailHeader) {
+                        this.detailHeader = _.cloneDeep(detailHeader);
+                        this.setHeaderClass(this.detailHeader, DETAIL);
+                        return this;
+                    };
+                    ExTable.prototype.DetailContent = function (detailContent) {
+                        this.detailContent = _.cloneDeep(detailContent);
+                        this.setBodyClass(this.detailContent, DETAIL);
+                        this.detailContent.updateMode = this.updateMode;
+                        this.detailContent.viewMode = this.viewMode;
+                        return this;
+                    };
+                    ExTable.prototype.VerticalSumHeader = function (verticalSumHeader) {
+                        this.verticalSumHeader = _.cloneDeep(verticalSumHeader);
+                        this.setHeaderClass(this.verticalSumHeader, VERTICAL_SUM);
+                        return this;
+                    };
+                    ExTable.prototype.VerticalSumContent = function (verticalSumContent) {
+                        this.verticalSumContent = _.cloneDeep(verticalSumContent);
+                        this.setBodyClass(this.verticalSumContent, VERTICAL_SUM);
+                        return this;
+                    };
+                    ExTable.prototype.LeftHorzSumHeader = function (leftHorzSumHeader) {
+                        this.leftHorzSumHeader = _.cloneDeep(leftHorzSumHeader);
+                        this.setHeaderClass(this.leftHorzSumHeader, LEFT_HORZ_SUM);
+                        return this;
+                    };
+                    ExTable.prototype.LeftHorzSumContent = function (leftHorzSumContent) {
+                        this.leftHorzSumContent = _.cloneDeep(leftHorzSumContent);
+                        this.setBodyClass(this.leftHorzSumContent, LEFT_HORZ_SUM);
+                        return this;
+                    };
+                    ExTable.prototype.HorizontalSumHeader = function (horizontalSumHeader) {
+                        this.horizontalSumHeader = _.cloneDeep(horizontalSumHeader);
+                        this.setHeaderClass(this.horizontalSumHeader, HORIZONTAL_SUM);
+                        return this;
+                    };
+                    ExTable.prototype.HorizontalSumContent = function (horizontalSumContent) {
+                        this.horizontalSumContent = _.cloneDeep(horizontalSumContent);
+                        this.setBodyClass(this.horizontalSumContent, HORIZONTAL_SUM);
+                        return this;
+                    };
+                    ExTable.prototype.setHeaderClass = function (options, part) {
+                        options.tableClass = HEADER_TBL_PRF + part;
+                        options.containerClass = HEADER_PRF + part;
+                    };
+                    ExTable.prototype.setBodyClass = function (options, part) {
+                        options.tableClass = BODY_TBL_PRF + part;
+                        options.containerClass = BODY_PRF + part;
+                    };
+                    /**
+                     * Create.
+                     */
+                    ExTable.prototype.create = function () {
+                        var self = this;
+                        var left = "0px";
+                        var top = "0px";
+                        if (!self.satisfyPrebuild())
+                            return;
+                        self.headers = _.filter([self.leftmostHeader, self.middleHeader, self.detailHeader, self.verticalSumHeader], function (h) {
+                            return !uk.util.isNullOrUndefined(h);
+                        });
+                        self.bodies = _.filter([self.leftmostContent, self.middleContent, self.detailContent, self.verticalSumContent], function (b) {
+                            return !uk.util.isNullOrUndefined(b);
+                        });
+                        // Get part widths
+                        var widthParts, gridHeight;
+                        storage.area.getPartWidths(self.$container).ifPresent(function (parts) {
+                            widthParts = JSON.parse(parts);
+                            return null;
+                        });
+                        // Get grid height
+                        storage.tableHeight.get(self.$container).ifPresent(function (height) {
+                            gridHeight = JSON.parse(height);
+                            return null;
+                        });
+                        self.$container.classList.add(NAMESPACE);
+                        $.data(self.$container, NAMESPACE, self);
+                        var pTable = $.data(self.$container, NAMESPACE);
+                        pTable.owner = { headers: [], bodies: [],
+                            find: function (name, where) {
+                                var o = this;
+                                var elm = o[where].filter(function (e, i) { return e.classList.contains(name); });
+                                if (!elm || elm.length === 0)
+                                    return null;
+                                return elm;
+                            } };
+                        var headerWrappers = [], bodyWrappers = [];
+                        for (var i = 0; i < self.headers.length; i++) {
+                            if (!uk.util.isNullOrUndefined(self.headers[i])) {
+                                self.headers[i].overflow = "hidden";
+                                self.headers[i].height = self.headerHeight;
+                                self.headers[i].isHeader = true;
+                                self.setWrapperWidth(self.headers[i], widthParts);
+                                var $headerWrapper = render.createWrapper("0px", left, self.headers[i]);
+                                pTable.owner.headers.push($headerWrapper);
+                                $headerWrapper.classList.add(HEADER);
+                                self.$container.appendChild($headerWrapper);
+                                render.process($headerWrapper, self.headers[i]);
+                                left = (parseInt(left) + parseInt(self.headers[i].width) + DISTANCE) + "px";
+                                top = (parseInt(self.headers[i].height) + DISTANCE) + "px";
+                                headerWrappers.push($headerWrapper);
+                            }
+                        }
+                        left = "0px";
+                        for (var i = 0; i < self.bodies.length; i++) {
+                            var $bodyWrapper = void 0;
+                            if (!uk.util.isNullOrUndefined(self.bodies[i])) {
+                                self.bodies[i].rowHeight = self.bodyRowHeight;
+                                self.bodies[i].height = gridHeight ? (parseFloat(gridHeight) + "px") : self.bodyHeight;
+                                self.bodies[i].width = self.headers[i].width;
+                                self.setWrapperWidth(self.bodies[i], widthParts);
+                                $bodyWrapper = render.createWrapper(top, left, self.bodies[i]);
+                                pTable.owner.bodies.push($bodyWrapper);
+                                self.$container.appendChild($bodyWrapper);
+                                if (i === self.bodies.length - 1 && !uk.util.isNullOrUndefined($bodyWrapper)) {
+                                    self.bodies[i].overflow = "scroll";
+                                    self.bodies[i].width = (parseFloat($bodyWrapper.style.width) + helper.getScrollWidth()) + "px";
+                                    self.bodies[i].height = (parseFloat($bodyWrapper.style.height) + helper.getScrollWidth()) + "px";
+                                    scroll.syncDoubDirVerticalScrolls(_.concat(bodyWrappers, $bodyWrapper));
+                                }
+                                else if (i > 0 && i < self.bodies.length - 1) {
+                                    self.bodies[i].overflowX = "scroll";
+                                    self.bodies[i].overflowY = "hidden";
+                                    self.bodies[i].height = (parseFloat($bodyWrapper.style.height) + helper.getScrollWidth()) + "px";
+                                    scroll.bindVertWheel($bodyWrapper);
+                                }
+                                else {
+                                    scroll.bindVertWheel($bodyWrapper);
+                                }
+                                render.process($bodyWrapper, self.bodies[i]);
+                                left = (parseInt(left) + parseInt(self.bodies[i].width) + DISTANCE) + "px";
+                                if (self.bodies[i].containerClass !== BODY_PRF + DETAIL) {
+                                    scroll.syncHorizontalScroll(headerWrappers[i], $bodyWrapper);
+                                }
+                                bodyWrappers.push($bodyWrapper);
+                                if (feature.isEnable(self.headers[i].features, feature.COLUMN_RESIZE)) {
+                                    new resize.ColumnAdjuster(headerWrappers[i].find("table"), $bodyWrapper.find("table")).handle();
+                                }
+                            }
+                        }
+                        self.createHorzSums(pTable);
+                        self.setupCrudArea();
+                        self.generalSettings(headerWrappers, bodyWrappers);
+                    };
+                    /**
+                     * Create horizontal sums.
+                     */
+                    ExTable.prototype.createHorzSums = function (table) {
+                        var self = this;
+                        var $detailHeader = self.$container.querySelector("." + HEADER_PRF + DETAIL);
+                        var $detailContent = self.$container.querySelector("." + BODY_PRF + DETAIL);
+                        var headerTop = parseFloat($detailHeader.style.height) + parseFloat($detailContent.style.height) + DISTANCE + helper.getScrollWidth() + SPACE;
+                        var bodyTop = headerTop + parseFloat(self.horzSumHeaderHeight) + DISTANCE + "px";
+                        var sumPosLeft = $detailHeader.style.left;
+                        var leftHorzWidth = parseInt(sumPosLeft) - DISTANCE;
+                        var $leftSumHeaderWrapper, $leftSumContentWrapper, $sumHeaderWrapper, $sumContentWrapper;
+                        // Items summary
+                        if (self.leftHorzSumHeader) {
+                            self.leftHorzSumHeader.height = self.horzSumHeaderHeight;
+                            self.leftHorzSumHeader.width = leftHorzWidth + "px";
+                            self.leftHorzSumHeader.overflow = "hidden";
+                            self.leftHorzSumHeader.isHeader = true;
+                            $leftSumHeaderWrapper = render.createWrapper(headerTop + "px", "0xp", self.leftHorzSumHeader);
+                            table.owner.headers.push($leftSumHeaderWrapper);
+                            $leftSumHeaderWrapper.classList.add(HEADER);
+                            self.$container.appendChild($leftSumHeaderWrapper);
+                            render.process($leftSumHeaderWrapper, self.leftHorzSumHeader);
+                        }
+                        if (self.leftHorzSumContent) {
+                            self.leftHorzSumContent.rowHeight = self.horzSumBodyRowHeight;
+                            self.leftHorzSumContent.height = parseFloat(self.horzSumBodyHeight) + helper.getScrollWidth() + "px";
+                            self.leftHorzSumContent.width = leftHorzWidth + "px";
+                            $leftSumContentWrapper = render.createWrapper(bodyTop, "0px", self.leftHorzSumContent);
+                            table.owner.bodies.push($leftSumContentWrapper);
+                            self.leftHorzSumContent.overflowX = "scroll";
+                            self.leftHorzSumContent.overflowY = "hidden";
+                            self.$container.appendChild($leftSumContentWrapper);
+                            render.process($leftSumContentWrapper, self.leftHorzSumContent);
+                            scroll.bindVertWheel($leftSumContentWrapper);
+                        }
+                        // Main summary
+                        if (self.horizontalSumHeader) {
+                            self.horizontalSumHeader.height = self.horzSumHeaderHeight;
+                            self.horizontalSumHeader.width = $detailHeader.style.width;
+                            self.horizontalSumHeader.overflow = "hidden";
+                            self.horizontalSumHeader.isHeader = true;
+                            $sumHeaderWrapper = render.createWrapper(headerTop + "px", sumPosLeft, self.horizontalSumHeader);
+                            table.owner.headers.push($sumHeaderWrapper);
+                            $sumHeaderWrapper.classList.add(HEADER);
+                            self.$container.appendChild($sumHeaderWrapper);
+                            render.process($sumHeaderWrapper, self.horizontalSumHeader);
+                        }
+                        if (self.horizontalSumContent) {
+                            self.horizontalSumContent.rowHeight = self.horzSumBodyRowHeight;
+                            self.horizontalSumContent.height = parseInt(self.horzSumBodyHeight) + helper.getScrollWidth() + "px";
+                            self.horizontalSumContent.width = $detailContent.style.width;
+                            $sumContentWrapper = render.createWrapper(bodyTop, sumPosLeft, self.horizontalSumContent);
+                            table.owner.bodies.push($sumContentWrapper);
+                            self.horizontalSumContent.overflow = "scroll";
+                            self.$container.appendChild($sumContentWrapper);
+                            render.process($sumContentWrapper, self.horizontalSumContent);
+                            scroll.syncHorizontalScroll($leftSumHeaderWrapper, $leftSumContentWrapper);
+                            scroll.syncDoubDirVerticalScrolls([$leftSumContentWrapper, $sumContentWrapper]);
+                        }
+                        if (self.$commander) {
+                            self.$commander.addXEventListener(events.MOUSEIN_COLUMN, function (evt) {
+                                var colIndex = evt.detail;
+                                helper.highlightColumn(self.$container, colIndex);
+                            });
+                            self.$commander.addXEventListener(events.MOUSEOUT_COLUMN, function (evt) {
+                                var colIndex = evt.detail;
+                                helper.unHighlightColumn(self.$container, colIndex);
+                            });
+                            var pHorzHeader = self.$commander.querySelector("." + HEADER_PRF + HORIZONTAL_SUM);
+                            var pHorzBody = self.$commander.querySelector("." + BODY_PRF + HORIZONTAL_SUM);
+                            var cmdTbls = Array.prototype.slice.call(self.$commander.querySelectorAll("div[class*='" + DETAIL + "']"));
+                            var stream = _.concat(cmdTbls, pHorzHeader, pHorzBody, $detailHeader, $detailContent, $sumHeaderWrapper, $sumContentWrapper);
+                            scroll.syncDoubDirHorizontalScrolls(stream);
+                        }
+                        else if (self.$follower) {
+                        }
+                        else {
+                            scroll.syncDoubDirHorizontalScrolls([$detailHeader, $detailContent, $sumHeaderWrapper, $sumContentWrapper]);
+                        }
+                    };
+                    /**
+                     * Setup crud area.
+                     */
+                    ExTable.prototype.setupCrudArea = function () {
+                        var self = this;
+                        var updateF = feature.find(self.features, feature.UPDATING);
+                        if (updateF) {
+                            var $area = document.createElement("div");
+                            $area.className = NAMESPACE + "-" + CRUD;
+                            var $rowAdd = document.createElement("button");
+                            $rowAdd.className = NAMESPACE + "-" + ADD_ROW;
+                            $rowAdd.addXEventListener(events.CLICK_EVT, function () {
+                                update.insertNewRow(self.$container);
+                            });
+                            $area.appendChild($rowAdd);
+                            var $rowDel = document.createElement("button");
+                            $rowDel.className = NAMESPACE + "-" + DEL_ROWS;
+                            $rowDel.addXEventListener(events.CLICK_EVT, function () {
+                                update.deleteRows(self.$container);
+                            });
+                            $area.appendChild($rowDel);
+                            var dftRowAddTxt = "新規行の追加";
+                            var dftRowDelTxt = "行の削除";
+                            if (updateF.addNew) {
+                                $rowAdd.classList.add(updateF.addNew.buttonClass || "proceed");
+                                $rowAdd.textContent = updateF.addNew.buttonText || dftRowAddTxt;
+                            }
+                            else {
+                                $rowAdd.classList.add("proceed");
+                                $rowAdd.textContent = dftRowAddTxt;
+                            }
+                            if (updateF.delete) {
+                                $rowDel.classList.add(updateF.delete.buttonClass || "danger");
+                                $rowDel.textContent = updateF.delete.buttonText || dftRowDelTxt;
+                            }
+                            else {
+                                $rowDel.classList.add("danger");
+                                $rowDel.textContent = dftRowDelTxt;
+                            }
+                            self.$container.insertAdjacentElement("beforebegin", $area);
+                        }
+                    };
+                    /**
+                     * General settings.
+                     */
+                    ExTable.prototype.generalSettings = function (headerWrappers, bodyWrappers) {
+                        var self = this;
+                        self.$container.addXEventListener(events.BODY_HEIGHT_CHANGED, resize.onBodyHeightChanged);
+                        //            if (self.heightSetter && self.heightSetter.showBodyHeightButton) {
+                        //                
+                        //                let $lastHeader = headerWrappers[headerWrappers.length - 1];
+                        //                let btnPosTop = $lastHeader.height() - parseInt(H_BTN_HEIGHT) - DISTANCE;
+                        //                let btnPosLeft = parseInt($lastHeader.css("left")) + $lastHeader.outerWidth();
+                        //                let $heightSetBtn = $("<button/>").addClass(H_BTN_CLS)
+                        //                    .css({ position: "absolute", height: H_BTN_HEIGHT, top: btnPosTop + "px", left: btnPosLeft + "px" })
+                        //                    .text("H").on(events.CLICK_EVT, self.heightSetter.click);
+                        //                $lastHeader.after($heightSetBtn);
+                        //            }
+                        resize.fitWindowWidth(self.$container);
+                        window.addXEventListener(events.RESIZE, resize.fitWindowWidth.bind(self, self.$container));
+                        var horzSumExists = !uk.util.isNullOrUndefined(self.horizontalSumHeader);
+                        if (self.bodyHeightSetMode === DYNAMIC) {
+                            resize.fitWindowHeight(self.$container, bodyWrappers, horzSumExists);
+                            window.addXEventListener(events.RESIZE, resize.fitWindowHeight.bind(self, self.$container, bodyWrappers, horzSumExists));
+                        }
+                        else {
+                            var cHeight_1 = 0;
+                            var stream = self.$container.querySelectorAll("div[class*='" + DETAIL + "'], div[class*='" + LEFT_HORZ_SUM + "']");
+                            Array.prototype.slice.call(stream).forEach(function (e) {
+                                cHeight_1 += e.style.height;
+                            });
+                            if (stream.length === 4) {
+                                cHeight_1 += (SPACE + DISTANCE);
+                            }
+                            self.$container.style.height = (cHeight_1 + SPACE) + "px";
+                        }
+                        if (self.$follower) {
+                            self.$follower.addXEventListener(events.COMPLETED, function () {
+                                if (self.areaResize) {
+                                    new resize.AreaAdjuster(self.$container, headerWrappers, bodyWrappers, self.$follower).handle();
+                                    self.$container.addXEventListener(events.AREA_RESIZE_END, resize.onAreaComplete.bind(self));
+                                }
+                                var formerWidth = 0, latterWidth = 0;
+                                _.forEach(headerWrappers, function (header) {
+                                    if (header.classList.contains(HEADER_PRF + LEFTMOST)) {
+                                        formerWidth += parseFloat(header.style.width);
+                                    }
+                                    else if (header.classList.contains(HEADER_PRF + MIDDLE)) {
+                                        formerWidth += parseFloat(header.style.width) + DISTANCE;
+                                    }
+                                    else if (header.classList.contains(HEADER_PRF + DETAIL)) {
+                                        latterWidth += parseFloat(header.style.width);
+                                    }
+                                });
+                                var $lm = self.$follower.querySelectorAll("div[class*='" + LEFTMOST + "']");
+                                var diff = formerWidth - parseInt($lm[0].style.width);
+                                for (var i = 0; i < $lm.length; i++) {
+                                    $lm[i].style.width = formerWidth + "px";
+                                }
+                                var $depDetailHeader = self.$follower.querySelector("." + HEADER_PRF + DETAIL);
+                                $depDetailHeader.style.width = latterWidth + "px";
+                                var $depDetail = self.$follower.querySelector("." + BODY_PRF + DETAIL);
+                                var left = parseInt($depDetail.style.left) + diff;
+                                $depDetailHeader.style.left = left + "px";
+                                $depDetail.style.left = left + "px";
+                                $depDetail.style.width = (latterWidth + helper.getScrollWidth()) + "px";
+                                var depLmHeader = _.filter($lm, function (e) {
+                                    return e.classList.contains(HEADER_PRF + LEFTMOST);
+                                });
+                                resize.saveSizes(self.$follower, depLmHeader[0], $depDetailHeader, formerWidth, latterWidth);
+                            });
+                        }
+                        else if (self.areaResize) {
+                            new resize.AreaAdjuster(self.$container, headerWrappers, bodyWrappers, self.$follower).handle();
+                            self.$container.addXEventListener(events.AREA_RESIZE_END, resize.onAreaComplete.bind(self));
+                        }
+                        storage.area.init(self.$container, headerWrappers);
+                        storage.tableHeight.init(self.$container);
+                        // Edit done
+                        update.editDone(self.$container);
+                        document.addXEventListener(events.CLICK_EVT, function (evt) {
+                            update.outsideClick(self.$container, evt.target);
+                        });
+                        events.onModify(self.$container);
+                        selection.checkUp(self.$container);
+                        copy.on(self.$container.querySelector("." + BODY_PRF + DETAIL), self.updateMode);
+                        self.$container.addXEventListener(events.OCCUPY_UPDATE, function (evt) {
+                            if (self.bodyHeightSetMode === FIXED)
+                                return;
+                            var reserve = evt.detail;
+                            if (reserve && reserve.x) {
+                                $.data(self.$container, internal.X_OCCUPY, reserve.x);
+                                resize.fitWindowWidth(self.$container);
+                            }
+                            if (reserve && reserve.y) {
+                                $.data(self.$container, internal.Y_OCCUPY, reserve.y);
+                                resize.fitWindowHeight(self.$container, bodyWrappers, horzSumExists);
+                            }
+                        });
+                        if (self.$commander) {
+                            events.trigger(self.$container, events.COMPLETED);
+                        }
+                    };
+                    /**
+                     * Satisfy prebuild.
+                     */
+                    ExTable.prototype.satisfyPrebuild = function () {
+                        if (uk.util.isNullOrUndefined(this.$container) || uk.util.isNullOrUndefined(this.headerHeight)
+                            || uk.util.isNullOrUndefined(this.bodyHeight) || uk.util.isNullOrUndefined(this.bodyRowHeight)
+                            || uk.util.isNullOrUndefined(this.horzSumBodyRowHeight))
+                            return false;
+                        return true;
+                    };
+                    /**
+                     * Set wrapper width.
+                     */
+                    ExTable.prototype.setWrapperWidth = function (options, widthParts) {
+                        if (!widthParts)
+                            return;
+                        var width = widthParts[options.containerClass];
+                        if (!uk.util.isNullOrUndefined(width)) {
+                            options.width = width + "px";
+                        }
+                    };
+                    return ExTable;
+                }());
+                exTable_1.ExTable = ExTable;
+                var render;
+                (function (render) {
+                    render.HIGHLIGHT_CLS = "highlight";
+                    render.CHILD_CELL_CLS = "child-cell";
+                    render.COL_ICON_CLS = "column-icon";
+                    /**
+                     * Process.
+                     */
+                    function process($container, options, isUpdate) {
+                        var levelStruct = synthesizeHeaders(options);
+                        options.levelStruct = levelStruct;
+                        if (options.isHeader) {
+                            if (Object.keys(levelStruct).length > 1) {
+                                groupHeader($container, options, isUpdate);
+                                return;
+                            }
+                        }
+                        else {
+                            options.float = options.float === false ? false : true;
+                        }
+                        table($container, options, isUpdate);
+                    }
+                    render.process = process;
+                    /**
+                     * Group header.
+                     */
+                    function groupHeader($container, options, isUpdate) {
+                        var $table = selector.create("table").html("<tbody></tbody>").addClass(options.tableClass)
+                            .css({ position: "relative", "table-layout": "fixed", width: "100%", "border-collapse": "separate" }).getSingle();
+                        $container.appendChild($table);
+                        var $tbody = $table.getElementsByTagName("tbody")[0];
+                        if (!isUpdate) {
+                            $container.style.height = options.height;
+                            $container.style.width = options.width;
+                        }
+                        if (!uk.util.isNullOrUndefined(options.overflow))
+                            $container.style.overflow = options.overflow;
+                        else if (!uk.util.isNullOrUndefined(options.overflowX) && !uk.util.isNullOrUndefined(options.overflowY)) {
+                            $container.style.overflowX = options.overflowX;
+                            $container.style.overflowY = options.overflowY;
+                        }
+                        var $colGroup = document.createElement("colgroup");
+                        $table.insertBefore($colGroup, $tbody);
+                        generateColGroup($colGroup, options.columns);
+                        var painter = new GroupHeaderPainter(options);
+                        painter.rows($tbody);
+                    }
+                    /**
+                     * Generate column group.
+                     */
+                    function generateColGroup($colGroup, columns) {
+                        _.forEach(columns, function (col) {
+                            if (!uk.util.isNullOrUndefined(col.group)) {
+                                generateColGroup($colGroup, col.group);
+                                return;
+                            }
+                            var $col = document.createElement("col");
+                            $col.style.width = col.width;
+                            $colGroup.appendChild($col);
+                            if (col.visible === false)
+                                $col.style.display = "none";
+                        });
+                    }
+                    /**
+                     * Table.
+                     */
+                    function table($container, options, isUpdate) {
+                        var $table = document.createElement("table");
+                        $table.innerHTML = "<tbody></tbody>";
+                        $table.className = options.tableClass;
+                        $table.style.position = "relative";
+                        $table.style.tableLayout = "fixed";
+                        $table.style.width = "100%";
+                        $table.style.borderCollapse = "separate";
+                        $container.appendChild($table);
+                        var $tbody = $table.getElementsByTagName("tbody")[0];
+                        if (!isUpdate) {
+                            $container.style.height = options.height;
+                            $container.style.width = options.width;
+                        }
+                        if (!uk.util.isNullOrUndefined(options.overflow))
+                            $container.style.overflow = options.overflow;
+                        else if (!uk.util.isNullOrUndefined(options.overflowX) && !uk.util.isNullOrUndefined(options.overflowY)) {
+                            $container.style.overflowX = options.overflowX;
+                            $container.style.overflowY = options.overflowY;
+                        }
+                        var $colGroup = document.createElement("colgroup");
+                        $table.insertBefore($colGroup, $tbody);
+                        generateColGroup($colGroup, options.columns);
+                        var dataSource;
+                        if (!uk.util.isNullOrUndefined(options.dataSource)) {
+                            dataSource = options.dataSource;
+                        }
+                        else {
+                            var item_1 = {};
+                            _.forEach(options.columns, function (col) {
+                                item_1[col.key] = col.headerText;
+                            });
+                            dataSource = [item_1];
+                        }
+                        begin($container, dataSource, options);
+                    }
+                    render.table = table;
+                    /**
+                     * Begin.
+                     */
+                    function begin($container, dataSource, options) {
+                        if (options.float) {
+                            var cloud = new intan.Cloud($container, dataSource, options);
+                            $.data($container, internal.TANGI, cloud);
+                            cloud.renderRows(true);
+                            return;
+                        }
+                        normal($container, dataSource, options);
+                    }
+                    render.begin = begin;
+                    /**
+                     * Normal.
+                     */
+                    function normal($container, dataSource, options) {
+                        var rowConfig = { css: { height: options.rowHeight } };
+                        var headerRowHeightFt;
+                        if (options.isHeader) {
+                            headerRowHeightFt = feature.find(options.features, feature.HEADER_ROW_HEIGHT);
+                        }
+                        var painter = new Painter($container, options);
+                        $.data($container, internal.CANON, { _origDs: _.cloneDeep(dataSource), dataSource: dataSource, primaryKey: options.primaryKey, painter: painter });
+                        var $tbody = $container.querySelector("tbody");
+                        _.forEach(dataSource, function (item, index) {
+                            if (!uk.util.isNullOrUndefined(headerRowHeightFt)) {
+                                rowConfig = { css: { height: headerRowHeightFt.rows[index] } };
+                            }
+                            $tbody.appendChild(painter.row(item, rowConfig, index));
+                        });
+                    }
+                    render.normal = normal;
+                    /**
+                     * Synthesize headers.
+                     */
+                    function synthesizeHeaders(options) {
+                        var level = {};
+                        peelStruct(options.columns, level, 0);
+                        var rowCount = Object.keys(level).length;
+                        if (rowCount > 1) {
+                            _.forEach(Object.keys(level), function (key) {
+                                _.forEach(level[key], function (col) {
+                                    if (uk.util.isNullOrUndefined(col.colspan) || col.colspan === 1) {
+                                        col.rowspan = rowCount - parseInt(key);
+                                    }
+                                });
+                            });
+                        }
+                        return level;
+                    }
+                    render.synthesizeHeaders = synthesizeHeaders;
+                    /**
+                     * Peel struct.
+                     */
+                    function peelStruct(columns, level, currentLevel) {
+                        var colspan = 0, noGroup = 0;
+                        _.forEach(columns, function (col) {
+                            var clonedCol = _.clone(col);
+                            var colCount = 0;
+                            if (!uk.util.isNullOrUndefined(col.group)) {
+                                colCount = col.group.length;
+                                noGroup++;
+                                var ret = peelStruct(col.group, level, currentLevel + 1);
+                                if (!uk.util.isNullOrUndefined(ret)) {
+                                    colCount += ret;
+                                }
+                                clonedCol.colspan = colCount;
+                            }
+                            if (uk.util.isNullOrUndefined(level[currentLevel])) {
+                                level[currentLevel] = [];
+                            }
+                            level[currentLevel].push(clonedCol);
+                            colspan += colCount;
+                        });
+                        return colspan !== 0 ? (colspan - noGroup) : undefined;
+                    }
+                    var Conditional = (function () {
+                        function Conditional(options) {
+                            this.options = options;
+                            var columns = helper.classifyColumns(options);
+                            this.visibleColumns = columns.visibleColumns;
+                            this.hiddenColumns = columns.hiddenColumns;
+                            this.visibleColumnsMap = helper.getColumnsMap(this.visibleColumns);
+                            this.hiddenColumnsMap = helper.getColumnsMap(this.hiddenColumns);
+                        }
+                        return Conditional;
+                    }());
+                    var Painter = (function (_super) {
+                        __extends(Painter, _super);
+                        function Painter($container, options) {
+                            _super.call(this, options);
+                            this.$container = $container;
+                            if (!uk.util.isNullOrUndefined(options.levelStruct)) {
+                                this.columnsMap = helper.columnsMapFromStruct(options.levelStruct);
+                            }
+                            else {
+                                this.columnsMap = _.groupBy(options.columns, "key");
+                            }
+                        }
+                        Painter.prototype.cell = function (rData, rowIdx, key) {
+                            var self = this;
+                            var cData = rData[key];
+                            var data = cData && _.isObject(cData) && cData.constructor !== Array && _.isFunction(self.options.view) ?
+                                helper.viewData(self.options.view, self.options.viewMode, cData) : cData;
+                            var column = self.columnsMap[key];
+                            if (uk.util.isNullOrUndefined(column))
+                                return;
+                            var ws = column.css && column.css.whiteSpace ? column.css.whiteSpace : "nowrap";
+                            var td = document.createElement("td");
+                            $.data(td, internal.VIEW, rowIdx + "-" + key);
+                            td.style.borderWidth = "1px";
+                            td.style.overflow = "hidden";
+                            td.style.whiteSpace = ws;
+                            td.style.position = "relative";
+                            self.highlight(td);
+                            if (!self.visibleColumnsMap[key])
+                                td.style.display = "none";
+                            if (!uk.util.isNullOrUndefined(data) && data.constructor === Array) {
+                                var incellHeight_1 = parseInt(self.options.rowHeight) / 2 - 3;
+                                var borderStyle_1 = "solid 1px transparent";
+                                _.forEach(data, function (item, idx) {
+                                    var div = document.createElement("div");
+                                    div.classList.add(render.CHILD_CELL_CLS);
+                                    div.innerText = uk.util.isNullOrUndefined(item) ? "" : item;
+                                    if (idx < data.length - 1) {
+                                        div.style.borderTop = borderStyle_1;
+                                        div.style.borderLeft = borderStyle_1;
+                                        div.style.borderRight = borderStyle_1;
+                                        div.style.borderBottom = "dashed 1px #AAB7B8";
+                                        div.style.top = "0px";
+                                    }
+                                    else {
+                                        div.style.border = borderStyle_1;
+                                        div.style.top = (incellHeight_1 + 2) + "px";
+                                    }
+                                    div.style.position = "absolute";
+                                    div.style.left = "0px";
+                                    div.style.height = incellHeight_1 + "px";
+                                    div.style.width = "98%";
+                                    div.style.textAlign = "center";
+                                    td.appendChild(div);
+                                    if (column.handlerType) {
+                                        var handler = cellHandler.get(column.handlerType);
+                                        if (handler)
+                                            handler(div, self.options, helper.call(column.supplier, rData, rowIdx, key));
+                                    }
+                                    //                       cellHandler.rClick(div, column, helper.call(column.rightClick, rData, rowIdx, key));
+                                    //                       spread.bindSticker(div, rowIdx, key, self.options);
+                                });
+                                style.detCell(self.$container, td, rowIdx, key);
+                                td.style.padding = "0px";
+                                return td;
+                            }
+                            if (!uk.util.isNullOrUndefined(column.handlerType) && !self.options.isHeader) {
+                                var handler = cellHandler.get(column.handlerType);
+                                if (!uk.util.isNullOrUndefined(handler)) {
+                                    handler(td, self.options, helper.call(column.supplier, rData, rowIdx, key));
+                                }
+                            }
+                            if (self.options.isHeader) {
+                                if (!uk.util.isNullOrUndefined(column.icon) && column.icon.for === "header") {
+                                    var icon = document.createElement("span");
+                                    icon.className = render.COL_ICON_CLS + " " + column.icon.class;
+                                    td.style.paddingLeft = column.icon.width;
+                                    td.appendChild(icon);
+                                    if (column.icon.popup && typeof column.icon.popup === "function") {
+                                        icon.style.cursor = "pointer";
+                                        new widget.PopupPanel(icon, column.icon.popup, "bottom right");
+                                    }
+                                    var innerDiv = document.createElement("div");
+                                    innerDiv.innerHTML = data;
+                                    td.appendChild(innerDiv);
+                                }
+                                else if (helper.containsBr(data)) {
+                                    td.innerHTML = data;
+                                }
+                                else {
+                                    td.innerText = data;
+                                }
+                            }
+                            else if (!self.options.isHeader) {
+                                if (!uk.util.isNullOrUndefined(column.icon) && column.icon.for === "body") {
+                                    var icon = document.createElement("span");
+                                    icon.className = render.COL_ICON_CLS + " " + column.icon.class;
+                                    td.style.paddingLeft = column.icon.width;
+                                    td.appendChild(icon);
+                                }
+                                else if (!column.control) {
+                                    td.innerText = data;
+                                }
+                                controls.check(td, column, data, helper.call(column.handler, rData, rowIdx, key));
+                            }
+                            //                spread.bindSticker(td, rowIdx , key, self.options);
+                            style.detCell(self.$container, td, rowIdx, key);
+                            return td;
+                        };
+                        Painter.prototype.row = function (data, config, rowIdx) {
+                            var self = this;
+                            var tr = document.createElement("tr");
+                            tr.style.height = parseInt(config.css.height) + "px";
+                            var headerCellStyleFt, headerPopupFt, bodyCellStyleFt;
+                            if (self.options.isHeader) {
+                                headerCellStyleFt = feature.find(self.options.features, feature.HEADER_CELL_STYLE);
+                                headerPopupFt = feature.find(self.options.features, feature.HEADER_POP_UP);
+                            }
+                            else {
+                                bodyCellStyleFt = feature.find(self.options.features, feature.BODY_CELL_STYLE);
+                            }
+                            var onChecked = function (checked, rowIndex) {
+                                var $grid = self.options.isHeader ? self.$container.siblings("." + BODY_PRF + LEFTMOST)
+                                    : self.$container;
+                                controls.tick(checked, $grid, self.options.isHeader, rowIndex);
+                            };
+                            if (!data[controls.CHECKED_KEY] && self.options.columns[0].key === controls.CHECKED_KEY) {
+                                var td = document.createElement("td");
+                                $.data(td, internal.VIEW, rowIdx + "-" + controls.CHECKED_KEY);
+                                td.style.padding = "1px 1px";
+                                td.style.textAlign = "center";
+                                td.appendChild(controls.createCheckBox(self.$container, { initValue: false, onChecked: onChecked })[0]);
+                                tr.append(td);
+                            }
+                            _.forEach(Object.keys(data), function (key, index) {
+                                if (!self.visibleColumnsMap[key] && !self.hiddenColumnsMap[key])
+                                    return;
+                                if (key === controls.CHECKED_KEY) {
+                                    var td = document.createElement("td");
+                                    td.style.padding = "1px 1px";
+                                    td.style.textAlign = "center";
+                                    td.appendChild(controls.createCheckBox(self.$container, { initValue: false, onChecked: onChecked })[0]);
+                                    tr.appendChild(td);
+                                    return;
+                                }
+                                var cell = self.cell(data, rowIdx, key);
+                                tr.appendChild(cell);
+                                // Styles
+                                if (!uk.util.isNullOrUndefined(headerCellStyleFt)) {
+                                    _.forEach(headerCellStyleFt.decorator, function (colorDef) {
+                                        if (key === colorDef.columnKey) {
+                                            if ((!uk.util.isNullOrUndefined(colorDef.rowId) && colorDef.rowId === rowIdx)
+                                                || uk.util.isNullOrUndefined(colorDef.rowId)) {
+                                                cell.classList.add(colorDef.clazz);
+                                                return false;
+                                            }
+                                        }
+                                    });
+                                }
+                                else if (!uk.util.isNullOrUndefined(bodyCellStyleFt)) {
+                                    _.forEach(bodyCellStyleFt.decorator, function (colorDef) {
+                                        if (key === colorDef.columnKey && data[self.options.primaryKey] === colorDef.rowId) {
+                                            var childCells = cell.querySelectorAll("." + render.CHILD_CELL_CLS);
+                                            if (!uk.util.isNullOrUndefined(colorDef.innerIdx) && childCells.length > 0) {
+                                                var child = childCells[colorDef.innerIdx];
+                                                child.classList.add(colorDef.clazz);
+                                                if (colorDef.clazz === style.HIDDEN_CLS) {
+                                                    $.data(child, "hide", child.textContent);
+                                                    child.innerHTML = "";
+                                                }
+                                            }
+                                            else {
+                                                cell.classList.add(colorDef.clazz);
+                                                if (colorDef.clazz == style.HIDDEN_CLS) {
+                                                    $.data(cell, "hide", cell.innerText);
+                                                    cell.innerText = "";
+                                                }
+                                                return false;
+                                            }
+                                        }
+                                    });
+                                }
+                                if (uk.util.isNullOrUndefined(self.columnsMap[key]))
+                                    return;
+                                var cellStyle = self.columnsMap[key].style;
+                                if (!uk.util.isNullOrUndefined(cellStyle)) {
+                                    cellStyle(new style.CellStyleParam($cell, data[key], data, rowIdx, key));
+                                }
+                            });
+                            widget.bind(tr, rowIdx, headerPopupFt);
+                            style.detColumn(self.$container, tr, rowIdx);
+                            spread.bindRowSticker(tr, rowIdx, self.options);
+                            if (!self.options.isHeader) {
+                                cellHandler.rRowClick(tr, self.columnsMap, { rData: data, rowIdx: rowIdx });
+                            }
+                            return tr;
+                        };
+                        /**
+                         * Highlight.
+                         */
+                        Painter.prototype.highlight = function (td) {
+                            var self = this;
+                            if (self.options.isHeader || self.options.containerClass !== BODY_PRF + DETAIL)
+                                return;
+                            var $targetContainer = self.$container;
+                            var targetHeader = helper.firstSibling($targetContainer, self.options.containerClass.replace(BODY_PRF, HEADER_PRF));
+                            var extable = helper.getExTableFromGrid($targetContainer);
+                            var horzSumHeader, horzSumContent;
+                            td.addXEventListener(events.MOUSE_OVER, function () {
+                                var colIndex = helper.indexInParent(td);
+                                var tr = helper.closest(td, "tr");
+                                var rowIndex = helper.indexInParent(tr);
+                                helper.addClass1n(tr.children, render.HIGHLIGHT_CLS);
+                                if (!horzSumHeader || !horzSumContent) {
+                                    horzSumHeader = extable.owner.find(HEADER_PRF + HORIZONTAL_SUM, "headers");
+                                    if (horzSumHeader)
+                                        horzSumHeader = horzSumHeader[0];
+                                    horzSumContent = extable.owner.find(BODY_PRF + HORIZONTAL_SUM, "bodies");
+                                    if (horzSumContent)
+                                        horzSumContent = horzSumContent[0];
+                                }
+                                var bodies = extable.owner.bodies;
+                                for (var i = 0; i < bodies.length; i++) {
+                                    if (!helper.hasClass(bodies[i], BODY_PRF + LEFT_HORZ_SUM)
+                                        && !helper.hasClass(bodies[i], BODY_PRF + HORIZONTAL_SUM)) {
+                                        var rowElm = bodies[i].getElementsByTagName("tr")[rowIndex];
+                                        if (rowElm) {
+                                            helper.addClass1n(rowElm.getElementsByTagName("td"), render.HIGHLIGHT_CLS);
+                                        }
+                                    }
+                                }
+                                helper.consumeSiblings(tr, function (elm) {
+                                    var tds = elm.getElementsByTagName("td");
+                                    if (!tds || tds.length === 0)
+                                        return;
+                                    helper.addClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
+                                });
+                                _.forEach(targetHeader.getElementsByTagName("tr"), function (t) {
+                                    var tds = t.getElementsByTagName("td");
+                                    if (!tds || tds.length === 0)
+                                        return;
+                                    helper.addClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
+                                });
+                                if (horzSumHeader && horzSumHeader.style.display !== "none") {
+                                    _.forEach(horzSumHeader.getElementsByTagName("tr"), function (t) {
+                                        var tds = t.getElementsByTagName("td");
+                                        if (!tds || tds.length === 0)
+                                            return;
+                                        helper.addClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
+                                    });
+                                    _.forEach(horzSumContent.getElementsByTagName("tr"), function (t) {
+                                        var tds = t.getElementsByTagName("td");
+                                        if (!tds || tds.length === 0)
+                                            return;
+                                        helper.addClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
+                                    });
+                                }
+                                $.data(self.$container, internal.COLUMN_IN, colIndex);
+                                events.trigger(helper.closest(self.$container, "." + NAMESPACE), events.MOUSEIN_COLUMN, colIndex);
+                            });
+                            td.addXEventListener(events.MOUSE_OUT, function () {
+                                helper.removeClass1n(td, render.HIGHLIGHT_CLS);
+                                var colIndex = helper.indexInParent(td);
+                                var tr = helper.closest(td, "tr");
+                                var rowIndex = helper.indexInParent(tr);
+                                helper.removeClass1n(tr.children, render.HIGHLIGHT_CLS);
+                                if (!horzSumHeader || !horzSumContent) {
+                                    horzSumHeader = extable.owner.find(HEADER_PRF + HORIZONTAL_SUM, "headers");
+                                    if (horzSumHeader)
+                                        horzSumHeader = horzSumHeader[0];
+                                    horzSumContent = extable.owner.find(BODY_PRF + HORIZONTAL_SUM, "bodies");
+                                    if (horzSumContent)
+                                        horzSumContent = horzSumContent[0];
+                                }
+                                var bodies = extable.owner.bodies;
+                                for (var i = 0; i < bodies.length; i++) {
+                                    if (!helper.hasClass(bodies[i], BODY_PRF + LEFT_HORZ_SUM)
+                                        && !helper.hasClass(bodies[i], BODY_PRF + HORIZONTAL_SUM)) {
+                                        helper.removeClass1n(bodies[i].getElementsByTagName("tr")[rowIndex].getElementsByTagName("td"), render.HIGHLIGHT_CLS);
+                                    }
+                                }
+                                helper.consumeSiblings(tr, function (elm) {
+                                    var tds = elm.getElementsByTagName("td");
+                                    if (!tds || tds.length === 0)
+                                        return;
+                                    helper.removeClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
+                                });
+                                _.forEach(targetHeader.getElementsByTagName("tr"), function (t) {
+                                    var tds = t.getElementsByTagName("td");
+                                    if (!tds || tds.length === 0)
+                                        return;
+                                    helper.removeClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
+                                });
+                                if (horzSumHeader && horzSumHeader.style.display !== "none") {
+                                    _.forEach(horzSumHeader.getElementsByTagName("tr"), function (t) {
+                                        var tds = t.getElementsByTagName("td");
+                                        if (!tds || tds.length === 0)
+                                            return;
+                                        helper.removeClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
+                                    });
+                                    _.forEach(horzSumContent.getElementsByTagName("tr"), function (t) {
+                                        var tds = t.getElementsByTagName("td");
+                                        if (!tds || tds.length === 0)
+                                            return;
+                                        helper.removeClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
+                                    });
+                                }
+                                $.data(self.$container, internal.COLUMN_IN, -1);
+                                events.trigger(helper.closest(self.$container, "." + NAMESPACE), events.MOUSEOUT_COLUMN, colIndex);
+                            });
+                        };
+                        return Painter;
+                    }(Conditional));
+                    render.Painter = Painter;
+                    var GroupHeaderPainter = (function (_super) {
+                        __extends(GroupHeaderPainter, _super);
+                        function GroupHeaderPainter(options) {
+                            _super.call(this, options);
+                            this.levelStruct = options.levelStruct;
+                            this.columnsMap = helper.columnsMapFromStruct(this.levelStruct);
+                        }
+                        /**
+                         * Cell.
+                         */
+                        GroupHeaderPainter.prototype.cell = function (text, rowIdx, cell) {
+                            var self = this;
+                            var $td = document.createElement("td");
+                            $.data($td, internal.VIEW, rowIdx + "-" + cell.key);
+                            $td.style.borderWidth = "1px";
+                            $td.style.overflow = "hidden";
+                            $td.style.whiteSpace = "nowrap";
+                            $td.style.borderCollapse = "collapse";
+                            if (!uk.util.isNullOrUndefined(cell.rowspan) && cell.rowspan > 1)
+                                $td.setAttribute("rowspan", cell.rowspan);
+                            if (!uk.util.isNullOrUndefined(cell.colspan) && cell.colspan > 1)
+                                $td.setAttribute("colspan", cell.colspan);
+                            else if (!self.visibleColumnsMap[cell.key])
+                                $td.style.display = "none";
+                            if (!uk.util.isNullOrUndefined(cell.icon) && cell.icon.for === "header") {
+                                var $icon = document.createElement("span");
+                                $icon.className = render.COL_ICON_CLS + " " + cell.icon.class;
+                                $icon.style.top = "20%";
+                                $td.style.paddingLeft = cell.icon.width;
+                                $td.appendChild($icon);
+                                if (cell.icon.popup && typeof cell.icon.popup === "function") {
+                                    $icon.style.cursor = "pointer";
+                                    new widget.PopupPanel($icon, cell.icon.popup, "bottom right");
+                                }
+                                var $content = document.createElement("div");
+                                $content.innerHTML = text;
+                                $td.appendChild($content);
+                            }
+                            else if (helper.containsBr(text)) {
+                                $td.innerHTML = text;
+                            }
+                            else {
+                                $td.textContent = text;
+                            }
+                            return $td;
+                        };
+                        /**
+                         * Rows.
+                         */
+                        GroupHeaderPainter.prototype.rows = function ($tbody) {
+                            var self = this;
+                            var height = self.options.rowHeight;
+                            var headerRowHeightFt = feature.find(self.options.features, feature.HEADER_ROW_HEIGHT);
+                            var headerCellStyleFt = feature.find(self.options.features, feature.HEADER_CELL_STYLE);
+                            _.forEach(Object.keys(self.levelStruct), function (rowIdx) {
+                                if (!uk.util.isNullOrUndefined(headerRowHeightFt)) {
+                                    height = headerRowHeightFt.rows[rowIdx];
+                                }
+                                var $tr = document.createElement("tr");
+                                $tr.style.height = height;
+                                var oneLevel = self.levelStruct[rowIdx];
+                                _.forEach(oneLevel, function (cell) {
+                                    if (!self.visibleColumnsMap[cell.key] && !self.hiddenColumnsMap[cell.key]
+                                        && (uk.util.isNullOrUndefined(cell.colspan) || cell.colspan == 1))
+                                        return;
+                                    var $cell = self.cell(cell.headerText, rowIdx, cell);
+                                    $tr.appendChild($cell);
+                                    if (!uk.util.isNullOrUndefined(headerCellStyleFt)) {
+                                        _.forEach(headerCellStyleFt.decorator, function (colorDef) {
+                                            if (colorDef.columnKey === cell.key) {
+                                                if ((!uk.util.isNullOrUndefined(colorDef.rowId) && colorDef.rowId === rowIdx)
+                                                    || uk.util.isNullOrUndefined(colorDef.rowId)) {
+                                                    $cell.classList.add(colorDef.clazz);
+                                                }
+                                                return false;
+                                            }
+                                        });
+                                    }
+                                    if (uk.util.isNullOrUndefined(self.columnsMap[cell.key]))
+                                        return;
+                                    var cellStyle = self.columnsMap[cell.key].style;
+                                    if (!uk.util.isNullOrUndefined(cellStyle)) {
+                                        cellStyle(new style.CellStyleParam($cell, cell.headerText, undefined, rowIdx, cell.key));
+                                    }
+                                });
+                                $tbody.appendChild($tr);
+                            });
+                        };
+                        return GroupHeaderPainter;
+                    }(Conditional));
+                    render.GroupHeaderPainter = GroupHeaderPainter;
+                    /**
+                     * Extra.
+                     */
+                    function extra(className, height) {
+                        var element = document.createElement("tr");
+                        element.style.height = height + "px";
+                        helper.addClass(element, "extable-" + className);
+                        return element;
+                    }
+                    render.extra = extra;
+                    /**
+                     * Wrapper styles.
+                     */
+                    function wrapperStyles(top, left, width, height, maxWidth) {
+                        var style = {
+                            position: "absolute",
+                            overflow: "hidden",
+                            top: top,
+                            left: left,
+                            width: width,
+                            height: height,
+                            border: "solid 1px #CCC"
+                        };
+                        if (maxWidth) {
+                            style.maxWidth = maxWidth;
+                        }
+                        return style;
+                    }
+                    render.wrapperStyles = wrapperStyles;
+                    /**
+                     * Create wrapper.
+                     */
+                    function createWrapper(top, left, options) {
+                        var style;
+                        if (options.containerClass === HEADER_PRF + DETAIL
+                            || options.containerClass === BODY_PRF + DETAIL) {
+                            var maxWidth = calcWidth(options.columns);
+                            style = wrapperStyles(top, left, options.width, options.height, maxWidth + "px");
+                        }
+                        else {
+                            style = wrapperStyles(top, left, options.width, options.height);
+                        }
+                        return selector.create("div").data(internal.EX_PART, options.containerClass)
+                            .addClass(options.containerClass)
+                            .css(style).getSingle();
+                    }
+                    render.createWrapper = createWrapper;
+                    /**
+                     * CalcWidth.
+                     */
+                    function calcWidth(columns) {
+                        var width = 0;
+                        columns.forEach(function (c, i) {
+                            if (c.group) {
+                                width += calcWidth(c.group);
+                                return;
+                            }
+                            width += parseFloat(c.width);
+                        });
+                        return width;
+                    }
+                    /**
+                     * Grid cell.
+                     */
+                    function gridCell($grid, rowIdx, columnKey, innerIdx, valueObj, isRestore) {
+                        var $exTable = helper.closest($grid, "." + NAMESPACE);
+                        var updateMode = helper.getExTableFromGrid($grid).updateMode;
+                        var $cell = selection.cellAt($grid, rowIdx, columnKey);
+                        if ($cell === intan.NULL)
+                            return;
+                        var origDs = helper.getOrigDS($grid);
+                        var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        var viewFn = gen.painter.options.view;
+                        var viewMode = gen.painter.options.viewMode;
+                        var value = valueObj;
+                        var fields = gen.painter.options.fields;
+                        if (_.isFunction(viewFn)) {
+                            value = helper.viewData(viewFn, viewMode, valueObj);
+                        }
+                        var touched = false;
+                        var $childCells = $cell.find("." + render.CHILD_CELL_CLS);
+                        if ($childCells.length > 0) {
+                            if (value.constructor === Array) {
+                                _.forEach(value, function (val, i) {
+                                    var $c = $($childCells[i]);
+                                    $c.text(val);
+                                    var mTouch = trace(origDs, $c, rowIdx, columnKey, i, valueObj, fields);
+                                    if (!touched)
+                                        touched = mTouch;
+                                    if (updateMode === EDIT) {
+                                        validation.validate($grid, $c, rowIdx, columnKey, i, val);
+                                    }
+                                });
+                            }
+                            else {
+                                var $c = $($childCells[innerIdx]);
+                                $c.text(value);
+                                touched = trace(origDs, $c, rowIdx, columnKey, innerIdx, valueObj, fields);
+                                if (updateMode === EDIT) {
+                                    validation.validate($grid, $c, rowIdx, columnKey, innerIdx, value);
+                                }
+                            }
+                        }
+                        else {
+                            $cell.text(value);
+                            touched = trace(origDs, $cell, rowIdx, columnKey, -1, valueObj, fields);
+                            if (updateMode === EDIT) {
+                                validation.validate($grid, $cell, rowIdx, columnKey, -1, value);
+                            }
+                        }
+                        return touched;
+                    }
+                    render.gridCell = gridCell;
+                    /**
+                     * Grid row.
+                     */
+                    function gridRow($grid, rowIdx, data, isRestore) {
+                        var $exTable = helper.closest($grid, "." + NAMESPACE);
+                        var updateMode = helper.getExTableFromGrid($grid).updateMode;
+                        var $row = selection.rowAt($grid, rowIdx);
+                        var $cells = Array.prototype.slice.call($row.querySelectorAll("td")).filter(function (e) {
+                            return e.style.display !== "none";
+                        });
+                        var visibleColumns = helper.gridVisibleColumns($grid);
+                        var origDs = helper.getOrigDS($grid);
+                        var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        var viewFn = gen.painter.options.view;
+                        var viewMode = gen.painter.options.viewMode;
+                        var fields = gen.painter.options.fields;
+                        _.forEach(Object.keys(data), function (key) {
+                            _.forEach(visibleColumns, function (col, index) {
+                                if (col.key === key) {
+                                    var $target = $cells[index];
+                                    var childCells_1 = $target.querySelectorAll("." + render.CHILD_CELL_CLS);
+                                    if (childCells_1.length > 0) {
+                                        var cData = data[key];
+                                        if (_.isFunction(viewFn)) {
+                                            cData = helper.viewData(viewFn, viewMode, data[key]);
+                                        }
+                                        if (cData.constructor === Array) {
+                                            _.forEach(cData, function (d, i) {
+                                                var $c = childCells_1[i];
+                                                $c.textContent = d;
+                                                if (updateMode === EDIT) {
+                                                    validation.validate($exTable, $grid, $c, rowIdx, key, i, d);
+                                                }
+                                                trace(origDs, $c, rowIdx, key, i, data[key], fields);
+                                            });
+                                            return false;
+                                        }
+                                        childCells_1[1].textContent = data[key];
+                                        trace(origDs, childCells_1[1], rowIdx, key, 1, data[key], fields);
+                                        if (updateMode === EDIT) {
+                                            validation.validate($exTable, $grid, childCells_1[1], rowIdx, key, 1, data[key]);
+                                        }
+                                    }
+                                    else {
+                                        var cData = data[key];
+                                        if (_.isFunction(viewFn)) {
+                                            cData = helper.viewData(viewFn, viewMode, data[key]);
+                                        }
+                                        $target.textContent = cData;
+                                        trace(origDs, $target, rowIdx, key, -1, data[key], fields);
+                                        if (updateMode === EDIT) {
+                                            validation.validate($exTable, $grid, $target, rowIdx, key, -1, data[key]);
+                                        }
+                                    }
+                                    return false;
+                                }
+                            });
+                        });
+                    }
+                    render.gridRow = gridRow;
+                    /**
+                     * Trace.
+                     */
+                    function trace(ds, $cell, rowIdx, key, innerIdx, value, fields) {
+                        if (!ds || ds.length === 0)
+                            return;
+                        var oVal = ds[rowIdx][key];
+                        if (!uk.util.isNullOrUndefined(oVal) && helper.isEqual(oVal, value, fields)) {
+                            helper.removeClass($cell, update.EDITED_CLS);
+                            return false;
+                        }
+                        helper.addClass($cell, update.EDITED_CLS);
+                        return true;
+                    }
+                })(render || (render = {}));
+                var intan;
+                (function (intan) {
+                    intan.TOP_SPACE = "top-space";
+                    intan.BOTTOM_SPACE = "bottom-space";
+                    intan.NULL = null;
+                    var Cloud = (function () {
+                        function Cloud($container, dataSource, options) {
+                            this.$container = $container;
+                            this.options = options;
+                            this.primaryKey = options.primaryKey;
+                            this.rowsOfBlock = options.rowsOfBlock || 30;
+                            this.blocksOfCluster = options.blocksOfCluster || 3;
+                            this.rowHeight = parseInt(options.rowHeight);
+                            this.blockHeight = this.rowsOfBlock * this.rowHeight;
+                            this.clusterHeight = this.blockHeight * this.blocksOfCluster;
+                            this.dataSource = dataSource;
+                            this._origDs = _.cloneDeep(dataSource);
+                            this.painter = new render.Painter($container, options);
+                            this.setCellsStyle();
+                            this.onScroll();
+                        }
+                        /**
+                         * Set cells style.
+                         */
+                        Cloud.prototype.setCellsStyle = function () {
+                            var self = this;
+                            var bodyStylesFt = feature.find(self.options.features, feature.BODY_CELL_STYLE);
+                            if (!bodyStylesFt)
+                                return;
+                            $.data(self.$container, internal.CELLS_STYLE, bodyStylesFt.decorator);
+                        };
+                        /**
+                         * Get cluster no.
+                         */
+                        Cloud.prototype.getClusterNo = function () {
+                            return Math.floor(this.$container.scrollTop / (this.clusterHeight - this.blockHeight));
+                        };
+                        /**
+                         * Render rows.
+                         */
+                        Cloud.prototype.renderRows = function (manual) {
+                            var self = this;
+                            var clusterNo = self.getClusterNo();
+                            if (manual)
+                                self.currentCluster = clusterNo;
+                            if (self.dataSource.length < self.rowsOfBlock) {
+                                self.topOffset = 0;
+                                self.bottomOffset = 0;
+                            }
+                            var rowsOfCluster = self.blocksOfCluster * self.rowsOfBlock;
+                            var startRowIdx = self.startIndex = Math.max((rowsOfCluster - self.rowsOfBlock) * clusterNo, 0);
+                            var endRowIdx = self.endIndex = startRowIdx + rowsOfCluster;
+                            self.topOffset = Math.max(startRowIdx * self.rowHeight, 0);
+                            self.bottomOffset = Math.max((self.dataSource.length - endRowIdx) * self.rowHeight, 0);
+                            var rowConfig = { css: { height: self.rowHeight } };
+                            var containerElm = self.$container;
+                            var tbody = document.createElement("tbody");
+                            tbody.appendChild(render.extra(intan.TOP_SPACE, self.topOffset));
+                            for (var i = startRowIdx; i < endRowIdx; i++) {
+                                if (uk.util.isNullOrUndefined(this.dataSource[i]))
+                                    continue;
+                                tbody.appendChild(self.painter.row(this.dataSource[i], rowConfig, i));
+                            }
+                            tbody.appendChild(render.extra(intan.BOTTOM_SPACE, self.bottomOffset));
+                            containerElm.querySelector("table").replaceChild(tbody, containerElm.getElementsByTagName("tbody")[0]);
+                            if (self.$container.classList.contains(BODY_PRF + DETAIL)) {
+                                self.selectCellsIn();
+                                self.dirtyCellsIn();
+                                self.errorCellsIn();
+                                self.detCellsIn();
+                                self.editCellIn();
+                            }
+                            else if (self.$container.classList.contains(BODY_PRF + LEFTMOST)) {
+                                self.selectedRowsIn();
+                                self.dirtyCellsIn();
+                                self.errorCellsIn();
+                                self.editCellIn();
+                            }
+                        };
+                        /**
+                         * OnScroll.
+                         */
+                        Cloud.prototype.onScroll = function () {
+                            var self = this;
+                            self.$container.removeXEventListener(events.SCROLL_EVT + ".detail");
+                            self.$container.addXEventListener(events.SCROLL_EVT + ".detail", function () {
+                                var inClusterNo = self.getClusterNo();
+                                if (self.currentCluster !== inClusterNo) {
+                                    self.currentCluster = inClusterNo;
+                                    if (self.$container.classList.contains(BODY_PRF + DETAIL)) {
+                                        var colIn = $.data(self.$container, internal.COLUMN_IN);
+                                        if (!uk.util.isNullOrUndefined(colIn) && colIn !== -1) {
+                                            helper.unHighlightGrid(selector.classSiblings(self.$container, HEADER_PRF + DETAIL)[0], colIn);
+                                            var $sumHeader = selector.classSiblings(self.$container, HEADER_PRF + HORIZONTAL_SUM);
+                                            var $sumBody = selector.classSiblings(self.$container, BODY_PRF + HORIZONTAL_SUM);
+                                            if ($sumHeader.length > 0 && $sumHeader[0].style.display !== "none") {
+                                                helper.unHighlightGrid($sumHeader[0], colIn);
+                                                helper.unHighlightGrid($sumBody[0], colIn);
+                                            }
+                                            events.trigger(helper.closest(self.$container, "." + NAMESPACE), events.MOUSEOUT_COLUMN, colIn);
+                                        }
+                                    }
+                                    self.renderRows();
+                                }
+                            });
+                        };
+                        /**
+                         * Roll to.
+                         */
+                        Cloud.prototype.rollTo = function (cell) {
+                            var self = this;
+                            if (self.startIndex <= cell.rowIndex && self.endIndex >= cell.rowIndex) {
+                                var $cell = selection.cellAt(self.$container, cell.rowIndex, cell.columnKey);
+                                var tdIndex = selector.index($cell);
+                                var tdPosLeft_1 = 0, tdPosTop_1 = 0;
+                                selector.siblingsLt($cell, tdIndex).forEach(function (e) {
+                                    if (e.style.display !== "none") {
+                                        tdPosLeft_1 += e.offsetWidth;
+                                    }
+                                });
+                                var $tr = $cell.parentElement;
+                                var trIndex = selector.index($tr);
+                                selector.siblingsLt($tr, trIndex).forEach(function (e) {
+                                    tdPosTop_1 += e.offsetHeight;
+                                });
+                                if ((self.$container.scrollTop + parseFloat(self.$container.style.height)) < (tdPosTop_1 + 100)
+                                    || self.$container.scrollTop > tdPosTop_1) {
+                                    self.$container.scrollTop = tdPosTop_1;
+                                }
+                                if ((self.$container.scrollLeft + parseFloat(self.$container.style.width)) < (tdPosLeft_1 + 100)
+                                    || self.$container.scrollLeft > tdPosLeft_1) {
+                                    self.$container.scrollLeft = tdPosLeft_1;
+                                }
+                            }
+                            else {
+                                self.$container.scrollTop = cell.rowIndex * self.rowHeight;
+                                var $cell = selection.cellAt(self.$container, cell.rowIndex, cell.columnKey);
+                                var tdPosLeft_2 = 0;
+                                selector.siblingsLt($cell, selector.index($cell)).forEach(function (e) {
+                                    if (e.style.display !== "none") {
+                                        tdPosLeft_2 += e.offsetWidth;
+                                    }
+                                });
+                                self.$container.scrollLeft = tdPosLeft_2;
+                            }
+                        };
+                        /**
+                         * Edit cell in.
+                         */
+                        Cloud.prototype.editCellIn = function () {
+                            var self = this;
+                            var $exTable = helper.closest(self.$container, "." + NAMESPACE);
+                            var updateMode = $.data($exTable, NAMESPACE).updateMode;
+                            var editor = $.data($exTable, update.EDITOR);
+                            if (updateMode !== EDIT || uk.util.isNullOrUndefined(editor) || editor.land !== self.options.containerClass)
+                                return;
+                            var editorRowIdx = parseInt(editor.rowIdx);
+                            if (uk.util.isNullOrUndefined(editor) || editorRowIdx < self.startIndex || editorRowIdx > self.endIndex)
+                                return;
+                            var $editRow = self.$container.querySelectorAll("tr")[editorRowIdx - self.startIndex + 1];
+                            var editorColumnIdx;
+                            _.forEach(self.painter.visibleColumns, function (c, idx) {
+                                if (c.key === editor.columnKey) {
+                                    editorColumnIdx = idx;
+                                    return false;
+                                }
+                            });
+                            if (!uk.util.isNullOrUndefined(editorColumnIdx)) {
+                                var $editorCell = Array.prototype.slice.call($editRow.getElementsByTagName()).filter(function (e) {
+                                    return e.style.display !== "none";
+                                })[editorColumnIdx];
+                                var $childCells = $editorCell.querySelectorAll("." + render.CHILD_CELL_CLS);
+                                update.edit($exTable, $childCells.length > 0 ? $childCells[1] : $editorCell, editor.land, editor.value, true);
+                            }
+                        };
+                        /**
+                         * Select cells in.
+                         */
+                        Cloud.prototype.selectCellsIn = function () {
+                            var self = this;
+                            var $exTable = helper.closest(self.$container, "." + NAMESPACE);
+                            var updateMode = $.data($exTable, NAMESPACE).updateMode;
+                            if (updateMode !== COPY_PASTE)
+                                return;
+                            var selectedCells = $.data(self.$container, internal.SELECTED_CELLS);
+                            if (uk.util.isNullOrUndefined(selectedCells) || selectedCells.length === 0)
+                                return;
+                            _.forEach(Object.keys(selectedCells), function (rowIdx, index) {
+                                if (rowIdx >= self.startIndex && rowIdx <= self.endIndex) {
+                                    _.forEach(selectedCells[rowIdx], function (colKey) {
+                                        var $cell = selection.cellAt(self.$container, rowIdx, colKey);
+                                        if ($cell === intan.NULL || !$cell)
+                                            return;
+                                        selection.markCell($cell);
+                                    });
+                                }
+                            });
+                        };
+                        /**
+                         * Select rows in.
+                         */
+                        Cloud.prototype.selectedRowsIn = function () {
+                            var self = this;
+                            var selectedRows = $.data(self.$container, internal.SELECTED_ROWS);
+                            if (!selectedRows || !selectedRows.items || selectedRows.items.length === 0)
+                                return;
+                            for (var i = self.startIndex; i <= self.endIndex; i++) {
+                                if (selectedRows.items[i]) {
+                                    controls.tick(true, self.$container, false, i);
+                                }
+                            }
+                        };
+                        /**
+                         * Dirty cells in.
+                         */
+                        Cloud.prototype.dirtyCellsIn = function () {
+                            var self = this;
+                            var $exTable = helper.closest(self.$container, "." + NAMESPACE);
+                            var updateMode = $.data($exTable, NAMESPACE).updateMode;
+                            var histories;
+                            if (self.options.containerClass === BODY_PRF + LEFTMOST) {
+                                histories = $.data(self.$container, internal.EDIT_HISTORY);
+                                if (!histories)
+                                    return;
+                                self.each(histories);
+                                return;
+                            }
+                            if (updateMode === COPY_PASTE) {
+                                histories = $.data(self.$container, internal.COPY_HISTORY);
+                                if (!histories)
+                                    return;
+                                for (var i = histories.length - 1; i >= 0; i--) {
+                                    self.each(histories[i].items);
+                                }
+                            }
+                            else if (updateMode === EDIT) {
+                                histories = $.data(self.$container, internal.EDIT_HISTORY);
+                                if (!histories)
+                                    return;
+                                self.each(histories);
+                            }
+                            else if (updateMode === STICK) {
+                                histories = $.data(self.$container, internal.STICK_HISTORY);
+                                if (!histories)
+                                    return;
+                                _.forEach(histories, function (items) {
+                                    self.each(items);
+                                });
+                            }
+                        };
+                        /**
+                         * Error cells in.
+                         */
+                        Cloud.prototype.errorCellsIn = function () {
+                            var self = this;
+                            var $exTable = helper.closest(self.$container, "." + NAMESPACE);
+                            var updateMode = $.data($exTable, NAMESPACE).updateMode;
+                            var errs = $.data($exTable, errors.ERRORS);
+                            if (!errs || errs.length === 0)
+                                return;
+                            self.each(errs, errors.ERROR_CLS);
+                        };
+                        /**
+                         * Det cells in.
+                         */
+                        Cloud.prototype.detCellsIn = function () {
+                            var self = this;
+                            var det = $.data(self.$container, internal.DET);
+                            if (!det)
+                                return;
+                            _.forEach(Object.keys(det), function (rIdx) {
+                                if (rIdx >= self.startIndex && rIdx <= self.endIndex) {
+                                    _.forEach(det[rIdx], function (key) {
+                                        var $cell = selection.cellAt(self.$container, rIdx, key);
+                                        if ($cell === intan.NULL || !$cell)
+                                            return;
+                                        helper.markCellWith(style.DET_CLS, $cell);
+                                    });
+                                }
+                            });
+                        };
+                        /**
+                         * Each.
+                         */
+                        Cloud.prototype.each = function (items, styler) {
+                            var self = this;
+                            styler = styler || update.EDITED_CLS;
+                            _.forEach(items, function (item) {
+                                if (item.rowIndex >= self.startIndex && item.rowIndex <= self.endIndex) {
+                                    var $cell = selection.cellAt(self.$container, item.rowIndex, item.columnKey);
+                                    if ($cell === intan.NULL || !$cell)
+                                        return;
+                                    helper.markCellWith(styler, $cell, item.innerIdx, item.value);
+                                }
+                            });
+                        };
+                        return Cloud;
+                    }());
+                    intan.Cloud = Cloud;
+                })(intan || (intan = {}));
+                var cellHandler;
+                (function (cellHandler) {
+                    cellHandler.ROUND_GO = "ex-round-go";
+                    function get(handlerType) {
+                        switch (handlerType.toLowerCase()) {
+                            case "input":
+                                return cellInput;
+                            case "tooltip":
+                                return tooltip;
+                            case "roundtrip":
+                                return roundGo;
+                        }
+                    }
+                    cellHandler.get = get;
+                    /**
+                     * Cell input.
+                     */
+                    function cellInput($cell, options, supplier) {
+                        if (uk.util.isNullOrUndefined(options.updateMode) || options.updateMode !== EDIT)
+                            return;
+                        $cell.classList.add(update.EDITABLE_CLS);
+                        $cell.addXEventListener(events.CLICK_EVT, function (evt) {
+                            if ($cell.getElementsByTagName("input").length > 0) {
+                                evt.stopImmediatePropagation();
+                                return;
+                            }
+                            var $exTable = helper.closest($cell, "." + NAMESPACE);
+                            if (evt.ctrlKey && $.data($exTable, NAMESPACE).determination)
+                                return;
+                            update.edit($exTable, $cell, options.containerClass);
+                        });
+                    }
+                    cellHandler.cellInput = cellInput;
+                    /**
+                     * Tooltip.
+                     */
+                    function tooltip($cell, options, supplier) {
+                        var $content = supplier();
+                        if (uk.util.isNullOrUndefined($content))
+                            return;
+                        new widget.Tooltip($cell, { sources: $content });
+                    }
+                    cellHandler.tooltip = tooltip;
+                    /**
+                     * Round go.
+                     */
+                    function roundGo($cell, options, supplier) {
+                        if (!supplier || typeof supplier !== "function")
+                            return;
+                        $cell.classList.add(cellHandler.ROUND_GO);
+                        $cell.addXEventListener(events.CLICK_EVT, function (evt) {
+                            var $grid = helper.closest($cell, "table").parentElement;
+                            if (errors.occurred(helper.closest($grid, "." + NAMESPACE)))
+                                return false;
+                            var coord = helper.getCellCoord($cell);
+                            helper.closest($cell, "." + NAMESPACE).addXEventListener(events.ROUND_RETREAT, function (evt) {
+                                if (evt.currentTarget.dataset.triggered)
+                                    return;
+                                var value = evt.detail;
+                                var ds = helper.getDataSource($grid);
+                                if (!ds || ds.length === 0)
+                                    return;
+                                if (ds[coord.rowIdx][coord.columnKey] !== value) {
+                                    update.gridCell($grid, coord.rowIdx, coord.columnKey, -1, value);
+                                    update.pushEditHistory($grid, new selection.Cell(coord.rowIdx, coord.columnKey, value, -1));
+                                }
+                                evt.currentTarget.dataset.triggered = true;
+                            });
+                            supplier();
+                        });
+                    }
+                    cellHandler.roundGo = roundGo;
+                    /**
+                     * rClick.
+                     */
+                    function rClick(cell, column, cb) {
+                        if (uk.util.isNullOrUndefined(column.rightClick) || typeof column.rightClick !== "function")
+                            return;
+                        cell.addXEventListener(events.MOUSE_DOWN, function (evt) {
+                            if (evt.which === 3 || evt.button === 2) {
+                                evt.preventDefault();
+                                cb();
+                            }
+                        });
+                        cell.addXEventListener(events.CM, function () {
+                            return false;
+                        });
+                    }
+                    cellHandler.rClick = rClick;
+                    /**
+                     * rRowClick.
+                     */
+                    function rRowClick(row, columnsMap, args) {
+                        row.addXEventListener(events.MOUSE_DOWN, function (evt) {
+                            var coord = helper.getCellCoord(evt.target);
+                            if (!coord)
+                                return;
+                            var column = columnsMap[coord.columnKey];
+                            if (uk.util.isNullOrUndefined(column.rightClick) || typeof column.rightClick !== "function")
+                                return;
+                            if (evt.which === 3 || evt.button === 2) {
+                                evt.preventDefault();
+                                column.rightClick(args.rData, args.rowIdx, coord.columnKey);
+                            }
+                        });
+                        row.addXEventListener(events.CM, function () {
+                            return false;
+                        });
+                    }
+                    cellHandler.rRowClick = rRowClick;
+                })(cellHandler || (cellHandler = {}));
+                var update;
+                (function (update) {
+                    update.EDITOR = "editor";
+                    update.EDITED_CLS = "edited";
+                    update.EDIT_CELL_CLS = "edit-cell";
+                    update.EDITOR_CLS = "ex-editor";
+                    update.EDITABLE_CLS = "ex-editable";
+                    var EMPTY_TBL_HEIGHT = "1px";
+                    var Editor = (function () {
+                        function Editor($editor, land, rowIdx, columnKey, innerIdx, value) {
+                            this.$editor = $editor;
+                            this.land = land;
+                            this.rowIdx = rowIdx;
+                            this.columnKey = columnKey;
+                            this.innerIdx = innerIdx;
+                            this.value = value;
+                        }
+                        return Editor;
+                    }());
+                    update.Editor = Editor;
+                    /**
+                     * Edit.
+                     */
+                    function edit($exTable, $cell, land, value, forced) {
+                        var $grid = $exTable.querySelector("." + BODY_PRF + DETAIL);
+                        var $body = !land ? $grid : helper.getTable($exTable, land);
+                        if (!forced && errors.occurred($exTable))
+                            return;
+                        if (!forced && (selector.is($cell, "." + style.DET_CLS)
+                            || selector.is($cell, "." + style.HIDDEN_CLS) || selector.is($cell, "." + style.SEAL_CLS))) {
+                            outsideClick($exTable, $cell, true);
+                            return;
+                        }
+                        var editor = $.data($exTable, update.EDITOR);
+                        var $editor, $input, inputVal, innerIdx = -1;
+                        var coord = helper.getCellCoord($cell);
+                        if (uk.util.isNullOrUndefined(editor)) {
+                            var content = $cell.textContent;
+                            inputVal = value ? value : content;
+                            $input = document.createElement("input");
+                            $input.style.border = "none";
+                            $input.style.width = "96%";
+                            $input.style.height = "92%";
+                            $input.style.outline = "none";
+                            $input.value = inputVal;
+                            $editor = document.createElement("div");
+                            $editor.className = update.EDITOR_CLS;
+                            $editor.style.height = $cell.offsetHeight - 4;
+                            $editor.style.width = $cell.offsetWidth - 4;
+                            $editor.style.backgroundColor = "#FFF";
+                            $editor.style.border = "solid 1px #E67E22";
+                            $editor.appendChild($input);
+                            if (selector.is($cell, "div")) {
+                                $editor.style.height = $cell.offsetHeight - 4;
+                                $editor.style.width = $cell.offsetWidth - 4;
+                                innerIdx = selector.index($cell);
+                            }
+                            $.data($exTable, update.EDITOR, new Editor($editor, land, coord.rowIdx, coord.columnKey, innerIdx, inputVal));
+                            events.trigger($exTable, events.START_EDIT, [$editor, content]);
+                            helper.addClass($cell, update.EDIT_CELL_CLS);
+                            $cell.innerHTML = "";
+                            $cell.appendChild($editor);
+                            editing($exTable, $editor, land);
+                            $input.select();
+                            validation.validate($body, $cell, coord.rowIdx, coord.columnKey, innerIdx, inputVal);
+                            selection.tickRows($exTable.querySelector("." + BODY_PRF + LEFTMOST), false);
+                        }
+                        else {
+                            $editor = editor.$editor;
+                            $input = $editor.querySelector("input");
+                            var content_1 = $input.value;
+                            var editingLand_1 = editor.land;
+                            var cont_1 = function (cb) {
+                                if ($editor.style.display === "none")
+                                    $editor.style.display = "";
+                                if (selector.is($cell, "div")) {
+                                    $editor.style.height = $cell.offsetHeight - 4;
+                                    $editor.style.width = $cell.offsetWidth - 4;
+                                    innerIdx = selector.index($cell);
+                                }
+                                else {
+                                    $editor.style.height = $cell.offsetHeight - 4;
+                                    $editor.style.width = $cell.offsetWidth - 4;
+                                }
+                                var $editingCell = helper.closest($editor, "." + update.EDIT_CELL_CLS);
+                                helper.removeClass($editingCell, update.EDIT_CELL_CLS);
+                                var cellText = $cell.textContent;
+                                inputVal = value ? value : cellText;
+                                $input.value = inputVal;
+                                triggerStopEdit($exTable, $editingCell, editingLand_1, content_1);
+                                if (cb && _.isFunction(cb)) {
+                                    cb();
+                                }
+                                // Update editing cell coord
+                                editor.land = land;
+                                editor.rowIdx = coord.rowIdx;
+                                editor.columnKey = coord.columnKey;
+                                editor.innerIdx = innerIdx;
+                                editor.value = inputVal;
+                                helper.addClass($cell, update.EDIT_CELL_CLS);
+                                $cell.innerHTML = "";
+                                $cell.appendChild($editor);
+                                editing($exTable, $editor, land);
+                                $input.select();
+                                validation.validate($body, $cell, coord.rowIdx, coord.columnKey, innerIdx, inputVal);
+                                selection.tickRows($exTable.querySelector("." + BODY_PRF + LEFTMOST), false);
+                            };
+                            var $editingGrid_1 = !editingLand_1 ? helper.getMainTable($exTable) : helper.getTable($exTable, editor.land);
+                            var visibleColumns = helper.getVisibleColumnsOn($editingGrid_1);
+                            var columnDf_1;
+                            _.forEach(visibleColumns, function (col) {
+                                if (col.key === editor.columnKey) {
+                                    columnDf_1 = col;
+                                    return false;
+                                }
+                            });
+                            if (!columnDf_1)
+                                return;
+                            if (columnDf_1.ajaxValidate && _.isFunction(columnDf_1.ajaxValidate.request)) {
+                                helper.block($exTable);
+                                columnDf_1.ajaxValidate.request(content_1).done(function (res) {
+                                    cont_1(helper.call(columnDf_1.ajaxValidate.onValid, { rowIndex: editor.rowIdx, columnKey: editor.columnKey, innerIdx: editor.innerIdx }, res));
+                                }).fail(function (res) {
+                                    var $target = selection.cellAt($editingGrid_1, editor.rowIdx, editor.columnKey);
+                                    if ($target !== intan.NULL) {
+                                        errors.add($exTable, $target, editor.rowIdx, editor.columnKey, editor.innerIdx, editor.value);
+                                    }
+                                    if (_.isFunction(columnDf_1.ajaxValidate.onFailed)) {
+                                        columnDf_1.ajaxValidate.onFailed({ rowIndex: editor.rowIdx, columnKey: editor.columnKey, innerIdx: editor.innerIdx }, res);
+                                    }
+                                }).always(function () {
+                                    helper.unblock($exTable);
+                                });
+                                return;
+                            }
+                            cont_1();
+                        }
+                    }
+                    update.edit = edit;
+                    /**
+                     * Editing.
+                     */
+                    function editing($exTable, $editor, land) {
+                        var $input = $editor.querySelector("input");
+                        $input.removeXEventListener(events.KEY_UP);
+                        $input.addXEventListener(events.KEY_UP, function (evt) {
+                            var value = $input.value;
+                            if (evt.keyCode === $.ui.keyCode.ENTER) {
+                                var $grid_1;
+                                if (!land) {
+                                    $grid_1 = helper.getMainTable($exTable);
+                                }
+                                else {
+                                    $grid_1 = $exTable.querySelector("." + land);
+                                }
+                                var editor_1 = $.data($exTable, update.EDITOR);
+                                if (errors.occurred($exTable) || !editor_1)
+                                    return;
+                                var visibleColumns = helper.getVisibleColumnsOn(!editor_1.land ? helper.getMainTable($exTable) : helper.getTable($exTable, editor_1.land));
+                                var columnDf_2;
+                                _.forEach(visibleColumns, function (col) {
+                                    if (col.key === editor_1.columnKey) {
+                                        columnDf_2 = col;
+                                        return false;
+                                    }
+                                });
+                                if (!columnDf_2)
+                                    return;
+                                if (columnDf_2.ajaxValidate && _.isFunction(columnDf_2.ajaxValidate.request)) {
+                                    helper.block($exTable);
+                                    columnDf_2.ajaxValidate.request(value).done(function (res) {
+                                        var $parent = $editor.parentElement;
+                                        helper.removeClass($parent, update.EDIT_CELL_CLS);
+                                        var currentCell = new selection.Cell(editor_1.rowIdx, editor_1.columnKey, undefined, editor_1.innerIdx);
+                                        $.data($exTable, update.EDITOR, null);
+                                        triggerStopEdit($exTable, $parent, land, value);
+                                        if (_.isFunction(columnDf_2.ajaxValidate.onValid)) {
+                                            columnDf_2.ajaxValidate.onValid({ rowIndex: editor_1.rowIdx, columnKey: editor_1.columnKey, innerIdx: editor_1.innerIdx }, res);
+                                        }
+                                        if (land !== BODY_PRF + DETAIL)
+                                            return;
+                                        var cell = helper.nextCellOf($grid_1, currentCell);
+                                        internal.getGem($grid_1).rollTo(cell);
+                                        _.defer(function () {
+                                            var $cell = selection.cellAt($grid_1, cell.rowIndex, cell.columnKey);
+                                            if (uk.util.isNullOrUndefined(cell.innerIdx) || cell.innerIdx === -1) {
+                                                edit($exTable, $cell, land);
+                                                return;
+                                            }
+                                            edit($exTable, $cell.querySelectorAll("." + render.CHILD_CELL_CLS)[cell.innerIdx], land);
+                                        });
+                                    }).fail(function (res) {
+                                        var $target = selection.cellAt($grid_1, editor_1.rowIdx, editor_1.columnKey);
+                                        if ($target !== intan.NULL) {
+                                            errors.add($exTable, $target, editor_1.rowIdx, editor_1.columnKey, editor_1.innerIdx, editor_1.value);
+                                        }
+                                        if (_.isFunction(columnDf_2.ajaxValidate.onFailed)) {
+                                            columnDf_2.ajaxValidate.onFailed({ rowIndex: editor_1.rowIdx, columnKey: editor_1.columnKey, innerIdx: editor_1.innerIdx }, res);
+                                        }
+                                    }).always(function () {
+                                        helper.unblock($exTable);
+                                    });
+                                }
+                                else {
+                                    var $parent = $editor.parentElement;
+                                    helper.removeClass($parent, update.EDIT_CELL_CLS);
+                                    var currentCell = new selection.Cell(editor_1.rowIdx, editor_1.columnKey, undefined, editor_1.innerIdx);
+                                    $.data($exTable, update.EDITOR, null);
+                                    triggerStopEdit($exTable, $parent, land, value);
+                                    if (land !== BODY_PRF + DETAIL)
+                                        return;
+                                    var cell_1 = helper.nextCellOf($grid_1, currentCell);
+                                    internal.getGem($grid_1).rollTo(cell_1);
+                                    _.defer(function () {
+                                        var $cell = selection.cellAt($grid_1, cell_1.rowIndex, cell_1.columnKey);
+                                        if (uk.util.isNullOrUndefined(cell_1.innerIdx) || cell_1.innerIdx === -1) {
+                                            edit($exTable, $cell, land);
+                                            return;
+                                        }
+                                        edit($exTable, $cell.querySelectorAll("." + render.CHILD_CELL_CLS)[cell_1.innerIdx], land);
+                                    });
+                                }
+                            }
+                            else {
+                                var editor = $.data($exTable, update.EDITOR);
+                                if (uk.util.isNullOrUndefined(editor))
+                                    return;
+                                editor.value = value;
+                                var $grid = !editor.land ? helper.getMainTable($exTable) : helper.getTable($exTable, editor.land);
+                                validation.validate($grid, helper.closest(editor.$editor, "." + update.EDIT_CELL_CLS), editor.rowIdx, editor.columnKey, editor.innerIdx, editor.value);
+                            }
+                        });
+                    }
+                    /**
+                     * Trigger stop edit.
+                     */
+                    function triggerStopEdit($exTable, $cell, land, value) {
+                        if ($cell.length === 0)
+                            return;
+                        var innerIdx = -1;
+                        if (selector.is($cell, "div")) {
+                            innerIdx = selector.index($cell);
+                        }
+                        var coord = helper.getCellCoord($cell);
+                        if (!coord)
+                            return;
+                        events.trigger($exTable, events.STOP_EDIT, { land: land, rowIndex: coord.rowIdx, columnKey: coord.columnKey, innerIdx: innerIdx, value: value });
+                    }
+                    update.triggerStopEdit = triggerStopEdit;
+                    /**
+                     * Edit done.
+                     */
+                    function editDone($exTable) {
+                        var $grid = $exTable.querySelector("." + BODY_PRF + DETAIL);
+                        var fts = $.data($exTable, NAMESPACE).detailContent.features;
+                        var timeRangeFt = feature.find(fts, feature.TIME_RANGE);
+                        var timeRangerDef;
+                        if (!uk.util.isNullOrUndefined(timeRangeFt)) {
+                            timeRangerDef = _.groupBy(timeRangeFt.ranges, "rowId");
+                            $.data($grid, internal.TIME_VALID_RANGE, timeRangerDef);
+                        }
+                        $exTable.addXEventListener(events.STOP_EDIT, function (evt) {
+                            var ui = evt.detail;
+                            postEdit($exTable, ui, timeRangerDef);
+                        });
+                    }
+                    update.editDone = editDone;
+                    /**
+                     * Post edit.
+                     */
+                    function postEdit($exTable, ui, timeRangerDef) {
+                        var $body = !ui.land ? $exTable.querySelector("." + BODY_PRF + DETAIL) : $exTable.querySelector("." + ui.land);
+                        var $cell = selection.cellAt($body, ui.rowIndex, ui.columnKey);
+                        var result = validation.validate($body, $cell, ui.rowIndex, ui.columnKey, ui.innerIdx, ui.value, timeRangerDef);
+                        if (!result.isValid)
+                            return;
+                        ui.value = result.value;
+                        var res = cellData($exTable, ui);
+                        if (!uk.util.isNullOrUndefined(res)) {
+                            var newValObj = ui.value;
+                            if (_.isObject(res)) {
+                                var $main = helper.getMainTable($exTable);
+                                var gen = $.data($main, internal.TANGI) || $.data($main, internal.CANON);
+                                var upperInput = gen.painter.options.upperInput;
+                                var lowerInput = gen.painter.options.lowerInput;
+                                newValObj = _.cloneDeep(res);
+                                if (ui.innerIdx === 0) {
+                                    newValObj[upperInput] = ui.value;
+                                }
+                                else if (ui.innerIdx === 1) {
+                                    newValObj[lowerInput] = ui.value;
+                                }
+                            }
+                            pushEditHistory($body, new selection.Cell(ui.rowIndex, ui.columnKey, res, ui.innerIdx));
+                            helper.markCellWith(update.EDITED_CLS, $cell, ui.innerIdx);
+                            events.trigger($exTable, events.CELL_UPDATED, new selection.Cell(ui.rowIndex, ui.columnKey, newValObj, ui.innerIdx));
+                        }
+                        setText($cell, ui.innerIdx, ui.value);
+                    }
+                    /**
+                     * Set text.
+                     */
+                    function setText($cell, innerIdx, value) {
+                        var $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
+                        if (!uk.util.isNullOrUndefined(innerIdx) && innerIdx > -1 && $childCells.length > 0) {
+                            $childCells[innerIdx].textContent = value;
+                        }
+                        else {
+                            $cell.textContent = value;
+                        }
+                    }
+                    update.setText = setText;
+                    /**
+                     * Outside click.
+                     */
+                    function outsideClick($exTable, $target, immediate) {
+                        if (immediate || !selector.is($target, "." + update.EDITABLE_CLS)) {
+                            if ($.data($exTable, "blockUI.isBlocked") === 1 || errors.occurred($exTable))
+                                return;
+                            var editor_2 = $.data($exTable, update.EDITOR);
+                            if (uk.util.isNullOrUndefined(editor_2))
+                                return;
+                            var $input = editor_2.$editor.querySelector("input");
+                            var content_2 = $input.value;
+                            var mo_1 = function (cb) {
+                                var innerIdx = -1;
+                                var $parent = helper.closest(editor_2.$editor, "." + update.EDITABLE_CLS);
+                                helper.removeClass($parent, update.EDIT_CELL_CLS);
+                                var $g = helper.closest($parent, "table").parentElement;
+                                if (!$parent || !$g)
+                                    return;
+                                if (selector.is($parent, "div"))
+                                    innerIdx = selector.index($parent);
+                                $parent.textContent = content_2;
+                                postEdit($exTable, { rowIndex: editor_2.rowIdx, columnKey: editor_2.columnKey, innerIdx: innerIdx,
+                                    value: content_2, land: ($.data($g, internal.TANGI) || $.data($g, internal.CANON)).painter.options.containerClass });
+                                if (cb && _.isFunction(cb)) {
+                                    cb();
+                                }
+                                $.data($exTable, update.EDITOR, null);
+                            };
+                            var $grid_2 = !editor_2.land ? helper.getMainTable($exTable) : helper.getTable($exTable, editor_2.land);
+                            var visibleColumns = helper.getVisibleColumnsOn($grid_2);
+                            var columnDf_3;
+                            _.forEach(visibleColumns, function (col) {
+                                if (col.key === editor_2.columnKey) {
+                                    columnDf_3 = col;
+                                    return false;
+                                }
+                            });
+                            if (!columnDf_3)
+                                return;
+                            if (!selector.is($target, "." + cellHandler.ROUND_GO)
+                                && columnDf_3.ajaxValidate && _.isFunction(columnDf_3.ajaxValidate.request)) {
+                                helper.block($exTable);
+                                columnDf_3.ajaxValidate.request(content_2).done(function (res) {
+                                    mo_1(helper.call(columnDf_3.ajaxValidate.onValid, { rowIndex: editor_2.rowIdx, columnKey: editor_2.columnKey, innerIdx: editor_2.innerIdx }, res));
+                                }).fail(function (res) {
+                                    var $target = selection.cellAt($grid_2, editor_2.rowIdx, editor_2.columnKey);
+                                    if ($target !== intan.NULL) {
+                                        errors.add($exTable, $target, editor_2.rowIdx, editor_2.columnKey, editor_2.innerIdx, editor_2.value);
+                                    }
+                                    if (_.isFunction(columnDf_3.ajaxValidate.onFailed)) {
+                                        columnDf_3.ajaxValidate.onFailed({ rowIndex: editor_2.rowIdx, columnKey: editor_2.columnKey, innerIdx: editor_2.innerIdx }, res);
+                                    }
+                                }).always(function () {
+                                    helper.unblock($exTable);
+                                });
+                                return;
+                            }
+                            mo_1();
+                        }
+                    }
+                    update.outsideClick = outsideClick;
+                    /**
+                     * Cell data.
+                     */
+                    function cellData($exTable, ui) {
+                        var exTable = $.data($exTable, NAMESPACE);
+                        if (!exTable)
+                            return;
+                        var oldVal, innerIdx = ui.innerIdx, f;
+                        if (ui.land === BODY_PRF + LEFTMOST) {
+                            f = "leftmostContent";
+                        }
+                        else if (ui.land === BODY_PRF + MIDDLE) {
+                            f = "middleContent";
+                        }
+                        else {
+                            f = "detailContent";
+                        }
+                        if (uk.util.isNullOrUndefined(ui.innerIdx)) {
+                            innerIdx = exTable[f].dataSource[ui.rowIndex][ui.columnKey].constructor === Array ? 1 : -1;
+                        }
+                        var currentVal = exTable[f].dataSource[ui.rowIndex][ui.columnKey];
+                        if (innerIdx === -1) {
+                            if (currentVal !== ui.value) {
+                                oldVal = _.cloneDeep(currentVal);
+                                if (exTable[f].primaryKey === ui.columnKey) {
+                                    if (exTable.leftmostContent) {
+                                        exTable.leftmostContent.dataSource[ui.rowIndex][ui.columnKey] = ui.value;
+                                    }
+                                    if (exTable.middleContent) {
+                                        exTable.middleContent.dataSource[ui.rowIndex][ui.columnKey] = ui.value;
+                                    }
+                                    if (exTable.detailContent) {
+                                        exTable.detailContent.dataSource[ui.rowIndex][ui.columnKey] = ui.value;
+                                    }
+                                }
+                                else {
+                                    exTable[f].dataSource[ui.rowIndex][ui.columnKey] = ui.value;
+                                }
+                                return oldVal;
+                            }
+                            return null;
+                        }
+                        var $main = !ui.land ? helper.getMainTable($exTable) : helper.getTable($exTable, ui.land);
+                        var gen = $.data($main, internal.TANGI) || $.data($main, internal.CANON);
+                        var upperInput = gen.painter.options.upperInput;
+                        var lowerInput = gen.painter.options.lowerInput;
+                        var field;
+                        if (ui.innerIdx === 0) {
+                            field = upperInput;
+                        }
+                        else if (ui.innerIdx === 1) {
+                            field = lowerInput;
+                        }
+                        if (currentVal[field] !== ui.value) {
+                            oldVal = _.cloneDeep(currentVal);
+                            exTable[f].dataSource[ui.rowIndex][ui.columnKey][field] = ui.value;
+                            return oldVal;
+                        }
+                        return null;
+                    }
+                    update.cellData = cellData;
+                    /**
+                     * Row data.
+                     */
+                    function rowData($exTable, rowIdx, data) {
+                        var exTable = $.data($exTable, NAMESPACE);
+                        if (!exTable)
+                            return;
+                        _.assignInWith(exTable.detailContent.dataSource[rowIdx], data, function (objVal, srcVal) {
+                            if (objVal.constructor === Array && srcVal.constructor !== Array) {
+                                objVal[1] = srcVal;
+                                return objVal;
+                            }
+                            return srcVal;
+                        });
+                    }
+                    update.rowData = rowData;
+                    /**
+                     * Grid cell.
+                     */
+                    function gridCell($grid, rowIdx, columnKey, innerIdx, value, isRestore) {
+                        var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        if (!gen)
+                            return;
+                        var cData = gen.dataSource[rowIdx][columnKey];
+                        var origDs = gen._origDs;
+                        var $table = helper.closest($grid, "." + NAMESPACE);
+                        if (cData.constructor === Array) {
+                            if (value.constructor === Array) {
+                                _.forEach(cData, function (d, i) {
+                                    gen.dataSource[rowIdx][columnKey][i] = value[i];
+                                    if (!helper.isEqual(origDs[rowIdx][columnKey][i], value[i])) {
+                                        events.trigger($table, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value[i], i));
+                                    }
+                                });
+                            }
+                            else {
+                                gen.dataSource[rowIdx][columnKey][innerIdx] = value;
+                                if (!helper.isEqual(origDs[rowIdx][columnKey][innerIdx], value)) {
+                                    events.trigger($table, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, innerIdx));
+                                }
+                            }
+                        }
+                        else {
+                            gen.dataSource[rowIdx][columnKey] = value;
+                            if (!helper.isEqual(origDs[rowIdx][columnKey], value)) {
+                                events.trigger($table, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, -1));
+                            }
+                        }
+                        render.gridCell($grid, rowIdx, columnKey, innerIdx, value, isRestore);
+                    }
+                    update.gridCell = gridCell;
+                    /**
+                     * Grid row.
+                     */
+                    function gridRow($grid, rowIdx, data, isRestore) {
+                        var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        if (!gen)
+                            return;
+                        _.assignInWith(gen.dataSource[rowIdx], data, function (objVal, srcVal) {
+                            if (objVal.constructor === Array && srcVal.constructor !== Array) {
+                                objVal[1] = srcVal;
+                                return objVal;
+                            }
+                            return srcVal;
+                        });
+                        render.gridRow($grid, rowIdx, data, isRestore);
+                    }
+                    update.gridRow = gridRow;
+                    /**
+                     * Grid cell ow.
+                     */
+                    function gridCellOw($grid, rowIdx, columnKey, innerIdx, value, txId) {
+                        var $exTable = helper.closest($grid, "." + NAMESPACE);
+                        var exTable = $.data($exTable, NAMESPACE);
+                        var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        var pk = helper.getPrimaryKey($grid);
+                        if (!gen || helper.isDetCell($grid, rowIdx, columnKey)
+                            || helper.isXCell($grid, gen.dataSource[rowIdx][pk], columnKey, style.HIDDEN_CLS, style.SEAL_CLS))
+                            return;
+                        var cData = gen.dataSource[rowIdx][columnKey];
+                        var opt = gen.options;
+                        if (!exTable.pasteOverWrite
+                            && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, cData)))
+                            return;
+                        var changedData;
+                        if (cData.constructor === Array) {
+                            if (value.constructor === Array) {
+                                changedData = _.cloneDeep(cData);
+                                _.forEach(cData, function (d, i) {
+                                    gen.dataSource[rowIdx][columnKey][i] = value[i];
+                                });
+                            }
+                            else {
+                                changedData = cData[innerIdx];
+                                gen.dataSource[rowIdx][columnKey][innerIdx] = value;
+                            }
+                        }
+                        else if (_.isObject(cData) && !_.isObject(value)) {
+                            return;
+                        }
+                        else {
+                            changedData = cData;
+                            gen.dataSource[rowIdx][columnKey] = value;
+                        }
+                        var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, value);
+                        if (touched) {
+                            pushHistory($grid, [new selection.Cell(rowIdx, columnKey, changedData)], txId);
+                            events.trigger($exTable, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, innerIdx));
+                        }
+                    }
+                    update.gridCellOw = gridCellOw;
+                    /**
+                     * Grid row ow.
+                     */
+                    function gridRowOw($grid, rowIdx, data, txId) {
+                        var $exTable = helper.closest($grid, "." + NAMESPACE);
+                        var exTable = $.data($exTable, NAMESPACE);
+                        var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        var pk = helper.getPrimaryKey($grid);
+                        if (!gen)
+                            return;
+                        // Create history
+                        var changedCells = [];
+                        var origData = _.cloneDeep(data);
+                        var clonedData = _.cloneDeep(data);
+                        var opt = gen.options;
+                        _.assignInWith(gen.dataSource[rowIdx], clonedData, function (objVal, srcVal, key, obj, src) {
+                            if ((!exTable.pasteOverWrite
+                                && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, objVal)))
+                                || helper.isDetCell($grid, rowIdx, key)
+                                || helper.isXCell($grid, gen.dataSource[rowIdx][pk], key, style.HIDDEN_CLS, style.SEAL_CLS)) {
+                                src[key] = objVal;
+                                return objVal;
+                            }
+                            if (!uk.util.isNullOrUndefined(src[key]) && !helper.isEqual(src[key], obj[key])) {
+                                changedCells.push(new selection.Cell(rowIdx, key, objVal));
+                            }
+                            else {
+                                delete origData[key];
+                            }
+                            if (objVal.constructor === Array && srcVal.constructor !== Array) {
+                                objVal[1] = srcVal;
+                                return objVal;
+                            }
+                            return srcVal;
+                        });
+                        _.forEach(Object.keys(clonedData), function (k) {
+                            if (!helper.isEqual(clonedData[k], origData[k])) {
+                                delete origData[k];
+                            }
+                        });
+                        render.gridRow($grid, rowIdx, origData);
+                        if (changedCells.length > 0) {
+                            pushHistory($grid, changedCells, txId);
+                            events.trigger($exTable, events.ROW_UPDATED, events.createRowUi(rowIdx, origData));
+                        }
+                    }
+                    update.gridRowOw = gridRowOw;
+                    /**
+                     * Stick grid cell ow.
+                     */
+                    function stickGridCellOw($grid, rowIdx, columnKey, innerIdx, value) {
+                        var $exTable = helper.closest($grid, "." + NAMESPACE);
+                        var exTable = $.data($exTable, NAMESPACE);
+                        var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        var pk = helper.getPrimaryKey($grid);
+                        if (!gen || helper.isDetCell($grid, rowIdx, columnKey)
+                            || helper.isXCell($grid, gen.dataSource[rowIdx][pk], columnKey, style.HIDDEN_CLS, style.SEAL_CLS))
+                            return;
+                        var cData = gen.dataSource[rowIdx][columnKey];
+                        var opt = gen.options;
+                        if (!exTable.stickOverWrite
+                            && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, cData)))
+                            return;
+                        var changedData = _.cloneDeep(cData);
+                        gen.dataSource[rowIdx][columnKey] = value;
+                        var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, value);
+                        if (touched) {
+                            pushStickHistory($grid, [new selection.Cell(rowIdx, columnKey, changedData, innerIdx)]);
+                            events.trigger($exTable, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, innerIdx));
+                        }
+                    }
+                    update.stickGridCellOw = stickGridCellOw;
+                    /**
+                     * Stick grid row ow.
+                     */
+                    function stickGridRowOw($grid, rowIdx, data) {
+                        var $exTable = helper.closest($grid, "." + NAMESPACE);
+                        var exTable = $.data($exTable, NAMESPACE);
+                        var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        var pk = helper.getPrimaryKey($grid);
+                        if (!gen)
+                            return;
+                        // Create history
+                        var changedCells = [];
+                        var origData = _.cloneDeep(data);
+                        var clonedData = _.cloneDeep(data);
+                        var opt = gen.options;
+                        _.assignInWith(gen.dataSource[rowIdx], clonedData, function (objVal, srcVal, key, obj, src) {
+                            if ((!exTable.stickOverWrite
+                                && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, objVal)))
+                                || helper.isDetCell($grid, rowIdx, key)
+                                || helper.isXCell($grid, gen.dataSource[rowIdx][pk], key, style.HIDDEN_CLS, style.SEAL_CLS)) {
+                                src[key] = objVal;
+                                return objVal;
+                            }
+                            if (!uk.util.isNullOrUndefined(src[key]) && !helper.isEqual(src[key], obj[key])) {
+                                changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
+                            }
+                            else {
+                                delete origData[key];
+                            }
+                            if (objVal.constructor === Array && srcVal.constructor !== Array) {
+                                objVal[1] = srcVal;
+                                return objVal;
+                            }
+                            return srcVal;
+                        });
+                        _.forEach(Object.keys(clonedData), function (k) {
+                            if (!helper.isEqual(clonedData[k], origData[k])) {
+                                delete origData[k];
+                            }
+                        });
+                        render.gridRow($grid, rowIdx, origData);
+                        if (changedCells.length > 0) {
+                            pushStickHistory($grid, changedCells);
+                            events.trigger($exTable, events.ROW_UPDATED, events.createRowUi(rowIdx, origData));
+                        }
+                    }
+                    update.stickGridRowOw = stickGridRowOw;
+                    /**
+                     * Push history.
+                     */
+                    function pushHistory($grid, cells, txId) {
+                        var history = $.data($grid, internal.COPY_HISTORY);
+                        if (!history || history.length === 0) {
+                            history = [{ txId: txId, items: cells }];
+                            $.data($grid, internal.COPY_HISTORY, history);
+                            return;
+                        }
+                        var latestHistory = history[history.length - 1];
+                        if (latestHistory.txId === txId) {
+                            _.forEach(cells, function (cell) {
+                                latestHistory.items.push(cell);
+                            });
+                        }
+                        else {
+                            var newHis = { txId: txId, items: cells };
+                            history.push(newHis);
+                        }
+                    }
+                    update.pushHistory = pushHistory;
+                    /**
+                     * Push edit history.
+                     */
+                    function pushEditHistory($grid, cell) {
+                        var history = $.data($grid, internal.EDIT_HISTORY);
+                        if (!history || history.length === 0) {
+                            $.data($grid, internal.EDIT_HISTORY, [cell]);
+                            return;
+                        }
+                        history.push(cell);
+                    }
+                    update.pushEditHistory = pushEditHistory;
+                    /**
+                     * Push stick history.
+                     */
+                    function pushStickHistory($grid, cells) {
+                        var history = $.data($grid, internal.STICK_HISTORY);
+                        if (!history || history.length === 0) {
+                            $.data($grid, internal.STICK_HISTORY, [cells]);
+                            return;
+                        }
+                        history.push(cells);
+                    }
+                    update.pushStickHistory = pushStickHistory;
+                    /**
+                     * Remove stick history.
+                     */
+                    function removeStickHistory($grid, cells) {
+                        var history = $.data($grid, internal.STICK_HISTORY);
+                        if (!history || history.length === 0)
+                            return;
+                        _.remove(history, function (h) { return cells.some(function (c) { return helper.areSameCells(c, h); }); });
+                    }
+                    update.removeStickHistory = removeStickHistory;
+                    /**
+                     * Insert new row.
+                     */
+                    function insertNewRow($container) {
+                        var rowIndex;
+                        Array.prototype.slice.call($container.querySelectorAll("div[class*='" + BODY_PRF + "']")).filter(function (e) {
+                            return !e.classList.contains(BODY_PRF + HORIZONTAL_SUM) && !e.classList.contains(BODY_PRF + LEFT_HORZ_SUM);
+                        }).forEach(function (e) {
+                            var ds = internal.getDataSource(e);
+                            var origDs = helper.getOrigDS(e);
+                            var newRec = {};
+                            rowIndex = ds.length;
+                            var columns = helper.gridColumnsMap(e);
+                            if (!ds || !columns)
+                                return;
+                            _.forEach(columns, function (value, key) {
+                                if (key === controls.CHECKED_KEY)
+                                    return;
+                                newRec[key] = "";
+                            });
+                            var gen = $.data(e, internal.TANGI) || $.data(e, internal.CANON);
+                            var newRow = gen.painter.row(newRec, { css: { height: gen.painter.options.rowHeight } }, ds.length);
+                            if (!uk.util.isNullOrUndefined(gen.startIndex)) {
+                                var trList = e.querySelectorAll("tbody tr");
+                                trList[trList.length - 1].insertAdjacentElement("beforebegin", newRow);
+                            }
+                            else {
+                                e.querySelector("tbody").appendChild(newRow);
+                            }
+                            origDs[ds.length] = _.cloneDeep(newRec);
+                            ds[ds.length] = newRec;
+                        });
+                        var $grid = helper.getMainTable($container);
+                        $grid.scrollTop = $grid.scrollHeight;
+                        controls.tick(true, $container.querySelector("." + BODY_PRF + LEFTMOST), false, rowIndex);
+                    }
+                    update.insertNewRow = insertNewRow;
+                    /**
+                     * Delete rows.
+                     */
+                    function deleteRows($container) {
+                        var $grid = helper.getLeftmostTable($container);
+                        var rows = $.data($grid, internal.SELECTED_ROWS);
+                        if (!rows || !rows.items || rows.items.length === 0)
+                            return;
+                        if (rows.count > 0) {
+                            rows.selectAll = false;
+                            var $allBox = selector.classSiblings($grid, HEADER_PRF + LEFTMOST).map(function (e) {
+                                var trList = e.querySelectorAll("table tr");
+                                return trList[0].querySelectorAll("td")[0].querySelector("input");
+                            })[0];
+                            if (selector.is($allBox, ":checked"))
+                                $allBox.checked = false;
+                        }
+                        retrackEditor($container, rows.items);
+                        var $t = Array.prototype.slice.call($container.querySelectorAll("div[class*='" + BODY_PRF + "']")).filter(function (e) {
+                            return !e.classList.contains(BODY_PRF + HORIZONTAL_SUM) && !e.classList.contains(BODY_PRF + LEFT_HORZ_SUM);
+                        });
+                        $t.forEach(function (elm) {
+                            _.forEach([internal.EDIT_HISTORY, internal.COPY_HISTORY, internal.STICK_HISTORY,
+                                internal.SELECTED_CELLS, errors.ERRORS], function (name) {
+                                retrackRecords(elm, rows.items, name);
+                            });
+                        });
+                        $t.forEach(function (elm, index) {
+                            var ds = internal.getDataSource(elm);
+                            var origDs = helper.getOrigDS(elm);
+                            if (!ds || ds.length === 0)
+                                return;
+                            if (ds.length > rows.items.length)
+                                rows.items[ds.length - 1] = false;
+                            var count = rows.count;
+                            for (var i = rows.items.length - 1; i >= 0; i--) {
+                                var $row = selection.rowAt(elm, i);
+                                if (rows.items[i]) {
+                                    if ($row !== intan.NULL && !$row.classList.contains(NAMESPACE + "-" + intan.BOTTOM_SPACE)) {
+                                        $row.parentNode.removeChild($row);
+                                    }
+                                    ds.splice(i, 1);
+                                    origDs.splice(i, 1);
+                                    if (index === $t.length - 1) {
+                                        rows.items[i] = false;
+                                        rows.count--;
+                                    }
+                                    count--;
+                                }
+                                else {
+                                    if ($row !== intan.NULL) {
+                                        selector.queryAll($row, "td").forEach(function (e) {
+                                            var view = $.data(e, internal.VIEW);
+                                            if (view) {
+                                                var coord = view.split("-");
+                                                $.data(e, internal.VIEW, parseInt(coord[0]) - count + "-" + coord[1]);
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                            if (ds.length === 0) {
+                                elm.querySelector("." + NAMESPACE + "-" + intan.BOTTOM_SPACE).style.height = EMPTY_TBL_HEIGHT;
+                            }
+                        });
+                    }
+                    update.deleteRows = deleteRows;
+                    /**
+                     * Retrack editor.
+                     */
+                    function retrackEditor($container, rows) {
+                        var count = 0;
+                        var editor = $.data($container, update.EDITOR);
+                        if (!editor)
+                            return;
+                        if (rows[editor.rowIdx]) {
+                            $.data($container, update.EDITOR, null);
+                            return;
+                        }
+                        for (var i = 0; i < editor.rowIdx; i++) {
+                            if (rows[i])
+                                count++;
+                        }
+                        if (count > 0)
+                            editor.rowIdx = editor.rowIdx - count;
+                    }
+                    /**
+                     * Retrack records.
+                     */
+                    function retrackRecords($grid, rows, name) {
+                        var histories = $.data($grid, name);
+                        if (!histories)
+                            return;
+                        if (name === internal.COPY_HISTORY) {
+                            for (var i = histories.length - 1; i >= 0; i--) {
+                                each(histories[i].items, rows);
+                            }
+                        }
+                        else if (name === internal.SELECTED_CELLS) {
+                            _.forEach(Object.keys(histories).sort(function (a, b) { return a - b; }), function (key, index) {
+                                var count = 0;
+                                if (rows[key]) {
+                                    delete histories[key];
+                                    return;
+                                }
+                                for (var i = 0; i < key; i++) {
+                                    if (rows[i])
+                                        count++;
+                                }
+                                if (count > 0) {
+                                    var newKey = key - count;
+                                    histories[newKey] = histories[key];
+                                    delete histories[key];
+                                }
+                            });
+                        }
+                        else {
+                            each(histories, rows);
+                        }
+                    }
+                    /**
+                     * Each.
+                     */
+                    function each(histories, rows) {
+                        var removes = [];
+                        _.forEach(histories, function (his, index) {
+                            var count = 0;
+                            if (rows[his.rowIndex]) {
+                                removes.push(index);
+                                return;
+                            }
+                            for (var i = 0; i < his.rowIndex; i++) {
+                                if (rows[i])
+                                    count++;
+                            }
+                            if (count > 0)
+                                his.rowIndex = his.rowIndex - count;
+                        });
+                        while (removes.length > 0) {
+                            histories.splice(removes.pop(), 1);
+                        }
+                    }
+                })(update || (update = {}));
+                var copy;
+                (function (copy) {
+                    copy.PASTE_ID = "pasteHelper";
+                    copy.COPY_ID = "copyHelper";
+                    var Mode;
+                    (function (Mode) {
+                        Mode[Mode["SINGLE"] = 0] = "SINGLE";
+                        Mode[Mode["MULTIPLE"] = 1] = "MULTIPLE";
+                    })(Mode || (Mode = {}));
+                    var History = (function () {
+                        function History(cells) {
+                            this.cells = cells;
+                        }
+                        return History;
+                    }());
+                    copy.History = History;
+                    var Printer = (function () {
+                        function Printer(options) {
+                            this.options = options;
+                        }
+                        /**
+                         * Hook.
+                         */
+                        Printer.prototype.hook = function ($grid) {
+                            var self = this;
+                            self.$grid = $grid;
+                            self.$grid.setAttribute("tabindex", 0);
+                            self.$grid.style.outline = "none";
+                            self.$grid.addXEventListener(events.FOCUS_IN, function (evt) {
+                                if (document.querySelector("#pasteHelper") && document.querySelector("#copyHelper"))
+                                    return;
+                                var pasteArea = document.createElement("textarea");
+                                pasteArea.setAttribute("id", copy.PASTE_ID);
+                                pasteArea.style.opacity = "0";
+                                pasteArea.style.overflow = "hidden";
+                                pasteArea.addXEventListener(events.PASTE, self.paste.bind(self));
+                                var copyArea = document.createElement("textarea");
+                                copyArea.setAttribute("id", copy.COPY_ID);
+                                copyArea.style.opacity = "0";
+                                copyArea.style.overflow = "hidden";
+                                var $div = document.createElement("div");
+                                $div.style.position = "fixed";
+                                $div.style.top = "-10000px";
+                                $div.style.left = "-10000px";
+                                document.body.appendChild($div);
+                                $div.appendChild(pasteArea);
+                                $div.appendChild(copyArea);
+                            });
+                            self.$grid.addXEventListener(events.KEY_DOWN, function (evt) {
+                                if (evt.ctrlKey && helper.isPasteKey(evt)) {
+                                    document.querySelector("#pasteHelper").focus();
+                                }
+                                else
+                                    self.getOp(evt);
+                                _.defer(function () {
+                                    selection.focus(self.$grid);
+                                });
+                            });
+                        };
+                        /**
+                         * Get op.
+                         */
+                        Printer.prototype.getOp = function (evt) {
+                            var self = this;
+                            if (evt.ctrlKey && helper.isCopyKey(evt)) {
+                                self.copy();
+                            }
+                            else if (evt.ctrlKey && helper.isCutKey(evt)) {
+                            }
+                            else if (evt.ctrlKey && helper.isUndoKey(evt)) {
+                                self.undo();
+                            }
+                        };
+                        /**
+                         * Copy.
+                         */
+                        Printer.prototype.copy = function (cut) {
+                            var self = this;
+                            var selectedCells = selection.getSelectedCells(this.$grid);
+                            var copiedData;
+                            if (selectedCells.length === 1) {
+                                var cell = selectedCells[0];
+                                var ds = internal.getDataSource(self.$grid);
+                                var pk = helper.getPrimaryKey(self.$grid);
+                                if (helper.isDetCell(self.$grid, cell.rowIndex, cell.columnKey)
+                                    || helper.isXCell(self.$grid, ds[cell.rowIndex][pk], cell.columnKey, style.HIDDEN_CLS, style.SEAL_CLS))
+                                    return;
+                                this.mode = Mode.SINGLE;
+                                copiedData = _.isObject(selectedCells[0].value) ? JSON.stringify(selectedCells[0].value) : selectedCells[0].value;
+                            }
+                            else {
+                                this.mode = Mode.MULTIPLE;
+                                copiedData = this.converseStructure(selectedCells, cut);
+                            }
+                            var $copyHelper = document.querySelector("#copyHelper");
+                            $copyHelper.value = copiedData;
+                            $copyHelper.select();
+                            document.execCommand("copy");
+                            return selectedCells;
+                        };
+                        /**
+                         * Convert structure.
+                         */
+                        Printer.prototype.converseStructure = function (cells, cut) {
+                            var self = this;
+                            var maxRow = 0;
+                            var minRow = 0;
+                            var maxColumn = 0;
+                            var minColumn = 0;
+                            var structure = [];
+                            var structData = "";
+                            _.forEach(cells, function (cell, index) {
+                                var rowIndex = cell.rowIndex;
+                                var columnIndex = helper.getDisplayColumnIndex(self.$grid, cell.columnKey);
+                                if (index === 0) {
+                                    minRow = maxRow = rowIndex;
+                                    minColumn = maxColumn = columnIndex;
+                                }
+                                if (rowIndex < minRow)
+                                    minRow = rowIndex;
+                                if (rowIndex > maxRow)
+                                    maxRow = rowIndex;
+                                if (columnIndex < minColumn)
+                                    minColumn = columnIndex;
+                                if (columnIndex > maxColumn)
+                                    maxColumn = columnIndex;
+                                if (uk.util.isNullOrUndefined(structure[rowIndex])) {
+                                    structure[rowIndex] = {};
+                                }
+                                var ds = internal.getDataSource(self.$grid);
+                                var pk = helper.getPrimaryKey(self.$grid);
+                                if (helper.isDetCell(self.$grid, rowIndex, cell.columnKey)
+                                    || helper.isXCell(self.$grid, ds[rowIndex][pk], cell.columnKey, style.HIDDEN_CLS, style.SEAL_CLS)) {
+                                    structure[rowIndex][columnIndex] = undefined;
+                                }
+                                else
+                                    structure[rowIndex][columnIndex] = helper.stringValue(cell.value);
+                            });
+                            for (var i = minRow; i <= maxRow; i++) {
+                                for (var j = minColumn; j <= maxColumn; j++) {
+                                    if (uk.util.isNullOrUndefined(structure[i]) || uk.util.isNullOrUndefined(structure[i][j])
+                                        || uk.util.isNullOrEmpty(structure[i][j])) {
+                                        structData += "null";
+                                    }
+                                    else {
+                                        structData += structure[i][j];
+                                    }
+                                    if (j === maxColumn)
+                                        structData += "\n";
+                                    else
+                                        structData += "\t";
+                                }
+                            }
+                            return structData;
+                        };
+                        /**
+                         * Cut.
+                         */
+                        Printer.prototype.cut = function () {
+                            var self = this;
+                            var selectedCells = this.copy(true);
+                            _.forEach(selectedCells, function (cell) {
+                                var $cell = selection.cellAt(self.$grid, cell.rowIndex, cell.columnKey);
+                                var value = "";
+                                if ($cell.querySelectorAll("." + render.CHILD_CELL_CLS).length > 0) {
+                                    value = ["", ""];
+                                }
+                                update.gridCell(self.$grid, cell.rowIndex, cell.columnKey, -1, value);
+                            });
+                        };
+                        /**
+                         * Paste.
+                         */
+                        Printer.prototype.paste = function (evt) {
+                            if (this.mode === Mode.SINGLE) {
+                                this.pasteSingleCell(evt);
+                            }
+                            else {
+                                this.pasteRange(evt);
+                            }
+                        };
+                        /**
+                         * Paste single cell.
+                         */
+                        Printer.prototype.pasteSingleCell = function (evt) {
+                            var self = this;
+                            var cbData = this.getClipboardContent(evt);
+                            cbData = helper.getCellData(cbData);
+                            var selectedCells = selection.getSelectedCells(this.$grid);
+                            var txId = uk.util.randomId();
+                            _.forEach(selectedCells, function (cell, index) {
+                                update.gridCellOw(self.$grid, cell.rowIndex, cell.columnKey, -1, cbData, txId);
+                            });
+                        };
+                        /**
+                         * Paste range.
+                         */
+                        Printer.prototype.pasteRange = function (evt) {
+                            var cbData = this.getClipboardContent(evt);
+                            cbData = this.process(cbData);
+                            this.updateWith(cbData);
+                        };
+                        /**
+                         * Process.
+                         */
+                        Printer.prototype.process = function (data) {
+                            var dataRows = _.map(data.split("\n"), function (row) {
+                                return _.map(row.split("\t"), function (cData) {
+                                    return cData.indexOf(",") > 0 ? cData.split(",") : cData;
+                                });
+                            });
+                            var rowsCount = dataRows.length;
+                            if ((dataRows[rowsCount - 1].length === 1 && dataRows[rowsCount - 1][0] === "")
+                                || (dataRows.length === 1 && dataRows[0].length === 1
+                                    && (dataRows[0][0] === "" || dataRows[0][0] === "\r"))) {
+                                dataRows.pop();
+                            }
+                            return dataRows;
+                        };
+                        /**
+                         * Update with.
+                         */
+                        Printer.prototype.updateWith = function (data) {
+                            var self = this;
+                            var selectedCell = selection.getSelectedCells(self.$grid)[0];
+                            if (selectedCell === undefined)
+                                return;
+                            var visibleColumns = helper.gridVisibleColumns(self.$grid);
+                            var rowIndex = selectedCell.rowIndex;
+                            var startColumnIndex = helper.indexOf(selectedCell.columnKey, visibleColumns);
+                            if (startColumnIndex === -1)
+                                return;
+                            var txId = uk.util.randomId();
+                            var ds = internal.getDataSource(self.$grid);
+                            var size = ds ? ds.length : 0;
+                            _.forEach(data, function (row, idx) {
+                                var rowData = {};
+                                var columnKey = selectedCell.columnKey;
+                                var columnIndex = startColumnIndex;
+                                for (var i = 0; i < row.length; i++) {
+                                    if (!uk.util.isNullOrUndefined(row[i]) && row[i].constructor !== Array && row[i].trim() === "null") {
+                                        columnKey = helper.nextKeyOf(columnIndex++, visibleColumns);
+                                        if (!columnKey)
+                                            break;
+                                        continue;
+                                    }
+                                    rowData[columnKey] = helper.getCellData(row[i]);
+                                    columnKey = helper.nextKeyOf(columnIndex++, visibleColumns);
+                                    if (!columnKey)
+                                        break;
+                                }
+                                if (rowIndex >= size)
+                                    return false;
+                                update.gridRowOw(self.$grid, rowIndex, rowData, txId);
+                                rowIndex++;
+                            });
+                        };
+                        /**
+                         * Undo.
+                         */
+                        Printer.prototype.undo = function () {
+                            var self = this;
+                            var histories = $.data(self.$grid, internal.COPY_HISTORY);
+                            if (!histories || histories.length === 0)
+                                return;
+                            var tx = histories.pop();
+                            _.forEach(tx.items, function (item) {
+                                update.gridCell(self.$grid, item.rowIndex, item.columnKey, -1, item.value, true);
+                                internal.removeChange(self.$grid, item);
+                            });
+                        };
+                        /**
+                         * Get clipboard content.
+                         */
+                        Printer.prototype.getClipboardContent = function (evt) {
+                            if (window.clipboardData) {
+                                window.event.returnValue = false;
+                                return window.clipboardData.getData("text");
+                            }
+                            else {
+                                return evt.originalEvent.clipboardData.getData("text/plain");
+                            }
+                        };
+                        return Printer;
+                    }());
+                    copy.Printer = Printer;
+                    /**
+                     * On.
+                     */
+                    function on($grid, updateMode) {
+                        if (updateMode === COPY_PASTE) {
+                            new Printer().hook($grid);
+                        }
+                    }
+                    copy.on = on;
+                    /**
+                     * Off.
+                     */
+                    function off($grid, updateMode) {
+                        if (updateMode !== COPY_PASTE) {
+                            $grid.removeXEventListener(events.FOCUS_IN);
+                            $grid.removeXEventListener(events.KEY_DOWN);
+                            var $copy = document.querySelector("#" + copy.COPY_ID);
+                            var $paste = document.querySelector("#" + copy.PASTE_ID);
+                            $copy.parentNode.removeChild($copy);
+                            $paste.parentNode.removeChild($paste);
+                        }
+                    }
+                    copy.off = off;
+                })(copy || (copy = {}));
+                var spread;
+                (function (spread) {
+                    spread.SINGLE = "single";
+                    spread.MULTIPLE = "multiple";
+                    var Sticker = (function () {
+                        function Sticker(data) {
+                            this.mode = spread.MULTIPLE;
+                            this.validate = function () { return true; };
+                            this.data = data;
+                        }
+                        return Sticker;
+                    }());
+                    spread.Sticker = Sticker;
+                    /**
+                     * Bind sticker.
+                     */
+                    function bindSticker($cell, rowIdx, columnKey, options) {
+                        if (options.containerClass !== BODY_PRF + DETAIL || uk.util.isNullOrUndefined(options.updateMode)
+                            || options.updateMode !== STICK)
+                            return;
+                        $cell.addXEventListener(events.CLICK_EVT, function (evt) {
+                            if (evt.ctrlKey)
+                                return;
+                            var $grid = helper.closest($cell, "." + BODY_PRF + DETAIL);
+                            var sticker = $.data($grid, internal.STICKER);
+                            if (!sticker || uk.util.isNullOrUndefined(sticker.data)
+                                || uk.util.isNullOrUndefined(sticker.validate))
+                                return;
+                            var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                            var visibleColumns = gen.painter.visibleColumns;
+                            var data = {};
+                            var key = columnKey;
+                            var colIndex = helper.indexOf(key, visibleColumns);
+                            if (sticker.mode === spread.SINGLE) {
+                                var result = void 0;
+                                if ((result = sticker.validate(rowIdx, columnKey, sticker.data)) !== true) {
+                                    // TODO: show error
+                                    result();
+                                    return;
+                                }
+                                update.stickGridCellOw($grid, rowIdx, columnKey, -1, sticker.data);
+                                return;
+                            }
+                            _.forEach(sticker.data, function (cData) {
+                                data[key] = cData;
+                                key = helper.nextKeyOf(colIndex++, visibleColumns);
+                                if (!key)
+                                    return false;
+                            });
+                            update.stickGridRowOw($grid, rowIdx, data);
+                        });
+                    }
+                    spread.bindSticker = bindSticker;
+                    /**
+                     * Bind row sticker.
+                     */
+                    function bindRowSticker($row, rowIdx, options) {
+                        if (options.containerClass !== BODY_PRF + DETAIL || uk.util.isNullOrUndefined(options.updateMode)
+                            || options.updateMode !== STICK)
+                            return;
+                        $row.addXEventListener(events.CLICK_EVT, function (evt) {
+                            if (evt.ctrlKey)
+                                return;
+                            var $grid = helper.closest($row, "." + BODY_PRF + DETAIL);
+                            var sticker = $.data($grid, internal.STICKER);
+                            if (!sticker || uk.util.isNullOrUndefined(sticker.data)
+                                || uk.util.isNullOrUndefined(sticker.validate))
+                                return;
+                            var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                            var visibleColumns = gen.painter.visibleColumns;
+                            var data = {};
+                            var $cell = evt.target;
+                            if (selector.is(evt.target, "." + render.CHILD_CELL_CLS)) {
+                                $cell = helper.closest(evt.target, "td");
+                            }
+                            var coord = helper.getCellCoord($cell);
+                            var key = coord.columnKey;
+                            var colIndex = helper.indexOf(key, visibleColumns);
+                            if (sticker.mode === spread.SINGLE) {
+                                var result = void 0;
+                                if ((result = sticker.validate(rowIdx, columnKey, sticker.data)) !== true) {
+                                    // TODO: show error
+                                    result();
+                                    return;
+                                }
+                                update.stickGridCellOw($grid, rowIdx, columnKey, -1, sticker.data);
+                                return;
+                            }
+                            _.forEach(sticker.data, function (cData) {
+                                data[key] = cData;
+                                key = helper.nextKeyOf(colIndex++, visibleColumns);
+                                if (!key)
+                                    return false;
+                            });
+                            update.stickGridRowOw($grid, rowIdx, data);
+                        });
+                    }
+                    spread.bindRowSticker = bindRowSticker;
+                })(spread || (spread = {}));
+                var validation;
+                (function (validation) {
+                    validation.TIME_SPLIT = ":";
+                    validation.TIME_PTN = /^\d+:\d{2}$/;
+                    validation.SHORT_TIME_PTN = /^\d+$/;
+                    validation.NUMBER_PTN = /^\d+$/;
+                    validation.MINUTE_MAX = 59;
+                    validation.HOUR_MAX = 24;
+                    validation.DEF_HOUR_MAX = 9999;
+                    validation.DEF_HOUR_MIN = 0;
+                    validation.DEF_MIN_MAXMIN = 0;
+                    var Result = (function () {
+                        function Result(isValid, value) {
+                            this.isValid = isValid;
+                            this.value = value;
+                        }
+                        Result.fail = function () {
+                            return new Result(false);
+                        };
+                        Result.ok = function (value) {
+                            return new Result(true, value);
+                        };
+                        return Result;
+                    }());
+                    /**
+                     * Validate.
+                     */
+                    function validate($body, $cell, rowIdx, columnKey, innerIdx, value, timeRangerDef) {
+                        var vtor = validation.mandate($body, columnKey, innerIdx);
+                        var gen = $.data($body, internal.TANGI) || $.data($body, internal.CANON);
+                        var rowId = gen.dataSource[rowIdx][gen.primaryKey];
+                        timeRangerDef = timeRangerDef || $.data($body, internal.TIME_VALID_RANGE);
+                        var formatValue;
+                        if (vtor) {
+                            if ((vtor.actValid === internal.TIME || vtor.actValid === internal.DURATION) && timeRangerDef) {
+                                var ranges = timeRangerDef[rowId];
+                                _.forEach(ranges, function (range) {
+                                    if (range && range.columnKey === columnKey && range.innerIdx === innerIdx) {
+                                        vtor.max = range.max;
+                                        vtor.min = range.min;
+                                        return Result.fail();
+                                    }
+                                });
+                            }
+                            var isValid = void 0;
+                            if (vtor.required && (_.isUndefined(value) || _.isEmpty(value))) {
+                                isValid = false;
+                            }
+                            else if (!_.isUndefined(value) && !_.isEmpty(value)) {
+                                if (vtor.actValid === internal.TIME) {
+                                    isValid = isTimeClock(value);
+                                    formatValue = formatTime(value);
+                                }
+                                else if (vtor.actValid === internal.DURATION) {
+                                    isValid = isTimeDuration(value, vtor.max, vtor.min);
+                                    formatValue = formatTime(value);
+                                }
+                                else if (vtor.actValid === internal.NUMBER) {
+                                    isValid = isNumber(value, vtor.max, vtor.min);
+                                    formatValue = (_.isUndefined(value) || _.isEmpty(value)) ? "" : Number(value);
+                                }
+                                else {
+                                    isValid = true;
+                                    formatValue = value;
+                                }
+                            }
+                            else {
+                                isValid = true;
+                                formatValue = "";
+                            }
+                            var $tbl = helper.closest($body, "." + NAMESPACE);
+                            if (!isValid) {
+                                errors.add($tbl, $cell, rowIdx, columnKey, innerIdx, value);
+                                //                cellData($exTable, rowIdx, columnKey, innerIdx, value);
+                                //                    update.setText($cell, innerIdx, value);
+                                return Result.fail();
+                            }
+                            if (errors.any($cell, innerIdx))
+                                errors.remove($tbl, $cell, rowIdx, columnKey, innerIdx);
+                        }
+                        return Result.ok(formatValue);
+                    }
+                    validation.validate = validate;
+                    /**
+                     * Mandate.
+                     */
+                    function mandate($grid, columnKey, innerIdx) {
+                        var visibleColumns = helper.getVisibleColumnsOn($grid);
+                        var actValid, dataType, max, min, required;
+                        _.forEach(visibleColumns, function (col) {
+                            if (col.key === columnKey) {
+                                if (!col.dataType)
+                                    return false;
+                                dataType = col.dataType.toLowerCase();
+                                actValid = which(innerIdx, dataType, internal.TIME)
+                                    || which(innerIdx, dataType, internal.DURATION)
+                                    || which(innerIdx, dataType, internal.NUMBER)
+                                    || which(innerIdx, dataType, internal.TEXT);
+                                max = col.max;
+                                min = col.min;
+                                required = col.required;
+                                return false;
+                            }
+                        });
+                        if (actValid)
+                            return {
+                                actValid: actValid,
+                                max: max,
+                                min: min,
+                                required: required
+                            };
+                    }
+                    validation.mandate = mandate;
+                    /**
+                     * Which.
+                     */
+                    function which(innerIdx, dataType, type) {
+                        var actValid;
+                        if (dataType && dataType.indexOf(type) !== -1) {
+                            if (!uk.util.isNullOrUndefined(innerIdx) && innerIdx > -1) {
+                                _.forEach(dataType.split(internal.DT_SEPARATOR), function (p, index) {
+                                    if (p === type && index === innerIdx) {
+                                        actValid = type;
+                                        return false;
+                                    }
+                                });
+                            }
+                            else {
+                                actValid = type;
+                            }
+                        }
+                        return actValid;
+                    }
+                    /**
+                     * Check time clock.
+                     */
+                    function isTimeClock(time) {
+                        if (uk.util.isNullOrUndefined(time))
+                            return false;
+                        time = time.trim();
+                        var hour, minute;
+                        if (validation.TIME_PTN.test(time)) {
+                            var parts = time.split(validation.TIME_SPLIT);
+                            hour = parseInt(parts[0]);
+                            minute = parseInt(parts[1]);
+                        }
+                        else if (validation.SHORT_TIME_PTN.test(time)) {
+                            var totalTime = parseInt(time);
+                            minute = totalTime % 100;
+                            hour = Math.floor(totalTime / 100);
+                        }
+                        if (((hour !== NaN && hour >= 0 && hour <= validation.HOUR_MAX) || hour === NaN)
+                            && minute !== NaN && minute >= 0 && minute <= validation.MINUTE_MAX)
+                            return true;
+                        return false;
+                    }
+                    validation.isTimeClock = isTimeClock;
+                    /**
+                     * Check time duration.
+                     */
+                    function isTimeDuration(time, max, min) {
+                        if (uk.util.isNullOrUndefined(time))
+                            return false;
+                        time = time.trim();
+                        var hour, minute, minMM, maxHour = validation.DEF_HOUR_MAX, minHour = validation.DEF_HOUR_MIN;
+                        var maxMM = minMM = validation.DEF_MIN_MAXMIN;
+                        var maxTime = parse(max) || { hour: validation.DEF_HOUR_MAX, minute: validation.DEF_MIN_MAXMIN };
+                        var minTime = parse(min) || { hour: validation.DEF_HOUR_MIN, minute: validation.DEF_MIN_MAXMIN };
+                        if (validation.TIME_PTN.test(time)) {
+                            var parts = time.split(validation.TIME_SPLIT);
+                            hour = parseInt(parts[0]);
+                            minute = parseInt(parts[1]);
+                        }
+                        else if (validation.SHORT_TIME_PTN.test(time)) {
+                            var totalTime = parseInt(time);
+                            minute = totalTime % 100;
+                            hour = Math.floor(totalTime / 100);
+                        }
+                        if (((uk.util.isNullOrUndefined(hour) || hour === NaN) && (uk.util.isNullOrUndefined(minute) || minute === NaN))
+                            || minute > validation.MINUTE_MAX)
+                            return false;
+                        var targetTime = { hour: hour, minute: minute };
+                        if (compare(targetTime, maxTime) > 0 || compare(targetTime, minTime) < 0)
+                            return false;
+                        return true;
+                    }
+                    validation.isTimeDuration = isTimeDuration;
+                    /**
+                     * Check number.
+                     */
+                    function isNumber(value, max, min) {
+                        if (!validation.NUMBER_PTN.test(value))
+                            return false;
+                        var int = parseInt(value);
+                        if ((!uk.util.isNullOrUndefined(max) && int > parseInt(max))
+                            || (!uk.util.isNullOrUndefined(min) && int < parseInt(min)))
+                            return false;
+                        return true;
+                    }
+                    /**
+                     * Compare.
+                     */
+                    function compare(one, other) {
+                        if (one.hour > other.hour) {
+                            return 1;
+                        }
+                        else if (one.hour < other.hour) {
+                            return -1;
+                        }
+                        else if (one.minute > other.minute) {
+                            return 1;
+                        }
+                        else if (one.minute < other.minute) {
+                            return -1;
+                        }
+                        return 0;
+                    }
+                    /**
+                     * Parse.
+                     */
+                    function parse(time) {
+                        if (validation.TIME_PTN.test(time)) {
+                            var parts = time.split(validation.TIME_SPLIT);
+                            var hour = parseInt(parts[0]);
+                            var minute = parseInt(parts[1]);
+                            return {
+                                hour: hour,
+                                minute: minute
+                            };
+                        }
+                    }
+                    /**
+                     * Format time.
+                     */
+                    function formatTime(time) {
+                        var minute, hour;
+                        if (validation.SHORT_TIME_PTN.test(time)) {
+                            var totalTime = parseInt(time);
+                            minute = totalTime % 100;
+                            hour = Math.floor(totalTime / 100);
+                        }
+                        if (!uk.util.isNullOrUndefined(hour) && hour !== NaN
+                            && !uk.util.isNullOrUndefined(minute) && minute !== NaN) {
+                            if (minute < 10)
+                                minute = "0" + minute;
+                            return hour + validation.TIME_SPLIT + minute;
+                        }
+                        if (!uk.util.isNullOrUndefined(hour) && hour === NaN
+                            && !uk.util.isNullOrUndefined(minute) && minute !== NaN) {
+                            return minute;
+                        }
+                        return time;
+                    }
+                    validation.formatTime = formatTime;
+                })(validation || (validation = {}));
+                var errors;
+                (function (errors_2) {
+                    errors_2.ERROR_CLS = "x-error";
+                    errors_2.ERRORS = "errors";
+                    /**
+                     * Add.
+                     */
+                    function add($grid, $cell, rowIdx, columnKey, innerIdx, value) {
+                        if (any($cell, innerIdx))
+                            return;
+                        var errors = $.data($grid, errors_2.ERRORS);
+                        var newErr = new selection.Cell(rowIdx, columnKey, value, innerIdx);
+                        if (!errors) {
+                            errors = [newErr];
+                            $.data($grid, errors_2.ERRORS, errors);
+                        }
+                        else {
+                            errors.push(newErr);
+                        }
+                        if (selector.is($cell, "td") && !uk.util.isNullOrUndefined(innerIdx) && innerIdx > -1) {
+                            $cell.querySelectorAll("div")[innerIdx].classList.add(errors_2.ERROR_CLS);
+                        }
+                        else {
+                            $cell.classList.add(errors_2.ERROR_CLS);
+                        }
+                    }
+                    errors_2.add = add;
+                    /**
+                     * Remove.
+                     */
+                    function remove($grid, $cell, rowIdx, columnKey, innerIdx) {
+                        var errors = $.data($grid, errors_2.ERRORS);
+                        if (!errors)
+                            return;
+                        var idx;
+                        _.forEach(errors, function (err, index) {
+                            if (helper.areSameCells(err, { rowIndex: rowIdx, columnKey: columnKey, innerIdx: innerIdx })) {
+                                idx = index;
+                                return false;
+                            }
+                        });
+                        if (!uk.util.isNullOrUndefined(idx)) {
+                            errors.splice(idx, 1);
+                            if (selector.is($cell, "td") && !uk.util.isNullOrUndefined(innerIdx) && innerIdx > -1) {
+                                $cell.querySelector("div")[innerIdx].classList.remove(errors_2.ERROR_CLS);
+                            }
+                            else {
+                                $cell.classList.remove(errors_2.ERROR_CLS);
+                            }
+                        }
+                    }
+                    errors_2.remove = remove;
+                    /**
+                     * Clear.
+                     */
+                    function clear($grid) {
+                        $.data($grid, errors_2.ERRORS, null);
+                    }
+                    errors_2.clear = clear;
+                    /**
+                     * Any.
+                     */
+                    function any($cell, innerIdx) {
+                        var $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
+                        if (!uk.util.isNullOrUndefined(innerIdx) && $childCells.length > 0) {
+                            return $childCells[innerIdx].classList.contains(errors_2.ERROR_CLS);
+                        }
+                        return $cell.classList.contains(errors_2.ERROR_CLS);
+                    }
+                    errors_2.any = any;
+                    /**
+                     * Occurred.
+                     */
+                    function occurred($grid) {
+                        var errs = $.data($grid, errors_2.ERRORS);
+                        if (!errs)
+                            return false;
+                        return errs.length > 0;
+                    }
+                    errors_2.occurred = occurred;
+                })(errors || (errors = {}));
+                var selection;
+                (function (selection) {
+                    selection.CELL_SELECTED_CLS = "x-cell-selected";
+                    selection.ROW_SELECTED_CLS = "x-row-selected";
+                    var Cell = (function () {
+                        function Cell(rowIdx, columnKey, value, innerIdx) {
+                            this.rowIndex = rowIdx;
+                            this.columnKey = columnKey;
+                            this.value = value;
+                            this.innerIdx = innerIdx;
+                        }
+                        return Cell;
+                    }());
+                    selection.Cell = Cell;
+                    /**
+                     * Check up.
+                     */
+                    function checkUp($exTable) {
+                        if ($.data($exTable, NAMESPACE).updateMode !== COPY_PASTE)
+                            return;
+                        var $detailContent = $exTable.querySelector("." + BODY_PRF + DETAIL);
+                        var isSelecting;
+                        $detailContent.onselectstart = function () {
+                            return false;
+                        };
+                        $detailContent.addXEventListener(events.MOUSE_DOWN, function (evt) {
+                            var $target = evt.target;
+                            isSelecting = true;
+                            if (!selector.is($target, "." + render.CHILD_CELL_CLS) && !selector.is($target, "td"))
+                                return;
+                            if (evt.shiftKey) {
+                                selectRange($detailContent, $target);
+                                return;
+                            }
+                            if (!evt.ctrlKey) {
+                                clearAll($detailContent);
+                            }
+                            selectCell($detailContent, $target);
+                        });
+                        $detailContent.addXEventListener(events.MOUSE_UP, function (evt) {
+                            isSelecting = false;
+                        });
+                        $detailContent.addXEventListener(events.MOUSE_MOVE, function (evt) {
+                            if (isSelecting) {
+                                selectRange($detailContent, $(evt.target));
+                            }
+                        });
+                    }
+                    selection.checkUp = checkUp;
+                    /**
+                     * Select range.
+                     */
+                    function selectRange($grid, $cell) {
+                        if (uk.util.isNullOrUndefined($cell))
+                            return;
+                        var lastSelected = $.data($grid, internal.LAST_SELECTED);
+                        if (!lastSelected) {
+                            selectCell($grid, $cell);
+                            return;
+                        }
+                        clearAll($grid);
+                        var toCoord = helper.getCellCoord($cell);
+                        var minRowIdx = Math.min(lastSelected.rowIdx, toCoord.rowIdx);
+                        var maxRowIdx = Math.max(lastSelected.rowIdx, toCoord.rowIdx);
+                        for (var i = minRowIdx; i < maxRowIdx + 1; i++) {
+                            cellInRange($grid, i, lastSelected.columnKey, toCoord.columnKey);
+                        }
+                    }
+                    /**
+                     * Mark cell.
+                     */
+                    function markCell($cell) {
+                        if (selector.is($cell, "." + render.CHILD_CELL_CLS)) {
+                            $cell.classList.add(selection.CELL_SELECTED_CLS);
+                            selector.classSiblings($cell, render.CHILD_CELL_CLS).forEach(function (e) {
+                                e.classList.add(selection.CELL_SELECTED_CLS);
+                            });
+                            return true;
+                        }
+                        else if (selector.is($cell, "td")) {
+                            var childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
+                            if (childCells.length > 0) {
+                                helper.addClass(childCells, selection.CELL_SELECTED_CLS);
+                            }
+                            else {
+                                $cell.classList.add(selection.CELL_SELECTED_CLS);
+                            }
+                            return true;
+                        }
+                        return false;
+                    }
+                    selection.markCell = markCell;
+                    /**
+                     * Select cell.
+                     */
+                    function selectCell($grid, $cell, notLast) {
+                        if (!markCell($cell))
+                            return;
+                        var coord = helper.getCellCoord($cell);
+                        addSelect($grid, coord.rowIdx, coord.columnKey, notLast);
+                        tickRows(selector.classSiblings($grid, BODY_PRF + LEFTMOST), false);
+                    }
+                    selection.selectCell = selectCell;
+                    /**
+                     * Add select.
+                     */
+                    function addSelect($grid, rowIdx, columnKey, notLast) {
+                        var selectedCells = $.data($grid, internal.SELECTED_CELLS);
+                        if (!notLast)
+                            $.data($grid, internal.LAST_SELECTED, { rowIdx: rowIdx, columnKey: columnKey });
+                        if (!selectedCells) {
+                            selectedCells = {};
+                            selectedCells[rowIdx] = [columnKey];
+                            $.data($grid, internal.SELECTED_CELLS, selectedCells);
+                            return;
+                        }
+                        if (!selectedCells[rowIdx]) {
+                            selectedCells[rowIdx] = [columnKey];
+                            return;
+                        }
+                        if (_.find(selectedCells[rowIdx], function (key) {
+                            return key === columnKey;
+                        }) === undefined) {
+                            selectedCells[rowIdx].push(columnKey);
+                        }
+                    }
+                    selection.addSelect = addSelect;
+                    /**
+                     * Clear.
+                     */
+                    function clear($grid, rowIdx, columnKey) {
+                        var selectedCells = $.data($grid, internal.SELECTED_CELLS);
+                        if (!selectedCells)
+                            return;
+                        var row = selectedCells[rowIdx];
+                        if (!row || row.length === 0)
+                            return;
+                        var colIdx;
+                        _.forEach(row, function (key, index) {
+                            if (key === columnKey) {
+                                colIdx = index;
+                                return false;
+                            }
+                        });
+                        if (uk.util.isNullOrUndefined(colIdx))
+                            return;
+                        row.splice(colIdx, 1);
+                        var selectedCell = cellAt($grid, rowIdx, columnKey);
+                        if (selectedCell === intan.NULL)
+                            return;
+                        if (selectedCell) {
+                            var $childCells = selectedCell.querySelectorAll("." + render.CHILD_CELL_CLS);
+                            if ($childCells.length > 0) {
+                                helper.removeClass($childCells, selection.CELL_SELECTED_CLS);
+                            }
+                            else {
+                                helper.removeClass(selectedCell, selection.CELL_SELECTED_CLS);
+                            }
+                        }
+                    }
+                    selection.clear = clear;
+                    /**
+                     * Clear all.
+                     */
+                    function clearAll($grid) {
+                        var selectedCells = $.data($grid, internal.SELECTED_CELLS);
+                        if (!selectedCells)
+                            return;
+                        _.forEach(Object.keys(selectedCells), function (rowIdx, index) {
+                            if (!rowExists($grid, rowIdx))
+                                return;
+                            _.forEach(selectedCells[rowIdx], function (col, i) {
+                                var $cell = cellAt($grid, rowIdx, col);
+                                if ($cell) {
+                                    var childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
+                                    if (childCells.length > 0) {
+                                        helper.removeClass(childCells, selection.CELL_SELECTED_CLS);
+                                    }
+                                    else {
+                                        helper.removeClass($cell, selection.CELL_SELECTED_CLS);
+                                    }
+                                }
+                            });
+                        });
+                        $.data($grid, internal.SELECTED_CELLS, null);
+                    }
+                    selection.clearAll = clearAll;
+                    /**
+                     * Cell at.
+                     */
+                    function cellAt($grid, rowIdx, columnKey) {
+                        var $row = rowAt($grid, rowIdx);
+                        return getCellInRow($grid, $row, columnKey);
+                    }
+                    selection.cellAt = cellAt;
+                    /**
+                     * Row at.
+                     */
+                    function rowAt($grid, rowIdx) {
+                        var virt = $.data($grid, internal.TANGI);
+                        var rows = $grid.getElementsByTagName("tr");
+                        var idx;
+                        if (!virt) {
+                            idx = (parseInt(rowIdx) + 1);
+                            if (!rows || rows.length <= idx)
+                                return intan.NULL;
+                            return rows[idx];
+                        }
+                        if (virt.startIndex > rowIdx || virt.endIndex < rowIdx)
+                            return intan.NULL;
+                        idx = (parseInt(rowIdx) - virt.startIndex + 1);
+                        return rows[idx];
+                    }
+                    selection.rowAt = rowAt;
+                    /**
+                     * Cell of.
+                     */
+                    function cellOf($grid, rowId, columnKey) {
+                        var $row = rowOf($grid, rowId);
+                        return getCellInRow($grid, $row, columnKey);
+                    }
+                    selection.cellOf = cellOf;
+                    /**
+                     * Row of.
+                     */
+                    function rowOf($grid, rowId) {
+                        var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        if (!gen)
+                            return;
+                        var start = gen.startIndex || 0;
+                        var end = gen.endIndex || gen.dataSource.length - 1;
+                        for (var i = start; i <= end; i++) {
+                            if (gen.dataSource[i][gen.primaryKey] === rowId) {
+                                return rowAt($grid, i);
+                            }
+                        }
+                    }
+                    selection.rowOf = rowOf;
+                    /**
+                     * Row exists.
+                     */
+                    function rowExists($grid, rowIdx) {
+                        var virt = $.data($grid, internal.TANGI);
+                        if (virt && (virt.startIndex > rowIdx || virt.endIndex < rowIdx))
+                            return false;
+                        return true;
+                    }
+                    selection.rowExists = rowExists;
+                    /**
+                     * Cell in range.
+                     */
+                    function cellInRange($grid, rowIdx, startKey, endKey) {
+                        var range = [];
+                        var $row = rowAt($grid, rowIdx);
+                        if ($row === intan.NULL)
+                            return;
+                        var colRange = columnIndexRange($grid, startKey, endKey);
+                        if (colRange.start === -1 || colRange.end === -1)
+                            return;
+                        var min = Math.min(colRange.start, colRange.end);
+                        var max = Math.max(colRange.start, colRange.end);
+                        var $td = selector.queryAll($row, "td").filter(function (e) {
+                            return e.style.display !== "none";
+                        }).forEach(function (e, index) {
+                            if (index >= min && index <= max) {
+                                var childCells = e.querySelectorAll("." + render.CHILD_CELL_CLS);
+                                if (childCells.length > 0) {
+                                    helper.addClass(childCells, selection.CELL_SELECTED_CLS);
+                                }
+                                else {
+                                    helper.addClass(e, selection.CELL_SELECTED_CLS);
+                                }
+                                addSelect($grid, rowIdx, colRange.columns[index].key, true);
+                                range.push($(this));
+                            }
+                            else if (index > max)
+                                return false;
+                        });
+                        return range;
+                    }
+                    selection.cellInRange = cellInRange;
+                    /**
+                     * Get cell in row.
+                     */
+                    function getCellInRow($grid, $row, columnKey) {
+                        if ($row === intan.NULL || !$row)
+                            return intan.NULL;
+                        var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        var visibleColumns = gen.painter.visibleColumns;
+                        var columnIdx;
+                        _.forEach(visibleColumns, function (c, idx) {
+                            if (c.key === columnKey) {
+                                columnIdx = idx;
+                                return false;
+                            }
+                        });
+                        if (uk.util.isNullOrUndefined(columnIdx))
+                            return intan.NULL;
+                        var cells = Array.prototype.slice.call($row.getElementsByTagName("td")).filter(function (c) {
+                            return c.style.display !== "none";
+                        });
+                        return cells[columnIdx];
+                    }
+                    selection.getCellInRow = getCellInRow;
+                    /**
+                     * Column index range.
+                     */
+                    function columnIndexRange($grid, startKey, endKey) {
+                        var cloud = $.data($grid, internal.TANGI);
+                        var canon = $.data($grid, internal.CANON);
+                        var visibleColumns;
+                        if (!uk.util.isNullOrUndefined(cloud)) {
+                            visibleColumns = cloud.painter.visibleColumns;
+                        }
+                        else {
+                            visibleColumns = canon.painter.visibleColumns;
+                        }
+                        var startColumnIdx = -1, endColumnIdx = -1;
+                        _.forEach(visibleColumns, function (c, idx) {
+                            if (c.key === startKey) {
+                                startColumnIdx = idx;
+                            }
+                            if (c.key === endKey) {
+                                endColumnIdx = idx;
+                            }
+                            if (startColumnIdx !== -1 && endColumnIdx !== -1)
+                                return false;
+                        });
+                        return {
+                            start: startColumnIdx,
+                            end: endColumnIdx,
+                            columns: visibleColumns
+                        };
+                    }
+                    selection.columnIndexRange = columnIndexRange;
+                    /**
+                     * Get selected cells.
+                     */
+                    function getSelectedCells($grid) {
+                        var selectedCells = $.data($grid, internal.SELECTED_CELLS);
+                        var generator = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        var dataSource = generator.dataSource;
+                        var cells = [];
+                        _.forEach(Object.keys(selectedCells), function (rowIdx) {
+                            _.forEach(selectedCells[rowIdx], function (colKey) {
+                                cells.push(new Cell(rowIdx, colKey, dataSource[rowIdx][colKey]));
+                            });
+                        });
+                        return cells;
+                    }
+                    selection.getSelectedCells = getSelectedCells;
+                    /**
+                     * Off.
+                     */
+                    function off($exTable) {
+                        if ($.data($exTable, NAMESPACE).updateMode === COPY_PASTE)
+                            return;
+                        var $detailContent = $exTable.querySelector("." + BODY_PRF + DETAIL);
+                        $detailContent.onselectstart = function () {
+                            return true;
+                        };
+                        $detailContent.removeXEventListener(events.MOUSE_DOWN);
+                        $detailContent.removeXEventListener(events.MOUSE_UP);
+                        $detailContent.removeXEventListener(events.MOUSE_MOVE);
+                    }
+                    selection.off = off;
+                    /**
+                     * Focus.
+                     */
+                    function focus($grid) {
+                        $grid.focus();
+                    }
+                    selection.focus = focus;
+                    /**
+                     * Focus latest.
+                     */
+                    function focusLatest($grid) {
+                        var latest = $.data($grid, internal.LAST_SELECTED);
+                        if (!latest)
+                            return;
+                        var $cell = selection.cellAt($grid, latest.rowIdx, latest.columnKey);
+                        if ($cell === intan.NULL)
+                            return;
+                        $cell.focus();
+                    }
+                    selection.focusLatest = focusLatest;
+                    /**
+                     * Select row.
+                     */
+                    function selectRow($grid, rowIndex) {
+                        var $row = selection.rowAt($grid, rowIndex);
+                        if ($row !== intan.NULL && !$row.classList.contains(NAMESPACE + "-" + intan.BOTTOM_SPACE)) {
+                            helper.addClass($row, selection.ROW_SELECTED_CLS);
+                        }
+                        setTimeout(function () {
+                            $row = selection.rowAt(helper.classSiblings($grid, BODY_PRF).filter(function (e) {
+                                return !e.classList.contains(BODY_PRF + HORIZONTAL_SUM) && !e.classList.contains(BODY_PRF + LEFT_HORZ_SUM);
+                            }), rowIndex);
+                            if ($row !== intan.NULL && !$row.classList.contains(NAMESPACE + "-" + intan.BOTTOM_SPACE)) {
+                                helper.addClass($row, selection.ROW_SELECTED_CLS);
+                            }
+                        }, 60);
+                        var selectedRows = $.data($grid, internal.SELECTED_ROWS);
+                        if (!selectedRows) {
+                            selectedRows = {};
+                            selectedRows.items = [];
+                            selectedRows.items[rowIndex] = true;
+                            selectedRows.count = (selectedRows.count || 0) + 1;
+                            $.data($grid, internal.SELECTED_ROWS, selectedRows);
+                            return;
+                        }
+                        if (!selectedRows.items) {
+                            selectedRows.items = [];
+                            selectedRows.items[rowIndex] = true;
+                            selectedRows.count = (selectedRows.count || 0) + 1;
+                            return;
+                        }
+                        if (!selectedRows.items[rowIndex]) {
+                            selectedRows.items[rowIndex] = true;
+                            selectedRows.count = (selectedRows.count || 0) + 1;
+                        }
+                    }
+                    selection.selectRow = selectRow;
+                    /**
+                     * Deselect row.
+                     */
+                    function deselectRow($grid, rowIndex) {
+                        selection.rowAt($grid, rowIndex).classList.remove(selection.ROW_SELECTED_CLS);
+                        var bodies = selection.rowAt(helper.classSiblings($grid, BODY_PRF).filter(function (e) {
+                            return !e.classList.contains(BODY_PRF + HORIZONTAL_SUM) && !e.classList.contains(BODY_PRF + LEFT_HORZ_SUM);
+                        }), rowIndex);
+                        helper.removeClass(bodies, selection.ROW_SELECTED_CLS);
+                        var selectedRows = $.data($grid, internal.SELECTED_ROWS);
+                        if (!selectedRows || !selectedRows.items || selectedRows.items.length === 0)
+                            return;
+                        selectedRows.items[rowIndex] = false;
+                        selectedRows.count--;
+                    }
+                    selection.deselectRow = deselectRow;
+                    /**
+                     * Tick rows.
+                     */
+                    function tickRows($grid, flag, limit) {
+                        var selectedRows = $.data($grid, internal.SELECTED_ROWS);
+                        if (!selectedRows || !selectedRows.items || selectedRows.items.length === 0)
+                            return;
+                        var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        var start = limit ? gen.startIndex : 0;
+                        var end = limit ? gen.endIndex : selectedRows.items.length - 1;
+                        for (var i = start; i <= end; i++) {
+                            if (selectedRows.items[i]) {
+                                controls.tick(flag, $grid, false, i);
+                            }
+                        }
+                    }
+                    selection.tickRows = tickRows;
+                })(selection || (selection = {}));
+                var resize;
+                (function (resize) {
+                    resize.AGENCY = "ex-agency";
+                    resize.LINE = "ex-line";
+                    resize.RESIZE_COL = "resize-column";
+                    resize.AREA_AGENCY = "ex-area-agency";
+                    resize.RESIZE_AREA = "resize-area";
+                    resize.AREA_LINE = "ex-area-line";
+                    resize.STAY_CLS = "x-stay";
+                    var ColumnAdjuster = (function () {
+                        function ColumnAdjuster($headerTable, $contentTable, options) {
+                            this.$headerTable = $headerTable;
+                            this.$contentTable = $contentTable;
+                            this.$ownerDoc = $headerTable.ownerDocument;
+                            this.standardCells = [];
+                        }
+                        /**
+                         * Handle.
+                         */
+                        ColumnAdjuster.prototype.handle = function () {
+                            var self = this;
+                            self.$agency = document.createElement("div");
+                            self.$agency.className = resize.AGENCY;
+                            self.$agency.style.position = "relative";
+                            self.$agency.style.width = self.$headerTable.offsetWidth;
+                            self.$headerTable.insertAdjacentElement("beforebegin", self.$agency);
+                            self.$colGroup = self.$headerTable.querySelectorAll("colgroup > col");
+                            var trList = self.$headerTable.querySelectorAll("tbody > tr");
+                            var targetColumnIdx = 0;
+                            _.forEach(trList, function (tr) {
+                                var tdList = tr.querySelectorAll("td");
+                                for (var i = 0; i < tdList.length; i++) {
+                                    if (self.standardCells.length >= self.$colGroup.length)
+                                        return false;
+                                    var $td = tdList[i];
+                                    var colspan = $td.getAttribute("colspan");
+                                    if (!uk.util.isNullOrUndefined(colspan) && parseInt(colspan) > 1)
+                                        continue;
+                                    self.standardCells.push($td);
+                                    var $targetCol = self.$colGroup[targetColumnIdx];
+                                    var $line = document.createElement("div");
+                                    $line.className = resize.LINE;
+                                    $.data($line, resize.RESIZE_COL, $targetCol);
+                                    $line.style.position = "absolute";
+                                    $line.style.cursor = "ew-resize";
+                                    $line.style.width = "4px";
+                                    $line.style.zIndex = 2,
+                                        $line.style.marginLeft = "-3px";
+                                    self.$agency.appendChild($line);
+                                    // Line positions
+                                    var height = self.$headerTable.style.height;
+                                    var left = $td.offsetWidth + (selector.offset($td).left - selector.offset(self.$agency).left);
+                                    $line.style.left = left + "px";
+                                    $line.style.height = height;
+                                    targetColumnIdx++;
+                                }
+                            });
+                            self.$agency.addXEventListener(events.MOUSE_DOWN, self.cursorDown.bind(self));
+                        };
+                        /**
+                         * Cursor down.
+                         */
+                        ColumnAdjuster.prototype.cursorDown = function (event) {
+                            var self = this;
+                            if (self.actionDetails) {
+                                self.cursorUp(event);
+                            }
+                            var $targetGrip = event.target;
+                            var gripIndex = selector.index($targetGrip);
+                            var $leftCol = $.data($targetGrip, resize.RESIZE_COL);
+                            var $rightCol = self.$colGroup[gripIndex + 1];
+                            var leftWidth = $leftCol.style.width;
+                            var rightWidth = $rightCol.style.width;
+                            self.actionDetails = {
+                                $targetGrip: $targetGrip,
+                                gripIndex: gripIndex,
+                                $leftCol: $leftCol,
+                                $rightCol: $rightCol,
+                                xCoord: getCursorX(event),
+                                widths: {
+                                    left: parseFloat(leftWidth),
+                                    right: parseFloat(rightWidth)
+                                },
+                                changedWidths: {
+                                    left: parseFloat(leftWidth),
+                                    right: parseFloat(rightWidth)
+                                }
+                            };
+                            self.$ownerDoc.addXEventListener(events.MOUSE_MOVE, self.cursorMove.bind(self));
+                            self.$ownerDoc.addXEventListener(events.MOUSE_UP, self.cursorUp.bind(self));
+                            event.preventDefault();
+                        };
+                        /**
+                         * Cursor move.
+                         */
+                        ColumnAdjuster.prototype.cursorMove = function (event) {
+                            var self = this;
+                            if (!self.actionDetails)
+                                return;
+                            var distance = getCursorX(event) - self.actionDetails.xCoord;
+                            if (distance === 0)
+                                return;
+                            var leftWidth, rightWidth;
+                            if (distance > 0) {
+                                leftWidth = self.actionDetails.widths.left + distance;
+                                rightWidth = self.actionDetails.widths.right - distance;
+                            }
+                            else {
+                                leftWidth = self.actionDetails.widths.left + distance;
+                                rightWidth = self.actionDetails.widths.right - distance;
+                            }
+                            if (leftWidth <= 20 || rightWidth <= 20)
+                                return;
+                            self.actionDetails.changedWidths.left = leftWidth;
+                            self.actionDetails.changedWidths.right = rightWidth;
+                            if (self.actionDetails.$leftCol) {
+                                self.setWidth(self.actionDetails.$leftCol, leftWidth);
+                                var $contentLeftCol = self.$contentTable.querySelectorAll("colgroup > col")[self.actionDetails.gripIndex];
+                                self.setWidth($contentLeftCol, leftWidth);
+                            }
+                            if (self.actionDetails.$rightCol) {
+                                self.setWidth(self.actionDetails.$rightCol, rightWidth);
+                                var $contentRightCol = self.$contentTable.querySelectorAll("colgroup > col")[self.actionDetails.gripIndex + 1];
+                                self.setWidth($contentRightCol, rightWidth);
+                            }
+                        };
+                        /**
+                         * Cursor up.
+                         */
+                        ColumnAdjuster.prototype.cursorUp = function (event) {
+                            var self = this;
+                            self.$ownerDoc.removeXEventListener(events.MOUSE_MOVE);
+                            self.$ownerDoc.removeXEventListener(events.MOUSE_UP);
+                            self.syncLines();
+                            self.actionDetails = null;
+                        };
+                        /**
+                         * Set width.
+                         */
+                        ColumnAdjuster.prototype.setWidth = function ($col, width) {
+                            $col.style.width = parseFloat(width) + "px";
+                        };
+                        /**
+                         * Sync lines.
+                         */
+                        ColumnAdjuster.prototype.syncLines = function () {
+                            var self = this;
+                            self.$agency.style.width = self.$headerTable.style.width;
+                            _.forEach(self.standardCells, function ($td, index) {
+                                var height = self.$headerTable.style.height;
+                                var left = $td.offsetWidth + (selector.offset($td).left - selector.offset(self.$agency).left);
+                                var div = self.$agency.querySelectorAll("div")[index];
+                                div.style.left = left + "px";
+                                div.style.height = height;
+                            });
+                        };
+                        return ColumnAdjuster;
+                    }());
+                    resize.ColumnAdjuster = ColumnAdjuster;
+                    var AreaAdjuster = (function () {
+                        function AreaAdjuster($container, headerWrappers, bodyWrappers, $follower) {
+                            this.$container = $container;
+                            this.headerWrappers = headerWrappers;
+                            this.bodyWrappers = bodyWrappers;
+                            this.$ownerDoc = $container.ownerDocument;
+                            this.$leftHorzSumHeader = this.$container.querySelector("." + HEADER_PRF + LEFT_HORZ_SUM);
+                            this.$leftHorzSumContent = this.$container.querySelector("." + BODY_PRF + LEFT_HORZ_SUM);
+                            this.$horzSumHeader = this.$container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM);
+                            this.$horzSumContent = this.$container.querySelector("." + BODY_PRF + HORIZONTAL_SUM);
+                            if ($follower) {
+                                this.$depLeftmostHeader = $follower.querySelector("." + HEADER_PRF + LEFTMOST);
+                                this.$depLeftmostBody = $follower.querySelector("." + BODY_PRF + LEFTMOST);
+                                this.$depDetailHeader = $follower.querySelector("." + HEADER_PRF + DETAIL);
+                                this.$depDetailBody = $follower.querySelector("." + BODY_PRF + DETAIL);
+                            }
+                        }
+                        /**
+                         * Handle.
+                         */
+                        AreaAdjuster.prototype.handle = function () {
+                            var self = this;
+                            self.$areaAgency = document.createElement("div");
+                            self.$areaAgency.className = resize.AREA_AGENCY;
+                            self.$areaAgency.style.position = "relative";
+                            self.$areaAgency.style.width = self.$container.style.width;
+                            self.headerWrappers[0].insertAdjacentElement("beforebegin", self.$areaAgency);
+                            _.forEach(self.headerWrappers, function ($wrapper, index) {
+                                if (index === self.headerWrappers.length - 1)
+                                    return;
+                                var $line = document.createElement("div");
+                                $line.className = resize.AREA_LINE;
+                                $.data($line, resize.RESIZE_AREA, $wrapper);
+                                $line.style.position = "absolute";
+                                $line.style.cursor = "ew-resize";
+                                $line.style.width = "4px";
+                                $line.style.zIndex = 2;
+                                $line.style.marginLeft = "0px";
+                                self.$areaAgency.appendChild($line);
+                                // Line positions
+                                var height = parseFloat($wrapper.style.height) + parseFloat(self.bodyWrappers[index].style.height);
+                                var left = $wrapper.offsetWidth + (selector.offset($wrapper).left - selector.offset(self.$areaAgency).left);
+                                $line.style.left = left + "px";
+                                $line.style.height = height + "px";
+                                if ($wrapper.classList.contains(HEADER_PRF + LEFTMOST)
+                                    && self.headerWrappers[index + 1].classList.contains(HEADER_PRF + MIDDLE))
+                                    helper.addClass($line, resize.STAY_CLS);
+                            });
+                            self.$areaAgency.addXEventListener(events.MOUSE_DOWN, self.cursorDown.bind(self));
+                        };
+                        /**
+                         * Cursor down.
+                         */
+                        AreaAdjuster.prototype.cursorDown = function (event) {
+                            var self = this;
+                            if (self.actionDetails) {
+                                self.cursorUp(event);
+                            }
+                            var $targetGrip = event.target;
+                            if ($targetGrip.classList.contains(resize.STAY_CLS))
+                                return;
+                            var gripIndex = selector.index($targetGrip);
+                            var $leftArea = $.data($targetGrip, resize.RESIZE_AREA);
+                            var $rightArea = self.headerWrappers[gripIndex + 1];
+                            var leftWidth = $leftArea.style.width;
+                            var rightWidth = !uk.util.isNullOrUndefined($rightArea) ? $rightArea.style.width : 0;
+                            var leftHorzSumWidth = self.$leftHorzSumHeader.style.width;
+                            self.actionDetails = {
+                                $targetGrip: $targetGrip,
+                                gripIndex: gripIndex,
+                                $leftArea: $leftArea,
+                                $rightArea: $rightArea,
+                                xCoord: getCursorX(event),
+                                rightAreaPosLeft: $rightArea ? $rightArea.style.left : 0,
+                                widths: {
+                                    left: parseFloat(leftWidth),
+                                    right: parseFloat(rightWidth),
+                                    leftHorzSum: parseFloat(leftHorzSumWidth)
+                                },
+                                changedWidths: {
+                                    left: parseFloat(leftWidth),
+                                    right: parseFloat(rightWidth),
+                                    leftHorzSum: parseFloat(leftHorzSumWidth)
+                                }
+                            };
+                            self.$ownerDoc.addXEventListener(events.MOUSE_MOVE, self.cursorMove.bind(self));
+                            self.$ownerDoc.addXEventListener(events.MOUSE_UP, self.cursorUp.bind(self));
+                            events.trigger(self.$container, events.AREA_RESIZE_STARTED, [$leftArea, $rightArea, leftWidth, rightWidth]);
+                            event.preventDefault();
+                        };
+                        /**
+                         * Cursor move.
+                         */
+                        AreaAdjuster.prototype.cursorMove = function (event) {
+                            var self = this;
+                            if (!self.actionDetails)
+                                return;
+                            var distance = getCursorX(event) - self.actionDetails.xCoord;
+                            if (distance === 0)
+                                return;
+                            var $bodyLeftArea, $bodyRightArea, leftWidth, rightWidth;
+                            // TODO: Use if here because there may be changes later.
+                            if (distance > 0) {
+                                leftWidth = self.actionDetails.widths.left + distance;
+                                rightWidth = self.actionDetails.widths.right - distance;
+                            }
+                            else {
+                                leftWidth = self.actionDetails.widths.left + distance;
+                                rightWidth = self.actionDetails.widths.right - distance;
+                            }
+                            if (!self.isResizePermit(leftWidth, rightWidth))
+                                return;
+                            self.actionDetails.changedWidths.left = leftWidth;
+                            self.actionDetails.changedWidths.right = rightWidth;
+                            if (self.actionDetails.$leftArea) {
+                                self.setWidth(self.actionDetails.$leftArea, leftWidth);
+                                $bodyLeftArea = self.bodyWrappers[self.actionDetails.gripIndex];
+                                if (self.actionDetails.gripIndex === self.bodyWrappers.length - 1) {
+                                    self.setWidth($bodyLeftArea, leftWidth + helper.getScrollWidth());
+                                }
+                                else {
+                                    self.setWidth($bodyLeftArea, leftWidth);
+                                }
+                            }
+                            var newPosLeft;
+                            if (self.actionDetails.$rightArea) {
+                                self.setWidth(self.actionDetails.$rightArea, rightWidth);
+                                newPosLeft = (parseInt(self.actionDetails.rightAreaPosLeft) + distance) + "px";
+                                self.actionDetails.$rightArea.style.left = newPosLeft;
+                                $bodyRightArea = self.bodyWrappers[self.actionDetails.gripIndex + 1];
+                                if (self.actionDetails.gripIndex === self.bodyWrappers.length - 2) {
+                                    self.setWidth($bodyRightArea, rightWidth + helper.getScrollWidth());
+                                }
+                                else {
+                                    self.setWidth($bodyRightArea, rightWidth);
+                                }
+                                $bodyRightArea.style.left = newPosLeft;
+                            }
+                            self.reflectSumTblsSize(distance, leftWidth, rightWidth, newPosLeft);
+                            events.trigger(self.$container, events.AREA_RESIZE, [self.actionDetails.$leftArea, self.actionDetails.$rightArea, leftWidth, rightWidth]);
+                        };
+                        /**
+                         * Reflect size.
+                         */
+                        AreaAdjuster.prototype.reflectSumTblsSize = function (diff, leftWidth, rightWidth, posLeft) {
+                            var self = this;
+                            var $leftArea = self.actionDetails.$leftArea;
+                            var $rightArea = self.actionDetails.$rightArea;
+                            var scrollWidth = helper.getScrollWidth();
+                            if ($rightArea && $rightArea.classList.contains(HEADER_PRF + DETAIL)) {
+                                var horzLeftWidth = self.actionDetails.widths.leftHorzSum + diff;
+                                self.setWidth(self.$leftHorzSumHeader, horzLeftWidth);
+                                self.setWidth(self.$leftHorzSumContent, horzLeftWidth);
+                                self.setWidth(self.$horzSumHeader, rightWidth);
+                                self.setWidth(self.$horzSumContent, rightWidth + scrollWidth);
+                                self.$horzSumHeader.style.left = posLeft;
+                                self.$horzSumContent.style.left = posLeft;
+                                if (self.$depLeftmostHeader) {
+                                    self.setWidth(self.$depLeftmostHeader, horzLeftWidth);
+                                    self.setWidth(self.$depLeftmostBody, horzLeftWidth);
+                                    self.setWidth(self.$depDetailHeader, rightWidth);
+                                    self.setWidth(self.$depDetailBody, rightWidth + scrollWidth);
+                                    self.$depDetailHeader.style.left = posLeft;
+                                    self.$depDetailBody.style.left = posLeft;
+                                }
+                            }
+                            else if ($leftArea && $leftArea.classList.contains(HEADER_PRF + DETAIL)) {
+                                self.setWidth(self.$horzSumHeader, leftWidth);
+                                self.setWidth(self.$horzSumContent, leftWidth + scrollWidth);
+                                if (self.$depDetailHeader) {
+                                    self.setWidth(self.$depDetailHeader, leftWidth);
+                                    self.setWidth(self.$depDetailBody, leftWidth + scrollWidth);
+                                }
+                            }
+                        };
+                        /**
+                         * Check resize permit.
+                         */
+                        AreaAdjuster.prototype.isResizePermit = function (leftWidth, rightWidth) {
+                            var self = this;
+                            var leftAreaMaxWidth = 0, rightAreaMaxWidth = 0;
+                            if (leftWidth <= 20 || (self.actionDetails.widths.right > 0 && rightWidth <= 20))
+                                return false;
+                            if (self.actionDetails.$leftArea) {
+                                var leftAreaColGroup = self.actionDetails.$leftArea.querySelectorAll("table > colgroup > col");
+                                var size = leftAreaColGroup.length;
+                                for (var i = 0; i < size; i++) {
+                                    leftAreaMaxWidth += (parseFloat(leftAreaColGroup[i].style.width) + 1);
+                                }
+                                if (leftWidth >= leftAreaMaxWidth)
+                                    return false;
+                            }
+                            if (self.actionDetails.$rightArea) {
+                                var rightAreaColGroup = self.actionDetails.$rightArea.querySelectorAll("table > colgroup > col");
+                                var size = rightAreaColGroup.length;
+                                for (var i = 0; i < size; i++) {
+                                    rightAreaMaxWidth += (parseFloat(rightAreaColGroup[i].style.width) + 1);
+                                }
+                                if (rightWidth >= rightAreaMaxWidth)
+                                    return false;
+                            }
+                            return true;
+                        };
+                        /**
+                         * Cursor up.
+                         */
+                        AreaAdjuster.prototype.cursorUp = function (event) {
+                            var self = this;
+                            if (!self.actionDetails)
+                                return;
+                            self.$ownerDoc.removeXEventListener(events.MOUSE_MOVE);
+                            self.$ownerDoc.removeXEventListener(events.MOUSE_UP);
+                            self.syncLines();
+                            events.trigger(self.$container, events.AREA_RESIZE_END, [self.actionDetails.$leftArea, self.actionDetails.$rightArea,
+                                self.actionDetails.changedWidths.left, self.actionDetails.changedWidths.right]);
+                            self.actionDetails = null;
+                        };
+                        /**
+                         * Set width.
+                         */
+                        AreaAdjuster.prototype.setWidth = function ($wrapper, width) {
+                            $wrapper.style.width = parseFloat(width) + "px";
+                        };
+                        /**
+                         * Sync lines.
+                         */
+                        AreaAdjuster.prototype.syncLines = function () {
+                            var self = this;
+                            self.$areaAgency.style.width = self.$container.style.width;
+                            _.forEach(self.headerWrappers, function ($wrapper, index) {
+                                var height = parseFloat($wrapper.style.height) + parseFloat(self.bodyWrappers[index].style.height);
+                                var left = $wrapper.offsetWidth + (selector.offset($wrapper).left - selector.offset(self.$areaAgency).left);
+                                var div = self.$areaAgency.querySelectorAll("div")[index];
+                                if (!div)
+                                    return false;
+                                div.style.left = left + "px";
+                                div.style.height = height + "px";
+                            });
+                        };
+                        return AreaAdjuster;
+                    }());
+                    resize.AreaAdjuster = AreaAdjuster;
+                    /**
+                     * Get cursorX.
+                     */
+                    function getCursorX(event) {
+                        return event.pageX;
+                    }
+                    /**
+                     * Line styles.
+                     */
+                    function lineStyles(marginLeft) {
+                        return { position: "absolute", cursor: "ew-resize", width: "4px", zIndex: 2, marginLeft: marginLeft };
+                    }
+                    /**
+                     * Fit window height.
+                     */
+                    function fitWindowHeight($container, wrappers, horzSumExists) {
+                        var height = window.innerHeight - parseInt($.data($container, internal.Y_OCCUPY)) - 100;
+                        var $horzSumHeader, $horzSumBody, decreaseAmt;
+                        wrappers = wrappers || selector.queryAll($container, "div[class*='" + BODY_PRF + "']").filter(function (e) {
+                            return !e.classList.contains(BODY_PRF + HORIZONTAL_SUM) && !e.classList.contains(BODY_PRF + LEFT_HORZ_SUM);
+                        });
+                        if (horzSumExists) {
+                            $horzSumHeader = $container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM);
+                            $horzSumBody = $container.querySelector("." + BODY_PRF + HORIZONTAL_SUM);
+                            decreaseAmt = parseFloat($horzSumHeader.style.height) + parseFloat($horzSumBody.style.height) + DISTANCE + SPACE;
+                            height -= decreaseAmt;
+                        }
+                        _.forEach(wrappers, function ($wrapper) {
+                            if (($wrapper.style.overflowX && $wrapper.style.overflowX === "scroll")
+                                || ($wrapper.style.overflow && $wrapper.style.overflow === "scroll")) {
+                                $wrapper.style.height = height + "px";
+                            }
+                            else {
+                                $wrapper.style.height = (height - helper.getScrollWidth()) + "px";
+                            }
+                        });
+                        if (horzSumExists) {
+                            repositionHorzSum($container, $horzSumHeader, $horzSumBody);
+                        }
+                        var cHeight = 0, showCount = 0;
+                        var stream = selector.queryAll($container, "div[class*='" + DETAIL + "'], div[class*='" + LEFT_HORZ_SUM + "']");
+                        stream.forEach(function (e) {
+                            if (e.style.display !== "none") {
+                                showCount++;
+                                cHeight += parseFloat(e.style.height);
+                            }
+                        });
+                        if (showCount === 4) {
+                            cHeight += (SPACE + DISTANCE);
+                        }
+                        $container.style.height = (cHeight + SPACE) + "px";
+                        events.trigger($container, events.BODY_HEIGHT_CHANGED, height);
+                    }
+                    resize.fitWindowHeight = fitWindowHeight;
+                    /**
+                     * Fit window width.
+                     */
+                    function fitWindowWidth($container) {
+                        var table = $.data($container, NAMESPACE);
+                        if (table.$commander)
+                            return;
+                        var $vertSumHeader = $container.querySelector("." + HEADER_PRF + VERTICAL_SUM);
+                        var $vertSumContent = $container.querySelector("." + BODY_PRF + VERTICAL_SUM);
+                        var $detailHeader = $container.querySelector("." + HEADER_PRF + DETAIL);
+                        var $detailBody = $container.querySelector("." + BODY_PRF + DETAIL);
+                        var width = window.innerWidth - selector.offset($detailHeader).left;
+                        var scrollWidth = helper.getScrollWidth();
+                        var $sup = table.$follower;
+                        if ($vertSumHeader && $vertSumHeader.style.display !== "none") {
+                            width = width - parseFloat($.data($container, internal.X_OCCUPY)) - parseFloat($vertSumContent.style.width);
+                            $detailHeader.style.width = width + "px";
+                            $detailBody.style.width = width + "px";
+                            $container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM).style.width = width + "px";
+                            $container.querySelector("." + BODY_PRF + HORIZONTAL_SUM).style.width = (width + helper.getScrollWidth()) + "px";
+                            repositionVertSum($container, $vertSumHeader, $vertSumContent);
+                            syncDetailAreaLine($container, $detailHeader, $detailBody);
+                            if ($sup) {
+                                var $supHeader = $sup.querySelector("." + HEADER_PRF + DETAIL);
+                                if ($supHeader) {
+                                    $supHeader.style.width = width + "px";
+                                    $sup.querySelector("." + BODY_PRF + DETAIL).style.width = (width + scrollWidth) + "px";
+                                }
+                            }
+                            return;
+                        }
+                        width = width - parseFloat($.data($container, internal.X_OCCUPY));
+                        $detailHeader.style.width = (width - scrollWidth) + "px";
+                        $detailBody.style.width = width + "px";
+                        $container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM).style.width = (width - scrollWidth) + "px";
+                        $container.querySelector("." + BODY_PRF + HORIZONTAL_SUM).style.width = width + "px";
+                        if ($sup) {
+                            var $supHeader = $sup.querySelector("." + HEADER_PRF + DETAIL);
+                            if ($supHeader) {
+                                $supHeader.style.width = (width - scrollWidth) + "px";
+                                $sup.querySelector("." + BODY_PRF + DETAIL).style.width = width + "px";
+                            }
+                        }
+                    }
+                    resize.fitWindowWidth = fitWindowWidth;
+                    /**
+                     * Sync detail area line.
+                     */
+                    function syncDetailAreaLine($container, $detailHeader, $detailBody) {
+                        var $agency = $container.querySelector("." + resize.AREA_AGENCY);
+                        if (!$agency)
+                            return;
+                        var height = parseFloat($detailHeader.style.height) + parseFloat($detailBody.style.height);
+                        var left = $detailHeader.offsetWidth + (selector.offset($detailHeader).left - selector.offset($agency).left);
+                        var index;
+                        selector.queryAll($container, "div[class*='" + HEADER_PRF + "']").forEach(function (e, idx) {
+                            if (e.classList.contains(HEADER_PRF + DETAIL)) {
+                                index = idx;
+                                return false;
+                            }
+                        });
+                        var div = $agency.querySelectorAll("div")[index];
+                        div.style.left = left + "px";
+                        div.style.height = height + "px";
+                    }
+                    /**
+                     * Reposition horzSum.
+                     */
+                    function repositionHorzSum($container, $horzSumHeader, $horzSumBody) {
+                        $horzSumHeader = $horzSumHeader || $container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM);
+                        $horzSumBody = $horzSumBody || $container.querySelector("." + BODY_PRF + HORIZONTAL_SUM);
+                        var headerTop = parseFloat($container.querySelector("." + HEADER_PRF + DETAIL).style.height)
+                            + parseFloat($container.querySelector("." + BODY_PRF + DETAIL).style.height) + DISTANCE + SPACE;
+                        var bodyTop = headerTop + DISTANCE + parseFloat($horzSumHeader.style.height);
+                        $container.querySelector("." + HEADER_PRF + LEFT_HORZ_SUM).style.top = headerTop + "px";
+                        $container.querySelector("." + BODY_PRF + LEFT_HORZ_SUM).style.top = bodyTop + "px";
+                        $horzSumHeader.style.top = headerTop + "px";
+                        $horzSumBody.style.top = bodyTop + "px";
+                    }
+                    resize.repositionHorzSum = repositionHorzSum;
+                    /**
+                     * Reposition vertSum.
+                     */
+                    function repositionVertSum($container, $vertSumHeader, $vertSumContent) {
+                        $vertSumHeader = $vertSumHeader || $container.querySelector("." + HEADER_PRF + VERTICAL_SUM);
+                        $vertSumContent = $vertSumContent || $container.querySelector("." + BODY_PRF + VERTICAL_SUM);
+                        var $detailHeader = $container.querySelector("." + HEADER_PRF + DETAIL);
+                        var posLeft = $detailHeader.style.left;
+                        var vertSumLeft = parseFloat(posLeft) + parseFloat($detailHeader.style.width) + DISTANCE;
+                        $vertSumHeader.style.left = vertSumLeft + "px";
+                        $vertSumContent.style.left = vertSumLeft + "px";
+                    }
+                    resize.repositionVertSum = repositionVertSum;
+                    /**
+                     * Set height.
+                     */
+                    function setHeight($container, height) {
+                        selector.queryAll($container, "div[class*='" + BODY_PRF + "']").forEach(function (e) {
+                            if (e.classList.contains(BODY_PRF + HORIZONTAL_SUM) || e.classList.contains(BODY_PRF + LEFT_HORZ_SUM))
+                                return;
+                            e.style.height = height + "px";
+                        });
+                        var cHeight = 0, showCount = 0;
+                        var stream = selector.queryAll($container, "div[class*='" + DETAIL + "'], div[class*='" + LEFT_HORZ_SUM + "']");
+                        stream.forEach(function (e) {
+                            if (e.style.display !== "none") {
+                                showCount++;
+                                cHeight += parseFloat(e.style.height);
+                            }
+                        });
+                        if (showCount === 4) {
+                            cHeight += (SPACE + DISTANCE);
+                        }
+                        $container.style.height = (cHeight + SPACE) + "px";
+                        events.trigger($container, events.BODY_HEIGHT_CHANGED, height);
+                    }
+                    resize.setHeight = setHeight;
+                    /**
+                     * On area complete.
+                     */
+                    function onAreaComplete(event, $leftArea, $rightArea, leftWidth, rightWidth) {
+                        var self = this;
+                        saveSizes(self.$container, $leftArea, $rightArea, leftWidth, rightWidth);
+                    }
+                    resize.onAreaComplete = onAreaComplete;
+                    /**
+                     * Save sizes.
+                     */
+                    function saveSizes($container, $leftArea, $rightArea, leftWidth, rightWidth) {
+                        if ($leftArea) {
+                            storage.area.save($container, $.data($leftArea, internal.EX_PART), leftWidth);
+                        }
+                        if ($rightArea) {
+                            storage.area.save($container, $.data($rightArea, internal.EX_PART), rightWidth);
+                        }
+                    }
+                    resize.saveSizes = saveSizes;
+                    /**
+                     * On body height changed.
+                     */
+                    function onBodyHeightChanged(event) {
+                        var $container = event.target;
+                        var height = event.detail;
+                        storage.tableHeight.save($container, height);
+                        repositionHorzSum($container);
+                    }
+                    resize.onBodyHeightChanged = onBodyHeightChanged;
+                })(resize || (resize = {}));
+                var storage;
+                (function (storage) {
+                    storage.AREA_WIDTHS = "areawidths";
+                    storage.TBL_HEIGHT = "tableheight";
+                    var Store = (function () {
+                        function Store() {
+                        }
+                        /**
+                         * Check value exists.
+                         */
+                        Store.prototype.initValueExists = function ($container) {
+                            var self = this;
+                            var storeKey = self.getStorageKey($container);
+                            var value = uk.localStorage.getItem(storeKey);
+                            return value.isPresent();
+                        };
+                        /**
+                         * Get store item.
+                         */
+                        Store.prototype.getStoreItem = function ($container, item) {
+                            return uk.request.location.current.rawUrl + "/" + $container.id + "/" + item;
+                        };
+                        /**
+                         * Get value.
+                         */
+                        Store.prototype.getValue = function ($container) {
+                            var storeKey = this.getStorageKey($container);
+                            return uk.localStorage.getItem(storeKey);
+                        };
+                        return Store;
+                    }());
+                    var area;
+                    (function (area) {
+                        var Cache = (function (_super) {
+                            __extends(Cache, _super);
+                            function Cache() {
+                                _super.apply(this, arguments);
+                            }
+                            Cache.prototype.getStorageKey = function ($container) {
+                                return this.getStoreItem($container, storage.AREA_WIDTHS);
+                            };
+                            return Cache;
+                        }(Store));
+                        var cache = new Cache();
+                        /**
+                         * Init.
+                         */
+                        function init($container, parts) {
+                            if (cache.initValueExists($container)) {
+                                return;
+                            }
+                            var partWidths = {};
+                            _.forEach(parts, function (part, index) {
+                                var key = helper.getClassOfHeader(part);
+                                partWidths[key] = part.width();
+                            });
+                            saveAll($container, partWidths);
+                        }
+                        area.init = init;
+                        /**
+                         * Load.
+                         */
+                        function load($container) {
+                            var storeKey = cache.getStorageKey($container);
+                            uk.localStorage.getItem(storeKey).ifPresent(function (parts) {
+                                var widthParts = JSON.parse(parts);
+                                setWidths($container, widthParts);
+                                return null;
+                            });
+                        }
+                        area.load = load;
+                        /**
+                         * Save.
+                         */
+                        function save($container, keyClass, partWidth) {
+                            var storeKey = cache.getStorageKey($container);
+                            var partsWidth = uk.localStorage.getItem(storeKey);
+                            var widths = {};
+                            if (partsWidth.isPresent()) {
+                                widths = JSON.parse(partsWidth.get());
+                                widths[keyClass] = partWidth;
+                            }
+                            else {
+                                widths[keyClass] = partWidth;
+                            }
+                            uk.localStorage.setItemAsJson(storeKey, widths);
+                        }
+                        area.save = save;
+                        /**
+                         * Save all.
+                         */
+                        function saveAll($container, widths) {
+                            var storeKey = cache.getStorageKey($container);
+                            var partWidths = uk.localStorage.getItem(storeKey);
+                            if (!partWidths.isPresent()) {
+                                uk.localStorage.setItemAsJson(storeKey, widths);
+                            }
+                        }
+                        /**
+                         * Get part widths.
+                         */
+                        function getPartWidths($container) {
+                            return cache.getValue($container);
+                        }
+                        area.getPartWidths = getPartWidths;
+                        /**
+                         * Set widths.
+                         */
+                        function setWidths($container, parts) {
+                            var partKeys = Object.keys(parts);
+                            _.forEach(partKeys, function (keyClass, index) {
+                                setWidth($container, keyClass, parts[keyClass]);
+                            });
+                        }
+                        /**
+                         * Set width.
+                         */
+                        function setWidth($container, keyClass, width) {
+                            selector.find($container, "." + keyClass).width(width);
+                            selector.find($container, "." + Connector[keyClass]).width(width);
+                        }
+                    })(area = storage.area || (storage.area = {}));
+                    var tableHeight;
+                    (function (tableHeight) {
+                        var Cache2 = (function (_super) {
+                            __extends(Cache2, _super);
+                            function Cache2() {
+                                _super.apply(this, arguments);
+                            }
+                            Cache2.prototype.getStorageKey = function ($container) {
+                                return this.getStoreItem($container, storage.TBL_HEIGHT);
+                            };
+                            return Cache2;
+                        }(Store));
+                        var cache = new Cache2();
+                        /**
+                         * Init.
+                         */
+                        function init($container) {
+                            if (cache.initValueExists($container)) {
+                                return;
+                            }
+                            var $bodies = $container.querySelectorAll("div[class*='" + BODY_PRF + "']");
+                            if ($bodies.length === 0)
+                                return;
+                            save($container, $bodies[0].style.height);
+                        }
+                        tableHeight.init = init;
+                        /**
+                         * Load.
+                         */
+                        function load($container) {
+                            var storeKey = cache.getStorageKey($container);
+                            uk.localStorage.getItem(storeKey).ifPresent(function (height) {
+                                var h = JSON.parse(height);
+                                resize.setHeight($container, height);
+                                return null;
+                            });
+                        }
+                        tableHeight.load = load;
+                        /**
+                         * Get.
+                         */
+                        function get($container) {
+                            return cache.getValue($container);
+                        }
+                        tableHeight.get = get;
+                        /**
+                         * Save.
+                         */
+                        function save($container, height) {
+                            var storeKey = cache.getStorageKey($container);
+                            uk.localStorage.setItemAsJson(storeKey, height);
+                        }
+                        tableHeight.save = save;
+                    })(tableHeight = storage.tableHeight || (storage.tableHeight = {}));
+                })(storage || (storage = {}));
+                var scroll;
+                (function (scroll) {
+                    scroll.SCROLL_SYNCING = "scroll-syncing";
+                    scroll.VERT_SCROLL_SYNCING = "vert-scroll-syncing";
+                    /**
+                     * Bind vertWheel.
+                     */
+                    function bindVertWheel($container) {
+                        $container.addXEventListener(events.MOUSE_WHEEL, function (event) {
+                            var delta = event.wheelDeltaY;
+                            var direction = delta > 0 ? -1 : 1;
+                            var value = $container.scrollTop + event.deltaY;
+                            //                $container.stop().animate({ scrollTop: value }, 10);
+                            $container.scrollTop = value;
+                            event.preventDefault();
+                            event.stopImmediatePropagation();
+                        });
+                        if ($container.style.overflowY !== "hidden") {
+                            $container.style.overflowY = "hidden";
+                        }
+                    }
+                    scroll.bindVertWheel = bindVertWheel;
+                    /**
+                     * Unbind vertWheel.
+                     */
+                    function unbindVertWheel($container) {
+                        $container.removeXEventListener(events.MOUSE_WHEEL);
+                        $container.style.overflowY = "scroll";
+                    }
+                    scroll.unbindVertWheel = unbindVertWheel;
+                    /**
+                     * Sync scrolls.
+                     */
+                    function syncDoubDirHorizontalScrolls(wrappers) {
+                        _.forEach(wrappers, function ($main, index) {
+                            if (!$main)
+                                return;
+                            $main.addXEventListener(events.SCROLL_EVT, function () {
+                                _.forEach(wrappers, function ($depend, i) {
+                                    if (i === index || !$depend)
+                                        return;
+                                    var mainSyncing = $.data($main, scroll.SCROLL_SYNCING);
+                                    if (!mainSyncing) {
+                                        $.data($depend, scroll.SCROLL_SYNCING, true);
+                                        $depend.scrollLeft = $main.scrollLeft;
+                                    }
+                                });
+                                $.data($main, scroll.SCROLL_SYNCING, false);
+                            });
+                        });
+                    }
+                    scroll.syncDoubDirHorizontalScrolls = syncDoubDirHorizontalScrolls;
+                    /**
+                     * Sync scrolls.
+                     */
+                    function syncDoubDirVerticalScrolls(wrappers) {
+                        _.forEach(wrappers, function ($main, index) {
+                            $main.addXEventListener(events.SCROLL_EVT, function (event) {
+                                _.forEach(wrappers, function ($depend, i) {
+                                    if (i === index)
+                                        return;
+                                    var mainSyncing = $.data($main, scroll.VERT_SCROLL_SYNCING);
+                                    if (!mainSyncing) {
+                                        $.data($depend, scroll.VERT_SCROLL_SYNCING, true);
+                                        $depend.scrollTop = $main.scrollTop;
+                                    }
+                                });
+                                $.data($main, scroll.VERT_SCROLL_SYNCING, false);
+                            });
+                        });
+                    }
+                    scroll.syncDoubDirVerticalScrolls = syncDoubDirVerticalScrolls;
+                    /**
+                     * Sync scroll.
+                     */
+                    function syncHorizontalScroll($headerWrap, $bodyWrap) {
+                        $bodyWrap.addXEventListener(events.SCROLL_EVT, function () {
+                            $headerWrap.scrollLeft = $bodyWrap.scrollLeft;
+                        });
+                    }
+                    scroll.syncHorizontalScroll = syncHorizontalScroll;
+                    /**
+                     * Sync scroll.
+                     */
+                    function syncVerticalScroll($pivotBody, bodyWraps) {
+                        $pivotBody.addXEventListener(events.SCROLL_EVT, function () {
+                            _.forEach(bodyWraps, function (body) {
+                                body.scrollTop = $pivotBody.scrollTop;
+                            });
+                        });
+                    }
+                    scroll.syncVerticalScroll = syncVerticalScroll;
+                })(scroll || (scroll = {}));
+                var controls;
+                (function (controls) {
+                    controls.LINK_BUTTON = "link";
+                    controls.LINK_CLS = "x-link";
+                    controls.CHECKED_KEY = "xCheckbox";
+                    controls.CHECKBOX_COL_WIDTH = 40;
+                    /**
+                     * Check.
+                     */
+                    function check(td, column, data, action) {
+                        if (!uk.util.isNullOrUndefined(column.control)) {
+                            switch (column.control) {
+                                case controls.LINK_BUTTON:
+                                    var a = document.createElement("a");
+                                    a.classList.add(controls.LINK_CLS);
+                                    a.addXEventListener(events.CLICK_EVT, function (evt) {
+                                        action();
+                                    });
+                                    a.innerText = data;
+                                    td.appendChild(a);
+                                    break;
+                            }
+                        }
+                    }
+                    controls.check = check;
+                    /**
+                     * Add checkbox def.
+                     */
+                    function addCheckBoxDef(arr) {
+                        _.forEach(arr, function (opt) {
+                            opt.columns.unshift({ key: controls.CHECKED_KEY, headerText: controls.CHECKED_KEY, width: controls.CHECKBOX_COL_WIDTH + "px" });
+                        });
+                    }
+                    controls.addCheckBoxDef = addCheckBoxDef;
+                    /**
+                     * Create checkbox.
+                     */
+                    function createCheckBox($grid, ui) {
+                        var checkBoxText;
+                        var $wrapper = document.createElement("div");
+                        $wrapper.className = "nts-checkbox-container";
+                        $wrapper.addXEventListener(events.CLICK_EVT, function (e) {
+                            if ($grid && errors.occurred(helper.closest($grid, "." + NAMESPACE)))
+                                e.preventDefault();
+                        });
+                        var $checkBoxLabel = document.createElement("label");
+                        $checkBoxLabel.className = "ntsCheckBox";
+                        var $checkBox = document.createElement("input");
+                        $checkBox.type = "checkbox";
+                        $checkBox.addXEventListener("change", function () {
+                            var cellCoord = helper.getCellCoord(helper.closest($checkBox, "td"));
+                            var rowIndex = 0;
+                            if (cellCoord)
+                                rowIndex = cellCoord.rowIdx;
+                            ui.onChecked(selector.is($checkBox, ":checked"), rowIndex);
+                        });
+                        $checkBoxLabel.appendChild($checkBox);
+                        var $box = document.createElement("span");
+                        $box.className = "box";
+                        $checkBoxLabel.appendChild($box);
+                        if (ui.text && ui.text.length > 0) {
+                            var label = document.createElement("span");
+                            label.className = "label";
+                            label.textContent = ui.text;
+                            $checkBoxLabel.appendChild(label);
+                        }
+                        $wrapper.appendChild($checkBoxLabel);
+                        var checked = ui.initValue !== undefined ? ui.initValue : true;
+                        var $checkBox = $wrapper.querySelector("input[type='checkbox']");
+                        if (checked === true)
+                            $checkBox.checked = true;
+                        else
+                            $checkBox.checked = false;
+                        return $wrapper;
+                    }
+                    controls.createCheckBox = createCheckBox;
+                    /**
+                     * Checkbox cell styles.
+                     */
+                    function checkBoxCellStyles() {
+                        return { padding: "1px 1px", textAlign: "center" };
+                    }
+                    controls.checkBoxCellStyles = checkBoxCellStyles;
+                    /**
+                     * Tick.
+                     */
+                    function tick(checked, $grid, isHeader, rowIdx) {
+                        var $checkBox;
+                        var ds = internal.getDataSource($grid);
+                        if (isHeader) {
+                            selector.queryAll($grid, "tr").forEach(function (r) {
+                                var td = r.querySelectorAll("td")[0];
+                                $checkBox = td.querySelector("input");
+                                if (checked) {
+                                    $checkBox.checked = true;
+                                }
+                                else {
+                                    $checkBox.checked = false;
+                                }
+                            });
+                            var rows = $.data($grid, internal.SELECTED_ROWS);
+                            if (checked) {
+                                if (!rows) {
+                                    rows = {};
+                                    rows.selectAll = true;
+                                    $.data($grid, internal.SELECTED_ROWS, rows);
+                                }
+                                else {
+                                    rows.selectAll = true;
+                                }
+                                for (var i = 0; i < ds.length; i++) {
+                                    selection.selectRow($grid, i);
+                                }
+                            }
+                            else {
+                                rows.selectAll = false;
+                                for (var i = 0; i < ds.length; i++) {
+                                    selection.deselectRow($grid, i);
+                                }
+                            }
+                        }
+                        else {
+                            var $row = selection.rowAt($grid, rowIdx);
+                            $checkBox = $row.querySelectorAll("td")[0].querySelector("input");
+                            if (checked) {
+                                $checkBox.checked = true;
+                                selection.selectRow($grid, rowIdx);
+                            }
+                            else {
+                                $checkBox.checked = false;
+                                selection.deselectRow($grid, rowIdx);
+                            }
+                            var rows = $.data($grid, internal.SELECTED_ROWS);
+                            var $allBox = selector.classSiblings($grid, HEADER_PRF + LEFTMOST)[0].querySelectorAll("table tr")[0]
+                                .querySelectorAll("td")[0].querySelector("input");
+                            if (rows.count === ds.length) {
+                                rows.selectAll = true;
+                                if (!selector.is($allBox, ":checked"))
+                                    $allBox.checked = true;
+                            }
+                            else {
+                                rows.selectAll = false;
+                                if (selector.is($allBox, ":checked"))
+                                    $allBox.checked = false;
+                            }
+                        }
+                    }
+                    controls.tick = tick;
+                })(controls || (controls = {}));
+                var events;
+                (function (events) {
+                    events.SCROLL_EVT = "scroll";
+                    events.CLICK_EVT = "click";
+                    events.MOUSE_DOWN = "mousedown";
+                    events.MOUSE_MOVE = "mousemove";
+                    events.MOUSE_UP = "mouseup";
+                    events.MOUSE_OVER = "mouseover";
+                    events.MOUSE_ENTER = "mouseenter";
+                    events.MOUSE_OUT = "mouseout";
+                    events.FOCUS_IN = "focusin";
+                    events.PASTE = "paste";
+                    events.MOUSE_WHEEL = "wheel";
+                    events.RESIZE = "resize";
+                    events.KEY_DOWN = "keydown";
+                    events.KEY_UP = "keyup";
+                    events.CM = "contextmenu";
+                    events.AREA_RESIZE_STARTED = "extablearearesizestarted";
+                    events.AREA_RESIZE = "extablearearesize";
+                    events.AREA_RESIZE_END = "extablearearesizeend";
+                    events.BODY_HEIGHT_CHANGED = "extablebodyheightchanged";
+                    events.OCCUPY_UPDATE = "extableoccupyupdate";
+                    events.START_EDIT = "extablestartedit";
+                    events.STOP_EDIT = "extablestopedit";
+                    events.CELL_UPDATED = "extablecellupdated";
+                    events.ROW_UPDATED = "extablerowupdated";
+                    events.POPUP_SHOWN = "xpopupshown";
+                    events.POPUP_INPUT_END = "xpopupinputend";
+                    events.ROUND_RETREAT = "extablecellretreat";
+                    events.CHECK_ALL = "extableselectallrows";
+                    events.CHECK_ROW = "extableselectrow";
+                    events.MOUSEIN_COLUMN = "extablemouseincolumn";
+                    events.MOUSEOUT_COLUMN = "extablemousoutcolumn";
+                    events.COMPLETED = "extablecompleted";
+                    window.addXEventListener = document.addXEventListener = Element.prototype.addXEventListener = addEventListener;
+                    window.removeXEventListener = document.removeXEventListener = Element.prototype.removeXEventListener = removeEventListener;
+                    /**
+                     * Trigger.
+                     */
+                    function trigger($target, eventName, args) {
+                        var event;
+                        if (window.CustomEvent) {
+                            event = new CustomEvent(eventName, { detail: args });
+                        }
+                        else {
+                            event = document.createEvent('CustomEvent');
+                            event.initCustomEvent(eventName, true, true, args);
+                        }
+                        $target.dispatchEvent(event);
+                    }
+                    events.trigger = trigger;
+                    function addEventListener(event, cb, opts) {
+                        var self = this;
+                        if (!self.ns)
+                            self.ns = {};
+                        if (!self.ns[event])
+                            self.ns[event] = [cb];
+                        else
+                            self.ns[event].push(cb);
+                        self.addEventListener(event.split(".")[0], cb, opts);
+                    }
+                    ;
+                    function removeEventListener(event, cb) {
+                        var self = this;
+                        if (!self.ns)
+                            return;
+                        if (cb) {
+                            var keys = Object.keys(self.ns).filter(function (k) {
+                                return (k === event || k === event.split(".")[0])
+                                    && self.ns[k].indexOf(cb) > -1;
+                            });
+                            var key = void 0;
+                            if (keys.length > 0) {
+                                key = keys[0];
+                                self.ns[key].splice(self.ns[key].indexOf(cb), 1);
+                                if (self.ns[key].length === 0)
+                                    delete self.ns[key];
+                            }
+                            self.removeEventListener(event.split(".")[0], cb);
+                            return;
+                        }
+                        if (!self.ns[event])
+                            return;
+                        self.ns[event].forEach(function (e) {
+                            self.removeEventListener(event.split(".")[0], e);
+                        });
+                        delete self.ns[event];
+                    }
+                    /**
+                     * On modify.
+                     */
+                    function onModify($exTable) {
+                        $exTable.addXEventListener(events.CELL_UPDATED, function (evt) {
+                            var exTable = $.data($exTable, NAMESPACE);
+                            if (!exTable)
+                                return;
+                            var ui = evt.detail;
+                            if (ui.value.constructor === Array && (uk.util.isNullOrUndefined(ui.innerIdx) || ui.innerIdx === -1)) {
+                                pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[0], 0));
+                                pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[1], 1));
+                                return;
+                            }
+                            pushChange(exTable, ui.rowIndex, ui);
+                        });
+                        $exTable.addXEventListener(events.ROW_UPDATED, function (evt) {
+                            var exTable = $.data($exTable, NAMESPACE);
+                            if (!exTable)
+                                return;
+                            var ui = evt.detail;
+                            var cells = [];
+                            _.forEach(Object.keys(ui.data), function (k, i) {
+                                if (ui.data[k].constructor === Array && ui.data[k].length === 2) {
+                                    cells.push(new selection.Cell(ui.rowIndex, k, ui.data[k][0], 0));
+                                    cells.push(new selection.Cell(ui.rowIndex, k, ui.data[k][1], 1));
+                                    return;
+                                }
+                                cells.push(new selection.Cell(ui.rowIndex, k, ui.data[k], -1));
+                            });
+                            _.forEach(cells, function (c, i) {
+                                pushChange(exTable, c.rowIndex, c);
+                            });
+                        });
+                    }
+                    events.onModify = onModify;
+                    /**
+                     * Push change.
+                     */
+                    function pushChange(exTable, rowIdx, cell) {
+                        var modifies = exTable.modifications;
+                        if (!modifies) {
+                            exTable.modifications = {};
+                            exTable.modifications[rowIdx] = [cell];
+                            return;
+                        }
+                        if (!modifies[rowIdx]) {
+                            modifies[rowIdx] = [cell];
+                            return;
+                        }
+                        var rData = modifies[rowIdx];
+                        var cellUpdated = false;
+                        _.forEach(rData, function (c, i) {
+                            if (helper.areSameCells(c, cell)) {
+                                rData[i].value = cell.value;
+                                cellUpdated = true;
+                                return false;
+                            }
+                        });
+                        if (!cellUpdated) {
+                            modifies[rowIdx].push(cell);
+                        }
+                    }
+                    /**
+                     * Create row ui.
+                     */
+                    function createRowUi(rowIdx, data) {
+                        return {
+                            rowIndex: rowIdx,
+                            data: data
+                        };
+                    }
+                    events.createRowUi = createRowUi;
+                })(events || (events = {}));
+                var feature;
+                (function (feature_1) {
+                    feature_1.UPDATING = "Updating";
+                    feature_1.HEADER_ROW_HEIGHT = "HeaderRowHeight";
+                    feature_1.HEADER_CELL_STYLE = "HeaderCellStyle";
+                    feature_1.HEADER_POP_UP = "HeaderPopups";
+                    feature_1.BODY_CELL_STYLE = "BodyCellStyle";
+                    feature_1.COLUMN_RESIZE = "ColumnResize";
+                    feature_1.TIME_RANGE = "TimeRange";
+                    /**
+                     * Is enable.
+                     */
+                    function isEnable(features, name) {
+                        return _.find(features, function (feature) {
+                            return feature.name === name;
+                        }) !== undefined;
+                    }
+                    feature_1.isEnable = isEnable;
+                    /**
+                     * Find.
+                     */
+                    function find(features, name) {
+                        return _.find(features, function (feature) {
+                            return feature.name === name;
+                        });
+                    }
+                    feature_1.find = find;
+                })(feature || (feature = {}));
+                var style;
+                (function (style) {
+                    style.DET_CLS = "xdet";
+                    style.HIDDEN_CLS = "xhidden";
+                    style.SEAL_CLS = "xseal";
+                    var CellStyleParam = (function () {
+                        function CellStyleParam($cell, cellData, rowData, rowIdx, columnKey) {
+                            this.$cell = $cell;
+                            this.cellData = cellData;
+                            this.rowData = rowData;
+                            this.rowIdx = rowIdx;
+                            this.columnKey = columnKey;
+                        }
+                        return CellStyleParam;
+                    }());
+                    style.CellStyleParam = CellStyleParam;
+                    var Cell = (function () {
+                        function Cell(rowId, columnKey) {
+                            this.rowId = rowId;
+                            this.columnKey = columnKey;
+                        }
+                        return Cell;
+                    }());
+                    style.Cell = Cell;
+                    function detColumn($grid, row, rowIdx) {
+                        var $tbl = helper.closest($grid, "." + NAMESPACE);
+                        var detOpt = $.data($tbl, NAMESPACE).determination;
+                        if (!detOpt || !$grid.classList.contains(HEADER_PRF + DETAIL))
+                            return;
+                        _.forEach(detOpt.rows, function (i) {
+                            if (i === rowIdx) {
+                                row.addXEventListener(events.MOUSE_DOWN, function (evt) {
+                                    if (!evt.ctrlKey)
+                                        return;
+                                    var $main = helper.getMainTable($tbl);
+                                    var gen = $.data($main, internal.TANGI) || $.data($main, internal.CANON);
+                                    var ds = gen.dataSource;
+                                    var primaryKey = helper.getPrimaryKey($main);
+                                    var start = gen.startIndex || 0;
+                                    var end = gen.endIndex || ds.length - 1;
+                                    var $hCell = evt.target;
+                                    var coord = helper.getCellCoord($hCell);
+                                    var det = $.data($main, internal.DET);
+                                    if (!det) {
+                                        det = {};
+                                    }
+                                    var xRows = [];
+                                    var xCellsInColumn = _.filter(ds, function (r, i) {
+                                        if (helper.isXCell($main, r[primaryKey], coord.columnKey, style.HIDDEN_CLS, style.SEAL_CLS)) {
+                                            xRows.push(i);
+                                            return true;
+                                        }
+                                        return false;
+                                    });
+                                    var rows = Object.keys(det);
+                                    if (rows.length >= (ds.length - xCellsInColumn.length)) {
+                                        var flaw_1 = false;
+                                        var indices_1 = {};
+                                        _.forEach(rows, function (k, i) {
+                                            var found = false;
+                                            _.forEach(det[k], function (c, j) {
+                                                if (c === coord.columnKey) {
+                                                    indices_1[k] = j;
+                                                    found = true;
+                                                    return false;
+                                                }
+                                            });
+                                            if (!found && !xRows.some(function (val) { return parseInt(k) === val; })) {
+                                                flaw_1 = true;
+                                                return false;
+                                            }
+                                        });
+                                        if (!flaw_1) {
+                                            var rKeys = Object.keys(indices_1);
+                                            _.forEach(rKeys, function (k, i) {
+                                                var col = det[k].splice(indices_1[k], 1);
+                                                if (det[k].length === 0)
+                                                    delete det[k];
+                                                var $c = selection.cellAt($main, k, col[0]);
+                                                helper.stripCellWith(style.DET_CLS, $c);
+                                            });
+                                            return;
+                                        }
+                                    }
+                                    _.forEach(ds, function (item, index) {
+                                        if (index >= start && index < end) {
+                                            var $c = selection.cellAt($main, index, coord.columnKey);
+                                            if ($c === intan.NULL || !$c || !helper.isDetable($c))
+                                                return;
+                                            helper.markCellWith(style.DET_CLS, $c);
+                                        }
+                                        else if (helper.isXCell($main, item[primaryKey], coord.columnKey, style.HIDDEN_CLS, style.SEAL_CLS))
+                                            return;
+                                        if (!det[index]) {
+                                            det[index] = [coord.columnKey];
+                                            $.data($main, internal.DET, det);
+                                        }
+                                        else {
+                                            var dup_1;
+                                            _.forEach(det[index], function (key) {
+                                                if (key === coord.columnKey) {
+                                                    dup_1 = true;
+                                                    return false;
+                                                }
+                                            });
+                                            if (!dup_1) {
+                                                det[index].push(coord.columnKey);
+                                            }
+                                        }
+                                    });
+                                });
+                                return false;
+                            }
+                        });
+                    }
+                    style.detColumn = detColumn;
+                    function detCell($grid, $cell, rowIdx, columnKey) {
+                        var $tbl = helper.closest($grid, "." + NAMESPACE);
+                        var detOpt = $.data($tbl, NAMESPACE).determination;
+                        if (!detOpt)
+                            return;
+                        if ($grid.classList.contains(BODY_PRF + LEFTMOST)) {
+                            _.forEach(detOpt.columns, function (key) {
+                                if (key === columnKey) {
+                                    $cell.addXEventListener(events.MOUSE_DOWN, function (evt) {
+                                        if (!evt.ctrlKey)
+                                            return;
+                                        var $main = helper.getMainTable($tbl);
+                                        var coord = helper.getCellCoord($cell);
+                                        var $targetRow = selection.rowAt($main, coord.rowIdx);
+                                        if ($targetRow === intan.NULL || !$targetRow)
+                                            return;
+                                        var colKeys = _.map(helper.gridVisibleColumns($main), "key");
+                                        var det = $.data($main, internal.DET);
+                                        var rowDet;
+                                        var undetables = [];
+                                        var detables = selector.queryAll($targetRow, "td").filter(function (e) {
+                                            return e.style.display !== "none";
+                                        }).filter(function (e, i) {
+                                            if (!helper.isDetable(e)) {
+                                                undetables.push(i);
+                                                return false;
+                                            }
+                                            return true;
+                                        });
+                                        for (var i = undetables.length - 1; i >= 0; i--) {
+                                            colKeys.splice(undetables[i], 1);
+                                        }
+                                        if (det && (rowDet = det[coord.rowIdx]) && rowDet.length === colKeys.length) {
+                                            helper.stripCellsWith(style.DET_CLS, selector.queryAll($targetRow, "td").filter(function (e) {
+                                                return e.style.display !== "none";
+                                            }));
+                                            //                                det[coord.rowIdx] = [];
+                                            delete det[coord.rowIdx];
+                                            return;
+                                        }
+                                        helper.markCellsWith(style.DET_CLS, detables);
+                                        if (!det) {
+                                            det = {};
+                                            det[coord.rowIdx] = colKeys;
+                                            $.data($main, internal.DET, det);
+                                        }
+                                        else if (!det[coord.rowIdx]) {
+                                            det[coord.rowIdx] = colKeys;
+                                        }
+                                        else {
+                                            var dup_2;
+                                            _.forEach(colKeys, function (k) {
+                                                dup_2 = false;
+                                                _.forEach(det[coord.rowIdx], function (existedKey) {
+                                                    if (existedKey === k) {
+                                                        dup_2 = true;
+                                                        return false;
+                                                    }
+                                                });
+                                                if (!dup_2) {
+                                                    det[coord.rowIdx].push(k);
+                                                }
+                                            });
+                                        }
+                                    });
+                                    return false;
+                                }
+                            });
+                        }
+                        else if ($grid.classList.contains(BODY_PRF + DETAIL)) {
+                            var childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
+                            var target = $cell;
+                            if (childCells.length > 0) {
+                                target = childCells;
+                                _.forEach(Array.prototype.slice.call(childCells), function (c) {
+                                    c.addXEventListener(events.MOUSE_DOWN, function (evt) {
+                                        onDetSingleCell(evt, $tbl, $cell, rowIdx, columnKey);
+                                    });
+                                });
+                                return;
+                            }
+                            target.addXEventListener(events.MOUSE_DOWN, function (evt) {
+                                onDetSingleCell(evt, $tbl, $cell, rowIdx, columnKey);
+                            });
+                        }
+                    }
+                    style.detCell = detCell;
+                    /**
+                     * On det single cell.
+                     */
+                    function onDetSingleCell(evt, $tbl, $cell, rowIdx, columnKey) {
+                        if (!evt.ctrlKey || !helper.isDetable($cell))
+                            return;
+                        var $main = helper.getMainTable($tbl);
+                        var det = $.data($main, internal.DET);
+                        if (!det) {
+                            det = {};
+                            det[rowIdx] = [columnKey];
+                            $.data($main, internal.DET, det);
+                        }
+                        else if (!det[rowIdx]) {
+                            det[rowIdx] = [columnKey];
+                        }
+                        else {
+                            var dup_3 = -1;
+                            _.forEach(det[rowIdx], function (key, index) {
+                                if (key === columnKey) {
+                                    dup_3 = index;
+                                    return false;
+                                }
+                            });
+                            if (dup_3 > -1) {
+                                var a = [];
+                                det[rowIdx].splice(dup_3, 1);
+                                if (det[rowIdx].length === 0)
+                                    delete det[rowIdx];
+                                helper.stripCellWith(style.DET_CLS, $cell);
+                                return;
+                            }
+                            det[rowIdx].push(columnKey);
+                        }
+                        helper.markCellWith(style.DET_CLS, $cell);
+                    }
+                })(style || (style = {}));
+                var func;
+                (function (func) {
+                    var LEFT_TBL = "leftmost";
+                    var HORZ_SUM = "horizontalSummaries";
+                    var VERT_SUM = "verticalSummaries";
+                    $.fn.exTable = function (name) {
+                        var params = [];
+                        for (var _i = 1; _i < arguments.length; _i++) {
+                            params[_i - 1] = arguments[_i];
+                        }
+                        var self = this;
+                        switch (name) {
+                            case "setHeight":
+                                resize.setHeight(self, params[0]);
+                                break;
+                            case "gridHeightMode":
+                                changeGridHeightMode(self, params[0]);
+                                break;
+                            case "hideHorizontalSummary":
+                                hideHorzSum(self);
+                                break;
+                            case "showHorizontalSummary":
+                                showHorzSum(self);
+                                break;
+                            case "hideVerticalSummary":
+                                hideVertSum(self);
+                                break;
+                            case "showVerticalSummary":
+                                showVertSum(self);
+                                break;
+                            case "updateTable":
+                                updateTable(self, params[0], params[1], params[2], params[3]);
+                                break;
+                            case "updateMode":
+                                return setUpdateMode(self, params[0], params[1]);
+                            case "viewMode":
+                                return setViewMode(self, params[0], params[1]);
+                            case "pasteOverWrite":
+                                setPasteOverWrite(self, params[0]);
+                                break;
+                            case "stickOverWrite":
+                                setStickOverWrite(self, params[0]);
+                                break;
+                            case "stickMode":
+                                setStickMode(self, params[0]);
+                                break;
+                            case "stickData":
+                                setStickData(self, params[0]);
+                                break;
+                            case "stickValidate":
+                                setStickValidate(self, params[0]);
+                                break;
+                            case "stickUndo":
+                                undoStick(self);
+                                break;
+                            case "clearHistories":
+                                clearHistories(self, params[0]);
+                                break;
+                            case "lockCell":
+                                lockCell(self, params[0], params[1]);
+                                break;
+                            case "unlockCell":
+                                unlockCell(self, params[0], params[1]);
+                                break;
+                            case "popupValue":
+                                returnPopupValue(self, params[0]);
+                                break;
+                            case "cellValue":
+                                setCellValue(self, params[0], params[1], params[2], params[3]);
+                                break;
+                            case "cellValueByIndex":
+                                setCellValueByIndex(self, params[0], params[1], params[2], params[3]);
+                                break;
+                            case "roundGet":
+                                roundRetreat(self, params[0]);
+                                break;
+                            case "dataSource":
+                                return getDataSource(self, params[0]);
+                            case "cellByIndex":
+                                return getCellByIndex(self, params[0], params[1]);
+                            case "cellById":
+                                return getCellById(self, params[0], params[1]);
+                            case "updatedCells":
+                                return getUpdatedCells(self);
+                            case "addNewRow":
+                                break;
+                            case "removeRows":
+                                break;
+                            case "rowId":
+                                setRowId(self, params[0], params[1]);
+                                break;
+                            case "saveScroll":
+                                saveScroll(self);
+                                break;
+                            case "scrollBack":
+                                scrollBack(self, params[0]);
+                                break;
+                        }
+                    };
+                    /**
+                     * Change grid height mode.
+                     */
+                    function changeGridHeightMode($container, mode) {
+                        if (mode === DYNAMIC) {
+                            var bodyWrappers_1 = [], horzSumExists_1 = false;
+                            var $bodyWrappers = $container.find("div[class*='" + BODY_PRF + "']").each(function () {
+                                if ($(this).hasClass(BODY_PRF + HORIZONTAL_SUM) || $(this).hasClass(BODY_PRF + LEFT_HORZ_SUM)) {
+                                    horzSumExists_1 = true;
+                                    return;
+                                }
+                                bodyWrappers_1.push($(this));
+                            });
+                            $(window).on(events.RESIZE, $.proxy(resize.fitWindowHeight, undefined, $container[0], bodyWrappers_1, horzSumExists_1));
+                        }
+                        else {
+                            $(window).off(events.RESIZE, resize.fitWindowHeight);
+                        }
+                    }
+                    /**
+                     * Hide horzSum.
+                     */
+                    function hideHorzSum($container) {
+                        $container.find("." + HEADER_PRF + LEFT_HORZ_SUM).hide();
+                        $container.find("." + BODY_PRF + LEFT_HORZ_SUM).hide();
+                        $container.find("." + HEADER_PRF + HORIZONTAL_SUM).hide();
+                        $container.find("." + BODY_PRF + HORIZONTAL_SUM).hide();
+                        resize.fitWindowHeight($container[0], undefined, false);
+                    }
+                    /**
+                     * Show horzSum.
+                     */
+                    function showHorzSum($container) {
+                        $container.find("." + HEADER_PRF + LEFT_HORZ_SUM).show();
+                        $container.find("." + BODY_PRF + LEFT_HORZ_SUM).show();
+                        $container.find("." + HEADER_PRF + HORIZONTAL_SUM).show();
+                        $container.find("." + BODY_PRF + HORIZONTAL_SUM).show();
+                        resize.fitWindowHeight($container[0], undefined, true);
+                    }
+                    /**
+                     * Hide vertSum.
+                     */
+                    function hideVertSum($container) {
+                        $container.find("." + HEADER_PRF + VERTICAL_SUM).hide();
+                        $container.find("." + BODY_PRF + VERTICAL_SUM).hide();
+                        resize.fitWindowWidth($container[0]);
+                        scroll.unbindVertWheel($container.find("." + BODY_PRF + DETAIL)[0]);
+                    }
+                    /**
+                     * Show vertSum.
+                     */
+                    function showVertSum($container) {
+                        var $vertSumBody = $container.find("." + BODY_PRF + VERTICAL_SUM);
+                        var $detailBody = $container.find("." + BODY_PRF + DETAIL);
+                        $container.find("." + HEADER_PRF + VERTICAL_SUM).show();
+                        $vertSumBody.show();
+                        resize.fitWindowWidth($container[0]);
+                        scroll.bindVertWheel($detailBody[0]);
+                        $vertSumBody.scrollTop($detailBody.scrollTop());
+                    }
+                    /**
+                     * Update table.
+                     */
+                    function updateTable($container, name, header, body, keepStates) {
+                        switch (name) {
+                            case "leftmost":
+                                updateLeftmost($container, header, body);
+                                break;
+                            case "middle":
+                                updateMiddle($container, header, body);
+                                break;
+                            case "detail":
+                                updateDetail($container, header, body, keepStates);
+                                break;
+                            case "verticalSummaries":
+                                updateVertSum($container, header, body);
+                                break;
+                            case "leftHorizontalSummaries":
+                                updateLeftHorzSum($container, header, body);
+                                break;
+                            case "horizontalSummaries":
+                                updateHorzSum($container, header, body);
+                                break;
+                        }
+                    }
+                    /**
+                     * Update leftmost.
+                     */
+                    function updateLeftmost($container, header, body) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (header) {
+                            _.assignIn(exTable.leftmostHeader, header);
+                            var $header = $container.find("." + HEADER_PRF + LEFTMOST);
+                            var pu = $header.find("table").data(internal.POPUP);
+                            $header.empty();
+                            render.process($header[0], exTable.leftmostHeader, true);
+                            if (pu && pu.css("display") !== "none")
+                                pu.hide();
+                        }
+                        if (body) {
+                            _.assignIn(exTable.leftmostContent, body);
+                            var $body = $container.find("." + BODY_PRF + LEFTMOST);
+                            $body.empty();
+                            render.process($body[0], exTable.leftmostContent, true);
+                        }
+                    }
+                    /**
+                     * Update middle.
+                     */
+                    function updateMiddle($container, header, body) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (header) {
+                            _.assignIn(exTable.middleHeader, header);
+                            var $header = $container.find("." + HEADER_PRF + MIDDLE);
+                            var pu = $header.find("table").data(internal.POPUP);
+                            $header.empty();
+                            render.process($header[0], exTable.middleHeader, true);
+                            if (pu && pu.css("display") !== "none")
+                                pu.hide();
+                        }
+                        if (body) {
+                            _.assignIn(exTable.middleContent, body);
+                            var $body = $container.find("." + BODY_PRF + MIDDLE);
+                            $body.empty();
+                            render.process($body[0], exTable.middleContent, true);
+                        }
+                    }
+                    /**
+                     * Update detail.
+                     */
+                    function updateDetail($container, header, body, keepStates) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (header) {
+                            _.assignIn(exTable.detailHeader, header);
+                            var $header = $container.find("." + HEADER_PRF + DETAIL);
+                            var pu = $header.find("table").data(internal.POPUP);
+                            $header.empty();
+                            render.process($header[0], exTable.detailHeader, true);
+                            if (pu && pu.css("display") !== "none")
+                                pu.hide();
+                        }
+                        if (body) {
+                            _.assignIn(exTable.detailContent, body);
+                            var $body = $container.find("." + BODY_PRF + DETAIL);
+                            $body.empty();
+                            if (!keepStates)
+                                internal.clearStates($body);
+                            render.process($body[0], exTable.detailContent, true);
+                        }
+                    }
+                    /**
+                     * Update vertSum.
+                     */
+                    function updateVertSum($container, header, body) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (header) {
+                            _.assignIn(exTable.verticalSumHeader, header);
+                            var $header = $container.find("." + HEADER_PRF + VERTICAL_SUM);
+                            var pu = $header.find("table").data(internal.POPUP);
+                            $header.empty();
+                            render.process($header[0], exTable.verticalSumHeader, true);
+                            if (pu && pu.css("display") !== "none")
+                                pu.hide();
+                        }
+                        if (body) {
+                            _.assignIn(exTable.verticalSumContent, body);
+                            var $body = $container.find("." + BODY_PRF + VERTICAL_SUM);
+                            $body.empty();
+                            render.process($body[0], exTable.verticalSumContent, true);
+                        }
+                    }
+                    /**
+                     * Update leftHorzSum.
+                     */
+                    function updateLeftHorzSum($container, header, body) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (header) {
+                            _.assignIn(exTable.leftHorzSumHeader, header);
+                            var $header = $container.find("." + HEADER_PRF + LEFT_HORZ_SUM);
+                            var pu = $header.find("table").data(internal.POPUP);
+                            $header.empty();
+                            render.process($header[0], exTable.leftHorzSumHeader, true);
+                            if (pu && pu.css("display") !== "none")
+                                pu.hide();
+                        }
+                        if (body) {
+                            _.assignIn(exTable.leftHorzSumContent, body);
+                            var $body = $container.find("." + BODY_PRF + LEFT_HORZ_SUM);
+                            $body.empty();
+                            render.process($body[0], exTable.leftHorzSumContent, true);
+                        }
+                    }
+                    /**
+                     * Update horzSum.
+                     */
+                    function updateHorzSum($container, header, body) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (header) {
+                            _.assignIn(exTable.horizontalSumHeader, header);
+                            var $header = $container.find("." + HEADER_PRF + HORIZONTAL_SUM);
+                            var pu = $header.find("table").data(internal.POPUP);
+                            $header.empty();
+                            render.process($header[0], exTable.horizontalSumHeader, true);
+                            if (pu && pu.css("display") !== "none")
+                                pu.hide();
+                        }
+                        if (body) {
+                            _.assignIn(exTable.horizontalSumContent, body);
+                            var $body = $container.find("." + BODY_PRF + HORIZONTAL_SUM);
+                            $body.empty();
+                            render.process($body[0], exTable.horizontalSumContent, true);
+                        }
+                    }
+                    /**
+                     * Set update mode.
+                     */
+                    function setUpdateMode($container, mode, occupation) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (!mode)
+                            return exTable.updateMode;
+                        if (exTable.updateMode === mode)
+                            return;
+                        exTable.setUpdateMode(mode);
+                        if (occupation) {
+                            events.trigger($container[0], events.OCCUPY_UPDATE, occupation);
+                        }
+                        var $grid = $container.find("." + BODY_PRF + DETAIL);
+                        render.begin($grid[0], internal.getDataSource($grid), exTable.detailContent);
+                        selection.tickRows($container.find("." + BODY_PRF + LEFTMOST)[0], true);
+                        if (mode === COPY_PASTE) {
+                            selection.checkUp($container[0]);
+                            copy.on($grid[0], mode);
+                            return;
+                        }
+                        selection.off($container[0]);
+                        copy.off($grid[0], mode);
+                    }
+                    /**
+                     * Set view mode.
+                     */
+                    function setViewMode($container, mode, occupation) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (!mode)
+                            return exTable.viewMode;
+                        if (occupation) {
+                            events.trigger($container[0], events.OCCUPY_UPDATE, occupation);
+                        }
+                        if (exTable.viewMode === mode)
+                            return;
+                        if (exTable.updateMode === EDIT) {
+                            if (errors.occurred($container[0]))
+                                return;
+                            var editor = $container.data(update.EDITOR);
+                            if (editor) {
+                                var $editor = editor.$editor;
+                                var $input = $editor.find("input");
+                                var $editingCell = $editor.closest("." + update.EDIT_CELL_CLS).removeClass(update.EDIT_CELL_CLS);
+                                update.triggerStopEdit($container[0], $editingCell[0], editor.land, $input.val());
+                                $container.data(update.EDITOR, null);
+                            }
+                        }
+                        exTable.setViewMode(mode);
+                        var $grid = $container.find("." + BODY_PRF + DETAIL);
+                        render.begin($grid[0], internal.getDataSource($grid), exTable.detailContent);
+                    }
+                    /**
+                     * Set paste overwrite.
+                     */
+                    function setPasteOverWrite($container, overwrite) {
+                        var exTable = $container.data(NAMESPACE);
+                        exTable.pasteOverWrite = overwrite;
+                    }
+                    /**
+                     * Set stick overwrite.
+                     */
+                    function setStickOverWrite($container, overwrite) {
+                        var exTable = $container.data(NAMESPACE);
+                        exTable.stickOverWrite = overwrite;
+                    }
+                    /**
+                     * Set stick mode.
+                     */
+                    function setStickMode($container, mode) {
+                        var $grid = $container.find("." + BODY_PRF + DETAIL);
+                        var sticker = $grid.data(internal.STICKER);
+                        if (!sticker) {
+                            sticker = new spread.Sticker();
+                            sticker.mode = mode;
+                            $grid.data(internal.STICKER, sticker);
+                        }
+                        else {
+                            sticker.mode = mode;
+                        }
+                    }
+                    /**
+                     * Set stick data.
+                     */
+                    function setStickData($container, data) {
+                        var $grid = $container.find("." + BODY_PRF + DETAIL);
+                        var sticker = $grid.data(internal.STICKER);
+                        if (!sticker) {
+                            sticker = new spread.Sticker(data);
+                            $grid.data(internal.STICKER, sticker);
+                        }
+                        else {
+                            sticker.data = data;
+                        }
+                    }
+                    /**
+                     * Set stick validate.
+                     */
+                    function setStickValidate($container, validate) {
+                        var $grid = $container.find("." + BODY_PRF + DETAIL);
+                        var sticker = $grid.data(internal.STICKER);
+                        if (!sticker) {
+                            sticker = new spread.Sticker();
+                            sticker.validate = validate;
+                            $grid.data(internal.STICKER, sticker);
+                        }
+                        else {
+                            sticker.validate = validate;
+                        }
+                    }
+                    /**
+                     * Undo stick.
+                     */
+                    function undoStick($container) {
+                        var $grid = $container.find("." + BODY_PRF + DETAIL);
+                        var histories = $grid.data(internal.STICK_HISTORY);
+                        if (!histories)
+                            return;
+                        var items = histories.pop();
+                        _.forEach(items, function (i) {
+                            update.gridCell($grid[0], i.rowIndex, i.columnKey, -1, i.value, true);
+                            internal.removeChange($grid[0], i);
+                        });
+                    }
+                    /**
+                     * Clear histories.
+                     */
+                    function clearHistories($container, type) {
+                        var $grid = $container.find("." + BODY_PRF + DETAIL);
+                        var histType;
+                        switch (type) {
+                            case "edit":
+                                histType = internal.EDIT_HISTORY;
+                                break;
+                            case "copyPaste":
+                                histType = internal.COPY_HISTORY;
+                                break;
+                            case "stick":
+                                histType = internal.STICK_HISTORY;
+                                break;
+                        }
+                        $grid.data(histType, null);
+                    }
+                    /**
+                     * Lock cell.
+                     */
+                    function lockCell($container, rowId, columnKey) {
+                        var $table = helper.getMainTable($container[0]);
+                        var ds = helper.getDataSource($table[0]);
+                        var pk = helper.getPrimaryKey($table[0]);
+                        var i = -1;
+                        _.forEach(ds, function (r, j) {
+                            if (r[pk] === rowId) {
+                                i = j;
+                                return false;
+                            }
+                        });
+                        if (i === -1)
+                            return;
+                        var locks = $.data($table, internal.DET);
+                        var found = -1;
+                        if (locks && locks[i] && locks[i].length > 0) {
+                            _.forEach(locks[i], function (c, j) {
+                                if (c === columnKey) {
+                                    found = j;
+                                    return false;
+                                }
+                            });
+                        }
+                        if (found === -1) {
+                            var $cell = selection.cellAt($table[0], i, columnKey);
+                            if (!locks) {
+                                locks = {};
+                                locks[i] = [columnKey];
+                                $table.data(internal.DET, locks);
+                            }
+                            else if (locks && !locks[i]) {
+                                locks[i] = [columnKey];
+                            }
+                            else
+                                locks[i].push(columnKey);
+                            helper.markCellWith(style.DET_CLS, $cell);
+                        }
+                    }
+                    /**
+                     * Unlock cell.
+                     */
+                    function unlockCell($container, rowId, columnKey) {
+                        var $table = helper.getMainTable($container[0]);
+                        var ds = helper.getDataSource($table[0]);
+                        var pk = helper.getPrimaryKey($table[0]);
+                        var i = -1;
+                        _.forEach(ds, function (r, j) {
+                            if (r[pk] === rowId) {
+                                i = j;
+                                return false;
+                            }
+                        });
+                        if (i === -1)
+                            return;
+                        var locks = $.data($table, internal.DET);
+                        var found = -1;
+                        if (locks && locks[i] && locks[i].length > 0) {
+                            _.forEach(locks[i], function (c, j) {
+                                if (c === columnKey) {
+                                    found = j;
+                                    return false;
+                                }
+                            });
+                        }
+                        if (found > -1) {
+                            var $cell = selection.cellAt($table[0], i, columnKey);
+                            locks[i].splice(found, 1);
+                            if (locks[i].length === 0)
+                                delete locks[i];
+                            helper.stripCellWith(style.DET_CLS, $cell[0]);
+                        }
+                    }
+                    /**
+                     * Return popup value.
+                     */
+                    function returnPopupValue($container, value) {
+                        var header = helper.getMainHeader($container).find("table:first");
+                        if (!header)
+                            return;
+                        var $pu = $.data(header, internal.POPUP);
+                        if (!$pu)
+                            return;
+                        events.trigger($pu[0], events.POPUP_INPUT_END, { value: value });
+                    }
+                    /**
+                     * Get data source.
+                     */
+                    function getDataSource($container, name) {
+                        switch (name) {
+                            case "leftmost":
+                                return helper.getPartialDataSource($container[0], LEFTMOST);
+                            case "middle":
+                                return helper.getPartialDataSource($container[0], MIDDLE);
+                            case "detail":
+                                return helper.getPartialDataSource($container[0], DETAIL);
+                            case "verticalSummaries":
+                                return helper.getPartialDataSource($container[0], VERTICAL_SUM);
+                            case "leftHorizontalSummaries":
+                                return helper.getPartialDataSource($container[0], LEFT_HORZ_SUM);
+                            case "horizontalSummaries":
+                                return helper.getPartialDataSource($container[0], HORIZONTAL_SUM);
+                        }
+                    }
+                    /**
+                     * Get cell by index.
+                     */
+                    function getCellByIndex($container, rowIndex, columnKey) {
+                        var $tbl = helper.getMainTable($container[0]);
+                        if (!$tbl)
+                            return;
+                        return selection.cellAt($tbl, rowIndex, columnKey);
+                    }
+                    /**
+                     * Get cell by Id.
+                     */
+                    function getCellById($container, rowId, columnKey) {
+                        var $tbl = helper.getMainTable($container[0]);
+                        if (!$tbl)
+                            return;
+                        return selection.cellOf($tbl, rowId, columnKey);
+                    }
+                    /**
+                     * Get updated cells.
+                     */
+                    function getUpdatedCells($container) {
+                        var data = $container.data(NAMESPACE).modifications;
+                        if (!data)
+                            return [];
+                        return helper.valuesArray(data);
+                    }
+                    /**
+                     * Round retreat.
+                     */
+                    function roundRetreat($container, value) {
+                        if (!value)
+                            return;
+                        events.trigger($container[0], events.ROUND_RETREAT, value);
+                    }
+                    /**
+                     * Set cell value.
+                     */
+                    function setCellValue($container, name, rowId, columnKey, value) {
+                        switch (name) {
+                            case LEFT_TBL:
+                                setValue($container, BODY_PRF + LEFTMOST, rowId, columnKey, value);
+                                break;
+                            case HORZ_SUM:
+                                setValue($container, BODY_PRF + HORIZONTAL_SUM, rowId, columnKey, value);
+                                break;
+                            case VERT_SUM:
+                                setValue($container, BODY_PRF + VERTICAL_SUM, rowId, columnKey, value);
+                                break;
+                        }
+                    }
+                    /**
+                     * Set cell value by index.
+                     */
+                    function setCellValueByIndex($container, name, rowIdx, columnKey, value) {
+                        switch (name) {
+                            case LEFT_TBL:
+                                setValueByIndex($container, BODY_PRF + LEFTMOST, rowIdx, columnKey, value);
+                                break;
+                            case HORZ_SUM:
+                                setValueByIndex($container, BODY_PRF + HORIZONTAL_SUM, rowIdx, columnKey, value);
+                                break;
+                            case VERT_SUM:
+                                setValueByIndex($container, BODY_PRF + VERTICAL_SUM, rowIdx, columnKey, value);
+                                break;
+                        }
+                    }
+                    /**
+                     * Set value.
+                     */
+                    function setValue($container, selector, rowId, columnKey, value) {
+                        var $grid = $container.find("." + selector);
+                        if ($grid.length === 0)
+                            return;
+                        var rowIdx = helper.getRowIndex($grid[0], rowId);
+                        var ds = helper.getDataSource($grid[0]);
+                        if (rowIdx === -1 || !ds || ds.length === 0)
+                            return;
+                        if (selector === BODY_PRF + LEFTMOST) {
+                            if (ds[rowIdx][columnKey] !== value) {
+                                update.gridCell($grid[0], rowIdx, columnKey, -1, value);
+                                update.pushEditHistory($grid[0], new selection.Cell(rowIdx, columnKey, value, -1));
+                            }
+                        }
+                        else {
+                            ds[rowIdx][columnKey] = value;
+                            refreshCell($grid, rowId, columnKey, value);
+                        }
+                    }
+                    /**
+                     * Set value by index.
+                     */
+                    function setValueByIndex($container, selector, rowIdx, columnKey, value) {
+                        var $grid = $container.find("." + selector);
+                        if ($grid.length === 0)
+                            return;
+                        var ds = helper.getDataSource($grid[0]);
+                        if (!ds || ds.length === 0)
+                            return;
+                        if (selector === BODY_PRF + LEFTMOST) {
+                            if (ds[rowIdx][columnKey] !== value) {
+                                update.gridCell($grid[0], rowIdx, columnKey, -1, value);
+                                update.pushEditHistory($grid[0], new selection.Cell(rowIdx, columnKey, value, -1));
+                            }
+                        }
+                        else {
+                            ds[rowIdx][columnKey] = value;
+                            refreshCellByIndex($grid, rowIdx, columnKey, value);
+                        }
+                    }
+                    /**
+                     * Refresh cell.
+                     */
+                    function refreshCell($grid, rowId, columnKey, value) {
+                        var $c = selection.cellOf($grid[0], rowId, columnKey);
+                        if ($c === intan.NULL || !$c)
+                            return;
+                        if (uk.util.isNullOrUndefined(value)) {
+                            var ds = helper.getClonedDs($grid[0]);
+                            if (!ds || ds.length === 0)
+                                return;
+                            var rIdx = helper.getRowIndex($grid[0], rowId);
+                            if (rIdx === -1)
+                                return;
+                            value = ds[rIdx][columnKey];
+                        }
+                        $c.textContent = value;
+                    }
+                    /**
+                     * Refresh cell by index.
+                     */
+                    function refreshCellByIndex($grid, rowIdx, columnKey, value) {
+                        var $c = selection.cellAt($grid[0], rowIdx, columnKey);
+                        if ($c === intan.NULL || !$c)
+                            return;
+                        if (uk.util.isNullOrUndefined(value)) {
+                            var ds = helper.getClonedDs($grid);
+                            if (!ds || ds.length === 0)
+                                return;
+                            value = ds[rowIdx][columnKey];
+                        }
+                        $c.textContent = value;
+                    }
+                    /**
+                     * Set row Id.
+                     */
+                    function setRowId($container, rowIndex, value) {
+                        $container.find("div[class*='" + BODY_PRF + "']").filter(function () {
+                            return !$(this).hasClass(BODY_PRF + HORIZONTAL_SUM) && !$(this).hasClass(BODY_PRF + LEFT_HORZ_SUM);
+                        }).each(function () {
+                            var key = helper.getPrimaryKey(this);
+                            var ds = internal.getDataSource(this);
+                            if (!ds || ds.length === 0 || !ds[rowIndex])
+                                return;
+                            if (ds[rowIndex][key] !== value) {
+                                update.gridCell(this, rowIndex, key, -1, value);
+                                update.pushEditHistory(this, new selection.Cell(rowIndex, key, value, -1));
+                            }
+                        });
+                    }
+                    /**
+                     * Save scroll.
+                     */
+                    function saveScroll($container) {
+                        var key = uk.request.location.current.rawUrl + "/" + $container.attr("id") + "/scroll";
+                        var scroll = {};
+                        var tbl = helper.getMainTable($container[0]);
+                        scroll.v = tbl.scrollTop;
+                        scroll.h = tbl.scrollLeft;
+                        uk.localStorage.setItemAsJson(key, scroll);
+                    }
+                    /**
+                     * Scroll back.
+                     */
+                    function scrollBack($container, where) {
+                        var key = uk.request.location.current.rawUrl + "/" + $container.attr("id") + "/scroll";
+                        var item = uk.localStorage.getItem(key);
+                        if (!item.isPresent())
+                            return;
+                        var tbl = helper.getMainTable($container[0]);
+                        var scroll = JSON.parse(item.get());
+                        switch (where) {
+                            case 0:
+                                tbl.scrollLeft = scroll.h + "px";
+                                break;
+                            case 1:
+                                tbl.scrollTop = scroll.v + "px";
+                                break;
+                            case 2:
+                                tbl.scrollLeft = scroll.h + "px";
+                                tbl.scrollTop = scroll.v + "px";
+                                break;
+                        }
+                    }
+                })(func || (func = {}));
+                var internal;
+                (function (internal) {
+                    internal.X_OCCUPY = "ex-x-occupy";
+                    internal.Y_OCCUPY = "ex-y-occupy";
+                    internal.TANGI = "x-tangi";
+                    internal.CANON = "x-canon";
+                    internal.STICKER = "x-sticker";
+                    internal.DET = "x-det";
+                    internal.PAINTER = "painter";
+                    internal.CELLS_STYLE = "body-cells-style";
+                    internal.VIEW = "view";
+                    internal.EX_PART = "expart";
+                    internal.TIME_VALID_RANGE = "time-validate-range";
+                    internal.SELECTED_CELLS = "selected-cells";
+                    internal.LAST_SELECTED = "last-selected";
+                    internal.SELECTED_ROWS = "selected-rows";
+                    internal.COPY_HISTORY = "copy-history";
+                    internal.EDIT_HISTORY = "edit-history";
+                    internal.STICK_HISTORY = "stick-history";
+                    internal.TOOLTIP = "tooltip";
+                    internal.CONTEXT_MENU = "context-menu";
+                    internal.POPUP = "popup";
+                    internal.TEXT = "text";
+                    internal.TIME = "time";
+                    internal.DURATION = "duration";
+                    internal.NUMBER = "number";
+                    internal.DT_SEPARATOR = "/";
+                    internal.COLUMN_IN = "column-in";
+                    /**
+                     * Get gem.
+                     */
+                    function getGem($grid) {
+                        return $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                    }
+                    internal.getGem = getGem;
+                    /**
+                     * Get data source.
+                     */
+                    function getDataSource($grid) {
+                        var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        if (!gen)
+                            return;
+                        return gen.dataSource;
+                    }
+                    internal.getDataSource = getDataSource;
+                    /**
+                     * Remove change.
+                     */
+                    function removeChange($grid, cell) {
+                        var origDs = helper.getOrigDS($grid);
+                        var exTable = helper.getExTableFromGrid($grid);
+                        if (!origDs || !exTable)
+                            return;
+                        var oVal = origDs[cell.rowIndex][cell.columnKey];
+                        var cells = exTable.modifications[cell.rowIndex];
+                        if (!cells)
+                            return;
+                        var index = -1;
+                        _.forEach(cells, function (c, i) {
+                            if (helper.areSameCells(cell, c) && cell.value === oVal) {
+                                index = i;
+                                return false;
+                            }
+                        });
+                        exTable.modifications[cell.rowIndex].splice(index, 1);
+                    }
+                    internal.removeChange = removeChange;
+                    /**
+                     * Clear states.
+                     */
+                    function clearStates($grid) {
+                        $grid.data(internal.SELECTED_CELLS, null);
+                        $grid.data(internal.LAST_SELECTED, null);
+                        $grid.data(internal.COPY_HISTORY, null);
+                        $grid.data(internal.EDIT_HISTORY, null);
+                        $grid.data(internal.STICK_HISTORY, null);
+                        var exTable = helper.getExTableFromGrid($grid);
+                        if (!exTable)
+                            return;
+                        exTable.modifications = {};
+                    }
+                    internal.clearStates = clearStates;
+                })(internal || (internal = {}));
+                var selector;
+                (function (selector) {
+                    function find(p, sel) {
+                        return new Manipulator().addNodes(p.querySelectorAll(sel));
+                    }
+                    selector.find = find;
+                    function create(str) {
+                        return new Manipulator().addElement(document.createElement(str));
+                    }
+                    selector.create = create;
+                    function is(el, sel) {
+                        return (el.matches || el.matchesSelector || el.msMatchesSelector || el.mozMatchesSelector || el.webkitMatchesSelector || el.oMatchesSelector).call(el, sel);
+                    }
+                    selector.is = is;
+                    function index(el) {
+                        return Array.prototype.slice.call(el.parentNode.children).indexOf(el);
+                    }
+                    selector.index = index;
+                    function queryAll(el, sel) {
+                        return Array.prototype.slice.call(el.querySelectorAll(sel));
+                    }
+                    selector.queryAll = queryAll;
+                    function offset(el) {
+                        var rect = el.getBoundingClientRect();
+                        return {
+                            top: rect.top + document.body.scrollTop,
+                            left: rect.left + document.body.scrollLeft
+                        };
+                    }
+                    selector.offset = offset;
+                    function classSiblings(node, clazz) {
+                        var parent = node.parentElement;
+                        if (!parent)
+                            return;
+                        var children = parent.children;
+                        var results = [];
+                        for (var i = 0; i < children.length; i++) {
+                            if (children[i] === node)
+                                continue;
+                            var classList = children[i].classList;
+                            for (var j = 0; j < classList.length; j++) {
+                                if (classList.item(j) === clazz) {
+                                    results.push(children[i]);
+                                    break;
+                                }
+                            }
+                        }
+                        return results;
+                    }
+                    selector.classSiblings = classSiblings;
+                    function siblingsLt(el, index) {
+                        var parent = el.parentNode;
+                        if (!parent)
+                            return;
+                        var children = parent.children;
+                        var results = [];
+                        for (var i = 0; i < children.length; i++) {
+                            if (i < index) {
+                                if (children[i] !== el)
+                                    results.push(children[i]);
+                            }
+                            else
+                                return results;
+                        }
+                    }
+                    selector.siblingsLt = siblingsLt;
+                    var Manipulator = (function () {
+                        function Manipulator() {
+                        }
+                        Manipulator.prototype.addNodes = function (nodes) {
+                            if (!nodes || nodes.length === 0)
+                                return;
+                            this.elements = Array.prototype.slice.call(self.elements);
+                            return this;
+                        };
+                        Manipulator.prototype.addElements = function (elements) {
+                            this.elements = elements;
+                            return this;
+                        };
+                        Manipulator.prototype.addElement = function (element) {
+                            if (!this.elements)
+                                this.elements = [];
+                            this.elements.push(element);
+                            return this;
+                        };
+                        Manipulator.prototype.html = function (str) {
+                            this.elements.forEach(function (e) {
+                                e.innerHTML = str;
+                            });
+                            return this;
+                        };
+                        Manipulator.prototype.width = function (w) {
+                            var self = this;
+                            this.elements.forEach(function (e) {
+                                e.style.width = parseInt(w) + "px";
+                            });
+                            return this;
+                        };
+                        Manipulator.prototype.height = function (h) {
+                            var self = this;
+                            this.elements.forEach(function (e) {
+                                e.style.height = parseInt(h) + "px";
+                            });
+                            return this;
+                        };
+                        Manipulator.prototype.data = function (name, value) {
+                            this.elements.forEach(function (e) {
+                                $.data(e, name, value);
+                            });
+                            return this;
+                        };
+                        Manipulator.prototype.addClass = function (clazz) {
+                            this.elements.forEach(function (e) {
+                                e.classList.add(clazz);
+                            });
+                            return this;
+                        };
+                        Manipulator.prototype.css = function (style) {
+                            this.elements.forEach(function (e) {
+                                Object.keys(style).forEach(function (k) {
+                                    ;
+                                    if (k === "maxWidth") {
+                                        e.style.setProperty("max-width", style[k]);
+                                        return;
+                                    }
+                                    e.style.setProperty(k, style[k]);
+                                });
+                            });
+                            return this;
+                        };
+                        Manipulator.prototype.getSingle = function () {
+                            return this.elements[0];
+                        };
+                        Manipulator.prototype.get = function () {
+                            return this.elements;
+                        };
+                        return Manipulator;
+                    }());
+                    selector.Manipulator = Manipulator;
+                })(selector || (selector = {}));
+                var helper;
+                (function (helper) {
+                    /**
+                     * Get scroll width.
+                     */
+                    function getScrollWidth() {
+                        var $outer = document.body.appendChild(selector.create("div").css({ visibility: 'hidden', width: "100px", overflow: 'scroll' }).getSingle());
+                        var $inner = selector.create("div").css({ width: '100%' }).getSingle();
+                        $outer.appendChild($inner);
+                        var widthWithScroll = $inner.offsetWidth;
+                        $outer.parentNode.removeChild($outer);
+                        return 100 - widthWithScroll;
+                    }
+                    helper.getScrollWidth = getScrollWidth;
+                    /**
+                     * Get table.
+                     */
+                    function getTable($exTable, name) {
+                        return $exTable.querySelector("." + name);
+                    }
+                    helper.getTable = getTable;
+                    /**
+                     * Get main header.
+                     */
+                    function getMainHeader($exTable) {
+                        return $exTable.querySelector("." + HEADER_PRF + DETAIL);
+                    }
+                    helper.getMainHeader = getMainHeader;
+                    /**
+                     * Get main table.
+                     */
+                    function getMainTable($exTable) {
+                        return $exTable.querySelector("." + BODY_PRF + DETAIL);
+                    }
+                    helper.getMainTable = getMainTable;
+                    /**
+                     * Get leftmost table.
+                     */
+                    function getLeftmostTable($exTable) {
+                        return $exTable.querySelector("." + BODY_PRF + LEFTMOST);
+                    }
+                    helper.getLeftmostTable = getLeftmostTable;
+                    /**
+                     * Get exTable from grid.
+                     */
+                    function getExTableFromGrid($grid) {
+                        return $.data(helper.closest($grid, "." + NAMESPACE), NAMESPACE);
+                    }
+                    helper.getExTableFromGrid = getExTableFromGrid;
+                    /**
+                     * Get visible columns.
+                     */
+                    function getVisibleColumnsOn($grid) {
+                        return ($.data($grid, internal.TANGI) || $.data($grid, internal.CANON)).painter.visibleColumns;
+                    }
+                    helper.getVisibleColumnsOn = getVisibleColumnsOn;
+                    /**
+                     * Get visible columns.
+                     */
+                    function getVisibleColumns(options) {
+                        var visibleColumns = [];
+                        filterColumns(options.columns, visibleColumns, []);
+                        return visibleColumns;
+                    }
+                    helper.getVisibleColumns = getVisibleColumns;
+                    /**
+                     * Get origDS.
+                     */
+                    function getOrigDS($grid) {
+                        return ($.data($grid, internal.TANGI) || $.data($grid, internal.CANON))._origDs;
+                    }
+                    helper.getOrigDS = getOrigDS;
+                    /**
+                     * Get data source.
+                     */
+                    function getDataSource($grid) {
+                        return ($.data($grid, internal.TANGI) || $.data($grid, internal.CANON)).dataSource;
+                    }
+                    helper.getDataSource = getDataSource;
+                    /**
+                     * Get clonedDs.
+                     */
+                    function getClonedDs($grid) {
+                        return _.cloneDeep(getDataSource($grid));
+                    }
+                    helper.getClonedDs = getClonedDs;
+                    /**
+                     * Get primary key.
+                     */
+                    function getPrimaryKey($grid) {
+                        return ($.data($grid, internal.TANGI) || $.data($grid, internal.CANON)).primaryKey;
+                    }
+                    helper.getPrimaryKey = getPrimaryKey;
+                    /**
+                     * Classify columns.
+                     */
+                    function classifyColumns(options) {
+                        var visibleColumns = [];
+                        var hiddenColumns = [];
+                        filterColumns(options.columns, visibleColumns, hiddenColumns);
+                        return {
+                            visibleColumns: visibleColumns,
+                            hiddenColumns: hiddenColumns
+                        };
+                    }
+                    helper.classifyColumns = classifyColumns;
+                    /**
+                     * Filter columns.
+                     */
+                    function filterColumns(columns, visibleColumns, hiddenColumns) {
+                        _.forEach(columns, function (col) {
+                            if (!uk.util.isNullOrUndefined(col.visible) && col.visible === false) {
+                                hiddenColumns.push(col);
+                                return;
+                            }
+                            if (!uk.util.isNullOrUndefined(col.group) && col.group.length > 0) {
+                                filterColumns(col.group, visibleColumns, hiddenColumns);
+                            }
+                            else {
+                                visibleColumns.push(col);
+                            }
+                        });
+                    }
+                    /**
+                     * Get columns map.
+                     */
+                    function getColumnsMap(columns) {
+                        return _.groupBy(columns, "key");
+                    }
+                    helper.getColumnsMap = getColumnsMap;
+                    /**
+                     * Get columns map from struct.
+                     */
+                    function columnsMapFromStruct(levelStruct) {
+                        var map = {};
+                        _.forEach(Object.keys(levelStruct), function (nth) {
+                            _.forEach(levelStruct[nth], function (col) {
+                                if (!uk.util.isNullOrUndefined(col.key)) {
+                                    map[col.key] = col;
+                                }
+                            });
+                        });
+                        return map;
+                    }
+                    helper.columnsMapFromStruct = columnsMapFromStruct;
+                    /**
+                     * Get partial data source.
+                     */
+                    function getPartialDataSource($table, name) {
+                        return {
+                            header: getClonedDs($table.querySelector("." + HEADER_PRF + name)),
+                            body: getClonedDs($table.querySelector("." + BODY_PRF + name))
+                        };
+                    }
+                    helper.getPartialDataSource = getPartialDataSource;
+                    /**
+                     * Make connector.
+                     */
+                    function makeConnector() {
+                        Connector[HEADER_PRF + LEFTMOST] = BODY_PRF + LEFTMOST;
+                        Connector[HEADER_PRF + MIDDLE] = BODY_PRF + MIDDLE;
+                        Connector[HEADER_PRF + DETAIL] = BODY_PRF + DETAIL;
+                        Connector[HEADER_PRF + VERTICAL_SUM] = BODY_PRF + VERTICAL_SUM;
+                        Connector[HEADER_PRF + HORIZONTAL_SUM] = BODY_PRF + HORIZONTAL_SUM;
+                    }
+                    helper.makeConnector = makeConnector;
+                    /**
+                     * Get class of header.
+                     */
+                    function getClassOfHeader($part) {
+                        return $.data($part, internal.EX_PART);
+                    }
+                    helper.getClassOfHeader = getClassOfHeader;
+                    /**
+                     * Is paste key.
+                     */
+                    function isPasteKey(evt) {
+                        return evt.keyCode === 86;
+                    }
+                    helper.isPasteKey = isPasteKey;
+                    /**
+                     * Is copy key.
+                     */
+                    function isCopyKey(evt) {
+                        return evt.keyCode === 67;
+                    }
+                    helper.isCopyKey = isCopyKey;
+                    /**
+                     * Is cut key.
+                     */
+                    function isCutKey(evt) {
+                        return evt.keyCode === 88;
+                    }
+                    helper.isCutKey = isCutKey;
+                    /**
+                     * Is undo key.
+                     */
+                    function isUndoKey(evt) {
+                        return evt.keyCode === 90;
+                    }
+                    helper.isUndoKey = isUndoKey;
+                    /**
+                     * Get cell coord.
+                     */
+                    function getCellCoord($cell) {
+                        if (!$cell)
+                            return;
+                        var $td = $cell;
+                        if (selector.is($cell, "div")) {
+                            $td = closest($cell, "td");
+                        }
+                        var view = $.data($td, internal.VIEW);
+                        if (!view)
+                            return;
+                        var coord = view.split("-");
+                        if (uk.util.isNullOrUndefined(coord[0]) || uk.util.isNullOrUndefined(coord[1]))
+                            return;
+                        return {
+                            rowIdx: parseFloat(coord[0]),
+                            columnKey: coord[1]
+                        };
+                    }
+                    helper.getCellCoord = getCellCoord;
+                    /**
+                     * Get display column index.
+                     */
+                    function getDisplayColumnIndex($grid, key) {
+                        var generator = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        var visibleColumns = generator.painter.visibleColumns;
+                        var index;
+                        _.forEach(visibleColumns, function (c, i) {
+                            if (c.key === key) {
+                                index = i;
+                                return false;
+                            }
+                        });
+                        return index;
+                    }
+                    helper.getDisplayColumnIndex = getDisplayColumnIndex;
+                    /**
+                     * Get row index.
+                     */
+                    function getRowIndex($grid, rowId) {
+                        var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        if (!gen)
+                            return;
+                        var start = gen.startIndex || 0;
+                        var end = gen.endIndex || gen.dataSource.length - 1;
+                        for (var i = start; i <= end; i++) {
+                            if (gen.dataSource[i][gen.primaryKey] === rowId) {
+                                return i;
+                            }
+                        }
+                        return -1;
+                    }
+                    helper.getRowIndex = getRowIndex;
+                    /**
+                     * Grid visible columns.
+                     */
+                    function gridVisibleColumns($grid) {
+                        var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        if (!gen)
+                            return;
+                        return gen.painter.visibleColumns;
+                    }
+                    helper.gridVisibleColumns = gridVisibleColumns;
+                    /**
+                     * Grid columns map.
+                     */
+                    function gridColumnsMap($grid) {
+                        var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        if (!gen)
+                            return;
+                        return gen.painter.columnsMap;
+                    }
+                    helper.gridColumnsMap = gridColumnsMap;
+                    /**
+                     * Mark cell.
+                     */
+                    function markCellWith(clazz, $cell, nth, value) {
+                        var $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
+                        if (selector.is($cell, "td") && $childCells.length > 0) {
+                            if (!uk.util.isNullOrUndefined(nth) && nth !== -1) {
+                                $childCells[nth].classList.add(clazz);
+                                if (clazz === errors.ERROR_CLS)
+                                    $childCells[nth].textContent = value;
+                            }
+                            else {
+                                helper.addClass($childCells, clazz);
+                            }
+                            return;
+                        }
+                        $cell.classList.add(clazz);
+                        if (clazz === errors.ERROR_CLS)
+                            $cell.textContent = value;
+                    }
+                    helper.markCellWith = markCellWith;
+                    /**
+                     * Strip cell.
+                     */
+                    function stripCellWith(clazz, $cell, nth) {
+                        var $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
+                        if (selector.is($cell, "td") && $childCells.length > 0) {
+                            if (!uk.util.isNullOrUndefined(nth) && nth !== -1) {
+                                $childCells[nth].classList.remove(clazz);
+                            }
+                            else
+                                helper.removeClass($childCells, clazz);
+                            return;
+                        }
+                        $cell.classList.remove(clazz);
+                    }
+                    helper.stripCellWith = stripCellWith;
+                    /**
+                     * Mark cells.
+                     */
+                    function markCellsWith(clazz, $cells) {
+                        $cells.forEach(function (e) {
+                            markCellWith(clazz, e);
+                        });
+                    }
+                    helper.markCellsWith = markCellsWith;
+                    /**
+                     * Strip cells.
+                     */
+                    function stripCellsWith(clazz, $cells) {
+                        $cells.forEach(function (e) {
+                            stripCellWith(clazz, e);
+                        });
+                    }
+                    helper.stripCellsWith = stripCellsWith;
+                    /**
+                     * Is detable.
+                     */
+                    function isDetable($cell) {
+                        var children = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
+                        return !(selector.is($cell, "." + style.HIDDEN_CLS) || selector.is($cell, "." + style.SEAL_CLS)
+                            || (children.length > 0
+                                && (selector.is(children[0], "." + style.HIDDEN_CLS)
+                                    || selector.is(children[0], "." + style.SEAL_CLS))));
+                    }
+                    helper.isDetable = isDetable;
+                    /**
+                     * Column index.
+                     */
+                    function indexOf(columnKey, visibleColumns) {
+                        var index = -1;
+                        _.forEach(visibleColumns, function (column, i) {
+                            if (column.key === columnKey) {
+                                index = i;
+                                return false;
+                            }
+                        });
+                        return index;
+                    }
+                    helper.indexOf = indexOf;
+                    /**
+                     * Next column key.
+                     */
+                    function nextKeyOf(columnIndex, visibleColumns) {
+                        if (columnIndex >= visibleColumns.length - 1)
+                            return;
+                        return visibleColumns[columnIndex + 1].key;
+                    }
+                    helper.nextKeyOf = nextKeyOf;
+                    /**
+                     * Next cell.
+                     */
+                    function nextCellOf($grid, cell) {
+                        var key, rowIndex, innerIdx;
+                        var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        if (!gen)
+                            return;
+                        var visibleColumns = gen.painter.visibleColumns;
+                        key = nextKeyOf(indexOf(cell.columnKey, visibleColumns), visibleColumns);
+                        if (key) {
+                            return new selection.Cell(cell.rowIndex, key, undefined, cell.innerIdx);
+                        }
+                        key = visibleColumns[0].key;
+                        if (cell.rowIndex >= gen.dataSource.length - 1) {
+                            if (cell.innerIdx === -1) {
+                                rowIndex = 0;
+                                innerIdx = -1;
+                            }
+                            else if (cell.innerIdx === 0) {
+                                rowIndex = Number(cell.rowIndex);
+                                innerIdx = 1;
+                            }
+                            else if (cell.innerIdx === 1) {
+                                rowIndex = 0;
+                                innerIdx = 0;
+                            }
+                        }
+                        else {
+                            if (cell.innerIdx === -1) {
+                                rowIndex = Number(cell.rowIndex) + 1;
+                                innerIdx = -1;
+                            }
+                            else if (cell.innerIdx === 0) {
+                                rowIndex = Number(cell.rowIndex);
+                                innerIdx = 1;
+                            }
+                            else if (cell.innerIdx === 1) {
+                                rowIndex = Number(cell.rowIndex) + 1;
+                                innerIdx = 0;
+                            }
+                        }
+                        return new selection.Cell(rowIndex, key, undefined, innerIdx);
+                    }
+                    helper.nextCellOf = nextCellOf;
+                    /**
+                     * Call.
+                     */
+                    function call(fn) {
+                        var args = [];
+                        for (var _i = 1; _i < arguments.length; _i++) {
+                            args[_i - 1] = arguments[_i];
+                        }
+                        return function () {
+                            return fn.apply(null, args);
+                        };
+                    }
+                    helper.call = call;
+                    /**
+                     * Check br.
+                     */
+                    function containsBr(text) {
+                        return text && text.indexOf("<br/>") > -1;
+                    }
+                    helper.containsBr = containsBr;
+                    /**
+                     * Compare cells.
+                     */
+                    function areSameCells(one, other) {
+                        if (parseInt(one.rowIndex) !== parseInt(other.rowIndex)
+                            || one.columnKey !== other.columnKey
+                            || one.innerIdx !== other.innerIdx)
+                            return false;
+                        return true;
+                    }
+                    helper.areSameCells = areSameCells;
+                    /**
+                     * Is det cell.
+                     */
+                    function isDetCell($grid, rowIdx, key) {
+                        var $cell = selection.cellAt($grid, rowIdx, key);
+                        var $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
+                        return ($childCells.length === 0 && selector.is($cell, "." + style.DET_CLS))
+                            || ($childCells.length > 0 && selector.is($childCells[0], "." + style.DET_CLS));
+                    }
+                    helper.isDetCell = isDetCell;
+                    /**
+                     * Is xcell.
+                     */
+                    function isXCell($grid, rowId, key) {
+                        var clazz = [];
+                        for (var _i = 3; _i < arguments.length; _i++) {
+                            clazz[_i - 3] = arguments[_i];
+                        }
+                        var cellsStyle = $.data($grid, internal.CELLS_STYLE);
+                        if (!cellsStyle)
+                            return;
+                        var result = _.find(cellsStyle, function (deco) {
+                            return deco.columnKey === key && deco.rowId === rowId && clazz.some(function (c) { return deco.clazz === c; });
+                        });
+                        return result !== undefined;
+                    }
+                    helper.isXCell = isXCell;
+                    /**
+                     * Is xcell shown.
+                     */
+                    function isXCellShown($grid, rowIdx, key) {
+                        var clazz = [];
+                        for (var _i = 3; _i < arguments.length; _i++) {
+                            clazz[_i - 3] = arguments[_i];
+                        }
+                        var $cell = selection.cellAt($grid, rowIdx, key);
+                        var $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
+                        var returnVal = false;
+                        _.forEach(clazz, function (c) {
+                            if (($childCells.length === 0 && selector.is($cell, "." + c))
+                                || ($childCells.length > 0 && selector.is($childCells[0], "." + c))) {
+                                returnVal = true;
+                                return false;
+                            }
+                        });
+                        return returnVal;
+                    }
+                    helper.isXCellShown = isXCellShown;
+                    /**
+                     * Is empty.
+                     */
+                    function isEmpty(obj) {
+                        if (obj && obj.constructor === Array) {
+                            var empty_1 = true;
+                            _.forEach(obj, function (o) {
+                                if (!uk.util.isNullOrUndefined(o)) {
+                                    empty_1 = false;
+                                    return false;
+                                }
+                            });
+                            return empty_1;
+                        }
+                        if (!obj)
+                            return true;
+                        return false;
+                    }
+                    helper.isEmpty = isEmpty;
+                    /**
+                     * Values array.
+                     */
+                    function valuesArray(obj) {
+                        var values = [];
+                        _.forEach(Object.keys(obj), function (k, i) {
+                            values = _.concat(values, obj[k]);
+                        });
+                        return values;
+                    }
+                    helper.valuesArray = valuesArray;
+                    /**
+                     * String value.
+                     */
+                    function stringValue(val) {
+                        return _.isObject(val) ? JSON.stringify(val) : val;
+                    }
+                    helper.stringValue = stringValue;
+                    /**
+                     * Get cell data.
+                     */
+                    function getCellData(data) {
+                        try {
+                            return JSON.parse(data);
+                        }
+                        catch (e) {
+                            return data;
+                        }
+                    }
+                    helper.getCellData = getCellData;
+                    /**
+                     * View data.
+                     */
+                    function viewData(view, viewMode, obj) {
+                        if (!view || !viewMode)
+                            return;
+                        var result = [];
+                        _.forEach(view(viewMode), function (f) {
+                            if (!f)
+                                return;
+                            result.push(obj[f]);
+                        });
+                        return result.length === 1 ? result[0] : result;
+                    }
+                    helper.viewData = viewData;
+                    /**
+                     * Is equal.
+                     */
+                    function isEqual(one, two, fields) {
+                        if (_.isObject(one) && _.isObject(two)) {
+                            return (fields && fields.length > 0)
+                                ? _.isEqual(_.omitBy(one, function (d, p) { return fields.every(function (f) { return f !== p; }); }), _.omitBy(two, function (d, p) { return fields.every(function (f) { return f !== p; }); }))
+                                : _.isEqual(_.omit(one, _.isFunction), _.omit(two, _.isFunction));
+                        }
+                        return _.isEqual(one, two);
+                    }
+                    helper.isEqual = isEqual;
+                    /**
+                     * Block.
+                     */
+                    function block(exTable) {
+                        var $exTable = $(exTable);
+                        $exTable.block({
+                            message: null,
+                            fadeIn: 200,
+                            css: {
+                                width: $exTable.width(),
+                                height: $exTable.height()
+                            }
+                        });
+                    }
+                    helper.block = block;
+                    /**
+                     * Unblock.
+                     */
+                    function unblock(exTable) {
+                        $(exTable).unblock();
+                    }
+                    helper.unblock = unblock;
+                    /**
+                     * Highlight column.
+                     */
+                    function highlightColumn($container, columnIndex) {
+                        var grid = $container.querySelector("." + BODY_PRF + DETAIL);
+                        var header = $container.querySelector("." + HEADER_PRF + DETAIL);
+                        _.forEach(grid.getElementsByTagName("tr"), function (t) {
+                            var tds = t.getElementsByTagName("td");
+                            if (!tds || tds.length === 0)
+                                return;
+                            helper.addClass1n(tds[columnIndex], render.HIGHLIGHT_CLS);
+                        });
+                        _.forEach(header.getElementsByTagName("tr"), function (t) {
+                            var tds = t.getElementsByTagName("td");
+                            if (!tds || tds.length === 0)
+                                return;
+                            helper.addClass1n(tds[columnIndex], render.HIGHLIGHT_CLS);
+                        });
+                    }
+                    helper.highlightColumn = highlightColumn;
+                    /**
+                     * Unhighlight column.
+                     */
+                    function unHighlightColumn($container, columnIndex) {
+                        var grid = $container.querySelector("." + BODY_PRF + DETAIL);
+                        var header = $container.querySelector("." + HEADER_PRF + DETAIL);
+                        unHighlightGrid(grid, columnIndex);
+                        unHighlightGrid(header, columnIndex);
+                    }
+                    helper.unHighlightColumn = unHighlightColumn;
+                    /**
+                     * Unhighlight grid.
+                     */
+                    function unHighlightGrid(grid, columnIndex) {
+                        if (!grid)
+                            return;
+                        _.forEach(grid.getElementsByTagName("tr"), function (t) {
+                            var tds = t.getElementsByTagName("td");
+                            if (!tds || tds.length === 0)
+                                return;
+                            helper.removeClass1n(tds[columnIndex], render.HIGHLIGHT_CLS);
+                        });
+                    }
+                    helper.unHighlightGrid = unHighlightGrid;
+                    /**
+                     * First sibling.
+                     */
+                    function firstSibling(node, clazz) {
+                        var parent = node.parentElement;
+                        if (!parent)
+                            return;
+                        var children = parent.children;
+                        for (var i = 0; i < children.length; i++) {
+                            if (node !== children[i] && children[i].classList.contains(clazz)) {
+                                return children[i];
+                            }
+                        }
+                    }
+                    helper.firstSibling = firstSibling;
+                    /**
+                     * Class siblings.
+                     */
+                    function classSiblings(node, partialClass) {
+                        var parent = node.parentElement;
+                        if (!parent)
+                            return;
+                        var children = parent.children;
+                        var results = [];
+                        for (var i = 0; i < children.length; i++) {
+                            if (children[i] === node)
+                                continue;
+                            var classList = children[i].classList;
+                            for (var j = 0; j < classList.length; j++) {
+                                if (classList.item(j).indexOf(partialClass) >= 0) {
+                                    results.push(children[i]);
+                                }
+                            }
+                        }
+                        return results;
+                    }
+                    helper.classSiblings = classSiblings;
+                    /**
+                     * Consume siblings.
+                     */
+                    function consumeSiblings(node, op) {
+                        var parent = node.parentElement;
+                        if (!parent)
+                            return;
+                        var children = parent.children;
+                        for (var i = 0; i < children.length; i++) {
+                            if (node !== children[i]) {
+                                op(children[i]);
+                            }
+                        }
+                    }
+                    helper.consumeSiblings = consumeSiblings;
+                    /**
+                     * Closest.
+                     */
+                    function closest(el, selector) {
+                        var matches;
+                        ['matches', 'webkitMatchesSelector', 'mozMatchesSelector', 'msMatchesSelector', 'oMatchesSelector'].some(function (fn) {
+                            if (typeof document.body[fn] === 'function') {
+                                matches = fn;
+                                return true;
+                            }
+                            return false;
+                        });
+                        var parent;
+                        while (el) {
+                            parent = el.parentElement;
+                            if (parent && parent[matches](selector)) {
+                                return parent;
+                            }
+                            el = parent;
+                        }
+                    }
+                    helper.closest = closest;
+                    /**
+                     * Add class.
+                     */
+                    function addClass1n(node, clazz) {
+                        if (node && node.constructor !== HTMLCollection) {
+                            var children = node.querySelectorAll("." + render.CHILD_CELL_CLS);
+                            if (children.length > 0)
+                                addClass(children, clazz);
+                            else
+                                addClass(node, clazz);
+                            return;
+                        }
+                        for (var i = 0; i < node.length; i++) {
+                            var children = node[i].querySelectorAll("." + render.CHILD_CELL_CLS);
+                            if (children.length > 0)
+                                addClass(children, clazz);
+                            else
+                                addClass(node[i], clazz);
+                        }
+                    }
+                    helper.addClass1n = addClass1n;
+                    /**
+                     * Remove class.
+                     */
+                    function removeClass1n(node, clazz) {
+                        if (node && node.constructor !== HTMLCollection) {
+                            var children = node.querySelectorAll("." + render.CHILD_CELL_CLS);
+                            if (children.length > 0)
+                                removeClass(children, clazz);
+                            else
+                                removeClass(node, clazz);
+                            return;
+                        }
+                        for (var i = 0; i < node.length; i++) {
+                            var children = node[i].querySelectorAll("." + render.CHILD_CELL_CLS);
+                            if (children.length > 0)
+                                removeClass(children, clazz);
+                            else
+                                removeClass(node[i], clazz);
+                        }
+                    }
+                    helper.removeClass1n = removeClass1n;
+                    /**
+                     * Add class.
+                     */
+                    function addClass(node, clazz) {
+                        if (node && node.constructor !== HTMLCollection && node.constructor !== NodeList) {
+                            node.classList.add(clazz);
+                            return;
+                        }
+                        for (var i = 0; i < node.length; i++) {
+                            if (!node[i].classList.contains(clazz)) {
+                                node[i].classList.add(clazz);
+                            }
+                        }
+                    }
+                    helper.addClass = addClass;
+                    /**
+                     * Remove class.
+                     */
+                    function removeClass(node, clazz) {
+                        if (node && node.constructor !== HTMLCollection && node.constructor !== NodeList) {
+                            node.classList.remove(clazz);
+                            return;
+                        }
+                        for (var i = 0; i < node.length; i++) {
+                            if (node[i].classList.contains(clazz)) {
+                                node[i].classList.remove(clazz);
+                            }
+                        }
+                    }
+                    helper.removeClass = removeClass;
+                    /**
+                     * Has class.
+                     */
+                    function hasClass(node, clazz) {
+                        return node.classList.contains(clazz);
+                    }
+                    helper.hasClass = hasClass;
+                    /**
+                     * Index.
+                     */
+                    function indexInParent(node) {
+                        var parent = node.parentElement;
+                        if (!parent)
+                            return;
+                        var children = parent.children;
+                        var index = 0;
+                        for (var i = 0; i < children.length; i++) {
+                            if (children[i] === node)
+                                return index;
+                            if (children[i].nodeType === 1)
+                                index++;
+                        }
+                        return -1;
+                    }
+                    helper.indexInParent = indexInParent;
+                })(helper || (helper = {}));
+                var widget;
+                (function (widget) {
+                    widget.MENU = "menu";
+                    widget.POPUP = "popup";
+                    widget.MENU_CLS = "x-context-menu";
+                    widget.POPUP_CLS = "x-popup-panel";
+                    widget.PARTITION_CLS = "partition";
+                    widget.MENU_ITEM_CLS = "menu-item";
+                    widget.MENU_ICON_CLS = "menu-icon";
+                    widget.DISABLED_CLS = "disabled";
+                    /**
+                     * Widget.
+                     */
+                    var XWidget = (function () {
+                        function XWidget($selector) {
+                            this.$selector = $selector;
+                        }
+                        /**
+                         * Get table.
+                         */
+                        XWidget.prototype.getTable = function () {
+                            this.$table = helper.closest(this.$selector, "table");
+                        };
+                        return XWidget;
+                    }());
+                    /**
+                     * Tooltip.
+                     */
+                    var Tooltip = (function (_super) {
+                        __extends(Tooltip, _super);
+                        function Tooltip($selector, options) {
+                            _super.call(this, $selector);
+                            this.options = options;
+                            this.defaultOpts = {
+                                showRight: true,
+                                width: "100px"
+                            };
+                            this.initialize();
+                        }
+                        /**
+                         * Initialize.
+                         */
+                        Tooltip.prototype.initialize = function () {
+                            var self = this;
+                            $.extend(true, self.options, self.defaultOpts);
+                            self.$selector.addXEventListener(events.MOUSE_OVER, function (evt) {
+                                self.getTable();
+                                if (self.$table.length === 0)
+                                    return;
+                                // Tooltip is jq
+                                var $t2 = $.data(self.$table, internal.TOOLTIP);
+                                if (!$t2) {
+                                    $t2 = $("<div/>").addClass(cssClass(self.options));
+                                    $t2.appendTo("body");
+                                    $.data(self.$table, internal.TOOLTIP, $t2);
+                                }
+                                $t2.empty().append(self.options.sources).css({ visibility: "visible" })
+                                    .position({ my: "left top", at: "left+" + self.$selector.offsetWidth + " top+5", of: self.$selector });
+                            });
+                            self.$selector.addXEventListener(events.MOUSE_OUT, function (evt) {
+                                self.getTable();
+                                if (!self.$table)
+                                    return;
+                                var $t2 = $.data(self.$table, internal.TOOLTIP);
+                                if (!$t2 || $t2.css("display") === "none")
+                                    return;
+                                $t2.css({ visibility: "hidden" });
+                            });
+                        };
+                        return Tooltip;
+                    }(XWidget));
+                    widget.Tooltip = Tooltip;
+                    /**
+                     * Popup.
+                     */
+                    var Popup = (function (_super) {
+                        __extends(Popup, _super);
+                        function Popup($selector) {
+                            _super.call(this, $selector);
+                            this.initialize();
+                        }
+                        /**
+                         * Initialize.
+                         */
+                        Popup.prototype.initialize = function () {
+                            var self = this;
+                            self.$selector.addXEventListener(events.MOUSE_DOWN, function (evt) {
+                                self.getTable();
+                                if (evt.ctrlKey && $.data(helper.closest(self.$table, "." + NAMESPACE), NAMESPACE).determination)
+                                    return;
+                                self.click(evt);
+                            });
+                        };
+                        return Popup;
+                    }(XWidget));
+                    /**
+                     * Context menu.
+                     */
+                    var ContextMenu = (function (_super) {
+                        __extends(ContextMenu, _super);
+                        function ContextMenu($selector, items) {
+                            _super.call(this, $selector);
+                            this.items = items;
+                        }
+                        /**
+                         * Click.
+                         */
+                        ContextMenu.prototype.click = function (evt) {
+                            var self = this;
+                            var $menu = $.data(self.$table, internal.CONTEXT_MENU);
+                            if (!$menu) {
+                                $menu = $("<ul/>").addClass(widget.MENU_CLS).appendTo("body").hide();
+                                _.forEach(self.items, function (item) {
+                                    self.createItem($menu, item);
+                                });
+                                $.data(self.$table, internal.CONTEXT_MENU, $menu);
+                            }
+                            if ($menu.css("display") === "none") {
+                                var pos = eventPageOffset(evt, false);
+                                $menu.show().css({ top: pos.pageY, left: pos.pageX });
+                            }
+                            else {
+                                $menu.hide();
+                            }
+                            var $pu = $.data(self.$table, internal.POPUP);
+                            if ($pu && $pu.css("display") !== "none") {
+                                $pu.hide();
+                            }
+                            update.outsideClick(helper.closest(self.$table, "." + NAMESPACE), self.$selector);
+                            evt.stopPropagation();
+                            hideIfOutside($menu);
+                        };
+                        /**
+                         * Create item.
+                         */
+                        ContextMenu.prototype.createItem = function ($menu, item) {
+                            if (item.id === widget.PARTITION_CLS) {
+                                $("<li/>").addClass(widget.MENU_ITEM_CLS + " " + widget.PARTITION_CLS).appendTo($menu);
+                                return;
+                            }
+                            var $li = $("<li/>").addClass(widget.MENU_ITEM_CLS).text(item.text)
+                                .on(events.CLICK_EVT, function (evt) {
+                                if (item.disabled)
+                                    return;
+                                item.selectHandler(item.id);
+                                $menu.hide();
+                            }).appendTo($menu);
+                            if (item.disabled) {
+                                $li.addClass(widget.DISABLED_CLS);
+                            }
+                            if (item.icon) {
+                                $li.append($("<span/>").addClass(widget.MENU_ICON_CLS + " " + item.icon));
+                            }
+                        };
+                        return ContextMenu;
+                    }(Popup));
+                    widget.ContextMenu = ContextMenu;
+                    /**
+                     * Menu item.
+                     */
+                    var MenuItem = (function () {
+                        function MenuItem(text, selectHandler, disabled, icon) {
+                            this.text = text;
+                            this.selectHandler = selectHandler ? selectHandler : $.noop();
+                            this.disabled = disabled;
+                            this.icon = icon;
+                        }
+                        return MenuItem;
+                    }());
+                    widget.MenuItem = MenuItem;
+                    /**
+                     * Popup panel.
+                     */
+                    var PopupPanel = (function (_super) {
+                        __extends(PopupPanel, _super);
+                        function PopupPanel($selector, provider, position) {
+                            _super.call(this, $selector);
+                            this.provider = provider;
+                            this.position = position;
+                        }
+                        /**
+                         * Click.
+                         */
+                        PopupPanel.prototype.click = function (evt) {
+                            var self = this;
+                            var $pu = $.data(self.$table, internal.POPUP);
+                            var $cell = evt.target;
+                            if (!selector.is(evt.target, "td")) {
+                                $cell = helper.closest(evt.target, "td");
+                            }
+                            var coord = helper.getCellCoord($cell);
+                            self.$panel = self.provider(coord.columnKey);
+                            if (!$pu) {
+                                $pu = self.$panel.addClass(widget.POPUP_CLS).hide();
+                                $.data(self.$table, internal.POPUP, $pu);
+                            }
+                            if ($pu.css("display") === "none") {
+                                var pos = eventPageOffset(evt, false);
+                                $pu.show().css(self.getPosition($pu, pos, self.position || "top left"));
+                                events.trigger(self.$table, events.POPUP_SHOWN, $(evt.target));
+                                self.addListener($pu, $(evt.target));
+                            }
+                            else {
+                                $pu.hide();
+                            }
+                            var $menu = $.data(self.$table, internal.CONTEXT_MENU);
+                            if ($menu && $menu.css("display") !== "none") {
+                                $menu.hide();
+                            }
+                            evt.stopPropagation();
+                            hideIfOutside($pu);
+                        };
+                        /**
+                         * Add listener.
+                         */
+                        PopupPanel.prototype.addListener = function ($pu, $t) {
+                            var self = this;
+                            $pu.off(events.POPUP_INPUT_END);
+                            $pu.on(events.POPUP_INPUT_END, function (evt, ui) {
+                                var $header = helper.closest(self.$selector, "table").parentElement;
+                                if ($header.classList.contains(HEADER)) {
+                                    var ds = helper.getDataSource($header);
+                                    if (!ds || ds.length === 0)
+                                        return;
+                                    var coord = helper.getCellCoord($t[0]);
+                                    ds[coord.rowIdx][coord.columnKey] = ui.value;
+                                    $t.text(ui.value);
+                                    $pu.hide();
+                                }
+                            });
+                        };
+                        /**
+                         * Get position.
+                         */
+                        PopupPanel.prototype.getPosition = function ($pu, pos, my) {
+                            if (my === "top left") {
+                                return { top: pos.pageY - $pu.outerHeight() - 49, left: pos.pageX - $pu.outerWidth() };
+                            }
+                            else if (my === "bottom left") {
+                                return { top: pos.pageY - 49, left: pos.pageX - $pu.outerWidth() };
+                            }
+                            else if (my === "top right") {
+                                return { top: pos.pageY - $pu.outerHeight() - 49, left: pos.pageX };
+                            }
+                            else if (my === "bottom right") {
+                                return { top: pos.pageY - 49, left: pos.pageX };
+                            }
+                        };
+                        return PopupPanel;
+                    }(Popup));
+                    widget.PopupPanel = PopupPanel;
+                    function bind(row, rowIdx, headerPopupFt) {
+                        var wType;
+                        if (!headerPopupFt)
+                            return;
+                        _.forEach(headerPopupFt.menu.rows, function (rId) {
+                            if (rId === rowIdx) {
+                                new ContextMenu(row, headerPopupFt.menu.items);
+                                wType = widget.MENU;
+                                return false;
+                            }
+                        });
+                        if (wType)
+                            return;
+                        _.forEach(headerPopupFt.popup.rows, function (rId) {
+                            if (rId === rowIdx) {
+                                new PopupPanel(row, headerPopupFt.popup.provider);
+                                wType = widget.POPUP;
+                                return false;
+                            }
+                        });
+                        return wType;
+                    }
+                    widget.bind = bind;
+                    /**
+                     * Hide.
+                     */
+                    function hideIfOutside($w) {
+                        $(document).on(events.MOUSE_DOWN, function (evt) {
+                            if (outsideOf($w, evt.target)) {
+                                $w.hide();
+                            }
+                        });
+                        var outsideOf = function ($container, target) {
+                            return !$container.is(target) && $container.has(target).length === 0;
+                        };
+                    }
+                    /**
+                     * Offset.
+                     */
+                    function eventPageOffset(evt, isFixed) {
+                        var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+                        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        return isFixed ? { pageX: evt.pageX - scrollLeft, pageY: evt.pageY - scrollTop }
+                            : { pageX: evt.pageX, pageY: evt.pageY };
+                    }
+                    /**
+                     * Class.
+                     */
+                    function cssClass(options) {
+                        var css = options.showBelow ? 'bottom' : 'top';
+                        css += '-';
+                        css += (options.showRight ? 'right' : 'left');
+                        css += '-tooltip';
+                        return css;
+                    }
+                })(widget || (widget = {}));
+            })(exTable = ui_3.exTable || (ui_3.exTable = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui_4) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 // This file left here for log purpose
@@ -6119,7 +13465,21 @@ var nts;
                     $tabsContainer.trigger("change-tab", tabId);
                     return $target;
                 };
-            })(jqueryExtentions = ui_3.jqueryExtentions || (ui_3.jqueryExtentions = {}));
+                $.fn.ctState = function (name, method, value) {
+                    var $this = $(this);
+                    var dataName = {
+                        selected: "ctstate-selected",
+                        required: "ctstate-required",
+                        name: "ctstate-name"
+                    }[name];
+                    switch (method) {
+                        case "set":
+                            return $this.data(dataName, value);
+                        case "get":
+                            return $this.data(dataName);
+                    }
+                };
+            })(jqueryExtentions = ui_4.jqueryExtentions || (ui_4.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6129,7 +13489,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_4) {
+        (function (ui_5) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -6344,7 +13704,7 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
                 ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
-            })(koExtentions = ui_4.koExtentions || (ui_4.koExtentions = {}));
+            })(koExtentions = ui_5.koExtentions || (ui_5.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6354,7 +13714,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_5) {
+        (function (ui_6) {
             var koExtentions;
             (function (koExtentions) {
                 var notSelected;
@@ -6566,7 +13926,10 @@ var nts;
                             container.igCombo("option", "dataSource", options);
                             container.igCombo("dataBind");
                         }
-                        if (selectedValue !== undefined && selectedValue !== null) {
+                        if (notSelected.get(container) || uk.util.isNullOrUndefined(selectedValue)) {
+                            container.igCombo("value", "");
+                        }
+                        else {
                             container.igCombo("value", selectedValue);
                         }
                         container.data("columns", _.cloneDeep(columns));
@@ -6592,13 +13955,12 @@ var nts;
                             }
                         }
                         if (notSelected.get(container)) {
-                            container.find("input").val("");
                         }
                     };
                     return ComboBoxBindingHandler;
                 }());
                 ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
-            })(koExtentions = ui_5.koExtentions || (ui_5.koExtentions = {}));
+            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -8391,7 +15753,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_6) {
+        (function (ui_7) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -8835,7 +16197,7 @@ var nts;
                     };
                     return ListItemTransporter;
                 }());
-            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
+            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -9152,7 +16514,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_7) {
+        (function (ui_8) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsRadioBoxBindingHandler = (function () {
@@ -9409,7 +16771,7 @@ var nts;
                 }
                 ko.bindingHandlers['ntsRadioButton'] = new NtsRadioBoxBindingHandler();
                 ko.bindingHandlers['ntsRadioBoxGroup'] = new NtsRadioBoxGroupBindingHandler();
-            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
+            })(koExtentions = ui_8.koExtentions || (ui_8.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -9419,7 +16781,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_8) {
+        (function (ui_9) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -9735,7 +17097,7 @@ var nts;
                     return NtsSearchBoxBindingHandler;
                 }());
                 ko.bindingHandlers['ntsSearchBox'] = new NtsSearchBoxBindingHandler();
-            })(koExtentions = ui_8.koExtentions || (ui_8.koExtentions = {}));
+            })(koExtentions = ui_9.koExtentions || (ui_9.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -9745,7 +17107,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_9) {
+        (function (ui_10) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -9944,26 +17306,16 @@ var nts;
                             .attr("tabindex", tabIndex);
                         $grid2.ntsGridList('setupSelecting');
                         var $moveArea = $swap.find("#" + elementId + "-move-data")
-                            .append("<button class='move-button move-forward-all ntsSwap_Component'><i class='img-icon icon-next-all'></i></button>")
                             .append("<button class='move-button move-forward ntsSwap_Component'><i class='img-icon icon-next'></i></button>")
-                            .append("<button class='move-button move-back ntsSwap_Component'><i class='img-icon icon-prev'></i></button>")
-                            .append("<button class='move-button move-back-all ntsSwap_Component'><i class='img-icon icon-prev-all'></i></button>");
+                            .append("<button class='move-button move-back ntsSwap_Component'><i class='img-icon icon-prev'></i></button>");
                         var $moveForward = $moveArea.find(".move-forward");
-                        var $moveForwardAll = $moveArea.find(".move-forward-all");
                         var $moveBack = $moveArea.find(".move-back");
-                        var $moveBackAll = $moveArea.find(".move-back-all");
                         var swapper = this.swapper;
                         $moveForward.click(function () {
                             swapper.Model.move(true, data.value, false, beforeRight, afterRight);
                         });
                         $moveBack.click(function () {
                             swapper.Model.move(false, data.value, false, beforeLeft, afterLeft);
-                        });
-                        $moveForwardAll.click(function () {
-                            swapper.Model.move(true, data.value, true, beforeAllR, afterAllR);
-                        });
-                        $moveBackAll.click(function () {
-                            swapper.Model.move(false, data.value, true, beforeAllL, afterAllL);
                         });
                         $swap.find(".ntsSwap_Component").attr("tabindex", tabIndex);
                         this.swapper.Model.$container.bind("swaplistgridsizeexceed", function (evt, data) {
@@ -10643,7 +17995,7 @@ var nts;
                     };
                     return ListItemTransporter;
                 }());
-            })(koExtentions = ui_9.koExtentions || (ui_9.koExtentions = {}));
+            })(koExtentions = ui_10.koExtentions || (ui_10.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -10653,7 +18005,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_10) {
+        (function (ui_11) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -10674,7 +18026,6 @@ var nts;
                         if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
                             container.attr("tabindex", "0");
                         container.data("tabindex", container.attr("tabindex"));
-                        var container = $(element);
                         container.keydown(function (evt, ui) {
                             var code = evt.which || evt.keyCode;
                             if (code === 32) {
@@ -10712,6 +18063,15 @@ var nts;
                         });
                         // Default value.
                         var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
+                        container.bind("validate", function () {
+                            if (container.ctState("required", "get") && !container.ctState("selected", "get")) {
+                                container.ntsError("set", uk.resource.getMessage("FND_E_REQ_SELECT", [container.ctState("name", "get")]), "FND_E_REQ_SELECT");
+                            }
+                            else {
+                                container.ntsError("clear");
+                            }
+                        });
+                        ui.bindErrorStyle.useDefaultErrorClass(container);
                     };
                     /**
                      * Update
@@ -10731,6 +18091,8 @@ var nts;
                         var container = $(element);
                         container.data("enable", enable);
                         container.addClass("ntsControl switchButton-wrapper");
+                        container.ctState("required", "set", ko.unwrap(data.required) === true);
+                        container.ctState("name", "set", ko.unwrap(data.name));
                         // Remove deleted button.
                         $('button', container).each(function (index, btn) {
                             var $btn = $(btn);
@@ -10783,6 +18145,7 @@ var nts;
                     };
                     NtsSwitchButtonBindingHandler.setSelectedClass = function ($container, selectedCssClass, selectedValue, optValue) {
                         var targetBtn;
+                        $container.ctState("selected", "set", false);
                         $('button', $container).each(function (index, btn) {
                             var btnValue = $(btn).data('swbtn');
                             if (btnValue == optValue) {
@@ -10790,6 +18153,8 @@ var nts;
                             }
                             if (btnValue == selectedValue) {
                                 $(btn).addClass(selectedCssClass);
+                                $container.ctState("selected", "set", true);
+                                $container.ntsError("clear");
                             }
                             else {
                                 $(btn).removeClass(selectedCssClass);
@@ -10800,7 +18165,7 @@ var nts;
                     return NtsSwitchButtonBindingHandler;
                 }());
                 ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
-            })(koExtentions = ui_10.koExtentions || (ui_10.koExtentions = {}));
+            })(koExtentions = ui_11.koExtentions || (ui_11.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -10810,7 +18175,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_11) {
+        (function (ui_12) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -10923,7 +18288,7 @@ var nts;
                     return TabPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTabPanel'] = new TabPanelBindingHandler();
-            })(koExtentions = ui_11.koExtentions || (ui_11.koExtentions = {}));
+            })(koExtentions = ui_12.koExtentions || (ui_12.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -10997,7 +18362,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_12) {
+        (function (ui_13) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -11320,7 +18685,7 @@ var nts;
                     return ExpandNode;
                 }());
                 ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
-            })(koExtentions = ui_12.koExtentions || (ui_12.koExtentions = {}));
+            })(koExtentions = ui_13.koExtentions || (ui_13.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -11330,7 +18695,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_13) {
+        (function (ui_14) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -11595,7 +18960,7 @@ var nts;
                     return NtsUpDownBindingHandler;
                 }());
                 ko.bindingHandlers['ntsUpDown'] = new NtsUpDownBindingHandler();
-            })(koExtentions = ui_13.koExtentions || (ui_13.koExtentions = {}));
+            })(koExtentions = ui_14.koExtentions || (ui_14.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -11842,7 +19207,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_14) {
+        (function (ui_15) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -11906,7 +19271,7 @@ var nts;
                     return NtsCharsetSettingBindingHandler;
                 }());
                 ko.bindingHandlers['ntsCharsetSetting'] = new NtsCharsetSettingBindingHandler();
-            })(koExtentions = ui_14.koExtentions || (ui_14.koExtentions = {}));
+            })(koExtentions = ui_15.koExtentions || (ui_15.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -11916,7 +19281,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_15) {
+        (function (ui_16) {
             var contextmenu;
             (function (contextmenu) {
                 var ContextMenu = (function () {
@@ -12089,7 +19454,7 @@ var nts;
                     return ContextMenuItem;
                 }());
                 contextmenu.ContextMenuItem = ContextMenuItem;
-            })(contextmenu = ui_15.contextmenu || (ui_15.contextmenu = {}));
+            })(contextmenu = ui_16.contextmenu || (ui_16.contextmenu = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -12124,6 +19489,7 @@ var nts;
 /// <reference path="ui/ui_sub/ig.ts"/>
 /// <reference path="ui/dialog-options.ts"/>
 /// <reference path="ui/textbox-options.ts"/>
+/// <reference path="ui/extable.ts"/>
 /// <reference path="ui/jquery-ext.ts"/>
 /// <reference path="ui/ko-ext.ts"/>
 /// <reference path="ui/ko-ext/checkbox-ko-ext.ts"/>
@@ -12152,7 +19518,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_16) {
+        (function (ui_17) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -12325,7 +19691,7 @@ var nts;
                             $target.ntsError('clear');
                             $ntsDateRange.ntsError("clear");
                             var isStart = $target.hasClass("ntsStartDatePicker");
-                            var validator = new ui_16.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                            var validator = new ui_17.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                             var result = validator.validate(newText);
                             var oldValue = value();
                             if ($target.hasClass("ntsStartDatePicker")) {
@@ -12344,7 +19710,7 @@ var nts;
                                 $(e.target).ntsError('set', getMessage('FND_E_REQ_INPUT', [isStart ? startName : endName]), 'FND_E_REQ_INPUT');
                             }
                             else {
-                                var validator = new ui_16.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                                var validator = new ui_17.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                                 var result = validator.validate(newText);
                                 if (!result.isValid) {
                                     $(e.target).ntsError('set', result.errorMessage, result.errorCode);
@@ -12356,7 +19722,7 @@ var nts;
                             var newText = $target.val();
                             var isStart = $target.hasClass("ntsStartDatePicker");
                             var oldValue = value();
-                            var validator = new ui_16.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                            var validator = new ui_17.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                             var result = validator.validate(newText);
                             $target.ntsError('clear');
                             $ntsDateRange.ntsError("clear");
@@ -12419,7 +19785,7 @@ var nts;
                     return NtsDateRangePickerBindingHandler;
                 }());
                 ko.bindingHandlers['ntsDateRangePicker'] = new NtsDateRangePickerBindingHandler();
-            })(koExtentions = ui_16.koExtentions || (ui_16.koExtentions = {}));
+            })(koExtentions = ui_17.koExtentions || (ui_17.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -12588,7 +19954,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_17) {
+        (function (ui_18) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsFixedTable;
@@ -12685,7 +20051,7 @@ var nts;
                         return controls;
                     }
                 })(ntsFixedTable || (ntsFixedTable = {}));
-            })(jqueryExtentions = ui_17.jqueryExtentions || (ui_17.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_18.jqueryExtentions || (ui_18.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -12695,7 +20061,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_18) {
+        (function (ui_19) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsGridList;
@@ -12906,7 +20272,7 @@ var nts;
                             mousePos = {
                                 x: e.pageX,
                                 y: e.pageY,
-                                rowIndex: ui_18.ig.grid.getRowIndexFrom($(e.target))
+                                rowIndex: ui_19.ig.grid.getRowIndexFrom($(e.target))
                             };
                             // set position to start dragging
                             dragSelectRange.push(mousePos.rowIndex);
@@ -12923,7 +20289,7 @@ var nts;
                             }, 20);
                             // handle mousemove on window while dragging (unhandle when mouseup)
                             $(window).bind('pointermove.NtsGridListDragging', function (e) {
-                                var newPointedRowIndex = ui_18.ig.grid.getRowIndexFrom($(e.target));
+                                var newPointedRowIndex = ui_19.ig.grid.getRowIndexFrom($(e.target));
                                 // selected range is not changed
                                 if (mousePos.rowIndex === newPointedRowIndex) {
                                     return;
@@ -12999,7 +20365,7 @@ var nts;
                         //            $grid.off('mouseup');
                     }
                 })(ntsGridList || (ntsGridList = {}));
-            })(jqueryExtentions = ui_18.jqueryExtentions || (ui_18.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_19.jqueryExtentions || (ui_19.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -13009,7 +20375,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_19) {
+        (function (ui_20) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsWizard;
@@ -13098,7 +20464,7 @@ var nts;
                         return wizard.steps("getCurrentIndex");
                     }
                 })(ntsWizard || (ntsWizard = {}));
-            })(jqueryExtentions = ui_19.jqueryExtentions || (ui_19.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_20.jqueryExtentions || (ui_20.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -13197,7 +20563,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_20) {
+        (function (ui_21) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var isNull = nts.uk.util.isNullOrUndefined;
@@ -13564,7 +20930,7 @@ var nts;
                     }());
                     ntsButtonTable.TableButtonEntity = TableButtonEntity;
                 })(ntsButtonTable || (ntsButtonTable = {}));
-            })(jqueryExtentions = ui_20.jqueryExtentions || (ui_20.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_21.jqueryExtentions || (ui_21.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -13574,7 +20940,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_21) {
+        (function (ui_22) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -13772,7 +21138,7 @@ var nts;
                     return NtsTreeDragAndDropBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTreeDragAndDrop'] = new NtsTreeDragAndDropBindingHandler();
-            })(koExtentions = ui_21.koExtentions || (ui_21.koExtentions = {}));
+            })(koExtentions = ui_22.koExtentions || (ui_22.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -13782,7 +21148,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_22) {
+        (function (ui_23) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -13899,7 +21265,7 @@ var nts;
                     return NtsMonthDaysBindingHandler;
                 }());
                 ko.bindingHandlers['ntsMonthDays'] = new NtsMonthDaysBindingHandler();
-            })(koExtentions = ui_22.koExtentions || (ui_22.koExtentions = {}));
+            })(koExtentions = ui_23.koExtentions || (ui_23.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -13909,7 +21275,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_23) {
+        (function (ui_24) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -14268,7 +21634,7 @@ var nts;
                     return ImageEditorHelper;
                 }());
                 ko.bindingHandlers['ntsImageEditor'] = new NtsImageEditorBindingHandler();
-            })(koExtentions = ui_23.koExtentions || (ui_23.koExtentions = {}));
+            })(koExtentions = ui_24.koExtentions || (ui_24.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -14278,7 +21644,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_24) {
+        (function (ui_25) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -14368,7 +21734,7 @@ var nts;
                     return NtsFunctionPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsFunctionPanel'] = new NtsFunctionPanelBindingHandler();
-            })(koExtentions = ui_24.koExtentions || (ui_24.koExtentions = {}));
+            })(koExtentions = ui_25.koExtentions || (ui_25.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -14528,7 +21894,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_25) {
+        (function (ui_26) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -14613,7 +21979,7 @@ var nts;
                     return NtsAccordionBindingHandler;
                 }());
                 ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
-            })(koExtentions = ui_25.koExtentions || (ui_25.koExtentions = {}));
+            })(koExtentions = ui_26.koExtentions || (ui_26.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -14731,7 +22097,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_26) {
+        (function (ui_27) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -14888,7 +22254,7 @@ var nts;
                     return NtsColorPickerBindingHandler;
                 }());
                 ko.bindingHandlers['ntsColorPicker'] = new NtsColorPickerBindingHandler();
-            })(koExtentions = ui_26.koExtentions || (ui_26.koExtentions = {}));
+            })(koExtentions = ui_27.koExtentions || (ui_27.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -15078,7 +22444,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_27) {
+        (function (ui_28) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var errorMementos = {};
@@ -15201,7 +22567,7 @@ var nts;
                         return control.find("#sidebar-area .navigator a.active").closest("li").index();
                     }
                 })(ntsSideBar || (ntsSideBar = {}));
-            })(jqueryExtentions = ui_27.jqueryExtentions || (ui_27.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_28.jqueryExtentions || (ui_28.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -15365,7 +22731,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_28) {
+        (function (ui_29) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsGrid;
@@ -15657,23 +23023,23 @@ var nts;
                         });
                     };
                     var feature;
-                    (function (feature_1) {
-                        feature_1.UPDATING = "Updating";
-                        feature_1.SELECTION = "Selection";
-                        feature_1.RESIZING = "Resizing";
-                        feature_1.COLUMN_FIX = "ColumnFixing";
-                        feature_1.PAGING = "Paging";
-                        feature_1.COPY_PASTE = "CopyPaste";
-                        feature_1.CELL_EDIT = "CellEdit";
-                        feature_1.CELL_COLOR = "CellColor";
-                        feature_1.CELL_STATE = "CellState";
-                        feature_1.ROW_STATE = "RowState";
-                        feature_1.TEXT_COLOR = "TextColor";
-                        feature_1.HEADER_STYLES = "HeaderStyles";
-                        feature_1.HIDING = "Hiding";
-                        feature_1.SHEET = "Sheet";
-                        feature_1.DEMAND_LOAD = "LoadOnDemand";
-                        feature_1.STORAGE = "Storage";
+                    (function (feature_2) {
+                        feature_2.UPDATING = "Updating";
+                        feature_2.SELECTION = "Selection";
+                        feature_2.RESIZING = "Resizing";
+                        feature_2.COLUMN_FIX = "ColumnFixing";
+                        feature_2.PAGING = "Paging";
+                        feature_2.COPY_PASTE = "CopyPaste";
+                        feature_2.CELL_EDIT = "CellEdit";
+                        feature_2.CELL_COLOR = "CellColor";
+                        feature_2.CELL_STATE = "CellState";
+                        feature_2.ROW_STATE = "RowState";
+                        feature_2.TEXT_COLOR = "TextColor";
+                        feature_2.HEADER_STYLES = "HeaderStyles";
+                        feature_2.HIDING = "Hiding";
+                        feature_2.SHEET = "Sheet";
+                        feature_2.DEMAND_LOAD = "LoadOnDemand";
+                        feature_2.STORAGE = "Storage";
                         /**
                          * Replace feature
                          */
@@ -15687,7 +23053,7 @@ var nts;
                             });
                             options.features.splice(replaceId, 1, newFeature);
                         }
-                        feature_1.replaceBy = replaceBy;
+                        feature_2.replaceBy = replaceBy;
                         /**
                          * Check enable
                          */
@@ -15696,7 +23062,7 @@ var nts;
                                 return feature.name === name;
                             }) !== undefined;
                         }
-                        feature_1.isEnable = isEnable;
+                        feature_2.isEnable = isEnable;
                         /**
                          * Find feature
                          */
@@ -15705,10 +23071,12 @@ var nts;
                                 return feature.name === name;
                             });
                         }
-                        feature_1.find = find;
+                        feature_2.find = find;
                     })(feature || (feature = {}));
                     var updating;
                     (function (updating) {
+                        updating.INPUT_CURR_SYM = "input-currency-symbol";
+                        updating.CURR_SYM = "currency-symbol";
                         /**
                          * Add feature
                          */
@@ -15763,8 +23131,8 @@ var nts;
                             if (uk.util.isNullOrUndefined(selectedCell) || !utils.selectable($(evt.target)))
                                 return;
                             var $cell = $(selectedCell.element);
-                            if ($cell.hasClass("currency-symbol"))
-                                $cell.removeClass("currency-symbol");
+                            if ($cell.hasClass(updating.CURR_SYM))
+                                $cell.removeClass(updating.CURR_SYM);
                             return true;
                         }
                         /**
@@ -15784,6 +23152,7 @@ var nts;
                                     }
                                     setTimeout(function () {
                                         var $editor = $(ui.editor.find("input")[0]);
+                                        $editor.css("text-align", "right");
                                         $editor.val(formatted_1).select();
                                     }, 140);
                                 }
@@ -15791,7 +23160,7 @@ var nts;
                                     var groupSeparator = validation.getGroupSeparator($grid, ui.columnKey) || ",";
                                     var value_1 = uk.text.replaceAll(ui.value, groupSeparator, "");
                                     setTimeout(function () {
-                                        ui.editor.addClass("input-currency-symbol");
+                                        ui.editor.addClass(updating.INPUT_CURR_SYM);
                                         var $editor = $(ui.editor.find("input")[0]);
                                         var numb = Number(value_1);
                                         $editor.val(isNaN(numb) ? value_1 : numb).css("text-align", "right").select();
@@ -15799,7 +23168,7 @@ var nts;
                                 }
                             }
                             else if (valueType === "Currency") {
-                                ui.editor.addClass("input-currency-symbol");
+                                ui.editor.addClass(updating.INPUT_CURR_SYM);
                                 var $editor = $(ui.editor.find("input")[0]);
                                 $editor.css("text-align", "right");
                             }
@@ -15832,13 +23201,8 @@ var nts;
                             var $targetGrid = fixedColumns.realGridOf($(grid));
                             if (utils.isEditMode($targetGrid) || utils.disabled($(cell.element)))
                                 return;
-                            if (utils.isAlphaNumeric(evt) || utils.isMinusSymbol(evt)) {
-                                startEdit(evt, cell);
-                            }
-                            if (utils.isDeleteKey(evt)) {
-                                $targetGrid.one(events.Handler.GRID_EDIT_CELL_STARTED, function (evt, ui) {
-                                    $(ui.editor).find("input").val("");
-                                });
+                            if (utils.isAlphaNumeric(evt) || utils.isMinusSymbol(evt)
+                                || utils.isDeleteKey(evt)) {
                                 startEdit(evt, cell);
                             }
                         }
@@ -15851,8 +23215,8 @@ var nts;
                             if (!utils.updatable($targetGrid))
                                 return;
                             var $cell = $(cell.element);
-                            if ($cell.hasClass("currency-symbol"))
-                                $cell.removeClass("currency-symbol");
+                            if ($cell.hasClass(updating.CURR_SYM))
+                                $cell.removeClass(updating.CURR_SYM);
                             utils.startEdit($targetGrid, cell);
                             // Keep text contents if any, otherwise set input value
                             //                if ($(cell.element).text().trim() !== "") evt.preventDefault();
@@ -15864,13 +23228,20 @@ var nts;
                                         var newText = $editor.igTextEditor("value");
                                         newText = newText.substr(newText.length - 1);
                                         $editor.igTextEditor("value", newText.trim());
+                                        var input = $editor.find("input")[0];
+                                        var len = input.value.length;
+                                        input.setSelectionRange(len, len);
                                         cellValue = newText;
                                     }
                                     else if (!uk.util.isNullOrUndefined($editor.data("igNumericEditor"))) {
-                                        var newValue = $editor.igNumericEditor("value");
-                                        var numericStr = String(newValue);
-                                        numericStr = numericStr.substr(numericStr.length - 1);
-                                        $editor.igNumericEditor("value", parseInt(numericStr));
+                                        var numericStr = "-";
+                                        if (!utils.isMinusSymbol(evt)) {
+                                            numericStr = String.fromCharCode(evt.keyCode);
+                                            $editor.igNumericEditor("value", parseInt(numericStr));
+                                        }
+                                        else {
+                                            $editor.igNumericEditor("value", numericStr);
+                                        }
                                         setTimeout(function () {
                                             var length = String($editor.igNumericEditor("value")).length;
                                             $editor.igNumericEditor("select", length, length);
@@ -15888,7 +23259,13 @@ var nts;
                                     if (!result.isValid) {
                                         errors.set($targetGrid, cell, result.errorMessage);
                                     }
-                                }, 100);
+                                }, 200);
+                            }
+                            else {
+                                setTimeout(function () {
+                                    var $editor = $targetGrid.igGridUpdating("editorForCell", $(cell.element));
+                                    $editor.find("input").val("");
+                                }, 200);
                             }
                             evt.stopImmediatePropagation();
                         }
@@ -15924,8 +23301,8 @@ var nts;
                             if ($editorContainer.length > 0)
                                 $editorContainer.css(errors.NO_ERROR_STL);
                             specialColumn.tryDo($grid, selectedCell, ui.value);
-                            if (ui.editor.hasClass("input-currency-symbol")) {
-                                $(selectedCell.element).addClass("currency-symbol");
+                            if (ui.editor.hasClass(updating.INPUT_CURR_SYM)) {
+                                $(selectedCell.element).addClass(updating.CURR_SYM);
                             }
                             return true;
                         }
@@ -16082,8 +23459,8 @@ var nts;
                             if ($editorContainer.length > 0)
                                 $editorContainer.css(errors.NO_ERROR_STL);
                             specialColumn.tryDo($grid, selectedCell, value);
-                            if ($editorContainer.find("span").hasClass("input-currency-symbol")) {
-                                $selectedCell.addClass("currency-symbol");
+                            if ($editorContainer.find("span").hasClass(updating.INPUT_CURR_SYM)) {
+                                $selectedCell.addClass(updating.CURR_SYM);
                             }
                             $grid.igGridUpdating("endEdit");
                         }
@@ -16658,6 +24035,7 @@ var nts;
                         functions.DIRECT_ENTER = "directEnter";
                         functions.CHECK_ALL = "checkAll";
                         functions.UNCHECK_ALL = "uncheckAll";
+                        functions.HEADER_TEXT = "headerText";
                         functions.DESTROY = "destroy";
                         /**
                          * Actions
@@ -16695,6 +24073,9 @@ var nts;
                                     break;
                                 case functions.UNCHECK_ALL:
                                     uncheckAll($grid, params[0]);
+                                    break;
+                                case functions.HEADER_TEXT:
+                                    setHeaderText($grid, params[0], params[1]);
                                     break;
                                 case functions.DESTROY:
                                     destroy($grid);
@@ -16790,6 +24171,21 @@ var nts;
                                 var id = ds[i][primaryKey];
                                 updating.updateCell($grid, id, key, false, undefined, true);
                             }
+                        }
+                        /**
+                         * Set header text.
+                         */
+                        function setHeaderText($grid, key, text) {
+                            var setting = $grid.data(internal.SETTINGS);
+                            if (!setting || !setting.descriptor || !setting.descriptor.colIdxes
+                                || !setting.descriptor.headerCells)
+                                return;
+                            var colIdx = setting.descriptor.colIdxes[key];
+                            var fixedColsLen = setting.descriptor.headerCells.length - Object.keys(setting.descriptor.colIdxes).length;
+                            var headerCell = setting.descriptor.headerCells[colIdx + fixedColsLen];
+                            if (!headerCell)
+                                return;
+                            $(headerCell.find("span")[1]).html(text);
                         }
                         /**
                          * Destroy
@@ -17369,9 +24765,9 @@ var nts;
                                         return validation.parseTime(value, constraint.format);
                                     case "HalfInt":
                                         if (uk.ntsNumber.isHalfInt(value)) {
-                                            return new validation.Result.OK(value);
+                                            return validation.Result.OK(value);
                                         }
-                                        return new validation.Result.invalid("FND_E_HALFINT");
+                                        return validation.Result.invalid("FND_E_HALFINT");
                                     case "String":
                                         return validation.Result.OK(value);
                                 }
@@ -17391,6 +24787,7 @@ var nts;
                         var Label = (function (_super) {
                             __extends(Label, _super);
                             function Label(action) {
+                                _super.call(this);
                                 this.action = action;
                             }
                             Label.prototype.containerClass = function () {
@@ -17753,6 +25150,18 @@ var nts;
                                     if (!utils.isPastableControls(self.$grid, cell.columnKey)
                                         || utils.isDisabled($(cell.element)))
                                         return;
+                                    if (utils.isEditMode(self.$grid)) {
+                                        var editor = self.$grid.igGridUpdating("editorForCell", cell.element);
+                                        if (cell.element.has(editor).length > 0) {
+                                            var inputs_1 = editor.find("input");
+                                            inputs_1[0].value = cbData;
+                                            inputs_1[1].value = cbData;
+                                            setTimeout(function () {
+                                                inputs_1[0].focus();
+                                            }, 0);
+                                            return;
+                                        }
+                                    }
                                     var rowIndex = cell.rowIndex;
                                     var columnIndex = cell.index;
                                     var $gridRow = utils.rowAt(cell);
@@ -19053,7 +26462,9 @@ var nts;
                                     columns = getSheetColumns(options.columns, sheet[0], options.features);
                                     sheetMng.sheetColumns[sheet[0].name] = columns.all;
                                     var idxes_2 = {};
-                                    utils.analyzeColumns(columns.unfixed).forEach(function (c, i) {
+                                    utils.analyzeColumns(columns.unfixed)
+                                        .filter(function (c) { return c.hidden !== true; })
+                                        .forEach(function (c, i) {
                                         idxes_2[c.key] = i;
                                     });
                                     var setting = $grid.data(internal.SETTINGS);
@@ -19097,7 +26508,9 @@ var nts;
                                             columns = getSheetColumns(options.columns, sheet, options.features);
                                             sheetMng.sheetColumns[sheet.name] = columns.all;
                                             var idxes_3 = {};
-                                            utils.analyzeColumns(columns.unfixed).forEach(function (c, i) {
+                                            utils.analyzeColumns(columns.unfixed)
+                                                .filter(function (c) { return c.hidden !== true; })
+                                                .forEach(function (c, i) {
                                                 idxes_3[c.key] = i;
                                             });
                                             settings.descriptor.colIdxes = idxes_3;
@@ -19108,7 +26521,9 @@ var nts;
                                             var fixedColumns_3 = settings.descriptor.fixedColumns;
                                             if (fixedColumns_3) {
                                                 var unfixed = columns.slice(fixedColumns_3.length);
-                                                utils.analyzeColumns(unfixed).forEach(function (c, i) {
+                                                utils.analyzeColumns(unfixed)
+                                                    .filter(function (c) { return c.hidden !== true; })
+                                                    .forEach(function (c, i) {
                                                     idxes_4[c.key] = i;
                                                 });
                                                 settings.descriptor.colIdxes = idxes_4;
@@ -19418,6 +26833,7 @@ var nts;
                                     setting.descriptor = descriptor;
                                     setting.descriptor.fixedColumns = owner._fixedColumns;
                                     setting.descriptor.fixedTable = owner._fixedTable;
+                                    setting.descriptor.headerCells = owner._headerCells;
                                     return;
                                 }
                                 setting.descriptor.update(startRow, owner._virtualRowCount, owner._virtualDom);
@@ -19431,9 +26847,12 @@ var nts;
                                     }
                                     setting.descriptor.keyIdxes = keyIdxes_2;
                                     setting.descriptor.fixedTable = owner._fixedTable;
+                                    setting.descriptor.headerCells = owner._headerCells;
                                 }
-                                if (rebuild)
+                                if (rebuild) {
                                     setting.descriptor.fixedTable = owner._fixedTable;
+                                    setting.descriptor.headerCells = owner._headerCells;
+                                }
                             });
                         }
                         settings.build = build;
@@ -19931,7 +27350,7 @@ var nts;
                         utils.outsideGrid = outsideGrid;
                     })(utils || (utils = {}));
                 })(ntsGrid = jqueryExtentions.ntsGrid || (jqueryExtentions.ntsGrid = {}));
-            })(jqueryExtentions = ui_28.jqueryExtentions || (ui_28.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_29.jqueryExtentions || (ui_29.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -20613,6918 +28032,6 @@ var NtsSortableBindingHandler = (function () {
     return NtsSortableBindingHandler;
 }());
 ko.bindingHandlers["ntsSortable"] = new NtsSortableBindingHandler();
-/// <reference path="../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui_29) {
-            var exTable;
-            (function (exTable_1) {
-                var NAMESPACE = "extable";
-                var DISTANCE = 3;
-                var SPACE = 10;
-                var HEADER = "xheader";
-                var HEADER_PRF = "ex-header-";
-                var BODY_PRF = "ex-body-";
-                var HEADER_TBL_PRF = "extable-header-";
-                var BODY_TBL_PRF = "extable-body-";
-                var H_BTN_CLS = "ex-height-btn";
-                var LEFTMOST = "leftmost";
-                var MIDDLE = "middle";
-                var DETAIL = "detail";
-                var VERTICAL_SUM = "vert-sum";
-                var HORIZONTAL_SUM = "horz-sum";
-                var LEFT_HORZ_SUM = "left-horz-sum";
-                var CRUD = "crud";
-                var ADD_ROW = "add-row";
-                var DEL_ROWS = "delete-rows";
-                var H_BTN_HEIGHT = "24px";
-                // Body height setting mode
-                var DYNAMIC = "dynamic";
-                var FIXED = "fixed";
-                // Update mode
-                var COPY_PASTE = "copyPaste";
-                var EDIT = "edit";
-                var STICK = "stick";
-                var Connector = {};
-                var ExTable = (function () {
-                    function ExTable($container, options) {
-                        // dynamic or fixed
-                        this.bodyHeightSetMode = DYNAMIC;
-                        this.windowXOccupation = 0;
-                        this.windowYOccupation = 0;
-                        this.updateMode = EDIT;
-                        this.pasteOverWrite = true;
-                        this.stickOverWrite = true;
-                        this.$container = $container;
-                        this.$commander = options.primaryTable;
-                        this.$follower = options.secondaryTable;
-                        this.bodyRowHeight = options.bodyRowHeight;
-                        this.headerHeight = options.headerHeight;
-                        this.bodyHeight = options.bodyHeight;
-                        this.horzSumHeaderHeight = options.horizontalSumHeaderHeight;
-                        this.horzSumBodyHeight = options.horizontalSumBodyHeight;
-                        this.horzSumBodyRowHeight = options.horizontalSumBodyRowHeight;
-                        this.areaResize = options.areaResize;
-                        this.heightSetter = options.heightSetter;
-                        this.bodyHeightSetMode = options.bodyHeightMode;
-                        this.windowXOccupation = options.windowXOccupation;
-                        this.windowYOccupation = options.windowYOccupation;
-                        if (options.updateMode) {
-                            this.updateMode = options.updateMode;
-                        }
-                        this.pasteOverWrite = options.pasteOverWrite;
-                        this.stickOverWrite = options.stickOverWrite;
-                        this.viewMode = options.viewMode;
-                        this.determination = options.determination;
-                        this.features = options.features;
-                        this.$container.data(internal.X_OCCUPY, this.windowXOccupation);
-                        this.$container.data(internal.Y_OCCUPY, this.windowYOccupation);
-                        helper.makeConnector();
-                    }
-                    ExTable.prototype.setUpdateMode = function (updateMode) {
-                        this.updateMode = updateMode;
-                        this.detailContent.updateMode = updateMode;
-                    };
-                    ExTable.prototype.setViewMode = function (mode) {
-                        this.viewMode = mode;
-                        this.detailContent.viewMode = mode;
-                    };
-                    ExTable.prototype.LeftmostHeader = function (leftmostHeader) {
-                        this.leftmostHeader = _.cloneDeep(leftmostHeader);
-                        this.setHeaderClass(this.leftmostHeader, LEFTMOST);
-                        return this;
-                    };
-                    ExTable.prototype.LeftmostContent = function (leftmostContent) {
-                        this.leftmostContent = _.cloneDeep(leftmostContent);
-                        this.setBodyClass(this.leftmostContent, LEFTMOST);
-                        this.leftmostContent.updateMode = this.updateMode;
-                        if (feature.isEnable(this.features, feature.UPDATING)) {
-                            this.leftmostHeader.width = parseInt(this.leftmostHeader.width) + controls.CHECKBOX_COL_WIDTH + "px";
-                            controls.addCheckBoxDef([this.leftmostHeader, this.leftmostContent]);
-                        }
-                        return this;
-                    };
-                    ExTable.prototype.MiddleHeader = function (middleHeader) {
-                        this.middleHeader = _.cloneDeep(middleHeader);
-                        this.setHeaderClass(this.middleHeader, MIDDLE);
-                        this.middleHeader.updateMode = this.updateMode;
-                        return this;
-                    };
-                    ExTable.prototype.MiddleContent = function (middleContent) {
-                        this.middleContent = _.cloneDeep(middleContent);
-                        this.setBodyClass(this.middleContent, MIDDLE);
-                        return this;
-                    };
-                    ExTable.prototype.DetailHeader = function (detailHeader) {
-                        this.detailHeader = _.cloneDeep(detailHeader);
-                        this.setHeaderClass(this.detailHeader, DETAIL);
-                        return this;
-                    };
-                    ExTable.prototype.DetailContent = function (detailContent) {
-                        this.detailContent = _.cloneDeep(detailContent);
-                        this.setBodyClass(this.detailContent, DETAIL);
-                        this.detailContent.updateMode = this.updateMode;
-                        this.detailContent.viewMode = this.viewMode;
-                        return this;
-                    };
-                    ExTable.prototype.VerticalSumHeader = function (verticalSumHeader) {
-                        this.verticalSumHeader = _.cloneDeep(verticalSumHeader);
-                        this.setHeaderClass(this.verticalSumHeader, VERTICAL_SUM);
-                        return this;
-                    };
-                    ExTable.prototype.VerticalSumContent = function (verticalSumContent) {
-                        this.verticalSumContent = _.cloneDeep(verticalSumContent);
-                        this.setBodyClass(this.verticalSumContent, VERTICAL_SUM);
-                        return this;
-                    };
-                    ExTable.prototype.LeftHorzSumHeader = function (leftHorzSumHeader) {
-                        this.leftHorzSumHeader = _.cloneDeep(leftHorzSumHeader);
-                        this.setHeaderClass(this.leftHorzSumHeader, LEFT_HORZ_SUM);
-                        return this;
-                    };
-                    ExTable.prototype.LeftHorzSumContent = function (leftHorzSumContent) {
-                        this.leftHorzSumContent = _.cloneDeep(leftHorzSumContent);
-                        this.setBodyClass(this.leftHorzSumContent, LEFT_HORZ_SUM);
-                        return this;
-                    };
-                    ExTable.prototype.HorizontalSumHeader = function (horizontalSumHeader) {
-                        this.horizontalSumHeader = _.cloneDeep(horizontalSumHeader);
-                        this.setHeaderClass(this.horizontalSumHeader, HORIZONTAL_SUM);
-                        return this;
-                    };
-                    ExTable.prototype.HorizontalSumContent = function (horizontalSumContent) {
-                        this.horizontalSumContent = _.cloneDeep(horizontalSumContent);
-                        this.setBodyClass(this.horizontalSumContent, HORIZONTAL_SUM);
-                        return this;
-                    };
-                    ExTable.prototype.setHeaderClass = function (options, part) {
-                        options.tableClass = HEADER_TBL_PRF + part;
-                        options.containerClass = HEADER_PRF + part;
-                    };
-                    ExTable.prototype.setBodyClass = function (options, part) {
-                        options.tableClass = BODY_TBL_PRF + part;
-                        options.containerClass = BODY_PRF + part;
-                    };
-                    /**
-                     * Create.
-                     */
-                    ExTable.prototype.create = function () {
-                        var self = this;
-                        var left = "0px";
-                        var top = "0px";
-                        if (!self.satisfyPrebuild())
-                            return;
-                        self.headers = _.filter([self.leftmostHeader, self.middleHeader, self.detailHeader, self.verticalSumHeader], function (h) {
-                            return !uk.util.isNullOrUndefined(h);
-                        });
-                        self.bodies = _.filter([self.leftmostContent, self.middleContent, self.detailContent, self.verticalSumContent], function (b) {
-                            return !uk.util.isNullOrUndefined(b);
-                        });
-                        // Get part widths
-                        var widthParts, gridHeight;
-                        storage.area.getPartWidths(self.$container).ifPresent(function (parts) {
-                            widthParts = JSON.parse(parts);
-                            return null;
-                        });
-                        // Get grid height
-                        storage.tableHeight.get(self.$container).ifPresent(function (height) {
-                            gridHeight = JSON.parse(height);
-                            return null;
-                        });
-                        self.$container.addClass(NAMESPACE);
-                        self.$container.data(NAMESPACE, self);
-                        var headerWrappers = [], bodyWrappers = [];
-                        for (var i = 0; i < self.headers.length; i++) {
-                            if (!uk.util.isNullOrUndefined(self.headers[i])) {
-                                self.headers[i].overflow = "hidden";
-                                self.headers[i].height = self.headerHeight;
-                                self.headers[i].isHeader = true;
-                                self.setWrapperWidth(self.headers[i], widthParts);
-                                var $headerWrapper = render.createWrapper("0px", left, self.headers[i]);
-                                self.$container.append($headerWrapper.addClass(HEADER));
-                                render.process($headerWrapper, self.headers[i]);
-                                left = parseInt(left) + parseInt(self.headers[i].width) + DISTANCE + "px";
-                                top = parseInt(self.headers[i].height) + DISTANCE + "px";
-                                headerWrappers.push($headerWrapper);
-                            }
-                        }
-                        left = "0px";
-                        for (var i = 0; i < self.bodies.length; i++) {
-                            var $bodyWrapper = void 0;
-                            if (!uk.util.isNullOrUndefined(self.bodies[i])) {
-                                self.bodies[i].rowHeight = self.bodyRowHeight;
-                                self.bodies[i].height = gridHeight ? gridHeight : self.bodyHeight;
-                                self.bodies[i].width = self.headers[i].width;
-                                self.setWrapperWidth(self.bodies[i], widthParts);
-                                $bodyWrapper = render.createWrapper(top, left, self.bodies[i]);
-                                self.$container.append($bodyWrapper);
-                                if (i === self.bodies.length - 1 && !uk.util.isNullOrUndefined($bodyWrapper)) {
-                                    self.bodies[i].overflow = "scroll";
-                                    self.bodies[i].width = $bodyWrapper.width() + helper.getScrollWidth();
-                                    self.bodies[i].height = $bodyWrapper.height() + helper.getScrollWidth();
-                                    scroll.syncDoubDirVerticalScrolls(_.concat(bodyWrappers, $bodyWrapper));
-                                }
-                                else if (i > 0 && i < self.bodies.length - 1) {
-                                    self.bodies[i].overflowX = "scroll";
-                                    self.bodies[i].overflowY = "hidden";
-                                    self.bodies[i].height = $bodyWrapper.height() + helper.getScrollWidth();
-                                    scroll.bindVertWheel($bodyWrapper);
-                                }
-                                else {
-                                    scroll.bindVertWheel($bodyWrapper);
-                                }
-                                render.process($bodyWrapper, self.bodies[i]);
-                                left = parseInt(left) + parseInt(self.bodies[i].width) + DISTANCE + "px";
-                                if (self.bodies[i].containerClass !== BODY_PRF + DETAIL) {
-                                    scroll.syncHorizontalScroll(headerWrappers[i], $bodyWrapper);
-                                }
-                                bodyWrappers.push($bodyWrapper);
-                                if (feature.isEnable(self.headers[i].features, feature.COLUMN_RESIZE)) {
-                                    new resize.ColumnAdjuster(headerWrappers[i].find("table"), $bodyWrapper.find("table")).handle();
-                                }
-                            }
-                        }
-                        self.createHorzSums();
-                        self.setupCrudArea();
-                        self.generalSettings(headerWrappers, bodyWrappers);
-                    };
-                    /**
-                     * Create horizontal sums.
-                     */
-                    ExTable.prototype.createHorzSums = function () {
-                        var self = this;
-                        var $detailHeader = self.$container.find("." + HEADER_PRF + DETAIL);
-                        var $detailContent = self.$container.find("." + BODY_PRF + DETAIL);
-                        var headerTop = $detailHeader.height() + $detailContent.height() + DISTANCE + helper.getScrollWidth() + SPACE;
-                        var bodyTop = headerTop + parseInt(self.horzSumHeaderHeight) + DISTANCE + "px";
-                        var sumPosLeft = $detailHeader.css("left");
-                        var leftHorzWidth = parseInt(sumPosLeft) - DISTANCE;
-                        var $leftSumHeaderWrapper, $leftSumContentWrapper, $sumHeaderWrapper, $sumContentWrapper;
-                        // Items summary
-                        if (self.leftHorzSumHeader) {
-                            self.leftHorzSumHeader.height = self.horzSumHeaderHeight;
-                            self.leftHorzSumHeader.width = leftHorzWidth;
-                            self.leftHorzSumHeader.overflow = "hidden";
-                            self.leftHorzSumHeader.isHeader = true;
-                            $leftSumHeaderWrapper = render.createWrapper(headerTop + "px", "0xp", self.leftHorzSumHeader);
-                            self.$container.append($leftSumHeaderWrapper.addClass(HEADER));
-                            render.process($leftSumHeaderWrapper, self.leftHorzSumHeader);
-                        }
-                        if (self.leftHorzSumContent) {
-                            self.leftHorzSumContent.rowHeight = self.horzSumBodyRowHeight;
-                            self.leftHorzSumContent.height = parseInt(self.horzSumBodyHeight) + helper.getScrollWidth() + "px";
-                            self.leftHorzSumContent.width = leftHorzWidth;
-                            $leftSumContentWrapper = render.createWrapper(bodyTop, "0px", self.leftHorzSumContent);
-                            self.leftHorzSumContent.overflowX = "scroll";
-                            self.leftHorzSumContent.overflowY = "hidden";
-                            self.$container.append($leftSumContentWrapper);
-                            render.process($leftSumContentWrapper, self.leftHorzSumContent);
-                            scroll.bindVertWheel($leftSumContentWrapper);
-                        }
-                        // Main summary
-                        if (self.horizontalSumHeader) {
-                            self.horizontalSumHeader.height = self.horzSumHeaderHeight;
-                            self.horizontalSumHeader.width = $detailHeader.width();
-                            self.horizontalSumHeader.overflow = "hidden";
-                            self.horizontalSumHeader.isHeader = true;
-                            $sumHeaderWrapper = render.createWrapper(headerTop + "px", sumPosLeft, self.horizontalSumHeader);
-                            self.$container.append($sumHeaderWrapper.addClass(HEADER));
-                            render.process($sumHeaderWrapper, self.horizontalSumHeader);
-                        }
-                        if (self.horizontalSumContent) {
-                            self.horizontalSumContent.rowHeight = self.horzSumBodyRowHeight;
-                            self.horizontalSumContent.height = parseInt(self.horzSumBodyHeight) + helper.getScrollWidth() + "px";
-                            self.horizontalSumContent.width = $detailContent.width();
-                            $sumContentWrapper = render.createWrapper(bodyTop, sumPosLeft, self.horizontalSumContent);
-                            self.horizontalSumContent.overflow = "scroll";
-                            self.$container.append($sumContentWrapper);
-                            render.process($sumContentWrapper, self.horizontalSumContent);
-                            scroll.syncHorizontalScroll($leftSumHeaderWrapper, $leftSumContentWrapper);
-                            scroll.syncDoubDirVerticalScrolls([$leftSumContentWrapper, $sumContentWrapper]);
-                        }
-                        if (self.$commander) {
-                            self.$commander.on(events.MOUSEIN_COLUMN, function (evt, colIndex) {
-                                helper.highlightColumn(self.$container, colIndex);
-                            });
-                            self.$commander.on(events.MOUSEOUT_COLUMN, function (evt, colIndex) {
-                                helper.unHighlightColumn(self.$container, colIndex);
-                            });
-                            var pHorzHeader = self.$commander.find("." + HEADER_PRF + HORIZONTAL_SUM);
-                            var pHorzBody = self.$commander.find("." + BODY_PRF + HORIZONTAL_SUM);
-                            var stream = _.concat(self.$commander.find("div[class*='" + DETAIL + "']").toArray().map(function (val) {
-                                return $(val);
-                            }), pHorzHeader, pHorzBody, $detailHeader, $detailContent, $sumHeaderWrapper, $sumContentWrapper);
-                            scroll.syncDoubDirHorizontalScrolls(stream);
-                        }
-                        else if (self.$follower) {
-                        }
-                        else {
-                            scroll.syncDoubDirHorizontalScrolls([$detailHeader, $detailContent, $sumHeaderWrapper, $sumContentWrapper]);
-                        }
-                    };
-                    /**
-                     * Setup crud area.
-                     */
-                    ExTable.prototype.setupCrudArea = function () {
-                        var self = this;
-                        var updateF = feature.find(self.features, feature.UPDATING);
-                        if (updateF) {
-                            var $area = $("<div/>").addClass(NAMESPACE + "-" + CRUD);
-                            var $rowAdd = $("<button/>").addClass(NAMESPACE + "-" + ADD_ROW).on(events.CLICK_EVT, function () {
-                                update.insertNewRow(self.$container);
-                            }).appendTo($area);
-                            var $rowDel = $("<button/>").addClass(NAMESPACE + "-" + DEL_ROWS).on(events.CLICK_EVT, function () {
-                                update.deleteRows(self.$container);
-                            }).appendTo($area);
-                            var dftRowAddTxt = "新規行の追加";
-                            var dftRowDelTxt = "行の削除";
-                            if (updateF.addNew) {
-                                $rowAdd.addClass(updateF.addNew.buttonClass || "proceed").text(updateF.addNew.buttonText || dftRowAddTxt);
-                            }
-                            else {
-                                $rowAdd.addClass("proceed").text(dftRowAddTxt);
-                            }
-                            if (updateF.delete) {
-                                $rowDel.addClass(updateF.delete.buttonClass || "danger").text(updateF.delete.buttonText || dftRowDelTxt);
-                            }
-                            else {
-                                $rowDel.addClass("danger").text(dftRowDelTxt);
-                            }
-                            self.$container.before($area);
-                        }
-                    };
-                    /**
-                     * General settings.
-                     */
-                    ExTable.prototype.generalSettings = function (headerWrappers, bodyWrappers) {
-                        var self = this;
-                        self.$container.on(events.BODY_HEIGHT_CHANGED, resize.onBodyHeightChanged);
-                        //            if (self.heightSetter && self.heightSetter.showBodyHeightButton) {
-                        //                
-                        //                let $lastHeader = headerWrappers[headerWrappers.length - 1];
-                        //                let btnPosTop = $lastHeader.height() - parseInt(H_BTN_HEIGHT) - DISTANCE;
-                        //                let btnPosLeft = parseInt($lastHeader.css("left")) + $lastHeader.outerWidth();
-                        //                let $heightSetBtn = $("<button/>").addClass(H_BTN_CLS)
-                        //                    .css({ position: "absolute", height: H_BTN_HEIGHT, top: btnPosTop + "px", left: btnPosLeft + "px" })
-                        //                    .text("H").on(events.CLICK_EVT, self.heightSetter.click);
-                        //                $lastHeader.after($heightSetBtn);
-                        //            }
-                        resize.fitWindowWidth(self.$container);
-                        $(window).on(events.RESIZE, $.proxy(resize.fitWindowWidth, self, self.$container));
-                        var horzSumExists = !uk.util.isNullOrUndefined(self.horizontalSumHeader);
-                        if (self.bodyHeightSetMode === DYNAMIC) {
-                            resize.fitWindowHeight(self.$container, bodyWrappers, horzSumExists);
-                            $(window).on(events.RESIZE, $.proxy(resize.fitWindowHeight, self, self.$container, bodyWrappers, horzSumExists));
-                        }
-                        else {
-                            var cHeight_1 = 0;
-                            var stream = self.$container.find("div[class*='" + DETAIL + "'], div[class*='" + LEFT_HORZ_SUM + "']");
-                            stream.each(function () {
-                                cHeight_1 += $(this).height();
-                            });
-                            if (stream.length === 4) {
-                                cHeight_1 += (SPACE + DISTANCE);
-                            }
-                            self.$container.height(cHeight_1 + SPACE);
-                        }
-                        if (self.$follower) {
-                            self.$follower.on(events.COMPLETED, function () {
-                                if (self.areaResize) {
-                                    new resize.AreaAdjuster(self.$container, headerWrappers, bodyWrappers, self.$follower).handle();
-                                    self.$container.on(events.AREA_RESIZE_END, $.proxy(resize.onAreaComplete, self));
-                                }
-                                var formerWidth = 0, latterWidth = 0;
-                                _.forEach(headerWrappers, function (header) {
-                                    if (header.hasClass(HEADER_PRF + LEFTMOST)) {
-                                        formerWidth += header.width();
-                                    }
-                                    else if (header.hasClass(HEADER_PRF + MIDDLE)) {
-                                        formerWidth += header.width() + DISTANCE;
-                                    }
-                                    else if (header.hasClass(HEADER_PRF + DETAIL)) {
-                                        latterWidth += header.width();
-                                    }
-                                });
-                                var $lm = self.$follower.find("div[class*='" + LEFTMOST + "']");
-                                var diff = formerWidth - parseInt($lm[0].style.width);
-                                $lm.width(formerWidth);
-                                var $depDetailHeader = self.$follower.find("." + HEADER_PRF + DETAIL);
-                                $depDetailHeader.width(latterWidth);
-                                var $depDetail = self.$follower.find("." + BODY_PRF + DETAIL);
-                                var left = parseInt($depDetail.css("left")) + diff;
-                                $depDetailHeader.css("left", left);
-                                $depDetail.css("left", left);
-                                $depDetail.width(latterWidth + helper.getScrollWidth());
-                                var depLmHeader = _.filter($lm, function (e) {
-                                    return $(e).hasClass(HEADER_PRF + LEFTMOST);
-                                });
-                                resize.saveSizes(self.$follower, $(depLmHeader[0]), $depDetailHeader, formerWidth, latterWidth);
-                            });
-                        }
-                        else if (self.areaResize) {
-                            new resize.AreaAdjuster(self.$container, headerWrappers, bodyWrappers, self.$follower).handle();
-                            self.$container.on(events.AREA_RESIZE_END, $.proxy(resize.onAreaComplete, self));
-                        }
-                        storage.area.init(self.$container, headerWrappers);
-                        storage.tableHeight.init(self.$container);
-                        // Edit done
-                        update.editDone(self.$container);
-                        $(document).on(events.CLICK_EVT, function (evt) {
-                            update.outsideClick(self.$container, $(evt.target));
-                        });
-                        events.onModify(self.$container);
-                        selection.checkUp(self.$container);
-                        copy.on(self.$container.find("." + BODY_PRF + DETAIL), self.updateMode);
-                        self.$container.on(events.OCCUPY_UPDATE, function (evt, reserve) {
-                            if (self.bodyHeightSetMode === FIXED)
-                                return;
-                            if (reserve && reserve.x) {
-                                self.$container.data(internal.X_OCCUPY, reserve.x);
-                                resize.fitWindowWidth(self.$container);
-                            }
-                            if (reserve && reserve.y) {
-                                self.$container.data(internal.Y_OCCUPY, reserve.y);
-                                resize.fitWindowHeight(self.$container, bodyWrappers, horzSumExists);
-                            }
-                        });
-                        if (self.$commander) {
-                            events.trigger(self.$container, events.COMPLETED);
-                        }
-                    };
-                    /**
-                     * Satisfy prebuild.
-                     */
-                    ExTable.prototype.satisfyPrebuild = function () {
-                        if (uk.util.isNullOrUndefined(this.$container) || uk.util.isNullOrUndefined(this.headerHeight)
-                            || uk.util.isNullOrUndefined(this.bodyHeight) || uk.util.isNullOrUndefined(this.bodyRowHeight)
-                            || uk.util.isNullOrUndefined(this.horzSumBodyRowHeight))
-                            return false;
-                        return true;
-                    };
-                    /**
-                     * Set wrapper width.
-                     */
-                    ExTable.prototype.setWrapperWidth = function (options, widthParts) {
-                        if (!widthParts)
-                            return;
-                        var width = widthParts[options.containerClass];
-                        if (!uk.util.isNullOrUndefined(width)) {
-                            options.width = width + "px";
-                        }
-                    };
-                    return ExTable;
-                }());
-                exTable_1.ExTable = ExTable;
-                var render;
-                (function (render) {
-                    render.HIGHLIGHT_CLS = "highlight";
-                    render.CHILD_CELL_CLS = "child-cell";
-                    render.COL_ICON_CLS = "column-icon";
-                    /**
-                     * Process.
-                     */
-                    function process($container, options, isUpdate) {
-                        var levelStruct = synthesizeHeaders(options);
-                        options.levelStruct = levelStruct;
-                        if (options.isHeader) {
-                            if (Object.keys(levelStruct).length > 1) {
-                                groupHeader($container, options, isUpdate);
-                                return;
-                            }
-                        }
-                        else {
-                            options.float = options.float === false ? false : true;
-                        }
-                        table($container, options, isUpdate);
-                    }
-                    render.process = process;
-                    /**
-                     * Group header.
-                     */
-                    function groupHeader($container, options, isUpdate) {
-                        var $table = $("<table><tbody></tbody></table>").addClass(options.tableClass)
-                            .css({ position: "relative", tableLayout: "fixed", width: "100%", borderCollapse: "separate" })
-                            .appendTo($container);
-                        var $tbody = $table.find("tbody");
-                        if (!isUpdate) {
-                            $container.css({ height: options.height, width: options.width });
-                        }
-                        if (!uk.util.isNullOrUndefined(options.overflow))
-                            $container.css("overflow", options.overflow);
-                        else if (!uk.util.isNullOrUndefined(options.overflowX) && !uk.util.isNullOrUndefined(options.overflowY)) {
-                            $container.css("overflow-x", options.overflowX);
-                            $container.css("overflow-y", options.overflowY);
-                        }
-                        var $colGroup = $("<colgroup/>").insertBefore($tbody);
-                        generateColGroup($colGroup, options.columns);
-                        var painter = new GroupHeaderPainter(options);
-                        painter.rows($tbody);
-                    }
-                    /**
-                     * Generate column group.
-                     */
-                    function generateColGroup($colGroup, columns) {
-                        _.forEach(columns, function (col) {
-                            if (!uk.util.isNullOrUndefined(col.group)) {
-                                generateColGroup($colGroup, col.group);
-                                return;
-                            }
-                            var $col = $("<col/>").width(col.width);
-                            $colGroup.append($col);
-                            if (col.visible === false)
-                                $col.hide();
-                        });
-                    }
-                    /**
-                     * Table.
-                     */
-                    function table($container, options, isUpdate) {
-                        var $table = $("<table><tbody></tbody></table>").addClass(options.tableClass)
-                            .css({ position: "relative", tableLayout: "fixed", width: "100%", borderCollapse: "separate" })
-                            .appendTo($container);
-                        var $tbody = $table.find("tbody");
-                        if (!isUpdate) {
-                            $container.css({ height: options.height, width: options.width });
-                        }
-                        if (!uk.util.isNullOrUndefined(options.overflow))
-                            $container.css("overflow", options.overflow);
-                        else if (!uk.util.isNullOrUndefined(options.overflowX) && !uk.util.isNullOrUndefined(options.overflowY)) {
-                            $container.css("overflow-x", options.overflowX);
-                            $container.css("overflow-y", options.overflowY);
-                        }
-                        var $colGroup = $("<colgroup/>").insertBefore($tbody);
-                        generateColGroup($colGroup, options.columns);
-                        var dataSource;
-                        if (!uk.util.isNullOrUndefined(options.dataSource)) {
-                            dataSource = options.dataSource;
-                        }
-                        else {
-                            var item_1 = {};
-                            _.forEach(options.columns, function (col) {
-                                item_1[col.key] = col.headerText;
-                            });
-                            dataSource = [item_1];
-                        }
-                        begin($container, dataSource, options);
-                    }
-                    render.table = table;
-                    /**
-                     * Begin.
-                     */
-                    function begin($container, dataSource, options) {
-                        if (options.float) {
-                            var cloud = new intan.Cloud($container, dataSource, options);
-                            $container.data(internal.TANGI, cloud);
-                            cloud.renderRows(true);
-                            return;
-                        }
-                        normal($container, dataSource, options);
-                    }
-                    render.begin = begin;
-                    /**
-                     * Normal.
-                     */
-                    function normal($container, dataSource, options) {
-                        var rowConfig = { css: { height: options.rowHeight } };
-                        var headerRowHeightFt;
-                        if (options.isHeader) {
-                            headerRowHeightFt = feature.find(options.features, feature.HEADER_ROW_HEIGHT);
-                        }
-                        var painter = new Painter($container, options);
-                        $container.data(internal.CANON, { _origDs: _.cloneDeep(dataSource), dataSource: dataSource, primaryKey: options.primaryKey, painter: painter });
-                        var $tbody = $container.find("tbody");
-                        _.forEach(dataSource, function (item, index) {
-                            if (!uk.util.isNullOrUndefined(headerRowHeightFt)) {
-                                rowConfig = { css: { height: headerRowHeightFt.rows[index] } };
-                            }
-                            $tbody.append(painter.row(item, rowConfig, index));
-                        });
-                    }
-                    render.normal = normal;
-                    /**
-                     * Synthesize headers.
-                     */
-                    function synthesizeHeaders(options) {
-                        var level = {};
-                        peelStruct(options.columns, level, 0);
-                        var rowCount = Object.keys(level).length;
-                        if (rowCount > 1) {
-                            _.forEach(Object.keys(level), function (key) {
-                                _.forEach(level[key], function (col) {
-                                    if (uk.util.isNullOrUndefined(col.colspan) || col.colspan === 1) {
-                                        col.rowspan = rowCount - parseInt(key);
-                                    }
-                                });
-                            });
-                        }
-                        return level;
-                    }
-                    render.synthesizeHeaders = synthesizeHeaders;
-                    /**
-                     * Peel struct.
-                     */
-                    function peelStruct(columns, level, currentLevel) {
-                        var colspan = 0, noGroup = 0;
-                        _.forEach(columns, function (col) {
-                            var clonedCol = _.clone(col);
-                            var colCount = 0;
-                            if (!uk.util.isNullOrUndefined(col.group)) {
-                                colCount = col.group.length;
-                                noGroup++;
-                                var ret = peelStruct(col.group, level, currentLevel + 1);
-                                if (!uk.util.isNullOrUndefined(ret)) {
-                                    colCount += ret;
-                                }
-                                clonedCol.colspan = colCount;
-                            }
-                            if (uk.util.isNullOrUndefined(level[currentLevel])) {
-                                level[currentLevel] = [];
-                            }
-                            level[currentLevel].push(clonedCol);
-                            colspan += colCount;
-                        });
-                        return colspan !== 0 ? (colspan - noGroup) : undefined;
-                    }
-                    var Conditional = (function () {
-                        function Conditional(options) {
-                            this.options = options;
-                            var columns = helper.classifyColumns(options);
-                            this.visibleColumns = columns.visibleColumns;
-                            this.hiddenColumns = columns.hiddenColumns;
-                            this.visibleColumnsMap = helper.getColumnsMap(this.visibleColumns);
-                            this.hiddenColumnsMap = helper.getColumnsMap(this.hiddenColumns);
-                        }
-                        return Conditional;
-                    }());
-                    var Painter = (function (_super) {
-                        __extends(Painter, _super);
-                        function Painter($container, options) {
-                            _super.call(this, options);
-                            this.$container = $container;
-                            if (!uk.util.isNullOrUndefined(options.levelStruct)) {
-                                this.columnsMap = helper.columnsMapFromStruct(options.levelStruct);
-                            }
-                            else {
-                                this.columnsMap = _.groupBy(options.columns, "key");
-                            }
-                        }
-                        /**
-                         * Cell.
-                         */
-                        Painter.prototype.cell = function (rData, rowIdx, key) {
-                            var self = this;
-                            var cData = rData[key];
-                            var data = cData && _.isObject(cData) && cData.constructor !== Array && _.isFunction(self.options.view) ?
-                                helper.viewData(self.options.view, self.options.viewMode, cData) : cData;
-                            var column = self.columnsMap[key];
-                            if (uk.util.isNullOrUndefined(column))
-                                return;
-                            var ws = column.css && column.css.whiteSpace ? column.css.whiteSpace : "nowrap";
-                            var $td = $("<td/>").data(internal.VIEW, rowIdx + "-" + key)
-                                .css({ borderWidth: "1px", overflow: "hidden", whiteSpace: ws, position: "relative" });
-                            self.highlight($td);
-                            if (!self.visibleColumnsMap[key])
-                                $td.hide();
-                            if (!uk.util.isNullOrUndefined(data) && data.constructor === Array) {
-                                var incellHeight_1 = parseInt(self.options.rowHeight) / 2 - 3;
-                                var borderStyle_1 = "solid 1px transparent";
-                                _.forEach(data, function (item, idx) {
-                                    var $div = $("<div/>").addClass(render.CHILD_CELL_CLS).text(item);
-                                    if (idx < data.length - 1) {
-                                        $div.css({ borderTop: borderStyle_1, borderLeft: borderStyle_1,
-                                            borderRight: borderStyle_1, borderBottom: "dashed 1px #AAB7B8", top: "0px" });
-                                    }
-                                    else {
-                                        $div.css({ border: borderStyle_1, top: (incellHeight_1 + 2) + "px" });
-                                    }
-                                    $td.append($div.css({ position: "absolute", left: "0px", height: incellHeight_1 + "px",
-                                        width: "98%", textAlign: "center" }));
-                                    if (column.handlerType) {
-                                        var handler = cellHandler.get(column.handlerType);
-                                        if (handler)
-                                            handler($div, self.options, helper.call(column.supplier, rData, rowIdx, key));
-                                    }
-                                    cellHandler.rClick($div, column, helper.call(column.rightClick, rData, rowIdx, key));
-                                    spread.bindSticker($div, rowIdx, key, self.options);
-                                });
-                                style.detCell(self.$container, $td, rowIdx, key);
-                                return $td.css({ padding: "0px" });
-                            }
-                            if (!uk.util.isNullOrUndefined(column.handlerType) && !self.options.isHeader) {
-                                var handler = cellHandler.get(column.handlerType);
-                                if (!uk.util.isNullOrUndefined(handler)) {
-                                    handler($td, self.options, helper.call(column.supplier, rData, rowIdx, key));
-                                }
-                            }
-                            if (self.options.isHeader) {
-                                if (!uk.util.isNullOrUndefined(column.icon) && column.icon.for === "header") {
-                                    var $icon = $("<span/>").addClass(render.COL_ICON_CLS + " " + column.icon.class);
-                                    $icon.appendTo($td.css({ paddingLeft: column.icon.width }));
-                                    if (column.icon.popup && typeof column.icon.popup === "function") {
-                                        $icon.css({ cursor: "pointer" });
-                                        new widget.PopupPanel($icon, column.icon.popup(), "bottom right");
-                                    }
-                                    $("<div/>").html(data).appendTo($td);
-                                }
-                                else if (helper.containsBr(data)) {
-                                    $td.html(data);
-                                }
-                                else {
-                                    $td.text(data);
-                                }
-                            }
-                            else if (!self.options.isHeader) {
-                                if (!uk.util.isNullOrUndefined(column.icon) && column.icon.for === "body") {
-                                    var $icon = $("<span/>").addClass(render.COL_ICON_CLS + " " + column.icon.class);
-                                    $icon.appendTo($td.css({ paddingLeft: column.icon.width }));
-                                }
-                                else if (!column.control) {
-                                    $td.text(data);
-                                }
-                                controls.check($td, column, data, helper.call(column.handler, rData, rowIdx, key));
-                                cellHandler.rClick($td, column, helper.call(column.rightClick, rData, rowIdx, key));
-                            }
-                            spread.bindSticker($td, rowIdx, key, self.options);
-                            style.detCell(self.$container, $td, rowIdx, key);
-                            return $td;
-                        };
-                        /**
-                         * Row.
-                         */
-                        Painter.prototype.row = function (data, config, rowIdx) {
-                            var self = this;
-                            var $tr = $("<tr/>").css(config.css);
-                            var headerCellStyleFt, headerPopupFt, bodyCellStyleFt;
-                            if (self.options.isHeader) {
-                                headerCellStyleFt = feature.find(self.options.features, feature.HEADER_CELL_STYLE);
-                                headerPopupFt = feature.find(self.options.features, feature.HEADER_POP_UP);
-                            }
-                            else {
-                                bodyCellStyleFt = feature.find(self.options.features, feature.BODY_CELL_STYLE);
-                            }
-                            var onChecked = function (checked, rowIndex) {
-                                var $grid = self.options.isHeader ? self.$container.siblings("." + BODY_PRF + LEFTMOST)
-                                    : self.$container;
-                                controls.tick(checked, $grid, self.options.isHeader, rowIndex);
-                            };
-                            if (!data[controls.CHECKED_KEY] && self.options.columns[0].key === controls.CHECKED_KEY) {
-                                $tr.append($("<td/>").data(internal.VIEW, rowIdx + "-" + controls.CHECKED_KEY).css(controls.checkBoxCellStyles())
-                                    .append(controls.createCheckBox(self.$container, { initValue: false, onChecked: onChecked })));
-                            }
-                            _.forEach(Object.keys(data), function (key, index) {
-                                if (!self.visibleColumnsMap[key] && !self.hiddenColumnsMap[key])
-                                    return;
-                                if (key === controls.CHECKED_KEY) {
-                                    $tr.append($("<td/>").css(controls.checkBoxCellStyles())
-                                        .append(controls.createCheckBox(self.$container, { initValue: false, onChecked: onChecked })));
-                                    return;
-                                }
-                                var $cell = self.cell(data, rowIdx, key);
-                                $tr.append($cell);
-                                // Styles
-                                if (!uk.util.isNullOrUndefined(headerCellStyleFt)) {
-                                    _.forEach(headerCellStyleFt.decorator, function (colorDef) {
-                                        if (key === colorDef.columnKey) {
-                                            if ((!uk.util.isNullOrUndefined(colorDef.rowId) && colorDef.rowId === rowIdx)
-                                                || uk.util.isNullOrUndefined(colorDef.rowId)) {
-                                                $cell.addClass(colorDef.clazz);
-                                                return false;
-                                            }
-                                        }
-                                    });
-                                }
-                                else if (!uk.util.isNullOrUndefined(bodyCellStyleFt)) {
-                                    _.forEach(bodyCellStyleFt.decorator, function (colorDef) {
-                                        if (key === colorDef.columnKey && data[self.options.primaryKey] === colorDef.rowId) {
-                                            var $childCells = $cell.find("." + render.CHILD_CELL_CLS);
-                                            if (!uk.util.isNullOrUndefined(colorDef.innerIdx) && $childCells.length > 0) {
-                                                var $child = $($childCells[colorDef.innerIdx]);
-                                                $child.addClass(colorDef.clazz);
-                                                if (colorDef.clazz === style.HIDDEN_CLS) {
-                                                    $child.data("hide", $child.text());
-                                                    $child.text("");
-                                                }
-                                            }
-                                            else {
-                                                $cell.addClass(colorDef.clazz);
-                                                if (colorDef.clazz == style.HIDDEN_CLS) {
-                                                    $cell.data("hide", $cell.text());
-                                                    $cell.text("");
-                                                }
-                                                return false;
-                                            }
-                                        }
-                                    });
-                                }
-                                if (uk.util.isNullOrUndefined(self.columnsMap[key]))
-                                    return;
-                                var cellStyle = self.columnsMap[key].style;
-                                if (!uk.util.isNullOrUndefined(cellStyle)) {
-                                    cellStyle(new style.CellStyleParam($cell, data[key], data, rowIdx, key));
-                                }
-                            });
-                            widget.bind($tr, rowIdx, headerPopupFt);
-                            style.detColumn(self.$container, $tr, rowIdx);
-                            return $tr;
-                        };
-                        /**
-                         * Highlight.
-                         */
-                        Painter.prototype.jqHighlight = function ($td) {
-                            var self = this;
-                            if (self.options.isHeader || self.options.containerClass !== BODY_PRF + DETAIL)
-                                return;
-                            var $targetContainer = self.$container;
-                            var $targetHeader = $targetContainer.siblings("." + self.options.containerClass.replace(BODY_PRF, HEADER_PRF));
-                            $td.on(events.MOUSE_OVER, function () {
-                                var colIndex = $td.index();
-                                var $tr = $td.closest("tr");
-                                var rowIndex = $tr.index();
-                                $tr.find("td").addClass(render.HIGHLIGHT_CLS);
-                                var $horzSumHeader = $targetContainer.siblings("." + HEADER_PRF + HORIZONTAL_SUM);
-                                var $horzSumContent = $targetContainer.siblings("." + BODY_PRF + HORIZONTAL_SUM);
-                                ;
-                                $targetContainer.siblings("div[class*='" + BODY_PRF + "']").each(function () {
-                                    if ($(this).hasClass(BODY_PRF + LEFT_HORZ_SUM) || $(this).hasClass(BODY_PRF + HORIZONTAL_SUM))
-                                        return;
-                                    $(this).find("tbody > tr:eq(" + rowIndex + ")").find("td").addClass(render.HIGHLIGHT_CLS);
-                                });
-                                $tr.siblings("tr").each(function () {
-                                    $(this).find("td:eq(" + colIndex + ")").addClass(render.HIGHLIGHT_CLS);
-                                });
-                                $targetHeader.find("tr").each(function () {
-                                    $(this).find("td:eq(" + colIndex + ")").addClass(render.HIGHLIGHT_CLS);
-                                });
-                                if ($horzSumHeader.length > 0 && $horzSumHeader.css("display") !== "none") {
-                                    $horzSumHeader.find("tr").each(function () {
-                                        $(this).find("td:eq(" + colIndex + ")").addClass(render.HIGHLIGHT_CLS);
-                                    });
-                                    $horzSumContent.find("tr").each(function () {
-                                        $(this).find("td:eq(" + colIndex + ")").addClass(render.HIGHLIGHT_CLS);
-                                    });
-                                }
-                                events.trigger(self.$container.closest("." + NAMESPACE), events.MOUSEIN_COLUMN, colIndex);
-                            });
-                            $td.on(events.MOUSE_OUT, function () {
-                                $td.removeClass(render.HIGHLIGHT_CLS);
-                                var colIndex = $td.index();
-                                var $tr = $td.closest("tr");
-                                $tr.find("td").removeClass(render.HIGHLIGHT_CLS);
-                                var rowIndex = $tr.index();
-                                var $horzSumHeader = $targetContainer.siblings("." + HEADER_PRF + HORIZONTAL_SUM);
-                                var $horzSumContent = $targetContainer.siblings("." + BODY_PRF + HORIZONTAL_SUM);
-                                $targetContainer.siblings("div[class*='" + BODY_PRF + "']").each(function () {
-                                    if ($(this).hasClass(BODY_PRF + LEFT_HORZ_SUM) || $(this).hasClass(BODY_PRF + HORIZONTAL_SUM))
-                                        return;
-                                    $(this).find("tbody > tr:eq(" + rowIndex + ")").find("td").removeClass(render.HIGHLIGHT_CLS);
-                                });
-                                $tr.siblings("tr").each(function () {
-                                    $(this).find("td:eq(" + colIndex + ")").removeClass(render.HIGHLIGHT_CLS);
-                                });
-                                $targetHeader.find("tr").each(function () {
-                                    $(this).find("td:eq(" + colIndex + ")").removeClass(render.HIGHLIGHT_CLS);
-                                });
-                                if ($horzSumHeader.length > 0 && $horzSumHeader.css("display") !== "none") {
-                                    $horzSumHeader.find("tr").each(function () {
-                                        $(this).find("td:eq(" + colIndex + ")").removeClass(render.HIGHLIGHT_CLS);
-                                    });
-                                    $horzSumContent.find("tr").each(function () {
-                                        $(this).find("td:eq(" + colIndex + ")").removeClass(render.HIGHLIGHT_CLS);
-                                    });
-                                }
-                                events.trigger(self.$container.closest("." + NAMESPACE), events.MOUSEOUT_COLUMN, colIndex);
-                            });
-                        };
-                        /**
-                         * Highlight.
-                         */
-                        Painter.prototype.highlight = function ($td) {
-                            var self = this;
-                            if (self.options.isHeader || self.options.containerClass !== BODY_PRF + DETAIL)
-                                return;
-                            var $targetContainer = self.$container;
-                            var targetHeader = helper.firstSibling($targetContainer[0], self.options.containerClass.replace(BODY_PRF, HEADER_PRF));
-                            $td.on(events.MOUSE_OVER, function () {
-                                var colIndex = helper.indexInParent($td[0]);
-                                var tr = helper.closest($td[0], "tr");
-                                var rowIndex = helper.indexInParent(tr);
-                                helper.addClass1n(tr.children, render.HIGHLIGHT_CLS);
-                                var horzSumHeader = helper.firstSibling($targetContainer[0], HEADER_PRF + HORIZONTAL_SUM);
-                                var horzSumContent = helper.firstSibling($targetContainer[0], BODY_PRF + HORIZONTAL_SUM);
-                                var bodies = helper.classSiblings($targetContainer[0], BODY_PRF);
-                                for (var i = 0; i < bodies.length; i++) {
-                                    if (!helper.hasClass(bodies[i], BODY_PRF + LEFT_HORZ_SUM)
-                                        && !helper.hasClass(bodies[i], BODY_PRF + HORIZONTAL_SUM)) {
-                                        var rowElm = bodies[i].getElementsByTagName("tr")[rowIndex];
-                                        if (rowElm) {
-                                            helper.addClass1n(rowElm.getElementsByTagName("td"), render.HIGHLIGHT_CLS);
-                                        }
-                                    }
-                                }
-                                helper.consumeSiblings(tr, function (elm) {
-                                    var tds = elm.getElementsByTagName("td");
-                                    if (!tds || tds.length === 0)
-                                        return;
-                                    helper.addClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
-                                });
-                                _.forEach(targetHeader.getElementsByTagName("tr"), function (t) {
-                                    var tds = t.getElementsByTagName("td");
-                                    if (!tds || tds.length === 0)
-                                        return;
-                                    helper.addClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
-                                });
-                                if (horzSumHeader && horzSumHeader.style.display !== "none") {
-                                    _.forEach(horzSumHeader.getElementsByTagName("tr"), function (t) {
-                                        var tds = t.getElementsByTagName("td");
-                                        if (!tds || tds.length === 0)
-                                            return;
-                                        helper.addClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
-                                    });
-                                    _.forEach(horzSumContent.getElementsByTagName("tr"), function (t) {
-                                        var tds = t.getElementsByTagName("td");
-                                        if (!tds || tds.length === 0)
-                                            return;
-                                        helper.addClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
-                                    });
-                                }
-                                self.$container.data(internal.COLUMN_IN, colIndex);
-                                events.trigger(self.$container.closest("." + NAMESPACE), events.MOUSEIN_COLUMN, colIndex);
-                            });
-                            $td.on(events.MOUSE_OUT, function () {
-                                helper.removeClass1n($td[0], render.HIGHLIGHT_CLS);
-                                var colIndex = helper.indexInParent($td[0]);
-                                var tr = helper.closest($td[0], "tr");
-                                var rowIndex = helper.indexInParent(tr);
-                                helper.removeClass1n(tr.children, render.HIGHLIGHT_CLS);
-                                var horzSumHeader = helper.firstSibling($targetContainer[0], HEADER_PRF + HORIZONTAL_SUM);
-                                var horzSumContent = helper.firstSibling($targetContainer[0], BODY_PRF + HORIZONTAL_SUM);
-                                var bodies = helper.classSiblings($targetContainer[0], BODY_PRF);
-                                for (var i = 0; i < bodies.length; i++) {
-                                    if (!helper.hasClass(bodies[i], BODY_PRF + LEFT_HORZ_SUM)
-                                        && !helper.hasClass(bodies[i], BODY_PRF + HORIZONTAL_SUM)) {
-                                        helper.removeClass1n(bodies[i].getElementsByTagName("tr")[rowIndex].getElementsByTagName("td"), render.HIGHLIGHT_CLS);
-                                    }
-                                }
-                                helper.consumeSiblings(tr, function (elm) {
-                                    var tds = elm.getElementsByTagName("td");
-                                    if (!tds || tds.length === 0)
-                                        return;
-                                    helper.removeClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
-                                });
-                                _.forEach(targetHeader.getElementsByTagName("tr"), function (t) {
-                                    var tds = t.getElementsByTagName("td");
-                                    if (!tds || tds.length === 0)
-                                        return;
-                                    helper.removeClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
-                                });
-                                if (horzSumHeader && horzSumHeader.style.display !== "none") {
-                                    _.forEach(horzSumHeader.getElementsByTagName("tr"), function (t) {
-                                        var tds = t.getElementsByTagName("td");
-                                        if (!tds || tds.length === 0)
-                                            return;
-                                        helper.removeClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
-                                    });
-                                    _.forEach(horzSumContent.getElementsByTagName("tr"), function (t) {
-                                        var tds = t.getElementsByTagName("td");
-                                        if (!tds || tds.length === 0)
-                                            return;
-                                        helper.removeClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
-                                    });
-                                }
-                                self.$container.data(internal.COLUMN_IN, -1);
-                                events.trigger(self.$container.closest("." + NAMESPACE), events.MOUSEOUT_COLUMN, colIndex);
-                            });
-                        };
-                        return Painter;
-                    }(Conditional));
-                    render.Painter = Painter;
-                    var GroupHeaderPainter = (function (_super) {
-                        __extends(GroupHeaderPainter, _super);
-                        function GroupHeaderPainter(options) {
-                            _super.call(this, options);
-                            this.levelStruct = options.levelStruct;
-                            this.columnsMap = helper.columnsMapFromStruct(this.levelStruct);
-                        }
-                        /**
-                         * Cell.
-                         */
-                        GroupHeaderPainter.prototype.cell = function (text, rowIdx, cell) {
-                            var self = this;
-                            var $td = $("<td/>").data(internal.VIEW, rowIdx + "-" + cell.key)
-                                .css({ "border-width": "1px", "overflow": "hidden", "white-space": "nowrap", "border-collapse": "collapse" });
-                            if (!uk.util.isNullOrUndefined(cell.rowspan) && cell.rowspan > 1)
-                                $td.attr("rowspan", cell.rowspan);
-                            if (!uk.util.isNullOrUndefined(cell.colspan) && cell.colspan > 1)
-                                $td.attr("colspan", cell.colspan);
-                            else if (!self.visibleColumnsMap[cell.key])
-                                $td.hide();
-                            if (!uk.util.isNullOrUndefined(cell.icon) && cell.icon.for === "header") {
-                                var $icon = $("<span/>").addClass(render.COL_ICON_CLS + " " + cell.icon.class);
-                                $icon.css("top", "20%").appendTo($td.css({ paddingLeft: cell.icon.width }));
-                                if (cell.icon.popup && typeof cell.icon.popup === "function") {
-                                    $icon.css({ cursor: "pointer" });
-                                    new widget.PopupPanel($icon, cell.icon.popup(), "bottom right");
-                                }
-                                $("<div/>").html(text).appendTo($td);
-                            }
-                            else if (helper.containsBr(text)) {
-                                $td.html(text);
-                            }
-                            else {
-                                $td.text(text);
-                            }
-                            return $td;
-                        };
-                        /**
-                         * Rows.
-                         */
-                        GroupHeaderPainter.prototype.rows = function ($tbody) {
-                            var self = this;
-                            var css = { height: self.options.rowHeight };
-                            var headerRowHeightFt = feature.find(self.options.features, feature.HEADER_ROW_HEIGHT);
-                            var headerCellStyleFt = feature.find(self.options.features, feature.HEADER_CELL_STYLE);
-                            _.forEach(Object.keys(self.levelStruct), function (rowIdx) {
-                                if (!uk.util.isNullOrUndefined(headerRowHeightFt)) {
-                                    css = { height: headerRowHeightFt.rows[rowIdx] };
-                                }
-                                var $tr = $("<tr/>").css(css);
-                                var oneLevel = self.levelStruct[rowIdx];
-                                _.forEach(oneLevel, function (cell) {
-                                    if (!self.visibleColumnsMap[cell.key] && !self.hiddenColumnsMap[cell.key]
-                                        && (uk.util.isNullOrUndefined(cell.colspan) || cell.colspan == 1))
-                                        return;
-                                    var $cell = self.cell(cell.headerText, rowIdx, cell);
-                                    $tr.append($cell);
-                                    if (!uk.util.isNullOrUndefined(headerCellStyleFt)) {
-                                        _.forEach(headerCellStyleFt.decorator, function (colorDef) {
-                                            if (colorDef.columnKey === cell.key) {
-                                                if ((!uk.util.isNullOrUndefined(colorDef.rowId) && colorDef.rowId === rowIdx)
-                                                    || uk.util.isNullOrUndefined(colorDef.rowId)) {
-                                                    $cell.addClass(colorDef.clazz);
-                                                }
-                                                return false;
-                                            }
-                                        });
-                                    }
-                                    if (uk.util.isNullOrUndefined(self.columnsMap[cell.key]))
-                                        return;
-                                    var cellStyle = self.columnsMap[cell.key].style;
-                                    if (!uk.util.isNullOrUndefined(cellStyle)) {
-                                        cellStyle(new style.CellStyleParam($cell, cell.headerText, undefined, rowIdx, cell.key));
-                                    }
-                                });
-                                $tbody.append($tr);
-                            });
-                        };
-                        return GroupHeaderPainter;
-                    }(Conditional));
-                    render.GroupHeaderPainter = GroupHeaderPainter;
-                    /**
-                     * Extra.
-                     */
-                    function extra(className, height) {
-                        return $("<tr/>").addClass("extable-" + className).height(height);
-                    }
-                    render.extra = extra;
-                    /**
-                     * Wrapper styles.
-                     */
-                    function wrapperStyles(top, left, width, height) {
-                        return {
-                            position: "absolute",
-                            overflow: "hidden",
-                            top: top,
-                            left: left,
-                            width: width,
-                            height: height,
-                            border: "solid 1px #CCC"
-                        };
-                    }
-                    render.wrapperStyles = wrapperStyles;
-                    /**
-                     * Create wrapper.
-                     */
-                    function createWrapper(top, left, options) {
-                        return $("<div/>").data(internal.EX_PART, options.containerClass).addClass(options.containerClass)
-                            .css(wrapperStyles(top, left, options.width, options.height));
-                    }
-                    render.createWrapper = createWrapper;
-                    /**
-                     * Grid cell.
-                     */
-                    function gridCell($grid, rowIdx, columnKey, innerIdx, valueObj, isRestore) {
-                        var $exTable = $grid.closest("." + NAMESPACE);
-                        var updateMode = helper.getExTableFromGrid($grid).updateMode;
-                        var $cell = selection.cellAt($grid, rowIdx, columnKey);
-                        if ($cell === intan.NULL)
-                            return;
-                        var origDs = helper.getOrigDS($grid);
-                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
-                        var viewFn = gen.painter.options.view;
-                        var viewMode = gen.painter.options.viewMode;
-                        var value = valueObj;
-                        var fields = gen.painter.options.fields;
-                        if (_.isFunction(viewFn)) {
-                            value = helper.viewData(viewFn, viewMode, valueObj);
-                        }
-                        var touched = false;
-                        var $childCells = $cell.find("." + render.CHILD_CELL_CLS);
-                        if ($childCells.length > 0) {
-                            if (value.constructor === Array) {
-                                _.forEach(value, function (val, i) {
-                                    var $c = $($childCells[i]);
-                                    $c.text(val);
-                                    var mTouch = trace(origDs, $c, rowIdx, columnKey, i, valueObj, fields);
-                                    if (!touched)
-                                        touched = mTouch;
-                                    if (updateMode === EDIT) {
-                                        validation.validate($grid, $c, rowIdx, columnKey, i, val);
-                                    }
-                                });
-                            }
-                            else {
-                                var $c = $($childCells[innerIdx]);
-                                $c.text(value);
-                                touched = trace(origDs, $c, rowIdx, columnKey, innerIdx, valueObj, fields);
-                                if (updateMode === EDIT) {
-                                    validation.validate($grid, $c, rowIdx, columnKey, innerIdx, value);
-                                }
-                            }
-                        }
-                        else {
-                            $cell.text(value);
-                            touched = trace(origDs, $cell, rowIdx, columnKey, -1, valueObj, fields);
-                            if (updateMode === EDIT) {
-                                validation.validate($grid, $cell, rowIdx, columnKey, -1, value);
-                            }
-                        }
-                        return touched;
-                    }
-                    render.gridCell = gridCell;
-                    /**
-                     * Grid row.
-                     */
-                    function gridRow($grid, rowIdx, data, isRestore) {
-                        var $exTable = $grid.closest("." + NAMESPACE);
-                        var updateMode = helper.getExTableFromGrid($grid).updateMode;
-                        var $row = selection.rowAt($grid, rowIdx);
-                        var $cells = $row.find("td").filter(function () {
-                            return $(this).css("display") !== "none";
-                        });
-                        var visibleColumns = helper.gridVisibleColumns($grid);
-                        var origDs = helper.getOrigDS($grid);
-                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
-                        var viewFn = gen.painter.options.view;
-                        var viewMode = gen.painter.options.viewMode;
-                        var fields = gen.painter.options.fields;
-                        _.forEach(Object.keys(data), function (key) {
-                            _.forEach(visibleColumns, function (col, index) {
-                                if (col.key === key) {
-                                    var $target = $cells.eq(index);
-                                    var childCells_1 = $target.find("." + render.CHILD_CELL_CLS);
-                                    if (childCells_1.length > 0) {
-                                        var cData = data[key];
-                                        if (_.isFunction(viewFn)) {
-                                            cData = helper.viewData(viewFn, viewMode, data[key]);
-                                        }
-                                        if (cData.constructor === Array) {
-                                            _.forEach(cData, function (d, i) {
-                                                var $c = $(childCells_1[i]);
-                                                $c.text(d);
-                                                if (updateMode === EDIT) {
-                                                    validation.validate($exTable, $grid, $c, rowIdx, key, i, d);
-                                                }
-                                                trace(origDs, $c, rowIdx, key, i, data[key], fields);
-                                            });
-                                            return false;
-                                        }
-                                        $(childCells_1[1]).text(data[key]);
-                                        trace(origDs, $(childCells_1[1]), rowIdx, key, 1, data[key], fields);
-                                        if (updateMode === EDIT) {
-                                            validation.validate($exTable, $grid, $(childCells_1[1]), rowIdx, key, 1, data[key]);
-                                        }
-                                    }
-                                    else {
-                                        var cData = data[key];
-                                        if (_.isFunction(viewFn)) {
-                                            cData = helper.viewData(viewFn, viewMode, data[key]);
-                                        }
-                                        $target.text(cData);
-                                        trace(origDs, $target, rowIdx, key, -1, data[key], fields);
-                                        if (updateMode === EDIT) {
-                                            validation.validate($exTable, $grid, $target, rowIdx, key, -1, data[key]);
-                                        }
-                                    }
-                                    return false;
-                                }
-                            });
-                        });
-                    }
-                    render.gridRow = gridRow;
-                    /**
-                     * Trace.
-                     */
-                    function trace(ds, $cell, rowIdx, key, innerIdx, value, fields) {
-                        if (!ds || ds.length === 0)
-                            return;
-                        var oVal = ds[rowIdx][key];
-                        if (!uk.util.isNullOrUndefined(oVal) && helper.isEqual(oVal, value, fields)) {
-                            $cell.removeClass(update.EDITED_CLS);
-                            return false;
-                        }
-                        $cell.addClass(update.EDITED_CLS);
-                        return true;
-                    }
-                })(render || (render = {}));
-                var intan;
-                (function (intan) {
-                    intan.TOP_SPACE = "top-space";
-                    intan.BOTTOM_SPACE = "bottom-space";
-                    intan.NULL = $([]);
-                    var Cloud = (function () {
-                        function Cloud($container, dataSource, options) {
-                            this.$container = $container;
-                            this.options = options;
-                            this.primaryKey = options.primaryKey;
-                            this.rowsOfBlock = options.rowsOfBlock || 30;
-                            this.blocksOfCluster = options.blocksOfCluster || 3;
-                            this.rowHeight = parseInt(options.rowHeight);
-                            this.blockHeight = this.rowsOfBlock * this.rowHeight;
-                            this.clusterHeight = this.blockHeight * this.blocksOfCluster;
-                            this.dataSource = dataSource;
-                            this._origDs = _.cloneDeep(dataSource);
-                            this.painter = new render.Painter($container, options);
-                            this.setCellsStyle();
-                            this.onScroll();
-                        }
-                        /**
-                         * Set cells style.
-                         */
-                        Cloud.prototype.setCellsStyle = function () {
-                            var self = this;
-                            var bodyStylesFt = feature.find(self.options.features, feature.BODY_CELL_STYLE);
-                            if (!bodyStylesFt)
-                                return;
-                            self.$container.data(internal.CELLS_STYLE, bodyStylesFt.decorator);
-                        };
-                        /**
-                         * Get cluster no.
-                         */
-                        Cloud.prototype.getClusterNo = function () {
-                            return Math.floor(this.$container.scrollTop() / (this.clusterHeight - this.blockHeight));
-                        };
-                        /**
-                         * Render rows.
-                         */
-                        Cloud.prototype.renderRows = function (manual) {
-                            var self = this;
-                            var clusterNo = self.getClusterNo();
-                            if (manual)
-                                self.currentCluster = clusterNo;
-                            if (self.dataSource.length < self.rowsOfBlock) {
-                                self.topOffset = 0;
-                                self.bottomOffset = 0;
-                            }
-                            var rowsOfCluster = self.blocksOfCluster * self.rowsOfBlock;
-                            var startRowIdx = self.startIndex = Math.max((rowsOfCluster - self.rowsOfBlock) * clusterNo, 0);
-                            var endRowIdx = self.endIndex = startRowIdx + rowsOfCluster;
-                            self.topOffset = Math.max(startRowIdx * self.rowHeight, 0);
-                            self.bottomOffset = Math.max((self.dataSource.length - endRowIdx) * self.rowHeight, 0);
-                            var rowConfig = { css: { height: self.rowHeight } };
-                            var $tbody = self.$container.find("tbody");
-                            $tbody.empty();
-                            $tbody.append(render.extra(intan.TOP_SPACE, self.topOffset));
-                            for (var i = startRowIdx; i < endRowIdx; i++) {
-                                if (uk.util.isNullOrUndefined(this.dataSource[i]))
-                                    continue;
-                                $tbody.append(self.painter.row(this.dataSource[i], rowConfig, i));
-                            }
-                            $tbody.append(render.extra(intan.BOTTOM_SPACE, self.bottomOffset));
-                            if (self.$container.hasClass(BODY_PRF + DETAIL)) {
-                                self.selectCellsIn();
-                                self.dirtyCellsIn();
-                                self.errorCellsIn();
-                                self.detCellsIn();
-                                self.editCellIn();
-                            }
-                            else if (self.$container.hasClass(BODY_PRF + LEFTMOST)) {
-                                self.selectedRowsIn();
-                                self.dirtyCellsIn();
-                                self.errorCellsIn();
-                                self.editCellIn();
-                            }
-                        };
-                        /**
-                         * OnScroll.
-                         */
-                        Cloud.prototype.onScroll = function () {
-                            var self = this;
-                            self.$container.off(events.SCROLL_EVT + ".detail").on(events.SCROLL_EVT + ".detail", function () {
-                                var inClusterNo = self.getClusterNo();
-                                if (self.currentCluster !== inClusterNo) {
-                                    self.currentCluster = inClusterNo;
-                                    if (self.$container.hasClass(BODY_PRF + DETAIL)) {
-                                        var colIn = self.$container.data(internal.COLUMN_IN);
-                                        if (!uk.util.isNullOrUndefined(colIn) && colIn !== -1) {
-                                            helper.unHighlightGrid(self.$container.siblings("." + HEADER_PRF + DETAIL)[0], colIn);
-                                            var $sumHeader = self.$container.siblings("." + HEADER_PRF + HORIZONTAL_SUM);
-                                            var $sumBody = self.$container.siblings("." + BODY_PRF + HORIZONTAL_SUM);
-                                            if ($sumHeader.length > 0 && $sumHeader[0].style.display !== "none") {
-                                                helper.unHighlightGrid($sumHeader[0], colIn);
-                                                helper.unHighlightGrid($sumBody[0], colIn);
-                                            }
-                                            events.trigger(self.$container.closest("." + NAMESPACE), events.MOUSEOUT_COLUMN, colIn);
-                                        }
-                                    }
-                                    self.renderRows();
-                                }
-                            });
-                        };
-                        /**
-                         * Roll to.
-                         */
-                        Cloud.prototype.rollTo = function (cell) {
-                            var self = this;
-                            if (self.startIndex <= cell.rowIndex && self.endIndex >= cell.rowIndex) {
-                                var $cell = selection.cellAt(self.$container, cell.rowIndex, cell.columnKey);
-                                var tdIndex = $cell.index();
-                                var tdPosLeft_1 = 0, tdPosTop_1 = 0;
-                                $cell.siblings("td:lt(" + tdIndex + ")").each(function () {
-                                    if ($(this).css("display") !== "none") {
-                                        tdPosLeft_1 += $(this).outerWidth();
-                                    }
-                                });
-                                var $tr = $cell.parent();
-                                var trIndex = $tr.index();
-                                $tr.siblings("tr:lt(" + trIndex + ")").each(function () {
-                                    tdPosTop_1 += $(this).outerHeight();
-                                });
-                                if ((self.$container.scrollTop() + self.$container.height()) < (tdPosTop_1 + 100)
-                                    || self.$container.scrollTop() > tdPosTop_1) {
-                                    self.$container.scrollTop(tdPosTop_1);
-                                }
-                                if ((self.$container.scrollLeft() + self.$container.width()) < (tdPosLeft_1 + 100)
-                                    || self.$container.scrollLeft() > tdPosLeft_1) {
-                                    self.$container.scrollLeft(tdPosLeft_1);
-                                }
-                            }
-                            else {
-                                self.$container.scrollTop(cell.rowIndex * self.rowHeight);
-                                var $cell = selection.cellAt(self.$container, cell.rowIndex, cell.columnKey);
-                                var tdPosLeft_2 = 0;
-                                $cell.siblings("td:lt(" + $cell.index() + ")").each(function () {
-                                    if ($(this).css("display") !== "none") {
-                                        tdPosLeft_2 += $(this).outerWidth();
-                                    }
-                                });
-                                self.$container.scrollLeft(tdPosLeft_2);
-                            }
-                        };
-                        /**
-                         * Edit cell in.
-                         */
-                        Cloud.prototype.editCellIn = function () {
-                            var self = this;
-                            var $exTable = self.$container.closest("." + NAMESPACE);
-                            var updateMode = $exTable.data(NAMESPACE).updateMode;
-                            var editor = $exTable.data(update.EDITOR);
-                            if (updateMode !== EDIT || uk.util.isNullOrUndefined(editor) || editor.land !== self.options.containerClass)
-                                return;
-                            var editorRowIdx = parseInt(editor.rowIdx);
-                            if (uk.util.isNullOrUndefined(editor) || editorRowIdx < self.startIndex || editorRowIdx > self.endIndex)
-                                return;
-                            var $editRow = self.$container.find("tr:eq(" + (editorRowIdx - self.startIndex + 1) + ")");
-                            var editorColumnIdx;
-                            _.forEach(self.painter.visibleColumns, function (c, idx) {
-                                if (c.key === editor.columnKey) {
-                                    editorColumnIdx = idx;
-                                    return false;
-                                }
-                            });
-                            if (!uk.util.isNullOrUndefined(editorColumnIdx)) {
-                                var $editorCell = $editRow.find("td").filter(function () {
-                                    return $(this).css("display") !== "none";
-                                }).eq(editorColumnIdx);
-                                var $childCells = $editorCell.find("." + render.CHILD_CELL_CLS);
-                                update.edit($exTable, $childCells.length > 0 ? $($childCells[1]) : $editorCell, editor.land, editor.value, true);
-                            }
-                        };
-                        /**
-                         * Select cells in.
-                         */
-                        Cloud.prototype.selectCellsIn = function () {
-                            var self = this;
-                            var $exTable = self.$container.closest("." + NAMESPACE);
-                            var updateMode = $exTable.data(NAMESPACE).updateMode;
-                            if (updateMode !== COPY_PASTE)
-                                return;
-                            var selectedCells = self.$container.data(internal.SELECTED_CELLS);
-                            if (uk.util.isNullOrUndefined(selectedCells) || selectedCells.length === 0)
-                                return;
-                            _.forEach(Object.keys(selectedCells), function (rowIdx, index) {
-                                if (rowIdx >= self.startIndex && rowIdx <= self.endIndex) {
-                                    _.forEach(selectedCells[rowIdx], function (colKey) {
-                                        var $cell = selection.cellAt(self.$container, rowIdx, colKey);
-                                        if ($cell === intan.NULL || !$cell)
-                                            return;
-                                        selection.markCell($cell);
-                                    });
-                                }
-                            });
-                        };
-                        /**
-                         * Select rows in.
-                         */
-                        Cloud.prototype.selectedRowsIn = function () {
-                            var self = this;
-                            var selectedRows = self.$container.data(internal.SELECTED_ROWS);
-                            if (!selectedRows || !selectedRows.items || selectedRows.items.length === 0)
-                                return;
-                            for (var i = self.startIndex; i <= self.endIndex; i++) {
-                                if (selectedRows.items[i]) {
-                                    controls.tick(true, self.$container, false, i);
-                                }
-                            }
-                        };
-                        /**
-                         * Dirty cells in.
-                         */
-                        Cloud.prototype.dirtyCellsIn = function () {
-                            var self = this;
-                            var $exTable = self.$container.closest("." + NAMESPACE);
-                            var updateMode = $exTable.data(NAMESPACE).updateMode;
-                            var histories;
-                            if (self.options.containerClass === BODY_PRF + LEFTMOST) {
-                                histories = self.$container.data(internal.EDIT_HISTORY);
-                                if (!histories)
-                                    return;
-                                self.each(histories);
-                                return;
-                            }
-                            if (updateMode === COPY_PASTE) {
-                                histories = self.$container.data(internal.COPY_HISTORY);
-                                if (!histories)
-                                    return;
-                                for (var i = histories.length - 1; i >= 0; i--) {
-                                    self.each(histories[i].items);
-                                }
-                            }
-                            else if (updateMode === EDIT) {
-                                histories = self.$container.data(internal.EDIT_HISTORY);
-                                if (!histories)
-                                    return;
-                                self.each(histories);
-                            }
-                            else if (updateMode === STICK) {
-                                histories = self.$container.data(internal.STICK_HISTORY);
-                                if (!histories)
-                                    return;
-                                _.forEach(histories, function (items) {
-                                    self.each(items);
-                                });
-                            }
-                        };
-                        /**
-                         * Error cells in.
-                         */
-                        Cloud.prototype.errorCellsIn = function () {
-                            var self = this;
-                            var $exTable = self.$container.closest("." + NAMESPACE);
-                            var updateMode = $exTable.data(NAMESPACE).updateMode;
-                            var errs = $exTable.data(errors.ERRORS);
-                            if (!errs || errs.length === 0)
-                                return;
-                            self.each(errs, errors.ERROR_CLS);
-                        };
-                        /**
-                         * Det cells in.
-                         */
-                        Cloud.prototype.detCellsIn = function () {
-                            var self = this;
-                            var det = self.$container.data(internal.DET);
-                            if (!det)
-                                return;
-                            _.forEach(Object.keys(det), function (rIdx) {
-                                if (rIdx >= self.startIndex && rIdx <= self.endIndex) {
-                                    _.forEach(det[rIdx], function (key) {
-                                        var $cell = selection.cellAt(self.$container, rIdx, key);
-                                        if ($cell === intan.NULL || !$cell)
-                                            return;
-                                        helper.markCellWith(style.DET_CLS, $cell);
-                                    });
-                                }
-                            });
-                        };
-                        /**
-                         * Each.
-                         */
-                        Cloud.prototype.each = function (items, styler) {
-                            var self = this;
-                            styler = styler || update.EDITED_CLS;
-                            _.forEach(items, function (item) {
-                                if (item.rowIndex >= self.startIndex && item.rowIndex <= self.endIndex) {
-                                    var $cell = selection.cellAt(self.$container, item.rowIndex, item.columnKey);
-                                    if ($cell === intan.NULL || !$cell)
-                                        return;
-                                    helper.markCellWith(styler, $cell, item.innerIdx, item.value);
-                                }
-                            });
-                        };
-                        return Cloud;
-                    }());
-                    intan.Cloud = Cloud;
-                })(intan || (intan = {}));
-                var cellHandler;
-                (function (cellHandler) {
-                    cellHandler.ROUND_GO = "ex-round-go";
-                    /**
-                     * Get.
-                     */
-                    function get(handlerType) {
-                        switch (handlerType.toLowerCase()) {
-                            case "input":
-                                return cellInput;
-                            case "tooltip":
-                                return tooltip;
-                            case "roundtrip":
-                                return roundGo;
-                        }
-                    }
-                    cellHandler.get = get;
-                    /**
-                     * Cell input.
-                     */
-                    function cellInput($cell, options, supplier) {
-                        if (uk.util.isNullOrUndefined(options.updateMode) || options.updateMode !== EDIT)
-                            return;
-                        $cell.addClass(update.EDITABLE_CLS);
-                        $cell.on(events.CLICK_EVT, function (evt) {
-                            if ($cell.find("input").length > 0) {
-                                evt.stopImmediatePropagation();
-                                return;
-                            }
-                            var $exTable = $cell.closest("." + NAMESPACE);
-                            if (evt.ctrlKey && $exTable.data(NAMESPACE).determination)
-                                return;
-                            update.edit($exTable, $cell, options.containerClass);
-                        });
-                    }
-                    cellHandler.cellInput = cellInput;
-                    /**
-                     * Tooltip.
-                     */
-                    function tooltip($cell, options, supplier) {
-                        var $content = supplier();
-                        if (uk.util.isNullOrUndefined($content))
-                            return;
-                        new widget.Tooltip($cell, { sources: $content });
-                    }
-                    cellHandler.tooltip = tooltip;
-                    /**
-                     * Round go.
-                     */
-                    function roundGo($cell, options, supplier) {
-                        if (!supplier || typeof supplier !== "function")
-                            return;
-                        $cell.addClass(cellHandler.ROUND_GO).on(events.CLICK_EVT, function (evt) {
-                            var $grid = $cell.closest("table").parent();
-                            if (errors.occurred($grid.closest("." + NAMESPACE)))
-                                return false;
-                            var coord = helper.getCellCoord($cell);
-                            $cell.closest("." + NAMESPACE).one(events.ROUND_RETREAT, function (evt, value) {
-                                var ds = helper.getDataSource($grid);
-                                if (!ds || ds.length === 0)
-                                    return;
-                                if (ds[coord.rowIdx][coord.columnKey] !== value) {
-                                    update.gridCell($grid, coord.rowIdx, coord.columnKey, -1, value);
-                                    update.pushEditHistory($grid, new selection.Cell(coord.rowIdx, coord.columnKey, value, -1));
-                                }
-                            });
-                            supplier();
-                        });
-                    }
-                    cellHandler.roundGo = roundGo;
-                    /**
-                     * rClick.
-                     */
-                    function rClick($cell, column, cb) {
-                        if (uk.util.isNullOrUndefined(column.rightClick) || typeof column.rightClick !== "function")
-                            return;
-                        $cell.on(events.MOUSE_DOWN, function (evt) {
-                            if (evt.which === 3 || evt.button === 2) {
-                                evt.preventDefault();
-                                cb();
-                            }
-                        });
-                        $cell.on(events.CM, function () {
-                            return false;
-                        });
-                    }
-                    cellHandler.rClick = rClick;
-                })(cellHandler || (cellHandler = {}));
-                var update;
-                (function (update) {
-                    update.EDITOR = "editor";
-                    update.EDITED_CLS = "edited";
-                    update.EDIT_CELL_CLS = "edit-cell";
-                    update.EDITOR_CLS = "ex-editor";
-                    update.EDITABLE_CLS = "ex-editable";
-                    var EMPTY_TBL_HEIGHT = "1px";
-                    var Editor = (function () {
-                        function Editor($editor, land, rowIdx, columnKey, innerIdx, value) {
-                            this.$editor = $editor;
-                            this.land = land;
-                            this.rowIdx = rowIdx;
-                            this.columnKey = columnKey;
-                            this.innerIdx = innerIdx;
-                            this.value = value;
-                        }
-                        return Editor;
-                    }());
-                    update.Editor = Editor;
-                    /**
-                     * Edit.
-                     */
-                    function edit($exTable, $cell, land, value, forced) {
-                        var $grid = $exTable.find("." + BODY_PRF + DETAIL);
-                        var $body = !land ? $grid : helper.getTable($exTable, land);
-                        if (!forced && errors.occurred($exTable))
-                            return;
-                        if (!forced && ($cell.is("." + style.DET_CLS)
-                            || $cell.is("." + style.HIDDEN_CLS) || $cell.is("." + style.SEAL_CLS))) {
-                            outsideClick($exTable, $cell, true);
-                            return;
-                        }
-                        var editor = $exTable.data(update.EDITOR);
-                        var $editor, $input, inputVal, innerIdx = -1;
-                        var coord = helper.getCellCoord($cell);
-                        if (uk.util.isNullOrUndefined(editor)) {
-                            var content = $cell.text();
-                            inputVal = value ? value : content;
-                            $input = $("<input/>").css({ border: "none", width: "96%", height: "92%", outline: "none" })
-                                .val(inputVal);
-                            $editor = $("<div/>").addClass(update.EDITOR_CLS)
-                                .css({ height: $cell.outerHeight() - 4, width: $cell.outerWidth() - 4, backgroundColor: "#FFF",
-                                border: "solid 1px #E67E22" }).append($input);
-                            if ($cell.is("div")) {
-                                $editor.css({ height: $cell.outerHeight() - 4, width: $cell.outerWidth() - 4 });
-                                innerIdx = $cell.index();
-                            }
-                            $exTable.data(update.EDITOR, new Editor($editor, land, coord.rowIdx, coord.columnKey, innerIdx, inputVal));
-                            events.trigger($exTable, events.START_EDIT, [$editor, content]);
-                            $cell.addClass(update.EDIT_CELL_CLS).empty();
-                            $cell.append($editor);
-                            editing($exTable, $editor, land);
-                            $input.select();
-                            validation.validate($body, $cell, coord.rowIdx, coord.columnKey, innerIdx, inputVal);
-                            selection.tickRows($exTable.find("." + BODY_PRF + LEFTMOST), false);
-                        }
-                        else {
-                            $editor = editor.$editor;
-                            $input = $editor.find("input");
-                            var content_1 = $input.val();
-                            var editingLand_1 = editor.land;
-                            var cont_1 = function (cb) {
-                                if ($editor.css("display") === "none")
-                                    $editor.show();
-                                if ($cell.is("div")) {
-                                    $editor.css({ height: $cell.outerHeight() - 4, width: $cell.outerWidth() - 4 });
-                                    innerIdx = $cell.index();
-                                }
-                                else {
-                                    $editor.css({ height: $cell.outerHeight() - 4, width: $cell.outerWidth() - 4 });
-                                }
-                                var $editingCell = $editor.closest("." + update.EDIT_CELL_CLS).removeClass(update.EDIT_CELL_CLS);
-                                var cellText = $cell.text();
-                                inputVal = value ? value : cellText;
-                                $input.val(inputVal);
-                                triggerStopEdit($exTable, $editingCell, editingLand_1, content_1);
-                                if (cb && _.isFunction(cb)) {
-                                    cb();
-                                }
-                                // Update editing cell coord
-                                editor.land = land;
-                                editor.rowIdx = coord.rowIdx;
-                                editor.columnKey = coord.columnKey;
-                                editor.innerIdx = innerIdx;
-                                editor.value = inputVal;
-                                $cell.addClass(update.EDIT_CELL_CLS).empty();
-                                $cell.append($editor);
-                                editing($exTable, $editor, land);
-                                $input.select();
-                                validation.validate($body, $cell, coord.rowIdx, coord.columnKey, innerIdx, inputVal);
-                                selection.tickRows($exTable.find("." + BODY_PRF + LEFTMOST), false);
-                            };
-                            var $editingGrid_1 = !editingLand_1 ? helper.getMainTable($exTable) : helper.getTable($exTable, editor.land);
-                            var visibleColumns = helper.getVisibleColumnsOn($editingGrid_1);
-                            var columnDf_1;
-                            _.forEach(visibleColumns, function (col) {
-                                if (col.key === editor.columnKey) {
-                                    columnDf_1 = col;
-                                    return false;
-                                }
-                            });
-                            if (!columnDf_1)
-                                return;
-                            if (columnDf_1.ajaxValidate && _.isFunction(columnDf_1.ajaxValidate.request)) {
-                                helper.block($exTable);
-                                columnDf_1.ajaxValidate.request(content_1).done(function (res) {
-                                    cont_1(helper.call(columnDf_1.ajaxValidate.onValid, { rowIndex: editor.rowIdx, columnKey: editor.columnKey, innerIdx: editor.innerIdx }, res));
-                                }).fail(function (res) {
-                                    var $target = selection.cellAt($editingGrid_1, editor.rowIdx, editor.columnKey);
-                                    if ($target !== intan.NULL) {
-                                        errors.add($exTable, $target, editor.rowIdx, editor.columnKey, editor.innerIdx, editor.value);
-                                    }
-                                    if (_.isFunction(columnDf_1.ajaxValidate.onFailed)) {
-                                        columnDf_1.ajaxValidate.onFailed({ rowIndex: editor.rowIdx, columnKey: editor.columnKey, innerIdx: editor.innerIdx }, res);
-                                    }
-                                }).always(function () {
-                                    helper.unblock($exTable);
-                                });
-                                return;
-                            }
-                            cont_1();
-                        }
-                    }
-                    update.edit = edit;
-                    /**
-                     * Editing.
-                     */
-                    function editing($exTable, $editor, land) {
-                        var $input = $editor.find("input");
-                        $input.off(events.KEY_UP);
-                        $input.on(events.KEY_UP, function (evt) {
-                            var value = $input.val();
-                            if (evt.keyCode === $.ui.keyCode.ENTER) {
-                                var $grid_1;
-                                if (!land) {
-                                    $grid_1 = helper.getMainTable($exTable);
-                                }
-                                else {
-                                    $grid_1 = $exTable.find("." + land);
-                                }
-                                var editor_1 = $exTable.data(update.EDITOR);
-                                if (errors.occurred($exTable) || !editor_1)
-                                    return;
-                                var visibleColumns = helper.getVisibleColumnsOn(!editor_1.land ? helper.getMainTable($exTable) : helper.getTable($exTable, editor_1.land));
-                                var columnDf_2;
-                                _.forEach(visibleColumns, function (col) {
-                                    if (col.key === editor_1.columnKey) {
-                                        columnDf_2 = col;
-                                        return false;
-                                    }
-                                });
-                                if (!columnDf_2)
-                                    return;
-                                if (columnDf_2.ajaxValidate && _.isFunction(columnDf_2.ajaxValidate.request)) {
-                                    helper.block($exTable);
-                                    columnDf_2.ajaxValidate.request(value).done(function (res) {
-                                        var $parent = $editor.parent();
-                                        $parent.removeClass(update.EDIT_CELL_CLS);
-                                        var currentCell = new selection.Cell(editor_1.rowIdx, editor_1.columnKey, undefined, editor_1.innerIdx);
-                                        $exTable.data(update.EDITOR, null);
-                                        triggerStopEdit($exTable, $parent, land, value);
-                                        if (_.isFunction(columnDf_2.ajaxValidate.onValid)) {
-                                            columnDf_2.ajaxValidate.onValid({ rowIndex: editor_1.rowIdx, columnKey: editor_1.columnKey, innerIdx: editor_1.innerIdx }, res);
-                                        }
-                                        if (land !== BODY_PRF + DETAIL)
-                                            return;
-                                        var cell = helper.nextCellOf($grid_1, currentCell);
-                                        internal.getGem($grid_1).rollTo(cell);
-                                        _.defer(function () {
-                                            var $cell = selection.cellAt($grid_1, cell.rowIndex, cell.columnKey);
-                                            if (uk.util.isNullOrUndefined(cell.innerIdx) || cell.innerIdx === -1) {
-                                                edit($exTable, $cell, land);
-                                                return;
-                                            }
-                                            edit($exTable, $($cell.find("." + render.CHILD_CELL_CLS)[cell.innerIdx]), land);
-                                        });
-                                    }).fail(function (res) {
-                                        var $target = selection.cellAt($grid_1, editor_1.rowIdx, editor_1.columnKey);
-                                        if ($target !== intan.NULL) {
-                                            errors.add($exTable, $target, editor_1.rowIdx, editor_1.columnKey, editor_1.innerIdx, editor_1.value);
-                                        }
-                                        if (_.isFunction(columnDf_2.ajaxValidate.onFailed)) {
-                                            columnDf_2.ajaxValidate.onFailed({ rowIndex: editor_1.rowIdx, columnKey: editor_1.columnKey, innerIdx: editor_1.innerIdx }, res);
-                                        }
-                                    }).always(function () {
-                                        helper.unblock($exTable);
-                                    });
-                                }
-                                else {
-                                    var $parent = $editor.parent();
-                                    $parent.removeClass(update.EDIT_CELL_CLS);
-                                    var currentCell = new selection.Cell(editor_1.rowIdx, editor_1.columnKey, undefined, editor_1.innerIdx);
-                                    $exTable.data(update.EDITOR, null);
-                                    triggerStopEdit($exTable, $parent, land, value);
-                                    if (land !== BODY_PRF + DETAIL)
-                                        return;
-                                    var cell_1 = helper.nextCellOf($grid_1, currentCell);
-                                    internal.getGem($grid_1).rollTo(cell_1);
-                                    _.defer(function () {
-                                        var $cell = selection.cellAt($grid_1, cell_1.rowIndex, cell_1.columnKey);
-                                        if (uk.util.isNullOrUndefined(cell_1.innerIdx) || cell_1.innerIdx === -1) {
-                                            edit($exTable, $cell, land);
-                                            return;
-                                        }
-                                        edit($exTable, $($cell.find("." + render.CHILD_CELL_CLS)[cell_1.innerIdx]), land);
-                                    });
-                                }
-                            }
-                            else {
-                                var editor = $exTable.data(update.EDITOR);
-                                if (uk.util.isNullOrUndefined(editor))
-                                    return;
-                                editor.value = value;
-                                var $grid = !editor.land ? helper.getMainTable($exTable) : helper.getTable($exTable, editor.land);
-                                validation.validate($grid, editor.$editor.closest("." + update.EDIT_CELL_CLS), editor.rowIdx, editor.columnKey, editor.innerIdx, editor.value);
-                            }
-                        });
-                    }
-                    /**
-                     * Trigger stop edit.
-                     */
-                    function triggerStopEdit($exTable, $cell, land, value) {
-                        if ($cell.length === 0)
-                            return;
-                        var innerIdx = -1;
-                        if ($cell.is("div")) {
-                            innerIdx = $cell.index();
-                        }
-                        var coord = helper.getCellCoord($cell);
-                        if (!coord)
-                            return;
-                        events.trigger($exTable, events.STOP_EDIT, { land: land, rowIndex: coord.rowIdx, columnKey: coord.columnKey, innerIdx: innerIdx, value: value });
-                    }
-                    update.triggerStopEdit = triggerStopEdit;
-                    /**
-                     * Edit done.
-                     */
-                    function editDone($exTable) {
-                        var $grid = $exTable.find("." + BODY_PRF + DETAIL);
-                        var fts = $exTable.data(NAMESPACE).detailContent.features;
-                        var timeRangeFt = feature.find(fts, feature.TIME_RANGE);
-                        var timeRangerDef;
-                        if (!uk.util.isNullOrUndefined(timeRangeFt)) {
-                            timeRangerDef = _.groupBy(timeRangeFt.ranges, "rowId");
-                            $grid.data(internal.TIME_VALID_RANGE, timeRangerDef);
-                        }
-                        $exTable.on(events.STOP_EDIT, function (evt, ui) {
-                            postEdit($exTable, ui, timeRangerDef);
-                        });
-                    }
-                    update.editDone = editDone;
-                    /**
-                     * Post edit.
-                     */
-                    function postEdit($exTable, ui, timeRangerDef) {
-                        var $body = !ui.land ? $exTable.find("." + BODY_PRF + DETAIL) : $exTable.find("." + ui.land);
-                        var $cell = selection.cellAt($body, ui.rowIndex, ui.columnKey);
-                        var result = validation.validate($body, $cell, ui.rowIndex, ui.columnKey, ui.innerIdx, ui.value, timeRangerDef);
-                        if (!result.isValid)
-                            return;
-                        ui.value = result.value;
-                        var res = cellData($exTable, ui);
-                        if (!uk.util.isNullOrUndefined(res)) {
-                            var newValObj = ui.value;
-                            if (_.isObject(res)) {
-                                var $main = helper.getMainTable($exTable);
-                                var gen = $main.data(internal.TANGI) || $main.data(internal.CANON);
-                                var upperInput = gen.painter.options.upperInput;
-                                var lowerInput = gen.painter.options.lowerInput;
-                                newValObj = _.cloneDeep(res);
-                                if (ui.innerIdx === 0) {
-                                    newValObj[upperInput] = ui.value;
-                                }
-                                else if (ui.innerIdx === 1) {
-                                    newValObj[lowerInput] = ui.value;
-                                }
-                            }
-                            pushEditHistory($body, new selection.Cell(ui.rowIndex, ui.columnKey, res, ui.innerIdx));
-                            helper.markCellWith(update.EDITED_CLS, $cell, ui.innerIdx);
-                            events.trigger($exTable, events.CELL_UPDATED, [new selection.Cell(ui.rowIndex, ui.columnKey, newValObj, ui.innerIdx)]);
-                        }
-                        setText($cell, ui.innerIdx, ui.value);
-                    }
-                    /**
-                     * Set text.
-                     */
-                    function setText($cell, innerIdx, value) {
-                        var $childCells = $cell.find("." + render.CHILD_CELL_CLS);
-                        if (!uk.util.isNullOrUndefined(innerIdx) && innerIdx > -1 && $childCells.length > 0) {
-                            $($childCells[innerIdx]).text(value);
-                        }
-                        else {
-                            $cell.text(value);
-                        }
-                    }
-                    update.setText = setText;
-                    /**
-                     * Outside click.
-                     */
-                    function outsideClick($exTable, $target, immediate) {
-                        if (immediate || !$target.is("." + update.EDITABLE_CLS)) {
-                            if ($exTable.data("blockUI.isBlocked") === 1 || errors.occurred($exTable))
-                                return;
-                            var editor_2 = $exTable.data(update.EDITOR);
-                            if (uk.util.isNullOrUndefined(editor_2))
-                                return;
-                            var $input = editor_2.$editor.find("input");
-                            var content_2 = $input.val();
-                            var mo_1 = function (cb) {
-                                var innerIdx = -1;
-                                var $parent = editor_2.$editor.closest("." + update.EDITABLE_CLS).removeClass(update.EDIT_CELL_CLS);
-                                var $g = $parent.closest("table").parent();
-                                if ($parent.length === 0 || $g.length === 0)
-                                    return;
-                                if ($parent.is("div"))
-                                    innerIdx = $parent.index();
-                                $parent.text(content_2);
-                                postEdit($exTable, { rowIndex: editor_2.rowIdx, columnKey: editor_2.columnKey, innerIdx: innerIdx,
-                                    value: content_2, land: ($g.data(internal.TANGI) || $g.data(internal.CANON)).painter.options.containerClass });
-                                if (cb && _.isFunction(cb)) {
-                                    cb();
-                                }
-                                $exTable.data(update.EDITOR, null);
-                            };
-                            var $grid_2 = !editor_2.land ? helper.getMainTable($exTable) : helper.getTable($exTable, editor_2.land);
-                            var visibleColumns = helper.getVisibleColumnsOn($grid_2);
-                            var columnDf_3;
-                            _.forEach(visibleColumns, function (col) {
-                                if (col.key === editor_2.columnKey) {
-                                    columnDf_3 = col;
-                                    return false;
-                                }
-                            });
-                            if (!columnDf_3)
-                                return;
-                            if (!$target.is("." + cellHandler.ROUND_GO)
-                                && columnDf_3.ajaxValidate && _.isFunction(columnDf_3.ajaxValidate.request)) {
-                                helper.block($exTable);
-                                columnDf_3.ajaxValidate.request(content_2).done(function (res) {
-                                    mo_1(helper.call(columnDf_3.ajaxValidate.onValid, { rowIndex: editor_2.rowIdx, columnKey: editor_2.columnKey, innerIdx: editor_2.innerIdx }, res));
-                                }).fail(function (res) {
-                                    var $target = selection.cellAt($grid_2, editor_2.rowIdx, editor_2.columnKey);
-                                    if ($target !== intan.NULL) {
-                                        errors.add($exTable, $target, editor_2.rowIdx, editor_2.columnKey, editor_2.innerIdx, editor_2.value);
-                                    }
-                                    if (_.isFunction(columnDf_3.ajaxValidate.onFailed)) {
-                                        columnDf_3.ajaxValidate.onFailed({ rowIndex: editor_2.rowIdx, columnKey: editor_2.columnKey, innerIdx: editor_2.innerIdx }, res);
-                                    }
-                                }).always(function () {
-                                    helper.unblock($exTable);
-                                });
-                                return;
-                            }
-                            mo_1();
-                        }
-                    }
-                    update.outsideClick = outsideClick;
-                    /**
-                     * Cell data.
-                     */
-                    function cellData($exTable, ui) {
-                        var exTable = $exTable.data(NAMESPACE);
-                        if (!exTable)
-                            return;
-                        var oldVal, innerIdx = ui.innerIdx, f;
-                        if (ui.land === BODY_PRF + LEFTMOST) {
-                            f = "leftmostContent";
-                        }
-                        else if (ui.land === BODY_PRF + MIDDLE) {
-                            f = "middleContent";
-                        }
-                        else {
-                            f = "detailContent";
-                        }
-                        if (uk.util.isNullOrUndefined(ui.innerIdx)) {
-                            innerIdx = exTable[f].dataSource[ui.rowIndex][ui.columnKey].constructor === Array ? 1 : -1;
-                        }
-                        var currentVal = exTable[f].dataSource[ui.rowIndex][ui.columnKey];
-                        if (innerIdx === -1) {
-                            if (currentVal !== ui.value) {
-                                oldVal = _.cloneDeep(currentVal);
-                                if (exTable[f].primaryKey === ui.columnKey) {
-                                    if (exTable.leftmostContent) {
-                                        exTable.leftmostContent.dataSource[ui.rowIndex][ui.columnKey] = ui.value;
-                                    }
-                                    if (exTable.middleContent) {
-                                        exTable.middleContent.dataSource[ui.rowIndex][ui.columnKey] = ui.value;
-                                    }
-                                    if (exTable.detailContent) {
-                                        exTable.detailContent.dataSource[ui.rowIndex][ui.columnKey] = ui.value;
-                                    }
-                                }
-                                else {
-                                    exTable[f].dataSource[ui.rowIndex][ui.columnKey] = ui.value;
-                                }
-                                return oldVal;
-                            }
-                            return null;
-                        }
-                        var $main = !ui.land ? helper.getMainTable($exTable) : helper.getTable($exTable, ui.land);
-                        var gen = $main.data(internal.TANGI) || $main.data(internal.CANON);
-                        var upperInput = gen.painter.options.upperInput;
-                        var lowerInput = gen.painter.options.lowerInput;
-                        var field;
-                        if (ui.innerIdx === 0) {
-                            field = upperInput;
-                        }
-                        else if (ui.innerIdx === 1) {
-                            field = lowerInput;
-                        }
-                        if (currentVal[field] !== ui.value) {
-                            oldVal = _.cloneDeep(currentVal);
-                            exTable[f].dataSource[ui.rowIndex][ui.columnKey][field] = ui.value;
-                            return oldVal;
-                        }
-                        return null;
-                    }
-                    update.cellData = cellData;
-                    /**
-                     * Row data.
-                     */
-                    function rowData($exTable, rowIdx, data) {
-                        var exTable = $exTable.data(NAMESPACE);
-                        if (!exTable)
-                            return;
-                        _.assignInWith(exTable.detailContent.dataSource[rowIdx], data, function (objVal, srcVal) {
-                            if (objVal.constructor === Array && srcVal.constructor !== Array) {
-                                objVal[1] = srcVal;
-                                return objVal;
-                            }
-                            return srcVal;
-                        });
-                    }
-                    update.rowData = rowData;
-                    /**
-                     * Grid cell.
-                     */
-                    function gridCell($grid, rowIdx, columnKey, innerIdx, value, isRestore) {
-                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
-                        if (!gen)
-                            return;
-                        var cData = gen.dataSource[rowIdx][columnKey];
-                        var origDs = gen._origDs;
-                        var $table = $grid.closest("." + NAMESPACE);
-                        if (cData.constructor === Array) {
-                            if (value.constructor === Array) {
-                                _.forEach(cData, function (d, i) {
-                                    gen.dataSource[rowIdx][columnKey][i] = value[i];
-                                    if (!helper.isEqual(origDs[rowIdx][columnKey][i], value[i])) {
-                                        events.trigger($table, events.CELL_UPDATED, [new selection.Cell(rowIdx, columnKey, value[i], i)]);
-                                    }
-                                });
-                            }
-                            else {
-                                gen.dataSource[rowIdx][columnKey][innerIdx] = value;
-                                if (!helper.isEqual(origDs[rowIdx][columnKey][innerIdx], value)) {
-                                    events.trigger($table, events.CELL_UPDATED, [new selection.Cell(rowIdx, columnKey, value, innerIdx)]);
-                                }
-                            }
-                        }
-                        else {
-                            gen.dataSource[rowIdx][columnKey] = value;
-                            if (!helper.isEqual(origDs[rowIdx][columnKey], value)) {
-                                events.trigger($table, events.CELL_UPDATED, [new selection.Cell(rowIdx, columnKey, value, -1)]);
-                            }
-                        }
-                        render.gridCell($grid, rowIdx, columnKey, innerIdx, value, isRestore);
-                    }
-                    update.gridCell = gridCell;
-                    /**
-                     * Grid row.
-                     */
-                    function gridRow($grid, rowIdx, data, isRestore) {
-                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
-                        if (!gen)
-                            return;
-                        _.assignInWith(gen.dataSource[rowIdx], data, function (objVal, srcVal) {
-                            if (objVal.constructor === Array && srcVal.constructor !== Array) {
-                                objVal[1] = srcVal;
-                                return objVal;
-                            }
-                            return srcVal;
-                        });
-                        render.gridRow($grid, rowIdx, data, isRestore);
-                    }
-                    update.gridRow = gridRow;
-                    /**
-                     * Grid cell ow.
-                     */
-                    function gridCellOw($grid, rowIdx, columnKey, innerIdx, value, txId) {
-                        var $exTable = $grid.closest("." + NAMESPACE);
-                        var exTable = $exTable.data(NAMESPACE);
-                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
-                        var pk = helper.getPrimaryKey($grid);
-                        if (!gen || helper.isDetCell($grid, rowIdx, columnKey)
-                            || helper.isXCell($grid, gen.dataSource[rowIdx][pk], columnKey, style.HIDDEN_CLS, style.SEAL_CLS))
-                            return;
-                        var cData = gen.dataSource[rowIdx][columnKey];
-                        var opt = gen.options;
-                        if (!exTable.pasteOverWrite
-                            && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, cData)))
-                            return;
-                        var changedData;
-                        if (cData.constructor === Array) {
-                            if (value.constructor === Array) {
-                                changedData = _.cloneDeep(cData);
-                                _.forEach(cData, function (d, i) {
-                                    gen.dataSource[rowIdx][columnKey][i] = value[i];
-                                });
-                            }
-                            else {
-                                changedData = cData[innerIdx];
-                                gen.dataSource[rowIdx][columnKey][innerIdx] = value;
-                            }
-                        }
-                        else if (_.isObject(cData) && !_.isObject(value)) {
-                            return;
-                        }
-                        else {
-                            changedData = cData;
-                            gen.dataSource[rowIdx][columnKey] = value;
-                        }
-                        var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, value);
-                        if (touched) {
-                            pushHistory($grid, [new selection.Cell(rowIdx, columnKey, changedData)], txId);
-                            events.trigger($exTable, events.CELL_UPDATED, [new selection.Cell(rowIdx, columnKey, value, innerIdx)]);
-                        }
-                    }
-                    update.gridCellOw = gridCellOw;
-                    /**
-                     * Grid row ow.
-                     */
-                    function gridRowOw($grid, rowIdx, data, txId) {
-                        var $exTable = $grid.closest("." + NAMESPACE);
-                        var exTable = $exTable.data(NAMESPACE);
-                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
-                        var pk = helper.getPrimaryKey($grid);
-                        if (!gen)
-                            return;
-                        // Create history
-                        var changedCells = [];
-                        var origData = _.cloneDeep(data);
-                        var clonedData = _.cloneDeep(data);
-                        var opt = gen.options;
-                        _.assignInWith(gen.dataSource[rowIdx], clonedData, function (objVal, srcVal, key, obj, src) {
-                            if ((!exTable.pasteOverWrite
-                                && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, objVal)))
-                                || helper.isDetCell($grid, rowIdx, key)
-                                || helper.isXCell($grid, gen.dataSource[rowIdx][pk], key, style.HIDDEN_CLS, style.SEAL_CLS)) {
-                                src[key] = objVal;
-                                return objVal;
-                            }
-                            if (!uk.util.isNullOrUndefined(src[key]) && !helper.isEqual(src[key], obj[key])) {
-                                changedCells.push(new selection.Cell(rowIdx, key, objVal));
-                            }
-                            else {
-                                delete origData[key];
-                            }
-                            if (objVal.constructor === Array && srcVal.constructor !== Array) {
-                                objVal[1] = srcVal;
-                                return objVal;
-                            }
-                            return srcVal;
-                        });
-                        _.forEach(Object.keys(clonedData), function (k) {
-                            if (!helper.isEqual(clonedData[k], origData[k])) {
-                                delete origData[k];
-                            }
-                        });
-                        render.gridRow($grid, rowIdx, origData);
-                        if (changedCells.length > 0) {
-                            pushHistory($grid, changedCells, txId);
-                            events.trigger($exTable, events.ROW_UPDATED, [events.createRowUi(rowIdx, origData)]);
-                        }
-                    }
-                    update.gridRowOw = gridRowOw;
-                    /**
-                     * Stick grid cell ow.
-                     */
-                    function stickGridCellOw($grid, rowIdx, columnKey, innerIdx, value) {
-                        var $exTable = $grid.closest("." + NAMESPACE);
-                        var exTable = $exTable.data(NAMESPACE);
-                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
-                        var pk = helper.getPrimaryKey($grid);
-                        if (!gen || helper.isDetCell($grid, rowIdx, columnKey)
-                            || helper.isXCell($grid, gen.dataSource[rowIdx][pk], columnKey, style.HIDDEN_CLS, style.SEAL_CLS))
-                            return;
-                        var cData = gen.dataSource[rowIdx][columnKey];
-                        var opt = gen.options;
-                        if (!exTable.stickOverWrite
-                            && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, cData)))
-                            return;
-                        var changedData = _.cloneDeep(cData);
-                        gen.dataSource[rowIdx][columnKey] = value;
-                        var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, value);
-                        if (touched) {
-                            pushStickHistory($grid, [new selection.Cell(rowIdx, columnKey, changedData, innerIdx)]);
-                            events.trigger($exTable, events.CELL_UPDATED, [new selection.Cell(rowIdx, columnKey, value, innerIdx)]);
-                        }
-                    }
-                    update.stickGridCellOw = stickGridCellOw;
-                    /**
-                     * Stick grid row ow.
-                     */
-                    function stickGridRowOw($grid, rowIdx, data) {
-                        var $exTable = $grid.closest("." + NAMESPACE);
-                        var exTable = $exTable.data(NAMESPACE);
-                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
-                        var pk = helper.getPrimaryKey($grid);
-                        if (!gen)
-                            return;
-                        // Create history
-                        var changedCells = [];
-                        var origData = _.cloneDeep(data);
-                        var clonedData = _.cloneDeep(data);
-                        var opt = gen.options;
-                        _.assignInWith(gen.dataSource[rowIdx], clonedData, function (objVal, srcVal, key, obj, src) {
-                            if ((!exTable.stickOverWrite
-                                && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, objVal)))
-                                || helper.isDetCell($grid, rowIdx, key)
-                                || helper.isXCell($grid, gen.dataSource[rowIdx][pk], key, style.HIDDEN_CLS, style.SEAL_CLS)) {
-                                src[key] = objVal;
-                                return objVal;
-                            }
-                            if (!uk.util.isNullOrUndefined(src[key]) && !helper.isEqual(src[key], obj[key])) {
-                                changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
-                            }
-                            else {
-                                delete origData[key];
-                            }
-                            if (objVal.constructor === Array && srcVal.constructor !== Array) {
-                                objVal[1] = srcVal;
-                                return objVal;
-                            }
-                            return srcVal;
-                        });
-                        _.forEach(Object.keys(clonedData), function (k) {
-                            if (!helper.isEqual(clonedData[k], origData[k])) {
-                                delete origData[k];
-                            }
-                        });
-                        render.gridRow($grid, rowIdx, origData);
-                        if (changedCells.length > 0) {
-                            pushStickHistory($grid, changedCells);
-                            events.trigger($exTable, events.ROW_UPDATED, [events.createRowUi(rowIdx, origData)]);
-                        }
-                    }
-                    update.stickGridRowOw = stickGridRowOw;
-                    /**
-                     * Push history.
-                     */
-                    function pushHistory($grid, cells, txId) {
-                        var history = $grid.data(internal.COPY_HISTORY);
-                        if (!history || history.length === 0) {
-                            history = [{ txId: txId, items: cells }];
-                            $grid.data(internal.COPY_HISTORY, history);
-                            return;
-                        }
-                        var latestHistory = history[history.length - 1];
-                        if (latestHistory.txId === txId) {
-                            _.forEach(cells, function (cell) {
-                                latestHistory.items.push(cell);
-                            });
-                        }
-                        else {
-                            var newHis = { txId: txId, items: cells };
-                            history.push(newHis);
-                        }
-                    }
-                    update.pushHistory = pushHistory;
-                    /**
-                     * Push edit history.
-                     */
-                    function pushEditHistory($grid, cell) {
-                        var history = $grid.data(internal.EDIT_HISTORY);
-                        if (!history || history.length === 0) {
-                            $grid.data(internal.EDIT_HISTORY, [cell]);
-                            return;
-                        }
-                        history.push(cell);
-                    }
-                    update.pushEditHistory = pushEditHistory;
-                    /**
-                     * Push stick history.
-                     */
-                    function pushStickHistory($grid, cells) {
-                        var history = $grid.data(internal.STICK_HISTORY);
-                        if (!history || history.length === 0) {
-                            $grid.data(internal.STICK_HISTORY, [cells]);
-                            return;
-                        }
-                        history.push(cells);
-                    }
-                    update.pushStickHistory = pushStickHistory;
-                    /**
-                     * Remove stick history.
-                     */
-                    function removeStickHistory($grid, cells) {
-                        var history = $grid.data(internal.STICK_HISTORY);
-                        if (!history || history.length === 0)
-                            return;
-                        _.remove(history, function (h) { return cells.some(function (c) { return helper.areSameCells(c, h); }); });
-                    }
-                    update.removeStickHistory = removeStickHistory;
-                    /**
-                     * Insert new row.
-                     */
-                    function insertNewRow($container) {
-                        var rowIndex;
-                        $container.find("div[class*='" + BODY_PRF + "']").filter(function () {
-                            return !$(this).hasClass(BODY_PRF + HORIZONTAL_SUM) && !$(this).hasClass(BODY_PRF + LEFT_HORZ_SUM);
-                        }).each(function (index) {
-                            var ds = internal.getDataSource($(this));
-                            var origDs = helper.getOrigDS($(this));
-                            var newRec = {};
-                            rowIndex = ds.length;
-                            var columns = helper.gridColumnsMap($(this));
-                            if (!ds || !columns)
-                                return;
-                            _.forEach(columns, function (value, key) {
-                                if (key === controls.CHECKED_KEY)
-                                    return;
-                                newRec[key] = "";
-                            });
-                            var gen = $(this).data(internal.TANGI) || $(this).data(internal.CANON);
-                            var newRow = gen.painter.row(newRec, { css: { height: gen.painter.options.rowHeight } }, ds.length);
-                            if (!uk.util.isNullOrUndefined(gen.startIndex)) {
-                                $(this).find("tbody tr:last").before(newRow);
-                            }
-                            else {
-                                $(this).find("tbody").append(newRow);
-                            }
-                            origDs[ds.length] = _.cloneDeep(newRec);
-                            ds[ds.length] = newRec;
-                        });
-                        var $grid = helper.getMainTable($container);
-                        $grid.scrollTop($grid[0].scrollHeight);
-                        controls.tick(true, $container.find("." + BODY_PRF + LEFTMOST), false, rowIndex);
-                    }
-                    update.insertNewRow = insertNewRow;
-                    /**
-                     * Delete rows.
-                     */
-                    function deleteRows($container) {
-                        var $grid = helper.getLeftmostTable($container);
-                        var rows = $grid.data(internal.SELECTED_ROWS);
-                        if (!rows || !rows.items || rows.items.length === 0)
-                            return;
-                        if (rows.count > 0) {
-                            rows.selectAll = false;
-                            var $allBox = $grid.siblings("." + HEADER_PRF + LEFTMOST).find("table tr:first td:first input");
-                            if ($allBox.is(":checked"))
-                                $allBox.prop("checked", false);
-                        }
-                        retrackEditor($container, rows.items);
-                        var $t = $container.find("div[class*='" + BODY_PRF + "']").filter(function () {
-                            return !$(this).hasClass(BODY_PRF + HORIZONTAL_SUM) && !$(this).hasClass(BODY_PRF + LEFT_HORZ_SUM);
-                        });
-                        $t.each(function () {
-                            var elm = this;
-                            _.forEach([internal.EDIT_HISTORY, internal.COPY_HISTORY, internal.STICK_HISTORY,
-                                internal.SELECTED_CELLS, errors.ERRORS], function (name) {
-                                retrackRecords($(elm), rows.items, name);
-                            });
-                        });
-                        $t.each(function (index) {
-                            var ds = internal.getDataSource($(this));
-                            var origDs = helper.getOrigDS($(this));
-                            if (!ds || ds.length === 0)
-                                return;
-                            if (ds.length > rows.items.length)
-                                rows.items[ds.length - 1] = false;
-                            var count = rows.count;
-                            for (var i = rows.items.length - 1; i >= 0; i--) {
-                                var $row = selection.rowAt($(this), i);
-                                if (rows.items[i]) {
-                                    if ($row !== intan.NULL && !$row.hasClass(NAMESPACE + "-" + intan.BOTTOM_SPACE)) {
-                                        $row.remove();
-                                    }
-                                    ds.splice(i, 1);
-                                    origDs.splice(i, 1);
-                                    if (index === $t.length - 1) {
-                                        rows.items[i] = false;
-                                        rows.count--;
-                                    }
-                                    count--;
-                                }
-                                else {
-                                    if ($row !== intan.NULL) {
-                                        $row.find("td").each(function () {
-                                            var view = $(this).data(internal.VIEW);
-                                            if (view) {
-                                                var coord = view.split("-");
-                                                $(this).data(internal.VIEW, parseInt(coord[0]) - count + "-" + coord[1]);
-                                            }
-                                        });
-                                    }
-                                }
-                            }
-                            if (ds.length === 0) {
-                                $(this).find("." + NAMESPACE + "-" + intan.BOTTOM_SPACE).height(EMPTY_TBL_HEIGHT);
-                            }
-                        });
-                    }
-                    update.deleteRows = deleteRows;
-                    /**
-                     * Retrack editor.
-                     */
-                    function retrackEditor($container, rows) {
-                        var count = 0;
-                        var editor = $container.data(update.EDITOR);
-                        if (!editor)
-                            return;
-                        if (rows[editor.rowIdx]) {
-                            $container.data(update.EDITOR, null);
-                            return;
-                        }
-                        for (var i = 0; i < editor.rowIdx; i++) {
-                            if (rows[i])
-                                count++;
-                        }
-                        if (count > 0)
-                            editor.rowIdx = editor.rowIdx - count;
-                    }
-                    /**
-                     * Retrack records.
-                     */
-                    function retrackRecords($grid, rows, name) {
-                        var histories = $grid.data(name);
-                        if (!histories)
-                            return;
-                        if (name === internal.COPY_HISTORY) {
-                            for (var i = histories.length - 1; i >= 0; i--) {
-                                each(histories[i].items, rows);
-                            }
-                        }
-                        else if (name === internal.SELECTED_CELLS) {
-                            _.forEach(Object.keys(histories).sort(function (a, b) { return a - b; }), function (key, index) {
-                                var count = 0;
-                                if (rows[key]) {
-                                    delete histories[key];
-                                    return;
-                                }
-                                for (var i = 0; i < key; i++) {
-                                    if (rows[i])
-                                        count++;
-                                }
-                                if (count > 0) {
-                                    var newKey = key - count;
-                                    histories[newKey] = histories[key];
-                                    delete histories[key];
-                                }
-                            });
-                        }
-                        else {
-                            each(histories, rows);
-                        }
-                    }
-                    /**
-                     * Each.
-                     */
-                    function each(histories, rows) {
-                        var removes = [];
-                        _.forEach(histories, function (his, index) {
-                            var count = 0;
-                            if (rows[his.rowIndex]) {
-                                removes.push(index);
-                                return;
-                            }
-                            for (var i = 0; i < his.rowIndex; i++) {
-                                if (rows[i])
-                                    count++;
-                            }
-                            if (count > 0)
-                                his.rowIndex = his.rowIndex - count;
-                        });
-                        while (removes.length > 0) {
-                            histories.splice(removes.pop(), 1);
-                        }
-                    }
-                })(update || (update = {}));
-                var copy;
-                (function (copy) {
-                    copy.PASTE_ID = "pasteHelper";
-                    copy.COPY_ID = "copyHelper";
-                    var Mode;
-                    (function (Mode) {
-                        Mode[Mode["SINGLE"] = 0] = "SINGLE";
-                        Mode[Mode["MULTIPLE"] = 1] = "MULTIPLE";
-                    })(Mode || (Mode = {}));
-                    var History = (function () {
-                        function History(cells) {
-                            this.cells = cells;
-                        }
-                        return History;
-                    }());
-                    copy.History = History;
-                    var Printer = (function () {
-                        function Printer(options) {
-                            this.options = options;
-                        }
-                        /**
-                         * Hook.
-                         */
-                        Printer.prototype.hook = function ($grid) {
-                            var self = this;
-                            self.$grid = $grid;
-                            self.$grid.attr("tabindex", 0).css("outline", "none");
-                            self.$grid.on(events.FOCUS_IN, function (evt) {
-                                if ($("#pasteHelper").length > 0 && $("#copyHelper").length > 0)
-                                    return;
-                                var pasteArea = $("<textarea/>").attr("id", copy.PASTE_ID).css({ "opacity": 0, "overflow": "hidden" })
-                                    .on(events.PASTE, $.proxy(self.paste, self));
-                                var copyArea = $("<textarea/>").attr("id", copy.COPY_ID).css({ "opacity": 0, "overflow": "hidden" });
-                                $("<div/>").css({ "position": "fixed", "top": -10000, "left": -10000 })
-                                    .appendTo($(document.body)).append(pasteArea).append(copyArea);
-                            });
-                            self.$grid.on(events.KEY_DOWN, function (evt) {
-                                if (evt.ctrlKey && helper.isPasteKey(evt)) {
-                                    $("#pasteHelper").focus();
-                                }
-                                else
-                                    self.getOp(evt);
-                                _.defer(function () {
-                                    selection.focus(self.$grid);
-                                });
-                            });
-                        };
-                        /**
-                         * Get op.
-                         */
-                        Printer.prototype.getOp = function (evt) {
-                            var self = this;
-                            if (evt.ctrlKey && helper.isCopyKey(evt)) {
-                                self.copy();
-                            }
-                            else if (evt.ctrlKey && helper.isCutKey(evt)) {
-                            }
-                            else if (evt.ctrlKey && helper.isUndoKey(evt)) {
-                                self.undo();
-                            }
-                        };
-                        /**
-                         * Copy.
-                         */
-                        Printer.prototype.copy = function (cut) {
-                            var self = this;
-                            var selectedCells = selection.getSelectedCells(this.$grid);
-                            var copiedData;
-                            if (selectedCells.length === 1) {
-                                var cell = selectedCells[0];
-                                var ds = internal.getDataSource(self.$grid);
-                                var pk = helper.getPrimaryKey(self.$grid);
-                                if (helper.isDetCell(self.$grid, cell.rowIndex, cell.columnKey)
-                                    || helper.isXCell(self.$grid, ds[cell.rowIndex][pk], cell.columnKey, style.HIDDEN_CLS, style.SEAL_CLS))
-                                    return;
-                                this.mode = Mode.SINGLE;
-                                copiedData = _.isObject(selectedCells[0].value) ? JSON.stringify(selectedCells[0].value) : selectedCells[0].value;
-                            }
-                            else {
-                                this.mode = Mode.MULTIPLE;
-                                copiedData = this.converseStructure(selectedCells, cut);
-                            }
-                            $("#copyHelper").val(copiedData).select();
-                            document.execCommand("copy");
-                            return selectedCells;
-                        };
-                        /**
-                         * Convert structure.
-                         */
-                        Printer.prototype.converseStructure = function (cells, cut) {
-                            var self = this;
-                            var maxRow = 0;
-                            var minRow = 0;
-                            var maxColumn = 0;
-                            var minColumn = 0;
-                            var structure = [];
-                            var structData = "";
-                            _.forEach(cells, function (cell, index) {
-                                var rowIndex = cell.rowIndex;
-                                var columnIndex = helper.getDisplayColumnIndex(self.$grid, cell.columnKey);
-                                if (index === 0) {
-                                    minRow = maxRow = rowIndex;
-                                    minColumn = maxColumn = columnIndex;
-                                }
-                                if (rowIndex < minRow)
-                                    minRow = rowIndex;
-                                if (rowIndex > maxRow)
-                                    maxRow = rowIndex;
-                                if (columnIndex < minColumn)
-                                    minColumn = columnIndex;
-                                if (columnIndex > maxColumn)
-                                    maxColumn = columnIndex;
-                                if (uk.util.isNullOrUndefined(structure[rowIndex])) {
-                                    structure[rowIndex] = {};
-                                }
-                                var ds = internal.getDataSource(self.$grid);
-                                var pk = helper.getPrimaryKey(self.$grid);
-                                if (helper.isDetCell(self.$grid, rowIndex, cell.columnKey)
-                                    || helper.isXCell(self.$grid, ds[rowIndex][pk], cell.columnKey, style.HIDDEN_CLS, style.SEAL_CLS)) {
-                                    structure[rowIndex][columnIndex] = undefined;
-                                }
-                                else
-                                    structure[rowIndex][columnIndex] = helper.stringValue(cell.value);
-                            });
-                            for (var i = minRow; i <= maxRow; i++) {
-                                for (var j = minColumn; j <= maxColumn; j++) {
-                                    if (uk.util.isNullOrUndefined(structure[i]) || uk.util.isNullOrUndefined(structure[i][j])
-                                        || uk.util.isNullOrEmpty(structure[i][j])) {
-                                        structData += "null";
-                                    }
-                                    else {
-                                        structData += structure[i][j];
-                                    }
-                                    if (j === maxColumn)
-                                        structData += "\n";
-                                    else
-                                        structData += "\t";
-                                }
-                            }
-                            return structData;
-                        };
-                        /**
-                         * Cut.
-                         */
-                        Printer.prototype.cut = function () {
-                            var self = this;
-                            var selectedCells = this.copy(true);
-                            _.forEach(selectedCells, function (cell) {
-                                var $cell = selection.cellAt(self.$grid, cell.rowIndex, cell.columnKey);
-                                var value = "";
-                                if ($cell.find("." + render.CHILD_CELL_CLS).length > 0) {
-                                    value = ["", ""];
-                                }
-                                update.gridCell(self.$grid, cell.rowIndex, cell.columnKey, -1, value);
-                            });
-                        };
-                        /**
-                         * Paste.
-                         */
-                        Printer.prototype.paste = function (evt) {
-                            if (this.mode === Mode.SINGLE) {
-                                this.pasteSingleCell(evt);
-                            }
-                            else {
-                                this.pasteRange(evt);
-                            }
-                        };
-                        /**
-                         * Paste single cell.
-                         */
-                        Printer.prototype.pasteSingleCell = function (evt) {
-                            var self = this;
-                            var cbData = this.getClipboardContent(evt);
-                            cbData = helper.getCellData(cbData);
-                            var selectedCells = selection.getSelectedCells(this.$grid);
-                            var txId = uk.util.randomId();
-                            _.forEach(selectedCells, function (cell, index) {
-                                update.gridCellOw(self.$grid, cell.rowIndex, cell.columnKey, -1, cbData, txId);
-                            });
-                        };
-                        /**
-                         * Paste range.
-                         */
-                        Printer.prototype.pasteRange = function (evt) {
-                            var cbData = this.getClipboardContent(evt);
-                            cbData = this.process(cbData);
-                            this.updateWith(cbData);
-                        };
-                        /**
-                         * Process.
-                         */
-                        Printer.prototype.process = function (data) {
-                            var dataRows = _.map(data.split("\n"), function (row) {
-                                return _.map(row.split("\t"), function (cData) {
-                                    return cData.indexOf(",") > 0 ? cData.split(",") : cData;
-                                });
-                            });
-                            var rowsCount = dataRows.length;
-                            if ((dataRows[rowsCount - 1].length === 1 && dataRows[rowsCount - 1][0] === "")
-                                || (dataRows.length === 1 && dataRows[0].length === 1
-                                    && (dataRows[0][0] === "" || dataRows[0][0] === "\r"))) {
-                                dataRows.pop();
-                            }
-                            return dataRows;
-                        };
-                        /**
-                         * Update with.
-                         */
-                        Printer.prototype.updateWith = function (data) {
-                            var self = this;
-                            var selectedCell = selection.getSelectedCells(self.$grid)[0];
-                            if (selectedCell === undefined)
-                                return;
-                            var visibleColumns = helper.gridVisibleColumns(self.$grid);
-                            var rowIndex = selectedCell.rowIndex;
-                            var startColumnIndex = helper.indexOf(selectedCell.columnKey, visibleColumns);
-                            if (startColumnIndex === -1)
-                                return;
-                            var txId = uk.util.randomId();
-                            var ds = internal.getDataSource(self.$grid);
-                            var size = ds ? ds.length : 0;
-                            _.forEach(data, function (row, idx) {
-                                var rowData = {};
-                                var columnKey = selectedCell.columnKey;
-                                var columnIndex = startColumnIndex;
-                                for (var i = 0; i < row.length; i++) {
-                                    if (!uk.util.isNullOrUndefined(row[i]) && row[i].constructor !== Array && row[i].trim() === "null") {
-                                        columnKey = helper.nextKeyOf(columnIndex++, visibleColumns);
-                                        if (!columnKey)
-                                            break;
-                                        continue;
-                                    }
-                                    rowData[columnKey] = helper.getCellData(row[i]);
-                                    columnKey = helper.nextKeyOf(columnIndex++, visibleColumns);
-                                    if (!columnKey)
-                                        break;
-                                }
-                                if (rowIndex >= size)
-                                    return false;
-                                update.gridRowOw(self.$grid, rowIndex, rowData, txId);
-                                rowIndex++;
-                            });
-                        };
-                        /**
-                         * Undo.
-                         */
-                        Printer.prototype.undo = function () {
-                            var self = this;
-                            var histories = self.$grid.data(internal.COPY_HISTORY);
-                            if (!histories || histories.length === 0)
-                                return;
-                            var tx = histories.pop();
-                            _.forEach(tx.items, function (item) {
-                                update.gridCell(self.$grid, item.rowIndex, item.columnKey, -1, item.value, true);
-                                internal.removeChange(self.$grid, item);
-                            });
-                        };
-                        /**
-                         * Get clipboard content.
-                         */
-                        Printer.prototype.getClipboardContent = function (evt) {
-                            if (window.clipboardData) {
-                                window.event.returnValue = false;
-                                return window.clipboardData.getData("text");
-                            }
-                            else {
-                                return evt.originalEvent.clipboardData.getData("text/plain");
-                            }
-                        };
-                        return Printer;
-                    }());
-                    copy.Printer = Printer;
-                    /**
-                     * On.
-                     */
-                    function on($grid, updateMode) {
-                        if (updateMode === COPY_PASTE) {
-                            new Printer().hook($grid);
-                        }
-                    }
-                    copy.on = on;
-                    /**
-                     * Off.
-                     */
-                    function off($grid, updateMode) {
-                        if (updateMode !== COPY_PASTE) {
-                            $grid.off(events.FOCUS_IN).off(events.KEY_DOWN);
-                            $("#" + copy.COPY_ID).remove();
-                            $("#" + copy.PASTE_ID).remove();
-                        }
-                    }
-                    copy.off = off;
-                })(copy || (copy = {}));
-                var spread;
-                (function (spread) {
-                    spread.SINGLE = "single";
-                    spread.MULTIPLE = "multiple";
-                    var Sticker = (function () {
-                        function Sticker(data) {
-                            this.mode = spread.MULTIPLE;
-                            this.validate = function () { return true; };
-                            this.data = data;
-                        }
-                        return Sticker;
-                    }());
-                    spread.Sticker = Sticker;
-                    /**
-                     * Bind sticker.
-                     */
-                    function bindSticker($cell, rowIdx, columnKey, options) {
-                        if (options.containerClass !== BODY_PRF + DETAIL || uk.util.isNullOrUndefined(options.updateMode)
-                            || options.updateMode !== STICK)
-                            return;
-                        $cell.on(events.CLICK_EVT, function (evt) {
-                            if (evt.ctrlKey)
-                                return;
-                            var $grid = $cell.closest("." + BODY_PRF + DETAIL);
-                            var sticker = $grid.data(internal.STICKER);
-                            if (!sticker || uk.util.isNullOrUndefined(sticker.data)
-                                || uk.util.isNullOrUndefined(sticker.validate))
-                                return;
-                            var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
-                            var visibleColumns = gen.painter.visibleColumns;
-                            var data = {};
-                            var key = columnKey;
-                            var colIndex = helper.indexOf(key, visibleColumns);
-                            if (sticker.mode === spread.SINGLE) {
-                                var result = void 0;
-                                if ((result = sticker.validate(rowIdx, columnKey, sticker.data)) !== true) {
-                                    // TODO: show error
-                                    result();
-                                    return;
-                                }
-                                update.stickGridCellOw($grid, rowIdx, columnKey, -1, sticker.data);
-                                return;
-                            }
-                            _.forEach(sticker.data, function (cData) {
-                                data[key] = cData;
-                                key = helper.nextKeyOf(colIndex++, visibleColumns);
-                                if (!key)
-                                    return false;
-                            });
-                            update.stickGridRowOw($grid, rowIdx, data);
-                        });
-                    }
-                    spread.bindSticker = bindSticker;
-                })(spread || (spread = {}));
-                var validation;
-                (function (validation) {
-                    validation.TIME_SPLIT = ":";
-                    validation.TIME_PTN = /^\d+:\d{2}$/;
-                    validation.SHORT_TIME_PTN = /^\d+$/;
-                    validation.NUMBER_PTN = /^\d+$/;
-                    validation.MINUTE_MAX = 59;
-                    validation.HOUR_MAX = 24;
-                    validation.DEF_HOUR_MAX = 9999;
-                    validation.DEF_HOUR_MIN = 0;
-                    validation.DEF_MIN_MAXMIN = 0;
-                    var Result = (function () {
-                        function Result(isValid, value) {
-                            this.isValid = isValid;
-                            this.value = value;
-                        }
-                        Result.fail = function () {
-                            return new Result(false);
-                        };
-                        Result.ok = function (value) {
-                            return new Result(true, value);
-                        };
-                        return Result;
-                    }());
-                    /**
-                     * Validate.
-                     */
-                    function validate($body, $cell, rowIdx, columnKey, innerIdx, value, timeRangerDef) {
-                        var vtor = validation.mandate($body, columnKey, innerIdx);
-                        var gen = $body.data(internal.TANGI) || $body.data(internal.CANON);
-                        var rowId = gen.dataSource[rowIdx][gen.primaryKey];
-                        timeRangerDef = timeRangerDef || $body.data(internal.TIME_VALID_RANGE);
-                        var formatValue;
-                        if (vtor) {
-                            if ((vtor.actValid === internal.TIME || vtor.actValid === internal.DURATION) && timeRangerDef) {
-                                var ranges = timeRangerDef[rowId];
-                                _.forEach(ranges, function (range) {
-                                    if (range && range.columnKey === columnKey && range.innerIdx === innerIdx) {
-                                        vtor.max = range.max;
-                                        vtor.min = range.min;
-                                        return Result.fail();
-                                    }
-                                });
-                            }
-                            var isValid = void 0;
-                            if (vtor.required && (_.isUndefined(value) || _.isEmpty(value))) {
-                                isValid = false;
-                            }
-                            else if (!_.isUndefined(value) && !_.isEmpty(value)) {
-                                if (vtor.actValid === internal.TIME) {
-                                    isValid = isTimeClock(value);
-                                    formatValue = formatTime(value);
-                                }
-                                else if (vtor.actValid === internal.DURATION) {
-                                    isValid = isTimeDuration(value, vtor.max, vtor.min);
-                                    formatValue = formatTime(value);
-                                }
-                                else if (vtor.actValid === internal.NUMBER) {
-                                    isValid = isNumber(value, vtor.max, vtor.min);
-                                    formatValue = (_.isUndefined(value) || _.isEmpty(value)) ? "" : Number(value);
-                                }
-                                else {
-                                    isValid = true;
-                                    formatValue = value;
-                                }
-                            }
-                            else {
-                                isValid = true;
-                                formatValue = "";
-                            }
-                            var $tbl = $body.closest("." + NAMESPACE);
-                            if (!isValid) {
-                                errors.add($tbl, $cell, rowIdx, columnKey, innerIdx, value);
-                                //                cellData($exTable, rowIdx, columnKey, innerIdx, value);
-                                //                    update.setText($cell, innerIdx, value);
-                                return Result.fail();
-                            }
-                            if (errors.any($cell, innerIdx))
-                                errors.remove($tbl, $cell, rowIdx, columnKey, innerIdx);
-                        }
-                        return Result.ok(formatValue);
-                    }
-                    validation.validate = validate;
-                    /**
-                     * Mandate.
-                     */
-                    function mandate($grid, columnKey, innerIdx) {
-                        var visibleColumns = helper.getVisibleColumnsOn($grid);
-                        var actValid, dataType, max, min, required;
-                        _.forEach(visibleColumns, function (col) {
-                            if (col.key === columnKey) {
-                                if (!col.dataType)
-                                    return false;
-                                dataType = col.dataType.toLowerCase();
-                                actValid = which(innerIdx, dataType, internal.TIME)
-                                    || which(innerIdx, dataType, internal.DURATION)
-                                    || which(innerIdx, dataType, internal.NUMBER)
-                                    || which(innerIdx, dataType, internal.TEXT);
-                                max = col.max;
-                                min = col.min;
-                                required = col.required;
-                                return false;
-                            }
-                        });
-                        if (actValid)
-                            return {
-                                actValid: actValid,
-                                max: max,
-                                min: min,
-                                required: required
-                            };
-                    }
-                    validation.mandate = mandate;
-                    /**
-                     * Which.
-                     */
-                    function which(innerIdx, dataType, type) {
-                        var actValid;
-                        if (dataType && dataType.indexOf(type) !== -1) {
-                            if (!uk.util.isNullOrUndefined(innerIdx) && innerIdx > -1) {
-                                _.forEach(dataType.split(internal.DT_SEPARATOR), function (p, index) {
-                                    if (p === type && index === innerIdx) {
-                                        actValid = type;
-                                        return false;
-                                    }
-                                });
-                            }
-                            else {
-                                actValid = type;
-                            }
-                        }
-                        return actValid;
-                    }
-                    /**
-                     * Check time clock.
-                     */
-                    function isTimeClock(time) {
-                        if (uk.util.isNullOrUndefined(time))
-                            return false;
-                        time = time.trim();
-                        var hour, minute;
-                        if (validation.TIME_PTN.test(time)) {
-                            var parts = time.split(validation.TIME_SPLIT);
-                            hour = parseInt(parts[0]);
-                            minute = parseInt(parts[1]);
-                        }
-                        else if (validation.SHORT_TIME_PTN.test(time)) {
-                            var totalTime = parseInt(time);
-                            minute = totalTime % 100;
-                            hour = Math.floor(totalTime / 100);
-                        }
-                        if (((hour !== NaN && hour >= 0 && hour <= validation.HOUR_MAX) || hour === NaN)
-                            && minute !== NaN && minute >= 0 && minute <= validation.MINUTE_MAX)
-                            return true;
-                        return false;
-                    }
-                    validation.isTimeClock = isTimeClock;
-                    /**
-                     * Check time duration.
-                     */
-                    function isTimeDuration(time, max, min) {
-                        if (uk.util.isNullOrUndefined(time))
-                            return false;
-                        time = time.trim();
-                        var hour, minute, minMM, maxHour = validation.DEF_HOUR_MAX, minHour = validation.DEF_HOUR_MIN;
-                        var maxMM = minMM = validation.DEF_MIN_MAXMIN;
-                        var maxTime = parse(max) || { hour: validation.DEF_HOUR_MAX, minute: validation.DEF_MIN_MAXMIN };
-                        var minTime = parse(min) || { hour: validation.DEF_HOUR_MIN, minute: validation.DEF_MIN_MAXMIN };
-                        if (validation.TIME_PTN.test(time)) {
-                            var parts = time.split(validation.TIME_SPLIT);
-                            hour = parseInt(parts[0]);
-                            minute = parseInt(parts[1]);
-                        }
-                        else if (validation.SHORT_TIME_PTN.test(time)) {
-                            var totalTime = parseInt(time);
-                            minute = totalTime % 100;
-                            hour = Math.floor(totalTime / 100);
-                        }
-                        if (((uk.util.isNullOrUndefined(hour) || hour === NaN) && (uk.util.isNullOrUndefined(minute) || minute === NaN))
-                            || minute > validation.MINUTE_MAX)
-                            return false;
-                        var targetTime = { hour: hour, minute: minute };
-                        if (compare(targetTime, maxTime) > 0 || compare(targetTime, minTime) < 0)
-                            return false;
-                        return true;
-                    }
-                    validation.isTimeDuration = isTimeDuration;
-                    /**
-                     * Check number.
-                     */
-                    function isNumber(value, max, min) {
-                        if (!validation.NUMBER_PTN.test(value))
-                            return false;
-                        var int = parseInt(value);
-                        if ((!uk.util.isNullOrUndefined(max) && int > parseInt(max))
-                            || (!uk.util.isNullOrUndefined(min) && int < parseInt(min)))
-                            return false;
-                        return true;
-                    }
-                    /**
-                     * Compare.
-                     */
-                    function compare(one, other) {
-                        if (one.hour > other.hour) {
-                            return 1;
-                        }
-                        else if (one.hour < other.hour) {
-                            return -1;
-                        }
-                        else if (one.minute > other.minute) {
-                            return 1;
-                        }
-                        else if (one.minute < other.minute) {
-                            return -1;
-                        }
-                        return 0;
-                    }
-                    /**
-                     * Parse.
-                     */
-                    function parse(time) {
-                        if (validation.TIME_PTN.test(time)) {
-                            var parts = time.split(validation.TIME_SPLIT);
-                            var hour = parseInt(parts[0]);
-                            var minute = parseInt(parts[1]);
-                            return {
-                                hour: hour,
-                                minute: minute
-                            };
-                        }
-                    }
-                    /**
-                     * Format time.
-                     */
-                    function formatTime(time) {
-                        var minute, hour;
-                        if (validation.SHORT_TIME_PTN.test(time)) {
-                            var totalTime = parseInt(time);
-                            minute = totalTime % 100;
-                            hour = Math.floor(totalTime / 100);
-                        }
-                        if (!uk.util.isNullOrUndefined(hour) && hour !== NaN
-                            && !uk.util.isNullOrUndefined(minute) && minute !== NaN) {
-                            if (minute < 10)
-                                minute = "0" + minute;
-                            return hour + validation.TIME_SPLIT + minute;
-                        }
-                        if (!uk.util.isNullOrUndefined(hour) && hour === NaN
-                            && !uk.util.isNullOrUndefined(minute) && minute !== NaN) {
-                            return minute;
-                        }
-                        return time;
-                    }
-                    validation.formatTime = formatTime;
-                })(validation || (validation = {}));
-                var errors;
-                (function (errors_2) {
-                    errors_2.ERROR_CLS = "x-error";
-                    errors_2.ERRORS = "errors";
-                    /**
-                     * Add.
-                     */
-                    function add($grid, $cell, rowIdx, columnKey, innerIdx, value) {
-                        if (any($cell, innerIdx))
-                            return;
-                        var errors = $grid.data(errors_2.ERRORS);
-                        var newErr = new selection.Cell(rowIdx, columnKey, value, innerIdx);
-                        if (!errors) {
-                            errors = [newErr];
-                            $grid.data(errors_2.ERRORS, errors);
-                        }
-                        else {
-                            errors.push(newErr);
-                        }
-                        if ($cell.is("td") && !uk.util.isNullOrUndefined(innerIdx) && innerIdx > -1) {
-                            $cell.find("div:eq(" + innerIdx + ")").addClass(errors_2.ERROR_CLS);
-                        }
-                        else {
-                            $cell.addClass(errors_2.ERROR_CLS);
-                        }
-                    }
-                    errors_2.add = add;
-                    /**
-                     * Remove.
-                     */
-                    function remove($grid, $cell, rowIdx, columnKey, innerIdx) {
-                        var errors = $grid.data(errors_2.ERRORS);
-                        if (!errors)
-                            return;
-                        var idx;
-                        _.forEach(errors, function (err, index) {
-                            if (helper.areSameCells(err, { rowIndex: rowIdx, columnKey: columnKey, innerIdx: innerIdx })) {
-                                idx = index;
-                                return false;
-                            }
-                        });
-                        if (!uk.util.isNullOrUndefined(idx)) {
-                            errors.splice(idx, 1);
-                            if ($cell.is("td") && !uk.util.isNullOrUndefined(innerIdx) && innerIdx > -1) {
-                                $cell.find("div:eq(" + innerIdx + ")").removeClass(errors_2.ERROR_CLS);
-                            }
-                            else {
-                                $cell.removeClass(errors_2.ERROR_CLS);
-                            }
-                        }
-                    }
-                    errors_2.remove = remove;
-                    /**
-                     * Clear.
-                     */
-                    function clear($grid) {
-                        $grid.data(errors_2.ERRORS, null);
-                    }
-                    errors_2.clear = clear;
-                    /**
-                     * Any.
-                     */
-                    function any($cell, innerIdx) {
-                        var $childCells = $cell.find("." + render.CHILD_CELL_CLS);
-                        if (!uk.util.isNullOrUndefined(innerIdx) && $childCells.length > 0) {
-                            return $($childCells[innerIdx]).hasClass(errors_2.ERROR_CLS);
-                        }
-                        return $cell.hasClass(errors_2.ERROR_CLS);
-                    }
-                    errors_2.any = any;
-                    /**
-                     * Occurred.
-                     */
-                    function occurred($grid) {
-                        var errs = $grid.data(errors_2.ERRORS);
-                        if (!errs)
-                            return false;
-                        return errs.length > 0;
-                    }
-                    errors_2.occurred = occurred;
-                })(errors || (errors = {}));
-                var selection;
-                (function (selection) {
-                    selection.CELL_SELECTED_CLS = "x-cell-selected";
-                    selection.ROW_SELECTED_CLS = "x-row-selected";
-                    var Cell = (function () {
-                        function Cell(rowIdx, columnKey, value, innerIdx) {
-                            this.rowIndex = rowIdx;
-                            this.columnKey = columnKey;
-                            this.value = value;
-                            this.innerIdx = innerIdx;
-                        }
-                        return Cell;
-                    }());
-                    selection.Cell = Cell;
-                    /**
-                     * Check up.
-                     */
-                    function checkUp($exTable) {
-                        if ($exTable.data(NAMESPACE).updateMode !== COPY_PASTE)
-                            return;
-                        var $detailContent = $exTable.find("." + BODY_PRF + DETAIL);
-                        var isSelecting;
-                        $detailContent[0].onselectstart = function () {
-                            return false;
-                        };
-                        $detailContent.on(events.MOUSE_DOWN, function (evt) {
-                            var $target = $(evt.target);
-                            isSelecting = true;
-                            if (!$target.is("." + render.CHILD_CELL_CLS) && !$target.is("td"))
-                                return;
-                            if (evt.shiftKey) {
-                                selectRange($detailContent, $target);
-                                return;
-                            }
-                            if (!evt.ctrlKey) {
-                                clearAll($detailContent);
-                            }
-                            selectCell($detailContent, $target);
-                        }).on(events.MOUSE_UP, function (evt) {
-                            isSelecting = false;
-                        }).on(events.MOUSE_MOVE, function (evt) {
-                            if (isSelecting) {
-                                selectRange($detailContent, $(evt.target));
-                            }
-                        });
-                    }
-                    selection.checkUp = checkUp;
-                    /**
-                     * Select range.
-                     */
-                    function selectRange($grid, $cell) {
-                        if (uk.util.isNullOrUndefined($cell) || $cell.length === 0)
-                            return;
-                        var lastSelected = $grid.data(internal.LAST_SELECTED);
-                        if (!lastSelected) {
-                            selectCell($grid, $cell);
-                            return;
-                        }
-                        clearAll($grid);
-                        var toCoord = helper.getCellCoord($cell);
-                        var minRowIdx = Math.min(lastSelected.rowIdx, toCoord.rowIdx);
-                        var maxRowIdx = Math.max(lastSelected.rowIdx, toCoord.rowIdx);
-                        for (var i = minRowIdx; i < maxRowIdx + 1; i++) {
-                            cellInRange($grid, i, lastSelected.columnKey, toCoord.columnKey);
-                        }
-                    }
-                    /**
-                     * Mark cell.
-                     */
-                    function markCell($cell) {
-                        if ($cell.is("." + render.CHILD_CELL_CLS)) {
-                            $cell.addClass(selection.CELL_SELECTED_CLS);
-                            $cell.siblings("." + render.CHILD_CELL_CLS).addClass(selection.CELL_SELECTED_CLS);
-                            return true;
-                        }
-                        else if ($cell.is("td")) {
-                            var childCells = $cell.find("." + render.CHILD_CELL_CLS);
-                            if (childCells.length > 0) {
-                                childCells.addClass(selection.CELL_SELECTED_CLS);
-                            }
-                            else {
-                                $cell.addClass(selection.CELL_SELECTED_CLS);
-                            }
-                            return true;
-                        }
-                        return false;
-                    }
-                    selection.markCell = markCell;
-                    /**
-                     * Select cell.
-                     */
-                    function selectCell($grid, $cell, notLast) {
-                        if (!markCell($cell))
-                            return;
-                        var coord = helper.getCellCoord($cell);
-                        addSelect($grid, coord.rowIdx, coord.columnKey, notLast);
-                        tickRows($grid.siblings("." + BODY_PRF + LEFTMOST), false);
-                    }
-                    selection.selectCell = selectCell;
-                    /**
-                     * Add select.
-                     */
-                    function addSelect($grid, rowIdx, columnKey, notLast) {
-                        var selectedCells = $grid.data(internal.SELECTED_CELLS);
-                        if (!notLast)
-                            $grid.data(internal.LAST_SELECTED, { rowIdx: rowIdx, columnKey: columnKey });
-                        if (!selectedCells) {
-                            selectedCells = {};
-                            selectedCells[rowIdx] = [columnKey];
-                            $grid.data(internal.SELECTED_CELLS, selectedCells);
-                            return;
-                        }
-                        if (!selectedCells[rowIdx]) {
-                            selectedCells[rowIdx] = [columnKey];
-                            return;
-                        }
-                        if (_.find(selectedCells[rowIdx], function (key) {
-                            return key === columnKey;
-                        }) === undefined) {
-                            selectedCells[rowIdx].push(columnKey);
-                        }
-                    }
-                    selection.addSelect = addSelect;
-                    /**
-                     * Clear.
-                     */
-                    function clear($grid, rowIdx, columnKey) {
-                        var selectedCells = $grid.data(internal.SELECTED_CELLS);
-                        if (!selectedCells)
-                            return;
-                        var row = selectedCells[rowIdx];
-                        if (!row || row.length === 0)
-                            return;
-                        var colIdx;
-                        _.forEach(row, function (key, index) {
-                            if (key === columnKey) {
-                                colIdx = index;
-                                return false;
-                            }
-                        });
-                        if (uk.util.isNullOrUndefined(colIdx))
-                            return;
-                        row.splice(colIdx, 1);
-                        var selectedCell = cellAt($grid, rowIdx, columnKey);
-                        if (selectedCell === intan.NULL)
-                            return;
-                        if (selectedCell && selectedCell.length > 0) {
-                            var $childCells = selectedCell.find("." + render.CHILD_CELL_CLS);
-                            if ($childCells.length > 0) {
-                                $childCells.removeClass(selection.CELL_SELECTED_CLS);
-                            }
-                            else {
-                                selectedCell.removeClass(selection.CELL_SELECTED_CLS);
-                            }
-                        }
-                    }
-                    selection.clear = clear;
-                    /**
-                     * Clear all.
-                     */
-                    function clearAll($grid) {
-                        var selectedCells = $grid.data(internal.SELECTED_CELLS);
-                        if (!selectedCells)
-                            return;
-                        _.forEach(Object.keys(selectedCells), function (rowIdx, index) {
-                            if (!rowExists($grid, rowIdx))
-                                return;
-                            _.forEach(selectedCells[rowIdx], function (col, i) {
-                                var $cell = cellAt($grid, rowIdx, col);
-                                if ($cell && $cell.length > 0) {
-                                    var childCells = $cell.find("." + render.CHILD_CELL_CLS);
-                                    if (childCells.length > 0) {
-                                        childCells.removeClass(selection.CELL_SELECTED_CLS);
-                                    }
-                                    else {
-                                        $cell.removeClass(selection.CELL_SELECTED_CLS);
-                                    }
-                                }
-                            });
-                        });
-                        $grid.data(internal.SELECTED_CELLS, null);
-                    }
-                    selection.clearAll = clearAll;
-                    /**
-                     * Cell at.
-                     */
-                    function cellAt($grid, rowIdx, columnKey) {
-                        var $row = rowAt($grid, rowIdx);
-                        return getCellInRow($grid, $row, columnKey);
-                    }
-                    selection.cellAt = cellAt;
-                    /**
-                     * Row at.
-                     */
-                    function rowAt($grid, rowIdx) {
-                        var virt = $grid.data(internal.TANGI);
-                        if (!virt)
-                            return $grid.find("tr:eq(" + (parseInt(rowIdx) + 1) + ")");
-                        if (virt.startIndex > rowIdx || virt.endIndex < rowIdx)
-                            return intan.NULL;
-                        return $grid.find("tr:eq(" + (parseInt(rowIdx) - virt.startIndex + 1) + ")");
-                    }
-                    selection.rowAt = rowAt;
-                    /**
-                     * Cell of.
-                     */
-                    function cellOf($grid, rowId, columnKey) {
-                        var $row = rowOf($grid, rowId);
-                        return getCellInRow($grid, $row, columnKey);
-                    }
-                    selection.cellOf = cellOf;
-                    /**
-                     * Row of.
-                     */
-                    function rowOf($grid, rowId) {
-                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
-                        if (!gen)
-                            return;
-                        var start = gen.startIndex || 0;
-                        var end = gen.endIndex || gen.dataSource.length - 1;
-                        for (var i = start; i <= end; i++) {
-                            if (gen.dataSource[i][gen.primaryKey] === rowId) {
-                                return rowAt($grid, i);
-                            }
-                        }
-                    }
-                    selection.rowOf = rowOf;
-                    /**
-                     * Row exists.
-                     */
-                    function rowExists($grid, rowIdx) {
-                        var virt = $grid.data(internal.TANGI);
-                        if (virt && (virt.startIndex > rowIdx || virt.endIndex < rowIdx))
-                            return false;
-                        return true;
-                    }
-                    selection.rowExists = rowExists;
-                    /**
-                     * Cell in range.
-                     */
-                    function cellInRange($grid, rowIdx, startKey, endKey) {
-                        var range = [];
-                        var $row = rowAt($grid, rowIdx);
-                        if ($row === intan.NULL)
-                            return;
-                        var colRange = columnIndexRange($grid, startKey, endKey);
-                        if (colRange.start === -1 || colRange.end === -1)
-                            return;
-                        var min = Math.min(colRange.start, colRange.end);
-                        var max = Math.max(colRange.start, colRange.end);
-                        var $td = $row.find("td").filter(function () {
-                            return $(this).css("display") !== "none";
-                        }).each(function (index) {
-                            if (index >= min && index <= max) {
-                                var childCells = $(this).find("." + render.CHILD_CELL_CLS);
-                                if (childCells.length > 0) {
-                                    childCells.addClass(selection.CELL_SELECTED_CLS);
-                                }
-                                else {
-                                    $(this).addClass(selection.CELL_SELECTED_CLS);
-                                }
-                                addSelect($grid, rowIdx, colRange.columns[index].key, true);
-                                range.push($(this));
-                            }
-                            else if (index > max)
-                                return false;
-                        });
-                        return range;
-                    }
-                    selection.cellInRange = cellInRange;
-                    /**
-                     * Get cell in row.
-                     */
-                    function getCellInRow($grid, $row, columnKey) {
-                        if ($row === intan.NULL || !$row)
-                            return intan.NULL;
-                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
-                        var visibleColumns = gen.painter.visibleColumns;
-                        var columnIdx;
-                        _.forEach(visibleColumns, function (c, idx) {
-                            if (c.key === columnKey) {
-                                columnIdx = idx;
-                                return false;
-                            }
-                        });
-                        if (uk.util.isNullOrUndefined(columnIdx))
-                            return intan.NULL;
-                        return $row.find("td").filter(function () {
-                            return $(this).css("display") !== "none";
-                        }).eq(columnIdx);
-                    }
-                    selection.getCellInRow = getCellInRow;
-                    /**
-                     * Column index range.
-                     */
-                    function columnIndexRange($grid, startKey, endKey) {
-                        var cloud = $grid.data(internal.TANGI);
-                        var canon = $grid.data(internal.CANON);
-                        var visibleColumns;
-                        if (!uk.util.isNullOrUndefined(cloud)) {
-                            visibleColumns = cloud.painter.visibleColumns;
-                        }
-                        else {
-                            visibleColumns = canon.painter.visibleColumns;
-                        }
-                        var startColumnIdx = -1, endColumnIdx = -1;
-                        _.forEach(visibleColumns, function (c, idx) {
-                            if (c.key === startKey) {
-                                startColumnIdx = idx;
-                            }
-                            if (c.key === endKey) {
-                                endColumnIdx = idx;
-                            }
-                            if (startColumnIdx !== -1 && endColumnIdx !== -1)
-                                return false;
-                        });
-                        return {
-                            start: startColumnIdx,
-                            end: endColumnIdx,
-                            columns: visibleColumns
-                        };
-                    }
-                    selection.columnIndexRange = columnIndexRange;
-                    /**
-                     * Get selected cells.
-                     */
-                    function getSelectedCells($grid) {
-                        var selectedCells = $grid.data(internal.SELECTED_CELLS);
-                        var generator = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
-                        var dataSource = generator.dataSource;
-                        var cells = [];
-                        _.forEach(Object.keys(selectedCells), function (rowIdx) {
-                            _.forEach(selectedCells[rowIdx], function (colKey) {
-                                cells.push(new Cell(rowIdx, colKey, dataSource[rowIdx][colKey]));
-                            });
-                        });
-                        return cells;
-                    }
-                    selection.getSelectedCells = getSelectedCells;
-                    /**
-                     * Off.
-                     */
-                    function off($exTable) {
-                        if ($exTable.data(NAMESPACE).updateMode === COPY_PASTE)
-                            return;
-                        var $detailContent = $exTable.find("." + BODY_PRF + DETAIL);
-                        $detailContent[0].onselectstart = function () {
-                            return true;
-                        };
-                        $detailContent.off(events.MOUSE_DOWN).off(events.MOUSE_UP).off(events.MOUSE_MOVE);
-                    }
-                    selection.off = off;
-                    /**
-                     * Focus.
-                     */
-                    function focus($grid) {
-                        $grid.focus();
-                    }
-                    selection.focus = focus;
-                    /**
-                     * Focus latest.
-                     */
-                    function focusLatest($grid) {
-                        var latest = $grid.data(internal.LAST_SELECTED);
-                        if (!latest)
-                            return;
-                        var $cell = selection.cellAt($grid, latest.rowIdx, latest.columnKey);
-                        if ($cell === intan.NULL || $cell.length === 0)
-                            return;
-                        $cell.focus();
-                    }
-                    selection.focusLatest = focusLatest;
-                    /**
-                     * Select row.
-                     */
-                    function selectRow($grid, rowIndex) {
-                        var $row = selection.rowAt($grid, rowIndex);
-                        if ($row !== intan.NULL && !$row.hasClass(NAMESPACE + "-" + intan.BOTTOM_SPACE)) {
-                            $row.addClass(selection.ROW_SELECTED_CLS);
-                        }
-                        setTimeout(function () {
-                            $row = selection.rowAt($grid.siblings("div[class*='" + BODY_PRF + "']").filter(function () {
-                                return !$(this).hasClass(BODY_PRF + HORIZONTAL_SUM) && !$(this).hasClass(BODY_PRF + LEFT_HORZ_SUM);
-                            }), rowIndex);
-                            if ($row !== intan.NULL && !$row.hasClass(NAMESPACE + "-" + intan.BOTTOM_SPACE)) {
-                                $row.addClass(selection.ROW_SELECTED_CLS);
-                            }
-                        }, 60);
-                        var selectedRows = $grid.data(internal.SELECTED_ROWS);
-                        if (!selectedRows) {
-                            selectedRows = {};
-                            selectedRows.items = [];
-                            selectedRows.items[rowIndex] = true;
-                            selectedRows.count = (selectedRows.count || 0) + 1;
-                            $grid.data(internal.SELECTED_ROWS, selectedRows);
-                            return;
-                        }
-                        if (!selectedRows.items) {
-                            selectedRows.items = [];
-                            selectedRows.items[rowIndex] = true;
-                            selectedRows.count = (selectedRows.count || 0) + 1;
-                            return;
-                        }
-                        if (!selectedRows.items[rowIndex]) {
-                            selectedRows.items[rowIndex] = true;
-                            selectedRows.count = (selectedRows.count || 0) + 1;
-                        }
-                    }
-                    selection.selectRow = selectRow;
-                    /**
-                     * Deselect row.
-                     */
-                    function deselectRow($grid, rowIndex) {
-                        selection.rowAt($grid, rowIndex).removeClass(selection.ROW_SELECTED_CLS);
-                        selection.rowAt($grid.siblings("div[class*='" + BODY_PRF + "']").filter(function () {
-                            return !$(this).hasClass(BODY_PRF + HORIZONTAL_SUM) && !$(this).hasClass(BODY_PRF + LEFT_HORZ_SUM);
-                        }), rowIndex).removeClass(selection.ROW_SELECTED_CLS);
-                        var selectedRows = $grid.data(internal.SELECTED_ROWS);
-                        if (!selectedRows || !selectedRows.items || selectedRows.items.length === 0)
-                            return;
-                        selectedRows.items[rowIndex] = false;
-                        selectedRows.count--;
-                    }
-                    selection.deselectRow = deselectRow;
-                    /**
-                     * Tick rows.
-                     */
-                    function tickRows($grid, flag, limit) {
-                        var selectedRows = $grid.data(internal.SELECTED_ROWS);
-                        if (!selectedRows || !selectedRows.items || selectedRows.items.length === 0)
-                            return;
-                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
-                        var start = limit ? gen.startIndex : 0;
-                        var end = limit ? gen.endIndex : selectedRows.items.length - 1;
-                        for (var i = start; i <= end; i++) {
-                            if (selectedRows.items[i]) {
-                                controls.tick(flag, $grid, false, i);
-                            }
-                        }
-                    }
-                    selection.tickRows = tickRows;
-                })(selection || (selection = {}));
-                var resize;
-                (function (resize) {
-                    resize.AGENCY = "ex-agency";
-                    resize.LINE = "ex-line";
-                    resize.RESIZE_COL = "resize-column";
-                    resize.AREA_AGENCY = "ex-area-agency";
-                    resize.RESIZE_AREA = "resize-area";
-                    resize.AREA_LINE = "ex-area-line";
-                    resize.STAY_CLS = "x-stay";
-                    var ColumnAdjuster = (function () {
-                        function ColumnAdjuster($headerTable, $contentTable, options) {
-                            this.$headerTable = $headerTable;
-                            this.$contentTable = $contentTable;
-                            this.$ownerDoc = $($headerTable[0].ownerDocument);
-                            this.standardCells = [];
-                        }
-                        /**
-                         * Handle.
-                         */
-                        ColumnAdjuster.prototype.handle = function () {
-                            var self = this;
-                            self.$agency = $("<div/>").addClass(resize.AGENCY).css({ position: "relative", width: self.$headerTable.outerWidth() });
-                            self.$headerTable.before(self.$agency);
-                            self.$colGroup = self.$headerTable.find("colgroup > col");
-                            var trList = self.$headerTable.find("tbody > tr");
-                            var targetColumnIdx = 0;
-                            _.forEach(trList, function (tr) {
-                                var tdList = $(tr).find("td");
-                                for (var i = 0; i < tdList.length; i++) {
-                                    if (self.standardCells.length >= self.$colGroup.length)
-                                        return false;
-                                    var $td = $(tdList[i]);
-                                    var colspan = $td.attr("colspan");
-                                    if (!uk.util.isNullOrUndefined(colspan) && parseInt(colspan) > 1)
-                                        continue;
-                                    self.standardCells.push($td);
-                                    var $targetCol = $(self.$colGroup[targetColumnIdx]);
-                                    var $line = $("<div/>").addClass(resize.LINE).data(resize.RESIZE_COL, $targetCol).css(lineStyles("-3px"));
-                                    self.$agency.append($line);
-                                    // Line positions
-                                    var height = self.$headerTable.height();
-                                    var left = $td.outerWidth() + ($td.offset().left - self.$agency.offset().left);
-                                    $line.css({ left: left, height: height });
-                                    targetColumnIdx++;
-                                }
-                            });
-                            self.$agency.on(events.MOUSE_DOWN, $.proxy(self.cursorDown, self));
-                        };
-                        /**
-                         * Cursor down.
-                         */
-                        ColumnAdjuster.prototype.cursorDown = function (event) {
-                            var self = this;
-                            if (self.actionDetails) {
-                                self.cursorUp(event);
-                            }
-                            var $targetGrip = $(event.target);
-                            var gripIndex = $targetGrip.index();
-                            var $leftCol = $targetGrip.data(resize.RESIZE_COL);
-                            var $rightCol = self.$colGroup.eq(gripIndex + 1);
-                            var leftWidth = $leftCol.width();
-                            var rightWidth = $rightCol.width();
-                            self.actionDetails = {
-                                $targetGrip: $targetGrip,
-                                gripIndex: gripIndex,
-                                $leftCol: $leftCol,
-                                $rightCol: $rightCol,
-                                xCoord: getCursorX(event),
-                                widths: {
-                                    left: leftWidth,
-                                    right: rightWidth
-                                },
-                                changedWidths: {
-                                    left: leftWidth,
-                                    right: rightWidth
-                                }
-                            };
-                            self.$ownerDoc.on(events.MOUSE_MOVE, $.proxy(self.cursorMove, self));
-                            self.$ownerDoc.on(events.MOUSE_UP, $.proxy(self.cursorUp, self));
-                            event.preventDefault();
-                        };
-                        /**
-                         * Cursor move.
-                         */
-                        ColumnAdjuster.prototype.cursorMove = function (event) {
-                            var self = this;
-                            if (!self.actionDetails)
-                                return;
-                            var distance = getCursorX(event) - self.actionDetails.xCoord;
-                            if (distance === 0)
-                                return;
-                            var leftWidth, rightWidth;
-                            if (distance > 0) {
-                                leftWidth = self.actionDetails.widths.left + distance;
-                                rightWidth = self.actionDetails.widths.right - distance;
-                            }
-                            else {
-                                leftWidth = self.actionDetails.widths.left + distance;
-                                rightWidth = self.actionDetails.widths.right - distance;
-                            }
-                            if (leftWidth <= 20 || rightWidth <= 20)
-                                return;
-                            self.actionDetails.changedWidths.left = leftWidth;
-                            self.actionDetails.changedWidths.right = rightWidth;
-                            if (self.actionDetails.$leftCol) {
-                                self.setWidth(self.actionDetails.$leftCol, leftWidth);
-                                var $contentLeftCol = self.$contentTable.find("colgroup > col").eq(self.actionDetails.gripIndex);
-                                self.setWidth($contentLeftCol, leftWidth);
-                            }
-                            if (self.actionDetails.$rightCol) {
-                                self.setWidth(self.actionDetails.$rightCol, rightWidth);
-                                var $contentRightCol = self.$contentTable.find("colgroup > col").eq(self.actionDetails.gripIndex + 1);
-                                self.setWidth($contentRightCol, rightWidth);
-                            }
-                        };
-                        /**
-                         * Cursor up.
-                         */
-                        ColumnAdjuster.prototype.cursorUp = function (event) {
-                            var self = this;
-                            self.$ownerDoc.off(events.MOUSE_MOVE);
-                            self.$ownerDoc.off(events.MOUSE_UP);
-                            self.syncLines();
-                            self.actionDetails = null;
-                        };
-                        /**
-                         * Set width.
-                         */
-                        ColumnAdjuster.prototype.setWidth = function ($col, width) {
-                            $col.width(width);
-                        };
-                        /**
-                         * Sync lines.
-                         */
-                        ColumnAdjuster.prototype.syncLines = function () {
-                            var self = this;
-                            self.$agency.width(self.$headerTable.width());
-                            _.forEach(self.standardCells, function ($td, index) {
-                                var height = self.$headerTable.height();
-                                var left = $td.outerWidth() + ($td.offset().left - self.$agency.offset().left);
-                                self.$agency.find("div:eq(" + index + ")").css({ left: left, height: height });
-                            });
-                        };
-                        return ColumnAdjuster;
-                    }());
-                    resize.ColumnAdjuster = ColumnAdjuster;
-                    var AreaAdjuster = (function () {
-                        function AreaAdjuster($container, headerWrappers, bodyWrappers, $follower) {
-                            this.$container = $container;
-                            this.headerWrappers = headerWrappers;
-                            this.bodyWrappers = bodyWrappers;
-                            this.$ownerDoc = $($container[0].ownerDocument);
-                            this.$leftHorzSumHeader = this.$container.find("." + HEADER_PRF + LEFT_HORZ_SUM);
-                            this.$leftHorzSumContent = this.$container.find("." + BODY_PRF + LEFT_HORZ_SUM);
-                            this.$horzSumHeader = this.$container.find("." + HEADER_PRF + HORIZONTAL_SUM);
-                            this.$horzSumContent = this.$container.find("." + BODY_PRF + HORIZONTAL_SUM);
-                            if ($follower) {
-                                this.$depLeftmostHeader = $follower.find("." + HEADER_PRF + LEFTMOST);
-                                this.$depLeftmostBody = $follower.find("." + BODY_PRF + LEFTMOST);
-                                this.$depDetailHeader = $follower.find("." + HEADER_PRF + DETAIL);
-                                this.$depDetailBody = $follower.find("." + BODY_PRF + DETAIL);
-                            }
-                        }
-                        /**
-                         * Handle.
-                         */
-                        AreaAdjuster.prototype.handle = function () {
-                            var self = this;
-                            self.$areaAgency = $("<div/>").addClass(resize.AREA_AGENCY).css({ position: "relative", width: self.$container.width() });
-                            self.headerWrappers[0].before(self.$areaAgency);
-                            _.forEach(self.headerWrappers, function ($wrapper, index) {
-                                if (index === self.headerWrappers.length - 1)
-                                    return;
-                                var $line = $("<div/>").addClass(resize.AREA_LINE).data(resize.RESIZE_AREA, $wrapper).css(lineStyles("0px"));
-                                self.$areaAgency.append($line);
-                                // Line positions
-                                var height = $wrapper.height() + self.bodyWrappers[index].height();
-                                var left = $wrapper.outerWidth() + ($wrapper.offset().left - self.$areaAgency.offset().left);
-                                $line.css({ left: left, height: height });
-                                if ($wrapper.hasClass(HEADER_PRF + LEFTMOST) && self.headerWrappers[index + 1].hasClass(HEADER_PRF + MIDDLE))
-                                    $line.addClass(resize.STAY_CLS);
-                            });
-                            self.$areaAgency.on(events.MOUSE_DOWN, $.proxy(self.cursorDown, self));
-                        };
-                        /**
-                         * Cursor down.
-                         */
-                        AreaAdjuster.prototype.cursorDown = function (event) {
-                            var self = this;
-                            if (self.actionDetails) {
-                                self.cursorUp(event);
-                            }
-                            var $targetGrip = $(event.target);
-                            if ($targetGrip.hasClass(resize.STAY_CLS))
-                                return;
-                            var gripIndex = $targetGrip.index();
-                            var $leftArea = $targetGrip.data(resize.RESIZE_AREA);
-                            var $rightArea = self.headerWrappers[gripIndex + 1];
-                            var leftWidth = $leftArea.width();
-                            var rightWidth = !uk.util.isNullOrUndefined($rightArea) ? $rightArea.width() : 0;
-                            var leftHorzSumWidth = self.$leftHorzSumHeader.width();
-                            self.actionDetails = {
-                                $targetGrip: $targetGrip,
-                                gripIndex: gripIndex,
-                                $leftArea: $leftArea,
-                                $rightArea: $rightArea,
-                                xCoord: getCursorX(event),
-                                rightAreaPosLeft: $rightArea ? $rightArea.css("left") : 0,
-                                widths: {
-                                    left: leftWidth,
-                                    right: rightWidth,
-                                    leftHorzSum: leftHorzSumWidth
-                                },
-                                changedWidths: {
-                                    left: leftWidth,
-                                    right: rightWidth,
-                                    leftHorzSum: leftHorzSumWidth
-                                }
-                            };
-                            self.$ownerDoc.on(events.MOUSE_MOVE, $.proxy(self.cursorMove, self));
-                            self.$ownerDoc.on(events.MOUSE_UP, $.proxy(self.cursorUp, self));
-                            events.trigger(self.$container, events.AREA_RESIZE_STARTED, [$leftArea, $rightArea, leftWidth, rightWidth]);
-                            event.preventDefault();
-                        };
-                        /**
-                         * Cursor move.
-                         */
-                        AreaAdjuster.prototype.cursorMove = function (event) {
-                            var self = this;
-                            if (!self.actionDetails)
-                                return;
-                            var distance = getCursorX(event) - self.actionDetails.xCoord;
-                            if (distance === 0)
-                                return;
-                            var $bodyLeftArea, $bodyRightArea, leftWidth, rightWidth;
-                            // TODO: Use if here because there may be changes later.
-                            if (distance > 0) {
-                                leftWidth = self.actionDetails.widths.left + distance;
-                                rightWidth = self.actionDetails.widths.right - distance;
-                            }
-                            else {
-                                leftWidth = self.actionDetails.widths.left + distance;
-                                rightWidth = self.actionDetails.widths.right - distance;
-                            }
-                            if (!self.isResizePermit(leftWidth, rightWidth))
-                                return;
-                            self.actionDetails.changedWidths.left = leftWidth;
-                            self.actionDetails.changedWidths.right = rightWidth;
-                            if (self.actionDetails.$leftArea) {
-                                self.setWidth(self.actionDetails.$leftArea, leftWidth);
-                                $bodyLeftArea = self.bodyWrappers[self.actionDetails.gripIndex];
-                                if (self.actionDetails.gripIndex === self.bodyWrappers.length - 1) {
-                                    self.setWidth($bodyLeftArea, leftWidth + helper.getScrollWidth());
-                                }
-                                else {
-                                    self.setWidth($bodyLeftArea, leftWidth);
-                                }
-                            }
-                            var newPosLeft;
-                            if (self.actionDetails.$rightArea) {
-                                self.setWidth(self.actionDetails.$rightArea, rightWidth);
-                                newPosLeft = (parseInt(self.actionDetails.rightAreaPosLeft) + distance) + "px";
-                                self.actionDetails.$rightArea.css("left", newPosLeft);
-                                $bodyRightArea = self.bodyWrappers[self.actionDetails.gripIndex + 1];
-                                if (self.actionDetails.gripIndex === self.bodyWrappers.length - 2) {
-                                    self.setWidth($bodyRightArea, rightWidth + helper.getScrollWidth());
-                                }
-                                else {
-                                    self.setWidth($bodyRightArea, rightWidth);
-                                }
-                                $bodyRightArea.css("left", newPosLeft);
-                            }
-                            self.reflectSumTblsSize(distance, leftWidth, rightWidth, newPosLeft);
-                            events.trigger(self.$container, events.AREA_RESIZE, [self.actionDetails.$leftArea, self.actionDetails.$rightArea, leftWidth, rightWidth]);
-                        };
-                        /**
-                         * Reflect size.
-                         */
-                        AreaAdjuster.prototype.reflectSumTblsSize = function (diff, leftWidth, rightWidth, posLeft) {
-                            var self = this;
-                            var $leftArea = self.actionDetails.$leftArea;
-                            var $rightArea = self.actionDetails.$rightArea;
-                            var scrollWidth = helper.getScrollWidth();
-                            if ($rightArea && $rightArea.hasClass(HEADER_PRF + DETAIL)) {
-                                var horzLeftWidth = self.actionDetails.widths.leftHorzSum + diff;
-                                self.setWidth(self.$leftHorzSumHeader, horzLeftWidth);
-                                self.setWidth(self.$leftHorzSumContent, horzLeftWidth);
-                                self.setWidth(self.$horzSumHeader, rightWidth);
-                                self.setWidth(self.$horzSumContent, rightWidth + scrollWidth);
-                                self.$horzSumHeader.css("left", posLeft);
-                                self.$horzSumContent.css("left", posLeft);
-                                if (self.$depLeftmostHeader) {
-                                    self.setWidth(self.$depLeftmostHeader, horzLeftWidth);
-                                    self.setWidth(self.$depLeftmostBody, horzLeftWidth);
-                                    self.setWidth(self.$depDetailHeader, rightWidth);
-                                    self.setWidth(self.$depDetailBody, rightWidth + scrollWidth);
-                                    self.$depDetailHeader.css("left", posLeft);
-                                    self.$depDetailBody.css("left", posLeft);
-                                }
-                            }
-                            else if ($leftArea && $leftArea.hasClass(HEADER_PRF + DETAIL)) {
-                                self.setWidth(self.$horzSumHeader, leftWidth);
-                                self.setWidth(self.$horzSumContent, leftWidth + scrollWidth);
-                                if (self.$depDetailHeader) {
-                                    self.setWidth(self.$depDetailHeader, leftWidth);
-                                    self.setWidth(self.$depDetailBody, leftWidth + scrollWidth);
-                                }
-                            }
-                        };
-                        /**
-                         * Check resize permit.
-                         */
-                        AreaAdjuster.prototype.isResizePermit = function (leftWidth, rightWidth) {
-                            var self = this;
-                            var leftAreaMaxWidth = 0, rightAreaMaxWidth = 0;
-                            if (leftWidth <= 20 || (self.actionDetails.widths.right > 0 && rightWidth <= 20))
-                                return false;
-                            if (self.actionDetails.$leftArea) {
-                                var leftAreaColGroup = self.actionDetails.$leftArea[0].querySelectorAll("table > colgroup > col");
-                                var size = leftAreaColGroup.length;
-                                for (var i = 0; i < size; i++) {
-                                    leftAreaMaxWidth += (parseInt(leftAreaColGroup[i].style.width) + 1);
-                                }
-                                if (leftWidth >= leftAreaMaxWidth)
-                                    return false;
-                            }
-                            if (self.actionDetails.$rightArea) {
-                                var rightAreaColGroup = self.actionDetails.$rightArea[0].querySelectorAll("table > colgroup > col");
-                                var size = rightAreaColGroup.length;
-                                for (var i = 0; i < size; i++) {
-                                    rightAreaMaxWidth += (parseInt(rightAreaColGroup[i].style.width) + 1);
-                                }
-                                if (rightWidth >= rightAreaMaxWidth)
-                                    return false;
-                            }
-                            return true;
-                        };
-                        /**
-                         * Cursor up.
-                         */
-                        AreaAdjuster.prototype.cursorUp = function (event) {
-                            var self = this;
-                            if (!self.actionDetails)
-                                return;
-                            self.$ownerDoc.off(events.MOUSE_MOVE);
-                            self.$ownerDoc.off(events.MOUSE_UP);
-                            self.syncLines();
-                            events.trigger(self.$container, events.AREA_RESIZE_END, [self.actionDetails.$leftArea, self.actionDetails.$rightArea,
-                                self.actionDetails.changedWidths.left, self.actionDetails.changedWidths.right]);
-                            self.actionDetails = null;
-                        };
-                        /**
-                         * Set width.
-                         */
-                        AreaAdjuster.prototype.setWidth = function ($wrapper, width) {
-                            $wrapper.width(width);
-                        };
-                        /**
-                         * Sync lines.
-                         */
-                        AreaAdjuster.prototype.syncLines = function () {
-                            var self = this;
-                            self.$areaAgency.width(self.$container.width());
-                            _.forEach(self.headerWrappers, function ($wrapper, index) {
-                                var height = $wrapper.height() + self.bodyWrappers[index].height();
-                                var left = $wrapper.outerWidth() + ($wrapper.offset().left - self.$areaAgency.offset().left);
-                                self.$areaAgency.find("div:eq(" + index + ")").css({ left: left, height: height });
-                            });
-                        };
-                        return AreaAdjuster;
-                    }());
-                    resize.AreaAdjuster = AreaAdjuster;
-                    /**
-                     * Get cursorX.
-                     */
-                    function getCursorX(event) {
-                        return event.pageX;
-                    }
-                    /**
-                     * Line styles.
-                     */
-                    function lineStyles(marginLeft) {
-                        return { position: "absolute", cursor: "ew-resize", width: "4px", zIndex: 2, marginLeft: marginLeft };
-                    }
-                    /**
-                     * Fit window height.
-                     */
-                    function fitWindowHeight($container, wrappers, horzSumExists) {
-                        var height = window.innerHeight - parseInt($container.data(internal.Y_OCCUPY)) - 100;
-                        var $horzSumHeader, $horzSumBody, decreaseAmt;
-                        wrappers = wrappers || _.map($container.find("div[class*='" + BODY_PRF + "']").filter(function () {
-                            return !$(this).hasClass(BODY_PRF + HORIZONTAL_SUM) && !$(this).hasClass(BODY_PRF + LEFT_HORZ_SUM);
-                        }), function (elm) { return $(elm); });
-                        if (horzSumExists) {
-                            $horzSumHeader = $container.find("." + HEADER_PRF + HORIZONTAL_SUM);
-                            $horzSumBody = $container.find("." + BODY_PRF + HORIZONTAL_SUM);
-                            decreaseAmt = $horzSumHeader.height() + $horzSumBody.height() + DISTANCE + SPACE;
-                            height -= decreaseAmt;
-                        }
-                        _.forEach(wrappers, function ($wrapper) {
-                            if (($wrapper.css("overflow-x") && $wrapper.css("overflow-x") !== "scroll")
-                                || ($wrapper.css("overflow") && $wrapper.css("overflow") !== "scroll")) {
-                                $wrapper.height(height - helper.getScrollWidth());
-                            }
-                            else {
-                                $wrapper.height(height);
-                            }
-                        });
-                        if (horzSumExists) {
-                            repositionHorzSum($container, $horzSumHeader, $horzSumBody);
-                        }
-                        var cHeight = 0, showCount = 0;
-                        var stream = $container.find("div[class*='" + DETAIL + "'], div[class*='" + LEFT_HORZ_SUM + "']");
-                        stream.each(function () {
-                            if ($(this).css("display") !== "none") {
-                                showCount++;
-                                cHeight += $(this).height();
-                            }
-                        });
-                        if (showCount === 4) {
-                            cHeight += (SPACE + DISTANCE);
-                        }
-                        $container.height(cHeight + SPACE);
-                        events.trigger($container, events.BODY_HEIGHT_CHANGED, height);
-                    }
-                    resize.fitWindowHeight = fitWindowHeight;
-                    /**
-                     * Fit window width.
-                     */
-                    function fitWindowWidth($container) {
-                        var table = $container.data(NAMESPACE);
-                        if (table.$commander)
-                            return;
-                        var $vertSumHeader = $container.find("." + HEADER_PRF + VERTICAL_SUM);
-                        var $vertSumContent = $container.find("." + BODY_PRF + VERTICAL_SUM);
-                        var $detailHeader = $container.find("." + HEADER_PRF + DETAIL);
-                        var $detailBody = $container.find("." + BODY_PRF + DETAIL);
-                        var width = window.innerWidth - $detailHeader.offset().left;
-                        var scrollWidth = helper.getScrollWidth();
-                        var $sup = table.$follower;
-                        if ($vertSumHeader.length > 0 && $vertSumHeader.css("display") !== "none") {
-                            width = width - parseInt($container.data(internal.X_OCCUPY)) - $vertSumContent.width();
-                            $detailHeader.width(width);
-                            $detailBody.width(width);
-                            $container.find("." + HEADER_PRF + HORIZONTAL_SUM).width(width);
-                            $container.find("." + BODY_PRF + HORIZONTAL_SUM).width(width + helper.getScrollWidth());
-                            repositionVertSum($container, $vertSumHeader, $vertSumContent);
-                            syncDetailAreaLine($container, $detailHeader, $detailBody);
-                            if ($sup) {
-                                $sup.find("." + HEADER_PRF + DETAIL).width(width);
-                                $sup.find("." + BODY_PRF + DETAIL).width(width + scrollWidth);
-                            }
-                            return;
-                        }
-                        width = width - parseInt($container.data(internal.X_OCCUPY));
-                        $detailHeader.width(width - scrollWidth);
-                        $detailBody.width(width);
-                        $container.find("." + HEADER_PRF + HORIZONTAL_SUM).width(width - scrollWidth);
-                        $container.find("." + BODY_PRF + HORIZONTAL_SUM).width(width);
-                        if ($sup) {
-                            $sup.find("." + HEADER_PRF + DETAIL).width(width - scrollWidth);
-                            $sup.find("." + BODY_PRF + DETAIL).width(width);
-                        }
-                    }
-                    resize.fitWindowWidth = fitWindowWidth;
-                    /**
-                     * Sync detail area line.
-                     */
-                    function syncDetailAreaLine($container, $detailHeader, $detailBody) {
-                        var $agency = $container.find("." + resize.AREA_AGENCY);
-                        if ($agency.length === 0)
-                            return;
-                        var height = $detailHeader.height() + $detailBody.height();
-                        var left = $detailHeader.outerWidth() + ($detailHeader.offset().left - $agency.offset().left);
-                        var index;
-                        $container.find("div[class*='" + HEADER_PRF + "']").each(function (idx) {
-                            if ($(this).hasClass(HEADER_PRF + DETAIL)) {
-                                index = idx;
-                                return false;
-                            }
-                        });
-                        $agency.find("div:eq(" + index + ")").css({ left: left, height: height });
-                    }
-                    /**
-                     * Reposition horzSum.
-                     */
-                    function repositionHorzSum($container, $horzSumHeader, $horzSumBody) {
-                        $horzSumHeader = $horzSumHeader || $container.find("." + HEADER_PRF + HORIZONTAL_SUM);
-                        $horzSumBody = $horzSumBody || $container.find("." + BODY_PRF + HORIZONTAL_SUM);
-                        var headerTop = $container.find("." + HEADER_PRF + DETAIL).height()
-                            + $container.find("." + BODY_PRF + DETAIL).height() + DISTANCE + SPACE;
-                        var bodyTop = headerTop + DISTANCE + $horzSumHeader.height();
-                        $container.find("." + HEADER_PRF + LEFT_HORZ_SUM).css("top", headerTop);
-                        $container.find("." + BODY_PRF + LEFT_HORZ_SUM).css("top", bodyTop);
-                        $horzSumHeader.css("top", headerTop);
-                        $horzSumBody.css("top", bodyTop);
-                    }
-                    resize.repositionHorzSum = repositionHorzSum;
-                    /**
-                     * Reposition vertSum.
-                     */
-                    function repositionVertSum($container, $vertSumHeader, $vertSumContent) {
-                        $vertSumHeader = $vertSumHeader || $container.find("." + HEADER_PRF + VERTICAL_SUM);
-                        $vertSumContent = $vertSumContent || $container.find("." + BODY_PRF + VERTICAL_SUM);
-                        var $detailHeader = $container.find("." + HEADER_PRF + DETAIL);
-                        var posLeft = $detailHeader.css("left");
-                        var vertSumLeft = parseInt(posLeft) + $detailHeader.width() + DISTANCE;
-                        $vertSumHeader.css("left", vertSumLeft);
-                        $vertSumContent.css("left", vertSumLeft);
-                    }
-                    resize.repositionVertSum = repositionVertSum;
-                    /**
-                     * Set height.
-                     */
-                    function setHeight($container, height) {
-                        $container.find("div[class*='" + BODY_PRF + "']").each(function () {
-                            if ($(this).hasClass(BODY_PRF + HORIZONTAL_SUM) || $(this).hasClass(BODY_PRF + LEFT_HORZ_SUM))
-                                return;
-                            $(this).height(height);
-                        });
-                        var cHeight = 0, showCount = 0;
-                        var stream = $container.find("div[class*='" + DETAIL + "'], div[class*='" + LEFT_HORZ_SUM + "']");
-                        stream.each(function () {
-                            if ($(this).css("display") !== "none") {
-                                showCount++;
-                                cHeight += $(this).height();
-                            }
-                        });
-                        if (showCount === 4) {
-                            cHeight += (SPACE + DISTANCE);
-                        }
-                        $container.height(cHeight + SPACE);
-                        events.trigger($container, events.BODY_HEIGHT_CHANGED, height);
-                    }
-                    resize.setHeight = setHeight;
-                    /**
-                     * On area complete.
-                     */
-                    function onAreaComplete(event, $leftArea, $rightArea, leftWidth, rightWidth) {
-                        var self = this;
-                        saveSizes(self.$container, $leftArea, $rightArea, leftWidth, rightWidth);
-                    }
-                    resize.onAreaComplete = onAreaComplete;
-                    /**
-                     * Save sizes.
-                     */
-                    function saveSizes($container, $leftArea, $rightArea, leftWidth, rightWidth) {
-                        if ($leftArea) {
-                            storage.area.save($container, $leftArea.data(internal.EX_PART), leftWidth);
-                        }
-                        if ($rightArea) {
-                            storage.area.save($container, $rightArea.data(internal.EX_PART), rightWidth);
-                        }
-                    }
-                    resize.saveSizes = saveSizes;
-                    /**
-                     * On body height changed.
-                     */
-                    function onBodyHeightChanged(event, height) {
-                        var $container = $(event.target);
-                        storage.tableHeight.save($container, height);
-                        repositionHorzSum($container);
-                    }
-                    resize.onBodyHeightChanged = onBodyHeightChanged;
-                })(resize || (resize = {}));
-                var storage;
-                (function (storage) {
-                    storage.AREA_WIDTHS = "areawidths";
-                    storage.TBL_HEIGHT = "tableheight";
-                    var Store = (function () {
-                        function Store() {
-                        }
-                        /**
-                         * Check value exists.
-                         */
-                        Store.prototype.initValueExists = function ($container) {
-                            var self = this;
-                            var storeKey = self.getStorageKey($container);
-                            var value = uk.localStorage.getItem(storeKey);
-                            return value.isPresent();
-                        };
-                        /**
-                         * Get store item.
-                         */
-                        Store.prototype.getStoreItem = function ($container, item) {
-                            return uk.request.location.current.rawUrl + "/" + $container.attr("id") + "/" + item;
-                        };
-                        /**
-                         * Get value.
-                         */
-                        Store.prototype.getValue = function ($container) {
-                            var storeKey = this.getStorageKey($container);
-                            return uk.localStorage.getItem(storeKey);
-                        };
-                        return Store;
-                    }());
-                    var area;
-                    (function (area) {
-                        var Cache = (function (_super) {
-                            __extends(Cache, _super);
-                            function Cache() {
-                                _super.apply(this, arguments);
-                            }
-                            Cache.prototype.getStorageKey = function ($container) {
-                                return this.getStoreItem($container, storage.AREA_WIDTHS);
-                            };
-                            return Cache;
-                        }(Store));
-                        var cache = new Cache();
-                        /**
-                         * Init.
-                         */
-                        function init($container, parts) {
-                            if (cache.initValueExists($container)) {
-                                return;
-                            }
-                            var partWidths = {};
-                            _.forEach(parts, function (part, index) {
-                                var key = helper.getClassOfHeader(part);
-                                partWidths[key] = part.width();
-                            });
-                            saveAll($container, partWidths);
-                        }
-                        area.init = init;
-                        /**
-                         * Load.
-                         */
-                        function load($container) {
-                            var storeKey = cache.getStorageKey($container);
-                            uk.localStorage.getItem(storeKey).ifPresent(function (parts) {
-                                var widthParts = JSON.parse(parts);
-                                setWidths($container, widthParts);
-                                return null;
-                            });
-                        }
-                        area.load = load;
-                        /**
-                         * Save.
-                         */
-                        function save($container, keyClass, partWidth) {
-                            var storeKey = cache.getStorageKey($container);
-                            var partsWidth = uk.localStorage.getItem(storeKey);
-                            var widths = {};
-                            if (partsWidth.isPresent()) {
-                                widths = JSON.parse(partsWidth.get());
-                                widths[keyClass] = partWidth;
-                            }
-                            else {
-                                widths[keyClass] = partWidth;
-                            }
-                            uk.localStorage.setItemAsJson(storeKey, widths);
-                        }
-                        area.save = save;
-                        /**
-                         * Save all.
-                         */
-                        function saveAll($container, widths) {
-                            var storeKey = cache.getStorageKey($container);
-                            var partWidths = uk.localStorage.getItem(storeKey);
-                            if (!partWidths.isPresent()) {
-                                uk.localStorage.setItemAsJson(storeKey, widths);
-                            }
-                        }
-                        /**
-                         * Get part widths.
-                         */
-                        function getPartWidths($container) {
-                            return cache.getValue($container);
-                        }
-                        area.getPartWidths = getPartWidths;
-                        /**
-                         * Set widths.
-                         */
-                        function setWidths($container, parts) {
-                            var partKeys = Object.keys(parts);
-                            _.forEach(partKeys, function (keyClass, index) {
-                                setWidth($container, keyClass, parts[keyClass]);
-                            });
-                        }
-                        /**
-                         * Set width.
-                         */
-                        function setWidth($container, keyClass, width) {
-                            $container.find("." + keyClass).width(width);
-                            $container.find("." + Connector[keyClass]).width(width);
-                        }
-                    })(area = storage.area || (storage.area = {}));
-                    var tableHeight;
-                    (function (tableHeight) {
-                        var Cache2 = (function (_super) {
-                            __extends(Cache2, _super);
-                            function Cache2() {
-                                _super.apply(this, arguments);
-                            }
-                            Cache2.prototype.getStorageKey = function ($container) {
-                                return this.getStoreItem($container, storage.TBL_HEIGHT);
-                            };
-                            return Cache2;
-                        }(Store));
-                        var cache = new Cache2();
-                        /**
-                         * Init.
-                         */
-                        function init($container) {
-                            if (cache.initValueExists($container)) {
-                                return;
-                            }
-                            var $bodies = $container.find("div[class*='" + BODY_PRF + "']");
-                            if ($bodies.length === 0)
-                                return;
-                            save($container, $($bodies[0]).height());
-                        }
-                        tableHeight.init = init;
-                        /**
-                         * Load.
-                         */
-                        function load($container) {
-                            var storeKey = cache.getStorageKey($container);
-                            uk.localStorage.getItem(storeKey).ifPresent(function (height) {
-                                var h = JSON.parse(height);
-                                resize.setHeight($container, height);
-                                return null;
-                            });
-                        }
-                        tableHeight.load = load;
-                        /**
-                         * Get.
-                         */
-                        function get($container) {
-                            return cache.getValue($container);
-                        }
-                        tableHeight.get = get;
-                        /**
-                         * Save.
-                         */
-                        function save($container, height) {
-                            var storeKey = cache.getStorageKey($container);
-                            uk.localStorage.setItemAsJson(storeKey, height);
-                        }
-                        tableHeight.save = save;
-                    })(tableHeight = storage.tableHeight || (storage.tableHeight = {}));
-                })(storage || (storage = {}));
-                var scroll;
-                (function (scroll) {
-                    scroll.SCROLL_SYNCING = "scroll-syncing";
-                    scroll.VERT_SCROLL_SYNCING = "vert-scroll-syncing";
-                    /**
-                     * Bind vertWheel.
-                     */
-                    function bindVertWheel($container) {
-                        $container.on(events.MOUSE_WHEEL, function (event) {
-                            var delta = event.originalEvent.wheelDeltaY;
-                            var direction = delta > 0 ? -1 : 1;
-                            var value = $container.scrollTop() + event.originalEvent.deltaY;
-                            //                $container.stop().animate({ scrollTop: value }, 10);
-                            $container.scrollTop(value);
-                            event.preventDefault();
-                            event.stopImmediatePropagation();
-                        });
-                        if ($container.css("overflow-y") !== "hidden") {
-                            $container.css("overflow-y", "hidden");
-                        }
-                    }
-                    scroll.bindVertWheel = bindVertWheel;
-                    /**
-                     * Unbind vertWheel.
-                     */
-                    function unbindVertWheel($container) {
-                        $container.off(events.MOUSE_WHEEL);
-                        $container.css("overflow-y", "scroll");
-                    }
-                    scroll.unbindVertWheel = unbindVertWheel;
-                    /**
-                     * Sync scrolls.
-                     */
-                    function syncDoubDirHorizontalScrolls(wrappers) {
-                        _.forEach(wrappers, function ($main, index) {
-                            if (!$main)
-                                return;
-                            $main.on(events.SCROLL_EVT, function () {
-                                _.forEach(wrappers, function ($depend, i) {
-                                    if (i === index || !$depend)
-                                        return;
-                                    var mainSyncing = $main.data(scroll.SCROLL_SYNCING);
-                                    if (!mainSyncing) {
-                                        $depend.data(scroll.SCROLL_SYNCING, true);
-                                        $depend.scrollLeft($main.scrollLeft());
-                                    }
-                                });
-                                $main.data(scroll.SCROLL_SYNCING, false);
-                            });
-                        });
-                    }
-                    scroll.syncDoubDirHorizontalScrolls = syncDoubDirHorizontalScrolls;
-                    /**
-                     * Sync scrolls.
-                     */
-                    function syncDoubDirVerticalScrolls(wrappers) {
-                        _.forEach(wrappers, function ($main, index) {
-                            $main.on(events.SCROLL_EVT, function (event) {
-                                _.forEach(wrappers, function ($depend, i) {
-                                    if (i === index)
-                                        return;
-                                    var mainSyncing = $main.data(scroll.VERT_SCROLL_SYNCING);
-                                    if (!mainSyncing) {
-                                        $depend.data(scroll.VERT_SCROLL_SYNCING, true);
-                                        $depend.scrollTop($main.scrollTop());
-                                    }
-                                });
-                                $main.data(scroll.VERT_SCROLL_SYNCING, false);
-                            });
-                        });
-                    }
-                    scroll.syncDoubDirVerticalScrolls = syncDoubDirVerticalScrolls;
-                    /**
-                     * Sync scroll.
-                     */
-                    function syncHorizontalScroll($headerWrap, $bodyWrap) {
-                        $bodyWrap.on(events.SCROLL_EVT, function () {
-                            $headerWrap.scrollLeft($bodyWrap.scrollLeft());
-                        });
-                    }
-                    scroll.syncHorizontalScroll = syncHorizontalScroll;
-                    /**
-                     * Sync scroll.
-                     */
-                    function syncVerticalScroll($pivotBody, bodyWraps) {
-                        $pivotBody.on(events.SCROLL_EVT, function () {
-                            _.forEach(bodyWraps, function (body) {
-                                body.scrollTop($pivotBody.scrollTop());
-                            });
-                        });
-                    }
-                    scroll.syncVerticalScroll = syncVerticalScroll;
-                })(scroll || (scroll = {}));
-                var controls;
-                (function (controls) {
-                    controls.LINK_BUTTON = "link";
-                    controls.LINK_CLS = "x-link";
-                    controls.CHECKED_KEY = "xCheckbox";
-                    controls.CHECKBOX_COL_WIDTH = 40;
-                    /**
-                     * Check.
-                     */
-                    function check($td, column, data, action) {
-                        if (!uk.util.isNullOrUndefined(column.control)) {
-                            switch (column.control) {
-                                case controls.LINK_BUTTON:
-                                    $("<a/>").addClass(controls.LINK_CLS).on(events.CLICK_EVT, function (evt) {
-                                        action();
-                                    }).text(data).appendTo($td);
-                                    break;
-                            }
-                        }
-                    }
-                    controls.check = check;
-                    /**
-                     * Add checkbox def.
-                     */
-                    function addCheckBoxDef(arr) {
-                        _.forEach(arr, function (opt) {
-                            opt.columns.unshift({ key: controls.CHECKED_KEY, headerText: controls.CHECKED_KEY, width: controls.CHECKBOX_COL_WIDTH + "px" });
-                        });
-                    }
-                    controls.addCheckBoxDef = addCheckBoxDef;
-                    /**
-                     * Create checkbox.
-                     */
-                    function createCheckBox($grid, ui) {
-                        var checkBoxText;
-                        var $wrapper = $("<div/>").addClass("nts-checkbox-container").on(events.CLICK_EVT, function (e) {
-                            if ($grid && errors.occurred($grid.closest("." + NAMESPACE)))
-                                e.preventDefault();
-                        });
-                        var $checkBoxLabel = $("<label class='ntsCheckBox'></label>");
-                        var $checkBox = $('<input type="checkbox">').on("change", function () {
-                            var cellCoord = helper.getCellCoord($(this).closest("td"));
-                            var rowIndex = 0;
-                            if (cellCoord)
-                                rowIndex = cellCoord.rowIdx;
-                            ui.onChecked($(this).is(":checked"), rowIndex);
-                        }).appendTo($checkBoxLabel);
-                        var $box = $("<span class='box'></span>").appendTo($checkBoxLabel);
-                        if (ui.text && ui.text.length > 0) {
-                            var label = $("<span class='label'></span>").text(ui.text).appendTo($checkBoxLabel);
-                        }
-                        $checkBoxLabel.appendTo($wrapper);
-                        var checked = ui.initValue !== undefined ? ui.initValue : true;
-                        var $checkBox = $wrapper.find("input[type='checkbox']");
-                        if (checked === true)
-                            $checkBox.prop("checked", true);
-                        else
-                            $checkBox.prop("checked", false);
-                        return $wrapper;
-                    }
-                    controls.createCheckBox = createCheckBox;
-                    /**
-                     * Checkbox cell styles.
-                     */
-                    function checkBoxCellStyles() {
-                        return { padding: "1px 1px", textAlign: "center" };
-                    }
-                    controls.checkBoxCellStyles = checkBoxCellStyles;
-                    /**
-                     * Tick.
-                     */
-                    function tick(checked, $grid, isHeader, rowIdx) {
-                        var $checkBox;
-                        var ds = internal.getDataSource($grid);
-                        if (isHeader) {
-                            $grid.find("tr").find("td:first").each(function (index) {
-                                $checkBox = $(this).find("input");
-                                if (checked) {
-                                    $checkBox.prop("checked", true);
-                                }
-                                else {
-                                    $checkBox.prop("checked", false);
-                                }
-                            });
-                            var rows = $grid.data(internal.SELECTED_ROWS);
-                            if (checked) {
-                                if (!rows) {
-                                    rows = {};
-                                    rows.selectAll = true;
-                                    $grid.data(internal.SELECTED_ROWS, rows);
-                                }
-                                else {
-                                    rows.selectAll = true;
-                                }
-                                for (var i = 0; i < ds.length; i++) {
-                                    selection.selectRow($grid, i);
-                                }
-                            }
-                            else {
-                                rows.selectAll = false;
-                                for (var i = 0; i < ds.length; i++) {
-                                    selection.deselectRow($grid, i);
-                                }
-                            }
-                        }
-                        else {
-                            var $row = selection.rowAt($grid, rowIdx);
-                            $checkBox = $row.find("td:first input");
-                            if (checked) {
-                                $checkBox.prop("checked", true);
-                                selection.selectRow($grid, rowIdx);
-                            }
-                            else {
-                                $checkBox.prop("checked", false);
-                                selection.deselectRow($grid, rowIdx);
-                            }
-                            var rows = $grid.data(internal.SELECTED_ROWS);
-                            var $allBox = $grid.siblings("." + HEADER_PRF + LEFTMOST).find("table tr:first td:first input");
-                            if (rows.count === ds.length) {
-                                rows.selectAll = true;
-                                if (!$allBox.is(":checked"))
-                                    $allBox.prop("checked", true);
-                            }
-                            else {
-                                rows.selectAll = false;
-                                if ($allBox.is(":checked"))
-                                    $allBox.prop("checked", false);
-                            }
-                        }
-                    }
-                    controls.tick = tick;
-                })(controls || (controls = {}));
-                var events;
-                (function (events) {
-                    events.SCROLL_EVT = "scroll";
-                    events.CLICK_EVT = "click";
-                    events.MOUSE_DOWN = "mousedown";
-                    events.MOUSE_MOVE = "mousemove";
-                    events.MOUSE_UP = "mouseup";
-                    events.MOUSE_OVER = "mouseover";
-                    events.MOUSE_ENTER = "mouseenter";
-                    events.MOUSE_OUT = "mouseout";
-                    events.FOCUS_IN = "focusin";
-                    events.PASTE = "paste";
-                    events.MOUSE_WHEEL = "wheel";
-                    events.RESIZE = "resize";
-                    events.KEY_DOWN = "keydown";
-                    events.KEY_UP = "keyup";
-                    events.CM = "contextmenu";
-                    events.AREA_RESIZE_STARTED = "extablearearesizestarted";
-                    events.AREA_RESIZE = "extablearearesize";
-                    events.AREA_RESIZE_END = "extablearearesizeend";
-                    events.BODY_HEIGHT_CHANGED = "extablebodyheightchanged";
-                    events.OCCUPY_UPDATE = "extableoccupyupdate";
-                    events.START_EDIT = "extablestartedit";
-                    events.STOP_EDIT = "extablestopedit";
-                    events.CELL_UPDATED = "extablecellupdated";
-                    events.ROW_UPDATED = "extablerowupdated";
-                    events.POPUP_SHOWN = "xpopupshown";
-                    events.POPUP_INPUT_END = "xpopupinputend";
-                    events.ROUND_RETREAT = "extablecellretreat";
-                    events.CHECK_ALL = "extableselectallrows";
-                    events.CHECK_ROW = "extableselectrow";
-                    events.MOUSEIN_COLUMN = "extablemouseincolumn";
-                    events.MOUSEOUT_COLUMN = "extablemousoutcolumn";
-                    events.COMPLETED = "extablecompleted";
-                    /**
-                     * Trigger.
-                     */
-                    function trigger($target, eventName, args) {
-                        $target.trigger($.Event(eventName), args);
-                    }
-                    events.trigger = trigger;
-                    /**
-                     * On modify.
-                     */
-                    function onModify($exTable) {
-                        $exTable.on(events.CELL_UPDATED, function (evt, ui) {
-                            var exTable = $exTable.data(NAMESPACE);
-                            if (!exTable)
-                                return;
-                            if (ui.value.constructor === Array && (uk.util.isNullOrUndefined(ui.innerIdx) || ui.innerIdx === -1)) {
-                                pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[0], 0));
-                                pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[1], 1));
-                                return;
-                            }
-                            pushChange(exTable, ui.rowIndex, ui);
-                        });
-                        $exTable.on(events.ROW_UPDATED, function (evt, ui) {
-                            var exTable = $exTable.data(NAMESPACE);
-                            if (!exTable)
-                                return;
-                            var cells = [];
-                            _.forEach(Object.keys(ui.data), function (k, i) {
-                                if (ui.data[k].constructor === Array && ui.data[k].length === 2) {
-                                    cells.push(new selection.Cell(ui.rowIndex, k, ui.data[k][0], 0));
-                                    cells.push(new selection.Cell(ui.rowIndex, k, ui.data[k][1], 1));
-                                    return;
-                                }
-                                cells.push(new selection.Cell(ui.rowIndex, k, ui.data[k], -1));
-                            });
-                            _.forEach(cells, function (c, i) {
-                                pushChange(exTable, c.rowIndex, c);
-                            });
-                        });
-                    }
-                    events.onModify = onModify;
-                    /**
-                     * Push change.
-                     */
-                    function pushChange(exTable, rowIdx, cell) {
-                        var modifies = exTable.modifications;
-                        if (!modifies) {
-                            exTable.modifications = {};
-                            exTable.modifications[rowIdx] = [cell];
-                            return;
-                        }
-                        if (!modifies[rowIdx]) {
-                            modifies[rowIdx] = [cell];
-                            return;
-                        }
-                        var rData = modifies[rowIdx];
-                        var cellUpdated = false;
-                        _.forEach(rData, function (c, i) {
-                            if (helper.areSameCells(c, cell)) {
-                                rData[i].value = cell.value;
-                                cellUpdated = true;
-                                return false;
-                            }
-                        });
-                        if (!cellUpdated) {
-                            modifies[rowIdx].push(cell);
-                        }
-                    }
-                    /**
-                     * Create row ui.
-                     */
-                    function createRowUi(rowIdx, data) {
-                        return {
-                            rowIndex: rowIdx,
-                            data: data
-                        };
-                    }
-                    events.createRowUi = createRowUi;
-                })(events || (events = {}));
-                var feature;
-                (function (feature_2) {
-                    feature_2.UPDATING = "Updating";
-                    feature_2.HEADER_ROW_HEIGHT = "HeaderRowHeight";
-                    feature_2.HEADER_CELL_STYLE = "HeaderCellStyle";
-                    feature_2.HEADER_POP_UP = "HeaderPopups";
-                    feature_2.BODY_CELL_STYLE = "BodyCellStyle";
-                    feature_2.COLUMN_RESIZE = "ColumnResize";
-                    feature_2.TIME_RANGE = "TimeRange";
-                    /**
-                     * Is enable.
-                     */
-                    function isEnable(features, name) {
-                        return _.find(features, function (feature) {
-                            return feature.name === name;
-                        }) !== undefined;
-                    }
-                    feature_2.isEnable = isEnable;
-                    /**
-                     * Find.
-                     */
-                    function find(features, name) {
-                        return _.find(features, function (feature) {
-                            return feature.name === name;
-                        });
-                    }
-                    feature_2.find = find;
-                })(feature || (feature = {}));
-                var style;
-                (function (style) {
-                    style.DET_CLS = "xdet";
-                    style.HIDDEN_CLS = "xhidden";
-                    style.SEAL_CLS = "xseal";
-                    var CellStyleParam = (function () {
-                        function CellStyleParam($cell, cellData, rowData, rowIdx, columnKey) {
-                            this.$cell = $cell;
-                            this.cellData = cellData;
-                            this.rowData = rowData;
-                            this.rowIdx = rowIdx;
-                            this.columnKey = columnKey;
-                        }
-                        return CellStyleParam;
-                    }());
-                    style.CellStyleParam = CellStyleParam;
-                    var Cell = (function () {
-                        function Cell(rowId, columnKey) {
-                            this.rowId = rowId;
-                            this.columnKey = columnKey;
-                        }
-                        return Cell;
-                    }());
-                    style.Cell = Cell;
-                    /**
-                     * Det column.
-                     */
-                    function detColumn($grid, $row, rowIdx) {
-                        var $tbl = $grid.closest("." + NAMESPACE);
-                        var detOpt = $tbl.data(NAMESPACE).determination;
-                        if (!detOpt || !$grid.hasClass(HEADER_PRF + DETAIL))
-                            return;
-                        _.forEach(detOpt.rows, function (i) {
-                            if (i === rowIdx) {
-                                $row.on(events.MOUSE_DOWN, function (evt) {
-                                    if (!evt.ctrlKey)
-                                        return;
-                                    var $main = helper.getMainTable($tbl);
-                                    var gen = $main.data(internal.TANGI) || $main.data(internal.CANON);
-                                    var ds = gen.dataSource;
-                                    var primaryKey = helper.getPrimaryKey($main);
-                                    var start = gen.startIndex || 0;
-                                    var end = gen.endIndex || ds.length - 1;
-                                    var $hCell = $(evt.target);
-                                    var coord = helper.getCellCoord($hCell);
-                                    var det = $main.data(internal.DET);
-                                    if (!det) {
-                                        det = {};
-                                    }
-                                    var xRows = [];
-                                    var xCellsInColumn = _.filter(ds, function (r, i) {
-                                        if (helper.isXCell($main, r[primaryKey], coord.columnKey, style.HIDDEN_CLS, style.SEAL_CLS)) {
-                                            xRows.push(i);
-                                            return true;
-                                        }
-                                        return false;
-                                    });
-                                    var rows = Object.keys(det);
-                                    if (rows.length >= (ds.length - xCellsInColumn.length)) {
-                                        var flaw_1 = false;
-                                        var indices_1 = {};
-                                        _.forEach(rows, function (k, i) {
-                                            var found = false;
-                                            _.forEach(det[k], function (c, j) {
-                                                if (c === coord.columnKey) {
-                                                    indices_1[k] = j;
-                                                    found = true;
-                                                    return false;
-                                                }
-                                            });
-                                            if (!found && !xRows.some(function (val) { return parseInt(k) === val; })) {
-                                                flaw_1 = true;
-                                                return false;
-                                            }
-                                        });
-                                        if (!flaw_1) {
-                                            var rKeys = Object.keys(indices_1);
-                                            _.forEach(rKeys, function (k, i) {
-                                                var col = det[k].splice(indices_1[k], 1);
-                                                if (det[k].length === 0)
-                                                    delete det[k];
-                                                var $c = selection.cellAt($main, k, col[0]);
-                                                helper.stripCellWith(style.DET_CLS, $c);
-                                            });
-                                            return;
-                                        }
-                                    }
-                                    _.forEach(ds, function (item, index) {
-                                        if (index >= start && index < end) {
-                                            var $c = selection.cellAt($main, index, coord.columnKey);
-                                            if ($c === intan.NULL || $c.length === 0 || !helper.isDetable($c))
-                                                return;
-                                            helper.markCellWith(style.DET_CLS, $c);
-                                        }
-                                        else if (helper.isXCell($main, item[primaryKey], coord.columnKey, style.HIDDEN_CLS, style.SEAL_CLS))
-                                            return;
-                                        if (!det[index]) {
-                                            det[index] = [coord.columnKey];
-                                            $main.data(internal.DET, det);
-                                        }
-                                        else {
-                                            var dup_1;
-                                            _.forEach(det[index], function (key) {
-                                                if (key === coord.columnKey) {
-                                                    dup_1 = true;
-                                                    return false;
-                                                }
-                                            });
-                                            if (!dup_1) {
-                                                det[index].push(coord.columnKey);
-                                            }
-                                        }
-                                    });
-                                });
-                                return false;
-                            }
-                        });
-                    }
-                    style.detColumn = detColumn;
-                    /**
-                     * Det cell.
-                     */
-                    function detCell($grid, $cell, rowIdx, columnKey) {
-                        var $tbl = $grid.closest("." + NAMESPACE);
-                        var detOpt = $tbl.data(NAMESPACE).determination;
-                        if (!detOpt)
-                            return;
-                        if ($grid.hasClass(BODY_PRF + LEFTMOST)) {
-                            _.forEach(detOpt.columns, function (key) {
-                                if (key === columnKey) {
-                                    $cell.on(events.MOUSE_DOWN, function (evt) {
-                                        if (!evt.ctrlKey)
-                                            return;
-                                        var $main = helper.getMainTable($tbl);
-                                        var coord = helper.getCellCoord($cell);
-                                        var $targetRow = selection.rowAt($main, coord.rowIdx);
-                                        if ($targetRow === intan.NULL || !$targetRow)
-                                            return;
-                                        var colKeys = _.map(helper.gridVisibleColumns($main), "key");
-                                        var det = $main.data(internal.DET);
-                                        var rowDet;
-                                        var undetables = [];
-                                        var detables = $targetRow.find("td").filter(function () {
-                                            return $(this).css("display") !== "none";
-                                        }).filter(function (i) {
-                                            if (!helper.isDetable($(this))) {
-                                                undetables.push(i);
-                                                return false;
-                                            }
-                                            return true;
-                                        });
-                                        for (var i = undetables.length - 1; i >= 0; i--) {
-                                            colKeys.splice(undetables[i], 1);
-                                        }
-                                        if (det && (rowDet = det[coord.rowIdx]) && rowDet.length === colKeys.length) {
-                                            helper.stripCellsWith(style.DET_CLS, $targetRow.find("td").filter(function () {
-                                                return $(this).css("display") !== "none";
-                                            }));
-                                            //                                det[coord.rowIdx] = [];
-                                            delete det[coord.rowIdx];
-                                            return;
-                                        }
-                                        helper.markCellsWith(style.DET_CLS, detables);
-                                        if (!det) {
-                                            det = {};
-                                            det[coord.rowIdx] = colKeys;
-                                            $main.data(internal.DET, det);
-                                        }
-                                        else if (!det[coord.rowIdx]) {
-                                            det[coord.rowIdx] = colKeys;
-                                        }
-                                        else {
-                                            var dup_2;
-                                            _.forEach(colKeys, function (k) {
-                                                dup_2 = false;
-                                                _.forEach(det[coord.rowIdx], function (existedKey) {
-                                                    if (existedKey === k) {
-                                                        dup_2 = true;
-                                                        return false;
-                                                    }
-                                                });
-                                                if (!dup_2) {
-                                                    det[coord.rowIdx].push(k);
-                                                }
-                                            });
-                                        }
-                                    });
-                                    return false;
-                                }
-                            });
-                        }
-                        else if ($grid.hasClass(BODY_PRF + DETAIL)) {
-                            var $childCells = $cell.find("." + render.CHILD_CELL_CLS);
-                            var $target = $cell;
-                            if ($childCells.length > 0) {
-                                $target = $childCells;
-                            }
-                            $target.on(events.MOUSE_DOWN, function (evt) {
-                                onDetSingleCell(evt, $tbl, $cell, rowIdx, columnKey);
-                            });
-                        }
-                    }
-                    style.detCell = detCell;
-                    /**
-                     * On det single cell.
-                     */
-                    function onDetSingleCell(evt, $tbl, $cell, rowIdx, columnKey) {
-                        if (!evt.ctrlKey || !helper.isDetable($cell))
-                            return;
-                        var $main = helper.getMainTable($tbl);
-                        var det = $main.data(internal.DET);
-                        if (!det) {
-                            det = {};
-                            det[rowIdx] = [columnKey];
-                            $main.data(internal.DET, det);
-                        }
-                        else if (!det[rowIdx]) {
-                            det[rowIdx] = [columnKey];
-                        }
-                        else {
-                            var dup_3 = -1;
-                            _.forEach(det[rowIdx], function (key, index) {
-                                if (key === columnKey) {
-                                    dup_3 = index;
-                                    return false;
-                                }
-                            });
-                            if (dup_3 > -1) {
-                                var a = [];
-                                det[rowIdx].splice(dup_3, 1);
-                                if (det[rowIdx].length === 0)
-                                    delete det[rowIdx];
-                                helper.stripCellWith(style.DET_CLS, $cell);
-                                return;
-                            }
-                            det[rowIdx].push(columnKey);
-                        }
-                        helper.markCellWith(style.DET_CLS, $cell);
-                    }
-                })(style || (style = {}));
-                var func;
-                (function (func) {
-                    var LEFT_TBL = "leftmost";
-                    var HORZ_SUM = "horizontalSummaries";
-                    var VERT_SUM = "verticalSummaries";
-                    $.fn.exTable = function (name) {
-                        var params = [];
-                        for (var _i = 1; _i < arguments.length; _i++) {
-                            params[_i - 1] = arguments[_i];
-                        }
-                        var self = this;
-                        switch (name) {
-                            case "setHeight":
-                                resize.setHeight(self, params[0]);
-                                break;
-                            case "gridHeightMode":
-                                changeGridHeightMode(self, params[0]);
-                                break;
-                            case "hideHorizontalSummary":
-                                hideHorzSum(self);
-                                break;
-                            case "showHorizontalSummary":
-                                showHorzSum(self);
-                                break;
-                            case "hideVerticalSummary":
-                                hideVertSum(self);
-                                break;
-                            case "showVerticalSummary":
-                                showVertSum(self);
-                                break;
-                            case "updateTable":
-                                updateTable(self, params[0], params[1], params[2], params[3]);
-                                break;
-                            case "updateMode":
-                                return setUpdateMode(self, params[0], params[1]);
-                            case "viewMode":
-                                return setViewMode(self, params[0], params[1]);
-                            case "pasteOverWrite":
-                                setPasteOverWrite(self, params[0]);
-                                break;
-                            case "stickOverWrite":
-                                setStickOverWrite(self, params[0]);
-                                break;
-                            case "stickMode":
-                                setStickMode(self, params[0]);
-                                break;
-                            case "stickData":
-                                setStickData(self, params[0]);
-                                break;
-                            case "stickValidate":
-                                setStickValidate(self, params[0]);
-                                break;
-                            case "stickUndo":
-                                undoStick(self);
-                                break;
-                            case "clearHistories":
-                                clearHistories(self, params[0]);
-                                break;
-                            case "lockCell":
-                                lockCell(self, params[0], params[1]);
-                                break;
-                            case "unlockCell":
-                                unlockCell(self, params[0], params[1]);
-                                break;
-                            case "popupValue":
-                                returnPopupValue(self, params[0]);
-                                break;
-                            case "cellValue":
-                                setCellValue(self, params[0], params[1], params[2], params[3]);
-                                break;
-                            case "cellValueByIndex":
-                                setCellValueByIndex(self, params[0], params[1], params[2], params[3]);
-                                break;
-                            case "roundGet":
-                                roundRetreat(self, params[0]);
-                                break;
-                            case "dataSource":
-                                return getDataSource(self, params[0]);
-                            case "cellByIndex":
-                                return getCellByIndex(self, params[0], params[1]);
-                            case "cellById":
-                                return getCellById(self, params[0], params[1]);
-                            case "updatedCells":
-                                return getUpdatedCells(self);
-                            case "addNewRow":
-                                break;
-                            case "removeRows":
-                                break;
-                            case "rowId":
-                                setRowId(self, params[0], params[1]);
-                                break;
-                            case "saveScroll":
-                                saveScroll(self);
-                                break;
-                            case "scrollBack":
-                                scrollBack(self, params[0]);
-                                break;
-                        }
-                    };
-                    /**
-                     * Change grid height mode.
-                     */
-                    function changeGridHeightMode($container, mode) {
-                        if (mode === DYNAMIC) {
-                            var bodyWrappers_1 = [], horzSumExists_1 = false;
-                            var $bodyWrappers = $container.find("div[class*='" + BODY_PRF + "']").each(function () {
-                                if ($(this).hasClass(BODY_PRF + HORIZONTAL_SUM) || $(this).hasClass(BODY_PRF + LEFT_HORZ_SUM)) {
-                                    horzSumExists_1 = true;
-                                    return;
-                                }
-                                bodyWrappers_1.push($(this));
-                            });
-                            $(window).on(events.RESIZE, $.proxy(resize.fitWindowHeight, undefined, $container, bodyWrappers_1, horzSumExists_1));
-                        }
-                        else {
-                            $(window).off(events.RESIZE, resize.fitWindowHeight);
-                        }
-                    }
-                    /**
-                     * Hide horzSum.
-                     */
-                    function hideHorzSum($container) {
-                        $container.find("." + HEADER_PRF + LEFT_HORZ_SUM).hide();
-                        $container.find("." + BODY_PRF + LEFT_HORZ_SUM).hide();
-                        $container.find("." + HEADER_PRF + HORIZONTAL_SUM).hide();
-                        $container.find("." + BODY_PRF + HORIZONTAL_SUM).hide();
-                        resize.fitWindowHeight($container, undefined, false);
-                    }
-                    /**
-                     * Show horzSum.
-                     */
-                    function showHorzSum($container) {
-                        $container.find("." + HEADER_PRF + LEFT_HORZ_SUM).show();
-                        $container.find("." + BODY_PRF + LEFT_HORZ_SUM).show();
-                        $container.find("." + HEADER_PRF + HORIZONTAL_SUM).show();
-                        $container.find("." + BODY_PRF + HORIZONTAL_SUM).show();
-                        resize.fitWindowHeight($container, undefined, true);
-                    }
-                    /**
-                     * Hide vertSum.
-                     */
-                    function hideVertSum($container) {
-                        $container.find("." + HEADER_PRF + VERTICAL_SUM).hide();
-                        $container.find("." + BODY_PRF + VERTICAL_SUM).hide();
-                        resize.fitWindowWidth($container);
-                        scroll.unbindVertWheel($container.find("." + BODY_PRF + DETAIL));
-                    }
-                    /**
-                     * Show vertSum.
-                     */
-                    function showVertSum($container) {
-                        var $vertSumBody = $container.find("." + BODY_PRF + VERTICAL_SUM);
-                        var $detailBody = $container.find("." + BODY_PRF + DETAIL);
-                        $container.find("." + HEADER_PRF + VERTICAL_SUM).show();
-                        $vertSumBody.show();
-                        resize.fitWindowWidth($container);
-                        scroll.bindVertWheel($detailBody);
-                        $vertSumBody.scrollTop($detailBody.scrollTop());
-                    }
-                    /**
-                     * Update table.
-                     */
-                    function updateTable($container, name, header, body, keepStates) {
-                        switch (name) {
-                            case "leftmost":
-                                updateLeftmost($container, header, body);
-                                break;
-                            case "middle":
-                                updateMiddle($container, header, body);
-                                break;
-                            case "detail":
-                                updateDetail($container, header, body, keepStates);
-                                break;
-                            case "verticalSummaries":
-                                updateVertSum($container, header, body);
-                                break;
-                            case "leftHorizontalSummaries":
-                                updateLeftHorzSum($container, header, body);
-                                break;
-                            case "horizontalSummaries":
-                                updateHorzSum($container, header, body);
-                                break;
-                        }
-                    }
-                    /**
-                     * Update leftmost.
-                     */
-                    function updateLeftmost($container, header, body) {
-                        var exTable = $container.data(NAMESPACE);
-                        if (header) {
-                            _.assignIn(exTable.leftmostHeader, header);
-                            var $header = $container.find("." + HEADER_PRF + LEFTMOST);
-                            var pu = $header.find("table").data(internal.POPUP);
-                            $header.empty();
-                            render.process($header, exTable.leftmostHeader, true);
-                            if (pu && pu.css("display") !== "none")
-                                pu.hide();
-                        }
-                        if (body) {
-                            _.assignIn(exTable.leftmostContent, body);
-                            var $body = $container.find("." + BODY_PRF + LEFTMOST);
-                            $body.empty();
-                            render.process($body, exTable.leftmostContent, true);
-                        }
-                    }
-                    /**
-                     * Update middle.
-                     */
-                    function updateMiddle($container, header, body) {
-                        var exTable = $container.data(NAMESPACE);
-                        if (header) {
-                            _.assignIn(exTable.middleHeader, header);
-                            var $header = $container.find("." + HEADER_PRF + MIDDLE);
-                            var pu = $header.find("table").data(internal.POPUP);
-                            $header.empty();
-                            render.process($header, exTable.middleHeader, true);
-                            if (pu && pu.css("display") !== "none")
-                                pu.hide();
-                        }
-                        if (body) {
-                            _.assignIn(exTable.middleContent, body);
-                            var $body = $container.find("." + BODY_PRF + MIDDLE);
-                            $body.empty();
-                            render.process($body, exTable.middleContent, true);
-                        }
-                    }
-                    /**
-                     * Update detail.
-                     */
-                    function updateDetail($container, header, body, keepStates) {
-                        var exTable = $container.data(NAMESPACE);
-                        if (header) {
-                            _.assignIn(exTable.detailHeader, header);
-                            var $header = $container.find("." + HEADER_PRF + DETAIL);
-                            var pu = $header.find("table").data(internal.POPUP);
-                            $header.empty();
-                            render.process($header, exTable.detailHeader, true);
-                            if (pu && pu.css("display") !== "none")
-                                pu.hide();
-                        }
-                        if (body) {
-                            _.assignIn(exTable.detailContent, body);
-                            var $body = $container.find("." + BODY_PRF + DETAIL);
-                            $body.empty();
-                            if (!keepStates)
-                                internal.clearStates($body);
-                            render.process($body, exTable.detailContent, true);
-                        }
-                    }
-                    /**
-                     * Update vertSum.
-                     */
-                    function updateVertSum($container, header, body) {
-                        var exTable = $container.data(NAMESPACE);
-                        if (header) {
-                            _.assignIn(exTable.verticalSumHeader, header);
-                            var $header = $container.find("." + HEADER_PRF + VERTICAL_SUM);
-                            var pu = $header.find("table").data(internal.POPUP);
-                            $header.empty();
-                            render.process($header, exTable.verticalSumHeader, true);
-                            if (pu && pu.css("display") !== "none")
-                                pu.hide();
-                        }
-                        if (body) {
-                            _.assignIn(exTable.verticalSumContent, body);
-                            var $body = $container.find("." + BODY_PRF + VERTICAL_SUM);
-                            $body.empty();
-                            render.process($body, exTable.verticalSumContent, true);
-                        }
-                    }
-                    /**
-                     * Update leftHorzSum.
-                     */
-                    function updateLeftHorzSum($container, header, body) {
-                        var exTable = $container.data(NAMESPACE);
-                        if (header) {
-                            _.assignIn(exTable.leftHorzSumHeader, header);
-                            var $header = $container.find("." + HEADER_PRF + LEFT_HORZ_SUM);
-                            var pu = $header.find("table").data(internal.POPUP);
-                            $header.empty();
-                            render.process($header, exTable.leftHorzSumHeader, true);
-                            if (pu && pu.css("display") !== "none")
-                                pu.hide();
-                        }
-                        if (body) {
-                            _.assignIn(exTable.leftHorzSumContent, body);
-                            var $body = $container.find("." + BODY_PRF + LEFT_HORZ_SUM);
-                            $body.empty();
-                            render.process($body, exTable.leftHorzSumContent, true);
-                        }
-                    }
-                    /**
-                     * Update horzSum.
-                     */
-                    function updateHorzSum($container, header, body) {
-                        var exTable = $container.data(NAMESPACE);
-                        if (header) {
-                            _.assignIn(exTable.horizontalSumHeader, header);
-                            var $header = $container.find("." + HEADER_PRF + HORIZONTAL_SUM);
-                            var pu = $header.find("table").data(internal.POPUP);
-                            $header.empty();
-                            render.process($header, exTable.horizontalSumHeader, true);
-                            if (pu && pu.css("display") !== "none")
-                                pu.hide();
-                        }
-                        if (body) {
-                            _.assignIn(exTable.horizontalSumContent, body);
-                            var $body = $container.find("." + BODY_PRF + HORIZONTAL_SUM);
-                            $body.empty();
-                            render.process($body, exTable.horizontalSumContent, true);
-                        }
-                    }
-                    /**
-                     * Set update mode.
-                     */
-                    function setUpdateMode($container, mode, occupation) {
-                        var exTable = $container.data(NAMESPACE);
-                        if (!mode)
-                            return exTable.updateMode;
-                        if (exTable.updateMode === mode)
-                            return;
-                        exTable.setUpdateMode(mode);
-                        if (occupation) {
-                            events.trigger($container, events.OCCUPY_UPDATE, occupation);
-                        }
-                        var $grid = $container.find("." + BODY_PRF + DETAIL);
-                        render.begin($grid, internal.getDataSource($grid), exTable.detailContent);
-                        selection.tickRows($container.find("." + BODY_PRF + LEFTMOST), true);
-                        if (mode === COPY_PASTE) {
-                            selection.checkUp($container);
-                            copy.on($grid, mode);
-                            return;
-                        }
-                        selection.off($container);
-                        copy.off($grid, mode);
-                    }
-                    /**
-                     * Set view mode.
-                     */
-                    function setViewMode($container, mode, occupation) {
-                        var exTable = $container.data(NAMESPACE);
-                        if (!mode)
-                            return exTable.viewMode;
-                        if (occupation) {
-                            events.trigger($container, events.OCCUPY_UPDATE, occupation);
-                        }
-                        if (exTable.viewMode === mode)
-                            return;
-                        if (exTable.updateMode === EDIT) {
-                            if (errors.occurred($container))
-                                return;
-                            var editor = $container.data(update.EDITOR);
-                            if (editor) {
-                                $editor = editor.$editor;
-                                $input = $editor.find("input");
-                                var $editingCell = $editor.closest("." + update.EDIT_CELL_CLS).removeClass(update.EDIT_CELL_CLS);
-                                update.triggerStopEdit($container, $editingCell, editor.land, $input.val());
-                                $container.data(update.EDITOR, null);
-                            }
-                        }
-                        exTable.setViewMode(mode);
-                        var $grid = $container.find("." + BODY_PRF + DETAIL);
-                        render.begin($grid, internal.getDataSource($grid), exTable.detailContent);
-                    }
-                    /**
-                     * Set paste overwrite.
-                     */
-                    function setPasteOverWrite($container, overwrite) {
-                        var exTable = $container.data(NAMESPACE);
-                        exTable.pasteOverWrite = overwrite;
-                    }
-                    /**
-                     * Set stick overwrite.
-                     */
-                    function setStickOverWrite($container, overwrite) {
-                        var exTable = $container.data(NAMESPACE);
-                        exTable.stickOverWrite = overwrite;
-                    }
-                    /**
-                     * Set stick mode.
-                     */
-                    function setStickMode($container, mode) {
-                        var $grid = $container.find("." + BODY_PRF + DETAIL);
-                        var sticker = $grid.data(internal.STICKER);
-                        if (!sticker) {
-                            sticker = new spread.Sticker();
-                            sticker.mode = mode;
-                            $grid.data(internal.STICKER, sticker);
-                        }
-                        else {
-                            sticker.mode = mode;
-                        }
-                    }
-                    /**
-                     * Set stick data.
-                     */
-                    function setStickData($container, data) {
-                        var $grid = $container.find("." + BODY_PRF + DETAIL);
-                        var sticker = $grid.data(internal.STICKER);
-                        if (!sticker) {
-                            sticker = new spread.Sticker(data);
-                            $grid.data(internal.STICKER, sticker);
-                        }
-                        else {
-                            sticker.data = data;
-                        }
-                    }
-                    /**
-                     * Set stick validate.
-                     */
-                    function setStickValidate($container, validate) {
-                        var $grid = $container.find("." + BODY_PRF + DETAIL);
-                        var sticker = $grid.data(internal.STICKER);
-                        if (!sticker) {
-                            sticker = new spread.Sticker();
-                            sticker.validate = validate;
-                            $grid.data(internal.STICKER, sticker);
-                        }
-                        else {
-                            sticker.validate = validate;
-                        }
-                    }
-                    /**
-                     * Undo stick.
-                     */
-                    function undoStick($container) {
-                        var $grid = $container.find("." + BODY_PRF + DETAIL);
-                        var histories = $grid.data(internal.STICK_HISTORY);
-                        if (!histories)
-                            return;
-                        var items = histories.pop();
-                        _.forEach(items, function (i) {
-                            update.gridCell($grid, i.rowIndex, i.columnKey, -1, i.value, true);
-                            internal.removeChange($grid, i);
-                        });
-                    }
-                    /**
-                     * Clear histories.
-                     */
-                    function clearHistories($container, type) {
-                        var $grid = $container.find("." + BODY_PRF + DETAIL);
-                        var histType;
-                        switch (type) {
-                            case "edit":
-                                histType = internal.EDIT_HISTORY;
-                                break;
-                            case "copyPaste":
-                                histType = internal.COPY_HISTORY;
-                                break;
-                            case "stick":
-                                histType = internal.STICK_HISTORY;
-                                break;
-                        }
-                        $grid.data(histType, null);
-                    }
-                    /**
-                     * Lock cell.
-                     */
-                    function lockCell($container, rowId, columnKey) {
-                        var $table = helper.getMainTable($container);
-                        var ds = helper.getDataSource($table);
-                        var pk = helper.getPrimaryKey($table);
-                        var i = -1;
-                        _.forEach(ds, function (r, j) {
-                            if (r[pk] === rowId) {
-                                i = j;
-                                return false;
-                            }
-                        });
-                        if (i === -1)
-                            return;
-                        var locks = $table.data(internal.DET);
-                        var found = -1;
-                        if (locks && locks[i] && locks[i].length > 0) {
-                            _.forEach(locks[i], function (c, j) {
-                                if (c === columnKey) {
-                                    found = j;
-                                    return false;
-                                }
-                            });
-                        }
-                        if (found === -1) {
-                            var $cell = selection.cellAt($table, i, columnKey);
-                            if (!locks) {
-                                locks = {};
-                                locks[i] = [columnKey];
-                                $table.data(internal.DET, locks);
-                            }
-                            else if (locks && !locks[i]) {
-                                locks[i] = [columnKey];
-                            }
-                            else
-                                locks[i].push(columnKey);
-                            helper.markCellWith(style.DET_CLS, $cell);
-                        }
-                    }
-                    /**
-                     * Unlock cell.
-                     */
-                    function unlockCell($container, rowId, columnKey) {
-                        var $table = helper.getMainTable($container);
-                        var ds = helper.getDataSource($table);
-                        var pk = helper.getPrimaryKey($table);
-                        var i = -1;
-                        _.forEach(ds, function (r, j) {
-                            if (r[pk] === rowId) {
-                                i = j;
-                                return false;
-                            }
-                        });
-                        if (i === -1)
-                            return;
-                        var locks = $table.data(internal.DET);
-                        var found = -1;
-                        if (locks && locks[i] && locks[i].length > 0) {
-                            _.forEach(locks[i], function (c, j) {
-                                if (c === columnKey) {
-                                    found = j;
-                                    return false;
-                                }
-                            });
-                        }
-                        if (found > -1) {
-                            var $cell = selection.cellAt($table, i, columnKey);
-                            locks[i].splice(found, 1);
-                            if (locks[i].length === 0)
-                                delete locks[i];
-                            helper.stripCellWith(style.DET_CLS, $cell);
-                        }
-                    }
-                    /**
-                     * Return popup value.
-                     */
-                    function returnPopupValue($container, value) {
-                        var header = helper.getMainHeader($container).find("table:first");
-                        if (!header)
-                            return;
-                        var $pu = header.data(internal.POPUP);
-                        if (!$pu)
-                            return;
-                        events.trigger($pu, events.POPUP_INPUT_END, { value: value });
-                    }
-                    /**
-                     * Get data source.
-                     */
-                    function getDataSource($container, name) {
-                        switch (name) {
-                            case "leftmost":
-                                return helper.getPartialDataSource($container, LEFTMOST);
-                            case "middle":
-                                return helper.getPartialDataSource($container, MIDDLE);
-                            case "detail":
-                                return helper.getPartialDataSource($container, DETAIL);
-                            case "verticalSummaries":
-                                return helper.getPartialDataSource($container, VERTICAL_SUM);
-                            case "leftHorizontalSummaries":
-                                return helper.getPartialDataSource($container, LEFT_HORZ_SUM);
-                            case "horizontalSummaries":
-                                return helper.getPartialDataSource($container, HORIZONTAL_SUM);
-                        }
-                    }
-                    /**
-                     * Get cell by index.
-                     */
-                    function getCellByIndex($container, rowIndex, columnKey) {
-                        var $tbl = helper.getMainTable($container);
-                        if ($tbl.length === 0)
-                            return;
-                        return selection.cellAt($tbl, rowIndex, columnKey);
-                    }
-                    /**
-                     * Get cell by Id.
-                     */
-                    function getCellById($container, rowId, columnKey) {
-                        var $tbl = helper.getMainTable($container);
-                        if ($tbl.length === 0)
-                            return;
-                        return selection.cellOf($tbl, rowId, columnKey);
-                    }
-                    /**
-                     * Get updated cells.
-                     */
-                    function getUpdatedCells($container) {
-                        var data = $container.data(NAMESPACE).modifications;
-                        if (!data)
-                            return [];
-                        return helper.valuesArray(data);
-                    }
-                    /**
-                     * Round retreat.
-                     */
-                    function roundRetreat($container, value) {
-                        if (!value)
-                            return;
-                        events.trigger($container, events.ROUND_RETREAT, value);
-                    }
-                    /**
-                     * Set cell value.
-                     */
-                    function setCellValue($container, name, rowId, columnKey, value) {
-                        switch (name) {
-                            case LEFT_TBL:
-                                setValue($container, BODY_PRF + LEFTMOST, rowId, columnKey, value);
-                                break;
-                            case HORZ_SUM:
-                                setValue($container, BODY_PRF + HORIZONTAL_SUM, rowId, columnKey, value);
-                                break;
-                            case VERT_SUM:
-                                setValue($container, BODY_PRF + VERTICAL_SUM, rowId, columnKey, value);
-                                break;
-                        }
-                    }
-                    /**
-                     * Set cell value by index.
-                     */
-                    function setCellValueByIndex($container, name, rowIdx, columnKey, value) {
-                        switch (name) {
-                            case LEFT_TBL:
-                                setValueByIndex($container, BODY_PRF + LEFTMOST, rowIdx, columnKey, value);
-                                break;
-                            case HORZ_SUM:
-                                setValueByIndex($container, BODY_PRF + HORIZONTAL_SUM, rowIdx, columnKey, value);
-                                break;
-                            case VERT_SUM:
-                                setValueByIndex($container, BODY_PRF + VERTICAL_SUM, rowIdx, columnKey, value);
-                                break;
-                        }
-                    }
-                    /**
-                     * Set value.
-                     */
-                    function setValue($container, selector, rowId, columnKey, value) {
-                        var $grid = $container.find("." + selector);
-                        if ($grid.length === 0)
-                            return;
-                        var rowIdx = helper.getRowIndex($grid, rowId);
-                        var ds = helper.getDataSource($grid);
-                        if (rowIdx === -1 || !ds || ds.length === 0)
-                            return;
-                        if (selector === BODY_PRF + LEFTMOST) {
-                            if (ds[rowIdx][columnKey] !== value) {
-                                update.gridCell($grid, rowIdx, columnKey, -1, value);
-                                update.pushEditHistory($grid, new selection.Cell(rowIdx, columnKey, value, -1));
-                            }
-                        }
-                        else {
-                            ds[rowIdx][columnKey] = value;
-                            refreshCell($grid, rowId, columnKey, value);
-                        }
-                    }
-                    /**
-                     * Set value by index.
-                     */
-                    function setValueByIndex($container, selector, rowIdx, columnKey, value) {
-                        var $grid = $container.find("." + selector);
-                        if ($grid.length === 0)
-                            return;
-                        var ds = helper.getDataSource($grid);
-                        if (!ds || ds.length === 0)
-                            return;
-                        if (selector === BODY_PRF + LEFTMOST) {
-                            if (ds[rowIdx][columnKey] !== value) {
-                                update.gridCell($grid, rowIdx, columnKey, -1, value);
-                                update.pushEditHistory($grid, new selection.Cell(rowIdx, columnKey, value, -1));
-                            }
-                        }
-                        else {
-                            ds[rowIdx][columnKey] = value;
-                            refreshCellByIndex($grid, rowIdx, columnKey, value);
-                        }
-                    }
-                    /**
-                     * Refresh cell.
-                     */
-                    function refreshCell($grid, rowId, columnKey, value) {
-                        var $c = selection.cellOf($grid, rowId, columnKey);
-                        if ($c === intan.NULL || !$c)
-                            return;
-                        if (uk.util.isNullOrUndefined(value)) {
-                            var ds = helper.getClonedDs($grid);
-                            if (!ds || ds.length === 0)
-                                return;
-                            var rIdx = helper.getRowIndex($grid, rowId);
-                            if (rIdx === -1)
-                                return;
-                            value = ds[rIdx][columnKey];
-                        }
-                        $c.text(value);
-                    }
-                    /**
-                     * Refresh cell by index.
-                     */
-                    function refreshCellByIndex($grid, rowIdx, columnKey, value) {
-                        var $c = selection.cellAt($grid, rowIdx, columnKey);
-                        if ($c === intan.NULL || !$c)
-                            return;
-                        if (uk.util.isNullOrUndefined(value)) {
-                            var ds = helper.getClonedDs($grid);
-                            if (!ds || ds.length === 0)
-                                return;
-                            value = ds[rowIdx][columnKey];
-                        }
-                        $c.text(value);
-                    }
-                    /**
-                     * Set row Id.
-                     */
-                    function setRowId($container, rowIndex, value) {
-                        $container.find("div[class*='" + BODY_PRF + "']").filter(function () {
-                            return !$(this).hasClass(BODY_PRF + HORIZONTAL_SUM) && !$(this).hasClass(BODY_PRF + LEFT_HORZ_SUM);
-                        }).each(function () {
-                            var key = helper.getPrimaryKey($(this));
-                            var ds = internal.getDataSource($(this));
-                            if (!ds || ds.length === 0 || !ds[rowIndex])
-                                return;
-                            if (ds[rowIndex][key] !== value) {
-                                update.gridCell($(this), rowIndex, key, -1, value);
-                                update.pushEditHistory($(this), new selection.Cell(rowIndex, key, value, -1));
-                            }
-                        });
-                    }
-                    /**
-                     * Save scroll.
-                     */
-                    function saveScroll($container) {
-                        var key = uk.request.location.current.rawUrl + "/" + $container.attr("id") + "/scroll";
-                        var scroll = {};
-                        var tbl = helper.getMainTable($container);
-                        scroll.v = tbl.scrollTop();
-                        scroll.h = tbl.scrollLeft();
-                        uk.localStorage.setItemAsJson(key, scroll);
-                    }
-                    /**
-                     * Scroll back.
-                     */
-                    function scrollBack($container, where) {
-                        var key = uk.request.location.current.rawUrl + "/" + $container.attr("id") + "/scroll";
-                        var item = uk.localStorage.getItem(key);
-                        if (!item.isPresent())
-                            return;
-                        var tbl = helper.getMainTable($container);
-                        var scroll = JSON.parse(item.get());
-                        switch (where) {
-                            case 0:
-                                tbl.scrollLeft(scroll.h);
-                                break;
-                            case 1:
-                                tbl.scrollTop(scroll.v);
-                                break;
-                            case 2:
-                                tbl.scrollLeft(scroll.h);
-                                tbl.scrollTop(scroll.v);
-                                break;
-                        }
-                    }
-                })(func || (func = {}));
-                var internal;
-                (function (internal) {
-                    internal.X_OCCUPY = "ex-x-occupy";
-                    internal.Y_OCCUPY = "ex-y-occupy";
-                    internal.TANGI = "x-tangi";
-                    internal.CANON = "x-canon";
-                    internal.STICKER = "x-sticker";
-                    internal.DET = "x-det";
-                    internal.PAINTER = "painter";
-                    internal.CELLS_STYLE = "body-cells-style";
-                    internal.VIEW = "view";
-                    internal.EX_PART = "expart";
-                    internal.TIME_VALID_RANGE = "time-validate-range";
-                    internal.SELECTED_CELLS = "selected-cells";
-                    internal.LAST_SELECTED = "last-selected";
-                    internal.SELECTED_ROWS = "selected-rows";
-                    internal.COPY_HISTORY = "copy-history";
-                    internal.EDIT_HISTORY = "edit-history";
-                    internal.STICK_HISTORY = "stick-history";
-                    internal.TOOLTIP = "tooltip";
-                    internal.CONTEXT_MENU = "context-menu";
-                    internal.POPUP = "popup";
-                    internal.TEXT = "text";
-                    internal.TIME = "time";
-                    internal.DURATION = "duration";
-                    internal.NUMBER = "number";
-                    internal.DT_SEPARATOR = "/";
-                    internal.COLUMN_IN = "column-in";
-                    /**
-                     * Get gem.
-                     */
-                    function getGem($grid) {
-                        return $grid.data(internal.TANGI) || $grid.data(internal.CANON);
-                    }
-                    internal.getGem = getGem;
-                    /**
-                     * Get data source.
-                     */
-                    function getDataSource($grid) {
-                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
-                        if (!gen)
-                            return;
-                        return gen.dataSource;
-                    }
-                    internal.getDataSource = getDataSource;
-                    /**
-                     * Remove change.
-                     */
-                    function removeChange($grid, cell) {
-                        var origDs = helper.getOrigDS($grid);
-                        var exTable = helper.getExTableFromGrid($grid);
-                        if (!origDs || !exTable)
-                            return;
-                        var oVal = origDs[cell.rowIndex][cell.columnKey];
-                        var cells = exTable.modifications[cell.rowIndex];
-                        if (!cells)
-                            return;
-                        var index = -1;
-                        _.forEach(cells, function (c, i) {
-                            if (helper.areSameCells(cell, c) && cell.value === oVal) {
-                                index = i;
-                                return false;
-                            }
-                        });
-                        exTable.modifications[cell.rowIndex].splice(index, 1);
-                    }
-                    internal.removeChange = removeChange;
-                    /**
-                     * Clear states.
-                     */
-                    function clearStates($grid) {
-                        $grid.data(internal.SELECTED_CELLS, null);
-                        $grid.data(internal.LAST_SELECTED, null);
-                        $grid.data(internal.COPY_HISTORY, null);
-                        $grid.data(internal.EDIT_HISTORY, null);
-                        $grid.data(internal.STICK_HISTORY, null);
-                        var exTable = helper.getExTableFromGrid($grid);
-                        if (!exTable)
-                            return;
-                        exTable.modifications = {};
-                    }
-                    internal.clearStates = clearStates;
-                })(internal || (internal = {}));
-                var helper;
-                (function (helper) {
-                    /**
-                     * Get scroll width.
-                     */
-                    function getScrollWidth() {
-                        var $outer = $('<div>').css({ visibility: 'hidden', width: 100, overflow: 'scroll' }).appendTo('body'), widthWithScroll = $('<div>').css({ width: '100%' }).appendTo($outer).outerWidth();
-                        $outer.remove();
-                        return 100 - widthWithScroll;
-                    }
-                    helper.getScrollWidth = getScrollWidth;
-                    /**
-                     * Get table.
-                     */
-                    function getTable($exTable, name) {
-                        return $exTable.find("." + name);
-                    }
-                    helper.getTable = getTable;
-                    /**
-                     * Get main header.
-                     */
-                    function getMainHeader($exTable) {
-                        return $exTable.find("." + HEADER_PRF + DETAIL);
-                    }
-                    helper.getMainHeader = getMainHeader;
-                    /**
-                     * Get main table.
-                     */
-                    function getMainTable($exTable) {
-                        return $exTable.find("." + BODY_PRF + DETAIL);
-                    }
-                    helper.getMainTable = getMainTable;
-                    /**
-                     * Get leftmost table.
-                     */
-                    function getLeftmostTable($exTable) {
-                        return $exTable.find("." + BODY_PRF + LEFTMOST);
-                    }
-                    helper.getLeftmostTable = getLeftmostTable;
-                    /**
-                     * Get exTable from grid.
-                     */
-                    function getExTableFromGrid($grid) {
-                        return $grid.closest("." + NAMESPACE).data(NAMESPACE);
-                    }
-                    helper.getExTableFromGrid = getExTableFromGrid;
-                    /**
-                     * Get visible columns.
-                     */
-                    function getVisibleColumnsOn($grid) {
-                        return ($grid.data(internal.TANGI) || $grid.data(internal.CANON)).painter.visibleColumns;
-                    }
-                    helper.getVisibleColumnsOn = getVisibleColumnsOn;
-                    /**
-                     * Get visible columns.
-                     */
-                    function getVisibleColumns(options) {
-                        var visibleColumns = [];
-                        filterColumns(options.columns, visibleColumns, []);
-                        return visibleColumns;
-                    }
-                    helper.getVisibleColumns = getVisibleColumns;
-                    /**
-                     * Get origDS.
-                     */
-                    function getOrigDS($grid) {
-                        return ($grid.data(internal.TANGI) || $grid.data(internal.CANON))._origDs;
-                    }
-                    helper.getOrigDS = getOrigDS;
-                    /**
-                     * Get data source.
-                     */
-                    function getDataSource($grid) {
-                        return ($grid.data(internal.TANGI) || $grid.data(internal.CANON)).dataSource;
-                    }
-                    helper.getDataSource = getDataSource;
-                    /**
-                     * Get clonedDs.
-                     */
-                    function getClonedDs($grid) {
-                        return _.cloneDeep(getDataSource($grid));
-                    }
-                    helper.getClonedDs = getClonedDs;
-                    /**
-                     * Get primary key.
-                     */
-                    function getPrimaryKey($grid) {
-                        return ($grid.data(internal.TANGI) || $grid.data(internal.CANON)).primaryKey;
-                    }
-                    helper.getPrimaryKey = getPrimaryKey;
-                    /**
-                     * Classify columns.
-                     */
-                    function classifyColumns(options) {
-                        var visibleColumns = [];
-                        var hiddenColumns = [];
-                        filterColumns(options.columns, visibleColumns, hiddenColumns);
-                        return {
-                            visibleColumns: visibleColumns,
-                            hiddenColumns: hiddenColumns
-                        };
-                    }
-                    helper.classifyColumns = classifyColumns;
-                    /**
-                     * Filter columns.
-                     */
-                    function filterColumns(columns, visibleColumns, hiddenColumns) {
-                        _.forEach(columns, function (col) {
-                            if (!uk.util.isNullOrUndefined(col.visible) && col.visible === false) {
-                                hiddenColumns.push(col);
-                                return;
-                            }
-                            if (!uk.util.isNullOrUndefined(col.group) && col.group.length > 0) {
-                                filterColumns(col.group, visibleColumns, hiddenColumns);
-                            }
-                            else {
-                                visibleColumns.push(col);
-                            }
-                        });
-                    }
-                    /**
-                     * Get columns map.
-                     */
-                    function getColumnsMap(columns) {
-                        return _.groupBy(columns, "key");
-                    }
-                    helper.getColumnsMap = getColumnsMap;
-                    /**
-                     * Get columns map from struct.
-                     */
-                    function columnsMapFromStruct(levelStruct) {
-                        var map = {};
-                        _.forEach(Object.keys(levelStruct), function (nth) {
-                            _.forEach(levelStruct[nth], function (col) {
-                                if (!uk.util.isNullOrUndefined(col.key)) {
-                                    map[col.key] = col;
-                                }
-                            });
-                        });
-                        return map;
-                    }
-                    helper.columnsMapFromStruct = columnsMapFromStruct;
-                    /**
-                     * Get partial data source.
-                     */
-                    function getPartialDataSource($table, name) {
-                        return {
-                            header: getClonedDs($table.find("." + HEADER_PRF + name)),
-                            body: getClonedDs($table.find("." + BODY_PRF + name))
-                        };
-                    }
-                    helper.getPartialDataSource = getPartialDataSource;
-                    /**
-                     * Make connector.
-                     */
-                    function makeConnector() {
-                        Connector[HEADER_PRF + LEFTMOST] = BODY_PRF + LEFTMOST;
-                        Connector[HEADER_PRF + MIDDLE] = BODY_PRF + MIDDLE;
-                        Connector[HEADER_PRF + DETAIL] = BODY_PRF + DETAIL;
-                        Connector[HEADER_PRF + VERTICAL_SUM] = BODY_PRF + VERTICAL_SUM;
-                        Connector[HEADER_PRF + HORIZONTAL_SUM] = BODY_PRF + HORIZONTAL_SUM;
-                    }
-                    helper.makeConnector = makeConnector;
-                    /**
-                     * Get class of header.
-                     */
-                    function getClassOfHeader($part) {
-                        return $part.data(internal.EX_PART);
-                    }
-                    helper.getClassOfHeader = getClassOfHeader;
-                    /**
-                     * Is paste key.
-                     */
-                    function isPasteKey(evt) {
-                        return evt.keyCode === 86;
-                    }
-                    helper.isPasteKey = isPasteKey;
-                    /**
-                     * Is copy key.
-                     */
-                    function isCopyKey(evt) {
-                        return evt.keyCode === 67;
-                    }
-                    helper.isCopyKey = isCopyKey;
-                    /**
-                     * Is cut key.
-                     */
-                    function isCutKey(evt) {
-                        return evt.keyCode === 88;
-                    }
-                    helper.isCutKey = isCutKey;
-                    /**
-                     * Is undo key.
-                     */
-                    function isUndoKey(evt) {
-                        return evt.keyCode === 90;
-                    }
-                    helper.isUndoKey = isUndoKey;
-                    /**
-                     * Get cell coord.
-                     */
-                    function getCellCoord($cell) {
-                        if ($cell.length === 0)
-                            return;
-                        var $td = $cell;
-                        if ($cell.is("div")) {
-                            $td = $cell.closest("td");
-                        }
-                        var view = $td.data(internal.VIEW);
-                        if (!view)
-                            return;
-                        var coord = view.split("-");
-                        if (uk.util.isNullOrUndefined(coord[0]) || uk.util.isNullOrUndefined(coord[1]))
-                            return;
-                        return {
-                            rowIdx: Number(coord[0]),
-                            columnKey: coord[1]
-                        };
-                    }
-                    helper.getCellCoord = getCellCoord;
-                    /**
-                     * Get display column index.
-                     */
-                    function getDisplayColumnIndex($grid, key) {
-                        var generator = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
-                        var visibleColumns = generator.painter.visibleColumns;
-                        var index;
-                        _.forEach(visibleColumns, function (c, i) {
-                            if (c.key === key) {
-                                index = i;
-                                return false;
-                            }
-                        });
-                        return index;
-                    }
-                    helper.getDisplayColumnIndex = getDisplayColumnIndex;
-                    /**
-                     * Get row index.
-                     */
-                    function getRowIndex($grid, rowId) {
-                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
-                        if (!gen)
-                            return;
-                        var start = gen.startIndex || 0;
-                        var end = gen.endIndex || gen.dataSource.length - 1;
-                        for (var i = start; i <= end; i++) {
-                            if (gen.dataSource[i][gen.primaryKey] === rowId) {
-                                return i;
-                            }
-                        }
-                        return -1;
-                    }
-                    helper.getRowIndex = getRowIndex;
-                    /**
-                     * Grid visible columns.
-                     */
-                    function gridVisibleColumns($grid) {
-                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
-                        if (!gen)
-                            return;
-                        return gen.painter.visibleColumns;
-                    }
-                    helper.gridVisibleColumns = gridVisibleColumns;
-                    /**
-                     * Grid columns map.
-                     */
-                    function gridColumnsMap($grid) {
-                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
-                        if (!gen)
-                            return;
-                        return gen.painter.columnsMap;
-                    }
-                    helper.gridColumnsMap = gridColumnsMap;
-                    /**
-                     * Mark cell.
-                     */
-                    function markCellWith(clazz, $cell, nth, value) {
-                        var $childCells = $cell.find("." + render.CHILD_CELL_CLS);
-                        if ($cell.is("td") && $childCells.length > 0) {
-                            if (!uk.util.isNullOrUndefined(nth) && nth !== -1) {
-                                $($childCells[nth]).addClass(clazz);
-                                if (clazz === errors.ERROR_CLS)
-                                    $($childCells[nth]).text(value);
-                            }
-                            else {
-                                $childCells.addClass(clazz);
-                            }
-                            return;
-                        }
-                        $cell.addClass(clazz);
-                        if (clazz === errors.ERROR_CLS)
-                            $cell.text(value);
-                    }
-                    helper.markCellWith = markCellWith;
-                    /**
-                     * Strip cell.
-                     */
-                    function stripCellWith(clazz, $cell, nth) {
-                        var $childCells = $cell.find("." + render.CHILD_CELL_CLS);
-                        if ($cell.is("td") && $childCells.length > 0) {
-                            if (!uk.util.isNullOrUndefined(nth) && nth !== -1) {
-                                $($childCells[nth]).removeClass(clazz);
-                            }
-                            else
-                                $childCells.removeClass(clazz);
-                            return;
-                        }
-                        $cell.removeClass(clazz);
-                    }
-                    helper.stripCellWith = stripCellWith;
-                    /**
-                     * Mark cells.
-                     */
-                    function markCellsWith(clazz, $cells) {
-                        $cells.each(function () {
-                            markCellWith(clazz, $(this));
-                        });
-                    }
-                    helper.markCellsWith = markCellsWith;
-                    /**
-                     * Strip cells.
-                     */
-                    function stripCellsWith(clazz, $cells) {
-                        $cells.each(function () {
-                            stripCellWith(clazz, $(this));
-                        });
-                    }
-                    helper.stripCellsWith = stripCellsWith;
-                    /**
-                     * Is detable.
-                     */
-                    function isDetable($cell) {
-                        var children = $cell.children("." + render.CHILD_CELL_CLS);
-                        return !($cell.is("." + style.HIDDEN_CLS) || $cell.is("." + style.SEAL_CLS)
-                            || (children.length > 0
-                                && ($(children[0]).is("." + style.HIDDEN_CLS)
-                                    || $(children[0]).is("." + style.SEAL_CLS))));
-                    }
-                    helper.isDetable = isDetable;
-                    /**
-                     * Column index.
-                     */
-                    function indexOf(columnKey, visibleColumns) {
-                        var index = -1;
-                        _.forEach(visibleColumns, function (column, i) {
-                            if (column.key === columnKey) {
-                                index = i;
-                                return false;
-                            }
-                        });
-                        return index;
-                    }
-                    helper.indexOf = indexOf;
-                    /**
-                     * Next column key.
-                     */
-                    function nextKeyOf(columnIndex, visibleColumns) {
-                        if (columnIndex >= visibleColumns.length - 1)
-                            return;
-                        return visibleColumns[columnIndex + 1].key;
-                    }
-                    helper.nextKeyOf = nextKeyOf;
-                    /**
-                     * Next cell.
-                     */
-                    function nextCellOf($grid, cell) {
-                        var key, rowIndex, innerIdx;
-                        var gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
-                        if (!gen)
-                            return;
-                        var visibleColumns = gen.painter.visibleColumns;
-                        key = nextKeyOf(indexOf(cell.columnKey, visibleColumns), visibleColumns);
-                        if (key) {
-                            return new selection.Cell(cell.rowIndex, key, undefined, cell.innerIdx);
-                        }
-                        key = visibleColumns[0].key;
-                        if (cell.rowIndex >= gen.dataSource.length - 1) {
-                            if (cell.innerIdx === -1) {
-                                rowIndex = 0;
-                                innerIdx = -1;
-                            }
-                            else if (cell.innerIdx === 0) {
-                                rowIndex = Number(cell.rowIndex);
-                                innerIdx = 1;
-                            }
-                            else if (cell.innerIdx === 1) {
-                                rowIndex = 0;
-                                innerIdx = 0;
-                            }
-                        }
-                        else {
-                            if (cell.innerIdx === -1) {
-                                rowIndex = Number(cell.rowIndex) + 1;
-                                innerIdx = -1;
-                            }
-                            else if (cell.innerIdx === 0) {
-                                rowIndex = Number(cell.rowIndex);
-                                innerIdx = 1;
-                            }
-                            else if (cell.innerIdx === 1) {
-                                rowIndex = Number(cell.rowIndex) + 1;
-                                innerIdx = 0;
-                            }
-                        }
-                        return new selection.Cell(rowIndex, key, undefined, innerIdx);
-                    }
-                    helper.nextCellOf = nextCellOf;
-                    /**
-                     * Call.
-                     */
-                    function call(fn) {
-                        var args = [];
-                        for (var _i = 1; _i < arguments.length; _i++) {
-                            args[_i - 1] = arguments[_i];
-                        }
-                        return function () {
-                            return fn.apply(null, args);
-                        };
-                    }
-                    helper.call = call;
-                    /**
-                     * Check br.
-                     */
-                    function containsBr(text) {
-                        return text && text.indexOf("<br/>") > -1;
-                    }
-                    helper.containsBr = containsBr;
-                    /**
-                     * Compare cells.
-                     */
-                    function areSameCells(one, other) {
-                        if (parseInt(one.rowIndex) !== parseInt(other.rowIndex)
-                            || one.columnKey !== other.columnKey
-                            || one.innerIdx !== other.innerIdx)
-                            return false;
-                        return true;
-                    }
-                    helper.areSameCells = areSameCells;
-                    /**
-                     * Is det cell.
-                     */
-                    function isDetCell($grid, rowIdx, key) {
-                        var $cell = selection.cellAt($grid, rowIdx, key);
-                        var $childCells = $cell.children("." + render.CHILD_CELL_CLS);
-                        return ($childCells.length === 0 && $cell.is("." + style.DET_CLS))
-                            || ($childCells.length > 0 && $($childCells[0]).is("." + style.DET_CLS));
-                    }
-                    helper.isDetCell = isDetCell;
-                    /**
-                     * Is xcell.
-                     */
-                    function isXCell($grid, rowId, key) {
-                        var clazz = [];
-                        for (var _i = 3; _i < arguments.length; _i++) {
-                            clazz[_i - 3] = arguments[_i];
-                        }
-                        var cellsStyle = $grid.data(internal.CELLS_STYLE);
-                        if (!cellsStyle)
-                            return;
-                        var result = _.find(cellsStyle, function (deco) {
-                            return deco.columnKey === key && deco.rowId === rowId && clazz.some(function (c) { return deco.clazz === c; });
-                        });
-                        return result !== undefined;
-                    }
-                    helper.isXCell = isXCell;
-                    /**
-                     * Is xcell shown.
-                     */
-                    function isXCellShown($grid, rowIdx, key) {
-                        var clazz = [];
-                        for (var _i = 3; _i < arguments.length; _i++) {
-                            clazz[_i - 3] = arguments[_i];
-                        }
-                        var $cell = selection.cellAt($grid, rowIdx, key);
-                        var $childCells = $cell.children("." + render.CHILD_CELL_CLS);
-                        var returnVal = false;
-                        _.forEach(clazz, function (c) {
-                            if (($childCells.length === 0 && $cell.is("." + c))
-                                || ($childCells.length > 0 && $($childCells[0]).is("." + c))) {
-                                returnVal = true;
-                                return false;
-                            }
-                        });
-                        return returnVal;
-                    }
-                    helper.isXCellShown = isXCellShown;
-                    /**
-                     * Is empty.
-                     */
-                    function isEmpty(obj) {
-                        if (obj && obj.constructor === Array) {
-                            var empty_1 = true;
-                            _.forEach(obj, function (o) {
-                                if (!uk.util.isNullOrUndefined(o)) {
-                                    empty_1 = false;
-                                    return false;
-                                }
-                            });
-                            return empty_1;
-                        }
-                        if (!obj)
-                            return true;
-                        return false;
-                    }
-                    helper.isEmpty = isEmpty;
-                    /**
-                     * Values array.
-                     */
-                    function valuesArray(obj) {
-                        var values = [];
-                        _.forEach(Object.keys(obj), function (k, i) {
-                            values = _.concat(values, obj[k]);
-                        });
-                        return values;
-                    }
-                    helper.valuesArray = valuesArray;
-                    /**
-                     * String value.
-                     */
-                    function stringValue(val) {
-                        return _.isObject(val) ? JSON.stringify(val) : val;
-                    }
-                    helper.stringValue = stringValue;
-                    /**
-                     * Get cell data.
-                     */
-                    function getCellData(data) {
-                        try {
-                            return JSON.parse(data);
-                        }
-                        catch (e) {
-                            return data;
-                        }
-                    }
-                    helper.getCellData = getCellData;
-                    /**
-                     * View data.
-                     */
-                    function viewData(view, viewMode, obj) {
-                        if (!view || !viewMode)
-                            return;
-                        var result = [];
-                        _.forEach(view(viewMode), function (f) {
-                            if (!f)
-                                return;
-                            result.push(obj[f]);
-                        });
-                        return result.length === 1 ? result[0] : result;
-                    }
-                    helper.viewData = viewData;
-                    /**
-                     * Is equal.
-                     */
-                    function isEqual(one, two, fields) {
-                        if (_.isObject(one) && _.isObject(two)) {
-                            return (fields && fields.length > 0)
-                                ? _.isEqual(_.omitBy(one, function (d, p) { return fields.every(function (f) { return f !== p; }); }), _.omitBy(two, function (d, p) { return fields.every(function (f) { return f !== p; }); }))
-                                : _.isEqual(_.omit(one, _.isFunction), _.omit(two, _.isFunction));
-                        }
-                        return _.isEqual(one, two);
-                    }
-                    helper.isEqual = isEqual;
-                    /**
-                     * Block.
-                     */
-                    function block($exTable) {
-                        $exTable.block({
-                            message: null,
-                            fadeIn: 200,
-                            css: {
-                                width: $exTable.width(),
-                                height: $exTable.height()
-                            }
-                        });
-                    }
-                    helper.block = block;
-                    /**
-                     * Unblock.
-                     */
-                    function unblock($exTable) {
-                        $exTable.unblock();
-                    }
-                    helper.unblock = unblock;
-                    /**
-                     * Highlight column.
-                     */
-                    function highlightColumn($container, columnIndex) {
-                        var grid = $container[0].querySelector("." + BODY_PRF + DETAIL);
-                        var header = $container[0].querySelector("." + HEADER_PRF + DETAIL);
-                        _.forEach(grid.getElementsByTagName("tr"), function (t) {
-                            var tds = t.getElementsByTagName("td");
-                            if (!tds || tds.length === 0)
-                                return;
-                            helper.addClass1n(tds[columnIndex], render.HIGHLIGHT_CLS);
-                        });
-                        _.forEach(header.getElementsByTagName("tr"), function (t) {
-                            var tds = t.getElementsByTagName("td");
-                            if (!tds || tds.length === 0)
-                                return;
-                            helper.addClass1n(tds[columnIndex], render.HIGHLIGHT_CLS);
-                        });
-                    }
-                    helper.highlightColumn = highlightColumn;
-                    /**
-                     * Unhighlight column.
-                     */
-                    function unHighlightColumn($container, columnIndex) {
-                        var grid = $container[0].querySelector("." + BODY_PRF + DETAIL);
-                        var header = $container[0].querySelector("." + HEADER_PRF + DETAIL);
-                        unHighlightGrid(grid, columnIndex);
-                        unHighlightGrid(header, columnIndex);
-                    }
-                    helper.unHighlightColumn = unHighlightColumn;
-                    /**
-                     * Unhighlight grid.
-                     */
-                    function unHighlightGrid(grid, columnIndex) {
-                        if (!grid)
-                            return;
-                        _.forEach(grid.getElementsByTagName("tr"), function (t) {
-                            var tds = t.getElementsByTagName("td");
-                            if (!tds || tds.length === 0)
-                                return;
-                            helper.removeClass1n(tds[columnIndex], render.HIGHLIGHT_CLS);
-                        });
-                    }
-                    helper.unHighlightGrid = unHighlightGrid;
-                    /**
-                     * First sibling.
-                     */
-                    function firstSibling(node, clazz) {
-                        var parent = node.parentElement;
-                        if (!parent)
-                            return;
-                        var children = parent.children;
-                        for (var i = 0; i < children.length; i++) {
-                            if (node !== children[i] && children[i].classList.contains(clazz)) {
-                                return children[i];
-                            }
-                        }
-                    }
-                    helper.firstSibling = firstSibling;
-                    /**
-                     * Class siblings.
-                     */
-                    function classSiblings(node, partialClass) {
-                        var parent = node.parentElement;
-                        if (!parent)
-                            return;
-                        var children = parent.children;
-                        var results = [];
-                        for (var i = 0; i < children.length; i++) {
-                            if (children[i] === node)
-                                continue;
-                            var classList = children[i].classList;
-                            for (var j = 0; j < classList.length; j++) {
-                                if (classList.item(j).indexOf(partialClass) >= 0) {
-                                    results.push(children[i]);
-                                }
-                            }
-                        }
-                        return results;
-                    }
-                    helper.classSiblings = classSiblings;
-                    /**
-                     * Consume siblings.
-                     */
-                    function consumeSiblings(node, op) {
-                        var parent = node.parentElement;
-                        if (!parent)
-                            return;
-                        var children = parent.children;
-                        for (var i = 0; i < children.length; i++) {
-                            if (node !== children[i]) {
-                                op(children[i]);
-                            }
-                        }
-                    }
-                    helper.consumeSiblings = consumeSiblings;
-                    /**
-                     * Closest.
-                     */
-                    function closest(el, selector) {
-                        var matches;
-                        ['matches', 'webkitMatchesSelector', 'mozMatchesSelector', 'msMatchesSelector', 'oMatchesSelector'].some(function (fn) {
-                            if (typeof document.body[fn] === 'function') {
-                                matches = fn;
-                                return true;
-                            }
-                            return false;
-                        });
-                        var parent;
-                        while (el) {
-                            parent = el.parentElement;
-                            if (parent && parent[matches](selector)) {
-                                return parent;
-                            }
-                            el = parent;
-                        }
-                    }
-                    helper.closest = closest;
-                    /**
-                     * Add class.
-                     */
-                    function addClass1n(node, clazz) {
-                        if (node && node.constructor !== HTMLCollection) {
-                            var children = node.querySelectorAll("." + render.CHILD_CELL_CLS);
-                            if (children.length > 0)
-                                addClass(children, clazz);
-                            else
-                                addClass(node, clazz);
-                            return;
-                        }
-                        for (var i = 0; i < node.length; i++) {
-                            var children = node[i].querySelectorAll("." + render.CHILD_CELL_CLS);
-                            if (children.length > 0)
-                                addClass(children, clazz);
-                            else
-                                addClass(node[i], clazz);
-                        }
-                    }
-                    helper.addClass1n = addClass1n;
-                    /**
-                     * Remove class.
-                     */
-                    function removeClass1n(node, clazz) {
-                        if (node && node.constructor !== HTMLCollection) {
-                            var children = node.querySelectorAll("." + render.CHILD_CELL_CLS);
-                            if (children.length > 0)
-                                removeClass(children, clazz);
-                            else
-                                removeClass(node, clazz);
-                            return;
-                        }
-                        for (var i = 0; i < node.length; i++) {
-                            var children = node[i].querySelectorAll("." + render.CHILD_CELL_CLS);
-                            if (children.length > 0)
-                                removeClass(children, clazz);
-                            else
-                                removeClass(node[i], clazz);
-                        }
-                    }
-                    helper.removeClass1n = removeClass1n;
-                    /**
-                     * Add class.
-                     */
-                    function addClass(node, clazz) {
-                        if (node && node.constructor !== HTMLCollection && node.constructor !== NodeList) {
-                            node.classList.add(clazz);
-                            return;
-                        }
-                        for (var i = 0; i < node.length; i++) {
-                            if (!node[i].classList.contains(clazz)) {
-                                node[i].classList.add(clazz);
-                            }
-                        }
-                    }
-                    helper.addClass = addClass;
-                    /**
-                     * Remove class.
-                     */
-                    function removeClass(node, clazz) {
-                        if (node && node.constructor !== HTMLCollection && node.constructor !== NodeList) {
-                            node.classList.remove(clazz);
-                            return;
-                        }
-                        for (var i = 0; i < node.length; i++) {
-                            if (node[i].classList.contains(clazz)) {
-                                node[i].classList.remove(clazz);
-                            }
-                        }
-                    }
-                    helper.removeClass = removeClass;
-                    /**
-                     * Has class.
-                     */
-                    function hasClass(node, clazz) {
-                        return node.classList.contains(clazz);
-                    }
-                    helper.hasClass = hasClass;
-                    /**
-                     * Index.
-                     */
-                    function indexInParent(node) {
-                        var parent = node.parentElement;
-                        if (!parent)
-                            return;
-                        var children = parent.children;
-                        var index = 0;
-                        for (var i = 0; i < children.length; i++) {
-                            if (children[i] === node)
-                                return index;
-                            if (children[i].nodeType === 1)
-                                index++;
-                        }
-                        return -1;
-                    }
-                    helper.indexInParent = indexInParent;
-                })(helper || (helper = {}));
-                var widget;
-                (function (widget) {
-                    widget.MENU = "menu";
-                    widget.POPUP = "popup";
-                    widget.MENU_CLS = "x-context-menu";
-                    widget.POPUP_CLS = "x-popup-panel";
-                    widget.PARTITION_CLS = "partition";
-                    widget.MENU_ITEM_CLS = "menu-item";
-                    widget.MENU_ICON_CLS = "menu-icon";
-                    widget.DISABLED_CLS = "disabled";
-                    /**
-                     * Widget.
-                     */
-                    var XWidget = (function () {
-                        function XWidget($selector) {
-                            this.$selector = $selector;
-                        }
-                        /**
-                         * Get table.
-                         */
-                        XWidget.prototype.getTable = function () {
-                            this.$table = this.$selector.closest("table");
-                        };
-                        return XWidget;
-                    }());
-                    /**
-                     * Tooltip.
-                     */
-                    var Tooltip = (function (_super) {
-                        __extends(Tooltip, _super);
-                        function Tooltip($selector, options) {
-                            _super.call(this, $selector);
-                            this.options = options;
-                            this.defaultOpts = {
-                                showRight: true,
-                                width: "100px"
-                            };
-                            this.initialize();
-                        }
-                        /**
-                         * Initialize.
-                         */
-                        Tooltip.prototype.initialize = function () {
-                            var self = this;
-                            $.extend(true, self.options, self.defaultOpts);
-                            self.$selector.on(events.MOUSE_OVER, function (evt) {
-                                self.getTable();
-                                if (self.$table.length === 0)
-                                    return;
-                                var $t2 = self.$table.data(internal.TOOLTIP);
-                                if (!$t2) {
-                                    $t2 = $("<div/>").addClass(cssClass(self.options));
-                                    $t2.appendTo("body");
-                                    self.$table.data(internal.TOOLTIP, $t2);
-                                }
-                                $t2.empty().append(self.options.sources).css({ visibility: "visible" })
-                                    .position({ my: "left top", at: "left+" + self.$selector.outerWidth() + " top+5", of: self.$selector });
-                            });
-                            self.$selector.on(events.MOUSE_OUT, function (evt) {
-                                self.getTable();
-                                if (self.$table.length === 0)
-                                    return;
-                                var $t2 = self.$table.data(internal.TOOLTIP);
-                                if (!$t2 || $t2.css("display") === "none")
-                                    return;
-                                $t2.css({ visibility: "hidden" });
-                            });
-                        };
-                        return Tooltip;
-                    }(XWidget));
-                    widget.Tooltip = Tooltip;
-                    /**
-                     * Popup.
-                     */
-                    var Popup = (function (_super) {
-                        __extends(Popup, _super);
-                        function Popup($selector) {
-                            _super.call(this, $selector);
-                            this.initialize();
-                        }
-                        /**
-                         * Initialize.
-                         */
-                        Popup.prototype.initialize = function () {
-                            var self = this;
-                            self.$selector.on(events.MOUSE_DOWN, function (evt) {
-                                self.getTable();
-                                if (evt.ctrlKey && self.$table.closest("." + NAMESPACE).data(NAMESPACE).determination)
-                                    return;
-                                self.click(evt);
-                            });
-                        };
-                        return Popup;
-                    }(XWidget));
-                    /**
-                     * Context menu.
-                     */
-                    var ContextMenu = (function (_super) {
-                        __extends(ContextMenu, _super);
-                        function ContextMenu($selector, items) {
-                            _super.call(this, $selector);
-                            this.items = items;
-                        }
-                        /**
-                         * Click.
-                         */
-                        ContextMenu.prototype.click = function (evt) {
-                            var self = this;
-                            var $menu = self.$table.data(internal.CONTEXT_MENU);
-                            if (!$menu) {
-                                $menu = $("<ul/>").addClass(widget.MENU_CLS).appendTo("body").hide();
-                                _.forEach(self.items, function (item) {
-                                    self.createItem($menu, item);
-                                });
-                                self.$table.data(internal.CONTEXT_MENU, $menu);
-                            }
-                            if ($menu.css("display") === "none") {
-                                var pos = eventPageOffset(evt, false);
-                                $menu.show().css({ top: pos.pageY, left: pos.pageX });
-                            }
-                            else {
-                                $menu.hide();
-                            }
-                            var $pu = self.$table.data(internal.POPUP);
-                            if ($pu && $pu.css("display") !== "none") {
-                                $pu.hide();
-                            }
-                            update.outsideClick(self.$table.closest("." + NAMESPACE), self.$selector);
-                            evt.stopPropagation();
-                            hideIfOutside($menu);
-                        };
-                        /**
-                         * Create item.
-                         */
-                        ContextMenu.prototype.createItem = function ($menu, item) {
-                            if (item.id === widget.PARTITION_CLS) {
-                                $("<li/>").addClass(widget.MENU_ITEM_CLS + " " + widget.PARTITION_CLS).appendTo($menu);
-                                return;
-                            }
-                            var $li = $("<li/>").addClass(widget.MENU_ITEM_CLS).text(item.text)
-                                .on(events.CLICK_EVT, function (evt) {
-                                if (item.disabled)
-                                    return;
-                                item.selectHandler(item.id);
-                                $menu.hide();
-                            }).appendTo($menu);
-                            if (item.disabled) {
-                                $li.addClass(widget.DISABLED_CLS);
-                            }
-                            if (item.icon) {
-                                $li.append($("<span/>").addClass(widget.MENU_ICON_CLS + " " + item.icon));
-                            }
-                        };
-                        return ContextMenu;
-                    }(Popup));
-                    widget.ContextMenu = ContextMenu;
-                    /**
-                     * Menu item.
-                     */
-                    var MenuItem = (function () {
-                        function MenuItem(text, selectHandler, disabled, icon) {
-                            this.text = text;
-                            this.selectHandler = selectHandler ? selectHandler : $.noop();
-                            this.disabled = disabled;
-                            this.icon = icon;
-                        }
-                        return MenuItem;
-                    }());
-                    widget.MenuItem = MenuItem;
-                    /**
-                     * Popup panel.
-                     */
-                    var PopupPanel = (function (_super) {
-                        __extends(PopupPanel, _super);
-                        function PopupPanel($selector, $panel, position) {
-                            _super.call(this, $selector);
-                            this.$panel = $panel;
-                            this.position = position;
-                        }
-                        /**
-                         * Click.
-                         */
-                        PopupPanel.prototype.click = function (evt) {
-                            var self = this;
-                            var $pu = self.$table.data(internal.POPUP);
-                            if (!$pu) {
-                                $pu = self.$panel.addClass(widget.POPUP_CLS).hide();
-                                self.$table.data(internal.POPUP, $pu);
-                            }
-                            if ($pu.css("display") === "none") {
-                                var pos = eventPageOffset(evt, false);
-                                $pu.show().css(self.getPosition($pu, pos, self.position || "top left"));
-                                events.trigger(self.$table, events.POPUP_SHOWN, $(evt.target));
-                                self.addListener($pu, $(evt.target));
-                            }
-                            else {
-                                $pu.hide();
-                            }
-                            var $menu = self.$table.data(internal.CONTEXT_MENU);
-                            if ($menu && $menu.css("display") !== "none") {
-                                $menu.hide();
-                            }
-                            evt.stopPropagation();
-                            hideIfOutside($pu);
-                        };
-                        /**
-                         * Add listener.
-                         */
-                        PopupPanel.prototype.addListener = function ($pu, $t) {
-                            var self = this;
-                            $pu.off(events.POPUP_INPUT_END);
-                            $pu.on(events.POPUP_INPUT_END, function (evt, ui) {
-                                var $header = self.$selector.closest("table").parent();
-                                if ($header.hasClass(HEADER)) {
-                                    var ds = helper.getDataSource($header);
-                                    if (!ds || ds.length === 0)
-                                        return;
-                                    var coord = helper.getCellCoord($t);
-                                    ds[coord.rowIdx][coord.columnKey] = ui.value;
-                                    $t.text(ui.value);
-                                    $pu.hide();
-                                }
-                            });
-                        };
-                        /**
-                         * Get position.
-                         */
-                        PopupPanel.prototype.getPosition = function ($pu, pos, my) {
-                            if (my === "top left") {
-                                return { top: pos.pageY - $pu.outerHeight(), left: pos.pageX - $pu.outerWidth() };
-                            }
-                            else if (my === "bottom left") {
-                                return { top: pos.pageY, left: pos.pageX - $pu.outerWidth() };
-                            }
-                            else if (my === "top right") {
-                                return { top: pos.pageY - $pu.outerHeight(), left: pos.pageX };
-                            }
-                            else if (my === "bottom right") {
-                                return { top: pos.pageY, left: pos.pageX };
-                            }
-                        };
-                        return PopupPanel;
-                    }(Popup));
-                    widget.PopupPanel = PopupPanel;
-                    /**
-                     * Bind.
-                     */
-                    function bind($row, rowIdx, headerPopupFt) {
-                        var wType;
-                        if (!headerPopupFt)
-                            return;
-                        _.forEach(headerPopupFt.menu.rows, function (rId) {
-                            if (rId === rowIdx) {
-                                new ContextMenu($row, headerPopupFt.menu.items);
-                                wType = widget.MENU;
-                                return false;
-                            }
-                        });
-                        if (wType)
-                            return;
-                        _.forEach(headerPopupFt.popup.rows, function (rId) {
-                            if (rId === rowIdx) {
-                                new PopupPanel($row, headerPopupFt.popup.provider());
-                                wType = widget.POPUP;
-                                return false;
-                            }
-                        });
-                        return wType;
-                    }
-                    widget.bind = bind;
-                    /**
-                     * Hide.
-                     */
-                    function hideIfOutside($w) {
-                        $(document).on(events.MOUSE_DOWN, function (evt) {
-                            if (outsideOf($w, evt.target)) {
-                                $w.hide();
-                            }
-                        });
-                        var outsideOf = function ($container, target) {
-                            return !$container.is(target) && $container.has(target).length === 0;
-                        };
-                    }
-                    /**
-                     * Offset.
-                     */
-                    function eventPageOffset(evt, isFixed) {
-                        var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-                        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                        return isFixed ? { pageX: evt.pageX - scrollLeft, pageY: evt.pageY - scrollTop }
-                            : { pageX: evt.pageX, pageY: evt.pageY };
-                    }
-                    /**
-                     * Class.
-                     */
-                    function cssClass(options) {
-                        var css = options.showBelow ? 'bottom' : 'top';
-                        css += '-';
-                        css += (options.showRight ? 'right' : 'left');
-                        css += '-tooltip';
-                        return css;
-                    }
-                })(widget || (widget = {}));
-            })(exTable = ui_29.exTable || (ui_29.exTable = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
 /// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {

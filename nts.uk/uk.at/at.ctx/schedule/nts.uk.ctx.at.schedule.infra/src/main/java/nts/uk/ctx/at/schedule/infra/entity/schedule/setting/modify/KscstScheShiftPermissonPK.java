@@ -8,6 +8,11 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,8 +26,8 @@ public class KscstScheShiftPermissonPK implements Serializable {
 	/** ロールID */
 	@Column(name = "ROLE_ID")
 	public String roleId;
-	
-	/** 機能NO*/
+
+	/** 機能NO */
 	@Column(name = "FUNCTION_NO_SHIFT")
 	public int functionNoShift;
 }

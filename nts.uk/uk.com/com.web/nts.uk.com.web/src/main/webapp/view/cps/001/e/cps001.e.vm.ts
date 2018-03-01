@@ -19,6 +19,7 @@ module cps001.e.vm {
         isChange: KnockoutObservable<boolean> = ko.observable(false);
         enaBtnSave: KnockoutObservable<boolean> = ko.observable(true);
         isInit = true;
+        overSize = false;
 
         constructor() {
             let self = this;
@@ -31,22 +32,32 @@ module cps001.e.vm {
             //get employee file management domain by employeeId
             block();
             service.getMap(self.empFileMn().employeeId).done(function(data) {
-                if (data) {
+                if (data.fileId != null) {
                     self.empFileMn().fileId = data.fileId ? data.fileId : "";
                     self.empFileMn().fileType = 1;
                     if (self.empFileMn().fileId != "" && self.empFileMn().fileId != undefined)
                         self.getImage();
                     else self.isChange(true);
                     self.oldEmpFileMn = { employeeId: self.empFileMn().employeeId, fileId: self.empFileMn().fileId, fileType: self.empFileMn().fileType };
-                } else self.isChange(true);
+                } else {
+                    unblock();
+                    self.isChange(true);
+                }
+
                 $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
                     if (!self.isInit) {
                         self.isChange(true);
+                        self.overSize = false;
+                        unblock();
+                        if (query.size > 10485760) { // 10485760 = 10MB
+                            self.overSize = true;
+                            alertError({ messageId: "Msg_77" });
+                        }
                         return;
                     }
                     self.isInit = false;
+                    unblock();
                 });
-                unblock();
 
             }).fail((mes) => {
                 unblock();
@@ -69,7 +80,11 @@ module cps001.e.vm {
             let self = this;
             nts.uk.ui.block.grayout();
 
-            if (nts.uk.ui.errors.hasError()) {
+            if (nts.uk.ui.errors.hasError() || self.overSize) {
+                if (self.overSize) {
+                    alertError({ messageId: "Msg_77" });
+                }
+                unblock();
                 return;
             }
 

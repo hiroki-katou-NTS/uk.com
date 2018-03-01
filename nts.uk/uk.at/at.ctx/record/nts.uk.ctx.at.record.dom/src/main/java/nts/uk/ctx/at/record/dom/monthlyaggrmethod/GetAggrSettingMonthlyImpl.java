@@ -18,14 +18,14 @@ public class GetAggrSettingMonthlyImpl implements GetAggrSettingMonthly {
 	@Inject
 	private AggrSettingMonthlyForCompanyRepository aggrSettingMonthlyForCompanyRepository;
 	/** 職場月別実績集計設定 */
-	@Inject
-	private AggrSettingMonthlyForWorkplaceRepository aggrSettingMonthlyForWorkplaceRepository;
+	//@Inject
+	//private AggrSettingMonthlyForWorkplaceRepository aggrSettingMonthlyForWorkplaceRepository;
 	/** 雇用月別実績集計設定 */
-	@Inject
-	private AggrSettingMonthlyForEmploymentRepository aggrSettingMonthlyForEmploymentRepository;
+	//@Inject
+	//private AggrSettingMonthlyForEmploymentRepository aggrSettingMonthlyForEmploymentRepository;
 	/** 社員月別実績集計設定 */
-	@Inject
-	private AggrSettingMonthlyForSyainRepository aggrSettingMonthlyForSyainRepository;
+	//@Inject
+	//private AggrSettingMonthlyForSyainRepository aggrSettingMonthlyForSyainRepository;
 	
 	/** 取得 */
 	@Override

@@ -32,8 +32,8 @@ public class JpaMailHdInstructionRepository extends JpaRepository implements Mai
 	private static KrqmtMailHdInstruction toEntity(MailHdInstruction domain){
 		val entity = new KrqmtMailHdInstruction();
 		entity.companyId = domain.getCompanyId();
-		entity.content = domain.getContent().v();
-		entity.subject = domain.getSubject().v();
+		entity.content = domain.getContent() == null ? null : domain.getContent().v();
+		entity.subject = domain.getSubject() == null ? null : domain.getSubject().v();
 		return entity;
 	}
 	/**
