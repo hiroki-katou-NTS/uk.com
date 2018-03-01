@@ -42,9 +42,9 @@ module nts.uk.at.view.kmf002 {
                 _self.arrMonth = ko.observableArray([]);
                 
                 $.when(_self.findFirstMonth()).done(function(data: any) {
-                    if (_.isEmpty(data)) {
-                        data.startMonth = 0;
-                    }
+                    if (_.isNull(data.startMonth)) {
+                            data.startMonth = 1;
+                        }
                     for (let i=data.startMonth; i<=12; i++) {
                         _self.arrMonth.push({'month': ko.observable(i), 'day': ko.observable(0), 'enable': ko.observable(true)});
                     }
