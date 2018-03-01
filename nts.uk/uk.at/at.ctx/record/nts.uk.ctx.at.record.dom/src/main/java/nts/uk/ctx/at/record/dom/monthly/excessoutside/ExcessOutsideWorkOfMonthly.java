@@ -6,6 +6,8 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.IrregularWorkingTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.TotalTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
@@ -22,7 +24,7 @@ public class ExcessOutsideWorkOfMonthly {
 	/** 変形繰越時間 */
 	private AttendanceTimeMonth deformationCarryforwardTime;
 	/** 時間 */
-	private Map<Integer, ExcessOutsideWork> time;
+	private Map<Integer, ExcessOutSideWorkEachBreakdown> time;
 	
 	/**
 	 * コンストラクタ
@@ -53,10 +55,26 @@ public class ExcessOutsideWorkOfMonthly {
 		domain.weeklyTotalPremiumTime = weeklyTotalPremiumTime;
 		domain.monthlyTotalPremiumTime = monthlyTotalPremiumTime;
 		domain.deformationCarryforwardTime = deformationCarryforwardTime;
-		for (val time : timeList){
-			domain.time.putIfAbsent(time.getBreakdownNo(), time);
+		for (val excessOutsideWork : timeList){
+			val breakdownNo = excessOutsideWork.getBreakdownNo();
+			val excessNo = excessOutsideWork.getExcessNo();
+			domain.time.putIfAbsent(breakdownNo, new ExcessOutSideWorkEachBreakdown(breakdownNo));
+			val breakdown = domain.time.get(breakdownNo);
+			breakdown.getBreakdown().putIfAbsent(excessNo, excessOutsideWork);
 		}
 		return domain;
+	}
+	
+	/**
+	 * 時間が存在するか
+	 * @param breakdownNo 内訳NO
+	 * @param excessNo 超過NO
+	 * @return true：存在する、false：存在しない
+	 */
+	public boolean containsTime(int breakdownNo, int excessNo){
+		if (!this.time.containsKey(breakdownNo)) return false;
+		if (!this.time.get(breakdownNo).getBreakdown().containsKey(excessNo)) return false;
+		return true;
 	}
 	
 	/**
@@ -81,5 +99,20 @@ public class ExcessOutsideWorkOfMonthly {
 	 */
 	public void addMinutesToDeformationCarryforwardTime(int minutes){
 		this.deformationCarryforwardTime = this.deformationCarryforwardTime.addMinutes(minutes);
+	}
+	
+	/**
+	 * 集計時間から各時間を設定する
+	 * @param totalTime 合計時間
+	 * @param irregularWork 月別実績の変形労働時間
+	 */
+	public void setFromAggregateTime(TotalTime totalTime, IrregularWorkingTimeOfMonthly irregularWork){
+		
+		// 丸め後合計時間をコピーする
+		this.weeklyTotalPremiumTime = totalTime.getWeeklyTotalPremiumTime();
+		this.monthlyTotalPremiumTime = totalTime.getMonthlyTotalPremiumTime();
+		
+		// 変形労働時間から変形期間繰越時間をコピーする
+		this.deformationCarryforwardTime = irregularWork.getIrregularPeriodCarryforwardTime();
 	}
 }
