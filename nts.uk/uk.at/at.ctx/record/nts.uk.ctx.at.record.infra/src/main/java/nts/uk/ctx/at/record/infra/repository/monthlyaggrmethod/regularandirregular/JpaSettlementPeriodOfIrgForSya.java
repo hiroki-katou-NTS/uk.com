@@ -8,6 +8,7 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.Settlement
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.SettlementPeriodOfIrgForSyaRepository;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.employee.KrcstMonsetSyaIrgSetl;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.employee.KrcstMonsetSyaIrgSetlPK;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.regularandirregular.KrcstMonsetIrgSetl;
 
 /**
  * リポジトリ実装：社員の変形労働の精算期間
@@ -62,6 +63,7 @@ public class JpaSettlementPeriodOfIrgForSya extends JpaRepository implements Set
 		else {
 			entity = new KrcstMonsetSyaIrgSetl();
 			entity.PK = key;
+			entity.setValue = new KrcstMonsetIrgSetl();
 		}
 		entity.setValue.endMonth = domain.getEndMonth().v();
 		return entity;

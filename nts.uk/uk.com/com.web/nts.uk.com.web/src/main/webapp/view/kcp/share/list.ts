@@ -687,7 +687,7 @@ module kcp.share.list {
                 }
                 self.itemList(data);
                 self.initNoSelectRow(self.isShowNoSelectRow);
-                self.selectedCodes(null);
+                self.selectedCodes(self.isMultipleSelect ? [] : null);
             });
         }
         
@@ -702,7 +702,7 @@ module kcp.share.list {
                 }
                 self.itemList(data);
                 self.initNoSelectRow(self.isShowNoSelectRow);
-                self.selectedCodes(null);
+                self.selectedCodes(self.isMultipleSelect ? [] : null);
             })
         }
         

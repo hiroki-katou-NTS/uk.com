@@ -82,7 +82,7 @@
 			<com:ko tag="if" bind="showQuickSearchTab">
 				<div tabindex="-1" class="tab-content-1">
 					<com:ko tag="if" bind="showAllReferableEmployee">
-						<div tabindex="7" class="btn-quick-search" data-bind="click: searchAllListEmployee">
+						<div tabindex="7" id="ccg001-btn-search-all" class="btn-quick-search" data-bind="click: searchAllListEmployee">
 							<div class="flex valign-center btn_big">
 								<i class="icon icon-28-allemployee"></i>
 								<label class="labelBigButton">#{i18n.getText('CCG001_34')}</label> 
@@ -91,7 +91,7 @@
 						</div>
 					</com:ko>
 					<com:ko tag="if" bind="showOnlyMe">
-						<div tabindex="8" class="btn-quick-search" data-bind="click: getEmployeeLogin">
+						<div tabindex="8" id="ccg001-btn-only-me" class="btn-quick-search" data-bind="click: getEmployeeLogin">
 							<div class="flex valign-center btn_big">
 								<i class="icon icon-26-onlyemployee"></i>
 								<label class="labelBigButton">#{i18n.getText('CCG001_35')}</label> 
@@ -100,7 +100,8 @@
 						</div>
 					</com:ko>
 					<com:ko tag="if" bind="showSameWorkplace">
-						<div tabindex="9" class="btn-quick-search" data-bind="click: searchEmployeeOfDepOnly">
+						<div tabindex="9" id="ccg001-btn-same-workplace" class="btn-quick-search"
+							data-bind="click: searchEmployeeOfDepOnly">
 							<div class="flex valign-center btn_small">
 								<i class="icon icon-48-ofworkplace"></i>
 								<label class="labelSmallButton">#{i18n.getText('CCG001_38')}</label> 
@@ -109,7 +110,8 @@
 						</div>
 					</com:ko>
 					<com:ko tag="if" bind="showSameWorkplaceAndChild">
-						<div tabindex="10" class="btn-quick-search" data-bind="click: searchEmployeeOfDepAndChild">
+						<div tabindex="10" id="ccg001-btn-same-workplace-and-child" class="btn-quick-search"
+							data-bind="click: searchEmployeeOfDepAndChild">
 							<div class="flex valign-center btn_small">
 								<i class="icon icon-49-workplacechild"></i>
 								<label class="labelSmallButton">#{i18n.getText('CCG001_39')}</label> 
@@ -269,7 +271,7 @@
 												name: '#[CCG001_59]',
 												height: 235,
 												options: listWorkType,
-												optionsValue: 'workTypeCode',
+												optionsValue: 'businessTypeCode',
 												columns: workTypeColumns,
 												multiple: true,
 												value: selectedWorkTypeCode
@@ -280,7 +282,8 @@
 							</div>
 							<div class="pull-left height-maximum margin-left-10 ccg001-table">
 								<div class="ccg001-cell mid">
-									<div tabindex="25" class="ccg-btn-vertical height-maximum" data-bind="click: advancedSearchEmployee">
+									<div tabindex="25" id="ccg001-btn-advanced-search" class="ccg-btn-vertical height-maximum"
+										data-bind="click: advancedSearchEmployee">
 										<div class="ccg001-cell mid">
 											<div class="ccg-lbl-vertical ccg-lbl-extract-emp">#{i18n.getText('CCG001_25')}</div>
 										</div>
@@ -297,7 +300,8 @@
 								</div>
 								<div class="pull-left height-maximum margin-left-10 ccg001-table">
 									<div class="ccg001-cell mid">
-										<div tabindex="27" class="ccg-btn-vertical height-maximum" data-bind="click: extractSelectedEmployees">
+										<div tabindex="27" id="ccg001-btn-KCP005-apply" class="ccg-btn-vertical height-maximum"
+											data-bind="click: extractSelectedEmployees">
 											<div class="ccg001-cell mid">
 												<i class="icon icon-47-white-check-mark"></i>
 												<div class="ccg-lbl-vertical ccg-lbl-extract-emp">#{i18n.getText('CCG001_26')}</div>

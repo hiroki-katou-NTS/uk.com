@@ -1628,14 +1628,14 @@ module nts.custombinding {
             opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
                 // remove all sibling sperators
                 let maps: Array<number> = _(data)
-                    .map((x, i) => (x.layoutItemType == 2) ? i : -1)
+                    .map((x, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
                     .filter(x => x != -1).value();
 
                 _.each(maps, (t, i) => {
                     if (maps[i + 1] == t + 1) {
                         _.remove(data, (m: IItemClassification) => {
                             let item: IItemClassification = data[maps[i + 1]];
-                            return item && item.layoutItemType == 2 && item.layoutID == m.layoutID;
+                            return item && item.layoutItemType == IT_CLA_TYPE.SPER && item.layoutID == m.layoutID;
                         });
                     }
                 });
