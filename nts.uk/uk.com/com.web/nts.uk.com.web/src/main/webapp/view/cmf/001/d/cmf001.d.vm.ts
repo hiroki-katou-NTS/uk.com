@@ -186,7 +186,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             let self = this, condition = null;
             if (data.screenConditionSetting) condition = data.screenConditionSetting();
             setShared('CMF001lParams', {
-                systemType: self.systemType.code,
+                dataType: data.itemType(),
                 condition: condition
             }, true);
             
