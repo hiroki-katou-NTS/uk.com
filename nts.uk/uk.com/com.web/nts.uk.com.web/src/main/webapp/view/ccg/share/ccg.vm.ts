@@ -1022,7 +1022,10 @@ module nts.uk.com.view.ccg.share.ccg {
                     dfd.resolve(self.baseDate().format(CcgDateFormat.DEFAULT_FORMAT));
                 } else {
                     if (self.showPeriodYM) { // Period accuracy is YM 
-                        service.calculatePeriod(self.selectedClosure(), parseInt(self.periodEnd().format('YYYYMM')))
+                        service.calculatePeriod(
+                            // アルゴリズム「当月の期間を算出する」を実行する
+                            self.selectedClosure() == ConfigEnumClosure.CLOSURE_ALL ? 1 : self.selectedClosure(),
+                            parseInt(self.periodEnd().format('YYYYMM')))
                             .done(date => {
                                 return dfd.resolve(date[0]);
                             });
