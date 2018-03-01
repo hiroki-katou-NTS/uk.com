@@ -992,10 +992,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 service.searchEmployeeByLogin(self.baseDate().toDate()).done(data => {
                     self.returnDataFromCcg001(self.combineData(data));
                     self.hideComponent();
-                    nts.uk.ui.block.clear(); // clear block UI
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
-                });
+                }).always(() => nts.uk.ui.block.clear());  // clear block UI
             }
 
             /**
