@@ -4917,6 +4917,31 @@ var nts;
                     });
                 });
             })(smallExtensions || (smallExtensions = {}));
+            var keyboardStream;
+            (function (keyboardStream) {
+                var _lastKey = {
+                    code: undefined,
+                    time: undefined
+                };
+                function lastKey() {
+                    return {
+                        code: _lastKey.code,
+                        time: _lastKey.time
+                    };
+                }
+                keyboardStream.lastKey = lastKey;
+                function wasKeyDown(keyCode, millisToExpire) {
+                    return _lastKey.code === keyCode
+                        && (+new Date() - +_lastKey.time <= millisToExpire);
+                }
+                keyboardStream.wasKeyDown = wasKeyDown;
+                $(function () {
+                    $(window).on("keydown", function (e) {
+                        _lastKey.code = e.keyCode;
+                        _lastKey.time = new Date();
+                    });
+                });
+            })(keyboardStream = ui.keyboardStream || (ui.keyboardStream = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -15372,12 +15397,11 @@ var nts;
                         _super.prototype.init.call(this, $input, data);
                         $input.focus(function () {
                             if (!$input.attr('readonly')) {
-                                var selectionType = document.getSelection().type;
                                 // Remove separator (comma)
                                 $input.val(data.value());
                                 // If focusing is caused by Tab key, select text
                                 // this code is needed because removing separator deselects.
-                                if (selectionType === 'Range') {
+                                if (ui.keyboardStream.wasKeyDown(uk.KeyCodes.Tab, 500)) {
                                     $input.select();
                                 }
                             }
@@ -15507,7 +15531,6 @@ var nts;
                             if ($input.ntsError('hasError')) {
                                 return;
                             }
-                            var selectionTypeOnFocusing = document.getSelection().type;
                             if (!nts.uk.util.isNullOrEmpty(data.value())) {
                                 var timeWithDayAttr = uk.time.minutesBased.clock.dayattr.create(data.value());
                                 $input.val(timeWithDayAttr.shortText);
@@ -15517,7 +15540,7 @@ var nts;
                             }
                             // If focusing is caused by Tab key, select text
                             // this code is needed because removing separator deselects.
-                            if (selectionTypeOnFocusing === 'Range') {
+                            if (ui.keyboardStream.wasKeyDown(uk.KeyCodes.Tab, 500)) {
                                 $input.select();
                             }
                         });

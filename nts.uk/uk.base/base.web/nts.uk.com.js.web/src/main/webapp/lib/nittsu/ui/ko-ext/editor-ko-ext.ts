@@ -390,12 +390,11 @@ module nts.uk.ui.koExtentions {
             super.init($input, data);
             $input.focus(() => {
                 if (!$input.attr('readonly')) {
-                    var selectionType = document.getSelection().type;
                     // Remove separator (comma)
                     $input.val(data.value());
                     // If focusing is caused by Tab key, select text
                     // this code is needed because removing separator deselects.
-                    if (selectionType === 'Range') {
+                    if (keyboardStream.wasKeyDown(KeyCodes.Tab, 500)) {
                         $input.select();
                     }
                 }
@@ -533,20 +532,18 @@ module nts.uk.ui.koExtentions {
                 }
                 if ($input.ntsError('hasError')) {
                     return;
-                } 
-                
-                var selectionTypeOnFocusing = document.getSelection().type;
+                }
                 
                 if(!nts.uk.util.isNullOrEmpty(data.value())){
                     let timeWithDayAttr = time.minutesBased.clock.dayattr.create(data.value());
-                    $input.val(timeWithDayAttr.shortText);    
+                    $input.val(timeWithDayAttr.shortText);
                 } else {
                     $input.val("");
                 }
 
                 // If focusing is caused by Tab key, select text
                 // this code is needed because removing separator deselects.
-                if (selectionTypeOnFocusing === 'Range') {
+                if (keyboardStream.wasKeyDown(KeyCodes.Tab, 500)) {
                     $input.select();
                 }
                 
