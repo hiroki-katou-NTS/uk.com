@@ -57,7 +57,7 @@ public class StdAcceptItemDto
     /**
     * カテゴリ項目NO
     */
-    private String categoryItemNo;
+    private int categoryItemNo;
     
     
     private Long version;
