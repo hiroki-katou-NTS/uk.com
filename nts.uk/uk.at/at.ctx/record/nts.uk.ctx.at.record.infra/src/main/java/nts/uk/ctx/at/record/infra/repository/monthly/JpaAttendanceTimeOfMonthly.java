@@ -39,6 +39,8 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.Co
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.RetentionYearlyUseTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.SpecialHolidayUseTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWork;
+import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave.AggregateLeaveDays;
@@ -91,6 +93,9 @@ import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.KrcdtMonAggrOverTimePK;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.KrcdtMonOverTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.vacationusetime.KrcdtMonVactUseTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcessOutside;
+import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcoutTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcoutTimePK;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.KrcdtMonVerticalTotal;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrAbsnDays;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrAbsnDaysPK;
@@ -183,6 +188,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 				new ClosureDate(entity.PK.closureDay, (entity.PK.isLastDay != 0)),
 				new DatePeriod(entity.startYmd, entity.endYmd),
 				monthlyCalculation,
+				toDomainExcessOutsideWorkOfMonthly(entity),
 				toDomainVerticalTotalOfMonthly(entity),
 				new AttendanceDaysMonth(entity.aggregateDays));
 		return domain;
@@ -408,6 +414,39 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 		return domain;
 	}
 
+	/**
+	 * エンティティ→ドメイン　（月別実績の時間外超過）
+	 * @param parentEntity エンティティ：月別実績の勤怠時間
+	 * @return ドメイン：月別実績の時間外超過
+	 */
+	private static ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly(KrcdtMonAttendanceTime parentEntity){
+		
+		val entity = parentEntity.krcdtMonExcessOutside;
+		if (entity == null) return new ExcessOutsideWorkOfMonthly();
+		
+		val domain = ExcessOutsideWorkOfMonthly.of(
+				new AttendanceTimeMonth(entity.totalWeeklyPremiumTime),
+				new AttendanceTimeMonth(entity.totalMonthlyPremiumTime),
+				new AttendanceTimeMonth(entity.deformationCarryforwardTime),
+				parentEntity.krcdtMonExcoutTime.stream()
+					.map(c -> toDomainExcessOutsideWork(c)).collect(Collectors.toList()));
+		return domain;
+	}
+	
+	/**
+	 * エンティティ→ドメイン　（時間外超過）
+	 * @param entity エンティティ：時間外超過
+	 * @return ドメイン：時間外超過
+	 */
+	private static ExcessOutsideWork toDomainExcessOutsideWork(KrcdtMonExcoutTime entity){
+
+		val domain = ExcessOutsideWork.of(
+				entity.PK.breakdownNo,
+				entity.PK.excessNo,
+				new AttendanceTimeMonth(entity.excessTime));
+		return domain;
+	}
+	
 	/**
 	 * エンティティ→ドメイン　（月別実績の縦計）
 	 * @param parentEntity エンティティ：月別実績の勤怠時間
@@ -897,6 +936,49 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 		entityAggrTotalSpt.holidayTimeSpentAtWork = totalTimeSpentAtWork.getHolidayTimeSpentAtWork().v();
 		entityAggrTotalSpt.varienceTimeSpentAtWork = totalTimeSpentAtWork.getVarienceTimeSpentAtWork().v();
 		entityAggrTotalSpt.totalTimeSpentAtWork = totalTimeSpentAtWork.getTotalTimeSpentAtWork().v();
+		
+		// 時間外超過
+		val excessOutsideWork = domain.getExcessOutsideWork();
+		if (entity.krcdtMonExcessOutside == null){
+			entity.krcdtMonExcessOutside = new KrcdtMonExcessOutside();
+			entity.krcdtMonExcessOutside.PK = key;
+		}
+		val entityExcessOutside = entity.krcdtMonExcessOutside;
+		entityExcessOutside.totalWeeklyPremiumTime = excessOutsideWork.getWeeklyTotalPremiumTime().v();
+		entityExcessOutside.totalMonthlyPremiumTime = excessOutsideWork.getMonthlyTotalPremiumTime().v();
+		entityExcessOutside.deformationCarryforwardTime = excessOutsideWork.getDeformationCarryforwardTime().v();
+		
+		// 時間外超過：時間
+		val excessOutsideTimeMap = excessOutsideWork.getTime();
+		if (entity.krcdtMonExcoutTime == null) entity.krcdtMonExcoutTime = new ArrayList<>();
+		val entityExcoutTimeList = entity.krcdtMonExcoutTime;
+		entityExcoutTimeList.removeIf(
+				a -> {return !excessOutsideWork.containsTime(a.PK.breakdownNo, a.PK.excessNo);} );
+		for (val breakdowns : excessOutsideTimeMap.values()){
+			for (val excessOutsideTime : breakdowns.getBreakdown().values()) {
+				KrcdtMonExcoutTime entityExcoutTime = new KrcdtMonExcoutTime();
+				boolean isAddExcoutTime = false;
+				val entityExcoutTimeOpt = entityExcoutTimeList.stream()
+						.filter(c -> (c.PK.breakdownNo == excessOutsideTime.getBreakdownNo() &&
+									c.PK.excessNo == excessOutsideTime.getExcessNo())).findFirst();
+				if (entityExcoutTimeOpt.isPresent()){
+					entityExcoutTime = entityExcoutTimeOpt.get();
+				}
+				else {
+					isAddExcoutTime = true;
+					entityExcoutTime.PK = new KrcdtMonExcoutTimePK(
+							domain.getEmployeeId(),
+							domain.getYearMonth().v(),
+							domain.getClosureId().value,
+							closureDate.getClosureDay().v(),
+							(closureDate.getLastDayOfMonth() ? 1 : 0),
+							excessOutsideTime.getBreakdownNo(),
+							excessOutsideTime.getExcessNo());
+				}
+				entityExcoutTime.excessTime = excessOutsideTime.getExcessTime().v();
+				if (isAddExcoutTime) entityExcoutTimeList.add(entityExcoutTime);
+			}
+		}
 		
 		// 縦計
 		val verticalTotal = domain.getVerticalTotal();
