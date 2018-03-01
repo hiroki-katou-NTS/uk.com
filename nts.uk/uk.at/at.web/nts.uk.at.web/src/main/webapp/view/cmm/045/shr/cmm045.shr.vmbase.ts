@@ -345,7 +345,7 @@ module cmm045.shr {
             //事後
             postAppID: string;
             //実績
-            time: string;
+            lstFrameRes: Array<vmbase.OverTimeFrame>;
         }
     }
 }
