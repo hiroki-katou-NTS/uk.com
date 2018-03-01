@@ -94,20 +94,20 @@ public class ItemDefFinder {
 		List<ItemValue> lstItemDef = new ArrayList<>();
 		//
 		ItemValue itemDef;
-		for(PersonInfoItemDefinition item : lstPerInfoDef) {
-			itemDef = getItemValueFromDomain(item);
-			lstItemDef.add(itemDef);
-			lstItemDef.addAll(getListItemChildren(item));
+		for(PersonInfoItemDefinition item : lstPerInfoDef) {			
+			if(item.getItemTypeState().getItemType() == ItemType.SINGLE_ITEM) {
+				itemDef = getItemValueFromDomain(item);
+				lstItemDef.add(itemDef);
+			}else {
+				lstItemDef.addAll(getListItemChildren(item));
+			}
 		}
 		return lstItemDef;
 	}
 	
-	private ItemValue getItemValueFromDomain(PersonInfoItemDefinition item) {
-		int valueType = 0;
-		if(item.getItemTypeState().getItemType() == ItemType.SINGLE_ITEM) {
-			SingleItem single = (SingleItem) item.getItemTypeState();
-			valueType = single.getDataTypeState().getDataTypeValue().value;
-		}
+	private ItemValue getItemValueFromDomain(PersonInfoItemDefinition item) {		
+		SingleItem single = (SingleItem) item.getItemTypeState();
+		int valueType = single.getDataTypeState().getDataTypeValue().value;
 		return new ItemValue(item.getPerInfoItemDefId(), item.getItemCode().v(), null,
 				valueType);
 	}
@@ -128,8 +128,9 @@ public class ItemDefFinder {
 				lstDomain.forEach(i -> {
 					if(i.getItemTypeState().getItemType() == ItemType.SET_ITEM) {
 						parentItems.add(i);
+					}else {
+						lstItemDef.add(getItemValueFromDomain(i));
 					}
-					lstItemDef.add(getItemValueFromDomain(i));
 				});
 			}
 		}
