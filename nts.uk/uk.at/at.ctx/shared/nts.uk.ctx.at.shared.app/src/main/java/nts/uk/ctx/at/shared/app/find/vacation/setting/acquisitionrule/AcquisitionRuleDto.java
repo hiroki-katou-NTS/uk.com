@@ -4,12 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.vacation.setting.acquisitionrule;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import lombok.Builder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionOrder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AnnualHoliday;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.HoursHoliday;
@@ -25,9 +21,6 @@ public class AcquisitionRuleDto implements AcquisitionRuleSetMemento {
 
 	/** The category. */
 	public int category;
-
-	/** The va ac orders. */
-	public List<AcquisitionOrderItemDto> vaAcOrders;
 	
 	/** */
 	public AnnualHolidayItemDto annualHolidayShow;
@@ -57,22 +50,6 @@ public class AcquisitionRuleDto implements AcquisitionRuleSetMemento {
 	@Override
 	public void setCategory(ManageDistinct category) {
 		this.category = category.value;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.vacationacquisitionrule.VaAcRuleSetMemento#
-	 * setAcquisitionOrder(java.util.List)
-	 */
-	@Override
-	public void setAcquisitionOrder(List<AcquisitionOrder> listVacationAcquisitionOrder) {
-		this.vaAcOrders = listVacationAcquisitionOrder.stream().map(domain -> {
-			AcquisitionOrderItemDto dto = AcquisitionOrderItemDto.builder().build();
-			domain.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
-
 	}
 
 	/*

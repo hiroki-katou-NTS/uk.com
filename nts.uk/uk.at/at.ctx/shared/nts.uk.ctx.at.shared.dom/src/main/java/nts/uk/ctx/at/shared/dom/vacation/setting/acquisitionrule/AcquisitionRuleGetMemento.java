@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule;
 
-import java.util.List;
-
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
@@ -26,13 +24,6 @@ public interface AcquisitionRuleGetMemento {
 	 * @return the settingclassification
 	 */
 	ManageDistinct getCategory();
-
-	/**
-	 * Gets the acquisition order.
-	 *
-	 * @return the acquisition order
-	 */
-	List<AcquisitionOrder> getAcquisitionOrder();
 	
 	/**
 	 * Gets the acquisition order.

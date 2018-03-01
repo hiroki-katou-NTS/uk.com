@@ -4,12 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.vacation.setting.acquisitionrule;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionOrder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AnnualHoliday;
@@ -24,9 +21,6 @@ public class AcquisitionRuleCommand {
 
 	/** The category. */
 	public int category;
-
-	/** The va ac rule. */
-	public List<AcquisitionOrder> vaAcRule;
 	
 	/** The annualHoliday. */
 	public AnnualHoliday annualHoliday;
@@ -78,17 +72,6 @@ public class AcquisitionRuleCommand {
 		@Override
 		public ManageDistinct getCategory() {
 			return ManageDistinct.valueOf(this.command.category);
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.
-		 * AcquisitionRuleGetMemento#getAcquisitionOrder()
-		 */
-		@Override
-		public List<AcquisitionOrder> getAcquisitionOrder() {
-			return this.command.vaAcRule;
 		}
 
 		/*
