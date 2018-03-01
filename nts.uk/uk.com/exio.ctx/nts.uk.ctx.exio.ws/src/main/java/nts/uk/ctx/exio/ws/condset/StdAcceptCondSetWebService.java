@@ -28,13 +28,13 @@ public class StdAcceptCondSetWebService {
 	public List<StdAcceptCondSetDto> getConditionBySystemType(@PathParam("systemType") int systemType) {
 		List<StdAcceptCondSetDto> list = new ArrayList<StdAcceptCondSetDto>();
 
-		list.add(new StdAcceptCondSetDto("0001", "1", "1", 2, 1, 1, 4, 1, "Test-1", 1, 1, (long) 1));
-		list.add(new StdAcceptCondSetDto("0002", "2", "2", 3, 1, 1, 5, 1, "Test-2", 1, 1, (long) 1));
-		list.add(new StdAcceptCondSetDto("0002", "3", "2", 1, 1, 1, 7, 1, "Test-3", 1, 1, (long) 1));
-
-		if (systemType == 1) {
-			list.add(new StdAcceptCondSetDto("0001", "4", "4", 2, 1, 1, 5, 1, "Test-4", 1, 1, (long) 1));
-		}
+//		list.add(new StdAcceptCondSetDto(0, "001", "adfasdf", 1, 1, 4, 1, "Test-1", 1, 1));
+//		list.add(new StdAcceptCondSetDto("0002", "2", "2", 3, 1, 1, 5, 1, "Test-2", 1, 1, (long) 1));
+//		list.add(new StdAcceptCondSetDto("0002", "3", "2", 1, 1, 1, 7, 1, "Test-3", 1, 1, (long) 1));
+//
+//		if (systemType == 1) {
+//			list.add(new StdAcceptCondSetDto("0001", "4", "4", 2, 1, 1, 5, 1, "Test-4", 1, 1, (long) 1));
+//		}
 		return list;
 		// return this.stdAcceptCondSetFind.getStdAcceptCondSetBySystemType(1);
 	}
