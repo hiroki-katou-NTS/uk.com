@@ -32,6 +32,8 @@ module nts.uk.pr.view.kmf001.d {
             leaveAsWorkDaysOpt: KnockoutObservableArray<LeaveAsWorkDaysModel>;
             isShowEmployment: KnockoutObservable<boolean>;
 
+            employmentVisible: KnockoutObservable<boolean>;
+            
             // Dirty checker
             dirtyChecker: nts.uk.ui.DirtyChecker;
 
@@ -65,6 +67,8 @@ module nts.uk.pr.view.kmf001.d {
                 self.selectedManagement = ko.observable(1);
                 self.selectedComManagement = ko.observable(1);
                 self.hasSelectedEmp = ko.observable(false);
+                
+                self.employmentVisible = ko.observable(self.selectedComManagement() == 1);
                 
                 self.isManaged = ko.computed(function() {
                     return self.selectedManagement() == 1;
@@ -129,6 +133,7 @@ module nts.uk.pr.view.kmf001.d {
                         self.initializeWholeCompanyData(data);
                     }
                     $('#year-amount-company').focus();
+                    self.employmentVisible(self.selectedComManagement() == 1);
                 });
             }
             
@@ -242,11 +247,11 @@ module nts.uk.pr.view.kmf001.d {
                 }
                 // Register
                 service.saveRetentionYearly(self.collectWholeCompanyData()).done(function() {
+                    self.employmentVisible(self.selectedComManagement() == 1);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                })
-                    .fail((res) => {
-                        nts.uk.ui.dialog.alertError(res.message);
-                    });
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alertError(res.message);
+                });
             }
             
             // Clear Errors Company Tab

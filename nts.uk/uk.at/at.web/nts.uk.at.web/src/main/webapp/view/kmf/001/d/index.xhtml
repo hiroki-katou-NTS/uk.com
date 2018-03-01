@@ -25,7 +25,8 @@
 		<ui:define name="sidebar" id="left-sidebar">
 			<ul class="navigator" tabindex="1">
 				<li><a href="#whole-company-tab" role="tab-navigator" tabindex="-1" class="active" data-bind="click: switchToCompanyTab">#{i18n.getText('Com_Company')}</a></li>
-				<li><a href="#by-employment-tab" role="tab-navigator" tabindex="-1" data-bind="click: switchToEmploymentTab">#{i18n.getText('Com_Employment')}</a></li>
+				<li data-bind="visible: employmentVisible"><a href="#by-employment-tab" role="tab-navigator" tabindex="-1" data-bind="click: switchToEmploymentTab">#{i18n.getText('Com_Employment')}</a></li>
+			
 			</ul>
 		</ui:define>
 
