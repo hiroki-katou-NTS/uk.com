@@ -63,10 +63,17 @@ module nts.uk.at.view.kmf002.c {
             
         enableSave: KnockoutObservable<boolean>;
         enableDelete: KnockoutObservable<boolean>;
+        
+        mapEmployeeCode: Map<string, string>;
+        mapEmployeeID: Map<string, string>; 
+
             
         constructor() {
             let _self = this;
-
+            
+            _self.mapEmployeeCode = new Map<string, string>();
+            _self.mapEmployeeID = new Map<string, string>();
+            
             _self.enableSave = ko.observable(true);
             _self.enableDelete= ko.observable(true);
             _self.commonTableMonthDaySet = ko.observable(new nts.uk.at.view.kmf002.viewmodel.CommonTableMonthDaySet());
@@ -145,6 +152,8 @@ module nts.uk.at.view.kmf002.c {
                     _self.selectedEmployee(data.listEmployee);
                     _self.employeeList.removeAll();
                     _.forEach(data.listEmployee, function(value: any) {
+                        _self.mapEmployeeCode.set(value.employeeCode, value.employeeId);
+                        _self.mapEmployeeID.set(value.employeeId, value.employeeCode);
                         _self.employeeList.push({ code: value.employeeCode, name: value.employeeName, workplaceName: value.workplaceName});  
                     });
                     _self.findAllEmployeeRegister();
@@ -256,7 +265,8 @@ module nts.uk.at.view.kmf002.c {
         private save(): void {
             let _self = this;
             if (!nts.uk.ui.errors.hasError()) {
-                service.save(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth(), _self.selectedCode()).done((data) => {
+                let id = _self.mapEmployeeCode.get(_self.selectedCode());
+                service.save(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth(), id).done((data) => {
                     _self.getDataFromService();
                     _self.alreadySettingList.push({code: _self.selectedCode(), isAlreadySetting: true});
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -283,8 +293,8 @@ module nts.uk.at.view.kmf002.c {
             let _self = this;
             $.when(service.findAllEmployeeRegister(_self.commonTableMonthDaySet().fiscalYear())).done(function(data: any) {
                 _self.alreadySettingList.removeAll();
-                _.forEach(data, function(code) {
-                    _self.alreadySettingList.push({code: code, isAlreadySetting: true});
+                _.forEach(data, function(id) {
+                    _self.alreadySettingList.push({code: _self.mapEmployeeID.get(id), isAlreadySetting: true});
                 })
                 dfd.resolve();
             });
