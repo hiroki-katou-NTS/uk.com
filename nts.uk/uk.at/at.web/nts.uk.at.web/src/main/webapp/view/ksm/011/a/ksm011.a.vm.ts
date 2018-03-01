@@ -508,7 +508,17 @@ module nts.uk.at.view.ksm011 {
                         }
                         
                         if(self.selectedAlarmCheck() == 0) {
-                            self.alarmMethodEnable(true);
+                            if(self.selectedCompFunc() == 1) {
+                                self.alarmCheckEnable(false);
+                                self.alarmMethodEnable(false);
+                                self.openEDialogEnable(false);
+                                self.conditionListEnable(false);
+                                self.conditionList("");
+                                self.dataE = null;
+                                self.scheFuncCondList([]);
+                            } else {
+                                self.alarmMethodEnable(true);
+                            }
                             
                             if(self.selectedAlarmMethod() == 0) {
                                 self.openEDialogEnable(false);
@@ -517,8 +527,18 @@ module nts.uk.at.view.ksm011 {
                                 self.dataE = null;
                                 self.scheFuncCondList([]);
                             } else {
-                                self.openEDialogEnable(true);
-                                self.conditionListEnable(true);
+                                if(self.selectedCompFunc() == 1) {
+                                    self.alarmCheckEnable(false);
+                                    self.alarmMethodEnable(false);
+                                    self.openEDialogEnable(false);
+                                    self.conditionListEnable(false);
+                                    self.conditionList("");
+                                    self.dataE = null;
+                                    self.scheFuncCondList([]);
+                                } else {
+                                    self.openEDialogEnable(true);
+                                    self.conditionListEnable(true);
+                                }
                             }
                         } else {
                             self.alarmMethodEnable(false);
@@ -550,8 +570,18 @@ module nts.uk.at.view.ksm011 {
                         self.dataE = null;
                         self.scheFuncCondList([]);
                     } else {
-                        self.openEDialogEnable(true);
-                        self.conditionListEnable(true);
+                        if(self.selectedCompFunc() == 1) {
+                            self.alarmCheckEnable(false);
+                            self.alarmMethodEnable(false);
+                            self.openEDialogEnable(false);
+                            self.conditionListEnable(false);
+                            self.conditionList("");
+                            self.dataE = null;
+                            self.scheFuncCondList([]);
+                        } else {
+                            self.openEDialogEnable(true);
+                            self.conditionListEnable(true);
+                        }
                     }
                 });
                 
@@ -658,6 +688,9 @@ module nts.uk.at.view.ksm011 {
                             self.alarmCheckEnable(false);
                             self.alarmMethodEnable(false);
                         }
+                    } else {
+                        self.unhookingEnable(false);
+                        self.confirmEnable(false);
                     }
                     
                     dfd.resolve();
