@@ -31,13 +31,9 @@ module cps001.c.vm {
                     self.enableControl();
 
                     let iem: IEmployee = _.find(self.listEmployee(), e => e.id == x);
-                    
+
                     block();
-                    debugger;
                     service.getDetail(x).done((data: IEmployee) => {
-                        
-                        unblock();
-                        
                         if (data) {
                             emp.id(iem.id);
                             emp.code(iem.code);
@@ -46,6 +42,7 @@ module cps001.c.vm {
                             emp.reason(data.reason || '');
                             emp.dateDelete(data.dateDelete || undefined);
                             $('#code').focus();
+                            unblock();
                         }
                     });
                 } else {
@@ -63,13 +60,12 @@ module cps001.c.vm {
                 emp = self.currentEmployee();
 
             emps.removeAll();
-            
+
             block();
-            
             service.getData().done((data: Array<IEmployee>) => {
-                
+
                 unblock();
-                
+
                 if (data && data.length) {
                     emps(data);
                     $('#code').focus();
@@ -91,9 +87,9 @@ module cps001.c.vm {
                 }
                 dfd.resolve();
             }).fail(() => {
-                
-              unblock();
-                  
+
+                unblock();
+
             });
             return dfd.promise();
         }
@@ -135,18 +131,18 @@ module cps001.c.vm {
 
                 }).fail(error => {
 
-                        if (error.messageId == 'Msg_345') {
-                            alertError({ messageId: "Msg_345"})
+                    if (error.messageId == 'Msg_345') {
+                        alertError({ messageId: "Msg_345" })
                             .then(() => {
-                                 $('#code').focus();
+                                $('#code').focus();
                             });
-                        } else {
-                            alertError({ messageId: error.messageId }).then(() => {
-                            });
-                        }
-                         unblock();
+                    } else {
+                        alertError({ messageId: error.messageId }).then(() => {
+                        });
+                    }
+                    unblock();
 
-                    });
+                });
 
             }).ifCancel(() => {
                 unblock();
