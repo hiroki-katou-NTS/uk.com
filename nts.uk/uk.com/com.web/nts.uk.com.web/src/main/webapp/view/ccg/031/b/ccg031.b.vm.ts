@@ -114,9 +114,13 @@ module nts.uk.com.view.ccg031.b.viewmodel {
 
         /** Change Selected Part */
         private changeSelectedPart(partID: string): void {
-            var selectedPart: model.TopPagePartDto = _.find(this.allPart(), ['topPagePartID', partID]);
-            selectedPart.codeName = nts.uk.text.padLeft(selectedPart.code, '0', 4) + ' ' + selectedPart.name;
-            this.selectedPart(selectedPart);
+            if(!util.isNullOrUndefined(partID)){
+                var selectedPart: model.TopPagePartDto = _.find(this.allPart(), ['topPagePartID', partID]);
+                selectedPart.codeName = nts.uk.text.padLeft(selectedPart.code, '0', 4) + ' ' + selectedPart.name;
+                this.selectedPart(selectedPart);
+            } else {
+                this.selectedPart(null);    
+            }
         }
 
         /** Select first Part */

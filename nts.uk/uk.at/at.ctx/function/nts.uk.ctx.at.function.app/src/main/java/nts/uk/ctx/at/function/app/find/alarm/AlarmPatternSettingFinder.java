@@ -79,31 +79,11 @@ public class AlarmPatternSettingFinder {
 		} else if (domain.getExtractPeriod().getExtractionRange() == ExtractionRange.WEEK) {
 			extractionUnit = ExtractionPeriodUnitDto.fromDomain((ExtractionPeriodUnit) domain.getExtractPeriod());
 		} else {
-
+			// Monthly
 		}
 
 		return new CheckConditionDto(domain.getAlarmCategory().value, domain.getCheckConditionList(),
 				extractionPeriodDailyDto, extractionUnit);
-
-	}
-
-	public List<AlarmPatternSettingDto> findAllAlarmByUser() {
-		String companyId = AppContexts.user().companyId();
-		List<AlarmPatternSettingDto> alarmList = alarmPatternRepo.findByCompanyId(companyId).stream()
-				.map(domain -> convertToAlarmPatternDto(domain)).collect(Collectors.toList());
-
-		String userId = AppContexts.user().userId();
-		List<String> roleIds = roleByUserFinder.getRoleIdFromUserId(userId);
-
-		return alarmList.stream()
-				.filter(a -> !a.getAlarmPerSet().isAuthSetting() || a.getAlarmPerSet().isAuthSetting()
-						&& intersectTwoListRoleId(a.getAlarmPerSet().getRoleIds(), roleIds))
-				.collect(Collectors.toList());
-	}
-
-	public boolean intersectTwoListRoleId(List<String> listRole1, List<String> listRole2) {
-		List<String> intersect = listRole1.stream().filter(listRole2::contains).collect(Collectors.toList());
-		return !intersect.isEmpty();
 
 	}
 
@@ -117,4 +97,9 @@ public class AlarmPatternSettingFinder {
 				.map(a -> new CodeNameAlarmDto(a.getAlarmCode(), a.getAlarmName())).collect(Collectors.toList());
 	}
 
+	private boolean intersectTwoListRoleId(List<String> listRole1, List<String> listRole2) {
+		List<String> intersect = listRole1.stream().filter(listRole2::contains).collect(Collectors.toList());
+		return !intersect.isEmpty();
+	}
+	
 }
