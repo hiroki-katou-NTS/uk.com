@@ -255,10 +255,14 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		resultList = resultList.stream().filter(this.distinctByKey(EmployeeDataView::getSid)).collect(Collectors.toList());
 
 		return resultList.stream().map(entity -> RegulationInfoEmployee.builder()
-				.classificationCode(Optional.ofNullable(entity.getClassificationCode())).employeeCode(entity.getScd())
-				.employeeID(entity.getSid()).employmentCode(Optional.ofNullable(entity.getEmpCd()))
-				.hireDate(Optional.ofNullable(entity.getComStrDate())).jobTitleCode(Optional.ofNullable(entity.getJobCd()))
-				.name(Optional.ofNullable(entity.getBusinessName())).workplaceCode(Optional.ofNullable(entity.getWplCd()))
+				.classificationCode(Optional.ofNullable(entity.getClassificationCode()))
+				.employeeCode(entity.getScd())
+				.employeeID(entity.getSid())
+				.employmentCode(Optional.ofNullable(entity.getEmpCd()))
+				.hireDate(Optional.ofNullable(entity.getComStrDate()))
+				.jobTitleCode(Optional.ofNullable(entity.getJobCd()))
+				.name(Optional.ofNullable(entity.getBusinessName()))
+				.workplaceCode(Optional.ofNullable(entity.getWplCd()))
 				.workplaceName(Optional.ofNullable(entity.getWplName()))
 				.build()).collect(Collectors.toList());
 	}

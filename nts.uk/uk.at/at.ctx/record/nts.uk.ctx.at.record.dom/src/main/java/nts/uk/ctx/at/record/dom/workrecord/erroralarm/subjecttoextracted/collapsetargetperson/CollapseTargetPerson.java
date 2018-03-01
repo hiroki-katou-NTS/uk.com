@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm.subjecttoextracted.algorithm.collapsetargetperson;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.subjecttoextracted.collapsetargetperson;
 
 import java.util.Collections;
 import java.util.List;
