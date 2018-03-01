@@ -189,8 +189,8 @@ module cmm044.a.viewmodel {
             self.selectedEmployee = ko.observableArray([]);
 
             self.isShow = ko.observable(false);
-
         }
+
         start() {
             let self = this;
             var dfd = $.Deferred();
@@ -498,49 +498,17 @@ module cmm044.a.viewmodel {
             isOnlyMe: ko.observable(false);
         }
 
-//        initCCG001() {
-//            let self = this;
-//            self.ccgcomponent = {
-//                baseDate: ko.observable(new Date()),
-//                // Show/hide options 
-//                isQuickSearchTab: true,
-//                isAdvancedSearchTab: true,
-//                isAllReferableEmployee: true,
-//                isOnlyMe: true,
-//                isEmployeeOfWorkplace: true,
-//                isEmployeeWorkplaceFollow: true,
-//                isMutipleCheck: true,
-//                isSelectAllEmployee: true,
-//
-//                //Event options
-//                /**
-//                * @param dataList: list employee returned from component.
-//                * Define how to use this list employee by yourself in the function's body.
-//                */
-//                onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
-//                    self.searchEmployee(dataList);
-//                },
-//                onSearchOnlyClicked: function(data: EmployeeSearchDto) {
-//                    self.showinfoSelectedEmployee(true);
-//                    var dataEmployee: EmployeeSearchDto[] = [];
-//                    dataEmployee.push(data);
-//                    self.searchEmployee(dataEmployee);
-//                },
-//                onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
-//                    self.searchEmployee(dataList);
-//                },
-//                onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
-//                    self.searchEmployee(dataList);
-//                },
-//                onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
-//                    self.searchEmployee(dataEmployee);
-//                }
-//            }
-//            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
-//        }
-
         initCCG001(): void {
-            var self = this;
+            let self = this;
+            let showBaseDate = true, showClosure = false, showPeriod = false;
+
+            if ($('.ccg-sample-has-error').ntsError('hasError')) {
+                return;
+            }
+            if (!showBaseDate && !showClosure && !showPeriod) {
+                nts.uk.ui.dialog.alertError("Base Date or Closure or Period must be shown!");
+                return;
+            }
             // Component option
             self.ccgcomponent = {
                 /** Common properties */
@@ -548,10 +516,10 @@ module cmm044.a.viewmodel {
                 showEmployeeSelection: false, // 検索タイプ
                 showQuickSearchTab: true, // クイック検索
                 showAdvancedSearchTab: true, // 詳細検索
-                showBaseDate: true, // 基準日利用
-                showClosure: false, // 就業締め日利用
+                showBaseDate: showBaseDate, // 基準日利用
+                showClosure: showClosure, // 就業締め日利用
                 showAllClosure: false, // 全締め表示
-                showPeriod: false, // 対象期間利用
+                showPeriod: showPeriod, // 対象期間利用
                 periodFormatYM: true, // 対象期間精度
 
                 /** Required parameter */

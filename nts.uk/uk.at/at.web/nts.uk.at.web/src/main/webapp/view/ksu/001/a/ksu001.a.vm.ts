@@ -3,6 +3,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
     import alertError = nts.uk.ui.dialog.alertError;
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
+    import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     import blockUI = nts.uk.ui.block;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
@@ -345,45 +346,102 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         /**
          * init CCG001
          */
+        //        initCCG001(): void {
+        //            let self = this;
+        //            self.ccgcomponent = {
+        //                baseDate: ko.observable(new Date()),
+        //                // Show/hide options 
+        //                isQuickSearchTab: true,
+        //                isAdvancedSearchTab: true,
+        //                isAllReferableEmployee: true,
+        //                isOnlyMe: true,
+        //                isEmployeeOfWorkplace: true,
+        //                isEmployeeWorkplaceFollow: true,
+        //                isMutipleCheck: true,
+        //                isSelectAllEmployee: true,
+        //
+        //                /**
+        //                * @param dataList: list employee returned from component.
+        //                * Define how to use this list employee by yourself in the function's body.
+        //                */
+        //                onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
+        //                    self.searchEmployee(dataList);
+        //
+        //                },
+        //                onSearchOnlyClicked: function(data: EmployeeSearchDto) {
+        //                    self.showinfoSelectedEmployee(true);
+        //                    var dataEmployee: EmployeeSearchDto[] = [];
+        //                    dataEmployee.push(data);
+        //                    self.searchEmployee(dataEmployee);
+        //                },
+        //                onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
+        //                    self.searchEmployee(dataList);
+        //                },
+        //                onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
+        //                    self.searchEmployee(dataList);
+        //                },
+        //                onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
+        //                    self.searchEmployee(dataEmployee);
+        //                }
+        //            }
+        //
+        //            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(function() {
+        //                $("#hor-scroll-button-hide").trigger("click");
+        //            });
+        //        }
+
         initCCG001(): void {
             let self = this;
+            let showBaseDate = false, showClosure = false, showPeriod = true;
+
+            if ($('.ccg-sample-has-error').ntsError('hasError')) {
+                return;
+            }
+            if (!showBaseDate && !showClosure && !showPeriod) {
+                nts.uk.ui.dialog.alertError("Base Date or Closure or Period must be shown!");
+                return;
+            }
+            // Component option
             self.ccgcomponent = {
-                baseDate: ko.observable(new Date()),
-                // Show/hide options 
-                isQuickSearchTab: true,
-                isAdvancedSearchTab: true,
-                isAllReferableEmployee: true,
-                isOnlyMe: true,
-                isEmployeeOfWorkplace: true,
-                isEmployeeWorkplaceFollow: true,
-                isMutipleCheck: true,
-                isSelectAllEmployee: true,
+                /** Common properties */
+                systemType: 2, // システム区分
+                showEmployeeSelection: false, // 検索タイプ
+                showQuickSearchTab: false, // クイック検索
+                showAdvancedSearchTab: true, // 詳細検索
+                showBaseDate: showBaseDate, // 基準日利用
+                showClosure: showClosure, // 就業締め日利用
+                showAllClosure: false, // 全締め表示
+                showPeriod: showPeriod, // 対象期間利用
+                periodFormatYM: true, // 対象期間精度
 
-                /**
-                * @param dataList: list employee returned from component.
-                * Define how to use this list employee by yourself in the function's body.
-                */
-                onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
-                    self.searchEmployee(dataList);
+                /** Required parameter */
+                periodStartDate: self.dtPrev().toISOString(), // 対象期間開始日
+                periodEndDate: self.dtAft().toISOString(), // 対象期間終了日
+                inService: false, // 在職区分
+                leaveOfAbsence: false, // 休職区分
+                closed: false, // 休業区分
+                retirement: false, // 退職区分
 
-                },
-                onSearchOnlyClicked: function(data: EmployeeSearchDto) {
-                    self.showinfoSelectedEmployee(true);
-                    var dataEmployee: EmployeeSearchDto[] = [];
-                    dataEmployee.push(data);
-                    self.searchEmployee(dataEmployee);
-                },
-                onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
-                    self.searchEmployee(dataList);
-                },
-                onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
-                    self.searchEmployee(dataList);
-                },
-                onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
-                    self.searchEmployee(dataEmployee);
+                /** Quick search tab options */
+                showAllReferableEmployee: true, // 参照可能な社員すべて
+                showOnlyMe: false, // 自分だけ
+                showSameWorkplace: true, // 同じ職場の社員
+                showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
+
+                /** Advanced search properties */
+                showEmployment: false, // 雇用条件
+                showWorkplace: true, // 職場条件
+                showClassification: false, // 分類条件
+                showJobTitle: false, // 職位条件
+                showWorktype: false, // 勤種条件
+                isMutipleCheck: true, // 選択モード
+
+                /** Return data */
+                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                    self.selectedEmployee(data.listEmployee);
                 }
             }
-
+            // Start component
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(function() {
                 $("#hor-scroll-button-hide").trigger("click");
             });
@@ -781,7 +839,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#extable").on("extablecellupdated", function() { });
                 $("#extable").on("extablerowupdated", function() { });
 
-                setTimeout(function() { $("#extable").exTable("scrollBack", 2);}, 1000 );
+                setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
 
                 /**
                  * validate when stick data in cell
@@ -909,7 +967,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
                     //                    $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
 
-                    setTimeout(function() { $("#extable").exTable("scrollBack", 2);}, 1000 );
+                    setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
 
                     self.stopRequest(true);
                 });
@@ -978,7 +1036,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
                         //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
-                        setTimeout(function() { $("#extable").exTable("scrollBack", 2);}, 1000 );
+                        setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
                     });
                 }).always(() => {
                     self.stopRequest(true);
@@ -1048,7 +1106,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
                         //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
-                        setTimeout(function() { $("#extable").exTable("scrollBack", 2);}, 1000 );
+                        setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
                     });
                 }).always(() => {
                     self.stopRequest(true);
