@@ -943,7 +943,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 // Filter selected employee
                 let selectedEmployees = self.getSelectedCodeEmployee();
                 let filteredList = _.filter(self.reservedEmployees(), e => {
-                    return _.includes(selectedEmployees, e.employeeId);
+                    return _.includes(selectedEmployees, e.employeeCode);
                 });
 
                 // block ui
@@ -1142,7 +1142,7 @@ module nts.uk.com.view.ccg.share.ccg {
             public toUnitModelList(dataList: EmployeeSearchDto[]): Array<UnitModel> {
                 return _.map(dataList, item => {
                     return {
-                        code: item.employeeId,
+                        code: item.employeeCode,
                         name: item.employeeName
                     };
                 });
