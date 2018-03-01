@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -85,7 +84,9 @@ public class JpaSDayScheDayOfSetMemento implements SingleDayScheduleSetMemento {
 	 */
 	@Override
 	public void setWorkTimeCode(Optional<WorkTimeCode> workTimeCode) {
-		this.entity.setWorkTimeCode(workTimeCode.get().v());
+		if (workTimeCode != null && workTimeCode.isPresent()){
+			this.entity.setWorkTimeCode(workTimeCode.get().v());
+		}
 	}
 
 }

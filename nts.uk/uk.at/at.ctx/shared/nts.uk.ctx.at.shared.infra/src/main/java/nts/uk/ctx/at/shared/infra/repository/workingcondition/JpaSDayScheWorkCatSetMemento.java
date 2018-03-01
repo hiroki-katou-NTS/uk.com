@@ -80,7 +80,9 @@ public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento
 	 */
 	@Override
 	public void setWorkTimeCode(Optional<WorkTimeCode> workTimeCode) {
-		this.entity.setWorkTimeCode(workTimeCode.get().v());
+		if (workTimeCode != null && workTimeCode.isPresent()){
+			this.entity.setWorkTimeCode(workTimeCode.get().v());
+		}
 	}
 
 }

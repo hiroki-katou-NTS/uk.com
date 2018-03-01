@@ -91,7 +91,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	 */
 	private void updateEntity(EmploymentHistoryItem domain, BsymtEmploymentHistItem entity) {
 		entity.empCode = domain.getEmploymentCode().v();
-		entity.salarySegment = domain.getSalarySegment().value;
+		entity.salarySegment = domain.getSalarySegment()!= null? domain.getSalarySegment().value: null;
 	}
 
 	@Override
