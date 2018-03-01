@@ -3,10 +3,12 @@ __viewContext.ready(function () {
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
         enable: KnockoutObservable<boolean>;
+        required: KnockoutObservable<boolean>;
         defaultValue: KnockoutObservable<string>;
         constructor() {
             var self = this;
             self.enable = ko.observable(true);
+            self.required = ko.observable(true);
             self.roundingRules = ko.observableArray([
                 { code: '1', name: '四捨五入' },
                 { code: '2', name: '切り上げ' },
@@ -19,6 +21,10 @@ __viewContext.ready(function () {
         setDefault() {
             var self = this;
             nts.uk.util.value.reset($("#switch-buttons"), self.defaultValue() !== '' ? self.defaultValue() : undefined);
+        }
+        
+        validate() {
+            $("#switch-buttons").trigger("validate");
         }
     }
     

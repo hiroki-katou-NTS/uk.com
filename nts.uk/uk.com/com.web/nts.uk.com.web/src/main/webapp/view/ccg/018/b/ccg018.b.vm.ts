@@ -1,5 +1,6 @@
 module ccg018.b.viewmodel {
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
+    import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
     import blockUI = nts.uk.ui.block;
 
@@ -17,7 +18,7 @@ module ccg018.b.viewmodel {
 
         listSid: Array<any>;
         isSelectedFirst: KnockoutObservable<boolean>;
-        
+
         isEmpty: KnockoutObservable<boolean>;
 
         //component
@@ -79,9 +80,9 @@ module ccg018.b.viewmodel {
                 });
                 self.findTopPagePersonSet();
             });
-            
-            self.isEmpty = ko.computed(function(){
-                return !nts.uk.ui.errors.hasError();    
+
+            self.isEmpty = ko.computed(function() {
+                return !nts.uk.ui.errors.hasError();
             });
         }
 
@@ -91,7 +92,7 @@ module ccg018.b.viewmodel {
 
             $.when(self.findTopPagePersonSet()).done(function() {
                 self.bindGrid();
-                self.bindCCG001();
+                self.initCCG001();
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject(error);
@@ -99,52 +100,51 @@ module ccg018.b.viewmodel {
             return dfd.promise();
         }
 
-        
-        bindCCG001(): void {
-            let self = this;   
+        initCCG001(): void {
+            var self = this;
+            // Component option
             self.ccgcomponent = {
-                baseDate: self.baseDate,
-                //Show/hide options
-                isQuickSearchTab: true,
-                isAdvancedSearchTab: true,
-                isAllReferableEmployee: true,
-                isOnlyMe: true,
-                isEmployeeOfWorkplace: true,
-                isEmployeeWorkplaceFollow: true,
-                isMutipleCheck: true,
-                isSelectAllEmployee: true,
+                /** Common properties */
+                systemType: 1, // システム区分
+                showEmployeeSelection: false, // 検索タイプ
+                showQuickSearchTab: false, // クイック検索
+                showAdvancedSearchTab: true, // 詳細検索
+                showBaseDate: true, // 基準日利用
+                showClosure: false, // 就業締め日利用
+                showAllClosure: false, // 全締め表示
+                showPeriod: false, // 対象期間利用
+                periodFormatYM: true, // 対象期間精度
 
-                //Event options 
-                /**
-                * @param dataList: list employee returned from component.
-                * Define how to use this list employee by yourself in the function's body.
-                */
-                onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
-                    self.showinfoSelectedEmployee(true);
-                    self.selectedEmployee(dataList);
-                },
-                onSearchOnlyClicked: function(data: EmployeeSearchDto) {
-                    self.showinfoSelectedEmployee(true);
-                    var dataEmployee: EmployeeSearchDto[] = [];
-                    dataEmployee.push(data);
-                    self.selectedEmployee(dataEmployee);
-                },
-                onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
-                    self.showinfoSelectedEmployee(true);
-                    self.selectedEmployee(dataList);
-                },
-                onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
-                    self.showinfoSelectedEmployee(true);
-                    self.selectedEmployee(dataList);
-                },
-                onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
-                    self.showinfoSelectedEmployee(true);
-                    self.selectedEmployee(dataEmployee);
+                /** Required parameter */
+                baseDate: self.baseDate().toISOString(), // 基準日
+                inService: true, // 在職区分
+                leaveOfAbsence: false, // 休職区分
+                closed: false, // 休業区分
+                retirement: false, // 退職区分
+
+                /** Quick search tab options */
+                showAllReferableEmployee: false, // 参照可能な社員すべて
+                showOnlyMe: false, // 自分だけ
+                showSameWorkplace: false, // 同じ職場の社員
+                showSameWorkplaceAndChild: false, // 同じ職場とその配下の社員
+
+                /** Advanced search properties */
+                showEmployment: true, // 雇用条件
+                showWorkplace: true, // 職場条件
+                showClassification: true, // 分類条件
+                showJobTitle: true, // 職位条件
+                showWorktype: true, // 勤種条件
+                isMutipleCheck: true, // 選択モード
+
+                /** Return data */
+                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                    self.selectedEmployee(data.listEmployee);
                 }
             }
+            // Start component
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
         }
-        
+
         bindGrid(): any {
             let self = this;
             let listComponentOption: any = {
@@ -204,9 +204,9 @@ module ccg018.b.viewmodel {
                     }
                     self.isSelectedFirst(true);
                     dfd.resolve();
-                }).fail(function(){
-                        dfd.reject();    
-                    });
+                }).fail(function() {
+                    dfd.reject();
+                });
             return dfd.promise();
         }
 
@@ -262,8 +262,8 @@ module ccg018.b.viewmodel {
                             self.selectedItemAsTopPage('');
                             nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));
                         });
-                    }).fail(function(){
-                        dfd.reject();    
+                    }).fail(function() {
+                        dfd.reject();
                     });
                 }).ifNo(() => { });
             }

@@ -130,11 +130,11 @@ module nts.uk.at.view.kal001.a.model {
                     self.alarmCodeChange();
                     dfd.resolve();
                 }).fail((errorCheckTime) =>{
-                    
+                    alertError(errorCheckTime);
                 });
                 
             }).fail((errorAlarm)=>{
-
+                 alertError(errorAlarm);
             });
             
 
@@ -182,6 +182,14 @@ module nts.uk.at.view.kal001.a.model {
             
                             
         }
+        
+        public open_Dialog(): any {
+            let self = this;
+            nts.uk.ui.windows.setShared("alarmCode", self.currentAlarmCode());
+            modal("/view/kal/001/b/index.xhtml").onClosed(() => {
+                
+            });
+        }
 
     }
     
@@ -202,23 +210,24 @@ module nts.uk.at.view.kal001.a.model {
             this.startMonth = ko.observable(dto.startMonth);
             this.endMonth = ko.observable(dto.endMonth);
             this.checkBox = ko.observable(false);
-            this.checkBox.subscribe((checkBox)=>{
-                __viewContext["viewmodel"].checkBoxAllOrNot(checkBox);
-            });
         }
         
+        public setClick() : void{
+            this.checkBox(!this.checkBox());    
+            __viewContext["viewmodel"].checkBoxAllOrNot(this.checkBox());
+        }
         
-            public  getFormattedDate(date : number) : string {
-                var d = new Date(date),
-                    month = '' + (d.getMonth() + 1),
-                    day = '' + d.getDate(),
-                    year = d.getFullYear();
-            
-                if (month.length < 2) month = '0' + month;
-                if (day.length < 2) day = '0' + day;
-            
-                return [year, month, day].join('/');
-            }
+        public  getFormattedDate(date : number) : string {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+        
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+        
+            return [year, month, day].join('/');
+        }
     }
     
     
