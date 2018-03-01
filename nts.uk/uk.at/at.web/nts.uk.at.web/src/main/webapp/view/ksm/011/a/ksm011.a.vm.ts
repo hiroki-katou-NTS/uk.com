@@ -495,7 +495,17 @@ module nts.uk.at.view.ksm011 {
                         self.openEDialogEnable(false);
                         self.conditionListEnable(false);
                     } else {
-                        self.alarmCheckEnable(true);
+                        if(self.selectedCompFunc() == 1) {
+                            self.alarmCheckEnable(false);
+                            self.alarmMethodEnable(false);
+                            self.openEDialogEnable(false);
+                            self.conditionListEnable(false);
+                            self.conditionList("");
+                            self.dataE = null;
+                            self.scheFuncCondList([]);
+                        } else {
+                            self.alarmCheckEnable(true);
+                        }
                         
                         if(self.selectedAlarmCheck() == 0) {
                             self.alarmMethodEnable(true);
