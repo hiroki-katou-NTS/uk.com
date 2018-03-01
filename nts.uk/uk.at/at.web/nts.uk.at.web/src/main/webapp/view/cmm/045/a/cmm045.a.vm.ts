@@ -7,8 +7,14 @@ module cmm045.a.viewmodel {
     export class ScreenModel {
         roundingRules: KnockoutObservableArray<vmbase.ApplicationDisplayAtr> = ko.observableArray([]);
         selectedRuleCode: KnockoutObservable<any> = ko.observable(0);// switch button
+        //lst fill in grid list
         items: KnockoutObservableArray<vmbase.DataModeApp> = ko.observableArray([]);
+        //lst full data get from db
         lstApp: KnockoutObservableArray<vmbase.DataModeApp> = ko.observableArray([]);
+        lstAppCommon: KnockoutObservableArray<vmbase.ApplicationDto_New> = ko.observableArray([]);
+        lstAppMaster: KnockoutObservableArray<vmbase.AppMasterInfo> = ko.observableArray([]);
+        lstAppOt: KnockoutObservableArray<vmbase.AppOverTimeInfoFull> = ko.observableArray([]);
+        lstAppGoBack: KnockoutObservableArray<vmbase.AppGoBackInfoFull> = ko.observableArray([]);
         displaySet: KnockoutObservable<vmbase.ApprovalListDisplaySetDto> = ko.observable(null);
         approvalMode:  KnockoutObservable<boolean> = ko.observable(false);
         approvalCount: KnockoutObservable<vmbase.ApplicationStatus> = ko.observable(new vmbase.ApplicationStatus(0,0,0,0,0,0));
@@ -101,6 +107,7 @@ module cmm045.a.viewmodel {
                     let lstMaster: Array<vmbase.AppMasterInfo> = []
                     let lstGoBack: Array<vmbase.AppGoBackInfoFull> = [];
                     let lstOverTime: Array<vmbase.AppOverTimeInfoFull> = [];
+                    let lstAppGroup : Array<vmbase.AppPrePostGroup> = [];
                     self.displaySet(new vmbase.ApprovalListDisplaySetDto(data.displaySet.advanceExcessMessDisAtr,
                             data.displaySet.hwAdvanceDisAtr,  data.displaySet.hwActualDisAtr, 
                             data.displaySet.actualExcessMessDisAtr, data.displaySet.otAdvanceDisAtr, 
@@ -255,13 +262,18 @@ module cmm045.a.viewmodel {
                     $(".nts-grid-control-appStatus-" + item.appId).addClass('denialCell');
                 }
                 //fill color in 申請内容
-                if(item.checkTimecolor){
-                    $(".nts-grid-control-appContent" + item.appId).addClass('denialCell');
+                if(item.checkTimecolor == 1){//1: xin truoc < xin sau; k co xin truoc; xin truoc bi denail
+                    $(".nts-grid-control-appContent" + item.appId).addClass('preAppExcess');
                 }
+                if(item.checkTimecolor == 2){////2: thuc te < xin sau
+                    $(".nts-grid-control-appContent" + item.appId).addClass('workingResultExcess');
+                }
+                
             });
         }
         /**
          * format data: over time before
+         * ※申請モード、承認モード(事前)用レイアウト
          */
         fomartOverTimeBf(app: vmbase.ApplicationDto_New, overTime: vmbase.AppOverTimeInfoFull, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp{
             let self = this;
@@ -273,15 +285,21 @@ module cmm045.a.viewmodel {
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                         masterInfo.dispName, prePostApp, self.convertDate(app.applicationDate),appContent1111, self.convertDateTime(app.inputDate), 
-                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatusAppv(app.reflectPerState),masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version);
+                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatusAppv(app.reflectPerState),masterInfo.phaseStatus,
+                        masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor);
             return a;
         }
         /**
-         * 
+         * ※承認モード(事後)用レイアウト
          * format data: over time after
          */
-        fomartOverTimeAf(app: vmbase.ApplicationDto_New, goBack: vmbase.AppGoBackInfoFull, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp{
-             let self = this;
+        fomartOverTimeAf(app: vmbase.ApplicationDto_New, goBack: vmbase.AppGoBackInfoFull, masterInfo: vmbase.AppMasterInfo, lstAppGroup: Array<vmbase.AppPrePostGroup>): vmbase.DataModeApp{
+            let self = this;
+            let check = self.findAppPre(lstAppGroup, app.applicationID);
+            let appPre = ''
+            if(check !== undefined){
+                appPre = check.preAppID//Note
+            }
             let applicant: string = masterInfo.workplaceName + ' ' + masterInfo.empName;
             let go = goBack.goWorkAtr1 == 0 ? '' : ' ' + getText('CMM045_259')+ goBack.workTimeStart1;
 //                        + self.convertTime_Short_HM(goBack.workTimeStart1);
@@ -293,10 +311,15 @@ module cmm045.a.viewmodel {
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                         masterInfo.dispName, prePostApp, self.convertDate(app.applicationDate),appContent2222, self.convertDateTime(app.inputDate), 
-                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatusAppv(app.reflectPerState),masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version);
+                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatusAppv(app.reflectPerState),masterInfo.phaseStatus,
+                        masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor);
             return a;
         }
-        
+        findAppPre(lstAppGroup: Array<vmbase.AppPrePostGroup>, appId: String): any{
+            return _.find(lstAppGroup, function(app){
+                return app.postAppID == appId;
+            });
+        }
         formatGoBack(app: vmbase.ApplicationDto_New, goBack: vmbase.AppGoBackInfoFull, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp{
             let self = this;
             let applicant: string = masterInfo.workplaceName + ' ' + masterInfo.empName;
@@ -310,12 +333,13 @@ module cmm045.a.viewmodel {
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                         masterInfo.dispName, prePostApp, self.convertDate(app.applicationDate),appContent2222, self.convertDateTime(app.inputDate), 
-                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatusAppv(app.reflectPerState),masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version);
+                        self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatusAppv(app.reflectPerState),masterInfo.phaseStatus,
+                        masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor);
             return a;
         }
         
-        mapData(lstApp: Array<vmbase.ApplicationDto_New>, lstMaster: Array<vmbase.AppMasterInfo>, 
-                        lstGoBack: Array<vmbase.AppGoBackInfoFull>, lstOverTime: Array<vmbase.AppOverTimeInfoFull>): Array<vmbase.DataModeApp>{
+        mapData(lstApp: Array<vmbase.ApplicationDto_New>, lstMaster: Array<vmbase.AppMasterInfo>, lstGoBack: Array<vmbase.AppGoBackInfoFull>,
+                lstOverTime: Array<vmbase.AppOverTimeInfoFull>, lstAppGroup: Array<vmbase.AppPrePostGroup>): Array<vmbase.DataModeApp>{
             let self = this;
             let lstData: Array<vmbase.DataModeApp> = [];
             _.each(lstApp, function(app: vmbase.ApplicationDto_New){
@@ -327,7 +351,7 @@ module cmm045.a.viewmodel {
                     if(app.prePostAtr == 0){
                         data = self.fomartOverTimeBf(app, overtTime ,masterInfo);
                     }else{
-                        data = self.fomartOverTimeAf(app, overtTime ,masterInfo);
+                        data = self.fomartOverTimeAf(app, overtTime ,masterInfo, lstAppGroup);
                     }
                 }
                 if(app.applicationType == 4){//goback
@@ -479,7 +503,7 @@ module cmm045.a.viewmodel {
                     lstOverTime.push(new vmbase.AppOverTimeInfoFull(overTime.appID, overTime.workClockFrom1, overTime.workClockTo1, overTime.workClockFrom2,
                             overTime.workClockTo2, overTime.total, lstFrame, overTime.overTimeShiftNight, overTime.flexExessTime));
                 });
-                let lstData = self.mapData(lstApp, lstMaster, lstGoBack, lstOverTime);
+                let lstData = self.mapData(lstApp, lstMaster, lstGoBack, lstOverTime, data.lstAppGroup);
                 self.items(lstData);
                 //mode approval - count
                 if(data.appStatusCount != null){
