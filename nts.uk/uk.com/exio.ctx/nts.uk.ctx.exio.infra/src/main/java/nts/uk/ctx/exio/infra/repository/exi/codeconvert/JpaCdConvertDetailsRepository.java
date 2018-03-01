@@ -45,7 +45,6 @@ public class JpaCdConvertDetailsRepository extends JpaRepository implements CdCo
         if (null == updateCdConvertDetails) {
             return;
         }
-        updateCdConvertDetails.version = newCdConvertDetails.version;
         updateCdConvertDetails.outputItem = newCdConvertDetails.outputItem;
         updateCdConvertDetails.systemCd = newCdConvertDetails.systemCd;
         this.commandProxy().update(updateCdConvertDetails);
@@ -57,11 +56,11 @@ public class JpaCdConvertDetailsRepository extends JpaRepository implements CdCo
     }
 
     private static CdConvertDetails toDomain(OiomtCdConvertDetails entity) {
-        return CdConvertDetails.createFromJavaType(entity.version, entity.cdConvertDetailsPk.cid, entity.cdConvertDetailsPk.convertCd, entity.cdConvertDetailsPk.lineNumber, entity.outputItem, entity.systemCd);
+        return CdConvertDetails.createFromJavaType(entity.cdConvertDetailsPk.cid, entity.cdConvertDetailsPk.convertCd, entity.cdConvertDetailsPk.lineNumber, entity.outputItem, entity.systemCd);
     }
 
     private OiomtCdConvertDetails toEntity(CdConvertDetails domain) {
-        return new OiomtCdConvertDetails(domain.getVersion(), new OiomtCdConvertDetailsPk(domain.getCid(), domain.getConvertCd(), domain.getLineNumber()), domain.getOutputItem(), domain.getSystemCd());
+        return new OiomtCdConvertDetails(new OiomtCdConvertDetailsPk(domain.getCid(), domain.getConvertCd(), domain.getLineNumber()), domain.getOutputItem(), domain.getSystemCd(), null);
     }
 
 }

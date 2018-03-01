@@ -1,8 +1,8 @@
 package nts.uk.ctx.exio.app.command.exi.codeconvert;
 
+import java.util.List;
+
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 @Value
 public class AcceptCdConvertCommand
@@ -30,4 +30,5 @@ public class AcceptCdConvertCommand
     
     private Long version;
 
+    private List<CdConvertDetailsCommand> cdConvertDetails;
 }

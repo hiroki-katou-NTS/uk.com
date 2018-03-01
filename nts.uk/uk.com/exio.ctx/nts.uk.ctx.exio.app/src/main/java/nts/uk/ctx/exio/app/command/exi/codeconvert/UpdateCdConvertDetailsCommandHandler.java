@@ -20,7 +20,7 @@ public class UpdateCdConvertDetailsCommandHandler extends CommandHandler<CdConve
     @Override
     protected void handle(CommandHandlerContext<CdConvertDetailsCommand> context) {
         CdConvertDetailsCommand updateCommand = context.getCommand();
-        repository.update(CdConvertDetails.createFromJavaType(updateCommand.getVersion(), updateCommand.getCid(), updateCommand.getConvertCd(), updateCommand.getLineNumber(), updateCommand.getOutputItem(), updateCommand.getSystemCd()));
+       // repository.update(CdConvertDetails.createFromJavaType(updateCommand.getVersion(), updateCommand.getCid(), updateCommand.getConvertCd(), updateCommand.getLineNumber(), updateCommand.getOutputItem(), updateCommand.getSystemCd()));
     
     }
 }
