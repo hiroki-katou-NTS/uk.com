@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @author NWS_THANHNC_PC
  */
 @Entity
-@Table(name = "KRCDT_DAI_SHORT_WORK_TIME")
+@Table(name = "KRCDT_DAI_SHORTTIME_TS")
 @XmlRootElement
 @NamedQueries({
 //    @NamedQuery(name = "KrcdtDaiShortWorkTime.findAll", query = "SELECT k FROM KrcdtDaiShortWorkTime k"),
