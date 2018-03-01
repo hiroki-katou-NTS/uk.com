@@ -5,7 +5,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
         // Service paths.
         var servicePath = {
-            searchEmployeeByLogin: "basic/organization/employee/onlyemployee",
+            searchEmployeeByLogin: "basic/organization/employee/onlyemployeenew",
             searchWorkplaceOfEmployee: "basic/organization/employee/workplaceemp",
             getOfSelectedEmployee: "basic/organization/employee/getoffselect",
             searchAllWorkType: "at/record/businesstype/findAll",
