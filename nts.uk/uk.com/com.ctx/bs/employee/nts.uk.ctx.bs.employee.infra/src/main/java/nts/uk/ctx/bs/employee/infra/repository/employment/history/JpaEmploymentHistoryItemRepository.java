@@ -69,7 +69,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	 */
 	private BsymtEmploymentHistItem toEntity(EmploymentHistoryItem domain) {
 		return new BsymtEmploymentHistItem(domain.getHistoryId(), domain.getEmployeeId(),
-				domain.getEmploymentCode().v(), domain.getSalarySegment() !=null? domain.getSalarySegment().value: 0);
+				domain.getEmploymentCode().v(), domain.getSalarySegment() !=null? domain.getSalarySegment().value: null);
 	}
 
 	private EmploymentInfo toDomainEmployee(Object[] entity) {
