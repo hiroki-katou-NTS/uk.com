@@ -61,8 +61,7 @@ module cmm044.a.viewmodel {
         ccgcomponent: GroupOption;
         selectedCode: KnockoutObservableArray<any>;
         showinfoSelectedEmployee: KnockoutObservable<boolean>;
-        selectedEmployee: KnockoutObservableArray<any>;
-        baseDate: KnockoutObservable<Date> = ko.observable(new Date());;
+        baseDate: KnockoutObservable<Date> = ko.observable(new Date());
         isShow: KnockoutObservable<boolean>;
 
         constructor() {
@@ -86,7 +85,6 @@ module cmm044.a.viewmodel {
             ]);
 
             self.dateValue = ko.observable({});
-            self.baseDate = ko.observable(new Date());
 
             self.displayEmployeeInfo1 = ko.observable(true);
             self.displayEmployeeInfo2 = ko.observable(true);
@@ -186,7 +184,6 @@ module cmm044.a.viewmodel {
             self.ccgcomponent = {};
             self.selectedCode = ko.observableArray([]);
             self.showinfoSelectedEmployee = ko.observable(true);
-            self.selectedEmployee = ko.observableArray([]);
 
             self.isShow = ko.observable(false);
         }
@@ -500,15 +497,6 @@ module cmm044.a.viewmodel {
 
         initCCG001(): void {
             let self = this;
-            let showBaseDate = true, showClosure = false, showPeriod = false;
-
-            if ($('.ccg-sample-has-error').ntsError('hasError')) {
-                return;
-            }
-            if (!showBaseDate && !showClosure && !showPeriod) {
-                nts.uk.ui.dialog.alertError("Base Date or Closure or Period must be shown!");
-                return;
-            }
             // Component option
             self.ccgcomponent = {
                 /** Common properties */
@@ -516,11 +504,11 @@ module cmm044.a.viewmodel {
                 showEmployeeSelection: false, // 検索タイプ
                 showQuickSearchTab: true, // クイック検索
                 showAdvancedSearchTab: true, // 詳細検索
-                showBaseDate: showBaseDate, // 基準日利用
-                showClosure: showClosure, // 就業締め日利用
+                showBaseDate: true, // 基準日利用
+                showClosure: false, // 就業締め日利用
                 showAllClosure: false, // 全締め表示
-                showPeriod: showPeriod, // 対象期間利用
-                periodFormatYM: true, // 対象期間精度
+                showPeriod: false, // 対象期間利用
+                periodFormatYM: false, // 対象期間精度
 
                 /** Required parameter */
                 baseDate: self.baseDate().toISOString(), // 基準日
@@ -545,7 +533,7 @@ module cmm044.a.viewmodel {
 
                 /** Return data */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                    self.selectedEmployee(data.listEmployee);
+                    self.searchEmployee(data.listEmployee);
                 }
             }
             // Start component

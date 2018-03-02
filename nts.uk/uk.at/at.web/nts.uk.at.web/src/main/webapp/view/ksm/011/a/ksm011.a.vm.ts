@@ -185,6 +185,7 @@ module nts.uk.at.view.ksm011 {
             dataE: any;
             conditionData: KnockoutObservableArray<ConditionModel>;
             scheFuncCondList: KnockoutObservableArray<any>;
+            oldScheFuncCondList: any;
             
             constructor() {
                 var self = this;
@@ -456,9 +457,6 @@ module nts.uk.at.view.ksm011 {
                                 if(self.selectedAlarmMethod() == 0) {
                                     self.openEDialogEnable(false);
                                     self.conditionListEnable(false);
-                                    self.conditionList("");
-                                    self.dataE = null;
-                                    self.scheFuncCondList([]);
                                 } else {
                                     self.openEDialogEnable(true);
                                     self.conditionListEnable(true);
@@ -467,9 +465,6 @@ module nts.uk.at.view.ksm011 {
                                 self.alarmMethodEnable(false);
                                 self.openEDialogEnable(false);
                                 self.conditionListEnable(false);
-                                self.conditionList("");
-                                self.dataE = null;
-                                self.scheFuncCondList([]);
                             }
                             
                             self.unhookingEnable(true);
@@ -495,20 +490,38 @@ module nts.uk.at.view.ksm011 {
                         self.openEDialogEnable(false);
                         self.conditionListEnable(false);
                     } else {
-                        self.alarmCheckEnable(true);
+                        if(self.selectedCompFunc() == 1) {
+                            self.alarmCheckEnable(false);
+                            self.alarmMethodEnable(false);
+                            self.openEDialogEnable(false);
+                            self.conditionListEnable(false);
+                        } else {
+                            self.alarmCheckEnable(true);
+                        }
                         
                         if(self.selectedAlarmCheck() == 0) {
-                            self.alarmMethodEnable(true);
+                            if(self.selectedCompFunc() == 1) {
+                                self.alarmCheckEnable(false);
+                                self.alarmMethodEnable(false);
+                                self.openEDialogEnable(false);
+                                self.conditionListEnable(false);
+                            } else {
+                                self.alarmMethodEnable(true);
+                            }
                             
                             if(self.selectedAlarmMethod() == 0) {
                                 self.openEDialogEnable(false);
                                 self.conditionListEnable(false);
-                                self.conditionList("");
-                                self.dataE = null;
-                                self.scheFuncCondList([]);
                             } else {
-                                self.openEDialogEnable(true);
-                                self.conditionListEnable(true);
+                                if(self.selectedCompFunc() == 1) {
+                                    self.alarmCheckEnable(false);
+                                    self.alarmMethodEnable(false);
+                                    self.openEDialogEnable(false);
+                                    self.conditionListEnable(false);
+                                } else {
+                                    self.openEDialogEnable(true);
+                                    self.conditionListEnable(true);
+                                }
                             }
                         } else {
                             self.alarmMethodEnable(false);
@@ -536,12 +549,16 @@ module nts.uk.at.view.ksm011 {
                     if(value == 0) {
                         self.openEDialogEnable(false);
                         self.conditionListEnable(false);
-                        self.conditionList("");
-                        self.dataE = null;
-                        self.scheFuncCondList([]);
                     } else {
-                        self.openEDialogEnable(true);
-                        self.conditionListEnable(true);
+                        if(self.selectedCompFunc() == 1) {
+                            self.alarmCheckEnable(false);
+                            self.alarmMethodEnable(false);
+                            self.openEDialogEnable(false);
+                            self.conditionListEnable(false);
+                        } else {
+                            self.openEDialogEnable(true);
+                            self.conditionListEnable(true);
+                        }
                     }
                 });
                 
@@ -607,6 +624,7 @@ module nts.uk.at.view.ksm011 {
                         });
                         
                         self.conditionList(conds.trim().slice(0, -1));
+                        self.oldScheFuncCondList = self.scheFuncCondList();
                     } else {
                         self.selectedAlarm(1); 
                         self.selectedConfirmed(1); 
@@ -647,7 +665,17 @@ module nts.uk.at.view.ksm011 {
                         if(self.selectedOptionComp() == 0) {
                             self.alarmCheckEnable(false);
                             self.alarmMethodEnable(false);
+                        } else {
+                            self.alarmCheckEnable(true);
+                            if(self.selectedAlarmCheck() == 1) {
+                                self.alarmMethodEnable(false);
+                                self.openEDialogEnable(false);
+                                self.conditionListEnable(false);
+                            }
                         }
+                    } else {
+                        self.unhookingEnable(false);
+                        self.confirmEnable(false);
                     }
                     
                     dfd.resolve();
@@ -793,18 +821,34 @@ module nts.uk.at.view.ksm011 {
                 }
                 
                 var conditionData = [];
-                if(self.dataE != null && self.dataE.length > 0) {
-                    _.forEach(self.dataE, function(code) {
-                        conditionData.push({ 
-                            conditionNo: Number(code)
+                if(self.selectedCompFunc() == 0 && self.selectedOptionComp() == 1 && self.selectedAlarmCheck() == 0 && self.selectedAlarmMethod() == 1) {
+                    if(self.dataE != null && self.dataE.length > 0) {
+                        _.forEach(self.dataE, function(code) {
+                            conditionData.push({ 
+                                conditionNo: Number(code)
+                            });
                         });
-                    });
+                    } else {
+                        _.forEach(self.scheFuncCondList(), function(item) {
+                            conditionData.push({ 
+                                conditionNo: Number(item.conditionNo)
+                            });
+                        });                    
+                    }
                 } else {
-                    _.forEach(self.scheFuncCondList(), function(item) {
-                        conditionData.push({ 
-                            conditionNo: Number(item.conditionNo)
-                        });
-                    });                    
+                    if(self.selectedOptionComp() == 0 || self.selectedAlarmCheck() == 1 || self.selectedAlarmMethod() == 0) {
+                        _.forEach(self.oldScheFuncCondList, function(item) {
+                            conditionData.push({ 
+                                conditionNo: Number(item.conditionNo)
+                            });
+                        }); 
+                    } else {
+                        _.forEach(self.oldScheFuncCondList, function(item) {
+                            conditionData.push({ 
+                                conditionNo: Number(item.conditionNo)
+                            });
+                        }); 
+                    }
                 }
                 
                 var data = new ScheFuncControlDto({
