@@ -404,7 +404,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
         proceed() {
             let errorGrid: any = $("#dpGrid").ntsGrid("errors");
-            if(errorGrid.length == 0){
+            if(errorGrid == undefined || errorGrid.length == 0){
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             var self = this;
@@ -477,7 +477,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         proceedSave() {
             let errorGrid: any = $("#dpGrid").ntsGrid("errors");
-            if(errorGrid.length == 0){
+            if(errorGrid == undefined || errorGrid.length == 0){
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             var self = this;
