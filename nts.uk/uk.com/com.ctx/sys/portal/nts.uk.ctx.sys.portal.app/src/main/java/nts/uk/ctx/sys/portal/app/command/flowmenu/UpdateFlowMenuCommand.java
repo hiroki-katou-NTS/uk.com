@@ -7,7 +7,7 @@ import lombok.Value;
 
 @Value
 public class UpdateFlowMenuCommand {
-	private String toppagePartID;	
+	private String topPagePartID;	
 	//top page code
 	private String topPageCode;
 	//top page name
