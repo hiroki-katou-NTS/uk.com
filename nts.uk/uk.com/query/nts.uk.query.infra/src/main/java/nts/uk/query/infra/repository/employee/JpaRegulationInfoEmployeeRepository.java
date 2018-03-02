@@ -162,6 +162,16 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 					cb.lessThan(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodEnd()),
 					cb.greaterThan(root.get(EmployeeDataView_.absEndDate), paramQuery.getPeriodStart()));
 			incumbentCondition = cb.and(comDateCondition, absDateCondition);
+		} else {
+			Predicate comDateCondition = cb.or(
+					cb.greaterThan(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodStart()),
+					cb.lessThan(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodStart()),
+					cb.greaterThan(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodEnd()),
+					cb.lessThan(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodEnd()));
+			Predicate absDateCondition = cb.or(
+					cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodEnd()),
+					cb.lessThanOrEqualTo(root.get(EmployeeDataView_.absEndDate), paramQuery.getPeriodStart()));
+			incumbentCondition = cb.and(comDateCondition, absDateCondition);
 		}
 
 		// include workers on leave condition
@@ -176,6 +186,19 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 					cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodStart()),
 					cb.lessThanOrEqualTo(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodEnd()),
 					cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodEnd()));
+			Predicate frameNoCondition = cb.equal(root.get(EmployeeDataView_.tempAbsFrameNo), LEAVE_ABSENCE_QUOTA_NO);
+			workerOnLeaveCondition = cb.and(comDateCondition, absDateCondition, frameNoCondition);
+		} else {
+			Predicate comDateCondition = cb.or(
+					cb.greaterThan(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodStart()),
+					cb.lessThan(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodStart()),
+					cb.greaterThan(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodEnd()),
+					cb.lessThan(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodEnd()));
+			Predicate absDateCondition = cb.or(
+					cb.greaterThan(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodStart()),
+					cb.lessThan(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodStart()),
+					cb.greaterThan(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodEnd()),
+					cb.lessThan(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodEnd()));
 			Predicate frameNoCondition = cb.equal(root.get(EmployeeDataView_.tempAbsFrameNo), LEAVE_ABSENCE_QUOTA_NO);
 			workerOnLeaveCondition = cb.and(comDateCondition, absDateCondition, frameNoCondition);
 		}
@@ -195,11 +218,29 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			Predicate frameNoCondition = cb.notEqual(root.get(EmployeeDataView_.tempAbsFrameNo),
 					LEAVE_ABSENCE_QUOTA_NO);
 			occupancyCondition = cb.and(comDateCondition, absDateCondition, frameNoCondition);
+		} else {
+			Predicate comDateCondition = cb.or(
+					cb.greaterThan(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodStart()),
+					cb.lessThan(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodStart()),
+					cb.greaterThan(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodEnd()),
+					cb.lessThan(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodEnd()));
+			Predicate absDateCondition = cb.or(
+					cb.greaterThan(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodStart()),
+					cb.lessThan(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodStart()),
+					cb.greaterThan(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodEnd()),
+					cb.lessThan(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodEnd()));
+			Predicate frameNoCondition = cb.notEqual(root.get(EmployeeDataView_.tempAbsFrameNo),
+					LEAVE_ABSENCE_QUOTA_NO);
+			occupancyCondition = cb.and(comDateCondition, absDateCondition, frameNoCondition);
 		}
 
 		// include retire condition
 		if (paramQuery.getIncludeRetirees()) {
 			retireCondition = cb.greaterThan(root.get(EmployeeDataView_.comEndDate), paramQuery.getRetireStart());
+		} else {
+			retireCondition = cb.and(
+					cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getRetireEnd()),
+					cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comStrDate), paramQuery.getRetireStart()));
 		}
 
 		// set condition
