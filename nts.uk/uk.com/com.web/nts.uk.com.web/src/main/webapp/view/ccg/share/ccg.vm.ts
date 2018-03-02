@@ -233,7 +233,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 let dfd = $.Deferred<void>();
                 let self = this;
                 let param = self.queryParam;
-                param.filterByEmployment = self.showClosure;
+                param.filterByEmployment = false;
                 param.employmentCodes = [];
                 param.filterByDepartment = false;
                 param.departmentCodes = [];
@@ -256,6 +256,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 // set employments code condition
                 if (self.showClosure && self.selectedClosure() != ConfigEnumClosure.CLOSURE_ALL) {
                     service.getEmploymentCodeByClosureId(self.selectedClosure()).done(data => {
+                        param.filterByEmployment = true;
                         param.employmentCodes = data;
                         dfd.resolve();
                     });
