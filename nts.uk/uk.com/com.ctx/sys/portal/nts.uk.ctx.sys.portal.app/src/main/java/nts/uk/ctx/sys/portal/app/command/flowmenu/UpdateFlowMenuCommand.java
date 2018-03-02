@@ -13,9 +13,9 @@ public class UpdateFlowMenuCommand {
 	//top page name
 	private String topPageName;
 	//width size
-	private int widthSize;
+	private int width;
 	//height size
-	private int heightSize;
+	private int height;
 	
 	/** File ID */
 	private String fileID;
