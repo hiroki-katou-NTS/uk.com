@@ -17,10 +17,6 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         employeeName: KnockoutObservable<string> = ko.observable("");
         //Pre-POST
         prePostSelected: KnockoutObservable<number> = ko.observable(2);
-        prePostItems: KnockoutObservableArray<any> = ko.observableArray([
-            { prePostCode: 0, prePostName: text('KAF009_9') },
-            { prePostCode: 1, prePostName: text('KAF009_10') }
-        ]);
         defaultPrePost: number = 0;
         workState: KnockoutObservable<boolean> = ko.observable(true);
         typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
