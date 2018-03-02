@@ -23,9 +23,11 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
+import nts.uk.ctx.pereg.app.find.processor.PeregProcessor;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
@@ -67,6 +69,9 @@ public class RegisterLayoutFinder {
 	@Inject
 
 	private InitDefaultValue initDefaultValue;
+	
+	@Inject
+	private PeregProcessor processor;
 
 	// sonnlb end
 
@@ -195,6 +200,13 @@ public class RegisterLayoutFinder {
 						command.getHireDate(), item.isRequired());
 
 				item.setLstComboBoxValue(comboValues);
+				PerInfoItemDefForLayoutDto dto = new PerInfoItemDefForLayoutDto();
+				dto.setItemTypeState(itemDef.getItemTypeState());
+				dto.setLstComboxBoxValue(comboValues);
+				if(setItem == null) {
+					Object value =  processor.getValue(dto);
+					item.setValue(value);
+				}
 
 			}
 		}

@@ -263,7 +263,7 @@ public class PeregProcessor {
 		return classItemList;
 	}
 	
-	private Object getValue(PerInfoItemDefForLayoutDto item) {
+	public Object getValue(PerInfoItemDefForLayoutDto item) {
 		Object value = null;
 		if(item.getItemTypeState().getItemType() == ItemType.SINGLE_ITEM.value) {
 			SingleItemDto singleItem = (SingleItemDto) item.getItemTypeState();
