@@ -12,7 +12,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -65,9 +64,7 @@ public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento
 	 */
 	@Override
 	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
-		if (workTypeCode != null && !StringUtil.isNullOrEmpty(workTypeCode.v(), true)) {
-			this.entity.setWorkTypeCode(workTypeCode.v());
-		}
+		this.entity.setWorkTypeCode(workTypeCode.v());
 	}
 
 	/*
@@ -79,15 +76,13 @@ public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento
 	 */
 	@Override
 	public void setWorkingHours(List<TimeZone> workingHours) {
-		if (!CollectionUtil.isEmpty(workingHours)){
-			this.entity.setKshmtWorkCatTimeZones(workingHours.stream().map(item -> {
-				KshmtWorkCatTimeZone kshmtWorkCatTimeZone = this.mapKshmtWorkCatTimeZone.getOrDefault(Integer.valueOf(item.getCnt()), new KshmtWorkCatTimeZone());
-				item.saveToMemento(new JpaTimezoneSetMemento<KshmtWorkCatTimeZone>(
-						this.entity.getKshmtPerWorkCatPK().getHistoryId(),
-						this.entity.getKshmtPerWorkCatPK().getPerWorkCatAtr(), kshmtWorkCatTimeZone));
-				return kshmtWorkCatTimeZone;
-			}).collect(Collectors.toList()));
-		}
+		this.entity.setKshmtWorkCatTimeZones(workingHours.stream().map(item -> {
+			KshmtWorkCatTimeZone kshmtWorkCatTimeZone = this.mapKshmtWorkCatTimeZone.getOrDefault(Integer.valueOf(item.getCnt()), new KshmtWorkCatTimeZone());
+			item.saveToMemento(new JpaTimezoneSetMemento<KshmtWorkCatTimeZone>(
+					this.entity.getKshmtPerWorkCatPK().getHistoryId(),
+					this.entity.getKshmtPerWorkCatPK().getPerWorkCatAtr(), kshmtWorkCatTimeZone));
+			return kshmtWorkCatTimeZone;
+		}).collect(Collectors.toList()));
 	}
 
 	/*
@@ -99,8 +94,10 @@ public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento
 	 */
 	@Override
 	public void setWorkTimeCode(Optional<WorkTimeCode> workTimeCode) {
-		if (workTimeCode.isPresent() && !StringUtil.isNullOrEmpty(workTimeCode.get().v(), true)) {
+		if (workTimeCode != null && workTimeCode.isPresent()){
 			this.entity.setWorkTimeCode(workTimeCode.get().v());
+		}  else {
+			this.entity.setWorkTimeCode(null);
 		}
 	}
 

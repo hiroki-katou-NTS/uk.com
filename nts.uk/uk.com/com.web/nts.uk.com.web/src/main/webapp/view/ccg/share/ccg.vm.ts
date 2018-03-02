@@ -54,6 +54,7 @@ module nts.uk.com.view.ccg.share.ccg {
             showWorktype: boolean; // 勤種条件
             isMultiple: boolean; // 選択モード
 
+            // flags
             isShow: KnockoutObservable<boolean>;
             isOpenStatusOfEmployeeList: KnockoutObservable<boolean>;
             isOpenEmploymentList: KnockoutObservable<boolean>;
@@ -61,6 +62,7 @@ module nts.uk.com.view.ccg.share.ccg {
             isOpenJoptitleList: KnockoutObservable<boolean>;
             isOpenWorkplaceList: KnockoutObservable<boolean>;
             isOpenWorkTypeList: KnockoutObservable<boolean>;
+            isInDialog: boolean;
 
             // tabs
             tabs: KnockoutObservableArray<any>;
@@ -233,7 +235,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 let dfd = $.Deferred<void>();
                 let self = this;
                 let param = self.queryParam;
-                param.filterByEmployment = self.showClosure;
+                param.filterByEmployment = false;
                 param.employmentCodes = [];
                 param.filterByDepartment = false;
                 param.departmentCodes = [];
@@ -256,6 +258,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 // set employments code condition
                 if (self.showClosure && self.selectedClosure() != ConfigEnumClosure.CLOSURE_ALL) {
                     service.getEmploymentCodeByClosureId(self.selectedClosure()).done(data => {
+                        param.filterByEmployment = true;
                         param.employmentCodes = data;
                         dfd.resolve();
                     });
@@ -547,6 +550,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.showWorktype = options.showWorktype;
                 self.isMultiple = options.isMutipleCheck;
 
+                /** Optional properties */
+                self.isInDialog = options.isInDialog ? options.isInDialog : false;
+
                 // return data function
                 self.returnDataFromCcg001 = options.returnDataFromCcg001;
             }
@@ -555,13 +561,20 @@ module nts.uk.com.view.ccg.share.ccg {
              * Set component height
              */
             private setComponentHeight(): void {
+                let self = this;
+                const headerHeight = $('#header').outerHeight(true);
+                const functionAreaHeight = $('#functions-area').length > 0 ? $('#functions-area').outerHeight(true) : 0;
+                let componentHeight = 0;
+
                 // set component height
-                const headerHeight = $('#header').outerHeight();
-                const functionAreaHeight = $('#functions-area').length > 0 ? $('#functions-area').outerHeight() : 0;
-                const componentHeight = window.innerHeight - headerHeight - functionAreaHeight - 15;
+                if (self.isInDialog) {
+                    componentHeight =  window.innerHeight - functionAreaHeight - 15;
+                } else {
+                    componentHeight = window.innerHeight - headerHeight - functionAreaHeight - 15;
+                }
                 $('#component-ccg001').outerHeight(componentHeight);
-                $('#hor-scroll-button-hide').outerHeight(componentHeight);
-                $('#ccg001-btn-search-drawer').outerHeight(componentHeight / 2);
+                    $('#hor-scroll-button-hide').outerHeight(componentHeight);
+                    $('#ccg001-btn-search-drawer').outerHeight(componentHeight / 2);
 
                 // set tab panel height.
                 const tabpanelHeight = componentHeight - $('#ccg001-header').outerHeight(true) - 10;
@@ -606,32 +619,60 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 service.getEmployeeRangeSelection().done((data: EmployeeRangeSelection) => {
                     if (data) {
+                        // set employeeRangeSelection
                         self.employeeRangeSelection = data;
+
+                        // get selected closure id
                         switch (self.systemType) {
                             case ConfigEnumSystemType.PERSONAL_INFORMATION:
-                                dfd.resolve(data.personalInfo.selectedClosureId);
+                                if (!nts.uk.util.isNullOrEmpty(data.personalInfo.selectedClosureId)) {
+                                    dfd.resolve(data.personalInfo.selectedClosureId);
+                                } else {
+                                    self.getSelectedClosureByEmployment().done(id => dfd.resolve(id));
+                                }
                                 break;
                             case ConfigEnumSystemType.EMPLOYMENT:
-                                dfd.resolve(data.employmentInfo.selectedClosureId);
+                                if (!nts.uk.util.isNullOrEmpty(data.employmentInfo.selectedClosureId)) {
+                                    dfd.resolve(data.employmentInfo.selectedClosureId);
+                                } else {
+                                    self.getSelectedClosureByEmployment().done(id => dfd.resolve(id));
+                                }
                                 break;
                             case ConfigEnumSystemType.SALARY:
-                                dfd.resolve(data.salaryInfo.selectedClosureId);
+                                if (!nts.uk.util.isNullOrEmpty(data.salaryInfo.selectedClosureId)) {
+                                    dfd.resolve(data.salaryInfo.selectedClosureId);
+                                } else {
+                                    self.getSelectedClosureByEmployment().done(id => dfd.resolve(id));
+                                }
                                 break;
                             case ConfigEnumSystemType.HUMAN_RESOURCES:
-                                dfd.resolve(data.humanResourceInfo.selectedClosureId);
+                                if (!nts.uk.util.isNullOrEmpty(data.humanResourceInfo.selectedClosureId)) {
+                                    dfd.resolve(data.humanResourceInfo.selectedClosureId);
+                                } else {
+                                    self.getSelectedClosureByEmployment().done(id => dfd.resolve(id));
+                                }
                                 break;
                             default: break; // systemType not found
                         }
                     } else {
-                        service.getCurrentHistoryItem().done(item => {
-                            if (item) {
-                                service.getClosureTiedByEmployment(item.employmentCode).done(id => dfd.resolve(id));
-                            } else {
-                                const DEFAULT_VALUE = 1;
-                                // Q&A: #88282 (update specs)
-                                dfd.resolve(DEFAULT_VALUE);
-                            }
-                        });
+                        self.getSelectedClosureByEmployment().done(id => dfd.resolve(id));
+                    }
+                });
+                return dfd.promise();
+            }
+
+            /**
+             * Get selected closure by employment
+             */
+            private getSelectedClosureByEmployment(): JQueryPromise<number> {
+                let dfd = $.Deferred<number>();
+                service.getCurrentHistoryItem().done(item => {
+                    if (item) {
+                        service.getClosureTiedByEmployment(item.employmentCode).done(id => dfd.resolve(id));
+                    } else {
+                        const DEFAULT_VALUE = 1;
+                        // Q&A: #88282 (update specs)
+                        dfd.resolve(DEFAULT_VALUE);
                     }
                 });
                 return dfd.promise();
@@ -773,13 +814,11 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             private isNotFutureDate(acquiredBaseDate: string): boolean {
                 let self = this;
-                if (self.showBaseDate){
-                    if (self.isFutureDate(moment.utc(acquiredBaseDate))) {
+                if (self.showBaseDate && self.isFutureDate(moment.utc(acquiredBaseDate))) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_853" });
                         return false;
-                    }
                 }
-                if (self.isFutureDate(self.periodEnd())) {
+                if (self.showPeriod && self.isFutureDate(self.periodEnd())) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_860" });
                     return false;
                 }
@@ -841,8 +880,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 let dfd = $.Deferred<void>();
                 let self = this;
                 // set advanced search param
-                self.queryParam.periodStart = self.periodStart().format(CcgDateFormat.DEFAULT_FORMAT);
-                self.queryParam.periodEnd = self.periodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
                 self.queryParam.retireStart = self.statusPeriodStart().format(CcgDateFormat.DEFAULT_FORMAT);
                 self.queryParam.retireEnd = self.statusPeriodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
 
@@ -1001,7 +1038,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 $("#ccg001-partg-start").ntsEditor("validate");
                 $("#ccg001-partg-end").ntsEditor("validate");
-                return $("#ccg001-partg-start").ntsError('hasError') || $("#ccg001-partg-start").ntsError('hasError');
+                return $("#ccg001-partg-start").ntsError('hasError') || $("#ccg001-partg-end").ntsError('hasError');
             }
 
             /**
@@ -1042,7 +1079,10 @@ module nts.uk.com.view.ccg.share.ccg {
             public setBaseDateAndPeriod(): JQueryPromise<void> { // format: YYYY-MM-DD
                 let dfd = $.Deferred<void>();
                 let self = this;
-                // set base date
+                // set default base date
+                self.queryParam.baseDate = moment().format(CcgDateFormat.DEFAULT_FORMAT);
+
+                // set base date = user input
                 if (self.showBaseDate) {
                     self.acquiredBaseDate(self.baseDate().format(CcgDateFormat.DEFAULT_FORMAT));
                 }
@@ -1051,6 +1091,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (self.showPeriod) {
                     self.queryParam.periodStart = self.periodStart().format(CcgDateFormat.DEFAULT_FORMAT);
                     self.queryParam.periodEnd = self.periodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
+                    if (!self.showBaseDate) {
+                        self.acquiredBaseDate(self.queryParam.periodEnd);
+                    }
                 } else {
                     // set period = base date (Period accuracy is YMD)
                     self.queryParam.periodStart = self.baseDate().format(CcgDateFormat.DEFAULT_FORMAT);
@@ -1061,8 +1104,11 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (self.showPeriodYM) {
                     self.calculatePeriod().done(period => {
                         if (!self.showBaseDate) {
+                            // set base date = period end
                             self.acquiredBaseDate(period.endDate);
                         }
+
+                        // set period
                         self.queryParam.periodStart = period.startDate;
                         self.queryParam.periodEnd = period.endDate;
                         dfd.resolve();
@@ -1132,8 +1178,10 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 nts.uk.ui.block.invisible(); // block ui
                 if (self.showClosure) { // save EmployeeRangeSelection if show closure
+                    // check data exist
                     let empRangeSelection = self.employeeRangeSelection ?
                         self.employeeRangeSelection : new EmployeeRangeSelection();
+
                     switch (self.systemType) {
                         case ConfigEnumSystemType.PERSONAL_INFORMATION:
                             empRangeSelection.personalInfo.selectedClosureId = self.selectedClosure();

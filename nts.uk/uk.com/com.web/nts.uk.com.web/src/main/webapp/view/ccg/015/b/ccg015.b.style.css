@@ -4,16 +4,18 @@
 	overflow: hidden;
 }
 
-#tab_url {
-	height: 350px;
+#tab_url, #tab_standar_widget, #tab_optional_widget, #tab_dash_board, #tab_flow_menu {
+	height: 360px;
 }
 
 .float_left {
 	float: left;
 }
+.ui-widget{
+	height: 300px !important;
+}
 
 .switch_btn_style {
-	float: left;
 	margin-bottom: 20px;
 }
 
