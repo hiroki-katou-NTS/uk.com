@@ -334,7 +334,8 @@ module nts.uk.com.view.cmf001.share.model {
         characterConditionValue1: KnockoutObservable<string>;
         numberConditionValue2: KnockoutObservable<number>;
         numberConditionValue1: KnockoutObservable<number>;
-        receiptItemNumber: KnockoutObservable<number>;
+        acceptItemNum: KnockoutObservable<number>;
+        conditionSetCd: KnockoutObservable<string>;
         
         constructor(receiptItemName: string, selectComparisonCondition: number,timeConditionValue2: number, timeConditionValue1: number, timeMomentConditionValue2:number, timeMomentConditionValue1: number,
         dateConditionValue2: string, dateConditionValue1: string, characterConditionValue2: string, characterConditionValue1: string, numberConditionValue2: number, numberConditionValue1: number) {

@@ -47,7 +47,7 @@ module nts.uk.com.view.cmf001.m.viewmodel {
         
         //設定
         saveData() {
-         //nts.uk.ui.dialog.alertError({ messageId: "Msg_892", messageParams: [nts.uk.resource.getText("M2_7")] });
+            //nts.uk.ui.dialog.alertError({ messageId: "Msg_892", messageParams: [nts.uk.resource.getText("M2_7")] });
             var self = this;
             setShared('CMF001mOutput', {
 				checked: self.checked(),

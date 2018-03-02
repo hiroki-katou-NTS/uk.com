@@ -13,6 +13,7 @@ module nts.uk.com.view.cmf001.l.viewmodel {
         compareItems: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getCompareTypes());
         acceptScreenConditionSetting: KnockoutObservable<model.AcceptScreenConditionSetting>;
         selectedDataType: number;
+        selectComparisonCondition: KnockoutObservable<string>;
         screenMode: number;
         constructor() {
             var self = this;  
@@ -23,7 +24,7 @@ module nts.uk.com.view.cmf001.l.viewmodel {
                 let condition = params.condition;
                 self.acceptScreenConditionSetting = ko.observable(new model.AcceptScreenConditionSetting(condition.receiptItemName, condition.selectComparisonCondition, condition.timeConditionValue2, condition.timeConditionValue1, condition.timeMomentConditionValue2, condition.timeMomentConditionValue1, condition.dateConditionValue2, condition.dateConditionValue1, condition.characterConditionValue2, condition.characterConditionValue1, condition.numberConditionValue2, condition.numberConditionValue1));
             } else {
-                self.acceptScreenConditionSetting = ko.observable(new model.AcceptScreenConditionSetting('条件値', null , null, null, null, null, null, null,null, null, null, null));
+                self.acceptScreenConditionSetting = ko.observable(new model.AcceptScreenConditionSetting('条件値', 0 , null, null, null, null, null, null,null, null, null, null));
             }
         }
         
@@ -36,9 +37,10 @@ module nts.uk.com.view.cmf001.l.viewmodel {
         }
         
         saveSetting(){
-            var self = this; 
+            var self = this;
             setShared('CMF001lOutput', ko.toJS(self.acceptScreenConditionSetting), true);
             nts.uk.ui.windows.close();
+            
         }
     }
 }

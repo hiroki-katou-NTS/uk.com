@@ -26,57 +26,58 @@ public class AcScreenCondSetCommand
     /**
     * 比較条件選択
     */
-    private int selCompareCond;
+    private int selectComparisonCondition;
     
     /**
     * 時間‗条件値2
     */
-    private int timeCondVal2;
+    private int timeConditionValue2;
     
     /**
     * 時間‗条件値1
     */
-    private int timeCondVal1;
+    private int timeConditionValue1;
     
     /**
     * 時刻‗条件値2
     */
-    private int timeMoCondVal2;
+    private int timeMomentConditionValue2;
     
     /**
     * 時刻‗条件値1
     */
-    private int timeMoCondVal1;
+    private int timeMomentConditionValue1;
     
     /**
     * 日付‗条件値2
     */
-    private GeneralDate dateCondVal2;
+    private GeneralDate dateConditionValue2;
     
     /**
     * 日付‗条件値1
     */
-    private GeneralDate dateCondVal1;
+    private GeneralDate dateConditionValue1;
     
     /**
     * 文字‗条件値2
     */
-    private String charCondVal2;
+    private String characterConditionValue2;
     
     /**
     * 文字‗条件値1
     */
-    private String charCondVal1;
+    private String characterConditionValue1;
     
     /**
     * 数値‗条件値2
     */
-    private String numCondVal2;
+    private String numberConditionValue2;
     
     /**
     * 数値‗条件値1
     */
-    private String numCondVal1;
+    private String numberConditionValue1;
+    
     
     private Long version;
 
