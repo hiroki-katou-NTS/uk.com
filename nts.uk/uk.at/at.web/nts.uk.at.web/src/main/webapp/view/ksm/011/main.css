@@ -237,5 +237,14 @@ button.nts-switch-button {
 }
 
 .combo {
-	margin-left: 184px;
+	margin-left: 186px;
+}
+
+.combo-d .ui-igcombo-wrapper {
+	width: 65px;
+}
+
+.combo-d {
+	margin-left: 245px;
+	margin-top: -24px;
 }
