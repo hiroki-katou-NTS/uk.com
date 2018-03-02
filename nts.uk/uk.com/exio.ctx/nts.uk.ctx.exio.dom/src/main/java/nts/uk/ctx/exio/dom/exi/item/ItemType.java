@@ -6,10 +6,10 @@ package nts.uk.ctx.exio.dom.exi.item;
  *
  */
 public enum ItemType {
-	NUMERIC_TYPE(0, "Enum_ItemType_NUMERIC_TYPE"),
-	CHARACTER_TYPE(1, "Enum_ItemType_CHARACTER_TYPE"),
-	DATE_TYPE(2, "Enum_ItemType_DATE_TYPE"),
-	TIME_TYPE(3, "Enum_ItemType_TIME_TYPE");
+	NUMERIC(0, "Enum_ItemType_NUMERIC"),
+	CHARACTER(1, "Enum_ItemType_CHARACTER"),
+	DATE(2, "Enum_ItemType_DATE"),
+	INS_TIME(3, "Enum_ItemType_INS_TIME");
 	
 	/** The value. */
 	public final int value;
