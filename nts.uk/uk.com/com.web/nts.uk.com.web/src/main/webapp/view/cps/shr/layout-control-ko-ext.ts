@@ -873,6 +873,7 @@ module nts.custombinding {
                                     optionsText: 'optionText',
                                     optionsValue: 'optionValue',
                                     enable: editable,
+                                    required: required,
                                     visibleItemsCount: 5,
                                     dropDownAttachedToBody: true,
                                     columns: [{ prop: 'optionText', length: 10 }]
