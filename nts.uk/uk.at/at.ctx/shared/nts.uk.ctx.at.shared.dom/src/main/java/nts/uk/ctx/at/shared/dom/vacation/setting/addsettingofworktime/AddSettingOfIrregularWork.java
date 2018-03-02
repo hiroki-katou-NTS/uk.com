@@ -16,6 +16,14 @@ public class AddSettingOfIrregularWork extends AggregateRoot implements AddSetti
 	@Getter
 	private HolidayCalcMethodSet holidayCalcMethodSet;
 	
+	/**
+	 * Constructor 
+	 */
+	public AddSettingOfIrregularWork(CompanyId companyId, HolidayCalcMethodSet holidayCalcMethodSet) {
+		super();
+		this.companyId = companyId;
+		this.holidayCalcMethodSet = holidayCalcMethodSet;
+	}
 	
 	//「休暇分を含める割増計算詳細設定」or「休暇分を含める就業計算詳細設定」の属性「加算する」を取得する
 	public NotUseAtr getNotUseAtr(StatutoryDivision statutoryDivision) {
@@ -43,5 +51,7 @@ public class AddSettingOfIrregularWork extends AggregateRoot implements AddSetti
 		}
 		return calculationByActualTimeAtr;	
 	}
+
+
 	
 }

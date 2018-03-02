@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAI_BREAK_TIME")
+@Table(name = "KRCDT_DAI_BREAK_TIME_TS")
 public class KrcdtDaiBreakTime extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -33,26 +33,26 @@ public class KrcdtDaiBreakTime extends UkJpaEntity implements Serializable {
 	@Column(name = "STR_STAMP_TIME")
 	public Integer startStampTime;
 
-	@Column(name = "STR_STAMP_ROUDING_TIME_DAY")
-	public Integer startStampRoundingTimeDay;
-
-	@Column(name = "STR_STAMP_PLACE_CODE")
-	public String startStampPlaceCode;
-
-	@Column(name = "STR_STAMP_SOURCE_INFO")
-	public Integer startStampSourceInfo;
+//	@Column(name = "STR_STAMP_ROUDING_TIME_DAY")
+//	public Integer startStampRoundingTimeDay;
+//
+//	@Column(name = "STR_STAMP_PLACE_CODE")
+//	public String startStampPlaceCode;
+//
+//	@Column(name = "STR_STAMP_SOURCE_INFO")
+//	public Integer startStampSourceInfo;
 
 	@Column(name = "END_STAMP_TIME")
 	public Integer endStampTime;
 
-	@Column(name = "END_STAMP_ROUDING_TIME_DAY")
-	public Integer endStampRoundingTimeDay;
-
-	@Column(name = "END_STAMP_PLACE_CODE")
-	public String endStampPlaceCode;
-
-	@Column(name = "END_STAMP_SOURCE_INFO")
-	public Integer endStampSourceInfo;
+//	@Column(name = "END_STAMP_ROUDING_TIME_DAY")
+//	public Integer endStampRoundingTimeDay;
+//
+//	@Column(name = "END_STAMP_PLACE_CODE")
+//	public String endStampPlaceCode;
+//
+//	@Column(name = "END_STAMP_SOURCE_INFO")
+//	public Integer endStampSourceInfo;
 
 	@Override
 	protected Object getKey() {
@@ -62,13 +62,7 @@ public class KrcdtDaiBreakTime extends UkJpaEntity implements Serializable {
 	public static List<KrcdtDaiBreakTime> toEntity(BreakTimeOfDailyPerformance breakTime) {
 		return breakTime.getBreakTimeSheets().stream().map(c -> new KrcdtDaiBreakTime(
 				new KrcdtDaiBreakTimePK(breakTime.getEmployeeId(), breakTime.getYmd(), breakTime.getBreakType().value, c.getBreakFrameNo().v()),
-					c.getStartTime() == null || c.getStartTime().getTimeWithDay() == null ? null : c.getStartTime().getTimeWithDay().valueAsMinutes(),
-					c.getStartTime() == null || c.getStartTime().getAfterRoundingTime() == null ? null : c.getStartTime().getAfterRoundingTime().valueAsMinutes(), 
-					c.getStartTime() == null || c.getStartTime().getLocationCode() == null ? null : c.getStartTime().getLocationCode().v(),
-					c.getStartTime() == null || c.getStartTime().getStampSourceInfo() == null ? null : c.getStartTime().getStampSourceInfo().value, 
-					c.getEndTime() == null || c.getEndTime().getTimeWithDay() == null ? null : c.getEndTime().getTimeWithDay().valueAsMinutes(),
-					c.getEndTime() == null || c.getEndTime().getAfterRoundingTime() == null ? null : c.getEndTime().getAfterRoundingTime().valueAsMinutes(), 
-					c.getEndTime() == null || c.getEndTime().getLocationCode() == null ? null : c.getEndTime().getLocationCode().v(),
-					c.getEndTime() == null || c.getEndTime().getStampSourceInfo() == null ? null : c.getEndTime().getStampSourceInfo().value)).collect(Collectors.toList());
+					c.getStartTime() == null ? null : c.getStartTime().valueAsMinutes(),
+					c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes())).collect(Collectors.toList());
 	}
 }

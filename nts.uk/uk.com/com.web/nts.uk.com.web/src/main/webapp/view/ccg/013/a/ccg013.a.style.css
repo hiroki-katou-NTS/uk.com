@@ -1,12 +1,8 @@
 @CHARSET "UTF-8";
 
-#contents-area {
-	display: table;
-}
-
-#left-content {
-	/* display: table-cell; */
-	
+.fixed-flex-layout-left {
+	width: 340px;
+	height: 328px;
 }
 
 #single-list>tbody>tr>td:first-child {
@@ -16,12 +12,6 @@
 #single-list .icon-dot {
 	vertical-align: middle;
 	font-size: 0px;
-}
-
-.right-content {
-	width: 75%;
-	padding-left: 50px;
-	display: table-cell;
 }
 
 #A_LST_001 {
@@ -171,7 +161,7 @@ button.search-btn {
 }
 
 #menubar-tabs .menubar-container .title-menu .titlemenu-placeholder {
-	float: left;
+	display: inline-block;
 	height: 58px;
 	width: 134px;
 	border: 1px dashed #666;

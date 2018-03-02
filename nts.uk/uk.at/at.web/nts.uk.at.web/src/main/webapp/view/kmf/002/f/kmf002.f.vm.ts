@@ -32,15 +32,17 @@ module nts.uk.at.view.kmf002.f {
                 _self.enableTypeSelectUnitRadioBox = ko.observable(false);
                 
                 _self.selectUnitCheck.subscribe(function(newValue) {
-                    if (newValue == false) {
-                        _self.isManageWkpPublicHd(BoolValue.FALSE);
-                        _self.isManageEmpPublicHd(BoolValue.FALSE);
-                        _self.enableTypeSelectUnitRadioBox(false);
-                    } else {
-                        _self.isManageWkpPublicHd(BoolValue.TRUE);
-                        _self.valueDefaultTypeSelect(0);
-                        _self.enableTypeSelectUnitRadioBox(true);
-                    }
+                        if (newValue == false) {
+                            _self.isManageWkpPublicHd(BoolValue.FALSE);
+                            _self.isManageEmpPublicHd(BoolValue.FALSE);
+                            _self.enableTypeSelectUnitRadioBox(false);
+                        } else if (_self.isManageWkpPublicHd() == BoolValue.FALSE && _self.isManageEmpPublicHd() == BoolValue.FALSE) {
+                            _self.isManageEmpPublicHd(BoolValue.TRUE);
+                            _self.valueDefaultTypeSelect(0);
+                            _self.enableTypeSelectUnitRadioBox(true);
+                        } else {
+                            _self.enableTypeSelectUnitRadioBox(true);
+                        }   
                 });
                 
                 _self.selectEmployee.subscribe(function(newValue) {

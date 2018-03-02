@@ -2,6 +2,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
     import common = nts.uk.at.view.kaf009.share.common;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     export class ScreenModel {
+        isNewScreen: KnockoutObservable<boolean> = ko.observable(true);
         dateType: string = 'YYYY/MM/DD';
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
         //画面モード(表示/編集)
@@ -136,8 +137,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             //get Common Setting
             service.getGoBackSetting().done(function(settingData: any) {
                 if(!nts.uk.util.isNullOrEmpty(settingData)){
-                    self.displayTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg);
-                    self.displayReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg);
+                    self.displayTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false);
+                    self.displayReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false);
                     //申請制限設定.申請理由が必須
                     self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true: false);
                     if(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos.length>0){

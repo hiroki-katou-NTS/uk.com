@@ -74,7 +74,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	/** The select by list emp id. */
 	public final String SELECT_BY_LIST_EMP_ID = SELECT_NO_PARAM + " WHERE e.companyId = :companyId"
-			+ " AND e.bsymtEmployeeDataMngInfoPk.sId IN :employeeIds ";
+			+ " AND e.bsymtEmployeeDataMngInfoPk.sId IN :employeeIds ORDER BY e.employeeCode ASC";
 
 	// duongtv end code
 

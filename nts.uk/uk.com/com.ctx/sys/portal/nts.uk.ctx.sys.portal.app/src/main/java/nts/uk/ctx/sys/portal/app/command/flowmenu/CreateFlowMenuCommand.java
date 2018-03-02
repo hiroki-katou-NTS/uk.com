@@ -26,10 +26,12 @@ public class CreateFlowMenuCommand {
 	// Def Class attribute	
 	private int defClassAtr;
 	
+
 	public FlowMenu toDomain(String topPagePartId){
 		return FlowMenu.createFromJavaType(AppContexts.user().companyId(), topPagePartId,
 				topPageCode, topPageName,
 				TopPagePartType.FlowMenu.value, widthSize, heightSize,
-				fileID,defClassAtr);
+				fileID,defClassAtr
+				);
 	}
 }

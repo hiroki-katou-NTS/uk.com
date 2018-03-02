@@ -7,6 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 850, height: 650 };</script>
 			<com:stylefile path="ccg015.b.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="ccg015.b.start.js" />
@@ -35,21 +36,25 @@
 					<div>
 						<div tabindex="2" id="tab-panel" class="cf"
 							data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.selectedTab, direction: 'vertical' }">
-							<div id="widget">
+							<div id="standar_widget">
 								<com:ko tag="template"
-									bind="{name: 'widget-template', data: topPagePartSettingItems()[0]}"></com:ko>
+									bind="{name: 'standar-template', data: topPagePartSettingItems()[0]}"></com:ko>
+							</div>
+							<div id="optional_widget">
+								<com:ko tag="template"
+									bind="{name: 'optional-template', data: topPagePartSettingItems()[1]}"></com:ko>
 							</div>
 							<div id="dash_board">
 								<com:ko tag="template"
-									bind="{name: 'dashboard-template', data: topPagePartSettingItems()[1]}"></com:ko>
+									bind="{name: 'dashboard-template', data: topPagePartSettingItems()[2]}"></com:ko>
 							</div>
 							<div id="flow_menu">
 								<com:ko tag="template"
-									bind="{name: 'flow-template', data: topPagePartSettingItems()[2]}"></com:ko>
+									bind="{name: 'flow-template', data: topPagePartSettingItems()[3]}"></com:ko>
 							</div>
 							<div id="url">
 								<com:ko tag="template"
-									bind="{name: 'tab-URL-template', data: topPagePartSettingItems()[3]}"></com:ko>
+									bind="{name: 'tab-URL-template', data: topPagePartSettingItems()[4]}"></com:ko>
 							</div>
 						</div>
 					</div>
@@ -62,8 +67,8 @@
 				</span> <span class="padding_left_20"><button
 						onclick="nts.uk.ui.windows.close()">#{i18n.getText('CCG015_31')}</button></span>
 			</div>
-			<script type="text/html" id="widget-template">
-					<div class="float_left" id="widget_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
+			<script type="text/html" id="standar-template">
+					<div class="float_left" id="standar_widget_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
 						<label>#{i18n.getText('CCG015_28')}<br /></label>
 					</div>
 					<div tabindex ="3" class="padding_top_3 cf switch_btn_style"
@@ -74,7 +79,34 @@
 						value: usePart,
 						enable: true }"></div>
 					<div>
-						<table tabindex ="4" id="widget-list" data-bind="ntsGridList: {	
+						<table tabindex ="4" id="standarWidget-list" data-bind="ntsGridList: {	
+								showNumbering: true,							
+								height: 350,
+								dataSource: settingItems,
+								primaryKey: 'itemCode',
+								columns: $parents[1].columns,
+								multiple: false,
+								features: [{name: 'Switch', options: $parents[1].useDivisionOptions, optionsValue: 'code', optionsText: 'name'}],
+								value: $parents[1].currentCode
+							}"
+							class="cf"></table>
+					</div>
+			
+			</script>
+			
+			<script type="text/html" id="optional-template">
+					<div class="float_left" id="optional_widget_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
+						<label>#{i18n.getText('CCG015_28')}<br /></label>
+					</div>
+					<div tabindex ="3" class="padding_top_3 cf switch_btn_style"
+						data-bind="ntsSwitchButton: {
+						options: $parents[1].useDivisionOptions,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: usePart,
+						enable: true }"></div>
+					<div>
+						<table tabindex ="4" id="optionalWidget-list" data-bind="ntsGridList: {	
 								showNumbering: true,							
 								height: 350,
 								dataSource: settingItems,

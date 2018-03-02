@@ -174,7 +174,7 @@ public class DailyPerformanceErrorCodeProcessor {
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
 						.getErrorSetting(lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
 				// Seperate Error and Alarm
-				screenDto.addErrorToResponseData(lstError, lstErrorSetting);
+				//screenDto.addErrorToResponseData(lstError, lstErrorSetting);
 			}
 		}
 
@@ -299,7 +299,7 @@ public class DailyPerformanceErrorCodeProcessor {
 				screenDto.getItemValues().addAll(attendanceTimes);
 				itemValueMap = attendanceTimes.isEmpty()? Collections.emptyMap(): attendanceTimes.stream().collect(Collectors.toMap(x -> x.itemId()+"|"+data.getEmployeeId()+"|"+data.getDate(), x -> x));
 			}
-			List<DPCellDataDto> cellDatas = new ArrayList<>();
+			Set<DPCellDataDto> cellDatas = new HashSet<>();
 			if (dPControlDisplayItem.getLstAttendanceItem() != null) {
 				for (DPAttendanceItem item : dPControlDisplayItem.getLstAttendanceItem()){
 					//int a = 1;
@@ -409,7 +409,7 @@ public class DailyPerformanceErrorCodeProcessor {
 				for (int i = 0; i < lstDate.size(); i++) {
 					GeneralDate filterDate = lstDate.get(i);
 					result.add(new DPDataDto(employee.getId()+"_"+dataId, "", "", filterDate, false, employee.getId(), employee.getCode(),
-							employee.getBusinessName(), employee.getWorkplaceId()));
+							employee.getBusinessName(), employee.getWorkplaceId(), "", ""));
 					dataId++;
 				}
 			}
@@ -507,7 +507,7 @@ public class DailyPerformanceErrorCodeProcessor {
 					result.setLstHeader(lstHeader);
 					// result.setLstSheet(lstSheet);
 					result.createSheets(lstSheet);
-					result.addColumnsToSheet(lstFormat, mapDP);
+					result.addColumnsToSheet(lstFormat, mapDP, true);
 				}
 			} else {
 				// アルゴリズム「社員の勤務種別に対応する表示項目を取得する」を実行する
@@ -536,7 +536,7 @@ public class DailyPerformanceErrorCodeProcessor {
 										.collect(Collectors.toList());
 						mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
 					}
-					result.addColumnsToSheet(lstFormat, mapDP);
+					result.addColumnsToSheet(lstFormat, mapDP, true);
 					List<DPHeaderDto> lstHeader = new ArrayList<>();
 					for (FormatDPCorrectionDto dto : lstFormat) {
 						lstHeader.add(DPHeaderDto.createSimpleHeader(ADD_CHARACTER + String.valueOf(dto.getAttendanceItemId()),

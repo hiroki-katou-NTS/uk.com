@@ -51,10 +51,10 @@ public class CheckBeforeRegisterHolidayWork {
 		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
 				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason());
 
-		int workClockStart1 = command.getWorkClockStart1() == null ? -1 : command.getWorkClockStart1().intValue();
-		int workClockEnd1 = command.getWorkClockEnd1() == null ? -1 : command.getWorkClockEnd1().intValue();
-		int workClockStart2 = command.getWorkClockStart2() == null ? -1 : command.getWorkClockStart2().intValue();
-		int workClockEnd2 = command.getWorkClockEnd2() == null ? -1 : command.getWorkClockEnd2().intValue();
+		Integer workClockStart1 = command.getWorkClockStart1() == null ? null : command.getWorkClockStart1().intValue();
+		Integer workClockEnd1 = command.getWorkClockEnd1() == null ? null : command.getWorkClockEnd1().intValue();
+		Integer workClockStart2 = command.getWorkClockStart2() == null ? null : command.getWorkClockStart2().intValue();
+		Integer workClockEnd2 = command.getWorkClockEnd2() == null ? null : command.getWorkClockEnd2().intValue();
 		int goAtr1 = command.getGoAtr1() == null ? 0 : command.getGoAtr1().intValue();
 		int backAtr1 = command.getBackAtr1() == null ? 0 : command.getBackAtr1().intValue();
 		int goAtr2 = command.getGoAtr2() == null ? 0 : command.getGoAtr2().intValue();
@@ -130,10 +130,10 @@ public class CheckBeforeRegisterHolidayWork {
 		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
 				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason());
 
-		int workClockStart1 = command.getWorkClockStart1() == null ? -1 : command.getWorkClockStart1().intValue();
-		int workClockEnd1 = command.getWorkClockEnd1() == null ? -1 : command.getWorkClockEnd1().intValue();
-		int workClockStart2 = command.getWorkClockStart2() == null ? -1 : command.getWorkClockStart2().intValue();
-		int workClockEnd2 = command.getWorkClockEnd2() == null ? -1 : command.getWorkClockEnd2().intValue();
+		Integer workClockStart1 = command.getWorkClockStart1() == null ? null : command.getWorkClockStart1().intValue();
+		Integer workClockEnd1 = command.getWorkClockEnd1() == null ? null : command.getWorkClockEnd1().intValue();
+		Integer workClockStart2 = command.getWorkClockStart2() == null ? null : command.getWorkClockStart2().intValue();
+		Integer workClockEnd2 = command.getWorkClockEnd2() == null ? null : command.getWorkClockEnd2().intValue();
 		int goAtr1 = command.getGoAtr1() == null ? 0 : command.getGoAtr1().intValue();
 		int backAtr1 = command.getBackAtr1() == null ? 0 : command.getBackAtr1().intValue();
 		int goAtr2 = command.getGoAtr2() == null ? 0 : command.getGoAtr2().intValue();

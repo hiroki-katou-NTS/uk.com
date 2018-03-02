@@ -61,8 +61,8 @@ public class OverTimeWorkDailyPerformDto {
 				: new OverTimeWorkDailyPerformDto(
 						domain.getOverTimeWorkFrameTime() == null ? new ArrayList<>()
 								: ConvertHelper.mapTo(domain.getOverTimeWorkFrameTime(),
-										c -> new OverTimeFrameTimeDto(getWithCalc(c.getTransferTime()),
-												getWithCalc(c.getOverTimeWork()),
+										c -> new OverTimeFrameTimeDto(CalcAttachTimeDto.toTimeWithCal(c.getTransferTime()),
+												CalcAttachTimeDto.toTimeWithCal(c.getOverTimeWork()),
 												getAttendanceTime(c.getBeforeApplicationTime()),
 												getAttendanceTime(c.getOrderTime()), c.getOverWorkFrameNo().v())),
 						domain.getOverTimeWorkFrameTimeSheet() == null ? new ArrayList<>()
@@ -76,7 +76,7 @@ public class OverTimeWorkDailyPerformDto {
 						getAttendanceTime(domain.getOverTimeWorkSpentAtWork()),
 						getAttendanceTime(domain.getIrregularWithinPrescribedOverTimeWork()),
 						domain.getFlexTime() == null ? null
-								: new FlexTimeDto(getWithCalc(domain.getFlexTime().getFlexTime()),
+								: new FlexTimeDto(CalcAttachTimeDto.toTimeWithCal(domain.getFlexTime().getFlexTime()),
 										getAttendanceTime(domain.getFlexTime().getBeforeApplicationTime())));
 	}
 
@@ -86,14 +86,6 @@ public class OverTimeWorkDailyPerformDto {
 
 	private static int getAttendanceTime(TimeWithDayAttr time) {
 		return time == null ? null : time.valueAsMinutes();
-	}
-
-	private static CalcAttachTimeDto getWithCalc(TimeWithCalculation c) {
-		return c == null ? null : new CalcAttachTimeDto(c.getCalcTime().valueAsMinutes(), c.getTime().valueAsMinutes());
-	}
-
-	private static CalcAttachTimeDto getWithCalc(TimeWithCalculationMinusExist c) {
-		return c == null ? null : new CalcAttachTimeDto(c.getCalcTime().valueAsMinutes(), c.getTime().valueAsMinutes());
 	}
 
 	public OverTimeOfDaily toDomain() {

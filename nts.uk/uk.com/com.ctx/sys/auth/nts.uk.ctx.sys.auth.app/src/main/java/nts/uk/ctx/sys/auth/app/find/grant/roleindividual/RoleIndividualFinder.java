@@ -94,9 +94,9 @@ public class RoleIndividualFinder {
 
 	}
 	
-	public RoleIndividualGrantMetaDto getMetadata() {
+	public RoleIndividualGrantMetaDto getCAS012Metadata() {
 		LoginUserContext user = AppContexts.user();
-		if (!user.roles().have().companyAdmin() && !user.roles().have().systemAdmin())
+		if (!user.roles().have().systemAdmin())
 			return null;
 		
 		// Get List Enum RoleType
@@ -108,15 +108,19 @@ public class RoleIndividualFinder {
 		return new RoleIndividualGrantMetaDto(enumRoleType, listCompanyImport);
 	}
 
-	public List<RoleTypeDto> GetRoleType(){
-		
+	public List<RoleTypeDto> getCAS013Metadata(){
 		val user = AppContexts.user();
 		if (!user.roles().have().systemAdmin() && !user.roles().have().companyAdmin())
 			return null;
 		
+		// Get List Enum RoleType
+		List<EnumConstant> enumRoleType = EnumAdaptor.convertToValueNameList(RoleType.class,
+				RoleType.EMPLOYMENT, RoleType.SALARY, RoleType.HUMAN_RESOURCE,
+				RoleType.OFFICE_HELPER, RoleType.MY_NUMBER, RoleType.PERSONAL_INFO);
+		
 		List<RoleTypeDto> roleTypeDtos = new ArrayList<>();
-		for (RoleType r : RoleType.values()) {
-			roleTypeDtos.add(new RoleTypeDto(r.value, r.nameId, r.description));
+		for (EnumConstant r : enumRoleType) {
+			roleTypeDtos.add(new RoleTypeDto(r.getValue(), r.getFieldName(), r.getLocalizedName()));
 		}
 		return roleTypeDtos;
 	}
@@ -166,7 +170,6 @@ public class RoleIndividualFinder {
 
 		}
 		return rGrants;
-
 	}
 	
 	public RoleIndividualGrantDto getRoleGrant(String userId, String roleId){

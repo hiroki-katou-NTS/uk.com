@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
@@ -224,5 +225,11 @@ public class DataDialogWithTypeProcessor {
 	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
 		final Set<Object> seen = new HashSet<>();
 		return t -> seen.add(keyExtractor.apply(t));
+	}
+	
+	// get application NO19
+	public List<EnumConstant> getNameAppliction(List<String> errorCodes){
+		String companyId = AppContexts.user().companyId();
+		return repo.findErAlApplication(companyId, errorCodes);
 	}
 }

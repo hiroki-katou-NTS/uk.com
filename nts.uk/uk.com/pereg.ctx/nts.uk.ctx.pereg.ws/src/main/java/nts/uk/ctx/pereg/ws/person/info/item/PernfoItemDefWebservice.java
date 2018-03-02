@@ -20,6 +20,7 @@ import nts.uk.ctx.pereg.app.command.person.info.item.UpdateItemCommand;
 import nts.uk.ctx.pereg.app.command.person.info.item.UpdateItemCommandHandler;
 import nts.uk.ctx.pereg.app.command.person.info.item.UpdateOrderItemChangeCommand;
 import nts.uk.ctx.pereg.app.command.person.info.item.UpdateOrderItemChangeCommandHandler;
+import nts.uk.ctx.pereg.app.find.person.info.item.ItemRequiredBackGroud;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemChangeDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
@@ -141,4 +142,13 @@ public class PernfoItemDefWebservice extends WebService {
 	public boolean checkExistedSelectionItemId(@PathParam("selectionItemId") String selectionItemId) {
 		return this.itemDefFinder.checkExistedSelectionItemId(selectionItemId);
 	}
+	
+	//lalt start
+	
+	@POST
+	@Path("layout/findAll/required")
+	public List<ItemRequiredBackGroud> getAllRequiredIds() {
+		return itemDefFinder.getAllRequiredIds();
+	}
+	//lanlt end
 }

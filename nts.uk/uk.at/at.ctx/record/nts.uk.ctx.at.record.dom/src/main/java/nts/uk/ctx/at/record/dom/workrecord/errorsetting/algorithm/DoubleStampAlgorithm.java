@@ -35,19 +35,32 @@ public class DoubleStampAlgorithm {
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
 				// 出勤の二重打刻チェック処理
 				Optional<TimeActualStamp> attendanceTimeActual = timeLeavingWork.getAttendanceStamp();
-				this.doubleStampCheckProcessing(companyID, employeeID, processingDate, attendanceTimeActual);
+				this.doubleStampCheckProcessing(companyID, employeeID, processingDate, attendanceTimeActual, 1);
 
 				// 退勤の二重打刻チェック処理
 				Optional<TimeActualStamp> leavingTimeActual = timeLeavingWork.getLeaveStamp();
-				this.doubleStampCheckProcessing(companyID, employeeID, processingDate, leavingTimeActual);
+				this.doubleStampCheckProcessing(companyID, employeeID, processingDate, leavingTimeActual, 2);
 			}
 		}
 	}
 
 	private void doubleStampCheckProcessing(String companyID, String employeeID, GeneralDate processingDate,
-			Optional<TimeActualStamp> timeActualStamp) {
+			Optional<TimeActualStamp> timeActualStamp, int type) {
 
 		List<Integer> attendanceItemIDs = new ArrayList<>();
+		if (type == 1) {
+			if (timeActualStamp != null && timeActualStamp.isPresent() && timeActualStamp.get().getNumberOfReflectionStamp() == 1) {
+				attendanceItemIDs.add(31);
+			} else if (timeActualStamp != null && timeActualStamp.isPresent() && timeActualStamp.get().getNumberOfReflectionStamp() == 2) {
+				attendanceItemIDs.add(41);
+			}
+		} else {
+			if (timeActualStamp != null && timeActualStamp.isPresent() && timeActualStamp.get().getNumberOfReflectionStamp() == 1) {
+				attendanceItemIDs.add(34);
+			} else if (timeActualStamp != null && timeActualStamp.isPresent() && timeActualStamp.get().getNumberOfReflectionStamp() == 2) {
+				attendanceItemIDs.add(44);
+			}
+		}
 
 		if (timeActualStamp != null && timeActualStamp.isPresent() && timeActualStamp.get().getNumberOfReflectionStamp() >= 2) {
 			createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
