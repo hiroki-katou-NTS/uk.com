@@ -70,7 +70,7 @@ public class JpaAcScreenCondSetRepository extends JpaRepository implements AcScr
     }
 
     private OiomtAcScreenCondSet toEntity(AcScreenCondSet domain) {
-        return new OiomtAcScreenCondSet(domain.getVersion(), new OiomtAcScreenCondSetPk(domain.getCid(), domain.getConditionSetCd(), domain.getAcceptItemNum()), domain.getSelCompareCond(), domain.getTimeCondVal2(), domain.getTimeCondVal1(), domain.getTimeMoCondVal2(), domain.getTimeMoCondVal1(), domain.getDateCondVal2(), domain.getDateCondVal1(), domain.getCharCondVal2(), domain.getCharCondVal1(), domain.getNumCondVal2(), domain.getNumCondVal1());
+        return new OiomtAcScreenCondSet(domain.getVersion(), new OiomtAcScreenCondSetPk(domain.getCid(), domain.getConditionSetCd(), domain.getAcceptItemNum()), domain.getSelectComparisonCondition(), domain.getTimeConditionValue2(), domain.getTimeConditionValue1(), domain.getTimeMomentConditionValue2(), domain.getTimeMomentConditionValue1(), domain.getDateConditionValue2(), domain.getDateConditionValue1(), domain.getCharacterConditionValue2(), domain.getCharacterConditionValue1(), domain.getNumberConditionValue2(), domain.getNumberConditionValue1());
     }
 
 }

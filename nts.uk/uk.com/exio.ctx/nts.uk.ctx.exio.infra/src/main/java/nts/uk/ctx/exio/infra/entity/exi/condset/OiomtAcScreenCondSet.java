@@ -39,70 +39,70 @@ public class OiomtAcScreenCondSet extends UkJpaEntity implements Serializable
     /**
     * 比較条件選択
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "SEL_COMPARE_COND")
     public int selCompareCond;
     
     /**
     * 時間‗条件値2
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "TIME_COND_VAL2")
     public int timeCondVal2;
     
     /**
     * 時間‗条件値1
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "TIME_COND_VAL1")
     public int timeCondVal1;
     
     /**
     * 時刻‗条件値2
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "TIME_MO_COND_VAL2")
     public int timeMoCondVal2;
     
     /**
     * 時刻‗条件値1
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "TIME_MO_COND_VAL1")
     public int timeMoCondVal1;
     
     /**
     * 日付‗条件値2
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "DATE_COND_VAL2")
     public GeneralDate dateCondVal2;
     
     /**
     * 日付‗条件値1
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "DATE_COND_VAL1")
     public GeneralDate dateCondVal1;
     
     /**
     * 文字‗条件値2
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "CHAR_COND_VAL2")
     public String charCondVal2;
     
     /**
     * 文字‗条件値1
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "CHAR_COND_VAL1")
     public String charCondVal1;
     
     /**
     * 数値‗条件値2
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "NUM_COND_VAL2")
     public String numCondVal2;
     
