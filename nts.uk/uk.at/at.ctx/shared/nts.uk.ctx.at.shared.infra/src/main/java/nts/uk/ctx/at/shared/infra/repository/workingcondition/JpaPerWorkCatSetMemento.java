@@ -45,6 +45,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 		}
 
 		this.entities = entities;
+		this.entities.clear();
 
 		this.historyId = historyId;
 	}
