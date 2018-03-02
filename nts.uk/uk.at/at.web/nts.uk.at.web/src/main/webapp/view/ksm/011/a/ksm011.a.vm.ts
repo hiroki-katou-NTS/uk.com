@@ -617,8 +617,9 @@ module nts.uk.at.view.ksm011 {
                         self.selectedSearchMethod(self.dataA.searchMethod); 
                         self.selectedRetrieval(self.dataA.searchMethodDispCls);
                         
-                        _.forEach(self.dataA.scheFuncCond, function(item) {
-                            var result = _.find(self.conditionData(), function(o) { return o.conditionNo == Number(item.conditionNo); });
+                        var sortedScheFuncCond = _.sortBy(self.dataA.scheFuncCond, [function(o) { return o.conditionNo; }]);
+                        _.forEach(sortedScheFuncCond, function(item) {
+                            var result = _.find(self.conditionData(), function(o) { return o.conditionNo == Number(item.conditionNo) && o.isParent == false; });
                             self.scheFuncCondList.push(result);
                             conds += result.conditionName + ", ";
                         });
@@ -825,7 +826,7 @@ module nts.uk.at.view.ksm011 {
                     if(self.dataE != null && self.dataE.length > 0) {
                         _.forEach(self.dataE, function(code) {
                             conditionData.push({ 
-                                conditionNo: Number(code)
+                                conditionNo: Number(code.slice(0, -1))
                             });
                         });
                     } else {
@@ -905,7 +906,7 @@ module nts.uk.at.view.ksm011 {
                     var oldData = [];
                     
                     _.forEach(self.scheFuncCondList(), function(item) {
-                        oldData.push(item.conditionNo.toString());
+                        oldData.push(item.conditionNo.toString() + "c");
                     });
                     
                     nts.uk.ui.windows.setShared("KSM011_A_DATA_SELECTED", oldData);
@@ -919,7 +920,7 @@ module nts.uk.at.view.ksm011 {
                         self.scheFuncCondList([]);
                         
                         _.forEach(self.dataE, function(code) {
-                            var result = _.find(self.conditionData(), function(o) { return o.conditionNo == Number(code); });
+                            var result = _.find(self.conditionData(), function(o) { return o.conditionNo == Number(code.slice(0, -1)) && o.isParent == false; });
                             self.scheFuncCondList.push(result);
                             conds += result.conditionName + ", ";
                         });
