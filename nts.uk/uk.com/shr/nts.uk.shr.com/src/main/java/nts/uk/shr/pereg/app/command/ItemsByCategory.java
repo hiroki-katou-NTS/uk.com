@@ -1,5 +1,6 @@
 package nts.uk.shr.pereg.app.command;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,6 +13,7 @@ import lombok.val;
 import nts.gul.reflection.AnnotationUtil;
 import nts.gul.reflection.ReflectionUtil;
 import nts.uk.shr.pereg.app.ItemValue;
+import nts.uk.shr.pereg.app.ItemValueType;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.PeregPersonId;
@@ -50,7 +52,7 @@ public class ItemsByCategory {
 		AnnotationUtil.getFieldAnnotated(commandClass, PeregRecordId.class).ifPresent(field -> {
 			ReflectionUtil.setFieldValue(field, command, this.recordId);
 		});
-
+		
 		// set item values
 		val inputsMap = this.createInputsMap();
 
@@ -60,6 +62,8 @@ public class ItemsByCategory {
 			if (inputItem != null) {
 				if (inputItem.value() != null && field.getType() == String.class) {
 					ReflectionUtil.setFieldValue(field, command, inputItem.value().toString());
+				} else if (inputItem.itemValueType() == ItemValueType.SELECTION && inputItem.value() != null && field.getType() == BigDecimal.class) {
+					ReflectionUtil.setFieldValue(field, command, new BigDecimal(Integer.parseInt(inputItem.value())));
 				} else {
 					ReflectionUtil.setFieldValue(field, command, inputItem.value());
 				}

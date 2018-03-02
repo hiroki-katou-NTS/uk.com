@@ -873,6 +873,7 @@ module nts.custombinding {
                                     optionsText: 'optionText',
                                     optionsValue: 'optionValue',
                                     enable: editable,
+                                    required: required,
                                     visibleItemsCount: 5,
                                     dropDownAttachedToBody: true,
                                     columns: [{ prop: 'optionText', length: 10 }]
@@ -1413,11 +1414,11 @@ module nts.custombinding {
                                                     tnt = typeof nv == 'number';
 
                                                 if (!tpt && tnt && !dom1.parent().hasClass('error')) {
-                                                    dom1.ntsError('set', { messageId: "Msg_858" });
+                                                    !dom1.is(':disabled') && dom1.ntsError('set', { messageId: "Msg_858" });
                                                 }
 
                                                 if (tpt && !tnt && !dom2.parent().hasClass('error')) {
-                                                    dom2.ntsError('set', { messageId: "Msg_858" });
+                                                    !dom2.is(':disabled') && dom2.ntsError('set', { messageId: "Msg_858" });
                                                 }
 
                                                 if ((!tpt && !tnt) || (tpt && tnt)) {

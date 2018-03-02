@@ -127,9 +127,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.fixColGrid = ko.observableArray(self.employeeModeFixCol);
             // show/hide header number
             self.showHeaderNumber.subscribe((val) => {
-                 self.loadHeader(self.displayFormat());
-                let column = self.headersGrid();
-                  $("#dpGrid").igGrid("option", "columns", column);
+ //                self.loadHeader(self.displayFormat());
+//                let column = self.headersGrid();
+//                  //$("#dpGrid").igGrid("option", "columns", column);
+                $("#dpGrid").ntsGrid("headerText", "A3", "Thanh")
 //                $.when(self.destroyGrid()).then( data => {
 //                    self.reloadGrid();
 //                });
@@ -151,8 +152,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
          helps(event, data){
              var self = this;
              $('#tooltip').css({
-                 'left': event.pageX+40,
-                 'top':  event.pageY-20
+                 'left': event.pageX+15,
+                 'top':  event.pageY-12,
+                 'display': 'none',
+                 'position': 'fixed',
              });
              self.lockMessage(data);
              $("#tooltip").show();
@@ -400,6 +403,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.sheetsGrid.valueHasMutated();
         }
         proceed() {
+            let errorGrid: any = $("#dpGrid").ntsGrid("errors");
+            if(errorGrid == undefined || errorGrid.length == 0){
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             var self = this;
@@ -467,9 +472,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }else{
                  nts.uk.ui.block.clear(); 
             }
+                }
         }
         
         proceedSave() {
+            let errorGrid: any = $("#dpGrid").ntsGrid("errors");
+            if(errorGrid == undefined || errorGrid.length == 0){
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             var self = this;
@@ -537,6 +545,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }else{
                   nts.uk.ui.block.clear();
             }
+                }
         }
         checkIsColumn(dataCell: any, key: any): boolean {
             let check = false;
@@ -667,7 +676,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         showErrorDialog() {
             var self = this;
             let lstEmployee = [];
-            let uiErrors = nts.uk.ui.errors.getErrorList();
+            let uiErrors : any = $("#dpGrid").ntsGrid("errors");
             let errorValidateScreeen : any = [];
             if (self.displayFormat() === 0) {
                 _.each(uiErrors, value => {
@@ -677,7 +686,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                     let object = { date: dateCon.date , employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: value.message, itemName: "", columnKey: value.columnKey };
                     let item = _.find(self.optionalHeader, (data) => {
-                        return String(data.key) === value.columnKey;
+                        if (data.group != undefined && data.group != null) {
+                            return String(data.group[0].key) === value.columnKey;
+                        } else {
+                            return String(data.key) === value.columnKey;
+                        }
                     })
                     object.itemName = (item == undefined) ? "" : item.headerText; 
                     errorValidateScreeen.push(object);
@@ -1150,7 +1163,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 showClosure: true, // 就業締め日利用
                 showAllClosure: false, // 全締め表示
                 showPeriod: true, // 対象期間利用
-                periodFormatYM: true, // 対象期間精度
+                periodFormatYM: false, // 対象期間精度
 
                 /** Required parameter */
                 //baseDate: self.baseDate().toISOString(), // 基準日
@@ -1369,12 +1382,55 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 date: rowItemSelect.dateDetail.format("YYYY/MM/DD"),
                                 listValue: []
                             }
+                            let date = moment(dataShare.date, "YYYY/MM/DD");
                             if (errorCode.length > 0) {
                                 $.when(service.getApplication(errorCode)).done((data) => {
                                     dataShare.listValue = data;
                                     nts.uk.ui.windows.setShared("shareToKdw003e", dataShare);
                                     nts.uk.ui.windows.sub.modal("/view/kdw/003/e/index.xhtml").onClosed(() => {
-                                    });
+                                        let screen = nts.uk.ui.windows.getShared("shareToKdw003a");
+                                        if(screen == undefined) screen = 1905;
+                                        switch (screen.code) {
+                                            case 0:
+                                                //KAF005-残業申請
+                                                nts.uk.request.jump("/view/kaf/005/a/index.xhtml", { date: date });
+                                             break;
+                                            case 1:
+                                                //KAF006-休暇
+                                                nts.uk.request.jump("/view/kaf/006/a/index.xhtml", { date: date });
+                                                break;
+                                            case 2:
+                                                //KAF007-勤務変更申請
+                                                nts.uk.request.jump("/view/kaf/007/a/index.xhtml", { date: date });
+                                                break;
+                                            case 3:
+                                                //KAF008-出張申請
+                                                nts.uk.request.jump("/view/kaf/008/a/index.xhtml", { date: date });
+                                                break;
+                                            case 4:
+                                                //KAF009-直行直帰申請
+                                                nts.uk.request.jump("/view/kaf/009/a/index.xhtml", { date: date });
+                                                break;
+                                            case 6:
+                                                //KAF010-休日出勤時間申請
+                                                nts.uk.request.jump("/view/kaf/010/a/index.xhtml", { date: date });
+                                                break;
+                                            case 7:
+                                                //KAF002-打刻申請
+                                                nts.uk.request.jump("/view/kaf/002/a/index.xhtml", { date: date });
+                                                break;
+                                            case 9:
+                                                //KAF004-遅刻早退取消申請
+                                                nts.uk.request.jump("/view/kaf/004/a/index.xhtml", { date: date });
+                                                break;
+                                            case 10:
+                                                //KAF011-振休振出申請
+                                                nts.uk.request.jump("/view/kaf/011/a/index.xhtml", { date: date });
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                     });
                                     dfd.resolve();
                                 });
                             } else {
@@ -1471,26 +1527,42 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }else{
                     header.constraint["cDisplayType"] = header.constraint.cdisplayType;
                     if (header.constraint.cDisplayType != null && header.constraint.cDisplayType != undefined) {
-                        if (header.constraint.cDisplayType.indexOf("Currency") != -1) {
-                            header["columnCssClass"] = "currency-symbol";
-                            header.constraint["min"] = "0";
-                            header.constraint["max"] = "9999999999"
-                        } else if (header.constraint.cDisplayType == "Clock") {
-                            header["columnCssClass"] = "right-align";
-                            header.constraint["min"] = "-10:00";
-                            header.constraint["max"] = "100:30"
-                        } else if (header.constraint.cDisplayType == "Integer") {
-                            header["columnCssClass"] = "right-align";
+                        if (header.constraint.cDisplayType != "Primitive" && header.constraint.cDisplayType != "Combo") {
+                            if (header.constraint.cDisplayType.indexOf("Currency") != -1) {
+                                header["columnCssClass"] = "currency-symbol";
+                                header.constraint["min"] = "0";
+                                header.constraint["max"] = "9999999999"
+                            } else if (header.constraint.cDisplayType == "Clock") {
+                                header["columnCssClass"] = "right-align";
+                                header.constraint["min"] = "-10:00";
+                                header.constraint["max"] = "100:30"
+                            } else if (header.constraint.cDisplayType == "Integer") {
+                                header["columnCssClass"] = "right-align";
+                            }
+                            delete header.constraint.primitiveValue;
+                        } else {
+                           
+                            if (header.constraint.cDisplayType == "Primitive") {
+                                delete header.group[0].constraint.cDisplayType
+                            } else if (header.constraint.cDisplayType == "Combo") {
+                                    header.group[0].constraint["min"] = 0;
+                                    header.group[0].constraint["max"] = Number(header.group[0].constraint.primitiveValue);
+                                    header.group[0].constraint["cDisplayType"] =  header.group[0].constraint.cdisplayType;
+                                   delete header.group[0].constraint.cdisplayType
+                                   delete header.group[0].constraint.primitiveValue;
+                            }
+                            delete header.constraint;
+                            delete header.group[1].constraint;
                         }
                     }
-                    delete header.constraint.cdisplayType;
+                    if(header.constraint != undefined) delete header.constraint.cdisplayType;
                 }
                 if (header.group != null && header.group != undefined) {
                     if (header.group.length > 0) {
-                       delete header.group[0].constraint;
+                       if( header.group[0].constraint == undefined) delete header.group[0].constraint;
                        delete header.group[1].constraint;
                         delete header.group[0].group;
-                        //delete header.key;
+                        delete header.key;
                         delete header.dataType;
                        // delete header.width;
                         delete header.ntsControl;
@@ -1569,7 +1641,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (self.showHeaderNumber()) {
                 self.optionalHeader.map((header) => {
                     if (header.headerText) {
-                        header.headerText = header.headerText + " " + header.key.substring(1, header.key.length);
+                        if (header.group == undefined || header.group == null) {
+                            header.headerText = header.headerText + " " + header.key.substring(1, header.key.length);
+                        }else{
+                            header.headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length)
+                        }
                     }
                     return header;
                 });
