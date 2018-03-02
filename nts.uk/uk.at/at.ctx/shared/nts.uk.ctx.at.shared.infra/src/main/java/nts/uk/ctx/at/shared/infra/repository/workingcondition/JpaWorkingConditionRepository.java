@@ -200,13 +200,24 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 		List<KshmtWorkingCond> entities = this.findBy(workingCondition.getCompanyId(), workingCondition.getEmployeeId(),
 		null);
 		
-		List<KshmtWorkingCond> newWorkingCondition = entities;
+		List<KshmtWorkingCond> newWorkingCondition = new ArrayList<>(entities);
 
 		workingCondition.saveToMemento(new JpaWorkingConditionSetMemento(newWorkingCondition));
 		
-//		this.add(newWorkingCondition.stream().filter(item ->  !entities.contains(item)).collect(Collectors.toList()));
-
-		this.update(newWorkingCondition);
+		this.add(newWorkingCondition.stream()
+				.filter(item -> {
+					int index = entities.indexOf(item);
+					if (index == -1) {
+						return true;
+					}				
+					
+					KshmtWorkingCond oldItem = entities.get(index);
+					if (oldItem.getStrD().equals(item.getStrD()) && oldItem.getEndD().equals(item.getEndD())) {
+						return false;
+					}
+					return true;
+				})
+				.collect(Collectors.toList()));
 		
 		this.deleteAll(entities.stream().filter(item ->  !newWorkingCondition.contains(item)).collect(Collectors.toList()));
 	}

@@ -4917,6 +4917,31 @@ var nts;
                     });
                 });
             })(smallExtensions || (smallExtensions = {}));
+            var keyboardStream;
+            (function (keyboardStream) {
+                var _lastKey = {
+                    code: undefined,
+                    time: undefined
+                };
+                function lastKey() {
+                    return {
+                        code: _lastKey.code,
+                        time: _lastKey.time
+                    };
+                }
+                keyboardStream.lastKey = lastKey;
+                function wasKeyDown(keyCode, millisToExpire) {
+                    return _lastKey.code === keyCode
+                        && (+new Date() - +_lastKey.time <= millisToExpire);
+                }
+                keyboardStream.wasKeyDown = wasKeyDown;
+                $(function () {
+                    $(window).on("keydown", function (e) {
+                        _lastKey.code = e.keyCode;
+                        _lastKey.time = new Date();
+                    });
+                });
+            })(keyboardStream = ui.keyboardStream || (ui.keyboardStream = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6887,7 +6912,7 @@ var nts;
                                         if (key === colorDef.columnKey) {
                                             if ((!uk.util.isNullOrUndefined(colorDef.rowId) && colorDef.rowId === rowIdx)
                                                 || uk.util.isNullOrUndefined(colorDef.rowId)) {
-                                                cell.classList.add(colorDef.clazz);
+                                                helper.addClassList(cell, colorDef.clazz);
                                                 return false;
                                             }
                                         }
@@ -6899,14 +6924,14 @@ var nts;
                                             var childCells = cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                                             if (!uk.util.isNullOrUndefined(colorDef.innerIdx) && childCells.length > 0) {
                                                 var child = childCells[colorDef.innerIdx];
-                                                child.classList.add(colorDef.clazz);
+                                                helper.addClassList(child, colorDef.clazz);
                                                 if (colorDef.clazz === style.HIDDEN_CLS) {
                                                     $.data(child, "hide", child.textContent);
                                                     child.innerHTML = "";
                                                 }
                                             }
                                             else {
-                                                cell.classList.add(colorDef.clazz);
+                                                helper.addClassList(cell, colorDef.clazz);
                                                 if (colorDef.clazz == style.HIDDEN_CLS) {
                                                     $.data(cell, "hide", cell.innerText);
                                                     cell.innerText = "";
@@ -7120,7 +7145,7 @@ var nts;
                                             if (colorDef.columnKey === cell.key) {
                                                 if ((!uk.util.isNullOrUndefined(colorDef.rowId) && colorDef.rowId === rowIdx)
                                                     || uk.util.isNullOrUndefined(colorDef.rowId)) {
-                                                    $cell.classList.add(colorDef.clazz);
+                                                    helper.addClassList($cell, colorDef.clazz);
                                                 }
                                                 return false;
                                             }
@@ -13074,6 +13099,17 @@ var nts;
                         return -1;
                     }
                     helper.indexInParent = indexInParent;
+                    /**
+                     * Add class.
+                     */
+                    function addClassList(cell, clazz) {
+                        if (!clazz)
+                            return;
+                        clazz.split(" ").forEach(function (c, i) {
+                            cell.classList.add(c);
+                        });
+                    }
+                    helper.addClassList = addClassList;
                 })(helper || (helper = {}));
                 var widget;
                 (function (widget) {
@@ -15375,12 +15411,11 @@ var nts;
                         _super.prototype.init.call(this, $input, data);
                         $input.focus(function () {
                             if (!$input.attr('readonly')) {
-                                var selectionType = document.getSelection().type;
                                 // Remove separator (comma)
                                 $input.val(data.value());
                                 // If focusing is caused by Tab key, select text
                                 // this code is needed because removing separator deselects.
-                                if (selectionType === 'Range') {
+                                if (ui.keyboardStream.wasKeyDown(uk.KeyCodes.Tab, 500)) {
                                     $input.select();
                                 }
                             }
@@ -15510,7 +15545,6 @@ var nts;
                             if ($input.ntsError('hasError')) {
                                 return;
                             }
-                            var selectionTypeOnFocusing = document.getSelection().type;
                             if (!nts.uk.util.isNullOrEmpty(data.value())) {
                                 var timeWithDayAttr = uk.time.minutesBased.clock.dayattr.create(data.value());
                                 $input.val(timeWithDayAttr.shortText);
@@ -15520,7 +15554,7 @@ var nts;
                             }
                             // If focusing is caused by Tab key, select text
                             // this code is needed because removing separator deselects.
-                            if (selectionTypeOnFocusing === 'Range') {
+                            if (ui.keyboardStream.wasKeyDown(uk.KeyCodes.Tab, 500)) {
                                 $input.select();
                             }
                         });
@@ -22100,94 +22134,6 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui) {
-            var jqueryExtentions;
-            (function (jqueryExtentions) {
-                var ntsDatepicker;
-                (function (ntsDatepicker) {
-                    $.fn.ntsDatepicker = function (action, index) {
-                        var $container = $(this);
-                        if (action === "bindFlip") {
-                            return bindFlip($container);
-                        }
-                        return $container;
-                    };
-                    function bindFlip($input) {
-                        $input.on('show.datepicker', function (evt) {
-                            $input.data("showed", true);
-                            setTimeout(function () {
-                                $input.trigger("flippickercontainer");
-                            }, 10);
-                        });
-                        $input.on('hide.datepicker', function (evt) {
-                            $input.data("showed", false);
-                            //                let currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
-                            //                $("body").append(currentShowContainer);
-                        });
-                        $(window).resize(function () {
-                            if ($input.data("showed")) {
-                                $input.datepicker('hide');
-                                setTimeout(function () {
-                                    $input.datepicker('show');
-                                }, 10);
-                            }
-                        });
-                        $input.bind("flippickercontainer", function (evt, data) {
-                            var currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
-                            var container = $input.parent();
-                            //                container.append(currentShowContainer);
-                            var ePos = container.offset();
-                            if (ePos.top < 0 && ePos.left < 0) {
-                                return;
-                            }
-                            var containerHeight = container.outerHeight(true);
-                            var containerWidth = container.outerWidth(true);
-                            var showContainerHeight = currentShowContainer.outerHeight(true);
-                            var showContainerWidth = currentShowContainer.outerWidth(true);
-                            var documentHeight = document.body.clientHeight;
-                            var documentWidth = document.body.clientWidth;
-                            var headerHeight = $("#functions-area").outerHeight(true) + $("#header").outerHeight(true);
-                            var bottomHeight = $("#functions-area-bottom").outerHeight(true);
-                            var spaceBottom = documentHeight - ePos.top - containerHeight;
-                            var spaceTop = ePos.top - headerHeight;
-                            var spaceRight = documentWidth - ePos.left - containerWidth;
-                            var spaceLeft = ePos.left;
-                            currentShowContainer.removeClass();
-                            currentShowContainer.addClass("datepicker-container datepicker-dropdown");
-                            if (showContainerHeight + 10 <= spaceBottom) {
-                                currentShowContainer.css({ top: containerHeight + 5, left: 0 });
-                                currentShowContainer.addClass("datepicker-top-left");
-                                return;
-                            }
-                            if (showContainerHeight + 10 <= spaceTop) {
-                                currentShowContainer.css({ top: 0 - showContainerHeight - 5, left: 0 });
-                                currentShowContainer.addClass("datepicker-bottom-left");
-                                return;
-                            }
-                            if (showContainerWidth + 10 <= spaceRight) {
-                                currentShowContainer.css({ top: 0, left: containerWidth + 5 + 2 });
-                                currentShowContainer.addClass("datepicker-left-top");
-                                return;
-                            }
-                            if (showContainerWidth + 10 <= spaceLeft) {
-                                currentShowContainer.css({ top: 0, left: 0 - showContainerWidth - 5 - 2 });
-                                currentShowContainer.addClass("datepicker-right-top");
-                                return;
-                            }
-                        });
-                        return $input;
-                    }
-                })(ntsDatepicker || (ntsDatepicker = {}));
-            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
         (function (ui_27) {
             var koExtentions;
             (function (koExtentions) {
@@ -24117,6 +24063,7 @@ var nts;
                     })(columnSize || (columnSize = {}));
                     var functions;
                     (function (functions) {
+                        functions.ERRORS = "errors";
                         functions.UPDATE_ROW = "updateRow";
                         functions.UPDATED_CELLS = "updatedCells";
                         functions.ENABLE_CONTROL = "enableNtsControlAt";
@@ -24173,9 +24120,19 @@ var nts;
                                     break;
                                 case functions.UPDATED_CELLS:
                                     return $grid.data(internal.UPDATED_CELLS);
+                                case functions.ERRORS:
+                                    return getErrors($grid);
                             }
                         }
                         functions.ntsAction = ntsAction;
+                        /**
+                         * Get errors.
+                         */
+                        function getErrors($grid) {
+                            if (!$grid)
+                                return [];
+                            return $grid.data(internal.ERRORS);
+                        }
                         /**
                          * Update row
                          */
@@ -25115,10 +25072,13 @@ var nts;
                                 var selectedCells = selection.getSelectedCells(this.$grid);
                                 var copiedData;
                                 var checker = cut ? utils.isCuttableControls : utils.isCopiableControls;
+                                nts.uk.ui.block.grayout();
                                 if (selectedCells.length === 1) {
                                     this.copyMode = CopyMode.SINGLE;
-                                    if (!checker(this.$grid, selectedCells[0].columnKey))
+                                    if (!checker(this.$grid, selectedCells[0].columnKey)) {
+                                        nts.uk.ui.block.clear();
                                         return;
+                                    }
                                     if (utils.isComboBox(this.$grid, selectedCells[0].columnKey)) {
                                         var $comboBox = utils.comboBoxOfCell(selectedCells[0]);
                                         if ($comboBox.length > 0) {
@@ -25137,6 +25097,7 @@ var nts;
                                 }
                                 $("#copyHelper").val(copiedData).select();
                                 document.execCommand("copy");
+                                nts.uk.ui.block.clear();
                                 return selectedCells;
                             };
                             /**
@@ -25222,12 +25183,14 @@ var nts;
                              * Paste
                              */
                             Processor.prototype.pasteHandler = function (evt) {
+                                nts.uk.ui.block.grayout();
                                 if (this.copyMode === CopyMode.SINGLE) {
                                     this.pasteSingleCellHandler(evt);
                                 }
                                 else {
                                     this.pasteRangeHandler(evt);
                                 }
+                                nts.uk.ui.block.clear();
                             };
                             /**
                              * Paste single cell
@@ -25929,6 +25892,45 @@ var nts;
                         errors.ERROR_STL = { "border-color": "#ff6666" };
                         errors.NO_ERROR_STL = { "border-color": "" };
                         errors.EDITOR_SELECTOR = "div.ui-igedit-container";
+                        var GridCellError = (function () {
+                            function GridCellError(grid, rowId, columnKey, message) {
+                                this.grid = grid;
+                                this.rowId = rowId;
+                                this.columnKey = columnKey;
+                                this.message = message;
+                            }
+                            GridCellError.prototype.equals = function (err) {
+                                if (!this.grid.is(err.grid))
+                                    return false;
+                                if (this.rowId !== err.rowId)
+                                    return false;
+                                if (this.columnKey !== err.columnKey)
+                                    return false;
+                                return true;
+                            };
+                            return GridCellError;
+                        }());
+                        errors.GridCellError = GridCellError;
+                        function addCellError($grid, error) {
+                            var gridErrors = $grid.data(internal.ERRORS);
+                            if (!gridErrors) {
+                                $grid.data(internal.ERRORS, [error]);
+                                return;
+                            }
+                            if (gridErrors.some(function (e) {
+                                return e.equals(error);
+                            }))
+                                return;
+                            gridErrors.push(error);
+                        }
+                        function removeCellError($grid, rowId, key) {
+                            var gridErrors = $grid.data(internal.ERRORS);
+                            if (!gridErrors)
+                                return;
+                            _.remove(gridErrors, function (e) {
+                                return $grid.is(e.grid) && rowId === e.rowId && key === e.columnKey;
+                            });
+                        }
                         function mark($grid) {
                             var errorsLog = $grid.data(internal.ERRORS_LOG);
                             if (uk.util.isNullOrUndefined(errorsLog))
@@ -25956,25 +25958,23 @@ var nts;
                             var $cell = $(cell.element);
                             decorate($cell);
                             var errorDetails = createErrorInfos($grid, cell, message);
-                            ui.errors.addCell(errorDetails);
+                            //                ui.errors.addCell(errorDetails);
+                            addCellError($grid, errorDetails);
                             addErrorInSheet($grid, cell);
                         }
                         errors.set = set;
                         function createErrorInfos($grid, cell, message) {
                             var record = $grid.igGrid("findRecordByKey", cell.id);
-                            var error = {
-                                grid: $grid,
-                                rowId: cell.id,
-                                columnKey: cell.columnKey,
-                                message: message
-                            };
+                            var setting = $grid.data(internal.SETTINGS);
+                            var error = new GridCellError($grid, cell.id, cell.columnKey, message);
                             // Error column headers
-                            var headers = ko.toJS(ui.errors.errorsViewModel().option().headers());
+                            //                let headers = ko.toJS(ui.errors.errorsViewModel().option().headers());
+                            var headers = setting.errorColumns;
                             _.forEach(headers, function (header) {
-                                if (uk.util.isNullOrUndefined(record[header.name])
-                                    || !uk.util.isNullOrUndefined(error[header.name]))
+                                if (uk.util.isNullOrUndefined(record[header])
+                                    || !uk.util.isNullOrUndefined(error[header]))
                                     return;
-                                error[header.name] = record[header.name];
+                                error[header] = record[header];
                             });
                             return error;
                         }
@@ -25987,7 +25987,8 @@ var nts;
                             var $editor = $cell.find(errors.EDITOR_SELECTOR);
                             if ($editor.length > 0)
                                 $editor.css(errors.NO_ERROR_STL);
-                            ui.errors.removeCell($grid, cell.id, cell.columnKey);
+                            //                ui.errors.removeCell($grid, cell.id, cell.columnKey);
+                            removeCellError($grid, cell.id, cell.columnKey);
                             removeErrorFromSheet($grid, cell);
                         }
                         errors.clear = clear;
@@ -26888,6 +26889,7 @@ var nts;
                             var rebuild;
                             data.preventEditInError = options.preventEditInError;
                             data.dataSourceAdapter = options.dataSourceAdapter;
+                            data.errorColumns = options.errorColumns;
                             if (!$grid.data(internal.SETTINGS)) {
                                 $grid.data(internal.SETTINGS, data);
                             }
@@ -26971,6 +26973,7 @@ var nts;
                         internal.SPECIAL_COL_TYPES = "ntsSpecialColumnTypes";
                         internal.ENTER_DIRECT = "enter";
                         internal.SETTINGS = "ntsSettings";
+                        internal.ERRORS = "ntsErrors";
                         internal.ERRORS_LOG = "ntsErrorsLog";
                         internal.LOADER = "ntsLoader";
                         internal.TXT_RAW = "rawText";
