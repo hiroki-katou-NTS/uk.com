@@ -403,6 +403,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.sheetsGrid.valueHasMutated();
         }
         proceed() {
+            let errorGrid: any = $("#dpGrid").ntsGrid("errors");
+            if(errorGrid.length == 0){
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             var self = this;
@@ -470,9 +472,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }else{
                  nts.uk.ui.block.clear(); 
             }
+                }
         }
         
         proceedSave() {
+            let errorGrid: any = $("#dpGrid").ntsGrid("errors");
+            if(errorGrid.length == 0){
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             var self = this;
@@ -540,6 +545,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }else{
                   nts.uk.ui.block.clear();
             }
+                }
         }
         checkIsColumn(dataCell: any, key: any): boolean {
             let check = false;
@@ -670,7 +676,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         showErrorDialog() {
             var self = this;
             let lstEmployee = [];
-            let uiErrors = nts.uk.ui.errors.getErrorList();
+            let uiErrors : any = $("#dpGrid").ntsGrid("errors");
             let errorValidateScreeen : any = [];
             if (self.displayFormat() === 0) {
                 _.each(uiErrors, value => {
@@ -1157,7 +1163,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 showClosure: true, // 就業締め日利用
                 showAllClosure: false, // 全締め表示
                 showPeriod: true, // 対象期間利用
-                periodFormatYM: true, // 対象期間精度
+                periodFormatYM: false, // 対象期間精度
 
                 /** Required parameter */
                 //baseDate: self.baseDate().toISOString(), // 基準日
@@ -1521,7 +1527,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }else{
                     header.constraint["cDisplayType"] = header.constraint.cdisplayType;
                     if (header.constraint.cDisplayType != null && header.constraint.cDisplayType != undefined) {
-                        if (header.constraint.cDisplayType != "Primitive") {
+                        if (header.constraint.cDisplayType != "Primitive" && header.constraint.cDisplayType != "Combo") {
                             if (header.constraint.cDisplayType.indexOf("Currency") != -1) {
                                 header["columnCssClass"] = "currency-symbol";
                                 header.constraint["min"] = "0";
@@ -1535,9 +1541,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             }
                             delete header.constraint.primitiveValue;
                         } else {
+                           
+                            if (header.constraint.cDisplayType == "Primitive") {
+                                delete header.group[0].constraint.cDisplayType
+                            } else if (header.constraint.cDisplayType == "Combo") {
+                                    header.group[0].constraint["min"] = 0;
+                                    header.group[0].constraint["max"] = Number(header.group[0].constraint.primitiveValue);
+                                    header.group[0].constraint["cDisplayType"] =  header.group[0].constraint.cdisplayType;
+                                   delete header.group[0].constraint.cdisplayType
+                                   delete header.group[0].constraint.primitiveValue;
+                            }
                             delete header.constraint;
                             delete header.group[1].constraint;
-                            delete header.group[0].constraint.cDisplayType
                         }
                     }
                     if(header.constraint != undefined) delete header.constraint.cdisplayType;
