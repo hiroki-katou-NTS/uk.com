@@ -41,7 +41,7 @@ public class UpdateFlowMenuCommandHandler extends CommandHandler<UpdateFlowMenuC
 		// Update FLowMenu
 		FlowMenu flowMenu = checkFlowMenu.get();
 		flowMenu.setName(command.getTopPageName());
-		flowMenu.setSize(command.getWidthSize(), command.getHeightSize());
+		flowMenu.setSize(command.getWidth(), command.getHeight());
 		flowMenu.setFileID(command.getFileID());
 		flowMenu.setDefClassAtr(command.getDefClassAtr());
 		flowMenuService.updateFlowMenu(flowMenu);

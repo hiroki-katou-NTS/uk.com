@@ -35,6 +35,7 @@ public class JpaPerDayOfWeekSetMemento implements PersonalDayOfWeekSetMemento {
 	public JpaPerDayOfWeekSetMemento(String historyId, List<KshmtPersonalDayOfWeek> entities) {
 		this.historyId = historyId;
 		this.entities = entities;
+		this.entities.clear();
 	}
 
 	/*

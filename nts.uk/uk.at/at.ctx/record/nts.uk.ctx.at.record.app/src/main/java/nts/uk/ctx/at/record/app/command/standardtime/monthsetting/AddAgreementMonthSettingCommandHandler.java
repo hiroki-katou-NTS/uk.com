@@ -1,18 +1,23 @@
 package nts.uk.ctx.at.record.app.command.standardtime.monthsetting;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneMonth;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSetDomainService;
+import nts.uk.ctx.at.shared.app.service.workingcondition.WorkingConditionService;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
 /**
  * 
@@ -20,16 +25,19 @@ import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRep
  *
  */
 @Stateless
-public class AddAgreementMonthSettingCommandHandler extends CommandHandler<AddAgreementMonthSettingCommand> {
+public class AddAgreementMonthSettingCommandHandler extends CommandHandlerWithResult<AddAgreementMonthSettingCommand, List<String>> {
 
 	@Inject
-	private AgreementMonthSettingRepository agreementMonthSettingRepository;
+	private AgreementMonthSetDomainService agreementMonthSetDomainService;
+	
+	@Inject
+	private WorkingConditionService workingConditionService;
 
 	@Override
-	protected void handle(CommandHandlerContext<AddAgreementMonthSettingCommand> context) {
+	protected List<String> handle(CommandHandlerContext<AddAgreementMonthSettingCommand> context) {
 		AddAgreementMonthSettingCommand command = context.getCommand();
 		
-		if(this.agreementMonthSettingRepository.checkExistData(command.getEmployeeId(), new BigDecimal(command.getYearMonthValue()))){
+		if(this.agreementMonthSetDomainService.checkExistData(command.getEmployeeId(), new BigDecimal(command.getYearMonthValue()))){
 			throw new BusinessException("Msg_61");
 		};
 		
@@ -39,9 +47,11 @@ public class AddAgreementMonthSettingCommandHandler extends CommandHandler<AddAg
 				new ErrorOneMonth(command.getErrorOneMonth()),
 				new AlarmOneMonth(command.getAlarmOneMonth()));
 		
-		agreementMonthSetting.validate();
+//		agreementMonthSetting.validate();
+		
+		Optional<WorkingConditionItem> workingConditionItem = this.workingConditionService.findWorkConditionByEmployee(command.getEmployeeId(), GeneralDate.today());
 
-		this.agreementMonthSettingRepository.add(agreementMonthSetting);
+		return this.agreementMonthSetDomainService.add(agreementMonthSetting, workingConditionItem);
 	}
 
 }

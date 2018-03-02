@@ -178,6 +178,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 // showDepartment: boolean; // 部門条件 not covered
                 // showDelivery: boolean; not covered
 
+                /** Optional properties */
+                isInDialog: boolean;
+
                 /** Data returned */
                 returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
             }
