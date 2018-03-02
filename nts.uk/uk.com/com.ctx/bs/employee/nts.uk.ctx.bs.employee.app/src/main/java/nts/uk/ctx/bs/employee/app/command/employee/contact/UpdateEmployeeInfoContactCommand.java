@@ -1,11 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.employee.contact;
 
-import java.util.List;
-
 import lombok.Getter;
-import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.PeregItem;
-import nts.uk.shr.pereg.app.PeregItemValues;
 import nts.uk.shr.pereg.app.PeregRecordId;
 
 @Getter
