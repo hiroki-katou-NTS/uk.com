@@ -263,6 +263,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				.hireDate(Optional.ofNullable(entity.getComStrDate()))
 				.jobTitleCode(Optional.ofNullable(entity.getJobCd()))
 				.name(Optional.ofNullable(entity.getBusinessName()))
+				.workplaceId(Optional.ofNullable(entity.getWorkplaceId()))
 				.workplaceCode(Optional.ofNullable(entity.getWplCd()))
 				.workplaceName(Optional.ofNullable(entity.getWplName()))
 				.build()).collect(Collectors.toList());
