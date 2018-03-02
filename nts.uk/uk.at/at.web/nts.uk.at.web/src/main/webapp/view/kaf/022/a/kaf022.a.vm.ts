@@ -1254,13 +1254,13 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdD16 = ko.observable(0);
                 self.enableD15 = ko.observable(true);
 
-                self.selectedValueD13.subscribe((value) => {
-                    if (value == 1) {
-                        self.enableD15(true);
-                    } else {
-                        self.enableD15(false);
-                    }
-                });
+//                self.selectedValueD13.subscribe((value) => {
+//                    if (value == 1) {
+//                        self.enableD15(true);
+//                    } else {
+//                        self.enableD15(false);
+//                    }
+//                });
                 //e
                 self.itemListE9 = ko.observableArray([
                     new ItemModel(0, nts.uk.resource.getText('KAF022_195')),
@@ -1274,7 +1274,7 @@ module nts.uk.at.view.kmf022 {
                 ]);
                 self.selectedIdE10 = ko.observable(0);
                 self.selectedValueE11 = ko.observable(0);
-                self.enableE11_5 = ko.observable(false);
+                self.enableE11_5 = ko.observable(true);
                 self.itemListE12 = ko.observableArray([
                     new ItemModel(0, nts.uk.resource.getText('KAF022_173')),
                     new ItemModel(1, nts.uk.resource.getText('KAF022_174')),
@@ -1312,20 +1312,20 @@ module nts.uk.at.view.kmf022 {
                 self.valueE17 = ko.observable('');
                 self.enableE18 = ko.observable(false);
                 self.checkedE11_5 = ko.observable(false);
-                self.selectedValueE11.subscribe((newValue) => {
-                    if (newValue == 2) {
-                        self.enableE11_5(true);
-                    } else {
-                        self.enableE11_5(false);
-                    }
-                })
+//                self.selectedValueE11.subscribe((newValue) => {
+//                    if (newValue == 2) {
+//                        self.enableE11_5(true);
+//                    } else {
+//                        self.enableE11_5(false);
+//                    }
+//                })
                 //f
                 self.selectedIdF10 = ko.observable(0);
                 self.selectedIdF11 = ko.observable(0);
                 self.selectedIdF12 = ko.observable(0);
                 self.selectedValueF13 = ko.observable(0);
                 self.checkedF13_1 = ko.observable(false);
-                self.enableF13_1 = ko.observable(false);
+                self.enableF13_1 = ko.observable(true);
                 self.selectedIdF14 = ko.observable(0);
                 self.texteditorF15 = {
                     value: ko.observable(''),
@@ -1361,13 +1361,13 @@ module nts.uk.at.view.kmf022 {
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
                     new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
                 ]);
-                self.selectedValueF13.subscribe((newValue) => {
-                    if (newValue == 2) {
-                        self.enableF13_1(true);
-                    } else {
-                        self.enableF13_1(false);
-                    }
-                })
+//                self.selectedValueF13.subscribe((newValue) => {
+//                    if (newValue == 2) {
+//                        self.enableF13_1(true);
+//                    } else {
+//                        self.enableF13_1(false);
+//                    }
+//                })
                 //g
                 self.itemListG16 = ko.observableArray([
                     new ItemModel(0, nts.uk.resource.getText('KAF022_221')),
@@ -1961,7 +1961,7 @@ module nts.uk.at.view.kmf022 {
                         self.selectedIdE9(data.workType);
                         self.selectedIdE10(data.contractCheck);
                         self.selectedValueE11(data.workChange);
-                        self.checkedE11_5(data.WorkChangeAppTime);
+                        self.checkedE11_5(data.WorkChangeAppTime==1 ? true : false);
                         self.selectedIdE12(data.lateLeave);
                         self.texteditorE13.value(data.comment1);
                         self.texteditorE16.value(data.comment2);
@@ -2074,6 +2074,7 @@ module nts.uk.at.view.kmf022 {
                 self.saveDataAt();
             }
             saveDataAt(): void {
+                if (nts.uk.ui.errors.hasError()){return;}
                 nts.uk.ui.block.invisible();
                 let self = this;
                 let data: any = {};
@@ -2257,7 +2258,7 @@ module nts.uk.at.view.kmf022 {
                     workType: self.selectedIdE9(),
                     contractCheck: self.selectedIdE10(),
                     workChange: self.selectedValueE11(),
-                    WorkChangeAppTime: self.checkedE11_5(),
+                    WorkChangeAppTime: self.checkedE11_5() ? 1 : 0,
                     lateLeave: self.selectedIdE12(),
                     comment1: self.texteditorE13.value(),
                     comment2: self.texteditorE16.value()
