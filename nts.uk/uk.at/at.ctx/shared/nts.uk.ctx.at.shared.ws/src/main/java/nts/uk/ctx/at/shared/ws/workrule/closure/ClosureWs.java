@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.ws.workrule.closure;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -297,8 +298,9 @@ public class ClosureWs {
 
 	@POST
 	@Path("calculateperiod/{closureid}/{yearmonth}")
-	public String calculatePeriod(@PathParam("closureid") int closureId, @PathParam("yearmonth") int yearMonth) {
-		return this.closureService.getClosurePeriod(closureId, YearMonth.of(yearMonth)).end().toString();
+	public List<String> calculatePeriod(@PathParam("closureid") int closureId, @PathParam("yearmonth") int yearMonth) {
+		return Arrays.asList(
+				this.closureService.getClosurePeriod(closureId, YearMonth.of(yearMonth)).end().toString("yyyy-MM-dd"));
 	}
 
 	@POST

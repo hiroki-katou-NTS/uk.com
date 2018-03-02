@@ -37,7 +37,7 @@ module nts.uk.at.view.kmf002.d {
                     isShowAlreadySet: _self.isShowAlreadySet(),
                     isMultiSelect: _self.isMultiSelect(),
                     listType: ListType.EMPLOYMENT,
-                    selectType: SelectType.NO_SELECT,
+                    selectType: SelectType.SELECT_FIRST_ITEM,
                     selectedCode: _self.selectedCode,
                     isDialog: _self.isDialog(),
                     isShowNoSelectRow: _self.isShowNoSelectRow(),
@@ -74,13 +74,17 @@ module nts.uk.at.view.kmf002.d {
 
                 return nameEmpSelected;
             }
+            
+            private setDefaultMonthDay(): void {
+                let _self = this;
+                for (let i=0; i<_self.commonTableMonthDaySet().arrMonth().length; i++) {
+                    _self.commonTableMonthDaySet().arrMonth()[i].day(0); 
+                }     
+            }
 
             private catchChangeSelectEmp(): void {
                 let _self = this;
                 _self.selectedCode.subscribe(function(codeEmployee) {
-//                    if (_.isEmpty(codeEmployee)) {
-//                        return;
-//                    }
                     _self.commonTableMonthDaySet().infoSelect2(codeEmployee);
                     _self.commonTableMonthDaySet().infoSelect3(_self.findEmploymentSelect(codeEmployee));
                     _self.getDataFromService();
@@ -88,7 +92,8 @@ module nts.uk.at.view.kmf002.d {
                     if (_.isUndefined(_self.selectedCode()) || _.isEmpty(_self.selectedCode()) 
                             || _.isNull(_self.selectedCode())) {
                         _self.enableDelete(false);
-                        _self.enableSave(false);    
+                        _self.enableSave(false);
+                        _self.setDefaultMonthDay();    
                     } else {
                         _self.enableDelete(true);
                         _self.enableSave(true);
@@ -113,11 +118,6 @@ module nts.uk.at.view.kmf002.d {
                     });
                     dfd.resolve();    
                 })
-//                $('#empt-list-setting').ntsListComponent(_self.listComponentOption).done(function(){
-//                    _self.catchChangeSelectEmp();
-////                    _self.getDataFromService();
-//                    dfd.resolve();    
-//                });
                 return dfd.promise();
             }
 
@@ -149,12 +149,7 @@ module nts.uk.at.view.kmf002.d {
             public getDataFromService(): void {
                 let _self = this;
                  $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()), 
-                                    service.findFirstMonth(),
-                                    service.findAllEmpRegister(_self.commonTableMonthDaySet().fiscalYear())).done(function(data: any, data2: any, data3: any) {
-//                    _self.alreadySettingList.removeAll();
-//                    _.forEach(data3, function(code) {
-//                        _self.alreadySettingList.push({code: code, isAlreadySetting: true});
-//                    });
+                                    service.findFirstMonth()).done(function(data: any, data2: any) {
                     if (typeof data === "undefined") {
                         /** 
                          *   create value null for prepare create new 
@@ -164,6 +159,9 @@ module nts.uk.at.view.kmf002.d {
                         });
                         _self.enableDelete(false);
                     } else {
+                        if (_.isNull(data2.startMonth)) {
+                            data2.startMonth = 1;
+                        }
                         _self.commonTableMonthDaySet().arrMonth.removeAll();
                         for (let i=data2.startMonth-1; i<12; i++) {
                             _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 'day': ko.observable(data.publicHolidayMonthSettings[i].inLegalHoliday), 'enable': ko.observable(true)});    

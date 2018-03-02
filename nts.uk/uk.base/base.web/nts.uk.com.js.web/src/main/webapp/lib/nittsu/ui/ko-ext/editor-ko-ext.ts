@@ -516,7 +516,7 @@ module nts.uk.ui.koExtentions {
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var inputFormat: string = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
             var mode: string = (data.mode !== undefined) ? ko.unwrap(data.mode) : "";
-            
+           
             let validateOption = $.extend({ required: required, outputFormat: inputFormat, mode: mode }, option);
             return new validation.TimeValidator(name, constraintName, validateOption);
         }
