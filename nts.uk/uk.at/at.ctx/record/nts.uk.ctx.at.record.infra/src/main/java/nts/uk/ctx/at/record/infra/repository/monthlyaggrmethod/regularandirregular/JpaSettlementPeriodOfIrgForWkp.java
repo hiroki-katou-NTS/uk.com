@@ -6,6 +6,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.SettlementPeriod;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.SettlementPeriodOfIrgForWkpRepository;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.regularandirregular.KrcstMonsetIrgSetl;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpIrgSetl;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpIrgSetlPK;
 
@@ -62,6 +63,7 @@ public class JpaSettlementPeriodOfIrgForWkp extends JpaRepository implements Set
 		else {
 			entity = new KrcstMonsetWkpIrgSetl();
 			entity.PK = key;
+			entity.setValue = new KrcstMonsetIrgSetl();
 		}
 		entity.setValue.endMonth = domain.getEndMonth().v();
 		return entity;

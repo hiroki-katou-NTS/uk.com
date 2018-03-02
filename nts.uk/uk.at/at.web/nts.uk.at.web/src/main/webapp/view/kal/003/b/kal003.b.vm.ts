@@ -447,51 +447,42 @@ module nts.uk.at.view.kal003.b.viewmodel{
         //initial default data of ErAlAtdItemCon
         private initialDataOfErAlAtdItemCon() {
             let self = this, workRecordExtractingCondition = self.workRecordExtractingCondition();
-            if (!(workRecordExtractingCondition.checkItem() == enItemCheck.Time
-                || workRecordExtractingCondition.checkItem() == enItemCheck.Time
-                || workRecordExtractingCondition.checkItem() == enItemCheck.CountinuousTime
-                || workRecordExtractingCondition.checkItem() == enItemCheck.Times
-                || workRecordExtractingCondition.checkItem() == enItemCheck.AmountOfMoney
-                || workRecordExtractingCondition.checkItem() == enItemCheck.TimeOfDate)) {
+            let checkItem = workRecordExtractingCondition.checkItem(); 
+            if (!(checkItem == enItemCheck.Time
+                || checkItem == enItemCheck.CountinuousTime
+                || checkItem == enItemCheck.Times
+                || checkItem == enItemCheck.AmountOfMoney
+                || checkItem == enItemCheck.TimeOfDate)) {
                 return;
             }
             let conditionAtr = 0;
-            let conditionType = ConditionType.ATTENDANCE_ITEM;
             let lstErAlAtdItemCon1 = workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon();
-            
-            switch (workRecordExtractingCondition.checkItem()) {
+            switch (checkItem) {
                 case enItemCheck.Time:          //時間
                 case enItemCheck.CountinuousTime:   //連続時間
                     conditionAtr = 1;
-                    conditionType = ConditionType.FIXED_VALUE;
                     break;
                 case enItemCheck.Times:         //回数
                     conditionAtr = 0;
-                    conditionType = ConditionType.FIXED_VALUE;
                     break;
                 case enItemCheck.AmountOfMoney: //金額
                     conditionAtr = 3;
-                    conditionType = ConditionType.FIXED_VALUE;
                     break;
                 case enItemCheck.TimeOfDate:    //時刻の場合
                     conditionAtr = 2;
-                    conditionType = ConditionType.FIXED_VALUE;
                     break;
                 default:
-                    if (lstErAlAtdItemCon1 && lstErAlAtdItemCon1.length > 0) {
-                        conditionAtr = lstErAlAtdItemCon1[0].conditionAtr();
-                    }
-                    break;
+                    return;
             }
 
             for(var i=0; i< lstErAlAtdItemCon1.length; i++) {
                 lstErAlAtdItemCon1[i].conditionAtr(conditionAtr);
-                lstErAlAtdItemCon1[i].conditionType(conditionType); //1: 勤怠項目 - AttendanceItem, 0: fix
+                lstErAlAtdItemCon1[i].conditionType(ConditionType.FIXED_VALUE); //1: 勤怠項目 - AttendanceItem, 0: fix
             }
             let lstErAlAtdItemCon2 = workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group2().lstErAlAtdItemCon();
             for(var i=0; i< lstErAlAtdItemCon2.length; i++) {
                 lstErAlAtdItemCon2[i].conditionAtr(conditionAtr);
-                lstErAlAtdItemCon2[i].conditionType(conditionType); //1: 勤怠項目 - AttendanceItem, 0: fix
+                lstErAlAtdItemCon2[i].conditionType(ConditionType.FIXED_VALUE); //1: 勤怠項目 - AttendanceItem, 0: fix
             }
         }
         /**
@@ -759,6 +750,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 || workRecordExtractingCondition.checkItem() == enItemCheck.TimeOfDate
                 || workRecordExtractingCondition.checkItem() == enItemCheck.CountinuousTime
             ) {
+                self.initialDataOfErAlAtdItemCon();
                  // validate comparison range
                 let group1 = workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1();
                 let listErAlAtdItemCondition = group1.lstErAlAtdItemCon();

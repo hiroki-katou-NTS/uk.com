@@ -234,6 +234,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                     //let alreadyList: UnitAlreadySettingModel = {code: self.selectedCode(), isAlreadySetting: true};
                     //self.alreadySettingList.push(alreadyList);
                     //self.alreadySettingList.valueHasMutated();
+                    self.screenMode(ScreenMode.UPDATE);
                     //情報メッセージ（Msg_15）を表示する
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         //Load data setting

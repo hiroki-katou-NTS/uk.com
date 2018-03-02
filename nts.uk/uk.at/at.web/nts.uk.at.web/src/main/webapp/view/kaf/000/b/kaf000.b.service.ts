@@ -9,7 +9,8 @@
         releaseApp : "at/request/application/releaseapp",
         cancelApp : "at/request/application/cancelapp",
         deleteApp : "at/request/application/deleteapp",
-        getAppDataDate : "at/request/application/getAppDataByDate"
+        getAppDataDate : "at/request/application/getAppDataByDate",
+        getAppByID: "at/request/application/getAppInfoByAppID"
     }
      
      export function getAppDataDate(command) : JQueryPromise<any>{
@@ -76,5 +77,9 @@
       */
      export function getMessageDeadline(applicationMeta: any) : JQueryPromise<any>{
          return nts.uk.request.ajax("at",paths.getMessageDeadline, applicationMeta);
+     }
+     
+     export function getAppByID(appID: string) : JQueryPromise<any>{
+         return nts.uk.request.ajax("at",paths.getAppByID, appID);
      }
  }

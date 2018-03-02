@@ -16,6 +16,8 @@ public class MailOtInstructionDto {
 	// 本文
 	private String content;
 	public static MailOtInstructionDto convertToDto(MailOtInstruction domain){
-		return new MailOtInstructionDto(domain.getCompanyId(), domain.getSubject().v(), domain.getContent().v());
+		return new MailOtInstructionDto(domain.getCompanyId(), 
+				domain.getSubject() == null ? null : domain.getSubject().v(), 
+				domain.getContent() == null ? null : domain.getContent().v());
 	}
 }

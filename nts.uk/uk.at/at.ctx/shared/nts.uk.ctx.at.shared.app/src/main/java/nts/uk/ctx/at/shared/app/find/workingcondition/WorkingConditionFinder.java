@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2015 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.workingcondition;
 
 import java.util.ArrayList;
@@ -74,6 +78,24 @@ public class WorkingConditionFinder implements PeregFinder<WorkingConditionDto>{
 						? "" : x.end().toString()))
 				.collect(Collectors.toList());
 	}
+	
+	/**
+	 * Find work condition by employee.
+	 * 社員の労働条件を取得する
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the optional
+	 */
+	public Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate) {
+		String companyId = AppContexts.user().companyId();
+		Optional<WorkingCondition> workConditionOpt = this.wcRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
+		if (!workConditionOpt.isPresent()) {
+			return Optional.empty();
+		}
+		return this.wcItemRepo.getByHistoryId(workConditionOpt.get().items().get(0).identifier());
+	}
+	
 
 	private Optional<WorkingCondition> getWorkingCondition(PeregQuery query){
 		if(query.getInfoId() == null){
