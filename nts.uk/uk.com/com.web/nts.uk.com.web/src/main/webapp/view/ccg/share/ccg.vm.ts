@@ -773,11 +773,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             private isNotFutureDate(acquiredBaseDate: string): boolean {
                 let self = this;
-                if (self.showBaseDate){
-                    if (self.isFutureDate(moment.utc(acquiredBaseDate))) {
+                if (self.showBaseDate && self.isFutureDate(moment.utc(acquiredBaseDate))) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_853" });
                         return false;
-                    }
                 }
                 if (self.isFutureDate(self.periodEnd())) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_860" });

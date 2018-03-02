@@ -133,11 +133,10 @@ module nts.uk.com.view.ccg.share.ccg {
 
             export class EmployeeSearchDto {
                 employeeId: string;
-
                 employeeCode: string;
-
                 employeeName: string;
-
+                workplaceCode: string;
+                workplaceId: string;
                 workplaceName: string;
             }
 
