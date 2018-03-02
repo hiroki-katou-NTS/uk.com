@@ -225,7 +225,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 			this.entity.setHdAddTimeOneDay(null);
 			return;
 		}
-		if (holidayAddTimeSet.get().getAfternoon() != null){
+		if (holidayAddTimeSet.get().getMorning() != null){
 			this.entity.setHdAddTimeMorning(holidayAddTimeSet.get().getMorning().v());
 		} else {
 			this.entity.setHdAddTimeMorning(null);
@@ -233,12 +233,12 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 		if (holidayAddTimeSet.get().getAfternoon() != null){
 			this.entity.setHdAddTimeAfternoon(holidayAddTimeSet.get().getAfternoon().v());
 		} else {
-			this.entity.setHdAddTimeMorning(null);
+			this.entity.setHdAddTimeAfternoon(null);
 		}
 		if (holidayAddTimeSet.get().getOneDay() != null){
 			this.entity.setHdAddTimeOneDay(holidayAddTimeSet.get().getOneDay().v());
 		} else {
-				this.entity.setHdAddTimeMorning(null);
+				this.entity.setHdAddTimeOneDay(null);
 		}
 	}
 
