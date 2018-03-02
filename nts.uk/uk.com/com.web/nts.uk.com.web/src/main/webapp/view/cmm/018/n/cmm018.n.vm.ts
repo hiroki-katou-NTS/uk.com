@@ -1,4 +1,5 @@
 module nts.uk.com.view.cmm018.n {
+   import vmbase = cmm018.shr.vmbase;
 export module viewmodel {
     export class ScreenModel {
         //Right table's properties.
@@ -7,11 +8,11 @@ export module viewmodel {
         currentAppType: KnockoutObservableArray<any>;
 
         //Left filter area
-        ccgcomponent: GroupOption;
+        ccgcomponent: vmbase.GroupOption;
 
         // Options
         baseDate: KnockoutObservable<Date>;
-        selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
+        selectedEmployee: KnockoutObservableArray<vmbase.EmployeeSearchDto>;
 
         constructor() {
             var self = this;
@@ -34,37 +35,45 @@ export module viewmodel {
         loadGrid() {
             var self = this;
             self.ccgcomponent = {
-                baseDate: self.baseDate,
-                //Show/hide options
-                isQuickSearchTab: true,
-                isAdvancedSearchTab: true,
-                isAllReferableEmployee: true,
-                isOnlyMe: true,
-                isEmployeeOfWorkplace: true,
-                isEmployeeWorkplaceFollow: true,
+                showEmployeeSelection: false, // 検索タイプ
+                systemType: 2, // システム区分
+                showQuickSearchTab: true, // クイック検索
+                showAdvancedSearchTab: true, // 詳細検索
+                showBaseDate: true, // 基準日利用
+                showClosure: false, // 就業締め日利用
+                showAllClosure: false, // 全締め表示
+                showPeriod: false, // 対象期間利用
+                periodFormatYM: false, // 対象期間精度
+
+                /** Required parameter */
+                baseDate: moment.utc().toISOString(), // 基準日
+                periodStartDate: moment.utc("1900/01/01", "YYYY/MM/DD").toISOString(), // 対象期間開始日
+                periodEndDate: moment.utc("9999/12/31", "YYYY/MM/DD").toISOString(), // 対象期間終了日
+                inService: false, // 在職区分
+                leaveOfAbsence: false, // 休職区分
+                closed: false, // 休業区分
+                retirement: false, // 退職区分
+
+                /** Quick search tab options */
+                showAllReferableEmployee: true, // 参照可能な社員すべて
+                showOnlyMe: false, // 自分だけ
+                showSameWorkplace: true, // 同じ職場の社員
+                showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
+
+                /** Advanced search properties */
+                showEmployment: false, // 雇用条件
+                showWorkplace: true, // 職場条件
+                showClassification: false, // 分類条件
+                showJobTitle: false, // 職位条件
+                showWorktype: false, // 勤種条件
                 isMutipleCheck: true,
-                isSelectAllEmployee: false,
-                /**
-                * @param dataList: list employee returned from component.
-                * Define how to use this list employee by yourself in the function's body.
-                */
-                onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
-                    self.selectedEmployee(dataList);
-                },
-                onSearchOnlyClicked: function(data: EmployeeSearchDto) {
-                    var dataEmployee: EmployeeSearchDto[] = [];
-                    dataEmployee.push(data);
-                    self.selectedEmployee(dataEmployee);
-                },
-                onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
-                    self.selectedEmployee(dataList);
-                },
-                onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
-                    self.selectedEmployee(dataList);
-                },
-                onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
-                    self.selectedEmployee(dataEmployee);
-                }
+                   /**  
+                   * @param dataList: list employee returned from component.
+                   * Define how to use this list employee by yourself in the function's body.
+                   */
+                 returnDataFromCcg001: function(data: vmbase.Ccg001ReturnedData){
+                     self.selectedEmployee(data.listEmployee);            
+                 }
 
             }
 
@@ -122,8 +131,7 @@ export module viewmodel {
                 return;    
             }
             //xuat file
-            var data = new service.model.appInfor();
-//            data.baseDate = self.baseDate();
+            let data = new service.model.appInfor();
             data.baseDate = self.baseDate();
             
             //fix tam du lieu
@@ -159,56 +167,56 @@ export module viewmodel {
         }
     }
     
-//    export interface IItemModel {
-//        value: string;
-//        localizedName: string;
-//    }
+    export interface IItemModel {
+        value: string;
+        localizedName: string;
+    }
     
-    export interface EmployeeSearchDto {
-        employeeId: string;
-
-        employeeCode: string;
-
-        employeeName: string;
-
-        workplaceCode: string;
-
-        workplaceId: string;
-
-        workplaceName: string;
-    }
-
-    export interface GroupOption {
-        baseDate?: KnockoutObservable<Date>;
-        // クイック検索タブ
-        isQuickSearchTab: boolean;
-        // 参照可能な社員すべて
-        isAllReferableEmployee: boolean;
-        //自分だけ
-        isOnlyMe: boolean;
-        //おなじ部門の社員
-        isEmployeeOfWorkplace: boolean;
-        //おなじ＋配下部門の社員
-        isEmployeeWorkplaceFollow: boolean;
-
-
-        // 詳細検索タブ
-        isAdvancedSearchTab: boolean;
-        //複数選択 
-        isMutipleCheck: boolean;
-
-        //社員指定タイプ or 全社員タイプ
-        isSelectAllEmployee: boolean;
-
-        onSearchAllClicked: (data: EmployeeSearchDto[]) => void;
-
-        onSearchOnlyClicked: (data: EmployeeSearchDto) => void;
-
-        onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
-
-        onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
-
-        onApplyEmployee: (data: EmployeeSearchDto[]) => void;
-    }
+//    export interface EmployeeSearchDto {
+//        employeeId: string;
+//
+//        employeeCode: string;
+//
+//        employeeName: string;
+//
+//        workplaceCode: string;
+//
+//        workplaceId: string;
+//
+//        workplaceName: string;
+//    }
+//
+//    export interface GroupOption {
+//        baseDate?: KnockoutObservable<Date>;
+//        // クイック検索タブ
+//        isQuickSearchTab: boolean;
+//        // 参照可能な社員すべて
+//        isAllReferableEmployee: boolean;
+//        //自分だけ
+//        isOnlyMe: boolean;
+//        //おなじ部門の社員
+//        isEmployeeOfWorkplace: boolean;
+//        //おなじ＋配下部門の社員
+//        isEmployeeWorkplaceFollow: boolean;
+//
+//
+//        // 詳細検索タブ
+//        isAdvancedSearchTab: boolean;
+//        //複数選択 
+//        isMutipleCheck: boolean;
+//
+//        //社員指定タイプ or 全社員タイプ
+//        isSelectAllEmployee: boolean;
+//
+//        onSearchAllClicked: (data: EmployeeSearchDto[]) => void;
+//
+//        onSearchOnlyClicked: (data: EmployeeSearchDto) => void;
+//
+//        onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
+//
+//        onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
+//
+//        onApplyEmployee: (data: EmployeeSearchDto[]) => void;
+//    }
 }
     }

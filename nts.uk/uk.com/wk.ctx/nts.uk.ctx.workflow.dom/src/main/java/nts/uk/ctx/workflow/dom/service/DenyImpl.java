@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
@@ -57,26 +59,35 @@ public class DenyImpl implements DenyService {
 					continue;
 				}
 			}
-			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
-				if(approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList()).contains(employeeID)){
-					approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
-					approvalFrame.setApproverID(employeeID);
-					approvalFrame.setRepresenterID("");
-					approvalFrame.setApprovalDate(GeneralDate.today());
-					approvalFrame.setApprovalReason(memo);
-					return;
+			for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
+				if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
+					if(!approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList()).contains(employeeID)){
+						List<String> listApprover = approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
+						ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
+						if(approvalRepresenterOutput.getListAgent().contains(employeeID)){
+							approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
+							approvalFrame.setApproverID("");
+							approvalFrame.setRepresenterID(employeeID);
+							approvalFrame.setApprovalDate(GeneralDate.today());
+							approvalFrame.setApprovalReason(memo);
+							continue;
+						} else {
+							continue;
+						}
+					}
+				} else {
+					if(!((Strings.isNotBlank(approvalFrame.getApproverID())&&approvalFrame.getApproverID().equals(employeeID))|
+						(Strings.isNotBlank(approvalFrame.getRepresenterID())&&approvalFrame.getRepresenterID().equals(employeeID)))){
+						continue;
+					}
 				}
-				List<String> listApprover = approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
-				ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
-				if(approvalRepresenterOutput.getListAgent().contains(employeeID)){
-					approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
-					approvalFrame.setApproverID("");
-					approvalFrame.setRepresenterID(employeeID);
-					approvalFrame.setApprovalDate(GeneralDate.today());
-					approvalFrame.setApprovalReason(memo);
-				}
-			});
-			executedFlag = true;
+				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
+				approvalFrame.setApproverID(employeeID);
+				approvalFrame.setRepresenterID("");
+				approvalFrame.setApprovalDate(GeneralDate.today());
+				approvalFrame.setApprovalReason(memo);
+				executedFlag = true;
+			}
 			approvalRootStateRepository.update(approvalRootState);
 			break;
 		}
@@ -89,7 +100,8 @@ public class DenyImpl implements DenyService {
 		if(order<=0){
 			return canDenyFlag;
 		}
-		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
+		for(int i = order; i >= 0 ; i--){
+			ApprovalPhaseState approvalPhaseState = approvalRootState.getListApprovalPhaseState().get(5-i);
 			List<String> listApprover = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
 			if(CollectionUtil.isEmpty(listApprover)){
 				continue;
