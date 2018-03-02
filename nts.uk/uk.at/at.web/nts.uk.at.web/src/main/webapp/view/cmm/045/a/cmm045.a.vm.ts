@@ -4,6 +4,7 @@ module cmm045.a.viewmodel {
     import block = nts.uk.ui.block;
     import character = nts.uk.characteristics;
     import request = nts.uk.request;
+//    import sessionStorage = new WebStorageWrapper(window.sessionStorage);
     export class ScreenModel {
         roundingRules: KnockoutObservableArray<vmbase.ApplicationDisplayAtr> = ko.observableArray([]);
         selectedRuleCode: KnockoutObservable<any> = ko.observable(0);// switch button
@@ -163,7 +164,7 @@ module cmm045.a.viewmodel {
         reloadGridApplicaion(){
             var self = this;
             $("#grid2").ntsGrid({
-            width: '1150px',
+            width: '1100px',
             height: '500px',
             dataSource: self.items(),
             primaryKey: 'appId',
@@ -175,10 +176,10 @@ module cmm045.a.viewmodel {
                 { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '120px' },
                 { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '80px' },
                 { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '150px' },
-                { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '240px' },
+                { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '280px' },
                 { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '180px' },
                 { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '100px' },
-                { headerText: 'ID', key: 'appId', dataType: 'string', width: '10px', ntsControl: 'Label', hidden: true}
+                { headerText: 'ID', key: 'appId', dataType: 'string', width: '0px', ntsControl: 'Label', hidden: true}
             ], 
             features: [{ name: 'Resizing' },
                         { 
@@ -193,8 +194,9 @@ module cmm045.a.viewmodel {
             $("#grid2").on("click", ".ntsButton", function(evt, ui){
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
-                uk.sessionStorage.removeItem(request.STORAGE_KEY_TRANSFER_DATA);
-                uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, { appID: id });
+//                uk.sessionStorage = new WebStorageWrapper(window.sessionStorage);
+                nts.uk.sessionStorage.removeItem(request.STORAGE_KEY_TRANSFER_DATA);
+                nts.uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, { appID: id });
                 window.location.href = "../../../kaf/000/b/index.xhtml";
 //                nts.uk.request.jump("../../../kaf/000/b/index.xhtml", { 'appID': id });
             });
@@ -236,7 +238,10 @@ module cmm045.a.viewmodel {
             $("#grid1").on("click", ".ntsButton", function(evt, ui){
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
-                nts.uk.request.jump("../../../kaf/000/b/index.xhtml", { 'appID': id });
+                nts.uk.sessionStorage.removeItem(request.STORAGE_KEY_TRANSFER_DATA);
+                nts.uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, { appID: id });
+                window.location.href = "../../../kaf/000/b/index.xhtml";
+//                nts.uk.request.jump("../../../kaf/000/b/index.xhtml", { 'appID': id });
             });
             
             $("#grid1").setupSearchScroll("igGrid", true);
@@ -386,10 +391,10 @@ module cmm045.a.viewmodel {
                 if(app.applicationType == 0){//over time
                     let overtTime = self.findOverTimeById(app.applicationID, lstOverTime);
                     
-                    if(app.prePostAtr == 0){
-                        data = self.fomartOverTimeBf(app, overtTime ,masterInfo);
+                    if(self.mode() == 1 && app.prePostAtr == 1){
+                         data = self.fomartOverTimeAf(app, overtTime ,masterInfo, lstAppGroup);
                     }else{
-                        data = self.fomartOverTimeAf(app, overtTime ,masterInfo, lstAppGroup);
+                       data = self.fomartOverTimeBf(app, overtTime ,masterInfo);
                     }
                 }
                 if(app.applicationType == 4){//goback
@@ -611,8 +616,14 @@ module cmm045.a.viewmodel {
                 self.items([]);
                 self.items(lstAppFitler);
             }
-            $("#grid1").ntsGrid("destroy");
-            self.reloadGridApproval();
+            if(self.mode() == 1){
+                $("#grid1").ntsGrid("destroy");
+                self.reloadGridApproval();
+            }else{
+                $("#grid2").ntsGrid("destroy");
+                self.reloadGridApplicaion();
+            }
+            
         }
     } 
     
