@@ -1,15 +1,19 @@
 package nts.uk.ctx.exio.infra.repository.exi.codeconvert;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
+import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvertRepository;
+import nts.uk.ctx.exio.dom.exi.codeconvert.CdConvertDetails;
 import nts.uk.ctx.exio.infra.entity.exi.codeconvert.OiomtAcceptCdConvert;
 import nts.uk.ctx.exio.infra.entity.exi.codeconvert.OiomtAcceptCdConvertPk;
-import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvertRepository;
-import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
-import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.exio.infra.entity.exi.codeconvert.OiomtCdConvertDetails;
+import nts.uk.ctx.exio.infra.entity.exi.codeconvert.OiomtCdConvertDetailsPk;
 
 @Stateless
 public class JpaAcceptCdConvertRepository extends JpaRepository implements AcceptCdConvertRepository
@@ -56,11 +60,25 @@ public class JpaAcceptCdConvertRepository extends JpaRepository implements Accep
     }
 
     private static AcceptCdConvert toDomain(OiomtAcceptCdConvert entity) {
-        return AcceptCdConvert.createFromJavaType(entity.version, entity.acceptCdConvertPk.cid, entity.acceptCdConvertPk.convertCd, entity.convertName, entity.acceptWithoutSetting);
-    }
+		return AcceptCdConvert.createFromJavaType(entity.version, entity.acceptCdConvertPk.cid,
+				entity.acceptCdConvertPk.convertCd, entity.convertName, entity.acceptWithoutSetting,
+				entity.oiomtCdConvertDetails.stream().map(itemDetail -> {
+					return new CdConvertDetails(itemDetail.cdConvertDetailsPk.cid,
+							itemDetail.cdConvertDetailsPk.convertCd, itemDetail.cdConvertDetailsPk.lineNumber,
+							itemDetail.outputItem, itemDetail.systemCd);
 
-    private OiomtAcceptCdConvert toEntity(AcceptCdConvert domain) {
-        return new OiomtAcceptCdConvert(domain.getVersion(), new OiomtAcceptCdConvertPk(domain.getCid(), domain.getConvertCd()), domain.getConvertName(), domain.getAcceptWithoutSetting());
-    }
+				}).collect(Collectors.toList()));
+	}
+
+	private OiomtAcceptCdConvert toEntity(AcceptCdConvert domain) {
+		return new OiomtAcceptCdConvert(domain.getVersion(),
+				new OiomtAcceptCdConvertPk(domain.getCid(), domain.getConvertCd()), domain.getConvertName(),
+				domain.getAcceptWithoutSetting(), domain.getListConvertDetails().stream().map(itemDetail -> {
+					return new OiomtCdConvertDetails(
+							new OiomtCdConvertDetailsPk(itemDetail.getCid(), itemDetail.getConvertCd(),
+									itemDetail.getLineNumber()),
+							itemDetail.getOutputItem(), itemDetail.getSystemCd(), null);
+				}).collect(Collectors.toList()));
+	}
 
 }

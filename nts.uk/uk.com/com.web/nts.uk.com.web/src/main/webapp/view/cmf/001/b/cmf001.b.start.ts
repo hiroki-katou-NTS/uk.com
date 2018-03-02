@@ -1,7 +1,7 @@
 module nts.uk.com.view.cmf001.b {
     __viewContext.ready(function() {
         var screenModel = new viewmodel.ScreenModel();
-        //screenModel.startPage().done(function() {
+        screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
 //            _.defer(() => {
 //                if (screenModel.screenMode() == nts.uk.at.view.kal003.share.model.SCREEN_MODE.UPDATE) {
@@ -10,6 +10,6 @@ module nts.uk.com.view.cmf001.b {
 //                    $("#A3_2").focus();
 //                }
 //            });
-        //});
+        });
     });
 }

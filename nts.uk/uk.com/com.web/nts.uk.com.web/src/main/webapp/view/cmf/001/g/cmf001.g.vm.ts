@@ -30,7 +30,8 @@ module nts.uk.com.view.cmf001.g.viewmodel {
         decimalFractionItem: KnockoutObservableArray<model.ItemModel>;
         
         /* value*/
-        inputMode: boolean
+        inputMode: boolean = true
+        lineNumber: number = -1
         constructor() {
             var self = this;
             self.decimalPointClsItem = ko.observableArray([
@@ -42,23 +43,24 @@ module nts.uk.com.view.cmf001.g.viewmodel {
                 new model.ItemModel(model.ROUNDING_METHOD.ROUND_UP, 'ROUND_UP'),
                 new model.ItemModel(model.ROUNDING_METHOD.DOWN_4_UP_5, 'DOWN_4_UP_5')
             ]);
-            let param = getShared("params_cmf001g");
-            let numFormat = param.numDataFormatSetting;
-            let inputMode = param.inputMode;
-            self.inputMode = inputMode;
-            if(_.isNull(numFormat)){
-                
-            }else{
-                self.numDataFormatSetting = ko.observable(new model.NumericDataFormatSetting(numFormat.effectiveDigitLength, numFormat.startDigit,
-                numFormat.endDigit, numFormat.decimalDivision, numFormat.decimalDigitNumber, numFormat.decimalPointClassification,
-                numFormat.decimalFraction, numFormat.codeConvertCode, numFormat.fixedValue, numFormat.valueOfFixed)); 
+            let params = getShared("CMF001mParams");
+            if(!nts.uk.util.isNullOrUndefined(params)){
+                let inputMode = params.inputMode;
+                let lineNumber = params.lineNumber;
+                let numFormat = params.formatSetting;
+                self.inputMode = inputMode;
+                self.lineNumber = lineNumber;
+                if(!(_.isNull(numFormat))) 
+                    self.numDataFormatSetting(new model.NumericDataFormatSetting(numFormat.effectiveDigitLength, numFormat.startDigit,
+                    numFormat.endDigit, numFormat.decimalDivision, numFormat.decimalDigitNumber, numFormat.decimalPointClassification,
+                    numFormat.decimalFraction, numFormat.codeConvertCode, numFormat.fixedValue, numFormat.valueOfFixed)); 
             }
             
         }
         open001_K(){
             var self = this;
-            nts.uk.ui.windows.sub.modal("/view/cmf/001/k/index.xhtml").onClosed(()=>{
-                let xxx = getShared("xxx");
+            modal("/view/cmf/001/k/index.xhtml").onClosed(()=>{
+                
                 //get shared
                 alert("CLOSED");
             });
@@ -66,7 +68,7 @@ module nts.uk.com.view.cmf001.g.viewmodel {
         saveNumericSetting(){
             var self = this;
             if(self.inputMode){
-                setShared("params_cmf001g_res", { numDataFormatSetting: ko.toJS(self.numDataFormatSetting) });
+                setShared("CMF001mOutput", {lineNumber: self.lineNumber, formatSetting: ko.toJS(self.numDataFormatSetting) });
                 nts.uk.ui.windows.close();
             }else{
                 

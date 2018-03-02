@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 
 @Stateless
@@ -20,7 +21,8 @@ public class AddStdAcceptCondSetCommandHandler extends CommandHandler<StdAcceptC
     @Override
     protected void handle(CommandHandlerContext<StdAcceptCondSetCommand> context) {
         StdAcceptCondSetCommand addCommand = context.getCommand();
-        repository.add(StdAcceptCondSet.createFromJavaType(0L, addCommand.getCid(), addCommand.getConditionSetCd(), addCommand.getCategoryId(), addCommand.getCsvDataLineNumber(), addCommand.getSystemType(), addCommand.getDeleteExistData(), addCommand.getCsvDataStartLine(), addCommand.getAcceptMode(), addCommand.getConditionSetName(), addCommand.getCheckCompleted(), addCommand.getDeleteExtDataMethod()));
+        String companyId = AppContexts.user().companyId();
+//        repository.add(new StdAcceptCondSet(companyId, addCommand.getConditionSetCd(), addCommand.getCategoryId(), addCommand.getCsvDataLineNumber(), addCommand.getSystemType(), addCommand.getDeleteExistData(), addCommand.getCsvDataStartLine(), addCommand.getAcceptMode(), addCommand.getConditionSetName(), addCommand.getCheckCompleted(), addCommand.getDeleteExtDataMethod()));
     
     }
 }

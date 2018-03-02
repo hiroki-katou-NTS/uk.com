@@ -38,12 +38,10 @@ public class CdConvertDetailsDto
     * 本システムのコード
     */
     private String systemCd;
-    
-    
-    private Long version;
+        
     public static CdConvertDetailsDto fromDomain(CdConvertDetails domain)
     {
-        return new CdConvertDetailsDto(domain.getCid(), domain.getConvertCd(), domain.getLineNumber(), domain.getOutputItem(), domain.getSystemCd(), domain.getVersion());
+        return new CdConvertDetailsDto(domain.getCid(), domain.getConvertCd(), domain.getLineNumber(), domain.getOutputItem(), domain.getSystemCd());
     }
     
 }

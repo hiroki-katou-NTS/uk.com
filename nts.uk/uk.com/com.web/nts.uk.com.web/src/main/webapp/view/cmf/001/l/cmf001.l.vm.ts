@@ -36,7 +36,19 @@ module nts.uk.com.view.cmf001.l.viewmodel {
             self.enable = ko.observable(true);
             self.readonly = ko.observable(true);
             
-            self.itemList = ko.observableArray(model.getCompareListItem());
+            self.itemList = ko.observableArray([
+            new ItemModel(0, '条件としない'),
+            new ItemModel(1, '条件値1　＜　値'),
+            new ItemModel(2, '条件値1　≦　値'),
+            new ItemModel(3, '値　＜　条件値1'),
+            new ItemModel(4, '値　≦　条件値1'),
+            new ItemModel(5, '条件値1　＜　値　かつ　　値　＜　条件値2'),
+            new ItemModel(6, '条件値1　≦　値　かつ　　値　≦　条件値2'),
+            new ItemModel(7, '値　＜　条件値1　または　　条件値2　＜　値'),
+            new ItemModel(8, '値　≦　条件値1　または　　条件値2　≦　値'),
+            new ItemModel(9, '条件値1　＝　値'),
+            new ItemModel(10, '条件値1　≠　　値')
+            ]);
             
             self.acceptScreenConditionSetting = ko.observable(new model.AcceptScreenConditionSetting('条件値', 0 , null, null, null, null, null, null,null, null, null, null));
             self.selectedCode = ko.observable(0);

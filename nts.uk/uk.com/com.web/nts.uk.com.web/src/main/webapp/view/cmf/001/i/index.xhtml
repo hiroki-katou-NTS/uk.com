@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 650, height: 430 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cmf001.i.style.css" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="cmf001.i.vm.js" />
+			<com:scriptfile path="cmf001.i.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div class="contents-area">
+				<div id="I1_1" class="label">#{i18n.getText('CMF001_300')}</div>
+				<table id="tbl-control">
+					<col width="180px" />
+					<col width="135px" />
+					<col width="160px" />
+					<tr>
+						<td>
+							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_301')}</div>
+						</td>
+						<td>
+							<div data-bind="foreach: itemsFormat">
+								<span class="ntsControl"> <label class="ntsRadioBox">
+										<input type="radio" name="radioFormat"
+										data-bind="checkedValue: code, checked: $parent.selectedFormat, enable: $parent.isEditMode" />
+										<span class="box"></span><span class="label"
+										data-bind="text: name"></span>
+								</label>
+								</span>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_320')}</div>
+						</td>
+						<td>
+							<div data-bind="foreach: itemsFixedValue">
+								<span class="ntsControl"> <label class="ntsRadioBox">
+										<input type="radio" name="radioFixedValue"
+										data-bind="checkedValue: code, checked: $parent.selectedFixedValue, enable: $parent.isEditMode" />
+										<span class="box"></span><span class="label"
+										data-bind="text: name"></span>
+								</label>
+								</span>
+							</div>
+						</td>
+						<td><input
+							data-bind="ntsTextEditor: {
+									value: fixedValue,
+									enable: isEditMode,
+									option : {width : '200px'}}" />
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div id="functions-area-bottom">
+				<button id="btn_I5_1" class="x-large proceed "
+					data-bind="click: saveNumericSetting">#{i18n.getText('CMF001_325')}</button>
+				<button id="btn_I5_2" class="large"
+					data-bind="click: cancelNumericSetting">#{i18n.getText('CMF001_326')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

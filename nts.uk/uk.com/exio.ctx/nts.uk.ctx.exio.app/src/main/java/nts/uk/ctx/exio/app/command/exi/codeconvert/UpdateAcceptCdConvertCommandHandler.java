@@ -1,5 +1,7 @@
 package nts.uk.ctx.exio.app.command.exi.codeconvert;
 
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -7,6 +9,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvertRepository;
+import nts.uk.ctx.exio.dom.exi.codeconvert.CdConvertDetails;
 import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
 
 @Stateless
@@ -17,10 +20,15 @@ public class UpdateAcceptCdConvertCommandHandler extends CommandHandler<AcceptCd
     @Inject
     private AcceptCdConvertRepository repository;
     
-    @Override
-    protected void handle(CommandHandlerContext<AcceptCdConvertCommand> context) {
-        AcceptCdConvertCommand updateCommand = context.getCommand();
-        repository.update(AcceptCdConvert.createFromJavaType(updateCommand.getVersion(), updateCommand.getCid(), updateCommand.getConvertCd(), updateCommand.getConvertName(), updateCommand.getAcceptWithoutSetting()));
-    
-    }
+	@Override
+	protected void handle(CommandHandlerContext<AcceptCdConvertCommand> context) {
+		AcceptCdConvertCommand updateCommand = context.getCommand();
+		repository.update(AcceptCdConvert.createFromJavaType(updateCommand.getVersion(), updateCommand.getCid(),
+				updateCommand.getConvertCd(), updateCommand.getConvertName(), updateCommand.getAcceptWithoutSetting(),
+				updateCommand.getCdConvertDetails().stream().map(itemDetail -> {
+					return CdConvertDetails.createFromJavaType(itemDetail.getCid(), itemDetail.getConvertCd(),
+							itemDetail.getLineNumber(), itemDetail.getOutputItem(), itemDetail.getSystemCd());
+				}).collect(Collectors.toList())));
+
+	}
 }

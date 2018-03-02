@@ -51,7 +51,7 @@ public class StdAcceptItemCommand
     /**
     * カテゴリ項目NO
     */
-    private String categoryItemNo;
+    private int categoryItemNo;
     
     private Long version;
 

@@ -69,7 +69,7 @@ public class OiomtStdAcceptItem extends UkJpaEntity implements Serializable
     */
     @Basic(optional = false)
     @Column(name = "CATEGORY_ITEM_NO")
-    public String categoryItemNo;
+    public int categoryItemNo;
     
     @Override
     protected Object getKey()

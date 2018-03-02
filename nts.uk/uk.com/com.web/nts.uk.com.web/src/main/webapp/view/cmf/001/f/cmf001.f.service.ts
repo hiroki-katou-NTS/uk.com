@@ -1,23 +1,37 @@
 module nts.uk.com.view.cmf001.f.service {
     import ajax = nts.uk.request.ajax;
-    import block = nts.uk.ui.block;
     import format = nts.uk.text.format;
     var paths = {
-        getPersonRoleAuth: "/ctx/pereg/roles/auth/find/{0}",
+        getCodeConvert:                "exio/codeconvert/getCodeConvert",
+        getAcceptCodeConvert:          "exio/codeconvert/getAcceptCodeConvert/{0}",
+        getCodeConvertDetails:         "exio/codeconvert/getCodeConvertDetails/{0}",
+        addAcceptCodeConvert:          "exio/codeconvert/addAcceptCodeConvert",
+        updateAcceptCodeConvert:       "exio/codeconvert/updateAcceptCodeConvert"
     }
-    export function getPersonRoleAuth(roleID): JQueryPromise<any> {
-        let dfd = $.Deferred<any>();
-        let self = this;
-        _.defer(() => block.invisible());
-        nts.uk.request.ajax(format(paths.getPersonRoleAuth, roleID))
-            .done(function(res) {
-                dfd.resolve(res);
-            }).fail(function(res) {
-                dfd.reject(res);
-            }).always(() => {
-                _.defer(() => block.clear());
-            });
-        return dfd.promise();
+
+    //Get all accept code convert
+    export function getCodeConvert(): JQueryPromise<any> {
+        return ajax(paths.getCodeConvert);
+    }
+
+    //Get accept code convert by id
+    export function getAcceptCodeConvert(convertCode: string): JQueryPromise<any> {
+        return ajax(format(paths.getAcceptCodeConvert, convertCode));
+    }
+
+    //get accept code convert detail
+    export function getCodeConvertDetails(convertCode: string): JQueryPromise<any> {
+        return ajax(format(paths.getCodeConvertDetails, convertCode));
+    }
+    
+    //Add new accept code convert
+    export function addAcceptCodeConvert(command): JQueryPromise<any> {
+        return ajax(paths.getCodeConvert);
+    }
+    
+    //Update accept code convert
+    export function updateAcceptCodeConvert(command): JQueryPromise<any> {
+        return ajax(paths.getCodeConvert);
     }
 
 }

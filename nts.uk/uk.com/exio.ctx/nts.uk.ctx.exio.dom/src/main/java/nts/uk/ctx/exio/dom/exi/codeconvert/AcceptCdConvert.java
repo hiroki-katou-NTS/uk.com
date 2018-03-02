@@ -1,11 +1,11 @@
 package nts.uk.ctx.exio.dom.exi.codeconvert;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 /**
 * 受入コード変換
@@ -36,9 +36,14 @@ public class AcceptCdConvert extends AggregateRoot
     */
     private int acceptWithoutSetting;
     
-    public static AcceptCdConvert createFromJavaType(Long version, String cid, String convertCd, String convertName, int acceptWithoutSetting)
+    /**
+     * List convert detail data
+     */
+    private List<CdConvertDetails> listConvertDetails;
+    
+    public static AcceptCdConvert createFromJavaType(Long version, String cid, String convertCd, String convertName, int acceptWithoutSetting, List<CdConvertDetails> listConvertDetails)
     {
-        AcceptCdConvert  acceptCdConvert =  new AcceptCdConvert(cid, convertCd, convertName,  acceptWithoutSetting);
+        AcceptCdConvert  acceptCdConvert =  new AcceptCdConvert(cid, convertCd, convertName,  acceptWithoutSetting, listConvertDetails);
         acceptCdConvert.setVersion(version);
         return acceptCdConvert;
     }

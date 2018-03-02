@@ -1,0 +1,240 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="cmf001.o.style.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="cmf002.p.start.js" />
+			<com:scriptfile path="cmf002.pservice.js" />
+			<com:scriptfile path="cmf002.p.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- Go back Style -->
+				<a class="goback"
+					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF001_430')}</a>
+			</div>
+			<div id="contents-area">
+				<div id="ex_output_wizard"
+					data-bind="ntsWizard: {active: activeStep, steps: stepList, theme: 'yellow'}"
+					class="cf">
+					<div class="header">
+						<div class="image" data-icon="../resource/外部出力アイコンA1.jpg"></div>
+						<div class="content">#{i18n.getText('CMF002_25')}</div>
+					</div>
+					<div class="steps">
+						<div class="step-1">
+							<span>#{i18n.getText('CMF002_215')}</span><br />
+							└#{i18n.getText('CMF002_216')}
+						</div>
+						<div class="step-2">#{i18n.getText('CMF002_217')}</div>
+						<div class="end step-2">#{i18n.getText('CMF002_218')}</div>
+					</div>
+					<div class="contents">
+						<div class="step-1">
+							<div class="label" style="margin-bottom: 15px;">#{i18n.getText('CMF002_219')}</div>
+							<table style="width: 100%;">
+								<tr>
+									<td rowspan="2" style="width: 360px;">
+										<div class="" style="width: 360px; float: left;">
+											<div
+												data-bind="ntsPanel:{width: '320px', height: '464px', direction: 'none', showIcon: true, visible: true}">
+												<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_36')}</div>
+												<div tabindex="7" style="width: 320px"
+													data-bind="ntsSearchBox: {
+														searchMode: 'filter', 
+														targetKey: 'dispConditionSettingCode', 
+														comId: 'grd_Condition', 
+														items: listCondition, 
+														selected: selectedConditionCd, 
+														selectedKey: 'dispConditionSettingCode', 
+														fields: ['dispConditionSettingCode', 'dispConditionSettingName'], 
+														mode: 'igGrid'}" />
+												<table id="grd_Condition"
+													data-bind="ntsGridList: {
+													height: 384,
+													name: '#[CMF001_39]', 
+				 									dataSource: listCondition,
+													primaryKey: 'dispConditionSettingCode', 
+													showNumbering: true,
+				 									columns: [
+										                { headerText: '#{i18n.getText('CMF001_440')}', key: 'dispConditionSettingCode', width: 60, formatter: _.escape },
+										                { headerText: '#{i18n.getText('CMF001_441')}', key: 'dispConditionSettingName', width: 220, formatter: _.escape }
+										            ], 
+													multiple: false,
+													value: selectedConditionCd}">
+												</table>
+											</div>
+										</div>
+									</td>
+									<td style="vertical-align: top">
+										<div class="panel panel-frame"
+											style="margin-left: 20px; height: 75px">
+											<table style="margin-bottom: 10px">
+												<tr>
+													<td style="padding: 5px 10px"><label>#{i18n.getText('CMF001_444')}</label>
+													</td>
+													<td style="padding: 5px 10px">
+														<div class="label" data-bind="text: selectedConditionCd"></div>
+													</td>
+													<td style="padding: 5px 10px">
+														<div class="label" data-bind="text: selectedConditionName"></div>
+													</td>
+												</tr>
+											</table>
+											<table>
+												<tr>
+													<td>
+														<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF001_445')}</div>
+													</td>
+													<td>
+														<div id="file-upload" class="form_step0"
+															style="display: inline-block;"
+															data-bind="ntsFileUpload:{
+																	filename: filename,
+																	accept: accept,
+																	text: textId,
+																	aslink: asLink,
+																	enable: enable,
+																	required: true,
+																	onchange: uploadFile.bind($data)}">
+														</div>
+													</td>
+												</tr>
+											</table>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td style="vertical-align: bottom; padding-left: 10px;">
+										<button data-bind="click: previous">#{i18n.getText('CMF001_448')}</button>
+										<button class="proceed x-large" style="margin-left: 10px"
+											data-bind="click: next">#{i18n.getText('CMF001_449')}</button>
+									</td>
+								</tr>
+							</table>
+						</div>
+						<div class="step-2">
+							<div class="label">#{i18n.getText('CMF001_461')}</div>
+							<table style="margin: 0 20px 15px 20px; width: calc(100% - 40px)">
+								<colgroup>
+									<col width="110px" />
+									<col width="50px" />
+									<col width="160px" />
+									<col width="160px" />
+									<col width="25px" />
+									<col width="150px" />
+								</colgroup>
+								<tr>
+									<td style="padding: 5px 0;">
+										<div class="label">#{i18n.getText('CMF001_462')}</div>
+									</td>
+									<td>
+										<div class="label" data-bind="text: selectedConditionCd"></div>
+									</td>
+									<td>
+										<div class="label" data-bind="text: selectedConditionName"></div>
+									</td>
+									<td>
+										<div class="label">#{i18n.getText('CMF001_463')}</div>
+									</td>
+									<td>
+										<div class="label"
+											data-bind="text: selectedConditionLineNumber"></div>
+									</td>
+									<td>
+										<div class="label">#{i18n.getText('CMF001_464')}</div>
+									</td>
+								</tr>
+								<tr>
+									<td style="padding: 5px 0;">
+										<div class="label">#{i18n.getText('CMF001_465')}</div>
+									</td>
+									<td colspan="2">
+										<div class="label" data-bind="text: filename"></div>
+									</td>
+									<td style="">
+										<div class="label">#{i18n.getText('CMF001_466')}</div>
+									</td>
+									<td style="">
+										<div class="label"
+											data-bind="text: selectedConditionStartLine"></div>
+									</td>
+									<td style="">
+										<div class="label">#{i18n.getText('CMF001_467')}</div>
+									</td>
+								</tr>
+							</table>
+							<div class="label" style="margin-bottom: 5px;">#{i18n.getText('CMF001_468')}</div>
+
+							<table id="grd_Accept">
+								<colgroup>
+									<col width="40px" />
+									<col width="130px" />
+									<col width="180px" />
+									<col width="120px" />
+									<col width="120px" />
+									<col width="100px" />
+									<col width="100px" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th class="ui-widget-header"></th>
+										<th class="ui-widget-header">#{i18n.getText('CMF001_471')}</th>
+										<th class="ui-widget-header">#{i18n.getText('CMF001_472')}</th>
+										<th class="ui-widget-header">#{i18n.getText('CMF001_473')}</th>
+										<th class="ui-widget-header">#{i18n.getText('CMF001_474')}</th>
+										<th class="ui-widget-header">#{i18n.getText('CMF001_475')}</th>
+										<th class="ui-widget-header">#{i18n.getText('CMF001_476')}</th>
+									</tr>
+								</thead>
+								<tbody data-bind="foreach: listAccept">
+									<tr>
+										<td style="text-align: right;"></td>
+										<td style="text-align: left;"><div class="label"
+												data-bind="text: infoName"></div></td>
+										<td style="text-align: left;"><div class="label"
+												data-bind="text: itemName"></div></td>
+										<td style="text-align: left;"><div class="label"
+												data-bind="text: sampleData"></div></td>
+										<td style="text-align: left;"><div class="label"
+												data-bind="text: itemType"></div></td>
+										<td style="text-align: center;"><i
+											data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: function() {$parent.editIngestion($data)}"></i></td>
+										<td style="text-align: center;"><i
+											data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: function() {$parent.receiveCondition}"></i></td>
+									</tr>
+								</tbody>
+							</table>
+							<table style="margin-top: 5px; margin-bottom: 10px;">
+								<tr>
+									<td width="80"><div class="label">#{i18n.getText('CMF001_477')}</div></td>
+									<td style="padding-right: 5px;"><div class="label"
+											style="font-size: 1.5em;" data-bind="text: count"></div></td>
+									<td><div class="label">#{i18n.getText('CMF001_478')}</div></td>
+								</tr>
+							</table>
+							<table style="width: 100%">
+								<tr>
+									<td style="text-align: center;">
+										<button data-bind="click: previous">#{i18n.getText('CMF001_479')}</button>
+										<button class="proceed x-large" style="margin-left: 10px"
+											data-bind="click: exeAccept">#{i18n.getText('CMF001_480')}</button>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

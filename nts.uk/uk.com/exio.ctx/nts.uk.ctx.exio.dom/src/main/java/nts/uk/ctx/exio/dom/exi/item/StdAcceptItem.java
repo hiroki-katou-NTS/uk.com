@@ -59,9 +59,9 @@ public class StdAcceptItem extends AggregateRoot
     /**
     * カテゴリ項目NO
     */
-    private String categoryItemNo;
+    private int categoryItemNo;
     
-    public static StdAcceptItem createFromJavaType(Long version, String cid, String conditionSetCd, String categoryId, int acceptItemNumber, int systemType, int csvItemNumber, String csvItemName, int itemType, String categoryItemNo)
+    public static StdAcceptItem createFromJavaType(Long version, String cid, String conditionSetCd, String categoryId, int acceptItemNumber, int systemType, int csvItemNumber, String csvItemName, int itemType, int categoryItemNo)
     {
         StdAcceptItem  stdAcceptItem =  new StdAcceptItem(cid, conditionSetCd, categoryId, acceptItemNumber, systemType, csvItemNumber, csvItemName, itemType,  categoryItemNo);
         stdAcceptItem.setVersion(version);
