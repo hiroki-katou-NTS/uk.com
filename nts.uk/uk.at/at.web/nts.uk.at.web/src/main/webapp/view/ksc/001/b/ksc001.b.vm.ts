@@ -143,12 +143,12 @@ module nts.uk.at.view.ksc001.b {
 //                    }
                     
                     /** Common properties */
-                    systemType: 1, // システム区分
-                    showEmployeeSelection: false, // 検索タイプ
-                    showQuickSearchTab: false, // クイック検索
-                    showAdvancedSearchTab: false, // 詳細検索
-                    showBaseDate: true, // 基準日利用
-                    showClosure: true, // 就業締め日利用
+                    systemType: 2, // システム区分
+                    showEmployeeSelection: true, // 検索タイプ
+                    showQuickSearchTab: true, // クイック検索
+                    showAdvancedSearchTab: true, // 詳細検索
+                    showBaseDate: false, // 基準日利用
+                    showClosure: false, // 就業締め日利用
                     showAllClosure: false, // 全締め表示
                     showPeriod: true, // 対象期間利用
                     periodFormatYM: false, // 対象期間精度
@@ -177,8 +177,9 @@ module nts.uk.at.view.ksc001.b {
                     isMutipleCheck: true, // 選択モード
 
                     /** Return data */
-                    returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                    returnDataFromCcg001: function(data: any) {
                         self.selectedEmployee(data.listEmployee);
+                        self.applyKCP005ContentSearch(data.listEmployee);
                     }
                 }
                 self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });

@@ -65,8 +65,8 @@ module nts.uk.at.view.kmf002.e {
                         });
                         _self.enableDelete(false);
                     } else {
-                        if (_.isEmpty(data2)) {
-                            data2.startMonth = 0;
+                        if (_.isNull(data2.startMonth)) {
+                            data2.startMonth = 1;
                         }
                         _self.commonTableMonthDaySet().arrMonth.removeAll();
                         for (let i=data2.startMonth-1; i<12; i++) {
