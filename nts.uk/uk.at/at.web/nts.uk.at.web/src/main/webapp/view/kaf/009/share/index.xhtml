@@ -13,7 +13,10 @@
 			<div data-bind="visible: screenModeNew" class="mode-style">
 				<div class="cf"
 					data-bind="ntsSwitchButton: {
-									options:prePostItems,
+									options:ko.observableArray([
+							                { prePostCode: 0, prePostName: '#{i18n.getText('KAF009_9')}' },
+							                { prePostCode: 1, prePostName: '#{i18n.getText('KAF009_10')}' }
+							                ]),
 									optionsValue: 'prePostCode',
 									optionsText: 'prePostName',
 									value: prePostSelected,
