@@ -34,8 +34,8 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ConfirmOfManagerOrYouself;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
-//import nts.uk.ctx.at.request.pub.screen.ApplicationExport;
-//import nts.uk.ctx.at.request.pub.screen.ApplicationPub;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
@@ -71,6 +71,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPHeaderDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecEditSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecOpeFuncDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayItem;
@@ -116,8 +117,8 @@ public class DailyPerformanceCorrectionProcessor {
 	@Inject
 	private ShClosurePub shClosurePub;
 
-//	@Inject
-//	private ApplicationPub applicationPub;
+	@Inject
+	private ApplicationListForScreen applicationListFinder;
 
 	private static final String CODE = "Code";
 	private static final String NAME = "Name";
@@ -141,6 +142,10 @@ public class DailyPerformanceCorrectionProcessor {
 	private static final String LOCK_APPLICATION = "Application";
 	private static final String COLUMN_SUBMITTED = "Submitted";
 	public static final int MINUTES_OF_DAY = 24 * 60;
+	private static final String STATE_DISABLE = "ntsgrid-disable";
+	private static final String HAND_CORRECTION_MYSELF = "ntsgrid-manual-edit-target";
+	private static final String HAND_CORRECTION_OTHER = "ntsgrid-manual-edit-other";
+	private static final String REFLECT_APPLICATION = "ntsgrid-reflect";
 
 	/**
 	 * Get List Data include:<br/>
@@ -228,8 +233,11 @@ public class DailyPerformanceCorrectionProcessor {
 		/// アルゴリズム「対象日に対応する社員の実績の編集状態を取得する」を実行する | Execute "Acquire edit status
 		/// of employee's record corresponding to target date"| lay ve trang
 		/// thai sua cua thanh tich nhan vien tuong ung
-		// --List<DailyRecEditSetDto> dailyRecEditSets =
-		/// repo.getDailyRecEditSet(listEmployeeId, dateRange);
+		List<DailyRecEditSetDto> dailyRecEditSets = repo.getDailyRecEditSet(listEmployeeId, dateRange);
+		Map<String, Integer> dailyRecEditSetsMap = dailyRecEditSets.stream()
+				.collect(Collectors.toMap(x -> mergeString(String.valueOf(x.getAttendanceItemId()), "|", x.getEmployeeId(), "|",
+						converDateToString(x.getProcessingYmd())),
+						x -> x.getEditState()));
 		/// アルゴリズム「実績エラーをすべて取得する」を実行する | Execute "Acquire all actual errors"
 		List<DPErrorDto> lstError = getErrorList(screenDto, listEmployeeId);
 		screenDto.setDPErrorDto(lstError);
@@ -322,17 +330,17 @@ public class DailyPerformanceCorrectionProcessor {
 		Map<Integer, Map<String, String>> mapGetName = dataDialogWithTypeProcessor
 				.getAllCodeName(new ArrayList<>(types), companyId);
 		// No 20 get submitted application
-//		List<ApplicationExport> appplication = applicationPub.getApplicationBySID(listEmployeeId,
-//				dateRange.getStartDate(), dateRange.getEndDate());
-//		Map<String, String> appMapDateSid = new HashMap<>();
-//		appplication.forEach(x -> {
-//			String key = x.getEmployeeID() + "|" + x.getAppDate();
-//			if (appMapDateSid.containsKey(key)) {
-//				appMapDateSid.put(key, appMapDateSid.get(key) + "  " + x.getAppTypeName());
-//			} else {
-//				appMapDateSid.put(key, x.getAppTypeName());
-//			}
-//		});
+		List<ApplicationExportDto> appplication = applicationListFinder.getApplicationBySID(listEmployeeId,
+				dateRange.getStartDate(), dateRange.getEndDate());
+		Map<String, String> appMapDateSid = new HashMap<>();
+		appplication.forEach(x -> {
+			String key = x.getEmployeeID() + "|" + x.getAppDate();
+			if (appMapDateSid.containsKey(key)) {
+				appMapDateSid.put(key, appMapDateSid.get(key) + "  " + x.getAppTypeName());
+			} else {
+				appMapDateSid.put(key, x.getAppTypeName());
+			}
+		});
 		Map<String, ItemValue> itemValueMap = new HashMap<>();
 		System.out.println("time create HashMap: " + (System.currentTimeMillis() - startTime2));
 		start = System.currentTimeMillis();
@@ -358,15 +366,15 @@ public class DailyPerformanceCorrectionProcessor {
 		for (DPDataDto data : screenDto.getLstData()) {
 			data.setEmploymentCode(screenDto.getEmploymentCode());
 			if (!sId.equals(data.getEmployeeId())) {
-				screenDto.setLock(data.getId(), LOCK_APPLICATION);
+				screenDto.setLock(data.getId(), LOCK_APPLICATION, STATE_DISABLE);
 			}
 			// map name submitted into cell
-//			if (appMapDateSid.containsKey(data.getEmployeeId() + "|" + data.getDate())) {
-//				data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED,
-//						appMapDateSid.get(data.getEmployeeId() + "|" + data.getDate()), "", ""));
-//			} else {
-//				data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED, "", "", ""));
-//			}
+			if (appMapDateSid.containsKey(data.getEmployeeId() + "|" + data.getDate())) {
+				data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED,
+						appMapDateSid.get(data.getEmployeeId() + "|" + data.getDate()), "", ""));
+			} else {
+				data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED, "", "", ""));
+			}
 			data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED, "", "", ""));
 			data.addCellData(new DPCellDataDto(LOCK_APPLICATION, "", "", ""));
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
@@ -386,7 +394,7 @@ public class DailyPerformanceCorrectionProcessor {
 									data.getEmployeeId(), "|", data.getDate().toString()), x -> x));
 				}
 				processCellData(NAME_EMPTY, NAME_NOT_FOUND, screenDto, dPControlDisplayItem, mapDP, mapGetName,
-						itemValueMap, data, lock);
+						itemValueMap, data, lock, dailyRecEditSetsMap);
 				lstData.add(data);
 				// DPCellDataDto bPCellDataDto = new DPCellDataDto(columnKey,
 				// value,
@@ -411,9 +419,10 @@ public class DailyPerformanceCorrectionProcessor {
 	private void processCellData(String NAME_EMPTY, String NAME_NOT_FOUND, DailyPerformanceCorrectionDto screenDto,
 			DPControlDisplayItem dPControlDisplayItem, Map<Integer, DPAttendanceItem> mapDP,
 			Map<Integer, Map<String, String>> mapGetName, Map<String, ItemValue> itemValueMap, DPDataDto data,
-			boolean lock) {
+			boolean lock, Map<String, Integer> dailyRecEditSetsMap) {
 		Set<DPCellDataDto> cellDatas = data.getCellDatas();
 		String typeGroup = "";
+		Integer cellEdit;
 		if (dPControlDisplayItem.getLstAttendanceItem() != null) {
 			for (DPAttendanceItem item : dPControlDisplayItem.getLstAttendanceItem()) {
 				DPAttendanceItem dpAttenItem = mapDP.get(item.getId());
@@ -425,6 +434,8 @@ public class DailyPerformanceCorrectionProcessor {
 				String key = mergeString(itemIdAsString, "|", data.getEmployeeId(), "|" + data.getDate().toString());
 				String value = itemValueMap.get(key) != null && itemValueMap.get(key).value() != null
 						? itemValueMap.get(key).value().toString() : "";
+				cellEdit = dailyRecEditSetsMap.get(mergeString(itemIdAsString, "|", data.getEmployeeId(), "|" + converDateToString(data.getDate())));
+				
 				if (attendanceAtr == DailyAttendanceAtr.Code.value
 						|| attendanceAtr == DailyAttendanceAtr.Classification.value) {
 					String nameColKey = mergeString(NAME, itemIdAsString);
@@ -433,8 +444,8 @@ public class DailyPerformanceCorrectionProcessor {
 						typeGroup = typeGroup
 								+ mergeString(String.valueOf(item.getId()), ":", String.valueOf(groupType), "|");
 						if (lock) {
-							screenDto.setLock(data.getId(), codeColKey);
-							screenDto.setLock(data.getId(), nameColKey);
+							screenDto.setLock(data.getId(), codeColKey, STATE_DISABLE);
+							screenDto.setLock(data.getId(), nameColKey, STATE_DISABLE);
 						}
 						if (value.isEmpty()) {
 							cellDatas.add(new DPCellDataDto(mergeString(CODE, itemIdAsString), value,
@@ -458,20 +469,27 @@ public class DailyPerformanceCorrectionProcessor {
 							}
 						}
 						cellDatas.add(new DPCellDataDto(nameColKey, value, attendanceAtrAsString, TYPE_LINK));
+						// set color edit
+						cellEditColor(screenDto, data.getId(), nameColKey, cellEdit);
+						cellEditColor(screenDto, data.getId(), codeColKey, cellEdit);
 					} else {
 						String noColKey = mergeString(NO, itemIdAsString);
 						if (lock) {
-							screenDto.setLock(data.getId(), noColKey);
-							screenDto.setLock(data.getId(), nameColKey);
+							screenDto.setLock(data.getId(), noColKey, STATE_DISABLE);
+							screenDto.setLock(data.getId(), nameColKey, STATE_DISABLE);
 						}
 						cellDatas.add(new DPCellDataDto(noColKey, value, attendanceAtrAsString, TYPE_LABEL));
 						cellDatas.add(new DPCellDataDto(nameColKey, value, attendanceAtrAsString, TYPE_LINK));
+						cellEditColor(screenDto, data.getId(), nameColKey, cellEdit);
+						cellEditColor(screenDto, data.getId(), noColKey, cellEdit);
 					}
 
 				} else {
 					String anyChar = mergeString(ADD_CHARACTER, itemIdAsString);
+					// set color edit
+					cellEditColor(screenDto, data.getId(), anyChar, cellEdit);
 					if (lock) {
-						screenDto.setLock(data.getId(), anyChar);
+						screenDto.setLock(data.getId(), anyChar, STATE_DISABLE);
 					}
 					if (attendanceAtr == DailyAttendanceAtr.Time.value
 							|| attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
@@ -526,14 +544,28 @@ public class DailyPerformanceCorrectionProcessor {
 	}
 
 	private void lockCell(DailyPerformanceCorrectionDto screenDto, DPDataDto data) {
-		screenDto.setLock(data.getId(), LOCK_DATE);
-		screenDto.setLock(data.getId(), LOCK_EMP_CODE);
-		screenDto.setLock(data.getId(), LOCK_EMP_NAME);
-		screenDto.setLock(data.getId(), LOCK_ERROR);
-		screenDto.setLock(data.getId(), LOCK_SIGN);
-		screenDto.setLock(data.getId(), LOCK_PIC);
+		screenDto.setLock(data.getId(), LOCK_DATE, STATE_DISABLE);
+		screenDto.setLock(data.getId(), LOCK_EMP_CODE, STATE_DISABLE);
+		screenDto.setLock(data.getId(), LOCK_EMP_NAME, STATE_DISABLE);
+		screenDto.setLock(data.getId(), LOCK_ERROR, STATE_DISABLE);
+		screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
+		screenDto.setLock(data.getId(), LOCK_PIC, STATE_DISABLE);
+		screenDto.setLock(data.getId(), LOCK_APPLICATION, STATE_DISABLE);
+		screenDto.setLock(data.getId(), COLUMN_SUBMITTED, STATE_DISABLE);
 	}
-
+    
+	private void cellEditColor(DailyPerformanceCorrectionDto screenDto, String rowId, String columnKey, Integer cellEdit ){
+		// set color edit
+		if(cellEdit != null){
+			if(cellEdit == 0){
+				screenDto.setLock(rowId, columnKey, HAND_CORRECTION_MYSELF);
+			}else if(cellEdit == 1){
+				screenDto.setLock(rowId, columnKey, HAND_CORRECTION_OTHER);
+			}else{
+				screenDto.setLock(rowId, columnKey, REFLECT_APPLICATION);
+			}
+		}
+	}
 	private boolean checkLockAndSetState(Map<String, DatePeriod> employeeAndDateRange, DPDataDto data) {
 		boolean lock = false;
 		if (!employeeAndDateRange.isEmpty()) {
@@ -573,12 +605,12 @@ public class DailyPerformanceCorrectionProcessor {
 		// disable, enable check sign no 10
 		if (dailyRecOpeFun != null) {
 			if (!sId.equals(data.getEmployeeId())) {
-				screenDto.setLock(data.getId(), LOCK_SIGN);
+				screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
 			} else {
 				if (data.getError().contains("ER")) {
 					int selfConfirmError = dailyRecOpeFun.getYourselfConfirmError();
 					if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value) {
-						screenDto.setLock(data.getId(), LOCK_SIGN);
+						screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
 						// thieu check khi co data
 					} else if (selfConfirmError == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value) {
 						// thieu tra ve message khi dang ky

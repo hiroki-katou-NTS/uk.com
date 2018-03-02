@@ -89,7 +89,7 @@ module cps002.a.vm {
             showClassification: true, // 分類条件
             showJobTitle: true, // 職位条件
             showWorktype: true, // 勤種条件
-            isMutipleCheck: true, // 選択モード
+            isMutipleCheck: false, // 選択モード
 
             /** Return data */
             returnDataFromCcg001: (data: any) => {

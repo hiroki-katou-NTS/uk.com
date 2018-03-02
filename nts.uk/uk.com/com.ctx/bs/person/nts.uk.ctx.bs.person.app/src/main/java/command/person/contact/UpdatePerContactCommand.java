@@ -42,4 +42,5 @@ public class UpdatePerContactCommand{
 	
 	@PeregItem("IS00270")
 	private String memo2;
+	
 }

@@ -113,7 +113,7 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 				.setParameter("companyId", domain.getCompanyId()).getSingleOrNull();
 		if (entity != null) {
 			entity.setUseMyPageAtr(domain.getUseMyPage().value);
-			entity.setUseStandarWidgetAtr(domain.getUseStandardWidget().value);
+			entity.setUseStandarWidgetAtr(domain.getUseStandarWidget().value);
 			entity.setUseOptionalWidgetAtr(domain.getUseOptionalWidget().value);
 			entity.setUseDashBoardAtr(domain.getUseDashboard().value);
 			entity.setUseFolowMenuAtr(domain.getUseFlowMenu().value);
@@ -121,7 +121,7 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 			return entity;
 		} else {
 			CcgmtMyPageSet newEntity = new CcgmtMyPageSet(domain.getCompanyId(), domain.getUseMyPage().value,
-					domain.getUseStandardWidget().value, domain.getUseOptionalWidget().value, domain.getUseDashboard().value, domain.getUseFlowMenu().value,
+					domain.getUseStandarWidget().value, domain.getUseOptionalWidget().value, domain.getUseDashboard().value, domain.getUseFlowMenu().value,
 					domain.getExternalUrlPermission().value);
 			return newEntity;
 		}

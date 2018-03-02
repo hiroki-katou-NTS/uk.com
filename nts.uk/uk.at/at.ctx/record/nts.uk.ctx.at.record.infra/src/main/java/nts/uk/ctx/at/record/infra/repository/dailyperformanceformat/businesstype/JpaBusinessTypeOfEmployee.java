@@ -65,7 +65,6 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository implements Business
 	 * @author hop.nt
 	 */
 	private void updateEntities(BusinessTypeOfEmployee domain, KrcmtBusinessTypeOfEmployee entity ){
-		if (domain.getBusinessTypeCode() != null && !domain.getBusinessTypeCode().equals(""))
 		entity.businessTypeCode = domain.getBusinessTypeCode().v();
 		
 	}

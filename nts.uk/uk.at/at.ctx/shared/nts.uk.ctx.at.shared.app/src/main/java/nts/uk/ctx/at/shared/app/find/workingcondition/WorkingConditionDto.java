@@ -933,9 +933,15 @@ public class WorkingConditionDto extends PeregDomainDto {
 		dto.setAutoIntervalSetAtr(workingConditionItem.getAutoIntervalSetAtr().value);
 		dto.setVacationAddedTimeAtr(workingConditionItem.getVacationAddedTimeAtr().value);
 		if(workingConditionItem.getHolidayAddTimeSet().isPresent()){
-			dto.setOneDay(workingConditionItem.getHolidayAddTimeSet().get().getOneDay().v());
-			dto.setMorning(workingConditionItem.getHolidayAddTimeSet().get().getMorning().v());
-			dto.setAfternoon(workingConditionItem.getHolidayAddTimeSet().get().getAfternoon().v());
+			if (workingConditionItem.getHolidayAddTimeSet().get().getOneDay() != null){
+				dto.setOneDay(workingConditionItem.getHolidayAddTimeSet().get().getOneDay().v());
+			}
+			if (workingConditionItem.getHolidayAddTimeSet().get().getMorning() != null){
+				dto.setMorning(workingConditionItem.getHolidayAddTimeSet().get().getMorning().v());
+			}
+			if (workingConditionItem.getHolidayAddTimeSet().get().getAfternoon() != null){
+				dto.setAfternoon(workingConditionItem.getHolidayAddTimeSet().get().getAfternoon().v());
+			}
 		}
 		dto.setLaborSystem(workingConditionItem.getLaborSystem().value);
 		dto.setContractTime(workingConditionItem.getContractTime().v());

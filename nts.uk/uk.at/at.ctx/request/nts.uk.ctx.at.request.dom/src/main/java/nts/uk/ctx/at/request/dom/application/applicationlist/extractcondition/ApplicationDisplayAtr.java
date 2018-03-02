@@ -16,13 +16,13 @@ public enum ApplicationDisplayAtr {
 	/** 3: 部下の申請 */
 	APP_SUB(2,"部下の申請"),
 	/** 4: 承認する申請*/
-	APP_APPROVED(4,"承認する申請"),
-	/**5: 確認する申請*/
-	APP_CONFIRM(5,"確認する申請"),
-	/** 6:事前通知 */
-	PRIOR_NOTICE(6,"事前通知"),
-	/** 7: 検討指示*/
-	CONSIDER_INSTRUCT(7,"検討指示");
+	APP_APPROVED(4,"承認する申請");
+//	/**5: 確認する申請*/
+//	APP_CONFIRM(5,"確認する申請"),
+//	/** 6:事前通知 */
+//	PRIOR_NOTICE(6,"事前通知"),
+//	/** 7: 検討指示*/
+//	CONSIDER_INSTRUCT(7,"検討指示");
 	
 	public int value;
 	
