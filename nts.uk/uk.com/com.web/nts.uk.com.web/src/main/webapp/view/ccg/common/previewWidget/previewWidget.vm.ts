@@ -30,10 +30,7 @@ module nts.uk.com.view.ccg.common.previewWidget.viewmodel {
             service.active(self.layoutID).done((data: model.LayoutDto) => {
                 if (data !== undefined) {
                     let listPlacement: Array<model.Placement> = _.map(data.placements, (item) => {
-                        return new model.Placement(item.placementID, item.placementPartDto.name,
-                            item.row, item.column,
-                            item.placementPartDto.width, item.placementPartDto.height, item.placementPartDto.externalUrl,
-                            item.placementPartDto.topPagePartID, item.placementPartDto.type);
+                        return new model.Placement(item);
                     });
                     listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
                     self.placements(listPlacement);
