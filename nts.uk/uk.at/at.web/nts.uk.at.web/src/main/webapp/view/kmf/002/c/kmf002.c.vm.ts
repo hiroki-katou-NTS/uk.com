@@ -84,8 +84,8 @@ module nts.uk.at.view.kmf002.c {
             /*
                 Init variable CCG001
             */
-            _self.isQuickSearchTab = ko.observable(false);
-            _self.isAdvancedSearchTab = ko.observable(false);
+            _self.isQuickSearchTab = ko.observable(true);
+            _self.isAdvancedSearchTab = ko.observable(true);
             _self.isAllReferableEmployee = ko.observable(true);
             _self.isOnlyMe = ko.observable(true);
             _self.isEmployeeOfWorkplace = ko.observable(true);
