@@ -43,7 +43,7 @@ public class EmploymentHistoryDto extends PeregDomainDto {
 	public static EmploymentHistoryDto createFromDomain(DateHistoryItem dateHistoryItem,
 			EmploymentHistoryItem historyItem) {
 		return new EmploymentHistoryDto(historyItem.getHistoryId(), dateHistoryItem.start(), dateHistoryItem.end(),
-				historyItem.getEmploymentCode().v(), historyItem.getSalarySegment() != null? historyItem.getSalarySegment().value: ConstantUtils.ENUM_UNDEFINE_VALUE );
+				historyItem.getEmploymentCode().v(), historyItem.getSalarySegment() != null? historyItem.getSalarySegment().value: null );
 	}
 
 }
