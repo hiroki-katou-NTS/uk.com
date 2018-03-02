@@ -255,7 +255,7 @@ public class PeregProcessor {
 			if (item.getItemDefType() != 2) {
 				item.getLstChildItemDef().forEach(childItem -> {
 					layoutPerInfoClsDto.setDispOrder(childItem.getDispOrder());
-					layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(childItem, null));
+					layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(childItem, getValue(childItem)));
 				});
 			}
 			classItemList.add(layoutPerInfoClsDto);
