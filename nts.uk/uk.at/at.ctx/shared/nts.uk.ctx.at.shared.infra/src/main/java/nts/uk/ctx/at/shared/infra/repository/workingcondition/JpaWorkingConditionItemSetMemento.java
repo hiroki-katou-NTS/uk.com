@@ -192,7 +192,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	public void setScheduleMethod(Optional<ScheduleMethod> scheduleMethod) {
 		// Check exist
 		if (!scheduleMethod.isPresent()) {
-//			this.entity.setKshmtScheduleMethod(null);
+			this.entity.setKshmtScheduleMethod(null);
 			return;
 		}
 
@@ -220,19 +220,25 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	public void setHolidayAddTimeSet(Optional<BreakdownTimeDay> holidayAddTimeSet) {
 		// Check exist
 		if (!holidayAddTimeSet.isPresent()) {
-//			this.entity.setHdAddTimeMorning(null);
-//			this.entity.setHdAddTimeAfternoon(null);
-//			this.entity.setHdAddTimeOneDay(null);
+			this.entity.setHdAddTimeMorning(null);
+			this.entity.setHdAddTimeAfternoon(null);
+			this.entity.setHdAddTimeOneDay(null);
 			return;
 		}
-		if (holidayAddTimeSet.get().getMorning() != null){
+		if (holidayAddTimeSet.get().getAfternoon() != null){
 			this.entity.setHdAddTimeMorning(holidayAddTimeSet.get().getMorning().v());
+		} else {
+			this.entity.setHdAddTimeMorning(null);
 		}
 		if (holidayAddTimeSet.get().getAfternoon() != null){
 			this.entity.setHdAddTimeAfternoon(holidayAddTimeSet.get().getAfternoon().v());
+		} else {
+			this.entity.setHdAddTimeMorning(null);
 		}
 		if (holidayAddTimeSet.get().getOneDay() != null){
 			this.entity.setHdAddTimeOneDay(holidayAddTimeSet.get().getOneDay().v());
+		} else {
+				this.entity.setHdAddTimeMorning(null);
 		}
 	}
 
@@ -260,6 +266,8 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	public void setTimeApply(Optional<BonusPaySettingCode> timeApply) {
 		if (timeApply.isPresent()){
 			this.entity.setTimeApply(timeApply.get().v());
+		} else {
+			this.entity.setTimeApply(null);
 		}
 	}
 
@@ -274,6 +282,8 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	public void setMonthlyPattern(Optional<MonthlyPatternCode> monthlyPattern) {
 		if (monthlyPattern.isPresent()){
 			this.entity.setMonthlyPattern(monthlyPattern.get().v());
+		} else {
+			this.entity.setMonthlyPattern(null);
 		}
 	}
 

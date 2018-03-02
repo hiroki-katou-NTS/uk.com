@@ -7,6 +7,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
     import blockUI = nts.uk.ui.block;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import formatById = nts.uk.time.format.byId;
 
     /**
      * load screen O->Q->A
@@ -392,15 +393,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         initCCG001(): void {
             let self = this;
-            let showBaseDate = false, showClosure = false, showPeriod = true;
-
-            if ($('.ccg-sample-has-error').ntsError('hasError')) {
-                return;
-            }
-            if (!showBaseDate && !showClosure && !showPeriod) {
-                nts.uk.ui.dialog.alertError("Base Date or Closure or Period must be shown!");
-                return;
-            }
             // Component option
             self.ccgcomponent = {
                 /** Common properties */
@@ -408,11 +400,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 showEmployeeSelection: false, // 検索タイプ
                 showQuickSearchTab: false, // クイック検索
                 showAdvancedSearchTab: true, // 詳細検索
-                showBaseDate: showBaseDate, // 基準日利用
-                showClosure: showClosure, // 就業締め日利用
+                showBaseDate: false, // 基準日利用
+                showClosure: false, // 就業締め日利用
                 showAllClosure: false, // 全締め表示
-                showPeriod: showPeriod, // 対象期間利用
-                periodFormatYM: true, // 対象期間精度
+                showPeriod: true, // 対象期間利用
+                periodFormatYM: false, // 対象期間精度
 
                 /** Required parameter */
                 periodStartDate: self.dtPrev().toISOString(), // 対象期間開始日
@@ -438,7 +430,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 /** Return data */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                    self.selectedEmployee(data.listEmployee);
+                    self.searchEmployee(data.listEmployee);
                 }
             }
             // Start component
@@ -636,7 +628,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             },
                             popup: {
                                 rows: [1],
-                                provider: function() {
+                                provider: function(columnKey) {
                                     //                                    return $("#popup-area8");
                                     return;
                                 }
@@ -666,7 +658,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     bodyHeightMode: "dynamic",
                     windowXOccupation: 25,
                     //                    windowYOccupation: 175,
-                    windowYOccupation: 230,
+                    windowYOccupation: 130,
                     updateMode: "none",
                     pasteOverWrite: true,
                     stickOverWrite: true,
@@ -790,7 +782,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             },
                             popup: {
                                 rows: [1],
-                                provider: function() {
+                                provider: function(columnKey) {
                                     //                                return $("#popup-area8"); 
                                     return;
                                 }
@@ -947,7 +939,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 },
                                 popup: {
                                     rows: [1],
-                                    provider: function() {
+                                    provider: function(columnKey) {
                                         //                                    return $("#popup-area8"); 
                                         return;
                                     }
@@ -994,7 +986,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     },
                                     popup: {
                                         rows: [1],
-                                        provider: function() {
+                                        provider: function(columnKey) {
                                             //                                        return $("#popup-area8"); 
                                             return;
                                         }
@@ -1065,7 +1057,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     },
                                     popup: {
                                         rows: [1],
-                                        provider: function() {
+                                        provider: function(columnKey) {
                                             //                                        return $("#popup-area8"); 
                                             return;
                                         }
@@ -1705,13 +1697,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this, dfd = $.Deferred();
             $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco), self.setColorForText(detailContentDeco),
                 self.setColorForCell(detailContentDeco), self.setColorForLeftmostContent()).done(() => {                    //set lock cell
-                    _.each(self.dataSource(), (x) => {
-                        if (x.confirmedAtr == 1) {
-                            $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
-                        } else {
-                            $("#extable").exTable("unlockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
-                        }
-                    });                    dfd.resolve();                });
+                    //                    _.each(self.dataSource(), (x) => {
+                    //                        if (x.confirmedAtr == 1) {
+                    //                            $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
+                    //                        } else {
+                    //                            $("#extable").exTable("unlockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
+                    //                        }
+                    //                    });                    dfd.resolve();                });
             return dfd.promise();
         }
 
@@ -2125,6 +2117,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         symbolName: obj.symbolName,
                         startTime: nts.uk.time.parseTime(obj.scheduleStartClock, true).format(),
                         endTime: nts.uk.time.parseTime(obj.scheduleEndClock, true).format()
+                        //                        startTime: formatById("Clock_Short_HM", obj.scheduleStartClock),
+                        //                        endTime: formatById("Clock_Short_HM", obj.scheduleEndClock)
                     });
                 } else {
                     this['_' + arrDay[i].yearMonthDay] = new ksu001.common.viewmodel.ExCell({

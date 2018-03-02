@@ -37,6 +37,9 @@ public class RegulationInfoEmployee { // 社員のソート用の規定情報
 
 	// private Integer oderOfJobTitle; //職位の序列の並び順
 
+	/** The workplace id. */
+	private Optional<String> workplaceId; // 職場の階層コード
+
 	/** The workplace code. */
 	private Optional<String> workplaceCode; // 職場の階層コード
 
