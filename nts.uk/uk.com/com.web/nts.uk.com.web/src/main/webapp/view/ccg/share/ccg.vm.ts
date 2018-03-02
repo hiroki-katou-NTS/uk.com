@@ -1027,7 +1027,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 $("#ccg001-partg-start").ntsEditor("validate");
                 $("#ccg001-partg-end").ntsEditor("validate");
-                return $("#ccg001-partg-start").ntsError('hasError') || $("#ccg001-partg-start").ntsError('hasError');
+                return $("#ccg001-partg-start").ntsError('hasError') || $("#ccg001-partg-end").ntsError('hasError');
             }
 
             /**
