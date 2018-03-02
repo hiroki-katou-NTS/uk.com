@@ -22,11 +22,11 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF001_37')}</a>
-				<button tabindex="1" >#{i18n.getText('CMF001_29')}</button>
-				<button tabindex="2" class="proceed" >#{i18n.getText('CMF001_30')}</button>
+				<button tabindex="1" data-bind="click: createNewCondition">#{i18n.getText('CMF001_29')}</button>
+				<button tabindex="2" data-bind="click: registerAlarmCheckCondition" class="proceed" >#{i18n.getText('CMF001_30')}</button>
 <!-- 					<button tabindex="3" >#{i18n.getText('CMF001_31')}</button> -->
 				<button tabindex="4" data-bind="click: openCMF001m">#{i18n.getText('CMF001_33')}</button>
-				<button tabindex="5" class="danger" >#{i18n.getText('CMF001_34')}</button>
+				<button tabindex="5" data-bind="click: deleteAlarmCheckCondition" class="danger" >#{i18n.getText('CMF001_34')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left">

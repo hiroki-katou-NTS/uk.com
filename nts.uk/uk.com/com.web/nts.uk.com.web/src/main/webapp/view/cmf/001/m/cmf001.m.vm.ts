@@ -10,6 +10,7 @@ module nts.uk.com.view.cmf001.m.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
  
     export class ScreenModel {
+        systemType: model.ItemModel;
         required: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
         checked: KnockoutObservable<boolean>;
@@ -19,38 +20,40 @@ module nts.uk.com.view.cmf001.m.viewmodel {
         selectionType : string;
         conditionCode: KnockoutObservable<string>;
         conditionName: KnockoutObservable<string>;
+        targetType: string;
         
         constructor() {
-            var self = this;
-            self.newCondCode = ko.observable('123');    
-            self.newCondName = ko.observable('A day roi'); 
+            var self = this; 
             self.required = ko.observable(true)
             self.enable = ko.observable(true);
-            self.checked = ko.observable(true);
-            let params = getShared('selectionType'); 
+            self.checked = ko.observable(false);
+            self.newCondCode = ko.observable('');
+            self.newCondName = ko.observable('');
+            let params = getShared('CMF001mParams'); 
+            let item = _.find(model.getSystemTypes(), x => {return x.code == params.systemType;});
+            self.systemType = item;
+            self.targetType = item.name;
             self.selectionType = params.systemType;
             self.conditionCode = ko.observable(params.conditionCode);
             self.conditionName = ko.observable(params.conditionName);
-           
         }
         
          /**
          * Close dialog.
          */
         cancelSetting(): void {
-            setShared('CMF001mCancel', true);
             nts.uk.ui.windows.close();
         }
         
         //設定
         saveData() {
+         //nts.uk.ui.dialog.alertError({ messageId: "Msg_892", messageParams: [nts.uk.resource.getText("M2_7")] });
             var self = this;
-            if(self.checked){
-                setShared('dataValue', {
-                    newValCode: ko.toJS(self.newCondCode()),
-                    newValName: ko.toJS(self.newCondName())
-                }, true);
-            }
+            setShared('CMF001mOutput', {
+				checked: self.checked(),
+                code: self.newCondCode(),
+                name: self.newCondName()
+            }, true);
             nts.uk.ui.windows.close();
         }
     }

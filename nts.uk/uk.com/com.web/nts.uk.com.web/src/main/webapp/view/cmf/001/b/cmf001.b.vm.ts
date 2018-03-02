@@ -112,7 +112,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             self.screenMode(model.SCREEN_MODE.NEW);
         }
 
-        registerAlarmCheckCondition() {
+        registerCondition() {
             let self = this;
             let data = new model.StandardAcceptanceConditionSetting(self.selectedStandardImportSetting().conditionSettingCode(), self.selectedStandardImportSetting().conditionSettingName(), self.selectedStandardImportSetting().deleteExistData(), self.selectedStandardImportSetting().acceptMode(), self.selectedStandardImportSetting().csvDataItemLineNumber(), self.selectedStandardImportSetting().csvDataStartLine());
             let command: any = ko.toJS(data);
@@ -140,7 +140,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             }
         }
 
-        deleteAlarmCheckCondition() {
+        deleteCondition() {
             let self = this, data = self.selectedStandardImportSetting();
             nts.uk.ui.errors.clearAll();
             let command: any = ko.toJS(data);

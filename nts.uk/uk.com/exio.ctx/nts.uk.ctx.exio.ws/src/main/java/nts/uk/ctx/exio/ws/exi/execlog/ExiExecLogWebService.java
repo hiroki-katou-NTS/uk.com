@@ -10,6 +10,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
@@ -24,7 +25,7 @@ import nts.uk.shr.sample.report.app.export.sample.SampleReportQuery;
 /**
  * The Class WorkplaceConfigInfoWebService
  */
-@Path("exio/exi/execlog")
+@Path("ctx/exio/ws/exi/execlog")
 @Produces("application/json")
 public class ExiExecLogWebService extends WebService {
 	@Inject
@@ -34,8 +35,6 @@ public class ExiExecLogWebService extends WebService {
 	private ExacErrorLogFinder exacErrorLogFinder;
 	
 	/** The export service. */
-    //@Inject
-    //private ExiExecLogExportService exportService;
     @Inject
 	private ExecLogAsposeExportService exportService;
     
@@ -43,9 +42,9 @@ public class ExiExecLogWebService extends WebService {
 	 * @param externalProcessId
 	 * @return
 	 */
-	@Path("getLogResults")
+	@Path("getLogResults/{a}")
 	@POST
-	public List<ExacExeResultLogDto> getLogResults(String externalProcessId) {
+	public List<ExacExeResultLogDto> getLogResults(@PathParam("a") String externalProcessId) {
 		return this.exacExeResultLogFinder.getExacExeResultLogByProcessId(externalProcessId);
 	}
 	
@@ -59,11 +58,6 @@ public class ExiExecLogWebService extends WebService {
      * @param processId
      * @return
      */
-    /*@POST
-    @Path("export/{processId}")
-    public ExportServiceResult exportCsvError(@PathParam("processId") String processId) {
-        return this.exportService.start(processId);
-    }*/
     @POST
 	@Path("generateCSV")
 	public ExportServiceResult generate(SampleReportQuery query) {

@@ -6,10 +6,10 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
-import javax.persistence.Version;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -25,10 +25,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class OiomtCdConvertDetails extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    
-    @Version
-    @Column(name = "EXCLUS_VER")
-    public Long version;
     
     /**
     * ID
@@ -50,6 +46,12 @@ public class OiomtCdConvertDetails extends UkJpaEntity implements Serializable
     @Column(name = "SYSTEM_CD")
     public String systemCd;
     
+    @ManyToOne
+	@PrimaryKeyJoinColumns({
+		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
+		@PrimaryKeyJoinColumn(name="CONVERT_CD",referencedColumnName="CONVERT_CD")
+	})
+	private OiomtAcceptCdConvert oiomtAcceptCdConvert;
     @Override
     protected Object getKey()
     {

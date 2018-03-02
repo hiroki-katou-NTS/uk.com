@@ -1,10 +1,10 @@
-module nts.uk.com.view.cmf.r.service {
+module nts.uk.com.view.cmf001.r.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths = {
-        getLogResults: "ctx/exio/ws/exi/execlog/getLogResults",
+        getLogResults: "ctx/exio/ws/exi/execlog/getLogResults/{0}",
         getErrorLogs: "ctx/exio/ws/exi/execlog/getErrorLogs",
-        exportDatatoCsv: "ctx/exio/ws/exi/execlog/export/{processId}",
+        exportDatatoCsv: "ctx/exio/ws/exi/execlog/export/{0}",
     }
 
     /**

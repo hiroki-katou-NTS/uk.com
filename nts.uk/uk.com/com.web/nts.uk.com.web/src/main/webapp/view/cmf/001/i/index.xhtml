@@ -8,53 +8,57 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 650, height: 500 };</script>
+			<script>var dialogSize = { width: 650, height: 430 };</script>
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cmf001.i.style.css" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf001.i.vm.js" />
 			<com:scriptfile path="cmf001.i.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area" style="width: 550px; height: 400px;">
-				<div class="label" style="margin-left: 20px; margin-top: 10px;">#{i18n.getText('CMF001_300')}</div>
-				<table style="margin-left: 30px; margin-top: 20px;">
-					<col width="150px" />
+			<div class="contents-area">
+				<div id="I1_1" class="label">#{i18n.getText('CMF001_300')}</div>
+				<table id="tbl-control">
+					<col width="180px" />
 					<col width="135px" />
 					<col width="160px" />
 					<tr>
-						<td style="vertical-align: top; padding: 5px">
+						<td>
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_301')}</div>
 						</td>
-						<td style="vertical-align: top; padding: 5px">
-							<div data-bind="foreach: items1">
-								<span class="ntsControl" style="padding-bottom: 10px">
-									<label class="ntsRadioBox">
-										<input type="radio" name="textRadio1" data-bind="checkedValue: value, checked: $parent.selectedValue1, enable: $parent.enable" />
-										<span class="box"></span><span class="label" data-bind="text: text"></span>
-									</label>
+						<td>
+							<div data-bind="foreach: itemsFormat">
+								<span class="ntsControl"> <label class="ntsRadioBox">
+										<input type="radio" name="radioFormat"
+										data-bind="checkedValue: code, checked: $parent.selectedFormat, enable: $parent.isEditMode" />
+										<span class="box"></span><span class="label"
+										data-bind="text: name"></span>
+								</label>
 								</span>
 							</div>
 						</td>
 					</tr>
 					<tr>
-						<td style="vertical-align: top; padding: 15px 5px 5px 5px">
+						<td>
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_320')}</div>
 						</td>
-						<td style="vertical-align: top; padding: 15px 5px 5px 5px">
-							<div data-bind="foreach: items2">
-								<span class="ntsControl" style="padding-bottom: 10px">
-									<label class="ntsRadioBox">
-										<input type="radio" name="textRadio2" data-bind="checkedValue: value, checked: $parent.selectedValue2, enable: $parent.enable" />
-										<span class="box"></span><span class="label" data-bind="text: text"></span>
-									</label>
+						<td>
+							<div data-bind="foreach: itemsFixedValue">
+								<span class="ntsControl"> <label class="ntsRadioBox">
+										<input type="radio" name="radioFixedValue"
+										data-bind="checkedValue: code, checked: $parent.selectedFixedValue, enable: $parent.isEditMode" />
+										<span class="box"></span><span class="label"
+										data-bind="text: name"></span>
+								</label>
 								</span>
 							</div>
 						</td>
-						<td style="vertical-align: top; padding: 15px 5px 5px 5px"><input
+						<td><input
 							data-bind="ntsTextEditor: {
-									value: valueTexBox,
-									option : {width : '100px'}" />
+									value: fixedValue,
+									enable: isEditMode,
+									option : {width : '200px'}}" />
 						</td>
 					</tr>
 				</table>

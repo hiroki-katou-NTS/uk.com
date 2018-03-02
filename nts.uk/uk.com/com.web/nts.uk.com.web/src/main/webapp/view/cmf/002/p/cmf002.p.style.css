@@ -1,0 +1,35 @@
+#ex_accept_wizard {
+	width: 1200px;
+}
+#ex_accept_wizard > .steps{
+	width: 250px;
+	height: 620px;
+}
+#ex_accept_wizard > .content{
+	width: 850px;
+	height: 620px;
+	background: none;
+}
+#file-upload{
+	width: 300px;
+}
+
+#grd_Accept{
+  counter-reset: rowNumber;
+}
+#grd_Accept tr {
+  counter-increment: rowNumber;
+}
+
+#grd_Accept tr td:first-child::before {
+  content: counter(rowNumber);
+  margin-left: 0.5em;
+}
+
+#grd_Accept tr td:first-child {
+	background-color: #CFF1A5;
+}
+
+.img-icon{
+	cursor: pointer;
+}

@@ -1,15 +1,17 @@
 package nts.uk.ctx.exio.infra.entity.exi.codeconvert;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -49,6 +51,10 @@ public class OiomtAcceptCdConvert extends UkJpaEntity implements Serializable
     @Basic(optional = false)
     @Column(name = "ACCEPT_WITHOUT_SETTING")
     public int acceptWithoutSetting;
+    
+    @OneToMany(targetEntity = OiomtCdConvertDetails.class, cascade = CascadeType.ALL, mappedBy = "oiomtAcceptCdConvert", orphanRemoval = true)
+	@JoinTable(name = "OIOMT_CD_CONVERT_DETAILS")
+	public List<OiomtCdConvertDetails> oiomtCdConvertDetails;
     
     @Override
     protected Object getKey()

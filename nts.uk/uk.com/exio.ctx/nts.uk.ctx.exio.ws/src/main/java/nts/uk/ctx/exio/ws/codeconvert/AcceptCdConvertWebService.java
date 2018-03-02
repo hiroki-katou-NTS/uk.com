@@ -19,7 +19,7 @@ public class AcceptCdConvertWebService {
 	public List<AcceptCdConvert> getCodeConvert() {
 		List<AcceptCdConvert> list = new ArrayList<>();
 		for (int i = 1; i < 10; i++) {
-			list.add(new AcceptCdConvert("1", "00" + i, "Item " + i, i % 2 == 0 ? 1 : 0));
+			list.add(new AcceptCdConvert("1", "00" + i, "Item " + i, i % 2 == 0 ? 1 : 0, null));
 		}
 		return list;
 	}
@@ -29,7 +29,7 @@ public class AcceptCdConvertWebService {
 	public AcceptCdConvert getAcceptCodeConvert(@PathParam("convertCode") String convertCode) {
 		List<AcceptCdConvert> list = new ArrayList<>();
 		for (int i = 1; i < 10; i++) {
-			list.add(new AcceptCdConvert("1", "00" + i, "Item " + i, i % 2 == 0 ? 1 : 0));
+			list.add(new AcceptCdConvert("1", "00" + i, "Item " + i, i % 2 == 0 ? 1 : 0, null));
 		}
 		AcceptCdConvert codeConvert = list.stream().filter(p -> p.getConvertCd().equals(convertCode)).findFirst()
 				.orElse(null);

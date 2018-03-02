@@ -12,18 +12,19 @@
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf001.e.vm.js" />
 			<com:scriptfile path="cmf001.e.start.js" />
+			<com:stylefile path = "cmf001.e.style.css"/>
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area" style="width:300px; height:550px;">
-				<div style="margin-top:15px; margin-left:20px;" class="label">#{i18n.getText('CMF001_180')}</div>
-				<div style="margin-left: 40px; margin-top:15px; width = 350px;">
-					<div  data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_181')}</div>
-					<div tabindex = "1"  style=" display:inline-block; width: 150px" data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'dispCsvItemNumber', comId: 'E2_1', 
+			<div class="contents-area dialog-content" >
+				<div id ="E1_1" class = "label dialog-title" >#{i18n.getText('CMF001_180')}</div>
+				<div style=" margin-top:15px; width = 350px;">
+					<div id ="E1_2"  data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_181')}</div>
+					<div id ="E1_3" tabindex = "1"  style=" display:inline-block; width: 150px" data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'dispCsvItemNumber', comId: 'E2_1', 
 					items: listCsvItem, placeHolder: '', selected: null, selectedKey: 'disCsvItemNumber', fields: ['dispCsvItemName'], mode: 'igGrid'}" />		
 				
 				</div>
-				<div style="margin-left:40px; margin-right:auto" >
+				<div style="margin-right:auto" >
 					<table id="E2_1"  data-bind="ntsGridList: {
 							height: 420,
 							width: 270,
@@ -42,8 +43,8 @@
 					</table>
 				</div>
 				<div id="functions-area-bottom">
-					<button tabindex = "2" id="btn_E3_1" class="x-large proceed " data-bind="click: save">#{i18n.getText('CMF001_184')}</button>
-					<button tabindex = "3" id="btn_E3_2" class="large" data-bind="click: cancel">#{i18n.getText('CMF001_185')}</button>
+					<button tabindex = "2" id="E3_1" class="x-large proceed " data-bind="click: save">#{i18n.getText('CMF001_184')}</button>
+					<button tabindex = "3" id="E3_2" class="large" data-bind="click: cancel">#{i18n.getText('CMF001_185')}</button>
 				</div>
 			</div>
 		</ui:define>
