@@ -49,12 +49,8 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 	 * @param entity
 	 */
 	private void updateEntity(AffJobTitleHistoryItem domain, BsymtAffJobTitleHistItem entity) {
-		if (domain.getJobTitleId() != null){
-			entity.jobTitleId = domain.getJobTitleId();
-		}
-		if (domain.getNote() != null && !domain.getNote().v().equals("")){
-			entity.note = domain.getNote().v();
-		}
+		entity.jobTitleId = domain.getJobTitleId();
+		entity.note = domain.getNote().v();
 	}
 
 	@Override
