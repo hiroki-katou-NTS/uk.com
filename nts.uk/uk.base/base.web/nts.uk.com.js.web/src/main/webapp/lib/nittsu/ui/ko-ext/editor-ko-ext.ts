@@ -231,8 +231,11 @@ module nts.uk.ui.koExtentions {
             setEnterHandlerIfRequired($input, data);
             
             $input.on("keyup", (e) => {
+                if($input.attr('readonly')){
+                    return;
+                }
                 var code = e.keyCode || e.which;
-                if (!readonly && code.toString() !== '9') {
+                if (!$input.attr('readonly') && code.toString() !== '9') {
                     let validator = self.getValidator(data);
                     var newText = $input.val();
                     var result = validator.validate(newText,{ isCheckExpression: true });
@@ -390,12 +393,11 @@ module nts.uk.ui.koExtentions {
             super.init($input, data);
             $input.focus(() => {
                 if (!$input.attr('readonly')) {
-                    var selectionType = document.getSelection().type;
                     // Remove separator (comma)
                     $input.val(data.value());
                     // If focusing is caused by Tab key, select text
                     // this code is needed because removing separator deselects.
-                    if (selectionType === 'Range') {
+                    if (keyboardStream.wasKeyDown(KeyCodes.Tab, 500)) {
                         $input.select();
                     }
                 }
@@ -514,7 +516,7 @@ module nts.uk.ui.koExtentions {
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var inputFormat: string = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
             var mode: string = (data.mode !== undefined) ? ko.unwrap(data.mode) : "";
-            
+           
             let validateOption = $.extend({ required: required, outputFormat: inputFormat, mode: mode }, option);
             return new validation.TimeValidator(name, constraintName, validateOption);
         }
@@ -533,20 +535,18 @@ module nts.uk.ui.koExtentions {
                 }
                 if ($input.ntsError('hasError')) {
                     return;
-                } 
-                
-                var selectionTypeOnFocusing = document.getSelection().type;
+                }
                 
                 if(!nts.uk.util.isNullOrEmpty(data.value())){
                     let timeWithDayAttr = time.minutesBased.clock.dayattr.create(data.value());
-                    $input.val(timeWithDayAttr.shortText);    
+                    $input.val(timeWithDayAttr.shortText);
                 } else {
                     $input.val("");
                 }
 
                 // If focusing is caused by Tab key, select text
                 // this code is needed because removing separator deselects.
-                if (selectionTypeOnFocusing === 'Range') {
+                if (keyboardStream.wasKeyDown(KeyCodes.Tab, 500)) {
                     $input.select();
                 }
                 

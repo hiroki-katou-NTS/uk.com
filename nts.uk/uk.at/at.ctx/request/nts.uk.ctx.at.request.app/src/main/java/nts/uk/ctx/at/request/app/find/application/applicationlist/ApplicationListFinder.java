@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListInit
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListOutPut;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppMasterInfo;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.ApplicationFullOutput;
+import nts.uk.ctx.at.request.dom.application.applicationlist.service.CheckColorTime;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.PhaseStatus;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispNameRepository;
@@ -101,11 +102,11 @@ public class ApplicationListFinder {
 			for (AppMasterInfo master : lstApp.getLstMasterInfo()) {
 				master.setStatusFrameAtr(this.findStatusFrame(lstApp.getLstFramStatus(), master.getAppID()));
 				master.setPhaseStatus(this.findStatusPhase(lstApp.getLstPhaseStatus(), master.getAppID()));
-				master.setCheckTimecolor(lstApp.getLstTimeColor().contains(master.getAppID()));
+				master.setCheckTimecolor(this.findColorAtr(lstApp.getLstTimeColor(), master.getAppID()));
 			}
 		}
 		return new ApplicationListDto(displaySet, lstApp.getLstMasterInfo(),lstAppDto,lstApp.getLstAppOt(),lstApp.getLstAppGoBack(),
-				lstApp.getAppStatusCount());
+				lstApp.getAppStatusCount(), lstApp.getLstAppGroup());
 	}
 	
 	private Integer findStatusAppv(List<AppStatusApproval> lstStatusApproval, String appID){
@@ -132,6 +133,14 @@ public class ApplicationListFinder {
 		}
 		return null;
 	}
+	private int findColorAtr(List<CheckColorTime> lstTimeColor, String appId){
+		for (CheckColorTime checkColorTime : lstTimeColor) {
+			if(checkColorTime.getAppID().equals(appId)){
+				return checkColorTime.getColorAtr();
+			}
+		}
+		return 0;
+	}
 	/**
 	 * requestList #26
 	 * getApplicationBySID 
@@ -140,30 +149,30 @@ public class ApplicationListFinder {
 	 * @param endDate
 	 * @return list<ApplicationExport>
 	 */
-	public List<ApplicationExportDto> getApplicationBySID(List<String> employeeID, GeneralDate startDate, GeneralDate endDate){
-		List<ApplicationExportDto> applicationExports = new ArrayList<>();
-		List<Application_New> application = this.applicationRepository_New.getApplicationBySIDs(employeeID, startDate, endDate);
-		if(CollectionUtil.isEmpty(application)){
-			return applicationExports;
-		}
-		List<Application_New> applicationExcessHoliday = application.stream().filter(x -> x.getAppType().value != ApplicationType.ABSENCE_APPLICATION.value).collect(Collectors.toList());
-		for(Application_New app : applicationExcessHoliday){
-			ApplicationExportDto applicationExport = new ApplicationExportDto();
-			applicationExport.setAppDate(app.getAppDate());
-			applicationExport.setAppType(app.getAppType().value);
-			applicationExport.setEmployeeID(app.getEmployeeID());
-			applicationExport.setAppTypeName(appDispNameRepository.getDisplay(app.getAppType().value).isPresent() ? appDispNameRepository.getDisplay(app.getAppType().value).get().getDispName().toString() : "" );
-			applicationExports.add(applicationExport);
-		}
-		List<Application_New> applicationHoliday = application.stream().filter(x -> x.getAppType().value == ApplicationType.ABSENCE_APPLICATION.value).collect(Collectors.toList());
-		for(Application_New app : applicationHoliday){
-			ApplicationExportDto applicationExport = new ApplicationExportDto();
-			applicationExport.setAppDate(app.getAppDate());
-			applicationExport.setAppType(app.getAppType().value);
-			applicationExport.setEmployeeID(app.getEmployeeID());
-			applicationExport.setAppTypeName(hdAppDispNameRepository.getHdApp(app.getAppType().value).isPresent() ? hdAppDispNameRepository.getHdApp(app.getAppType().value).get().getDispName().toString() : "" );
-			applicationExports.add(applicationExport);
-		}
-		return applicationExports;
-	} 
+//	public List<ApplicationExportDto> getApplicationBySID(List<String> employeeID, GeneralDate startDate, GeneralDate endDate){
+//		List<ApplicationExportDto> applicationExports = new ArrayList<>();
+//		List<Application_New> application = this.applicationRepository_New.getApplicationBySIDs(employeeID, startDate, endDate);
+//		if(CollectionUtil.isEmpty(application)){
+//			return applicationExports;
+//		}
+//		List<Application_New> applicationExcessHoliday = application.stream().filter(x -> x.getAppType().value != ApplicationType.ABSENCE_APPLICATION.value).collect(Collectors.toList());
+//		for(Application_New app : applicationExcessHoliday){
+//			ApplicationExportDto applicationExport = new ApplicationExportDto();
+//			applicationExport.setAppDate(app.getAppDate());
+//			applicationExport.setAppType(app.getAppType().value);
+//			applicationExport.setEmployeeID(app.getEmployeeID());
+//			applicationExport.setAppTypeName(appDispNameRepository.getDisplay(app.getAppType().value).isPresent() ? appDispNameRepository.getDisplay(app.getAppType().value).get().getDispName().toString() : "" );
+//			applicationExports.add(applicationExport);
+//		}
+//		List<Application_New> applicationHoliday = application.stream().filter(x -> x.getAppType().value == ApplicationType.ABSENCE_APPLICATION.value).collect(Collectors.toList());
+//		for(Application_New app : applicationHoliday){
+//			ApplicationExportDto applicationExport = new ApplicationExportDto();
+//			applicationExport.setAppDate(app.getAppDate());
+//			applicationExport.setAppType(app.getAppType().value);
+//			applicationExport.setEmployeeID(app.getEmployeeID());
+//			applicationExport.setAppTypeName(hdAppDispNameRepository.getHdApp(app.getAppType().value).isPresent() ? hdAppDispNameRepository.getHdApp(app.getAppType().value).get().getDispName().toString() : "" );
+//			applicationExports.add(applicationExport);
+//		}
+//		return applicationExports;
+//	} 
 }
