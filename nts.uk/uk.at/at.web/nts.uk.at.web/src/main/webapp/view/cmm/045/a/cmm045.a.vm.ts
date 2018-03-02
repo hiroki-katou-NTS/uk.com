@@ -548,20 +548,26 @@ module cmm045.a.viewmodel {
                             overTime.workClockTo2, overTime.total, lstFrame, overTime.overTimeShiftNight, overTime.flexExessTime));
                 });
                 let lstData = self.mapData(lstApp, lstMaster, lstGoBack, lstOverTime, data.lstAppGroup);
-                self.items(lstData);
-                //mode approval - count
-                if(data.appStatusCount != null){
-                    self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber, 
-                        data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner, 
-                        data.appStatusCount.denialNumber));
-                }
-                if(self.mode() == 1){
-                    $("#grid1").ntsGrid("destroy");
-                    self.reloadGridApproval();
+                self.lstApp(lstData);
+                if(self.selectedCode() != -1){
+                    self.filterByAppType(self.selectedCode());
                 }else{
-                    $("#grid2").ntsGrid("destroy");
-                    self.reloadGridApplicaion();
+                    self.items(lstData);
+                    //mode approval - count
+                    if(data.appStatusCount != null){
+                        self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber, 
+                            data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner, 
+                            data.appStatusCount.denialNumber));
+                    }
+                    if(self.mode() == 1){
+                        $("#grid1").ntsGrid("destroy");
+                        self.reloadGridApproval();
+                    }else{
+                        $("#grid2").ntsGrid("destroy");
+                        self.reloadGridApplicaion();
+                    }
                 }
+                
                       
             }).always(()=>{
                     block.clear(); 
