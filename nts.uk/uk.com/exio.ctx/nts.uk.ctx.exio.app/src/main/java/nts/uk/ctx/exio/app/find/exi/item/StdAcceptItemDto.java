@@ -1,69 +1,68 @@
 package nts.uk.ctx.exio.app.find.exi.item;
 
-import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.exio.app.find.exi.condset.AcScreenCondSetDto;
+import nts.uk.ctx.exio.app.find.exi.dataformat.ChrDataFormatSetDto;
+import nts.uk.ctx.exio.app.find.exi.dataformat.DateDataFormSetDto;
+import nts.uk.ctx.exio.app.find.exi.dataformat.InsTimeDatFmSetDto;
+import nts.uk.ctx.exio.app.find.exi.dataformat.NumDataFormatSetDto;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 
 /**
-* 受入項目（定型）
-*/
-@AllArgsConstructor
+ * 受入項目（定型）
+ */
+
 @Value
-public class StdAcceptItemDto
-{
-    
-    /**
-    * 会社ID
-    */
-    private String cid;
-    
-    /**
-    * 条件設定コード
-    */
-    private String conditionSetCd;
-    
-    /**
-    * カテゴリID
-    */
-    private String categoryId;
-    
-    /**
-    * 受入項目番号
-    */
-    private int acceptItemNumber;
-    
-    /**
-    * システム種類
-    */
-    private int systemType;
-    
-    /**
-    * CSV項目番号
-    */
-    private int csvItemNumber;
-    
-    /**
-    * CSV項目名
-    */
-    private String csvItemName;
-    
-    /**
-    * 項目型
-    */
-    private int itemType;
-    
-    /**
-    * カテゴリ項目NO
-    */
-    private int categoryItemNo;
-    
-    
-    private Long version;
-    public static StdAcceptItemDto fromDomain(StdAcceptItem domain)
-    {
-        return new StdAcceptItemDto(domain.getCid(), domain.getConditionSetCd(), domain.getCategoryId(), domain.getAcceptItemNumber(), domain.getSystemType(), domain.getCsvItemNumber(), domain.getCsvItemName(), domain.getItemType(), domain.getCategoryItemNo(), domain.getVersion());
-    }
-    
+public class StdAcceptItemDto {
+
+	/**
+	 * 条件設定コード
+	 */
+	private String conditionSettingCode;
+
+	/**
+	 * 受入項目番号
+	 */
+	private int acceptItemNumber;
+
+	/**
+	 * CSV項目番号
+	 */
+	private int csvItemNumber;
+
+	/**
+	 * CSV項目名
+	 */
+	private String csvItemName;
+
+	/**
+	 * 項目型
+	 */
+	private int itemType;
+
+//	private NumDataFormatSetDto numberFormatSetting;
+//
+//	private ChrDataFormatSetDto charFormatSetting;
+//
+//	private DateDataFormSetDto dateFormatSetting;
+//
+//	private InsTimeDatFmSetDto instTimeFormatSetting;
+
+	private AcScreenCondSetDto screenConditionSetting;
+	
+	public StdAcceptItemDto(String conditionSettingCode, int acceptItemNumber, int csvItemNumber, String csvItemName,
+			int itemType, AcScreenCondSetDto screenConditionSetting) {
+		super();
+		this.conditionSettingCode = conditionSettingCode;
+		this.acceptItemNumber = acceptItemNumber;
+		this.csvItemNumber = csvItemNumber;
+		this.csvItemName = csvItemName;
+		this.itemType = itemType;
+		this.screenConditionSetting = screenConditionSetting;
+	}
+
+	public static StdAcceptItemDto fromDomain(StdAcceptItem domain) {
+		return new StdAcceptItemDto(domain.getConditionSetCd().v(), domain.getAcceptItemNumber(), domain.getCsvItemNumber(), domain.getCsvItemName(), domain.getItemType().value, null);
+	}
+
 }

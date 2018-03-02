@@ -20,7 +20,7 @@ public class AddStdAcceptItemCommandHandler extends CommandHandler<StdAcceptItem
     @Override
     protected void handle(CommandHandlerContext<StdAcceptItemCommand> context) {
         StdAcceptItemCommand addCommand = context.getCommand();
-        repository.add(StdAcceptItem.createFromJavaType(0L, addCommand.getCid(), addCommand.getConditionSetCd(), addCommand.getCategoryId(), addCommand.getAcceptItemNumber(), addCommand.getSystemType(), addCommand.getCsvItemNumber(), addCommand.getCsvItemName(), addCommand.getItemType(), addCommand.getCategoryItemNo()));
+//        repository.add(StdAcceptItem.createFromJavaType(0L, addCommand.getCid(), addCommand.getConditionSetCd(), addCommand.getCategoryId(), addCommand.getAcceptItemNumber(), addCommand.getSystemType(), addCommand.getCsvItemNumber(), addCommand.getCsvItemName(), addCommand.getItemType(), addCommand.getCategoryItemNo()));
     
     }
 }

@@ -15,16 +15,11 @@ import nts.uk.shr.com.context.AppContexts;
 public class StdAcceptItemFinder {
 
 	@Inject
-	private StdAcceptItemRepository finder;
-
-	public List<StdAcceptItemDto> getAllStdAcceptItem() {
-		return finder.getAllStdAcceptItem().stream().map(item -> StdAcceptItemDto.fromDomain(item))
-				.collect(Collectors.toList());
-	}
+	private StdAcceptItemRepository stdAcceptItemRepo;
 
 	public List<StdAcceptItemDto> getStdAcceptItem(int systemType, String conditionSetCd) {
 		String companyId = AppContexts.user().companyId();
-		return finder.getStdAcceptItem(companyId, systemType, conditionSetCd).stream()
+		return stdAcceptItemRepo.getListStdAcceptItems(companyId, systemType, conditionSetCd).stream()
 				.map(item -> StdAcceptItemDto.fromDomain(item)).collect(Collectors.toList());
 	}
 }

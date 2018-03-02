@@ -7,37 +7,53 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
-* 受入選別条件設定: 主キー情報
-*/
-@AllArgsConstructor
-@NoArgsConstructor
+ * 受入選別条件設定: 主キー情報
+ */
+
 @Embeddable
-public class OiomtAcScreenCondSetPk implements Serializable
-{
-    private static final long serialVersionUID = 1L;
-    
-    /**
-    * 会社ID
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
+public class OiomtAcScreenCondSetPk implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 会社ID
+	 */
+	@Basic(optional = false)
+	@Column(name = "CID")
+	public String cid;
+
+	/**
+     * システム種類
+     */
+     @Basic(optional = false)
+     @Column(name = "SYSTEM_TYPE")
+     public int systemType;
+     
+	/**
+	 * 条件設定コード
+	 */
+	@Basic(optional = false)
+	@Column(name = "CONDITION_SET_CD")
+	public String conditionSetCd;
+
+	/**
+    * カテゴリID
     */
     @Basic(optional = false)
-    @Column(name = "CID")
-    public String cid;
+    @Column(name = "CATEGORY_ID")
+    public String categoryId;
     
-    /**
-    * 条件設定コード
-    */
-    @Basic(optional = false)
-    @Column(name = "CONDITION_SET_CD")
-    public String conditionSetCd;
-    
-    /**
-    * 受入項目の番号
-    */
-    @Basic(optional = false)
-    @Column(name = "ACCEPT_ITEM_NUM")
-    public int acceptItemNum;
-    
+	/**
+	 * 受入項目の番号
+	 */
+	@Basic(optional = false)
+	@Column(name = "ACCEPT_ITEM_NUM")
+	public int acceptItemNum;
+
 }
