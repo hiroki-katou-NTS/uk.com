@@ -1066,7 +1066,10 @@ module nts.uk.com.view.ccg.share.ccg {
             public setBaseDateAndPeriod(): JQueryPromise<void> { // format: YYYY-MM-DD
                 let dfd = $.Deferred<void>();
                 let self = this;
-                // set base date
+                // set default base date
+                self.queryParam.baseDate = moment().format(CcgDateFormat.DEFAULT_FORMAT);
+
+                // set base date = user input
                 if (self.showBaseDate) {
                     self.acquiredBaseDate(self.baseDate().format(CcgDateFormat.DEFAULT_FORMAT));
                 }
@@ -1088,8 +1091,11 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (self.showPeriodYM) {
                     self.calculatePeriod().done(period => {
                         if (!self.showBaseDate) {
+                            // set base date = period end
                             self.acquiredBaseDate(period.endDate);
                         }
+
+                        // set period
                         self.queryParam.periodStart = period.startDate;
                         self.queryParam.periodEnd = period.endDate;
                         dfd.resolve();
