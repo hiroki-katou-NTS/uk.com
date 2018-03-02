@@ -13,7 +13,7 @@ import nts.uk.ctx.exio.app.find.exi.item.StdAcceptItemFinder;
 
 @Path("exio/exi/item")
 @Produces("application/json")
-public class StdAcceptCondSetWebService {
+public class StdAcceptItemWebService {
 	@Inject
 	private StdAcceptItemFinder stdAcceptItem;
 
