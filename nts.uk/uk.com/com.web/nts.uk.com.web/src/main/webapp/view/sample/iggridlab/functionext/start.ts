@@ -158,6 +158,8 @@ module nts.uk.ui.gridlist {
                             autoFitWindow: true,
                             preventEditInError: false,
                             hidePrimaryKey: true,
+                            userId: "4",
+                            getUserId: function(k) { return String(k); },
                             errorColumns: [ "ruleCode" ],
 //                            recordKeys: keys, 
 //                            avgRowHeight: 36,
@@ -356,6 +358,9 @@ module nts.uk.ui.gridlist {
                                                 name: 'HeaderStyles',
                                                 columns: [
                                                     { key: 'ruleCode', color: 'header1' },
+                                                    { key: 'addressCode1', color: 'header1' },
+                                                    { key: 'address1', color: 'header1' },
+                                                    { key: 'comboCode1', color: 'header2' },
                                                     { key: 'combo', color: 'header2' },
                                                     { key: 'header3', color: 'header2' },
                                                     { key: 'header0', color: 'header1' },

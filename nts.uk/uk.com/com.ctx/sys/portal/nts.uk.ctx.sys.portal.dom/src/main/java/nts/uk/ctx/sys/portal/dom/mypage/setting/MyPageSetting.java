@@ -26,7 +26,7 @@ public class MyPageSetting extends AggregateRoot {
 	private UseDivision useMyPage;
 
 	/** The use standard widget. */
-	private UseDivision useStandardWidget;
+	private UseDivision useStandarWidget;
 	
 	/** The use optional widget. */
 	private UseDivision useOptionalWidget;
@@ -55,13 +55,13 @@ public class MyPageSetting extends AggregateRoot {
 	 * @param externalUrlPermission the external url permission
 	 * @param topPagePartUseSetting the top page part use setting
 	 */
-	public MyPageSetting(String companyId, UseDivision useMyPage, UseDivision useStandardWidget,
+	public MyPageSetting(String companyId, UseDivision useMyPage, UseDivision useStandarWidget,
 			UseDivision useOptionalWidget, UseDivision useDashboard, UseDivision useFlowMenu,
 			PermissionDivision externalUrlPermission, List<TopPagePartUseSetting> topPagePartUseSetting) {
 		super();
 		this.companyId = companyId;
 		this.useMyPage = useMyPage;
-		this.useStandardWidget = useStandardWidget;
+		this.useStandarWidget = useStandarWidget;
 		this.useOptionalWidget = useOptionalWidget;
 		this.useDashboard = useDashboard;
 		this.useFlowMenu = useFlowMenu;
