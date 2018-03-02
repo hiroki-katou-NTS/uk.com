@@ -47,7 +47,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                 { code: 1, name: nts.uk.resource.getText("KSM011_9") }
             ]);
             let arr: any = [];
-            for (let i = 1; i <= 31; i++) {
+            for (let i = 0; i <= 32; i++) {
                 arr.push({ code: i, name: i + '日' });
             }
             self.itemCorrectDeadlineAtr = ko.observableArray(arr);
