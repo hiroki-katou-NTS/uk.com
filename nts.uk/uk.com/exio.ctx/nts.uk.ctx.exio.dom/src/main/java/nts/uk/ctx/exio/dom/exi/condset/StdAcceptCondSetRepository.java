@@ -18,4 +18,6 @@ public interface StdAcceptCondSetRepository {
 
 	void remove(String cid, int sysType, String conditionSetCd);
 
+	boolean isSettingCodeExist(String cid, int sysType, String conditionSetCd);
+
 }

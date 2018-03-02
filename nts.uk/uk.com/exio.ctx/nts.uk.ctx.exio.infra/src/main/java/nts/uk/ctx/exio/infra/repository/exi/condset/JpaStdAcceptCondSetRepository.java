@@ -55,4 +55,15 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 				new OiomtStdAcceptCondSetPk(cid, sysType, conditionSetCd));
 	}
 
+	@Override
+	public boolean isSettingCodeExist(String cid, int sysType, String conditionSetCd) {
+		Optional<OiomtStdAcceptCondSet> entity = this.queryProxy()
+				.find(new OiomtStdAcceptCondSetPk(cid, sysType, conditionSetCd), OiomtStdAcceptCondSet.class);
+		if (entity.isPresent()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 }
