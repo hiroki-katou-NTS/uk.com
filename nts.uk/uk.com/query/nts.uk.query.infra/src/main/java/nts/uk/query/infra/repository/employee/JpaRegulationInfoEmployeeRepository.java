@@ -213,6 +213,9 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		List<BsymtEmpOrderCond> sortConditions = this.getSortConditions(comId, paramQuery.getSystemType(),
 				paramQuery.getSortOrderNo());
 
+		// sort by employee code
+		orders.add(cb.asc(root.get(EmployeeDataView_.scd)));
+
 		sortConditions.forEach(cond -> {
 			switch (cond.getId().getSearchType()) {
 			case 0: // EMPLOYMENT
@@ -244,8 +247,6 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			orders.add(cb.asc(root.get(EmployeeDataView_.workTypeCd)));
 		} 
 
-		// sort by employee code
-		orders.add(cb.asc(root.get(EmployeeDataView_.scd)));
 		cq.orderBy(orders);
 
 		// execute query & add to resultList
