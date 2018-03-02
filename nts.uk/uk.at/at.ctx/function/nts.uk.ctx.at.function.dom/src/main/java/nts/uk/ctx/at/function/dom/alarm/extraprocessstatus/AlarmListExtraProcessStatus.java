@@ -3,7 +3,6 @@ package nts.uk.ctx.at.function.dom.alarm.extraprocessstatus;
 import java.util.Optional;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 /**
@@ -12,7 +11,6 @@ import nts.arc.time.GeneralDate;
  *
  */
 @Getter
-@NoArgsConstructor
 public class AlarmListExtraProcessStatus extends AggregateRoot {
 	/**会社ID */
 	private String companyID;
@@ -42,8 +40,5 @@ public class AlarmListExtraProcessStatus extends AggregateRoot {
 		this.endDate = Optional.of(endDate);
 		this.endTime = endTime;
 	}
-	
-	
-	
 
 }

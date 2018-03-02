@@ -865,7 +865,7 @@ module nts.uk.ui.exTable {
                             if (key === colorDef.columnKey) {
                                 if ((!util.isNullOrUndefined(colorDef.rowId) && colorDef.rowId === rowIdx)
                                         || util.isNullOrUndefined(colorDef.rowId)) {
-                                    cell.classList.add(colorDef.clazz);
+                                    helper.addClassList(cell, colorDef.clazz);
                                     return false;
                                 }
                             }
@@ -876,13 +876,13 @@ module nts.uk.ui.exTable {
                                 let childCells = cell.querySelectorAll("." + CHILD_CELL_CLS);
                                 if (!util.isNullOrUndefined(colorDef.innerIdx) && childCells.length > 0) {
                                     let child = childCells[colorDef.innerIdx];
-                                    child.classList.add(colorDef.clazz);
+                                    helper.addClassList(child, colorDef.clazz);
                                     if (colorDef.clazz === style.HIDDEN_CLS) {
                                         $.data(child, "hide", child.textContent);
                                         child.innerHTML = "";
                                     }
                                 } else {
-                                    cell.classList.add(colorDef.clazz);
+                                    helper.addClassList(cell, colorDef.clazz);
                                     if (colorDef.clazz == style.HIDDEN_CLS) {
                                         $.data(cell, "hide", cell.innerText);
                                         cell.innerText = "";
@@ -1083,7 +1083,7 @@ module nts.uk.ui.exTable {
                                 if (colorDef.columnKey === cell.key) {
                                     if ((!util.isNullOrUndefined(colorDef.rowId) && colorDef.rowId === rowIdx)
                                         || util.isNullOrUndefined(colorDef.rowId)) {
-                                        $cell.classList.add(colorDef.clazz);   
+                                        helper.addClassList($cell, colorDef.clazz);   
                                     } 
                                     return false;
                                 }
@@ -6870,6 +6870,16 @@ module nts.uk.ui.exTable {
                  if (children[i].nodeType === 1) index++;
             }
             return -1;
+        }
+        
+        /**
+         * Add class.
+         */
+        export function addClassList(cell: any, clazz: string) {
+            if (!clazz) return;
+            clazz.split(" ").forEach(function(c, i) {
+                cell.classList.add(c);
+            });
         }
     }
     

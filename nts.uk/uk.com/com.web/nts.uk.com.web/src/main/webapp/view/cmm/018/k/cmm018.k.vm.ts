@@ -230,12 +230,13 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             var dataRes: shrVm.ApproverDtoK[] = [];
 
             for (var item: service.model.EmployeeSearchDto of dataList) {
-                dataRes.push({
+                let a:shrVm.ApproverDtoK = {
                     id: item.sid,
                     code: item.scd,
                     name: item.pname,
                     approvalAtr: 0
-                });
+                }
+                dataRes.push(a);
             }
             return dataRes;
         }

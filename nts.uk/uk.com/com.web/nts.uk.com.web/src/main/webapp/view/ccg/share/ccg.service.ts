@@ -5,10 +5,9 @@ module nts.uk.com.view.ccg.share.ccg {
 
         // Service paths.
         var servicePath = {
-            searchEmployeeByLogin: "basic/organization/employee/onlyemployee",
+            searchEmployeeByLogin: "basic/organization/employee/onlyemployeenew",
             searchWorkplaceOfEmployee: "basic/organization/employee/workplaceemp",
-            getOfSelectedEmployee: "basic/organization/employee/getoffselect",
-            searchAllWorkType: "at/share/worktype/findNotDeprecated",
+            searchAllWorkType: "at/record/businesstype/findAll",
             getEmploymentCodeByClosureId: "ctx/at/shared/workrule/closure/findEmpByClosureId",
             getRefRangeBySysType: "ctx/sys/auth/role/getrefrangebysystype",
             getClosuresByBaseDate: "ctx/at/shared/workrule/closure/getclosuresbybasedate",
@@ -114,13 +113,6 @@ module nts.uk.com.view.ccg.share.ccg {
          */
         export function searchWorkplaceOfEmployee(baseDate: Date): JQueryPromise<string[]> {
             return nts.uk.request.ajax('com', servicePath.searchWorkplaceOfEmployee, baseDate);
-        }
-        
-        /**
-         * get of selected Employee
-         */
-        export function getOfSelectedEmployee(baseDate: Date, employeeIds: string[]): JQueryPromise<model.EmployeeSearchDto[]> {
-            return nts.uk.request.ajax('com', servicePath.getOfSelectedEmployee, { baseDate: baseDate, employeeIds: employeeIds });
         }
         
         /**

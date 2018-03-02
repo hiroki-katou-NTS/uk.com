@@ -113,7 +113,7 @@ module ccg018.b.viewmodel {
                 showClosure: false, // 就業締め日利用
                 showAllClosure: false, // 全締め表示
                 showPeriod: false, // 対象期間利用
-                periodFormatYM: true, // 対象期間精度
+                periodFormatYM: false, // 対象期間精度
 
                 /** Required parameter */
                 baseDate: self.baseDate().toISOString(), // 基準日
