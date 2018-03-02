@@ -158,6 +158,7 @@ module nts.uk.ui.gridlist {
                             autoFitWindow: true,
                             preventEditInError: false,
                             hidePrimaryKey: true,
+                            errorColumns: [ "ruleCode" ],
 //                            recordKeys: keys, 
 //                            avgRowHeight: 36,
 //                            autoAdjustHeight: false,
@@ -197,7 +198,12 @@ module nts.uk.ui.gridlist {
                                 },
                                 { headerText: 'Combo1',
                                     group: [
-                                            { headerText: 'Code', key: 'comboCode1', dataType: 'number', width: '60px', ntsType: 'comboCode'  },
+                                            { headerText: 'Code', key: 'comboCode1', dataType: 'number', width: '60px', ntsType: 'comboCode',
+                                                constraint: {
+                                                    cDisplayType: "Integer",
+                                                    min: 1, max: 3,
+                                                    required: true
+                                                }},
                                             { headerText: 'Combobox', key: 'combo', dataType: 'string', width: '230px', ntsControl: 'Combobox' }
                                            ]
                                 },
@@ -449,15 +455,16 @@ module nts.uk.ui.gridlist {
         }
         
         // Grid cell errors
-        let dialogOptions: any = {
-            forGrid: true,
-            headers: [
-                    new nts.uk.ui.errors.ErrorHeader("rowId", "Row ID", "auto", true),
-                    new nts.uk.ui.errors.ErrorHeader("columnKey", "Column Key", "auto", true),
-                    new nts.uk.ui.errors.ErrorHeader("message", "Message", "auto", true),
-                    new nts.uk.ui.errors.ErrorHeader("ruleCode", "Rule code", "auto", true) 
-                ]
-        };
-        this.bind(model, dialogOptions);
+//        let dialogOptions: any = {
+//            forGrid: true,
+//            headers: [
+//                    new nts.uk.ui.errors.ErrorHeader("rowId", "Row ID", "auto", true),
+//                    new nts.uk.ui.errors.ErrorHeader("columnKey", "Column Key", "auto", true),
+//                    new nts.uk.ui.errors.ErrorHeader("message", "Message", "auto", true),
+//                    new nts.uk.ui.errors.ErrorHeader("ruleCode", "Rule code", "auto", true) 
+//                ]
+//        };
+//        this.bind(model, dialogOptions);
+        this.bind(model);
     });
 }
