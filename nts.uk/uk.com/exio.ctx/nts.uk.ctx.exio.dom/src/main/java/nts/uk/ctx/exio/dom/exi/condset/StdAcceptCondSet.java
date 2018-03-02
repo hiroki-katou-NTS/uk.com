@@ -87,14 +87,12 @@ public class StdAcceptCondSet extends AggregateRoot {
 		if (csvDataLineNumber == null) {
 			this.csvDataLineNumber = Optional.empty();
 		} else {
-			this.csvDataLineNumber = Optional
-					.of(EnumAdaptor.valueOf(csvDataLineNumber.intValue(), AcceptanceLineNumber.class));
+			this.csvDataLineNumber = Optional.of(new AcceptanceLineNumber(csvDataLineNumber));
 		}
 		if (csvDataStartLine == null) {
 			this.csvDataStartLine = Optional.empty();
 		} else {
-			this.csvDataStartLine = Optional
-					.of(EnumAdaptor.valueOf(csvDataStartLine.intValue(), AcceptanceLineNumber.class));
+			this.csvDataStartLine = Optional.of(new AcceptanceLineNumber(csvDataStartLine));
 		}
 		if (deleteExtDataMethod == null) {
 			this.deleteExtDataMethod = Optional.empty();

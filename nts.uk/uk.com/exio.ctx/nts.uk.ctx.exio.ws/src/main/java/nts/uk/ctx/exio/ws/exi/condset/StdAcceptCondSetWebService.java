@@ -1,10 +1,6 @@
 package nts.uk.ctx.exio.ws.exi.condset;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -24,19 +20,9 @@ public class StdAcceptCondSetWebService {
 	private StdAcceptCondSetFinder stdAcceptCondSetFind;
 	
 	@POST
-	@Path("getConditionBySystemType/{systemType}")
-	public List<StdAcceptCondSetDto> getConditionBySystemType(@PathParam("systemType") int systemType) {
-		List<StdAcceptCondSetDto> list = new ArrayList<StdAcceptCondSetDto>();
-
-//		list.add(new StdAcceptCondSetDto(0, "001", "adfasdf", 1, 1, 4, 1, "Test-1", 1, 1));
-//		list.add(new StdAcceptCondSetDto("0002", "2", "2", 3, 1, 1, 5, 1, "Test-2", 1, 1, (long) 1));
-//		list.add(new StdAcceptCondSetDto("0002", "3", "2", 1, 1, 1, 7, 1, "Test-3", 1, 1, (long) 1));
-//
-//		if (systemType == 1) {
-//			list.add(new StdAcceptCondSetDto("0001", "4", "4", 2, 1, 1, 5, 1, "Test-4", 1, 1, (long) 1));
-//		}
-		return list;
-		// return this.stdAcceptCondSetFind.getStdAcceptCondSetBySystemType(1);
+	@Path("getStdAcceptCondSetBySysType/{systemType}")
+	public List<StdAcceptCondSetDto> getStdAcceptCondSetBySysType(@PathParam("systemType") int systemType) {
+		return this.stdAcceptCondSetFind.getStdAcceptCondSetBySysType(systemType);
 	}
 
 	@POST
@@ -46,9 +32,15 @@ public class StdAcceptCondSetWebService {
 	}
 	
 	@POST
-	@Path("getTotalRecord/{fileId}")
-	public int getTotalRecord(@PathParam("fileId") String fileId) {
-		return stdAcceptCondSetFind.getTotalRecordCsv(fileId);
+	@Path("getNumberOfLine/{fileId}")
+	public int getNumberOfLine(@PathParam("fileId") String fileId) {
+		return stdAcceptCondSetFind.getNumberOfLine(fileId);
+	}
+	
+	@POST
+	@Path("getRecord/{fileId}/{numOfCol}/{index}")
+	public List<String> getRecord(@PathParam("fileId") String fileId, @PathParam("numOfCol") int numOfCol, @PathParam("index") int index) {
+		return stdAcceptCondSetFind.getRecordByIndex(fileId, numOfCol, index);
 	}
 	
 	/**

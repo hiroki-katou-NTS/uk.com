@@ -28,7 +28,7 @@ public class StdAcceptCondSetFinder {
 	@Inject
 	private StoredFileStreamService fileStreamService;
 
-	public List<StdAcceptCondSetDto> getAllStdAcceptCondSet(int systemType) {
+	public List<StdAcceptCondSetDto> getStdAcceptCondSetBySysType(int systemType) {
 		String companyId = AppContexts.user().companyId();
 		return stdConditionRepo.getStdAcceptCondSetBySysType(companyId, systemType).stream()
 				.map(item -> StdAcceptCondSetDto.fromDomain(item)).collect(Collectors.toList());
@@ -39,18 +39,32 @@ public class StdAcceptCondSetFinder {
 		return stdConditionRepo.isSettingCodeExist(companyId, systemType, conditionCode);
 	}
 
-	public int getTotalRecordCsv(String fileId) {
+	public int getNumberOfLine(String fileId) {
 		int totalRecord = 0;
 		try {
 			// get input stream by fileId
 			InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
 
-			totalRecord = FileUtil.getTotalRecord(inputStream);
+			totalRecord = FileUtil.getNumberOfLine(inputStream);
 			inputStream.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 		return totalRecord;
+	}
+	
+	public List<String> getRecordByIndex(String fileId, int numOfCol, int index){
+		List<String> result;
+		try {
+			// get input stream by fileId
+			InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
+
+			result = FileUtil.getRecordByIndex(inputStream, numOfCol, index);
+			inputStream.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return result;
 	}
 
 	/**
