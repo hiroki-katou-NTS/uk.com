@@ -36,18 +36,22 @@
 .dialog-contents{
   width:550px;
   height: 400px;
-}
+} 
 .radio-group{
   margin-top:15px; 
 }
-.vertical-align{
+.vertical-align-center{
+  display: inline;	
+  margin-top: 10px;
+}
+.label-vertical-align-center{
   display: inline;
   position: relative; 
-  top: 10px;	
+  top: 15px;
 }
-.label-vertical-center{
+.cell-label{
 	display: inline;
    width:20px; 
    top: -11px; 
    position: relative;
-}
+} 

@@ -8,30 +8,44 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 350, height: 550 };</script>
+			<script>var dialogSize = { width: 380, height: 550 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf001.k.vm.js" />
 			<com:scriptfile path="cmf001.k.start.js" />
-			<com:stylefile path = "cmf001.k.style.css"/>
+			<com:stylefile path="cmf001.k.style.css" />
+			<com:scriptfile path="cmf001.k.service.js" />
 		</ui:define>
 
 		<ui:define name="content">
-			<div class = "contents-area dialog-content" >
-				<div id ="K1_1" class = "dialog-title"  data-bind="ntsFormLabel: {required : true }">#{i18n.getText('CMF001_375')}</div>
-				<div id ="K2_1" class = "table-contents-area" >
-					<div id ="K2_2" data-bind="ntsPanel:{width: '250px', height: '300px', direction: 'none', showIcon: true, visible: true}">
-						<div  data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'dispConvertCode', comId: 'K3_1', 
-						items: listConvertCode, placeHolder: '', selected: selectedConvertCode,  selectedKey: 'dispItemCode', fields: ['dispConvertName'], mode: 'igGrid'}" />		
-						
-						<table id="K3_1"  data-bind="ntsGridList: {
+			<div class="contents-area dialog-content">
+				<div id="K1_1" class="dialog-title"
+					data-bind="ntsFormLabel: {required : true }">#{i18n.getText('CMF001_375')}</div>
+				<div id="K2_1" class="table-contents-area">
+					<div id="K2_2"
+						data-bind="ntsPanel:{width: '280px', height: '300px', direction: 'none', showIcon: true, visible: true}">
+						<div
+							data-bind="ntsSearchBox: {
+							searchMode: 'highlight', 
+							targetKey: 'dispConvertCode', 
+							comId: 'K3_1', 
+							items: listConvertCode, 
+							placeHolder: '', 
+							selected: selectedConvertCode,  
+							selectedKey: 'dispItemCode', 
+							fields: ['dispConvertName'], 
+							mode: 'igGrid'}" 
+							/>
+
+						<table id="K3_1"
+							data-bind="ntsGridList: {
 								height: 300,
-								width: 250,
+								width: 280,
 								name: '#[CMF001_376]', 
 								dataSource: listConvertCode,
 								primaryKey: 'dispConvertCode',
 									columns: [
-					                { headerText: '#{i18n.getText('CMF001_377')}', key: 'dispConvertCode', width: 40, formatter: _.escape },
+					                { headerText: '#{i18n.getText('CMF001_377')}', key: 'dispConvertCode', width: 70, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CMF001_378')}', key: 'dispConvertName', width: 180, formatter: _.escape }
 					            ],
 					            rows: 10,
@@ -44,8 +58,10 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button id="btn_K4_1" class="x-large proceed " data-bind="click: selectConvertCode">#{i18n.getText('CMF001_379')}</button>
-				<button id="btn_K4_2" class="large" data-bind="click: cancelSelectConvertCode">#{i18n.getText('CMF001_380')}</button>
+				<button id="btn_K4_1" class="x-large proceed "
+					data-bind="click: selectConvertCode">#{i18n.getText('CMF001_379')}</button>
+				<button id="btn_K4_2" class="large"
+					data-bind="click: cancelSelectConvertCode">#{i18n.getText('CMF001_380')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

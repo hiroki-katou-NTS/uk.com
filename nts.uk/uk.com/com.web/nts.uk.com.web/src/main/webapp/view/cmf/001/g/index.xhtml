@@ -12,66 +12,114 @@
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf001.g.vm.js" />
-			<com:stylefile path = "cmf001.g.style.css"/>
+			<com:stylefile path="cmf001.g.style.css" />
 			<com:scriptfile path="cmf001.g.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area dialog-contents" data-bind="with: numDataFormatSetting">
-				<div id = "G1_1" class = "label dialog-title" >#{i18n.getText('CMF001_220')}</div>
-				<div class = "div-table" >
-					<div class = "div-table-row">	
-						<div id = "G2_1" class = "div-table-col-2" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_221')}</div>
-						<div id = "G2_2" tabindex = "1" class= "div-table-col">
-							<div id = "G2_3" tabindex ="-1" class = "div-table-col" data-bind="ntsRadioButton: {checked: effectiveDigitLength, option: $parent.effectDigitItem()[0], name: '#[CMF001_222]', optionValue: 'code', enable: $parent.inputMode, optionText: 'name', group: 'effectDigitCls'}"></div>
-							<div id = "G2_4" tabindex ="-1" class = "div-table-col radio-group" data-bind="ntsRadioButton: {checked: effectiveDigitLength, option: $parent.effectDigitItem()[1], name: '#[CMF001_222]', optionValue: 'code', enable: $parent.inputMode, optionText: 'name', group: 'effectDigitCls' }"></div>
+			<div class="contents-area dialog-contents"
+				data-bind="with: numDataFormatSetting">
+				<div id="G1_1" class="label dialog-title">#{i18n.getText('CMF001_220')}</div>
+				<div class="div-table">
+					<div class="div-table-row">
+						<div id="G2_1" class="div-table-col-2"
+							data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_221')}</div>
+						<div id="G2_2" tabindex="1" class="div-table-col">
+							<div id="G2_3" tabindex="-1" class="div-table-col"
+								data-bind="ntsRadioButton: {
+									checked: effectiveDigitLength, 
+									option: $parent.effectDigitItem()[0], 
+									name: '#[CMF001_222]', 
+									optionValue: 'code', 
+									enable: $parent.inputMode, 
+									optionText: 'name', 
+									group: 'effectDigitCls'
+									}">
+							</div>
+							<div id="G2_4" tabindex="-1" class="div-table-col radio-group"
+								data-bind="ntsRadioButton: {
+									checked: effectiveDigitLength, 
+									option: $parent.effectDigitItem()[1], 
+									name: '#[CMF001_222]', 
+									optionValue: 'code', 
+									enable: $parent.inputMode, 
+									optionText: 'name', 
+									group: 'effectDigitCls' 
+									}">
+							</div>
 						</div>
-						<div class = "div-table-col" >
-							<input id = "G2_5" tabindex ="2" data-bind="ntsNumberEditor: {
+						<div class="div-table-col">
+							<input id="G2_5" tabindex="2"
+								data-bind="ntsNumberEditor: {
 								value: startDigit,
 								option : {width : '30px'},
 								enable: !(effectiveDigitLength() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode)}" />
-							<div id = "G2_6"  class = "label" style= "display:inline">#{i18n.getText('CMF001_226')}</div>
+							<div id="G2_6" class="label" style="display: inline">#{i18n.getText('CMF001_226')}</div>
 						</div>
-						<div  class = "div-table-col" >
-							<input id = "G2_8" tabindex ="3" data-bind="ntsNumberEditor: {
+						<div class="div-table-col">
+							<input id="G2_8" tabindex="3"
+								data-bind="ntsNumberEditor: {
 								value: endDigit,
 								option : {width : '30px'},
 								enable: !(effectiveDigitLength() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode)}" />
-						<div id = "G2_9" class =" label" style= "display:inline">#{i18n.getText('CMF001_229')}</div>
+							<div id="G2_9" class=" label" style="display: inline">#{i18n.getText('CMF001_229')}</div>
 						</div>
 					</div>
-					
-					<div class= "div-table-row">
-						<div class = "div-table-col-2">
-							<div id = "G3_1" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_231')}</div>
+
+					<div class="div-table-row">
+						<div class="div-table-col-2">
+							<div id="G3_1" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_231')}</div>
 						</div>
-						<div id = "G3_2" tabindex ="4" class = "div-table-col">
-							<div id = "G3_3" tabindex ="-1" class = "div-table-col" data-bind="ntsRadioButton: {checked: decimalDivision, option: $parent.effectMinorityItem()[0], optionValue: 'code', enable: $parent.inputMode, name: '#{i18n.getText('CMF001_231')}', optionText: 'name', group: 'minorityDigitCls' }"></div>	
-							<div id = "G3_4" tabindex ="-1" class = "div-table-col radio-group" data-bind="ntsRadioButton: {checked: decimalDivision, option: $parent.effectMinorityItem()[1], optionValue: 'code', enable: $parent.inputMode, name: '#{i18n.getText('CMF001_231')}', optionText: 'name', group: 'minorityDigitCls' }"></div>
+						<div id="G3_2" tabindex="4" class="div-table-col">
+							<div id="G3_3" tabindex="-1" class="div-table-col"
+								data-bind="ntsRadioButton: {
+									checked: decimalDivision, 
+									option: $parent.effectMinorityItem()[0], 
+									optionValue: 'code', 
+									enable: $parent.inputMode, 
+									name: '#{i18n.getText('CMF001_231')}', 
+									optionText: 'name', 
+									group: 'minorityDigitCls' 
+									}">
+							</div>
+							<div id="G3_4" tabindex="-1" class="div-table-col radio-group"
+								data-bind="ntsRadioButton: {
+									checked: decimalDivision, 
+									option: $parent.effectMinorityItem()[1], 
+									optionValue: 'code', 
+									enable: $parent.inputMode, 
+									name: '#{i18n.getText('CMF001_231')}', 
+									optionText: 'name', 
+									group: 'minorityDigitCls' 
+									}">
+							</div>
 						</div>
-						<div class = "div-table-col">
-							<div id = "G3_5" style = "display:inline " class="label">#{i18n.getText('CMF001_234')}</div>
-							<input id = "G3_6" tabindex ="5"  data-bind="ntsNumberEditor: {
+						<div class="div-table-col">
+							<div id="G3_5" style="display: inline" class="label">#{i18n.getText('CMF001_234')}</div>
+							<input id="G3_6" tabindex="5"
+								data-bind="ntsNumberEditor: {
 								value: decimalDigitNumber,
 								enable: !(decimalDivision() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode),
 								option : {width : '30px'}}" />
-							<div style = "margin-top: 5px;">
-								<div id="G3_9" tabindex ="7" style = "display:inline-block; width :150px;" data-bind="ntsComboBox: {
-									name: '#{i18n.getText('CMF001_238')}',
-									options: $parent.decimalFractionItem,
-									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: decimalFraction,
-									optionsText: 'name',
-									enable:  !(decimalDivision() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.USE || !$parent.inputMode)}">
+							<div style="margin-top: 5px;">
+								<div id="G3_9" tabindex="7"
+									style="display: inline-block; width: 150px;"
+									data-bind="ntsComboBox: {
+										name: '#{i18n.getText('CMF001_238')}',
+										options: $parent.decimalFractionItem,
+										optionsValue: 'code',
+										visibleItemsCount: 5,
+										value: decimalFraction,
+										optionsText: 'name',
+										enable:  !(decimalDivision() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.USE || !$parent.inputMode)}">
 								</div>
-						
 							</div>
 						</div>
-						<div class = "div-table-col1">
-							<div id = "G3_7" class = "label label-vertical-center" >#{i18n.getText('CMF001_236')}</div>
-							<div id = "G3_8" tabindex ="6" style = "display:inline-block; width :200px;" data-bind="ntsComboBox: {
+						<div class="div-table-col1">
+							<div id="G3_7" class="label cell-label">#{i18n.getText('CMF001_236')}</div>
+							<div id="G3_8" tabindex="6"
+								style="display: inline-block; width: 200px;"
+								data-bind="ntsComboBox: {
 									name: '#{i18n.getText('CMF001_237')}',
 									options: $parent.decimalPointClsItem,
 									editable: false,
@@ -83,26 +131,42 @@
 							</div>
 						</div>
 					</div>
-					<div class = "div-table-row">
-						<div class = "div-table-col-2">
-							<div id = "G4_1" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_250')}</div>
+					<div class="div-table-row">
+						<div class="div-table-col-2">
+							<div id="G4_1" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_250')}</div>
 						</div>
-						<div class = "div-table-col">
-							<button id = "G4_2" tabindex ="8" class = "vertical-align label" data-bind="click: $parent.open001_K, enable: $parent.inputMode">#{i18n.getText('CMF001_251')}</button>
+						<div class="div-table-col">
+							<button id="G4_2" tabindex="8" class="vertical-align-center"
+								data-bind="click: function() {$parent.open001_K($data)}, enable: $parent.inputMode">#{i18n.getText('CMF001_251')}</button>
 						</div>
-						<div id = "G4_3" class = "vertical-align label" >コード</div>
-						<div id = "G4_4" class = "vertical-align label" style="	margin-left: 15px;" >コード変換名</div>
+						<div id="G4_3" class="label-vertical-align-center"
+							data-bind="text: codeConvertCode().dispConvertCode"></div>
+						<div id="G4_4" class="label-vertical-align-center"
+							style="margin-left: 15px;"
+							data-bind="text: codeConvertCode().dispConvertName"></div>
 					</div>
-					<div class = "div-table-row">
-						<div class = "div-table-col-2">
-							<div id = "G5_1" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_252')}</div>
+					<div class="div-table-row">
+						<div class="div-table-col-2">
+							<div id="G5_1" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_252')}</div>
 						</div>
-						<div id = "G5_2" tabindex ="9" class = "div-table-col">
-							<div id = "G5_3" tabindex ="-1" class = "div-table-col" data-bind="ntsRadioButton: {checked: fixedValue, option: $parent.effectFixedValItem()[0], optionValue: 'code', enable: $parent.inputMode, name: '#{i18n.getText('CMF001_251')}', optionText: 'name', group: 'fixedValCls' }"></div>
-							<div id = "G5_4" tabindex ="-1" class = "div-table-col radio-group" data-bind="ntsRadioButton: {checked: fixedValue, option: $parent.effectFixedValItem()[1], optionValue: 'code', enable: $parent.inputMode, name: '#{i18n.getText('CMF001_251')}', optionText: 'name', group: 'fixedValCls' }"></div>
+						<div id="G5_2" tabindex="9" class="div-table-col">
+							<div id="G5_3" tabindex="-1" class="div-table-col"
+								data-bind="ntsRadioButton: {
+									checked: fixedValue, 
+									option: $parent.effectFixedValItem()[0], 
+									optionValue: 'code', 
+									enable: $parent.inputMode, 
+									name: '#{i18n.getText('CMF001_251')}', 
+									optionText: 'name', 
+									group: 'fixedValCls' 
+									}">
+							</div>
+							<div id="G5_4" tabindex="-1" class="div-table-col radio-group"
+								data-bind="ntsRadioButton: {checked: fixedValue, option: $parent.effectFixedValItem()[1], optionValue: 'code', enable: $parent.inputMode, name: '#{i18n.getText('CMF001_251')}', optionText: 'name', group: 'fixedValCls' }"></div>
 						</div>
 						<div style="display: inline">
-							<input id = "G5_5" tabindex ="10" data-bind="ntsTextEditor: {
+							<input id="G5_5" tabindex="10"
+								data-bind="ntsTextEditor: {
 								value: valueOfFixed,
 								enable: !(fixedValue() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode),
 								option : {width : '200px'}}" />
@@ -111,8 +175,10 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex ="11" id="btn_G6_1" class="x-large proceed " data-bind="click: saveNumericSetting">#{i18n.getText('CMF001_257')}</button>
-				<button tabindex ="12" id="btn_G6_2" class="large" data-bind="click: cancelNumericSetting">#{i18n.getText('CMF001_258')}</button>
+				<button tabindex="11" id="btn_G6_1" class="x-large proceed "
+					data-bind="click: saveNumericSetting">#{i18n.getText('CMF001_257')}</button>
+				<button tabindex="12" id="btn_G6_2" class="large"
+					data-bind="click: cancelNumericSetting">#{i18n.getText('CMF001_258')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

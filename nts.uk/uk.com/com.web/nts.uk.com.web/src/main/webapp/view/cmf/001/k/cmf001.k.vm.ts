@@ -8,35 +8,62 @@ module nts.uk.com.view.cmf001.k.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    
+
     export class ScreenModel {
+
         listConvertCode: KnockoutObservableArray<model.AcceptanceCodeConvert>
         selectedConvertCode: KnockoutObservable<string>
         /* screen */
         constructor() {
             var self = this;
-            self.listConvertCode = ko.observableArray([
-            new model.AcceptanceCodeConvert("001","XXX", [], 1),
-            new model.AcceptanceCodeConvert("002","YYY", [], 1),
-            new model.AcceptanceCodeConvert("003","XXX", [], 1),
-            new model.AcceptanceCodeConvert("004","YYY", [], 1),
-            new model.AcceptanceCodeConvert("005","XXX", [], 1),
-            new model.AcceptanceCodeConvert("006","YYY", [], 1),
-            new model.AcceptanceCodeConvert("007","XXX", [], 1),
-            new model.AcceptanceCodeConvert("008","YYY", [], 1),
-            new model.AcceptanceCodeConvert("009","XXX", [], 1),
-            new model.AcceptanceCodeConvert("010","YYY", [], 1)
-                
-            ]);
-            self.selectedConvertCode = ko.observable("001");
-            
+            let firstItem = new model.AcceptanceCodeConvert("", "なし", 0);
+            self.listConvertCode = ko.observableArray([firstItem]);
+            self.selectedConvertCode = ko.observable("");
+            let params = getShared("CMF001kParams");
+            if (!nts.uk.util.isNullOrUndefined(params)) {
+                let selectedConvertCode = params.selectedConvertCode;
+                let convertCode = selectedConvertCode.dispConvertCode;
+                let convertName = selectedConvertCode.dispConvertName;
+                self.selectedConvertCode(convertCode);
+            }
         }
-        selectConvertCode(){
+        displayScreen() {
+            var self = this;
+            //ドメインモデル「受入コード変換」を取得する
+            service.getCodeConvert().done(function(result: Array<any>) {
+                let x = result;
+                if (result && result.length) {
+                    let _listConvertCode: Array<model.AcceptanceCodeConvert> = _.map(result, x => {
+                        return new model.AcceptanceCodeConvert(x.convertCd, x.convertName, x.acceptWithoutSetting);
+                    });
+                    let abc = _listConvertCode;
+                    //取得した受入コード変換を「コード変換一覧」（グリッドリスト）に表示する
+                    self.listConvertCode.push.apply(self.listConvertCode, _listConvertCode);
+                }
+            }).fail(function(error) {
+                alertError(error);
+            });
+        }
+        start(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            self.displayScreen();
+            dfd.resolve();
+            return dfd.promise();
+        }
+        selectConvertCode() {
+            var self = this;
+            let codeSelected = ko.toJS(self.selectedConvertCode);
+            let codeConvert = new model.AcceptanceCodeConvert("", "", 0);
+            if (!_.isEqual(codeSelected, "")){
+                codeConvert = _.find(ko.toJS(self.listConvertCode), (x: model.AcceptanceCodeConvert) => x.dispConvertCode == codeSelected);
+            }
+            setShared("CMF001kOutput", { selectedConvertCodeShared: codeConvert});
             nts.uk.ui.windows.close();
         }
-        cancelSelectConvertCode(){
+        cancelSelectConvertCode() {
             nts.uk.ui.windows.close();
         }
     }
-    
+
 }
