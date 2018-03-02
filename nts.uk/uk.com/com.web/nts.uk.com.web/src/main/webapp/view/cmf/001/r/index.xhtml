@@ -12,6 +12,7 @@
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf001.r.vm.js" />
 			<com:scriptfile path="cmf001.r.start.js" />
+			<com:scriptfile path="cmf001.r.service.js" />
 			<com:stylefile path="cmf001.r.style.css" />
 		</ui:define>
 
@@ -26,7 +27,7 @@
 									<label>#{i18n.getText('CMF001_506')}</label>
 								</td>
 								<td width='300px'>
-									<label data-bind="text : imExExecuteResultLog().externalProcessId"></label>
+									<label data-bind="text : imExExecuteResultLog.externalProcessId"></label>
 									<label data-bind="text : nameSetting()"></label>
 								</td>
 							</tr>
@@ -35,7 +36,7 @@
 									<label>#{i18n.getText('CMF001_507')}</label>
 								</td>
 								<td width='300px'>
-									<label data-bind="text : imExExecuteResultLog().processStartDatetime"></label>
+									<label data-bind="text : imExExecuteResultLog.processStartDatetime"></label>
 								</td>
 							</tr>
 						</tbody>
@@ -51,8 +52,14 @@
 									<label>#{i18n.getText('CMF001_509')}</label>
 								</td>
 								<td width='300px'>
-									<label data-bind="text : imExExecuteResultLog().targetCount"></label>
-									<label>#{i18n.getText('CMF001_510')}</label>
+									
+										<div style="float:right" >
+											<div style="float: left; width:50px">
+												<label style="float: right" data-bind="text : imExExecuteResultLog.targetCount"></label></div>
+											<div style="float: left; width: 250px">
+												<label>#{i18n.getText('CMF001_510')}</label>
+											</div>
+										</div>
 								</td>
 							</tr>
 							<tr>
@@ -60,8 +67,13 @@
 									<label>#{i18n.getText('CMF001_511')}</label>
 								</td>
 								<td width='300px'>
-									<label data-bind="text : imExExecuteResultLog().executeForm"></label>
-									<label>#{i18n.getText('CMF001_512')}</label>
+									<div style="float:right" >
+										<div style="float: left; width:50px">
+											<label style="float: right" data-bind="text : imExExecuteResultLog.executeForm"></label>
+										</div>
+										<div style="float: left; width: 250px"><label>#{i18n.getText('CMF001_512')}</label></div>
+									</div>
+									
 								</td>
 							</tr>
 							<tr>
@@ -69,8 +81,10 @@
 									<label>#{i18n.getText('CMF001_513')}</label>
 								</td>
 								<td width='300px'>
-									<label data-bind="text : imExExecuteResultLog().errorCount"></label>
-									<label>#{i18n.getText('CMF001_514')}</label>
+									<div style="float:right" >
+									<div  style="float: left; width:50px"><label style="float: right" data-bind="text : imExExecuteResultLog.errorCount"></label></div>
+									<div style="float: left; width: 250px"><label>#{i18n.getText('CMF001_514')}</label></div>
+									</div>
 								</td>
 							</tr>
 						</tbody>
@@ -83,13 +97,13 @@
 					</div>
 					<div class="ichi-ran" style="margin-left:10px; margin-right:auto" >
 						<table id="single-list" data-bind="ntsGridList: {								
-							height: 350,
-							dataSource: imExErrorLog,
-							columns: columns,
-							showNumbering: true,
-							rows: 13,
-							value: currentCode
-						}"></table>
+ 							height: 350, 
+ 							dataSource: imExErrorLog, 
+ 							columns: columns, 
+ 							showNumbering: true, 
+ 							rows: 13, 
+ 							value: currentCode 
+ 						}"></table> 
 					</div>
 				</div>
 				<div class="label-4">
