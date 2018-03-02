@@ -286,7 +286,7 @@ module cmm045.a.viewmodel {
             let reason = self.displaySet().appReasonDisAtr == 1 ? ' ' + app.applicationReason : '';
             let applicant: string = masterInfo.workplaceName + ' ' + masterInfo.empName;
 //            let appContent: string = getText('CMM045_268') + ' ' + self.convertTime_Short_HM(overTime.workClockFrom1) + getText('CMM045_100')+ self.convertTime_Short_HM(overTime.workClockTo1) + ' 残業合計' + '4:00' + reason;
-            let appContent1111: string = getText('CMM045_268') + ' ' + overTime.workClockFrom1 + getText('CMM045_100')+ overTime.workClockTo1 + ' 残業合計' + '4:00' + reason;
+            let appContent1111: string = getText('CMM045_268') + ' ' + overTime.workClockFrom1 + getText('CMM045_100')+ overTime.workClockTo1 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
@@ -294,6 +294,47 @@ module cmm045.a.viewmodel {
                         self.mode() == 0 ? self.convertStatus(app.reflectPerState): self.convertStatusAppv(app.reflectPerState),masterInfo.phaseStatus,
                         masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor);
             return a;
+        }
+        convertFrameTime(lstFrame: Array<vmbase.OverTimeFrame>): any{
+            let self = this;
+            let framName = '';
+            let framName11 = '';
+            let framName12 = '';
+            let time = 0;
+            let count = 0;
+            let lstSort = _.sortBy(lstFrame, ["frameNo"], ["asc"]);
+            //時間外深夜時間
+            let frame11 = self.findFrameByNo(lstFrame, 11);
+            if(frame11 !== undefined && frame11.applicationTime != 0){
+                framName11 = frame11.name + self.convertTime_Short_HM(frame11.applicationTime);
+                time =+ frame11.applicationTime;
+                count =+ 1;
+            }
+            //ﾌﾚｯｸｽ超過
+            let frame12 = self.findFrameByNo(lstFrame, 11);
+            if(frame12 !== undefined && frame12.applicationTime != 0){
+                framName12 = frame12.name + self.convertTime_Short_HM(frame12.applicationTime);
+                time =+ frame12.applicationTime;
+                count =+ 1;
+            }
+             _.each(lstSort, function(item, index){
+                if(index != 11 && index != 12 && item.applicationTime != 0){//時間外深夜時間
+                    if(count <= 3){
+                        framName += item.name + self.convertTime_Short_HM(item.applicationTime);
+                    }
+                    time =+ item.applicationTime;
+                    count =+ 1;
+                }
+            });
+            let other = count > 3 ? count - 3 : 0;
+            let otherInfo = other > 0 ? '他' +other+ '枠' : '';
+            let result = self.convertTime_Short_HM(time) + '(' + framName11 + framName12 + framName + otherInfo + ')';
+            return result;
+        }
+        findFrameByNo(lstFrame: Array<vmbase.OverTimeFrame>, frameNo: number): any{
+            return _.find(lstFrame, function(frame){
+                return frame.frameNo == frameNo;
+            });
         }
         /**
          * ※承認モード(事後)用レイアウト
@@ -615,10 +656,6 @@ module cmm045.a.viewmodel {
                 let lstAppFitler: Array<vmbase.DataModeApp> = _.filter(self.lstApp(), function(item){
                                                                     return item.appType == appType;
                                                                 });
-//                let lstAppFitler: Array<vmbase.DataModeApp> = [];
-//                _.each(self.lstApp(), function(){
-//                    
-//                });
                 self.items([]);
                 self.items(lstAppFitler);
             }
@@ -630,6 +667,17 @@ module cmm045.a.viewmodel {
                 self.reloadGridApplicaion();
             }
             
+        }
+        convertTime_Short_HM(time: number): string{
+            let hh = Math.floor(time/60);
+            let min1: string = Math.floor(time%60);
+            let min = '';
+            if(min1.length == 2){
+                min = min1;
+            }else{
+                min = '0' + min1;    
+            }
+            return hh + ':' + min;
         }
     } 
     
