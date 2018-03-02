@@ -69,7 +69,7 @@ public class RoleIndividualWebService extends WebService {
 	@POST
 	@Path("getmetadata")
 	public RoleIndividualGrantMetaDto getCompany() {
-		return this.roleIndividualFinder.getMetadata();
+		return this.roleIndividualFinder.getCAS012Metadata();
 	}
 
 	@POST
@@ -93,7 +93,7 @@ public class RoleIndividualWebService extends WebService {
 	@POST
 	@Path("getRoleType")
 	public List<RoleTypeDto> GetRoleType() {
-		return this.roleIndividualFinder.GetRoleType();
+		return this.roleIndividualFinder.getCAS013Metadata();
 	}
 	
 	@POST

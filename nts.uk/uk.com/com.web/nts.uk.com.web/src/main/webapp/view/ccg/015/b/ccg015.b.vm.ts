@@ -25,12 +25,13 @@ module nts.uk.pr.view.ccg015.b {
                 ]);
                 self.selectedUsingMyPage = ko.observable(0);
                 self.tabs = ko.observableArray([
-                    { id: 'tab_widget', title: nts.uk.resource.getText("Enum_TopPagePartType_Widget"), content: '#widget', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab_standar_widget', title: nts.uk.resource.getText("Enum_TopPagePartType_StandardWidget"), content: '#standar_widget', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab_optional_widget', title: nts.uk.resource.getText("Enum_TopPagePartType_OptionalWidget"), content: '#optional_widget', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab_dash_board', title: nts.uk.resource.getText("Enum_TopPagePartType_DashBoard"), content: '#dash_board', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab_flow_menu', title: nts.uk.resource.getText("Enum_TopPagePartType_FlowMenu"), content: '#flow_menu', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab_url', title: nts.uk.resource.getText("Enum_TopPagePartType_ExternalUrl"), content: '#url', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
-                self.selectedTab = ko.observable('tab_widget');
+                self.selectedTab = ko.observable('tab_standar_widget');
                 self.myPageSettingModel = ko.observable(new MyPageSettingModel());
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("CCG015_11"), width: "70px", key: 'itemCode', dataType: "string", hidden: false },
@@ -72,22 +73,28 @@ module nts.uk.pr.view.ccg015.b {
                 self.myPageSettingModel().topPagePartSettingItems()[0].settingItems([]);
                 self.myPageSettingModel().topPagePartSettingItems()[1].settingItems([]);
                 self.myPageSettingModel().topPagePartSettingItems()[2].settingItems([]);
+                self.myPageSettingModel().topPagePartSettingItems()[3].settingItems([]);
+                self.myPageSettingModel().topPagePartSettingItems()[4].settingItems([]);
 
                 self.myPageSettingModel().useMyPage(data.useMyPage);
-                self.myPageSettingModel().topPagePartSettingItems()[0].usePart(data.useWidget);
-                self.myPageSettingModel().topPagePartSettingItems()[1].usePart(data.useDashboard);
-                self.myPageSettingModel().topPagePartSettingItems()[2].usePart(data.useFlowMenu);
-                self.myPageSettingModel().topPagePartSettingItems()[3].usePart(data.externalUrlPermission);
+                self.myPageSettingModel().topPagePartSettingItems()[0].usePart(data.useStandarWidget);
+                self.myPageSettingModel().topPagePartSettingItems()[1].usePart(data.useOptionalWidget);
+                self.myPageSettingModel().topPagePartSettingItems()[2].usePart(data.useDashboard);
+                self.myPageSettingModel().topPagePartSettingItems()[3].usePart(data.useFlowMenu);
+                self.myPageSettingModel().topPagePartSettingItems()[4].usePart(data.externalUrlPermission);
 
                 data.topPagePartUseSettingDto.forEach(function(item, index) {
-                    if (item.partType == TopPagePartsEnum.Widget) {
+                    if (item.partType == TopPagePartsEnum.StandarWidget) {
                         self.myPageSettingModel().topPagePartSettingItems()[0].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
                     }
-                    if (item.partType == TopPagePartsEnum.Dashboard) {
+                    if (item.partType == TopPagePartsEnum.OptionalWidget) {
                         self.myPageSettingModel().topPagePartSettingItems()[1].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
                     }
-                    if (item.partType == TopPagePartsEnum.FlowMenu) {
+                    if (item.partType == TopPagePartsEnum.Dashboard) {
                         self.myPageSettingModel().topPagePartSettingItems()[2].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
+                    }
+                    if (item.partType == TopPagePartsEnum.FlowMenu) {
+                        self.myPageSettingModel().topPagePartSettingItems()[3].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
                     }
                 });
                 dfd.resolve();
@@ -95,8 +102,11 @@ module nts.uk.pr.view.ccg015.b {
             }
             private setData(data: MyPageSettingDto) {
                 data.topPagePartUseSettingDto.forEach(function(item, index) {
-                    if (item.partType == TopPagePartsEnum.Widget) {
-                        $("#widget-list").ntsGridListFeature('switch', 'setValue', item.partItemCode, 'useItem', item.useDivision);
+                    if (item.partType == TopPagePartsEnum.StandarWidget) {
+                        $("#standarWidget-list").ntsGridListFeature('switch', 'setValue', item.partItemCode, 'useItem', item.useDivision);
+                    }
+                    if (item.partType == TopPagePartsEnum.OptionalWidget) {
+                        $("#optionalWidget-list").ntsGridListFeature('switch', 'setValue', item.partItemCode, 'useItem', item.useDivision);
                     }
                     if (item.partType == TopPagePartsEnum.Dashboard) {
                         $("#dashboard-list").ntsGridListFeature('switch', 'setValue', item.partItemCode, 'useItem', item.useDivision);
@@ -114,10 +124,11 @@ module nts.uk.pr.view.ccg015.b {
                 var collectData: MyPageSettingDto = {
                     companyId: "",
                     useMyPage: self.myPageSettingModel().useMyPage(),
-                    useWidget: self.myPageSettingModel().topPagePartSettingItems()[0].usePart(),
-                    useDashboard: self.myPageSettingModel().topPagePartSettingItems()[1].usePart(),
-                    useFlowMenu: self.myPageSettingModel().topPagePartSettingItems()[2].usePart(),
-                    externalUrlPermission: self.myPageSettingModel().topPagePartSettingItems()[3].usePart(),
+                    useStandarWidget: self.myPageSettingModel().topPagePartSettingItems()[0].usePart(),
+                    useOptionalWidget: self.myPageSettingModel().topPagePartSettingItems()[1].usePart(),
+                    useDashboard: self.myPageSettingModel().topPagePartSettingItems()[2].usePart(),
+                    useFlowMenu: self.myPageSettingModel().topPagePartSettingItems()[3].usePart(),
+                    externalUrlPermission: self.myPageSettingModel().topPagePartSettingItems()[4].usePart(),
                     topPagePartUseSettingDto: []
                 }
                 self.myPageSettingModel().topPagePartSettingItems().forEach(function(item, index) {
@@ -165,7 +176,7 @@ module nts.uk.pr.view.ccg015.b {
             topPagePartSettingItems: KnockoutObservableArray<PartItemModel>;
             constructor() {
                 this.useMyPage = ko.observable(0);
-                this.topPagePartSettingItems = ko.observableArray<PartItemModel>([new PartItemModel(0), new PartItemModel(1), new PartItemModel(2), new PartItemModel(3)]);
+                this.topPagePartSettingItems = ko.observableArray<PartItemModel>([new PartItemModel(0), new PartItemModel(1), new PartItemModel(2), new PartItemModel(3), new PartItemModel(4)]);
             }
         }
         export class PartItemModel {
@@ -175,7 +186,7 @@ module nts.uk.pr.view.ccg015.b {
             constructor(partType: number) {
                 this.partType = ko.observable(partType);
                 this.usePart = ko.observable(0);
-                this.settingItems = ko.observableArray<SettingItemsModel>([new SettingItemsModel("", "", 0)]);
+                this.settingItems = ko.observableArray<SettingItemsModel>([new SettingItemsModel("", "", 0, "")]);
             }
         }
         export class SettingItemsModel {
@@ -192,10 +203,11 @@ module nts.uk.pr.view.ccg015.b {
         }
         
         export enum TopPagePartsEnum {
-            Widget = 0,
-            Dashboard = 1,
-            FlowMenu = 2,
-            ExternalUrl = 3
+            StandarWidget = 0,
+            OptionalWidget = 1,
+            Dashboard = 2,
+            FlowMenu = 3,
+            ExternalUrl = 4
         }
         export enum UseType {
             Use = 1,

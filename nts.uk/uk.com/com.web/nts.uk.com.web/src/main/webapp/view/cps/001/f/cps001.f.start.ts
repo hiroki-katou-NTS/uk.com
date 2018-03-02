@@ -51,19 +51,11 @@ function init() {
 function LinkButtonClick() {
     var rowId: string = String($(this).closest("tr").data("id"));
     var rowItem = _.find(__viewContext['viewModel'].items, function(x: any) { return x.id == rowId; });
-    var fileSize;
     nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowItem.fileId).done(function(res) {
         // set Text SizeFile
-        fileSize = ((res.originalSize) / 1024).toFixed(2);
+        let fileSize = ((res.originalSize) / 1024).toFixed(2);
         __viewContext['viewModel'].fileSize(nts.uk.resource.getText("CPS001_85", [fileSize]));
-        // dowload file
-        service.getCurrentEmpPermision().done((data: IPersonAuth) => {
-            if (data) {
-                if (data.allowDocUpload == 1) {
-                    nts.uk.request.specials.donwloadFile(rowItem.fileId);
-                }
-            }
-        });
+        __viewContext['viewModel'].filename(res.originalName);
 
     });
 }

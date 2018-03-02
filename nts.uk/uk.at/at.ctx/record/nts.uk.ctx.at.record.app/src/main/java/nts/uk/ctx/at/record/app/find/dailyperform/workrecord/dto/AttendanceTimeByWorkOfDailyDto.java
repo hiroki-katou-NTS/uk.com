@@ -46,26 +46,12 @@ public class AttendanceTimeByWorkOfDailyDto implements ConvertibleAttendanceItem
 					(c) -> new WorkTimeOfDailyDto(
 								c.getWorkFrameNo().v(), 
 								c.getTimeSheet() == null ? null : new ActualWorkTimeSheetDto(
-									getActualStamp(c.getTimeSheet().getStart()), 
-									getActualStamp(c.getTimeSheet().getEnd())), 
+										WithActualTimeStampDto.toWithActualTimeStamp(c.getTimeSheet().getStart()), 
+										WithActualTimeStampDto.toWithActualTimeStamp(c.getTimeSheet().getEnd())), 
 								c.getWorkTime().valueAsMinutes())));
 		}
 		
 		return dto;
-	}
-
-	private static WithActualTimeStampDto getActualStamp(TimeActualStamp c) {
-		return c == null ? null : new WithActualTimeStampDto(
-					getTimeStample(c.getStamp().orElse(null)), 
-					getTimeStample(c.getActualStamp()), 
-					c.getNumberOfReflectionStamp());
-	}
-
-	private static TimeStampDto getTimeStample(WorkStamp domain) {
-		return domain == null ? null : new TimeStampDto(domain.getTimeWithDay().valueAsMinutes(),
-						domain.getAfterRoundingTime().valueAsMinutes(), domain.getLocationCode().v(),
-						domain.getStampSourceInfo().value);
-
 	}
 
 	@Override
@@ -89,18 +75,6 @@ public class AttendanceTimeByWorkOfDailyDto implements ConvertibleAttendanceItem
 	}
 	
 	private TimeActualStamp getStamp(WithActualTimeStampDto stamp) {
-		return stamp == null ? null
-				: new TimeActualStamp(getWorkStamp(stamp.getActualTime()), getWorkStamp(stamp.getTime()),
-						stamp.getNumberOfReflectionStamp());
-	}
-
-	private WorkStamp getWorkStamp(TimeStampDto stamp) {
-		return stamp == null ? null
-				: new WorkStamp(
-						stamp.getAfterRoundingTimesOfDay() == null ? null
-								: new TimeWithDayAttr(stamp.getAfterRoundingTimesOfDay()),
-						stamp.getTimesOfDay() == null ? null : new TimeWithDayAttr(stamp.getTimesOfDay()),
-						new WorkLocationCD(stamp.getPlaceCode()),
-						stamp.getStampSourceInfo() == null ? StampSourceInfo.HAND_CORRECTION_BY_MYSELF : ConvertHelper.getEnum(stamp.getStampSourceInfo(), StampSourceInfo.class));
+		return stamp == null ? null : stamp.toDomain();
 	}
 }

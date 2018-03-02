@@ -18,6 +18,7 @@ public class ApprovalTempDto {
 	// 本文
 	public String content;
 	public static ApprovalTempDto convertToDto(ApprovalTemp domain){
-		return new ApprovalTempDto(domain.getCompanyId(), domain.getContent().v());
+		return new ApprovalTempDto(domain.getCompanyId(), 
+				domain.getContent() == null ? null : domain.getContent().v());
 	}
 }

@@ -57,9 +57,9 @@ public class SacmtRoleSetGrantedPerson extends UkJpaEntity implements Serializab
 		return this.employeeId;
 	}
 	
-	public static RoleSetGrantedPerson toDomain(SacmtRoleSetGrantedPerson entity) {
-		return new RoleSetGrantedPerson(entity.roleSetCd, entity.companyId, entity.startDate, entity.endDate,
-				entity.employeeId);
+	public RoleSetGrantedPerson toDomain() {
+		return new RoleSetGrantedPerson(this.roleSetCd, this.companyId, this.startDate, this.endDate,
+				this.employeeId);
 	}
 
 	public static SacmtRoleSetGrantedPerson toEntity(RoleSetGrantedPerson domain) {

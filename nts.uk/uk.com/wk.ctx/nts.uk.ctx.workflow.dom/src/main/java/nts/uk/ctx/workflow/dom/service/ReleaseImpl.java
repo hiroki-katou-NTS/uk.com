@@ -78,7 +78,9 @@ public class ReleaseImpl implements ReleaseService {
 	public Boolean canReleaseCheck(ApprovalPhaseState approvalPhaseState, String employeeID) {
 		if(approvalPhaseState.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){
 			return approvalPhaseState.getListApprovalFrame().stream()
-				.filter(x -> x.getApproverID().equals(employeeID)||x.getRepresenterID().equals(employeeID)).findAny().map(y ->true).orElse(false);
+				.filter(x -> (Strings.isNotBlank(x.getApproverID()) && x.getApproverID().equals(employeeID))||
+						(Strings.isNotBlank(x.getRepresenterID()) && x.getRepresenterID().equals(employeeID)))
+				.findAny().map(y ->true).orElse(false);
 		}
 		Optional<ApprovalFrame> opConfirmFrame = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
 		if(opConfirmFrame.isPresent()){
@@ -90,7 +92,9 @@ public class ReleaseImpl implements ReleaseService {
 			return false;
 		}
 		return approvalPhaseState.getListApprovalFrame().stream()
-				.filter(x -> x.getApproverID().equals(employeeID)||x.getRepresenterID().equals(employeeID)).findAny().map(y ->true).orElse(false);
+				.filter(x -> (Strings.isNotBlank(x.getApproverID()) && x.getApproverID().equals(employeeID))||
+						(Strings.isNotBlank(x.getRepresenterID()) && x.getRepresenterID().equals(employeeID)))
+				.findAny().map(y ->true).orElse(false);
 	}
 
 }

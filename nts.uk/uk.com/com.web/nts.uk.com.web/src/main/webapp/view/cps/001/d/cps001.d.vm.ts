@@ -41,6 +41,7 @@ module cps001.d.vm {
                     else self.isChange(true);
                     self.oldEmpFileMn = { employeeId: self.empFileMn().employeeId, fileId: self.empFileMn().fileId, fileType: self.empFileMn().fileType };
                 } else {
+                    unblock();
                     self.isChange(true);
                     $(".checkbox-holder").hide();
                 }
@@ -49,12 +50,19 @@ module cps001.d.vm {
                     $('input[type=checkbox]').prop('checked', true);
                     if (!self.isInit) {
                         self.isChange(true);
+                        unblock();
+                        // check size if req
+                        
+                       /*  if (query.size > 10485760) { // 10485760 = 10MB
+                            self.hasError = true;
+                            alertError({ messageId: "Msg_77" });
+                        } */
+                        
                         return;
                     }
                     self.isInit = false;
+                    unblock();
                 });
-
-                unblock();
 
             }).fail((mes) => {
                 unblock();
@@ -156,6 +164,7 @@ module cps001.d.vm {
                 self.isChange(true);
             }
         }
+
         close() {
             nts.uk.ui.block.clear();
             close();

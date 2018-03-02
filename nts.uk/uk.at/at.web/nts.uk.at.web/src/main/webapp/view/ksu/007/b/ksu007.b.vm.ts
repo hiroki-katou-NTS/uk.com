@@ -121,8 +121,7 @@ module nts.uk.at.view.ksu007.b {
                                             employeeName : error.employeeName,
                                             ymd : error.dateYMD,
                                             message : nts.uk.resource.getMessage(error.message)
-                                        }
-                                        self.dataError.push(errorContent);
+                                        }   
                                         self.errorLogs.push(errorContent);
                                     });
                                 }
