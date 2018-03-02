@@ -50,9 +50,15 @@ public class TimeHdAppSetDto {
 	
 	public static TimeHdAppSetDto convertToDto(TimeHdAppSet domain){
 		return new TimeHdAppSetDto(domain.getCompanyId(), domain.getCheckDay().value, domain.getUse60h().value, 
-				domain.getUseAttend2().value, domain.getNameBefore2().v(), domain.getUseBefore().value, domain.getNameBefore().v(), 
+				domain.getUseAttend2().value, 
+				domain.getNameBefore2() == null ? null : domain.getNameBefore2().v(), domain.getUseBefore().value, 
+				domain.getNameBefore() == null ? null : domain.getNameBefore().v(), 
 				domain.getActualDisp().value, domain.getCheckOver().value, domain.getUseTimeHd().value, domain.getUseTimeYear().value, 
-				domain.getUsePrivate().value, domain.getPrivateName().v(), domain.getUnionLeave().value, domain.getUnionName().v(), 
-				domain.getUseAfter2().value, domain.getNameAfter2().v(), domain.getUseAfter().value, domain.getNameAfter().v());
+				domain.getUsePrivate().value, 
+				domain.getPrivateName() == null ? null : domain.getPrivateName().v(), domain.getUnionLeave().value, 
+				domain.getUnionName() == null ? null : domain.getUnionName().v(), 
+				domain.getUseAfter2().value, 
+				domain.getNameAfter2() == null ? null : domain.getNameAfter2().v(), domain.getUseAfter().value, 
+				domain.getNameAfter() == null ? null : domain.getNameAfter().v());
 	}
 }

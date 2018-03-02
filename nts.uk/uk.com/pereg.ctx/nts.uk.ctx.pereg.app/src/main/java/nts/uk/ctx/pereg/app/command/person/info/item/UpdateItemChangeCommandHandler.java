@@ -7,7 +7,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -32,11 +31,16 @@ public class UpdateItemChangeCommandHandler extends CommandHandler<UpdateItemCha
 		UpdateItemChangeCommand command = context.getCommand();
 		String itemName = command.getItemName();
 		if(CheckNameSpace.checkName(itemName)){
-			throw new BusinessException(new RawErrorMessage("Msg_928"));
+			throw new BusinessException("Msg_928");
 		}
 		
 		PersonInfoItemDefinition itemDef = this.pernfoItemDefRep
 				.getPerInfoItemDefById(command.getId(), AppContexts.user().contractCode()).get();
+		
+		if (!this.pernfoItemDefRep.checkItemNameIsUnique(itemDef.getPerInfoCategoryId(), command.getItemName(),
+				itemDef.getPerInfoItemDefId())) {
+			throw new BusinessException("Msg_358");
+		}
 
 		List<Selection> selection = new ArrayList<>();
 		if (command.getDataType() == 6) {
@@ -53,7 +57,7 @@ public class UpdateItemChangeCommandHandler extends CommandHandler<UpdateItemCha
 			}
 			if (selection == null || selection.size() == 0) {
 
-				throw new BusinessException(new RawErrorMessage("Msg_587"));
+				throw new BusinessException("Msg_587");
 
 			}
 		}

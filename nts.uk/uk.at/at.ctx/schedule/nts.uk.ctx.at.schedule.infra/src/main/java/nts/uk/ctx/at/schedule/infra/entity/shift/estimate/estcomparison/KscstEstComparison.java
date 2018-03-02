@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.entity.shift.estimate.estcomparison;
@@ -35,7 +35,26 @@ public class KscstEstComparison extends UkJpaEntity implements Serializable {
     /** The comparison atr. */
     @Column(name = "COMPARISON_ATR")
     private int comparisonAtr;
+    
+    /**
+     * Instantiates a new kscst est comparison.
+     */
+    public KscstEstComparison() {
+		super();
+	}
 
+    /**
+     * Instantiates a new kscst est comparison.
+     *
+     * @param cid the cid
+     * @param comparisonAtr the comparison atr
+     */
+    public KscstEstComparison(String cid, int comparisonAtr) {
+		super();
+		this.cid = cid;
+		this.comparisonAtr = comparisonAtr;
+	}
+    
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */

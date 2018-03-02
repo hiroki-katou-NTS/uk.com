@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 430, height: 530 };</script>
 			<com:stylefile path="cdl025.a.main.css" />
-			
+
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="../../ccg/025/component/component.css" />
 			<com:scriptfile path="../../ccg/025/component/component.service.js" />
@@ -20,7 +20,8 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
-				<div data-bind="with: component" style="margin-top: 30px;margin-left: 30px;">
+				<div data-bind="with: component"
+					style="margin-top: 30px; margin-left: 30px;">
 					<ui:include src="../../ccg/025/component/index.xhtml" />
 				</div>
 			</div>
@@ -29,7 +30,7 @@
 				<button data-bind="click: cancel">#{i18n.getText('CDL025_4')}</button>
 			</div>
 		</ui:define>
-		
+
 
 
 	</ui:composition>

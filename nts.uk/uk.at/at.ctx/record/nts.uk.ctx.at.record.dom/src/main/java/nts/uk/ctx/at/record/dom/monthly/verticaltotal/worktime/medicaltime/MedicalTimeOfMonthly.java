@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.medicaltime;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 
@@ -13,14 +12,15 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 @Getter
 public class MedicalTimeOfMonthly {
 
+	/** 日勤夜勤区分 */
+	private WorkTimeNightShift dayNightAtr;
+	
 	/** 勤務時間 */
 	private AttendanceTimeMonth workTime;
 	/** 控除時間 */
 	private AttendanceTimeMonth deducationTime;
 	/** 申送時間 */
 	private AttendanceTimeMonth takeOverTime;
-	/** 日勤夜勤区分 */
-	private WorkTimeNightShift dayNightAtr;
 	
 	/**
 	 * コンストラクタ
@@ -56,14 +56,26 @@ public class MedicalTimeOfMonthly {
 	}
 	
 	/**
-	 * 集計
-	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
+	 * 勤務時間に分を加算する
+	 * @param minutes 分
 	 */
-	public void aggregate(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
-
-		if (attendanceTimeOfDaily == null) return;
-		
-		//*****（未）　医療時間クラスをリスト管理に設計変更要。
-		//val medicalCareTime = attendanceTimeOfDaily.getMedicalCareTime();
+	public void addMinutesToWorkTime(int minutes){
+		this.workTime = this.workTime.addMinutes(minutes);
+	}
+	
+	/**
+	 * 控除時間に分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinutesToDeducationTime(int minutes){
+		this.deducationTime = this.deducationTime.addMinutes(minutes);
+	}
+	
+	/**
+	 * 申送時間に分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinutesToTakeOverTime(int minutes){
+		this.takeOverTime = this.takeOverTime.addMinutes(minutes);
 	}
 }

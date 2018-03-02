@@ -4,6 +4,7 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,6 +28,9 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 
 	private final String FIND_BY_COMPANY = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId ";
 	private final String FIND_BY_ERROR_ALARM_CHECK_ID = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId AND a.eralCheckId = :eralCheckId ";
+	private final String FIND_LIST_CODE = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId "
+			+ " AND a.kwrmtErAlWorkRecordPK.errorAlarmCode = :errorAlarmCode ";
+	
 
 	@Override
 	public Optional<ErrorAlarmWorkRecord> findByCode(String code) {
@@ -125,6 +129,20 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 		List<KwrmtErAlWorkRecord> lstData = this.queryProxy().query(FIND_BY_COMPANY, KwrmtErAlWorkRecord.class)
 				.setParameter("companyId", companyId).getList();
 		return lstData.stream().map(entity -> KwrmtErAlWorkRecord.toConditionDomain(entity)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ErrorAlarmWorkRecord> getListErAlByListCode(String companyId, List<String> listCode) {
+		List<ErrorAlarmWorkRecord> data = new  ArrayList<>();
+		for(String errorAlarmCode : listCode) {
+			Optional<ErrorAlarmWorkRecord> errorAlarmWorkRecord = this.queryProxy().query(FIND_LIST_CODE,KwrmtErAlWorkRecord.class)
+				.setParameter("companyId", companyId)
+				.setParameter("errorAlarmCode", errorAlarmCode).getSingle().map(c->KwrmtErAlWorkRecord.toDomain(c));
+			if(errorAlarmWorkRecord.isPresent()){
+				data.add(errorAlarmWorkRecord.get());
+			}
+		}
+		return data;
 	}
 
 }

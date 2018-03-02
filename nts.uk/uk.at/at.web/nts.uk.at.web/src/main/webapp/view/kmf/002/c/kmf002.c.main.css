@@ -1,13 +1,13 @@
-#scrC table {
+#scrC #tableCommonMonth table {
 	border-collapse: collapse;
 }
 
-#scrC table th, #scrC table td{
+#scrC #tableCommonMonth table th, #scrC #tableCommonMonth table td{
 	border: 1px solid  black;
 	padding: 5px;
 }
 
-#scrC table td > span > input{
+#scrC #tableCommonMonth table td > span > input{
 	/* background-color:transparent;
     border: 0px solid; */
     text-align: center;
@@ -26,4 +26,8 @@
 #scrC #includeTableMonthlyDay > div:nth-child(2) {
 	padding-top: 20px;
 	padding-bottom: 20px
+}
+
+#scrC #component-ccg001 {
+	top: 100px;
 }

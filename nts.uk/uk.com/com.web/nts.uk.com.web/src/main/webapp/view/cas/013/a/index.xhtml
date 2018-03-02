@@ -19,12 +19,12 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex="1" data-bind="click: New">#{i18n.getText('CAS013_4')}</button>
+				<button tabindex="1" data-bind="click: New, enable: listRole().length > 0">#{i18n.getText('CAS013_4')}</button>
 				<button class="proceed" tabindex="2"
-					data-bind="click: save, enable: $root.errors.isEmpty">#{i18n.getText('CAS013_5')}</button>
+					data-bind="click: save, enable: $root.errors.isEmpty() &amp;&amp; listRole().length > 0">#{i18n.getText('CAS013_5')}</button>
 				<button class="danger" tabindex="3"
 					data-bind="click: Delete, enable: isDelete() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CAS013_6')}</button>
-					
+
 			</div>
 			<div id="contents-area">
 				<div class="container cf">

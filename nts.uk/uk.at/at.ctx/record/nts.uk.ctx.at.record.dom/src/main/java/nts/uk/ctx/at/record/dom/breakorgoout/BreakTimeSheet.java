@@ -1,12 +1,20 @@
 package nts.uk.ctx.at.record.dom.breakorgoout;
 
+import java.util.Collections;
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.BreakClassification;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionClassification;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 
@@ -22,10 +30,10 @@ public class BreakTimeSheet extends DomainObject {
 	private BreakFrameNo breakFrameNo;
 	
 	//開始 - 勤怠打刻(実打刻付き)
-	private WorkStamp startTime;
+	private TimeWithDayAttr startTime;
 	
 	//終了 - 勤怠打刻(実打刻付き)
-	private WorkStamp endTime;
+	private TimeWithDayAttr endTime;
 	
 	/** 休憩時間: 勤怠時間 */
 	private AttendanceTime breakTime;
@@ -39,5 +47,23 @@ public class BreakTimeSheet extends DomainObject {
 		return baseTimeSheet.getDuplicatedWith(baseTimeSheet)
 				.map(ts -> ts.lengthAsMinutes())
 				.orElse(0);
+	}
+	
+	/**
+	 * 自分自身を控除項目の時間帯に変換する
+	 * @return 控除項目の時間帯
+	 */
+	public TimeSheetOfDeductionItem toTimeSheetOfDeductionItem() {
+		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeZoneRounding(this.startTime, this.endTime, null),
+																			  new TimeSpanForCalc(this.startTime, this.endTime),
+																			  Collections.emptyList(),
+																			  Collections.emptyList(),
+																			  Collections.emptyList(),
+																			  Collections.emptyList(),
+																			  Optional.empty(),
+																			  Finally.empty(),
+																			  Finally.of(BreakClassification.BREAK),
+																			  DeductionClassification.BREAK
+																			  );
 	}
 }

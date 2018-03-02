@@ -17,16 +17,10 @@ public interface AggrSettingMonthlyForWorkplaceRepository {
 	Optional<AggrSettingMonthlyForWorkplace> find(String companyId, String workplaceId);
 	
 	/**
-	 * 追加
+	 * 登録および更新
 	 * @param aggrSettingMonthlyForWorkplace 職場月別実績集計設定
 	 */
-	void insert(AggrSettingMonthlyForWorkplace aggrSettingMonthlyForWorkplace);
-	
-	/**
-	 * 更新
-	 * @param aggrSettingMonthlyForWorkplace 職場月別実績集計設定
-	 */
-	void update(AggrSettingMonthlyForWorkplace aggrSettingMonthlyForWorkplace);
+	void persistAndUpdate(AggrSettingMonthlyForWorkplace aggrSettingMonthlyForWorkplace);
 	
 	/**
 	 * 削除

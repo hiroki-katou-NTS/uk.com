@@ -1,15 +1,15 @@
-
 #functions-area button.danger {
 	margin-left: 45px;
 	margin-right: 30px;
 }
 
 #contents-area {
-	width: 1260px;
-} 
+	width: 1380px;
+	height: 800px;
+}
 
 .pull-left {
-	float : left;
+	float: left;
 }
 
 /* ---------------------------------------- content-left -----------------------------------------------------------*/
@@ -17,7 +17,7 @@
 	margin-top: 10px;
 	margin-left: 10px !important;
 	width: 370px;
-	height : 580px;
+	height: 580px;
 }
 
 #caret {
@@ -27,12 +27,12 @@
 
 #history {
 	margin-bottom: 10px;
-	width : 100%;
+	width: 100%;
 }
 
 .history-control-button {
 	width: 89px;
-	float : left;
+	float: left;
 }
 
 #edit-history {
@@ -47,7 +47,7 @@
 #content-center {
 	margin-top: 10px;
 	width: 440px !important;
-	height : 580px;
+	height: 580px;
 }
 
 .col1 {
@@ -64,20 +64,19 @@
 
 #itemRegisterLst {
 	margin-top: 20px;
-    width: 415px;
+	width: 415px;
 }
 
-.caret-background.caret-right:after  {
+.caret-background.caret-right:after {
 	top: 100px;
 }
 
 /* ---------------------------------------- content-right -----------------------------------------------------------*/
-
 #content-right {
-	margin-left : 15px;
+	margin-left: 15px;
 	margin-top: 115px;
 	width: 425px !important;
-	height : 580px;
+	height: 580px;
 }
 
 .form-input {
@@ -85,7 +84,7 @@
 }
 
 .input {
-	clear: both;	
+	clear: both;
 	margin-left: 20px;
 	margin-bottom: 10px;
 }
@@ -96,11 +95,11 @@
 
 #name {
 	width: 357px !important;
-    margin-top: 5px;
+	margin-top: 5px;
 }
 
 #exCode {
-	margin-top: 5px;	
+	margin-top: 5px;
 }
 
 #memoSelection {
@@ -108,4 +107,3 @@
 	height: 100px;
 	margin-top: 5px;
 }
-

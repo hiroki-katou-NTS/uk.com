@@ -12,7 +12,8 @@
 				nts.uk.ctx.sys.portal.dom.webmenu.TitleBarName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="/view/ccg/013/base/base.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/013/base/base.js"
+				of="/nts.uk.com.web" />
 			<com:stylefile path="ccg013.j.style.css" />
 			<com:scriptfile path="ccg013.j.start.js" />
 			<com:scriptfile path="ccg013.j.service.js" />
@@ -34,7 +35,7 @@
 						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_94')}</div></td>
 						<td colspan="2"><div id="colorpicker1" tabindex="2"
 								data-name="#{i18n.getText('CCG013_19')} "
-								data-bind="ntsColorPicker: {name:'#[CCG013_94]',value: letterColor, enable: true, width: 50,required: true}" /></td>
+								data-bind="ntsColorPicker: {name:'#[CCG013_94]',value: letterColor, enable: true, width: 50, required: true}" /></td>
 					</tr>
 					<tr>
 						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_95')}</div></td>
@@ -57,7 +58,7 @@
 					<tr>
 						<td></td>
 						<td tabindex="7" class="col2"><span id="imageName"
-							data-bind="text:imageName"></span></td>
+							class="hyperlink" href="#" data-bind="text: imageName"></span></td>
 						<td tabindex="8" class="pull-right">
 							<button id="delBtn" class="danger"
 								data-bind="click: deleteFile, enable: isDelete()">#{i18n.getText('CCG013_98')}</button>

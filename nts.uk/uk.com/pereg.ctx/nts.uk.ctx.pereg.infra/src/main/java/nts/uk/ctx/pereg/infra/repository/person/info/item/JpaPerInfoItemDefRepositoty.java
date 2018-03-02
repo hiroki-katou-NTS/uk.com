@@ -19,6 +19,7 @@ import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemTypeState;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinitionSimple;
 import nts.uk.ctx.pereg.dom.person.info.numericitem.NumericItem;
 import nts.uk.ctx.pereg.dom.person.info.order.PerInfoItemDefOrder;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.CodeNameReferenceType;
@@ -48,17 +49,18 @@ import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItemPK;
 public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInfoItemDefRepositoty {
 
 	private final static String SPECIAL_ITEM_CODE = "IO";
-	private final static String SELECT_NO_WHERE = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId,"
+	private final static String SELECT_COMMON_FIELD = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId,"
 			+ " i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,"
 			+ " ic.itemParentCd, ic.systemRequiredAtr, ic.requireChangabledAtr, ic.fixedAtr, ic.itemType,"
 			+ " ic.dataType, ic.timeItemMin, ic.timeItemMax, ic.timepointItemMin, ic.timepointItemMax, ic.dateItemType,"
 			+ " ic.stringItemType, ic.stringItemLength, ic.stringItemDataType, ic.numericItemMin, ic.numericItemMax, ic.numericItemAmountAtr,"
 			+ " ic.numericItemMinusAtr, ic.numericItemDecimalPart, ic.numericItemIntegerPart,"
-			+ " ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId"
-			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId";
+	private final static String JOIN_COMMON_TABLE = " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
 			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd INNER JOIN PpemtPerInfoItemOrder io"
 			+ " ON io.ppemtPerInfoItemPK.perInfoItemDefId = i.ppemtPerInfoItemPK.perInfoItemDefId AND io.perInfoCtgId = i.perInfoCtgId";
+	private final static String SELECT_NO_WHERE = SELECT_COMMON_FIELD + JOIN_COMMON_TABLE;;
 
 	private final static String COMMON_CONDITION = " ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL"
 			+ " ORDER BY io.disporder";
@@ -177,7 +179,6 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"INNER JOIN PpemtPerInfoItemCm c ON i.itemCd = c.ppemtPerInfoItemCmPK.itemCd",
 			"WHERE c.ppemtPerInfoItemCmPK.contractCd = :contractCd AND c.systemRequiredAtr = 1 AND i.abolitionAtr = 0",
 			"AND i.perInfoCtgId IN (SELECT g.ppemtPerInfoCtgPK.perInfoCtgId FROM PpemtPerInfoCtg g WHERE g.cid = :companyId)");
-
 	private final static String SELECT_DEFAULT_ITEM_NAME_BY_ITEMS_CODE = String.join(" ", "SELECT pi.itemName",
 			"FROM PpemtPerInfoItem pi INNER JOIN PpemtPerInfoCtg pc",
 			"ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId",
@@ -231,6 +232,22 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"INNER JOIN PpemtPerInfoItemCm io",
 			"ON c.categoryCd = io.ppemtPerInfoItemCmPK.categoryCd AND i.itemCd = io.ppemtPerInfoItemCmPK.itemCd",
 			"WHERE i.perInfoCtgId IN :perInfoCtgId  AND i.abolitionAtr = 0 AND io.itemParentCd IS NULL");
+
+	// sonnlb start
+	private final static String SEL_REQUIRED_ITEM_BY_CTG = String.join(" ", "SELECT i.itemCd,i.itemName",
+			JOIN_COMMON_TABLE, "WHERE c.categoryCd IN :categoryCds", "AND c.cid= :companyId", "AND ic.itemType = 2 ",
+			"AND ic.systemRequiredAtr = 1", "AND ic.ppemtPerInfoItemCmPK.contractCd = :contractCd","AND i.abolitionAtr = 0");
+
+	// sonnlb end
+	
+	// lanlt start
+	private final static String SELECT_REQUIRED_ITEMS_ID_BY_CID = String.join(" ",
+			"SELECT DISTINCT i.ppemtPerInfoItemPK.perInfoItemDefId FROM PpemtPerInfoItem i",
+			"INNER JOIN PpemtPerInfoItemCm c ON i.itemCd = c.ppemtPerInfoItemCmPK.itemCd",
+			"WHERE c.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.requiredAtr = 1 AND i.abolitionAtr = 0",
+			"AND i.perInfoCtgId IN (SELECT g.ppemtPerInfoCtgPK.perInfoCtgId FROM PpemtPerInfoCtg g WHERE g.cid = :companyId)");	
+	
+	// lanlt end
 
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
@@ -697,13 +714,18 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 
 	@Override
-	public List<PersonInfoItemDefinition> getAllItemFromCodeList(String companyId, String categoryCd,
-			List<String> itemCodeList) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<PersonInfoItemDefinitionSimple> getRequiredItemFromCtgCdLst(String contractCd, String companyId,
+			List<String> categoryCds) {
+		return this.queryProxy().query(SEL_REQUIRED_ITEM_BY_CTG, Object[].class).setParameter("contractCd", contractCd)
+				.setParameter("companyId", companyId).setParameter("categoryCds", categoryCds).getList().stream()
+				.map(x -> toSimpleItem(x)).collect(Collectors.toList());
 	}
 
 	// Sonnlb Code end
+
+	private PersonInfoItemDefinitionSimple toSimpleItem(Object[] i) {
+		return new PersonInfoItemDefinitionSimple(i[0].toString(), i[1].toString());
+	}
 
 	// vinhpx start
 	@Override
@@ -780,6 +802,12 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 					List<String> items = getChildIds(contractCd, perInfoCategoryId, String.valueOf(i[1]));
 					return createDomainFromEntity(i, items);
 				});
+	}
+
+	@Override
+	public List<String> getAllRequiredIds(String contractCd, String companyId) {
+		return queryProxy().query(SELECT_REQUIRED_ITEMS_ID_BY_CID, String.class).setParameter("contractCd", contractCd)
+				.setParameter("companyId", companyId).getList();
 	}
 
 }

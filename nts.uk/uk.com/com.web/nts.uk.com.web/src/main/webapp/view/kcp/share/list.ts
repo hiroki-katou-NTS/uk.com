@@ -239,8 +239,8 @@ module kcp.share.list {
             ko.cleanNode($input[0]);
             
             // Init self data.
-            if (data.isMultipleUse) {
-                self.isMultipleUse = data.isMultipleUse;
+            if (!nts.uk.util.isNullOrUndefined(data) && !nts.uk.util.isNullOrUndefined(data.isMultipleUse)) { 
+                self.isMultipleUse = data.isMultipleUse; 
             }
             self.isMultipleSelect = data.isMultiSelect;
             self.targetKey = data.listType == ListType.JOB_TITLE ? 'id': 'code';
@@ -687,7 +687,7 @@ module kcp.share.list {
                 }
                 self.itemList(data);
                 self.initNoSelectRow(self.isShowNoSelectRow);
-                self.selectedCodes(null);
+                self.selectedCodes(self.isMultipleSelect ? [] : null);
             });
         }
         
@@ -702,7 +702,7 @@ module kcp.share.list {
                 }
                 self.itemList(data);
                 self.initNoSelectRow(self.isShowNoSelectRow);
-                self.selectedCodes(null);
+                self.selectedCodes(self.isMultipleSelect ? [] : null);
             })
         }
         

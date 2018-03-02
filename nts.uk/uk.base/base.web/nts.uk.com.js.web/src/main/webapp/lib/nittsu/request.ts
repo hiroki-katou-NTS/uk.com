@@ -359,11 +359,25 @@ module nts.uk.request {
             return dfd.promise();
         }
         
+        export function liveViewUrl(fileId: string): string;
+        export function liveViewUrl(fileId: string, entryName?: string): string {
+            let liveViewPath = "/webapi/shr/infra/file/storage/liveview/";
+            let locator = location.siteRoot
+                .mergeRelativePath(WEB_APP_NAME.com + '/')
+                .mergeRelativePath(liveViewPath);
+                
+            if (arguments.length === 1) {
+                return locator.mergeRelativePath(fileId).serialize();
+            } else if (arguments.length === 2) {
+                return locator.mergeRelativePath(fileId + "/").mergeRelativePath(entryName).serialize();
+            }
+        }
+
         export function remove(fileId: string) {
             return ajax("com", "/shr/infra/file/storage/delete/" + fileId);
         }
         
-        export function isExist(fileId: string): boolean {
+        export function isExist(fileId: string) {
             return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
         }
         
@@ -371,6 +385,11 @@ module nts.uk.request {
             return resolvePath('/webapi/shr/infra/file/storage/get/' + fileId);
         }
     }
+
+    export function liveView(fileId: string): string {
+        return file.liveViewUrl(fileId);
+    }
+    
 
     export module specials {
 
@@ -386,7 +405,7 @@ module nts.uk.request {
             return file.remove(fileId);
         }
         
-        export function isFileExist(fileId: string): boolean {
+        export function isFileExist(fileId: string) {
             return file.isExist(fileId);
         }
         
@@ -398,7 +417,7 @@ module nts.uk.request {
                 }
                 
                 ui.windows.setShared("errorInfo", error);
-                let sub = ui.windows.sub.modal("com", "/view/common/error/system/index.xhtml", {
+                let sub = (<any>ui).windows.sub.modal("com", "/view/common/error/system/index.xhtml", {
                     resizable: true
                 });
                 sub.$dialog.addClass("nts-system-error-dialog");
@@ -509,7 +528,7 @@ module nts.uk.request {
         
         export function restoreSessionTo(webAppId: WebAppId) {
             let serializedTicket = uk.sessionStorage.getItem(STORAGE_KEY_SERIALIZED_SESSION).get();
-            return request.ajax(webAppId, "/shr/web/session/restore", serializedTicket, null, false);
+            return (<any>request).ajax(webAppId, "/shr/web/session/restore", serializedTicket, null, false);
         }
     }
     
@@ -527,21 +546,7 @@ module nts.uk.request {
 
         return destination.rawUrl;
     }
-
-    export function liveView(fileId: string);
-    export function liveView(webAppId: WebAppId, fileId: string): string {
-        let liveViewPath = "/webapi/shr/infra/file/storage/liveview/";
-        if (typeof arguments[1] !== 'string') {
-            return resolvePath(liveViewPath) + _.concat(location.currentAppId, arguments)[1];
-        }
-
-        var webserviceLocator = location.siteRoot
-            .mergeRelativePath(WEB_APP_NAME[webAppId] + '/')
-            .mergeRelativePath(liveViewPath);
-
-        let fullPath = webserviceLocator.serialize() + fileId;
-        return fullPath;
-    }
+    
     export module location {
         export var current = new Locator(window.location.href);
         export var appRoot = current.mergeRelativePath(__viewContext.rootPath);

@@ -153,3 +153,12 @@ div.form-label.broken {
 	position: relative;
 	z-index: 1;
 }
+.inputTime-kaf005{
+	width: 85px !important;
+}
+.textarea-kaf005{
+	height: 120px !important;
+}
+.fix-margin-left-kaf005{
+	margin-left:10px;
+}

@@ -47,24 +47,10 @@ public class TimeLeavingOfDailyPerformanceDto implements ConvertibleAttendanceIt
 			dto.setWorkTimes(domain.getWorkTimes() != null ? domain.getWorkTimes().v() : null);
 			dto.setWorkAndLeave(ConvertHelper.mapTo(domain.getTimeLeavingWorks(),
 					(c) -> new WorkLeaveTimeDto(c.getWorkNo().v(),
-							getActualTimeStamp(c.getAttendanceStamp().orElse(null)),
-							getActualTimeStamp(c.getLeaveStamp().orElse(null)))));
+							WithActualTimeStampDto.toWithActualTimeStamp(c.getAttendanceStamp().orElse(null)),
+							WithActualTimeStampDto.toWithActualTimeStamp(c.getLeaveStamp().orElse(null)))));
 		}
 		return dto;
-	}
-
-	private static WithActualTimeStampDto getActualTimeStamp(TimeActualStamp c) {
-		return c == null ? null
-				: new WithActualTimeStampDto(getTimeStamp(c.getStamp().orElse(null)), getTimeStamp(c.getActualStamp()),
-						c.getNumberOfReflectionStamp());
-	}
-
-	private static TimeStampDto getTimeStamp(WorkStamp c) {
-		return c == null ? null
-				: new TimeStampDto(c.getTimeWithDay() == null ? null : c.getTimeWithDay().valueAsMinutes(),
-						c.getAfterRoundingTime() == null ? null : c.getAfterRoundingTime().valueAsMinutes(),
-						c.getLocationCode() == null ? null : c.getLocationCode().v(), c.getStampSourceInfo().value);
-
 	}
 
 	@Override
@@ -95,19 +81,6 @@ public class TimeLeavingOfDailyPerformanceDto implements ConvertibleAttendanceIt
 	}
 
 	private Optional<TimeActualStamp> toTimeActualStamp(WithActualTimeStampDto c) {
-		return c == null ? Optional.empty()
-				: Optional.of(new TimeActualStamp(toWorkStamp(c.getActualTime()), toWorkStamp(c.getTime()),
-						c.getNumberOfReflectionStamp()));
-	}
-
-	private WorkStamp toWorkStamp(TimeStampDto c) {
-		return c == null ? null
-				: new WorkStamp(
-						c.getAfterRoundingTimesOfDay() == null ? null
-								: new TimeWithDayAttr(c.getAfterRoundingTimesOfDay()),
-						c.getTimesOfDay() == null ? null : new TimeWithDayAttr(c.getTimesOfDay()),
-						c.getPlaceCode() == null ? null : new WorkLocationCD(c.getPlaceCode()),
-						c.getStampSourceInfo() == null ? StampSourceInfo.HAND_CORRECTION_BY_MYSELF
-								: ConvertHelper.getEnum(c.getStampSourceInfo(), StampSourceInfo.class));
+		return c == null ? Optional.empty() : Optional.of(c.toDomain());
 	}
 }

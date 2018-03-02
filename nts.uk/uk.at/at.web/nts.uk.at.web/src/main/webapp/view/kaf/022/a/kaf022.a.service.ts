@@ -21,7 +21,7 @@ module nts.uk.at.view.kmf022.a.service {
         findProByApp: "at/request/application/setting/proxy/findApp",
         // A14_3 (com)
         findJobAssign: "job/assign/setting/getjob", 
-        //A15_4, truyền lần lượt job id trong list lấy được để lấy ra A15_4. (ver 2) (com)
+        //A15 trừ a15_4, truyền lần lượt job id trong list lấy được để lấy ra A15_4. (ver 2) (com)
         findJobTitleSearch: "workflow/jobtitlesearchset/job/getbyId",
         // A16_7, A16_8
         findMail: "at/request/application/mail/holiday",
@@ -76,6 +76,13 @@ module nts.uk.at.view.kmf022.a.service {
 //        add: 'at/shared/yearservicecom/add',
         // update kaf022
         update: 'screen/at/kaf022/update',
+        
+        // A7, A8. A7 là list beforeAfter, A8 là list appType
+        findBfReqSet: "at/request/application/applist/getappDisp",
+    }
+    
+    export function findBfReqSet() {
+        return nts.uk.request.ajax("at", paths.findBfReqSet); 
     }
     
     export function findJobTitleSearchList(param: any): JQueryPromise<void>{

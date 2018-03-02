@@ -6,6 +6,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.UpdateAppTypeBfCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationSettingCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.triprequestsetting.UpdateTripRequestSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.workchange.InsertAppWorkChangeSetCommandHandler;
@@ -25,6 +26,8 @@ import nts.uk.ctx.at.request.app.command.setting.company.request.stamp.UpdateSta
 import nts.uk.ctx.at.request.app.command.setting.company.vacationapplicationsetting.UpdateHdAppSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.request.UpdateApplicationDeadlineCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.request.gobackdirectlycommon.UpdateGoBackDirectlyCommonSettingCommandHandler;
+import nts.uk.ctx.workflow.app.command.approvermanagement.setting.UpdateJobAssignSettingCommandHandler;
+import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateJobtitleSearchSetCommandHandler;
 
 @Stateless
 @Transactional
@@ -90,6 +93,15 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 	@Inject
 	private UpdateLateEarReqHandler updateLateEar;
 	
+	@Inject
+	private UpdateAppTypeBfCommandHandler updateBf;
+	
+	@Inject
+	private UpdateJobtitleSearchSetCommandHandler updateJobSearch;
+	
+	@Inject
+	private UpdateJobAssignSettingCommandHandler updateJobAssign;
+	
 	@Override
 	protected void handle(CommandHandlerContext<Kaf022AddCommand> context) {
 		Kaf022AddCommand kaf022 = context.getCommand();
@@ -133,6 +145,12 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		this.updateWdReq.handle(kaf022.getWdReq());
 		
 		this.updateLateEar.handle(kaf022.getLateEarly());
+		
+		this.updateBf.handle(kaf022.getAppBf());
+		// update list for A15_4
+		this.updateJobSearch.handle(kaf022.getJobSearch());
+		// A14
+		this.updateJobAssign.handle(kaf022.getJobAssign());
 	}
 
 }

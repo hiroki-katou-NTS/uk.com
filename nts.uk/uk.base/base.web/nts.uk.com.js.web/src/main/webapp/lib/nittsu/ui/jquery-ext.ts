@@ -1,3 +1,11 @@
+interface JQuery {
+    exposeVertically($target: JQuery);
+    onkey(command: "down"|"up"|"press", keyCode: number, handler: (JQueryEventObject) => void): JQuery;
+    dialogPositionControl(): JQuery;
+    exposeOnTabPanel(): JQuery;
+    ctState(name: "selected"|"required"|"name", method: "set"|"get", value?: any): any; 
+}
+
 module nts.uk.ui.jqueryExtentions {
     // This file left here for log purpose
     
@@ -75,4 +83,42 @@ module nts.uk.ui.jqueryExtentions {
         
         return $dialog;
     };
+    
+    $.fn.exposeOnTabPanel = function () {
+        
+        let $target = $(this);
+        
+        let $tabPanel = $target.closest(".ui-tabs-panel");
+        if ($tabPanel.length === 0) {
+            return $target;
+        }
+        
+        let tabId = $tabPanel.attr("id");
+        let $tabsContainer = $tabPanel.closest(".ui-tabs");
+        
+        // 先に親から
+        $tabsContainer.exposeOnTabPanel();
+        
+        $tabsContainer.trigger("change-tab", tabId);
+        
+        return $target;
+    };
+    
+    $.fn.ctState = function (name: string, method: string, value: any): any {
+        
+        let $this = $(this);
+        
+        let dataName = {
+            selected: "ctstate-selected",
+            required: "ctstate-required",
+            name: "ctstate-name"
+        }[name];
+        
+        switch (method) {
+            case "set":
+                return $this.data(dataName, value);
+            case "get":
+                return $this.data(dataName);
+        }
+    }
 }

@@ -818,7 +818,12 @@
 							<tr>
 								<td style = "width: 880px">
 								<!-- KCP009 -->
-								<div id="emp-component"></div>
+								<div data-bind ="visible: visibleCCG001">
+									<div id="emp-component"></div>
+								</div>
+								<div data-bind ="visible: !visibleCCG001()">
+									<div data-bind = "text: empInfoLabel" style = "margin-left: 20px"></div>
+								</div>
 								</td>
 								<td>
 									<!-- E1_11: Label モード切替： -->

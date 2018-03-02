@@ -30,7 +30,7 @@ public class AddedVacationUseTime {
 	public static AddedVacationUseTime of(AttendanceTimeMonth addTimePerMonth){
 		
 		val domain = new AddedVacationUseTime();
-		domain.addTimePerMonth = new AttendanceTimeMonth(addTimePerMonth.valueAsMinutes());
+		domain.addTimePerMonth = addTimePerMonth;
 		return domain;
 	}
 	

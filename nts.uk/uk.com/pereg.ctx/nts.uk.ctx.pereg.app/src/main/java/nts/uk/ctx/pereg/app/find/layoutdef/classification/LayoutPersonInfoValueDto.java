@@ -68,6 +68,11 @@ public class LayoutPersonInfoValueDto {
 
 	// contains some information of item for render control
 	private DataTypeStateDto item;
+	
+	/*
+	 *  showColor is true when category hasn't data, false when category has data. 
+	 */
+	private boolean showColor;
 
 	private int type;
 	private int ctgType;
@@ -102,6 +107,7 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setItemParentCode(itemDef.getItemParentCode());
 		dataObject.setRow(0);
 		dataObject.setRequired(itemDef.getIsRequired() == 1);
+		dataObject.setShowColor(true);
 
 		dataObject.setType(itemDef.getItemTypeState().getItemType());
 		dataObject.setCtgType(perInfoCategory.getCategoryType().value);

@@ -2,7 +2,6 @@
 	padding-left : 30px !important;
 	min-width: 1200px;
 } */
-
 .tr360 {
 	width: 360px !important;
 }
@@ -44,18 +43,15 @@
 	color: red;
 }
 
-
 #lbl_registrationOfLaborInsurancePlant {
 	float: right;
 }
 
 #contents-left, #contents-right {
-	padding: 20px;
 	vertical-align: top !important;
 }
 
 #contents-right {
-	padding-left: 50px !important;
 }
 
 .leftTop {
@@ -101,8 +97,7 @@ button.nts-switch-button {
 	width: 110px !important;
 }
 
-
-.btn_margin_top{
+.btn_margin_top {
 	margin-top: 20px;
 }
 
@@ -115,34 +110,39 @@ button.nts-switch-button {
 
 #preview-iframe {
 	width: 630px;
-	height: 300px;
+	height: 330px;
 }
 
-#nodata-iframe{
+#nodata-iframe {
 	width: 1005px;
 	height: 550px;
 }
-.contentsRL{
+
+.contentsRL {
 	width: 200px;
 }
-.contentsRR
-{
+
+.contentsRR {
 	width: 70px;
 }
-.float_right{
+
+.float_right {
 	float: right;
 }
+
 #box_search {
-	width: 375px;
-	padding-bottom: 20px;
+	width: 327px;
 }
-.pad_left_20{
+
+.pad_left_20 {
 	padding-left: 20px;
 }
-.drop_links{
+
+.drop_links {
 	max-height: 50px;
 	margin-left: 270px;
 }
-.float_left{
+
+.float_left {
 	float: left;
 }

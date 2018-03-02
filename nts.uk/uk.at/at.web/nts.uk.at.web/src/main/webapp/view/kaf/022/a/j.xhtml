@@ -168,11 +168,12 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="color-header" id="j16">#{i18n.getText('KAF022_256')}</td>
+			<td class="color-header" id="j16"><div data-bind="ntsFormLabel: { constraint: 'Comment',inline:true}">#{i18n.getText('KAF022_256')}</div></td>
 			<td>
 				<div data-bind="with: texteditorJ29">
 					<input tabindex="12"
 						data-bind="ntsTextEditor: {
+						name:'#{i18n.getText('KAF022_256')}',
 						value: value,
 						constraint: constraint,
 						option: option,
@@ -188,11 +189,12 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="color-header" id="j17">#{i18n.getText('KAF022_257')}</td>
+			<td class="color-header" id="j17"><div data-bind="ntsFormLabel: { constraint: 'Comment',inline:true}">#{i18n.getText('KAF022_257')}</div></td>
 			<td>
 				<div data-bind="with: texteditorJ32">
 					<input tabindex="15"
 						data-bind="ntsTextEditor: {
+						name:'#{i18n.getText('KAF022_257')}',
 						value: value,
 						constraint: constraint,
 						option: option,

@@ -50,8 +50,8 @@ module nts.uk.at.view.ksm005.c {
             return nts.uk.request.ajax('at', paths.getListMonthlyPattern);
         }
         
-        export function findAllMonthlyPatternSetting(employeeIds: string[]): JQueryPromise<any> {
-             return nts.uk.request.ajax('at', paths.getAllMonthlyPatternSetting, {employeeIds: employeeIds});
+        export function findAllMonthlyPatternSetting(employeeIds: string[], monthlyPatternCodes: string[]): JQueryPromise<any> {
+             return nts.uk.request.ajax('at', paths.getAllMonthlyPatternSetting, {employeeIds: employeeIds, monthlyPatternCodes: monthlyPatternCodes});
         }
         
         export function findMonthlyPatternSettingBySid(employeeId: string[]): JQueryPromise<any> {

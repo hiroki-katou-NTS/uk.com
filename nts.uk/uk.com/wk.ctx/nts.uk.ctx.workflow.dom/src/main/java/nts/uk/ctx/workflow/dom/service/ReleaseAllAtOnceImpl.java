@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.dom.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +41,7 @@ public class ReleaseAllAtOnceImpl implements ReleaseAllAtOnceService {
 			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 		}
 		ApprovalRootState approvalRootState = opApprovalRootState.get();
+		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
 		approvalRootState.getListApprovalPhaseState().stream().forEach(approvalPhaseState -> {
 			List<String> approvers = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
 			if(CollectionUtil.isEmpty(approvers)){

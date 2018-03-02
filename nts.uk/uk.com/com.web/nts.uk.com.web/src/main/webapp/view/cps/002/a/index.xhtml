@@ -109,7 +109,7 @@
 												data-bind="ntsFormLabel: {  required: true,constraint:'FullName' }">#{i18n.getText('CPS002_105')}</div>
 										</div>
 										<div class="step1_top_left_col2">
-											<input class="form_step1"
+											<input class="form_step1" id="employeeName"
 												data-bind="ntsTextEditor: {
 											value: employeeName ,
 											constraint:'FullName',
@@ -231,7 +231,7 @@
 														optionsValue: 'id' ,
 														optionsText: 'name' ,
 														value: createTypeId ,
-														enable: true
+														enable: false
 														       		}">
 										</div>
 									</div>

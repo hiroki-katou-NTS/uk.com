@@ -43,7 +43,7 @@ public class AppListExtractConditionDto {
 	private String empRefineCondition;
 	
 	public AppListExtractCondition convertDtotoDomain(AppListExtractConditionDto dto){
-		String dateFormat = "yyyy-MM-dd";
+		String dateFormat = "yyyy/MM/dd";
 		return new AppListExtractCondition(
 				GeneralDate.fromString(dto.getStartDate(), dateFormat),
 				GeneralDate.fromString(dto.getEndDate(), dateFormat),

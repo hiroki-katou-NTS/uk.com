@@ -14,14 +14,16 @@ public class PrescribedWorkingTimeOfTimeSeries {
 
 	/** 年月日 */
 	private GeneralDate ymd;
+	
 	/** 所定労働時間 */
 	private WorkScheduleTimeOfDaily prescribedWorkingTime;
 	
 	/**
 	 * コンストラクタ
 	 */
-	public PrescribedWorkingTimeOfTimeSeries(){
+	public PrescribedWorkingTimeOfTimeSeries(GeneralDate ymd){
 		
+		this.ymd = ymd;
 		this.prescribedWorkingTime = new WorkScheduleTimeOfDaily();
 	}
 
@@ -34,10 +36,8 @@ public class PrescribedWorkingTimeOfTimeSeries {
 	public static PrescribedWorkingTimeOfTimeSeries of(
 			GeneralDate ymd, WorkScheduleTimeOfDaily prescribedWorkingTime){
 		
-		val domain = new PrescribedWorkingTimeOfTimeSeries();
-		domain.ymd = ymd;
-		//*****（未）値を入れる方法が必要
-		domain.prescribedWorkingTime = new WorkScheduleTimeOfDaily();
+		val domain = new PrescribedWorkingTimeOfTimeSeries(ymd);
+		domain.prescribedWorkingTime = prescribedWorkingTime;
 		return domain;
 	}
 }

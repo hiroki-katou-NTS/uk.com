@@ -17,11 +17,11 @@
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 
 			<com:stylefile path="cps001.a.style.css" />
-			
+
 			<com:scriptfile path="/view/cps/shr/cbx-control-ko-ext.js" />
 			<com:scriptfile path="/view/cps/shr/layout-control-validation.js" />
 			<com:scriptfile path="/view/cps/shr/layout-control-ko-ext.js" />
-			
+
 			<com:scriptfile path="cps001.a.service.js" />
 			<com:scriptfile path="cps001.a.vm.js" />
 			<com:scriptfile path="cps001.a.start.js" />
@@ -30,14 +30,17 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button type="button" class="proceed"
-					data-bind="click: saveData, enable: $root.errors.isEmpty &amp;&amp; saveAble" tabindex="1">#{i18n.getText('CPS001_4')}</button>
-				<button type="button" data-bind="click: unManagerEmployee" tabindex="2">#{i18n.getText('CPS001_5')}</button>
+					data-bind="click: saveData, enable: $root.errors.isEmpty &amp;&amp; saveAble"
+					tabindex="1">#{i18n.getText('CPS001_4')}</button>
+				<button type="button" data-bind="click: unManagerEmployee"
+					tabindex="2">#{i18n.getText('CPS001_5')}</button>
 				<button type="button" class="danger"
 					data-bind="click: deleteEmployee" tabindex="3">#{i18n.getText('CPS001_6')}</button>
 				<a class="goout"
-					data-bind="ntsLinkButton: { jump: '/view/cas/001/a/index.xhtml' }" tabindex="4">#{i18n.getText('CPS001_7')}</a>
-				<a class="goout"
-					data-bind="ntsLinkButton: { jump: '/view/cps/008/a/index.xhtml' }" tabindex="5">#{i18n.getText('CPS001_8')}</a>
+					data-bind="ntsLinkButton: { jump: '/view/cas/001/a/index.xhtml' }"
+					tabindex="4">#{i18n.getText('CPS001_7')}</a> <a class="goout"
+					data-bind="ntsLinkButton: { jump: '/view/cps/008/a/index.xhtml' }"
+					tabindex="5">#{i18n.getText('CPS001_8')}</a>
 			</div>
 			<div id="contents-area" class="cf"
 				data-bind="let: { 
@@ -59,7 +62,8 @@
 				<div class="left-area">
 					<div class="bg-green caret-right caret-background"
 						data-bind="let: { emp: employee() }">
-						<div data-bind="template: {	
+						<div
+							data-bind="template: {	
 								name: 'list-data',
 								data: {
 									rows: 10,
@@ -83,14 +87,14 @@
 									title: text('CPS001_23'), 
 									content: '.layouttab', 
 									enable: ko.observable(true), 
-									visible: ko.observable(true)
+									visible: hasLayout
 								},
 								{
 									id: 'category', 
 									title: text('CPS001_24'), 
 									content: '.categorytab', 
 									enable: ko.observable(true), 
-									visible: ko.observable(true)
+									visible: hasLayout
 								}], 
 							active: tab
 							}">
@@ -108,8 +112,10 @@
 										selectedKey: 'optionValue', 
 										fields: ['optionText'], 
 										mode: 'igGrid'
-									}" tabindex="8"></div>
-								<div data-bind="template: {	
+									}"
+									tabindex="8"></div>
+								<div
+									data-bind="template: {	
 										name: 'list-data',
 										data: {
 											id: 'layout-data',
@@ -129,17 +135,23 @@
 						<div class="categorytab" data-bind="if: tab() == TABS.CATEGORY">
 							<div data-bind="foreach: { data: multipleData, as: 'multiple' }">
 								<div data-bind="if: !$index()">
-									<div class="form-group search-box">
+									<div class="form-group search-box" data-bind="let: { _cid: nts.uk.util.randomId().replace(/-/g, '') }">
 										<button type="button"
-											data-bind="click: function() { multiple.id.valueHasMutated() }" tabindex="8">#{i18n.getText('CPS001_27')}</button>
-										<div data-bind="attr: {id: nts.uk.util.randomId().replace(/-/g, '')}, ntsDropDownList: {
-												value: multiple.id,
-												dataSource: multiple.combobox,
-												textKey: 'optionText',
-												valueKey: 'optionValue',
-												visibleItemsCount: 10,
-												tabIndex: -1
-										 }" tabindex="9"></div>
+											data-bind="click: function() { multiple.id.valueHasMutated() }"
+											tabindex="8">#{i18n.getText('CPS001_27')}</button>
+										<div
+											data-bind="attr: {
+													id: _cid
+												}, 
+												ntsDropDownList: {
+													value: multiple.id,
+													dataSource: multiple.combobox,
+													textKey: 'optionText',
+													valueKey: 'optionValue',
+													visibleItemsCount: 10,
+													tabIndex: -1
+												 }"
+											tabindex="9"></div>
 									</div>
 									<div
 										data-bind="let: { catType: multiple.category().categoryType() }">
@@ -212,8 +224,9 @@
 						}">
 					<div class="top-right-area cf">
 						<div class="avatar-group">
-							<div class="active-panel" data-bind="click: chooseAvatar" >
-								<img data-bind="attr: { src: _emp.avatar}" class="avatar" tabindex="13"/>
+							<div class="active-panel" data-bind="click: chooseAvatar">
+								<img data-bind="attr: { src: _emp.avatar}" class="avatar"
+									tabindex="13" />
 							</div>
 						</div>
 						<div class="person-group">
@@ -224,9 +237,12 @@
 											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_11')}</td>
 											<td>
 												<div class="info">
-													<span data-bind="text: _emp.employeeCode, attr: { title: _emp.employeeCode }"></span> 
-													<span data-bind="text:  _emp.employeeName, attr: { title: _emp.employeeName }"></span>
-													<span data-bind="text:  _pers.gender() ? ('(' + _pers.gender() + ')') : ''"></span>
+													<span
+														data-bind="text: _emp.employeeCode, attr: { title: _emp.employeeCode }"></span>
+													<span
+														data-bind="text:  _emp.employeeName, attr: { title: _emp.employeeName }"></span>
+													<span
+														data-bind="text:  _pers.gender() ? ('(' + _pers.gender() + ')') : ''"></span>
 												</div>
 											</td>
 										</tr>
@@ -259,12 +275,15 @@
 							<div class="active-panel cf">
 								<div class="column">
 									<button class="btn btn-location" type="button"
-										data-bind="click: pickLocation, style: { visibility: _auth.allowMapBrowse() ? 'visible' : 'hidden' }" tabindex="16">#{i18n.getText('CPS001_20')}</button>
+										data-bind="click: pickLocation, style: { visibility: _auth.allowMapBrowse() ? 'visible' : 'hidden' }"
+										tabindex="16">#{i18n.getText('CPS001_20')}</button>
 									<button class="btn btn-details" type="button"
-										data-bind="click: uploadebook,  style: { visibility: _auth.allowDocRef() ? 'visible' : 'hidden' }" tabindex="15">#{i18n.getText('CPS001_19')}</button>
+										data-bind="click: uploadebook,  style: { visibility: _auth.allowDocRef() ? 'visible' : 'hidden' }"
+										tabindex="15">#{i18n.getText('CPS001_19')}</button>
 								</div>
 								<div class="column">
-									<button class="btn btn-print hidden" type="button" tabindex="14">#{i18n.getText('CPS001_17')}</button>
+									<button class="btn btn-print hidden" type="button"
+										tabindex="14">#{i18n.getText('CPS001_17')}</button>
 								</div>
 							</div>
 							<div class="active-panel">
@@ -340,7 +359,7 @@
 						remove: ko.observable()
 					}
 				}">
-				<div class="form-group search-box">
+				<div class="form-group search-box" data-bind="visible: $data.permisions.show()">
 					<button type="button" class="btn-add" data-bind="click: $data.event.add || function() {}, enable: $data.permisions &amp;&amp; $data.permisions.add()" tabindex="10">#{i18n.getText('CPS001_32')}</button>
 					<button type="button" class="btn-repli" data-bind="click: $data.event.replication || function() {}, enable: $data.permisions &amp;&amp; $data.permisions.replace() &amp;&amp; $data.list.value()" tabindex="11">#{i18n.getText('CPS001_33')}</button>
 					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}, enable: $data.permisions &amp;&amp; $data.permisions.remove() &amp;&amp; $data.list.dataSource().length > -1" tabindex="12">#{i18n.getText('CPS001_34')}</button>
@@ -348,7 +367,7 @@
 				<div data-bind="template: {
 						name: 'list-data',
 						data: {
-							rows: 8,
+							rows: $data.permisions.show() ? 8 : 10,
 							value: $data.list.value,
 							dataSource: $data.list.dataSource,
 							primaryKey: $data.list.primaryKey || 'id',

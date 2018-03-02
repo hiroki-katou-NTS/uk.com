@@ -19,7 +19,7 @@ module nts.uk.at.view.kmf002.e {
                 _self.commonTableMonthDaySet().fiscalYear.subscribe(function(newValue) {
                     // change year
                     if (!nts.uk.ui.errors.hasError()) {
-                        $.when(_self.start_page()).done(function() {
+                        $.when(_self.start_page()).done(function(data: any) {
                         });    
                     }  
                 });
@@ -55,12 +55,7 @@ module nts.uk.at.view.kmf002.e {
             public start_page(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var _self = this;
-                if (getShared('conditionSidebar5') == false) {
-//                    blockUI.grayout();
-                } else {
-//                    blockUI.clear();
-                }
-                service.find(_self.commonTableMonthDaySet().fiscalYear()).done((data) => {
+                $.when(service.find(_self.commonTableMonthDaySet().fiscalYear()), service.findFirstMonth()).done(function(data: any, data2: any) {
                     if (typeof data === "undefined") {
                         /** 
                          *   create value null for prepare create new 
@@ -70,21 +65,26 @@ module nts.uk.at.view.kmf002.e {
                         });
                         _self.enableDelete(false);
                     } else {
-                        for (let i=0; i<data.publicHolidayMonthSettings.length; i++) {
-                            _self.commonTableMonthDaySet().arrMonth()[i].day(data.publicHolidayMonthSettings[i].inLegalHoliday);
+                        if (_.isNull(data2.startMonth)) {
+                            data2.startMonth = 1;
                         }
+                        _self.commonTableMonthDaySet().arrMonth.removeAll();
+                        for (let i=data2.startMonth-1; i<12; i++) {
+                            _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 
+                                                                          'day': ko.observable(data.publicHolidayMonthSettings[i].inLegalHoliday), 
+                                                                          'enable': ko.observable(true)});    
+                        }
+                        for (let i=0; i<data2.startMonth-1; i++) {
+                            _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 
+                                                                          'day': ko.observable(data.publicHolidayMonthSettings[i].inLegalHoliday), 
+                                                                          'enable': ko.observable(true)});    
+                        } 
                         _self.enableDelete(true);
                     }
-                    dfd.resolve();
-                    
+                    dfd.resolve();       
                 });
-                
-//                nts.uk.ui.errors.clearAll();
-            
                 return dfd.promise();
             }
-            
-            
        }      
     }
 }

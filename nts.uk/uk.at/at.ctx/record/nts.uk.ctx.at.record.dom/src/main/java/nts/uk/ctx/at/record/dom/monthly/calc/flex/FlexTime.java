@@ -12,10 +12,9 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculationAndMinus;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.FlexTimeOfTimeSeries;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * フレックス時間
@@ -84,17 +83,16 @@ public class FlexTime {
 	private void addFlexTimeInTimeSeriesWork(GeneralDate ymd,
 			Integer timeAsMinutes, Integer calcTimeAsMinutes, Integer beforeApplicationTimeAsMinutes){
 		
-		if (!this.timeSeriesWorks.containsKey(ymd)){
-			this.timeSeriesWorks.put(ymd, new FlexTimeOfTimeSeries(ymd));
-		}
+		this.timeSeriesWorks.putIfAbsent(ymd, new FlexTimeOfTimeSeries(ymd));
 		val targetFlexTime = this.timeSeriesWorks.get(ymd);
 		val flexTimeSrc = targetFlexTime.getFlexTime();
-		targetFlexTime.setFlexTime(new nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime(
-				TimeWithCalculationMinusExist.createTimeWithCalculation(
-						new AttendanceTimeOfExistMinus(flexTimeSrc.getFlexTime().getTime().v() + timeAsMinutes),
-						new AttendanceTimeOfExistMinus(flexTimeSrc.getFlexTime().getCalcTime().v() + calcTimeAsMinutes)),
-				new AttendanceTime(flexTimeSrc.getBeforeApplicationTime().v() + beforeApplicationTimeAsMinutes))
-			);
+		targetFlexTime.setFlexTime(
+				new nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime(
+						TimeWithCalculationMinusExist.createTimeWithCalculation(
+								flexTimeSrc.getFlexTime().getTime().addMinutes(timeAsMinutes),
+								flexTimeSrc.getFlexTime().getCalcTime().addMinutes(calcTimeAsMinutes)),
+						flexTimeSrc.getBeforeApplicationTime().addMinutes(beforeApplicationTimeAsMinutes)
+				));
 	}
 	
 	/**
@@ -133,13 +131,15 @@ public class FlexTime {
 	
 	/**
 	 * 時系列合計フレックス時間を取得する
+	 * @param datePeriod 期間
 	 * @param exceptMinus マイナス値を除く
 	 * @return 時系列合計フレックス時間
 	 */
-	public AttendanceTimeMonthWithMinus getTimeSeriesTotalFlexTime(boolean exceptMinus){
+	public AttendanceTimeMonthWithMinus getTimeSeriesTotalFlexTime(DatePeriod datePeriod, boolean exceptMinus){
 		
 		AttendanceTimeMonthWithMinus returnTime = new AttendanceTimeMonthWithMinus(0);
 		for (val timeSeriesWork : this.timeSeriesWorks.values()){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 			val flexTime = timeSeriesWork.getFlexTime().getFlexTime().getTime();
 			if (exceptMinus && flexTime.lessThanOrEqualTo(0)) continue;
 			returnTime = returnTime.addMinutes(flexTime.v());

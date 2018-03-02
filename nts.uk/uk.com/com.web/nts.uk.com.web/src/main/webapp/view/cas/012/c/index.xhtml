@@ -21,7 +21,7 @@
 					<div data-bind="ntsCheckBox: { checked: checkSetAdminFlag }">#{i18n.getText('CAS012_29')}</div>
 				</div>
 				<div class="control-group valign-center">
-				<label class="company">#{i18n.getText('CAS012_30')}</label>
+					<label class="company">#{i18n.getText('CAS012_30')}</label>
 					<div id="combo-box" tabindex="5"
 						data-bind="ntsComboBox: {
 							options: listCompany,
@@ -29,15 +29,16 @@
 							optionsValue: 'companyId',
 							value: selectedCompany,
 							optionsText: 'companyName',
+							required : isRequired,
 							columns: [
 								{ prop: 'companyName', length: 14 }
 							]}"></div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-					<button  class="proceed x-large" data-bind = "click : decision">#{i18n.getText('CAS012_32')}</button>
-					<button data-bind ="click :cancel_Dialog">#{i18n.getText('CAS012_33')}</button>
-				</div>
+				<button class="proceed x-large" data-bind="click : decision">#{i18n.getText('CAS012_32')}</button>
+				<button data-bind="click :cancel_Dialog">#{i18n.getText('CAS012_33')}</button>
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>

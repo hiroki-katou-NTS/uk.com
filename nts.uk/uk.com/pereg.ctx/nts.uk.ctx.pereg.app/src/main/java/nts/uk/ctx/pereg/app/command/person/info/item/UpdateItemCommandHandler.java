@@ -1,6 +1,5 @@
 package nts.uk.ctx.pereg.app.command.person.info.item;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +7,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
@@ -34,7 +32,7 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 		// String mess = "Msg_233";
 		String contractCd = PersonInfoItemDefinition.ROOT_CONTRACT_CODE;
 		if (CheckNameSpace.checkName(itemCommand.getItemName())){
-			throw new BusinessException(new RawErrorMessage("Msg_928"));
+			throw new BusinessException("Msg_928");
 		}
 		if (itemCommand.getSingleItem().getDataType() == 6) {
 
@@ -48,7 +46,7 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 			}
 			if (selection == null || selection.size() == 0) {
 
-				throw new BusinessException(new RawErrorMessage("Msg_587"));
+				throw new BusinessException("Msg_587");
 
 			}
 
@@ -56,7 +54,7 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 		
 		if (!this.pernfoItemDefRep.checkItemNameIsUnique(itemCommand.getPerInfoCtgId(), itemCommand.getItemName(),
 				itemCommand.getPerInfoItemDefId())) {
-			throw new BusinessException(new RawErrorMessage("Msg_358"));
+			throw new BusinessException("Msg_358");
 		}
 		PersonInfoItemDefinition oldItem = this.pernfoItemDefRep
 				.getPerInfoItemDefById(itemCommand.getPerInfoItemDefId(), contractCd).orElse(null);

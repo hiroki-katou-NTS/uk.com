@@ -4,6 +4,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
     import UserType = nts.uk.at.view.kaf000.shr.model.UserType;
     import ApprovalAtr = nts.uk.at.view.kaf000.shr.model.ApprovalAtr;
     import Status = nts.uk.at.view.kaf000.shr.model.Status;
+    import Approver = nts.uk.at.view.kdl034.a.viewmodel.Approver;
+    import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
     export abstract class ScreenModel {
         // Metadata
         appID: KnockoutObservable<string>;
@@ -65,6 +68,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         enableCancelButton: KnockoutObservable<boolean> = ko.observable(false);
         displayApprovalLabel: KnockoutObservable<boolean> = ko.observable(false);
         displayDenyLabel: KnockoutObservable<boolean> = ko.observable(false);
+        displayApprovalReason: KnockoutObservable<boolean> = ko.observable(false);
+        enableApprovalReason: KnockoutObservable<boolean> = ko.observable(false);
+        displayReturnReasonPanel: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor(listAppMetadata: Array<shrvm.model.ApplicationMetadata>, currentApp: shrvm.model.ApplicationMetadata) {
             let self = this;
@@ -107,6 +113,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.dataApplication(data.applicationDto);
                 self.appType(data.applicationDto.applicationType);
                 self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
+                self.displayReturnReasonPanel(!nts.uk.util.isNullOrEmpty(data.applicationDto.reversionReason));
                 let deadlineMsg = data.outputMessageDeadline;
                 if (!nts.uk.text.isNullOrEmpty(deadlineMsg.message)) {
                     self.messageDeadlineTop(self.reasonAppMess + deadlineMsg.message);
@@ -176,6 +183,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
             self.displayDenyLabel((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER)
                 && (approvalAtrValue == ApprovalAtr.DENIAL));
+            
+            self.displayApprovalReason((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER));
+            self.enableApprovalReason((state == Status.DENIAL || state == Status.WAITREFLECTION || state == Status.NOTREFLECTED || state == Status.REMAND)
+                && canApprove
+                && !expired);
         }
 
         //補足1
@@ -303,6 +315,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }).fail(function(res: any) {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
             });
+        }
+        
+        btnRemand(){
+            var self = this;
+            let command = self.convertToApproverList();
+            setShared("KDL034_PARAM", command);
+            nts.uk.ui.windows.sub.modal("/view/kdl/034/a/index.xhtml");     
         }
 
         /**
@@ -443,6 +462,24 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }).ifNo(function() {
                 nts.uk.ui.block.clear();
             });
+        }
+        
+        convertToApproverList(): Array<Approver> {
+            var self = this;
+            let listApprover = [];
+            listApprover.push(new Approver(self.appID(), self.employeeName(), null));
+            _.forEach(ko.mapping.toJS(self.approvalRootState()), function(approvalPhase) {
+                _.forEach(approvalPhase, function(approvalFrame) {
+                    if((!nts.uk.util.isNullOrEmpty(approvalFrame.approverID))||(!nts.uk.util.isNullOrEmpty(approvalFrame.representerID))){
+                        if(!nts.uk.util.isNullOrEmpty(approvalFrame.approverID)){
+                            listApprover.push(new Approver(approvalFrame.approverID, approvalFrame.approverName, approvalFrame.phaseOrder));        
+                        } else {
+                            listApprover.push(new Approver(approvalFrame.representerID, approvalFrame.representerName, approvalFrame.phaseOrder));    
+                        }      
+                    }     
+                });
+            });
+            return listApprover;
         }
 
 

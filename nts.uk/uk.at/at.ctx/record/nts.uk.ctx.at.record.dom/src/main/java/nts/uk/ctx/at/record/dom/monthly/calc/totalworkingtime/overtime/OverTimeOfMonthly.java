@@ -1,11 +1,11 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
@@ -19,11 +19,11 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalOverTi
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.TreatOverTimeOfLessThanCriteriaPerDay;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
-import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.OverTimeAndTransferAtr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -34,6 +34,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class OverTimeOfMonthly {
 
 	/** 残業合計時間 */
+	@Setter
 	private TimeMonthWithCalculation totalOverTime;
 	/** 事前残業時間 */
 	private AttendanceTimeMonth beforeOverTime;
@@ -73,8 +74,7 @@ public class OverTimeOfMonthly {
 		domain.totalTransferOverTime = totalTransferOverTime;
 		for (AggregateOverTime aggregateOverTime : aggregateOverTimeList){
 			val overTimeFrameNo = aggregateOverTime.getOverTimeFrameNo();
-			if (domain.aggregateOverTimeMap.containsKey(overTimeFrameNo)) continue;
-			domain.aggregateOverTimeMap.put(overTimeFrameNo, aggregateOverTime);
+			domain.aggregateOverTimeMap.putIfAbsent(overTimeFrameNo, aggregateOverTime);
 		}
 		return domain;
 	}
@@ -86,9 +86,7 @@ public class OverTimeOfMonthly {
 	 */
 	private AggregateOverTime getTargetAggregateOverTime(OverTimeFrameNo overTimeFrameNo){
 		
-		if (!this.aggregateOverTimeMap.containsKey(overTimeFrameNo)){
-			this.aggregateOverTimeMap.put(overTimeFrameNo, new AggregateOverTime(overTimeFrameNo));
-		}
+		this.aggregateOverTimeMap.putIfAbsent(overTimeFrameNo, new AggregateOverTime(overTimeFrameNo));
 		return this.aggregateOverTimeMap.get(overTimeFrameNo);
 	}
 	
@@ -123,15 +121,6 @@ public class OverTimeOfMonthly {
 			this.aggregateByAutoCalc(attendanceTimeOfDaily, companyId, workplaceId, employmentCd, workingSystem,
 					workInfo, legalOverTimeTransferOrder, autoExcludeOverTimeFrames, repositories);
 		}
-	}
-
-	/**
-	 * 残業振替区分
-	 * @author shuichu_ishida
-	 */
-	private enum ProcAtrOverTimeAndTransfer{
-		OverTime,
-		Transfer;
 	}
 	
 	/**
@@ -169,36 +158,19 @@ public class OverTimeOfMonthly {
 		// 残業枠時間リストをマップに組み換え　（枠での検索用）
 		Map<OverTimeFrameNo, OverTimeFrameTime> overTimeFrameTimeMap = new HashMap<>();
 		for (val overTimeFrameTimeSrc : overTimeFrameTimeSrcs){
-			if (overTimeFrameTimeMap.containsKey(overTimeFrameTimeSrc.getOverWorkFrameNo())) continue;
-			overTimeFrameTimeMap.put(overTimeFrameTimeSrc.getOverWorkFrameNo(), overTimeFrameTimeSrc);
+			overTimeFrameTimeMap.putIfAbsent(overTimeFrameTimeSrc.getOverWorkFrameNo(), overTimeFrameTimeSrc);
 		}
 	
 		// 残業・振替の処理順序を取得する
-		val endState = this.getOverTimeAndTransferOrder(companyId, attendanceTimeOfDaily.getEmployeeId(),
-				attendanceTimeOfDaily.getYmd(), workInfo, repositories);
-		List<ProcAtrOverTimeAndTransfer> procAtrOverTimeAndTransferList = new ArrayList<>();
-		switch (endState){
-		case InOrderOverTimeToTransfer:
-			// 残業→振替の順に処理
-			procAtrOverTimeAndTransferList.add(ProcAtrOverTimeAndTransfer.OverTime);
-			procAtrOverTimeAndTransferList.add(ProcAtrOverTimeAndTransfer.Transfer);
-			break;
-		case InOrderTransferToOverTime:
-			// 振替→残業の順に処理
-			procAtrOverTimeAndTransferList.add(ProcAtrOverTimeAndTransfer.Transfer);
-			procAtrOverTimeAndTransferList.add(ProcAtrOverTimeAndTransfer.OverTime);
-			break;
-		case OnlyOverTime:
-			// 残業のみ処理
-			procAtrOverTimeAndTransferList.add(ProcAtrOverTimeAndTransfer.OverTime);
-			break;
-		}
+		val workTimeCode = workInfo.getWorkTimeCode().v();
+		val overTimeAndTransferAtrs = repositories.getOverTimeAndTransferOrder().get(
+				companyId, workTimeCode, false);
 		
 		// 残業・振替のループ
-		for (val procAtrOverTimeAndTransfer : procAtrOverTimeAndTransferList){
+		for (val overTimeAndTransferAtr : overTimeAndTransferAtrs){
 		
 			// 残業枠時間のループ処理
-			canLegalOverTime = this.overTimeFrameTimeProcess(procAtrOverTimeAndTransfer,
+			canLegalOverTime = this.overTimeFrameTimeProcess(overTimeAndTransferAtr,
 					legalOverTimeTransferOrder, canLegalOverTime,
 					autoExcludeOverTimeFrameList, overTimeFrameTimeMap, attendanceTimeOfDaily.getYmd());
 		}
@@ -280,61 +252,8 @@ public class OverTimeOfMonthly {
 	}
 	
 	/**
-	 * 残業・振替の処理順序を取得する
-	 * @param companyId 会社ID
-	 * @param employeeId 社員ID
-	 * @param ymd 年月日
-	 * @param workInfo 勤務情報
-	 * @param repositories 月次集計が必要とするリポジトリ
-	 * @return 終了状態
-	 */
-	private EndStateOfGetOverTimeAndTransferOrder getOverTimeAndTransferOrder(
-			String companyId, String employeeId, GeneralDate ymd, WorkInformation workInfo,
-			RepositoriesRequiredByMonthlyAggr repositories){
-		
-		// 就業時間帯コードを取得する
-		//*****（未）　取ったコードを使って、代休振替設定を読み込んでいない。設定クラス側の残課題。
-		WorkTimeCode workTimeCd = workInfo.getWorkTimeCode();
-		if (workTimeCd.toString() != "") {
-			
-			//*****（未）　代休振替設定取得処理が未完成のため、対応待ち。
-			/*
-			// 代休振替設定．使用区分を取得する
-			val transferSet = repositories.getCompensatoryOccurrenceSet().getTransferSetting();
-			transferSet = new TransferSetting(memento)
-			if (!transferSet.isUseDivision()) {
-				return EndStateOfGetOverTimeAndTransferOrder.OnlyOverTime;
-			}
-			
-			// 代休振替設定区分を取得する
-			val transferDivision = transferSet.getTransferDivision();
-			if (transferDivision == TransferSettingDivision.DesignTime) {
-				// 指定した時間を代休とする時
-				return EndStateOfGetOverTimeAndTransferOrder.InOrderTransferToOverTime;
-			}
-			*/
-		}
-
-		// 一定時間を超えたら代休とする時
-		return EndStateOfGetOverTimeAndTransferOrder.InOrderOverTimeToTransfer;
-	}
-	
-	/**
-	 * 終了状態：残業・振替の処理順序
-	 * @author shuichu_ishida
-	 */
-	private enum EndStateOfGetOverTimeAndTransferOrder{
-		/** 振替→残業で処理 */
-		InOrderTransferToOverTime,
-		/** 残業→振替で処理 */
-		InOrderOverTimeToTransfer,
-		/** 残業のみ処理 */
-		OnlyOverTime;
-	}
-	
-	/**
 	 * 残業枠時間のループ処理
-	 * @param procAtr 残業振替区分
+	 * @param overTimeAndTransferAtr 残業振替区分
 	 * @param legalOverTimeTransferOrderOfAggrMonthly 法定内残業振替順
 	 * @param canLegalOverTime 法定内残業に出来る時間
 	 * @param autoExcludeOverTimeFrameList 自動的に除く残業枠
@@ -343,7 +262,7 @@ public class OverTimeOfMonthly {
 	 * @return 法定内残業に出来る時間　（計算後）
 	 */
 	private AttendanceTime overTimeFrameTimeProcess(
-			ProcAtrOverTimeAndTransfer procAtr,
+			OverTimeAndTransferAtr overTimeAndTransferAtr,
 			LegalOverTimeTransferOrderOfAggrMonthly legalOverTimeTransferOrderOfAggrMonthly,
 			AttendanceTime canLegalOverTime,
 			List<OverTimeFrameNo> autoExcludeOverTimeFrameList,
@@ -362,14 +281,14 @@ public class OverTimeOfMonthly {
 			
 			// 対象の時系列ワークを確認する
 			val targetAggregateOverTime = this.getTargetAggregateOverTime(overTimeFrameNo);
-			val timeSeriesWork = targetAggregateOverTime.getTimeSeriesWork(ymd);
+			val timeSeriesWork = targetAggregateOverTime.getAndPutTimeSeriesWork(ymd);
 			
 			// 自動的に除く残業枠か確認する
 			if (autoExcludeOverTimeFrameList.contains(overTimeFrameNo)){
 				
 				// 取得した残業枠時間を集計残業時間に入れる　（入れた時間分を法定内残業にできる時間から引く）
-				switch (procAtr){
-				case OverTime:
+				switch (overTimeAndTransferAtr){
+				case OVER_TIME:
 					AttendanceTime legalOverTimeWork =
 						new AttendanceTime(overTimeFrameTime.getOverTimeWork().getTime().v());
 					AttendanceTime overTimeWork = new AttendanceTime(0);
@@ -388,7 +307,7 @@ public class OverTimeOfMonthly {
 					timeSeriesWork.addOverTimeInLegalOverTime(TimeWithCalculation.sameTime(legalOverTimeWork));
 					timeSeriesWork.addOverTimeInOverTime(TimeWithCalculation.sameTime(overTimeWork));
 					break;
-				case Transfer:
+				case TRANSFER:
 					AttendanceTime legalTransferTimeWork =
 						new AttendanceTime(overTimeFrameTime.getTransferTime().getTime().v());
 					AttendanceTime transferTimeWork = new AttendanceTime(0);
@@ -412,11 +331,11 @@ public class OverTimeOfMonthly {
 			else {
 				
 				// 取得した残業枠時間を集計残業時間に入れる
-				switch (procAtr){
-				case OverTime:
+				switch (overTimeAndTransferAtr){
+				case OVER_TIME:
 					timeSeriesWork.addOverTimeInOverTime(overTimeFrameTime.getOverTimeWork());
 					break;
-				case Transfer:
+				case TRANSFER:
 					timeSeriesWork.addTransferTimeInOverTime(overTimeFrameTime.getTransferTime());
 					break;
 				}

@@ -28,7 +28,7 @@ module cps002.a.vm {
 
         itemSettingList: KnockoutObservableArray<SettingItem> = ko.observableArray([]);
 
-        createTypeId: KnockoutObservable<number> = ko.observable(1);
+        createTypeId: KnockoutObservable<number> = ko.observable(3);
 
         currentEmployee: KnockoutObservable<Employee> = ko.observable(new Employee());
 
@@ -57,21 +57,45 @@ module cps002.a.vm {
         defaultImgId: KnockoutObservable<string> = ko.observable("");
 
         ccgcomponent: any = {
-            baseDate: ko.observable(moment().toDate()),
-            isQuickSearchTab: true,
-            isAdvancedSearchTab: true,
-            isAllReferableEmployee: true,
-            isOnlyMe: true,
-            isEmployeeOfWorkplace: true,
-            isEmployeeWorkplaceFollow: true,
-            isMutipleCheck: false,
-            isSelectAllEmployee: false,
-            onApplyEmployee: (dataEmployee: Array<any>) => {
-                let self: ViewModel = __viewContext['viewModel'];
-                self.copyEmployee(new EmployeeCopy(dataEmployee[0]));
-            }, onSearchOnlyClicked: function(data: any) {
-                let self: ViewModel = __viewContext['viewModel'];
-                self.copyEmployee(new EmployeeCopy(data));
+            /** Common properties */
+            systemType: 1, // システム区分
+            showEmployeeSelection: true, // 検索タイプ
+            showQuickSearchTab: false, // クイック検索
+            showAdvancedSearchTab: true, // 詳細検索
+            showBaseDate: false, // 基準日利用
+            showClosure: true, // 就業締め日利用
+            showAllClosure: true, // 全締め表示
+            showPeriod: false, // 対象期間利用
+            periodFormatYM: true, // 対象期間精度
+
+            /** Required parame*/
+            baseDate: moment.utc().toISOString(), // 基準日
+            periodStartDate: moment.utc("1900/01/01", "YYYY/MM/DD").toISOString(), // 対象期間開始日
+            periodEndDate: moment.utc("9999/12/31", "YYYY/MM/DD").toISOString(), // 対象期間終了日
+            inService: false, // 在職区分
+            leaveOfAbsence: false, // 休職区分
+            closed: true, // 休業区分
+            retirement: true, // 退職区分
+
+            /** Quick search tab options */
+            showAllReferableEmployee: true, // 参照可能な社員すべて
+            showOnlyMe: true, // 自分だけ
+            showSameWorkplace: true, // 同じ職場の社員
+            showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
+
+            /** Advanced search properties */
+            showEmployment: true, // 雇用条件
+            showWorkplace: true, // 職場条件
+            showClassification: true, // 分類条件
+            showJobTitle: true, // 職位条件
+            showWorktype: true, // 勤種条件
+            isMutipleCheck: true, // 選択モード
+
+            /** Return data */
+            returnDataFromCcg001: (data: any) => {
+                let self: ViewModel = this;
+
+                self.copyEmployee(data.listEmployee[0]);
             }
         };
 
@@ -137,7 +161,7 @@ module cps002.a.vm {
                                     return item.categoryCd == currentCtgCode;
                                 });
                                 if (currentCtg) {
-                                    self.categorySelectedCode(currentCtgCode);
+                                    self.categorySelectedCode.valueHasMutated()
                                 } else {
                                     self.categorySelectedCode(result[0].categoryCd);
                                 }
@@ -229,19 +253,11 @@ module cps002.a.vm {
                 });
             }
         }
-        clearEmployeeData() {
-            let self = this;
-            self.currentEmployee().employeeName("");
-            self.currentEmployee().employeeCode("");
-            self.currentEmployee().loginId("");
-            self.currentEmployee().password("");
-            self.currentEmployee().avatarId("");
-        }
 
         start() {
 
             let self = this;
-            self.clearEmployeeData();
+            self.currentEmployee().clearData();
 
             nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
                 self.employeeBasicInfo(data);
@@ -355,7 +371,8 @@ module cps002.a.vm {
                 command = {
                     EmployeeCode: employee.employeeCode(),
                     cardNo: employee.cardNo(),
-                    LoginId: employee.loginId()
+                    LoginId: employee.loginId(),
+                    employeeName: employee.employeeName()
                 };
             if (!self.isError()) {
                 service.validateEmpInfo(command).done(() => {
@@ -374,6 +391,9 @@ module cps002.a.vm {
                     switch (messageId) {
                         case "Msg_345":
                             $('#employeeCode').ntsError('set', { messageId: messageId });
+                            break;
+                        case "Msg_924":
+                            $('#employeeName').ntsError('set', { messageId: messageId });
                             break;
                         case "Msg_757":
                             $('#loginId').ntsError('set', { messageId: messageId });
@@ -424,12 +444,10 @@ module cps002.a.vm {
 
             $("#employeeAvatar").focus();
 
-
-
             service.getSelfRoleAuth().done((result: IRoleAuth) => {
 
                 if (result) {
-                    self.isAllowAvatarUpload(result ? result.allowAvatarUpload == 0 ? false : true : false);
+                    self.isAllowAvatarUpload(result.allowAvatarUpload == 0 ? false : true);
                 }
 
             });
@@ -473,7 +491,6 @@ module cps002.a.vm {
 
                 //start Screen C
 
-
                 self.loadInitSettingData();
 
 
@@ -507,7 +524,6 @@ module cps002.a.vm {
 
                     self.categorySelectedCode(result[0].code);
                 }
-
             }).fail((error) => {
 
                 dialog({ messageId: error.message }).then(() => {
@@ -515,10 +531,7 @@ module cps002.a.vm {
                     self.currentStep(0);
 
                 });
-
             });
-
-
         }
 
         loadInitSettingData() {
@@ -541,6 +554,8 @@ module cps002.a.vm {
                     } else {
                         if (!_.find(result, ctg => { return self.initSettingSelectedCode() == ctg.settingCode; })) {
                             self.initSettingSelectedCode(result[0].settingCode);
+                        } else {
+                            self.initSettingSelectedCode.valueHasMutated();
                         }
 
                     }
@@ -594,13 +609,9 @@ module cps002.a.vm {
                     newEmpInfo.copyEmployeeId = newEmpInfo.copyEmployeeId == '' ? currentEmpInfo.copyEmployeeId : newEmpInfo.copyEmployeeId;
                 } else {
                     newEmpInfo.initialValueCode = newEmpInfo.initialValueCode == '' ? currentEmpInfo.initialValueCode : newEmpInfo.initialValueCode;
-
                 }
 
             }
-
-
-
 
             character.save('NewEmployeeBasicInfo', newEmpInfo);
         }
@@ -633,7 +644,7 @@ module cps002.a.vm {
 
                 }).fail(error => {
 
-                    dialog({ messageId: error.messageId });
+                    dialog({ messageId: error.messageId, messageParams: error.parameterIds });
 
                 })
             }
@@ -724,10 +735,6 @@ module cps002.a.vm {
             subModal('/view/cps/009/a/index.xhtml', { title: '', height: 700, width: 1400 }).onClosed(() => {
 
             });
-            //            
-            //            subModal('/view/cps/009/a/index.xhtml', { title: text('CPS002_10') }).onClosed(() => {
-            //                
-            //            });
         }
 
 
@@ -752,6 +759,15 @@ module cps002.a.vm {
         avatarId: KnockoutObservable<string> = ko.observable("");
         loginId: KnockoutObservable<string> = ko.observable("");
         password: KnockoutObservable<string> = ko.observable("");
+        clearData() {
+            let self = this;
+            self.employeeName("");
+            self.employeeCode("");
+            self.avatarId("");
+            self.loginId("");
+            self.password("");
+
+        }
     }
 
 
@@ -889,7 +905,7 @@ module cps002.a.vm {
                 return this.genDateString(this.saveData.value, this.dateType);
             }
 
-            if (this.dataType === "TIME" && this.saveData.value) {
+            if (this.dataType === "TIME" && this.saveData.value || this.dataType === "TIMEPOINT" && this.saveData.value) {
                 return this.genTimeString(this.saveData.value, this.dateType);
             }
 

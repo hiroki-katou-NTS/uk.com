@@ -19,6 +19,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
@@ -176,10 +177,26 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	public Optional<JobTitleExport> findByJobId(String companyId, String jobTitleId, GeneralDate baseDate) {
 
 		// Query
-		JobTitleInfo jobInfo = this.jobTitleInfoRepository.find(companyId, jobTitleId, baseDate).get();
+		Optional<JobTitleInfo> optJobInfo = this.jobTitleInfoRepository.find(companyId, jobTitleId, baseDate);
 
-		JobTitle jobTitle = this.jobTitleRepository.findByHistoryId(companyId, jobInfo.getJobTitleHistoryId()).get();
+		if(!optJobInfo.isPresent()) {
+			return Optional.empty();
+		}
+		
+		JobTitleInfo jobInfo = optJobInfo.get();
+				
+		Optional<JobTitle> optJobTitle = this.jobTitleRepository.findByHistoryId(companyId, jobInfo.getJobTitleHistoryId());
 
+		if(!optJobTitle.isPresent()) {
+			return Optional.empty();
+		}
+		
+		JobTitle jobTitle = optJobTitle.get();
+		
+		if(CollectionUtil.isEmpty(jobTitle.getJobTitleHistories())) {
+			return Optional.empty();
+		}
+				
 		JobTitleHistory jobTitleHistory = jobTitle.getJobTitleHistories().get(FIRST_ITEM_INDEX);
 
 		// Return
@@ -222,30 +239,6 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	 */
 	@Override
 	public Optional<EmployeeJobHistExport> findSJobHistBySId(String employeeId, GeneralDate baseDate) {
-		/*
-		 * // Query Optional<AffJobTitleHistory> optAffJobTitleHistory =
-		 * jobTitleHistoryRepository.findBySid(employeeId, baseDate);
-		 * 
-		 * // Check exist if(!optAffJobTitleHistory.isPresent()) { return
-		 * Optional.empty(); }
-		 * 
-		 * AffJobTitleHistory affJobTitleHist = optAffJobTitleHistory.get();
-		 * 
-		 * // Query Optional<JobTitleInfo> optJobTitleInfo =
-		 * this.jobTitleInfoRepository.find(affJobTitleHist.getJobTitleId().v(),
-		 * baseDate);
-		 * 
-		 * // Check exist if(!optJobTitleInfo.isPresent()) { return Optional.empty(); }
-		 * 
-		 * JobTitleInfo jobTitleInfo = optJobTitleInfo.get();
-		 * 
-		 * // Return return Optional.of(EmployeeJobHistExport.builder().
-		 * employeeId(affJobTitleHist.getEmployeeId())
-		 * .jobTitleID(jobTitleInfo.getJobTitleId())
-		 * .jobTitleName(jobTitleInfo.getJobTitleName().v())
-		 * .startDate(affJobTitleHist.getPeriod().start())
-		 * .endDate(affJobTitleHist.getPeriod().end()).build());
-		 */
 
 		// Query
 		Optional<AffJobTitleHistoryItem> optAffJobTitleHistoryItem = affJobTitleHisItemRepo
@@ -308,7 +301,6 @@ public class JobTitlePubImp implements SyJobTitlePub {
 
 	@Override
 	public Optional<AffJobTitleHistoryExport> gerBySidAndBaseDate(String employeeId, GeneralDate baseDate) {
-		// TODO Auto-generated method stub
 		Optional<AffJobTitleHistory> optAffJobtitle = affJobTitleHisRepo.getByEmpIdAndStandardDate(employeeId,
 				baseDate);
 		if (!optAffJobtitle.isPresent())
