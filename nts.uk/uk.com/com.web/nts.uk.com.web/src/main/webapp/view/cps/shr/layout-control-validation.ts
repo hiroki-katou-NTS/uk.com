@@ -61,7 +61,8 @@ module nts.layout {
                         if (element.tagName.toUpperCase() == "INPUT") {
                             $element
                                 .trigger('blur')
-                                .trigger('change');
+                                .trigger('change')
+                                .trigger('validate');
                         } else if (element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper')) {
                             if (nou(x.value) && x.required) {
                                 if (!getError($element).length) {
@@ -71,6 +72,7 @@ module nts.layout {
                         }
                         else {
                             $element
+                                .trigger('validate')
                                 .find('.nts-input')
                                 .trigger('blur')
                                 .trigger('change');
