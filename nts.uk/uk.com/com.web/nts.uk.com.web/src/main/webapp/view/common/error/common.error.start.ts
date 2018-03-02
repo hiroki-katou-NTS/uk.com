@@ -4,7 +4,9 @@ module common.error.system {
         __viewContext.bind(screenModel);
 
         var errorInfo = nts.uk.ui.windows.getShared("errorInfo");
-        screenModel.details(errorInfo.errorMessage + "\r\n" + errorInfo.stackTrace);
+        if (!nts.uk.util.isNullOrUndefined(errorInfo)) {
+            screenModel.details(errorInfo.errorMessage + "\r\n" + errorInfo.stackTrace);
+        }
     });
     
     class ScreenModel {
