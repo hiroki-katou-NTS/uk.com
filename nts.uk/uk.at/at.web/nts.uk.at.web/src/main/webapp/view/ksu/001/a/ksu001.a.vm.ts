@@ -1795,8 +1795,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 baseDate: moment().toISOString()
             }
             service.getWorkPlaceById(data).done((wkp) => {
-                //                self.workPlaceNameDisplay(wkp.wkpDisplayName);
-                self.workPlaceNameDisplay('hahaha');
+                self.workPlaceNameDisplay(wkp.wkpDisplayName);
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
