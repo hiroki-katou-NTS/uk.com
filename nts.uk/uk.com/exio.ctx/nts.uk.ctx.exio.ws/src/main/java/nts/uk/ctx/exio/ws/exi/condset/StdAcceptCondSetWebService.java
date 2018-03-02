@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.ws.condset;
+package nts.uk.ctx.exio.ws.exi.condset;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +17,7 @@ import nts.uk.ctx.exio.app.find.exi.category.ExAcpCtgItemDatDto;
 import nts.uk.ctx.exio.app.find.exi.condset.StdAcceptCondSetDto;
 import nts.uk.ctx.exio.app.find.exi.condset.StdAcceptCondSetFinder;
 
-@Path("exio/condset")
+@Path("exio/exi/condset")
 @Produces("application/json")
 public class StdAcceptCondSetWebService {
 	@Inject
@@ -39,6 +39,12 @@ public class StdAcceptCondSetWebService {
 		// return this.stdAcceptCondSetFind.getStdAcceptCondSetBySystemType(1);
 	}
 
+	@POST
+	@Path("checkExistCode/{sysType}/{condCode}")
+	public boolean getConditionBySystemType(@PathParam("sysType") int systemType, @PathParam("condCode") String conditionCode) {
+		return stdAcceptCondSetFind.isCodeExist(systemType, conditionCode);
+	}
+	
 	@POST
 	@Path("getTotalRecord/{fileId}")
 	public int getTotalRecord(@PathParam("fileId") String fileId) {

@@ -33,6 +33,11 @@ public class StdAcceptCondSetFinder {
 		return stdConditionRepo.getStdAcceptCondSetBySysType(companyId, systemType).stream()
 				.map(item -> StdAcceptCondSetDto.fromDomain(item)).collect(Collectors.toList());
 	}
+	
+	public boolean isCodeExist(int systemType, String conditionCode) {
+		String companyId = AppContexts.user().companyId();
+		return stdConditionRepo.isSettingCodeExist(companyId, systemType, conditionCode);
+	}
 
 	public int getTotalRecordCsv(String fileId) {
 		int totalRecord = 0;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.ws.codeconvert;
+package nts.uk.ctx.exio.ws.exi.codeconvert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
 
-@Path("exio/codeconvert")
+@Path("exio/exi/codeconvert")
 @Produces("application/json")
 public class AcceptCdConvertWebService {
 
