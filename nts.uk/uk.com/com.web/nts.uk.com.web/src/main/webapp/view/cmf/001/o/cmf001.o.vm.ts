@@ -37,7 +37,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         onchange: (filename) => void;
         onfilenameclick: (filename) => void;
 
-        listAccept: KnockoutObservableArray<AcceptItems> = ko.observableArray([]);
+        listAccept: KnockoutObservableArray<model.StandardAcceptItem> = ko.observableArray([]);
         selectedAccept: KnockoutObservable<any> = ko.observable('');
         count: KnockoutObservable<number> = ko.observable(0);
 
@@ -214,10 +214,28 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             let self = this;
 
             //アップロードしたファイルを読み込む
-            self.listAccept([]);
+            /*
             for (let i = 0; i < 5; i++) {
                 self.listAccept.push(new AcceptItems('00' + i, '基本給', "description " + i, "基本給" + i, i));
-            }
+            }*/
+            block.grayout();
+            debugger;
+            service.getStdAcceptItem('1', 1, '1').done(function(data: Array<any>) {
+                debugger;
+                self.listAccept.removeAll();
+                //
+                if (data && data.length) {
+                    let _rspList: Array<model.StandardAcceptItem> = _.map(data, rsp => {
+                        return new model.StandardAcceptItem(rsp.csvItemName, rsp.csvItemNumber, rsp.itemType, rsp.acceptItemNumber, '', rsp.conditionSetCd, null, null, null);
+                    });
+                    self.listAccept(_rspList);
+                }
+            }).fail(function(error) {
+                alertError(error);
+            }).always(() => {
+                block.clear();
+            });
+
             //ファイルの行数を取得する
             self.count(self.listAccept().length);
         }
@@ -225,8 +243,8 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         editIngestion(item: any) {
             var self = this;
             console.log('editIngestion', item, self);
-            
-            switch (item.itemType) {
+            debugger
+            switch (item.itemType()) {
                 case 0:
                     //数値型の場合                    
                     //G:「数値型設定」ダイアログをモーダルで表示する

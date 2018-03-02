@@ -28,7 +28,7 @@ public class StdAcceptCondSetFinder {
 	@Inject
 	private StoredFileStreamService fileStreamService;
 
-	public List<StdAcceptCondSetDto> getAllStdAcceptCondSet(int systemType) {
+	public List<StdAcceptCondSetDto> getStdAcceptCondSetBySysType(int systemType) {
 		String companyId = AppContexts.user().companyId();
 		return stdConditionRepo.getStdAcceptCondSetBySysType(companyId, systemType).stream()
 				.map(item -> StdAcceptCondSetDto.fromDomain(item)).collect(Collectors.toList());
