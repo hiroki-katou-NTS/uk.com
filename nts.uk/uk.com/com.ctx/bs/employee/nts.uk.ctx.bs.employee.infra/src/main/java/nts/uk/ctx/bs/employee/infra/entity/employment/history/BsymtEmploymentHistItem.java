@@ -66,7 +66,7 @@ public class BsymtEmploymentHistItem extends UkJpaEntity implements Serializable
 	 * @param empCode the emp code
 	 * @param salarySegment the salary segment
 	 */
-	public BsymtEmploymentHistItem(String hisId, String sid, String empCode, int salarySegment) {
+	public BsymtEmploymentHistItem(String hisId, String sid, String empCode, Integer salarySegment) {
 		super();
 		this.hisId = hisId;
 		this.sid = sid;
