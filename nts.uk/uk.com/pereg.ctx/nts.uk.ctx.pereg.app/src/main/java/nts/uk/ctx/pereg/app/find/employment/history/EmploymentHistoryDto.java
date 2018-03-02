@@ -29,10 +29,10 @@ public class EmploymentHistoryDto extends PeregDomainDto {
 
 	// 給与区分
 	@PeregItem("IS00069")
-	private int salarySegment;
+	private Integer salarySegment;
 	
 	public EmploymentHistoryDto(String recordId, GeneralDate startDate, GeneralDate endDate, String employmentCode,
-			int salarySegment) {
+			Integer salarySegment) {
 		super(recordId);
 		this.startDate = startDate;
 		this.endDate = endDate;
