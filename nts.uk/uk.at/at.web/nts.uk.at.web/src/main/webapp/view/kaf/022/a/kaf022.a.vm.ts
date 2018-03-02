@@ -1961,7 +1961,7 @@ module nts.uk.at.view.kmf022 {
                         self.selectedIdE9(data.workType);
                         self.selectedIdE10(data.contractCheck);
                         self.selectedValueE11(data.workChange);
-                        self.checkedE11_5(data.WorkChangeAppTime==1 ? true : false);
+                        self.checkedE11_5(data.workChangeTime==1 ? true : false);
                         self.selectedIdE12(data.lateLeave);
                         self.texteditorE13.value(data.comment1);
                         self.texteditorE16.value(data.comment2);
@@ -2087,7 +2087,7 @@ module nts.uk.at.view.kmf022 {
                         deadline: self.dataA4Display()[i].a4_8()
                     });
                 }
-                data.appDead = dataA4; //done
+                data.appDead = dataA4;  
                 data.appSet = {
                     companyId: self.companyId(),
                     reasonDisp: self.selectedIdA5_14(),
@@ -2100,12 +2100,12 @@ module nts.uk.at.view.kmf022 {
                     msgExceeded: self.selectedIdA5_23(),
                     scheduleCon: self.selectedIdA5_24(),
                     achiveCon: self.selectedIdA5_25(),
-                    //done
+                     
                 };
                 data.appCommon = {
                     companyId: self.companyId(),
                     showWkpNameBelong: self.selectedIdA10_3(),
-                    //done
+                     
                 };
                 data.proxy = {
                     companyId: self.companyId(),
@@ -2116,18 +2116,18 @@ module nts.uk.at.view.kmf022 {
                     companyId: self.companyId(),
                     subject: self.texteditorA16_7.value(),
                     content: self.texteditorA16_8.value()
-                    //done
+                     
                 };
                 data.mailOt = {
                     companyId: self.companyId(),
                     subject: self.texteditorA16_9.value(),
                     content: self.texteditorA16_10.value()
-                    //done    
+                         
                 };
                 data.appTemp = {
                     companyId: self.companyId(),
                     content: self.texteditorA16_11.value()
-                    //done    
+                         
                 };
                 data.appliSet = {
                     companyId: self.companyId(),
@@ -2175,7 +2175,7 @@ module nts.uk.at.view.kmf022 {
                     topCommentFontWeight: self.enableE15(),
                     bottomCommentFontColor: self.valueE17(),
                     bottomCommentFontWeight: self.enableE18(),
-                    //done
+                     
                 };
                 data.goBack = {
                     companyId: self.companyId(),
@@ -2191,7 +2191,7 @@ module nts.uk.at.view.kmf022 {
                     commentContent2: self.texteditorF16.value(),
                     commentFontColor2: self.valueF16_1(),
                     commentFontWeight2: (self.enableF16_1() ? 1 : 0),
-                    //done
+                     
                 };
                 data.appOt = {
                     cid: self.companyId(),
@@ -2209,7 +2209,7 @@ module nts.uk.at.view.kmf022 {
                     useOt: self.selectedIdB34(),
                     earlyOverTimeUseAtr: self.selectedIdB35(),
                     normalOvertimeUseAtr: self.selectedIdB36(),
-                    //done
+                     
                 };
                 data.hdSet = {
                     companyId: self.companyId(),
@@ -2237,7 +2237,7 @@ module nts.uk.at.view.kmf022 {
                     changeWrkHour: self.selectedIdC48(),
                     pridigCheck: self.selectedIdC49(),
                     furikyuName: self.texteditorC51.value()
-                    //done
+                     
                 };
                 data.appChange = {
                     cid: self.companyId(),
@@ -2251,18 +2251,18 @@ module nts.uk.at.view.kmf022 {
                     workChangeTimeAtr: self.selectedValueD13(),
                     initDisplayWorktime: self.selectedIdD15(),
                     excludeHoliday: self.selectedIdD16()
-                    //done
+                     
                 };
                 data.tripReq = {
                     companyId: self.companyId(),
                     workType: self.selectedIdE9(),
                     contractCheck: self.selectedIdE10(),
                     workChange: self.selectedValueE11(),
-                    WorkChangeAppTime: self.checkedE11_5() ? 1 : 0,
+                    workChangeTime: self.checkedE11_5() ? 1 : 0,
                     lateLeave: self.selectedIdE12(),
                     comment1: self.texteditorE13.value(),
                     comment2: self.texteditorE16.value()
-                    //done
+                     
                 };
                 data.wdApp = {
                     companyId: self.companyId(),
@@ -2277,7 +2277,7 @@ module nts.uk.at.view.kmf022 {
                     prefixLeave: self.selectedIdG27(),
                     directDivi: self.selectedIdG28(),
                     bounSeg: self.selectedIdG29()
-                    //done
+                     
                 };
                 data.timeHd = {
                     companyId: self.companyId(),
@@ -2299,7 +2299,7 @@ module nts.uk.at.view.kmf022 {
                     privateName: self.texteditorH26_1.value(),
                     unionLeave: (self.enableH27() ? 1 : 0),
                     unionName: self.texteditorH27_1.value()
-                    //done
+                     
                 };
                 data.wdReq = {
                     companyId: self.companyId(),
@@ -2316,12 +2316,12 @@ module nts.uk.at.view.kmf022 {
                     deferredBold: self.enableK19_1() ? 1 : 0,
                     permissionDivision: self.selectedIdK21(),
                     appliDateContrac: self.selectedIdK22(),
-                    //done                    
+                                         
                 };
                 data.lateEarly = {
                     companyId: self.companyId(),
                     showResult: self.selectedIdI4()
-                    //done
+                     
                 };
                 data.appBf = {
                     beforeAfter: _.map(ko.toJS(self.listDataA7()), (x: any) => {

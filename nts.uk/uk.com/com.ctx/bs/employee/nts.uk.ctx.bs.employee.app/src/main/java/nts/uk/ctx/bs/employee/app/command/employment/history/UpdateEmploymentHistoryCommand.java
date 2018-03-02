@@ -35,4 +35,5 @@ public class UpdateEmploymentHistoryCommand{
 	
 	@PeregItem("IS00067")
 	private GeneralDate endDate;
+	
 }

@@ -17,10 +17,10 @@ module nts.uk.ui.koExtentions {
         }
         
         export function on($input: JQuery) {
-            $input.attr('disabled', 'disabled').ntsError("clear");
+            $input.attr('disabled', 'disabled')/*.ntsError("clear");
             return $input.data(DATA_DEFAULT_VALUE) !== undefined
                 ? $input.data(DATA_DEFAULT_VALUE)
-                : $input.data(DATA_API_SET_VALUE);
+                : $input.data(DATA_API_SET_VALUE)*/;
         }
         
         export function off($input: JQuery) {
@@ -172,8 +172,8 @@ module nts.uk.ui.koExtentions {
             if (enable !== false) {
                 disable.off($input);
             } else {
-                value = disable.on($input);
-                data.value(value);
+                disable.on($input);
+                //data.value(value);
             }
             if (readonly === false) {
                 $input.removeAttr('readonly'); 

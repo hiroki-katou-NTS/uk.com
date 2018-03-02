@@ -3047,6 +3047,8 @@ var nts;
                             dfd.resolve(res);
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
+                        console.log("request failed");
+                        console.log(arguments);
                         specials.errorPages.systemError(jqXHR.responseJSON);
                     });
                 }
@@ -15055,10 +15057,10 @@ var nts;
                     }
                     disable.saveDefaultValue = saveDefaultValue;
                     function on($input) {
-                        $input.attr('disabled', 'disabled').ntsError("clear");
+                        $input.attr('disabled', 'disabled') /*.ntsError("clear");
                         return $input.data(DATA_DEFAULT_VALUE) !== undefined
                             ? $input.data(DATA_DEFAULT_VALUE)
-                            : $input.data(DATA_API_SET_VALUE);
+                            : $input.data(DATA_API_SET_VALUE)*/;
                     }
                     disable.on = on;
                     function off($input) {
@@ -15195,8 +15197,7 @@ var nts;
                             disable.off($input);
                         }
                         else {
-                            value = disable.on($input);
-                            data.value(value);
+                            disable.on($input);
                         }
                         if (readonly === false) {
                             $input.removeAttr('readonly');

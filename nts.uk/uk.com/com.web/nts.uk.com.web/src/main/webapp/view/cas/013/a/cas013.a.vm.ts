@@ -32,7 +32,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
             var self = this;
             self.listRoleType = ko.observableArray([]);
             self.listRole = ko.observableArray([]);
-            self.selectedRoleType = ko.observable('0');
+            self.selectedRoleType = ko.observable('');
             self.selectedRole = ko.observable('');
             self.listRoleIndividual = ko.observableArray([]);
             self.columns = ko.observableArray([
@@ -80,6 +80,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                         self.backToTopPage();   
                     }else{
                         self.listRoleType(data);
+                        self.selectedRoleType(data[0].value);
                     }
                 }else{
                      nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
