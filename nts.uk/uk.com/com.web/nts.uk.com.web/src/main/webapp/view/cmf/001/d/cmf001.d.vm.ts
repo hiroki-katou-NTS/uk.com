@@ -197,6 +197,13 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 }
             });
         }
+        
+        openCMF001f() {
+            let self = this;
+            modal("/view/cmf/001/f/index.xhtml").onClosed(function() {
+                
+            });
+        }
     }
 }
 
