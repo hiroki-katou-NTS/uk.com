@@ -3047,6 +3047,8 @@ var nts;
                             dfd.resolve(res);
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
+                        console.log("request failed");
+                        console.log(arguments);
                         specials.errorPages.systemError(jqXHR.responseJSON);
                     });
                 }
@@ -15055,10 +15057,10 @@ var nts;
                     }
                     disable.saveDefaultValue = saveDefaultValue;
                     function on($input) {
-                        $input.attr('disabled', 'disabled').ntsError("clear");
+                        $input.attr('disabled', 'disabled') /*.ntsError("clear");
                         return $input.data(DATA_DEFAULT_VALUE) !== undefined
                             ? $input.data(DATA_DEFAULT_VALUE)
-                            : $input.data(DATA_API_SET_VALUE);
+                            : $input.data(DATA_API_SET_VALUE)*/;
                     }
                     disable.on = on;
                     function off($input) {
@@ -15195,8 +15197,7 @@ var nts;
                             disable.off($input);
                         }
                         else {
-                            value = disable.on($input);
-                            data.value(value);
+                            disable.on($input);
                         }
                         if (readonly === false) {
                             $input.removeAttr('readonly');
@@ -23445,6 +23446,42 @@ var nts;
                                 updatedCells[index].value = value;
                             else
                                 updatedCells.push({ rowId: rowId, columnKey: columnKey, value: value });
+                            var options = $grid.data(internal.GRID_OPTIONS);
+                            if (!options || !options.getUserId || !options.userId)
+                                return;
+                            var record = $grid.igGrid("findRecordByKey", rowId);
+                            var userId = options.getUserId(record[options.primaryKey]);
+                            var $cell = internal.getCellById($grid, rowId, columnKey);
+                            if (userId === options.userId) {
+                                $cell.addClass(color.ManualEditTarget);
+                                var targetEdits = $grid.data(internal.TARGET_EDITS);
+                                if (!targetEdits) {
+                                    targetEdits = {};
+                                    targetEdits[rowId] = [columnKey];
+                                    $grid.data(internal.TARGET_EDITS, targetEdits);
+                                    return;
+                                }
+                                if (!targetEdits[rowId]) {
+                                    targetEdits[rowId] = [columnKey];
+                                    return;
+                                }
+                                targetEdits[rowId].push(columnKey);
+                            }
+                            else {
+                                $cell.addClass(color.ManualEditOther);
+                                var otherEdits = $grid.data(internal.OTHER_EDITS);
+                                if (!otherEdits) {
+                                    otherEdits = {};
+                                    otherEdits[rowId] = [columnKey];
+                                    $grid.data(internal.OTHER_EDITS, otherEdits);
+                                    return;
+                                }
+                                if (!otherEdits[rowId]) {
+                                    otherEdits[rowId] = [columnKey];
+                                    return;
+                                }
+                                otherEdits[rowId].push(columnKey);
+                            }
                         }
                         /**
                          * Render cell
@@ -24113,7 +24150,7 @@ var nts;
                                     uncheckAll($grid, params[0]);
                                     break;
                                 case functions.HEADER_TEXT:
-                                    setHeaderText($grid, params[0], params[1]);
+                                    setHeaderText($grid, params[0], params[1], params[2]);
                                     break;
                                 case functions.DESTROY:
                                     destroy($grid);
@@ -24223,17 +24260,73 @@ var nts;
                         /**
                          * Set header text.
                          */
-                        function setHeaderText($grid, key, text) {
-                            var setting = $grid.data(internal.SETTINGS);
-                            if (!setting || !setting.descriptor || !setting.descriptor.colIdxes
-                                || !setting.descriptor.headerCells)
+                        function setHeaderText($grid, key, text, group) {
+                            if (!group) {
+                                var setting = $grid.data(internal.SETTINGS);
+                                if (!setting || !setting.descriptor || !setting.descriptor.colIdxes
+                                    || !setting.descriptor.headerCells)
+                                    return;
+                                var colIdx = setting.descriptor.colIdxes[key];
+                                var fixedColsLen = setting.descriptor.headerCells.length - Object.keys(setting.descriptor.colIdxes).length;
+                                var headerCell = setting.descriptor.headerCells[colIdx + fixedColsLen];
+                                if (headerCell) {
+                                    $(headerCell.find("span")[1]).html(text);
+                                }
+                                var options_1 = $grid.data(internal.GRID_OPTIONS);
+                                updateHeaderColumn(options_1.columns, key, text, group);
+                                var sheetMng_1 = $grid.data(internal.SHEETS);
+                                if (sheetMng_1) {
+                                    Object.keys(sheetMng_1.sheetColumns).forEach(function (k) {
+                                        updateHeaderColumn(sheetMng_1.sheetColumns[k], key, text, group);
+                                    });
+                                }
                                 return;
-                            var colIdx = setting.descriptor.colIdxes[key];
-                            var fixedColsLen = setting.descriptor.headerCells.length - Object.keys(setting.descriptor.colIdxes).length;
-                            var headerCell = setting.descriptor.headerCells[colIdx + fixedColsLen];
-                            if (!headerCell)
-                                return;
-                            $(headerCell.find("span")[1]).html(text);
+                            }
+                            var headersTable = $grid.igGrid("headersTable");
+                            headersTable.find("th").each(function () {
+                                var $self = $(this);
+                                var colspan = $self.attr("colspan");
+                                if (uk.util.isNullOrUndefined(colspan))
+                                    return;
+                                var label = $self.attr("aria-label");
+                                if (key === label.trim()) {
+                                    $self.attr("aria-label", text);
+                                    $self.children("span.ui-iggrid-headertext").text(text);
+                                    return false;
+                                }
+                            });
+                            var options = $grid.data(internal.GRID_OPTIONS);
+                            updateHeaderColumn(options.columns, key, text, group);
+                            var sheetMng = $grid.data(internal.SHEETS);
+                            if (sheetMng) {
+                                Object.keys(sheetMng.sheetColumns).forEach(function (k) {
+                                    updateHeaderColumn(sheetMng.sheetColumns[k], key, text, group);
+                                });
+                            }
+                        }
+                        /**
+                         * Update header column.
+                         */
+                        function updateHeaderColumn(columns, key, text, group) {
+                            var updated = false;
+                            _.forEach(columns, function (c, i) {
+                                if (group && c.group && c.headerText === key) {
+                                    updated = true;
+                                    c.headerText = text;
+                                    return false;
+                                }
+                                if (!group && c.group) {
+                                    updated = updateHeaderColumn(c.group, key, text, group);
+                                    if (updated)
+                                        return false;
+                                }
+                                if (!group && !c.group && c.key === key) {
+                                    updated = true;
+                                    c.headerText = text;
+                                    return false;
+                                }
+                            });
+                            return updated;
                         }
                         /**
                          * Destroy
@@ -26171,6 +26264,7 @@ var nts;
                                         };
                                         // If cell has error, mark it
                                         errors.markIfError(self.$grid, cell);
+                                        color.markIfEdit(self.$grid, cell);
                                         //                            let aColumn = _.find(_self.colorFeatureDef, function(col: any) {
                                         //                                return col.key === column.key;
                                         //                            });
@@ -26278,45 +26372,52 @@ var nts;
                             var headersTable = $grid.igGrid("headersTable");
                             var fixedHeadersTable = $grid.igGrid("fixedHeadersTable");
                             fixedHeadersTable.find("th").each(function () {
-                                var columnId = $(this).attr("id");
-                                if (uk.util.isNullOrUndefined(columnId))
-                                    return;
-                                var key = columnId.split("_")[1];
-                                var targetColumn;
-                                _.forEach(columns, function (col) {
-                                    if (col.key === key) {
-                                        targetColumn = col;
-                                        return false;
-                                    }
-                                });
-                                if (!uk.util.isNullOrUndefined(targetColumn)) {
-                                    if (targetColumn.color.indexOf("#") === 0) {
-                                        $(this).css("background-color", targetColumn.color);
+                                var $self = $(this);
+                                var columnId = $self.attr("id");
+                                if (uk.util.isNullOrUndefined(columnId)) {
+                                    var owns = $self.attr("aria-owns");
+                                    if (!owns)
                                         return;
-                                    }
-                                    $(this).addClass(targetColumn.color);
+                                    var key_2 = owns.split(" ")[0].split("_")[1];
+                                    setBackground($self, key_2, columns);
+                                    return;
                                 }
+                                var key = columnId.split("_")[1];
+                                setBackground($self, key, columns);
                             });
                             headersTable.find("th").each(function () {
-                                var columnId = $(this).attr("id");
-                                if (uk.util.isNullOrUndefined(columnId))
-                                    return;
-                                var key = columnId.split("_")[1];
-                                var targetColumn;
-                                _.forEach(columns, function (col) {
-                                    if (col.key === key) {
-                                        targetColumn = col;
-                                        return false;
-                                    }
-                                });
-                                if (!uk.util.isNullOrUndefined(targetColumn)) {
-                                    if (targetColumn.color.indexOf("#") === 0) {
-                                        $(this).css("background-color", targetColumn.color);
+                                var $self = $(this);
+                                var columnId = $self.attr("id");
+                                if (uk.util.isNullOrUndefined(columnId)) {
+                                    var owns = $self.attr("aria-owns");
+                                    if (!owns)
                                         return;
-                                    }
-                                    $(this).addClass(targetColumn.color);
+                                    var key_3 = owns.split(" ")[0].split("_")[1];
+                                    setBackground($self, key_3, columns);
+                                    return;
+                                }
+                                var key = columnId.split("_")[1];
+                                setBackground($self, key, columns);
+                            });
+                        }
+                        /**
+                         * Set background.
+                         */
+                        function setBackground($cell, key, columns) {
+                            var targetColumn;
+                            _.forEach(columns, function (col) {
+                                if (col.key === key) {
+                                    targetColumn = col;
+                                    return false;
                                 }
                             });
+                            if (!uk.util.isNullOrUndefined(targetColumn)) {
+                                if (targetColumn.color.indexOf("#") === 0) {
+                                    $cell.css("background-color", targetColumn.color);
+                                    return;
+                                }
+                                $cell.addClass(targetColumn.color);
+                            }
                         }
                         /**
                          * Remember disable
@@ -26374,6 +26475,39 @@ var nts;
                             disables[cell.id].delete(cell.columnKey);
                         }
                         color.popDisable = popDisable;
+                        /**
+                         * Mark if edit.
+                         */
+                        function markIfEdit($grid, cell) {
+                            var targetEdits = $grid.data(internal.TARGET_EDITS);
+                            var cols;
+                            if (!targetEdits || !(cols = targetEdits[cell.id])) {
+                                markIfOtherEdit($grid, cell);
+                                return;
+                            }
+                            if (cols.some(function (c) {
+                                return c === cell.columnKey;
+                            })) {
+                                cell.element.classList.add(color.ManualEditTarget);
+                            }
+                            else
+                                markIfOtherEdit($grid, cell);
+                        }
+                        color.markIfEdit = markIfEdit;
+                        /**
+                         * Mark if other edit.
+                         */
+                        function markIfOtherEdit($grid, cell) {
+                            var otherEdits = $grid.data(internal.OTHER_EDITS);
+                            var cols;
+                            if (!otherEdits || !(cols = otherEdits[cell.id]))
+                                return;
+                            if (cols.some(function (c) {
+                                return c === cell.columnKey;
+                            })) {
+                                cell.element.classList.add(color.ManualEditOther);
+                            }
+                        }
                     })(color = ntsGrid.color || (ntsGrid.color = {}));
                     var fixedColumns;
                     (function (fixedColumns) {
@@ -26533,6 +26667,9 @@ var nts;
                                         setting.descriptor = new settings.Descriptor();
                                     }
                                     setting.descriptor.colIdxes = idxes_1;
+                                    if (uk.util.isNullOrUndefined($grid.data(internal.GRID_OPTIONS))) {
+                                        $grid.data(internal.GRID_OPTIONS, _.cloneDeep(options));
+                                    }
                                     return;
                                 }
                                 Configurator.load($grid, sheetFeature);
@@ -26856,6 +26993,8 @@ var nts;
                     })(onDemand || (onDemand = {}));
                     var settings;
                     (function (settings) {
+                        settings.USER_M = "M";
+                        settings.USER_O = "O";
                         var Descriptor = (function () {
                             function Descriptor(startRow, rowCount, elements, keyIdxes) {
                                 this.startRow = startRow;
@@ -26966,6 +27105,8 @@ var nts;
                         internal.COMBO_SELECTED = "ntsComboSelection";
                         internal.CB_SELECTED = "ntsCheckboxSelection";
                         internal.UPDATED_CELLS = "ntsUpdatedCells";
+                        internal.TARGET_EDITS = "ntsTargetEdits";
+                        internal.OTHER_EDITS = "ntsOtherEdits";
                         // Full columns options
                         internal.GRID_OPTIONS = "ntsGridOptions";
                         internal.SELECTED_CELL = "ntsSelectedCell";
