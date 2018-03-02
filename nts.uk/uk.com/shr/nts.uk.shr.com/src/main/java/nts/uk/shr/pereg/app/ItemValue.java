@@ -43,6 +43,7 @@ public class ItemValue {
 		case NUMERIC:
 		case TIME:
 		case TIMEPOINT:
+		case SELECTION_RADIO:
 			// In case of value is empty or null return default value
 			if (StringUtils.isEmpty(this.value)) {
 				convertedValue = null;
@@ -52,7 +53,6 @@ public class ItemValue {
 			break;
 		case STRING:
 		case SELECTION:
-		case SELECTION_RADIO:
 		case SELECTION_BUTTON:
 			convertedValue = this.value;
 			break;
@@ -72,15 +72,19 @@ public class ItemValue {
 	}
 
 	public void setValue(Object obj) {
+		if (obj == null){
+			this.value = null;
+			return;
+		}
 		switch (this.itemValueType()) {
 		case NUMERIC:
 		case TIME:
 		case TIMEPOINT:
+		case SELECTION_RADIO:
 			this.value = obj.toString();
 			break;
 		case STRING:
 		case SELECTION:
-		case SELECTION_RADIO:
 		case SELECTION_BUTTON:
 			this.value = obj.toString();
 			break;

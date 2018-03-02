@@ -34,6 +34,7 @@ public class UpdatePersonCommandHandler extends CommandHandler<UpdatePersonComma
 	protected void handle(CommandHandlerContext<UpdatePersonCommand> context) {
 		
 		val command = context.getCommand();
+
 		// Person name, person name kana, bussiness name, bussiness name kana 氏名には、文字の間に必ず全角スペースがなければならない。
 		if (!ValidateUtils.validateName(command.getPersonName()) || !ValidateUtils.validateName(command.getPersonNameKana())
 				|| !ValidateUtils.validateName(command.getBusinessName()) || !ValidateUtils.validateName(command.getBusinessNameKana())){

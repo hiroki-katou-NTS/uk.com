@@ -70,6 +70,7 @@ public class JpaGoBackDirectlyCommonSettingRepository extends JpaRepository impl
 		entity.commentContent2 = domain.getCommentContent2().v();
 		entity.commentFontWeight2 = domain.getCommentFontWeight2().value;
 		entity.commentFontColor2 = domain.getCommentFontColor2().v();
+		entity.workChangeTimeAtr = domain.getWorkChangeTimeAtr().value;
 		return entity;
 	}
 
