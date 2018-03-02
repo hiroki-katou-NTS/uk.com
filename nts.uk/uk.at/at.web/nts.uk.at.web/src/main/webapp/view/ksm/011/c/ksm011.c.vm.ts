@@ -44,8 +44,10 @@ module nts.uk.at.view.ksm011.c.viewmodel {
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            self.getWorkTypeList();
-            self.findAll();
+            $.when(self.getWorkTypeList()).done(function() {
+                self.findAll();
+                dfd.resolve();
+            });
             return dfd.promise();
         }
 
@@ -77,6 +79,7 @@ module nts.uk.at.view.ksm011.c.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.findWorkType().done(function(res) {
+                self.workTypeList.removeAll();
                 _.forEach(res, function(item) {
                     self.workTypeList.push({
                         workTypeCode: item.workTypeCode,
@@ -99,20 +102,43 @@ module nts.uk.at.view.ksm011.c.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             nts.uk.ui.block.invisible();
-            var workType = ko.toJS(self.currentItem());
-            var workTypeData : any = {
-                    useAtr: self.useAtr(),
-                    workTypeList: workType.workTypeList
-                };
-            service.add(workTypeData).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message);
-            }).always(() => {
-                nts.uk.ui.block.clear();
-            });
 
-            return dfd.promise();
+            var workType = ko.toJS(self.currentItem());
+
+
+            if (self.useAtr() == 0) {
+                if (workType.workTypeList.length > 0) {
+                    var workTypeData: any = {
+                        useAtr: self.useAtr(),
+                        workTypeList: workType.workTypeList
+                    };
+
+                    service.add(workTypeData).done(function() {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError(res.message);
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
+                    });
+                } else {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_10" });
+                    nts.uk.ui.block.clear();
+                }
+            } else {
+                var workTypeData: any = {
+                    useAtr: self.useAtr(),
+                    workTypeList: []
+                };
+
+                service.add(workTypeData).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+
+            }
 
         }
 
@@ -121,17 +147,19 @@ module nts.uk.at.view.ksm011.c.viewmodel {
             var dfd = $.Deferred();
             self.items.removeAll();
             service.findAll().done(function(totalTimeArr: Array<any>) {
-                self.useAtr(totalTimeArr.useAtr);
-                var totalTime: any = {
-                    useAtr: totalTimeArr.useAtr,
-                    workTypeList: totalTimeArr.workTypeList
+                if (totalTimeArr) {
+                    self.useAtr(totalTimeArr.useAtr);
+                    var totalTime: any = {
+                        useAtr: totalTimeArr.useAtr,
+                        workTypeList: totalTimeArr.workTypeList
+                    };
+                    _.each(totalTime.workTypeList, (items: any) => {
+                        self.currentItem().workTypeList().push(items.workTypeCode);
+                    });
+                    self.items.push(new WorktypeDisplayDto(totalTime));
+                    var names = self.getNames(self.workTypeList(), totalTimeArr.workTypeList);
+                    self.workTypeNames(names);
                 };
-                _.each(totalTime.workTypeList, (items: any) => {
-                    self.currentItem().workTypeList().push(items.workTypeCode);
-                });
-                self.items.push(new WorktypeDisplayDto(totalTime));
-                var names = self.getNames(self.workTypeList(), totalTimeArr.workTypeList);
-                self.workTypeNames(names);
             });
             return dfd.promise();
         }
