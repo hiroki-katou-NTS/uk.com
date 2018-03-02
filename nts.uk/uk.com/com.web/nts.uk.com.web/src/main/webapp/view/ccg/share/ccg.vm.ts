@@ -54,6 +54,7 @@ module nts.uk.com.view.ccg.share.ccg {
             showWorktype: boolean; // 勤種条件
             isMultiple: boolean; // 選択モード
 
+            // flags
             isShow: KnockoutObservable<boolean>;
             isOpenStatusOfEmployeeList: KnockoutObservable<boolean>;
             isOpenEmploymentList: KnockoutObservable<boolean>;
@@ -61,6 +62,7 @@ module nts.uk.com.view.ccg.share.ccg {
             isOpenJoptitleList: KnockoutObservable<boolean>;
             isOpenWorkplaceList: KnockoutObservable<boolean>;
             isOpenWorkTypeList: KnockoutObservable<boolean>;
+            isInDialog: boolean;
 
             // tabs
             tabs: KnockoutObservableArray<any>;
@@ -548,6 +550,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.showWorktype = options.showWorktype;
                 self.isMultiple = options.isMutipleCheck;
 
+                /** Optional properties */
+                self.isInDialog = options.isInDialog ? options.isInDialog : false;
+
                 // return data function
                 self.returnDataFromCcg001 = options.returnDataFromCcg001;
             }
@@ -556,13 +561,20 @@ module nts.uk.com.view.ccg.share.ccg {
              * Set component height
              */
             private setComponentHeight(): void {
+                let self = this;
+                const headerHeight = $('#header').outerHeight(true);
+                const functionAreaHeight = $('#functions-area').length > 0 ? $('#functions-area').outerHeight(true) : 0;
+                let componentHeight = 0;
+
                 // set component height
-                const headerHeight = $('#header').outerHeight();
-                const functionAreaHeight = $('#functions-area').length > 0 ? $('#functions-area').outerHeight() : 0;
-                const componentHeight = window.innerHeight - headerHeight - functionAreaHeight - 15;
+                if (self.isInDialog) {
+                    componentHeight =  window.innerHeight - functionAreaHeight - 15;
+                } else {
+                    componentHeight = window.innerHeight - headerHeight - functionAreaHeight - 15;
+                }
                 $('#component-ccg001').outerHeight(componentHeight);
-                $('#hor-scroll-button-hide').outerHeight(componentHeight);
-                $('#ccg001-btn-search-drawer').outerHeight(componentHeight / 2);
+                    $('#hor-scroll-button-hide').outerHeight(componentHeight);
+                    $('#ccg001-btn-search-drawer').outerHeight(componentHeight / 2);
 
                 // set tab panel height.
                 const tabpanelHeight = componentHeight - $('#ccg001-header').outerHeight(true) - 10;
