@@ -37,9 +37,10 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         onchange: (filename) => void;
         onfilenameclick: (filename) => void;
 
-        listAccept: KnockoutObservableArray<model.StandardAcceptItem> = ko.observableArray([]);
+        listAccept: KnockoutObservableArray<AcceptItems> = ko.observableArray([]);
         selectedAccept: KnockoutObservable<any> = ko.observable('');
-        count: KnockoutObservable<number> = ko.observable(0);
+        totalRecord: KnockoutObservable<number> = ko.observable(0);
+        totalLine: KnockoutObservable<number> = ko.observable(0);
 
         constructor() {
             var self = this;
@@ -50,9 +51,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 { content: '.step-2' }
             ];
             self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
-
             self.loadSystemType();
-
             //選択したカレント行の「条件コード/名称」を画面右側の「条件コード/名称」にセットする
             self.selectedConditionCd.subscribe(function(data: any) {
                 //取込情報を選択する
@@ -71,7 +70,6 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     self.selectedConditionStartLine(0);
                 }
             });
-
             //self.loadListAccept();   
             $("#grd_Accept").ntsFixedTable({ height: 373 });
         }
@@ -86,14 +84,12 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 dialog({ messageId: "Msg_963" });
                 return;
             }
-
             //受入ファイルがアップロードされているか判別
             if (self.fileId() == '') {
                 //Msg_964　を表示する。受入ファイルがアップロードされていません。
                 dialog({ messageId: "Msg_964" });
                 return;
             }
-
             //P:外部受入サマリー画面へ遷移する
             $('#ex_accept_wizard').ntsWizard("next");
             self.loadListAccept();
@@ -103,16 +99,14 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             $('#ex_accept_wizard').ntsWizard("prev");
         }
 
-        //file upload
-
         private uploadFile(): void {
             var self = this;
             block.grayout();
             $("#file-upload").ntsFileUpload({ stereoType: "flowmenu" }).done(function(res) {
-                service.getTotalRecord(res[0].id).done(function(totalRecord: any) {
-                    console.log(res[0].id, totalRecord);
-                    //アップロードCSVが取込開始行に満たない場合
-                    if (totalRecord < self.selectedConditionStartLine()) {
+                service.getNumberOfLine(res[0].id).done(function(totalLine: any) {
+                    self.totalLine(totalLine);
+                    //アップロードCSVが取込開始行に満たない場合                   
+                    if (totalLine < self.selectedConditionStartLine()) {
                         self.fileId('');
                         self.filename('');
                         dialog({ messageId: "Msg_1059" });
@@ -131,6 +125,8 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 self.fileId('');
                 //エラーメッセージ　Msg_910　　ファイルアップロードに失敗しました。
                 dialog({ messageId: "Msg_910" });
+            }).always(() => {
+                block.clear();
             });
         }
 
@@ -151,7 +147,6 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 new model.ItemModel(model.SYSTEM_TYPE.PAYROLL_SYS, '給与システム'),
                 new model.ItemModel(model.SYSTEM_TYPE.OFFICE_HELPER, 'オフィスヘルパー')
             ]);
-
             //1件以上取得できた場合
             if (self.listSysType().length > 0) {
                 //システム種類を画面セットする
@@ -165,13 +160,11 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 //トップページに戻る
                 nts.uk.request.jump("/view/cmf/001/a/index.xhtml");
             }
-
             //システム種類を変更する
             self.selectedSysType.subscribe(function(data: any) {
                 //画面上の条件コード/名称をクリアする
                 self.selectedConditionCd('');
                 self.selectedConditionName('');
-
                 //ドメインモデル「受入条件設定（定型）」を取得する
                 self.loadListCondition(data);
             });
@@ -183,7 +176,6 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             //「条件設定一覧」を初期化して取得した設定を表示する
             $('.clear-btn.ntsSearchBox_Component').click();
             self.listCondition([]);
-
             //ドメインモデル「受入条件設定（定型）」を取得する
             service.getConditionList(sysType).done(function(data: Array<any>) {
                 self.listCondition.removeAll();
@@ -212,23 +204,31 @@ module nts.uk.com.view.cmf001.o.viewmodel {
 
         loadListAccept() {
             let self = this;
-
-            //アップロードしたファイルを読み込む
-            /*
-            for (let i = 0; i < 5; i++) {
-                self.listAccept.push(new AcceptItems('00' + i, '基本給', "description " + i, "基本給" + i, i));
-            }*/
             block.grayout();
-            debugger;
-            service.getStdAcceptItem('1', 1, '1').done(function(data: Array<any>) {
-                debugger;
+            //ドメインモデル「受入項目（定型）」を取得する
+            service.getStdAcceptItem(self.selectedSysType(), self.selectedConditionCd()).done(function(data: Array<any>) {
                 self.listAccept.removeAll();
-                //
                 if (data && data.length) {
-                    let _rspList: Array<model.StandardAcceptItem> = _.map(data, rsp => {
-                        return new model.StandardAcceptItem(rsp.csvItemName, rsp.csvItemNumber, rsp.itemType, rsp.acceptItemNumber, '', rsp.conditionSetCd, null, null, null);
+                    let _rspList: Array<AcceptItems> = _.map(data, rsp => {
+                        return new AcceptItems('', rsp.csvItemName, '', rsp.itemType);
                     });
                     self.listAccept(_rspList);
+                }
+                //アップロードしたファイルを読み込む
+                self.readUploadFile(self.listAccept().length);
+            }).fail(function(error) {
+                alertError(error);
+            }).always(() => {
+                block.clear();
+            });
+        }
+
+        readUploadFile(numOfCol: number) {
+            let self = this;
+            //アップロードしたファイルの「取込開始行」のＣＳＶ項Ｎｏの値
+            service.getRecord(self.fileId(), numOfCol, self.selectedConditionStartLine()).done(function(data: Array<any>) {
+                for (let i = 0; i < numOfCol; i++) {
+                    self.listAccept()[i].sampleData(data[i]);
                 }
             }).fail(function(error) {
                 alertError(error);
@@ -237,7 +237,11 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             });
 
             //ファイルの行数を取得する
-            self.count(self.listAccept().length);
+            let count = self.totalLine() - self.selectedConditionStartLine();
+            if (count < 0) {
+                count = 0;
+            }
+            self.totalRecord(count);
         }
 
         editIngestion(item: any) {
@@ -300,17 +304,17 @@ module nts.uk.com.view.cmf001.o.viewmodel {
     }
 
     class AcceptItems {
-        id: string;
-        infoName: string;
-        itemName: string;
-        sampleData: string;
-        itemType: number;
-        constructor(id: string, infoName: string, itemName: string, sampleData: string, itemType: number) {
-            this.id = id;
-            this.infoName = infoName;
-            this.itemName = itemName;
-            this.sampleData = sampleData;
-            this.itemType = itemType;
+        infoName: KnockoutObservable<string>;
+        csvItemName: KnockoutObservable<string>;
+        sampleData: KnockoutObservable<string>;
+        itemType: KnockoutObservable<number>;
+        itemTypeName: KnockoutObservable<string>;
+        constructor(infoName: string, csvItemName: string, sampleData: string, itemType: number) {
+            this.infoName = ko.observable(infoName);
+            this.csvItemName = ko.observable(csvItemName);
+            this.sampleData = ko.observable(sampleData);
+            this.itemType = ko.observable(itemType);
+            this.itemTypeName = ko.observable(''+itemType)
         }
     }
 }

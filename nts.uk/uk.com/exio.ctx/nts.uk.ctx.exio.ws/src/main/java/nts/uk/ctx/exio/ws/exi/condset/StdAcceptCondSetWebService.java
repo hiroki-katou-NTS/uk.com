@@ -32,9 +32,15 @@ public class StdAcceptCondSetWebService {
 	}
 	
 	@POST
-	@Path("getTotalRecordCsv/{fileId}")
-	public int getTotalRecord(@PathParam("fileId") String fileId) {
-		return stdAcceptCondSetFind.getTotalRecordCsv(fileId);
+	@Path("getNumberOfLine/{fileId}")
+	public int getNumberOfLine(@PathParam("fileId") String fileId) {
+		return stdAcceptCondSetFind.getNumberOfLine(fileId);
+	}
+	
+	@POST
+	@Path("getRecord/{fileId}/{numOfCol}/{index}")
+	public List<String> getRecord(@PathParam("fileId") String fileId, @PathParam("numOfCol") int numOfCol, @PathParam("index") int index) {
+		return stdAcceptCondSetFind.getRecordByIndex(fileId, numOfCol, index);
 	}
 	
 	/**
