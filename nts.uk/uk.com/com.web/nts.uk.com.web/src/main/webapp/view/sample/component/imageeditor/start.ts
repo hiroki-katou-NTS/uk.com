@@ -11,7 +11,7 @@ __viewContext.ready(function () {
         upload(){
             var self = this;
             nts.uk.ui.block.grayout();
-            $("#test").ntsImageEditor("upload", {stereoType: "image"}).done(function(data){
+            $("#test").ntsImageEditor("upload", {stereoType: "samplefile"}).done(function(data){
                 self.uploaded = data;
                 nts.uk.ui.block.clear();
             }).fail(function(error){
@@ -23,7 +23,7 @@ __viewContext.ready(function () {
         uploadOriginal(){
             var self = this;
             nts.uk.ui.block.grayout();
-            $("#test").ntsImageEditor("uploadOriginal", {stereoType: "image"}).done(function(data){
+            $("#test").ntsImageEditor("uploadOriginal", {stereoType: "samplefile"}).done(function(data){
                 self.originalUpload = data;
                 nts.uk.ui.block.clear();
             }).fail(function(error){

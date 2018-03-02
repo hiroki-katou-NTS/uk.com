@@ -115,7 +115,7 @@ module nts.uk.at.view.ksm001.a {
                 };
                 self.ccgcomponentPerson = {
                     /** Common properties */
-                    systemType: 1, // システム区分
+                    systemType: 2, // 就業
                     showEmployeeSelection: true, // 検索タイプ
                     showQuickSearchTab: true, // クイック検索
                     showAdvancedSearchTab: true, // 詳細検索
