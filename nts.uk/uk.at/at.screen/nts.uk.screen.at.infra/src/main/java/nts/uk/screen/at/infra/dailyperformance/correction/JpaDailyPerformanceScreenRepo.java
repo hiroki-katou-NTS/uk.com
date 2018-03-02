@@ -456,7 +456,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				.getList();
 		List<ClosureDto> result = new ArrayList<>();
 		empCodes.forEach((key, value) -> {
-			Optional<ClosureDto> optional = closureDtos.stream().filter(item -> item.getEmploymentCode() == value)
+			Optional<ClosureDto> optional = closureDtos.stream().filter(item -> item.getEmploymentCode().equals(value))
 					.findFirst();
 			if (optional.isPresent()) {
 				ClosureDto closureDto = new ClosureDto();
