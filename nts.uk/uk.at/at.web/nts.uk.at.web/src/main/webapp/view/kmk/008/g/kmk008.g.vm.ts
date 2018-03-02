@@ -43,7 +43,7 @@ module nts.uk.at.view.kmk008.g {
             maxRows: number;
 
             //search
-            ccg001ComponentOption: GroupOption;
+            ccg001ComponentOption: any;
             selectedCode: KnockoutObservableArray<string>;
             showinfoSelectedEmployee: KnockoutObservable<boolean>;
 
