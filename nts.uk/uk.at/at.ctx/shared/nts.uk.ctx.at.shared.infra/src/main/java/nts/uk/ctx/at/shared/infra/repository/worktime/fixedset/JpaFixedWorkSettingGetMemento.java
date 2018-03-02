@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
@@ -34,7 +35,8 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	/**
 	 * Instantiates a new jpa fixed work setting get memento.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 */
 	public JpaFixedWorkSettingGetMemento(KshmtFixedWorkSet entity) {
 		super();
@@ -126,13 +128,13 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 */
 	@Override
 	public List<FixHalfDayWorkTimezone> getLstHalfDayWorkTimezone() {
-		
+
 		// Build a list with item for each enum AmPmAtr case
-		List<FixHalfDayWorkTimezone> result = new ArrayList<>();		
-		for (AmPmAtr type : AmPmAtr.values()) {			
+		List<FixHalfDayWorkTimezone> result = new ArrayList<>();
+		for (AmPmAtr type : AmPmAtr.values()) {
 			result.add(new FixHalfDayWorkTimezone(new JpaFixHalfDayWorkTimezoneGetMemento(entity, type)));
-		}				
-		
+		}
+
 		return result;
 	}
 
@@ -160,6 +162,19 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	@Override
 	public LegalOTSetting getLegalOTSetting() {
 		return LegalOTSetting.valueOf(this.entity.getLegalOtSet());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingGetMemento#
+	 * getFixedWorkCalcSetting()
+	 */
+	@Override
+	public FixedWorkCalcSetting getFixedWorkCalcSetting() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

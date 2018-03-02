@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.fixedset.dto;
@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingGetMemento;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -50,6 +51,9 @@ public class FixedWorkSettingDto implements FixedWorkSettingGetMemento {
 
 	/** The legal OT setting. */
 	private Integer legalOTSetting;
+	
+	/** The fixed work calc setting. */
+	private FixedWorkCalcSettingDto fixedWorkCalcSetting;
 
 	/*
 	 * (non-Javadoc)
@@ -159,5 +163,16 @@ public class FixedWorkSettingDto implements FixedWorkSettingGetMemento {
 	@Override
 	public LegalOTSetting getLegalOTSetting() {
 		return LegalOTSetting.valueOf(this.legalOTSetting);
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingGetMemento#getFixedWorkCalcSetting()
+	 */
+	@Override
+	public FixedWorkCalcSetting getFixedWorkCalcSetting() {
+		if (this.fixedWorkCalcSetting == null) {
+			return null;
+		}
+		return new FixedWorkCalcSetting(this.fixedWorkCalcSetting);
 	}
 }

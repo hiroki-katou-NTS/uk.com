@@ -20,7 +20,7 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 
 	/** The Zero H stradd calculate set. */
 	// 0時跨ぎ計算設定
-	private boolean ZeroHStraddCalculateSet;
+	private boolean zeroHStraddCalculateSet;
 
 	/** The interval set. */
 	// インターバル時間設定
@@ -68,7 +68,7 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 	 * @param memento the memento
 	 */
 	public WorkTimezoneCommonSet(WorkTimezoneCommonSetGetMemento memento) {
-		this.ZeroHStraddCalculateSet = memento.getZeroHStraddCalculateSet();
+		this.zeroHStraddCalculateSet = memento.getZeroHStraddCalculateSet();
 		this.intervalSet = memento.getIntervalSet();
 		this.subHolTimeSet = memento.getSubHolTimeSet();
 		this.raisingSalarySet = memento.getRaisingSalarySet();
@@ -87,7 +87,7 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(WorkTimezoneCommonSetSetMemento memento) {
-		memento.setZeroHStraddCalculateSet(this.ZeroHStraddCalculateSet);
+		memento.setZeroHStraddCalculateSet(this.zeroHStraddCalculateSet);
 		memento.setIntervalSet(this.intervalSet);
 		memento.setSubHolTimeSet(this.subHolTimeSet);
 		memento.setRaisingSalarySet(this.raisingSalarySet);

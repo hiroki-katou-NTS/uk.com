@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
@@ -79,5 +79,11 @@ public interface FixedWorkSettingSetMemento {
 	 * @param legalOTSetting the new legal OT setting
 	 */
 	void setLegalOTSetting(LegalOTSetting legalOTSetting);
-	
+
+	/**
+	 * Sets the fixed work calc setting.
+	 *
+	 * @param fixedWorkCalcSetting the new fixed work calc setting
+	 */
+	void setFixedWorkCalcSetting(FixedWorkCalcSetting fixedWorkCalcSetting);
 }

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
@@ -65,6 +65,10 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot {
 	// 法定内残業設定
 	private LegalOTSetting legalOTSetting;
 
+	/** The fixed work calc setting. */
+	// 計算設定
+	private FixedWorkCalcSetting fixedWorkCalcSetting;
+
 	/**
 	 * Instantiates a new fixed work setting.
 	 *
@@ -81,6 +85,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot {
 		this.lstHalfDayWorkTimezone = memento.getLstHalfDayWorkTimezone();
 		this.lstStampReflectTimezone = memento.getLstStampReflectTimezone();
 		this.legalOTSetting = memento.getLegalOTSetting();
+		this.fixedWorkCalcSetting = memento.getFixedWorkCalcSetting();
 	}
 
 	/**
@@ -99,6 +104,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot {
 		memento.setLstHalfDayWorkTimezone(this.lstHalfDayWorkTimezone);
 		memento.setLstStampReflectTimezone(this.lstStampReflectTimezone);
 		memento.setLegalOTSetting(this.legalOTSetting);
+		memento.setFixedWorkCalcSetting(this.fixedWorkCalcSetting);
 	}
 
 	/*
