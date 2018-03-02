@@ -155,7 +155,7 @@ __viewContext.ready(function () {
         middleDs.push({ empId: i.toString(), cert: "★", over1: 100 + i + "", over2: 1 + i + "" });
         updateMiddleDs.push({ empId: i.toString(), time: "100:00", days: "38", can: "", get: "" });
         if (i % 2 === 0) middleContentDeco.push(new CellColor("over1", i.toString(), "cell-red"));
-        else middleContentDeco.push(new CellColor("over2", i.toString(), "cell-green"));
+        else middleContentDeco.push(new CellColor("over2", i.toString(), "cell-green cell-red"));
         if (i % 7 === 0) {
             detailContentDeco.push(new CellColor("_2", i.toString(), "xseal", 0));
             detailContentDeco.push(new CellColor("_2", i.toString(), "xcustom", 0));
