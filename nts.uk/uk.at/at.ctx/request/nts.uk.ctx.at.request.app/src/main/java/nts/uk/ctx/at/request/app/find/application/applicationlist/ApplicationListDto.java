@@ -8,6 +8,7 @@ import nts.uk.ctx.at.request.app.find.setting.company.request.approvallistsettin
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppGoBackInfoFull;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppMasterInfo;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppOverTimeInfoFull;
+import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppPrePostGroup;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.ApplicationStatus;
 
 @Value
@@ -19,5 +20,9 @@ public class ApplicationListDto {
 	private List<AppGoBackInfoFull> lstAppGoBack;
 	//TH: approval (count)
 	private	ApplicationStatus appStatusCount;
-	private List<AppStatusApproval> lstStatusApproval;
+//	private List<AppStatusApproval> lstStatusApproval;
+//	private List<String> lstTimeColor; 
+//	private List<String> lstFramStatus;
+	private List<AppPrePostGroup> lstAppGroup;
+	
 }

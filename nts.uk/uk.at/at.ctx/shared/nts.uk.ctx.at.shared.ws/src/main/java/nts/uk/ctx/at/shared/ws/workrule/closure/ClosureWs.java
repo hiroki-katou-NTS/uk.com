@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.ws.workrule.closure;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -296,13 +295,28 @@ public class ClosureWs {
 		return this.finder.getClosureIdByEmploymentCode(employmentCode);
 	}
 
+	/**
+	 * Calculate period.
+	 *
+	 * @param closureId the closure id
+	 * @param yearMonth the year month
+	 * @return the date period dto
+	 */
 	@POST
 	@Path("calculateperiod/{closureid}/{yearmonth}")
-	public List<String> calculatePeriod(@PathParam("closureid") int closureId, @PathParam("yearmonth") int yearMonth) {
-		return Arrays.asList(
-				this.closureService.getClosurePeriod(closureId, YearMonth.of(yearMonth)).end().toString("yyyy-MM-dd"));
+	public DatePeriodDto calculatePeriod(@PathParam("closureid") int closureId, @PathParam("yearmonth") int yearMonth) {
+		DatePeriod period = this.closureService.getClosurePeriod(closureId, YearMonth.of(yearMonth));
+		return DatePeriodDto.builder()
+				.endDate(period.end().toString("yyyy-MM-dd"))
+				.startDate(period.start().toString("yyyy-MM-dd")).build();
 	}
 
+	/**
+	 * Gets the closures by base date.
+	 *
+	 * @param basedate the basedate
+	 * @return the closures by base date
+	 */
 	@POST
 	@Path("getclosuresbybasedate/{basedate}")
 	public List<ClosureIdNameDto> getClosuresByBaseDate(@PathParam("basedate") String basedate) {

@@ -28,6 +28,8 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
+import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
+import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
@@ -92,6 +94,10 @@ public class TotalWorkingTime {
 	/*日別実績の臨時時間*/
 	private TemporaryTimeOfDaily temporaryTime;
 	
+	/*短時間勤務時間*/
+	private ShortWorkTimeOfDaily shotrTimeOfDaily;
+	
+	
 	/**
 	 * 
 	 * @param withinStatutory
@@ -124,7 +130,7 @@ public class TotalWorkingTime {
 			List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily, BreakTimeOfDaily breakTimeOfDaily,
 			List<OutingTimeOfDaily> outingTimeOfDailyPerformance,
 			RaiseSalaryTimeOfDailyPerfor raiseSalaryTimeOfDailyPerfor, WorkTimes workTimes,
-			TemporaryTimeOfDaily temporaryTime) {
+			TemporaryTimeOfDaily temporaryTime, ShortWorkTimeOfDaily shotrTime) {
 		super();
 		this.totalTime = totalTime;
 		this.totalCalcTime = totalCalcTime;
@@ -138,6 +144,7 @@ public class TotalWorkingTime {
 		this.raiseSalaryTimeOfDailyPerfor = raiseSalaryTimeOfDailyPerfor;
 		this.workTimes = workTimes;
 		this.temporaryTime = temporaryTime;
+		this.shotrTimeOfDaily = shotrTime;
 	}
 	
 	/**
@@ -223,6 +230,16 @@ public class TotalWorkingTime {
 		val outingList = new ArrayList<OutingTimeOfDaily>();
 		val outingTime = OutingTimeOfDaily.calcOutingTime(oneDay);
 		outingList.add(outingTime);
+		
+		val shotrTime = new ShortWorkTimeOfDaily(new WorkTimes(1),
+											 DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+													 			   TimeWithCalculation.sameTime(new AttendanceTime(0)),
+													 			   TimeWithCalculation.sameTime(new AttendanceTime(0))),
+											 DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+										 			   			   TimeWithCalculation.sameTime(new AttendanceTime(0)),
+										 			   			   TimeWithCalculation.sameTime(new AttendanceTime(0))),
+											 ChildCareAttribute.CARE
+											);
 		//加給時間
 		val raiseTime = new RaiseSalaryTimeOfDailyPerfor(Collections.emptyList(),Collections.emptyList());//RaiseSalaryTimeOfDailyPerfor.
 		//勤務回数
@@ -267,8 +284,11 @@ public class TotalWorkingTime {
 									outingList,
 									raiseTime,
 									workTimes,
-									tempTime);
+									tempTime,
+									shotrTime);
 	}
+
+
 
 
 

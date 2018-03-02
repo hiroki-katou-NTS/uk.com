@@ -51,7 +51,8 @@ module nts.uk.at.view.kmf002.b {
                             _self.commonTableMonthDaySet().infoSelect2('');
                             _self.commonTableMonthDaySet().infoSelect3('');
                             _self.enableSave(false);
-                            _self.enableDelete(false);                            
+                            _self.enableDelete(false);     
+                            _self.setDefaultMonthDay();
                         } else {
                             _self.commonTableMonthDaySet().infoSelect2($('#tree-grid').getRowSelected()[0].workplaceCode);
                             _self.getNameWkpSelect($('#tree-grid').getDataList(), 
@@ -77,9 +78,15 @@ module nts.uk.at.view.kmf002.b {
                                 _self.alreadySettingList.push({'workplaceId': wkpID, 'isAlreadySetting': true});
                             });        
                         })
-                          
                     }
                 });
+            }
+            
+            private setDefaultMonthDay(): void {
+                let _self = this;
+                for (let i=0; i<_self.commonTableMonthDaySet().arrMonth().length; i++) {
+                    _self.commonTableMonthDaySet().arrMonth()[i].day(0); 
+                }     
             }
             
             private getNameWkpSelect(data: any, codeSelect: string): void {
@@ -172,6 +179,9 @@ module nts.uk.at.view.kmf002.b {
                             });
                             _self.enableDelete(false);
                         } else {
+                            if (_.isNull(data2.startMonth)) {
+                                data2.startMonth = 1;
+                            }
                             _self.commonTableMonthDaySet().arrMonth.removeAll();
                             for (let i=data2.startMonth-1; i<12; i++) {
                                 _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.applicationlist.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @AllArgsConstructor
 @Getter
@@ -22,5 +23,6 @@ public class OverTimeFrame {
 	/**
 	 * 申請時間  - phut
 	 */
+	@Setter
 	private Integer applicationTime;
 }

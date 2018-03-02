@@ -118,7 +118,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		builder.append(SELECT_FROM_WORKTYPE);
 		builder.append(" WHERE c.kshmtWorkTypePK.companyId = :companyId");
 		builder.append(" AND c.deprecateAtr = :abolishAtr");
-		builder.append(" AND c.worktypeAtr = :worktypeAtr");
+		builder.append(" AND c.oneDayAtr = :oneDayAtr");
 		builder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
 		FIND_WORKTYPE_ONEDAY = builder.toString();
 	}
@@ -312,9 +312,9 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	}
 
 	@Override
-	public List<WorkType> findWorkOneDay(String companyId, int abolishAtr, int worktypeAtr) {
+	public List<WorkType> findWorkOneDay(String companyId, int abolishAtr, int oneDayAtr) {
 		return this.queryProxy().query(FIND_WORKTYPE_ONEDAY, KshmtWorkType.class).setParameter("companyId", companyId)
-				.setParameter("abolishAtr", abolishAtr).setParameter("worktypeAtr", worktypeAtr)
+				.setParameter("abolishAtr", abolishAtr).setParameter("oneDayAtr", oneDayAtr)
 				.getList(x -> toDomain(x));
 	}
 

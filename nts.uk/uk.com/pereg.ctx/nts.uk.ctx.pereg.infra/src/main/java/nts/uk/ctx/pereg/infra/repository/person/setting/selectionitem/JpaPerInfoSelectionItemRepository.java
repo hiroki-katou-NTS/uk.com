@@ -29,6 +29,8 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 			+ " WHERE si.selectionItemName = :selectionItemName";
 	private static final String SELECT_ALL_BY_PERSON_TYPE = SELECT_ALL
 			+ " WHERE si.selectionItemClsAtr =:selectionItemClsAtr" + " ORDER BY si.selectionItemName ";
+	private static final String SELECT_BY_HIST_ID = SELECT_ALL
+			+ " INNER JOIN PpemtHistorySelection hs ON si.selectionItemPk.selectionItemId = hs.selectionItemId WHERE hs.histidPK.histId=:histId";
 
 	@Override
 	public void add(PerInfoSelectionItem domain) {
@@ -119,5 +121,12 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 				.setParameter("selectionItemClsAtr", selectionItemClsAtr).getList(c -> toDomain(c));
 	}
 	// Lanlt
+
+	@Override
+	public Optional<PerInfoSelectionItem> getSelectionItemByHistId(String histId) {
+		return this.queryProxy().query(SELECT_BY_HIST_ID, PpemtSelectionItem.class).setParameter("histId", histId)
+				.getSingle().map(c -> toDomain(c));
+
+	}
 
 }

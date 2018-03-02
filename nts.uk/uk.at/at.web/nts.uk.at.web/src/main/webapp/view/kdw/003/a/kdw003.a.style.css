@@ -195,6 +195,15 @@
 .nts-grid-sheet-buttons{
 /* 	margin-top:32px; */
 }
+.right-align {
+  text-align: right;
+}
+.center-align {
+  text-align: center !important;
+}
+.ui-iggrid table tr th.ui-widget-header, .ui-iggrid table tr.ui-state-focus th.ui-widget-header, .ui-iggrid table tr.ui-ig-altrecord.ui-state-focus th.ui-widget-header {
+    text-align: center;
+}
 /* .nts-grid  tr.ui-ig-altrecord td.ui-state-active{
 	background-color: #007fff !IMPORTANT;
 } */

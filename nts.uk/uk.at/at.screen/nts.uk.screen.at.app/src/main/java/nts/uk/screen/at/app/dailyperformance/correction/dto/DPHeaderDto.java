@@ -121,7 +121,14 @@ public class DPHeaderDto {
 		}
 		return dto;
 	}
-
+    
+	public static DPHeaderDto addHeaderApplication(){
+		return  new DPHeaderDto(TextResource.localize("KDW003_63"), "Application", "String", "90px", "", false, "Button", false, false);
+	}
+	
+	public static DPHeaderDto addHeaderSubmitted(){
+		return  new DPHeaderDto(TextResource.localize("KDW003_62"), "Submitted", "String", "90px", "", false, "Label", false, false);
+	}
 	private static String getCode(String key) {
 		return key.trim().substring(1, key.trim().length());
 	}

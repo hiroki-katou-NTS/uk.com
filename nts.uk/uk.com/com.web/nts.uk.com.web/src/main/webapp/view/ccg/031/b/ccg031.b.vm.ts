@@ -61,7 +61,7 @@ module nts.uk.com.view.ccg031.b.viewmodel {
                 // Binding TopPage Part
                 self.allPart(data.listTopPagePart);
                 // Default value
-                self.selectedPartType(0);
+                self.selectedPartType(data.listTopPagePartType[0].value);
                 self.selectFirstPart();
                 dfd.resolve();
             }).fail((res) => {
@@ -91,7 +91,7 @@ module nts.uk.com.view.ccg031.b.viewmodel {
 
         /** Filter by Type */
         private filterPartType(partType: number): void {
-            var isExternalUrl: boolean = (partType === 3);
+            var isExternalUrl: boolean = (partType === 4);
             this.isExternalUrl(isExternalUrl);
             if (isExternalUrl !== true) {
                 if (nts.uk.ui._viewModel)
@@ -105,16 +105,22 @@ module nts.uk.com.view.ccg031.b.viewmodel {
             if (partType === 0)
                 this.instructionText(resource.getText("CCG031_17"));
             if (partType === 1)
-                this.instructionText(resource.getText("CCG031_18"));
+                this.instructionText(resource.getText("CCG031_17"));
             if (partType === 2)
+                this.instructionText(resource.getText("CCG031_18"));
+            if (partType === 3)
                 this.instructionText(resource.getText("CCG031_19"));
         }
 
         /** Change Selected Part */
         private changeSelectedPart(partID: string): void {
-            var selectedPart: model.TopPagePartDto = _.find(this.allPart(), ['topPagePartID', partID]);
-            selectedPart.codeName = nts.uk.text.padLeft(selectedPart.code, '0', 4) + ' ' + selectedPart.name;
-            this.selectedPart(selectedPart);
+            if(!util.isNullOrUndefined(partID)){
+                var selectedPart: model.TopPagePartDto = _.find(this.allPart(), ['topPagePartID', partID]);
+                selectedPart.codeName = nts.uk.text.padLeft(selectedPart.code, '0', 4) + ' ' + selectedPart.name;
+                this.selectedPart(selectedPart);
+            } else {
+                this.selectedPart(null);    
+            }
         }
 
         /** Select first Part */
@@ -135,7 +141,7 @@ module nts.uk.com.view.ccg031.b.viewmodel {
             var url: string = self.url();
 
             // In case is TopPagePart
-            if (self.selectedPartType() !== 3) {
+            if (self.selectedPartType() !== 4) {
                 if (!util.isNullOrUndefined(self.selectedPart())) {
                     name = self.selectedPart().name;
                     width = self.selectedPart().width;
