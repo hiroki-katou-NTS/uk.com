@@ -430,6 +430,7 @@
 													<span> <input
 														id="a7_23" 
 														data-bind="ntsTimeEditor: {
+													name:'#{i18n.getText('KAF022_67')}',
 													value: retrictPreTimeDay,
 													constraint: 'AttendanceClock',
 								                    inputFormat: 'time',
@@ -532,7 +533,7 @@
 													editable: $parent.isEditable,
 													enable: $parent.isEnable,
 													columns: [
-														{ prop: 'name', length: 6 }
+														{ prop: 'name', length: 7 }
 													]},attr:{
 														tabindex:91 + $index()*6
 													}">
