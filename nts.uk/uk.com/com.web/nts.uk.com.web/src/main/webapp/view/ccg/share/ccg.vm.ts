@@ -562,19 +562,24 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             private setComponentHeight(): void {
                 let self = this;
-                const headerHeight = $('#header').outerHeight(true);
-                const functionAreaHeight = $('#functions-area').length > 0 ? $('#functions-area').outerHeight(true) : 0;
+                const headerHeight = $('#header').outerHeight();
+                const sidebarHeaderHeight = $('.sidebar-content-header').outerHeight(); // for screen with sidebar
+                const functionAreaHeight = $('#functions-area').length > 0 ? $('#functions-area').outerHeight() : 0;
+                const buffer = 15;
                 let componentHeight = 0;
 
-                // set component height
+                // calculate component height
                 if (self.isInDialog) {
-                    componentHeight =  window.innerHeight - functionAreaHeight - 15;
+                    componentHeight = window.innerHeight - functionAreaHeight - buffer;
                 } else {
-                    componentHeight = window.innerHeight - headerHeight - functionAreaHeight - 15;
+                    const notIncluded = headerHeight + functionAreaHeight + (sidebarHeaderHeight ? sidebarHeaderHeight : 0) + buffer;
+                    componentHeight = window.innerHeight - notIncluded;
                 }
+
+                // set component height
                 $('#component-ccg001').outerHeight(componentHeight);
-                    $('#hor-scroll-button-hide').outerHeight(componentHeight);
-                    $('#ccg001-btn-search-drawer').outerHeight(componentHeight / 2);
+                $('#hor-scroll-button-hide').outerHeight(componentHeight);
+                $('#ccg001-btn-search-drawer').outerHeight(componentHeight / 2);
 
                 // set tab panel height.
                 const tabpanelHeight = componentHeight - $('#ccg001-header').outerHeight(true) - 10;
