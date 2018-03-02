@@ -103,15 +103,21 @@ public class DPHeaderDto {
 			groups.add(new DPHeaderDto("NO", "NO"+getCode(key), "number", String.valueOf(withChild)+"px", "",false, "","comboCode","", false, false));
 			if(item.getTypeGroup() == TypeLink.CALC.value){
 				DPHeaderDto dtoG = new DPHeaderDto("名称", "Name"+getCode(key), "String", String.valueOf(withChild)+"px", "",false, "ComboboxCalc", false, false);
+				groups.get(0).setConstraint(new Constraint("Integer", false,"2"));
 				groups.add(dtoG);
 			}
 			if (item.getTypeGroup() == TypeLink.REASON_GO_OUT.value) {
-				groups.add(new DPHeaderDto("名称", "Name"+getCode(key), "String", String.valueOf(withChild)+"px", "",false, "ComboboxReason", false, false));
+				DPHeaderDto dtoG = new DPHeaderDto("名称", "Name"+getCode(key), "String", String.valueOf(withChild)+"px", "",false, "ComboboxReason", false, false);
+				groups.add(dtoG);
+				groups.get(0).setConstraint(new Constraint("Integer", false,"3"));
 			}
 			if (item.getTypeGroup() == TypeLink.DOWORK.value) {
-				groups.add(new DPHeaderDto("名称", "Name"+getCode(key), "String", String.valueOf(withChild)+"px", "",false, "ComboboxDoWork", false, false));
+				DPHeaderDto dtoG = new DPHeaderDto("名称", "Name"+getCode(key), "String", String.valueOf(withChild)+"px", "",false, "ComboboxDoWork", false, false);
+				groups.add(dtoG);
+				groups.get(0).setConstraint(new Constraint("Integer", false,"1"));
 			}
 			dto.setGroup(groups);
+			dto.setConstraint(new Constraint("Combo", false,""));
 		} else if(attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value){
 			//dto.setNtsControl("TextEditorNumberSeparated");
 			dto.setConstraint(new Constraint("Currency", false,""));

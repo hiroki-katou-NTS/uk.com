@@ -186,3 +186,7 @@ textarea {
    resize: none;
    height: 85px;
 }
+#i4 .ntsRadioBox span.label {
+	padding-right: 51px;
+}
+
