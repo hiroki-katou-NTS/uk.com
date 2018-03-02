@@ -37,25 +37,27 @@ public class AggregationProcessService {
 			// 次のチェック条件コードで集計する(loop list by category)
 			for (CheckCondition checkCondition : alarmPatternSetting.get().getCheckConList()) {
 				// get Period by category
-				Optional<PeriodByAlarmCategory> outputScreenA = periodByCategory.stream()
+				Optional<PeriodByAlarmCategory> period = periodByCategory.stream()
 						.filter(c -> c.getCategory() == checkCondition.getAlarmCategory().value).findFirst();
-				for (String checkConditionCode : checkCondition.getCheckConditionList()) {
-
-					// カテゴリ：日次のチェック条件(daily)
-					if (checkCondition.isDaily()) {
+				
+				// カテゴリ：日次のチェック条件(daily)
+				if (checkCondition.isDaily()) {
+					for (String checkConditionCode : checkCondition.getCheckConditionList()) {						
 						// アルゴリズム「日次の集計処理」を実行する
-						dailyAggregationProcessService.dailyAggregationProcess(checkConditionCode, outputScreenA.get(), employee);
-					}
-					// カテゴリ：4週4休のチェック条件(4 week 4 day)
-					else if (checkCondition.is4W4D()) {
-						// アルゴリズム「4週4休の集計処理」を実行する
-						//TotalProcess4Week4Day(checkConditionCode, outputScreenA.get(), employee);
-					}
-					// カテゴリ：月次のチェック条件 (monthly)
-					else if (checkCondition.isMonthly()) {
-						// tạm thời chưa làm
+						dailyAggregationProcessService.dailyAggregationProcess(checkConditionCode, period.get(), employee);
 					}
 				}
+				// カテゴリ：4週4休のチェック条件(4 week 4 day)
+				else if (checkCondition.is4W4D()) {
+					// アルゴリズム「4週4休の集計処理」を実行する
+					//TotalProcess4Week4Day(checkConditionCode, outputScreenA.get(), employee);
+				}
+				// カテゴリ：月次のチェック条件 (monthly)
+				else if (checkCondition.isMonthly()) {
+					// tạm thời chưa làm
+				}
+				
+
 
 			}
 

@@ -10,7 +10,7 @@ import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
 @Value
 public class FlowMenuDto {
 			
-	private String toppagePartID;
+	private String topPagePartID;
 
 	private String topPageCode;
 	
@@ -18,9 +18,9 @@ public class FlowMenuDto {
 				
 	private int type;
 	
-	private int widthSize;
+	private int width;
 	
-	private int heightSize;
+	private int height;
 	
 	private String fileID;
 	

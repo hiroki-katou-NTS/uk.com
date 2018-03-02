@@ -9,7 +9,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
@@ -32,11 +31,9 @@ public class UpdateFlowMenuCommandHandler extends CommandHandler<UpdateFlowMenuC
 		String companyId = AppContexts.user().companyId();
 		UpdateFlowMenuCommand command = context.getCommand();
 		
-		// Check FlowMenu is Existence	
-		Optional<FlowMenu> checkFlowMenu = repository.findByCode(companyId, context.getCommand().getToppagePartID());
-		if(!checkFlowMenu.isPresent()){
-			throw new BusinessException("ER026");
-		}
+		Optional<FlowMenu> checkFlowMenu = repository.findByCode(companyId, context.getCommand().getTopPagePartID());
+		if (!checkFlowMenu.isPresent())
+			throw new RuntimeException("Can't find FlowMenu with ID: " + context.getCommand().getTopPagePartID());
 		
 		// Update FLowMenu
 		FlowMenu flowMenu = checkFlowMenu.get();
