@@ -32,7 +32,7 @@ public class KscstSchemodifyDeadline  extends UkJpaEntity implements Serializabl
 			
 			/** 修正期限*/
 			@Column(name = "CORRECT_DEADLINE")
-			public int correctDeadline;
+			public Integer correctDeadline;
 
 	@Override
 	protected Object getKey() {
