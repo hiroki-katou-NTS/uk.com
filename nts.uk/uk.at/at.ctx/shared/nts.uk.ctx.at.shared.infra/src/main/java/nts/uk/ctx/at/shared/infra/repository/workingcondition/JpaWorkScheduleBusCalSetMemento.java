@@ -38,9 +38,7 @@ public class JpaWorkScheduleBusCalSetMemento implements WorkScheduleBusCalSetMem
 	@Override
 	public void setReferenceBusinessDayCalendar(
 			WorkScheduleMasterReferenceAtr referenceBusinessDayCalendar) {
-		if (referenceBusinessDayCalendar != null) {
-			this.entity.setRefBusinessDayCalendar(referenceBusinessDayCalendar.value);
-		}
+		this.entity.setRefBusinessDayCalendar(referenceBusinessDayCalendar.value);
 	}
 
 	/*
@@ -53,9 +51,7 @@ public class JpaWorkScheduleBusCalSetMemento implements WorkScheduleBusCalSetMem
 	 */
 	@Override
 	public void setReferenceBasicWork(WorkScheduleMasterReferenceAtr referenceBasicWork) {
-		if (referenceBasicWork != null) {
-			this.entity.setRefBasicWork(referenceBasicWork.value);
-		}
+		this.entity.setRefBasicWork(referenceBasicWork.value);
 	}
 
 	/*
@@ -68,8 +64,6 @@ public class JpaWorkScheduleBusCalSetMemento implements WorkScheduleBusCalSetMem
 	 */
 	@Override
 	public void setReferenceWorkingHours(TimeZoneScheduledMasterAtr referenceWorkingHours) {
-		if (referenceWorkingHours != null) {
-			this.entity.setRefWorkingHours(referenceWorkingHours.value);
-		}
+		this.entity.setRefWorkingHours(referenceWorkingHours.value);
 	}
 }

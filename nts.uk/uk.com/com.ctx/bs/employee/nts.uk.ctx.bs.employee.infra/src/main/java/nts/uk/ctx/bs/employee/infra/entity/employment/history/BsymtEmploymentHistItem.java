@@ -48,9 +48,9 @@ public class BsymtEmploymentHistItem extends UkJpaEntity implements Serializable
 	 * 3 = hourlySalary - 時間給
 	 * 4 = monthlySalary - 月給
 	 *  */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "SALARY_SEGMENT")
-	public int salarySegment;
+	public Integer salarySegment;
 	
 	/** The bsymt aff class history. */
 	// Add by ThanhNC
@@ -66,7 +66,7 @@ public class BsymtEmploymentHistItem extends UkJpaEntity implements Serializable
 	 * @param empCode the emp code
 	 * @param salarySegment the salary segment
 	 */
-	public BsymtEmploymentHistItem(String hisId, String sid, String empCode, int salarySegment) {
+	public BsymtEmploymentHistItem(String hisId, String sid, String empCode, Integer salarySegment) {
 		super();
 		this.hisId = hisId;
 		this.sid = sid;

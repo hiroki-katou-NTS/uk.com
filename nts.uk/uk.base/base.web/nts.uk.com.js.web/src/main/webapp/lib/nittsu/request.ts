@@ -194,6 +194,8 @@ module nts.uk.request {
                     dfd.resolve(res);
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log("request failed");
+                console.log(arguments);
                 specials.errorPages.systemError(jqXHR.responseJSON);
             });
         }

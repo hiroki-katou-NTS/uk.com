@@ -22,6 +22,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
         listDeadline: KnockoutObservableArray<any>;
         itemBaseAtr: KnockoutObservableArray<any>;
         outputAtr: KnockoutObservableArray<any>;
+        itemCorrectDeadlineAtr: KnockoutObservableArray<any>;
         useCls: KnockoutObservable<number>;
         currentItem: KnockoutObservable<PermissonDto>;
         items: KnockoutObservableArray<PermissonDto>;
@@ -45,8 +46,15 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                 { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                 { code: 1, name: nts.uk.resource.getText("KSM011_9") }
             ]);
+            let arr: any = [];
+            for (let i = 0; i <= 32; i++) {
+                arr.push({ code: i, name: i + '日' });
+            }
+            self.itemCorrectDeadlineAtr = ko.observableArray(arr);
             self.currentItem = ko.observable(new PermissonDto({}));
-            self.items = ko.observableArray([]);
+            self.items = ko.observableArray([
+
+            ]);
             self.useCls = ko.observable(0);
             self.correctDeadline = ko.observable(0);
             self.component.currentCode.subscribe(function(codeChanged) {
@@ -116,6 +124,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                 });
             }).then(() => {
                 self.componentShift.startPage().done(function() {
+                    self.listPermissionShift(self.componentShift.listPermissions());
                 });
             });
         }
@@ -226,7 +235,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
         findAll(roleId: string): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            self.items.removeAll();
+
             service.findAll(roleId).done(function(permissonTotalArr: any) {
                 if (permissonTotalArr != null) {
                     var totalTime: IPermissonDto = {
@@ -237,6 +246,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                         shiftPermisson: permissonTotalArr.shiftPermisson,
                         schemodifyDeadline: permissonTotalArr.schemodifyDeadline
                     };
+                    self.items.removeAll();
                     self.items.push(new PermissonDto(totalTime));
 
                     var listCommon = [];

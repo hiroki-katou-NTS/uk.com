@@ -25,7 +25,6 @@ module cps001.f.vm {
         fileSize: KnockoutObservable<string>;
         uploadFinished: (fileInfo) => void;
         onfilenameclick: (fileId) => void;
-        stereoType: KnockoutObservable<string>;
 
 
         items: Array<GridItem> = [];
@@ -36,7 +35,6 @@ module cps001.f.vm {
         constructor() {
             let self = this,
                 dto: any = getShared('CPS001F_PARAMS') || {};
-            self.stereoType = ko.observable("flowmenu");
             self.fileId = ko.observable("");
             self.filename = ko.observable("");
             self.fileInfo = ko.observable(null);
@@ -104,8 +102,6 @@ module cps001.f.vm {
                         unblock();
                     });
                 });
-
-                setShared('CPS001F_VALUES', {});
             }
         }
 
@@ -121,8 +117,8 @@ module cps001.f.vm {
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 block();
                 service.deletedata(rowItem.fileId).done(() => {
-                    unblock();
                     self.restart();
+                    unblock();
                 }).fail((mes) => {
                     unblock();
                 });

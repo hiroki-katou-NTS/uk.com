@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListInit
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListOutPut;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppMasterInfo;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.ApplicationFullOutput;
+import nts.uk.ctx.at.request.dom.application.applicationlist.service.CheckColorTime;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.PhaseStatus;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispNameRepository;
@@ -60,20 +61,27 @@ public class ApplicationListFinder {
 			displaySet = ApprovalListDisplaySetDto.fromDomain(appDisplaySet);
 		}
 		//URパラメータが存在する-(Check param)
-		if(param.getAppListAtr() != null){//存在する場合
-			//期間（開始日、終了日）が存する場合
-			if(StringUtil.isNullOrEmpty(param.getStartDate(), false) || StringUtil.isNullOrEmpty(param.getEndDate(), false)){
-				//アルゴリズム「申請一覧初期日付期間」を実行する-(Thực hiện thuật toán lấy ngày　－12)
-				DatePeriod date = repoAppListInit.getInitialPeriod(companyId);
-				param.setStartDate(date.start().toString());
-				param.setEndDate(date.end().toString());
-			}
-			// TODO Auto-generated method stub
-		}else{//存在しない場合
-			//ドメインモデル「申請一覧抽出条件」を取得する
-			// TODO Auto-generated method stub
-			//申請一覧抽出条件.社員IDリストが空白
+		if(StringUtil.isNullOrEmpty(param.getStartDate(), false) || StringUtil.isNullOrEmpty(param.getEndDate(), false)){
+			//アルゴリズム「申請一覧初期日付期間」を実行する-(Thực hiện thuật toán lấy ngày　－12)
+			DatePeriod date = repoAppListInit.getInitialPeriod(companyId);
+			param.setStartDate(date.start().toString());
+			param.setEndDate(date.end().toString());
+			
 		}
+//		if(param.getAppListAtr() != null){//存在する場合
+//			//期間（開始日、終了日）が存する場合
+//			if(StringUtil.isNullOrEmpty(param.getStartDate(), false) || StringUtil.isNullOrEmpty(param.getEndDate(), false)){
+//				//アルゴリズム「申請一覧初期日付期間」を実行する-(Thực hiện thuật toán lấy ngày　－12)
+//				DatePeriod date = repoAppListInit.getInitialPeriod(companyId);
+//				param.setStartDate(date.start().toString());
+//				param.setEndDate(date.end().toString());
+//			}
+//			// TODO Auto-generated method stub
+//		}else{//存在しない場合
+//			//ドメインモデル「申請一覧抽出条件」を取得する
+//			// TODO Auto-generated method stub
+//			//申請一覧抽出条件.社員IDリストが空白
+//		}
 		//ドメインモデル「申請一覧共通設定フォーマット.表の列幅」を取得-(Lấy 表の列幅)//xu ly o ui
 		//アルゴリズム「申請一覧リスト取得」を実行する-(Thực hiện thuật toán Application List get): 1-申請一覧リスト取得
 		AppListExtractCondition appListExCon = param.convertDtotoDomain(param);
@@ -94,10 +102,11 @@ public class ApplicationListFinder {
 			for (AppMasterInfo master : lstApp.getLstMasterInfo()) {
 				master.setStatusFrameAtr(this.findStatusFrame(lstApp.getLstFramStatus(), master.getAppID()));
 				master.setPhaseStatus(this.findStatusPhase(lstApp.getLstPhaseStatus(), master.getAppID()));
+				master.setCheckTimecolor(this.findColorAtr(lstApp.getLstTimeColor(), master.getAppID()));
 			}
 		}
 		return new ApplicationListDto(displaySet, lstApp.getLstMasterInfo(),lstAppDto,lstApp.getLstAppOt(),lstApp.getLstAppGoBack(),
-				lstApp.getAppStatusCount(), lstApp.getLstTimeColor());
+				lstApp.getAppStatusCount(), lstApp.getLstAppGroup());
 	}
 	
 	private Integer findStatusAppv(List<AppStatusApproval> lstStatusApproval, String appID){
@@ -124,6 +133,14 @@ public class ApplicationListFinder {
 		}
 		return null;
 	}
+	private int findColorAtr(List<CheckColorTime> lstTimeColor, String appId){
+		for (CheckColorTime checkColorTime : lstTimeColor) {
+			if(checkColorTime.getAppID().equals(appId)){
+				return checkColorTime.getColorAtr();
+			}
+		}
+		return 0;
+	}
 	/**
 	 * requestList #26
 	 * getApplicationBySID 
@@ -132,30 +149,30 @@ public class ApplicationListFinder {
 	 * @param endDate
 	 * @return list<ApplicationExport>
 	 */
-	public List<ApplicationExportDto> getApplicationBySID(List<String> employeeID, GeneralDate startDate, GeneralDate endDate){
-		List<ApplicationExportDto> applicationExports = new ArrayList<>();
-		List<Application_New> application = this.applicationRepository_New.getApplicationBySIDs(employeeID, startDate, endDate);
-		if(CollectionUtil.isEmpty(application)){
-			return applicationExports;
-		}
-		List<Application_New> applicationExcessHoliday = application.stream().filter(x -> x.getAppType().value != ApplicationType.ABSENCE_APPLICATION.value).collect(Collectors.toList());
-		for(Application_New app : applicationExcessHoliday){
-			ApplicationExportDto applicationExport = new ApplicationExportDto();
-			applicationExport.setAppDate(app.getAppDate());
-			applicationExport.setAppType(app.getAppType().value);
-			applicationExport.setEmployeeID(app.getEmployeeID());
-			applicationExport.setAppTypeName(appDispNameRepository.getDisplay(app.getAppType().value).isPresent() ? appDispNameRepository.getDisplay(app.getAppType().value).get().getDispName().toString() : "" );
-			applicationExports.add(applicationExport);
-		}
-		List<Application_New> applicationHoliday = application.stream().filter(x -> x.getAppType().value == ApplicationType.ABSENCE_APPLICATION.value).collect(Collectors.toList());
-		for(Application_New app : applicationHoliday){
-			ApplicationExportDto applicationExport = new ApplicationExportDto();
-			applicationExport.setAppDate(app.getAppDate());
-			applicationExport.setAppType(app.getAppType().value);
-			applicationExport.setEmployeeID(app.getEmployeeID());
-			applicationExport.setAppTypeName(hdAppDispNameRepository.getHdApp(app.getAppType().value).isPresent() ? hdAppDispNameRepository.getHdApp(app.getAppType().value).get().getDispName().toString() : "" );
-			applicationExports.add(applicationExport);
-		}
-		return applicationExports;
-	} 
+//	public List<ApplicationExportDto> getApplicationBySID(List<String> employeeID, GeneralDate startDate, GeneralDate endDate){
+//		List<ApplicationExportDto> applicationExports = new ArrayList<>();
+//		List<Application_New> application = this.applicationRepository_New.getApplicationBySIDs(employeeID, startDate, endDate);
+//		if(CollectionUtil.isEmpty(application)){
+//			return applicationExports;
+//		}
+//		List<Application_New> applicationExcessHoliday = application.stream().filter(x -> x.getAppType().value != ApplicationType.ABSENCE_APPLICATION.value).collect(Collectors.toList());
+//		for(Application_New app : applicationExcessHoliday){
+//			ApplicationExportDto applicationExport = new ApplicationExportDto();
+//			applicationExport.setAppDate(app.getAppDate());
+//			applicationExport.setAppType(app.getAppType().value);
+//			applicationExport.setEmployeeID(app.getEmployeeID());
+//			applicationExport.setAppTypeName(appDispNameRepository.getDisplay(app.getAppType().value).isPresent() ? appDispNameRepository.getDisplay(app.getAppType().value).get().getDispName().toString() : "" );
+//			applicationExports.add(applicationExport);
+//		}
+//		List<Application_New> applicationHoliday = application.stream().filter(x -> x.getAppType().value == ApplicationType.ABSENCE_APPLICATION.value).collect(Collectors.toList());
+//		for(Application_New app : applicationHoliday){
+//			ApplicationExportDto applicationExport = new ApplicationExportDto();
+//			applicationExport.setAppDate(app.getAppDate());
+//			applicationExport.setAppType(app.getAppType().value);
+//			applicationExport.setEmployeeID(app.getEmployeeID());
+//			applicationExport.setAppTypeName(hdAppDispNameRepository.getHdApp(app.getAppType().value).isPresent() ? hdAppDispNameRepository.getHdApp(app.getAppType().value).get().getDispName().toString() : "" );
+//			applicationExports.add(applicationExport);
+//		}
+//		return applicationExports;
+//	} 
 }
