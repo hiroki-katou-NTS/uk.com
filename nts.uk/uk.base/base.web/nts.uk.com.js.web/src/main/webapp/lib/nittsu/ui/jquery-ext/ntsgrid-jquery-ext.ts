@@ -1264,6 +1264,7 @@ module nts.uk.ui.jqueryExtentions {
         }
 
         module functions {
+            export let ERRORS: string = "errors";
             export let UPDATE_ROW: string = "updateRow";
             export let UPDATED_CELLS: string = "updatedCells";
             export let ENABLE_CONTROL: string = "enableNtsControlAt";
@@ -1321,7 +1322,17 @@ module nts.uk.ui.jqueryExtentions {
                         break;
                     case UPDATED_CELLS:
                         return $grid.data(internal.UPDATED_CELLS);
+                    case ERRORS:
+                        return getErrors($grid);
                 }
+            }
+            
+            /**
+             * Get errors.
+             */
+            function getErrors($grid: JQuery) {
+                if (!$grid) return [];
+                return $grid.data(internal.ERRORS);
             }
     
             /**
@@ -2268,9 +2279,13 @@ module nts.uk.ui.jqueryExtentions {
                     let selectedCells: Array<any> = selection.getSelectedCells(this.$grid);
                     let copiedData;
                     let checker = cut ? utils.isCuttableControls : utils.isCopiableControls;
+                    nts.uk.ui.block.grayout();
                     if (selectedCells.length === 1) {
                         this.copyMode = CopyMode.SINGLE;
-                        if (!checker(this.$grid, selectedCells[0].columnKey)) return;
+                        if (!checker(this.$grid, selectedCells[0].columnKey)) {
+                            nts.uk.ui.block.clear();
+                            return;
+                        }
                         if (utils.isComboBox(this.$grid, selectedCells[0].columnKey)) {
                             let $comboBox = utils.comboBoxOfCell(selectedCells[0]);
                             if ($comboBox.length > 0) {
@@ -2287,6 +2302,7 @@ module nts.uk.ui.jqueryExtentions {
                     }
                     $("#copyHelper").val(copiedData).select();
                     document.execCommand("copy");
+                    nts.uk.ui.block.clear();
                     return selectedCells;
                 }
                 
@@ -2367,11 +2383,13 @@ module nts.uk.ui.jqueryExtentions {
                  * Paste
                  */
                 pasteHandler(evt: any) {
+                    nts.uk.ui.block.grayout();
                     if (this.copyMode === CopyMode.SINGLE) {
                         this.pasteSingleCellHandler(evt);
                     } else {
                         this.pasteRangeHandler(evt);
                     }
+                    nts.uk.ui.block.clear();
                 }
                 
                 /**
@@ -3095,6 +3113,48 @@ module nts.uk.ui.jqueryExtentions {
             export let NO_ERROR_STL = { "border-color": "" };
             export let EDITOR_SELECTOR = "div.ui-igedit-container";
             
+            export class GridCellError {
+                grid: JQuery;
+                rowId: any;
+                columnKey: string;
+                message: string;
+                
+                constructor(grid: JQuery, rowId: any, columnKey: any, message: string) {
+                    this.grid = grid;
+                    this.rowId = rowId;
+                    this.columnKey = columnKey;
+                    this.message = message;   
+                }
+                
+                equals(err: GridCellError) {
+                    if (!this.grid.is(err.grid)) return false;
+                    if (this.rowId !== err.rowId) return false;
+                    if (this.columnKey !== err.columnKey) return false;
+                    return true;
+                }
+            }
+            
+            function addCellError($grid: JQuery, error: any) {
+                let gridErrors: Array<any> = $grid.data(internal.ERRORS);
+                if (!gridErrors) {
+                    $grid.data(internal.ERRORS, [ error ]);
+                    return;
+                }
+                
+                if (gridErrors.some(function(e: GridCellError) {
+                    return e.equals(error);
+                })) return;
+                gridErrors.push(error);
+            }
+        
+            function removeCellError($grid: JQuery, rowId: any, key: any) {
+                let gridErrors: Array<any> = $grid.data(internal.ERRORS);
+                if (!gridErrors) return;
+                _.remove(gridErrors, function(e) {
+                    return $grid.is(e.grid) && rowId === e.rowId && key === e.columnKey;
+                });
+            }
+            
             export function mark($grid: JQuery) {
                 let errorsLog = $grid.data(internal.ERRORS_LOG);
                 if (util.isNullOrUndefined(errorsLog)) return;
@@ -3119,24 +3179,22 @@ module nts.uk.ui.jqueryExtentions {
                 let $cell = $(cell.element);
                 decorate($cell);
                 let errorDetails = createErrorInfos($grid, cell, message);
-                ui.errors.addCell(errorDetails);
+//                ui.errors.addCell(errorDetails);
+                addCellError($grid, errorDetails);
                 addErrorInSheet($grid, cell);
             }
             
             function createErrorInfos($grid: JQuery, cell: any, message: string): any {
                 let record: any = $grid.igGrid("findRecordByKey", cell.id);
-                let error: any = {
-                    grid: $grid,
-                    rowId: cell.id,
-                    columnKey: cell.columnKey,
-                    message: message
-                };
+                let setting: any = $grid.data(internal.SETTINGS);
+                let error: any = new GridCellError($grid, cell.id, cell.columnKey, message);
                 // Error column headers
-                let headers = ko.toJS(ui.errors.errorsViewModel().option().headers());
+//                let headers = ko.toJS(ui.errors.errorsViewModel().option().headers());
+                let headers = setting.errorColumns;
                 _.forEach(headers, function(header: any) {
-                    if (util.isNullOrUndefined(record[header.name]) 
-                        || !util.isNullOrUndefined(error[header.name])) return;
-                    error[header.name] = record[header.name];
+                    if (util.isNullOrUndefined(record[header]) 
+                        || !util.isNullOrUndefined(error[header])) return;
+                    error[header] = record[header];
                 });
                 return error;
             } 
@@ -3148,7 +3206,8 @@ module nts.uk.ui.jqueryExtentions {
                 $cell.css(NO_ERROR_STL);
                 let $editor = $cell.find(EDITOR_SELECTOR);
                 if ($editor.length > 0) $editor.css(NO_ERROR_STL);
-                ui.errors.removeCell($grid, cell.id, cell.columnKey);
+//                ui.errors.removeCell($grid, cell.id, cell.columnKey);
+                removeCellError($grid, cell.id, cell.columnKey);
                 removeErrorFromSheet($grid, cell);
             }
             
@@ -4058,6 +4117,7 @@ module nts.uk.ui.jqueryExtentions {
                 let rebuild;
                 data.preventEditInError = options.preventEditInError;
                 data.dataSourceAdapter = options.dataSourceAdapter;
+                data.errorColumns = options.errorColumns;
                 if (!$grid.data(internal.SETTINGS)) {
                     $grid.data(internal.SETTINGS, data);
                 } else {
@@ -4140,6 +4200,7 @@ module nts.uk.ui.jqueryExtentions {
             export let SPECIAL_COL_TYPES = "ntsSpecialColumnTypes";
             export let ENTER_DIRECT = "enter";
             export let SETTINGS = "ntsSettings";
+            export let ERRORS = "ntsErrors";
             export let ERRORS_LOG = "ntsErrorsLog";
             export let LOADER = "ntsLoader";
             export let TXT_RAW = "rawText";

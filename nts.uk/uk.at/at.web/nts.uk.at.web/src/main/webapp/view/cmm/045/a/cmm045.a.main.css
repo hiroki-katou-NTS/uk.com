@@ -16,11 +16,14 @@
 .reflectCell {
 	background-color: #CEE6FF;
 }
-.overdelivery {
+/* .overdelivery {
 	background-color: #ffff00;
-}
-.preExcess {
+} */
+.preAppExcess {
 	background-color: #ffc0cb;
+}
+.workingResultExcess{
+	background-color: #ffff00;
 }
 table#grid2 tbody tr {
 	max-height: 50px !important;
