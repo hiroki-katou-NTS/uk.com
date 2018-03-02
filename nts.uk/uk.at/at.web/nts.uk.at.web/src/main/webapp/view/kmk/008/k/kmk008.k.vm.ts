@@ -141,21 +141,42 @@ module nts.uk.at.view.kmk008.k {
                     return;
                 }
                 if (self.isYearMonth) {
-                    new service.Service().addAgreementMonthSetting(new AddUpdateMonthSettingModel(self.currentSelectItem())).done((res) => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.updateEnable(true);
-                        self.reloadData(yearOrYearMonth);
-                    }).fail((res) => {
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage(res.message));
-                    });
+//                    new service.Service().addAgreementMonthSetting(new AddUpdateMonthSettingModel(self.currentSelectItem())).done((res) => {
+//                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+//                        self.updateEnable(true);
+//                        self.reloadData(yearOrYearMonth);
+//                    }).fail((res) => {
+//                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage(res.message));
+//                    });
+                    
+                    new service.Service().addAgreementMonthSetting(new AddUpdateMonthSettingModel(self.currentSelectItem())).done(listError => {
+                            if (listError.length > 0) {
+                                let errorCode = _.split(listError[0], ',');
+                                nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [nts.uk.resource.getText(errorCode[1]), nts.uk.resource.getText(errorCode[2])] });
+                                return;
+                            }
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                            self.reloadData(yearOrYearMonth);
+
+                        });
                 } else {
-                    new service.Service().addAgreementYearSetting(new AddUpdateYearSettingModel(self.currentSelectItem())).done((res) => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.updateEnable(true);
-                        self.reloadData(yearOrYearMonth);
-                    }).fail((res) => {
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage(res.message));
-                    });
+//                    new service.Service().addAgreementYearSetting(new AddUpdateYearSettingModel(self.currentSelectItem())).done((res) => {
+//                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+//                        self.updateEnable(true);
+//                        self.reloadData(yearOrYearMonth);
+//                    }).fail((res) => {
+//                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage(res.message));
+//                    });
+                    new service.Service().addAgreementYearSetting(new AddUpdateYearSettingModel(self.currentSelectItem())).done(listError => {
+                            if (listError.length > 0) {
+                                let errorCode = _.split(listError[0], ',');
+                                nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [nts.uk.resource.getText(errorCode[1]), nts.uk.resource.getText(errorCode[2])] });
+                                return;
+                            }
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                            self.reloadData(yearOrYearMonth);
+
+                        });
                 }
             }
 
@@ -165,21 +186,41 @@ module nts.uk.at.view.kmk008.k {
                     return;
                 }
                 if (self.isYearMonth) {
-                    new service.Service().updateAgreementMonthSetting(new AddUpdateMonthSettingModel(self.currentSelectItem())).done((res) => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.updateEnable(true);
-                        self.reloadData(self.currentCodeSelect());
-                    }).fail((res) => {
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage(res.messageId, ['{#KMK008_42}', '{#KMK008_44}']));
-                    });
+//                    new service.Service().updateAgreementMonthSetting(new AddUpdateMonthSettingModel(self.currentSelectItem())).done((res) => {
+//                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+//                        self.updateEnable(true);
+//                        self.reloadData(self.currentCodeSelect());
+//                    }).fail((res) => {
+//                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage(res.messageId, ['{#KMK008_42}', '{#KMK008_44}']));
+//                    });
+                    new service.Service().updateAgreementMonthSetting(new AddUpdateMonthSettingModel(self.currentSelectItem())).done(listError => {
+                            if (listError.length > 0) {
+                                let errorCode = _.split(listError[0], ',');
+                                nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [nts.uk.resource.getText(errorCode[1]), nts.uk.resource.getText(errorCode[2])] });
+                                return;
+                            }
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                            self.reloadData(self.currentCodeSelect());
+
+                        });
                 } else {
-                    new service.Service().updateAgreementYearSetting(new AddUpdateYearSettingModel(self.currentSelectItem())).done((res) => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.updateEnable(true);
-                        self.reloadData(self.currentCodeSelect());
-                    }).fail((res) => {
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage(res.messageId, ['{#KMK008_42}', '{#KMK008_44}']));
-                    });
+//                    new service.Service().updateAgreementYearSetting(new AddUpdateYearSettingModel(self.currentSelectItem())).done((res) => {
+//                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+//                        self.updateEnable(true);
+//                        self.reloadData(self.currentCodeSelect());
+//                    }).fail((res) => {
+//                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage(res.messageId, ['{#KMK008_42}', '{#KMK008_44}']));
+//                    });
+                    new service.Service().updateAgreementYearSetting(new AddUpdateYearSettingModel(self.currentSelectItem())).done(listError => {
+                            if (listError.length > 0) {
+                                let errorCode = _.split(listError[0], ',');
+                                nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [nts.uk.resource.getText(errorCode[1]), nts.uk.resource.getText(errorCode[2])] });
+                                return;
+                            }
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                            self.reloadData(self.currentCodeSelect());
+
+                        });
                 }
             }
 

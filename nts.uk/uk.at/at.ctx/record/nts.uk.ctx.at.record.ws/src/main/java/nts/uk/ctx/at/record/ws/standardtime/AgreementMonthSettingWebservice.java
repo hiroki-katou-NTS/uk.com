@@ -35,8 +35,8 @@ public class AgreementMonthSettingWebservice {
 	
 	@POST
 	@Path("addAgreementMonthSetting")
-	public void addAgreementMonthSetting(AddAgreementMonthSettingCommand command) {
-		this.addAgreementMonthSettingCommandHandler.handle(command);
+	public List<String> addAgreementMonthSetting(AddAgreementMonthSettingCommand command) {
+		return this.addAgreementMonthSettingCommandHandler.handle(command);
 	}
 
 	@POST
@@ -47,8 +47,8 @@ public class AgreementMonthSettingWebservice {
 	
 	@POST
 	@Path("updateAgreementMonthSetting")
-	public void updateAgreementMonthSetting(UpdateAgreementMonthSettingCommand command) {
-		this.updateAgreementMonthSettingCommandHandler.handle(command);
+	public List<String> updateAgreementMonthSetting(UpdateAgreementMonthSettingCommand command) {
+		return this.updateAgreementMonthSettingCommandHandler.handle(command);
 	}
 	
 	@POST
