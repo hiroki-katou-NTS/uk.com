@@ -327,49 +327,77 @@ module nts.uk.com.view.cmm018.a {
                 //_____CCG001________
                 self.selectedEmployee = ko.observableArray([]);
                 self.showinfoSelectedEmployee = ko.observable(false);
-                self.baseDate = ko.observable(moment(new Date()).toDate());
+                //self.baseDate = ko.observable(moment(new Date()).toDate());
                 self.ccgcomponent = {
-                   baseDate: self.baseDate,
-                   //Show/hide options
-                   isQuickSearchTab: true,
-                   isAdvancedSearchTab: true,
-                   isAllReferableEmployee: true,
-                   isOnlyMe: true,
-                   isEmployeeOfWorkplace: true,
-                   isEmployeeWorkplaceFollow: true,
-                   isMutipleCheck: true,
-                   isSelectAllEmployee: true,
+               
+                showEmployeeSelection: false, // 検索タイプ
+                systemType: 2, // システム区分
+                showQuickSearchTab: true, // クイック検索
+                showAdvancedSearchTab: true, // 詳細検索
+                showBaseDate: true, // 基準日利用
+                showClosure: false, // 就業締め日利用
+                showAllClosure: false, // 全締め表示
+                showPeriod: false, // 対象期間利用
+                periodFormatYM: false, // 対象期間精度
+
+                /** Required parameter */
+                baseDate: moment.utc().toISOString(), // 基準日
+                periodStartDate: moment.utc("1900/01/01", "YYYY/MM/DD").toISOString(), // 対象期間開始日
+                periodEndDate: moment.utc("9999/12/31", "YYYY/MM/DD").toISOString(), // 対象期間終了日
+                inService: false, // 在職区分
+                leaveOfAbsence: false, // 休職区分
+                closed: false, // 休業区分
+                retirement: false, // 退職区分
+
+                /** Quick search tab options */
+                showAllReferableEmployee: true, // 参照可能な社員すべて
+                showOnlyMe: false, // 自分だけ
+                showSameWorkplace: true, // 同じ職場の社員
+                showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
+
+                /** Advanced search properties */
+                showEmployment: false, // 雇用条件
+                showWorkplace: true, // 職場条件
+                showClassification: false, // 分類条件
+                showJobTitle: false, // 職位条件
+                showWorktype: false, // 勤種条件
+                isMutipleCheck: true,
                    /**  
                    * @param dataList: list employee returned from component.
                    * Define how to use this list employee by yourself in the function's body.
                    */
-                   onSearchAllClicked: function(dataList: vmbase.EmployeeSearchDto[]) {
-                       self.showinfoSelectedEmployee(true);
-                       self.selectedEmployee(dataList);
-                        __viewContext.viewModel.viewmodelA.convertEmployeeCcg01ToKcp009(dataList);
-                   },
-                   onSearchOnlyClicked: function(data: vmbase.EmployeeSearchDto) {
-                       self.showinfoSelectedEmployee(true);
-                       let dataEmployee: vmbase.EmployeeSearchDto[] = [];
-                       dataEmployee.push(data);
-                       self.selectedEmployee(dataEmployee);
-                       self.convertEmployeeCcg01ToKcp009(dataEmployee);
-                   },
-                   onSearchOfWorkplaceClicked: function(dataList: vmbase.EmployeeSearchDto[]) {
-                       self.showinfoSelectedEmployee(true);
-                       self.selectedEmployee(dataList);
-                       self.convertEmployeeCcg01ToKcp009(dataList);
-                   },
-                   onSearchWorkplaceChildClicked: function(dataList: vmbase.EmployeeSearchDto[]) {
-                       self.showinfoSelectedEmployee(true);
-                       self.selectedEmployee(dataList);
-                       self.convertEmployeeCcg01ToKcp009(dataList);
-                   },
-                   onApplyEmployee: function(dataEmployee: vmbase.EmployeeSearchDto[]) {
-                       self.showinfoSelectedEmployee(true);
-                       self.selectedEmployee(dataEmployee);
-                       self.convertEmployeeCcg01ToKcp009(dataEmployee);
-                   }
+                 returnDataFromCcg001: function(data: vmbase.Ccg001ReturnedData){
+                     self.showinfoSelectedEmployee(true);
+                     self.selectedEmployee(data.listEmployee);
+                     __viewContext.viewModel.viewmodelA.convertEmployeeCcg01ToKcp009(data.listEmployee);
+                 }
+//                   onSearchAllClicked: function(dataList: vmbase.EmployeeSearchDto[]) {
+//                       self.showinfoSelectedEmployee(true);
+//                       self.selectedEmployee(dataList);
+//                        __viewContext.viewModel.viewmodelA.convertEmployeeCcg01ToKcp009(dataList);
+//                   },
+//                   onSearchOnlyClicked: function(data: vmbase.EmployeeSearchDto) {
+//                       self.showinfoSelectedEmployee(true);
+//                       let dataEmployee: vmbase.EmployeeSearchDto[] = [];
+//                       dataEmployee.push(data);
+//                       self.selectedEmployee(dataEmployee);
+//                       self.convertEmployeeCcg01ToKcp009(dataEmployee);
+//                   },
+//                   onSearchOfWorkplaceClicked: function(dataList: vmbase.EmployeeSearchDto[]) {
+//                       self.showinfoSelectedEmployee(true);
+//                       self.selectedEmployee(dataList);
+//                       self.convertEmployeeCcg01ToKcp009(dataList);
+//                   },
+//                   onSearchWorkplaceChildClicked: function(dataList: vmbase.EmployeeSearchDto[]) {
+//                       self.showinfoSelectedEmployee(true);
+//                       self.selectedEmployee(dataList);
+//                       self.convertEmployeeCcg01ToKcp009(dataList);
+//                   },
+//                   onApplyEmployee: function(dataEmployee: vmbase.EmployeeSearchDto[]) {
+//                       self.showinfoSelectedEmployee(true);
+//                       self.selectedEmployee(dataEmployee);
+//                       self.convertEmployeeCcg01ToKcp009(dataEmployee);
+//                   }
                 } 
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
                 // Init Fixed Table
@@ -388,7 +416,8 @@ module nts.uk.com.view.cmm018.a {
                    self.selectedItem('');
                }else{
                    let item = self.findIdSelected(dataList,self.selectedItem());
-                   if(item == undefined) self.selectedItem(dataList[0].employeeId);
+                    let sortByEmployeeCode =  _.orderBy(dataList, ["employeeCode"], ["asc"]);
+                   if(item == undefined) self.selectedItem(sortByEmployeeCode[0].employeeId);
                }
                 
             }
@@ -458,18 +487,18 @@ module nts.uk.com.view.cmm018.a {
                         });
                     });
                 }
-                servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {   
-                    block.clear();
-                    if(data == null || data === undefined){
-                        self.lstCompany();
-                        self.nameCompany('');
-                        return;
-                    } 
-                    //get name application type
-                    servicebase.getNameAppType().done(function(lstName: Array<vmbase.ApplicationType>){
-                        _.each(lstName, function(item){
-                             self.lstNameAppType.push(new vmbase.ApplicationType(item.value, item.localizedName,1));
-                        });
+                //get name application type
+                servicebase.getNameAppType().done(function(lstName: Array<vmbase.ApplicationType>){
+                    _.each(lstName, function(item){
+                         self.lstNameAppType.push(new vmbase.ApplicationType(item.value, item.localizedName,1));
+                    });
+                    servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {   
+                        block.clear();
+                        if(data == null || data === undefined){
+                            self.lstCompany();
+                            self.nameCompany('');
+                            return;
+                        } 
                         servicebase.getNameConfirmType().done(function(lstNameCfr){
                             _.each(lstNameCfr, function(item){
                                 self.lstNameAppType.push(new vmbase.ApplicationType(item.value, item.localizedName, 2));

@@ -48,9 +48,9 @@ public class BsymtEmploymentHistItem extends UkJpaEntity implements Serializable
 	 * 3 = hourlySalary - 時間給
 	 * 4 = monthlySalary - 月給
 	 *  */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "SALARY_SEGMENT")
-	public int salarySegment;
+	public Integer salarySegment;
 	
 	/** The bsymt aff class history. */
 	// Add by ThanhNC

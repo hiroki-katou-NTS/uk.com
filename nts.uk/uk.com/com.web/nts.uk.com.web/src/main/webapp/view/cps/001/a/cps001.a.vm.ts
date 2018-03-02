@@ -475,11 +475,11 @@ module cps001.a.vm {
 
                 // push data layout to webservice
                 block();
-                service.saveCurrentLayout(command).done((selected: string) => {
+                service.saveCurrentLayout(command).done((selecteds: Array<string>) => {
                     let firstData: MultiData = _.first(self.multipleData()) || new MultiData(),
                         saveData: IReloadData = {
-                            id: selected || firstData.id(),
-                            infoId: firstData.infoId(),
+                            id: firstData.id(),
+                            infoId: selecteds[0] || firstData.infoId(),
                             categoryId: firstData.categoryId()
                         };
 

@@ -12,6 +12,7 @@ module nts.uk.com.view.ccg.share.ccg {
     import EmployeeRangeSelection = service.model.EmployeeRangeSelection;
     import EmployeeQueryParam = service.model.EmployeeQueryParam;
     import EmployeeDto = service.model.EmployeeDto;
+    import DatePeriodDto = service.model.DatePeriodDto;
 
     export module viewmodel {
         
@@ -119,6 +120,9 @@ module nts.uk.com.view.ccg.share.ccg {
             // reserved list employee for KCP005
             reservedEmployees: KnockoutObservableArray<EmployeeSearchDto>;
 
+            // Acquired baseDate
+            acquiredBaseDate: KnockoutObservable<string>;
+
             /**
              * Init screen model
              */
@@ -160,6 +164,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.baseDate = ko.observable(moment());
                 self.periodStart = ko.observable(moment());
                 self.periodEnd = ko.observable(moment());
+                self.acquiredBaseDate = ko.observable('');
 
                 // status of employee
                 self.selectedIncumbent = ko.observable(false);
@@ -509,11 +514,13 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.systemType = options.systemType;
                 // always show quick search if advanced search is hidden
                 self.showQuickSearchTab = options.showAdvancedSearchTab ? options.showQuickSearchTab : true;
+                // showBaseDate and showPeriod can not hide at the same time
                 self.showBaseDate = !options.showBaseDate && !options.showPeriod ? true : options.showBaseDate;
                 self.showClosure = options.showClosure;
                 self.showAllClosure = options.showAllClosure;
                 self.showPeriod = options.showPeriod;
-                self.showPeriodYM = options.periodFormatYM;
+                // if ShowPeriod = false then period accuracy must be false too. 
+                self.showPeriodYM = self.showPeriod ? options.periodFormatYM : false;
 
                 /** Required parameter */
                 self.baseDate(moment.utc(options.baseDate));
@@ -766,9 +773,11 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             private isNotFutureDate(acquiredBaseDate: string): boolean {
                 let self = this;
-                if (self.isFutureDate(moment.utc(acquiredBaseDate))) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_853" });
-                    return false;
+                if (self.showBaseDate){
+                    if (self.isFutureDate(moment.utc(acquiredBaseDate))) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_853" });
+                        return false;
+                    }
                 }
                 if (self.isFutureDate(self.periodEnd())) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_860" });
@@ -801,11 +810,11 @@ module nts.uk.com.view.ccg.share.ccg {
                 nts.uk.ui.block.invisible(); // block ui
 
                 // Check future reference permission
-                $.when(self.acquireBaseDate(), self.getFuturePermit())
-                    .done((acquiredDate, permit) => {
-                        if (permit || self.isNotFutureDate(acquiredDate)) {
+                $.when(self.setBaseDateAndPeriod(), self.getFuturePermit())
+                    .done((noValue, permit) => {
+                        if (permit || self.isNotFutureDate(self.acquiredBaseDate())) {
                             // has permission or acquiredDate is not future
-                            self.queryParam.baseDate = acquiredDate;
+                            self.queryParam.baseDate = self.acquiredBaseDate();
                             if (self.showAdvancedSearchTab) {
                                 self.reloadAdvanceSearchTab().done(() => {
                                     nts.uk.ui.block.clear();// clear block UI
@@ -1028,26 +1037,51 @@ module nts.uk.com.view.ccg.share.ccg {
             }
 
             /**
-             * Acquire base date
+             * Set base date and period
              */
-            public acquireBaseDate(): JQueryPromise<string> { // format: YYYY-MM-DD
-                let dfd = $.Deferred<String>();
+            public setBaseDateAndPeriod(): JQueryPromise<void> { // format: YYYY-MM-DD
+                let dfd = $.Deferred<void>();
                 let self = this;
+                // set base date
                 if (self.showBaseDate) {
-                    dfd.resolve(self.baseDate().format(CcgDateFormat.DEFAULT_FORMAT));
-                } else {
-                    if (self.showPeriodYM) { // Period accuracy is YM 
-                        service.calculatePeriod(
-                            // アルゴリズム「当月の期間を算出する」を実行する
-                            self.selectedClosure() == ConfigEnumClosure.CLOSURE_ALL ? 1 : self.selectedClosure(),
-                            parseInt(self.periodEnd().format('YYYYMM')))
-                            .done(date => {
-                                return dfd.resolve(date[0]);
-                            });
-                    } else { // Period accuracy is YMD
-                        dfd.resolve(self.periodEnd().format(CcgDateFormat.DEFAULT_FORMAT));
-                    }
+                    self.acquiredBaseDate(self.baseDate().format(CcgDateFormat.DEFAULT_FORMAT));
                 }
+
+                // set period
+                if (self.showPeriod) {
+                    self.queryParam.periodStart = self.periodStart().format(CcgDateFormat.DEFAULT_FORMAT);
+                    self.queryParam.periodEnd = self.periodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
+                } else {
+                    // set period = base date (Period accuracy is YMD)
+                    self.queryParam.periodStart = self.baseDate().format(CcgDateFormat.DEFAULT_FORMAT);
+                    self.queryParam.periodEnd = self.baseDate().format(CcgDateFormat.DEFAULT_FORMAT);
+                }
+
+                // Period accuracy is YM 
+                if (self.showPeriodYM) {
+                    self.calculatePeriod().done(period => {
+                        if (!self.showBaseDate) {
+                            self.acquiredBaseDate(period.endDate);
+                        }
+                        self.queryParam.periodStart = period.startDate;
+                        self.queryParam.periodEnd = period.endDate;
+                        dfd.resolve();
+                    });
+                } else {
+                    dfd.resolve();
+                }
+
+                return dfd.promise();
+            }
+
+            public calculatePeriod(): JQueryPromise<DatePeriodDto> {
+                let self = this;
+                let dfd = $.Deferred<DatePeriodDto>();
+                const closureId = self.selectedClosure() == ConfigEnumClosure.CLOSURE_ALL ? 1 : self.selectedClosure();
+                const parsedYM = parseInt(self.periodEnd().format('YYYYMM'));
+                // アルゴリズム「当月の期間を算出する」を実行する
+                service.calculatePeriod(closureId, parsedYM)
+                    .done(period => dfd.resolve(period));
                 return dfd.promise();
             }
 

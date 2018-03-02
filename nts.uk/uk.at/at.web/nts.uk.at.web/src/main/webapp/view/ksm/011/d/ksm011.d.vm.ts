@@ -116,6 +116,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                 });
             }).then(() => {
                 self.componentShift.startPage().done(function() {
+                    self.listPermissionShift(self.componentShift.listPermissions());
                 });
             });
         }
@@ -226,7 +227,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
         findAll(roleId: string): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            self.items.removeAll();
+            
             service.findAll(roleId).done(function(permissonTotalArr: any) {
                 if (permissonTotalArr != null) {
                     var totalTime: IPermissonDto = {
@@ -237,6 +238,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                         shiftPermisson: permissonTotalArr.shiftPermisson,
                         schemodifyDeadline: permissonTotalArr.schemodifyDeadline
                     };
+                    self.items.removeAll();
                     self.items.push(new PermissonDto(totalTime));
 
                     var listCommon = [];

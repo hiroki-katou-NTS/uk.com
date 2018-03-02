@@ -29,4 +29,5 @@ public class UpdateEmployeeInfoContactCommand {
 	//携帯電話番号
 	@PeregItem("IS00271")
 	private String cellPhoneNo;
+	
 }
