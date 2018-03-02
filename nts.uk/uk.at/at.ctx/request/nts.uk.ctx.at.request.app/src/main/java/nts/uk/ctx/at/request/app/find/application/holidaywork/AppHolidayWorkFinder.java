@@ -190,6 +190,7 @@ public class AppHolidayWorkFinder {
 		getPreAppPanel(overtimeRestAppCommonSet,companyID,employeeID,result,appDate,prePostAtr);
 		//01-18_実績内容を取得（新規） : TODO
 		// ドメインモデル「申請表示設定」．事前事後区分表示をチェックする
+		result.setDisplayPrePostFlg(AppDisplayAtr.DISPLAY.value);
 		if (appCommonSettingOutput.applicationSetting.getDisplayPrePostFlg().value == AppDisplayAtr.NOTDISPLAY.value) {
 			result.setDisplayPrePostFlg(AppDisplayAtr.NOTDISPLAY.value);
 			// 3.事前事後の判断処理(事前事後非表示する場合)
