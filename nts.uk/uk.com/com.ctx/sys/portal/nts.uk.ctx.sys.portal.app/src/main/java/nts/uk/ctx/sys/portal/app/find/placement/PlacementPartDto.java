@@ -1,11 +1,17 @@
 package nts.uk.ctx.sys.portal.app.find.placement;
 
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
+import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
+import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
+import nts.uk.ctx.sys.portal.dom.placement.externalurl.ExternalUrl;
+import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 
 /**
  * @author LamDT
  */
-@Value
+@Getter
+@Setter
 public class PlacementPartDto {
 
 	/** Width */
@@ -18,15 +24,46 @@ public class PlacementPartDto {
 	private String topPagePartID;
 	
 	/** Code */
-	private String code;
+	private String topPageCode;
 
 	/** Name */
-	private String name;
+	private String topPageName;
 
 	/** TopPage Part Type */
 	private Integer type;
 	
 	/** External Url */
-	private String externalUrl;
+	private String url;
+	
+	/* FlowMenu */
+	private String fileID;
+	private Integer defClassAtr;
+	
+	protected PlacementPartDto(int width, int height, String topPagePartID, String code, String name, Integer type, String url, String fileID, Integer defClassAtr) {
+		this.width = width;
+		this.height = height;
+		this.topPagePartID = topPagePartID;
+		this.topPageCode = code;
+		this.topPageName = name;
+		this.type = type;
+		this.url = url;
+		this.fileID = fileID;
+		this.defClassAtr = defClassAtr;
+	}
+	
+	public static PlacementPartDto createExternalUrl(ExternalUrl externalUrl) {
+		return new PlacementPartDto(externalUrl.getWidth().v(), externalUrl.getHeight().v(), null, null, null, TopPagePartType.ExternalUrl.value, externalUrl.getUrl().v(), null, null);
+	}
+	
+	public static PlacementPartDto createFromTopPagePart(TopPagePart topPagePart) {
+		if (topPagePart.isFlowMenu()) {
+			FlowMenu flowMenu = (FlowMenu) topPagePart;
+			return new PlacementPartDto(flowMenu.getWidth().v(), flowMenu.getHeight().v(),
+					flowMenu.getToppagePartID(), flowMenu.getCode().v(), flowMenu.getName().v(),
+					TopPagePartType.FlowMenu.value, null,
+					flowMenu.getFileID(), flowMenu.getDefClassAtr().value);
+		}
+		return null;
+	}
 	
 }

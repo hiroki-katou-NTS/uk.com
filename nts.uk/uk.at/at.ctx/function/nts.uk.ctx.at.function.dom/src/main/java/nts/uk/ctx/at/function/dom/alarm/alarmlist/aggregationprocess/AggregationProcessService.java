@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.AlarmExtraValueWkReDto;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.FuncEmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.daily.dailyaggregationprocess.DailyAggregationProcessService;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
@@ -23,15 +24,16 @@ public class AggregationProcessService {
 	@Inject 
 	private DailyAggregationProcessService dailyAggregationProcessService;
 	
-	public List<AlarmExtraValueWkReDto> processAlarmListWorkRecord(List<String> listEmployee,
+	public List<AlarmExtraValueWkReDto> processAlarmListWorkRecord(List<FuncEmployeeSearchDto> listEmployee,
 			String checkPatternCode, List<PeriodByAlarmCategory> periodByCategory) {
 		String companyID = AppContexts.user().companyId();
 		
 		// パラメータ．パターンコードをもとにドメインモデル「アラームリストパターン設定」を取得する
-		Optional<AlarmPatternSetting> alarmPatternSetting = this.alPatternSettingRepo.findByAlarmPatternCode(companyID, checkPatternCode);
+		Optional<AlarmPatternSetting> alarmPatternSetting = this.alPatternSettingRepo.findByAlarmPatternCode(companyID, checkPatternCode);		
+		if(!alarmPatternSetting.isPresent()) throw new RuntimeException("「アラームリストパターン設定 」が見つかりません！");
 		
 		// 従業員ごと に行う(for list employee)
-		for (String employee : listEmployee) {
+		for (FuncEmployeeSearchDto employee : listEmployee) {
 			// 次のチェック条件コードで集計する(loop list by category)
 			for (CheckCondition checkCondition : alarmPatternSetting.get().getCheckConList()) {
 				// get Period by category
