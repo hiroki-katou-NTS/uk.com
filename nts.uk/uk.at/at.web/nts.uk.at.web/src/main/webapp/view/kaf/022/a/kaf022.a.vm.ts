@@ -1961,7 +1961,7 @@ module nts.uk.at.view.kmf022 {
                         self.selectedIdE9(data.workType);
                         self.selectedIdE10(data.contractCheck);
                         self.selectedValueE11(data.workChange);
-                        self.checkedE11_5(data.WorkChangeAppTime);
+                        self.checkedE11_5(data.WorkChangeAppTime==1 ? true : false);
                         self.selectedIdE12(data.lateLeave);
                         self.texteditorE13.value(data.comment1);
                         self.texteditorE16.value(data.comment2);
@@ -2258,7 +2258,7 @@ module nts.uk.at.view.kmf022 {
                     workType: self.selectedIdE9(),
                     contractCheck: self.selectedIdE10(),
                     workChange: self.selectedValueE11(),
-                    WorkChangeAppTime: self.checkedE11_5(),
+                    WorkChangeAppTime: self.checkedE11_5() ? 1 : 0,
                     lateLeave: self.selectedIdE12(),
                     comment1: self.texteditorE13.value(),
                     comment2: self.texteditorE16.value()
