@@ -13,6 +13,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -38,6 +39,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentDa
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
@@ -793,11 +795,26 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 */
 	private List<ApplicationFullOutput> mergeAppAndPhase(List<Application_New> lstApp, String companyID){
 		List<ApplicationFullOutput> lstAppFull = new ArrayList<>();
-		for (Application_New app : lstApp) {
-			List<ApprovalPhaseStateImport_New> lstPhase = approvalRootStateAdapter.getApprovalRootContent(companyID, 
-					app.getEmployeeID(), app.getAppType().value, app.getAppDate(), app.getAppID(), false).getApprovalRootState().getListApprovalPhaseState();
-			lstAppFull.add(new ApplicationFullOutput(app, lstPhase,-1,""));
+		long start = System.currentTimeMillis();
+		List<String> appIDs = lstApp.stream().map(x -> x.getAppID()).collect(Collectors.toList());
+//		for (Application_New app : lstApp) {
+//			List<ApprovalPhaseStateImport_New> lstPhase = approvalRootStateAdapter.getApprovalRootContent(companyID, 
+//					app.getEmployeeID(), app.getAppType().value, app.getAppDate(), app.getAppID(), false).getApprovalRootState().getListApprovalPhaseState();
+//			lstAppFull.add(new ApplicationFullOutput(app, lstPhase,-1,""));
+//		}
+		if(!CollectionUtil.isEmpty(appIDs)){
+			Map<String,List<ApprovalPhaseStateImport_New>> approvalRootContentImport_News = approvalRootStateAdapter.getApprovalRootContents(appIDs, companyID);
+			for(Map.Entry<String,List<ApprovalPhaseStateImport_New>> entry : approvalRootContentImport_News.entrySet()){
+				for (Application_New app : lstApp) {
+					if(entry.getKey().equals(app.getAppID())){
+						lstAppFull.add(new ApplicationFullOutput(app, entry.getValue(),-1,""));
+					}
+				}
+				
+			}
 		}
+		long end = System.currentTimeMillis();
+		  System.out.println("Thời gian chạy đoạn lệnh: " + (end - start) + "Millis");
 		return lstAppFull;
 	}
 	/**
