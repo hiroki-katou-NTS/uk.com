@@ -348,11 +348,11 @@ module cmm045.a.viewmodel {
             let check: vmbase.AppPrePostGroup = self.findAppPre(lstAppGroup, app.applicationID);
             if(check !== undefined){
                 if(check.preAppID != ''){
-                    contentPre = self.findContentPre(check.preAppID, check.time);
+                    contentPre = self.findContentPre(check.preAppID, check.lstFrameRes);
                 }
-                if(check.time != null){
-                    contentResult = check.time;
-                }
+//                if(check.time != null){
+//                    contentResult = check.time;
+//                }
             }
 //            let applicant: string = masterInfo.workplaceName + ' ' + masterInfo.empName;
 //            let go = goBack.goWorkAtr1 == 0 ? '' : ' ' + getText('CMM045_259')+ goBack.workTimeStart1;
@@ -371,7 +371,7 @@ module cmm045.a.viewmodel {
             let reason = self.displaySet().appReasonDisAtr == 1 ? ' ' + app.applicationReason : '';
             let applicant: string = masterInfo.workplaceName + ' ' + masterInfo.empName;
 //            let appContent: string = getText('CMM045_268') + ' ' + self.convertTime_Short_HM(overTime.workClockFrom1) + getText('CMM045_100')+ self.convertTime_Short_HM(overTime.workClockTo1) + ' 残業合計' + '4:00' + reason;
-            let appContentPost: string = getText('CMM045_268') + ' ' + overTime.workClockFrom1 + getText('CMM045_100')+ overTime.workClockTo1 + ' 残業合計' + '4:00' + reason;
+            let appContentPost: string = getText('CMM045_268') + ' ' + overTime.workClockFrom1 + getText('CMM045_100')+ overTime.workClockTo1 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let contentFull = contentPre + appContentPost + contentResult;
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
