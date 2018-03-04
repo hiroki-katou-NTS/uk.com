@@ -43,7 +43,7 @@ public class ImageEditorWebService extends WebService{
 	private StoredFileInfo storeFile(ImageCropQuery query, BufferedImage bfi) throws IOException {
 		ApplicationTemporaryFile tempFile = tempFileFactory.createTempFile();
 
-		ImageIO.write(bfi, query.getFormat(), tempFile.getPath().toFile());
+		ImageIO.write(bfi, "png", tempFile.getPath().toFile());
 
 		StoredFileInfo fileInfo = this.fileStorage.store(tempFile.getPath(), query.getFileName(), query.getStereoType());
 		
