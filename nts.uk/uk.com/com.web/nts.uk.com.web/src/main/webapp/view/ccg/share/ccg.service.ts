@@ -179,7 +179,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 // showDelivery: boolean; not covered
 
                 /** Optional properties */
-                isInDialog: boolean;
+                isInDialog?: boolean;
 
                 /** Data returned */
                 returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
