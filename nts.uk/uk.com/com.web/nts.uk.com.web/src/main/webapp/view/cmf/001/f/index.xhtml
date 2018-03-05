@@ -53,20 +53,22 @@
 												mode: 'igGrid'
 											}"
 								tabindex="5" />
-							<table id="F3_1"
-								data-bind="ntsGridList: {
-												dataSource: codeConvertList,
-												primaryKey: 'dispConvertCode' ,
-												columns: [
-															{headerText: '#{i18n.getText('CMF001_195')}', key: 'dispConvertCode', width: 80},
-							                				{headerText: '#{i18n.getText('CMF001_196')}', key: 'dispConvertName', width: 250}
-							                			],
-												multiple: false,
-												value: selectedConvertCode ,
-												rows: 15,
-												showNumbering: true
-											}">
-							</table>
+							
+								<table id="F3_1"
+									data-bind="ntsGridList: {
+		                                            options: codeConvertList,
+		                                            optionsValue: selectedConvertCode,
+		                                            primaryKey: 'convertCd',
+		                                            columns: [
+																{headerText: '#{i18n.getText('CMF001_195')}', key: 'dispConvertCode', width: 80, formatter: _.escape},
+								                				{headerText: '#{i18n.getText('CMF001_196')}', key: 'dispConvertName', width: 250, formatter: _.escape}
+								                			],
+		                                            multiple: false,
+		                                            value: selectedConvertCode,
+		                                            showNumbering: true,
+		                                            rows: 15,
+		                                            enable: true}">
+								</table>
 						</div>
 
 					</div>
@@ -81,7 +83,6 @@
 									data-bind="ntsTextEditor: {
 													value: codeConvertData().convertCd,
 													name:'#{i18n.getText('CMF001_198')}',
-													constraint: 'ConvertCode',
 													required: true,
 													constraint: 'CodeConvertCode',
 													enable: screenMode() == 0
@@ -91,7 +92,7 @@
 									data-bind="ntsTextEditor: {
 													value: codeConvertData().convertName,
 													name:'#{i18n.getText('CMF001_199')}',
-													constraint: 'ConvertName',
+													required: true,
 													constraint: 'CodeConvertName',
 													enable: true
 												}"
@@ -126,9 +127,9 @@
 									<tr data-bind="attr: { 'data-id': lineNumber }">
 										<td class="order-column"><span data-bind="text: lineNumber"></span></td>
 										<td><input
-											data-bind="ntsTextEditor: {value: outputItem, name:'#{i18n.getText('CMF001_205')}', option: {width: '93px'}}" /></td>
+											data-bind="ntsTextEditor: {value: outputItem, constraint: 'CodeConvertValue', name:'#{i18n.getText('CMF001_205')}', option: {width: '93px'}}" /></td>
 										<td><input
-											data-bind="ntsTextEditor: {value: systemCd, name:'#{i18n.getText('CMF001_206')}', option: {width: '123px'}}" /></td>
+											data-bind="ntsTextEditor: {value: systemCd, constraint: 'CodeConvertValue', name:'#{i18n.getText('CMF001_206')}', option: {width: '123px'}}" /></td>
 									</tr>
 								</tbody>
 							</table>
