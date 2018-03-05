@@ -19787,8 +19787,8 @@ var nts;
                         var $startDate = $container.find(".ntsStartDatePicker");
                         var $endDate = $container.find(".ntsEndDatePicker");
                         if (!nts.uk.util.isNullOrUndefined(data.value())) {
-                            var startDate = (data.value().startDate !== "") ? uk.time.formatPattern(data.value().startDate, dateFormat, ISOFormat) : "";
-                            var oldStart = $startDate.val();
+                            var startDate = !nts.uk.util.isNullOrEmpty(data.value().startDate) ? uk.time.formatPattern(data.value().startDate, dateFormat, ISOFormat) : "";
+                            var oldStart = !nts.uk.util.isNullOrEmpty($startDate.val()) ? uk.time.formatPattern($startDate.val(), dateFormat, ISOFormat) : $startDate.val();
                             if (startDate !== oldStart) {
                                 if (startDate !== "" && startDate !== "Invalid date") {
                                     // Check equals to avoid multi datepicker with same value
@@ -19798,8 +19798,8 @@ var nts;
                                     $startDate.val("");
                                 }
                             }
-                            var endDate = (data.value().endDate !== "") ? uk.time.formatPattern(data.value().endDate, dateFormat, ISOFormat) : "";
-                            var oldEnd = $endDate.val();
+                            var endDate = !nts.uk.util.isNullOrEmpty(data.value().endDate) ? uk.time.formatPattern(data.value().endDate, dateFormat, ISOFormat) : "";
+                            var oldEnd = !nts.uk.util.isNullOrEmpty($endDate.val()) ? uk.time.formatPattern($endDate.val(), dateFormat, ISOFormat) : $endDate.val();
                             if (endDate !== oldEnd) {
                                 if (endDate !== "" && endDate !== "Invalid date") {
                                     // Check equals to avoid multi datepicker with same value
