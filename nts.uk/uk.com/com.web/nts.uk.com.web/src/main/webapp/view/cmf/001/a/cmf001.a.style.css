@@ -11,8 +11,13 @@
 	clear: both;
 }
 
+.button-image {
+	margin-left: 100px;
+	margin-right: 100px;	
+}
+
 .navigation-label {
-	margin-left: 50px;
+	margin-left: 150px;
 	vertical-align: 12px;
 	padding-bottom: 20px;
 }
@@ -30,9 +35,9 @@
 	background-image: url("../resource/外部受入A2.jpg");
 	background-size: 100%;
 	height: 254px;
-	width: 257px;
+	width: 264px;
 	background-repeat: no-repeat;
-	margin-left: 20px;
+	margin-left: 50px;
 }
 
 .history-reference {

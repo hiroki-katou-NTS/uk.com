@@ -55,7 +55,7 @@ public class JpaExAcOpManageRepository extends JpaRepository implements ExAcOpMa
 
     @Override
     public void remove(String cid, String processId){
-        this.commandProxy().remove(OiomtExAcOpManagePk.class, new OiomtExAcOpManagePk(cid, processId)); 
+        this.commandProxy().remove(OiomtExAcOpManage.class, new OiomtExAcOpManagePk(cid, processId)); 
     }
 
     private static ExAcOpManage toDomain(OiomtExAcOpManage entity) {

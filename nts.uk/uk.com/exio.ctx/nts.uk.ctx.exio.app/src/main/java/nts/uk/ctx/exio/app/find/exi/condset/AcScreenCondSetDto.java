@@ -1,5 +1,8 @@
 package nts.uk.ctx.exio.app.find.exi.condset;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
@@ -27,7 +30,7 @@ public class AcScreenCondSetDto
     /**
     * 受入項目の番号
     */
-    private int acceptItemNum;
+    private Integer acceptItemNum;
     
     /**
     * 比較条件選択
@@ -37,22 +40,22 @@ public class AcScreenCondSetDto
     /**
     * 時間‗条件値2
     */
-    private int timeConditionValue2;
+    private Integer timeConditionValue2;
     
     /**
     * 時間‗条件値1
     */
-    private int timeConditionValue1;
+    private Integer timeConditionValue1;
     
     /**
     * 時刻‗条件値2
     */
-    private int timeMomentConditionValue2;
+    private Integer timeMomentConditionValue2;
     
     /**
     * 時刻‗条件値1
     */
-    private int timeMomentConditionValue1;
+    private Integer timeMomentConditionValue1;
     
     /**
     * 日付‗条件値2
@@ -77,18 +80,22 @@ public class AcScreenCondSetDto
     /**
     * 数値‗条件値2
     */
-    private String numberConditionValue2;
+    private BigDecimal numberConditionValue2;
     
     /**
     * 数値‗条件値1
     */
-    private String numberConditionValue1;
+    private BigDecimal numberConditionValue1;
     
-    
-    private Long version;
     public static AcScreenCondSetDto fromDomain(AcScreenCondSet domain)
     {
-        return new AcScreenCondSetDto(domain.getCid(), domain.getConditionSetCd(), domain.getAcceptItemNum(), domain.getSelectComparisonCondition(), domain.getTimeConditionValue2(), domain.getTimeConditionValue1(), domain.getTimeMomentConditionValue2(), domain.getTimeMomentConditionValue1(), domain.getDateConditionValue2(), domain.getDateConditionValue1(), domain.getCharacterConditionValue2(), domain.getCharacterConditionValue1(), domain.getNumberConditionValue2(), domain.getNumberConditionValue1(), domain.getVersion());
+        return new AcScreenCondSetDto(domain.getCid(), domain.getConditionSetCd().v(), 
+        		domain.getAcceptItemNum().v(), domain.getSelectComparisonCondition().get().value, 
+        		domain.getTimeConditionValue2().get().v(), domain.getTimeConditionValue1().get().v(), 
+        		domain.getTimeMomentConditionValue2().get().v(), domain.getTimeMomentConditionValue1().get().v(), 
+        		domain.getDateConditionValue2(), domain.getDateConditionValue1(), 
+        		domain.getCharacterConditionValue2().get().v(), domain.getCharacterConditionValue1().get().v(), 
+        		domain.getNumberConditionValue2().get().v() , domain.getNumberConditionValue1().get().v());
     }
     
 }

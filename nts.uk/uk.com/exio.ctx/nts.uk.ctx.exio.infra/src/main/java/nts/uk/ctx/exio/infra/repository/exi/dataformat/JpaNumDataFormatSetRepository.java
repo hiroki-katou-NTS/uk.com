@@ -61,7 +61,7 @@ public class JpaNumDataFormatSetRepository extends JpaRepository implements NumD
 
     @Override
     public void remove(String cid, String conditionSetCd, int acceptItemNum){
-        this.commandProxy().remove(OiomtNumDataFormatSetPk.class, new OiomtNumDataFormatSetPk(cid, conditionSetCd, acceptItemNum)); 
+        this.commandProxy().remove(OiomtNumDataFormatSet.class, new OiomtNumDataFormatSetPk(cid, conditionSetCd, acceptItemNum)); 
     }
 
     private static NumDataFormatSet toDomain(OiomtNumDataFormatSet entity) {

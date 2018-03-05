@@ -54,7 +54,7 @@ public class JpaDateDataFormSetRepository extends JpaRepository implements DateD
 
     @Override
     public void remove(String cid, String conditionSetCd, int acceptItemNum){
-        this.commandProxy().remove(OiomtDateDataFormSetPk.class, new OiomtDateDataFormSetPk(cid, conditionSetCd, acceptItemNum)); 
+        this.commandProxy().remove(OiomtDateDataFormSet.class, new OiomtDateDataFormSetPk(cid, conditionSetCd, acceptItemNum)); 
     }
 
     private static DateDataFormSet toDomain(OiomtDateDataFormSet entity) {

@@ -193,6 +193,7 @@ module nts.uk.com.view.cmf001.share.model {
             this.dispItemNo = code;
             this.dispItemName = name;
         }
+    }
 
     //screen F, screen K
     export class AcceptanceCodeConvert {
