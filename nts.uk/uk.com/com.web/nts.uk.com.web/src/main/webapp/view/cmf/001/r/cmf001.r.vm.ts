@@ -40,13 +40,22 @@ module nts.uk.com.view.cmf001.r.viewmodel {
             let paramReceived = getShared('CMF001-R');
             self.imexProcessID = paramReceived.imexProcessId;
             self.nameSetting = ko.observable(paramReceived.nameSetting);
-            //self.imexProcessID = '001';
-            //self.nameSetting = ko.observable('A社人事管理情報');
             
             // grid list constructor
             self.imExErrorLog =  ko.observableArray([]);
-            self.currentCode = ko.observable({
-            });
+            let dataNull = {
+                logSeqNumber: null,
+                cid: '',
+                externalProcessId: '',
+                csvErrorItemName: '',
+                csvAcceptedValue: '',
+                errorContents: '',
+                recordNumber: null,
+                logRegDateTime: '',
+                itemName: '',
+                errorAtr: null,
+            }
+            self.currentCode = ko.observable(dataNull);
             self.columns = ko.observableArray([
                 { headerText: self.CODE_BANGO, key: 'recordNumber', width: 100 },
                 { headerText: self.CSV_FIELD_NAME, key: 'csvErrorItemName', width: 150 }, 
@@ -56,12 +65,12 @@ module nts.uk.com.view.cmf001.r.viewmodel {
             ]); 
             
             // csv template
-             self.dataError = ko.observableArray([]);
              self.itemDataError = ko.observable({
                 nameSetting: self.nameSetting(),
-                resultLog: {},
-                errorLog: [],
+                resultLog: null,
+                errorLog: null,
              });
+            self.dataError = ko.observableArray([]);
         }
         
         //開始
