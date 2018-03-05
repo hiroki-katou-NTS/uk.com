@@ -438,7 +438,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             // Start component
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(function() {
-                $("#hor-scroll-button-hide").trigger("click");
+                $("#ccg001-btn-search-drawer").trigger("click");
             });
         }
 
@@ -706,7 +706,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             _.each(self.listSid(), (x) => {
                 //newLeftMost dataSource
                 let empItem: PersonModel = _.find(self.empItems(), ['empId', x]);
-                newLeftMostDs.push({ empId: x, empName: nts.uk.text.padRight(empItem.empCd, ' ', 12) + ' ' + empItem.empName });
+                newLeftMostDs.push({ empId: x, empName: empItem.empCd + ' ' + empItem.empName });
                 //newMiddle dataSource
                 newMiddleDs.push({ empId: x, team: "1", rank: "A", qualification: "★", employmentName: "アルバイト", workplaceName: "東京本社", classificationName: "分類", positionName: "一般" });
                 //newDetail dataSource
