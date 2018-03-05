@@ -115,7 +115,7 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 		if (checkMyPageSetting.isPresent()) {
 			MyPageSetting myPageSetting = checkMyPageSetting.get();
 			if (myPageSetting.getUseMyPage() == UseDivision.Use) {
-				if (myPageSetting.getUseStandardWidget() == UseDivision.Use)
+				if (myPageSetting.getUseStandarWidget() == UseDivision.Use)
 					checkingTopPagePartTypeValues.add(TopPagePartType.StandardWidget.value);
 				if (myPageSetting.getUseOptionalWidget() == UseDivision.Use)
 					checkingTopPagePartTypeValues.add(TopPagePartType.OptionalWidget.value);
