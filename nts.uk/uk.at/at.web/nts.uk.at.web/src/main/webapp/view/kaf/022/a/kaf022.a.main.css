@@ -1,3 +1,7 @@
+/ Override Base /
+.ui-widget.ui-tabs.vertical > .ui-tabs-panel {
+    overflow: visible;
+}
 td div {
 	position: relative;
 	vertical-align: middle;
