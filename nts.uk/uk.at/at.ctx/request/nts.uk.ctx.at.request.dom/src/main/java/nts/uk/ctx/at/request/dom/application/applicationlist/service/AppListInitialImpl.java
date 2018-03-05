@@ -50,6 +50,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.primitive.ShowName;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
@@ -492,7 +493,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 						}
 					}
 					if(!lstAppPre.isEmpty()){
-						group = new AppPrePostGroup(appID, lstAppPre.get(0).getEmployeeID(), null);
+						group = new AppPrePostGroup(appID, lstAppPre.get(0).getAppID(), null);
 					}
 				}
 				//承認一覧表示設定.残業の実績
@@ -506,7 +507,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					if(group != null){
 						group.setTime(result.getLstFrameResult());
 					}else{
-						group = new AppPrePostGroup(sID, "", result.getLstFrameResult());
+						group = new AppPrePostGroup("", sID, result.getLstFrameResult());
 					}
 				}
 				if(group != null){
@@ -691,17 +692,22 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	public List<AppMasterInfo> getListAppMasterInfo(List<Application_New> lstApp, String companyId) {
 		//ドメインモデル「申請一覧共通設定」を取得する-(Lấy domain Application list common settings) - wait YenNTH
 		Optional<AppCommonSet> appCommonSet = repoAppCommonSet.find();
+		ShowName displaySet = appCommonSet.get().getShowWkpNameBelong();
 		List<AppMasterInfo> lstAppMasterInfo = new ArrayList<>();
 		//申請一覧リスト　繰返し実行
 		for (Application_New app : lstApp) {
 			//ドメインモデル「申請表示名」より申請表示名称を取得する-(Lấy Application display name) - wait YenNTH
 			Optional<AppDispName> appDispName = repoAppDispName.getDisplay(app.getAppType().value);
 			//アルゴリズム「社員IDから個人社員基本情報を取得」を実行する - req #1
-			String empName = empRequestAdapter.getEmployeeName(app.getEmployeeID());
+			String empName = displaySet.equals(ShowName.SHOW) ? empRequestAdapter.getEmployeeName(app.getEmployeeID()) : "";
 			// TODO Auto-generated method stub
 			//アルゴリズム「社員から職場を取得する」を実行する - req #30
 			WkpHistImport wkp = wkpAdapter.findWkpBySid(app.getEmployeeID(), app.getAppDate());
-			String wkpID = wkp == null ? "" : wkp.getWorkplaceId();
+			String wkpID = "";
+			if(displaySet.equals(ShowName.SHOW) && wkp != null){
+				wkp.getWorkplaceId();
+			}
+//			String wkpID = wkp == null ? "" : wkp.getWorkplaceId();
 			//アルゴリズム「申請一覧事前必須チェック」を実行する- (check App Predict Require): 0 - 申請一覧事前必須チェック
 			Boolean check = this.checkAppPredictRequire(app.getAppType().value, wkpID, companyId);
 			boolean checkAddNote = false;

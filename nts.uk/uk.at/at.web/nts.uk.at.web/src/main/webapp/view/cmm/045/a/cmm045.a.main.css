@@ -25,6 +25,3 @@
 .workingResultExcess{
 	background-color: #ffff00;
 }
-table#grid2 tbody tr {
-	max-height: 50px !important;
-}

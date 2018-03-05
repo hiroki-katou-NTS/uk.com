@@ -97,12 +97,19 @@ module cmm045.a.viewmodel {
                     self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
                 
             service.getApplicationDisplayAtr().done(function(data1){
-                //luu
-                character.save('AppListExtractCondition', param);
                 _.each(data1, function(obj){
                     self.roundingRules.push(new vmbase.ApplicationDisplayAtr(obj.value, obj.localizedName));
                 });
                 service.getApplicationList(param).done(function(data){
+                    //luu param
+                    if(self.dateValue().startDate == '' || self.dateValue().endDate == ''){
+                        let date: vmbase.Date = {startDate: data.startDate, endDate: data.endDate}
+                        self.dateValue(date);
+                    }
+                    let paramSave: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
+                        null, self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
+                        self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
+                    character.save('AppListExtractCondition', paramSave);
                     console.log(data);
 //                    let lstApp: Array<vmbase.ApplicationDto_New> = [];
 //                    let lstMaster: Array<vmbase.AppMasterInfo> = []
@@ -174,7 +181,7 @@ module cmm045.a.viewmodel {
             virtualization: true,
             virtualizationMode: 'continuous',
             columns: [
-                { headerText: getText('CMM045_50'), key: 'appId', dataType: 'string', width: '50px', unbound: false, ntsControl: 'Button' },
+                { headerText: getText('CMM045_50'), key: 'appId', dataType: 'string', width: '80px', unbound: false, ntsControl: 'Button' },
                 { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
                 { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '120px' },
                 { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '80px' },
@@ -197,11 +204,38 @@ module cmm045.a.viewmodel {
             $("#grid2").on("click", ".ntsButton", function(evt, ui){
                 let _this = $(this);
                 let id = _this.parents('tr').data('id');
-//                uk.sessionStorage = new WebStorageWrapper(window.sessionStorage);
                 nts.uk.sessionStorage.removeItem(request.STORAGE_KEY_TRANSFER_DATA);
                 nts.uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, { appID: id });
                 window.location.href = "../../../kaf/000/b/index.xhtml";
-//                nts.uk.request.jump("../../../kaf/000/b/index.xhtml", { 'appID': id });
+            });
+            _.each(self.items(), function(item){
+                //fill color in 承認状況
+                if (item.appStatus == '未') {
+                    $(".nts-grid-control-appStatus-" + item.appId).addClass('unapprovalCell');
+                }
+                if(item.appStatus == '承認済'){
+                    $(".nts-grid-control-appStatus-" + item.appId).addClass('approvalCell');
+                }
+                if(item.appStatus == '反映済'){
+                    $(".nts-grid-control-appStatus-" + item.appId).addClass('reflectCell');
+                }
+                if(item.appStatus == '取消'){
+                    $(".nts-grid-control-appStatus-" + item.appId).addClass('cancelCell');
+                }
+                if(item.appStatus == '差戻'){
+                    $(".nts-grid-control-appStatus-" + item.appId).addClass('remandCell');
+                }
+                if(item.appStatus == '否'){
+                    $(".nts-grid-control-appStatus-" + item.appId).addClass('denialCell');
+                }
+                //fill color in 申請内容
+                if(item.checkTimecolor == 1){//1: xin truoc < xin sau; k co xin truoc; xin truoc bi denail
+                    $(".nts-grid-control-appContent" + item.appId).addClass('preAppExcess');
+                }
+                if(item.checkTimecolor == 2){////2: thuc te < xin sau
+                    $(".nts-grid-control-appContent" + item.appId).addClass('workingResultExcess');
+                }
+                
             });
         }
         
@@ -244,7 +278,6 @@ module cmm045.a.viewmodel {
                 nts.uk.sessionStorage.removeItem(request.STORAGE_KEY_TRANSFER_DATA);
                 nts.uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, { appID: id });
                 window.location.href = "../../../kaf/000/b/index.xhtml";
-//                nts.uk.request.jump("../../../kaf/000/b/index.xhtml", { 'appID': id });
             });
             
             $("#grid1").setupSearchScroll("igGrid", true);
@@ -288,7 +321,6 @@ module cmm045.a.viewmodel {
             let self = this;
             let reason = self.displaySet().appReasonDisAtr == 1 ? ' ' + app.applicationReason : '';
             let applicant: string = masterInfo.workplaceName + ' ' + masterInfo.empName;
-//            let appContent: string = getText('CMM045_268') + ' ' + self.convertTime_Short_HM(overTime.workClockFrom1) + getText('CMM045_100')+ self.convertTime_Short_HM(overTime.workClockTo1) + ' 残業合計' + '4:00' + reason;
             let appContent1111: string = getText('CMM045_268') + ' ' + overTime.workClockFrom1 + getText('CMM045_100')+ overTime.workClockTo1 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
@@ -310,23 +342,23 @@ module cmm045.a.viewmodel {
             let frame11 = self.findFrameByNo(lstFrame, 11);
             if(frame11 !== undefined && frame11.applicationTime != 0){
                 framName11 = frame11.name + self.convertTime_Short_HM(frame11.applicationTime);
-                time =+ frame11.applicationTime;
-                count =+ 1;
+                time += frame11.applicationTime;
+                count += 1;
             }
             //ﾌﾚｯｸｽ超過
             let frame12 = self.findFrameByNo(lstFrame, 11);
             if(frame12 !== undefined && frame12.applicationTime != 0){
                 framName12 = frame12.name + self.convertTime_Short_HM(frame12.applicationTime);
-                time =+ frame12.applicationTime;
-                count =+ 1;
+                time += frame12.applicationTime;
+                count += 1;
             }
              _.each(lstSort, function(item, index){
                 if(index != 11 && index != 12 && item.applicationTime != 0){//時間外深夜時間
                     if(count <= 3){
                         framName += item.name + self.convertTime_Short_HM(item.applicationTime);
                     }
-                    time =+ item.applicationTime;
-                    count =+ 1;
+                    time += item.applicationTime;
+                    count += 1;
                 }
             });
             let other = count > 3 ? count - 3 : 0;
@@ -458,21 +490,17 @@ module cmm045.a.viewmodel {
         convertStatus(status: number):string{
             switch(status){
                 case 0:
-                    return '未';
+                    return '未';//下書き保存/未反映　=　未
                 case 1: 
-                    return '反映待ち';
+                    return '承認済み';//反映待ち　＝　承認済み
                 case 2: 
-                    return '反映済';
-                case 3: 
-                    return '取消待ち';
-                case 4: 
-                    return '取消済';
+                    return '反映済み';//反映済　＝　反映済み
                 case 5: 
-                    return '差し戻し';
+                    return '差戻';//差し戻し　＝　差戻
                 case 6: 
-                    return '否認';
+                    return '否';//否認　=　否
                 default: 
-                    return '';
+                    return '取消';//取消待ち/取消済　＝　取消
             }
         }
         //UNAPPROVED:5
@@ -532,7 +560,7 @@ module cmm045.a.viewmodel {
             let self = this;
             //check filter
             if(self.dateValue().startDate === undefined || self.dateValue().endDate === undefined){//期間開始日付または期間終了日付が入力されていない
-                nts.uk.ui.dialog.error({ messageId: "Msg_360"});
+                nts.uk.ui.dialog.error({ messageId: "Msg_359"});
                 block.clear();
                 return;
             }
