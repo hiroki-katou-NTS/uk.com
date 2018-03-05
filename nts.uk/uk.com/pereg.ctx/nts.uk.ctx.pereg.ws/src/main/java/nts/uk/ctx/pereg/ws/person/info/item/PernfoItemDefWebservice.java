@@ -96,10 +96,18 @@ public class PernfoItemDefWebservice extends WebService {
 		return itemDefFinder.getPerInfoItemDefByIdForLayout(Id);
 	}
 
-	// to anh Vuong
+
 	@POST
 	@Path("layout/findby/listItemId")
 	public List<PerInfoItemDefDto> getPerInfoItemDefByListIdForLayout(List<String> listItemDefId) {
+		return itemDefFinder.getPerInfoItemDefByListIdForLayout(listItemDefId);
+	}
+
+	// to anh Vuong
+	//test hieu nang Layout
+	@POST
+	@Path("layout/findby/listItemIdTest")
+	public List<PerInfoItemDefDto> getPerInfoItemDefByListIdForLayoutTest(List<String> listItemDefId) {
 		return itemDefFinder.getPerInfoItemDefByIds(listItemDefId);
 	}
 
