@@ -248,7 +248,7 @@
 									    	<input id="displayLstWorkTypePlan" class="display-list-label need-check" data-bind="ntsTextEditor: {name: '#[KDW007_64]',value: selectedErrorAlarm().workTypeCondition.displayLstWorkTypePlan, readonly: true, required: selectedErrorAlarm().workTypeCondition.planFilterAtr}" />
 									    </td>
 									    <td>
-									    	<button data-bind="click: chooseWorkType.bind($data, 'plan'), enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_64')}</button>
+									    	<button data-bind="click: chooseWorkType.bind($data, 'plan'), enable: selectedErrorAlarm().fixedAtr() != 1 &amp;&amp; selectedErrorAlarm().workTypeCondition.planFilterAtr()">#{i18n.getText('KDW007_64')}</button>
 									    </td> 
 									  </tr>
 									  <tr>
