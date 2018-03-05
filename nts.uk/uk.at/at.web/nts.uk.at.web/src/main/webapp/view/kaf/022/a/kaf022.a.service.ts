@@ -13,9 +13,9 @@ module nts.uk.at.view.kmf022.a.service {
 //        updateClosure: "at/request/application/update",
         addClosure: "at/request/application/add",
         // A5_14 -> A5_25
-        findApproSet: "at/request/application/common/setting/appcommon",
+        findApproSet: "at/request/application/common/setting/approval/appcommon",
         // A10_3
-        findAppCom: "at/request/application/common/setting/appset",
+        findAppCom: "at/request/application/common/setting/approval/appset",
         // A13_4 có 2 sự lựa chọn, có thể lấy list cty đang đăng nhập rồi lên UI lọc, hoặc lấy thẳng 1 object(nhớ truyền apptype) 
         findAllPro: "at/request/application/setting/proxy/findAll",
         findProByApp: "at/request/application/setting/proxy/findApp",
@@ -36,16 +36,13 @@ module nts.uk.at.view.kmf022.a.service {
         // A6_24, A6_26, A6_35->A6_45 có thể lấy list cty đang đăng nhập rồi lên UI lọc, hoặc lấy thẳng 1 object(nhớ truyền apptype)
         findDisp: "at/request/application/displayname/disp",
         fidnDispApp: "at/request/application/displayname/app",
-        // A6_27 -> A6_34 có thể lấy theo company rồi lên lọc hoặc lấy thẳng object bằng cả holiday app type
-        findAllHdApp: "at/request/application/displayname/hd",
-        findHdApp: "at/request/application/displayname/hdapp",
         //E14,15, E17,18 cũng lấy ở đây (ver2)   màn J cùng link này (ver 3)
         findStamp: "at/request/application/stamprequest/findByComID", //UpdateStampRequestSettingCommandHandler
         // F10->F15, F16, 16_1, 16_2 (ver2)
         findDirectlycommon: "at/request/application/gobackdirectlycommon/getGoBackCommonByCid", //GoBackDirectlyCommonSettingRepository
 
         //B18 -> B36
-        findOvertime: "at/request/application/overtime/ot",
+        findOvertime: "at/request/application/over/time/ot",
         
         // C27 -> C49 
         findAllVaca: "at/request/vacation/setting/hdapp",
@@ -79,6 +76,7 @@ module nts.uk.at.view.kmf022.a.service {
         
         // A7, A8. A7 là list beforeAfter, A8 là list appType
         findBfReqSet: "at/request/application/applist/getappDisp",
+        finAllData : "screen/at/kaf022/findAll"
     }
     
     export function findBfReqSet() {
@@ -138,9 +136,9 @@ module nts.uk.at.view.kmf022.a.service {
         return nts.uk.request.ajax("at", paths.findDisp); 
     }
     
-    export function findHdApp(hdAppType: number): JQueryPromise<void>{
-        return nts.uk.request.ajax("at", paths.findHdApp + "/" + hdAppType);     
-    }
+//    export function findHdApp(hdAppType: number): JQueryPromise<void>{
+//        return nts.uk.request.ajax("at", paths.findHdApp + "/" + hdAppType);     
+//    }
     
     export function findAllHdApp() {
         return nts.uk.request.ajax("at", paths.findAllHdApp); 
@@ -227,5 +225,8 @@ module nts.uk.at.view.kmf022.a.service {
 //
     export function update(command): JQueryPromise<Array<string>>{
         return ajax("at", paths.update, command);
-    }    
+    }
+    export function findAllData(): {
+        return nts.uk.request.ajax("at", paths.finAllData); 
+    }   
 }
