@@ -3,12 +3,12 @@ module nts.uk.com.view.cmf001.r.service {
     import format = nts.uk.text.format;
     var paths = {
         getLogResults: "ctx/exio/ws/exi/execlog/getLogResults/{0}",
-        getErrorLogs: "ctx/exio/ws/exi/execlog/getErrorLogs",
-        exportDatatoCsv: "ctx/exio/ws/exi/execlog/export/{0}",
+        getErrorLogs:  "ctx/exio/ws/exi/execlog/getErrorLogs/{0}",
+        exportDatatoCsv: "ctx/exio/ws/exi/execlog/export",
     }
 
     /**
-    * Get log results by processId
+    * ドメインモデル「外部受入実行結果ログ」を取得する
     */
     export function getLogResults(imexProcessID: string) {
         let _path = format(paths.getLogResults, imexProcessID);
@@ -16,7 +16,7 @@ module nts.uk.com.view.cmf001.r.service {
     }
 
     /**
-    * Get error log by processId
+    * ドメインモデル「外部受入エラーログ」を取得する
     */
     export function getErrorLogs(imexProcessID: string) {
         let _path = format(paths.getErrorLogs, imexProcessID);
@@ -26,7 +26,28 @@ module nts.uk.com.view.cmf001.r.service {
     /**
      * download export file
      */
-    export function exportDatatoCsv(processId: string): JQueryPromise<any> {
-        return nts.uk.request.exportFile(paths.exportDatatoCsv + "/" +  processId);
+    export function exportDatatoCsv(data : Model.ErrorContentDto[]): JQueryPromise<any> {
+        return nts.uk.request.exportFile(paths.exportDatatoCsv, data);
+    }
+    
+    export module Model {
+        export interface ResultLog {
+            externalProcessIdName: string;
+            processStartDatetime: string;
+            targetCount: string;
+            errorCount: string;
+            normalCount: string;
+        }
+        export interface ErrorLog {
+            recordNumber: string;
+            csvErrorItemName: string;
+            itemName: string;
+            itemValue: string;
+            errorContents: string;
+        }
+        export interface ErrorContentDto {
+            resultLog: ResultLog;
+            errorLog: ErrorLog[];
+        }
     }
 }

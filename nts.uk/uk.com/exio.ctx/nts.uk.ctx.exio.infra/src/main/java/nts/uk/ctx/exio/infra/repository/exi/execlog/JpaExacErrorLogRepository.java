@@ -75,7 +75,7 @@ public class JpaExacErrorLogRepository extends JpaRepository implements ExacErro
 	 */
 	@Override
 	public List<ExacErrorLog> getExacErrorLogByProcessId(String externalProcessId) {
-		return  this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtExacErrorLog.class)
+		return  this.queryProxy().query(SELECT_BY_PROCESS_ID, OiomtExacErrorLog.class)
 		.setParameter("externalProcessId", externalProcessId)
         .getList(item -> toDomain(item));
 	}

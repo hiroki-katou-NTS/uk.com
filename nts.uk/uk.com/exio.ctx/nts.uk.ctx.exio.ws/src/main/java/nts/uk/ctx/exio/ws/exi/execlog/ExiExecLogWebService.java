@@ -15,12 +15,12 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.exio.app.find.exi.execlog.ErrorContentDto;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacErrorLogDto;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacErrorLogFinder;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacExeResultLogDto;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacExeResultLogFinder;
-import nts.uk.ctx.exio.dom.exi.execlog.ExecLogAsposeExportService;
-import nts.uk.shr.sample.report.app.export.sample.SampleReportQuery;
+import nts.uk.ctx.exio.app.find.exi.execlog.ExiExecLogExportService;
 
 /**
  * The Class WorkplaceConfigInfoWebService
@@ -34,9 +34,8 @@ public class ExiExecLogWebService extends WebService {
 	@Inject
 	private ExacErrorLogFinder exacErrorLogFinder;
 	
-	/** The export service. */
     @Inject
-	private ExecLogAsposeExportService exportService;
+    private ExiExecLogExportService exportService;
     
     /**
 	 * @param externalProcessId
@@ -48,19 +47,15 @@ public class ExiExecLogWebService extends WebService {
 		return this.exacExeResultLogFinder.getExacExeResultLogByProcessId(externalProcessId);
 	}
 	
-	@Path("getErrorLogs")
+	@Path("getErrorLogs/{b}")
 	@POST
-	public List<ExacErrorLogDto> getExacErrorLogByProcessId(String externalProcessId) {
+	public List<ExacErrorLogDto> getExacErrorLogByProcessId(@PathParam("b") String externalProcessId) {
     	return this.exacErrorLogFinder.getExacErrorLogByProcessId(externalProcessId);
     }
 	
-    /**
-     * @param processId
-     * @return
-     */
     @POST
-	@Path("generateCSV")
-	public ExportServiceResult generate(SampleReportQuery query) {
-		return this.exportService.start(query);
-	}
+    @Path("export")
+    public ExportServiceResult exportCsvError(List<ErrorContentDto> command) {    	
+        return this.exportService.start(command);
+    }
 }
