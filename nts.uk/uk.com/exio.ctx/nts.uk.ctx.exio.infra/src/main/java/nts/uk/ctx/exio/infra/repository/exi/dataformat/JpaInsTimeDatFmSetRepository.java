@@ -61,7 +61,7 @@ public class JpaInsTimeDatFmSetRepository extends JpaRepository implements InsTi
 
     @Override
     public void remove(String cid, String conditionSetCd, int acceptItemNum){
-        this.commandProxy().remove(OiomtInsTimeDatFmSetPk.class, new OiomtInsTimeDatFmSetPk(cid, conditionSetCd, acceptItemNum)); 
+        this.commandProxy().remove(OiomtInsTimeDatFmSet.class, new OiomtInsTimeDatFmSetPk(cid, conditionSetCd, acceptItemNum)); 
     }
 
     private static InsTimeDatFmSet toDomain(OiomtInsTimeDatFmSet entity) {

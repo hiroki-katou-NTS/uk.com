@@ -50,7 +50,7 @@ public class JpaExAcpCategoryRepository extends JpaRepository implements ExAcpCa
 
     @Override
     public void remove(String categoryId){
-        this.commandProxy().remove(OiomtExAcpCategoryPk.class, new OiomtExAcpCategoryPk(categoryId)); 
+        this.commandProxy().remove(OiomtExAcpCategory.class, new OiomtExAcpCategoryPk(categoryId)); 
     }
 
     private static ExAcpCategory toDomain(OiomtExAcpCategory entity) {

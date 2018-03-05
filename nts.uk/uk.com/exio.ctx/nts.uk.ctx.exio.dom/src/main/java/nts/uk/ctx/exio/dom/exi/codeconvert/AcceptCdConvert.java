@@ -41,10 +41,10 @@ public class AcceptCdConvert extends AggregateRoot
      */
     private List<CdConvertDetails> listConvertDetails;
     
-    public static AcceptCdConvert createFromJavaType(Long version, String cid, String convertCd, String convertName, int acceptWithoutSetting, List<CdConvertDetails> listConvertDetails)
+    public static AcceptCdConvert createFromJavaType(String cid, String convertCd, String convertName, int acceptWithoutSetting, List<CdConvertDetails> listConvertDetails)
     {
         AcceptCdConvert  acceptCdConvert =  new AcceptCdConvert(cid, convertCd, convertName,  acceptWithoutSetting, listConvertDetails);
-        acceptCdConvert.setVersion(version);
+        //acceptCdConvert.setVersion(version);
         return acceptCdConvert;
     }
     
