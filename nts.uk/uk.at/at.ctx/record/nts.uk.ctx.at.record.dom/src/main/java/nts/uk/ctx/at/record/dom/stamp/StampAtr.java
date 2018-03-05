@@ -31,7 +31,11 @@ public enum StampAtr {
 	// 10:行き
 	TOGO(10, "行き"),
 	// 11:帰り
-	GOBACK(11, "帰り");
+	GOBACK(11, "帰り"),
+	// 12: PCログオン
+	PCLOGON(12, "PCログオン"),
+	//13: PCログオフ
+	PCLOGOFF(13, "PCログオフ");
 
 	public final int value;
 	public final String name;
@@ -71,6 +75,12 @@ public enum StampAtr {
 			break;
 		case 11:
 			name = "帰り";
+			break;
+		case 12:
+			name = "PCログオン";
+			break;
+		case 13:
+			name = "PCログオフ";
 			break;
 		default:
 			name = "出勤";
