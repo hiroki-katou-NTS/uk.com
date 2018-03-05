@@ -346,6 +346,11 @@ module cmm045.shr {
             postAppID: string;
             //実績
             lstFrameRes: Array<vmbase.OverTimeFrame>;
+            constructor(preAppID: string, postAppID: string, lstFrameRes: Array<vmbase.OverTimeFrame>){
+                this.preAppID = preAppID;
+                this.postAppID = postAppID;
+                this.lstFrameRes = lstFrameRes;
+            }
         }
     }
 }
