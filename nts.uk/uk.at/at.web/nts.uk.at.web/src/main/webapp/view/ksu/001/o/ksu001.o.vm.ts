@@ -108,7 +108,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     //                    $("#extable").exTable("viewMode", "shortName", { y: 100 }); 
                     $("#extable").exTable("viewMode", "shortName", { y: 232 });
                     $('#contain-view').show();
-                    //when close dialog, copy-paste value of nameWorkTimeType of screen O(not O1) for cell
+                    // when close dialog, copy-paste value of nameWorkTimeType of screen O(not O1) for cell
                     $("#extable").exTable("stickData", self.nameWorkTimeType());
                     $("#combo-box1").focus();
                 }
@@ -207,8 +207,8 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 self.endDateScreenA = data.endDate;
                 //set data for listWorkType
                 self.listWorkType(data.listWorkType);
-                //
-                self.checkStateWorkTypeCode = data.checkStateWorkTypeCode;
+                self.selectedWorkTypeCode(self.listWorkType()[0].workTypeCode),
+                    self.checkStateWorkTypeCode = data.checkStateWorkTypeCode;
                 self.checkNeededOfWorkTimeSetting = data.checkNeededOfWorkTimeSetting;
                 self.workEmpCombines = data.workEmpCombines;
                 //set data for listWorkTime
@@ -291,6 +291,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 });
                 dfd.resolve();
                 self.listWorkTimeComboBox(self.listWorkTime());
+                self.selectedWorkTimeCode(self.listWorkTimeComboBox()[0].codeName);
             }).fail(function() {
                 dfd.reject();
             });
