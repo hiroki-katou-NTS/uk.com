@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 960,
-					height : 590
+					width : 1080,
+					height : 650
 				};
 			</script>
 			<com:ValidatorScript>
@@ -92,7 +92,6 @@
 													value: codeConvertData().convertName,
 													name:'#{i18n.getText('CMF001_199')}',
 													constraint: 'ConvertName',
-													required: true,
 													constraint: 'CodeConvertName',
 													enable: true
 												}"
@@ -137,7 +136,7 @@
 						</div>
 						<div class="div_line">
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF001_207')}</div>
-							<button>?</button>
+							<button data-bind="ntsHelpButton: {image: '../resource/上記の設定にないコード.jpg', position: 'bottom left'}">?</button>
 							<div class="cf"
 								data-bind="ntsSwitchButton: {
 														options: acceptWithoutSettingItems,
