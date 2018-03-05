@@ -1640,7 +1640,8 @@ module nts.uk.at.view.kmf022 {
             }
             loadData(): void {
                 let self = this;
-                service.findAllData().done((data: any): {
+                nts.uk.ui.block.invisible();
+                service.findAllData().done((data: any)=> {
                     self.initDataA4(data);
                     self.initDataA5(data);
                     self.initDataA6(data);
@@ -1662,25 +1663,26 @@ module nts.uk.at.view.kmf022 {
                     self.initDataI(data);
                     self.initDataJ(data);
                     self.initDataK(data);
+                    nts.uk.ui.block.clear();     
                 });
-
+                    
             }
-            initDataA4(allData:any): void {
+            initDataA4(allData: any): void {
                 let self = this;
                 // init data A4
                 self.dataA4Display([]);
                 self.sizeArrayA4(0);
                 let data = allData.allClosure;
-                if(data) {
+                if (data) {
                     self.sizeArrayA4(data.length);
-                    _.forEach(data, element => {
-                        let name = element.id + "." + element.name;
-                        service.findApp(element.id).done((obj: any) => {
-                            if (obj) {
-                                self.dataA4Display.push(new ItemA4(element.id, name, obj.userAtr, obj.deadlineCriteria, obj.deadline));
-                            } else {
-                                self.dataA4Display.push(new ItemA4(element.id, name, 0, 0, 1));
-                            }
+                    let ids = _.map(data, 'id');
+                    let closureId = {
+                        closureId:ids   
+                    };
+                    service.findApp(closureId).done((arr: any) => {
+                        _.forEach(arr, (obj: any, index: number) => {
+                            let name = obj.closureId + "." + _.find(data, ['id', obj.closureId]).name;
+                            self.dataA4Display.push(new ItemA4(obj.closureId, name, obj.userAtr, obj.deadlineCriteria, obj.deadline));
                             if (self.dataA4Display().length == data.length) {
                                 for (let i = data.length + 1; i <= 5; i++) {
                                     self.dataA4Display.push(new ItemA4(i, i + '.', 0, 0, 1));
@@ -1954,6 +1956,10 @@ module nts.uk.at.view.kmf022 {
                     self.selectedIdE12(data.lateLeave);
                     self.texteditorE13.value(data.comment1);
                     self.texteditorE16.value(data.comment2);
+                    self.valueE14(data.color1);
+                    self.enableE15(data.weight1);
+                    self.valueE17(data.color2);
+                    self.enableE18(data.weight2);
                 }
             }
             initDataG(allData:any): void {
@@ -1990,16 +1996,11 @@ module nts.uk.at.view.kmf022 {
                     self.selectedIdJ28(data.stampGoOutAtr_Union_Disp);
                     self.texteditorJ29.value(data.topComment);
                     self.texteditorJ32.value(data.bottomComment);
-                    //self.valueJ30(data.topCommentFontColor);
-                    //self.valueJ30_1(data.bottomCommentFontColor);
-                    //self.enableJ31(data.topCommentFontWeight);
-                    //self.enableJ31_1(data.bottomCommentFontWeight);
+                    self.valueJ30(data.topCommentFontColor);
+                    self.valueJ30_1(data.bottomCommentFontColor);
+                    self.enableJ31(data.topCommentFontWeight);
+                    self.enableJ31_1(data.bottomCommentFontWeight);
 
-                    //e
-                    self.valueE14(data.topCommentFontColor);
-                    self.enableE15(data.topCommentFontWeight);
-                    self.valueE17(data.bottomCommentFontColor);
-                    self.enableE18(data.bottomCommentFontWeight);
                 }
             }
             initDataH(allData:any): void {
@@ -2154,11 +2155,10 @@ module nts.uk.at.view.kmf022 {
                     stampGoOutAtr_Union_Disp: self.selectedIdJ28(),
                     topComment: self.texteditorJ29.value(),
                     bottomComment: self.texteditorJ32.value(),
-                    topCommentFontColor: self.valueE14(),
-                    topCommentFontWeight: self.enableE15(),
-                    bottomCommentFontColor: self.valueE17(),
-                    bottomCommentFontWeight: self.enableE18(),
-                     
+                    topCommentFontColor: self.valueJ30(),
+                    topCommentFontWeight: self.enableJ31(),
+                    bottomCommentFontColor: self.valueJ30_1(),
+                    bottomCommentFontWeight: self.enableJ31_1()                     
                 };
                 data.goBack = {
                     companyId: self.companyId(),
@@ -2244,8 +2244,11 @@ module nts.uk.at.view.kmf022 {
                     workChangeTime: self.checkedE11_5() ? 1 : 0,
                     lateLeave: self.selectedIdE12(),
                     comment1: self.texteditorE13.value(),
-                    comment2: self.texteditorE16.value()
-                     
+                    comment2: self.texteditorE16.value(),
+                    color1:self.valueE14(),
+                    weight1:self.enableE15(),
+                    color2:self.valueE17(),
+                    weight2:self.enableE18()
                 };
                 data.wdApp = {
                     companyId: self.companyId(),
