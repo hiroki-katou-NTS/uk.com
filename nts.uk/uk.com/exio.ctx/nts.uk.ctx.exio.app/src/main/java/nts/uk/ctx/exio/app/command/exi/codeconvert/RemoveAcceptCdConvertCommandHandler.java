@@ -6,9 +6,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import javax.transaction.Transactional;
 import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvertRepository;
-import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -20,7 +19,7 @@ public class RemoveAcceptCdConvertCommandHandler extends CommandHandler<AcceptCd
     
     @Override
     protected void handle(CommandHandlerContext<AcceptCdConvertCommand> context) {
-        String cid = context.getCommand().getCid();
+        String cid = AppContexts.user().companyId();
         String convertCd = context.getCommand().getConvertCd();
         repository.remove(cid, convertCd);
     }

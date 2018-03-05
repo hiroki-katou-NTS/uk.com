@@ -55,7 +55,7 @@ public class JpaAcceptCdConvertRepository extends JpaRepository implements Accep
 
 	@Override
 	public void remove(String cid, String convertCd) {
-		this.commandProxy().remove(OiomtAcceptCdConvertPk.class, new OiomtAcceptCdConvertPk(cid, convertCd));
+		this.commandProxy().remove(OiomtAcceptCdConvert.class, new OiomtAcceptCdConvertPk(cid, convertCd));
 	}
 
 	private static AcceptCdConvert toDomain(OiomtAcceptCdConvert entity) {

@@ -13,6 +13,11 @@
 					height : 590
 				};
 			</script>
+			<com:ValidatorScript>
+                    nts.uk.ctx.exio.dom.exi.codeconvert.CodeConvertCode
+                    nts.uk.ctx.exio.dom.exi.codeconvert.CodeConvertName
+                    nts.uk.ctx.exio.dom.exi.codeconvert.CodeConvertValue
+            </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf001.f.start.js" />
@@ -25,10 +30,10 @@
 				<button id="F1_1" class="proceed"
 					data-bind="click: addCodeConvert_click, enable: screenMode() == 1"
 					tabindex="1">#{i18n.getText('CMF001_190')}</button>
-				<button id="F1_2" class="proceed" tabindex="2">#{i18n.getText('CMF001_191')}</button>
+				<button id="F1_2" data-bind="click: regAcceptCodeConvert_Click" class="proceed" tabindex="2">#{i18n.getText('CMF001_191')}</button>
 				<button id="F1_3" data-bind="click: closeDialog" tabindex="3">#{i18n.getText('CMF001_192')}</button>
 				<button id="F1_4" class="danger push-right-4x"
-					data-bind="enable: screenMode() == 1" tabindex="4">#{i18n.getText('CMF001_193')}</button>
+					data-bind="enable: screenMode() == 1, click: delAcceptCodeConvert_Click" tabindex="4">#{i18n.getText('CMF001_193')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="content">
@@ -69,22 +74,26 @@
 						<div class="div_line">
 							<div class="line_col_1">
 								<div class="float_left display_block"
-									data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CMF001_197')}</div>
+									data-bind="ntsFormLabel: { required:true, constraint: ['CodeConvertCode', 'CodeConvertName'] }">#{i18n.getText('CMF001_197')}</div>
 							</div>
 							<div>
 								<input id="F4_2" style="width: 30px"
 									data-bind="ntsTextEditor: {
-													value: convertCode,
+													value: codeConvertData().convertCd,
+													name:'#{i18n.getText('CMF001_198')}',
 													constraint: 'ConvertCode',
 													required: true,
+													constraint: 'CodeConvertCode',
 													enable: screenMode() == 0
 												}"
 									tabindex="6" />
 									<input id="F4_3"
 									data-bind="ntsTextEditor: {
-													value: convertName,
+													value: codeConvertData().convertName,
+													name:'#{i18n.getText('CMF001_199')}',
 													constraint: 'ConvertName',
 													required: true,
+													constraint: 'CodeConvertName',
 													enable: true
 												}"
 									tabindex="7" />
@@ -101,7 +110,7 @@
 								data-bind="click: deleteDetailConvert_click" tabindex="9">#{i18n.getText('CMF001_202')}</button>
 						</div>
 						<div class="div_line">
-							<table id="detail-code-convert">
+							 <table id="detail-code-convert">
 								<colgroup>
 									<col width="35px" />
 									<col width="120px" />
@@ -114,13 +123,13 @@
 										<th class="ui-widget-header">#{i18n.getText('CMF001_204')}</th>
 									</tr>
 								</thead>
-								<tbody data-bind="foreach: codeConvertDetailList">
+								<tbody data-bind="foreach: codeConvertData().cdConvertDetails">
 									<tr data-bind="attr: { 'data-id': lineNumber }">
 										<td class="order-column"><span data-bind="text: lineNumber"></span></td>
 										<td><input
-											data-bind="ntsTextEditor: {value: outputItem, option: {width: '93px'}}" /></td>
+											data-bind="ntsTextEditor: {value: outputItem, name:'#{i18n.getText('CMF001_205')}', option: {width: '93px'}}" /></td>
 										<td><input
-											data-bind="ntsTextEditor: {value: systemCode, option: {width: '123px'}}" /></td>
+											data-bind="ntsTextEditor: {value: systemCd, name:'#{i18n.getText('CMF001_206')}', option: {width: '123px'}}" /></td>
 									</tr>
 								</tbody>
 							</table>
@@ -131,11 +140,10 @@
 							<button>?</button>
 							<div class="cf"
 								data-bind="ntsSwitchButton: {
-														options: [{code: 0, name: '#{i18n.getText('CMF001_209')}'},
-																  {code: 1, name: '#{i18n.getText('CMF001_210')}'}],
+														options: acceptWithoutSettingItems,
 														optionsValue: 'code',
 														optionsText: 'name',
-														value: selectedSettingKbn,
+														value: codeConvertData().acceptWithoutSetting,
 														enable: true }" />
 						</div>
 					</div>
