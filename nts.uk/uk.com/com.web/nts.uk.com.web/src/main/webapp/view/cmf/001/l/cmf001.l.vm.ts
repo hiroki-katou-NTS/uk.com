@@ -38,9 +38,27 @@ module nts.uk.com.view.cmf001.l.viewmodel {
         
         saveSetting(){
             var self = this;
-            setShared('CMF001lOutput', ko.toJS(self.acceptScreenConditionSetting), true);
-            nts.uk.ui.windows.close();
-            
+            switch(self.selectedDataType) {
+                case 0:
+                $(".numberCondition").trigger("validate");
+                break;
+                case 1:
+                $(".characterCondition").trigger("validate");
+                break;
+                case 2:
+                $(".dateCondition").trigger("validate");
+                break;
+                case 3:
+                $(".timeCondition").trigger("validate");
+                case 4:
+                $(".timeMomentCondition").trigger("validate");
+                break;
+            }
+            if (!nts.uk.ui.errors.hasError()) {
+                
+                setShared('CMF001lOutput', ko.toJS(self.acceptScreenConditionSetting), true);
+                nts.uk.ui.windows.close();
+            }
         }
     }
 }

@@ -3,15 +3,7 @@ module nts.uk.com.view.cmf001.a {
         export class ScreenModel {
             constructor() {
             }
-            /**
-             * get data on start page
-             */
-            startPage(): JQueryPromise<any> {
-                 let self = this;
-                let dfd = $.Deferred();
-                dfd.resolve();
-                return dfd.promise();
-            }
+            
             /**
              * request to create creation screen
              */

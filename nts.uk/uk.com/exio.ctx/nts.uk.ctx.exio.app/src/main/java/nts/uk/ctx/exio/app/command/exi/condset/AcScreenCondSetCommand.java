@@ -2,7 +2,6 @@ package nts.uk.ctx.exio.app.command.exi.condset;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 @Value
 public class AcScreenCondSetCommand
@@ -71,14 +70,10 @@ public class AcScreenCondSetCommand
     /**
     * 数値‗条件値2
     */
-    private String numberConditionValue2;
+    private int numberConditionValue2;
     
     /**
     * 数値‗条件値1
     */
-    private String numberConditionValue1;
-    
-    
-    private Long version;
-
+    private int numberConditionValue1;
 }
