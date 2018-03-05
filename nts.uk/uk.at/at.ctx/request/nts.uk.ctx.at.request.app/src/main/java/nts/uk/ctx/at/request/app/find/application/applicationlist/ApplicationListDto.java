@@ -26,5 +26,6 @@ public class ApplicationListDto {
 //	private List<String> lstTimeColor; 
 //	private List<String> lstFramStatus;
 	private List<AppPrePostGroup> lstAppGroup;
+	private List<Integer> lstAppType;
 	
 }
