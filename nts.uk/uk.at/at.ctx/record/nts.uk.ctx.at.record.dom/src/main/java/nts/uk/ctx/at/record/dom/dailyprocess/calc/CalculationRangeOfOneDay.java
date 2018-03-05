@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
@@ -35,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.Working
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.RaisingSalaryCalcAtr;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
@@ -158,20 +161,6 @@ public class CalculationRangeOfOneDay {
 				fixedCalc, workTimeDivision, breakTimeOfDailyList);
 		this.temporaryDeductionTimeSheet = Optional.of(deductionTimeSheet);
 		
-//		DeductionTimeSheet deductionTimeSheet = new DeductionTimeSheet(Collections.emptyList(), Collections.emptyList(),new BreakTimeManagement(new BreakTimeOfDaily(DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-//																																															TimeWithCalculation.sameTime(new AttendanceTime(0)),
-//																																															TimeWithCalculation.sameTime(new AttendanceTime(0))),
-//																																									 DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-//																																											 				TimeWithCalculation.sameTime(new AttendanceTime(0)),
-//																																											 				TimeWithCalculation.sameTime(new AttendanceTime(0))),
-//																																									 new BreakTimeGoOutTimes(0),
-//																																									 new AttendanceTime(0),
-//																																									 Collections.emptyList()
-//																																									 ),
-//																																				Collections.emptyList()));
-		this.temporaryDeductionTimeSheet = Optional.of(deductionTimeSheet);
-		
-		
 		val fixedWorkTImeZoneSet = new CommonFixedWorkTimezoneSet();
 		fixedWorkTImeZoneSet.forFixed(fixedWorkSetting.getLstHalfDayWorkTimezone());
 		theDayOfWorkTimesLoop(workingSystem, predetermineTimeSetForCalc, fixedWorkTImeZoneSet,fixedWorkSetting.getCommonSetting(), bonusPaySetting,
@@ -282,30 +271,117 @@ public class CalculationRangeOfOneDay {
 	}
 
 	/**
-	 * 加給時間の合計計算
+	 * 就内・残業内・休出時間内の加給時間の合計を求める
 	 */
-	public RaiseSalaryTimeOfDailyPerfor calcTotalBonusPay(WithinWorkTimeSheet withinWorkSheet,
-			OverTimeOfDaily overTimeWorkOfDaily, BonusPayAutoCalcSet bonusPayAutoCalcSet, BonusPayAtr bonusPayAtr,
-			CalAttrOfDailyPerformance calcAtrOfDaily) {
-		return new RaiseSalaryTimeOfDailyPerfor(
-				withinWorkSheet.calcBonusPayTimeInWithinWorkTime(bonusPayAutoCalcSet, bonusPayAtr, calcAtrOfDaily),
-				calcTotalSpecifiedBonusPay(withinWorkSheet, overTimeWorkOfDaily, bonusPayAutoCalcSet, bonusPayAtr,
-						calcAtrOfDaily));
+	public List<BonusPayTime> calcBonusPayTime(RaisingSalaryCalcAtr raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,
+											   CalAttrOfDailyPerformance calcAtrOfDaily, BonusPayAtr bonusPayAtr) {
+		val withinBonusPay = withinWorkingTimeSheet.get().calcBonusPayTimeInWithinWorkTime(raisingAutoCalcSet,bonusPayAutoCalcSet, bonusPayAtr,calcAtrOfDaily);
+		List<BonusPayTime> overTimeBonusPay = new ArrayList<>();
+		List<BonusPayTime> holidayWorkBonusPay = new ArrayList<>();
+		if(outsideWorkTimeSheet.isPresent())
+		{
+			if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
+				overTimeBonusPay = outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().calcBonusPayTimeInOverWorkTime(raisingAutoCalcSet, bonusPayAutoCalcSet, bonusPayAtr, calcAtrOfDaily);
+			}
+			
+			if(outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
+				holidayWorkBonusPay = outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().calcBonusPayTimeInHolidayWorkTime(raisingAutoCalcSet, bonusPayAutoCalcSet, bonusPayAtr, calcAtrOfDaily);
+			}
+		}
+		return calcBonusPayTime(withinBonusPay,overTimeBonusPay,holidayWorkBonusPay);
 	}
-
+	
 	/**
-	 * 特定日加給時間の合計時間
+	 * 就内・残業内・休出時間内の特定加給時間の合計を求める
 	 */
-	public List<BonusPayTime> calcTotalSpecifiedBonusPay(WithinWorkTimeSheet withinWorkSheet,
-			OverTimeOfDaily overTimeWorkOfDaily, BonusPayAutoCalcSet bonusPayAutoCalcSet, BonusPayAtr bonusPayAtr,
-			CalAttrOfDailyPerformance calcAtrOfDaily) {
-		List<BonusPayTime> bonusPayList = withinWorkSheet.calcSpecifiedBonusPayTimeInWithinWorkTime(bonusPayAutoCalcSet,
-				bonusPayAtr, calcAtrOfDaily);
-		bonusPayList
-				.addAll(overTimeWorkOfDaily.calcSpecifiedBonusPay(bonusPayAutoCalcSet, bonusPayAtr, calcAtrOfDaily));
-		return bonusPayList;
+	public List<BonusPayTime> calcSpecBonusPayTime(RaisingSalaryCalcAtr raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,
+												   CalAttrOfDailyPerformance calcAtrOfDaily,BonusPayAtr bonusPayAtr){
+		List<BonusPayTime> withinBonusPay = withinWorkingTimeSheet.get().calcSpecifiedBonusPayTimeInWithinWorkTime(raisingAutoCalcSet,bonusPayAutoCalcSet, bonusPayAtr,calcAtrOfDaily);
+		List<BonusPayTime> overTimeBonusPay = new ArrayList<>();
+		List<BonusPayTime> holidayWorkBonusPay = new ArrayList<>();
+		if(outsideWorkTimeSheet.isPresent())
+		{
+			if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
+				overTimeBonusPay = outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().calcSpecBonusPayTimeInOverWorkTime(raisingAutoCalcSet, bonusPayAutoCalcSet, bonusPayAtr, calcAtrOfDaily);
+			}
+			
+			if(outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
+				holidayWorkBonusPay = outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().calcSpecBonusPayTimeInHolidayWorkTime(raisingAutoCalcSet, bonusPayAutoCalcSet, bonusPayAtr, calcAtrOfDaily);
+			}
+		}
+		return calcBonusPayTime(withinBonusPay,overTimeBonusPay,holidayWorkBonusPay);
 	}
-
+	
+	/**
+	 * 就・残・休の加給時間を合計する
+	 * @param withinBonusPay
+	 * @param overTimeBonusPay
+	 * @param holidayWorkBonusPay
+	 * @return　合計後の加算時間(Noでユニーク)
+	 */
+	private List<BonusPayTime> calcBonusPayTime(List<BonusPayTime> withinBonusPay ,
+								   List<BonusPayTime> overTimeBonusPay ,
+								   List<BonusPayTime> holidayWorkBonusPay){
+		AttendanceTime bonusTime = new AttendanceTime(0);
+		List<BonusPayTime> returnList = new ArrayList<>();
+		
+		overTimeBonusPay.addAll(holidayWorkBonusPay);
+		val excessPayTime = overTimeBonusPay;
+		for(int bonusPayNo = 1 ; bonusPayNo <= 10 ; bonusPayNo++) {
+			returnList.add(addWithinAndExcessBonusTime(sumBonusPayTime(getByBonusPayNo(withinBonusPay,bonusPayNo),bonusPayNo),
+													   sumBonusPayTime(getByBonusPayNo(excessPayTime,bonusPayNo),bonusPayNo)
+													   ,bonusPayNo));
+		}
+		return returnList;
+	}
+	
+	/**
+	 * 受け取った2つの加給時間が持つ時間を合算
+	 * @param within
+	 * @param excess
+	 * @param bonusPayNo
+	 * @return
+	 */
+	private BonusPayTime addWithinAndExcessBonusTime(BonusPayTime within,BonusPayTime excess,int bonusPayNo) {
+		return new BonusPayTime(bonusPayNo,
+								within.getBonusPayTime().addMinutes(excess.getBonusPayTime().valueAsMinutes()),
+								within.getWithinBonusPay().addMinutes(excess.getWithinBonusPay().getTime(), 
+																	  excess.getWithinBonusPay().getCalcTime()),
+								within.getExcessBonusPayTime().addMinutes(excess.getExcessBonusPayTime().getTime(), 
+										  								  excess.getExcessBonusPayTime().getCalcTime())
+								);
+	}
+	
+	/**
+	 * 各時間の合計を算出
+	 * @param bonusPayList　加給時間のリスト
+	 * @param bonusPayNo　加給時間Ｎｏ
+	 * @return　合計時間の加給時間
+	 */
+	private BonusPayTime sumBonusPayTime(List<BonusPayTime> bonusPayList, int bonusPayNo) {
+		AttendanceTime bonusPayTime =  new AttendanceTime(bonusPayList.stream().map(tc -> tc.getBonusPayTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+		AttendanceTime withinTime = new AttendanceTime(bonusPayList.stream().map(tc -> tc.getWithinBonusPay().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+		AttendanceTime withinCalcTime = new AttendanceTime(bonusPayList.stream().map(tc -> tc.getWithinBonusPay().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+		AttendanceTime excessTime = new AttendanceTime(bonusPayList.stream().map(tc -> tc.getExcessBonusPayTime().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+		AttendanceTime excessCalcTime = new AttendanceTime(bonusPayList.stream().map(tc -> tc.getExcessBonusPayTime().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+		
+		return new BonusPayTime(bonusPayNo,
+								bonusPayTime,
+								TimeWithCalculation.createTimeWithCalculation(withinTime, withinCalcTime),
+								TimeWithCalculation.createTimeWithCalculation(excessTime, excessCalcTime));
+	}
+	
+	/**
+	 * 受け取った加給時間Ｎｏを持つ加給時間を取得
+	 * @param bonusPayTime 加給時間
+	 * @param bonusPayNo　加給時間Ｎｏ
+	 * @return　加給時間リスト
+	 */
+	private List<BonusPayTime> getByBonusPayNo(List<BonusPayTime> bonusPayTime,int bonusPayNo){
+		return bonusPayTime.stream().filter(tc -> tc.getBonusPayTimeItemNo() == bonusPayNo).collect(Collectors.toList());
+	}
+	
+	
 	/**
 	 * 控除時間を取得
 	 * @param dedClassification 

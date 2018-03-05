@@ -36,8 +36,8 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 			TimeSpanForCalc calculationTimeSheet,
 			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets,
-			List<BonusPayTimesheet> bonusPayTimeSheet,
-			List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet,
+			List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
+			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet,
 			Optional<MidNightTimeSheet> midNighttimeSheet
 			,int frameNo
 			,OverTimeFrameTime overTimeWorkFrameTime

@@ -11,8 +11,11 @@ import lombok.Getter;
 import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.SubHolOccurrenceInfo;
+import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
+import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaisingSalaryTime;
@@ -20,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.RaisingSalaryCalcAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
@@ -131,6 +135,78 @@ public class OverTimeSheet {
 											.sorted((first,second) -> first.getFrameNo().v().compareTo(second.getFrameNo().v()))
 											.collect(Collectors.toList());
 	}
+	
+	/**
+	 * 残業時間帯に入っている加給時間の計算
+	 */
+	public List<BonusPayTime> calcBonusPayTimeInOverWorkTime(RaisingSalaryCalcAtr raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
+		List<BonusPayTime> bonusPayList = new ArrayList<>();
+		ActualWorkTimeSheetAtr sheetAtr;
+		for(OverTimeFrameTimeSheetForCalc timeFrame : frameTimeSheets) {
+			sheetAtr = ActualWorkTimeSheetAtr.OverTimeWork;
+			if(timeFrame.getWithinStatutryAtr().isStatutory()) {
+				sheetAtr = ActualWorkTimeSheetAtr.StatutoryOverTimeWork;
+				if(timeFrame.isGoEarly()) {
+					sheetAtr = ActualWorkTimeSheetAtr.EarlyWork;
+				}
+			}
+			bonusPayList.addAll(timeFrame.calcBonusPay(sheetAtr,raisingAutoCalcSet,bonusPayAutoCalcSet,calcAtrOfDaily,bonusPayAtr));
+		}
+		return sumBonusPayTime(bonusPayList);
+	}
+	
+	/**
+	 * 残業時間帯に入っている特定加給時間の計算
+	 */
+	public List<BonusPayTime> calcSpecBonusPayTimeInOverWorkTime(RaisingSalaryCalcAtr raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
+		List<BonusPayTime> bonusPayList = new ArrayList<>();
+		ActualWorkTimeSheetAtr sheetAtr;
+		for(OverTimeFrameTimeSheetForCalc timeFrame : frameTimeSheets) {
+			sheetAtr = ActualWorkTimeSheetAtr.OverTimeWork;
+			if(timeFrame.getWithinStatutryAtr().isStatutory()) {
+				sheetAtr = ActualWorkTimeSheetAtr.StatutoryOverTimeWork;
+				if(timeFrame.isGoEarly()) {
+					sheetAtr = ActualWorkTimeSheetAtr.EarlyWork;
+				}
+			}
+			bonusPayList.addAll(timeFrame.calcSpacifiedBonusPay(sheetAtr,raisingAutoCalcSet,bonusPayAutoCalcSet,calcAtrOfDaily,bonusPayAtr));
+		}
+		return sumBonusPayTime(bonusPayList);
+	}
+	
+	/**
+	 * 同じ加給時間Ｎｏを持つものを１つにまとめる
+	 * @param bonusPayTime　加給時間
+	 * @return　Noでユニークにした加給時間List
+	 */
+	private List<BonusPayTime> sumBonusPayTime(List<BonusPayTime> bonusPayTime){
+		List<BonusPayTime> returnList = new ArrayList<>();
+		List<BonusPayTime> refineList = new ArrayList<>();
+		for(int bonusPayNo = 1 ; bonusPayNo <= 10 ; bonusPayNo++) {
+			refineList = getByBonusPayNo(bonusPayTime, bonusPayNo);
+			if(refineList.size()>0) {
+				returnList.add(new BonusPayTime(bonusPayNo,
+												new AttendanceTime(refineList.stream().map(tc -> tc.getBonusPayTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
+												TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(refineList.stream().map(tc -> tc.getWithinBonusPay().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
+																							  new AttendanceTime(refineList.stream().map(tc -> tc.getWithinBonusPay().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)))),
+												TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(refineList.stream().map(tc -> tc.getExcessBonusPayTime().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
+																							  new AttendanceTime(refineList.stream().map(tc -> tc.getExcessBonusPayTime().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))))
+												));
+			}
+		}
+		return returnList;
+	}
+	
+	/**
+	 * 受け取った加給時間Ｎｏを持つ加給時間を取得
+	 * @param bonusPayTime 加給時間
+	 * @param bonusPayNo　加給時間Ｎｏ
+	 * @return　加給時間リスト
+	 */
+	private List<BonusPayTime> getByBonusPayNo(List<BonusPayTime> bonusPayTime,int bonusPayNo){
+		return bonusPayTime.stream().filter(tc -> tc.getBonusPayTimeItemNo() == bonusPayNo).collect(Collectors.toList());
+	}
+	
 	/**
 	 * 深夜時間計算後の時間帯再作成
 	 * @return

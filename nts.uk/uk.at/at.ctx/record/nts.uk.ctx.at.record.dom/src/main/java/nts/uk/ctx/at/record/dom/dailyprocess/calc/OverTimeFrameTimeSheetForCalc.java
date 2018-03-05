@@ -77,8 +77,8 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 */
 	public OverTimeFrameTimeSheetForCalc(TimeZoneRounding timeSheet, TimeSpanForCalc calcrange,
 			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
-			List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimesheet> bonusPayTimeSheet,
-			List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet, Optional<MidNightTimeSheet> midNighttimeSheet,
+			List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
+			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet, Optional<MidNightTimeSheet> midNighttimeSheet,
 			OverTimeFrameTime frameTime, StatutoryAtr withinStatutryAtr, boolean goEarly, EmTimezoneNo overTimeWorkSheetNo,
 			boolean asTreatBindTime, Optional<AttendanceTime> adjustTime) {
 		super(timeSheet, calcrange, recorddeductionTimeSheets,deductionTimeSheets, bonusPayTimeSheet, specifiedBonusPayTimeSheet,

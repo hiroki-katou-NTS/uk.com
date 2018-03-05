@@ -18,8 +18,8 @@ public class LateLeaveEarlyTimeSheet extends CalculationTimeSheet{
 
 	public LateLeaveEarlyTimeSheet(TimeZoneRounding timeSheet, TimeSpanForCalc calcrange,
 			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
-			List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimesheet> bonusPayTimeSheet,
-			List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet, Optional<MidNightTimeSheet> midNighttimeSheet) {
+			List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
+			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet, Optional<MidNightTimeSheet> midNighttimeSheet) {
 		super(timeSheet, calcrange, recorddeductionTimeSheets, deductionTimeSheets, bonusPayTimeSheet,
 				specifiedBonusPayTimeSheet, midNighttimeSheet);
 		// TODO Auto-generated constructor stub

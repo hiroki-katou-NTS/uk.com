@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonFixedWorkTimezoneSet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
@@ -32,6 +33,8 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateLeaveEarlyManagementTimeSh
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.PremiumAtr;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.SpecBonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationAddTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
@@ -50,6 +53,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.Calculatio
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.RaisingSalaryCalcAtr;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
@@ -139,16 +143,24 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		List<EmTimeZoneSet> workingHourSet = createWorkingHourSet(workType, predetermineTimeForSet , lstHalfDayWorkTimezone);
 		workingHourSet = duplicatedByStamp(workingHourSet,timeLeavingWork);
 		
-		List<BonusPayTimesheet> bonusPayTimeSheet = new ArrayList<>();
-		List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet = new ArrayList<>();
+		List<BonusPayTimeSheetForCalc> bonusPayTimeSheet = new ArrayList<>();
+		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet = new ArrayList<>();
 		Optional<MidNightTimeSheet> midNightTimeSheet = Optional.empty();
 		for(EmTimeZoneSet duplicateTimeSheet :workingHourSet) {
 			//DeductionTimeSheet deductionTimeSheet = /*控除時間を分割する*/
 			
 			timeFrame = new WithinWorkTimeFrame(duplicateTimeSheet.getEmploymentTimeFrameNo(), duplicateTimeSheet.getTimezone(),duplicateTimeSheet.getTimezone().timeSpan(),deductionTimeSheet.getForRecordTimeZoneList(),deductionTimeSheet.getForDeductionTimeZoneList(),Collections.emptyList(),Optional.empty(),Collections.emptyList());
 			/*加給*/
-			bonusPayTimeSheet = bonusPaySetting.createDuplicationBonusPayTimeSheet(duplicateTimeSheet.getTimezone().timeSpan());
-			specifiedBonusPayTimeSheet = bonusPaySetting.createDuplicationSpecifyBonusPay(duplicateTimeSheet.getTimezone().timeSpan());
+			bonusPayTimeSheet = bonusPaySetting.getLstBonusPayTimesheet().stream().map(tc ->BonusPayTimeSheetForCalc.convertForCalc(tc)).collect(Collectors.toList());
+			bonusPayTimeSheet = bonusPayTimeSheet.stream()
+												 .filter(tc -> tc.getCalcrange().checkDuplication(duplicateTimeSheet.getTimezone().timeSpan()).isDuplicated())
+												 .map(tc -> tc.convertForCalcCorrectRange(tc.getCalcrange().getDuplicatedWith(duplicateTimeSheet.getTimezone().timeSpan()).get()))
+												 .collect(Collectors.toList());
+			specifiedBonusPayTimeSheet = bonusPaySetting.getLstSpecBonusPayTimesheet().stream().map(tc -> SpecBonusPayTimeSheetForCalc.convertForCalc(tc)).collect(Collectors.toList());
+			specifiedBonusPayTimeSheet = specifiedBonusPayTimeSheet.stream()
+												 .filter(tc -> tc.getCalcrange().checkDuplication(duplicateTimeSheet.getTimezone().timeSpan()).isDuplicated())
+					 							 .map(tc -> tc.convertForCalcCorrectRange(tc.getCalcrange().getDuplicatedWith(duplicateTimeSheet.getTimezone().timeSpan()).get()))
+					 							 .collect(Collectors.toList());
 			/*深夜*/
 			midNightTimeSheet = timeFrame.createMidNightTimeSheet();
 			
@@ -307,7 +319,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @param dedTimeSheet　控除時間帯
 	 * @return 就業時間の計算結果
 	 */
-	public AttendanceTime calcWorkTimeForStatutory(CalculationByActualTimeAtr calcActualTime,DeductionTimeSheet dedTimeSheet,
+	public AttendanceTime calcWorkTimeForStatutory(PremiumAtr premiumAtr,CalculationByActualTimeAtr calcActualTime,DeductionTimeSheet dedTimeSheet,
 			   TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 			   VacationClass vacationClass,
 			   StatutoryDivision statutoryDivision,
@@ -326,7 +338,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			   AddSettingOfFlexWork addSettingOfFlexWork,
 			   AddSettingOfRegularWork addSettingOfRegularWork,
 			   VacationAddTimeSet vacationAddTimeSet) {
-		return calcWorkTime(calcActualTime,
+		return calcWorkTime(
+					premiumAtr,
+					calcActualTime,
 				    dedTimeSheet,
 				    vacationClass,
 				    timevacationUseTimeOfDaily,
@@ -353,7 +367,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * 就業時間の計算(控除時間差し引いた後)
 	 * @return 就業時間
 	 */
-	public AttendanceTime calcWorkTime(CalculationByActualTimeAtr calcActualTime,DeductionTimeSheet dedTimeSheet,VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
+	public AttendanceTime calcWorkTime(PremiumAtr premiumAtr, CalculationByActualTimeAtr calcActualTime,DeductionTimeSheet dedTimeSheet,VacationClass vacationClass,TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
 									   StatutoryDivision statutoryDivision,
 									   WorkType workType,
 									   PredetermineTimeSetForCalc predetermineTimeSet,
@@ -751,23 +765,59 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	/**
 	 * 就業時間内時間帯に入っている加給時間の計算
 	 */
-	public List<BonusPayTime> calcBonusPayTimeInWithinWorkTime(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
+	public List<BonusPayTime> calcBonusPayTimeInWithinWorkTime(RaisingSalaryCalcAtr raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		for(WithinWorkTimeFrame timeFrame : withinWorkTimeFrame) {
-			bonusPayList.addAll(timeFrame.calcBonusPay(ActualWorkTimeSheetAtr.WithinWorkTime,bonusPayAutoCalcSet, calcAtrOfDaily));
+			bonusPayList.addAll(timeFrame.calcBonusPay(ActualWorkTimeSheetAtr.WithinWorkTime,raisingAutoCalcSet,bonusPayAutoCalcSet,calcAtrOfDaily,bonusPayAtr));
 		}
-		return bonusPayList;
+		//同じNo同士はここで加算し、Listのサイズを減らす
+		return sumBonusPayTime(bonusPayList);
 	}
 	/**
 	 * 就業時間内時間帯に入っている特定加給時間の計算
 	 */
-	public List<BonusPayTime> calcSpecifiedBonusPayTimeInWithinWorkTime(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
+	public List<BonusPayTime> calcSpecifiedBonusPayTimeInWithinWorkTime(RaisingSalaryCalcAtr raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		for(WithinWorkTimeFrame timeFrame : withinWorkTimeFrame) {
-			bonusPayList.addAll(timeFrame.calcBonusPay(ActualWorkTimeSheetAtr.WithinWorkTime,bonusPayAutoCalcSet, calcAtrOfDaily));
+			bonusPayList.addAll(timeFrame.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.WithinWorkTime,raisingAutoCalcSet,bonusPayAutoCalcSet, calcAtrOfDaily,bonusPayAtr));
 		}
-		return bonusPayList;
+		//同じNo同士はここで加算し、Listのサイズを減らす
+		return sumBonusPayTime(bonusPayList);
 	}
+	
+	/**
+	 * 同じ加給時間Ｎｏを持つものを１つにまとめる
+	 * @param bonusPayTime　加給時間
+	 * @return　Noでユニークにした加給時間List
+	 */
+	private List<BonusPayTime> sumBonusPayTime(List<BonusPayTime> bonusPayTime){
+		List<BonusPayTime> returnList = new ArrayList<>();
+		List<BonusPayTime> refineList = new ArrayList<>();
+		for(int bonusPayNo = 1 ; bonusPayNo <= 10 ; bonusPayNo++) {
+			refineList = getByBonusPayNo(bonusPayTime, bonusPayNo);
+			if(refineList.size()>0) {
+				returnList.add(new BonusPayTime(bonusPayNo,
+												new AttendanceTime(refineList.stream().map(tc -> tc.getBonusPayTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
+												TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(refineList.stream().map(tc -> tc.getWithinBonusPay().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
+																							  new AttendanceTime(refineList.stream().map(tc -> tc.getWithinBonusPay().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)))),
+												TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(refineList.stream().map(tc -> tc.getExcessBonusPayTime().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))),
+																							  new AttendanceTime(refineList.stream().map(tc -> tc.getExcessBonusPayTime().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))))
+												));
+			}
+		}
+		return returnList;
+	}
+	
+	/**
+	 * 受け取った加給時間Ｎｏを持つ加給時間を取得
+	 * @param bonusPayTime 加給時間
+	 * @param bonusPayNo　加給時間Ｎｏ
+	 * @return　加給時間リスト
+	 */
+	private List<BonusPayTime> getByBonusPayNo(List<BonusPayTime> bonusPayTime,int bonusPayNo){
+		return bonusPayTime.stream().filter(tc -> tc.getBonusPayTimeItemNo() == bonusPayNo).collect(Collectors.toList());
+	}
+	
 	/**
 	 * 法定内深夜時間の計算
 	 * @return　法定内深夜時間

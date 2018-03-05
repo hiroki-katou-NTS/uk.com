@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.PremiumAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
@@ -77,7 +78,8 @@ public class WithinStatutoryTimeOfDaily {
 												?oneDay.getTemporaryDeductionTimeSheet().get()
 												:new DeductionTimeSheet(Collections.emptyList(), Collections.emptyList());
 		if(oneDay.getWithinWorkingTimeSheet().isPresent()) {
-			workTime =  oneDay.getWithinWorkingTimeSheet().get().calcWorkTimeForStatutory(CalculationByActualTimeAtr.CalculationByActualTime,dedSheet,oneDay.getTimeVacationAdditionRemainingTime().get(),
+			workTime =  oneDay.getWithinWorkingTimeSheet().get().calcWorkTimeForStatutory(PremiumAtr.RegularWork,
+																						  CalculationByActualTimeAtr.CalculationByActualTime,dedSheet,oneDay.getTimeVacationAdditionRemainingTime().get(),
 																						  vacationClass,StatutoryDivision.Nomal,workType,oneDay.getPredetermineTimeSetForCalc(),
 																						   Optional.empty(),//Optional.of(new WorkTimeCode(oneDay.getWorkInformationOfDaily().getRecordWorkInformation().getWorkTimeCode().toString())),
 																						   personalCondition,
