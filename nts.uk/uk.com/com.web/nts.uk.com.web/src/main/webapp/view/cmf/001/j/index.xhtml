@@ -23,33 +23,41 @@
 					<col width="180px" />
 					<col width="135px" />
 					<col width="160px" />
+					<!-- J2 -->
 					<tr>
 						<td>
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_331')}</div>
 						</td>
 						<td>
 							<div data-bind="foreach: itemsDigit">
-								<span class="ntsControl"> <label class="ntsRadioBox">
-										<input type="radio" name="radioDigit"
-										data-bind="checkedValue: code, checked: $parent.selectedDigit, enable: $parent.isEditMode" />
-										<span class="box"></span><span class="label"
-										data-bind="text: name"></span>
-								</label>
-								</span>
+								<div
+									data-bind="ntsRadioButton: {
+										checked: $parent.selectedDigit, 
+										option: $data, 
+										optionValue: 'code', 
+										enable: !(!$parent.checkActive6() || !$parent.inputMode()),
+										optionText: 'name', 
+										group: 'J2_2'}"></div>
 							</div>
 						</td>
 						<td>
 							<div class="disp-inline">
 								<input
-									data-bind="ntsNumberEditor: {value: fromDigit, enable: isEditMode, option : {width : '40px'}}" />
+									data-bind="ntsNumberEditor: {
+										value: fromDigit, 
+										enable: !(!checkActive6() || !checkActive1() || !inputMode()),
+										option : {width : '40px'}}" />
 							</div> <label>#{i18n.getText('CMF001_336')}</label> <label>#{i18n.getText('CMF001_337')}</label>
 							<div class="disp-inline">
 								<input
-									data-bind="ntsNumberEditor: {value: toDigit, enable: isEditMode, option : {width : '40px'}}" />
-							</div>
-							<label>#{i18n.getText('CMF001_339')}</label>
+									data-bind="ntsNumberEditor: {
+										value: toDigit, 
+										enable: !(!checkActive6() || !checkActive1() || !inputMode()),
+										option : {width : '40px'}}" />
+							</div> <label>#{i18n.getText('CMF001_339')}</label>
 						</td>
 					</tr>
+					<!-- J3 -->
 					<tr>
 						<td>
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_340')}</div>
@@ -61,9 +69,10 @@
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: selectedDecimalType,
-								enable: isEditMode }"></div>
+								enable: !(!checkActive6() || !inputMode()) }"></div>
 						</td>
 					</tr>
+					<!-- J4 -->
 					<tr>
 						<td>
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_350')}</div>
@@ -75,9 +84,10 @@
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: selectedTimeType,
-								enable: isEditMode }"></div>
+								enable: !(!checkActive6() || !checkActive4() || !inputMode()) }"></div>
 						</td>
 					</tr>
+					<!-- J5 -->
 					<tr>
 						<td>
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_354')}</div>
@@ -87,7 +97,7 @@
 								data-bind="ntsComboBox: {
 								options: itemsDelimiterSet,
 								optionsValue: 'code',
-								enable: isEditMode,
+								enable: !(!checkActive6() || !inputMode()) ,
 								visibleItemsCount: 5,
 								value: selectedDelimiterSet,
 								optionsText: 'name',
@@ -96,19 +106,21 @@
 								]}"></div>
 						</td>
 					</tr>
+					<!-- J6 -->
 					<tr>
 						<td>
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_356')}</div>
 						</td>
 						<td>
 							<div data-bind="foreach: itemsRoundProcess">
-								<span class="ntsControl"> <label class="ntsRadioBox">
-										<input type="radio" name="radioRoundProcess"
-										data-bind="checkedValue: code, checked: $parent.selectedRoundProcess, enable: $parent.isEditMode" />
-										<span class="box"></span><span class="label"
-										data-bind="text: name"></span>
-								</label>
-								</span>
+								<div
+									data-bind="ntsRadioButton: {
+										checked: $parent.selectedRoundProcess, 
+										option: $data, 
+										optionValue: 'code', 
+										enable: !(!$parent.checkActive6() || !$parent.checkActive5() || !$parent.inputMode()), 
+										optionText: 'name', 
+										group: 'J6_2'}"></div>
 							</div>
 						</td>
 						<td>
@@ -116,7 +128,7 @@
 								data-bind="ntsComboBox: {
 								options: itemsRoundProcessContent,
 								optionsValue: 'code',
-								enable: isEditMode,
+								enable: !(!checkActive6() || !checkActive5() || !checkActive2() || !inputMode()), 
 								visibleItemsCount: 5,
 								value: selectedRoundProcessContent,
 								optionsText: 'name',
@@ -125,25 +137,27 @@
 								]}"></div>
 						</td>
 					</tr>
+					<!-- J7 -->
 					<tr>
 						<td>
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_361')}</div>
 						</td>
 						<td>
 							<div data-bind="foreach: itemsFixedValue">
-								<span class="ntsControl"> <label class="ntsRadioBox">
-										<input type="radio" name="radioFixedValue"
-										data-bind="checkedValue: code, checked: $parent.selectedFixedValue, enable: $parent.isEditMode" />
-										<span class="box"></span><span class="label"
-										data-bind="text: name"></span>
-								</label>
-								</span>
+								<div
+									data-bind="ntsRadioButton: {
+										checked: $parent.selectedFixedValue, 
+										option: $data, 
+										optionValue: 'code', 
+										enable: $parent.inputMode, 
+										optionText: 'name', 
+										group: 'J7_2'}"></div>
 							</div>
 						</td>
 						<td><input
 							data-bind="ntsTextEditor: {
 									value: fixedValue,
-									enable: isEditMode,
+									enable: !(!checkActive3() || !inputMode()) ,
 									option : {width : '200px'}}" />
 						</td>
 					</tr>
