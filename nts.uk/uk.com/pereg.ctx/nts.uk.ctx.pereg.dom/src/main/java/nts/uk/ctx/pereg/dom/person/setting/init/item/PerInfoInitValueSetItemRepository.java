@@ -102,4 +102,6 @@ public interface PerInfoInitValueSetItemRepository {
 	void addItem(PerInfoInitValueSetItem item);
 
 	void update(PerInfoInitValueSetItem item);
+	
+	boolean hasItemData(String itemCd, List<String> perInfoCtgId);
 }
