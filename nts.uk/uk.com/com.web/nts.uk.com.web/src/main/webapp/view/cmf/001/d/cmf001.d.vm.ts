@@ -204,6 +204,25 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 
             });
         }
+        
+        openCMF001e(data: model.StandardAcceptItem) {
+            let self = this;
+            let listCsvData = [];
+            for (let i = 1; i< 15; i++) {
+                listCsvData.push({csvItemName: 'Column ' + i, csvItemNumber: i});
+            }
+            setShared('CMF001eParams', {
+                listCsvData: listCsvData,
+                selectedScvData: 3
+            }, true);
+            
+            modal("/view/cmf/001/e/index.xhtml").onClosed(function() {
+                var output = getShared('CMF001eOutput');
+                if (output) {
+                    
+                }
+            });
+        }
     }
 }
 
