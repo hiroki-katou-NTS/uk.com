@@ -62,13 +62,18 @@ public class JpaExacErrorLogRepository extends JpaRepository implements ExacErro
         this.commandProxy().remove(OiomtExacErrorLog.class, new OiomtExacErrorLogPk(logSeqNumber, cid, externalProcessId)); 
     }
 
-    private static ExacErrorLog toDomain(OiomtExacErrorLog entity) {
-        return ExacErrorLog.createFromJavaType(entity.version, entity.exacErrorLogPk.logSeqNumber, entity.exacErrorLogPk.cid, entity.exacErrorLogPk.externalProcessId, entity.csvErrorItemName, entity.csvAcceptedValue, entity.errorContents, entity.recordNumber, entity.logRegDateTime, entity.itemName, entity.errorAtr);
-    }
+	private static ExacErrorLog toDomain(OiomtExacErrorLog entity) {
+		return new ExacErrorLog(entity.exacErrorLogPk.logSeqNumber, entity.exacErrorLogPk.cid,
+				entity.exacErrorLogPk.externalProcessId, entity.csvErrorItemName, entity.csvAcceptedValue,
+				entity.errorContents, entity.recordNumber, entity.logRegDateTime, entity.itemName, entity.errorAtr);
+	}
 
-    private OiomtExacErrorLog toEntity(ExacErrorLog domain) {
-        return new OiomtExacErrorLog(domain.getVersion(), new OiomtExacErrorLogPk(domain.getLogSeqNumber(), domain.getCid(), domain.getExternalProcessId()), domain.getCsvErrorItemName(), domain.getCsvAcceptedValue(), domain.getErrorContents(), domain.getRecordNumber(), domain.getLogRegDateTime(), domain.getItemName(), domain.getErrorAtr());
-    }
+	private OiomtExacErrorLog toEntity(ExacErrorLog domain) {
+		return new OiomtExacErrorLog(domain.getVersion(),
+				new OiomtExacErrorLogPk(domain.getLogSeqNumber(), domain.getCid(), domain.getExternalProcessId()),
+				domain.getCsvErrorItemName().get(), domain.getCsvAcceptedValue().get(), domain.getErrorContents().get(),
+				domain.getRecordNumber().v(), domain.getLogRegDateTime(), domain.getItemName().get(), domain.getErrorAtr().value);
+	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLogRepository#getExacErrorLogByProcessId(java.lang.String)

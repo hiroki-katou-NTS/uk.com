@@ -65,9 +65,12 @@ public class ExacErrorLogDto
     
     
     private Long version;
-    public static ExacErrorLogDto fromDomain(ExacErrorLog domain)
-    {
-        return new ExacErrorLogDto(domain.getLogSeqNumber(), domain.getCid(), domain.getExternalProcessId(), domain.getCsvErrorItemName(), domain.getCsvAcceptedValue(), domain.getErrorContents(), domain.getRecordNumber(), domain.getLogRegDateTime(), domain.getItemName(), domain.getErrorAtr(), domain.getVersion());
-    }
-    
+
+	public static ExacErrorLogDto fromDomain(ExacErrorLog domain) {
+		return new ExacErrorLogDto(domain.getLogSeqNumber(), domain.getCid(), domain.getExternalProcessId(),
+				domain.getCsvErrorItemName().get(), domain.getCsvAcceptedValue().get(), domain.getErrorContents().get(),
+				domain.getRecordNumber().v(), domain.getLogRegDateTime(), domain.getItemName().get(),
+				domain.getErrorAtr().value, domain.getVersion());
+	}
+
 }

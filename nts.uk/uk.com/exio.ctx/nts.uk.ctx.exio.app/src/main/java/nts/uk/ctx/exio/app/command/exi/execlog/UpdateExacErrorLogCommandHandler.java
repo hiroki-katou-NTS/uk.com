@@ -19,8 +19,8 @@ public class UpdateExacErrorLogCommandHandler extends CommandHandler<ExacErrorLo
     
     @Override
     protected void handle(CommandHandlerContext<ExacErrorLogCommand> context) {
-        ExacErrorLogCommand updateCommand = context.getCommand();
-        repository.update(ExacErrorLog.createFromJavaType(updateCommand.getVersion(), updateCommand.getLogSeqNumber(), updateCommand.getCid(), updateCommand.getExternalProcessId(), updateCommand.getCsvErrorItemName(), updateCommand.getCsvAcceptedValue(), updateCommand.getErrorContents(), updateCommand.getRecordNumber(), updateCommand.getLogRegDateTime(), updateCommand.getItemName(), updateCommand.getErrorAtr()));
+        //ExacErrorLogCommand updateCommand = context.getCommand();
+        //repository.update(ExacErrorLog.createFromJavaType(updateCommand.getVersion(), updateCommand.getLogSeqNumber(), updateCommand.getCid(), updateCommand.getExternalProcessId(), updateCommand.getCsvErrorItemName(), updateCommand.getCsvAcceptedValue(), updateCommand.getErrorContents(), updateCommand.getRecordNumber(), updateCommand.getLogRegDateTime(), updateCommand.getItemName(), updateCommand.getErrorAtr()));
     
     }
 }

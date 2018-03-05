@@ -6,12 +6,12 @@ package nts.uk.ctx.exio.dom.exi.dataformat;
  */
 public enum DateOutputFormat {
 	
-	YYYY_MM_DD(0, "Enum_DateOutputFormat_YYYY_MM_DD"),
-	YYYYMMDD(1, "Enum_DateOutputFormat_YYYYMMDD"),
-	YY_MM_DD(2, "Enum_DateOutputFormat_YY_MM_DD"),
-	YYMMDD(3, "Enum_DateOutputFormat_YYMMDD"),
-	JJYY_MM_DD(4, "Enum_DateOutputFormat_JJYY_MM_DD"),
-	JJYYMMDD(5, "Enum_DateOutputFormat_JJYYMMDD");
+	YYYY_MM_DD(0, "YYYY/MM/DD"),
+	YYYYMMDD(1, "YYYYMMDD"),
+	YY_MM_DD(2, "YY/MM/DD"),
+	YYMMDD(3, "YYMMDD"),
+	JJYY_MM_DD(4, "JJYY/MM/DD"),
+	JJYYMMDD(5, "JJYYMMDD");
 	
 	/** The value. */
 	public final int value;

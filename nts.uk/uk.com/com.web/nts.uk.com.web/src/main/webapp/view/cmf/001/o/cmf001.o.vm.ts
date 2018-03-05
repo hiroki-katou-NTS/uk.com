@@ -210,7 +210,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 self.listAccept.removeAll();
                 if (data && data.length) {
                     let _rspList: Array<AcceptItems> = _.map(data, rsp => {
-                        return new AcceptItems('', rsp.csvItemName, '', rsp.itemType);
+                        return new AcceptItems('', rsp.csvItemName, rsp.csvItemNumber, '', rsp.itemType);
                     });
                     self.listAccept(_rspList);
                 }
@@ -226,9 +226,10 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         readUploadFile(numOfCol: number) {
             let self = this;
             //アップロードしたファイルの「取込開始行」のＣＳＶ項Ｎｏの値
-            service.getRecord(self.fileId(), numOfCol, self.selectedConditionStartLine()).done(function(data: Array<any>) {
+            service.getRecord(self.fileId(), numOfCol, self.selectedConditionStartLine()).done(function(data: Array<any>) {           
                 for (let i = 0; i < numOfCol; i++) {
-                    self.listAccept()[i].sampleData(data[i]);
+                    let temp = data[self.listAccept()[i].csvItemNumber()];
+                    self.listAccept()[i].sampleData(temp);
                 }
             }).fail(function(error) {
                 alertError(error);
@@ -306,12 +307,14 @@ module nts.uk.com.view.cmf001.o.viewmodel {
     class AcceptItems {
         infoName: KnockoutObservable<string>;
         csvItemName: KnockoutObservable<string>;
+        csvItemNumber: KnockoutObservable<number>;
         sampleData: KnockoutObservable<string>;
         itemType: KnockoutObservable<number>;
         itemTypeName: KnockoutObservable<string>;
-        constructor(infoName: string, csvItemName: string, sampleData: string, itemType: number) {
+        constructor(infoName: string, csvItemName: string, csvItemNumber: number, sampleData: string, itemType: number) {
             this.infoName = ko.observable(infoName);
             this.csvItemName = ko.observable(csvItemName);
+            this.csvItemNumber = ko.observable(csvItemNumber);
             this.sampleData = ko.observable(sampleData);
             this.itemType = ko.observable(itemType);
             this.itemTypeName = ko.observable(''+itemType)
