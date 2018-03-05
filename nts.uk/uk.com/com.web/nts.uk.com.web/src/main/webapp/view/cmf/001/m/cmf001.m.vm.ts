@@ -8,7 +8,8 @@ module nts.uk.com.view.cmf001.m.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
- 
+    import error = nts.uk.ui.errors;
+    
     export class ScreenModel {
         systemType: model.ItemModel;
         required: KnockoutObservable<boolean>;
@@ -16,7 +17,6 @@ module nts.uk.com.view.cmf001.m.viewmodel {
         checked: KnockoutObservable<boolean>;
         newCondCode: KnockoutObservable<string>;
         newCondName: KnockoutObservable<string>;
-        
         selectionType : string;
         conditionCode: KnockoutObservable<string>;
         conditionName: KnockoutObservable<string>;
@@ -37,7 +37,6 @@ module nts.uk.com.view.cmf001.m.viewmodel {
             self.conditionCode = ko.observable(params.conditionCode);
             self.conditionName = ko.observable(params.conditionName);
         }
-        
          /**
          * Close dialog.
          */
@@ -47,14 +46,25 @@ module nts.uk.com.view.cmf001.m.viewmodel {
         
         //設定
         saveData() {
-            //nts.uk.ui.dialog.alertError({ messageId: "Msg_892", messageParams: [nts.uk.resource.getText("M2_7")] });
             var self = this;
-            setShared('CMF001mOutput', {
-				checked: self.checked(),
-                code: self.newCondCode(),
-                name: self.newCondName()
-            }, true);
-            nts.uk.ui.windows.close();
+            $(".nts-editor").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                service.checkExistCode(self.systemType.code, self.newCondCode()).done((result) => {
+                    if(result && !self.checked()){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_892", messageParams: [nts.uk.resource.getText("M2_7")] }).then(() => {
+                            $("#M4").focus();  
+                        });
+                    } else {
+                        setShared('CMF001mOutput', {
+                            checked: self.checked(),
+                            code: self.newCondCode(),
+                            name: self.newCondName()
+                        }, true);  
+                        nts.uk.ui.windows.close();
+                    }
+                });
+                
+            }
         }
     }
 }
