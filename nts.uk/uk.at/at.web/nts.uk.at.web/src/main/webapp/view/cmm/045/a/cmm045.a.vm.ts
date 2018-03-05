@@ -590,7 +590,7 @@ module cmm045.a.viewmodel {
             }
             let self = this;
             //check filter
-            if (self.dateValue().startDate === undefined || self.dateValue().endDate === undefined) {//期間開始日付または期間終了日付が入力されていない
+            if (self.dateValue().startDate == null || self.dateValue().endDate == null) {//期間開始日付または期間終了日付が入力されていない
                 nts.uk.ui.dialog.error({ messageId: "Msg_359" });
                 block.clear();
                 return;
@@ -721,6 +721,7 @@ module cmm045.a.viewmodel {
                 self.items(lstAppFitler);
             }
             if (self.mode() == 1) {
+                self.approvalCount(self.countStatus(self.items()));
                 $("#grid1").ntsGrid("destroy");
                 self.reloadGridApproval();
             } else {
@@ -728,6 +729,24 @@ module cmm045.a.viewmodel {
                 self.reloadGridApplicaion();
             }
 
+        }
+        countStatus(lstApp: Array<vmbase.DataModeApp>): vmbase.ApplicationStatus{
+            let unApprovalNumber = 0;
+            let approvalNumber = 0;
+            let approvalAgentNumber = 0;
+            let cancelNumber = 0;
+            let remandNumner = 0;
+            let denialNumber = 0;
+            _.each(lstApp, function(app){
+                if(app.appStatus == '未'){ unApprovalNumber += 1; }//UNAPPROVED:5
+                if(app.appStatus == '承認済み'){ approvalNumber += 1; }//APPROVED: 4
+                if(app.appStatus == '-'){ approvalAgentNumber += 1; }//-: 0 
+                if(app.appStatus == '取消'){ cancelNumber += 1; }//CANCELED: 3
+                if(app.appStatus == '差戻'){ remandNumner += 1; }//REMAND: 2
+                if(app.appStatus == '否'){ denialNumber += 1; }//DENIAL: 1
+            })
+            return new vmbase.ApplicationStatus(unApprovalNumber, approvalNumber,
+                approvalAgentNumber, cancelNumber, remandNumner,denialNumber);
         }
         convertTime_Short_HM(time: number): string {
             let hh = Math.floor(time / 60);
