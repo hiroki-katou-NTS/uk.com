@@ -207,14 +207,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT b");
-		builderString.append(" FROM KrcmtBusinessTypeDaily b INNER JOIN");
-		builderString.append(" KrcstBusinessTypeSorted s");
-		builderString.append(" WHERE s.krcstBusinessTypeSortedPK.companyId = :companyId");
-		builderString.append(
-				" AND b.krcmtBusinessTypeDailyPK.attendanceItemId = s.krcstBusinessTypeSortedPK.attendanceItemId");
-		builderString.append(" AND b.krcmtBusinessTypeDailyPK.companyId = :companyId");
+		builderString.append(" FROM KrcmtBusinessTypeDaily b");
+		builderString.append(" WHERE b.krcmtBusinessTypeDailyPK.companyId = :companyId");
 		builderString.append(" AND b.krcmtBusinessTypeDailyPK.businessTypeCode IN :lstBusinessTypeCode ");
-		builderString.append(" ORDER BY s.order ASC, b.krcmtBusinessTypeDailyPK.attendanceItemId ASC");
+		builderString.append(" ORDER BY b.order ASC, b.krcmtBusinessTypeDailyPK.attendanceItemId ASC");
 		SEL_FORMAT_DP_CORRECTION = builderString.toString();
 
 		builderString = new StringBuilder();

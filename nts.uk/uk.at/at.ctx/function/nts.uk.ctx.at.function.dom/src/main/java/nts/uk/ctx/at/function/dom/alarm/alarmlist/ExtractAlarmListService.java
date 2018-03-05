@@ -26,7 +26,7 @@ public class ExtractAlarmListService {
 	@Inject
 	private AggregationProcessService aggregationProcessService;
 
-	public ExtractedAlarmDto extractAlarm(List<String> listEmployee, String checkPatternCode,
+	public ExtractedAlarmDto extractAlarm(List<FuncEmployeeSearchDto> listEmployee, String checkPatternCode,
 			List<PeriodByAlarmCategory> periodByCategory) {		
 		String companyID = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
