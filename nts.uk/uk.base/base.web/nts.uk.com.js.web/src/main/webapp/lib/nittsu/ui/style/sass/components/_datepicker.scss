@@ -69,6 +69,17 @@ $brand-color: #39f;
   position: static;
 }
 
+.nts-datepicker-wrapper {
+  &:before,
+  &:after {
+    position: absolute;
+    display: block;
+    width: 0;
+    height: 0;
+    content: ' ';
+    border: 5px solid transparent;
+  }
+}
 .datepicker-top-left,
 .datepicker-top-right {
   border-top-color: $brand-color;
@@ -77,7 +88,6 @@ $brand-color: #39f;
   &:after {
     top: -5px;
     left: 10px;
-
     border-top: 0;
   }
 
@@ -87,7 +97,6 @@ $brand-color: #39f;
 
   &:after {
     top: -4px;
-
     border-bottom-color: #fff;
   }
 }
@@ -112,6 +121,52 @@ $brand-color: #39f;
     bottom: -4px;
 
     border-top-color: #fff;
+  }
+}
+
+.datepicker-left-top,
+.datepicker-left-bottom {
+  border-left-color: $brand-color;
+
+  &:before,
+  &:after {
+    top: 5px;
+    left: -5px;
+
+    border-left: 0;
+  }
+
+  &:before {
+    border-right-color: $brand-color;
+  }
+
+  &:after {
+    top: 5px;
+
+    border-right-color: #fff;
+  }
+}
+
+.datepicker-right-top,
+.datepicker-right-bottom {
+  border-right-color: $brand-color;
+
+  &:before,
+  &:after {
+    top: 5px;
+    left: 210px;
+
+    border-right: 0;
+  }
+
+  &:before {
+    border-left-color: $brand-color;
+  }
+
+  &:after {
+    top: 5px;
+
+    border-left-color: #fff;
   }
 }
 

@@ -169,6 +169,8 @@ module nts.uk.ui.koExtentions {
             
             new nts.uk.util.value.DefaultValue().onReset($input, data.value);
             container.data("init", false);
+            
+            $input.ntsDatepicker("bindFlip");
         }
 
         /**
