@@ -1,0 +1,24 @@
+package nts.uk.ctx.exio.dom.exi.item;
+
+/**
+ * 
+ * @author DatLH 項目型
+ *
+ */
+public enum ItemType {
+	NUMERIC(0, "Enum_ItemType_NUMERIC"),
+	CHARACTER(1, "Enum_ItemType_CHARACTER"),
+	DATE(2, "Enum_ItemType_DATE"),
+	INS_TIME(3, "Enum_ItemType_INS_TIME");
+	
+	/** The value. */
+	public final int value;
+
+	/** The name id. */
+	public final String nameId;
+
+	private ItemType(int value, String nameId) {
+		this.value = value;
+		this.nameId = nameId;
+	}
+}

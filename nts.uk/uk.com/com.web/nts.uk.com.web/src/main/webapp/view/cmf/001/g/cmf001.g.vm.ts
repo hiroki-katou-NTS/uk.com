@@ -8,11 +8,11 @@ module nts.uk.com.view.cmf001.g.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    
+
     export class ScreenModel {
-       
-        numDataFormatSetting: KnockoutObservable<model.NumericDataFormatSetting> = ko.observable(new model.NumericDataFormatSetting(0, null, null , 0, null,
-         0, 0, "1", 0, ""));
+        numDataFormatSetting: KnockoutObservable<model.NumericDataFormatSetting>
+        = ko.observable(new model.NumericDataFormatSetting(0, null, null, 0, null, 0, 0, new model.AcceptanceCodeConvert("", "", 0), 0, ""));
+        
         effectDigitItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
             new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_223')),
             new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF001_224'))
@@ -25,13 +25,10 @@ module nts.uk.com.view.cmf001.g.viewmodel {
             new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_254')),
             new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF001_255'))
         ]);
-        
         decimalPointClsItem: KnockoutObservableArray<model.ItemModel>;
         decimalFractionItem: KnockoutObservableArray<model.ItemModel>;
-        
-        /* value*/
-        inputMode: boolean = true
-        lineNumber: number = -1
+        inputMode: boolean = true;
+        lineNumber: number = -1;
         constructor() {
             var self = this;
             self.decimalPointClsItem = ko.observableArray([
@@ -44,40 +41,47 @@ module nts.uk.com.view.cmf001.g.viewmodel {
                 new model.ItemModel(model.ROUNDING_METHOD.DOWN_4_UP_5, 'DOWN_4_UP_5')
             ]);
             let params = getShared("CMF001mParams");
-            if(!nts.uk.util.isNullOrUndefined(params)){
+            if (!nts.uk.util.isNullOrUndefined(params)) {
                 let inputMode = params.inputMode;
                 let lineNumber = params.lineNumber;
                 let numFormat = params.formatSetting;
                 self.inputMode = inputMode;
                 self.lineNumber = lineNumber;
-                if(!(_.isNull(numFormat))) 
+                if (!(nts.uk.util.isNullOrUndefined(numFormat))) {
+                    let convertCodeShared = numFormat.codeConvertCode;
+                    let convertCode = null;
+                    if (nts.uk.util.isNullOrUndefined(convertCodeShared)) {
+                        convertCode = new model.AcceptanceCodeConvert("", "", 0);
+                    } else {
+                        convertCode = new model.AcceptanceCodeConvert(convertCodeShared.convertCode, convertCodeShared.convertName, 0);
+                    }
                     self.numDataFormatSetting(new model.NumericDataFormatSetting(numFormat.effectiveDigitLength, numFormat.startDigit,
-                    numFormat.endDigit, numFormat.decimalDivision, numFormat.decimalDigitNumber, numFormat.decimalPointClassification,
-                    numFormat.decimalFraction, numFormat.codeConvertCode, numFormat.fixedValue, numFormat.valueOfFixed)); 
+                        numFormat.endDigit, numFormat.decimalDivision, numFormat.decimalDigitNumber, numFormat.decimalPointClassification,
+                        numFormat.decimalFraction, convertCode, numFormat.fixedValue, numFormat.valueOfFixed));
+                }
             }
-            
         }
-        open001_K(){
+        open001_K(data) {
             var self = this;
-            modal("/view/cmf/001/k/index.xhtml").onClosed(()=>{
-                
-                //get shared
-                alert("CLOSED");
+            let selectedConvertCode = data.codeConvertCode();
+            setShared("CMF001kParams", { selectedConvertCode: selectedConvertCode });
+            modal("/view/cmf/001/k/index.xhtml").onClosed(() => {
+                let params = getShared("CMF001kOutput");
+                if(!nts.uk.util.isNullOrUndefined(params)){
+                    let codeConvertCodeSelected = params.selectedConvertCodeShared;
+                    self.numDataFormatSetting().codeConvertCode(codeConvertCodeSelected);
+                }
             });
         }
-        saveNumericSetting(){
+        saveNumericSetting() {
             var self = this;
-            if(self.inputMode){
-                setShared("CMF001mOutput", {lineNumber: self.lineNumber, formatSetting: ko.toJS(self.numDataFormatSetting) });
-                nts.uk.ui.windows.close();
-            }else{
-                
+            if (self.inputMode) {
+                setShared("CMF001mOutput", { lineNumber: self.lineNumber, formatSetting: ko.toJS(self.numDataFormatSetting) });
             }
-            
+            nts.uk.ui.windows.close();
         }
-        cancelNumericSetting(){
+        cancelNumericSetting() {
             nts.uk.ui.windows.close();
         }
     }
-    
 }

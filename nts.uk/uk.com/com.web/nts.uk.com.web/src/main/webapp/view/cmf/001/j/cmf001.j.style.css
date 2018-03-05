@@ -21,3 +21,7 @@
 #tbl-control td .ntsControl {
 	padding-bottom: 5px;
 }
+
+#tbl-control td .disp-inline {
+	display: inline-block;
+}

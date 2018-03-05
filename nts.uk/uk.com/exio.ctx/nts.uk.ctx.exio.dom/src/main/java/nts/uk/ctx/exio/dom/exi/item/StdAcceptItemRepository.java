@@ -9,15 +9,15 @@ import java.util.Optional;
 public interface StdAcceptItemRepository
 {
 
-    List<StdAcceptItem> getAllStdAcceptItem();
+//    List<StdAcceptItem> getAllStdAcceptItem();
 
-    Optional<StdAcceptItem> getStdAcceptItemById(String cid, String conditionSetCd, String categoryId, int acceptItemNumber);
+    Optional<StdAcceptItem> getStdAcceptItemById(String cid, int sysType, String conditionSetCd, String categoryId, int acceptItemNumber);
 
     void add(StdAcceptItem domain);
 
     void update(StdAcceptItem domain);
 
-    void remove(String cid, String conditionSetCd, String categoryId, int acceptItemNumber);
+    void remove(String cid, int sysType, String conditionSetCd, String categoryId, int acceptItemNumber);
 
-    List<StdAcceptItem> getStdAcceptItem(String cid, int systemType, String conditionSetCd);
+    List<StdAcceptItem> getListStdAcceptItems(String cid, int systemType, String conditionSetCd);
 }

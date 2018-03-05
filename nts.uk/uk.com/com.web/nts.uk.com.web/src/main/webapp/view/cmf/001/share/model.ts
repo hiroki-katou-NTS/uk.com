@@ -144,14 +144,16 @@ module nts.uk.com.view.cmf001.share.model {
         dateFormatSetting: KnockoutObservable<DateDataFormatSetting>;
         instTimeFormatSetting: KnockoutObservable<InstantTimeDataFormatSetting>; 
         screenConditionSetting: KnockoutObservable<AcceptScreenConditionSetting>;
+        categoryItemNo: KnockoutObservable<number>;
 
-        constructor(csvItemName: string, csvItemNumber: number, itemType: number, acceptItemNumber: number, acceptItemName: string, conditionCode: string, numSet?: NumericDataFormatSetting, charSet?: CharacterDataFormatSetting, dateSet?: DateDataFormatSetting, instTimeSet?: InstantTimeDataFormatSetting, screenSet?: AcceptScreenConditionSetting) {
+        constructor(csvItemName: string, csvItemNumber: number, itemType: number, acceptItemNumber: number, acceptItemName: string, conditionCode: string, categoryItemNo: number, numSet?: NumericDataFormatSetting, charSet?: CharacterDataFormatSetting, dateSet?: DateDataFormatSetting, instTimeSet?: InstantTimeDataFormatSetting, screenSet?: AcceptScreenConditionSetting) {
             this.csvItemName = ko.observable(csvItemName);
             this.csvItemNumber = ko.observable(csvItemNumber);
             this.itemType = ko.observable(itemType);
             this.acceptItemNumber = ko.observable(acceptItemNumber);
             this.acceptItemName = ko.observable(acceptItemName);
             this.conditionSettingCode = ko.observable(conditionCode);
+            this.categoryItemNo = ko.observable(categoryItemNo);
             if (numSet)
                 this.numberFormatSetting = ko.observable(numSet);
             if (charSet)
@@ -180,18 +182,17 @@ module nts.uk.com.view.cmf001.share.model {
     }
 
     export class ExternalAcceptanceCategoryItemData {
-        itemCode: KnockoutObservable<string>;
+        itemNo: KnockoutObservable<number>;
         itemName: KnockoutObservable<string>;
-        dispItemCode: string;
+        dispItemNo: number;
         dispItemName: string;
 
-        constructor(code: string, name: string) {
-            this.itemCode = ko.observable(code);
+        constructor(code: number, name: string) {
+            this.itemNo = ko.observable(code);
             this.itemName = ko.observable(name);
-            this.dispItemCode = code;
+            this.dispItemNo = code;
             this.dispItemName = name;
         }
-    }
 
     //screen F, screen K
     export class AcceptanceCodeConvert {
@@ -241,7 +242,7 @@ module nts.uk.com.view.cmf001.share.model {
         fixedValue: KnockoutObservable<number>;
         decimalDivision: KnockoutObservable<number>;
         effectiveDigitLength: KnockoutObservable<number>;
-        codeConvertCode: KnockoutObservable<string>;
+        codeConvertCode: KnockoutObservable<AcceptanceCodeConvert>;
         valueOfFixed: KnockoutObservable<string>;
         decimalDigitNumber: KnockoutObservable<number>;
         startDigit: KnockoutObservable<number>;
@@ -250,7 +251,7 @@ module nts.uk.com.view.cmf001.share.model {
         decimalFraction: KnockoutObservable<number>;
 
         constructor(effectDigitLength: number, startDigit: number, endDigit: number, decimalDivision: number, decimalDigitNumber: number,
-         decimalPointClassification: number, decimalFraction: number, codeConvertCode: string, fixedValue: number, valueOfFixed: string) {
+         decimalPointClassification: number, decimalFraction: number, codeConvertCode: AcceptanceCodeConvert, fixedValue: number, valueOfFixed: string) {
             this.fixedValue = ko.observable(fixedValue);
             this.decimalDivision = ko.observable(decimalDivision);
             this.effectiveDigitLength = ko.observable(effectDigitLength);
@@ -269,7 +270,7 @@ module nts.uk.com.view.cmf001.share.model {
         codeEditing: KnockoutObservable<number>;
         fixedValue: KnockoutObservable<number>;
         effectiveDigitLength: KnockoutObservable<number>;
-        codeConvertCode: KnockoutObservable<string>;
+        codeConvertCode: KnockoutObservable<AcceptanceCodeConvert>;
         codeEditingMethod: KnockoutObservable<number>;
         codeEditDigit: KnockoutObservable<number>;
         valueOfFixed: KnockoutObservable<string>;
@@ -277,7 +278,7 @@ module nts.uk.com.view.cmf001.share.model {
         endDigit: KnockoutObservable<number>;
 
         constructor(effectDigitLength: number, startDigit: number, endDigit: number, codeEditing: number, codeEditDigit: number,
-         codeEditingMethod: number, codeConvertCode: string, fixedValue: number, valueOfFixed: string) {
+         codeEditingMethod: number, codeConvertCode: AcceptanceCodeConvert, fixedValue: number, valueOfFixed: string) {
             this.fixedValue = ko.observable(fixedValue);
             this.codeEditing = ko.observable(codeEditing);
             this.effectiveDigitLength = ko.observable(effectDigitLength);

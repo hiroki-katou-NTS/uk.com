@@ -40,8 +40,12 @@
 .radio-group{
   margin-top:15px; 
 }
-.vertical-align{
+.vertical-align-center{
+  display: inline;	
+  margin-top: 10px;
+}
+.label-vertical-align-center{
   display: inline;
   position: relative; 
-  top: 10px;	
+  top: 15px;
 }

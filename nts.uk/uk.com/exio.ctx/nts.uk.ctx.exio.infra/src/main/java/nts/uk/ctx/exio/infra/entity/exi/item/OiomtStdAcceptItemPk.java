@@ -7,14 +7,17 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
 * 受入項目（定型）: 主キー情報
 */
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Embeddable
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 public class OiomtStdAcceptItemPk implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -26,6 +29,13 @@ public class OiomtStdAcceptItemPk implements Serializable
     @Column(name = "CID")
     public String cid;
     
+    /**
+     * システム種類
+     */
+     @Basic(optional = false)
+     @Column(name = "SYSTEM_TYPE")
+     public int systemType;
+     
     /**
     * 条件設定コード
     */
