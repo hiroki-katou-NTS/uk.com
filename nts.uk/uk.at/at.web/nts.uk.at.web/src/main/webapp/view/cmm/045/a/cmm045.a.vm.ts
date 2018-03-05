@@ -242,10 +242,10 @@ module cmm045.a.viewmodel {
                 }
                 //fill color text
                 let colorIn = item.inputDate.substring(11,12);
-                if (color == '土') {//土
+                if (colorIn == '土') {//土
                     $(".nts-grid-control-inputDate-" + item.appId).addClass('saturdayCell');
                 }
-                if (color == '日') {//日 
+                if (colorIn == '日') {//日 
                     $(".nts-grid-control-inputDate-" + item.appId).addClass('sundayCell');
                 }
             });
@@ -333,10 +333,10 @@ module cmm045.a.viewmodel {
                 }
                 //fill color text
                 let colorIn = item.inputDate.substring(11,12);
-                if (color == '土') {//土
+                if (colorIn == '土') {//土
                     $(".nts-grid-control-inputDate-" + item.appId).addClass('saturdayCell');
                 }
-                if (color == '日') {//日
+                if (colorIn == '日') {//日
                     $(".nts-grid-control-inputDate-" + item.appId).addClass('sundayCell');
                 }
             });
