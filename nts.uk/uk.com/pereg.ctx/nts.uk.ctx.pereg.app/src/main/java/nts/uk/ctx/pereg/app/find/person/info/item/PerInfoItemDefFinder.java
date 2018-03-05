@@ -261,15 +261,18 @@ public class PerInfoItemDefFinder {
 			return perItemDefdto;
 		}).collect(Collectors.toList());
 
-		itemDfChild = this.pernfoItemDefRep.getPerInfoItemDefByListIdv2(idsChild, AppContexts.user().contractCode());
+		if (!idsChild.isEmpty()) {
+			itemDfChild = this.pernfoItemDefRep.getPerInfoItemDefByListIdv2(idsChild,
+					AppContexts.user().contractCode());
 
-		List<PerInfoItemDefDto> listItemDefDtoChild = itemDfChild.stream().map(i -> {
-			int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(i.getPerInfoCategoryId(), i.getPerInfoItemDefId());
-			return mappingFromDomaintoDto(i, dispOrder);
-		}).collect(Collectors.toList());
+			List<PerInfoItemDefDto> listItemDefDtoChild = itemDfChild.stream().map(i -> {
+				int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(i.getPerInfoCategoryId(),
+						i.getPerInfoItemDefId());
+				return mappingFromDomaintoDto(i, dispOrder);
+			}).collect(Collectors.toList());
 
-		result.addAll(listItemDefDtoChild);
-
+			result.addAll(listItemDefDtoChild);
+		}
 		return result;
 
 	}
