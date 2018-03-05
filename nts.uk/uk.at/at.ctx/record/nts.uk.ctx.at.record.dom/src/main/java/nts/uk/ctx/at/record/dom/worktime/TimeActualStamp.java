@@ -19,7 +19,7 @@ public class TimeActualStamp {
 	
 	private Optional<WorkStamp> stamp = Optional.of(new WorkStamp());
 	
-	private int numberOfReflectionStamp;
+	private Integer numberOfReflectionStamp;
 	
 	/**
 	 * 打刻時間を指定時間分経過させた勤怠打刻を返す
@@ -61,13 +61,13 @@ public class TimeActualStamp {
 								   stamp,
                 				   this.numberOfReflectionStamp);
 	}
-	public TimeActualStamp(WorkStamp actualStamp, WorkStamp stamp, int numberOfReflectionStamp) {
+	public TimeActualStamp(WorkStamp actualStamp, WorkStamp stamp, Integer numberOfReflectionStamp) {
 		super();
 		this.actualStamp = actualStamp;
 		this.stamp = Optional.ofNullable(stamp);
 		this.numberOfReflectionStamp = numberOfReflectionStamp;
 	}
-	public void setPropertyTimeActualStamp(WorkStamp actualStamp, Optional<WorkStamp> stamp, int numberOfReflectionStamp){
+	public void setPropertyTimeActualStamp(WorkStamp actualStamp, Optional<WorkStamp> stamp, Integer numberOfReflectionStamp){
 		this.actualStamp = actualStamp;
 		this.stamp = stamp;
 		this.numberOfReflectionStamp = numberOfReflectionStamp;
