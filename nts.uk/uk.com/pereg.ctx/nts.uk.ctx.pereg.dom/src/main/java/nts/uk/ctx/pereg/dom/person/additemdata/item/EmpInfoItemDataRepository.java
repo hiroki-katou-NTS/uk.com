@@ -23,5 +23,5 @@ public interface EmpInfoItemDataRepository {
 	
 	void deleteEmployInfoItemData(String recordID);
 	
-	boolean getAllInfoItem(String itemCd, List<String> perInfoCtgId);
+	boolean hasItemData(String itemCd, List<String> perInfoCtgId);
 }

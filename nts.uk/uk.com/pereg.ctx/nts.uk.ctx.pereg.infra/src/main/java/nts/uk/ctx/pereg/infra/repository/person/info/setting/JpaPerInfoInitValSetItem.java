@@ -87,6 +87,13 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 	private final String DELETE_ALL_ITEM_BY_ID = "DELETE FROM PpemtPersonInitValueSettingItem c"
 			+ " WHERE c.settingItemPk.settingId =:settingId";
 
+	private final String SEL_ALL_ITEM_DATA = "SELECT id.settingItemPk.perInfoItemDefId"
+			+ " FROM PpemtPersonInitValueSettingItem id"
+			+ " INNER JOIN PpemtPerInfoItem pi ON id.settingItemPk.perInfoItemDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtPerInfoCtg pc ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoItemCm pm ON pi.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
+			+ " WHERE pm.ppemtPerInfoItemCmPK.itemCd =:itemCd" + " AND pi.perInfoCtgId IN :perInfoCtgId";
+
 	private static PerInfoInitValueSetItem toDomain(PpemtPersonInitValueSettingItem entity) {
 		PerInfoInitValueSetItem domain = new PerInfoInitValueSetItem();
 		domain.setPerInfoItemDefId(entity.settingItemPk.perInfoItemDefId);
@@ -422,5 +429,18 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			return itemIdList;
 		}
 		return new ArrayList<>();
+	}
+
+	@Override
+	public boolean hasItemData(String itemCd, List<String> perInfoCtgId) {
+
+		List<String> itemLst = this.queryProxy().query(SEL_ALL_ITEM_DATA, String.class)
+				.setParameter("itemCd", itemCd)
+				.setParameter("perInfoCtgId", perInfoCtgId)
+				.getList();
+		if (itemLst.size() > 0) {
+			return true;
+		}
+		return false;
 	}
 }
