@@ -1,8 +1,11 @@
 package nts.uk.ctx.workflow.pubimp.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -96,7 +99,55 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	
 	@Inject
 	private RemandService remandService;
-	
+	@Override
+	public Map<String,List<ApprovalPhaseStateExport>> getApprovalRoots(List<String> appIDs,String companyID) {
+		Map<String,List<ApprovalPhaseStateExport>> approvalPhaseStateExportMs = new LinkedHashMap<>();
+		ApprovalRootContentOutput approvalRootContentOutput =  null;
+		List<ApprovalRootState> approvalRootStates = approvalRootStateRepository.findEmploymentApps(appIDs);
+		if(!CollectionUtil.isEmpty(approvalRootStates)){
+			for(ApprovalRootState approvalRootState :  approvalRootStates){
+				approvalRootContentOutput = new ApprovalRootContentOutput(approvalRootState, ErrorFlag.NO_ERROR);
+				
+				List<ApprovalPhaseStateExport> approvalPhaseStateExports = approvalRootContentOutput.getApprovalRootState().getListApprovalPhaseState()
+							.stream()
+							.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
+							.map(x -> {
+								return new ApprovalPhaseStateExport(
+										x.getPhaseOrder(),
+										EnumAdaptor.valueOf(x.getApprovalAtr().value, ApprovalBehaviorAtrExport.class),
+										x.getListApprovalFrame()
+										.stream()
+										.sorted(Comparator.comparing(ApprovalFrame::getFrameOrder))
+										.map(y -> {
+											return new ApprovalFrameExport(
+													y.getPhaseOrder(), 
+													y.getFrameOrder(), 
+													EnumAdaptor.valueOf(y.getApprovalAtr().value, ApprovalBehaviorAtrExport.class),
+													y.getListApproverState().stream().map(z -> { 
+														String approverName = "";
+														String representerID = "";
+														String representerName = "";
+														ApprovalRepresenterOutput approvalRepresenterOutput = 
+																collectApprovalAgentInforService.getApprovalAgentInfor(companyID, Arrays.asList(z.getApproverID()));
+														if(approvalRepresenterOutput.getAllPathSetFlag().equals(Boolean.FALSE)){
+															if(!CollectionUtil.isEmpty(approvalRepresenterOutput.getListAgent())){
+																representerID = approvalRepresenterOutput.getListAgent().get(0);
+															}
+														}
+														return new ApproverStateExport(z.getApproverID(), approverName, representerID, representerName);
+													}).collect(Collectors.toList()), 
+													y.getApproverID(),
+													"", 
+													y.getRepresenterID(),		
+													"",
+													y.getApprovalReason());
+										}).collect(Collectors.toList()));
+							}).collect(Collectors.toList());
+				approvalPhaseStateExportMs.put(approvalRootState.getRootStateID(), approvalPhaseStateExports);
+			}
+		}
+		return approvalPhaseStateExportMs;
+	}
 	@Override
 	public ApprovalRootContentExport getApprovalRoot(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID, Boolean isCreate) {
 		ApprovalRootContentOutput approvalRootContentOutput = null;
@@ -256,4 +307,6 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	public void doRemandForApplicant(String companyID, String rootStateID) {
 		remandService.doRemandForApplicant(companyID, rootStateID);
 	}
+
+	
 }
