@@ -3,9 +3,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
     import alertError = nts.uk.ui.dialog.alertError;
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
+    import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     import blockUI = nts.uk.ui.block;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import formatById = nts.uk.time.format.byId;
 
     /**
      * load screen O->Q->A
@@ -345,45 +347,93 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         /**
          * init CCG001
          */
+        //        initCCG001(): void {
+        //            let self = this;
+        //            self.ccgcomponent = {
+        //                baseDate: ko.observable(new Date()),
+        //                // Show/hide options 
+        //                isQuickSearchTab: true,
+        //                isAdvancedSearchTab: true,
+        //                isAllReferableEmployee: true,
+        //                isOnlyMe: true,
+        //                isEmployeeOfWorkplace: true,
+        //                isEmployeeWorkplaceFollow: true,
+        //                isMutipleCheck: true,
+        //                isSelectAllEmployee: true,
+        //
+        //                /**
+        //                * @param dataList: list employee returned from component.
+        //                * Define how to use this list employee by yourself in the function's body.
+        //                */
+        //                onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
+        //                    self.searchEmployee(dataList);
+        //
+        //                },
+        //                onSearchOnlyClicked: function(data: EmployeeSearchDto) {
+        //                    self.showinfoSelectedEmployee(true);
+        //                    var dataEmployee: EmployeeSearchDto[] = [];
+        //                    dataEmployee.push(data);
+        //                    self.searchEmployee(dataEmployee);
+        //                },
+        //                onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
+        //                    self.searchEmployee(dataList);
+        //                },
+        //                onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
+        //                    self.searchEmployee(dataList);
+        //                },
+        //                onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
+        //                    self.searchEmployee(dataEmployee);
+        //                }
+        //            }
+        //
+        //            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(function() {
+        //                $("#hor-scroll-button-hide").trigger("click");
+        //            });
+        //        }
+
         initCCG001(): void {
             let self = this;
+            // Component option
             self.ccgcomponent = {
-                baseDate: ko.observable(new Date()),
-                // Show/hide options 
-                isQuickSearchTab: true,
-                isAdvancedSearchTab: true,
-                isAllReferableEmployee: true,
-                isOnlyMe: true,
-                isEmployeeOfWorkplace: true,
-                isEmployeeWorkplaceFollow: true,
-                isMutipleCheck: true,
-                isSelectAllEmployee: true,
+                /** Common properties */
+                systemType: 2, // システム区分
+                showEmployeeSelection: false, // 検索タイプ
+                showQuickSearchTab: false, // クイック検索
+                showAdvancedSearchTab: true, // 詳細検索
+                showBaseDate: false, // 基準日利用
+                showClosure: false, // 就業締め日利用
+                showAllClosure: false, // 全締め表示
+                showPeriod: true, // 対象期間利用
+                periodFormatYM: false, // 対象期間精度
 
-                /**
-                * @param dataList: list employee returned from component.
-                * Define how to use this list employee by yourself in the function's body.
-                */
-                onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
-                    self.searchEmployee(dataList);
+                /** Required parameter */
+                periodStartDate: self.dtPrev().toISOString(), // 対象期間開始日
+                periodEndDate: self.dtAft().toISOString(), // 対象期間終了日
+                inService: false, // 在職区分
+                leaveOfAbsence: false, // 休職区分
+                closed: false, // 休業区分
+                retirement: false, // 退職区分
 
-                },
-                onSearchOnlyClicked: function(data: EmployeeSearchDto) {
-                    self.showinfoSelectedEmployee(true);
-                    var dataEmployee: EmployeeSearchDto[] = [];
-                    dataEmployee.push(data);
-                    self.searchEmployee(dataEmployee);
-                },
-                onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
-                    self.searchEmployee(dataList);
-                },
-                onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
-                    self.searchEmployee(dataList);
-                },
-                onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
-                    self.searchEmployee(dataEmployee);
+                /** Quick search tab options */
+                showAllReferableEmployee: true, // 参照可能な社員すべて
+                showOnlyMe: false, // 自分だけ
+                showSameWorkplace: true, // 同じ職場の社員
+                showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
+
+                /** Advanced search properties */
+                showEmployment: false, // 雇用条件
+                showWorkplace: true, // 職場条件
+                showClassification: false, // 分類条件
+                showJobTitle: false, // 職位条件
+                showWorktype: false, // 勤種条件
+                isMutipleCheck: true, // 選択モード
+
+                /** Return data */
+                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                    self.searchEmployee(data.listEmployee);
                 }
             }
-
+            // Start component
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(function() {
                 $("#hor-scroll-button-hide").trigger("click");
             });
@@ -578,7 +628,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             },
                             popup: {
                                 rows: [1],
-                                provider: function() {
+                                provider: function(columnKey) {
                                     //                                    return $("#popup-area8");
                                     return;
                                 }
@@ -608,7 +658,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     bodyHeightMode: "dynamic",
                     windowXOccupation: 25,
                     //                    windowYOccupation: 175,
-                    windowYOccupation: 230,
+                    windowYOccupation: 130,
                     updateMode: "none",
                     pasteOverWrite: true,
                     stickOverWrite: true,
@@ -732,7 +782,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             },
                             popup: {
                                 rows: [1],
-                                provider: function() {
+                                provider: function(columnKey) {
                                     //                                return $("#popup-area8"); 
                                     return;
                                 }
@@ -781,29 +831,29 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#extable").on("extablecellupdated", function() { });
                 $("#extable").on("extablerowupdated", function() { });
 
-                setTimeout($("#extable").exTable("scrollBack", 2), 1000);
+                setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
 
                 /**
                  * validate when stick data in cell
                  */
                 $("#extable").exTable("stickValidate", function(rowIdx, key, data) {
-//                    if (__viewContext.viewModel.viewO.selectedWorkTimeCode() == '000据え置き') {
-//                        let dataS: BasicSchedule =
-//                            _.find(self.dataSource(), { 'date': moment(key, '_YYYYMMDD').format('YYYY/MM/DD'), 'employeeId': self.listSid()[rowIdx] });
-//                        let wTimeCode: string = dataS ? dataS.workTimeCode : null;
-//                        let wTime: any =
-//                            wTimeCode ? _.find(__viewContext.viewModel.viewO.listWorkTime(), { 'workTimeCode': wTimeCode }) : null;
-//                        let wTimeName: string = wTime ? wTime.abName : null;
-//                        $("#extable").exTable("stickData", {
-//                            workTypeCode: data.workTypeCode,
-//                            workTypeName: data.workTypeName,
-//                            workTimeCode: wTimeCode,
-//                            workTimeName: wTimeName,
-//                            startTime: dataS ? dataS.scheduleStartClock : '',
-//                            endTime: dataS ? dataS.scheduleEndClock : ''
-//                        });
-//                        return true;
-//                    }
+                    //                    if (__viewContext.viewModel.viewO.selectedWorkTimeCode() == '000据え置き') {
+                    //                        let dataS: BasicSchedule =
+                    //                            _.find(self.dataSource(), { 'date': moment(key, '_YYYYMMDD').format('YYYY/MM/DD'), 'employeeId': self.listSid()[rowIdx] });
+                    //                        let wTimeCode: string = dataS ? dataS.workTimeCode : null;
+                    //                        let wTime: any =
+                    //                            wTimeCode ? _.find(__viewContext.viewModel.viewO.listWorkTime(), { 'workTimeCode': wTimeCode }) : null;
+                    //                        let wTimeName: string = wTime ? wTime.abName : null;
+                    //                        $("#extable").exTable("stickData", {
+                    //                            workTypeCode: data.workTypeCode,
+                    //                            workTypeName: data.workTypeName,
+                    //                            workTimeCode: wTimeCode,
+                    //                            workTimeName: wTimeName,
+                    //                            startTime: dataS ? dataS.scheduleStartClock : '',
+                    //                            endTime: dataS ? dataS.scheduleEndClock : ''
+                    //                        });
+                    //                        return true;
+                    //                    }
 
                     let stateWorkTypeCd: any = _.find(self.listCheckNeededOfWorkTime(), ['workTypeCode', data.workTypeCode]);
                     // if workTypeCode is not required( state = 2) worktime is needless
@@ -889,7 +939,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 },
                                 popup: {
                                     rows: [1],
-                                    provider: function() {
+                                    provider: function(columnKey) {
                                         //                                    return $("#popup-area8"); 
                                         return;
                                     }
@@ -909,7 +959,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
                     //                    $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
 
-                    setTimeout($("#extable").exTable("scrollBack", 2), 1000);
+                    setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
 
                     self.stopRequest(true);
                 });
@@ -936,7 +986,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     },
                                     popup: {
                                         rows: [1],
-                                        provider: function() {
+                                        provider: function(columnKey) {
                                             //                                        return $("#popup-area8"); 
                                             return;
                                         }
@@ -978,7 +1028,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
                         //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
-                        setTimeout($("#extable").exTable("scrollBack", 2), 1000);
+                        setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
                     });
                 }).always(() => {
                     self.stopRequest(true);
@@ -1007,7 +1057,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     },
                                     popup: {
                                         rows: [1],
-                                        provider: function() {
+                                        provider: function(columnKey) {
                                             //                                        return $("#popup-area8"); 
                                             return;
                                         }
@@ -1048,7 +1098,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
                         //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
-                        setTimeout($("#extable").exTable("scrollBack", 2), 1000);
+                        setTimeout(function() { $("#extable").exTable("scrollBack", 2); }, 1000);
                     });
                 }).always(() => {
                     self.stopRequest(true);
@@ -1647,13 +1697,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this, dfd = $.Deferred();
             $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco), self.setColorForText(detailContentDeco),
                 self.setColorForCell(detailContentDeco), self.setColorForLeftmostContent()).done(() => {                    //set lock cell
-                    _.each(self.dataSource(), (x) => {
-                        if (x.confirmedAtr == 1) {
-                            $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
-                        } else {
-                            $("#extable").exTable("unlockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
-                        }
-                    });                    dfd.resolve();                });
+                    //                    _.each(self.dataSource(), (x) => {
+                    //                        if (x.confirmedAtr == 1) {
+                    //                            $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
+                    //                        } else {
+                    //                            $("#extable").exTable("unlockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
+                    //                        }
+                    //                    });                    dfd.resolve();                });
             return dfd.promise();
         }
 
@@ -2067,6 +2117,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         symbolName: obj.symbolName,
                         startTime: nts.uk.time.parseTime(obj.scheduleStartClock, true).format(),
                         endTime: nts.uk.time.parseTime(obj.scheduleEndClock, true).format()
+                        //                        startTime: formatById("Clock_Short_HM", obj.scheduleStartClock),
+                        //                        endTime: formatById("Clock_Short_HM", obj.scheduleEndClock)
                     });
                 } else {
                     this['_' + arrDay[i].yearMonthDay] = new ksu001.common.viewmodel.ExCell({

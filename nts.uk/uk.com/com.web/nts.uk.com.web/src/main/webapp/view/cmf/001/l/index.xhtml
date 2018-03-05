@@ -10,7 +10,7 @@
 			<script type='text/javascript'>
 				var dialogSize = {
 					width : 520,
-					height : 500
+					height : 480
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -25,33 +25,33 @@
 			<div id="contents-area">
 				<div>
 					<div class="title_content">#{i18n.getText('CMF001_385')}</div>
-					<table id="table_content">
-					<!-- row1 -->
+					<table id="table_content" data-bind="with: acceptScreenConditionSetting">
+						<!-- row1 -->
 						<tr>
 							<td>
 								<div class="form-label enable">
 									<label>#{i18n.getText('CMF001_386')}</label>
 								</div>
 							</td>
-							<td><div class="lable" data-bind="text: csvItemName">入社年月日</div></td>
+							<td><div class="lable" data-bind="text: receiptItemName">入社年月日</div></td>
 						</tr>
 						<!-- row2 -->
 						<tr>
 							<td>
-								<div  data-bind="ntsFormLabel: {required: true }" class="form-label enable">
+								<div  data-bind="ntsFormLabel: {}" class="form-label enable">
 									<label>#{i18n.getText('CMF001_386')}</label>
 								</div>
 							</td>
 							<td>
-								<div id="combo-box" data-bind="ntsComboBox: {
+								<div id="combo-box" tabindex="1" data-bind="ntsComboBox: {
 									optionsValue: 'code',
 									visibleItemsCount: 5,
-									value: selectedCode,
 									optionsText: 'name',
-									options: itemList,
-									enable: screenMode == 0,
+									name: '#[CMF001_388]',
+									required: true,
+									value: selectComparisonCondition,
+									options: $parent.compareItems,
 									columns: [
-										{ prop: 'code', length: 2 },
 										{ prop: 'name', length: 10 },
 									]}">
 								</div>
@@ -65,36 +65,79 @@
 								</div>
 							</td>
 							<td>
-								<input data-bind="ntsTextEditor: {value: simpleValue1, enable: screenMode == 0}, visible: selectedDataType == 0"/>
-								<input data-bind="ntsTextEditor: {value: simpleValue1, enable: screenMode == 0}, visible: selectedDataType == 1"/>
-								<input data-bind="ntsTextEditor: {value: simpleValue1, enable: screenMode == 0}, visible: selectedDataType == 2"/>
-								<input data-bind="ntsTextEditor: {value: simpleValue1, enable: screenMode == 0}, visible: selectedDataType == 3"/>
-								<input data-bind="ntsTextEditor: {value: simpleValue1, enable: screenMode == 0}, visible: selectedDataType == 4"/>
+								<input tabindex="2" class="numberCondition" data-bind="ntsTextEditor: {value: numberConditionValue1, 
+															     enable: $parent.screenMode == 0, 
+															     name: '#[CMF001_390]',
+															     required: true,
+															     optionsText: 'name'}, 
+																 visible: $parent.selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.NUMERIC"/>
+								<input tabindex="4" class="characterCondition" data-bind="ntsTextEditor: {value: characterConditionValue1, 
+																 enable: $parent.screenMode == 0, 
+																 name: '#[CMF001_390]',
+																 required: true,
+																 optionsText: 'name'}, 
+																 visible: $parent.selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.CHARACTER"/>
+								<input tabindex="6" class="dateCondition" data-bind="ntsTextEditor: {value: dateConditionValue1, 
+								                                 enable: $parent.screenMode == 0, 
+								                                 name: '#[CMF001_390]',
+								                                 required: true,
+								                                 optionsText: 'name'}, 
+																 visible: $parent.selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.DATE"/>
+								<input tabindex="8" class="timeMomentCondition" data-bind="ntsTextEditor: {value: timeMomentConditionValue1, 
+																 enable: $parent.screenMode == 0, 
+																 name: '#[CMF001_390]',
+																 required: true,
+																 optionsText: 'name'}, 
+																 visible: $parent.selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.INS_TIME"/>
+								<input tabindex="10" class="timeCondition" data-bind="ntsTextEditor: {value: timeConditionValue1, 
+																 enable: $parent.screenMode == 0, 
+																 name:'#[CMF001_390]',
+																 required: true,
+																 optionsText: 'name'}, 
+																 visible: $parent.selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.INS_TIME"/>
 							</td>
-							
-							
 						</tr>
 						<!-- row4 -->
 						<tr>
 							<td>
-								<div data-bind="ntsFormLabel: {inline: inline}" class="form-label enable}">
+								<div class="form-label enable}">
 									<label>#{i18n.getText('CMF001_389')}</label>
 								</div>
 							</td>
 							<td>
-								<input data-bind="ntsTextEditor: {value: simpleValue2, enable: screenMode == 0}, visible: selectedDataType == 0" />
-								<input data-bind="ntsTextEditor: {value: simpleValue2, enable: screenMode == 0}, visible: selectedDataType == 1" />
-								<input data-bind="ntsTextEditor: {value: simpleValue2, enable: screenMode == 0}, visible: selectedDataType == 2" />
-								<input data-bind="ntsTextEditor: {value: simpleValue2, enable: screenMode == 0}, visible: selectedDataType == 3" />
-								<input data-bind="ntsTextEditor: {value: simpleValue2, enable: screenMode == 0}, visible: selectedDataType == 4" />
+								<input tabindex="3" class="numberCondition" data-bind="ntsTextEditor: {value: numberConditionValue2, 
+																 enable: $parent.screenMode == 0, 
+																 name:'#[CMF001_392]',
+																 required: true}, 
+																 visible: $parent.selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.NUMERIC" />
+								<input tabindex="5" class="characterCondition" data-bind="ntsTextEditor: {value: characterConditionValue2, 
+																 enable: $parent.screenMode == 0, 
+																 name: '#[CMF001_392]',
+																 required: true}, 
+																 visible: $parent.selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.CHARACTER"/>
+								<input tabindex="7" class="dateCondition" data-bind="ntsTextEditor: {value: dateConditionValue2, 
+								                                 enable: $parent.screenMode == 0, 
+								                                 name: '#[CMF001_392]',
+								                                 required: true}, 
+																 visible: $parent.selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.DATE"/>
+								<input tabindex="9" class="timeMomentCondition" data-bind="ntsTextEditor: {value: timeMomentConditionValue2, 
+																 enable: $parent.screenMode == 0, 
+																 name: '#[CMF001_392]',
+																 required: true}, 
+																 visible: $parent.selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.INS_TIME"/>
+								<input tabindex="11" class="timeCondition" data-bind="ntsTextEditor: {value: timeConditionValue2, 
+																 enable: $parent.screenMode == 0, 
+																 name:'#[CMF001_392]',
+																 required: true}, 
+																 visible: $parent.selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.INS_TIME"/>
 							</td>
 						</tr>
 					</table>
 				</div>
 			</div>
  			<div id="functions-area-bottom">
-				<button class="x-large" data-bind="click: saveSetting">#{i18n.getText('CMF001_393')}</button>
-				<button class="large" data-bind="click: cancelSetting">#{i18n.getText('CMF001_394')}</button>
+				<button class="x-large" tabindex="12" data-bind="click: saveSetting, enable: $root.errors.isEmpty">#{i18n.getText('CMF001_393')}</button>
+				<button class="large" tabindex="13" data-bind="click: cancelSetting">#{i18n.getText('CMF001_394')}</button>
 			</div> 
 		</ui:define>
 	</ui:composition>

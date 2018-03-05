@@ -7,6 +7,7 @@ module cps001.c.vm {
     import confirm = nts.uk.ui.dialog.confirm;
     import close = nts.uk.ui.windows.close;
     import setShared = nts.uk.ui.windows.setShared;
+    import alertError = nts.uk.ui.dialog.alertError;
 
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
@@ -31,6 +32,7 @@ module cps001.c.vm {
 
                     let iem: IEmployee = _.find(self.listEmployee(), e => e.id == x);
 
+                    block();
                     service.getDetail(x).done((data: IEmployee) => {
                         if (data) {
                             emp.id(iem.id);
@@ -40,6 +42,7 @@ module cps001.c.vm {
                             emp.reason(data.reason || '');
                             emp.dateDelete(data.dateDelete || undefined);
                             $('#code').focus();
+                            unblock();
                         }
                     });
                 } else {
@@ -57,7 +60,12 @@ module cps001.c.vm {
                 emp = self.currentEmployee();
 
             emps.removeAll();
+
+            block();
             service.getData().done((data: Array<IEmployee>) => {
+
+                unblock();
+
                 if (data && data.length) {
                     emps(data);
                     $('#code').focus();
@@ -79,6 +87,9 @@ module cps001.c.vm {
                 }
                 dfd.resolve();
             }).fail(() => {
+
+                unblock();
+
             });
             return dfd.promise();
         }
@@ -118,8 +129,19 @@ module cps001.c.vm {
 
                     unblock();
 
-                }).fail((mes) => {
+                }).fail(error => {
+
+                    if (error.messageId == 'Msg_345') {
+                        alertError({ messageId: "Msg_345" })
+                            .then(() => {
+                                $('#code').focus();
+                            });
+                    } else {
+                        alertError({ messageId: error.messageId }).then(() => {
+                        });
+                    }
                     unblock();
+
                 });
 
             }).ifCancel(() => {

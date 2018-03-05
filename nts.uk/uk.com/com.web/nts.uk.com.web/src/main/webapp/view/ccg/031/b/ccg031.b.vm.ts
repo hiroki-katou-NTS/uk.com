@@ -61,7 +61,7 @@ module nts.uk.com.view.ccg031.b.viewmodel {
                 // Binding TopPage Part
                 self.allPart(data.listTopPagePart);
                 // Default value
-                self.selectedPartType(0);
+                self.selectedPartType(data.listTopPagePartType[0].value);
                 self.selectFirstPart();
                 dfd.resolve();
             }).fail((res) => {
@@ -78,7 +78,7 @@ module nts.uk.com.view.ccg031.b.viewmodel {
             if (self.isExternalUrl() === true)
             $(".nts-validate").trigger("validate");
             if (!$(".nts-validate").ntsError("hasError")) {
-                var placement: model.Placement = self.buildReturnPlacement();
+                var placement: model.PlacementDto = self.buildReturnPlacement();
                 windows.setShared("placement", placement, false);
                 windows.close();
             }
@@ -91,7 +91,7 @@ module nts.uk.com.view.ccg031.b.viewmodel {
 
         /** Filter by Type */
         private filterPartType(partType: number): void {
-            var isExternalUrl: boolean = (partType === 3);
+            var isExternalUrl: boolean = (partType === 4);
             this.isExternalUrl(isExternalUrl);
             if (isExternalUrl !== true) {
                 if (nts.uk.ui._viewModel)
@@ -105,16 +105,23 @@ module nts.uk.com.view.ccg031.b.viewmodel {
             if (partType === 0)
                 this.instructionText(resource.getText("CCG031_17"));
             if (partType === 1)
-                this.instructionText(resource.getText("CCG031_18"));
+                this.instructionText(resource.getText("CCG031_17"));
             if (partType === 2)
+                this.instructionText(resource.getText("CCG031_18"));
+            if (partType === 3)
                 this.instructionText(resource.getText("CCG031_19"));
         }
 
         /** Change Selected Part */
         private changeSelectedPart(partID: string): void {
             var selectedPart: model.TopPagePartDto = _.find(this.allPart(), ['topPagePartID', partID]);
-            selectedPart.codeName = nts.uk.text.padLeft(selectedPart.code, '0', 4) + ' ' + selectedPart.name;
-            this.selectedPart(selectedPart);
+            if (selectedPart != undefined) {
+                selectedPart.codeName = nts.uk.text.padLeft(selectedPart.code, '0', 4) + ' ' + selectedPart.name;
+                this.selectedPart(selectedPart);
+            }
+            else {
+                this.selectedPart(null);    
+            }
         }
 
         /** Select first Part */
@@ -124,36 +131,45 @@ module nts.uk.com.view.ccg031.b.viewmodel {
         }
 
         /** Build a return Placement for LayoutSetting */
-        private buildReturnPlacement(): model.Placement {
+        private buildReturnPlacement(): model.PlacementDto {
             var self = this;
+            
             // Default is External Url
-            var name: string = "";
-            var width: number = self.urlWidth();
-            var height: number = self.urlHeight();
-            var topPagePartID: string = "";
-            var topPagePartType: number = null;
-            var url: string = self.url();
-
+            var placementPartDto: model.PlacementPartDto = {
+                topPagePartID: "",
+                topPageCode: "",
+                topPageName: "",
+                "type": 4,
+                width: self.urlWidth(),
+                height: self.urlHeight(),
+                url: self.url(),
+                fileID: "",
+                fileName: "",
+                defClassAtr: 0
+            }
+            
             // In case is TopPagePart
-            if (self.selectedPartType() !== 3) {
+            if (self.selectedPartType() !== 4) {
                 if (!util.isNullOrUndefined(self.selectedPart())) {
-                    name = self.selectedPart().name;
-                    width = self.selectedPart().width;
-                    height = self.selectedPart().height;
-                    topPagePartID = self.selectedPart().topPagePartID;
-                    topPagePartType = self.selectedPart().type;
-                    url = "";
+                    placementPartDto.topPageName = self.selectedPart().name;
+                    placementPartDto.topPagePartID = self.selectedPart().topPagePartID;
+                    placementPartDto.type = self.selectedPart().type;
+                    placementPartDto.width = self.selectedPart().width;
+                    placementPartDto.height = self.selectedPart().height;
                 }
                 else {
                     return null;
                 }
             }
 
-            var placement: model.Placement = new model.Placement(
-                util.randomId(), name,
-                self.positionRow(), self.positionColumn(),
-                width, height, url, topPagePartID, topPagePartType);
-            return placement;
+            var placementDto: model.PlacementDto = {
+                placementID: util.randomId(),
+                column: self.positionColumn(),
+                row: self.positionRow(),
+                placementPartDto: placementPartDto
+            }
+            
+            return placementDto;
         }
 
     }

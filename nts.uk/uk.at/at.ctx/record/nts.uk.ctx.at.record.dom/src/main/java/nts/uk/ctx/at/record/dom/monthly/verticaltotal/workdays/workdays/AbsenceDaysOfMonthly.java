@@ -46,8 +46,7 @@ public class AbsenceDaysOfMonthly {
 		domain.totalAbsenceDays = totalAbsenceDays;
 		for (val absenceDays : absenceDaysList){
 			val absenceFrameNo = Integer.valueOf(absenceDays.getAbsenceFrameNo());
-			domain.absenceDaysList.putIfAbsent(absenceFrameNo, AggregateAbsenceDays.of(
-					absenceFrameNo, new AttendanceDaysMonth(absenceDays.getDays().v())));
+			domain.absenceDaysList.putIfAbsent(absenceFrameNo, absenceDays);
 		}
 		return domain;
 	}

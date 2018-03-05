@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailyItem;
@@ -35,6 +36,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcstActualLock;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcstActualLockPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtSyainDpErList;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlApplication;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformanceAut;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtWorktypeChangeable;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcstDailyRecOpe;
@@ -66,6 +68,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.datadialog.WorkTimeWorkp
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.WorkTypeChangedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ApplicationType;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatInitialDisplayDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatSheetDto;
@@ -169,6 +172,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private final static String SEL_ALL_WORKPLACE;
 	
 	private final static String SEL_FIND_WORKPLACE;
+	
+	private final static String SEL_FIND_ER_AL_APP;
 	
 
 	private final String GET_DAI_PER_AUTH_WITH_ROLE = "SELECT da FROM KrcmtDaiPerformanceAut da WHERE da.pk.roleId =:roleId";
@@ -425,6 +430,12 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("AND a.strD <= :baseDate ");
 		builderString.append("AND a.endD >= :baseDate ");
 		SEL_FIND_WORKPLACE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e FROM KrcstErAlApplication e ");
+		builderString.append("WHERE e.krcstErAlApplicationPK.cid = :cid ");
+		builderString.append("AND e.krcstErAlApplicationPK.errorCd IN :errorCd ");
+		SEL_FIND_ER_AL_APP = builderString.toString();
 
 	}
 
@@ -445,7 +456,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				.getList();
 		List<ClosureDto> result = new ArrayList<>();
 		empCodes.forEach((key, value) -> {
-			Optional<ClosureDto> optional = closureDtos.stream().filter(item -> item.getEmploymentCode() == value)
+			Optional<ClosureDto> optional = closureDtos.stream().filter(item -> item.getEmploymentCode().equals(value))
 					.findFirst();
 			if (optional.isPresent()) {
 				ClosureDto closureDto = new ClosureDto();
@@ -985,6 +996,22 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 					"", "",
 					"", false);
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<EnumConstant> findErAlApplication(String companyId, List<String> errorCode) {
+		List<KrcstErAlApplication> entity = this.queryProxy().query(SEL_FIND_ER_AL_APP, KrcstErAlApplication.class)
+				.setParameter("cid", companyId).setParameter("errorCd", errorCode).getList();
+		if (!entity.isEmpty()) {
+			return entity.stream().map(x -> {
+				return new EnumConstant(
+						x.krcstErAlApplicationPK.appTypeCd.intValue(), EnumAdaptor
+								.valueOf(x.krcstErAlApplicationPK.appTypeCd.intValue(), ApplicationType.class).nameId,
+						"");
+			}).collect(Collectors.toList());
+		} else {
+			return Collections.emptyList();
+		}
 	}
 
 }

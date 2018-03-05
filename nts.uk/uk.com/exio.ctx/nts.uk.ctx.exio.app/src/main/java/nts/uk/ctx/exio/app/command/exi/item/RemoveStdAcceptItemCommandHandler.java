@@ -20,10 +20,10 @@ public class RemoveStdAcceptItemCommandHandler extends CommandHandler<StdAcceptI
     
     @Override
     protected void handle(CommandHandlerContext<StdAcceptItemCommand> context) {
-        String cid = context.getCommand().getCid();
-        String conditionSetCd = context.getCommand().getConditionSetCd();
-        String categoryId = context.getCommand().getCategoryId();
-        int acceptItemNumber = context.getCommand().getAcceptItemNumber();
-        repository.remove(cid, conditionSetCd, categoryId, acceptItemNumber);
+//        String cid = context.getCommand().getCid();
+//        String conditionSetCd = context.getCommand().getConditionSetCd();
+//        String categoryId = context.getCommand().getCategoryId();
+//        int acceptItemNumber = context.getCommand().getAcceptItemNumber();
+//        repository.remove(cid, conditionSetCd, categoryId, acceptItemNumber);
     }
 }

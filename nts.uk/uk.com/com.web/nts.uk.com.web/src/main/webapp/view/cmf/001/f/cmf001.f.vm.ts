@@ -1,81 +1,100 @@
 module nts.uk.com.view.cmf001.f.viewmodel {
     import close = nts.uk.ui.windows.close;
+    import getText = nts.uk.resource.getText;
     import model = cmf001.share.model;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import dialog = nts.uk.ui.dialog.info;
-    import alertError = nts.uk.ui.dialog.alertError;
+    import dialog = nts.uk.ui.dialog;
+    import block = nts.uk.ui.block;
     export class ScreenModel {
-        codeConvertList: KnockoutObservableArray<model.AcceptanceCodeConvert> = ko.observableArray([]);
-        codeConvertDetailList: KnockoutObservableArray<model.CodeConvertDetail> = ko.observableArray([]);
+        codeConvertList: KnockoutObservableArray<AcceptanceCodeConvert> = ko.observableArray([]);
         selectedConvertCode: KnockoutObservable<string> = ko.observable('');
-        selectedConvertDetail: KnockoutObservable<number> = ko.observable(0);
-        convertCode: KnockoutObservable<string> = ko.observable('');
-        convertName: KnockoutObservable<string> = ko.observable('');
-        selectedSettingKbn: any = ko.observable(0);
+        selectedConvertDetail: KnockoutObservable<number> = ko.observable(0); 
         screenMode: KnockoutObservable<number>;
-
+        codeConvertData: KnockoutObservable<AcceptanceCodeConvert> = ko.observable(new AcceptanceCodeConvert('', '', 0, []));
+        acceptWithoutSettingItems: KnockoutObservableArray<model.ItemModel>;
+        
         constructor() {
             let self = this;
             self.screenMode = ko.observable(model.SCREEN_MODE.UPDATE);
             $("#detail-code-convert").ntsFixedTable({ height: 200 });
-
-            //起動する
-            //アルゴリズム「一覧登録画面を表示する」を実行する
-            self.displayListScreen();
+            
+            self.acceptWithoutSettingItems =  ko.observableArray([
+                new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF001_209')),
+                new model.ItemModel(model.NOT_USE_ATR.USE    , getText('CMF001_210')), 
+            ]);
 
             //登録済のコード変換を参照する
             //コード一覧でいづれか選択する
             self.selectedConvertCode.subscribe(function(convertCode: any) {
                 nts.uk.ui.errors.clearAll();
+                self.codeConvertData().cdConvertDetails.removeAll();
                 if (convertCode) {
+                    block.invisible();
                     //ドメインモデル「受入コード変換」を取得し内容を画面（右側）にセットする
-                    self.displayAcceptCodeConvert(convertCode);
+                    service.getAcceptCodeConvert(convertCode).done(function(codeConvert) {
+                        if (codeConvert) {
+                            self.selectedConvertCode(codeConvert.convertCd);
+                            self.codeConvertData().convertCd(codeConvert.convertCd);
+                            self.codeConvertData().convertName(codeConvert.convertName);
+                            self.codeConvertData().acceptWithoutSetting(codeConvert.acceptWithoutSetting);
+                            var detail: Array<any> = _.sortBy(codeConvert.cdConvertDetails, ['lineNumber']);
+                            for (let i = 0; i < detail.length; i++) {
+                                self.codeConvertData().cdConvertDetails.push(new CodeConvertDetail(detail[i].convertCd, detail[i].lineNumber, detail[i].outputItem, detail[i].systemCd));
+                            }
 
-                    //ドメインモデル「コード変換詳細」を取得して、内容をコード変換コード表（右側）にセットする
-                    self.displayCodeConvertDetails(convertCode);
+                            //UI設計の「項目制御」のl更新モードに画面設定する
+                            self.screenMode(model.SCREEN_MODE.UPDATE);
 
-                    //UI設計の「項目制御」のl更新モードに画面設定する
-                    self.screenMode(model.SCREEN_MODE.UPDATE);
-
-                    //フォーカス制御
-                    self.setFocusItem(FOCUS_TYPE.ROW_PRESS, model.SCREEN_MODE.UPDATE);
+                            //フォーカス制御
+                            self.setFocusItem(FOCUS_TYPE.ROW_PRESS, model.SCREEN_MODE.UPDATE);
+                        }
+                    }).fail(function(error) {
+                        dialog.alertError(error);
+                    }).always(function() {
+                        block.clear();
+                    });
                 }
             });
 
-            self.codeConvertDetailList.subscribe(() => {
-                for (var i = 0; i < self.codeConvertDetailList().length; i++) {
-                    self.codeConvertDetailList()[i].lineNumber(i + 1);
+            self.codeConvertData().cdConvertDetails.subscribe(() => {
+                for (var i = 0; i < self.codeConvertData().cdConvertDetails().length; i++) {
+                    self.codeConvertData().cdConvertDetails()[i].lineNumber(i + 1);
                 }
             });
         }
 
-        displayListScreen() {
+        /**
+         * 起動する
+         * - アルゴリズム「一覧登録画面を表示する」を実行する
+         */
+        initialScreen(convertCodeParam?: string) {
             let self = this;
-
+            block.invisible();
+            nts.uk.ui.errors.clearAll();
             //ドメインモデル「受入コード変換」を取得する
-            service.getCodeConvert().done(function(result: Array<any>) {
+            service.getCodeConvertByCompanyId().done(function(result: Array<any>) {
                 //データが存在するか判別する
                 //データが存在する場合
                 if (result && result.length) {
-                    let _codeConvertList: Array<model.AcceptanceCodeConvert> = _.map(result, x => {
-                        return new model.AcceptanceCodeConvert(x.convertCd, x.convertName, x.acceptWithoutSetting);
+                    let _codeConvertResult: Array<any> = _.sortBy(result, ['convertCd']);
+                    let _codeConvertList: Array<AcceptanceCodeConvert> = _.map(_codeConvertResult, x => {
+                        return new AcceptanceCodeConvert(x.convertCd, x.convertName, x.acceptWithoutSetting, x.cdConvertDetails);
                     });
 
                     //取得した受入コード変換を「コード変換一覧」（グリッドリスト）に表示する
                     self.codeConvertList(_codeConvertList);
 
-                    //Fist line of data
-                    var codeConvert: model.AcceptanceCodeConvert = self.codeConvertList()[0];
-
                     //F:「コード変換一括登録」ダイアログを更新モードでモーダル表示する
                     self.screenMode(model.SCREEN_MODE.UPDATE);
 
-                    ////「コード変換一覧」の1行目をカレント行とし、内容を右側に表示
-                    self.displayCodeConvertInfo(codeConvert);
-
-                    //ドメインモデル「受入変換コード値」を取得する
-                    self.displayCodeConvertDetails(codeConvert.convertCode());
+                    let _codeConvert: string;
+                    if (convertCodeParam) {
+                        _codeConvert = convertCodeParam;
+                    } else {
+                        _codeConvert = _codeConvertList[0].convertCd();
+                    }
+                    self.selectedConvertCode(_codeConvert);
 
                     //フォーカス制御
                     self.setFocusItem(FOCUS_TYPE.INIT, model.SCREEN_MODE.UPDATE);
@@ -89,47 +108,9 @@ module nts.uk.com.view.cmf001.f.viewmodel {
                     self.setFocusItem(FOCUS_TYPE.INIT, model.SCREEN_MODE.NEW);
                 }
             }).fail(function(error) {
-                alertError(error);
-            });
-        }
-
-        displayCodeConvertInfo(codeConvert: model.AcceptanceCodeConvert) {
-            let self = this;
-
-            //「コード変換一覧」グリッドの1行目にカレント行をセットし、「コード変換コード」「コード変換名称」「設定のないコードの受入」を画面右側にセットする
-            self.selectedConvertCode(codeConvert.convertCode());
-            self.convertCode(codeConvert.convertCode());
-            self.convertName(codeConvert.convertName());
-            self.selectedSettingKbn(codeConvert.acceptCodeWithoutSettings());
-        }
-
-        displayAcceptCodeConvert(convertCode: string) {
-            let self = this;
-            //ドメインモデル「受入コード変換」を取得し内容を画面（右側）にセットする
-            service.getAcceptCodeConvert(convertCode).done(function(result: any) {
-                if (result) {
-                    self.convertCode(result.convertCd);
-                    self.convertName(result.convertName);
-                    self.selectedSettingKbn(result.acceptWithoutSetting);
-                }
-            }).fail(function(error) {
-                alertError(error);
-            });
-        }
-
-        displayCodeConvertDetails(convertCode: string) {
-            let self = this;
-            self.codeConvertDetailList.removeAll();
-            self.selectedConvertDetail(0);
-
-            //ドメインモデル「受入変換コード値」を取得する
-            service.getCodeConvertDetails(convertCode).done(function(result: Array<any>) {
-                let _details: Array<model.CodeConvertDetail> = _.map(result, x => {
-                    return new model.CodeConvertDetail(x.lineNumber, x.outputItem, x.systemCd);
-                });
-                self.codeConvertDetailList(_details);
-            }).fail(function(error) {
-                alertError(error);
+                dialog.alertError(error);
+            }).always(function() {
+                block.clear();
             });
         }
 
@@ -137,17 +118,208 @@ module nts.uk.com.view.cmf001.f.viewmodel {
         //「新規」ボタンを押下
         addCodeConvert_click() {
             let self = this;
-            nts.uk.ui.errors.clearAll();
+            block.invisible();
+            self.settingCreateMode();
+            block.clear();
+        }
 
+        //フォーカス制御
+        setFocusItem(focus: number, screenMode: number, index?: number) {
+            let self = this;
+            if (focus == FOCUS_TYPE.ADD_ROW_PRESS || focus == FOCUS_TYPE.DEL_ROW_PRESS) {
+                $('tr[data-id=' + index + ']').find("input").first().focus();
+            } else {
+                if (screenMode == model.SCREEN_MODE.NEW) {
+                    $('#F4_2').focus();
+                } else if (screenMode == model.SCREEN_MODE.UPDATE) {
+                    $('#F4_3').focus();
+                }
+            }
+        }
+
+        start(): JQueryPromise<any> {
+            let self = this;
+            var dfd = $.Deferred();
+            
+            self.initialScreen();
+            
+            dfd.resolve();
+            return dfd.promise();
+        }
+
+        //一覧の行追加
+        //行追加ボタンを押下
+        addDetailConvert_click() {
+            let self = this;
+            block.invisible();
+
+            if (self.codeConvertData().cdConvertDetails == null || self.codeConvertData().cdConvertDetails == undefined) {
+                self.codeConvertData().cdConvertDetails = ko.observableArray([]);
+            }
+
+            //コード変換一覧の最下行に1行追加する
+            self.codeConvertData().cdConvertDetails.push(new CodeConvertDetail(self.codeConvertData().convertCd(), self.codeConvertData().cdConvertDetails().length + 1, '', ''));
+            self.selectedConvertDetail(self.codeConvertData().cdConvertDetails().length);
+            $("#detail-code-convert tr")[self.codeConvertData().cdConvertDetails().length - 1].scrollIntoView();
+
+            let indexFocus:number = self.codeConvertData().cdConvertDetails().length;
+            //フォーカス制御
+            self.setFocusItem(FOCUS_TYPE.ADD_ROW_PRESS, model.SCREEN_MODE.UPDATE, indexFocus);
+            
+            block.clear();
+        }
+
+        //一覧の行削除
+        //行削除ボタンを押下
+        deleteDetailConvert_click() {
+            let self = this;
+            let indexFocus: number = 0;
+            block.invisible();
+
+            //選択行がない場合
+            if (self.selectedConvertDetail() < 1 || self.selectedConvertDetail() > self.codeConvertData().cdConvertDetails().length) {
+                //エラーメッセージの表示　Msg_897　削除行が選択されていません。
+                dialog.alertError({ messageId: "Msg_897" });
+                block.clear();
+                return;
+            }
+
+            //現在の行を「コード変換コード表」グリッドリストから1削除する（削除後に記入する）
+            self.codeConvertData().cdConvertDetails.remove(function(item) { return item.lineNumber() == (self.selectedConvertDetail()); })
+            nts.uk.ui.errors.clearAll();
+            for (var i = 0; i < self.codeConvertData().cdConvertDetails().length; i++) {
+                self.codeConvertData().cdConvertDetails()[i].lineNumber(i + 1);
+            }
+            if (self.selectedConvertDetail() >= self.codeConvertData().cdConvertDetails().length) {
+                self.selectedConvertDetail(self.codeConvertData().cdConvertDetails().length);
+                indexFocus = self.codeConvertData().cdConvertDetails().length;
+            } else {
+                indexFocus = self.selectedConvertDetail();
+            }
+
+            //フォーカス制御
+            self.setFocusItem(FOCUS_TYPE.DEL_ROW_PRESS, model.SCREEN_MODE.UPDATE, indexFocus);
+            self.selectedConvertDetail.valueHasMutated();
+            
+            block.clear();
+        }
+        
+        //登録ボタンを押下
+        regAcceptCodeConvert_Click() {
+            let self = this;
+            block.invisible();
+
+            //コード一覧に変換データの有無を判別
+            if (!_.isEmpty(self.codeConvertData().convertCd())) {
+                //受入コードに同一の値がないか全行のチェックを行いエラーをエラーリストにセットする
+                for (let detail of self.codeConvertData().cdConvertDetails()) {
+                    ////同一の受入コード存在する場合
+                    var data = self.codeConvertData().cdConvertDetails().filter(x => x.outputItem() === detail.outputItem());
+                    if (data.length >= 2) {
+                        //エラーメッセージ　Msg_1015　同一の受入コード「｛0｝」が複数存在します。
+                        dialog.alertError({ messageId: "Msg_1015", messageParams: [detail.outputItem()] });
+                        block.clear();
+                        return;
+                    }
+                }
+                
+                //コードの未入力チェックを全行行いエラーの場合エラーリストにセットする
+                for (let detail of self.codeConvertData().cdConvertDetails()) {
+                    if (_.isEmpty(detail.outputItem()) || _.isEmpty(detail.systemCd())) {
+                        //エラーメッセージ　Msg_1016　受入コード｛0｝にコード未入力があります。
+                        dialog.alertError({ messageId: "Msg_1016", messageParams: [detail.outputItem()] });
+                        block.clear();
+                        return;
+                    }
+                }
+                
+                //画面の項目を、ドメインモデル「受入コード変換」に登録/更新する
+                if (model.SCREEN_MODE.NEW == self.screenMode()) {
+                    service.addAcceptCodeConvert(ko.toJS(self.codeConvertData)).done((acceptConvertCode) => {
+                        //登録した受入コード変換を「コード変換一覧パネル」へ追加/更新する
+                        self.initialScreen(self.codeConvertData().convertCd());
+
+                        //情報メッセージ　Msg_15 登録しました。を表示する。
+                        dialog.info({ messageId: "Msg_15" });
+                    }).fail(function(error) {
+                        dialog.alertError(error);
+                    }).always(function() {
+                        block.clear();
+                    });
+                } else {
+                    service.updateAcceptCodeConvert(ko.toJS(self.codeConvertData)).done((acceptConvertCode) => {
+                        //登録した受入コード変換を「コード変換一覧パネル」へ追加/更新する
+                        self.initialScreen(self.selectedConvertCode());
+
+                        //情報メッセージ　Msg_15 登録しました。を表示する。
+                        dialog.info({ messageId: "Msg_15" });
+                    }).fail(function(error) {
+                        dialog.alertError(error);
+                    }).always(function() {
+                        block.clear();
+                    });
+                }
+            } else {
+                //エラーメッセージ　Msg_906　変換コードが設定されていません
+                dialog.alertError({ messageId: "Msg_906" });
+                block.clear();
+            }
+        }
+        
+        //削除ボタンを押下
+        delAcceptCodeConvert_Click(){
+            let self = this
+            let listAcceptCodeConvert = self.codeConvertList;
+            let currentCodeConvert = self.codeConvertData;
+            block.invisible();
+
+            //確認メッセージ（Msg_18）を表示する
+            dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                service.deleteAcceptCodeConvert(ko.toJS(currentCodeConvert)).done(function() {
+                    //select next code convert
+                    let index: number = _.findIndex(listAcceptCodeConvert(), function(x)
+                    { return x.convertCd() == currentCodeConvert().convertCd() });
+                    
+                    if (index > -1) {
+                        self.codeConvertList.splice(index, 1);
+
+                        if (index >= listAcceptCodeConvert().length) {
+                            index = listAcceptCodeConvert().length - 1;
+                        }
+                        if (listAcceptCodeConvert().length > 0) {
+                            self.initialScreen(listAcceptCodeConvert()[index].convertCd());
+                            self.screenMode(model.SCREEN_MODE.UPDATE);
+                        } else {
+                            self.settingCreateMode();
+                        }
+                    }
+                    
+                    //情報メッセージ　Msg-16を表示する
+                    dialog.info({ messageId: "Msg_16" });
+                }).fail(function(error) {
+                    dialog.alertError(error);
+                }).always(function() {
+                    block.clear();
+                });
+            }).then(() => {
+                block.clear();
+            });
+        }
+        
+        settingCreateMode() {
+            let self = this;
+            nts.uk.ui.errors.clearAll();
+            
             //コード変換一覧のカレントを解除する
             self.selectedConvertCode('');
 
             //画面右側のコード/名称/上記の設定にないコードをクリア
-            self.convertCode('');
-            self.convertName('');
+            self.codeConvertData().convertCd('');
+            self.codeConvertData().convertName('');
+            self.codeConvertData().acceptWithoutSetting(0);
 
             //コード変換コード表をクリア
-            self.codeConvertDetailList.removeAll();
+            self.codeConvertData().cdConvertDetails.removeAll();
             self.selectedConvertDetail(0);
 
             //UI設計の「項目制御」新規モードで表示する
@@ -157,90 +329,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
             self.setFocusItem(FOCUS_TYPE.ADD_PRESS, model.SCREEN_MODE.NEW);
         }
 
-        //フォーカス制御
-        setFocusItem(focus: number, screenMode?: number) {
-            let self = this;
-            switch (focus) {
-                case FOCUS_TYPE.INIT:
-                    self.focusItemByMode(screenMode);
-                    break;
-                case FOCUS_TYPE.ADD_PRESS:
-                    self.focusItemByMode(screenMode);
-                    break;
-                case FOCUS_TYPE.REG_PRESS:
-                    self.focusItemByMode(screenMode);
-                    break;
-                case FOCUS_TYPE.DEL_PRESS:
-                    self.focusItemByMode(screenMode);
-                    break;
-                case FOCUS_TYPE.ROW_PRESS:
-                    self.focusItemByMode(screenMode);
-                    break;
-            }
-        }
-        focusItemByMode(screenMode: number) {
-            if (screenMode == model.SCREEN_MODE.NEW) {
-                $('#F4_2').focus();
-            } else if (screenMode == model.SCREEN_MODE.UPDATE) {
-                $('#F4_3').focus();
-            }
-        }
-
-        start(): JQueryPromise<any> {
-            let self = this;
-            var dfd = $.Deferred();
-            dfd.resolve();
-            return dfd.promise();
-        }
-
-        //一覧の行追加
-        //行追加ボタンを押下
-        addDetailConvert_click() {
-            let self = this;
-
-            if (self.codeConvertDetailList == null || self.codeConvertDetailList == undefined) {
-                self.codeConvertDetailList = ko.observableArray([]);
-            }
-
-            //コード変換一覧の最下行に1行追加する
-            self.codeConvertDetailList.push(new model.CodeConvertDetail(self.codeConvertDetailList().length + 1, '', ''));
-            self.selectedConvertDetail(self.codeConvertDetailList().length);
-            $("#detail-code-convert tr")[self.codeConvertDetailList().length - 1].scrollIntoView();
-
-            //フォーカス制御
-            $('tr[data-id=' + self.codeConvertDetailList().length + ']').find("input").first().focus();
-        }
-
-        //一覧の行削除
-        //行削除ボタンを押下
-        deleteDetailConvert_click() {
-            var self = this;
-
-            //選択行がない場合
-            if (self.selectedConvertDetail() < 1 || self.selectedConvertDetail() > self.codeConvertDetailList().length) {
-                //エラーメッセージの表示　Msg_897　削除行が選択されていません。
-                dialog({ messageId: "Msg_897" });
-                return;
-            }
-
-            //現在の行を「コード変換コード表」グリッドリストから1削除する（削除後に記入する）
-            self.codeConvertDetailList.remove(function(item) { return item.lineNumber() == (self.selectedConvertDetail()); })
-            nts.uk.ui.errors.clearAll();
-            for (var i = 0; i < self.codeConvertDetailList().length; i++) {
-                self.codeConvertDetailList()[i].lineNumber(i + 1);
-            }
-            if (self.selectedConvertDetail() >= self.codeConvertDetailList().length) {
-                self.selectedConvertDetail(self.codeConvertDetailList().length);
-                //フォーカス制御
-                $('tr[data-id=' + self.codeConvertDetailList().length + ']').find("input").first().focus();
-            } else {
-                //フォーカス制御
-                $('tr[data-id=' + self.selectedConvertDetail() + ']').find("input").first().focus();
-            }
-            self.selectedConvertDetail.valueHasMutated();
-
-        }
-
+        //終了する
         closeDialog() {
             close();
         }
@@ -254,6 +343,53 @@ module nts.uk.com.view.cmf001.f.viewmodel {
         ROW_PRESS = 4,
         ADD_ROW_PRESS = 5,
         DEL_ROW_PRESS = 6
+    }
+
+    export class AcceptanceCodeConvert {
+
+        //コード変換コード
+        convertCd: KnockoutObservable<string>;
+        dispConvertCode: string;
+
+        //コード変換名称
+        convertName: KnockoutObservable<string>;
+        dispConvertName: string;
+
+        //設定のないコードの受入
+        acceptWithoutSetting: KnockoutObservable<number>;
+
+        //コード変換詳細
+        cdConvertDetails: KnockoutObservableArray<CodeConvertDetail>;
+
+        constructor(code: string, name: string, acceptWithoutSettings: number, cdConvertDetails:Array<any>) {
+            this.convertCd            = ko.observable(code);
+            this.convertName          = ko.observable(name);
+            this.cdConvertDetails     = ko.observableArray(cdConvertDetails);
+            this.acceptWithoutSetting = ko.observable(acceptWithoutSettings);
+            this.dispConvertCode      = code;
+            this.dispConvertName      = name;
+        } 
+    }
+
+    export class CodeConvertDetail {
+        //コード変換コード
+        convertCd: KnockoutObservable<string>;
+
+        //行番号
+        lineNumber: KnockoutObservable<number>;
+
+        //出力項目
+        outputItem: KnockoutObservable<string>;
+
+        //本システムのコード
+        systemCd: KnockoutObservable<string>;
+
+        constructor(code: string, lineNumber: number, outputItem: string, systemCd: string) {
+            this.convertCd  = ko.observable(code);
+            this.lineNumber = ko.observable(lineNumber);
+            this.outputItem = ko.observable(outputItem);
+            this.systemCd   = ko.observable(systemCd);
+        }
     }
 }//end module
 

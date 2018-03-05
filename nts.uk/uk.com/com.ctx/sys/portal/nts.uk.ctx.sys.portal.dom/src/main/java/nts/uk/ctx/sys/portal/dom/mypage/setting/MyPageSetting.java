@@ -25,8 +25,11 @@ public class MyPageSetting extends AggregateRoot {
 	/** The use my page. */
 	private UseDivision useMyPage;
 
-	/** The use widget. */
-	private UseDivision useWidget;
+	/** The use standard widget. */
+	private UseDivision useStandarWidget;
+	
+	/** The use optional widget. */
+	private UseDivision useOptionalWidget;
 
 	/** The use dashboard. */
 	private UseDivision useDashboard;
@@ -45,19 +48,21 @@ public class MyPageSetting extends AggregateRoot {
 	 *
 	 * @param companyId the company id
 	 * @param useMyPage the use my page
-	 * @param useWidget the use widget
+	 * @param useStandardWidget
+	 * @param useOptionalWidget
 	 * @param useDashboard the use dashboard
 	 * @param useFlowMenu the use flow menu
 	 * @param externalUrlPermission the external url permission
 	 * @param topPagePartUseSetting the top page part use setting
 	 */
-	public MyPageSetting(String companyId, UseDivision useMyPage, UseDivision useWidget, UseDivision useDashboard,
-			UseDivision useFlowMenu, PermissionDivision externalUrlPermission,
-			List<TopPagePartUseSetting> topPagePartUseSetting) {
+	public MyPageSetting(String companyId, UseDivision useMyPage, UseDivision useStandarWidget,
+			UseDivision useOptionalWidget, UseDivision useDashboard, UseDivision useFlowMenu,
+			PermissionDivision externalUrlPermission, List<TopPagePartUseSetting> topPagePartUseSetting) {
 		super();
 		this.companyId = companyId;
 		this.useMyPage = useMyPage;
-		this.useWidget = useWidget;
+		this.useStandarWidget = useStandarWidget;
+		this.useOptionalWidget = useOptionalWidget;
 		this.useDashboard = useDashboard;
 		this.useFlowMenu = useFlowMenu;
 		this.externalUrlPermission = externalUrlPermission;
@@ -69,17 +74,20 @@ public class MyPageSetting extends AggregateRoot {
 	 *
 	 * @param CompanyId the company id
 	 * @param useMyPage the use my page
-	 * @param useWidget the use widget
 	 * @param useDashboard the use dashboard
 	 * @param useFlowMenu the use flow menu
 	 * @param externalUrlPermission the external url permission
 	 * @param topPagePartUseSetting the top page part use setting
 	 * @return the my page setting
 	 */
-	public static MyPageSetting createFromJavaType(String CompanyId, Integer useMyPage, Integer useWidget,
+	public static MyPageSetting createFromJavaType(String CompanyId, Integer useMyPage, Integer useStandardWidget, Integer useOptionalWidget,
 			Integer useDashboard, Integer useFlowMenu, Integer externalUrlPermission,List<TopPagePartUseSetting> topPagePartUseSetting) {
 		return new MyPageSetting(CompanyId, UseDivision.valueOf(useMyPage),
-				UseDivision.valueOf(useWidget), UseDivision.valueOf(useDashboard), UseDivision.valueOf(useFlowMenu),
+				UseDivision.valueOf(useStandardWidget), UseDivision.valueOf(useOptionalWidget), UseDivision.valueOf(useDashboard), UseDivision.valueOf(useFlowMenu),
 				PermissionDivision.valueOf(externalUrlPermission), topPagePartUseSetting);
 	}
+
+	
+	
+	
 }

@@ -21,4 +21,5 @@ public class UpdateEmployeeDataMngInfoCommand{
 	/** 外部コード */
 	@PeregItem("IS00002")
 	private String externalCode;
+	
 }

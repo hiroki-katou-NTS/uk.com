@@ -15,9 +15,7 @@ public class ApprovalPhaseStateExport {
 	
 	private Integer phaseOrder;
 	
-	private Integer approvalAtr_Enum;
-	
-	private String approvalAtr;
+	private ApprovalBehaviorAtrExport approvalAtr;
 	
 	private List<ApprovalFrameExport> listApprovalFrame;
 	

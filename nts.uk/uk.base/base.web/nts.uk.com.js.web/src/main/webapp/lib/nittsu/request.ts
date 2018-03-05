@@ -194,6 +194,8 @@ module nts.uk.request {
                     dfd.resolve(res);
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log("request failed");
+                console.log(arguments);
                 specials.errorPages.systemError(jqXHR.responseJSON);
             });
         }
@@ -359,11 +361,25 @@ module nts.uk.request {
             return dfd.promise();
         }
         
+        export function liveViewUrl(fileId: string): string;
+        export function liveViewUrl(fileId: string, entryName?: string): string {
+            let liveViewPath = "/webapi/shr/infra/file/storage/liveview/";
+            let locator = location.siteRoot
+                .mergeRelativePath(WEB_APP_NAME.com + '/')
+                .mergeRelativePath(liveViewPath);
+                
+            if (arguments.length === 1) {
+                return locator.mergeRelativePath(fileId).serialize();
+            } else if (arguments.length === 2) {
+                return locator.mergeRelativePath(fileId + "/").mergeRelativePath(entryName).serialize();
+            }
+        }
+
         export function remove(fileId: string) {
             return ajax("com", "/shr/infra/file/storage/delete/" + fileId);
         }
         
-        export function isExist(fileId: string): boolean {
+        export function isExist(fileId: string) {
             return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
         }
         
@@ -371,6 +387,11 @@ module nts.uk.request {
             return resolvePath('/webapi/shr/infra/file/storage/get/' + fileId);
         }
     }
+
+    export function liveView(fileId: string): string {
+        return file.liveViewUrl(fileId);
+    }
+    
 
     export module specials {
 
@@ -386,7 +407,7 @@ module nts.uk.request {
             return file.remove(fileId);
         }
         
-        export function isFileExist(fileId: string): boolean {
+        export function isFileExist(fileId: string) {
             return file.isExist(fileId);
         }
         
@@ -527,21 +548,7 @@ module nts.uk.request {
 
         return destination.rawUrl;
     }
-
-    export function liveView(fileId?: string): string;
-    export function liveView(webAppId?: WebAppId, fileId?: string): string {
-        let liveViewPath = "/webapi/shr/infra/file/storage/liveview/";
-        if (typeof arguments[1] !== 'string') {
-            return resolvePath(liveViewPath) + _.concat(location.currentAppId, arguments)[1];
-        }
-
-        var webserviceLocator = location.siteRoot
-            .mergeRelativePath(WEB_APP_NAME[webAppId] + '/')
-            .mergeRelativePath(liveViewPath);
-
-        let fullPath = webserviceLocator.serialize() + fileId;
-        return fullPath;
-    }
+    
     export module location {
         export var current = new Locator(window.location.href);
         export var appRoot = current.mergeRelativePath(__viewContext.rootPath);

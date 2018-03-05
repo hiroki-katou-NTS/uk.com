@@ -20,7 +20,7 @@ public class UpdateAcScreenCondSetCommandHandler extends CommandHandler<AcScreen
     @Override
     protected void handle(CommandHandlerContext<AcScreenCondSetCommand> context) {
         AcScreenCondSetCommand updateCommand = context.getCommand();
-        repository.update(AcScreenCondSet.createFromJavaType(updateCommand.getVersion(), updateCommand.getCid(), updateCommand.getConditionSetCd(), updateCommand.getAcceptItemNum(), updateCommand.getSelCompareCond(), updateCommand.getTimeCondVal2(), updateCommand.getTimeCondVal1(), updateCommand.getTimeMoCondVal2(), updateCommand.getTimeMoCondVal1(), updateCommand.getDateCondVal2(), updateCommand.getDateCondVal1(), updateCommand.getCharCondVal2(), updateCommand.getCharCondVal1(), updateCommand.getNumCondVal2(), updateCommand.getNumCondVal1()));
+        //repository.update(AcScreenCondSet.createFromJavaType(updateCommand.getCid(), updateCommand.getConditionSetCd(), updateCommand.getAcceptItemNum(), updateCommand.getSelectComparisonCondition(), updateCommand.getTimeConditionValue2(), updateCommand.getTimeConditionValue1(), updateCommand.getTimeMomentConditionValue2(), updateCommand.getTimeMomentConditionValue1(), updateCommand.getDateConditionValue2(), updateCommand.getDateConditionValue1(), updateCommand.getCharacterConditionValue2(), updateCommand.getCharacterConditionValue1(), updateCommand.getNumberConditionValue2(), updateCommand.getNumberConditionValue1()));
     
     }
 }

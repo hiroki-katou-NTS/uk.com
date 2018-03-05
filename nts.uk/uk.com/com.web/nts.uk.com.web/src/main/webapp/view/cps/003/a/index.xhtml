@@ -16,7 +16,8 @@
 				of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 
-			<com:scriptfile path="gridlist-ko-ext.js" />
+			<com:scriptfile path="/view/cps/shr/layout-list-control-validation.js" />
+			<com:scriptfile path="/view/cps/shr/layout-list-control-ko-ext.js" />
 
 			<com:stylefile path="cps003.a.style.css" />
 			<com:scriptfile path="cps003.a.service.js" />
@@ -36,11 +37,40 @@
 					}">
 				<div id="ccgcomponent" tabindex="6"></div>
 				<div class="data-layout">
-					<div data-bind="ntsGridMultiple: gridList"></div>
-					<div class="halign-right">
-						<button data-bind="click: addRow">Add rows</button>
-						<button data-bind="click: removeRow">Remove rows</button>
+					<div class="form-groups">
+						<div class="form-group">
+							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_14')}</div>
+							<label>9999/12/31</label>
+						</div>
+						<div class="form-group">
+							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_15')}</div>
+							<div data-bind="ntsRadioBoxGroup: {
+								options: ko.observableArray([{	
+									id: 1,
+									name: text('CPS003_17'),
+									enable:true
+								},{
+									id: 2,
+									name: text('CPS003_18'),
+									enable:true
+								}]),
+								optionsValue: 'id',
+								optionsText: 'name',
+								value: ko.observable(1),
+								enable: true
+							}"></div>
+						</div>
+						<div class="form-group">
+							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_23')}</div>
+							<label>個人基本情報</label>
+							<label>（履歴なし）</label>
+						</div>
+						<div class="form-group margin-left">
+							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_24')}</div>
+							<button>?</button>
+						</div>
 					</div>
+					<div data-bind="ntsGridMultiple: gridList"></div>
 				</div>
 			</div>
 		</ui:define>

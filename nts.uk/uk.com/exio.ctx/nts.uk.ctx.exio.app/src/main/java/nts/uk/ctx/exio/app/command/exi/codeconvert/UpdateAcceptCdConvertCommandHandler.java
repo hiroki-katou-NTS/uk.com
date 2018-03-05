@@ -10,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvertRepository;
 import nts.uk.ctx.exio.dom.exi.codeconvert.CdConvertDetails;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
 
 @Stateless
@@ -23,10 +24,11 @@ public class UpdateAcceptCdConvertCommandHandler extends CommandHandler<AcceptCd
 	@Override
 	protected void handle(CommandHandlerContext<AcceptCdConvertCommand> context) {
 		AcceptCdConvertCommand updateCommand = context.getCommand();
-		repository.update(AcceptCdConvert.createFromJavaType(updateCommand.getVersion(), updateCommand.getCid(),
+		String companyId = AppContexts.user().companyId();
+		repository.update(AcceptCdConvert.createFromJavaType(companyId,
 				updateCommand.getConvertCd(), updateCommand.getConvertName(), updateCommand.getAcceptWithoutSetting(),
 				updateCommand.getCdConvertDetails().stream().map(itemDetail -> {
-					return CdConvertDetails.createFromJavaType(itemDetail.getCid(), itemDetail.getConvertCd(),
+					return CdConvertDetails.createFromJavaType(companyId, itemDetail.getConvertCd(),
 							itemDetail.getLineNumber(), itemDetail.getOutputItem(), itemDetail.getSystemCd());
 				}).collect(Collectors.toList())));
 

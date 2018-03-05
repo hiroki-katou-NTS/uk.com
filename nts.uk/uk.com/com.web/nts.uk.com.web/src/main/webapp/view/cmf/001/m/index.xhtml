@@ -18,7 +18,7 @@
 			<com:stylefile path="cmf001.m.style.css" />
 			<com:scriptfile path="cmf001.m.vm.js" />
 			<com:scriptfile path="cmf001.m.start.js" />
-			
+			<com:scriptfile path="cmf001.m.service.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -27,7 +27,7 @@
 					<div class="title_content">
 						<div class="title_content_left">#{i18n.getText('CMF001_403')}</div>
 						<div class="title_content_right">
-							<label data-bind="text: selectionType"></label>
+							<label data-bind="text: targetType"></label>
 						</div>
 						<div class="title_content_right">
 							<label>人事システム</label>
@@ -59,17 +59,21 @@
 										<label>#{i18n.getText('CMF001_407')}</label>
 									</div>
 								</td>
-								<td><input data-bind="ntsTextEditor: {value: newValCode" class="td_center_sp" /></td>
-								<td class="td_right"><input data-bind="ntsTextEditor: {value: newValName" /></td>
+								<td><input class="td_center_sp" id="M4" tabindex="1" data-bind="ntsTextEditor: {value: newCondCode, 
+																					name: '#[CMF001_408]',
+																					required: true}" /></td>
+								<td class="td_right"><input tabindex="2" data-bind="ntsTextEditor: {value: newCondName, 
+																					name: '#[CMF001_409]',
+																					required: true}" /></td>
 							</tr>
 						</table>
-						<div class="checkbox_bottom" data-bind="ntsCheckBox: { checked: checked, enable: enable, text: '#{i18n.getText('CMF001_410')}',  style: 'warnpanel'}"></div>
+						<div class="checkbox_bottom" tabindex="3" data-bind="ntsCheckBox: { checked: checked, enable: enable, text: '#{i18n.getText('CMF001_410')}',  style: 'warnpanel'}"></div>
 					</div>
 				</div>
 			</div>
  			<div id="functions-area-bottom">
-				<button class="x-large" data-bind="click: saveData">#{i18n.getText('CMF001_393')}</button>
-				<button class="large" data-bind="click: cancelSetting">#{i18n.getText('CMF001_394')}</button>
+				<button class="x-large" tabindex="4" data-bind="click: saveData, enable: $root.errors.isEmpty">#{i18n.getText('CMF001_393')}</button>
+				<button class="large" tabindex="5" data-bind="click: cancelSetting">#{i18n.getText('CMF001_394')}</button>
 			</div> 
 		</ui:define>
 	</ui:composition>

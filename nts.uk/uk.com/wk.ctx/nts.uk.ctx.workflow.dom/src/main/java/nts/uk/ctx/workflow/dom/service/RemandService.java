@@ -1,4 +1,7 @@
 package nts.uk.ctx.workflow.dom.service;
+
+import java.util.List;
+
 /**
  * 差し戻しする
  * @author Doan Duy Hung
@@ -6,8 +9,19 @@ package nts.uk.ctx.workflow.dom.service;
  */
 public interface RemandService {
 	
-	public void doRemandForApprover();
+	/**
+	 * 差し戻しする(承認者まで)
+	 * @param companyID
+	 * @param rootStateID
+	 * @param order
+	 */
+	public List<String> doRemandForApprover(String companyID, String rootStateID, Integer order);
 	
-	public void doRemandForApplicant(String companyID, String rootStateID, String employeeID);
+	/**
+	 * 差し戻しする(本人まで)
+	 * @param companyID
+	 * @param rootStateID
+	 */
+	public void doRemandForApplicant(String companyID, String rootStateID);
 	
 }

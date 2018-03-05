@@ -7,9 +7,10 @@
 		</div>
 		<!--事前事後区分-->
 		<div class="valign-center control-group "
-			data-bind="if: prePostDisp()">
-			<div class="lblTitleKAF009" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_8')}</div>
-			<div data-bind="if: screenModeNew" class="mode-style">
+			data-bind="visible: prePostDisp()">
+			<div class="lblTitleKAF009"
+				data-bind="ntsFormLabel:{required : true}">#{i18n.getText('KAF009_8')}</div>
+			<div data-bind="visible: screenModeNew" class="mode-style">
 				<div class="cf"
 					data-bind="ntsSwitchButton: {
 									options:ko.observableArray([
@@ -19,12 +20,15 @@
 									optionsValue: 'prePostCode',
 									optionsText: 'prePostName',
 									value: prePostSelected,
-									enable: prePostEnable}">
+									enable: prePostEnable,
+									required : true,
+									name: '#{i18n.getText('KAF009_8')}'}">
 				</div>
 			</div>
 			<div data-bind="if: !screenModeNew()" class="mode-style">
 				<div data-bind="if: prePostSelected() &lt; 2" class="mode-style">
-					<span data-bind="text: prePostSelected()==0 ? '#{i18n.getText('KAF009_9')}' : '#{i18n.getText('KAF009_10')}'"></span>
+					<span
+						data-bind="text: prePostSelected()==0 ? '#{i18n.getText('KAF009_9')}' : '#{i18n.getText('KAF009_10')}'"></span>
 				</div>
 			</div>
 		</div>
@@ -32,7 +36,8 @@
 			<!--申請日付 -->
 			<div class="lblTitleKAF009" data-bind="ntsFormLabel:{required:true}">#{i18n.getText('KAF009_11')}</div>
 			<div data-bind="if: screenModeNew()" class="mode-style">
-				<div id = "inputdate" data-bind="ntsDatePicker: {
+				<div id="inputdate"
+					data-bind="ntsDatePicker: {
 									name: '#[KAF009_12]',
 									required:true, 
 									value: appDate, 
@@ -47,7 +52,8 @@
 		<div class="valign-center control-group">
 			<div class="table">
 				<div class="cell valign-top">
-					<div class="lblTitleKAF009" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KAF009_13')}</div>
+					<div class="lblTitleKAF009"
+						data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KAF009_13')}</div>
 				</div>
 				<div class="cell valign-center">
 					<div style="display: inline-block; width: 250px;">
@@ -59,27 +65,28 @@
 															readonly: false }" />
 						<label class="valign-center link-label">#{i18n.getText('KAF009_14')}</label>
 					</div>
-					<div class="row-cell-margin" style="display: inline-block; width: 250px;">
-						<input class="row-cell-margin inputTime-kaf009" id="inpEndTime1" 
+					<div class="row-cell-margin"
+						style="display: inline-block; width: 250px;">
+						<input class="row-cell-margin inputTime-kaf009" id="inpEndTime1"
 							data-bind="ntsTimeWithDayEditor: {name: '勤務時間直帰', 
 															constraint:'TimeWithDayAttr',
 															value: timeEnd1, 
 															enable: editable(), 
 															readonly: false}" />
 					</div>
-					<div class="cell valign-center row-cell-margin" style="display: inline-block">
+					<div class="cell valign-center row-cell-margin"
+						style="display: inline-block">
 						<!--選択場所　Button-->
 						<button id="btnLocation1" class="location-button-009"
 							data-bind="click: function(){openLocationDialog(1)}, enable: editable()">#{i18n.getText('KAF009_15')}</button>
-						<label id = "lblLocation"
+						<label id="lblLocation"
 							data-bind="text : workLocationCD() + '　' +workLocationName()"></label>
 					</div>
 				</div>
 			</div>
 			<div class="table">
-				<div class="cell valign-top lblTitleKAF009">
-				</div>
-				<div class="cell valign-center">	
+				<div class="cell valign-top lblTitleKAF009"></div>
+				<div class="cell valign-center">
 					<div style="display: inline-block; width: 250px;">
 						<div class="row-cell-margin" id="goWorkAtr1"
 							data-bind="ntsSwitchButton: {
@@ -93,7 +100,8 @@
 									enable: true }">
 						</div>
 					</div>
-					<div class="row-cell-margin" style="display: inline-block; width: 250px;">
+					<div class="row-cell-margin"
+						style="display: inline-block; width: 250px;">
 						<div class="row-cell-margin"
 							data-bind="ntsSwitchButton: {
 									options: ko.observableArray([
@@ -106,25 +114,25 @@
 									enable: true }">
 						</div>
 					</div>
-				</div>	
+				</div>
 			</div>
 			<div class="table">
-				<div class="cell valign-top lblTitleKAF009">
-				</div>
-				<div class="cell valign-center">	
+				<div class="cell valign-top lblTitleKAF009"></div>
+				<div class="cell valign-center">
 					<div style="display: inline-block; width: 250px;">
 						<div class="row-cell-margin lblComment">
-							(<label 
+							(<label
 								data-bind="text: commentGo1,style:{color:colorGo, fontWeight:fontWeightGo() > 0 ? 'bold':'normal'}"></label>)
 						</div>
 					</div>
-					<div class="row-cell-margin" style="display: inline-block; width: 250px;">
+					<div class="row-cell-margin"
+						style="display: inline-block; width: 250px;">
 						<div class="row-cell-margin lblComment">
-							(<label 
+							(<label
 								data-bind="text: commentBack1,style:{color:colorBack, fontWeight:fontWeightBack() > 0 ? 'bold':'normal'}"></label>)
 						</div>
 					</div>
-				</div>	
+				</div>
 			</div>
 		</div>
 
@@ -132,7 +140,8 @@
 		<div class="valign-center control-group" data-bind="if: useMulti()">
 			<div class="table">
 				<div class="cell valign-center">
-					<div class="lblTitleKAF009" data-bind="ntsFormLabel: {required:false}">#{i18n.getText('KAF009_20')}</div>
+					<div class="lblTitleKAF009"
+						data-bind="ntsFormLabel: {required:false}">#{i18n.getText('KAF009_20')}</div>
 				</div>
 				<div class="cell valign-center">
 					<div style="display: inline-block; width: 250px;">
@@ -142,7 +151,8 @@
 															value: timeStart2}" />
 						<label class="valign-center link-label">#{i18n.getText('KAF009_14')}</label>
 					</div>
-					<div class="row-cell-margin" style="display: inline-block; width: 250px;">
+					<div class="row-cell-margin"
+						style="display: inline-block; width: 250px;">
 						<input class="row-cell-margin inputTime-kaf009" id="inpEndTime2"
 							data-bind="ntsTimeWithDayEditor: {name: '勤務時間２直帰', 
 															constraint:'TimeWithDayAttr',
@@ -157,9 +167,8 @@
 				</div>
 			</div>
 			<div class="table">
-				<div class="cell valign-top lblTitleKAF009">
-				</div>
-				<div class="cell valign-center">	
+				<div class="cell valign-top lblTitleKAF009"></div>
+				<div class="cell valign-center">
 					<div style="display: inline-block; width: 250px;">
 						<div class="row-cell-margin" id="goWorkAtr2"
 							data-bind="ntsSwitchButton: {
@@ -173,7 +182,8 @@
 									enable: true }">
 						</div>
 					</div>
-					<div class="row-cell-margin" style="display: inline-block; width: 250px;">
+					<div class="row-cell-margin"
+						style="display: inline-block; width: 250px;">
 						<div class="row-cell-margin"
 							data-bind="ntsSwitchButton: {
 									options: ko.observableArray([
@@ -189,28 +199,30 @@
 				</div>
 			</div>
 			<div class="table">
-				<div class="cell valign-top lblTitleKAF009">
-				</div>
-				<div class="cell valign-center">	
+				<div class="cell valign-top lblTitleKAF009"></div>
+				<div class="cell valign-center">
 					<div style="display: inline-block; width: 250px;">
 						<div class="row-cell-margin lblComment">
-							(<label 
+							(<label
 								data-bind="text: commentGo2,style:{color:colorGo, fontWeight:fontWeightGo() > 0 ? 'bold':'normal'}"></label>)
 						</div>
 					</div>
-					<div class="row-cell-margin" style="display: inline-block; width: 250px;">
+					<div class="row-cell-margin"
+						style="display: inline-block; width: 250px;">
 						<div class="row-cell-margin lblComment">
 							(<label
 								data-bind="text: commentBack2,style:{color:colorBack, fontWeight:fontWeightBack() > 0 ? 'bold':'normal'}"></label>)
 						</div>
 					</div>
-				</div>	
-			</div>			
+				</div>
+			</div>
 		</div>
 		<!--勤務を変更する -->
 		<!--Work Change-->
-		<div class="valign-center control-group" data-bind ="visible: isWorkChange">
-			<div data-bind="visible: workState(), ntsCheckBox: { checked: workChangeAtr , enable: workState(), text: '#{i18n.getText('KAF009_21')}' }"></div>
+		<div class="valign-center control-group"
+			data-bind="visible: isWorkChange">
+			<div
+				data-bind="visible: workState(), ntsCheckBox: { checked: workChangeAtr , enable: workState(), text: '#{i18n.getText('KAF009_21')}' }"></div>
 			<HR data-bind="display: typeSiftVisible() ? '' : 'none' " />
 			<div class="table clsWorkType" data-bind="if: typeSiftVisible()">
 				<div class="cell valign-center ">
@@ -221,19 +233,20 @@
 						data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_23')}</div>
 				</div>
 				<div class="cell valign-center">
-					<button id="workSelect" data-bind="enable: workChangeAtr, click: openDialogKdl003">#{i18n.getText('KAF009_24')}</button>
+					<button id="workSelect"
+						data-bind="enable: workChangeAtr, click: openDialogKdl003">#{i18n.getText('KAF009_24')}</button>
 				</div>
 				<div class="cell valign-center">
-					<label class="lblWorkTypeCd"
-						data-bind="text: workTypeCd"></label> <LABEL
-						data-bind="text: workTypeName"></LABEL> <BR /> <label
-						class="lblSiftCd" data-bind="text: siftCD"></label>
-					<LABEL data-bind="text: siftName"></LABEL>
+					<label class="lblWorkTypeCd" data-bind="text: workTypeCd"></label>
+					<LABEL data-bind="text: workTypeName"></LABEL> <BR /> <label
+						class="lblSiftCd" data-bind="text: siftCD"></label> <LABEL
+						data-bind="text: siftName"></LABEL>
 				</div>
 			</div>
 		</div>
 		<!--定型理由 -->
-		<div class="valign-top control-group overlay-reason" data-bind="if: displayTypicalReason">
+		<div class="valign-top control-group overlay-reason"
+			data-bind="if: displayTypicalReason()">
 			<div class="lblTitleKAF009" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_25')}</div>
 			<div id="combo-box"
 				data-bind="ntsComboBox: {
@@ -247,23 +260,27 @@
 			</div>
 		</div>
 		<!-- 申請理由（ラベル) -->
-		<div class="valign-top control-group" data-bind="if: displayReason">
-			<div class="lblTitleKAF009"
-				data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_27')}</div>
+		<div class="valign-top control-group"
+			data-bind="if: (isNewScreen() &amp;&amp; displayReason()) &#124;&#124; !isNewScreen()">
+			<div class="lblTitleKAF009" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_27')}</div>
 			<div id="inpReason">
 				<textarea id="inpReasonTextarea"
-					data-bind="ntsMultilineEditor: {value: multilContent,option: multiOption, required : requiredReason(), name: '#[KAF009_29]'}" />
+					data-bind="ntsMultilineEditor: { value: multilContent,
+													option: multiOption, 
+													required : requiredReason(), 
+													name: '#[KAF009_29]',
+													enable: displayReason,
+													}" />
 			</div>
 		</div>
 	</div>
 	<!--RIGHT CONTENT -->
 	<div class="right-contents">
 		<div class="panel panel-gray-bg panel-frame">
-			<label>#{i18n.getText('KAF009_30')} :</label> <BR /> <BR />
-			<label>#{i18n.getText('KAF009_31')} :</label> <BR /> <BR /> <label>#{i18n.getText('KAF009_32')}
-				:</label> <BR /> <label>#{i18n.getText('KAF009_33')} :</label> <BR /> <BR />
-			<label>#{i18n.getText('KAF009_34')} :</label> <BR /> <label>#{i18n.getText('KAF009_35')}
-				:</label>
+			<label>#{i18n.getText('KAF009_30')} :</label> <BR /> <BR /> <label>#{i18n.getText('KAF009_31')}
+				:</label> <BR /> <BR /> <label>#{i18n.getText('KAF009_32')} :</label> <BR />
+			<label>#{i18n.getText('KAF009_33')} :</label> <BR /> <BR /> <label>#{i18n.getText('KAF009_34')}
+				:</label> <BR /> <label>#{i18n.getText('KAF009_35')} :</label>
 		</div>
 	</div>
 </div>

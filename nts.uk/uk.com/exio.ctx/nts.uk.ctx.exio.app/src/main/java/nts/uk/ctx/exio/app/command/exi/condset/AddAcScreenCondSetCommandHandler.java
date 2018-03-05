@@ -20,7 +20,7 @@ public class AddAcScreenCondSetCommandHandler extends CommandHandler<AcScreenCon
     @Override
     protected void handle(CommandHandlerContext<AcScreenCondSetCommand> context) {
         AcScreenCondSetCommand addCommand = context.getCommand();
-        repository.add(AcScreenCondSet.createFromJavaType(0L, addCommand.getCid(), addCommand.getConditionSetCd(), addCommand.getAcceptItemNum(), addCommand.getSelCompareCond(), addCommand.getTimeCondVal2(), addCommand.getTimeCondVal1(), addCommand.getTimeMoCondVal2(), addCommand.getTimeMoCondVal1(), addCommand.getDateCondVal2(), addCommand.getDateCondVal1(), addCommand.getCharCondVal2(), addCommand.getCharCondVal1(), addCommand.getNumCondVal2(), addCommand.getNumCondVal1()));
+        //repository.add(AcScreenCondSet.createFromJavaType(addCommand.getCid(), addCommand.getConditionSetCd(), addCommand.getAcceptItemNum(), addCommand.getSelectComparisonCondition(), addCommand.getTimeConditionValue2(), addCommand.getTimeConditionValue1(), addCommand.getTimeMomentConditionValue2(), addCommand.getTimeMomentConditionValue1(), addCommand.getDateConditionValue2(), addCommand.getDateConditionValue1(), addCommand.getCharacterConditionValue2(), addCommand.getCharacterConditionValue1(), addCommand.getNumberConditionValue2(), addCommand.getNumberConditionValue1()));
     
     }
 }

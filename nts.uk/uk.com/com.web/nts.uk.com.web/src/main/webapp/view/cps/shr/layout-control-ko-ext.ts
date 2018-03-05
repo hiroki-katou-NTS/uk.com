@@ -710,7 +710,7 @@ module nts.custombinding {
                                 'data-code': itemCode,
                                 'data-category': categoryCode,
                                 'data-required': required,
-                                'data-defv': value()
+                                'data-defv': defValue
                             }," />
                         <!-- /ko -->
                         <!-- ko if: item.stringItemType != STRING_TYPE.NUMERIC && (([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80)) -->
@@ -732,7 +732,7 @@ module nts.custombinding {
                                 'data-code': itemCode,
                                 'data-category': categoryCode,
                                 'data-required': required,
-                                'data-defv': value()
+                                'data-defv': defValue
                             }" />
                         <!-- /ko -->
                         <!-- /ko -->
@@ -743,7 +743,6 @@ module nts.custombinding {
                                     constraint: nameid,
                                     required: required,
                                     option: {
-                                        grouplength: 3,
                                         textalign: 'left',
                                         decimallength: Number(item.decimalPart)
                                     },
@@ -756,7 +755,7 @@ module nts.custombinding {
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
-                                    'data-defv': value()
+                                    'data-defv': defValue
                                 }" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.DATE -->
@@ -777,7 +776,7 @@ module nts.custombinding {
                                 'data-code': itemCode,
                                 'data-category': categoryCode,
                                 'data-required': required,
-                                'data-defv': value()
+                                'data-defv': defValue
                             }"></div>
                         <!-- /ko -->
                         <!-- ko if: index == 2 -->
@@ -802,7 +801,7 @@ module nts.custombinding {
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
-                                    'data-defv': value()
+                                    'data-defv': defValue
                                 }"></div>
                             <!-- /ko -->
                         <!-- /ko -->
@@ -823,7 +822,7 @@ module nts.custombinding {
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
-                                    'data-defv': value()
+                                    'data-defv': defValue
                                 }"></div>
                         <!-- /ko -->
                         <!-- /ko -->
@@ -845,7 +844,7 @@ module nts.custombinding {
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
-                                    'data-defv': value()
+                                    'data-defv': defValue
                                 }" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.TIMEPOINT -->
@@ -863,7 +862,7 @@ module nts.custombinding {
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
-                                    'data-defv': value()
+                                    'data-defv': defValue
                                 }" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SELECTION -->
@@ -874,6 +873,7 @@ module nts.custombinding {
                                     optionsText: 'optionText',
                                     optionsValue: 'optionValue',
                                     enable: editable,
+                                    required: required,
                                     visibleItemsCount: 5,
                                     dropDownAttachedToBody: true,
                                     columns: [{ prop: 'optionText', length: 10 }]
@@ -884,7 +884,7 @@ module nts.custombinding {
                                     'data-code': itemCode,
                                     'data-category': categoryCode,
                                     'data-required': required,
-                                    'data-defv': value()
+                                    'data-defv': defValue
                                 }"></div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SEL_RADIO -->
@@ -900,7 +900,7 @@ module nts.custombinding {
                                 'data-code': itemCode,
                                 'data-category': categoryCode,
                                 'data-required': required,
-                                'data-defv': value()
+                                'data-defv': defValue
                             }"></div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SEL_BUTTON -->
@@ -910,7 +910,7 @@ module nts.custombinding {
                                 'data-code': itemCode,
                                 'data-category': categoryCode,
                                 'data-required': required,
-                                'data-defv': value()
+                                'data-defv': defValue
                              }, text: text('CPS001_106'), enable: editable">選択</button>
                             <label class="value-text" data-bind="text: ko.computed(function() { return (value() || '') + '&nbsp;&nbsp;&nbsp;' + (textValue() || ''); })"></label>
                         <!-- /ko -->
@@ -935,7 +935,7 @@ module nts.custombinding {
             opts.sortable.removeItem(item, false);
         };
 
-        private _constructor = (element?: HTMLElement, valueAccessor?: any) => {
+        private _constructor = (element: HTMLElement, valueAccessor: any) => {
             let self = this,
                 services = self.services,
                 $element = $(element),
@@ -1000,7 +1000,6 @@ module nts.custombinding {
                                 item: IItemClassification = data.item,
                                 source: Array<IItemClassification> = ko.unwrap(opts.sortable.data);
 
-
                             // cancel drop if two line is sibling
                             if (item.layoutItemType == IT_CLA_TYPE.SPER) {
                                 let front = source[tindex - 1] || { layoutID: '-1', layoutItemType: -1 },
@@ -1051,15 +1050,15 @@ module nts.custombinding {
                             return opts.sortable;
                         },
                         findExist: (ids: Array<string>) => {
-                            let items: Array<IItemClassification> = opts.sortable.data();
-
                             if (!ids || !ids.length) {
                                 return [];
                             }
 
+                            let items: Array<IItemClassification> = opts.sortable.data();
+
                             // return items if it's exist in list
                             return _(items)
-                                .map((x: IItemClassification) => x.listItemDf)
+                                .map(x => x.listItemDf)
                                 .flatten()
                                 .filter((x: IItemDefinition) => x && ids.indexOf(x.id) > -1)
                                 .value();
@@ -1302,7 +1301,7 @@ module nts.custombinding {
                                         constraint.valueType = "Integer";
 
                                         constraint.min = 0;
-                                        constraint.max = Math.pow(10, dts.maxLength || 0) - 1;
+                                        constraint.max = Math.pow(10, dts.stringItemLength || 0) - 1;
                                         break;
                                     case ITEM_STRING_TYPE.KANA:
                                         constraint.charType = 'Kana';
@@ -1415,11 +1414,11 @@ module nts.custombinding {
                                                     tnt = typeof nv == 'number';
 
                                                 if (!tpt && tnt && !dom1.parent().hasClass('error')) {
-                                                    dom1.ntsError('set', { messageId: "Msg_858" });
+                                                    !dom1.is(':disabled') && dom1.ntsError('set', { messageId: "Msg_858" });
                                                 }
 
                                                 if (tpt && !tnt && !dom2.parent().hasClass('error')) {
-                                                    dom2.ntsError('set', { messageId: "Msg_858" });
+                                                    !dom2.is(':disabled') && dom2.ntsError('set', { messageId: "Msg_858" });
                                                 }
 
                                                 if ((!tpt && !tnt) || (tpt && tnt)) {
@@ -1530,7 +1529,6 @@ module nts.custombinding {
 
             $element
                 .append(self.tmp)
-                .disableSelection()
                 .addClass('ntsControl layout-control');
 
 
@@ -1546,7 +1544,7 @@ module nts.custombinding {
             }
 
             // change color text
-            if (access.showColor) {
+            if (_.has(access, "showColor")) {
                 $.extend(opts.sortable, { showColor: access.showColor });
             }
 
@@ -1630,14 +1628,14 @@ module nts.custombinding {
             opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
                 // remove all sibling sperators
                 let maps: Array<number> = _(data)
-                    .map((x, i) => (x.layoutItemType == 2) ? i : -1)
+                    .map((x, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
                     .filter(x => x != -1).value();
 
                 _.each(maps, (t, i) => {
                     if (maps[i + 1] == t + 1) {
                         _.remove(data, (m: IItemClassification) => {
                             let item: IItemClassification = data[maps[i + 1]];
-                            return item && item.layoutItemType == 2 && item.layoutID == m.layoutID;
+                            return item && item.layoutItemType == IT_CLA_TYPE.SPER && item.layoutID == m.layoutID;
                         });
                     }
                 });
@@ -1688,6 +1686,8 @@ module nts.custombinding {
 
                             def.value = ko.isObservable(def.value) ? def.value : ko.observable(isStr(def.item) && def.value ? String(def.value) : def.value);
                             def.textValue = ko.isObservable(def.textValue) ? def.textValue : ko.observable(isStr(def.item) && def.textValue ? String(def.textValue) : def.textValue);
+
+                            def.defValue = ko.toJS(def.value);
 
                             def.value.subscribe(x => {
                                 let inputs = [],
@@ -2087,6 +2087,10 @@ module nts.custombinding {
                                             .filter(m => !m.isAbolition)
                                             .filter(f => {
                                                 if (location.href.indexOf('/view/cps/007/a/') > -1) {
+                                                    if (item.id === "COM1_00000000000000000000000_CS00001") {
+                                                        return f.id !== "COM1_000000000000000_CS00001_IS00001";
+                                                    }
+
                                                     if (item.id === "COM1_00000000000000000000000_CS00002") {
                                                         return f.id !== "COM1_000000000000000_CS00002_IS00003";
                                                     }
@@ -2330,32 +2334,20 @@ module nts.custombinding {
             this._constructor(element, valueAccessor);
 
             let $element = $(element),
-                opts = $element.data('options'),
-                ctrls = $element.data('controls');
+                opts: any = $element.data('options'),
+                ctrls: any = $element.data('controls');
 
-            ko.bindingHandlers['ntsFormLabel'].init(ctrls.label, function() {
-                return {};
-            }, allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers['ntsFormLabel'].init(ctrls.label, () => { return {} }, allBindingsAccessor, viewModel, bindingContext);
             // init radio box group
-            ko.bindingHandlers['ntsRadioBoxGroup'].init(ctrls.radios, function() {
-                return opts.radios;
-            }, allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers['ntsRadioBoxGroup'].init(ctrls.radios, () => opts.radios, allBindingsAccessor, viewModel, bindingContext);
 
-            ko.bindingHandlers['ntsComboBox'].init(ctrls.combobox, function() {
-                return opts.comboxbox;
-            }, allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers['ntsComboBox'].init(ctrls.combobox, () => opts.comboxbox, allBindingsAccessor, viewModel, bindingContext);
 
-            ko.bindingHandlers['ntsSearchBox'].init(ctrls.searchbox, function() {
-                return opts.searchbox;
-            }, allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers['ntsSearchBox'].init(ctrls.searchbox, () => opts.searchbox, allBindingsAccessor, viewModel, bindingContext);
 
-            ko.bindingHandlers['ntsListBox'].init(ctrls.listbox, function() {
-                return opts.listbox;
-            }, allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers['ntsListBox'].init(ctrls.listbox, () => opts.listbox, allBindingsAccessor, viewModel, bindingContext);
 
-            ko.bindingHandlers['ntsSortable'].init(ctrls.sortable, function() {
-                return opts.sortable;
-            }, allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers['ntsSortable'].init(ctrls.sortable, () => opts.sortable, allBindingsAccessor, viewModel, bindingContext);
 
             // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
             return { controlsDescendantBindings: true };
@@ -2364,32 +2356,20 @@ module nts.custombinding {
         update = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
             let self = this,
                 $element = $(element),
-                opts = $element.data('options'),
-                ctrls = $element.data('controls');
+                opts: any = $element.data('options'),
+                ctrls: any = $element.data('controls');
 
-            ko.bindingHandlers['ntsFormLabel'].update(ctrls.label, function() {
-                return {};
-            }, allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers['ntsFormLabel'].update(ctrls.label, () => { return {} }, allBindingsAccessor, viewModel, bindingContext);
 
-            ko.bindingHandlers['ntsRadioBoxGroup'].update(ctrls.radios, function() {
-                return opts.radios;
-            }, allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers['ntsRadioBoxGroup'].update(ctrls.radios, () => opts.radios, allBindingsAccessor, viewModel, bindingContext);
 
-            ko.bindingHandlers['ntsComboBox'].update(ctrls.combobox, function() {
-                return opts.comboxbox;
-            }, allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers['ntsComboBox'].update(ctrls.combobox, () => opts.comboxbox, allBindingsAccessor, viewModel, bindingContext);
 
-            ko.bindingHandlers['ntsSearchBox'].update(ctrls.searchbox, function() {
-                return opts.searchbox;
-            }, allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers['ntsSearchBox'].update(ctrls.searchbox, () => opts.searchbox, allBindingsAccessor, viewModel, bindingContext);
 
-            ko.bindingHandlers['ntsListBox'].update(ctrls.listbox, function() {
-                return opts.listbox;
-            }, allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers['ntsListBox'].update(ctrls.listbox, () => opts.listbox, allBindingsAccessor, viewModel, bindingContext);
 
-            ko.bindingHandlers['ntsSortable'].update(ctrls.sortable, function() {
-                return opts.sortable;
-            }, allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers['ntsSortable'].update(ctrls.sortable, () => opts.sortable, allBindingsAccessor, viewModel, bindingContext);
 
             // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
             return { controlsDescendantBindings: true };

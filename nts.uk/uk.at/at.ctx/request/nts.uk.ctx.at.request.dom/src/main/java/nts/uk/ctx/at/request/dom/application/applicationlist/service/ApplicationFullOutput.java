@@ -20,6 +20,6 @@ public class ApplicationFullOutput {
 	//REMAND: 2
 	//DENIAL: 1
 	//-: 0
-	private int	status;
+	private Integer	status;
 	private String agentId;
 }

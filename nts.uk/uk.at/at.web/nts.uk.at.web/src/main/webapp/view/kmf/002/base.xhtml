@@ -10,7 +10,7 @@
 		<div>
 			<!-- YearMonth Picker -->
 			<!-- E7_1 -->
-			<div tabindex="1" id="datePickerYear" class="ntsControl nts-datepicker-wrapper" data-bind="ntsDatePicker: { value: fiscalYear, 
+			<div tabindex="99" id="datePickerYear" class="ntsControl nts-datepicker-wrapper" data-bind="ntsDatePicker: { value: fiscalYear, 
 																						dateFormat: 'YYYY', 
 																						valueFormat: 'YYYY', 
 																						fiscalYear: true, 
@@ -26,11 +26,11 @@
 			<span data-bind="text: infoSelect3" ></span>
 		</div>
 		
-		<div>
+		<div id="tableCommonMonth">
 			<!-- table month in year -->
 			<table>
 				<thead>
-					<tr>
+					<tr class="bg-dark-green">
 						<th>
 							<!-- E8_2 --> <span>#{i18n.getText('KMF002_12')}</span>
 						</th>
@@ -42,18 +42,18 @@
 				<tbody data-bind="foreach: arrMonth">
 					<tr>
 						<!-- E8_5 -->
-						<td><span data-bind="text: month"></span> <span>月度</span></td>
+						<td class="bg-green"><span data-bind="text: month"></span> <span>月度</span></td>
 						<!-- E8_6 -->
 						<td>
 							<div>
-								<input id="" type="text" tabindex="2"
+								<input id="" type="text" tabindex="100"
 											data-bind="ntsNumberEditor: { 
 																		value: day,
 																		enable: enable,
 																		constraint: 'MonthlyNumberOfDays',
 																		required: true,
 																		option: {width: '90px',
-																				 decimallength: 1,},
+																				decimallength: 1,},
 																		name:'#[KMF002_13]'}"></input>
 								<span>日</span>
 							</div>	

@@ -2264,6 +2264,10 @@ button.nts-switch-button[disabled]:hover {
   box-shadow: 0 0 1px 1px #0096f2;
   border-radius: 2px;
 }
+/* line 62, ../sass/components/_switchbutton.scss */
+.switchButton-wrapper.error button {
+  border-color: #ff6666;
+}
 
 @CHARSET "UTF-8";
 /* line 2, ../sass/components/_checkbox.scss */
@@ -4055,7 +4059,7 @@ button.nts-switch-button[disabled]:hover {
 .nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ntsgrid-disable,
 .nts-grid tr td.ntsgrid-manual-edit-other.ui-state-hover,
 .nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-other.ui-state-hover {
-  background-color: orange;
+  background-color: #CEE6FF;
 }
 
 /* line 108, ../sass/components/_ntsgrid.scss */
@@ -4083,7 +4087,7 @@ button.nts-switch-button[disabled]:hover {
 .nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ntsgrid-disable,
 .nts-grid tr td.ntsgrid-manual-edit-target.ui-state-hover,
 .nts-grid tr.ui-ig-altrecord td.ntsgrid-manual-edit-target.ui-state-hover {
-  background-color: pink;
+  background-color: #94B7FE;
 }
 
 /* line 135, ../sass/components/_ntsgrid.scss */
@@ -4664,23 +4668,24 @@ div .ex-area-line.x-stay {
   padding: 10px;
   overflow-y: auto;
 }
+
 /* line 6, ../sass/frame/_contents.scss */
-#contents-area.fixed-flex-layout {
+#master-wrapper {
+  height: 100vh;
+}
+
+/* line 11, ../sass/frame/_contents.scss */
+.fixed-flex-layout {
   display: flex;
 }
-/* line 9, ../sass/frame/_contents.scss */
-#contents-area.fixed-flex-layout > .fixed-flex-layout-left {
+/* line 14, ../sass/frame/_contents.scss */
+.fixed-flex-layout > .fixed-flex-layout-left {
   margin-right: 30px;
   /* specify width each screens */
 }
-/* line 15, ../sass/frame/_contents.scss */
-#contents-area.fixed-flex-layout > .fixed-flex-layout-right {
-  flex: 1;
-}
-
 /* line 20, ../sass/frame/_contents.scss */
-#master-wrapper {
-  height: 100vh;
+.fixed-flex-layout > .fixed-flex-layout-right {
+  flex: 1;
 }
 
 /* line 7, ../sass/frame/_sidebar.scss */

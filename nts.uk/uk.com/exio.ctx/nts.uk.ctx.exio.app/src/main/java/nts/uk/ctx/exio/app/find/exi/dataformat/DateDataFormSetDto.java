@@ -48,7 +48,8 @@ public class DateDataFormSetDto
     private Long version;
     public static DateDataFormSetDto fromDomain(DateDataFormSet domain)
     {
-        return new DateDataFormSetDto(domain.getCid(), domain.getConditionSetCd(), domain.getAcceptItemNum(), domain.getFixedValue(), domain.getValueOfFixedValue(), domain.getFormatSelection(), domain.getVersion());
+		return new DateDataFormSetDto(domain.getCid(), domain.getConditionSetCd(), domain.getAcceptItemNum(),
+				domain.getFixedValue(), domain.getValueOfFixedValue().get().v(), domain.getFormatSelection(), domain.getVersion());
     }
     
 }

@@ -13,6 +13,8 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayBreakTime;
+import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayBreakTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.attendanceschedule.KrcdtDayWorkScheTime;
@@ -31,6 +33,8 @@ import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimework
 import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkPK;
 import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkTs;
 import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkTsPK;
+import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttime;
+import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttimePK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -76,6 +80,14 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 											.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get()
 											.getHolidayWorkFrameTimeSheet()));
 				}
+			}
+			if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily() != null) {
+				/*休憩時間*/
+				this.commandProxy().insert(KrcdtDayBreakTime.toEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), attendanceTime));
+			}
+			if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily() != null) {
+				/*短時間勤務時間*/
+				this.commandProxy().insert(KrcdtDayShorttime.toEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), attendanceTime));
 			}
 			for (LeaveEarlyTimeOfDaily leaveEarlyTime : attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
 																										.getLeaveEarlyTimeOfDaily()) {
@@ -184,7 +196,37 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 												.getHolidayWorkFrameTimeSheet()));
 					}
 				}
-
+				
+				
+				/*休憩時間*/
+				KrcdtDayBreakTime krcdtDayBreakTime = this.queryProxy().find(new KrcdtDayBreakTimePK(attendanceTime.getEmployeeId(), attendanceTime.getYmd()),
+																									 KrcdtDayBreakTime.class)
+																	   .orElse(null);
+				if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily() != null && krcdtDayBreakTime != null) {
+					krcdtDayBreakTime.setData(attendanceTime);
+					this.commandProxy().update(krcdtDayBreakTime);
+				}
+				else if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily() != null && krcdtDayBreakTime == null) {
+				
+					this.commandProxy().insert(KrcdtDayBreakTime.toEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), attendanceTime));
+				}
+				
+				/*短時間勤務時間*/
+				if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily() != null) {
+					Optional<KrcdtDayShorttime> krcdtDayShorttime = this.queryProxy().find(new KrcdtDayShorttimePK(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getChildCareAttribute().value),
+																				 KrcdtDayShorttime.class);
+				
+					if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily() != null && krcdtDayShorttime.isPresent()) {
+						krcdtDayShorttime.get().setData(attendanceTime);
+						this.commandProxy().update(krcdtDayShorttime.get());
+						
+					}
+					else if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily() != null && !krcdtDayShorttime.isPresent()) {
+						this.commandProxy().insert(KrcdtDayShorttime.toEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), attendanceTime));
+					}
+				}
+				
+				
 				for (LeaveEarlyTimeOfDaily leaveEarlyTime : attendanceTime.getActualWorkingTimeOfDaily()
 						.getTotalWorkingTime().getLeaveEarlyTimeOfDaily()) {
 					KrcdtDayLeaveEarlyTime krcdtDayLeaveEarlyTime = this

@@ -20,8 +20,17 @@
 				<div id ="E1_1" class = "label dialog-title" >#{i18n.getText('CMF001_180')}</div>
 				<div style=" margin-top:15px; width = 350px;">
 					<div id ="E1_2"  data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_181')}</div>
-					<div id ="E1_3" tabindex = "1"  style=" display:inline-block; width: 150px" data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'dispCsvItemNumber', comId: 'E2_1', 
-					items: listCsvItem, placeHolder: '', selected: null, selectedKey: 'disCsvItemNumber', fields: ['dispCsvItemName'], mode: 'igGrid'}" />		
+					<div id ="E1_3" tabindex = "1"  style=" display:inline-block; width: 150px" 
+					data-bind="ntsSearchBox: {
+						searchMode: 'highlight', 
+						targetKey: 'dispCsvItemNumber', comId: 'E2_1', 
+						items: listCsvItem, 
+						placeHolder: '', 
+						selected: null, 
+						selectedKey: 'disCsvItemNumber', 
+						fields: ['dispCsvItemName'], 
+						mode: 'igGrid'}" 
+						/>		
 				
 				</div>
 				<div style="margin-right:auto" >

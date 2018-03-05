@@ -54,15 +54,15 @@ public class JpaDateDataFormSetRepository extends JpaRepository implements DateD
 
     @Override
     public void remove(String cid, String conditionSetCd, int acceptItemNum){
-        this.commandProxy().remove(OiomtDateDataFormSetPk.class, new OiomtDateDataFormSetPk(cid, conditionSetCd, acceptItemNum)); 
+        this.commandProxy().remove(OiomtDateDataFormSet.class, new OiomtDateDataFormSetPk(cid, conditionSetCd, acceptItemNum)); 
     }
 
     private static DateDataFormSet toDomain(OiomtDateDataFormSet entity) {
-        return DateDataFormSet.createFromJavaType(entity.version, entity.dateDataFormSetPk.cid, entity.dateDataFormSetPk.conditionSetCd, entity.dateDataFormSetPk.acceptItemNum, entity.fixedValue, entity.valueOfFixedValue, entity.formatSelection);
+        return new DateDataFormSet(entity.dateDataFormSetPk.cid, entity.dateDataFormSetPk.conditionSetCd, entity.dateDataFormSetPk.acceptItemNum, entity.fixedValue, entity.valueOfFixedValue, entity.formatSelection);
     }
 
     private OiomtDateDataFormSet toEntity(DateDataFormSet domain) {
-        return new OiomtDateDataFormSet(domain.getVersion(), new OiomtDateDataFormSetPk(domain.getCid(), domain.getConditionSetCd(), domain.getAcceptItemNum()), domain.getFixedValue(), domain.getValueOfFixedValue(), domain.getFormatSelection());
+        return new OiomtDateDataFormSet(domain.getVersion(), new OiomtDateDataFormSetPk(domain.getCid(), domain.getConditionSetCd(), domain.getAcceptItemNum()), domain.getFixedValue(), domain.getValueOfFixedValue().toString(), domain.getFormatSelection());
     }
 
 }

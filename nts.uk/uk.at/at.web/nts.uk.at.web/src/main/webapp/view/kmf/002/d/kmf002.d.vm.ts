@@ -37,7 +37,7 @@ module nts.uk.at.view.kmf002.d {
                     isShowAlreadySet: _self.isShowAlreadySet(),
                     isMultiSelect: _self.isMultiSelect(),
                     listType: ListType.EMPLOYMENT,
-                    selectType: SelectType.NO_SELECT,
+                    selectType: SelectType.SELECT_FIRST_ITEM,
                     selectedCode: _self.selectedCode,
                     isDialog: _self.isDialog(),
                     isShowNoSelectRow: _self.isShowNoSelectRow(),
@@ -49,7 +49,13 @@ module nts.uk.at.view.kmf002.d {
                 _self.commonTableMonthDaySet().fiscalYear.subscribe(function(newValue) {
                     // change year
                     if (!nts.uk.ui.errors.hasError()) {
-                        _self.getDataFromService();    
+                        _self.getDataFromService();
+                        service.findAllEmpRegister(_self.commonTableMonthDaySet().fiscalYear()).done(function(data: any) {
+                            _self.alreadySettingList.removeAll();
+                            _.forEach(data, function(code) {
+                                _self.alreadySettingList.push({code: code, isAlreadySetting: true});
+                            });                            
+                        })
                     }
                 });
                 _self.commonTableMonthDaySet().visibleInfoSelect(true);
@@ -68,6 +74,13 @@ module nts.uk.at.view.kmf002.d {
 
                 return nameEmpSelected;
             }
+            
+            private setDefaultMonthDay(): void {
+                let _self = this;
+                for (let i=0; i<_self.commonTableMonthDaySet().arrMonth().length; i++) {
+                    _self.commonTableMonthDaySet().arrMonth()[i].day(0); 
+                }     
+            }
 
             private catchChangeSelectEmp(): void {
                 let _self = this;
@@ -79,7 +92,8 @@ module nts.uk.at.view.kmf002.d {
                     if (_.isUndefined(_self.selectedCode()) || _.isEmpty(_self.selectedCode()) 
                             || _.isNull(_self.selectedCode())) {
                         _self.enableDelete(false);
-                        _self.enableSave(false);    
+                        _self.enableSave(false);
+                        _self.setDefaultMonthDay();    
                     } else {
                         _self.enableDelete(true);
                         _self.enableSave(true);
@@ -95,11 +109,15 @@ module nts.uk.at.view.kmf002.d {
             public start_page(): JQueryPromise<void> {
                 let _self = this;
                 var dfd = $.Deferred<void>();
-                $('#empt-list-setting').ntsListComponent(_self.listComponentOption).done(function(){
+                $.when($('#empt-list-setting').ntsListComponent(_self.listComponentOption),
+                        service.findAllEmpRegister(_self.commonTableMonthDaySet().fiscalYear())).done(function(data: any, data2: any){
                     _self.catchChangeSelectEmp();
                     _self.getDataFromService();
+                    _.forEach(data2, function(code) {
+                        _self.alreadySettingList.push({code: code, isAlreadySetting: true});
+                    });
                     dfd.resolve();    
-                });
+                })
                 return dfd.promise();
             }
 
@@ -108,6 +126,7 @@ module nts.uk.at.view.kmf002.d {
                 if (!nts.uk.ui.errors.hasError()) {
                     service.save(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth(), _self.selectedCode()).done((data) => {
                         _self.getDataFromService();
+                        _self.alreadySettingList.push({code: _self.selectedCode(), isAlreadySetting: true});
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     });    
                 }
@@ -117,6 +136,7 @@ module nts.uk.at.view.kmf002.d {
                 let _self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     service.remove(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()).done(() => {
+                        _self.alreadySettingList.remove(function(s) { return s.code == _self.selectedCode() });
                         _self.getDataFromService();
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     });
@@ -129,12 +149,7 @@ module nts.uk.at.view.kmf002.d {
             public getDataFromService(): void {
                 let _self = this;
                  $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()), 
-                                    service.findFirstMonth(),
-                                    service.findAllEmpRegister()).done(function(data: any, data2: any, data3: any) {
-                    _self.alreadySettingList.removeAll();
-                    _.forEach(data3, function(code) {
-                        _self.alreadySettingList.push({code: code, isAlreadySetting: true});
-                    });
+                                    service.findFirstMonth()).done(function(data: any, data2: any) {
                     if (typeof data === "undefined") {
                         /** 
                          *   create value null for prepare create new 
@@ -144,6 +159,9 @@ module nts.uk.at.view.kmf002.d {
                         });
                         _self.enableDelete(false);
                     } else {
+                        if (_.isNull(data2.startMonth)) {
+                            data2.startMonth = 1;
+                        }
                         _self.commonTableMonthDaySet().arrMonth.removeAll();
                         for (let i=data2.startMonth-1; i<12; i++) {
                             _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 'day': ko.observable(data.publicHolidayMonthSettings[i].inLegalHoliday), 'enable': ko.observable(true)});    

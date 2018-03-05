@@ -1,5 +1,8 @@
 package nts.uk.ctx.exio.app.find.exi.condset;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
@@ -27,68 +30,72 @@ public class AcScreenCondSetDto
     /**
     * 受入項目の番号
     */
-    private int acceptItemNum;
+    private Integer acceptItemNum;
     
     /**
     * 比較条件選択
     */
-    private int selCompareCond;
+    private int selectComparisonCondition;
     
     /**
     * 時間‗条件値2
     */
-    private int timeCondVal2;
+    private Integer timeConditionValue2;
     
     /**
     * 時間‗条件値1
     */
-    private int timeCondVal1;
+    private Integer timeConditionValue1;
     
     /**
     * 時刻‗条件値2
     */
-    private int timeMoCondVal2;
+    private Integer timeMomentConditionValue2;
     
     /**
     * 時刻‗条件値1
     */
-    private int timeMoCondVal1;
+    private Integer timeMomentConditionValue1;
     
     /**
     * 日付‗条件値2
     */
-    private GeneralDate dateCondVal2;
+    private GeneralDate dateConditionValue2;
     
     /**
     * 日付‗条件値1
     */
-    private GeneralDate dateCondVal1;
+    private GeneralDate dateConditionValue1;
     
     /**
     * 文字‗条件値2
     */
-    private String charCondVal2;
+    private String characterConditionValue2;
     
     /**
     * 文字‗条件値1
     */
-    private String charCondVal1;
+    private String characterConditionValue1;
     
     /**
     * 数値‗条件値2
     */
-    private String numCondVal2;
+    private BigDecimal numberConditionValue2;
     
     /**
     * 数値‗条件値1
     */
-    private String numCondVal1;
+    private BigDecimal numberConditionValue1;
     
-    
-    private Long version;
     public static AcScreenCondSetDto fromDomain(AcScreenCondSet domain)
     {
-        return new AcScreenCondSetDto(domain.getCid(), domain.getConditionSetCd(), domain.getAcceptItemNum(), domain.getSelCompareCond(), domain.getTimeCondVal2(), domain.getTimeCondVal1(), domain.getTimeMoCondVal2(), domain.getTimeMoCondVal1(), domain.getDateCondVal2(), domain.getDateCondVal1(), domain.getCharCondVal2(), domain.getCharCondVal1(), domain.getNumCondVal2(), domain.getNumCondVal1(), domain.getVersion());
+        return new AcScreenCondSetDto(domain.getCid(), domain.getConditionSetCd().v(), 
+        		domain.getAcceptItemNum().v(), domain.getSelectComparisonCondition().get().value, 
+        		domain.getTimeConditionValue2().get().v(), domain.getTimeConditionValue1().get().v(), 
+        		domain.getTimeMomentConditionValue2().get().v(), domain.getTimeMomentConditionValue1().get().v(), 
+        		domain.getDateConditionValue2(), domain.getDateConditionValue1(), 
+        		domain.getCharacterConditionValue2().get().v(), domain.getCharacterConditionValue1().get().v(), 
+        		domain.getNumberConditionValue2().get().v() , domain.getNumberConditionValue1().get().v());
     }
     
 }

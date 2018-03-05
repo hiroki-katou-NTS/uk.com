@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2015 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.workingcondition;
 
 import java.util.ArrayList;
@@ -74,6 +78,7 @@ public class WorkingConditionFinder implements PeregFinder<WorkingConditionDto>{
 						? "" : x.end().toString()))
 				.collect(Collectors.toList());
 	}
+	
 
 	private Optional<WorkingCondition> getWorkingCondition(PeregQuery query){
 		if(query.getInfoId() == null){

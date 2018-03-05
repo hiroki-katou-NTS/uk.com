@@ -35,15 +35,16 @@ public class RoleIndividualServiceImpl implements RoleIndividualService {
 		if (listRoleIndividualGrant.isEmpty()) {
 			return false;
 		}
-
+		//システム管理者リストを初期化する
 		// Create new List System Admin
 		List<CheckSysAdmin> listCheckSysAdmin = new ArrayList<CheckSysAdmin>();
+		//パラメータ.有効期間From、パラメータ.有効期間Toをシステム管理者リストにセットする
 		listCheckSysAdmin.add(new CheckSysAdmin(userID, validPeriod.start(), validPeriod.end()));
-
+		//ドメインモデル「ロール個人別付与」を取得する
 		List<RoleIndividualGrant> listSysAdmin = roleIndividualGrantRepo.findByRoleType(RoleType.SYSTEM_MANAGER.value);
-
+		//取得したロール個人別付与をループする
 		List<RoleIndividualGrant> filterListRoleIndividualGrant = listSysAdmin.stream().filter(c -> !c.getUserId().equals(userID) && c.getRoleType().equals(RoleType.SYSTEM_MANAGER)).collect(Collectors.toList());
-
+		//ドメインモデル「ユーザ」を取得する
 		List<String> userIds = filterListRoleIndividualGrant.stream().map(c -> c.getUserId()).collect(Collectors.toList());
 		
 		List<User> users = new ArrayList<User>();
@@ -59,7 +60,7 @@ public class RoleIndividualServiceImpl implements RoleIndividualService {
 			}
 			listCheckSysAdmin.add(checkSysAdmin);
 		}
-
+		//取得されたシステム管理者リストを期間To（DESC）でソートする
 		listCheckSysAdmin.sort((a, b) -> {
 			return b.getEndDate().compareTo(a.getEndDate());
 		});

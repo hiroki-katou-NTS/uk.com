@@ -6,8 +6,10 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
+import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -46,37 +48,38 @@ public class BreakTimeSheetDailyPerformDto {
 
 	public static BreakTimeSheetDailyPerformDto fromBreakTimeOfDaily(BreakTimeOfDaily domain) {
 		return domain == null ? null : new BreakTimeSheetDailyPerformDto(
-						getĐeuctionTime(domain.getToRecordTotalTime()),
-						getĐeuctionTime(domain.getDeductionTotalTime()),
+						TotalDeductionTimeDto.getDeductionTime(domain.getToRecordTotalTime()),
+						TotalDeductionTimeDto.getDeductionTime(domain.getDeductionTotalTime()),
 						getAttendanceTime(domain.getWorkTime()),
 						domain.getBreakTimeSheet() == null ? new ArrayList<>() : 
 							ConvertHelper.mapTo(domain.getBreakTimeSheet(),
 								(c) -> new BreakTimeSheetDto(
-										getAttendanceTime(c.getStartTime().getAfterRoundingTime()),
-										getAttendanceTime(c.getEndTime().getAfterRoundingTime()), 
+										getTime(c.getStartTime()),
+										getTime(c.getEndTime()), 
 										getAttendanceTime(c.getBreakTime()),
 										c.getBreakFrameNo().v().intValue())),
 						domain.getGooutTimes() == null ? null : domain.getGooutTimes().v());
 	}
 	
-	private static Integer getAttendanceTime(TimeWithDayAttr domain) {
+	private static Integer getTime(TimeWithDayAttr domain) {
 		return domain == null ? null : domain.valueAsMinutes();
 	}
 	
 	private static Integer getAttendanceTime(AttendanceTime domain) {
 		return domain == null ? null : domain.valueAsMinutes();
 	}
-
-	private static TotalDeductionTimeDto getĐeuctionTime(DeductionTotalTime domain) {
-		return domain == null ? null : new TotalDeductionTimeDto(
-				getCalcTime(domain.getExcessOfStatutoryTotalTime()),
-				getCalcTime(domain.getWithinStatutoryTotalTime()),
-				getCalcTime(domain.getTotalTime()));
+	
+	public BreakTimeOfDaily toDmain(){
+		return new BreakTimeOfDaily(createDeductionTime(toRecordTotalTime), createDeductionTime(deductionTotalTime), 
+				breakTimes == null ? null : new BreakTimeGoOutTimes(breakTimes), duringWork == null ? null : new AttendanceTime(duringWork), 
+						ConvertHelper.mapTo(correctedTimeSheet, c -> new BreakTimeSheet(
+												new BreakFrameNo(c.getBreakFrameNo()), 
+												c.getStart() == null ? null : new TimeWithDayAttr(c.getStart()),
+												c.getEnd() == null ? null : new TimeWithDayAttr(c.getEnd()), 
+												c.getBreakTime() == null ? null : new AttendanceTime(c.getBreakTime()))));
 	}
-
-	private static CalcAttachTimeDto getCalcTime(TimeWithCalculation domain) {
-		return domain == null ? null : new CalcAttachTimeDto(
-					getAttendanceTime(domain.getCalcTime()),
-					getAttendanceTime(domain.getTime()));
+	
+	private DeductionTotalTime createDeductionTime(TotalDeductionTimeDto dto) {
+		return dto == null ? null : dto.createDeductionTime();
 	}
 }

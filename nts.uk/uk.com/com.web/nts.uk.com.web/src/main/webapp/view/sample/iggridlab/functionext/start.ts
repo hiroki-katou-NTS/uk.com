@@ -158,6 +158,9 @@ module nts.uk.ui.gridlist {
                             autoFitWindow: true,
                             preventEditInError: false,
                             hidePrimaryKey: true,
+                            userId: "4",
+                            getUserId: function(k) { return String(k); },
+                            errorColumns: [ "ruleCode" ],
 //                            recordKeys: keys, 
 //                            avgRowHeight: 36,
 //                            autoAdjustHeight: false,
@@ -176,7 +179,7 @@ module nts.uk.ui.gridlist {
                                                             }
                                             },
 //                                    ],
-                                { headerText: 'Inbound time', key: 'time', dataType: 'string', width: '140px',
+                                { headerText: 'Inbound time', key: 'time', width: '140px', columnCssClass: "halign-right", headerCssClass: "center-align",
                                                 constraint: { 
 //                                                                primitiveValue: 'SampleTimeClock',
                                                                 cDisplayType: "Clock",
@@ -197,7 +200,12 @@ module nts.uk.ui.gridlist {
                                 },
                                 { headerText: 'Combo1',
                                     group: [
-                                            { headerText: 'Code', key: 'comboCode1', dataType: 'number', width: '60px', ntsType: 'comboCode'  },
+                                            { headerText: 'Code', key: 'comboCode1', dataType: 'number', width: '60px', ntsType: 'comboCode',
+                                                constraint: {
+                                                    cDisplayType: "Integer",
+                                                    min: 1, max: 3,
+                                                    required: true
+                                                }},
                                             { headerText: 'Combobox', key: 'combo', dataType: 'string', width: '230px', ntsControl: 'Combobox' }
                                            ]
                                 },
@@ -350,6 +358,9 @@ module nts.uk.ui.gridlist {
                                                 name: 'HeaderStyles',
                                                 columns: [
                                                     { key: 'ruleCode', color: 'header1' },
+                                                    { key: 'addressCode1', color: 'header1' },
+                                                    { key: 'address1', color: 'header1' },
+                                                    { key: 'comboCode1', color: 'header2' },
                                                     { key: 'combo', color: 'header2' },
                                                     { key: 'header3', color: 'header2' },
                                                     { key: 'header0', color: 'header1' },
@@ -449,15 +460,16 @@ module nts.uk.ui.gridlist {
         }
         
         // Grid cell errors
-        let dialogOptions: any = {
-            forGrid: true,
-            headers: [
-                    new nts.uk.ui.errors.ErrorHeader("rowId", "Row ID", "auto", true),
-                    new nts.uk.ui.errors.ErrorHeader("columnKey", "Column Key", "auto", true),
-                    new nts.uk.ui.errors.ErrorHeader("message", "Message", "auto", true),
-                    new nts.uk.ui.errors.ErrorHeader("ruleCode", "Rule code", "auto", true) 
-                ]
-        };
-        this.bind(model, dialogOptions);
+//        let dialogOptions: any = {
+//            forGrid: true,
+//            headers: [
+//                    new nts.uk.ui.errors.ErrorHeader("rowId", "Row ID", "auto", true),
+//                    new nts.uk.ui.errors.ErrorHeader("columnKey", "Column Key", "auto", true),
+//                    new nts.uk.ui.errors.ErrorHeader("message", "Message", "auto", true),
+//                    new nts.uk.ui.errors.ErrorHeader("ruleCode", "Rule code", "auto", true) 
+//                ]
+//        };
+//        this.bind(model, dialogOptions);
+        this.bind(model);
     });
 }

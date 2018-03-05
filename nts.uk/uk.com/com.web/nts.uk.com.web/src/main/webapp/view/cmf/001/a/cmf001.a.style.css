@@ -1,11 +1,3 @@
-.label-action {
-	margin-bottom: 10px;
-}
-
-.button-area{
-	margin:0px 120px 0px 120px;
-}
-
 .image-left{
 	float: left;
 	margin-right: 20px;
@@ -18,3 +10,42 @@
 .clear {
 	clear: both;
 }
+
+.button-image {
+	margin-left: 100px;
+	margin-right: 100px;	
+}
+
+.navigation-label {
+	margin-left: 150px;
+	vertical-align: 12px;
+	padding-bottom: 20px;
+}
+
+.import-creation {
+	background-image: url("../resource/外部受入A1.jpg");
+	background-size: 100%;
+	height: 254px;
+	width: 257px;
+	background-repeat: no-repeat;
+	margin-left: 50px;
+}
+
+.setting-creation {
+	background-image: url("../resource/外部受入A2.jpg");
+	background-size: 100%;
+	height: 254px;
+	width: 264px;
+	background-repeat: no-repeat;
+	margin-left: 50px;
+}
+
+.history-reference {
+	background-image: url("../resource/外部受入A3.jpg");
+	background-size: 100%;
+	width: 286px;
+	height: 109px;
+	background-repeat: no-repeat;
+	margin-right: 50px;
+}
+

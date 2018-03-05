@@ -8,11 +8,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.sys.portal.dom.enums.PermissionDivision;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.enums.UseDivision;
+import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
 import nts.uk.ctx.sys.portal.dom.layout.PGType;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSetting;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSettingRepository;
@@ -29,6 +31,9 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 
 	@Inject
 	private TopPagePartRepository topPagePartRepository;
+	
+	@Inject
+	private FlowMenuRepository flowMenuRepository;
 	
 	@Inject
 	private PlacementService placementService;
@@ -71,17 +76,24 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 		List<EnumConstant> activeTopPagePartTypes = getAllActiveTopPagePartType(companyID, pgType);
 		List<Integer> activeTopPagePartTypeIDs = activeTopPagePartTypes.stream().map(c -> c.getValue()).collect(Collectors.toList());
 		
+		List<TopPagePart> listTopPagePart = new ArrayList<TopPagePart>();
 		if (pgType == PGType.TOPPAGE) {
-			return topPagePartRepository.findByTypes(companyID, activeTopPagePartTypeIDs);
+			listTopPagePart = topPagePartRepository.findByTypes(companyID, activeTopPagePartTypeIDs);
 		}
 		else if (pgType == PGType.TITLEMENU) {
-			return topPagePartRepository.findByTypes(companyID, activeTopPagePartTypeIDs);
+			listTopPagePart = topPagePartRepository.findByTypes(companyID, activeTopPagePartTypeIDs);
 		}
 		else if (pgType == PGType.MYPAGE) {
 			List<String> activeTopPagePartIDs = getMyPageActivePartIDs(companyID);
-			return topPagePartRepository.findByTypesAndIDs(companyID, activeTopPagePartTypeIDs, activeTopPagePartIDs);
+			listTopPagePart = topPagePartRepository.findByTypesAndIDs(companyID, activeTopPagePartTypeIDs, activeTopPagePartIDs);
 		}
-		return null;
+		
+		List<TopPagePart> result =  new ArrayList<TopPagePart>();
+		// Get list FlowMenu
+		val listFlowMenu = listTopPagePart.stream().filter(c -> c.isFlowMenu()).collect(Collectors.toList());
+		result.addAll(flowMenuRepository.findByCodes(companyID, listFlowMenu.stream().map(c -> c.getToppagePartID()).collect(Collectors.toList())));
+		
+		return result;
 	}
 	
 	/**
@@ -115,8 +127,10 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 		if (checkMyPageSetting.isPresent()) {
 			MyPageSetting myPageSetting = checkMyPageSetting.get();
 			if (myPageSetting.getUseMyPage() == UseDivision.Use) {
-				if (myPageSetting.getUseWidget() == UseDivision.Use)
-					checkingTopPagePartTypeValues.add(TopPagePartType.Widget.value);
+				if (myPageSetting.getUseStandarWidget() == UseDivision.Use)
+					checkingTopPagePartTypeValues.add(TopPagePartType.StandardWidget.value);
+				if (myPageSetting.getUseOptionalWidget() == UseDivision.Use)
+					checkingTopPagePartTypeValues.add(TopPagePartType.OptionalWidget.value);
 				if (myPageSetting.getUseDashboard() == UseDivision.Use)
 					checkingTopPagePartTypeValues.add(TopPagePartType.DashBoard.value);
 				if (myPageSetting.getUseFlowMenu() == UseDivision.Use)

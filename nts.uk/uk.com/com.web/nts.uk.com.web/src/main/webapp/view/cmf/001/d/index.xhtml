@@ -26,7 +26,7 @@
 			<div id="functions-area">
 				<div class="container">
 					<button tabindex="1" class="proceed">#{i18n.getText('CMF001_130')}</button>
-					<button tabindex="2" >#{i18n.getText('CMF001_131')}</button>
+					<button tabindex="2" data-bind="click: openCMF001f">#{i18n.getText('CMF001_131')}</button>
 					<button tabindex="3" >#{i18n.getText('CMF001_132')}</button>
 				</div>
 			</div>
@@ -142,7 +142,7 @@
 								<td><span class="label" data-bind="text: acceptItemName"></span></td>
 								<td>
 									<span class="label" data-bind="text: csvItemName"></span>
-									<button class="pull-right">#{i18n.getText('CMF001_167')}</button>
+									<button class="pull-right" data-bind="click: function() {$parent.openCMF001e($data)}">#{i18n.getText('CMF001_167')}</button>
 								</td>
 								<td><span class="label" data-bind="text: 'Sample Data From File'"></span></td>
 								<td>

@@ -22,7 +22,6 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicScheduleHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTimeHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.WorkTimeSetGetterCommand;
-import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommand;
 import nts.uk.ctx.at.schedule.dom.adapter.employment.EmploymentHistoryImported;
 import nts.uk.ctx.at.schedule.dom.adapter.employment.ScEmploymentAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
@@ -33,7 +32,6 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.closure.ClosurePeriod;
-import nts.uk.ctx.at.shared.app.command.worktime.predset.dto.PrescribedTimezoneSettingDto;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
@@ -89,9 +87,6 @@ public class ScheBatchCorrectExecutionCommandHandler
 	/** The Constant PREV_MONTH. */
 	private static final int PREV_DAY_MONTH = -1;
 	
-	/** The Constant DATA_EXECUTION. */
-	private static final String DATA_EXECUTION = "DATA_EXECUTION";
-	
 	/** The Constant NUMBER_OF_SUCCESS. */
 	private static final String NUMBER_OF_SUCCESS = "NUMBER_OF_SUCCESS";
 	
@@ -104,6 +99,11 @@ public class ScheBatchCorrectExecutionCommandHandler
 	/** The Constant DAY_ONE. */
 	private static final int DAY_ONE = 1;
 	
+	/** The Constant DATA_PREFIX. */
+	private static final String DATA_PREFIX = "DATA_";
+	
+	/** The Constant MAX_ERROR_RECORD. */
+	private static final int MAX_ERROR_RECORD = 5;
 	
 			
 	/*
@@ -141,7 +141,9 @@ public class ScheBatchCorrectExecutionCommandHandler
 		
 		int countSuccess = DEFAULT_VALUE;
 		
-		setter.setData(DATA_EXECUTION, dto);
+		// Variable to count amount of list of error records sent to DB
+		int errorRecordCount = DEFAULT_VALUE;
+		
 		setter.setData(NUMBER_OF_SUCCESS, countSuccess);
 		setter.setData(NUMBER_OF_ERROR, DEFAULT_VALUE);
 		
@@ -161,22 +163,37 @@ public class ScheBatchCorrectExecutionCommandHandler
 					// Create and add error content to the errors list
 					ErrorContentDto errorContentDto = new ErrorContentDto();
 					errorContentDto.setMessage(optErrorMsg.get());
-					errorContentDto.setEmployeeCode(employeeId);
+					errorContentDto.setEmployeeCode(employeeDto.getEmployeeCode());
 					errorContentDto.setEmployeeName(employeeDto.getEmployeeName());
 					errorContentDto.setDateYMD(currentDateCheck);
+					
+					// Add to error list (save to DB every 5 error records)
+					if (errorList.size() >= MAX_ERROR_RECORD) {
+						errorRecordCount++;
+						setter.setData(DATA_PREFIX + errorRecordCount, dto);
+						
+						// Clear the list for the new batch of error record
+						errorList.clear();
+					}
 					errorList.add(errorContentDto);
 				} else {
 					countSuccess++;
 					setter.updateData(NUMBER_OF_SUCCESS, countSuccess);
 				}
-				setter.updateData(DATA_EXECUTION, dto);
+				//setter.updateData(DATA_EXECUTION, dto);
 				
 				// Add 1 more day to current day
 				currentDateCheck = currentDateCheck.nextValue(true);
 			}
 		}
 		
-		// Count emount of error
+		// Send the last batch of errors if there is still records unsent
+		if (!errorList.isEmpty()) {
+			errorRecordCount++;
+			setter.setData(DATA_PREFIX + errorRecordCount, dto);
+		}
+		
+		// Count amount of error
 		if (errorList.size() > 0) {
 			dto.setWithError(WithError.WITH_ERROR);
 			setter.updateData(NUMBER_OF_ERROR, errorList.size());
@@ -188,7 +205,7 @@ public class ScheBatchCorrectExecutionCommandHandler
 
 		dto.setEndTime(GeneralDateTime.now());
 		dto.setExecutionState(ExecutionState.DONE);
-		setter.updateData(DATA_EXECUTION, dto);
+		//setter.updateData(DATA_EXECUTION, dto);
 	}
 	
 	/**
@@ -295,7 +312,7 @@ public class ScheBatchCorrectExecutionCommandHandler
 		GeneralDate endDate;
 		
 		// 締め変更履歴と当月をチェックする
-		if (optionalClosureHistory.get().getStartYearMonth().compareTo(optionalClosure.get().getClosureMonth().getProcessingYm()) != 0) {
+//		if (optionalClosureHistory.get().getStartYearMonth().compareTo(optionalClosure.get().getClosureMonth().getProcessingYm()) != 0) {
 			// 当月　≠　締め変更履歴．開始年月
 			
 			// 日付の末日とするをチェック
@@ -317,17 +334,17 @@ public class ScheBatchCorrectExecutionCommandHandler
 				// 算出日を締め期間の終了年月日に設定する
 				endDate = checkClosureDateTime(optionalClosure.get().getClosureMonth().getProcessingYm(), optionalClosureHistory.get().toClosureDate());
 			}
-		}
-		else {
-			// 当月　＝　締め変更履歴．開始年月
-			
-			// アルゴリズム「締め日変更時の期間を算出」を実行する
-			ClosurePeriod closurePeriod = calculateClosurePeriod(companyId, optionalClosure.get(), optionalClosureHistory.get());
-			
-			// Set to start date and end date
-			startDate = closurePeriod.getStartTime();
-			endDate = closurePeriod.getEndTime();
-		}
+//		}
+//		else {
+//			// 当月　＝　締め変更履歴．開始年月
+//			
+//			// アルゴリズム「締め日変更時の期間を算出」を実行する
+//			ClosurePeriod closurePeriod = calculateClosurePeriod(companyId, optionalClosure.get(), optionalClosureHistory.get());
+//			
+//			// Set to start date and end date
+//			startDate = closurePeriod.getStartTime();
+//			endDate = closurePeriod.getEndTime();
+//		}
 		
 		/**
 		 *  Check processing date (処理中年月日)

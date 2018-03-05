@@ -10,22 +10,6 @@ public enum CarryforwardSetInShortageFlex {
 	/** 翌月繰越 */
 	NEXT_MONTH_CARRYFORWARD(1);
 	
-	/**
-	 * 当月積算か判定する
-	 * @return true：当月積算、false：当月積算でない
-	 */
-	public boolean isCurrentMonthIntegration(){
-		return this.equals(CURRENT_MONTH_INTEGRATION);
-	}
-	
-	/**
-	 * 翌月繰越か判定する
-	 * @return true：翌月繰越、false：翌月繰越でない
-	 */
-	public boolean isNextMonthCarryforward(){
-		return this.equals(NEXT_MONTH_CARRYFORWARD);
-	}
-	
 	public int value;
 	private CarryforwardSetInShortageFlex(int value){
 		this.value = value;

@@ -2,16 +2,16 @@ module nts.uk.com.view.cmf001.f.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths = {
-        getCodeConvert:                "exio/codeconvert/getCodeConvert",
-        getAcceptCodeConvert:          "exio/codeconvert/getAcceptCodeConvert/{0}",
-        getCodeConvertDetails:         "exio/codeconvert/getCodeConvertDetails/{0}",
-        addAcceptCodeConvert:          "exio/codeconvert/addAcceptCodeConvert",
-        updateAcceptCodeConvert:       "exio/codeconvert/updateAcceptCodeConvert"
+        getCodeConvertByCompanyId:     "exio/exi/codeconvert/getCodeConvertByCompanyId",
+        getAcceptCodeConvert:          "exio/exi/codeconvert/getAcceptCodeConvert/{0}",
+        addAcceptCodeConvert:          "exio/exi/codeconvert/addAcceptCodeConvert",
+        updateAcceptCodeConvert:       "exio/exi/codeconvert/updateAcceptCodeConvert",
+        deleteAcceptCodeConvert:       "exio/exi/codeconvert/removeAcceptCodeConvert"
     }
 
     //Get all accept code convert
-    export function getCodeConvert(): JQueryPromise<any> {
-        return ajax(paths.getCodeConvert);
+    export function getCodeConvertByCompanyId(): JQueryPromise<any> {
+        return ajax(paths.getCodeConvertByCompanyId);
     }
 
     //Get accept code convert by id
@@ -19,19 +19,19 @@ module nts.uk.com.view.cmf001.f.service {
         return ajax(format(paths.getAcceptCodeConvert, convertCode));
     }
 
-    //get accept code convert detail
-    export function getCodeConvertDetails(convertCode: string): JQueryPromise<any> {
-        return ajax(format(paths.getCodeConvertDetails, convertCode));
-    }
-    
     //Add new accept code convert
     export function addAcceptCodeConvert(command): JQueryPromise<any> {
-        return ajax(paths.getCodeConvert);
+        return ajax(paths.addAcceptCodeConvert, command);
     }
-    
+
     //Update accept code convert
     export function updateAcceptCodeConvert(command): JQueryPromise<any> {
-        return ajax(paths.getCodeConvert);
+        return ajax(paths.updateAcceptCodeConvert, command);
+    }
+
+    //Delete accept code convert
+    export function deleteAcceptCodeConvert(command): JQueryPromise<any> {
+        return ajax(paths.deleteAcceptCodeConvert, command);
     }
 
 }

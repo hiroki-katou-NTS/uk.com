@@ -39,27 +39,27 @@
 				<div tabindex="3">
 					<div class="ntsControl blockrow">
 						<label  class="ntsRadioBox" >
-							<input type="radio" name="textRadio" data-bind="checkedValue: 1, checked: selectedValueE11, enable: true" />
+							<input type="radio" name="textRadio" data-bind="checkedValue: 0, checked: selectedValueE11, enable: true" />
 							<span class="box"></span><span class="label" >#{i18n.getText('KAF022_198')}</span>
 						</label>
 					</div>
 					<div class="ntsControl blockrow">
 						<label  class="ntsRadioBox">
-							<input type="radio" name="textRadio" data-bind="checkedValue: 2, checked: selectedValueE11, enable: true" />
+							<input type="radio" name="textRadio" data-bind="checkedValue: 1, checked: selectedValueE11, enable: true" />
 							<span class="box"></span><span class="label" >#{i18n.getText('KAF022_199')}</span>
 						</label>
 					</div>
 					<div id="e11_5" data-bind="ntsCheckBox: { checked: checkedE11_5, enable: enableE11_5 }">#{i18n.getText('KAF022_205')}</div>
 					<div class="ntsControl blockrow">
 						<label  class="ntsRadioBox">
-							<input type="radio" name="textRadio" data-bind="checkedValue: 3, checked: selectedValueE11, enable: true" />
+							<input type="radio" name="textRadio" data-bind="checkedValue: 2, checked: selectedValueE11, enable: true" />
 							<span class="box"></span><span class="label">#{i18n.getText('KAF022_200')}</span>
 						</label>
 					</div>
 					
 					<div class="ntsControl blockrow">
 						<label  class="ntsRadioBox">
-							<input type="radio" name="textRadio" data-bind="checkedValue: 4, checked: selectedValueE11, enable: true" />
+							<input type="radio" name="textRadio" data-bind="checkedValue: 3, checked: selectedValueE11, enable: true" />
 							<span class="box"></span><span class="label">#{i18n.getText('KAF022_201')}</span>
 						</label>
 					</div>
@@ -79,10 +79,11 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="color-header" id="e7">#{i18n.getText('KAF022_179')}</td>
+			<td class="color-header" id="e7"><div data-bind="ntsFormLabel: { constraint: 'Comment',inline:true}">#{i18n.getText('KAF022_179')}</div></td>
 			<td>
 				<div  data-bind="with: texteditorE13">
 					<input tabindex="5" data-bind="ntsTextEditor: {
+						name:'#{i18n.getText('KAF022_179')}',
 						value: value,
 						constraint: constraint,
 						option: option,
@@ -96,10 +97,11 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="color-header" id="e8">#{i18n.getText('KAF022_180')}</td>
+			<td class="color-header" id="e8"><div data-bind="ntsFormLabel: { constraint: 'Comment',inline:true}">#{i18n.getText('KAF022_180')}</div></td>
 			<td>
 				<div  data-bind="with: texteditorE16">
 					<input tabindex="8" data-bind="ntsTextEditor: {
+						name:'#{i18n.getText('KAF022_180')}',
 						value: value,
 						constraint: constraint,
 						option: option,
@@ -107,8 +109,8 @@
 						enable: true,
 						readonly: readonly
 						}" />
-					<div tabindex="9" id="colorpicker" data-bind="ntsColorPicker: {value: $parent.valueE14_1, enable: true, width: 40}"/>
-					<div tabindex="10" data-bind="ntsCheckBox: { checked: $parent.enableE15_1 }">#{i18n.getText('KAF022_185')}</div>
+					<div tabindex="9" id="colorpicker" data-bind="ntsColorPicker: {value: $parent.valueE17, enable: true, width: 40}"/>
+					<div tabindex="10" data-bind="ntsCheckBox: { checked: $parent.enableE18 }">#{i18n.getText('KAF022_185')}</div>
 				</div>
 			</td>
 		</tr>

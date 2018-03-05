@@ -10,8 +10,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class MailHdInstructionCommand {
-	// 会社ID
-	private String companyId;
 	// 件名
 	private String subject;
 	// 本文

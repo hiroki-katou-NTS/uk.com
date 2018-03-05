@@ -6,8 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class UpdateWithDrawalReqSetCommand {
-	/** * 会社ID */
-	private String companyId;
 
 	/** * 勤務時間変更の許可 */
 	private int permissionDivision;

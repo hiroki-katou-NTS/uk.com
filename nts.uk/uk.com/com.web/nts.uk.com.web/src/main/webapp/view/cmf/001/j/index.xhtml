@@ -38,12 +38,17 @@
 								</span>
 							</div>
 						</td>
-						<td><input
-							data-bind="ntsTextEditor: {value: fromDigit, enable: isEditMode, option : {width : '40px'}}" />
-							<label>#{i18n.getText('CMF001_336')}</label> <label>#{i18n.getText('CMF001_337')}</label>
-							<input
-							data-bind="ntsTextEditor: {value: toDigit, enable: isEditMode, option : {width : '40px'}}" />
-							<label>#{i18n.getText('CMF001_339')}</label></td>
+						<td>
+							<div class="disp-inline">
+								<input
+									data-bind="ntsNumberEditor: {value: fromDigit, enable: isEditMode, option : {width : '40px'}}" />
+							</div> <label>#{i18n.getText('CMF001_336')}</label> <label>#{i18n.getText('CMF001_337')}</label>
+							<div class="disp-inline">
+								<input
+									data-bind="ntsNumberEditor: {value: toDigit, enable: isEditMode, option : {width : '40px'}}" />
+							</div>
+							<label>#{i18n.getText('CMF001_339')}</label>
+						</td>
 					</tr>
 					<tr>
 						<td>

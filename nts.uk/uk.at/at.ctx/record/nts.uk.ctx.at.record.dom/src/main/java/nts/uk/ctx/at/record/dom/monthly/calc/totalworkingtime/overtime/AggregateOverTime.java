@@ -86,7 +86,7 @@ public class AggregateOverTime {
 	 * @param ymd 年月日
 	 * @return 時系列ワーク
 	 */
-	public OverTimeOfTimeSeries getTimeSeriesWork(GeneralDate ymd){
+	public OverTimeOfTimeSeries getAndPutTimeSeriesWork(GeneralDate ymd){
 		
 		this.timeSeriesWorks.putIfAbsent(ymd, new OverTimeOfTimeSeries(ymd, this.overTimeFrameNo));
 		return this.timeSeriesWorks.get(ymd);

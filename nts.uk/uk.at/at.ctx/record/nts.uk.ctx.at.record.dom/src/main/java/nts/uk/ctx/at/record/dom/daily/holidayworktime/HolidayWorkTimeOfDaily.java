@@ -124,6 +124,18 @@ public class HolidayWorkTimeOfDaily {
 	}
 	
 	/**
+	 * 全枠の振替休出時間の合計の算出
+	 * @return　休出時間
+	 */
+	public int calcTransTotalFrameTime() {
+		int transTotalTime = 0;
+		for(HolidayWorkFrameTime holidayWorkFrameTime : holidayWorkFrameTime) {
+			transTotalTime += holidayWorkFrameTime.getTransferTime().get().getTime().valueAsMinutes();
+		}
+		return transTotalTime ;
+	}
+	
+	/**
 	 * 早出・普通の設定(優先順位)を見て並び替える
 	 * @param overTimeWorkFrameTimeSheetList
 	 * @param prioritySet

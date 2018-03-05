@@ -62,43 +62,8 @@ subprojects {
 //=====================nts.uk.com.js.web↓============================
 project (':base.web:nts.uk.com.js.web') {
 	apply plugin: 'war'
-	apply plugin: "de.richsource.gradle.plugins.typescript"
 	war {
 		baseName= "nts.uk.com.js.web"
-		into("lib/nittsu") {
-			from compileTypeScript.outputs
-		}
-	}
-	
-	def explodedWarPath = "${buildDir}/exploded/${war.baseName}.war"
-	def explodedWarDeployFile = new File("${explodedWarPath}.dodeploy");
-	
-	compileTypeScript {
-		declaration=true
-		sourcemap = true
-		charset="utf8"
-		target = "ES5"
-		source=  file("src/main/webapp/lib")
-		outFile =file("${buildDir}/js/nts.uk.com.web.nittsu.bundles.js")
-		
-	}
-	task explodedWar(type: Copy) {  
-		into explodedWarPath
-		with war
-		doLast {
-			explodedWarDeployFile.write ''
-		}
-	}
-	
-	war.dependsOn explodedWar
-	
-	task copyStaticResource(type: Sync) {
-		from "${rootDir}/${war.baseName}/src/main/webapp"
-		into explodedWarPath
-	}
-	
-	dependencies {
-
 	}
 }
 //=====================nts.uk.com.js.web↑============================

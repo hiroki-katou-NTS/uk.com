@@ -17,15 +17,17 @@ public class ApprovalFrameImport_New {
 	
 	private Integer frameOrder;
 	
-	private String approvalAtr;
-	
-	private ApprovalBehaviorAtrImport_New approvalAtr_Enum;
+	private ApprovalBehaviorAtrImport_New approvalAtr;
 	
 	private List<ApproverStateImport_New> listApprover;
 	
 	private String approverID;
 	
+	private String approverName;
+	
 	private String representerID;
+	
+	private String representerName;
 	
 	private String approvalReason;
 }

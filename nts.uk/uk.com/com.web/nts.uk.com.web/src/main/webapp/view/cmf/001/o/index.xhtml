@@ -218,15 +218,15 @@
 										<td style="text-align: left;"><div class="label"
 												data-bind="text: infoName"></div></td>
 										<td style="text-align: left;"><div class="label"
-												data-bind="text: itemName"></div></td>
+												data-bind="text: csvItemName"></div></td>
 										<td style="text-align: left;"><div class="label"
 												data-bind="text: sampleData"></div></td>
 										<td style="text-align: left;"><div class="label"
-												data-bind="text: itemType"></div></td>
+												data-bind="text: itemTypeName"></div></td>
 										<td style="text-align: center;"><i
 											data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: function() {$parent.editIngestion($data)}"></i></td>
 										<td style="text-align: center;"><i
-											data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: function() {$parent.receiveCondition}"></i></td>
+											data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: function() {$parent.receiveCondition($data)}"></i></td>
 									</tr>
 								</tbody>
 							</table>
@@ -234,7 +234,7 @@
 								<tr>
 									<td width="80"><div class="label">#{i18n.getText('CMF001_477')}</div></td>
 									<td style="padding-right: 5px;"><div class="label"
-											style="font-size: 1.5em;" data-bind="text: count"></div></td>
+											style="font-size: 1.5em;" data-bind="text: totalRecord"></div></td>
 									<td><div class="label">#{i18n.getText('CMF001_478')}</div></td>
 								</tr>
 							</table>

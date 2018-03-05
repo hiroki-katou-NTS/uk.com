@@ -275,7 +275,7 @@ module nts.uk.at.view.ksm011.b.viewmodel {
                 symbolAtr: self.selectedEmpSignCls(),
                 pubHolidayExcessAtr: self.selectedObtain(),
                 pubHolidayShortageAtr: self.selectedInsufficient(),
-                symbolHalfDayName: "",
+                symbolHalfDayName: " ",
                 schePerInfoAtr: schePerInfoAtrData.length > 0 ? schePerInfoAtrData : null,
                 scheQualifySet: scheQualifySetData.length > 0 ? scheQualifySetData : null
             });
@@ -319,6 +319,11 @@ module nts.uk.at.view.ksm011.b.viewmodel {
             self.currentRCodeList([]);
             self.singleAddEnable(false);
             self.displayQualMark();
+            
+            if(self.leftItems().length == 0) {
+                self.addAllEnable(false);
+                self.removeAllEnable(true);
+            }
         }
         
         /**
@@ -355,10 +360,18 @@ module nts.uk.at.view.ksm011.b.viewmodel {
                 
                 if(self.rightItems().length > 0) {
                     self.removeAllEnable(true);
+                    
+                    if(self.leftItems().length > 0) {
+                        self.addAllEnable(true);
+                    } else {
+                        self.addAllEnable(false);
+                    }
                 }
                 
                 self.displayQualMark();
             }
+            
+            self.currentLCodeList.removeAll();
         }
         
         /**
@@ -395,10 +408,18 @@ module nts.uk.at.view.ksm011.b.viewmodel {
                 
                 if(self.leftItems().length > 0) {
                     self.addAllEnable(true);
+                    
+                    if(self.rightItems().length > 0) {
+                        self.removeAllEnable(true);
+                    } else {
+                        self.removeAllEnable(false);
+                    }
                 }
                 
                 self.displayQualMark();
             }
+            
+            self.currentRCodeList.removeAll();
         }
         
         /**
@@ -433,6 +454,11 @@ module nts.uk.at.view.ksm011.b.viewmodel {
             self.currentLCodeList([]);
             self.singleRemoveEnable(false);
             self.displayQualMark();
+            
+            if(self.rightItems().length == 0) {
+                self.removeAllEnable(false);
+                self.addAllEnable(true);
+            }
         }
         
         /**
