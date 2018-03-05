@@ -957,7 +957,7 @@ module nts.custombinding {
                         optionsValue: 'id',
                         optionsText: 'name'
                     },
-                    comboxbox: {
+                    combobox: {
                         enable: ko.observable(true),
                         editable: ko.observable(false),
                         visibleItemsCount: 10,
@@ -1616,7 +1616,7 @@ module nts.custombinding {
             opts.sortable.isEditable.valueHasMutated();
 
             // extend option
-            $.extend(opts.comboxbox, { enable: ko.computed(() => !opts.radios.value()) });
+            $.extend(opts.combobox, { enable: ko.computed(() => !opts.radios.value()) });
 
             $.extend(opts.searchbox, {
                 items: ko.computed(opts.listbox.options),
@@ -1987,7 +1987,7 @@ module nts.custombinding {
                 }
 
                 if (mode == CAT_OR_GROUP.CATEGORY) { // get item by category
-                    opts.comboxbox.options.removeAll();
+                    opts.combobox.options.removeAll();
                     services.getCats().done((data: any) => {
                         if (data && data.categoryList && data.categoryList.length) {
                             let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition && !x.categoryParentCode);
@@ -2012,7 +2012,7 @@ module nts.custombinding {
                             $.when.apply($, dfds).then(function() {
                                 let items: Array<IItemCategory> = _.filter(_.flatten(arguments), x => !!x);
                                 if (items && items.length) {
-                                    opts.comboxbox.options(items);
+                                    opts.combobox.options(items);
                                 } else {
                                     // show message if hasn't any category
                                     if (ko.toJS(opts.sortable.isEnabled)) {
@@ -2057,13 +2057,13 @@ module nts.custombinding {
             opts.radios.value.valueHasMutated();
 
             // load listbox data
-            opts.comboxbox.value.subscribe(cid => {
+            opts.combobox.value.subscribe(cid => {
                 if (opts.sortable.isEditable() != 0) {
                     return;
                 }
 
                 if (cid) {
-                    let data: Array<IItemCategory> = ko.toJS(opts.comboxbox.options),
+                    let data: Array<IItemCategory> = ko.toJS(opts.combobox.options),
                         item: IItemCategory = _.find(data, x => x.id == cid);
 
                     // remove all item in list item for init new data
@@ -2187,8 +2187,8 @@ module nts.custombinding {
 
                 // category mode
                 if (ko.unwrap(opts.radios.value) == CAT_OR_GROUP.CATEGORY) {
-                    let cid: string = ko.toJS(opts.comboxbox.value),
-                        cats: Array<IItemCategory> = ko.toJS(opts.comboxbox.options),
+                    let cid: string = ko.toJS(opts.combobox.value),
+                        cats: Array<IItemCategory> = ko.toJS(opts.combobox.options),
                         cat: IItemCategory = _.find(cats, x => x.id == cid);
 
                     if (cat) {
@@ -2341,7 +2341,7 @@ module nts.custombinding {
             // init radio box group
             ko.bindingHandlers['ntsRadioBoxGroup'].init(ctrls.radios, () => opts.radios, allBindingsAccessor, viewModel, bindingContext);
 
-            ko.bindingHandlers['ntsComboBox'].init(ctrls.combobox, () => opts.comboxbox, allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers['ntsComboBox'].init(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
 
             ko.bindingHandlers['ntsSearchBox'].init(ctrls.searchbox, () => opts.searchbox, allBindingsAccessor, viewModel, bindingContext);
 
@@ -2363,7 +2363,7 @@ module nts.custombinding {
 
             ko.bindingHandlers['ntsRadioBoxGroup'].update(ctrls.radios, () => opts.radios, allBindingsAccessor, viewModel, bindingContext);
 
-            ko.bindingHandlers['ntsComboBox'].update(ctrls.combobox, () => opts.comboxbox, allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers['ntsComboBox'].update(ctrls.combobox, () => opts.combobox, allBindingsAccessor, viewModel, bindingContext);
 
             ko.bindingHandlers['ntsSearchBox'].update(ctrls.searchbox, () => opts.searchbox, allBindingsAccessor, viewModel, bindingContext);
 
