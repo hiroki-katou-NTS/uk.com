@@ -36,7 +36,7 @@ module nts.uk.at.view.kmf022.a.service {
         // A6_24, A6_26, A6_35->A6_45 có thể lấy list cty đang đăng nhập rồi lên UI lọc, hoặc lấy thẳng 1 object(nhớ truyền apptype)
         findDisp: "at/request/application/displayname/disp",
         fidnDispApp: "at/request/application/displayname/app",
-        //E14,15, E17,18 cũng lấy ở đây (ver2)   màn J cùng link này (ver 3)
+        // màn J cùng link này (ver 3)
         findStamp: "at/request/application/stamprequest/findByComID", //UpdateStampRequestSettingCommandHandler
         // F10->F15, F16, 16_1, 16_2 (ver2)
         findDirectlycommon: "at/request/application/gobackdirectlycommon/getGoBackCommonByCid", //GoBackDirectlyCommonSettingRepository
@@ -50,7 +50,7 @@ module nts.uk.at.view.kmf022.a.service {
         //D
         findWorkChange: "at/request/application/workchange/workChangeSet",
         
-        // E9->E13, E16
+        // E9->E13, E16 (Tất cả màn E ver 2)
         findTrip: "at/request/application/triprequest/disp",
         
         // G16 -> G29
