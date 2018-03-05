@@ -14125,6 +14125,7 @@ var nts;
                                 $input.ntsError('set', result.errorMessage, result.errorCode, false);
                                 value(newText);
                             }
+                            $input.focus();
                         });
                         $input.on("blur", function () {
                             var newText = $input.val();
@@ -22336,7 +22337,7 @@ var nts;
                         var $fileuploadContainer = $("<div class='nts-fileupload-container cf'></div>");
                         var $fileBrowserButton = $("<button class='browser-button'></button>");
                         var $fileNameWrap = $("<span class='nts-editor-wrapped ntsControl'/>");
-                        var $fileNameInput = $("<input class='nts-editor nts-input' readonly='readonly'/>");
+                        var $fileNameInput = $("<input class='nts-editor nts-input' readonly='readonly' tabindex='-1'/>");
                         var $fileNameLabel = $("<span class='filenamelabel hyperlink'></span> ");
                         var $fileInput = $("<input type='file' class='fileinput'/>");
                         $fileuploadContainer.append($fileBrowserButton);
