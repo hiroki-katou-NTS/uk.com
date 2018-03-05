@@ -59,7 +59,7 @@ public class JpaExacErrorLogRepository extends JpaRepository implements ExacErro
 
     @Override
     public void remove(int logSeqNumber, String cid, String externalProcessId){
-        this.commandProxy().remove(OiomtExacErrorLogPk.class, new OiomtExacErrorLogPk(logSeqNumber, cid, externalProcessId)); 
+        this.commandProxy().remove(OiomtExacErrorLog.class, new OiomtExacErrorLogPk(logSeqNumber, cid, externalProcessId)); 
     }
 
     private static ExacErrorLog toDomain(OiomtExacErrorLog entity) {

@@ -64,7 +64,7 @@ public class JpaExacExeResultLogRepository extends JpaRepository implements Exac
 
     @Override
     public void remove(String cid, String conditionSetCd, String externalProcessId){
-        this.commandProxy().remove(OiomtExacExeResultLogPk.class, new OiomtExacExeResultLogPk(cid, conditionSetCd, externalProcessId)); 
+        this.commandProxy().remove(OiomtExacExeResultLog.class, new OiomtExacExeResultLogPk(cid, conditionSetCd, externalProcessId)); 
     }
 
     private static ExacExeResultLog toDomain(OiomtExacExeResultLog entity) {

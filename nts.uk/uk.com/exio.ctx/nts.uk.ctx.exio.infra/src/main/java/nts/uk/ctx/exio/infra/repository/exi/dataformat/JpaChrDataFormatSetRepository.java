@@ -60,7 +60,7 @@ public class JpaChrDataFormatSetRepository extends JpaRepository implements ChrD
 
     @Override
     public void remove(String cid, String conditionSetCd, int acceptItemNum){
-        this.commandProxy().remove(OiomtChrDataFormatSetPk.class, new OiomtChrDataFormatSetPk(cid, conditionSetCd, acceptItemNum)); 
+        this.commandProxy().remove(OiomtChrDataFormatSet.class, new OiomtChrDataFormatSetPk(cid, conditionSetCd, acceptItemNum)); 
     }
 
     private static ChrDataFormatSet toDomain(OiomtChrDataFormatSet entity) {
