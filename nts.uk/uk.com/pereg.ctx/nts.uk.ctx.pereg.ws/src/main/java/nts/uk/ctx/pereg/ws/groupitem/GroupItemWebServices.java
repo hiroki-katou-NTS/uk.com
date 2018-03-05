@@ -42,8 +42,8 @@ public class GroupItemWebServices extends WebService {
 	}
 	
 	@POST
-	@Path("getAllItemDf/{groupIds}")
-	public List<PerInfoItemDefDto> getAllItemDfFromLstGroup(@PathParam("groupIds") List<String> groupIds) {
+	@Path("findby/listgroupId")
+	public List<PerInfoItemDefDto> getAllItemDfFromLstGroup(List<String> groupIds) {
 		return this.gItemfinder.getAllItemDfFromListGroup(groupIds);
 	}
 	
