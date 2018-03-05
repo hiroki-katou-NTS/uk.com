@@ -2115,10 +2115,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         workTimeCode: workTimeCode,
                         workTimeName: workTimeName,
                         symbolName: obj.symbolName,
-                        startTime: nts.uk.time.parseTime(obj.scheduleStartClock, true).format(),
-                        endTime: nts.uk.time.parseTime(obj.scheduleEndClock, true).format()
-                        //                        startTime: formatById("Clock_Short_HM", obj.scheduleStartClock),
-                        //                        endTime: formatById("Clock_Short_HM", obj.scheduleEndClock)
+                        //                        startTime: nts.uk.time.parseTime(obj.scheduleStartClock, true).format(),
+                        //                        endTime: nts.uk.time.parseTime(obj.scheduleEndClock, true).format()
+                        startTime: obj.scheduleStartClock ? formatById("Clock_Short_HM", obj.scheduleStartClock) : '',
+                        endTime: obj.scheduleStartClock ? formatById("Clock_Short_HM", obj.scheduleEndClock) : ''
                     });
                 } else {
                     this['_' + arrDay[i].yearMonthDay] = new ksu001.common.viewmodel.ExCell({
