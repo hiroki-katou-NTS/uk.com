@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmk011.b {
+module nts.uk.at.view.kmk011.e {
     import blockUI = nts.uk.ui.block;
     
     __viewContext.ready(function() {

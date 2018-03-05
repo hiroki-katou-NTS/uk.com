@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 500,
+					height : 400
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk011.h.main.css" />
+			
+			<com:scriptfile path="kmk011.h.vm.js" />
+			<com:scriptfile path="kmk011.h.service.js" />
+			<com:scriptfile path="kmk011.h.start.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div tabindex="-1" id="contents-area" class="scrH" >
+				<div class="title-content">
+					<!-- F1_1 -->
+					<pre tabindex="-1">#{i18n.getText('KMF002_28')}</pre>
+				</div>
+				<div style="display: flex; flex-direction: row" class="option-select-content">
+					<div id="manage_unit">
+						<div tabindex="-1">
+							<!-- F2_1 -->
+							<span>#{i18n.getText('Com_Company')}</span>
+						</div>
+						<!-- F2_2 -->
+						<div tabindex="-1" id="selectUnitCheck" data-bind="ntsCheckBox: { checked: selectUnitCheck, 
+														enable: true, 
+														text: '#{i18n.getText('KMF002_31')}'}"></div>
+						<div>
+							<!-- F2_6 -->
+							<div tabindex="-1" data-bind="ntsCheckBox: { checked: selectEmployee, 
+															enable: true, 
+															text: '#{i18n.getText('Com_Person')}' }"></div>
+						</div>
+					</div>
+					<div>
+						<!-- F3_2 -->
+						<pre>#{i18n.getText('KMF002_32')}</pre>
+					</div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<!-- F4_2 -->
+				<button tabindex="-1" data-bind="click: closeSaveDialog" class="x-large proceed">#{i18n.getText('KMF002_20')}</button>
+				<!-- F4_3 -->
+				<button tabindex="-1" data-bind="click: closeDialog">#{i18n.getText('KMF002_33')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

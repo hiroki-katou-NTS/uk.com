@@ -1,11 +1,11 @@
-module nts.uk.at.view.kmk011.b {
+module nts.uk.at.view.kmk011.h {
     export module service {
         /**
          * define path to service
          */
         var path: any = {
             save: "",
-            find: "",            
+            find: ""      
         };
         
         export function save(): JQueryPromise<any> {

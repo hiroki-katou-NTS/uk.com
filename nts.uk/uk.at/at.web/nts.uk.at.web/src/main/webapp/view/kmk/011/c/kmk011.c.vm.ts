@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmk011.b {
+module nts.uk.at.view.kmk011.c {
   
     export module viewmodel {
 
