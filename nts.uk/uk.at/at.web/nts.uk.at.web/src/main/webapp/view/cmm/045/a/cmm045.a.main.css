@@ -25,3 +25,28 @@
 .workingResultExcess{
 	background-color: #ffff00;
 }
+#grid1 tbody tr td:NTH-CHILD(1){
+	text-align: center;
+}
+#grid1 tbody tr td:NTH-CHILD(2){
+	text-align: center;
+}
+#grid1 tbody tr td:NTH-CHILD(9){
+	text-align: center;
+}
+#grid1 tbody tr td:NTH-CHILD(10){
+	text-align: center;
+}
+#grid2 tbody tr td:NTH-CHILD(8){
+	text-align: center;
+}
+#grid2 tbody tr td:NTH-CHILD(1){
+	text-align: center;
+}
+.saturdayCell{
+	color: #0000ff;
+}	
+.sundayCell{
+	color: #ff0000;
+}	
+
