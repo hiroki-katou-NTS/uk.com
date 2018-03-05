@@ -7,15 +7,15 @@ import lombok.Value;
 
 @Value
 public class UpdateFlowMenuCommand {
-	private String toppagePartID;	
+	private String topPagePartID;	
 	//top page code
 	private String topPageCode;
 	//top page name
 	private String topPageName;
 	//width size
-	private int widthSize;
+	private int width;
 	//height size
-	private int heightSize;
+	private int height;
 	
 	/** File ID */
 	private String fileID;

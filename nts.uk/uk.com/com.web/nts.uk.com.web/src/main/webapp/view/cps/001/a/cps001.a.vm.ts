@@ -138,10 +138,15 @@ module cps001.a.vm {
                     selectFirstId = (sources: Array<any>, layoutData: any) => {
                         if (loadData) {
                             if (loadData.id) {
-                                if (layoutData.id() == loadData.id) {
-                                    layoutData.id.valueHasMutated();
+                                let exist = _(sources).map(x => x.optionValue).indexOf(loadData.id) != -1;
+                                if (exist) {
+                                    if (layoutData.id() == loadData.id) {
+                                        layoutData.id.valueHasMutated();
+                                    } else {
+                                        layoutData.id(loadData.id);
+                                    }
                                 } else {
-                                    layoutData.id(loadData.id);
+                                    layoutData.id(sources[0].optionValue);
                                 }
                             } else {
                                 if (layoutData.id() == sources[0].optionValue) {
@@ -284,20 +289,17 @@ module cps001.a.vm {
                 reload = getShared(RELOAD_KEY),
                 reloadData = getShared(RELOAD_DT_KEY),
                 employee = self.employee(),
+                logInId: string = __viewContext.user.employeeId,
                 params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined };
 
             if (reload) {
                 let emps = self.employees(),
-                    zero = emps.length == 0,
                     single = emps.length == 1,
                     old_index = _.indexOf(emps.map(x => x.employeeId), employee.employeeId());
 
                 self.employees.removeAll();
-                if (!zero) {
-                    $('.btn-quick-search[tabindex=7]').click();
-                } else {
-                    $('.btn-quick-search[tabindex=8]').click();
-                }
+
+                $('#ccg001-btn-search-all').trigger('click');
 
                 $.when((() => {
                     let def = $.Deferred(),
@@ -310,7 +312,13 @@ module cps001.a.vm {
                     return def.promise();
                 })()).done((employees: Array<IEmployee>) => {
                     if (single) {
-                        self.employees(_.filter(employees, m => m.employeeId == employee.employeeId()));
+                        let exist = _.find(employees, m => m.employeeId == employee.employeeId());
+                        if (exist) {
+                            self.employees(_.filter(employees, m => m.employeeId == employee.employeeId()));
+                        } else {
+                            self.employees(_.filter(employees, m => m.employeeId == logInId));
+                            employee.employeeId(logInId);
+                        }
                     }
 
                     let first = _.find(self.employees(), x => x.employeeId == employee.employeeId());
@@ -337,9 +345,9 @@ module cps001.a.vm {
             } else {
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
                     if (params && params.employeeId) {
-                        $('.btn-quick-search[tabindex=7]').click();
+                        $('#ccg001-btn-search-all').trigger('click');
                     } else {
-                        $('.btn-quick-search[tabindex=8]').click();
+                        $('#ccg001-btn-only-me').trigger('click');
                     }
 
                     $.when((() => {
@@ -370,7 +378,13 @@ module cps001.a.vm {
         deleteEmployee() {
             let self = this,
                 emp = self.employee(),
-                person = self.person();
+                person = self.person(),
+                logInId: string = __viewContext.user.employeeId;
+
+            if (emp.employeeId() == logInId) {
+                // show message if delete self
+                return;
+            }
 
             setShared('CPS001B_PARAMS', {
                 sid: emp.employeeId(),
@@ -470,11 +484,11 @@ module cps001.a.vm {
 
                 // push data layout to webservice
                 block();
-                service.saveCurrentLayout(command).done((selected: string) => {
+                service.saveCurrentLayout(command).done((selecteds: Array<string>) => {
                     let firstData: MultiData = _.first(self.multipleData()) || new MultiData(),
                         saveData: IReloadData = {
-                            id: selected || firstData.id(),
-                            infoId: firstData.infoId(),
+                            id: firstData.id(),
+                            infoId: selecteds[0] || firstData.infoId(),
                             categoryId: firstData.categoryId()
                         };
 
@@ -703,15 +717,13 @@ module cps001.a.vm {
 
                             cat.categoryCode(icat.categoryCode);
                             cat.categoryType(icat.categoryType);
-                        } else {
-                            cat.categoryCode(undefined);
-                            cat.categoryType(undefined);
-                        }
 
-                        if (id) {
                             service.getCatChilds(id).done(data => {
                                 cat.hasChildrens(data.length > 1);
                             });
+                        } else {
+                            cat.categoryCode(undefined);
+                            cat.categoryType(undefined);
                         }
                     }
                     self.categoryId.valueHasMutated();

@@ -213,6 +213,9 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		List<BsymtEmpOrderCond> sortConditions = this.getSortConditions(comId, paramQuery.getSystemType(),
 				paramQuery.getSortOrderNo());
 
+		// sort by employee code
+		orders.add(cb.asc(root.get(EmployeeDataView_.scd)));
+
 		sortConditions.forEach(cond -> {
 			switch (cond.getId().getSearchType()) {
 			case 0: // EMPLOYMENT
@@ -244,8 +247,6 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			orders.add(cb.asc(root.get(EmployeeDataView_.workTypeCd)));
 		} 
 
-		// sort by employee code
-		orders.add(cb.asc(root.get(EmployeeDataView_.scd)));
 		cq.orderBy(orders);
 
 		// execute query & add to resultList
@@ -255,10 +256,15 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		resultList = resultList.stream().filter(this.distinctByKey(EmployeeDataView::getSid)).collect(Collectors.toList());
 
 		return resultList.stream().map(entity -> RegulationInfoEmployee.builder()
-				.classificationCode(Optional.ofNullable(entity.getClassificationCode())).employeeCode(entity.getScd())
-				.employeeID(entity.getSid()).employmentCode(Optional.ofNullable(entity.getEmpCd()))
-				.hireDate(Optional.ofNullable(entity.getComStrDate())).jobTitleCode(Optional.ofNullable(entity.getJobCd()))
-				.name(Optional.ofNullable(entity.getBusinessName())).workplaceCode(Optional.ofNullable(entity.getWplCd()))
+				.classificationCode(Optional.ofNullable(entity.getClassificationCode()))
+				.employeeCode(entity.getScd())
+				.employeeID(entity.getSid())
+				.employmentCode(Optional.ofNullable(entity.getEmpCd()))
+				.hireDate(Optional.ofNullable(entity.getComStrDate()))
+				.jobTitleCode(Optional.ofNullable(entity.getJobCd()))
+				.name(Optional.ofNullable(entity.getBusinessName()))
+				.workplaceId(Optional.ofNullable(entity.getWorkplaceId()))
+				.workplaceCode(Optional.ofNullable(entity.getWplCd()))
 				.workplaceName(Optional.ofNullable(entity.getWplName()))
 				.build()).collect(Collectors.toList());
 	}

@@ -35,14 +35,14 @@ public class AgreementYearSettingService {
 
 	@POST
 	@Path("addAgreementYearSetting")
-	public void addAgreementTimeOfWorkPlace(AddAgreementYearSettingCommand command) {
-		this.addAgreementYearSettingCommandHandler.handle(command);
+	public List<String> addAgreementTimeOfWorkPlace(AddAgreementYearSettingCommand command) {
+		return this.addAgreementYearSettingCommandHandler.handle(command);
 	}
 
 	@POST
 	@Path("updateAgreementYearSetting")
-	public void updateAgreementYearSetting(UpdateAgreementYearSettingCommand command) {
-		this.updateAgreementYearSettingCommandHandler.handle(command);
+	public List<String> updateAgreementYearSetting(UpdateAgreementYearSettingCommand command) {
+		return this.updateAgreementYearSettingCommandHandler.handle(command);
 	}
 
 	@POST

@@ -176,4 +176,34 @@ module nts.uk.ui {
             });
         });
     }
+    
+    export module keyboardStream {
+        
+        let _lastKey: { code: number, time: Date } = {
+            code: undefined,
+            time: undefined
+        };
+        
+        export function lastKey(): { code: number, time: Date } {
+            return {
+                code: _lastKey.code,
+                time: _lastKey.time
+            };
+        }
+        
+        export function wasKeyDown(keyCode: number, millisToExpire: number): boolean {
+            
+            return _lastKey.code === keyCode
+                && (+new Date() - +_lastKey.time <= millisToExpire);
+        }
+        
+        $(() => {
+            
+            $(window).on("keydown", e => {
+                _lastKey.code = e.keyCode;
+                _lastKey.time = new Date();
+            });
+            
+        });
+    }
 }

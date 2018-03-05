@@ -91,7 +91,7 @@ module nts.uk.at.view.kmf002.c {
             _self.isEmployeeOfWorkplace = ko.observable(true);
             _self.isEmployeeWorkplaceFollow = ko.observable(true);
             _self.isMutipleCheck = ko.observable(true);
-            _self.isSelectAllEmployee = ko.observable(true);
+            _self.isSelectAllEmployee = ko.observable(false);
             _self.baseDate = ko.observable(moment());
             _self.periodStartDate = ko.observable(moment());
             _self.periodEndDate = ko.observable(moment());
@@ -99,17 +99,17 @@ module nts.uk.at.view.kmf002.c {
             _self.showWorkplace = ko.observable(true); // 職場条件
             _self.showClassification = ko.observable(true); // 分類条件
             _self.showJobTitle = ko.observable(true); // 職位条件
-            _self.showWorktype = ko.observable(true); // 勤種条件
-            _self.inService = ko.observable(true); // 在職区分
-            _self.leaveOfAbsence = ko.observable(true); // 休職区分
-            _self.closed = ko.observable(true); // 休業区分
-            _self.retirement = ko.observable(true); // 退職区分
-            _self.systemType = ko.observable(1);
-            _self.showClosure = ko.observable(true); // 就業締め日利用
-            _self.showBaseDate = ko.observable(true); // 基準日利用
-            _self.showAllClosure = ko.observable(true); // 全締め表示
-            _self.showPeriod = ko.observable(true); // 対象期間利用
-            _self.periodFormatYM = ko.observable(false); // 対象期間精度
+            _self.showWorktype = ko.observable(false); // 勤種条件
+            _self.inService = ko.observable(false); // 在職区分
+            _self.leaveOfAbsence = ko.observable(false); // 休職区分
+            _self.closed = ko.observable(false); // 休業区分
+            _self.retirement = ko.observable(false); // 退職区分
+            _self.systemType = ko.observable(2);
+            _self.showClosure = ko.observable(false); // 就業締め日利用
+            _self.showBaseDate = ko.observable(false); // 基準日利用
+            _self.showAllClosure = ko.observable(false); // 全締め表示
+            _self.showPeriod = ko.observable(false); // 対象期間利用
+            _self.periodFormatYM = ko.observable(true); // 対象期間精度
                 
             // Component option
             _self.ccgcomponent = {
@@ -125,9 +125,9 @@ module nts.uk.at.view.kmf002.c {
                 periodFormatYM: _self.periodFormatYM(), // 対象期間精度
 
                 /** Required parameter */
-                baseDate: moment(_self.baseDate()).format("YYYY-MM-DD"), // 基準日
-                periodStartDate: moment(_self.periodStartDate()).format("YYYY-MM-DD"), // 対象期間開始日
-                periodEndDate: moment(_self.periodEndDate()).format("YYYY-MM-DD"), // 対象期間終了日
+                baseDate: _self.baseDate().toISOString(), // 基準日
+                periodStartDate: _self.periodStartDate().toISOString(), // 対象期間開始日
+                periodEndDate: _self.periodEndDate().toISOString(), // 対象期間終了日
                 inService: _self.inService(), // 在職区分
                 leaveOfAbsence: _self.leaveOfAbsence(), // 休職区分
                 closed: _self.closed(), // 休業区分
@@ -277,7 +277,7 @@ module nts.uk.at.view.kmf002.c {
         private remove(): void {
             let _self = this;
              nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                service.remove(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()).done((data) => {
+                service.remove(_self.commonTableMonthDaySet().fiscalYear(), _self.mapEmployeeCode.get(_self.selectedCode())).done((data) => {
                     _self.getDataFromService();
                     _self.alreadySettingList.remove(function(s) { return s.code == _self.selectedCode() });
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" });
@@ -305,7 +305,7 @@ module nts.uk.at.view.kmf002.c {
         private getDataFromService(): void {
             let _self = this;
             if (!_.isNull(_self.selectedCode()) && !_.isEmpty(_self.selectedCode())) {
-                $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()), 
+                $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(), _self.mapEmployeeCode.get(_self.selectedCode())), 
                         service.findFirstMonth()
         //                ,_self.findAllEmployeeRegister()
                         ).done(function(data: any, data2: any) {
@@ -318,8 +318,8 @@ module nts.uk.at.view.kmf002.c {
                         });
                         _self.enableDelete(false);
                     } else {
-                        if (_.isEmpty(data2)) {
-                            data2.startMonth = 0;
+                        if (_.isNull(data2.startMonth)) {
+                            data2.startMonth = 1;
                         }
                         _self.commonTableMonthDaySet().arrMonth.removeAll();
                         for (let i=data2.startMonth-1; i<12; i++) {

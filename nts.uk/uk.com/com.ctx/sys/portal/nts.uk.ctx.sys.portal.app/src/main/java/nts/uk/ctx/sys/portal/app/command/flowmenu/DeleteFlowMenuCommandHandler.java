@@ -28,21 +28,21 @@ public class DeleteFlowMenuCommandHandler extends CommandHandler<DeleteFlowMenuC
 
 	@Inject
 	private FlowMenuService flowMenuService;
-	
+
 	@Override
-	protected void handle(CommandHandlerContext<DeleteFlowMenuCommand> context) {		
+	protected void handle(CommandHandlerContext<DeleteFlowMenuCommand> context) {
 		String companyID = AppContexts.user().companyId();
 		String topPagePartId = context.getCommand().getToppagePartID();
-		//check topPagePartId is exit
-		Optional<FlowMenu> getFlowMenu = flowMenuRepository.findByCode(companyID, topPagePartId);		
-		if(!getFlowMenu.isPresent()){ 
-			throw new BusinessException("ER026");
+		// Check topPagePartId is exit
+		Optional<FlowMenu> getFlowMenu = flowMenuRepository.findByCode(companyID, topPagePartId);
+		if (!getFlowMenu.isPresent()) {
+			throw new RuntimeException("Can't find FlowMenu id: " + topPagePartId);
 		}
-		if(getFlowMenu.get().getDefClassAtr() == DefClassAtr.DEFAULT){
+		if (getFlowMenu.get().getDefClassAtr() == DefClassAtr.DEFAULT) {
 			throw new BusinessException(new RawErrorMessage("Msg_76"));
 		}
-		
+
 		flowMenuService.deleteFlowMenu(companyID, topPagePartId);
 	}
-	
+
 }

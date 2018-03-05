@@ -580,7 +580,7 @@ module kcp.share.tree {
          */
         public reload() {
             let self = this;
-            if (!self.baseDate()) {
+            if (!self.baseDate() || self.$input.find('#work-place-base-date').ntsError('hasError')) {
                 return;
             }
             service.findWorkplaceTree(self.baseDate(), self.systemType ).done(function(res: Array<UnitModel>) {

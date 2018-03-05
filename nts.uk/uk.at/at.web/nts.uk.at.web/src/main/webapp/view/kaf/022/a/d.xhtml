@@ -27,6 +27,7 @@
 			<td>
 				<div  data-bind="with: texteditorD9">
 					<input tabindex="2" data-bind="ntsTextEditor: {
+						name:'#{i18n.getText('KAF022_179')}',
 						value: value,
 						constraint: constraint,
 						option: option,
@@ -45,6 +46,7 @@
 			<td>
 				<div data-bind="with: texteditorD12">
 					<input  tabindex="5" data-bind="ntsTextEditor: {
+						name:'#{i18n.getText('KAF022_180')}',
 						value: value,
 						constraint: constraint,
 						option: option,
@@ -61,11 +63,13 @@
 		<tr>
 			<td class="color-header" id="d6">#{i18n.getText('KAF022_181')}</td>
 			<td>
-				<div tabindex="8" class="ntsControl">
+				<div  class="ntsControl">
 					<label class="ntsRadioBox">
-						<input  type="radio" name="textRadio" data-bind="checkedValue: 1, checked: selectedValueD13, enable: true" />
-						<span class="box"></span>
-						<span class="label">#{i18n.getText('KAF022_75')}</span>
+						<span tabindex="8">
+							<input  type="radio" name="textRadio" data-bind="checkedValue: 1, checked: selectedValueD13, enable: true" />
+							<span class="box"></span>
+							<span class="label">#{i18n.getText('KAF022_75')}</span>
+						</span>
 						<span>(</span>
 						<span class="label">#{i18n.getText('KAF022_186')}</span>
 						<span tabindex="9" data-bind="ntsRadioBoxGroup: {
@@ -77,7 +81,7 @@
 						<span>)</span>
 					</label>
 					<div>
-						<label class="ntsRadioBox">
+						<label class="ntsRadioBox" tabindex="8">
 							<input type="radio" name="textRadio" data-bind="checkedValue: 2, checked: selectedValueD13, enable: true" />
 							<span class="box"></span>
 							<span class="label">#{i18n.getText('KAF022_82')}</span>

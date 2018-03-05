@@ -57,21 +57,45 @@ module cps002.a.vm {
         defaultImgId: KnockoutObservable<string> = ko.observable("");
 
         ccgcomponent: any = {
-            baseDate: ko.observable(moment().toDate()),
-            isQuickSearchTab: true,
-            isAdvancedSearchTab: true,
-            isAllReferableEmployee: true,
-            isOnlyMe: true,
-            isEmployeeOfWorkplace: true,
-            isEmployeeWorkplaceFollow: true,
-            isMutipleCheck: false,
-            isSelectAllEmployee: false,
-            onApplyEmployee: (dataEmployee: Array<any>) => {
-                let self: ViewModel = __viewContext['viewModel'];
-                self.copyEmployee(new EmployeeCopy(dataEmployee[0]));
-            }, onSearchOnlyClicked: function(data: any) {
-                let self: ViewModel = __viewContext['viewModel'];
-                self.copyEmployee(new EmployeeCopy(data));
+            /** Common properties */
+            systemType: 1, // システム区分
+            showEmployeeSelection: true, // 検索タイプ
+            showQuickSearchTab: false, // クイック検索
+            showAdvancedSearchTab: true, // 詳細検索
+            showBaseDate: false, // 基準日利用
+            showClosure: true, // 就業締め日利用
+            showAllClosure: true, // 全締め表示
+            showPeriod: false, // 対象期間利用
+            periodFormatYM: true, // 対象期間精度
+
+            /** Required parame*/
+            baseDate: moment.utc().toISOString(), // 基準日
+            periodStartDate: moment.utc("1900/01/01", "YYYY/MM/DD").toISOString(), // 対象期間開始日
+            periodEndDate: moment.utc("9999/12/31", "YYYY/MM/DD").toISOString(), // 対象期間終了日
+            inService: false, // 在職区分
+            leaveOfAbsence: false, // 休職区分
+            closed: true, // 休業区分
+            retirement: true, // 退職区分
+
+            /** Quick search tab options */
+            showAllReferableEmployee: true, // 参照可能な社員すべて
+            showOnlyMe: true, // 自分だけ
+            showSameWorkplace: true, // 同じ職場の社員
+            showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
+
+            /** Advanced search properties */
+            showEmployment: true, // 雇用条件
+            showWorkplace: true, // 職場条件
+            showClassification: true, // 分類条件
+            showJobTitle: true, // 職位条件
+            showWorktype: true, // 勤種条件
+            isMutipleCheck: false, // 選択モード
+
+            /** Return data */
+            returnDataFromCcg001: (data: any) => {
+                let self: ViewModel = this;
+
+                self.copyEmployee(data.listEmployee[0]);
             }
         };
 
