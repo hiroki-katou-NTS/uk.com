@@ -87,9 +87,6 @@ public class ScheBatchCorrectExecutionCommandHandler
 	/** The Constant PREV_MONTH. */
 	private static final int PREV_DAY_MONTH = -1;
 	
-	/** The Constant DATA_EXECUTION. */
-	private static final String DATA_EXECUTION = "DATA_EXECUTION";
-	
 	/** The Constant NUMBER_OF_SUCCESS. */
 	private static final String NUMBER_OF_SUCCESS = "NUMBER_OF_SUCCESS";
 	
@@ -147,7 +144,6 @@ public class ScheBatchCorrectExecutionCommandHandler
 		// Variable to count amount of list of error records sent to DB
 		int errorRecordCount = DEFAULT_VALUE;
 		
-		setter.setData(DATA_EXECUTION, dto);
 		setter.setData(NUMBER_OF_SUCCESS, countSuccess);
 		setter.setData(NUMBER_OF_ERROR, DEFAULT_VALUE);
 		
