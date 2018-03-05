@@ -1,16 +1,15 @@
 package nts.uk.shr.com.task.schedule;
 
+import java.util.Optional;
+
 import nts.arc.task.schedule.ScheduledJob;
-import nts.arc.task.schedule.ScheduledJobUserData;
-import nts.arc.task.schedule.cron.CronSchedule;
+import nts.arc.time.GeneralDateTime;
 
 public interface UkJobScheduler {
 
-	default void scheduleOnCurrentCompany(Class<? extends ScheduledJob> jobClass, CronSchedule cronSchedule) {
-		this.scheduleOnCurrentCompany(jobClass, cronSchedule, new ScheduledJobUserData());
-	}
-
-	void scheduleOnCurrentCompany(Class<? extends ScheduledJob> jobClass, CronSchedule cronSchedule, ScheduledJobUserData userData);
+	ScheduleInfo scheduleOnCurrentcompany(UkJobScheduleOptions options);
 	
-	void unscheduleOnCurrentCompany(Class<? extends ScheduledJob> jobClass);
+	void unscheduleOnCurrentCompany(Class<? extends ScheduledJob> jobClass, String scheduleId);
+	
+	Optional<GeneralDateTime> getNextFireTime(Class<? extends ScheduledJob> jobClass, String scheduleId);
 }
