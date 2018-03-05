@@ -2157,9 +2157,9 @@ module nts.uk.at.view.kmf022 {
                     topComment: self.texteditorJ29.value(),
                     bottomComment: self.texteditorJ32.value(),
                     topCommentFontColor: self.valueJ30(),
-                    topCommentFontWeight: self.enableJ31(),
+                    topCommentFontWeight: self.enableJ31()? 1 : 0,
                     bottomCommentFontColor: self.valueJ30_1(),
-                    bottomCommentFontWeight: self.enableJ31_1()                     
+                    bottomCommentFontWeight: self.enableJ31_1()? 1 : 0                 
                 };
                 data.goBack = {
                     companyId: self.companyId(),
@@ -2247,9 +2247,9 @@ module nts.uk.at.view.kmf022 {
                     comment1: self.texteditorE13.value(),
                     comment2: self.texteditorE16.value(),
                     color1:self.valueE14(),
-                    weight1:self.enableE15(),
+                    weight1:self.enableE15()? 1 : 0,
                     color2:self.valueE17(),
-                    weight2:self.enableE18()
+                    weight2:self.enableE18()? 1 : 0
                 };
                 data.wdApp = {
                     companyId: self.companyId(),
@@ -2328,14 +2328,19 @@ module nts.uk.at.view.kmf022 {
                 data.jobAssign = {
                     isConcurrently: self.selectedIdA14_3() ? 1 : 0
                 };
+                data.approvalSet = {
+                    prinFlg: self.selectedIdA17_5()
+                };
                 data.jobSearch = ko.toJS(self.listDataA15());
                 service.update(data).done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         //Load data setting
                         self.loadData();
-                        nts.uk.ui.block.clear();
                     });
-                }).fail();
+                }).always(()=>{
+                    nts.uk.ui.block.clear();
+                });
+           
             }
 
         }
