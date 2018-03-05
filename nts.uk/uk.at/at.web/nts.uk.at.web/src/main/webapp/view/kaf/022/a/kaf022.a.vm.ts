@@ -1663,7 +1663,8 @@ module nts.uk.at.view.kmf022 {
                     self.initDataI(data);
                     self.initDataJ(data);
                     self.initDataK(data);
-                    nts.uk.ui.block.clear();     
+                }).always(()=>{
+                    nts.uk.ui.block.clear();
                 });
                     
             }
@@ -1856,8 +1857,8 @@ module nts.uk.at.view.kmf022 {
                         self.otActualDispAtr(dataAppSet.otActualDispAtr);
                         self.warningDateDispAtr(dataAppSet.warningDateDispAtr);
                         self.appReasonDispAtr(dataAppSet.appReasonDispAtr);
-                        self.scheReflectFlg(dataAppSet.scheReflectFlg);
-                        self.priorityTimeReflectFlg(dataAppSet.priorityTimeReflectFlg);
+                        self.selectedIdA9_8(dataAppSet.scheReflectFlg);
+                        self.selectedIdA9_9(dataAppSet.priorityTimeReflectFlg);
                     }
             }
             initDataB(allData:any): void {
@@ -2124,8 +2125,8 @@ module nts.uk.at.view.kmf022 {
                     otActualDispAtr: self.otActualDispAtr(),
                     warningDateDispAtr: self.warningDateDispAtr(),
                     appReasonDispAtr: self.appReasonDispAtr(),
-                    scheReflectFlg: self.scheReflectFlg(),
-                    priorityTimeReflectFlg: self.priorityTimeReflectFlg(),
+                    scheReflectFlg: self.selectedIdA9_8(),
+                    priorityTimeReflectFlg: self.selectedIdA9_9(),
                     appContentChangeFlg: self.selectedIdA17_4(),
                     attendentTimeReflectFlg: self.selectedIdA9_5(),
                     appActMonthConfirmFlg: self.selectedIdA11_8(),
