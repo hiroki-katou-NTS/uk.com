@@ -8,10 +8,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -27,10 +27,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class OiomtAcceptCdConvert extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    
-    @Version
-    @Column(name = "EXCLUS_VER")
-    public Long version;
     
     /**
     * ID
@@ -50,9 +46,9 @@ public class OiomtAcceptCdConvert extends UkJpaEntity implements Serializable
     */
     @Basic(optional = false)
     @Column(name = "ACCEPT_WITHOUT_SETTING")
-    public int acceptWithoutSetting;
-    
-    @OneToMany(targetEntity = OiomtCdConvertDetails.class, cascade = CascadeType.ALL, mappedBy = "oiomtAcceptCdConvert", orphanRemoval = true)
+    public int acceptWithoutSetting;    
+
+    @OneToMany(targetEntity=OiomtCdConvertDetails.class, cascade = CascadeType.ALL, mappedBy = "oiomtAcceptCdConvert", orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "OIOMT_CD_CONVERT_DETAILS")
 	public List<OiomtCdConvertDetails> oiomtCdConvertDetails;
     

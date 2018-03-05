@@ -10,6 +10,8 @@ public interface AcceptCdConvertRepository
 {
 
     List<AcceptCdConvert> getAllAcceptCdConvert();
+    
+    List<AcceptCdConvert> getAcceptCdConvertByCompanyId(String cid);
 
     Optional<AcceptCdConvert> getAcceptCdConvertById(String cid, String convertCd);
 

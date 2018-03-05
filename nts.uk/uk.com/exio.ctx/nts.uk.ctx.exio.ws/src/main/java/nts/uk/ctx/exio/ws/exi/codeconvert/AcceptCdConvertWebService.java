@@ -1,38 +1,64 @@
 package nts.uk.ctx.exio.ws.exi.codeconvert;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
+import nts.uk.ctx.exio.app.command.exi.codeconvert.AcceptCdConvertCommand;
+import nts.uk.ctx.exio.app.command.exi.codeconvert.AddAcceptCdConvertCommandHandler;
+import nts.uk.ctx.exio.app.command.exi.codeconvert.RemoveAcceptCdConvertCommandHandler;
+import nts.uk.ctx.exio.app.command.exi.codeconvert.UpdateAcceptCdConvertCommandHandler;
+import nts.uk.ctx.exio.app.find.exi.codeconvert.AcceptCdConvertDto;
+import nts.uk.ctx.exio.app.find.exi.codeconvert.AcceptCdConvertFinder;
 
 @Path("exio/exi/codeconvert")
 @Produces("application/json")
 public class AcceptCdConvertWebService {
 
+	@Inject
+	private AddAcceptCdConvertCommandHandler addHandler;
+	
+	@Inject
+	private UpdateAcceptCdConvertCommandHandler updateHandler;
+	
+	@Inject
+	private RemoveAcceptCdConvertCommandHandler removeHandler;
+
+	@Inject
+	private AcceptCdConvertFinder codeConvertFinder;
+
 	@POST
-	@Path("getCodeConvert")
-	public List<AcceptCdConvert> getCodeConvert() {
-		List<AcceptCdConvert> list = new ArrayList<>();
-		for (int i = 1; i < 10; i++) {
-			list.add(new AcceptCdConvert("1", "00" + i, "Item " + i, i % 2 == 0 ? 1 : 0, null));
-		}
-		return list;
+	@Path("getCodeConvertByCompanyId")
+	public List<AcceptCdConvertDto> getCodeConvertByCompanyId() {
+		return this.codeConvertFinder.getAcceptCdConvertByCompanyId();
 	}
 
 	@POST
 	@Path("getAcceptCodeConvert/{convertCode}")
-	public AcceptCdConvert getAcceptCodeConvert(@PathParam("convertCode") String convertCode) {
-		List<AcceptCdConvert> list = new ArrayList<>();
-		for (int i = 1; i < 10; i++) {
-			list.add(new AcceptCdConvert("1", "00" + i, "Item " + i, i % 2 == 0 ? 1 : 0, null));
-		}
-		AcceptCdConvert codeConvert = list.stream().filter(p -> p.getConvertCd().equals(convertCode)).findFirst()
-				.orElse(null);
-		return codeConvert;
+	public AcceptCdConvertDto getAcceptCodeConvert(@PathParam("convertCode") String convertCd) {
+		return this.codeConvertFinder.getAcceptCdConvertById(convertCd);
 	}
+
+	@POST
+	@Path("addAcceptCodeConvert")
+	public void addAcceptCodeConvert(AcceptCdConvertCommand command) {
+		this.addHandler.handle(command);
+	}
+
+	@POST
+	@Path("updateAcceptCodeConvert")
+	public void updateAcceptCodeConvert(AcceptCdConvertCommand command) {
+		this.updateHandler.handle(command);
+	}
+
+	@POST
+	@Path("removeAcceptCodeConvert")
+	public void removeAcceptCodeConvert(AcceptCdConvertCommand command) {
+		this.removeHandler.handle(command);
+	}
+
 }

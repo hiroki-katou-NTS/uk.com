@@ -52,6 +52,7 @@ public class OiomtCdConvertDetails extends UkJpaEntity implements Serializable
 		@PrimaryKeyJoinColumn(name="CONVERT_CD",referencedColumnName="CONVERT_CD")
 	})
 	private OiomtAcceptCdConvert oiomtAcceptCdConvert;
+    
     @Override
     protected Object getKey()
     {
