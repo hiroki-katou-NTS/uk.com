@@ -1,6 +1,7 @@
-/ Override Base /
+/* Override Base */
 .ui-widget.ui-tabs.vertical > .ui-tabs-panel {
-    overflow: visible;
+    overflow: visible !important;
+    width: auto;
 }
 td div {
 	position: relative;
