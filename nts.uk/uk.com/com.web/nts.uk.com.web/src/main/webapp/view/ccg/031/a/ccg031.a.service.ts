@@ -20,7 +20,7 @@ module nts.uk.com.view.ccg031.a.service {
                 layoutID: layoutID,
                 pgType: pgType
             },
-            listPortalPlacementCommand: placements
+            listPortalPlacementCommand: ko.mapping.toJS(placements)
         };
         return nts.uk.request.ajax("com", paths.registry, data, {dataType: 'text'});
     }
