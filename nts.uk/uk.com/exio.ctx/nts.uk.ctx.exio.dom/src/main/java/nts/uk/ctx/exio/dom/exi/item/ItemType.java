@@ -13,7 +13,9 @@ public enum ItemType {
 	//日付型
 	DATE(2, "Enum_ItemType_DATE"),
 	//時刻型
-	INS_TIME(3, "Enum_ItemType_INS_TIME");
+	INS_TIME(3, "Enum_ItemType_INS_TIME"),
+	//時間
+	TIME(4, "Enum_ItemType_TIME");
 	
 	/** The value. */
 	public final int value;
