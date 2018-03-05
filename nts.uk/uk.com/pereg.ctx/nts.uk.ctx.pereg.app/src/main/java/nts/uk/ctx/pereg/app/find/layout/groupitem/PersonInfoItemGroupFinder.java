@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.pereg.app.find.layout.groupitem;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -83,5 +84,22 @@ public class PersonInfoItemGroupFinder {
 				return m;
 			}).sorted((o1, o2) -> o1.getDispOrder() - o2.getDispOrder()).collect(Collectors.toList());
 		}
+	}
+
+	public List<PerInfoItemDefDto> getAllItemDfFromListGroup(List<String> groupIds) {
+
+		if (groupIds.isEmpty()) {
+			return null;
+		}
+
+		List<PerInfoItemDefDto> result = new ArrayList<PerInfoItemDefDto>();
+
+		groupIds.stream().forEach(f-> {
+			List<PerInfoItemDefDto> lstItemDfDto = getAllItemDf(f);
+			if (lstItemDfDto !=  null) 
+				result.addAll(lstItemDfDto);
+		});
+		
+		return result;
 	}
 }
