@@ -110,7 +110,7 @@ public class RegulationInfoEmployeeFinder {
 			}
 			break;
 		default:
-			break;
+			throw new RuntimeException("Invalid enum value");
 		}
 
 	}
