@@ -38,6 +38,7 @@ import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
@@ -203,7 +204,9 @@ public class TotalWorkingTime {
 				   																      addSettingOfIrregularWork,
 				   																      addSettingOfFlexWork,
 				   																      addSettingOfRegularWork,
-				   																      vacationAddTimeSet);
+				   																      vacationAddTimeSet,
+				   																      AutoCalAtrOvertime.CALCULATEMBOSS
+				   																      );
 		//日別実績の所定外時間
 		ExcessOfStatutoryTimeOfDaily excesstime =ExcessOfStatutoryTimeOfDaily.calculationExcessTime(oneDay, overTimeAutoCalcSet,holidayAutoCalcSetting,
 																									CalcMethodOfNoWorkingDay.isCalculateFlexTime,
@@ -289,7 +292,6 @@ public class TotalWorkingTime {
 		/*日別実績の早退時間(途中)*/
 		/*日別実績の外出時間*/
 		
-		/*日別実績の加給時間*/
 		/*日別実績の法定外時間*/
 		
 		return new TotalWorkingTime(totalWorkTime,

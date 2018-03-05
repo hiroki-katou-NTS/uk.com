@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.record.dom;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.SpecBonusPayTimeSheetForCalc;
@@ -18,26 +20,12 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author keisuke_hoshina
  *
  */
-public class MidNightTimeSheet extends CalculationTimeSheet{
+public class MidNightTimeSheetForCalc extends CalculationTimeSheet{
 
-//	private CompanyId companyId;
-//	private TimeWithDayAttr start;
-//	private TimeWithDayAttr end;
-//	private TimeSpanForCalc timeSpan;
-	
-	public MidNightTimeSheet(TimeZoneRounding timeSheet, TimeSpanForCalc calculationTimeSheet,List<TimeSheetOfDeductionItem> recorddeductionSheets,List<TimeSheetOfDeductionItem> deductionSheets,
-			List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet,Optional<MidNightTimeSheet> midNighttimeSheet) {
+	public MidNightTimeSheetForCalc(TimeZoneRounding timeSheet, TimeSpanForCalc calculationTimeSheet,List<TimeSheetOfDeductionItem> recorddeductionSheets,List<TimeSheetOfDeductionItem> deductionSheets,
+			List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet,Optional<MidNightTimeSheetForCalc> midNighttimeSheet) {
 		super(timeSheet, calculationTimeSheet,recorddeductionSheets,deductionSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
 	}
-	
-	/**
-	 * 計算範囲と深夜時間帯の重複部分取得
-	 * @return 重複部分
-	 */
-	public Optional<TimeSpanForCalc> TimeSpanForCalc () {
-		return this.calcrange.getDuplicatedWith(((CalculationTimeSheet)this).getCalcrange());
-	}
-	
 	
 	public boolean contains(TimeWithDayAttr baseTime) {
 		return ((CalculationTimeSheet)this).getCalcrange().contains(baseTime);
@@ -60,13 +48,13 @@ public class MidNightTimeSheet extends CalculationTimeSheet{
 	 * @param baseTime
 	 * @return
 	 */
-	public Optional<MidNightTimeSheet> reCreateOwn(TimeWithDayAttr baseTime,boolean isDateBefore) {
+	public Optional<MidNightTimeSheetForCalc> reCreateOwn(TimeWithDayAttr baseTime,boolean isDateBefore) {
 		List<TimeSheetOfDeductionItem> deductionTimeSheets = this.recreateDeductionItemBeforeBase(baseTime,isDateBefore);
 		List<BonusPayTimeSheetForCalc>        bonusPayTimeSheet = this.recreateBonusPayListBeforeBase(baseTime,isDateBefore);
 		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet = this.recreateSpecifiedBonusPayListBeforeBase(baseTime, isDateBefore);
-		Optional<MidNightTimeSheet>    midNighttimeSheet = this.recreateMidNightTimeSheetBeforeBase(baseTime,isDateBefore);
+		Optional<MidNightTimeSheetForCalc>    midNighttimeSheet = this.recreateMidNightTimeSheetBeforeBase(baseTime,isDateBefore);
 		TimeSpanForCalc renewSpan = decisionNewSpan(this.getCalcrange(),baseTime,isDateBefore);
-		return Optional.of(new MidNightTimeSheet(this.getTimeSheet(),renewSpan,deductionTimeSheets,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet));
+		return Optional.of(new MidNightTimeSheetForCalc(this.getTimeSheet(),renewSpan,deductionTimeSheets,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet));
 	}
 	
 	
@@ -102,8 +90,39 @@ public class MidNightTimeSheet extends CalculationTimeSheet{
 //	}
 	
 	
+	/**
+	 * 深夜時間帯から計算用時間帯への変更
+	 * @param midNightTimeSheet 深夜時間帯
+	 * @return 計算用深夜時間帯
+	 */
+	public static MidNightTimeSheetForCalc convertForCalc(MidNightTimeSheet midNightTimeSheet) {
+		return new MidNightTimeSheetForCalc(new TimeZoneRounding(midNightTimeSheet.getStart(), midNightTimeSheet.getEnd(), null),
+											new TimeSpanForCalc(midNightTimeSheet.getStart(),midNightTimeSheet.getEnd()), 
+											Collections.emptyList(), 
+											Collections.emptyList(), 
+											Collections.emptyList(), 
+											Collections.emptyList(), 
+											Optional.empty());
+	}
 	
-	public MidNightTimeSheet getTerminalMidnightTimeSheet() {
+	/**
+	 * 重複範囲の時間帯を持つ計算用深夜時間帯に作り直す
+	 * @param timeSpan　重複を調べたい時間帯
+	 * @return　重複範囲の時間帯深夜時間帯
+	 */
+	public MidNightTimeSheetForCalc getDuplicateRangeTimeSheet(TimeSpanForCalc timeSpan) {
+		
+		return new MidNightTimeSheetForCalc(new TimeZoneRounding(timeSpan.getStart(), timeSpan.getEnd(), null), 
+											timeSpan, 
+											this.recordedTimeSheet, 
+											this.deductionTimeSheet, 
+											this.bonusPayTimeSheet, 
+											this.specBonusPayTimesheet, 
+											this.midNightTimeSheet);
+	}
+	
+	
+	public MidNightTimeSheetForCalc getTerminalMidnightTimeSheet() {
 		return this.midNightTimeSheet
 				.map(ts -> ts.getTerminalMidnightTimeSheet())
 				.orElse(this);

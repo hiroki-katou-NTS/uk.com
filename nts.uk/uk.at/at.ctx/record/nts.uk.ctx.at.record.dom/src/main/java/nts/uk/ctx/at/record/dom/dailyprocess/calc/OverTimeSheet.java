@@ -17,11 +17,14 @@ import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.overtimework.enums.StatutoryAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaisingSalaryTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.RaisingSalaryCalcAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
@@ -208,17 +211,42 @@ public class OverTimeSheet {
 	}
 	
 	/**
-	 * 深夜時間計算後の時間帯再作成
-	 * @return
+	 * 深夜時間計算
+	 * @return 計算時間
 	 */
-	public OverTimeSheet reCreateToCalcExcessWork(OverTimeSheet overTimeWorkSheet,AutoCalculationOfOverTimeWork autoCalcSet) {
-//		ExcessOverTimeWorkMidNightTime midNightTime = overTimeWorkSheet.overWorkTimeOfDaily.calcMidNightTimeIncludeOverTimeWork(autoCalcSet);
-//		OverTimeOfDaily overTimeWorkOfDaily = new OverTimeOfDaily(overTimeWorkSheet.overWorkTimeOfDaily.getOverTimeWorkFrameTimeSheet(),
-//																		  overTimeWorkSheet.overWorkTimeOfDaily.getOverTimeWorkFrameTime(),
-//																		  Finally.of(midNightTime));
-//		return new OverTimeSheet(overTimeWorkOfDaily);
-		return null;
+	public AttendanceTime calcMidNightTime(AutoCalculationOfOverTimeWork autoCalcSet) {
+		
+		AttendanceTime calcTime = new AttendanceTime(0);
+		for(OverTimeFrameTimeSheetForCalc timeSheet:frameTimeSheets) {
+			val calcSet = getCalcSetByAtr(autoCalcSet, timeSheet.getWithinStatutryAtr(),timeSheet.isGoEarly());
+			if(timeSheet.getMidNightTimeSheet().isPresent()) {
+				calcTime = calcTime.addMinutes(timeSheet.getMidNightTimeSheet().get().calcMidNight(calcSet.getCalculationClassification()).valueAsMinutes());
+			}
+		}
+		return calcTime;
 	}
+	
+	/**
+	 * 法定内区分、早出区分に従って計算区分の取得
+	 * @param autoCalcSet 自動計算設定
+	 * @param statutoryAtr　法定内区分
+	 * @param goEarly　早出区分
+	 * @return　自動計算設定
+	 */
+	private AutoCalcSet getCalcSetByAtr(AutoCalculationOfOverTimeWork autoCalcSet,StatutoryAtr statutoryAtr, boolean goEarly) {
+		if(statutoryAtr.isStatutory() && !goEarly) {
+			return autoCalcSet.getLegalOtTime();
+		}
+		else if(statutoryAtr.isStatutory() && goEarly) {
+			return autoCalcSet.getEarlyOtTime();
+		}
+		else {
+			return autoCalcSet.getNormalOtTime();
+		}
+		
+	}
+	
+	
 	
 	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 

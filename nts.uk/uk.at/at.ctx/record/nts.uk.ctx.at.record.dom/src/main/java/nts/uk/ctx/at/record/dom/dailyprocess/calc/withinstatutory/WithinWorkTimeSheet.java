@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
+import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
+import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
@@ -106,12 +107,13 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 													CommonFixedWorkTimezoneSet lstHalfDayWorkTimezone,
 													WorkTimezoneCommonSet workTimeCommonSet,
 													DeductionTimeSheet deductionTimeSheet,
-													BonusPaySetting bonusPaySetting) {
+													BonusPaySetting bonusPaySetting,
+													MidNightTimeSheet midNightTimeSheet) {
 		
 		List<WithinWorkTimeFrame> timeFrames = new ArrayList<>();
 		if(workType.isWeekDayAttendance()) {
 			timeFrames = isWeekDayProcess(timeLeavingWork,workType,predetermineTimeSetForCalc,lstHalfDayWorkTimezone,workTimeCommonSet
-									 							,deductionTimeSheet,bonusPaySetting);
+									 							,deductionTimeSheet,bonusPaySetting,midNightTimeSheet);
 		}
 		return new WithinWorkTimeSheet(timeFrames);
 	}
@@ -130,7 +132,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			CommonFixedWorkTimezoneSet lstHalfDayWorkTimezone,
 			WorkTimezoneCommonSet workTimeCommonSet,
 			DeductionTimeSheet deductionTimeSheet,
-			BonusPaySetting bonusPaySetting
+			BonusPaySetting bonusPaySetting,
+			MidNightTimeSheet midNightTimeSheet
 			) {
 
 		//遅刻猶予時間の取得
@@ -145,7 +148,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		
 		List<BonusPayTimeSheetForCalc> bonusPayTimeSheet = new ArrayList<>();
 		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet = new ArrayList<>();
-		Optional<MidNightTimeSheet> midNightTimeSheet = Optional.empty();
+		Optional<MidNightTimeSheetForCalc> duplicatemidNightTimeSheet = Optional.empty();
 		for(EmTimeZoneSet duplicateTimeSheet :workingHourSet) {
 			//DeductionTimeSheet deductionTimeSheet = /*控除時間を分割する*/
 			
@@ -156,16 +159,20 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 												 .filter(tc -> tc.getCalcrange().checkDuplication(duplicateTimeSheet.getTimezone().timeSpan()).isDuplicated())
 												 .map(tc -> tc.convertForCalcCorrectRange(tc.getCalcrange().getDuplicatedWith(duplicateTimeSheet.getTimezone().timeSpan()).get()))
 												 .collect(Collectors.toList());
+			/*特定日*/
 			specifiedBonusPayTimeSheet = bonusPaySetting.getLstSpecBonusPayTimesheet().stream().map(tc -> SpecBonusPayTimeSheetForCalc.convertForCalc(tc)).collect(Collectors.toList());
 			specifiedBonusPayTimeSheet = specifiedBonusPayTimeSheet.stream()
 												 .filter(tc -> tc.getCalcrange().checkDuplication(duplicateTimeSheet.getTimezone().timeSpan()).isDuplicated())
 					 							 .map(tc -> tc.convertForCalcCorrectRange(tc.getCalcrange().getDuplicatedWith(duplicateTimeSheet.getTimezone().timeSpan()).get()))
 					 							 .collect(Collectors.toList());
 			/*深夜*/
-			midNightTimeSheet = timeFrame.createMidNightTimeSheet();
+			val duplicateMidNightSpan = duplicateTimeSheet.getTimezone().getDuplicatedWith(midNightTimeSheet.getTimeSpan());
+			if(duplicateMidNightSpan.isPresent()) {
+				duplicatemidNightTimeSheet = Optional.of(MidNightTimeSheetForCalc.convertForCalc(midNightTimeSheet).getDuplicateRangeTimeSheet(duplicateMidNightSpan.get()));
+			}
 			
 			//timeFrames.add(new WithinWorkTimeFrame(timeFrame.getWorkingHoursTimeNo(),timeFrame.getTimeSheet(),timeFrame.getCalcrange(),timeFrame.getDeductionTimeSheet(),bonusPayTimeSheet,midNightTimeSheet,specifiedBonusPayTimeSheet));
-			timeFrames.add(new WithinWorkTimeFrame(timeFrame.getWorkingHoursTimeNo(),timeFrame.getTimeSheet(),timeFrame.getCalcrange(),timeFrame.getRecordedTimeSheet(),timeFrame.getDeductionTimeSheet(),bonusPayTimeSheet,Optional.empty(),specifiedBonusPayTimeSheet));
+			timeFrames.add(new WithinWorkTimeFrame(timeFrame.getWorkingHoursTimeNo(),timeFrame.getTimeSheet(),timeFrame.getCalcrange(),timeFrame.getRecordedTimeSheet(),timeFrame.getDeductionTimeSheet(),bonusPayTimeSheet,duplicatemidNightTimeSheet,specifiedBonusPayTimeSheet));
 		}
 		/*所定内割増時間の時間帯作成*/
 		
@@ -822,13 +829,13 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * 法定内深夜時間の計算
 	 * @return　法定内深夜時間
 	 */
-	public WithinStatutoryMidNightTime calcMidNightTime(AutoCalAtrOvertime autoCalcSet) {
+	public AttendanceTime calcMidNightTime(AutoCalAtrOvertime autoCalcSet) {
 		int totalMidNightTime = 0;
 		totalMidNightTime = withinWorkTimeFrame.stream()
 											   .filter(tg -> tg.getMidNightTimeSheet().isPresent())
 											   .map(ts -> ts.getMidNightTimeSheet().get().calcMidNight(autoCalcSet))
 											   .collect(Collectors.summingInt(tc -> tc));
-		return new WithinStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(totalMidNightTime)));
+		return new AttendanceTime(totalMidNightTime);
 	}
 	
 	/**

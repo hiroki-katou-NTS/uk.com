@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
+import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
@@ -42,7 +42,7 @@ public abstract class CalculationTimeSheet {
 	@Setter
 	protected List<SpecBonusPayTimeSheetForCalc> specBonusPayTimesheet = new ArrayList<>();
 	@Setter
-	protected Optional<MidNightTimeSheet> midNightTimeSheet = Optional.empty();
+	protected Optional<MidNightTimeSheetForCalc> midNightTimeSheet = Optional.empty();
 
 	/**
 	 * @param 控除用
@@ -68,7 +68,7 @@ public abstract class CalculationTimeSheet {
 								
 								List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
 								List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet,
-								Optional<MidNightTimeSheet> midNighttimeSheet
+								Optional<MidNightTimeSheetForCalc> midNighttimeSheet
 								) {
 		this.timeSheet = timeSheet;
 		this.calcrange = calcrange;
@@ -333,7 +333,7 @@ public abstract class CalculationTimeSheet {
 	 * @param isDateBefore 基準時間より早い時間を切り出す
 	 * @return 切り出した深夜時間帯
 	 */
-	public Optional<MidNightTimeSheet> recreateMidNightTimeSheetBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
+	public Optional<MidNightTimeSheetForCalc> recreateMidNightTimeSheetBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
 		if(this.midNightTimeSheet.isPresent()) {
 			if(midNightTimeSheet.get().calcrange.contains(baseTime)) {
 				return midNightTimeSheet.get().midNightTimeSheet.get().reCreateOwn(baseTime,isDateBefore);
@@ -352,10 +352,10 @@ public abstract class CalculationTimeSheet {
 	 * 深夜時間帯の作成(トリガー)
 	 * @param midnightTimeSheet
 	 */
-	public Optional<MidNightTimeSheet> createMidNightTimeSheet() {
+	public Optional<MidNightTimeSheetForCalc> createMidNightTimeSheet() {
 		if(midNightTimeSheet.isPresent()) {
 			if(calcrange.checkDuplication(midNightTimeSheet.get().calcrange).isDuplicated()) { 
-				return Optional.of(new MidNightTimeSheet(timeSheet,
+				return Optional.of(new MidNightTimeSheetForCalc(timeSheet,
 										 calcrange.getDuplicatedWith(midNightTimeSheet.get().calcrange).get(),
 										 duplicateTimeSpan(midNightTimeSheet.get().calcrange),
 										 duplicateTimeSpan(midNightTimeSheet.get().calcrange),
@@ -467,18 +467,18 @@ public abstract class CalculationTimeSheet {
 	 * 深夜時間の計算
 	 * @return 深夜時間
 	 */
-	public int calcMidNight(AutoCalAtrOvertime autoCalcSet) {
+	public AttendanceTime calcMidNight(AutoCalAtrOvertime autoCalcSet) {
 		if(autoCalcSet.isCalculateEmbossing())
 		{
 			if(this.midNightTimeSheet.isPresent()) {
-				return this.midNightTimeSheet.get().calcTotalTime().valueAsMinutes();
+				return this.midNightTimeSheet.get().calcTotalTime();
 			}
 			else {
-				return 0;
+				return new AttendanceTime(0);
 			}
 		}
 		else {
-			return 0;
+			return new AttendanceTime(0);
 		}
 	}
 }
