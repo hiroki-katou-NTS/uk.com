@@ -1625,6 +1625,201 @@ module nts.custombinding {
 
             // extend data of sortable with valueAccessor data prop
             $.extend(opts.sortable, { data: access.data });
+
+            // define common function for init new item value
+            let isStr = (item: any) => {
+                if (!item) {
+                    return false;
+                }
+
+                switch (item.dataTypeValue) {
+                    default:
+                        return false;
+                    case ITEM_SINGLE_TYPE.STRING:
+                    case ITEM_SINGLE_TYPE.SELECTION:
+                        return true;
+                }
+            },
+                modifitem = (def: any, item?: any) => {
+                    if (!item) {
+                        item = {};
+                    }
+
+                    def.itemCode = _.has(def, "itemCode") && def.itemCode || item.itemCode;
+                    def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
+                    def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
+                    def.required = _.has(def, "required") && def.required || !!item.isRequired;
+
+                    def.itemParentCode = _.has(def, "itemParentCode") && def.itemParentCode || item.itemParentCode;
+
+                    def.categoryCode = _.has(def, "categoryCode") && def.categoryCode || '';
+
+                    def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? def.lstComboBoxValue : [
+                        { optionValue: '1', optionText: text('CPS001_100') },
+                        { optionValue: '0', optionText: text('CPS001_99') }
+                    ];
+
+                    def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
+                    def.readonly = ko.observable(_.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled());
+                    def.editable = ko.observable(_.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.EDIT : !!opts.sortable.isEditable());
+                    def.showColor = _.has(def, "showColor") ? (ko.isObservable(def.showColor) ? def.showColor : ko.observable(def.showColor)) :
+                        (ko.isObservable(opts.sortable.showColor) ? opts.sortable.showColor : ko.observable(opts.sortable.showColor));
+
+                    def.type = _.has(def, "type") ? def.type : (item.itemTypeState || <any>{}).itemType;
+                    def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
+
+                    def.value = ko.isObservable(def.value) ? def.value : ko.observable(isStr(def.item) && def.value ? String(def.value) : def.value);
+                    def.textValue = ko.isObservable(def.textValue) ? def.textValue : ko.observable(isStr(def.item) && def.textValue ? String(def.textValue) : def.textValue);
+
+                    def.defValue = ko.toJS(def.value);
+
+                    def.value.subscribe(x => {
+                        let inputs = [],
+                            proc = function(data: any): any {
+                                if (!data.item) {
+                                    return {
+                                        value: String(data.value),
+                                        typeData: 1
+                                    };
+                                }
+
+                                switch (data.item.dataTypeValue) {
+                                    default:
+                                    case ITEM_SINGLE_TYPE.STRING:
+                                        return {
+                                            value: !nou(data.value) ? String(data.value) : undefined,
+                                            typeData: 1
+                                        };
+                                    case ITEM_SINGLE_TYPE.TIME:
+                                    case ITEM_SINGLE_TYPE.NUMERIC:
+                                    case ITEM_SINGLE_TYPE.TIMEPOINT:
+                                        return {
+                                            value: !nou(data.value) ? String(data.value).replace(/:/g, '') : undefined,
+                                            typeData: 2
+                                        };
+                                    case ITEM_SINGLE_TYPE.DATE:
+                                        return {
+                                            value: !nou(data.value) ? moment.utc(data.value, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
+                                            typeData: 3
+                                        };
+                                    case ITEM_SINGLE_TYPE.SELECTION:
+                                    case ITEM_SINGLE_TYPE.SEL_RADIO:
+                                    case ITEM_SINGLE_TYPE.SEL_BUTTON:
+                                        switch (data.item.referenceType) {
+                                            case ITEM_SELECT_TYPE.ENUM:
+                                                return {
+                                                    value: !nou(data.value) ? String(data.value) : undefined,
+                                                    typeData: 2
+                                                };
+                                            case ITEM_SELECT_TYPE.CODE_NAME:
+                                                return {
+                                                    value: !nou(data.value) ? String(data.value) : undefined,
+                                                    typeData: 1
+                                                };
+                                            case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
+                                                let value: number = !nou(data.value) ? Number(data.value) : undefined;
+                                                if (!nou(value)) {
+                                                    if (String(value) == String(data.value)) {
+                                                        return {
+                                                            value: !nou(data.value) ? String(data.value) : undefined,
+                                                            typeData: 2
+                                                        };
+                                                    } else {
+                                                        return {
+                                                            value: !nou(data.value) ? String(data.value) : undefined,
+                                                            typeData: 1
+                                                        };
+                                                    }
+                                                } else {
+                                                    return {
+                                                        value: !nou(data.value) ? String(data.value) : undefined,
+                                                        typeData: 1
+                                                    };
+                                                }
+                                        }
+                                }
+                            };
+
+                        _(opts.sortable.data())
+                            .filter(x => _.has(x, "items") && _.isFunction(x.items))
+                            .map(x => ko.toJS(x.items))
+                            .flatten()
+                            .filter((x: any) => _.has(x, "item") && !!x.item)
+                            .map((x: any) => {
+                                if (_.isArray(x)) {
+                                    return x.map((m: any) => {
+                                        let data = proc(m);
+                                        return {
+                                            recordId: m.recordId,
+                                            categoryCd: m.categoryCode,
+                                            definitionId: m.itemDefId,
+                                            itemCode: m.itemCode,
+                                            value: data.value,
+                                            'type': data.typeData
+                                        }
+                                    });
+                                } else {
+                                    let data = proc(x);
+                                    return {
+                                        recordId: x.recordId,
+                                        categoryCd: x.categoryCode,
+                                        definitionId: x.itemDefId,
+                                        itemCode: x.itemCode,
+                                        value: data.value,
+                                        'type': data.typeData
+                                    };
+                                }
+                            })
+                            .groupBy((x: any) => x.categoryCd)
+                            .each(x => {
+                                if (_.isArray(_.first(x))) {
+                                    _.each(x, k => {
+                                        let group = _.groupBy(k, (m: any) => !!m.recordId);
+                                        _.each(group, g => {
+                                            let first: any = _.first(g);
+                                            inputs.push({
+                                                recordId: first.recordId,
+                                                categoryCd: first.categoryCd,
+                                                items: g.map(m => {
+                                                    return {
+                                                        definitionId: m.definitionId,
+                                                        itemCode: m.itemCode,
+                                                        value: m.value,
+                                                        'type': m.type
+                                                    };
+                                                })
+                                            });
+                                        });
+                                    });
+                                } else {
+                                    let group = _.groupBy(x, (m: any) => !!m.recordId);
+                                    _.each(group, g => {
+                                        let first: any = _.first(g);
+                                        inputs.push({
+                                            recordId: first.recordId,
+                                            categoryCd: first.categoryCd,
+                                            items: g.map(m => {
+                                                return {
+                                                    definitionId: m.definitionId,
+                                                    itemCode: m.itemCode,
+                                                    value: m.value,
+                                                    'type': m.type
+                                                };
+                                            })
+                                        });
+                                    });
+                                }
+                            });
+                        // change value
+                        opts.sortable.outData(inputs);
+                    });
+
+                    def.editable.subscribe(x => {
+                        def.value.valueHasMutated();
+                    });
+                    def.editable.valueHasMutated();
+                };
+
             opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
                 // remove all sibling sperators
                 let maps: Array<number> = _(data)
@@ -1642,200 +1837,6 @@ module nts.custombinding {
 
                 opts.sortable.isEditable.valueHasMutated();
                 _.each(data, (x, i) => {
-                    // define common function for init new item value
-                    let isStr = (item: any) => {
-                        if (!item) {
-                            return false;
-                        }
-
-                        switch (item.dataTypeValue) {
-                            default:
-                                return false;
-                            case ITEM_SINGLE_TYPE.STRING:
-                            case ITEM_SINGLE_TYPE.SELECTION:
-                                return true;
-                        }
-                    },
-                        modifitem = (def: any, item?: any) => {
-                            if (!item) {
-                                item = {};
-                            }
-
-                            def.itemCode = _.has(def, "itemCode") && def.itemCode || item.itemCode;
-                            def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
-                            def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
-                            def.required = _.has(def, "required") && def.required || !!item.isRequired;
-
-                            def.itemParentCode = _.has(def, "itemParentCode") && def.itemParentCode || item.itemParentCode;
-
-                            def.categoryCode = _.has(def, "categoryCode") && def.categoryCode || '';
-
-                            def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? def.lstComboBoxValue : [
-                                { optionValue: '1', optionText: text('CPS001_100') },
-                                { optionValue: '0', optionText: text('CPS001_99') }
-                            ];
-
-                            def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
-                            def.readonly = ko.observable(_.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled());
-                            def.editable = ko.observable(_.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.EDIT : !!opts.sortable.isEditable());
-                            def.showColor = _.has(def, "showColor") ? (ko.isObservable(def.showColor) ? def.showColor : ko.observable(def.showColor)) :
-                                (ko.isObservable(opts.sortable.showColor) ? opts.sortable.showColor : ko.observable(opts.sortable.showColor));
-
-                            def.type = _.has(def, "type") ? def.type : (item.itemTypeState || <any>{}).itemType;
-                            def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
-
-                            def.value = ko.isObservable(def.value) ? def.value : ko.observable(isStr(def.item) && def.value ? String(def.value) : def.value);
-                            def.textValue = ko.isObservable(def.textValue) ? def.textValue : ko.observable(isStr(def.item) && def.textValue ? String(def.textValue) : def.textValue);
-
-                            def.defValue = ko.toJS(def.value);
-
-                            def.value.subscribe(x => {
-                                let inputs = [],
-                                    proc = function(data: any): any {
-                                        if (!data.item) {
-                                            return {
-                                                value: String(data.value),
-                                                typeData: 1
-                                            };
-                                        }
-
-                                        switch (data.item.dataTypeValue) {
-                                            default:
-                                            case ITEM_SINGLE_TYPE.STRING:
-                                                return {
-                                                    value: !nou(data.value) ? String(data.value) : undefined,
-                                                    typeData: 1
-                                                };
-                                            case ITEM_SINGLE_TYPE.TIME:
-                                            case ITEM_SINGLE_TYPE.NUMERIC:
-                                            case ITEM_SINGLE_TYPE.TIMEPOINT:
-                                                return {
-                                                    value: !nou(data.value) ? String(data.value).replace(/:/g, '') : undefined,
-                                                    typeData: 2
-                                                };
-                                            case ITEM_SINGLE_TYPE.DATE:
-                                                return {
-                                                    value: !nou(data.value) ? moment.utc(data.value, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
-                                                    typeData: 3
-                                                };
-                                            case ITEM_SINGLE_TYPE.SELECTION:
-                                            case ITEM_SINGLE_TYPE.SEL_RADIO:
-                                            case ITEM_SINGLE_TYPE.SEL_BUTTON:
-                                                switch (data.item.referenceType) {
-                                                    case ITEM_SELECT_TYPE.ENUM:
-                                                        return {
-                                                            value: !nou(data.value) ? String(data.value) : undefined,
-                                                            typeData: 2
-                                                        };
-                                                    case ITEM_SELECT_TYPE.CODE_NAME:
-                                                        return {
-                                                            value: !nou(data.value) ? String(data.value) : undefined,
-                                                            typeData: 1
-                                                        };
-                                                    case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
-                                                        let value: number = !nou(data.value) ? Number(data.value) : undefined;
-                                                        if (!nou(value)) {
-                                                            if (String(value) == String(data.value)) {
-                                                                return {
-                                                                    value: !nou(data.value) ? String(data.value) : undefined,
-                                                                    typeData: 2
-                                                                };
-                                                            } else {
-                                                                return {
-                                                                    value: !nou(data.value) ? String(data.value) : undefined,
-                                                                    typeData: 1
-                                                                };
-                                                            }
-                                                        } else {
-                                                            return {
-                                                                value: !nou(data.value) ? String(data.value) : undefined,
-                                                                typeData: 1
-                                                            };
-                                                        }
-                                                }
-                                        }
-                                    };
-
-                                _(opts.sortable.data())
-                                    .filter(x => _.has(x, "items") && _.isFunction(x.items))
-                                    .map(x => ko.toJS(x.items))
-                                    .flatten()
-                                    .filter((x: any) => _.has(x, "item") && !!x.item)
-                                    .map((x: any) => {
-                                        if (_.isArray(x)) {
-                                            return x.map((m: any) => {
-                                                let data = proc(m);
-                                                return {
-                                                    recordId: m.recordId,
-                                                    categoryCd: m.categoryCode,
-                                                    definitionId: m.itemDefId,
-                                                    itemCode: m.itemCode,
-                                                    value: data.value,
-                                                    'type': data.typeData
-                                                }
-                                            });
-                                        } else {
-                                            let data = proc(x);
-                                            return {
-                                                recordId: x.recordId,
-                                                categoryCd: x.categoryCode,
-                                                definitionId: x.itemDefId,
-                                                itemCode: x.itemCode,
-                                                value: data.value,
-                                                'type': data.typeData
-                                            };
-                                        }
-                                    })
-                                    .groupBy((x: any) => x.categoryCd)
-                                    .each(x => {
-                                        if (_.isArray(_.first(x))) {
-                                            _.each(x, k => {
-                                                let group = _.groupBy(k, (m: any) => !!m.recordId);
-                                                _.each(group, g => {
-                                                    let first: any = _.first(g);
-                                                    inputs.push({
-                                                        recordId: first.recordId,
-                                                        categoryCd: first.categoryCd,
-                                                        items: g.map(m => {
-                                                            return {
-                                                                definitionId: m.definitionId,
-                                                                itemCode: m.itemCode,
-                                                                value: m.value,
-                                                                'type': m.type
-                                                            };
-                                                        })
-                                                    });
-                                                });
-                                            });
-                                        } else {
-                                            let group = _.groupBy(x, (m: any) => !!m.recordId);
-                                            _.each(group, g => {
-                                                let first: any = _.first(g);
-                                                inputs.push({
-                                                    recordId: first.recordId,
-                                                    categoryCd: first.categoryCd,
-                                                    items: g.map(m => {
-                                                        return {
-                                                            definitionId: m.definitionId,
-                                                            itemCode: m.itemCode,
-                                                            value: m.value,
-                                                            'type': m.type
-                                                        };
-                                                    })
-                                                });
-                                            });
-                                        }
-                                    });
-                                // change value
-                                opts.sortable.outData(inputs);
-                            });
-
-                            def.editable.subscribe(x => {
-                                def.value.valueHasMutated();
-                            });
-                            def.editable.valueHasMutated();
-                        };
-
                     x.dispOrder = i + 1;
                     x.layoutID = random();
 
