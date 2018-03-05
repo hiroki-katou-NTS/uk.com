@@ -118,7 +118,7 @@ module nts.uk.com.view.ccg.share.ccg {
         /**
          * search all worktype
          */
-        export function searchAllWorkType(): JQueryPromise<string[]> {
+        export function searchAllWorkType(): JQueryPromise<Array<model.BusinessType>> {
             return nts.uk.request.ajax('at', servicePath.searchAllWorkType);
         }
         
@@ -238,6 +238,11 @@ module nts.uk.com.view.ccg.share.ccg {
             export interface DatePeriodDto {
                 startDate: string;
                 endDate: string
+            }
+
+            export interface BusinessType {
+                businessTypeCode: string;
+                businessTypeName: string;
             }
 
             export class EmployeeRangeSelection {

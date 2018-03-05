@@ -13,6 +13,7 @@ module nts.uk.com.view.ccg.share.ccg {
     import EmployeeQueryParam = service.model.EmployeeQueryParam;
     import EmployeeDto = service.model.EmployeeDto;
     import DatePeriodDto = service.model.DatePeriodDto;
+    import BusinessType = service.model.BusinessType;
 
     export module viewmodel {
         
@@ -889,30 +890,91 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.queryParam.retireEnd = self.statusPeriodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
 
                 // reload advanced search tab.
-                $.when(service.searchWorkplaceOfEmployee(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
-                    service.searchAllWorkType())
-                    .done((selectedCodes, workTypeList: Array<BusinessType>) => {
-                        self.selectedCodeWorkplace(selectedCodes);
+                self.reloadDataSearch();
+                $.when(self.loadEmploymentPart(),
+                    self.loadClassificationPart(),
+                    self.loadJobTitlePart(),
+                    self.loadWorkplacePart(),
+                    self.loadWorktypePart())
+                    .done(() => dfd.resolve());
+                return dfd.promise();
+            }
+
+            /**
+             * Load employment part
+             */
+            private loadEmploymentPart(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                if (self.showEmployment) {
+                    $('#employmentList').ntsListComponent(self.employments).done(() => dfd.resolve());
+                } else {
+                    dfd.resolve();
+                }
+                return dfd.promise();
+            }
+
+            /**
+             * Load Classification part
+             */
+            private loadClassificationPart(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                if (self.showClassification) {
+                    $('#classificationList').ntsListComponent(self.classifications).done(() => dfd.resolve());
+                } else {
+                    dfd.resolve();
+                }
+                return dfd.promise();
+            }
+
+            /**
+             * Load jobtitle part
+             */
+            private loadJobTitlePart(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                if (self.showJobTitle) {
+                    $('#jobtitleList').ntsListComponent(self.jobtitles).done(() => dfd.resolve());
+                } else {
+                    dfd.resolve();
+                }
+                return dfd.promise();
+            }
+
+            /**
+             * Load workplace part
+             */
+            private loadWorkplacePart(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                if (self.showWorkplace) {
+                    service.searchWorkplaceOfEmployee(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate())
+                        .done(selectedCodes => {
+                            self.selectedCodeWorkplace(selectedCodes);
+                            $('#workplaceList').ntsTreeComponent(self.workplaces).done(() => dfd.resolve());
+                        })
+                } else {
+                    dfd.resolve();
+                }
+                return dfd.promise();
+            }
+
+            /**
+             * Load worktype part
+             */
+            private loadWorktypePart(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                if (self.showEmployment) {
+                    service.searchAllWorkType().done((workTypeList: Array<BusinessType>) => {
                         self.listWorkType(workTypeList);
                         self.selectedWorkTypeCode(_.map(workTypeList, vl => vl.businessTypeCode));
-
-                        self.reloadDataSearch();
-
-                        if (self.showEmployment) {
-                            $('#employmentList').ntsListComponent(self.employments);
-                        }
-                        if (self.showClassification) {
-                            $('#classificationList').ntsListComponent(self.classifications);
-                        }
-                        if (self.showJobTitle) {
-                            $('#jobtitleList').ntsListComponent(self.jobtitles);
-                        }
-                        if (self.showWorkplace) {
-                            $('#workplaceList').ntsTreeComponent(self.workplaces);
-                        }
                         dfd.resolve();
-
                     });
+                } else {
+                    dfd.resolve();
+                }
                 return dfd.promise();
             }
 
@@ -1081,7 +1143,7 @@ module nts.uk.com.view.ccg.share.ccg {
             /**
              * Set base date and period
              */
-            public setBaseDateAndPeriod(): JQueryPromise<void> { // format: YYYY-MM-DD
+            public setBaseDateAndPeriod(): JQueryPromise<void> {
                 let dfd = $.Deferred<void>();
                 let self = this;
                 // set default base date
@@ -1401,10 +1463,6 @@ module nts.uk.com.view.ccg.share.ccg {
             static ONLY_MYSELF = 3;
         }
 
-        interface BusinessType {
-            businessTypeCode: string;
-            businessTypeName: string;
-        }
     }
 }
 /**
