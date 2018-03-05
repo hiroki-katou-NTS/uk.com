@@ -837,22 +837,20 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 .disappear {
   position: absolute !important;
   visibility: hidden !important;
-  width: 0 !important;
-  height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
+  top: -9999px !important;
+  left: -9999px !important;
   overflow: hidden !important;
 }
 
 /*****************************
   ntsControl
 *****************************/
-/* line 63, ../sass/components/_commons.scss */
+/* line 61, ../sass/components/_commons.scss */
 .control-group {
   margin-bottom: 10px;
 }
 
-/* line 64, ../sass/components/_commons.scss */
+/* line 62, ../sass/components/_commons.scss */
 .ntsControl {
   display: inline-block;
 }
@@ -860,7 +858,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 /*****************************
   NtsFormLabel
 *****************************/
-/* line 69, ../sass/components/_commons.scss */
+/* line 67, ../sass/components/_commons.scss */
 div.form-label {
   display: inline-block;
   box-sizing: border-box;
@@ -870,34 +868,34 @@ div.form-label {
   border-width: 0 0 0 5px;
   padding: 0 10px 0 8px;
 }
-/* line 91, ../sass/components/_commons.scss */
+/* line 89, ../sass/components/_commons.scss */
 div.form-label.broken label {
   line-height: inherit;
 }
-/* line 94, ../sass/components/_commons.scss */
+/* line 92, ../sass/components/_commons.scss */
 div.form-label.inline {
   height: 23px;
   line-height: 23px;
 }
-/* line 97, ../sass/components/_commons.scss */
+/* line 95, ../sass/components/_commons.scss */
 div.form-label.inline label {
   line-height: 23px;
 }
-/* line 100, ../sass/components/_commons.scss */
+/* line 98, ../sass/components/_commons.scss */
 div.form-label.required {
   border-color: #FAC002;
 }
-/* line 104, ../sass/components/_commons.scss */
+/* line 102, ../sass/components/_commons.scss */
 div.form-label.disabled {
   border-color: #AAA;
 }
-/* line 108, ../sass/components/_commons.scss */
+/* line 106, ../sass/components/_commons.scss */
 div.form-label > label {
   max-height: 100%;
   font-size: 14px;
   line-height: 37px;
 }
-/* line 114, ../sass/components/_commons.scss */
+/* line 112, ../sass/components/_commons.scss */
 div.form-label > i {
   display: block;
   margin-top: 1px;
@@ -905,21 +903,21 @@ div.form-label > i {
   font-weight: normal;
   color: #777777;
 }
-/* line 121, ../sass/components/_commons.scss */
+/* line 119, ../sass/components/_commons.scss */
 div.form-label > i:before {
   content: '(';
 }
-/* line 125, ../sass/components/_commons.scss */
+/* line 123, ../sass/components/_commons.scss */
 div.form-label > i:after {
   content: ')';
 }
-/* line 130, ../sass/components/_commons.scss */
+/* line 128, ../sass/components/_commons.scss */
 div.form-label.inline > i {
   display: inline-block;
   margin-left: 5px;
 }
 
-/* line 136, ../sass/components/_commons.scss */
+/* line 134, ../sass/components/_commons.scss */
 .constraint-label {
   display: block;
   margin-top: 1px;
@@ -931,7 +929,7 @@ div.form-label.inline > i {
 /*****************************
   NtsPopupPanel
 *****************************/
-/* line 146, ../sass/components/_commons.scss */
+/* line 144, ../sass/components/_commons.scss */
 div.popup-panel {
   position: absolute;
   background-color: #fff;
@@ -945,22 +943,22 @@ div.popup-panel {
 /*****************************
   NtsError
 *****************************/
-/* line 158, ../sass/components/_commons.scss */
+/* line 156, ../sass/components/_commons.scss */
 .ntsControl.error .nts-editor, .ntsControl.error .ntsDatepicker, .ntsControl.error .sp-replacer {
   border-color: #ff6666;
 }
 
-/* line 163, ../sass/components/_commons.scss */
+/* line 161, ../sass/components/_commons.scss */
 .ui-igcombo.error {
   border-color: #ff6666;
 }
 
-/* line 166, ../sass/components/_commons.scss */
+/* line 164, ../sass/components/_commons.scss */
 .checkbox-wrapper.error {
   border: 1px solid #ff6666;
 }
 
-/* line 169, ../sass/components/_commons.scss */
+/* line 167, ../sass/components/_commons.scss */
 .multicheckbox-wrapper.error {
   border: 1px solid #ff6666;
 }
@@ -968,7 +966,7 @@ div.popup-panel {
 /*****************************
   ErrorNotifier
 *****************************/
-/* line 175, ../sass/components/_commons.scss */
+/* line 173, ../sass/components/_commons.scss */
 #func-notifier-errors {
   position: absolute;
   display: none;
@@ -985,13 +983,13 @@ div.popup-panel {
   color: #dd3a3a;
   cursor: pointer;
 }
-/* line 189, ../sass/components/_commons.scss */
+/* line 187, ../sass/components/_commons.scss */
 #func-notifier-errors:hover {
   background-color: #ffcccc;
   color: #cc2222;
   border-color: #cc2222;
 }
-/* line 195, ../sass/components/_commons.scss */
+/* line 193, ../sass/components/_commons.scss */
 #func-notifier-errors.shown {
   display: inline-block;
 }
@@ -999,37 +997,37 @@ div.popup-panel {
 /*****************************
   Label
 *****************************/
-/* line 204, ../sass/components/_commons.scss */
+/* line 202, ../sass/components/_commons.scss */
 .label {
   display: inline-block;
   box-sizing: border-box;
 }
-/* line 208, ../sass/components/_commons.scss */
+/* line 206, ../sass/components/_commons.scss */
 .label.warning {
   padding: 15px 10px;
   font-size: 1.2rem;
   background-color: #F7EFD4;
   color: #C12017;
 }
-/* line 215, ../sass/components/_commons.scss */
+/* line 213, ../sass/components/_commons.scss */
 .label.with-image {
   padding: 5px 10px 5px 5px;
   border-radius: 5px;
   background-color: #E0F59E;
   color: #00B050;
 }
-/* line 221, ../sass/components/_commons.scss */
+/* line 219, ../sass/components/_commons.scss */
 .label.with-image .image {
   vertical-align: middle;
   margin-right: 10px;
 }
 
-/* line 227, ../sass/components/_commons.scss */
+/* line 225, ../sass/components/_commons.scss */
 div.label {
   width: 100%;
 }
 
-/* line 230, ../sass/components/_commons.scss */
+/* line 228, ../sass/components/_commons.scss */
 .pre {
   white-space: pre-wrap;
 }
@@ -3583,6 +3581,8 @@ button.nts-switch-button[disabled]:hover {
 .datepicker-inline {
   position: static;
 }
+
+/* line 73, ../sass/components/_datepicker.scss */
 .nts-datepicker-wrapper:before, .nts-datepicker-wrapper:after {
   position: absolute;
   display: block;
@@ -3591,13 +3591,73 @@ button.nts-switch-button[disabled]:hover {
   content: ' ';
   border: 5px solid transparent;
 }
+/* line 84, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-top:before, .nts-datepicker-wrapper.arrow-top:after {
+  top: -5px;
+  left: 10px;
+  border-top: 0;
+}
+/* line 89, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-top:before {
+  border-bottom-color: #999999;
+}
+/* line 92, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-top:after {
+  top: -4px;
+  border-bottom-color: #fff;
+}
+/* line 99, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-bottom:before, .nts-datepicker-wrapper.arrow-bottom:after {
+  bottom: -5px;
+  left: 10px;
+  border-bottom: 0;
+}
+/* line 104, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-bottom:before {
+  border-top-color: #999999;
+}
+/* line 107, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-bottom:after {
+  bottom: -4px;
+  border-top-color: #fff;
+}
+/* line 114, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-right:before, .nts-datepicker-wrapper.arrow-right:after {
+  right: -5px;
+  top: 11px;
+  border-right: 0;
+}
+/* line 119, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-right:before {
+  border-left-color: #999999;
+}
+/* line 122, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-right:after {
+  right: -4px;
+  border-left-color: #fff;
+}
+/* line 129, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-left:before, .nts-datepicker-wrapper.arrow-left:after {
+  left: -5px;
+  top: 11px;
+  border-left: 0;
+}
+/* line 134, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-left:before {
+  border-right-color: #999999;
+}
+/* line 137, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-left:after {
+  left: -4px;
+  border-right-color: #fff;
+}
 
-/* line 72, ../sass/components/_datepicker.scss */
+/* line 143, ../sass/components/_datepicker.scss */
 .datepicker-top-left,
 .datepicker-top-right {
   border-top-color: #39f;
 }
-/* line 76, ../sass/components/_datepicker.scss */
+/* line 147, ../sass/components/_datepicker.scss */
 .datepicker-top-left:before, .datepicker-top-left:after,
 .datepicker-top-right:before,
 .datepicker-top-right:after {
@@ -3605,24 +3665,24 @@ button.nts-switch-button[disabled]:hover {
   left: 10px;
   border-top: 0;
 }
-/* line 84, ../sass/components/_datepicker.scss */
+/* line 154, ../sass/components/_datepicker.scss */
 .datepicker-top-left:before,
 .datepicker-top-right:before {
   border-bottom-color: #39f;
 }
-/* line 88, ../sass/components/_datepicker.scss */
+/* line 158, ../sass/components/_datepicker.scss */
 .datepicker-top-left:after,
 .datepicker-top-right:after {
   top: -4px;
   border-bottom-color: #fff;
 }
 
-/* line 95, ../sass/components/_datepicker.scss */
+/* line 164, ../sass/components/_datepicker.scss */
 .datepicker-bottom-left,
 .datepicker-bottom-right {
-  border-bottom-color: #39f;
+  border-bottom-color: #999999;
 }
-/* line 99, ../sass/components/_datepicker.scss */
+/* line 168, ../sass/components/_datepicker.scss */
 .datepicker-bottom-left:before, .datepicker-bottom-left:after,
 .datepicker-bottom-right:before,
 .datepicker-bottom-right:after {
@@ -3630,24 +3690,24 @@ button.nts-switch-button[disabled]:hover {
   left: 10px;
   border-bottom: 0;
 }
-/* line 107, ../sass/components/_datepicker.scss */
+/* line 176, ../sass/components/_datepicker.scss */
 .datepicker-bottom-left:before,
 .datepicker-bottom-right:before {
   border-top-color: #39f;
 }
-/* line 111, ../sass/components/_datepicker.scss */
+/* line 180, ../sass/components/_datepicker.scss */
 .datepicker-bottom-left:after,
 .datepicker-bottom-right:after {
   bottom: -4px;
   border-top-color: #fff;
 }
 
-/* line 95, ../sass/components/_datepicker.scss */
+/* line 187, ../sass/components/_datepicker.scss */
 .datepicker-left-top,
 .datepicker-left-bottom {
   border-left-color: #39f;
 }
-/* line 99, ../sass/components/_datepicker.scss */
+/* line 191, ../sass/components/_datepicker.scss */
 .datepicker-left-top:before, .datepicker-left-top:after,
 .datepicker-left-bottom:before,
 .datepicker-left-bottom:after {
@@ -3655,24 +3715,24 @@ button.nts-switch-button[disabled]:hover {
   left: -5px;
   border-left: 0;
 }
-/* line 107, ../sass/components/_datepicker.scss */
+/* line 199, ../sass/components/_datepicker.scss */
 .datepicker-left-top:before,
 .datepicker-left-bottom:before {
   border-right-color: #39f;
 }
-/* line 111, ../sass/components/_datepicker.scss */
+/* line 203, ../sass/components/_datepicker.scss */
 .datepicker-left-top:after,
 .datepicker-left-bottom:after {
   top: 5px;
   border-right-color: #fff;
 }
 
-/* line 95, ../sass/components/_datepicker.scss */
+/* line 210, ../sass/components/_datepicker.scss */
 .datepicker-right-top,
 .datepicker-right-bottom {
   border-right-color: #39f;
 }
-/* line 99, ../sass/components/_datepicker.scss */
+/* line 214, ../sass/components/_datepicker.scss */
 .datepicker-right-top:before, .datepicker-right-top:after,
 .datepicker-right-bottom:before,
 .datepicker-right-bottom:after {
@@ -3680,18 +3740,19 @@ button.nts-switch-button[disabled]:hover {
   left: 210px;
   border-right: 0;
 }
-/* line 107, ../sass/components/_datepicker.scss */
+/* line 222, ../sass/components/_datepicker.scss */
 .datepicker-right-top:before,
 .datepicker-right-bottom:before {
   border-left-color: #39f;
 }
-/* line 111, ../sass/components/_datepicker.scss */
+/* line 226, ../sass/components/_datepicker.scss */
 .datepicker-right-top:after,
 .datepicker-right-bottom:after {
   top: 5px;
   border-left-color: #fff;
 }
-/* line 120, ../sass/components/_datepicker.scss */
+
+/* line 235, ../sass/components/_datepicker.scss */
 .datepicker-top-right:before, .datepicker-top-right:after,
 .datepicker-bottom-right:before,
 .datepicker-bottom-right:after {
@@ -3699,23 +3760,23 @@ button.nts-switch-button[disabled]:hover {
   left: auto;
 }
 
-/* line 132, ../sass/components/_datepicker.scss */
+/* line 247, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul:before,
 .datepicker-panel > ul:after {
   display: table;
   content: ' ';
 }
-/* line 139, ../sass/components/_datepicker.scss */
+/* line 254, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul:after {
   clear: both;
 }
-/* line 143, ../sass/components/_datepicker.scss */
+/* line 258, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul {
   width: 102%;
   margin: 0;
   padding: 0;
 }
-/* line 148, ../sass/components/_datepicker.scss */
+/* line 263, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul > li {
   float: left;
   width: 30px;
@@ -3727,84 +3788,84 @@ button.nts-switch-button[disabled]:hover {
   text-align: center;
   background-color: #fff;
 }
-/* line 163, ../sass/components/_datepicker.scss */
+/* line 278, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul > li:hover {
   background-color: #e6f2ff;
 }
-/* line 167, ../sass/components/_datepicker.scss */
+/* line 282, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul > li.muted, .datepicker-panel > ul > li.muted:hover {
   color: #999;
 }
-/* line 172, ../sass/components/_datepicker.scss */
+/* line 287, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul > li.highlighted {
   background-color: #e6f2ff;
 }
-/* line 176, ../sass/components/_datepicker.scss */
+/* line 291, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul > li.highlighted:hover {
   background-color: #cce6ff;
 }
-/* line 180, ../sass/components/_datepicker.scss */
+/* line 295, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul > li.picked, .datepicker-panel > ul > li.picked:hover {
   color: #39f;
 }
-/* line 185, ../sass/components/_datepicker.scss */
+/* line 300, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul > li.disabled, .datepicker-panel > ul > li.disabled:hover {
   cursor: default;
   color: #ccc;
   background-color: #fff;
 }
-/* line 192, ../sass/components/_datepicker.scss */
+/* line 307, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul > li.disabled.highlighted, .datepicker-panel > ul > li.disabled:hover.highlighted {
   background-color: #e6f2ff;
 }
-/* line 197, ../sass/components/_datepicker.scss */
+/* line 312, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul > li[data-view='years prev'], .datepicker-panel > ul > li[data-view='year prev'], .datepicker-panel > ul > li[data-view='month prev'], .datepicker-panel > ul > li[data-view='years next'], .datepicker-panel > ul > li[data-view='year next'], .datepicker-panel > ul > li[data-view='month next'], .datepicker-panel > ul > li[data-view='next'] {
   font-size: 18px;
 }
-/* line 207, ../sass/components/_datepicker.scss */
+/* line 322, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul > li[data-view='years current'], .datepicker-panel > ul > li[data-view='year current'], .datepicker-panel > ul > li[data-view='month current'] {
   width: 150px;
 }
-/* line 216, ../sass/components/_datepicker.scss */
+/* line 331, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul[data-view='years'] > li, .datepicker-panel > ul[data-view='months'] > li {
   line-height: 52.5px;
   width: 52.5px;
   height: 52.5px;
 }
-/* line 225, ../sass/components/_datepicker.scss */
+/* line 340, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul[data-view='week'] > li,
 .datepicker-panel > ul[data-view='week'] > li:hover {
   cursor: default;
   background-color: #fff;
 }
 
-/* line 239, ../sass/components/_datepicker.scss */
+/* line 354, ../sass/components/_datepicker.scss */
 .datepicker-hide {
   display: none;
 }
 
 /* ntsDatepicker */
-/* line 244, ../sass/components/_datepicker.scss */
+/* line 359, ../sass/components/_datepicker.scss */
 .nts-datepicker-wrapper {
   position: relative;
 }
-/* line 247, ../sass/components/_datepicker.scss */
+/* line 362, ../sass/components/_datepicker.scss */
 .nts-datepicker-wrapper .ntsDatepicker {
   width: 85px;
 }
-/* line 249, ../sass/components/_datepicker.scss */
+/* line 364, ../sass/components/_datepicker.scss */
 .nts-datepicker-wrapper .ntsDatepicker.yearmonth-picker {
   width: 60px;
 }
-/* line 251, ../sass/components/_datepicker.scss */
+/* line 366, ../sass/components/_datepicker.scss */
 .nts-datepicker-wrapper .ntsDatepicker.short-day {
   padding-right: 40px;
 }
-/* line 252, ../sass/components/_datepicker.scss */
+/* line 367, ../sass/components/_datepicker.scss */
 .nts-datepicker-wrapper .ntsDatepicker.long-day {
   padding-right: 68px;
 }
-/* line 255, ../sass/components/_datepicker.scss */
+/* line 370, ../sass/components/_datepicker.scss */
 .nts-datepicker-wrapper .dayofweek-label {
   position: absolute;
   line-height: 30px;
@@ -3812,15 +3873,15 @@ button.nts-switch-button[disabled]:hover {
   top: 1px;
 }
 
-/* line 264, ../sass/components/_datepicker.scss */
+/* line 379, ../sass/components/_datepicker.scss */
 .ntsDateRange_Container .ntsDateRangeComponent {
   float: left;
 }
-/* line 267, ../sass/components/_datepicker.scss */
+/* line 382, ../sass/components/_datepicker.scss */
 .ntsDateRange_Container .ntsRangeLabel {
   padding: 6px 5px 6px 5px;
 }
-/* line 271, ../sass/components/_datepicker.scss */
+/* line 386, ../sass/components/_datepicker.scss */
 .ntsDateRange_Container .ntsRangeButton_Container {
   padding: 2px 2px 2px 2px;
 }
@@ -3918,8 +3979,9 @@ button.nts-switch-button[disabled]:hover {
   display: inline-block;
   position: relative;
 }
-/* line 5, ../sass/components/_helpbutton.scss */
-.ntsHelpButton .nts-help-button-image {
+
+/* line 6, ../sass/components/_helpbutton.scss */
+.nts-help-button-image {
   background-color: #E0F59E;
   padding: 18px 12px;
   position: absolute;

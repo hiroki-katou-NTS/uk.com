@@ -79,6 +79,66 @@ $brand-color: #39f;
     content: ' ';
     border: 5px solid transparent;
   }
+  
+  &.arrow-top {
+	&:before, &:after {
+		top: -5px;
+		left: 10px;
+		border-top: 0;
+	}
+	&:before {
+		border-bottom-color: $editor-border-color;
+	}
+	&:after {
+		  top: -4px;
+		  border-bottom-color: #fff;
+	}
+  }
+	
+  &.arrow-bottom {
+	&:before, &:after {
+		bottom: -5px;
+		left: 10px;
+		border-bottom: 0;
+	}
+	&:before {
+		border-top-color: $editor-border-color;
+	}
+	&:after {
+		bottom: -4px;
+		border-top-color: #fff;
+	}
+  }
+  
+  &.arrow-right {
+	&:before, &:after {
+		right: -5px;
+		top: 11px;
+		border-right: 0;
+	}
+	&:before {
+		border-left-color: $editor-border-color;
+	}
+	&:after {
+		right: -4px;
+		border-left-color: #fff;
+	}
+  }
+  
+  &.arrow-left {
+	&:before, &:after {
+		left: -5px;
+		top: 11px;
+		border-left: 0;
+	}
+	&:before {
+		border-right-color: $editor-border-color;
+	}
+	&:after {
+		left: -4px;
+		border-right-color: #fff;
+	}
+  }
 }
 .datepicker-top-left,
 .datepicker-top-right {
@@ -103,7 +163,7 @@ $brand-color: #39f;
 
 .datepicker-bottom-left,
 .datepicker-bottom-right {
-  border-bottom-color: $brand-color;
+  border-bottom-color: $editor-border-color;
 
   &:before,
   &:after {
