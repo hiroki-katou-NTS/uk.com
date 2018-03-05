@@ -27,6 +27,7 @@ module nts.uk.pr.view.kmf001.c {
             displayDivisionList: KnockoutObservableArray<EnumertionModel>;
             selectedNumberRemainingYearly: KnockoutObservable<number>;
             selectedNextAnunalVacation: KnockoutObservable<number>;
+            yearlyOfNumberDays: KnockoutObservable<string>;
             
             selectedTimeManagement: KnockoutObservable<number>;
             vacationTimeUnitList: KnockoutObservableArray<EnumertionModel>;
@@ -66,6 +67,7 @@ module nts.uk.pr.view.kmf001.c {
                 self.maxGrantDay = ko.observable("");
                 self.maxRemainingDay = ko.observable("");
                 self.numberYearRetain = ko.observable("");
+                self.yearlyOfNumberDays = ko.observable("");                
                 
                 // 年休取得の設定
                 self.applyPermissionList = ko.observableArray([]);
@@ -178,8 +180,8 @@ module nts.uk.pr.view.kmf001.c {
                 command.permitType = self.enableAnnualVacation() ? self.selectedApplyPermission() : dataBackup.permitType;
                 command.annualPriority = self.enableAnnualVacation() ? self.selectedAnnualPriority() : dataBackup.annualPriority;
                 command.remainingNumberDisplay = self.enableAnnualVacation() ? self.selectedNumberRemainingYearly() : dataBackup.remainingNumberDisplay;
-                command.nextGrantDayDisplay = self.enableAnnualVacation() ? self.selectedNextAnunalVacation() : dataBackup.nextGrantDayDisplay;
-                
+                command.nextGrantDayDisplay = self.enableAnnualVacation() ? self.selectedNextAnunalVacation() : dataBackup.nextGrantDayDisplay;                
+                command.yearlyOfDays = self.enableAnnualVacation() ? self.yearlyOfNumberDays() : dataBackup.yearlyOfNumberDays;
                 // Time Leave Setting
                 command.timeManageType = self.enableAnnualVacation() ? self.selectedTimeManagement() : dataBackup.timeManageType;
                 command.timeUnit = self.enableTimeSetting() ? self.selectedVacationTimeUnit() : dataBackup.timeUnit;
@@ -212,6 +214,7 @@ module nts.uk.pr.view.kmf001.c {
                 self.selectedAnnualPriority(res.annualPriority);
                 self.selectedNumberRemainingYearly(res.remainingNumberDisplay);
                 self.selectedNextAnunalVacation(res.nextGrantDayDisplay);
+                self.yearlyOfNumberDays(res.yearlyOfDays); 
                 
                 // Time Leave Setting
                 self.selectedTimeManagement(res.timeManageType);
@@ -236,7 +239,8 @@ module nts.uk.pr.view.kmf001.c {
                 backup.permitType = 1;
                 backup.annualPriority = 0;
                 backup.remainingNumberDisplay = 1;
-                backup.nextGrantDayDisplay = 1;
+                backup.nextGrantDayDisplay = 1;                
+                backup.yearlyOfNumberDays = '';
                 
                 // Time Leave Setting
                 backup.timeManageType = 1;

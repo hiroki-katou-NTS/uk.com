@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxRemainingDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RemainingNumberSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearLyOfNumberDays;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmamtMngAnnualSet;
 
 /**
@@ -113,4 +114,20 @@ public class JpaManageAnnualSettingGetMemento implements ManageAnnualSettingGetM
         return display;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+     * ManageAnnualSettingGetMemento#getYearLyOfDays()
+     */
+	@Override
+	public YearLyOfNumberDays getYearLyOfDays() {
+		// TODO Auto-generated method stub
+		return new YearLyOfNumberDays(entity.getYearlyOfDays());
+	}
+
+//	@Override
+//	public YearLyOfNumberDays getYearLyOfDays() {
+////		return new YearLyOfNumberDays(entity.getYearlyOfDays());
+//		return null;
+//	}
 }

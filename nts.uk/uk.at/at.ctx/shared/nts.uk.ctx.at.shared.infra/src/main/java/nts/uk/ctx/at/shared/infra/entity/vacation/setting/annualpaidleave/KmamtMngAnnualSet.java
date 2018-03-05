@@ -74,6 +74,10 @@ public class KmamtMngAnnualSet extends UkJpaEntity implements Serializable {
     /** The remaining num disp atr. */
     @Column(name = "REMAINING_NUM_DISP_ATR")
     private Integer remainingNumDispAtr;
+    
+    /** The yearly of day. */
+    @Column(name = "YEARLY_OF_DAYS")
+    private double yearlyOfDays;
 
     /**
      * Instantiates a new kmamt mng annual set.

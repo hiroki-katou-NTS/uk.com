@@ -34,6 +34,9 @@ public class ManageAnnualSetting extends DomainObject {
     // 表示設定
     private DisplaySetting displaySetting;
     
+    //年間所定労働日数
+    private YearLyOfNumberDays yearlyOfNumberDays;
+    
     /**
      * Instantiates a new manage annual setting.
      *
@@ -46,6 +49,7 @@ public class ManageAnnualSetting extends DomainObject {
         this.isWorkDayCalculate = memento.getIsWorkDayCalculate();
         this.remainingNumberSetting = memento.getRemainingNumberSetting();
         this.displaySetting = memento.getDisplaySetting();
+        this.yearlyOfNumberDays = memento.getYearLyOfDays();
     }
     
     /**
@@ -59,5 +63,6 @@ public class ManageAnnualSetting extends DomainObject {
         memento.setWorkDayCalculate(this.isWorkDayCalculate);
         memento.setRemainingNumberSetting(this.remainingNumberSetting);
         memento.setDisplaySetting(this.displaySetting);
+        memento.setYearLyOfDays(this.yearlyOfNumberDays);
     }
 }

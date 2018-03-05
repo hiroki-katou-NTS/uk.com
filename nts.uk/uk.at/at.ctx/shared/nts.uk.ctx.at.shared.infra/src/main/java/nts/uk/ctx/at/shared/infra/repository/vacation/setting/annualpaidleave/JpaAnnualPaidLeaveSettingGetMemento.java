@@ -87,5 +87,4 @@ public class JpaAnnualPaidLeaveSettingGetMemento implements AnnualPaidLeaveSetti
     public TimeAnnualSetting getTimeSetting() {
         return new TimeAnnualSetting(new JpaTimeAnnualSettingGetMemento(this.entity.getKtvmtTimeVacationSet()));
     }
-
 }

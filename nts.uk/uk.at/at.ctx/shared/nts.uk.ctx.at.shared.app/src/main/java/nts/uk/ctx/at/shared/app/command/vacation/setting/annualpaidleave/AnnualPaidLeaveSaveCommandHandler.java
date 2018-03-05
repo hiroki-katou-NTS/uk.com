@@ -51,7 +51,8 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
 
         String companyId = AppContexts.user().companyId();
         AnnualPaidLeaveSetting domain = this.annualRepo.findByCompanyId(companyId);
-
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+domain.getManageAnnualSetting().getYearlyOfNumberDays().v());
+        
         // Check field enable/disable
         this.validateField(command, domain);
 
@@ -96,7 +97,8 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
             command.setRemainingNumberDisplay(setttingDB.getManageAnnualSetting().getDisplaySetting()
                     .remainingNumberDisplay.value);
             command.setNextGrantDayDisplay(setttingDB.getManageAnnualSetting().getDisplaySetting()
-                    .nextGrantDayDisplay.value);
+                    .nextGrantDayDisplay.value);            
+            command.setYearlyOfDays(setttingDB.getManageAnnualSetting().getYearlyOfNumberDays().v());
 
             // Time Leave Setting
             command.setTimeManageType(setttingDB.getTimeSetting().getTimeManageType().value);
@@ -144,6 +146,7 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         command.setMaxGrantDay(null);
         command.setMaxRemainingDay(null);
         command.setNumberYearRetain(null);
+        command.setYearlyOfDays(null);
         // =======
         command.setPermitType(ApplyPermission.ALLOW.value);
         command.setAnnualPriority(AnnualPriority.FIFO.value);

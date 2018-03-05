@@ -8,9 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionOrder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionType;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AnnualHoliday;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.HoursHoliday;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.acquisitionrule.KarstAcquisitionRule;
@@ -65,48 +63,6 @@ public class JpaAcquisitionRuleGetMemento implements AcquisitionRuleGetMemento {
 	@Override
 	public ManageDistinct getCategory() {
 		return ManageDistinct.valueOf(this.typeValue.getCategory());
-	}
-
-	/**
-	 * Gets the acquisition order.
-	 *
-	 * @return the acquisition order
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.vacation.setting.acquisitionrule.
-	 * VaAcRuleGetMemento#getAcquisitionOrder()
-	 */
-	@Override
-	public List<AcquisitionOrder> getAcquisitionOrder() {
-		List<AcquisitionOrder> acOrder = new ArrayList<>();
-
-		// Add AcquisitionOrder AnnualPaidLeave.
-		acOrder.add(new AcquisitionOrder(new JpaAcquisitionOrderGetMemento(this.typeValue,
-				AcquisitionType.AnnualPaidLeave)));
-
-		// Add AcquisitionOrder CompensatoryDayOff.
-		acOrder.add(new AcquisitionOrder(new JpaAcquisitionOrderGetMemento(this.typeValue,
-				AcquisitionType.CompensatoryDayOff)));
-
-		// Add AcquisitionOrder SubstituteHoliday.
-		acOrder.add(new AcquisitionOrder(new JpaAcquisitionOrderGetMemento(this.typeValue,
-				AcquisitionType.SubstituteHoliday)));
-
-		// Add AcquisitionOrder FundedPaidHoliday.
-		acOrder.add(new AcquisitionOrder(new JpaAcquisitionOrderGetMemento(this.typeValue,
-				AcquisitionType.FundedPaidHoliday)));
-
-		// Add AcquisitionOrder ExsessHoliday.
-		acOrder.add(new AcquisitionOrder(
-				new JpaAcquisitionOrderGetMemento(this.typeValue, AcquisitionType.ExsessHoliday)));
-
-		// Add AcquisitionOrder SpecialHoliday.
-		acOrder.add(new AcquisitionOrder(
-				new JpaAcquisitionOrderGetMemento(this.typeValue, AcquisitionType.SpecialHoliday)));
-
-		return acOrder;
 	}
 
 	@Override

@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RemainingNumber
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearLyOfNumberDays;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualMaxDay;
 
 /**
@@ -89,6 +90,9 @@ public class AnnualPaidLeaveSaveCommand {
 
     /** The is enough time one day. */
     private Boolean isEnoughTimeOneDay;
+    
+    /** The yearly of date. */
+    private Double yearlyOfDays;
 
     /**
      * To domain.
@@ -283,6 +287,11 @@ public class AnnualPaidLeaveSaveCommand {
                     .build();
             return display;
         }
+
+		@Override
+		public YearLyOfNumberDays getYearLyOfDays() {
+			return this.command.yearlyOfDays == null ? null : new YearLyOfNumberDays(this.command.yearlyOfDays);
+		}
     }
 
     /**

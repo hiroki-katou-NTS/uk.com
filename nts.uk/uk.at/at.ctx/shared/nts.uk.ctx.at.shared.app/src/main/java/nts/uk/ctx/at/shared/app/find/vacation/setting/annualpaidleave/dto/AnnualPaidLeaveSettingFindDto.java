@@ -65,5 +65,7 @@ public class AnnualPaidLeaveSettingFindDto {
 
     /** The is enough time one day. */
     public Boolean isEnoughTimeOneDay;
-
+    
+    /** The yearly of date. */
+    public Double yearlyOfDays;
 }

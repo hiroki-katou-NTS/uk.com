@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplaySetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.HalfDayManage;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RemainingNumberSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearLyOfNumberDays;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmamtMngAnnualSet;
 
 /**
@@ -106,5 +107,16 @@ public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetM
         this.entity.setNextGrantDayDispAtr(displaySetting.nextGrantDayDisplay.value);
         this.entity.setRemainingNumDispAtr(displaySetting.remainingNumberDisplay.value);
     }
+
+    /*
+     * (non-Javadoc)
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+     * ManageAnnualSettingSetMemento#setYearLyOfDays
+     * (nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearLyOfNumberDays)
+     */
+	@Override
+	public void setYearLyOfDays(YearLyOfNumberDays yearLyOfNumberDays) {
+		this.setYearLyOfDays(yearLyOfNumberDays);
+	}
 
 }
