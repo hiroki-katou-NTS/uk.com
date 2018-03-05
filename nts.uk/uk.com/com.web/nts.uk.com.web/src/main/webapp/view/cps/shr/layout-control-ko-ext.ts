@@ -924,7 +924,8 @@ module nts.custombinding {
             getItemByCat: (cid) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/categoryId/${cid}`),
             getItemByGroup: (gid) => ajax(`ctx/pereg/person/groupitem/getAllItemDf/${gid}`),
             getItemsById: (id: string) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/itemId/${id}`),
-            getItemsByIds: (ids: Array<any>) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/listItemId`, ids)
+            //getItemsByIds: (ids: Array<any>) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/listItemId`, ids),
+            getItemsByIds: (ids: Array<any>) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/listItemIdTest`, ids)
         };
 
         remove = (item, sender) => {
@@ -1507,139 +1508,20 @@ module nts.custombinding {
                             }
                         });
                 },
-                scrollDown = () => {
-                    // remove old selected items
-                    $(ctrls.sortable)
-                        .find('.form-group.item-classification')
-                        .removeClass('selected');
-                    // scroll to bottom
-                    $(ctrls.sortable).scrollTop($(ctrls.sortable).prop("scrollHeight"));
-                    // select lastest item
-                    setTimeout(() => {
-                        $(ctrls.sortable)
-                            .find('.form-group.item-classification:last-child')
-                            .addClass('selected');
-                    }, 0);
-                };
-
-            // add style to <head> on first run
-            if (!$('#layout_style').length) {
-                $('head').append(self.style);
-            }
-
-            $element
-                .append(self.tmp)
-                .addClass('ntsControl layout-control');
-
-
-
-            // binding callback function to control
-            if (access.callback) {
-                $.extend(opts, { callback: access.callback });
-            }
-
-            // binding output data value 
-            if (access.outData) {
-                $.extend(opts.sortable, { outData: access.outData });
-            }
-
-            // change color text
-            if (_.has(access, "showColor")) {
-                $.extend(opts.sortable, { showColor: access.showColor });
-            }
-
-            // validate editAble
-            if (ko.unwrap(access.editAble) != undefined) {
-                if (ko.isObservable(access.editAble)) {
-                    access.editAble.subscribe(editable);
-                    access.editAble.valueHasMutated();
-                } else {
-                    editable(access.editAble);
-                }
-            }
-
-            // sortable
-            opts.sortable.isEnabled.subscribe(x => {
-                if (!x) {
-                    $element
-                        .addClass('readonly')
-                        .removeClass('dragable');
-
-                    $element.find('.left-area, .add-buttons, #cps007_btn_line').hide();
-                } else {
-                    $element
-                        .addClass('dragable')
-                        .removeClass('readonly');
-
-                    $element.find('.left-area, .add-buttons, #cps007_btn_line').show();
-                }
-            });
-            opts.sortable.isEnabled.valueHasMutated();
-
-            // inputable (editable)
-            opts.sortable.isEditable.subscribe(x => {
-                let data: Array<IItemClassification> = ko.unwrap(opts.sortable.data);
-                _.each(data, icl => {
-                    _.each(icl.listItemDf, (e: IItemDefinition) => {
-                        if (e.itemTypeState && e.itemTypeState.dataTypeState) {
-                            let state = e.itemTypeState.dataTypeState;
-                            if (x == 2) {
-                                if (state.editable && ko.isObservable(state.editable)) {
-                                    state.editable(true);
-                                } else {
-                                    state.editable = ko.observable(true);
-                                }
-
-                                if (state.readonly && ko.isObservable(state.readonly)) {
-                                    state.readonly(false);
-                                } else {
-                                    state.readonly = ko.observable(false);
-                                }
-                            } else {
-                                if (state.editable && ko.isObservable(state.editable)) {
-                                    state.editable(false);
-                                } else {
-                                    state.editable = ko.observable(false);
-                                }
-
-                                if (state.readonly && ko.isObservable(state.readonly)) {
-                                    state.readonly(true);
-                                } else {
-                                    state.readonly = ko.observable(true);
-                                }
-                            }
-                            state.editable.valueHasMutated();
-                        }
-                    });
-                });
-            });
-            opts.sortable.isEditable.valueHasMutated();
-
-            // extend option
-            $.extend(opts.combobox, { enable: ko.computed(() => !opts.radios.value()) });
-
-            $.extend(opts.searchbox, {
-                items: ko.computed(opts.listbox.options),
-                selected: opts.listbox.value
-            });
-
-            // extend data of sortable with valueAccessor data prop
-            $.extend(opts.sortable, { data: access.data });
-
-            // define common function for init new item value
-            let isStr = (item: any) => {
-                if (!item) {
-                    return false;
-                }
-
-                switch (item.dataTypeValue) {
-                    default:
+                // define common function for init new item value
+                isStr = (item: any) => {
+                    if (!item) {
                         return false;
-                    case ITEM_SINGLE_TYPE.STRING:
-                    case ITEM_SINGLE_TYPE.SELECTION:
-                        return true;
-                }
-            },
+                    }
+
+                    switch (item.dataTypeValue) {
+                        default:
+                            return false;
+                        case ITEM_SINGLE_TYPE.STRING:
+                        case ITEM_SINGLE_TYPE.SELECTION:
+                            return true;
+                    }
+                },
                 modifitem = (def: any, item?: any) => {
                     if (!item) {
                         item = {};
@@ -1818,23 +1700,127 @@ module nts.custombinding {
                         def.value.valueHasMutated();
                     });
                     def.editable.valueHasMutated();
+                },
+                scrollDown = () => {
+                    // remove old selected items
+                    $(ctrls.sortable)
+                        .find('.form-group.item-classification')
+                        .removeClass('selected');
+                    // scroll to bottom
+                    $(ctrls.sortable).scrollTop($(ctrls.sortable).prop("scrollHeight"));
+                    // select lastest item
+                    setTimeout(() => {
+                        $(ctrls.sortable)
+                            .find('.form-group.item-classification:last-child')
+                            .addClass('selected');
+                    }, 0);
                 };
 
-            opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
-                // remove all sibling sperators
-                let maps: Array<number> = _(data)
-                    .map((x, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
-                    .filter(x => x != -1).value();
+            // add style to <head> on first run
+            if (!$('#layout_style').length) {
+                $('head').append(self.style);
+            }
 
-                _.each(maps, (t, i) => {
-                    if (maps[i + 1] == t + 1) {
-                        _.remove(data, (m: IItemClassification) => {
-                            let item: IItemClassification = data[maps[i + 1]];
-                            return item && item.layoutItemType == IT_CLA_TYPE.SPER && item.layoutID == m.layoutID;
-                        });
-                    }
+            $element
+                .append(self.tmp)
+                .addClass('ntsControl layout-control');
+
+
+
+            // binding callback function to control
+            if (access.callback) {
+                $.extend(opts, { callback: access.callback });
+            }
+
+            // binding output data value 
+            if (access.outData) {
+                $.extend(opts.sortable, { outData: access.outData });
+            }
+
+            // change color text
+            if (_.has(access, "showColor")) {
+                $.extend(opts.sortable, { showColor: access.showColor });
+            }
+
+            // validate editAble
+            if (ko.unwrap(access.editAble) != undefined) {
+                if (ko.isObservable(access.editAble)) {
+                    access.editAble.subscribe(editable);
+                    access.editAble.valueHasMutated();
+                } else {
+                    editable(access.editAble);
+                }
+            }
+
+            // sortable
+            opts.sortable.isEnabled.subscribe(x => {
+                if (!x) {
+                    $element
+                        .addClass('readonly')
+                        .removeClass('dragable');
+
+                    $element.find('.left-area, .add-buttons, #cps007_btn_line').hide();
+                } else {
+                    $element
+                        .addClass('dragable')
+                        .removeClass('readonly');
+
+                    $element.find('.left-area, .add-buttons, #cps007_btn_line').show();
+                }
+            });
+            opts.sortable.isEnabled.valueHasMutated();
+
+            // inputable (editable)
+            opts.sortable.isEditable.subscribe(x => {
+                let data: Array<IItemClassification> = ko.unwrap(opts.sortable.data);
+                _.each(data, icl => {
+                    _.each(icl.listItemDf, (e: IItemDefinition) => {
+                        if (e.itemTypeState && e.itemTypeState.dataTypeState) {
+                            let state = e.itemTypeState.dataTypeState;
+                            if (x == 2) {
+                                if (state.editable && ko.isObservable(state.editable)) {
+                                    state.editable(true);
+                                } else {
+                                    state.editable = ko.observable(true);
+                                }
+
+                                if (state.readonly && ko.isObservable(state.readonly)) {
+                                    state.readonly(false);
+                                } else {
+                                    state.readonly = ko.observable(false);
+                                }
+                            } else {
+                                if (state.editable && ko.isObservable(state.editable)) {
+                                    state.editable(false);
+                                } else {
+                                    state.editable = ko.observable(false);
+                                }
+
+                                if (state.readonly && ko.isObservable(state.readonly)) {
+                                    state.readonly(true);
+                                } else {
+                                    state.readonly = ko.observable(true);
+                                }
+                            }
+                            state.editable.valueHasMutated();
+                        }
+                    });
                 });
+            });
+            opts.sortable.isEditable.valueHasMutated();
 
+            // extend option
+            $.extend(opts.combobox, { enable: ko.computed(() => !opts.radios.value()) });
+
+            $.extend(opts.searchbox, {
+                items: ko.computed(opts.listbox.options),
+                selected: opts.listbox.value
+            });
+
+            // extend data of sortable with valueAccessor data prop
+            $.extend(opts.sortable, { data: access.data });
+
+            opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
                 opts.sortable.isEditable.valueHasMutated();
                 _.each(data, (x, i) => {
                     x.dispOrder = i + 1;
