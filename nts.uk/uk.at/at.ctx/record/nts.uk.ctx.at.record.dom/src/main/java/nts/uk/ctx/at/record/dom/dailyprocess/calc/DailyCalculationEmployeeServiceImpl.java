@@ -127,8 +127,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		//*****（未）　期間分をまとめて取得するリポジトリメソッド等をここで使い、読み込んだデータは、最終的にIntegrationへ入れる。
 		//*****（未）　データがない日も含めて、毎日ごとに処理するなら、下のループをデータ単位→日単位に変え、Integrationへの取得はループ内で行う。
 		List<IntegrationOfDaily> integrationOfDailys = createIntegrationOfDaily(employeeId,datePeriod);
-		org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass());
-		log.info("日別実績を取得できています");
+		//org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass());
+		//log.info("日別実績を取得できています");
 		// 取得データ分ループ
 		for (IntegrationOfDaily integrationOfDaily : integrationOfDailys) {
 			
@@ -164,15 +164,15 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 				return ProcessState.INTERRUPTION;
 			}
 			*/
-			log.info("データ更新のために勤怠時間をチェックします");
+			//log.info("データ更新のために勤怠時間をチェックします");
 			// データ更新
 			//*****（未）　日別実績の勤怠情報だけを更新する場合。まとめて更新するなら、integrationOfDailyを入出できるよう調整する。
 			if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
-				log.info("勤怠時間が見つかりました");
+				//log.info("勤怠時間が見つかりました");
 				this.registAttendanceTime(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get());
 			}
 			else {
-				log.info("勤怠時間が見つかりませんでした");
+				//log.info("勤怠時間が見つかりませんでした");
 			}
 		}
 		return status;
@@ -189,15 +189,15 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		// キー値確認
 		val employeeId = attendanceTime.getEmployeeId();
 		val ymd = attendanceTime.getYmd();
-		org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass());
+		//org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass());
 		if (this.attendanceTimeRepository.find(employeeId, ymd).isPresent()){
 			
-			log.info("更新され始めます");
+			//log.info("更新され始めます");
 			// 更新
 			this.attendanceTimeRepository.update(attendanceTime);
 		}
 		else {
-			log.info("更新なんてされずにスルーされます");
+			//log.info("更新なんてされずにスルーされます");
 			// 追加
 			//*****（未）　親のフローにより、読み込めないデータは計算しないはずなので、この処理は不要かもしれない。find確認自体不要かも。
 			//this.attendanceTimeRepository.add(attendanceTime);
