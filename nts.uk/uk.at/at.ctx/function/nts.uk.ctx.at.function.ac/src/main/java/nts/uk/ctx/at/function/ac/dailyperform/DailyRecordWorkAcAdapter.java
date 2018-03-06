@@ -16,10 +16,19 @@ public class DailyRecordWorkAcAdapter implements DailyRecordWorkAdapter{
 	
 	@Inject
 	private DailyRecordWorkPub pub; 
+	/* param
+	 * 社員ID　　employeeId
+	 * 基準日　baseDate
+	 * 勤怠項目ID baseDate
+	 * 
+	 * return 勤怠項目ID , 勤怠項目価値
+	 */
 	@Override
 	public DailyRecordWorkImport getByEmployeeList(String employeeId, GeneralDate baseDate, List<Integer> itemIds) {
 		DailyRecordWorkImport dailyRecordWorkImport = new DailyRecordWorkImport();
 		DailyRecordWorkExport export = pub.getByEmployee(employeeId, baseDate, itemIds);
+		if(export==null) throw new  RuntimeException("List<AttendanceID, AttendanceName> not found!");
+		
 		dailyRecordWorkImport.setEmployeeId(employeeId);
 		dailyRecordWorkImport.setDate(baseDate);
 		dailyRecordWorkImport.setItems(export.getItems());
