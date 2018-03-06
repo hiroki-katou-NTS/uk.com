@@ -13891,6 +13891,7 @@ var nts;
                         var editable = ko.unwrap(data.editable);
                         var isRequired = ko.unwrap(data.required) === true;
                         var enable = data.enable !== undefined ? ko.unwrap(data.enable) : true;
+                        var selectFirstIfNull = !(ko.unwrap(data.selectFirstIfNull) === false); // default: true
                         var columns = ko.unwrap(data.columns);
                         var visibleItemsCount = data.visibleItemsCount === undefined ? 5 : ko.unwrap(data.visibleItemsCount);
                         var dropDownAttachedToBody = data.dropDownAttachedToBody === undefined ? null : ko.unwrap(data.dropDownAttachedToBody);
@@ -13915,17 +13916,25 @@ var nts;
                         };
                         // required
                         required.set(container, isRequired);
-                        // Check if selected code exists in list.
-                        // But "null" and "undefined" are "not-selected" even if the "null" or "undefined" exist in list.
-                        // この仕様は、「未選択」という項目を持つことを許容するためのもの。
-                        var isValidValue = !uk.util.isNullOrUndefined(selectedValue) && _.some(options, function (item) { return getValue(item) === selectedValue; });
-                        notSelected.set(container, !isValidValue);
-                        if (!isValidValue) {
-                            notSelected.set(container, true);
-                        }
-                        else {
+                        if (selectFirstIfNull && options.length !== 0 && uk.util.isNullOrEmpty(selectedValue)) {
+                            selectedValue = getValue(options[0]);
+                            data.value(selectedValue);
                             notSelected.set(container, false);
                             container.ntsError("clear");
+                        }
+                        else {
+                            // Check if selected code exists in list.
+                            // But "null" and "undefined" are "not-selected" even if the "null" or "undefined" exist in list.
+                            // この仕様は、「未選択」という項目を持つことを許容するためのもの。
+                            var isValidValue = !uk.util.isNullOrUndefined(selectedValue) && _.some(options, function (item) { return getValue(item) === selectedValue; });
+                            notSelected.set(container, !isValidValue);
+                            if (!isValidValue) {
+                                notSelected.set(container, true);
+                            }
+                            else {
+                                notSelected.set(container, false);
+                                container.ntsError("clear");
+                            }
                         }
                         var haveColumn = columns && columns.length > 0;
                         var isChangeOptions = !_.isEqual(container.data("options"), options);

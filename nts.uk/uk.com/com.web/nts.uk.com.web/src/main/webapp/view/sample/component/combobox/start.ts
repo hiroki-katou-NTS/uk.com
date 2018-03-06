@@ -2,9 +2,11 @@ __viewContext.ready(function() {
     class ScreenModel {
         itemList: KnockoutObservableArray<ItemModel>;
         selectedCode: KnockoutObservable<string>;
+        selectedCode2: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
-        isRequired: KnockoutObservable<boolean>
+        isRequired: KnockoutObservable<boolean>;
+        selectFirstIfNull: KnockoutObservable<boolean>;
 
         /**
          * Constructor.
@@ -18,9 +20,11 @@ __viewContext.ready(function() {
             ]);
 
             self.selectedCode = ko.observable('1');
+            self.selectedCode2 = ko.observable('2');
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
             self.isRequired = ko.observable(true);
+            self.selectFirstIfNull = ko.observable(true);
         }
 
         setDefault() {

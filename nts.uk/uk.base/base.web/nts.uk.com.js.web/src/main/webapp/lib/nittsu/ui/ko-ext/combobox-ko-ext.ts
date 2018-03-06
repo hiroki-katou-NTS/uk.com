@@ -91,6 +91,7 @@ module nts.uk.ui.koExtentions {
             var editable = ko.unwrap(data.editable);
             var isRequired = ko.unwrap(data.required) === true;
             var enable: boolean = data.enable !== undefined ? ko.unwrap(data.enable) : true;
+            var selectFirstIfNull = !(ko.unwrap(data.selectFirstIfNull) === false); // default: true
             var columns: Array<any> = ko.unwrap(data.columns);
             var visibleItemsCount = data.visibleItemsCount === undefined ? 5 : ko.unwrap(data.visibleItemsCount);
             var dropDownAttachedToBody: boolean = data.dropDownAttachedToBody === undefined ? null : ko.unwrap(data.dropDownAttachedToBody);
@@ -122,18 +123,25 @@ module nts.uk.ui.koExtentions {
             // required
             required.set(container, isRequired);
             
-            // Check if selected code exists in list.
-            // But "null" and "undefined" are "not-selected" even if the "null" or "undefined" exist in list.
-            // この仕様は、「未選択」という項目を持つことを許容するためのもの。
-            let isValidValue = !util.isNullOrUndefined(selectedValue) && _.some(options, item => getValue(item) === selectedValue);
-            notSelected.set(container, !isValidValue);
-            if (!isValidValue) {
-                notSelected.set(container, true);
-            } else {
+            if(selectFirstIfNull && options.length !== 0 && util.isNullOrEmpty(selectedValue)) {
+                selectedValue = getValue(options[0]);
+                data.value(selectedValue);
                 notSelected.set(container, false);
                 container.ntsError("clear");
+            } else {
+                // Check if selected code exists in list.
+                // But "null" and "undefined" are "not-selected" even if the "null" or "undefined" exist in list.
+                // この仕様は、「未選択」という項目を持つことを許容するためのもの。
+                let isValidValue = !util.isNullOrUndefined(selectedValue) && _.some(options, item => getValue(item) === selectedValue);
+                notSelected.set(container, !isValidValue);
+                if (!isValidValue) {
+                    notSelected.set(container, true);
+                } else {
+                    notSelected.set(container, false);
+                    container.ntsError("clear");
+                }
             }
-
+            
             var haveColumn = columns && columns.length > 0;
 
             var isChangeOptions = !_.isEqual(container.data("options"), options);
