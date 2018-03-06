@@ -146,12 +146,58 @@ module nts.layout {
             let self = this;
             self.finder = new constraint(lstCls);
 
+            self.textBox();
             self.radio();
             self.button();
             self.combobox();
             validate.initCheckError(lstCls);
         }
-
+        
+        textBox = () => {
+            let self = this,
+            finder = self.finder,
+            CS00002_IS00003: IFindData = finder.find('CS00002', 'IS00003'),
+            CS00002_IS00004: IFindData = finder.find('CS00002', 'IS00004'),
+            CS00002_IS00009: IFindData = finder.find('CS00002', 'IS00009'),
+            CS00002_IS00010: IFindData = finder.find('CS00002', 'IS00010');
+            if (CS00002_IS00003) {
+                self.validateName(CS00002_IS00003);
+                CS00002_IS00003.data.value.subscribe(x=> {
+                   self.validateName(CS00002_IS00003);
+                });
+            }
+            
+            if (CS00002_IS00004) {
+                self.validateName(CS00002_IS00004);
+                CS00002_IS00004.data.value.subscribe(x=> {
+                   self.validateName(CS00002_IS00004);
+                });
+            }
+            if (CS00002_IS00009) {
+                self.validateName(CS00002_IS00009);
+                CS00002_IS00009.data.value.subscribe(x=> {
+                   self.validateName(CS00002_IS00009);
+                });
+            }
+            
+            if (CS00002_IS00010) {
+                self.validateName(CS00002_IS00010);
+                CS00002_IS00010.data.value.subscribe(x=> {
+                   self.validateName(CS00002_IS00010);
+                });
+            }
+        };
+        
+        validateName(item: IFindData){
+            if (!item.data.value().startsWith('　') && !item.data.value().endsWith('　') && item.data.value().includes('　')){
+                rmError(item, "Msg_924");
+            }  else if (item.data.value()) {
+                if (!item.ctrl.parent().hasClass('error')) {
+                    !item.ctrl.is(':disabled') && item.ctrl.ntsError('set', { messageId: "Msg_924" });
+                }
+            }
+        }
+        
         radio = () => {
             let self = this,
                 finder = self.finder,
