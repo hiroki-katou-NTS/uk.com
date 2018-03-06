@@ -4,6 +4,7 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.CascadeType;
 import javax.persistence.EmbeddedId;
@@ -15,6 +16,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplication;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -22,6 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @author hungnm
  *
  */
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
