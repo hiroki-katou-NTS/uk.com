@@ -48,10 +48,18 @@
 					<div>
 						<div class="mw-90" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_911')}</div>
 						<input id="time-edit1"
-							data-bind="ntsTimeEditor: {value: time1, inputFormat: 'time', enable: isEnableButton}" />
+							data-bind="ntsTimeEditor: {
+							name: '#{i18n.getText('KSU001_73')}',
+							value: time1,
+			 				inputFormat: 'time',
+			 				enable: isEnableButton}" />
 						<span id="spelcial">#{i18n.getText('KSU001_913')}</span> <input
 							id="time-edit2"
-							data-bind="ntsTimeEditor: {value: time2, inputFormat: 'time',enable: isEnableButton}" />
+							data-bind="ntsTimeEditor: {
+							name: '#{i18n.getText('KSU001_74')}',
+							value: time2,
+			 				inputFormat: 'time',
+			 				enable: isEnableButton}" />
 						<button class="search"
 							data-bind="click:search, enable: isEnableButton">#{i18n.getText('KSU001_67')}</button>
 						<button class="clear-search"

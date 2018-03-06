@@ -49,9 +49,15 @@
 				<div id="set-work-time">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_65')}</div>
 					<input id="time-edit1"
-						data-bind="ntsTimeEditor: {value: time1, inputFormat: 'time'}" />
+						data-bind="ntsTimeEditor: {
+							name: '#{i18n.getText('KSU001_73')}',
+							value: time1,
+			 				inputFormat: 'time'}" />
 					<span>#{i18n.getText('KSU001_66')}</span> <input id="time-edit2"
-						data-bind="ntsTimeEditor: {value: time2, inputFormat: 'time'}" />
+						data-bind="ntsTimeEditor: {
+							name: '#{i18n.getText('KSU001_74')}',
+							value: time2,
+			 				inputFormat: 'time'}" />
 					<button data-bind="click:search" class="reserved">#{i18n.getText('KSU001_67')}</button>
 					<button data-bind="click:clear">#{i18n.getText('KSU001_68')}</button>
 				</div>
