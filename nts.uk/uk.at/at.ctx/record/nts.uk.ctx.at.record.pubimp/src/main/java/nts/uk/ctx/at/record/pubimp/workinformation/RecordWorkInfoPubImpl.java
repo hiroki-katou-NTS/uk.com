@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.pub.workinformation.InfoCheckNotRegisterPubExport;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPub;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPubExport;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -109,6 +110,23 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 				leaveStampTimeSecond,
 				null, null, null, null, null);
 		return recordWorkInfoPubExport;
+	}
+
+	@Override
+	public InfoCheckNotRegisterPubExport getInfoCheckNotRegister(String employeeId, GeneralDate ymd) {
+		 Optional<InfoCheckNotRegisterPubExport> data = workInformationRepository.find(employeeId, ymd).map(c->convertToExport(c));
+		if(data.isPresent()) {
+			return data.get();
+		}
+		return null;
+	}
+	
+	private InfoCheckNotRegisterPubExport convertToExport(WorkInfoOfDailyPerformance domain) {
+		return new InfoCheckNotRegisterPubExport(
+				domain.getEmployeeId(),
+				domain.getRecordWorkInformation().getWorkTimeCode().v(),
+				domain.getRecordWorkInformation().getWorkTypeCode().v()
+				);
 	}
 
 }
