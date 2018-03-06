@@ -111,7 +111,7 @@ public class AddEmployeeCommandHelper {
 	// }
 
 	private void addNewPerson(String personId, AddEmployeeCommand command) {
-		Person newPerson = Person.createFromJavaType(ConstantUtils.minDate(), BloodType.Unselected.value,
+		Person newPerson = Person.createFromJavaType(ConstantUtils.minDate(), null,
 				GenderPerson.Male.value, personId, " ", "", command.getEmployeeName(), " ", "", "", "", "", "", "", "",
 				"", "", "");
 

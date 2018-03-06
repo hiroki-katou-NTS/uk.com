@@ -20,7 +20,7 @@ public class PersonDto extends PeregDomainDto{
 	/** The BloodType */
 	// 血液型
 	@PeregItem("IS00019")
-	private int bloodType;
+	private Integer bloodType;
 
 	/** The Gender - 性別 */
 	@PeregItem("IS00018")
@@ -91,7 +91,7 @@ public class PersonDto extends PeregDomainDto{
 				person.getPersonNameGroup().getPersonalNameMultilingual() == null ? null : person.getPersonNameGroup().getPersonalNameMultilingual().getFullNameKana());
 
 		PersonDto personDto =  new PersonDto(person.getBirthDate(), 
-				person.getBloodType().value, 
+				person.getBloodType() != null ? person.getBloodType().value : null, 
 				person.getGender().value, 
 				person.getPersonNameGroup().getPersonName().getFullName().v().trim(),
 				person.getPersonNameGroup().getPersonName().getFullNameKana().v().trim(), 

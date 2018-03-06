@@ -57,7 +57,7 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 		BpsmtPerson entity = new BpsmtPerson();
 		entity.bpsmtPersonPk = new BpsmtPersonPk(domain.getPersonId());
 		entity.birthday = domain.getBirthDate();
-		entity.bloodType = domain.getBloodType() == null ? 0 : domain.getBloodType().value;
+		entity.bloodType = domain.getBloodType() == null ? null : domain.getBloodType().value;
 		entity.gender = domain.getGender() == null ? 0 : domain.getGender().value;
 
 		entity.personName = domain.getPersonNameGroup().getPersonName() == null
@@ -113,7 +113,7 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 	 */
 	private void updateEntity(Person domain, BpsmtPerson entity) {
 		entity.birthday = domain.getBirthDate();
-		entity.bloodType = domain.getBloodType() == null ? 0 :domain.getBloodType().value;
+		entity.bloodType = domain.getBloodType() == null ? null :domain.getBloodType().value;
 		entity.gender = domain.getGender().value;
 		entity.personName = domain.getPersonNameGroup().getPersonName().getFullName().v();
 		entity.personNameKana = domain.getPersonNameGroup().getPersonName().getFullNameKana().v();

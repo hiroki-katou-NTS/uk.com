@@ -53,7 +53,7 @@ public class Person extends AggregateRoot {
 //	}
 	
 	//for required field
-	public static Person createFromJavaType(String personId, GeneralDate birthDate, int bloodType, int gender, String businessName, String personName, String personNameKana) {
+	public static Person createFromJavaType(String personId, GeneralDate birthDate, Integer bloodType, int gender, String businessName, String personName, String personNameKana) {
 		return new Person(personId, birthDate, bloodType,gender, new BusinessName(businessName), new FullNameSet(personName, personNameKana));
 	}
 	public Person(String personId, PersonNameGroup personNameGroup) {
@@ -63,12 +63,12 @@ public class Person extends AggregateRoot {
 	}
 	
 	//constructor for required field
-	public Person(String personId, GeneralDate birthDate, int bloodType, int gender, BusinessName businessName, FullNameSet personName){
+	public Person(String personId, GeneralDate birthDate, Integer bloodType, int gender, BusinessName businessName, FullNameSet personName){
 		super();
 		this.personId = personId;
 		this.birthDate = birthDate;
 		
-		if (ConstantUtils.ENUM_UNDEFINE_VALUE != bloodType){
+		if (bloodType != null){
 			this.bloodType = EnumAdaptor.valueOf(bloodType,BloodType.class);
 		}
 		if (ConstantUtils.ENUM_UNDEFINE_VALUE != gender){
@@ -77,12 +77,12 @@ public class Person extends AggregateRoot {
 		
 		this.personNameGroup = new PersonNameGroup(personName, businessName);
 	}
-	public Person(GeneralDate birthDate,int bloodType, int gender,String personId,PersonNameGroup personNameGroup){
+	public Person(GeneralDate birthDate,Integer bloodType, int gender,String personId,PersonNameGroup personNameGroup){
 		super();
 		this.personId = personId;
 		this.birthDate = birthDate;
 		
-		if (ConstantUtils.ENUM_UNDEFINE_VALUE != bloodType){
+		if (bloodType != null){
 			this.bloodType = EnumAdaptor.valueOf(bloodType,BloodType.class);
 		}
 		if (ConstantUtils.ENUM_UNDEFINE_VALUE != gender){
@@ -94,7 +94,7 @@ public class Person extends AggregateRoot {
 	
 	// sonnlb code start
 
-	public static Person createFromJavaType(GeneralDate birthDate, int bloodType, int gender, String personId,
+	public static Person createFromJavaType(GeneralDate birthDate, Integer bloodType, int gender, String personId,
 			String businessName,String businessNameKana, String personName, String personNameKana, String businessOtherName,
 			String businessEnglishName, String personRomanji, String personRomanjiKana,
 			String todokedeFullName, String todokedeFullNameKana, String oldName, String oldNameKana,

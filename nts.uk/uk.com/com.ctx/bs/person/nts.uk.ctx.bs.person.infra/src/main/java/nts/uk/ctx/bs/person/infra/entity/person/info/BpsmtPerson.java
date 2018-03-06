@@ -27,9 +27,9 @@ public class BpsmtPerson extends UkJpaEntity implements Serializable {
 	@Column(name = "BIRTHDAY")
 	public GeneralDate birthday;
 
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "BLOOD_TYPE")
-	public int bloodType;
+	public Integer bloodType;
 
 	@Basic(optional = false)
 	@Column(name = "GENDER")
