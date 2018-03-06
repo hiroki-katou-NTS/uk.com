@@ -13,3 +13,7 @@ tr {
 .main-content table>tbody>tr>td:NTH-CHILD(2) {
 	padding-left: 50px;
 }
+
+#tabpanel-2 .main-content {
+	min-width: 900px;
+}
