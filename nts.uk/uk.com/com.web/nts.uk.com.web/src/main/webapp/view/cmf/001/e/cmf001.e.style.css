@@ -1,9 +1,12 @@
 .dialog-content{
 	width:300px; 
-	height:550px;
+	height:450px;
 	margin-left:40px;
+	margin-right:40px;
 }
 .dialog-title{
 	margin-top:15px; 
-	margin-left:20px;
+}
+.dialog-components {
+	margin-top:15px; 
 }
