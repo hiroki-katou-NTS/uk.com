@@ -86,6 +86,12 @@ public class EmployeeSearchQueryDto implements Serializable {
 	/** The include retirees. */
 	private Boolean includeRetirees; // 退職者を含める
 
+	/** The include are on loan. */
+	private Boolean includeAreOnLoan; // 出向に来ている社員を含める
+
+	/** The include going on loan. */
+	private Boolean includeGoingOnLoan; // 出向に行っている社員を含める
+
 	/** The retire start. */
 	private String retireStart; // 退職日のチェック期間
 
