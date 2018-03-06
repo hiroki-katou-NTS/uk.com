@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 
@@ -15,12 +16,13 @@ import nts.arc.time.GeneralDate;
  */
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class SpecificDateAttrOfDailyPerfor extends AggregateRoot {
 	
 	private String employeeId;
 	
 	private List<SpecificDateAttrSheet> specificDateAttrSheets;
 	
-	private GeneralDate ymd;
+	private GeneralDate ymd;	
 
 }
