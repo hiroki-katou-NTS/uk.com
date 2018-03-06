@@ -124,25 +124,29 @@ public class PersonInfoItemGroupFinder {
 				return m;
 			}).sorted((o1, o2) -> o1.getDispOrder() - o2.getDispOrder()).collect(Collectors.toList());
 
-			// Lay List ItemDf theo  idsChild 
-			itemDfChild = itemDfFinder.getPerInfoItemDefByListId(idsChild);
-			
-			// List ItemDf sau khi check Abolition va sap xep
-			List<PerInfoItemDefDto> lstItemDfDto = itemDfChild.stream().map(m -> {
+			if (!idsChild.isEmpty()) {
 
-				PerInfoCtgFullDto cat = categoryFinder.getPerInfoCtg(m.getPerInfoCtgId());
+				// Lay List ItemDf theo idsChild
+				itemDfChild = itemDfFinder.getPerInfoItemDefByListId(idsChild);
 
-				if (cat.getIsAbolition() == 0 && m.getIsAbolition() == 0) {
+				// List ItemDf sau khi check Abolition va sap xep
+				List<PerInfoItemDefDto> lstItemDfDto = itemDfChild.stream().map(m -> {
+
+					PerInfoCtgFullDto cat = categoryFinder.getPerInfoCtg(m.getPerInfoCtgId());
+
+					if (cat.getIsAbolition() == 0 && m.getIsAbolition() == 0) {
+						return m;
+					}
+					return null;
+				}).filter(f -> f != null).map(m -> {
+					int catDispOrder = categoryFinder.getDispOrder(m.getPerInfoCtgId());
+					m.setDispOrder(catDispOrder * 100000 + m.getDispOrder());
 					return m;
-				}
-				return null;
-			}).filter(f -> f != null).map(m -> {
-				int catDispOrder = categoryFinder.getDispOrder(m.getPerInfoCtgId());
-				m.setDispOrder(catDispOrder * 100000 + m.getDispOrder());
-				return m;
-			}).sorted((o1, o2) -> o1.getDispOrder() - o2.getDispOrder()).collect(Collectors.toList());
+				}).sorted((o1, o2) -> o1.getDispOrder() - o2.getDispOrder()).collect(Collectors.toList());
 
-			result.addAll(lstItemDfDto);
+				result.addAll(lstItemDfDto);
+
+			}
 
 			return result;
 
@@ -156,7 +160,7 @@ public class PersonInfoItemGroupFinder {
 		}
 
 		List<PerInfoItemDefDto> result = new ArrayList<PerInfoItemDefDto>();
-		
+
 		groupIds.stream().forEach(f -> {
 			List<PerInfoItemDefDto> lstItemDfDto = getAllItemDfTest(f);
 			if (lstItemDfDto != null)
