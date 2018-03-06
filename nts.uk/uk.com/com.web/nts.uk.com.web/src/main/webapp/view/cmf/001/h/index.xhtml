@@ -8,6 +8,12 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 650, height: 500 };</script>
+			<com:ValidatorScript>
+	            nts.uk.ctx.exio.dom.exi.dataformat.StartDigit
+	            nts.uk.ctx.exio.dom.exi.dataformat.EndDigit
+	            nts.uk.ctx.exio.dom.exi.dataformat.CodeEditDigit
+	            nts.uk.ctx.exio.dom.exi.dataformat.ValueOfFixed
+            </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf001.h.vm.js" />
@@ -49,18 +55,20 @@
 						</div>
 						<div class="div-table-col">
 							<input id="H2_5" tabindex="2"
-								data-bind="ntsTextEditor: {
+								data-bind="ntsNumberEditor: {
 								value: startDigit,
 								name:'#{i18n.getText('CMF001_270')}',
+								constraint: 'StartDigit',
 								option : {width : '30px'},
 								enable: !(effectiveDigitLength() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode)}" />
 							<div id="H2_6" class="label" style="display: inline">#{i18n.getText('CMF001_270')}</div>
 						</div>
 						<div class="div-table-col">
 							<input id="H2_7" tabindex="3"
-								data-bind="ntsTextEditor: {
+								data-bind="ntsNumberEditor: {
 								value: endDigit,
 								name:'#{i18n.getText('CMF001_273')}',
+								constraint: 'EndDigit',
 								option : {width : '30px'},
 								enable: !(effectiveDigitLength() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode)}" />
 							<div id="H2_8" class=" label" style="display: inline">#{i18n.getText('CMF001_274')}</div>
@@ -95,9 +103,10 @@
 						</div>
 						<div class="div-table-col">
 							<input id="H3_5" tabindex="5"
-								data-bind="ntsTextEditor: {
+								data-bind="ntsNumberEditor: {
 								value: codeEditDigit,
 								name:'#{i18n.getText('CMF001_279')}',
+								constraint: 'CodeEditDigit',
 								option : {width : '30px'},
 								enable: !(codeEditing() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode)}" />
 							<div id="H3_6" class=" label" style="display: inline">#{i18n.getText('CMF001_280')}</div>
@@ -164,6 +173,7 @@
 								data-bind="ntsTextEditor: {
 								value: valueOfFixed,
 								name:'#{i18n.getText('CMF001_296')}',
+								constraint: 'ValueOfFixed',
 								option : {width : '200px'},
 								enable: !(fixedValue() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode)}" />
 						</div>
