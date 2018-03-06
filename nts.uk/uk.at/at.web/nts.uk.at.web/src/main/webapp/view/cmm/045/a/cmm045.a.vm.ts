@@ -174,6 +174,7 @@ module cmm045.a.viewmodel {
                 dataSource: self.items(),
                 primaryKey: 'appId',
                 virtualization: true,
+                rows: 8,
                 rowVirtualization: true,
                 virtualizationMode: 'continuous',
                 columns: [
@@ -262,6 +263,7 @@ module cmm045.a.viewmodel {
                 primaryKey: 'appId',
                 rowVirtualization: true,
                 virtualization: true,
+                rows: 8,
                 virtualizationMode: 'continuous',
                 columns: [
                     { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '60px', ntsControl: 'Checkbox' },
@@ -302,8 +304,12 @@ module cmm045.a.viewmodel {
         fillColorInGridList(){
             let self = this;
             _.each(self.items(), function(item) {
-                //fill color in 承認状況
                 let id = ".nts-grid-control-appStatus-" + item.appId;
+                //display check box
+                if (item.checkAtr == false) {
+                    $(".nts-grid-control-check-" + item.appId).css("display", "none");
+                }
+                //fill color in 承認状況
                 if (item.appStatus == '未') {
                     $(id).parent().addClass('unapprovalCell');
                 }
@@ -675,8 +681,6 @@ module cmm045.a.viewmodel {
                         self.reloadGridApplicaion();
                     }
                 }
-
-
             }).always(() => {
                 block.clear();
             });
@@ -700,7 +704,7 @@ module cmm045.a.viewmodel {
             console.log(self.items());
             let lstApp = [];
             _.each(self.items(), function(item) {
-                if (item.check) {
+                if (item.check && item.checkAtr) {
                     lstApp.push({ appId: item.appId, version: item.version });
                 }
             });
@@ -735,7 +739,6 @@ module cmm045.a.viewmodel {
                 $("#grid2").ntsGrid("destroy");
                 self.reloadGridApplicaion();
             }
-
         }
         countStatus(lstApp: Array<vmbase.DataModeApp>): vmbase.ApplicationStatus{
             let unApprovalNumber = 0;
