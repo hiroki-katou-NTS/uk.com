@@ -18,6 +18,7 @@
 
 		<ui:define name="content">
 			<div class="contents-area">
+				<!--J1_1 タイトル-->
 				<div id="J1_1" class="label">#{i18n.getText('CMF001_330')}</div>
 				<table id="tbl-control">
 					<col width="180px" />
@@ -26,9 +27,11 @@
 					<!-- J2 -->
 					<tr>
 						<td>
+							<!--J2_1 有効桁長(ラベル)-->
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_331')}</div>
 						</td>
 						<td>
+							<!--J2_2 有効桁長-->
 							<div data-bind="foreach: itemsEffectiveDigitLength">
 								<div
 									data-bind="ntsRadioButton: {
@@ -42,6 +45,7 @@
 						</td>
 						<td>
 							<div class="disp-inline">
+								<!--J2_5 開始桁-->
 								<input
 									data-bind="ntsNumberEditor: {
 										value: setting().startDigit, 
@@ -49,6 +53,7 @@
 										option : {width : '40px'}}" />
 							</div> <label>#{i18n.getText('CMF001_336')}</label> <label>#{i18n.getText('CMF001_337')}</label>
 							<div class="disp-inline">
+								<!--J2_8 終了桁-->
 								<input
 									data-bind="ntsNumberEditor: {
 										value: setting().endDigit, 
@@ -60,9 +65,11 @@
 					<!-- J3 -->
 					<tr>
 						<td>
+							<!--J3_1 進数選択(ラベル)-->
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_340')}</div>
 						</td>
 						<td colspan="2">
+							<!--J3_2 進数選択-->
 							<div class="cf"
 								data-bind="ntsSwitchButton: {
 								options: itemsDecimalSelection,
@@ -75,9 +82,11 @@
 					<!-- J4 -->
 					<tr>
 						<td>
+							<!--J4_1 時分/分選択(ラベル)-->
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_350')}</div>
 						</td>
 						<td colspan="2">
+							<!--J4_2 時分/分選択-->
 							<div class="cf"
 								data-bind="ntsSwitchButton: {
 								options: itemsHourMinuteSelection,
@@ -90,9 +99,11 @@
 					<!-- J5 -->
 					<tr>
 						<td>
+							<!--J5_1 区切り文字設定-->
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_354')}</div>
 						</td>
 						<td colspan="2">
+							<!--J5_2 区切り文字選択-->
 							<div
 								data-bind="ntsComboBox: {
 								options: itemsDelimiterSetting,
@@ -109,9 +120,11 @@
 					<!-- J6 -->
 					<tr>
 						<td>
+							<!--J6_1 端数処理（１０進数）-->
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_356')}</div>
 						</td>
 						<td>
+							<!--J6_2 端数処理の有無-->
 							<div data-bind="foreach: itemsRoundingProcessing">
 								<div
 									data-bind="ntsRadioButton: {
@@ -124,6 +137,7 @@
 							</div>
 						</td>
 						<td>
+							<!--J6_5 端数処理内容-->
 							<div
 								data-bind="ntsComboBox: {
 								options: itemsRoundProcessingClassification,
@@ -140,9 +154,11 @@
 					<!-- J7 -->
 					<tr>
 						<td>
+							<!--J7_1 固定値(ラベル)-->
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_361')}</div>
 						</td>
 						<td>
+							<!--J7_2 固定値使用有無-->
 							<div data-bind="foreach: itemsFixedValue">
 								<div
 									data-bind="ntsRadioButton: {
@@ -154,6 +170,7 @@
 										group: 'J7_2'}"></div>
 							</div>
 						</td>
+						<!--J7_5 固定値の値-->
 						<td><input
 							data-bind="ntsTextEditor: {
 									value: setting().valueOfFixed,
@@ -164,8 +181,10 @@
 				</table>
 			</div>
 			<div id="functions-area-bottom">
+				<!--J8_1 設定-->
 				<button id="btn_J8_1" class="x-large proceed "
 					data-bind="click: saveNumericSetting, enable: inputMode">#{i18n.getText('CMF001_366')}</button>
+				<!--J8_2 キャンセル-->
 				<button id="btn_J8_2" class="large"
 					data-bind="click: cancelNumericSetting">#{i18n.getText('CMF001_367')}</button>
 			</div>
