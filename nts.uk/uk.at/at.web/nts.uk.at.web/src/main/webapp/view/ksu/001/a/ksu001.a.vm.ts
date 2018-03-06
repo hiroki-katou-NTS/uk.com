@@ -424,11 +424,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
 
                 /** Advanced search properties */
-                showEmployment: false, // 雇用条件
+                showEmployment: true, // 雇用条件
                 showWorkplace: true, // 職場条件
-                showClassification: false, // 分類条件
-                showJobTitle: false, // 職位条件
-                showWorktype: false, // 勤種条件
+                showClassification: true, // 分類条件
+                showJobTitle: true, // 職位条件
+                showWorktype: true, // 勤種条件
                 isMutipleCheck: true, // 選択モード
 
                 /** Return data */
