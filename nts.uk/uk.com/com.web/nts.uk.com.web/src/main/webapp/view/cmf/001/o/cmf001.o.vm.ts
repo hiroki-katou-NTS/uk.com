@@ -176,7 +176,8 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 //表示するデータがある場合   
                 if (data && data.length) {
                     let _rspList: Array<model.StandardAcceptanceConditionSetting> = _.map(data, rsp => {
-                        return new model.StandardAcceptanceConditionSetting(rsp.conditionSetCd, rsp.conditionSetName, rsp.deleteExistData, rsp.acceptMode, rsp.csvDataLineNumber, rsp.csvDataStartLine, rsp.deleteExtDataMethod);
+                        return new model.StandardAcceptanceConditionSetting(rsp.conditionSettingCode, rsp.conditionSettingName, 
+                        rsp.deleteExistData, rsp.acceptMode, rsp.csvDataItemLineNumber, rsp.csvDataStartLine, rsp.deleteExistDataMethod);
                     });
                     self.listCondition(_rspList);
 
