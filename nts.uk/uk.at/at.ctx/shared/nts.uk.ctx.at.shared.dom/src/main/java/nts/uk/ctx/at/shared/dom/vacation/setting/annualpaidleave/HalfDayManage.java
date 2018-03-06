@@ -28,4 +28,7 @@ public class HalfDayManage {
     /** The max number uniform company. */
     // 会社一律上限回数
     public AnnualNumberDay maxNumberUniformCompany;
+    
+    //端数処理区分
+    public RoundProcessingClassification roundProcesCla;
 }

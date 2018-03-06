@@ -18,6 +18,8 @@ module nts.uk.pr.view.kmf001.c {
             maxRemainingDay: KnockoutObservable<string>;
             numberYearRetain: KnockoutObservable<string>;
             enableMaxNumberCompany: KnockoutObservable<boolean>;
+            roundProcessClassificationList: KnockoutObservableArray<EnumertionModel>;
+            selectedRoundProcessCla: KnockoutObservable<number>;
             
             applyPermissionList: KnockoutObservableArray<EnumertionModel>;
             selectedApplyPermission: KnockoutObservable<number>;
@@ -67,7 +69,9 @@ module nts.uk.pr.view.kmf001.c {
                 self.maxGrantDay = ko.observable("");
                 self.maxRemainingDay = ko.observable("");
                 self.numberYearRetain = ko.observable("");
-                self.yearlyOfNumberDays = ko.observable("");                
+                self.yearlyOfNumberDays = ko.observable("");
+                self.roundProcessClassificationList = ko.observableArray([]);
+                self.selectedRoundProcessCla = ko.observable(0);   
                 
                 // 年休取得の設定
                 self.applyPermissionList = ko.observableArray([]);
@@ -118,7 +122,7 @@ module nts.uk.pr.view.kmf001.c {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 $.when(self.loadManageDistinctEnums(), self.loadApplyPermissionEnums(), self.loadPreemptionPermitEnums(),
-                        self.loadDisplayDivisionEnums(), self.loadTimeUnitEnums(), self.loadMaxDayReferenceEnums()).done(function() {
+                        self.loadDisplayDivisionEnums(), self.loadTimeUnitEnums(), self.loadMaxDayReferenceEnums(),  self.roundProcessClassificationEnums()).done(function() {
                     self.loadSetting().done(() => {
                         $('#annual-manage').focus();
                     });
@@ -214,7 +218,8 @@ module nts.uk.pr.view.kmf001.c {
                 self.selectedAnnualPriority(res.annualPriority);
                 self.selectedNumberRemainingYearly(res.remainingNumberDisplay);
                 self.selectedNextAnunalVacation(res.nextGrantDayDisplay);
-                self.yearlyOfNumberDays(res.yearlyOfDays); 
+                self.yearlyOfNumberDays(res.yearlyOfDays);
+                self.selectedRoundProcessCla(res.roundProcessCla);
                 
                 // Time Leave Setting
                 self.selectedTimeManagement(res.timeManageType);
@@ -354,6 +359,19 @@ module nts.uk.pr.view.kmf001.c {
                 let dfd = $.Deferred();
                 service.findMaxDayReference().done(function(res: Array<EnumertionModel>) {
                     self.maxDayReferenceList(res);
+                    dfd.resolve();
+                }).fail(function(res) {
+                   nts.uk.ui.dialog.alertError(res.message);
+                });
+                return dfd.promise();
+            }            
+            
+            // find enumeration MaxDayReference
+            private roundProcessClassificationEnums(): JQueryPromise<Array<EnumertionModel>> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.roundProcessClassification().done(function(res: Array<EnumertionModel>) {
+                    self.roundProcessClassificationList(res);
                     dfd.resolve();
                 }).fail(function(res) {
                    nts.uk.ui.dialog.alertError(res.message);

@@ -67,6 +67,7 @@ public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetM
         this.entity.setHalfManageAtr(halfDayManage.manageType.value);
         this.entity.setHalfMaxReference(halfDayManage.reference.value);
         this.entity.setHalfMaxUniformComp(halfDayManage.maxNumberUniformCompany.v());
+        this.entity.setRoundProcessCla(halfDayManage.roundProcesCla.value);
     }
 
     /*
@@ -116,7 +117,6 @@ public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetM
      */
 	@Override
 	public void setYearLyOfDays(YearLyOfNumberDays yearLyOfNumberDays) {
-		this.setYearLyOfDays(yearLyOfNumberDays);
+		this.entity.setYearlyOfDays(yearLyOfNumberDays.v());
 	}
-
 }

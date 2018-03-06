@@ -52,7 +52,7 @@ public interface ManageAnnualSettingSetMemento {
     void setDisplaySetting(DisplaySetting displaySetting);
     
     /**
-     * Gets the yearly of day.
+     * Sets the yearly of day.
      * @return
      */
     void setYearLyOfDays(YearLyOfNumberDays yearLyOfNumberDays);

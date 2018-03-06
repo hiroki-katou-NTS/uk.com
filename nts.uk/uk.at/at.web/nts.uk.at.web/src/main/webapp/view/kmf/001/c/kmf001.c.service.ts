@@ -10,6 +10,7 @@ module nts.uk.pr.view.kmf001.c {
             findDisplayDivision: 'ctx/at/share/vacation/setting/annualpaidleave/find/displaydivision',
             findTimeUnit: 'ctx/at/share/vacation/setting/annualpaidleave/find/timeunit',
             findMaxDayReference: 'ctx/at/share/vacation/setting/annualpaidleave/find/maxdayreference',
+            roundProcessClassification: 'ctx/at/share/vacation/setting/annualpaidleave/find/roundProcessCla',
             
             save: 'ctx/at/share/vacation/setting/annualpaidleave/save',
             findSetting: 'ctx/at/share/vacation/setting/annualpaidleave/find/setting'
@@ -37,6 +38,10 @@ module nts.uk.pr.view.kmf001.c {
         
         export function findMaxDayReference(): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.findMaxDayReference);
+        }
+        
+        export function roundProcessClassification(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.roundProcessClassification);
         }
 
         export function save(command: any): JQueryPromise<any> {

@@ -68,4 +68,7 @@ public class AnnualPaidLeaveSettingFindDto {
     
     /** The yearly of date. */
     public Double yearlyOfDays;
+    
+    /** The round processing classification. */
+    public Integer roundProcessCla;
 }
