@@ -224,4 +224,14 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 			return Optional.empty();
 		}
 	}
+
+	@Override
+	public Optional<Person> getByPId(String personId) {
+		Optional<BpsmtPerson> person = this.queryProxy().find(new BpsmtPersonPk(personId), BpsmtPerson.class);
+		if (person.isPresent()) {
+			return Optional.of(toFullPersonDomain(person.get()));
+		} else {
+			return Optional.empty();
+		}
+	}
 }

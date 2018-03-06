@@ -29,6 +29,8 @@ public interface PersonRepository {
 	 */
 	Optional<Person> getByPersonId(String personId);
 	
+	Optional<Person> getByPId(String personId);
+	
 	/**
 	 * Gets person for pereg by person id.
 	 *
