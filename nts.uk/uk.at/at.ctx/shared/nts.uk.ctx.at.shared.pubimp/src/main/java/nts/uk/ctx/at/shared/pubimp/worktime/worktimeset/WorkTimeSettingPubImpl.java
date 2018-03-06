@@ -22,35 +22,55 @@ public class WorkTimeSettingPubImpl implements WorkTimeSettingPub {
 	/** The work time setting repository. */
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.pub.worktime.worktimeset.WorkTimeSettingPub#isFlowWork(java.lang.String, java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.pub.worktime.worktimeset.WorkTimeSettingPub#isFlowWork(
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
 	public boolean isFlowWork(String companyId, String workTimeCode) {
-		
+
 		// Get WorkTimeSetting
-		Optional<WorkTimeSetting> opWorkTimeSetting = this.workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		Optional<WorkTimeSetting> opWorkTimeSetting = this.workTimeSettingRepository.findByCode(companyId,
+				workTimeCode);
 		if (!opWorkTimeSetting.isPresent()) {
 			return false;
 		}
-		
+
 		return opWorkTimeSetting.get().getWorkTimeDivision().isFlow();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.pub.worktime.worktimeset.WorkTimeSettingPub#getWorkTimeSettingName(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.pub.worktime.worktimeset.WorkTimeSettingPub#
+	 * getWorkTimeSettingName(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public String getWorkTimeSettingName(String companyId, String workTimeCode) {
-		
+
 		// Get WorkTimeSetting
-		Optional<WorkTimeSetting> opWorkTimeSetting = this.workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		Optional<WorkTimeSetting> opWorkTimeSetting = this.workTimeSettingRepository.findByCode(companyId,
+				workTimeCode);
 		if (!opWorkTimeSetting.isPresent()) {
 			return null;
 		}
-		
+
 		return opWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v();
+	}
+
+	@Override
+	public boolean isExist(String companyId, String worktimeCode) {
+		// Get WorkTimeSetting
+		Optional<WorkTimeSetting> opWorkTimeSetting = this.workTimeSettingRepository.findByCode(companyId,
+				worktimeCode);
+		if (opWorkTimeSetting.isPresent()) {
+			return true;
+		}
+		return false;
 	}
 
 }

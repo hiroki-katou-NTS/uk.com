@@ -5,8 +5,11 @@
 package nts.uk.ctx.bs.employee.infra.repository.workplace.config.info;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -123,41 +126,41 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 	 * WorkplaceConfigInfoRepository#find(java.lang.String,
 	 * nts.arc.time.GeneralDate)
 	 */
-	@Override
-	public Optional<WorkplaceConfigInfo> find(String companyId, GeneralDate baseDate) {
-		// get entity manager
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-		CriteriaQuery<BsymtWkpConfigInfo> cq = criteriaBuilder
-				.createQuery(BsymtWkpConfigInfo.class);
-		Root<BsymtWkpConfigInfo> root = cq.from(BsymtWkpConfigInfo.class);
-
-		// select root
-		cq.select(root);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.cid),
-				companyId));
-		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
-				root.get(BsymtWkpConfigInfo_.bsymtWkpConfig).get(BsymtWkpConfig_.strD), baseDate));
-		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
-				root.get(BsymtWkpConfigInfo_.bsymtWkpConfig).get(BsymtWkpConfig_.endD), baseDate));
-		
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-		cq.orderBy(criteriaBuilder.asc(root.get(BsymtWkpConfigInfo_.hierarchyCd)));
-
-		List<BsymtWkpConfigInfo> lstEntity = em.createQuery(cq).getResultList();
-
-		if (lstEntity.isEmpty()) {
-			return Optional.empty();
-		}
-
-		return Optional
-				.of(new WorkplaceConfigInfo(new JpaWorkplaceConfigInfoGetMemento(lstEntity)));
-	}
+//	@Override
+//	public Optional<WorkplaceConfigInfo> find(String companyId, GeneralDate baseDate) {
+//		// get entity manager
+//		EntityManager em = this.getEntityManager();
+//		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+//
+//		CriteriaQuery<BsymtWkpConfigInfo> cq = criteriaBuilder
+//				.createQuery(BsymtWkpConfigInfo.class);
+//		Root<BsymtWkpConfigInfo> root = cq.from(BsymtWkpConfigInfo.class);
+//
+//		// select root
+//		cq.select(root);
+//
+//		// add where
+//		List<Predicate> lstpredicateWhere = new ArrayList<>();
+//		lstpredicateWhere.add(criteriaBuilder.equal(
+//				root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.cid),
+//				companyId));
+//		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+//				root.get(BsymtWkpConfigInfo_.bsymtWkpConfig).get(BsymtWkpConfig_.strD), baseDate));
+//		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
+//				root.get(BsymtWkpConfigInfo_.bsymtWkpConfig).get(BsymtWkpConfig_.endD), baseDate));
+//		
+//		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+//		cq.orderBy(criteriaBuilder.asc(root.get(BsymtWkpConfigInfo_.hierarchyCd)));
+//
+//		List<BsymtWkpConfigInfo> lstEntity = em.createQuery(cq).getResultList();
+//
+//		if (lstEntity.isEmpty()) {
+//			return Optional.empty();
+//		}
+//
+//		return Optional
+//				.of(new WorkplaceConfigInfo(new JpaWorkplaceConfigInfoGetMemento(lstEntity)));
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -395,6 +398,54 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 		
 		return Optional
 				.of(new WorkplaceConfigInfo(new JpaWorkplaceConfigInfoGetMemento(lstEntity)));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.config.info.
+	 * WorkplaceConfigInfoRepository#findByWkpIdsAtTime(java.lang.String,
+	 * nts.arc.time.GeneralDate, java.util.List)
+	 */
+	@Override
+	public List<WorkplaceConfigInfo> findByWkpIdsAtTime(String companyId, GeneralDate baseDate,
+			List<String> wkpIds) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<BsymtWkpConfigInfo> cq = criteriaBuilder
+				.createQuery(BsymtWkpConfigInfo.class);
+		Root<BsymtWkpConfigInfo> root = cq.from(BsymtWkpConfigInfo.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.cid),
+				companyId));
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+				root.get(BsymtWkpConfigInfo_.bsymtWkpConfig).get(BsymtWkpConfig_.strD), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
+				root.get(BsymtWkpConfigInfo_.bsymtWkpConfig).get(BsymtWkpConfig_.endD), baseDate));
+		lstpredicateWhere.add(
+				root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.wkpid).in(wkpIds));
+
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		List<BsymtWkpConfigInfo> lstEntity = em.createQuery(cq).getResultList();
+
+		// check empty
+		if (lstEntity.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		return lstEntity.stream()
+				.map(entity -> new WorkplaceConfigInfo(
+						new JpaWorkplaceConfigInfoGetMemento(Arrays.asList(entity))))
+				.collect(Collectors.toList());
 	}
 
 }

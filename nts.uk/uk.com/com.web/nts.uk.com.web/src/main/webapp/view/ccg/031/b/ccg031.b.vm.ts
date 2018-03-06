@@ -137,25 +137,17 @@ module nts.uk.com.view.ccg031.b.viewmodel {
             // Default is External Url
             var placementPartDto: model.PlacementPartDto = {
                 topPagePartID: "",
-                topPageCode: "",
-                topPageName: "",
                 "type": 4,
                 width: self.urlWidth(),
                 height: self.urlHeight(),
                 url: self.url(),
-                fileID: "",
-                fileName: "",
-                defClassAtr: 0
             }
             
             // In case is TopPagePart
             if (self.selectedPartType() !== 4) {
                 if (!util.isNullOrUndefined(self.selectedPart())) {
-                    placementPartDto.topPageName = self.selectedPart().name;
                     placementPartDto.topPagePartID = self.selectedPart().topPagePartID;
-                    placementPartDto.type = self.selectedPart().type;
-                    placementPartDto.width = self.selectedPart().width;
-                    placementPartDto.height = self.selectedPart().height;
+                    placementPartDto.type = self.selectedPartType();
                 }
                 else {
                     return null;
