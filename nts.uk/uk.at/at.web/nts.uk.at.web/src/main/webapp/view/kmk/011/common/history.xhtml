@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition >
+		<div class="history_setting" data-bind="with: screenHist()">
+			<div class ="functions">
+				<button tabindex="-1" data-bind="click: createMode, enable: enable_button_creat">職位の作成</button>
+				<button tabindex="-1" data-bind="click: editMode, enable: enable_button_edit">職位の作成</button>
+				<button tabindex="-1" data-bind="click: deleteMode, enable: enable_button_delete">職位の作成</button>
+			</div>
+			<div class="list_hist">
+				<div id="list-box" data-bind="ntsListBox: {
+							options: histList,
+							optionsValue: 'historyId',
+							optionsText: 'textDisplay',
+							multiple: false,
+							value: selectedHist,
+							enable: isEnableListHist,
+							rows: 5,
+							columns: [
+								{ key: 'textDisplay', length: 17 }
+				]}"></div>
+			</div>
+		</div>
+	</ui:composition>
+</body>
+</html>

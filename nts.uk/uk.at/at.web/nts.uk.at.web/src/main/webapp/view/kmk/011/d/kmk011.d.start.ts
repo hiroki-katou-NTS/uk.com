@@ -5,7 +5,7 @@ module nts.uk.at.view.kmk011.d {
         let mainTab = new viewmodel.ScreenModel();
 
         
-        mainTab.start_page().done(function(screenModel){
+        mainTab.start_page(0).done(function(screenModel){
             __viewContext.bind(mainTab); 
         });
     });

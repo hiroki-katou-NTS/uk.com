@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 500,
+					height : 400
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk011.c.main.css" />
+			
+			<com:scriptfile path="kmk011.c.vm.js" />
+			<com:scriptfile path="kmk011.c.service.js" />
+			<com:scriptfile path="kmk011.c.start.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div tabindex="-1" id="contents-area" 
+				<div class="title-content">
+					aaaaaaaa
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				
+				<button tabindex="-1" data-bind="" class="x-large proceed">Save</button>
+				
+				<button tabindex="-1" data-bind="">Close</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

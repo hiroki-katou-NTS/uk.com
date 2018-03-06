@@ -1,0 +1,12 @@
+@CHARSET "UTF-8";
+
+.history_setting {
+	margin-top: 40px;
+}
+
+.functions {
+	height: 40px;
+	padding-top: 8px;
+	paddding-left: 5px;
+	margin-bottom: 20px;
+}

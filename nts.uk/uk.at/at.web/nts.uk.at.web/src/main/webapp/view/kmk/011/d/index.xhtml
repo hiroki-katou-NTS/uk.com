@@ -22,8 +22,9 @@
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" /> -->
-
-			<!-- <com:scriptfile path="../commonTableMonthDaySet.js" /> -->
+			
+			<com:stylefile path="../common/history.main.css" />
+			<com:scriptfile path="../common/history.vm.js" />
 			
 			<com:stylefile path="../e/kmk011.e.main.css" />
 			<com:scriptfile path="../e/kmk011.e.service.js" />
@@ -37,10 +38,10 @@
 		</ui:define>
 		<ui:define name="sidebar">
 			<ul tabindex="1" class="navigator">
-				<li data-bind="click: onSelectTabA"><a tabindex="-1"
+				<li data-bind="click: onSelectTabOne"><a tabindex="-1"
 					href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
-				<li data-bind="click: onSelectTabE"><a tabindex="-1"
-					href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Company')}</a></li>
+				<li data-bind="click: onSelectTabTwo"><a tabindex="-1"
+					href="#tabpanel-2" role="tab-navigator">#{i18n.getText('KMK011_49')}</a></li>
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
