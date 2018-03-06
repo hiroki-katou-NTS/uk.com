@@ -16,7 +16,7 @@ module nts.uk.com.view.cmf001.k.viewmodel {
         /* screen */
         constructor() {
             var self = this;
-            let firstItem = new model.AcceptanceCodeConvert("", "なし", 0);
+            let firstItem = new model.AcceptanceCodeConvert("", getText('CMF001_268'), 0);
             self.listConvertCode = ko.observableArray([firstItem]);
             self.selectedConvertCode = ko.observable("");
             let params = getShared("CMF001kParams");
