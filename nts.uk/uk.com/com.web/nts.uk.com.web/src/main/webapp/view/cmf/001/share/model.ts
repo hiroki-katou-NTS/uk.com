@@ -100,19 +100,20 @@ module nts.uk.com.view.cmf001.share.model {
         dispConditionSettingCode: string;
         conditionSettingName: KnockoutObservable<string>;
         dispConditionSettingName: string;
-        deleteExistData: KnockoutObservable<number> = ko.observable(0);
-        deleteExistDataMethod: KnockoutObservable<number> = ko.observable(null);
+        deleteExistData: KnockoutObservable<number>;
+        deleteExistDataMethod: KnockoutObservable<number> = ko.observable(1);
         acceptMode: KnockoutObservable<number>;
         csvDataItemLineNumber: KnockoutObservable<number>;
         csvDataStartLine: KnockoutObservable<number>;
         systemType: KnockoutObservable<number> = ko.observable(0);
+        alreadySetting: KnockoutObservable<boolean> = ko.observable(false);
 
-        constructor(code: string, name: string, deleteExistData: number, acceptMode: number, csvDataItemLineNumber: number, csvDataStartLine: number, deleteExistDataMethod?: number) {
+        constructor(code: string, name: string, deleteExistData: number, acceptMode: number, csvDataItemLineNumber: number, csvDataStartLine: number, deleteExistDataMethod?: number, alreadySetting?: boolean) {
             this.conditionSettingCode = ko.observable(code);
             this.dispConditionSettingCode = code;
             this.conditionSettingName = ko.observable(name);
             this.dispConditionSettingName = name;
-            this.deleteExistData(deleteExistData);
+            this.deleteExistData = ko.observable(deleteExistData);
             if (deleteExistDataMethod) {
                 this.deleteExistDataMethod(deleteExistDataMethod);
             }

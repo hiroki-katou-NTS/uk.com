@@ -6,6 +6,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.text.StringUtil;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 受入条件設定（定型）
@@ -36,12 +37,12 @@ public class StdAcceptCondSet extends AggregateRoot {
 	/**
 	 * システム種類
 	 */
-	private int systemType;
+	private SystemType systemType;
 
 	/**
 	 * 既存データの削除
 	 */
-	private int deleteExistData;
+	private NotUseAtr deleteExistData;
 
 	/**
 	 * CSVデータの取込開始行
@@ -61,7 +62,7 @@ public class StdAcceptCondSet extends AggregateRoot {
 	/**
 	 * チェック完了
 	 */
-	private int checkCompleted;
+	private NotUseAtr checkCompleted;
 
 	/**
 	 * 既存データの削除方法
@@ -74,11 +75,11 @@ public class StdAcceptCondSet extends AggregateRoot {
 		super();
 		this.cid = cid;
 		this.conditionSetCd = new AcceptanceConditionCode(conditionSetCd);
-		this.systemType = systemType;
-		this.deleteExistData = deleteExistData;
+		this.systemType = EnumAdaptor.valueOf(systemType, SystemType.class);
+		this.deleteExistData = EnumAdaptor.valueOf(deleteExistData, NotUseAtr.class);
 		this.acceptMode = EnumAdaptor.valueOf(acceptMode, AcceptMode.class);
 		this.conditionSetName = new AcceptanceConditionName(conditionSetName);
-		this.checkCompleted = checkCompleted;
+		this.checkCompleted = EnumAdaptor.valueOf(checkCompleted, NotUseAtr.class);
 		if (StringUtil.isNullOrEmpty(categoryId, true)) {
 			this.categoryId = Optional.empty();
 		} else {

@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 <!-- 			<com:stylefile path="cas014.a.style.css" /> -->
-<!-- 			<com:scriptfile path="cas014.a.service.js" /> -->
+			<com:scriptfile path="cmf001.b.service.js" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf001.b.vm.js" />
 			
@@ -19,11 +19,11 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF001_37')}</a>
-				<button tabindex="1" data-bind="click: createNewCondition">#{i18n.getText('CMF001_29')}</button>
+				<button tabindex="1" data-bind="click: createNewCondition, enable: screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.UPDATE">#{i18n.getText('CMF001_29')}</button>
 				<button tabindex="2" data-bind="click: registerCondition" class="proceed" >#{i18n.getText('CMF001_30')}</button>
 <!-- 					<button tabindex="3" >#{i18n.getText('CMF001_31')}</button> -->
-				<button tabindex="4" data-bind="click: openCMF001m">#{i18n.getText('CMF001_33')}</button>
-				<button tabindex="5" data-bind="click: deleteCondition" class="danger" >#{i18n.getText('CMF001_34')}</button>
+				<button tabindex="4" data-bind="click: openCMF001m, enable: screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.UPDATE">#{i18n.getText('CMF001_33')}</button>
+				<button tabindex="5" data-bind="click: deleteCondition, enable: screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.UPDATE" class="danger" >#{i18n.getText('CMF001_34')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left">
@@ -47,7 +47,7 @@
 				</div>
 				<div class="fixed-flex-layout-right">
 					<div class="valign-center control-group">
-						<label>#{i18n.getText('CMF001_35')}</label> 
+						<span class="label">#{i18n.getText('CMF001_35')}</span> 
 						<div tabindex="6" data-bind="ntsComboBox: {
 							options: systemTypes,
 							optionsValue: 'code',
@@ -65,7 +65,7 @@
 						<div class="label warning">#{i18n.getText('CMF001_50')}</div>
 						<div class="valign-center control-group">
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_51')}</div>
-							<input tabindex="9" id="B4_3" data-bind="ntsTextEditor: {name: '#[CMF001_52]', value: conditionSettingCode, required: true, option: {width: '80px'}}" />
+							<input tabindex="9" id="B4_3" data-bind="ntsTextEditor: {name: '#[CMF001_52]', value: conditionSettingCode, required: true, option: {width: '80px'}, enable: $parent.screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.NEW}" />
 							<input tabindex="10" id="B4_4" data-bind="ntsTextEditor: {name: '#[CMF001_53]', value: conditionSettingName, required: true}" />
 						</div>
 						<div class="valign-center control-group">
@@ -83,7 +83,7 @@
 								editable: false,
 								enable: true,
 								columns: [
-									{ prop: 'name', length: 12 }
+									{ prop: 'name', length: 20 }
 								]}"></div>
 						</div>
 						<div class="valign-center control-group">
@@ -94,14 +94,15 @@
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: acceptMode,
-								enable: true }"></div>
+								enable: deleteExistData()==0 }"></div>
 						</div>
-					</div>
-					<div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_69')}</div>
-						<button tabindex="14" data-bind="click: openCMF001d">#{i18n.getText('CMF001_70')}</button>
-						<label>#{i18n.getText('CMF001_71')}</label>
-						<label>YES/NO</label>
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_69')}</div>
+							<button tabindex="14" data-bind="click: function() {$parent.openCMF001d()}">#{i18n.getText('CMF001_70')}</button>
+							<span class="label">#{i18n.getText('CMF001_71')}</span>
+							<span class="label" data-bind="visible: alreadySetting()">#{i18n.getText('CMF001_77')}</span>
+							<span class="label" data-bind="visible: !alreadySetting()">#{i18n.getText('CMF001_78')}</span>
+						</div>
 					</div>
 				</div>
 			</div>

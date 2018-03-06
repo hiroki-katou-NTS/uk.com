@@ -22,7 +22,7 @@ public class RemoveStdAcceptCondSetCommandHandler extends CommandHandler<StdAcce
 	protected void handle(CommandHandlerContext<StdAcceptCondSetCommand> context) {
 		String cid = AppContexts.user().companyId();
 		int sysType = context.getCommand().getSystemType();
-		String conditionSetCd = context.getCommand().getConditionSetCd();
+		String conditionSetCd = context.getCommand().getConditionSettingCode();
 		repository.remove(cid, sysType, conditionSetCd);
 	}
 }

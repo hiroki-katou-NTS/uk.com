@@ -1,8 +1,6 @@
 package nts.uk.ctx.exio.app.command.exi.condset;
 
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 @Value
 public class StdAcceptCondSetCommand {
@@ -15,12 +13,12 @@ public class StdAcceptCondSetCommand {
 	/**
 	 * 外部受入条件コード
 	 */
-	private String conditionSetCd;
+	private String conditionSettingCode;
 
 	/**
 	 * 外部受入条件名称
 	 */
-	private String conditionSetName;
+	private String conditionSettingName;
 	
 	/**
 	 * 既存データの削除
@@ -45,16 +43,19 @@ public class StdAcceptCondSetCommand {
 	/**
 	 * CSVデータの項目名行
 	 */
-	private int csvDataLineNumber;
+	private Integer csvDataItemLineNumber;
 	
 	/**
 	 * CSVデータの取込開始行
 	 */
-	private int csvDataStartLine;
+	private Integer csvDataStartLine;
 	
 	/**
 	 * 既存データの削除方法
 	 */
-	private int deleteExtDataMethod;
+	private Integer deleteExistDataMethod;
+	
+	private int action;
 
+	
 }

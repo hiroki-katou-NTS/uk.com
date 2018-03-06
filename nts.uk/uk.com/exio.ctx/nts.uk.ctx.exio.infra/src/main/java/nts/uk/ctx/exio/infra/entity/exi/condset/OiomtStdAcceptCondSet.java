@@ -109,9 +109,9 @@ public class OiomtStdAcceptCondSet extends UkJpaEntity implements Serializable {
 	}
 
 	public static OiomtStdAcceptCondSet domainToEntity(StdAcceptCondSet domain) {
-		return new OiomtStdAcceptCondSet(domain.getCid(), domain.getSystemType(), domain.getConditionSetCd().v(),
-				domain.getConditionSetName().v(), domain.getDeleteExistData(), domain.getAcceptMode().value,
-				domain.getCheckCompleted(), domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null,
+		return new OiomtStdAcceptCondSet(domain.getCid(), domain.getSystemType().value, domain.getConditionSetCd().v(),
+				domain.getConditionSetName().v(), domain.getDeleteExistData().value, domain.getAcceptMode().value,
+				domain.getCheckCompleted().value, domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null,
 				domain.getCsvDataLineNumber().isPresent() ? domain.getCsvDataLineNumber().get().v() : null,
 				domain.getCsvDataStartLine().isPresent() ? domain.getCsvDataStartLine().get().v() : null,
 				domain.getDeleteExtDataMethod().isPresent() ? domain.getDeleteExtDataMethod().get().value : null);

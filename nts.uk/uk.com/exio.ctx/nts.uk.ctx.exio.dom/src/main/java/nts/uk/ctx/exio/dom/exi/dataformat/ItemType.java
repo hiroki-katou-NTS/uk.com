@@ -6,14 +6,17 @@ package nts.uk.ctx.exio.dom.exi.dataformat;
  *
  */
 public enum ItemType {
-	NUMERIC(0, "数値型"),
-
-	CHARACTER(1, "文字型"),
-
-	DATE(2, "日付型"), 
+	//数値型
+	NUMERIC(0, "Enum_ItemType_NUMERIC"),
+	//文字型
+	CHARACTER(1, "Enum_ItemType_CHARACTER"),
+	//日付型
+	DATE(2, "Enum_ItemType_DATE"),
+	//時刻型
+	INS_TIME(3, "Enum_ItemType_INS_TIME"),
+	//時間
+	TIME(4, "Enum_ItemType_TIME");
 	
-	INS_TIME(3, "時刻型");
-
 	/** The value. */
 	public final int value;
 
