@@ -5,14 +5,14 @@ module nts.uk.at.view.kmk003.a {
     import OverTimeOfTimeZoneSetDto = service.model.common.OverTimeOfTimeZoneSetDto;
     import HDWorkTimeSheetSettingDto = service.model.common.HDWorkTimeSheetSettingDto;
     import StampReflectTimezoneDto = service.model.common.StampReflectTimezoneDto;
+    import OverTimeCalcNoBreakDto = service.model.common.OverTimeCalcNoBreakDto;
+    import ExceededPredAddVacationCalcDto = service.model.common.ExceededPredAddVacationCalcDto;
+    import FixedWorkCalcSettingDto = service.model.common.FixedWorkCalcSettingDto;
     
     import FixOffdayWorkTimezoneDto = service.model.fixedset.FixOffdayWorkTimezoneDto;
     import FixRestTimezoneSetDto = service.model.fixedset.FixRestTimezoneSetDto;
     import FixedWorkTimezoneSetDto = service.model.fixedset.FixedWorkTimezoneSetDto;
     import FixHalfDayWorkTimezoneDto = service.model.fixedset.FixHalfDayWorkTimezoneDto;
-    import OverTimeCalcNoBreakDto = service.model.fixedset.OverTimeCalcNoBreakDto;
-    import ExceededPredAddVacationCalcDto = service.model.fixedset.ExceededPredAddVacationCalcDto;
-    import FixedWorkCalcSettingDto = service.model.fixedset.FixedWorkCalcSettingDto;
     
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
     import TimeRangeModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModel;
@@ -24,6 +24,7 @@ module nts.uk.at.view.kmk003.a {
     import OverTimeOfTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.OverTimeOfTimeZoneSetModel;
     import TimeRangeModelConverter = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModelConverter;
     import FixedWorkTimezoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixedWorkTimezoneSetModel;
+    import FixedWorkCalcSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixedWorkCalcSettingModel;
     import OtherFlowColumnSetting = nts.uk.at.view.kmk003.a.viewmodel.common.OtherFlowColumnSetting;
     import OffdayWorkTimeConverter = nts.uk.at.view.kmk003.a.viewmodel.common.OffdayWorkTimeConverter;
     
@@ -161,96 +162,7 @@ module nts.uk.at.view.kmk003.a {
                 resetData(){
                     this.lstTimezone([]);    
                 }
-            }
-            
-            export class OverTimeCalcNoBreakModel {
-                calcMethod: KnockoutObservable<number>;
-                inLawOT: KnockoutObservable<number>;
-                notInLawOT: KnockoutObservable<number>;
-                
-                constructor() {
-                    this.calcMethod = ko.observable(0);
-                    this.inLawOT = ko.observable(0);
-                    this.notInLawOT = ko.observable(0);
-                }
-                
-                updateData(data: OverTimeCalcNoBreakDto) {
-                    this.calcMethod(data.calcMethod);
-                    this.inLawOT(data.inLawOT);
-                    this.notInLawOT(data.notInLawOT);
-                }
-                
-                toDto(): OverTimeCalcNoBreakDto {
-                    let dataDTO: OverTimeCalcNoBreakDto = {
-                        calcMethod: this.calcMethod(),
-                        inLawOT: this.inLawOT(),
-                        notInLawOT: this.notInLawOT()
-                    };
-                    return dataDTO;
-                }
-                
-                resetData() {
-                    this.calcMethod(0);
-                    this.inLawOT(0);
-                    this.notInLawOT(0);    
-                }
-            }
-            
-            export class ExceededPredAddVacationCalcModel {
-                calcMethod: KnockoutObservable<number>;
-                otFrameNo: KnockoutObservable<number>;
-                
-                constructor() {
-                    this.calcMethod = ko.observable(0);
-                    this.otFrameNo = ko.observable(0);
-                }
-                
-                updateData(data: ExceededPredAddVacationCalcDto) {
-                    this.calcMethod(data.calcMethod);
-                    this.otFrameNo(data.otFrameNo);
-                }
-                
-                toDto(): ExceededPredAddVacationCalcDto {
-                    let dataDTO: ExceededPredAddVacationCalcDto = {
-                        calcMethod: this.calcMethod(),
-                        otFrameNo: this.otFrameNo()
-                    };
-                    return dataDTO;
-                }
-                
-                resetData() {
-                    this.calcMethod(0);
-                    this.otFrameNo(0);
-                }
-            }
-            
-            export class FixedWorkCalcSettingModel {
-                exceededPredAddVacationCalc: ExceededPredAddVacationCalcModel;
-                overTimeCalcNoBreak: OverTimeCalcNoBreakModel;
-                
-                constructor() {
-                    this.exceededPredAddVacationCalc = new ExceededPredAddVacationCalcModel();
-                    this.overTimeCalcNoBreak = new OverTimeCalcNoBreakModel();
-                }
-                
-                updateData(data: FixedWorkCalcSettingDto) {
-                    this.exceededPredAddVacationCalc.updateData(data.exceededPredAddVacationCalc);
-                    this.overTimeCalcNoBreak.updateData(data.overTimeCalcNoBreak);
-                }
-                
-                toDto(): FixedWorkCalcSettingDto {
-                    let dataDTO: FixedWorkCalcSettingDto = {
-                        exceededPredAddVacationCalc: this.exceededPredAddVacationCalc.toDto(),
-                        overTimeCalcNoBreak: this.overTimeCalcNoBreak.toDto()
-                    };
-                    return dataDTO;
-                }
-                
-                resetData() {
-                    this.exceededPredAddVacationCalc.resetData();
-                    this.overTimeCalcNoBreak.resetData();
-                }
-            }
+            }           
             
             export class FixedWorkSettingModel {
                 workTimeCode: KnockoutObservable<string>;
@@ -261,7 +173,7 @@ module nts.uk.at.view.kmk003.a {
                 lstHalfDayWorkTimezone: FixHalfDayWorkTimezoneModel[];
                 lstStampReflectTimezone: StampReflectTimezoneModel[];
                 legalOTSetting: KnockoutObservable<number>;
-                fixedWorkCalcSetting: FixedWorkCalcSettingModel;
+                calculationSetting: FixedWorkCalcSettingModel;
                 
                 constructor() {
                     this.workTimeCode = ko.observable('');
@@ -273,7 +185,7 @@ module nts.uk.at.view.kmk003.a {
                     this.lstStampReflectTimezone = [];
                     this.legalOTSetting = ko.observable(0);
                     // Update phase 2
-                    this.fixedWorkCalcSetting = new FixedWorkCalcSettingModel();
+                    this.calculationSetting = new FixedWorkCalcSettingModel();
                 }
 
                 public getHDWtzOneday(): FixHalfDayWorkTimezoneModel {
@@ -303,7 +215,7 @@ module nts.uk.at.view.kmk003.a {
                     });                                    
                     this.legalOTSetting(data.legalOTSetting);
                     // Update phase 2
-                    this.fixedWorkCalcSetting.updateData(data.fixedWorkCalcSetting);
+                    this.calculationSetting.updateData(data.calculationSetting);
                 }
 
                 updateListHalfDay(lstHalfDayWorkTimezone: FixHalfDayWorkTimezoneDto[]): void {
@@ -337,7 +249,7 @@ module nts.uk.at.view.kmk003.a {
                         lstStampReflectTimezone: lstStampReflectTimezone,
                         legalOTSetting: this.legalOTSetting(),
                         // Update phase 2
-                        fixedWorkCalcSetting: this.fixedWorkCalcSetting.toDto()
+                        calculationSetting: this.calculationSetting.toDto()
                     };
                     return dataDTO;
                 }
@@ -354,7 +266,7 @@ module nts.uk.at.view.kmk003.a {
                     //update ver7.2 
                     this.legalOTSetting(0);
                     // Update phase 2
-                    this.fixedWorkCalcSetting.resetData();
+                    this.calculationSetting.resetData();
                 }
             }
         }

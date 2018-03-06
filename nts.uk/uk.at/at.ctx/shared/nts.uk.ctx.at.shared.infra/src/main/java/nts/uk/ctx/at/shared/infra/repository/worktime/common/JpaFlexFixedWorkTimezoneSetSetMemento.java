@@ -14,11 +14,11 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaRtSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOtTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOtTimeSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkTimeSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkTimeSetPK;
 
 /**
  * The Class JpaFlexFixedWorkTimezoneSetSetMemento.

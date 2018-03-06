@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHolSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHolSet;
 
 /**
  * The Class JpaFlexODHDWTSheetGetMemento.

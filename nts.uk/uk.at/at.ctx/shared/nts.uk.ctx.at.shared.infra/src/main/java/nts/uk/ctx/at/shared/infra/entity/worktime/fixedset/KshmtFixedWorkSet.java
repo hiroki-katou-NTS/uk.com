@@ -64,7 +64,7 @@ public class KshmtFixedWorkSet extends UkJpaEntity implements Serializable {
 	private int levRestCalcType;
 	
 	/** The is plan actual not match master refe. */
-	@Column(name = "PLAN_ACTUAL_NOT_MATCH_REFER")
+	@Column(name = "PLAN_NOT_MATCH")
 	private int isPlanActualNotMatchMasterRefe;
 	
 	/** The ot calc method. */

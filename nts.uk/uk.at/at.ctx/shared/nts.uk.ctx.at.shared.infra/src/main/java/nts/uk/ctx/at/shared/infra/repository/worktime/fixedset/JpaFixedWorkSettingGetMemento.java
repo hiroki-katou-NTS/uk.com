@@ -172,7 +172,7 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 * getFixedWorkCalcSetting()
 	 */
 	@Override
-	public FixedWorkCalcSetting getFixedWorkCalcSetting() {
+	public FixedWorkCalcSetting getCalculationSetting() {
 		return new FixedWorkCalcSetting(new JpaFixedWorkCalcSettingGetMemento(this.entity));
 	}
 

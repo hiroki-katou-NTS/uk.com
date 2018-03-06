@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2018 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.difftimeset;
 
 import java.util.ArrayList;
@@ -14,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezone
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkStampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.EmTimezoneChangeExtent;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkRestSetGetMemento;
@@ -24,33 +29,70 @@ import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneComm
  */
 public class JpaDiffTimeWorkSettingGetMemento implements DiffTimeWorkSettingGetMemento {
 
+	/** The entity. */
 	private KshmtDiffTimeWorkSet entity;
 
+	/**
+	 * Instantiates a new jpa diff time work setting get memento.
+	 *
+	 * @param kshmtDiffTimeWorkSet
+	 *            the kshmt diff time work set
+	 */
 	public JpaDiffTimeWorkSettingGetMemento(KshmtDiffTimeWorkSet kshmtDiffTimeWorkSet) {
 		this.entity = kshmtDiffTimeWorkSet;
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.
+	 * DiffTimeWorkSettingGetMemento#getCompanyId()
+	 */
 	@Override
 	public String getCompanyId() {
 		return this.entity.getKshmtDiffTimeWorkSetPK().getCid();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.
+	 * DiffTimeWorkSettingGetMemento#getWorkTimeCode()
+	 */
 	@Override
 	public WorkTimeCode getWorkTimeCode() {
 		return new WorkTimeCode(this.entity.getKshmtDiffTimeWorkSetPK().getWorktimeCd());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.
+	 * DiffTimeWorkSettingGetMemento#getRestSet()
+	 */
 	@Override
 	public FixedWorkRestSet getRestSet() {
 		return new FixedWorkRestSet(new JpaFixedWorkRestSetGetMemento<KshmtDiffTimeWorkSet>(this.entity));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.
+	 * DiffTimeWorkSettingGetMemento#getDayoffWorkTimezone()
+	 */
 	@Override
 	public DiffTimeDayOffWorkTimezone getDayoffWorkTimezone() {
 		return new DiffTimeDayOffWorkTimezone(new DiffTimeDayOffWorkTimezoneGetMemento(this.entity));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.
+	 * DiffTimeWorkSettingGetMemento#getCommonSet()
+	 */
 	@Override
 	public WorkTimezoneCommonSet getCommonSet() {
 		KshmtWorktimeCommonSet diffTimeCommonSet = this.entity.getKshmtWorktimeCommonSet();
@@ -60,16 +102,34 @@ public class JpaDiffTimeWorkSettingGetMemento implements DiffTimeWorkSettingGetM
 		return new WorkTimezoneCommonSet(new JpaWorkTimezoneCommonSetGetMemento(diffTimeCommonSet));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.
+	 * DiffTimeWorkSettingGetMemento#isIsUseHalfDayShift()
+	 */
 	@Override
 	public boolean isIsUseHalfDayShift() {
 		return BooleanGetAtr.getAtrByInteger(this.entity.getUseHalfDay());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.
+	 * DiffTimeWorkSettingGetMemento#getChangeExtent()
+	 */
 	@Override
 	public EmTimezoneChangeExtent getChangeExtent() {
 		return new EmTimezoneChangeExtent(new JpaEmTimezoneChangeExtentGetMemento(this.entity));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.
+	 * DiffTimeWorkSettingGetMemento#getHalfDayWorkTimezones()
+	 */
 	@Override
 	public List<DiffTimeHalfDayWorkTimezone> getHalfDayWorkTimezones() {
 		List<DiffTimeHalfDayWorkTimezone> lstReturn = new ArrayList<>();
@@ -80,14 +140,37 @@ public class JpaDiffTimeWorkSettingGetMemento implements DiffTimeWorkSettingGetM
 		return lstReturn;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.
+	 * DiffTimeWorkSettingGetMemento#getStampReflectTimezone()
+	 */
 	@Override
 	public DiffTimeWorkStampReflectTimezone getStampReflectTimezone() {
 		return new DiffTimeWorkStampReflectTimezone(new JpaDiffTimeStampReflectGetMemento(this.entity));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.
+	 * DiffTimeWorkSettingGetMemento#getOvertimeSetting()
+	 */
 	@Override
 	public LegalOTSetting getOvertimeSetting() {
 		return LegalOTSetting.valueOf(this.entity.getOtSet());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.
+	 * DiffTimeWorkSettingGetMemento#getCalculationSetting()
+	 */
+	@Override
+	public FixedWorkCalcSetting getCalculationSetting() {
+		return new FixedWorkCalcSetting(new JpaFixedWorkCalcSettingGetMemento(this.entity));
 	}
 
 }

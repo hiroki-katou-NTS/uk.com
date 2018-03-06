@@ -19,5 +19,10 @@ public class KshmtDiffTimeWorkSet_ {
     public static volatile SingularAttribute<KshmtDiffTimeWorkSet, Integer> useHalfDay;
     public static volatile SingularAttribute<KshmtDiffTimeWorkSet, Integer> otSet;
     public static volatile SingularAttribute<KshmtDiffTimeWorkSet, Integer> changeBehind;
+    public static volatile SingularAttribute<KshmtDiffTimeWorkSet, Integer> otCalcMethod;
+    public static volatile SingularAttribute<KshmtDiffTimeWorkSet, Integer> otInLaw;
+    public static volatile SingularAttribute<KshmtDiffTimeWorkSet, Integer> otNotInLaw;
+    public static volatile SingularAttribute<KshmtDiffTimeWorkSet, Integer> exceededPredCalcMethod;
+    public static volatile SingularAttribute<KshmtDiffTimeWorkSet, Integer> exceededPredOtFrameNo;
 
 }

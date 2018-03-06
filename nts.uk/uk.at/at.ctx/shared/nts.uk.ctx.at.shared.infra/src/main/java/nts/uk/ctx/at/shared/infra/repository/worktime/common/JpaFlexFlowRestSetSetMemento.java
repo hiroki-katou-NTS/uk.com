@@ -9,8 +9,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestClockCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexRestSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexRestSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSetPK;
 
 /**
  * The Class JpaFlexFlowRestSetSetMemento.

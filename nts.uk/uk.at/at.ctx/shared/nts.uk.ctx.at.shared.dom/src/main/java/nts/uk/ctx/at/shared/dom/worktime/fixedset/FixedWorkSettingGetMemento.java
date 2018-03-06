@@ -81,10 +81,10 @@ public interface FixedWorkSettingGetMemento {
 	LegalOTSetting getLegalOTSetting();
 
 	/**
-	 * Gets the fixed work calc setting.
+	 * Gets the calculation setting.
 	 *
-	 * @return the fixed work calc setting
+	 * @return the calculation setting
 	 */
-	FixedWorkCalcSetting getFixedWorkCalcSetting();
+	FixedWorkCalcSetting getCalculationSetting();
 
 }

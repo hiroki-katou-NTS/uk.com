@@ -67,6 +67,7 @@ module nts.uk.at.view.kmk003.a {
                     halfDayWorkTimezones: DiffTimeHalfDayWorkTimezoneDto[];
                     stampReflectTimezone: DiffTimeWorkStampReflectTimezoneDto;
                     overtimeSetting: number;
+                    calculationSetting: common.FixedWorkCalcSettingDto;
                 }
 
             }

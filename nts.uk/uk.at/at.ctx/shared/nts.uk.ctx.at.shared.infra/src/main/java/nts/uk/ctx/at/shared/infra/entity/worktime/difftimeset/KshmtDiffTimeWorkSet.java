@@ -56,7 +56,7 @@ public class KshmtDiffTimeWorkSet extends UkJpaEntity implements Serializable {
 	private int dtCommonRestSet;
 
 	/** The dt is plan actual not match master refe. */
-	@Column(name = "DT_PLAN_ACTUAL_NOT_MATCH_REFER")
+	@Column(name = "DT_PLAN_NOT_MATCH")
 	private int dtIsPlanActualNotMatchMasterRefe;
 
 	/** The use half day. */
@@ -86,7 +86,27 @@ public class KshmtDiffTimeWorkSet extends UkJpaEntity implements Serializable {
 	/** The upd start time. */
 	@Column(name = "UPD_START_TIME")
 	private int updStartTime;
-
+	
+	/** The ot calc method. */
+	@Column(name = "OT_CALC_METHOD")
+	private Integer otCalcMethod;
+	
+	/** The ot in law. */
+	@Column(name = "OT_IN_LAW")
+	private Integer otInLaw;
+	
+	/** The ot not in law. */
+	@Column(name = "OT_NOT_IN_LAW")
+	private Integer otNotInLaw;
+	
+	/** The exceeded pred calc method. */
+	@Column(name = "EXCEEDED_PRED_CALC_METHOD")
+	private Integer exceededPredCalcMethod;
+	
+	/** The exceeded pred ot frame no. */
+	@Column(name = "EXCEEDED_PRED_OT_FRAME_NO")
+	private Integer exceededPredOtFrameNo;
+	
 	/** The lst kshmt dt half rest time. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),

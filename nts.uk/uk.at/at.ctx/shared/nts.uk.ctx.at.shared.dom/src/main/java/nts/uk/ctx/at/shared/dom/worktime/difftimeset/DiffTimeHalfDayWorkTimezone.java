@@ -76,6 +76,13 @@ public class DiffTimeHalfDayWorkTimezone extends WorkTimeDomainObject {
 		}
 	}
 	
+	public void restoreDefaultData(ScreenMode screenMode) {
+		if (screenMode.equals(ScreenMode.SIMPLE) && this.getAmPmAtr() != AmPmAtr.ONE_DAY) {
+			this.restTimezone.restoreDefaultData();
+			this.workTimezone.restoreDefaultData();
+		}
+	}
+	
 	/**
 	 * Restore simple mode.
 	 *

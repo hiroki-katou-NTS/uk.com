@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FixedWorkCalcSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FixedWorkRestSetDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.StampReflectTimezoneDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneCommonSetDto;
@@ -55,8 +56,8 @@ public class FixedWorkSettingDto implements FixedWorkSettingSetMemento {
 	/** The legal OT setting. */
 	private Integer legalOTSetting;
 
-	/** The fixed work calc setting. */
-	private FixedWorkCalcSettingDto fixedWorkCalcSetting;
+	/** The calculation setting. */
+	private FixedWorkCalcSettingDto calculationSetting;
 
 	/*
 	 * (non-Javadoc)
@@ -204,10 +205,10 @@ public class FixedWorkSettingDto implements FixedWorkSettingSetMemento {
 	 * FixedWorkCalcSetting)
 	 */
 	@Override
-	public void setFixedWorkCalcSetting(FixedWorkCalcSetting fixedWorkCalcSetting) {
+	public void setCalculationSetting(FixedWorkCalcSetting fixedWorkCalcSetting) {
 		if (fixedWorkCalcSetting != null) {
-			this.fixedWorkCalcSetting = new FixedWorkCalcSettingDto();
-			fixedWorkCalcSetting.saveToMemento(this.fixedWorkCalcSetting);
+			this.calculationSetting = new FixedWorkCalcSettingDto();
+			fixedWorkCalcSetting.saveToMemento(this.calculationSetting);
 		}
 	}
 

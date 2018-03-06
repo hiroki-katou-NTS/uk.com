@@ -25,22 +25,6 @@ module nts.uk.at.view.kmk003.a {
                     lstOTTimezone: common.OverTimeOfTimeZoneSetDto[];
                 }
                 
-                export interface OverTimeCalcNoBreakDto {
-                    calcMethod: number;
-                    inLawOT: number;
-                    notInLawOT: number;
-                }
-                
-                export interface ExceededPredAddVacationCalcDto {
-                    calcMethod: number;
-                    otFrameNo: number;
-                }
-                
-                export interface FixedWorkCalcSettingDto {
-                    exceededPredAddVacationCalc: ExceededPredAddVacationCalcDto;
-                    overTimeCalcNoBreak: OverTimeCalcNoBreakDto;
-                }
-                
                 export interface FixedWorkSettingDto {
                     workTimeCode: string;
                     offdayWorkTimezone: FixOffdayWorkTimezoneDto;
@@ -50,7 +34,7 @@ module nts.uk.at.view.kmk003.a {
                     lstHalfDayWorkTimezone: FixHalfDayWorkTimezoneDto[];
                     lstStampReflectTimezone: common.StampReflectTimezoneDto[];
                     legalOTSetting: number;
-                    fixedWorkCalcSetting: FixedWorkCalcSettingDto;
+                    calculationSetting: common.FixedWorkCalcSettingDto;
                 }
                 
             }

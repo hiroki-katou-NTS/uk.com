@@ -81,9 +81,9 @@ public interface FixedWorkSettingSetMemento {
 	void setLegalOTSetting(LegalOTSetting legalOTSetting);
 
 	/**
-	 * Sets the fixed work calc setting.
+	 * Sets the calculation setting.
 	 *
-	 * @param fixedWorkCalcSetting the new fixed work calc setting
+	 * @param fixedWorkCalcSetting the new calculation setting
 	 */
-	void setFixedWorkCalcSetting(FixedWorkCalcSetting fixedWorkCalcSetting);
+	void setCalculationSetting(FixedWorkCalcSetting fixedWorkCalcSetting);
 }

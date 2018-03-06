@@ -220,7 +220,7 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 * FixedWorkCalcSetting)
 	 */
 	@Override
-	public void setFixedWorkCalcSetting(FixedWorkCalcSetting fixedWorkCalcSetting) {
+	public void setCalculationSetting(FixedWorkCalcSetting fixedWorkCalcSetting) {
 		fixedWorkCalcSetting.saveToMemento(new JpaFixedWorkCalcSettingSetMemento(this.entity));
 	}
 }

@@ -21,6 +21,7 @@ module nts.uk.at.view.kmk003.a {
     import InstantRoundingModel = nts.uk.at.view.kmk003.a.viewmodel.common.InstantRoundingModel;
     import FixedWorkRestSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixedWorkRestSetModel;
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
+    import FixedWorkCalcSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixedWorkCalcSettingModel;
     import TimeRangeModelConverter = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModelConverter;
     import TimeRangeModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModel;
     import OffdayWorkTimeConverter = nts.uk.at.view.kmk003.a.viewmodel.common.OffdayWorkTimeConverter;
@@ -392,7 +393,8 @@ module nts.uk.at.view.kmk003.a {
                 halfDayWorkTimezones: DiffTimeHalfDayWorkTimezoneModel[];
                 stampReflectTimezone: DiffTimeWorkStampReflectTimezoneModel;
                 overtimeSetting: KnockoutObservable<number>;
-
+                calculationSetting: FixedWorkCalcSettingModel;
+                
                 constructor() {
                     this.workTimeCode = ko.observable('');
                     this.restSet = new FixedWorkRestSetModel();
@@ -403,6 +405,8 @@ module nts.uk.at.view.kmk003.a {
                     this.halfDayWorkTimezones = DiffTimeHalfDayWorkTimezoneModel.getDefaultData();
                     this.stampReflectTimezone = new DiffTimeWorkStampReflectTimezoneModel();
                     this.overtimeSetting = ko.observable(0);
+                    // Update phase 2
+                    this.calculationSetting = new FixedWorkCalcSettingModel();
                 }
 
                 public getHDWtzOneday(): DiffTimeHalfDayWorkTimezoneModel {
@@ -430,6 +434,8 @@ module nts.uk.at.view.kmk003.a {
                     });
                     self.stampReflectTimezone.resetData();
                     self.overtimeSetting(0);
+                    // Update phase 2
+                    self.calculationSetting.resetData();
                 }
 
                 updateData(data: DiffTimeWorkSettingDto) {
@@ -442,6 +448,8 @@ module nts.uk.at.view.kmk003.a {
                     this.updateListHalfDay(data.halfDayWorkTimezones);
                     this.stampReflectTimezone.updateData(data.stampReflectTimezone);
                     this.overtimeSetting(data.overtimeSetting);
+                    // Update phase 2
+                    this.calculationSetting.updateData(data.calculationSetting);
                 }
 
                 updateListHalfDay(lstHalfDayWorkTimezone: DiffTimeHalfDayWorkTimezoneDto[]): void {
@@ -465,7 +473,9 @@ module nts.uk.at.view.kmk003.a {
                         changeExtent: this.changeExtent.toDto(),
                         halfDayWorkTimezones: halfDayWorkTimezones,
                         stampReflectTimezone: this.stampReflectTimezone.toDto(),
-                        overtimeSetting: this.overtimeSetting()
+                        overtimeSetting: this.overtimeSetting(),
+                        // Update phase 2
+                        calculationSetting: this.calculationSetting.toDto()
                     };
                     return dataDTO;
                 }

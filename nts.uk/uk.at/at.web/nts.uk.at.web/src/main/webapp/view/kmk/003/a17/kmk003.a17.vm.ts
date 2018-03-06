@@ -142,49 +142,48 @@ module a17 {
             _self.notUseAtr = _self.model.commonSetting.holidayCalculation.isCalculate;
             
             // Fixed
-            if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.fixedWorkCalcSetting.overTimeCalcNoBreak.calcMethod())) {     
-                _self.model.fixedWorkSetting.fixedWorkCalcSetting.overTimeCalcNoBreak.calcMethod(0);                              
+            if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.calculationSetting.overTimeCalcNoBreak.calcMethod())) {     
+                _self.model.fixedWorkSetting.calculationSetting.overTimeCalcNoBreak.calcMethod(0);                              
             } 
-            _self.fixedCalcMethodNoBreak = _self.model.fixedWorkSetting.fixedWorkCalcSetting.overTimeCalcNoBreak.calcMethod;
-            if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.fixedWorkCalcSetting.overTimeCalcNoBreak.inLawOT())) {     
-                _self.model.fixedWorkSetting.fixedWorkCalcSetting.overTimeCalcNoBreak.inLawOT(1);                              
+            _self.fixedCalcMethodNoBreak = _self.model.fixedWorkSetting.calculationSetting.overTimeCalcNoBreak.calcMethod;
+            if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.calculationSetting.overTimeCalcNoBreak.inLawOT())) {     
+                _self.model.fixedWorkSetting.calculationSetting.overTimeCalcNoBreak.inLawOT(1);                              
             } 
-            _self.fixedInLawOT = _self.model.fixedWorkSetting.fixedWorkCalcSetting.overTimeCalcNoBreak.inLawOT;           
-            if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.fixedWorkCalcSetting.overTimeCalcNoBreak.notInLawOT())) {     
-                _self.model.fixedWorkSetting.fixedWorkCalcSetting.overTimeCalcNoBreak.notInLawOT(1);                                 
+            _self.fixedInLawOT = _self.model.fixedWorkSetting.calculationSetting.overTimeCalcNoBreak.inLawOT;           
+            if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.calculationSetting.overTimeCalcNoBreak.notInLawOT())) {     
+                _self.model.fixedWorkSetting.calculationSetting.overTimeCalcNoBreak.notInLawOT(1);                                 
             } 
-            _self.fixedNotInLawOT = _self.model.fixedWorkSetting.fixedWorkCalcSetting.overTimeCalcNoBreak.notInLawOT;           
-            if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.fixedWorkCalcSetting.exceededPredAddVacationCalc.calcMethod())) {     
-                _self.model.fixedWorkSetting.fixedWorkCalcSetting.exceededPredAddVacationCalc.calcMethod(0);                                
+            _self.fixedNotInLawOT = _self.model.fixedWorkSetting.calculationSetting.overTimeCalcNoBreak.notInLawOT;           
+            if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.calculationSetting.exceededPredAddVacationCalc.calcMethod())) {     
+                _self.model.fixedWorkSetting.calculationSetting.exceededPredAddVacationCalc.calcMethod(0);                                
             } 
-            _self.fixedCalcMethodExceededPredAddVacation = _self.model.fixedWorkSetting.fixedWorkCalcSetting.exceededPredAddVacationCalc.calcMethod;          
-            if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.fixedWorkCalcSetting.exceededPredAddVacationCalc.otFrameNo())) {     
-                _self.model.fixedWorkSetting.fixedWorkCalcSetting.exceededPredAddVacationCalc.otFrameNo(1);                                 
+            _self.fixedCalcMethodExceededPredAddVacation = _self.model.fixedWorkSetting.calculationSetting.exceededPredAddVacationCalc.calcMethod;          
+            if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.calculationSetting.exceededPredAddVacationCalc.otFrameNo())) {     
+                _self.model.fixedWorkSetting.calculationSetting.exceededPredAddVacationCalc.otFrameNo(1);                                 
             } 
-            _self.fixedOtFrameNo = _self.model.fixedWorkSetting.fixedWorkCalcSetting.exceededPredAddVacationCalc.otFrameNo;
+            _self.fixedOtFrameNo = _self.model.fixedWorkSetting.calculationSetting.exceededPredAddVacationCalc.otFrameNo;
             
             // Diff
-            //TODO
-            if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.fixedWorkCalcSetting.overTimeCalcNoBreak.calcMethod())) {     
-                _self.model.fixedWorkSetting.fixedWorkCalcSetting.overTimeCalcNoBreak.calcMethod(0);                              
+            if (nts.uk.util.isNullOrUndefined(_self.model.diffWorkSetting.calculationSetting.overTimeCalcNoBreak.calcMethod())) {     
+                _self.model.diffWorkSetting.calculationSetting.overTimeCalcNoBreak.calcMethod(0);                              
             } 
-            _self.diffCalcMethodNoBreak = _self.model.fixedWorkSetting.fixedWorkCalcSetting.overTimeCalcNoBreak.calcMethod;
-            if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.fixedWorkCalcSetting.overTimeCalcNoBreak.inLawOT())) {     
-                _self.model.fixedWorkSetting.fixedWorkCalcSetting.overTimeCalcNoBreak.inLawOT(1);                              
+            _self.diffCalcMethodNoBreak = _self.model.diffWorkSetting.calculationSetting.overTimeCalcNoBreak.calcMethod;
+            if (nts.uk.util.isNullOrUndefined(_self.model.diffWorkSetting.calculationSetting.overTimeCalcNoBreak.inLawOT())) {     
+                _self.model.diffWorkSetting.calculationSetting.overTimeCalcNoBreak.inLawOT(1);                              
             } 
-            _self.diffInLawOT = _self.model.fixedWorkSetting.fixedWorkCalcSetting.overTimeCalcNoBreak.inLawOT;           
-            if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.fixedWorkCalcSetting.overTimeCalcNoBreak.notInLawOT())) {     
-                _self.model.fixedWorkSetting.fixedWorkCalcSetting.overTimeCalcNoBreak.notInLawOT(1);                               
+            _self.diffInLawOT = _self.model.diffWorkSetting.calculationSetting.overTimeCalcNoBreak.inLawOT;           
+            if (nts.uk.util.isNullOrUndefined(_self.model.diffWorkSetting.calculationSetting.overTimeCalcNoBreak.notInLawOT())) {     
+                _self.model.diffWorkSetting.calculationSetting.overTimeCalcNoBreak.notInLawOT(1);                               
             } 
-            _self.diffNotInLawOT = _self.model.fixedWorkSetting.fixedWorkCalcSetting.overTimeCalcNoBreak.notInLawOT;           
-            if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.fixedWorkCalcSetting.exceededPredAddVacationCalc.calcMethod())) {     
-                _self.model.fixedWorkSetting.fixedWorkCalcSetting.exceededPredAddVacationCalc.calcMethod(0);                                
+            _self.diffNotInLawOT = _self.model.diffWorkSetting.calculationSetting.overTimeCalcNoBreak.notInLawOT;           
+            if (nts.uk.util.isNullOrUndefined(_self.model.diffWorkSetting.calculationSetting.exceededPredAddVacationCalc.calcMethod())) {     
+                _self.model.diffWorkSetting.calculationSetting.exceededPredAddVacationCalc.calcMethod(0);                                
             } 
-            _self.diffCalcMethodExceededPredAddVacation = _self.model.fixedWorkSetting.fixedWorkCalcSetting.exceededPredAddVacationCalc.calcMethod;          
-            if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.fixedWorkCalcSetting.exceededPredAddVacationCalc.otFrameNo())) {     
-                _self.model.fixedWorkSetting.fixedWorkCalcSetting.exceededPredAddVacationCalc.otFrameNo(1);         
+            _self.diffCalcMethodExceededPredAddVacation = _self.model.diffWorkSetting.calculationSetting.exceededPredAddVacationCalc.calcMethod;          
+            if (nts.uk.util.isNullOrUndefined(_self.model.diffWorkSetting.calculationSetting.exceededPredAddVacationCalc.otFrameNo())) {     
+                _self.model.diffWorkSetting.calculationSetting.exceededPredAddVacationCalc.otFrameNo(1);         
             } 
-            _self.diffOtFrameNo = _self.model.fixedWorkSetting.fixedWorkCalcSetting.exceededPredAddVacationCalc.otFrameNo;
+            _self.diffOtFrameNo = _self.model.diffWorkSetting.calculationSetting.exceededPredAddVacationCalc.otFrameNo;
             
             // Subscribe
             _self.notUseAtr.subscribe(v => {

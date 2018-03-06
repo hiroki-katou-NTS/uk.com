@@ -282,6 +282,22 @@ module nts.uk.at.view.kmk003.a {
                     isCalculate: number;    
                 }
                 
+                export interface OverTimeCalcNoBreakDto {
+                    calcMethod: number;
+                    inLawOT: number;
+                    notInLawOT: number;
+                }
+                
+                export interface ExceededPredAddVacationCalcDto {
+                    calcMethod: number;
+                    otFrameNo: number;
+                }
+                
+                export interface FixedWorkCalcSettingDto {
+                    exceededPredAddVacationCalc: ExceededPredAddVacationCalcDto;
+                    overTimeCalcNoBreak: OverTimeCalcNoBreakDto;
+                }
+                
                 // Common Enum
                 export enum LateEarlyAtr {
                     LATE,
