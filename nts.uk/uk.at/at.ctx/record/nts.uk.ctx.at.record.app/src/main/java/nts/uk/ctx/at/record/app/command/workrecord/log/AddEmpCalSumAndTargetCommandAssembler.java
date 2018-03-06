@@ -145,7 +145,7 @@ public class AddEmpCalSumAndTargetCommandAssembler {
 			result.add(executionLog);
 		}
 		// Create DailyCalSetInfo
-		if (command.isCalClassReset()) {
+		if (command.isDailyCalClass()) {
 			CalExeSettingInfor dailyCalSetInfo = new CalExeSettingInfor(
 					ExecutionContent.DAILY_CALCULATION,
 					EnumAdaptor.valueOf(command.getCalClass(), ExecutionType.class), 

@@ -8,15 +8,17 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
+import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.RaisingSalaryCalcAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -36,11 +38,11 @@ public abstract class CalculationTimeSheet {
 	//控除用
 	protected List<TimeSheetOfDeductionItem> deductionTimeSheet = new ArrayList<>();
 	@Setter
-	protected List<BonusPayTimesheet> bonusPayTimeSheet = new ArrayList<>();
+	protected List<BonusPayTimeSheetForCalc> bonusPayTimeSheet = new ArrayList<>();
 	@Setter
-	protected List<SpecBonusPayTimesheet> specBonusPayTimesheet = new ArrayList<>();
+	protected List<SpecBonusPayTimeSheetForCalc> specBonusPayTimesheet = new ArrayList<>();
 	@Setter
-	protected Optional<MidNightTimeSheet> midNightTimeSheet = Optional.empty();
+	protected Optional<MidNightTimeSheetForCalc> midNightTimeSheet = Optional.empty();
 
 	/**
 	 * @param 控除用
@@ -64,9 +66,9 @@ public abstract class CalculationTimeSheet {
 								List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
 								List<TimeSheetOfDeductionItem> deductionTimeSheets,
 								
-								List<BonusPayTimesheet> bonusPayTimeSheet,
-								List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet,
-								Optional<MidNightTimeSheet> midNighttimeSheet
+								List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
+								List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet,
+								Optional<MidNightTimeSheetForCalc> midNighttimeSheet
 								) {
 		this.timeSheet = timeSheet;
 		this.calcrange = calcrange;
@@ -262,9 +264,9 @@ public abstract class CalculationTimeSheet {
 	 * @param isDateBefore 基準時間より早い時間を切り出す
 	 * @return 切り出した加給時間帯
 	 */
-	public List<BonusPayTimesheet> recreateBonusPayListBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
-		List<BonusPayTimesheet> bonusPayList = new ArrayList<>();
-		for(BonusPayTimesheet bonusPay : bonusPayList) {
+	public List<BonusPayTimeSheetForCalc> recreateBonusPayListBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
+		List<BonusPayTimeSheetForCalc> bonusPayList = new ArrayList<>();
+		for(BonusPayTimeSheetForCalc bonusPay : bonusPayList) {
 //			if(bonusPay..contains(baseTime)) {
 //				bonusPayList.add(bonusPay.reCreateOwn(baseTime,isDateBefore));
 //			}
@@ -284,9 +286,9 @@ public abstract class CalculationTimeSheet {
 	 * @param isDateBefore 基準時間より早い時間を切り出す
 	 * @return 切り出した加給時間帯
 	 */
-	public List<SpecBonusPayTimesheet> recreateSpecifiedBonusPayListBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
-		List<SpecBonusPayTimesheet> specifiedBonusPayList = new ArrayList<>();
-		for(SpecBonusPayTimesheet specifiedBonusPay : specifiedBonusPayList) {
+	public List<SpecBonusPayTimeSheetForCalc> recreateSpecifiedBonusPayListBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
+		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayList = new ArrayList<>();
+		for(SpecBonusPayTimeSheetForCalc specifiedBonusPay : specifiedBonusPayList) {
 //			if(specifiedBonusPay.contains(baseTime)) {
 //				specifiedBonusPayList.add(specifiedBonusPay.reCreateOwn(baseTime,isDateBefore));
 //			}
@@ -331,7 +333,7 @@ public abstract class CalculationTimeSheet {
 	 * @param isDateBefore 基準時間より早い時間を切り出す
 	 * @return 切り出した深夜時間帯
 	 */
-	public Optional<MidNightTimeSheet> recreateMidNightTimeSheetBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
+	public Optional<MidNightTimeSheetForCalc> recreateMidNightTimeSheetBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
 		if(this.midNightTimeSheet.isPresent()) {
 			if(midNightTimeSheet.get().calcrange.contains(baseTime)) {
 				return midNightTimeSheet.get().midNightTimeSheet.get().reCreateOwn(baseTime,isDateBefore);
@@ -350,10 +352,10 @@ public abstract class CalculationTimeSheet {
 	 * 深夜時間帯の作成(トリガー)
 	 * @param midnightTimeSheet
 	 */
-	public Optional<MidNightTimeSheet> createMidNightTimeSheet() {
+	public Optional<MidNightTimeSheetForCalc> createMidNightTimeSheet() {
 		if(midNightTimeSheet.isPresent()) {
 			if(calcrange.checkDuplication(midNightTimeSheet.get().calcrange).isDuplicated()) { 
-				return Optional.of(new MidNightTimeSheet(timeSheet,
+				return Optional.of(new MidNightTimeSheetForCalc(timeSheet,
 										 calcrange.getDuplicatedWith(midNightTimeSheet.get().calcrange).get(),
 										 duplicateTimeSpan(midNightTimeSheet.get().calcrange),
 										 duplicateTimeSpan(midNightTimeSheet.get().calcrange),
@@ -402,17 +404,18 @@ public abstract class CalculationTimeSheet {
 	 * @param calcAtrOfDaily　日別実績の計算区分
 	 * @return 加給時間クラス(List)
 	 */
-	public List<BonusPayTime> calcBonusPay(ActualWorkTimeSheetAtr actualWorkAtr, BonusPayAutoCalcSet bonusPayCalcSet, CalAttrOfDailyPerformance calcAtrOfDaily) {
+	public List<BonusPayTime> calcBonusPay(ActualWorkTimeSheetAtr actualWorkAtr, RaisingSalaryCalcAtr raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet, CalAttrOfDailyPerformance calcAtrOfDaily,BonusPayAtr bonusPayAtr) {
 		List<BonusPayTime> bonusPayTimeList = new ArrayList<>();
-		for(BonusPayTimesheet bonusPaySheet : this.bonusPayTimeSheet){
-			//int calcTime = bonusPaySheet.;
-//			bonusPayTimeList.add(new BonusPayTime(bonusPayCalcSet.getBonusPayItemNo()
-//												 ,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))
-//												 ,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))
-//												 ,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))));
+		for(BonusPayTimeSheetForCalc bonusPaySheet : this.bonusPayTimeSheet){
+			AttendanceTime calcTime = bonusPaySheet.calcTotalTime();
+			bonusPayTimeList.add(new BonusPayTime(bonusPayAutoCalcSet.getBonusPayItemNo()
+												 ,calcTime
+												 ,TimeWithCalculation.sameTime(calcTime)
+												 ,TimeWithCalculation.sameTime(calcTime)));
 		}
-		if(!GetCalcAtr.isCalc(calcAtrOfDaily.getRasingSalarySetting().getSalaryCalSetting().isUse(), calcAtrOfDaily, bonusPayCalcSet, actualWorkAtr)) {
-			bonusPayTimeList.forEach(tc ->{tc.getBonusPay().setTime(new AttendanceTime(0));});
+		if(!GetCalcAtr.isCalc(calcAtrOfDaily.getRasingSalarySetting().getSalaryCalSetting().isUse(), calcAtrOfDaily, bonusPayAutoCalcSet, actualWorkAtr)) {
+			bonusPayTimeList.forEach(tc ->{tc.getWithinBonusPay().setTime(new AttendanceTime(0));
+										   tc.getExcessBonusPayTime().setTime(new AttendanceTime(0));});
 		}
 		return bonusPayTimeList;
 	}
@@ -424,17 +427,18 @@ public abstract class CalculationTimeSheet {
 	 * @param calcAtrOfDaily　日別実績の計算区分
 	 * @return 加給時間クラス(List)
 	 */
-	public List<BonusPayTime> calcSpacifiedBonusPay(ActualWorkTimeSheetAtr actualWorkAtr, BonusPayAutoCalcSet bonusPayCalcSet, CalAttrOfDailyPerformance calcAtrOfDaily){
+	public List<BonusPayTime> calcSpacifiedBonusPay(ActualWorkTimeSheetAtr actualWorkAtr, RaisingSalaryCalcAtr raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet, CalAttrOfDailyPerformance calcAtrOfDaily,BonusPayAtr bonusPayAtr){
 		List<BonusPayTime> bonusPayTimeList = new ArrayList<>();
-		for(SpecBonusPayTimesheet bonusPaySheet : this.specBonusPayTimesheet){
-//			int calcTime = bonusPaySheet.calcTotalTime().valueAsMinutes();
-//			bonusPayTimeList.add(new BonusPayTime(bonusPayCalcSet.getBonusPayItemNo()
-//												 ,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))
-//												 ,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))
-//												 ,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))));
+		for(SpecBonusPayTimeSheetForCalc bonusPaySheet : this.specBonusPayTimesheet){
+			AttendanceTime calcTime = bonusPaySheet.calcTotalTime();
+			bonusPayTimeList.add(new BonusPayTime(bonusPayAutoCalcSet.getBonusPayItemNo()
+					 ,calcTime
+					 ,TimeWithCalculation.sameTime(calcTime)
+					 ,TimeWithCalculation.sameTime(calcTime)));
 		}
-		if(!GetCalcAtr.isCalc(calcAtrOfDaily.getRasingSalarySetting().getSpecificSalaryCalSetting().isUse(), calcAtrOfDaily, bonusPayCalcSet, actualWorkAtr)) {
-			bonusPayTimeList.forEach(tc ->{tc.getBonusPay().setTime(new AttendanceTime(0));});
+		if(!GetCalcAtr.isCalc(calcAtrOfDaily.getRasingSalarySetting().getSpecificSalaryCalSetting().isUse(), calcAtrOfDaily, bonusPayAutoCalcSet, actualWorkAtr)) {
+			bonusPayTimeList.forEach(tc ->{tc.getWithinBonusPay().setTime(new AttendanceTime(0));
+										   tc.getExcessBonusPayTime().setTime(new AttendanceTime(0));});
 		}
 		return bonusPayTimeList;
 	}
@@ -444,15 +448,15 @@ public abstract class CalculationTimeSheet {
 	 * @param specifiedDayList　特定日
 	 * @return 加給設定
 	 */
-	public List<SpecBonusPayTimesheet> createSpecifiedBonusPayTimeSheet(List<Integer> specifiedDayList,List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheetList){
+	public List<SpecBonusPayTimeSheetForCalc> createSpecifiedBonusPayTimeSheet(List<Integer> specifiedDayList,List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheetList){
 		if(specifiedDayList.size() == 0) return Collections.emptyList();
-		for(SpecBonusPayTimesheet specifiedBonusPayTimeSheet : specifiedBonusPayTimeSheetList) {
+		for(SpecBonusPayTimeSheetForCalc specifiedBonusPayTimeSheet : specifiedBonusPayTimeSheetList) {
 			if(specifiedDayList.contains(specifiedBonusPayTimeSheet.getSpecBonusPayNumber().v().intValue())) {
 				Optional<TimeSpanForCalc> newSpan = this.calcrange.getDuplicatedWith(
-														new TimeSpanForCalc(new TimeWithDayAttr(specifiedBonusPayTimeSheet.getStartTime().valueAsMinutes())
-																		   ,new TimeWithDayAttr(specifiedBonusPayTimeSheet.getEndTime().valueAsMinutes())));
+														new TimeSpanForCalc(new TimeWithDayAttr(specifiedBonusPayTimeSheet.getCalcrange().getStart().valueAsMinutes())
+																		   ,new TimeWithDayAttr(specifiedBonusPayTimeSheet.getCalcrange().getEnd().valueAsMinutes())));
 				if(newSpan.isPresent()) {
-					this.specBonusPayTimesheet.add(specifiedBonusPayTimeSheet.reCreateCalcRange(newSpan.get()));
+					this.specBonusPayTimesheet.add(specifiedBonusPayTimeSheet.convertForCalcCorrectRange(newSpan.get()));
 				}
 			}
 		}
@@ -463,18 +467,18 @@ public abstract class CalculationTimeSheet {
 	 * 深夜時間の計算
 	 * @return 深夜時間
 	 */
-	public int calcMidNight(AutoCalAtrOvertime autoCalcSet) {
+	public AttendanceTime calcMidNight(AutoCalAtrOvertime autoCalcSet) {
 		if(autoCalcSet.isCalculateEmbossing())
 		{
 			if(this.midNightTimeSheet.isPresent()) {
-				return this.midNightTimeSheet.get().calcTotalTime().valueAsMinutes();
+				return this.midNightTimeSheet.get().calcTotalTime();
 			}
 			else {
-				return 0;
+				return new AttendanceTime(0);
 			}
 		}
 		else {
-			return 0;
+			return new AttendanceTime(0);
 		}
 	}
 }
