@@ -112,8 +112,6 @@ module nts.uk.at.view.ksu007.b {
                         if (res.running || res.succeeded || res.cancelled) {
                              _.forEach(res.taskDatas, item => {
                                 if (item.key.substring(0, 5) == "DATA_") {
-                                    console.log(item);
-                                    
                                     var errors = JSON.parse(item.valueAsString);
                                     _.forEach(errors, error => {
                                         var errorContent : ErrorContentDto = {

@@ -3,30 +3,22 @@ module ccg030.a.viewmodel {
     import errors = nts.uk.ui.errors;
     import util = nts.uk.util;
     import text = nts.uk.text;
+    import resource = nts.uk.resource;
+    import model = nts.uk.com.view.ccg.model;
 
     export class ScreenModel {
-        // list FlowMenu
-        listFlowMenu: KnockoutObservableArray<any>;
+        // FlowMenu
+        listFlowMenu: KnockoutObservableArray<model.PlacementPartDto>;
         columns: KnockoutObservableArray<any>;
         selectedFlowMenuCD: KnockoutObservable<string>;
-        // Details FlowMenu 
         selectedFlowMenu: KnockoutObservable<model.FlowMenu>;
-        tempFileID: KnockoutObservable<string>;
+        // UI Binding
         isCreate: KnockoutObservable<boolean>;
-        isDelete: KnockoutObservable<boolean>;
-        enableDownload: KnockoutObservable<boolean>;
-        enablePreview: KnockoutObservable<boolean>;
-        // Message
-        listMessage: KnockoutObservableArray<ItemMessage>;
-        //old file name
-        oldFileName: KnockoutObservable<string>;
-        zipID: KnockoutObservable<string> = ko.observable("");
-        
+        enablePreview: KnockoutComputed<boolean>;
 
         constructor() {
             var self = this;
             // list
-            self.oldFileName = ko.observable("未設定");
             self.listFlowMenu = ko.observableArray([]);
             self.selectedFlowMenuCD = ko.observable(null);
             self.selectedFlowMenuCD.subscribe((value) => {
@@ -39,14 +31,11 @@ module ccg030.a.viewmodel {
             ]);
             // Details
             self.selectedFlowMenu = ko.observable(new model.FlowMenu());
-            self.tempFileID = ko.observable('');
             self.isCreate = ko.observable(null);
-            self.isDelete = ko.observable(false);
             // Enable
-            self.enableDownload = ko.observable(true);
-            self.enablePreview = ko.observable(true);
-            // Message
-            self.listMessage = ko.observableArray([]);
+            self.enablePreview = ko.pureComputed(() => {
+                return !text.isNullOrEmpty(self.selectedFlowMenu().fileID());
+            });
         }
 
         /** Start page */
@@ -64,20 +53,19 @@ module ccg030.a.viewmodel {
         /** Creat new FlowMenu */
         createNewFlowMenu() {
             var self = this;
-            errors.clearAll();
-            self.isCreate(true);
-            self.isDelete(false);
             self.selectedFlowMenuCD(null);
-            self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "未設定", 0, 4, 4));
             self.focusToInput();
+            errors.clearAll();
         }
 
         /** Click Registry button */
         registryFlowMenu() {
             var self = this;
             $(".nts-input").trigger("validate");
-            if (util.isNullOrEmpty(self.selectedFlowMenu().fileID()))
-                $('#file_upload').ntsError('set', '選択されていないファイル');
+            if (util.isNullOrEmpty(self.selectedFlowMenu().fileID())) {
+                let CCG030_26 = resource.getText("CCG030_26");
+                $('#file_upload').ntsError('set', resource.getMessage("FND_E_REQ_SELECT", [CCG030_26]), "FND_E_REQ_SELECT");
+            }
             if (!errors.hasError()) {
                 self.selectedFlowMenu().topPageCode(text.padLeft($("#inpCode").val(), '0', 4));
                 var flowMenu = ko.mapping.toJS(self.selectedFlowMenu);
@@ -86,7 +74,7 @@ module ccg030.a.viewmodel {
                 if (self.isCreate() === true) {
                     service.createFlowMenu(flowMenu).done((data) => {
                         self.reloadData().done(() => {
-                            self.selectFlowMenuByCode(topPageCode);
+                            self.selectedFlowMenuCD(topPageCode);
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                                 self.focusToInput();
                             });
@@ -118,41 +106,38 @@ module ccg030.a.viewmodel {
             if (self.selectedFlowMenuCD() !== null) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
                     nts.uk.ui.block.invisible();
-                    service.deleteFlowMenu(self.selectedFlowMenu().toppagePartID())
-                        .done(() => {
-                            var index = _.findIndex(self.listFlowMenu(), ['topPageCode', self.selectedFlowMenu().topPageCode()]);
-                            index = _.min([self.listFlowMenu().length - 2, index]);
-                            self.reloadData().done(() => {
-                                self.selectFlowMenuByIndex(index);
-                                nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                                    self.focusToInput();
-                                    errors.clearAll();
-                                });
+                    service.deleteFlowMenu(self.selectedFlowMenu().topPagePartID()).done(() => {
+                        var index = _.findIndex(self.listFlowMenu(), ['topPageCode', self.selectedFlowMenu().topPageCode()]);
+                        index = _.min([self.listFlowMenu().length - 2, index]);
+                        self.reloadData().done(() => {
+                            self.selectFlowMenuByIndex(index);
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                                self.focusToInput();
+                                errors.clearAll();
                             });
-                        }).fail((res) => {
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_76" });
-                        }).always(() => {
-                            nts.uk.ui.block.clear();
                         });
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_76" });
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
+                    });
                 });
             }
         }
 
+        /** When upload file is finished */
         uploadFinish(fileInfo: any): void {
             var self = this;
-            self.tempFileID(fileInfo.id);   
             self.selectedFlowMenu().fileID(fileInfo.id);
-            self.selectedFlowMenu().fileName(fileInfo.originalName.length === 0 ? '未設定' : fileInfo.originalName);
-            self.isDelete(true);
-            errors.clearAll();
+            self.selectedFlowMenu().fileName(fileInfo.originalName.length === 0 ? resource.getText("CCG030_26") : fileInfo.originalName);
+            $('#file_upload').ntsError("clear");
         }
 
+        /** Download zip file */
         download() {
-              var self = this;
-            if (!_.isEmpty(this.zipID())) 
-                nts.uk.request.specials.donwloadFile(self.selectedFlowMenu().fileID() + "/" + this.zipID());
-            else nts.uk.request.specials.donwloadFile(self.selectedFlowMenu().fileID());
+            nts.uk.request.file.download(this.selectedFlowMenu().fileID());
         }
+
         /** Close Dialog */
         closeDialog(): void {
             nts.uk.ui.windows.close();
@@ -161,73 +146,25 @@ module ccg030.a.viewmodel {
         /** Open ccg030 B Dialog */
         open030B_Dialog() {
             var self = this;
-            if(self.selectedFlowMenu().fileName() == '未設定'){
-                return;    
-            }
-            nts.uk.ui.block.invisible();
-            nts.uk.ui.windows.setShared("flowmenu", ko.mapping.toJS(this.selectedFlowMenu()), false);
-            nts.uk.ui.windows.setShared("fileID", this.selectedFlowMenu().fileID(), false);
-            nts.uk.ui.windows.sub.modal("/view/ccg/030/b/index.xhtml", { title: nts.uk.resource.getText("CCG030_4"), dialogClass: "no-close" }).onClosed(() => {
-                nts.uk.ui.block.clear();
-            });
+            nts.uk.ui.windows.setShared("flowmenu", ko.mapping.toJS(self.selectedFlowMenu()), false);
+            nts.uk.ui.windows.setShared("fileID", self.selectedFlowMenu().fileID(), false);
+            nts.uk.ui.windows.sub.modal("/view/ccg/030/b/index.xhtml");
         }
 
         /** Find Current FlowMenu by ID */
         private findFlowMenu(flowmenuCD: string): void {
             var self = this;
-            if (nts.uk.ui._viewModel !== undefined)
-                errors.clearAll();
             var selectedFlowmenu = _.find(self.listFlowMenu(), ['topPageCode', flowmenuCD]);
             if (selectedFlowmenu !== undefined) {
-                self.selectedFlowMenu(new model.FlowMenu(selectedFlowmenu.toppagePartID,
-                    selectedFlowmenu.topPageCode, selectedFlowmenu.topPageName,
-                    selectedFlowmenu.fileID,
-                    nts.uk.text.isNullOrEmpty(selectedFlowmenu.fileName) ? '未設定' : selectedFlowmenu.fileName,
-                    selectedFlowmenu.defClassAtr,
-                    selectedFlowmenu.widthSize, selectedFlowmenu.heightSize));
-                if(flowmenuCD !== null){
-                    self.oldFileName(selectedFlowmenu.fileName);
-                }
+                self.selectedFlowMenu(new model.FlowMenu(selectedFlowmenu));
                 self.isCreate(false);
-                self.focusToInput();
-                if (!util.isNullOrEmpty(selectedFlowmenu.fileID))
-                    self.isDelete(true);
-                else
-                    self.isDelete(false);
             }
             else {
-                self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "未設定", 0, 4, 4));
+                self.selectedFlowMenu(new model.FlowMenu());
                 self.isCreate(true);
-                self.isDelete(false);
             }
-        }
-
-        /** Reload Data */
-        private reloadData(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            // Get list FlowMenu
-            service.fillAllFlowMenu().done(function(listFlowMenu: Array<any>) {
-                listFlowMenu = _.orderBy(listFlowMenu, ["topPageCode"], ["asc"]);
-                self.listFlowMenu(listFlowMenu);
-                if (listFlowMenu.length > 0) {
-                    self.isCreate(false);
-                }
-                else {
-                    self.findFlowMenu(null);
-                    self.isCreate(true);
-                }
-                dfd.resolve();
-            }).fail(function(error) {
-                dfd.fail();
-                alert(error.message);
-            });
-            return dfd.promise();
-        }
-
-        /** Select FlowMenu by Code: Create & Update case*/
-        private selectFlowMenuByCode(topPageCode: string) {
-            this.selectedFlowMenuCD(topPageCode);
+            self.focusToInput();
+            _.defer(() => { errors.clearAll(); });
         }
 
         /** Select FlowMenu by Index: Start & Delete case */
@@ -239,6 +176,29 @@ module ccg030.a.viewmodel {
             else
                 self.selectedFlowMenuCD(null);
         }
+        
+        /** Reload Data */
+        private reloadData(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            // Get list FlowMenu
+            service.fillAllFlowMenu().done((listFlowMenu: Array<any>) => {
+                listFlowMenu = _.orderBy(listFlowMenu, ["topPageCode"], ["asc"]);
+                self.listFlowMenu(listFlowMenu);
+                if (listFlowMenu.length > 0) {
+                    self.isCreate(false);
+                }
+                else {
+                    self.findFlowMenu(null);
+                    self.isCreate(true);
+                }
+                dfd.resolve();
+            }).fail((error) => {
+                dfd.fail();
+                alert(error);
+            });
+            return dfd.promise();
+        }
 
         /** Focus to input */
         focusToInput() {
@@ -248,64 +208,6 @@ module ccg030.a.viewmodel {
             else {
                 $("#inpName").focus();
             }
-        }
-    }
-
-    export module model {
-        
-        export interface FlowMenuDto {
-            toppagePartID: string;
-            topPageCode: string;
-            topPageName?: string;
-            fileID: string;
-            fileName: string;
-            defClassAtr: number;
-            widthSize: number;
-            heightSize: number;
-            "type": number;
-        }
-        
-        export class FlowMenu {
-            toppagePartID: KnockoutObservable<string>;
-            topPageCode: KnockoutObservable<string>;
-            topPageName: KnockoutObservable<string>;
-            fileID: KnockoutObservable<string>;
-            fileName: KnockoutObservable<string>;
-            defClassAtr: KnockoutObservable<number>;
-            widthSize: KnockoutObservable<number>;
-            heightSize: KnockoutObservable<number>;
-            "type": number;
-            constructor(toppagePartID: string, topPageCode: string, topPageName: string, fileID: string, fileName: string, defClassAtr: number, widthSize: number, heightSize: number) {
-                this.toppagePartID = ko.observable(toppagePartID);
-                this.fileID = ko.observable(fileID);
-                this.fileName = ko.observable(fileName);
-                this.defClassAtr = ko.observable(defClassAtr);
-                this.topPageCode = ko.observable(topPageCode);
-                this.topPageName = ko.observable(topPageName || "");
-                this.widthSize = ko.observable(widthSize);
-                this.heightSize = ko.observable(heightSize);
-                this.type = 2;
-            }
-            
-            fromDTO(dto: FlowMenuDto) {
-                this.toppagePartID = ko.observable(dto.toppagePartID);
-                this.fileID = ko.observable(dto.fileID);
-                this.fileName = ko.observable(dto.fileName);
-                this.defClassAtr = ko.observable(dto.defClassAtr);
-                this.topPageCode = ko.observable(dto.topPageCode);
-                this.topPageName = ko.observable(dto.topPageName || "");
-                this.widthSize = ko.observable(dto.widthSize);
-                this.heightSize = ko.observable(dto.heightSize);
-            }
-        }
-    }
-
-    export class ItemMessage {
-        messCode: string;
-        messName: string;
-        constructor(messCode: string, messName: string) {
-            this.messCode = messCode;
-            this.messName = messName;
         }
     }
 }
