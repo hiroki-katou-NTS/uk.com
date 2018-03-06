@@ -9,9 +9,26 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.AttendanceTimeByWorkOfDailyRepository;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
+import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
+import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
+import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
+import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -29,6 +46,66 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	/** リポジトリ：日別実績の勤怠情報 */
 	@Inject
 	private AttendanceTimeRepository attendanceTimeRepository;
+	
+	/** リポジトリ：日別実績の勤務情報 */
+	@Inject
+	private WorkInformationRepository workInformationRepository;  
+	
+	/** リポジトリ：日別実績の計算区分 */
+	@Inject
+	private CalAttrOfDailyPerformanceRepository calAttrOfDailyPerformanceRepository;
+	
+	/** リポジトリ：日別実績の所属情報 */
+	@Inject
+	private AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepository;
+	
+	/** リポジトリ：日別実績のPCログオン情報 */
+	@Inject
+	private PCLogOnInfoOfDailyRepo pcLogOnInfoOfDailyRepo; 
+	
+	/** リポジトリ:社員の日別実績エラー一覧 */
+	@Inject
+	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepository;
+	
+	/** リポジトリ：日別実績の外出時間帯 */
+	@Inject
+	private OutingTimeOfDailyPerformanceRepository outingTimeOfDailyPerformanceRepository;
+	
+	/** リポジトリ：日別実績の休憩時間帯 */
+	@Inject
+	private BreakTimeOfDailyPerformanceRepository breakTimeOfDailyPerformanceRepository; 
+	
+	/** リポジトリ：日別実績の作業別勤怠時間 */
+	@Inject
+	private AttendanceTimeByWorkOfDailyRepository attendanceTimeByWorkOfDailyRepository;
+	
+	/** リポジトリ：日別実績の出退勤 */
+	@Inject
+	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepository;
+	
+	/** リポジトリ：日別実績の短時間勤務時間帯 */
+	@Inject
+	private ShortTimeOfDailyPerformanceRepository shortTimeOfDailyPerformanceRepository;
+	
+	/** リポジトリ：日別実績の特定日区分 */
+	@Inject
+	private SpecificDateAttrOfDailyPerforRepo specificDateAttrOfDailyPerforRepo;
+	
+	/** リポジトリ：日別実績の入退門 */
+	@Inject
+	private AttendanceLeavingGateOfDailyRepo attendanceLeavingGateOfDailyRepo;
+	
+	/** リポジトリ：日別実績の任意項目 */
+	@Inject
+	private AnyItemValueOfDailyRepo anyItemValueOfDailyRepo;
+	
+	/** リポジトリ：日別実績のの編集状態 */
+	@Inject
+	private EditStateOfDailyPerformanceRepository editStateOfDailyPerformanceRepository;
+	
+	/** リポジトリ：日別実績の臨時出退勤 */
+	@Inject
+	private TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDailyPerformanceRepository;
 	
 	/**
 	 * 社員の日別実績を計算
@@ -49,8 +126,9 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		// 日別実績を取得する
 		//*****（未）　期間分をまとめて取得するリポジトリメソッド等をここで使い、読み込んだデータは、最終的にIntegrationへ入れる。
 		//*****（未）　データがない日も含めて、毎日ごとに処理するなら、下のループをデータ単位→日単位に変え、Integrationへの取得はループ内で行う。
-		List<IntegrationOfDaily> integrationOfDailys = new ArrayList<>();
-		
+		List<IntegrationOfDaily> integrationOfDailys = createIntegrationOfDaily(employeeId,datePeriod);
+		org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass());
+		log.info("日別実績を取得できています");
 		// 取得データ分ループ
 		for (IntegrationOfDaily integrationOfDaily : integrationOfDailys) {
 			
@@ -86,15 +164,20 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 				return ProcessState.INTERRUPTION;
 			}
 			*/
-			
+			log.info("データ更新のために勤怠時間をチェックします");
 			// データ更新
 			//*****（未）　日別実績の勤怠情報だけを更新する場合。まとめて更新するなら、integrationOfDailyを入出できるよう調整する。
-			if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent())
+			if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
+				log.info("勤怠時間が見つかりました");
 				this.registAttendanceTime(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get());
+			}
+			else {
+				log.info("勤怠時間が見つかりませんでした");
+			}
 		}
 		return status;
 	}
-	
+
 	/**
 	 * データ更新
 	 * @param attendanceTime 日別実績の勤怠時間
@@ -106,17 +189,63 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		// キー値確認
 		val employeeId = attendanceTime.getEmployeeId();
 		val ymd = attendanceTime.getYmd();
-		
+		org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass());
 		if (this.attendanceTimeRepository.find(employeeId, ymd).isPresent()){
 			
+			log.info("更新され始めます");
 			// 更新
 			this.attendanceTimeRepository.update(attendanceTime);
 		}
 		else {
-			
+			log.info("更新なんてされずにスルーされます");
 			// 追加
 			//*****（未）　親のフローにより、読み込めないデータは計算しないはずなので、この処理は不要かもしれない。find確認自体不要かも。
 			//this.attendanceTimeRepository.add(attendanceTime);
 		}
+	}
+	
+	/**
+	 * 日別実績(WORK)の作成
+	 * @param employeeId
+	 * @param datePeriod
+	 * @return
+	 */
+	private List<IntegrationOfDaily> createIntegrationOfDaily(String employeeId, DatePeriod datePeriod) {
+		val attendanceTimeList= attendanceTimeRepository.findByPeriodOrderByYmd(employeeId, datePeriod);
+		
+		List<IntegrationOfDaily> returnList = new ArrayList<>();
+		
+		for(AttendanceTimeOfDailyPerformance attendanceTime : attendanceTimeList) {
+			/** リポジトリ：日別実績の勤務情報 */
+			val workInf = workInformationRepository.find(employeeId, attendanceTime.getYmd());  
+			/** リポジトリ：日別実績の計算区分 */
+			//val calAttr = calAttrOfDailyPerformanceRepository.find(employeeId, attendanceTime.getYmd());
+			val calAttr = new CalAttrOfDailyPerformance();
+			
+			/** リポジトリ：日別実績の所属情報 */
+			val affiInfo = affiliationInforOfDailyPerforRepository.findByKey(employeeId, attendanceTime.getYmd());
+			if(!workInf.isPresent() ||  !affiInfo.isPresent())
+				continue;
+			returnList.add(
+				new IntegrationOfDaily(
+					workInf.get(),
+					calAttr,
+					affiInfo.get(),
+					pcLogOnInfoOfDailyRepo.find(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績のPCログオン情報 */
+					employeeDailyPerErrorRepository.findByPeriodOrderByYmd(employeeId, datePeriod),/** リポジトリ:社員の日別実績エラー一覧 */
+					outingTimeOfDailyPerformanceRepository.findByEmployeeIdAndDate(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績の外出時間帯 */
+					breakTimeOfDailyPerformanceRepository.findByKey(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績の休憩時間帯 */
+					attendanceTimeRepository.find(employeeId, attendanceTime.getYmd()),
+					attendanceTimeByWorkOfDailyRepository.find(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績の作業別勤怠時間 */
+					timeLeavingOfDailyPerformanceRepository.findByKey(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績の出退勤 */
+					shortTimeOfDailyPerformanceRepository.find(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績の短時間勤務時間帯 */
+					specificDateAttrOfDailyPerforRepo.find(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績の特定日区分 */
+					attendanceLeavingGateOfDailyRepo.find(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績の入退門 */
+					anyItemValueOfDailyRepo.find(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績の任意項目 */
+					editStateOfDailyPerformanceRepository.findByKey(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績のの編集状態 */
+					temporaryTimeOfDailyPerformanceRepository.findByKey(employeeId, attendanceTime.getYmd())/** リポジトリ：日別実績の臨時出退勤 */
+					));
+		}
+		return returnList;
 	}
 }

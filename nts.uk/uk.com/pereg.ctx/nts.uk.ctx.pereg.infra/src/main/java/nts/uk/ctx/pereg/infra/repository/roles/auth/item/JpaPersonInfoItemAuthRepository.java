@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -45,6 +44,13 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 
 	private final String DELETE_BY_ROLE_ID = "DELETE FROM PpemtPersonItemAuth c"
 			+ " WHERE c.ppemtPersonItemAuthPk.roleId =:roleId";
+
+	private final String SEL_ALL_ITEM_DATA = String.join(" ", "SELECT id.ppemtPersonItemAuthPk.personItemDefId",
+			" FROM PpemtPersonItemAuth id",
+			" INNER JOIN PpemtPerInfoItem pi ON id.ppemtPersonItemAuthPk.personItemDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId",
+			" INNER JOIN PpemtPerInfoCtg pc ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId",
+			" INNER JOIN PpemtPerInfoItemCm pm ON pi.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd",
+			" WHERE pm.ppemtPerInfoItemCmPK.itemCd =:itemCd", " AND pi.perInfoCtgId IN :perInfoCtgId");
 
 	private static PpemtPersonItemAuth toEntity(PersonInfoItemAuth domain) {
 		PpemtPersonItemAuth entity = new PpemtPersonItemAuth();
@@ -176,6 +182,18 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 		this.getEntityManager().createQuery(DELETE_BY_ROLE_ID).setParameter("roleId", roleId).executeUpdate();
 		this.getEntityManager().flush();
 
+	}
+
+	@Override
+	public boolean hasItemData(String itemCd, List<String> perInfoCtgId) {
+		// SEL_ALL_ITEM_DATA
+		List<String> itemList = this.queryProxy().query(SEL_ALL_ITEM_DATA, String.class).setParameter("itemCd", itemCd)
+				.setParameter("perInfoCtgId", perInfoCtgId).getList();
+		if (itemList.size() > 0) {
+
+			return true;
+		}
+		return false;
 	}
 
 }

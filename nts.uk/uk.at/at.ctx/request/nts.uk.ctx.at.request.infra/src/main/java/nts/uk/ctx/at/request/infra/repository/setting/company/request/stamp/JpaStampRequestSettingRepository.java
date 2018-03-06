@@ -86,6 +86,7 @@ public class JpaStampRequestSettingRepository extends JpaRepository implements S
 		oldEntity.topComment = entity.topComment;
 		oldEntity.topCommentFontColor = entity.topCommentFontColor;
 		oldEntity.topCommentFontWeight = entity.topCommentFontWeight;
+		oldEntity.stampAtr_Child_Care_Disp = entity.stampAtr_Child_Care_Disp;
 		this.commandProxy().update(oldEntity);
 	}
 	/**

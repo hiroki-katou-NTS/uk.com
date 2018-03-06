@@ -170,6 +170,14 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	public void reflectWorkInformation(String companyId, String employeeId, GeneralDate day,
 			String empCalAndSumExecLogID, ExecutionType reCreateAttr) {
 
+		// Get Data
+		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
+
+		// Imported(就業．勤務実績)「所属職場履歴」を取得する
+		Optional<AffWorkPlaceSidImport> workPlaceHasData = this.affWorkplaceAdapter.findBySidAndDate(employeeId, day);
+
+		AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor = new AffiliationInforOfDailyPerfor();
+		
 		// ドメインモデル「日別実績の勤務情報」を削除する - rerun
 		if (reCreateAttr == ExecutionType.RERUN) {
 			this.workInformationRepository.delete(employeeId, day);
@@ -194,8 +202,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			
 			if (affiliationInforOfDailyPerforState.getErrMesInfos().isEmpty()) {
 				// Imported(就業.勤務実績)「社員の勤務予定管理」を取得する
-				this.workschedule(companyId, employeeId, day, empCalAndSumExecLogID, 
-								  affiliationInforOfDailyPerforState.getAffiliationInforOfDailyPerfor().get(),reCreateAttr);
+				this.workschedule(companyId, employeeId, day, empCalAndSumExecLogID, affiliationInforOfDailyPerfor,reCreateAttr);
 			} else {
 				affiliationInforOfDailyPerforState.getErrMesInfos().forEach(action -> {
 					this.errMessageInfoRepository.add(action);
@@ -213,6 +220,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	 * @param empCalAndSumExecLogID 
 	 * @return AffiliationInforState(nts.uk.ctx.at.record.dom.dailyperformanceprocessing)
 	 */
+	@Override
 	public AffiliationInforState createAffiliationInforOfDailyPerfor(String companyId, String employeeId, GeneralDate day,
 																	String empCalAndSumExecLogID) {
 		
@@ -269,6 +277,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			return new AffiliationInforState(errMesInfos, Optional.empty());
 		}
 	}
+	
+	
 
 	private void workschedule(String companyId, String employeeID, GeneralDate day, String empCalAndSumExecLogID,
 			AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor, ExecutionType reCreateAttr) {

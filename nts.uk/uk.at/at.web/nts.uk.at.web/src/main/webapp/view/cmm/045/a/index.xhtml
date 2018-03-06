@@ -33,24 +33,48 @@
 					<div class = "cell" style = "width: 150px;">
 						<div data-bind = "visible: mode()==1">
 							<div data-bind="with: approvalCount">
-								<!-- A3_1 -->
-								<div data-bind="text: unApprovalNumber"></div>
-								<!-- A3_2 -->
-								<div data-bind="text: approvalNumber"></div>
-								<!-- A3_3 -->
-								<div data-bind="text: approvalAgentNumber"></div>
-								<!-- A3_4 -->
-								<div data-bind="text: cancelNumber"></div>
-								<!-- A3_5 -->
-								<div data-bind="text: remandNumner"></div>
-								<!-- A3_6 -->
-								<div data-bind="text: denialNumber"></div>
+								<table>
+									<colgroup>
+										<col width="100px" />
+										<col width="*" />
+									</colgroup>
+									<tr>
+										<td><div>#{i18n.getText('CMM045_12')}</div></td>
+										<!-- A3_1 -->
+										<td><div data-bind="text: unApprovalNumber"></div></td>
+									</tr>
+									<tr>
+										<td><div>#{i18n.getText('CMM045_13')}</div></td>
+										<!-- A3_2 -->
+										<td><div data-bind="text: approvalNumber"></div></td>
+									</tr>
+									<tr>
+										<td><div>#{i18n.getText('CMM045_14')}</div></td>
+										<!-- A3_3 -->
+										<td><div data-bind="text: approvalAgentNumber"></div></td>
+									</tr>
+									<tr>
+										<td><div>#{i18n.getText('CMM045_15')}</div></td>
+										<!-- A3_4 -->
+										<td><div data-bind="text: cancelNumber"></div></td>
+									</tr>
+									<tr>
+										<td><div>#{i18n.getText('CMM045_16')}</div></td>
+										<!-- A3_5 -->
+										<td><div data-bind="text: remandNumner"></div></td>
+									</tr>
+									<tr>
+										<td><div>#{i18n.getText('CMM045_17')}</div></td>
+										<!-- A3_6 -->
+										<td><div data-bind="text: denialNumber"></div></td>
+									</tr>
+								</table>
 							</div>
 						</div>
 						
 					</div>
 					
-					<div class = "cell" style ="padding-left: 20px">
+					<div class = "cell" style ="padding: 20px; border:1px solid #AAAAAA;">
 						<!-- A2: Switch button -->
 						<div data-bind = "visible: mode()==1">
 							<div data-bind="ntsSwitchButton: {
@@ -80,7 +104,7 @@
 										</td>
 								</tr>
 								<tr>
-									<td><div>#{i18n.getText('CMM045_26')}</div></td>
+									<td><div>#{i18n.getText('CMM045_29')}</div></td>
 									<td><div id="daterangepicker" tabindex="1"
 											data-bind="ntsDateRangePicker:
 											{required: false,
@@ -100,7 +124,7 @@
 									<!-- A4_4: label 申請種類 -->
 									<td><div>#{i18n.getText('CMM045_33')}</div></td>
 									<td>
-										<div id="combo-box"
+										<div id="combo-box" style = "display: inline-block;"
 											data-bind="ntsComboBox: {
 												options: itemApplication,
 												optionsValue: 'appId',
@@ -108,6 +132,8 @@
 												optionsText: 'appName',
 												enable: true,
 												columns: [{ prop: 'appName'}]}"></div>
+										<!-- A4_4_2 -->
+										<div style = "display: inline-block;margin-left: 30px">#{i18n.getText('CMM045_35')}</div>
 									</td>
 								</tr>
 							</table>

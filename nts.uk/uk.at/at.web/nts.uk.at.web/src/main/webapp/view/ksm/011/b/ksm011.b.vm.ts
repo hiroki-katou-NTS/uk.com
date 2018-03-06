@@ -181,12 +181,33 @@ module nts.uk.at.view.ksm011.b.viewmodel {
                         var sortedRItems = _.sortBy(rightItems, [function(o) { return o.code; }]);
                         self.rightItems(sortedRItems);
                         self.leftItems([]);
-                        self.leftItems(sortedLItems);
+                        
+                        if(sortedLItems.length <= 0) {
+                            var newLData = _.clone(self.personalInforData);
+                            _.forEach(sortedRItems, function(item){
+                                var lEvens = _.remove(newLData, function(newItem) {
+                                    return newItem.code == item.code;
+                                });
+                            });
+                            
+                            self.leftItems(newLData);
+                        } else {
+                            self.leftItems(sortedLItems);
+                        }
+                        
                         self.singleRemoveEnable(false);
                         self.currentRCodeList([]);
                 
+                        if(self.leftItems().length > 0) {
+                            self.addAllEnable(true);
+                        } else {
+                            self.addAllEnable(false);
+                        }
+                        
                         if(self.rightItems().length > 0) {
                             self.removeAllEnable(true);
+                        } else {
+                            self.removeAllEnable(false);
                         }
                         
                         self.displayQualMark();
