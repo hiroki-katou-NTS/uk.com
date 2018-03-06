@@ -52,7 +52,7 @@ module nts.uk.sys.view.ccg013.j.viewmodel {
                 self.nameTitleBar(setShareTitleMenu.titleMenuName);
                 self.letterColor(setShareTitleMenu.textColor);
                 self.backgroundColor(setShareTitleMenu.backgroundColor);
-                if(setShareTitleMenu.imageFile != "") {
+                if(setShareTitleMenu.imageFile) {
                     nts.uk.request.ajax("/shr/infra/file/storage/infor/" + setShareTitleMenu.imageFile).done(function(res) {
                         self.imageName(res.originalName);
                         self.imageSize(nts.uk.text.format(resource.getText('CCG013_44'), res.originalSize));
