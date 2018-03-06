@@ -138,9 +138,7 @@ module nts.uk.at.view.ksu007.b {
                         // finish task
                         if (res.succeeded || res.failed || res.cancelled) {
                             self.errorLogs.sort(function(a,b) {
-                                if (a.employeeId < b.employeeId) return -1;
-                                else if (a.employeeId == b.employeeId) return 0;
-                                else return 1;
+                                return (a.employeeId - b.employeeId) || (moment(a.ymd, 'YYYY/MM/DD').toDate() - moment(b.ymd, 'YYYY/MM/DD').toDate());
                             });
                             
                             self.executionState('完了');
