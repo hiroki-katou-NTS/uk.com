@@ -577,7 +577,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	public TimeResultOutput getAppListAchievementOverTime(String sID, GeneralDate date, List<OverTimeFrame> time) {
 		//Imported(申請承認)「勤務実績」を取得する - req #5
 		RecordWorkInfoImport record = recordWkpInfoAdapter.getRecordWorkInfo(sID, date);
-		DailyAttendanceTimeCaculationImport cal = calTime.getCalculation(sID, date, record.getWorkTypeCode(), record.getWorkTimeCode(), 0, 0, 0, 0);
+		DailyAttendanceTimeCaculationImport cal = calTime.getCalculation(sID, date, record.getWorkTypeCode(), record.getWorkTimeCode(),record.getAttendanceStampTimeFirst(), record.getLeaveStampTimeFirst(), 0, 0);
 		//Imported(申請承認)「計算残業時間」を取得する - req #23
 		boolean checkColor = false;
 		List<OverTimeFrame> lstFrameResult = new ArrayList<>();
