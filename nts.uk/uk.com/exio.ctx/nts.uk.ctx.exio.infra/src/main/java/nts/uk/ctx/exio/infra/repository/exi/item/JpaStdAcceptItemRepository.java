@@ -38,7 +38,7 @@ public class JpaStdAcceptItemRepository extends JpaRepository implements StdAcce
 	public void update(StdAcceptItem domain) {
 		Optional<OiomtStdAcceptItem> entityOpt = this
 				.queryProxy().find(
-						new OiomtStdAcceptItemPk(domain.getCid(), domain.getSystemType(),
+						new OiomtStdAcceptItemPk(domain.getCid(), domain.getSystemType().value,
 								domain.getConditionSetCd().v(), "", domain.getAcceptItemNumber()),
 						OiomtStdAcceptItem.class);
 		if (entityOpt.isPresent()) {

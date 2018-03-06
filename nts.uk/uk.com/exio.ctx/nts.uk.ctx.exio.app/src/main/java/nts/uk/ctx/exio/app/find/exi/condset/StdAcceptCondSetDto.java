@@ -19,12 +19,12 @@ public class StdAcceptCondSetDto {
 	/**
 	 * 外部受入条件コード
 	 */
-	private String conditionSetCd;
+	private String conditionSettingCode;
 
 	/**
 	 * 外部受入条件名称
 	 */
-	private String conditionSetName;
+	private String conditionSettingName;
 
 	/**
 	 * 既存データの削除
@@ -49,7 +49,7 @@ public class StdAcceptCondSetDto {
 	/**
 	 * CSVデータの項目名行
 	 */
-	private Integer csvDataLineNumber;
+	private Integer csvDataItemLineNumber;
 
 	/**
 	 * CSVデータの取込開始行
@@ -59,12 +59,12 @@ public class StdAcceptCondSetDto {
 	/**
 	 * 既存データの削除方法
 	 */
-	private Integer deleteExtDataMethod;
+	private Integer deleteExistDataMethod;
 
 	public static StdAcceptCondSetDto fromDomain(StdAcceptCondSet domain) {
-		return new StdAcceptCondSetDto(domain.getSystemType(), domain.getConditionSetCd().v(),
-				domain.getConditionSetName().v(), domain.getDeleteExistData(), domain.getAcceptMode().value,
-				domain.getCheckCompleted(), domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null,
+		return new StdAcceptCondSetDto(domain.getSystemType().value, domain.getConditionSetCd().v(),
+				domain.getConditionSetName().v(), domain.getDeleteExistData().value, domain.getAcceptMode().value,
+				domain.getCheckCompleted().value, domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null,
 				domain.getCsvDataLineNumber().isPresent() ? domain.getCsvDataLineNumber().get().v() : null,
 				domain.getCsvDataStartLine().isPresent() ? domain.getCsvDataStartLine().get().v() : null,
 				domain.getDeleteExtDataMethod().isPresent() ? domain.getDeleteExtDataMethod().get().value : null);

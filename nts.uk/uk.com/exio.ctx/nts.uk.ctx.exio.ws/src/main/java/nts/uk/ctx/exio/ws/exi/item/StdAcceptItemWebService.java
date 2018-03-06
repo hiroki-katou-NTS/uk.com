@@ -21,6 +21,6 @@ public class StdAcceptItemWebService {
 	@Path("getAllStdAcceptItem/{systemType}/{conditionSetCd}")
 	public List<StdAcceptItemDto> getAllStdAcceptItem(@PathParam("systemType") int systemType,
 			@PathParam("conditionSetCd") String conditionSetCd) {
-		return this.stdAcceptItem.getStdAcceptItem(systemType, conditionSetCd);
+		return this.stdAcceptItem.getStdAcceptItems(systemType, conditionSetCd);
 	}
 }
