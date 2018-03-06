@@ -136,10 +136,10 @@ public class ApplicationListFinder {
 	private List<Integer> findListApp(List<ApplicationDto_New> lstApp){
 		List<Integer> lstAppType = new ArrayList<>();
 		for (ApplicationDto_New app : lstApp) {
-			if(lstAppType.contains(app.getApplicationType())){
+			if(!lstAppType.contains(app.getApplicationType())){
 				lstAppType.add(app.getApplicationType());
 			}
 		}
-		return lstAppType;
+		return lstAppType.stream().sorted((x, y) -> x-y).collect(Collectors.toList());
 	}
 }
