@@ -25,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxRemainingDay
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxTimeDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RemainingNumberSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RoundProcessingClassification;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearLyOfNumberDays;
@@ -93,6 +94,9 @@ public class AnnualPaidLeaveSaveCommand {
     
     /** The yearly of date. */
     private Double yearlyOfDays;
+    
+    /** The round processing classification. */
+    private Integer roundProcessCla;
 
     /**
      * To domain.
@@ -242,6 +246,7 @@ public class AnnualPaidLeaveSaveCommand {
                     .manageType(ManageDistinct.valueOf(this.command.maxManageSemiVacation))
                     .reference(MaxDayReference.valueOf(this.command.maxNumberSemiVacation))
                     .maxNumberUniformCompany(new AnnualNumberDay(this.command.maxNumberCompany))
+                    .roundProcesCla(RoundProcessingClassification.valueOf(this.command.roundProcessCla))
                     .build();
             return halfDay;
         }

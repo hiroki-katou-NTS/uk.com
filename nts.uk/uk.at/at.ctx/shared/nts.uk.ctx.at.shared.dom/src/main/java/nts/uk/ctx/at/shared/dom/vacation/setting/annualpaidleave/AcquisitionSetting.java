@@ -21,8 +21,4 @@ public class AcquisitionSetting {
     /** The annual priority. */
     // 年休消化優先
     public AnnualPriority annualPriority;
-    
-    /** The yearly . */
-    // 年休消化優先
-//    public YearLyOfNumberDays yearlyOfNumberDays;
 }

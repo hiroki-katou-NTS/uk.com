@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeave
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplayDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RoundProcessingClassification;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -51,7 +52,6 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
 
         String companyId = AppContexts.user().companyId();
         AnnualPaidLeaveSetting domain = this.annualRepo.findByCompanyId(companyId);
-        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+domain.getManageAnnualSetting().getYearlyOfNumberDays().v());
         
         // Check field enable/disable
         this.validateField(command, domain);
@@ -99,6 +99,7 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
             command.setNextGrantDayDisplay(setttingDB.getManageAnnualSetting().getDisplaySetting()
                     .nextGrantDayDisplay.value);            
             command.setYearlyOfDays(setttingDB.getManageAnnualSetting().getYearlyOfNumberDays().v());
+            command.setRoundProcessCla(setttingDB.getManageAnnualSetting().getHalfDayManage().roundProcesCla.value);
 
             // Time Leave Setting
             command.setTimeManageType(setttingDB.getTimeSetting().getTimeManageType().value);
@@ -147,6 +148,7 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         command.setMaxRemainingDay(null);
         command.setNumberYearRetain(null);
         command.setYearlyOfDays(null);
+        command.setRoundProcessCla(RoundProcessingClassification.TruncateOnDay0.value);
         // =======
         command.setPermitType(ApplyPermission.ALLOW.value);
         command.setAnnualPriority(AnnualPriority.FIFO.value);
