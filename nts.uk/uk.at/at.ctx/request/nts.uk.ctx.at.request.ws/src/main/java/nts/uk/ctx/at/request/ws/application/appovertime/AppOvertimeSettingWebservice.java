@@ -9,7 +9,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.appovertime.AppOvertimeSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.appovertime.AppOvertimeSettingFinder;
 
-@Path("at/request/application/overtime")
+@Path("at/request/application/over/time")
 @Produces("application/json")
 public class AppOvertimeSettingWebservice extends WebService{
 	@Inject

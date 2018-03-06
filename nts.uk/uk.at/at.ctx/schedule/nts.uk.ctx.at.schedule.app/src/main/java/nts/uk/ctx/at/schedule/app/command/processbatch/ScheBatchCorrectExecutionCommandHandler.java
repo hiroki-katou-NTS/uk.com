@@ -87,9 +87,6 @@ public class ScheBatchCorrectExecutionCommandHandler
 	/** The Constant PREV_MONTH. */
 	private static final int PREV_DAY_MONTH = -1;
 	
-	/** The Constant DATA_EXECUTION. */
-	private static final String DATA_EXECUTION = "DATA_EXECUTION";
-	
 	/** The Constant NUMBER_OF_SUCCESS. */
 	private static final String NUMBER_OF_SUCCESS = "NUMBER_OF_SUCCESS";
 	
@@ -147,7 +144,6 @@ public class ScheBatchCorrectExecutionCommandHandler
 		// Variable to count amount of list of error records sent to DB
 		int errorRecordCount = DEFAULT_VALUE;
 		
-		setter.setData(DATA_EXECUTION, dto);
 		setter.setData(NUMBER_OF_SUCCESS, countSuccess);
 		setter.setData(NUMBER_OF_ERROR, DEFAULT_VALUE);
 		
@@ -286,9 +282,10 @@ public class ScheBatchCorrectExecutionCommandHandler
 		// Imported（就業）「所属雇用履歴」を取得する
 		Optional<EmploymentHistoryImported> employmentHisOptional = this.employmentAdapter.getEmpHistBySid(companyId, employeeId, baseDate);
 		
-//		if (!employmentHisOptional.isPresent()) {
-//			return Optional.of("Msg_557");
-//		}
+		// 所属雇用履歴が取得できなかった場合
+		if (!employmentHisOptional.isPresent()) {
+			return Optional.of("Msg_303"); 
+		}
 		
 		// ドメインモデル「雇用に紐づく就業締め」を取得する
 		Optional<ClosureEmployment> optionalClosureEmployment = closureEmployment.findByEmploymentCD(companyId, employmentHisOptional.get().getEmploymentCode());

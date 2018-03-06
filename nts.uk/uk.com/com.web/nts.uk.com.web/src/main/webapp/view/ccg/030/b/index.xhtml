@@ -8,24 +8,19 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 800, height: 600 };</script>
-
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="../../common/common.css" />
+			<com:stylefile path="/view/ccg/common/common.css" />
 			<com:stylefile path="ccg030.b.style.css" />
-			<com:scriptfile path="../a/ccg030.a.vm.js" />
+			<com:scriptfile path="/view/ccg/common/model.js" />
 			<com:scriptfile path="ccg030.b.vm.js" />
 			<com:scriptfile path="ccg030.b.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="contents-area" class="cf">
-				<div class="preview">
-					<div id="preview-flowmenu" class="widget-panel preview"
-						data-bind="with: flowmenu">
-						<div class="panel-header">
-							<span class="title" data-bind="text: topPageName()"></span>
-						</div>
-						<div class="panel-content"></div>
+				<div class="preview" data-bind="with: flowmenu">
+					<div class="widget-panel preview">
+						<ui:include src="/view/ccg/common/flowmenu.xhtml" />
 					</div>
 				</div>
 			</div>

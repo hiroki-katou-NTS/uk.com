@@ -1,5 +1,6 @@
 module nts.uk.com.view.ccg031.a.viewmodel {
     import model = nts.uk.com.view.ccg.model;
+    import util = nts.uk.util;
     import windows = nts.uk.ui.windows;
     import ntsNumber = nts.uk.ntsNumber;
     import dialog = nts.uk.ui.dialog;
@@ -46,10 +47,7 @@ module nts.uk.com.view.ccg031.a.viewmodel {
             service.active(self.layoutID).done((data: model.LayoutDto) => {
                 if (data !== undefined) {
                     let listPlacement: Array<model.Placement> = _.map(data.placements, (item) => {
-                        return new model.Placement(item.placementID, item.placementPartDto.name,
-                            item.row, item.column,
-                            item.placementPartDto.width, item.placementPartDto.height, item.placementPartDto.externalUrl,
-                            item.placementPartDto.topPagePartID, item.placementPartDto.type);
+                        return new model.Placement(item);
                     });
                     listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
                     self.placements(listPlacement);
@@ -112,25 +110,40 @@ module nts.uk.com.view.ccg031.a.viewmodel {
             windows.setShared("size", { row: row, column: column }, false);
             windows.sub.modal("/view/ccg/031/b/index.xhtml").onClosed(() => {
                 block.clear();
-                let placement: model.Placement = windows.getShared("placement");
-                if (placement != undefined) {
-                    self.placements.push(placement);
-                    positionUtil.setupPositionAndSize(placement);
-                    var movingPlacementIds = self.layoutGrid().markOccupied(placement);
-                    self.reorderPlacements(movingPlacementIds, [placement.placementID]);
-                    self.autoExpandLayout();
-                    self.markOccupiedAll();
-                    self.setupDragDrop();
+                let placementDto: model.PlacementDto = windows.getShared("placement");
+                if (!util.isNullOrUndefined(placementDto)) {
+                    if (placementDto.placementPartDto.type != 4) {
+                        service.findPlacementPart(placementDto.placementPartDto.topPagePartID).done((data) => {
+                            placementDto.placementPartDto = data;
+                            self.addPlacementToList(new model.Placement(placementDto));
+                        });
+                    } else {
+                        self.addPlacementToList(new model.Placement(placementDto));
+                    }
                 };
                 $(element).removeClass("hover");
             });
+        }
+        
+        private addPlacementToList(placement: model.Placement): void {
+            var self = this;
+            self.placements.push(placement);
+            positionUtil.setupPositionAndSize(placement);
+            var movingPlacementIds = self.layoutGrid().markOccupied(placement);
+            self.reorderPlacements(movingPlacementIds, [placement.placementID]);
+            self.autoExpandLayout();
+            self.markOccupiedAll();
+            self.setupDragDrop();
         }
 
         /** Open Preview Dialog */
         openPreviewDialog(): void {
             block.invisible();
-            windows.setShared("placements", this.placements(), false);
-            windows.sub.modal("/view/ccg/031/c/index.xhtml", { title: "プレビュー" }).onClosed(() => {
+            var placementDtos = _.map(this.placements(), (item) => {
+                return item.buildPlacementDto();
+            });
+            windows.setShared("placements", placementDtos, false);
+            windows.sub.modal("/view/ccg/031/c/index.xhtml").onClosed(() => {
                 block.clear();
             });
         }
