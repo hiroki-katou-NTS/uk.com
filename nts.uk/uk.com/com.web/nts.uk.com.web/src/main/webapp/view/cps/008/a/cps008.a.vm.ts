@@ -281,14 +281,10 @@ module cps008.a.viewmodel {
             modal('../b/index.xhtml').onClosed(() => {
                 let dto: Array<any> = getShared('CPS008B_VALUE');
 
-
                 if (dto && dto.length) {
-                    layout.classifications.removeAll();
-                    _.each(dto, x => layout.classifications.push(_.omit(x, ["items"])));
+                    layout.classifications(_.map(dto, x => _.omit(x, ["items"])));
                     layout.action(LAYOUT_ACTION.UPDATE);
                 }
-
-
             });
         }
 
