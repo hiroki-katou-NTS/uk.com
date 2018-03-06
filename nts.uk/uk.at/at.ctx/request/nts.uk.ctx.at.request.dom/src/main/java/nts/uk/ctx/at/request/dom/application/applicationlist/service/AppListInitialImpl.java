@@ -607,20 +607,20 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		// TODO Auto-generated method stub
 		//Imported(申請承認)「計算加給時間」を取得する - req #23
-		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getBonusPayTime().entrySet()){
+		for(Map.Entry<Integer,Integer> entry : cal.getBonusPayTime().entrySet()){
 			for(OverTimeFrame i : time){
 				if(i.getFrameNo() == entry.getKey()){
-					int a =	entry.getValue().getCalTime();
+					int a =	entry.getValue().intValue();
 					if(a < i.getApplicationTime()){
 						checkColor = true;
 					}
 				}
 			}
 		}
-		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getSpecBonusPayTime().entrySet()){
+		for(Map.Entry<Integer,Integer> entry : cal.getSpecBonusPayTime().entrySet()){
 			for(OverTimeFrame i : time){
 				if(i.getFrameNo() == entry.getKey()){
-					int a =	entry.getValue().getCalTime();
+					int a =	entry.getValue().intValue();
 					if(a < i.getApplicationTime()){
 						checkColor = true;
 					}
