@@ -299,7 +299,7 @@ module cps001.a.vm {
 
                 self.employees.removeAll();
 
-                $('.btn-quick-search[tabindex=8]').click();
+                $('#ccg001-btn-search-all').trigger('click');
 
                 $.when((() => {
                     let def = $.Deferred(),
@@ -345,9 +345,9 @@ module cps001.a.vm {
             } else {
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
                     if (params && params.employeeId) {
-                        $('.btn-quick-search[tabindex=7]').click();
+                        $('#ccg001-btn-search-all').trigger('click');
                     } else {
-                        $('.btn-quick-search[tabindex=8]').click();
+                        $('#ccg001-btn-only-me').trigger('click');
                     }
 
                     $.when((() => {

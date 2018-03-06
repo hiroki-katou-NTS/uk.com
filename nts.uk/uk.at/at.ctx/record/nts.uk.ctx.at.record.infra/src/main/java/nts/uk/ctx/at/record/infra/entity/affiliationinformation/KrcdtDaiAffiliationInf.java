@@ -60,7 +60,7 @@ public class KrcdtDaiAffiliationInf extends UkJpaEntity implements Serializable 
 				this.workplaceID,
 				this.krcdtDaiAffiliationInfPK.ymd,
 				new ClassificationCode(this.classificationCode),
-				new BonusPaySettingCode(this.bonusPayCode));
+				this.bonusPayCode == null ? null : new BonusPaySettingCode(this.bonusPayCode));
 		return domain;
 	}
 	
@@ -71,6 +71,7 @@ public class KrcdtDaiAffiliationInf extends UkJpaEntity implements Serializable 
 				affiliationInforOfDailyPerfor.getJobTitleID(),
 				affiliationInforOfDailyPerfor.getClsCode().v(),
 				affiliationInforOfDailyPerfor.getWplID(),
-				affiliationInforOfDailyPerfor.getBonusPaySettingCode().v());
+				affiliationInforOfDailyPerfor.getBonusPaySettingCode() == null 
+					? null : affiliationInforOfDailyPerfor.getBonusPaySettingCode().v());
 	}
 }

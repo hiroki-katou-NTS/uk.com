@@ -25,6 +25,7 @@ module nts.uk.at.view.kal003.a.tab {
             
             if (listWorkRecordExtraCon) {
                 self.listWorkRecordExtraCon.removeAll();
+                _.orderBy(listWorkRecordExtraCon, ['code'], ['asc']);  
                 self.listWorkRecordExtraCon(listWorkRecordExtraCon);
             }
             self.columns = [
@@ -37,11 +38,14 @@ module nts.uk.at.view.kal003.a.tab {
                         let id = nts.uk.util.randomId();
                         
                         let $div = $("<div/>", {html: classification, id: id});
-                        $div.hide();
                         if (record.classification.toString() === "0") {
                             $div.addClass("bg-daily-error");
+                            $div.html(getText('KAL003_110'));
                         } else if (record.classification.toString() === "1") {
                             $div.addClass("bg-daily-alarm");
+                            $div.html(getText('KAL003_111'));
+                        } else{
+                            $div.html("");
                         }
                         setTimeout(function(){
                             let d = $("#" + id);

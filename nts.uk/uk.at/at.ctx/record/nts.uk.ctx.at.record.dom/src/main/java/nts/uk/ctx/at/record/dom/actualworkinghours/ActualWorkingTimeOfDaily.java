@@ -5,6 +5,9 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
+import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.calculationattribute.enums.AutoCalOverTimeAttr;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
@@ -13,15 +16,19 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
 import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTimeOfDaily;
 import nts.uk.ctx.at.record.dom.premiumtime.PremiumTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfIrregularWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.AddSettingOfRegularWork;
+import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.RaisingSalaryCalcAtr;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
@@ -54,7 +61,7 @@ public class ActualWorkingTimeOfDaily {
 	private DivergenceTimeOfDaily divTime;
 
 	/**
-	 * 総労働時間のみを埋めるConstructor(Byほしな 2017.11.15)
+	 * Constructor
 	 */
 
 	private ActualWorkingTimeOfDaily(AttendanceTime constraintDiffTime, ConstraintTime constraintTime,
@@ -107,7 +114,14 @@ public class ActualWorkingTimeOfDaily {
 			   AddSettingOfIrregularWork addSettingOfIrregularWork,
 			   AddSettingOfFlexWork addSettingOfFlexWork,
 			   AddSettingOfRegularWork addSettingOfRegularWork,
-			   VacationAddTimeSet vacationAddTimeSet) {
+			   VacationAddTimeSet vacationAddTimeSet,
+			   AutoCalOverTimeAttr overTimeAutoCalcAtr,
+			   WorkTimeDailyAtr workTimeDailyAtr,
+			   Optional<SettingOfFlexWork> flexCalcMethod,
+			   HolidayCalcMethodSet holidayCalcMethodSet,
+			   RaisingSalaryCalcAtr raisingAutoCalcSet,
+			   BonusPayAutoCalcSet bonusPayAutoCalcSet,
+			   CalAttrOfDailyPerformance calcAtrOfDaily) {
 		/* 割増時間の計算 */
 		val premiumTime = new PremiumTimeOfDailyPerformance(Collections.emptyList());
 		/*拘束差異時間*/
@@ -131,7 +145,14 @@ public class ActualWorkingTimeOfDaily {
 				    addSettingOfIrregularWork,
 				    addSettingOfFlexWork,
 				    addSettingOfRegularWork,
-				    vacationAddTimeSet);
+				    vacationAddTimeSet,
+				    overTimeAutoCalcAtr,
+				    workTimeDailyAtr,
+				    flexCalcMethod,
+				    holidayCalcMethodSet,
+					raisingAutoCalcSet,
+					bonusPayAutoCalcSet,
+					calcAtrOfDaily);
 		/* 乖離時間の計算 */
 		val divergenceTimeOfDaily = new DivergenceTimeOfDaily();
 		

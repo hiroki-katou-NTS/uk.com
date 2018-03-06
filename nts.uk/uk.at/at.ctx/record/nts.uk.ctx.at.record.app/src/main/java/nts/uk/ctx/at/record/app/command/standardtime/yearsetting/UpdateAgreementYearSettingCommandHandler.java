@@ -1,14 +1,20 @@
 package nts.uk.ctx.at.record.app.command.standardtime.yearsetting;
 
+import java.util.List;
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementYearSetting;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneYear;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneYear;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSetDomainService;
+import nts.uk.ctx.at.shared.app.service.workingcondition.WorkingConditionService;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
 /**
  * 
@@ -16,13 +22,16 @@ import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepo
  *
  */
 @Stateless
-public class UpdateAgreementYearSettingCommandHandler extends CommandHandler<UpdateAgreementYearSettingCommand> {
+public class UpdateAgreementYearSettingCommandHandler extends CommandHandlerWithResult<UpdateAgreementYearSettingCommand, List<String>> {
 
 	@Inject
-	private AgreementYearSettingRepository agreementYearSettingRepository;
+	private AgreementYearSetDomainService agreementYearSetDomainService;
+	
+	@Inject
+	private WorkingConditionService workingConditionService;
 
 	@Override
-	protected void handle(CommandHandlerContext<UpdateAgreementYearSettingCommand> context) {
+	protected List<String> handle(CommandHandlerContext<UpdateAgreementYearSettingCommand> context) {
 		UpdateAgreementYearSettingCommand command = context.getCommand();
 
 		AgreementYearSetting agreementYearSetting = new AgreementYearSetting(
@@ -31,8 +40,10 @@ public class UpdateAgreementYearSettingCommandHandler extends CommandHandler<Upd
 				new ErrorOneYear(command.getErrorOneYear()),
 				new AlarmOneYear(command.getAlarmOneYear()));
 		
-		agreementYearSetting.validate();
+//		agreementYearSetting.validate();
+		
+		Optional<WorkingConditionItem> workingConditionItem = this.workingConditionService.findWorkConditionByEmployee(command.getEmployeeId(), GeneralDate.today());
 
-		this.agreementYearSettingRepository.update(agreementYearSetting);
+		return this.agreementYearSetDomainService.update(agreementYearSetting, workingConditionItem);
 	}
 }
