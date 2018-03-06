@@ -109,7 +109,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 													BonusPaySetting bonusPaySetting) {
 		
 		List<WithinWorkTimeFrame> timeFrames = new ArrayList<>();
+		//List<LateDecisionClock> lateDesClock = new ArrayList<>();
 		if(workType.isWeekDayAttendance()) {
+			
 			timeFrames = isWeekDayProcess(timeLeavingWork,workType,predetermineTimeSetForCalc,lstHalfDayWorkTimezone,workTimeCommonSet
 									 							,deductionTimeSheet,bonusPaySetting);
 		}
