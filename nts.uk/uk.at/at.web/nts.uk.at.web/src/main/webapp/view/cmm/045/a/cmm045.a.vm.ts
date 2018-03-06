@@ -15,6 +15,8 @@ module cmm045.a.viewmodel {
         lstAppMaster: KnockoutObservableArray<vmbase.AppMasterInfo> = ko.observableArray([]);
         lstAppOt: KnockoutObservableArray<vmbase.AppOverTimeInfoFull> = ko.observableArray([]);
         lstAppGoBack: KnockoutObservableArray<vmbase.AppGoBackInfoFull> = ko.observableArray([]);
+        lstListAgent: KnockoutObservableArray<vmbase.ApproveAgent> = ko.observableArray([]);
+        
         displaySet: KnockoutObservable<vmbase.ApprovalListDisplaySetDto> = ko.observable(null);
         approvalMode: KnockoutObservable<boolean> = ko.observable(false);
         approvalCount: KnockoutObservable<vmbase.ApplicationStatus> = ko.observable(new vmbase.ApplicationStatus(0, 0, 0, 0, 0, 0));
@@ -141,6 +143,10 @@ module cmm045.a.viewmodel {
                         self.itemApplication.push(new vmbase.ChoseApplicationList(-1, '全件表示'));
                         _.each(data.lstAppType, function(appType){
                             self.itemApplication.push(new vmbase.ChoseApplicationList(appType, self.findAppName(appType)));                          
+                        });
+                        self.lstListAgent([]);
+                        _.each(data.lstAgent, function(agent){
+                            self.lstListAgent.push(new vmbase.ApproveAgent(agent.appID, agent.agentId));
                         });
                         let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), lstGoBack, self.lstAppOt(), lstAppGroup);
                         self.lstApp(lstData);
@@ -661,6 +667,10 @@ module cmm045.a.viewmodel {
                 _.each(data.lstAppType, function(appType){
                     self.itemApplication.push(new vmbase.ChoseApplicationList(appType, self.findAppName(appType)));                          
                 });
+                self.lstListAgent([]);
+                _.each(data.lstAgent, function(agent){
+                    self.lstListAgent.push(new vmbase.ApproveAgent(agent.appID, agent.agentId));
+                });
                 let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), lstGoBack, self.lstAppOt(), lstAppGroup);
                 self.lstApp(lstData);
                 if (self.selectedCode() != -1) {
@@ -749,14 +759,27 @@ module cmm045.a.viewmodel {
             let denialNumber = 0;
             _.each(lstApp, function(app){
                 if(app.appStatus == '未'){ unApprovalNumber += 1; }//UNAPPROVED:5
-                if(app.appStatus == '承認済み'){ approvalNumber += 1; }//APPROVED: 4
-                if(app.appStatus == '-'){ approvalAgentNumber += 1; }//-: 0 
+                if(app.appStatus == '承認済み'){//APPROVED: 4
+                    let agent = this.findAgent(app.appId);
+                    if(agent != undefined && agent.agentId != null && agent.agentId != ''){
+                        approvalAgentNumber += 1;
+                    }else{
+                        approvalNumber += 1;
+                    }
+                     approvalNumber += 1;
+                }
+//                if(app.appStatus == '-'){ approvalAgentNumber += 1; }//-: 0 
                 if(app.appStatus == '取消'){ cancelNumber += 1; }//CANCELED: 3
                 if(app.appStatus == '差戻'){ remandNumner += 1; }//REMAND: 2
                 if(app.appStatus == '否'){ denialNumber += 1; }//DENIAL: 1
             })
             return new vmbase.ApplicationStatus(unApprovalNumber, approvalNumber,
                 approvalAgentNumber, cancelNumber, remandNumner,denialNumber);
+        }
+        findAgent(appId: string): any{
+            return _.find(this.lstListAgent(), function(agent){
+                return agent.appID = appId;    
+            });
         }
         convertTime_Short_HM(time: number): string {
             let hh = Math.floor(time / 60);

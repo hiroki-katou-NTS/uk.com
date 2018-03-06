@@ -358,5 +358,13 @@ module cmm045.shr {
                 this.lstFrameRes = lstFrameRes;
             }
         }
+        export class ApproveAgent{
+            appID: string;
+            agentId: string;
+            constructor(appID: string, agentId: string){
+                this.appID = appID;
+                this.agentId = agentId;
+            }
+        }
     }
 }
