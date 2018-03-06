@@ -10,12 +10,12 @@ module nts.uk.com.view.cmf001.i.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
-        inputMode: boolean = false;
+        inputMode: boolean = true;
         lineNumber: number = -1;
 
-        setting: KnockoutObservable<model.DateDataFormatSetting> = ko.observable(new model.DateDataFormatSetting(0, model.NOT_USE_ATR.USE, ''));
+        setting: KnockoutObservable<model.DateDataFormatSetting> = ko.observable(null);
 
-        itemsFormat: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
+        itemsFormatSelection: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
 
         itemsFixedValue: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
 
@@ -25,7 +25,7 @@ module nts.uk.com.view.cmf001.i.viewmodel {
         constructor() {
             let self = this;
 
-            self.itemsFormat([
+            self.itemsFormatSelection([
                 new model.ItemModel(0, getText('CMF001_303')),
                 new model.ItemModel(1, getText('CMF001_304')),
                 new model.ItemModel(2, getText('CMF001_305')),
@@ -38,6 +38,7 @@ module nts.uk.com.view.cmf001.i.viewmodel {
                 new model.ItemModel(self.atrUse, getText('CMF001_322')),
                 new model.ItemModel(self.atrNotUse, getText('CMF001_323'))
             ]);
+            
             let params = getShared("CMF001iParams");
             if (!nts.uk.util.isNullOrUndefined(params)) {
                 let inputMode = params.inputMode;

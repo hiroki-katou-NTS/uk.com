@@ -29,7 +29,7 @@
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_331')}</div>
 						</td>
 						<td>
-							<div data-bind="foreach: itemsDigit">
+							<div data-bind="foreach: itemsEffectiveDigitLength">
 								<div
 									data-bind="ntsRadioButton: {
 										checked: $parent.setting().effectiveDigitLength, 
@@ -65,7 +65,7 @@
 						<td colspan="2">
 							<div class="cf"
 								data-bind="ntsSwitchButton: {
-								options: itemsDecimalType,
+								options: itemsDecimalSelection,
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: setting().decimalSelection,
@@ -80,7 +80,7 @@
 						<td colspan="2">
 							<div class="cf"
 								data-bind="ntsSwitchButton: {
-								options: itemsTimeType,
+								options: itemsHourMinuteSelection,
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: setting().hourMinuteSelection,
@@ -95,7 +95,7 @@
 						<td colspan="2">
 							<div
 								data-bind="ntsComboBox: {
-								options: itemsDelimiterSet,
+								options: itemsDelimiterSetting,
 								optionsValue: 'code',
 								enable: !(!checkActive6() || !inputMode) ,
 								visibleItemsCount: 5,
@@ -112,7 +112,7 @@
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_356')}</div>
 						</td>
 						<td>
-							<div data-bind="foreach: itemsRoundProcess">
+							<div data-bind="foreach: itemsRoundingProcessing">
 								<div
 									data-bind="ntsRadioButton: {
 										checked: $parent.setting().roundingProcessing, 
@@ -126,7 +126,7 @@
 						<td>
 							<div
 								data-bind="ntsComboBox: {
-								options: itemsRoundProcessContent,
+								options: itemsRoundProcessingClassification,
 								optionsValue: 'code',
 								enable: !(!checkActive6() || !checkActive5() || !checkActive2() || !inputMode), 
 								visibleItemsCount: 5,
