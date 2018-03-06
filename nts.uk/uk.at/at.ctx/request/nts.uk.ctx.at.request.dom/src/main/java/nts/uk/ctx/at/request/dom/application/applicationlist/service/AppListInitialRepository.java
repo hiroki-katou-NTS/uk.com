@@ -21,7 +21,7 @@ public interface AppListInitialRepository {
 	 * @param wkpID
 	 * @return
 	 */
-	public Boolean checkAppPredictRequire(int appType, String wkpID);
+	public Boolean checkAppPredictRequire(int appType, String wkpID, String companyId);
 	
 	/**
 	 * 1- 申請一覧リスト取得
@@ -48,14 +48,14 @@ public interface AppListInitialRepository {
 	 * @param lstApp
 	 * @return
 	 */
-	public AppInfoStatus countAppListApproval(List<Application_New> lstApp);
+	public AppInfoStatus countAppListApproval(List<ApplicationFullOutput> lstApp, String sID);
 	/**
 	 * 5 - 申請一覧リスト取得実績
 	 * @param lstApp
 	 * @param displaySet
 	 * @return
 	 */
-	public AppListAtrOutput getAppListAchievement(List<Application_New> lstApp, ApprovalListDisplaySetting displaySet);
+	public AppListAtrOutput getAppListAchievement(List<ApplicationFullOutput> lstApp, ApprovalListDisplaySetting displaySet, String companyId, String sID);
 	/**
 	 * 5.1 - 申請一覧リスト取得実績休出申請
 	 * @param sID
@@ -82,19 +82,19 @@ public interface AppListInitialRepository {
 	 * @param application
 	 * @return
 	 */
-	public Boolean getListAppStampIsCancel(Application_New application);
+	public Boolean getListAppStampIsCancel(Application_New application, String companyID);
 	/**
 	 * 8 - 申請一覧リスト取得休暇
 	 * @param application
 	 * @return
 	 */
-	public List<Application_New> getListAppAbsence(Application_New application);
+	public List<Application_New> getListAppAbsence(Application_New application, String companyID);
 	/**
 	 * 9 - 申請一覧リスト取得マスタ情報
 	 * @param lstApp
 	 * @return
 	 */
-	public List<AppMasterInfo> getListAppMasterInfo(List<Application_New> lstApp);
+	public List<AppMasterInfo> getListAppMasterInfo(List<Application_New> lstApp, String companyId);
 	/**
 	 * 12 - 申請一覧初期日付期間
 	 * @param companyId

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import nts.uk.shr.infra.file.storage.filestereotype.defines.AvatarFileStereoType;
 import nts.uk.shr.infra.file.storage.filestereotype.defines.FlowMenuStereoType;
 import nts.uk.shr.infra.file.storage.filestereotype.defines.SampleFileStereoType;
 import nts.uk.shr.infra.file.storage.filestereotype.defines.SamplePackStereoType;
@@ -17,7 +18,8 @@ final class FileStereoTypeDef {
 				// Add file type descriptions here
 				new SampleFileStereoType(),
 				new SamplePackStereoType(),
-				new FlowMenuStereoType()
+				new FlowMenuStereoType(), 
+				new AvatarFileStereoType()
 				
 				).stream().forEach(d -> {
 					map.put(d.name(), d);

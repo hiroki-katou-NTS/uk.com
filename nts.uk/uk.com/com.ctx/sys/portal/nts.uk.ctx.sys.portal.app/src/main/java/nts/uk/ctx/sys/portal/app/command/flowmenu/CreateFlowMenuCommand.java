@@ -16,9 +16,9 @@ public class CreateFlowMenuCommand {
 	//top page name
 	private String topPageName;
 	//width size
-	private int widthSize;
+	private int width;
 	//height size
-	private int heightSize;
+	private int height;
 	
 	/** File ID */
 	private String fileID;
@@ -30,7 +30,7 @@ public class CreateFlowMenuCommand {
 	public FlowMenu toDomain(String topPagePartId){
 		return FlowMenu.createFromJavaType(AppContexts.user().companyId(), topPagePartId,
 				topPageCode, topPageName,
-				TopPagePartType.FlowMenu.value, widthSize, heightSize,
+				TopPagePartType.FlowMenu.value, width, height,
 				fileID,defClassAtr
 				);
 	}
