@@ -33,12 +33,12 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 		DailyAttendanceTimePubImport dailyAttendanceTimePubImport = new DailyAttendanceTimePubImport();
 		dailyAttendanceTimePubImport.setEmployeeid(employeeID);
 		dailyAttendanceTimePubImport.setYmd(ymd);
-		dailyAttendanceTimePubImport.setWorkTypeCode(new WorkTypeCode(workTypeCode));
-		dailyAttendanceTimePubImport.setWorkTimeCode(new WorkTimeCode(workTimeCode));
-		dailyAttendanceTimePubImport.setWorkStartTime( new AttendanceTime(workStartTime));
-		dailyAttendanceTimePubImport.setWorkEndTime(new AttendanceTime( workEndTime));
-		dailyAttendanceTimePubImport.setBreakStartTime( new AttendanceTime(breakStartTime));
-		dailyAttendanceTimePubImport.setBreakEndTime(new AttendanceTime( breakEndTime));
+		dailyAttendanceTimePubImport.setWorkTypeCode(workTypeCode == null ? null : new WorkTypeCode(workTypeCode));
+		dailyAttendanceTimePubImport.setWorkTimeCode(workTimeCode== null ? null : new WorkTimeCode(workTimeCode));
+		dailyAttendanceTimePubImport.setWorkStartTime( workStartTime == null ? null : new AttendanceTime(workStartTime));
+		dailyAttendanceTimePubImport.setWorkEndTime(workEndTime == null? null: new AttendanceTime( workEndTime));
+		dailyAttendanceTimePubImport.setBreakStartTime( breakStartTime== null ? null : new AttendanceTime(breakStartTime));
+		dailyAttendanceTimePubImport.setBreakEndTime(breakEndTime == null ? null : new AttendanceTime( breakEndTime));
 		
 		DailyAttendanceTimePubExport dailyAttendanceTimePubExport = dailyAttendanceTimePub.calcDailyAttendance(dailyAttendanceTimePubImport);
 		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = new DailyAttendanceTimeCaculationImport(convertMapOverTime(dailyAttendanceTimePubExport.getOverTime()),
