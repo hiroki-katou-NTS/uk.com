@@ -84,12 +84,12 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 dialog({ messageId: "Msg_963" });
                 return;
             }
-            /*//受入ファイルがアップロードされているか判別
+            //受入ファイルがアップロードされているか判別
             if (self.fileId() == '') {
                 //Msg_964　を表示する。受入ファイルがアップロードされていません。
                 dialog({ messageId: "Msg_964" });
                 return;
-            }*/
+            }
             //P:外部受入サマリー画面へ遷移する
             $('#ex_accept_wizard').ntsWizard("next");
             self.loadListAccept();
@@ -102,7 +102,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         private uploadFile(): void {
             var self = this;
             block.grayout();
-            $("#file-upload").ntsFileUpload({ stereoType: "flowmenu" }).done(function(res) {
+            $("#file-upload").ntsFileUpload({ stereoType: "csvfile" }).done(function(res) {
                 service.getNumberOfLine(res[0].id).done(function(totalLine: any) {
                     self.totalLine(totalLine);
                     //アップロードCSVが取込開始行に満たない場合                   
