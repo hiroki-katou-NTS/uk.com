@@ -239,6 +239,16 @@ $brand-color: #39f;
   }
 }
 
+.small-style {
+	> .datepicker-panel  {
+		> ul { 
+			> li {
+  				line-height: 22px !important;
+  				height: 22px !important;
+			}
+		}
+	} 
+}
 
 // Panels
 // -----------------------------------------------------------------------------

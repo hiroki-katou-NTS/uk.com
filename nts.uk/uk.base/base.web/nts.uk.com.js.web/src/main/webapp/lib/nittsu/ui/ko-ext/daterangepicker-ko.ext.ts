@@ -242,6 +242,7 @@ module nts.uk.ui.koExtentions {
             }));
             
             $container.find(".ntsDateRange_Component").attr("tabindex", tabIndex);
+            $input.ntsDatepicker("bindFlip");
         }
 
         /**

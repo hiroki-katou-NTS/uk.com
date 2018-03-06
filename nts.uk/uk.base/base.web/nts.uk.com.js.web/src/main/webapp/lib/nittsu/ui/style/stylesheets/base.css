@@ -3760,6 +3760,11 @@ button.nts-switch-button[disabled]:hover {
   left: auto;
 }
 
+.small-style > .datepicker-panel > ul > li{
+  line-height: 22px !important;
+  height: 22px !important;
+}
+
 /* line 247, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul:before,
 .datepicker-panel > ul:after {
