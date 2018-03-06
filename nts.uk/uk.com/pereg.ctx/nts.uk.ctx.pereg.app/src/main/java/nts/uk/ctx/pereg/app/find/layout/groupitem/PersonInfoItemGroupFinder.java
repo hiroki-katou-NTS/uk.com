@@ -103,6 +103,8 @@ public class PersonInfoItemGroupFinder {
 
 			List<PerInfoItemDefDto> itemDfChild = new ArrayList<>();
 			List<String> idsChild = new ArrayList<>();
+			List<String> idsChildInChild = new ArrayList<>();
+			List<PerInfoItemDefDto> itemDfChildinChild = new ArrayList<>();
 
 			List<PerInfoItemDefDto> result = items.stream().map(m -> {
 
@@ -131,6 +133,12 @@ public class PersonInfoItemGroupFinder {
 
 				// List ItemDf sau khi check Abolition va sap xep
 				List<PerInfoItemDefDto> lstItemDfDto = itemDfChild.stream().map(m -> {
+					
+					if (m.getItemTypeState().getItemType() == 1
+							&& (((SetItemDto) m.getItemTypeState()).getItems() != null)) {
+
+						idsChildInChild.addAll(((SetItemDto) m.getItemTypeState()).getItems());
+					}
 
 					PerInfoCtgFullDto cat = categoryFinder.getPerInfoCtg(m.getPerInfoCtgId());
 
@@ -146,6 +154,35 @@ public class PersonInfoItemGroupFinder {
 
 				result.addAll(lstItemDfDto);
 
+			}
+			
+			if (!idsChildInChild.isEmpty()) {
+
+				// Lay List ItemDf theo idsChild of Child
+				itemDfChildinChild = itemDfFinder.getPerInfoItemDefByListId(idsChildInChild);
+
+				// List ItemDf sau khi check Abolition va sap xep
+				List<PerInfoItemDefDto> lstItemDfDtoChild = itemDfChildinChild.stream().map(m -> {
+					
+					if (m.getItemTypeState().getItemType() == 1
+							&& (((SetItemDto) m.getItemTypeState()).getItems() != null)) {
+
+						idsChildInChild.addAll(((SetItemDto) m.getItemTypeState()).getItems());
+					}
+
+					PerInfoCtgFullDto cat = categoryFinder.getPerInfoCtg(m.getPerInfoCtgId());
+
+					if (cat.getIsAbolition() == 0 && m.getIsAbolition() == 0) {
+						return m;
+					}
+					return null;
+				}).filter(f -> f != null).map(m -> {
+					int catDispOrder = categoryFinder.getDispOrder(m.getPerInfoCtgId());
+					m.setDispOrder(catDispOrder * 100000 + m.getDispOrder());
+					return m;
+				}).sorted((o1, o2) -> o1.getDispOrder() - o2.getDispOrder()).collect(Collectors.toList());
+
+				result.addAll(lstItemDfDtoChild);
 			}
 
 			return result;
