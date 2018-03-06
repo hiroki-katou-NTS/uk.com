@@ -205,51 +205,52 @@ module cmm045.a.viewmodel {
                 nts.uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, { appID: id });
                 window.location.href = "../../../kaf/000/b/index.xhtml";
             });
-            _.each(self.items(), function(item) {
-                //fill color in 承認状況
-                let id = ".nts-grid-control-appStatus-" + item.appId;
-                if (item.appStatus == '未') {
-                    $(id).parent().addClass('unapprovalCell');
-                }
-                if (item.appStatus == '承認済み') {
-                    $(id).parent().addClass('approvalCell');
-                }
-                if (item.appStatus == '反映済み') {
-                    $(id).parent().addClass('reflectCell');
-                }
-                if (item.appStatus == '取消') {
-                    $(id).parent().addClass('cancelCell');
-                }
-                if (item.appStatus == '差戻') {
-                   $(id).parent().addClass('remandCell');
-                }
-                if (item.appStatus == '否') {
-                    $(id).parent().addClass('denialCell');
-                }
-                //fill color in 申請内容
-                if (item.checkTimecolor == 1) {//1: xin truoc < xin sau; k co xin truoc; xin truoc bi denail
-                    $(".nts-grid-control-appContent-" + item.appId).addClass('preAppExcess');
-                }
-                if (item.checkTimecolor == 2) {////2: thuc te < xin sau
-                    $(".nts-grid-control-appContent-" + item.appId).addClass('workingResultExcess');
-                }
-                //fill color text
-                let color = item.appDate.substring(11,12);
-                if (color == '土') {//土
-                    $(".nts-grid-control-appDate-" + item.appId).addClass('saturdayCell');
-                }
-                if (color == '日') {//日 
-                    $(".nts-grid-control-appDate-" + item.appId).addClass('sundayCell');
-                }
-                //fill color text
-                let colorIn = item.inputDate.substring(11,12);
-                if (colorIn == '土') {//土
-                    $(".nts-grid-control-inputDate-" + item.appId).addClass('saturdayCell');
-                }
-                if (colorIn == '日') {//日 
-                    $(".nts-grid-control-inputDate-" + item.appId).addClass('sundayCell');
-                }
-            });
+            self.fillColorInGridList();
+//            _.each(self.items(), function(item) {
+//                //fill color in 承認状況
+//                let id = ".nts-grid-control-appStatus-" + item.appId;
+//                if (item.appStatus == '未') {
+//                    $(id).parent().addClass('unapprovalCell');
+//                }
+//                if (item.appStatus == '承認済み') {
+//                    $(id).parent().addClass('approvalCell');
+//                }
+//                if (item.appStatus == '反映済み') {
+//                    $(id).parent().addClass('reflectCell');
+//                }
+//                if (item.appStatus == '取消') {
+//                    $(id).parent().addClass('cancelCell');
+//                }
+//                if (item.appStatus == '差戻') {
+//                   $(id).parent().addClass('remandCell');
+//                }
+//                if (item.appStatus == '否') {
+//                    $(id).parent().addClass('denialCell');
+//                }
+//                //fill color in 申請内容
+//                if (item.checkTimecolor == 1) {//1: xin truoc < xin sau; k co xin truoc; xin truoc bi denail
+//                    $(".nts-grid-control-appContent-" + item.appId).addClass('preAppExcess');
+//                }
+//                if (item.checkTimecolor == 2) {////2: thuc te < xin sau
+//                    $(".nts-grid-control-appContent-" + item.appId).addClass('workingResultExcess');
+//                }
+//                //fill color text
+//                let color = item.appDate.substring(11,12);
+//                if (color == '土') {//土
+//                    $(".nts-grid-control-appDate-" + item.appId).addClass('saturdayCell');
+//                }
+//                if (color == '日') {//日 
+//                    $(".nts-grid-control-appDate-" + item.appId).addClass('sundayCell');
+//                }
+//                //fill color text
+//                let colorIn = item.inputDate.substring(11,12);
+//                if (colorIn == '土') {//土
+//                    $(".nts-grid-control-inputDate-" + item.appId).addClass('saturdayCell');
+//                }
+//                if (colorIn == '日') {//日 
+//                    $(".nts-grid-control-inputDate-" + item.appId).addClass('sundayCell');
+//                }
+//            });
         }
 
         reloadGridApproval() {
@@ -296,24 +297,27 @@ module cmm045.a.viewmodel {
 
             $("#grid1").setupSearchScroll("igGrid", true);
 
+            self.fillColorInGridList();
+        }
+        fillColorInGridList(){
+            let self = this;
             _.each(self.items(), function(item) {
-                //display check box
-                if (item.checkAtr == false) {
-                    $(".nts-grid-control-check-" + item.appId).css("display", "none");
-                }
                 //fill color in 承認状況
                 let id = ".nts-grid-control-appStatus-" + item.appId;
                 if (item.appStatus == '未') {
                     $(id).parent().addClass('unapprovalCell');
                 }
                 if (item.appStatus == '承認済み') {
-                     $(id).parent().addClass('approvalCell');
+                    $(id).parent().addClass('approvalCell');
+                }
+                if (item.appStatus == '反映済み') {
+                    $(id).parent().addClass('reflectCell');
                 }
                 if (item.appStatus == '取消') {
-                     $(id).parent().addClass('cancelCell');
+                    $(id).parent().addClass('cancelCell');
                 }
                 if (item.appStatus == '差戻') {
-                    $(id).parent().addClass('remandCell');
+                   $(id).parent().addClass('remandCell');
                 }
                 if (item.appStatus == '否') {
                     $(id).parent().addClass('denialCell');
@@ -330,7 +334,7 @@ module cmm045.a.viewmodel {
                 if (color == '土') {//土
                     $(".nts-grid-control-appDate-" + item.appId).addClass('saturdayCell');
                 }
-                if (color == '日') {//日
+                if (color == '日') {//日 
                     $(".nts-grid-control-appDate-" + item.appId).addClass('sundayCell');
                 }
                 //fill color text
@@ -664,10 +668,10 @@ module cmm045.a.viewmodel {
                             data.appStatusCount.denialNumber));
                     }
                     if (self.mode() == 1) {
-//                        $("#grid1").ntsGrid("destroy");
+                        $("#grid1").ntsGrid("destroy");
                         self.reloadGridApproval();
                     } else {
-//                        $("#grid2").ntsGrid("destroy");
+                        $("#grid2").ntsGrid("destroy");
                         self.reloadGridApplicaion();
                     }
                 }
@@ -701,6 +705,7 @@ module cmm045.a.viewmodel {
                 }
             });
             service.approvalListApp(lstApp).done(function() {
+                nts.uk.ui.dialog.info({ messageId: "Msg_220" });
                 self.filter();
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId });
@@ -724,10 +729,10 @@ module cmm045.a.viewmodel {
             }
             if (self.mode() == 1) {
                 self.approvalCount(self.countStatus(self.items()));
-//                $("#grid1").ntsGrid("destroy");
+                $("#grid1").ntsGrid("destroy");
                 self.reloadGridApproval();
             } else {
-//                $("#grid2").ntsGrid("destroy");
+                $("#grid2").ntsGrid("destroy");
                 self.reloadGridApplicaion();
             }
 
