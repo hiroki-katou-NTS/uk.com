@@ -531,9 +531,7 @@ module nts.custombinding {
                                             <div class="set-group">
                                                 <!-- ko foreach: { data: _childs, as: 'set' } -->
                                                 <!-- ko if: $index() && _render.length > 1 -->
-                                                <div class="set-item set-item-sperator">
-                                                    <span data-bind="text: text('CPS001_89')"></span>
-                                                </div>
+                                                <div class="set-item set-item-sperator" data-bind="text: text('CPS001_89')"></div>
                                                 <!-- /ko -->
                                                 <!-- ko if: _items.length == 1 && _items[0].item && [ITEM_TYPE.SEL_RADIO].indexOf(_items[0].item.dataTypeValue) == -1 -->
                                                 <div class="child-label" data-bind="text: set.itemName"></div>
@@ -555,9 +553,7 @@ module nts.custombinding {
                                                         <div class="child-label" data-bind="text: set.itemName"></div>
                                                         <!-- ko foreach: { data: _.filter(__items, function(x) { return x.itemParentCode == set.itemCode }), as: 'child' } -->
                                                             <!-- ko if: $index() && _render.length > 1 -->
-                                                            <div class="set-item set-item-sperator">
-                                                                <span data-bind="text: text('CPS001_89')"></span>
-                                                            </div>
+                                                            <div class="set-item set-item-sperator" data-bind="text: text('CPS001_89')"></div>
                                                             <!-- /ko -->
                                                         <div data-bind="template: {
                                                                 data: child,
@@ -919,13 +915,15 @@ module nts.custombinding {
 
         private services = {
             getCat: (cid) => ajax(`ctx/pereg/person/info/category/find/companyby/${cid}`),
-            getCats: () => ajax(`ctx/pereg/person/info/category/findby/company`),
+            //getCats: () => ajax(`ctx/pereg/person/info/category/findby/company`),
+            getCats: () => ajax(`ctx/pereg/person/info/category/findby/companyv2`),
             getGroups: () => ajax(`ctx/pereg/person/groupitem/getAll`),
             getItemByCat: (cid) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/categoryId/${cid}`),
             getItemByGroup: (gid) => ajax(`ctx/pereg/person/groupitem/getAllItemDf/${gid}`),
+            getItemByGroups: (gids: Array<any>) => ajax(`ctx/pereg/person/groupitem/findby/listgroupId`, gids),
             getItemsById: (id: string) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/itemId/${id}`),
             //getItemsByIds: (ids: Array<any>) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/listItemId`, ids),
-            getItemsByIds: (ids: Array<any>) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/listItemIdTest`, ids)
+            getItemsByIds: (ids: Array<any>) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/listItemIdv2`, ids)
         };
 
         remove = (item, sender) => {
@@ -1026,29 +1024,38 @@ module nts.custombinding {
                             }
                         },
                         removeItem: (data: IItemClassification, byItemId?: boolean) => {
-                            let items: KnockoutObservableArray<IItemClassification> = opts.sortable.data;
+                            let items: Array<any> = _(ko.toJS(opts.sortable.data))
+                                .map((x: IItemClassification) => _.omit(x, "items"))
+                                .value();
 
                             if (!byItemId) { // remove item by classification id (virtual id)
-                                items.remove((x: IItemClassification) => x.layoutID == data.layoutID);
+                                items = _.filter(items, x => x.layoutID != data.layoutID);
                             } else if (data.listItemDf) { // remove item by item definition id
-                                items.remove((x: IItemClassification) => x.listItemDf && x.listItemDf[0].id == data.listItemDf[0].id);
+                                items = _.filter(items, (x: IItemClassification) => x.listItemDf && x.listItemDf[0].id == data.listItemDf[0].id);
                             }
 
-                            let source: Array<any> = ko.unwrap(items),
-                                maps: Array<number> = _(source).map((x: IItemClassification, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
-                                    .filter(x => x != -1)
-                                    .orderBy(x => x).value()
+                            let maps: Array<number> = _(items).map((x: IItemClassification, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
+                                .filter(x => x != -1)
+                                .orderBy(x => x).value()
 
                             // remove next line if two line is sibling
                             _.each(maps, (x, i) => {
                                 if (maps[i + 1] == x + 1) {
-                                    items.remove((m: IItemClassification) => {
+                                    _.remove(items, m => {
                                         let item: IItemClassification = ko.unwrap(items)[maps[i + 1]];
                                         return item && item.layoutItemType == IT_CLA_TYPE.SPER && item.layoutID == m.layoutID;
                                     });
                                 }
                             });
+
+                            opts.sortable.data(items);
+
                             return opts.sortable;
+                        },
+                        removeItems: (data: Array<IItemClassification>) => {
+                            if (data && data.length) {
+                                _.each(data, x => opts.sortable.removeItem(x, true));
+                            }
                         },
                         findExist: (ids: Array<string>) => {
                             if (!ids || !ids.length) {
@@ -1065,120 +1072,67 @@ module nts.custombinding {
                                 .value();
                         },
                         pushItem: (data: IItemClassification) => {
-                            let items: KnockoutObservableArray<IItemClassification> = opts.sortable.data;
+                            if (data.layoutItemType == IT_CLA_TYPE.SPER) {
+                                // add line to list sortable
+                                let last: any = _.last(ko.unwrap(opts.sortable.data));
 
-                            switch (data.layoutItemType) {
-                                case IT_CLA_TYPE.ITEM:
-                                    let item = _.find(ko.unwrap(items), (x: IItemClassification) => x.layoutItemType == IT_CLA_TYPE.ITEM && x.listItemDf[0].id == data.listItemDf[0].id);
-                                    if (!item) {
-                                        items.push(data);
-                                        return true;
-                                    } else {
-                                        return false;
-                                    }
-                                case IT_CLA_TYPE.LIST:
-                                    items.push(data);
-                                    return true;
-                                case IT_CLA_TYPE.SPER:
-                                    // add line to list sortable
-                                    let last: any = _.last(ko.unwrap(items));
-
-                                    if (last && last.layoutItemType != IT_CLA_TYPE.SPER) {
-                                        items.push(data);
-                                        return true;
-                                    } else {
-                                        return false;
-                                    }
+                                if (last && last.layoutItemType != IT_CLA_TYPE.SPER) {
+                                    opts.sortable.data.push(data);
+                                }
                             }
                         },
-                        pushItems: (defs: Array<IItemDefinition>, groupMode?: boolean) => {
+                        pushItems: (defs: Array<IItemDefinition>) => {
+                            let items1 = _(ko.toJS(opts.sortable.data))
+                                .map(x => _.omit(x, "items"))
+                                .value(),
+                                items2: Array<IItemClassification> = _(defs)
+                                    .filter(def => !def.itemParentCode)
+                                    .map(def => {
+                                        let dispOrder: number = ko.toJS(opts.sortable.data).length,
+                                            item: IItemClassification = {
+                                                layoutID: random(),
+                                                dispOrder: -1,
+                                                personInfoCategoryID: undefined,
+                                                layoutItemType: IT_CLA_TYPE.ITEM,
+                                                listItemDf: []
+                                            };
+
+                                        def.dispOrder = dispOrder + 1;
+                                        item.listItemDf = [def];
+                                        item.className = def.itemName;
+                                        item.personInfoCategoryID = def.perInfoCtgId;
+
+                                        // setitem
+                                        if (def.itemTypeState.itemType == ITEM_TYPE.SET) {
+                                            let childs = _(defs)
+                                                .filter(x => x.itemParentCode == def.itemCode)
+                                                .orderBy(x => x.dispOrder)
+                                                .value();
+
+                                            item.listItemDf = _.concat(item.listItemDf, childs);
+                                            _.each(childs, c => {
+                                                // setitem
+                                                if (c.itemTypeState.itemType == ITEM_TYPE.SET) {
+                                                    let newchilds = _(defs)
+                                                        .filter(x => x.itemParentCode == c.itemCode)
+                                                        .orderBy(x => x.dispOrder)
+                                                        .value();
+
+                                                    item.listItemDf = _.concat(item.listItemDf, newchilds);
+                                                }
+                                            });
+                                        }
+
+                                        return item;
+                                    }).value();
+
+                            opts.sortable.data(_.concat(items1, items2));
+
+                            scrollDown();
+                        },
+                        pushAllItems: (defs: Array<IItemDefinition>, groupMode?: boolean) => {
                             let self = this,
-                                services = self.services,
-                                removeItems = (data: Array<IItemClassification>) => {
-                                    if (data && data.length) {
-                                        _.each(data, x => opts.sortable.removeItem(x, true));
-                                    }
-                                },
-                                pushItems = (defs: Array<IItemDefinition>) => {
-                                    let dfds: Array<JQueryDeferred<any>> = [];
-
-                                    _(defs)
-                                        .filter(x => !x.isAbolition) // remove all item if it's abolition
-                                        .each(def => {
-                                            let dfd = $.Deferred<any>(),
-                                                item: IItemClassification = {
-                                                    layoutID: random(),
-                                                    dispOrder: -1,
-                                                    personInfoCategoryID: undefined,
-                                                    layoutItemType: IT_CLA_TYPE.ITEM,
-                                                    listItemDf: []
-                                                };
-
-                                            def.dispOrder = -1;
-                                            item.listItemDf = [def];
-                                            item.className = def.itemName;
-                                            item.personInfoCategoryID = def.perInfoCtgId;
-
-                                            // setitem
-                                            if (def.itemTypeState.itemType == ITEM_TYPE.SET) {
-                                                services.getItemsByIds(def.itemTypeState.items).done((defs: Array<IItemDefinition>) => {
-                                                    if (defs && defs.length) {
-                                                        _(defs)
-                                                            .filter(x => !x.isAbolition)
-                                                            .orderBy(x => x.dispOrder)
-                                                            .each((x, i) => {
-                                                                x.dispOrder = i + 1;
-                                                                item.listItemDf.push(x);
-                                                            });
-
-                                                        let setItem = _.filter(defs, x => x.itemTypeState.itemType == ITEM_TYPE.SET);
-                                                        if (setItem.length) {
-                                                            let _dfds: Array<JQueryDeferred<any>> = [];
-                                                            _.each(setItem, x => {
-                                                                let _dfd = $.Deferred<any>();
-                                                                services.getItemsByIds(x.itemTypeState.items).done((defs: Array<IItemDefinition>) => {
-                                                                    if (defs && defs.length) {
-                                                                        _(defs)
-                                                                            .filter(x => !x.isAbolition)
-                                                                            .orderBy(x => x.dispOrder)
-                                                                            .each((x, i) => {
-                                                                                x.dispOrder = i + 1;
-                                                                                item.listItemDf.push(x);
-                                                                            });
-                                                                        _dfd.resolve(item);
-                                                                    } else {
-                                                                        _dfd.reject(false);
-                                                                    }
-                                                                });
-                                                                _dfds.push(_dfd);
-                                                            });
-
-                                                            $.when.apply($, _dfds).then(function() {
-                                                                dfd.resolve(item);
-                                                            });
-                                                        } else {
-                                                            dfd.resolve(item);
-                                                        }
-                                                    } else {
-                                                        dfd.reject(false);
-                                                    }
-                                                });
-                                            } else {
-                                                dfd.resolve(item);
-                                            }
-
-                                            dfds.push(dfd);
-                                        });
-
-                                    $.when.apply($, dfds).then(function() {
-                                        _.each(arguments, x => {
-                                            if (x) {
-                                                opts.sortable.pushItem(x);
-                                            }
-                                        });
-                                        scrollDown();
-                                    });
-                                };
+                                services = self.services;
 
                             if (!defs || !defs.length) {
                                 return;
@@ -1199,7 +1153,7 @@ module nts.custombinding {
                                         messageParams: dups.map((x: IItemDefinition) => x.itemName)
                                     })
                                         .then(() => {
-                                            removeItems(dups.map((x: IItemDefinition) => {
+                                            opts.sortable.removeItems(dups.map((x: IItemDefinition) => {
                                                 return {
                                                     layoutID: random(),
                                                     dispOrder: -1,
@@ -1208,10 +1162,10 @@ module nts.custombinding {
                                                     listItemDf: [x]
                                                 };
                                             }));
-                                            pushItems(defs);
+                                            opts.sortable.pushItems(defs);
                                         });
                                 } else {
-                                    pushItems(defs);
+                                    opts.sortable.pushItems(defs);
                                 }
                             } else {
                                 let dupids = dups.map((x: IItemDefinition) => x.id),
@@ -1226,7 +1180,7 @@ module nts.custombinding {
                                     });
                                 }
 
-                                pushItems(nodups);
+                                opts.sortable.pushItems(nodups);
                             }
 
                             // remove all item selected in list box
@@ -1978,35 +1932,27 @@ module nts.custombinding {
                     services.getCats().done((data: any) => {
                         if (data && data.categoryList && data.categoryList.length) {
                             let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition && !x.categoryParentCode);
+                            if (cats && cats.length) {
+                                opts.combobox.options(cats);
 
-                            let dfds: Array<JQueryDeferred<any>> = [];
+                                // set first id
+                                let options = ko.toJS(opts.combobox.options);
 
-                            _.each(cats, cat => {
-                                let dfd = $.Deferred<any>();
-                                services.getItemByCat(cat.id).done((data: Array<IItemDefinition>) => {
-                                    let items = _.filter(_.flatten(data) as Array<IItemDefinition>, x => !x.isAbolition);
-                                    if (items.length) {
-                                        dfd.resolve(cat);
+                                if (options[0]) {
+                                    if (ko.toJS(opts.combobox.value) != options[0].id) {
+                                        opts.combobox.value(options[0].id);
                                     } else {
-                                        dfd.resolve(false);
+                                        opts.combobox.value.valueHasMutated();
                                     }
-                                }).fail(x => dfd.reject(false));
-
-                                dfds.push(dfd);
-                            });
-
-                            // push all category to combobox when done
-                            $.when.apply($, dfds).then(function() {
-                                let items: Array<IItemCategory> = _.filter(_.flatten(arguments), x => !!x);
-                                if (items && items.length) {
-                                    opts.combobox.options(items);
                                 } else {
-                                    // show message if hasn't any category
-                                    if (ko.toJS(opts.sortable.isEnabled)) {
-                                        alert({ messageId: 'Msg_288' }).then(opts.callback);
-                                    }
+                                    opts.combobox.value(undefined);
                                 }
-                            });
+                            } else {
+                                // show message if hasn't any category
+                                if (ko.toJS(opts.sortable.isEnabled)) {
+                                    alert({ messageId: 'Msg_288' }).then(opts.callback);
+                                }
+                            }
                         } else {
                             // show message if hasn't any category
                             if (ko.toJS(opts.sortable.isEnabled)) {
@@ -2022,18 +1968,21 @@ module nts.custombinding {
                         if (opts.radios.value() != CAT_OR_GROUP.GROUP) {
                             return;
                         }
+
                         if (data && data.length) {
                             // map Array<IItemGroup> to Array<IItemDefinition>
                             // 「個人情報項目定義」が取得できなかった「項目グループ」以外を、画面項目「グループ一覧」に表示する
                             // remove groups when it does not contains any item definition (by hql)
-                            opts.listbox.options(_.map(data, group => {
+                            let _opts = _.map(data, group => {
                                 return {
                                     id: group.personInfoItemGroupID,
                                     itemName: group.fieldGroupName,
                                     itemTypeState: undefined,
                                     dispOrder: group.dispOrder
                                 }
-                            }));
+                            });
+
+                            opts.listbox.options(_opts);
                         }
                     });
                 }
@@ -2269,7 +2218,7 @@ module nts.custombinding {
                             if (idefs && idefs.length) {
                                 services.getItemsByIds(idefs.map(x => x.id)).done((defs: Array<IItemDefinition>) => {
                                     if (defs && defs.length) {
-                                        opts.sortable.pushItems(defs, false);
+                                        opts.sortable.pushAllItems(defs, false);
                                         scrollDown();
                                     }
                                 });
@@ -2302,7 +2251,7 @@ module nts.custombinding {
                                 .value();
 
                             if (items && items.length) {
-                                opts.sortable.pushItems(items, true);
+                                opts.sortable.pushAllItems(items, true);
                                 scrollDown();
                             }
                         });
@@ -2335,7 +2284,6 @@ module nts.custombinding {
             ko.bindingHandlers['ntsListBox'].init(ctrls.listbox, () => opts.listbox, allBindingsAccessor, viewModel, bindingContext);
 
             ko.bindingHandlers['ntsSortable'].init(ctrls.sortable, () => opts.sortable, allBindingsAccessor, viewModel, bindingContext);
-
             // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
             return { controlsDescendantBindings: true };
         }
@@ -2357,7 +2305,6 @@ module nts.custombinding {
             ko.bindingHandlers['ntsListBox'].update(ctrls.listbox, () => opts.listbox, allBindingsAccessor, viewModel, bindingContext);
 
             ko.bindingHandlers['ntsSortable'].update(ctrls.sortable, () => opts.sortable, allBindingsAccessor, viewModel, bindingContext);
-
             // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
             return { controlsDescendantBindings: true };
         }
