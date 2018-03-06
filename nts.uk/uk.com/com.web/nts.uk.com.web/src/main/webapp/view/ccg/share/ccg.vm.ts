@@ -794,7 +794,7 @@ module nts.uk.com.view.ccg.share.ccg {
             private fixComponentWidth(): void {
                 let self = this;
                 // update tab 2 width
-                let totalWidth = 5;
+                let totalWidth = 20;
                 $('#ccg001-tab-content-2').children('div.pull-left.height-maximum').each((i, e) => totalWidth += $(e).outerWidth(true));
                 $('#ccg001-tab-content-2').outerWidth(totalWidth);
 
