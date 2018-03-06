@@ -1,7 +1,6 @@
 @CHARSET "UTF-8";
 
 .contentSchedule {
-	margin-top: 15px;
 	margin-left: 20px;
 }
 
@@ -10,7 +9,7 @@
 }
 
 .tableSchedule {
-	margin-top: 20px;
+	margin-top: 10px;
 }
 
 .tableSchedule td {
@@ -51,4 +50,7 @@ ul.countdown {
 
 ul.countdown li {
 	display: inline-block;
+}
+#functions-area-bottom {
+	height: 45px;
 }
