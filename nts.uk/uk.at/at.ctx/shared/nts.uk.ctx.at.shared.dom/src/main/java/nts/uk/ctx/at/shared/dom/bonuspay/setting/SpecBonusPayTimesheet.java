@@ -67,44 +67,6 @@ public class SpecBonusPayTimesheet {
 	}
 	
 	
-	/**
-	 * 開始と終了時刻を入れ替え作り直す
-	 * @return
-	 */
-	public SpecBonusPayTimesheet reCreateCalcRange(TimeSpanForCalc newRange){
-		return new SpecBonusPayTimesheet(
-									 this.timeSheetId,
-									 this.useAtr,
-									 this.timeItemId,
-									 new AttendanceClock(newRange.getStart().valueAsMinutes()),
-									 new AttendanceClock(newRange.getEnd().valueAsMinutes()),
-									 this.roundingTimeAtr,
-									 this.roundingAtr,
-									 this.dateCode,
-									 this.specBonusPayNumber);//new BonusPayTimesheet(timeSheetId,useAtr,timeItemId,startTime,endTime,roundingTimeAtr,roundingAtr);
-	}
-	
-	/**
-	 * 指定時間を内包しているか判定する
-	 * @param 指定時間
-	 * @return 内包している
-	 */
-	public boolean contains(TimeWithDayAttr baseTime) {
-		return this.startTime.lessThan(baseTime) && this.endTime.greaterThan(baseTime);
-	}
-	
-	/**
-	 * 終了時間と基準時間の早い方の時間を取得する
-	 * @param basePoint　基準時間
-	 * @return 時刻が早い方
-	 */
-	public TimeSpanForCalc decisionNewSpan(TimeSpanForCalc timeSpan,TimeWithDayAttr baseTime,boolean isDateBefore) {
-		if(isDateBefore) {
-			return new TimeSpanForCalc(timeSpan.getStart(),baseTime);
-		}
-		else {
-			return new TimeSpanForCalc(baseTime,timeSpan.getEnd());
-		}
-	}
+
 	
 }
