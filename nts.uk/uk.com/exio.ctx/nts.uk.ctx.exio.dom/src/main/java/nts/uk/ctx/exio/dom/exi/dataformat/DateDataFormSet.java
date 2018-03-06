@@ -5,8 +5,9 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.exio.dom.exi.condset.AcceptanceLineNumber;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 日付型データ形式設定
@@ -34,7 +35,7 @@ public class DateDataFormSet extends AggregateRoot {
 	/**
 	 * 固定値
 	 */
-	private int fixedValue;
+	private NotUseAtr fixedValue;
 
 	/**
 	 * 固定値の値
@@ -44,7 +45,7 @@ public class DateDataFormSet extends AggregateRoot {
 	/**
 	 * 形式選択
 	 */
-	private int formatSelection;
+	private DateOutputFormat formatSelection;
 
 	public DateDataFormSet(String cid, String conditionSetCd, int acceptItemNum, int fixedValue,
 			String valueOfFixedValue, int formatSelection) {
@@ -52,12 +53,12 @@ public class DateDataFormSet extends AggregateRoot {
 		this.cid = cid;
 		this.conditionSetCd = conditionSetCd;
 		this.acceptItemNum = acceptItemNum;
-		this.fixedValue = fixedValue;
+		this.fixedValue = EnumAdaptor.valueOf(fixedValue, NotUseAtr.class);
 		if (valueOfFixedValue == null) {
 			this.valueOfFixedValue = Optional.empty();
 		} else {
 			this.valueOfFixedValue = Optional.of(new DataSettingFixedValue(valueOfFixedValue));
 		}
-		this.formatSelection = formatSelection;
+		this.formatSelection = EnumAdaptor.valueOf(formatSelection, DateOutputFormat.class);
 	}
 }

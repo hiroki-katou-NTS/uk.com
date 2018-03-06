@@ -2,7 +2,6 @@ package nts.uk.ctx.exio.app.find.exi.execlog;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLog;
 
@@ -66,9 +65,12 @@ public class ExacErrorLogDto
     
     
     private Long version;
-    public static ExacErrorLogDto fromDomain(ExacErrorLog domain)
-    {
-        return new ExacErrorLogDto(domain.getLogSeqNumber(), domain.getCid(), domain.getExternalProcessId(), domain.getCsvErrorItemName(), domain.getCsvAcceptedValue(), domain.getErrorContents(), domain.getRecordNumber(), domain.getLogRegDateTime(), domain.getItemName(), domain.getErrorAtr(), domain.getVersion());
-    }
-    
+
+	public static ExacErrorLogDto fromDomain(ExacErrorLog domain) {
+		return new ExacErrorLogDto(domain.getLogSeqNumber(), domain.getCid(), domain.getExternalProcessId(),
+				domain.getCsvErrorItemName().get(), domain.getCsvAcceptedValue().get(), domain.getErrorContents().get(),
+				domain.getRecordNumber().v(), domain.getLogRegDateTime(), domain.getItemName().get(),
+				domain.getErrorAtr().value, domain.getVersion());
+	}
+
 }

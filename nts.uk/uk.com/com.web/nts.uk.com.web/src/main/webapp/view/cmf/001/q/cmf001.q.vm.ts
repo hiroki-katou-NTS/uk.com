@@ -65,6 +65,7 @@ module nts.uk.com.view.cmf001.q.viewmodel {
             setShared('CMF001-R', {
                 // add after test
                 imexProcessId: '001',
+                nameSetting: 'A社人事管理情報'
             }, true);
             
             nts.uk.ui.windows.sub.modal("/view/cmf/001/r/index.xhtml");

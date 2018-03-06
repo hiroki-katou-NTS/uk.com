@@ -29,13 +29,14 @@
 						</td>
 						<td>
 							<div data-bind="foreach: itemsFormat">
-								<span class="ntsControl"> <label class="ntsRadioBox">
-										<input type="radio" name="radioFormat"
-										data-bind="checkedValue: code, checked: $parent.selectedFormat, enable: $parent.isEditMode" />
-										<span class="box"></span><span class="label"
-										data-bind="text: name"></span>
-								</label>
-								</span>
+								<div
+									data-bind="ntsRadioButton: {
+										checked: $parent.selectedFormat, 
+										option: $data, 
+										optionValue: 'code', 
+										enable: $parent.isEditMode, 
+										optionText: 'name', 
+										group: 'radioFormat'}"></div>
 							</div>
 						</td>
 					</tr>
@@ -45,19 +46,20 @@
 						</td>
 						<td>
 							<div data-bind="foreach: itemsFixedValue">
-								<span class="ntsControl"> <label class="ntsRadioBox">
-										<input type="radio" name="radioFixedValue"
-										data-bind="checkedValue: code, checked: $parent.selectedFixedValue, enable: $parent.isEditMode" />
-										<span class="box"></span><span class="label"
-										data-bind="text: name"></span>
-								</label>
-								</span>
+								<div
+									data-bind="ntsRadioButton: {
+										checked: $parent.selectedFixedValue, 
+										option: $data, 
+										optionValue: 'code', 
+										enable: $parent.isEditMode, 
+										optionText: 'name', 
+										group: 'radioFixedValue'}"></div>
 							</div>
 						</td>
 						<td><input
 							data-bind="ntsNumberEditor: {
 									value: fixedValue,
-									enable: isEditMode,
+									enable: !(selectedFixedValue() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.USE || !isEditMode()),
 									option : {width : '200px'}}" />
 						</td>
 					</tr>

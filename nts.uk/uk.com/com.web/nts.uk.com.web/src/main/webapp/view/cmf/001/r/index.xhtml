@@ -36,7 +36,7 @@
 									<label>#{i18n.getText('CMF001_507')}</label>
 								</td>
 								<td width='300px'>
-									<label data-bind="text : imExExecuteResultLog.processStartDatetime"></label>
+									<label data-bind="text : datetime"></label>
 								</td>
 							</tr>
 						</tbody>
@@ -69,7 +69,7 @@
 								<td width='300px'>
 									<div style="float:right" >
 										<div style="float: left; width:50px">
-											<label style="float: right" data-bind="text : imExExecuteResultLog.executeForm"></label>
+											<label style="float: right" data-bind="text : imExExecuteResultLog.targetCount - imExExecuteResultLog.errorCount"></label>
 										</div>
 										<div style="float: left; width: 250px"><label>#{i18n.getText('CMF001_512')}</label></div>
 									</div>

@@ -62,7 +62,7 @@ public class JpaDateDataFormSetRepository extends JpaRepository implements DateD
     }
 
     private OiomtDateDataFormSet toEntity(DateDataFormSet domain) {
-        return new OiomtDateDataFormSet(domain.getVersion(), new OiomtDateDataFormSetPk(domain.getCid(), domain.getConditionSetCd(), domain.getAcceptItemNum()), domain.getFixedValue(), domain.getValueOfFixedValue().toString(), domain.getFormatSelection());
+        return new OiomtDateDataFormSet(domain.getVersion(), new OiomtDateDataFormSetPk(domain.getCid(), domain.getConditionSetCd(), domain.getAcceptItemNum()), domain.getFixedValue().value, domain.getValueOfFixedValue().toString(), domain.getFormatSelection().value);
     }
 
 }

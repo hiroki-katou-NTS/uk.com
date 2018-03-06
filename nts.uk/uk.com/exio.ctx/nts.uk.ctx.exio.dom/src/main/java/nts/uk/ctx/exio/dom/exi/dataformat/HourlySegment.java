@@ -2,12 +2,12 @@ package nts.uk.ctx.exio.dom.exi.dataformat;
 
 /**
  * 
- * @author DatLH 小数区分
+ * @author DatLH 時分区分
  *
  */
-public enum DecimalDivision {
-	DECIMAL(1, "小数あり"), 
-	NO_DECIMAL(0, "小数なし");
+public enum HourlySegment {
+	HOUR_MINUTE(0, "時分"), 
+	MINUTE(1, "分");
 
 	/** The value. */
 	public final int value;
@@ -15,7 +15,7 @@ public enum DecimalDivision {
 	/** The name id. */
 	public final String nameId;
 
-	private DecimalDivision(int value, String nameId) {
+	private HourlySegment(int value, String nameId) {
 		this.value = value;
 		this.nameId = nameId;
 	}

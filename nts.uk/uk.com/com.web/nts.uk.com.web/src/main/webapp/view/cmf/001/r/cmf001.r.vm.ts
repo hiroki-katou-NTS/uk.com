@@ -8,64 +8,69 @@ module nts.uk.com.view.cmf001.r.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    
     export class ScreenModel {
-        // current line
-        currentCode: KnockoutObservable<IImExErrorLog>;
+        // param from resources
+        CODE_BANGO: string = getText("CMF001_518");
+        CSV_FIELD_NAME: string = getText("CMF001_519");
+        FIELD_NAME: string = getText("CMF001_520");
+        VALUE: string = getText("CMF001_521");
+        MESSENGE: string = getText("CMF001_522");
+        
         // result log
         imExExecuteResultLog: IImExExecuteResultLogR;
-        // array list error log
+        datetime : string;
+        
+        // gridList
         imExErrorLog: KnockoutObservableArray<IImExErrorLog>;
+        currentCode: KnockoutObservable<IImExErrorLog>;
         columns: KnockoutObservableArray<NtsGridListColumn>;
         
-        // get share name from Q, S
+        //params from Q, S
         nameSetting: KnockoutObservable<string>;
         imexProcessID: any ;
         
+        // csv 
+        dataError: KnockoutObservableArray<IErrorContentCSV>;
+        itemDataError: KnockoutObservable<IErrorContentCSV>;
+        
         constructor() {
             let self = this;
-            // dump data
-            let imExExecuteResultLogDump = {
-                cid: 'cid',
-                conditionSetCd: 'conditionSetCd',
-                externalProcessId: '001',
-                executorId: 'executorId',
-                userId: 'userId',
-                processStartDatetime: '2018/02/28 14:00:00',
-                standardAtr: 100,
-                executeForm: 1000,
-                targetCount: 900,
-                errorCount: 11,
-                fileName: 'fileName',
-                systemType: 10,
-                resultStatus: 10,
-                processEndDatetime: '2018/02/28 14:00:00',
-                processAtr: 14
-            };
-            let imExErrorLogDump = {
-                logSeqNumber: 0,
-                cid: '1',
-                externalProcessId: '001',
-                csvErrorItemName: 'csvErrorItemName',
-                csvAcceptedValue: 'csvAcceptedValue',
-                errorContents: 'errorContents',
-                recordNumber: 20,
-                logRegDateTime: 'logRegDateTime',
-                itemName: 'itemName',
-                errorAtr: 8  
-            };
-            self.imExExecuteResultLog = imExExecuteResultLogDump;
-            self.imExErrorLog = ko.observableArray( [ imExErrorLogDump, imExErrorLogDump ]);
-            self.currentCode = ko.observable(imExErrorLogDump, imExErrorLogDump, imExErrorLogDump, imExErrorLogDump);
+            // param received from Q, S
+            let paramReceived = getShared('CMF001-R');
+            self.imexProcessID = paramReceived.imexProcessId;
+            self.nameSetting = ko.observable(paramReceived.nameSetting);
+            
+            // grid list constructor
+            self.imExErrorLog =  ko.observableArray([]);
+            let dataNull = {
+                logSeqNumber: null,
+                cid: '',
+                externalProcessId: '',
+                csvErrorItemName: '',
+                csvAcceptedValue: '',
+                errorContents: '',
+                recordNumber: null,
+                logRegDateTime: '',
+                itemName: '',
+                errorAtr: null,
+            }
+            self.currentCode = ko.observable(dataNull);
             self.columns = ko.observableArray([
-                { headerText: 'レコード番号', key: 'recordNumber', width: 100 },
-                { headerText: 'CSV項目名', key: 'csvErrorItemName', width: 150 }, 
-                { headerText: '項目名', key: 'itemName', width: 150 }, 
-                { headerText: '値', key: 'csvAcceptedValue', width: 150},
-                { headerText: 'エラーメッセージ', key: 'errorContents', width: 150} 
+                { headerText: self.CODE_BANGO, key: 'recordNumber', width: 100 },
+                { headerText: self.CSV_FIELD_NAME, key: 'csvErrorItemName', width: 150 }, 
+                { headerText: self.FIELD_NAME, key: 'itemName', width: 150 }, 
+                { headerText: self.VALUE, key: 'csvAcceptedValue', width: 150},
+                { headerText: self.MESSENGE, key: 'errorContents', width: 150} 
             ]); 
-            // param receive from Q, S
-            self.imexProcessID = '001';
-            self.nameSetting = ko.observable('A社人事管理情報');
+            
+            // csv template
+             self.itemDataError = ko.observable({
+                nameSetting: self.nameSetting(),
+                resultLog: null,
+                errorLog: null,
+             });
+            self.dataError = ko.observableArray([]);
         }
         
         //開始
@@ -73,31 +78,56 @@ module nts.uk.com.view.cmf001.r.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             nts.uk.ui.errors.clearAll();
-            service.getLogResults('001').done((itemList: Array<IImExExecuteResultLogR>) => {
-                if (itemList && itemList.length > 0) {
-                    // do something set to imExExecuteResultLog
-                    self.imExExecuteResultLog =  itemList[0];
-                }
+            
+            
+            // ドメインモデル「外部受入実行結果ログ」を取得する
+            service.getLogResults(self.imexProcessID).done((itemList: Array<IImExExecuteResultLogR>) => {
+                 
+                    if (itemList && itemList.length > 0) {
+                        self.imExExecuteResultLog =  itemList[0];
+                        self.datetime = nts.uk.time.formatDate(new Date(self.imExExecuteResultLog.processStartDatetime), "yyyy-MM-dd hh:mm:ss");
+                        self.itemDataError().resultLog = itemList[0];
+                    }
+                
+                    // ドメインモデル「外部受入エラーログ」を取得する
+               service.getErrorLogs(self.imexProcessID).done((itemListError: Array<IImExErrorLog>) => {
+                    if (itemListError && itemListError.length > 0) {
+                        itemListError.forEach(x => self.imExErrorLog.push(x));
+                        self.currentCode = ko.observable(itemListError[0]);
+                        self.itemDataError().errorLog = self.imExErrorLog();
+                    }
+                });
+                // set to list csv data
+                self.dataError.push(self.itemDataError());
                 dfd.resolve();
             });
             return dfd.promise();
         }
+        
         // エラー出力
         errorExport(){
+            let self = this;
             confirm({ messageId: "Msg_912" }).ifYes(() => {
-                nts.uk.request.exportFile('exio/exi/execlog/generateCSV', { value: 'abc' }).done(() => {
-                    console.log('DONE!!');
-                });
+                    service.exportDatatoCsv(self.dataError()).done(function() {
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    });
                 }).ifNo(() => {
                     return;
                 })
         }
+        
         //　閉じる
         close(){
              nts.uk.ui.windows.close();
         }
      }
     
+     interface IErrorContentCSV {
+         nameSetting: string;
+         resultLog: IImExExecuteResultLogR;
+         errorLog: IImExErrorLog[];
+     }
      interface IImExErrorLog{
         /**
         * ログ連番
