@@ -244,13 +244,17 @@ module nts.uk.at.view.kal001.a.model {
             id: string;
             code: string;
             name?: string;
-            workplaceName?: string;
+            workplaceCode?: string;
+            workplaceId?: string;
+            workplaceName?: string;            
             isAlreadySetting?: boolean;
         }
         export class UnitModelDto implements UnitModel{
             id: string;
             code: string;
             name: string;
+            workplaceCode: string;
+            workplaceId: string;
             workplaceName: string;
             isAlreadySetting: boolean;
             
@@ -258,6 +262,8 @@ module nts.uk.at.view.kal001.a.model {
                 this.id = employee.employeeId;
                 this.code = employee.employeeCode;
                 this.name = employee.employeeName;
+                this.workplaceId = employee.workplaceId;
+                this.workplaceCode = employee.workplaceCode;
                 this.workplaceName = employee.workplaceName;    
             }            
         }    
@@ -277,11 +283,10 @@ module nts.uk.at.view.kal001.a.model {
     // search component
     export interface EmployeeSearchDto {
         employeeId: string;
-
         employeeCode: string;
-
         employeeName: string;
-
+        workplaceCode: string;
+        workplaceId: string;
         workplaceName: string;
     }
     export interface GroupOption {

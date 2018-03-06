@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.daily.attendanceleavinggate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,19 +17,19 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 	@Override
 	public Optional<PCLogOnInfoOfDaily> find(String employeeId, GeneralDate baseDate) {
 		// TODO Auto-generated method stub
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
 	public List<PCLogOnInfoOfDaily> find(String employeeId, List<GeneralDate> baseDate) {
 		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<>();
 	}
 
 	@Override
 	public List<PCLogOnInfoOfDaily> find(String employeeId) {
 		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<>();
 	}
 
 	@Override

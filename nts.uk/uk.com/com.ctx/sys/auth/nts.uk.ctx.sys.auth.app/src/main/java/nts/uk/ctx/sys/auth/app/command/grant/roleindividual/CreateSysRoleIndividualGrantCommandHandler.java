@@ -54,14 +54,13 @@ public class CreateSysRoleIndividualGrantCommandHandler extends CommandHandlerWi
 		
 		// ドメインモデル「ロール個人別付与」を新規登録する | Register a domain model "Role individual grant"
 		RoleIndividualGrant domain = command.toDomain(sysAdminRole.get(0).getRoleId());
-        
+		roleIndividualGrantRepo.add(domain);
 		if (command.isSetRoleAdminFlag() == true) {
 			val isExistCompanyRole = roleIndividualGrantRepo.findByUserCompanyRoleType(command.getUserID(), command.getDecisionCompanyID(), RoleType.COMPANY_MANAGER.value);
-			if (!isExistCompanyRole.isPresent()) {
 				List<Role> companyManagerRole = roleRepository.findByType(command.getDecisionCompanyID(), RoleType.COMPANY_MANAGER.value);
 				if (companyManagerRole.isEmpty())
 					throw new RuntimeException("No default company manager role exist");
-				
+				if (!isExistCompanyRole.isPresent()) {
 				RoleIndividualGrant roleIndiGrantSys = RoleIndividualGrant.createFromJavaType(
 						command.getUserID(),
 						companyManagerRole.get(0).getRoleId(),
@@ -73,7 +72,6 @@ public class CreateSysRoleIndividualGrantCommandHandler extends CommandHandlerWi
 				roleIndividualGrantRepo.add(roleIndiGrantSys);
 			}
 		}
-		roleIndividualGrantRepo.add(domain);
 		
 		Optional<User> user = userRepo.getByUserID(command.getUserID());
 		if (user.get().isDefaultUser() == true) {
