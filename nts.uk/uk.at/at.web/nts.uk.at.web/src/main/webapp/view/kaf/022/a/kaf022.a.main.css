@@ -1,3 +1,8 @@
+/* Override Base */
+.ui-widget.ui-tabs.vertical > .ui-tabs-panel {
+    overflow: visible !important;
+    width: auto;
+}
 td div {
 	position: relative;
 	vertical-align: middle;
@@ -186,3 +191,7 @@ textarea {
    resize: none;
    height: 85px;
 }
+#i4 .ntsRadioBox span.label {
+	padding-right: 51px;
+}
+

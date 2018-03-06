@@ -28,8 +28,19 @@ module nts.uk.at.view.ksm011.e {
                 dfd = $.Deferred();
                 
                 service.buildTreeShiftCondition().done(function(itemsTree) {
-                    self.itemsTree(itemsTree);
-                    dfd.resolve(itemsTree);
+                    let data = [];
+                    _.forEach(itemsTree, function(item) {
+                        item.code = item.code + "p";
+                        
+                        _.forEach(item.childs, function(child) {
+                            child.code = child.code + "c";
+                        });
+                        
+                        data.push(item);
+                    });
+                    
+                    self.itemsTree(data);
+                    dfd.resolve(data);
                 });
 
                 dfd.resolve();
