@@ -128,19 +128,18 @@ public class PerInfoCategoryFinder {
 		List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class, internationalization);
 		return new PerInfoCtgDataEnumDto(historyTypes, categoryList);
 	};
-	
+
 	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompanyv2() {
 		String companyId = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
 
 		List<PerInfoCtgShowDto> categoryList = perInfoCtgRepositoty.getAllPerInfoCategory(companyId, contractCode)
 				.stream().map(p -> {
-
 					List<PerInfoItemDefDto> lstItemDfInCat = this.perInfoItemDfFinder
-							.getAllPerInfoItemDefByCtgIdForLayout(p.getPersonInfoCategoryId());
+							.getAllPerInfoItemDefByCtgIdForLayout(p.getPersonInfoCategoryId()).stream()
+							.filter(m -> m.getIsAbolition() == 0).collect(Collectors.toList());
 
-					if ((pernfoItemDefRep.countPerInfoItemDefInCategory(p.getPersonInfoCategoryId(), companyId) > 0)
-							&& (!lstItemDfInCat.isEmpty())) {
+					if (!lstItemDfInCat.isEmpty()) {
 						return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
 								p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v());
 					}
@@ -150,7 +149,6 @@ public class PerInfoCategoryFinder {
 		List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class, internationalization);
 		return new PerInfoCtgDataEnumDto(historyTypes, categoryList);
 	};
-	
 
 	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompanyRoot() {
 		List<PerInfoCtgShowDto> categoryList = perInfoCtgRepositoty
