@@ -19,18 +19,22 @@
 		<ui:define name="content">
 			<div class="contents-area" style="width:750px; height:550px;">
 			 	<div class="settingzyouho">
+			 	<!-- R1_1 -->
 					<div><label class="cmf001_505">#{i18n.getText('CMF001_505')}</label></div>
 					<table class="setting-zyouhou">
 						<tbody>
 							<tr>
+							<!-- R1_2 -->
 								<td class="bg-green" width='150px'>
 									<label>#{i18n.getText('CMF001_506')}</label>
 								</td>
+							<!-- R1_3,4 -->
 								<td width='300px'>
 									<label data-bind="text : imExExecuteResultLog.externalProcessId"></label>
 									<label data-bind="text : nameSetting()"></label>
 								</td>
 							</tr>
+							<!-- R1_5,6 -->
 							<tr>
 								<td class="bg-green" width='150px'>
 									<label>#{i18n.getText('CMF001_507')}</label>
@@ -44,18 +48,22 @@
 				</div>
 				
 				<div class="kekkanaiyou">
+					<!-- R2_1 -->
 					<div><label class="cmf001_508">#{i18n.getText('CMF001_508')}</label></div>
 					<table class="kekka-naiyou">
 						<tbody>
 							<tr>
+							<!-- R2_2 -->
 								<td class="bg-green" width='150px'>
 									<label>#{i18n.getText('CMF001_509')}</label>
 								</td>
+								<!-- R2_3 -->
 								<td width='300px'>
 									
 										<div style="float:right" >
 											<div style="float: left; width:50px">
 												<label style="float: right" data-bind="text : imExExecuteResultLog.targetCount"></label></div>
+											<!-- R2_4 -->
 											<div style="float: left; width: 250px">
 												<label>#{i18n.getText('CMF001_510')}</label>
 											</div>
@@ -63,9 +71,11 @@
 								</td>
 							</tr>
 							<tr>
+								<!-- R2_5 -->
 								<td class="bg-green" width='150px'>
 									<label>#{i18n.getText('CMF001_511')}</label>
 								</td>
+								<!-- R2_6,7 -->
 								<td width='300px'>
 									<div style="float:right" >
 										<div style="float: left; width:50px">
@@ -77,9 +87,11 @@
 								</td>
 							</tr>
 							<tr>
+								<!-- R2_8 -->
 								<td class="bg-green" width='150px'>
 									<label>#{i18n.getText('CMF001_513')}</label>
 								</td>
+								<!-- R2_9,10 -->
 								<td width='300px'>
 									<div style="float:right" >
 									<div  style="float: left; width:50px"><label style="float: right" data-bind="text : imExExecuteResultLog.errorCount"></label></div>
@@ -90,6 +102,7 @@
 						</tbody>
 					</table>
 				</div>
+				<!-- R3 -->
 				<div class="error-ichiran">
 					<div>
 						<label class="cmf001_515">#{i18n.getText('CMF001_515')}</label>
@@ -106,6 +119,7 @@
  						}"></table> 
 					</div>
 				</div>
+				<!-- R4 -->
 				<div class="label-4">
 					<div><label>#{i18n.getText('CMF001_523')}</label></div>
 					<div><label>#{i18n.getText('CMF001_524')}</label></div>

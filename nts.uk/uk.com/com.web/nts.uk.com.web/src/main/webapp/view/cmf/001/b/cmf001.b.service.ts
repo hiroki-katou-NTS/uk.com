@@ -3,28 +3,39 @@ module nts.uk.com.view.cmf001.b.service {
     import format = nts.uk.text.format;
     
     var paths = {
-        getAllData: "at/function/alarm/checkcondition/findAll/{0}",
-        getOneData: "at/function/alarm/checkcondition/findOne/{0}/{1}",
-        registerData: "at/function/alarm/checkcondition/register",
-        deleteData: "at/function/alarm/checkcondition/delete"
+        getSystemType: "exio/exi/condset/getSysType",
+        getAllStdData: "exio/exi/condset/getStdAcceptCondSetBySysType/{0}",
+        getOneStdData: "exio/exi/condset/getOneStdCondSet/{0}/{1}",
+        registerStdData: "exio/exi/condset/registerStd",
+        deleteStdData: "exio/exi/condset/deleteStd", 
+        getAllStdItemData: "exio/exi/item/getAllStdAcceptItem/{0}/{1}"
     }
 
-    export function getAllData(category: number): JQueryPromise<any> {
-        let _path = format(paths.getAllData, category);
-        return ajax("at", _path);
+    export function getSysTypes(): JQueryPromise<any> {
+        return ajax("com", paths.getSystemType);
+    }
+    
+    export function getAllStdData(category: number): JQueryPromise<any> {
+        let _path = format(paths.getAllStdData, category);
+        return ajax("com", _path);
     };
     
-    export function getOneData(category: number, code: string): JQueryPromise<any> {
-        let _path = format(paths.getOneData, category, code);
-        return ajax("at", _path);
+    export function getOneStdData(sysType: number, code: string): JQueryPromise<any> {
+        let _path = format(paths.getOneStdData, sysType, code);
+        return ajax("com", _path);
     };
 
-    export function registerData(data: any): JQueryPromise<any> {
-        return ajax("at", paths.registerData, data);
+    export function registerStdData(data: any): JQueryPromise<any> {
+        return ajax("com", paths.registerStdData, data);
     };
 
-    export function deleteData(data: any): JQueryPromise<any> {
-        return ajax("at", paths.deleteData, data);
+    export function deleteStdData(data: any): JQueryPromise<any> {
+        return ajax("com", paths.deleteStdData, data);
     }
+    
+    export function getAllStdItemData(sysType: number, code: string): JQueryPromise<any> {
+        let _path = format(paths.getAllStdItemData, sysType, code);
+        return ajax("com", _path);
+    };
     
 }

@@ -149,33 +149,37 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         
         //open screen G, H, I, J
         dataTypeSetting(data: model.StandardAcceptItem) {
-            let self = this, url = "", params = null;
+            let self = this, url = "", formatSetting = null, paramName = "";
             switch(data.itemType()) {
                 case model.ITEM_TYPE.NUMERIC: 
                     url = "/view/cmf/001/g/index.xhtml";
+                    paramName = "CMF001gParams";
                     if (data.numberFormatSetting)
-                        params = data.numberFormatSetting();
+                        formatSetting = data.numberFormatSetting();
                     break;
                 case model.ITEM_TYPE.CHARACTER: 
                     url = "/view/cmf/001/h/index.xhtml";
+                    paramName = "CMF001hParams";
                     if (data.charFormatSetting)
-                        params = data.charFormatSetting();
+                        formatSetting = data.charFormatSetting();
                     break;
                 case model.ITEM_TYPE.DATE: 
                     url = "/view/cmf/001/i/index.xhtml";
+                    paramName = "CMF001iParams";
                     if (data.dateFormatSetting)
-                        params = data.dateFormatSetting();
+                        formatSetting = data.dateFormatSetting();
                     break;
                 case model.ITEM_TYPE.INS_TIME: 
                     url = "/view/cmf/001/j/index.xhtml";
+                    paramName = "CMF001jParams";
                     if (data.instTimeFormatSetting)
-                        params = data.instTimeFormatSetting();
+                        formatSetting = data.instTimeFormatSetting();
                     break;
             }
-            setShared('CMF001mParams', params, true);
+            setShared(paramName, {formatSetting: formatSetting, inputMode: true, lineNumber: data.acceptItemNumber()}, true);
             
             modal(url).onClosed(function() {
-                var output = getShared('CMF001mOutput');
+                var output = getShared('CMF001FormatOutput');
                 if (output) {
                     
                 }
@@ -187,7 +191,8 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             if (data.screenConditionSetting) condition = data.screenConditionSetting();
             setShared('CMF001lParams', {
                 dataType: data.itemType(),
-                condition: condition
+                condition: condition,
+                inputMode: true
             }, true);
             
             modal("/view/cmf/001/l/index.xhtml").onClosed(function() {
@@ -221,6 +226,14 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 if (output) {
                     
                 }
+            });
+        }
+        
+        openCMF001b() {
+            let self = this;
+            nts.uk.request.jump("/view/cmf/001/b/index.xhtml", { 
+                conditionCode: self.selectedStandardImportSetting().conditionSettingCode(),
+                sysType: self.systemType.code 
             });
         }
     }
