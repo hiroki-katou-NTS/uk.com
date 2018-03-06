@@ -49,6 +49,10 @@ module nts.uk.ui.jqueryExtentions {
                 if(ePos.top < 0 && ePos.left < 0){
                     return;
                 }
+                currentShowContainer.removeClass();
+                container.removeClass();
+                currentShowContainer.addClass("datepicker-container datepicker-dropdown small-style"); 
+                container.addClass("ntsControl nts-datepicker-wrapper");
                 let containerHeight = container.outerHeight(true); 
                 let containerWidth = container.outerWidth(true);
                 let showContainerHeight = currentShowContainer.outerHeight(true);
@@ -61,10 +65,6 @@ module nts.uk.ui.jqueryExtentions {
                 let spaceTop = ePos.top;// - headerHeight;
                 let spaceRight = documentWidth - ePos.left - containerWidth;
                 let spaceLeft = ePos.left;
-                currentShowContainer.removeClass();
-                container.removeClass();
-                currentShowContainer.addClass("datepicker-container datepicker-dropdown small-style"); 
-                container.addClass("ntsControl nts-datepicker-wrapper");
                 // case 1: show below
                 if(showContainerHeight + 10 <= spaceBottom){ 
                     //currentShowContainer.css({top: containerHeight + 5, left: 0});

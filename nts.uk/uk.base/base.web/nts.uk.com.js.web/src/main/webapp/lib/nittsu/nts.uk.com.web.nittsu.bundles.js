@@ -22181,6 +22181,10 @@ var nts;
                             if (ePos.top < 0 && ePos.left < 0) {
                                 return;
                             }
+                            currentShowContainer.removeClass();
+                            container.removeClass();
+                            currentShowContainer.addClass("datepicker-container datepicker-dropdown small-style");
+                            container.addClass("ntsControl nts-datepicker-wrapper");
                             var containerHeight = container.outerHeight(true);
                             var containerWidth = container.outerWidth(true);
                             var showContainerHeight = currentShowContainer.outerHeight(true);
@@ -22193,10 +22197,6 @@ var nts;
                             var spaceTop = ePos.top; // - headerHeight;
                             var spaceRight = documentWidth - ePos.left - containerWidth;
                             var spaceLeft = ePos.left;
-                            currentShowContainer.removeClass();
-                            container.removeClass();
-                            currentShowContainer.addClass("datepicker-container datepicker-dropdown small-style");
-                            container.addClass("ntsControl nts-datepicker-wrapper");
                             // case 1: show below
                             if (showContainerHeight + 10 <= spaceBottom) {
                                 //currentShowContainer.css({top: containerHeight + 5, left: 0});
