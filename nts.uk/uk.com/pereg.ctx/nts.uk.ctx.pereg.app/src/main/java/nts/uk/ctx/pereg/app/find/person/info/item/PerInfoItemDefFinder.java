@@ -249,6 +249,8 @@ public class PerInfoItemDefFinder {
 
 		List<PersonInfoItemDefinition> itemDfChild = new ArrayList<>();
 		List<String> idsChild = new ArrayList<>();
+		List<String> idsChildInChild = new ArrayList<>();
+		List<PersonInfoItemDefinition> itemDfChildinChild = new ArrayList<>();
 
 		List<PerInfoItemDefDto> result = itemDefinition.stream().map(i -> {
 			int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(i.getPerInfoCategoryId(), i.getPerInfoItemDefId());
@@ -268,11 +270,33 @@ public class PerInfoItemDefFinder {
 			List<PerInfoItemDefDto> listItemDefDtoChild = itemDfChild.stream().map(i -> {
 				int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(i.getPerInfoCategoryId(),
 						i.getPerInfoItemDefId());
-				return mappingFromDomaintoDto(i, dispOrder);
+				PerInfoItemDefDto perItemDefdtochild =  mappingFromDomaintoDto(i, dispOrder);
+				
+				if (perItemDefdtochild.getItemTypeState().getItemType() == 1
+						&& (((SetItemDto) perItemDefdtochild.getItemTypeState()).getItems() != null)) {
+					idsChildInChild.addAll(((SetItemDto) perItemDefdtochild.getItemTypeState()).getItems());
+				}
+				
+				return perItemDefdtochild;
 			}).collect(Collectors.toList());
 
 			result.addAll(listItemDefDtoChild);
 		}
+		
+		if(!idsChildInChild.isEmpty()) {
+			itemDfChildinChild  = this.pernfoItemDefRep.getPerInfoItemDefByListIdv2(idsChildInChild,
+					AppContexts.user().contractCode());
+			
+			List<PerInfoItemDefDto> listItemDefDtoChildInChild = itemDfChildinChild.stream().map(i -> {
+				int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(i.getPerInfoCategoryId(),
+						i.getPerInfoItemDefId());
+				return  mappingFromDomaintoDto(i, dispOrder);
+				
+			}).collect(Collectors.toList());
+			
+			result.addAll(listItemDefDtoChildInChild);
+		}
+		
 		return result;
 
 	}
