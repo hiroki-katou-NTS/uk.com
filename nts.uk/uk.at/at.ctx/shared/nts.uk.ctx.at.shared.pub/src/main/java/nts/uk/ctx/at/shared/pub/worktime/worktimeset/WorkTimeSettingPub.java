@@ -28,5 +28,12 @@ public interface WorkTimeSettingPub {
 	 */
 	//就業時間帯名称を取得する
 	String getWorkTimeSettingName(String companyId, String worktimeCode);
+	/**
+	 * check is exist
+	 * @param companyId
+	 * @param worktimeCode
+	 * @return true if is exist
+	 */
+	boolean isExist(String companyId, String worktimeCode);
 	
 }

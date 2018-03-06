@@ -5,7 +5,6 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 @Data
 @AllArgsConstructor
@@ -18,10 +17,10 @@ public class DailyAttendanceTimeCaculationImport {
 		private Map<Integer,TimeWithCalculationImport> holidayWorkTime;
 		
 		//加給Ｎｏ,加給時間
-		private Map<Integer,TimeWithCalculationImport> bonusPayTime;
+		private Map<Integer,Integer> bonusPayTime;
 
 		//特定日加給No,特定日加給時間
-		private Map<Integer,TimeWithCalculationImport> specBonusPayTime;
+		private Map<Integer,Integer> specBonusPayTime;
 		
 		//フレックス時間
 		private TimeWithCalculationImport flexTime;

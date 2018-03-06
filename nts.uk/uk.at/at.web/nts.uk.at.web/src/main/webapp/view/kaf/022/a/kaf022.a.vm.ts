@@ -1640,7 +1640,7 @@ module nts.uk.at.view.kmf022 {
             }
             loadData(): void {
                 let self = this;
-                nts.uk.ui.block.invisible();
+                nts.uk.ui.block.grayout();
                 service.findAllData().done((data: any)=> {
                     self.initDataA4(data);
                     self.initDataA5(data);
@@ -1665,6 +1665,7 @@ module nts.uk.at.view.kmf022 {
                     self.initDataK(data);
                 }).always(()=>{
                     nts.uk.ui.block.clear();
+                    $("#a4_6").focus();
                 });
                     
             }
