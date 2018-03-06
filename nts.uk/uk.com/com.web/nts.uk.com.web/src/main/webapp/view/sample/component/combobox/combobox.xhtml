@@ -28,6 +28,7 @@
 							<span data-bind="ntsCheckBox: { checked: isEnable }">Enable</span>
 							<span data-bind="ntsCheckBox: { checked: isEditable }">Editable</span>
 							<span data-bind="ntsCheckBox: { checked: isRequired }">isRequired</span>
+							<span data-bind="ntsCheckBox: { checked: selectFirstIfNull }">selectFirstIfNull</span>
 						</div>
 						<div class="control-group valign-center">
 							<div id="combo-box" tabindex="1" data-bind="ntsComboBox: {
@@ -40,6 +41,7 @@
 												editable: isEditable,
 												enable: isEnable,
 												required: isRequired,
+												selectFirstIfNull: selectFirstIfNull,
 												columns: [
 														{ prop: 'code', length: 4 },
 														{ prop: 'name', length: 10 },
@@ -56,7 +58,7 @@
 							<div id="combo-box2" data-bind="ntsComboBox: {options: itemList,
  												optionsValue: 'code',
  												visibleItemsCount: 5,
- 												value: selectedCode,
+ 												value: selectedCode2,
  												optionsText: 'name',
  												editable: isEditable,
  												enable: isEnable,
@@ -71,7 +73,7 @@
 							<div class="tabs">
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
-									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+									<li><a href="#tabs-viewmodel">API</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
@@ -89,6 +91,7 @@
 	editable: isEditable,
 	enable: isEnable,
 	required: isRequired,
+	selectFirstIfNull: selectFirstIfNull,
 	columns: [
 		{ prop: 'code', length: 4 },
 		{ prop: 'name', length: 10 },
@@ -206,6 +209,14 @@ class ItemModel {
 													<b>Type:</b> boolean<br/>
 													<b>Default:</b> false<br/>
 													Set required or not.
+												</td>
+											</tr>											
+											<tr>
+												<td>selectFirstIfNull<i>(optional)</i></td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													<b>Default:</b> true<br/>
+													If true (default), first item will be selected when value is null or undefined or "".
 												</td>
 											</tr>
 											<tr>
