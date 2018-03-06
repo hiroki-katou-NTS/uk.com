@@ -6,8 +6,7 @@ package nts.uk.ctx.sys.portal.dom.mypage.setting;
 
 import java.util.List;
 
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.portal.dom.enums.PermissionDivision;
 import nts.uk.ctx.sys.portal.dom.enums.UseDivision;
@@ -15,8 +14,7 @@ import nts.uk.ctx.sys.portal.dom.enums.UseDivision;
 /**
  * The Class MyPageSetting.
  */
-@Value
-@EqualsAndHashCode(callSuper = false)
+@Getter
 public class MyPageSetting extends AggregateRoot {
 
 	/** The company id. */
@@ -87,7 +85,27 @@ public class MyPageSetting extends AggregateRoot {
 				PermissionDivision.valueOf(externalUrlPermission), topPagePartUseSetting);
 	}
 
+	public boolean useMyPage() {
+		return this.useMyPage == UseDivision.Use;
+	}
 	
+	public boolean useStandarWidget() {
+		return this.useStandarWidget == UseDivision.Use;
+	}
 	
+	public boolean useOptionalWidget() {
+		return this.useOptionalWidget == UseDivision.Use;
+	}
 	
+	public boolean useDashboard() {
+		return this.useDashboard == UseDivision.Use;
+	}
+	
+	public boolean useFlowMenu() {
+		return this.useFlowMenu == UseDivision.Use;
+	}
+	
+	public boolean isAllowExternalUrlPermission() {
+		return this.externalUrlPermission == PermissionDivision.Allow;
+	}
 }

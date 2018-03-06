@@ -20,6 +20,6 @@ public class TimeLeavingOfDailyPerformanceCommand extends DailyWorkCommonCommand
 
 	@Override
 	public void updateData(Object item) {
-		this.data = item == null ? Optional.empty() :  (Optional<TimeLeavingOfDailyPerformance>) item;
+		this.data = item == null ? Optional.empty() : Optional.of((TimeLeavingOfDailyPerformance) item);
 	}
 }

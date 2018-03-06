@@ -91,7 +91,7 @@ module nts.uk.at.view.kmf002.c {
             _self.isEmployeeOfWorkplace = ko.observable(true);
             _self.isEmployeeWorkplaceFollow = ko.observable(true);
             _self.isMutipleCheck = ko.observable(true);
-            _self.isSelectAllEmployee = ko.observable(false);
+            _self.isSelectAllEmployee = ko.observable(true);
             _self.baseDate = ko.observable(moment());
             _self.periodStartDate = ko.observable(moment());
             _self.periodEndDate = ko.observable(moment());
@@ -106,7 +106,7 @@ module nts.uk.at.view.kmf002.c {
             _self.retirement = ko.observable(false); // 退職区分
             _self.systemType = ko.observable(2);
             _self.showClosure = ko.observable(false); // 就業締め日利用
-            _self.showBaseDate = ko.observable(false); // 基準日利用
+            _self.showBaseDate = ko.observable(true); // 基準日利用
             _self.showAllClosure = ko.observable(false); // 全締め表示
             _self.showPeriod = ko.observable(false); // 対象期間利用
             _self.periodFormatYM = ko.observable(true); // 対象期間精度

@@ -17,10 +17,10 @@ public class DailyAttendanceTimeCaculationImport {
 		private Map<Integer,TimeWithCalculationImport> holidayWorkTime;
 		
 		//加給Ｎｏ,加給時間
-		private Map<Integer,TimeWithCalculationImport> bonusPayTime;
+		private Map<Integer,Integer> bonusPayTime;
 
 		//特定日加給No,特定日加給時間
-		private Map<Integer,TimeWithCalculationImport> specBonusPayTime;
+		private Map<Integer,Integer> specBonusPayTime;
 		
 		//フレックス時間
 		private TimeWithCalculationImport flexTime;

@@ -232,11 +232,47 @@ public class PerInfoItemDefFinder {
 	public List<PerInfoItemDefDto> getPerInfoItemDefByListIdForLayout(List<String> listItemDefId) {
 		List<PersonInfoItemDefinition> itemDefinition = this.pernfoItemDefRep.getPerInfoItemDefByListIdv2(listItemDefId,
 				AppContexts.user().contractCode());
+
 		return itemDefinition.stream().map(i -> {
 			int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(i.getPerInfoCategoryId(), i.getPerInfoItemDefId());
 			return mappingFromDomaintoDto(i, dispOrder);
+
 		}).collect(Collectors.toList());
+
 	};
+
+	// test bug hieu nang.
+	public List<PerInfoItemDefDto> getPerInfoItemDefByIds(List<String> listItemDefId) {
+
+		List<PersonInfoItemDefinition> itemDefinition = this.pernfoItemDefRep.getPerInfoItemDefByListIdv2(listItemDefId,
+				AppContexts.user().contractCode());
+
+		List<PersonInfoItemDefinition> itemDfChild = new ArrayList<>();
+		List<String> idsChild = new ArrayList<>();
+
+		List<PerInfoItemDefDto> result = itemDefinition.stream().map(i -> {
+			int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(i.getPerInfoCategoryId(), i.getPerInfoItemDefId());
+			PerInfoItemDefDto perItemDefdto = mappingFromDomaintoDto(i, dispOrder);
+
+			if (perItemDefdto.getItemTypeState().getItemType() == 1
+					&& (((SetItemDto) perItemDefdto.getItemTypeState()).getItems() != null)) {
+				idsChild.addAll(((SetItemDto) perItemDefdto.getItemTypeState()).getItems());
+			}
+			return perItemDefdto;
+		}).collect(Collectors.toList());
+
+		itemDfChild = this.pernfoItemDefRep.getPerInfoItemDefByListIdv2(idsChild, AppContexts.user().contractCode());
+
+		List<PerInfoItemDefDto> listItemDefDtoChild = itemDfChild.stream().map(i -> {
+			int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(i.getPerInfoCategoryId(), i.getPerInfoItemDefId());
+			return mappingFromDomaintoDto(i, dispOrder);
+		}).collect(Collectors.toList());
+
+		result.addAll(listItemDefDtoChild);
+
+		return result;
+
+	}
 
 	// return list id of item definition if it's require;
 	public List<String> getRequiredIds() {
@@ -374,17 +410,17 @@ public class PerInfoItemDefFinder {
 			itemNameRequired.setRowId(item);
 			itemNameRequired.setColumnKey("itemName");
 			itemNameRequired.setState(toList("ntsgrid-alarm"));
-			
+
 			ItemRequiredBackGroud setting = new ItemRequiredBackGroud();
 			setting.setRowId(item);
 			setting.setColumnKey("setting");
 			setting.setState(toList("ntsgrid-alarm"));
-			
+
 			ItemRequiredBackGroud other = new ItemRequiredBackGroud();
 			other.setRowId(item);
 			other.setColumnKey("otherAuth");
 			other.setState(toList("ntsgrid-alarm"));
-			
+
 			itemRequiredLst.add(itemNameRequired);
 			itemRequiredLst.add(setting);
 			itemRequiredLst.add(other);

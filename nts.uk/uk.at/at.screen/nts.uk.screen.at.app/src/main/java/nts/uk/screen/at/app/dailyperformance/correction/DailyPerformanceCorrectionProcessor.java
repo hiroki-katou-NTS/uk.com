@@ -641,17 +641,17 @@ public class DailyPerformanceCorrectionProcessor {
 						new YearMonth(x.getClosureMonth()));
 				Optional<ActualLockDto> actualLockDto = repo.findAutualLockById(companyId, x.getClosureId());
 				if (actualLockDto.isPresent()) {
-					if (actualLockDto.get().getDailyLockState() == 1) {
+					if (actualLockDto.get().getDailyLockState() == 1 || actualLockDto.get().getMonthlyLockState() == 1) {
 						employeeAndDateRange.put(
 								mergeString(x.getSid(), "|", x.getClosureId().toString(), "|", LOCK_EDIT_CELL_DAY),
 								datePeriod);
 					}
 
-					if (actualLockDto.get().getMonthlyLockState() == 1) {
-						employeeAndDateRange.put(
-								mergeString(x.getSid(), "|", x.getClosureId().toString(), "|", LOCK_EDIT_CELL_MONTH),
-								datePeriod);
-					}
+//					if (actualLockDto.get().getMonthlyLockState() == 1) {
+//						employeeAndDateRange.put(
+//								mergeString(x.getSid(), "|", x.getClosureId().toString(), "|", LOCK_EDIT_CELL_MONTH),
+//								datePeriod);
+//					}
 				}
 				// アルゴリズム「表示項目を制御する」を実行する | Execute "control display items"
 				Optional<WorkFixedDto> workFixedOp = repo.findWorkFixed(x.getClosureId(), x.getClosureMonth());

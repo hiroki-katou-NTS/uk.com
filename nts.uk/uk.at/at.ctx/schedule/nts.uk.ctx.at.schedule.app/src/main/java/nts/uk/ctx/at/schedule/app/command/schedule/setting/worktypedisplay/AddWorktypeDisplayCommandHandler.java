@@ -6,8 +6,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.worktype.control.WorktypeDis;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.worktype.control.WorktypeDisRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -26,10 +28,13 @@ public class AddWorktypeDisplayCommandHandler extends CommandHandler<AddWorktype
 	protected void  handle(CommandHandlerContext<AddWorktypeDisplayCommand> context) {
 		AddWorktypeDisplayCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		
+
+		if (CollectionUtil.isEmpty(command.getWorkTypeList()) && command.getUseAtr() ==0) {
+			throw new BusinessException("Msg_10");
+		}
 		WorktypeDis dis = command.toDomain(companyId);
 		Optional<WorktypeDis> optional = this.repository.findByCId(companyId);
-
+		
 		if (optional.isPresent()) {
 			// update Worktype Display
 			this.repository.update(dis);
