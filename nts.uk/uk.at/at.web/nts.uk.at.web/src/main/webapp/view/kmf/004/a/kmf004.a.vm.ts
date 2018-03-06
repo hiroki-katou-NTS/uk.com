@@ -268,7 +268,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 $("#specialVacationYears").trigger("validate");
                 $("#limitCarryoverDays").trigger("validate");
             }
-            if (model.UseAtr.Use == self.currentItem().sphdLimit().grantCarryForward()){
+            if (model.UseAtr.Use == self.currentItem().sphdLimit().grantCarryForward()) {
                 $("#limitCarryover").trigger("validate");
             }
             var useAge = self.currentItem().subCondition().useAge() ? 1 : 0;
@@ -312,7 +312,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 self.setDefaultValueSphdLimit(specialHoliday);
                 /** set default for tab 4 **/
                 self.setDefaultValueTab4(specialHoliday);
-                
+
                 specialHoliday.grantSingle = null;
                 if (specialHoliday.grantRegular.grantStartDate) {
                     specialHoliday.grantRegular.grantStartDate = new Date(specialHoliday.grantRegular.grantStartDate);
@@ -340,7 +340,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 var emptyObjectSphdLimit: model.ISphdLimitDto = {};
                 var emptyObjectSubCondition: model.ISubConditionDto = {};
                 var emptyObjectGrantSingle: model.IGrantSingleDto = {};
-
+                if (self.items().length == 20) {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_669" });
+                    nts.uk.ui.block.clear();
+                    return;
+                }
                 specialHoliday["grantMethod"] = self.inp_grantMethod();
 
                 service.addSpecialHoliday(specialHoliday).done(function(errors) {
@@ -380,17 +384,17 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 })
             }
         }
-        
+
         /** set default for tab 4 **/
         setDefaultValueTab4(specialHoliday: any) {
-            var self = this;  
-            
+            var self = this;
+
             var roundingCarryForward = specialHoliday.sphdLimit.roundingCarryForward;
             var useGender = specialHoliday.subCondition.useGender;
             var useEmployee = specialHoliday.subCondition.useEmployee;
             var useCls = specialHoliday.subCondition.useCls;
             var useAge = specialHoliday.subCondition.useAge;
-            
+
             specialHoliday.subCondition.useGender = useGender ? model.UseAtr.Use : model.UseAtr.NotUse;
             specialHoliday.subCondition.useEmployee = useEmployee ? model.UseAtr.Use : model.UseAtr.NotUse;
             specialHoliday.subCondition.useCls = useCls ? model.UseAtr.Use : model.UseAtr.NotUse;
@@ -405,7 +409,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 specialHoliday.subCondition.employmentList = [];
                 self.currentItem().subCondition().employmentList([]);
             }
-            
+
             if (useAge == model.UseAtr.NotUse) {
                 specialHoliday.subCondition.limitAgeTo = null;
                 specialHoliday.subCondition.limitAgeFrom = null;
@@ -413,7 +417,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 self.currentItem().subCondition().limitAgeFrom(null);
             }
         }
-        
+
         /** set default for tab 3 **/
         setDefaultValueSphdLimit(specialHoliday: any) {
             var self = this;
@@ -421,24 +425,24 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 specialHoliday.sphdLimit.specialVacationYears = null;
                 specialHoliday.sphdLimit.specialVacationMonths = null;
                 self.currentItem().sphdLimit().specialVacationYears(null);
-                self.currentItem().sphdLimit().specialVacationMonths(null);    
+                self.currentItem().sphdLimit().specialVacationMonths(null);
             }
-            
-            if (specialHoliday.sphdLimit.grantCarryForward == model.UseAtr.NotUse){
+
+            if (specialHoliday.sphdLimit.grantCarryForward == model.UseAtr.NotUse) {
                 specialHoliday.sphdLimit.limitCarryoverDays = null;
                 self.currentItem().sphdLimit().limitCarryoverDays(null);
-            }    
+            }
         }
-        
+
         /** set default for tab 2 **/
         setDefaultValueTab2(specialHoliday: any) {
             var self = this;
             if (specialHoliday.grantPeriodic.grantPeriodicMethod == model.GrantPeriodicMethod.DoNotAllow) {
                 specialHoliday.grantPeriodic.grantDay = null;
-                self.currentItem().grantPeriodic().grantDay(null);        
+                self.currentItem().grantPeriodic().grantDay(null);
             }
         }
-        
+
         /** set default for tab 1 **/
         setDefaultValueTab1(specialHoliday: any) {
             var self = this;
@@ -446,19 +450,19 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 specialHoliday.grantRegular.grantStartDate = null;
                 specialHoliday.grantRegular.months = null;
                 specialHoliday.grantRegular.years = null;
-                
+
                 self.currentItem().grantRegular().grantStartDate(null);
                 self.currentItem().grantRegular().months(null);
-                self.currentItem().grantRegular().years(null);     
+                self.currentItem().grantRegular().years(null);
             }
         }
-        
+
         /** set default for tab 0 **/
         setDefaultValueTab0(specialHoliday: any) {
             var self = this;
             if (specialHoliday.grantSingle.grantDaySingleType == 1) {
                 specialHoliday.grantSingle.fixNumberDays = null;
-                self.currentItem().grantSingle().fixNumberDays(null);        
+                self.currentItem().grantSingle().fixNumberDays(null);
             }
         }
 
