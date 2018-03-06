@@ -44,8 +44,8 @@
 					class="danger btnStyle">#{i18n.getText('CMM013_44')}</button>
 			</div>
 
-			<div id="contents-area">
-				<div id="left-content" class="bg-green caret-right caret-background">
+			<div id="contents-area" class="fixed-flex-layout">
+				<div class="fixed-flex-layout-left" class="bg-green caret-right caret-background">
 					<div id="list-data">
 						<table id="single-list" tabindex="5"
 							data-bind="ntsGridList: {
@@ -69,10 +69,9 @@
 							type: 'grid'
 						}"></div>
 					</div>
-
 				</div>
-
-				<div id="right-content">
+				
+				<div class="fixed-flex-layout-right">
 					<table class="table_content">
 						<colgroup>
 							<col width="150px" />
