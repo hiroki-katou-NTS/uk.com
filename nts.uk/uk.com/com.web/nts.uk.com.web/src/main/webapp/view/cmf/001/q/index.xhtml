@@ -7,17 +7,22 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 550, height: 620 };</script>
+			<script>var dialogSize = { 
+					width: 500, 
+					height: 300 
+			};
+			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="../share/model.js" />
 			<com:scriptfile path="cmf001.q.vm.js" />
 			<com:scriptfile path="cmf001.q.start.js" />
+			<com:scriptfile path="cmf001.q.service.js" />
 			<com:stylefile path="cmf001.q.style.css" />
 			
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area" style="width:400px; height:550px;">
+			<div class="contents-area" style="width:400px; height:200px;">
 			 	<com:ko-if bind="isCheckMode() == true">
 					<div><label class="cmf001_485">#{i18n.getText('CMF001_485')}</label></div>
 				</com:ko-if>

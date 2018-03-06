@@ -42,7 +42,7 @@ module nts.uk.com.view.cmf001.q.viewmodel {
         // dto from server
         exAcOpManage: ExAcOpManage;
         // object param
-        params = getShared("CMF001-Q");
+        params = getShared("CMF001qParams");
         codCode: string;
         codeName: string;
         timeOver: string;
@@ -61,15 +61,28 @@ module nts.uk.com.view.cmf001.q.viewmodel {
             self.timeOver = "00:01:27";
             self.operatingCondition = getListProcessing()[ self.exAcOpManage.stateBehavior].value;
         }
+        
+        //開始
+        start(): JQueryPromise<any>{
+            let self = this,
+                dfd = $.Deferred();
+            nts.uk.ui.errors.clearAll();
+            
+            
+            return dfd.promise();
+        }
+        
         // 中断ボタン
         stop() {
             let self = this;
             self.isStopMode(true);
             if (self.isCheckMode()) {
                 self.exAcOpManage.stateBehavior = 3;
+                self.operatingCondition = getListProcessing()[ self.exAcOpManage.stateBehavior].value;
             }
              if (!self.isCheckMode()) {
                 self.exAcOpManage.stateBehavior = 8;
+                self.operatingCondition = getListProcessing()[ self.exAcOpManage.stateBehavior].value;
             }
         }
         
@@ -79,6 +92,7 @@ module nts.uk.com.view.cmf001.q.viewmodel {
             self.isCheckMode(false);
             self.isStopMode(false);
             self.exAcOpManage.stateBehavior = 2;
+            self.operatingCondition = getListProcessing()[ self.exAcOpManage.stateBehavior].value;
         }
         
         //エラーボタン
@@ -190,7 +204,7 @@ module nts.uk.com.view.cmf001.q.viewmodel {
             self.errorCount = errorCount;
             self.interruption = interruption;
             self.processCount = processCount;
-            self.processTotalCount = processCount;
+            self.processTotalCount = processTotalCount;
             self.stateBehavior = stateBehavior;
         }
     }
