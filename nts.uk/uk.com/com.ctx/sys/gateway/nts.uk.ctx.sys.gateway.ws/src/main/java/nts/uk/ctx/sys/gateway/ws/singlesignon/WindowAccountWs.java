@@ -20,7 +20,7 @@ import nts.uk.ctx.sys.gateway.app.command.singlesignon.SaveWindowAccountCommandH
 import nts.uk.ctx.sys.gateway.app.find.singlesignon.UserDto;
 import nts.uk.ctx.sys.gateway.app.find.singlesignon.UserInfo;
 import nts.uk.ctx.sys.gateway.app.find.singlesignon.UserInfoFinder;
-import nts.uk.ctx.sys.gateway.app.find.singlesignon.WindowAccountFinder;
+import nts.uk.ctx.sys.gateway.app.find.singlesignon.WindowsAccountFinder;
 import nts.uk.ctx.sys.gateway.app.find.singlesignon.WindownAccountFinderDto;
 
 /**
@@ -37,7 +37,7 @@ public class WindowAccountWs extends WebService{
 	
 	/** The window account finder. */
 	@Inject
-	private WindowAccountFinder windowAccountFinder;
+	private WindowsAccountFinder windowAccountFinder;
 	
 	/** The save window account command handler. */
 	@Inject

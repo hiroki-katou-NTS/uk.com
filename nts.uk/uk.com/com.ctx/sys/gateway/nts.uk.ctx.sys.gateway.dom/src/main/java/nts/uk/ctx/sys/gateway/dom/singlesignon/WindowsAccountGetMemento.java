@@ -4,10 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.dom.singlesignon;
 
+import java.util.List;
+
 /**
  * The Interface WindowAccountGetMemento.
  */
-public interface WindowAccountGetMemento {
+public interface WindowsAccountGetMemento {
 	
 	/**
 	 * Gets the user id.
@@ -21,31 +23,6 @@ public interface WindowAccountGetMemento {
 	 *
 	 * @return the hot name
 	 */
-	HostName getHostName();
-	
-	
-	/**
-	 * Gets the user name.
-	 *
-	 * @return the user name
-	 */
-	UserName getUserName();
-	
-	/**
-	 * Gets the no.
-	 *
-	 * @return the no
-	 */
-	Integer getNo();
-	
-	
-	/**
-	 * Gets the use atr.
-	 *
-	 * @return the use atr
-	 */
-	UseAtr getUseAtr();
-	
-	
+	List<WindowsAccountInfo> getAccountInfos();
 	
 }
