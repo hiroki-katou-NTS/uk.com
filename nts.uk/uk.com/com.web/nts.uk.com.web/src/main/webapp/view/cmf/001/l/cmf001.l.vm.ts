@@ -14,17 +14,20 @@ module nts.uk.com.view.cmf001.l.viewmodel {
         acceptScreenConditionSetting: KnockoutObservable<model.AcceptScreenConditionSetting>;
         selectedDataType: number;
         selectComparisonCondition: KnockoutObservable<string>;
-        screenMode: number;
+        inputMode: boolean = true;
         constructor() {
-            var self = this;  
+            var self = this;
             let params = getShared("CMF001lParams");
-            self.screenMode = 0;
-            self.selectedDataType = params.dataType;
-            if (params.condition) {
-                let condition = params.condition;
-                self.acceptScreenConditionSetting = ko.observable(new model.AcceptScreenConditionSetting(condition.receiptItemName, condition.selectComparisonCondition, condition.timeConditionValue2, condition.timeConditionValue1, condition.timeMomentConditionValue2, condition.timeMomentConditionValue1, condition.dateConditionValue2, condition.dateConditionValue1, condition.characterConditionValue2, condition.characterConditionValue1, condition.numberConditionValue2, condition.numberConditionValue1));
-            } else {
-                self.acceptScreenConditionSetting = ko.observable(new model.AcceptScreenConditionSetting('条件値', 0 , null, null, null, null, null, null,null, null, null, null));
+            if (!nts.uk.util.isNullOrUndefined(params)) {
+                let inputMode = params.inputMode;
+                self.selectedDataType = params.dataType;
+                self.inputMode = inputMode;
+                if (params.condition) {
+                    let condition = params.condition;
+                    self.acceptScreenConditionSetting = ko.observable(new model.AcceptScreenConditionSetting(condition.receiptItemName, condition.selectComparisonCondition, condition.timeConditionValue2, condition.timeConditionValue1, condition.timeMomentConditionValue2, condition.timeMomentConditionValue1, condition.dateConditionValue2, condition.dateConditionValue1, condition.characterConditionValue2, condition.characterConditionValue1, condition.numberConditionValue2, condition.numberConditionValue1));
+                } else {
+                    self.acceptScreenConditionSetting = ko.observable(new model.AcceptScreenConditionSetting('条件値', 0 , null, null, null, null, null, null,null, null, null, null));
+                }
             }
         }
         
@@ -50,6 +53,7 @@ module nts.uk.com.view.cmf001.l.viewmodel {
                 break;
                 case 3:
                 $(".timeCondition").trigger("validate");
+                break;     
                 case 4:
                 $(".timeMomentCondition").trigger("validate");
                 break;
