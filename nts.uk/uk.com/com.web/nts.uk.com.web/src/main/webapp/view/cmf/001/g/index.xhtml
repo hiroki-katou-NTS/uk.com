@@ -29,7 +29,7 @@
 								data-bind="ntsRadioButton: {
 									checked: effectiveDigitLength, 
 									option: $parent.effectDigitItem()[0], 
-									name: '#[CMF001_222]', 
+									name:'#{i18n.getText('CMF001_222')}',
 									optionValue: 'code', 
 									enable: $parent.inputMode, 
 									optionText: 'name', 
@@ -40,7 +40,7 @@
 								data-bind="ntsRadioButton: {
 									checked: effectiveDigitLength, 
 									option: $parent.effectDigitItem()[1], 
-									name: '#[CMF001_222]', 
+									name:'#{i18n.getText('CMF001_222')}',
 									optionValue: 'code', 
 									enable: $parent.inputMode, 
 									optionText: 'name', 
@@ -52,6 +52,7 @@
 							<input id="G2_5" tabindex="2"
 								data-bind="ntsNumberEditor: {
 								value: startDigit,
+								name:'#{i18n.getText('CMF001_225')}',
 								option : {width : '30px'},
 								enable: !(effectiveDigitLength() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode)}" />
 							<div id="G2_6" class="label" style="display: inline">#{i18n.getText('CMF001_226')}</div>
@@ -60,6 +61,7 @@
 							<input id="G2_8" tabindex="3"
 								data-bind="ntsNumberEditor: {
 								value: endDigit,
+								name:'#{i18n.getText('CMF001_228')}',
 								option : {width : '30px'},
 								enable: !(effectiveDigitLength() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode)}" />
 							<div id="G2_9" class=" label" style="display: inline">#{i18n.getText('CMF001_229')}</div>
@@ -99,6 +101,7 @@
 							<input id="G3_6" tabindex="5"
 								data-bind="ntsNumberEditor: {
 								value: decimalDigitNumber,
+								name:'#{i18n.getText('CMF001_235')}',
 								enable: !(decimalDivision() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode),
 								option : {width : '30px'}}" />
 							<div style="margin-top: 5px;">
@@ -156,18 +159,28 @@
 									option: $parent.effectFixedValItem()[0], 
 									optionValue: 'code', 
 									enable: $parent.inputMode, 
-									name: '#{i18n.getText('CMF001_251')}', 
+									name: '#{i18n.getText('CMF001_253')}', 
 									optionText: 'name', 
 									group: 'fixedValCls' 
 									}">
 							</div>
 							<div id="G5_4" tabindex="-1" class="div-table-col radio-group"
-								data-bind="ntsRadioButton: {checked: fixedValue, option: $parent.effectFixedValItem()[1], optionValue: 'code', enable: $parent.inputMode, name: '#{i18n.getText('CMF001_251')}', optionText: 'name', group: 'fixedValCls' }"></div>
+								data-bind="ntsRadioButton: {
+									checked: fixedValue, 
+									option: $parent.effectFixedValItem()[1], 
+									optionValue: 'code', 
+									enable: $parent.inputMode, 
+									name: '#{i18n.getText('CMF001_253')}', 
+									optionText: 'name', 
+									group: 'fixedValCls' 
+									}">
+							</div>
 						</div>
 						<div style="display: inline">
 							<input id="G5_5" tabindex="10"
 								data-bind="ntsTextEditor: {
 								value: valueOfFixed,
+								name: '#{i18n.getText('CMF001_256')}', 
 								enable: !(fixedValue() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode),
 								option : {width : '200px'}}" />
 						</div>
