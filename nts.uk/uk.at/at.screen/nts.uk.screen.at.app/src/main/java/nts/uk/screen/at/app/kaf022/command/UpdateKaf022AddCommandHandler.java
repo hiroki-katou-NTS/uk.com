@@ -26,6 +26,7 @@ import nts.uk.ctx.at.request.app.command.setting.company.request.stamp.UpdateSta
 import nts.uk.ctx.at.request.app.command.setting.company.vacationapplicationsetting.UpdateHdAppSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.request.UpdateApplicationDeadlineCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.request.gobackdirectlycommon.UpdateGoBackDirectlyCommonSettingCommandHandler;
+import nts.uk.ctx.workflow.app.command.approvermanagement.setting.UpdateApprovalSettingCommandHandler;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.UpdateJobAssignSettingCommandHandler;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateJobtitleSearchSetCommandHandler;
 
@@ -102,6 +103,9 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 	@Inject
 	private UpdateJobAssignSettingCommandHandler updateJobAssign;
 	
+	@Inject
+	private UpdateApprovalSettingCommandHandler updateAppro;
+	
 	@Override
 	protected void handle(CommandHandlerContext<Kaf022AddCommand> context) {
 		Kaf022AddCommand kaf022 = context.getCommand();
@@ -151,6 +155,7 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		this.updateJobSearch.handle(kaf022.getJobSearch());
 		// A14
 		this.updateJobAssign.handle(kaf022.getJobAssign());
+		this.updateAppro.handle(kaf022.getApprovalSet());
 	}
 
 }

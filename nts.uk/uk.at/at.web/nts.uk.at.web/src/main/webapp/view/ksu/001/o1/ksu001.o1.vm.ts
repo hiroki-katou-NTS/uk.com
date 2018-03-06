@@ -1,5 +1,6 @@
 module nts.uk.at.view.ksu001.o1.viewmodel {
     import getShare = nts.uk.ui.windows.getShared;
+    import formatById = nts.uk.time.format.byId;
 
     export class ScreenModel {
         listWorkType: KnockoutObservableArray<any>;
@@ -63,8 +64,10 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
                     if (c) {
                         workTimeName = c.abName;
                         workTimeCode = (c.workTimeCode == '000') ? null : c.workTimeCode;
-                        startTime = nts.uk.time.parseTime(c.startTime, true).format();
-                        endTime = nts.uk.time.parseTime(c.endTime, true).format();
+                        //                        startTime = nts.uk.time.parseTime(c.startTime, true).format();
+                        //                        endTime = nts.uk.time.parseTime(c.endTime, true).format();
+                        startTime = c.startTime ? formatById("Clock_Short_HM", c.startTime) : '';
+                        endTime = c.endTime ? formatById("Clock_Short_HM", c.endTime) : '';
                     } else {
                         workTimeName = null;
                         workTimeCode = null;

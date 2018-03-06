@@ -282,9 +282,10 @@ public class ScheBatchCorrectExecutionCommandHandler
 		// Imported（就業）「所属雇用履歴」を取得する
 		Optional<EmploymentHistoryImported> employmentHisOptional = this.employmentAdapter.getEmpHistBySid(companyId, employeeId, baseDate);
 		
-//		if (!employmentHisOptional.isPresent()) {
-//			return Optional.of("Msg_557");
-//		}
+		// 所属雇用履歴が取得できなかった場合
+		if (!employmentHisOptional.isPresent()) {
+			return Optional.of("Msg_303"); 
+		}
 		
 		// ドメインモデル「雇用に紐づく就業締め」を取得する
 		Optional<ClosureEmployment> optionalClosureEmployment = closureEmployment.findByEmploymentCD(companyId, employmentHisOptional.get().getEmploymentCode());

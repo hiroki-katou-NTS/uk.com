@@ -20,6 +20,6 @@ public class AttendanceTimeOfDailyPerformCommand extends DailyWorkCommonCommand 
 
 	@Override
 	public void updateData(Object data) {
-		this.data = data == null ? Optional.empty() :  (Optional<AttendanceTimeOfDailyPerformance>) data;
+		this.data = data == null ? Optional.empty() :  Optional.of((AttendanceTimeOfDailyPerformance) data);
 	}
 }
