@@ -191,8 +191,8 @@ module nts.layout {
         validateName(item: IFindData){
             if (!item.data.value().startsWith('　') && !item.data.value().endsWith('　') && item.data.value().includes('　')){
                 rmError(item, "Msg_924");
-            }  else if (item.data.value()) {
-                if (!item.ctrl.parent().hasClass('error')) {
+            }  else {
+                if (item.data.value() && !item.ctrl.parent().hasClass('error')) {
                     !item.ctrl.is(':disabled') && item.ctrl.ntsError('set', { messageId: "Msg_924" });
                 }
             }
