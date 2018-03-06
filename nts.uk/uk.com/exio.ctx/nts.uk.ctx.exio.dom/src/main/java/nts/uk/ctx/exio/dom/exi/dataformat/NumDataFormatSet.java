@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
 * 数値型データ形式設定
@@ -34,54 +34,54 @@ public class NumDataFormatSet extends AggregateRoot
     /**
     * 固定値
     */
-    private int fixedValue;
+    private NotUseAtr fixedValue;
     
     /**
     * 小数区分
     */
-    private int decimalDivision;
+    private DecimalDivision decimalDivision;
     
     /**
     * 有効桁長
     */
-    private int effectiveDigitLength;
+    private NotUseAtr effectiveDigitLength;
     
     /**
     * コード変換コード
     */
-    private int cdConvertCd;
+    private AcceptCdConvert cdConvertCd;
     
     /**
     * 固定値の値
     */
-    private String valueOfFixedValue;
+    private ValueOfFixed valueOfFixedValue;
     
     /**
     * 少数桁数
     */
-    private int decimalDigitNum;
+    private DecimalDigitNumber decimalDigitNum;
     
     /**
     * 有効桁数開始桁
     */
-    private int startDigit;
+    private StartDigit startDigit;
     
     /**
     * 有効桁数終了桁
     */
-    private int endDigit;
+    private EndDigit endDigit;
     
     /**
     * 小数点区分
     */
-    private int decimalPointCls;
+    private DecimalPointClassification decimalPointCls;
     
     /**
     * 小数端数
     */
-    private int decimalFraction;
+    private DecimalFraction decimalFraction;
     
-    public static NumDataFormatSet createFromJavaType(Long version, String cid, String conditionSetCd, int acceptItemNum, int fixedValue, int decimalDivision, int effectiveDigitLength, int cdConvertCd, String valueOfFixedValue, int decimalDigitNum, int startDigit, int endDigit, int decimalPointCls, int decimalFraction)
+    public static NumDataFormatSet createFromJavaType(Long version, String cid, String conditionSetCd, int acceptItemNum, NotUseAtr fixedValue, DecimalDivision decimalDivision, NotUseAtr effectiveDigitLength, AcceptCdConvert cdConvertCd, ValueOfFixed valueOfFixedValue, DecimalDigitNumber decimalDigitNum, StartDigit startDigit, EndDigit endDigit, DecimalPointClassification decimalPointCls, DecimalFraction decimalFraction)
     {
         NumDataFormatSet  numDataFormatSet =  new NumDataFormatSet(cid, conditionSetCd, acceptItemNum, fixedValue, decimalDivision, effectiveDigitLength, cdConvertCd, valueOfFixedValue, decimalDigitNum, startDigit, endDigit, decimalPointCls,  decimalFraction);
         numDataFormatSet.setVersion(version);

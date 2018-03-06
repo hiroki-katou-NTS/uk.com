@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
 * 文字型データ形式設定
@@ -34,49 +34,49 @@ public class ChrDataFormatSet extends AggregateRoot
     /**
     * コード編集
     */
-    private int cdEditing;
+    private NotUseAtr cdEditing;
     
     /**
     * 固定値
     */
-    private int fixedValue;
+    private NotUseAtr fixedValue;
     
     /**
     * 有効桁長
     */
-    private int effectiveDigitLength;
+    private NotUseAtr effectiveDigitLength;
     
     /**
     * コード変換コード
     */
-    private int cdConvertCd;
+    private AcceptCdConvert cdConvertCd;
     
     /**
     * コード編集方法
     */
-    private int cdEditMethod;
+    private FixedLengthEditingMethod cdEditMethod;
     
     /**
     * コード編集桁
     */
-    private int cdEditDigit;
+    private CodeEditDigit cdEditDigit;
     
     /**
     * 固定値の値
     */
-    private String fixedVal;
+    private ValueOfFixed fixedVal;
     
     /**
     * 有効桁数開始桁
     */
-    private int startDigit;
+    private StartDigit startDigit;
     
     /**
     * 有効桁数終了桁
     */
-    private int endDigit;
+    private EndDigit endDigit;
     
-    public static ChrDataFormatSet createFromJavaType(Long version, String cid, String conditionSetCd, int acceptItemNum, int cdEditing, int fixedValue, int effectiveDigitLength, int cdConvertCd, int cdEditMethod, int cdEditDigit, String fixedVal, int startDigit, int endDigit)
+    public static ChrDataFormatSet createFromJavaType(Long version, String cid, String conditionSetCd, int acceptItemNum, NotUseAtr cdEditing, NotUseAtr fixedValue, NotUseAtr effectiveDigitLength, AcceptCdConvert cdConvertCd, FixedLengthEditingMethod cdEditMethod, CodeEditDigit cdEditDigit, ValueOfFixed fixedVal, StartDigit startDigit, EndDigit endDigit)
     {
         ChrDataFormatSet  chrDataFormatSet =  new ChrDataFormatSet(cid, conditionSetCd, acceptItemNum, cdEditing, fixedValue, effectiveDigitLength, cdConvertCd, cdEditMethod, cdEditDigit, fixedVal, startDigit,  endDigit);
         chrDataFormatSet.setVersion(version);

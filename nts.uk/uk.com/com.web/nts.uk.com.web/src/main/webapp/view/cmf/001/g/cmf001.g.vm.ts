@@ -75,6 +75,9 @@ module nts.uk.com.view.cmf001.g.viewmodel {
         }
         saveNumericSetting() {
             var self = this;
+            $("#G2_5").trigger("validate");
+            $("#G2_8").trigger("validate");
+            $("#G3_6").trigger("validate");
             if (self.inputMode) {
                 setShared("CMF001FormatOutput", { lineNumber: self.lineNumber, formatSetting: ko.toJS(self.numDataFormatSetting) });
             }
