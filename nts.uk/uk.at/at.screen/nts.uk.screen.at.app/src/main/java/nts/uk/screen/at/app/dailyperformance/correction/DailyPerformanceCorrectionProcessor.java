@@ -330,7 +330,7 @@ public class DailyPerformanceCorrectionProcessor {
 		Map<Integer, Map<String, String>> mapGetName = dataDialogWithTypeProcessor
 				.getAllCodeName(new ArrayList<>(types), companyId);
 		// No 20 get submitted application
-		List<ApplicationExportDto> appplication = applicationListFinder.getApplicationBySID(listEmployeeId,
+		List<ApplicationExportDto> appplication = listEmployeeId.isEmpty() ? Collections.emptyList() : applicationListFinder.getApplicationBySID(listEmployeeId,
 				dateRange.getStartDate(), dateRange.getEndDate());
 		Map<String, String> appMapDateSid = new HashMap<>();
 		appplication.forEach(x -> {
