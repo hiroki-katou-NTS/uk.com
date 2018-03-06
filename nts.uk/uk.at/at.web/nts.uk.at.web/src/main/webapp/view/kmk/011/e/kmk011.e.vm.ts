@@ -1,9 +1,16 @@
 module nts.uk.at.view.kmk011.e {
-    import viewModelHist = nts.uk.at.view.kmk011.common.history;
+    
     export module viewmodel {
         export class ScreenModel {
             //history screen
-            screenHist: KnockoutObservable<any>;
+            enable_button_creat: KnockoutObservable<boolean>;
+            enable_button_edit: KnockoutObservable<boolean>;
+            enable_button_delete: KnockoutObservable<boolean>;
+            histList: KnockoutObservableArray<any>;
+            histName: KnockoutObservable<string>;
+            currentHist: KnockoutObservable<number>
+            selectedHist: KnockoutObservable<string>;
+            isEnableListHist: KnockoutObservable<boolean>;
             
             // work type list
             items: KnockoutObservableArray<ItemModel[]>;
@@ -15,29 +22,45 @@ module nts.uk.at.view.kmk011.e {
             constructor() {
                 var _self = this;
                 
-                //for history screen
-                _self.screenHist = ko.observable(new viewModelHist.ScreenModel());
+                //history screen
+                _self.enable_button_creat = ko.observable(true);
+                _self.enable_button_edit = ko.observable(true);
+                _self.enable_button_delete = ko.observable(true);
+                _self.histList = ko.observableArray([]);
+                _self.histName = ko.observable('');
+                _self.currentHist = ko.observable(null);
+                _self.selectedHist = ko.observable(null)
+                _self.isEnableListHist = ko.observable(false);
                 
+                // work type list
                 _self.items = ko.observableArray([new ItemModel('00' + 0, '基本給', "description " + 0, 0%3 === 0)]);
                 for(let i = 1; i < 100; i++) {
                     _self.items.push(new ItemModel('00' + i, '基本給', "description " + i, i%3 === 0));
                 }
-                
                 _self.columns2 = ko.observableArray([
                     { headerText: 'コード', key: 'code', width: 100 },
                     { headerText: '名称', key: 'name', width: 150 }
                 ]);
-
                 _self.currentCode = ko.observable();
             }
             
             public start_page() : JQueryPromise<any> {
                 let _self = this;
                 var dfd = $.Deferred<any>();
-                _self.screenHist().start_page().done( () => {
-                     dfd.resolve();
-                });
+                
+                dfd.resolve();
                 return dfd.promise();
+            }
+            
+            // history mode
+            public createMode() : void {
+                
+            }
+            public editMode() : void {
+                
+            }
+            public deleteMode() : void {
+                
             }
         }
         

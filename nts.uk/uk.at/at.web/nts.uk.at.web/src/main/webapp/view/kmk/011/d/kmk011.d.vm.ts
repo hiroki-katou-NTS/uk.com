@@ -11,9 +11,29 @@ module nts.uk.at.view.kmk011.d {
         export class ScreenModel {
             screenE: KnockoutObservable<any>;
             
+            //history screen
+            enable_button_creat: KnockoutObservable<boolean>;
+            enable_button_edit: KnockoutObservable<boolean>;
+            enable_button_delete: KnockoutObservable<boolean>;
+            histList: KnockoutObservableArray<any>;
+            histName: KnockoutObservable<string>;
+            currentHist: KnockoutObservable<number>
+            selectedHist: KnockoutObservable<string>;
+            isEnableListHist: KnockoutObservable<boolean>;
+            
             constructor() {
                 var _self = this;
                 _self.screenE = ko.observable(new viewModelScreenE.ScreenModel());
+                
+                 //history screen
+                _self.enable_button_creat = ko.observable(true);
+                _self.enable_button_edit = ko.observable(true);
+                _self.enable_button_delete = ko.observable(true);
+                _self.histList = ko.observableArray([]);
+                _self.histName = ko.observable('');
+                _self.currentHist = ko.observable(null);
+                _self.selectedHist = ko.observable(null)
+                _self.isEnableListHist = ko.observable(false);
             }
             
             public start_page(typeStart: number) : JQueryPromise<any> {
@@ -42,32 +62,6 @@ module nts.uk.at.view.kmk011.d {
                 return dfd.promise();
             }
             
-            /**
-             * on select tab handle
-             */
-            
-            public onSelectTabOne(): void {
-                $("#sidebar").ntsSideBar("init", {
-                    active: SideBarTabIndex.FIRST,
-                    activate: (event: any, info: any) => {
-                        let _self = this;
-                        _self.start_page(SideBarTabIndex.FIRST);
-                    }
-                });
-            }
-            
-            public onSelectTabTwo(): void {
-                let _self = this;
-                if (_self.isDisableTab() == false) {
-                    $("#sidebar").ntsSideBar("init", {
-                        active: SideBarTabIndex.SECOND,
-                        activate: (event: any, info: any) => {
-                            _self.start_page(SideBarTabIndex.SECOND);
-                        }
-                    });
-                }
-            }
-            
             private fillData() : JQueryPromise<any> {
                 let _self = this;
                 var dfd = $.Deferred<any>();
@@ -86,6 +80,41 @@ module nts.uk.at.view.kmk011.d {
             
             private isDisableTab() : boolean {
                 return false;    
+            }
+            
+             /**
+             * on select tab handle
+             */
+            public onSelectTabOne(): void {
+                $("#sidebar").ntsSideBar("init", {
+                    active: SideBarTabIndex.FIRST,
+                    activate: (event: any, info: any) => {
+                        let _self = this;
+                        _self.start_page(SideBarTabIndex.FIRST);
+                    }
+                });
+            }
+            public onSelectTabTwo(): void {
+                let _self = this;
+                if (_self.isDisableTab() == false) {
+                    $("#sidebar").ntsSideBar("init", {
+                        active: SideBarTabIndex.SECOND,
+                        activate: (event: any, info: any) => {
+                            _self.start_page(SideBarTabIndex.SECOND);
+                        }
+                    });
+                }
+            }
+            
+            // history mode
+            public createMode() : void {
+                
+            }
+            public editMode() : void {
+                
+            }
+            public deleteMode() : void {
+                
             }
         }
         

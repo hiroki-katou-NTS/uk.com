@@ -10,10 +10,31 @@
 		<div class="divergence_time_settting">
 			<table>
 				<thead>
-				
+					<tr>
+						<th>#{i18n.getText('KMK011_53')}</th>
+						<th>#{i18n.getText('KMK011_54')}</th>
+						<th>#{i18n.getText('KMK011_55')}</th>
+						<th>#{i18n.getText('KMK011_12')}</th>
+						<th>#{i18n.getText('KMK011_13')}</th>
+					</tr>
 				</thead>
 				<tbody>
-					
+					<tr>
+						<td>
+							<div class="cf" data-bind="ntsSwitchButton: {
+								name: 'Sample Switch',
+								options: roundingRules,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedRuleCode,
+								required: required,
+								enable: enable }"></div>
+						</td>
+						<td> <span data-bind="text: myMessage"></span> </td>
+						<td>#{i18n.getText('KMK011_55')}</td>
+						<td>#{i18n.getText('KMK011_12')}</td>
+						<td>#{i18n.getText('KMK011_13')}</td>
+					</tr>
 				</tbody>
 			</table>
 		</div>
