@@ -21,7 +21,7 @@ import nts.uk.ctx.sys.gateway.app.find.singlesignon.UserDto;
 import nts.uk.ctx.sys.gateway.app.find.singlesignon.UserInfo;
 import nts.uk.ctx.sys.gateway.app.find.singlesignon.UserInfoFinder;
 import nts.uk.ctx.sys.gateway.app.find.singlesignon.WindowsAccountFinder;
-import nts.uk.ctx.sys.gateway.app.find.singlesignon.WindownAccountFinderDto;
+import nts.uk.ctx.sys.gateway.app.find.singlesignon.WindowsAccountFinderDto;
 
 /**
  * The Class WindowAccountWs.
@@ -68,7 +68,7 @@ public class WindowAccountWs extends WebService{
 	 */
 	@POST
 	@Path("find/window/account")
-	public List<WindownAccountFinderDto> findListWindowAccByUserId(WindownAccountFinderDto windownAccountFinderDto) {
+	public List<WindowsAccountFinderDto> findListWindowAccByUserId(WindowsAccountFinderDto windownAccountFinderDto) {
 		return this.windowAccountFinder.findWindowAccountByUserId(windownAccountFinderDto.getUserId());
 	}
 	
