@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto;
@@ -14,7 +14,10 @@ import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodExceededPredAddVacation;
+import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodNoBreak;
 import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
@@ -70,6 +73,15 @@ public class WorkTimeSettingEnumDto {
 	/** The lst am pm atr. */
 	private List<EnumConstant> lstAmPmAtr;
 	
+	/** The not use atr. */
+	private List<EnumConstant> notUseAtr;
+	
+	/** The calc method no break. */
+	private List<EnumConstant> calcMethodNoBreak;
+	
+	/** The calc method exceeded pred add vacation. */
+	private List<EnumConstant> calcMethodExceededPredAddVacation;
+	
 	/**
 	 * Inits the.
 	 *
@@ -96,6 +108,9 @@ public class WorkTimeSettingEnumDto {
 		dto.setApplyAtr(EnumAdaptor.convertToValueNameList(ApplyAtr.class, i18n));
 		dto.setLstFixedChangeAtr(EnumAdaptor.convertToValueNameList(FixedChangeAtr.class, i18n));
 		dto.setLstAmPmAtr(EnumAdaptor.convertToValueNameList(AmPmAtr.class, i18n));
+		dto.setNotUseAtr(EnumAdaptor.convertToValueNameList(NotUseAtr.class, i18n));
+		dto.setCalcMethodNoBreak(EnumAdaptor.convertToValueNameList(CalcMethodNoBreak.class, i18n));
+		dto.setCalcMethodExceededPredAddVacation(EnumAdaptor.convertToValueNameList(CalcMethodExceededPredAddVacation.class, i18n));
 		return dto;
 		
 	}

@@ -88,12 +88,7 @@ module a16 {
         public changeTab(data: any, e: any) {
             let _self = this;
             if (e.which == 9) {
-                if (_self.isDetailMode()) {
-                    //TODO switch to tab 17
-                    _self.selectedTab('tab-1');  
-                } else {
-                    _self.selectedTab('tab-1');  
-                }            
+                _self.selectedTab('tab-17');           
             }
         }
     }

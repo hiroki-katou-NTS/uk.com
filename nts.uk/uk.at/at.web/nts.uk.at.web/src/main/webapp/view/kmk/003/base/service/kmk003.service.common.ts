@@ -55,6 +55,7 @@ module nts.uk.at.view.kmk003.a {
 
                 export interface FixedWorkRestSetDto {
                     commonRestSet: CommonRestSettingDto;
+                    isPlanActualNotMatchMasterRefer: boolean;
                     fixedRestCalculateMethod: number;
                 }
 
@@ -257,6 +258,7 @@ module nts.uk.at.view.kmk003.a {
                     shortTimeWorkSet: WorkTimezoneShortTimeWorkSetDto;
                     extraordTimeSet: WorkTimezoneExtraordTimeSetDto;
                     lateEarlySet: WorkTimezoneLateEarlySetDto;
+                    holidayCalculation: HolidayCalculationDto;
                 }
 
                 export interface WorkTimeCommonDto {
@@ -276,7 +278,9 @@ module nts.uk.at.view.kmk003.a {
                     lstOTTimezone: OverTimeOfTimeZoneSetDto[];
                 }
 
-                
+                export interface HolidayCalculationDto {
+                    isCalculate: number;    
+                }
                 
                 // Common Enum
                 export enum LateEarlyAtr {

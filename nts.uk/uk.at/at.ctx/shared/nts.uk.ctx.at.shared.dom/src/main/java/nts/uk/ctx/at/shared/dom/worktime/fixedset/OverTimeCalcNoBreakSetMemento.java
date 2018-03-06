@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodNoBreak;
+import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 
 /**
  * The Interface OverTimeCalcNoBreakSetMemento.
@@ -24,13 +24,13 @@ public interface OverTimeCalcNoBreakSetMemento {
 	 *
 	 * @param inLawOT the new in law OT
 	 */
-	void setInLawOT(OverTimeFrameNo inLawOT);
+	void setInLawOT(OTFrameNo inLawOT);
 
 	/**
 	 * Sets the not in law OT.
 	 *
 	 * @param notInLawOT the new not in law OT
 	 */
-	void setNotInLawOT(OverTimeFrameNo notInLawOT);
+	void setNotInLawOT(OTFrameNo notInLawOT);
 
 }

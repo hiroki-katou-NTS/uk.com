@@ -14,5 +14,11 @@ public class KshmtFixedWorkSet_ {
     public static volatile SingularAttribute<KshmtFixedWorkSet, Integer> exclusVer;
     public static volatile SingularAttribute<KshmtFixedWorkSet, Integer> useHalfDay;
     public static volatile SingularAttribute<KshmtFixedWorkSet, Integer> legalOtSet;
+    public static volatile SingularAttribute<KshmtFixedWorkSet, Integer> isPlanActualNotMatchMasterRefe;
+    public static volatile SingularAttribute<KshmtFixedWorkSet, Integer> otCalcMethod;
+    public static volatile SingularAttribute<KshmtFixedWorkSet, Integer> otInLaw;
+    public static volatile SingularAttribute<KshmtFixedWorkSet, Integer> otNotInLaw;
+    public static volatile SingularAttribute<KshmtFixedWorkSet, Integer> exceededPredCalcMethod;
+    public static volatile SingularAttribute<KshmtFixedWorkSet, Integer> exceededPredOtFrameNo;
 
 }

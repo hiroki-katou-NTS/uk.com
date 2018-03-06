@@ -159,6 +159,7 @@ module nts.uk.at.view.kmk003.a {
                 self.tabs.push(new TabItem(TabID.TAB14, nts.uk.resource.getText("KMK003_28"), '.tab-a14', true, true));
                 self.tabs.push(new TabItem(TabID.TAB15, nts.uk.resource.getText("KMK003_29"), '.tab-a15', true, true));
                 self.tabs.push(new TabItem(TabID.TAB16, nts.uk.resource.getText("KMK003_30"), '.tab-a16', true, true));
+                self.tabs.push(new TabItem(TabID.TAB17, nts.uk.resource.getText("KMK003_219"), '.tab-a17', true, true));
                 
                 self.selectedTab = ko.observable(TabID.TAB1);
 
@@ -356,7 +357,7 @@ module nts.uk.at.view.kmk003.a {
                 if (isDetail) {
                     _.forEach(_self.tabs(), tab => tab.setVisible(true));
                 } else {
-                    let simpleTabsId: string[] = [TabID.TAB1, TabID.TAB2, TabID.TAB3, TabID.TAB4, TabID.TAB5, TabID.TAB6, TabID.TAB7, TabID.TAB9, TabID.TAB10, TabID.TAB11, TabID.TAB12];
+                    let simpleTabsId: string[] = [TabID.TAB1, TabID.TAB2, TabID.TAB3, TabID.TAB4, TabID.TAB5, TabID.TAB6, TabID.TAB7, TabID.TAB9, TabID.TAB10, TabID.TAB11, TabID.TAB12, TabID.TAB17];
                     _.forEach(_self.tabs(), tab => {
                         if (_.findIndex(simpleTabsId, id => tab.id === id) === -1) {
                             tab.setVisible(false);

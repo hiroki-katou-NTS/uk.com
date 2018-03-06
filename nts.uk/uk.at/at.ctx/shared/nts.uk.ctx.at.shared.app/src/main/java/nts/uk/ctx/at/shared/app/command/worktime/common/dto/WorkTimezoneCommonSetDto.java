@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneExtraordTimeSet;
@@ -61,6 +62,9 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetGetMemento
 	/** The late early set. */
 	private WorkTimezoneLateEarlySetDto lateEarlySet;
 
+	/** The holiday calculation. */
+	private HolidayCalculationDto holidayCalculation;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -94,7 +98,8 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetGetMemento
 	 */
 	@Override
 	public List<WorkTimezoneOtherSubHolTimeSet> getSubHolTimeSet() {
-		return this.subHolTimeSet.stream().map(item -> new WorkTimezoneOtherSubHolTimeSet(item)).collect(Collectors.toList());
+		return this.subHolTimeSet.stream().map(item -> new WorkTimezoneOtherSubHolTimeSet(item))
+				.collect(Collectors.toList());
 	}
 
 	/*
@@ -191,6 +196,18 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetGetMemento
 	@Override
 	public WorkTimezoneLateEarlySet getLateEarlySet() {
 		return new WorkTimezoneLateEarlySet(this.lateEarlySet);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetGetMemento#
+	 * getHolidayCalculation()
+	 */
+	@Override
+	public HolidayCalculation getHolidayCalculation() {
+		return new HolidayCalculation(this.holidayCalculation);
 	}
 
 }

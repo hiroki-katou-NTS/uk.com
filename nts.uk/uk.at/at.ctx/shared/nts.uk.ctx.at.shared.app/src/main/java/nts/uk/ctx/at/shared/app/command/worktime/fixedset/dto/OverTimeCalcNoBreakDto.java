@@ -5,8 +5,8 @@
 package nts.uk.ctx.at.shared.app.command.worktime.fixedset.dto;
 
 import lombok.Value;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodNoBreak;
+import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeCalcNoBreakGetMemento;
 
 /**
@@ -44,11 +44,11 @@ public class OverTimeCalcNoBreakDto implements OverTimeCalcNoBreakGetMemento {
 	 * getInLawOT()
 	 */
 	@Override
-	public OverTimeFrameNo getInLawOT() {
+	public OTFrameNo getInLawOT() {
 		if (this.inLawOT == null) {
 			return null;
 		}
-		return new OverTimeFrameNo(this.inLawOT);
+		return new OTFrameNo(this.inLawOT);
 	}
 
 	/*
@@ -59,11 +59,11 @@ public class OverTimeCalcNoBreakDto implements OverTimeCalcNoBreakGetMemento {
 	 * getNotInLawOT()
 	 */
 	@Override
-	public OverTimeFrameNo getNotInLawOT() {
+	public OTFrameNo getNotInLawOT() {
 		if (this.notInLawOT == null) {
 			return null;
 		}
-		return new OverTimeFrameNo(this.notInLawOT);
+		return new OTFrameNo(this.notInLawOT);
 	}
 
 }

@@ -5,8 +5,8 @@
 package nts.uk.ctx.at.shared.app.command.worktime.fixedset.dto;
 
 import lombok.Value;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodExceededPredAddVacation;
+import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.ExceededPredAddVacationCalcGetMemento;
 
 /**
@@ -39,11 +39,11 @@ public class ExceededPredAddVacationCalcDto implements ExceededPredAddVacationCa
 	 * ExceededPredAddVacationCalcGetMemento#getOtFrameNo()
 	 */
 	@Override
-	public OverTimeFrameNo getOtFrameNo() {
+	public OTFrameNo getOtFrameNo() {
 		if (this.otFrameNo == null) {
 			return null;
 		}
-		return new OverTimeFrameNo(this.otFrameNo);
+		return new OTFrameNo(this.otFrameNo);
 	}
 
 }

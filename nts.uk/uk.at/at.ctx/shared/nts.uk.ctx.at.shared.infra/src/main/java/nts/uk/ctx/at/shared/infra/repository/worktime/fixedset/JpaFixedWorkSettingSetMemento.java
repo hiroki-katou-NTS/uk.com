@@ -221,7 +221,6 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 */
 	@Override
 	public void setFixedWorkCalcSetting(FixedWorkCalcSetting fixedWorkCalcSetting) {
-		// TODO Auto-generated method stub
-
+		fixedWorkCalcSetting.saveToMemento(new JpaFixedWorkCalcSettingSetMemento(this.entity));
 	}
 }

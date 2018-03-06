@@ -5,8 +5,8 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodExceededPredAddVacation;
+import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -22,7 +22,7 @@ public class ExceededPredAddVacationCalc extends WorkTimeDomainObject {
 
 	/** The ot frame no. */
 	// 残業枠
-	private OverTimeFrameNo otFrameNo;
+	private OTFrameNo otFrameNo;
 
 	public ExceededPredAddVacationCalc(ExceededPredAddVacationCalcGetMemento memento) {
 		this.calcMethod = memento.getCalcMethod();

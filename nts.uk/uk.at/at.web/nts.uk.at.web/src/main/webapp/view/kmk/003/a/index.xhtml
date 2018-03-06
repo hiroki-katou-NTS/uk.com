@@ -79,6 +79,10 @@
 			<com:scriptfile path="../a16/kmk003.a16.vm.js" />
 			<com:stylefile path="../a16/kmk003.a16.style.css" /><!-- End tab 16 -->
 			
+			<!-- Begin tab 17 -->
+			<com:scriptfile path="../a17/kmk003.a17.vm.js" />
+			<com:stylefile path="../a17/kmk003.a17.style.css" /><!-- End tab 17 -->
+			
 			<com:scriptfile path="/view/kmk/003/base/fixedtable/fixedtable.js" of="/nts.uk.at.web"/>
 			<com:scriptfile path="/view/kmk/003/base/timerange/timerange.js" of="/nts.uk.at.web"/>
 			
@@ -447,6 +451,15 @@
 											</div>
 											<div tabindex="165" class="tab-a16">
 												<div class="tab-outline" data-bind="ntsKMK003A16: {
+													selectedTab: selectedTab,
+													screenMode: tabMode,
+													model: mainSettingModel,
+													enum: settingEnum
+												}">
+												</div>
+											</div>											
+											<div tabindex="167" class="tab-a17">
+												<div class="tab-outline" data-bind="ntsKMK003A17: {
 													selectedTab: selectedTab,
 													screenMode: tabMode,
 													model: mainSettingModel,

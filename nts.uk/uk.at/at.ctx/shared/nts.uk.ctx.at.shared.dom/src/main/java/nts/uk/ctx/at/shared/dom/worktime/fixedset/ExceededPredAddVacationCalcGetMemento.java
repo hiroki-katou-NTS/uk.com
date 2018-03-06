@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodExceededPredAddVacation;
+import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 
 /**
  * The Interface ExceededPredAddVacationCalcGetMemento.
@@ -24,5 +24,5 @@ public interface ExceededPredAddVacationCalcGetMemento {
 	 *
 	 * @return the ot frame no
 	 */
-	OverTimeFrameNo getOtFrameNo();
+	OTFrameNo getOtFrameNo();
 }

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 @Getter
 public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 
-	/** The Zero H stradd calculate set. */
+	/** The zero H stradd calculate set. */
 	// 0時跨ぎ計算設定
 	private boolean zeroHStraddCalculateSet;
 
@@ -61,6 +61,10 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 	/** The late early set. */
 	// 遅刻・早退設定
 	private WorkTimezoneLateEarlySet lateEarlySet;
+	
+	/** The holiday calculation. */
+	// 休暇時の計算
+	private HolidayCalculation holidayCalculation;
 
 	/**
 	 * Instantiates a new work timezone common set.
@@ -79,6 +83,7 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 		this.shortTimeWorkSet = memento.getShortTimeWorkSet();
 		this.extraordTimeSet = memento.getExtraordTimeSet();
 		this.lateEarlySet = memento.getLateEarlySet();
+		this.holidayCalculation = memento.getHolidayCalculation();
 	}
 
 	/**
@@ -98,6 +103,7 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 		memento.setShortTimeWorkSet(this.shortTimeWorkSet);
 		memento.setExtraordTimeSet(this.extraordTimeSet);
 		memento.setLateEarlySet(this.lateEarlySet);
+		memento.setHolidayCalculation(this.holidayCalculation);
 	}
 
 	/**

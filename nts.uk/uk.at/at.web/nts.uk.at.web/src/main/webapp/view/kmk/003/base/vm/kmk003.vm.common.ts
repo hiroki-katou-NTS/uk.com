@@ -43,6 +43,7 @@ module nts.uk.at.view.kmk003.a {
     import EmTimeZoneSetDto = service.model.common.EmTimeZoneSetDto;
     import FixedWorkRestSetDto = service.model.common.FixedWorkRestSetDto;
     import FixedWorkTimezoneSetDto = service.model.common.FixedWorkTimezoneSetDto;
+    import HolidayCalculationDto = service.model.common.HolidayCalculationDto;
 
     import LateEarlyAtr = service.model.common.LateEarlyAtr;
     import WorkSystemAtr = service.model.common.WorkSystemAtr;
@@ -227,6 +228,7 @@ module nts.uk.at.view.kmk003.a {
                 shortTimeWorkSet: WorkTimezoneShortTimeWorkSetModel;
                 extraordTimeSet: WorkTimezoneExtraordTimeSetModel;
                 lateEarlySet: WorkTimezoneLateEarlySetModel;
+                holidayCalculation: HolidayCalculationModel;
 
                 constructor() {
                     this.zeroHStraddCalculateSet = ko.observable(false);
@@ -240,6 +242,7 @@ module nts.uk.at.view.kmk003.a {
                     this.shortTimeWorkSet = new WorkTimezoneShortTimeWorkSetModel();
                     this.extraordTimeSet = new WorkTimezoneExtraordTimeSetModel();
                     this.lateEarlySet = new WorkTimezoneLateEarlySetModel();
+                    this.holidayCalculation = new HolidayCalculationModel();
                 }
 
                 updateData(data: WorkTimezoneCommonSetDto) {
@@ -295,6 +298,7 @@ module nts.uk.at.view.kmk003.a {
                         this.shortTimeWorkSet.updateData(data.shortTimeWorkSet);
                         this.extraordTimeSet.updateData(data.extraordTimeSet);
                         this.lateEarlySet.updateData(data.lateEarlySet);
+                        this.holidayCalculation.updateData(data.holidayCalculation);
                     }
                 }
 
@@ -312,7 +316,8 @@ module nts.uk.at.view.kmk003.a {
                         lateNightTimeSet: this.lateNightTimeSet.toDto(),
                         shortTimeWorkSet: this.shortTimeWorkSet.toDto(),
                         extraordTimeSet: this.extraordTimeSet.toDto(),
-                        lateEarlySet: this.lateEarlySet.toDto()
+                        lateEarlySet: this.lateEarlySet.toDto(),
+                        holidayCalculation: this.holidayCalculation.toDto()
                     };
                     return dataDTO;
                 }
@@ -339,6 +344,7 @@ module nts.uk.at.view.kmk003.a {
                     this.shortTimeWorkSet.resetData();
                     this.extraordTimeSet.resetData();
                     this.lateEarlySet.resetData();
+                    this.holidayCalculation.resetData();
                 }
 
                 public static getDefaultSubHol(originAtr: SubHolidayOriginAtr): WorkTimezoneOtherSubHolTimeSetModel {
@@ -1833,21 +1839,25 @@ module nts.uk.at.view.kmk003.a {
 
             export class FixedWorkRestSetModel {
                 commonRestSet: CommonRestSettingModel;
+                isPlanActualNotMatchMasterRefer: KnockoutObservable<boolean>;
                 fixedRestCalculateMethod: KnockoutObservable<number>;
 
                 constructor() {
                     this.commonRestSet = new CommonRestSettingModel();
+                    this.isPlanActualNotMatchMasterRefer = ko.observable(false);
                     this.fixedRestCalculateMethod = ko.observable(0);
                 }
 
                 updateData(data: FixedWorkRestSetDto) {
                     this.commonRestSet.updateData(data.commonRestSet);
+                    this.isPlanActualNotMatchMasterRefer(data.isPlanActualNotMatchMasterRefer);
                     this.fixedRestCalculateMethod(data.fixedRestCalculateMethod);
                 }
 
                 toDto(): FixedWorkRestSetDto {
                     let dataDTO: FixedWorkRestSetDto = {
                         commonRestSet: this.commonRestSet.toDto(),
+                        isPlanActualNotMatchMasterRefer: this.isPlanActualNotMatchMasterRefer(),
                         fixedRestCalculateMethod: this.fixedRestCalculateMethod()
                     };
                     return dataDTO;
@@ -1855,6 +1865,7 @@ module nts.uk.at.view.kmk003.a {
 
                 resetData() {
                     this.commonRestSet.resetData();
+                    this.isPlanActualNotMatchMasterRefer(false);
                     this.fixedRestCalculateMethod(0);
                 }
             }
@@ -1915,6 +1926,29 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
+            export class HolidayCalculationModel {
+                isCalculate: KnockoutObservable<number>;
+                
+                constructor() {
+                    this.isCalculate = ko.observable(0);
+                }
+
+                updateData(data: HolidayCalculationDto) {
+                    this.isCalculate(data.isCalculate);
+                }
+
+                toDto(): HolidayCalculationDto {
+                    let dataDTO: HolidayCalculationDto = {
+                        isCalculate: this.isCalculate()
+                    };
+                    return dataDTO;
+                }
+
+                resetData() {
+                    this.isCalculate(0);
+                }
+            }
+            
         }
     }
 }

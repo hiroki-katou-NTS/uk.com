@@ -5,8 +5,8 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodNoBreak;
+import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -22,11 +22,11 @@ public class OverTimeCalcNoBreak extends WorkTimeDomainObject {
 
 	/** The in law OT. */
 	// 法内残業
-	private OverTimeFrameNo inLawOT;
+	private OTFrameNo inLawOT;
 
 	/** The not in law OT. */
 	// 法外残業
-	private OverTimeFrameNo notInLawOT;
+	private OTFrameNo notInLawOT;
 
 	/**
 	 * Instantiates a new over time calc no break.

@@ -4,8 +4,6 @@ import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSetPK;
-
 @Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-12-23T17:54:14")
 @StaticMetamodel(KshmtDiffTimeWorkSet.class)
 public class KshmtDiffTimeWorkSet_ { 
@@ -14,6 +12,7 @@ public class KshmtDiffTimeWorkSet_ {
     public static volatile SingularAttribute<KshmtDiffTimeWorkSet, Integer> changeAhead;
     public static volatile SingularAttribute<KshmtDiffTimeWorkSet, Integer> dtCalcMethod;
     public static volatile SingularAttribute<KshmtDiffTimeWorkSet, Integer> dtCommonRestSet;
+    public static volatile SingularAttribute<KshmtDiffTimeWorkSet, Integer> dtIsPlanActualNotMatchMasterRefe;
     public static volatile SingularAttribute<KshmtDiffTimeWorkSet, Integer> timeRoundingUnit;
     public static volatile SingularAttribute<KshmtDiffTimeWorkSet, Integer> frontRearAtr;
     public static volatile SingularAttribute<KshmtDiffTimeWorkSet, Integer> exclusVer;

@@ -6,8 +6,8 @@ package nts.uk.ctx.at.shared.app.find.worktime.fixedset.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodExceededPredAddVacation;
+import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.ExceededPredAddVacationCalcSetMemento;
 
 /**
@@ -32,6 +32,9 @@ public class ExceededPredAddVacationCalcDto implements ExceededPredAddVacationCa
 	 */
 	@Override
 	public void setCalcMethod(CalcMethodExceededPredAddVacation calcMethod) {
+		if (calcMethod == null) {
+			return;
+		}
 		this.calcMethod = calcMethod.value;
 	}
 
@@ -43,7 +46,10 @@ public class ExceededPredAddVacationCalcDto implements ExceededPredAddVacationCa
 	 * dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo)
 	 */
 	@Override
-	public void setOtFrameNo(OverTimeFrameNo otFrameNo) {
+	public void setOtFrameNo(OTFrameNo otFrameNo) {
+		if (otFrameNo == null) {
+			return;
+		}
 		this.otFrameNo = otFrameNo.v();
 	}
 

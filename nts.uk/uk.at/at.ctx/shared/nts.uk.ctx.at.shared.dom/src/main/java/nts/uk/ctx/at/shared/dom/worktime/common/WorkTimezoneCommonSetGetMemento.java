@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
@@ -89,4 +89,11 @@ public interface WorkTimezoneCommonSetGetMemento {
 	 * @return the late early set
 	 */
 	 WorkTimezoneLateEarlySet getLateEarlySet();
+
+	/**
+ 	 * Gets the holiday calculation.
+ 	 *
+ 	 * @return the holiday calculation
+ 	 */
+ 	HolidayCalculation getHolidayCalculation();
 }

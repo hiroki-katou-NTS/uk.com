@@ -95,7 +95,7 @@ module a12 {
                 if (_self.isDetailMode()) {
                     _self.selectedTab('tab-13');  
                 } else {
-                    _self.selectedTab('tab-1');  
+                    _self.selectedTab('tab-17');  
                 }            
             }
         }

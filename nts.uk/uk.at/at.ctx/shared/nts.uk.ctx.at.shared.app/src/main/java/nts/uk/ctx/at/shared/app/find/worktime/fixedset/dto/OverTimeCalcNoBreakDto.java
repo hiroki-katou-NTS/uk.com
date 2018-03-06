@@ -6,8 +6,8 @@ package nts.uk.ctx.at.shared.app.find.worktime.fixedset.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodNoBreak;
+import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeCalcNoBreakSetMemento;
 
 /**
@@ -31,6 +31,9 @@ public class OverTimeCalcNoBreakDto implements OverTimeCalcNoBreakSetMemento {
 	 */
 	@Override
 	public void setCalcMethod(CalcMethodNoBreak calcMethod) {
+		if (calcMethod == null) {
+			return;
+		}
 		this.calcMethod = calcMethod.value;
 	}
 
@@ -38,7 +41,10 @@ public class OverTimeCalcNoBreakDto implements OverTimeCalcNoBreakSetMemento {
 	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeCalcNoBreakSetMemento#setInLawOT(nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo)
 	 */
 	@Override
-	public void setInLawOT(OverTimeFrameNo inLawOT) {
+	public void setInLawOT(OTFrameNo inLawOT) {
+		if (inLawOT == null) {
+			return;
+		}
 		this.inLawOT = inLawOT.v();
 	}
 
@@ -46,7 +52,10 @@ public class OverTimeCalcNoBreakDto implements OverTimeCalcNoBreakSetMemento {
 	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeCalcNoBreakSetMemento#setNotInLawOT(nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo)
 	 */
 	@Override
-	public void setNotInLawOT(OverTimeFrameNo notInLawOT) {
+	public void setNotInLawOT(OTFrameNo notInLawOT) {
+		if (notInLawOT == null) {
+			return;
+		}
 		this.notInLawOT = notInLawOT.v();
 	}
 

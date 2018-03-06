@@ -173,8 +173,7 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 */
 	@Override
 	public FixedWorkCalcSetting getFixedWorkCalcSetting() {
-		// TODO Auto-generated method stub
-		return null;
+		return new FixedWorkCalcSetting(new JpaFixedWorkCalcSettingGetMemento(this.entity));
 	}
 
 }

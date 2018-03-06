@@ -56,6 +56,9 @@ module nts.uk.at.view.kmk003.a {
                     applyAtr: EnumConstantDto[];
                     lstFixedChangeAtr: EnumConstantDto[];
                     lstAmPmAtr: EnumConstantDto[];
+                    notUseAtr: EnumConstantDto[];
+                    calcMethodNoBreak: EnumConstantDto[];
+                    calcMethodExceededPredAddVacation: EnumConstantDto[];
                 }
 
 
