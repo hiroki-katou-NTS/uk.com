@@ -10,6 +10,8 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
+import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.info.category.HistoryTypes;
@@ -41,6 +43,9 @@ public class PerInfoCategoryFinder {
 
 	@Inject
 	private EmInfoCtgDataRepository empDataRepo;
+	
+	@Inject
+	private PerInfoItemDefFinder perInfoItemDfFinder;
 
 	public List<PerInfoCtgFullDto> getAllPerInfoCtg() {
 		return perInfoCtgRepositoty
@@ -112,7 +117,10 @@ public class PerInfoCategoryFinder {
 
 		List<PerInfoCtgShowDto> categoryList = perInfoCtgRepositoty.getAllPerInfoCategory(companyId, contractCode)
 				.stream().map(p -> {
-					if (pernfoItemDefRep.countPerInfoItemDefInCategory(p.getPersonInfoCategoryId(), companyId) > 0) {
+					
+					List<PerInfoItemDefDto> lstItemDfInCat = this.perInfoItemDfFinder.getAllPerInfoItemDefByCtgIdForLayout(p.getPersonInfoCategoryId());
+					
+					if ((pernfoItemDefRep.countPerInfoItemDefInCategory(p.getPersonInfoCategoryId(), companyId) > 0) && (!lstItemDfInCat.isEmpty())) {
 						return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
 								p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v());
 					}
