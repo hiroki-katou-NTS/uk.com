@@ -158,8 +158,8 @@ module nts.layout {
             finder = self.finder,
             CS00002_IS00003: IFindData = finder.find('CS00002', 'IS00003'),
             CS00002_IS00004: IFindData = finder.find('CS00002', 'IS00004'),
-            CS00002_IS00009: IFindData = finder.find('CS00002', 'IS00009'),
-            CS00002_IS00010: IFindData = finder.find('CS00002', 'IS00010');
+            CS00002_IS00015: IFindData = finder.find('CS00002', 'IS00015'),
+            CS00002_IS00016: IFindData = finder.find('CS00002', 'IS00016');
             if (CS00002_IS00003) {
                 self.validateName(CS00002_IS00003);
                 CS00002_IS00003.data.value.subscribe(x=> {
@@ -173,17 +173,17 @@ module nts.layout {
                    self.validateName(CS00002_IS00004);
                 });
             }
-            if (CS00002_IS00009) {
-                self.validateName(CS00002_IS00009);
-                CS00002_IS00009.data.value.subscribe(x=> {
-                   self.validateName(CS00002_IS00009);
+            if (CS00002_IS00015) {
+                self.validateName(CS00002_IS00015);
+                CS00002_IS00015.data.value.subscribe(x=> {
+                   self.validateName(CS00002_IS00015);
                 });
             }
             
-            if (CS00002_IS00010) {
-                self.validateName(CS00002_IS00010);
-                CS00002_IS00010.data.value.subscribe(x=> {
-                   self.validateName(CS00002_IS00010);
+            if (CS00002_IS00016) {
+                self.validateName(CS00002_IS00016);
+                CS00002_IS00016.data.value.subscribe(x=> {
+                   self.validateName(CS00002_IS00016);
                 });
             }
         };
