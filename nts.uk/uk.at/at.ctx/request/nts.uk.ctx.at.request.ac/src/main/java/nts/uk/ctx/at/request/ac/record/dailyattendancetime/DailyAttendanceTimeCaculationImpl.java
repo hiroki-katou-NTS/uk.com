@@ -84,10 +84,10 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 	 * @param bonusTime
 	 * @return
 	 */
-	private Map<Integer,TimeWithCalculationImport> convertBonusTime(Map<Integer,TimeWithCalculation> bonusTime){
-		Map<Integer,TimeWithCalculationImport> timeWithCal = new HashMap<>();
-		for(Map.Entry<Integer,TimeWithCalculation> entry : bonusTime.entrySet()){
-			timeWithCal.put(entry.getKey(), convert(entry.getValue()));
+	private Map<Integer,Integer> convertBonusTime(Map<Integer,AttendanceTime> bonusTime){
+		Map<Integer,Integer> timeWithCal = new HashMap<>();
+		for(Map.Entry<Integer,AttendanceTime> entry : bonusTime.entrySet()){
+			timeWithCal.put(entry.getKey(), entry.getValue().v());
 		}
 		return timeWithCal;
 	}
