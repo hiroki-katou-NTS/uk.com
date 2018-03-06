@@ -65,7 +65,7 @@ public class WorkInformationOfDailyDto implements ConvertibleAttendanceItem {
 
 	private static WorkInfoDto createWorkInfo(WorkInformation workInfo) {
 		return workInfo == null ? null : new WorkInfoDto(workInfo.getWorkTypeCode().v(),
-				workInfo.getWorkTimeCode().v());
+				workInfo.getWorkTimeCode() == null ? null : workInfo.getWorkTimeCode().v());
 	}
 
 	@Override

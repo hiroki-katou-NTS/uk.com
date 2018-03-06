@@ -96,8 +96,9 @@ public class ApplicationListFinder {
 				master.setCheckTimecolor(this.findColorAtr(lstApp.getLstTimeColor(), master.getAppID()));
 			}
 		}
-		return new ApplicationListDto(displaySet, lstApp.getLstMasterInfo(),lstAppDto,lstApp.getLstAppOt(),lstApp.getLstAppGoBack(),
-				lstApp.getAppStatusCount(), lstApp.getLstAppGroup());
+		List<Integer> lstAppType = this.findListApp(lstAppDto);
+		return new ApplicationListDto(param.getStartDate(), param.getEndDate(), displaySet, lstApp.getLstMasterInfo(),lstAppDto,lstApp.getLstAppOt(),lstApp.getLstAppGoBack(),
+				lstApp.getAppStatusCount(), lstApp.getLstAppGroup(), lstAppType);
 	}
 	
 	private Integer findStatusAppv(List<AppStatusApproval> lstStatusApproval, String appID){
@@ -131,5 +132,14 @@ public class ApplicationListFinder {
 			}
 		}
 		return 0;
+	}
+	private List<Integer> findListApp(List<ApplicationDto_New> lstApp){
+		List<Integer> lstAppType = new ArrayList<>();
+		for (ApplicationDto_New app : lstApp) {
+			if(!lstAppType.contains(app.getApplicationType())){
+				lstAppType.add(app.getApplicationType());
+			}
+		}
+		return lstAppType.stream().sorted((x, y) -> x-y).collect(Collectors.toList());
 	}
 }

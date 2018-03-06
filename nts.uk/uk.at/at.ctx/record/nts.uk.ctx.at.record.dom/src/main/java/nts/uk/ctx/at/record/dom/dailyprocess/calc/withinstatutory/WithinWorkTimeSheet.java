@@ -84,7 +84,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	//private Optional<> flexTimeSheet;
 	private final List<WithinWorkTimeFrame> withinWorkTimeFrame;
 //	private final List<LeaveEarlyDecisionClock> leaveEarlyDecisionClock;
-//	private final List<LateDecisionClock> lateDecisionClock;
+	private final List<LateDecisionClock> lateDecisionClock;
 //	private List<LateTimeOfDaily> lateTimeOfDaily;
 //	private final FlexWithinWorkTimeSheet flexTimeSheet;
 	
@@ -111,13 +111,13 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 													MidNightTimeSheet midNightTimeSheet) {
 		
 		List<WithinWorkTimeFrame> timeFrames = new ArrayList<>();
-		//List<LateDecisionClock> lateDesClock = new ArrayList<>();
+		List<LateDecisionClock> lateDesClock = new ArrayList<>();
 		if(workType.isWeekDayAttendance()) {
-			
+			//lateDesClock = 
 			timeFrames = isWeekDayProcess(timeLeavingWork,workType,predetermineTimeSetForCalc,lstHalfDayWorkTimezone,workTimeCommonSet
 									 							,deductionTimeSheet,bonusPaySetting,midNightTimeSheet);
 		}
-		return new WithinWorkTimeSheet(timeFrames);
+		return new WithinWorkTimeSheet(timeFrames,lateDesClock);
 	}
 
 	/**

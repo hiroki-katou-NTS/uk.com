@@ -1,13 +1,15 @@
 package nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 
 public interface IdentificationRepository {
 	
-	void delete(String employeeId, GeneralDate processingYmd);
+	List<Identification> findByEmployeeID(String employeeID,GeneralDate startDate,GeneralDate endDate);
 	
-	void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> processingYmds);
+	Optional<Identification> findByCode(String employeeID,GeneralDate processingYmd);
 
 }
