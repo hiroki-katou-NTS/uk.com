@@ -8,8 +8,8 @@ import nts.arc.primitive.constraint.IntegerMinValue;
 /**
  * コード編集桁
  */
-@IntegerMaxValue(9999)
-@IntegerMinValue(0)
+@IntegerMaxValue(100)
+@IntegerMinValue(1)
 public class CodeEditDigit extends IntegerPrimitiveValue<PrimitiveValue<Integer>>{
 	/**
 	 * 

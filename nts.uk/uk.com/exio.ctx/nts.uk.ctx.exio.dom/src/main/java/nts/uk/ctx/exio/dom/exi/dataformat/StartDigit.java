@@ -8,8 +8,8 @@ import nts.arc.primitive.constraint.IntegerMinValue;
 /**
  * 有効桁数終了桁
  */
-@IntegerMaxValue(9999)
-@IntegerMinValue(0)
+@IntegerMaxValue(100)
+@IntegerMinValue(1)
 public class StartDigit extends IntegerPrimitiveValue<PrimitiveValue<Integer>>{
 	/**
 	 * 

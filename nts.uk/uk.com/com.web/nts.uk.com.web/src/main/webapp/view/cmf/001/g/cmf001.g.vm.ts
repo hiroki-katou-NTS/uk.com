@@ -40,7 +40,7 @@ module nts.uk.com.view.cmf001.g.viewmodel {
                 new model.ItemModel(model.ROUNDING_METHOD.ROUND_UP, 'ROUND_UP'),
                 new model.ItemModel(model.ROUNDING_METHOD.DOWN_4_UP_5, 'DOWN_4_UP_5')
             ]);
-            let params = getShared("CMF001mParams");
+            let params = getShared("CMF001gParams");
             if (!nts.uk.util.isNullOrUndefined(params)) {
                 let inputMode = params.inputMode;
                 let lineNumber = params.lineNumber;
@@ -76,7 +76,7 @@ module nts.uk.com.view.cmf001.g.viewmodel {
         saveNumericSetting() {
             var self = this;
             if (self.inputMode) {
-                setShared("CMF001mOutput", { lineNumber: self.lineNumber, formatSetting: ko.toJS(self.numDataFormatSetting) });
+                setShared("CMF001FormatOutput", { lineNumber: self.lineNumber, formatSetting: ko.toJS(self.numDataFormatSetting) });
             }
             nts.uk.ui.windows.close();
         }

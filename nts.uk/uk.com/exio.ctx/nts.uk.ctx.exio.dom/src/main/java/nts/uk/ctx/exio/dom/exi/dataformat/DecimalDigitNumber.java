@@ -8,8 +8,8 @@ import nts.arc.primitive.constraint.IntegerMinValue;
 /**
  * 少数桁数
  */
-@IntegerMaxValue(99)
-@IntegerMinValue(0)
+@IntegerMaxValue(100)
+@IntegerMinValue(1)
 public class DecimalDigitNumber extends IntegerPrimitiveValue<PrimitiveValue<Integer>>{
 	/**
 	 * 
