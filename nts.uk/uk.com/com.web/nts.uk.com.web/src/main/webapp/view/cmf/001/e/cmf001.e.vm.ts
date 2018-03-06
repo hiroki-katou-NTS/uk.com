@@ -10,43 +10,36 @@ module nts.uk.com.view.cmf001.e.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
-        listCsvItem: KnockoutObservableArray<model.MappingListData>;
-        listCsvItemShared: model.MappingListData[];
-        selectedCsvItemNumber: KnockoutObservable<number>;
-        selectedCsvItem: model.MappingListData
+        listCsvItem: KnockoutObservableArray<model.MappingListData> = ko.observableArray([]);
+        selectedCsvItemNumber: KnockoutObservable<number> = ko.observable(null);
         constructor() {
             var self = this;
-            self.listCsvItemShared = getShared("listCsvItem");
-            self.selectedCsvItem = getShared("selectedCsvItemShared");
-            if (self.listCsvItemShared.length > 0) {
-                self.listCsvItem = ko.observableArray(self.listCsvItemShared);
-                if (_.isNull(self.selectedCsvItem)) {
-                    self.selectedCsvItemNumber = ko.observable(1);
-                } else {
-                    if(_.some(self.listCsvItemShared, self.selectedCsvItem)){
-                        self.selectedCsvItemNumber = ko.observable(self.selectedCsvItem.dispCsvItemNumber);
-                    }else{
-                        self.listCsvItem = ko.observableArray([new model.MappingListData(1, "None")]);
-                        alertError({ messageId: "Msg_905", messageParams: ["X", "Y"] });
+            let params = getShared("CMF001eParams");
+            if (!nts.uk.util.isNullOrUndefined(params)) {
+                let listCsvItem = params.listCsvItem;
+                let selectedCsvItemNumber = params.selectedCsvItemNumber;
+                if (listCsvItem.length > 0){
+                    // リスト表示するためのドメインモデル「マッピング用一覧データ（Work）」（D画面で生成）から下記を取得する
+                    self.listCsvItem.push.apply(self.listCsvItem, listCsvItem);
+                    // 一覧表の該当行にフォーカスする
+                    if (!nts.uk.util.isNullOrUndefined(selectedCsvItemNumber)) {
+                        self.selectedCsvItemNumber(selectedCsvItemNumber);
                     }
+                }else{
+                    // データ0件＝CSVが未読込の場合
+                    alertError({ messageId: "Msg_905"});
                 }
+            }else{
+                alertError({ messageId: "Msg_905"});
             }
-            else {
-                self.listCsvItem = ko.observableArray([new model.MappingListData(1, "None")]);
-                alertError({ messageId: "Msg_905", messageParams: ["X", "Y"] });
-            }
-            self.selectedCsvItemNumber.subscribe(function(data: any) {
-                if (data) {
-                    self.selectedCsvItem = _.find(ko.toJS(self.listCsvItemShared), (x: model.MappingListData) => x.dispCsvItemNumber == data);
-                }
-            });
         }
         cancel() {
             nts.uk.ui.windows.close();
         }
         save() {
             var self = this;
-            setShared("selectedCsvItemShared", self.selectedCsvItem);
+            let selectedCsvItem = _.find(ko.toJS(self.listCsvItem), (x: model.MappingListData) => x.dispCsvItemNumber == ko.toJS(self.selectedCsvItemNumber));
+            setShared("CMF001eOutput", {selectedCsvItem: ko.toJS(selectedCsvItem)});
             nts.uk.ui.windows.close();
         }
     }

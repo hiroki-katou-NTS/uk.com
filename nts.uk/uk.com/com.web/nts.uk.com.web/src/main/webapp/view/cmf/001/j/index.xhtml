@@ -29,13 +29,13 @@
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_331')}</div>
 						</td>
 						<td>
-							<div data-bind="foreach: itemsDigit">
+							<div data-bind="foreach: itemsEffectiveDigitLength">
 								<div
 									data-bind="ntsRadioButton: {
-										checked: $parent.selectedDigit, 
+										checked: $parent.setting().effectiveDigitLength, 
 										option: $data, 
 										optionValue: 'code', 
-										enable: !(!$parent.checkActive6() || !$parent.inputMode()),
+										enable: !(!$parent.checkActive6() || !$parent.inputMode),
 										optionText: 'name', 
 										group: 'J2_2'}"></div>
 							</div>
@@ -44,15 +44,15 @@
 							<div class="disp-inline">
 								<input
 									data-bind="ntsNumberEditor: {
-										value: fromDigit, 
-										enable: !(!checkActive6() || !checkActive1() || !inputMode()),
+										value: setting().startDigit, 
+										enable: !(!checkActive6() || !checkActive1() || !inputMode),
 										option : {width : '40px'}}" />
 							</div> <label>#{i18n.getText('CMF001_336')}</label> <label>#{i18n.getText('CMF001_337')}</label>
 							<div class="disp-inline">
 								<input
 									data-bind="ntsNumberEditor: {
-										value: toDigit, 
-										enable: !(!checkActive6() || !checkActive1() || !inputMode()),
+										value: setting().endDigit, 
+										enable: !(!checkActive6() || !checkActive1() || !inputMode),
 										option : {width : '40px'}}" />
 							</div> <label>#{i18n.getText('CMF001_339')}</label>
 						</td>
@@ -65,11 +65,11 @@
 						<td colspan="2">
 							<div class="cf"
 								data-bind="ntsSwitchButton: {
-								options: itemsDecimalType,
+								options: itemsDecimalSelection,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: selectedDecimalType,
-								enable: !(!checkActive6() || !inputMode()) }"></div>
+								value: setting().decimalSelection,
+								enable: !(!checkActive6() || !inputMode) }"></div>
 						</td>
 					</tr>
 					<!-- J4 -->
@@ -80,11 +80,11 @@
 						<td colspan="2">
 							<div class="cf"
 								data-bind="ntsSwitchButton: {
-								options: itemsTimeType,
+								options: itemsHourMinuteSelection,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: selectedTimeType,
-								enable: !(!checkActive6() || !checkActive4() || !inputMode()) }"></div>
+								value: setting().hourMinuteSelection,
+								enable: !(!checkActive6() || !checkActive4() || !inputMode) }"></div>
 						</td>
 					</tr>
 					<!-- J5 -->
@@ -95,11 +95,11 @@
 						<td colspan="2">
 							<div
 								data-bind="ntsComboBox: {
-								options: itemsDelimiterSet,
+								options: itemsDelimiterSetting,
 								optionsValue: 'code',
-								enable: !(!checkActive6() || !inputMode()) ,
+								enable: !(!checkActive6() || !inputMode) ,
 								visibleItemsCount: 5,
-								value: selectedDelimiterSet,
+								value: setting().delimiterSetting,
 								optionsText: 'name',
 								columns: [
 								{ prop: 'name', length: 12 }
@@ -112,13 +112,13 @@
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_356')}</div>
 						</td>
 						<td>
-							<div data-bind="foreach: itemsRoundProcess">
+							<div data-bind="foreach: itemsRoundingProcessing">
 								<div
 									data-bind="ntsRadioButton: {
-										checked: $parent.selectedRoundProcess, 
+										checked: $parent.setting().roundingProcessing, 
 										option: $data, 
 										optionValue: 'code', 
-										enable: !(!$parent.checkActive6() || !$parent.checkActive5() || !$parent.inputMode()), 
+										enable: !(!$parent.checkActive6() || !$parent.checkActive5() || !$parent.inputMode), 
 										optionText: 'name', 
 										group: 'J6_2'}"></div>
 							</div>
@@ -126,11 +126,11 @@
 						<td>
 							<div
 								data-bind="ntsComboBox: {
-								options: itemsRoundProcessContent,
+								options: itemsRoundProcessingClassification,
 								optionsValue: 'code',
-								enable: !(!checkActive6() || !checkActive5() || !checkActive2() || !inputMode()), 
+								enable: !(!checkActive6() || !checkActive5() || !checkActive2() || !inputMode), 
 								visibleItemsCount: 5,
-								value: selectedRoundProcessContent,
+								value: setting().roundProcessingClassification,
 								optionsText: 'name',
 								columns: [
 								{ prop: 'name', length: 13 }
@@ -146,7 +146,7 @@
 							<div data-bind="foreach: itemsFixedValue">
 								<div
 									data-bind="ntsRadioButton: {
-										checked: $parent.selectedFixedValue, 
+										checked: $parent.setting().fixedValue, 
 										option: $data, 
 										optionValue: 'code', 
 										enable: $parent.inputMode, 
@@ -156,8 +156,8 @@
 						</td>
 						<td><input
 							data-bind="ntsTextEditor: {
-									value: fixedValue,
-									enable: !(!checkActive3() || !inputMode()) ,
+									value: setting().valueOfFixed,
+									enable: !(!checkActive3() || !inputMode) ,
 									option : {width : '200px'}}" />
 						</td>
 					</tr>
@@ -165,7 +165,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<button id="btn_J8_1" class="x-large proceed "
-					data-bind="click: saveNumericSetting">#{i18n.getText('CMF001_366')}</button>
+					data-bind="click: saveNumericSetting, enable: inputMode">#{i18n.getText('CMF001_366')}</button>
 				<button id="btn_J8_2" class="large"
 					data-bind="click: cancelNumericSetting">#{i18n.getText('CMF001_367')}</button>
 			</div>

@@ -28,9 +28,9 @@ module nts.uk.com.view.cmf001.f.viewmodel {
             //コード一覧でいづれか選択する
             self.selectedConvertCode.subscribe(function(convertCode: any) {
                 nts.uk.ui.errors.clearAll();
-                self.codeConvertData().cdConvertDetails.removeAll();
                 if (convertCode) {
                     block.invisible();
+                    self.codeConvertData().cdConvertDetails.removeAll();
                     //ドメインモデル「受入コード変換」を取得し内容を画面（右側）にセットする
                     service.getAcceptCodeConvert(convertCode).done(function(codeConvert) {
                         if (codeConvert) {

@@ -1,44 +1,32 @@
-#content {
-	width: 1000px
-	margin-bottom: 20px;
+.push-right-4x {
+	margin-left: 400px !important;
 }
 
-#content-left {
-	width: 450px;
-	height: 460px;
-	float: left;
-	padding: 10px;
-}
-
-#content-right {
-	margin-left: 30px;
-	float: left;
-	width: 430px;
-	height: 460px;
-}
-
-.div_line {
-    margin-top: 10px;
-    float: left;
-    clear: both;
-    width: 100%;
-}
-
-.line_col_1 {
-    width: 175px;
-    float: left;
-}
-
-.push-right-4x{
-	margin-left: 400px!important;
-}
-
-.push-right-1x{
-	margin-left: 100px!important;
+.push-right-1x {
+	margin-left: 100px !important;
 }
 
 .order-column {
 	background-color: #CFF1A5;
 	text-align: right;
-    padding-right: 7px!important;
+	padding-right: 7px !important;
+}
+
+.flex {
+	margin-left: 0px;
+	margin-top: 5px;
+}
+
+.nts-fixed-body-wrapper {
+	width: 306px!important;
+	height: 160px!important;
+}
+
+.fixed-flex-layout>.fixed-flex-layout-left {
+	margin-left: 7px;
+	margin-top: 7px;
+}
+
+.panel.ntsPanel.direction-right{
+	margin-right: auto;
 }
