@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.config.info;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -52,7 +53,7 @@ public interface WorkplaceConfigInfoRepository {
 	 * @param baseDate the base date
 	 * @return the optional
 	 */
-	Optional<WorkplaceConfigInfo> find(String companyId, GeneralDate baseDate);
+//	Optional<WorkplaceConfigInfo> find(String companyId, GeneralDate baseDate);
 
 	/**
 	 * Find.
@@ -93,4 +94,14 @@ public interface WorkplaceConfigInfoRepository {
 	 * @return the optional
 	 */
 	Optional<WorkplaceConfigInfo> findAllParentByWkpId(String companyId, GeneralDate baseDate, String wkpId);
+	
+	/**
+	 * Find by wkp ids at time.
+	 *
+	 * @param companyId the company id
+	 * @param baseDate the base date
+	 * @param wkpIds the wkp ids
+	 * @return the list
+	 */
+	List<WorkplaceConfigInfo> findByWkpIdsAtTime(String companyId, GeneralDate baseDate, List<String> wkpIds);
 }

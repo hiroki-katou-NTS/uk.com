@@ -36,7 +36,7 @@ public class ApplicationSettingFinder {
 					appSet.get().getHwAdvanceDispAtr().value, appSet.get().getHwActualDispAtr().value, 
 					appSet.get().getActualExcessMessDispAtr().value, appSet.get().getOtAdvanceDispAtr().value, 
 					appSet.get().getOtActualDispAtr().value, appSet.get().getWarningDateDispAtr().v(),
-					appSet.get().getAppReasonDispAtr().value, appSet.get().getAppReasonDispAtr().value, 
+					appSet.get().getAppReasonDispAtr().value, appSet.get().getAppContentChangeFlg().value, 
 					appSet.get().getScheReflectFlg().value, appSet.get().getPriorityTimeReflectFlg().value, 
 					appSet.get().getAttendentTimeReflectFlg().value);
 		}

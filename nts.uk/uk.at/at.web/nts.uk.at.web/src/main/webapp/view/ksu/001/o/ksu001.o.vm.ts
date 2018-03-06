@@ -1,5 +1,6 @@
 module nts.uk.at.view.ksu001.o.viewmodel {
     import setShare = nts.uk.ui.windows.setShared;
+    import formatById = nts.uk.time.format.byId;
 
     export class ScreenModel {
         listWorkType: KnockoutObservableArray<ksu001.common.viewmodel.WorkType>;
@@ -64,8 +65,10 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     if (c) {
                         workTimeName = c.abName;
                         workTimeCode = (c.workTimeCode == '000') ? null : c.workTimeCode;
-                        startTime = nts.uk.time.parseTime(c.startTime, true).format();
-                        endTime = nts.uk.time.parseTime(c.endTime, true).format();
+                        //                        startTime = nts.uk.time.parseTime(c.startTime, true).format();
+                        //                        endTime = nts.uk.time.parseTime(c.endTime, true).format();
+                        startTime = c.startTime ? formatById("Clock_Short_HM", c.startTime) : '';
+                        endTime = c.endTime ? formatById("Clock_Short_HM", c.endTime) : '';
                     } else {
                         workTimeName = null;
                         workTimeCode = null;
@@ -105,7 +108,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     //                    $("#extable").exTable("viewMode", "shortName", { y: 100 }); 
                     $("#extable").exTable("viewMode", "shortName", { y: 232 });
                     $('#contain-view').show();
-                    //when close dialog, copy-paste value of nameWorkTimeType of screen O(not O1) for cell
+                    // when close dialog, copy-paste value of nameWorkTimeType of screen O(not O1) for cell
                     $("#extable").exTable("stickData", self.nameWorkTimeType());
                     $("#combo-box1").focus();
                 }
@@ -204,26 +207,26 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 self.endDateScreenA = data.endDate;
                 //set data for listWorkType
                 self.listWorkType(data.listWorkType);
-                //
-                self.checkStateWorkTypeCode = data.checkStateWorkTypeCode;
+                self.selectedWorkTypeCode(self.listWorkType()[0].workTypeCode),
+                    self.checkStateWorkTypeCode = data.checkStateWorkTypeCode;
                 self.checkNeededOfWorkTimeSetting = data.checkNeededOfWorkTimeSetting;
                 self.workEmpCombines = data.workEmpCombines;
                 //set data for listWorkTime
-//                self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
-//                    workTimeCode: '000',
-//                    name: nts.uk.resource.getText("KSU001_97"),
-//                    abName: '',
-//                    symbolName: '',
-//                    dailyWorkAtr: undefined,
-//                    worktimeSetMethod: undefined,
-//                    abolitionAtr: undefined,
-//                    color: null,
-//                    note: null,
-//                    startTime: undefined,
-//                    endTime: undefined,
-//                    workNo: undefined,
-//                    useAtr: undefined
-//                }));
+                //                self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
+                //                    workTimeCode: '000',
+                //                    name: nts.uk.resource.getText("KSU001_97"),
+                //                    abName: '',
+                //                    symbolName: '',
+                //                    dailyWorkAtr: undefined,
+                //                    worktimeSetMethod: undefined,
+                //                    abolitionAtr: undefined,
+                //                    color: null,
+                //                    note: null,
+                //                    startTime: undefined,
+                //                    endTime: undefined,
+                //                    workNo: undefined,
+                //                    useAtr: undefined
+                //                }));
                 // insert item 「なし」 with code = '000'
                 self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
                     workTimeCode: '000',
@@ -259,11 +262,15 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 _.each(data.listWorkTime, function(wT) {
                     let workTimeObj: ksu001.common.viewmodel.WorkTime = _.find(self.listWorkTime(), ['workTimeCode', wT.workTimeCode]);
                     if (workTimeObj && wT.workNo == 1) {
-                        workTimeObj.timeZone1 = nts.uk.time.parseTime(wT.startTime, true).format() + nts.uk.resource.getText("KSU001_66")
-                            + nts.uk.time.parseTime(wT.endTime, true).format();
+                        //                        workTimeObj.timeZone1 = nts.uk.time.parseTime(wT.startTime, true).format() + nts.uk.resource.getText("KSU001_66")
+                        //                            + nts.uk.time.parseTime(wT.endTime, true).format();
+                        workTimeObj.timeZone1 = formatById("Clock_Short_HM", wT.startTime) + nts.uk.resource.getText("KSU001_66")
+                            + formatById("Clock_Short_HM", wT.endTime);
                     } else if (workTimeObj && wT.workNo == 2) {
-                        workTimeObj.timeZone2 = wT.useAtr == 1 ? (nts.uk.time.parseTime(wT.startTime, true).format()
-                            + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(wT.endTime, true).format()) : '';
+                        //                        workTimeObj.timeZone2 = wT.useAtr == 1 ? (nts.uk.time.parseTime(wT.startTime, true).format()
+                        //                            + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(wT.endTime, true).format()) : '';
+                        workTimeObj.timeZone2 = wT.useAtr == 1 ? (formatById("Clock_Short_HM", wT.startTime)
+                            + nts.uk.resource.getText("KSU001_66") + formatById("Clock_Short_HM", wT.endTime)) : '';
                     } else {
                         self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
                             workTimeCode: wT.workTimeCode,
@@ -284,6 +291,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 });
                 dfd.resolve();
                 self.listWorkTimeComboBox(self.listWorkTime());
+                self.selectedWorkTimeCode(self.listWorkTimeComboBox()[0].codeName);
             }).fail(function() {
                 dfd.reject();
             });
