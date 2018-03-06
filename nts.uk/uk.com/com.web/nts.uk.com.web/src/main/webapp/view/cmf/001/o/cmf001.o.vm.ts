@@ -84,12 +84,12 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 dialog({ messageId: "Msg_963" });
                 return;
             }
-            //受入ファイルがアップロードされているか判別
+            /*//受入ファイルがアップロードされているか判別
             if (self.fileId() == '') {
                 //Msg_964　を表示する。受入ファイルがアップロードされていません。
                 dialog({ messageId: "Msg_964" });
                 return;
-            }
+            }*/
             //P:外部受入サマリー画面へ遷移する
             $('#ex_accept_wizard').ntsWizard("next");
             self.loadListAccept();
@@ -226,7 +226,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         readUploadFile(numOfCol: number) {
             let self = this;
             //アップロードしたファイルの「取込開始行」のＣＳＶ項Ｎｏの値
-            service.getRecord(self.fileId(), numOfCol, self.selectedConditionStartLine()).done(function(data: Array<any>) {           
+            service.getRecord(self.fileId(), numOfCol, self.selectedConditionStartLine()).done(function(data: Array<any>) {
                 for (let i = 0; i < numOfCol; i++) {
                     let temp = data[self.listAccept()[i].csvItemNumber()];
                     self.listAccept()[i].sampleData(temp);
@@ -247,8 +247,6 @@ module nts.uk.com.view.cmf001.o.viewmodel {
 
         editIngestion(item: any) {
             var self = this;
-            console.log('editIngestion', item, self);
-            debugger
             switch (item.itemType()) {
                 case 0:
                     //数値型の場合                    
@@ -263,11 +261,23 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 case 2:
                     //日付型の場合  
                     //I:「日付型設定」ダイアログをモーダルで表示する
+                    let settingI = new model.DateDataFormatSetting(2, model.NOT_USE_ATR.USE, '1223');
+                    setShared("CMF001iParams", { inputMode: true, lineNumber: null, formatSetting: ko.toJS(settingI) });
                     nts.uk.ui.windows.sub.modal("/view/cmf/001/i/index.xhtml");
+                    /*.onClosed(function() {
+                        var isCancel = getShared('CMF001iCancel');
+                        if (isCancel) {
+                            return;
+                        }
+                        var output = getShared('CMF001iOutput');
+                        console.log(output)
+                    });*/
                     break;
                 case 3:
                     //時間型の場合, 時刻型の場合 
                     //J:「時刻型・時間型設定」ダイアログをモーダルで表示する
+                    let settingJ = new model.InstantTimeDataFormatSetting(0, null, null, 0, 0, 0, 0, 0, 0, '111');
+                    setShared("CMF001jParams", { inputMode: true, lineNumber: null, formatSetting: ko.toJS(settingJ) });
                     nts.uk.ui.windows.sub.modal("/view/cmf/001/j/index.xhtml");
                     break;
             }
@@ -317,7 +327,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             this.csvItemNumber = ko.observable(csvItemNumber);
             this.sampleData = ko.observable(sampleData);
             this.itemType = ko.observable(itemType);
-            this.itemTypeName = ko.observable(''+itemType)
+            this.itemTypeName = ko.observable('' + itemType)
         }
     }
 }

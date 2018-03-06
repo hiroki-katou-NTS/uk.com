@@ -31,10 +31,10 @@
 							<div data-bind="foreach: itemsFormat">
 								<div
 									data-bind="ntsRadioButton: {
-										checked: $parent.selectedFormat, 
+										checked: $parent.setting().formatSelection, 
 										option: $data, 
 										optionValue: 'code', 
-										enable: $parent.isEditMode, 
+										enable: !(!$parent.checkActive3() || !$parent.inputMode),
 										optionText: 'name', 
 										group: 'radioFormat'}"></div>
 							</div>
@@ -48,26 +48,26 @@
 							<div data-bind="foreach: itemsFixedValue">
 								<div
 									data-bind="ntsRadioButton: {
-										checked: $parent.selectedFixedValue, 
+										checked: $parent.setting().fixedValue, 
 										option: $data, 
 										optionValue: 'code', 
-										enable: $parent.isEditMode, 
+										enable: $parent.inputMode, 
 										optionText: 'name', 
 										group: 'radioFixedValue'}"></div>
 							</div>
 						</td>
 						<td><input
 							data-bind="ntsNumberEditor: {
-									value: fixedValue,
-									enable: !(selectedFixedValue() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.USE || !isEditMode()),
+									value: setting().valueOfFixed,
+									enable: !(!checkActive2() || !inputMode),
 									option : {width : '200px'}}" />
 						</td>
 					</tr>
 				</table>
 			</div>
 			<div id="functions-area-bottom">
-				<button id="btn_I5_1" class="x-large proceed "
-					data-bind="click: saveNumericSetting">#{i18n.getText('CMF001_325')}</button>
+				<button id="btn_I5_1" class="x-large proceed" 
+					data-bind="click: saveNumericSetting, enable: inputMode">#{i18n.getText('CMF001_325')}</button>
 				<button id="btn_I5_2" class="large"
 					data-bind="click: cancelNumericSetting">#{i18n.getText('CMF001_326')}</button>
 			</div>

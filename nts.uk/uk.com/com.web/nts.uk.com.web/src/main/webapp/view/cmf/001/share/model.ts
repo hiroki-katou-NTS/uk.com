@@ -296,29 +296,41 @@ module nts.uk.com.view.cmf001.share.model {
     export class DateDataFormatSetting {
         fixedValue: KnockoutObservable<number>;
         formatSelection: KnockoutObservable<number>;
-        importedJapCalendarName: KnockoutObservable<number>;
+        //importedJapCalendarName: KnockoutObservable<number>;
         valueOfFixed: KnockoutObservable<string>;
 
-        constructor() {
-
+        constructor(formatSelection: number, fixedValue: number, valueOfFixed: string) {
+            this.formatSelection = ko.observable(formatSelection);
+            this.fixedValue = ko.observable(fixedValue);            
+            this.valueOfFixed = ko.observable(valueOfFixed);
         }
     }
 
     //screen J
     export class InstantTimeDataFormatSetting {
-        fixedValue: KnockoutObservable<number>;
-        decimalDivision: KnockoutObservable<number>;
         effectiveDigitLength: KnockoutObservable<number>;
-        codeConvertCode: KnockoutObservable<string>;
-        valueOfFixed: KnockoutObservable<string>;
-        decimalDigitNumber: KnockoutObservable<number>;
         startDigit: KnockoutObservable<number>;
         endDigit: KnockoutObservable<number>;
-        decimalPointClassification: KnockoutObservable<number>;
-        decimalFraction: KnockoutObservable<number>;
-
-        constructor() {
-
+        decimalSelection: KnockoutObservable<number>;
+        hourMinuteSelection: KnockoutObservable<number>;
+        delimiterSetting: KnockoutObservable<number>;
+        roundingProcessing: KnockoutObservable<number>;
+        roundProcessingClassification: KnockoutObservable<number>;
+        fixedValue: KnockoutObservable<number>;
+        valueOfFixed: KnockoutObservable<string>;
+        constructor(effectiveDigitLength: number, startDigit: number, endDigit: number, decimalSelection: number,
+            hourMinuteSelection: number, delimiterSetting: number, roundingProcessing: number,
+            roundProcessingClassification: number, fixedValue: number, valueOfFixed: string) {
+            this.effectiveDigitLength = ko.observable(effectiveDigitLength);
+            this.startDigit = ko.observable(startDigit);
+            this.endDigit = ko.observable(endDigit);
+            this.decimalSelection = ko.observable(decimalSelection);
+            this.hourMinuteSelection = ko.observable(hourMinuteSelection);
+            this.delimiterSetting = ko.observable(delimiterSetting);
+            this.roundingProcessing = ko.observable(roundingProcessing);
+            this.roundProcessingClassification = ko.observable(roundProcessingClassification);
+            this.fixedValue = ko.observable(fixedValue);
+            this.valueOfFixed = ko.observable(valueOfFixed);
         }
     }
 
