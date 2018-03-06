@@ -41,6 +41,8 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 	@Override
 	public DailyAttendanceTimePubExport calcDailyAttendance(DailyAttendanceTimePubImport imp) {
 
+		if(imp.getEmployeeid().equals(null) || imp.getYmd().equals(null) || imp.getWorkEndTime().equals(null) || imp.getWorkStartTime().equals(null))
+			return notPresentValue();
 		
 		//時間帯の作成
 		TimeZone timeZone = new TimeZone(new TimeWithDayAttr(imp.getWorkStartTime().valueAsMinutes()),
@@ -51,11 +53,12 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 		//休憩時間帯の作成
 		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
 		//-----------
-		breakTimeSheets.add(new BreakTimeSheet(new BreakFrameNo(1),
+		if(imp.getBreakStartTime().equals(null) || imp.getBreakEndTime().equals(null)) {
+			breakTimeSheets.add(new BreakTimeSheet(new BreakFrameNo(1),
 							new TimeWithDayAttr(imp.getBreakStartTime().valueAsMinutes()),
 							new TimeWithDayAttr(imp.getBreakEndTime().valueAsMinutes()),
 							imp.getBreakEndTime().minusMinutes(imp.getBreakStartTime().valueAsMinutes())));
-		
+		}
 		val calculateResult = provisionalCalculationService.calculation(imp.getEmployeeid(),
 																		imp.getYmd(),
 																		timeZoneMap,
