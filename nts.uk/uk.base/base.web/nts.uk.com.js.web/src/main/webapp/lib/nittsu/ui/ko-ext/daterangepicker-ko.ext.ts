@@ -265,8 +265,8 @@ module nts.uk.ui.koExtentions {
             let $endDate = $container.find(".ntsEndDatePicker");
             
             if(!nts.uk.util.isNullOrUndefined(data.value())){
-                let startDate = (data.value().startDate !== "") ? time.formatPattern(data.value().startDate, dateFormat, ISOFormat) : "";
-                let oldStart = $startDate.val(); 
+                let startDate = !nts.uk.util.isNullOrEmpty(data.value().startDate) ? time.formatPattern(data.value().startDate, dateFormat, ISOFormat) : "";
+                let oldStart = !nts.uk.util.isNullOrEmpty($startDate.val()) ? time.formatPattern($startDate.val(), dateFormat, ISOFormat) : $startDate.val(); 
                 if(startDate !== oldStart){
                     if (startDate !== "" && startDate !== "Invalid date") {
                     // Check equals to avoid multi datepicker with same value
@@ -275,8 +275,8 @@ module nts.uk.ui.koExtentions {
                         $startDate.val("");
                     }     
                 }   
-                var endDate = (data.value().endDate !== "") ? time.formatPattern(data.value().endDate, dateFormat, ISOFormat) : "";
-                let oldEnd = $endDate.val();
+                var endDate = !nts.uk.util.isNullOrEmpty(data.value().endDate) ? time.formatPattern(data.value().endDate, dateFormat, ISOFormat) : "";
+                let oldEnd = !nts.uk.util.isNullOrEmpty($endDate.val()) ? time.formatPattern($endDate.val(), dateFormat, ISOFormat) : $endDate.val();
                 if (endDate !== oldEnd){
                     if (endDate !== "" && endDate !== "Invalid date") {
                         // Check equals to avoid multi datepicker with same value

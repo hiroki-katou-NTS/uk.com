@@ -1640,7 +1640,7 @@ module nts.uk.at.view.kmf022 {
             }
             loadData(): void {
                 let self = this;
-                nts.uk.ui.block.invisible();
+                nts.uk.ui.block.grayout();
                 service.findAllData().done((data: any)=> {
                     self.initDataA4(data);
                     self.initDataA5(data);
@@ -1663,7 +1663,9 @@ module nts.uk.at.view.kmf022 {
                     self.initDataI(data);
                     self.initDataJ(data);
                     self.initDataK(data);
-                    nts.uk.ui.block.clear();     
+                }).always(()=>{
+                    nts.uk.ui.block.clear();
+                    $("#a4_6").focus();
                 });
                     
             }
@@ -1856,8 +1858,8 @@ module nts.uk.at.view.kmf022 {
                         self.otActualDispAtr(dataAppSet.otActualDispAtr);
                         self.warningDateDispAtr(dataAppSet.warningDateDispAtr);
                         self.appReasonDispAtr(dataAppSet.appReasonDispAtr);
-                        self.scheReflectFlg(dataAppSet.scheReflectFlg);
-                        self.priorityTimeReflectFlg(dataAppSet.priorityTimeReflectFlg);
+                        self.selectedIdA9_8(dataAppSet.scheReflectFlg);
+                        self.selectedIdA9_9(dataAppSet.priorityTimeReflectFlg);
                     }
             }
             initDataB(allData:any): void {
@@ -2124,8 +2126,8 @@ module nts.uk.at.view.kmf022 {
                     otActualDispAtr: self.otActualDispAtr(),
                     warningDateDispAtr: self.warningDateDispAtr(),
                     appReasonDispAtr: self.appReasonDispAtr(),
-                    scheReflectFlg: self.scheReflectFlg(),
-                    priorityTimeReflectFlg: self.priorityTimeReflectFlg(),
+                    scheReflectFlg: self.selectedIdA9_8(),
+                    priorityTimeReflectFlg: self.selectedIdA9_9(),
                     appContentChangeFlg: self.selectedIdA17_4(),
                     attendentTimeReflectFlg: self.selectedIdA9_5(),
                     appActMonthConfirmFlg: self.selectedIdA11_8(),
@@ -2156,9 +2158,9 @@ module nts.uk.at.view.kmf022 {
                     topComment: self.texteditorJ29.value(),
                     bottomComment: self.texteditorJ32.value(),
                     topCommentFontColor: self.valueJ30(),
-                    topCommentFontWeight: self.enableJ31(),
+                    topCommentFontWeight: self.enableJ31()? 1 : 0,
                     bottomCommentFontColor: self.valueJ30_1(),
-                    bottomCommentFontWeight: self.enableJ31_1()                     
+                    bottomCommentFontWeight: self.enableJ31_1()? 1 : 0                 
                 };
                 data.goBack = {
                     companyId: self.companyId(),
@@ -2246,9 +2248,9 @@ module nts.uk.at.view.kmf022 {
                     comment1: self.texteditorE13.value(),
                     comment2: self.texteditorE16.value(),
                     color1:self.valueE14(),
-                    weight1:self.enableE15(),
+                    weight1:self.enableE15()? 1 : 0,
                     color2:self.valueE17(),
-                    weight2:self.enableE18()
+                    weight2:self.enableE18()? 1 : 0
                 };
                 data.wdApp = {
                     companyId: self.companyId(),
@@ -2327,14 +2329,19 @@ module nts.uk.at.view.kmf022 {
                 data.jobAssign = {
                     isConcurrently: self.selectedIdA14_3() ? 1 : 0
                 };
+                data.approvalSet = {
+                    prinFlg: self.selectedIdA17_5()
+                };
                 data.jobSearch = ko.toJS(self.listDataA15());
                 service.update(data).done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         //Load data setting
                         self.loadData();
-                        nts.uk.ui.block.clear();
                     });
-                }).fail();
+                }).always(()=>{
+                    nts.uk.ui.block.clear();
+                });
+           
             }
 
         }

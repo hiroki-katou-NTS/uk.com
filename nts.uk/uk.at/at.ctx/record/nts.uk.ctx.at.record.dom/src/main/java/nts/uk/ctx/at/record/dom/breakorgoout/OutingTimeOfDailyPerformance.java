@@ -15,11 +15,13 @@ import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AcquisitionConditionsAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BreakClassification;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionClassification;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetail;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 
@@ -75,9 +77,9 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 	 * @param 取得条件区分 
 	 * @return 不要な項目を削除した時間帯
 	 */
-	public List<TimeSheetOfDeductionItem> removeUnuseItemBaseOnAtr(AcquisitionConditionsAtr acqAtr ,WorkTimeMethodSet workTimeMethodSet,Optional<FlowWorkRestTimezone> fluRestTime,FlowFixedRestSet fluidprefixBreakTimeSet,FlowRestCalcMethod flowRestSet) {
+	public List<TimeSheetOfDeductionItem> removeUnuseItemBaseOnAtr(DeductionAtr dedAtr ,WorkTimeMethodSet workTimeMethodSet,Optional<FlowWorkRestTimezone> fluRestTime,Optional<FlowWorkRestSettingDetail> flowDetail) {
 		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
-		List<TimeSheetOfDeductionItem> loopList = (acqAtr.isForDeduction())?
+		List<TimeSheetOfDeductionItem> loopList = (dedAtr.isDeduction())?
 														this.outingTimeSheets.stream()
 																			 .filter(tc->tc.getReasonForGoOut().isPrivateOrUnion())
 																			 .map(tc -> tc.toTimeSheetOfDeductionItem())
@@ -86,13 +88,12 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 																			 .map(tc -> tc.toTimeSheetOfDeductionItem())
 																			 .collect(Collectors.toList());
 		if(workTimeMethodSet.isFluidWork()) {
-			if((fluidprefixBreakTimeSet.getCalculateMethod().isStampWithoutReference() && fluRestTime.get().isFixRestTime())
-					||(!fluRestTime.get().isFixRestTime()  && fluidprefixBreakTimeSet.isReferRestTime())) {
-					returnList.addAll(convertFromgoOutTimeToBreakTime(fluidprefixBreakTimeSet,loopList));
+			if((flowDetail.get().getFlowFixedRestSetting().getCalculateMethod().isStampWithoutReference() && fluRestTime.get().isFixRestTime())
+					||(!fluRestTime.get().isFixRestTime()  && flowDetail.get().getFlowFixedRestSetting().isReferRestTime())) {
+					returnList.addAll(convertFromgoOutTimeToBreakTime(flowDetail.get().getFlowFixedRestSetting(),loopList));
 			}
 		}
 			
-		/*ここに外出から休憩に変化する↓のロジックを呼ぶ*/
 		return returnList;
 	}
 	

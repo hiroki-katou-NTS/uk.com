@@ -10,6 +10,12 @@ public class TripRequestSetCommand {
 	private String comment1;
 	/** コメント2 */
 	private String comment2;
+	private String color1;
+	// 上部コメント.太字
+	private int weight1;
+	private String color2;
+	// 上部コメント.太字
+	private int weight2;
 	/** WORK_TYPE */
 	private int workType;
 	/** 勤務の変更 */

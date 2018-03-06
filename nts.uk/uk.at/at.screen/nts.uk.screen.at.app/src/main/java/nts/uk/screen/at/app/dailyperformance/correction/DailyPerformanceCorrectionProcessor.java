@@ -143,9 +143,9 @@ public class DailyPerformanceCorrectionProcessor {
 	private static final String COLUMN_SUBMITTED = "Submitted";
 	public static final int MINUTES_OF_DAY = 24 * 60;
 	private static final String STATE_DISABLE = "ntsgrid-disable";
-	private static final String HAND_CORRECTION_MYSELF = "ntsgrid-disable";
-	private static final String HAND_CORRECTION_OTHER = "ntsgrid-disable";
-	private static final String REFLECT_APPLICATION = "ntsgrid-disable";
+	private static final String HAND_CORRECTION_MYSELF = "ntsgrid-manual-edit-target";
+	private static final String HAND_CORRECTION_OTHER = "ntsgrid-manual-edit-other";
+	private static final String REFLECT_APPLICATION = "ntsgrid-reflect";
 
 	/**
 	 * Get List Data include:<br/>
@@ -434,7 +434,7 @@ public class DailyPerformanceCorrectionProcessor {
 				String key = mergeString(itemIdAsString, "|", data.getEmployeeId(), "|" + data.getDate().toString());
 				String value = itemValueMap.get(key) != null && itemValueMap.get(key).value() != null
 						? itemValueMap.get(key).value().toString() : "";
-				cellEdit = dailyRecEditSetsMap.get(key);
+				cellEdit = dailyRecEditSetsMap.get(mergeString(itemIdAsString, "|", data.getEmployeeId(), "|" + converDateToString(data.getDate())));
 				
 				if (attendanceAtr == DailyAttendanceAtr.Code.value
 						|| attendanceAtr == DailyAttendanceAtr.Classification.value) {
@@ -641,17 +641,17 @@ public class DailyPerformanceCorrectionProcessor {
 						new YearMonth(x.getClosureMonth()));
 				Optional<ActualLockDto> actualLockDto = repo.findAutualLockById(companyId, x.getClosureId());
 				if (actualLockDto.isPresent()) {
-					if (actualLockDto.get().getDailyLockState() == 1) {
+					if (actualLockDto.get().getDailyLockState() == 1 || actualLockDto.get().getMonthlyLockState() == 1) {
 						employeeAndDateRange.put(
 								mergeString(x.getSid(), "|", x.getClosureId().toString(), "|", LOCK_EDIT_CELL_DAY),
 								datePeriod);
 					}
 
-					if (actualLockDto.get().getMonthlyLockState() == 1) {
-						employeeAndDateRange.put(
-								mergeString(x.getSid(), "|", x.getClosureId().toString(), "|", LOCK_EDIT_CELL_MONTH),
-								datePeriod);
-					}
+//					if (actualLockDto.get().getMonthlyLockState() == 1) {
+//						employeeAndDateRange.put(
+//								mergeString(x.getSid(), "|", x.getClosureId().toString(), "|", LOCK_EDIT_CELL_MONTH),
+//								datePeriod);
+//					}
 				}
 				// アルゴリズム「表示項目を制御する」を実行する | Execute "control display items"
 				Optional<WorkFixedDto> workFixedOp = repo.findWorkFixed(x.getClosureId(), x.getClosureMonth());

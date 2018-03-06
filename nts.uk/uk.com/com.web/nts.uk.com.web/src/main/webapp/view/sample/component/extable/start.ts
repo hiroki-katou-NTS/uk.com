@@ -440,7 +440,8 @@ __viewContext.ready(function () {
         .DetailHeader(detailHeader).DetailContent(detailContent)
         .VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent)
         .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
-        .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent).create();
+        .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent)
+        .create();
     
     
     let leftHorzColumns2 = [
