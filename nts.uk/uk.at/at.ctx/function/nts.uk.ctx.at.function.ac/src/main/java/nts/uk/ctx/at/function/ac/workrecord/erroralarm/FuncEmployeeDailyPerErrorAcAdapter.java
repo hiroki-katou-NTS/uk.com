@@ -20,6 +20,8 @@ public class FuncEmployeeDailyPerErrorAcAdapter implements FuncEmployeeDailyPerE
 			List<String> errorCodes) {
 		List<EmployeeDailyPerErrorPubExport> employeeDailyExportList = pub.getByErrorCode(employeeId, datePeriod,
 				errorCodes);
+		if(employeeDailyExportList ==null || employeeDailyExportList.isEmpty()) throw new RuntimeException("domain 社員の日別実績エラー一覧 not found by list error alarm codeID");
+		
 		return employeeDailyExportList.stream()
 				.map(e -> new FuncEmployeeDailyPerErrorImport(e.getCompanyID(), e.getEmployeeID(), e.getDate(),
 						e.getErrorAlarmWorkRecordCode(), e.getAttendanceItemList(), e.getErrorCancelAble()))
