@@ -1,6 +1,7 @@
 module nts.uk.at.view.ksu001.jb.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import formatById = nts.uk.time.format.byId;
 
     export class ScreenModel {
         listWorkType: KnockoutObservableArray<any> = ko.observableArray(nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.nts.uk.ui._viewModel.content.viewO.listWorkType());
@@ -69,8 +70,10 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     if (c) {
                         workTimeName = c.abName;
                         workTimeCode = c.workTimeCode == '000' ? null : c.workTimeCode;
-                        startTime = nts.uk.time.parseTime(c.startTime, true).format();
-                        endTime = nts.uk.time.parseTime(c.endTime, true).format();
+                        //                        startTime = nts.uk.time.parseTime(c.startTime, true).format();
+                        //                        endTime = nts.uk.time.parseTime(c.endTime, true).format();
+                        startTime = c.startTime ? formatById("Clock_Short_HM", c.startTime) : '';
+                        endTime = c.endTime ? formatById("Clock_Short_HM", c.endTime) : '';
                     } else {
                         workTimeName = null;
                         workTimeCode = null;
@@ -198,42 +201,42 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             _.forEach(self.listWorkTime(), (obj) => {
                 let timezone1 = obj.timeZone1.split("～");
                 let timezone2 = obj.timeZone2.split("～");
-                if (self.time1() && self.time2()){
-                    if(timezone1.length == 2){
-                        if(moment.duration(self.time1()).asMinutes() == moment.duration(timezone1[0]).asMinutes()
-                        && moment.duration(self.time2()).asMinutes() == moment.duration(timezone1[1]).asMinutes()){
-                             self.listWorkTimeComboBox.push(obj);
+                if (self.time1() && self.time2()) {
+                    if (timezone1.length == 2) {
+                        if (moment.duration(self.time1()).asMinutes() == moment.duration(timezone1[0]).asMinutes()
+                            && moment.duration(self.time2()).asMinutes() == moment.duration(timezone1[1]).asMinutes()) {
+                            self.listWorkTimeComboBox.push(obj);
                         }
                     }
-                    if(timezone2.length == 2){
-                        if(moment.duration(self.time1()).asMinutes() == moment.duration(timezone2[0]).asMinutes()
-                        && moment.duration(self.time2()).asMinutes() == moment.duration(timezone2[1]).asMinutes()){
-                             self.listWorkTimeComboBox.push(obj);
-                        }    
+                    if (timezone2.length == 2) {
+                        if (moment.duration(self.time1()).asMinutes() == moment.duration(timezone2[0]).asMinutes()
+                            && moment.duration(self.time2()).asMinutes() == moment.duration(timezone2[1]).asMinutes()) {
+                            self.listWorkTimeComboBox.push(obj);
+                        }
                     }
-                    
+
                 } else if (!self.time2()) {
-                    if(timezone1.length == 2){
-                        if(moment.duration(self.time1()).asMinutes() == moment.duration(timezone1[0]).asMinutes()){
-                             self.listWorkTimeComboBox.push(obj);
+                    if (timezone1.length == 2) {
+                        if (moment.duration(self.time1()).asMinutes() == moment.duration(timezone1[0]).asMinutes()) {
+                            self.listWorkTimeComboBox.push(obj);
                         }
                     }
-                    if(timezone2.length == 2){
-                        if(moment.duration(self.time1()).asMinutes() == moment.duration(timezone2[0]).asMinutes()){
-                             self.listWorkTimeComboBox.push(obj);
-                        }    
+                    if (timezone2.length == 2) {
+                        if (moment.duration(self.time1()).asMinutes() == moment.duration(timezone2[0]).asMinutes()) {
+                            self.listWorkTimeComboBox.push(obj);
+                        }
                     }
-                    
+
                 } else if (!self.time1()) {
-                    if(timezone1.length == 2){
-                        if(moment.duration(self.time2()).asMinutes() == moment.duration(timezone1[1]).asMinutes()){
-                             self.listWorkTimeComboBox.push(obj);
+                    if (timezone1.length == 2) {
+                        if (moment.duration(self.time2()).asMinutes() == moment.duration(timezone1[1]).asMinutes()) {
+                            self.listWorkTimeComboBox.push(obj);
                         }
                     }
-                    if(timezone2.length == 2){
-                        if(moment.duration(self.time2()).asMinutes() == moment.duration(timezone2[1]).asMinutes()){
-                             self.listWorkTimeComboBox.push(obj);
-                        }    
+                    if (timezone2.length == 2) {
+                        if (moment.duration(self.time2()).asMinutes() == moment.duration(timezone2[1]).asMinutes()) {
+                            self.listWorkTimeComboBox.push(obj);
+                        }
                     }
                 }
             });
