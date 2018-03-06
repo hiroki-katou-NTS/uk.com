@@ -174,6 +174,7 @@ module cmm045.a.viewmodel {
                 dataSource: self.items(),
                 primaryKey: 'appId',
                 virtualization: true,
+                rowVirtualization: true,
                 virtualizationMode: 'continuous',
                 columns: [
                     { headerText: getText('CMM045_50'), key: 'appId', dataType: 'string', width: '80px', unbound: false, ntsControl: 'Button' },
@@ -258,6 +259,7 @@ module cmm045.a.viewmodel {
                 height: '700px',
                 dataSource: self.items(),
                 primaryKey: 'appId',
+                rowVirtualization: true,
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 columns: [
@@ -662,10 +664,10 @@ module cmm045.a.viewmodel {
                             data.appStatusCount.denialNumber));
                     }
                     if (self.mode() == 1) {
-                        $("#grid1").ntsGrid("destroy");
+//                        $("#grid1").ntsGrid("destroy");
                         self.reloadGridApproval();
                     } else {
-                        $("#grid2").ntsGrid("destroy");
+//                        $("#grid2").ntsGrid("destroy");
                         self.reloadGridApplicaion();
                     }
                 }
@@ -722,10 +724,10 @@ module cmm045.a.viewmodel {
             }
             if (self.mode() == 1) {
                 self.approvalCount(self.countStatus(self.items()));
-                $("#grid1").ntsGrid("destroy");
+//                $("#grid1").ntsGrid("destroy");
                 self.reloadGridApproval();
             } else {
-                $("#grid2").ntsGrid("destroy");
+//                $("#grid2").ntsGrid("destroy");
                 self.reloadGridApplicaion();
             }
 
