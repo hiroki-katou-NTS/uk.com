@@ -8,46 +8,68 @@ module nts.uk.com.view.cmf001.q.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+  
+    export function getListProcessing(): Array<ItemModel> {
+        return [
+//            new ItemModel(0, getText('Enum_OperatingCondition_PREPRARING')),
+//            new ItemModel(1, getText('Enum_OperatingCondition_EXPORTING')),
+//            new ItemModel(2, getText('Enum_OperatingCondition_IMPORTING')),
+//            new ItemModel(3, getText('Enum_OperatingCondition_TEST_FINISH')),
+//            new ItemModel(4, getText('Enum_OperatingCondition_STOP_FINISH')),
+//            new ItemModel(5, getText('Enum_OperatingCondition_ERROR_FINISH')),
+//            new ItemModel(6, getText('Enum_OperatingCondition_CHECKING')),
+//            new ItemModel(7, getText('Enum_OperatingCondition_EXPORT_FINISH')),
+//            new ItemModel(8, getText('Enum_OperatingCondition_IMPORT_FINISH'))
+            // delete after have resource
+            new ItemModel(0, getText('準備中')),
+            new ItemModel(1, getText('出力中')),
+            new ItemModel(2, getText('受入中')),
+            new ItemModel(3, getText('テスト完了')),
+            new ItemModel(4, getText('中断終了')),
+            new ItemModel(5, getText('異常終了')),
+            new ItemModel(6, getText('チェック中')),
+            new ItemModel(7, getText('出力完了')),
+            new ItemModel(8, getText('受入完了'))
+        ];
+    }
     
     export class ScreenModel {
+        // mode 
         isCheckMode: KnockoutObservableArray<boolean>;
+        // stop view error mode
         isStopMode: KnockoutObservableArray<boolean>;
-        ankenCode: KnockoutObservableArray<any>;
-        ankenField: KnockoutObservableArray<any>;
-        keikazikan: KnockoutObservableArray<any>;
-        shorizyotai: KnockoutObservableArray<any>;
-        kensuu: KnockoutObservableArray<any>;
-        kugiri: KnockoutObservableArray<any>;
-        sou: KnockoutObservableArray<any>;
-        ken: KnockoutObservableArray<any>;
         
+        // dto from server
         exAcOpManage: ExAcOpManage;
+        // object param
+        params = getShared("CMF001-Q");
+        codCode: string;
+        codeName: string;
+        timeOver: string;
+        operatingCondition: string;
+        
         constructor() {
             let self = this;
-            
-            exAcOpManage = new ExAcOpManage('1', '001', 5, 6, 7, 8, 1);
-            
+            // mode
             self.isCheckMode = ko.observable(true);
             self.isStopMode = ko.observable(false);
-            self.ankenCode = ko.observable('　001');
-            self.ankenField = ko.observable('　A社人事管理情報');
-            self.keikazikan = ko.observable('　00:01:27');
-            self.shorizyotai = ko.observable('　チェック中。。。       ');
-            self.kensuu = ko.observable('　56');
-            self.kugiri = ko.observable('/');
-            self.sou = ko.observable('100');
-            self.ken = ko.observable(' 11');
             
+            // dump data. Delete after phase 2 
+            self.exAcOpManage = new ExAcOpManage('1', '001', 8, 0, 92, 100, 6);
+            self.codCode = "001";
+            self.codeName = "A社人事管理情報";
+            self.timeOver = "00:01:27";
+            self.operatingCondition = getListProcessing()[ self.exAcOpManage.stateBehavior].value;
         }
         // 中断ボタン
         stop() {
             let self = this;
             self.isStopMode(true);
             if (self.isCheckMode()) {
-                self.shorizyotai('　チェック完了');
+                self.exAcOpManage.stateBehavior = 3;
             }
              if (!self.isCheckMode()) {
-                self.shorizyotai('　完了');
+                self.exAcOpManage.stateBehavior = 8;
             }
         }
         
@@ -56,7 +78,7 @@ module nts.uk.com.view.cmf001.q.viewmodel {
             let self = this;
             self.isCheckMode(false);
             self.isStopMode(false);
-            self.shorizyotai('　受入中。。。');
+            self.exAcOpManage.stateBehavior = 2;
         }
         
         //エラーボタン
@@ -76,6 +98,54 @@ module nts.uk.com.view.cmf001.q.viewmodel {
              nts.uk.ui.windows.close();
         }
      }
+    
+    class ItemModel {
+        key: number;
+        value: string;   
+        
+        constructor(key: number,value: string) {
+            let self = this;
+            self.key = key;
+            self.value = value;
+        }
+    }
+    
+    class IExAcOpManage{
+        /**
+        * 会社ID
+        */
+        cid: string;
+        
+        /**
+        * 外部受入処理ID
+        */
+        processId: string;
+        
+        /**
+        * エラー件数
+        */
+        errorCount: number;
+        
+        /**
+        * 中断するしない
+        */
+        interruption: number;
+        
+        /**
+        * 処理カウント
+        */
+        processCount: number;
+        
+        /**
+        * 処理トータルカウント
+        */
+        processTotalCount: number;
+        
+        /**
+        * 動作状態
+        */
+        stateBehavior: number;
+    }
     
     class ExAcOpManage{
         /**

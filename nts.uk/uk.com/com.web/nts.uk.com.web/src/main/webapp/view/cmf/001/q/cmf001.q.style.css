@@ -1,6 +1,9 @@
 .contents-area{
 	margin:10px;
 }
+.bggreen {
+	background-color: #97D155;
+}
 .cmf001_485{
 	font-size: large;
 	margin-bottom: 3px;
@@ -14,17 +17,22 @@
 }
 
 .setting-zyouhou {
-	margin: 5px;
+	margin-top: 10px;
+	margin-left: 30px;
 	box-sizing: border-box;
+	border: 1px solid black;
 }
-
-table, th, td {
-    border: 1px solid black;
+.setting-zyouhou td {
+	border: 1px solid black;
 }
-
 .kekka {
-	margin: 5px;
+	margin-top: 10px;
+	margin-left: 30px;
 	box-sizing: border-box;
+	border: 1px solid black;
+}
+.kekka td {
+	border: 1px solid black;
 }
 .kekkanaiyou{
 	margin-bottom: 30px;

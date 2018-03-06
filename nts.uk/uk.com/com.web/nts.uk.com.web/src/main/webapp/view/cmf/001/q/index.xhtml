@@ -29,12 +29,12 @@
 					<table class="setting-zyouhou">
 						<tbody>
 							<tr>
-								<td class="bg-green" width='100px'>
+								<td class="bggreen" width='100px'>
 									<label>#{i18n.getText('CMF001_488')}</label>
 								</td>
 								<td width='300px'>
-									<label data-bind="text : ankenCode"></label>
-									<label data-bind="text : ankenField"></label>
+									<label data-bind="text : codCode"></label>
+									<label data-bind="text : codeName"></label>
 								</td>
 							</tr>
 						</tbody>
@@ -44,32 +44,36 @@
 				<div class="kekkanaiyou">
 					<table class="kekka">
 						<tbody>
-							<tr>
-								<td class="bg-green" width='100px'>
+							<tr >
+								<td class="bggreen" width='100px'>
 									<label>#{i18n.getText('CMF001_490')}</label>
 								</td>
 								<td width='300px'>
-									<label data-bind="text : keikazikan"></label>
+									<label style="padding-left:  10px;" data-bind="text : timeOver"></label>
 								</td>
 							</tr>
-							<tr>
-								<td class="bg-green" width='100px' >
+							<tr >
+								<td class="bggreen" width='100px' >
 									<label>#{i18n.getText('CMF001_491')}</label>
 								</td>
 								<td width='300px'>
-									<label data-bind="text : shorizyotai"></label>
-									<label data-bind="text : kensuu"></label>
-									<label data-bind="text : kugiri"></label>
-									<label data-bind="text : sou"></label>
-									<label>#{i18n.getText('CMF001_492')}</label>
+									<div style="float:left; ">
+									<label style="padding-left:  10px;" data-bind="text : operatingCondition"></label>
+									</div>
+									<div style="float:left; ">
+										<div style="float:left; "><label style="padding-left:  40px;" data-bind="text : exAcOpManage.processCount"></label></div>
+										<div style="float:left; "><label>/</label></div>
+										<div style="float:left; "><label data-bind="text : exAcOpManage.processTotalCount"></label></div>
+										<div style="float:left; "><label>#{i18n.getText('CMF001_492')}</label></div>
+									</div>
 								</td>
 							</tr>
-							<tr>
-								<td class="bg-green" width='100px'>
+							<tr >
+								<td class="bggreen" width='100px'>
 									<label>#{i18n.getText('CMF001_493')}</label>
 								</td>
 								<td width='300px'>
-									<label data-bind="text : ken"></label>
+									<label style="padding-left:  10px;" data-bind="text : exAcOpManage.errorCount"></label>
 									<label>#{i18n.getText('CMF001_494')}</label>
 								</td>
 							</tr>
@@ -81,15 +85,30 @@
  						<button id="BTN_STOP" data-bind="click : stop" tabindex="1">#{i18n.getText('CMF001_495')}</button> 
  					</com:ko-if>
  					<com:ko-if bind="isStopMode() == true">
-	 						<com:ko-if bind="isCheckMode() == true">
-								<button id="BTN_IMPORT" data-bind="click : importFile" class="proceed" tabindex="2">#{i18n.getText('CMF001_496')}</button>
-								<button id="BTN_ERROR" data-bind="click : gotoErrorList" tabindex="3">#{i18n.getText('CMF001_497')}</button>
-								<button id="BTN_CLOSE" data-bind="click : close" tabindex="4">#{i18n.getText('CMF001_498')}</button>
-							</com:ko-if>
-							<com:ko-if bind="isCheckMode() == false">
-								<button id="BTN_ERROR" data-bind="click : gotoErrorList" tabindex="3">#{i18n.getText('CMF001_497')}</button>
-								<button id="BTN_CLOSE" data-bind="click : close" tabindex="4">#{i18n.getText('CMF001_498')}</button>
-							</com:ko-if>
+	 					<com:ko-if bind="isCheckMode() == true">
+	 						<table class="botan">
+	 						<tr>
+							<td width='200px'>
+								<div style="text-align: center"><button id="BTN_IMPORT" data-bind="click : importFile" class="large proceed" tabindex="2">#{i18n.getText('CMF001_496')}</button></div>
+							</td>
+							<td width='100px'>
+								<div style="text-align: center"><button id="BTN_ERROR" data-bind="click : gotoErrorList" tabindex="3">#{i18n.getText('CMF001_497')}</button></div>
+							</td>
+							<td width='100px'>
+								<div style="text-align: center"><button id="BTN_CLOSE" data-bind="click : close" tabindex="4">#{i18n.getText('CMF001_498')}</button></div>
+							</td>
+							</tr>
+							</table>
+						</com:ko-if>
+						<com:ko-if bind="isCheckMode() == false">
+							<table class="botan">
+							<tr>
+							<td width='200px'><div style="text-align: center"></div></td>
+							<td width='100px'><div style="text-align: center"><button id="BTN_ERROR" data-bind="click : gotoErrorList" tabindex="3">#{i18n.getText('CMF001_497')}</button></div></td>
+							<td width='100px'><div style="text-align: center"><button id="BTN_CLOSE" data-bind="click : close" tabindex="4">#{i18n.getText('CMF001_498')}</button></div></td>
+							</tr>
+							</table>
+						</com:ko-if>
 					</com:ko-if>
 				</div>
 			</div>
