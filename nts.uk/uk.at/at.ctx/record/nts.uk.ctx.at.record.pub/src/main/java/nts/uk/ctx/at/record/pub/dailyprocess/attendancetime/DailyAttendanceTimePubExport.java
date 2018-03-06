@@ -24,10 +24,10 @@ public class DailyAttendanceTimePubExport {
 	private Map<HolidayWorkFrameNo,TimeWithCalculation> holidayWorkTime;
 	
 	//加給Ｎｏ,加給時間
-	private Map<Integer,TimeWithCalculation> bonusPayTime;
+	private Map<Integer,AttendanceTime> bonusPayTime;
 
 	//特定日加給No,特定日加給時間
-	private Map<Integer,TimeWithCalculation> specBonusPayTime;
+	private Map<Integer,AttendanceTime> specBonusPayTime;
 	
 	//フレックス時間
 	private TimeWithCalculation flexTime;
@@ -40,7 +40,7 @@ public class DailyAttendanceTimePubExport {
 	 */
 	public DailyAttendanceTimePubExport(Map<OverTimeFrameNo, TimeWithCalculation> overTime,
 			Map<HolidayWorkFrameNo, TimeWithCalculation> holidayWorkTime,
-			Map<Integer, TimeWithCalculation> bonusPayTime, Map<Integer, TimeWithCalculation> specBonusPayTime,
+			Map<Integer, AttendanceTime> bonusPayTime, Map<Integer, AttendanceTime> specBonusPayTime,
 			TimeWithCalculation flexTime, TimeWithCalculation midNightTime) {
 		super();
 		this.overTime = overTime;

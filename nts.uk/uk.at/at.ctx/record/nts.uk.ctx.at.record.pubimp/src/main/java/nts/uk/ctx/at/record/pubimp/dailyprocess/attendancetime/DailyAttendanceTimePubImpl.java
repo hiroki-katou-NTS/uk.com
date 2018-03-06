@@ -77,10 +77,10 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 	private DailyAttendanceTimePubExport isPresentValue(IntegrationOfDaily integrationOfDaily) {
 		val overTimeFrames = new HashMap<OverTimeFrameNo,TimeWithCalculation>();
 		val holidayWorkFrames = new HashMap<HolidayWorkFrameNo,TimeWithCalculation>();
-		//val bonusPays = new HashMap<Integer,AttendanceTime>();
-		val bonusPays = new HashMap<Integer,TimeWithCalculation>();
-		//val specBonusPays = new HashMap<Integer,AttendanceTime>();
-		val specBonusPays = new HashMap<Integer,TimeWithCalculation>();
+		val bonusPays = new HashMap<Integer,AttendanceTime>();
+		//val bonusPays = new HashMap<Integer,TimeWithCalculation>();
+		val specBonusPays = new HashMap<Integer,AttendanceTime>();
+		//val specBonusPays = new HashMap<Integer,TimeWithCalculation>();
 		if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
 			for(int loopNumber = 1 ; loopNumber <=10 ; loopNumber++ ) {
 				//残業
@@ -104,22 +104,22 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 				//加給
 				if(loopNumber < integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes().size()) {
 					
-					//bonusPays.put(loopNumber, integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes().get(loopNumber-1).getBonusPayTime());
-					bonusPays.put(loopNumber, TimeWithCalculation.sameTime(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes().get(loopNumber-1).getBonusPayTime()));
+					bonusPays.put(loopNumber, integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes().get(loopNumber-1).getBonusPayTime());
+					//bonusPays.put(loopNumber, TimeWithCalculation.sameTime(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes().get(loopNumber-1).getBonusPayTime()));
 				}
 				else {
-					//bonusPays.put(loopNumber, new AttendanceTime(0));
-					bonusPays.put(loopNumber,TimeWithCalculation.sameTime(new AttendanceTime(0)));
+					bonusPays.put(loopNumber, new AttendanceTime(0));
+					//bonusPays.put(loopNumber,TimeWithCalculation.sameTime(new AttendanceTime(0)));
 				}
 				//特定日加給
 				if(loopNumber < integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes().size()) {
 					
-					//specBonusPays.put(loopNumber, integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes().get(loopNumber-1).getBonusPayTime());
-					specBonusPays.put(loopNumber, TimeWithCalculation.sameTime(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes().get(loopNumber-1).getBonusPayTime()));
+					specBonusPays.put(loopNumber, integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes().get(loopNumber-1).getBonusPayTime());
+					//specBonusPays.put(loopNumber, TimeWithCalculation.sameTime(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes().get(loopNumber-1).getBonusPayTime()));
 				}
 				else {
-					//specBonusPays.put(loopNumber, new AttendanceTime(0));
-					specBonusPays.put(loopNumber,TimeWithCalculation.sameTime(new AttendanceTime(0)));
+					specBonusPays.put(loopNumber, new AttendanceTime(0));
+					//specBonusPays.put(loopNumber,TimeWithCalculation.sameTime(new AttendanceTime(0)));
 					
 				}
 
@@ -143,20 +143,20 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 		val overTimeFrames = new HashMap<OverTimeFrameNo,TimeWithCalculation>();
 		val holidayWorkFrames = new HashMap<HolidayWorkFrameNo,TimeWithCalculation>();
 		//val bonusPays = new HashMap<Integer,AttendanceTime>();
-		val bonusPays = new HashMap<Integer,TimeWithCalculation>();
+		val bonusPays = new HashMap<Integer,AttendanceTime>();
 		//val specBonusPays = new HashMap<Integer,AttendanceTime>();
-		val specBonusPays = new HashMap<Integer,TimeWithCalculation>();
+		val specBonusPays = new HashMap<Integer,AttendanceTime>();
 		for(int loopNumber = 1 ; loopNumber <=10 ; loopNumber++ ) {
 			//残業
 			overTimeFrames.put(new OverTimeFrameNo(loopNumber), TimeWithCalculation.sameTime(new AttendanceTime(0)));
 			//休出
 			holidayWorkFrames.put(new HolidayWorkFrameNo(loopNumber), TimeWithCalculation.sameTime(new AttendanceTime(0)));
 			//加給
-			//bonusPays.put(loopNumber,new AttendanceTime(0));
-			bonusPays.put(loopNumber,TimeWithCalculation.sameTime(new AttendanceTime(0)));
+			bonusPays.put(loopNumber,new AttendanceTime(0));
+			//bonusPays.put(loopNumber,TimeWithCalculation.sameTime(new AttendanceTime(0)));
 			//特定日加給
-			//specBonusPays.put(loopNumber,new AttendanceTime(0));
-			specBonusPays.put(loopNumber,TimeWithCalculation.sameTime(new AttendanceTime(0)));
+			specBonusPays.put(loopNumber,new AttendanceTime(0));
+			//specBonusPays.put(loopNumber,TimeWithCalculation.sameTime(new AttendanceTime(0)));
 		}
 		return new DailyAttendanceTimePubExport(overTimeFrames,
 												holidayWorkFrames,

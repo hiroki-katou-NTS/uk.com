@@ -144,8 +144,8 @@ public class OutsideWorkTimeSheet {
 		Optional<OverTimeSheet> overTimeWork = Optional.empty();
 		Optional<HolidayWorkTimeSheet> holidayTimeSheet = Optional.empty();
 		if (overTimeWorkSheet.isPresent()) {
-			overTimeWork = Optional.of(overTimeWorkSheet.get().reCreateToCalcExcessWork(overTimeWorkSheet.get(),
-					autoCalculationOfOverTimeWork));
+//			overTimeWork = Optional.of(overTimeWorkSheet.get().calcMidNightTime(overTimeWorkSheet.get(),
+//					autoCalculationOfOverTimeWork));
 
 		}
 		if (holidayWorkSheet.isPresent()) {

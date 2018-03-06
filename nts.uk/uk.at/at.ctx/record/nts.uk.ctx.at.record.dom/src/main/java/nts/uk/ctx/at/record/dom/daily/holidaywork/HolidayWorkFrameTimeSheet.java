@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
+import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayTimeSheetForCalc;
@@ -61,7 +61,7 @@ public class HolidayWorkFrameTimeSheet extends CalculationTimeSheet{
 			List<TimeSheetOfDeductionItem> deductionTimeSheets,
 			List<BonusPayTimeSheetForCalc> bonusPayTimeSheet, 
 			List<SpecBonusPayTimeSheetForCalc> specifiedbonusPayTimeSheet,
-			Optional<MidNightTimeSheet> midNighttimeSheet, 
+			Optional<MidNightTimeSheetForCalc> midNighttimeSheet, 
 			HolidayWorkFrameTime frameTime,
 			boolean treatAsTimeSpentAtWork,
 			HolidayWorkFrameNo holidayWorkTimeSheetNo) {

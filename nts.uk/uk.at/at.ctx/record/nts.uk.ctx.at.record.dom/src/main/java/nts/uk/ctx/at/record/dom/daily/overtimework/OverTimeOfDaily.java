@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.calcset.CalcMethodOfNoWorkingDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlOverFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.FlexWithinWorkTimeSheet;
@@ -275,7 +276,7 @@ public class OverTimeOfDaily {
 												  VacationAddTimeSet vacationAddTimeSet,WorkTimeDailyAtr workTimeDailyAtr) {
 		val overTimeFrameTimeSheet = overTimeSheet.changeOverTimeFrameTimeSheet();
 		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(overTimeAutoCalcSet);
-		val excessOverTimeWorkMidNightTime = Finally.of(new ExcessOverTimeWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0))));
+		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(overTimeSheet,overTimeAutoCalcSet));
 		val irregularTime = new AttendanceTime(0);
 		FlexTime flexTime = new FlexTime(TimeWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0));
 		try{
@@ -303,6 +304,16 @@ public class OverTimeOfDaily {
 								   flexTime,
 								   overTimeWork);
 		
+	}
+	/**
+	 * 所定外深夜時間の計算
+	 * @param oneDay
+	 * @return　所定外深夜時間
+	 */
+	private static ExcessOverTimeWorkMidNightTime calcExcessMidNightTime(OverTimeSheet overTimeSheet,AutoCalculationOfOverTimeWork autoCalcSet) {
+		
+		AttendanceTime calcTime = overTimeSheet.calcMidNightTime(autoCalcSet);
+		return new ExcessOverTimeWorkMidNightTime(TimeWithCalculation.sameTime(calcTime));
 	}
 	
 }
