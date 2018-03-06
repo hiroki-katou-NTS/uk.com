@@ -12,17 +12,21 @@ import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 
 @Stateless
 @Transactional
-public class AddStdAcceptCondSetCommandHandler extends CommandHandler<StdAcceptCondSetCommand>
-{
-    
-    @Inject
-    private StdAcceptCondSetRepository repository;
-    
-    @Override
-    protected void handle(CommandHandlerContext<StdAcceptCondSetCommand> context) {
-        StdAcceptCondSetCommand addCommand = context.getCommand();
-        String companyId = AppContexts.user().companyId();
-//        repository.add(new StdAcceptCondSet(companyId, addCommand.getConditionSetCd(), addCommand.getCategoryId(), addCommand.getCsvDataLineNumber(), addCommand.getSystemType(), addCommand.getDeleteExistData(), addCommand.getCsvDataStartLine(), addCommand.getAcceptMode(), addCommand.getConditionSetName(), addCommand.getCheckCompleted(), addCommand.getDeleteExtDataMethod()));
-    
-    }
+public class AddStdAcceptCondSetCommandHandler extends CommandHandler<StdAcceptCondSetCommand> {
+
+	@Inject
+	private StdAcceptCondSetRepository repository;
+
+	@Override
+	protected void handle(CommandHandlerContext<StdAcceptCondSetCommand> context) {
+		StdAcceptCondSetCommand addCommand = context.getCommand();
+		String companyId = AppContexts.user().companyId();
+		StdAcceptCondSet domain = new StdAcceptCondSet(companyId, addCommand.getSystemType(),
+				addCommand.getConditionSettingCode(), addCommand.getConditionSettingName(),
+				addCommand.getDeleteExistData(), addCommand.getAcceptMode(), addCommand.getCheckCompleted(),
+				addCommand.getCategoryId(), addCommand.getCsvDataItemLineNumber(), addCommand.getCsvDataStartLine(),
+				addCommand.getDeleteExistDataMethod());
+		this.repository.add(domain);
+
+	}
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -12,7 +13,9 @@ import javax.inject.Inject;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.uk.ctx.exio.app.find.exi.category.ExAcpCategoryDto;
 import nts.uk.ctx.exio.app.find.exi.category.ExAcpCtgItemDatDto;
+import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
+import nts.uk.ctx.exio.dom.exi.condset.SystemType;
 import nts.uk.ctx.exio.dom.exi.service.FileUtil;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -28,12 +31,40 @@ public class StdAcceptCondSetFinder {
 	@Inject
 	private StoredFileStreamService fileStreamService;
 
+	public List<SystemTypeDto> getSystemTypes() {
+		List<SystemTypeDto> result = new ArrayList<>();
+		String employeeId = AppContexts.user().employeeId();
+		// dummy request list #50: get system code by employee id
+		LoginUserInCharge charge = new LoginUserInCharge(true, true, true, true, true);
+		if (charge.isHumanResource()) {
+			result.add(new SystemTypeDto(SystemType.PERSON_SYSTEM.value, "Human Resources"));
+		}
+		if (charge.isOfficeHelper()) {
+			result.add(new SystemTypeDto(SystemType.OFFICE_HELPER.value, "Office Helper"));
+		}
+		if (charge.isSalary()) {
+			result.add(new SystemTypeDto(SystemType.PAYROLL_SYSTEM.value, "Salary"));
+		}
+		return result;
+	}
+
 	public List<StdAcceptCondSetDto> getStdAcceptCondSetBySysType(int systemType) {
 		String companyId = AppContexts.user().companyId();
 		return stdConditionRepo.getStdAcceptCondSetBySysType(companyId, systemType).stream()
 				.map(item -> StdAcceptCondSetDto.fromDomain(item)).collect(Collectors.toList());
 	}
-	
+
+	public StdAcceptCondSetDto getStdAccCondSet(int sysType, String conditionSetCd) {
+		String companyId = AppContexts.user().companyId();
+		Optional<StdAcceptCondSet> optDomain = stdConditionRepo.getStdAcceptCondSetById(companyId, sysType,
+				conditionSetCd);
+		if (optDomain.isPresent())
+			return StdAcceptCondSetDto.fromDomain(optDomain.get());
+		else
+			return null;
+
+	}
+
 	public boolean isCodeExist(int systemType, String conditionCode) {
 		String companyId = AppContexts.user().companyId();
 		return stdConditionRepo.isSettingCodeExist(companyId, systemType, conditionCode);
@@ -52,8 +83,8 @@ public class StdAcceptCondSetFinder {
 		}
 		return totalRecord;
 	}
-	
-	public List<String> getRecordByIndex(String fileId, int numOfCol, int index){
+
+	public List<String> getRecordByIndex(String fileId, int numOfCol, int index) {
 		List<String> result;
 		try {
 			// get input stream by fileId

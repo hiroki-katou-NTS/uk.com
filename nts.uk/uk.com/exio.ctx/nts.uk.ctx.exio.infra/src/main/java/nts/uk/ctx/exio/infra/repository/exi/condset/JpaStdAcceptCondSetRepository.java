@@ -41,7 +41,7 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 	@Override
 	public void update(StdAcceptCondSet domain) {
 		Optional<OiomtStdAcceptCondSet> entityOpt = this.queryProxy().find(
-				new OiomtStdAcceptCondSetPk(domain.getCid(), domain.getSystemType(), domain.getConditionSetCd().v()),
+				new OiomtStdAcceptCondSetPk(domain.getCid(), domain.getSystemType().value, domain.getConditionSetCd().v()),
 				OiomtStdAcceptCondSet.class);
 		if (entityOpt.isPresent()) {
 			OiomtStdAcceptCondSet entity = entityOpt.get();

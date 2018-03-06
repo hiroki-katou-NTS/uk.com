@@ -5,6 +5,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.exio.dom.exi.condset.AcScreenCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionCode;
+import nts.uk.ctx.exio.dom.exi.condset.SystemType;
 import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 
 /**
@@ -32,7 +33,7 @@ public class StdAcceptItem extends AggregateRoot {
 	/**
 	 * システム種類
 	 */
-	private int systemType;
+	private SystemType systemType;
 
 	/**
 	 * CSV項目番号
@@ -63,7 +64,7 @@ public class StdAcceptItem extends AggregateRoot {
 			int csvItemNumber, String csvItemName, int itemType, AcScreenCondSet acceptScreenConditionSetting) {
 		super();
 		this.cid = cid;
-		this.systemType = systemType;
+		this.systemType = EnumAdaptor.valueOf(systemType, SystemType.class);
 		this.conditionSetCd = new AcceptanceConditionCode(conditionSetCd);
 		this.categoryItemNo = categoryItemNo;
 		this.acceptItemNumber = acceptItemNumber;

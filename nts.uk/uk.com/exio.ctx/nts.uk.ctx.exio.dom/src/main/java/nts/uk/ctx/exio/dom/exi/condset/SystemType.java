@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.exi.item;
+package nts.uk.ctx.exio.dom.exi.condset;
 
 /**
  * 

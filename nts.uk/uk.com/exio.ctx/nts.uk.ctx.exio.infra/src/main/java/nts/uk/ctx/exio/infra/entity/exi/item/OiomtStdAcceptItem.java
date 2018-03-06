@@ -83,7 +83,7 @@ public class OiomtStdAcceptItem extends UkJpaEntity implements Serializable {
 	}
 
 	public static OiomtStdAcceptItem fromDomain(StdAcceptItem domain) {
-		return new OiomtStdAcceptItem(domain.getCid(), domain.getSystemType(), domain.getConditionSetCd().v(), "",
+		return new OiomtStdAcceptItem(domain.getCid(), domain.getSystemType().value, domain.getConditionSetCd().v(), "",
 				domain.getAcceptItemNumber(), domain.getCategoryItemNo(), domain.getCsvItemNumber(),
 				domain.getCsvItemName(), domain.getItemType().value,
 				OiomtAcScreenCondSet.fromDomain(domain.getAcceptScreenConditionSetting()));

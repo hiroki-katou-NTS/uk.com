@@ -17,7 +17,7 @@ public class StdAcceptItemFinder {
 	@Inject
 	private StdAcceptItemRepository stdAcceptItemRepo;
 
-	public List<StdAcceptItemDto> getStdAcceptItem(int systemType, String conditionSetCd) {
+	public List<StdAcceptItemDto> getStdAcceptItems(int systemType, String conditionSetCd) {
 		String companyId = AppContexts.user().companyId();
 		return stdAcceptItemRepo.getListStdAcceptItems(companyId, systemType, conditionSetCd).stream()
 				.map(item -> StdAcceptItemDto.fromDomain(item)).collect(Collectors.toList());
