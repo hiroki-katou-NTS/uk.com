@@ -18,6 +18,7 @@
 
 		<ui:define name="content">
 			<div class="contents-area">
+				<!--I1_1 タイトル-->
 				<div id="I1_1" class="label">#{i18n.getText('CMF001_300')}</div>
 				<table id="tbl-control">
 					<col width="180px" />
@@ -25,9 +26,11 @@
 					<col width="160px" />
 					<tr>
 						<td>
+							<!--I2_1 形式選択(ラベル)-->
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_301')}</div>
 						</td>
 						<td>
+							<!--I2_2 形式選択-->
 							<div data-bind="foreach: itemsFormatSelection">
 								<div
 									data-bind="ntsRadioButton: {
@@ -42,9 +45,11 @@
 					</tr>
 					<tr>
 						<td>
+							<!--I4_1 固定値(ラベル)-->
 							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_320')}</div>
 						</td>
 						<td>
+							<!--I4_2 固定値-->
 							<div data-bind="foreach: itemsFixedValue">
 								<div
 									data-bind="ntsRadioButton: {
@@ -56,6 +61,7 @@
 										group: 'radioFixedValue'}"></div>
 							</div>
 						</td>
+						<!--I4_5 固定値の値-->
 						<td><input
 							data-bind="ntsNumberEditor: {
 									value: setting().valueOfFixed,
@@ -66,8 +72,10 @@
 				</table>
 			</div>
 			<div id="functions-area-bottom">
-				<button id="btn_I5_1" class="x-large proceed" 
+				<!--I5_1 設定--> 
+				<button id="btn_I5_1" class="x-large proceed"
 					data-bind="click: saveNumericSetting, enable: inputMode">#{i18n.getText('CMF001_325')}</button>
+				<!--I5_2 キャンセル--> 
 				<button id="btn_I5_2" class="large"
 					data-bind="click: cancelNumericSetting">#{i18n.getText('CMF001_326')}</button>
 			</div>

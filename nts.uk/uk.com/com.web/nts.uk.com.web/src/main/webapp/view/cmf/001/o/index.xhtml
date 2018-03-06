@@ -17,7 +17,6 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<!-- Go back Style -->
 				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF001_430')}</a>
 			</div>
@@ -37,14 +36,17 @@
 						<div class="end step-2">#{i18n.getText('CMF001_435')}</div>
 					</div>
 					<div class="contents">
+						<!-- O 受入設定選択 -->
 						<div class="step-1">
 							<div class="label" style="margin-bottom: 15px;">#{i18n.getText('CMF001_436')}</div>
 							<table style="margin-bottom: 15px; margin-left: 20px">
 								<tr>
 									<td style="padding-right: 20px;">
+										<!--O5＿1 システム種類（ラベル）-->
 										<div class="label">#{i18n.getText('CMF001_442')}</div>
 									</td>
 									<td>
+										<!--O5_2 システム種類選択-->
 										<div id="cbbSysType"
 											data-bind="ntsComboBox: {
 													options: listSysType,
@@ -62,9 +64,12 @@
 								<tr>
 									<td rowspan="2" style="width: 360px;">
 										<div class="" style="width: 360px; float: left;">
+											<!--O4_1 条件設定選択(パネル)-->
 											<div
 												data-bind="ntsPanel:{width: '320px', height: '464px', direction: 'none', showIcon: true, visible: true}">
+												<!--O4_2 コード/名称-->
 												<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_438')}</div>
+												<!--O4_3 絞り込み検索-->
 												<div tabindex="7" style="width: 320px"
 													data-bind="ntsSearchBox: {
 														searchMode: 'filter', 
@@ -75,6 +80,7 @@
 														selectedKey: 'dispConditionSettingCode', 
 														fields: ['dispConditionSettingCode', 'dispConditionSettingName'], 
 														mode: 'igGrid'}" />
+												<!--O4_4 条件設定一覧-->
 												<table id="grd_Condition"
 													data-bind="ntsGridList: {
 													height: 384,
@@ -88,32 +94,38 @@
 										            ], 
 													multiple: false,
 													value: selectedConditionCd}">
-												</table>												
+												</table>
 											</div>
 										</div>
 									</td>
 									<td style="vertical-align: top">
+										<!--O5_3 取込情報パネル-->
 										<div class="panel panel-frame"
 											style="margin-left: 20px; height: 75px">
 											<table style="margin-bottom: 10px">
 												<tr>
-													<td style="padding: 5px 10px"><label>#{i18n.getText('CMF001_444')}</label>
+													<td style="padding: 5px 10px">
+														<!--O5_4 条件コード/名称-->
+														<div class="label">#{i18n.getText('CMF001_444')}</div>
 													</td>
 													<td style="padding: 5px 10px">
+														<!--O5_5 条件コード-->
 														<div class="label" data-bind="text: selectedConditionCd"></div>
 													</td>
 													<td style="padding: 5px 10px">
-														<div class="label"
-															data-bind="text: selectedConditionName"></div>
+														<!--O5_6 条件名称-->
+														<div class="label" data-bind="text: selectedConditionName"></div>
 													</td>
 												</tr>
 											</table>
 											<table>
 												<tr>
 													<td>
+														<!--O5_7 受入ファイル-->
 														<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF001_445')}</div>
 													</td>
 													<td>
+														<!--O5_8 受入ファイルアップロード-->
 														<div id="file-upload" class="form_step0"
 															style="display: inline-block;"
 															data-bind="ntsFileUpload:{
@@ -133,14 +145,18 @@
 								</tr>
 								<tr>
 									<td style="vertical-align: bottom; padding-left: 10px;">
+										<!--O6_1 ←処理を選びなおす-->
 										<button data-bind="click: previous">#{i18n.getText('CMF001_448')}</button>
+										<!--O6_2 次へ→-->
 										<button class="proceed x-large" style="margin-left: 10px"
 											data-bind="click: next">#{i18n.getText('CMF001_449')}</button>
 									</td>
 								</tr>
 							</table>
 						</div>
+						<!-- P 外部受入サマリー -->
 						<div class="step-2">
+							<!--P3_1 テキスト受入を行う-->
 							<div class="label">#{i18n.getText('CMF001_461')}</div>
 							<table style="margin: 0 20px 15px 20px; width: calc(100% - 40px)">
 								<colgroup>
@@ -153,44 +169,59 @@
 								</colgroup>
 								<tr>
 									<td style="padding: 5px 0;">
+										<!--P3_2 条件コード/名称-->
 										<div class="label">#{i18n.getText('CMF001_462')}</div>
 									</td>
 									<td>
+										<!--P3_3 条件コード-->
 										<div class="label" data-bind="text: selectedConditionCd"></div>
 									</td>
 									<td>
+										<!--P3_4 条件名称-->
 										<div class="label" data-bind="text: selectedConditionName"></div>
 									</td>
 									<td>
+										<!--P3_5 項目行行数（ラベル）-->
 										<div class="label">#{i18n.getText('CMF001_463')}</div>
 									</td>
 									<td>
-										<div class="label" data-bind="text: selectedConditionLineNumber"></div>
+										<!--P3_6 項目行行数-->
+										<div class="label"
+											data-bind="text: selectedConditionLineNumber"></div>
 									</td>
 									<td>
+										<!--P3_7 行目-->
 										<div class="label">#{i18n.getText('CMF001_464')}</div>
 									</td>
 								</tr>
 								<tr>
 									<td style="padding: 5px 0;">
+										<!--P3_8 受入ファイル（ラベル）-->
 										<div class="label">#{i18n.getText('CMF001_465')}</div>
 									</td>
 									<td colspan="2">
+										<!--P3_9 受入ファイル名-->
 										<div class="label" data-bind="text: filename"></div>
 									</td>
 									<td style="">
+										<!--P3_10 取込開始行（ラベル）-->
 										<div class="label">#{i18n.getText('CMF001_466')}</div>
 									</td>
 									<td style="">
-										<div class="label" data-bind="text: selectedConditionStartLine"></div>
+										<!--P3_11 取込開始行-->
+										<div class="label"
+											data-bind="text: selectedConditionStartLine"></div>
 									</td>
 									<td style="">
+										<!--P3_12 開始する-->
 										<div class="label">#{i18n.getText('CMF001_467')}</div>
 									</td>
 								</tr>
 							</table>
+							<!--P3_13 取込項目-->
 							<div class="label" style="margin-bottom: 5px;">#{i18n.getText('CMF001_468')}</div>
-							
+
+							<!--P4_1 取込項目一覧-->
 							<table id="grd_Accept">
 								<colgroup>
 									<col width="40px" />
@@ -204,27 +235,40 @@
 								<thead>
 									<tr>
 										<th class="ui-widget-header"></th>
+										<!--P4_2 取込項目名(ヘッダ)-->
 										<th class="ui-widget-header">#{i18n.getText('CMF001_471')}</th>
+										<!--P4_3 ＣＳＶ項目名(ヘッダ)-->
 										<th class="ui-widget-header">#{i18n.getText('CMF001_472')}</th>
+										<!--P4_4 サンプルデータ(ヘッダ)-->
 										<th class="ui-widget-header">#{i18n.getText('CMF001_473')}</th>
+										<!--P4_5 項目形式(ヘッダ)-->
 										<th class="ui-widget-header">#{i18n.getText('CMF001_474')}</th>
+										<!--P4_6 取込時の編集(ヘッダ)-->
 										<th class="ui-widget-header">#{i18n.getText('CMF001_475')}</th>
+										<!--P4_7 受入条件(ヘッダ)-->
 										<th class="ui-widget-header">#{i18n.getText('CMF001_476')}</th>
 									</tr>
 								</thead>
 								<tbody data-bind="foreach: listAccept">
 									<tr>
+										<!--P4_8 行番号-->
 										<td style="text-align: right;"></td>
+										<!--P4_9 取込項目名-->
 										<td style="text-align: left;"><div class="label"
 												data-bind="text: infoName"></div></td>
+										<!--P4_10 ＣＳＶ項目名-->
 										<td style="text-align: left;"><div class="label"
 												data-bind="text: csvItemName"></div></td>
+										<!--P4_11 サンプルデータ-->
 										<td style="text-align: left;"><div class="label"
 												data-bind="text: sampleData"></div></td>
+										<!--P4_12 項目形式-->
 										<td style="text-align: left;"><div class="label"
 												data-bind="text: itemTypeName"></div></td>
+										<!--P4_13 取込時の編集-->
 										<td style="text-align: center;"><i
 											data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: function() {$parent.editIngestion($data)}"></i></td>
+										<!--P4_14 受入条件-->
 										<td style="text-align: center;"><i
 											data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: function() {$parent.receiveCondition($data)}"></i></td>
 									</tr>
@@ -232,16 +276,21 @@
 							</table>
 							<table style="margin-top: 5px; margin-bottom: 10px;">
 								<tr>
+									<!--P5_1 対象件数-->
 									<td width="80"><div class="label">#{i18n.getText('CMF001_477')}</div></td>
+									<!--P5_2 件数-->
 									<td style="padding-right: 5px;"><div class="label"
 											style="font-size: 1.5em;" data-bind="text: totalRecord"></div></td>
+									<!--P5_3 件-->
 									<td><div class="label">#{i18n.getText('CMF001_478')}</div></td>
 								</tr>
 							</table>
 							<table style="width: 100%">
 								<tr>
 									<td style="text-align: center;">
+										<!--P6_1 ←受入設定へ-->
 										<button data-bind="click: previous">#{i18n.getText('CMF001_479')}</button>
+										<!--P6_2 受入実行-->
 										<button class="proceed x-large" style="margin-left: 10px"
 											data-bind="click: exeAccept">#{i18n.getText('CMF001_480')}</button>
 									</td>

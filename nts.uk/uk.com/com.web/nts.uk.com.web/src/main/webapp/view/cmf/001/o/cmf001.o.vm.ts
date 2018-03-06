@@ -59,10 +59,8 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     let item = _.find(ko.toJS(self.listCondition), (x: model.StandardAcceptanceConditionSetting) => x.dispConditionSettingCode == data);
                     //選択したカレント行の「条件コード/名称」を画面右側の「条件コード/名称」にセットする
                     self.selectedConditionName(item.dispConditionSettingName);
-                    let lineNumber = item.csvDataItemLineNumber;
-                    let startLine = item.csvDataStartLine
-                    self.selectedConditionLineNumber(lineNumber);
-                    self.selectedConditionStartLine(startLine);
+                    self.selectedConditionLineNumber(item.csvDataItemLineNumber);
+                    self.selectedConditionStartLine(item.csvDataStartLine);
                 }
                 else {
                     self.selectedConditionName('');
@@ -247,25 +245,29 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 case 0:
                     //数値型の場合                    
                     //G:「数値型設定」ダイアログをモーダルで表示する
+                    let settingG = new model.NumericDataFormatSetting(0, 0, 0, 0, 0, 0, 0, null, 0, "");
+                    setShared("CMF001gParams", { inputMode: false, lineNumber: null, formatSetting: ko.toJS(settingG) });
                     nts.uk.ui.windows.sub.modal("/view/cmf/001/g/index.xhtml");
                     break;
                 case 1:
                     //文字型の場合
                     //H:「文字型設定」ダイアログをモーダルで表示する
+                    let settingH = new model.CharacterDataFormatSetting(0, 0, 0, 0, 0, 0, null, 0, "");
+                    setShared("CMF001hParams", { inputMode: false, lineNumber: null, formatSetting: ko.toJS(settingH) });
                     nts.uk.ui.windows.sub.modal("/view/cmf/001/h/index.xhtml");
                     break;
                 case 2:
                     //日付型の場合  
                     //I:「日付型設定」ダイアログをモーダルで表示する
                     let settingI = new model.DateDataFormatSetting(2, model.NOT_USE_ATR.USE, '1223');
-                    setShared("CMF001iParams", { inputMode: true, lineNumber: null, formatSetting: ko.toJS(settingI) });
+                    setShared("CMF001iParams", { inputMode: false, lineNumber: null, formatSetting: ko.toJS(settingI) });
                     nts.uk.ui.windows.sub.modal("/view/cmf/001/i/index.xhtml");
                     break;
                 case 3:
                     //時間型の場合, 時刻型の場合 
                     //J:「時刻型・時間型設定」ダイアログをモーダルで表示する
                     let settingJ = new model.InstantTimeDataFormatSetting(0, null, null, 0, 0, 0, 0, 0, 0, '111');
-                    setShared("CMF001jParams", { inputMode: true, lineNumber: null, formatSetting: ko.toJS(settingJ) });
+                    setShared("CMF001jParams", { inputMode: false, lineNumber: null, formatSetting: ko.toJS(settingJ) });
                     nts.uk.ui.windows.sub.modal("/view/cmf/001/j/index.xhtml");
                     break;
             }
@@ -273,7 +275,8 @@ module nts.uk.com.view.cmf001.o.viewmodel {
 
         receiveCondition(item) {
             //L:「受入条件設定ダイアログをモーダルで表示する
-            console.log('receiveCondition', item);
+            let settingL = new model.AcceptScreenConditionSetting("", 0, 0, 0, 0, 0, "", "", "", "", 0, 0);
+            setShared("CMF001lParams", { inputMode: false, dataType: 0, formatSetting: ko.toJS(settingL) });
             nts.uk.ui.windows.sub.modal("/view/cmf/001/l/index.xhtml");
         }
 
@@ -305,7 +308,18 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             this.csvItemNumber = ko.observable(csvItemNumber);
             this.sampleData = ko.observable(sampleData);
             this.itemType = ko.observable(itemType);
-            this.itemTypeName = ko.observable('' + itemType)
+            this.itemTypeName = ko.observable(this.getItemTypeName(itemType));
+        }
+
+        getItemTypeName(typeCd: number) {
+            switch (typeCd) {
+                case 0: return "数値型";
+                case 1: return "文字型";
+                case 2: return "日付型";
+                case 3: return "時刻型";
+                case 4: return "時間型";
+            }
+            return "";
         }
     }
 }
