@@ -130,10 +130,6 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             });
         }
 
-        test(id) {
-            alert("hey");
-        }
-
         loadSystemType() {
             let self = this;
 
@@ -264,14 +260,6 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     let settingI = new model.DateDataFormatSetting(2, model.NOT_USE_ATR.USE, '1223');
                     setShared("CMF001iParams", { inputMode: true, lineNumber: null, formatSetting: ko.toJS(settingI) });
                     nts.uk.ui.windows.sub.modal("/view/cmf/001/i/index.xhtml");
-                    /*.onClosed(function() {
-                        var isCancel = getShared('CMF001iCancel');
-                        if (isCancel) {
-                            return;
-                        }
-                        var output = getShared('CMF001iOutput');
-                        console.log(output)
-                    });*/
                     break;
                 case 3:
                     //時間型の場合, 時刻型の場合 
@@ -290,27 +278,17 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         }
 
         exeAccept() {
-            //Q:「外部受入処理中ダイアログ」をチェック中で起動する 
-            console.log('exeAccept');
-        }
-
-        // Open Dialog CDL002
-        private openDialogG() {
             let self = this;
-            setShared('CMF001Params', {
-                /*isMultiple: '',
-                selectedCodes: '',
-                showNoSelection: '',*/
-            }, true);
-
-            nts.uk.ui.windows.sub.modal("/view/cmf/001/g/index.xhtml").onClosed(function() {
-                /*var isCancel = getShared('CDL002Cancel');
-                if (isCancel) {
-                    return;
-                }
-                var output = getShared('CDL002Output');
-                self.selectedItem(output);*/
+            //Q:「外部受入処理中ダイアログ」をチェック中で起動する 
+            setShared("CMF001qParams", {
+                mode: 0,
+                systemType: self.selectedSysType(),
+                conditionCd: self.selectedConditionCd(),
+                fileName: self.filename(),
+                fileId: self.fileId(),
+                totalRecord: self.totalRecord()
             });
+            nts.uk.ui.windows.sub.modal("/view/cmf/001/q/index.xhtml");
         }
     }
 
