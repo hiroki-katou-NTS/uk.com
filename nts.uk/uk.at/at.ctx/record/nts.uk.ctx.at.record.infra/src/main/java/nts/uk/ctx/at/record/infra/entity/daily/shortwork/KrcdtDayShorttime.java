@@ -92,31 +92,92 @@ public class KrcdtDayShorttime extends UkJpaEntity implements Serializable{
 	 * PrimaryKey以外の値セット 
 	 */
 	public void setData(AttendanceTimeOfDailyPerformance attendanceTime) {
-		val shorttimeDaily = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily();
-		val recordTime = shorttimeDaily.getTotalTime();
-		val dedTime = shorttimeDaily.getTotalDeductionTime();
-		val workTimes = shorttimeDaily.getWorkTimes();
-		if(!shorttimeDaily.equals(null)) {
-			this.toRecordTotalTime = recordTime.getTotalTime() == null ? 0 : recordTime.getTotalTime().getTime().valueAsMinutes();
-			this.calToRecordTotalTime = recordTime.getTotalTime() == null ? 0 : recordTime.getTotalTime().getCalcTime().valueAsMinutes();
-			
-			this.toRecordInTime = recordTime.getWithinStatutoryTotalTime() == null ? 0 : recordTime.getWithinStatutoryTotalTime().getTime().valueAsMinutes();
-			this.calToRecordInTime = recordTime.getWithinStatutoryTotalTime() == null ? 0 : recordTime.getWithinStatutoryTotalTime().getCalcTime().valueAsMinutes();;
-			
-			this.toRecordOutTime = recordTime.getExcessOfStatutoryTotalTime() == null ? 0 : recordTime.getExcessOfStatutoryTotalTime().getTime().valueAsMinutes();
-			this.calToRecordOutTime = recordTime.getExcessOfStatutoryTotalTime() == null ? 0 : recordTime.getExcessOfStatutoryTotalTime().getCalcTime().valueAsMinutes();
-			
-			this.deductionTotalTime = dedTime.getTotalTime() == null ? 0 : dedTime.getTotalTime().getTime().valueAsMinutes();
-			this.calDeductionTotalTime = dedTime.getTotalTime() == null ? 0 : dedTime.getTotalTime().getCalcTime().valueAsMinutes();
-			
-			this.deductionInTime = dedTime.getWithinStatutoryTotalTime() == null ? 0 : dedTime.getWithinStatutoryTotalTime().getTime().valueAsMinutes();
-			this.calDeductionInTime = dedTime.getWithinStatutoryTotalTime() == null ? 0 : dedTime.getWithinStatutoryTotalTime().getCalcTime().valueAsMinutes();
-			
-			this.deductionOutTime = dedTime.getExcessOfStatutoryTotalTime() == null ? 0 : dedTime.getExcessOfStatutoryTotalTime().getTime().valueAsMinutes();;
-			this.calDeductionOutTime = dedTime.getExcessOfStatutoryTotalTime() == null ? 0 : dedTime.getExcessOfStatutoryTotalTime().getCalcTime().valueAsMinutes();;
-			
-			this.count = workTimes == null ? 0 : workTimes.v();
+		if(attendanceTime != null) {
+			if(attendanceTime.getActualWorkingTimeOfDaily() != null) {
+				if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
+					if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily() != null) {
+						val recordTime = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getTotalTime();
+						val dedTime = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getTotalDeductionTime();
+						val workTimes = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getWorkTimes();
+						if(recordTime.getTotalTime() != null) {
+							this.toRecordTotalTime = recordTime.getTotalTime().getTime() == null ? 0 : recordTime.getTotalTime().getTime().valueAsMinutes();
+							this.calToRecordTotalTime = recordTime.getTotalTime().getCalcTime() == null ? 0 : recordTime.getTotalTime().getTime().valueAsMinutes();
+						}
+						else {
+							this.toRecordTotalTime = 0;
+							this.calToRecordTotalTime = 0;
+						}
+						
+						if(recordTime.getWithinStatutoryTotalTime() != null) {
+							this.toRecordInTime = recordTime.getWithinStatutoryTotalTime().getTime() == null ? 0 : recordTime.getWithinStatutoryTotalTime().getTime().valueAsMinutes();
+							this.calToRecordInTime = recordTime.getWithinStatutoryTotalTime().getCalcTime() == null ? 0 : recordTime.getWithinStatutoryTotalTime().getCalcTime().valueAsMinutes();;
+						}
+						else {
+							this.toRecordInTime = 0;
+							this.calToRecordInTime = 0;
+						}
+						
+						if(recordTime.getExcessOfStatutoryTotalTime() != null) {
+							this.toRecordOutTime = recordTime.getExcessOfStatutoryTotalTime().getTime() == null ? 0 : recordTime.getExcessOfStatutoryTotalTime().getTime().valueAsMinutes();
+							this.calToRecordOutTime = recordTime.getExcessOfStatutoryTotalTime().getCalcTime() == null ? 0 : recordTime.getExcessOfStatutoryTotalTime().getCalcTime().valueAsMinutes();
+						}
+						else {
+							this.toRecordOutTime = 0;
+							this.calToRecordOutTime = 0;
+						}
+
+						if(dedTime.getTotalTime() != null) {
+							this.deductionTotalTime = dedTime.getTotalTime().getTime() == null ? 0 : dedTime.getTotalTime().getTime().valueAsMinutes();
+							this.calDeductionTotalTime = dedTime.getTotalTime().getCalcTime() == null ? 0 : dedTime.getTotalTime().getCalcTime().valueAsMinutes();
+						}
+						else {
+							this.deductionTotalTime = 0;
+							this.calDeductionTotalTime = 0;
+						}
+
+						if(dedTime.getWithinStatutoryTotalTime() != null) {
+							this.deductionInTime = dedTime.getWithinStatutoryTotalTime().getTime() == null ? 0 : dedTime.getWithinStatutoryTotalTime().getTime().valueAsMinutes();
+							this.calDeductionInTime = dedTime.getWithinStatutoryTotalTime().getCalcTime() == null ? 0 : dedTime.getWithinStatutoryTotalTime().getCalcTime().valueAsMinutes();
+						}
+						else {
+							this.deductionInTime = 0;
+							this.calDeductionInTime = 0;
+						}
+						
+						if(dedTime.getExcessOfStatutoryTotalTime() != null) {
+							this.deductionOutTime = dedTime.getExcessOfStatutoryTotalTime().getTime() == null ? 0 : dedTime.getExcessOfStatutoryTotalTime().getTime().valueAsMinutes();
+							this.calDeductionOutTime = dedTime.getExcessOfStatutoryTotalTime().getCalcTime() == null ? 0 : dedTime.getExcessOfStatutoryTotalTime().getCalcTime().valueAsMinutes();
+						}
+						else {
+							this.deductionOutTime = 0;
+							this.calDeductionOutTime = 0;
+						}
+						this.count = workTimes == null ? 0 : workTimes.v();
+						return ;
+					}
+				}
+			}
 		}
+		
+		this.toRecordTotalTime = 0;
+		this.calToRecordTotalTime = 0;
+		
+		this.toRecordInTime = 0;
+		this.calToRecordInTime = 0;
+		
+		this.toRecordOutTime = 0;
+		this.calToRecordOutTime = 0;
+		
+		this.deductionTotalTime = 0;
+		this.calDeductionTotalTime = 0;
+		
+		this.deductionInTime = 0;
+		this.calDeductionInTime = 0;
+		
+		this.deductionOutTime = 0;
+		this.calDeductionOutTime = 0;
+		
+		this.count = 0;
 	}
 	
 	/**
