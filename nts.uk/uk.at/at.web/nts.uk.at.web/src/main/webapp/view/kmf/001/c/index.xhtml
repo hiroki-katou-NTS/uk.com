@@ -165,6 +165,7 @@
 									data-bind="ntsComboBox: {
 										options: maxDayReferenceList,
 										optionsValue: 'value',
+										visibleItemsCount: 2,
 										value: selectedMaxNumberSemiVacation,
 										optionsText: 'localizedName',
 										editable: false,
@@ -220,6 +221,7 @@
 									data-bind="ntsComboBox: {
 										options: annualPriorityList,
 										optionsValue: 'value',
+										visibleItemsCount: 2,
 										value: selectedAnnualPriority,
 										optionsText: 'localizedName',
 										editable: false,
@@ -295,6 +297,7 @@
 									data-bind="ntsComboBox: {
 										options: vacationTimeUnitList,
 										optionsValue: 'value',
+										visibleItemsCount: 5,
 										value: selectedVacationTimeUnit,
 										optionsText: 'localizedName',
 										editable: false,
@@ -325,6 +328,7 @@
 									data-bind="ntsComboBox: {
 										options: maxDayReferenceList,
 										optionsValue: 'value',
+										visibleItemsCount: 2,
 										value: selectedMaxDayVacation,
 										optionsText: 'localizedName',
 										editable: false,
@@ -357,7 +361,7 @@
 										value: selectedroundProcessClassific,
 										optionsText: 'localizedName',
 										editable: false,
-										enable: enableTimeSetting,
+										enable: enableAnnualVacation,
 										columns: [
 											{prop: 'localizedName', length: 10 }
 										]}"></div></td>

@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 500,
-					height : 600
+					height : 540
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -45,21 +45,21 @@
 				
 				<!--優先順位一覧-->
 				<div style="display: inline-flex;">
-					<table class="table table-bordered" id="priorityTable" tabindex="3"
+					<table class="table table-bordered" id="priorityTable" tabindex="-1"
 						style="margin-top: 30px; border-collapse: collapse; width: 280px; text-align: center; margin-left: 89px;">
 						<tr>
 							<td>
-								<div data-bind="ntsCheckBox: { checked: priorityPause, enable: enableInputPriority, text: '#{i18n.getText('KMF001_143')}'}"></div>
+								<div tabindex="2" data-bind="ntsCheckBox: { checked: priorityPause, enable: enableInputPriority, text: '#{i18n.getText('KMF001_143')}'}"></div>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<div data-bind="ntsCheckBox: { checked: prioritySubstitute, enable: enableInputPriority, text: '#{i18n.getText('KMF001_144')}'}"></div>
+								<div tabindex="3" data-bind="ntsCheckBox: { checked: prioritySubstitute, enable: enableInputPriority, text: '#{i18n.getText('KMF001_144')}'}"></div>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<div data-bind="ntsCheckBox: { checked: sixtyHoursOverrideHoliday, enable: enableInputPriority, text: '#{i18n.getText('KMF001_145')}'}"></div>
+								<div tabindex="4" data-bind="ntsCheckBox: { checked: sixtyHoursOverrideHoliday, enable: enableInputPriority, text: '#{i18n.getText('KMF001_145')}'}"></div>
 							</td>
 						</tr>						
 					</table>
@@ -73,18 +73,17 @@
 				
 				<!--時間年休一覧-->
 				<div style="display: inline-flex;">
-					<table class="table table-bordered" id="priorityTable" tabindex="3"
-						style="margin-top: 30px; border-collapse: collapse; width: 280px; text-align: center; margin-left: 89px;">						
-
+					<table class="table table-bordered" id="priorityTable" tabindex="-1"
+						style="margin-top: 30px; border-collapse: collapse; width: 280px; text-align: center; margin-left: 89px;">
 						<tr>
 							<td>
-								<div data-bind="ntsCheckBox: { checked: priorityOverpaid, enable: enableInputPriority, text: '#{i18n.getText('KMF001_147')}'}"></div>
+								<div tabindex="5" data-bind="ntsCheckBox: { checked: priorityOverpaid, enable: enableInputPriority, text: '#{i18n.getText('KMF001_147')}'}"></div>
 							</td>
 						</tr>				
 						
 						<tr>
 							<td>
-								<div data-bind="ntsCheckBox: { checked: sixtyHoursTimeOverrideHoliday, enable: enableInputPriority, text: '#{i18n.getText('KMF001_148')}'}"></div>
+								<div tabindex="6" data-bind="ntsCheckBox: { checked: sixtyHoursTimeOverrideHoliday, enable: enableInputPriority, text: '#{i18n.getText('KMF001_148')}'}"></div>
 							</td>
 						</tr>						
 					</table>
@@ -92,10 +91,10 @@
 
 				<div id="functions-area-bottom">
 					<!-- 決定 -->
-					<button tabindex="4"
+					<button tabindex="7"
 						data-bind="click: saveToDb" class=" proceed large">#{i18n.getText('KMF001_25')}</button>
 					<!-- キャンセル-->
-					<button tabindex="5"
+					<button tabindex="8"
 						data-bind="click: closeDialog" class=" large">#{i18n.getText('KMF001_26')}</button>
 				</div>
 			</div>
