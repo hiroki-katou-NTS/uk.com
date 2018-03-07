@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 
@@ -33,13 +34,6 @@ public interface WorkTimezoneCommonSetSetMemento {
 	 * @param shtSet the new sub hol time set
 	 */
 	 void setSubHolTimeSet(List<WorkTimezoneOtherSubHolTimeSet> shtSet);
-
-	/**
-	 * Sets the raising salary set.
-	 *
-	 * @param set the new raising salary set
-	 */
-	 void setRaisingSalarySet(BonusPaySettingCode set);
 
 	/**
 	 * Sets the medical set.
@@ -96,4 +90,11 @@ public interface WorkTimezoneCommonSetSetMemento {
 	 * @param holidayCalculation the new holiday calculation
 	 */
 	void setHolidayCalculation(HolidayCalculation holidayCalculation);
+	
+	/**
+	 * Sets the raising salary set.
+	 *
+	 * @param set the new raising salary set
+	 */
+	 void setRaisingSalarySet(Optional<BonusPaySettingCode> set);
 }

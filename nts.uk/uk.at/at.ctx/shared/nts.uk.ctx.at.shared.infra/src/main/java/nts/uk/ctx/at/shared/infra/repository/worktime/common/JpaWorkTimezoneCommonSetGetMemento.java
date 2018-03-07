@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
@@ -84,18 +85,6 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 		return this.entity.getKshmtSubstitutionSets().stream()
 				.map(item -> new WorkTimezoneOtherSubHolTimeSet(new JpaWorkTimezoneOtherSubHolTimeSetGetMemento(item)))
 				.collect(Collectors.toList());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetGetMemento#
-	 * getRaisingSalarySet()
-	 */
-	@Override
-	public BonusPaySettingCode getRaisingSalarySet() {
-		return new BonusPaySettingCode(this.entity.getRaisingSalarySet());
 	}
 
 	/*
@@ -203,6 +192,18 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	@Override
 	public HolidayCalculation getHolidayCalculation() {
 		return new HolidayCalculation(new JpaHolidayCalculationGetMemento(this.entity));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetGetMemento#
+	 * getRaisingSalarySet()
+	 */
+	@Override
+	public Optional<BonusPaySettingCode> getRaisingSalarySet() {
+		return Optional.ofNullable(new BonusPaySettingCode(this.entity.getRaisingSalarySet()));
 	}
 
 }

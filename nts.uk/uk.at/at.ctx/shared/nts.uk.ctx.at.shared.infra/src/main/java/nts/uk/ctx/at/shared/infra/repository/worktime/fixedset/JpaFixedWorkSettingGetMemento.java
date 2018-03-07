@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
@@ -172,8 +173,8 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 * getFixedWorkCalcSetting()
 	 */
 	@Override
-	public FixedWorkCalcSetting getCalculationSetting() {
-		return new FixedWorkCalcSetting(new JpaFixedWorkCalcSettingGetMemento(this.entity));
+	public Optional<FixedWorkCalcSetting> getCalculationSetting() {
+		return Optional.ofNullable(new FixedWorkCalcSetting(new JpaFixedWorkCalcSettingGetMemento(this.entity)));
 	}
 
 }

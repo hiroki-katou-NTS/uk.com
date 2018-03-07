@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -42,8 +43,7 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	/**
 	 * Instantiates a new jpa work timezone common set set memento.
 	 *
-	 * @param entity
-	 *            the entity
+	 * @param entity the entity
 	 */
 	public JpaWorkTimezoneCommonSetSetMemento(KshmtWorktimeCommonSet entity) {
 		super();
@@ -112,19 +112,6 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 			existShtSet.put(entity.getKshmtSubstitutionSetPK(), entity);
 		});
 		this.entity.setKshmtSubstitutionSets(existShtSet.values().stream().collect(Collectors.toList()));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetSetMemento#
-	 * setRaisingSalarySet(nts.uk.ctx.at.shared.dom.bonuspay.primitives.
-	 * BonusPaySettingCode)
-	 */
-	@Override
-	public void setRaisingSalarySet(BonusPaySettingCode set) {
-		this.entity.setRaisingSalarySet(set.v());
 	}
 
 	/*
@@ -256,6 +243,16 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	@Override
 	public void setHolidayCalculation(HolidayCalculation holidayCalculation) {
 		holidayCalculation.saveToMememto(new JpaHolidayCalculationSetMemento(this.entity));
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetSetMemento#setRaisingSalarySet(java.util.Optional)
+	 */
+	@Override
+	public void setRaisingSalarySet(Optional<BonusPaySettingCode> set) {
+		if (set.isPresent()) {
+			this.entity.setRaisingSalarySet(set.get().v());
+		}		
 	}
 
 }

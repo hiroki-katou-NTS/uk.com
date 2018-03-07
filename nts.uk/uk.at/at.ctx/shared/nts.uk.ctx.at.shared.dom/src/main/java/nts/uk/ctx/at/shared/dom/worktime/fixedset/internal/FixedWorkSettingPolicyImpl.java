@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedset.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +18,8 @@ import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -53,15 +57,49 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 	 * nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSet)
 	 */
 	@Override
-	public void validate(BundledBusinessException be, PredetemineTimeSetting predetemineTimeSet, 
+	public void validate(BundledBusinessException be, PredetemineTimeSetting predetemineTimeSet,
 			FixedWorkSetting fixedWorkSetting) {
 
 		// =============validate list emTimezone, Msg_773==============
 		this.validWorkTimezone(be, fixedWorkSetting, predetemineTimeSet);
 
-		// Check #Msg_516 domain StampReflectTimezone
+		// Check domain StampReflectTimezone
+		// #Msg_520
+		List<StampReflectTimezone> listGoWork = fixedWorkSetting.getLstStampReflectTimezone().stream()
+				.filter(domain -> domain.getClassification() == GoLeavingWorkAtr.GO_WORK)
+				.collect(Collectors.toList());
+		List<StampReflectTimezone> listLeaveWork = fixedWorkSetting.getLstStampReflectTimezone().stream()
+				.filter(domain -> domain.getClassification() == GoLeavingWorkAtr.LEAVING_WORK)
+				.collect(Collectors.toList());
+		if (this.isOverlap(listGoWork) || this.isOverlap(listLeaveWork)) {
+			be.addMessage("Msg_520");
+		}
 		fixedWorkSetting.getLstStampReflectTimezone().forEach(setting -> {
-			this.predService.validateOneDay(predetemineTimeSet, setting.getStartTime(), setting.getEndTime());
+			// #Msg_516
+			if (this.predService.validateOneDay(predetemineTimeSet, setting.getStartTime(), setting.getEndTime())) {
+				be.addMessage("Msg_516");
+			}
+	
+			// #Msg_1028
+			if (setting.getStartTime().lessThanOrEqualTo(predetemineTimeSet.getPrescribedTimezoneSetting().getTimezoneShiftOne().getStart())) {
+				be.addMessage("Msg_1028");
+			}
+			
+			// #Msg_1029
+			if (setting.getEndTime().greaterThanOrEqualTo(predetemineTimeSet.getPrescribedTimezoneSetting().getTimezoneShiftOne().getStart())) {
+				be.addMessage("Msg_1029");
+			}
+			
+			// #Msg_1030
+			
+			// #Msg_1031
+			
+			// #Msg_1032
+			
+			// #Msg_1033
+			
+			// #Msg_1034
+			
 		});
 
 		// Check #Msg_516 domain HDWorkTimeSheetSetting
@@ -126,5 +164,29 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 			this.emTzPolicy.validateTimezone(be, predetemineTimeSet.getPrescribedTimezoneSetting(),
 					workTimezone.getTimezone());
 		});
+	}
+
+	/**
+	 * Checks if is overlap.
+	 *
+	 * @param listTimezone
+	 *            the list timezone
+	 * @return true, if is overlap
+	 */
+	private boolean isOverlap(List<StampReflectTimezone> listTimezone) {
+		Collections.sort(listTimezone, Comparator.comparing(StampReflectTimezone::getStartTime));
+
+		for (int i = 0; i < listTimezone.size(); i++) {
+			StampReflectTimezone tz1 = listTimezone.get(i);
+			for (int j = i + 1; j < listTimezone.size(); j++) {
+				StampReflectTimezone tz2 = listTimezone.get(j);
+				// check overlap
+				if (!(tz1.getEndTime().lessThanOrEqualTo(tz2.getStartTime())
+						|| tz1.getStartTime().greaterThanOrEqualTo(tz2.getEndTime()))) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

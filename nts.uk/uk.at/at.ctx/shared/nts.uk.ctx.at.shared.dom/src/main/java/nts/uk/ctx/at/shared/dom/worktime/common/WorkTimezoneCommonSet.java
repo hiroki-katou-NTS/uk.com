@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
@@ -29,10 +30,6 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 	/** The sub hol time set. */
 	// 代休時間設定
 	private List<WorkTimezoneOtherSubHolTimeSet> subHolTimeSet;
-
-	/** The raising salary set. */
-	// 加給設定
-	private BonusPaySettingCode raisingSalarySet;
 
 	/** The medical sets. */
 	// 医療設定
@@ -65,6 +62,10 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 	/** The holiday calculation. */
 	// 休暇時の計算
 	private HolidayCalculation holidayCalculation;
+	
+	/** The raising salary set. */
+	// 加給設定
+	private Optional<BonusPaySettingCode> raisingSalarySet;
 
 	/**
 	 * Instantiates a new work timezone common set.
@@ -74,8 +75,7 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 	public WorkTimezoneCommonSet(WorkTimezoneCommonSetGetMemento memento) {
 		this.zeroHStraddCalculateSet = memento.getZeroHStraddCalculateSet();
 		this.intervalSet = memento.getIntervalSet();
-		this.subHolTimeSet = memento.getSubHolTimeSet();
-		this.raisingSalarySet = memento.getRaisingSalarySet();
+		this.subHolTimeSet = memento.getSubHolTimeSet();		
 		this.medicalSets = memento.getMedicalSet();
 		this.goOutSet = memento.getGoOutSet();
 		this.stampSet = memento.getStampSet();
@@ -84,6 +84,7 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 		this.extraordTimeSet = memento.getExtraordTimeSet();
 		this.lateEarlySet = memento.getLateEarlySet();
 		this.holidayCalculation = memento.getHolidayCalculation();
+		this.raisingSalarySet = memento.getRaisingSalarySet();
 	}
 
 	/**
@@ -95,7 +96,6 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 		memento.setZeroHStraddCalculateSet(this.zeroHStraddCalculateSet);
 		memento.setIntervalSet(this.intervalSet);
 		memento.setSubHolTimeSet(this.subHolTimeSet);
-		memento.setRaisingSalarySet(this.raisingSalarySet);
 		memento.setMedicalSet(this.medicalSets);
 		memento.setGoOutSet(this.goOutSet);
 		memento.setStampSet(this.stampSet);
@@ -104,6 +104,7 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 		memento.setExtraordTimeSet(this.extraordTimeSet);
 		memento.setLateEarlySet(this.lateEarlySet);
 		memento.setHolidayCalculation(this.holidayCalculation);
+		memento.setRaisingSalarySet(this.raisingSalarySet);
 	}
 
 	/**

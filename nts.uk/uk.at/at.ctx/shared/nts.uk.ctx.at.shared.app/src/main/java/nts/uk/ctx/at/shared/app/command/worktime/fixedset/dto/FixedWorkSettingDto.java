@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.command.worktime.fixedset.dto;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Value;
@@ -170,10 +171,10 @@ public class FixedWorkSettingDto implements FixedWorkSettingGetMemento {
 	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingGetMemento#getFixedWorkCalcSetting()
 	 */
 	@Override
-	public FixedWorkCalcSetting getCalculationSetting() {
+	public Optional<FixedWorkCalcSetting> getCalculationSetting() {
 		if (this.calculationSetting == null) {
-			return null;
+			return Optional.empty();
 		}
-		return new FixedWorkCalcSetting(this.calculationSetting);
+		return Optional.of(new FixedWorkCalcSetting(this.calculationSetting));
 	}
 }

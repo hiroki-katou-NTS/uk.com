@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
@@ -34,7 +34,8 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 	/**
 	 * Instantiates a new stamp reflect timezone.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public StampReflectTimezone(StampReflectTimezoneGetMemento memento) {
 		this.workNo = memento.getWorkNo();
@@ -46,7 +47,8 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(StampReflectTimezoneSetMemento memento) {
 		memento.setWorkNo(this.workNo);
@@ -54,5 +56,20 @@ public class StampReflectTimezone extends WorkTimeDomainObject {
 		memento.setEndTime(this.endTime);
 		memento.setStartTime(this.startTime);
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject#validate()
+	 */
+	@Override
+	public void validate() {
+		// Validate Msg_770
+		if (this.startTime.greaterThanOrEqualTo(this.endTime)) {
+			this.bundledBusinessExceptions.addMessage("Msg_770");
+		}
+		super.validate();
+	}
+
 }

@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -67,7 +68,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot {
 
 	/** The calculation setting. */
 	// 計算設定
-	private FixedWorkCalcSetting calculationSetting;
+	private Optional<FixedWorkCalcSetting> calculationSetting;
 
 	/**
 	 * Instantiates a new fixed work setting.

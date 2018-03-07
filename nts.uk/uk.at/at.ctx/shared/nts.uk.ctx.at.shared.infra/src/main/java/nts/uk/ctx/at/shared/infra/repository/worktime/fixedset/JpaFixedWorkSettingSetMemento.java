@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
@@ -220,7 +221,9 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 * FixedWorkCalcSetting)
 	 */
 	@Override
-	public void setCalculationSetting(FixedWorkCalcSetting fixedWorkCalcSetting) {
-		fixedWorkCalcSetting.saveToMemento(new JpaFixedWorkCalcSettingSetMemento(this.entity));
+	public void setCalculationSetting(Optional<FixedWorkCalcSetting> fixedWorkCalcSetting) {
+		if (fixedWorkCalcSetting.isPresent()) {
+			fixedWorkCalcSetting.get().saveToMemento(new JpaFixedWorkCalcSettingSetMemento(this.entity));
+		}		
 	}
 }
