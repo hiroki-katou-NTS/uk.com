@@ -293,10 +293,16 @@ module nts.uk.at.view.ksm005.b {
                             self.modeMonthlyPattern(ModeMonthlyPattern.UPDATE);
                             self.monthlyPatternModel().updateEnable(false);
                             self.enableDelete(true);
+                            self.updateWorkMothlySetting(data);
+                            self.lstWorkMonthlySetting(data);
                         });
                     }
-                    self.updateWorkMothlySetting(data);
-                    self.lstWorkMonthlySetting(data);
+                    else {
+                        self.updateWorkMothlySetting([]);
+                        self.lstWorkMonthlySetting([]);
+                    }
+//                    self.updateWorkMothlySetting(data);
+//                    self.lstWorkMonthlySetting(data);
                 });
             }
             
