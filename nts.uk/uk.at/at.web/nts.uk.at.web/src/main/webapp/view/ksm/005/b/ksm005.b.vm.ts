@@ -147,6 +147,7 @@ module nts.uk.at.view.ksm005.b {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
+                nts.uk.ui.block.invisible();
                 service.findAllMonthlyPattern().done(function(data) {
                     self.lstMonthlyPattern(data);
                     if(data.length <= 0){
@@ -157,6 +158,7 @@ module nts.uk.at.view.ksm005.b {
                     }
                     dfd.resolve(self);
                 });
+                nts.uk.ui.block.clear();
                 return dfd.promise();
             }
             
@@ -165,6 +167,7 @@ module nts.uk.at.view.ksm005.b {
              */
             public updateWorkMothlySetting(data: WorkMonthlySettingDto[]): void{
                 var self = this;
+//                nts.uk.ui.block.invisible();
                 var optionDates: any[] = [];
                 for(var settings of data){
                     optionDates.push(self.toOptionDate(settings));      
@@ -286,6 +289,7 @@ module nts.uk.at.view.ksm005.b {
              */
             public detailMonthlyPattern(monthlyPatternCode: string, month: number): void {
                 var self = this;
+                nts.uk.ui.block.invisible();
                 service.findByMonthWorkMonthlySetting(monthlyPatternCode, month).done(function(data) {
                     if (monthlyPatternCode) {
                         service.findByIdMonthlyPattern(monthlyPatternCode).done(function(res) {
@@ -301,6 +305,7 @@ module nts.uk.at.view.ksm005.b {
                         self.updateWorkMothlySetting([]);
                         self.lstWorkMonthlySetting([]);
                     }
+                    nts.uk.ui.block.clear();
 //                    self.updateWorkMothlySetting(data);
 //                    self.lstWorkMonthlySetting(data);
                 });
@@ -309,7 +314,7 @@ module nts.uk.at.view.ksm005.b {
             /**
              * reset data (mode new)
              */
-            public resetData(): void{
+            public resetData(): void {
                 var self = this;
                 if (self.isBuild) {
                     self.clearValiate();
@@ -330,6 +335,8 @@ module nts.uk.at.view.ksm005.b {
                 self.selectMonthlyPattern('');
                 self.updateWorkMothlySetting(dataUpdate);
                 self.enableDelete(false);
+                // focus on code
+                $('#inp_monthlyPatternCode').focus();
             }
             /**
              * convert date month day => YYYYMMDD
