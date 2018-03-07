@@ -5,18 +5,14 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="/master/dialog.xhtml">
+	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { 
-					width: 500, 
-					height: 300 
-			};
-			</script>
+			
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="../share/model.js" />
+			<com:scriptfile path="../share/model.js" />	
+			<com:scriptfile path="cmf001.q.service.js" />
 			<com:scriptfile path="cmf001.q.vm.js" />
 			<com:scriptfile path="cmf001.q.start.js" />
-			<com:scriptfile path="cmf001.q.service.js" />
 			<com:stylefile path="cmf001.q.style.css" />
 			
 		</ui:define>
@@ -63,12 +59,12 @@
 								</td>
 								<td width='300px'>
 									<div style="float:left; ">
-									<label style="padding-left:  10px;" data-bind="text : operatingCondition"></label>
+									<label style="padding-left:  10px;" data-bind="text : executionState"></label>
 									</div>
 									<div style="float:left; ">
-										<div style="float:left; "><label style="padding-left:  40px;" data-bind="text : exAcOpManage.processCount"></label></div>
+										<div style="float:left; "><label style="padding-left:  40px;" data-bind="text : currentRecord"></label></div>
 										<div style="float:left; "><label>/</label></div>
-										<div style="float:left; "><label data-bind="text : exAcOpManage.processTotalCount"></label></div>
+										<div style="float:left; "><label data-bind="text : totalRecord"></label></div>
 										<div style="float:left; "><label>#{i18n.getText('CMF001_492')}</label></div>
 									</div>
 								</td>
@@ -78,7 +74,7 @@
 									<label>#{i18n.getText('CMF001_493')}</label>
 								</td>
 								<td width='300px'>
-									<label style="padding-left:  10px;" data-bind="text : exAcOpManage.errorCount"></label>
+									<label style="padding-left:  10px;" data-bind="text : numberFail"></label>
 									<label>#{i18n.getText('CMF001_494')}</label>
 								</td>
 							</tr>
@@ -86,35 +82,19 @@
 					</table>
 				</div>
 				<div class ="button">
-					<com:ko-if bind="isStopMode() == false">
- 						<button id="BTN_STOP" data-bind="click : stop" tabindex="1">#{i18n.getText('CMF001_495')}</button> 
- 					</com:ko-if>
- 					<com:ko-if bind="isStopMode() == true">
-	 					<com:ko-if bind="isCheckMode() == true">
-	 						<table class="botan">
-	 						<tr>
+					<table class="botan">
+ 						<tr>
 							<td width='200px'>
-								<div style="text-align: center"><button id="BTN_IMPORT" data-bind="click : importFile" class="large proceed" tabindex="2">#{i18n.getText('CMF001_496')}</button></div>
+								<div style="text-align: center"><button id="BTN_IMPORT" 
+								data-bind="click : execution" class="large proceed" tabindex="2">#{i18n.getText('CMF001_496')}</button></div>
 							</td>
 							<td width='100px'>
-								<div style="text-align: center"><button id="BTN_ERROR" data-bind="click : gotoErrorList" tabindex="3">#{i18n.getText('CMF001_497')}</button></div>
-							</td>
-							<td width='100px'>
-								<div style="text-align: center"><button id="BTN_CLOSE" data-bind="click : close" tabindex="4">#{i18n.getText('CMF001_498')}</button></div>
-							</td>
-							</tr>
-							</table>
-						</com:ko-if>
-						<com:ko-if bind="isCheckMode() == false">
-							<table class="botan">
-							<tr>
-							<td width='200px'><div style="text-align: center"></div></td>
-							<td width='100px'><div style="text-align: center"><button id="BTN_ERROR" data-bind="click : gotoErrorList" tabindex="3">#{i18n.getText('CMF001_497')}</button></div></td>
-							<td width='100px'><div style="text-align: center"><button id="BTN_CLOSE" data-bind="click : close" tabindex="4">#{i18n.getText('CMF001_498')}</button></div></td>
-							</tr>
-							</table>
-						</com:ko-if>
-					</com:ko-if>
+								<div style="text-align: center">
+									<button id="BTN_STOP" data-bind="click : stopExecution" tabindex="1">#{i18n.getText('CMF001_495')}</button> 
+								</div>
+							</td>						
+						</tr>
+					</table>
 				</div>
 			</div>
 		</ui:define>
