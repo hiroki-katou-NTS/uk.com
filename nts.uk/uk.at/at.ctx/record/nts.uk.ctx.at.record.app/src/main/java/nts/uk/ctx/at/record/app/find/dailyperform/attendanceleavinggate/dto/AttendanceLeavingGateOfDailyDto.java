@@ -36,8 +36,8 @@ public class AttendanceLeavingGateOfDailyDto implements ConvertibleAttendanceIte
 		if (domain != null) {
 			dto.setAttendanceLeavingGateTime(ConvertHelper.mapTo(domain.getAttendanceLeavingGates(),
 					(c) -> new TimeSheetDto(c.getWorkNo().v(),
-							createTimeStamp(c.getAttendance()),
-							createTimeStamp(c.getLeaving()),
+							TimeStampDto.createTimeStamp(c.getAttendance()),
+							TimeStampDto.createTimeStamp(c.getLeaving()),
 							0
 
 					)));
@@ -45,14 +45,6 @@ public class AttendanceLeavingGateOfDailyDto implements ConvertibleAttendanceIte
 			dto.setYmd(domain.getYmd());
 		}
 		return dto;
-	}
-
-	private static TimeStampDto createTimeStamp(WorkStamp c) {
-		return c == null ? null : new TimeStampDto(
-				c.getTimeWithDay() == null ? null : c.getTimeWithDay().valueAsMinutes(),
-				c.getAfterRoundingTime() == null ? null : c.getAfterRoundingTime().valueAsMinutes(),
-				c.getLocationCode().v(),
-				c.getStampSourceInfo().value);
 	}
 
 	@Override

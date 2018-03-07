@@ -56,7 +56,7 @@
 				</com:ko-if>
 				
 				<com:ko-if bind="currentTab()=='B'">
-					<button class="proceed" data-bind="click: $parent.viewmodelB.registration.bind($parent.viewmodelB)">#{i18n.getText('KSM011_6')}</button>
+					<button tabindex="2" class="proceed" data-bind="click: $parent.viewmodelB.registration.bind($parent.viewmodelB)">#{i18n.getText('KSM011_6')}</button>
 				</com:ko-if>
 				
 				<com:ko-if bind="currentTab()=='C'">
@@ -87,7 +87,7 @@
 					<div id="item-panel" class="panel panel-frame item-panel">
 						<div id="control-01" class="block-1">
 							<label class="basic-label">#{i18n.getText('KSM011_76')}</label>
-							<hr />
+							<hr class="nav" />
 							<table class="basic-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_7')}</div></td>
@@ -177,7 +177,7 @@
 						
 						<div id="control-02" class="block-2">
 							<label class="basic-label">#{i18n.getText('KSM011_16')}</label>
-							<hr />
+							<hr class="nav" />
 							<table class="type-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_17')}</div></td>
@@ -214,7 +214,7 @@
 						
 						<div id="control-03" class="block-3">
 							<label class="basic-label">#{i18n.getText('KSM011_20')}</label>
-							<hr />
+							<hr class="nav" />
 							<table class="period-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_21')}</div></td>
@@ -241,7 +241,7 @@
 						
 						<div id="control-04" class="block-4">
 							<label class="basic-label">#{i18n.getText('KSM011_23')}</label>
-							<hr />
+							<hr class="nav" />
 							<table class="activation-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_24')}</div></td>
@@ -278,7 +278,7 @@
 						
 						<div id="control-05" class="block-5">
 							<label class="basic-label">#{i18n.getText('KSM011_27')}</label>
-							<hr />
+							<hr class="nav" />
 							<table class="time-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_28')}</div></td>
@@ -325,7 +325,7 @@
 						
 						<div id="control-06" class="block-6">
 							<label class="basic-label">#{i18n.getText('KSM011_34')}</label>
-							<hr />
+							<hr class="nav" />
 							<table class="creation-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_35')}</div></td>
@@ -362,7 +362,7 @@
 						
 						<div id="control-07" class="block-7">
 							<label class="basic-label">#{i18n.getText('KSM011_38')}</label>
-							<hr />
+							<hr class="nav" />
 							<table class="complete-method-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_39')}</div></td>
@@ -385,7 +385,7 @@
 									</td>
 								</tr>
 								<tr>
-									<td colspan="2"><label class="basic-label sub-label-title">#{i18n.getText('KSM011_43')}</label><hr /></td>
+									<td colspan="2"><label class="basic-label sub-label-title">#{i18n.getText('KSM011_43')}</label><hr class="nav" /></td>
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KSM011_7')}</div></td>
@@ -439,7 +439,7 @@
 						
 						<div id="control-08" class="block-8">
 							<label class="basic-label">#{i18n.getText('KSM011_48')}</label>
-							<hr />
+							<hr class="nav" />
 							<table class="search-control-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_49')}</div></td>

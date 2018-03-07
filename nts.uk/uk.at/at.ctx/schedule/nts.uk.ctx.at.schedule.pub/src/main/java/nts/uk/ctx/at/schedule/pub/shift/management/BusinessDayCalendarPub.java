@@ -7,7 +7,7 @@ import nts.arc.time.GeneralDate;
 public interface BusinessDayCalendarPub {
 	
 	/**
-	 * Request list #253
+	 * RequestList253
 	 * @param companyId company Id
 	 * @param workPlaceId work place Id
 	 * @param date date

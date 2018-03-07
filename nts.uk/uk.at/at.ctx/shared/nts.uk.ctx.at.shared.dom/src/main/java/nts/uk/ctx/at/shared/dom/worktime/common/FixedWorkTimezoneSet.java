@@ -132,8 +132,14 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject {
 	 * Check over time and em time overlap.
 	 */
 	private void checkOverTimeAndEmTimeOverlap() {
-		if (this.lstOTTimezone.stream().anyMatch(ot -> CollectionUtil.isEmpty(this.lstWorkingTimezone)
-				|| this.lstWorkingTimezone.stream().anyMatch(em -> ot.getTimezone().isOverlap(em.getTimezone())))) {
+		if (CollectionUtil.isEmpty(this.lstWorkingTimezone) ||  CollectionUtil.isEmpty(this.lstOTTimezone)) {
+			return;
+		}
+		
+		boolean isOverlap = this.lstOTTimezone.stream()
+				.anyMatch(ot -> this.lstWorkingTimezone.stream().anyMatch(em -> ot.getTimezone().isOverlap(em.getTimezone())));
+		
+		if (isOverlap) {
 			this.bundledBusinessExceptions.addMessage("Msg_845", "KMK003_89");
 		}
 	}
