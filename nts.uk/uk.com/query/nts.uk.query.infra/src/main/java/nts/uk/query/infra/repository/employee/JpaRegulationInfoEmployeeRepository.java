@@ -53,6 +53,11 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 	 */
 	@Override
 	public List<RegulationInfoEmployee> find(String comId, EmployeeSearchQuery paramQuery) {
+		// Return empty list if all status of employee = 対象外
+		if (!paramQuery.getIncludeIncumbents() && !paramQuery.getIncludeOccupancy() && !paramQuery.getIncludeRetirees()
+				&& !paramQuery.getIncludeWorkersOnLeave()) {
+			return Collections.emptyList();
+		}
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -144,77 +149,36 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 					GeneralDate.localDate(paramQuery.getBaseDate().toLocalDate())));
 		}
 
-		// status of employee conddition
-		Predicate incumbentCondition = null;
-		Predicate workerOnLeaveCondition = null;
-		Predicate occupancyCondition = null;
-		Predicate retireCondition = null;
+		/** Status of employee conddition */
 
 		// include incumbents condition
-		if (paramQuery.getIncludeIncumbents()) {
-			// Out of absence range
-			incumbentCondition = cb.or(
-					cb.greaterThan(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodEnd()),
-					cb.lessThan(root.get(EmployeeDataView_.absEndDate), paramQuery.getPeriodStart()),
-					cb.isNull(root.get(EmployeeDataView_.tempAbsFrameNo)));
-		} else {
-			// In absence range
-			incumbentCondition = cb.or(
-					cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodStart()),
-							cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.absEndDate),
-									paramQuery.getPeriodStart())),
-					cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodEnd()), cb
-							.greaterThanOrEqualTo(root.get(EmployeeDataView_.absEndDate), paramQuery.getPeriodEnd())));
-		}
+		// Out of absence range
+		Predicate incumbentCondition = cb.or(cb.isNull(root.get(EmployeeDataView_.tempAbsFrameNo)),
+				cb.greaterThan(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodEnd()),
+				cb.lessThan(root.get(EmployeeDataView_.absEndDate), paramQuery.getPeriodStart()));
 
 		// include workers on leave condition
-		if (paramQuery.getIncludeWorkersOnLeave()) {
-			// In absence range and tempAbsFrameNo = LEAVE_ABSENCE_QUOTA_NO
-			workerOnLeaveCondition = cb.and(cb.or(
-					cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodStart()),
-							cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.absEndDate),
-									paramQuery.getPeriodStart())),
-					cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodEnd()),
-							cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.absEndDate), paramQuery.getPeriodEnd())),
-					cb.equal(root.get(EmployeeDataView_.tempAbsFrameNo), LEAVE_ABSENCE_QUOTA_NO)));
-		} else {
-			// Out of absence range and tempAbsFrameNo = LEAVE_ABSENCE_QUOTA_NO
-			workerOnLeaveCondition = cb.and(
-					cb.or(cb.greaterThan(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodEnd()),
-							cb.lessThan(root.get(EmployeeDataView_.absEndDate), paramQuery.getPeriodStart())),
-					cb.equal(root.get(EmployeeDataView_.tempAbsFrameNo), LEAVE_ABSENCE_QUOTA_NO));
-		}
+		// In absence range and tempAbsFrameNo = LEAVE_ABSENCE_QUOTA_NO
+		Predicate workerOnLeaveCondition = cb.and(cb.isNotNull(root.get(EmployeeDataView_.tempAbsFrameNo)), cb.or(
+				cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodStart()),
+						cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.absEndDate), paramQuery.getPeriodStart())),
+				cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodEnd()),
+						cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.absEndDate), paramQuery.getPeriodEnd())),
+				cb.equal(root.get(EmployeeDataView_.tempAbsFrameNo), LEAVE_ABSENCE_QUOTA_NO)));
 
 		// include occupancy condition
-		if (paramQuery.getIncludeOccupancy()) {
-			// In absence range and tempAbsFrameNo <> LEAVE_ABSENCE_QUOTA_NO
-			occupancyCondition = cb.and(cb.or(
-					cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodStart()),
-							cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.absEndDate),
-									paramQuery.getPeriodStart())),
-					cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodEnd()),
-							cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.absEndDate), paramQuery.getPeriodEnd())),
-					cb.notEqual(root.get(EmployeeDataView_.tempAbsFrameNo), LEAVE_ABSENCE_QUOTA_NO)));
-		} else {
-			// Out of absence range and tempAbsFrameNo <> LEAVE_ABSENCE_QUOTA_NO
-			occupancyCondition = cb.and(
-					cb.or(cb.greaterThan(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodEnd()),
-							cb.lessThan(root.get(EmployeeDataView_.absEndDate), paramQuery.getPeriodStart())),
-					cb.notEqual(root.get(EmployeeDataView_.tempAbsFrameNo), LEAVE_ABSENCE_QUOTA_NO));
-		}
+		// In absence range and tempAbsFrameNo <> LEAVE_ABSENCE_QUOTA_NO
+		Predicate occupancyCondition = cb.and(cb.isNotNull(root.get(EmployeeDataView_.tempAbsFrameNo)), cb.or(
+				cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodStart()),
+						cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.absEndDate), paramQuery.getPeriodStart())),
+				cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodEnd()),
+						cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.absEndDate), paramQuery.getPeriodEnd())),
+				cb.notEqual(root.get(EmployeeDataView_.tempAbsFrameNo), LEAVE_ABSENCE_QUOTA_NO)));
 
 		// include retire condition
-		if (paramQuery.getIncludeRetirees()) {
-			// Retire start date < company end date
-			retireCondition = cb.lessThan(root.get(EmployeeDataView_.comEndDate), paramQuery.getRetireStart());
-		} else {
-			// Retire start date in Company range or Retire end date in Company range
-			retireCondition = cb.or(
-					cb.and(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getRetireStart()),
-							cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comStrDate), paramQuery.getRetireStart())),
-					cb.and(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getRetireEnd()),
-							cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comStrDate), paramQuery.getRetireEnd())));
-		}
+		// Retire start date < company end date
+		Predicate retireCondition = paramQuery.getIncludeRetirees()
+				? cb.lessThan(root.get(EmployeeDataView_.comEndDate), paramQuery.getRetireStart()) : cb.disjunction();
 
 		// set condition
 		Predicate statusOfEmployeeCondition = cb.or(incumbentCondition, workerOnLeaveCondition, occupancyCondition,
@@ -268,6 +232,35 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		
 		// Distinct employee in result list.
 		resultList = resultList.stream().filter(this.distinctByKey(EmployeeDataView::getSid)).collect(Collectors.toList());
+
+		// Filter result list by status of employee
+		if (!paramQuery.getIncludeIncumbents()) {
+			resultList = resultList.stream().filter(item -> {
+				return item.getTempAbsFrameNo() == null
+						|| item.getAbsStrDate().after(paramQuery.getPeriodEnd())
+						|| item.getAbsEndDate().after(paramQuery.getPeriodStart());
+			}).collect(Collectors.toList());
+		}
+		if (!paramQuery.getIncludeOccupancy()) {
+			resultList.stream().filter(item -> {
+				return item.getTempAbsFrameNo() != null
+						&& ((item.getAbsStrDate().beforeOrEquals(paramQuery.getPeriodStart())
+								&& item.getAbsEndDate().afterOrEquals(paramQuery.getPeriodStart()))
+								|| (item.getAbsStrDate().beforeOrEquals(paramQuery.getPeriodEnd())
+										&& item.getAbsEndDate().afterOrEquals(paramQuery.getPeriodEnd())))
+						&& item.getTempAbsFrameNo() != LEAVE_ABSENCE_QUOTA_NO;
+			}).collect(Collectors.toList());
+		}
+		if (!paramQuery.getIncludeWorkersOnLeave()) {
+			resultList = resultList.stream().filter(item -> {
+				return item.getTempAbsFrameNo() != null
+						&& ((item.getAbsStrDate().beforeOrEquals(paramQuery.getPeriodStart())
+								&& item.getAbsEndDate().afterOrEquals(paramQuery.getPeriodStart()))
+								|| (item.getAbsStrDate().beforeOrEquals(paramQuery.getPeriodEnd())
+										&& item.getAbsEndDate().afterOrEquals(paramQuery.getPeriodEnd())))
+						&& item.getTempAbsFrameNo() == LEAVE_ABSENCE_QUOTA_NO;
+			}).collect(Collectors.toList());
+		}
 
 		return resultList.stream().map(entity -> RegulationInfoEmployee.builder()
 				.classificationCode(Optional.ofNullable(entity.getClassificationCode()))
