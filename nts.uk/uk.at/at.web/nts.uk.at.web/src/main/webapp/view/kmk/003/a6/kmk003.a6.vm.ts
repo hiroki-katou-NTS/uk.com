@@ -279,7 +279,7 @@ module a6 {
                     defaultValue: ko.observable(0),
                     width: 100,
                     template: `<input data-bind="ntsTimeEditor: {
-                            constraint: 'TimeWithDayAttr',
+                            constraint: 'AttendanceTime',
                             mode: 'time',
                             inputFormat: 'time',
                             required: true }" />`

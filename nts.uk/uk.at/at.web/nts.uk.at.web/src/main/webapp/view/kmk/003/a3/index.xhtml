@@ -6,9 +6,11 @@
 	<com:ValidatorScript>
 		nts.uk.shr.com.time.TimeWithDayAttr
 		nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo
+		nts.uk.ctx.at.shared.dom.common.time.AttendanceTime
    	</com:ValidatorScript>
    	
    	<div>
+   	<com:ko tag="if" bind="rebind">
 	<com:ko tag="ifnot" bind="isFlexMode">
 	
 		<com:ko tag="ifnot" bind="isFlowMode">
@@ -194,6 +196,7 @@
 					</com:ko>
 				</com:ko>
 			</div>
-		</com:ko>
+	</com:ko>
+	</com:ko>
 	</div>
 </ui:composition>
