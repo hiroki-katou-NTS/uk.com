@@ -26,9 +26,9 @@
                   <button tabindex="1" class="proceed" data-bind="click: saveOptionalItemDetail, enable: hasSelected">
                   #{i18n.getText('KMK002_1')}</button>
                </div>
-               <div id="contents-area" style="display: none" data-bind="visible: true">
+               <div id="contents-area" style="display: none" data-bind="visible: true" class="fixed-flex-layout">
                   <!-- Optional item grid list. -->
-                  <div class="opt-item-grid-list pull-left caret-right caret-background bg-green">
+                  <div class="opt-item-grid-list pull-left caret-right caret-background bg-green fixed-flex-layout-left">
                      <i class="icon icon-searchbox"></i>
                      <div tabindex="2" data-bind="ntsSearchBox: {
                         label: nts.uk.resource.getText('KMK002_2'),
@@ -52,7 +52,7 @@
                      </table>
                   </div>
                   <!-- Optional Item view model -->
-                  <div class="pull-left opt-item-detail" style="width: 69%">
+                  <div class="pull-left opt-item-detail fixed-flex-layout-right">
                      <com:ko tag="with" bind="optionalItem">
                         <table class="control-group">
                            <tr>

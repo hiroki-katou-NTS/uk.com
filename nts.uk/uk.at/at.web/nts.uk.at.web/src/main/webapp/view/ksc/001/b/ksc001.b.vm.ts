@@ -603,7 +603,7 @@ module nts.uk.at.view.ksc001.b {
                     }
 
                     //NO3
-                    if (self.checkProcessExecutionAtrRebuild()) {
+                    if (self.checkProcessExecutionAtrRebuild()==0) {
                         lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")
                             + nts.uk.resource.getText("KSC001_7"));
                     } else {

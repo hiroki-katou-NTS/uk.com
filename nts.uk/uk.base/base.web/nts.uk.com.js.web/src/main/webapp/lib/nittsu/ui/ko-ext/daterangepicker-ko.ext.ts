@@ -130,7 +130,8 @@ module nts.uk.ui.koExtentions {
             $input.datepicker({
                 language: 'ja-JP',
                 format: ISOFormat,
-                autoHide: true, 
+                autoHide: true,
+                weekStart: 0
             });
             
             rangeName = nts.uk.util.isNullOrUndefined(rangeName) ? "期間入力フォーム" : nts.uk.resource.getControlName(rangeName);
