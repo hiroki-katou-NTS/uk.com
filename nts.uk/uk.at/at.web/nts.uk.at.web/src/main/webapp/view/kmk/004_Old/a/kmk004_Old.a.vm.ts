@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmk004.a {
+module nts.uk.at.view.kmk004_Old.a {
     export module viewmodel {
 
         import UsageUnitSettingService = nts.uk.at.view.kmk004.e.service;
@@ -33,10 +33,6 @@ module nts.uk.at.view.kmk004.a {
 
             // Start month.
             startMonth: KnockoutObservable<number>;
-            
-            // Update
-            aggrSelectionItemList: KnockoutObservableArray<any>;
-            selectedAggrSelection: KnockoutObservable<number>;
 
             constructor() {
                 let self = this;
@@ -139,13 +135,6 @@ module nts.uk.at.view.kmk004.a {
                         }
                     }
                 };
-                
-                // Update
-                self.aggrSelectionItemList = ko.observableArray([
-                    { id: 1, name: nts.uk.resource.getText("KMK004_51")},
-                    { id: 2, name: nts.uk.resource.getText("KMK004_52")}
-                ]);
-                self.selectedAggrSelection = ko.observable(1);
             }
 
             /**
@@ -908,7 +897,7 @@ module nts.uk.at.view.kmk004.a {
             constructor() {
                 let self = this;
                 self.flexDaily = new FlexDaily();
-                self.flexMonthly = ko.observableArray<FlexMonth>([]);
+                self.flexMonthly = new ko.observableArray<FlexMonth>([]);
                 for (let i = 1; i < 13; i++) {
                     let flm = new FlexMonth();
                     flm.speName(nts.uk.resource.getText("KMK004_21",[i]));
@@ -1066,15 +1055,5 @@ module nts.uk.at.view.kmk004.a {
                 self.workplace = ko.observable(true);
             }
         }
-        
-//        export class AggregateSelection {
-//            id: number;
-//            name: string;
-//            constructor(id, name) {
-//                var self = this;
-//                self.id = id;
-//                self.name = name;
-//            }
-//        }
     }
 }

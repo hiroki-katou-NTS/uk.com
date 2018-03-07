@@ -55,22 +55,6 @@
 	margin-left: 75px;
 }
 .tbl-monthly {
-	margin-top: 10px;
-	margin-left: 100px;
-}
-.float-left {
-	float: left;
-}
-.setting-panel {
-	width: 200px;
-	height: 200px;
-	margin-bottom: 10px;
-}
-#aggr-setting-content {
-	width: 300px;
-	margin-top: 40px;
-	margin-left: 20px;
-}
-#open-Detail-F {
-	margin: 10px 10px 10px 100px;
+	display: inline;
+	margin-left: 170px;
 }

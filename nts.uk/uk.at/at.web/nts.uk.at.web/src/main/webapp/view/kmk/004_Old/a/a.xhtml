@@ -32,7 +32,7 @@
 					<!-- NORMAL WORK TIME SETTING START -->
 					<div class="tab-content-1">
 						<com:ko tag="with" bind="normalSetting">
-						<!-- <div class="control-group">
+						<div class="control-group">
 							<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_6')}</div>
 							<div tabindex="8" class="cbb-weekstart"
 								id="combo-box"
@@ -46,10 +46,10 @@
 												columns: [
 													{ prop: 'name', length: 10 }
 												]}"></div>
-						</div> -->
+						</div>
 							<com:ko tag="with" bind="statutorySetting">
-								<!-- <div class="control-group">
-									<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_45')}</div>
+								<div class="control-group">
+									<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_7')}</div>
 									<table class="border-all tbl-daily">
 										<tr class="bg-dark-green">
 											<td></td>
@@ -68,10 +68,8 @@
 											</td>
 										</tr>
 									</table>
-								</div> -->
-								
+								</div>
 								<div class="control-group">
-								<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_45')}</div>
 									<table class="border-all tbl-monthly">
 										<tr class="bg-dark-green">
 											<td>#{i18n.getText('KMK004_13')}</td>
@@ -202,54 +200,6 @@
 					</div>
 					<!-- DEFORMATION LABOR WORK TIME SETTING END -->
 				</div>
-				
-				<!-- Start Aggregate Setting -->
-				<div id="aggr-setting-content" class="float-left">
-					<!-- Normal Setting -->
-					<div class="panel panel-frame setting-panel">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_46')}</div>
-						<BUTTON id="open-Detail-F">#{i18n.getText('KMK004_47')}</BUTTON>
-						<com:ko tag="with" bind="normalSetting">
-							<com:ko tag="with"  bind="statutorySetting">
-								<table class="border-all">
-									<tr class="bg-dark-green">
-										<td></td>
-										<td>#{i18n.getText('KMK004_8')}</td>
-									</tr>
-									<tr>
-										<td class="bg-green">#{i18n.getText('KMK004_9')}</td>
-										<td><input tabindex="9"
-											data-bind="ntsTimeEditor: {name:'#[KMK004_10]', value: daily, constraint:'DailyTime', inputFormat: 'time', mode: 'time', required: true}" />
-										</td>
-									</tr>
-									<tr>
-										<td class="bg-green">#{i18n.getText('KMK004_11')}</td>
-										<td><input tabindex="10"
-											data-bind="ntsTimeEditor: {name:'#[KMK004_12]', value: weekly, constraint:'WeeklyTime', inputFormat: 'time', mode: 'time', required: true}" />
-										</td>
-									</tr>
-								</table>
-							</com:ko>
-						</com:ko>	
-					</div>
-					<!-- Flex Setting -->
-					<div class="panel panel-frame setting-panel">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_48')}</div>
-						<BUTTON id="open-Detail-F">#{i18n.getText('KMK004_47')}</BUTTON>
-						<!-- <div data-bind="ntsRadioBoxGroup: {
-										options: $parent.aggrSelectionItemList,
-										optionsValue: 'id',
-										optionsText: 'name',
-										value: $parent.selectedAggrSelection,
-										enable: true}"></div> -->
-					</div>
-					<!-- Deformed Labor Setting -->
-					<div class="panel panel-frame setting-panel">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_48')}</div>
-						<BUTTON id="open-Detail-F">#{i18n.getText('KMK004_47')}</BUTTON>
-					</div>
-				</div>
-				<!-- End of Aggregate Setting -->
 			</com:ko>
 		</div>
 	</ui:composition>
