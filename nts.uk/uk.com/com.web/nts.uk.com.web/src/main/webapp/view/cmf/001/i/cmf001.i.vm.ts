@@ -74,15 +74,11 @@ module nts.uk.com.view.cmf001.i.viewmodel {
         saveNumericSetting() {
             let self = this;
             if (self.inputMode) {
-                setShared("CMF001iOutput", { lineNumber: self.lineNumber, formatSetting: ko.toJS(self.setting) });
+                setShared("CMF001Output", { lineNumber: self.lineNumber, formatSetting: ko.toJS(self.setting) });
             }
             nts.uk.ui.windows.close();
         }
         cancelNumericSetting() {
-            let self = this;
-            if (self.inputMode) {
-                setShared("CMF001iCancel", true);
-            }
             nts.uk.ui.windows.close();
         }
     }

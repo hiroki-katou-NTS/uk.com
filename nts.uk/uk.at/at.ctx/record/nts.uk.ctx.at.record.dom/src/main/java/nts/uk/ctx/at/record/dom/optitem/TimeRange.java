@@ -52,9 +52,9 @@ public class TimeRange extends DomainObject {
 	 */
 	public boolean isInvalidRange() {
 		if (this.upperLimit.get().greaterThan(this.lowerLimit.get())) {
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 }

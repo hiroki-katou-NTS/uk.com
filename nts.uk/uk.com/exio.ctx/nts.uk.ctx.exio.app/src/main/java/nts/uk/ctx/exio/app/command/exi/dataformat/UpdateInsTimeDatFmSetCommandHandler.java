@@ -11,16 +11,19 @@ import nts.uk.ctx.exio.dom.exi.dataformat.InsTimeDatFmSet;
 
 @Stateless
 @Transactional
-public class UpdateInsTimeDatFmSetCommandHandler extends CommandHandler<InsTimeDatFmSetCommand>
-{
-    
-    @Inject
-    private InsTimeDatFmSetRepository repository;
-    
-    @Override
-    protected void handle(CommandHandlerContext<InsTimeDatFmSetCommand> context) {
-        InsTimeDatFmSetCommand updateCommand = context.getCommand();
-        repository.update(InsTimeDatFmSet.createFromJavaType(updateCommand.getVersion(), updateCommand.getCid(), updateCommand.getConditionSetCd(), updateCommand.getAcceptItemNum(), updateCommand.getDelimiterSet(), updateCommand.getFixedValue(), updateCommand.getHourMinSelect(), updateCommand.getEffectiveDigitLength(), updateCommand.getRoundProc(), updateCommand.getDecimalSelect(), updateCommand.getValueOfFixedValue(), updateCommand.getStartDigit(), updateCommand.getEndDigit(), updateCommand.getRoundProcCls()));
-    
-    }
+public class UpdateInsTimeDatFmSetCommandHandler extends CommandHandler<InsTimeDatFmSetCommand> {
+
+	@Inject
+	private InsTimeDatFmSetRepository repository;
+
+	@Override
+	protected void handle(CommandHandlerContext<InsTimeDatFmSetCommand> context) {
+		InsTimeDatFmSetCommand updateCommand = context.getCommand();
+		repository.update(new InsTimeDatFmSet(updateCommand.getCid(), updateCommand.getConditionSetCd(),
+				updateCommand.getAcceptItemNum(), updateCommand.getDelimiterSet(), updateCommand.getFixedValue(),
+				updateCommand.getHourMinSelect(), updateCommand.getEffectiveDigitLength(), updateCommand.getRoundProc(),
+				updateCommand.getDecimalSelect(), updateCommand.getValueOfFixedValue(), updateCommand.getStartDigit(),
+				updateCommand.getEndDigit(), updateCommand.getRoundProcCls()));
+
+	}
 }

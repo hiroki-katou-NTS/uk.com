@@ -52,10 +52,13 @@ module nts.uk.sys.view.ccg013.j.viewmodel {
                 self.nameTitleBar(setShareTitleMenu.titleMenuName);
                 self.letterColor(setShareTitleMenu.textColor);
                 self.backgroundColor(setShareTitleMenu.backgroundColor);
-                nts.uk.request.ajax("/shr/infra/file/storage/infor/" + setShareTitleMenu.imageFile).done(function(res) {
-                    self.imageName(res.originalName);
-                    self.imageSize(nts.uk.text.format(resource.getText('CCG013_44'), res.originalSize));
-                });
+                if(setShareTitleMenu.imageFile != "") {
+                    nts.uk.request.ajax("/shr/infra/file/storage/infor/" + setShareTitleMenu.imageFile).done(function(res) {
+                        self.imageName(res.originalName);
+                        self.imageSize(nts.uk.text.format(resource.getText('CCG013_44'), res.originalSize));
+                    });
+                }
+                
                 if (!!self.fileID()) {
                     liveviewcontainer.html("");
                     liveviewcontainer.append($("<img/>").attr("src", nts.uk.request.resolvePath("/webapi/shr/infra/file/storage/liveview/" + self.fileID())));

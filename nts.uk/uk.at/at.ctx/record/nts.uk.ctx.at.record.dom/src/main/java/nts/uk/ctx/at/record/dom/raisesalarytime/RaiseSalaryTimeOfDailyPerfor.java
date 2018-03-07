@@ -4,7 +4,15 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.val;
+import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
+import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.RaisingSalaryCalcAtr;
 
 /**
  * 
@@ -20,14 +28,16 @@ public class RaiseSalaryTimeOfDailyPerfor {
 	private List<BonusPayTime> raisingSalaryTimes;
 	
 	//特定日加給時間
-	private List<BonusPayTime> autoCalRaisingSalarySettings; 
+	private List<BonusPayTime> autoCalRaisingSalarySettings;
 	
-	/**
-	 * 就内・残業内・休出時間内の加給時間の合計を求める
-	 */
-	public void calcTotalBonusPayTime() {
+	public static RaiseSalaryTimeOfDailyPerfor calcBonusPayTime(CalculationRangeOfOneDay oneDayRange,RaisingSalaryCalcAtr raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,
+			   											CalAttrOfDailyPerformance calcAtrOfDaily) {
+		val bonusPay = oneDayRange.calcBonusPayTime(raisingAutoCalcSet, bonusPayAutoCalcSet, calcAtrOfDaily,BonusPayAtr.BonusPay);
+		val specBonusPay = oneDayRange.calcSpecBonusPayTime(raisingAutoCalcSet, bonusPayAutoCalcSet, calcAtrOfDaily, BonusPayAtr.SpecifiedBonusPay);
 		
+		return new RaiseSalaryTimeOfDailyPerfor(bonusPay, specBonusPay);
 	}
 	
 	
+
 }

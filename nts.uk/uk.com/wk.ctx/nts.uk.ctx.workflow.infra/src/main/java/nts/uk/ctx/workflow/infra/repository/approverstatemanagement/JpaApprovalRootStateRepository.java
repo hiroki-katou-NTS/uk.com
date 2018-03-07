@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.infra.repository.approverstatemanagement;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -31,6 +32,8 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	private static final String SELECT_BY_ID;
 
 	private static final String SELECT_TYPE_APP;
+	
+	private static final String SELECT_BY_TYPE_APPS;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -43,8 +46,20 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(SELECT_BY_ID);
 		builderString.append(" AND e.rootType = 0");
 		SELECT_TYPE_APP = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM WwfdtApprovalRootState e");
+		builderString.append(" WHERE e.rootType = 0");
+		builderString.append(" AND e.wwfdpApprovalRootStatePK.rootStateID IN :rootStateIDs");
+		SELECT_BY_TYPE_APPS = builderString.toString();
 	}
-
+	@Override
+	public List<ApprovalRootState> findEmploymentApps(List<String> rootStateIDs) {
+		return this.queryProxy().query(SELECT_BY_TYPE_APPS, WwfdtApprovalRootState.class)
+				.setParameter("rootStateIDs", rootStateIDs).getList(x -> x.toDomain());
+	}
+	
 	@Override
 	public Optional<ApprovalRootState> findEmploymentApp(String rootStateID) {
 		return this.queryProxy().query(SELECT_TYPE_APP, WwfdtApprovalRootState.class)
@@ -110,5 +125,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 						approverState.getApproverID()), WwfdtApproverState.class).get();
 		return wwfdtApproverState;
 	}
+
+	
 
 }

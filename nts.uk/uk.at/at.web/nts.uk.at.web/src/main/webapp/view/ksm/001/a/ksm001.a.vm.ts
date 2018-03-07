@@ -117,7 +117,7 @@ module nts.uk.at.view.ksm001.a {
                     /** Common properties */
                     systemType: 2, // 就業
                     showEmployeeSelection: true, // 検索タイプ
-                    showQuickSearchTab: true, // クイック検索
+                    showQuickSearchTab: false, // クイック検索
                     showAdvancedSearchTab: true, // 詳細検索
                     showBaseDate: true, // 基準日利用
                     showClosure: true, // 就業締め日利用

@@ -60,44 +60,44 @@ public class OiomtChrDataFormatSet extends UkJpaEntity implements Serializable
     /**
     * コード変換コード
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "CD_CONVERT_CD")
-    public int cdConvertCd;
+    public Integer cdConvertCd;
     
     /**
     * コード編集方法
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "CD_EDIT_METHOD")
-    public int cdEditMethod;
+    public Integer cdEditMethod;
     
     /**
     * コード編集桁
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "CD_EDIT_DIGIT")
-    public int cdEditDigit;
+    public Integer cdEditDigit;
     
     /**
     * 固定値の値
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "FIXED_VAL")
     public String fixedVal;
     
     /**
     * 有効桁数開始桁
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "START_DIGIT")
-    public int startDigit;
+    public Integer startDigit;
     
     /**
     * 有効桁数終了桁
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "END_DIGIT")
-    public int endDigit;
+    public Integer endDigit;
     
     @Override
     protected Object getKey()

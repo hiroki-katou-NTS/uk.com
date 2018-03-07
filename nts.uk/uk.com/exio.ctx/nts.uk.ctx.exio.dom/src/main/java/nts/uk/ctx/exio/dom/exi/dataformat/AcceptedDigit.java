@@ -9,8 +9,8 @@ import nts.arc.primitive.constraint.IntegerMinValue;
  * 有効桁数終了桁
  */
 @IntegerMaxValue(9999)
-@IntegerMinValue(0)
-public class StartDigit extends IntegerPrimitiveValue<PrimitiveValue<Integer>>{
+@IntegerMinValue(1)
+public class AcceptedDigit extends IntegerPrimitiveValue<PrimitiveValue<Integer>>{
 	/**
 	 * 
 	 */
@@ -21,7 +21,7 @@ public class StartDigit extends IntegerPrimitiveValue<PrimitiveValue<Integer>>{
 	 * 
 	 * @param rawValue
 	 */
-	public StartDigit(int rawValue) {
+	public AcceptedDigit(int rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}

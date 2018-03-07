@@ -37,7 +37,7 @@ module nts.uk.ui.koExtentions {
             let $fileuploadContainer = $("<div class='nts-fileupload-container cf'></div>");
             let $fileBrowserButton = $("<button class='browser-button'></button>");
             let $fileNameWrap = $("<span class='nts-editor-wrapped ntsControl'/>");
-            let $fileNameInput = $("<input class='nts-editor nts-input' readonly='readonly'/>");
+            let $fileNameInput = $("<input class='nts-editor nts-input' readonly='readonly' tabindex='-1'/>");
             let $fileNameLabel = $("<span class='filenamelabel hyperlink'></span> ");
             let $fileInput = $("<input type='file' class='fileinput'/>");
             
