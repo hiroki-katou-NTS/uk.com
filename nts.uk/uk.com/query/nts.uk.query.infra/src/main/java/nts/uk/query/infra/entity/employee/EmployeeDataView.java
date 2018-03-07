@@ -18,6 +18,8 @@ import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.query.infra.repository.employee.JpaRegulationInfoEmployeeRepository;
+import nts.uk.query.model.employee.EmployeeSearchQuery;
 
 /**
  * The Class EmployeeDataView.
@@ -199,4 +201,98 @@ public class EmployeeDataView implements Serializable {
 	 */
 	public EmployeeDataView() {
 	}
+
+	public boolean isFiltered(EmployeeSearchQuery paramQuery) {
+		GeneralDateTime retireStart = paramQuery.getRetireStart() == null ? paramQuery.getPeriodStart()
+				: paramQuery.getRetireStart();
+		GeneralDateTime retireEnd = paramQuery.getRetireEnd() == null ? paramQuery.getPeriodEnd()
+				: paramQuery.getRetireEnd();
+		GeneralDateTime start = paramQuery.getPeriodStart();
+		GeneralDateTime end = paramQuery.getPeriodEnd();
+		
+		// check employee in company or not.
+		if (!this.isInComapany(paramQuery.getPeriodStart(), paramQuery.getPeriodEnd())) {
+			return false;
+		}
+		
+		boolean isWorking = true;
+		boolean isWorkersOnLeave = true;
+		boolean isOccupancy = true;
+		boolean isRetire = true;
+		
+		// If cover employee working.
+		if(paramQuery.getIncludeIncumbents()) {
+			isWorking = this.isWoking(start, end);
+		} else {
+			// Remove working employee
+			if (this.isWoking(start, end)) {
+				return false;
+			}
+		}
+		
+		// If cover Workers On Leave.
+		if (paramQuery.getIncludeWorkersOnLeave()) {
+			isWorkersOnLeave = this.isWorkersOnLeave(start, end);
+		} else {
+			// Remove Workers On Leave.
+			if (this.isWorkersOnLeave(start, end)) {
+				return false;
+			}
+		}
+		
+		// If cover Occupancy employee.
+		if(paramQuery.getIncludeOccupancy()) {
+			isOccupancy = this.isOccupancy(start, end);
+		} else {
+			// Remove Occupancy employee.
+			if (this.isOccupancy(start, end)) {
+				return false;
+			}
+		}
+		
+		// If cover Retire employee.
+		if (paramQuery.getIncludeRetirees()) {
+			isRetire = this.isRetire(retireStart, retireEnd);
+		} else {
+			if (this.isRetire(retireStart, retireEnd)) {
+				return false;
+			}
+		}
+		return isWorking || isWorkersOnLeave || isOccupancy || isRetire;
+	}
+	
+	public boolean isInComapany(GeneralDateTime start, GeneralDateTime end) {
+		// comStrDate <= start <= comEndDate || comStrDate <= end <= comEndDate
+		boolean isStartInCompanyRange = start.afterOrEquals(this.comStrDate) && start.beforeOrEquals(this.comEndDate);
+		boolean isEndInCompanyRange = end.afterOrEquals(this.comStrDate) && end.beforeOrEquals(this.comEndDate);
+
+		return isStartInCompanyRange || isEndInCompanyRange;
+	}
+
+	public boolean isWoking(GeneralDateTime start, GeneralDateTime end) {
+		// absStrDate <= start <= absEndDate || absStrDate <= end <= absEndDate
+		return isInComapany(start, end) && !this.isAbsent(start, end);
+	}
+
+	private boolean isAbsent(GeneralDateTime start, GeneralDateTime end) {
+		// start is in absent range or end is in absent range
+		return this.tempAbsFrameNo != null
+				&& ((start.afterOrEquals(this.absStrDate) && start.beforeOrEquals(this.absEndDate))
+						|| (end.afterOrEquals(this.absStrDate) && end.beforeOrEquals(this.absEndDate)));
+	}
+
+	public boolean isWorkersOnLeave(GeneralDateTime start, GeneralDateTime end) {
+		return this.isAbsent(start, end)
+				&& this.tempAbsFrameNo == JpaRegulationInfoEmployeeRepository.LEAVE_ABSENCE_QUOTA_NO;
+	}
+
+	public boolean isOccupancy(GeneralDateTime start, GeneralDateTime end) {
+		return this.isAbsent(start, end)
+				&& this.tempAbsFrameNo != JpaRegulationInfoEmployeeRepository.LEAVE_ABSENCE_QUOTA_NO;
+	}
+
+	public boolean isRetire(GeneralDateTime start, GeneralDateTime end) {
+		return this.comEndDate.afterOrEquals(start) && this.comEndDate.beforeOrEquals(end);
+	}
+	
 }

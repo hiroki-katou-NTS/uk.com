@@ -39,7 +39,7 @@ import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
 public class JpaRegulationInfoEmployeeRepository extends JpaRepository implements RegulationInfoEmployeeRepository {
 
 	/** The Constant LEAVE_ABSENCE_QUOTA_NO. */
-	private static final int LEAVE_ABSENCE_QUOTA_NO = 1;
+	public static final int LEAVE_ABSENCE_QUOTA_NO = 1;
 
 	/** The Constant NOT_DELETED. */
 	private static final int NOT_DELETED = 0;
@@ -75,6 +75,11 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 		// Add company condition 
 		conditions.add(cb.equal(root.get(EmployeeDataView_.cid), comId));
+//		conditions.add(cb.or(
+//				cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodStart()),
+//						cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodStart())),
+//				cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodEnd()),
+//						cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodEnd()))));
 
 		// Add NOT_DELETED condition
 		conditions.add(cb.equal(root.get(EmployeeDataView_.delStatusAtr), NOT_DELETED));
@@ -148,42 +153,6 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.workTypeEndDate),
 					GeneralDate.localDate(paramQuery.getBaseDate().toLocalDate())));
 		}
-
-		/** Status of employee conddition */
-
-		// include incumbents condition
-		// Out of absence range
-		Predicate incumbentCondition = cb.or(cb.isNull(root.get(EmployeeDataView_.tempAbsFrameNo)),
-				cb.greaterThan(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodEnd()),
-				cb.lessThan(root.get(EmployeeDataView_.absEndDate), paramQuery.getPeriodStart()));
-
-		// include workers on leave condition
-		// In absence range and tempAbsFrameNo = LEAVE_ABSENCE_QUOTA_NO
-		Predicate workerOnLeaveCondition = cb.and(cb.isNotNull(root.get(EmployeeDataView_.tempAbsFrameNo)), cb.or(
-				cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodStart()),
-						cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.absEndDate), paramQuery.getPeriodStart())),
-				cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodEnd()),
-						cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.absEndDate), paramQuery.getPeriodEnd())),
-				cb.equal(root.get(EmployeeDataView_.tempAbsFrameNo), LEAVE_ABSENCE_QUOTA_NO)));
-
-		// include occupancy condition
-		// In absence range and tempAbsFrameNo <> LEAVE_ABSENCE_QUOTA_NO
-		Predicate occupancyCondition = cb.and(cb.isNotNull(root.get(EmployeeDataView_.tempAbsFrameNo)), cb.or(
-				cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodStart()),
-						cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.absEndDate), paramQuery.getPeriodStart())),
-				cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodEnd()),
-						cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.absEndDate), paramQuery.getPeriodEnd())),
-				cb.notEqual(root.get(EmployeeDataView_.tempAbsFrameNo), LEAVE_ABSENCE_QUOTA_NO)));
-
-		// include retire condition
-		// Retire start date < company end date
-		Predicate retireCondition = paramQuery.getIncludeRetirees()
-				? cb.lessThan(root.get(EmployeeDataView_.comEndDate), paramQuery.getRetireStart()) : cb.disjunction();
-
-		// set condition
-		Predicate statusOfEmployeeCondition = cb.or(incumbentCondition, workerOnLeaveCondition, occupancyCondition,
-				retireCondition);
-		conditions.add(statusOfEmployeeCondition);
 		cq.where(conditions.toArray(new Predicate[] {}));
 
 		// getSortConditions
@@ -229,44 +198,17 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 		// execute query & add to resultList
 		resultList.addAll(em.createQuery(cq).getResultList());
-		
-		// Distinct employee in result list.
-		resultList = resultList.stream().filter(this.distinctByKey(EmployeeDataView::getSid)).collect(Collectors.toList());
 
 		// Filter result list by status of employee
-		if (!paramQuery.getIncludeIncumbents()) {
-			resultList = resultList.stream().filter(item -> {
-				return item.getTempAbsFrameNo() == null
-						|| item.getAbsStrDate().after(paramQuery.getPeriodEnd())
-						|| item.getAbsEndDate().after(paramQuery.getPeriodStart());
-			}).collect(Collectors.toList());
-		}
-		if (!paramQuery.getIncludeOccupancy()) {
-			resultList.stream().filter(item -> {
-				return item.getTempAbsFrameNo() != null
-						&& ((item.getAbsStrDate().beforeOrEquals(paramQuery.getPeriodStart())
-								&& item.getAbsEndDate().afterOrEquals(paramQuery.getPeriodStart()))
-								|| (item.getAbsStrDate().beforeOrEquals(paramQuery.getPeriodEnd())
-										&& item.getAbsEndDate().afterOrEquals(paramQuery.getPeriodEnd())))
-						&& item.getTempAbsFrameNo() != LEAVE_ABSENCE_QUOTA_NO;
-			}).collect(Collectors.toList());
-		}
-		if (!paramQuery.getIncludeWorkersOnLeave()) {
-			resultList = resultList.stream().filter(item -> {
-				return item.getTempAbsFrameNo() != null
-						&& ((item.getAbsStrDate().beforeOrEquals(paramQuery.getPeriodStart())
-								&& item.getAbsEndDate().afterOrEquals(paramQuery.getPeriodStart()))
-								|| (item.getAbsStrDate().beforeOrEquals(paramQuery.getPeriodEnd())
-										&& item.getAbsEndDate().afterOrEquals(paramQuery.getPeriodEnd())))
-						&& item.getTempAbsFrameNo() == LEAVE_ABSENCE_QUOTA_NO;
-			}).collect(Collectors.toList());
-		}
+		resultList = resultList.stream().filter(item -> item.isFiltered(paramQuery)).collect(Collectors.toList());
+
+		// Distinct employee in result list.
+		resultList = resultList.stream().filter(this.distinctByKey(EmployeeDataView::getSid))
+				.collect(Collectors.toList());
 
 		return resultList.stream().map(entity -> RegulationInfoEmployee.builder()
-				.classificationCode(Optional.ofNullable(entity.getClassificationCode()))
-				.employeeCode(entity.getScd())
-				.employeeID(entity.getSid())
-				.employmentCode(Optional.ofNullable(entity.getEmpCd()))
+				.classificationCode(Optional.ofNullable(entity.getClassificationCode())).employeeCode(entity.getScd())
+				.employeeID(entity.getSid()).employmentCode(Optional.ofNullable(entity.getEmpCd()))
 				.hireDate(Optional.ofNullable(entity.getComStrDate()))
 				.jobTitleCode(Optional.ofNullable(entity.getJobCd()))
 				.name(Optional.ofNullable(entity.getBusinessName()))
