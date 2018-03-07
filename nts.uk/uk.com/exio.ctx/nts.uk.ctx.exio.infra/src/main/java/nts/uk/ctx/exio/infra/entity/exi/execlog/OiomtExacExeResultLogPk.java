@@ -7,12 +7,14 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
 * 外部受入実行結果ログ: 主キー情報
 */
 @AllArgsConstructor
+@EqualsAndHashCode
 @NoArgsConstructor
 @Embeddable
 public class OiomtExacExeResultLogPk implements Serializable

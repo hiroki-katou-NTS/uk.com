@@ -7,11 +7,13 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
 * 外部受入カテゴリ: 主キー情報
 */
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
