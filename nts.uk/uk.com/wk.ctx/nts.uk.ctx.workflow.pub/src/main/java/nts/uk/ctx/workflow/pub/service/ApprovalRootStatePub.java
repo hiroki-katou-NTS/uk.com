@@ -18,6 +18,15 @@ import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
  */
 public interface ApprovalRootStatePub {
 	
+	/**
+	 * RequestList113
+	 * @param startDate
+	 * @param endDate
+	 * @param employeeID
+	 * @param companyID
+	 * @param rootType
+	 * @return
+	 */
 	public List<ApproveRootStatusForEmpExport> getApprovalByEmplAndDate(GeneralDate startDate, GeneralDate endDate, String employeeID,String companyID,Integer rootType); 
 	
 	/**
