@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.daily.bonuspaytime;
 
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * 加給時間
@@ -10,8 +11,12 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
  */
 @Value
 public class BonusPayTime {
+	//加給項目ＮＯ
 	private int BonusPayTimeItemNo;
-	private TimeWithCalculation bonusPayTime;
-	private TimeWithCalculation bonusPay;
-	private TimeWithCalculation specifiedbonusPayTime;
+	//加給時間
+	private AttendanceTime bonusPayTime;
+	//所定内加給
+	private TimeWithCalculation withinBonusPay;
+	//所定外加給
+	private TimeWithCalculation excessBonusPayTime;
 }

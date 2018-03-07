@@ -92,7 +92,7 @@ module cps001.e.vm {
 
             if (isImageLoaded.imgOnView) {
                 if (self.isChange()) {
-                    $("#test").ntsImageEditor("upload", { stereoType: "image" }).done(function(data) {
+                    $("#test").ntsImageEditor("upload", { stereoType: "avatarfile" }).done(function(data) {
                         self.empFileMn().fileId = data.id;
                         self.oldEmpFileMn = { employeeId: self.empFileMn().employeeId, fileId: self.empFileMn().fileId, fileType: self.empFileMn().fileType, isAvatar: false };
                         self.updateImage(self.oldEmpFileMn, ko.toJS(self.empFileMn()));

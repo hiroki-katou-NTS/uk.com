@@ -87,11 +87,13 @@ public class DailyPerformanceCorrectionDto {
 
 	/** Find cell by dataID and columnKey */
 	private Optional<DPCellStateDto> findExistCellState(String dataId, String columnKey) {
+		if(this.lstCellState != null){
 		for (int i = 0; i < this.lstCellState.size(); i++) {
 			if (this.lstCellState.get(i).getRowId().equals("_" + String.valueOf(dataId))
 					&& this.lstCellState.get(i).getColumnKey().equals(String.valueOf(columnKey))) {
 				return Optional.of(this.lstCellState.get(i));
 			}
+		}
 		}
 		return Optional.empty();
 	}
@@ -227,14 +229,14 @@ public class DailyPerformanceCorrectionDto {
 	}
 
 	/** Set AlarmCell state for Fixed cell */
-	public void setLock(String rowId, String columnKey) {
+	public void setLock(String rowId, String columnKey, String state) {
 		Optional<DPCellStateDto> existedCellState = findExistCellState(rowId, columnKey);
 		if (existedCellState.isPresent()) {
-			existedCellState.get().addState("ntsgrid-disable");
+			existedCellState.get().addState(state);
 		} else {
-			List<String> state = new ArrayList<>();
-			state.add("ntsgrid-disable");
-			DPCellStateDto dto = new DPCellStateDto("_" + rowId, columnKey, state);
+			List<String> states = new ArrayList<>();
+			states.add(state);
+			DPCellStateDto dto = new DPCellStateDto("_" + rowId, columnKey, states);
 			this.lstCellState.add(dto);
 		}
 

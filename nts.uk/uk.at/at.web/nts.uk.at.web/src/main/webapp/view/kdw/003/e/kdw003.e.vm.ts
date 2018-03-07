@@ -5,13 +5,15 @@ module nts.uk.at.view.kdw003.e.viewmodel {
     export class ScreenModel {
         dateRefer: KnockoutObservable<any>;
         itemList: KnockoutObservableArray<ItemModel>;
-         selectedCode: KnockoutObservable<number>;
+        selectedCode: KnockoutObservable<number>;
+        dateJump:KnockoutObservable<any>;
 
         constructor() {
             let self = this;
             self.dateRefer = ko.observable(moment(new Date(), "YYYY/MM/DD").format("YYYY/MM/DD(dd)"));
             self.itemList = ko.observableArray([]);
-            self.selectedCode = ko.observable(0);
+            self.selectedCode = ko.observable(1905);
+            self.dateJump = ko.observable(null);
         }
 
         startPage(): JQueryPromise<any> {
@@ -24,6 +26,7 @@ module nts.uk.at.view.kdw003.e.viewmodel {
             }
             self.itemList(temp);
             self.dateRefer(moment(dataShare.date, "YYYY/MM/DD").format("YYYY/MM/DD(dd)"));
+            self.dateJump(moment(dataShare.date, "YYYY/MM/DD"))
             dfd.resolve();
             return dfd.promise();
         }
@@ -31,9 +34,8 @@ module nts.uk.at.view.kdw003.e.viewmodel {
         extract() {
             let self = this;
             // set return value
-            setShared('errorAlarmList', "");
-            // close dialog.
-            windows.close();
+             nts.uk.ui.windows.setShared("shareToKdw003a", self.selectedCode());
+             windows.close();
         }
 
         closeDialog(): void {

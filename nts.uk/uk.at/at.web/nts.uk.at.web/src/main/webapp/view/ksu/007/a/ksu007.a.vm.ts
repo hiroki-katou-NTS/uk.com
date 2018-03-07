@@ -222,7 +222,7 @@ module nts.uk.at.view.ksu007.a {
                         self.applyKCP005ContentSearch(data.listEmployee);
                     }
                 }
-                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+                //$('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
             }
             
             /**

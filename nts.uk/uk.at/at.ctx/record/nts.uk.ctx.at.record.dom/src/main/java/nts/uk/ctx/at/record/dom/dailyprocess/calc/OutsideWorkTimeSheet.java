@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWor
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
+import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -65,7 +66,7 @@ public class OutsideWorkTimeSheet {
 	 * @return
 	 */
 	public static OutsideWorkTimeSheet createOutsideWorkTimeSheet(List<OverTimeOfTimeZoneSet> overTimeHourSetList,
-			FixOffdayWorkTimezone fixOff, TimeLeavingWork attendanceLeave, int workNo, OverDayEndCalcSet dayEndSet,
+			List<HDWorkTimeSheetSetting> fixOff, TimeLeavingWork attendanceLeave, int workNo, OverDayEndCalcSet dayEndSet,
 			WorkTimezoneCommonSet overDayEndSet, List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem, WorkType beforeDay,
 			WorkType toDay, WorkType afterDay, WorkTimeSetting workTime, WorkingSystem workingSystem,
 			BreakDownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalculationOfOverTimeWork autoCalculationSet,
@@ -143,8 +144,8 @@ public class OutsideWorkTimeSheet {
 		Optional<OverTimeSheet> overTimeWork = Optional.empty();
 		Optional<HolidayWorkTimeSheet> holidayTimeSheet = Optional.empty();
 		if (overTimeWorkSheet.isPresent()) {
-			overTimeWork = Optional.of(overTimeWorkSheet.get().reCreateToCalcExcessWork(overTimeWorkSheet.get(),
-					autoCalculationOfOverTimeWork));
+//			overTimeWork = Optional.of(overTimeWorkSheet.get().calcMidNightTime(overTimeWorkSheet.get(),
+//					autoCalculationOfOverTimeWork));
 
 		}
 		if (holidayWorkSheet.isPresent()) {

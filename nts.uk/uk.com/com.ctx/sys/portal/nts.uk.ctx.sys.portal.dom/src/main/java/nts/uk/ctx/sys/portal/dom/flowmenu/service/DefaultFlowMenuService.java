@@ -41,7 +41,7 @@ public class DefaultFlowMenuService implements FlowMenuService {
 
 	@Override
 	public void createFlowMenu(FlowMenu flowMenu) {
-		if (topPagePartService.isExist(flowMenu.getCompanyID(), flowMenu.getCode().v(), 2)) {
+		if (topPagePartService.isExist(flowMenu.getCompanyID(), flowMenu.getCode().v(), TopPagePartType.FlowMenu.value)) {
 			throw new BusinessException("Msg_3");
 		}
 		flowMenuRepository.add(flowMenu);
@@ -64,7 +64,6 @@ public class DefaultFlowMenuService implements FlowMenuService {
 	@Override
 	public void deleteFlowMenu(String companyID, String toppagePartID ) {
 		if (isExist(companyID, toppagePartID)) {
-			Optional<FlowMenu> flowMenu = flowMenuRepository.findByCode(companyID, toppagePartID);
 			flowMenuRepository.remove(companyID, toppagePartID);
 			topPagePartService.deleteTopPagePart(companyID, toppagePartID);
 			

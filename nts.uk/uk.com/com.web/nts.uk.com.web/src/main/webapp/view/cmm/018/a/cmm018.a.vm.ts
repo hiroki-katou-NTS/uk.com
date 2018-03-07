@@ -487,18 +487,18 @@ module nts.uk.com.view.cmm018.a {
                         });
                     });
                 }
-                servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {   
-                    block.clear();
-                    if(data == null || data === undefined){
-                        self.lstCompany();
-                        self.nameCompany('');
-                        return;
-                    } 
-                    //get name application type
-                    servicebase.getNameAppType().done(function(lstName: Array<vmbase.ApplicationType>){
-                        _.each(lstName, function(item){
-                             self.lstNameAppType.push(new vmbase.ApplicationType(item.value, item.localizedName,1));
-                        });
+                //get name application type
+                servicebase.getNameAppType().done(function(lstName: Array<vmbase.ApplicationType>){
+                    _.each(lstName, function(item){
+                         self.lstNameAppType.push(new vmbase.ApplicationType(item.value, item.localizedName,1));
+                    });
+                    servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {   
+                        block.clear();
+                        if(data == null || data === undefined){
+                            self.lstCompany();
+                            self.nameCompany('');
+                            return;
+                        } 
                         servicebase.getNameConfirmType().done(function(lstNameCfr){
                             _.each(lstNameCfr, function(item){
                                 self.lstNameAppType.push(new vmbase.ApplicationType(item.value, item.localizedName, 2));

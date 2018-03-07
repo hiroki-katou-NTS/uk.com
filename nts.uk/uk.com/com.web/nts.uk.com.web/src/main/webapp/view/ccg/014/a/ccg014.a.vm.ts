@@ -45,6 +45,7 @@ module ccg014.a.viewmodel {
                     $("#titleMenuCD").focus();
                 else
                     $("#titleMenuName").focus();
+                errors.clearAll();
             });
 
         }
@@ -181,14 +182,6 @@ module ccg014.a.viewmodel {
                 self.selectedTitleMenu(new model.TitleMenu("", "", ""));
             }
             errors.clearAll();
-        }
-
-        /** Init Mode */
-        private changeInitMode(isCreate: boolean) {
-            var self = this;
-            if (isCreate === true) {
-                self.selectedTitleMenuCD(null);
-            }
         }
 
         /** Reload data from server */

@@ -6,9 +6,7 @@ import nts.arc.time.GeneralDate;
 
 @Data
 @NoArgsConstructor
-public class OutputScreenA {
-
-	String categoryCode;
+public class PeriodByAlarmCategory {
 	
 	int category;
 	

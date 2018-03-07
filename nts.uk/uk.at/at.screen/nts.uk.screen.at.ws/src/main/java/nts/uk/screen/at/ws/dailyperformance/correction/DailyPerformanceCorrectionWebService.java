@@ -5,7 +5,6 @@ package nts.uk.screen.at.ws.dailyperformance.correction;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +33,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataD
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.ParamDialog;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
@@ -148,6 +148,8 @@ public class DailyPerformanceCorrectionWebService {
 						.map(z -> new DPItemValue(x.getValue().get(0).getRowId(), x.getKey().getLeft(), x.getKey().getRight(), z.getItemId()))
 						.collect(Collectors.toList()));
 		});
+		// insert cell edit
+		dailyModifyCommandFacade.handleEditCell(itemValues);
 		if (itemErrors.isEmpty()) {
 			mapSidDate.entrySet().forEach(x -> {
 				List<ItemValue> itemCovert = x.getValue().stream().filter(y -> y.getValue() != null)

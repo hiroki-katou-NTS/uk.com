@@ -106,12 +106,8 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.getSingleOrNull();
 
 		if (entity != null) {
-			if (domain.getEmployeeCode() != null && !domain.getEmployeeCode().v().equals("")) {
-				entity.employeeCode = domain.getEmployeeCode().v();
-			}
-			if (domain.getExternalCode() != null && !domain.getExternalCode().v().equals("")) {
-				entity.extCode = domain.getExternalCode().v();
-			}
+			entity.employeeCode = domain.getEmployeeCode().v();
+			entity.extCode = domain.getExternalCode().v();
 			commandProxy().update(entity);
 		}
 	}
