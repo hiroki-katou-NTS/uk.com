@@ -59,7 +59,7 @@ public class JpaAcceptCdConvertRepository extends JpaRepository implements Accep
 	}
 
 	private static AcceptCdConvert toDomain(OiomtAcceptCdConvert entity) {
-		return AcceptCdConvert.createFromJavaType(entity.acceptCdConvertPk.cid,
+		return new AcceptCdConvert(entity.acceptCdConvertPk.cid,
 				entity.acceptCdConvertPk.convertCd, entity.convertName, entity.acceptWithoutSetting,
 				entity.oiomtCdConvertDetails.stream().map(itemDetail -> {
 					return new CdConvertDetails(itemDetail.cdConvertDetailsPk.cid,
@@ -71,12 +71,12 @@ public class JpaAcceptCdConvertRepository extends JpaRepository implements Accep
 
 	private OiomtAcceptCdConvert toEntity(AcceptCdConvert domain) {
 		return new OiomtAcceptCdConvert(
-				new OiomtAcceptCdConvertPk(domain.getCid(), domain.getConvertCd()), domain.getConvertName(),
-				domain.getAcceptWithoutSetting(), domain.getListConvertDetails().stream().map(itemDetail -> {
+				new OiomtAcceptCdConvertPk(domain.getCid(), domain.getConvertCd().v()), domain.getConvertName().v(),
+				domain.getAcceptWithoutSetting().value, domain.getListConvertDetails().stream().map(itemDetail -> {
 					return new OiomtCdConvertDetails(
 							new OiomtCdConvertDetailsPk(itemDetail.getCid(), itemDetail.getConvertCd(),
 									itemDetail.getLineNumber()),
-							itemDetail.getOutputItem(), itemDetail.getSystemCd(), null);
+							itemDetail.getOutputItem().v(), itemDetail.getSystemCd().v(), null);
 				}).collect(Collectors.toList()));
 	}
 

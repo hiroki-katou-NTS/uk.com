@@ -1,10 +1,20 @@
-module nts.uk.com.view.cmf001.q.service {
+module nts.uk.com.view.cmf001.q {
+    
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
-    var paths = {
-        addDataErrorLog : "ctx/exio/ws/exi/proccessLog/addErrorLog"
+    
+    export module service {
+        
+        var paths = {
+            executionImportCsvData: "exio/exi/csvimport/execution",
+        }   
+    
+        /**
+         * call service execution import data
+         */
+        export function executionImportCsvData(command: any): JQueryPromise<any> {
+            return ajax('com', paths.executionImportCsvData, command);
+        }
+            
     }
-    export function addDataErrorLog(data: any): JQueryPromise<any> {
-        return ajax("com", paths.addDataErrorLog, data);
-    };
 }

@@ -13,6 +13,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
         systemTypes: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
         systemType: KnockoutObservable<number>;
         screenMode: KnockoutObservable<number>;
+        deleteExistDataMethod: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getDeleteExistDataMethod());
         radioItemList: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
             new model.ItemModel(1, getText('CMF001_56')),
             new model.ItemModel(0, getText('CMF001_57'))
@@ -45,6 +46,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                             let item = new model.StandardAcceptanceConditionSetting(result.conditionSettingCode, result.conditionSettingName, result.deleteExistData, result.acceptMode, result.csvDataItemLineNumber, result.csvDataStartLine);
                             self.selectedStandardImportSetting(item);
                             self.screenMode(model.SCREEN_MODE.UPDATE);
+                            $("#B4_4").focus();
                             service.getAllStdItemData(self.systemType(), data).done((rs) => {
                                 if (rs && rs.length) {
                                     self.selectedStandardImportSetting().alreadySetting(true);
@@ -160,25 +162,25 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             self.selectedStandardImportSettingCode('');
             self.selectedStandardImportSetting(new model.StandardAcceptanceConditionSetting('', '', 1, -1, 0, 0));
             self.screenMode(model.SCREEN_MODE.NEW);
+            $("#B4_3").focus();
         }
 
         registerCondition() {
             let self = this;
             let data = new model.StandardAcceptanceConditionSetting(self.selectedStandardImportSetting().conditionSettingCode(), self.selectedStandardImportSetting().conditionSettingName(), self.selectedStandardImportSetting().deleteExistData(), self.selectedStandardImportSetting().acceptMode(), self.selectedStandardImportSetting().csvDataItemLineNumber(), self.selectedStandardImportSetting().csvDataStartLine());
+            data.action(self.screenMode());
+            data.systemType(self.systemType());
             let command: any = ko.toJS(data);
             $(".nts-input").trigger("validate");
-//            $("#check-condition-table .nts-editor.nts-input").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 block.invisible();
-//                self.listStandardImportSetting.push(self.selectedStandardImportSetting());
-//                self.selectedStandardImportSettingCode(self.selectedStandardImportSetting().conditionSettingCode());
                 service.registerStdData(command).done(function() {
                     self.getAllData(data.conditionSettingCode()).done(() => {
                         info({ messageId: "Msg_15" }).then(() => {
                             if (self.screenMode() == model.SCREEN_MODE.UPDATE) {
-//                                $("#A3_4").focus();
+                                $("#B4_4").focus();
                             } else {
-//                                $("#A3_2").focus();
+                                $("#B4_3").focus();
                             }
                         });
                     });
@@ -191,16 +193,17 @@ module nts.uk.com.view.cmf001.b.viewmodel {
         }
 
         deleteCondition() {
-            let self = this, data = self.selectedStandardImportSetting();
             nts.uk.ui.errors.clearAll();
+            let self = this, data = self.selectedStandardImportSetting();
+            data.systemType(self.systemType());
             let command: any = ko.toJS(data);
 
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 block.invisible();
                 let indexItemDelete = _.findIndex(self.listStandardImportSetting(), (item: model.StandardAcceptanceConditionSetting) => { return item.conditionSettingCode() == data.conditionSettingCode(); });
                 self.listStandardImportSetting.remove(function(item) { return item.conditionSettingCode() == data.conditionSettingCode(); });
-//                service.deleteData(command).done(function() {
-//                    self.getAllData().done(() => {
+                service.deleteStdData(command).done(function() {
+                    self.getAllData().done(() => {
                         if (self.listStandardImportSetting().length == 0) {
                             self.createNewCondition();
                         } else {
@@ -212,17 +215,17 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                         }
                         info({ messageId: "Msg_16" }).then(() => {
                             if (self.screenMode() == model.SCREEN_MODE.UPDATE) {
-//                                $("#A3_4").focus();
+                                $("#B4_4").focus();
                             } else {
-//                                $("#A3_2").focus();
+                                $("#B4_3").focus();
                             }
                         });
-//                    });
-//                }).fail(error => {
-//                    alertError(error);
-//                }).always(() => {
+                    });
+                }).fail(error => {
+                    alertError(error);
+                }).always(() => {
                     block.clear();
-//                });
+                });
 
             }).ifNo(() => {
             });

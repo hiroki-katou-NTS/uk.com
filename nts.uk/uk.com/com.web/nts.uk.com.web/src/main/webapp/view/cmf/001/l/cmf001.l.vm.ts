@@ -42,19 +42,19 @@ module nts.uk.com.view.cmf001.l.viewmodel {
         saveSetting(){
             var self = this;
             switch(self.selectedDataType) {
-                case 0:
+                case model.ITEM_TYPE.NUMERIC:
                 $(".numberCondition").trigger("validate");
                 break;
-                case 1:
+                case model.ITEM_TYPE.CHARACTER:
                 $(".characterCondition").trigger("validate");
                 break;
-                case 2:
+                case model.ITEM_TYPE.DATE:
                 $(".dateCondition").trigger("validate");
                 break;
-                case 3:
+                case model.ITEM_TYPE.TIME:
                 $(".timeCondition").trigger("validate");
                 break;     
-                case 4:
+                case model.ITEM_TYPE.INS_TIME:
                 $(".timeMomentCondition").trigger("validate");
                 break;
             }

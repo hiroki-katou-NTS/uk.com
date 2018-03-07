@@ -1,8 +1,11 @@
 package nts.uk.ctx.exio.dom.exi.dataformat;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -49,38 +52,74 @@ public class ChrDataFormatSet extends AggregateRoot
     /**
     * コード変換コード
     */
-    private AcceptCdConvert cdConvertCd;
+    private Integer cdConvertCd;
     
     /**
     * コード編集方法
     */
-    private FixedLengthEditingMethod cdEditMethod;
+    private Optional<FixedLengthEditingMethod> cdEditMethod;
     
     /**
     * コード編集桁
     */
-    private CodeEditDigit cdEditDigit;
+    private Optional<CodeEditDigit> cdEditDigit;
     
     /**
     * 固定値の値
     */
-    private ValueOfFixed fixedVal;
+    private Optional<ValueOfFixed> fixedVal;
     
     /**
     * 有効桁数開始桁
     */
-    private StartDigit startDigit;
+    private Optional<AcceptedDigit> startDigit;
     
     /**
     * 有効桁数終了桁
     */
-    private EndDigit endDigit;
-    
-    public static ChrDataFormatSet createFromJavaType(Long version, String cid, String conditionSetCd, int acceptItemNum, NotUseAtr cdEditing, NotUseAtr fixedValue, NotUseAtr effectiveDigitLength, AcceptCdConvert cdConvertCd, FixedLengthEditingMethod cdEditMethod, CodeEditDigit cdEditDigit, ValueOfFixed fixedVal, StartDigit startDigit, EndDigit endDigit)
-    {
-        ChrDataFormatSet  chrDataFormatSet =  new ChrDataFormatSet(cid, conditionSetCd, acceptItemNum, cdEditing, fixedValue, effectiveDigitLength, cdConvertCd, cdEditMethod, cdEditDigit, fixedVal, startDigit,  endDigit);
-        chrDataFormatSet.setVersion(version);
-        return chrDataFormatSet;
-    }
-    
+    private Optional<AcceptedDigit> endDigit;
+
+	public ChrDataFormatSet(String cid, String conditionSetCd, int acceptItemNum, Integer cdEditing,
+			Integer fixedValue, Integer effectiveDigitLength, Integer cdConvertCd,
+			Integer cdEditMethod, Integer cdEditDigit, String fixedVal,
+			Integer startDigit, Integer endDigit) {
+		super();
+		this.cid = cid;
+		this.conditionSetCd = conditionSetCd;
+		this.acceptItemNum = acceptItemNum;
+		this.cdEditing = EnumAdaptor.valueOf(fixedValue, NotUseAtr.class);
+		this.fixedValue = EnumAdaptor.valueOf(fixedValue, NotUseAtr.class);
+		this.effectiveDigitLength = EnumAdaptor.valueOf(fixedValue, NotUseAtr.class);
+//		if (null == cdConvertCd) {
+//			this.cdConvertCd = Optional.empty();
+//		} else {
+//			this.cdConvertCd = Optional.of(cdConvertCd);
+//		}
+		if (null == cdEditMethod) {
+			this.cdEditMethod = Optional.empty();
+		} else {
+			this.cdEditMethod = Optional.of(EnumAdaptor.valueOf(cdEditMethod, FixedLengthEditingMethod.class));
+		}
+		if (null == fixedVal) {
+			this.fixedVal = Optional.empty();
+		} else {
+			this.fixedVal = Optional.of(new ValueOfFixed(fixedVal));
+		}
+		if (null == cdEditDigit) {
+			this.cdEditDigit = Optional.empty();
+		} else {
+			this.cdEditDigit = Optional.of(new CodeEditDigit(cdEditDigit));
+		}
+		if (null == startDigit) {
+			this.startDigit = Optional.empty();
+		} else {
+			this.startDigit = Optional.of(new AcceptedDigit(startDigit));
+		}
+		if (null == endDigit) {
+			this.endDigit = Optional.empty();
+		} else {
+			this.endDigit = Optional.of(new AcceptedDigit(endDigit));
+		}
+	}
+
 }

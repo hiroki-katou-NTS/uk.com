@@ -5,42 +5,34 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="/master/dialog.xhtml">
+	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { 
-					width: 500, 
-					height: 300 
-			};
-			</script>
+			
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="../share/model.js" />	
+			<com:scriptfile path="cmf001.q.service.js" />
 			<com:scriptfile path="cmf001.q.vm.js" />
 			<com:scriptfile path="cmf001.q.start.js" />
-			<com:scriptfile path="cmf001.q.service.js" />
 			<com:stylefile path="cmf001.q.style.css" />
 			
 		</ui:define>
 
 		<ui:define name="content">
 			<div class="contents-area" style="width:400px; height:200px;">
-			 	<!-- Q1_1 -->
 			 	<com:ko-if bind="isCheckMode() == true">
 					<div><label class="cmf001_485">#{i18n.getText('CMF001_485')}</label></div>
 				</com:ko-if>
 				<com:ko-if bind="isCheckMode() == false">
 				<div><label class="cmf001_486">#{i18n.getText('CMF001_486')}</label></div>
 				</com:ko-if>
-				<!-- Q2_1 -->
 				<div><label class="cmf001_487">#{i18n.getText('CMF001_487')}</label></div>
 				<div class="settingzyouho">
 					<table class="setting-zyouhou">
 						<tbody>
 							<tr>
-								<!-- Q2_2 -->
 								<td class="bggreen" width='100px'>
 									<label>#{i18n.getText('CMF001_488')}</label>
 								</td>
-								<!-- Q2_3,4 -->
 								<td width='300px'>
 									<label data-bind="text : codCode"></label>
 									<label data-bind="text : codeName"></label>
@@ -49,87 +41,60 @@
 						</tbody>
 					</table>
 				</div>
-				<!-- Q3_1 -->
 				<div><label class= "cmf001_489">#{i18n.getText('CMF001_489')}</label></div>
 				<div class="kekkanaiyou">
 					<table class="kekka">
 						<tbody>
 							<tr >
-								<!-- Q3_2 -->
 								<td class="bggreen" width='100px'>
 									<label>#{i18n.getText('CMF001_490')}</label>
 								</td>
-								<!-- Q3_3 -->
 								<td width='300px'>
 									<label style="padding-left:  10px;" data-bind="text : timeOver"></label>
 								</td>
 							</tr>
 							<tr >
-								<!-- Q3_4 -->
 								<td class="bggreen" width='100px' >
 									<label>#{i18n.getText('CMF001_491')}</label>
 								</td>
-								<!-- Q3_5,6,7,8 -->
 								<td width='300px'>
 									<div style="float:left; ">
-									<label style="padding-left:  10px;" data-bind="text : operatingCondition"></label>
+									<label style="padding-left:  10px;" data-bind="text : executionState"></label>
 									</div>
 									<div style="float:left; ">
-										<div style="float:left; "><label style="padding-left:  40px;" data-bind="text : exAcOpManage.processCount"></label></div>
-										<div style="float:left; "><label>#{i18n.getText('CMF001_499')}</label></div>
-										<div style="float:left; "><label data-bind="text : exAcOpManage.processTotalCount"></label></div>
-										<!-- Q3_9 -->
+										<div style="float:left; "><label style="padding-left:  40px;" data-bind="text : currentRecord"></label></div>
+										<div style="float:left; "><label>/</label></div>
+										<div style="float:left; "><label data-bind="text : totalRecord"></label></div>
 										<div style="float:left; "><label>#{i18n.getText('CMF001_492')}</label></div>
 									</div>
 								</td>
 							</tr>
 							<tr >
-								<!-- Q3_10 -->
 								<td class="bggreen" width='100px'>
 									<label>#{i18n.getText('CMF001_493')}</label>
 								</td>
-								<!-- Q3_11 -->
 								<td width='300px'>
-									<label style="padding-left:  10px;" data-bind="text : exAcOpManage.errorCount"></label>
+									<label style="padding-left:  10px;" data-bind="text : numberFail"></label>
 									<label>#{i18n.getText('CMF001_494')}</label>
 								</td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
-				<!-- Q4 -->
 				<div class ="button">
-					<com:ko-if bind="isStopMode() == false">
-						<!-- Q4_1 -->
- 						<button id="BTN_STOP" data-bind="click : stop" tabindex="1">#{i18n.getText('CMF001_495')}</button> 
- 					</com:ko-if>
- 					<!-- Q4_2,3,4 -->
- 					<com:ko-if bind="isStopMode() == true">
-	 					<com:ko-if bind="isCheckMode() == true">
-	 						<table class="botan">
-	 						<tr>
+					<table class="botan">
+ 						<tr>
 							<td width='200px'>
-								<div style="text-align: center"><button id="BTN_IMPORT" data-bind="click : importFile" class="large proceed" tabindex="2">#{i18n.getText('CMF001_496')}</button></div>
+								<div style="text-align: center"><button id="BTN_IMPORT" 
+								data-bind="click : execution" class="large proceed" tabindex="2">#{i18n.getText('CMF001_496')}</button></div>
 							</td>
 							<td width='100px'>
-								<div style="text-align: center"><button id="BTN_ERROR" data-bind="click : gotoErrorList" tabindex="3">#{i18n.getText('CMF001_497')}</button></div>
-							</td>
-							<td width='100px'>
-								<div style="text-align: center"><button id="BTN_CLOSE" data-bind="click : close" tabindex="4">#{i18n.getText('CMF001_498')}</button></div>
-							</td>
-							</tr>
-							</table>
-						</com:ko-if>
-						<com:ko-if bind="isCheckMode() == false">
-							<table class="botan">
-							<tr>
-							<td width='200px'><div style="text-align: center"></div></td>
-							<td width='100px'><div style="text-align: center"><button id="BTN_ERROR" data-bind="click : gotoErrorList" tabindex="3">#{i18n.getText('CMF001_497')}</button></div></td>
-							<td width='100px'><div style="text-align: center"><button id="BTN_CLOSE" data-bind="click : close" tabindex="4">#{i18n.getText('CMF001_498')}</button></div></td>
-							</tr>
-							</table>
-						</com:ko-if>
-					</com:ko-if>
+								<div style="text-align: center">
+									<button id="BTN_STOP" data-bind="click : stopExecution" tabindex="1">#{i18n.getText('CMF001_495')}</button> 
+								</div>
+							</td>						
+						</tr>
+					</table>
 				</div>
 			</div>
 		</ui:define>

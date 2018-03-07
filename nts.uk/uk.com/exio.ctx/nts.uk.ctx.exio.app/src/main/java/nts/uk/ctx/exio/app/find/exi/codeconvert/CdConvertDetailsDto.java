@@ -38,7 +38,7 @@ public class CdConvertDetailsDto {
 
 	public static CdConvertDetailsDto fromDomain(CdConvertDetails domain) {
 		return new CdConvertDetailsDto(domain.getCid(), domain.getConvertCd(), domain.getLineNumber(),
-				domain.getOutputItem(), domain.getSystemCd());
+				domain.getOutputItem().v(), domain.getSystemCd().v());
 	}
 
 }

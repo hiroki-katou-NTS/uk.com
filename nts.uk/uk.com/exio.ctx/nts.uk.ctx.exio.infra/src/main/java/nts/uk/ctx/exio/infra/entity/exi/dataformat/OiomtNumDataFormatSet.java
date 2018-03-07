@@ -60,51 +60,51 @@ public class OiomtNumDataFormatSet extends UkJpaEntity implements Serializable
     /**
     * コード変換コード
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "CD_CONVERT_CD")
-    public int cdConvertCd;
+    public Integer cdConvertCd;
     
     /**
     * 固定値の値
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "VALUE_OF_FIXED_VALUE")
     public String valueOfFixedValue;
     
     /**
     * 少数桁数
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "DECIMAL_DIGIT_NUM")
-    public int decimalDigitNum;
+    public Integer decimalDigitNum;
     
     /**
     * 有効桁数開始桁
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "START_DIGIT")
-    public int startDigit;
+    public Integer startDigit;
     
     /**
     * 有効桁数終了桁
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "END_DIGIT")
-    public int endDigit;
+    public Integer endDigit;
     
     /**
     * 小数点区分
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "DECIMAL_POINT_CLS")
-    public int decimalPointCls;
+    public Integer decimalPointCls;
     
     /**
     * 小数端数
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "DECIMAL_FRACTION")
-    public int decimalFraction;
+    public Integer decimalFraction;
     
     @Override
     protected Object getKey()
