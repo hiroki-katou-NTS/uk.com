@@ -5,13 +5,13 @@
 package nts.uk.ctx.sys.gateway.app.find.singlesignon;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
- * Gets the use atr.
- *
- * @return the use atr
+ * The Class WindowsAccountFinderDto.
  */
 @Getter
+@Setter
 public class WindowsAccountFinderDto {
 
 	// ユーザID
@@ -19,7 +19,7 @@ public class WindowsAccountFinderDto {
 	private String userId;
 
 	// ホスト名
-	/** The hot name. */
+	/** The host name. */
 	private String hostName;
 
 	// ユーザ名
@@ -34,6 +34,27 @@ public class WindowsAccountFinderDto {
 	// 利用区分
 	private Integer useAtr;
 
+	/**
+	 * Instantiates a new windows account finder dto.
+	 */
+	public WindowsAccountFinderDto() {
+		super();
+	}
+
+	/**
+	 * Instantiates a new windows account finder dto.
+	 *
+	 * @param userId
+	 *            the user id
+	 * @param hostName
+	 *            the host name
+	 * @param userName
+	 *            the user name
+	 * @param no
+	 *            the no
+	 * @param useAtr
+	 *            the use atr
+	 */
 	public WindowsAccountFinderDto(String userId, String hostName, String userName, Integer no,
 			Integer useAtr) {
 		super();
@@ -43,4 +64,5 @@ public class WindowsAccountFinderDto {
 		this.no = no;
 		this.useAtr = useAtr;
 	}
+
 }
