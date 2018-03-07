@@ -28665,9 +28665,9 @@ var nts;
                             if (ePos.top < 0 && ePos.left < 0) {
                                 return;
                             }
-                            currentShowContainer.removeClass();
+                            //currentShowContainer.removeClass();
                             container.removeClass();
-                            currentShowContainer.addClass("datepicker-container datepicker-dropdown small-style");
+                            //currentShowContainer.addClass("datepicker-container datepicker-dropdown small-style"); 
                             container.addClass("ntsControl nts-datepicker-wrapper");
                             var containerHeight = container.outerHeight(true);
                             var containerWidth = container.outerWidth(true);

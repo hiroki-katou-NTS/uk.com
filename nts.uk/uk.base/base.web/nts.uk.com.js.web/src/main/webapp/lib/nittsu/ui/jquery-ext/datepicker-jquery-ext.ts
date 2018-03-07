@@ -49,9 +49,9 @@ module nts.uk.ui.jqueryExtentions {
                 if(ePos.top < 0 && ePos.left < 0){
                     return;
                 }
-                currentShowContainer.removeClass();
+                //currentShowContainer.removeClass();
                 container.removeClass();
-                currentShowContainer.addClass("datepicker-container datepicker-dropdown small-style"); 
+                //currentShowContainer.addClass("datepicker-container datepicker-dropdown small-style"); 
                 container.addClass("ntsControl nts-datepicker-wrapper");
                 let containerHeight = container.outerHeight(true); 
                 let containerWidth = container.outerWidth(true);
