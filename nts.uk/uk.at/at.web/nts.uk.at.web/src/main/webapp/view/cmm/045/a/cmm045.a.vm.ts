@@ -158,7 +158,8 @@ module cmm045.a.viewmodel {
                                 data.appStatusCount.denialNumber));
                         }
                         if (self.mode() == 1) {
-                            self.reloadGridApproval();
+                             let lstHidden: Array<any> = self.findRowHidden(self.items());
+                             self.reloadGridApproval(lstHidden);
                         } else {
                             self.reloadGridApplicaion()
                         }
@@ -216,10 +217,10 @@ module cmm045.a.viewmodel {
             self.fillColorInGridList();
         }
 
-        reloadGridApproval() {
+        reloadGridApproval(lstHidden: Array<any>) {
             var self = this;
             $("#grid1").ntsGrid({
-                width: '1280px',
+                width: '1320px',
                 height: '700px',
                 dataSource: self.items(),
                 primaryKey: 'appId',
@@ -228,11 +229,12 @@ module cmm045.a.viewmodel {
                 rows: 8,
                 virtualizationMode: 'continuous',
                 columns: [
-                    { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '60px', ntsControl: 'Checkbox' },
-                    { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '50px', unbound: false, ntsControl: 'Button' },
+                    { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '90px', 
+                            showHeaderCheckbox: true, ntsControl: 'Checkbox',  hiddenRows: lstHidden},
+                    { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '70px', unbound: false, ntsControl: 'Button' },
                     { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
                     { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '120px' },
-                    { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '120px' },
+                    { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '90px' },
                     { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '150px', ntsControl: 'Label'},
                     { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '240px'},
                     { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '180px', ntsControl: 'Label'},
@@ -268,9 +270,9 @@ module cmm045.a.viewmodel {
             _.each(self.items(), function(item) {
                 let id = ".nts-grid-control-appStatus-" + item.appId;
                 //display check box
-                if (item.checkAtr == false) {
-                    $(".nts-grid-control-check-" + item.appId).css("display", "none");
-                }
+//                if (item.checkAtr == false) {
+//                    $(".nts-grid-control-check-" + item.appId).css("display", "none");
+//                }
                 //fill color in 承認状況
                 if (item.appStatus == '未') {
                     $(id).parent().addClass('unapprovalCell');
@@ -390,7 +392,7 @@ module cmm045.a.viewmodel {
                     contentResult = prRes.appRes;
                 }
             }
-            let reason = self.displaySet().appReasonDisAtr == 1 ? ''  + app.applicationReason : '';
+            let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
             let applicant: string = masterInfo.workplaceName + '<br/>' + masterInfo.empName;
             let appContentPost: string = getText('CMM045_272') + getText('CMM045_268') + ' ' + overTime.workClockFrom1 + getText('CMM045_100') + overTime.workClockTo1 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
@@ -437,7 +439,7 @@ module cmm045.a.viewmodel {
             //                        + self.convertTime_Short_HM(goBack.workTimeStart1);
             let back = goBack.backHomeAtr1 == 0 ? '' : ' ' + getText('CMM045_260') + goBack.workTimeEnd1;
             //                        + self.convertTime_Short_HM(goBack.workTimeEnd1);
-            let reason = self.displaySet().appReasonDisAtr == 1 ? ' ' + app.applicationReason : '';
+            let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
             let appContent2222 = getText('CMM045_258') + go + back + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
@@ -641,7 +643,8 @@ module cmm045.a.viewmodel {
                     }
                     if (self.mode() == 1) {
                         $("#grid1").ntsGrid("destroy");
-                        self.reloadGridApproval();
+                        let lstHidden: Array<any> = self.findRowHidden(self.items());
+                        self.reloadGridApproval(lstHidden);
                     } else {
                         $("#grid2").ntsGrid("destroy");
                         self.reloadGridApplicaion();
@@ -650,6 +653,15 @@ module cmm045.a.viewmodel {
             }).always(() => {
                 block.clear();
             });
+        }
+        findRowHidden(lstItem: Array<vmbase.DataModeApp>): any{
+            let lstHidden = []
+            _.each(lstItem, function(item){
+                if(item.checkAtr == false){
+                    lstHidden.push(item.appId);
+                }
+            });
+            return lstHidden;
         }
         findcheck(selectedIds: Array<any>, idCheck: number): boolean {
             let check = false;
@@ -673,6 +685,10 @@ module cmm045.a.viewmodel {
                     lstApp.push({ appId: item.appId, version: item.version });
                 }
             });
+            if(lstApp.length == 0){
+                block.clear();
+                return;
+            }
             service.approvalListApp(lstApp).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_220" });
                 self.filter();
@@ -699,7 +715,8 @@ module cmm045.a.viewmodel {
             if (self.mode() == 1) {
                 self.approvalCount(self.countStatus(self.items()));
                 $("#grid1").ntsGrid("destroy");
-                self.reloadGridApproval();
+                 let lstHidden: Array<any> = self.findRowHidden(self.items());
+                 self.reloadGridApproval(lstHidden);
             } else {
                 $("#grid2").ntsGrid("destroy");
                 self.reloadGridApplicaion();
