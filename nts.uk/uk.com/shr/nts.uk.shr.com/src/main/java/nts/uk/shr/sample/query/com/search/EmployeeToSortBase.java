@@ -1,7 +1,5 @@
 package nts.uk.shr.sample.query.com.search;
 
-import java.util.List;
-
 /**
  * 社員のソート用の規定情報
  * @author m_kitahira
@@ -9,6 +7,7 @@ import java.util.List;
  */
 public class EmployeeToSortBase {
 	
+	@SuppressWarnings("unused")
 	private String employeeId;
 	private String employeeCode;
 	private String clsssCode;
