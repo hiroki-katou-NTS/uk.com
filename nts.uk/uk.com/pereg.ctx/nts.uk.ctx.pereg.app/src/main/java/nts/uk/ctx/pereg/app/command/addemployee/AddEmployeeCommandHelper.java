@@ -148,8 +148,8 @@ public class AddEmployeeCommandHelper {
 
 		this.companyHistRepo.add(newComHist);
 
-		AffCompanyInfo newComInfo = AffCompanyInfo.createFromJavaType(comHistId, " ", ConstantUtils.maxDate(),
-				ConstantUtils.maxDate());
+		AffCompanyInfo newComInfo = AffCompanyInfo.createFromJavaType(comHistId, " ", null,
+				null);
 
 		this.companyInfoRepo.add(newComInfo);
 
