@@ -17,7 +17,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
         constructor() {
             let self = this;
             self.screenMode = ko.observable(model.SCREEN_MODE.UPDATE);
-            $("#detail-code-convert").ntsFixedTable({ height: 200 });
+            $("#detail-code-convert").ntsFixedTable({ height: 184 });
             
             self.acceptWithoutSettingItems =  ko.observableArray([
                 new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF001_209')),
