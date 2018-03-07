@@ -39,11 +39,11 @@ public class AcceptCdConvertDto {
 	private List<CdConvertDetailsDto> cdConvertDetails;
 	
 	public static AcceptCdConvertDto fromDomain(AcceptCdConvert domain) {
-		return new AcceptCdConvertDto(domain.getCid(), domain.getConvertCd(), domain.getConvertName(),
-				domain.getAcceptWithoutSetting(), domain.getVersion(),
+		return new AcceptCdConvertDto(domain.getCid(), domain.getConvertCd().v(), domain.getConvertName().v(),
+				domain.getAcceptWithoutSetting().value, domain.getVersion(),
 				domain.getListConvertDetails().stream().map(itemDetails -> {
 					return new CdConvertDetailsDto(itemDetails.getCid(), itemDetails.getConvertCd(),
-							itemDetails.getLineNumber(), itemDetails.getOutputItem(), itemDetails.getSystemCd());
+							itemDetails.getLineNumber(), itemDetails.getOutputItem().v(), itemDetails.getSystemCd().v());
 				}).collect(Collectors.toList()));
 	}
 

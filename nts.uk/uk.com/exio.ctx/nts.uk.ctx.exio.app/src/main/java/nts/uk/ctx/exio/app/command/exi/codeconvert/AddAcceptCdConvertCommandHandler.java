@@ -15,19 +15,19 @@ import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
 
 @Stateless
 @Transactional
-public class AddAcceptCdConvertCommandHandler extends CommandHandler<AcceptCdConvertCommand>
-{
-    
-    @Inject
-    private AcceptCdConvertRepository repository;
-    
-    @Override
-    public void handle(CommandHandlerContext<AcceptCdConvertCommand> context) {
+public class AddAcceptCdConvertCommandHandler extends CommandHandler<AcceptCdConvertCommand> {
+
+	@Inject
+	private AcceptCdConvertRepository repository;
+
+	@Override
+	public void handle(CommandHandlerContext<AcceptCdConvertCommand> context) {
 		AcceptCdConvertCommand addCommand = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		repository.add(AcceptCdConvert.createFromJavaType(companyId, addCommand.getConvertCd(),
-				addCommand.getConvertName(), addCommand.getAcceptWithoutSetting(), addCommand.getCdConvertDetails().stream().map(itemDetail -> {
-					return CdConvertDetails.createFromJavaType(companyId, itemDetail.getConvertCd(), itemDetail.getLineNumber(), itemDetail.getOutputItem(), itemDetail.getSystemCd());					
+		repository.add(new AcceptCdConvert(companyId, addCommand.getConvertCd(), addCommand.getConvertName(),
+				addCommand.getAcceptWithoutSetting(), addCommand.getCdConvertDetails().stream().map(itemDetail -> {
+					return new CdConvertDetails(companyId, itemDetail.getConvertCd(), itemDetail.getLineNumber(),
+							itemDetail.getOutputItem(), itemDetail.getSystemCd());
 				}).collect(Collectors.toList())));
 
 	}
