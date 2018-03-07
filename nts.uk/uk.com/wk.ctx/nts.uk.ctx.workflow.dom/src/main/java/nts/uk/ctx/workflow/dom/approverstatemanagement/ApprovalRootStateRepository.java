@@ -17,6 +17,16 @@ public interface ApprovalRootStateRepository {
 	 */
 	public List<ApprovalRootState> findEmployeeAppByApprovalRecordDate(GeneralDate startDate, GeneralDate endDate,String approverID,Integer rootType);
 	
+	/**
+	 * 対象者と期間から承認ルートインスタンスを取得する
+	 * @param startDate
+	 * @param endDate
+	 * @param employeeID
+	 * @param rootType
+	 * @return
+	 */
+	public List<ApprovalRootState> findAppByEmployeeIDRecordDate(GeneralDate startDate, GeneralDate endDate,String employeeID,Integer rootType);
+	
 	public List<ApprovalRootState> findEmploymentApps(List<String> rootStateIDs);
 	
 	public Optional<ApprovalRootState> findEmploymentApp(String rootStateID);
