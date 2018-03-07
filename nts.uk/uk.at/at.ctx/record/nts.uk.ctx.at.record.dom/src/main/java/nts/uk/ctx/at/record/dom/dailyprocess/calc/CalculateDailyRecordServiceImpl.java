@@ -182,7 +182,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	public IntegrationOfDaily calculate(IntegrationOfDaily integrationOfDaily) {
 		/*日別実績(Work)の退避*/
 		val copyIntegrationOfDaily = integrationOfDaily;
-		if (integrationOfDaily.getAffiliationInfor().equals(null)) return integrationOfDaily;
+		if (integrationOfDaily.getAffiliationInfor() == null) return integrationOfDaily;
 		// 実績データの計算
 		return this.calculateRecord(integrationOfDaily);
 	}
@@ -217,16 +217,12 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		/*労働制*/
 		DailyCalculationPersonalInformation personalInfo = getPersonInfomation(integrationOfDaily);
 		
-		
-		
 		/**
 		 * 勤務種類が休日系なら、所定時間の時間を変更する
 		 */
 		if(workType.get().getAttendanceHolidayAttr().equals(AttendanceHolidayAttr.HOLIDAY)) {
 			oneRange.getPredetermineTimeSetForCalc().endTimeSetStartTime();
 		}
-		
-		
 		
 		//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
 		//休憩時間帯(BreakManagement)
@@ -277,7 +273,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																	new OverDayEndCalcSetOfExcessHoliday(UseAtr.NOTUSE,UseAtr.NOTUSE,UseAtr.NOTUSE),
 																	new OverDayEndCalcSetOfExcessSpecialHoliday(UseAtr.NOTUSE,UseAtr.NOTUSE,UseAtr.NOTUSE),
 																	new OverDayEndCalcSetOfWeekDay(UseAtr.NOTUSE,UseAtr.NOTUSE,UseAtr.NOTUSE));
-			//残業時間の自動計算設定
+		//残業時間の自動計算設定
 		AutoCalcSet autoCalSetting = new AutoCalcSet(AutoCalAtrOvertime.CALCULATEMBOSS);
 		AutoCalculationOfOverTimeWork autoCalcOverTimeWork = new AutoCalculationOfOverTimeWork(autoCalSetting,
 																									autoCalSetting,
