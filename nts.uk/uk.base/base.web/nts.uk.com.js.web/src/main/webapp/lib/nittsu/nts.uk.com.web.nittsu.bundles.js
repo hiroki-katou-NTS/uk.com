@@ -19731,6 +19731,7 @@ var nts;
                             language: 'ja-JP',
                             format: ISOFormat,
                             autoHide: true,
+                            weekStart: 0
                         });
                         rangeName = nts.uk.util.isNullOrUndefined(rangeName) ? "期間入力フォーム" : nts.uk.resource.getControlName(rangeName);
                         startName = nts.uk.util.isNullOrUndefined(startName) ? "期間入力フォーム開始" : nts.uk.resource.getControlName(startName);
@@ -28626,6 +28627,7 @@ var nts;
             (function (jqueryExtentions) {
                 var ntsDatepicker;
                 (function (ntsDatepicker) {
+                    var CONTAINER_CLASSES = ["arrow-bottom", "arrow-top", "arrow-right", "arrow-left"];
                     $.fn.ntsDatepicker = function (action, index) {
                         var $container = $(this);
                         if (action === "bindFlip") {
@@ -28644,8 +28646,7 @@ var nts;
                         });
                         $input.on('hide.datepicker', function (evt) {
                             $input.data("showed", false);
-                            container.removeClass();
-                            container.addClass("ntsControl nts-datepicker-wrapper");
+                            CONTAINER_CLASSES.forEach(function (cls) { return container.removeClass(cls); });
                             //                let currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
                             //                $("body").append(currentShowContainer);
                         });
@@ -28665,10 +28666,7 @@ var nts;
                             if (ePos.top < 0 && ePos.left < 0) {
                                 return;
                             }
-                            //currentShowContainer.removeClass();
-                            container.removeClass();
-                            //currentShowContainer.addClass("datepicker-container datepicker-dropdown small-style"); 
-                            container.addClass("ntsControl nts-datepicker-wrapper");
+                            CONTAINER_CLASSES.forEach(function (cls) { return container.removeClass(cls); });
                             var containerHeight = container.outerHeight(true);
                             var containerWidth = container.outerWidth(true);
                             var showContainerHeight = currentShowContainer.outerHeight(true);
@@ -28725,7 +28723,6 @@ var nts;
                                 return;
                             }
                             container.addClass("arrow-bottom");
-                            //container.addClass("caret-bottom");
                             currentShowContainer.position({
                                 my: "left bottom+" + (showContainerHeight + 10),
                                 at: "left bottom",
