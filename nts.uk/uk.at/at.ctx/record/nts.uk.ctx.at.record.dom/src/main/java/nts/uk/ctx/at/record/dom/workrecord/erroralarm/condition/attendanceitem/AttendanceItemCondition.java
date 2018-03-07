@@ -3,6 +3,9 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem;
 
+import java.util.List;
+import java.util.function.Function;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
@@ -54,5 +57,22 @@ public class AttendanceItemCondition extends DomainObject {
 
 	public void setGroupId2(String groupId) {
 		this.group2.setGroupId(groupId);
+	}
+
+	/** 勤怠項目をチェックする */
+	public boolean check(Function<List<Integer>, List<Integer>> getValueFromItemIds) {
+		boolean checkGroup1 = group1.check(getValueFromItemIds);
+		if(this.group2UseAtr != null && this.group2UseAtr){
+			boolean checkGroup2 = group2.check(getValueFromItemIds);
+			switch (this.operatorBetweenGroups) {
+			case AND:
+				return checkGroup1 && checkGroup2;
+			case OR:
+				return checkGroup1 || checkGroup2;
+			default:
+				break;
+			}
+		}
+		return checkGroup1;
 	}
 }

@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 public class RaisingSalaryTimeDto {
 
 	/** 加給時間: 計算付き時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "加給時間.時間")
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "加給時間>時間")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer rasingSalaryTime;
 

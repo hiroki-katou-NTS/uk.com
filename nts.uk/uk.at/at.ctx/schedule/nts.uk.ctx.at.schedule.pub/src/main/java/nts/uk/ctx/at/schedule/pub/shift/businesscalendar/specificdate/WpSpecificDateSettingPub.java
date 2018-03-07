@@ -11,12 +11,14 @@ import nts.arc.time.GeneralDate;
 public interface WpSpecificDateSettingPub {
 	
 	/**
+	 * RequestList21
+	 * 
 	 * find specific date setting
 	 * @param companyID company ID
 	 * @param workPlaceID workplace ID
 	 * @param date date
 	 * @return
-	 * // RequestList #21
+	 * 
 	 */
 	public WpSpecificDateSettingExport workplaceSpecificDateSettingService(String companyID, String workPlaceID, GeneralDate date);
 	

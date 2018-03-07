@@ -286,9 +286,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				}
 				//「承認する申請」の場合
 				if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_APPROVED)){
-					if(lstEmployeeIdSub.equals(app.getApplication().getEmployeeID())){
-						lstAppFilter2.add(app);
-					}
+					lstAppFilter2.add(app);
 				}
 				// TODO Auto-generated method stub
 			}
@@ -352,14 +350,18 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					check = true;
 				}
 				if(check){
-					lstAppFilter3.add(appFull.getApplication());
-					lstAppFullFilter3.add(appFull);
-					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
-						lstFrameUn.add(appFull.getApplication().getAppID());
+					//条件 bo sung:
+					int phaseOrderCur = status.getPhaseOrder().intValue();
+					PhaseStatus statusPhase = this.convertStatusPhase(appFull.getApplication().getAppID(), appFull.getLstPhaseState());
+					if(phaseOrderCur == 1 || statusPhase.getPhaseAtr().get(phaseOrderCur -2) == 1){//phase truoc do da approve
+						lstAppFilter3.add(appFull.getApplication());
+						lstAppFullFilter3.add(appFull);
+						if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
+							lstFrameUn.add(appFull.getApplication().getAppID());
+						}
+						
+						lstPhaseStatus.add(statusPhase);
 					}
-					String statusPhase = this.convertStatusPhase(appFull.getLstPhaseState());
-					lstPhaseStatus.add(new PhaseStatus(appFull.getApplication().getAppID(), statusPhase));
-					
 				}
 			}
 			//条件５：重複承認の対応条件
@@ -582,56 +584,56 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	public TimeResultOutput getAppListAchievementOverTime(String sID, GeneralDate date, List<OverTimeFrame> time) {
 		//Imported(申請承認)「勤務実績」を取得する - req #5
 		RecordWorkInfoImport record = recordWkpInfoAdapter.getRecordWorkInfo(sID, date);
-//		DailyAttendanceTimeCaculationImport cal = calTime.getCalculation(sID, date, record.getWorkTypeCode(), record.getWorkTimeCode(),record.getAttendanceStampTimeFirst(), record.getLeaveStampTimeFirst(), 0, 0);
+		DailyAttendanceTimeCaculationImport cal = calTime.getCalculation(sID, date, record.getWorkTypeCode(), record.getWorkTimeCode(),record.getAttendanceStampTimeFirst(), record.getLeaveStampTimeFirst(), 0, 0);
 		//Imported(申請承認)「計算残業時間」を取得する - req #23
 		boolean checkColor = false;
 		List<OverTimeFrame> lstFrameResult = new ArrayList<>();
-//		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getOverTime().entrySet()){
-//			for(OverTimeFrame i : time){
-//				if(i.getFrameNo() == entry.getKey()){
-//					int a =	entry.getValue().getCalTime();
-//					if(a < i.getApplicationTime()){
-//						checkColor = true;
-//					}
-//					OverTimeFrame frameRes = i;
-//					frameRes.setApplicationTime(a);
-//				}
-//			}
-//		}
-//		// TODO Auto-generated method stub
-//		//Imported(申請承認)「計算休出時間」を取得する - req #23
-//		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getHolidayWorkTime().entrySet()){
-//			for(OverTimeFrame i : time){
-//				if(i.getFrameNo() == entry.getKey()){
-//					int a =	entry.getValue().getCalTime();
-//					if(a < i.getApplicationTime()){
-//						checkColor = true;
-//					}
-//				}
-//			}
-//		}
-//		// TODO Auto-generated method stub
-//		//Imported(申請承認)「計算加給時間」を取得する - req #23
-//		for(Map.Entry<Integer,Integer> entry : cal.getBonusPayTime().entrySet()){
-//			for(OverTimeFrame i : time){
-//				if(i.getFrameNo() == entry.getKey()){
-//					int a =	entry.getValue().intValue();
-//					if(a < i.getApplicationTime()){
-//						checkColor = true;
-//					}
-//				}
-//			}
-//		}
-//		for(Map.Entry<Integer,Integer> entry : cal.getSpecBonusPayTime().entrySet()){
-//			for(OverTimeFrame i : time){
-//				if(i.getFrameNo() == entry.getKey()){
-//					int a =	entry.getValue().intValue();
-//					if(a < i.getApplicationTime()){
-//						checkColor = true;
-//					}
-//				}
-//			}
-//		}
+		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getOverTime().entrySet()){
+			for(OverTimeFrame i : time){
+				if(i.getFrameNo() == entry.getKey()){
+					int a =	entry.getValue().getCalTime();
+					if(a < i.getApplicationTime()){
+						checkColor = true;
+					}
+					OverTimeFrame frameRes = i;
+					frameRes.setApplicationTime(a);
+				}
+			}
+		}
+		// TODO Auto-generated method stub
+		//Imported(申請承認)「計算休出時間」を取得する - req #23
+		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getHolidayWorkTime().entrySet()){
+			for(OverTimeFrame i : time){
+				if(i.getFrameNo() == entry.getKey()){
+					int a =	entry.getValue().getCalTime();
+					if(a < i.getApplicationTime()){
+						checkColor = true;
+					}
+				}
+			}
+		}
+		// TODO Auto-generated method stub
+		//Imported(申請承認)「計算加給時間」を取得する - req #23
+		for(Map.Entry<Integer,Integer> entry : cal.getBonusPayTime().entrySet()){
+			for(OverTimeFrame i : time){
+				if(i.getFrameNo() == entry.getKey()){
+					int a =	entry.getValue().intValue();
+					if(a < i.getApplicationTime()){
+						checkColor = true;
+					}
+				}
+			}
+		}
+		for(Map.Entry<Integer,Integer> entry : cal.getSpecBonusPayTime().entrySet()){
+			for(OverTimeFrame i : time){
+				if(i.getFrameNo() == entry.getKey()){
+					int a =	entry.getValue().intValue();
+					if(a < i.getApplicationTime()){
+						checkColor = true;
+					}
+				}
+			}
+		}
 		return new TimeResultOutput(checkColor, lstFrameResult);
 	}
 	/**
@@ -836,6 +838,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		for (ApprovalPhaseStateImport_New appPhase : lstPhase) {
 			FrameOutput frame = this.checkPhaseCurrent(appPhase, sID);
 			if(frame.getFrameStatus() != null){
+				status.setPhaseOrder(appPhase.getPhaseOrder());
 				status.setFrameStatus(EnumAdaptor.valueOf(frame.getFrameStatus(), ApprovalBehaviorAtrImport_New.class));
 				status.setPhaseStatus(appPhase.getApprovalAtr());
 				status.setAgentId(frame.getAgentId());
@@ -1195,17 +1198,19 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		return false;
 	}
 	
-	private String convertStatusPhase(List<ApprovalPhaseStateImport_New> lstPhaseState){
+	private PhaseStatus convertStatusPhase(String appId, List<ApprovalPhaseStateImport_New> lstPhaseState){
 		String phaseStatus = "";
+		List<Integer> lstPhaseAtr = new ArrayList<>();
 		for (int i = 1; i<= 5; i++) {
 			String phaseI = "";
 			Integer status = this.findPhaseStatus(lstPhaseState, i);
+			lstPhaseAtr.add(status);
 			if(status != null){//phase exist
 				phaseI = status == 1 ? "〇" : status == 2 ? "×" : "－";
 			}
 			phaseStatus += phaseI;
 		}
-		return phaseStatus;
+		return new PhaseStatus(appId, phaseStatus, lstPhaseAtr);
 	}
 	private Integer findPhaseStatus(List<ApprovalPhaseStateImport_New> lstPhaseState, int order){
 		for (ApprovalPhaseStateImport_New phase : lstPhaseState) {
