@@ -121,6 +121,8 @@ module a6 {
             self.dataSourceFlow.subscribe((dataFlow: any[]) => {
                 var lstWorkTimezone: FlWorkHdTimeZoneDto[] = [];
                 var workTimezoneNo: number = 0;
+                //sort list item by time 
+                dataFlow = _.sortBy(dataFlow, [function(o:any) { return o.elapsedTime(); }]);
                 for (var dataModel of dataFlow) {
                     workTimezoneNo++;
                     lstWorkTimezone.push(self.toModelFlowDto(dataModel, workTimezoneNo));
