@@ -740,7 +740,8 @@ module nts.custombinding {
                                     required: required,
                                     option: {
                                         textalign: 'left',
-                                        decimallength: Number(item.decimalPart)
+                                        decimallength: Number(item.decimalPart),
+                                        grouplength: item.numericItemAmount && 3
                                     },
                                     enable: editable,
                                     readonly: readonly
@@ -1253,10 +1254,6 @@ module nts.custombinding {
                                         break;
                                     case ITEM_STRING_TYPE.NUMERIC:
                                         constraint.charType = 'Numeric';
-                                        constraint.valueType = "Integer";
-
-                                        constraint.min = 0;
-                                        constraint.max = Math.pow(10, dts.stringItemLength || 0) - 1;
                                         break;
                                     case ITEM_STRING_TYPE.KANA:
                                         constraint.charType = 'Kana';
