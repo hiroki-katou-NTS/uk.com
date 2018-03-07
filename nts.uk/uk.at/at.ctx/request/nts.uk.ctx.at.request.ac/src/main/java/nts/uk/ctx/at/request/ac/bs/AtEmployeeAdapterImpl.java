@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.ac.bs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -21,7 +22,7 @@ public class AtEmployeeAdapterImpl implements AtEmployeeAdapter{
 	@Override
 	public List<String> getListSid(String sId, GeneralDate baseDate) {
 		List<String> lstEmployeeId = syEmployeePub.GetListSid(sId, baseDate);
-		return lstEmployeeId;
+		return lstEmployeeId == null ? new ArrayList<String>() : lstEmployeeId;
 	}
 
 }

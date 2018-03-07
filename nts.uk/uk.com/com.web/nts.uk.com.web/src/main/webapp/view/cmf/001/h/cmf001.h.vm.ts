@@ -37,7 +37,7 @@ module nts.uk.com.view.cmf001.h.viewmodel {
                 new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_BEFORE, 'SPACE_BEFORE'),
                 new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_AFTER, 'SPACE_AFTER')
             ]);
-            let params = getShared("CMF001mParams"); 
+            let params = getShared("CMF001hParams"); 
             if(!nts.uk.util.isNullOrUndefined(params)){
                 let inputMode = params.inputMode;
                 let lineNumber = params.lineNumber;
@@ -73,7 +73,7 @@ module nts.uk.com.view.cmf001.h.viewmodel {
         saveCharacterSetting(){
             var self = this;
             if(self.inputMode){
-                setShared("CMF001mOutput", {lineNumber: self.lineNumber, formatSetting: ko.toJS(self.characterDataFormatSetting) });
+                setShared("CMF001FormatOutput", {lineNumber: self.lineNumber, formatSetting: ko.toJS(self.characterDataFormatSetting) });
             }
             nts.uk.ui.windows.close();
         }

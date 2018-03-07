@@ -9,7 +9,7 @@ import nts.arc.primitive.constraint.IntegerMinValue;
  * 有効桁数開始桁
  */
 @IntegerMaxValue(9999)
-@IntegerMinValue(0)
+@IntegerMinValue(1)
 public class EndDigit extends IntegerPrimitiveValue<PrimitiveValue<Integer>>{
 	/**
 	 * 

@@ -1,5 +1,6 @@
 module nts.uk.com.view.ccg031.a.viewmodel {
     import model = nts.uk.com.view.ccg.model;
+    import util = nts.uk.util;
     import windows = nts.uk.ui.windows;
     import ntsNumber = nts.uk.ntsNumber;
     import dialog = nts.uk.ui.dialog;
@@ -110,18 +111,29 @@ module nts.uk.com.view.ccg031.a.viewmodel {
             windows.sub.modal("/view/ccg/031/b/index.xhtml").onClosed(() => {
                 block.clear();
                 let placementDto: model.PlacementDto = windows.getShared("placement");
-                if (placementDto != undefined) {
-                    let placement: model.Placement = new model.Placement(placementDto);
-                    self.placements.push(placement);
-                    positionUtil.setupPositionAndSize(placement);
-                    var movingPlacementIds = self.layoutGrid().markOccupied(placement);
-                    self.reorderPlacements(movingPlacementIds, [placement.placementID]);
-                    self.autoExpandLayout();
-                    self.markOccupiedAll();
-                    self.setupDragDrop();
+                if (!util.isNullOrUndefined(placementDto)) {
+                    if (placementDto.placementPartDto.type != 4) {
+                        service.findPlacementPart(placementDto.placementPartDto.topPagePartID).done((data) => {
+                            placementDto.placementPartDto = data;
+                            self.addPlacementToList(new model.Placement(placementDto));
+                        });
+                    } else {
+                        self.addPlacementToList(new model.Placement(placementDto));
+                    }
                 };
                 $(element).removeClass("hover");
             });
+        }
+        
+        private addPlacementToList(placement: model.Placement): void {
+            var self = this;
+            self.placements.push(placement);
+            positionUtil.setupPositionAndSize(placement);
+            var movingPlacementIds = self.layoutGrid().markOccupied(placement);
+            self.reorderPlacements(movingPlacementIds, [placement.placementID]);
+            self.autoExpandLayout();
+            self.markOccupiedAll();
+            self.setupDragDrop();
         }
 
         /** Open Preview Dialog */

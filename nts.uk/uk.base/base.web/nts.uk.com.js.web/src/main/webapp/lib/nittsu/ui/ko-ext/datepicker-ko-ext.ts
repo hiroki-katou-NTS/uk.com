@@ -123,6 +123,7 @@ module nts.uk.ui.koExtentions {
                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
                     value(newText);
                 }
+                $input.focus();
             });
             
             $input.on("blur", () => {

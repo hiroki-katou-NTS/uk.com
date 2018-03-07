@@ -13,6 +13,8 @@ import nts.uk.ctx.at.request.dom.application.applicationlist.service.Application
 
 @Value
 public class ApplicationListDto {
+	private String startDate;
+	private String endDate;
 	private ApprovalListDisplaySetDto displaySet;
 	private List<AppMasterInfo> lstMasterInfo;
 	private List<ApplicationDto_New> lstApp;
@@ -24,5 +26,6 @@ public class ApplicationListDto {
 //	private List<String> lstTimeColor; 
 //	private List<String> lstFramStatus;
 	private List<AppPrePostGroup> lstAppGroup;
+	private List<Integer> lstAppType;
 	
 }

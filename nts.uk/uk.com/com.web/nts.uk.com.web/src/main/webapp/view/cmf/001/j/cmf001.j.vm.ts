@@ -150,15 +150,11 @@ module nts.uk.com.view.cmf001.j.viewmodel {
         saveNumericSetting() {
             let self = this;
             if (self.inputMode) {
-                setShared("CMF001jOutput", { lineNumber: self.lineNumber, formatSetting: ko.toJS(self.setting) });
+                setShared("CMF001Output", { lineNumber: self.lineNumber, formatSetting: ko.toJS(self.setting) });
             }
             nts.uk.ui.windows.close();
         }
         cancelNumericSetting() {
-            let self = this;
-            if (self.inputMode) {
-                setShared("CMF001jCancel", true);
-            }
             nts.uk.ui.windows.close();
         }
     }

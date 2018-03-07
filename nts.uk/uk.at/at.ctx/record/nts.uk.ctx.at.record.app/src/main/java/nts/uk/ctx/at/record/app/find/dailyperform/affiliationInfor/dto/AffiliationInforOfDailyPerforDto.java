@@ -45,7 +45,8 @@ public class AffiliationInforOfDailyPerforDto implements ConvertibleAttendanceIt
 			dto.setClassificationCode(domain.getClsCode().v());
 			dto.setEmploymentCode(domain.getEmploymentCode().v());
 			dto.setJobId(domain.getJobTitleID());
-			dto.setSubscriptionCode(domain.getBonusPaySettingCode().v());
+			dto.setSubscriptionCode(domain.getBonusPaySettingCode() == null ? null 
+					: domain.getBonusPaySettingCode().v());
 			dto.setWorkplaceID(domain.getWplID());
 			dto.setBaseDate(domain.getYmd());
 			dto.setEmployeeId(domain.getEmployeeId());

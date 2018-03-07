@@ -9,14 +9,14 @@ module nts.uk.com.view.cas012.c.viewmodel {
             self.checkSetAdminFlag = ko.observable(false);
             self.isRequired = ko.observable(false);
             self.listCompany = ko.observableArray([]);
-            self.selectedCompany = ko.observable('1');
+            self.selectedCompany = ko.observable("");
             self.checkSetAdminFlag.subscribe(function (value) {
                 self.isRequired(value);
             });
             nts.uk.ui.windows.setShared('CAS012CResult', {
                 decisionCompanyID: null,
                 setRoleAdminFlag: false,
-                isCancel : false
+                isCancel : true
             });
         }
 
@@ -25,6 +25,7 @@ module nts.uk.com.view.cas012.c.viewmodel {
             let dfd = $.Deferred();
             service.getAll().done(function(data) {
                 self.listCompany(data.listCompany);
+                self.selectedCompany(data.listCompany[0].companyId);
                 dfd.resolve();    
             });
             return dfd.promise();
