@@ -2,12 +2,9 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package employee;
+package nts.uk.query.pub.employee;
 
 import java.util.List;
-
-import nts.uk.query.app.employee.EmployeeSearchQueryDto;
-import nts.uk.query.app.employee.RegulationInfoEmployeeDto;
 
 /**
  * The Interface RegulationInfoEmployeePub.
@@ -20,5 +17,5 @@ public interface RegulationInfoEmployeePub {
 	 * @param query the query
 	 * @return the list
 	 */
-	public List<RegulationInfoEmployeeDto> find(EmployeeSearchQueryDto query);
+	public List<RegulationInfoEmployeeExport> find(EmployeeSearchQueryDto query);
 }
