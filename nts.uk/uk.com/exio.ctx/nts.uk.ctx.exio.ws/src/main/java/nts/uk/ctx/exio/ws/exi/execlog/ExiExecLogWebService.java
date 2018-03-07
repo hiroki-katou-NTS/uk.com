@@ -23,7 +23,7 @@ import nts.uk.ctx.exio.app.find.exi.execlog.ExacExeResultLogFinder;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExiExecLogExportService;
 
 /**
- * The Class WorkplaceConfigInfoWebService
+ * The Class ExiExecLogWebService
  */
 @Path("ctx/exio/ws/exi/execlog")
 @Produces("application/json")
