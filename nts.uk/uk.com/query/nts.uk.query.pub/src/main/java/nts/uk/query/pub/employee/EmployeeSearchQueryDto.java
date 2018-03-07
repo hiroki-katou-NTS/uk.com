@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.query.app.employee;
+package nts.uk.query.pub.employee;
 
 import java.io.Serializable;
 import java.util.List;
@@ -68,12 +68,6 @@ public class EmployeeSearchQueryDto implements Serializable {
 	/** The worktype codes. */
 	private List<String> worktypeCodes; // 勤務種別コード一覧
 
-	/** The filter by closure. */
-	private Boolean filterByClosure;
-
-	/** The closure ids. */
-	private List<Integer> closureIds;
-
 	/** The period start. */
 	private String periodStart; // 在職・休職・休業のチェック期間
 
@@ -110,12 +104,10 @@ public class EmployeeSearchQueryDto implements Serializable {
 	/** The name type. */
 	private String nameType; // 氏名の種類
 
-	/** The system type.
-	 *  Note: 
-	 *  With Algorithm: <<Public>> 個人情報条件で社員を検索して並び替える. please set to 1.
-	 *  With Algorithm: <<Public>> 就業条件で社員を検索して並び替える. please set to 2.
-	 *  */
+	/** The system type. */
 	private Integer systemType;
+	
+	private String roleId;
 
 	/**
 	 * To query model.
@@ -140,17 +132,16 @@ public class EmployeeSearchQueryDto implements Serializable {
 				.jobTitleCodes(this.jobTitleCodes)
 				.filterByWorktype(this.filterByWorktype)
 				.worktypeCodes(this.worktypeCodes)
-				.filterByClosure(this.filterByClosure)
-				.closureIds(this.closureIds)
 				.nameType(this.nameType)
 				.periodEnd(this.periodEnd == null ? null : GeneralDateTime.fromString(this.periodEnd + TIME_DAY_START, DATE_TIME_FORMAT))
 				.periodStart(this.periodStart == null ? null : GeneralDateTime.fromString(this.periodStart + TIME_DAY_START, DATE_TIME_FORMAT))
 				.referenceRange(this.referenceRange)
-				.retireEnd(this.retireEnd != null ? GeneralDateTime.fromString(this.retireEnd + TIME_DAY_START, DATE_TIME_FORMAT) : null)
-				.retireStart(this.retireStart != null ? GeneralDateTime.fromString(this.retireStart + TIME_DAY_START, DATE_TIME_FORMAT) : null)
+				.retireEnd(this.includeRetirees == true ? GeneralDateTime.fromString(this.retireEnd + TIME_DAY_START, DATE_TIME_FORMAT) : null)
+				.retireStart(this.includeRetirees == true ? GeneralDateTime.fromString(this.retireStart + TIME_DAY_START, DATE_TIME_FORMAT) : null)
 				.sortOrderNo(this.sortOrderNo)
 				.workplaceCodes(this.workplaceCodes)
 				.systemType(this.systemType)
+				.roleId(this.roleId)
 				.build();
 	}
 }
