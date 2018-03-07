@@ -262,7 +262,7 @@
 	
 	<div class="setting_rows">
 		<div class="setting_header_tab1_2" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_44')}</div>
-		<input tabindex ="44" data-bind="ntsTimeEditor: {
+		<input tabindex ="44" data-bind="event: { keydown: changeTab }, ntsTimeEditor: {
 				name: '#[KMK003_44]',
 				value: predseting.predTime.predTime.afternoon,
 				constraint: 'AttendanceTime',
