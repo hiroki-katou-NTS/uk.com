@@ -147,8 +147,6 @@
 							<td><div></div></td>
 							<td><div></div></td>
 						</tr>
-						
-						
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_34')}</label></td>
 							<td><div tabindex="6"
@@ -188,9 +186,6 @@
 									},
 									enable: enableMaxNumberCompany}" /></td>
 						</tr>
-						
-						
-						
 						<tr>
 							<td style="min-width: 364px;"><label class="content-label">#{i18n.getText('KMF001_139')}</label></td>
 							<td><div tabindex="11" id="combo-box"
@@ -218,19 +213,19 @@
 									<hr />
 								</div></td>
 						</tr>
-<!-- 						<tr> -->
-<!-- 							<td><label class="content-label">#{i18n.getText('KMF001_40')}</label></td> -->
-<!-- 							<td><div tabindex="12" -->
-<!-- 									data-bind="ntsSwitchButton: { -->
-<!-- 										options: applyPermissionList, -->
-<!-- 										optionsValue: 'value', -->
-<!-- 										optionsText: 'localizedName', -->
-<!-- 										value: selectedApplyPermission, -->
-<!-- 										enable: enableAnnualVacation }"></div></td> -->
+						<tr>
+							<td><label class="content-label">#{i18n.getText('KMF001_40')}</label></td>
+							<td><div tabindex="12"
+									data-bind="ntsSwitchButton: {
+ 										options: applyPermissionList,
+ 										optionsValue: 'value',
+ 										optionsText: 'localizedName',
+ 										value: selectedApplyPermission,
+ 										enable: enableAnnualVacation }"></div></td>
 
-<!-- 							<td><div></div></td> -->
-<!-- 							<td><div></div></td> -->
-<!-- 						</tr> -->
+							<td><div></div></td>
+							<td><div></div></td>
+ 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_41')}</label></td>
 							<td><div tabindex="13"
@@ -369,9 +364,10 @@
 							<td><label class="content-label">#{i18n.getText('KMF001_140')}</label></td>
 							<td><div tabindex="25" id="combo-box"
 									data-bind="ntsComboBox: {
-										options: maxDayReferenceList,
+										options: roundProcessClassificList,
 										optionsValue: 'value',
-										value: selectedMaxDayVacation,
+										visibleItemsCount: 2,
+										value: selectedroundProcessClassific,
 										optionsText: 'localizedName',
 										editable: false,
 										enable: enableTimeSetting,
@@ -382,12 +378,6 @@
 							<td><div></div></td>
 							<td><div></div></td>
 						</tr>
-<!-- 						<tr> -->
-<!-- 							<td colspan="4" style="padding-left: 50px;"><div tabindex="27" -->
-<!-- 									data-bind="ntsCheckBox: { checked: isEnoughTimeOneDay, -->
-<!-- 									enable: enableTimeMaxNumberCompany, -->
-<!-- 									text: '#{i18n.getText('KMF001_55')}' }"></div></td> -->
-<!-- 						</tr> -->
 						<!-- END時間年休 -->
 					</table>
 				</div>

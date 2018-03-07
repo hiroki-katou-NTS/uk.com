@@ -70,7 +70,7 @@ public class AnnualPaidLeaveFinder {
         dto.setManageMaxDayVacation(setting.getTimeSetting().getMaxYearDayLeave().manageType.value);
         dto.setReference(setting.getTimeSetting().getMaxYearDayLeave().reference.value);
         dto.setMaxTimeDay(setting.getTimeSetting().getMaxYearDayLeave().maxNumberUniformCompany.v());
-        dto.setIsEnoughTimeOneDay(setting.getTimeSetting().isEnoughTimeOneDay());
+        dto.setRoundProcessClassific(setting.getTimeSetting().getRoundProcessClassific().value);
         
         return dto;
     }

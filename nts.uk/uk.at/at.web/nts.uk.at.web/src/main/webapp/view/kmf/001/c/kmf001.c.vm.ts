@@ -39,8 +39,9 @@ module nts.uk.pr.view.kmf001.c {
             selectedMaxDayVacation: KnockoutObservable<number>;
             timeMaxNumberCompany: KnockoutObservable<string>;
             requiredTimeMaxNumberCompany: KnockoutObservable<boolean>;
-            enableTimeMaxNumberCompany: KnockoutObservable<boolean>;
-            isEnoughTimeOneDay: KnockoutObservable<boolean>;
+            enableTimeMaxNumberCompany: KnockoutObservable<boolean>;            
+            selectedroundProcessClassific: KnockoutObservable<number>;
+            roundProcessClassificList: KnockoutObservableArray<EnumertionModel>;
             
             // Data backup
             dataBackup: KnockoutObservable<any>;
@@ -71,7 +72,7 @@ module nts.uk.pr.view.kmf001.c {
                 self.numberYearRetain = ko.observable("");
                 self.yearlyOfNumberDays = ko.observable("");
                 self.roundProcessClassificationList = ko.observableArray([]);
-                self.selectedRoundProcessCla = ko.observable(0);   
+                self.selectedRoundProcessCla = ko.observable(0);
                 
                 // 年休取得の設定
                 self.applyPermissionList = ko.observableArray([]);
@@ -100,7 +101,9 @@ module nts.uk.pr.view.kmf001.c {
                 self.enableTimeMaxNumberCompany = ko.computed(function() {
                     return self.enableTimeSetting() && self.selectedMaxDayVacation() == 0;
                 });
-                self.isEnoughTimeOneDay = ko.observable(true);
+                
+                self.roundProcessClassificList = ko.observableArray([]);
+                self.selectedroundProcessClassific = ko.observable(0);
                 
                 // Data backup
                 self.dataBackup = ko.observable(null);
@@ -122,7 +125,8 @@ module nts.uk.pr.view.kmf001.c {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 $.when(self.loadManageDistinctEnums(), self.loadApplyPermissionEnums(), self.loadPreemptionPermitEnums(),
-                        self.loadDisplayDivisionEnums(), self.loadTimeUnitEnums(), self.loadMaxDayReferenceEnums(),  self.roundProcessClassificationEnums()).done(function() {
+                        self.loadDisplayDivisionEnums(), self.loadTimeUnitEnums(), self.loadMaxDayReferenceEnums(), 
+                        self.loadRoundProcessClassificationEnums(), self.loadRoundProcessClassificEnums()).done(function() {
                     self.loadSetting().done(() => {
                         $('#annual-manage').focus();
                     });
@@ -193,7 +197,7 @@ module nts.uk.pr.view.kmf001.c {
                 command.manageMaxDayVacation = self.enableTimeSetting() ? self.selectedManageUpperLimitDayVacation() : dataBackup.manageMaxDayVacation;
                 command.reference = self.enableTimeSetting() ? self.selectedMaxDayVacation() : dataBackup.reference;
                 command.maxTimeDay = self.enableTimeMaxNumberCompany() ? self.timeMaxNumberCompany() : dataBackup.maxTimeDay;
-                command.isEnoughTimeOneDay = self.enableTimeMaxNumberCompany() ? self.isEnoughTimeOneDay() : dataBackup.isEnoughTimeOneDay;
+                command.roundProcessClassific = self.enableTimeMaxNumberCompany() ? self.selectedroundProcessClassific() : dataBackup.roundProcessClassific;
                 
                 return command;
             }
@@ -228,7 +232,7 @@ module nts.uk.pr.view.kmf001.c {
                 self.selectedManageUpperLimitDayVacation(res.manageMaxDayVacation);
                 self.selectedMaxDayVacation(res.reference);
                 self.timeMaxNumberCompany(res.maxTimeDay);
-                self.isEnoughTimeOneDay(res.isEnoughTimeOneDay);
+                self.selectedroundProcessClassific(res.roundProcessClassific);
             }
             
             private defaultValue(): any {
@@ -255,7 +259,7 @@ module nts.uk.pr.view.kmf001.c {
                 backup.manageMaxDayVacation = 1;
                 backup.reference = 0;
                 backup.maxTimeDay = '';
-                backup.isEnoughTimeOneDay = true;
+                backup.selectedEnoughTimeOneDay = 0;
                 
                 return backup;
             }
@@ -368,12 +372,25 @@ module nts.uk.pr.view.kmf001.c {
                 return dfd.promise();
             }            
             
-            // find enumeration MaxDayReference
-            private roundProcessClassificationEnums(): JQueryPromise<Array<EnumertionModel>> {
+            // find enumeration roundProcessClassification
+            private loadRoundProcessClassificationEnums(): JQueryPromise<Array<EnumertionModel>> {
                 let self = this;
                 let dfd = $.Deferred();
                 service.roundProcessClassification().done(function(res: Array<EnumertionModel>) {
                     self.roundProcessClassificationList(res);
+                    dfd.resolve();
+                }).fail(function(res) {
+                   nts.uk.ui.dialog.alertError(res.message);
+                });
+                return dfd.promise();
+            }
+            
+             // find enumeration roundProcessClassification
+            private loadRoundProcessClassificEnums(): JQueryPromise<Array<EnumertionModel>> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.roundProcessClassific().done(function(res: Array<EnumertionModel>) {
+                    self.roundProcessClassificList(res);
                     dfd.resolve();
                 }).fail(function(res) {
                    nts.uk.ui.dialog.alertError(res.message);

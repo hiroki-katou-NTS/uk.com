@@ -63,8 +63,8 @@ public class AnnualPaidLeaveSettingFindDto {
     /** The max time day. */
     public Integer maxTimeDay;
 
-    /** The is enough time one day. */
-    public Boolean isEnoughTimeOneDay;
+    /** The round processing classification. */
+    public Integer roundProcessClassific;
     
     /** The yearly of date. */
     public Double yearlyOfDays;

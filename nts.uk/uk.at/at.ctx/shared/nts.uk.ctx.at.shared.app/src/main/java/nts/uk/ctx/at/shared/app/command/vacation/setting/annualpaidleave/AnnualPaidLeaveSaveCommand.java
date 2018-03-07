@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AcquisitionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGrantDay;
@@ -90,7 +91,7 @@ public class AnnualPaidLeaveSaveCommand {
     private Integer maxTimeDay;
 
     /** The is enough time one day. */
-    private Boolean isEnoughTimeOneDay;
+    private Integer roundProcessClassific;
     
     /** The yearly of date. */
     private Double yearlyOfDays;
@@ -372,14 +373,23 @@ public class AnnualPaidLeaveSaveCommand {
 
         /*
          * (non-Javadoc)
+         * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+         * TimeAnnualSettingGetMemento#GetRoundProcessClassific()
+         */
+		@Override
+		public TimeAnnualRoundProcesCla GetRoundProcessClassific() {
+			return TimeAnnualRoundProcesCla.valueOf(this.command.roundProcessClassific);
+		}
+
+        /*
+         * (non-Javadoc)
          * 
          * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
          * TimeVacationSettingGetMemento#isEnoughTimeOneDay()
          */
         @Override
         public boolean isEnoughTimeOneDay() {
-            return this.command.isEnoughTimeOneDay;
-        }
-
+            return false;
+        }		
     }
 }

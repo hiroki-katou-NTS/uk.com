@@ -107,5 +107,4 @@ public class JpaAnnualPaidLeaveSettingSetMemento implements AnnualPaidLeaveSetti
         entityTime.setCid(this.entity.getCid());
         this.entity.setKtvmtTimeVacationSet(entityTime);
     }
-
 }
