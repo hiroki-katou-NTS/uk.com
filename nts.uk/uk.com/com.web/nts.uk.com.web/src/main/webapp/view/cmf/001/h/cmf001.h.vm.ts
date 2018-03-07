@@ -45,18 +45,35 @@ module nts.uk.com.view.cmf001.h.viewmodel {
                 self.inputMode = inputMode;
                 self.lineNumber = lineNumber;
                 if(!nts.uk.util.isNullOrUndefined(charSet)){
-                    let convertCodeShared = charSet.codeConvertCode;
-                    let convertCode = null;
-                    if (nts.uk.util.isNullOrUndefined(convertCodeShared)) {
-                        convertCode = new model.AcceptanceCodeConvert("", "", 0);
-                    } else {
-                        convertCode = new model.AcceptanceCodeConvert(convertCodeShared.convertCode, convertCodeShared.convertName, 0);
-                    }
-                    self.characterDataFormatSetting = ko.observable(new model.CharacterDataFormatSetting(charSet.effectiveDigitLength, charSet.startDigit,
-                    charSet.endDigit, charSet.codeEditing, charSet.codeEditDigit, charSet.codeEditingMethod,
-                    convertCode, charSet.fixedValue, charSet.valueOfFixed));   
+                    self.initial(charSet);
                 }
             }
+        }
+        // データが取得できる場合
+        setting(){
+//            nts.uk.util.value.reset($("#H2_5"), null);
+//            nts.uk.util.value.reset($("#H2_8"), null);
+//            nts.uk.util.value.reset($("#H3_5"), null);
+//            nts.uk.util.value.reset($("#H5_5"), null);
+        }
+        
+        // データが取得できない場合
+        initial(charSet){
+            var self = this;
+            let convertCodeShared = charSet.codeConvertCode;
+            let convertCode = null;
+            if (nts.uk.util.isNullOrUndefined(convertCodeShared)) {
+                convertCode = new model.AcceptanceCodeConvert("", "", 0);
+            } else {
+                convertCode = new model.AcceptanceCodeConvert(convertCodeShared.convertCode, convertCodeShared.convertName, 0);
+            }
+            self.characterDataFormatSetting = ko.observable(new model.CharacterDataFormatSetting(charSet.effectiveDigitLength, charSet.startDigit,
+            charSet.endDigit, charSet.codeEditing, charSet.codeEditDigit, charSet.codeEditingMethod,
+            convertCode, charSet.fixedValue, charSet.valueOfFixed));   
+//            nts.uk.util.value.reset($("#G2_5"), numFormat.startDigit);
+//            nts.uk.util.value.reset($("#G2_8"), numFormat.endDigit);
+//            nts.uk.util.value.reset($("#G3_6"), numFormat.decimalDigitNumber);
+//            nts.uk.util.value.reset($("#G5_5"), numFormat.valueOfFixed);
         }
         open001_K(data){
             var self = this;
@@ -72,6 +89,9 @@ module nts.uk.com.view.cmf001.h.viewmodel {
         }
         saveCharacterSetting(){
             var self = this;
+//            $("#H2_5").trigger("validate");
+//            $("#H2_8").trigger("validate");
+//            $("#H3_5").trigger("validate");
             if(self.inputMode){
                 setShared("CMF001FormatOutput", {lineNumber: self.lineNumber, formatSetting: ko.toJS(self.characterDataFormatSetting) });
             }

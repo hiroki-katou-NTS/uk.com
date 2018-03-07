@@ -40,6 +40,7 @@ module nts.uk.com.view.cmf001.g.viewmodel {
                 new model.ItemModel(model.ROUNDING_METHOD.ROUND_UP, 'ROUND_UP'),
                 new model.ItemModel(model.ROUNDING_METHOD.DOWN_4_UP_5, 'DOWN_4_UP_5')
             ]);
+            
             let params = getShared("CMF001gParams");
             if (!nts.uk.util.isNullOrUndefined(params)) {
                 let inputMode = params.inputMode;
@@ -48,18 +49,34 @@ module nts.uk.com.view.cmf001.g.viewmodel {
                 self.inputMode = inputMode;
                 self.lineNumber = lineNumber;
                 if (!(nts.uk.util.isNullOrUndefined(numFormat))) {
-                    let convertCodeShared = numFormat.codeConvertCode;
-                    let convertCode = null;
-                    if (nts.uk.util.isNullOrUndefined(convertCodeShared)) {
-                        convertCode = new model.AcceptanceCodeConvert("", "", 0);
-                    } else {
-                        convertCode = new model.AcceptanceCodeConvert(convertCodeShared.convertCode, convertCodeShared.convertName, 0);
-                    }
-                    self.numDataFormatSetting(new model.NumericDataFormatSetting(numFormat.effectiveDigitLength, numFormat.startDigit,
-                        numFormat.endDigit, numFormat.decimalDivision, numFormat.decimalDigitNumber, numFormat.decimalPointClassification,
-                        numFormat.decimalFraction, convertCode, numFormat.fixedValue, numFormat.valueOfFixed));
+                    self.initial(numFormat);
                 }
             }
+        }
+        // データが取得できる場合
+        setting(){
+//            nts.uk.util.value.reset($("#G2_5"), null);
+//            nts.uk.util.value.reset($("#G2_8"), null);
+//            nts.uk.util.value.reset($("#G3_6"), null);
+//            nts.uk.util.value.reset($("#G5_5"), null);
+        }
+        // データが取得できない場合
+        initial(numFormat){
+            var self = this;
+            let convertCodeShared = numFormat.codeConvertCode;
+            let convertCode = null;
+            if (nts.uk.util.isNullOrUndefined(convertCodeShared)) {
+                convertCode = new model.AcceptanceCodeConvert("", "", 0);
+            } else {
+                convertCode = new model.AcceptanceCodeConvert(convertCodeShared.convertCode, convertCodeShared.convertName, 0);
+            }
+            self.numDataFormatSetting(new model.NumericDataFormatSetting(numFormat.effectiveDigitLength, numFormat.startDigit,
+                numFormat.endDigit, numFormat.decimalDivision, numFormat.decimalDigitNumber, numFormat.decimalPointClassification,
+                numFormat.decimalFraction, convertCode, numFormat.fixedValue, numFormat.valueOfFixed));
+//            nts.uk.util.value.reset($("#G2_5"), numFormat.startDigit);
+//            nts.uk.util.value.reset($("#G2_8"), numFormat.endDigit);
+//            nts.uk.util.value.reset($("#G3_6"), numFormat.decimalDigitNumber);
+//            nts.uk.util.value.reset($("#G5_5"), numFormat.valueOfFixed);
         }
         open001_K(data) {
             var self = this;
@@ -75,9 +92,9 @@ module nts.uk.com.view.cmf001.g.viewmodel {
         }
         saveNumericSetting() {
             var self = this;
-            $("#G2_5").trigger("validate");
-            $("#G2_8").trigger("validate");
-            $("#G3_6").trigger("validate");
+//            $("#G2_5").trigger("validate");
+//            $("#G2_8").trigger("validate");
+//            $("#G3_6").trigger("validate");
             if (self.inputMode) {
                 setShared("CMF001FormatOutput", { lineNumber: self.lineNumber, formatSetting: ko.toJS(self.numDataFormatSetting) });
             }

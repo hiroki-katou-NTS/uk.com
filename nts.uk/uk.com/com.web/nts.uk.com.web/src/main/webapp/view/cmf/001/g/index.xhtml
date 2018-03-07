@@ -10,8 +10,7 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 650, height: 500 };</script>
 			<com:ValidatorScript>
-                    nts.uk.ctx.exio.dom.exi.dataformat.StartDigit
-                    nts.uk.ctx.exio.dom.exi.dataformat.EndDigit
+                    nts.uk.ctx.exio.dom.exi.dataformat.AcceptedDigit
                     nts.uk.ctx.exio.dom.exi.dataformat.DecimalDigitNumber
                     nts.uk.ctx.exio.dom.exi.dataformat.ValueOfFixed
             </com:ValidatorScript>
@@ -59,8 +58,8 @@
 								data-bind="ntsNumberEditor: {
 								value: startDigit,
 								name:'#{i18n.getText('CMF001_225')}',
-								constraint: 'StartDigit',
-								required : true,
+								constraint: 'AcceptedDigit',
+								required : !(effectiveDigitLength() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode),
 								option : {width : '30px'},
 								enable: !(effectiveDigitLength() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode)}" />
 							<div id="G2_6" class="label" style="display: inline">#{i18n.getText('CMF001_226')}</div>
@@ -71,8 +70,8 @@
 								data-bind="ntsNumberEditor: {
 								value: endDigit,
 								name:'#{i18n.getText('CMF001_228')}',
-								constraint: 'EndDigit',
-								required: true,
+								constraint: 'AcceptedDigit',
+								required: !(effectiveDigitLength() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode),
 								option : {width : '30px'},
 								enable: !(effectiveDigitLength() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode)}" />
 							<div id="G2_9" class=" label" style="display: inline">#{i18n.getText('CMF001_229')}</div>
@@ -114,7 +113,7 @@
 								value: decimalDigitNumber,
 								name:'#{i18n.getText('CMF001_235')}',
 								constraint: 'DecimalDigitNumber',
-								required: true,
+								required: !(decimalDivision() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode),
 								enable: !(decimalDivision() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode),
 								option : {width : '30px'}}" />
 							<div style="margin-top: 5px;">
@@ -203,7 +202,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<button tabindex="11" id="btn_G6_1" class="x-large proceed "
-					data-bind="click: saveNumericSetting, enable: $root.errors.isEmpty">#{i18n.getText('CMF001_257')}</button>
+					data-bind="click: saveNumericSetting, enable: inputMode">#{i18n.getText('CMF001_257')}</button>
 				<button tabindex="12" id="btn_G6_2" class="large"
 					data-bind="click: cancelNumericSetting">#{i18n.getText('CMF001_258')}</button>
 			</div>
