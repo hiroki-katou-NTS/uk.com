@@ -1162,6 +1162,13 @@ project (':query:nts.uk.query.ws') {
 	}
 }
 
+// Query Projects. Add by TIN.
+project (':query:nts.uk.query.pub') {
+	dependencies {
+		compile project(':query:nts.uk.query.model')
+	}
+}
+
 // Query Projects. Add by TienDD.
 project (':query:nts.uk.query.pubimp') {
 	dependencies {
