@@ -10,12 +10,13 @@ package nts.uk.ctx.at.schedule.pub.schedulemanagementcontrol;
 public interface ScheduleManagementControlPub {
 	
 	/**
+	 * RequestList27
+	 * 
 	 * Checks if is schedule management atr.
 	 *
 	 * @param employeeId the employee id
 	 * @return true, if is schedule management atr
 	 */
-	// #27
 	public boolean isScheduleManagementAtr(String employeeId);
 
 }

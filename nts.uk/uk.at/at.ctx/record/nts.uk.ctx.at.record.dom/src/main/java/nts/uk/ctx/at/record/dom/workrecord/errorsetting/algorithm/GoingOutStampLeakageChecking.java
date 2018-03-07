@@ -201,7 +201,8 @@ public class GoingOutStampLeakageChecking {
 										timeLeavingWork.getAttendanceStamp().get().getStamp().get()
 												.getAfterRoundingTime(),
 										timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
-										timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode(),
+										timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode().isPresent() ? 
+												timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode().get() : null,
 										StampSourceInfo.STAMP_LEAKAGE_CORRECTION);
 							}
 						}
@@ -241,7 +242,8 @@ public class GoingOutStampLeakageChecking {
 								stamp = new WorkStamp(
 										leavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
 										leavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
-										leavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode(),
+										leavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode().isPresent() ? 
+												leavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode().get() : null,
 										StampSourceInfo.STAMP_LEAKAGE_CORRECTION);
 							}
 						}
@@ -315,7 +317,8 @@ public class GoingOutStampLeakageChecking {
 										timeLeavingWork.getAttendanceStamp().get().getStamp().get()
 												.getAfterRoundingTime(),
 										timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
-										timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode(),
+										timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode().isPresent() ? 
+												timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode().get() : null,
 										StampSourceInfo.STAMP_LEAKAGE_CORRECTION);
 							}
 						}
@@ -353,7 +356,8 @@ public class GoingOutStampLeakageChecking {
 								stamp = new WorkStamp(
 										leavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
 										leavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
-										leavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode(),
+										leavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode().isPresent() ?
+												leavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode().get() : null,
 										StampSourceInfo.STAMP_LEAKAGE_CORRECTION);
 							}
 						}

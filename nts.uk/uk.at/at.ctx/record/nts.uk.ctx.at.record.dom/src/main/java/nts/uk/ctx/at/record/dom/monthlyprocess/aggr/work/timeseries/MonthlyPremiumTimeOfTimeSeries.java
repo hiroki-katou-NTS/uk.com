@@ -25,4 +25,12 @@ public class MonthlyPremiumTimeOfTimeSeries {
 		this.ymd = ymd;
 		this.monthlyTotalPremiumTime = new AttendanceTimeMonth(0);
 	}
+
+	/**
+	 * 月割増時間に分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinutesToMonthlyPremiumTime(int minutes){
+		this.monthlyTotalPremiumTime = this.monthlyTotalPremiumTime.addMinutes(minutes);
+	}
 }
