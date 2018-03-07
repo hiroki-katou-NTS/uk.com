@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.pubimp.fixedcheckitem;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -36,13 +37,21 @@ public class FixedCheckItemPubImpl implements FixedCheckItemPub {
 	
 	
 	@Override
-	public boolean checkWorkTypeNotRegister(String employeeID, GeneralDate date, String workTypeCD) {
-		return workTypeNotRegisterService.checkWorkTypeNotRegister(employeeID, date, workTypeCD);
+	public ValueExtractAlarmWRPubExport checkWorkTypeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTypeCD) {
+		Optional<ValueExtractAlarmWRPubExport> data = Optional.of(convertToExport(workTypeNotRegisterService.checkWorkTypeNotRegister(workplaceID,employeeID, date, workTypeCD)));
+		if(data.isPresent()) {
+			return data.get();
+		}
+		return null;
 	}
 
 	@Override
-	public boolean checkWorkTimeNotRegister(String employeeID, GeneralDate date, String workTimeCD) {
-		return workTimeNotRegisterService.checkWorkTimeNotRegister(employeeID, date, workTimeCD);
+	public ValueExtractAlarmWRPubExport checkWorkTimeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTimeCD) {
+		Optional<ValueExtractAlarmWRPubExport> data = Optional.of(convertToExport(workTimeNotRegisterService.checkWorkTimeNotRegister(workplaceID,employeeID, date, workTimeCD)));
+		if(data.isPresent()) {
+			return data.get();
+		}
+		return null;
 	}
 
 	@Override
@@ -60,9 +69,9 @@ public class FixedCheckItemPubImpl implements FixedCheckItemPub {
 	}
 
 	@Override
-	public List<ValueExtractAlarmWRPubExport> checkingData(String employeeID, GeneralDate startDate,
+	public List<ValueExtractAlarmWRPubExport> checkingData(String workplaceID,String employeeID, GeneralDate startDate,
 			GeneralDate endDate) {
-		return checkingDataService.checkingData(employeeID, startDate, endDate)
+		return checkingDataService.checkingData(workplaceID,employeeID, startDate, endDate)
 				.stream().map(c->convertToExport(c)).collect(Collectors.toList());
 	}
 	

@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.checkprincipalunconfirm;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ValueExtractAlarmWR {
 	private String workplaceID;
 	

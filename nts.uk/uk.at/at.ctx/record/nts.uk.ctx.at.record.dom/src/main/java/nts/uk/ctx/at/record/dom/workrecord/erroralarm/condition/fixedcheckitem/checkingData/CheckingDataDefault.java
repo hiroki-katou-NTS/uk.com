@@ -11,7 +11,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.c
 public class CheckingDataDefault implements CheckingDataService {
 
 	@Override
-	public List<ValueExtractAlarmWR> checkingData(String employeeID, GeneralDate startDate, GeneralDate endDate) {
+	public List<ValueExtractAlarmWR> checkingData(String workplaceID,String employeeID, GeneralDate startDate, GeneralDate endDate) {
 		// TODO Auto-generated method stub
 		return null;
 	}

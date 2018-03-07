@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.daily.dailyaggregationprocess;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.ejb.Stateless;
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.fixedcheckitem.FixedCheckItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapter;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
+import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.FuncEmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
@@ -34,7 +36,7 @@ public class DailyAggregationProcessService {
 	private RecordWorkInfoFunAdapter recordWorkInfoFunAdapter;
 
 
-	public void dailyAggregationProcess(String checkConditionCode, PeriodByAlarmCategory period,
+	public List<ValueExtractAlarm> dailyAggregationProcess(String checkConditionCode, PeriodByAlarmCategory period,
 			FuncEmployeeSearchDto employee) {
 		String companyID = AppContexts.user().companyId();
 		// ドメインモデル「カテゴリ別アラームチェック条件」を取得する
@@ -53,34 +55,51 @@ public class DailyAggregationProcessService {
 		
 		//get data by dailyAlarmCondition
 		List<FixedConWorkRecordAdapterDto> listFixed =  fixedConWorkRecordAdapter.getAllFixedConWorkRecordByID(dailyAlarmCondition.getDailyAlarmConID());
-		
+		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>(); 
 		for(int i = 1;i <= listFixed.size();i++) {
 			if(listFixed.get(i).isUseAtr()) {
 				switch(i) {
 				case 1 :
 					for(GeneralDate date = period.getStartDate();date.after(period.getEndDate());date.addDays(1)) {
 						String workType = recordWorkInfoFunAdapter.getInfoCheckNotRegister(employee.getId(), date).getWorkTypeCode();
-						fixedCheckItemAdapter.checkWorkTypeNotRegister(employee.getId(), date, workType);
+						
+						ValueExtractAlarm checkWorkType = fixedCheckItemAdapter.checkWorkTypeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workType);
+						if(checkWorkType !=null) {
+							listValueExtractAlarm.add(checkWorkType);
+						}
+						
 					}
 					break;
 				case 2 :
 					for(GeneralDate date = period.getStartDate();date.after(period.getEndDate());date.addDays(1)) {
 						String workTime = recordWorkInfoFunAdapter.getInfoCheckNotRegister(employee.getId(), date).getWorkTimeCode();
-						fixedCheckItemAdapter.checkWorkTimeNotRegister(employee.getId(), date, workTime);
+						ValueExtractAlarm checkWorkTime = fixedCheckItemAdapter.checkWorkTimeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workTime);
+						if(checkWorkTime !=null) {
+							listValueExtractAlarm.add(checkWorkTime);
+						}
 					}
 					break;
 				case 3 : 
-					fixedCheckItemAdapter.checkPrincipalUnconfirm(employee.getWorkplaceId(), employee.getId(), period.getStartDate(), period.getEndDate());
+					 List<ValueExtractAlarm> listCheckPrincipalUnconfirm = fixedCheckItemAdapter.checkPrincipalUnconfirm(employee.getWorkplaceId(), employee.getId(), period.getStartDate(), period.getEndDate());
+					 if(!listCheckPrincipalUnconfirm.isEmpty()) {
+						 listValueExtractAlarm.addAll(listCheckPrincipalUnconfirm);
+					 }
 					break;
 				case 4 :
-					fixedCheckItemAdapter.checkAdminUnverified(employee.getWorkplaceId(), employee.getId(), period.getStartDate(), period.getEndDate());
+					List<ValueExtractAlarm> listCheckAdminUnverified = fixedCheckItemAdapter.checkAdminUnverified(employee.getWorkplaceId(), employee.getId(), period.getStartDate(), period.getEndDate());
+					if(!listCheckAdminUnverified.isEmpty()) {
+						 listValueExtractAlarm.addAll(listCheckAdminUnverified);
+					 }
 					break;
 				default :
-					fixedCheckItemAdapter.checkingData(employee.getId(), period.getStartDate(), period.getEndDate());
+					List<ValueExtractAlarm> listCheckingData = fixedCheckItemAdapter.checkingData(employee.getWorkplaceId(),employee.getId(), period.getStartDate(), period.getEndDate());
+					if(!listCheckingData.isEmpty()) {
+						 listValueExtractAlarm.addAll(listCheckingData);
+					 }
 					break;
 				}//end switch
 			}//end if
 		}//end for
-
+		return listValueExtractAlarm;
 	}
 }
