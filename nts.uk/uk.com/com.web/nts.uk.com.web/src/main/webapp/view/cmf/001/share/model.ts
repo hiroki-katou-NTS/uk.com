@@ -72,26 +72,33 @@ module nts.uk.com.view.cmf001.share.model {
     
     export function getSystemTypes(): Array<ItemModel> {
         return [
-            new model.ItemModel(0, 'HR System'),
-            new model.ItemModel(1, 'Attendance System'),
-            new model.ItemModel(2, 'Payroll System'),
-            new model.ItemModel(3, 'Office Helper')
+            new model.ItemModel(0, getText('Enum_SystemType_PERSON_SYSTEM')),
+            new model.ItemModel(1, getText('Enum_SystemType_ATTENDANCE_SYSTEM')),
+            new model.ItemModel(2, getText('Enum_SystemType_PAYROLL_SYSTEM')),
+            new model.ItemModel(3, getText('Enum_SystemType_OFFICE_HELPER'))
+        ];
+    }
+    
+    export function getDeleteExistDataMethod(): Array<ItemModel> {
+        return [
+            new model.ItemModel(1, getText('Enum_DeleteExistDataMethod_DELETE_ALL')),
+            new model.ItemModel(2, getText('Enum_DeleteExistDataMethod_DELETE_TARGET'))
         ];
     }
     
     export function getCompareTypes(): Array<ItemModel> {
         return [
-            new model.ItemModel(0, '条件としない'),
-            new model.ItemModel(1, '条件値1　＜　値'),
-            new model.ItemModel(2, '条件値1　≦　値'),
-            new model.ItemModel(3, '値　＜　条件値1'),
-            new model.ItemModel(4, '値　≦　条件値1'),
-            new model.ItemModel(5, '条件値1　＜　値　かつ　　値　＜　条件値2'),
-            new model.ItemModel(6, '条件値1　≦　値　かつ　　値　≦　条件値2'),
-            new model.ItemModel(7, '値　＜　条件値1　または　　条件値2　＜　値'),
-            new model.ItemModel(8, '値　≦　条件値1　または　　条件値2　≦　値'),
-            new model.ItemModel(9, '条件値1　＝　値'),
-            new model.ItemModel(10, '条件値1　≠　　値')
+            new model.ItemModel(0, getText('Enum_SelectComparisonCondition_DO_NOT_COND')),
+            new model.ItemModel(1, getText('Enum_SelectComparisonCondition_COND1_LESS_VAL')),
+            new model.ItemModel(2, getText('Enum_SelectComparisonCondition_COND1_LESS_EQUAL_VAL')),
+            new model.ItemModel(3, getText('Enum_SelectComparisonCondition_VAL_LESS_COND1')),
+            new model.ItemModel(4, getText('Enum_SelectComparisonCondition_VAL_LESS_EQUAL_COND1')),
+            new model.ItemModel(5, getText('Enum_SelectComparisonCondition_COND1_LESS_VAL_AND_VAL_LESS_COND2')),
+            new model.ItemModel(6, getText('Enum_SelectComparisonCondition_COND1_LESS_EQUAL_VAL_AND_VAL_LESS_EQUAL_COND2')),
+            new model.ItemModel(7, getText('Enum_SelectComparisonCondition_VAL_LESS_COND1_OR_COND2_LESS_VAL')),
+            new model.ItemModel(8, getText('Enum_SelectComparisonCondition_VAL_LESS_EQUAL_COND1_OR_COND2_LESS_EQUAL_VAL')),
+            new model.ItemModel(9, getText('Enum_SelectComparisonCondition_COND1_EQUAL_VAL')),
+            new model.ItemModel(10, getText('Enum_SelectComparisonCondition_COND1_NOT_EQUAL_VAL'))
         ];
     }
     
@@ -107,6 +114,7 @@ module nts.uk.com.view.cmf001.share.model {
         csvDataStartLine: KnockoutObservable<number>;
         systemType: KnockoutObservable<number> = ko.observable(0);
         alreadySetting: KnockoutObservable<boolean> = ko.observable(false);
+        action: KnockoutObservable<number> = ko.observable(0);
 
         constructor(code: string, name: string, deleteExistData: number, acceptMode: number, csvDataItemLineNumber: number, csvDataStartLine: number, deleteExistDataMethod?: number, alreadySetting?: boolean) {
             this.conditionSettingCode = ko.observable(code);

@@ -60,7 +60,11 @@ public class StdAcceptCondSetWebService {
 	@POST
 	@Path("registerStd")
 	public void registerStandardCondition(StdAcceptCondSetCommand command) {
-		
+		if (command.getAction() == 0) {
+			this.addStdAccCondSetHandler.handle(command);
+		} else {
+			this.updateStdAccCondSetHandler.handle(command);
+		}
 	}
 	
 	@POST

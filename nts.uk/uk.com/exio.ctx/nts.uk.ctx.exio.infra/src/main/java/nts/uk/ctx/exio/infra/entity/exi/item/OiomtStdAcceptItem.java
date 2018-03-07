@@ -11,8 +11,18 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.dom.exi.dataformat.ChrDataFormatSet;
+import nts.uk.ctx.exio.dom.exi.dataformat.DataFormatSetting;
+import nts.uk.ctx.exio.dom.exi.dataformat.DateDataFormSet;
+import nts.uk.ctx.exio.dom.exi.dataformat.InsTimeDatFmSet;
+import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.exi.dataformat.NumDataFormatSet;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtAcScreenCondSet;
+import nts.uk.ctx.exio.infra.entity.exi.dataformat.OiomtChrDataFormatSet;
+import nts.uk.ctx.exio.infra.entity.exi.dataformat.OiomtDateDataFormSet;
+import nts.uk.ctx.exio.infra.entity.exi.dataformat.OiomtInsTimeDatFmSet;
+import nts.uk.ctx.exio.infra.entity.exi.dataformat.OiomtNumDataFormatSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -65,6 +75,18 @@ public class OiomtStdAcceptItem extends UkJpaEntity implements Serializable {
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "acceptItem", orphanRemoval = true)
 	public OiomtAcScreenCondSet acceptScreenCondSet;
 
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "acceptItem", orphanRemoval = true)
+	public OiomtNumDataFormatSet numDataFormatSet;
+
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "acceptItem", orphanRemoval = true)
+	public OiomtChrDataFormatSet charDataFormatSet;
+
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "acceptItem", orphanRemoval = true)
+	public OiomtDateDataFormSet dateDataFormatSet;
+
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "acceptItem", orphanRemoval = true)
+	public OiomtInsTimeDatFmSet insTimeDataFormatSet;
+
 	@Override
 	protected Object getKey() {
 		return stdAcceptItemPk;
@@ -72,7 +94,9 @@ public class OiomtStdAcceptItem extends UkJpaEntity implements Serializable {
 
 	public OiomtStdAcceptItem(String cid, int sysType, String conditionCode, String categoryId, int acceptItemNum,
 			int categoryItemNo, int csvItemNumber, String csvItemName, int itemType,
-			OiomtAcScreenCondSet acceptScreenCondSet) {
+			OiomtAcScreenCondSet acceptScreenCondSet, OiomtNumDataFormatSet numDataFormatSet,
+			OiomtChrDataFormatSet charDataFormatSet, OiomtDateDataFormSet dateDataFormatSet,
+			OiomtInsTimeDatFmSet insTimeDataFormatSet) {
 		super();
 		this.stdAcceptItemPk = new OiomtStdAcceptItemPk(cid, sysType, conditionCode, categoryId, acceptItemNum);
 		this.categoryItemNo = categoryItemNo;
@@ -80,20 +104,55 @@ public class OiomtStdAcceptItem extends UkJpaEntity implements Serializable {
 		this.csvItemName = csvItemName;
 		this.itemType = itemType;
 		this.acceptScreenCondSet = acceptScreenCondSet;
+		this.numDataFormatSet = numDataFormatSet;
+		this.charDataFormatSet = charDataFormatSet;
+		this.dateDataFormatSet = dateDataFormatSet;
+		this.insTimeDataFormatSet = insTimeDataFormatSet;
 	}
 
 	public static OiomtStdAcceptItem fromDomain(StdAcceptItem domain) {
 		return new OiomtStdAcceptItem(domain.getCid(), domain.getSystemType().value, domain.getConditionSetCd().v(), "",
 				domain.getAcceptItemNumber(), domain.getCategoryItemNo(), domain.getCsvItemNumber(),
 				domain.getCsvItemName(), domain.getItemType().value,
-				OiomtAcScreenCondSet.fromDomain(domain.getAcceptScreenConditionSetting()));
+				OiomtAcScreenCondSet.fromDomain(domain.getAcceptScreenConditionSetting()),
+				domain.getItemType() == ItemType.NUMERIC
+						? OiomtNumDataFormatSet.fromDomain(domain, (NumDataFormatSet) domain.getDataFormatSetting())
+						: null,
+				domain.getItemType() == ItemType.CHARACTER
+						? OiomtChrDataFormatSet.fromDomain(domain, (ChrDataFormatSet) domain.getDataFormatSetting())
+						: null,
+				domain.getItemType() == ItemType.DATE
+						? OiomtDateDataFormSet.fromDomain(domain, (DateDataFormSet) domain.getDataFormatSetting())
+						: null,
+				domain.getItemType() == ItemType.INS_TIME
+						? OiomtInsTimeDatFmSet.fromDomain(domain, (InsTimeDatFmSet) domain.getDataFormatSetting())
+						: null);
 	}
 
 	public static StdAcceptItem toDomain(OiomtStdAcceptItem entity) {
+		DataFormatSetting dataFormatSet = null;
+		ItemType itemType = ItemType.values()[entity.itemType];
+		switch (itemType) {
+		case NUMERIC:
+			dataFormatSet = entity.numDataFormatSet == null ? null : entity.numDataFormatSet.toDomain();
+			break;
+		case CHARACTER:
+			dataFormatSet = entity.charDataFormatSet == null ? null : entity.charDataFormatSet.toDomain();
+			break;
+		case DATE:
+			dataFormatSet = entity.dateDataFormatSet == null ? null : entity.dateDataFormatSet.toDomain();
+			break;
+		case INS_TIME:
+			dataFormatSet = entity.insTimeDataFormatSet == null ? null : entity.insTimeDataFormatSet.toDomain();
+			break;
+		case TIME:
+			break;
+		}
 		return new StdAcceptItem(entity.stdAcceptItemPk.cid, entity.stdAcceptItemPk.systemType,
-				entity.stdAcceptItemPk.conditionSetCd, entity.stdAcceptItemPk.acceptItemNumber, entity.categoryItemNo,
-				entity.csvItemNumber, entity.csvItemName, entity.itemType,
-				OiomtAcScreenCondSet.toDomain(entity.acceptScreenCondSet));
+				entity.stdAcceptItemPk.conditionSetCd, entity.stdAcceptItemPk.categoryId,
+				entity.stdAcceptItemPk.acceptItemNumber, entity.categoryItemNo, entity.csvItemNumber,
+				entity.csvItemName, entity.itemType, OiomtAcScreenCondSet.toDomain(entity.acceptScreenCondSet),
+				dataFormatSet);
 	}
 
 }
