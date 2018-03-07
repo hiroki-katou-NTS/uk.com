@@ -56,6 +56,8 @@ import nts.uk.ctx.workflow.pub.service.export.ApprovalRootOfEmployeeExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootSituation;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalStatus;
+import nts.uk.ctx.workflow.pub.service.export.ApprovalStatusForEmployee;
+import nts.uk.ctx.workflow.pub.service.export.ApproveRootStatusForEmpExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverEmployeeState;
 import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
@@ -443,6 +445,61 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		}
 
 		return result;
+	}
+	@Override
+	public List<ApproveRootStatusForEmpExport> getApprovalByEmplAndDate(GeneralDate startDate, GeneralDate endDate,
+			String employeeID, String companyID, Integer rootType) {
+		List<ApproveRootStatusForEmpExport> result = new ArrayList<>();
+		// 対象者と期間から承認ルートインスタンスを取得する
+		List<ApprovalRootState> approvalRootSates = this.approvalRootStateRepository.findAppByEmployeeIDRecordDate(startDate, endDate, employeeID, rootType);
+		
+		//承認ルート状況を取得する
+		for(ApprovalRootState approvalRoot : approvalRootSates){
+			ApproveRootStatusForEmpExport approveRootStatusForEmpExport = new ApproveRootStatusForEmpExport();
+			int status = ApprovalStatusForEmployee.UNAPPROVED.value;
+			boolean unapprovedPhasePresent = false;
+			List<ApprovalPhaseState> listApprovalPhaseState = approvalRoot.getListApprovalPhaseState();
+			listApprovalPhaseState.sort((a,b) -> b.getPhaseOrder().compareTo(a.getPhaseOrder()));
+			for(ApprovalPhaseState approvalPhaseState : listApprovalPhaseState){
+				//1.承認フェーズ毎の承認者を取得する(getApproverFromPhase)
+				List<String> approverFromPhases = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
+				// ループ中の承認フェーズに承認者がいる
+				if(!CollectionUtil.isEmpty(approverFromPhases)){
+					// ループ中のドメインモデル「承認フェーズインスタンス」．承認区分 == 承認済
+					if(approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+						//未承認フェーズあり=true
+						if(unapprovedPhasePresent == true){
+							status = ApprovalStatusForEmployee.DURING_APPROVAL.value;
+							break;
+						}else{
+							// 未承認フェーズあり=false
+							status = ApprovalStatusForEmployee.APPROVED.value;
+							break;
+						}
+					}else{
+						unapprovedPhasePresent = true;
+						if(checkApproverOfFrame(approvalPhaseState.getListApprovalFrame())){
+							status = approvalPhaseState.getApprovalAtr().value;
+							break;
+						}
+					}
+				}
+			}
+			approveRootStatusForEmpExport.setAppDate(approvalRoot.getApprovalRecordDate());
+			approveRootStatusForEmpExport.setEmployeeID(employeeID);
+			approveRootStatusForEmpExport.setApprovalStatus(EnumAdaptor.valueOf(status, ApprovalStatusForEmployee.class));
+			result.add(approveRootStatusForEmpExport);
+		}
+		return result;
+	}
+	
+	private boolean checkApproverOfFrame(List<ApprovalFrame> listApprovalFrame){
+		for(ApprovalFrame approvalFrame : listApprovalFrame){
+			if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	
