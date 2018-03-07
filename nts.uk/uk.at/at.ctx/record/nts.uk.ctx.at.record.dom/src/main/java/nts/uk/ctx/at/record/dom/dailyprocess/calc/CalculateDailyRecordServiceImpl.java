@@ -489,31 +489,19 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					bonusPayAutoCalcSet,
 					calcAtrOfDaily);
 	
-		//手修正された項目の値を計算前に戻す 
+
 		// 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
 		List<Integer> attendanceItemIdList = copyIntegrationOfDaily.getEditState().stream().filter(editState -> editState.getEmployeeId()==copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId()
 																								   && editState.getYmd() == copyIntegrationOfDaily.getAffiliationInfor().getYmd())
 																			               .map(editState -> editState.getAttendanceItemId())
+																			               .distinct()
 																			               .collect(Collectors.toList());
 
-//----------------------------------------動作検証用に一時的に作成（直ぐに消します）
-//		List<EditStateOfDailyPerformance> editSt = new ArrayList<>();
-//		editSt.add(new EditStateOfDailyPerformance(copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId(),559,copyIntegrationOfDaily.getAffiliationInfor().getYmd(),EditStateSetting.HAND_CORRECTION_MYSELF));
-//					
-//		List<Integer> attendanceItemIdList = editSt.stream().filter(editState -> editState.getEmployeeId()==copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId()
-//				   && editState.getYmd() == copyIntegrationOfDaily.getAffiliationInfor().getYmd())
-//        .map(editState -> editState.getAttendanceItemId())
-//        .collect(Collectors.toList());
-//------------------------------------------
-		
-		DailyRecordToAttendanceItemConverter beforDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(copyIntegrationOfDaily);
-		
-		List<ItemValue> itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);
-		
-		DailyRecordToAttendanceItemConverter afterDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(integrationOfDaily);
-		
+		DailyRecordToAttendanceItemConverter beforDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(copyIntegrationOfDaily);	
+		List<ItemValue> itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);		
+		DailyRecordToAttendanceItemConverter afterDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(integrationOfDaily);	
 		afterDailyRecordDto.merge(itemValueList);
-				
+		//手修正された項目の値を計算前に戻す 		
 		IntegrationOfDaily calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
 			
 		/*日別実績への項目移送*/
