@@ -448,8 +448,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
                                 return item.itemId == data.columnKey.substring(1, data.columnKey.length);
                             });
+                            let item = _.find(self.lstAttendanceItem(), (value) => {
+                                return String(value.id) === data.columnKey.substring(1, data.columnKey.length);
+                            })
                             let value: any;
-                            value = self.getPrimitiveValue(data.value);
+                            value = self.getPrimitiveValue(data.value, item.attendanceAtr);
                             let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), 0);
                             dataChangeProcess.push(dataMap);
                         }
@@ -521,8 +524,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
                                 return item.itemId == data.columnKey.substring(1, data.columnKey.length);
                             });
+                            let item = _.find(self.lstAttendanceItem(), (value) => {
+                                return String(value.id) === data.columnKey.substring(1, data.columnKey.length);
+                            })
                             let value: any;
-                            value = self.getPrimitiveValue(data.value);
+                            value = self.getPrimitiveValue(data.value, item.attendanceAtr);
                             let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), 0);
                             dataChangeProcess.push(dataMap);
                         }
@@ -583,13 +589,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return check;
         }
         
-        getPrimitiveValue(value : any): string{
+        getPrimitiveValue(value : any, atr: any): string{
             var self = this;
             let valueResult : string = "";
-            if(String(value).indexOf(":") != -1){
-                // Time
-                valueResult = String(self.getHoursAll(value));
-            }else{
+            if (atr != undefined && atr != null) {
+                    if (atr == 6) {
+                        // Time
+                        valueResult = String(self.getHoursAll(value));
+                    } else if(atr == 5){
+                         valueResult = String(self.getHoursTime(value));
+                    } else{
+                         valueResult = value;
+                    }
+            } else {
                 valueResult = value;
             }
             return valueResult;
@@ -598,7 +610,22 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         getHours(value: any) : number{
             return Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]);
         }
+        //time
+        getHoursTime(value) : number{
+              var self = this;
+            if (value.indexOf(":") != -1) {
+                if (value.indexOf("-") != -1) {
+                    let valueTemp = value.split('-')[1];
+                    return 0 - self.getHours(valueTemp);
+                } else {
+                    return self.getHours(value);
+                }
+            } else {
+                return value;
+            }
+        }
         
+        //time day
         getHoursAll(value: any) : number{
              var self = this;
             if (value.indexOf(":") != -1) {
@@ -1340,7 +1367,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 hidePrimaryKey: true,
                 userId: self.employIdLogin.id,
                 getUserId: function(primaryKey) {
-                   return primaryKey.split("_")[2] ; 
+                   let ids =  primaryKey.split("_");
+                   return ids[2]+"-"+ ids[3]+"-"+ids[4]+"-"+ids[5]+"-"+ids[6]; 
                  },
                // recordKeys: self.createKeyLoad(),
                 features: [
@@ -1599,6 +1627,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         delete header.hidden;
                         delete header.ntsType;
                         delete header.onChange;
+                        delete header.group[1].ntsType;
+                        delete header.group[1].onChange;
                         if (header.group[0].dataType == "String") {
                             header.group[0].onChange = self.search;
                            // delete header.group[0].onChange;
