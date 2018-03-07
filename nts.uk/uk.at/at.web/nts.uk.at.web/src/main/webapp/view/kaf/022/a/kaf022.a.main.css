@@ -1,8 +1,13 @@
 /* Override Base */
-.ui-widget.ui-tabs.vertical > .ui-tabs-panel {
-    overflow: visible !important;
-    width: auto;
+.ui-widget.ui-tabs.vertical>.ui-tabs-panel {
+	overflow: visible !important;
+	width: auto;
 }
+
+#fixed-table-a4 tr {
+	height: 38px !important;
+}
+
 td div {
 	position: relative;
 	vertical-align: middle;
@@ -77,6 +82,7 @@ td div {
 #e11_5 {
 	padding-left: 28px;
 }
+
 #b18 .ntsRadioBox span.label {
 	padding-right: 72px;
 }
@@ -140,7 +146,6 @@ td div {
 /* .viewmodel-a {
 	margin-bottom: 20px;
 } */
-
 .nts-fixed-table {
 	margin-bottom: 20px;
 }
