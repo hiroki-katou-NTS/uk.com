@@ -9,10 +9,10 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.Month;
 
 /**
- * 変形労働時間勤務の法定内集計設定　（テスト）
+ * 変形労働精算期間　（テスト）
  * @author shuichu_ishida
  */
-public class LegalAggrSetOfIrgTest {
+public class SettlementPeriodOfIrgTest {
 
 	private LegalAggrSetOfIrg legalAggrSetOfIrg;
 	
@@ -42,7 +42,7 @@ public class LegalAggrSetOfIrgTest {
 		
 		// exercize
 		val nowYearMonth = YearMonth.of(201702);
-		val actualList = this.legalAggrSetOfIrg.getPastSettlementYearMonths(nowYearMonth);
+		val actualList = this.legalAggrSetOfIrg.getSettlementPeriod().getPastSettlementYearMonths(nowYearMonth);
 		String actual = nowYearMonth.toString() + " = ";
 		boolean isExist = false;
 		for (YearMonth yearMonth : actualList){
@@ -66,7 +66,7 @@ public class LegalAggrSetOfIrgTest {
 		
 		// exercize
 		val nowYearMonth = YearMonth.of(201703);
-		val actualList = this.legalAggrSetOfIrg.getPastSettlementYearMonths(nowYearMonth);
+		val actualList = this.legalAggrSetOfIrg.getSettlementPeriod().getPastSettlementYearMonths(nowYearMonth);
 		String actual = nowYearMonth.toString() + " = ";
 		boolean isExist = false;
 		for (YearMonth yearMonth : actualList){
@@ -90,7 +90,7 @@ public class LegalAggrSetOfIrgTest {
 		
 		// exercize
 		val nowYearMonth = YearMonth.of(201709);
-		val actualList = this.legalAggrSetOfIrg.getPastSettlementYearMonths(nowYearMonth);
+		val actualList = this.legalAggrSetOfIrg.getSettlementPeriod().getPastSettlementYearMonths(nowYearMonth);
 		String actual = nowYearMonth.toString() + " = ";
 		boolean isExist = false;
 		for (YearMonth yearMonth : actualList){
@@ -114,7 +114,7 @@ public class LegalAggrSetOfIrgTest {
 		
 		// exercize
 		val nowYearMonth = YearMonth.of(201702);
-		val isSame = this.legalAggrSetOfIrg.isSameSettlementEndMonth(nowYearMonth);
+		val isSame = this.legalAggrSetOfIrg.getSettlementPeriod().isSameSettlementEndMonth(nowYearMonth);
 		String actual = nowYearMonth.toString() + " = " + (isSame ? "Match." : "No Match.");
 		
 		// verify
@@ -132,7 +132,7 @@ public class LegalAggrSetOfIrgTest {
 		
 		// exercize
 		val nowYearMonth = YearMonth.of(201704);
-		val isSame = this.legalAggrSetOfIrg.isSameSettlementEndMonth(nowYearMonth);
+		val isSame = this.legalAggrSetOfIrg.getSettlementPeriod().isSameSettlementEndMonth(nowYearMonth);
 		String actual = nowYearMonth.toString() + " = " + (isSame ? "Match." : "No Match.");
 		
 		// verify
