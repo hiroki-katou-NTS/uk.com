@@ -25,6 +25,10 @@ public class FileStereoTypeDescriptionExtend {
 		return this.description.keepsPack();
 	}
 	
+	public boolean isFileOrKeepedPack() {
+		return !this.isPack() || this.keepsPack();
+	}
+	
 	public void checkIfAcceptableExtension(String targetExtension) {
 		if (this.acceptsAllExtensions()) {
 			return;

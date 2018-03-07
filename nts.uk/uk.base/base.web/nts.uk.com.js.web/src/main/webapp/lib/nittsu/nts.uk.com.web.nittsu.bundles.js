@@ -14220,6 +14220,7 @@ var nts;
                         }));
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
                         container.data("init", false);
+                        $input.ntsDatepicker("bindFlip");
                     };
                     /**
                      * Update
@@ -19826,6 +19827,7 @@ var nts;
                             validateProcess(newText, $target, isStart, oldValue, result);
                         }));
                         $container.find(".ntsDateRange_Component").attr("tabindex", tabIndex);
+                        $input.ntsDatepicker("bindFlip");
                     };
                     /**
                      * Update
@@ -28609,6 +28611,130 @@ var nts;
                         }
                     }
                 })(ntsImageEditor || (ntsImageEditor = {}));
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var jqueryExtentions;
+            (function (jqueryExtentions) {
+                var ntsDatepicker;
+                (function (ntsDatepicker) {
+                    $.fn.ntsDatepicker = function (action, index) {
+                        var $container = $(this);
+                        if (action === "bindFlip") {
+                            return bindFlip($container);
+                        }
+                        return $container;
+                    };
+                    function bindFlip($input) {
+                        var datepickerID = $input.attr("id");
+                        var container = $input.parent();
+                        $input.on('show.datepicker', function (evt) {
+                            $input.data("showed", true);
+                            setTimeout(function () {
+                                $input.trigger("flippickercontainer");
+                            }, 10);
+                        });
+                        $input.on('hide.datepicker', function (evt) {
+                            $input.data("showed", false);
+                            container.removeClass();
+                            container.addClass("ntsControl nts-datepicker-wrapper");
+                            //                let currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
+                            //                $("body").append(currentShowContainer);
+                        });
+                        $(window).resize(function () {
+                            if ($input.data("showed")) {
+                                $input.datepicker('hide');
+                                setTimeout(function () {
+                                    $input.datepicker('show');
+                                }, 10);
+                            }
+                        });
+                        $input.bind("flippickercontainer", function (evt, data) {
+                            var currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
+                            //                let container = $input.parent();
+                            //                container.append(currentShowContainer);
+                            var ePos = container.offset();
+                            if (ePos.top < 0 && ePos.left < 0) {
+                                return;
+                            }
+                            //currentShowContainer.removeClass();
+                            container.removeClass();
+                            //currentShowContainer.addClass("datepicker-container datepicker-dropdown small-style"); 
+                            container.addClass("ntsControl nts-datepicker-wrapper");
+                            var containerHeight = container.outerHeight(true);
+                            var containerWidth = container.outerWidth(true);
+                            var showContainerHeight = currentShowContainer.outerHeight(true);
+                            var showContainerWidth = currentShowContainer.outerWidth(true);
+                            var documentHeight = document.body.clientHeight;
+                            var documentWidth = document.body.clientWidth;
+                            var headerHeight = $("#functions-area").outerHeight(true) + $("#header").outerHeight(true);
+                            var bottomHeight = $("#functions-area-bottom").outerHeight(true);
+                            var spaceBottom = documentHeight - ePos.top - containerHeight;
+                            var spaceTop = ePos.top; // - headerHeight;
+                            var spaceRight = documentWidth - ePos.left - containerWidth;
+                            var spaceLeft = ePos.left;
+                            // case 1: show below
+                            if (showContainerHeight + 10 <= spaceBottom) {
+                                //currentShowContainer.css({top: containerHeight + 5, left: 0});
+                                container.addClass("arrow-bottom");
+                                //container.addClass("caret-bottom");
+                                currentShowContainer.position({
+                                    my: "left bottom+" + (showContainerHeight + 10),
+                                    at: "left bottom",
+                                    'of': "#" + datepickerID
+                                });
+                                return;
+                            }
+                            //case 2: show above
+                            if (showContainerHeight + 10 <= spaceTop) {
+                                //currentShowContainer.css({top: 0 - showContainerHeight - 5, left: 0});
+                                container.addClass("arrow-top");
+                                currentShowContainer.position({
+                                    my: "left top-" + (showContainerHeight + 10),
+                                    at: "left top",
+                                    'of': "#" + datepickerID
+                                });
+                                return;
+                            }
+                            // case 3: show right
+                            var diaTop = ePos.top <= 0 ? 0 : ePos.top - showContainerHeight + containerHeight + headerHeight;
+                            if (ePos.top <= diaTop) {
+                                diaTop = ePos.top;
+                            }
+                            if (showContainerWidth + 10 <= spaceRight) {
+                                //                    currentShowContainer.css({top: 0, left: containerWidth + 5 + 2});
+                                var diaRight = ePos.left + containerWidth + 10;
+                                container.addClass("arrow-right");
+                                currentShowContainer.css({ top: diaTop, left: diaRight });
+                                return;
+                            }
+                            //case 4: show left
+                            if (showContainerWidth + 10 <= spaceLeft) {
+                                var diaLeft = ePos.left - 10 - showContainerWidth;
+                                //                    currentShowContainer.css({top: 0, left: 0 - showContainerWidth - 5 - 2 });
+                                container.addClass("arrow-left");
+                                currentShowContainer.css({ top: diaTop, left: diaLeft });
+                                return;
+                            }
+                            container.addClass("arrow-bottom");
+                            //container.addClass("caret-bottom");
+                            currentShowContainer.position({
+                                my: "left bottom+" + (showContainerHeight + 10),
+                                at: "left bottom",
+                                'of': "#" + datepickerID
+                            });
+                        });
+                        return $input;
+                    }
+                })(ntsDatepicker || (ntsDatepicker = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
