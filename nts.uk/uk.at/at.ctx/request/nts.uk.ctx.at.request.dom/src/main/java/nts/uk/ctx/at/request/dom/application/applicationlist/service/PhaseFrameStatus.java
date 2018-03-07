@@ -11,6 +11,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 @NoArgsConstructor
 public class PhaseFrameStatus {
 
+	private Integer phaseOrder;
+	
 	private ApprovalBehaviorAtrImport_New phaseStatus;
 	
 	private ApprovalBehaviorAtrImport_New frameStatus;

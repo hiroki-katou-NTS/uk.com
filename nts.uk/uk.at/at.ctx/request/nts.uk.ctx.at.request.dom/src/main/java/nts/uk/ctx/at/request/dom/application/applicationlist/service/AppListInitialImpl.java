@@ -350,14 +350,18 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					check = true;
 				}
 				if(check){
-					lstAppFilter3.add(appFull.getApplication());
-					lstAppFullFilter3.add(appFull);
-					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
-						lstFrameUn.add(appFull.getApplication().getAppID());
+					//条件 bo sung:
+					int phaseOrderCur = status.getPhaseOrder().intValue();
+					PhaseStatus statusPhase = this.convertStatusPhase(appFull.getApplication().getAppID(), appFull.getLstPhaseState());
+					if(phaseOrderCur == 1 || statusPhase.getPhaseAtr().get(phaseOrderCur -1) == 1){//phase truoc do da approve
+						lstAppFilter3.add(appFull.getApplication());
+						lstAppFullFilter3.add(appFull);
+						if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
+							lstFrameUn.add(appFull.getApplication().getAppID());
+						}
+						
+						lstPhaseStatus.add(statusPhase);
 					}
-					String statusPhase = this.convertStatusPhase(appFull.getLstPhaseState());
-					lstPhaseStatus.add(new PhaseStatus(appFull.getApplication().getAppID(), statusPhase));
-					
 				}
 			}
 			//条件５：重複承認の対応条件
@@ -834,6 +838,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		for (ApprovalPhaseStateImport_New appPhase : lstPhase) {
 			FrameOutput frame = this.checkPhaseCurrent(appPhase, sID);
 			if(frame.getFrameStatus() != null){
+				status.setPhaseOrder(appPhase.getPhaseOrder());
 				status.setFrameStatus(EnumAdaptor.valueOf(frame.getFrameStatus(), ApprovalBehaviorAtrImport_New.class));
 				status.setPhaseStatus(appPhase.getApprovalAtr());
 				status.setAgentId(frame.getAgentId());
@@ -1193,17 +1198,19 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		return false;
 	}
 	
-	private String convertStatusPhase(List<ApprovalPhaseStateImport_New> lstPhaseState){
+	private PhaseStatus convertStatusPhase(String appId, List<ApprovalPhaseStateImport_New> lstPhaseState){
 		String phaseStatus = "";
+		List<Integer> lstPhaseAtr = new ArrayList<>();
 		for (int i = 1; i<= 5; i++) {
 			String phaseI = "";
 			Integer status = this.findPhaseStatus(lstPhaseState, i);
+			lstPhaseAtr.add(status);
 			if(status != null){//phase exist
 				phaseI = status == 1 ? "〇" : status == 2 ? "×" : "－";
 			}
 			phaseStatus += phaseI;
 		}
-		return phaseStatus;
+		return new PhaseStatus(appId, phaseStatus, lstPhaseAtr);
 	}
 	private Integer findPhaseStatus(List<ApprovalPhaseStateImport_New> lstPhaseState, int order){
 		for (ApprovalPhaseStateImport_New phase : lstPhaseState) {
