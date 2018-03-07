@@ -12,7 +12,6 @@ module nts.uk.at.view.kmk003.a {
     import FlOTSetDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlOTSetDto;
     import FlStampReflectTzDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlStampReflectTzDto;
     import FlWorkDedSettingDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlWorkDedSettingDto;
-    import FlWorkSettingDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlWorkSettingDto;
 
     import TimeRoundingSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRoundingSettingModel;
     import FlowWorkRestTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowWorkRestTimezoneModel;
@@ -20,7 +19,8 @@ module nts.uk.at.view.kmk003.a {
     import FlowWorkRestSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowWorkRestSettingModel;
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
     import FixedTableDataConverter = nts.uk.at.view.kmk003.a.viewmodel.common.FixedTableDataConverter;
-
+    
+    import FlWorkSettingDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlWorkSettingDto;
     export module viewmodel {
 
         export module flowset {

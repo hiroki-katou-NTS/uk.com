@@ -24,7 +24,7 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepository;
 
 	/**
-	 * Request List 5
+	 * RequestList5
 	 */
 	@Override
 	public RecordWorkInfoPubExport getRecordWorkInfo(String employeeId, GeneralDate ymd) {

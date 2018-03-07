@@ -37,8 +37,8 @@ public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 		if (domain != null) {
 			dto.setAttendanceLeavingGateTime(ConvertHelper.mapTo(domain.getAttendanceLeavingGates(),
 					(c) -> new TimeSheetDto(c.getWorkNo().v(),
-							createTimeStamp(c.getAttendance()),
-							createTimeStamp(c.getLeaving()),
+							TimeStampDto.createTimeStamp(c.getAttendance()),
+							TimeStampDto.createTimeStamp(c.getLeaving()),
 							0
 
 					)));
@@ -47,14 +47,6 @@ public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 			dto.exsistData();
 		}
 		return dto;
-	}
-
-	private static TimeStampDto createTimeStamp(WorkStamp c) {
-		return c == null ? null : new TimeStampDto(
-				c.getTimeWithDay() == null ? null : c.getTimeWithDay().valueAsMinutes(),
-				c.getAfterRoundingTime() == null ? null : c.getAfterRoundingTime().valueAsMinutes(),
-				c.getLocationCode() == null ? null : c.getLocationCode().v(),
-				c.getStampSourceInfo() == null ? null : c.getStampSourceInfo().value);
 	}
 
 	@Override

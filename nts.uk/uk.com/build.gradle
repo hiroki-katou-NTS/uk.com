@@ -114,7 +114,7 @@ subprojects {
 		compile group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.0'
 		
         compile group: 'nts.gul', name: 'nts.gul', version: '0.44'
-        compile group: 'nts.arc', name: 'nts.arc', version: '0.57'
+        compile group: 'nts.arc', name: 'nts.arc', version: '0.59'
 	}
 }
 //=============com.file↓===========================================
@@ -1162,6 +1162,13 @@ project (':query:nts.uk.query.ws') {
 	}
 }
 
+// Query Projects. Add by TIN.
+project (':query:nts.uk.query.pub') {
+	dependencies {
+		compile project(':query:nts.uk.query.model')
+	}
+}
+
 // Query Projects. Add by TienDD.
 project (':query:nts.uk.query.pubimp') {
 	dependencies {
@@ -1169,13 +1176,6 @@ project (':query:nts.uk.query.pubimp') {
 		compile project(':query:nts.uk.query.model')
 		compile project(':query:nts.uk.query.app')
 		compile project(':query:nts.uk.query.infra')
-	}
-}
-
-// Query Projects. Add by TienDD.
-project (':query:nts.uk.query.pub') {
-	dependencies {
-		compile project(':query:nts.uk.query.app')
 	}
 }
 

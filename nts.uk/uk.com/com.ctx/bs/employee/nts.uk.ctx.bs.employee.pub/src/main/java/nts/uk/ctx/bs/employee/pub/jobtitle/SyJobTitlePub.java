@@ -20,7 +20,7 @@ public interface SyJobTitlePub {
 	 * @param employeeId the employee id
 	 * @return the list
 	 */
-	// RequestList #17
+	// RequestList17
 	List<JobTitleExport> findJobTitleBySid(String employeeId);
 
 	/**
@@ -30,7 +30,7 @@ public interface SyJobTitlePub {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	// RequestList #33
+	// RequestList33
 	Optional<EmployeeJobHistExport> findBySid(String employeeId, GeneralDate baseDate);
 
 	/**

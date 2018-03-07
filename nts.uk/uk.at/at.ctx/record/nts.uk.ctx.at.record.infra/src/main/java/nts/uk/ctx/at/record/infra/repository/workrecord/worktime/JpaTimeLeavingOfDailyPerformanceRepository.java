@@ -11,6 +11,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWork;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWorkPK;
@@ -106,58 +107,58 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 			}
 			if (c.getAttendanceStamp().isPresent()) {
 				TimeActualStamp attendanceStamp = c.getAttendanceStamp().get();
-				if (attendanceStamp.getActualStamp() != null) {
-					krcdtTimeLeavingWork.attendanceActualRoudingTime = attendanceStamp.getActualStamp()
-							.getAfterRoundingTime() == null ? null
-									: attendanceStamp.getActualStamp().getAfterRoundingTime().valueAsMinutes();
-					krcdtTimeLeavingWork.attendanceActualTime = attendanceStamp.getActualStamp()
-							.getTimeWithDay() == null ? null
-									: attendanceStamp.getActualStamp().getTimeWithDay().valueAsMinutes();
-					krcdtTimeLeavingWork.attendanceActualPlaceCode = attendanceStamp.getActualStamp()
-							.getLocationCode() == null ? null : attendanceStamp.getActualStamp().getLocationCode().v();
-					krcdtTimeLeavingWork.attendanceActualSourceInfo = attendanceStamp.getActualStamp()
-							.getStampSourceInfo() == null ? 0
-									: attendanceStamp.getActualStamp().getStampSourceInfo().value;
+				WorkStamp attendanceActualS = attendanceStamp.getActualStamp().orElse(null);
+				WorkStamp attendanceS = attendanceStamp.getStamp().orElse(null);
+				if (attendanceActualS != null) {
+					krcdtTimeLeavingWork.attendanceActualRoudingTime = attendanceActualS.getAfterRoundingTime() == null ? null
+									: attendanceActualS.getAfterRoundingTime().valueAsMinutes();
+					krcdtTimeLeavingWork.attendanceActualTime = attendanceActualS.getTimeWithDay() == null ? null
+									: attendanceActualS.getTimeWithDay().valueAsMinutes();
+					krcdtTimeLeavingWork.attendanceActualPlaceCode = !attendanceActualS.getLocationCode().isPresent() 
+							? null : attendanceActualS.getLocationCode().get().v();
+					krcdtTimeLeavingWork.attendanceActualSourceInfo = attendanceActualS.getStampSourceInfo() == null 
+							? 0 : attendanceActualS.getStampSourceInfo().value;
 				}
-				if (attendanceStamp.getStamp().isPresent()) {
-					krcdtTimeLeavingWork.attendanceStampRoudingTime = attendanceStamp.getStamp().get()
-							.getAfterRoundingTime() == null ? null
-									: attendanceStamp.getStamp().get().getAfterRoundingTime().valueAsMinutes();
-					krcdtTimeLeavingWork.attendanceStampTime = attendanceStamp.getStamp().get().getTimeWithDay() == null
-							? null : attendanceStamp.getStamp().get().getTimeWithDay().valueAsMinutes();
-					krcdtTimeLeavingWork.attendanceStampPlaceCode = attendanceStamp.getStamp().get()
-							.getLocationCode() == null ? null : attendanceStamp.getStamp().get().getLocationCode().v();
-					krcdtTimeLeavingWork.attendanceStampSourceInfo = attendanceStamp.getStamp().get()
-							.getStampSourceInfo() == null ? 0
-									: attendanceStamp.getStamp().get().getStampSourceInfo().value;
+				if (attendanceS != null) {
+					krcdtTimeLeavingWork.attendanceStampRoudingTime = attendanceS.getAfterRoundingTime() == null ? null
+									: attendanceS.getAfterRoundingTime().valueAsMinutes();
+					krcdtTimeLeavingWork.attendanceStampTime = attendanceS.getTimeWithDay() == null
+							? null : attendanceS.getTimeWithDay().valueAsMinutes();
+					krcdtTimeLeavingWork.attendanceStampPlaceCode = !attendanceS.getLocationCode().isPresent() 
+							? null : attendanceS.getLocationCode().get().v();
+					krcdtTimeLeavingWork.attendanceStampSourceInfo = attendanceS.getStampSourceInfo() == null 
+							? 0 : attendanceS.getStampSourceInfo().value;
 				}
 				krcdtTimeLeavingWork.attendanceNumberStamp = attendanceStamp.getNumberOfReflectionStamp();
 			}
 			if (c.getLeaveStamp().isPresent()) {
-				TimeActualStamp leaveStamp = c.getLeaveStamp().get();
-				if (leaveStamp.getActualStamp() != null) {
-					krcdtTimeLeavingWork.leaveWorkActualRoundingTime = leaveStamp.getActualStamp()
+				TimeActualStamp ls = c.getLeaveStamp().get();
+				WorkStamp as = ls.getActualStamp().orElse(null);
+				WorkStamp s = ls.getStamp().orElse(null);
+				if (as != null) {
+					krcdtTimeLeavingWork.leaveWorkActualRoundingTime = as
 							.getAfterRoundingTime() == null ? null
-									: leaveStamp.getActualStamp().getAfterRoundingTime().valueAsMinutes();
-					krcdtTimeLeavingWork.leaveWorkActualTime = leaveStamp.getActualStamp().getTimeWithDay() == null
-							? null : leaveStamp.getActualStamp().getTimeWithDay().valueAsMinutes();
-					krcdtTimeLeavingWork.leaveWorkActualPlaceCode = leaveStamp.getActualStamp()
-							.getLocationCode() == null ? null : leaveStamp.getActualStamp().getLocationCode().v();
-					krcdtTimeLeavingWork.leaveActualSourceInfo = leaveStamp.getActualStamp()
-							.getStampSourceInfo() == null ? 0 : leaveStamp.getActualStamp().getStampSourceInfo().value;
+									: as.getAfterRoundingTime().valueAsMinutes();
+					krcdtTimeLeavingWork.leaveWorkActualTime = as.getTimeWithDay() == null
+							? null : as.getTimeWithDay().valueAsMinutes();
+					krcdtTimeLeavingWork.leaveWorkActualPlaceCode = !as
+							.getLocationCode().isPresent() ? null : as.getLocationCode().get().v();
+					krcdtTimeLeavingWork.leaveActualSourceInfo = as
+							.getStampSourceInfo() == null ? 0 : as.getStampSourceInfo().value;
 				}
-				if (leaveStamp.getStamp().isPresent()) {
-					krcdtTimeLeavingWork.leaveWorkStampRoundingTime = leaveStamp.getStamp().get()
+				if (s != null) {
+					krcdtTimeLeavingWork.leaveWorkStampRoundingTime = s
 							.getAfterRoundingTime() == null ? null
-									: leaveStamp.getStamp().get().getAfterRoundingTime().valueAsMinutes();
-					krcdtTimeLeavingWork.leaveWorkStampTime = leaveStamp.getStamp().get().getTimeWithDay() == null
-							? null : leaveStamp.getStamp().get().getTimeWithDay().valueAsMinutes();
-					krcdtTimeLeavingWork.leaveWorkStampPlaceCode = leaveStamp.getStamp().get().getLocationCode() == null
-							? null : leaveStamp.getStamp().get().getLocationCode().v();
-					krcdtTimeLeavingWork.leaveWorkStampSourceInfo = leaveStamp.getStamp().get()
-							.getStampSourceInfo() == null ? 0 : leaveStamp.getStamp().get().getStampSourceInfo().value;
+									: s.getAfterRoundingTime().valueAsMinutes();
+					krcdtTimeLeavingWork.leaveWorkStampTime = s.getTimeWithDay() == null
+							? null : s.getTimeWithDay().valueAsMinutes();
+					krcdtTimeLeavingWork.leaveWorkStampPlaceCode = !s
+							.getLocationCode().isPresent() ? null : s.getLocationCode().get().v();
+					krcdtTimeLeavingWork.leaveWorkStampSourceInfo = s
+							.getStampSourceInfo() == null ? 0 : s.getStampSourceInfo().value;
 				}
-				krcdtTimeLeavingWork.leaveWorkNumberStamp = leaveStamp.getNumberOfReflectionStamp();
+				krcdtTimeLeavingWork.leaveWorkNumberStamp = ls.getNumberOfReflectionStamp();
+				
 			}
 			krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK.timeLeavingType = 0;
 			krcdtTimeLeavingWork.daiLeavingWork = entity;

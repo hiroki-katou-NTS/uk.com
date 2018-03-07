@@ -122,7 +122,8 @@ module nts.uk.ui.jqueryExtentions {
                         selectAll: false, quantity: 0, 
                         onSelect: function(value) {
                             var fs = this;
-                            if (value && ++fs.quantity === options.dataSource.length) {
+                            let hiddenCount = fs.hiddenRows ? fs.hiddenRows.length : 0;
+                            if (value && ++fs.quantity === (options.dataSource.length - hiddenCount)) {
                                 fs.th.find(".nts-grid-header-control-" + column.key).find("input[type='checkbox']").prop("checked", true);
                                 fs.selectAll = true;
                             } else if (!value && fs.quantity > 0) {
@@ -134,6 +135,10 @@ module nts.uk.ui.jqueryExtentions {
                             }
                         }
                     };
+                    
+                    if (column.hiddenRows) {
+                        cbSelectionColumns[column.key].hiddenRows = column.hiddenRows;
+                    }
                 }
                 // Have column group
                 if (!util.isNullOrUndefined(column.group)) {
@@ -215,25 +220,26 @@ module nts.uk.ui.jqueryExtentions {
                     var $container = $("<div/>").append($("<div/>").addClass(controlCls).css("height", ntsControls.HEIGHT_CONTROL));
                     var $_self = $self;
                     setTimeout(function() {
-                        var $self = $_self;
-                     
-//                        let sFormatter = performance.now();   
+                        var $self = $_self;   
                         let rowId = rowObj[$self.igGrid("option", "primaryKey")];
                         let $gridCell = internal.getCellById($self, rowId, column.key);
                         let gridCellChild;
                         if (!$gridCell || (gridCellChild = $gridCell.children()).length === 0) return;
                         if (gridCellChild[0].children.length === 0) {
-                            let $control = ntsControl.draw(data);
-                            let gridControl = $gridCell[0].querySelector("." + controlCls);
-                            if (!gridControl) return;
-                            gridControl.appendChild($control[0]);
-                            if (controlDef.controlType === ntsControls.CHECKBOX && column.showHeaderCheckbox) {
-                                let cbSelectCols = $self.data(internal.CB_SELECTED) || {};
-                                let cbColConf = cbSelectCols[column.key]
-                                if (cbColConf) {
-                                    $control.on("change", function() {
-                                        cbColConf.onSelect($(this).find("input[type='checkbox']").is(":checked"));
-                                    });
+                            if (controlDef.controlType !== ntsControls.CHECKBOX
+                                || !column.hiddenRows || !column.hiddenRows.some(v => v === rowId)) {
+                                let $control = ntsControl.draw(data);
+                                let gridControl = $gridCell[0].querySelector("." + controlCls);
+                                if (!gridControl) return;
+                                gridControl.appendChild($control[0]);
+                                if (controlDef.controlType === ntsControls.CHECKBOX && column.showHeaderCheckbox) {
+                                    let cbSelectCols = $self.data(internal.CB_SELECTED) || {};
+                                    let cbColConf = cbSelectCols[column.key]
+                                    if (cbColConf) {
+                                        $control.on("change", function() {
+                                            cbColConf.onSelect($(this).find("input[type='checkbox']").is(":checked"));
+                                        });
+                                    }
                                 }
                             }
                             ntsControl.$containedGrid = $self;
@@ -1655,14 +1661,18 @@ module nts.uk.ui.jqueryExtentions {
                         let selected = $cb.is(":checked");
                         _.forEach(options.dataSource, function(r) {
                             if (!r) return;
-                            updating.updateCell($grid, r[options.primaryKey], ui.columnKey, selected, undefined, true);
+                            let id = r[options.primaryKey];
+                            if (columnConf && columnConf.hiddenRows
+                                && columnConf.hiddenRows.some(v => v === id)) return;
+                            updating.updateCell($grid, id, ui.columnKey, selected, undefined, true);
                         });
                         let cbSelectCols = $grid.data(internal.CB_SELECTED);
                         let cbSelectConf = cbSelectCols[column[0]];
                         if (!cbSelectConf) return;
                         cbSelectConf.selectAll = selected;
                         if (selected) {
-                            cbSelectConf.quantity = options.dataSource.length;
+                            let hiddenCount = cbSelectConf.hiddenRows ? cbSelectConf.hiddenRows.length : 0;
+                            cbSelectConf.quantity = options.dataSource.length - hiddenCount;
                             return;
                         }
                         cbSelectConf.quantity = 0;

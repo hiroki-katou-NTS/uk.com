@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 丸め前合計時間
@@ -113,5 +114,64 @@ public class TotalTimeBeforeRound {
 		// 週割増・月割増をコピーする
 		this.weeklyTotalPremiumTime = regAndIrgTimeOfMonthly.getWeeklyTotalPremiumTime();
 		this.monthlyTotalPremiumTime = regAndIrgTimeOfMonthly.getMonthlyTotalPremiumTime();
+	}
+	
+	/**
+	 * 時間外超過明細から集計する
+	 * @param excessOutsideWorkDetail 時間外超過明細
+	 * @param datePeriod 期間
+	 */
+	public void aggregateValues(ExcessOutsideWorkDetail excessOutsideWorkDetail, DatePeriod datePeriod){
+		
+		// 就業時間・所定内割増時間
+		int workTimeMinutes = 0;
+		int withinPrescribedPTMinutes = 0;
+		for (val workTimeEachDay : excessOutsideWorkDetail.getWorkTime().values()){
+			workTimeMinutes += workTimeEachDay.getLegalTime().getWorkTime().v();
+			withinPrescribedPTMinutes += workTimeEachDay.getLegalTime().getWithinPrescribedPremiumTime().v();
+		}
+		this.workTime = new AttendanceTimeMonth(workTimeMinutes);
+		this.withinPrescribedPremiumTime = new AttendanceTimeMonth(withinPrescribedPTMinutes);
+		
+		// 残業時間
+		for (val overTimeEachFrameNo : excessOutsideWorkDetail.getOverTime().values()){
+			val overTimeFrameNo = overTimeEachFrameNo.getOverTimeFrameNo();
+			overTimeEachFrameNo.aggregate(datePeriod);
+			this.overTime.putIfAbsent(overTimeFrameNo, OverTimeFrameTotalTime.of(
+					overTimeFrameNo,
+					overTimeEachFrameNo.getOverTime(),
+					overTimeEachFrameNo.getTransferOverTime()));
+		}
+		
+		// 休出時間
+		for (val holidayWorkTimeEachFrameNo : excessOutsideWorkDetail.getHolidayWorkTime().values()){
+			val holidayWorkFrameNo = holidayWorkTimeEachFrameNo.getHolidayWorkFrameNo();
+			holidayWorkTimeEachFrameNo.aggregate(datePeriod);
+			this.holidayWorkTime.putIfAbsent(holidayWorkFrameNo, HolidayWorkFrameTotalTime.of(
+					holidayWorkFrameNo,
+					holidayWorkTimeEachFrameNo.getHolidayWorkTime(),
+					holidayWorkTimeEachFrameNo.getTransferTime()));
+		}
+		
+		// フレックス超過時間
+		int flexExcessTimeMinutes = 0;
+		for (val flexExcessTimeEachDay : excessOutsideWorkDetail.getFlexExcessTime().values()){
+			flexExcessTimeMinutes += flexExcessTimeEachDay.getFlexTime().getFlexTime().getTime().v();
+		}
+		this.flexExcessTime = new AttendanceTimeMonth(flexExcessTimeMinutes);
+		
+		// 週割増合計時間
+		int weekPremiumTimeMinutes = 0;
+		for (val weekPremiumTimeEachDay : excessOutsideWorkDetail.getWeeklyPremiumTime().values()){
+			weekPremiumTimeMinutes += weekPremiumTimeEachDay.getWeeklyPremiumTime().v();
+		}
+		this.weeklyTotalPremiumTime = new AttendanceTimeMonth(weekPremiumTimeMinutes);
+		
+		// 月割増合計時間
+		int monthPremiumTimeMinutes = 0;
+		for (val monthPremiumTimeEachDay : excessOutsideWorkDetail.getMonthlyPremiumTime().values()){
+			monthPremiumTimeMinutes += monthPremiumTimeEachDay.getMonthlyTotalPremiumTime().v();
+		}
+		this.monthlyTotalPremiumTime = new AttendanceTimeMonth(monthPremiumTimeMinutes);
 	}
 }

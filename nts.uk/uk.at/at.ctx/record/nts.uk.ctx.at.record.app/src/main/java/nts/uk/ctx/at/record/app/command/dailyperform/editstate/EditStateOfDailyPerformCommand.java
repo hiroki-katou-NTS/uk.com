@@ -30,4 +30,13 @@ public class EditStateOfDailyPerformCommand extends DailyWorkCommonCommand {
 			this.data.add(d);
 		}
 	}
+	
+	public void updateDatas( List<EditStateOfDailyPerformance> datas){
+		if(!datas.isEmpty()){
+			datas.forEach(data -> {
+				this.data.removeIf(es -> es.getAttendanceItemId() == data.getAttendanceItemId());
+				this.data.add(data);
+			});
+		}
+	}
 }
