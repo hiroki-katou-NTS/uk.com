@@ -6,6 +6,7 @@ package nts.uk.ctx.sys.gateway.app.command.singlesignon;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -146,18 +147,19 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 	}
 	
 	private void save(Optional<WindowsAccount> optWindowAccDB, List<WindowAccountDto> listWinAccDto) {
-		if(!optWindowAccDB.isPresent()) {
-			return;
-		}
-		
 		WindowsAccount windAccCommand = this.toWindowsAccountDomain(listWinAccDto);
 		
-		Map<Integer, WindowsAccountInfo> mapWinAcc = optWindowAccDB.get().getAccountInfos().stream()
-				.collect(Collectors.toMap(WindowsAccountInfo::getNo, Function.identity()));
+		Map<Integer, WindowsAccountInfo> mapWinAcc = new HashMap<Integer, WindowsAccountInfo>();
+		
+		if(optWindowAccDB.isPresent()) {
+			mapWinAcc = optWindowAccDB.get().getAccountInfos().stream()
+					.collect(Collectors.toMap(WindowsAccountInfo::getNo, Function.identity()));
+		}
 		
 		List<Integer> lstWinAccSaved = new ArrayList<>();
 		
-		windAccCommand.getAccountInfos().forEach(domain -> {
+		for (WindowsAccountInfo domain : windAccCommand.getAccountInfos()) {
+			
 			lstWinAccSaved.add(domain.getNo());
 			
 			WindowsAccountInfo winAccDb = mapWinAcc.get(domain.getNo());
@@ -168,14 +170,16 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 			} else {
 				this.windowAccountRepository.update(windAccCommand.getUserId(), domain, winAccDb);
 			}
-		});
+		}
 		
 		// remove item not setting
-		optWindowAccDB.get().getAccountInfos().stream().filter(
-				domain -> domain.getNo() != null && !lstWinAccSaved.contains(domain.getNo()))
-				.forEach(domain -> {
-					this.windowAccountRepository.remove(windAccCommand.getUserId(), domain.getNo());
-				});
+		if(optWindowAccDB.isPresent()) {
+			optWindowAccDB.get().getAccountInfos().stream().filter(
+					domain -> domain.getNo() != null && !lstWinAccSaved.contains(domain.getNo()))
+					.forEach(domain -> {
+						this.windowAccountRepository.remove(windAccCommand.getUserId(), domain.getNo());
+					});
+		}
 	}
 	
 	/**
