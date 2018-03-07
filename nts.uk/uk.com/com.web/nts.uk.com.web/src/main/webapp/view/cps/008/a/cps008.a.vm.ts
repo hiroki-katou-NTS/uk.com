@@ -103,19 +103,7 @@ module cps008.a.viewmodel {
                     code: data.code,
                     name: data.name,
                     action: data.action,
-                    classifications: _(data.classifications || []).map((item, i) => {
-                        return {
-                            dispOrder: i + 1,
-                            personInfoCategoryID: item.personInfoCategoryID,
-                            layoutItemType: _(IT_CLA_TYPE).map(x => x).indexOf(item.layoutItemType),
-                            listItemClsDf: _(item.listItemDf || []).map((def, j) => {
-                                return {
-                                    dispOrder: j + 1,
-                                    personInfoItemDefinitionID: def.id
-                                };
-                            }).value()
-                        };
-                    }).value()
+                    classifications: data.outData
                 };
 
             // check input
@@ -165,19 +153,7 @@ module cps008.a.viewmodel {
                         id: data.id,
                         code: _data.code,
                         name: _data.name,
-                        classifications: (data.classifications || []).map((item, i) => {
-                            return {
-                                dispOrder: i + 1,
-                                personInfoCategoryID: item.personInfoCategoryID,
-                                layoutItemType: _(IT_CLA_TYPE).map(x => x).indexOf(item.layoutItemType),
-                                listItemClsDf: (item.listItemDf || []).map((def, j) => {
-                                    return {
-                                        dispOrder: j + 1,
-                                        personInfoItemDefinitionID: def.id
-                                    };
-                                })
-                            };
-                        })
+                        classifications: data.outData
                     };
 
                     if (_data.action) {
@@ -186,16 +162,13 @@ module cps008.a.viewmodel {
                         command.action = LAYOUT_ACTION.COPY;
                     }
 
-
                     // call saveData service
                     invisible();
                     service.saveData(command).done((data: any) => {
-
                         showDialog.info({ messageId: "Msg_20" }).then(function() {
                             unblock();
                             self.start(_data.code);
                         });
-
                     }).fail((error: any) => {
                         if (error.message == 'Msg_3') {
                             showDialog.alert({ messageId: "Msg_3" }).then(function() {
@@ -203,8 +176,6 @@ module cps008.a.viewmodel {
                                 self.start(data.code);
                             });
                         }
-
-
                     });
 
                 } else {
@@ -227,19 +198,7 @@ module cps008.a.viewmodel {
                     code: data.code,
                     name: data.name,
                     action: data.action,
-                    classifications: (data.classifications || []).map((item, i) => {
-                        return {
-                            dispOrder: i + 1,
-                            personInfoCategoryID: item.personInfoCategoryID,
-                            layoutItemType: _(IT_CLA_TYPE).map(x => x).indexOf(item.layoutItemType),
-                            listItemClsDf: (item.listItemDf || []).map((def, j) => {
-                                return {
-                                    dispOrder: j + 1,
-                                    personInfoItemDefinitionID: def.id
-                                };
-                            })
-                        };
-                    })
+                    classifications: data.outData
                 };
 
                 // call service remove
@@ -269,7 +228,6 @@ module cps008.a.viewmodel {
                 });
 
             }).ifCancel(() => {
-
             });
         }
 
@@ -287,7 +245,6 @@ module cps008.a.viewmodel {
                 }
             });
         }
-
     }
 
     interface IItemClassification {
@@ -314,6 +271,7 @@ module cps008.a.viewmodel {
         name: string;
         classifications?: Array<IItemClassification>;
         action?: number;
+        outData?: Array<any>;
     }
 
     class Layout {
@@ -322,6 +280,7 @@ module cps008.a.viewmodel {
         name: KnockoutObservable<string> = ko.observable('');
         classifications: KnockoutObservableArray<any> = ko.observableArray([]);
         action: KnockoutObservable<LAYOUT_ACTION> = ko.observable(LAYOUT_ACTION.INSERT);
+        outData: KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor(param: ILayout) {
             let self = this;
