@@ -22,7 +22,7 @@ import lombok.Setter;
  * 
  * @author sonnlb
  */
-public class KrqdtComplementLeaveSimultaneousManagerPK implements Serializable {
+public class KrqdtCompltLeaveSimManaPK implements Serializable {
 
 	/**
 	 * 

@@ -647,8 +647,9 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 	// 反映するか判断する
 	boolean determineReflect(String inOrOutClass, StampItem x, PCLogonLogoffReflectOuput pcLogonLogoffReflectOuput) {
-		// pcLogonLogoffReflectOuput ma null thi sao fixed ?
-
+		if(pcLogonLogoffReflectOuput==null){
+			return true;
+		}
 		if ("PCログオン".equals(inOrOutClass)) {
 			if (x.getAttendanceTime().v() < pcLogonLogoffReflectOuput.getTimeOfDay().v()) {
 				return true;
@@ -766,7 +767,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 		WorkStamp inorOutStamp = null;
 
-		// AfterRoundingTime chua xac dinh fixed
+		// AfterRoundingTime chua xac dinh fixed, workstamp nay 3 thuoc tinh khong co lam tron
 		switch (x.getStampMethod().value) {
 		// タイムレコーダー → タイムレコーダー
 		case 0:
