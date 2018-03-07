@@ -198,3 +198,15 @@ textarea {
 #a5_5, #a5_6, #a5_7, #a5_9, #a5_10, #a5_11 {
 	padding-left: 19px;
 }
+
+.tab-content-1, .tab-content-3,
+.tab-content-4, .tab-content-5,
+.tab-content-6, .tab-content-7,
+.tab-content-8, .tab-content-9,
+.tab-content-10, .tab-content-11, .tab-content-12 {
+	height: 575px;
+}
+
+.tab-content-1, .tab-content-3 {
+	overflow-y: scroll;
+}

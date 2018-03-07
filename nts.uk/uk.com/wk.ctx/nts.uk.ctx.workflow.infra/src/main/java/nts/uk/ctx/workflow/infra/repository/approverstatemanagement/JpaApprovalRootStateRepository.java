@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.infra.repository.approverstatemanagement;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
@@ -34,6 +37,8 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	private static final String SELECT_TYPE_APP;
 	
 	private static final String SELECT_BY_TYPE_APPS;
+	
+	private static final String SELECT_BY_DATE;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -53,6 +58,14 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" WHERE e.rootType = 0");
 		builderString.append(" AND e.wwfdpApprovalRootStatePK.rootStateID IN :rootStateIDs");
 		SELECT_BY_TYPE_APPS = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM WwfdtApprovalRootState e");
+		builderString.append(" WHERE e.recordDate >= :startDate");
+		builderString.append(" AND e.recordDate <= :endDate");
+		builderString.append(" AND e.rootType = :rootType");
+		SELECT_BY_DATE = builderString.toString();
 	}
 	@Override
 	public List<ApprovalRootState> findEmploymentApps(List<String> rootStateIDs) {
@@ -124,6 +137,30 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 						approverState.getFrameOrder(), 
 						approverState.getApproverID()), WwfdtApproverState.class).get();
 		return wwfdtApproverState;
+	}
+
+	@Override
+	public List<ApprovalRootState> findEmployeeAppByApprovalRecordDate(GeneralDate startDate, GeneralDate endDate,
+			String approverID,Integer rootType) {
+		List<ApprovalRootState> result  = new ArrayList<>();
+		List<ApprovalRootState> approvalRootStates = this.queryProxy().query(SELECT_BY_DATE, WwfdtApprovalRootState.class)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.setParameter("rootType", rootType).getList(x -> x.toDomain());
+		if(!CollectionUtil.isEmpty(approvalRootStates)){
+			for(ApprovalRootState approvalRootState : approvalRootStates){
+				for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
+					for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
+						for(ApproverState approverState : approvalFrame.getListApproverState()){
+							if(approverState.getApproverID().equals(approverID)){
+								result.add(approvalRootState);
+							}
+						}
+					}
+				}
+			}
+		}	
+		return result;
 	}
 
 	
