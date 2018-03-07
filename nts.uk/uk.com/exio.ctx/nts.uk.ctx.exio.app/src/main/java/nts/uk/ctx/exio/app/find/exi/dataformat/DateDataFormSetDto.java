@@ -14,20 +14,6 @@ import nts.uk.ctx.exio.dom.exi.dataformat.DateDataFormSet;
 public class DateDataFormSetDto
 {
     
-    /**
-    * 会社ID
-    */
-    private String cid;
-    
-    /**
-    * 条件設定コード
-    */
-    private String conditionSetCd;
-    
-    /**
-    * 受入項目番号
-    */
-    private int acceptItemNum;
     
     /**
     * 固定値
@@ -44,13 +30,10 @@ public class DateDataFormSetDto
     */
     private int formatSelection;
     
-    
-    private Long version;
 
 	public static DateDataFormSetDto fromDomain(DateDataFormSet domain) {
-		return new DateDataFormSetDto(domain.getCid(), domain.getConditionSetCd(), domain.getAcceptItemNum(),
-				domain.getFixedValue().value, domain.getValueOfFixedValue().get().v(),
-				domain.getFormatSelection().value, domain.getVersion());
+		return new DateDataFormSetDto(domain.getFixedValue().value, domain.getValueOfFixedValue().get().v(),
+				domain.getFormatSelection().value);
 	}
     
 }

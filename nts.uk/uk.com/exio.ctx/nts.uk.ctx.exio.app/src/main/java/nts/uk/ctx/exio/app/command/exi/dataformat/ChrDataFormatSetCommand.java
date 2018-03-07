@@ -9,21 +9,6 @@ public class ChrDataFormatSetCommand
 {
     
     /**
-    * 会社ID
-    */
-    private String cid;
-    
-    /**
-    * 条件設定コード
-    */
-    private String conditionSetCd;
-    
-    /**
-    * 受入項目番号
-    */
-    private int acceptItemNum;
-    
-    /**
     * コード編集
     */
     private int cdEditing;
@@ -41,7 +26,7 @@ public class ChrDataFormatSetCommand
     /**
     * コード変換コード
     */
-    private int cdConvertCd;
+    private String cdConvertCd;
     
     /**
     * コード編集方法
@@ -67,7 +52,5 @@ public class ChrDataFormatSetCommand
     * 有効桁数終了桁
     */
     private int endDigit;
-    
-    private Long version;
 
 }

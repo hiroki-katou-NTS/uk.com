@@ -12,6 +12,8 @@ public class StdAcceptItemCommand {
 	 */
 	private String conditionSettingCode;
 
+	private String categoryId;
+
 	/**
 	 * 受入項目番号
 	 */
@@ -44,7 +46,7 @@ public class StdAcceptItemCommand {
 
 	private AcScreenCondSetCommand screenConditionSetting;
 
-	public StdAcceptItemCommand(String conditionSettingCode, int acceptItemNumber, int csvItemNumber,
+	public StdAcceptItemCommand(String conditionSettingCode, String categoryId, int acceptItemNumber, int csvItemNumber,
 			String csvItemName, int itemType, int categoryItemNo, AcScreenCondSetCommand screenConditionSetting) {
 		super();
 		this.conditionSettingCode = conditionSettingCode;
@@ -54,11 +56,12 @@ public class StdAcceptItemCommand {
 		this.itemType = itemType;
 		this.screenConditionSetting = screenConditionSetting;
 		this.categoryItemNo = categoryItemNo;
+		this.categoryId = categoryId;
 	}
 
-	public static StdAcceptItem toDomain(String companyId, int systemType, StdAcceptItemCommand dto) {
-		return new StdAcceptItem(companyId, systemType, dto.getConditionSettingCode(), dto.getAcceptItemNumber(),
-				dto.getCategoryItemNo(), dto.getCsvItemNumber(), dto.getCsvItemName(), dto.getItemType(), null);
-	}
+//	public static StdAcceptItem toDomain(String companyId, int systemType, StdAcceptItemCommand dto) {
+//		return new StdAcceptItem(companyId, systemType, dto.getConditionSettingCode(), dto.getCategoryId(),
+//				dto.acceptItemNumber, dto.categoryItemNo, dto.csvItemNumber, dto.csvItemName, dto.itemType, null, null);
+//	}
 
 }

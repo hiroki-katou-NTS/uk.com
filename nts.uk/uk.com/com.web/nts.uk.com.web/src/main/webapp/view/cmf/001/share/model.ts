@@ -253,7 +253,7 @@ module nts.uk.com.view.cmf001.share.model {
         decimalDivision: KnockoutObservable<number>;
         effectiveDigitLength: KnockoutObservable<number>;
         codeConvertCode: KnockoutObservable<AcceptanceCodeConvert>;
-        valueOfFixed: KnockoutObservable<string>;
+        valueOfFixedValue: KnockoutObservable<string>;
         decimalDigitNumber: KnockoutObservable<number>;
         startDigit: KnockoutObservable<number>;
         endDigit: KnockoutObservable<number>;
@@ -266,7 +266,7 @@ module nts.uk.com.view.cmf001.share.model {
             this.decimalDivision = ko.observable(decimalDivision);
             this.effectiveDigitLength = ko.observable(effectDigitLength);
             this.codeConvertCode = ko.observable(codeConvertCode);
-            this.valueOfFixed = ko.observable(valueOfFixed);
+            this.valueOfFixedValue = ko.observable(valueOfFixed);
             this.decimalDigitNumber = ko.observable(decimalDigitNumber);
             this.startDigit = ko.observable(startDigit);
             this.endDigit = ko.observable(endDigit);
@@ -283,17 +283,17 @@ module nts.uk.com.view.cmf001.share.model {
         codeConvertCode: KnockoutObservable<AcceptanceCodeConvert>;
         codeEditingMethod: KnockoutObservable<number>;
         codeEditDigit: KnockoutObservable<number>;
-        valueOfFixed: KnockoutObservable<string>;
+        fixedVal: KnockoutObservable<string>;
         startDigit: KnockoutObservable<number>;
         endDigit: KnockoutObservable<number>;
 
         constructor(effectDigitLength: number, startDigit: number, endDigit: number, codeEditing: number, codeEditDigit: number,
-         codeEditingMethod: number, codeConvertCode: AcceptanceCodeConvert, fixedValue: number, valueOfFixed: string) {
+         codeEditingMethod: number, codeConvertCode: AcceptanceCodeConvert, fixedValue: number, fixedVal: string) {
             this.fixedValue = ko.observable(fixedValue);
             this.codeEditing = ko.observable(codeEditing);
             this.effectiveDigitLength = ko.observable(effectDigitLength);
             this.codeConvertCode = ko.observable(codeConvertCode);
-            this.valueOfFixed = ko.observable(valueOfFixed);
+            this.fixedVal = ko.observable(fixedVal);
             this.codeEditDigit = ko.observable(codeEditDigit);
             this.startDigit = ko.observable(startDigit);
             this.endDigit = ko.observable(endDigit);

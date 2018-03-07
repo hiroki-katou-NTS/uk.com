@@ -70,10 +70,10 @@ module nts.uk.com.view.cmf001.h.viewmodel {
             self.characterDataFormatSetting = ko.observable(new model.CharacterDataFormatSetting(charSet.effectiveDigitLength, charSet.startDigit,
             charSet.endDigit, charSet.codeEditing, charSet.codeEditDigit, charSet.codeEditingMethod,
             convertCode, charSet.fixedValue, charSet.valueOfFixed));   
-//            nts.uk.util.value.reset($("#G2_5"), numFormat.startDigit);
-//            nts.uk.util.value.reset($("#G2_8"), numFormat.endDigit);
-//            nts.uk.util.value.reset($("#G3_6"), numFormat.decimalDigitNumber);
-//            nts.uk.util.value.reset($("#G5_5"), numFormat.valueOfFixed);
+//            nts.uk.util.value.reset($("#H2_5"), numFormat.startDigit);
+//            nts.uk.util.value.reset($("#H2_8"), numFormat.endDigit);
+//            nts.uk.util.value.reset($("#H3_5"), numFormat.decimalDigitNumber);
+//            nts.uk.util.value.reset($("#H5_5"), numFormat.fixedVal);
         }
         open001_K(data){
             var self = this;

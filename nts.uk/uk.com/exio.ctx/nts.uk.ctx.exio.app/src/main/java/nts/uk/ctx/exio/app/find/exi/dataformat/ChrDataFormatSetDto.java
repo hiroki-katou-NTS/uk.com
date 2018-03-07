@@ -14,21 +14,6 @@ import nts.uk.ctx.exio.dom.exi.dataformat.ChrDataFormatSet;
 public class ChrDataFormatSetDto {
 
 	/**
-	 * 会社ID
-	 */
-	private String cid;
-
-	/**
-	 * 条件設定コード
-	 */
-	private String conditionSetCd;
-
-	/**
-	 * 受入項目番号
-	 */
-	private int acceptItemNum;
-
-	/**
 	 * コード編集
 	 */
 	private int cdEditing;
@@ -46,7 +31,7 @@ public class ChrDataFormatSetDto {
 	/**
 	 * コード変換コード
 	 */
-	private int cdConvertCd;
+	private String cdConvertCd;
 
 	/**
 	 * コード編集方法
@@ -73,13 +58,11 @@ public class ChrDataFormatSetDto {
 	 */
 	private int endDigit;
 
-	private Long version;
-
 	public static ChrDataFormatSetDto fromDomain(ChrDataFormatSet domain) {
-		return new ChrDataFormatSetDto(domain.getCid(), domain.getConditionSetCd(), domain.getAcceptItemNum(),
-				domain.getCdEditing().value, domain.getFixedValue().value, domain.getEffectiveDigitLength().value,
-				domain.getCdConvertCd(), domain.getCdEditMethod().get().value, domain.getCdEditDigit().get().v(), domain.getFixedVal().get().v(),
-				domain.getStartDigit().get().v(), domain.getEndDigit().get().v(), domain.getVersion());
+		return new ChrDataFormatSetDto(domain.getCdEditing().value, domain.getFixedValue().value,
+				domain.getEffectiveDigitLength().value, domain.getCdConvertCd().get().v(),
+				domain.getCdEditMethod().get().value, domain.getCdEditDigit().get().v(), domain.getFixedVal().get().v(),
+				domain.getStartDigit().get().v(), domain.getStartDigit().get().v());
 	}
 
 }

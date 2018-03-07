@@ -76,7 +76,7 @@ module nts.uk.com.view.cmf001.g.viewmodel {
 //            nts.uk.util.value.reset($("#G2_5"), numFormat.startDigit);
 //            nts.uk.util.value.reset($("#G2_8"), numFormat.endDigit);
 //            nts.uk.util.value.reset($("#G3_6"), numFormat.decimalDigitNumber);
-//            nts.uk.util.value.reset($("#G5_5"), numFormat.valueOfFixed);
+//            nts.uk.util.value.reset($("#G5_5"), numFormat.valueOfFixedValue);
         }
         open001_K(data) {
             var self = this;

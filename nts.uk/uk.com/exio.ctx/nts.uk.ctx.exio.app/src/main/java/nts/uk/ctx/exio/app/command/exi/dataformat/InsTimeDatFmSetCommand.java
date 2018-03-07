@@ -9,21 +9,6 @@ public class InsTimeDatFmSetCommand
 {
     
     /**
-    * 会社ID
-    */
-    private String cid;
-    
-    /**
-    * 条件設定コード
-    */
-    private String conditionSetCd;
-    
-    /**
-    * 受入項目番号
-    */
-    private int acceptItemNum;
-    
-    /**
     * 区切り文字設定
     */
     private int delimiterSet;
@@ -72,7 +57,5 @@ public class InsTimeDatFmSetCommand
     * 端数処理区分
     */
     private int roundProcCls;
-    
-    private Long version;
 
 }

@@ -57,7 +57,7 @@ public class ChrDataFormatSet extends DataFormatSetting {
 	 * 有効桁数終了桁
 	 */
 	private Optional<AcceptedDigit> endDigit;
-
+	
 	public ChrDataFormatSet(int itemType, int cdEditing, int fixedValue,
 			int effectiveDigitLength, String cdConvertCd, Integer cdEditMethod, Integer cdEditDigit,
 			String fixedVal, Integer startDigit, Integer endDigit) {

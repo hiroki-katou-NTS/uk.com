@@ -9,21 +9,6 @@ public class NumDataFormatSetCommand
 {
     
     /**
-    * 会社ID
-    */
-    private String cid;
-    
-    /**
-    * 条件設定コード
-    */
-    private String conditionSetCd;
-    
-    /**
-    * 受入項目番号
-    */
-    private int acceptItemNum;
-    
-    /**
     * 固定値
     */
     private int fixedValue;
@@ -41,7 +26,7 @@ public class NumDataFormatSetCommand
     /**
     * コード変換コード
     */
-    private int cdConvertCd;
+    private String cdConvertCd;
     
     /**
     * 固定値の値
@@ -73,6 +58,5 @@ public class NumDataFormatSetCommand
     */
     private int decimalFraction;
     
-    private Long version;
 
 }
