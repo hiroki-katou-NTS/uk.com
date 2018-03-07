@@ -5,14 +5,16 @@
 package nts.uk.query.pubimp.employee;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import employee.RegulationInfoEmployeePub;
-import nts.uk.query.app.employee.EmployeeSearchQueryDto;
-import nts.uk.query.app.employee.RegulationInfoEmployeeDto;
-import nts.uk.query.app.employee.RegulationInfoEmployeeFinder;
+import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
+import nts.uk.query.pub.employee.EmployeeSearchQueryDto;
+import nts.uk.query.pub.employee.RegulationInfoEmployeeExport;
+import nts.uk.query.pub.employee.RegulationInfoEmployeePub;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class RegulationInfoEmployeePubImpl.
@@ -20,9 +22,9 @@ import nts.uk.query.app.employee.RegulationInfoEmployeeFinder;
 @Stateless
 public class RegulationInfoEmployeePubImpl implements RegulationInfoEmployeePub {
 
-	/** The employee finder. */
+	/** The emp repo. */
 	@Inject
-	private RegulationInfoEmployeeFinder employeeFinder;
+	private RegulationInfoEmployeeRepository empRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -31,7 +33,16 @@ public class RegulationInfoEmployeePubImpl implements RegulationInfoEmployeePub 
 	 * EmployeeSearchQueryDto)
 	 */
 	@Override
-	public List<RegulationInfoEmployeeDto> find(EmployeeSearchQueryDto query) {
-		return this.employeeFinder.find(query);
+	public List<RegulationInfoEmployeeExport> find(EmployeeSearchQueryDto query) {
+		return this.empRepo.find(AppContexts.user().companyId(), query.toQueryModel()).stream()
+				.map(model -> RegulationInfoEmployeeExport.builder()
+						.employeeCode(model.getEmployeeCode())
+						.employeeId(model.getEmployeeID())
+						.employeeName(model.getName().orElse(""))
+						.workplaceId(model.getWorkplaceId().orElse(""))
+						.workplaceCode(model.getWorkplaceCode().orElse(""))
+						.workplaceName(model.getWorkplaceName().orElse(""))
+						.build())
+				.collect(Collectors.toList());
 	}
 }
