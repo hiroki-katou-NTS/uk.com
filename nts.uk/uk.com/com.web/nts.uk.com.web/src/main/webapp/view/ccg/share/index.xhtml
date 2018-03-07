@@ -259,12 +259,12 @@
 										</h3>
 										<div class="contentkcp">
 											<div style="width: 340px" tabindex="30" data-bind="ntsSearchBox: {
-												searchMode: 'highlight',
-												targetKey: 'workTypeCode',
+												searchMode: 'filter',
+												targetKey: 'businessTypeCode',
 												comId: 'list-worktype', 
 												items: listWorkType,
-												selectedKey: 'workTypeCode',
-												fields: ['workTypeCode', 'name'],
+												selectedKey: 'businessTypeCode',
+												fields: ['businessTypeCode', 'businessTypeName'],
 												mode: 'listbox'}" />
 											<table id="list-worktype" tabindex="31"
 											data-bind="ntsGridList: {
