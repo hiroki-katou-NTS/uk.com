@@ -7,11 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Version;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
