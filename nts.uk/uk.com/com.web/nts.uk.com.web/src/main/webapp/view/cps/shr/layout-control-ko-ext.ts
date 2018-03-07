@@ -2228,30 +2228,15 @@ module nts.custombinding {
                 } else { // group mode
                     let ids: Array<string> = ko.toJS(opts.listbox.value),
                         groups: Array<any> = ko.unwrap(opts.listbox.options),
-                        filters: Array<any> = _.filter(groups, x => ids.indexOf(x.id) > -1);
+                        filters: Array<any> = _(groups)
+                            .filter(x => ids.indexOf(x.id) > -1)
+                            .map(x => x.id)
+                            .value();
 
                     if (filters && filters.length) {
-                        let dfds: Array<JQueryDeferred<any>> = [];
-
-                        _.each(filters, group => {
-                            let dfd = $.Deferred<any>();
-                            services.getItemByGroup(group.id).done((data: Array<IItemDefinition>) => {
-                                dfd.resolve(data);
-                            }).fail(x => dfd.reject(false));
-
-                            dfds.push(dfd);
-                        });
-
-                        // push all item to sortable when done
-                        $.when.apply($, dfds).then(function() {
-                            // remove all item if it's abolition
-                            let items = _(_.flatten(arguments) as Array<IItemDefinition>)
-                                .filter(x => !x.isAbolition)
-                                .orderBy(x => x.dispOrder)
-                                .value();
-
-                            if (items && items.length) {
-                                opts.sortable.pushAllItems(items, true);
+                        services.getItemByGroups(filters).done((defs: Array<IItemDefinition>) => {
+                            if (defs && defs.length) {
+                                opts.sortable.pushAllItems(defs, true);
                                 scrollDown();
                             }
                         });
