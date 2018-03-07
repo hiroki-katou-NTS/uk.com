@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.app.find.bonuspay;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,6 +19,9 @@ public class WPBonusPaySettingFinder {
 	private WPBonusPaySettingRepository repo;
 
 	public List<WPBonusPaySettingDto> getListSetting(List<String> lstWorkplace) {
+		if(lstWorkplace==null||lstWorkplace.isEmpty()){
+			return new ArrayList<WPBonusPaySettingDto>();
+		}
 		List<WorkplaceBonusPaySetting> domains = this.repo
 				.getListSetting(lstWorkplace.stream().map(c -> new WorkplaceId(c)).collect(Collectors.toList()));
 

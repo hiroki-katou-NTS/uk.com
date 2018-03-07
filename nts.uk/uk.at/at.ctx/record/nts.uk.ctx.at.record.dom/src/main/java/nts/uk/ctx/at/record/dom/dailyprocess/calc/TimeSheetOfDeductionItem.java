@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
+import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
@@ -45,9 +45,9 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 									,TimeSpanForCalc timeSpan
 									,List<TimeSheetOfDeductionItem> recorddeductionTimeSheets
 									,List<TimeSheetOfDeductionItem> deductionTimeSheets
-									,List<BonusPayTimesheet> bonusPayTimeSheet
-									,List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet
-									,Optional<MidNightTimeSheet> midNighttimeSheet
+									,List<BonusPayTimeSheetForCalc> bonusPayTimeSheet
+									,List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet
+									,Optional<MidNightTimeSheetForCalc> midNighttimeSheet
 									,Finally<GoingOutReason> goOutReason
 									,Finally<BreakClassification> breakAtr
 									,DeductionClassification deductionAtr) {
@@ -70,9 +70,9 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 			,TimeSpanForCalc timeSpan
 			,List<TimeSheetOfDeductionItem> recorddeductionTimeSheets
 			,List<TimeSheetOfDeductionItem> deductionTimeSheets
-			,List<BonusPayTimesheet> bonusPayTimeSheet
-			,List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet
-			,Optional<MidNightTimeSheet> midNighttimeSheet
+			,List<BonusPayTimeSheetForCalc> bonusPayTimeSheet
+			,List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet
+			,Optional<MidNightTimeSheetForCalc> midNighttimeSheet
 			,Finally<GoingOutReason> goOutReason
 			,Finally<BreakClassification> breakAtr
 			,DeductionClassification deductionAtr) {
@@ -313,9 +313,9 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	public TimeSheetOfDeductionItem reCreateOwn(TimeWithDayAttr baseTime,boolean isDateBefore) {
 			List<TimeSheetOfDeductionItem>  recorddeductionTimeSheets = this.recreateDeductionItemBeforeBase(baseTime,isDateBefore);
 			List<TimeSheetOfDeductionItem>  deductionTimeSheets = this.recreateDeductionItemBeforeBase(baseTime,isDateBefore);
-			List<BonusPayTimesheet>         bonusPayTimeSheet = this.recreateBonusPayListBeforeBase(baseTime,isDateBefore);
-			List<SpecBonusPayTimesheet>specifiedBonusPayTimeSheet = this.recreateSpecifiedBonusPayListBeforeBase(baseTime, isDateBefore);
-			Optional<MidNightTimeSheet>     midNighttimeSheet = this.recreateMidNightTimeSheetBeforeBase(baseTime,isDateBefore);
+			List<BonusPayTimeSheetForCalc>         bonusPayTimeSheet = this.recreateBonusPayListBeforeBase(baseTime,isDateBefore);
+			List<SpecBonusPayTimeSheetForCalc>specifiedBonusPayTimeSheet = this.recreateSpecifiedBonusPayListBeforeBase(baseTime, isDateBefore);
+			Optional<MidNightTimeSheetForCalc>     midNighttimeSheet = this.recreateMidNightTimeSheetBeforeBase(baseTime,isDateBefore);
 			TimeSpanForCalc renewSpan = decisionNewSpan(this.calcrange,baseTime,isDateBefore);
 			return new TimeSheetOfDeductionItem(this.getTimeSheet(),
 												renewSpan,

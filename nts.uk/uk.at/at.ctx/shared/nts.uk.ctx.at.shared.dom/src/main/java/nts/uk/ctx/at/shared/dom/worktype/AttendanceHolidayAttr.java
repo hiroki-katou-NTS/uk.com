@@ -30,4 +30,12 @@ public enum AttendanceHolidayAttr {
 			throw new RuntimeException("invalid value:" + this);
 		}
 	}
+	
+	/**
+	 * decision holiday
+	 * @return is holiday
+	 */
+	public boolean isHoliday() {
+		return this.equals(HOLIDAY);
+	}
 }

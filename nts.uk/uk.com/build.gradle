@@ -1162,6 +1162,16 @@ project (':query:nts.uk.query.ws') {
 	}
 }
 
+// Query Projects. Add by TienDD.
+project (':query:nts.uk.query.pubimp') {
+	dependencies {
+		compile project(':query:nts.uk.query.pub')
+		compile project(':query:nts.uk.query.model')
+		compile project(':query:nts.uk.query.app')
+		compile project(':query:nts.uk.query.infra')
+	}
+}
+
 artifactory {
 	contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
 	publish {

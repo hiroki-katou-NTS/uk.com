@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -28,9 +29,6 @@ public class KrcdtIdentificationStatus extends UkJpaEntity implements Serializab
 
 	@EmbeddedId
 	public KrcdtIdentificationStatusPK krcdtIdentificationStatusPK;
-
-	@Column(name = "PROCESSING_YMD")
-	public GeneralDate processingYmd;
 	
 	@Column(name = "INDENTIFICATION_YMD")
 	public GeneralDate indentificationYmd;
@@ -38,5 +36,24 @@ public class KrcdtIdentificationStatus extends UkJpaEntity implements Serializab
 	@Override
 	protected Object getKey() {
 		return this.krcdtIdentificationStatusPK;
+	}
+	
+	public Identification toDomain() {
+		return new Identification(
+				this.krcdtIdentificationStatusPK.companyID,
+				this.krcdtIdentificationStatusPK.employeeId,
+				this.krcdtIdentificationStatusPK.processingYmd,
+				this.indentificationYmd
+				);
+	}
+	
+	public static KrcdtIdentificationStatus toEntity(Identification entity) {
+		return new KrcdtIdentificationStatus(
+				new KrcdtIdentificationStatusPK(
+						entity.getCompanyID(),
+						entity.getEmployeeId(),
+						entity.getProcessingYmd()),
+				entity.getIndentificationYmd()
+				);
 	}
 }

@@ -26,7 +26,7 @@ public class WithActualTimeStampDto {
 	/** 打刻反映回数 */
 	// @AttendanceItemLayout(layout = "C")
 	// @AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
-	private int numberOfReflectionStamp;
+	private Integer numberOfReflectionStamp;
 	
 	public static WithActualTimeStampDto toWithActualTimeStamp(TimeActualStamp stamp){
 		return stamp == null ? null : new WithActualTimeStampDto(

@@ -63,10 +63,10 @@ public class EmployeeSearchQueryDto implements Serializable {
 	private List<String> jobTitleCodes; // 職位ID一覧
 
 	/** The filter by worktype. */
-	private Boolean filterByWorktype;
+	private Boolean filterByWorktype; // 勤務種別で絞り込む
 	
 	/** The worktype codes. */
-	private List<String> worktypeCodes;
+	private List<String> worktypeCodes; // 勤務種別コード一覧
 
 	/** The period start. */
 	private String periodStart; // 在職・休職・休業のチェック期間
@@ -85,6 +85,12 @@ public class EmployeeSearchQueryDto implements Serializable {
 
 	/** The include retirees. */
 	private Boolean includeRetirees; // 退職者を含める
+
+	/** The include are on loan. */
+	private Boolean includeAreOnLoan; // 出向に来ている社員を含める
+
+	/** The include going on loan. */
+	private Boolean includeGoingOnLoan; // 出向に行っている社員を含める
 
 	/** The retire start. */
 	private String retireStart; // 退職日のチェック期間

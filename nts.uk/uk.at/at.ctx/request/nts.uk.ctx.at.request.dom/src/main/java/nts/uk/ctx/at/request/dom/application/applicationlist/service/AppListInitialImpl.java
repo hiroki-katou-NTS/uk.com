@@ -39,7 +39,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentDa
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
@@ -50,6 +49,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.primitive.ShowName;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
@@ -285,6 +285,11 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					}
 				}
 				//「承認する申請」の場合
+				if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_APPROVED)){
+					if(lstEmployeeIdSub.equals(app.getApplication().getEmployeeID())){
+						lstAppFilter2.add(app);
+					}
+				}
 				// TODO Auto-generated method stub
 			}
 			//条件３：承認区分の指定条件
@@ -302,7 +307,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					continue;
 				}
 				//申請一覧共通設定.承認状況＿未承認がチェックあり(True)の場合 - A4_1_1: check
-				if(param.isUnapprovalStatus() && state.equals(ReflectedState_New.NOTREFLECTED)){
+				//「承認する申請」の場合
+				if(param.isUnapprovalStatus() && state.equals(ReflectedState_New.NOTREFLECTED) || param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_APPROVED)){
 					if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
 							&& status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
 						check = true;
@@ -492,7 +498,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 						}
 					}
 					if(!lstAppPre.isEmpty()){
-						group = new AppPrePostGroup(appID, lstAppPre.get(0).getEmployeeID(), null);
+						group = new AppPrePostGroup(appID, lstAppPre.get(0).getAppID(), null);
 					}
 				}
 				//承認一覧表示設定.残業の実績
@@ -506,7 +512,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					if(group != null){
 						group.setTime(result.getLstFrameResult());
 					}else{
-						group = new AppPrePostGroup(sID, "", result.getLstFrameResult());
+						group = new AppPrePostGroup("", sID, result.getLstFrameResult());
 					}
 				}
 				if(group != null){
@@ -576,56 +582,56 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	public TimeResultOutput getAppListAchievementOverTime(String sID, GeneralDate date, List<OverTimeFrame> time) {
 		//Imported(申請承認)「勤務実績」を取得する - req #5
 		RecordWorkInfoImport record = recordWkpInfoAdapter.getRecordWorkInfo(sID, date);
-		DailyAttendanceTimeCaculationImport cal = calTime.getCalculation(sID, date, record.getWorkTypeCode(), record.getWorkTimeCode(), 0, 0, 0, 0);
+//		DailyAttendanceTimeCaculationImport cal = calTime.getCalculation(sID, date, record.getWorkTypeCode(), record.getWorkTimeCode(),record.getAttendanceStampTimeFirst(), record.getLeaveStampTimeFirst(), 0, 0);
 		//Imported(申請承認)「計算残業時間」を取得する - req #23
 		boolean checkColor = false;
 		List<OverTimeFrame> lstFrameResult = new ArrayList<>();
-		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getOverTime().entrySet()){
-			for(OverTimeFrame i : time){
-				if(i.getFrameNo() == entry.getKey()){
-					int a =	entry.getValue().getCalTime();
-					if(a < i.getApplicationTime()){
-						checkColor = true;
-					}
-					OverTimeFrame frameRes = i;
-					frameRes.setApplicationTime(a);
-				}
-			}
-		}
-		// TODO Auto-generated method stub
-		//Imported(申請承認)「計算休出時間」を取得する - req #23
-		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getHolidayWorkTime().entrySet()){
-			for(OverTimeFrame i : time){
-				if(i.getFrameNo() == entry.getKey()){
-					int a =	entry.getValue().getCalTime();
-					if(a < i.getApplicationTime()){
-						checkColor = true;
-					}
-				}
-			}
-		}
-		// TODO Auto-generated method stub
-		//Imported(申請承認)「計算加給時間」を取得する - req #23
-		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getBonusPayTime().entrySet()){
-			for(OverTimeFrame i : time){
-				if(i.getFrameNo() == entry.getKey()){
-					int a =	entry.getValue().getCalTime();
-					if(a < i.getApplicationTime()){
-						checkColor = true;
-					}
-				}
-			}
-		}
-		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getSpecBonusPayTime().entrySet()){
-			for(OverTimeFrame i : time){
-				if(i.getFrameNo() == entry.getKey()){
-					int a =	entry.getValue().getCalTime();
-					if(a < i.getApplicationTime()){
-						checkColor = true;
-					}
-				}
-			}
-		}
+//		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getOverTime().entrySet()){
+//			for(OverTimeFrame i : time){
+//				if(i.getFrameNo() == entry.getKey()){
+//					int a =	entry.getValue().getCalTime();
+//					if(a < i.getApplicationTime()){
+//						checkColor = true;
+//					}
+//					OverTimeFrame frameRes = i;
+//					frameRes.setApplicationTime(a);
+//				}
+//			}
+//		}
+//		// TODO Auto-generated method stub
+//		//Imported(申請承認)「計算休出時間」を取得する - req #23
+//		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getHolidayWorkTime().entrySet()){
+//			for(OverTimeFrame i : time){
+//				if(i.getFrameNo() == entry.getKey()){
+//					int a =	entry.getValue().getCalTime();
+//					if(a < i.getApplicationTime()){
+//						checkColor = true;
+//					}
+//				}
+//			}
+//		}
+//		// TODO Auto-generated method stub
+//		//Imported(申請承認)「計算加給時間」を取得する - req #23
+//		for(Map.Entry<Integer,Integer> entry : cal.getBonusPayTime().entrySet()){
+//			for(OverTimeFrame i : time){
+//				if(i.getFrameNo() == entry.getKey()){
+//					int a =	entry.getValue().intValue();
+//					if(a < i.getApplicationTime()){
+//						checkColor = true;
+//					}
+//				}
+//			}
+//		}
+//		for(Map.Entry<Integer,Integer> entry : cal.getSpecBonusPayTime().entrySet()){
+//			for(OverTimeFrame i : time){
+//				if(i.getFrameNo() == entry.getKey()){
+//					int a =	entry.getValue().intValue();
+//					if(a < i.getApplicationTime()){
+//						checkColor = true;
+//					}
+//				}
+//			}
+//		}
 		return new TimeResultOutput(checkColor, lstFrameResult);
 	}
 	/**
@@ -691,17 +697,22 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	public List<AppMasterInfo> getListAppMasterInfo(List<Application_New> lstApp, String companyId) {
 		//ドメインモデル「申請一覧共通設定」を取得する-(Lấy domain Application list common settings) - wait YenNTH
 		Optional<AppCommonSet> appCommonSet = repoAppCommonSet.find();
+		ShowName displaySet = appCommonSet.get().getShowWkpNameBelong();
 		List<AppMasterInfo> lstAppMasterInfo = new ArrayList<>();
 		//申請一覧リスト　繰返し実行
 		for (Application_New app : lstApp) {
 			//ドメインモデル「申請表示名」より申請表示名称を取得する-(Lấy Application display name) - wait YenNTH
 			Optional<AppDispName> appDispName = repoAppDispName.getDisplay(app.getAppType().value);
 			//アルゴリズム「社員IDから個人社員基本情報を取得」を実行する - req #1
-			String empName = empRequestAdapter.getEmployeeName(app.getEmployeeID());
+			String empName = displaySet.equals(ShowName.SHOW) ? empRequestAdapter.getEmployeeName(app.getEmployeeID()) : "";
 			// TODO Auto-generated method stub
 			//アルゴリズム「社員から職場を取得する」を実行する - req #30
 			WkpHistImport wkp = wkpAdapter.findWkpBySid(app.getEmployeeID(), app.getAppDate());
-			String wkpID = wkp == null ? "" : wkp.getWorkplaceId();
+			String wkpID = "";
+			if(displaySet.equals(ShowName.SHOW) && wkp != null){
+				wkp.getWorkplaceId();
+			}
+//			String wkpID = wkp == null ? "" : wkp.getWorkplaceId();
 			//アルゴリズム「申請一覧事前必須チェック」を実行する- (check App Predict Require): 0 - 申請一覧事前必須チェック
 			Boolean check = this.checkAppPredictRequire(app.getAppType().value, wkpID, companyId);
 			boolean checkAddNote = false;
@@ -795,7 +806,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 */
 	private List<ApplicationFullOutput> mergeAppAndPhase(List<Application_New> lstApp, String companyID){
 		List<ApplicationFullOutput> lstAppFull = new ArrayList<>();
-		long start = System.currentTimeMillis();
 		List<String> appIDs = lstApp.stream().map(x -> x.getAppID()).collect(Collectors.toList());
 //		for (Application_New app : lstApp) {
 //			List<ApprovalPhaseStateImport_New> lstPhase = approvalRootStateAdapter.getApprovalRootContent(companyID, 
@@ -813,8 +823,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				
 			}
 		}
-		long end = System.currentTimeMillis();
-		  System.out.println("Thời gian chạy đoạn lệnh: " + (end - start) + "Millis");
 		return lstAppFull;
 	}
 	/**
