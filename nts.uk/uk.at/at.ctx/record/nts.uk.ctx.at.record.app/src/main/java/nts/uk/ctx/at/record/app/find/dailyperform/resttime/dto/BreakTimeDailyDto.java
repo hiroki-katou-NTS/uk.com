@@ -90,6 +90,9 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 	
 	@Override
 	public BreakTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new BreakTimeOfDailyPerformance(emp,
 					EnumAdaptor.valueOf(restTimeType, BreakType.class),
 					timeZone == null ? new ArrayList<>() : ConvertHelper.mapTo(timeZone,

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,6 +52,7 @@ import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
@@ -211,7 +213,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd(); 
 		
 		/*日別実績(Work)の退避*/
-		val copyIntegrationOfDaily = integrationOfDaily;
+		val copyIntegrationOfDaily = dailyRecordToAttendanceItemConverter.setData(integrationOfDaily).toDomain();
 			
 		/*1日の計算範囲クラスを作成*/
 		val oneRange = createOneDayRange(integrationOfDaily);
@@ -493,11 +495,21 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																								   && editState.getYmd() == copyIntegrationOfDaily.getAffiliationInfor().getYmd())
 																			               .map(editState -> editState.getAttendanceItemId())
 																			               .collect(Collectors.toList());
-		//
+
+//----------------------------------------動作検証用に一時的に作成（直ぐに消します）
+//		List<EditStateOfDailyPerformance> editSt = new ArrayList<>();
+//		editSt.add(new EditStateOfDailyPerformance(copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId(),559,copyIntegrationOfDaily.getAffiliationInfor().getYmd(),EditStateSetting.HAND_CORRECTION_MYSELF));
+//					
+//		List<Integer> attendanceItemIdList = editSt.stream().filter(editState -> editState.getEmployeeId()==copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId()
+//				   && editState.getYmd() == copyIntegrationOfDaily.getAffiliationInfor().getYmd())
+//        .map(editState -> editState.getAttendanceItemId())
+//        .collect(Collectors.toList());
+//------------------------------------------
+		
 		DailyRecordToAttendanceItemConverter beforDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(copyIntegrationOfDaily);
-		//
+		
 		List<ItemValue> itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);
-		//
+		
 		DailyRecordToAttendanceItemConverter afterDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(integrationOfDaily);
 		
 		afterDailyRecordDto.merge(itemValueList);

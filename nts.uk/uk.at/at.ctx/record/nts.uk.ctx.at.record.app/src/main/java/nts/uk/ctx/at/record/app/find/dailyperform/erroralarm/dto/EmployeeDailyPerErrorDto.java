@@ -65,6 +65,9 @@ public class EmployeeDailyPerErrorDto extends AttendanceItemCommon {
 	
 	@Override
 	public EmployeeDailyPerError toDomain(String employeeId, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new EmployeeDailyPerError(companyID, employeeId, date,
 				errorCode == null ? null : new ErrorAlarmWorkRecordCode(errorCode), attendanceItemList, 0);
 	}

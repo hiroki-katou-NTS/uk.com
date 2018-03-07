@@ -59,6 +59,9 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 
 	@Override
 	public ShortTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new ShortTimeOfDailyPerformance(
 					emp,
 					shortWorkingTimeSheets == null ? new ArrayList<>() : ConvertHelper.mapTo(shortWorkingTimeSheets,

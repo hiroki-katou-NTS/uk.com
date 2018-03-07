@@ -61,6 +61,9 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 	
 	@Override
 	public AnyItemValueOfDaily toDomain(String employeeId, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new AnyItemValueOfDaily(employeeId, date,
 						optionalItems == null ? new ArrayList<>() : ConvertHelper.mapTo(optionalItems,
 								(c) -> new AnyItemValue(new AnyItemNo(c.getItemNo()), 

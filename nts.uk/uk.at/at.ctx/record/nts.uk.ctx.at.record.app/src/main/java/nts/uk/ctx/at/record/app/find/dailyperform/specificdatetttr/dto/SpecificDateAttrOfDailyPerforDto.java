@@ -50,6 +50,9 @@ public class SpecificDateAttrOfDailyPerforDto extends AttendanceItemCommon {
 
 	@Override
 	public SpecificDateAttrOfDailyPerfor toDomain(String emp, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new SpecificDateAttrOfDailyPerfor(emp,
 				sepecificDateAttrs == null ? new ArrayList<>() : ConvertHelper.mapTo(sepecificDateAttrs,
 						(c) -> new SpecificDateAttrSheet(new SpecificDateItemNo(c.getItemNo()),

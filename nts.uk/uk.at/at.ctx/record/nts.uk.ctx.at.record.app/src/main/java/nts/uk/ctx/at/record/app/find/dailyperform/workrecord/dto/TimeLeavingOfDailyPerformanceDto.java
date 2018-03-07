@@ -61,6 +61,9 @@ public class TimeLeavingOfDailyPerformanceDto extends AttendanceItemCommon {
 	
 	@Override
 	public TimeLeavingOfDailyPerformance toDomain(String emp, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new TimeLeavingOfDailyPerformance(emp, new WorkTimes(toWorkTime()),
 				workAndLeave == null ? new ArrayList<>() : ConvertHelper.mapTo(workAndLeave, c -> toTimeLeaveWork(c)),
 				date);

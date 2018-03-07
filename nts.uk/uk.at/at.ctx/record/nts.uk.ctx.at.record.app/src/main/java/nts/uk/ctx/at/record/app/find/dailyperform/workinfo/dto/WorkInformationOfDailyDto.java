@@ -81,6 +81,9 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 
 	@Override
 	public WorkInfoOfDailyPerformance toDomain(String employeeId, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new WorkInfoOfDailyPerformance(employeeId, getWorkInfo(actualWorkInfo),
 					getWorkInfo(planWorkInfo),
 					ConvertHelper.getEnum(calculationState, CalculationState.class),

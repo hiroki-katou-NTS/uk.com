@@ -61,6 +61,9 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	@Override
 	public OutingTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new OutingTimeOfDailyPerformance(emp, date, 
 					timeZone == null ? new ArrayList<>() : ConvertHelper.mapTo(timeZone,
 						(c) -> new OutingTimeSheet(new OutingFrameNo(c.getWorkNo()), createTimeActual(c.getOuting()),

@@ -80,6 +80,9 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 	
 	@Override
 	public AttendanceTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new AttendanceTimeOfDailyPerformance(emp, date,
 				scheduleTime == null ? null : scheduleTime.toDomain(), 
 				actualWorkTime == null ? null : actualWorkTime.toDomain(),

@@ -54,6 +54,9 @@ public class EditStateOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	@Override
 	public EditStateOfDailyPerformance toDomain(String employeeId, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new EditStateOfDailyPerformance(employeeId, attendanceItemId, date,
 				ConvertHelper.getEnum(editStateSetting, EditStateSetting.class));
 	}

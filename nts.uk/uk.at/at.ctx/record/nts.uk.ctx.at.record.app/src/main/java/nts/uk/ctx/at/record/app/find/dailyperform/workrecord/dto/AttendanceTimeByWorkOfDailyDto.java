@@ -62,6 +62,9 @@ public class AttendanceTimeByWorkOfDailyDto extends AttendanceItemCommon {
 	
 	@Override
 	public AttendanceTimeByWorkOfDaily toDomain(String employeeId, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new AttendanceTimeByWorkOfDaily(employeeId, date,
 					workTimes == null ? new ArrayList<>() : ConvertHelper.mapTo(workTimes,
 								c -> new WorkTimeOfDaily(new WorkFrameNo(c.getWorkFrameNo()),

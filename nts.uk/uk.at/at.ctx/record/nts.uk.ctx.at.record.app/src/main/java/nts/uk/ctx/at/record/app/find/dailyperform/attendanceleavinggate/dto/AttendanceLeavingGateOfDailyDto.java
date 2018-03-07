@@ -69,6 +69,9 @@ public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 
 	@Override
 	public AttendanceLeavingGateOfDaily toDomain(String employeeId, GeneralDate ymd) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new AttendanceLeavingGateOfDaily(employeeId, ymd,
 					attendanceLeavingGateTime == null ? new ArrayList<>() : ConvertHelper.mapTo(attendanceLeavingGateTime,
 						(c) -> new AttendanceLeavingGate(new WorkNo(c.getTimeSheetNo()),

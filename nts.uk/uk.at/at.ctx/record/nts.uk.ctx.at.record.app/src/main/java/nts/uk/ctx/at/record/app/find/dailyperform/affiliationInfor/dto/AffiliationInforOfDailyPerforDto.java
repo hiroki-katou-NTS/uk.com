@@ -68,6 +68,9 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 
 	@Override
 	public AffiliationInforOfDailyPerfor toDomain(String employeeId, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new AffiliationInforOfDailyPerfor(
 					this.employmentCode == null ? null : new EmploymentCode(this.employmentCode), 
 					employeeId, this.jobId, this.workplaceID, date,

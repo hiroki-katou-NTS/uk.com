@@ -64,6 +64,9 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	@Override
 	public TemporaryTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new TemporaryTimeOfDailyPerformance(emp, new WorkTimes(toWorkTimes()), 
 					workLeaveTime == null ? new ArrayList<>() : ConvertHelper.mapTo(workLeaveTime, (c) -> toTimeLeaveWork(c)), date);
 	}

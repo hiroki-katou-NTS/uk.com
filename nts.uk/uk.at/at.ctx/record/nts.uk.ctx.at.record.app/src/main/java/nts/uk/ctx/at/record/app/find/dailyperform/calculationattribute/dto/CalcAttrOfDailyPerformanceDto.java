@@ -121,6 +121,10 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	@Override
 	public CalAttrOfDailyPerformance toDomain(String employeeId, GeneralDate date) {
+
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new CalAttrOfDailyPerformance(
 				employeeId,  date, 
 				newAutoCalcSetting(this.flexExcessTime),
