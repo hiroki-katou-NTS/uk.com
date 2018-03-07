@@ -48,7 +48,6 @@ public class AnnualPaidLeaveFinder {
         dto.setAnnualManage(setting.getYearManageType().value);
         
         // AcquisitionSetting
-        dto.setPermitType(setting.getAcquisitionSetting().permitType.value);
         dto.setAnnualPriority(setting.getAcquisitionSetting().annualPriority.value);
         
         // Manage Annual

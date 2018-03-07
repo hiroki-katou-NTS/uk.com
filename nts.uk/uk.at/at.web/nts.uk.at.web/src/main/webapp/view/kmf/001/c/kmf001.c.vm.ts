@@ -21,8 +21,6 @@ module nts.uk.pr.view.kmf001.c {
             roundProcessClassificationList: KnockoutObservableArray<EnumertionModel>;
             selectedRoundProcessCla: KnockoutObservable<number>;
             
-            applyPermissionList: KnockoutObservableArray<EnumertionModel>;
-            selectedApplyPermission: KnockoutObservable<number>;
             annualPriorityList: KnockoutObservableArray<EnumertionModel>;
             selectedAnnualPriority: KnockoutObservable<number>;
             
@@ -75,8 +73,6 @@ module nts.uk.pr.view.kmf001.c {
                 self.selectedRoundProcessCla = ko.observable(0);
                 
                 // 年休取得の設定
-                self.applyPermissionList = ko.observableArray([]);
-                self.selectedApplyPermission = ko.observable(1);
                 self.annualPriorityList = ko.observableArray([]);
                 self.selectedAnnualPriority = ko.observable(0);
                 
@@ -124,7 +120,7 @@ module nts.uk.pr.view.kmf001.c {
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
-                $.when(self.loadManageDistinctEnums(), self.loadApplyPermissionEnums(), self.loadPreemptionPermitEnums(),
+                $.when(self.loadManageDistinctEnums(), self.loadPreemptionPermitEnums(),
                         self.loadDisplayDivisionEnums(), self.loadTimeUnitEnums(), self.loadMaxDayReferenceEnums(), 
                         self.loadRoundProcessClassificationEnums(), self.loadRoundProcessClassificEnums()).done(function() {
                     self.loadSetting().done(() => {
@@ -185,7 +181,6 @@ module nts.uk.pr.view.kmf001.c {
                 command.maxGrantDay = self.enableAnnualVacation() ? self.maxGrantDay() : dataBackup.maxGrantDay;
                 command.maxRemainingDay = self.enableAnnualVacation() ? self.maxRemainingDay() : dataBackup.maxRemainingDay;
                 command.numberYearRetain = self.enableAnnualVacation() ? self.numberYearRetain() : dataBackup.numberYearRetain;
-                command.permitType = self.enableAnnualVacation() ? self.selectedApplyPermission() : dataBackup.permitType;
                 command.annualPriority = self.enableAnnualVacation() ? self.selectedAnnualPriority() : dataBackup.annualPriority;
                 command.remainingNumberDisplay = self.enableAnnualVacation() ? self.selectedNumberRemainingYearly() : dataBackup.remainingNumberDisplay;
                 command.nextGrantDayDisplay = self.enableAnnualVacation() ? self.selectedNextAnunalVacation() : dataBackup.nextGrantDayDisplay;                
@@ -219,7 +214,6 @@ module nts.uk.pr.view.kmf001.c {
                 self.maxGrantDay(res.maxGrantDay);
                 self.maxRemainingDay(res.maxRemainingDay);
                 self.numberYearRetain(res.numberYearRetain);
-                self.selectedApplyPermission(res.permitType);
                 self.selectedAnnualPriority(res.annualPriority);
                 self.selectedNumberRemainingYearly(res.remainingNumberDisplay);
                 self.selectedNextAnunalVacation(res.nextGrantDayDisplay);
@@ -300,19 +294,6 @@ module nts.uk.pr.view.kmf001.c {
                 let dfd = $.Deferred();
                 service.findManageDistinct().done(function(res: Array<EnumertionModel>) {
                     self.manageDistinctList(res);
-                    dfd.resolve();
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message);
-                });
-                return dfd.promise();
-            }
-            
-            // find enumeration ApplyPermission
-            private loadApplyPermissionEnums(): JQueryPromise<Array<EnumertionModel>> {
-                let self = this;
-                let dfd = $.Deferred();
-                service.findApplyPermission().done(function(res: Array<EnumertionModel>) {
-                    self.applyPermissionList(res);
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);

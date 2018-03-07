@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.app.command.vacation.setting.annualpaidleave;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
@@ -62,9 +61,6 @@ public class AnnualPaidLeaveSaveCommand {
 
     /** The number year retain. */
     private Integer numberYearRetain;
-
-    /** The permit type. */
-    private Integer permitType;
 
     /** The annual priority. */
     private Integer annualPriority;
@@ -162,7 +158,6 @@ public class AnnualPaidLeaveSaveCommand {
         @Override
         public AcquisitionSetting getAcquisitionSetting() {
             AcquisitionSetting setting = AcquisitionSetting.builder()
-                    .permitType(ApplyPermission.valueOf(this.command.permitType))
                     .annualPriority(AnnualPriority.valueOf(this.command.annualPriority))
                     .build();
             return setting;

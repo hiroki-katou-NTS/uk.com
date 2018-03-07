@@ -9,7 +9,6 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
@@ -93,7 +92,6 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
                     .remainingDayMaxNumber.v());
             command.setNumberYearRetain(setttingDB.getManageAnnualSetting().getRemainingNumberSetting()
                     .retentionYear.v());
-            command.setPermitType(setttingDB.getAcquisitionSetting().permitType.value);
             command.setAnnualPriority(setttingDB.getAcquisitionSetting().annualPriority.value);
             command.setRemainingNumberDisplay(setttingDB.getManageAnnualSetting().getDisplaySetting()
                     .remainingNumberDisplay.value);
@@ -108,7 +106,6 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
             command.setManageMaxDayVacation(setttingDB.getTimeSetting().getMaxYearDayLeave().manageType.value);
             command.setReference(setttingDB.getTimeSetting().getMaxYearDayLeave().reference.value);
             command.setMaxTimeDay(setttingDB.getTimeSetting().getMaxYearDayLeave().maxNumberUniformCompany.v());
-//            command.setIsEnoughTimeOneDay(setttingDB.getTimeSetting().isEnoughTimeOneDay());
             command.setRoundProcessClassific(setttingDB.getTimeSetting().getRoundProcessClassific().value);
             
             return;
@@ -124,12 +121,10 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         boolean isTimeManage = command.getTimeManageType() == ManageDistinct.YES.value;
         if (!isTimeManage) {
             command.setMaxTimeDay(setttingDB.getTimeSetting().getMaxYearDayLeave().maxNumberUniformCompany.v());
-//            command.setIsEnoughTimeOneDay(setttingDB.getTimeSetting().isEnoughTimeOneDay());
             return;
         }
         if (command.getReference() == MaxDayReference.ReferAnnualGrantTable.value) {
             command.setMaxTimeDay(setttingDB.getTimeSetting().getMaxYearDayLeave().maxNumberUniformCompany.v());
-//            command.setIsEnoughTimeOneDay(setttingDB.getTimeSetting().isEnoughTimeOneDay());
         }
     }
     
@@ -152,7 +147,6 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         command.setYearlyOfDays(null);
         command.setRoundProcessCla(RoundProcessingClassification.TruncateOnDay0.value);
         // =======
-        command.setPermitType(ApplyPermission.ALLOW.value);
         command.setAnnualPriority(AnnualPriority.FIFO.value);
         command.setRemainingNumberDisplay(DisplayDivision.Indicate.value);
         command.setNextGrantDayDisplay(DisplayDivision.Indicate.value);
@@ -163,7 +157,6 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         command.setManageMaxDayVacation(ManageDistinct.YES.value);
         command.setReference(MaxDayReference.CompanyUniform.value);
         command.setMaxTimeDay(null);
-//        command.setIsEnoughTimeOneDay(false);
         command.setRoundProcessClassific(TimeAnnualRoundProcesCla.TruncateOnDay0.value);
     }
 }

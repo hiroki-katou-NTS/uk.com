@@ -36,9 +36,6 @@ public class AnnualPaidLeaveSettingFindDto {
     /** The number year retain. */
     public Integer numberYearRetain;
 
-    /** The permit type. */
-    public Integer permitType;
-
     /** The annual priority. */
     public Integer annualPriority;
 

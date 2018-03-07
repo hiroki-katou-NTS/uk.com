@@ -52,7 +52,6 @@ public class JpaAnnualPaidLeaveSettingSetMemento implements AnnualPaidLeaveSetti
      */
     @Override
     public void setAcquisitionSetting(AcquisitionSetting acquisitionSetting) {
-        this.entity.setPermitAtr(acquisitionSetting.permitType.value);
         this.entity.setPriorityType(acquisitionSetting.annualPriority.value);
     }
 

@@ -5,7 +5,6 @@ module nts.uk.pr.view.kmf001.c {
          */
         var servicePath: any = {
             findManageDistinct: 'ctx/at/share/vacation/setting/annualpaidleave/find/managedistinct',
-            findApplyPermission: 'ctx/at/share/vacation/setting/annualpaidleave/find/applypermission',
             findPreemptionPermit: 'ctx/at/share/vacation/setting/annualpaidleave/find/preemptionpermit',
             findDisplayDivision: 'ctx/at/share/vacation/setting/annualpaidleave/find/displaydivision',
             findTimeUnit: 'ctx/at/share/vacation/setting/annualpaidleave/find/timeunit',
@@ -19,10 +18,6 @@ module nts.uk.pr.view.kmf001.c {
         
         export function findManageDistinct(): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.findManageDistinct);
-        }
-        
-        export function findApplyPermission(): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.findApplyPermission);
         }
         
         export function findPreemptionPermit(): JQueryPromise<any> {
