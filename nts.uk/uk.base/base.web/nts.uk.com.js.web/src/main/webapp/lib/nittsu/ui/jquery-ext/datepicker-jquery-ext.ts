@@ -7,6 +7,9 @@ interface JQuery {
 module nts.uk.ui.jqueryExtentions {
 
     module ntsDatepicker {
+        
+        let CONTAINER_CLASSES = ["arrow-bottom", "arrow-top", "arrow-right", "arrow-left"];
+        
         $.fn.ntsDatepicker = function(action: string, index?: number): any {
             var $container = $(this);
             if (action === "bindFlip") {
@@ -27,8 +30,7 @@ module nts.uk.ui.jqueryExtentions {
             });
             $input.on('hide.datepicker', function (evt) {
                 $input.data("showed", false); 
-                container.removeClass();
-                container.addClass("ntsControl nts-datepicker-wrapper");
+                CONTAINER_CLASSES.forEach(cls => container.removeClass(cls));
 //                let currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
 //                $("body").append(currentShowContainer);
             });
@@ -49,10 +51,9 @@ module nts.uk.ui.jqueryExtentions {
                 if(ePos.top < 0 && ePos.left < 0){
                     return;
                 }
-                //currentShowContainer.removeClass();
-                container.removeClass();
-                //currentShowContainer.addClass("datepicker-container datepicker-dropdown small-style"); 
-                container.addClass("ntsControl nts-datepicker-wrapper");
+                
+                CONTAINER_CLASSES.forEach(cls => container.removeClass(cls));
+                
                 let containerHeight = container.outerHeight(true); 
                 let containerWidth = container.outerWidth(true);
                 let showContainerHeight = currentShowContainer.outerHeight(true);
@@ -111,7 +112,6 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 
                 container.addClass("arrow-bottom");
-                //container.addClass("caret-bottom");
                 currentShowContainer.position({
                     my: "left bottom+" + (showContainerHeight + 10),
                     at: "left bottom",
