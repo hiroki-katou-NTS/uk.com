@@ -37,7 +37,7 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 	@Override
 	public DailyAttendanceTimePubExport calcDailyAttendance(DailyAttendanceTimePubImport imp) {
 
-		if(imp.getEmployeeid().equals(null) || imp.getYmd().equals(null) || imp.getWorkEndTime().equals(null) || imp.getWorkStartTime().equals(null))
+		if(imp.getEmployeeid() == null || imp.getYmd() == null || imp.getWorkEndTime() == null || imp.getWorkStartTime() == null)
 			return notPresentValue();
 		
 		//時間帯の作成
