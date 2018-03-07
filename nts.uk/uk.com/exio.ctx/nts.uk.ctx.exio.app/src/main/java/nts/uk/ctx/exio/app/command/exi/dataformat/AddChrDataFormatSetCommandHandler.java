@@ -11,16 +11,19 @@ import nts.uk.ctx.exio.dom.exi.dataformat.ChrDataFormatSet;
 
 @Stateless
 @Transactional
-public class AddChrDataFormatSetCommandHandler extends CommandHandler<ChrDataFormatSetCommand>
-{
-    
-    @Inject
-    private ChrDataFormatSetRepository repository;
-    
-    @Override
-    protected void handle(CommandHandlerContext<ChrDataFormatSetCommand> context) {
-        ChrDataFormatSetCommand addCommand = context.getCommand();
-        repository.add(ChrDataFormatSet.createFromJavaType(0L, addCommand.getCid(), addCommand.getConditionSetCd(), addCommand.getAcceptItemNum(), addCommand.getCdEditing(), addCommand.getFixedValue(), addCommand.getEffectiveDigitLength(), addCommand.getCdConvertCd(), addCommand.getCdEditMethod(), addCommand.getCdEditDigit(), addCommand.getFixedVal(), addCommand.getStartDigit(), addCommand.getEndDigit()));
-    
-    }
+public class AddChrDataFormatSetCommandHandler extends CommandHandler<ChrDataFormatSetCommand> {
+
+	@Inject
+	private ChrDataFormatSetRepository repository;
+
+	@Override
+	protected void handle(CommandHandlerContext<ChrDataFormatSetCommand> context) {
+		ChrDataFormatSetCommand addCommand = context.getCommand();
+		repository.add(
+				new ChrDataFormatSet(addCommand.getCid(), addCommand.getConditionSetCd(), addCommand.getAcceptItemNum(),
+						addCommand.getCdEditing(), addCommand.getFixedValue(), addCommand.getEffectiveDigitLength(),
+						addCommand.getCdConvertCd(), addCommand.getCdEditMethod(), addCommand.getCdEditDigit(),
+						addCommand.getFixedVal(), addCommand.getStartDigit(), addCommand.getEndDigit()));
+
+	}
 }
