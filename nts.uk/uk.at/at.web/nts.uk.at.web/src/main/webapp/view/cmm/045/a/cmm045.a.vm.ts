@@ -175,7 +175,7 @@ module cmm045.a.viewmodel {
         reloadGridApplicaion() {
             var self = this;
             $("#grid2").ntsGrid({
-                width: '1100px',
+                width: '1120px',
                 height: '500px',
                 dataSource: self.items(),
                 primaryKey: 'appId',
@@ -184,15 +184,16 @@ module cmm045.a.viewmodel {
                 rowVirtualization: true,
                 virtualizationMode: 'continuous',
                 columns: [
-                    { headerText: getText('CMM045_50'), key: 'appId', dataType: 'string', width: '80px', unbound: false, ntsControl: 'Button' },
+                    { headerText: 'ID', key: 'appId', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '70px', unbound: false, ntsControl: 'Button' },
                     { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
                     { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '120px' },
                     { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '80px' },
                     { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '150px', ntsControl: 'Label'},
                     { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '280px' },
                     { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '180px', ntsControl: 'Label'},
-                    { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '100px', ntsControl: 'Label' },
-                    { headerText: 'ID', key: 'appId', dataType: 'string', width: '0px', hidden: true }
+                    { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '100px', ntsControl: 'Label' }
+//                    { headerText: 'ID', key: 'appId', dataType: 'string', width: '10px', hidden: true }
                 ],
                 features: [{ name: 'Resizing' },
                     {
