@@ -72,6 +72,7 @@ module cmm001.a {
                     let foundItem: ICompany = _.find(self.sel001Data(), (item: ICompany) => {
                         return item.companyCode == value;
                     });
+                    
                     service.findComId(foundItem.companyId).done((comId) => {
                         self.currentCompany(new CompanyModel(comId));
                         self.checkInsert(false);
@@ -98,6 +99,7 @@ module cmm001.a {
                         });
                         
                         $("#companyName").focus();
+                        nts.uk.ui.errors.clearAll();
                     });
                 }
             });

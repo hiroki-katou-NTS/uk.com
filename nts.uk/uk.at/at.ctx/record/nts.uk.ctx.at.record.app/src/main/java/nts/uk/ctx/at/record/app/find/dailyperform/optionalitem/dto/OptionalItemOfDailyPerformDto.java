@@ -16,11 +16,12 @@ import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 
 @Data
 @AttendanceItemRoot(rootName = "日別実績の任意項目")
-public class OptionalItemOfDailyPerformDto implements ConvertibleAttendanceItem {
+public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 
 	private String employeeId;
 
@@ -43,6 +44,7 @@ public class OptionalItemOfDailyPerformDto implements ConvertibleAttendanceItem 
 								: String.valueOf(c.getTimes().get().v());
 				return new OptionalItemValueDto(value, c.getItemNo().v(), isTime, isTimes, isAmount);
 			}));
+			dto.exsistData();
 		}
 		return dto;
 	}
@@ -59,6 +61,9 @@ public class OptionalItemOfDailyPerformDto implements ConvertibleAttendanceItem 
 	
 	@Override
 	public AnyItemValueOfDaily toDomain(String employeeId, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new AnyItemValueOfDaily(employeeId, date,
 						optionalItems == null ? new ArrayList<>() : ConvertHelper.mapTo(optionalItems,
 								(c) -> new AnyItemValue(new AnyItemNo(c.getItemNo()), 

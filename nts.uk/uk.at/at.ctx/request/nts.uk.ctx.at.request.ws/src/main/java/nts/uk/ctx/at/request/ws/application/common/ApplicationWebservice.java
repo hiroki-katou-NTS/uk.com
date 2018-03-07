@@ -195,9 +195,9 @@ public class ApplicationWebservice extends WebService {
 	 * @return
 	 */
 	@POST
-    @Path("getalldatabyclosureId")
-    public List<ApplicationDeadlineDto> getDeadlineByClosureId(ClosureParam closureId){
-        return this.getDataAppCfDetailFinder.findByClosureId(closureId.getClosureId());
+    @Path("getalldatabyclosureId/{closureId}")
+    public ApplicationDeadlineDto getDeadlineByClosureId(@PathParam("closureId") int closureId){
+        return this.getDataAppCfDetailFinder.findByClosureId(closureId);
     }
 	/**
 	 * update application deadline
@@ -218,10 +218,4 @@ class AppDateParam {
 	private String appDate;
 	private Boolean isStartup;
 	private String appID;
-}
-
-
-@Value
-class ClosureParam {
-	private List<Integer> closureId;
 }
