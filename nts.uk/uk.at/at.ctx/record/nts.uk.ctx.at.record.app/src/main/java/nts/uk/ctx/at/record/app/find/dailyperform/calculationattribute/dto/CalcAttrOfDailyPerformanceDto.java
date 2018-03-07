@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
@@ -24,7 +25,7 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 
 @Data
 @AttendanceItemRoot(rootName = "日別実績の計算区分")
-public class CalcAttrOfDailyPerformanceDto implements ConvertibleAttendanceItem {
+public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	/** 社員ID: 社員ID */
 	private String employeeId;
@@ -70,6 +71,7 @@ public class CalcAttrOfDailyPerformanceDto implements ConvertibleAttendanceItem 
 			result.setOvertimeSetting(getOverTimeSetting(domain.getOvertimeSetting()));
 			result.setRasingSalarySetting(newAutoCalcSalarySetting(domain));
 			result.setYmd(domain.getYmd());
+			result.exsistData();
 		}
 		return result;
 	}

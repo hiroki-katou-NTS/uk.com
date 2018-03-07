@@ -26,12 +26,12 @@ import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.TimeLeavingOfDa
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 
 @Data
 /** 日別実績（WORK） */
 @AttendanceItemRoot(isContainer = true)
-public class DailyRecordDto implements ConvertibleAttendanceItem {
+public class DailyRecordDto extends AttendanceItemCommon {
 
 	private String employeeId;
 

@@ -16,13 +16,14 @@ import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
 @AttendanceItemRoot(rootName = "日別実績の入退門")
-public class AttendanceLeavingGateOfDailyDto implements ConvertibleAttendanceItem {
+public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 
 	private String employeeId;
 	
@@ -43,6 +44,7 @@ public class AttendanceLeavingGateOfDailyDto implements ConvertibleAttendanceIte
 					)));
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());
+			dto.exsistData();
 		}
 		return dto;
 	}
@@ -51,8 +53,8 @@ public class AttendanceLeavingGateOfDailyDto implements ConvertibleAttendanceIte
 		return c == null ? null : new TimeStampDto(
 				c.getTimeWithDay() == null ? null : c.getTimeWithDay().valueAsMinutes(),
 				c.getAfterRoundingTime() == null ? null : c.getAfterRoundingTime().valueAsMinutes(),
-				c.getLocationCode().v(),
-				c.getStampSourceInfo().value);
+				c.getLocationCode() == null ? null : c.getLocationCode().v(),
+				c.getStampSourceInfo() == null ? null : c.getStampSourceInfo().value);
 	}
 
 	@Override
@@ -75,9 +77,10 @@ public class AttendanceLeavingGateOfDailyDto implements ConvertibleAttendanceIte
 	}
 
 	private WorkStamp createWorkStamp(TimeStampDto c) {
-		return c == null ? null : new WorkStamp(new TimeWithDayAttr(c.getAfterRoundingTimesOfDay()),
-				new TimeWithDayAttr(c.getTimesOfDay()),
-				new WorkLocationCD(c.getPlaceCode()),
-				c == null ? StampSourceInfo.HAND_CORRECTION_BY_MYSELF : EnumAdaptor.valueOf(c.getStampSourceInfo(), StampSourceInfo.class));
+		return c == null ? null : new WorkStamp(
+				c.getAfterRoundingTimesOfDay() == null ? null : new TimeWithDayAttr(c.getAfterRoundingTimesOfDay()),
+				c.getTimesOfDay() == null ? null : new TimeWithDayAttr(c.getTimesOfDay()),
+				c.getPlaceCode() == null ? null : new WorkLocationCD(c.getPlaceCode()),
+				c.getStampSourceInfo() == null ? StampSourceInfo.HAND_CORRECTION_BY_MYSELF : EnumAdaptor.valueOf(c.getStampSourceInfo(), StampSourceInfo.class));
 	}
 }

@@ -12,11 +12,11 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemN
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 
 @Data
 @AttendanceItemRoot(rootName = "日別実績の特定日区分")
-public class SpecificDateAttrOfDailyPerforDto implements ConvertibleAttendanceItem {
+public class SpecificDateAttrOfDailyPerforDto extends AttendanceItemCommon {
 
 	private String employeeId;
 
@@ -33,6 +33,7 @@ public class SpecificDateAttrOfDailyPerforDto implements ConvertibleAttendanceIt
 			dto.setSepecificDateAttrs(ConvertHelper.mapTo(domain.getSpecificDateAttrSheets(), (c) -> {
 				return new SpecificDateAttrDto(c.getSpecificDateAttr().value, c.getSpecificDateItemNo().v().intValue());
 			}));
+			dto.exsistData();
 		}
 		return dto;
 	}
