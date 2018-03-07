@@ -7,6 +7,8 @@ module a4 {
     import PrioritySettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.PrioritySettingModel;
     class ScreenModel {
 
+        selectedTab: KnockoutObservable<string>;
+        
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
         
@@ -35,8 +37,9 @@ module a4 {
         /**
         * Constructor.
         */
-        constructor(tabMode: any,enumSetting: WorkTimeSettingEnumDto,mainSettingModel: MainSettingModel) {
+        constructor(selectedTab: KnockoutObservable<string>, tabMode: any,enumSetting: WorkTimeSettingEnumDto,mainSettingModel: MainSettingModel) {
             let self = this;
+            self.selectedTab = selectedTab;
             
             // Subscribe Detail/Simple mode 
             self.isDetailMode = ko.observable(null);
@@ -100,6 +103,15 @@ module a4 {
             //check mode screen
         }
 
+        /**
+         * Handle when using tab button
+         */
+        public changeTab(data: any, e: any) {
+            let _self = this;
+            if (e.which == 9) {
+                _self.selectedTab('tab-5');            
+            }
+        }
     }
     export class Item {
         code: number;
@@ -137,7 +149,7 @@ module a4 {
             let enumSetting = input.enum;
             let mainSettingModel = input.mainSettingModel;
 
-            var screenModel = new ScreenModel(tabMode, enumSetting, mainSettingModel);
+            var screenModel = new ScreenModel(input.selectedTab, tabMode, enumSetting, mainSettingModel);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

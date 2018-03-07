@@ -10,6 +10,7 @@ import lombok.Value;
  * The Class WorkTimeCondition.
  */
 @Value
+//For form search of work time register screen
 public class WorkTimeSettingCondition {
 
 	/** The work time daily atr. */

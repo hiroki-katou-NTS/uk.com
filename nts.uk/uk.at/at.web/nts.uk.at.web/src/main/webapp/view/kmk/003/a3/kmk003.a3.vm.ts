@@ -10,6 +10,7 @@ module a3 {
     import OverTimeOfTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.OverTimeOfTimeZoneSetModel;
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
     import OvertimeWorkFrameFindDto = nts.uk.at.view.kmk003.a3.service.model.OvertimeWorkFrameFindDto;
+    import SettingMethod = nts.uk.at.view.kmk003.a.viewmodel.SettingMethod;
     class ScreenModel {
 
         fixTableOptionOnedayFixed: any;
@@ -45,15 +46,21 @@ module a3 {
         mainSettingModel: MainSettingModel;
         lstOvertimeWorkFrame: OvertimeWorkFrameFindDto[];
         
-        //define for 精算順序 primitive value
+        //define for 精算�primitive value
         lstSettlementOrder: any[];
-
+        screenSettingMode: KnockoutObservable<number>;
+        isNewMode: KnockoutObservable<boolean>;
+        
+        rebind: KnockoutObservable<boolean>;
         /**
         * Constructor.
         */
         constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, 
-        isLoading: KnockoutObservable<boolean>, isDetailMode: KnockoutObservable<boolean>, isUseHalfDay: KnockoutObservable<boolean>) {
+        isLoading: KnockoutObservable<boolean>, isDetailMode: KnockoutObservable<boolean>, isUseHalfDay: KnockoutObservable<boolean>,isNewMode: KnockoutObservable<boolean>) {
             let self = this;
+            self.rebind = ko.observable(true);
+            self.isNewMode = isNewMode;
+            self.screenSettingMode = ko.observable(0);
             self.settingEnum = settingEnum;
             self.mainSettingModel = mainSettingModel;
             self.isLoading = isLoading;
@@ -63,7 +70,6 @@ module a3 {
             self.isFlowMode = self.mainSettingModel.workTimeSetting.isFlow;
             self.isFixedMode = self.mainSettingModel.workTimeSetting.isFixed;
             self.isDiffTimeMode = self.mainSettingModel.workTimeSetting.isDiffTime;
-            
             
             self.autoCalUseAttrs = ko.observableArray([
                 { code: 1, name: nts.uk.resource.getText("KMK003_142") },
@@ -90,11 +96,6 @@ module a3 {
             self.dataSourceOnedayFlex = ko.observableArray([]);
             self.dataSourceMorningFlex = ko.observableArray([]);
             self.dataSourceAfternoonFlex = ko.observableArray([]);
-            self.isLoading.subscribe(function(isLoading: boolean) {
-                if (isLoading) {
-                    self.updateDataModel();
-                }
-            });
 
             self.selectedCodeAutoCalUse = ko.observable('1');
             
@@ -203,31 +204,110 @@ module a3 {
             });
             
             self.isDetailMode.subscribe((v) => {
-                if (self.isFixedMode()) {
-                    if (v) {
-                        self.fixTableOptionOnedayFixed.columns = self.columnSettingFixedAndDiffTime();
-                    }
-                    else {
-                        self.fixTableOptionOnedayFixed.columns = self.columnSettingFlex();
+                //if is new mode
+                if (self.isNewMode()) {
+                    switch (self.screenSettingMode()) {
+                        case SettingMethod.FIXED:
+                            if (self.fixTableOptionOnedayFixed) {
+                                if (v) {
+                                    self.fixTableOptionOnedayFixed.columns = self.columnSettingFixedAndDiffTime();
+                                    self.updateDataModel();
+                                }
+                                else {
+                                    self.fixTableOptionOnedayFixed.columns = self.columnSettingFlex();
+                                }
+                            }
+                            break;
+                        case SettingMethod.FLOW:
+                            if (self.fixTableOptionOvertimeFlow) {
+                                if (v) {
+                                    self.fixTableOptionOvertimeFlow.columns = self.columnSettingOvertimeFlow();
+                                    self.updateDataModel();
+                                }
+                                else {
+                                    self.fixTableOptionOvertimeFlow.columns = self.columnSettingFlowSimple();
+                                }
+                            }
+                            break;
+                        case SettingMethod.DIFFTIME:
+                            if (self.fixTableOptionOnedayDiffTime) {
+                                if (v) {
+                                    self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFixedAndDiffTime();
+                                    self.updateDataModel();
+                                }
+                                else {
+                                    self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFlex();
+                                }
+                            }
+                            break;
+                        default: break;
                     }
                 }
-                
-                if (self.isFlowMode()) {
-                    if (v) {
-                        self.fixTableOptionOvertimeFlow.columns = self.columnSettingOvertimeFlow();
+                else {
+                    if (self.isFixedMode()) {
+                        if (v) {
+                            self.fixTableOptionOnedayFixed.columns = self.columnSettingFixedAndDiffTime();
+                            self.updateDataModel();
+                        }
+                        else {
+                            self.fixTableOptionOnedayFixed.columns = self.columnSettingFlex();
+                        }
                     }
-                    else {
-                        self.fixTableOptionOvertimeFlow.columns = self.columnSettingFlowSimple();
+
+                    if (self.isFlowMode()) {
+                        if (v) {
+                            self.fixTableOptionOvertimeFlow.columns = self.columnSettingOvertimeFlow();
+                            self.updateDataModel();
+                        }
+                        else {
+                            self.fixTableOptionOvertimeFlow.columns = self.columnSettingFlowSimple();
+                        }
+                    }
+                    if (self.isDiffTimeMode()) {
+                        if (v) {
+                            self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFixedAndDiffTime();
+                            self.updateDataModel();
+                        }
+                        else {
+                            self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFlex();
+                        }
                     }
                 }
-                if(self.isDiffTimeMode())
-                {
-                    if (v) {
-                        self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFixedAndDiffTime();
+                setTimeout(() => {
+                    self.rebind(false);
+                    self.rebind(true);
+                }, 500);
+            });
+            
+            self.isNewMode.subscribe((v) => {
+                if (v) {
+                    self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.valueHasMutated();
+                }
+            });
+            self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe((v) => {
+                if (self.isNewMode()) {
+                    self.screenSettingMode(v);
+                    self.isDetailMode.notifySubscribers(self.isDetailMode());
+                    if (v == SettingMethod.FLOW) {
+                        self.dataSourceOvertimeFlow.valueHasMutated();
                     }
-                    else {
-                        self.fixTableOptionOnedayDiffTime.columns = self.columnSettingFlex();
+                }
+            });
+            
+            self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe((v) => {
+                if (self.isNewMode()) {
+                    self.screenSettingMode(v);
+                    if(v == SettingMethod.FLOW) {
+                        self.dataSourceOvertimeFlow.valueHasMutated();
                     }
+                    self.isDetailMode.notifySubscribers(self.isDetailMode());
+                }
+            });
+            
+            self.isLoading.subscribe(function(isLoading: boolean) {
+                if (isLoading) {
+                    self.updateDataModel();
+//                    self.isDetailMode.notifySubscribers(self.isDetailMode());
                 }
             });
         }
@@ -451,8 +531,8 @@ module a3 {
                 timezone: timezone,
                 otFrameNo: dataModel.otFrameNo(),
                 earlyOTUse: dataModel.earlyOTUse(),
-                legalOTframeNo: dataModel.legalOTframeNo(),
-                settlementOrder: dataModel.settlementOrder(),
+                legalOTframeNo: dataModel.legalOTframeNo?dataModel.legalOTframeNo():1,
+                settlementOrder: dataModel.settlementOrder?dataModel.settlementOrder():1,
                 isUpdateStartTime: false
             };
             return dataDTO;
@@ -548,7 +628,7 @@ module a3 {
             var dataDTO: FlOTTimezoneDto = {
                 worktimeNo: worktimeNo,
                 restrictTime: false,
-                otFrameNo: 1,
+                otFrameNo: dataModel.otFrameNo?dataModel.otFrameNo():1,
                 flowTimeSetting: flowTimeSetting,
                 inLegalOTFrameNo: dataModel.inLegalOTFrameNo?dataModel.inLegalOTFrameNo():1,
                 settlementOrder: dataModel.settlementOrder?dataModel.settlementOrder():1
@@ -574,7 +654,7 @@ module a3 {
                     dataSource: self.lstOvertimeWorkFrame,
                     defaultValue: ko.observable(1),
                     width: 120,
-                    template: `<div data-key="inLegalOTFrameNo" class="column-combo-box" data-bind="ntsComboBox: {
+                    template: `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
                                     visibleItemsCount: 10,
                                     optionsText: 'overtimeWorkFrName',
@@ -610,7 +690,7 @@ module a3 {
                      defaultValue: ko.observable(0), 
                      width: 100, 
                      template: `<input data-bind="ntsTimeEditor: {
-                            constraint: 'TimeWithDayAttr',
+                            constraint: 'AttendanceTime',
                             mode: 'time',
                             inputFormat: 'time',
                             required: true }" />`
@@ -816,7 +896,8 @@ module a3 {
             var isDetailMode:  KnockoutObservable<boolean> = input.isDetailMode;
             var useHalfDay:  KnockoutObservable<boolean> = input.useHalfDay;
             var isClickSave: KnockoutObservable<boolean> = input.isClickSave;
-            let screenModel = new ScreenModel(settingEnum, mainSettingModel, isLoading, isDetailMode, useHalfDay);
+            var isNewMode: KnockoutObservable<boolean> = input.isNewMode;
+            let screenModel = new ScreenModel(settingEnum, mainSettingModel, isLoading, isDetailMode, useHalfDay,isNewMode);
             nts.uk.at.view.kmk003.a3.service.findAllOvertimeWorkFrame().done(function(data) {
                 screenModel.lstOvertimeWorkFrame = data;
                 screenModel.initDataModel();
