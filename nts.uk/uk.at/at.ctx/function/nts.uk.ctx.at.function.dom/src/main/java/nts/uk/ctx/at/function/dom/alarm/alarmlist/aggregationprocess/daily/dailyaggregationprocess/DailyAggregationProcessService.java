@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.daily.dail
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -34,11 +35,17 @@ public class DailyAggregationProcessService {
 	
 	@Inject
 	private RecordWorkInfoFunAdapter recordWorkInfoFunAdapter;
+	
+	@Inject
+	private DailyPerformanceService dailyPerformanceService;
 
 
 	public List<ValueExtractAlarm> dailyAggregationProcess(String checkConditionCode, PeriodByAlarmCategory period,
 			FuncEmployeeSearchDto employee) {
+		
+		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>(); 		
 		String companyID = AppContexts.user().companyId();
+		
 		// ドメインモデル「カテゴリ別アラームチェック条件」を取得する
 		Optional<AlarmCheckConditionByCategory> alCheckConByCategory = alCheckConByCategoryRepo.find(companyID,
 				AlarmCategory.DAILY.value, checkConditionCode);
@@ -48,14 +55,11 @@ public class DailyAggregationProcessService {
 				.getExtractionCondition();
 
 		// tab2: 日別実績のエラーアラーム
+		listValueExtractAlarm.addAll(dailyPerformanceService.aggregationProcess(dailyAlarmCondition, period, employee, companyID));
 			
-		// tab4:
-		//「システム固定のチェック項目」で実績をチェックする
-		
-		
+		// tab4: 「システム固定のチェック項目」で実績をチェックする			
 		//get data by dailyAlarmCondition
 		List<FixedConWorkRecordAdapterDto> listFixed =  fixedConWorkRecordAdapter.getAllFixedConWorkRecordByID(dailyAlarmCondition.getDailyAlarmConID());
-		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>(); 
 		for(int i = 1;i <= listFixed.size();i++) {
 			if(listFixed.get(i).isUseAtr()) {
 				switch(i) {
