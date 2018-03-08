@@ -1,14 +1,14 @@
 package nts.uk.ctx.exio.app.find.exi.dataformat;
 
 import lombok.Value;
-import nts.uk.ctx.exio.dom.exi.dataformat.InsTimeDatFmSet;
+import nts.uk.ctx.exio.dom.exi.dataformat.TimeDataFormatSet;
 
 /**
- * 時刻型データ形式設定
+ * 時間型データ形式設定
  */
 
 @Value
-public class InsTimeDatFmSetDto {
+public class TimeDataFmSetDto {
 
 	/**
 	 * 区切り文字設定
@@ -60,8 +60,8 @@ public class InsTimeDatFmSetDto {
 	 */
 	private int roundProcCls;
 
-	public static InsTimeDatFmSetDto fromDomain(InsTimeDatFmSet domain) {
-		return new InsTimeDatFmSetDto(domain.getDelimiterSet().value, domain.getFixedValue().value,
+	public static TimeDataFmSetDto fromDomain(TimeDataFormatSet domain) {
+		return new TimeDataFmSetDto(domain.getDelimiterSet().value, domain.getFixedValue().value,
 				domain.getHourMinSelect().value, domain.getEffectiveDigitLength().value, domain.getRoundProc().value,
 				domain.getDecimalSelect().value, domain.getValueOfFixedValue().get().v(),
 				domain.getStartDigit().get().v(), domain.getEndDigit().get().v(), domain.getRoundProcCls().get().value);

@@ -30,11 +30,7 @@ public class DateDataFormSet extends DataFormatSetting {
 	public DateDataFormSet(int itemType, int fixedValue, int formatSelection, String valueOfFixedValue) {
 		super(itemType);
 		this.fixedValue = EnumAdaptor.valueOf(fixedValue, NotUseAtr.class);
-		if (valueOfFixedValue == null) {
-			this.valueOfFixedValue = Optional.empty();
-		} else {
-			this.valueOfFixedValue = Optional.of(new DataSettingFixedValue(valueOfFixedValue));
-		}
+		this.valueOfFixedValue = Optional.ofNullable(new DataSettingFixedValue(valueOfFixedValue));
 		this.formatSelection = EnumAdaptor.valueOf(formatSelection, DateOutputFormat.class);
 	}
 }
