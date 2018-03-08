@@ -1,5 +1,6 @@
 package nts.uk.screen.at.infra.schedule.basicschedule;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -8,6 +9,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedule;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtScheDispControl;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtScheDispControlPK;
@@ -126,9 +128,14 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 	@Override
 	public List<BasicScheduleScreenDto> getByListSidAndDate(List<String> employeeId, GeneralDate startDate,
 			GeneralDate endDate) {
-		return this.queryProxy().query(SEL_BY_LIST_SID_AND_DATE, KscdtBasicSchedule.class)
-				.setParameter("sId", employeeId).setParameter("startDate", startDate).setParameter("endDate", endDate)
-				.getList(x -> toDto(x));
+		List<BasicScheduleScreenDto> datas = new ArrayList<BasicScheduleScreenDto>();
+		CollectionUtil.split(employeeId, 1000, subIdList -> {
+			datas.addAll(this.queryProxy().query(SEL_BY_LIST_SID_AND_DATE, KscdtBasicSchedule.class)
+					.setParameter("sId", subIdList).setParameter("startDate", startDate)
+					.setParameter("endDate", endDate).getList(x -> toDto(x)));
+		});
+		return datas;
+
 	}
 
 	/**
@@ -177,9 +184,13 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 	@Override
 	public List<BasicScheduleScreenDto> getDataWorkScheTimezone(List<String> sId, GeneralDate startDate,
 			GeneralDate endDate) {
-		return this.queryProxy().query(GET_WORK_SCH_TIMEZONE, KscdtWorkScheduleTimeZone.class).setParameter("sId", sId)
-				.setParameter("startDate", startDate).setParameter("endDate", endDate)
-				.getList(x -> toBasicScheduleScreenDto(x));
+		List<BasicScheduleScreenDto> datas = new ArrayList<BasicScheduleScreenDto>();
+		CollectionUtil.split(sId, 1000, subIdList -> {
+			datas.addAll(this.queryProxy().query(GET_WORK_SCH_TIMEZONE, KscdtWorkScheduleTimeZone.class)
+					.setParameter("sId", subIdList).setParameter("startDate", startDate)
+					.setParameter("endDate", endDate).getList(x -> toBasicScheduleScreenDto(x)));
+		});
+		return datas;
 	}
 
 	@Override

@@ -365,7 +365,7 @@ module cps002.a.vm {
             return false;
         }
 
-        completeStep1() {
+        completeStep0() {
             let self = this,
                 employee = self.currentEmployee(),
                 command = {
@@ -379,11 +379,11 @@ module cps002.a.vm {
 
                     if (self.createTypeId() === 3) {
 
-                        self.gotoStep3();
+                        self.gotoStep2();
                         return;
                     }
 
-                    self.gotoStep2();
+                    self.gotoStep1();
 
                 }).fail((error) => {
 
@@ -408,7 +408,7 @@ module cps002.a.vm {
         }
 
 
-        backtoStep1() {
+        backToStep0() {
 
             let self = this;
 
@@ -417,7 +417,7 @@ module cps002.a.vm {
             self.start();
         }
 
-        gotoStep3() {
+        gotoStep2() {
             let self = this,
                 command = ko.toJS(self.currentEmployee()),
                 layout = self.layout();
@@ -456,7 +456,7 @@ module cps002.a.vm {
         }
 
 
-        completeStep2() {
+        completeStep1() {
             let self = this;
             if (self.copyEmployee().employeeId === '' && !self.isUseInitValue()) {
 
@@ -470,7 +470,7 @@ module cps002.a.vm {
                 return;
             }
 
-            self.gotoStep3();
+            self.gotoStep2();
 
 
         }
@@ -481,7 +481,7 @@ module cps002.a.vm {
             return self.createTypeId() === 2;
         }
 
-        gotoStep2() {
+        gotoStep1() {
             let self = this;
 
             self.currentStep(1);
@@ -578,8 +578,8 @@ module cps002.a.vm {
             if (self.currentStep() === 1) {
                 $('#emp_reg_info_wizard').ntsWizard("prev");
             }
-            if (self.currentStep() === 2) {
-                self.gotoStep2();
+            if (self.currentStep() === 2　&& self.createTypeId() !== 3) {
+                self.gotoStep1();
                 nts.uk.ui.errors.clearAll();
             }
             if (self.createTypeId() === 3) {
@@ -635,7 +635,7 @@ module cps002.a.vm {
                     nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { dialogClass: "finish", title: '' }).onClosed(() => {
                         if (getShared('isContinue')) {
 
-                            self.backtoStep1();
+                            self.backToStep0();
 
                         } else {
                             jump('/view/cps/001/a/index.xhtml', { employeeId: employeeId });

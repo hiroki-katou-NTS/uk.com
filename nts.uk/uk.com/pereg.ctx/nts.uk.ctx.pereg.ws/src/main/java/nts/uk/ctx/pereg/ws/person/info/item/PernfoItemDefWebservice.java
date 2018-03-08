@@ -107,7 +107,7 @@ public class PernfoItemDefWebservice extends WebService {
 	//test hieu nang Layout
 	@POST
 	@Path("layout/findby/listItemIdv2")
-	public List<PerInfoItemDefDto> getPerInfoItemDefByListIdForLayoutTest(List<String> listItemDefId) {
+	public List<PerInfoItemDefDto> getPerInfoItemDefByListIdForLayoutV2(List<String> listItemDefId) {
 		return itemDefFinder.getPerInfoItemDefByIds(listItemDefId);
 	}
 
