@@ -55,8 +55,9 @@ public class DailyAggregationProcessService {
 				.getExtractionCondition();
 
 		// tab2: 日別実績のエラーアラーム
-		listValueExtractAlarm.addAll(dailyPerformanceService.aggregationProcess(dailyAlarmCondition, period, employee, companyID));
-			
+		List<ValueExtractAlarm> tab2 = dailyPerformanceService.aggregationProcess(dailyAlarmCondition, period, employee, companyID);
+		listValueExtractAlarm.addAll(tab2);
+		
 		// tab4: 「システム固定のチェック項目」で実績をチェックする			
 		//get data by dailyAlarmCondition
 		List<FixedConWorkRecordAdapterDto> listFixed =  fixedConWorkRecordAdapter.getAllFixedConWorkRecordByID(dailyAlarmCondition.getDailyAlarmConID());
@@ -67,9 +68,9 @@ public class DailyAggregationProcessService {
 					for(GeneralDate date = period.getStartDate();date.after(period.getEndDate());date.addDays(1)) {
 						String workType = recordWorkInfoFunAdapter.getInfoCheckNotRegister(employee.getId(), date).getWorkTypeCode();
 						
-						ValueExtractAlarm checkWorkType = fixedCheckItemAdapter.checkWorkTypeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workType);
-						if(checkWorkType !=null) {
-							listValueExtractAlarm.add(checkWorkType);
+						Optional<ValueExtractAlarm> checkWorkType = fixedCheckItemAdapter.checkWorkTypeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workType);
+						if(checkWorkType.isPresent()) {
+							listValueExtractAlarm.add(checkWorkType.get());
 						}
 						
 					}
@@ -77,9 +78,9 @@ public class DailyAggregationProcessService {
 				case 2 :
 					for(GeneralDate date = period.getStartDate();date.after(period.getEndDate());date.addDays(1)) {
 						String workTime = recordWorkInfoFunAdapter.getInfoCheckNotRegister(employee.getId(), date).getWorkTimeCode();
-						ValueExtractAlarm checkWorkTime = fixedCheckItemAdapter.checkWorkTimeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workTime);
-						if(checkWorkTime !=null) {
-							listValueExtractAlarm.add(checkWorkTime);
+						Optional<ValueExtractAlarm> checkWorkTime = fixedCheckItemAdapter.checkWorkTimeNotRegister(employee.getWorkplaceId(),employee.getId(), date, workTime);
+						if(checkWorkTime.isPresent()) {
+							listValueExtractAlarm.add(checkWorkTime.get());
 						}
 					}
 					break;
@@ -96,7 +97,7 @@ public class DailyAggregationProcessService {
 					 }
 					break;
 				default :
-					List<ValueExtractAlarm> listCheckingData = fixedCheckItemAdapter.checkingData(employee.getWorkplaceId(),employee.getId(), period.getStartDate(), period.getEndDate());
+					List<ValueExtractAlarm> listCheckingData = fixedCheckItemAdapter.checkingData(tab2,employee.getWorkplaceId(),employee.getId(), period.getStartDate(), period.getEndDate());
 					if(!listCheckingData.isEmpty()) {
 						 listValueExtractAlarm.addAll(listCheckingData);
 					 }
