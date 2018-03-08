@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.exio.app.command.exi.item.StdAcceptItemCommand;
 import nts.uk.ctx.exio.app.find.exi.item.StdAcceptItemDto;
 import nts.uk.ctx.exio.app.find.exi.item.StdAcceptItemFinder;
 
@@ -22,5 +23,13 @@ public class StdAcceptItemWebService {
 	public List<StdAcceptItemDto> getAllStdAcceptItem(@PathParam("systemType") int systemType,
 			@PathParam("conditionSetCd") String conditionSetCd) {
 		return this.stdAcceptItem.getStdAcceptItems(systemType, conditionSetCd);
+	}
+	
+	@POST
+	@Path("register")
+	public void getAllStdAcceptItem(List<StdAcceptItemCommand> listItem) {
+		int length = listItem.size();
+		System.out.println("data size: " + length);
+//		return this.stdAcceptItem.getStdAcceptItems(systemType, conditionSetCd);
 	}
 }

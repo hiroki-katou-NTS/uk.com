@@ -1,32 +1,13 @@
 package nts.uk.ctx.exio.app.find.exi.dataformat;
 
-import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.dom.exi.dataformat.ChrDataFormatSet;
 
 /**
  * 文字型データ形式設定
  */
-@AllArgsConstructor
 @Value
 public class ChrDataFormatSetDto {
-
-	/**
-	 * 会社ID
-	 */
-	private String cid;
-
-	/**
-	 * 条件設定コード
-	 */
-	private String conditionSetCd;
-
-	/**
-	 * 受入項目番号
-	 */
-	private int acceptItemNum;
 
 	/**
 	 * コード編集
@@ -46,17 +27,17 @@ public class ChrDataFormatSetDto {
 	/**
 	 * コード変換コード
 	 */
-	private int cdConvertCd;
+	private String cdConvertCd;
 
 	/**
 	 * コード編集方法
 	 */
-	private int cdEditMethod;
+	private Integer cdEditMethod;
 
 	/**
 	 * コード編集桁
 	 */
-	private int cdEditDigit;
+	private Integer cdEditDigit;
 
 	/**
 	 * 固定値の値
@@ -66,20 +47,22 @@ public class ChrDataFormatSetDto {
 	/**
 	 * 有効桁数開始桁
 	 */
-	private int startDigit;
+	private Integer startDigit;
 
 	/**
 	 * 有効桁数終了桁
 	 */
-	private int endDigit;
-
-	private Long version;
+	private Integer endDigit;
 
 	public static ChrDataFormatSetDto fromDomain(ChrDataFormatSet domain) {
-		return new ChrDataFormatSetDto(domain.getCid(), domain.getConditionSetCd(), domain.getAcceptItemNum(),
-				domain.getCdEditing().value, domain.getFixedValue().value, domain.getEffectiveDigitLength().value,
-				domain.getCdConvertCd(), domain.getCdEditMethod().get().value, domain.getCdEditDigit().get().v(), domain.getFixedVal().get().v(),
-				domain.getStartDigit().get().v(), domain.getEndDigit().get().v(), domain.getVersion());
+		return new ChrDataFormatSetDto(domain.getCdEditing().value, domain.getFixedValue().value,
+				domain.getEffectiveDigitLength().value,
+				domain.getCdConvertCd().isPresent() ? domain.getCdConvertCd().get().v() : null,
+				domain.getCdEditMethod().isPresent() ? domain.getCdEditMethod().get().value : null,
+				domain.getCdEditDigit().isPresent() ? domain.getCdEditDigit().get().v() : null,
+				domain.getFixedVal().isPresent() ? domain.getFixedVal().get().v() : null,
+				domain.getStartDigit().isPresent() ? domain.getStartDigit().get().v() : null,
+				domain.getStartDigit().isPresent() ? domain.getStartDigit().get().v() : null);
 	}
 
 }

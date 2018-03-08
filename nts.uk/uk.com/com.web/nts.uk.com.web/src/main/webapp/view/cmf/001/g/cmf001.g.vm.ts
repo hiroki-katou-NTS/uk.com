@@ -11,7 +11,7 @@ module nts.uk.com.view.cmf001.g.viewmodel {
 
     export class ScreenModel {
         numDataFormatSetting: KnockoutObservable<model.NumericDataFormatSetting>
-        = ko.observable(new model.NumericDataFormatSetting(0, null, null, 0, null, 0, 0, new model.AcceptanceCodeConvert("", "", 0), 0, ""));
+        = ko.observable(new model.NumericDataFormatSetting(0, null, null, 0, null, null, null, new model.AcceptanceCodeConvert("", "", 0), 0, ""));
         
         effectDigitItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
             new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_223')),
@@ -32,25 +32,23 @@ module nts.uk.com.view.cmf001.g.viewmodel {
         constructor() {
             var self = this;
             self.decimalPointClsItem = ko.observableArray([
-                new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.NO_OUTPUT_DECIMAL_POINT, 'NO_OUTPUT_DECIMAL_POINT'),
-                new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.OUTPUT_DECIMAL_POINT, 'OUTPUT_DECIMAL_POINT')
+                new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.NO_OUTPUT_DECIMAL_POINT, getText('Enum_DecimalPointClassification_NO_OUTPUT_DECIMAL_POINT')),
+                new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.OUTPUT_DECIMAL_POINT, getText('Enum_DecimalPointClassification_OUTPUT_DECIMAL_POINT'))
             ]);
             self.decimalFractionItem = ko.observableArray([
-                new model.ItemModel(model.ROUNDING_METHOD.TRUNCATION, 'TRUNCATION'),
-                new model.ItemModel(model.ROUNDING_METHOD.ROUND_UP, 'ROUND_UP'),
-                new model.ItemModel(model.ROUNDING_METHOD.DOWN_4_UP_5, 'DOWN_4_UP_5')
+                new model.ItemModel(model.ROUNDING_METHOD.TRUNCATION, getText('Enum_Rounding_Truncation')),
+                new model.ItemModel(model.ROUNDING_METHOD.ROUND_UP, getText('Enum_Rounding_Round_Up')),
+                new model.ItemModel(model.ROUNDING_METHOD.DOWN_4_UP_5, getText('Enum_Rounding_Down_4_Up_5'))
             ]);
             
             let params = getShared("CMF001gParams");
-            if (!nts.uk.util.isNullOrUndefined(params)) {
-                let inputMode = params.inputMode;
-                let lineNumber = params.lineNumber;
-                let numFormat = params.formatSetting;
-                self.inputMode = inputMode;
-                self.lineNumber = lineNumber;
-                if (!(nts.uk.util.isNullOrUndefined(numFormat))) {
-                    self.initial(numFormat);
-                }
+            let inputMode = params.inputMode;
+            let lineNumber = params.lineNumber;
+            let numFormat = params.formatSetting;
+            self.inputMode = inputMode;
+            self.lineNumber = lineNumber;
+            if (!(nts.uk.util.isNullOrUndefined(numFormat))) {
+                self.initial(numFormat);
             }
         }
         // データが取得できる場合
@@ -76,8 +74,9 @@ module nts.uk.com.view.cmf001.g.viewmodel {
 //            nts.uk.util.value.reset($("#G2_5"), numFormat.startDigit);
 //            nts.uk.util.value.reset($("#G2_8"), numFormat.endDigit);
 //            nts.uk.util.value.reset($("#G3_6"), numFormat.decimalDigitNumber);
-//            nts.uk.util.value.reset($("#G5_5"), numFormat.valueOfFixed);
+//            nts.uk.util.value.reset($("#G5_5"), numFormat.valueOfFixedValue);
         }
+        // コード変換の選択を行う
         open001_K(data) {
             var self = this;
             let selectedConvertCode = data.codeConvertCode();
@@ -90,6 +89,7 @@ module nts.uk.com.view.cmf001.g.viewmodel {
                 }
             });
         }
+        // 数値編集の設定をして終了する
         saveNumericSetting() {
             var self = this;
 //            $("#G2_5").trigger("validate");
@@ -100,6 +100,7 @@ module nts.uk.com.view.cmf001.g.viewmodel {
             }
             nts.uk.ui.windows.close();
         }
+        // キャンセルして終了する
         cancelNumericSetting() {
             nts.uk.ui.windows.close();
         }

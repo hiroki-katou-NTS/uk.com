@@ -27,16 +27,8 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         //upload file
         stereoType: KnockoutObservable<string> = ko.observable('');
         fileId: KnockoutObservable<string> = ko.observable('');
-        filename: KnockoutObservable<string> = ko.observable('');
-        fileInfo: KnockoutObservable<any> = ko.observable(null);
+        fileName: KnockoutObservable<string> = ko.observable('');
         textId: KnockoutObservable<string> = ko.observable("CMF001_447");
-        accept: KnockoutObservableArray<string> = ko.observableArray(['.csv']);
-        asLink: KnockoutObservable<boolean> = ko.observable(false);
-        enable: KnockoutObservable<boolean> = ko.observable(true);
-        immediate: KnockoutObservable<boolean> = ko.observable(true);
-        onchange: (filename) => void;
-        onfilenameclick: (filename) => void;
-
         listAccept: KnockoutObservableArray<AcceptItems> = ko.observableArray([]);
         selectedAccept: KnockoutObservable<any> = ko.observable('');
         totalRecord: KnockoutObservable<number> = ko.observable(0);
@@ -51,12 +43,21 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 { content: '.step-2' }
             ];
             self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
-            self.loadSystemType();
+
+            //システム種類を変更する
+            self.selectedSysType.subscribe(function(data: any) {
+                //画面上の条件コード/名称をクリアする
+                self.selectedConditionCd('');
+                self.selectedConditionName('');
+                //ドメインモデル「受入条件設定（定型）」を取得する
+                self.loadListCondition(data);
+            });
+
             //選択したカレント行の「条件コード/名称」を画面右側の「条件コード/名称」にセットする
             self.selectedConditionCd.subscribe(function(data: any) {
                 //取込情報を選択する
                 if (data) {
-                    let item = _.find(ko.toJS(self.listCondition), (x: model.StandardAcceptanceConditionSetting) => x.dispConditionSettingCode == data);
+                    let item = _.find(ko.toJS(self.listCondition), (x: any) => x.dispConditionSettingCode == data);
                     //選択したカレント行の「条件コード/名称」を画面右側の「条件コード/名称」にセットする
                     self.selectedConditionName(item.dispConditionSettingName);
                     self.selectedConditionLineNumber(item.csvDataItemLineNumber);
@@ -68,22 +69,56 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     self.selectedConditionStartLine(0);
                 }
             });
-            //self.loadListAccept();   
+
             $("#grd_Accept").ntsFixedTable({ height: 373 });
+        }
+        /**
+         * start page data    
+        */
+        public startPage(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            // block ui
+            block.grayout();
+
+            //Imported(共通)　「システムコード」を取得する
+
+            //「システムコード」の取得結果からシステム種類に変換する
+
+            self.listSysType = ko.observableArray([
+                new model.ItemModel(model.SYSTEM_TYPE.PERSON_SYS, '人事システム'), //TODO: Enum_SystemType_PERSON_SYSTEM
+                new model.ItemModel(model.SYSTEM_TYPE.ATTENDANCE_SYS, '勤怠システム'), //TODO: Enum_SystemType_ATTENDANCE_SYSTEM
+                new model.ItemModel(model.SYSTEM_TYPE.PAYROLL_SYS, '給与システム'), //TODO: Enum_SystemType_PAYROLL_SYSTEM
+                new model.ItemModel(model.SYSTEM_TYPE.OFFICE_HELPER, 'オフィスヘルパー') //TODO: Enum_SystemType_OFFICE_HELPER
+            ]);            
+            //1件以上取得できた場合
+            if (self.listSysType().length > 0) {
+                //システム種類を画面セットする
+                self.selectedSysType(self.listSysType()[0].code);
+                //ドメインモデル「受入条件設定（定型）」を取得する
+                self.loadListCondition(self.selectedSysType());
+            }
+            //システム種類が取得できない場合
+            else {
+                //トップページに戻る
+                nts.uk.request.jump("/view/cmf/001/a/index.xhtml");
+            }            
+            dfd.resolve(self);
+            return dfd.promise();
         }
 
         //次の画面へ遷移する
-        next() {
+        private gotoExAccSummary(): void {
             let self = this;
 
             //条件コードは選択されているか判別
-            if (self.selectedConditionCd() == '') {
+            if (self.selectedConditionCd() == null || self.selectedConditionCd() == '') {
                 //Msg_963　を表示する。受入条件が選択されていません。
                 dialog({ messageId: "Msg_963" });
                 return;
             }
             //受入ファイルがアップロードされているか判別
-            if (self.fileId() == '') {
+            if (self.fileId() == null || self.fileId() == '') {
                 //Msg_964　を表示する。受入ファイルがアップロードされていません。
                 dialog({ messageId: "Msg_964" });
                 return;
@@ -92,9 +127,9 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             $('#ex_accept_wizard').ntsWizard("next");
             self.loadListAccept();
         }
-        previous() {
+        private gotoAccSetSelect(): void {
             //受入設定選択に戻る
-            $('#ex_accept_wizard').ntsWizard("prev");
+            $('#ex_accept_wizard').ntsWizard("goto", 0);
         }
 
         private uploadFile(): void {
@@ -106,7 +141,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     //アップロードCSVが取込開始行に満たない場合                   
                     if (totalLine < self.selectedConditionStartLine()) {
                         self.fileId('');
-                        self.filename('');
+                        self.fileName('');
                         dialog({ messageId: "Msg_1059" });
                     }
                     //アップロードCSVが取込開始行以上ある
@@ -128,43 +163,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             });
         }
 
-        loadSystemType() {
-            let self = this;
-
-            //Imported(共通)　「システムコード」を取得する
-
-            //「システムコード」の取得結果からシステム種類に変換する
-
-            self.listSysType = ko.observableArray([
-                new model.ItemModel(model.SYSTEM_TYPE.PERSON_SYS, '人事システム'),
-                new model.ItemModel(model.SYSTEM_TYPE.ATTENDANCE_SYS, '勤怠システム'),
-                new model.ItemModel(model.SYSTEM_TYPE.PAYROLL_SYS, '給与システム'),
-                new model.ItemModel(model.SYSTEM_TYPE.OFFICE_HELPER, 'オフィスヘルパー')
-            ]);
-            //1件以上取得できた場合
-            if (self.listSysType().length > 0) {
-                //システム種類を画面セットする
-                self.selectedSysType(self.listSysType()[0].code);
-
-                //ドメインモデル「受入条件設定（定型）」を取得する
-                self.loadListCondition(self.selectedSysType());
-            }
-            //システム種類が取得できない場合
-            else {
-                //トップページに戻る
-                nts.uk.request.jump("/view/cmf/001/a/index.xhtml");
-            }
-            //システム種類を変更する
-            self.selectedSysType.subscribe(function(data: any) {
-                //画面上の条件コード/名称をクリアする
-                self.selectedConditionCd('');
-                self.selectedConditionName('');
-                //ドメインモデル「受入条件設定（定型）」を取得する
-                self.loadListCondition(data);
-            });
-        }
-
-        loadListCondition(sysType) {
+        private loadListCondition(sysType): void {
             let self = this;
             block.grayout();
             //「条件設定一覧」を初期化して取得した設定を表示する
@@ -176,8 +175,8 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 //表示するデータがある場合   
                 if (data && data.length) {
                     let _rspList: Array<model.StandardAcceptanceConditionSetting> = _.map(data, rsp => {
-                        return new model.StandardAcceptanceConditionSetting(rsp.conditionSettingCode, rsp.conditionSettingName, 
-                        rsp.deleteExistData, rsp.acceptMode, rsp.csvDataItemLineNumber, rsp.csvDataStartLine, rsp.deleteExistDataMethod);
+                        return new model.StandardAcceptanceConditionSetting(rsp.conditionSettingCode, rsp.conditionSettingName,
+                            rsp.deleteExistData, rsp.acceptMode, rsp.csvDataItemLineNumber, rsp.csvDataStartLine, rsp.deleteExistDataMethod);
                     });
                     self.listCondition(_rspList);
 
@@ -197,7 +196,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             });
         }
 
-        loadListAccept() {
+        private loadListAccept(): void {
             let self = this;
             block.grayout();
             //ドメインモデル「受入項目（定型）」を取得する
@@ -205,7 +204,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 self.listAccept.removeAll();
                 if (data && data.length) {
                     let _rspList: Array<AcceptItems> = _.map(data, rsp => {
-                        return new AcceptItems('', rsp.csvItemName, rsp.csvItemNumber, '', rsp.itemType);
+                        return new AcceptItems('', rsp.csvItemName, rsp.csvItemNumber, rsp.acceptItemNumber, '', rsp.itemType);
                     });
                     self.listAccept(_rspList);
                 }
@@ -218,7 +217,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             });
         }
 
-        readUploadFile(numOfCol: number) {
+        private readUploadFile(numOfCol: number): void {
             let self = this;
             //アップロードしたファイルの「取込開始行」のＣＳＶ項Ｎｏの値
             service.getRecord(self.fileId(), numOfCol, self.selectedConditionStartLine()).done(function(data: Array<any>) {
@@ -240,7 +239,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             self.totalRecord(count);
         }
 
-        editIngestion(item: any) {
+        private editIngestion(item: any): void {
             var self = this;
             switch (item.itemType()) {
                 case 0:
@@ -274,21 +273,21 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             }
         }
 
-        receiveCondition(item) {
+        private receiveCondition(item): void {
             //L:「受入条件設定ダイアログをモーダルで表示する
             let settingL = new model.AcceptScreenConditionSetting("", 0, 0, 0, 0, 0, "", "", "", "", 0, 0);
             setShared("CMF001lParams", { inputMode: false, dataType: 0, formatSetting: ko.toJS(settingL) });
             nts.uk.ui.windows.sub.modal("/view/cmf/001/l/index.xhtml");
         }
 
-        exeAccept() {
+        private exeAccept(): void {
             let self = this;
             //Q:「外部受入処理中ダイアログ」をチェック中で起動する 
             setShared("CMF001qParams", {
                 mode: 0,
                 systemType: self.selectedSysType(),
                 conditionCd: self.selectedConditionCd(),
-                fileName: self.filename(),
+                fileName: self.fileName(),
                 fileId: self.fileId(),
                 totalRecord: self.totalRecord()
             });
@@ -300,25 +299,27 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         infoName: KnockoutObservable<string>;
         csvItemName: KnockoutObservable<string>;
         csvItemNumber: KnockoutObservable<number>;
+        acceptItemNumber: KnockoutObservable<number>;
         sampleData: KnockoutObservable<string>;
         itemType: KnockoutObservable<number>;
         itemTypeName: KnockoutObservable<string>;
-        constructor(infoName: string, csvItemName: string, csvItemNumber: number, sampleData: string, itemType: number) {
+        constructor(infoName: string, csvItemName: string, csvItemNumber: number, acceptItemNumber: number, sampleData: string, itemType: number) {
             this.infoName = ko.observable(infoName);
             this.csvItemName = ko.observable(csvItemName);
             this.csvItemNumber = ko.observable(csvItemNumber);
+            this.acceptItemNumber = ko.observable(acceptItemNumber);
             this.sampleData = ko.observable(sampleData);
             this.itemType = ko.observable(itemType);
             this.itemTypeName = ko.observable(this.getItemTypeName(itemType));
         }
 
-        getItemTypeName(typeCd: number) {
+        private getItemTypeName(typeCd: number): string {
             switch (typeCd) {
-                case 0: return "数値型";
-                case 1: return "文字型";
-                case 2: return "日付型";
-                case 3: return "時刻型";
-                case 4: return "時間型";
+                case model.ITEM_TYPE.NUMERIC: return "数値型";// TODO: Enum_ItemType_NUMERIC
+                case model.ITEM_TYPE.CHARACTER: return "文字型";// TODO: Enum_ItemType_CHARACTER
+                case model.ITEM_TYPE.DATE: return "日付型";// TODO: Enum_ItemType_DATE
+                case model.ITEM_TYPE.INS_TIME: return "時刻型";// TODO: Enum_ItemType_INS_TIME
+                case model.ITEM_TYPE.TIME: return "時間型";// TODO: Enum_ItemType_TIME
             }
             return "";
         }

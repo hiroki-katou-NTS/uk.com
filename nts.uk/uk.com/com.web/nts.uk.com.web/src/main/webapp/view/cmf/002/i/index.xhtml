@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 650, height: 500 };</script>
+<!-- 			<com:ValidatorScript> -->
+<!--                     nts.uk.ctx.exio.dom.exi.dataformat.AcceptedDigit -->
+<!--                     nts.uk.ctx.exio.dom.exi.dataformat.DecimalDigitNumber -->
+<!--                     nts.uk.ctx.exio.dom.exi.dataformat.ValueOfFixed -->
+<!--             </com:ValidatorScript> -->
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="cmf002.i.vm.js" />
+			<com:scriptfile path="cmf002.i.start.js" />
+			<com:stylefile  path="cmf002.i.style.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div class="contents-area dialog-contents" data-bind="with: numDataFormatSetting">
+				<!--  I1 - タイトル  -->
+				<div id="I1" class="label dialog-title">#{i18n.getText('#CMF002_137')}</div>
+				<div class="div-table">
+					<div class = "div-table-row">
+						<div id="I2" class="div-table-col"
+							data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_138')}</div>
+						
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

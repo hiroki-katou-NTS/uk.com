@@ -21,7 +21,7 @@
 		
 		<ui:define name="content">
 			<div id="functions-area">
-				<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF001_37')}</a>
+				<a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF001_37')}</a>
 				<button tabindex="1" data-bind="click: createNewCondition, enable: screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.UPDATE">#{i18n.getText('CMF001_29')}</button>
 				<button tabindex="2" data-bind="click: registerCondition" class="proceed" >#{i18n.getText('CMF001_30')}</button>
 <!-- 					<button tabindex="3" >#{i18n.getText('CMF001_31')}</button> -->
@@ -41,7 +41,7 @@
 								name: '#[CMF001_39]', 
 								dataSource: listStandardImportSetting,
 								primaryKey: 'dispConditionSettingCode', 
-									columns: [
+								columns: [
 					                { headerText: '#{i18n.getText('CMF001_41')}', key: 'dispConditionSettingCode', width: 100, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CMF001_42')}', key: 'dispConditionSettingName', width: 220, formatter: _.escape }
 					            ], 

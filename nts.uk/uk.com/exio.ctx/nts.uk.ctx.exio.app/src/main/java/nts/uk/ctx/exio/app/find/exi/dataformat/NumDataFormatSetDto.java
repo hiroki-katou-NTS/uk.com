@@ -1,32 +1,14 @@
 package nts.uk.ctx.exio.app.find.exi.dataformat;
 
-import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.dom.exi.dataformat.NumDataFormatSet;
 
 /**
  * 数値型データ形式設定
  */
-@AllArgsConstructor
+
 @Value
 public class NumDataFormatSetDto {
-
-	/**
-	 * 会社ID
-	 */
-	private String cid;
-
-	/**
-	 * 条件設定コード
-	 */
-	private String conditionSetCd;
-
-	/**
-	 * 受入項目番号
-	 */
-	private int acceptItemNum;
 
 	/**
 	 * 固定値
@@ -46,7 +28,7 @@ public class NumDataFormatSetDto {
 	/**
 	 * コード変換コード
 	 */
-	private int cdConvertCd;
+	private String cdConvertCd;
 
 	/**
 	 * 固定値の値
@@ -78,14 +60,12 @@ public class NumDataFormatSetDto {
 	 */
 	private int decimalFraction;
 
-	private Long version;
-
 	public static NumDataFormatSetDto fromDomain(NumDataFormatSet domain) {
-		return new NumDataFormatSetDto(domain.getCid(), domain.getConditionSetCd(), domain.getAcceptItemNum(),
-				domain.getFixedValue().value, domain.getDecimalDivision().value, domain.getEffectiveDigitLength().value,
-				domain.getCdConvertCd(), domain.getValueOfFixedValue().get().v(), domain.getDecimalDigitNum().get().v(),
+		return new NumDataFormatSetDto(domain.getFixedValue().value, domain.getDecimalDivision().value,
+				domain.getEffectiveDigitLength().value, domain.getCdConvertCd().get().v(),
+				domain.getValueOfFixedValue().get().v(), domain.getDecimalDigitNum().get().v(),
 				domain.getStartDigit().get().v(), domain.getEndDigit().get().v(),
-				domain.getDecimalPointCls().get().value, domain.getDecimalFraction().get().value, domain.getVersion());
+				domain.getDecimalPointCls().get().value, domain.getDecimalFraction().get().value);
 	}
 
 }

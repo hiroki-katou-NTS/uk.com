@@ -7,12 +7,14 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
 * 外部受入動作管理: 主キー情報
 */
 @AllArgsConstructor
+@EqualsAndHashCode
 @NoArgsConstructor
 @Embeddable
 public class OiomtExAcOpManagePk implements Serializable

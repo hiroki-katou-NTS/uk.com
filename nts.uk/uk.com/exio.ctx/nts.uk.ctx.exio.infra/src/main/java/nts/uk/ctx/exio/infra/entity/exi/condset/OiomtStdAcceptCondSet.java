@@ -7,11 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Version;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -63,9 +59,9 @@ public class OiomtStdAcceptCondSet extends UkJpaEntity implements Serializable {
 	/**
 	 * 受入モード
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "ACCEPT_MODE")
-	public int acceptMode;
+	public Integer acceptMode;
 
 	/**
 	 * 外部受入条件名称
@@ -110,8 +106,10 @@ public class OiomtStdAcceptCondSet extends UkJpaEntity implements Serializable {
 
 	public static OiomtStdAcceptCondSet domainToEntity(StdAcceptCondSet domain) {
 		return new OiomtStdAcceptCondSet(domain.getCid(), domain.getSystemType().value, domain.getConditionSetCd().v(),
-				domain.getConditionSetName().v(), domain.getDeleteExistData().value, domain.getAcceptMode().value,
-				domain.getCheckCompleted().value, domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null,
+				domain.getConditionSetName().v(), domain.getDeleteExistData().value,
+				domain.getAcceptMode().isPresent() ? domain.getAcceptMode().get().value : null,
+				domain.getCheckCompleted().value,
+				domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null,
 				domain.getCsvDataLineNumber().isPresent() ? domain.getCsvDataLineNumber().get().v() : null,
 				domain.getCsvDataStartLine().isPresent() ? domain.getCsvDataStartLine().get().v() : null,
 				domain.getDeleteExtDataMethod().isPresent() ? domain.getDeleteExtDataMethod().get().value : null);

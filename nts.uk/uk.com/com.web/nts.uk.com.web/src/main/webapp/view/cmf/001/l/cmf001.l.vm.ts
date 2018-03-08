@@ -13,10 +13,13 @@ module nts.uk.com.view.cmf001.l.viewmodel {
         compareItems: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getCompareTypes());
         acceptScreenConditionSetting: KnockoutObservable<model.AcceptScreenConditionSetting>;
         selectedDataType: number;
-        selectComparisonCondition: KnockoutObservable<string>;
+        selectComparisonCondition: KnockoutObservable<number>;
         inputMode: boolean = true;
+        valueSelected: KnockoutObservable<number>;
+        required: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             var self = this;
+            
             let params = getShared("CMF001lParams");
             if (!nts.uk.util.isNullOrUndefined(params)) {
                 let inputMode = params.inputMode;
@@ -29,6 +32,16 @@ module nts.uk.com.view.cmf001.l.viewmodel {
                     self.acceptScreenConditionSetting = ko.observable(new model.AcceptScreenConditionSetting('条件値', 0 , null, null, null, null, null, null,null, null, null, null));
                 }
             }
+            self.acceptScreenConditionSetting().selectComparisonCondition.subscribe(function(selectedValue){
+                if(selectedValue == 0) {
+                    self.required(false);
+                    nts.uk.ui.errors.clearAll();
+                } else {
+                    self.required(true);    
+                }               
+            });
+            
+               
         }
         
          /**
@@ -41,28 +54,30 @@ module nts.uk.com.view.cmf001.l.viewmodel {
         
         saveSetting(){
             var self = this;
-            switch(self.selectedDataType) {
+            debugger;
+            let value = self.selectedDataType;
+            switch (value) {
                 case model.ITEM_TYPE.NUMERIC:
-                $(".numberCondition").trigger("validate");
-                break;
+                    $(".numberCondition").trigger("validate");
+                    break;
                 case model.ITEM_TYPE.CHARACTER:
-                $(".characterCondition").trigger("validate");
-                break;
+                    $(".characterCondition").trigger("validate");
+                    break;
                 case model.ITEM_TYPE.DATE:
-                $(".dateCondition").trigger("validate");
-                break;
+                    $(".dateCondition").trigger("validate");
+                    break;
                 case model.ITEM_TYPE.TIME:
-                $(".timeCondition").trigger("validate");
-                break;     
+                    $(".timeCondition").trigger("validate");
+                    break;
                 case model.ITEM_TYPE.INS_TIME:
-                $(".timeMomentCondition").trigger("validate");
-                break;
+                    $(".timeMomentCondition").trigger("validate");
+                    break;
             }
             if (!nts.uk.ui.errors.hasError()) {
-                
                 setShared('CMF001lOutput', ko.toJS(self.acceptScreenConditionSetting), true);
                 nts.uk.ui.windows.close();
-            }
+            } 
+
         }
     }
 }

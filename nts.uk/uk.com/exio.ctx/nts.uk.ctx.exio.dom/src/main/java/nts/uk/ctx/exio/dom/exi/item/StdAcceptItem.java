@@ -1,11 +1,14 @@
 package nts.uk.ctx.exio.dom.exi.item;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.exio.dom.exi.condset.AcScreenCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionCode;
 import nts.uk.ctx.exio.dom.exi.condset.SystemType;
+import nts.uk.ctx.exio.dom.exi.dataformat.DataFormatSetting;
 import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 
 /**
@@ -35,6 +38,8 @@ public class StdAcceptItem extends AggregateRoot {
 	 */
 	private SystemType systemType;
 
+	private String categoryId;
+	
 	/**
 	 * CSV項目番号
 	 */
@@ -58,20 +63,27 @@ public class StdAcceptItem extends AggregateRoot {
 	/**
 	 * 受入選別条件設定
 	 */
-	private AcScreenCondSet acceptScreenConditionSetting;
+	private Optional<AcScreenCondSet> acceptScreenConditionSetting;
+	
+	/**
+	 * データ形式設定
+	 */
+	private DataFormatSetting dataFormatSetting;
 
-	public StdAcceptItem(String cid, int systemType, String conditionSetCd, int acceptItemNumber, int categoryItemNo,
-			int csvItemNumber, String csvItemName, int itemType, AcScreenCondSet acceptScreenConditionSetting) {
+	public StdAcceptItem(String cid, int systemType, String conditionSetCd, String categoryId, int acceptItemNumber, int categoryItemNo,
+			int csvItemNumber, String csvItemName, int itemType, AcScreenCondSet acceptScreenConditionSetting, DataFormatSetting dataFormatSetting) {
 		super();
 		this.cid = cid;
 		this.systemType = EnumAdaptor.valueOf(systemType, SystemType.class);
 		this.conditionSetCd = new AcceptanceConditionCode(conditionSetCd);
+		this.categoryId = categoryId;
 		this.categoryItemNo = categoryItemNo;
 		this.acceptItemNumber = acceptItemNumber;
 		this.csvItemNumber = csvItemNumber;
 		this.csvItemName = csvItemName;
 		this.itemType = EnumAdaptor.valueOf(itemType, ItemType.class);
-		this.acceptScreenConditionSetting = acceptScreenConditionSetting;
+		this.acceptScreenConditionSetting = Optional.ofNullable(acceptScreenConditionSetting);
+		this.dataFormatSetting = dataFormatSetting;
 	}
 
 }

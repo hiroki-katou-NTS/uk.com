@@ -11,7 +11,7 @@ module nts.uk.com.view.cmf001.h.viewmodel {
     
     export class ScreenModel {
         characterDataFormatSetting: KnockoutObservable<model.CharacterDataFormatSetting> = 
-        ko.observable(new model.CharacterDataFormatSetting(0, null, null, 0, null, 0, new model.AcceptanceCodeConvert("", "", 0), 0, ""));
+        ko.observable(new model.CharacterDataFormatSetting(0, null, null, 0, null, null, new model.AcceptanceCodeConvert("", "", 0), 0, ""));
         
         effectDigitItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
             new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_268')),
@@ -32,21 +32,19 @@ module nts.uk.com.view.cmf001.h.viewmodel {
             var self = this;
             self.inputMode = true;
             self.fixedLengMethod = ko.observableArray([
-                new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_BEFORE, 'ZERO_BEFORE'),
-                new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_AFTER, 'ZERO_AFTER'),
-                new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_BEFORE, 'SPACE_BEFORE'),
-                new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_AFTER, 'SPACE_AFTER')
+                new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_BEFORE, getText('Enum_FixedLengthEditingMethod_ZERO_BEFORE')),
+                new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_AFTER, getText('Enum_FixedLengthEditingMethod_ZERO_AFTER')),
+                new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_BEFORE, getText('Enum_FixedLengthEditingMethod_SPACE_BEFORE')),
+                new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_AFTER, getText('Enum_FixedLengthEditingMethod_SPACE_AFTER'))
             ]);
             let params = getShared("CMF001hParams"); 
-            if(!nts.uk.util.isNullOrUndefined(params)){
-                let inputMode = params.inputMode;
-                let lineNumber = params.lineNumber;
-                let charSet = params.formatSetting;
-                self.inputMode = inputMode;
-                self.lineNumber = lineNumber;
-                if(!nts.uk.util.isNullOrUndefined(charSet)){
-                    self.initial(charSet);
-                }
+            let inputMode = params.inputMode;
+            let lineNumber = params.lineNumber;
+            let charSet = params.formatSetting;
+            self.inputMode = inputMode;
+            self.lineNumber = lineNumber;
+            if(!nts.uk.util.isNullOrUndefined(charSet)){
+                self.initial(charSet);
             }
         }
         // データが取得できる場合
@@ -70,16 +68,18 @@ module nts.uk.com.view.cmf001.h.viewmodel {
             self.characterDataFormatSetting = ko.observable(new model.CharacterDataFormatSetting(charSet.effectiveDigitLength, charSet.startDigit,
             charSet.endDigit, charSet.codeEditing, charSet.codeEditDigit, charSet.codeEditingMethod,
             convertCode, charSet.fixedValue, charSet.valueOfFixed));   
-//            nts.uk.util.value.reset($("#G2_5"), numFormat.startDigit);
-//            nts.uk.util.value.reset($("#G2_8"), numFormat.endDigit);
-//            nts.uk.util.value.reset($("#G3_6"), numFormat.decimalDigitNumber);
-//            nts.uk.util.value.reset($("#G5_5"), numFormat.valueOfFixed);
+//            nts.uk.util.value.reset($("#H2_5"), numFormat.startDigit);
+//            nts.uk.util.value.reset($("#H2_8"), numFormat.endDigit);
+//            nts.uk.util.value.reset($("#H3_5"), numFormat.decimalDigitNumber);
+//            nts.uk.util.value.reset($("#H5_5"), numFormat.fixedVal);
         }
+        // コード変換の選択を行う
         open001_K(data){
             var self = this;
             let selectedConvertCode = data.codeConvertCode();
             setShared("CMF001kParams", { selectedConvertCode: ko.toJS(selectedConvertCode) });
             modal("/view/cmf/001/k/index.xhtml").onClosed(() => {
+                // コード変換選択を行う
                 let params = getShared("CMF001kOutput");
                 if(!nts.uk.util.isNullOrUndefined(params)){
                     let codeConvertCodeSelected = params.selectedConvertCodeShared;
@@ -87,6 +87,7 @@ module nts.uk.com.view.cmf001.h.viewmodel {
                 }
             });
         }
+        // 数値編集の設定をして終了する
         saveCharacterSetting(){
             var self = this;
 //            $("#H2_5").trigger("validate");
@@ -97,6 +98,7 @@ module nts.uk.com.view.cmf001.h.viewmodel {
             }
             nts.uk.ui.windows.close();
         }
+        // キャンセルして終了する
         cancelCharacterSetting(){
             nts.uk.ui.windows.close();   
         }
