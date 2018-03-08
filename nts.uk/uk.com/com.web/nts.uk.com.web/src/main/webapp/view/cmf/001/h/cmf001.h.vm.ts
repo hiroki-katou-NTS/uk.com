@@ -11,7 +11,7 @@ module nts.uk.com.view.cmf001.h.viewmodel {
     
     export class ScreenModel {
         characterDataFormatSetting: KnockoutObservable<model.CharacterDataFormatSetting> = 
-        ko.observable(new model.CharacterDataFormatSetting(0, null, null, 0, null, 0, new model.AcceptanceCodeConvert("", "", 0), 0, ""));
+        ko.observable(new model.CharacterDataFormatSetting(0, null, null, 0, null, null, new model.AcceptanceCodeConvert("", "", 0), 0, ""));
         
         effectDigitItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
             new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_268')),

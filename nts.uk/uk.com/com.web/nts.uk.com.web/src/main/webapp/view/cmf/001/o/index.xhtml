@@ -132,11 +132,11 @@
 														<div id="file-upload" class="form_step0"
 															style="display: inline-block;"
 															data-bind="ntsFileUpload:{
-																	filename: filename,
-																	accept: accept,
+																	filename: fileName,
+																	accept: ['.csv'],
 																	text: textId,
-																	aslink: asLink,
-																	enable: enable,
+																	aslink: false,
+																	enable: true,
 																	required: true,
 																	onchange: uploadFile.bind($data)}">
 														</div>
@@ -149,10 +149,10 @@
 								<tr>
 									<td style="vertical-align: bottom; padding-left: 10px;">
 										<!--O6_1 ←処理を選びなおす-->
-										<button class="large" data-bind="click: previous">#{i18n.getText('CMF001_448')}</button>
+										<button class="large">#{i18n.getText('CMF001_448')}</button>
 										<!--O6_2 次へ→-->
 										<button class="proceed x-large" style="margin-left: 10px"
-											data-bind="click: next">#{i18n.getText('CMF001_449')}</button>
+											data-bind="click: gotoExAccSummary">#{i18n.getText('CMF001_449')}</button>
 									</td>
 								</tr>
 							</table>
@@ -204,7 +204,7 @@
 									</td>
 									<td colspan="2">
 										<!--P3_9 受入ファイル名-->
-										<div class="label" data-bind="text: filename"></div>
+										<div class="label" data-bind="text: fileName"></div>
 									</td>
 									<td style="">
 										<!--P3_10 取込開始行（ラベル）-->
@@ -292,7 +292,7 @@
 								<tr>
 									<td style="text-align: center;">
 										<!--P6_1 ←受入設定へ-->
-										<button class="large" data-bind="click: previous">#{i18n.getText('CMF001_479')}</button>
+										<button class="large" data-bind="click: gotoAccSetSelect">#{i18n.getText('CMF001_479')}</button>
 										<!--P6_2 受入実行-->
 										<button class="proceed x-large" style="margin-left: 10px"
 											data-bind="click: exeAccept">#{i18n.getText('CMF001_480')}</button>

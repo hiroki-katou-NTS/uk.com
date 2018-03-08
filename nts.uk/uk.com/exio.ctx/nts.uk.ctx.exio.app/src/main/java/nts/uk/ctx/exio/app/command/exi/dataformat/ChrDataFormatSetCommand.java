@@ -1,8 +1,6 @@
 package nts.uk.ctx.exio.app.command.exi.dataformat;
 
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.dom.exi.dataformat.ChrDataFormatSet;
 import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 
