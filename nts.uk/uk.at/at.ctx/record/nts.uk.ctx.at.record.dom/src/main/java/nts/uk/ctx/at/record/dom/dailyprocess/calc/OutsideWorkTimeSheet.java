@@ -39,13 +39,22 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
  *
  */
 @Getter
-@AllArgsConstructor
 public class OutsideWorkTimeSheet {
 
 	private Optional<OverTimeSheet> overTimeWorkSheet;
 
 	private Optional<HolidayWorkTimeSheet> holidayWorkTimeSheet;
 
+	/**
+	 * Constructor 
+	 */
+	public OutsideWorkTimeSheet(Optional<OverTimeSheet> overTimeWorkSheet,
+			Optional<HolidayWorkTimeSheet> holidayWorkTimeSheet) {
+		super();
+		this.overTimeWorkSheet = overTimeWorkSheet;
+		this.holidayWorkTimeSheet = holidayWorkTimeSheet;
+	}
+	
 	/**
 	 * 就業時間外時間帯を作成する
 	 * 
@@ -203,5 +212,7 @@ public class OutsideWorkTimeSheet {
 		}
 		return new AttendanceTime(0);
 	}
+
+
 	
 }
