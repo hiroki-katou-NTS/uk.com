@@ -30,7 +30,14 @@
 		<ui:define name="sidebar-content" tabindex="-1">
 
 			<div class="sidebar-content-header" tabindex="-1">
-				<span class="title">#{i18n.getText('CMM021_3')}</span> <span
+				<com:ko tag="if" bind="isScreenBSelected">
+					<span class="title">#{i18n.getText('CMM021_3')}</span>
+				</com:ko>
+				<com:ko tag="if" bind="isScreenCSelected">
+					<span class="title">#{i18n.getText('CMM021_4')}</span>
+				</com:ko>
+
+				<span
 					class="action-bar"> <!-- BEGIN A2_1 & A2_2 -->
 					<button tabindex="1" class="proceed"
 						data-bind="click: saveAccount, enable: enable_Save">#{i18n.getText('CMM021_5')}</button>
