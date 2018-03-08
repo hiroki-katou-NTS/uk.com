@@ -164,7 +164,7 @@ module nts.layout {
                     let value: string = ko.toJS(item.data.value),
                         index: number = value.indexOf('　');
 
-                    if (index > -1 && [0, value.length - 1].indexOf(index) == -1) {
+                    if (index > -1 && !item.data.value().startsWith('　') && !item.data.value().endsWith('　')) {
                         rmError(item, "Msg_924");
                     } else if (item.data.value() && !item.ctrl.parent().hasClass('error')) {
                         !item.ctrl.is(':disabled') && item.ctrl.ntsError('set', { messageId: "Msg_924" });
