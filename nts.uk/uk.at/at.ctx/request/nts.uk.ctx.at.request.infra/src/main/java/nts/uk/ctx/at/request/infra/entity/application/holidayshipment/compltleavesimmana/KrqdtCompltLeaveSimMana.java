@@ -1,7 +1,9 @@
-package nts.uk.ctx.at.request.infra.entity.application.holidayshipment;
+package nts.uk.ctx.at.request.infra.entity.application.holidayshipment.compltleavesimmana;
 
 import java.io.Serializable;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -13,25 +15,31 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * 振休申請休出変更管理
+ * 振休振出同時申請管理
  * 
  * @author sonnlb
  */
 @Entity
-@Table(name = "KRQDT_BRK_OFF_SUP_CHG_MNG")
+@Table(name = "KRQDT_COMP_LEAVE_SIL_MNG")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtBrkOffSupChangeMng extends UkJpaEntity implements Serializable {
+public class KrqdtCompltLeaveSimMana extends UkJpaEntity implements Serializable {
+	/**
+	* 
+	*/
+	private static final long serialVersionUID = 1L;
+
+	@EmbeddedId
+	private KrqdtCompltLeaveSimManaPK pk;
 
 	/**
-	 * 
+	 * 同期中
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	@EmbeddedId
-	public KrqdtBrkOffSupChangeMngPK pk;
+	@Basic(optional = false)
+	@Column(name = "SYNCING")
+	private int syncing;
 
 	@Override
 	protected Object getKey() {
