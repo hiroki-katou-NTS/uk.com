@@ -388,15 +388,15 @@ module cmm045.a.viewmodel {
             if (check !== undefined) {
                 if (check.preAppID != '') {
                     let prRes = self.findContentPre(check.preAppID, check.lstFrameRes);
-                    contentPre = prRes.appPre;
-                    contentResult = prRes.appRes;
+                    contentPre = prRes.appPre == '' ? '' : '<br/>' + prRes.appPre;
+                    contentResult = prRes.appRes == '' ? '' :'<br/>' + prRes.appRes;
                 }
             }
             let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
             let applicant: string = masterInfo.workplaceName + '<br/>' + masterInfo.empName;
             let appContentPost: string = getText('CMM045_272') + getText('CMM045_268') + ' ' + overTime.workClockFrom1 + getText('CMM045_100') + overTime.workClockTo1 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
-            let contentFull = appContentPost + '<br/>' + contentPre + '<br/>' + contentResult;
+            let contentFull = appContentPost + contentPre + contentResult;
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                 masterInfo.dispName, prePostApp, self.convertDate(app.applicationDate), contentFull, self.convertDateTime(app.inputDate),
@@ -414,7 +414,10 @@ module cmm045.a.viewmodel {
             let overTime = self.findOverTimeById(appId, self.lstAppOt());
             let masterInfo = self.findMasterInfo(self.lstAppMaster(), appId);
             let app = self.findCommon(self.lstAppCommon(), appId);
-            let appPre = self.fomartOverTimeBf(app, overTime, masterInfo);
+            let appPre = null;
+            if(app !== undefined && overTime !== undefined && masterInfo !== undefined){
+                appPre = self.fomartOverTimeBf(app, overTime, masterInfo);
+            }
             let appResContent = '';
             //thuc te
             let appRes = self.convertFrameTime(lstFrameRes);
@@ -422,7 +425,7 @@ module cmm045.a.viewmodel {
 
 
             let appInfor = {
-                appPre: getText('CMM045_272') + appPre.appContent,
+                appPre: appPre == null ? '' : getText('CMM045_272') + appPre.appContent,
                 appRes: lstFrameRes.length == 0 ? '' : appResContent
             }
             return appInfor;
