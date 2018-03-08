@@ -42,8 +42,8 @@ public class FileUtil {
 		try {
 			CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
 			NtsCsvRecord record = csvParsedResult.getRecords().get(index);
-			for (int i = 1; i <= numOfCol; i++) {
-				result.add((String) record.getColumn(i - 1));
+			for (int i = 0; i < numOfCol; i++) {
+				result.add((String) record.getColumn(i));
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
