@@ -67,6 +67,7 @@ export module viewmodel {
                 showJobTitle: false, // 職位条件
                 showWorktype: false, // 勤種条件
                 isMutipleCheck: true,
+                isInDialog:true,
                    /**  
                    * @param dataList: list employee returned from component.
                    * Define how to use this list employee by yourself in the function's body.

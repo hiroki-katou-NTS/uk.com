@@ -13,6 +13,7 @@ module nts.uk.com.view.ccg.share.ccg {
     import EmployeeQueryParam = service.model.EmployeeQueryParam;
     import EmployeeDto = service.model.EmployeeDto;
     import DatePeriodDto = service.model.DatePeriodDto;
+    import BusinessType = service.model.BusinessType;
 
     export module viewmodel {
         
@@ -181,6 +182,45 @@ module nts.uk.com.view.ccg.share.ccg {
                 //check show button Apply
                 self.showApplyBtn = ko.computed(() => {
                     return self.baseDate() && self.periodStart() && self.periodEnd() ? true : false;
+                });
+                
+                self.periodStart.subscribe(startDate => {
+                    if (startDate.isAfter(self.periodEnd())){
+                        let CCG001_30 = nts.uk.resource.getText("CCG001_30");
+                        if (self.showPeriodYM) {
+                            $("#inp-period-startYM").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_30]), "FND_E_SPAN_REVERSED");
+                        } else {
+                            $("#inp-period-startYMD").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_30]), "FND_E_SPAN_REVERSED");
+                        }
+                    }
+                });
+                
+                self.periodEnd.subscribe(endDate => {
+                    $("#inp-period-startYM").ntsError("clear");
+                    $("#inp-period-startYMD").ntsError("clear");
+                    if (endDate.isBefore(self.periodStart())){
+                        let CCG001_30 = nts.uk.resource.getText("CCG001_30");
+                        if (self.showPeriodYM) {
+                            $("#inp-period-startYM").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_30]), "FND_E_SPAN_REVERSED");
+                        } else {
+                            $("#inp-period-startYMD").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_30]), "FND_E_SPAN_REVERSED");
+                        }
+                    }
+                });
+                
+                self.statusPeriodStart.subscribe(startDate => {
+                    if (startDate.isAfter(self.statusPeriodEnd())){
+                        let CCG001_94 = nts.uk.resource.getText("CCG001_94");
+                        $("#ccg001-partg-start").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_94]), "FND_E_SPAN_REVERSED");
+                    }
+                });
+                
+                self.statusPeriodEnd.subscribe(endDate => {
+                    $("#ccg001-partg-start").ntsError("clear");
+                    if (endDate.isBefore(self.statusPeriodStart())){
+                        let CCG001_94 = nts.uk.resource.getText("CCG001_94");
+                        $("#ccg001-partg-start").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_94]), "FND_E_SPAN_REVERSED");
+                    }
                 });
             }
 
@@ -562,19 +602,24 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             private setComponentHeight(): void {
                 let self = this;
-                const headerHeight = $('#header').outerHeight(true);
-                const functionAreaHeight = $('#functions-area').length > 0 ? $('#functions-area').outerHeight(true) : 0;
+                const headerHeight = $('#header').outerHeight();
+                const sidebarHeaderHeight = $('.sidebar-content-header').outerHeight(); // for screen with sidebar
+                const functionAreaHeight = $('#functions-area').length > 0 ? $('#functions-area').outerHeight() : 0;
+                const buffer = 15;
                 let componentHeight = 0;
 
-                // set component height
+                // calculate component height
                 if (self.isInDialog) {
-                    componentHeight =  window.innerHeight - functionAreaHeight - 15;
+                    componentHeight = window.innerHeight - functionAreaHeight - buffer;
                 } else {
-                    componentHeight = window.innerHeight - headerHeight - functionAreaHeight - 15;
+                    const notIncluded = headerHeight + functionAreaHeight + (sidebarHeaderHeight ? sidebarHeaderHeight : 0) + buffer;
+                    componentHeight = window.innerHeight - notIncluded;
                 }
+
+                // set component height
                 $('#component-ccg001').outerHeight(componentHeight);
-                    $('#hor-scroll-button-hide').outerHeight(componentHeight);
-                    $('#ccg001-btn-search-drawer').outerHeight(componentHeight / 2);
+                $('#hor-scroll-button-hide').outerHeight(componentHeight);
+                $('#ccg001-btn-search-drawer').outerHeight(componentHeight / 2);
 
                 // set tab panel height.
                 const tabpanelHeight = componentHeight - $('#ccg001-header').outerHeight(true) - 10;
@@ -788,7 +833,7 @@ module nts.uk.com.view.ccg.share.ccg {
             private fixComponentWidth(): void {
                 let self = this;
                 // update tab 2 width
-                let totalWidth = 0;
+                let totalWidth = 20;
                 $('#ccg001-tab-content-2').children('div.pull-left.height-maximum').each((i, e) => totalWidth += $(e).outerWidth(true));
                 $('#ccg001-tab-content-2').outerWidth(totalWidth);
 
@@ -847,7 +892,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
 
                 nts.uk.ui.block.invisible(); // block ui
-
+                
                 // Check future reference permission
                 $.when(self.setBaseDateAndPeriod(), self.getFuturePermit())
                     .done((noValue, permit) => {
@@ -884,30 +929,91 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.queryParam.retireEnd = self.statusPeriodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
 
                 // reload advanced search tab.
-                $.when(service.searchWorkplaceOfEmployee(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
-                    service.searchAllWorkType())
-                    .done((selectedCodes, workTypeList: Array<BusinessType>) => {
-                        self.selectedCodeWorkplace(selectedCodes);
+                self.reloadDataSearch();
+                $.when(self.loadEmploymentPart(),
+                    self.loadClassificationPart(),
+                    self.loadJobTitlePart(),
+                    self.loadWorkplacePart(),
+                    self.loadWorktypePart())
+                    .done(() => dfd.resolve());
+                return dfd.promise();
+            }
+
+            /**
+             * Load employment part
+             */
+            private loadEmploymentPart(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                if (self.showEmployment) {
+                    $('#employmentList').ntsListComponent(self.employments).done(() => dfd.resolve());
+                } else {
+                    dfd.resolve();
+                }
+                return dfd.promise();
+            }
+
+            /**
+             * Load Classification part
+             */
+            private loadClassificationPart(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                if (self.showClassification) {
+                    $('#classificationList').ntsListComponent(self.classifications).done(() => dfd.resolve());
+                } else {
+                    dfd.resolve();
+                }
+                return dfd.promise();
+            }
+
+            /**
+             * Load jobtitle part
+             */
+            private loadJobTitlePart(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                if (self.showJobTitle) {
+                    $('#jobtitleList').ntsListComponent(self.jobtitles).done(() => dfd.resolve());
+                } else {
+                    dfd.resolve();
+                }
+                return dfd.promise();
+            }
+
+            /**
+             * Load workplace part
+             */
+            private loadWorkplacePart(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                if (self.showWorkplace) {
+                    service.searchWorkplaceOfEmployee(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate())
+                        .done(selectedCodes => {
+                            self.selectedCodeWorkplace(selectedCodes);
+                            $('#workplaceList').ntsTreeComponent(self.workplaces).done(() => dfd.resolve());
+                        })
+                } else {
+                    dfd.resolve();
+                }
+                return dfd.promise();
+            }
+
+            /**
+             * Load worktype part
+             */
+            private loadWorktypePart(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                if (self.showEmployment) {
+                    service.searchAllWorkType().done((workTypeList: Array<BusinessType>) => {
                         self.listWorkType(workTypeList);
                         self.selectedWorkTypeCode(_.map(workTypeList, vl => vl.businessTypeCode));
-
-                        self.reloadDataSearch();
-
-                        if (self.showEmployment) {
-                            $('#employmentList').ntsListComponent(self.employments);
-                        }
-                        if (self.showClassification) {
-                            $('#classificationList').ntsListComponent(self.classifications);
-                        }
-                        if (self.showJobTitle) {
-                            $('#jobtitleList').ntsListComponent(self.jobtitles);
-                        }
-                        if (self.showWorkplace) {
-                            $('#workplaceList').ntsTreeComponent(self.workplaces);
-                        }
                         dfd.resolve();
-
                     });
+                } else {
+                    dfd.resolve();
+                }
                 return dfd.promise();
             }
 
@@ -1076,7 +1182,7 @@ module nts.uk.com.view.ccg.share.ccg {
             /**
              * Set base date and period
              */
-            public setBaseDateAndPeriod(): JQueryPromise<void> { // format: YYYY-MM-DD
+            public setBaseDateAndPeriod(): JQueryPromise<void> {
                 let dfd = $.Deferred<void>();
                 let self = this;
                 // set default base date
@@ -1154,7 +1260,8 @@ module nts.uk.com.view.ccg.share.ccg {
             public isBaseDateInTargetPeriod(): boolean {
                 let self = this;
                 let baseDate = self.baseDate();
-                if(self.showPeriodYM){
+                
+                if (self.showPeriodYM){
                     baseDate = moment.utc((self.baseDate()).format("YYYY/MM"), "YYYY/MM"); 
                 } 
                 
@@ -1396,10 +1503,6 @@ module nts.uk.com.view.ccg.share.ccg {
             static ONLY_MYSELF = 3;
         }
 
-        interface BusinessType {
-            businessTypeCode: string;
-            businessTypeName: string;
-        }
     }
 }
 /**

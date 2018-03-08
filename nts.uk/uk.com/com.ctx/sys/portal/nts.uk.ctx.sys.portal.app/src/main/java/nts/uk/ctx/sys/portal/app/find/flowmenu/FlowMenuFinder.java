@@ -22,14 +22,14 @@ import nts.uk.shr.com.context.AppContexts;
 public class FlowMenuFinder {
 	
 	@Inject
-	private FlowMenuRepository repository;
+	private FlowMenuRepository flowmenuRepository;
 	
 	@Inject
 	private FileStorage fileStorage;
 	
 	public List<FlowMenuDto> getAllFlowMenu() {
 		String companyID = AppContexts.user().companyId();
-		List<FlowMenu> flowMenus = repository.findAll(companyID);
+		List<FlowMenu> flowMenus = flowmenuRepository.findAll(companyID);
 		List<FlowMenuDto> flowMenuDtos = new ArrayList<FlowMenuDto>();
 		for (FlowMenu flowMenu : flowMenus) {
 			if(StringUtils.isEmpty(flowMenu.getFileID()) || !fileStorage.getInfo(flowMenu.getFileID()).isPresent()) {
@@ -44,11 +44,9 @@ public class FlowMenuFinder {
 	
 	public FlowMenuDto getFlowMenu(String toppagePartID) {
 		String companyID = AppContexts.user().companyId();
-//		FlowMenu flowMenu = repository.findByCode(companyID, toppagePartID).get();
-		//hoatt
-		Optional<FlowMenu> flowMenu = repository.findByCode(companyID, toppagePartID);
+		Optional<FlowMenu> flowMenu = flowmenuRepository.findByCode(companyID, toppagePartID);
 		if(!flowMenu.isPresent()){
-			return null;
+			throw new RuntimeException("Can't find FlowMenu with id: " + toppagePartID);
 		}
 		StoredFileInfo fileInfo = fileStorage.getInfo(flowMenu.get().getFileID()).get();
 		return FlowMenuDto.fromDomain(flowMenu.get(), fileInfo);

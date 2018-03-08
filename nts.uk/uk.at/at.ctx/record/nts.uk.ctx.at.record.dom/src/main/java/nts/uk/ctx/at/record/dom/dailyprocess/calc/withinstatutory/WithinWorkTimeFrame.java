@@ -5,10 +5,11 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
+import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
@@ -17,6 +18,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.SpecBonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
@@ -66,9 +68,9 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 			TimeSpanForCalc calculationTimeSheet,
 			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets,
-			List<BonusPayTimesheet> bonusPayTimeSheet,
-			Optional<MidNightTimeSheet> midNighttimeSheet,
-			List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet) {
+			List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
+			Optional<MidNightTimeSheetForCalc> midNighttimeSheet,
+			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet) {
 		
 		super(timeSheet, calculationTimeSheet,recorddeductionTimeSheets,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
 		this.workingHoursTimeNo = workingHoursTimeNo;

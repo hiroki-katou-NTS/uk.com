@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.setting.company.request.approvallistsetting.ApprovalListDisplaySetDto;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppListInitialRepository;
@@ -20,8 +19,6 @@ import nts.uk.ctx.at.request.dom.application.applicationlist.service.AppMasterIn
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.ApplicationFullOutput;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.CheckColorTime;
 import nts.uk.ctx.at.request.dom.application.applicationlist.service.PhaseStatus;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
@@ -82,9 +79,11 @@ public class ApplicationListFinder {
 			lstAppDto.add(ApplicationDto_New.fromDomain(app));
 		}
 		List<AppStatusApproval> lstStatusApproval = new ArrayList<>();
+		List<ApproveAgent> lstAgent = new ArrayList<>();
 		if(param.getAppListAtr() == 1){//mode approval
 			List<ApplicationFullOutput> lstFil = lstApp.getLstAppFull().stream().filter(c -> c.getStatus() != null).collect(Collectors.toList());
 			for (ApplicationFullOutput app : lstFil) {
+				lstAgent.add(new ApproveAgent(app.getApplication().getAppID(), app.getAgentId()));
 				lstStatusApproval.add(new AppStatusApproval(app.getApplication().getAppID(), app.getStatus()));
 			}
 			for (ApplicationDto_New appDto : lstAppDto) {
@@ -96,8 +95,9 @@ public class ApplicationListFinder {
 				master.setCheckTimecolor(this.findColorAtr(lstApp.getLstTimeColor(), master.getAppID()));
 			}
 		}
-		return new ApplicationListDto(displaySet, lstApp.getLstMasterInfo(),lstAppDto,lstApp.getLstAppOt(),lstApp.getLstAppGoBack(),
-				lstApp.getAppStatusCount(), lstApp.getLstAppGroup());
+		List<Integer> lstAppType = this.findListApp(lstAppDto);
+		return new ApplicationListDto(param.getStartDate(), param.getEndDate(), displaySet, lstApp.getLstMasterInfo(),lstAppDto,lstApp.getLstAppOt(),lstApp.getLstAppGoBack(),
+				lstApp.getAppStatusCount(), lstApp.getLstAppGroup(), lstAppType, lstAgent);
 	}
 	
 	private Integer findStatusAppv(List<AppStatusApproval> lstStatusApproval, String appID){
@@ -131,5 +131,14 @@ public class ApplicationListFinder {
 			}
 		}
 		return 0;
+	}
+	private List<Integer> findListApp(List<ApplicationDto_New> lstApp){
+		List<Integer> lstAppType = new ArrayList<>();
+		for (ApplicationDto_New app : lstApp) {
+			if(!lstAppType.contains(app.getApplicationType())){
+				lstAppType.add(app.getApplicationType());
+			}
+		}
+		return lstAppType.stream().sorted((x, y) -> x-y).collect(Collectors.toList());
 	}
 }

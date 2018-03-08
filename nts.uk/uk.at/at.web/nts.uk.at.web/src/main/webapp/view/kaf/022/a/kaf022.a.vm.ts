@@ -1640,27 +1640,34 @@ module nts.uk.at.view.kmf022 {
             }
             loadData(): void {
                 let self = this;
-                self.initDataA4();
-                self.initDataA5();
-                self.initDataA6();
-                self.initDataA7AndA8();
-                self.initDataA10();
-                self.initDataA13();
-                self.initDataA14();
-                self.initDataA16();
-                self.initDataA15();
-                self.initDataA17();
-
-                self.initDataB();
-                self.initDataC();
-                self.initDataD();
-                self.initDataF();
-                self.initDataE();
-                self.initDataG();
-                self.initDataH();
-                self.initDataI();
-                self.initDataJ();
-                self.initDataK();
+                nts.uk.ui.block.grayout();
+                service.findAllData().done((data: any)=> {
+                    self.initDataA4(data);
+                    self.initDataA5(data);
+                    self.initDataA6(data);
+                    self.initDataA7AndA8(data);
+                    self.initDataA10(data);
+                    self.initDataA13(data);
+                    self.initDataA14(data);
+                    self.initDataA16(data);
+                    self.initDataA15();
+                    self.initDataA17(data);
+    
+                    self.initDataB(data);
+                    self.initDataC(data);
+                    self.initDataD(data);
+                    self.initDataF(data);
+                    self.initDataE(data);
+                    self.initDataG(data);
+                    self.initDataH(data);
+                    self.initDataI(data);
+                    self.initDataJ(data);
+                    self.initDataK(data);
+                }).always(()=>{
+                    nts.uk.ui.block.clear();
+                    $("#a4_6").focus();
+                });
+                    
             }
             initDataA4(): void {
                 let self = this;

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import lombok.Getter;
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
@@ -8,8 +9,19 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  * @author keisuke_hoshina
  *
  */
-@Value
+@Getter
 public class StatutoryWorkingTime {
 	private AttendanceTime forActualWorkTime;
 	private AttendanceTime forWorkTimeIncludePremium;
+	
+	/**
+	 * Constructor 
+	 */
+	public StatutoryWorkingTime(AttendanceTime forActualWorkTime, AttendanceTime forWorkTimeIncludePremium) {
+		super();
+		this.forActualWorkTime = forActualWorkTime;
+		this.forWorkTimeIncludePremium = forWorkTimeIncludePremium;
+	}
+	
+	
 }
