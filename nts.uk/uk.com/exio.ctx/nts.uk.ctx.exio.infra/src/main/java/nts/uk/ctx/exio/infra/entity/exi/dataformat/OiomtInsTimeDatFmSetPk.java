@@ -52,7 +52,7 @@ public class OiomtInsTimeDatFmSetPk implements Serializable {
 	 * 受入項目番号
 	 */
 	@Basic(optional = false)
-	@Column(name = "ACCEPT_ITEM_NUMBER")
+	@Column(name = "ACCEPT_ITEM_NUM")
 	public int acceptItemNumber;
 
 }

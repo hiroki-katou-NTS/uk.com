@@ -109,7 +109,7 @@ public class OiomtInsTimeDatFmSet extends UkJpaEntity implements Serializable {
 			@JoinColumn(name = "SYSTEM_TYPE", referencedColumnName = "SYSTEM_TYPE", insertable = false, updatable = false),
 			@JoinColumn(name = "CONDITION_SET_CD", referencedColumnName = "CONDITION_SET_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "CATEGORY_ID", referencedColumnName = "CATEGORY_ID", insertable = false, updatable = false),
-			@JoinColumn(name = "ACCEPT_ITEM_NUMBER", referencedColumnName = "ACCEPT_ITEM_NUMBER", insertable = false, updatable = false) })
+			@JoinColumn(name = "ACCEPT_ITEM_NUM", referencedColumnName = "ACCEPT_ITEM_NUMBER", insertable = false, updatable = false) })
 	public OiomtStdAcceptItem acceptItem;
 
 	@Override
