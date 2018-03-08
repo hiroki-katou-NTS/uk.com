@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.entity.application.holidayshipment.recruitmentapp;
+package nts.uk.ctx.at.request.infra.entity.application.holidayshipment;
 
 import java.io.Serializable;
 
@@ -16,21 +16,18 @@ import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * 振出申請
+ * 振休申請
  * 
  * @author sonnlb
  */
 @Entity
-@Table(name = "KRQDT_RECRUITMENT_APP")
+@Table(name = "KRQDT_ABSENCE_LEAVE_APP")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtRecruitmentApp extends UkJpaEntity implements Serializable {
+public class KrqdtAbsenceLeaveApp extends UkJpaEntity implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -44,87 +41,69 @@ public class KrqdtRecruitmentApp extends UkJpaEntity implements Serializable {
 	/**
 	 * 勤務種類
 	 */
-	@Id
 	@Basic(optional = false)
 	@Column(name = "WORK_TYPE_CD")
 	private String workTypeCD;
 
 	/**
+	 * 就業時間帯変更
+	 */
+	@Basic(optional = false)
+	@Column(name = "CHANGE_WORK_HOURS_ATR")
+	private int changeWorkHoursAtr;
+
+	/**
 	 * 勤務場所コード
 	 */
-	@Id
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "WORK_LOCATION_CD")
 	private String workLocationCD;
 
 	/**
 	 * 就業時間帯
 	 */
-	@Id
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "WORK_TIME_CD")
 	private String workTimeCD;
 
 	/**
 	 * 日区分
 	 */
-	@Id
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "START_WORK_TIME_ATR1")
 	private int startWorkTimeAtr1;
 
 	/**
-	 * 時刻
+	 * 開始時刻
 	 */
-	@Id
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "START_WORK_TIME1")
 	private GeneralDate startWorkTime1;
 
 	/**
 	 * 日区分
 	 */
-	@Id
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "END_WORK_TIME_ATR1")
 	private int endWorkTimeAtr1;
 
 	/**
-	 * 時刻
+	 * 終了時刻
 	 */
-	@Id
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "END_WORK_TIME1")
 	private GeneralDate endWorkTime1;
 
 	/**
-	 * 直行
-	 */
-	@Id
-	@Basic(optional = false)
-	@Column(name = "START_USE_ATR1")
-	private int startUseAtr1;
-
-	/**
-	 * 直帰
-	 */
-	@Id
-	@Basic(optional = false)
-	@Column(name = "END_USE_ATR1")
-	private int endUseAtr1;
-
-	/**
 	 * 日区分
 	 */
-	@Id
 	@Basic(optional = true)
 	@Column(name = "START_WORK_TIME_ATR2")
 	private int startWorkTimeAtr2;
 
 	/**
-	 * 時刻
+	 * 開始時刻
 	 */
-	@Id
 	@Basic(optional = true)
 	@Column(name = "START_WORK_TIME2")
 	private GeneralDate startWorkTime2;
@@ -132,74 +111,44 @@ public class KrqdtRecruitmentApp extends UkJpaEntity implements Serializable {
 	/**
 	 * 日区分
 	 */
-	@Id
 	@Basic(optional = true)
 	@Column(name = "END_WORK_TIME_ATR2")
 	private int endWorkTimeAtr2;
 
 	/**
-	 * 時刻
+	 * 終了時刻
 	 */
-	@Id
 	@Basic(optional = true)
 	@Column(name = "END_WORK_TIME2")
 	private GeneralDate endWorkTime2;
 
 	/**
-	 * 直行
+	 * 管理データ日数単位
 	 */
-	@Id
-	@Basic(optional = true)
-	@Column(name = "START_USE_ATR2")
-	private int startUseAtr2;
-
-	/**
-	 * 直帰
-	 */
-	@Id
-	@Basic(optional = true)
-	@Column(name = "END_USE_ATR2")
-	private int endUseAtr2;
-
-	/**
-	 * 申請内容
-	 */
-	@Id
-	@Basic(optional = true)
-	@Column(name = "APP_CONTENT")
-	private String appContent;
-
-	/**
-	 * 使用時間数
-	 */
-	@Id
 	@Basic(optional = false)
-	@Column(name = "HOURS_USED")
-	private GeneralDate hoursUsed;
+	@Column(name = "DAYS_USED_NO")
+	private int daysUsedNo;
 
 	/**
-	 * 休出管理データ
+	 * 振出管理データ
 	 */
-	@Id
 	@Basic(optional = true)
-	@Column(name = "LEAVE_MNG_DATA_ID")
-	private String leaveMngDataID;
+	@Column(name = "PAYOUT_MNG_DATA_ID")
+	private String payoutMngDataID;
 
 	/**
-	 * 休出発生日
+	 * 管理データ区分
 	 */
-	@Id
 	@Basic(optional = false)
-	@Column(name = "BREAK_OUT_DATE")
-	private GeneralDate breakOutDate;
+	@Column(name = "PICK_UP_STATE")
+	private int pickUpState;
 
 	/**
-	 * 休出状態
+	 * 振休発生日
 	 */
-	@Id
 	@Basic(optional = false)
-	@Column(name = "REST_STATE")
-	private int restState;
+	@Column(name = "OCCURRENCE_DATE")
+	private GeneralDate occurrenceDate;
 
 	@Override
 	protected Object getKey() {
