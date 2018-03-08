@@ -114,7 +114,7 @@ public class UserInfoFinder {
 		listUserAccount.forEach(item -> {
 			PersonInfoImport personInfoImport = mapPerson.get(item.getPersonId());
 			if (personInfoImport != null) {
-				item.setPersonName(personInfoImport.getPersonName());
+				item.setBusinessName(personInfoImport.getBusinessName());
 			}
 		});
 
