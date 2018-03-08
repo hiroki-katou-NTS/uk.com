@@ -163,15 +163,15 @@ module nts.layout {
                 CS00002_IS00015: IFindData = finder.find('CS00002', 'IS00015'),
                 CS00002_IS00016: IFindData = finder.find('CS00002', 'IS00016'),
                 validateName = (item: IFindData) => {
-                    let value: string = ko.toJS(item.data.value);
+                    let value: string = ko.toJS(item.data.value),
+                        index: number = value.indexOf('　');
 
-                    if (![0, value.length - 1].indexOf(value.indexOf('　')) && value.indexOf('　') > -1) {
+                    if (index > -1 && !item.data.value().startsWith('　') && !item.data.value().endsWith('　')) {
                         rmError(item, "Msg_924");
                     } else if (item.data.value() && !item.ctrl.parent().hasClass('error')) {
                         !item.ctrl.is(':disabled') && item.ctrl.ntsError('set', { messageId: "Msg_924" });
                     }
                 };
-
             if (CS00002_IS00003) {
                 validateName(CS00002_IS00003);
                 CS00002_IS00003.data.value.subscribe(x => {

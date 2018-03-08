@@ -220,7 +220,7 @@ public class OverTimeSheet {
 		for(OverTimeFrameTimeSheetForCalc timeSheet:frameTimeSheets) {
 			val calcSet = getCalcSetByAtr(autoCalcSet, timeSheet.getWithinStatutryAtr(),timeSheet.isGoEarly());
 			if(timeSheet.getMidNightTimeSheet().isPresent()) {
-				calcTime = calcTime.addMinutes(timeSheet.getMidNightTimeSheet().get().calcMidNight(calcSet.getCalculationClassification()).valueAsMinutes());
+				calcTime = calcTime.addMinutes(timeSheet.calcMidNight(calcSet.getCalculationClassification()).valueAsMinutes());
 			}
 		}
 		return calcTime;
