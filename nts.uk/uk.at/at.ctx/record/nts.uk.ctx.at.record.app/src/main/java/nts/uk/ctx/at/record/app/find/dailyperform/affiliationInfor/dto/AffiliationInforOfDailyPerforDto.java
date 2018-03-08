@@ -8,7 +8,6 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
@@ -43,8 +42,8 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 	public static AffiliationInforOfDailyPerforDto getDto(AffiliationInforOfDailyPerfor domain){
 		AffiliationInforOfDailyPerforDto dto = new AffiliationInforOfDailyPerforDto();
 		if(domain != null){
-			dto.setClassificationCode(domain.getClsCode().v());
-			dto.setEmploymentCode(domain.getEmploymentCode().v());
+			dto.setClassificationCode(domain.getClsCode() == null ? null : domain.getClsCode().v());
+			dto.setEmploymentCode(domain.getEmploymentCode() == null ? null : domain.getEmploymentCode().v());
 			dto.setJobId(domain.getJobTitleID());
 			dto.setSubscriptionCode(domain.getBonusPaySettingCode() == null ? null 
 					: domain.getBonusPaySettingCode().v());

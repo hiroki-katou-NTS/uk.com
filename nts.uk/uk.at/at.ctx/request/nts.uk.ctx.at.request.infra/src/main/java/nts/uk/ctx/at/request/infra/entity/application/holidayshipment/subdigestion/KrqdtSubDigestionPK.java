@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.entity.application.holidayshipment;
+package nts.uk.ctx.at.request.infra.entity.application.holidayshipment.subdigestion;
 
 import java.io.Serializable;
 
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * 消化対象代休管理PK
+ * 消化対象振休管理PK
  * 
  * @author sonnlb
  */
@@ -22,18 +22,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @Embeddable
-public class KrqdtSubTargetDigestionPK implements Serializable {
+public class KrqdtSubDigestionPK implements Serializable {
 	/**
 	* 
 	*/
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * 振出申請ID
-	 */
-	@Basic(optional = false)
-	@Column(name = "REC_APP_ID")
-	private String recAppID;
 
 	/**
 	 * 振休申請ID

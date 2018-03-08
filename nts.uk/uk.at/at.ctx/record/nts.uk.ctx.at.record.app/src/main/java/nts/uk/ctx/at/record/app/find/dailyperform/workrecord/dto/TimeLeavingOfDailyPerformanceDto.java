@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,8 +64,7 @@ public class TimeLeavingOfDailyPerformanceDto extends AttendanceItemCommon {
 			return null;
 		}
 		return new TimeLeavingOfDailyPerformance(emp, new WorkTimes(toWorkTime()),
-				workAndLeave == null ? new ArrayList<>() : ConvertHelper.mapTo(workAndLeave, c -> toTimeLeaveWork(c)),
-				date);
+				ConvertHelper.mapTo(workAndLeave, c -> toTimeLeaveWork(c)), date);
 	}
 
 	private int toWorkTime() {

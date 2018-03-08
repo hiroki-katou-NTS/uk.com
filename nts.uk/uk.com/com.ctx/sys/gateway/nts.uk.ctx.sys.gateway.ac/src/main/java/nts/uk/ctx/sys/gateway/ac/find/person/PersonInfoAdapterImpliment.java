@@ -30,9 +30,8 @@ public class PersonInfoAdapterImpliment implements PersonInfoAdapter {
 	@Override
 	public List<PersonInfoImport> getListPersonInfo(List<String> listPersonId) {
 		return this.personPub.findByPersonIds(listPersonId).stream().map(f -> {
-			return new PersonInfoImport(f.getPersonId(), f.getPersonName());
+			return new PersonInfoImport(f.getPersonId(), f.getBusinessName());
 		}).collect(Collectors.toList());
 
 	}
-
 }

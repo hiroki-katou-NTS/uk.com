@@ -1,11 +1,13 @@
 package nts.uk.screen.at.infra.schedule.workschedulestate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedulestate.KscstWorkScheduleState;
 import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenDto;
 import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenRepository;
@@ -16,8 +18,7 @@ import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenRe
  *
  */
 @Stateless
-public class JpaWorkScheduleStateScreenRepository extends JpaRepository
-		implements WorkScheduleStateScreenRepository {
+public class JpaWorkScheduleStateScreenRepository extends JpaRepository implements WorkScheduleStateScreenRepository {
 
 	private final String SELECT_BY_SID_AND_DATE_AND_SCHEDULE_ITEM_ID = "SELECT a FROM KscstWorkScheduleState a "
 			+ "WHERE a.kscstWorkScheduleStatePK.employeeId IN :sId "
@@ -34,9 +35,13 @@ public class JpaWorkScheduleStateScreenRepository extends JpaRepository
 	@Override
 	public List<WorkScheduleStateScreenDto> getByListSidAndDateAndScheId(List<String> sId, GeneralDate startDate,
 			GeneralDate endDate) {
-		return this.queryProxy().query(SELECT_BY_SID_AND_DATE_AND_SCHEDULE_ITEM_ID, KscstWorkScheduleState.class)
-				.setParameter("sId", sId).setParameter("startDate", startDate).setParameter("endDate", endDate)
-				.getList(x -> toDto(x));
+		List<WorkScheduleStateScreenDto> datas = new ArrayList<WorkScheduleStateScreenDto>();
+		CollectionUtil.split(sId, 1000, subIdList -> {
+			datas.addAll(
+					this.queryProxy().query(SELECT_BY_SID_AND_DATE_AND_SCHEDULE_ITEM_ID, KscstWorkScheduleState.class)
+							.setParameter("sId", subIdList).setParameter("startDate", startDate)
+							.setParameter("endDate", endDate).getList(x -> toDto(x)));
+		});
+		return datas;
 	}
-
 }
