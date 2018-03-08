@@ -20,14 +20,14 @@
 							<!--O5_2 システム種類選択-->
 							<div id="cbbSysType" tabindex="3"
 								data-bind="ntsComboBox: {
-													options: listSysType,
-													optionsValue: 'code',
-													visibleItemsCount: 5,
-													value: selectedSysType,
-													optionsText: 'name',
-													columns: [
-														{ prop: 'name', length: 10 }
-													]}"></div>
+									options: listSysType,
+									optionsValue: 'code',
+									visibleItemsCount: 5,
+									value: selectedSysType,
+									optionsText: 'name',
+									columns: [
+										{ prop: 'name', length: 10 }
+									]}"></div>
 						</td>
 					</tr>
 				</table>
@@ -43,28 +43,28 @@
 									<!--O4_3 絞り込み検索-->
 									<div tabindex="2" style="width: 320px"
 										data-bind="ntsSearchBox: {
-														searchMode: 'filter', 
-														targetKey: 'dispConditionSettingCode', 
-														comId: 'grd_Condition', 
-														items: listCondition, 
-														selected: selectedConditionCd, 
-														selectedKey: 'dispConditionSettingCode', 
-														fields: ['dispConditionSettingCode', 'dispConditionSettingName'], 
-														mode: 'igGrid'}" />
+											searchMode: 'filter', 
+											targetKey: 'dispConditionSettingCode', 
+											comId: 'grd_Condition', 
+											items: listCondition, 
+											selected: selectedConditionCd, 
+											selectedKey: 'dispConditionSettingCode', 
+											fields: ['dispConditionSettingCode', 'dispConditionSettingName'], 
+											mode: 'igGrid'}" />
 									<!--O4_4 条件設定一覧-->
 									<table id="grd_Condition" tabindex="-1"
 										data-bind="ntsGridList: {
-													height: 384,
-													name: '#[CMF001_39]', 
-				 									dataSource: listCondition,
-													primaryKey: 'dispConditionSettingCode', 
-													showNumbering: true,
-				 									columns: [
-										                { headerText: '#{i18n.getText('CMF001_440')}', key: 'dispConditionSettingCode', width: 60, formatter: _.escape },
-										                { headerText: '#{i18n.getText('CMF001_441')}', key: 'dispConditionSettingName', width: 220, formatter: _.escape }
-										            ], 
-													multiple: false,
-													value: selectedConditionCd}">
+											height: 384,
+											name: '#[CMF001_39]', 
+				 							ataSource: listCondition,
+											primaryKey: 'dispConditionSettingCode', 
+											showNumbering: true,
+				 							columns: [
+										    	{ headerText: '#{i18n.getText('CMF001_440')}', key: 'dispConditionSettingCode', width: 60, formatter: _.escape },
+										    	{ headerText: '#{i18n.getText('CMF001_441')}', key: 'dispConditionSettingName', width: 220, formatter: _.escape }
+										    ], 
+											multiple: false,
+											value: selectedConditionCd}">
 									</table>
 								</div>
 							</div>
@@ -106,13 +106,13 @@
 											<div id="file-upload" class="form_step0" tabindex="4"
 												style="display: inline-block;"
 												data-bind="ntsFileUpload:{
-																	filename: fileName,
-																	accept: ['.csv'],
-																	text: textId,
-																	aslink: false,
-																	enable: true,
-																	required: true,
-																	onchange: uploadFile.bind($data)}">
+													filename: fileName,
+													accept: ['.csv'],
+													text: textId,
+													aslink: false,
+													enable: true,
+													required: true,
+													onchange: uploadFile.bind($data)}">
 											</div>
 										</td>
 									</tr>
