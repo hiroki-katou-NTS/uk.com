@@ -17,7 +17,11 @@ import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.AlarmExtraValueWkReDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.FuncEmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.daily.dailyaggregationprocess.DailyAggregationProcessService;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
+import nts.uk.ctx.at.function.dom.alarm.w4d4alarm.W4D4AlarmService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AggregationProcessService {
@@ -30,16 +34,16 @@ public class AggregationProcessService {
 
 	@Inject
 	private SyWorkplaceAdapter workplaceAdapter;
-	
-	public List<AlarmExtraValueWkReDto> processAlarmListWorkRecord(List<FuncEmployeeSearchDto> listEmployee,
-			String checkPatternCode, List<PeriodByAlarmCategory> periodByCategory) {
 		
+	public List<AlarmExtraValueWkReDto> processAlarmListWorkRecord(List<FuncEmployeeSearchDto> listEmployee, String checkPatternCode, List<PeriodByAlarmCategory> periodByCategory) {
 		List<AlarmExtraValueWkReDto> result = new ArrayList<>();
+
 		String companyID = AppContexts.user().companyId();
 		
 		// パラメータ．パターンコードをもとにドメインモデル「アラームリストパターン設定」を取得する
 		Optional<AlarmPatternSetting> alarmPatternSetting = this.alPatternSettingRepo.findByAlarmPatternCode(companyID, checkPatternCode);		
-		if(!alarmPatternSetting.isPresent()) throw new RuntimeException("「アラームリストパターン設定 」が見つかりません！");
+		if(!alarmPatternSetting.isPresent())
+			throw new RuntimeException("「アラームリストパターン設定 」が見つかりません！");
 		
 		
 		List<ValueExtractAlarm> valueList = new ArrayList<>();
