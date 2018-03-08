@@ -157,7 +157,7 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 			if (this.compareSingleValue.getConditionType() == ConditionType.FIXED_VALUE) {
 				compareValue = getSingleFixValue();
 			} else {
-				compareValue = getItemValue.apply(Arrays.asList((int) this.compareSingleValue.getValue())).get(0);
+				compareValue = getItemValue.apply(Arrays.asList((Integer) this.compareSingleValue.getValue())).get(0);
 			}
 			switch (this.compareSingleValue.getCompareOpertor()) {
 			case EQUAL:
