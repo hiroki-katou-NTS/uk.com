@@ -51,7 +51,7 @@ public class StdAcceptCondSet extends AggregateRoot {
 	/**
 	 * 受入モード
 	 */
-	private AcceptMode acceptMode;
+	private Optional<AcceptMode> acceptMode;
 
 	/**
 	 * 外部受入条件名称
@@ -76,7 +76,7 @@ public class StdAcceptCondSet extends AggregateRoot {
 		this.conditionSetCd = new AcceptanceConditionCode(conditionSetCd);
 		this.systemType = EnumAdaptor.valueOf(systemType, SystemType.class);
 		this.deleteExistData = EnumAdaptor.valueOf(deleteExistData, NotUseAtr.class);
-		this.acceptMode = EnumAdaptor.valueOf(acceptMode, AcceptMode.class);
+		this.acceptMode = Optional.ofNullable(EnumAdaptor.valueOf(acceptMode, AcceptMode.class));
 		this.conditionSetName = new AcceptanceConditionName(conditionSetName);
 		this.checkCompleted = EnumAdaptor.valueOf(checkCompleted, NotUseAtr.class);
 		this.categoryId = Optional.ofNullable(categoryId);
