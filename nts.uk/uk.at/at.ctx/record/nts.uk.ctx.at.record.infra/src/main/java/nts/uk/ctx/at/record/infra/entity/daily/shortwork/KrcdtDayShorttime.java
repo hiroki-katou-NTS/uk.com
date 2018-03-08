@@ -152,7 +152,6 @@ public class KrcdtDayShorttime extends UkJpaEntity implements Serializable{
 						if(workTimes != null) {
 							this.count = workTimes.v() == null ? 0 : workTimes.v();
 						}
-						return ;
 					}
 				}
 			}

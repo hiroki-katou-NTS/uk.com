@@ -233,7 +233,8 @@ public class CalculationRangeOfOneDay {
 				val createOutSideWorkTimeSheet = OutsideWorkTimeSheet.createOutsideWorkTimeSheet(overTimeHourSetList, fixOff,
 						attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)),
 						workNumber, dayEndSet, workTimeCommonSet, holidayTimeWorkItem, beforeDay, toDay, afterDay, workTime,
-						workingSystem, breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet);
+						workingSystem, breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet
+						,bonusPaySetting,midNightTimeSheet);
 				if(!outsideWorkTimeSheet.isPresent()) {
 					outsideWorkTimeSheet.set(createOutSideWorkTimeSheet);
 				}
