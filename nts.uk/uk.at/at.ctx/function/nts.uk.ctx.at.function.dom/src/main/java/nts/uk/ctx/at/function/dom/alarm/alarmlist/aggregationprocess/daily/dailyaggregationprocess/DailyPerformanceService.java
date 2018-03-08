@@ -21,7 +21,7 @@ import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.FuncEmployeeDail
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.FuncEmployeeDailyPerErrorImport;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
-import nts.uk.ctx.at.function.dom.alarm.alarmlist.FuncEmployeeSearchDto;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -59,7 +59,7 @@ public class DailyPerformanceService {
 	private ApplicationAdapter applicationAdapter;
 	
 	public List<ValueExtractAlarm> aggregationProcess(DailyAlarmCondition dailyAlarmCondition, PeriodByAlarmCategory period,
-			FuncEmployeeSearchDto employee, String companyID ) {
+			EmployeeSearchDto employee, String companyID ) {
 		List<ValueExtractAlarm> valueExtractAlarmList= new ArrayList<>();
 		
 		List<String> listCode = dailyAlarmCondition.getErrorAlarmCode();

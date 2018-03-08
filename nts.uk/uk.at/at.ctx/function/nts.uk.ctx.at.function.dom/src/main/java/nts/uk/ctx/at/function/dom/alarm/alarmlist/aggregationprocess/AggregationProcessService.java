@@ -15,13 +15,9 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.AlarmExtraValueWkReDto;
-import nts.uk.ctx.at.function.dom.alarm.alarmlist.FuncEmployeeSearchDto;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
-import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.daily.dailyaggregationprocess.DailyAggregationProcessService;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
-import nts.uk.ctx.at.function.dom.alarm.w4d4alarm.W4D4AlarmService;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AggregationProcessService {
@@ -35,7 +31,7 @@ public class AggregationProcessService {
 	@Inject
 	private SyWorkplaceAdapter workplaceAdapter;
 		
-	public List<AlarmExtraValueWkReDto> processAlarmListWorkRecord(List<FuncEmployeeSearchDto> listEmployee, String checkPatternCode, List<PeriodByAlarmCategory> periodByCategory) {
+	public List<AlarmExtraValueWkReDto> processAlarmListWorkRecord(List<EmployeeSearchDto> listEmployee, String checkPatternCode, List<PeriodByAlarmCategory> periodByCategory) {
 		List<AlarmExtraValueWkReDto> result = new ArrayList<>();
 
 		String companyID = AppContexts.user().companyId();
@@ -48,7 +44,7 @@ public class AggregationProcessService {
 		
 		List<ValueExtractAlarm> valueList = new ArrayList<>();
 		// 従業員ごと に行う(for list employee)
-		for (FuncEmployeeSearchDto employee : listEmployee) {
+		for (EmployeeSearchDto employee : listEmployee) {
 			valueList.addAll(extractService.process(alarmPatternSetting.get().getCheckConList(), periodByCategory, employee));
 		}
 		

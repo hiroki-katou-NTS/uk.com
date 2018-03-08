@@ -10,7 +10,7 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
-import nts.uk.ctx.at.function.dom.alarm.alarmlist.FuncEmployeeSearchDto;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.daily.dailyaggregationprocess.DailyAggregationProcessService;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
@@ -27,7 +27,7 @@ public class ExtractAlarmForEmployeeService {
 	@Inject
 	private W4D4AlarmService w4D4AlarmService;
 	
-	public List<ValueExtractAlarm> process(List<CheckCondition> checkConList, List<PeriodByAlarmCategory> listPeriodByCategory, FuncEmployeeSearchDto employee){
+	public List<ValueExtractAlarm> process(List<CheckCondition> checkConList, List<PeriodByAlarmCategory> listPeriodByCategory, EmployeeSearchDto employee){
 		
 		List<ValueExtractAlarm> result = new ArrayList<>();
 		

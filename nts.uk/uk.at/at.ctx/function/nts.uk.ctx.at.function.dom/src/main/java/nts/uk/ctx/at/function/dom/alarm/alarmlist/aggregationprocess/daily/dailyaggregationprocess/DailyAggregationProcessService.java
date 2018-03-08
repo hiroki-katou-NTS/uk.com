@@ -14,7 +14,7 @@ import nts.uk.ctx.at.function.dom.adapter.fixedcheckitem.FixedCheckItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapter;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
-import nts.uk.ctx.at.function.dom.alarm.alarmlist.FuncEmployeeSearchDto;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
@@ -41,7 +41,7 @@ public class DailyAggregationProcessService {
 
 
 	public List<ValueExtractAlarm> dailyAggregationProcess(String checkConditionCode, PeriodByAlarmCategory period,
-			FuncEmployeeSearchDto employee) {
+			EmployeeSearchDto employee) {
 		
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>(); 		
 		String companyID = AppContexts.user().companyId();
