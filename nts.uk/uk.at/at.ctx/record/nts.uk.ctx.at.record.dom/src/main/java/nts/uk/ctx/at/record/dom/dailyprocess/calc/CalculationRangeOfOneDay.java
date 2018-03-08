@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
@@ -72,6 +73,7 @@ public class CalculationRangeOfOneDay {
 
 	private Finally<WithinWorkTimeSheet> withinWorkingTimeSheet = Finally.empty();
 
+	@Setter
 	private Finally<OutsideWorkTimeSheet> outsideWorkTimeSheet = Finally.empty();
 
 	private TimeSpanForCalc oneDayOfRange;
@@ -221,32 +223,44 @@ public class CalculationRangeOfOneDay {
 			return;
 		}
 		for (int workNumber = 1; workNumber <= attendanceLeavingWork.getTimeLeavingWorks().size(); workNumber++) {
-			if(workNumber <=1) {
-				/* 就業内の時間帯作成 */
-				val createWithinWorkTimeSheet = WithinWorkTimeSheet.createAsFixed(attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)),toDay, predetermineTimeSetForCalc, 
-																					lstHalfDayWorkTimezone,workTimeCommonSet, deductionTimeSheet, bonusPaySetting,midNightTimeSheet);
-				if(withinWorkingTimeSheet.isPresent()) {
-					withinWorkingTimeSheet.get().getWithinWorkTimeFrame().addAll(createWithinWorkTimeSheet.getWithinWorkTimeFrame());
+			/* 就業内の時間帯作成 */
+			val createWithinWorkTimeSheet = WithinWorkTimeSheet.createAsFixed(attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)),toDay, predetermineTimeSetForCalc, 
+																				lstHalfDayWorkTimezone,workTimeCommonSet, deductionTimeSheet, bonusPaySetting,midNightTimeSheet);
+			if(withinWorkingTimeSheet.isPresent()) {
+				withinWorkingTimeSheet.get().getWithinWorkTimeFrame().addAll(createWithinWorkTimeSheet.getWithinWorkTimeFrame());
+			}
+			else {
+				withinWorkingTimeSheet.set(createWithinWorkTimeSheet);
+			}
+			/* 就業外の時間帯作成 */
+			val createOutSideWorkTimeSheet = OutsideWorkTimeSheet.createOutsideWorkTimeSheet(overTimeHourSetList, fixOff,
+					attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)),
+					workNumber, dayEndSet, workTimeCommonSet, holidayTimeWorkItem, beforeDay, toDay, afterDay, workTime,
+					workingSystem, breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet
+					,bonusPaySetting,midNightTimeSheet,personalInfo);
+			if(!outsideWorkTimeSheet.isPresent()) {
+				outsideWorkTimeSheet.set(createOutSideWorkTimeSheet);
+			}
+			else {
+				if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) {
+					List<OverTimeFrameTimeSheetForCalc> addOverList = createOutSideWorkTimeSheet.getOverTimeWorkSheet().isPresent()? createOutSideWorkTimeSheet.getOverTimeWorkSheet().get().getFrameTimeSheets():Collections.emptyList();
+					outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().getFrameTimeSheets().addAll(addOverList);
 				}
 				else {
-					withinWorkingTimeSheet.set(createWithinWorkTimeSheet);
+					this.outsideWorkTimeSheet = Finally.of(new OutsideWorkTimeSheet(createOutSideWorkTimeSheet.getOverTimeWorkSheet(),this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet()));
 				}
-				/* 就業外の時間帯作成 */
-				val createOutSideWorkTimeSheet = OutsideWorkTimeSheet.createOutsideWorkTimeSheet(overTimeHourSetList, fixOff,
-						attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)),
-						workNumber, dayEndSet, workTimeCommonSet, holidayTimeWorkItem, beforeDay, toDay, afterDay, workTime,
-						workingSystem, breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet
-						,bonusPaySetting,midNightTimeSheet,personalInfo);
-				if(!outsideWorkTimeSheet.isPresent()) {
-					outsideWorkTimeSheet.set(createOutSideWorkTimeSheet);
+				if(outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
+					List<HolidayWorkFrameTimeSheetForCalc> addHolList = createOutSideWorkTimeSheet.getOverTimeWorkSheet().isPresent()? createOutSideWorkTimeSheet.getHolidayWorkTimeSheet().get().getWorkHolidayTime():Collections.emptyList();
+					outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().getWorkHolidayTime().addAll(addHolList);
 				}
 				else {
-					
+					this.outsideWorkTimeSheet = Finally.of(new OutsideWorkTimeSheet(this.outsideWorkTimeSheet.get().getOverTimeWorkSheet(),createOutSideWorkTimeSheet.getHolidayWorkTimeSheet()));
 				}
 			}
 		}
+}
 
-	}
+
 
 
 	
