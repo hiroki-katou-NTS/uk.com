@@ -1,4 +1,4 @@
-module nts.uk.at.view.kal002.a.viewmodel {
+module nts.uk.at.view.kal002.b.viewmodel {
     export class ScreenModel {
 
         constructor() {
@@ -16,12 +16,7 @@ module nts.uk.at.view.kal002.a.viewmodel {
         openKAL003() { 
         nts.uk.request.jump("/view/kal/003/a/index.xhtml");
         }   
-        openKAL004() { 
-        nts.uk.request.jump("/view/kal/004/a/index.xhtml");
-        } 
-        openKAL002B() { 
-        nts.uk.request.jump("/view/kal/002/b/index.xhtml");
-        }  
+        
     }   
 }
 
