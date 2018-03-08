@@ -30,7 +30,7 @@ public class RaisingSalaryTimeDailyPerformDto {
 	}
 	
 	private static List<RaisingSalaryTimeDto> toArray(List<BonusPayTime> domain){
-		return domain == null ? new ArrayList<>() : ConvertHelper.mapTo(domain, c -> RaisingSalaryTimeDto.toDto(c));
+		return ConvertHelper.mapTo(domain, c -> RaisingSalaryTimeDto.toDto(c));
 	}
 	
 	public RaiseSalaryTimeOfDailyPerfor toDomain(){

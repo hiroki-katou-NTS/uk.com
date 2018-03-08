@@ -43,7 +43,7 @@ public class AttendanceTimeByWorkOfDailyDto extends AttendanceItemCommon {
 								c.getTimeSheet() == null ? null : new ActualWorkTimeSheetDto(
 										WithActualTimeStampDto.toWithActualTimeStamp(c.getTimeSheet().getStart()), 
 										WithActualTimeStampDto.toWithActualTimeStamp(c.getTimeSheet().getEnd())), 
-								c.getWorkTime().valueAsMinutes())));
+								c.getWorkTime() == null ? null : c.getWorkTime().valueAsMinutes())));
 			dto.exsistData();
 		}
 		
@@ -66,7 +66,7 @@ public class AttendanceTimeByWorkOfDailyDto extends AttendanceItemCommon {
 			return null;
 		}
 		return new AttendanceTimeByWorkOfDaily(employeeId, date,
-					workTimes == null ? new ArrayList<>() : ConvertHelper.mapTo(workTimes,
+					ConvertHelper.mapTo(workTimes,
 								c -> new WorkTimeOfDaily(new WorkFrameNo(c.getWorkFrameNo()),
 										new ActualWorkTimeSheet(getStamp(c.getTimeSheet().getStart()),
 												getStamp(c.getTimeSheet().getEnd())),
