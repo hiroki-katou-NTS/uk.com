@@ -293,11 +293,12 @@ module cmm045.a.viewmodel {
                     $(id).parent().addClass('denialCell');
                 }
                 //fill color in 申請内容
+                let idContent = ".appContent-" + item.appId;
                 if (item.checkTimecolor == 1) {//1: xin truoc < xin sau; k co xin truoc; xin truoc bi denail
-                    $(".nts-grid-control-appContent-" + item.appId).addClass('preAppExcess');
+                    $(idContent).parent().addClass('preAppExcess');
                 }
                 if (item.checkTimecolor == 2) {////2: thuc te < xin sau
-                    $(".nts-grid-control-appContent-" + item.appId).addClass('workingResultExcess');
+                    $(idContent).parent().addClass('workingResultExcess');
                 }
                 //fill color text
                 let color = item.appDate.substring(11,12);
@@ -396,7 +397,7 @@ module cmm045.a.viewmodel {
             let applicant: string = masterInfo.workplaceName + '<br/>' + masterInfo.empName;
             let appContentPost: string = getText('CMM045_272') + getText('CMM045_268') + ' ' + overTime.workClockFrom1 + getText('CMM045_100') + overTime.workClockTo1 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
-            let contentFull = appContentPost + contentPre + contentResult;
+            let contentFull = '<div class = "appContent-' + app.applicationID + '">'+ appContentPost + contentPre + contentResult + '</div>';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                 masterInfo.dispName, prePostApp, self.convertDate(app.applicationDate), contentFull, self.convertDateTime(app.inputDate),
