@@ -7,10 +7,10 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * 時刻型データ形式設定
+ * 時間型データ形式設定
  */
 @Getter
-public class InsTimeDatFmSet extends DataFormatSetting {
+public class TimeDataFormatSet extends DataFormatSetting {
 
 	/**
 	 * 区切り文字設定
@@ -62,9 +62,9 @@ public class InsTimeDatFmSet extends DataFormatSetting {
 	 */
 	private Optional<TimeRounding> roundProcCls;
 
-	public InsTimeDatFmSet(int itemType, int delimiterSet, int fixedValue, int hourMinSelect, int effectiveDigitLength,
-			int roundProc, int decimalSelect, String valueOfFixedValue, Integer startDigit, Integer endDigit,
-			Integer roundProcCls) {
+	public TimeDataFormatSet(int itemType, int delimiterSet, int fixedValue, int hourMinSelect,
+			int effectiveDigitLength, int roundProc, int decimalSelect, String valueOfFixedValue, Integer startDigit,
+			Integer endDigit, Integer roundProcCls) {
 		super(itemType);
 		this.delimiterSet = EnumAdaptor.valueOf(delimiterSet, DelimiterSetting.class);
 		this.fixedValue = EnumAdaptor.valueOf(fixedValue, NotUseAtr.class);

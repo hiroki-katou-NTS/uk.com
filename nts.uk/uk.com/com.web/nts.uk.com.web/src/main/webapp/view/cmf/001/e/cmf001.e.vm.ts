@@ -33,9 +33,11 @@ module nts.uk.com.view.cmf001.e.viewmodel {
                 alertError({ messageId: "Msg_905"});
             }
         }
+        // キャンセルして終了する
         cancel() {
             nts.uk.ui.windows.close();
         }
+        // CSVファイルの項目を設定して戻る
         save() {
             var self = this;
             let selectedCsvItem = _.find(ko.toJS(self.listCsvItem), (x: model.MappingListData) => x.dispCsvItemNumber == ko.toJS(self.selectedCsvItemNumber));

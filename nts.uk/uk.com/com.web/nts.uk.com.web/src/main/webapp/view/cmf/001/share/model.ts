@@ -152,10 +152,12 @@ module nts.uk.com.view.cmf001.share.model {
         charFormatSetting: KnockoutObservable<CharacterDataFormatSetting>;
         dateFormatSetting: KnockoutObservable<DateDataFormatSetting>;
         instTimeFormatSetting: KnockoutObservable<InstantTimeDataFormatSetting>; 
+        timeFormatSetting: KnockoutObservable<TimeDataFormatSetting>
         screenConditionSetting: KnockoutObservable<AcceptScreenConditionSetting>;
         categoryItemNo: KnockoutObservable<number>;
+        categoryId: KnockoutObservable<string> = ko.observable("");
 
-        constructor(csvItemName: string, csvItemNumber: number, itemType: number, acceptItemNumber: number, acceptItemName: string, conditionCode: string, categoryItemNo: number, numSet?: NumericDataFormatSetting, charSet?: CharacterDataFormatSetting, dateSet?: DateDataFormatSetting, instTimeSet?: InstantTimeDataFormatSetting, screenSet?: AcceptScreenConditionSetting) {
+        constructor(csvItemName: string, csvItemNumber: number, itemType: number, acceptItemNumber: number, acceptItemName: string, conditionCode: string, categoryItemNo: number, numSet?: NumericDataFormatSetting, charSet?: CharacterDataFormatSetting, dateSet?: DateDataFormatSetting, instTimeSet?: InstantTimeDataFormatSetting, timeSet?: TimeDataFormatSetting, screenSet?: AcceptScreenConditionSetting, categoryId?: string) {
             this.csvItemName = ko.observable(csvItemName);
             this.csvItemNumber = ko.observable(csvItemNumber);
             this.itemType = ko.observable(itemType);
@@ -171,8 +173,12 @@ module nts.uk.com.view.cmf001.share.model {
                 this.dateFormatSetting = ko.observable(dateSet);
             if (instTimeSet)
                 this.instTimeFormatSetting = ko.observable(instTimeSet);
+            if (timeSet)
+                this.timeFormatSetting = ko.observable(timeSet);
             if (screenSet)
                 this.screenConditionSetting = ko.observable(screenSet);
+            if (categoryId)
+                this.categoryId(categoryId);
         }
     }
 
@@ -317,6 +323,33 @@ module nts.uk.com.view.cmf001.share.model {
 
     //screen J
     export class InstantTimeDataFormatSetting {
+        effectiveDigitLength: KnockoutObservable<number>;
+        startDigit: KnockoutObservable<number>;
+        endDigit: KnockoutObservable<number>;
+        decimalSelection: KnockoutObservable<number>;
+        hourMinuteSelection: KnockoutObservable<number>;
+        delimiterSetting: KnockoutObservable<number>;
+        roundingProcessing: KnockoutObservable<number>;
+        roundProcessingClassification: KnockoutObservable<number>;
+        fixedValue: KnockoutObservable<number>;
+        valueOfFixed: KnockoutObservable<string>;
+        constructor(effectiveDigitLength: number, startDigit: number, endDigit: number, decimalSelection: number,
+            hourMinuteSelection: number, delimiterSetting: number, roundingProcessing: number,
+            roundProcessingClassification: number, fixedValue: number, valueOfFixed: string) {
+            this.effectiveDigitLength = ko.observable(effectiveDigitLength);
+            this.startDigit = ko.observable(startDigit);
+            this.endDigit = ko.observable(endDigit);
+            this.decimalSelection = ko.observable(decimalSelection);
+            this.hourMinuteSelection = ko.observable(hourMinuteSelection);
+            this.delimiterSetting = ko.observable(delimiterSetting);
+            this.roundingProcessing = ko.observable(roundingProcessing);
+            this.roundProcessingClassification = ko.observable(roundProcessingClassification);
+            this.fixedValue = ko.observable(fixedValue);
+            this.valueOfFixed = ko.observable(valueOfFixed);
+        }
+    }
+    
+    export class TimeDataFormatSetting {
         effectiveDigitLength: KnockoutObservable<number>;
         startDigit: KnockoutObservable<number>;
         endDigit: KnockoutObservable<number>;

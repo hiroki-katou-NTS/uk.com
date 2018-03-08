@@ -57,44 +57,19 @@ public class ChrDataFormatSet extends DataFormatSetting {
 	 * 有効桁数終了桁
 	 */
 	private Optional<AcceptedDigit> endDigit;
-	
-	public ChrDataFormatSet(int itemType, int cdEditing, int fixedValue,
-			int effectiveDigitLength, String cdConvertCd, Integer cdEditMethod, Integer cdEditDigit,
-			String fixedVal, Integer startDigit, Integer endDigit) {
+
+	public ChrDataFormatSet(int itemType, int cdEditing, int fixedValue, int effectiveDigitLength, String cdConvertCd,
+			Integer cdEditMethod, Integer cdEditDigit, String fixedVal, Integer startDigit, Integer endDigit) {
 		super(itemType);
 		this.cdEditing = EnumAdaptor.valueOf(cdEditing, NotUseAtr.class);
 		this.fixedValue = EnumAdaptor.valueOf(fixedValue, NotUseAtr.class);
 		this.effectiveDigitLength = EnumAdaptor.valueOf(effectiveDigitLength, NotUseAtr.class);
-		if (null == cdConvertCd) {
-			this.cdConvertCd = Optional.empty();
-		} else {
-			this.cdConvertCd = Optional.of(new CodeConvertCode(cdConvertCd));
-		}
-		if (null == cdEditMethod) {
-			this.cdEditMethod = Optional.empty();
-		} else {
-			this.cdEditMethod = Optional.of(EnumAdaptor.valueOf(cdEditMethod, FixedLengthEditingMethod.class));
-		}
-		if (null == fixedVal) {
-			this.fixedVal = Optional.empty();
-		} else {
-			this.fixedVal = Optional.of(new ValueOfFixed(fixedVal));
-		}
-		if (null == cdEditDigit) {
-			this.cdEditDigit = Optional.empty();
-		} else {
-			this.cdEditDigit = Optional.of(new CodeEditDigit(cdEditDigit));
-		}
-		if (null == startDigit) {
-			this.startDigit = Optional.empty();
-		} else {
-			this.startDigit = Optional.of(new AcceptedDigit(startDigit));
-		}
-		if (null == endDigit) {
-			this.endDigit = Optional.empty();
-		} else {
-			this.endDigit = Optional.of(new AcceptedDigit(endDigit));
-		}
+		this.cdConvertCd = Optional.ofNullable(new CodeConvertCode(cdConvertCd));
+		this.cdEditMethod = Optional.ofNullable(EnumAdaptor.valueOf(cdEditMethod, FixedLengthEditingMethod.class));
+		this.fixedVal = Optional.ofNullable(new ValueOfFixed(fixedVal));
+		this.cdEditDigit = Optional.ofNullable(new CodeEditDigit(cdEditDigit));
+		this.startDigit = Optional.ofNullable(new AcceptedDigit(startDigit));
+		this.endDigit = Optional.of(new AcceptedDigit(endDigit));
 	}
 
 }

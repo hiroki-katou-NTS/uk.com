@@ -1,5 +1,7 @@
 package nts.uk.ctx.exio.dom.exi.item;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -61,7 +63,7 @@ public class StdAcceptItem extends AggregateRoot {
 	/**
 	 * 受入選別条件設定
 	 */
-	private AcScreenCondSet acceptScreenConditionSetting;
+	private Optional<AcScreenCondSet> acceptScreenConditionSetting;
 	
 	/**
 	 * データ形式設定
@@ -80,7 +82,7 @@ public class StdAcceptItem extends AggregateRoot {
 		this.csvItemNumber = csvItemNumber;
 		this.csvItemName = csvItemName;
 		this.itemType = EnumAdaptor.valueOf(itemType, ItemType.class);
-		this.acceptScreenConditionSetting = acceptScreenConditionSetting;
+		this.acceptScreenConditionSetting = Optional.ofNullable(acceptScreenConditionSetting);
 		this.dataFormatSetting = dataFormatSetting;
 	}
 

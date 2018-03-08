@@ -1,11 +1,11 @@
 package nts.uk.ctx.exio.app.command.exi.dataformat;
 
 import lombok.Value;
-import nts.uk.ctx.exio.dom.exi.dataformat.InsTimeDatFmSet;
 import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.exi.dataformat.TimeDataFormatSet;
 
 @Value
-public class InsTimeDatFmSetCommand {
+public class TimeDatFmSetCommand {
 
 	/**
 	 * 区切り文字設定
@@ -57,8 +57,8 @@ public class InsTimeDatFmSetCommand {
 	 */
 	private Integer roundProcCls;
 
-	public InsTimeDatFmSet toDomain() {
-		return new InsTimeDatFmSet(ItemType.INS_TIME.value, this.delimiterSet, this.fixedValue, this.hourMinSelect,
+	public TimeDataFormatSet toDomain() {
+		return new TimeDataFormatSet(ItemType.INS_TIME.value, this.delimiterSet, this.fixedValue, this.hourMinSelect,
 				this.effectiveDigitLength, this.roundProc, this.decimalSelect, this.valueOfFixedValue, this.startDigit,
 				this.endDigit, this.roundProcCls);
 	}

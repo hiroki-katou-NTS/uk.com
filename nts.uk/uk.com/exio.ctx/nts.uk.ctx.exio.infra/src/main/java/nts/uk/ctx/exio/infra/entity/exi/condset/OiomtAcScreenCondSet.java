@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.exi.condset.AcScreenCondSet;
+import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 import nts.uk.ctx.exio.infra.entity.exi.item.OiomtStdAcceptItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -124,10 +125,10 @@ public class OiomtAcScreenCondSet extends UkJpaEntity implements Serializable {
 		return acScreenCondSetPk;
 	}
 
-	public OiomtAcScreenCondSet(String cid, int sysType, String conditionCode, String categoryId, int acceptItemNum, Integer selCompareCond,
-			Integer timeCondVal1, Integer timeCondVal2, Integer timeMoCondVal1, Integer timeMoCondVal2,
-			GeneralDate dateCondVal1, GeneralDate dateCondVal2, String charCondVal1, String charCondVal2,
-			BigDecimal numCondVal1, BigDecimal numCondVal2) {
+	public OiomtAcScreenCondSet(String cid, int sysType, String conditionCode, String categoryId, int acceptItemNum,
+			Integer selCompareCond, Integer timeCondVal1, Integer timeCondVal2, Integer timeMoCondVal1,
+			Integer timeMoCondVal2, GeneralDate dateCondVal1, GeneralDate dateCondVal2, String charCondVal1,
+			String charCondVal2, BigDecimal numCondVal1, BigDecimal numCondVal2) {
 		super();
 		this.acScreenCondSetPk = new OiomtAcScreenCondSetPk(cid, sysType, conditionCode, categoryId, acceptItemNum);
 		this.selCompareCond = selCompareCond;
@@ -143,17 +144,32 @@ public class OiomtAcScreenCondSet extends UkJpaEntity implements Serializable {
 		this.numCondVal1 = numCondVal1;
 	}
 
-	public static OiomtAcScreenCondSet fromDomain(AcScreenCondSet domain) {
-		return new OiomtAcScreenCondSet();
-//		return new OiomtAcScreenCondSet(domain.getCid(), domain.getConditionSetCd(), domain.getAcceptItemNum(),
-//				domain.getSelCompareCond(), domain.getTimeCondVal1(), domain.getTimeCondVal2(),
-//				domain.getTimeMoCondVal1(), domain.getTimeMoCondVal2(), domain.getDateCondVal1(),
-//				domain.getDateCondVal2(), domain.getDateCondVal2(), domain.getCharCondVal1(), domain.getCharCondVal2(),
-//				domain.getNumCondVal1(), domain.getNumCondVal2());
+	public static OiomtAcScreenCondSet fromDomain(StdAcceptItem item, AcScreenCondSet domain) {
+		return new OiomtAcScreenCondSet(item.getCid(), item.getSystemType().value, item.getConditionSetCd().v(),
+				item.getCategoryId(), item.getAcceptItemNumber(),
+				domain.getSelectComparisonCondition().isPresent() ? domain.getSelectComparisonCondition().get().value
+						: null,
+				domain.getTimeConditionValue1().isPresent() ? domain.getTimeConditionValue1().get().v() : null,
+				domain.getTimeConditionValue2().isPresent() ? domain.getTimeConditionValue2().get().v() : null,
+				domain.getTimeMomentConditionValue1().isPresent() ? domain.getTimeMomentConditionValue1().get().v()
+						: null,
+				domain.getTimeMomentConditionValue2().isPresent() ? domain.getTimeMomentConditionValue2().get().v()
+						: null,
+				domain.getDateConditionValue1().isPresent() ? domain.getDateConditionValue1().get() : null,
+				domain.getDateConditionValue2().isPresent() ? domain.getDateConditionValue2().get() : null,
+				domain.getCharacterConditionValue1().isPresent() ? domain.getCharacterConditionValue1().get().v()
+						: null,
+				domain.getCharacterConditionValue2().isPresent() ? domain.getCharacterConditionValue2().get().v()
+						: null,
+				domain.getNumberConditionValue1().isPresent() ? domain.getNumberConditionValue1().get().v() : null,
+				domain.getNumberConditionValue2().isPresent() ? domain.getNumberConditionValue2().get().v() : null);
 	}
 
-	public static AcScreenCondSet toDomain(OiomtAcScreenCondSet entity) {
-		return null;//new AcScreenCondSet();
+	public AcScreenCondSet toDomain() {
+		return new AcScreenCondSet(this.acScreenCondSetPk.conditionSetCd, this.acScreenCondSetPk.acceptItemNum,
+				this.selCompareCond, this.timeCondVal1, this.timeCondVal2, this.timeMoCondVal1, this.timeMoCondVal2,
+				this.dateCondVal1, this.dateCondVal2, this.charCondVal1, this.charCondVal2, this.numCondVal1,
+				this.numCondVal2);
 	}
 
 }

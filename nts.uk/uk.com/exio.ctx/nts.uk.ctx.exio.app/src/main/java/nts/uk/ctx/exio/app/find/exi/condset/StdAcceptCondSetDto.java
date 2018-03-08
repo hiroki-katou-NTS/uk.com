@@ -34,7 +34,7 @@ public class StdAcceptCondSetDto {
 	/**
 	 * 受入モード
 	 */
-	private int acceptMode;
+	private Integer acceptMode;
 
 	/**
 	 * チェック完了
@@ -63,8 +63,10 @@ public class StdAcceptCondSetDto {
 
 	public static StdAcceptCondSetDto fromDomain(StdAcceptCondSet domain) {
 		return new StdAcceptCondSetDto(domain.getSystemType().value, domain.getConditionSetCd().v(),
-				domain.getConditionSetName().v(), domain.getDeleteExistData().value, domain.getAcceptMode().value,
-				domain.getCheckCompleted().value, domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null,
+				domain.getConditionSetName().v(), domain.getDeleteExistData().value,
+				domain.getAcceptMode().isPresent() ? domain.getAcceptMode().get().value : null,
+				domain.getCheckCompleted().value,
+				domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null,
 				domain.getCsvDataLineNumber().isPresent() ? domain.getCsvDataLineNumber().get().v() : null,
 				domain.getCsvDataStartLine().isPresent() ? domain.getCsvDataStartLine().get().v() : null,
 				domain.getDeleteExtDataMethod().isPresent() ? domain.getDeleteExtDataMethod().get().value : null);

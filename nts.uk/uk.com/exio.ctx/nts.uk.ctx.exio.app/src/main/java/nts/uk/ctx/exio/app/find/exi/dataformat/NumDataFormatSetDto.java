@@ -1,15 +1,12 @@
 package nts.uk.ctx.exio.app.find.exi.dataformat;
 
-import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.dom.exi.dataformat.NumDataFormatSet;
 
 /**
  * 数値型データ形式設定
  */
-@AllArgsConstructor
+
 @Value
 public class NumDataFormatSetDto {
 

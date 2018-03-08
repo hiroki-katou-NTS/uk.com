@@ -1,41 +1,28 @@
 package nts.uk.ctx.exio.app.command.exi.dataformat;
 
 import lombok.Value;
+import nts.uk.ctx.exio.dom.exi.dataformat.DateDataFormSet;
+import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 
 @Value
-public class DateDataFormSetCommand
-{
-    
-    /**
-    * 会社ID
-    */
-    private String cid;
-    
-    /**
-    * 条件設定コード
-    */
-    private String conditionSetCd;
-    
-    /**
-    * 受入項目番号
-    */
-    private int acceptItemNum;
-    
-    /**
-    * 固定値
-    */
-    private int fixedValue;
-    
-    /**
-    * 固定値の値
-    */
-    private String valueOfFixedValue;
-    
-    /**
-    * 形式選択
-    */
-    private int formatSelection;
-    
-    private Long version;
+public class DateDataFormSetCommand {
 
+	/**
+	 * 固定値
+	 */
+	private int fixedValue;
+
+	/**
+	 * 固定値の値
+	 */
+	private String valueOfFixedValue;
+
+	/**
+	 * 形式選択
+	 */
+	private int formatSelection;
+
+	public DateDataFormSet toDomain() {
+		return new DateDataFormSet(ItemType.DATE.value, this.fixedValue, this.formatSelection, this.valueOfFixedValue);
+	}
 }

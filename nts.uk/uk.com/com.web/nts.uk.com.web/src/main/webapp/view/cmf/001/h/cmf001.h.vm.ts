@@ -75,11 +75,13 @@ module nts.uk.com.view.cmf001.h.viewmodel {
 //            nts.uk.util.value.reset($("#H3_5"), numFormat.decimalDigitNumber);
 //            nts.uk.util.value.reset($("#H5_5"), numFormat.fixedVal);
         }
+        // コード変換の選択を行う
         open001_K(data){
             var self = this;
             let selectedConvertCode = data.codeConvertCode();
             setShared("CMF001kParams", { selectedConvertCode: ko.toJS(selectedConvertCode) });
             modal("/view/cmf/001/k/index.xhtml").onClosed(() => {
+                // コード変換選択を行う
                 let params = getShared("CMF001kOutput");
                 if(!nts.uk.util.isNullOrUndefined(params)){
                     let codeConvertCodeSelected = params.selectedConvertCodeShared;
@@ -87,6 +89,7 @@ module nts.uk.com.view.cmf001.h.viewmodel {
                 }
             });
         }
+        // 数値編集の設定をして終了する
         saveCharacterSetting(){
             var self = this;
 //            $("#H2_5").trigger("validate");
@@ -97,6 +100,7 @@ module nts.uk.com.view.cmf001.h.viewmodel {
             }
             nts.uk.ui.windows.close();
         }
+        // キャンセルして終了する
         cancelCharacterSetting(){
             nts.uk.ui.windows.close();   
         }

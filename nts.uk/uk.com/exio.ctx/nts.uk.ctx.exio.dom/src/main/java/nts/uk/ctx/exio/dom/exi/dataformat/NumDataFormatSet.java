@@ -63,50 +63,21 @@ public class NumDataFormatSet extends DataFormatSetting {
 	 */
 	private Optional<DecimalFraction> decimalFraction;
 
-	public NumDataFormatSet(int itemType, int fixedValue,
-			int decimalDivision, int effectiveDigitLength, String cdConvertCd, String valueOfFixedValue,
-			Integer decimalDigitNum, Integer startDigit, Integer endDigit, Integer decimalPointCls,
-			Integer decimalFraction) {
+	public NumDataFormatSet(int itemType, int fixedValue, int decimalDivision, int effectiveDigitLength,
+			String cdConvertCd, String valueOfFixedValue, Integer decimalDigitNum, Integer startDigit, Integer endDigit,
+			Integer decimalPointCls, Integer decimalFraction) {
 		super(itemType);
 		this.fixedValue = EnumAdaptor.valueOf(fixedValue, NotUseAtr.class);
 		this.decimalDivision = EnumAdaptor.valueOf(decimalDivision, DecimalDivision.class);
 		this.effectiveDigitLength = EnumAdaptor.valueOf(effectiveDigitLength, NotUseAtr.class);
 
-		if (null == cdConvertCd) {
-			this.cdConvertCd = Optional.empty();
-		} else {
-			this.cdConvertCd = Optional.of(new CodeConvertCode(cdConvertCd));
-		}
-
-		if (null == valueOfFixedValue) {
-			this.valueOfFixedValue = Optional.empty();
-		} else {
-			this.valueOfFixedValue = Optional.of(new ValueOfFixed(valueOfFixedValue));
-		}
-		if (null == decimalDigitNum) {
-			this.decimalDigitNum = Optional.empty();
-		} else {
-			this.decimalDigitNum = Optional.of(new DecimalDigitNumber(decimalDigitNum));
-		}
-		if (null == startDigit) {
-			this.startDigit = Optional.empty();
-		} else {
-			this.startDigit = Optional.of(new AcceptedDigit(startDigit));
-		}
-		if (null == endDigit) {
-			this.endDigit = Optional.empty();
-		} else {
-			this.endDigit = Optional.of(new AcceptedDigit(endDigit));
-		}
-		if (null == decimalPointCls) {
-			this.decimalPointCls = Optional.empty();
-		} else {
-			this.decimalPointCls = Optional.of(EnumAdaptor.valueOf(decimalPointCls, DecimalPointClassification.class));
-		}
-		if (null == decimalFraction) {
-			this.decimalFraction = Optional.empty();
-		} else {
-			this.decimalFraction = Optional.of(EnumAdaptor.valueOf(decimalFraction, DecimalFraction.class));
-		}
+		this.cdConvertCd = Optional.ofNullable(new CodeConvertCode(cdConvertCd));
+		this.valueOfFixedValue = Optional.ofNullable(new ValueOfFixed(valueOfFixedValue));
+		this.decimalDigitNum = Optional.ofNullable(new DecimalDigitNumber(decimalDigitNum));
+		this.startDigit = Optional.ofNullable(new AcceptedDigit(startDigit));
+		this.endDigit = Optional.ofNullable(new AcceptedDigit(endDigit));
+		this.decimalPointCls = Optional
+				.ofNullable(EnumAdaptor.valueOf(decimalPointCls, DecimalPointClassification.class));
+		this.decimalFraction = Optional.ofNullable(EnumAdaptor.valueOf(decimalFraction, DecimalFraction.class));
 	}
 }

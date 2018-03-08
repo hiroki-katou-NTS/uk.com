@@ -5,7 +5,6 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.gul.text.StringUtil;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -52,7 +51,7 @@ public class StdAcceptCondSet extends AggregateRoot {
 	/**
 	 * 受入モード
 	 */
-	private AcceptMode acceptMode;
+	private Optional<AcceptMode> acceptMode;
 
 	/**
 	 * 外部受入条件名称
@@ -77,30 +76,14 @@ public class StdAcceptCondSet extends AggregateRoot {
 		this.conditionSetCd = new AcceptanceConditionCode(conditionSetCd);
 		this.systemType = EnumAdaptor.valueOf(systemType, SystemType.class);
 		this.deleteExistData = EnumAdaptor.valueOf(deleteExistData, NotUseAtr.class);
-		this.acceptMode = EnumAdaptor.valueOf(acceptMode, AcceptMode.class);
+		this.acceptMode = Optional.ofNullable(EnumAdaptor.valueOf(acceptMode, AcceptMode.class));
 		this.conditionSetName = new AcceptanceConditionName(conditionSetName);
 		this.checkCompleted = EnumAdaptor.valueOf(checkCompleted, NotUseAtr.class);
-		if (StringUtil.isNullOrEmpty(categoryId, true)) {
-			this.categoryId = Optional.empty();
-		} else {
-			this.categoryId = Optional.of(categoryId);
-		}
-		if (csvDataLineNumber == null) {
-			this.csvDataLineNumber = Optional.empty();
-		} else {
-			this.csvDataLineNumber = Optional.of(new AcceptanceLineNumber(csvDataLineNumber));
-		}
-		if (csvDataStartLine == null) {
-			this.csvDataStartLine = Optional.empty();
-		} else {
-			this.csvDataStartLine = Optional.of(new AcceptanceLineNumber(csvDataStartLine));
-		}
-		if (deleteExtDataMethod == null) {
-			this.deleteExtDataMethod = Optional.empty();
-		} else {
-			this.deleteExtDataMethod = Optional
-					.of(EnumAdaptor.valueOf(deleteExtDataMethod.intValue(), DeleteExistDataMethod.class));
-		}
+		this.categoryId = Optional.ofNullable(categoryId);
+		this.csvDataLineNumber = Optional.ofNullable(new AcceptanceLineNumber(csvDataLineNumber));
+		this.csvDataStartLine = Optional.ofNullable(new AcceptanceLineNumber(csvDataStartLine));
+		this.deleteExtDataMethod = Optional
+				.ofNullable(EnumAdaptor.valueOf(deleteExtDataMethod.intValue(), DeleteExistDataMethod.class));
 	}
 
 }

@@ -28,7 +28,7 @@ public class StdAcceptCondSetCommand {
 	/**
 	 * 受入モード
 	 */
-	private int acceptMode;
+	private Integer acceptMode;
 
 	/**
 	 * チェック完了
