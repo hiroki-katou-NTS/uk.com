@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.temporarytime.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +39,7 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 		if (domain != null) {
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());
-			dto.setWorkTimes(domain.getWorkTimes().v());
+			dto.setWorkTimes(domain.getWorkTimes() == null ? null : domain.getWorkTimes().v());
 			dto.setWorkLeaveTime(ConvertHelper.mapTo(domain.getTimeLeavingWorks(), (c) -> newWorkLeaveTime(c)));
 			dto.exsistData();
 		}
@@ -48,7 +47,7 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 	}
 
 	private static WorkLeaveTimeDto newWorkLeaveTime(TimeLeavingWork c) {
-		return new WorkLeaveTimeDto(c.getWorkNo().v(), WithActualTimeStampDto.toWithActualTimeStamp(c.getAttendanceStamp().orElse(null)),
+		return c == null ? null : new WorkLeaveTimeDto(c.getWorkNo().v(), WithActualTimeStampDto.toWithActualTimeStamp(c.getAttendanceStamp().orElse(null)),
 				WithActualTimeStampDto.toWithActualTimeStamp(c.getLeaveStamp().orElse(null)));
 	}
 
@@ -68,7 +67,7 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 			return null;
 		}
 		return new TemporaryTimeOfDailyPerformance(emp, new WorkTimes(toWorkTimes()), 
-					workLeaveTime == null ? new ArrayList<>() : ConvertHelper.mapTo(workLeaveTime, (c) -> toTimeLeaveWork(c)), date);
+						ConvertHelper.mapTo(workLeaveTime, (c) -> toTimeLeaveWork(c)), date);
 	}
 
 	private int toWorkTimes() {

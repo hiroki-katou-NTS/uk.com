@@ -51,22 +51,29 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 			result.setEmployeeId(workInfo.getEmployeeId());
 			result.setDate(workInfo.getYmd());
 			result.setActualWorkInfo(createWorkInfo(workInfo.getRecordWorkInformation()));
-			result.setBackStraightAtr(workInfo.getBackStraightAtr().value);
-			result.setCalculationState(workInfo.getCalculationState().value);
-			result.setGoStraightAtr(workInfo.getGoStraightAtr().value);
+			result.setBackStraightAtr(workInfo.getBackStraightAtr() == null ? 0 : workInfo.getBackStraightAtr().value);
+			result.setCalculationState(workInfo.getCalculationState() == null ? 01 : workInfo.getCalculationState().value);
+			result.setGoStraightAtr(workInfo.getGoStraightAtr() == null ? 0 : workInfo.getGoStraightAtr().value);
 			result.setPlanWorkInfo(createWorkInfo(workInfo.getScheduleWorkInformation()));
-			result.setScheduleTimeZone(workInfo.getScheduleTimeSheets().stream().map(sts -> {
-				return new ScheduleTimeZoneDto(sts.getWorkNo().v().intValue(), sts.getAttendance().v(),
-						sts.getLeaveWork().v());
-			}).sorted((s1, s2) -> s1.getWorkNo().compareTo(s2.getWorkNo())).collect(Collectors.toList()));
+			result.setScheduleTimeZone(getScheduleTimeZone(workInfo.getScheduleTimeSheets()));
 			result.exsistData();
 		}
 		return result;
 	}
 
+	private static List<ScheduleTimeZoneDto> getScheduleTimeZone(List<ScheduleTimeSheet> sheets) {
+		return sheets == null ? new ArrayList<>() : sheets.stream().map(sts -> {
+			return new ScheduleTimeZoneDto(
+					sts.getWorkNo() == null ? null : sts.getWorkNo().v().intValue(), 
+					sts.getAttendance() == null ? null : sts.getAttendance().v(),
+					sts.getLeaveWork() == null ? null : sts.getLeaveWork().v());
+		}).sorted((s1, s2) -> s1.getWorkNo().compareTo(s2.getWorkNo())).collect(Collectors.toList());
+	}
+
 	private static WorkInfoDto createWorkInfo(WorkInformation workInfo) {
-		return workInfo == null ? null : new WorkInfoDto(workInfo.getWorkTypeCode().v(),
-				workInfo.getWorkTimeCode() == null ? null : workInfo.getWorkTimeCode().v());
+		return workInfo == null ? null : new WorkInfoDto(
+					workInfo.getWorkTypeCode() == null ? null : workInfo.getWorkTypeCode().v(),
+					workInfo.getWorkTimeCode() == null ? null : workInfo.getWorkTimeCode().v());
 	}
 
 	@Override
@@ -89,9 +96,11 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 					ConvertHelper.getEnum(calculationState, CalculationState.class),
 					ConvertHelper.getEnum(goStraightAtr, NotUseAttribute.class),
 					ConvertHelper.getEnum(backStraightAtr, NotUseAttribute.class), date,
-					this.getScheduleTimeZone() == null ? new ArrayList<>() :
-						ConvertHelper.mapTo(this.getScheduleTimeZone(), (c) -> 
-							new ScheduleTimeSheet(c.getWorkNo(), c.getWorking() == null ?  0 : c.getWorking(), c.getLeave() == null ? 0: c.getLeave())));
+					ConvertHelper.mapTo(this.getScheduleTimeZone(), (c) -> 
+							new ScheduleTimeSheet(
+									c.getWorkNo(), 
+									c.getWorking() == null ?  0 : c.getWorking(), 
+									c.getLeave() == null ? 0: c.getLeave())));
 	}
 
 	private WorkInformation getWorkInfo(WorkInfoDto dto) {
