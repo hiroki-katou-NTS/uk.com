@@ -234,18 +234,18 @@ module nts.uk.at.view.kcp006.a {
                     $(container).fullCalendar('gotoDate', moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"));
                 });
             } else if (optionDates.length > 0) {
-//                service.getPublicHoliday(lstDate).done((data: Array<model.EventObj>) => {
-//                    _lstHoliday = [];
-//                    data.forEach((a) => { _lstHoliday.push({ start: moment(a.date).format("YYYY-MM-DD"), holidayName: a.holidayName }); });
-                    $(container).fullCalendar('option', {
-                        viewRender: function(view, element) {
-                            fullCalendarRender.viewRender(container[0].id, optionDates, firstDay, _lstHoliday, _lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay, workplaceId);
-                        },
-                        eventAfterAllRender: function(view) {
-                            fullCalendarRender.eventAfterAllRender(container[0].id, lstDate, _lstHoliday, _lstEvent, workplaceId, workplaceName, eventUpdatable, optionDates);
-                        }
-                    });
-//                });
+                //                service.getPublicHoliday(lstDate).done((data: Array<model.EventObj>) => {
+                //                    _lstHoliday = [];
+                //                    data.forEach((a) => { _lstHoliday.push({ start: moment(a.date).format("YYYY-MM-DD"), holidayName: a.holidayName }); });
+                $(container).fullCalendar('option', {
+                    viewRender: function(view, element) {
+                        fullCalendarRender.viewRender(container[0].id, optionDates, firstDay, _lstHoliday, _lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay, workplaceId);
+                    },
+                    eventAfterAllRender: function(view) {
+                        fullCalendarRender.eventAfterAllRender(container[0].id, lstDate, _lstHoliday, _lstEvent, workplaceId, workplaceName, eventUpdatable, optionDates);
+                    }
+                });
+                //                });
             }
             _lstDate = lstDate;
         }
@@ -440,17 +440,19 @@ module nts.uk.at.view.kcp006.a {
                     return parent.className == 'fc-row fc-week fc-widget-content fc-rigid';
                 }))[0];
                 let currentIndex = 0;
-                let lstTd = $elementWrap.firstChild.getElementsByTagName("td");
-                for (let j = 0; j < lstTd.length; j++) {
-                    if (lstTd[j].getAttribute("data-date") === optionDates[i].start) {
-                        currentIndex = j;
+                if ($elementWrap) {
+                    let lstTd = $elementWrap.firstChild.getElementsByTagName("td");
+                    for (let j = 0; j < lstTd.length; j++) {
+                        if (lstTd[j].getAttribute("data-date") === optionDates[i].start) {
+                            currentIndex = j;
+                        }
                     }
+                    let $skeletonElement = $elementWrap.getElementsByClassName("fc-content-skeleton")[0];
+                    lstTd = $elementWrap.getElementsByClassName("fc-content-skeleton")[0].getElementsByTagName("tbody")[0].getElementsByTagName("td");
+                    let targetTd = lstTd[currentIndex];
+                    targetTd.className = "fc-event-container";
+                    $(targetTd).append("<a class='fc-day-grid-event fc-h-event fc-event fc-start fc-end' style='background-color:" + optionDates[i].backgroundColor + ";border-color:" + optionDates[i].backgroundColor + ";color:" + optionDates[i].textColor + "'><div class='fc-content'> <span class='fc-title'>" + displayText + "</span></div></a>");
                 }
-                let $skeletonElement = $elementWrap.getElementsByClassName("fc-content-skeleton")[0];
-                lstTd = $elementWrap.getElementsByClassName("fc-content-skeleton")[0].getElementsByTagName("tbody")[0].getElementsByTagName("td");
-                let targetTd = lstTd[currentIndex];
-                targetTd.className = "fc-event-container";
-                $(targetTd).append("<a class='fc-day-grid-event fc-h-event fc-event fc-start fc-end' style='background-color:" + optionDates[i].backgroundColor + ";border-color:" + optionDates[i].backgroundColor + ";color:" + optionDates[i].textColor + "'><div class='fc-content'> <span class='fc-title'>" + displayText + "</span></div></a>");
             }
         }
 
