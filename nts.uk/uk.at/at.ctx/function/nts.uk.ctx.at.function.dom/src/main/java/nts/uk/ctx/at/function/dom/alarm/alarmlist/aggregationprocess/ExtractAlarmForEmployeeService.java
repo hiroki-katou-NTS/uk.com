@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -33,10 +34,12 @@ public class ExtractAlarmForEmployeeService {
 		// 次のチェック条件コードで集計する(loop list by category)
 		for (CheckCondition checkCondition : checkConList) {
 			// get Period by category
-			PeriodByAlarmCategory periodByAlarmCategory = listPeriodByCategory.stream()
-					.filter(c -> c.getCategory() == checkCondition.getAlarmCategory().value).findFirst().get();
+			Optional<PeriodByAlarmCategory> optPeriodByAlarmCategory = listPeriodByCategory.stream()
+					.filter(c -> c.getCategory() == checkCondition.getAlarmCategory().value).findFirst();
+			if (!optPeriodByAlarmCategory.isPresent())
+				throw new RuntimeException("Can't find category: " + checkCondition.getAlarmCategory().value + " from UI");
+			PeriodByAlarmCategory periodByAlarmCategory = optPeriodByAlarmCategory.get();
 			DatePeriod period = new DatePeriod(periodByAlarmCategory.getStartDate(), periodByAlarmCategory.getEndDate());
-
 			
 			// カテゴリ：日次のチェック条件(daily)
 			if (checkCondition.isDaily()) {
