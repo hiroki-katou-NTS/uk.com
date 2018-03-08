@@ -26,7 +26,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 // 勤怠項目のエラーアラーム条件
-public class ErAlAttendanceItemCondition<V extends CheckConditionValue<V>> extends AggregateRoot {
+public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 
 	// 会社ID
 	@Getter

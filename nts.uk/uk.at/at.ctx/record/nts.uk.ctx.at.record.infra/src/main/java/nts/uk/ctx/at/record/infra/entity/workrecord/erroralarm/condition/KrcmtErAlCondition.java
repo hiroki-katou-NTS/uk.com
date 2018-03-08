@@ -33,7 +33,6 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckConditionValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
@@ -434,7 +433,7 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 			} else {
 				erAlSingleAtd.add(new KrcstErAlSingleAtd(
 						new KrcstErAlSingleAtdPK(atdItemConditionGroup1, new BigDecimal(erAlAtdItemCon.getTargetNO()),
-								(erAlAtdItemCon.getCompareSingleValue().getValue().value())),
+								(((AttendanceItemId) erAlAtdItemCon.getCompareSingleValue().getValue()).v())),
 						new BigDecimal(2)));
 			}
 		}
@@ -529,8 +528,9 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 		condition.setCheckId(entity.eralCheckId);
 		return condition;
 	}
+	
 	@SuppressWarnings("unchecked")
-	private static <V extends CheckConditionValue<V>> ErAlAttendanceItemCondition<V> convertKrcmtErAlAtdItemConToDomain(KrcmtErAlCondition entity,
+	private static <V> ErAlAttendanceItemCondition<V> convertKrcmtErAlAtdItemConToDomain(KrcmtErAlCondition entity,
 			KrcmtErAlAtdItemCon atdItemCon, String companyId, String errorAlarmCode) {
 		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(
 				companyId, errorAlarmCode,

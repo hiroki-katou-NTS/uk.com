@@ -12,7 +12,7 @@ import nts.arc.primitive.constraint.IntegerRange;
  */
 //チェック条件値回数
 @IntegerRange(min = -99999999, max = 999999999)
-public class CheckedTimesValue  extends IntegerPrimitiveValue<CheckedTimesValue> implements CheckConditionValue<CheckedTimesValue> {
+public class CheckedTimesValue  extends IntegerPrimitiveValue<CheckedTimesValue> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -23,11 +23,6 @@ public class CheckedTimesValue  extends IntegerPrimitiveValue<CheckedTimesValue>
 	 */	
 	public CheckedTimesValue(Integer rawValue) {
 		super(rawValue);
-	}
-
-	@Override
-	public Integer value() {
-		return this.v();
 	}
 	
 }

@@ -13,7 +13,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckCondit
  *
  */
 // 範囲との比較
-public class CompareRange<V extends CheckConditionValue> extends CheckedCondition{
+public class CompareRange<V> extends CheckedCondition{
 
 	//開始値
 	private V startValue;
@@ -61,17 +61,18 @@ public class CompareRange<V extends CheckConditionValue> extends CheckedConditio
 	}
 	
 	public boolean checkRange(V target) {
-		switch (this.compareOperator) {
-		case BETWEEN_RANGE_CLOSED:
-			return target.compareTo(startValue) > 0 && target.compareTo(endValue) < 0;
-		case BETWEEN_RANGE_OPEN:
-			return target.compareTo(startValue) >= 0 && target.compareTo(endValue) <= 0;
-		case OUTSIDE_RANGE_CLOSED:
-			return target.compareTo(startValue) < 0 || target.compareTo(endValue) > 0;
-		case OUTSIDE_RANGE_OPEN:
-			return target.compareTo(startValue) <= 0 || target.compareTo(endValue) >= 0;
-		default:
-			return false;
-		}
+		return false;
+//		switch (this.compareOperator) {
+//		case BETWEEN_RANGE_CLOSED:
+//			return target.compareTo(startValue) > 0 && target.compareTo(endValue) < 0;
+//		case BETWEEN_RANGE_OPEN:
+//			return target.compareTo(startValue) >= 0 && target.compareTo(endValue) <= 0;
+//		case OUTSIDE_RANGE_CLOSED:
+//			return target.compareTo(startValue) < 0 || target.compareTo(endValue) > 0;
+//		case OUTSIDE_RANGE_OPEN:
+//			return target.compareTo(startValue) <= 0 || target.compareTo(endValue) >= 0;
+//		default:
+//			return false;
+//		}
 	}
 }

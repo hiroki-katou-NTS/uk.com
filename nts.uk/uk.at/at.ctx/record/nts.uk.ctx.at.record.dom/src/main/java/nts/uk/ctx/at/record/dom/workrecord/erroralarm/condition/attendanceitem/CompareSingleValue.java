@@ -18,7 +18,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckCondit
  *
  */
 // 単一値との比較
-public class CompareSingleValue<V extends CheckConditionValue> extends CheckedCondition {
+public class CompareSingleValue<V> extends CheckedCondition {
 
 	// 値
 	private V value;
@@ -54,30 +54,33 @@ public class CompareSingleValue<V extends CheckConditionValue> extends CheckedCo
 	}
 
 	public boolean check(V target) {
-		return check(target, value.value());
+		return false;
+//		return check(target, value.value());
 	}
 	
 	public boolean checkWithAttendanceItem(V target, Function<List<Integer>, List<Integer>> getItemValue) {
-		Integer compareValue = getItemValue.apply(Arrays.asList(this.value.value())).get(0);
-		return check(target, compareValue);
+		return false;
+//		Integer compareValue = getItemValue.apply(Arrays.asList(this.value.value())).get(0);
+//		return check(target, compareValue);
 	}
 	
 	private boolean check(V target, Integer compare) {
-		switch (this.compareOpertor) {
-		case EQUAL:
-			return target.compareTo(compare) == 0;
-		case GREATER_OR_EQUAL:
-			return target.compareTo(compare) >= 0;
-		case GREATER_THAN:
-			return target.compareTo(compare) > 0;
-		case LESS_OR_EQUAL:
-			return target.compareTo(compare) <= 0;
-		case LESS_THAN:
-			return target.compareTo(compare) < 0;
-		case NOT_EQUAL:
-			return target.compareTo(compare) != 0;
-		default:
-			throw new RuntimeException("invalid compareOpertor: " + compareOpertor);
-		}
+		return false;
+//		switch (this.compareOpertor) {
+//		case EQUAL:
+//			return target.compareTo(compare) == 0;
+//		case GREATER_OR_EQUAL:
+//			return target.compareTo(compare) >= 0;
+//		case GREATER_THAN:
+//			return target.compareTo(compare) > 0;
+//		case LESS_OR_EQUAL:
+//			return target.compareTo(compare) <= 0;
+//		case LESS_THAN:
+//			return target.compareTo(compare) < 0;
+//		case NOT_EQUAL:
+//			return target.compareTo(compare) != 0;
+//		default:
+//			throw new RuntimeException("invalid compareOpertor: " + compareOpertor);
+//		}
 	}
 }
