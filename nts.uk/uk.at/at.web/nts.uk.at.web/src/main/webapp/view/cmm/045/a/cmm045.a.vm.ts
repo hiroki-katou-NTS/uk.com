@@ -38,9 +38,7 @@ module cmm045.a.viewmodel {
                 { id: 5, name: getText('CMM045_24') },
                 { id: 6, name: getText('CMM045_25') }
             ]);
-            self.selectedRuleCode.subscribe(function(codeChanged) {
-                self.filter();
-            });
+            
             self.selectedCode.subscribe(function(codeChanged) {
                 self.filterByAppType(codeChanged);
             });
@@ -96,6 +94,9 @@ module cmm045.a.viewmodel {
                         self.roundingRules.push(new vmbase.ApplicationDisplayAtr(obj.value, obj.localizedName));
                     });
                     service.getApplicationList(param).done(function(data) {
+                        self.selectedRuleCode.subscribe(function(codeChanged) {
+                            self.filter();
+                        });
                         //luu param
                         if (self.dateValue().startDate == '' || self.dateValue().endDate == '') {
                             let date: vmbase.Date = { startDate: data.startDate, endDate: data.endDate }
