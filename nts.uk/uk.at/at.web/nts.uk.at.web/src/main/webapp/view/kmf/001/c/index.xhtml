@@ -80,7 +80,7 @@
 									<label class="content-label" style="padding-left: 0px">#{i18n.getText('KMF001_36')}</label>
 								</div>
 								<div style="display: inline-block; float: right;">
-									<input tabindex="7" id="max-grant-day" class="nts-input"
+									<input tabindex="6" id="max-grant-day" class="nts-input"
 										data-bind="ntsNumberEditor: {
 									value: maxGrantDay,
 									constraint: 'AnnualLeaveGrantDay',
@@ -95,7 +95,7 @@
 								</div></td>
 
 							<td><label class="content-label">#{i18n.getText('KMF001_37')}</label></td>
-							<td><input tabindex="8" id="max-remaining-day"
+							<td><input tabindex="7" id="max-remaining-day"
 								class="nts-input" data-bind="ntsNumberEditor: {
 									value: maxRemainingDay,
 									constraint: 'MaxRemainingDay',
@@ -110,7 +110,7 @@
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_38')}</label></td>
-							<td style="padding-left: 4px;"><div style="width: 82px;"><input tabindex="9"
+							<td style="padding-left: 4px;"><div style="width: 82px;"><input tabindex="8"
 								id="number-year-retain" class="nts-input"
 								data-bind="ntsNumberEditor: {
 									value: numberYearRetain,
@@ -149,7 +149,7 @@
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_34')}</label></td>
-							<td><div tabindex="6"
+							<td><div tabindex="10"
 									data-bind="ntsSwitchButton: {
 										options: manageDistinctList,
 										optionsValue: 'value',
@@ -175,7 +175,7 @@
 										]}"></div></td>
 
 							<td style="min-width: 256px;"><label class="content-label">#{i18n.getText('KMF001_132')}</label></td>
-							<td><input tabindex="10" id="max-number-company"
+							<td><input tabindex="12" id="max-number-company"
 								class="nts-input" data-bind="ntsNumberEditor: {
 									value: maxNumberCompany,
 									constraint: 'AnnualNumberDay',
@@ -189,7 +189,7 @@
 						</tr>
 						<tr>
 							<td style="min-width: 364px;"><label class="content-label">#{i18n.getText('KMF001_139')}</label></td>
-							<td><div tabindex="11" id="combo-box"
+							<td><div tabindex="13" id="combo-box"
 									data-bind="ntsComboBox: {
 										options: roundProcessClassificationList,
 										optionsValue: 'value',
@@ -216,7 +216,7 @@
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_41')}</label></td>
-							<td><div tabindex="13"
+							<td><div tabindex="14"
 									id="combo-box-preem-permit"
 									data-bind="ntsComboBox: {
 										options: annualPriorityList,
@@ -353,7 +353,7 @@
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_140')}</label></td>
-							<td><div tabindex="25" id="combo-box"
+							<td><div tabindex="27" id="combo-box"
 									data-bind="ntsComboBox: {
 										options: roundProcessClassificList,
 										optionsValue: 'value',
