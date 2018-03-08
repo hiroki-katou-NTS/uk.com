@@ -43,6 +43,8 @@ module nts.uk.com.view.cps006.b.viewmodel {
             let self = this;
 
             self.currentSelectId.subscribe(function(newValue) {
+                
+                nts.uk.ui.errors.clearAll();
                 if (!newValue) {
 
                     return;
@@ -58,6 +60,8 @@ module nts.uk.com.view.cps006.b.viewmodel {
             });
 
             self.currentItem.subscribe(function(newItem) {
+                
+                nts.uk.ui.errors.clearAll();
 
                 self.itemNameText(newItem.itemName);
 

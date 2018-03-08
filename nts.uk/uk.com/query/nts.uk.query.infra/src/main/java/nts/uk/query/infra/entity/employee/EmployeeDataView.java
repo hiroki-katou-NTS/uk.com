@@ -225,7 +225,7 @@ public class EmployeeDataView implements Serializable {
 			isWorking = this.isWoking(start, end);
 		} else {
 			// Remove working employee
-			if (this.isWoking(start, end)) {
+			if (this.isWoking(start, end) && !this.isRetire(start, end)) {
 				return false;
 			}
 		}
@@ -254,7 +254,13 @@ public class EmployeeDataView implements Serializable {
 		if (paramQuery.getIncludeRetirees()) {
 			isRetire = this.isRetire(retireStart, retireEnd);
 		} else {
-			if (this.isRetire(retireStart, retireEnd)) {
+			if (this.isRetire(retireStart, retireEnd) && !this.isWoking(start, end)) {
+				return false;
+			}
+		}
+		
+		if (!paramQuery.getIncludeRetirees() && !paramQuery.getIncludeIncumbents()) {
+			if (this.isRetire(retireStart, retireEnd) || this.isWoking(start, end)) {
 				return false;
 			}
 		}
