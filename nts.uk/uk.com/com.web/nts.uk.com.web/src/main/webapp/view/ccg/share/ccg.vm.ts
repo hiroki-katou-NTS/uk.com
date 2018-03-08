@@ -196,6 +196,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 });
                 
                 self.periodEnd.subscribe(endDate => {
+                    $("#inp-period-startYM").ntsError("clear");
+                    $("#inp-period-startYMD").ntsError("clear");
                     if (endDate.isBefore(self.periodStart())){
                         let CCG001_30 = nts.uk.resource.getText("CCG001_30");
                         if (self.showPeriodYM) {
@@ -214,6 +216,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 });
                 
                 self.statusPeriodEnd.subscribe(endDate => {
+                    $("#ccg001-partg-start").ntsError("clear");
                     if (endDate.isBefore(self.statusPeriodStart())){
                         let CCG001_94 = nts.uk.resource.getText("CCG001_94");
                         $("#ccg001-partg-start").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_94]), "FND_E_SPAN_REVERSED");
