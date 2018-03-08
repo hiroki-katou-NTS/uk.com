@@ -659,6 +659,9 @@ module cmm045.a.viewmodel {
                 block.clear();
             });
         }
+        /**
+         * find row hidden
+         */
         findRowHidden(lstItem: Array<vmbase.DataModeApp>): any{
             let lstHidden = []
             _.each(lstItem, function(item){
@@ -668,6 +671,9 @@ module cmm045.a.viewmodel {
             });
             return lstHidden;
         }
+        /**
+         * find check box
+         */
         findcheck(selectedIds: Array<any>, idCheck: number): boolean {
             let check = false;
             _.each(selectedIds, function(id) {
@@ -727,6 +733,9 @@ module cmm045.a.viewmodel {
                 self.reloadGridApplicaion();
             }
         }
+        /**
+         * count status when filter by appType
+         */
         countStatus(lstApp: Array<vmbase.DataModeApp>): vmbase.ApplicationStatus{
             let unApprovalNumber = 0;
             let approvalNumber = 0;
