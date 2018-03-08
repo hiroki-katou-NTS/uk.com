@@ -183,9 +183,9 @@ module nts.uk.pr.view.kmf001.c {
                 command.numberYearRetain = self.enableAnnualVacation() ? self.numberYearRetain() : dataBackup.numberYearRetain;
                 command.annualPriority = self.enableAnnualVacation() ? self.selectedAnnualPriority() : dataBackup.annualPriority;
                 command.remainingNumberDisplay = self.enableAnnualVacation() ? self.selectedNumberRemainingYearly() : dataBackup.remainingNumberDisplay;
-                command.nextGrantDayDisplay = self.enableAnnualVacation() ? self.selectedNextAnunalVacation() : dataBackup.nextGrantDayDisplay;                
-                command.yearlyOfDays = self.enableAnnualVacation() ? self.yearlyOfNumberDays() : dataBackup.yearlyOfDays;                
-                command.roundProcessCla = self.enableAnnualVacation() ? self.selectedRoundProcessCla() : dataBackup.roundProcessCla();
+                command.nextGrantDayDisplay = self.enableAnnualVacation() ? self.selectedNextAnunalVacation() : dataBackup.nextGrantDayDisplay;
+                command.yearlyOfDays = self.enableAnnualVacation() ? self.yearlyOfNumberDays() : dataBackup.yearlyOfDays;
+                command.roundProcessCla = self.enableAnnualVacation() ? self.selectedRoundProcessCla() : dataBackup.roundProcessCla;
                 // Time Leave Setting
                 command.timeManageType = self.enableAnnualVacation() ? self.selectedTimeManagement() : dataBackup.timeManageType;
                 command.timeUnit = self.enableTimeSetting() ? self.selectedVacationTimeUnit() : dataBackup.timeUnit;
@@ -243,7 +243,7 @@ module nts.uk.pr.view.kmf001.c {
                 backup.permitType = 1;
                 backup.annualPriority = 0;
                 backup.remainingNumberDisplay = 1;
-                backup.nextGrantDayDisplay = 1;                
+                backup.nextGrantDayDisplay = 1;
                 backup.yearlyOfDays = '';
                 backup.roundProcessCla = 0;
                 
