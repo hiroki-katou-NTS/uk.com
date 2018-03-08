@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.entity.application.holidayshipment;
+package nts.uk.ctx.at.request.infra.entity.application.holidayshipment.absenceleaveapp;
 
 import java.io.Serializable;
 
@@ -16,21 +16,18 @@ import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * 振出申請
+ * 振休申請
  * 
  * @author sonnlb
  */
 @Entity
-@Table(name = "KRQDT_RECRUITMENT_APP")
+@Table(name = "KRQDT_ABSENCE_LEAVE_APP")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtRecruitmentApp extends UkJpaEntity implements Serializable {
+public class KrqdtAbsenceLeaveApp extends UkJpaEntity implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -44,87 +41,69 @@ public class KrqdtRecruitmentApp extends UkJpaEntity implements Serializable {
 	/**
 	 * 勤務種類
 	 */
-	
 	@Basic(optional = false)
 	@Column(name = "WORK_TYPE_CD")
 	private String workTypeCD;
 
 	/**
+	 * 就業時間帯変更
+	 */
+	@Basic(optional = false)
+	@Column(name = "CHANGE_WORK_HOURS_ATR")
+	private int changeWorkHoursAtr;
+
+	/**
 	 * 勤務場所コード
 	 */
-	
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "WORK_LOCATION_CD")
 	private String workLocationCD;
 
 	/**
 	 * 就業時間帯
 	 */
-	
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "WORK_TIME_CD")
 	private String workTimeCD;
 
 	/**
 	 * 日区分
 	 */
-	
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "START_WORK_TIME_ATR1")
 	private int startWorkTimeAtr1;
 
 	/**
-	 * 時刻
+	 * 開始時刻
 	 */
-	
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "START_WORK_TIME1")
 	private GeneralDate startWorkTime1;
 
 	/**
 	 * 日区分
 	 */
-	
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "END_WORK_TIME_ATR1")
 	private int endWorkTimeAtr1;
 
 	/**
-	 * 時刻
+	 * 終了時刻
 	 */
-	
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "END_WORK_TIME1")
 	private GeneralDate endWorkTime1;
 
 	/**
-	 * 直行
-	 */
-	
-	@Basic(optional = false)
-	@Column(name = "START_USE_ATR1")
-	private int startUseAtr1;
-
-	/**
-	 * 直帰
-	 */
-	
-	@Basic(optional = false)
-	@Column(name = "END_USE_ATR1")
-	private int endUseAtr1;
-
-	/**
 	 * 日区分
 	 */
-	
 	@Basic(optional = true)
 	@Column(name = "START_WORK_TIME_ATR2")
 	private int startWorkTimeAtr2;
 
 	/**
-	 * 時刻
+	 * 開始時刻
 	 */
-	
 	@Basic(optional = true)
 	@Column(name = "START_WORK_TIME2")
 	private GeneralDate startWorkTime2;
@@ -137,25 +116,39 @@ public class KrqdtRecruitmentApp extends UkJpaEntity implements Serializable {
 	private int endWorkTimeAtr2;
 
 	/**
-	 * 時刻
+	 * 終了時刻
 	 */
 	@Basic(optional = true)
 	@Column(name = "END_WORK_TIME2")
 	private GeneralDate endWorkTime2;
 
 	/**
-	 * 直行
+	 * 管理データ日数単位
 	 */
-	@Basic(optional = true)
-	@Column(name = "START_USE_ATR2")
-	private int startUseAtr2;
+	@Basic(optional = false)
+	@Column(name = "DAYS_USED_NO")
+	private int daysUsedNo;
 
 	/**
-	 * 直帰
+	 * 振出管理データ
 	 */
 	@Basic(optional = true)
-	@Column(name = "END_USE_ATR2")
-	private int endUseAtr2;
+	@Column(name = "PAYOUT_MNG_DATA_ID")
+	private String payoutMngDataID;
+
+	/**
+	 * 管理データ区分
+	 */
+	@Basic(optional = false)
+	@Column(name = "PICK_UP_STATE")
+	private int pickUpState;
+
+	/**
+	 * 振休発生日
+	 */
+	@Basic(optional = false)
+	@Column(name = "OCCURRENCE_DATE")
+	private GeneralDate occurrenceDate;
 
 	@Override
 	protected Object getKey() {

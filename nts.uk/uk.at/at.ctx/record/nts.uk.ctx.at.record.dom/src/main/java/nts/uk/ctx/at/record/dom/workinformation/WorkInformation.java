@@ -24,7 +24,7 @@ public class WorkInformation extends DomainObject{
 
 	public WorkInformation(String workTimeCode, String workTypeCode) {
 		this.workTimeCode = workTimeCode == null ? null : new WorkTimeCode(workTimeCode);
-		this.workTypeCode = new WorkTypeCode(workTypeCode);
+		this.workTypeCode = workTypeCode == null ? null : new WorkTypeCode(workTypeCode);
 	}
 	
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.entity.application.holidayshipment;
+package nts.uk.ctx.at.request.infra.entity.application.holidayshipment.brkoffsupchangemng;
 
 import java.io.Serializable;
 
