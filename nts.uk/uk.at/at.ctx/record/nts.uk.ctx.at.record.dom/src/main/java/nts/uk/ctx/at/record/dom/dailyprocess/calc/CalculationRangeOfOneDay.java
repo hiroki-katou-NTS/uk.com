@@ -390,12 +390,16 @@ public class CalculationRangeOfOneDay {
 	 */
 	public TimeWithCalculation calcWithinTotalTime(ConditionAtr dedClassification, DeductionAtr dedAtr,StatutoryAtr statutoryAtr,TimeSheetRoundingAtr pertimesheet) {
 		if(statutoryAtr.isStatutory()) {
-			return TimeWithCalculation.sameTime(this.withinWorkingTimeSheet.get().calculationAllFrameDeductionTime(dedAtr, dedClassification));
+			if(this.withinWorkingTimeSheet.isPresent()) {
+				return TimeWithCalculation.sameTime(this.withinWorkingTimeSheet.get().calculationAllFrameDeductionTime(dedAtr, dedClassification));
+			}
 		}
 		else if(statutoryAtr.isExcess()) {
-			AttendanceTime overTime = this.getOutsideWorkTimeSheet().get().caluclationAllOverTimeFrameTime(dedAtr, dedClassification);
-			AttendanceTime holidaytime = this.getOutsideWorkTimeSheet().get().caluclationAllHolidayFrameTime(dedAtr, dedClassification);
-			return TimeWithCalculation.sameTime(overTime.addMinutes(holidaytime.valueAsMinutes()));
+			if(this.getOutsideWorkTimeSheet().isPresent()) {
+				AttendanceTime overTime = this.getOutsideWorkTimeSheet().get().caluclationAllOverTimeFrameTime(dedAtr, dedClassification);
+				AttendanceTime holidaytime = this.getOutsideWorkTimeSheet().get().caluclationAllHolidayFrameTime(dedAtr, dedClassification);
+				return TimeWithCalculation.sameTime(overTime.addMinutes(holidaytime.valueAsMinutes()));
+			}
 		}
 		return TimeWithCalculation.sameTime(new AttendanceTime(0));
 	}

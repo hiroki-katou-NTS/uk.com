@@ -142,7 +142,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 		afterVariableWork = dicisionCalcVariableWork(createTimeSheet,breakdownTimeDay,autoCalculationSet,personalInfo,isCalcWithinOverTime);
 //		/*法定内残業　振替*/
 		List<OverTimeFrameTimeSheet> afterCalcStatutoryOverTimeWork = new ArrayList<>();
-		afterCalcStatutoryOverTimeWork = diciaionCalcStatutory(statutorySet ,dailyTime ,OverTimeOfDaily.sortedByPriority(afterVariableWork,prioritySet),autoCalculationSet);
+		//afterCalcStatutoryOverTimeWork = diciaionCalcStatutory(statutorySet ,dailyTime ,OverTimeOfDaily.sortedByPriority(afterVariableWork,prioritySet),autoCalculationSet);
 		
 		/*return*/
 		//return afterCalcStatutoryOverTimeWork;
@@ -239,7 +239,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
      * @return
      */
     public static List<OverTimeFrameTimeSheetForCalc> diciaionCalcStatutory(AutoCalOfOverTime statutorySet,DailyTime dailyTime,List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheetList
-                                                                    ,AutoCalculationOfOverTimeWork autoCalculationSet) {
+                                                                    		,AutoCalculationOfOverTimeWork autoCalculationSet) {
     	List<OverTimeFrameTimeSheetForCalc> returnList = new ArrayList<>();
         if(statutorySet.getLegalOverTime().getCalculationAttr().isApplyOrManuallyEnter()) {
             /*振替処理   法定内基準時間を計算する*/
