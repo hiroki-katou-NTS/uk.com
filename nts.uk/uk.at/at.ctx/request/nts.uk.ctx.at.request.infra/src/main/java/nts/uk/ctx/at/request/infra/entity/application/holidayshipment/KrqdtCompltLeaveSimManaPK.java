@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.entity.application.holidayshipment.complementleavesimultaneousmanager;
+package nts.uk.ctx.at.request.infra.entity.application.holidayshipment;
 
 import java.io.Serializable;
 
