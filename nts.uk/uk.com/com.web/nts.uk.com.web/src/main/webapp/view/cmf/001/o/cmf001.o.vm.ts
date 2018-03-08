@@ -27,16 +27,8 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         //upload file
         stereoType: KnockoutObservable<string> = ko.observable('');
         fileId: KnockoutObservable<string> = ko.observable('');
-        filename: KnockoutObservable<string> = ko.observable('');
-        fileInfo: KnockoutObservable<any> = ko.observable(null);
+        fileName: KnockoutObservable<string> = ko.observable('');
         textId: KnockoutObservable<string> = ko.observable("CMF001_447");
-        accept: KnockoutObservableArray<string> = ko.observableArray(['.csv']);
-        asLink: KnockoutObservable<boolean> = ko.observable(false);
-        enable: KnockoutObservable<boolean> = ko.observable(true);
-        immediate: KnockoutObservable<boolean> = ko.observable(true);
-        onchange: (filename) => void;
-        onfilenameclick: (filename) => void;
-
         listAccept: KnockoutObservableArray<AcceptItems> = ko.observableArray([]);
         selectedAccept: KnockoutObservable<any> = ko.observable('');
         totalRecord: KnockoutObservable<number> = ko.observable(0);
@@ -56,7 +48,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             self.selectedConditionCd.subscribe(function(data: any) {
                 //取込情報を選択する
                 if (data) {
-                    let item = _.find(ko.toJS(self.listCondition), (x: model.StandardAcceptanceConditionSetting) => x.dispConditionSettingCode == data);
+                    let item = _.find(ko.toJS(self.listCondition), (x: any) => x.dispConditionSettingCode == data);
                     //選択したカレント行の「条件コード/名称」を画面右側の「条件コード/名称」にセットする
                     self.selectedConditionName(item.dispConditionSettingName);
                     self.selectedConditionLineNumber(item.csvDataItemLineNumber);
@@ -73,17 +65,17 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         }
 
         //次の画面へ遷移する
-        next() {
+        gotoExAccSummary() {
             let self = this;
 
             //条件コードは選択されているか判別
-            if (self.selectedConditionCd() == '') {
+            if (self.selectedConditionCd() == null || self.selectedConditionCd() == '') {
                 //Msg_963　を表示する。受入条件が選択されていません。
                 dialog({ messageId: "Msg_963" });
                 return;
             }
             //受入ファイルがアップロードされているか判別
-            if (self.fileId() == '') {
+            if (self.fileId() == null || self.fileId() == '') {
                 //Msg_964　を表示する。受入ファイルがアップロードされていません。
                 dialog({ messageId: "Msg_964" });
                 return;
@@ -92,12 +84,12 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             $('#ex_accept_wizard').ntsWizard("next");
             self.loadListAccept();
         }
-        previous() {
+        gotoAccSetSelect() {
             //受入設定選択に戻る
-            $('#ex_accept_wizard').ntsWizard("prev");
+            $('#ex_accept_wizard').ntsWizard("goto", 0);
         }
 
-        private uploadFile(): void {
+        uploadFile(): void {
             var self = this;
             block.grayout();
             $("#file-upload").ntsFileUpload({ stereoType: "csvfile" }).done(function(res) {
@@ -106,7 +98,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     //アップロードCSVが取込開始行に満たない場合                   
                     if (totalLine < self.selectedConditionStartLine()) {
                         self.fileId('');
-                        self.filename('');
+                        self.fileName('');
                         dialog({ messageId: "Msg_1059" });
                     }
                     //アップロードCSVが取込開始行以上ある
@@ -288,7 +280,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 mode: 0,
                 systemType: self.selectedSysType(),
                 conditionCd: self.selectedConditionCd(),
-                fileName: self.filename(),
+                fileName: self.fileName(),
                 fileId: self.fileId(),
                 totalRecord: self.totalRecord()
             });
