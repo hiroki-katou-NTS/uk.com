@@ -572,7 +572,9 @@ module cmm045.a.viewmodel {
             let self = this;
             //check filter
             if (self.dateValue().startDate == null || self.dateValue().endDate == null) {//期間開始日付または期間終了日付が入力されていない
-                nts.uk.ui.dialog.error({ messageId: "Msg_359" });
+//                $('.ntsStartDate').set
+                $('.ntsDatepicker.nts-input.ntsStartDatePicker.ntsDateRange_Component').ntsError('set', {messageId:"Msg_359"});
+//                nts.uk.ui.dialog.error({ messageId: "Msg_359" });
                 block.clear();
                 return;
             }
