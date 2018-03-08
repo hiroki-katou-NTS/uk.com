@@ -30,6 +30,9 @@ public class ExiExecLogExportService extends ExportService<List<ErrorContentDto>
     
     @Override
 	protected void handle(ExportServiceContext<List<ErrorContentDto>> context) {
+    	if (context == null){ 
+    		return;
+    	}
     	List<ErrorContentDto> lstError = context.getQuery();
     	List<String> header = this.getTextHeader();  
 		String nameSetting;

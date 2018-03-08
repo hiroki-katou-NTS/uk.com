@@ -1,5 +1,8 @@
 package nts.uk.ctx.exio.app.command.exi.execlog;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -31,7 +34,7 @@ public class AddExacExeResultLogCommandHandler extends CommandHandler<ExacExeRes
 		String userID = AppContexts.user().userId();
 		String employeeID = AppContexts.user().userId();
 		
-        repository.add(ExacExeResultLog.createFromJavaType(0L, addCommand.getCid(), addCommand.getConditionSetCd(), addCommand.getExternalProcessId(), addCommand.getExecutorId(), addCommand.getUserId(), addCommand.getProcessStartDatetime(), addCommand.getStandardAtr(), addCommand.getExecuteForm(), addCommand.getTargetCount(), addCommand.getErrorCount(), addCommand.getFileName(), addCommand.getSystemType(), addCommand.getResultStatus(), addCommand.getProcessEndDatetime(), addCommand.getProcessAtr()));
+        repository.add(ExacExeResultLog.createFromJavaType(0L, companyId, addCommand.getConditionSetCd(), appID, userID, userID, addCommand.getProcessStartDatetime(), addCommand.getStandardAtr(), addCommand.getExecuteForm(), addCommand.getTargetCount(), addCommand.getErrorCount(), addCommand.getFileName(), addCommand.getSystemType(), addCommand.getResultStatus(), addCommand.getProcessEndDatetime(), addCommand.getProcessAtr()));
     
     }
 }

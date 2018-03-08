@@ -54,14 +54,13 @@ public class SyncCsvImportDataCommandHandler extends AsyncCommandHandler<CsvImpo
 				setter.updateData(NUMBER_OF_ERROR, value);
 			}*/
 			if (asyncTask.hasBeenRequestedToCancel()) {
-
 				/* do something to clean up */
-
 				// cancel explicitly
 				asyncTask.finishedAsCancelled();
 				break;
 			}
 
+			// dump code. delete after finish pharse 2
 			if (i % 2 == 0) {				
 				setter.updateData(NUMBER_OF_SUCCESS, i);
 			} else {				

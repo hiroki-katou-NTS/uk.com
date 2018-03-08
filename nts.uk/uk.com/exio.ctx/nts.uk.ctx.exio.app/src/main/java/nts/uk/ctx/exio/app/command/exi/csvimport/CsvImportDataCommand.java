@@ -7,4 +7,6 @@ public class CsvImportDataCommand {
 	private String test;
 	private int csvLine;
 	private int currentLine;
+	private int errorCount;
+	private int stateBehavior;
 }

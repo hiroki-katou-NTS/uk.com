@@ -40,7 +40,6 @@ module nts.uk.com.view.cmf001.r.viewmodel {
             let paramReceived = getShared('CMF001-R');
             self.imexProcessID = paramReceived.imexProcessId;
             self.nameSetting = ko.observable(paramReceived.nameSetting);
-            
             // grid list constructor
             self.imExErrorLog =  ko.observableArray([]);
             let dataNull = {
@@ -58,18 +57,18 @@ module nts.uk.com.view.cmf001.r.viewmodel {
             self.currentCode = ko.observable(dataNull);
             self.columns = ko.observableArray([
                 { headerText: self.CODE_BANGO, key: 'recordNumber', width: 100 },
-                { headerText: self.CSV_FIELD_NAME, key: 'csvErrorItemName', width: 150 }, 
-                { headerText: self.FIELD_NAME, key: 'itemName', width: 150 }, 
-                { headerText: self.VALUE, key: 'csvAcceptedValue', width: 150},
-                { headerText: self.MESSENGE, key: 'errorContents', width: 150} 
-            ]); 
-            
+                { headerText: self.CSV_FIELD_NAME, key: 'csvErrorItemName', width: 150 },
+                { headerText: self.FIELD_NAME, key: 'itemName', width: 150 },
+                { headerText: self.VALUE, key: 'csvAcceptedValue', width: 150 },
+                { headerText: self.MESSENGE, key: 'errorContents', width: 150 }
+            ]);
+
             // csv template
-             self.itemDataError = ko.observable({
+            self.itemDataError = ko.observable({
                 nameSetting: self.nameSetting(),
                 resultLog: null,
                 errorLog: null,
-             });
+            });
             self.dataError = ko.observableArray([]);
         }
         
@@ -77,29 +76,39 @@ module nts.uk.com.view.cmf001.r.viewmodel {
         start(): JQueryPromise<any>{
             let self = this,
                 dfd = $.Deferred();
-            nts.uk.ui.errors.clearAll();
-            
-            
+            nts.uk.ui.block.invisible();
             // ドメインモデル「外部受入実行結果ログ」を取得する
             service.getLogResults(self.imexProcessID).done((itemList: Array<IImExExecuteResultLogR>) => {
-                 
-                    if (itemList && itemList.length > 0) {
-                        self.imExExecuteResultLog =  itemList[0];
-                        self.datetime = nts.uk.time.formatDate(new Date(self.imExExecuteResultLog.processStartDatetime), "yyyy-MM-dd hh:mm:ss");
-                        self.itemDataError().resultLog = itemList[0];
-                    }
-                
-                    // ドメインモデル「外部受入エラーログ」を取得する
-               service.getErrorLogs(self.imexProcessID).done((itemListError: Array<IImExErrorLog>) => {
-                    if (itemListError && itemListError.length > 0) {
-                        itemListError.forEach(x => self.imExErrorLog.push(x));
-                        self.currentCode = ko.observable(itemListError[0]);
-                        self.itemDataError().errorLog = self.imExErrorLog();
-                    }
-                });
+
+                if (itemList && itemList.length > 0) {
+                    self.imExExecuteResultLog = itemList[0];
+                    self.datetime = nts.uk.time.formatDate(new Date(self.imExExecuteResultLog.processStartDatetime), "yyyy-MM-dd hh:mm:ss");
+                    self.itemDataError().resultLog = itemList[0];
+                }
+
                 // set to list csv data
                 self.dataError.push(self.itemDataError());
                 dfd.resolve();
+                nts.uk.ui.block.clear();
+            }).fail(function(res: any) {
+                alertError({ messageId: res.messageId });
+                dfd.reject();
+                nts.uk.ui.block.clear();
+            });
+
+            // ドメインモデル「外部受入エラーログ」を取得する
+            service.getErrorLogs(self.imexProcessID).done((itemListError: Array<IImExErrorLog>) => {
+                if (itemListError && itemListError.length > 0) {
+                    itemListError.forEach(x => self.imExErrorLog.push(x));
+                    self.currentCode = ko.observable(itemListError[0]);
+                    self.itemDataError().errorLog = self.imExErrorLog();
+                }
+                dfd.resolve();
+                 nts.uk.ui.block.clear();
+            }).fail(function(res: any) {
+                alertError({ messageId: res.messageId });
+                dfd.reject();
+                 nts.uk.ui.block.clear();
             });
             return dfd.promise();
         }
@@ -108,18 +117,20 @@ module nts.uk.com.view.cmf001.r.viewmodel {
         errorExport(){
             let self = this;
             confirm({ messageId: "Msg_912" }).ifYes(() => {
-                    service.exportDatatoCsv(self.dataError()).done(function() {
-                    }).always(function() {
-                        nts.uk.ui.block.clear();
-                    });
-                }).ifNo(() => {
-                    return;
-                })
+                nts.uk.ui.block.invisible();
+                service.exportDatatoCsv(self.dataError()).fail(function(res: any) {
+                    alertError({ messageId: res.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }).ifNo(() => {
+                return;
+            })
         }
         
         //　閉じる
         close(){
-             nts.uk.ui.windows.close();
+            nts.uk.ui.windows.close();
         }
      }
     

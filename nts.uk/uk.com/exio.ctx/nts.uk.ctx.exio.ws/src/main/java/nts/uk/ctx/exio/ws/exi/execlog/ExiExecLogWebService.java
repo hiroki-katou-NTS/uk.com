@@ -25,7 +25,7 @@ import nts.uk.ctx.exio.app.find.exi.execlog.ExiExecLogExportService;
 /**
  * The Class ExiExecLogWebService
  */
-@Path("ctx/exio/ws/exi/execlog")
+@Path("exio/exi/execlog")
 @Produces("application/json")
 public class ExiExecLogWebService extends WebService {
 	@Inject
@@ -41,15 +41,15 @@ public class ExiExecLogWebService extends WebService {
 	 * @param externalProcessId
 	 * @return
 	 */
-	@Path("getLogResults/{a}")
+	@Path("getLogResults/{processId}")
 	@POST
-	public List<ExacExeResultLogDto> getLogResults(@PathParam("a") String externalProcessId) {
+	public List<ExacExeResultLogDto> getLogResults(@PathParam("processId") String externalProcessId) {
 		return this.exacExeResultLogFinder.getExacExeResultLogByProcessId(externalProcessId);
 	}
 	
-	@Path("getErrorLogs/{b}")
+	@Path("getErrorLogs/{processId}")
 	@POST
-	public List<ExacErrorLogDto> getExacErrorLogByProcessId(@PathParam("b") String externalProcessId) {
+	public List<ExacErrorLogDto> getExacErrorLogByProcessId(@PathParam("processId") String externalProcessId) {
     	return this.exacErrorLogFinder.getExacErrorLogByProcessId(externalProcessId);
     }
 	

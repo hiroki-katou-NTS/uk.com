@@ -9,9 +9,12 @@
 }
 .cmf001_515{
 	margin-bottom: 3px;
+	top: -17px;
+    position: relative;
 }
 .error-ichiran{
 	margin: 5px;
+	display: grid;
 }
 .settingzyouho{
 	margin-bottom: 15px;
@@ -28,7 +31,8 @@
 	box-sizing: border-box;
 }
 .ichi-ran{
-	margin: 10px;
+	margin-left: 10px;
+	
 }
 table, th, td {
     border: 1px solid black;
@@ -52,5 +56,4 @@ table, th, td {
 .btn-error-export{
 	float: right;
 	margin-right: 0 !important;
-	margin-bottom: 10px;
 }

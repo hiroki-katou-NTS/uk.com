@@ -8,7 +8,18 @@ public enum ExecutionState {
 
 	/** The processing. */
 	// 処理中
-	PROCESSING(1, "Enum_ExecutionState_processing", "処理中");
+	PROCESSING(1, "Enum_ExecutionState_processing", "処理中"),
+	
+	PREPRARING(0, "Enum_OperatingCondition_PREPRARING", "準備中"),
+	EXPORTING(1, "Enum_OperatingCondition_EXPORTING","出力中" ),
+	IMPORTING(2, "Enum_OperatingCondition_IMPORTING", "受入中"),
+	TEST_FINISH(3, "Enum_OperatingCondition_TEST_FINISH", "テスト完了"),
+	STOP_FINISH(4, "Enum_OperatingCondition_STOP_FINISH", "中断終了"),
+	ERROR_FINISH(5, "Enum_OperatingCondition_ERROR_FINISH", "異常終了"),
+	CHECKING(6, "Enum_OperatingCondition_ERROR_CHECKING", "チェック中"),
+	EXPORT_FINISH(7, "Enum_OperatingCondition_EXPORT_FINISH", "出力完了"),
+	IMPORT_FINISH(8, "Enum_OperatingCondition_IMPORT_FINISH", "受入完了");
+	
 
 	/** The value. */
 	public final int value;

@@ -19,7 +19,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 @Stateless
 public class ExecLogCSVGenerator extends AsposeCellsReportGenerator implements ExecLogCSVReportGenerator{
 
-	private final String REPORT_ID = "SCV_GENERATOR";
+	private final String REPORT_ID = "CSV_GENERATOR";
 	
 	private final int COND_IMPORT_ROW = 0;
 	

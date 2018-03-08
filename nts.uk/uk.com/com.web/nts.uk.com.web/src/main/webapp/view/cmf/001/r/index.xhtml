@@ -104,10 +104,8 @@
 				</div>
 				<!-- R3 -->
 				<div class="error-ichiran">
-					<div>
-						<label class="cmf001_515">#{i18n.getText('CMF001_515')}</label>
-						<button id="BTN_ERROR_EXPORT" class="btn-error-export" data-bind="click : errorExport" tabindex="2">#{i18n.getText('CMF001_516')}</button>
-					</div>
+					<div><button id="BTN_ERROR_EXPORT" class="large btn-error-export" data-bind="click : errorExport" tabindex="2">#{i18n.getText('CMF001_516')}</button></div>
+					<div><label class="cmf001_515">#{i18n.getText('CMF001_515')}</label></div>
 					<div class="ichi-ran" style="margin-left:10px; margin-right:auto" >
 						<table id="single-list" data-bind="ntsGridList: {								
  							height: 350, 
@@ -115,7 +113,8 @@
  							columns: columns, 
  							showNumbering: true, 
  							rows: 13, 
- 							value: currentCode 
+ 							value: currentCode,
+ 							multiple: false,
  						}"></table> 
 					</div>
 				</div>
@@ -125,7 +124,7 @@
 					<div><label>#{i18n.getText('CMF001_524')}</label></div>
 				</div>
 				<div class ="button">
-					<button id="BTN_CLOSE" class="btn-close" data-bind="click : close" tabindex="1">#{i18n.getText('CMF001_526')}</button>
+					<button id="BTN_CLOSE" class="large btn-close" data-bind="click : close" tabindex="1">#{i18n.getText('CMF001_526')}</button>
 				</div>
 			</div>
 		</ui:define>
