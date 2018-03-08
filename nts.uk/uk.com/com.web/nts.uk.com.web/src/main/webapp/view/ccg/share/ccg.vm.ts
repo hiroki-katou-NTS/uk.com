@@ -788,7 +788,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
                 $('#component-ccg001').toggle("slide");
                 if (self.showAdvancedSearchTab && self.showEmployeeSelection && self.isFirstTime) {
-                    self.loadKcp005();
+                    self.loadKcp005().done(() => self.fixComponentWidth());
+                } else {
+                    self.fixComponentWidth();
                 }
                 self.isShow(true);
             }
@@ -796,7 +798,8 @@ module nts.uk.com.view.ccg.share.ccg {
             /**
              * Load component KCP005
              */
-            private loadKcp005(): void {
+            private loadKcp005(): JQueryPromise<void> {
+                let dfd = $.Deferred<void>();
                 let self = this;
 
                 // set KCP005 rows
@@ -819,12 +822,13 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
 
                 // Show KCP005
-                $('#employeeinfo').ntsListComponent(self.employeeinfo).done(() => self.fixComponentWidth());
+                $('#employeeinfo').ntsListComponent(self.employeeinfo).done(() => dfd.resolve());
 
                 // update flag isFirstTime
                 if (self.isFirstTime) {
                     self.isFirstTime = false;
                 }
+                return dfd.promise();
             }
 
             /**

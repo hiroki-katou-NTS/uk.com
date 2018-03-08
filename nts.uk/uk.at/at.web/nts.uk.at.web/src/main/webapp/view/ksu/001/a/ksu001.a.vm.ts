@@ -600,10 +600,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             //                            popup: {
                             //                                rows: [1],
                             //                                provider: function(columnKey) {
-                            //                                    //                                    return $("#popup-area8");
-                            //                                    return;
+                            //                                    self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
+                            //                                    return $("#popup-area8");
                             //                                }
                             //                            }
+
                         }]
                 };
 
@@ -648,7 +649,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     .create();
 
                 // set stick single
+                $("#extable").exTable("stickData", __viewContext.viewModel.viewO.nameWorkTimeType());
                 $("#extable").exTable("stickMode", "single");
+
 
                 /**
                  * update text for row 2 of detailHeader
@@ -757,10 +760,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             //                            popup: {
                             //                                rows: [1],
                             //                                provider: function(columnKey) {
-                            //                                    //                                    return $("#popup-area8");
-                            //                                    return;
+                            //                                    self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
+                            //                                    return $("#popup-area8");
                             //                                }
                             //                            }
+
                         }]
                 };
 
@@ -923,13 +927,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                         { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                     ]
                                 },
-                                //                                popup: {
-                                //                                    rows: [1],
-                                //                                    provider: function(columnKey) {
-                                //                                        //                                        return $("#popup-area8");
-                                //                                        return;
-                                //                                    }
+                                //                            popup: {
+                                //                                rows: [1],
+                                //                                provider: function(columnKey) {
+                                //                                    self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
+                                //                                    return $("#popup-area8");
                                 //                                }
+                                //                            }
+
                             }]
                     };
 
@@ -970,13 +975,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                             { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                         ]
                                     },
-                                    //                                    popup: {
-                                    //                                        rows: [1],
-                                    //                                        provider: function(columnKey) {
-                                    //                                            //                                            return $("#popup-area8");
-                                    //                                            return;
-                                    //                                        }
-                                    //                                    }
+                                    //                            popup: {
+                                    //                                rows: [1],
+                                    //                                provider: function(columnKey) {
+                                    //                                    self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
+                                    //                                    return $("#popup-area8");
+                                    //                                }
+                                    //                            }
+
                                 }]
                         };
 
@@ -1041,13 +1047,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                             { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
                                         ]
                                     },
-                                    //                                    popup: {
-                                    //                                        rows: [1],
-                                    //                                        provider: function(columnKey) {
-                                    //                                            //                                            return $("#popup-area8");
-                                    //                                            return;
-                                    //                                        }
-                                    //                                    }
+                                    //                            popup: {
+                                    //                                rows: [1],
+                                    //                                provider: function(columnKey) {
+                                    //                                    self.selectedDate(moment(columnKey, '_YYYYMMDD').format('YYYY/MM/DD'));
+                                    //                                    return $("#popup-area8");
+                                    //                                }
+                                    //                            }
+
                                 }]
                         };
 
