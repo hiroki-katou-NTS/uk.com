@@ -42,4 +42,34 @@ module nts.uk.com.view.cmf002.share.model {
         }
     }
 
+    export class ItemModel {
+        code: number;
+        name: string;
+
+        constructor(code: number, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }    
+    
+    export class StandardOutputItem {
+        outputItemCode: KnockoutObservable<string>;
+        dispOutputItemCode: string;
+        outputItemName: KnockoutObservable<string>;
+        dispOutputItemName: string;
+        conditionSettingCode: KnockoutObservable<string>;
+        formulaResult: KnockoutObservable<string>;
+        itemType: KnockoutObservable<number>;
+
+        constructor(outputItemCode: string, outputItemName: string, 
+            conditionSettingCode: string, formulaResult: string, itemType: number) {
+            this.outputItemCode = ko.observable(outputItemCode);
+            this.dispOutputItemCode = outputItemCode;
+            this.outputItemName = ko.observable(outputItemName);
+            this.dispOutputItemName = outputItemName;
+            this.conditionSettingCode = ko.observable(conditionSettingCode);
+            this.formulaResult = ko.observable(formulaResult);
+            this.itemType = ko.observable(itemType);
+        }
+    }
 }

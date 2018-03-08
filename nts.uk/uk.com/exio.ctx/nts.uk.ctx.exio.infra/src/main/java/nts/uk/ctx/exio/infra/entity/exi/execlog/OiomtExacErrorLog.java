@@ -39,21 +39,21 @@ public class OiomtExacErrorLog extends UkJpaEntity implements Serializable
     /**
     * CSVエラー項目名
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "CSV_ERROR_ITEM_NAME")
     public String csvErrorItemName;
     
     /**
     * CSV受入値
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "CSV_ACCEPTED_VALUE")
     public String csvAcceptedValue;
     
     /**
     * エラー内容
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "ERROR_CONTENTS")
     public String errorContents;
     
@@ -74,7 +74,7 @@ public class OiomtExacErrorLog extends UkJpaEntity implements Serializable
     /**
     * 項目名
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "ITEM_NAME")
     public String itemName;
     

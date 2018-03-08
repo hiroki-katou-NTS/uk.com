@@ -1,0 +1,265 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="cmf002.o.style.css" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="cmf002.o.start.js" />
+			<com:scriptfile path="cmf002.o.service.js" />
+			<com:scriptfile path="cmf002.o.vm.js" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<a class="goback"
+					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF001_430')}</a>
+			</div>
+			<div id="contents-area">
+				<div id="ex_output_wizard"
+					data-bind="ntsWizard: {active: activeStep, steps: stepList, theme: 'yellow'}"
+					class="cf">
+					<div class="header">
+						<div class="image" data-icon="../resource/外部出力アイコンA1.jpg"></div>
+						<div class="content">#{i18n.getText('CMF002_25')}</div>
+					</div>
+					<div class="steps">
+						<div class="step-1"></div>
+						<div class="step-2">
+							<span>#{i18n.getText('CMF002_215')}</span><br />
+							└#{i18n.getText('CMF002_216')}
+						</div>
+						<div class="step-3">#{i18n.getText('CMF002_217')}</div>
+						<div class="end step-4">#{i18n.getText('CMF002_218')}</div>
+					</div>
+					<div class="contents">
+						<div class="step-1">
+							<div class="label" style="margin-bottom: 15px;">#{i18n.getText('CMF002_219')}</div>
+							<button class="large caret-right btn_select_mode"
+								data-bind="click: selectStandardMode">#{i18n.getText('CMF002_220')}</button>
+							<!-- <br />
+							<button class="large caret-right btn_select_mode"
+								data-bind="click: selectUserMode">#{i18n.getText('CMF002_221')}</button> -->
+						</div>
+						<!-- P 出力設定選択 -->
+						<div class="step-2">
+							<!--P3 情報を選んでください-->
+							<div class="label" style="margin-bottom: 15px;">#{i18n.getText('CMF002_219')}</div>
+							<table style="margin-bottom: 15px; margin-left: 20px">
+								<tr>
+									<td style="padding-right: 20px;">
+										<!--P4 設定する情報(ラベル)-->
+										<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMF002_222')}</div>
+									</td>
+									<td>
+										<!--P4_1 設定タイプ-->
+										<div class="label">定型</div>
+									</td>
+								</tr>
+							</table>
+							<table style="width: 100%;">
+								<tr>
+									<td rowspan="2" style="width: 360px;">
+										<div class="" style="width: 360px; float: left;">
+											<!--P5 条件設定選択(パネル)-->
+											<div
+												data-bind="ntsPanel:{width: '320px', height: '464px', direction: 'none', showIcon: true, visible: true}">
+												<!--P5_1 コード/名称-->
+												<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_36')}</div>
+												<!--P5_2 絞り込み検索-->
+												<div tabindex="7" style="width: 320px"
+													data-bind="ntsSearchBox: {
+														searchMode: 'filter', 
+														targetKey: 'code', 
+														comId: 'grd_Condition', 
+														items: listCondition, 
+														selected: selectedConditionCd, 
+														selectedKey: 'code', 
+														fields: ['code', 'name'], 
+														mode: 'igGrid'}" />
+												<!--P5_3 条件設定一覧-->
+												<table id="grd_Condition"
+													data-bind="ntsGridList: {
+													height: 384,
+													name: '#[CMF002_345]', 
+				 									dataSource: listCondition,
+													primaryKey: 'code', 
+													showNumbering: true,
+				 									columns: [
+										                { headerText: '#{i18n.getText('CMF002_37')}', key: 'code', width: 60, formatter: _.escape },
+										                { headerText: '#{i18n.getText('CMF002_38')}', key: 'name', width: 220, formatter: _.escape }
+										            ], 
+													multiple: false,
+													value: selectedConditionCd}">
+												</table>
+											</div>
+										</div>
+									</td>
+									<td style="vertical-align: top">
+										<div class="panel panel-frame"
+											style="margin-left: 20px; height: 90px">
+											<table>
+												<colgroup>
+													<col width="130px" />
+													<col width="270px" />
+												</colgroup>
+												<tr>
+													<td style="padding: 5px 0px">
+														<!--P6 処理する年月日(ラベル)-->
+														<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF002_223')}</div>
+													</td>
+													<td>
+														<!--P6_1 実行期間-->
+														<div id="daterangepicker" tabindex="1"
+															data-bind="ntsDateRangePicker: { 
+																required: true,
+																value: periodDateValue }" />
+													</td>
+												</tr>
+												<tr>
+													<td style="padding: 5px 0px">
+														<!--P7 条件コード/名称-->
+														<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF002_78')}</div>
+													</td>
+													<td>
+														<!--P7_1 条件設定名-->
+														<div class="label">
+															<span data-bind="text: selectedConditionCd"></span> <span
+																data-bind="text: selectedConditionName"></span>
+														</div>
+													</td>
+												</tr>
+											</table>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td style="vertical-align: bottom; padding-left: 10px;">
+										<!--P20_1 ←処理を選びなおす-->
+										<button class="large" data-bind="click: previous">#{i18n.getText('CMF002_225')}</button>
+										<!--P20_2 次へ→-->
+										<button class="proceed x-large" style="margin-left: 10px"
+											data-bind="click: next">#{i18n.getText('CMF002_226')}</button>
+									</td>
+								</tr>
+							</table>
+						</div>
+						<!-- Q 出力社員選択 -->
+						<div class="step-3">
+							<div id="com-ccg001"></div>
+							<!--Q20_1 ←処理日の選択へ戻る-->
+							<button class="large" data-bind="click: previous">#{i18n.getText('CMF002_227')}</button>
+							<!--Q20_2 次へ→-->
+							<button class="proceed x-large" style="margin-left: 10px"
+								data-bind="click: next">#{i18n.getText('CMF002_228')}</button>
+						</div>
+						<!-- R 外部出力サマリー -->
+						<div class="step-4">
+							<!--R3 テキスト出力を行う-->
+							<div class="label" style="margin-bottom: 15px;">#{i18n.getText('CMF002_229')}</div>
+							<table style="margin-bottom: 15px">
+								<tr>
+									<td style="padding: 5px 20px 5px 0px;">
+										<!--R4 処理する年月日(ラベル)-->
+										<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMF002_223')}</div>
+									</td>
+									<td>
+										<!--R4_1 処理期間開始日--> <label
+										data-bind="text: periodDateValue().startDate" /> <!--R4_3 接続記号-->
+										<label>#{i18n.getText('CMF002_235')}</label> <!--R4_2 処理期間終了日-->
+										<label data-bind="text: periodDateValue().endDate" />
+									</td>
+								</tr>
+								<tr>
+									<td style="padding: 5px 20px 5px 0px;">
+										<!--R5 条件コード/名称-->
+										<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMF002_78')}</div>
+									</td>
+									<td>
+										<!--R5_1 条件設定名-->
+										<div class="label">
+											<span data-bind="text: selectedConditionCd"></span> <span
+												data-bind="text: selectedConditionName"></span>
+										</div>
+									</td>
+								</tr>
+							</table>
+
+							<table style="width: 100%">
+								<tr>
+									<td style="padding: 5px 0px">
+										<!--R6 出力項目-->
+										<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_59')}</div>
+									</td>
+									<td style="padding: 5px 0px">
+										<!--R7 出力条件(ラベル)-->
+										<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_230')}</div>
+									</td>
+								</tr>
+								<tr>
+									<td style="padding-right: 20px; vertical-align: top;">
+										<!--R6_1 出力項目一覧-->
+										<table id="single-list"
+											data-bind="ntsGridList: {								
+												height: 408,
+												dataSource: listOutputItem,
+												primaryKey: 'dispOutputItemCode',
+												columns: [ 
+													{ headerText: '#{i18n.getText('CMF002_60')}', key: 'dispOutputItemCode', width: 60},
+                									{ headerText: '#{i18n.getText('CMF002_61')}', key: 'dispOutputItemName', width: 170}
+                								],
+												multiple: false,
+												showNumbering: true,
+												value: selectedOutputItemCode
+											}"></table>
+									</td>
+									<td style="vertical-align: top">
+										<!--R7_1 出力条件一覧-->
+										<table id="single-list"
+											data-bind="ntsGridList: {								
+												height: 168,
+												dataSource: listOutputCondition,
+												primaryKey: 'itemName',
+												columns: [ 
+													{ headerText: '#{i18n.getText('CMF002_231')}', key: 'itemName', width: 100},
+                									{ headerText: '#{i18n.getText('CMF002_232')}', key: 'condition', width: 380}
+                								],
+												multiple: false,
+												showNumbering: true,
+												value: selectedOutputConditionItem
+											}"></table>
+									</td>
+								</tr>
+							</table>
+
+							<table style="width: 100%; margin-top: 20px">
+								<tr>
+									<td>
+										<!--R20_1 ←前の処理に戻る-->
+										<button class="large" data-bind="click: previous">#{i18n.getText('CMF002_233')}</button>
+										<!--R20_2 テキストを出力する-->
+										<button class="proceed x-large" style="margin-left: 10px"
+											data-bind="click: next">#{i18n.getText('CMF002_234')}</button>
+									</td>
+								</tr>
+							</table>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
