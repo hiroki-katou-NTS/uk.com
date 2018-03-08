@@ -126,10 +126,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.dateTimeAfter = ko.observable(moment(self.dtAft()).format('YYYY/MM/DD'));
             self.dateTimePrev = ko.observable(moment(self.dtPrev()).format('YYYY/MM/DD'));
 
-            self.dtPrev.subscribe(() => {
+            self.dtPrev.subscribe((newValue) => {
                 self.dateTimePrev(moment(self.dtPrev()).format('YYYY/MM/DD'));
             });
-            self.dtAft.subscribe(() => {
+            self.dtAft.subscribe((newValue) => {
                 self.dateTimeAfter(moment(self.dtAft()).format('YYYY/MM/DD'));
             });
 
@@ -170,27 +170,27 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $('#group-bt').show();
                     $('#oViewModel').show();
                     $('#qViewModel').hide();
-                    $("#extable").exTable("updateMode", "stick");
-                    $("#extable").exTable("stickMode", "single");
                     //                    $("#extable").exTable("viewMode", "shortName", { y: 175 });
                     $("#extable").exTable("viewMode", "shortName", { y: 232 });
+                    $("#extable").exTable("updateMode", "stick");
+                    $("#extable").exTable("stickMode", "single");
                     $("#combo-box1").focus();
                     // get data to stickData
                     $("#extable").exTable("stickData", __viewContext.viewModel.viewO.nameWorkTimeType());
                 } else if (newValue == 2) {
                     $('#contain-view').hide();
-                    $("#extable").exTable("updateMode", "edit");
                     //                    $("#extable").exTable("viewMode", "time", { y: 115 });
                     $("#extable").exTable("viewMode", "time", { y: 172 });
+                    $("#extable").exTable("updateMode", "edit");
                 } else {
                     $('#contain-view').show();
                     $('#contain-view').addClass('h-90');
                     $('#oViewModel').hide();
                     $('#qViewModel').show();
                     $('#group-bt').show();
+                    $("#extable").exTable("viewMode", "symbol", { y: 235 });
                     $("#extable").exTable("updateMode", "stick");
                     $("#extable").exTable("stickMode", "multi");
-                    $("#extable").exTable("viewMode", "symbol", { y: 235 });
                     $("#tab-panel").focus();
                     // get data to stickData
                     // if buttonTable not selected, set stickData is null
@@ -347,53 +347,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }).fail(() => { self.stopRequest(true); });
         }
 
-        /**
-         * init CCG001
-         */
-        //        initCCG001(): void {
-        //            let self = this;
-        //            self.ccgcomponent = {
-        //                baseDate: ko.observable(new Date()),
-        //                // Show/hide options 
-        //                isQuickSearchTab: true,
-        //                isAdvancedSearchTab: true,
-        //                isAllReferableEmployee: true,
-        //                isOnlyMe: true,
-        //                isEmployeeOfWorkplace: true,
-        //                isEmployeeWorkplaceFollow: true,
-        //                isMutipleCheck: true,
-        //                isSelectAllEmployee: true,
-        //
-        //                /**
-        //                * @param dataList: list employee returned from component.
-        //                * Define how to use this list employee by yourself in the function's body.
-        //                */
-        //                onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
-        //                    self.searchEmployee(dataList);
-        //
-        //                },
-        //                onSearchOnlyClicked: function(data: EmployeeSearchDto) {
-        //                    self.showinfoSelectedEmployee(true);
-        //                    var dataEmployee: EmployeeSearchDto[] = [];
-        //                    dataEmployee.push(data);
-        //                    self.searchEmployee(dataEmployee);
-        //                },
-        //                onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
-        //                    self.searchEmployee(dataList);
-        //                },
-        //                onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
-        //                    self.searchEmployee(dataList);
-        //                },
-        //                onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
-        //                    self.searchEmployee(dataEmployee);
-        //                }
-        //            }
-        //
-        //            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(function() {
-        //                $("#hor-scroll-button-hide").trigger("click");
-        //            });
-        //        }
-
         initCCG001(): void {
             let self = this;
             // Component option
@@ -401,7 +354,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 /** Common properties */
                 systemType: 2, // システム区分
                 showEmployeeSelection: false, // 検索タイプ
-                showQuickSearchTab: false, // クイック検索
+                showQuickSearchTab: true, // クイック検索
                 showAdvancedSearchTab: true, // 詳細検索
                 showBaseDate: false, // 基準日利用
                 showClosure: false, // 就業締め日利用
@@ -410,9 +363,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 periodFormatYM: false, // 対象期間精度
 
                 /** Required parameter */
-                periodStartDate: self.dtPrev().toISOString(), // 対象期間開始日
-                periodEndDate: self.dtAft().toISOString(), // 対象期間終了日
-                inService: false, // 在職区分
+                periodStartDate: moment.utc(__viewContext.viewModel.viewO.startDateScreenA, 'YYYY/MM/DD').toISOString(), // 対象期間開始日
+                periodEndDate: moment.utc(__viewContext.viewModel.viewO.endDateScreenA, 'YYYY/MM/DD').toISOString(), // 対象期間終了日
+                inService: true, // 在職区分
                 leaveOfAbsence: false, // 休職区分
                 closed: false, // 休業区分
                 retirement: false, // 退職区分
@@ -434,6 +387,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 /** Return data */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     self.searchEmployee(data.listEmployee);
+                    // set startDate-endDate
+                    let isAllowUpdateExTable = false;
+                    if (moment(self.dtPrev()).format('YYYYMMDD') !== moment(data.periodStart).format('YYYYMMDD')) {
+                        self.dtPrev(new Date(data.periodStart));
+                        isAllowUpdateExTable = true;
+                    }
+
+                    if (moment(self.dtAft()).format('YYYYMMDD') !== moment(data.periodEnd).format('YYYYMMDD')) {
+                        self.dtAft(new Date(data.periodEnd));
+                        isAllowUpdateExTable = true;
+                    }
+
+                    if (isAllowUpdateExTable) {
+                        self.updateDetailAndHorzSum();
+                    }
                 }
             }
             // Start component
@@ -1464,7 +1432,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     //set static bounceAtr =  1
                     bounceAtr: 1
                 }] : null;
-
 
                 arrObj.push({
                     // slice string '_YYYYMMDD' to 'YYYYMMDD'
