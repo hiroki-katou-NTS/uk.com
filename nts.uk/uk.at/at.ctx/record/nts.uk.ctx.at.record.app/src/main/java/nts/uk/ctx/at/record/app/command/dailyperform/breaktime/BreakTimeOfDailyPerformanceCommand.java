@@ -7,7 +7,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.BreakTimeDailyDto;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 
 public class BreakTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 
@@ -15,8 +15,8 @@ public class BreakTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 	private List<BreakTimeOfDailyPerformance> data = new ArrayList<>();
 
 	@Override
-	public void setRecords(ConvertibleAttendanceItem item) {
-		if(item != null){
+	public void setRecords(AttendanceItemCommon item) {
+		if(item != null && item.isHaveData()){
 			this.data.add(((BreakTimeDailyDto) item).toDomain(getEmployeeId(), getWorkDate()));
 		}
 	}

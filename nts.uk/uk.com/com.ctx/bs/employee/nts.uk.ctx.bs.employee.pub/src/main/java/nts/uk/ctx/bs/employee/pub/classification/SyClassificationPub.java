@@ -20,7 +20,7 @@ public interface SyClassificationPub {
 	 * @param baseDate the base date
 	 * @return the optional
 	 */
-	// RequestList #32
+	// RequestList32
 	Optional<SClsHistExport> findSClsHistBySid(String companyId, String employeeId, GeneralDate baseDate);
 
 }
