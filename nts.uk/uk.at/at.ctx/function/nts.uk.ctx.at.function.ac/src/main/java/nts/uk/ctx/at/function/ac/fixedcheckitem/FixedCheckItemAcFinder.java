@@ -1,0 +1,63 @@
+package nts.uk.ctx.at.function.ac.fixedcheckitem;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.dom.adapter.fixedcheckitem.FixedCheckItemAdapter;
+import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
+import nts.uk.ctx.at.record.pub.fixedcheckitem.FixedCheckItemPub;
+import nts.uk.ctx.at.record.pub.fixedcheckitem.ValueExtractAlarmWRPubExport;
+@Stateless
+public class FixedCheckItemAcFinder implements FixedCheckItemAdapter {
+	
+	@Inject
+	private FixedCheckItemPub fixedCheckItemPub;
+
+	@Override
+	public ValueExtractAlarm  checkWorkTypeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTypeCD) {
+		return convertToImport(fixedCheckItemPub.checkWorkTypeNotRegister(workplaceID,employeeID, date, workTypeCD));
+	}
+
+	@Override
+	public ValueExtractAlarm checkWorkTimeNotRegister(String workplaceID,String employeeID, GeneralDate date, String workTimeCD) {
+		return convertToImport(fixedCheckItemPub.checkWorkTimeNotRegister(workplaceID,employeeID, date, workTimeCD));
+	}
+
+	@Override
+	public List<ValueExtractAlarm> checkPrincipalUnconfirm(String workplaceID, String employeeID,
+			GeneralDate startDate, GeneralDate endDate) {
+		return fixedCheckItemPub.checkPrincipalUnconfirm(workplaceID, employeeID, startDate, endDate)
+				.stream().map(c->convertToImport(c)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ValueExtractAlarm> checkAdminUnverified(String workplaceID, String employeeID,
+			GeneralDate startDate, GeneralDate endDate) {
+		return fixedCheckItemPub.checkAdminUnverified(workplaceID, employeeID, startDate, endDate)
+				.stream().map(c->convertToImport(c)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ValueExtractAlarm> checkingData(String workplaceID,String employeeID, GeneralDate startDate,
+			GeneralDate endDate) {
+		return fixedCheckItemPub.checkingData(workplaceID,employeeID, startDate, endDate)
+				.stream().map(c->convertToImport(c)).collect(Collectors.toList());
+	}
+	
+	private ValueExtractAlarm convertToImport(ValueExtractAlarmWRPubExport export) {
+		return new ValueExtractAlarm(
+				export.getWorkplaceID(),
+				export.getEmployeeID(),
+				export.getAlarmValueDate(),
+				export.getClassification(),
+				export.getAlarmItem(),
+				export.getAlarmValueMessage(),
+				export.getComment()
+				);
+	}
+
+}

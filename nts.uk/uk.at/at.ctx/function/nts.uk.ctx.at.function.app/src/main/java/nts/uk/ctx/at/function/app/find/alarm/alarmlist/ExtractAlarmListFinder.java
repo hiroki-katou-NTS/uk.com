@@ -13,10 +13,10 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 public class ExtractAlarmListFinder {
 
 	@Inject
-	private ExtractAlarmListService checkOutputAlarmListService;
+	private ExtractAlarmListService extractAlarmListService;
 
 	public ExtractedAlarmDto checkOutputAlarmList(List<FuncEmployeeSearchDto> listEmployee, String checkPatternCode,
 			List<PeriodByAlarmCategory> listOutputScreenA) {
-		return this.checkOutputAlarmListService.extractAlarm(listEmployee, checkPatternCode, listOutputScreenA);
+		return this.extractAlarmListService.extractAlarm(listEmployee, checkPatternCode, listOutputScreenA);
 	}
 }

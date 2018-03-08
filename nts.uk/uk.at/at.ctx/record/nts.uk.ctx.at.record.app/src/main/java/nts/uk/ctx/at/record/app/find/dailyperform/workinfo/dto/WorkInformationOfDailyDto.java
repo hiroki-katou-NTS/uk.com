@@ -14,12 +14,12 @@ import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 
 /** 日別実績の勤務情報 */
 @Data
 @AttendanceItemRoot(rootName = "日別実績の勤務情報")
-public class WorkInformationOfDailyDto implements ConvertibleAttendanceItem {
+public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 
 	/** 勤務実績の勤務情報: 勤務情報 */
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "勤務実績の勤務情報")
@@ -59,13 +59,14 @@ public class WorkInformationOfDailyDto implements ConvertibleAttendanceItem {
 				return new ScheduleTimeZoneDto(sts.getWorkNo().v().intValue(), sts.getAttendance().v(),
 						sts.getLeaveWork().v());
 			}).sorted((s1, s2) -> s1.getWorkNo().compareTo(s2.getWorkNo())).collect(Collectors.toList()));
+			result.exsistData();
 		}
 		return result;
 	}
 
 	private static WorkInfoDto createWorkInfo(WorkInformation workInfo) {
 		return workInfo == null ? null : new WorkInfoDto(workInfo.getWorkTypeCode().v(),
-				workInfo.getWorkTimeCode().v());
+				workInfo.getWorkTimeCode() == null ? null : workInfo.getWorkTimeCode().v());
 	}
 
 	@Override
@@ -80,6 +81,9 @@ public class WorkInformationOfDailyDto implements ConvertibleAttendanceItem {
 
 	@Override
 	public WorkInfoOfDailyPerformance toDomain(String employeeId, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new WorkInfoOfDailyPerformance(employeeId, getWorkInfo(actualWorkInfo),
 					getWorkInfo(planWorkInfo),
 					ConvertHelper.getEnum(calculationState, CalculationState.class),

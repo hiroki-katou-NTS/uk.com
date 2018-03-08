@@ -319,12 +319,18 @@ module cmm045.shr {
                 approvalAgentNumber: number, cancelNumber: number,
                 remandNumner: number,denialNumber: number)
             {
-                this.unApprovalNumber = getText('CMM045_12') + ' ' + getText('CMM045_18', [unApprovalNumber]); 
-                this.approvalNumber = getText('CMM045_13') + ' ' + getText('CMM045_18', [approvalNumber]);
-                this.approvalAgentNumber = getText('CMM045_14') + ' ' + getText('CMM045_18', [denialNumber]);
-                this.cancelNumber = getText('CMM045_15') + ' ' + getText('CMM045_18', [approvalAgentNumber]);
-                this.remandNumner = getText('CMM045_16') + ' ' + getText('CMM045_18', [remandNumner]);
-                this.denialNumber = getText('CMM045_17') + ' ' + getText('CMM045_18', [cancelNumber]);    
+//                this.unApprovalNumber = getText('CMM045_12') + ' ' + getText('CMM045_18', [unApprovalNumber]); 
+//                this.approvalNumber = getText('CMM045_13') + ' ' + getText('CMM045_18', [approvalNumber]);
+//                this.approvalAgentNumber = getText('CMM045_14') + ' ' + getText('CMM045_18', [denialNumber]);
+//                this.cancelNumber = getText('CMM045_15') + ' ' + getText('CMM045_18', [approvalAgentNumber]);
+//                this.remandNumner = getText('CMM045_16') + ' ' + getText('CMM045_18', [remandNumner]);
+//                this.denialNumber = getText('CMM045_17') + ' ' + getText('CMM045_18', [cancelNumber]); 
+                this.unApprovalNumber = getText('CMM045_18', [unApprovalNumber]); 
+                this.approvalNumber = getText('CMM045_18', [approvalNumber]);
+                this.approvalAgentNumber = getText('CMM045_18', [denialNumber]);
+                this.cancelNumber = getText('CMM045_18', [approvalAgentNumber]);
+                this.remandNumner = getText('CMM045_18', [remandNumner]);
+                this.denialNumber = getText('CMM045_18', [cancelNumber]);    
             }
         }
         export class ChoseApplicationList{
@@ -346,6 +352,48 @@ module cmm045.shr {
             postAppID: string;
             //実績
             lstFrameRes: Array<vmbase.OverTimeFrame>;
+            constructor(preAppID: string, postAppID: string, lstFrameRes: Array<vmbase.OverTimeFrame>){
+                this.preAppID = preAppID;
+                this.postAppID = postAppID;
+                this.lstFrameRes = lstFrameRes;
+            }
+        }
+        export class ApproveAgent{
+            appID: string;
+            agentId: string;
+            constructor(appID: string, agentId: string){
+                this.appID = appID;
+                this.agentId = agentId;
+            }
+        }
+        export class ProcessHandler {
+            /**
+             * sort by appType and appDate
+             */
+            static orderByList(lstData: Array<DataModeApp>): Array<DataModeApp>{
+                let result: Array<DataModeApp> = [];
+                let lstA: Array<DataModeApp> = [];
+                let lstB: Array<DataModeApp> = [];
+                _.each(lstData, function(obj){
+                    if(obj.appType == 0){//overtime
+                        lstA.push(obj);
+                    }
+                    if(obj.appType == 4){//goback
+                        lstB.push(obj);
+                    }
+                });
+                let sortByA =  _.orderBy(lstA, ["appDate"], ["asc"]);
+                let sortByB =  _.orderBy(lstB, ["appDate"], ["asc"]);
+                //push list A (common)
+                _.each(sortByA, function(obj){
+                    result.push(obj);
+                });
+                //push list B (application)
+                _.each(sortByB, function(obj){
+                    result.push(obj);
+                });
+                return result;
+            }
         }
     }
 }

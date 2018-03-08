@@ -1,3 +1,13 @@
+/* Override Base */
+.ui-widget.ui-tabs.vertical>.ui-tabs-panel {
+	overflow: visible !important;
+	width: auto;
+}
+
+#fixed-table-a4 tr {
+	height: 38px !important;
+}
+
 td div {
 	position: relative;
 	vertical-align: middle;
@@ -72,6 +82,7 @@ td div {
 #e11_5 {
 	padding-left: 28px;
 }
+
 #b18 .ntsRadioBox span.label {
 	padding-right: 72px;
 }
@@ -135,7 +146,6 @@ td div {
 /* .viewmodel-a {
 	margin-bottom: 20px;
 } */
-
 .nts-fixed-table {
 	margin-bottom: 20px;
 }
@@ -182,11 +192,37 @@ div.form-label {
 #fixed-table-a7 span.label-a27 {
 	margin-left: 29px;
 }
+
 textarea {
-   resize: none;
-   height: 85px;
+	resize: none;
+	height: 85px;
 }
+
 #i4 .ntsRadioBox span.label {
 	padding-right: 51px;
 }
 
+#a5_5, #a5_6, #a5_7, #a5_9, #a5_10, #a5_11, #j6, #j7, #j8, #j9, #j10,
+	#j12, #j13, #j14, #j15, #c10, #c11, #c12, #c13, #c14 {
+	padding-left: 19px;
+}
+
+/* .tab-content-1, .tab-content-3, .tab-content-4, .tab-content-5,
+	.tab-content-6, .tab-content-7, .tab-content-8, .tab-content-9,
+	.tab-content-10, .tab-content-11, .tab-content-12 {
+	height: 530px;
+} */
+.tab-content-1, .tab-content-3, .tab-content-4.tab-content-5,
+	.tab-content-6, .tab-content-7, .tab-content-8, .tab-content-9,
+	.tab-content-10, .tab-content-11, .tab-content-12 {
+	height: 575px;
+}
+
+.tab-content-1, .tab-content-3 {
+	overflow-y: scroll;
+}
+
+.contents-area-kaf022 {
+	height: 620px;
+	overflow-y: scroll;
+}

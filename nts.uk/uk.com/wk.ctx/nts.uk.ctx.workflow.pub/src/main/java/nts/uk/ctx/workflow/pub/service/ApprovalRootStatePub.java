@@ -1,10 +1,14 @@
 package nts.uk.ctx.workflow.pub.service;
 
 import java.util.List;
+import java.util.Map;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
+import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
+import nts.uk.ctx.workflow.pub.service.export.ApprovalRootOfEmployeeExport;
+import nts.uk.ctx.workflow.pub.service.export.ApproveRootStatusForEmpExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
 /**
@@ -13,6 +17,34 @@ import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
  *
  */
 public interface ApprovalRootStatePub {
+	
+	/**
+	 * RequestList113
+	 * @param startDate
+	 * @param endDate
+	 * @param employeeID
+	 * @param companyID
+	 * @param rootType
+	 * @return
+	 */
+	public List<ApproveRootStatusForEmpExport> getApprovalByEmplAndDate(GeneralDate startDate, GeneralDate endDate, String employeeID,String companyID,Integer rootType); 
+	
+	/**
+	 * RequestList133
+	 * @param startDate
+	 * @param endDate
+	 * @param approverID
+	 * @param companyID
+	 * @param rootType
+	 * @return
+	 */
+	public ApprovalRootOfEmployeeExport getApprovalRootOfEmloyee(GeneralDate startDate, GeneralDate endDate, String approverID,String companyID,Integer rootType);
+	/**
+	 * @param appID
+	 * @param companyID
+	 * @return
+	 */
+	public Map<String,List<ApprovalPhaseStateExport>> getApprovalRoots(List<String> appID,String companyID);
 	
 	public ApprovalRootContentExport getApprovalRoot(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID, Boolean isCreate);
 	

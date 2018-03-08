@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.request.ac.workflow.approvalrootstate;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -25,6 +28,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Represe
 import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
 import nts.uk.ctx.workflow.pub.agent.ApproverRepresenterExport;
 import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
+import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
@@ -39,6 +43,41 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	@Inject
 	private ApprovalRootStatePub approvalRootStatePub;
 	
+	@Override
+	public Map<String,List<ApprovalPhaseStateImport_New>> getApprovalRootContents(List<String> appIDs, String companyID) {
+		Map<String,List<ApprovalPhaseStateImport_New>> approvalPhaseImport_NewMap = new LinkedHashMap<>();
+		Map<String,List<ApprovalPhaseStateExport>> approvalRootContentExports = approvalRootStatePub.getApprovalRoots(appIDs, companyID);
+		for(Map.Entry<String,List<ApprovalPhaseStateExport>> approvalRootContentExport : approvalRootContentExports.entrySet()){
+					
+			List<ApprovalPhaseStateImport_New> appRootContentImport_News =	approvalRootContentExport.getValue().stream()
+						.map(x -> {
+							return new ApprovalPhaseStateImport_New(
+									x.getPhaseOrder(), 
+									EnumAdaptor.valueOf(x.getApprovalAtr().value, ApprovalBehaviorAtrImport_New.class),
+									x.getListApprovalFrame().stream()
+									.map(y -> {
+										return new ApprovalFrameImport_New(
+												y.getPhaseOrder(), 
+												y.getFrameOrder(), 
+												EnumAdaptor.valueOf(y.getApprovalAtr().value, ApprovalBehaviorAtrImport_New.class),
+												y.getListApprover().stream().map(z -> 
+													new ApproverStateImport_New(
+															z.getApproverID(), 
+															z.getApproverName(), 
+															z.getRepresenterID(),
+															z.getRepresenterName()))
+													.collect(Collectors.toList()), 
+												y.getApproverID(), 
+												y.getApproverName(),
+												y.getRepresenterID(),
+												y.getRepresenterName(),
+												y.getApprovalReason());
+									}).collect(Collectors.toList()));
+						}).collect(Collectors.toList());
+			approvalPhaseImport_NewMap.put(approvalRootContentExport.getKey(), appRootContentImport_News);
+		}
+		return approvalPhaseImport_NewMap;
+	}
 	@Override
 	public ApprovalRootContentImport_New getApprovalRootContent(String companyID, String employeeID, Integer appTypeValue, GeneralDate appDate, String appID, Boolean isCreate) {
 		ApprovalRootContentExport approvalRootContentExport = approvalRootStatePub.getApprovalRoot(companyID, employeeID, appTypeValue, appDate, appID, isCreate);
@@ -179,5 +218,7 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	public void doRemandForApplicant(String companyID, String rootStateID) {
 		approvalRootStatePub.doRemandForApplicant(companyID, rootStateID);
 	}
+
+	
 	
 }

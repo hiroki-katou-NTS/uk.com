@@ -199,7 +199,7 @@ public class AddEmployeeCommandFacade {
 			case DESIGNATED_MASTER:
 				String itemValue = value != null ? value.value() : item.getSaveData().getValue().toString();
 				if (NumberUtils.isDigits(itemValue)) {
-					if (String.valueOf(Integer.parseInt(itemValue)) == itemValue) {
+					if (String.valueOf(Integer.parseInt(itemValue)).equals(itemValue)) {
 						return DataTypeValue.NUMERIC;
 					} else {
 						return DataTypeValue.STRING;

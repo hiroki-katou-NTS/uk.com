@@ -26,21 +26,13 @@ public class WithActualTimeStampDto {
 	/** 打刻反映回数 */
 	// @AttendanceItemLayout(layout = "C")
 	// @AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
-	private int numberOfReflectionStamp;
+	private Integer numberOfReflectionStamp;
 	
 	public static WithActualTimeStampDto toWithActualTimeStamp(TimeActualStamp stamp){
 		return stamp == null ? null : new WithActualTimeStampDto(
-											toTimeStamp(stamp.getStamp().orElse(null)), 
-											toTimeStamp(stamp.getActualStamp()),
+											TimeStampDto.createTimeStamp(stamp.getStamp().orElse(null)), 
+											TimeStampDto.createTimeStamp(stamp.getActualStamp().orElse(null)),
 											stamp.getNumberOfReflectionStamp());
-	}
-	
-	private static TimeStampDto toTimeStamp(WorkStamp stamp){
-		return stamp == null ? null : new TimeStampDto(
-						stamp.getTimeWithDay() == null ? null : stamp.getTimeWithDay().valueAsMinutes(), 
-						stamp.getAfterRoundingTime() == null ? null : stamp.getAfterRoundingTime().valueAsMinutes(), 
-						stamp.getLocationCode() == null ? null : stamp.getLocationCode().v(),
-						stamp.getStampSourceInfo() == null ? null : stamp.getStampSourceInfo().value);
 	}
 	
 	public TimeActualStamp toDomain(){

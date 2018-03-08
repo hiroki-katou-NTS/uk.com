@@ -75,7 +75,7 @@ public class AppWorkChangeSet extends AggregateRoot {
 			int displayResultAtr, int initDisplayWorktime, String commentContent1, int commentFontWeight1,
 			String commentFontColor1, String commentContent2, int commentFontWeight2, String commentFontColor2) {
 		return new AppWorkChangeSet(cid, excludeHoliday, workChangeTimeAtr, displayResultAtr,
-				EnumAdaptor.valueOf(displayResultAtr, InitDisplayWorktimeAtr.class),
+				EnumAdaptor.valueOf(initDisplayWorktime, InitDisplayWorktimeAtr.class),
 				StringUtil.isNullOrEmpty(commentContent1, true) ? null : new CommentContent(commentContent1), 
 				EnumAdaptor.valueOf(commentFontWeight1, FontWeightFlg.class),
 				new CommentFontColor(commentFontColor1), 
