@@ -183,6 +183,45 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.showApplyBtn = ko.computed(() => {
                     return self.baseDate() && self.periodStart() && self.periodEnd() ? true : false;
                 });
+                
+                self.periodStart.subscribe(startDate => {
+                    if (startDate.isAfter(self.periodEnd())){
+                        let CCG001_30 = nts.uk.resource.getText("CCG001_30");
+                        if (self.showPeriodYM) {
+                            $("#inp-period-startYM").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_30]), "FND_E_SPAN_REVERSED");
+                        } else {
+                            $("#inp-period-startYMD").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_30]), "FND_E_SPAN_REVERSED");
+                        }
+                    }
+                });
+                
+                self.periodEnd.subscribe(endDate => {
+                    $("#inp-period-startYM").ntsError("clear");
+                    $("#inp-period-startYMD").ntsError("clear");
+                    if (endDate.isBefore(self.periodStart())){
+                        let CCG001_30 = nts.uk.resource.getText("CCG001_30");
+                        if (self.showPeriodYM) {
+                            $("#inp-period-startYM").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_30]), "FND_E_SPAN_REVERSED");
+                        } else {
+                            $("#inp-period-startYMD").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_30]), "FND_E_SPAN_REVERSED");
+                        }
+                    }
+                });
+                
+                self.statusPeriodStart.subscribe(startDate => {
+                    if (startDate.isAfter(self.statusPeriodEnd())){
+                        let CCG001_94 = nts.uk.resource.getText("CCG001_94");
+                        $("#ccg001-partg-start").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_94]), "FND_E_SPAN_REVERSED");
+                    }
+                });
+                
+                self.statusPeriodEnd.subscribe(endDate => {
+                    $("#ccg001-partg-start").ntsError("clear");
+                    if (endDate.isBefore(self.statusPeriodStart())){
+                        let CCG001_94 = nts.uk.resource.getText("CCG001_94");
+                        $("#ccg001-partg-start").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_94]), "FND_E_SPAN_REVERSED");
+                    }
+                });
             }
 
             /**
@@ -853,7 +892,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
 
                 nts.uk.ui.block.invisible(); // block ui
-
+                
                 // Check future reference permission
                 $.when(self.setBaseDateAndPeriod(), self.getFuturePermit())
                     .done((noValue, permit) => {
@@ -1221,7 +1260,8 @@ module nts.uk.com.view.ccg.share.ccg {
             public isBaseDateInTargetPeriod(): boolean {
                 let self = this;
                 let baseDate = self.baseDate();
-                if(self.showPeriodYM){
+                
+                if (self.showPeriodYM){
                     baseDate = moment.utc((self.baseDate()).format("YYYY/MM"), "YYYY/MM"); 
                 } 
                 
