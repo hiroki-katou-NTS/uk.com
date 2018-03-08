@@ -812,6 +812,10 @@
 					<button data-bind = "click: openDialogM">#{i18n.getText('CMM018_13')}</button>
 				</div>
 				<div class="contents-area-tabpanel-3">
+						<!-- CCG001 -->
+						<div data-bind="visible: viewmodelA.visibleCCG001">
+							<div id="ccgcomponent"></div>
+						</div>
 					<div class="contents-area-tabpanel-3" data-bind="with: viewmodelA">
 					<div style="margin-top: 10px;">
 						<table>
@@ -842,10 +846,6 @@
 						</table>
 					</div>
 					<div>
-						<!-- CCG001 -->
-						<div data-bind="visible: visibleCCG001">
-							<div id="ccgcomponent"></div>
-						</div>
 						<!-- SCREEN E -->
 						<div class="mode_Common"  data-bind="visible: checkAAA" style="clear: both;">
 							<!-- A2: List gridList -->
