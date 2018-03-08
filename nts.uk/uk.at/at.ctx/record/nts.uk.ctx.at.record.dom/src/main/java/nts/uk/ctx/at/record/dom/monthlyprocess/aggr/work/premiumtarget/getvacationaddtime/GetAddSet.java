@@ -98,6 +98,7 @@ public class GetAddSet {
 		case ONLY_LEGAL:
 			val addSetOfFlx = holidayAddition.getFlexWork();
 			// 加算する＝「する(1)」
+			//*****（未）　加算する判定は属性「月次法定内のみ加算」で判定する設計だが、実装がまだ
 			if (addSetOfFlx.getAdditionTime2() == 1) isApplyHolidayAddition = true;
 			break;
 		}

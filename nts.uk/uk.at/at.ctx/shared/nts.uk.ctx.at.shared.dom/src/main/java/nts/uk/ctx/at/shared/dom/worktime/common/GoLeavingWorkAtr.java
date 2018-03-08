@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 /**
  * The Enum GoLeavingWorkAtr.
  */
+//出退勤区分
 public enum GoLeavingWorkAtr {
 
 	/** The go work. */

@@ -161,8 +161,8 @@ public class DailyPerformanceCorrectionProcessor {
 				DailyPerformanceEmployeeDto employee = listEmployee.get(j);
 				for (int i = 0; i < lstDate.size(); i++) {
 					result.add(new DPDataDto(
-							displayFormat + "_" + employee.getId() + "_" + converDateToString(lstDate.get(i)) + "_"
-									+ converDateToString(lstDate.get(lstDate.size() - 1)) + "_" + dataId,
+							displayFormat + "_" + convertFormatString(employee.getId()) + "_" + convertFormatString(converDateToString(lstDate.get(i))) + "_"
+									+ convertFormatString(converDateToString(lstDate.get(lstDate.size() - 1))) + "_" + dataId,
 							"", "", lstDate.get(i), false, employee.getId(), employee.getCode(),
 							employee.getBusinessName(), employee.getWorkplaceId(), "", ""));
 					dataId++;
@@ -171,7 +171,10 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 		return result;
 	}
-
+    
+	private String convertFormatString(String data){
+		return data.replace("-", "_");
+	}
 	private String converDateToString(GeneralDate genDate) {
 		Format formatter = new SimpleDateFormat(DATE_FORMAT);
 		return formatter.format(genDate.date());
@@ -330,7 +333,7 @@ public class DailyPerformanceCorrectionProcessor {
 		Map<Integer, Map<String, String>> mapGetName = dataDialogWithTypeProcessor
 				.getAllCodeName(new ArrayList<>(types), companyId);
 		// No 20 get submitted application
-		List<ApplicationExportDto> appplication = applicationListFinder.getApplicationBySID(listEmployeeId,
+		List<ApplicationExportDto> appplication = listEmployeeId.isEmpty() ? Collections.emptyList() : applicationListFinder.getApplicationBySID(listEmployeeId,
 				dateRange.getStartDate(), dateRange.getEndDate());
 		Map<String, String> appMapDateSid = new HashMap<>();
 		appplication.forEach(x -> {
@@ -496,10 +499,14 @@ public class DailyPerformanceCorrectionProcessor {
 						if (!value.isEmpty()) {
 							// convert HH:mm
 							int minute =0 ;
-							if(Integer.parseInt(value) > 0){
+							if(Integer.parseInt(value) >= 0){
 								minute = Integer.parseInt(value);
 							}else{
-								minute = 0 -(Integer.parseInt(value) + (1 + -Integer.parseInt(value) / MINUTES_OF_DAY) * MINUTES_OF_DAY);
+								if (attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
+									minute = (Integer.parseInt(value)+ (1 + -Integer.parseInt(value) / MINUTES_OF_DAY) * MINUTES_OF_DAY);
+								} else {
+									minute = Integer.parseInt(value);
+								}
 							}
 							int hours = minute / 60;
 							int minutes = Math.abs(minute) % 60;

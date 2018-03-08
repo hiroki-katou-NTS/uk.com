@@ -196,7 +196,7 @@ module nts.uk.com.view.cas005.a {
                 }else{
                     self.visibleWebmenu(false);    
                 }
-                errors.clearAll();
+                
                 self.isDelete(true);
                 self.isCopy(true);
                 let item = _.find(self.listRole(), ['roleId', value]);
@@ -247,6 +247,7 @@ module nts.uk.com.view.cas005.a {
                     self.visibleWebmenu(true);
                 }
                 $("#roleNameFocus").focus(); 
+                _.defer(() => {errors.clearAll();});
             }
 
             /** Select TitleMenu by Index: Start & Delete case */
@@ -482,7 +483,8 @@ module nts.uk.com.view.cas005.a {
                     self.listWpkAuthoritySelect.push(temp);
                 }
                 $("#roleTypeCd").focus();
-                errors.clearAll();
+                var abc = 1;
+                _.defer(() => {errors.clearAll();}); 
             }
 
             /**

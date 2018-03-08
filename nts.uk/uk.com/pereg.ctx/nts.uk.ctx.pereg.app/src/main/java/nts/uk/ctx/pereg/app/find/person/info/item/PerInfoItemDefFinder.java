@@ -12,11 +12,15 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pereg.app.command.person.info.category.GetListCompanyOfContract;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.SelectionInitDto;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoSelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoSelectionItemFinder;
+import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
+import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.dateitem.DateItem;
 import nts.uk.ctx.pereg.dom.person.info.dateitem.DateType;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
@@ -38,7 +42,10 @@ import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItemDataType;
 import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItemType;
 import nts.uk.ctx.pereg.dom.person.info.timeitem.TimeItem;
 import nts.uk.ctx.pereg.dom.person.info.timepointitem.TimePointItem;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
+import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
+import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
@@ -59,6 +66,21 @@ public class PerInfoItemDefFinder {
 
 	@Inject
 	private SelectionRepository selectionRepo;
+
+	@Inject
+	private EmpInfoItemDataRepository empInfoRepo;
+
+	@Inject
+	private PerInfoItemDataRepository perItemRepo;
+
+	@Inject
+	private PersonInfoItemAuthRepository itemAuthRepo;
+
+	@Inject
+	private PerInfoInitValueSetItemRepository itemInitRepo;
+
+	@Inject
+	private PerInfoCategoryRepositoty perInfoCtgRep;
 
 	public PerInfoItemDefFullEnumDto getAllPerInfoItemDefByCtgId(String perInfoCtgId, int personEmployeeType) {
 		List<PerInfoItemDefShowListDto> perInfoItemDefs = this.pernfoItemDefRep
@@ -261,15 +283,18 @@ public class PerInfoItemDefFinder {
 			return perItemDefdto;
 		}).collect(Collectors.toList());
 
-		itemDfChild = this.pernfoItemDefRep.getPerInfoItemDefByListIdv2(idsChild, AppContexts.user().contractCode());
+		if (!idsChild.isEmpty()) {
+			itemDfChild = this.pernfoItemDefRep.getPerInfoItemDefByListIdv2(idsChild,
+					AppContexts.user().contractCode());
 
-		List<PerInfoItemDefDto> listItemDefDtoChild = itemDfChild.stream().map(i -> {
-			int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(i.getPerInfoCategoryId(), i.getPerInfoItemDefId());
-			return mappingFromDomaintoDto(i, dispOrder);
-		}).collect(Collectors.toList());
+			List<PerInfoItemDefDto> listItemDefDtoChild = itemDfChild.stream().map(i -> {
+				int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(i.getPerInfoCategoryId(),
+						i.getPerInfoItemDefId());
+				return mappingFromDomaintoDto(i, dispOrder);
+			}).collect(Collectors.toList());
 
-		result.addAll(listItemDefDtoChild);
-
+			result.addAll(listItemDefDtoChild);
+		}
 		return result;
 
 	}
@@ -431,6 +456,32 @@ public class PerInfoItemDefFinder {
 
 	private List<String> toList(String... item) {
 		return Stream.of(item).collect(Collectors.toCollection(ArrayList::new));
+	}
+
+	public boolean isCheckData(String itemId) {
+
+		String contractCd = AppContexts.user().contractCode();
+		List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
+		PersonInfoItemDefinition oldItem = this.pernfoItemDefRep.getPerInfoItemDefById(itemId, contractCd).orElse(null);
+		PersonInfoCategory category = this.perInfoCtgRep.getPerInfoCategory(oldItem.getPerInfoCategoryId(), contractCd)
+				.orElse(null);
+
+		if (category == null) {
+			return false;
+		}
+
+		List<String> perInfoCtgIds = this.perInfoCtgRep.getPerInfoCtgIdList(companyIdList,
+				category.getCategoryCode().v());
+		boolean itemAuth = this.itemAuthRepo.hasItemData(oldItem.getItemCode().v(), perInfoCtgIds),
+				itemInit = this.itemInitRepo.hasItemData(oldItem.getItemCode().v(), perInfoCtgIds),
+				isEmpData = this.empInfoRepo.hasItemData(oldItem.getItemCode().v(), perInfoCtgIds),
+				isPerData = this.perItemRepo.hasItemData(perInfoCtgIds, oldItem.getItemCode().v());
+
+		if (itemAuth || itemInit || isEmpData || isPerData) {
+			return true;
+		}
+		return false;
+
 	}
 	// lanlt end
 

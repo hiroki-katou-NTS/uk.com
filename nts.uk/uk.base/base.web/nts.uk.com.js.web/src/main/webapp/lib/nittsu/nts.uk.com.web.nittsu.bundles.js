@@ -6545,6 +6545,8 @@ var nts;
                                 resize.fitWindowHeight(self.$container, bodyWrappers, horzSumExists);
                             }
                         });
+                        var containerWidth = headerWrappers.map(function (h) { return parseFloat(h.style.width); }).reduce(function (a, v) { return a + v; });
+                        self.$container.style.width = (containerWidth + 34) + "px";
                         if (self.$commander) {
                             events.trigger(self.$container, events.COMPLETED);
                         }
@@ -6895,7 +6897,7 @@ var nts;
                                 bodyCellStyleFt = feature.find(self.options.features, feature.BODY_CELL_STYLE);
                             }
                             var onChecked = function (checked, rowIndex) {
-                                var $grid = self.options.isHeader ? self.$container.siblings("." + BODY_PRF + LEFTMOST)
+                                var $grid = self.options.isHeader ? selector.classSiblings(self.$container, BODY_PRF + LEFTMOST)[0]
                                     : self.$container;
                                 controls.tick(checked, $grid, self.options.isHeader, rowIndex);
                             };
@@ -6904,7 +6906,7 @@ var nts;
                                 $.data(td, internal.VIEW, rowIdx + "-" + controls.CHECKED_KEY);
                                 td.style.padding = "1px 1px";
                                 td.style.textAlign = "center";
-                                td.appendChild(controls.createCheckBox(self.$container, { initValue: false, onChecked: onChecked })[0]);
+                                td.appendChild(controls.createCheckBox(self.$container, { initValue: false, onChecked: onChecked }));
                                 tr.append(td);
                             }
                             _.forEach(Object.keys(data), function (key, index) {
@@ -6914,7 +6916,7 @@ var nts;
                                     var td = document.createElement("td");
                                     td.style.padding = "1px 1px";
                                     td.style.textAlign = "center";
-                                    td.appendChild(controls.createCheckBox(self.$container, { initValue: false, onChecked: onChecked })[0]);
+                                    td.appendChild(controls.createCheckBox(self.$container, { initValue: false, onChecked: onChecked }));
                                     tr.appendChild(td);
                                     return;
                                 }
@@ -7051,7 +7053,10 @@ var nts;
                                 for (var i = 0; i < bodies.length; i++) {
                                     if (!helper.hasClass(bodies[i], BODY_PRF + LEFT_HORZ_SUM)
                                         && !helper.hasClass(bodies[i], BODY_PRF + HORIZONTAL_SUM)) {
-                                        helper.removeClass1n(bodies[i].getElementsByTagName("tr")[rowIndex].getElementsByTagName("td"), render.HIGHLIGHT_CLS);
+                                        var rowElm = bodies[i].getElementsByTagName("tr")[rowIndex];
+                                        if (rowElm) {
+                                            helper.removeClass1n(rowElm.getElementsByTagName("td"), render.HIGHLIGHT_CLS);
+                                        }
                                     }
                                 }
                                 helper.consumeSiblings(tr, function (elm) {
@@ -7444,6 +7449,9 @@ var nts;
                                 self.errorCellsIn();
                                 self.editCellIn();
                             }
+                            setTimeout(function () {
+                                events.trigger(self.$container, events.RENDERED);
+                            }, 0);
                         };
                         /**
                          * OnScroll.
@@ -7827,14 +7835,14 @@ var nts;
                             $input.value = inputVal;
                             $editor = document.createElement("div");
                             $editor.className = update.EDITOR_CLS;
-                            $editor.style.height = $cell.offsetHeight - 4;
-                            $editor.style.width = $cell.offsetWidth - 4;
+                            $editor.style.height = ($cell.offsetHeight - 4) + "px";
+                            $editor.style.width = ($cell.offsetWidth - 4) + "px";
                             $editor.style.backgroundColor = "#FFF";
                             $editor.style.border = "solid 1px #E67E22";
                             $editor.appendChild($input);
                             if (selector.is($cell, "div")) {
-                                $editor.style.height = $cell.offsetHeight - 4;
-                                $editor.style.width = $cell.offsetWidth - 4;
+                                $editor.style.height = ($cell.offsetHeight - 4) + "px";
+                                $editor.style.width = ($cell.offsetWidth - 4) + "px";
                                 innerIdx = selector.index($cell);
                             }
                             $.data($exTable, update.EDITOR, new Editor($editor, land, coord.rowIdx, coord.columnKey, innerIdx, inputVal));
@@ -7856,13 +7864,13 @@ var nts;
                                 if ($editor.style.display === "none")
                                     $editor.style.display = "";
                                 if (selector.is($cell, "div")) {
-                                    $editor.style.height = $cell.offsetHeight - 4;
-                                    $editor.style.width = $cell.offsetWidth - 4;
+                                    $editor.style.height = ($cell.offsetHeight - 4) + "px";
+                                    $editor.style.width = ($cell.offsetWidth - 4) + "px";
                                     innerIdx = selector.index($cell);
                                 }
                                 else {
-                                    $editor.style.height = $cell.offsetHeight - 4;
-                                    $editor.style.width = $cell.offsetWidth - 4;
+                                    $editor.style.height = ($cell.offsetHeight - 4) + "px";
+                                    $editor.style.width = ($cell.offsetWidth - 4) + "px";
                                 }
                                 var $editingCell = helper.closest($editor, "." + update.EDIT_CELL_CLS);
                                 helper.removeClass($editingCell, update.EDIT_CELL_CLS);
@@ -8535,7 +8543,16 @@ var nts;
                         });
                         var $grid = helper.getMainTable($container);
                         $grid.scrollTop = $grid.scrollHeight;
-                        controls.tick(true, $container.querySelector("." + BODY_PRF + LEFTMOST), false, rowIndex);
+                        var $leftmost = $container.querySelector("." + BODY_PRF + LEFTMOST);
+                        var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        if (rowIndex >= gen.startIndex && rowIndex <= gen.endIndex) {
+                            controls.tick(true, $leftmost, false, rowIndex);
+                            return;
+                        }
+                        $leftmost.addXEventListener(events.RENDERED + ".once", function (evt) {
+                            controls.tick(true, $leftmost, false, rowIndex);
+                            $leftmost.removeXEventListener(events.RENDERED + ".once");
+                        });
                     }
                     update.insertNewRow = insertNewRow;
                     /**
@@ -8583,6 +8600,7 @@ var nts;
                                     origDs.splice(i, 1);
                                     if (index === $t.length - 1) {
                                         rows.items[i] = false;
+                                        rows.items.splice(i, 1);
                                         rows.count--;
                                     }
                                     count--;
@@ -9095,8 +9113,8 @@ var nts;
                 var validation;
                 (function (validation) {
                     validation.TIME_SPLIT = ":";
-                    validation.TIME_PTN = /^\d+:\d{2}$/;
-                    validation.SHORT_TIME_PTN = /^\d+$/;
+                    validation.TIME_PTN = /^-?\d+:\d{2}$/;
+                    validation.SHORT_TIME_PTN = /^-?\d+$/;
                     validation.NUMBER_PTN = /^\d+$/;
                     validation.MINUTE_MAX = 59;
                     validation.HOUR_MAX = 24;
@@ -9256,24 +9274,26 @@ var nts;
                         if (uk.util.isNullOrUndefined(time))
                             return false;
                         time = time.trim();
-                        var hour, minute, minMM, maxHour = validation.DEF_HOUR_MAX, minHour = validation.DEF_HOUR_MIN;
+                        var hour, minute, negative, minMM, maxHour = validation.DEF_HOUR_MAX, minHour = validation.DEF_HOUR_MIN;
                         var maxMM = minMM = validation.DEF_MIN_MAXMIN;
-                        var maxTime = parse(max) || { hour: validation.DEF_HOUR_MAX, minute: validation.DEF_MIN_MAXMIN };
-                        var minTime = parse(min) || { hour: validation.DEF_HOUR_MIN, minute: validation.DEF_MIN_MAXMIN };
+                        var maxTime = parse(max) || { hour: validation.DEF_HOUR_MAX, minute: validation.DEF_MIN_MAXMIN, negative: false };
+                        var minTime = parse(min) || { hour: validation.DEF_HOUR_MIN, minute: validation.DEF_MIN_MAXMIN, negative: false };
                         if (validation.TIME_PTN.test(time)) {
                             var parts = time.split(validation.TIME_SPLIT);
-                            hour = parseInt(parts[0]);
+                            hour = Math.abs(parseInt(parts[0]));
                             minute = parseInt(parts[1]);
+                            negative = time.charAt(0) === '-';
                         }
                         else if (validation.SHORT_TIME_PTN.test(time)) {
-                            var totalTime = parseInt(time);
+                            var totalTime = Math.abs(parseInt(time));
                             minute = totalTime % 100;
                             hour = Math.floor(totalTime / 100);
+                            negative = time.charAt(0) === '-';
                         }
                         if (((uk.util.isNullOrUndefined(hour) || hour === NaN) && (uk.util.isNullOrUndefined(minute) || minute === NaN))
                             || minute > validation.MINUTE_MAX)
                             return false;
-                        var targetTime = { hour: hour, minute: minute };
+                        var targetTime = { hour: hour, minute: minute, negative: negative };
                         if (compare(targetTime, maxTime) > 0 || compare(targetTime, minTime) < 0)
                             return false;
                         return true;
@@ -9295,6 +9315,20 @@ var nts;
                      * Compare.
                      */
                     function compare(one, other) {
+                        if (one.negative && !other.negative)
+                            return -1;
+                        else if (!one.negative && other.negative)
+                            return 1;
+                        else if (one.negative && other.negative) {
+                            return compareAbs(one, other) * (-1);
+                        }
+                        else
+                            return compareAbs(one, other);
+                    }
+                    /**
+                     * Compare abs.
+                     */
+                    function compareAbs(one, other) {
                         if (one.hour > other.hour) {
                             return 1;
                         }
@@ -9315,11 +9349,12 @@ var nts;
                     function parse(time) {
                         if (validation.TIME_PTN.test(time)) {
                             var parts = time.split(validation.TIME_SPLIT);
-                            var hour = parseInt(parts[0]);
+                            var hour = Math.abs(parseInt(parts[0]));
                             var minute = parseInt(parts[1]);
                             return {
                                 hour: hour,
-                                minute: minute
+                                minute: minute,
+                                negative: time.charAt(0) === '-'
                             };
                         }
                     }
@@ -9329,7 +9364,7 @@ var nts;
                     function formatTime(time) {
                         var minute, hour;
                         if (validation.SHORT_TIME_PTN.test(time)) {
-                            var totalTime = parseInt(time);
+                            var totalTime = Math.abs(parseInt(time));
                             minute = totalTime % 100;
                             hour = Math.floor(totalTime / 100);
                         }
@@ -9337,11 +9372,11 @@ var nts;
                             && !uk.util.isNullOrUndefined(minute) && minute !== NaN) {
                             if (minute < 10)
                                 minute = "0" + minute;
-                            return hour + validation.TIME_SPLIT + minute;
+                            return (time.charAt(0) === '-' ? "-" : "") + hour + validation.TIME_SPLIT + minute;
                         }
                         if (!uk.util.isNullOrUndefined(hour) && hour === NaN
                             && !uk.util.isNullOrUndefined(minute) && minute !== NaN) {
-                            return minute;
+                            return (time.charAt(0) === '-' ? "-" : "") + minute;
                         }
                         return time;
                     }
@@ -9823,12 +9858,15 @@ var nts;
                             helper.addClass($row, selection.ROW_SELECTED_CLS);
                         }
                         setTimeout(function () {
-                            $row = selection.rowAt(helper.classSiblings($grid, BODY_PRF).filter(function (e) {
+                            var tbls = helper.classSiblings($grid, BODY_PRF).filter(function (e) {
                                 return !e.classList.contains(BODY_PRF + HORIZONTAL_SUM) && !e.classList.contains(BODY_PRF + LEFT_HORZ_SUM);
-                            }), rowIndex);
-                            if ($row !== intan.NULL && !$row.classList.contains(NAMESPACE + "-" + intan.BOTTOM_SPACE)) {
-                                helper.addClass($row, selection.ROW_SELECTED_CLS);
-                            }
+                            });
+                            tbls.forEach(function (t) {
+                                $row = selection.rowAt(t, rowIndex);
+                                if ($row !== intan.NULL && !$row.classList.contains(NAMESPACE + "-" + intan.BOTTOM_SPACE)) {
+                                    helper.addClass($row, selection.ROW_SELECTED_CLS);
+                                }
+                            });
                         }, 60);
                         var selectedRows = $.data($grid, internal.SELECTED_ROWS);
                         if (!selectedRows) {
@@ -9855,16 +9893,22 @@ var nts;
                      * Deselect row.
                      */
                     function deselectRow($grid, rowIndex) {
-                        selection.rowAt($grid, rowIndex).classList.remove(selection.ROW_SELECTED_CLS);
-                        var bodies = selection.rowAt(helper.classSiblings($grid, BODY_PRF).filter(function (e) {
-                            return !e.classList.contains(BODY_PRF + HORIZONTAL_SUM) && !e.classList.contains(BODY_PRF + LEFT_HORZ_SUM);
-                        }), rowIndex);
-                        helper.removeClass(bodies, selection.ROW_SELECTED_CLS);
                         var selectedRows = $.data($grid, internal.SELECTED_ROWS);
                         if (!selectedRows || !selectedRows.items || selectedRows.items.length === 0)
                             return;
                         selectedRows.items[rowIndex] = false;
                         selectedRows.count--;
+                        var row = selection.rowAt($grid, rowIndex);
+                        if (!row)
+                            return;
+                        row.classList.remove(selection.ROW_SELECTED_CLS);
+                        var tbls = helper.classSiblings($grid, BODY_PRF).filter(function (e) {
+                            return !e.classList.contains(BODY_PRF + HORIZONTAL_SUM) && !e.classList.contains(BODY_PRF + LEFT_HORZ_SUM);
+                        });
+                        tbls.forEach(function (t) {
+                            var bodies = selection.rowAt(t, rowIndex);
+                            helper.removeClass(bodies, selection.ROW_SELECTED_CLS);
+                        });
                     }
                     selection.deselectRow = deselectRow;
                     /**
@@ -10369,6 +10413,7 @@ var nts;
                         var $sup = table.$follower;
                         if ($vertSumHeader && $vertSumHeader.style.display !== "none") {
                             width = width - parseFloat($.data($container, internal.X_OCCUPY)) - parseFloat($vertSumContent.style.width);
+                            $container.style.width = (parseFloat($container.style.width) + (width - parseFloat($detailBody.style.width))) + "px";
                             $detailHeader.style.width = width + "px";
                             $detailBody.style.width = width + "px";
                             $container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM).style.width = width + "px";
@@ -10388,6 +10433,8 @@ var nts;
                         var $horzSumContent = $container.querySelector("." + BODY_PRF + HORIZONTAL_SUM);
                         width = width - parseFloat($.data($container, internal.X_OCCUPY));
                         $detailHeader.style.width = (width - scrollWidth) + "px";
+                        $container.style.width = (parseFloat($container.style.width)
+                            + (width - parseFloat($detailBody.style.width))) + "px";
                         $detailBody.style.width = width + "px";
                         if ($horzSumHeader && $horzSumHeader.style.display !== "none") {
                             $horzSumHeader.style.width = (width - scrollWidth) + "px";
@@ -10869,6 +10916,8 @@ var nts;
                         if (isHeader) {
                             selector.queryAll($grid, "tr").forEach(function (r) {
                                 var td = r.querySelectorAll("td")[0];
+                                if (!td)
+                                    return;
                                 $checkBox = td.querySelector("input");
                                 if (checked) {
                                     $checkBox.checked = true;
@@ -10900,7 +10949,12 @@ var nts;
                         }
                         else {
                             var $row = selection.rowAt($grid, rowIdx);
-                            $checkBox = $row.querySelectorAll("td")[0].querySelector("input");
+                            if (!$row)
+                                return;
+                            var $cells = $row.querySelectorAll("td");
+                            if (!$cells || $cells.length === 0)
+                                return;
+                            $checkBox = $cells[0].querySelector("input");
                             if (checked) {
                                 $checkBox.checked = true;
                                 selection.selectRow($grid, rowIdx);
@@ -10959,6 +11013,7 @@ var nts;
                     events.CHECK_ROW = "extableselectrow";
                     events.MOUSEIN_COLUMN = "extablemouseincolumn";
                     events.MOUSEOUT_COLUMN = "extablemousoutcolumn";
+                    events.RENDERED = "extablerowsrendered";
                     events.COMPLETED = "extablecompleted";
                     window.addXEventListener = document.addXEventListener = Element.prototype.addXEventListener = addEventListener;
                     window.removeXEventListener = document.removeXEventListener = Element.prototype.removeXEventListener = removeEventListener;
@@ -13891,6 +13946,7 @@ var nts;
                         var editable = ko.unwrap(data.editable);
                         var isRequired = ko.unwrap(data.required) === true;
                         var enable = data.enable !== undefined ? ko.unwrap(data.enable) : true;
+                        var selectFirstIfNull = !(ko.unwrap(data.selectFirstIfNull) === false); // default: true
                         var columns = ko.unwrap(data.columns);
                         var visibleItemsCount = data.visibleItemsCount === undefined ? 5 : ko.unwrap(data.visibleItemsCount);
                         var dropDownAttachedToBody = data.dropDownAttachedToBody === undefined ? null : ko.unwrap(data.dropDownAttachedToBody);
@@ -13915,17 +13971,25 @@ var nts;
                         };
                         // required
                         required.set(container, isRequired);
-                        // Check if selected code exists in list.
-                        // But "null" and "undefined" are "not-selected" even if the "null" or "undefined" exist in list.
-                        // この仕様は、「未選択」という項目を持つことを許容するためのもの。
-                        var isValidValue = !uk.util.isNullOrUndefined(selectedValue) && _.some(options, function (item) { return getValue(item) === selectedValue; });
-                        notSelected.set(container, !isValidValue);
-                        if (!isValidValue) {
-                            notSelected.set(container, true);
-                        }
-                        else {
+                        if (selectFirstIfNull && options.length !== 0 && uk.util.isNullOrEmpty(selectedValue)) {
+                            selectedValue = getValue(options[0]);
+                            data.value(selectedValue);
                             notSelected.set(container, false);
                             container.ntsError("clear");
+                        }
+                        else {
+                            // Check if selected code exists in list.
+                            // But "null" and "undefined" are "not-selected" even if the "null" or "undefined" exist in list.
+                            // この仕様は、「未選択」という項目を持つことを許容するためのもの。
+                            var isValidValue = !uk.util.isNullOrUndefined(selectedValue) && _.some(options, function (item) { return getValue(item) === selectedValue; });
+                            notSelected.set(container, !isValidValue);
+                            if (!isValidValue) {
+                                notSelected.set(container, true);
+                            }
+                            else {
+                                notSelected.set(container, false);
+                                container.ntsError("clear");
+                            }
                         }
                         var haveColumn = columns && columns.length > 0;
                         var isChangeOptions = !_.isEqual(container.data("options"), options);
@@ -14211,6 +14275,7 @@ var nts;
                         }));
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
                         container.data("init", false);
+                        $input.ntsDatepicker("bindFlip");
                     };
                     /**
                      * Update
@@ -19721,6 +19786,7 @@ var nts;
                             language: 'ja-JP',
                             format: ISOFormat,
                             autoHide: true,
+                            weekStart: 0
                         });
                         rangeName = nts.uk.util.isNullOrUndefined(rangeName) ? "期間入力フォーム" : nts.uk.resource.getControlName(rangeName);
                         startName = nts.uk.util.isNullOrUndefined(startName) ? "期間入力フォーム開始" : nts.uk.resource.getControlName(startName);
@@ -19817,6 +19883,7 @@ var nts;
                             validateProcess(newText, $target, isStart, oldValue, result);
                         }));
                         $container.find(".ntsDateRange_Component").attr("tabindex", tabIndex);
+                        $input.ntsDatepicker("bindFlip");
                     };
                     /**
                      * Update
@@ -22936,7 +23003,8 @@ var nts;
                                     selectAll: false, quantity: 0,
                                     onSelect: function (value) {
                                         var fs = this;
-                                        if (value && ++fs.quantity === options.dataSource.length) {
+                                        var hiddenCount = fs.hiddenRows ? fs.hiddenRows.length : 0;
+                                        if (value && ++fs.quantity === (options.dataSource.length - hiddenCount)) {
                                             fs.th.find(".nts-grid-header-control-" + column.key).find("input[type='checkbox']").prop("checked", true);
                                             fs.selectAll = true;
                                         }
@@ -22949,6 +23017,9 @@ var nts;
                                         }
                                     }
                                 };
+                                if (column.hiddenRows) {
+                                    cbSelectionColumns[column.key].hiddenRows = column.hiddenRows;
+                                }
                             }
                             // Have column group
                             if (!uk.util.isNullOrUndefined(column.group)) {
@@ -23030,25 +23101,27 @@ var nts;
                                 var $_self = $self;
                                 setTimeout(function () {
                                     var $self = $_self;
-                                    //                        let sFormatter = performance.now();   
                                     var rowId = rowObj[$self.igGrid("option", "primaryKey")];
                                     var $gridCell = internal.getCellById($self, rowId, column.key);
                                     var gridCellChild;
                                     if (!$gridCell || (gridCellChild = $gridCell.children()).length === 0)
                                         return;
                                     if (gridCellChild[0].children.length === 0) {
-                                        var $control = ntsControl.draw(data);
-                                        var gridControl = $gridCell[0].querySelector("." + controlCls);
-                                        if (!gridControl)
-                                            return;
-                                        gridControl.appendChild($control[0]);
-                                        if (controlDef.controlType === ntsControls.CHECKBOX && column.showHeaderCheckbox) {
-                                            var cbSelectCols = $self.data(internal.CB_SELECTED) || {};
-                                            var cbColConf_1 = cbSelectCols[column.key];
-                                            if (cbColConf_1) {
-                                                $control.on("change", function () {
-                                                    cbColConf_1.onSelect($(this).find("input[type='checkbox']").is(":checked"));
-                                                });
+                                        if (controlDef.controlType !== ntsControls.CHECKBOX
+                                            || !column.hiddenRows || !column.hiddenRows.some(function (v) { return v === rowId; })) {
+                                            var $control = ntsControl.draw(data);
+                                            var gridControl = $gridCell[0].querySelector("." + controlCls);
+                                            if (!gridControl)
+                                                return;
+                                            gridControl.appendChild($control[0]);
+                                            if (controlDef.controlType === ntsControls.CHECKBOX && column.showHeaderCheckbox) {
+                                                var cbSelectCols = $self.data(internal.CB_SELECTED) || {};
+                                                var cbColConf_1 = cbSelectCols[column.key];
+                                                if (cbColConf_1) {
+                                                    $control.on("change", function () {
+                                                        cbColConf_1.onSelect($(this).find("input[type='checkbox']").is(":checked"));
+                                                    });
+                                                }
                                             }
                                         }
                                         ntsControl.$containedGrid = $self;
@@ -24501,7 +24574,11 @@ var nts;
                                     _.forEach(options.dataSource, function (r) {
                                         if (!r)
                                             return;
-                                        updating.updateCell($grid, r[options.primaryKey], ui.columnKey, selected, undefined, true);
+                                        var id = r[options.primaryKey];
+                                        if (columnConf && columnConf.hiddenRows
+                                            && columnConf.hiddenRows.some(function (v) { return v === id; }))
+                                            return;
+                                        updating.updateCell($grid, id, ui.columnKey, selected, undefined, true);
                                     });
                                     var cbSelectCols = $grid.data(internal.CB_SELECTED);
                                     var cbSelectConf = cbSelectCols[column[0]];
@@ -24509,7 +24586,8 @@ var nts;
                                         return;
                                     cbSelectConf.selectAll = selected;
                                     if (selected) {
-                                        cbSelectConf.quantity = options.dataSource.length;
+                                        var hiddenCount = cbSelectConf.hiddenRows ? cbSelectConf.hiddenRows.length : 0;
+                                        cbSelectConf.quantity = options.dataSource.length - hiddenCount;
                                         return;
                                     }
                                     cbSelectConf.quantity = 0;
@@ -28600,6 +28678,126 @@ var nts;
                         }
                     }
                 })(ntsImageEditor || (ntsImageEditor = {}));
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var jqueryExtentions;
+            (function (jqueryExtentions) {
+                var ntsDatepicker;
+                (function (ntsDatepicker) {
+                    var CONTAINER_CLASSES = ["arrow-bottom", "arrow-top", "arrow-right", "arrow-left"];
+                    $.fn.ntsDatepicker = function (action, index) {
+                        var $container = $(this);
+                        if (action === "bindFlip") {
+                            return bindFlip($container);
+                        }
+                        return $container;
+                    };
+                    function bindFlip($input) {
+                        var datepickerID = $input.attr("id");
+                        var container = $input.parent();
+                        $input.on('show.datepicker', function (evt) {
+                            $input.data("showed", true);
+                            setTimeout(function () {
+                                $input.trigger("flippickercontainer");
+                            }, 10);
+                        });
+                        $input.on('hide.datepicker', function (evt) {
+                            $input.data("showed", false);
+                            CONTAINER_CLASSES.forEach(function (cls) { return container.removeClass(cls); });
+                            //                let currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
+                            //                $("body").append(currentShowContainer);
+                        });
+                        $(window).resize(function () {
+                            if ($input.data("showed")) {
+                                $input.datepicker('hide');
+                                setTimeout(function () {
+                                    $input.datepicker('show');
+                                }, 10);
+                            }
+                        });
+                        $input.bind("flippickercontainer", function (evt, data) {
+                            var currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
+                            //                let container = $input.parent();
+                            //                container.append(currentShowContainer);
+                            var ePos = container.offset();
+                            if (ePos.top < 0 && ePos.left < 0) {
+                                return;
+                            }
+                            CONTAINER_CLASSES.forEach(function (cls) { return container.removeClass(cls); });
+                            var containerHeight = container.outerHeight(true);
+                            var containerWidth = container.outerWidth(true);
+                            var showContainerHeight = currentShowContainer.outerHeight(true);
+                            var showContainerWidth = currentShowContainer.outerWidth(true);
+                            var documentHeight = document.body.clientHeight;
+                            var documentWidth = document.body.clientWidth;
+                            var headerHeight = $("#functions-area").outerHeight(true) + $("#header").outerHeight(true);
+                            var bottomHeight = $("#functions-area-bottom").outerHeight(true);
+                            var spaceBottom = documentHeight - ePos.top - containerHeight;
+                            var spaceTop = ePos.top; // - headerHeight;
+                            var spaceRight = documentWidth - ePos.left - containerWidth;
+                            var spaceLeft = ePos.left;
+                            // case 1: show below
+                            if (showContainerHeight + 10 <= spaceBottom) {
+                                //currentShowContainer.css({top: containerHeight + 5, left: 0});
+                                container.addClass("arrow-bottom");
+                                //container.addClass("caret-bottom");
+                                currentShowContainer.position({
+                                    my: "left bottom+" + (showContainerHeight + 10),
+                                    at: "left bottom",
+                                    'of': "#" + datepickerID
+                                });
+                                return;
+                            }
+                            //case 2: show above
+                            if (showContainerHeight + 10 <= spaceTop) {
+                                //currentShowContainer.css({top: 0 - showContainerHeight - 5, left: 0});
+                                container.addClass("arrow-top");
+                                currentShowContainer.position({
+                                    my: "left top-" + (showContainerHeight + 10),
+                                    at: "left top",
+                                    'of': "#" + datepickerID
+                                });
+                                return;
+                            }
+                            // case 3: show right
+                            var diaTop = ePos.top <= 0 ? 0 : ePos.top - showContainerHeight + containerHeight + headerHeight;
+                            if (ePos.top <= diaTop) {
+                                diaTop = ePos.top;
+                            }
+                            if (showContainerWidth + 10 <= spaceRight) {
+                                //                    currentShowContainer.css({top: 0, left: containerWidth + 5 + 2});
+                                var diaRight = ePos.left + containerWidth + 10;
+                                container.addClass("arrow-right");
+                                currentShowContainer.css({ top: diaTop, left: diaRight });
+                                return;
+                            }
+                            //case 4: show left
+                            if (showContainerWidth + 10 <= spaceLeft) {
+                                var diaLeft = ePos.left - 10 - showContainerWidth;
+                                //                    currentShowContainer.css({top: 0, left: 0 - showContainerWidth - 5 - 2 });
+                                container.addClass("arrow-left");
+                                currentShowContainer.css({ top: diaTop, left: diaLeft });
+                                return;
+                            }
+                            container.addClass("arrow-bottom");
+                            currentShowContainer.position({
+                                my: "left bottom+" + (showContainerHeight + 10),
+                                at: "left bottom",
+                                'of': "#" + datepickerID
+                            });
+                        });
+                        return $input;
+                    }
+                })(ntsDatepicker || (ntsDatepicker = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));

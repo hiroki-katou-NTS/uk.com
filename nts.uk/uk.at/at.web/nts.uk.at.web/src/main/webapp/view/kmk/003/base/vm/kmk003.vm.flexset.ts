@@ -11,7 +11,6 @@ module nts.uk.at.view.kmk003.a {
     import FlexHalfDayWorkTimeDto = service.model.flexset.FlexHalfDayWorkTimeDto;
     import FlexCalcSettingDto = service.model.flexset.FlexCalcSettingDto;
     import FlexOffdayWorkTimeDto = service.model.flexset.FlexOffdayWorkTimeDto;
-    import FlexWorkSettingDto = service.model.flexset.FlexWorkSettingDto;
 
     import EmTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.EmTimeZoneSetModel;
     import OverTimeOfTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.OverTimeOfTimeZoneSetModel;
@@ -23,6 +22,8 @@ module nts.uk.at.view.kmk003.a {
     import FixedWorkTimezoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixedWorkTimezoneSetModel;
     import OffdayWorkTimeConverter = nts.uk.at.view.kmk003.a.viewmodel.common.OffdayWorkTimeConverter;
 
+    import FlexWorkSettingDto = service.model.flexset.FlexWorkSettingDto;
+    
     export module viewmodel {
         export module flexset {
             
@@ -340,7 +341,6 @@ module nts.uk.at.view.kmk003.a {
                     return dataDTO;    
                 }
             }
-            
         }
     }
 }

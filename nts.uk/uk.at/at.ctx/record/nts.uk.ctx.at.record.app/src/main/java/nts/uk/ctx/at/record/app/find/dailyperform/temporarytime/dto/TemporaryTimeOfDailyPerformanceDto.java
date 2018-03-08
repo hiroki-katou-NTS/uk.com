@@ -17,12 +17,12 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 @Data
 @AttendanceItemRoot(rootName = "日別実績の臨時出退勤")
-public class TemporaryTimeOfDailyPerformanceDto implements ConvertibleAttendanceItem {
+public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private String employeeId;
 
@@ -42,6 +42,7 @@ public class TemporaryTimeOfDailyPerformanceDto implements ConvertibleAttendance
 			dto.setYmd(domain.getYmd());
 			dto.setWorkTimes(domain.getWorkTimes().v());
 			dto.setWorkLeaveTime(ConvertHelper.mapTo(domain.getTimeLeavingWorks(), (c) -> newWorkLeaveTime(c)));
+			dto.exsistData();
 		}
 		return dto;
 	}
@@ -63,6 +64,9 @@ public class TemporaryTimeOfDailyPerformanceDto implements ConvertibleAttendance
 
 	@Override
 	public TemporaryTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new TemporaryTimeOfDailyPerformance(emp, new WorkTimes(toWorkTimes()), 
 					workLeaveTime == null ? new ArrayList<>() : ConvertHelper.mapTo(workLeaveTime, (c) -> toTimeLeaveWork(c)), date);
 	}

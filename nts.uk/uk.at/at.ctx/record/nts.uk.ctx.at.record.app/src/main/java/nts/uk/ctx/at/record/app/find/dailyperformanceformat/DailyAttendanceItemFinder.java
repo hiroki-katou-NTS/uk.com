@@ -16,6 +16,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.ErrorAlarmWorkRecordDto;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
@@ -71,7 +72,18 @@ public class DailyAttendanceItemFinder {
     @Inject
     private WorkTimeSettingRepository workTimeSettingRepo;
     
-   
+    private int convertToOptionalItemAtr(DailyAttendanceAtr dailyAttendanceAtr){
+    	switch (dailyAttendanceAtr) {
+		case AmountOfMoney:
+			return OptionalItemAtr.AMOUNT.value;
+		case Time:
+			return OptionalItemAtr.TIME.value;
+		case NumberOfTime:
+			return OptionalItemAtr.NUMBER.value;
+		default:
+			return 0;
+		}
+    }
     
 	/**
 	 * Find Daily Attendance Item by checkItem and eralCheckId.
@@ -88,7 +100,7 @@ public class DailyAttendanceItemFinder {
 		
 		// find list optional item by attribute
         Map<Integer, Integer> filteredOptionItemByAtr = this.optItemRepo
-                .findByAtr(AppContexts.user().companyId(), checkItem.value).stream()
+                .findByAtr(AppContexts.user().companyId(), convertToOptionalItemAtr(checkItem)).stream()
                 .filter(ii -> ii.isUsed())
                 .collect(Collectors.toMap(i -> Integer.parseInt(i.getOptionalItemNo().v()), i -> Integer.parseInt(i.getOptionalItemNo().v())));
 

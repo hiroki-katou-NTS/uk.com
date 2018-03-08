@@ -3,13 +3,21 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * @author hungnm
@@ -18,7 +26,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmW
  *
  */
 // 勤怠項目のエラーアラーム条件
-public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
+public class ErAlAttendanceItemCondition<V extends IntegerPrimitiveValue<V>> extends AggregateRoot {
 
 	// 会社ID
 	@Getter
@@ -56,13 +64,13 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 	@Getter
 	private CompareRange<V> compareRange;
 
-	public ErAlAttendanceItemCondition(String companyId, String errorAlarmCode, int targetNO,
-			int conditionAtr, Boolean useAtr) {
+	public ErAlAttendanceItemCondition(String companyId, String errorAlarmCode, int targetNO, int conditionAtr,
+			Boolean useAtr) {
 		super();
 		this.companyId = companyId;
 		this.errorAlarmCode = new ErrorAlarmWorkRecordCode(errorAlarmCode);
 		this.targetNO = targetNO;
-		this.conditionAtr =  EnumAdaptor.valueOf(conditionAtr, ConditionAtr.class);
+		this.conditionAtr = EnumAdaptor.valueOf(conditionAtr, ConditionAtr.class);
 		this.useAtr = useAtr;
 	}
 
@@ -117,4 +125,44 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 		return this;
 	}
 
+	public boolean checkTarget(Function<List<Integer>, List<Integer>> getItemValue) {
+		V targetValue = calculateTargetValue(getItemValue);
+		
+		if (this.compareRange != null) {
+			return this.compareRange.checkRange(targetValue);
+		} else {
+			if (this.compareSingleValue.getConditionType() == ConditionType.FIXED_VALUE) {
+				return this.compareSingleValue.check(targetValue);
+			} else {
+				return this.compareSingleValue.checkWithAttendanceItem(targetValue, getItemValue);
+			}
+		}
+	}
+
+	private V calculateTargetValue(Function<List<Integer>, List<Integer>> getItemValue) {
+		Integer target = 0;
+		if (this.uncountableTarget != null) {
+			target = getItemValue.apply(Arrays.asList(this.uncountableTarget.getAttendanceItem())).get(0);
+		} else {
+			target = this.countableTarget.getAddSubAttendanceItems().calculate(getItemValue);
+		}
+
+		return toCheckValue(target);
+	}
+
+	@SuppressWarnings("unchecked")
+	private V toCheckValue(Integer target) {
+		switch (this.conditionAtr) {
+		case AMOUNT_VALUE:
+			return (V) new CheckedAmountValue(target);
+		case TIME_DURATION:
+//			return (V) new CheckedTimeDuration(target);
+		case TIME_WITH_DAY:
+//			return (V) new TimeWithDayAttr(target);
+		case TIMES:
+			return (V) new CheckedTimesValue(target);
+		default:
+			throw new RuntimeException("invalid conditionAtr: " + conditionAtr);
+		}
+	}
 }

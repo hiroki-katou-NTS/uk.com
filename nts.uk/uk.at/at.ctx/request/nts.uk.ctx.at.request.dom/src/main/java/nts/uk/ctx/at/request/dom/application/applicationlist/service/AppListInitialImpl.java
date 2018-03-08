@@ -39,7 +39,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentDa
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
@@ -286,6 +285,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					}
 				}
 				//「承認する申請」の場合
+				if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_APPROVED)){
+					lstAppFilter2.add(app);
+				}
 				// TODO Auto-generated method stub
 			}
 			//条件３：承認区分の指定条件
@@ -303,7 +305,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					continue;
 				}
 				//申請一覧共通設定.承認状況＿未承認がチェックあり(True)の場合 - A4_1_1: check
-				if(param.isUnapprovalStatus() && state.equals(ReflectedState_New.NOTREFLECTED)){
+				//「承認する申請」の場合
+				if(param.isUnapprovalStatus() && state.equals(ReflectedState_New.NOTREFLECTED) || param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_APPROVED)){
 					if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
 							&& status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
 						check = true;
@@ -347,14 +350,18 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					check = true;
 				}
 				if(check){
-					lstAppFilter3.add(appFull.getApplication());
-					lstAppFullFilter3.add(appFull);
-					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
-						lstFrameUn.add(appFull.getApplication().getAppID());
+					//条件 bo sung:
+					int phaseOrderCur = status.getPhaseOrder().intValue();
+					PhaseStatus statusPhase = this.convertStatusPhase(appFull.getApplication().getAppID(), appFull.getLstPhaseState());
+					if(phaseOrderCur == 1 || statusPhase.getPhaseAtr().get(phaseOrderCur -2) == 1){//phase truoc do da approve
+						lstAppFilter3.add(appFull.getApplication());
+						lstAppFullFilter3.add(appFull);
+						if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
+							lstFrameUn.add(appFull.getApplication().getAppID());
+						}
+						
+						lstPhaseStatus.add(statusPhase);
 					}
-					String statusPhase = this.convertStatusPhase(appFull.getLstPhaseState());
-					lstPhaseStatus.add(new PhaseStatus(appFull.getApplication().getAppID(), statusPhase));
-					
 				}
 			}
 			//条件５：重複承認の対応条件
@@ -493,7 +500,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 						}
 					}
 					if(!lstAppPre.isEmpty()){
-						group = new AppPrePostGroup(appID, lstAppPre.get(0).getAppID(), null);
+						group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null);
 					}
 				}
 				//承認一覧表示設定.残業の実績
@@ -507,7 +514,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					if(group != null){
 						group.setTime(result.getLstFrameResult());
 					}else{
-						group = new AppPrePostGroup("", sID, result.getLstFrameResult());
+						group = new AppPrePostGroup("", appID, result.getLstFrameResult());
 					}
 				}
 				if(group != null){
@@ -583,13 +590,14 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		List<OverTimeFrame> lstFrameResult = new ArrayList<>();
 		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getOverTime().entrySet()){
 			for(OverTimeFrame i : time){
-				if(i.getFrameNo() == entry.getKey()){
+				if(i.getFrameNo() == entry.getKey() && i.getAttendanceType() == 1){
 					int a =	entry.getValue().getCalTime();
 					if(a < i.getApplicationTime()){
 						checkColor = true;
 					}
 					OverTimeFrame frameRes = i;
 					frameRes.setApplicationTime(a);
+					lstFrameResult.add(frameRes);
 				}
 			}
 		}
@@ -597,11 +605,14 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//Imported(申請承認)「計算休出時間」を取得する - req #23
 		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getHolidayWorkTime().entrySet()){
 			for(OverTimeFrame i : time){
-				if(i.getFrameNo() == entry.getKey()){
+				if(i.getFrameNo() == entry.getKey() && i.getAttendanceType() == 0){
 					int a =	entry.getValue().getCalTime();
 					if(a < i.getApplicationTime()){
 						checkColor = true;
 					}
+					OverTimeFrame frameRes = i;
+					frameRes.setApplicationTime(a);
+					lstFrameResult.add(frameRes);
 				}
 			}
 		}
@@ -609,21 +620,27 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//Imported(申請承認)「計算加給時間」を取得する - req #23
 		for(Map.Entry<Integer,Integer> entry : cal.getBonusPayTime().entrySet()){
 			for(OverTimeFrame i : time){
-				if(i.getFrameNo() == entry.getKey()){
+				if(i.getFrameNo() == entry.getKey() && i.getAttendanceType() == 3){
 					int a =	entry.getValue().intValue();
 					if(a < i.getApplicationTime()){
 						checkColor = true;
 					}
+					OverTimeFrame frameRes = i;
+					frameRes.setApplicationTime(a);
+					lstFrameResult.add(frameRes);
 				}
 			}
 		}
 		for(Map.Entry<Integer,Integer> entry : cal.getSpecBonusPayTime().entrySet()){
 			for(OverTimeFrame i : time){
-				if(i.getFrameNo() == entry.getKey()){
+				if(i.getFrameNo() == entry.getKey() && i.getAttendanceType() == 4){
 					int a =	entry.getValue().intValue();
 					if(a < i.getApplicationTime()){
 						checkColor = true;
 					}
+					OverTimeFrame frameRes = i;
+					frameRes.setApplicationTime(a);
+					lstFrameResult.add(frameRes);
 				}
 			}
 		}
@@ -801,7 +818,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 */
 	private List<ApplicationFullOutput> mergeAppAndPhase(List<Application_New> lstApp, String companyID){
 		List<ApplicationFullOutput> lstAppFull = new ArrayList<>();
-		long start = System.currentTimeMillis();
 		List<String> appIDs = lstApp.stream().map(x -> x.getAppID()).collect(Collectors.toList());
 //		for (Application_New app : lstApp) {
 //			List<ApprovalPhaseStateImport_New> lstPhase = approvalRootStateAdapter.getApprovalRootContent(companyID, 
@@ -819,8 +835,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				
 			}
 		}
-		long end = System.currentTimeMillis();
-		  System.out.println("Thời gian chạy đoạn lệnh: " + (end - start) + "Millis");
 		return lstAppFull;
 	}
 	/**
@@ -834,6 +848,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		for (ApprovalPhaseStateImport_New appPhase : lstPhase) {
 			FrameOutput frame = this.checkPhaseCurrent(appPhase, sID);
 			if(frame.getFrameStatus() != null){
+				status.setPhaseOrder(appPhase.getPhaseOrder());
 				status.setFrameStatus(EnumAdaptor.valueOf(frame.getFrameStatus(), ApprovalBehaviorAtrImport_New.class));
 				status.setPhaseStatus(appPhase.getApprovalAtr());
 				status.setAgentId(frame.getAgentId());
@@ -1193,17 +1208,19 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		return false;
 	}
 	
-	private String convertStatusPhase(List<ApprovalPhaseStateImport_New> lstPhaseState){
+	private PhaseStatus convertStatusPhase(String appId, List<ApprovalPhaseStateImport_New> lstPhaseState){
 		String phaseStatus = "";
+		List<Integer> lstPhaseAtr = new ArrayList<>();
 		for (int i = 1; i<= 5; i++) {
 			String phaseI = "";
 			Integer status = this.findPhaseStatus(lstPhaseState, i);
+			lstPhaseAtr.add(status);
 			if(status != null){//phase exist
 				phaseI = status == 1 ? "〇" : status == 2 ? "×" : "－";
 			}
 			phaseStatus += phaseI;
 		}
-		return phaseStatus;
+		return new PhaseStatus(appId, phaseStatus, lstPhaseAtr);
 	}
 	private Integer findPhaseStatus(List<ApprovalPhaseStateImport_New> lstPhaseState, int order){
 		for (ApprovalPhaseStateImport_New phase : lstPhaseState) {

@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
-import nts.uk.ctx.sys.portal.dom.enums.PermissionDivision;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.enums.UseDivision;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
@@ -126,16 +125,16 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 		Optional<MyPageSetting> checkMyPageSetting = myPageSettingRepository.findByCompanyId(companyID);
 		if (checkMyPageSetting.isPresent()) {
 			MyPageSetting myPageSetting = checkMyPageSetting.get();
-			if (myPageSetting.getUseMyPage() == UseDivision.Use) {
-				if (myPageSetting.getUseStandarWidget() == UseDivision.Use)
+			if (myPageSetting.useMyPage()) {
+				if (myPageSetting.useStandarWidget())
 					checkingTopPagePartTypeValues.add(TopPagePartType.StandardWidget.value);
-				if (myPageSetting.getUseOptionalWidget() == UseDivision.Use)
+				if (myPageSetting.useOptionalWidget())
 					checkingTopPagePartTypeValues.add(TopPagePartType.OptionalWidget.value);
-				if (myPageSetting.getUseDashboard() == UseDivision.Use)
+				if (myPageSetting.useDashboard())
 					checkingTopPagePartTypeValues.add(TopPagePartType.DashBoard.value);
-				if (myPageSetting.getUseFlowMenu() == UseDivision.Use)
+				if (myPageSetting.useFlowMenu())
 					checkingTopPagePartTypeValues.add(TopPagePartType.FlowMenu.value);
-				if (myPageSetting.getExternalUrlPermission() == PermissionDivision.Allow)
+				if (myPageSetting.isAllowExternalUrlPermission())
 					checkingTopPagePartTypeValues.add(TopPagePartType.ExternalUrl.value);
 			}
 		}
