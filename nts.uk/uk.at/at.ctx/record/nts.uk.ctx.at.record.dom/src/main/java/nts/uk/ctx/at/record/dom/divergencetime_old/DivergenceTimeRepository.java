@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.divergencetime;
+package nts.uk.ctx.at.record.dom.divergencetime_old;
 
 import java.util.List;
 import java.util.Optional;

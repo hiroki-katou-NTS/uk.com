@@ -12,6 +12,14 @@ module nts.uk.at.view.kmk011.e {
             selectedHist: KnockoutObservable<string>;
             isEnableListHist: KnockoutObservable<boolean>;
             
+            //divergence time setting
+            emailAuth: KnockoutObservable<string>;
+            myMessage: KnockoutObservable<string>;
+            selectedRuleCode: KnockoutObservable<any>;
+            roundingRules: KnockoutObservableArray<any>;
+            required: KnockoutObservable<boolean>;
+            enable: KnockoutObservable<boolean>;
+            
             // work type list
             items: KnockoutObservableArray<ItemModel[]>;
             columns2: KnockoutObservableArray<any>;
@@ -31,6 +39,17 @@ module nts.uk.at.view.kmk011.e {
                 _self.currentHist = ko.observable(null);
                 _self.selectedHist = ko.observable(null)
                 _self.isEnableListHist = ko.observable(false);
+                
+                //divergence time setting
+                _self.emailAuth =  ko.observable("test");
+                _self.myMessage = ko.observable("test21");
+                _self.roundingRules = ko.observableArray([
+                    { code: '1', name: '四捨五入' },
+                    { code: '2', name: '切り上げ' }
+                ]);
+                _self.selectedRuleCode = ko.observable(1);
+                _self.required = ko.observable(true);
+                _self.enable = ko.observable(true);
                 
                 // work type list
                 _self.items = ko.observableArray([new ItemModel('00' + 0, '基本給', "description " + 0, 0%3 === 0)]);

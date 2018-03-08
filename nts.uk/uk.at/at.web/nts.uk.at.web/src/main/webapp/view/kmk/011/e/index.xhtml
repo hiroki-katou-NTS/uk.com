@@ -10,7 +10,7 @@
 		<div class="sidebar-content-header">
 			<span class="title">TextResource</span>
 			<!-- E1_1 -->
-			<a class="goback" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KMK011_48')}</a>
+			<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK011_48')}</a>
    			<!-- E1_2 -->
    			<button class="proceed" tabindex="1">#{i18n.getText('KMK011_3')}</button>
    			<!-- E1_3 -->
@@ -32,7 +32,7 @@
 				<ui:include src="../common/history.xhtml"></ui:include>
 			</div>
 			<div class="fixed-flex-layout-right">
-				<!-- <ui:include src="../base.xhtml"></ui:include> -->
+				<ui:include src="../common/divergence_time_setting.xhtml"></ui:include>
 			</div>
 		</div>
 	</ui:composition>

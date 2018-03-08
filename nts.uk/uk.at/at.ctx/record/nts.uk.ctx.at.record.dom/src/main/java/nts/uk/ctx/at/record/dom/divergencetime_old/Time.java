@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.divergencetime;
+package nts.uk.ctx.at.record.dom.divergencetime_old;
 
 import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;

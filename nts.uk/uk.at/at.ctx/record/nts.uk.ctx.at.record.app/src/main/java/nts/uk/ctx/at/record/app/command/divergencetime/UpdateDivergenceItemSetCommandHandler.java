@@ -10,8 +10,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.divergencetime.DivergenceItemSet;
-import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.dom.divergencetime_old.DivergenceItemSet;
+import nts.uk.ctx.at.record.dom.divergencetime_old.DivergenceTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

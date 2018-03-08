@@ -15,6 +15,13 @@
 			</com:ValidatorScript> -->
 			
 			<com:scriptfile set="IGNITE" />
+			
+			<script>
+				__viewContext.primitiveValueConstraints.OvertimeWorkFrameName = {
+						valueType: 'String',
+						maxLength: 12,
+				};
+			</script>
 
 			
 <!-- 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
@@ -23,6 +30,7 @@
 			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" /> -->
 			
+			<com:stylefile path="../common/divergence_time_setting.main.css" />
 			<com:stylefile path="../common/history.main.css" />
 			
 			<com:stylefile path="../e/kmk011.e.main.css" />

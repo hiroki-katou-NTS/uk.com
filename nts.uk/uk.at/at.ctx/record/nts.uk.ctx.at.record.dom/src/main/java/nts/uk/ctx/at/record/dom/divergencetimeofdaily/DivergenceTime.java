@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.dom.divergencetimeofdaily;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
-import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
+import nts.uk.ctx.at.record.dom.divergencetime_old.DiverdenceReasonCode;
+import nts.uk.ctx.at.record.dom.divergencetime_old.DivergenceReasonContent;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 乖離時間 */
