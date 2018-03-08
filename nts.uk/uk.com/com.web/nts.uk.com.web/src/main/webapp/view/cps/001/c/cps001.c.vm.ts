@@ -155,7 +155,7 @@ module cps001.c.vm {
                 listItem: Array<IEmployee> = ko.toJS(self.listEmployee());
 
             if (nts.uk.ui.errors.hasError()) {
-                nts.uk.ui.block.clear();
+                return;
             }
 
 
