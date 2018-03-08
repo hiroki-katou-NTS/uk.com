@@ -49,7 +49,7 @@ public class KAL001WebService {
 	@POST
 	@Path("extract/alarm")
 	public ExtractedAlarmDto extractAlarm(ExtractAlarmQuery query) {
-		extractAlarmFinder.extractAlarm(query);
+		//extractAlarmFinder.extractAlarm(query);
 		return new ExtractedAlarmDto(new ArrayList<>(), false, false);
 	}
 }
