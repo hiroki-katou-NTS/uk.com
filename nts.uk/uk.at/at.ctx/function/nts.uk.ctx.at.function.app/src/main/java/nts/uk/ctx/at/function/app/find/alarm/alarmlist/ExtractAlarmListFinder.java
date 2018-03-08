@@ -16,7 +16,7 @@ public class ExtractAlarmListFinder {
 	private ExtractAlarmListService extractAlarmListService;
 
 	public ExtractedAlarmDto checkOutputAlarmList(List<EmployeeSearchDto> listEmployee, String checkPatternCode,
-			List<PeriodByAlarmCategory> listOutputScreenA) {
-		return this.extractAlarmListService.extractAlarm(listEmployee, checkPatternCode, listOutputScreenA);
+			List<PeriodByAlarmCategory> listPeriodByCategory) {
+		return this.extractAlarmListService.extractAlarm(listEmployee, checkPatternCode, listPeriodByCategory);
 	}
 }

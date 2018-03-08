@@ -53,7 +53,7 @@ public class FixedCheckItemAcFinder implements FixedCheckItemAdapter {
 		return new ValueExtractAlarm(
 				export.getWorkplaceID(),
 				export.getEmployeeID(),
-				export.getAlarmValueDate(),
+				export.getAlarmValueDate().toString(),
 				export.getClassification(),
 				export.getAlarmItem(),
 				export.getAlarmValueMessage(),
@@ -65,7 +65,7 @@ public class FixedCheckItemAcFinder implements FixedCheckItemAdapter {
 		return new ValueExtractAlarmWRPubExport(
 				importDto.getWorkplaceID(),
 				importDto.getEmployeeID(),
-				importDto.getAlarmValueDate(),
+				GeneralDate.fromString(importDto.getAlarmValueDate(), "yyyy/MM/dd"),
 				importDto.getClassification(),
 				importDto.getAlarmItem(),
 				importDto.getAlarmValueMessage(),
