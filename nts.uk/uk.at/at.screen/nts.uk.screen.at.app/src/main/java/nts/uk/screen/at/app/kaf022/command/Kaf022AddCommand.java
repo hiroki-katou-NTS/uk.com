@@ -25,6 +25,7 @@ import nts.uk.ctx.at.request.app.command.setting.company.request.stamp.StampRequ
 import nts.uk.ctx.at.request.app.command.setting.company.vacationapplicationsetting.HdAppSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.request.ApplicationDeadlineCommand;
 import nts.uk.ctx.at.request.app.command.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingCommand;
+import nts.uk.ctx.workflow.app.command.approvermanagement.setting.ApprovalSettingCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.JobAssignSettingCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.JobtitleSearchSetCommand;
 
@@ -58,4 +59,6 @@ public class Kaf022AddCommand {
 	private List<JobtitleSearchSetCommand> jobSearch;
 	// A14
 	private JobAssignSettingCommand jobAssign;
+	
+	private ApprovalSettingCommand approvalSet;
 }
