@@ -29,12 +29,14 @@ public class TimeWithDayAttrTest {
 	public void theNextDay() {
 		val target1 = new TimeWithDayAttr(24 * 60);
 		assertThat(target1.getDayDivision(), is(DayAttr.THE_NEXT_DAY));
-		assertThat(target1.hour(), is(0));
+		assertThat(target1.hoursInDay(), is(0));
+		assertThat(target1.hour(), is(24));
 		assertThat(target1.minute(), is(0));
 		
 		val target2 = new TimeWithDayAttr(2 * 24 * 60 - 1);
 		assertThat(target2.getDayDivision(), is(DayAttr.THE_NEXT_DAY));
-		assertThat(target2.hour(), is(23));
+		assertThat(target2.hoursInDay(), is(23));
+		assertThat(target2.hour(), is(2 * 24 - 1));
 		assertThat(target2.minute(), is(59));
 	}
 
@@ -42,12 +44,14 @@ public class TimeWithDayAttrTest {
 	public void twoDaysLater() {
 		val target1 = new TimeWithDayAttr(2 * 24 * 60);
 		assertThat(target1.getDayDivision(), is(DayAttr.TWO_DAY_LATER));
-		assertThat(target1.hour(), is(0));
+		assertThat(target1.hoursInDay(), is(0));
+		assertThat(target1.hour(), is(2 * 24));
 		assertThat(target1.minute(), is(0));
 		
 		val target2 = new TimeWithDayAttr(3 * 24 * 60 - 1);
 		assertThat(target2.getDayDivision(), is(DayAttr.TWO_DAY_LATER));
-		assertThat(target2.hour(), is(23));
+		assertThat(target2.hoursInDay(), is(23));
+		assertThat(target2.hour(), is(3 * 24 - 1));
 		assertThat(target2.minute(), is(59));
 	}
 
