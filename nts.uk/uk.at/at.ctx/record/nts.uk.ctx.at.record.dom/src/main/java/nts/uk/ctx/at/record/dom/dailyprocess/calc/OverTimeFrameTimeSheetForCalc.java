@@ -131,8 +131,6 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 		
 		for(OverTimeOfTimeZoneSet overTimeHourSet:overTimeHourSetList) {
 			
-			//if(overTimeHourSet.getTimezone().contains(attendanceLeave.getTimeSpan()));
-			//if(attendanceLeave.getTimeZone().isBetweenOrEqual(overTimeHourSet.getTimezone())) {
 			Optional<TimeSpanForCalc> calcrange = overTimeHourSet.getTimezone().getDuplicatedWith(attendanceLeave.getTimespan());
 			if(calcrange.isPresent()) {
 				createTimeSheet.add(OverTimeFrameTimeSheetForCalc.createOverWorkFramTimeSheet(overTimeHourSet,calcrange.get(),bonusPaySetting,midNightTimeSheet));
@@ -144,7 +142,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 		afterVariableWork = dicisionCalcVariableWork(createTimeSheet,breakdownTimeDay,autoCalculationSet,personalInfo,isCalcWithinOverTime);
 //		/*法定内残業　振替*/
 		List<OverTimeFrameTimeSheet> afterCalcStatutoryOverTimeWork = new ArrayList<>();
-		//afterCalcStatutoryOverTimeWork = diciaionCalcStatutory(statutorySet ,dailyTime ,OverTimeOfDaily.sortedByPriority(afterVariableWork,prioritySet),autoCalculationSet);
+		afterCalcStatutoryOverTimeWork = diciaionCalcStatutory(statutorySet ,dailyTime ,OverTimeOfDaily.sortedByPriority(afterVariableWork,prioritySet),autoCalculationSet);
 		
 		/*return*/
 		//return afterCalcStatutoryOverTimeWork;
