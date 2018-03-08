@@ -15,21 +15,17 @@ module nts.uk.com.view.cmf001.e.viewmodel {
         constructor() {
             var self = this;
             let params = getShared("CMF001eParams");
-            if (!nts.uk.util.isNullOrUndefined(params)) {
-                let listCsvItem = params.listCsvItem;
-                let selectedCsvItemNumber = params.selectedCsvItemNumber;
-                if (listCsvItem.length > 0){
-                    // リスト表示するためのドメインモデル「マッピング用一覧データ（Work）」（D画面で生成）から下記を取得する
-                    self.listCsvItem.push.apply(self.listCsvItem, listCsvItem);
-                    // 一覧表の該当行にフォーカスする
-                    if (!nts.uk.util.isNullOrUndefined(selectedCsvItemNumber)) {
-                        self.selectedCsvItemNumber(selectedCsvItemNumber);
-                    }
-                }else{
-                    // データ0件＝CSVが未読込の場合
-                    alertError({ messageId: "Msg_905"});
+            let listCsvItem = params.listCsvItem;
+            let selectedCsvItemNumber = params.selectedCsvItemNumber;
+            if (listCsvItem.length > 0){
+                // リスト表示するためのドメインモデル「マッピング用一覧データ（Work）」（D画面で生成）から下記を取得する
+                self.listCsvItem.push.apply(self.listCsvItem, listCsvItem);
+                // 一覧表の該当行にフォーカスする
+                if (!nts.uk.util.isNullOrUndefined(selectedCsvItemNumber)) {
+                    self.selectedCsvItemNumber(selectedCsvItemNumber);
                 }
             }else{
+                // データ0件＝CSVが未読込の場合
                 alertError({ messageId: "Msg_905"});
             }
         }

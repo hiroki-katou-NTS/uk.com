@@ -20,12 +20,10 @@ module nts.uk.com.view.cmf001.k.viewmodel {
             self.listConvertCode = ko.observableArray([firstItem]);
             self.selectedConvertCode = ko.observable("");
             let params = getShared("CMF001kParams");
-            if (!nts.uk.util.isNullOrUndefined(params)) {
-                let selectedConvertCode = params.selectedConvertCode;
-                let convertCode = selectedConvertCode.dispConvertCode;
-                let convertName = selectedConvertCode.dispConvertName;
-                self.selectedConvertCode(convertCode);
-            }
+            let selectedConvertCode = params.selectedConvertCode;
+            let convertCode = selectedConvertCode.dispConvertCode;
+            let convertName = selectedConvertCode.dispConvertName;
+            self.selectedConvertCode(convertCode);
         }
         displayScreen() {
             var self = this;

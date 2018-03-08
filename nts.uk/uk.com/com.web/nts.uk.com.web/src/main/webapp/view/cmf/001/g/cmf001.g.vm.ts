@@ -42,15 +42,13 @@ module nts.uk.com.view.cmf001.g.viewmodel {
             ]);
             
             let params = getShared("CMF001gParams");
-            if (!nts.uk.util.isNullOrUndefined(params)) {
-                let inputMode = params.inputMode;
-                let lineNumber = params.lineNumber;
-                let numFormat = params.formatSetting;
-                self.inputMode = inputMode;
-                self.lineNumber = lineNumber;
-                if (!(nts.uk.util.isNullOrUndefined(numFormat))) {
-                    self.initial(numFormat);
-                }
+            let inputMode = params.inputMode;
+            let lineNumber = params.lineNumber;
+            let numFormat = params.formatSetting;
+            self.inputMode = inputMode;
+            self.lineNumber = lineNumber;
+            if (!(nts.uk.util.isNullOrUndefined(numFormat))) {
+                self.initial(numFormat);
             }
         }
         // データが取得できる場合
