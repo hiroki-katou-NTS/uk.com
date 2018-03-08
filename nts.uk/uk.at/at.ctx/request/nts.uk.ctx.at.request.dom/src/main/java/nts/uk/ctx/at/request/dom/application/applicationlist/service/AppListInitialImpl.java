@@ -403,11 +403,23 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		List<AppMasterInfo> lstMaster = this.getListAppMasterInfo(lstAppFilter3, companyId);
 		//アルゴリズム「申請一覧リスト取得実績」を実行する-(get App List Achievement): 5 - 申請一覧リスト取得実績
 		AppListAtrOutput timeOutput = this.getAppListAchievement(lstAppFullFilter3, displaySet, companyId, sID);
+		//Check appPr exist listFilter??
+//		List<AppPrePostGroup> lstAppGroup = timeOutput.getLstAppGroup();
+//		for (AppPrePostGroup appPrePostGroup : lstAppGroup) {
+//			
+//		}
+		
+		
+		
 		//承認一覧に稟議書リスト追加し、申請日付順に整列する - phu thuoc vao request
 		// TODO Auto-generated method stub
 		return new AppListOutPut(lstMaster, lstAppFilter3, lstAppOt, lstAppGoBack, timeOutput.getAppStatus(),
 				timeOutput.getLstAppFull(), timeOutput.getLstAppColor(), lstFrameUn, lstPhaseStatus, timeOutput.getLstAppGroup());
 	}
+//	private boolean findAppPre(String preAppID){
+//		return true;
+//	}
+	
 	/**
 	 * lam o ui
 	 * 4 - 申請一覧リスト取得承認件数
@@ -486,17 +498,23 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				GeneralDate appDate = appPost.getApplication().getAppDate();
 				AppPrePostGroup group = null;
 				AppOverTimeInfoFull appOtPost = repoAppDetail.getAppOverTimeInfo(companyId, appID);
+				CheckColorTime checkColor = null;
 				if(displaySet.getOtAdvanceDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
 					//ドメインモデル「申請」を取得する
-					// TODO Auto-generated method stub
 					List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr.PREDICT.value, ApplicationType.OVER_TIME_APPLICATION.value);
+					//find master
+					// TODO Auto-generated method stub
+					//find overtime
+					// TODO Auto-generated method stub
 					if(lstAppPre.isEmpty() || lstAppPre.get(0).getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.DENIAL)){
-						lstColorTime.add(new CheckColorTime(appID, 1));
+//						lstColorTime.add(new CheckColorTime(appID, 1));
+						checkColor = new CheckColorTime(appID, 1);
 					}else{
 						AppOverTimeInfoFull appPre = repoAppDetail.getAppOverTimeInfo(companyId, lstAppPre.get(0).getAppID());
 						boolean checkPrePostColor = this.checkPrePostColor(appPre.getLstFrame(), appOtPost.getLstFrame());
 						if(checkPrePostColor){
-							lstColorTime.add(new CheckColorTime(appID, 1));
+							checkColor = new CheckColorTime(appID, 1);
+//							lstColorTime.add(new CheckColorTime(appID, 1));
 						}
 					}
 					if(!lstAppPre.isEmpty()){
@@ -509,7 +527,13 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					List<OverTimeFrame> time = appOtPost.getLstFrame();
 					TimeResultOutput result = this.getAppListAchievementOverTime(sID, appDate, time);
 					if(result.isCheckColor()){
-						lstColorTime.add(new CheckColorTime(appID, 2));
+						if(this.checkExistColor(lstColorTime, appID)){
+							checkColor.setColorAtr(2);
+						}else{
+//							lstColorTime.add(new CheckColorTime(appID, 2));
+							checkColor = new CheckColorTime(appID, 2);
+						}
+						
 					}
 					if(group != null){
 						group.setTime(result.getLstFrameResult());
@@ -519,6 +543,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				}
 				if(group != null){
 					lstAppGroup.add(group);
+				}
+				if(checkColor != null){
+					lstColorTime.add(checkColor);
 				}
 //			}
 //			else{//休出時間申請の場合
@@ -549,22 +576,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		// TODO Auto-generated method stub
 		return new AppListAtrOutput(appStatus.getLstAppFull(), appStatus.getCount(), lstColorTime, lstAppGroup);
 	}
-	private boolean checkPrePostColor(List<OverTimeFrame> timePre, List<OverTimeFrame> timePost){
-		for (OverTimeFrame overTimeFrame : timePost) {
-			if(overTimeFrame.getApplicationTime() == this.findTimePre(timePre, overTimeFrame.getFrameNo())){
-				return true;
-			}
-		}
-		return false;
-	}
-	private Integer findTimePre(List<OverTimeFrame> lstFrame, int frameNo){
-		for (OverTimeFrame overTimeFrame : lstFrame) {
-			if(overTimeFrame.getFrameNo() == frameNo){
-				return overTimeFrame.getApplicationTime();
-			}
-		}
-		return null;
-	}	
 	/**
 	 * 5.1 - 申請一覧リスト取得実績休出申請
 	 */
@@ -1207,7 +1218,15 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		return false;
 	}
-	
+	/**
+	 * convert status phase
+	 * －：承認フェーズ.承認区分　＝　未承認
+	 * 〇：承認フェーズ.承認区分　＝　承認済
+	 * ×：承認フェーズ.承認区分　＝　否認
+	 * @param appId
+	 * @param lstPhaseState
+	 * @return
+	 */
 	private PhaseStatus convertStatusPhase(String appId, List<ApprovalPhaseStateImport_New> lstPhaseState){
 		String phaseStatus = "";
 		List<Integer> lstPhaseAtr = new ArrayList<>();
@@ -1222,10 +1241,58 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		return new PhaseStatus(appId, phaseStatus, lstPhaseAtr);
 	}
+	/**
+	 * find phase status
+	 * @param lstPhaseState
+	 * @param order
+	 * @return
+	 */
 	private Integer findPhaseStatus(List<ApprovalPhaseStateImport_New> lstPhaseState, int order){
 		for (ApprovalPhaseStateImport_New phase : lstPhaseState) {
 			if(phase.getPhaseOrder().equals(order)){
 				return phase.getApprovalAtr().value;
+			}
+		}
+		return null;
+	}
+	/**
+	 * check color application exist list check???
+	 * @param lstColor
+	 * @param appId
+	 * @return
+	 */
+	private boolean checkExistColor(List<CheckColorTime> lstColor, String appId){
+		for (CheckColorTime checkColorTime : lstColor) {
+			if(checkColorTime.getAppID().equals(appId)){
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * check time pr < time post
+	 * @param timePre
+	 * @param timePost
+	 * @return
+	 */
+	private boolean checkPrePostColor(List<OverTimeFrame> timePre, List<OverTimeFrame> timePost){
+		for (OverTimeFrame overTimeFrame : timePost) {
+			if(overTimeFrame.getApplicationTime() < this.findTimePre(timePre, overTimeFrame.getFrameNo())){
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * find time application pre
+	 * @param lstFrame
+	 * @param frameNo
+	 * @return
+	 */
+	private Integer findTimePre(List<OverTimeFrame> lstFrame, int frameNo){
+		for (OverTimeFrame overTimeFrame : lstFrame) {
+			if(overTimeFrame.getFrameNo() == frameNo){
+				return overTimeFrame.getApplicationTime();
 			}
 		}
 		return null;

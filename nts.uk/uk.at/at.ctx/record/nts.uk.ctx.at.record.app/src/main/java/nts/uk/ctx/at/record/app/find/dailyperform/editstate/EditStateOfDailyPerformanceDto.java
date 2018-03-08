@@ -37,7 +37,7 @@ public class EditStateOfDailyPerformanceDto extends AttendanceItemCommon {
 			return new EditStateOfDailyPerformanceDto();
 		}
 		EditStateOfDailyPerformanceDto dto = new EditStateOfDailyPerformanceDto(c.getEmployeeId(), c.getAttendanceItemId(), c.getYmd(),
-				c.getEditStateSetting().value);
+				c.getEditStateSetting() == null ? 0 : c.getEditStateSetting().value);
 		dto.exsistData();
 		return dto;
 	}

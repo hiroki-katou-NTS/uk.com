@@ -56,10 +56,10 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 
 		List<String> listWorkTypeCode = basicScheduleList.stream().map(x -> {
 			return x.getWorkTypeCode();
-		}).collect(Collectors.toList());
+		}).distinct().collect(Collectors.toList());
 		List<String> listWorkTimeCode = basicScheduleList.stream().map(x -> {
 			return x.getWorkTimeCode();
-		}).collect(Collectors.toList());
+		}).distinct().collect(Collectors.toList());
 
 		List<WorkType> listWorkType = workTypeRepo.getPossibleWorkType(companyId, listWorkTypeCode);
 		List<WorkTimeSetting> listWorkTime = workTimeSettingRepo.findByCodes(companyId, listWorkTimeCode);

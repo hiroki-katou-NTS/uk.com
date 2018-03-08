@@ -13,7 +13,10 @@ public class ConvertHelper {
 		return original == null ? new ArrayList<>() : original.stream().map(actions).collect(Collectors.toList());
 	}
 	
-	public static <T> T getEnum(int value, Class<T> enumClass){
+	public static <T> T getEnum(Integer value, Class<T> enumClass){
+		if(value == null){
+			return null;
+		}
 		return EnumAdaptor.valueOf(value, enumClass);
 	}
 }
