@@ -3,7 +3,7 @@ package nts.uk.ctx.at.function.dom.alarm.alarmlist;
 import lombok.Data;
 
 @Data
-public class FuncEmployeeSearchDto {
+public class EmployeeSearchDto {
 	/**
 	 * employeeID
 	 */

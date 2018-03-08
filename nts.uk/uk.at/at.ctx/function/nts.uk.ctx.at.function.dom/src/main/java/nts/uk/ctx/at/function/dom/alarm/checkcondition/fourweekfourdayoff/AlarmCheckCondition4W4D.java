@@ -13,8 +13,8 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
 @Getter
 /** 4週4休のアラームチェック条件 */
 public class AlarmCheckCondition4W4D extends ExtractionCondition {
-	private	 String alCheck4w4dID;
-	private  FourW4DCheckCond fourW4DCheckCond;
+	private String alCheck4w4dID;
+	private FourW4DCheckCond fourW4DCheckCond;
 
 	public AlarmCheckCondition4W4D(String id, int fourW4DCheckCond) {
 		super();
@@ -30,4 +30,12 @@ public class AlarmCheckCondition4W4D extends ExtractionCondition {
 		}
 	}
 
+	public boolean isForActualResultsOnly() {
+		return this.fourW4DCheckCond == FourW4DCheckCond.ForActualResultsOnly;
+	}
+	
+	public boolean isWithScheduleAndActualResults() {
+		return this.fourW4DCheckCond == FourW4DCheckCond.WithScheduleAndActualResults;
+	}
+	
 }
