@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.AlarmCheckTargetConditionDto;
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.ErAlAtdItemConditionDto;
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.WorkTimeConditionDto;
@@ -21,7 +20,6 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckConditionValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
