@@ -491,11 +491,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	
 
 		// 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
-		List<Integer> attendanceItemIdList = copyIntegrationOfDaily.getEditState().stream().filter(editState -> editState.getEmployeeId()==copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId()
-																								   && editState.getYmd() == copyIntegrationOfDaily.getAffiliationInfor().getYmd())
-																			               .map(editState -> editState.getAttendanceItemId())
-																			               .distinct()
-																			               .collect(Collectors.toList());
+		List<Integer> attendanceItemIdList = integrationOfDaily.getEditState().stream().filter(editState -> editState.getEmployeeId()==copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId()
+				   && editState.getYmd() == copyIntegrationOfDaily.getAffiliationInfor().getYmd())
+        .map(editState -> editState.getAttendanceItemId())
+        .distinct()
+        .collect(Collectors.toList());
 
 		DailyRecordToAttendanceItemConverter beforDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(copyIntegrationOfDaily);	
 		List<ItemValue> itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);		
