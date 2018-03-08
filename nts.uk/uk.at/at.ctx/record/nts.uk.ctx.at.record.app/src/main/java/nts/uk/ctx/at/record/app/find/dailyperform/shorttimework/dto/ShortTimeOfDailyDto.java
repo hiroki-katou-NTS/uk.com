@@ -37,7 +37,8 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 			result.setEmployeeId(domain.getEmployeeId());
 			result.setYmd(domain.getYmd());
 			result.setShortWorkingTimeSheets(ConvertHelper.mapTo(domain.getShortWorkingTimeSheets(),
-					(c) -> new ShortWorkTimeSheetDto(c.getShortWorkTimeFrameNo().v(), c.getChildCareAttr().value,
+					(c) -> new ShortWorkTimeSheetDto(c.getShortWorkTimeFrameNo().v(), 
+							c.getChildCareAttr() == null ? 0 : c.getChildCareAttr().value,
 							c.getStartTime() == null ? null : c.getStartTime().valueAsMinutes(),
 							c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes(),
 							c.getDeductionTime() == null ? null : c.getDeductionTime().valueAsMinutes(),
@@ -64,7 +65,7 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 		}
 		return new ShortTimeOfDailyPerformance(
 					emp,
-					shortWorkingTimeSheets == null ? new ArrayList<>() : ConvertHelper.mapTo(shortWorkingTimeSheets,
+					ConvertHelper.mapTo(shortWorkingTimeSheets,
 							(c) -> new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.getShortWorkTimeFrameNo()),
 									c.getChildCareAttr() == null ? ChildCareAttribute.CHILD_CARE : ConvertHelper.getEnum(c.getChildCareAttr(), ChildCareAttribute.class),
 									createTimeWithDayAttr(c.getStartTime()), createTimeWithDayAttr(c.getEndTime()),

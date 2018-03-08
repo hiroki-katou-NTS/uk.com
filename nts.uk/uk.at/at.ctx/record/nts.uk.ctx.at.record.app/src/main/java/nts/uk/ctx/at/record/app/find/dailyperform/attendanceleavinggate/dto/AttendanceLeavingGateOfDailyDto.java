@@ -64,8 +64,7 @@ public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 		if(!this.isHaveData()) {
 			return null;
 		}
-		return new AttendanceLeavingGateOfDaily(employeeId, ymd,
-					attendanceLeavingGateTime == null ? new ArrayList<>() : ConvertHelper.mapTo(attendanceLeavingGateTime,
+		return new AttendanceLeavingGateOfDaily(employeeId, ymd, ConvertHelper.mapTo(attendanceLeavingGateTime,
 						(c) -> new AttendanceLeavingGate(new WorkNo(c.getTimeSheetNo()),
 								createWorkStamp(c.getStart()),
 								createWorkStamp(c.getEnd()))));

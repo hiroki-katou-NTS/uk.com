@@ -51,8 +51,7 @@ public class BreakTimeSheetDailyPerformDto {
 						TotalDeductionTimeDto.getDeductionTime(domain.getToRecordTotalTime()),
 						TotalDeductionTimeDto.getDeductionTime(domain.getDeductionTotalTime()),
 						getAttendanceTime(domain.getWorkTime()),
-						domain.getBreakTimeSheet() == null ? new ArrayList<>() : 
-							ConvertHelper.mapTo(domain.getBreakTimeSheet(),
+						ConvertHelper.mapTo(domain.getBreakTimeSheet(),
 								(c) -> new BreakTimeSheetDto(
 										getTime(c.getStartTime()),
 										getTime(c.getEndTime()), 

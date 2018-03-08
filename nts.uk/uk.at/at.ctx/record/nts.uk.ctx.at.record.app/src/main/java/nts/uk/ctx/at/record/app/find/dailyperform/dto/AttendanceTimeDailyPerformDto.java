@@ -62,7 +62,7 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 			items.setMedicalTime(MedicalTimeDailyPerformDto.fromMedicalCareTime(domain.getMedicalCareTime()));
 			items.setScheduleTime(WorkScheduleTimeDailyPerformDto.fromWorkScheduleTime(domain.getWorkScheduleTimeOfDaily()));
 			items.setStayingTime(StayingTimeDto.fromStayingTime(domain.getStayingTime()));
-			items.setUnemployedTime(domain.getUnEmployedTime().valueAsMinutes());
+			items.setUnemployedTime(domain.getUnEmployedTime() == null ? null : domain.getUnEmployedTime().valueAsMinutes());
 			items.exsistData();
 		}
 		return items;

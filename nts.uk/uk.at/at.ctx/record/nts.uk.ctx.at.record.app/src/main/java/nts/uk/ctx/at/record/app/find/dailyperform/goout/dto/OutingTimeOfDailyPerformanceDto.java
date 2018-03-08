@@ -40,7 +40,7 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 							c.getOutingFrameNo().v(),
 							WithActualTimeStampDto.toWithActualTimeStamp(c.getGoOut().orElse(null)),
 							WithActualTimeStampDto.toWithActualTimeStamp(c.getComeBack().orElse(null)),
-							c.getReasonForGoOut().value, 
+							c.getReasonForGoOut() == null ? 0 : c.getReasonForGoOut().value, 
 							c.getOutingTimeCalculation() == null ? null : c.getOutingTimeCalculation().valueAsMinutes(),
 							c.getOutingTime() == null ? null : c.getOutingTime().valueAsMinutes())));
 			dto.exsistData();
