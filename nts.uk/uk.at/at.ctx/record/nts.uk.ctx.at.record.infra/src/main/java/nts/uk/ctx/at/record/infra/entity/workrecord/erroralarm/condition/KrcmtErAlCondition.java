@@ -23,7 +23,6 @@ import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktime.PlanActualWorkTime;
@@ -434,7 +433,7 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 			} else {
 				erAlSingleAtd.add(new KrcstErAlSingleAtd(
 						new KrcstErAlSingleAtdPK(atdItemConditionGroup1, new BigDecimal(erAlAtdItemCon.getTargetNO()),
-								(erAlAtdItemCon.getCompareSingleValue().getValue().v())),
+								(((AttendanceItemId) erAlAtdItemCon.getCompareSingleValue().getValue()).v())),
 						new BigDecimal(2)));
 			}
 		}
@@ -529,8 +528,9 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 		condition.setCheckId(entity.eralCheckId);
 		return condition;
 	}
+	
 	@SuppressWarnings("unchecked")
-	private static <V extends IntegerPrimitiveValue<V>> ErAlAttendanceItemCondition<V> convertKrcmtErAlAtdItemConToDomain(KrcmtErAlCondition entity,
+	private static <V> ErAlAttendanceItemCondition<V> convertKrcmtErAlAtdItemConToDomain(KrcmtErAlCondition entity,
 			KrcmtErAlAtdItemCon atdItemCon, String companyId, String errorAlarmCode) {
 		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(
 				companyId, errorAlarmCode,

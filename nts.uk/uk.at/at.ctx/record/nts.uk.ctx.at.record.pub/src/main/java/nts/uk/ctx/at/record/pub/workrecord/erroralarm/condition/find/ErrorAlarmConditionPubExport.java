@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlConditionsAttendanceItem;
@@ -122,7 +121,7 @@ public class ErrorAlarmConditionPubExport {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <V extends IntegerPrimitiveValue<V>> ErAlAttendanceItemCondition<V> convertAtdIemConToDomain(
+	private <V> ErAlAttendanceItemCondition<V> convertAtdIemConToDomain(
 			ErAlAtdItemConditionPubExport atdItemCon, String companyId, String errorAlarmCode) {
 
 		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(companyId, errorAlarmCode,
@@ -361,7 +360,7 @@ public class ErrorAlarmConditionPubExport {
 					break;
 				}
 			} else {
-				erAlAtdItemConditionDto.setSingleAtdItem(itemDomain.getCompareSingleValue().getValue().v());
+				erAlAtdItemConditionDto.setSingleAtdItem(((AttendanceItemId) itemDomain.getCompareSingleValue().getValue()).v());
 			}
 			erAlAtdItemConditionDto.setConditionType(itemDomain.getCompareSingleValue().getConditionType().value);
 			erAlAtdItemConditionDto.setCompareOperator(itemDomain.getCompareSingleValue().getCompareOpertor().value);

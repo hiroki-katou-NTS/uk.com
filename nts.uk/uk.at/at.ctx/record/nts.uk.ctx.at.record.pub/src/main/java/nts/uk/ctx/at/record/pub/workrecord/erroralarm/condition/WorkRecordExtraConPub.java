@@ -7,6 +7,8 @@ import java.util.List;
 public interface WorkRecordExtraConPub {
 	List<WorkRecordExtraConPubExport> getAllWorkRecordExtraConByListID(List<String> listErrorAlarmID );
 	
+	List<MessageWRExtraConPubExport> getMessageWRExtraConByListID(List<String> listErrorAlarmID );
+	
 	WorkRecordExtraConPubExport getWorkRecordExtraConById(String errorAlarmCheckID);
 	
 	void addWorkRecordExtraConPub(WorkRecordExtraConPubExport workRecordExtraConPubExport);

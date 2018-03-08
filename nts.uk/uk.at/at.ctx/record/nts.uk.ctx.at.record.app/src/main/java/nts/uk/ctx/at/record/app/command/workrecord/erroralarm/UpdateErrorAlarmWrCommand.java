@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.AlarmCheckTargetConditionDto;
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.ErAlAtdItemConditionDto;
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.WorkTimeConditionDto;
@@ -108,7 +107,7 @@ public class UpdateErrorAlarmWrCommand {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <V extends IntegerPrimitiveValue<V>> ErAlAttendanceItemCondition<V> convertAtdIemConToDomain(ErAlAtdItemConditionDto atdItemCon) {
+	private <V> ErAlAttendanceItemCondition<V> convertAtdIemConToDomain(ErAlAtdItemConditionDto atdItemCon) {
 		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(companyId, code,
 				atdItemCon.getTargetNO(), atdItemCon.getConditionAtr(), atdItemCon.isUseAtr());
 		// Set Target

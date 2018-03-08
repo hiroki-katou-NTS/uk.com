@@ -6,7 +6,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Data
 @Builder
-public class FuncWorkplaceImport {
+public class WorkplaceImport {
 	/** The date range. */
 	// 配属期間
 	private DatePeriod dateRange;
