@@ -261,12 +261,12 @@ module nts.uk.com.view.cmf001.share.model {
         decimalFraction: KnockoutObservable<number>;
 
         constructor(effectDigitLength: number, startDigit: number, endDigit: number, decimalDivision: number, decimalDigitNumber: number,
-         decimalPointClassification: number, decimalFraction: number, codeConvertCode: AcceptanceCodeConvert, fixedValue: number, valueOfFixed: string) {
+         decimalPointClassification: number, decimalFraction: number, codeConvertCode: AcceptanceCodeConvert, fixedValue: number, valueOfFixedValue: string) {
             this.fixedValue = ko.observable(fixedValue);
             this.decimalDivision = ko.observable(decimalDivision);
             this.effectiveDigitLength = ko.observable(effectDigitLength);
             this.codeConvertCode = ko.observable(codeConvertCode);
-            this.valueOfFixedValue = ko.observable(valueOfFixed);
+            this.valueOfFixedValue = ko.observable(valueOfFixedValue);
             this.decimalDigitNumber = ko.observable(decimalDigitNumber);
             this.startDigit = ko.observable(startDigit);
             this.endDigit = ko.observable(endDigit);
