@@ -613,6 +613,7 @@ module nts.uk.ui.jqueryExtentions {
                             time.minutesBased.clock.dayattr.parseString(String(cellValue)).asMinutes).shortText;
                     } catch(e) {}
                 }
+                let origData = gridUpdate._getLatestValues(rId);
                 grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
                 let isControl = utils.isNtsControl($grid, columnKey);
                 if (!isControl || forceRender) renderCell($grid, rId, columnKey);
@@ -620,7 +621,7 @@ module nts.uk.ui.jqueryExtentions {
                     $grid.trigger(events.Handler.CONTROL_CHANGE, [{ columnKey: columnKey, value: cellValue }]);
                 }
                 gridUpdate._notifyCellUpdated(rId);
-                notifyUpdate($grid, rowId, columnKey, cellValue);
+                notifyUpdate($grid, rowId, columnKey, cellValue, origData);
             }
             
             /**
@@ -633,10 +634,10 @@ module nts.uk.ui.jqueryExtentions {
                 let autoCommit = grid.options.autoCommit;
                 let columnsMap: any = allColumnsMap || utils.getColumnsMap($grid);
                 let rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
-                let origData = gridUpdate._getLatestValues(rId); 
+                let origData = gridUpdate._getLatestValues(rId);
                 grid.dataSource.updateRow(rId, $.extend({}, origData, updatedRowData), autoCommit);
                 _.forEach(Object.keys(updatedRowData), function(key: any) {
-                    notifyUpdate($grid, rowId, key, updatedRowData[key]);
+                    notifyUpdate($grid, rowId, key, updatedRowData[key], origData);
                     let isControl = utils.isNtsControl($grid, key);
                     if (isControl) {
                         $grid.trigger(events.Handler.CONTROL_CHANGE, [{ columnKey: key, value: updatedRowData[key] }]);
@@ -666,7 +667,8 @@ module nts.uk.ui.jqueryExtentions {
             /**
              * Notify update.
              */
-            function notifyUpdate($grid: JQuery, rowId: any, columnKey: any, value: any) {
+            function notifyUpdate($grid: JQuery, rowId: any, columnKey: any, value: any, origData: any) {
+                if (origData && origData[columnKey] === value) return;
                 let updatedCells = $grid.data(internal.UPDATED_CELLS);
                 if (!updatedCells) {
                     $grid.data(internal.UPDATED_CELLS, []);
@@ -2543,7 +2545,9 @@ module nts.uk.ui.jqueryExtentions {
                                 return;
                             }
                         } else {
-                            specialColumn.tryDo(self.$grid, cell, cbData, visibleColumnsMap);
+                            setTimeout(function() {
+                                specialColumn.tryDo(self.$grid, cell, cbData, visibleColumnsMap);
+                            }, 1);
                             if (columnsGroup[columnIndex].dataType === "number") {
                                 updatedRow[columnKey] = parseInt(cbData);
                             } else {
@@ -2693,7 +2697,11 @@ module nts.uk.ui.jqueryExtentions {
                                 cell.index = targetIndex;
                                 cell.row = $gridRow;
                                 cell.rowIndex = $gridRow.data("rowIdx");
-                                specialColumn.tryDo(self.$grid, cell, row[i].trim(), visibleColumnsMap);
+                                (function(i) {
+                                    setTimeout(function() {
+                                        specialColumn.tryDo(self.$grid, cell, row[i].trim(), visibleColumnsMap);
+                                    }, 1);
+                                })(i);
                                 
                                 if (targetColumn.dataType === "number") {
                                     rowData[columnKey] = parseInt(row[i]);
