@@ -49,9 +49,9 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 @Getter
 public class ExcessOfStatutoryTimeOfDaily {
 	@Setter
-	private ExcessOfStatutoryMidNightTime ExcessOfStatutoryMidNightTime;
-	private Optional<OverTimeOfDaily> OverTimeWork;
-	private Optional<HolidayWorkTimeOfDaily> WorkHolidayTime;
+	private ExcessOfStatutoryMidNightTime excessOfStatutoryMidNightTime;
+	private Optional<OverTimeOfDaily> overTimeWork;
+	private Optional<HolidayWorkTimeOfDaily> workHolidayTime;
 	
 	
 	/**
@@ -65,9 +65,9 @@ public class ExcessOfStatutoryTimeOfDaily {
 			Optional<OverTimeOfDaily> overTimeWork,
 			Optional<HolidayWorkTimeOfDaily> workHolidayTime) {
 		super();
-		ExcessOfStatutoryMidNightTime = excessOfStatutoryMidNightTime;
-		OverTimeWork = overTimeWork;
-		WorkHolidayTime = workHolidayTime;
+		this.excessOfStatutoryMidNightTime = excessOfStatutoryMidNightTime;
+		this.overTimeWork = overTimeWork;
+		this.workHolidayTime = workHolidayTime;
 	}
 	
 	/**
@@ -84,9 +84,6 @@ public class ExcessOfStatutoryTimeOfDaily {
 			   														 boolean leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			   														 WorkingSystem workingSystem,AddSettingOfIrregularWork addSettingOfIrregularWork,AddSettingOfFlexWork addSettingOfFlexWork,AddSettingOfRegularWork addSettingOfRegularWork,
 			   														 VacationAddTimeSet vacationAddTimeSet,WorkTimeDailyAtr workTimeDailyAtr) {
-		//所定外深夜
-		val excessOfStatutoryMidNightTime = new ExcessOfStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0)); 
-		//val excessOfStatutoryMidNightTime = calcExcessMidNightTime(oneDay);//new ExcessOfStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0));
 		//残業時間
 		val overTime = calculationOverTime(oneDay,overTimeAutoCalcSet,calcMethod,holidayCalcMethodSet,autoCalcAtr,workType,flexCalcMethod,
 										   predetermineTimeSet,vacationClass,timevacationUseTimeOfDaily,
@@ -98,7 +95,8 @@ public class ExcessOfStatutoryTimeOfDaily {
 				   						   vacationAddTimeSet,workTimeDailyAtr);
 		//休出時間
 		val workHolidayTime = calculationHolidayTime(oneDay,holidayAutoCalcSetting);
-		//new HolidayWorkTimeOfDaily(Collections.emptyList(), Collections.emptyList(),Finally.empty(), new AttendanceTime(0)); 
+		//所定外深夜
+		val excessOfStatutoryMidNightTime = ExcessOfStatutoryMidNightTime.calcExcessTime(overTime,workHolidayTime);//.calcExcessMidNightTime(oneDay);//new ExcessOfStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0));
 		
 		return new ExcessOfStatutoryTimeOfDaily(excessOfStatutoryMidNightTime, Optional.of(overTime), Optional.of(workHolidayTime));
 	}
@@ -155,8 +153,4 @@ public class ExcessOfStatutoryTimeOfDaily {
 				   						  Finally.of(new HolidayMidnightWork(Collections.emptyList())),
 				   						  new AttendanceTime(0));
 	}
-	
-	
-
-
 }

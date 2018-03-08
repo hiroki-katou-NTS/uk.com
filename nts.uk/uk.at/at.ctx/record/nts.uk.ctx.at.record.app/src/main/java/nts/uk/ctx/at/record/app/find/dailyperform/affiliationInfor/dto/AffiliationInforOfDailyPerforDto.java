@@ -7,13 +7,14 @@ import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.Classifica
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 @Data
 @AttendanceItemRoot(rootName = "日別実績の所属情報")
-public class AffiliationInforOfDailyPerforDto implements ConvertibleAttendanceItem {
+public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 
 	private String employeeId;
 	
@@ -50,6 +51,7 @@ public class AffiliationInforOfDailyPerforDto implements ConvertibleAttendanceIt
 			dto.setWorkplaceID(domain.getWplID());
 			dto.setBaseDate(domain.getYmd());
 			dto.setEmployeeId(domain.getEmployeeId());
+			dto.exsistData();
 		}
 		return dto;
 	}
@@ -66,6 +68,9 @@ public class AffiliationInforOfDailyPerforDto implements ConvertibleAttendanceIt
 
 	@Override
 	public AffiliationInforOfDailyPerfor toDomain(String employeeId, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new AffiliationInforOfDailyPerfor(
 					this.employmentCode == null ? null : new EmploymentCode(this.employmentCode), 
 					employeeId, this.jobId, this.workplaceID, date,

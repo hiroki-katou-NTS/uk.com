@@ -32,7 +32,6 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkPlaceSidImpor
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceDto;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalStatusOfDailyPerforRepository;
@@ -1061,7 +1060,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							WorkStamp stamp = new WorkStamp(
 									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
 									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
-									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode(),
+									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode().isPresent() ? 
+											timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode().get() : null,
 									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getStampSourceInfo());
 							attendanceStamp = new TimeActualStamp(null, stamp,
 									timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp());
@@ -1092,7 +1092,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							WorkStamp stamp = new WorkStamp(
 									timeLeavingWork.getLeaveStamp().get().getStamp().get().getAfterRoundingTime(),
 									timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay(),
-									timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode(),
+									timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode().isPresent() ?
+											timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode().get() : null,
 									timeLeavingWork.getLeaveStamp().get().getStamp().get().getStampSourceInfo());
 							leaveStamp = new TimeActualStamp(null, stamp,
 									timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp());

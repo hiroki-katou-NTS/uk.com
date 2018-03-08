@@ -49,7 +49,8 @@ module ccg018.a.viewmodel {
             // Clean binding area.
             var resultArea = $(".screen-content");
             resultArea.html("");
-            ko.cleanNode(resultArea.get(0));
+            //TODO: cai nay co ve hok can anh a,
+            //ko.cleanNode(resultArea.get(0));
 
             // call start function on view at here
             switch (tab.id()) {
@@ -78,7 +79,8 @@ module ccg018.a.viewmodel {
                     });
                     break;
             }
-            $('.screen-' + tab.id().toLowerCase()).trigger('click');
+            //TODO: cai nay co ve hok can anh a,
+            //$('.screen-' + tab.id().toLowerCase()).trigger('click');
         }
 
         /**

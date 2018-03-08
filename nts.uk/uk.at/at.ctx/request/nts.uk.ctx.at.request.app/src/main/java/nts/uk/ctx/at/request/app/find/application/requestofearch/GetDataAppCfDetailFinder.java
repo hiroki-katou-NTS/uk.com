@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.app.find.application.requestofearch;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -163,18 +161,13 @@ public class GetDataAppCfDetailFinder {
 	 * @return
 	 * @author yennth
 	 */
-	public List<ApplicationDeadlineDto> findByClosureId(List<Integer> closureId){
+	public ApplicationDeadlineDto findByClosureId(int closureId){
 		String companyId = AppContexts.user().companyId();
-		List<ApplicationDeadlineDto> result = new ArrayList<>();
-		for(Integer obj : closureId){
-			ApplicationDeadlineDto appDead = this.applicationDeadlineRepository.getDeadlineByClosureId(companyId, obj)
-					.map(c -> {
-						return new ApplicationDeadlineDto(companyId, obj, 
-															c.getUserAtr().value, c.getDeadline().v(), 
-															c.getDeadlineCriteria().value);
-					}).orElse(null);
-			result.add(appDead);
-		}
-		return result;
+		return this.applicationDeadlineRepository.getDeadlineByClosureId(companyId, closureId)
+				.map(c -> {
+					return new ApplicationDeadlineDto(companyId, closureId, 
+														c.getUserAtr().value, c.getDeadline().v(), 
+														c.getDeadlineCriteria().value);
+				}).orElse(null);
 	}
 }

@@ -185,7 +185,7 @@ __viewContext.ready(function () {
         }, {
             key: "_2", width: "100px", handlerType: "Input", dataType: "duration/duration", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
         }, {
-            key: "_3", width: "100px", handlerType: "Input", dataType: "time/time", required: true
+            key: "_3", width: "100px", handlerType: "Input", dataType: "duration/duration", required: true, min: "-12:00", max: "71:59"
         }, {
             key: "_4", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
