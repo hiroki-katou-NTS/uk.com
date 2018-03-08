@@ -10,7 +10,7 @@
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:stylefile path="cmf001.d.style.css" />
-<!-- 			<com:scriptfile path="kal003.a.service.js" /> -->
+			<com:scriptfile path="cmf001.d.service.js" />
 			<com:scriptfile path="cmf001.d.vm.js" />
 
 <!-- 			<com:ValidatorScript> -->
@@ -77,15 +77,15 @@
 								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_150')}</div>
 								<div tabindex="6" data-bind="ntsComboBox: {
 									options: listCategory,
-									optionsValue: 'dispCategoryCode',
+									optionsValue: 'categoryId',
 									visibleItemsCount: 15,
 									name: '#[CMF001_58]',
 									value: selectedCategory,
-									optionsText: 'dispCategoryName',
+									optionsText: 'categoryName',
 									editable: false,
 									enable: true,
 									columns: [
-										{ prop: 'dispCategoryName', length: 8 }
+										{ prop: 'categoryName', length: 8 }
 									]}"></div>
 							</div>
 						</div>
@@ -119,7 +119,7 @@
 								<col width="150px"/>
 								<col width="200px"/>
 								<col width="110px"/>
-								<col width="200px"/>
+								<col width="100px"/>
 								<col width="100px"/>
 								<col width="100px"/>
 							</colgroup>
@@ -144,15 +144,16 @@
 									</td>
 									<td><span class="label" data-bind="text: 'Sample Data From File'"></span></td>
 									<td>
-										<div data-bind="ntsComboBox: {
+										<div style="width: 95px;" data-bind="ntsComboBox: {
 											options: $parent.dataTypes,
 											optionsValue: 'code',
 											visibleItemsCount: 5,
 											name: '#[CMF001_168]',
 											value: itemType,
 											optionsText: 'name',
+											option: {width: '70px'},
 											columns: [
-												{ prop: 'name', length: 1 }
+												{ prop: 'name', length: 3 }
 											]}"></div>
 									</td>
 									<td style ="text-align: center;">

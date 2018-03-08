@@ -36,22 +36,22 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             self.screenMode = ko.observable(model.SCREEN_MODE.NEW);
             self.listStandardImportSetting = ko.observableArray([]);
             self.selectedStandardImportSettingCode = ko.observable('');
-            self.selectedStandardImportSetting = ko.observable(new model.StandardAcceptanceConditionSetting('', '', 1, -1, 0, 0));
+            self.selectedStandardImportSetting = ko.observable(new model.StandardAcceptanceConditionSetting(0, '', '', 1, -1, 0, 0));
             self.selectedStandardImportSettingCode.subscribe((data) => {
-                nts.uk.ui.errors.clearAll();
                 if (data) {
                     block.invisible();
-                    service.getOneStdData(self.systemType(), data).done((result) => {
+                    let d1 = service.getOneStdData(self.systemType(), data);
+                    let d2 = service.getAllStdItemData(self.systemType(), data);
+                    $.when( d1, d2 ).done(function ( result, rs ) {
                         if (result) {
-                            let item = new model.StandardAcceptanceConditionSetting(result.conditionSettingCode, result.conditionSettingName, result.deleteExistData, result.acceptMode, result.csvDataItemLineNumber, result.csvDataStartLine);
+                            let item = new model.StandardAcceptanceConditionSetting(result.systemType, result.conditionSettingCode, result.conditionSettingName, result.deleteExistData, result.acceptMode, result.csvDataItemLineNumber, result.csvDataStartLine);
                             self.selectedStandardImportSetting(item);
                             self.screenMode(model.SCREEN_MODE.UPDATE);
                             $("#B4_4").focus();
-                            service.getAllStdItemData(self.systemType(), data).done((rs) => {
-                                if (rs && rs.length) {
-                                    self.selectedStandardImportSetting().alreadySetting(true);
-                                }
-                            });
+                            _.defer(() => {nts.uk.ui.errors.clearAll()});
+                        }
+                        if (rs && rs.length) {
+                            self.selectedStandardImportSetting().alreadySetting(true);
                         }
                     }).fail(function(error) {
                         alertError(error);
@@ -70,7 +70,6 @@ module nts.uk.com.view.cmf001.b.viewmodel {
         private openCMF001d() {
             let self = this;
             nts.uk.request.jump("/view/cmf/001/d/index.xhtml", {
-                systemType: self.systemType(),
                 conditionSetting: ko.toJS(self.selectedStandardImportSetting)
             });
         }
@@ -130,7 +129,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             service.getAllStdData(self.systemType()).done(function(data: Array<any>) {
                 if (data && data.length) {
                     let _rsList: Array<model.StandardAcceptanceConditionSetting> = _.map(data, rs => {
-                        return new model.StandardAcceptanceConditionSetting(rs.conditionSettingCode, rs.conditionSettingName, rs.deleteExistData, rs.acceptMode, rs.csvDataItemLineNumber, rs.csvDataStartLine);
+                        return new model.StandardAcceptanceConditionSetting(rs.systemType, rs.conditionSettingCode, rs.conditionSettingName, rs.deleteExistData, rs.acceptMode, rs.csvDataItemLineNumber, rs.csvDataStartLine);
                     });
 //                    _rsList = _.sortBy(_rsList, ['code']);
                     self.listStandardImportSetting(_rsList);
@@ -160,16 +159,16 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             let self = this;
             nts.uk.ui.errors.clearAll();
             self.selectedStandardImportSettingCode('');
-            self.selectedStandardImportSetting(new model.StandardAcceptanceConditionSetting('', '', 1, -1, 0, 0));
+            self.selectedStandardImportSetting(new model.StandardAcceptanceConditionSetting(self.systemType(), '', '', 1, -1, 0, 0));
             self.screenMode(model.SCREEN_MODE.NEW);
             $("#B4_3").focus();
         }
 
         registerCondition() {
             let self = this;
-            let data = new model.StandardAcceptanceConditionSetting(self.selectedStandardImportSetting().conditionSettingCode(), self.selectedStandardImportSetting().conditionSettingName(), self.selectedStandardImportSetting().deleteExistData(), self.selectedStandardImportSetting().acceptMode(), self.selectedStandardImportSetting().csvDataItemLineNumber(), self.selectedStandardImportSetting().csvDataStartLine());
+            let data = new model.StandardAcceptanceConditionSetting(self.selectedStandardImportSetting().systemType(), self.selectedStandardImportSetting().conditionSettingCode(), self.selectedStandardImportSetting().conditionSettingName(), self.selectedStandardImportSetting().deleteExistData(), self.selectedStandardImportSetting().acceptMode(), self.selectedStandardImportSetting().csvDataItemLineNumber(), self.selectedStandardImportSetting().csvDataStartLine());
             data.action(self.screenMode());
-            data.systemType(self.systemType());
+//            data.systemType(self.systemType());
             let command: any = ko.toJS(data);
             $(".nts-input").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {

@@ -72,33 +72,43 @@ module nts.uk.com.view.cmf001.share.model {
     
     export function getSystemTypes(): Array<ItemModel> {
         return [
-            new model.ItemModel(0, getText('Enum_SystemType_PERSON_SYSTEM')),
-            new model.ItemModel(1, getText('Enum_SystemType_ATTENDANCE_SYSTEM')),
-            new model.ItemModel(2, getText('Enum_SystemType_PAYROLL_SYSTEM')),
-            new model.ItemModel(3, getText('Enum_SystemType_OFFICE_HELPER'))
+            new ItemModel(0, getText('Enum_SystemType_PERSON_SYSTEM')),
+            new ItemModel(1, getText('Enum_SystemType_ATTENDANCE_SYSTEM')),
+            new ItemModel(2, getText('Enum_SystemType_PAYROLL_SYSTEM')),
+            new ItemModel(3, getText('Enum_SystemType_OFFICE_HELPER'))
         ];
     }
     
     export function getDeleteExistDataMethod(): Array<ItemModel> {
         return [
-            new model.ItemModel(1, getText('Enum_DeleteExistDataMethod_DELETE_ALL')),
-            new model.ItemModel(2, getText('Enum_DeleteExistDataMethod_DELETE_TARGET'))
+            new ItemModel(1, getText('Enum_DeleteExistDataMethod_DELETE_ALL')),
+            new ItemModel(2, getText('Enum_DeleteExistDataMethod_DELETE_TARGET'))
+        ];
+    }
+    
+    export function getItemTypes(): Array<ItemModel> {
+        return [
+            new ItemModel(0, getText('Enum_ItemType_NUMERIC')),
+            new ItemModel(1, getText('Enum_ItemType_CHARACTER')),
+            new ItemModel(2, getText('Enum_ItemType_DATE')),
+            new ItemModel(3, getText('Enum_ItemType_INS_TIME')),
+            new ItemModel(4, getText('Enum_ItemType_TIME'))
         ];
     }
     
     export function getCompareTypes(): Array<ItemModel> {
         return [
-            new model.ItemModel(0, getText('Enum_SelectComparisonCondition_DO_NOT_COND')),
-            new model.ItemModel(1, getText('Enum_SelectComparisonCondition_COND1_LESS_VAL')),
-            new model.ItemModel(2, getText('Enum_SelectComparisonCondition_COND1_LESS_EQUAL_VAL')),
-            new model.ItemModel(3, getText('Enum_SelectComparisonCondition_VAL_LESS_COND1')),
-            new model.ItemModel(4, getText('Enum_SelectComparisonCondition_VAL_LESS_EQUAL_COND1')),
-            new model.ItemModel(5, getText('Enum_SelectComparisonCondition_COND1_LESS_VAL_AND_VAL_LESS_COND2')),
-            new model.ItemModel(6, getText('Enum_SelectComparisonCondition_COND1_LESS_EQUAL_VAL_AND_VAL_LESS_EQUAL_COND2')),
-            new model.ItemModel(7, getText('Enum_SelectComparisonCondition_VAL_LESS_COND1_OR_COND2_LESS_VAL')),
-            new model.ItemModel(8, getText('Enum_SelectComparisonCondition_VAL_LESS_EQUAL_COND1_OR_COND2_LESS_EQUAL_VAL')),
-            new model.ItemModel(9, getText('Enum_SelectComparisonCondition_COND1_EQUAL_VAL')),
-            new model.ItemModel(10, getText('Enum_SelectComparisonCondition_COND1_NOT_EQUAL_VAL'))
+            new ItemModel(0, getText('Enum_SelectComparisonCondition_DO_NOT_COND')),
+            new ItemModel(1, getText('Enum_SelectComparisonCondition_COND1_LESS_VAL')),
+            new ItemModel(2, getText('Enum_SelectComparisonCondition_COND1_LESS_EQUAL_VAL')),
+            new ItemModel(3, getText('Enum_SelectComparisonCondition_VAL_LESS_COND1')),
+            new ItemModel(4, getText('Enum_SelectComparisonCondition_VAL_LESS_EQUAL_COND1')),
+            new ItemModel(5, getText('Enum_SelectComparisonCondition_COND1_LESS_VAL_AND_VAL_LESS_COND2')),
+            new ItemModel(6, getText('Enum_SelectComparisonCondition_COND1_LESS_EQUAL_VAL_AND_VAL_LESS_EQUAL_COND2')),
+            new ItemModel(7, getText('Enum_SelectComparisonCondition_VAL_LESS_COND1_OR_COND2_LESS_VAL')),
+            new ItemModel(8, getText('Enum_SelectComparisonCondition_VAL_LESS_EQUAL_COND1_OR_COND2_LESS_EQUAL_VAL')),
+            new ItemModel(9, getText('Enum_SelectComparisonCondition_COND1_EQUAL_VAL')),
+            new ItemModel(10, getText('Enum_SelectComparisonCondition_COND1_NOT_EQUAL_VAL'))
         ];
     }
     
@@ -112,11 +122,12 @@ module nts.uk.com.view.cmf001.share.model {
         acceptMode: KnockoutObservable<number>;
         csvDataItemLineNumber: KnockoutObservable<number>;
         csvDataStartLine: KnockoutObservable<number>;
-        systemType: KnockoutObservable<number> = ko.observable(0);
+        systemType: KnockoutObservable<number>;
         alreadySetting: KnockoutObservable<boolean> = ko.observable(false);
         action: KnockoutObservable<number> = ko.observable(0);
 
-        constructor(code: string, name: string, deleteExistData: number, acceptMode: number, csvDataItemLineNumber: number, csvDataStartLine: number, deleteExistDataMethod?: number, alreadySetting?: boolean) {
+        constructor(systemType: number, code: string, name: string, deleteExistData: number, acceptMode: number, csvDataItemLineNumber: number, csvDataStartLine: number, deleteExistDataMethod?: number, alreadySetting?: boolean) {
+            this.systemType = ko.observable(0);
             this.conditionSettingCode = ko.observable(code);
             this.dispConditionSettingCode = code;
             this.conditionSettingName = ko.observable(name);
@@ -183,16 +194,12 @@ module nts.uk.com.view.cmf001.share.model {
     }
 
     export class ExternalAcceptanceCategory {
-        categoryCode: KnockoutObservable<string>;
-        categoryName: KnockoutObservable<string>;
-        dispCategoryCode: string;
-        dispCategoryName: string;
+        categoryId: string;
+        categoryName: string;
 
-        constructor(code: string, name: string) {
-            this.categoryCode = ko.observable(code);
-            this.categoryName = ko.observable(name);
-            this.dispCategoryCode = code;
-            this.dispCategoryName = name;
+        constructor(id: string, name: string) {
+            this.categoryId = id;
+            this.categoryName = name;
         }
     }
 

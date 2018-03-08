@@ -23,12 +23,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         selectedAcceptItem: KnockoutObservable<number> = ko.observable(0);
         
         selectedStandardImportSetting: KnockoutObservable<model.StandardAcceptanceConditionSetting>;
-        dataTypes: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
-            new model.ItemModel(0, 'Numeric'),
-            new model.ItemModel(1, 'Character'),
-            new model.ItemModel(2, 'Date'),
-            new model.ItemModel(3, 'Time')
-        ]);
+        dataTypes: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getItemTypes());
         
         selectedDataType: KnockoutObservable<number> = ko.observable(0);
         
@@ -40,14 +35,14 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         onchange: (filename) => void;
         constructor(data: any) {
             var self = this;
-            let item = _.find(model.getSystemTypes(), x => {return x.code == data.systemType;});
+            let item = _.find(model.getSystemTypes(), x => {return x.code == data.conditionSetting.systemType;});
             self.systemType = item;
-            self.selectedStandardImportSetting = ko.observable(new model.StandardAcceptanceConditionSetting(data.conditionSetting.conditionSettingCode, data.conditionSetting.conditionSettingName, data.conditionSetting.deleteExistData, data.conditionSetting.acceptMode, data.conditionSetting.csvDataItemLineNumber, data.conditionSetting.csvDataStartLine, data.conditionSetting.deleteExistDataMethod));
+            self.selectedStandardImportSetting = ko.observable(new model.StandardAcceptanceConditionSetting(data.conditionSetting.systemType, data.conditionSetting.conditionSettingCode, data.conditionSetting.conditionSettingName, data.conditionSetting.deleteExistData, data.conditionSetting.acceptMode, data.conditionSetting.csvDataItemLineNumber, data.conditionSetting.csvDataStartLine));
             
             self.listCategory = ko.observableArray([
                 new model.ExternalAcceptanceCategory('1', 'Category 1'),
                 new model.ExternalAcceptanceCategory('2', 'Category 2'),
-                new model.ExternalAcceptanceCategory('3', 'Category 3')
+                new model.ExternalAcceptanceCategory('3', 'Category 3') 
             ]);
             self.selectedCategory = ko.observable('1');
             
@@ -66,6 +61,25 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 new model.ExternalAcceptanceCategoryItemData(12, 'Item 12'),
                 new model.ExternalAcceptanceCategoryItemData(13, 'Item 13') 
             ]);
+            
+            self.selectedCategory.subscribe((data) => {
+                if (data) {
+                    service.getCategoryItem(data).done((rs: Array<any>) => {
+                        if (rs && rs.length) {
+                            let _rsList: Array<model.ExternalAcceptanceCategoryItemData> = _.map(rs, x => {
+                                return new model.ExternalAcceptanceCategoryItemData(x.itemNo, x.itemName);
+                            });
+//                            _rsList = _.sortBy(_rsList, ['code']);
+                            self.listCategoryItem(_rsList);
+                        }
+                        
+                    }).fail(function(error) {
+                        alertError(error);
+                    }).always(() => {
+                        block.clear();
+                    });
+                }
+            });
             
             self.selectedCategoryItem = ko.observable(1);
             $("#fixed-table").ntsFixedTable({ height: 540 });
@@ -235,6 +249,49 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 conditionCode: self.selectedStandardImportSetting().conditionSettingCode(),
                 sysType: self.systemType.code 
             });
+        }
+        
+        startPage() {
+            let self = this,
+                dfd = $.Deferred();
+            block.invisible();
+            service.getAllCategory().done((rs: Array<any>) => {
+                if (rs && rs.length) {
+                    let _rsList: Array<model.ExternalAcceptanceCategory> = _.map(rs, x => {
+                        return new model.ExternalAcceptanceCategory(x.categoryId, x.categoryName);
+                    });
+//                            _rsList = _.sortBy(_rsList, ['code']);
+                    self.listCategory(_rsList);
+                    self.selectedCategory(self.listCategory()[0].categoryId);
+                    service.getAllData(self.systemType.code, self.selectedStandardImportSetting().conditionSettingCode()).done(function(data: Array<any>) {
+                        if (data && data.length) {
+                            let _rsList: Array<model.StandardAcceptItem> = _.map(data, rs => {
+        //                        constructor(csvItemName: string, csvItemNumber: number, itemType: number, 
+        //                        acceptItemNumber: number, acceptItemName: string, conditionCode: string, 
+        //                        categoryItemNo: number, numSet?: NumericDataFormatSetting, charSet?: CharacterDataFormatSetting, 
+        //                        dateSet?: DateDataFormatSetting, instTimeSet?: 
+        //                        InstantTimeDataFormatSetting, timeSet?: TimeDataFormatSetting, 
+        //                        screenSet?: AcceptScreenConditionSetting, categoryId?: string) {
+                                
+                                return new model.StandardAcceptItem(rs.csvItemName, rs.csvItemNumber, rs.itemType, rs.acceptItemNumber, rs.acceptItemName, rs.conditionCode, rs.categoryItemNo);
+                            });
+        //                    _rsList = _.sortBy(_rsList, ['code']);
+                            self.listAcceptItem(_rsList);
+                        } 
+                        dfd.resolve();
+                    }).fail(function(error) {
+                        alertError(error);
+                        dfd.reject();
+                    }).always(() => {
+                        block.clear();
+                    });
+                }
+            }).fail(function(error) {
+                alertError(error);
+            }).always(() => {
+                block.clear();
+            });
+            return dfd.promise();
         }
     }
 }
