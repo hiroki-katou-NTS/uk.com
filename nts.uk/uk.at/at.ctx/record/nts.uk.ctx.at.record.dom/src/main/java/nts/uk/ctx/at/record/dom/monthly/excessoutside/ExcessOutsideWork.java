@@ -42,4 +42,12 @@ public class ExcessOutsideWork {
 		domain.excessTime = excessTime;
 		return domain;
 	}
+	
+	/**
+	 * 分を超過時間に加算する
+	 * @param minutes
+	 */
+	public void addMinutesToExcessTime(int minutes){
+		this.excessTime = this.excessTime.addMinutes(minutes);
+	}
 }

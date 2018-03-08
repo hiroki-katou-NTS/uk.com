@@ -76,8 +76,8 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             self.currentAtdItemCondition.compareOperator.subscribe((value) => {
                 self.validateRange();
             });
-            $(".value-input").blur(()=>{
-                self.validateRange();    
+            $(".value-input").blur(() => {
+                self.validateRange();
             });
             self.fillTextDisplayTarget();
             self.fillTextDisplayComparison();
@@ -150,20 +150,44 @@ module nts.uk.at.view.kdw007.b.viewmodel {
 
         getListItemByAtr() {
             let self = this;
+            let dfd = $.Deferred<any>();
             if (self.currentAtdItemCondition.conditionAtr() === 0) {
                 //With type 回数 - Times
-                return service.getAttendanceItemByAtr(2);
+                service.getAttendanceItemByAtr(2).done((lstAtdItem) => {
+                    service.getOptItemByAtr(1).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            lstAtdItem.push(lstOptItem[i]);
+                        }
+                        dfd.resolve(lstAtdItem);
+                    });
+                });
             } else if (self.currentAtdItemCondition.conditionAtr() === 1) {
                 //With type 時間 - Time
-                return service.getAttendanceItemByAtr(5);
+                service.getAttendanceItemByAtr(5).done((lstAtdItem) => {
+                    service.getOptItemByAtr(0).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            lstAtdItem.push(lstOptItem[i]);
+                        }
+                        dfd.resolve(lstAtdItem);
+                    });
+                });
             } else if (self.currentAtdItemCondition.conditionAtr() === 2) {
                 //With type 時刻 - TimeWithDay
-                return service.getAttendanceItemByAtr(6);
+                service.getAttendanceItemByAtr(6).done((lstAtdItem) => {
+                    dfd.resolve(lstAtdItem);
+                });
             } else if (self.currentAtdItemCondition.conditionAtr() === 3) {
                 //With type 金額 - AmountMoney
-                return service.getAttendanceItemByAtr(3);
+                service.getAttendanceItemByAtr(3).done((lstAtdItem) => {
+                    service.getOptItemByAtr(2).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            lstAtdItem.push(lstOptItem[i]);
+                        }
+                        dfd.resolve(lstAtdItem);
+                    });
+                });
             }
-
+            return dfd.promise();
         }
 
         openSelectAtdItemDialogTarget() {

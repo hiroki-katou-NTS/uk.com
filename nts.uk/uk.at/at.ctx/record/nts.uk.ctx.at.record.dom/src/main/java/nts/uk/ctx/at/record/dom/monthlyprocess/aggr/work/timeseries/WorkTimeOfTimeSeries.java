@@ -50,4 +50,21 @@ public class WorkTimeOfTimeSeries {
 		domain.legalTime = legalTime;
 		return domain;
 	}
+	
+	/**
+	 * 法定内時間に加算する
+	 * @param addTime 加算する法定内時間
+	 */
+	public void addLegalTime(WithinStatutoryTimeOfDaily addTime){
+		
+		this.legalTime = WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
+				this.legalTime.getWorkTime().addMinutes(addTime.getWorkTime().v()),
+				this.legalTime.getWorkTimeIncludeVacationTime().addMinutes(addTime.getWorkTimeIncludeVacationTime().v()),
+				this.legalTime.getWithinPrescribedPremiumTime().addMinutes(addTime.getWithinPrescribedPremiumTime().v()),
+				new WithinStatutoryMidNightTime(
+						this.legalTime.getWithinStatutoryMidNightTime().getTime().addMinutes(
+								addTime.getWithinStatutoryMidNightTime().getTime().getTime(),
+								addTime.getWithinStatutoryMidNightTime().getTime().getCalcTime())),
+				this.legalTime.getVacationAddTime().addMinutes(addTime.getVacationAddTime().v()));
+	}
 }

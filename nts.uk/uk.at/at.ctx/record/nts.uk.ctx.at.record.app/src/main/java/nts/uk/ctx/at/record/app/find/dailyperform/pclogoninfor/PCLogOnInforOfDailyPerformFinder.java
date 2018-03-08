@@ -26,16 +26,11 @@ public class PCLogOnInforOfDailyPerformFinder extends FinderFacade {
 		PCLogOnInfoOfDaily domain = this.repo.find(employeeId, baseDate).orElse(null);
 		if (domain != null) {
 			dto.setLogonTime(ConvertHelper.mapTo(domain.getLogOnInfo(),
-					(c) -> new TimeSheetDto(c.getWorkNo().v(),
-							new TimeStampDto(c.getLogOn().getTimeWithDay().valueAsMinutes(),
-									c.getLogOn().getAfterRoundingTime().valueAsMinutes(),
-									c.getLogOn().getLocationCode().v(),
-									c.getLogOn().getStampSourceInfo().value),
-							new TimeStampDto(c.getLogOff().getTimeWithDay().valueAsMinutes(),
-									c.getLogOff().getAfterRoundingTime().valueAsMinutes(),
-									c.getLogOff().getLocationCode().v(),
-									c.getLogOff().getStampSourceInfo().value),
-							0
+					(c) -> new TimeSheetDto(
+									c.getWorkNo() == null ? null : c.getWorkNo().v(),
+									TimeStampDto.createTimeStamp(c.getLogOn()),
+									TimeStampDto.createTimeStamp(c.getLogOff()),
+									0
 					)));
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());

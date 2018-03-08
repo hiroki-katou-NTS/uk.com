@@ -30,6 +30,8 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 	private final String FIND_BY_ERROR_ALARM_CHECK_ID = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId AND a.eralCheckId = :eralCheckId ";
 	private final String FIND_LIST_CODE = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId "
 			+ " AND a.kwrmtErAlWorkRecordPK.errorAlarmCode = :errorAlarmCode ";
+	private final String FIND_ALL_ER_AL_COMPANY = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId "
+			+ " AND a.useAtr = 1 AND  a.fixedAtr = 1 AND a.typeAtr IN (0,1)";
 	
 
 	@Override
@@ -139,6 +141,17 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 			datas.addAll(this.queryProxy().query(SELECT_ERAL_BY_LIST_CODE,KwrmtErAlWorkRecord.class).setParameter("listCode", listCode).getList(c->KwrmtErAlWorkRecord.toDomain(c)));
 		});
 		return datas;
+	}
+
+	@Override
+	public List<ErrorAlarmWorkRecord> getAllErAlCompany(String companyId) {
+		return this.queryProxy().query(FIND_ALL_ER_AL_COMPANY, KwrmtErAlWorkRecord.class)
+				.setParameter("companyId", companyId).getList(c -> {
+					ErrorAlarmWorkRecord record = KwrmtErAlWorkRecord.toDomain(c);
+					record.setErrorAlarmCondition(KwrmtErAlWorkRecord.toConditionDomain(c));
+					return record;
+				}
+				);
 	}
 
 }

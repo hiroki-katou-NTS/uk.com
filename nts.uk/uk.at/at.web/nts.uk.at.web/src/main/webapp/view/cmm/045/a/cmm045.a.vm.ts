@@ -15,6 +15,8 @@ module cmm045.a.viewmodel {
         lstAppMaster: KnockoutObservableArray<vmbase.AppMasterInfo> = ko.observableArray([]);
         lstAppOt: KnockoutObservableArray<vmbase.AppOverTimeInfoFull> = ko.observableArray([]);
         lstAppGoBack: KnockoutObservableArray<vmbase.AppGoBackInfoFull> = ko.observableArray([]);
+        lstListAgent: KnockoutObservableArray<vmbase.ApproveAgent> = ko.observableArray([]);
+        
         displaySet: KnockoutObservable<vmbase.ApprovalListDisplaySetDto> = ko.observable(null);
         approvalMode: KnockoutObservable<boolean> = ko.observable(false);
         approvalCount: KnockoutObservable<vmbase.ApplicationStatus> = ko.observable(new vmbase.ApplicationStatus(0, 0, 0, 0, 0, 0));
@@ -142,9 +144,13 @@ module cmm045.a.viewmodel {
                         _.each(data.lstAppType, function(appType){
                             self.itemApplication.push(new vmbase.ChoseApplicationList(appType, self.findAppName(appType)));                          
                         });
+                        self.lstListAgent([]);
+                        _.each(data.lstAgent, function(agent){
+                            self.lstListAgent.push(new vmbase.ApproveAgent(agent.appID, agent.agentId));
+                        });
                         let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), lstGoBack, self.lstAppOt(), lstAppGroup);
                         self.lstApp(lstData);
-                        self.items(lstData);
+                        self.items(vmbase.ProcessHandler.orderByList(lstData));
                         //mode approval - count
                         if (data.appStatusCount != null) {
                             self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
@@ -169,23 +175,25 @@ module cmm045.a.viewmodel {
         reloadGridApplicaion() {
             var self = this;
             $("#grid2").ntsGrid({
-                width: '1100px',
+                width: '1120px',
                 height: '500px',
                 dataSource: self.items(),
                 primaryKey: 'appId',
                 virtualization: true,
+                rows: 8,
                 rowVirtualization: true,
                 virtualizationMode: 'continuous',
                 columns: [
-                    { headerText: getText('CMM045_50'), key: 'appId', dataType: 'string', width: '80px', unbound: false, ntsControl: 'Button' },
+                    { headerText: 'ID', key: 'appId', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '70px', unbound: false, ntsControl: 'Button' },
                     { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
                     { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '120px' },
                     { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '80px' },
                     { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '150px', ntsControl: 'Label'},
                     { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '280px' },
                     { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '180px', ntsControl: 'Label'},
-                    { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '100px', ntsControl: 'Label' },
-                    { headerText: 'ID', key: 'appId', dataType: 'string', width: '0px', hidden: true }
+                    { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '100px', ntsControl: 'Label' }
+//                    { headerText: 'ID', key: 'appId', dataType: 'string', width: '10px', hidden: true }
                 ],
                 features: [{ name: 'Resizing' },
                     {
@@ -206,51 +214,6 @@ module cmm045.a.viewmodel {
                 window.location.href = "../../../kaf/000/b/index.xhtml";
             });
             self.fillColorInGridList();
-//            _.each(self.items(), function(item) {
-//                //fill color in 承認状況
-//                let id = ".nts-grid-control-appStatus-" + item.appId;
-//                if (item.appStatus == '未') {
-//                    $(id).parent().addClass('unapprovalCell');
-//                }
-//                if (item.appStatus == '承認済み') {
-//                    $(id).parent().addClass('approvalCell');
-//                }
-//                if (item.appStatus == '反映済み') {
-//                    $(id).parent().addClass('reflectCell');
-//                }
-//                if (item.appStatus == '取消') {
-//                    $(id).parent().addClass('cancelCell');
-//                }
-//                if (item.appStatus == '差戻') {
-//                   $(id).parent().addClass('remandCell');
-//                }
-//                if (item.appStatus == '否') {
-//                    $(id).parent().addClass('denialCell');
-//                }
-//                //fill color in 申請内容
-//                if (item.checkTimecolor == 1) {//1: xin truoc < xin sau; k co xin truoc; xin truoc bi denail
-//                    $(".nts-grid-control-appContent-" + item.appId).addClass('preAppExcess');
-//                }
-//                if (item.checkTimecolor == 2) {////2: thuc te < xin sau
-//                    $(".nts-grid-control-appContent-" + item.appId).addClass('workingResultExcess');
-//                }
-//                //fill color text
-//                let color = item.appDate.substring(11,12);
-//                if (color == '土') {//土
-//                    $(".nts-grid-control-appDate-" + item.appId).addClass('saturdayCell');
-//                }
-//                if (color == '日') {//日 
-//                    $(".nts-grid-control-appDate-" + item.appId).addClass('sundayCell');
-//                }
-//                //fill color text
-//                let colorIn = item.inputDate.substring(11,12);
-//                if (colorIn == '土') {//土
-//                    $(".nts-grid-control-inputDate-" + item.appId).addClass('saturdayCell');
-//                }
-//                if (colorIn == '日') {//日 
-//                    $(".nts-grid-control-inputDate-" + item.appId).addClass('sundayCell');
-//                }
-//            });
         }
 
         reloadGridApproval() {
@@ -262,6 +225,7 @@ module cmm045.a.viewmodel {
                 primaryKey: 'appId',
                 rowVirtualization: true,
                 virtualization: true,
+                rows: 8,
                 virtualizationMode: 'continuous',
                 columns: [
                     { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '60px', ntsControl: 'Checkbox' },
@@ -302,8 +266,12 @@ module cmm045.a.viewmodel {
         fillColorInGridList(){
             let self = this;
             _.each(self.items(), function(item) {
-                //fill color in 承認状況
                 let id = ".nts-grid-control-appStatus-" + item.appId;
+                //display check box
+                if (item.checkAtr == false) {
+                    $(".nts-grid-control-check-" + item.appId).css("display", "none");
+                }
+                //fill color in 承認状況
                 if (item.appStatus == '未') {
                     $(id).parent().addClass('unapprovalCell');
                 }
@@ -655,12 +623,16 @@ module cmm045.a.viewmodel {
                 _.each(data.lstAppType, function(appType){
                     self.itemApplication.push(new vmbase.ChoseApplicationList(appType, self.findAppName(appType)));                          
                 });
+                self.lstListAgent([]);
+                _.each(data.lstAgent, function(agent){
+                    self.lstListAgent.push(new vmbase.ApproveAgent(agent.appID, agent.agentId));
+                });
                 let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), lstGoBack, self.lstAppOt(), lstAppGroup);
                 self.lstApp(lstData);
                 if (self.selectedCode() != -1) {
                     self.filterByAppType(self.selectedCode());
                 } else {
-                    self.items(lstData);
+                    self.items(vmbase.ProcessHandler.orderByList(lstData));
                     //mode approval - count
                     if (data.appStatusCount != null) {
                         self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
@@ -675,8 +647,6 @@ module cmm045.a.viewmodel {
                         self.reloadGridApplicaion();
                     }
                 }
-
-
             }).always(() => {
                 block.clear();
             });
@@ -697,10 +667,9 @@ module cmm045.a.viewmodel {
             block.invisible();
             let self = this;
             let data = null;
-            console.log(self.items());
             let lstApp = [];
             _.each(self.items(), function(item) {
-                if (item.check) {
+                if (item.check && item.checkAtr) {
                     lstApp.push({ appId: item.appId, version: item.version });
                 }
             });
@@ -719,13 +688,13 @@ module cmm045.a.viewmodel {
         filterByAppType(appType: number) {
             let self = this;
             if (appType == -1) {//全件表示
-                self.items(self.lstApp());
+                self.items(vmbase.ProcessHandler.orderByList(self.lstApp()));
             } else {
                 let lstAppFitler: Array<vmbase.DataModeApp> = _.filter(self.lstApp(), function(item) {
                     return item.appType == appType;
                 });
                 self.items([]);
-                self.items(lstAppFitler);
+                self.items(vmbase.ProcessHandler.orderByList(lstAppFitler));
             }
             if (self.mode() == 1) {
                 self.approvalCount(self.countStatus(self.items()));
@@ -735,7 +704,6 @@ module cmm045.a.viewmodel {
                 $("#grid2").ntsGrid("destroy");
                 self.reloadGridApplicaion();
             }
-
         }
         countStatus(lstApp: Array<vmbase.DataModeApp>): vmbase.ApplicationStatus{
             let unApprovalNumber = 0;
@@ -746,14 +714,27 @@ module cmm045.a.viewmodel {
             let denialNumber = 0;
             _.each(lstApp, function(app){
                 if(app.appStatus == '未'){ unApprovalNumber += 1; }//UNAPPROVED:5
-                if(app.appStatus == '承認済み'){ approvalNumber += 1; }//APPROVED: 4
-                if(app.appStatus == '-'){ approvalAgentNumber += 1; }//-: 0 
+                if(app.appStatus == '承認済み'){//APPROVED: 4
+                    let agent = this.findAgent(app.appId);
+                    if(agent != undefined && agent.agentId != null && agent.agentId != ''){
+                        approvalAgentNumber += 1;
+                    }else{
+                        approvalNumber += 1;
+                    }
+                     approvalNumber += 1;
+                }
+//                if(app.appStatus == '-'){ approvalAgentNumber += 1; }//-: 0 
                 if(app.appStatus == '取消'){ cancelNumber += 1; }//CANCELED: 3
                 if(app.appStatus == '差戻'){ remandNumner += 1; }//REMAND: 2
                 if(app.appStatus == '否'){ denialNumber += 1; }//DENIAL: 1
             })
             return new vmbase.ApplicationStatus(unApprovalNumber, approvalNumber,
                 approvalAgentNumber, cancelNumber, remandNumner,denialNumber);
+        }
+        findAgent(appId: string): any{
+            return _.find(this.lstListAgent(), function(agent){
+                return agent.appID = appId;    
+            });
         }
         convertTime_Short_HM(time: number): string {
             let hh = Math.floor(time / 60);

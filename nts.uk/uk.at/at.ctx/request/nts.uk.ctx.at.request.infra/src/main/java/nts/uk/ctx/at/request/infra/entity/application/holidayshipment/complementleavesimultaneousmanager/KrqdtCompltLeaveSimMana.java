@@ -25,14 +25,14 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtComplementLeaveSimultaneousManager extends UkJpaEntity implements Serializable {
+public class KrqdtCompltLeaveSimMana extends UkJpaEntity implements Serializable {
 	/**
 	* 
 	*/
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private KrqdtComplementLeaveSimultaneousManagerPK pk;
+	private KrqdtCompltLeaveSimManaPK pk;
 
 	/**
 	 * 同期中
