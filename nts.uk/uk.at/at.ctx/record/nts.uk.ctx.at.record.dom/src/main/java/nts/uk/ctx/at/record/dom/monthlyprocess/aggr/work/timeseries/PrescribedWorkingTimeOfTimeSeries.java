@@ -3,7 +3,9 @@ package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * 時系列の所定労働時間
@@ -24,7 +26,13 @@ public class PrescribedWorkingTimeOfTimeSeries {
 	public PrescribedWorkingTimeOfTimeSeries(GeneralDate ymd){
 		
 		this.ymd = ymd;
-		this.prescribedWorkingTime = new WorkScheduleTimeOfDaily();
+		this.prescribedWorkingTime = new WorkScheduleTimeOfDaily(
+				new WorkScheduleTime(
+						new AttendanceTime(0),
+						new AttendanceTime(0),
+						new AttendanceTime(0)),
+				new AttendanceTime(0),
+				new AttendanceTime(0));
 	}
 
 	/**
@@ -37,7 +45,25 @@ public class PrescribedWorkingTimeOfTimeSeries {
 			GeneralDate ymd, WorkScheduleTimeOfDaily prescribedWorkingTime){
 		
 		val domain = new PrescribedWorkingTimeOfTimeSeries(ymd);
-		domain.prescribedWorkingTime = prescribedWorkingTime;
+		if (prescribedWorkingTime != null){
+			
+			WorkScheduleTime workScheduleTime = new WorkScheduleTime(
+							new AttendanceTime(0),
+							new AttendanceTime(0),
+							new AttendanceTime(0));
+			val srcWorkScheduleTime = prescribedWorkingTime.getWorkScheduleTime();
+			if (srcWorkScheduleTime != null){
+				workScheduleTime = new WorkScheduleTime(
+						(srcWorkScheduleTime.getTotal() != null ? srcWorkScheduleTime.getTotal() : new AttendanceTime(0)),
+						(srcWorkScheduleTime.getExcessOfStatutoryTime() != null ? srcWorkScheduleTime.getExcessOfStatutoryTime() : new AttendanceTime(0)),
+						(srcWorkScheduleTime.getWithinStatutoryTime() != null ? srcWorkScheduleTime.getWithinStatutoryTime() : new AttendanceTime(0)));
+			}
+			
+			domain.prescribedWorkingTime = new WorkScheduleTimeOfDaily(
+					workScheduleTime,
+					(prescribedWorkingTime.getSchedulePrescribedLaborTime() != null ? prescribedWorkingTime.getSchedulePrescribedLaborTime() : new AttendanceTime(0)),
+					(prescribedWorkingTime.getRecordPrescribedLaborTime() != null ? prescribedWorkingTime.getRecordPrescribedLaborTime() : new AttendanceTime(0)));
+		}
 		return domain;
 	}
 }

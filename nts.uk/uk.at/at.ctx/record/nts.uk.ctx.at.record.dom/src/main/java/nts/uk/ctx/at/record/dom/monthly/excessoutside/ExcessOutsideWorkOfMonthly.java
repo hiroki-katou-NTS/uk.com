@@ -10,6 +10,7 @@ import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.IrregularWorkingTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.TotalTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 
 /**
@@ -27,7 +28,7 @@ public class ExcessOutsideWorkOfMonthly {
 	private AttendanceTimeMonth monthlyTotalPremiumTime;
 	/** 変形繰越時間 */
 	@Setter
-	private AttendanceTimeMonth deformationCarryforwardTime;
+	private AttendanceTimeMonthWithMinus deformationCarryforwardTime;
 	/** 時間 */
 	private Map<Integer, ExcessOutSideWorkEachBreakdown> time;
 	
@@ -38,7 +39,7 @@ public class ExcessOutsideWorkOfMonthly {
 		
 		this.weeklyTotalPremiumTime = new AttendanceTimeMonth(0);
 		this.monthlyTotalPremiumTime = new AttendanceTimeMonth(0);
-		this.deformationCarryforwardTime = new AttendanceTimeMonth(0);
+		this.deformationCarryforwardTime = new AttendanceTimeMonthWithMinus(0);
 		this.time = new HashMap<>();
 	}
 	
@@ -53,7 +54,7 @@ public class ExcessOutsideWorkOfMonthly {
 	public static ExcessOutsideWorkOfMonthly of(
 			AttendanceTimeMonth weeklyTotalPremiumTime,
 			AttendanceTimeMonth monthlyTotalPremiumTime,
-			AttendanceTimeMonth deformationCarryforwardTime,
+			AttendanceTimeMonthWithMinus deformationCarryforwardTime,
 			List<ExcessOutsideWork> timeList){
 		
 		ExcessOutsideWorkOfMonthly domain = new ExcessOutsideWorkOfMonthly();
