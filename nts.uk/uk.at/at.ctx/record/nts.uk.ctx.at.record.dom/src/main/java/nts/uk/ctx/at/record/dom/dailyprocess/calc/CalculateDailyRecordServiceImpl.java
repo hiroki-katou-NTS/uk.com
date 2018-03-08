@@ -323,7 +323,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 											   new BreakDownTimeDay(new AttendanceTime(4),new AttendanceTime(4),new AttendanceTime(8)),
 												personalInfo.getStatutoryWorkTime(),autoCalcOverTimeWork,LegalOTSetting.LEGAL_INTERNAL_TIME,StatutoryPrioritySet.priorityNormalOverTimeWork,
 												workTime.get(),flexWorkSetOpt.get(),goOutTimeSheetList,oneRange.getOneDayOfRange(),oneRange.getAttendanceLeavingWork(),
-												workTime.get().getWorkTimeDivision(),breakTimeOfDailyList,midNightTimeSheet
+												workTime.get().getWorkTimeDivision(),breakTimeOfDailyList,midNightTimeSheet,personalInfo
 											   );
 		} else {
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
@@ -345,7 +345,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						fixedWorkSetting.get().getOffdayWorkTimezone().getLstWorkTimezone(), overDayEndCalcSet, Collections.emptyList(), yesterDay.get(), workType.get(),
 						tomorrow.get(), new BreakDownTimeDay(new AttendanceTime(4),new AttendanceTime(4),new AttendanceTime(8)),
 						personalInfo.getStatutoryWorkTime(), autoCalcOverTimeWork, fixedWorkSetting.get().getLegalOTSetting(), StatutoryPrioritySet.priorityNormalOverTimeWork, 
-						workTime.get(),breakTimeOfDailyList,midNightTimeSheet);
+						workTime.get(),breakTimeOfDailyList,midNightTimeSheet,personalInfo);
 				break;
 			case FLOW_WORK:
 				/* 流動勤務 */

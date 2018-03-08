@@ -17,6 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingCondition;
@@ -62,17 +63,18 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 
 		// select root
 		cq.select(root);
+		List<KshmtWorkTimeSet> lstKwtstWorkTimeSet = new ArrayList<>();
+		CollectionUtil.split(codes, 1000, subListCodes -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			lstpredicateWhere
+					.add(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.worktimeCd).in(subListCodes));
+			lstpredicateWhere.add(criteriaBuilder
+					.equal(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid), companyID));
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere
-				.add(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.worktimeCd).in(codes));
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid), companyID));
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		List<KshmtWorkTimeSet> lstKwtstWorkTimeSet = em.createQuery(cq).getResultList();
-		
+			lstKwtstWorkTimeSet.addAll(em.createQuery(cq).getResultList());
+		});
 		return lstKwtstWorkTimeSet.stream().map(item -> {
 			WorkTimeSetting worktimeSetting = new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(item));
 			return worktimeSetting;
