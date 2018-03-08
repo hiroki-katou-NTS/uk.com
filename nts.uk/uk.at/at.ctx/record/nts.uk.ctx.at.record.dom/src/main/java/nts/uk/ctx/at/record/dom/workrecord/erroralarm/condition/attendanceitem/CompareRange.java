@@ -5,6 +5,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
 
 /**
@@ -12,7 +13,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
  *
  */
 // 範囲との比較
-public class CompareRange<V> extends CheckedCondition{
+public class CompareRange<V extends IntegerPrimitiveValue<V>> extends CheckedCondition{
 
 	//開始値
 	private V startValue;
@@ -59,4 +60,18 @@ public class CompareRange<V> extends CheckedCondition{
 		return this;
 	}
 	
+	public boolean checkRange(V target) {
+		switch (this.compareOperator) {
+		case BETWEEN_RANGE_CLOSED:
+			return target.compareTo(startValue) > 0 && target.compareTo(endValue) < 0;
+		case BETWEEN_RANGE_OPEN:
+			return target.compareTo(startValue) >= 0 && target.compareTo(endValue) <= 0;
+		case OUTSIDE_RANGE_CLOSED:
+			return target.compareTo(startValue) < 0 || target.compareTo(endValue) > 0;
+		case OUTSIDE_RANGE_OPEN:
+			return target.compareTo(startValue) <= 0 || target.compareTo(endValue) >= 0;
+		default:
+			return false;
+		}
+	}
 }
