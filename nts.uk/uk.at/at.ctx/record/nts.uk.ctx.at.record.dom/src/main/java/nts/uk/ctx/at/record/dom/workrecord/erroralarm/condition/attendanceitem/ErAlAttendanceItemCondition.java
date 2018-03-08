@@ -10,9 +10,9 @@ import java.util.function.Function;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckConditionValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
@@ -26,7 +26,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 // 勤怠項目のエラーアラーム条件
-public class ErAlAttendanceItemCondition<V extends IntegerPrimitiveValue<V>> extends AggregateRoot {
+public class ErAlAttendanceItemCondition<V extends CheckConditionValue<V>> extends AggregateRoot {
 
 	// 会社ID
 	@Getter
@@ -156,9 +156,9 @@ public class ErAlAttendanceItemCondition<V extends IntegerPrimitiveValue<V>> ext
 		case AMOUNT_VALUE:
 			return (V) new CheckedAmountValue(target);
 		case TIME_DURATION:
-//			return (V) new CheckedTimeDuration(target);
+			return (V) new CheckedTimeDuration(target);
 		case TIME_WITH_DAY:
-//			return (V) new TimeWithDayAttr(target);
+			return (V) new TimeWithDayAttr(target);
 		case TIMES:
 			return (V) new CheckedTimesValue(target);
 		default:

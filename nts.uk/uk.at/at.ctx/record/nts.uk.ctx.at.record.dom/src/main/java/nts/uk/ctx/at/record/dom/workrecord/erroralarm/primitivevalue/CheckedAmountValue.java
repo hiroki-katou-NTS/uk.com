@@ -12,7 +12,7 @@ import nts.arc.primitive.constraint.IntegerRange;
  */
 //チェック条件値金額
 @IntegerRange(min = -99999999, max = 999999999)
-public class CheckedAmountValue extends IntegerPrimitiveValue<CheckedAmountValue> {
+public class CheckedAmountValue extends IntegerPrimitiveValue<CheckedAmountValue> implements CheckConditionValue<CheckedAmountValue> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -23,6 +23,11 @@ public class CheckedAmountValue extends IntegerPrimitiveValue<CheckedAmountValue
 	 */
 	public CheckedAmountValue(Integer rawValue) {
 		super(rawValue);
+	}
+
+	@Override
+	public Integer value() {
+		return this.v();
 	}
 	
 }

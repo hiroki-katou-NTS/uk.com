@@ -24,7 +24,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
@@ -36,6 +35,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckConditionValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
@@ -132,7 +132,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <V extends IntegerPrimitiveValue<V>> ErAlAttendanceItemCondition<V> convertKrcmtErAlAtdItemConToDomain(KwrmtErAlWorkRecord entity,
+	private static <V extends CheckConditionValue<V>> ErAlAttendanceItemCondition<V> convertKrcmtErAlAtdItemConToDomain(KwrmtErAlWorkRecord entity,
 			KrcmtErAlAtdItemCon atdItemCon) {
 		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(
 				entity.kwrmtErAlWorkRecordPK.companyId, entity.kwrmtErAlWorkRecordPK.errorAlarmCode,
@@ -284,7 +284,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 			} else {
 				erAlSingleAtd.add(new KrcstErAlSingleAtd(
 						new KrcstErAlSingleAtdPK(atdItemConditionGroup1, new BigDecimal(erAlAtdItemCon.getTargetNO()),
-								erAlAtdItemCon.getCompareSingleValue().getValue().v()),
+								erAlAtdItemCon.getCompareSingleValue().getValue().value()),
 						new BigDecimal(2)));
 			}
 		}

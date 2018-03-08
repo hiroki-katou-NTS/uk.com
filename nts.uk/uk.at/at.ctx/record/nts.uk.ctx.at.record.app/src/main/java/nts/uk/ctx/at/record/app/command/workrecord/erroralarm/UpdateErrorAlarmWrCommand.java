@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckConditionValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
@@ -108,7 +109,7 @@ public class UpdateErrorAlarmWrCommand {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <V extends IntegerPrimitiveValue<V>> ErAlAttendanceItemCondition<V> convertAtdIemConToDomain(ErAlAtdItemConditionDto atdItemCon) {
+	private <V extends CheckConditionValue<V>> ErAlAttendanceItemCondition<V> convertAtdIemConToDomain(ErAlAtdItemConditionDto atdItemCon) {
 		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(companyId, code,
 				atdItemCon.getTargetNO(), atdItemCon.getConditionAtr(), atdItemCon.isUseAtr());
 		// Set Target

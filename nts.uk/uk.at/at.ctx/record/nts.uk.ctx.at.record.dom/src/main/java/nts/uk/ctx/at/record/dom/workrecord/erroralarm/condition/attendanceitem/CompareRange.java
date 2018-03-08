@@ -5,15 +5,15 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckConditionValue;
 
 /**
  * @author hungnm
  *
  */
 // 範囲との比較
-public class CompareRange<V extends IntegerPrimitiveValue<V>> extends CheckedCondition{
+public class CompareRange<V extends CheckConditionValue> extends CheckedCondition{
 
 	//開始値
 	private V startValue;

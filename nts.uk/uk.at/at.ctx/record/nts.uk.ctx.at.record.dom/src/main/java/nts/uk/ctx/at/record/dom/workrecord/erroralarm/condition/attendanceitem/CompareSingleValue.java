@@ -9,16 +9,16 @@ import java.util.function.Function;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckConditionValue;
 
 /**
  * @author hungnm
  *
  */
 // 単一値との比較
-public class CompareSingleValue<V extends IntegerPrimitiveValue<V>> extends CheckedCondition {
+public class CompareSingleValue<V extends CheckConditionValue> extends CheckedCondition {
 
 	// 値
 	private V value;
@@ -54,11 +54,11 @@ public class CompareSingleValue<V extends IntegerPrimitiveValue<V>> extends Chec
 	}
 
 	public boolean check(V target) {
-		return check(target, value.v());
+		return check(target, value.value());
 	}
 	
 	public boolean checkWithAttendanceItem(V target, Function<List<Integer>, List<Integer>> getItemValue) {
-		Integer compareValue = getItemValue.apply(Arrays.asList(this.value.v())).get(0);
+		Integer compareValue = getItemValue.apply(Arrays.asList(this.value.value())).get(0);
 		return check(target, compareValue);
 	}
 	

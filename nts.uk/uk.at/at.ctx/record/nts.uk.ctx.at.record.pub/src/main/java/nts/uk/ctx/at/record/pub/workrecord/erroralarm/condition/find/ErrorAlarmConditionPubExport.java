@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlConditionsAttendanceItem;
@@ -20,6 +19,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckConditionValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
@@ -122,7 +122,7 @@ public class ErrorAlarmConditionPubExport {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <V extends IntegerPrimitiveValue<V>> ErAlAttendanceItemCondition<V> convertAtdIemConToDomain(
+	private <V extends CheckConditionValue<V>> ErAlAttendanceItemCondition<V> convertAtdIemConToDomain(
 			ErAlAtdItemConditionPubExport atdItemCon, String companyId, String errorAlarmCode) {
 
 		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(companyId, errorAlarmCode,
@@ -361,7 +361,7 @@ public class ErrorAlarmConditionPubExport {
 					break;
 				}
 			} else {
-				erAlAtdItemConditionDto.setSingleAtdItem(itemDomain.getCompareSingleValue().getValue().v());
+				erAlAtdItemConditionDto.setSingleAtdItem(itemDomain.getCompareSingleValue().getValue().value());
 			}
 			erAlAtdItemConditionDto.setConditionType(itemDomain.getCompareSingleValue().getConditionType().value);
 			erAlAtdItemConditionDto.setCompareOperator(itemDomain.getCompareSingleValue().getCompareOpertor().value);

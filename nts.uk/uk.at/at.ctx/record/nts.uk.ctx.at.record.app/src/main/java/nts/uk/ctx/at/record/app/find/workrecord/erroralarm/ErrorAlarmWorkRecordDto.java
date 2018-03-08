@@ -140,7 +140,7 @@ public class ErrorAlarmWorkRecordDto {
 					break;
 				}
 			} else {
-				erAlAtdItemConditionDto.setSingleAtdItem(itemDomain.getCompareSingleValue().getValue().v());
+				erAlAtdItemConditionDto.setSingleAtdItem(itemDomain.getCompareSingleValue().getValue().value());
 			}
 			erAlAtdItemConditionDto.setConditionType(itemDomain.getCompareSingleValue().getConditionType().value);
 			erAlAtdItemConditionDto.setCompareOperator(itemDomain.getCompareSingleValue().getCompareOpertor().value);
