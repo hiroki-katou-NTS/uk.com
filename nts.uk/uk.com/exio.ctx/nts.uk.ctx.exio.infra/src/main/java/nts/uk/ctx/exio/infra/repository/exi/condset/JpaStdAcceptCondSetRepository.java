@@ -40,19 +40,21 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 
 	@Override
 	public void update(StdAcceptCondSet domain) {
-		Optional<OiomtStdAcceptCondSet> entityOpt = this.queryProxy().find(
-				new OiomtStdAcceptCondSetPk(domain.getCid(), domain.getSystemType().value, domain.getConditionSetCd().v()),
-				OiomtStdAcceptCondSet.class);
+		Optional<OiomtStdAcceptCondSet> entityOpt = this.queryProxy().find(new OiomtStdAcceptCondSetPk(domain.getCid(),
+				domain.getSystemType().value, domain.getConditionSetCd().v()), OiomtStdAcceptCondSet.class);
 		if (entityOpt.isPresent()) {
 			OiomtStdAcceptCondSet entity = entityOpt.get();
 			entity.conditionSetName = domain.getConditionSetName().v();
-			entity.acceptMode = domain.getAcceptMode().value;
+			entity.acceptMode = domain.getAcceptMode().isPresent() ? domain.getAcceptMode().get().value : null;
 			entity.categoryId = domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null;
 			entity.checkCompleted = domain.getCheckCompleted().value;
-			entity.csvDataLineNumber = domain.getCsvDataLineNumber().isPresent() ? domain.getCsvDataLineNumber().get().v() : null;
-			entity.csvDataStartLine = domain.getCsvDataStartLine().isPresent() ? domain.getCsvDataStartLine().get().v() : null;
+			entity.csvDataLineNumber = domain.getCsvDataLineNumber().isPresent()
+					? domain.getCsvDataLineNumber().get().v() : null;
+			entity.csvDataStartLine = domain.getCsvDataStartLine().isPresent() ? domain.getCsvDataStartLine().get().v()
+					: null;
 			entity.deleteExistData = domain.getDeleteExistData().value;
-			entity.deleteExtDataMethod = domain.getDeleteExtDataMethod().isPresent() ? domain.getDeleteExtDataMethod().get().value : null;
+			entity.deleteExtDataMethod = domain.getDeleteExtDataMethod().isPresent()
+					? domain.getDeleteExtDataMethod().get().value : null;
 			this.commandProxy().update(entity);
 		}
 	}
