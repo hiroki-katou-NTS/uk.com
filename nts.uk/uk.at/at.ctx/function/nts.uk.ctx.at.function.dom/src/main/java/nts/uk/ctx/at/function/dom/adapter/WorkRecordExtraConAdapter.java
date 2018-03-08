@@ -2,6 +2,9 @@ package nts.uk.ctx.at.function.dom.adapter;
 
 import java.util.List;
 
+import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.MessageWRExtraConAdapterDto;
+
+
 public interface WorkRecordExtraConAdapter {
 	List<WorkRecordExtraConAdapterDto> getAllWorkRecordExtraConByListID(List<String> listErrorAlarmID );
 	
@@ -16,5 +19,7 @@ public interface WorkRecordExtraConAdapter {
 	List<String> checkUpdateListErAl(List<String> listErrorAlarmCheckID,List<WorkRecordExtraConAdapterDto> listErroAlarm);
 	
 	 List<String> addNewListErAl(List<WorkRecordExtraConAdapterDto> listErroAlarm);
+	 
+	 List<MessageWRExtraConAdapterDto> getMessageWRExtraConByListID(List<String> listErrorAlarmID );
 	
 }

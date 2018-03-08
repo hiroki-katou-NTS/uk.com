@@ -500,7 +500,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 						}
 					}
 					if(!lstAppPre.isEmpty()){
-						group = new AppPrePostGroup(appID, lstAppPre.get(0).getAppID(), null);
+						group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null);
 					}
 				}
 				//承認一覧表示設定.残業の実績
@@ -514,7 +514,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					if(group != null){
 						group.setTime(result.getLstFrameResult());
 					}else{
-						group = new AppPrePostGroup("", sID, result.getLstFrameResult());
+						group = new AppPrePostGroup("", appID, result.getLstFrameResult());
 					}
 				}
 				if(group != null){
@@ -590,13 +590,14 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		List<OverTimeFrame> lstFrameResult = new ArrayList<>();
 		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getOverTime().entrySet()){
 			for(OverTimeFrame i : time){
-				if(i.getFrameNo() == entry.getKey()){
+				if(i.getFrameNo() == entry.getKey() && i.getAttendanceType() == 1){
 					int a =	entry.getValue().getCalTime();
 					if(a < i.getApplicationTime()){
 						checkColor = true;
 					}
 					OverTimeFrame frameRes = i;
 					frameRes.setApplicationTime(a);
+					lstFrameResult.add(frameRes);
 				}
 			}
 		}
@@ -604,11 +605,14 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//Imported(申請承認)「計算休出時間」を取得する - req #23
 		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getHolidayWorkTime().entrySet()){
 			for(OverTimeFrame i : time){
-				if(i.getFrameNo() == entry.getKey()){
+				if(i.getFrameNo() == entry.getKey() && i.getAttendanceType() == 0){
 					int a =	entry.getValue().getCalTime();
 					if(a < i.getApplicationTime()){
 						checkColor = true;
 					}
+					OverTimeFrame frameRes = i;
+					frameRes.setApplicationTime(a);
+					lstFrameResult.add(frameRes);
 				}
 			}
 		}
@@ -616,21 +620,27 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//Imported(申請承認)「計算加給時間」を取得する - req #23
 		for(Map.Entry<Integer,Integer> entry : cal.getBonusPayTime().entrySet()){
 			for(OverTimeFrame i : time){
-				if(i.getFrameNo() == entry.getKey()){
+				if(i.getFrameNo() == entry.getKey() && i.getAttendanceType() == 3){
 					int a =	entry.getValue().intValue();
 					if(a < i.getApplicationTime()){
 						checkColor = true;
 					}
+					OverTimeFrame frameRes = i;
+					frameRes.setApplicationTime(a);
+					lstFrameResult.add(frameRes);
 				}
 			}
 		}
 		for(Map.Entry<Integer,Integer> entry : cal.getSpecBonusPayTime().entrySet()){
 			for(OverTimeFrame i : time){
-				if(i.getFrameNo() == entry.getKey()){
+				if(i.getFrameNo() == entry.getKey() && i.getAttendanceType() == 4){
 					int a =	entry.getValue().intValue();
 					if(a < i.getApplicationTime()){
 						checkColor = true;
 					}
+					OverTimeFrame frameRes = i;
+					frameRes.setApplicationTime(a);
+					lstFrameResult.add(frameRes);
 				}
 			}
 		}

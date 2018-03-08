@@ -120,18 +120,25 @@ module nts.uk.at.view.kal001.a.model {
             $("#fixed-table").ntsFixedTable({ height: 300, width: 600 });
             service.getAlarmByUser().done((alarmData)=>{
                 
-                self.alarmCombobox(alarmData);                
-                self.currentAlarmCode(self.alarmCombobox()[0].alarmCode);
-                
-                service.getCheckConditionTime(self.currentAlarmCode()).done((checkTimeData)=>{
-                    self.periodByCategory(_.map((checkTimeData), (item) =>{
-                        return new PeriodByCategory(item);
-                    }));
-                    self.alarmCodeChange();
-                    dfd.resolve();
-                }).fail((errorCheckTime) =>{
-                    alertError(errorCheckTime);
-                });
+                self.alarmCombobox(alarmData);
+                                
+                if(self.alarmCombobox().length>0){
+                    
+                    self.currentAlarmCode(self.alarmCombobox()[0].alarmCode);                
+                    service.getCheckConditionTime(self.currentAlarmCode()).done((checkTimeData)=>{
+                        self.periodByCategory(_.map((checkTimeData), (item) =>{
+                            return new PeriodByCategory(item);
+                        }));
+                        self.alarmCodeChange();
+                        dfd.resolve();
+                    }).fail((errorCheckTime) =>{
+                        alertError(errorCheckTime);
+                    });
+                                        
+                }else{
+                     dfd.resolve();  
+                }
+
                 
             }).fail((errorAlarm)=>{
                  alertError(errorAlarm);

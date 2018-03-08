@@ -18,6 +18,9 @@ module nts.uk.at.view.kal002.a.viewmodel {
         }   
         openKAL004() { 
         nts.uk.request.jump("/view/kal/004/a/index.xhtml");
+        } 
+        openKAL002B() { 
+        nts.uk.request.jump("/view/kal/002/b/index.xhtml");
         }  
     }   
 }

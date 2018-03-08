@@ -11,6 +11,9 @@ import nts.arc.time.GeneralDate;
 public class AlarmExtraValueWkReDto {
 
 	/**職場ID*/
+	private String workplaceID;
+	
+	/**職場名*/
 	private String workplaceName;
 	
 	/**社員ID*/
