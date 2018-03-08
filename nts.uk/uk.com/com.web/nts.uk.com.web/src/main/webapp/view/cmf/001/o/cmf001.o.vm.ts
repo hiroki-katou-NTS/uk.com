@@ -75,9 +75,9 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         /**
          * start page data    
         */
-        private startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
+        public startPage(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
             // block ui
             block.grayout();
 
