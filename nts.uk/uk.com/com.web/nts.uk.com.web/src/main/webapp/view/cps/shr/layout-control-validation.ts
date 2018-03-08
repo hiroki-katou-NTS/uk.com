@@ -162,7 +162,7 @@ module nts.layout {
                 CS00002_IS00016: IFindData = finder.find('CS00002', 'IS00016'),
                 validateName = (item: IFindData) => {
                     let value: string = ko.toJS(item.data.value),
-                        index: number = value.indexOf(' ');
+                        index: number = value.indexOf('　');
 
                     if (index > -1 && [0, value.length - 1].indexOf(index) == -1) {
                         rmError(item, "Msg_924");
