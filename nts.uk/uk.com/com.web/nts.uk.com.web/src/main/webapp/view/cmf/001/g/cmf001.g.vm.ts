@@ -32,13 +32,13 @@ module nts.uk.com.view.cmf001.g.viewmodel {
         constructor() {
             var self = this;
             self.decimalPointClsItem = ko.observableArray([
-                new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.NO_OUTPUT_DECIMAL_POINT, 'NO_OUTPUT_DECIMAL_POINT'),
-                new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.OUTPUT_DECIMAL_POINT, 'OUTPUT_DECIMAL_POINT')
+                new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.NO_OUTPUT_DECIMAL_POINT, getText('Enum_DecimalPointClassification_NO_OUTPUT_DECIMAL_POINT')),
+                new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.OUTPUT_DECIMAL_POINT, getText('Enum_DecimalPointClassification_OUTPUT_DECIMAL_POINT'))
             ]);
             self.decimalFractionItem = ko.observableArray([
-                new model.ItemModel(model.ROUNDING_METHOD.TRUNCATION, 'TRUNCATION'),
-                new model.ItemModel(model.ROUNDING_METHOD.ROUND_UP, 'ROUND_UP'),
-                new model.ItemModel(model.ROUNDING_METHOD.DOWN_4_UP_5, 'DOWN_4_UP_5')
+                new model.ItemModel(model.ROUNDING_METHOD.TRUNCATION, getText('Enum_Rounding_Truncation')),
+                new model.ItemModel(model.ROUNDING_METHOD.ROUND_UP, getText('Enum_Rounding_Round_Up')),
+                new model.ItemModel(model.ROUNDING_METHOD.DOWN_4_UP_5, getText('Enum_Rounding_Down_4_Up_5'))
             ]);
             
             let params = getShared("CMF001gParams");

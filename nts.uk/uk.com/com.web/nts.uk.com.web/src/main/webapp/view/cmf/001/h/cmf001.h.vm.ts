@@ -32,10 +32,10 @@ module nts.uk.com.view.cmf001.h.viewmodel {
             var self = this;
             self.inputMode = true;
             self.fixedLengMethod = ko.observableArray([
-                new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_BEFORE, 'ZERO_BEFORE'),
-                new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_AFTER, 'ZERO_AFTER'),
-                new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_BEFORE, 'SPACE_BEFORE'),
-                new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_AFTER, 'SPACE_AFTER')
+                new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_BEFORE, getText('Enum_FixedLengthEditingMethod_ZERO_BEFORE')),
+                new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_AFTER, getText('Enum_FixedLengthEditingMethod_ZERO_AFTER')),
+                new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_BEFORE, getText('Enum_FixedLengthEditingMethod_SPACE_BEFORE')),
+                new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_AFTER, getText('Enum_FixedLengthEditingMethod_SPACE_AFTER'))
             ]);
             let params = getShared("CMF001hParams"); 
             let inputMode = params.inputMode;
