@@ -152,52 +152,53 @@ module nts.layout {
             self.combobox();
             validate.initCheckError(lstCls);
         }
-        
+
         textBox = () => {
             let self = this,
-            finder = self.finder,
-            CS00002_IS00003: IFindData = finder.find('CS00002', 'IS00003'),
-            CS00002_IS00004: IFindData = finder.find('CS00002', 'IS00004'),
-            CS00002_IS00015: IFindData = finder.find('CS00002', 'IS00015'),
-            CS00002_IS00016: IFindData = finder.find('CS00002', 'IS00016');
+                finder = self.finder,
+                CS00002_IS00003: IFindData = finder.find('CS00002', 'IS00003'),
+                CS00002_IS00004: IFindData = finder.find('CS00002', 'IS00004'),
+                CS00002_IS00015: IFindData = finder.find('CS00002', 'IS00015'),
+                CS00002_IS00016: IFindData = finder.find('CS00002', 'IS00016'),
+                validateName = (item: IFindData) => {
+                    let value: string = ko.toJS(item.data.value);
+
+                    if (![0, value.length - 1].indexOf(value.indexOf('　')) && value.indexOf('　') > -1) {
+                        rmError(item, "Msg_924");
+                    } else if (item.data.value() && !item.ctrl.parent().hasClass('error')) {
+                        !item.ctrl.is(':disabled') && item.ctrl.ntsError('set', { messageId: "Msg_924" });
+                    }
+                };
+
             if (CS00002_IS00003) {
-                self.validateName(CS00002_IS00003);
-                CS00002_IS00003.data.value.subscribe(x=> {
-                   self.validateName(CS00002_IS00003);
+                validateName(CS00002_IS00003);
+                CS00002_IS00003.data.value.subscribe(x => {
+                    validateName(CS00002_IS00003);
                 });
             }
-            
+
             if (CS00002_IS00004) {
-                self.validateName(CS00002_IS00004);
-                CS00002_IS00004.data.value.subscribe(x=> {
-                   self.validateName(CS00002_IS00004);
+                validateName(CS00002_IS00004);
+                CS00002_IS00004.data.value.subscribe(x => {
+                    validateName(CS00002_IS00004);
                 });
             }
+
             if (CS00002_IS00015) {
-                self.validateName(CS00002_IS00015);
-                CS00002_IS00015.data.value.subscribe(x=> {
-                   self.validateName(CS00002_IS00015);
+                validateName(CS00002_IS00015);
+                CS00002_IS00015.data.value.subscribe(x => {
+                    validateName(CS00002_IS00015);
                 });
             }
-            
+
             if (CS00002_IS00016) {
-                self.validateName(CS00002_IS00016);
-                CS00002_IS00016.data.value.subscribe(x=> {
-                   self.validateName(CS00002_IS00016);
+                validateName(CS00002_IS00016);
+                CS00002_IS00016.data.value.subscribe(x => {
+                    validateName(CS00002_IS00016);
                 });
-            }
-        };
-        
-        validateName(item: IFindData){
-            if (!item.data.value().startsWith('　') && !item.data.value().endsWith('　') && item.data.value().includes('　')){
-                rmError(item, "Msg_924");
-            }  else {
-                if (item.data.value() && !item.ctrl.parent().hasClass('error')) {
-                    !item.ctrl.is(':disabled') && item.ctrl.ntsError('set', { messageId: "Msg_924" });
-                }
             }
         }
-        
+
         radio = () => {
             let self = this,
                 finder = self.finder,
@@ -215,6 +216,7 @@ module nts.layout {
                         }
                     });
                 });
+
                 setTimeout(() => {
                     CS00020_IS00248.data.value.valueHasMutated();
                 }, 0);
@@ -233,295 +235,289 @@ module nts.layout {
                         }
                     });
                 });
+
                 setTimeout(() => {
                     CS00020_IS00121.data.value.valueHasMutated();
                 }, 0);
             }
-        };
-
-        setItemData(Item, value) {
-            Item && Item.data.value(value);
-        }
-
-        setItemName(Item, value) {
-            Item && Item.data.textValue(value || '');
-        }
-
-        setEditAble(Item, value) {
-            Item && Item.data.editable(value);
-        }
-
-        regClickEvent(btnEvent: IButtonEvent) {
-            _.each(btnEvent.btnCodes, (code) => {
-                let self = this,
-                    finder = self.finder,
-                    currentCtg = 'CS00020',
-                    btnItem: IFindData = finder.find(currentCtg, code),
-                    wkTypeItem: IFindData = finder.find(currentCtg, btnEvent.wkTypeCode),
-                    wkTimeItem: IFindData = finder.find(currentCtg, btnEvent.timeCode),
-                    startItem1: IFindData = finder.find(currentCtg, btnEvent.startTime1),
-                    startItem2: IFindData = finder.find(currentCtg, btnEvent.startTime2),
-                    endItem1: IFindData = finder.find(currentCtg, btnEvent.endTime1),
-                    endItem2: IFindData = finder.find(currentCtg, btnEvent.endTime2),
-                    validateEditable = (wtc: any) => {
-                        let command: ICheckParam = {
-                            workTimeCode: ko.toJS(wtc)
-                        };
-
-                        if (command.workTimeCode) {
-                            fetch.check_start_end(command).done(first => {
-                                self.setEditAble(startItem1, !!first);
-                                self.setEditAble(endItem1, !!first);
-
-                                fetch.check_multi_time(command).done(second => {
-                                    self.setEditAble(startItem2, !!first && !!second);
-                                    self.setEditAble(endItem2, !!first && !!second);
-                                });
-                            });
-                        } else {
-                            self.setEditAble(startItem1, false);
-                            self.setEditAble(endItem1, false);
-                            self.setEditAble(startItem2, false);
-                            self.setEditAble(endItem2, false);
-                        }
-                    };
-
-                // for first run
-                validateEditable(wkTimeItem != null ? wkTimeItem.data.value : '');
-
-                if (btnItem) {
-                    btnItem.ctrl.on('click', () => {
-                        let typeCode: string = wkTypeItem ? wkTypeItem.data.value() || "" : "",
-                            typeCodes: Array<any> = btnEvent.wkTypeCodes.constructor === Array ? btnEvent.wkTypeCodes : !finder.find(currentCtg, btnEvent.wkTypeCodes) ? [] : finder.find(currentCtg, btnEvent.wkTypeCodes).data.lstComboBoxValue,
-                            timeCode: string = wkTimeItem ? wkTimeItem.data.value() || "" : "",
-                            timeCodes: Array<any> = btnEvent.wkTimeCodes.constructor === Array ? btnEvent.wkTimeCodes : !finder.find(currentCtg, btnEvent.wkTimeCodes) ? [] : finder.find(currentCtg, btnEvent.wkTimeCodes).data.lstComboBoxValue
-
-                        setShared('parentCodes', {
-                            workTypeCodes: _.map(typeCodes, x => x.optionValue),
-                            selectedWorkTypeCode: typeCode,
-                            workTimeCodes: _.map(timeCodes, x => x.optionValue),
-                            selectedWorkTimeCode: timeCode
-                        }, true);
-                        if (btnItem.data.itemCode != "IS00128") {
-                            modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                                let childData: IChildData = getShared('childData');
-
-                                if (childData) {
-                                    self.setItemData(wkTypeItem, childData.selectedWorkTypeCode);
-                                    self.setItemName(wkTypeItem, childData.selectedWorkTypeName);
-                                    self.setItemData(wkTimeItem, childData.selectedWorkTimeCode);
-                                    self.setItemName(wkTimeItem, childData.selectedWorkTimeName);
-                                    self.setItemData(startItem1, childData.first && childData.first.start);
-                                    self.setItemData(endItem1, childData.first && childData.first.end);
-                                    self.setItemData(startItem2, childData.second && childData.second.start);
-                                    self.setItemData(endItem2, childData.second && childData.second.end);
-
-                                    validateEditable(wkTimeItem != null ? wkTimeItem.data.value : '');
-                                }
-                            });
-                        } else {
-                            setShared("KDL002_Multiple", false, true);
-                            setShared("KDL002_SelectedItemId", btnItem.data.value(), true);
-                            setShared("KDL002_AllItemObj", _.map(btnItem.data.lstComboBoxValue, x => x.optionValue), true);
-                            modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
-                                let childData: IChildData = getShared('KDL002_SelectedNewItem');
-
-                                if (childData[0]) {
-                                    self.setItemData(wkTypeItem, childData[0].code);
-                                    self.setItemName(wkTypeItem, childData[0].name);
-                                }
-                            });
-                        }
-                    });
-                }
-            });
         }
 
         button = () => {
             let self = this,
                 finder = self.finder,
-                cmm009Items = [],
-
-                btnEvents: Array<IButtonEvent> = [
-                    //128
+                groups: Array<IGroupControl> = [
                     {
-                        btnCodes: ['IS00128'],
-                        wkTypeCode: 'IS00128',
-                        wkTypeCodes: 'IS00128',
-                        timeCode: '',
-                        wkTimeCodes: cmm009Items,
-                        startTime1: '',
-                        endTime1: '',
-                        startTime2: '',
-                        endTime2: ''
+                        workType: 'IS00128'
                     },
-                    //130 131
                     {
-                        btnCodes: ['IS00130', 'IS00131'],
-                        wkTypeCode: 'IS00130',
-                        wkTypeCodes: 'IS00130',
-                        timeCode: 'IS00131',
-                        wkTimeCodes: cmm009Items,
-                        startTime1: 'IS00133',
-                        endTime1: 'IS00134',
-                        startTime2: 'IS00136',
-                        endTime2: 'IS00137'
+                        workType: 'IS00130',
+                        workTime: 'IS00131',
+                        firstTimes: {
+                            start: 'IS00133',
+                            end: 'IS00134'
+                        },
+                        secondTimes: {
+                            start: 'IS00136',
+                            end: 'IS00137'
+                        }
                     },
-                    //139 140
                     {
-                        btnCodes: ['IS00139', 'IS00140'],
-                        wkTypeCode: 'IS00139',
-                        wkTypeCodes: 'IS00139',
-                        timeCode: 'IS00140',
-                        wkTimeCodes: cmm009Items,
-                        startTime1: 'IS00142',
-                        endTime1: 'IS00143',
-                        startTime2: 'IS00145',
-                        endTime2: 'IS00146'
+                        workType: 'IS00139',
+                        workTime: 'IS00140',
+                        firstTimes: {
+                            start: 'IS00142',
+                            end: 'IS00143'
+                        },
+                        secondTimes: {
+                            start: 'IS00145',
+                            end: 'IS00146'
+                        }
                     },
-                    //157 158
                     {
-                        btnCodes: ['IS00157', 'IS00158'],
-                        wkTypeCode: 'IS00157',
-                        wkTypeCodes: 'IS00157',
-                        timeCode: 'IS00158',
-                        wkTimeCodes: cmm009Items,
-                        startTime1: 'IS00160',
-                        endTime1: 'IS00161',
-                        startTime2: 'IS00163',
-                        endTime2: 'IS00164'
+                        workType: 'IS00157',
+                        workTime: 'IS00158',
+                        firstTimes: {
+                            start: 'IS00160',
+                            end: 'IS00161'
+                        },
+                        secondTimes: {
+                            start: 'IS00163',
+                            end: 'IS00164'
+                        }
                     },
-
-                    //166 167
                     {
-                        btnCodes: ['IS00166', 'IS00167'],
-                        wkTypeCode: 'IS00166',
-                        wkTypeCodes: 'IS00166',
-                        timeCode: 'IS00167',
-                        wkTimeCodes: cmm009Items,
-                        startTime1: 'IS00169',
-                        endTime1: 'IS00170',
-                        startTime2: 'IS00172',
-                        endTime2: 'IS00173'
+                        workType: 'IS00166',
+                        workTime: 'IS00167',
+                        firstTimes: {
+                            start: 'IS00169',
+                            end: 'IS00170'
+                        },
+                        secondTimes: {
+                            start: 'IS00172',
+                            end: 'IS00173'
+                        }
                     },
-
-                    //175 176
                     {
-                        btnCodes: ['IS00175', 'IS00176'],
-                        wkTypeCode: 'IS00175',
-                        wkTypeCodes: 'IS00175',
-                        timeCode: 'IS00176',
-                        wkTimeCodes: cmm009Items,
-                        startTime1: 'IS00178',
-                        endTime1: 'IS00179',
-                        startTime2: 'IS00181',
-                        endTime2: 'IS00182'
+                        workType: 'IS00175',
+                        workTime: 'IS00176',
+                        firstTimes: {
+                            start: 'IS00178',
+                            end: 'IS00179'
+                        },
+                        secondTimes: {
+                            start: 'IS00181',
+                            end: 'IS00182'
+                        }
                     },
-                    //148 149
                     {
-                        btnCodes: ['IS00148', 'IS00149'],
-                        wkTypeCode: 'IS00148',
-                        wkTypeCodes: 'IS00148',
-                        timeCode: 'IS00149',
-                        wkTimeCodes: cmm009Items,
-                        startTime1: 'IS00151',
-                        endTime1: 'IS00152',
-                        startTime2: 'IS00154',
-                        endTime2: 'IS00155'
+                        workType: 'IS00148',
+                        workTime: 'IS00149',
+                        firstTimes: {
+                            start: 'IS00151',
+                            end: 'IS00152'
+                        },
+                        secondTimes: {
+                            start: 'IS00154',
+                            end: 'IS00155'
+                        }
                     },
-                    //193 194
                     {
-                        btnCodes: ['IS00193', 'IS00194'],
-                        wkTypeCode: 'IS00193',
-                        wkTypeCodes: 'IS00193',
-                        timeCode: 'IS00194',
-                        wkTimeCodes: cmm009Items,
-                        startTime1: 'IS00196',
-                        endTime1: 'IS00197',
-                        startTime2: 'IS00199',
-                        endTime2: 'IS00200'
+                        workType: 'IS00193',
+                        workTime: 'IS00194',
+                        firstTimes: {
+                            start: 'IS00196',
+                            end: 'IS00197'
+                        },
+                        secondTimes: {
+                            start: 'IS00199',
+                            end: 'IS00200'
+                        }
                     },
-                    //202 203
                     {
-                        btnCodes: ['IS00202', 'IS00203'],
-                        wkTypeCode: 'IS00202',
-                        wkTypeCodes: 'IS00202',
-                        timeCode: 'IS00203',
-                        wkTimeCodes: cmm009Items,
-                        startTime1: 'IS00205',
-                        endTime1: 'IS00206',
-                        startTime2: 'IS00208',
-                        endTime2: 'IS00209'
+                        workType: 'IS00202',
+                        workTime: 'IS00203',
+                        firstTimes: {
+                            start: 'IS00205',
+                            end: 'IS00206'
+                        },
+                        secondTimes: {
+                            start: 'IS00208',
+                            end: 'IS00209'
+                        }
                     },
-                    //211 212
                     {
-                        btnCodes: ['IS00211', 'IS00212'],
-                        wkTypeCode: 'IS00211',
-                        wkTypeCodes: 'IS00211',
-                        timeCode: 'IS00212',
-                        wkTimeCodes: cmm009Items,
-                        startTime1: 'IS00214',
-                        endTime1: 'IS00215',
-                        startTime2: 'IS00217',
-                        endTime2: 'IS00218'
+                        workType: 'IS00211',
+                        workTime: 'IS00212',
+                        firstTimes: {
+                            start: 'IS00214',
+                            end: 'IS00215'
+                        },
+                        secondTimes: {
+                            start: 'IS00217',
+                            end: 'IS00218'
+                        }
                     },
-
-                    //220 221
                     {
-                        btnCodes: ['IS00220', 'IS00221'],
-                        wkTypeCode: 'IS00220',
-                        wkTypeCodes: 'IS00220',
-                        timeCode: 'IS00221',
-                        wkTimeCodes: cmm009Items,
-                        startTime1: 'IS00223',
-                        endTime1: 'IS00224',
-                        startTime2: 'IS00226',
-                        endTime2: 'IS00227'
+                        workType: 'IS00220',
+                        workTime: 'IS00221',
+                        firstTimes: {
+                            start: 'IS00223',
+                            end: 'IS00224'
+                        },
+                        secondTimes: {
+                            start: 'IS00226',
+                            end: 'IS00227'
+                        }
                     },
-                    //220 221
                     {
-                        btnCodes: ['IS00229', 'IS00230'],
-                        wkTypeCode: 'IS00229',
-                        wkTypeCodes: 'IS00229',
-                        timeCode: 'IS00230',
-                        wkTimeCodes: cmm009Items,
-                        startTime1: 'IS00232',
-                        endTime1: 'IS00233',
-                        startTime2: 'IS00235',
-                        endTime2: 'IS00236'
+                        workType: 'IS00229',
+                        workTime: 'IS00230',
+                        firstTimes: {
+                            start: 'IS00232',
+                            end: 'IS00233'
+                        },
+                        secondTimes: {
+                            start: 'IS00235',
+                            end: 'IS00236'
+                        }
                     },
-
-                    //238 239
                     {
-                        btnCodes: ['IS00238', 'IS00239'],
-                        wkTypeCode: 'IS00238',
-                        wkTypeCodes: 'IS00238',
-                        timeCode: 'IS00239',
-                        wkTimeCodes: cmm009Items,
-                        startTime1: 'IS00241',
-                        endTime1: 'IS00242',
-                        startTime2: 'IS00244',
-                        endTime2: 'IS00245'
+                        workType: 'IS00238',
+                        workTime: 'IS00239',
+                        firstTimes: {
+                            start: 'IS00241',
+                            end: 'IS00242'
+                        },
+                        secondTimes: {
+                            start: 'IS00244',
+                            end: 'IS00245'
+                        }
                     },
-                    //184 185
                     {
-                        btnCodes: ['IS00184', 'IS00185'],
-                        wkTypeCode: 'IS00184',
-                        wkTypeCodes: 'IS00184',
-                        timeCode: 'IS00185',
-                        wkTimeCodes: cmm009Items,
-                        startTime1: 'IS00187',
-                        endTime1: 'IS00188',
-                        startTime2: 'IS00190',
-                        endTime2: 'IS00191'
+                        workType: 'IS00184',
+                        workTime: 'IS00185',
+                        firstTimes: {
+                            start: 'IS00187',
+                            end: 'IS00188'
+                        },
+                        secondTimes: {
+                            start: 'IS00190',
+                            end: 'IS00191'
+                        }
                     }
-                ];
+                ],
+                setData = (ctrl: IFindData, value?: any) => {
+                    ctrl && ctrl.data.value(value || undefined);
+                },
+                setDataText = (ctrl: IFindData, value?: any) => {
+                    ctrl && ctrl.data.textValue(value || undefined);
+                },
+                setEditAble = (ctrl: IFindData, editable?: boolean) => {
+                    ctrl && ctrl.data.editable(editable || false);
+                },
+                validateEditable = (group: IGroupControl, wtc?: any) => {
+                    let command: ICheckParam = {
+                        workTimeCode: ko.toJS(wtc || undefined)
+                    },
+                        workType: IFindData = group.workType && finder.find('CS00020', group.workType),
+                        workTime: IFindData = group.workTime && finder.find('CS00020', group.workTime),
+                        firstTimes: ITimeFindData = group.firstTimes && {
+                            start: finder.find('CS00020', group.firstTimes.start),
+                            end: finder.find('CS00020', group.firstTimes.end)
+                        },
+                        secondTimes: ITimeFindData = group.secondTimes && {
+                            start: finder.find('CS00020', group.secondTimes.start),
+                            end: finder.find('CS00020', group.secondTimes.end)
+                        };
 
-            //register Event
-            _.each(btnEvents, (event) => {
-                self.regClickEvent(event);
+
+                    if (command.workTimeCode) {
+                        fetch.check_start_end(command).done(first => {
+                            firstTimes && setEditAble(firstTimes.start, !!first);
+                            firstTimes && setEditAble(firstTimes.end, !!first);
+
+                            fetch.check_multi_time(command).done(second => {
+                                secondTimes && setEditAble(secondTimes.start, !!first && !!second);
+                                secondTimes && setEditAble(secondTimes.end, !!first && !!second);
+                            });
+                        });
+                    } else {
+                        firstTimes && setEditAble(firstTimes.start, false);
+                        firstTimes && setEditAble(firstTimes.end, false);
+
+                        secondTimes && setEditAble(secondTimes.start, false);
+                        secondTimes && setEditAble(secondTimes.end, false);
+                    }
+                };
+
+            _.each(groups, (group: IGroupControl) => {
+                let workType: IFindData = group.workType && finder.find('CS00020', group.workType),
+                    workTime: IFindData = group.workTime && finder.find('CS00020', group.workTime),
+                    firstTimes: ITimeFindData = group.firstTimes && {
+                        start: finder.find('CS00020', group.firstTimes.start),
+                        end: finder.find('CS00020', group.firstTimes.end)
+                    },
+                    secondTimes: ITimeFindData = group.secondTimes && {
+                        start: finder.find('CS00020', group.secondTimes.start),
+                        end: finder.find('CS00020', group.secondTimes.end)
+                    };
+
+                if (!workType) {
+                    return;
+                }
+
+                if (!workTime) {
+                    workType.ctrl.on('click', () => {
+                        setShared("KDL002_Multiple", false, true);
+                        setShared("KDL002_SelectedItemId", workType.data.value(), true);
+                        setShared("KDL002_AllItemObj", _.map(workType.data.lstComboBoxValue, x => x.optionValue), true);
+
+                        modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
+                            let childData: Array<any> = getShared('KDL002_SelectedNewItem');
+
+                            if (childData[0]) {
+                                setData(workType, childData[0].code);
+                                setData(workType, childData[0].name);
+                            }
+                        });
+                    });
+                } else {
+                    validateEditable(group, workTime.data.value);
+
+                    workType.ctrl.on('click', () => {
+                        setShared('parentCodes', {
+                            workTypeCodes: workType && _.map(workType.data.lstComboBoxValue, x => x.optionValue),
+                            selectedWorkTypeCode: workType && ko.toJS(workType.data.value),
+                            workTimeCodes: workTime && _.map(workTime.data.lstComboBoxValue, x => x.optionValue),
+                            selectedWorkTimeCode: workTime && ko.toJS(workTime.data.value)
+                        }, true);
+
+                        modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                            let childData: IChildData = getShared('childData');
+
+                            if (childData) {
+                                setData(workType, childData.selectedWorkTypeCode);
+                                setDataText(workType, childData.selectedWorkTypeName);
+
+                                setData(workTime, childData.selectedWorkTimeCode);
+                                setDataText(workTime, childData.selectedWorkTimeName);
+
+                                firstTimes && setData(firstTimes.start, childData.first && childData.first.start);
+                                firstTimes && setData(firstTimes.end, childData.first && childData.first.end);
+
+                                secondTimes && setData(secondTimes.start, childData.second && childData.second.start);
+                                secondTimes && setData(secondTimes.end, childData.second && childData.second.end);
+
+                                validateEditable(group, workTime.data.value);
+                            }
+                        });
+                    });
+
+                    // handle click event of workType
+                    workTime.ctrl.on('click', () => workType.ctrl.trigger('click'));
+                }
             });
-        };
+        }
 
         combobox = () => {
             let self = this,
@@ -557,7 +553,7 @@ module nts.layout {
                 });
                 CS00020_IS00123.data.value.valueHasMutated();
             }
-        };
+        }
     }
 
     // define ITEM_CLASSIFICATION_TYPE
@@ -593,6 +589,7 @@ module nts.layout {
         'type': ITEM_TYPE;
         required: boolean;
         value: KnockoutObservable<any>;
+        textValue: KnockoutObservable<any>;
         items: KnockoutObservableArray<any>;
         editable: KnockoutObservable<boolean>;
         readonly: KnockoutObservable<boolean>;
@@ -632,15 +629,20 @@ module nts.layout {
         workTimeCode?: string;
     }
 
-    interface IButtonEvent {
-        btnCodes: any;
-        wkTypeCode: string;
-        wkTypeCodes: any;
-        timeCode: string;
-        wkTimeCodes: any;
-        startTime1: string;
-        endTime1: string;
-        startTime2: string;
-        endTime2: string;
+    interface IGroupControl {
+        workType: string;
+        workTime?: string;
+        firstTimes?: ITimeRange;
+        secondTimes?: ITimeRange;
+    }
+
+    interface ITimeRange {
+        start: string;
+        end: string;
+    }
+
+    interface ITimeFindData {
+        start: IFindData;
+        end: IFindData;
     }
 }
