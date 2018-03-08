@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum BloodType {
 
-	/* None */
-	Unselected(0),
 	/* O RH+ */
 	ORhPlus(3),
 	/* O RH- */

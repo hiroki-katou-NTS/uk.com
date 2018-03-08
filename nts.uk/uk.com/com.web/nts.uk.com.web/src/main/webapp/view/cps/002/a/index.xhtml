@@ -397,25 +397,25 @@
 								<div class="step3_col2">
 									<table class="table_item">
 										<tbody>
-											<tr>
-												<td width="120px" class="bg-green">#{i18n.getText('CPS002_103')}</td>
-												<td width="300px"
+											<tr class="step3-tr">
+												<td class="step3-title-name bg-green">#{i18n.getText('CPS002_103')}</td>
+												<td class="step3-title-value" 
 													data-bind="text:nts.uk.time.formatDate(currentEmployee().hireDate(),'yyyy/MM/dd')"></td>
 											</tr>
-											<tr>
-												<td class="bg-green">#{i18n.getText('CPS002_106')}</td>
-												<td>
+											<tr class="step3-tr">
+												<td class="step3-title-name bg-green">#{i18n.getText('CPS002_106')}</td>
+												<td class="step3-title-value" >
 													<div class='ellipsis_step3_title'
 														data-bind="text:currentEmployee().employeeCode()+' '+currentEmployee().employeeName()"></div>
 												</td>
 											</tr>
-											<tr>
-												<td class="bg-green">#{i18n.getText('CPS002_18')}</td>
-												<td data-bind="text:currentEmployee().cardNo()"></td>
+											<tr class="step3-tr">
+												<td class="step3-title-name bg-green">#{i18n.getText('CPS002_18')}</td>
+												<td class="step3-title-value" data-bind="text:currentEmployee().cardNo()"></td>
 											</tr>
-											<tr>
-												<td class="bg-green">#{i18n.getText('CPS002_108')}</td>
-												<td data-bind="text:currentEmployee().loginId()"></td>
+											<tr class="step3-tr">
+												<td class="step3-title-name bg-green">#{i18n.getText('CPS002_108')}</td>
+												<td class="step3-title-value" data-bind="text:currentEmployee().loginId()"></td>
 											</tr>
 										</tbody>
 									</table>
