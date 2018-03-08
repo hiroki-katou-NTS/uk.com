@@ -5,6 +5,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktime;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 
 /**
@@ -28,4 +29,8 @@ public class WorkTimeCondition extends DomainObject {
 		this.comparePlanAndActual = comparePlanAndActual;
 	}
 
+	/** 就業時間帯をチェックする */
+	public boolean checkWorkTime(WorkInfoOfDailyPerformance workInfo) {
+		return false;
+	}
 }

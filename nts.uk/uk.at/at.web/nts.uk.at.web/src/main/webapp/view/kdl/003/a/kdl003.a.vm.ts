@@ -124,8 +124,10 @@ module nts.uk.at.view.kdl003.a {
                 
                 // On selectedWorkTimeCode changed event.
                 self.selectedWorkTimeCode.subscribe(code => {
-                    self.getListTimeBySeleckedCode(code);
-                    self.getTimeBySelectedCode(self.listWorkTime(), code);
+                    if (code){
+                        self.getListTimeBySeleckedCode(code);
+                        self.getTimeBySelectedCode(self.listWorkTime(), code);
+                    }
                 }); 
                 
                 //parent data

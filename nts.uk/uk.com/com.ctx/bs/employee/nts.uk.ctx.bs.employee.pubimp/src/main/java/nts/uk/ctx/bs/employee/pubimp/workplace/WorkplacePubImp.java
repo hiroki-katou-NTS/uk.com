@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pubimp.workplace;
 
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,10 +19,10 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
@@ -34,6 +33,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpCdNameExport;
+import nts.uk.ctx.bs.employee.pub.workplace.WkpConfigAtTimeExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceIdAndPeriod;
 import nts.uk.shr.com.context.AppContexts;
@@ -374,6 +374,22 @@ public class WorkplacePubImp implements SyWorkplacePub {
 			}
 		});
 		return result;
-	};
+	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub#findByWkpIdsAtTime(java.lang.String, nts.arc.time.GeneralDate, java.util.List)
+	 */
+	@Override
+	public List<WkpConfigAtTimeExport> findByWkpIdsAtTime(String companyId, GeneralDate baseDate,
+			List<String> wkpIds) {
+		
+		List<WorkplaceConfigInfo> configInfos = wkpConfigInfoRepo.findByWkpIdsAtTime(companyId,
+				baseDate, wkpIds);
+		
+		return configInfos.stream().map(configInfo -> configInfo.getLstWkpHierarchy().get(0))
+				.map(wkpHierarchy -> WkpConfigAtTimeExport.builder()
+						.workplaceId(wkpHierarchy.getWorkplaceId())
+						.hierarchyCd(wkpHierarchy.getHierarchyCode().v()).build())
+				.collect(Collectors.toList());
+	}
 }

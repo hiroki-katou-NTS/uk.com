@@ -75,6 +75,7 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@Column(name = "ERAL_CHECK_ID")
 	public String eralCheckId;
 
+	@Basic(optional = true)
 	@Column(name = "MESSAGE_DISPLAY")
 	public String messageDisplay;
 	

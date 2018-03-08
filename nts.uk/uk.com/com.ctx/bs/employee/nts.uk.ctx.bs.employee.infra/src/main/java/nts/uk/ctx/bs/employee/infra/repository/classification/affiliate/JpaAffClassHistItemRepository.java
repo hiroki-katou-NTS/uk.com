@@ -64,9 +64,7 @@ public class JpaAffClassHistItemRepository extends JpaRepository implements AffC
 			throw new RuntimeException("invalid TempAbsenceHisItem");
 		}
 		BsymtAffClassHistItem ent = entityOpt.get();
-		if (item.getClassificationCode() != null && !item.getClassificationCode().v().equals("")){
-			ent.classificationCode = item.getClassificationCode().v();
-		}
+		ent.classificationCode = item.getClassificationCode().v();
 		this.commandProxy().update(ent);
 
 	}

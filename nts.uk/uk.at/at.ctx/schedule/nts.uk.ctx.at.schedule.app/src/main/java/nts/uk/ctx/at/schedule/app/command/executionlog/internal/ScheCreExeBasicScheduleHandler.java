@@ -436,8 +436,8 @@ public class ScheCreExeBasicScheduleHandler {
 		}
 		BasicScheduleSaveCommand basicScheduleSaveCommand = new BasicScheduleSaveCommand();
 		basicScheduleSaveCommand.setEmployeeId(basicSchedule.getEmployeeId());
-		basicScheduleSaveCommand.setWorktimeCode(basicSchedule.getWorkTimeCode());
-		basicScheduleSaveCommand.setWorktypeCode(basicSchedule.getWorkTypeCode());
+		basicScheduleSaveCommand.setWorktimeCode(command.getWorkingCode());
+		basicScheduleSaveCommand.setWorktypeCode(command.getWorktypeCode());
 		basicScheduleSaveCommand.setYmd(basicSchedule.getDate());
 		basicScheduleSaveCommand.setWorkScheduleTime(basicSchedule.getWorkScheduleTime());
 		

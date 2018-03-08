@@ -107,8 +107,9 @@
 }
 
 /* Widget Panel Component */
-.widget-panel {border:1px solid #B1B1B1; box-shadow:0 5px 0 #2FCC71 inset; padding:10px; box-sizing:border-box; }
+.widget-panel {position: relative;border:1px solid #B1B1B1; box-shadow:0 5px 0 #2FCC71 inset; padding:10px; box-sizing:border-box; }
 .widget-panel.preview {width: 150px; height: 150px;}
+.widget-panel .widget-wraper {width:100%; height:100%;}
 .widget-panel .panel-header {border-bottom:1px solid #B1B1B1; height:30px; padding-bottom:10px; margin-bottom:10px; box-sizing:border-box;}
 .widget-panel .panel-header .square {display:inline-block; width:18px; height:18px; vertical-align: middle; margin-right: 10px;}
 .widget-panel .panel-header .square.green {background-color: #2FCC71;}
@@ -136,10 +137,10 @@
 	position: relative;
 }
 
-.widget-panel.preview .panel-header .remove-button {
+.widget-panel.preview .remove-button {
 	position: absolute;
-	right: 0;
-	top: 1px;
+	right: 10px;
+	top: 11px;
 	width: 20px;
 	height: 20px;
 	line-height: 18px;
@@ -148,40 +149,13 @@
 	border: 1px solid transparent;
 	border-radius: 2px;
 	cursor: pointer;
+	z-index: 1;
 }
 
-.widget-panel.preview .panel-header .remove-button:hover {
+.widget-panel.preview .remove-button:hover {
 	border: 1px solid #a0a0a0;
 }
 
-.widget-panel.preview .panel-header .remove-button:active {
+.widget-panel.preview .remove-button:active {
 	box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.3) inset;
-}
-
-/* Loading Placeholder */
-.placeholder {
-	animation-name: placeHolderShimmer;
-	animation-duration: 1s;
-	animation-fill-mode: forwards;
-	animation-iteration-count: infinite;
-	animation-timing-function: linear;
-	background: #f6f7f8;
-	background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
-	background-size: 800px 104px;
-	position: relative;
-}
-
-@
-keyframes placeHolderShimmer { 0%{
-	background-position: -468px 0
-}
-100%{
-background-position
-:
- 
-468
-px
- 
-0
-}
 }

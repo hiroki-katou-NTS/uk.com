@@ -75,7 +75,7 @@ public class TotalWorkingTimeDto {
 	private List<GoOutTimeSheetDailyPerformDto> goOutTimeSheet;
 
 	/** 短時間勤務時間: 日別実績の短時間勤務時間 */
-	@AttendanceItemLayout(layout = "K", jpPropertyName = "短時間勤務時間", enumField = "childCareAndFamilyCareAtr")
+	@AttendanceItemLayout(layout = "K", jpPropertyName = "短時間勤務時間", enumField = "childCareAttr")
 	private ShortWorkTimeDto shortWorkTime;
 
 	/** 加給時間: 日別実績の加給時間 */

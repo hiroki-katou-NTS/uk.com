@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -8,6 +10,8 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceItemOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateMonthlyValue;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
@@ -30,6 +34,8 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTCalMed;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -272,8 +278,8 @@ public class ExcessOutsideWorkMng {
 			this.excessOutsideWork.setFromAggregateTime(
 					this.excessOutsideWorkDetail.getTotalTimeAfterRound(), regAndIrgTime.getIrregularWorkingTime());
 			
-			// 時間外超過内訳に割り当てる
-		
+			// 時間外超過内訳に割り当てる　（集計後）
+			this.assignExcessOutsideWorkBreakdownForAfterAggregate();
 		}
 	}
 	
@@ -314,7 +320,8 @@ public class ExcessOutsideWorkMng {
 					this.statutoryWorkingTimeMonth, repositories);
 			
 			// 通常・変形労働勤務の逆時系列割り当て
-			
+			this.assignReverseTimeSeriesOfRegAndIrg(
+					regAndIrgTime, aggrValue.getAggregateTotalWorkingTime(), repositories);
 		}
 		if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK){
 			val aggrSetOfFlex = this.aggrSettingMonthly.getFlexWork();
@@ -333,15 +340,20 @@ public class ExcessOutsideWorkMng {
 					this.prescribedWorkingTimeMonth, this.statutoryWorkingTimeMonth, repositories);
 			
 			// フレックス時間勤務の逆時系列割り当て
-			
+			if (flexAggregateMethod == FlexAggregateMethod.FOR_CONVENIENCE){
+				
+				// 便宜上集計の逆時系列割り当て
+				this.assignReverseTimeSeriesForConvenience(flexTime);
+			}
 		}
 		
 		if (aggrValue != null){
 		
 			// 丸め時間を割り当てる
+			this.excessOutsideWorkDetail.assignRoundTime(this.monthlyDetail, this.datePeriod, this.roundingSet);
 			
 			// 時間外超過内訳に割り当てる
-			
+			this.assignExcessOutsideWorkBreakdownForReverseTimeSeries();
 		}
 	}
 	
@@ -370,7 +382,7 @@ public class ExcessOutsideWorkMng {
 		}
 		if (!excessOutsideTimeSet.isAskPremium()) return;
 		
-		// 「時間外超過設定」を確認する
+		// 「時間外超過設定」を確認する　（計算方法が「時系列」以外なら割り当てない）
 		if (!this.outsideOTSetOpt.isPresent()) return;
 		if (this.outsideOTSetOpt.get().getCalculationMethod() != OutsideOTCalMed.TIME_SERIES) return;
 		
@@ -532,5 +544,383 @@ public class ExcessOutsideWorkMng {
 		excessTimeUntilDay = targetFlexExcessTime.minusMinutes(diffMinutes);
 		
 		return excessTimeUntilDay;
+	}
+	
+	/**
+	 * 通常・変形労働勤務の逆時系列割り当て
+	 * @param regAndIrgTime 月別実績の通常変形時間
+	 * @param aggregateTotalWorkingTime 総労働時間
+	 * @param repositories 月次集計が必要とするリポジトリ
+	 */
+	private void assignReverseTimeSeriesOfRegAndIrg(
+			RegularAndIrregularTimeOfMonthly regAndIrgTime,
+			AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		// 内訳項目一覧に週割増合計時間が設定されているか確認する
+		if (!this.outsideOTSetOpt.isPresent()) return;
+		val outsideOTSet = this.outsideOTSetOpt.get();
+		boolean isExistWeekTotalPT = false;
+		for (val outsideOTBDItem : outsideOTSet.getBreakdownItems()){
+			for (val attendanceItemId : outsideOTBDItem.getAttendanceItemIds()){
+				if (attendanceItemId == AttendanceItemOfMonthly.WEEKLY_TOTAL_PREMIUM_TIME.value){
+					isExistWeekTotalPT = true;
+					break;
+				}
+			}
+		}
+		if (!isExistWeekTotalPT) return;
+		
+		// 「労働制」を確認する
+		if (this.workingSystem == WorkingSystem.REGULAR_WORK){
+			
+			// 通常勤務の月割増時間を逆時系列で割り当てる
+			this.assignMonthlyPremiumTimeByReverseTimeSeriesOfReg(
+					regAndIrgTime, aggregateTotalWorkingTime, repositories);
+		}
+		if (this.workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
+			
+			// 変形労働勤務の月割増時間を逆時系列で割り当てる
+			this.assignMonthlyPremiumTimeByReverseTimeSeriesOfIrg(
+					regAndIrgTime, aggregateTotalWorkingTime, repositories);
+		}
+	}
+	
+	/**
+	 * 通常勤務の月割増時間を逆時系列で割り当てる
+	 * @param regAndIrgTime 月別実績の通常変形時間
+	 * @param aggregateTotalWorkingTime 総労働時間
+	 * @param repositories 月次集計が必要とするリポジトリ
+	 */
+	private void assignMonthlyPremiumTimeByReverseTimeSeriesOfReg(
+			RegularAndIrregularTimeOfMonthly regAndIrgTime,
+			AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		// 「週割増・月割増を求める」を取得する
+		ExcessOutsideTimeSet excessOutsideTimeSet = new ExcessOutsideTimeSet();
+		if (this.workingSystem == WorkingSystem.REGULAR_WORK){
+			val aggrSetOfReg = this.aggrSettingMonthly.getRegularWork();
+			excessOutsideTimeSet = aggrSetOfReg.getExcessOutsideTimeSet();
+		}
+		if (this.workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
+			val aggrSetOfIrg = this.aggrSettingMonthly.getIrregularWork();
+			excessOutsideTimeSet = aggrSetOfIrg.getExcessOutsideTimeSet();
+		}
+		if (!excessOutsideTimeSet.isAskPremium()) return;
+		
+		// 「月別実績の通常変形時間」から「逆時系列割り当て用の月割増時間」にコピーする
+		val monthPremiumTime = regAndIrgTime.getMonthlyTotalPremiumTime();
+		AttendanceTimeMonthWithMinus monthlyPTForAssign = new AttendanceTimeMonthWithMinus(monthPremiumTime.v());
+		
+		// 「月別実績の通常変形時間」から「月別実績の時間外超過」にコピーする
+		this.excessOutsideWork.addMinutesToMonthlyTotalPremiumTime(monthPremiumTime.v());
+		
+		// 「期間．終了日」を処理日にする
+		GeneralDate procDate = this.datePeriod.end();
+		while (procDate.afterOrEquals(this.datePeriod.start())){
+			
+			// 月割増時間を日単位で割り当てる
+			monthlyPTForAssign = this.monthlyDetail.assignMonthlyPremiumTimeByDayUnit(procDate, monthlyPTForAssign,
+					aggregateTotalWorkingTime, this.workInformationOfDailyMap, this, repositories);
+			
+			// 時間外超過明細の更新
+			this.excessOutsideWorkDetail = this.monthlyDetail.getExcessOutsideWorkMng().getExcessOutsideWorkDetail();
+			
+			if (monthlyPTForAssign.lessThanOrEqualTo(0)) break;
+			
+			// 処理日を更新する
+			procDate = procDate.addDays(-1);
+		}
+	}
+	
+	/**
+	 * 変形労働勤務の月割増時間を逆時系列で割り当てる
+	 * @param regAndIrgTime 月別実績の通常変形時間
+	 * @param aggregateTotalWorkingTime 総労働時間
+	 * @param repositories 月次集計が必要とするリポジトリ
+	 */
+	private void assignMonthlyPremiumTimeByReverseTimeSeriesOfIrg(
+			RegularAndIrregularTimeOfMonthly regAndIrgTime,
+			AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		// 処理月が含まれる精算期間が単月か複数月か確認する
+		val settlementPeriod = this.aggrSettingMonthly.getIrregularWork().getSettlementPeriod();
+		if (settlementPeriod.isSingleMonth(this.yearMonth)){
+			
+			// 単月の時、変形繰越時間を 0 にする
+			this.excessOutsideWork.setDeformationCarryforwardTime(new AttendanceTimeMonth(0));
+			
+			// 精算月の月割増時間を逆時系列で割り当てる　（単月）　※　通常勤務の方式と同じ
+			this.assignMonthlyPremiumTimeByReverseTimeSeriesOfReg(
+					regAndIrgTime, aggregateTotalWorkingTime, repositories);
+		}
+		else {
+			
+			// 複数月の時、変形繰越時間に月割増時間の値をコピーする
+			val monthPremiumTime = regAndIrgTime.getMonthlyTotalPremiumTime();
+			this.excessOutsideWork.setDeformationCarryforwardTime(monthPremiumTime);
+			
+			// 精算月か確認する
+			if (settlementPeriod.isSettlementMonth(this.yearMonth, this.isRetireMonth)){
+				
+				// 精算月の時、精算月の月割増時間を逆時系列で割り当てる　（複数月）
+				this.assignMonthlyPremiumTimeByReverseTimeSeriesForMultiMonth(
+						regAndIrgTime, aggregateTotalWorkingTime, repositories);
+			}
+			else {
+				
+				// 精算月でない時、月割増合計時間を 0 にする
+				this.excessOutsideWork.setMonthlyTotalPremiumTime(new AttendanceTimeMonth(0));
+			}
+		}
+	}
+	
+	/**
+	 * 精算月の月割増時間を逆時系列で割り当てる　（複数月）
+	 * @param regAndIrgTime 月別実績の通常変形時間
+	 * @param aggregateTotalWorkingTime 総労働時間
+	 * @param repositories 月次集計が必要とするリポジトリ
+	 */
+	private void assignMonthlyPremiumTimeByReverseTimeSeriesForMultiMonth(
+			RegularAndIrregularTimeOfMonthly regAndIrgTime,
+			AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		// 精算期間を取得する
+		val settlementPeriod = this.aggrSettingMonthly.getIrregularWork().getSettlementPeriod();
+		val settlementMonths = settlementPeriod.getPastSettlementYearMonths(this.yearMonth);
+		settlementMonths.add(this.yearMonth);
+		int totalStatutoryWorkingMinutes = 0;
+		int totalRecordMinutes = 0;
+		for (val settlementMonth : settlementMonths){
+			boolean isCurrentMonth = settlementMonth.equals(this.yearMonth);
+			
+			// 法定労働時間を取得する　（月間法定労働時間）
+			//*****（未）　日次での実装位置を確認して、合わせて実装する。
+			//*****（未）　参考（日次用）。このクラスか、別のクラスに、月・週用のメソッドを追加。仮に0設定。
+			/*
+			repositories.getGetOfStatutoryWorkTime().getDailyTimeFromStaturoyWorkTime(WorkingSystem.RegularWork,
+					companyId, workplaceId, employmentCd, employeeId, datePeriod.end());
+			*/
+			val statutoryWorkingTimeMonth = new AttendanceTimeMonth(0);
+			
+			// 確認中年月の月別実績を確認する　（当月除く）
+			List<AttendanceTimeOfMonthly> attendanceTimes = new ArrayList<>();
+			if (!isCurrentMonth){
+				attendanceTimes = repositories.getAttendanceTimeOfMonthly().findByYearMonthOrderByStartYmd(
+						this.employeeId, settlementMonth);
+			}
+			
+			// 取得した法令労働時間を法定労働時間累計に加算する
+			totalStatutoryWorkingMinutes += statutoryWorkingTimeMonth.v();
+			
+			// 当月以外の過去月の時間を元に実績累計に加算する
+			if (!isCurrentMonth){
+				
+				// 取得した法定労働時間を確認する
+				if (statutoryWorkingTimeMonth.lessThanOrEqualTo(0)){
+					
+					// 就業時間＋変形期間繰越時間を実績累計に加算する
+					for (val attendanceTime : attendanceTimes){
+						val monthlyCalculation = attendanceTime.getMonthlyCalculation();
+						val workTime = monthlyCalculation.getTotalWorkingTime().getWorkTime();
+						val irregTime = monthlyCalculation.getActualWorkingTime().getIrregularWorkingTime();
+						val irgPeriodCryfwdMinutes = irregTime.getIrregularPeriodCarryforwardTime().v();
+						totalRecordMinutes += workTime.getWorkTime().v();
+						if (irgPeriodCryfwdMinutes > 0) totalRecordMinutes += irgPeriodCryfwdMinutes;
+					}
+				}
+				else {
+					
+					// 法定労働時間＋変形期間繰越時間を実績累計に加算する
+					totalRecordMinutes += statutoryWorkingTimeMonth.v();
+					for (val attendanceTime : attendanceTimes){
+						val monthlyCalculation = attendanceTime.getMonthlyCalculation();
+						val irregTime = monthlyCalculation.getActualWorkingTime().getIrregularWorkingTime();
+						totalRecordMinutes += irregTime.getIrregularPeriodCarryforwardTime().v();
+					}
+				}
+			}
+		}
+		
+		// 境界時間を求める
+		int boundaryMinutes = totalStatutoryWorkingMinutes - totalRecordMinutes;
+		
+		// 月割増合計時間を求める
+		val monthlyPTTargetMinutes = regAndIrgTime.getIrregularPeriodCarryforwardsTime().getTime().v();
+		int monthlyTotalPremiumMinutes = monthlyPTTargetMinutes - boundaryMinutes;
+		if (monthlyTotalPremiumMinutes < 0) monthlyTotalPremiumMinutes = 0;
+		this.excessOutsideWork.setMonthlyTotalPremiumTime(new AttendanceTimeMonth(monthlyTotalPremiumMinutes));
+		
+		// 月割増時間を逆時系列で割り当てる　※　通常勤務と同じ方式
+		AttendanceTimeMonthWithMinus monthlyPTForAssign = new AttendanceTimeMonthWithMinus(monthlyTotalPremiumMinutes);
+		this.assignMonthlyPremiumTimeByReverseTimeSeriesOfIrg(
+				monthlyPTForAssign, aggregateTotalWorkingTime, repositories);
+	}
+	
+	/**
+	 * 変形労働勤務の月割増時間を逆時系列で割り当てる
+	 * @param monthlyPTForAssign 逆時系列割り当て用の月割増時間
+	 * @param aggregateTotalWorkingTime 総労働時間
+	 * @param repositories 月次集計が必要とするリポジトリ
+	 */
+	private void assignMonthlyPremiumTimeByReverseTimeSeriesOfIrg(
+			AttendanceTimeMonthWithMinus monthlyPTForAssign,
+			AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		// 「期間．終了日」を処理日にする
+		GeneralDate procDate = this.datePeriod.end();
+		while (procDate.afterOrEquals(this.datePeriod.start())){
+			
+			// 月割増時間を日単位で割り当てる
+			monthlyPTForAssign = this.monthlyDetail.assignMonthlyPremiumTimeByDayUnit(procDate, monthlyPTForAssign,
+					aggregateTotalWorkingTime, this.workInformationOfDailyMap, this, repositories);
+			
+			// 時間外超過明細の更新
+			this.excessOutsideWorkDetail = this.monthlyDetail.getExcessOutsideWorkMng().getExcessOutsideWorkDetail();
+			
+			if (monthlyPTForAssign.lessThanOrEqualTo(0)) break;
+			
+			// 処理日を更新する
+			procDate = procDate.addDays(-1);
+		}
+	}
+	
+	/**
+	 * 便宜上集計の逆時系列割り当て　（フレックス）
+	 * @param flexTimeOfMonthly 月別実績のフレックス時間
+	 */
+	private void assignReverseTimeSeriesForConvenience(
+			FlexTimeOfMonthly flexTimeOfMonthly){
+
+		// フレックス超過対象時間を求める
+		int flexExcessTargetMinutes = flexTimeOfMonthly.getFlexExcessTime().v();
+		flexExcessTargetMinutes += flexTimeOfMonthly.getFlexCarryforwardTime().getFlexCarryforwardWorkTime().v();
+		AttendanceTimeMonthWithMinus flexExcessTargetTime = new AttendanceTimeMonthWithMinus(flexExcessTargetMinutes);
+		
+		// 「期間．終了日」を処理日にする
+		GeneralDate procDate = this.datePeriod.end();
+		while (procDate.afterOrEquals(this.datePeriod.start())){
+			
+			// フレックス超過対象時間を日単位で割り当てる
+			flexExcessTargetTime = this.excessOutsideWorkDetail.assignFlexExcessTargetTimeByDayUnit(
+					procDate, flexExcessTargetTime, flexTimeOfMonthly);
+			
+			if (flexExcessTargetTime.lessThanOrEqualTo(0)) break;
+			
+			// 処理日を更新する
+			procDate = procDate.addDays(-1);
+		}
+	}
+	
+	/**
+	 * 時間外超過内訳に割り当てる　（集計後）
+	 */
+	private void assignExcessOutsideWorkBreakdownForAfterAggregate(){
+		
+		// 「時間外超過の内訳項目」を取得する
+		List<OutsideOTBRDItem> outsideOTBDItems = new ArrayList<>();
+		if (this.outsideOTSetOpt.isPresent()){
+			outsideOTBDItems = this.outsideOTSetOpt.get().getBreakdownItems();
+		}
+		outsideOTBDItems.sort((a, b) -> a.getProductNumber().value - b.getProductNumber().value);
+		for (val outsideOTBDItem : outsideOTBDItems){
+			
+			// 内訳項目に設定されている項目の値を取得する
+			val totalTime = this.excessOutsideWorkDetail.getTotalTimeAfterRound();
+			AttendanceTimeMonth breakdownItemTime = new AttendanceTimeMonth(0);
+			for (val attendanceItemId : outsideOTBDItem.getAttendanceItemIds()){
+				breakdownItemTime = breakdownItemTime.addMinutes(
+						totalTime.getTimeOfAttendanceItemId(attendanceItemId).v());
+			}
+			if (breakdownItemTime.greaterThan(0)){
+			
+				// 内訳項目ごとに時間外超過の値を求める
+				val breakdownItemNo =  outsideOTBDItem.getBreakdownItemNo().value;
+				this.askExcessOutsideWorkEachBreakdown(breakdownItemTime, breakdownItemNo);
+			}
+		}
+	}
+	
+	/**
+	 * 時間外超過内訳に割り当てる　（逆時系列）
+	 */
+	private void assignExcessOutsideWorkBreakdownForReverseTimeSeries(){
+		
+		// 「期間．開始日」を処理日にする
+		GeneralDate procDate = this.datePeriod.start();
+		while (procDate.beforeOrEquals(this.datePeriod.end())){
+			
+			// 日ごとに時間外超過の値を求める
+			this.askExcessOutsideWorkEachDay(procDate);
+			
+			// 処理日を更新する
+			procDate = procDate.addDays(1);
+		}
+	}
+	
+	/**
+	 * 日ごとに時間外超過の値を求める
+	 * @param procDate 処理日
+	 */
+	private void askExcessOutsideWorkEachDay(GeneralDate procDate){
+		
+		// 「時間外超過の内訳項目」を取得する
+		List<OutsideOTBRDItem> outsideOTBDItems = new ArrayList<>();
+		if (this.outsideOTSetOpt.isPresent()){
+			outsideOTBDItems = this.outsideOTSetOpt.get().getBreakdownItems();
+		}
+		outsideOTBDItems.sort((a, b) -> a.getProductNumber().value - b.getProductNumber().value);
+		for (val outsideOTBDItem : outsideOTBDItems){
+			
+			// 内訳項目に設定されている項目の値を取得する
+			AttendanceTimeMonth breakdownItemTime = new AttendanceTimeMonth(0);
+			for (val attendanceItemId : outsideOTBDItem.getAttendanceItemIds()){
+				breakdownItemTime = breakdownItemTime.addMinutes(
+						this.excessOutsideWorkDetail.getTimeOfAttendanceItemId(attendanceItemId, procDate).v());
+			}
+			if (breakdownItemTime.greaterThan(0)){
+			
+				// 内訳項目ごとに時間外超過の値を求める
+				val breakdownItemNo =  outsideOTBDItem.getBreakdownItemNo().value;
+				this.askExcessOutsideWorkEachBreakdown(breakdownItemTime, breakdownItemNo);
+			}
+		}
+	}
+	
+	/**
+	 * 内訳項目ごとに時間外超過の値を求める
+	 * @param breakdownItemTime 内訳項目時間
+	 * @param breakdownItemNo 内訳項目NO
+	 */
+	private void askExcessOutsideWorkEachBreakdown(AttendanceTimeMonth breakdownItemTime, int breakdownItemNo){
+		
+		// 「超過時間一覧」を取得する
+		List<Overtime> overTimes = new ArrayList<>();
+		if (this.outsideOTSetOpt.isPresent()){
+			overTimes = this.outsideOTSetOpt.get().getOvertimes();
+		}
+		overTimes.sort((a, b) -> a.getOvertime().v() - b.getOvertime().v());
+		
+		// 時間外超過の時間を合計する　→　時間外超過累積時間
+		val totalExcessOutside = this.excessOutsideWork.getTotalBreakdownTime();
+		
+		for (int ixOverTime = 0; ixOverTime < overTimes.size(); ixOverTime++){
+			val overTime = overTimes.get(ixOverTime);
+			
+			// 時間外超過累積時間＋内訳項目時間と超過時間を比較する
+			if (totalExcessOutside.v() + breakdownItemTime.v() <= overTime.getOvertime().v()) break;
+			
+			// 次の超過時間を取得する
+			Overtime nextOverTime = null;
+			if (ixOverTime + 1 < overTimes.size()) nextOverTime = overTimes.get(ixOverTime + 1);
+			
+			// 時間外超過の時間に加算する
+			this.excessOutsideWork.addTimeFromBreakdownItemTime(
+					totalExcessOutside, breakdownItemTime, overTime, nextOverTime, breakdownItemNo);
+		}
 	}
 }

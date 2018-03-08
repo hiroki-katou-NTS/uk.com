@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;

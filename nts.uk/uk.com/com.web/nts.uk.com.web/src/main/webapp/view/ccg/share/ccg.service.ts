@@ -95,7 +95,7 @@ module nts.uk.com.view.ccg.share.ccg {
         /**
          * Calculate period
          */
-        export function calculatePeriod(closureId: number, yearMonth: number): JQueryPromise<Array<string>> {
+        export function calculatePeriod(closureId: number, yearMonth: number): JQueryPromise<model.DatePeriodDto> {
             const param = '/' + closureId + '/' + yearMonth;
             return nts.uk.request.ajax('at', servicePath.calculatePeriod + param);
         }
@@ -133,11 +133,10 @@ module nts.uk.com.view.ccg.share.ccg {
 
             export class EmployeeSearchDto {
                 employeeId: string;
-
                 employeeCode: string;
-
                 employeeName: string;
-
+                workplaceCode: string;
+                workplaceId: string;
                 workplaceName: string;
             }
 
@@ -178,6 +177,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 isMutipleCheck: boolean; // 選択モード
                 // showDepartment: boolean; // 部門条件 not covered
                 // showDelivery: boolean; not covered
+
+                /** Optional properties */
+                isInDialog: boolean;
 
                 /** Data returned */
                 returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
@@ -231,6 +233,11 @@ module nts.uk.com.view.ccg.share.ccg {
                 sortOrderNo: number;
                 nameType: number;
                 systemType: number;
+            }
+
+            export interface DatePeriodDto {
+                startDate: string;
+                endDate: string
             }
 
             export class EmployeeRangeSelection {
