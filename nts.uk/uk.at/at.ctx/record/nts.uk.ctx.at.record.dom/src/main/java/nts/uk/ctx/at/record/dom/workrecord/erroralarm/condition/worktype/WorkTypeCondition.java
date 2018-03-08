@@ -5,20 +5,21 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 
 /**
  * @author hungnm
  *
  */
-//勤務種類の条件
+// 勤務種類の条件
 @Getter
 public class WorkTypeCondition extends DomainObject {
-	
-	//勤務種類の条件を使用する
+
+	// 勤務種類の条件を使用する
 	private Boolean useAtr;
-	
-	//予実比較による絞り込み方法
+
+	// 予実比較による絞り込み方法
 	private FilterByCompare comparePlanAndActual;
 
 	/* Constructor */
@@ -28,4 +29,12 @@ public class WorkTypeCondition extends DomainObject {
 		this.comparePlanAndActual = comparePlanAndActual;
 	}
 
+	/** 勤務種類をチェックする */
+	public boolean checkWorkType(WorkInfoOfDailyPerformance workInfo) {
+		return false;
+	}
+	
+	public boolean isUse() {
+		return this.getUseAtr() != null && this.getUseAtr();
+	}
 }

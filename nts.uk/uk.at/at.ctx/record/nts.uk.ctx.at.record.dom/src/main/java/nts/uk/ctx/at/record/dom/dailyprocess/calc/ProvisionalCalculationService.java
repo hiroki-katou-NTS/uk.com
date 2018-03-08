@@ -18,10 +18,10 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  *
  */
 public interface ProvisionalCalculationService {
-	
-	public Optional<IntegrationOfDaily> calculation(String employeeId,GeneralDate targetDate,Map<Integer, TimeZone> timeSheets,
-										  WorkTypeCode workTypeCode, WorkTimeCode workTimeCode,
-										  List<BreakTimeSheet> breakTimeSheets,
-										  List<OutingTimeSheet> outingTimeSheets,
-										  List<ShortWorkingTimeSheet> shortWorkingTimeSheets); 
+ 
+ public Optional<IntegrationOfDaily> calculation(String employeeId,GeneralDate targetDate,Map<Integer, TimeZone> timeSheets,
+            WorkTypeCode workTypeCode, WorkTimeCode workTimeCode,
+            List<BreakTimeSheet> breakTimeSheets,
+            List<OutingTimeSheet> outingTimeSheets,
+            List<ShortWorkingTimeSheet> shortWorkingTimeSheets); 
 }

@@ -1,7 +1,5 @@
 package nts.uk.shr.infra.arc.task.persist;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 

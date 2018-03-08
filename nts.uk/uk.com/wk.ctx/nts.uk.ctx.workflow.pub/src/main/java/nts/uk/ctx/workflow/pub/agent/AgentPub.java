@@ -8,7 +8,7 @@ public interface AgentPub {
 	
 	AgentPubExport getApprovalAgencyInformation(String companyID, List<String> approverList);
 	/**
-	 * Request No 244
+	 * RequestList244
 	 * @param companyId
 	 * @param employeeId
 	 * @param baseDate

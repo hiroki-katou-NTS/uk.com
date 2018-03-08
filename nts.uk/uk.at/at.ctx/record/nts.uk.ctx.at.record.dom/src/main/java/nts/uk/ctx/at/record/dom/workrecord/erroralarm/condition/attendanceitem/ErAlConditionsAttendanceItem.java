@@ -5,6 +5,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -56,9 +57,23 @@ public class ErAlConditionsAttendanceItem extends DomainObject {
 	public void addAtdItemConditions(List<ErAlAttendanceItemCondition<?>> conditions) {
 		this.lstErAlAtdItemCon.addAll(conditions);
 	}
-	
-	public void setGroupId(String atdItemConGroupId){
+
+	public void setGroupId(String atdItemConGroupId) {
 		this.atdItemConGroupId = atdItemConGroupId;
 	}
 
+	public boolean check(Function<List<Integer>, List<Integer>> getValueFromItemIds) {
+		switch (this.conditionOperator) {
+		case AND:
+			return lstErAlAtdItemCon.stream().map(aic -> {
+				return aic.checkTarget(getValueFromItemIds);
+			}).allMatch(r -> r);
+		case OR:
+			return lstErAlAtdItemCon.stream().map(aic -> {
+				return aic.checkTarget(getValueFromItemIds);
+			}).anyMatch(r -> r);
+		default:
+			throw new RuntimeException("invalid conditionOperator: " + conditionOperator);
+		}
+	}
 }

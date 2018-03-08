@@ -107,6 +107,9 @@ public class AttendanceItemUtil {
 	@SuppressWarnings("unchecked")
 	private static <T> T fromItemValues(T attendanceItems, int layoutIdx, String layoutCode, String path, int index,
 			boolean needCheckWithIdx, Map<String, List<ItemValue>> groups) {
+		if(attendanceItems.getClass().getAnnotation(AttendanceItemRoot.class) != null){
+			ReflectionUtil.invoke(attendanceItems.getClass(), attendanceItems, "exsistData");
+		}
 		Map<String, Field> fields = getFieldMap(attendanceItems, groups);
 		groups.entrySet().stream().forEach(c -> {
 			Field field = fields.get(c.getKey());

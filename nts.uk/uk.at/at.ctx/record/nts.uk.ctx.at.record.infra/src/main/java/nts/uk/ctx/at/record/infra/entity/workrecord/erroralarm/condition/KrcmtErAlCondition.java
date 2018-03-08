@@ -32,6 +32,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.SingleW
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
@@ -432,7 +433,7 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 			} else {
 				erAlSingleAtd.add(new KrcstErAlSingleAtd(
 						new KrcstErAlSingleAtdPK(atdItemConditionGroup1, new BigDecimal(erAlAtdItemCon.getTargetNO()),
-								new BigDecimal((Integer) erAlAtdItemCon.getCompareSingleValue().getValue())),
+								(((AttendanceItemId) erAlAtdItemCon.getCompareSingleValue().getValue()).v())),
 						new BigDecimal(2)));
 			}
 		}
@@ -527,9 +528,11 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 		condition.setCheckId(entity.eralCheckId);
 		return condition;
 	}
-	private static ErAlAttendanceItemCondition<?> convertKrcmtErAlAtdItemConToDomain(KrcmtErAlCondition entity,
+	
+	@SuppressWarnings("unchecked")
+	private static <V> ErAlAttendanceItemCondition<V> convertKrcmtErAlAtdItemConToDomain(KrcmtErAlCondition entity,
 			KrcmtErAlAtdItemCon atdItemCon, String companyId, String errorAlarmCode) {
-		ErAlAttendanceItemCondition<Object> atdItemConDomain = new ErAlAttendanceItemCondition<Object>(
+		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(
 				companyId, errorAlarmCode,
 				(atdItemCon.krcmtErAlAtdItemConPK.atdItemConNo == null ? 0 : atdItemCon.krcmtErAlAtdItemConPK.atdItemConNo.intValue())
 				, (atdItemCon.conditionAtr == null ? 0 : atdItemCon.conditionAtr.intValue())
@@ -555,20 +558,20 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 		if (atdItemCon.erAlCompareRange != null) {
 			if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.AMOUNT_VALUE.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
-						new CheckedAmountValue(atdItemCon.erAlCompareRange.startValue.intValue()),
-						new CheckedAmountValue(atdItemCon.erAlCompareRange.endValue.intValue()));
+						(V) new CheckedAmountValue(atdItemCon.erAlCompareRange.startValue.intValue()),
+						(V) new CheckedAmountValue(atdItemCon.erAlCompareRange.endValue.intValue()));
 			} else if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_DURATION.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
-						new CheckedTimeDuration(atdItemCon.erAlCompareRange.startValue.intValue()),
-						new CheckedTimeDuration(atdItemCon.erAlCompareRange.endValue.intValue()));
+						(V) new CheckedTimeDuration(atdItemCon.erAlCompareRange.startValue.intValue()),
+						(V) new CheckedTimeDuration(atdItemCon.erAlCompareRange.endValue.intValue()));
 			} else if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_WITH_DAY.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
-						new TimeWithDayAttr(atdItemCon.erAlCompareRange.startValue.intValue()),
-						new TimeWithDayAttr(atdItemCon.erAlCompareRange.endValue.intValue()));
+						(V) new TimeWithDayAttr(atdItemCon.erAlCompareRange.startValue.intValue()),
+						(V) new TimeWithDayAttr(atdItemCon.erAlCompareRange.endValue.intValue()));
 			} else if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIMES.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
-						new CheckedTimesValue(atdItemCon.erAlCompareRange.startValue.intValue()),
-						new CheckedTimesValue(atdItemCon.erAlCompareRange.endValue.intValue()));
+						(V) new CheckedTimesValue(atdItemCon.erAlCompareRange.startValue.intValue()),
+						(V) new CheckedTimesValue(atdItemCon.erAlCompareRange.endValue.intValue()));
 			}
 		} else if (atdItemCon.erAlCompareSingle != null) {
 			if (atdItemCon.erAlCompareSingle.conditionType != null 
@@ -576,24 +579,24 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 				if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.AMOUNT_VALUE.value) {
 					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr.intValue(),
 							atdItemCon.erAlCompareSingle.conditionType.intValue(),
-							new CheckedAmountValue(atdItemCon.erAlSingleFixed.fixedValue.intValue()));
+							(V) new CheckedAmountValue(atdItemCon.erAlSingleFixed.fixedValue.intValue()));
 				} else if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_DURATION.value) {
 					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr == null ? 0 : atdItemCon.erAlCompareSingle.compareAtr.intValue(),
 							atdItemCon.erAlCompareSingle.conditionType == null ? 0 : atdItemCon.erAlCompareSingle.conditionType.intValue(),
-							new CheckedTimeDuration(atdItemCon.erAlSingleFixed.fixedValue == null ? 0 : atdItemCon.erAlSingleFixed.fixedValue.intValue()));
+							(V) new CheckedTimeDuration(atdItemCon.erAlSingleFixed.fixedValue == null ? 0 : atdItemCon.erAlSingleFixed.fixedValue.intValue()));
 				} else if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_WITH_DAY.value) {
 					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr == null ? 0 : atdItemCon.erAlCompareSingle.compareAtr.intValue(),
 							atdItemCon.erAlCompareSingle.conditionType == null ? 0 : atdItemCon.erAlCompareSingle.conditionType.intValue(),
-							new TimeWithDayAttr(atdItemCon.erAlSingleFixed.fixedValue == null ? 0 : atdItemCon.erAlSingleFixed.fixedValue.intValue()));
+							(V) new TimeWithDayAttr(atdItemCon.erAlSingleFixed.fixedValue == null ? 0 : atdItemCon.erAlSingleFixed.fixedValue.intValue()));
 				} else if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIMES.value) {
 					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr == null ? 0 : atdItemCon.erAlCompareSingle.compareAtr.intValue(),
 							atdItemCon.erAlCompareSingle.conditionType == null ? 0 : atdItemCon.erAlCompareSingle.conditionType.intValue(),
-							new CheckedTimesValue(atdItemCon.erAlSingleFixed.fixedValue == null ? 0 : atdItemCon.erAlSingleFixed.fixedValue.intValue()));
+							(V) new CheckedTimesValue(atdItemCon.erAlSingleFixed.fixedValue == null ? 0 : atdItemCon.erAlSingleFixed.fixedValue.intValue()));
 				}
 			} else {
 				atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr == null ? 0 : atdItemCon.erAlCompareSingle.compareAtr.intValue(),
 						atdItemCon.erAlCompareSingle.conditionType == null ? 0 : atdItemCon.erAlCompareSingle.conditionType.intValue(),
-						atdItemCon.erAlSingleAtd.get(0).krcstEralSingleAtdPK.attendanceItemId.intValue());
+						(V) new AttendanceItemId(atdItemCon.erAlSingleAtd.get(0).krcstEralSingleAtdPK.attendanceItemId));
 			}
 		}
 		return atdItemConDomain;

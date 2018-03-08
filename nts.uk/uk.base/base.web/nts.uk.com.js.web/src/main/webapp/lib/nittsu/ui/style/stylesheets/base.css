@@ -3584,12 +3584,82 @@ button.nts-switch-button[disabled]:hover {
   position: static;
 }
 
-/* line 72, ../sass/components/_datepicker.scss */
+/* line 73, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper:before, .nts-datepicker-wrapper:after {
+  position: absolute;
+  display: block;
+  width: 0;
+  height: 0;
+  content: ' ';
+  border: 5px solid transparent;
+}
+/* line 84, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-top:before, .nts-datepicker-wrapper.arrow-top:after {
+  top: -5px;
+  left: 10px;
+  border-top: 0;
+}
+/* line 89, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-top:before {
+  border-bottom-color: #999999;
+}
+/* line 92, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-top:after {
+  top: -4px;
+  border-bottom-color: #fff;
+}
+/* line 99, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-bottom:before, .nts-datepicker-wrapper.arrow-bottom:after {
+  bottom: -5px;
+  left: 10px;
+  border-bottom: 0;
+}
+/* line 104, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-bottom:before {
+  border-top-color: #999999;
+}
+/* line 107, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-bottom:after {
+  bottom: -4px;
+  border-top-color: #fff;
+}
+/* line 114, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-right:before, .nts-datepicker-wrapper.arrow-right:after {
+  right: -5px;
+  top: 11px;
+  border-right: 0;
+}
+/* line 119, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-right:before {
+  border-left-color: #999999;
+}
+/* line 122, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-right:after {
+  right: -4px;
+  border-left-color: #fff;
+}
+/* line 129, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-left:before, .nts-datepicker-wrapper.arrow-left:after {
+  left: -5px;
+  top: 11px;
+  border-left: 0;
+}
+/* line 134, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-left:before {
+  border-right-color: #999999;
+}
+/* line 137, ../sass/components/_datepicker.scss */
+.nts-datepicker-wrapper.arrow-left:after {
+  left: -4px;
+  border-right-color: #fff;
+}
+
+/* line 143, ../sass/components/_datepicker.scss */
 .datepicker-top-left,
 .datepicker-top-right {
   border-top-color: #39f;
 }
-/* line 76, ../sass/components/_datepicker.scss */
+/* line 147, ../sass/components/_datepicker.scss */
 .datepicker-top-left:before, .datepicker-top-left:after,
 .datepicker-top-right:before,
 .datepicker-top-right:after {
@@ -3597,24 +3667,24 @@ button.nts-switch-button[disabled]:hover {
   left: 10px;
   border-top: 0;
 }
-/* line 84, ../sass/components/_datepicker.scss */
+/* line 154, ../sass/components/_datepicker.scss */
 .datepicker-top-left:before,
 .datepicker-top-right:before {
   border-bottom-color: #39f;
 }
-/* line 88, ../sass/components/_datepicker.scss */
+/* line 158, ../sass/components/_datepicker.scss */
 .datepicker-top-left:after,
 .datepicker-top-right:after {
   top: -4px;
   border-bottom-color: #fff;
 }
 
-/* line 95, ../sass/components/_datepicker.scss */
+/* line 164, ../sass/components/_datepicker.scss */
 .datepicker-bottom-left,
 .datepicker-bottom-right {
-  border-bottom-color: #39f;
+  border-bottom-color: #999999;
 }
-/* line 99, ../sass/components/_datepicker.scss */
+/* line 168, ../sass/components/_datepicker.scss */
 .datepicker-bottom-left:before, .datepicker-bottom-left:after,
 .datepicker-bottom-right:before,
 .datepicker-bottom-right:after {
@@ -3622,19 +3692,69 @@ button.nts-switch-button[disabled]:hover {
   left: 10px;
   border-bottom: 0;
 }
-/* line 107, ../sass/components/_datepicker.scss */
+/* line 176, ../sass/components/_datepicker.scss */
 .datepicker-bottom-left:before,
 .datepicker-bottom-right:before {
   border-top-color: #39f;
 }
-/* line 111, ../sass/components/_datepicker.scss */
+/* line 180, ../sass/components/_datepicker.scss */
 .datepicker-bottom-left:after,
 .datepicker-bottom-right:after {
   bottom: -4px;
   border-top-color: #fff;
 }
 
-/* line 120, ../sass/components/_datepicker.scss */
+/* line 187, ../sass/components/_datepicker.scss */
+.datepicker-left-top,
+.datepicker-left-bottom {
+  border-left-color: #39f;
+}
+/* line 191, ../sass/components/_datepicker.scss */
+.datepicker-left-top:before, .datepicker-left-top:after,
+.datepicker-left-bottom:before,
+.datepicker-left-bottom:after {
+  top: 5px;
+  left: -5px;
+  border-left: 0;
+}
+/* line 199, ../sass/components/_datepicker.scss */
+.datepicker-left-top:before,
+.datepicker-left-bottom:before {
+  border-right-color: #39f;
+}
+/* line 203, ../sass/components/_datepicker.scss */
+.datepicker-left-top:after,
+.datepicker-left-bottom:after {
+  top: 5px;
+  border-right-color: #fff;
+}
+
+/* line 210, ../sass/components/_datepicker.scss */
+.datepicker-right-top,
+.datepicker-right-bottom {
+  border-right-color: #39f;
+}
+/* line 214, ../sass/components/_datepicker.scss */
+.datepicker-right-top:before, .datepicker-right-top:after,
+.datepicker-right-bottom:before,
+.datepicker-right-bottom:after {
+  top: 5px;
+  left: 210px;
+  border-right: 0;
+}
+/* line 222, ../sass/components/_datepicker.scss */
+.datepicker-right-top:before,
+.datepicker-right-bottom:before {
+  border-left-color: #39f;
+}
+/* line 226, ../sass/components/_datepicker.scss */
+.datepicker-right-top:after,
+.datepicker-right-bottom:after {
+  top: 5px;
+  border-left-color: #fff;
+}
+
+/* line 235, ../sass/components/_datepicker.scss */
 .datepicker-top-right:before, .datepicker-top-right:after,
 .datepicker-bottom-right:before,
 .datepicker-bottom-right:after {
@@ -3642,23 +3762,23 @@ button.nts-switch-button[disabled]:hover {
   left: auto;
 }
 
-/* line 132, ../sass/components/_datepicker.scss */
+/* line 246, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul:before,
 .datepicker-panel > ul:after {
   display: table;
   content: ' ';
 }
-/* line 139, ../sass/components/_datepicker.scss */
+/* line 253, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul:after {
   clear: both;
 }
-/* line 143, ../sass/components/_datepicker.scss */
+/* line 257, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul {
   width: 102%;
   margin: 0;
   padding: 0;
 }
-/* line 148, ../sass/components/_datepicker.scss */
+/* line 262, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul > li {
   float: left;
   width: 30px;
@@ -3670,84 +3790,89 @@ button.nts-switch-button[disabled]:hover {
   text-align: center;
   background-color: #fff;
 }
-/* line 163, ../sass/components/_datepicker.scss */
+/* line 277, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul > li:hover {
   background-color: #e6f2ff;
 }
-/* line 167, ../sass/components/_datepicker.scss */
+/* line 281, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul > li.muted, .datepicker-panel > ul > li.muted:hover {
   color: #999;
 }
-/* line 172, ../sass/components/_datepicker.scss */
+/* line 286, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul > li.highlighted {
   background-color: #e6f2ff;
 }
-/* line 176, ../sass/components/_datepicker.scss */
+/* line 290, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul > li.highlighted:hover {
   background-color: #cce6ff;
 }
-/* line 180, ../sass/components/_datepicker.scss */
+/* line 294, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul > li.picked, .datepicker-panel > ul > li.picked:hover {
   color: #39f;
 }
-/* line 185, ../sass/components/_datepicker.scss */
+/* line 299, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul > li.disabled, .datepicker-panel > ul > li.disabled:hover {
   cursor: default;
   color: #ccc;
   background-color: #fff;
 }
-/* line 192, ../sass/components/_datepicker.scss */
+/* line 306, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul > li.disabled.highlighted, .datepicker-panel > ul > li.disabled:hover.highlighted {
   background-color: #e6f2ff;
 }
-/* line 197, ../sass/components/_datepicker.scss */
+/* line 311, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul > li[data-view='years prev'], .datepicker-panel > ul > li[data-view='year prev'], .datepicker-panel > ul > li[data-view='month prev'], .datepicker-panel > ul > li[data-view='years next'], .datepicker-panel > ul > li[data-view='year next'], .datepicker-panel > ul > li[data-view='month next'], .datepicker-panel > ul > li[data-view='next'] {
   font-size: 18px;
 }
-/* line 207, ../sass/components/_datepicker.scss */
+/* line 321, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul > li[data-view='years current'], .datepicker-panel > ul > li[data-view='year current'], .datepicker-panel > ul > li[data-view='month current'] {
   width: 150px;
 }
-/* line 216, ../sass/components/_datepicker.scss */
+/* line 330, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul[data-view='years'] > li, .datepicker-panel > ul[data-view='months'] > li {
-  line-height: 52.5px;
+  line-height: 30px;
+  height: 30px;
   width: 52.5px;
-  height: 52.5px;
 }
-/* line 225, ../sass/components/_datepicker.scss */
+/* line 339, ../sass/components/_datepicker.scss */
+.datepicker-panel > ul[data-view='days'] > li {
+  line-height: 22px;
+  height: 22px;
+}
+/* line 346, ../sass/components/_datepicker.scss */
 .datepicker-panel > ul[data-view='week'] > li,
 .datepicker-panel > ul[data-view='week'] > li:hover {
   cursor: default;
   background-color: #fff;
 }
 
-/* line 239, ../sass/components/_datepicker.scss */
+/* line 360, ../sass/components/_datepicker.scss */
 .datepicker-hide {
   display: none;
 }
 
 /* ntsDatepicker */
-/* line 244, ../sass/components/_datepicker.scss */
+/* line 365, ../sass/components/_datepicker.scss */
 .nts-datepicker-wrapper {
   position: relative;
 }
-/* line 247, ../sass/components/_datepicker.scss */
+/* line 368, ../sass/components/_datepicker.scss */
 .nts-datepicker-wrapper .ntsDatepicker {
   width: 85px;
 }
-/* line 249, ../sass/components/_datepicker.scss */
+/* line 370, ../sass/components/_datepicker.scss */
 .nts-datepicker-wrapper .ntsDatepicker.yearmonth-picker {
   width: 60px;
 }
-/* line 251, ../sass/components/_datepicker.scss */
+/* line 372, ../sass/components/_datepicker.scss */
 .nts-datepicker-wrapper .ntsDatepicker.short-day {
   padding-right: 40px;
 }
-/* line 252, ../sass/components/_datepicker.scss */
+/* line 373, ../sass/components/_datepicker.scss */
 .nts-datepicker-wrapper .ntsDatepicker.long-day {
   padding-right: 68px;
 }
-/* line 255, ../sass/components/_datepicker.scss */
+/* line 376, ../sass/components/_datepicker.scss */
 .nts-datepicker-wrapper .dayofweek-label {
   position: absolute;
   line-height: 30px;
@@ -3755,15 +3880,15 @@ button.nts-switch-button[disabled]:hover {
   top: 1px;
 }
 
-/* line 264, ../sass/components/_datepicker.scss */
+/* line 385, ../sass/components/_datepicker.scss */
 .ntsDateRange_Container .ntsDateRangeComponent {
   float: left;
 }
-/* line 267, ../sass/components/_datepicker.scss */
+/* line 388, ../sass/components/_datepicker.scss */
 .ntsDateRange_Container .ntsRangeLabel {
   padding: 6px 5px 6px 5px;
 }
-/* line 271, ../sass/components/_datepicker.scss */
+/* line 392, ../sass/components/_datepicker.scss */
 .ntsDateRange_Container .ntsRangeButton_Container {
   padding: 2px 2px 2px 2px;
 }

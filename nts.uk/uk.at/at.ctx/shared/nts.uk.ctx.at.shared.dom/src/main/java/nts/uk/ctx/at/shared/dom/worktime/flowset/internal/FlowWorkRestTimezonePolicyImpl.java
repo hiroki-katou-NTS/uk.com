@@ -42,7 +42,9 @@ public class FlowWorkRestTimezonePolicyImpl implements FlowWorkRestTimezonePolic
 		this.flowRestTimezonePolicy.validate(be, predTime, flowRest.getFlowRestTimezone());
 
 		// validate TimezoneOfFixedRestTimeSet
-		this.fixedRestPolicy.validate(be, predTime, flowRest.getFixedRestTimezone());
+		if (flowRest.isFixRestTime()) {
+			this.fixedRestPolicy.validate(be, predTime, flowRest.getFixedRestTimezone());
+		}
 	}
 
 }

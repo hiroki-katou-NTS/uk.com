@@ -59,14 +59,12 @@ public class OverTimeWorkDailyPerformDto {
 	public static OverTimeWorkDailyPerformDto fromOverTimeWorkDailyPerform(OverTimeOfDaily domain) {
 		return domain == null ? null
 				: new OverTimeWorkDailyPerformDto(
-						domain.getOverTimeWorkFrameTime() == null ? new ArrayList<>()
-								: ConvertHelper.mapTo(domain.getOverTimeWorkFrameTime(),
+						ConvertHelper.mapTo(domain.getOverTimeWorkFrameTime(),
 										c -> new OverTimeFrameTimeDto(CalcAttachTimeDto.toTimeWithCal(c.getTransferTime()),
 												CalcAttachTimeDto.toTimeWithCal(c.getOverTimeWork()),
 												getAttendanceTime(c.getBeforeApplicationTime()),
 												getAttendanceTime(c.getOrderTime()), c.getOverWorkFrameNo().v())),
-						domain.getOverTimeWorkFrameTimeSheet() == null ? new ArrayList<>()
-								: ConvertHelper.mapTo(domain.getOverTimeWorkFrameTimeSheet(),
+						ConvertHelper.mapTo(domain.getOverTimeWorkFrameTimeSheet(),
 										c -> new OverTimeFrameTimeSheetDto(
 												new TimeSpanForCalcDto(getAttendanceTime(c.getTimeSpan().getStart()),
 														getAttendanceTime(c.getTimeSpan().getEnd())),
@@ -90,10 +88,10 @@ public class OverTimeWorkDailyPerformDto {
 
 	public OverTimeOfDaily toDomain() {
 		return new OverTimeOfDaily(
-				overTimeFrameTimeSheet == null ? new ArrayList<>() : ConvertHelper.mapTo(overTimeFrameTimeSheet,
+				ConvertHelper.mapTo(overTimeFrameTimeSheet,
 						(c) -> new OverTimeFrameTimeSheet(createTimeSheet(c.getTimeSheet()),
 								new OverTimeFrameNo(c.getOvertimeFrameNo()))),
-				overTimeFrameTime == null ? new ArrayList<>() : ConvertHelper.mapTo(overTimeFrameTime,
+				ConvertHelper.mapTo(overTimeFrameTime,
 						(c) -> new OverTimeFrameTime(new OverTimeFrameNo(c.getOvertimeFrameNo()),
 								createTimeWithCalc(c.getOvertime()), createTimeWithCalc(c.getTransferTime()),
 								toAttendanceTime(c.getBeforeApplicationTime()), toAttendanceTime(c.getOrderTime()))),

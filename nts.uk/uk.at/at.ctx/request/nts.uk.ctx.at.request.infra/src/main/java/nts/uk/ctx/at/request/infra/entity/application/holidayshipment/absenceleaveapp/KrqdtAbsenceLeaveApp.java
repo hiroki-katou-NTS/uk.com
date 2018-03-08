@@ -123,41 +123,6 @@ public class KrqdtAbsenceLeaveApp extends UkJpaEntity implements Serializable {
 	private GeneralDate endWorkTime2;
 
 	/**
-	 * 申請内容
-	 */
-	@Basic(optional = true)
-	@Column(name = "APP_CONTENT")
-	private String appContent;
-
-	/**
-	 * 使用時間数
-	 */
-	@Basic(optional = false)
-	@Column(name = "HOURS_USED")
-	private GeneralDate hoursUsed;
-
-	/**
-	 * 休出管理データ
-	 */
-	@Basic(optional = true)
-	@Column(name = "LEAVE_MNG_DATA_ID")
-	private String leaveMngDataID;
-
-	/**
-	 * 休出発生日
-	 */
-	@Basic(optional = false)
-	@Column(name = "BREAK_OUT_DATE")
-	private GeneralDate breakOutDate;
-
-	/**
-	 * 管理データ区分
-	 */
-	@Basic(optional = false)
-	@Column(name = "REST_STATE")
-	private int restState;
-
-	/**
 	 * 管理データ日数単位
 	 */
 	@Basic(optional = false)

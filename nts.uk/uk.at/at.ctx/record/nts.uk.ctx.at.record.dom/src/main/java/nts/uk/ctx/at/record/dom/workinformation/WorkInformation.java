@@ -4,8 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTimeCode;
-import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTypeCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * 
@@ -24,7 +24,7 @@ public class WorkInformation extends DomainObject{
 
 	public WorkInformation(String workTimeCode, String workTypeCode) {
 		this.workTimeCode = workTimeCode == null ? null : new WorkTimeCode(workTimeCode);
-		this.workTypeCode = new WorkTypeCode(workTypeCode);
+		this.workTypeCode = workTypeCode == null ? null : new WorkTypeCode(workTypeCode);
 	}
 	
 }

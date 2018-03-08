@@ -32,7 +32,6 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkPlaceSidImpor
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceDto;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalStatusOfDailyPerforRepository;
@@ -65,8 +64,6 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
-import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTimeCode;
-import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTypeCode;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageContent;
@@ -96,7 +93,6 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.PersonalBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -105,11 +101,13 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.shr.com.i18n.TextResource;
@@ -1061,7 +1059,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							WorkStamp stamp = new WorkStamp(
 									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
 									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
-									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode(),
+									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode().isPresent() ? 
+											timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode().get() : null,
 									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getStampSourceInfo());
 							attendanceStamp = new TimeActualStamp(null, stamp,
 									timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp());
@@ -1092,7 +1091,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							WorkStamp stamp = new WorkStamp(
 									timeLeavingWork.getLeaveStamp().get().getStamp().get().getAfterRoundingTime(),
 									timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay(),
-									timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode(),
+									timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode().isPresent() ?
+											timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode().get() : null,
 									timeLeavingWork.getLeaveStamp().get().getStamp().get().getStampSourceInfo());
 							leaveStamp = new TimeActualStamp(null, stamp,
 									timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp());

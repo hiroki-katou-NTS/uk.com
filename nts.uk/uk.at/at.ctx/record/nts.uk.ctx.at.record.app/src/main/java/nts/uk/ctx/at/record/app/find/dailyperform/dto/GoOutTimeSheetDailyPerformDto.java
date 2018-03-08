@@ -95,8 +95,7 @@ public class GoOutTimeSheetDailyPerformDto {
 				null,  null, 
 				domain.getWorkTime() == null ? null : domain.getWorkTime().v(), 
 				domain.getReason().value, 
-				domain.getOutingTimeSheets() == null ? new ArrayList<>() : 
-							ConvertHelper.mapTo(domain.getOutingTimeSheets(), c -> GoOutTimeDto.toDto(c)));
+				ConvertHelper.mapTo(domain.getOutingTimeSheets(), c -> GoOutTimeDto.toDto(c)));
 	}
 	
 	private static ValicationUseDto toValicationUse(TimevacationUseTimeOfDaily valication){

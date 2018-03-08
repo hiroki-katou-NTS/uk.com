@@ -15,12 +15,13 @@ import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 @AttendanceItemRoot(rootName = "日別実績の外出時間帯")
 @Data
-public class OutingTimeOfDailyPerformanceDto implements ConvertibleAttendanceItem {
+public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private String employeeId;
 	
@@ -39,9 +40,10 @@ public class OutingTimeOfDailyPerformanceDto implements ConvertibleAttendanceIte
 							c.getOutingFrameNo().v(),
 							WithActualTimeStampDto.toWithActualTimeStamp(c.getGoOut().orElse(null)),
 							WithActualTimeStampDto.toWithActualTimeStamp(c.getComeBack().orElse(null)),
-							c.getReasonForGoOut().value, 
+							c.getReasonForGoOut() == null ? 0 : c.getReasonForGoOut().value, 
 							c.getOutingTimeCalculation() == null ? null : c.getOutingTimeCalculation().valueAsMinutes(),
 							c.getOutingTime() == null ? null : c.getOutingTime().valueAsMinutes())));
+			dto.exsistData();
 		}
 		return dto;
 	}
@@ -59,6 +61,9 @@ public class OutingTimeOfDailyPerformanceDto implements ConvertibleAttendanceIte
 
 	@Override
 	public OutingTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new OutingTimeOfDailyPerformance(emp, date, 
 					timeZone == null ? new ArrayList<>() : ConvertHelper.mapTo(timeZone,
 						(c) -> new OutingTimeSheet(new OutingFrameNo(c.getWorkNo()), createTimeActual(c.getOuting()),
