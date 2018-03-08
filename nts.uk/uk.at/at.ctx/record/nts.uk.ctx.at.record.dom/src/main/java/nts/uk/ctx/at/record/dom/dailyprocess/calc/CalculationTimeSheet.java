@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
@@ -96,7 +97,7 @@ public abstract class CalculationTimeSheet {
 	 * 指定時間を終了とする時間帯作成
 	 * @return
 	 */
-	public TimeSpanForCalc reCreateTreatAsSiteiTimeEnd(AttendanceTime transTime,OverTimeFrameTimeSheet overTimeWork) {
+	public TimeSpanForCalc reCreateTreatAsSiteiTimeEnd(AttendanceTime transTime,OverTimeFrameTimeSheetForCalc overTimeWork) {
 		TimeSpanForCalc copySpan = calcrange;
 		//return overTimeWork.reduceUntilSpecifiedTime(new AttendanceTime(copySpan.lengthAsMinutes() - transTime.valueAsMinutes()));
 		return copySpan;
@@ -308,23 +309,30 @@ public abstract class CalculationTimeSheet {
 	 * @param isDateBefore 基準時間より早い時間を切り出す
 	 * @return 切り出したl控除時間帯
 	 */
-	public List<TimeSheetOfDeductionItem> recreateDeductionItemBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
+	public List<TimeSheetOfDeductionItem> recreateDeductionItemBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore, DeductionAtr dedAtr){
 		List<TimeSheetOfDeductionItem> deductionList = new ArrayList<>();
+		if(dedAtr.isDeduction()) {
+			deductionList = this.deductionTimeSheet;
+		}
+		else {
+			deductionList = this.recordedTimeSheet;
+		}
+		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
 		
-		for(TimeSheetOfDeductionItem deductionItem : this.deductionTimeSheet) {
+		for(TimeSheetOfDeductionItem deductionItem : deductionList) {
 			
 			if(deductionItem.contains(baseTime)) {
-					deductionList.add(deductionItem.reCreateOwn(baseTime,isDateBefore));
+				returnList.add(deductionItem.reCreateOwn(baseTime,isDateBefore));
 			}
 			else if(deductionItem.calcrange.getEnd().lessThan(baseTime) && isDateBefore) {
-				deductionList.add(deductionItem);
+				returnList.add(deductionItem);
 			}
 			else if(deductionItem.calcrange.getStart().greaterThan(baseTime) && !isDateBefore) {
-				deductionList.add(deductionItem);
+				returnList.add(deductionItem);
 			}
 		}
 		
-		return deductionList;
+		return returnList;
 	}
 	
 	/**
