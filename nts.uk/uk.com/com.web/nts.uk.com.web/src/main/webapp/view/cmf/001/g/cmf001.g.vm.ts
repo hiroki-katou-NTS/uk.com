@@ -78,6 +78,7 @@ module nts.uk.com.view.cmf001.g.viewmodel {
 //            nts.uk.util.value.reset($("#G3_6"), numFormat.decimalDigitNumber);
 //            nts.uk.util.value.reset($("#G5_5"), numFormat.valueOfFixedValue);
         }
+        // コード変換の選択を行う
         open001_K(data) {
             var self = this;
             let selectedConvertCode = data.codeConvertCode();
@@ -90,6 +91,7 @@ module nts.uk.com.view.cmf001.g.viewmodel {
                 }
             });
         }
+        // 数値編集の設定をして終了する
         saveNumericSetting() {
             var self = this;
 //            $("#G2_5").trigger("validate");
@@ -100,6 +102,7 @@ module nts.uk.com.view.cmf001.g.viewmodel {
             }
             nts.uk.ui.windows.close();
         }
+        // キャンセルして終了する
         cancelNumericSetting() {
             nts.uk.ui.windows.close();
         }
