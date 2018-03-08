@@ -1366,7 +1366,7 @@ module nts.custombinding {
                                                     !dom2.is(':disabled') && dom2.ntsError('set', { messageId: "Msg_858" });
                                                 }
 
-                                                if ((!tpt && !tnt) || (tpt && tnt)) {
+                                                if (!(tpt && tnt) || (tpt && tnt)) {
                                                     rmError(dom1, "Msg_858");
                                                     rmError(dom2, "Msg_858");
 
