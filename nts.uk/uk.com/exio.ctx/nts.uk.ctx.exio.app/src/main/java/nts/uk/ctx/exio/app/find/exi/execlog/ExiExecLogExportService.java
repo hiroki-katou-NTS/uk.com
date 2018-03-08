@@ -13,6 +13,7 @@ import nts.uk.ctx.exio.dom.exi.execlog.csv.ExecLogCSVFileData;
 import nts.uk.ctx.exio.dom.exi.execlog.csv.ExecLogCSVReportGenerator;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
@@ -30,10 +31,10 @@ public class ExiExecLogExportService extends ExportService<List<ErrorContentDto>
     
     @Override
 	protected void handle(ExportServiceContext<List<ErrorContentDto>> context) {
-    	if (context == null){ 
+    	List<ErrorContentDto> lstError = context.getQuery();
+    	if (CollectionUtil.isEmpty(lstError)) {
     		return;
     	}
-    	List<ErrorContentDto> lstError = context.getQuery();
     	List<String> header = this.getTextHeader();  
 		String nameSetting;
 		List<String> condImport = new ArrayList<>();
