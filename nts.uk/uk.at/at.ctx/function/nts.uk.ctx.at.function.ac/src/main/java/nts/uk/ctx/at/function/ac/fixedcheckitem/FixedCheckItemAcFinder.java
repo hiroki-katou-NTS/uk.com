@@ -43,10 +43,9 @@ public class FixedCheckItemAcFinder implements FixedCheckItemAdapter {
 	}
 
 	@Override
-	public List<ValueExtractAlarm> checkingData(List<ValueExtractAlarm> listValue,String workplaceID,String employeeID, GeneralDate startDate,
+	public List<ValueExtractAlarm> checkingData(String workplaceID,String employeeID, GeneralDate startDate,
 			GeneralDate endDate) {
-		List<ValueExtractAlarmWRPubExport> listExport = listValue.stream().map(c->convertToImport(c)).collect(Collectors.toList());
-		return fixedCheckItemPub.checkingData(listExport,workplaceID,employeeID, startDate, endDate)
+		return fixedCheckItemPub.checkingData(workplaceID,employeeID, startDate, endDate)
 				.stream().map(c->convertToExport(c)).collect(Collectors.toList());
 	}
 	
