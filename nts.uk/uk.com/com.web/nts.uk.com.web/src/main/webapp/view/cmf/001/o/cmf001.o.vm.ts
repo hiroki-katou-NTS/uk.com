@@ -327,7 +327,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                         item.timeFormatSetting.roundProcCls,
                         item.timeFormatSetting.fixedValue,
                         item.timeFormatSetting.valueOfFixedValue);
-                    setShared("CMF001jParams", { inputMode: false, lineNumber: null, formatSetting: ko.toJS(settingJ) });
+                    setShared("CMF001jParams", { inputMode: false, lineNumber: null, formatSetting: ko.toJS(settingJ2) });
                     nts.uk.ui.windows.sub.modal("/view/cmf/001/j/index.xhtml");
                     break;
             }
