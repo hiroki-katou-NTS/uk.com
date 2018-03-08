@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.pub.worktype.algorithm;
 
 public interface AcquireWorkTypeNamePub {
 	/**
-	 * Request List #251
+	 * RequestList251
 	 * @param workTypeCode
 	 * @return
 	 */

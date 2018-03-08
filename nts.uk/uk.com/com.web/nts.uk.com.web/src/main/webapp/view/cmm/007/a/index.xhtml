@@ -64,8 +64,11 @@
 					href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('CMM007_2')}</a></li>
 				<li data-bind="click: onSelectTabC"><a tabindex="-1"
 					href="#tabpanel-2" role="tab-navigator">#{i18n.getText('CMM007_3')}</a></li>
-				<li data-bind="click: onSelectTabD"><a tabindex="-1"
-					href="#tabpanel-3" role="tab-navigator">#{i18n.getText('CMM007_4')}</a></li>
+					
+				<!-- ko xoá code dưới vì đối ứng http://192.168.50.4:3000/issues/88358 -->
+				<!-- <li data-bind="click: onSelectTabD"><a tabindex="-1"
+					href="#tabpanel-3" role="tab-navigator">#{i18n.getText('CMM007_4')}</a></li> -->
+					
 				<li data-bind="click: onSelectTabE"><a tabindex="-1"
 					href="#tabpanel-4" role="tab-navigator">#{i18n.getText('CMM007_49')}</a></li>
 				<li data-bind="click: onSelectTabG"><a tabindex="-1"
@@ -81,10 +84,13 @@
 				data-bind="with: temporaryAbsenceFr()">
 				<ui:include src="../c/index.xhtml" />
 			</div>
-			<div id="tabpanel-3" role="tabpanel"
+			
+			<!-- ko xoá code dưới vì đối ứng http://192.168.50.4:3000/issues/88358 -->
+			<!-- <div id="tabpanel-3" role="tabpanel"
 				data-bind="with: planYearHolidayFr()">
 				<ui:include src="../d/index.xhtml" />
-			</div>
+			</div> -->
+			
 			<div id="tabpanel-4" role="tabpanel"
 				data-bind="with: overtimeWorkFr()">
 				<ui:include src="../e/index.xhtml" />

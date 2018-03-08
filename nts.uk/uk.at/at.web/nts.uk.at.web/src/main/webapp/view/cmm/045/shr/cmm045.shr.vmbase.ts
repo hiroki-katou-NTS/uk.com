@@ -366,5 +366,34 @@ module cmm045.shr {
                 this.agentId = agentId;
             }
         }
+        export class ProcessHandler {
+            /**
+             * sort by appType and appDate
+             */
+            static orderByList(lstData: Array<DataModeApp>): Array<DataModeApp>{
+                let result: Array<DataModeApp> = [];
+                let lstA: Array<DataModeApp> = [];
+                let lstB: Array<DataModeApp> = [];
+                _.each(lstData, function(obj){
+                    if(obj.appType == 0){//overtime
+                        lstA.push(obj);
+                    }
+                    if(obj.appType == 4){//goback
+                        lstB.push(obj);
+                    }
+                });
+                let sortByA =  _.orderBy(lstA, ["appDate"], ["asc"]);
+                let sortByB =  _.orderBy(lstB, ["appDate"], ["asc"]);
+                //push list A (common)
+                _.each(sortByA, function(obj){
+                    result.push(obj);
+                });
+                //push list B (application)
+                _.each(sortByB, function(obj){
+                    result.push(obj);
+                });
+                return result;
+            }
+        }
     }
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
 
@@ -28,51 +29,86 @@ public class PlanActualWorkTime extends WorkTimeCondition {
 	private TargetWorkTime workTimeActual;
 
 	/**
-	 * Constructor from Superclass 
+	 * Constructor from Superclass
+	 * 
 	 * @param useAtr
 	 * @param comparePlanAndActual
 	 */
 	private PlanActualWorkTime(Boolean useAtr, FilterByCompare comparePlanAndActual) {
 		super(useAtr, comparePlanAndActual);
 	}
-	
+
 	/* Initial from java type */
 	public static PlanActualWorkTime init(boolean useAtr, int comparePlanAndActual) {
 		return new PlanActualWorkTime(useAtr, EnumAdaptor.valueOf(comparePlanAndActual, FilterByCompare.class));
 	}
-	
-	/** 
+
+	/**
 	 * Set logical operator
-	 * @param: operator 
-	 * 0: AND
-	 * 1: OR
+	 * 
+	 * @param: operator
+	 *             0: AND 1: OR
 	 * @return itself
-	 * */
+	 */
 	public PlanActualWorkTime chooseOperator(int operator) {
 		this.operatorBetweenPlanActual = EnumAdaptor.valueOf(operator, LogicalOperator.class);
 		return this;
 	}
 
-	/** 
+	/**
 	 * Set WorkTime plan
+	 * 
 	 * @param: filterAtr
 	 * @param lstWorkTime
 	 * @return itself
-	 * */
+	 */
 	public PlanActualWorkTime setWorkTimePlan(boolean filterAtr, List<String> lstWorkType) {
 		this.workTimePlan = TargetWorkTime.createFromJavaType(filterAtr, lstWorkType);
 		return this;
 	}
 
-	/** 
+	/**
 	 * Set WorkTime actual
+	 * 
 	 * @param filterAtr
 	 * @param lstWorkTime
 	 * @return itself
-	 * */
+	 */
 	public PlanActualWorkTime setworkTimeActual(boolean filterAtr, List<String> lstWorkType) {
 		this.workTimeActual = TargetWorkTime.createFromJavaType(filterAtr, lstWorkType);
 		return this;
 	}
-	
+
+	@Override
+	public boolean checkWorkTime(WorkInfoOfDailyPerformance workInfo) {
+		if (this.getUseAtr() != null && this.getUseAtr()) {
+			boolean planCheck = false;
+			if (this.workTimePlan != null) {
+				if (this.workTimePlan.getFilterAtr() != null && this.workTimePlan.getFilterAtr()) {
+					planCheck = this.workTimePlan.getLstWorkTime()
+							.contains(workInfo.getScheduleWorkInformation().getWorkTimeCode());
+				}
+			}
+			boolean actualCheck = false;
+			if (this.workTimeActual != null) {
+				if (this.workTimeActual.getFilterAtr() != null && this.workTimeActual.getFilterAtr()) {
+					planCheck = this.workTimeActual.getLstWorkTime()
+							.contains(workInfo.getRecordWorkInformation().getWorkTimeCode());
+				} else {
+					return planCheck;
+				}
+			}
+			if (this.operatorBetweenPlanActual != null) {
+				switch (this.operatorBetweenPlanActual) {
+				case AND:
+					return planCheck && actualCheck;
+				case OR:
+					return planCheck || actualCheck;
+				default:
+					break;
+				}
+			}
+		}
+		return false;
+	}
 }
