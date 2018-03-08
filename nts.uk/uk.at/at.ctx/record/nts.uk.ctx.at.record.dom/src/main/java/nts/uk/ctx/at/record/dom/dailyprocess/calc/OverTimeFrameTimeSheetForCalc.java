@@ -144,7 +144,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 		afterVariableWork = dicisionCalcVariableWork(createTimeSheet,breakdownTimeDay,autoCalculationSet,personalInfo,isCalcWithinOverTime);
 //		/*法定内残業　振替*/
 		List<OverTimeFrameTimeSheet> afterCalcStatutoryOverTimeWork = new ArrayList<>();
-		afterCalcStatutoryOverTimeWork = diciaionCalcStatutory(statutorySet ,dailyTime ,OverTimeOfDaily.sortedByPriority(afterVariableWork,prioritySet),autoCalculationSet);
+		//afterCalcStatutoryOverTimeWork = diciaionCalcStatutory(statutorySet ,dailyTime ,OverTimeOfDaily.sortedByPriority(afterVariableWork,prioritySet),autoCalculationSet);
 		
 		/*return*/
 		//return afterCalcStatutoryOverTimeWork;

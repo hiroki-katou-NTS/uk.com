@@ -38,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTi
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.RaisingSalaryCalcAtr;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
+import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
@@ -149,7 +150,7 @@ public class CalculationRangeOfOneDay {
 			List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem, WorkType beforeDay, WorkType toDay, WorkType afterDay,
 			BreakDownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalculationOfOverTimeWork autoCalculationSet,
 			LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet, WorkTimeSetting workTime,List<BreakTimeOfDailyPerformance> breakTimeOfDailyList
-			,MidNightTimeSheet midNightTimeSheet) {
+			,MidNightTimeSheet midNightTimeSheet,DailyCalculationPersonalInformation personalInfo) {
 		/* 固定控除時間帯の作成 */
 		DeductionTimeSheet deductionTimeSheet = DeductionTimeSheet.createTimeSheetForFixBreakTime(
 				setMethod, clockManage, dailyGoOutSheet, this.oneDayOfRange, commonSet, attendanceLeavingWork,
@@ -161,7 +162,7 @@ public class CalculationRangeOfOneDay {
 		theDayOfWorkTimesLoop(workingSystem, predetermineTimeSetForCalc, fixedWorkTImeZoneSet,fixedWorkSetting.getCommonSetting(), bonusPaySetting,
 				overTimeHourSetList, fixOff, dayEndSet, holidayTimeWorkItem, beforeDay, toDay, afterDay,
 				breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet, deductionTimeSheet,
-				workTime,midNightTimeSheet);
+				workTime,midNightTimeSheet,personalInfo);
 	}
 
 	/**
@@ -213,7 +214,8 @@ public class CalculationRangeOfOneDay {
 			List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem, WorkType beforeDay, WorkType toDay, WorkType afterDay,
 			BreakDownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalculationOfOverTimeWork autoCalculationSet,
 			LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet,
-			DeductionTimeSheet deductionTimeSheet, WorkTimeSetting workTime,MidNightTimeSheet midNightTimeSheet) {
+			DeductionTimeSheet deductionTimeSheet, WorkTimeSetting workTime,MidNightTimeSheet midNightTimeSheet,
+			DailyCalculationPersonalInformation personalInfo) {
 		if (workingSystem.isExcludedWorkingCalculate()) {
 			/* 計算対象外の処理 */
 			return;
@@ -234,7 +236,7 @@ public class CalculationRangeOfOneDay {
 						attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)),
 						workNumber, dayEndSet, workTimeCommonSet, holidayTimeWorkItem, beforeDay, toDay, afterDay, workTime,
 						workingSystem, breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet
-						,bonusPaySetting,midNightTimeSheet);
+						,bonusPaySetting,midNightTimeSheet,personalInfo);
 				if(!outsideWorkTimeSheet.isPresent()) {
 					outsideWorkTimeSheet.set(createOutSideWorkTimeSheet);
 				}
@@ -411,7 +413,7 @@ public class CalculationRangeOfOneDay {
 					WorkTimeSetting workTime,
 					FlexWorkSetting flexWorkSetting,OutingTimeOfDailyPerformance outingTimeSheetofDaily,
 					TimeSpanForCalc oneDayTimeSpan,TimeLeavingOfDailyPerformance attendanceLeaveWork,WorkTimeDivision workTimeDivision
-					,List<BreakTimeOfDailyPerformance> breakTimeOfDailyList,MidNightTimeSheet midNightTimeSheet){
+					,List<BreakTimeOfDailyPerformance> breakTimeOfDailyList,MidNightTimeSheet midNightTimeSheet,DailyCalculationPersonalInformation personalInfo){
 		 //if(!flexTimeSet.getUseFixedRestTime()){
 			// predetermineTimeSetForCalc.correctPredetermineTimeSheet(dailyWork);
 			 /*遅刻早退処理*/
@@ -434,7 +436,7 @@ public class CalculationRangeOfOneDay {
 					holidayTimeWorkItem,  beforeDay,  toDay,  afterDay,
 					 breakdownTimeDay,  dailyTime,  autoCalculationSet,
 					 statutorySet,  prioritySet,
-					 deductionTimeSheet,  workTime,midNightTimeSheet);
+					 deductionTimeSheet,  workTime,midNightTimeSheet,personalInfo);
 		 /*コアタイムのセット*/
 		 this.withinWorkingTimeSheet.set(withinWorkingTimeSheet.get().createWithinFlexTimeSheet(flexWorkSetting.getCoreTimeSetting()));
 	 }
