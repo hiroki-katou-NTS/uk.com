@@ -3,8 +3,13 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
 
@@ -13,9 +18,9 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareTy
  *
  */
 // 単一値との比較
-public class CompareSingleValue<V> extends CheckedCondition {
-	
-	//値
+public class CompareSingleValue<V extends IntegerPrimitiveValue<V>> extends CheckedCondition {
+
+	// 値
 	private V value;
 
 	// 比較演算子
@@ -40,11 +45,39 @@ public class CompareSingleValue<V> extends CheckedCondition {
 	}
 
 	/**
-	 * @param value the value to set
+	 * @param value
+	 *            the value to set
 	 */
 	public CompareSingleValue<V> setValue(V value) {
 		this.value = value;
 		return this;
 	}
 
+	public boolean check(V target) {
+		return check(target, value.v());
+	}
+	
+	public boolean checkWithAttendanceItem(V target, Function<List<Integer>, List<Integer>> getItemValue) {
+		Integer compareValue = getItemValue.apply(Arrays.asList(this.value.v())).get(0);
+		return check(target, compareValue);
+	}
+	
+	private boolean check(V target, Integer compare) {
+		switch (this.compareOpertor) {
+		case EQUAL:
+			return target.compareTo(compare) == 0;
+		case GREATER_OR_EQUAL:
+			return target.compareTo(compare) >= 0;
+		case GREATER_THAN:
+			return target.compareTo(compare) > 0;
+		case LESS_OR_EQUAL:
+			return target.compareTo(compare) <= 0;
+		case LESS_THAN:
+			return target.compareTo(compare) < 0;
+		case NOT_EQUAL:
+			return target.compareTo(compare) != 0;
+		default:
+			throw new RuntimeException("invalid compareOpertor: " + compareOpertor);
+		}
+	}
 }
