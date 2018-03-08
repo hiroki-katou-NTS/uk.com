@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.entity.application.holidayshipment.breakoffsuspensionchangemanager;
+package nts.uk.ctx.at.request.infra.entity.application.holidayshipment;
 
 import java.io.Serializable;
 
@@ -11,22 +11,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 消化対象代休管理PK
+ * 
+ * @author sonnlb
+ */
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Embeddable
-
-/**
- * 振休申請休出変更管理PK
- * 
- * @author sonnlb
- */
-public class KrqdtBreakOffSuspensionChangeManagerPK implements Serializable {
+public class KrqdtSubTargetDigestionPK implements Serializable {
 	/**
 	* 
 	*/
 	private static final long serialVersionUID = 1L;
+
 	/**
 	 * 振出申請ID
 	 */
@@ -40,4 +41,5 @@ public class KrqdtBreakOffSuspensionChangeManagerPK implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "ABSENCE_LEAVE_APP_ID")
 	private String absenceLeaveAppID;
+
 }
