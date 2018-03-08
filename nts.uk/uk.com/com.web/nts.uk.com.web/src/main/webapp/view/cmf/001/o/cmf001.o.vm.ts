@@ -316,7 +316,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 case 4:
                     //時間型の場合
                     //J:「時刻型・時間型設定」ダイアログをモーダルで表示する
-                    let settingJ = new model.InstantTimeDataFormatSetting(
+                    let settingJ2 = new model.InstantTimeDataFormatSetting(
                         item.timeFormatSetting.effectiveDigitLength,
                         item.timeFormatSetting.startDigit,
                         item.timeFormatSetting.endDigit,
