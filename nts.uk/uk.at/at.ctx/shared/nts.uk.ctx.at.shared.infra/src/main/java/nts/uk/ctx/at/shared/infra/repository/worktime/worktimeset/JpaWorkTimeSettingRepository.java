@@ -41,7 +41,7 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	 */
 	@Override
 	public List<WorkTimeSetting> findByCompanyId(String companyId) {
-		return this.findWithCondition(companyId, new WorkTimeSettingCondition(null, null, null));
+		return this.findWithCondition(companyId, new WorkTimeSettingCondition(null, null, false));
 	}
 
 	/*
