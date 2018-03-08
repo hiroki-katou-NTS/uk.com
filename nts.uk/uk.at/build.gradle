@@ -361,7 +361,7 @@ project (':at.ctx:record:nts.uk.ctx.at.record.ac') {
 		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.pub', version: '0.6.4')
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.36')
 		compile(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: '0.3.7')
-		compile(group: 'com.query', name: 'nts.uk.query.pub', version: '0.2')
+		compile(group: 'com.query', name: 'nts.uk.query.pub', version: '0.3')
 	}
 }
 project (':at.ctx:record:nts.uk.ctx.at.record.pub') {
