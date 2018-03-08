@@ -3,7 +3,7 @@ module nts.uk.com.view.cmf001.d {
         this.transferred.ifPresent(data => {
             console.log(data);
             var screenModel = new viewmodel.ScreenModel(data);
-            //screenModel.startPage().done(function() {
+            screenModel.startPage().done(function() {
                 __viewContext.bind(screenModel);
     //            _.defer(() => {
     //                if (screenModel.screenMode() == nts.uk.at.view.kal003.share.model.SCREEN_MODE.UPDATE) {
@@ -12,7 +12,7 @@ module nts.uk.com.view.cmf001.d {
     //                    $("#A3_2").focus();
     //                }
     //            });
-            //});
+            });
         });
         
     });
