@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 public class PlanActualWorkTypeTest {
 
 	@Test
-	public void checkWorkTypeTest() {
+	public void checkWorkTypeTest_True() {
 		val target = PlanActualWorkType.init(true, FilterByCompare.DO_NOT_COMPARE.value);
 		target.setworkTypeActual(true, Arrays.asList("1", "2"));
 		target.setWorkTypePlan(true, Arrays.asList("1", "2"));
@@ -31,7 +31,124 @@ public class PlanActualWorkTypeTest {
 		assertThat(actual, is(true));
 
 	}
+	
+	@Test
+	public void checkWorkTypeTest_False() {
+		val target = PlanActualWorkType.init(false, FilterByCompare.DO_NOT_COMPARE.value);
+		target.setworkTypeActual(true, Arrays.asList("1", "2"));
+		target.setWorkTypePlan(true, Arrays.asList("1", "2"));
+		target.chooseOperator(LogicalOperator.AND.value);
+		WorkInfoOfDailyPerformance info = createWorkInfo();
 
+		boolean actual = target.checkWorkType(info);
+		assertThat(actual, is(false));
+
+	}
+	
+	@Test
+	public void checkWorkTypeTest_False1() {
+		val target = PlanActualWorkType.init(true, FilterByCompare.DO_NOT_COMPARE.value);
+		target.setworkTypeActual(true, Arrays.asList("1", "2"));
+		target.setWorkTypePlan(true, Arrays.asList("2", "3"));
+		target.chooseOperator(LogicalOperator.AND.value);
+		WorkInfoOfDailyPerformance info = createWorkInfo();
+
+		boolean actual = target.checkWorkType(info);
+		assertThat(actual, is(false));
+
+	}
+	
+	@Test
+	public void checkWorkTypeTest_False2() {
+		val target = PlanActualWorkType.init(true, FilterByCompare.DO_NOT_COMPARE.value);
+		target.setworkTypeActual(true, Arrays.asList("2", "3"));
+		target.setWorkTypePlan(false, Arrays.asList("2", "3"));
+		target.chooseOperator(LogicalOperator.AND.value);
+		WorkInfoOfDailyPerformance info = createWorkInfo();
+
+		boolean actual = target.checkWorkType(info);
+		assertThat(actual, is(false));
+
+	}
+	
+	@Test
+	public void checkWorkTypeTest_False3() {
+		val target = PlanActualWorkType.init(true, FilterByCompare.DO_NOT_COMPARE.value);
+		target.setworkTypeActual(true, Arrays.asList("2", "3"));
+		target.setWorkTypePlan(true, Arrays.asList("2", "3"));
+		target.chooseOperator(LogicalOperator.AND.value);
+		WorkInfoOfDailyPerformance info = createWorkInfo();
+
+		boolean actual = target.checkWorkType(info);
+		assertThat(actual, is(false));
+
+	}
+
+	@Test
+	public void checkWorkTypeTest_False4() {
+		val target = PlanActualWorkType.init(true, FilterByCompare.DO_NOT_COMPARE.value);
+		target.setworkTypeActual(true, Arrays.asList("2", "3"));
+		target.setWorkTypePlan(true, Arrays.asList("1", "3"));
+		target.chooseOperator(LogicalOperator.AND.value);
+		WorkInfoOfDailyPerformance info = createWorkInfo();
+
+		boolean actual = target.checkWorkType(info);
+		assertThat(actual, is(false));
+
+	}
+	
+	@Test
+	public void checkWorkTypeTest_False5() {
+		val target = PlanActualWorkType.init(true, FilterByCompare.DO_NOT_COMPARE.value);
+		target.setworkTypeActual(true, Arrays.asList("2", "2"));
+		target.setWorkTypePlan(true, Arrays.asList("2", "3"));
+		target.chooseOperator(LogicalOperator.OR.value);
+		WorkInfoOfDailyPerformance info = createWorkInfo();
+
+		boolean actual = target.checkWorkType(info);
+		assertThat(actual, is(false));
+
+	}
+	
+	@Test
+	public void checkWorkTypeTest_True1() {
+		val target = PlanActualWorkType.init(true, FilterByCompare.DO_NOT_COMPARE.value);
+		target.setworkTypeActual(true, Arrays.asList("1", "3"));
+		target.setWorkTypePlan(false, Arrays.asList("2", "3"));
+		target.chooseOperator(LogicalOperator.OR.value);
+		WorkInfoOfDailyPerformance info = createWorkInfo();
+
+		boolean actual = target.checkWorkType(info);
+		assertThat(actual, is(true));
+
+	}
+	
+	@Test
+	public void checkWorkTypeTest_True2() {
+		val target = PlanActualWorkType.init(true, FilterByCompare.DO_NOT_COMPARE.value);
+		target.setworkTypeActual(true, Arrays.asList("1", "3"));
+		target.setWorkTypePlan(true, Arrays.asList("2", "3"));
+		target.chooseOperator(LogicalOperator.OR.value);
+		WorkInfoOfDailyPerformance info = createWorkInfo();
+
+		boolean actual = target.checkWorkType(info);
+		assertThat(actual, is(true));
+
+	}
+
+	@Test
+	public void checkWorkTypeTest_True3() {
+		val target = PlanActualWorkType.init(true, FilterByCompare.DO_NOT_COMPARE.value);
+		target.setworkTypeActual(true, Arrays.asList("2", "3"));
+		target.setWorkTypePlan(true, Arrays.asList("1", "3"));
+		target.chooseOperator(LogicalOperator.OR.value);
+		WorkInfoOfDailyPerformance info = createWorkInfo();
+
+		boolean actual = target.checkWorkType(info);
+		assertThat(actual, is(true));
+
+	}
+	
 	private WorkInfoOfDailyPerformance createWorkInfo() {
 		return new WorkInfoOfDailyPerformance("1", new WorkInformation("1", "1"), new WorkInformation("1", "1"),
 				CalculationState.No_Calculated, NotUseAttribute.Not_use,

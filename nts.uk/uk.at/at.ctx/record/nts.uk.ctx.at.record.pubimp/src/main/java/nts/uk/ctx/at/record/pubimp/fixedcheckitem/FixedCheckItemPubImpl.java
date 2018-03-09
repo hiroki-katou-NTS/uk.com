@@ -69,10 +69,9 @@ public class FixedCheckItemPubImpl implements FixedCheckItemPub {
 	}
 
 	@Override
-	public List<ValueExtractAlarmWRPubExport> checkingData(List<ValueExtractAlarmWRPubExport> listValue,String workplaceID,String employeeID, GeneralDate startDate,
+	public List<ValueExtractAlarmWRPubExport> checkingData(String workplaceID,String employeeID, GeneralDate startDate,
 			GeneralDate endDate) {
-		List<ValueExtractAlarmWR> listValueExtractAlarmWR = listValue.stream().map(c->convertToDto(c)).collect(Collectors.toList());
-		return checkingDataService.checkingData(listValueExtractAlarmWR,workplaceID,employeeID, startDate, endDate)
+		return checkingDataService.checkingData(workplaceID,employeeID, startDate, endDate)
 				.stream().map(c->convertToExport(c)).collect(Collectors.toList());
 	}
 	
@@ -88,17 +87,6 @@ public class FixedCheckItemPubImpl implements FixedCheckItemPub {
 				);
 	}
 	
-	private ValueExtractAlarmWR convertToDto(ValueExtractAlarmWRPubExport export) {
-		return new ValueExtractAlarmWR(
-				export.getWorkplaceID(),
-				export.getEmployeeID(),
-				export.getAlarmValueDate(),
-				export.getClassification(),
-				export.getAlarmItem(),
-				export.getAlarmValueMessage(),
-				export.getComment()
-				);
-	}
 	
 	
 	
