@@ -70,7 +70,7 @@ public class JpaWorkTypeReportRepository extends JpaRepository implements WorkTy
 				workTypeSetOneDay.genSubHoliday, 
 				workTypeSetOneDay.sumAbsenseNo, 
 				workTypeSetOneDay.sumSpHolidayNo, 
-				EnumAdaptor.valueOf(workTypeSetOneDay.closeAtr, CloseAtr.class), 
+				workTypeSetOneDay.closeAtr != null ? EnumAdaptor.valueOf(workTypeSetOneDay.closeAtr, CloseAtr.class) : null, 
 				workTypeSetMorning != null ? workTypeSetMorning.dayNightTimeAsk : null,
 				workTypeSetMorning != null ? workTypeSetMorning.attendanceTime : null,
 				workTypeSetMorning != null ? workTypeSetMorning.timeLeaveWork : null,

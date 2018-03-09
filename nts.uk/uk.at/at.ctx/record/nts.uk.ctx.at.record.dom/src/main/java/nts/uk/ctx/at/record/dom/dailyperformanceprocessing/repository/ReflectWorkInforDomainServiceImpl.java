@@ -61,7 +61,6 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemN
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -81,6 +80,7 @@ import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkingTimesheetCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.CPBonusPaySettingRepository;
@@ -99,15 +99,14 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.shr.com.i18n.TextResource;
@@ -187,28 +186,28 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 	@Inject
 	private StampRepository stampRepository;
-	
+
 	@Inject
 	private BusinessTypeEmpOfHistoryRepository businessTypeEmpOfHistoryRepository;
-	
+
 	@Inject
 	private BusinessTypeOfEmployeeRepository businessTypeOfEmployeeRepository;
-	
+
 	@Inject
 	private RecSpecificDateSettingAdapter recSpecificDateSettingAdapter;
-	
+
 	@Inject
 	private BPSettingRepository bPSettingRepository;
-	
+
 	@Inject
 	private WTBonusPaySettingRepository wTBonusPaySettingRepository;
-	
+
 	@Inject
 	private PSBonusPaySettingRepository pSBonusPaySettingRepository;
-	
+
 	@Inject
 	private WPBonusPaySettingRepository wPBonusPaySettingRepository;
-	
+
 	@Inject
 	private CPBonusPaySettingRepository cPBonusPaySettingRepository;
 
@@ -236,22 +235,27 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		// ドメインモデル「日別実績の勤務情報」を取得する - not rerun
 		if (!this.workInformationRepository.find(employeeId, day).isPresent()) {
 
-//			List<ErrMessageInfo> errMesInfos = new ArrayList<>();
+			// List<ErrMessageInfo> errMesInfos = new ArrayList<>();
 
-//			WorkTypeOfDailyPerformance workTypeOfDailyPerformance = new WorkTypeOfDailyPerformance();
+			// WorkTypeOfDailyPerformance workTypeOfDailyPerformance = new
+			// WorkTypeOfDailyPerformance();
 			// 勤務種別を反映する
-//			Optional<BusinessTypeOfEmployee> businessTypeOfEmployeeOpt = reflectWorkType(employeeId, day);
+			// Optional<BusinessTypeOfEmployee> businessTypeOfEmployeeOpt =
+			// reflectWorkType(employeeId, day);
 
 			// check data exist
-//			if (businessTypeOfEmployeeOpt.isPresent()) {
-//				workTypeOfDailyPerformance = new WorkTypeOfDailyPerformance(employeeId, day,
-//						businessTypeOfEmployeeOpt.get().getBusinessTypeCode());
-//			} else {
-//				ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
-//						new ErrMessageResource("011"), EnumAdaptor.valueOf(0, ExecutionContent.class), day,
-//						new ErrMessageContent(TextResource.localize("Msg_1011")));
-//				errMesInfos.add(employmentErrMes);
-//			}
+			// if (businessTypeOfEmployeeOpt.isPresent()) {
+			// workTypeOfDailyPerformance = new
+			// WorkTypeOfDailyPerformance(employeeId, day,
+			// businessTypeOfEmployeeOpt.get().getBusinessTypeCode());
+			// } else {
+			// ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId,
+			// empCalAndSumExecLogID,
+			// new ErrMessageResource("011"), EnumAdaptor.valueOf(0,
+			// ExecutionContent.class), day,
+			// new ErrMessageContent(TextResource.localize("Msg_1011")));
+			// errMesInfos.add(employmentErrMes);
+			// }
 
 			val affiliationInforOfDailyPerforState = createAffiliationInforOfDailyPerfor(companyId, employeeId, day,
 					empCalAndSumExecLogID);
@@ -264,13 +268,13 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				affiliationInforOfDailyPerforState.getErrMesInfos().forEach(action -> {
 					this.errMessageInfoRepository.add(action);
 				});
-//				errMesInfos.forEach(item -> {
-//					this.errMessageInfoRepository.add(item);
-//				});
+				// errMesInfos.forEach(item -> {
+				// this.errMessageInfoRepository.add(item);
+				// });
 			}
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param employeeId
@@ -379,8 +383,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		// 日別実績の出退勤
 		TimeLeavingOfDailyPerformance timeLeavingOptional = new TimeLeavingOfDailyPerformance();
 
-//		Optional<PersonalLaborCondition> personalLaborHasData = this.personalLaborConditionRepository
-//				.findById(employeeID, day);
+		// Optional<PersonalLaborCondition> personalLaborHasData =
+		// this.personalLaborConditionRepository
+		// .findById(employeeID, day);
 
 		// ドメインモデル「労働条件項目．予定管理区分」を取得する
 		Optional<WorkingConditionItem> workingConditionItem = this.workingConditionItemRepository
@@ -476,148 +481,44 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			} else {
 				// 個人情報から勤務種類と就業時間帯を写す
 				// 個人情報に処理中の曜日の設定が存在するか確認する
-				WorkInformation recordWorkInformation = new WorkInformation();
+				WorkInformation recordWorkInformation = null;
+				WorkingConditionItem workCondition = workingConditionItem.get();
 				if (this.workingConditionItemRepository.getBySidAndStandardDate(employeeID, day).isPresent()) {
 					// monday
 					if (day.dayOfWeek() == 1) {
-						if (workingConditionItem.get().getWorkDayOfWeek().getMonday().isPresent()) {
-							recordWorkInformation.setWorkTypeCode(new WorkTypeCode(workingConditionItem.get()
-									.getWorkDayOfWeek().getMonday().get().getWorkTypeCode().v()));
-							recordWorkInformation.setWorkTimeCode(workingConditionItem.get().getWorkDayOfWeek()
-									.getMonday().get().getWorkTimeCode().isPresent()
-											? new WorkTimeCode(workingConditionItem.get().getWorkDayOfWeek().getMonday()
-													.get().getWorkTimeCode().get().v())
-											: new WorkTimeCode(""));
-						} else {
-							recordWorkInformation.setWorkTypeCode(new WorkTypeCode(workingConditionItem.get()
-									.getWorkCategory().getWeekdayTime().getWorkTypeCode().v()));
-							recordWorkInformation.setWorkTimeCode(workingConditionItem.get().getWorkCategory()
-									.getWeekdayTime().getWorkTimeCode().isPresent()
-											? new WorkTimeCode(workingConditionItem.get().getWorkCategory()
-													.getWeekdayTime().getWorkTimeCode().get().v())
-											: new WorkTimeCode(""));
-						}
+						recordWorkInformation = getWorkInfo(workCondition.getWorkDayOfWeek().getMonday(),
+								workCondition.getWorkCategory().getWeekdayTime());
 					}
 					// tuesday
 					else if (day.dayOfWeek() == 2) {
-						if (workingConditionItem.get().getWorkDayOfWeek().getTuesday().isPresent()) {
-							recordWorkInformation.setWorkTypeCode(new WorkTypeCode(workingConditionItem.get()
-									.getWorkDayOfWeek().getTuesday().get().getWorkTypeCode().v()));
-							recordWorkInformation.setWorkTimeCode(workingConditionItem.get().getWorkDayOfWeek()
-									.getTuesday().get().getWorkTimeCode().isPresent()
-											? new WorkTimeCode(workingConditionItem.get().getWorkDayOfWeek()
-													.getTuesday().get().getWorkTimeCode().get().v())
-											: new WorkTimeCode(""));
-						} else {
-							recordWorkInformation.setWorkTypeCode(new WorkTypeCode(workingConditionItem.get()
-									.getWorkCategory().getWeekdayTime().getWorkTypeCode().v()));
-							recordWorkInformation.setWorkTimeCode(workingConditionItem.get().getWorkCategory()
-									.getWeekdayTime().getWorkTimeCode().isPresent()
-											? new WorkTimeCode(workingConditionItem.get().getWorkCategory()
-													.getWeekdayTime().getWorkTimeCode().get().v())
-											: new WorkTimeCode(""));
-						}
+						recordWorkInformation = getWorkInfo(workCondition.getWorkDayOfWeek().getTuesday(),
+								workCondition.getWorkCategory().getWeekdayTime());
 					}
 					// wednesday
 					else if (day.dayOfWeek() == 3) {
-						if (workingConditionItem.get().getWorkDayOfWeek().getWednesday().isPresent()) {
-							recordWorkInformation.setWorkTypeCode(new WorkTypeCode(workingConditionItem.get()
-									.getWorkDayOfWeek().getWednesday().get().getWorkTypeCode().v()));
-							recordWorkInformation.setWorkTimeCode(workingConditionItem.get().getWorkDayOfWeek()
-									.getWednesday().get().getWorkTimeCode().isPresent()
-											? new WorkTimeCode(workingConditionItem.get().getWorkDayOfWeek()
-													.getWednesday().get().getWorkTimeCode().get().v())
-											: new WorkTimeCode(""));
-						} else {
-							recordWorkInformation.setWorkTypeCode(new WorkTypeCode(workingConditionItem.get()
-									.getWorkCategory().getWeekdayTime().getWorkTypeCode().v()));
-							recordWorkInformation.setWorkTimeCode(workingConditionItem.get().getWorkCategory()
-									.getWeekdayTime().getWorkTimeCode().isPresent()
-											? new WorkTimeCode(workingConditionItem.get().getWorkCategory()
-													.getWeekdayTime().getWorkTimeCode().get().v())
-											: new WorkTimeCode(""));
-						}
+						recordWorkInformation = getWorkInfo(workCondition.getWorkDayOfWeek().getWednesday(),
+								workCondition.getWorkCategory().getWeekdayTime());
 
 					}
 					// thursday
 					else if (day.dayOfWeek() == 4) {
-						if (workingConditionItem.get().getWorkDayOfWeek().getThursday().isPresent()) {
-							recordWorkInformation.setWorkTypeCode(new WorkTypeCode(workingConditionItem.get()
-									.getWorkDayOfWeek().getThursday().get().getWorkTypeCode().v()));
-							recordWorkInformation.setWorkTimeCode(workingConditionItem.get().getWorkDayOfWeek()
-									.getThursday().get().getWorkTimeCode().isPresent()
-											? new WorkTimeCode(workingConditionItem.get().getWorkDayOfWeek()
-													.getThursday().get().getWorkTimeCode().get().v())
-											: new WorkTimeCode(""));
-						} else {
-							recordWorkInformation.setWorkTypeCode(new WorkTypeCode(workingConditionItem.get()
-									.getWorkCategory().getWeekdayTime().getWorkTypeCode().v()));
-							recordWorkInformation.setWorkTimeCode(workingConditionItem.get().getWorkCategory()
-									.getWeekdayTime().getWorkTimeCode().isPresent()
-											? new WorkTimeCode(workingConditionItem.get().getWorkCategory()
-													.getWeekdayTime().getWorkTimeCode().get().v())
-											: new WorkTimeCode(""));
-						}
+						recordWorkInformation = getWorkInfo(workCondition.getWorkDayOfWeek().getThursday(),
+								workCondition.getWorkCategory().getWeekdayTime());
 					}
 					// friday
 					else if (day.dayOfWeek() == 5) {
-						if (workingConditionItem.get().getWorkDayOfWeek().getFriday().isPresent()) {
-							recordWorkInformation.setWorkTypeCode(new WorkTypeCode(workingConditionItem.get()
-									.getWorkDayOfWeek().getFriday().get().getWorkTypeCode().v()));
-							recordWorkInformation.setWorkTimeCode(workingConditionItem.get().getWorkDayOfWeek()
-									.getFriday().get().getWorkTimeCode().isPresent()
-											? new WorkTimeCode(workingConditionItem.get().getWorkDayOfWeek().getFriday()
-													.get().getWorkTimeCode().get().v())
-											: new WorkTimeCode(""));
-						} else {
-							recordWorkInformation.setWorkTypeCode(new WorkTypeCode(workingConditionItem.get()
-									.getWorkCategory().getWeekdayTime().getWorkTypeCode().v()));
-							recordWorkInformation.setWorkTimeCode(workingConditionItem.get().getWorkCategory()
-									.getWeekdayTime().getWorkTimeCode().isPresent()
-											? new WorkTimeCode(workingConditionItem.get().getWorkCategory()
-													.getWeekdayTime().getWorkTimeCode().get().v())
-											: new WorkTimeCode(""));
-						}
+						recordWorkInformation = getWorkInfo(workCondition.getWorkDayOfWeek().getFriday(),
+								workCondition.getWorkCategory().getWeekdayTime());
 					}
 					// saturday
 					else if (day.dayOfWeek() == 6) {
-						if (workingConditionItem.get().getWorkDayOfWeek().getSaturday().isPresent()) {
-							recordWorkInformation.setWorkTypeCode(new WorkTypeCode(workingConditionItem.get()
-									.getWorkDayOfWeek().getSaturday().get().getWorkTypeCode().v()));
-							recordWorkInformation.setWorkTimeCode(workingConditionItem.get().getWorkDayOfWeek()
-									.getSaturday().get().getWorkTimeCode().isPresent()
-											? new WorkTimeCode(workingConditionItem.get().getWorkDayOfWeek()
-													.getSaturday().get().getWorkTimeCode().get().v())
-											: new WorkTimeCode(""));
-						} else {
-							recordWorkInformation.setWorkTypeCode(new WorkTypeCode(workingConditionItem.get()
-									.getWorkCategory().getWeekdayTime().getWorkTypeCode().v()));
-							recordWorkInformation.setWorkTimeCode(workingConditionItem.get().getWorkCategory()
-									.getWeekdayTime().getWorkTimeCode().isPresent()
-											? new WorkTimeCode(workingConditionItem.get().getWorkCategory()
-													.getWeekdayTime().getWorkTimeCode().get().v())
-											: new WorkTimeCode(""));
-						}
+						recordWorkInformation = getWorkInfo(workCondition.getWorkDayOfWeek().getSaturday(),
+								workCondition.getWorkCategory().getWeekdayTime());
 					}
 					// sunday
 					else if (day.dayOfWeek() == 7) {
-						if (workingConditionItem.get().getWorkDayOfWeek().getSunday().isPresent()) {
-							recordWorkInformation.setWorkTypeCode(new WorkTypeCode(workingConditionItem.get()
-									.getWorkDayOfWeek().getSunday().get().getWorkTypeCode().v()));
-							recordWorkInformation.setWorkTimeCode(workingConditionItem.get().getWorkDayOfWeek()
-									.getSunday().get().getWorkTimeCode().isPresent()
-											? new WorkTimeCode(workingConditionItem.get().getWorkDayOfWeek().getSunday()
-													.get().getWorkTimeCode().get().v())
-											: new WorkTimeCode(""));
-						} else {
-							recordWorkInformation.setWorkTypeCode(new WorkTypeCode(workingConditionItem.get()
-									.getWorkCategory().getWeekdayTime().getWorkTypeCode().v()));
-							recordWorkInformation.setWorkTimeCode(workingConditionItem.get().getWorkCategory()
-									.getWeekdayTime().getWorkTimeCode().isPresent()
-											? new WorkTimeCode(workingConditionItem.get().getWorkCategory()
-													.getWeekdayTime().getWorkTimeCode().get().v())
-											: new WorkTimeCode(""));
-						}
+						recordWorkInformation = getWorkInfo(workCondition.getWorkDayOfWeek().getSunday(),
+								workCondition.getWorkCategory().getWeekdayTime());
 					}
 				}
 
@@ -689,25 +590,32 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance = null;
 
 			if (errMesInfos.isEmpty()) {
-				
-//				// pharse 2 start ----
-//				// 特定日を日別実績に反映する
-//				SpecificDateAttrOfDailyPerfor specificDateAttrOfDailyPerfor = reflectSpecificDate(companyId, employeeID,
-//						day, affiliationInforOfDailyPerfor.getWplID());
-//				
-//				//加給設定を日別実績に反映する
-//				Optional<BonusPaySetting> bonusPaySetting = this.reflectBonusSetting(companyId, employeeID, day, null);
-//				if (bonusPaySetting.isPresent()) {
-//					affiliationInforOfDailyPerfor = new AffiliationInforOfDailyPerfor(affiliationInforOfDailyPerfor.getEmploymentCode(), affiliationInforOfDailyPerfor.getEmployeeId(), 
-//							affiliationInforOfDailyPerfor.getJobTitleID(), affiliationInforOfDailyPerfor.getWplID(), affiliationInforOfDailyPerfor.getYmd(), affiliationInforOfDailyPerfor.getClsCode(), 
-//							bonusPaySetting.get().getCode());
-//				}
-//				
-//				// 計算区分を日別実績に反映する
-//				
-//				
-//				
-//				// end -----	
+
+				// // pharse 2 start ----
+				// // 特定日を日別実績に反映する
+				// SpecificDateAttrOfDailyPerfor specificDateAttrOfDailyPerfor =
+				// reflectSpecificDate(companyId, employeeID,
+				// day, affiliationInforOfDailyPerfor.getWplID());
+				//
+				// //加給設定を日別実績に反映する
+				// Optional<BonusPaySetting> bonusPaySetting =
+				// this.reflectBonusSetting(companyId, employeeID, day, null);
+				// if (bonusPaySetting.isPresent()) {
+				// affiliationInforOfDailyPerfor = new
+				// AffiliationInforOfDailyPerfor(affiliationInforOfDailyPerfor.getEmploymentCode(),
+				// affiliationInforOfDailyPerfor.getEmployeeId(),
+				// affiliationInforOfDailyPerfor.getJobTitleID(),
+				// affiliationInforOfDailyPerfor.getWplID(),
+				// affiliationInforOfDailyPerfor.getYmd(),
+				// affiliationInforOfDailyPerfor.getClsCode(),
+				// bonusPaySetting.get().getCode());
+				// }
+				//
+				// // 計算区分を日別実績に反映する
+				//
+				//
+				//
+				// // end -----
 				// 1日半日出勤・1日休日系の判定
 				WorkStyle workStyle = basicScheduleService.checkWorkDay(
 						workInfoOfDailyPerformanceUpdate.getRecordWorkInformation().getWorkTypeCode().v());
@@ -797,9 +705,22 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		}
 
 	}
-	
+
+	private WorkInformation getWorkInfo(Optional<SingleDaySchedule> workingCondition, SingleDaySchedule category) {
+		WorkInformation recordWorkInformation;
+		if (workingCondition.isPresent()) {
+			recordWorkInformation = new WorkInformation(workingCondition.get().getWorkTimeCode().orElse(null),
+					workingCondition.get().getWorkTypeCode());
+		} else {
+			recordWorkInformation = new WorkInformation(category.getWorkTimeCode().orElse(null),
+					category.getWorkTypeCode());
+		}
+		return recordWorkInformation;
+	}
+
 	/**
 	 * 特定日を日別実績に反映する
+	 * 
 	 * @param companyId
 	 * @param employeeId
 	 * @param day
@@ -902,8 +823,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						// instantRounding.getRoundingTimeUnit().value);
 
 						// Imported(就業．勤務実績)「所属職場履歴」を取得する
-//						Optional<AffWorkPlaceSidImport> workPlaceHasData = this.affWorkplaceAdapter
-//								.findBySidAndDate(employeeID, day);
+						// Optional<AffWorkPlaceSidImport> workPlaceHasData =
+						// this.affWorkplaceAdapter
+						// .findBySidAndDate(employeeID, day);
 
 						// ドメインモデル「所属職場履歴」を取得する
 						attendanceStampTemp.setStamp(new WorkStampOutPut(new TimeWithDayAttr(sheet.getAttendance().v()),
@@ -1059,8 +981,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							WorkStamp stamp = new WorkStamp(
 									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
 									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
-									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode().isPresent() ? 
-											timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode().get() : null,
+									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode()
+											.isPresent()
+													? timeLeavingWork.getAttendanceStamp().get().getStamp().get()
+															.getLocationCode().get()
+													: null,
 									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getStampSourceInfo());
 							attendanceStamp = new TimeActualStamp(null, stamp,
 									timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp());
@@ -1091,8 +1016,10 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							WorkStamp stamp = new WorkStamp(
 									timeLeavingWork.getLeaveStamp().get().getStamp().get().getAfterRoundingTime(),
 									timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay(),
-									timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode().isPresent() ?
-											timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode().get() : null,
+									timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode().isPresent()
+											? timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode()
+													.get()
+											: null,
 									timeLeavingWork.getLeaveStamp().get().getStamp().get().getStampSourceInfo());
 							leaveStamp = new TimeActualStamp(null, stamp,
 									timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp());
@@ -1120,45 +1047,55 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 	/**
 	 * 加給設定を日別実績に反映する
+	 * 
 	 * @param companyId
 	 * @param employeeId
 	 * @param day
 	 * @param workTimeCode
 	 * @return
 	 */
-	private Optional<BonusPaySetting> reflectBonusSetting(String companyId, String employeeId, GeneralDate day, String workTimeCode){
-		
+	private Optional<BonusPaySetting> reflectBonusSetting(String companyId, String employeeId, GeneralDate day,
+			String workTimeCode) {
+
 		Optional<BonusPaySetting> bonusPaySetting = Optional.empty();
-		
+
 		// ドメインモデル「就業時間帯加給設定」を取得
-		Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = this.wTBonusPaySettingRepository.getWTBPSetting(companyId, new WorkingTimesheetCode(workTimeCode));
-		
+		Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = this.wTBonusPaySettingRepository
+				.getWTBPSetting(companyId, new WorkingTimesheetCode(workTimeCode));
+
 		if (!workingTimesheetBonusPaySetting.isPresent()) {
 			// ドメインモデル「個人加給設定」を取得
-			Optional<PersonalBonusPaySetting> personalBonusPaySetting = this.pSBonusPaySettingRepository.getPersonalBonusPaySetting(employeeId);
+			Optional<PersonalBonusPaySetting> personalBonusPaySetting = this.pSBonusPaySettingRepository
+					.getPersonalBonusPaySetting(employeeId);
 			if (!personalBonusPaySetting.isPresent()) {
 				// 所属職場履歴を取得
 				Optional<AffWorkPlaceSidImport> workPlace = this.affWorkplaceAdapter.findBySidAndDate(employeeId, day);
 				// ドメインモデル「職場加給設定」を取得
-				Optional<WorkplaceBonusPaySetting> workplaceBonusPaySetting = this.wPBonusPaySettingRepository.getWPBPSetting(new WorkplaceId(workPlace.get().getWorkplaceId()));
+				Optional<WorkplaceBonusPaySetting> workplaceBonusPaySetting = this.wPBonusPaySettingRepository
+						.getWPBPSetting(new WorkplaceId(workPlace.get().getWorkplaceId()));
 				if (!workplaceBonusPaySetting.isPresent()) {
-					Optional<CompanyBonusPaySetting> companyBonusPaySetting = this.cPBonusPaySettingRepository.getSetting(companyId);
+					Optional<CompanyBonusPaySetting> companyBonusPaySetting = this.cPBonusPaySettingRepository
+							.getSetting(companyId);
 					if (companyBonusPaySetting.isPresent()) {
-						bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId, companyBonusPaySetting.get().getBonusPaySettingCode());
+						bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId,
+								companyBonusPaySetting.get().getBonusPaySettingCode());
 					}
 				} else {
-					bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId, workplaceBonusPaySetting.get().getBonusPaySettingCode());
+					bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId,
+							workplaceBonusPaySetting.get().getBonusPaySettingCode());
 				}
 			} else {
-				bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId, personalBonusPaySetting.get().getBonusPaySettingCode());
+				bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId,
+						personalBonusPaySetting.get().getBonusPaySettingCode());
 			}
 		} else {
-			bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId, workingTimesheetBonusPaySetting.get().getBonusPaySettingCode());
+			bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId,
+					workingTimesheetBonusPaySetting.get().getBonusPaySettingCode());
 		}
 
 		return bonusPaySetting;
 	}
-	
+
 	private int roudingTime(int time, int fontRearSection, int roundingTimeUnit) {
 
 		BigDecimal result = new BigDecimal(time).divide(new BigDecimal(roundingTimeUnit));

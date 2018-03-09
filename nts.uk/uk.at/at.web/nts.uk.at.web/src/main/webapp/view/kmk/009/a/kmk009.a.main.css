@@ -4,7 +4,7 @@
 	margin-top: 20px;
 	padding: 25px;
 	float: left;
-	max-height: 600px;
+	max-height: 360px;
 }
 
 #right-content {
@@ -14,7 +14,7 @@
 }
 
 .row {
-	height: 50px;
+	height: 47px;
 }
 
 #single-list-dataSource tr td {

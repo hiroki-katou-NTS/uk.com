@@ -67,13 +67,15 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 		else if (pgType == PGType.MYPAGE) {
 			return getMyPagePartType(companyID);
 		}
-		return null;
+		return new ArrayList<EnumConstant>();
 	}
 
 	@Override
 	public List<TopPagePart> getAllActiveTopPagePart(String companyID, PGType pgType) {
 		List<EnumConstant> activeTopPagePartTypes = getAllActiveTopPagePartType(companyID, pgType);
 		List<Integer> activeTopPagePartTypeIDs = activeTopPagePartTypes.stream().map(c -> c.getValue()).collect(Collectors.toList());
+		if (activeTopPagePartTypeIDs.isEmpty())
+			return new ArrayList<TopPagePart>();
 		
 		List<TopPagePart> listTopPagePart = new ArrayList<TopPagePart>();
 		if (pgType == PGType.TOPPAGE) {
@@ -84,14 +86,23 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 		}
 		else if (pgType == PGType.MYPAGE) {
 			List<String> activeTopPagePartIDs = getMyPageActivePartIDs(companyID);
+			if (activeTopPagePartIDs.isEmpty())
+				return new ArrayList<TopPagePart>();
 			listTopPagePart = topPagePartRepository.findByTypesAndIDs(companyID, activeTopPagePartTypeIDs, activeTopPagePartIDs);
 		}
 		
 		List<TopPagePart> result =  new ArrayList<TopPagePart>();
 		// Get list FlowMenu
 		val listFlowMenu = listTopPagePart.stream().filter(c -> c.isFlowMenu()).collect(Collectors.toList());
-		result.addAll(flowMenuRepository.findByCodes(companyID, listFlowMenu.stream().map(c -> c.getToppagePartID()).collect(Collectors.toList())));
+		List<String> listFlowMenuID = listFlowMenu.stream().map(c -> c.getToppagePartID()).collect(Collectors.toList());
+		if (listFlowMenuID.isEmpty())
+			return new ArrayList<TopPagePart>();
 		
+		// TODO: Get list Widget
+		
+		// TODO: Get list Dashboard
+		
+		result.addAll(flowMenuRepository.findByCodes(companyID, listFlowMenuID));
 		return result;
 	}
 	

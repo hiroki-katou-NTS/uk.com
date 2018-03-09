@@ -60,10 +60,15 @@ public interface RoleExportRepo {
 	
 	/**
 	 * Find role id by system type.
-	 *
 	 * @param systemType the system type
 	 * @return the string
 	 */
 	//Get RoleId 
 	String findRoleIdBySystemType(Integer systemType);
+	
+	/**
+	 * RequestList50
+	 * @return
+	 */
+	RoleWhetherLoginPubExport  getWhetherLoginerCharge();
 }

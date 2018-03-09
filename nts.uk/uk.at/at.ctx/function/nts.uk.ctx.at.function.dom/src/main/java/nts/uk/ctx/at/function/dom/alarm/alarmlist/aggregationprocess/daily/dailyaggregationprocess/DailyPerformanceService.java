@@ -127,7 +127,7 @@ public class DailyPerformanceService {
 			// アラーム値メッセージ caculate from 	attendance Name and attendance value 		
 			String alarmContent ="";
 			ValueExtractAlarm data = new ValueExtractAlarm(employee.getWorkplaceId(), employee.getId(),
-					eDaily.getDate(), EnumAdaptor.convertToValueName(AlarmCategory.DAILY).getLocalizedName(),
+					eDaily.getDate().toString(), EnumAdaptor.convertToValueName(AlarmCategory.DAILY).getLocalizedName(),
 					errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode()).getName(), alarmContent,
 					errAlarmCheckIDToMessage
 							.get(errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode()).getErrorAlarmCheckID())

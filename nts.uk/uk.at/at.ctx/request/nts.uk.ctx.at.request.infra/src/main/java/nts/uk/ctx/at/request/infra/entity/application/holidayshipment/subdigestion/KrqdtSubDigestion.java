@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.entity.application.holidayshipment;
+package nts.uk.ctx.at.request.infra.entity.application.holidayshipment.subdigestion;
 
 import java.io.Serializable;
 
@@ -6,7 +6,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -17,17 +16,17 @@ import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * 消化対象代休管理
+ * 消化対象振休管理
  * 
  * @author sonnlb
  */
 @Entity
-@Table(name = "KRQDT_ABSENCE_LEAVE_APP")
+@Table(name = "KRQDT_SUP_DIGESTION")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtSubTargetDigestion extends UkJpaEntity implements Serializable {
+public class KrqdtSubDigestion extends UkJpaEntity implements Serializable {
 
 	/**
 	 * 
@@ -35,35 +34,35 @@ public class KrqdtSubTargetDigestion extends UkJpaEntity implements Serializable
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private KrqdtSubTargetDigestionPK pk;
+	private KrqdtSubDigestionPK pk;
 
 	/**
-	 * 使用時間数
+	 * 使用日数
 	 */
 	@Basic(optional = false)
-	@Column(name = "HOURS_USED")
-	private GeneralDate hoursUsed;
+	@Column(name = "DAYS_USED_NO")
+	private int daysUsedNo;
 
 	/**
-	 * 休出管理データ
+	 * 振出管理データ
 	 */
 	@Basic(optional = true)
-	@Column(name = "LEAVE_MNG_DATA_ID")
-	private String leaveMngDataID;
+	@Column(name = "PAYOUT_MNG_DATA_ID")
+	private String payoutMngDataID;
 
 	/**
-	 * 休出発生日
+	 * 振出状態
 	 */
 	@Basic(optional = false)
-	@Column(name = "BREAK_OUT_DATE")
-	private GeneralDate breakOutDate;
+	@Column(name = "PICK_UP_STATE")
+	private int pickUpState;
 
 	/**
-	 * 休出状態
+	 * 振休発生日
 	 */
 	@Basic(optional = false)
-	@Column(name = "REST_STATE")
-	private int restState;
+	@Column(name = "OCCURRENCE_DATE")
+	private GeneralDate occurrenceDate;
 
 	@Override
 	protected Object getKey() {

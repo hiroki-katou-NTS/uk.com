@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.entity.application.holidayshipment;
+package nts.uk.ctx.at.request.infra.entity.application.holidayshipment.compltleavesimmana;
 
 import java.io.Serializable;
 
@@ -18,15 +18,17 @@ import lombok.Setter;
 @Embeddable
 
 /**
- * 振休申請休出変更管理PK
+ * 振休振出同時申請管理PK
  * 
  * @author sonnlb
  */
-public class KrqdtBrkOffSupChangeMngPK implements Serializable {
+public class KrqdtCompltLeaveSimManaPK implements Serializable {
+
 	/**
-	* 
-	*/
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
+
 	/**
 	 * 振出申請ID
 	 */
@@ -40,4 +42,5 @@ public class KrqdtBrkOffSupChangeMngPK implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "ABSENCE_LEAVE_APP_ID")
 	private String absenceLeaveAppID;
+
 }

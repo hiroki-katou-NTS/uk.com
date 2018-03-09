@@ -88,13 +88,16 @@ public class AlarmPatternSettingFinder {
 	}
 
 	public List<CodeNameAlarmDto> getCodeNameAlarm() {
+		
 		String companyId = AppContexts.user().companyId();
 		String userId = AppContexts.user().userId();
 		List<String> roleIds = roleByUserFinder.getRoleIdFromUserId(userId);
-
-		return alarmPatternRepo.findByCompanyIdAndUser(companyId).stream()
+		List<CodeNameAlarmDto> result = alarmPatternRepo.findByCompanyIdAndUser(companyId).stream()
 				.filter(a -> !a.isAuthSetting() || a.isAuthSetting() && intersectTwoListRoleId(a.getRoleIds(), roleIds))
 				.map(a -> new CodeNameAlarmDto(a.getAlarmCode(), a.getAlarmName())).collect(Collectors.toList());
+
+		result.sort((a, b) -> a.getAlarmCode().compareTo(b.getAlarmCode()));
+		return result;
 	}
 
 	private boolean intersectTwoListRoleId(List<String> listRole1, List<String> listRole2) {
