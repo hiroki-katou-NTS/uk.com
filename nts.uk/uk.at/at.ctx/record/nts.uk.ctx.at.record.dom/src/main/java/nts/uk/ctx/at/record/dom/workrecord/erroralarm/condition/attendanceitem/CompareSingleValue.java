@@ -35,6 +35,12 @@ public class CompareSingleValue<V> extends CheckedCondition {
         this.compareOpertor = EnumAdaptor.valueOf(compareOpertor, SingleValueCompareType.class);
         this.conditionType = EnumAdaptor.valueOf(conditionType, ConditionType.class);
     }
+    
+    public CompareSingleValue(SingleValueCompareType compareOpertor, ConditionType conditionType) {
+        super();
+        this.compareOpertor = compareOpertor;
+        this.conditionType = conditionType;
+    }
 
     /**
      * @return the value
@@ -50,8 +56,19 @@ public class CompareSingleValue<V> extends CheckedCondition {
         this.value = value;
         return this;
     }
+    
+    public boolean check(Integer targetValue, Function<List<Integer>, List<Integer>> getItemValue, Function<V, Integer> getValue){
+    	if(targetValue == null){
+    		return false;
+    	}
+    	if (this.conditionType == ConditionType.FIXED_VALUE) {
+            return this.check(targetValue, getValue.apply(value));
+        } else {
+            return this.checkWithAttendanceItem(targetValue, getItemValue, c ->getValue.apply(value));
+        }
+    }
 
-    public boolean check(Integer target, Function<V, Integer> getValue) {
+    public boolean checkWithFixedValue(Integer target, Function<V, Integer> getValue) {
         return check(target, getValue.apply(value));
     }
 

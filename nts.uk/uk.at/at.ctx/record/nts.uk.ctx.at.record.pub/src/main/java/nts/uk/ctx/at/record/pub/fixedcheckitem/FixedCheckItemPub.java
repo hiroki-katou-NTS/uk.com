@@ -14,5 +14,5 @@ public interface FixedCheckItemPub {
 	//4.管理者未確認チェック
 	public List<ValueExtractAlarmWRPubExport> checkAdminUnverified(String workplaceID,String employeeID,GeneralDate startDate,GeneralDate endDate);
 	//5.データのチェック
-	public List<ValueExtractAlarmWRPubExport> checkingData(List<ValueExtractAlarmWRPubExport> listValue,String workplaceID,String employeeID,GeneralDate startDate,GeneralDate endDate);
+	public List<ValueExtractAlarmWRPubExport> checkingData(String workplaceID,String employeeID,GeneralDate startDate,GeneralDate endDate);
 }
