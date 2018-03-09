@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.json.DupDetector;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -237,7 +239,7 @@ public class CalculationRangeOfOneDay {
 					attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)),
 					workNumber, dayEndSet, workTimeCommonSet, holidayTimeWorkItem, beforeDay, toDay, afterDay, workTime,
 					workingSystem, breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet
-					,bonusPaySetting,midNightTimeSheet,personalInfo);
+					,bonusPaySetting,midNightTimeSheet,personalInfo,deductionTimeSheet);
 			if(!outsideWorkTimeSheet.isPresent()) {
 				outsideWorkTimeSheet.set(createOutSideWorkTimeSheet);
 			}
@@ -287,9 +289,13 @@ public class CalculationRangeOfOneDay {
 	 */
 	public List<BonusPayTime> calcBonusPayTime(RaisingSalaryCalcAtr raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,
 											   CalAttrOfDailyPerformance calcAtrOfDaily, BonusPayAtr bonusPayAtr) {
-		val withinBonusPay = withinWorkingTimeSheet.get().calcBonusPayTimeInWithinWorkTime(raisingAutoCalcSet,bonusPayAutoCalcSet, bonusPayAtr,calcAtrOfDaily);
+		
 		List<BonusPayTime> overTimeBonusPay = new ArrayList<>();
 		List<BonusPayTime> holidayWorkBonusPay = new ArrayList<>();
+		List<BonusPayTime> withinBonusPay = new ArrayList<>();
+		if(withinWorkingTimeSheet.isPresent())
+			withinBonusPay = withinWorkingTimeSheet.get().calcBonusPayTimeInWithinWorkTime(raisingAutoCalcSet,bonusPayAutoCalcSet, bonusPayAtr,calcAtrOfDaily);
+		
 		if(outsideWorkTimeSheet.isPresent())
 		{
 			if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 
@@ -308,9 +314,13 @@ public class CalculationRangeOfOneDay {
 	 */
 	public List<BonusPayTime> calcSpecBonusPayTime(RaisingSalaryCalcAtr raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,
 												   CalAttrOfDailyPerformance calcAtrOfDaily,BonusPayAtr bonusPayAtr){
-		List<BonusPayTime> withinBonusPay = withinWorkingTimeSheet.get().calcSpecifiedBonusPayTimeInWithinWorkTime(raisingAutoCalcSet,bonusPayAutoCalcSet, bonusPayAtr,calcAtrOfDaily);
 		List<BonusPayTime> overTimeBonusPay = new ArrayList<>();
 		List<BonusPayTime> holidayWorkBonusPay = new ArrayList<>();
+		List<BonusPayTime> withinBonusPay = new ArrayList<>();
+		
+		if(withinWorkingTimeSheet.isPresent())
+				withinWorkingTimeSheet.get().calcSpecifiedBonusPayTimeInWithinWorkTime(raisingAutoCalcSet,bonusPayAutoCalcSet, bonusPayAtr,calcAtrOfDaily);
+
 		if(outsideWorkTimeSheet.isPresent())
 		{
 			if(outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) { 

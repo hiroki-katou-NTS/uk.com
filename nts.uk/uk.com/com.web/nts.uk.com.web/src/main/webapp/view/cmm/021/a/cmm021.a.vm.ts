@@ -173,6 +173,7 @@ module nts.uk.com.view.cmm021.a {
                     _self.windowAcc1.isChange = true;
                 });
                 _self.enable_WinAcc1.subscribe((value) => {
+                    _self.clearError();
                     if (value == false) {
                         _self.windowAcc1.isChange = true;
                     }
@@ -246,6 +247,8 @@ module nts.uk.com.view.cmm021.a {
                                 } else if (_self.isSaveActive == true) {
                                     _self.isSaveActive = false;
                                 }
+                                _self.clearError();
+                                
                             });
                     }
                     if (_self.isScreenCSelected()) {
@@ -398,9 +401,7 @@ module nts.uk.com.view.cmm021.a {
             //find list Window Acc
             private findListWindowAccByUserId(userId: string): JQueryPromise<WindowAccountFinderDto[]> {
                 let _self = this;
-                let dfd = $.Deferred<any>();
-                
-                _self.clearError();
+                let dfd = $.Deferred<any>();                           
 
                 nts.uk.ui.block.invisible();
                 service.findListWindowAccByUserId(userId).done((data: WindowAccountFinderDto[]) => {

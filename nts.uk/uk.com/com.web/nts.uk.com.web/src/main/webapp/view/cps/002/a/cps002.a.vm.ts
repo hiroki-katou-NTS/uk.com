@@ -63,8 +63,8 @@ module cps002.a.vm {
             showQuickSearchTab: false, // クイック検索
             showAdvancedSearchTab: true, // 詳細検索
             showBaseDate: false, // 基準日利用
-            showClosure: true, // 就業締め日利用
-            showAllClosure: true, // 全締め表示
+            showClosure: false, // 就業締め日利用
+            showAllClosure: false, // 全締め表示
             showPeriod: false, // 対象期間利用
             periodFormatYM: true, // 対象期間精度
 
@@ -88,7 +88,7 @@ module cps002.a.vm {
             showWorkplace: true, // 職場条件
             showClassification: true, // 分類条件
             showJobTitle: true, // 職位条件
-            showWorktype: true, // 勤種条件
+            showWorktype: false, // 勤種条件
             isMutipleCheck: false, // 選択モード
 
             /** Return data */
