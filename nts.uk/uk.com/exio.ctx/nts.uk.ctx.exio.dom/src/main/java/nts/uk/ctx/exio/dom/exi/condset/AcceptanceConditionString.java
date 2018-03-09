@@ -4,14 +4,14 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringMaxLength(100)
-public class AcceptingConditionString extends StringPrimitiveValue<AcceptingConditionString>{
+public class AcceptanceConditionString extends StringPrimitiveValue<AcceptanceConditionString>{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public AcceptingConditionString(String rawValue) {
+	public AcceptanceConditionString(String rawValue) {
 		super(rawValue);
 	}
 

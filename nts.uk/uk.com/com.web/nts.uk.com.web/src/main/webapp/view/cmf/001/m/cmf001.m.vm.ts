@@ -30,14 +30,12 @@ module nts.uk.com.view.cmf001.m.viewmodel {
             self.newCondCode = ko.observable('');
             self.newCondName = ko.observable('');
             let params = getShared('CMF001mParams'); 
-            if (!nts.uk.util.isNullOrUndefined(params)) {
-                let item = _.find(model.getSystemTypes(), x => {return x.code == params.systemType;});
-                self.systemType = item;
-                self.targetType = item.name;
-                self.selectionType = params.systemType;
-                self.conditionCode = ko.observable(params.conditionCode);
-                self.conditionName = ko.observable(params.conditionName);    
-            }
+            let item = _.find(model.getSystemTypes(), x => {return x.code == params.systemType;});
+            self.systemType = item;
+            self.targetType = item.name;
+            self.selectionType = params.systemType;
+            self.conditionCode = ko.observable(params.conditionCode);
+            self.conditionName = ko.observable(params.conditionName);    
         }
          /**
          * Close dialog.
@@ -50,6 +48,8 @@ module nts.uk.com.view.cmf001.m.viewmodel {
         saveData() {
             var self = this;
             $(".nts-editor").trigger("validate");
+            var dfd = $.Deferred();
+            block.invisible();
             if (!nts.uk.ui.errors.hasError()) {
                 service.checkExistCode(self.systemType.code, self.newCondCode()).done((result) => {
                     if(result && !self.checked()){
@@ -62,8 +62,14 @@ module nts.uk.com.view.cmf001.m.viewmodel {
                             code: self.newCondCode(),
                             name: self.newCondName()
                         }, true);  
+                        block.clear();
+                        dfd.resolve();
                         nts.uk.ui.windows.close();
                     }
+                }).fail(function(error) {
+                    alertError(error);
+                    block.clear();
+                    dfd.reject();
                 });
                 
             }
