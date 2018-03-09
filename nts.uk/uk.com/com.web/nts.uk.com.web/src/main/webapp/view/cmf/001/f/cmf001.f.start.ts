@@ -10,6 +10,7 @@ module nts.uk.com.view.cmf001.f {
                     $('#F4_2').focus();
                 }
             });
+            _.defer(() => {nts.uk.ui.errors.clearAll()});
         });
     });
 }
