@@ -644,7 +644,7 @@ project (':at.web:nts.uk.at.web') {
 		
 		runtime(group: 'com.query', name: 'nts.uk.query.ac', version: '0.3')
 		runtime(group: 'com.query', name: 'nts.uk.query.app', version: '0.3')
-		runtime(group: 'com.query', name: 'nts.uk.query.infra', version: '0.3')
+		runtime(group: 'com.query', name: 'nts.uk.query.infra', version: '0.3.1')
 		runtime(group: 'com.query', name: 'nts.uk.query.model', version: '0.3')
 		runtime(group: 'com.query', name: 'nts.uk.query.pub', version: '0.3')
 		runtime(group: 'com.query', name: 'nts.uk.query.pubimp', version: '0.3')
