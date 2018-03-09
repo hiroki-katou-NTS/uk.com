@@ -150,15 +150,21 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             var self = this;
             self.displayApprovalButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER)
                 && (approvalAtrValue != ApprovalAtr.APPROVED));
-            self.enableApprovalButton((state == Status.DENIAL || state == Status.WAITREFLECTION || state == Status.NOTREFLECTED || state == Status.REMAND)
+            self.enableApprovalButton((state == Status.DENIAL || state == Status.NOTREFLECTED || state == Status.REMAND)
                 && canApprove
                 && !expired);
 
             self.displayDenyButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER)
                 && (approvalAtrValue != ApprovalAtr.DENIAL));
-            self.enableDenyButton((state == Status.DENIAL || state == Status.WAITREFLECTION || state == Status.NOTREFLECTED || state == Status.REMAND)
+            self.enableDenyButton(
+                ((state == Status.DENIAL || state == Status.NOTREFLECTED || state == Status.REMAND)
                 && canApprove
-                && !expired);
+                && !expired) ||
+                (state == Status.WAITREFLECTION 
+                && canApprove
+                && (approvalAtrValue == ApprovalAtr.APPROVED || approvalAtrValue == ApprovalAtr.DENIAL)
+                && !expired)
+            );
 
             self.displayRemandButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER));
             self.enableRemandButton((state == Status.DENIAL || state == Status.WAITREFLECTION || state == Status.NOTREFLECTED || state == Status.REMAND)
