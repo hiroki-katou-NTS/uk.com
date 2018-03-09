@@ -47,6 +47,11 @@ public class ErAlConditionsAttendanceItem extends DomainObject {
 	public static ErAlConditionsAttendanceItem init(int conditionOperator) {
 		return new ErAlConditionsAttendanceItem(EnumAdaptor.valueOf(conditionOperator, LogicalOperator.class));
 	}
+	
+	/** Init from Java type */
+	public static ErAlConditionsAttendanceItem init(LogicalOperator conditionOperator) {
+		return new ErAlConditionsAttendanceItem(conditionOperator);
+	}
 
 	/** Create from Java type */
 	public static ErAlConditionsAttendanceItem init(String atdItemConGroupId, int conditionOperator) {
@@ -54,8 +59,17 @@ public class ErAlConditionsAttendanceItem extends DomainObject {
 				EnumAdaptor.valueOf(conditionOperator, LogicalOperator.class));
 	}
 
+	/** Create from Java type */
+	public static ErAlConditionsAttendanceItem init(String atdItemConGroupId, LogicalOperator conditionOperator) {
+		return new ErAlConditionsAttendanceItem(atdItemConGroupId, conditionOperator);
+	}
+	
 	public void addAtdItemConditions(List<ErAlAttendanceItemCondition<?>> conditions) {
 		this.lstErAlAtdItemCon.addAll(conditions);
+	}
+	
+	public void addAtdItemConditions(ErAlAttendanceItemCondition<?> conditions) {
+		this.lstErAlAtdItemCon.add(conditions);
 	}
 
 	public void setGroupId(String atdItemConGroupId) {
@@ -65,7 +79,7 @@ public class ErAlConditionsAttendanceItem extends DomainObject {
 	public boolean check(Function<List<Integer>, List<Integer>> getValueFromItemIds) {
 		switch (this.conditionOperator) {
 		case AND:
-			return lstErAlAtdItemCon.stream().map(aic -> {
+			return lstErAlAtdItemCon.stream().filter(aic -> aic.getUseAtr() != null && aic.getUseAtr()).map(aic -> {
 				return aic.checkTarget(getValueFromItemIds);
 			}).allMatch(r -> r);
 		case OR:
