@@ -8,48 +8,59 @@ module nts.uk.com.view.cmf001.h.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    
+
     export class ScreenModel {
-        characterDataFormatSetting: KnockoutObservable<model.CharacterDataFormatSetting> = 
-        ko.observable(new model.CharacterDataFormatSetting(0, null, null, 0, null, null, new model.AcceptanceCodeConvert("", "", 0), 0, ""));
-        
-        effectDigitItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
-            new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_268')),
-            new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF001_269'))
-        ]);
-        codeEditingItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
-            new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_277')),
-            new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF001_278'))
-        ]);
-        effectFixedValItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
-            new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_294')),
-            new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF001_295'))
-        ]);
+        characterDataFormatSetting: KnockoutObservable<model.CharacterDataFormatSetting>;
+
+        effectDigitItem: KnockoutObservableArray<model.ItemModel>;
+        codeEditingItem: KnockoutObservableArray<model.ItemModel>;
+        effectFixedValItem: KnockoutObservableArray<model.ItemModel>;
         fixedLengMethod: KnockoutObservableArray<model.ItemModel>;
-        inputMode: boolean = true;
-        lineNumber: number = -1;
+        codeConvertCode: KnockoutObservable<model.AcceptanceCodeConvert>;
+        inputMode: boolean;
+        lineNumber: number;
         constructor() {
             var self = this;
             self.inputMode = true;
+            self.initComponents(); 
+            let params = getShared("CMF001hParams");
+            let inputMode = params.inputMode;
+            let lineNumber = params.lineNumber;
+            let charSet = params.formatSetting;
+            self.inputMode = inputMode;
+            self.lineNumber = lineNumber;
+            if (!nts.uk.util.isNullOrUndefined(charSet)) {
+                self.initial(charSet);
+            }
+        }
+        initComponents() {
+            var self = this;
+            self.characterDataFormatSetting = ko.observable(new model.CharacterDataFormatSetting(0, null, null, 0, null, null, null, null, null));
+
+            self.effectDigitItem = ko.observableArray([
+                new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_268')),
+                new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF001_269'))
+            ]);
+            self.codeEditingItem = ko.observableArray([
+                new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_277')),
+                new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF001_278'))
+            ]);
+            self.effectFixedValItem = ko.observableArray([
+                new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_294')),
+                new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF001_295'))
+            ]);
             self.fixedLengMethod = ko.observableArray([
                 new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_BEFORE, getText('Enum_FixedLengthEditingMethod_ZERO_BEFORE')),
                 new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_AFTER, getText('Enum_FixedLengthEditingMethod_ZERO_AFTER')),
                 new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_BEFORE, getText('Enum_FixedLengthEditingMethod_SPACE_BEFORE')),
                 new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_AFTER, getText('Enum_FixedLengthEditingMethod_SPACE_AFTER'))
             ]);
-            let params = getShared("CMF001hParams"); 
-            let inputMode = params.inputMode;
-            let lineNumber = params.lineNumber;
-            let charSet = params.formatSetting;
-            self.inputMode = inputMode;
-            self.lineNumber = lineNumber;
-            if(!nts.uk.util.isNullOrUndefined(charSet)){
-                self.initial(charSet);
-            }
+            self.codeConvertCode = ko.observable(new model.AcceptanceCodeConvert("", "", 0));
+            self.inputMode = true;
+            self.lineNumber = -1;
         }
-        
         // データが取得できない場合
-        initial(charSet){
+        initial(charSet) {
             var self = this;
             let convertCodeShared = charSet.codeConvertCode;
             let convertCode = null;
@@ -59,34 +70,83 @@ module nts.uk.com.view.cmf001.h.viewmodel {
                 convertCode = new model.AcceptanceCodeConvert(convertCodeShared.convertCode, convertCodeShared.convertName, 0);
             }
             self.characterDataFormatSetting = ko.observable(new model.CharacterDataFormatSetting(charSet.effectiveDigitLength, charSet.startDigit,
-            charSet.endDigit, charSet.codeEditing, charSet.codeEditDigit, charSet.codeEditingMethod,
-            convertCode, charSet.fixedValue, charSet.valueOfFixed));
+                charSet.endDigit, charSet.codeEditing, charSet.codeEditDigit, charSet.codeEditingMethod,
+                charSet.codeConvertCode, charSet.fixedValue, charSet.valueOfFixed));
         }
-        // コード変換の選択を行う
-        open001_K(data){
+        start(): JQueryPromise<any> {
+            block.invisible();
             var self = this;
-            let selectedConvertCode = data.codeConvertCode();
+            var dfd = $.Deferred();
+            service.getAcceptCodeConvert(self.characterDataFormatSetting().codeConvertCode()).done(function(codeConvert) {
+                if (codeConvert) {
+                    self.characterDataFormatSetting().codeConvertCode(codeConvert.convertCode);
+                    self.codeConvertCode(new model.AcceptanceCodeConvert(codeConvert.convertCd, codeConvert.convertName, codeConvert.acceptWithoutSetting));
+                }
+                block.clear();
+                dfd.resolve();
+            }).fail(function(error) {
+                alertError(error);
+                block.clear();
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+
+        // コード変換の選択を行う
+        open001_K(data) {
+            var self = this;
+            let selectedConvertCode = self.characterDataFormatSetting().codeConvertCode();
             setShared("CMF001kParams", { selectedConvertCode: ko.toJS(selectedConvertCode) });
             modal("/view/cmf/001/k/index.xhtml").onClosed(() => {
                 // コード変換選択を行う
                 let params = getShared("CMF001kOutput");
-                if(!nts.uk.util.isNullOrUndefined(params)){
+                if (!nts.uk.util.isNullOrUndefined(params)) {
                     let codeConvertCodeSelected = params.selectedConvertCodeShared;
-                    self.characterDataFormatSetting().codeConvertCode(codeConvertCodeSelected);
+                    self.codeConvertCode(codeConvertCodeSelected);
+                    self.characterDataFormatSetting().codeConvertCode(codeConvertCodeSelected.dispConvertCode);
                 }
             });
         }
         // 数値編集の設定をして終了する
-        saveCharacterSetting(){
+        saveCharacterSetting() {
             var self = this;
-            if(self.inputMode){
-                setShared("CMF001FormatOutput", {lineNumber: self.lineNumber, formatSetting: ko.toJS(self.characterDataFormatSetting) });
+            if (self.checkValidInput()) {
+                setShared("CMF001FormatOutput", { lineNumber: self.lineNumber, formatSetting: ko.toJS(self.characterDataFormatSetting) });
+                nts.uk.ui.windows.close();
+            } else {
+                alertError({ messageId: "Msg_2" });
             }
-            nts.uk.ui.windows.close();
+        }
+        checkValidInput() {
+            var self = this;
+            let checkValidInput: boolean = true;
+            if (self.characterDataFormatSetting().effectiveDigitLength() == 1) {
+                let startDigit = self.characterDataFormatSetting().startDigit();
+                let endDigit = self.characterDataFormatSetting().endDigit();
+                if (startDigit == 0 || endDigit == 0) {
+                    checkValidInput = false;
+                } else {
+                    if (startDigit > endDigit) {
+                        checkValidInput = false;
+                        alertError({ messageId: "Msg_1108" });
+                    }
+                }
+            }
+            if (self.characterDataFormatSetting().codeEditing() == 1) {
+                if (self.characterDataFormatSetting().codeEditDigit() == 0) {
+                    checkValidInput = false;
+                }
+            }
+            if (self.characterDataFormatSetting().fixedValue() == 1) {
+                if (_.isEmpty(self.characterDataFormatSetting().fixedVal())) {
+                    checkValidInput = false;
+                }
+            }
+            return checkValidInput;
         }
         // キャンセルして終了する
-        cancelCharacterSetting(){
-            nts.uk.ui.windows.close();   
+        cancelCharacterSetting() {
+            nts.uk.ui.windows.close();
         }
     }
 }
