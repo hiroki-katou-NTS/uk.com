@@ -69,7 +69,7 @@ module nts.uk.com.view.cmf001.i.viewmodel {
             if (self.setting().fixedValue() == self.atrUse) {
                 return true;
             }
-            return false;
+            return false; 
         }
 
         private saveSetting(): void {
