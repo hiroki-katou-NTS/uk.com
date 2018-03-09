@@ -51,13 +51,6 @@ module nts.uk.com.view.cmf001.g.viewmodel {
                 self.initial(numFormat);
             }
         }
-        // データが取得できる場合
-        setting(){
-//            nts.uk.util.value.reset($("#G2_5"), null);
-//            nts.uk.util.value.reset($("#G2_8"), null);
-//            nts.uk.util.value.reset($("#G3_6"), null);
-//            nts.uk.util.value.reset($("#G5_5"), null);
-        }
         // データが取得できない場合
         initial(numFormat){
             var self = this;
@@ -71,10 +64,6 @@ module nts.uk.com.view.cmf001.g.viewmodel {
             self.numDataFormatSetting(new model.NumericDataFormatSetting(numFormat.effectiveDigitLength, numFormat.startDigit,
                 numFormat.endDigit, numFormat.decimalDivision, numFormat.decimalDigitNumber, numFormat.decimalPointClassification,
                 numFormat.decimalFraction, convertCode, numFormat.fixedValue, numFormat.valueOfFixed));
-//            nts.uk.util.value.reset($("#G2_5"), numFormat.startDigit);
-//            nts.uk.util.value.reset($("#G2_8"), numFormat.endDigit);
-//            nts.uk.util.value.reset($("#G3_6"), numFormat.decimalDigitNumber);
-//            nts.uk.util.value.reset($("#G5_5"), numFormat.valueOfFixedValue);
         }
         // コード変換の選択を行う
         open001_K(data) {
@@ -92,9 +81,6 @@ module nts.uk.com.view.cmf001.g.viewmodel {
         // 数値編集の設定をして終了する
         saveNumericSetting() {
             var self = this;
-//            $("#G2_5").trigger("validate");
-//            $("#G2_8").trigger("validate");
-//            $("#G3_6").trigger("validate");
             if (self.inputMode) {
                 setShared("CMF001FormatOutput", { lineNumber: self.lineNumber, formatSetting: ko.toJS(self.numDataFormatSetting) });
             }

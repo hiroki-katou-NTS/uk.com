@@ -59,7 +59,7 @@
 								value: startDigit,
 								name:'#{i18n.getText('CMF001_225')}',
 								constraint: 'AcceptedDigit',
-								required : !(effectiveDigitLength() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode),
+								required: true,
 								option : {width : '30px'},
 								enable: !(effectiveDigitLength() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode)}" />
 							<div id="G2_6" class="label" style="display: inline">#{i18n.getText('CMF001_226')}</div>
@@ -71,7 +71,7 @@
 								value: endDigit,
 								name:'#{i18n.getText('CMF001_228')}',
 								constraint: 'AcceptedDigit',
-								required: !(effectiveDigitLength() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode),
+								required: true,
 								option : {width : '30px'},
 								enable: !(effectiveDigitLength() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode)}" />
 							<div id="G2_9" class=" label" style="display: inline">#{i18n.getText('CMF001_229')}</div>
@@ -113,7 +113,7 @@
 								value: decimalDigitNumber,
 								name:'#{i18n.getText('CMF001_235')}',
 								constraint: 'DecimalDigitNumber',
-								required: !(decimalDivision() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode),
+								required: true,
 								enable: !(decimalDivision() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode),
 								option : {width : '30px'}}" />
 							<div style="margin-top: 5px;">
@@ -193,6 +193,7 @@
 								data-bind="ntsTextEditor: {
 								value: valueOfFixedValue,
 								name: '#{i18n.getText('CMF001_256')}', 
+								required: true,
 								constraint: 'ValueOfFixedValue',
 								enable: !(fixedValue() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE || !$parent.inputMode),
 								option : {width : '200px'}}" />

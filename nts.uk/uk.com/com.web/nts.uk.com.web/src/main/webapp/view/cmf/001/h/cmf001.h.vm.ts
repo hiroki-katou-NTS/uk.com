@@ -47,13 +47,6 @@ module nts.uk.com.view.cmf001.h.viewmodel {
                 self.initial(charSet);
             }
         }
-        // データが取得できる場合
-        setting(){
-//            nts.uk.util.value.reset($("#H2_5"), null);
-//            nts.uk.util.value.reset($("#H2_8"), null);
-//            nts.uk.util.value.reset($("#H3_5"), null);
-//            nts.uk.util.value.reset($("#H5_5"), null);
-        }
         
         // データが取得できない場合
         initial(charSet){
@@ -67,11 +60,7 @@ module nts.uk.com.view.cmf001.h.viewmodel {
             }
             self.characterDataFormatSetting = ko.observable(new model.CharacterDataFormatSetting(charSet.effectiveDigitLength, charSet.startDigit,
             charSet.endDigit, charSet.codeEditing, charSet.codeEditDigit, charSet.codeEditingMethod,
-            convertCode, charSet.fixedValue, charSet.valueOfFixed));   
-//            nts.uk.util.value.reset($("#H2_5"), numFormat.startDigit);
-//            nts.uk.util.value.reset($("#H2_8"), numFormat.endDigit);
-//            nts.uk.util.value.reset($("#H3_5"), numFormat.decimalDigitNumber);
-//            nts.uk.util.value.reset($("#H5_5"), numFormat.fixedVal);
+            convertCode, charSet.fixedValue, charSet.valueOfFixed));
         }
         // コード変換の選択を行う
         open001_K(data){
@@ -90,9 +79,6 @@ module nts.uk.com.view.cmf001.h.viewmodel {
         // 数値編集の設定をして終了する
         saveCharacterSetting(){
             var self = this;
-//            $("#H2_5").trigger("validate");
-//            $("#H2_8").trigger("validate");
-//            $("#H3_5").trigger("validate");
             if(self.inputMode){
                 setShared("CMF001FormatOutput", {lineNumber: self.lineNumber, formatSetting: ko.toJS(self.characterDataFormatSetting) });
             }
