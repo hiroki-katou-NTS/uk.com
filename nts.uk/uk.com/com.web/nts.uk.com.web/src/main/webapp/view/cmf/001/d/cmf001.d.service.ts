@@ -3,28 +3,34 @@ module nts.uk.com.view.cmf001.d.service {
     import format = nts.uk.text.format;
     
     var paths = {
-        getAllData: "at/function/alarm/checkcondition/findAll/{0}",
-        getOneData: "at/function/alarm/checkcondition/findOne/{0}/{1}",
-        registerData: "at/function/alarm/checkcondition/register",
-        deleteData: "at/function/alarm/checkcondition/delete"
+        getAllData: "exio/exi/item/getAllStdAcceptItem/{0}/{1}",
+        registerData: "exio/exi/item/register",
+        getAllCategory: "exio/exi/condset/getAllCategory",
+        getCategoryItem: "exio/exi/condset/getCategoryItemData/{0}",
+        getOneStdSettingData: "exio/exi/condset/getOneStdCondSet/{0}/{1}"
     }
 
-    export function getAllData(category: number): JQueryPromise<any> {
-        let _path = format(paths.getAllData, category);
-        return ajax("at", _path);
+    export function getAllData(sysType: number, condCode: string): JQueryPromise<any> {
+        let _path = format(paths.getAllData, sysType, condCode);
+        return ajax("com", _path);
     };
     
-    export function getOneData(category: number, code: string): JQueryPromise<any> {
-        let _path = format(paths.getOneData, category, code);
-        return ajax("at", _path);
-    };
-
     export function registerData(data: any): JQueryPromise<any> {
-        return ajax("at", paths.registerData, data);
+        return ajax("com", paths.registerData, data);
     };
-
-    export function deleteData(data: any): JQueryPromise<any> {
-        return ajax("at", paths.deleteData, data);
+    
+    export function getAllCategory(): JQueryPromise<any> {
+        return ajax("com", paths.getAllCategory);
     }
     
+    export function getCategoryItem(categoryId: string): JQueryPromise<any> {
+        let _path = format(paths.getCategoryItem, categoryId);
+        return ajax("com", _path);
+    };
+    
+    export function getOneStdData(sysType: number, code: string): JQueryPromise<any> {
+        let _path = format(paths.getOneStdSettingData, sysType, code);
+        return ajax("com", _path);
+    };
+
 }

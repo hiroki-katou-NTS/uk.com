@@ -85,12 +85,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
 
             //「システムコード」の取得結果からシステム種類に変換する
 
-            self.listSysType = ko.observableArray([
-                new model.ItemModel(model.SYSTEM_TYPE.PERSON_SYS, '人事システム'), //TODO: Enum_SystemType_PERSON_SYSTEM
-                new model.ItemModel(model.SYSTEM_TYPE.ATTENDANCE_SYS, '勤怠システム'), //TODO: Enum_SystemType_ATTENDANCE_SYSTEM
-                new model.ItemModel(model.SYSTEM_TYPE.PAYROLL_SYS, '給与システム'), //TODO: Enum_SystemType_PAYROLL_SYSTEM
-                new model.ItemModel(model.SYSTEM_TYPE.OFFICE_HELPER, 'オフィスヘルパー') //TODO: Enum_SystemType_OFFICE_HELPER
-            ]);            
+            self.listSysType = ko.observableArray(model.getSystemTypes());
             //1件以上取得できた場合
             if (self.listSysType().length > 0) {
                 //システム種類を画面セットする
@@ -102,7 +97,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             else {
                 //トップページに戻る
                 nts.uk.request.jump("/view/cmf/001/a/index.xhtml");
-            }            
+            }
             dfd.resolve(self);
             return dfd.promise();
         }
@@ -175,8 +170,9 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 //表示するデータがある場合   
                 if (data && data.length) {
                     let _rspList: Array<model.StandardAcceptanceConditionSetting> = _.map(data, rsp => {
-                        return new model.StandardAcceptanceConditionSetting(rsp.conditionSettingCode, rsp.conditionSettingName,
-                            rsp.deleteExistData, rsp.acceptMode, rsp.csvDataItemLineNumber, rsp.csvDataStartLine, rsp.deleteExistDataMethod);
+                        return new model.StandardAcceptanceConditionSetting(rsp.systemType, rsp.conditionSettingCode,
+                            rsp.conditionSettingName, rsp.deleteExistData, rsp.acceptMode, rsp.csvDataItemLineNumber,
+                            rsp.csvDataStartLine, rsp.deleteExistDataMethod);
                     });
                     self.listCondition(_rspList);
 
@@ -204,7 +200,18 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 self.listAccept.removeAll();
                 if (data && data.length) {
                     let _rspList: Array<AcceptItems> = _.map(data, rsp => {
-                        return new AcceptItems('', rsp.csvItemName, rsp.csvItemNumber, rsp.acceptItemNumber, '', rsp.itemType);
+                        return new AcceptItems(
+                            '',
+                            rsp.csvItemName,
+                            rsp.csvItemNumber,
+                            rsp.acceptItemNumber,
+                            '',
+                            rsp.itemType,
+                            rsp.numberFormatSetting,
+                            rsp.charFormatSetting,
+                            rsp.dateFormatSetting,
+                            rsp.instTimeFormatSetting,
+                            rsp.timeFormatSetting);
                     });
                     self.listAccept(_rspList);
                 }
@@ -245,29 +252,78 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 case 0:
                     //数値型の場合                    
                     //G:「数値型設定」ダイアログをモーダルで表示する
-                    let settingG = new model.NumericDataFormatSetting(0, 0, 0, 0, 0, 0, 0, null, 0, "");
+                    let settingG = new model.NumericDataFormatSetting(
+                        item.numberFormatSetting.effectiveDigitLength,
+                        item.numberFormatSetting.startDigit,
+                        item.numberFormatSetting.endDigit,
+                        item.numberFormatSetting.decimalDivision,
+                        item.numberFormatSetting.decimalDigitNum,
+                        item.numberFormatSetting.decimalPointCls,
+                        item.numberFormatSetting.decimalFraction,
+                        item.numberFormatSetting.cdConvertCd,
+                        item.numberFormatSetting.fixedValue,
+                        item.numberFormatSetting.valueOfFixedValue);
                     setShared("CMF001gParams", { inputMode: false, lineNumber: null, formatSetting: ko.toJS(settingG) });
                     nts.uk.ui.windows.sub.modal("/view/cmf/001/g/index.xhtml");
                     break;
                 case 1:
                     //文字型の場合
                     //H:「文字型設定」ダイアログをモーダルで表示する
-                    let settingH = new model.CharacterDataFormatSetting(0, 0, 0, 0, 0, 0, null, 0, "");
+                    let settingH = new model.CharacterDataFormatSetting(
+                        item.charFormatSetting.effectiveDigitLength,
+                        item.charFormatSetting.startDigit,
+                        item.charFormatSetting.endDigit,
+                        item.charFormatSetting.cdEditing,
+                        item.charFormatSetting.cdEditDigit,
+                        item.charFormatSetting.cdEditMethod,
+                        item.charFormatSetting.cdConvertCd,
+                        item.charFormatSetting.fixedValue,
+                        item.charFormatSetting.fixedVal);
                     setShared("CMF001hParams", { inputMode: false, lineNumber: null, formatSetting: ko.toJS(settingH) });
                     nts.uk.ui.windows.sub.modal("/view/cmf/001/h/index.xhtml");
                     break;
                 case 2:
                     //日付型の場合  
                     //I:「日付型設定」ダイアログをモーダルで表示する
-                    let settingI = new model.DateDataFormatSetting(2, model.NOT_USE_ATR.USE, '1223');
+                    let settingI = new model.DateDataFormatSetting(
+                        item.dateFormatSetting.formatSelection,
+                        item.dateFormatSetting.fixedValue,
+                        item.dateFormatSetting.valueOfFixedValue);
                     setShared("CMF001iParams", { inputMode: false, lineNumber: null, formatSetting: ko.toJS(settingI) });
                     nts.uk.ui.windows.sub.modal("/view/cmf/001/i/index.xhtml");
                     break;
                 case 3:
-                    //時間型の場合, 時刻型の場合 
+                    //時刻型の場合 
                     //J:「時刻型・時間型設定」ダイアログをモーダルで表示する
-                    let settingJ = new model.InstantTimeDataFormatSetting(0, null, null, 0, 0, 0, 0, 0, 0, '111');
+                    let settingJ = new model.InstantTimeDataFormatSetting(
+                        item.instTimeFormatSetting.effectiveDigitLength,
+                        item.instTimeFormatSetting.startDigit,
+                        item.instTimeFormatSetting.endDigit,
+                        item.instTimeFormatSetting.decimalSelect,
+                        item.instTimeFormatSetting.hourMinSelect,
+                        item.instTimeFormatSetting.delimiterSet,
+                        item.instTimeFormatSetting.roundProc,
+                        item.instTimeFormatSetting.roundProcCls,
+                        item.instTimeFormatSetting.fixedValue,
+                        item.instTimeFormatSetting.valueOfFixedValue);
                     setShared("CMF001jParams", { inputMode: false, lineNumber: null, formatSetting: ko.toJS(settingJ) });
+                    nts.uk.ui.windows.sub.modal("/view/cmf/001/j/index.xhtml");
+                    break;
+                case 4:
+                    //時間型の場合
+                    //J:「時刻型・時間型設定」ダイアログをモーダルで表示する
+                    let settingJ2 = new model.InstantTimeDataFormatSetting(
+                        item.timeFormatSetting.effectiveDigitLength,
+                        item.timeFormatSetting.startDigit,
+                        item.timeFormatSetting.endDigit,
+                        item.timeFormatSetting.decimalSelect,
+                        item.timeFormatSetting.hourMinSelect,
+                        item.timeFormatSetting.delimiterSet,
+                        item.timeFormatSetting.roundProc,
+                        item.timeFormatSetting.roundProcCls,
+                        item.timeFormatSetting.fixedValue,
+                        item.timeFormatSetting.valueOfFixedValue);
+                    setShared("CMF001jParams", { inputMode: true, lineNumber: null, formatSetting: ko.toJS(settingJ2) });
                     nts.uk.ui.windows.sub.modal("/view/cmf/001/j/index.xhtml");
                     break;
             }
@@ -303,7 +359,17 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         sampleData: KnockoutObservable<string>;
         itemType: KnockoutObservable<number>;
         itemTypeName: KnockoutObservable<string>;
-        constructor(infoName: string, csvItemName: string, csvItemNumber: number, acceptItemNumber: number, sampleData: string, itemType: number) {
+        numberFormatSetting: model.NumericDataFormatSetting;
+        charFormatSetting: model.CharacterDataFormatSetting;
+        dateFormatSetting: model.DateDataFormatSetting;
+        instTimeFormatSetting: model.InstantTimeDataFormatSetting;
+        timeFormatSetting: model.TimeDataFormatSetting;
+
+        constructor(infoName: string, csvItemName: string, csvItemNumber: number,
+            acceptItemNumber: number, sampleData: string, itemType: number,
+            numSet?: model.NumericDataFormatSetting, charSet?: model.CharacterDataFormatSetting,
+            dateSet?: model.DateDataFormatSetting, instTimeSet?: model.InstantTimeDataFormatSetting,
+            timeSet?: model.TimeDataFormatSetting) {
             this.infoName = ko.observable(infoName);
             this.csvItemName = ko.observable(csvItemName);
             this.csvItemNumber = ko.observable(csvItemNumber);
@@ -311,15 +377,25 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             this.sampleData = ko.observable(sampleData);
             this.itemType = ko.observable(itemType);
             this.itemTypeName = ko.observable(this.getItemTypeName(itemType));
+            if (numSet)
+                this.numberFormatSetting = numSet;
+            if (charSet)
+                this.charFormatSetting = charSet;
+            if (dateSet)
+                this.dateFormatSetting = dateSet;
+            if (instTimeSet)
+                this.instTimeFormatSetting = instTimeSet;
+            if (timeSet)
+                this.timeFormatSetting = timeSet;
         }
 
         private getItemTypeName(typeCd: number): string {
             switch (typeCd) {
-                case model.ITEM_TYPE.NUMERIC: return "数値型";// TODO: Enum_ItemType_NUMERIC
-                case model.ITEM_TYPE.CHARACTER: return "文字型";// TODO: Enum_ItemType_CHARACTER
-                case model.ITEM_TYPE.DATE: return "日付型";// TODO: Enum_ItemType_DATE
-                case model.ITEM_TYPE.INS_TIME: return "時刻型";// TODO: Enum_ItemType_INS_TIME
-                case model.ITEM_TYPE.TIME: return "時間型";// TODO: Enum_ItemType_TIME
+                case model.ITEM_TYPE.NUMERIC: return getText('Enum_ItemType_NUMERIC');
+                case model.ITEM_TYPE.CHARACTER: return getText('Enum_ItemType_CHARACTER');
+                case model.ITEM_TYPE.DATE: return getText('Enum_ItemType_DATE');
+                case model.ITEM_TYPE.INS_TIME: return getText('Enum_ItemType_INS_TIME');
+                case model.ITEM_TYPE.TIME: return getText('Enum_ItemType_TIME');
             }
             return "";
         }

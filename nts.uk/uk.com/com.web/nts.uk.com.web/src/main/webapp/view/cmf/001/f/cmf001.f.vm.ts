@@ -2,8 +2,6 @@ module nts.uk.com.view.cmf001.f.viewmodel {
     import close = nts.uk.ui.windows.close;
     import getText = nts.uk.resource.getText;
     import model = cmf001.share.model;
-    import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
     import dialog = nts.uk.ui.dialog;
     import block = nts.uk.ui.block;
     export class ScreenModel {
@@ -27,13 +25,12 @@ module nts.uk.com.view.cmf001.f.viewmodel {
             //登録済のコード変換を参照する
             //コード一覧でいづれか選択する
             self.selectedConvertCode.subscribe(function(convertCode: any) {
-                nts.uk.ui.errors.clearAll();
                 if (convertCode) {
                     block.invisible();
-                    self.codeConvertData().cdConvertDetails.removeAll();
                     //ドメインモデル「受入コード変換」を取得し内容を画面（右側）にセットする
                     service.getAcceptCodeConvert(convertCode).done(function(codeConvert) {
                         if (codeConvert) {
+                            self.codeConvertData().cdConvertDetails.removeAll();
                             self.selectedConvertCode(codeConvert.convertCd);
                             self.codeConvertData().convertCd(codeConvert.convertCd);
                             self.codeConvertData().convertName(codeConvert.convertName);
@@ -135,6 +132,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
                     $('#F4_3').focus();
                 }
             }
+            _.defer(() => {nts.uk.ui.errors.clearAll()});
         }
 
         start(): JQueryPromise<any> {
@@ -206,36 +204,69 @@ module nts.uk.com.view.cmf001.f.viewmodel {
         
         //登録ボタンを押下
         regAcceptCodeConvert_Click() {
+            nts.uk.ui.errors.clearAll();
+
             let self = this;
-            block.invisible();
+            let currentAcceptCodeConvert = self.codeConvertData;
+
+            //新規モードか更新モードを判別する
+            if (model.SCREEN_MODE.NEW == self.screenMode()) {
+                //コード変換コードが既に登録されていないか判別
+                var existCode = self.codeConvertList().filter(x => x.convertCd() === currentAcceptCodeConvert().convertCd());
+                //同一コード有の場合
+                if (existCode.length > 0) {
+                    //エラーメッセージ　Msg_1094　を表示する 
+                    dialog.alertError({ messageId: "Msg_1094" });
+                    block.clear();
+                    return;
+                }
+            }
 
             //コード一覧に変換データの有無を判別
-            if (!_.isEmpty(self.codeConvertData().convertCd())) {
-                //受入コードに同一の値がないか全行のチェックを行いエラーをエラーリストにセットする
-                for (let detail of self.codeConvertData().cdConvertDetails()) {
-                    ////同一の受入コード存在する場合
-                    var data = self.codeConvertData().cdConvertDetails().filter(x => x.outputItem() === detail.outputItem());
-                    if (data.length >= 2) {
-                        //エラーメッセージ　Msg_1015　同一の受入コード「｛0｝」が複数存在します。
-                        dialog.alertError({ messageId: "Msg_1015", messageParams: [detail.outputItem()] });
-                        block.clear();
-                        return;
-                    }
+            if (_.isEmpty(currentAcceptCodeConvert().cdConvertDetails())) {
+                //エラーメッセージ　Msg_906　変換コードが設定されていません
+                dialog.alertError({ messageId: "Msg_906" });
+                block.clear();
+                return;
+            }
+
+            let _lineError: Array<any> = [];
+            let _codeDuplicate: Array<any> = [];
+            for (let detail of currentAcceptCodeConvert().cdConvertDetails()) {
+                if (_.isEmpty(detail.outputItem()) && _.isEmpty(detail.systemCd())) {
+                    continue;
                 }
-                
-                //コードの未入力チェックを全行行いエラーの場合エラーリストにセットする
-                for (let detail of self.codeConvertData().cdConvertDetails()) {
-                    if (_.isEmpty(detail.outputItem()) || _.isEmpty(detail.systemCd())) {
-                        //エラーメッセージ　Msg_1016　受入コード｛0｝にコード未入力があります。
-                        dialog.alertError({ messageId: "Msg_1016", messageParams: [detail.outputItem()] });
-                        block.clear();
-                        return;
-                    }
+                if (_.isEmpty(detail.outputItem()) || _.isEmpty(detail.systemCd())) {
+                    _lineError.push(detail.lineNumber());
                 }
-                
+                let data = currentAcceptCodeConvert().cdConvertDetails().filter(x => x.outputItem() === detail.outputItem());
+                if (data.length >= 2) {
+                    _codeDuplicate.push(detail);
+                }
+            }
+
+            if (!_.isEmpty(_lineError)) {
+                //コードの未入力チェックを全行行いエラーの場合エラーリストにセットする　　　　Msg_1016
+                $('tr[data-id=' + _lineError[0] + ']').find("input").first().ntsError('set', { messageId: 'Msg_1016', messageParams: [_lineError.join(',')] });
+            }
+
+            if (!_.isEmpty(_codeDuplicate)) {
+                // Remove duplicate outputItem
+                let _errorCodeDuplicate: Array<any> = _.uniqBy(ko.toJS(_codeDuplicate), 'outputItem');
+                //受入コードに同一の値がないか全行のチェックを行いエラーをエラーリストにセットする　　Msg_1015
+                for (let i = 0; i < _errorCodeDuplicate.length; i++) {
+                    $('tr[data-id=' + _errorCodeDuplicate[i].lineNumber + ']').find("input").first().ntsError('set', { messageId: 'Msg_1015', messageParams: [_errorCodeDuplicate[i].outputItem] });
+                }
+            }
+
+            if (!nts.uk.ui.errors.hasError()) {
+                block.invisible();
+
+                self.codeConvertData().cdConvertDetails(_.filter(self.codeConvertData().cdConvertDetails(), x => !_.isEmpty(x.outputItem()) && !_.isEmpty(x.systemCd())));
+
                 //画面の項目を、ドメインモデル「受入コード変換」に登録/更新する
                 if (model.SCREEN_MODE.NEW == self.screenMode()) {
-                    service.addAcceptCodeConvert(ko.toJS(self.codeConvertData)).done((acceptConvertCode) => {
+                    service.addAcceptCodeConvert(ko.toJS(self.codeConvertData())).done((acceptConvertCode) => {
                         //登録した受入コード変換を「コード変換一覧パネル」へ追加/更新する
                         self.initialScreen(self.codeConvertData().convertCd());
 
@@ -247,7 +278,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
                         block.clear();
                     });
                 } else {
-                    service.updateAcceptCodeConvert(ko.toJS(self.codeConvertData)).done((acceptConvertCode) => {
+                    service.updateAcceptCodeConvert(ko.toJS(self.codeConvertData())).done((acceptConvertCode) => {
                         //登録した受入コード変換を「コード変換一覧パネル」へ追加/更新する
                         self.initialScreen(self.selectedConvertCode());
 
@@ -259,10 +290,6 @@ module nts.uk.com.view.cmf001.f.viewmodel {
                         block.clear();
                     });
                 }
-            } else {
-                //エラーメッセージ　Msg_906　変換コードが設定されていません
-                dialog.alertError({ messageId: "Msg_906" });
-                block.clear();
             }
         }
         
@@ -396,6 +423,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 $(function() {
     $("#detail-code-convert").on("click", "tr", function() {
         var id = $(this).attr("data-id");
+        nts.uk.ui.errors.clearAll();
         nts.uk.ui._viewModel.content.selectedConvertDetail(id);
     })
 })

@@ -62,12 +62,12 @@ public class AcScreenCondSet extends DomainObject {
 	/**
 	 * 文字‗条件値2
 	 */
-	private Optional<AcceptingConditionString> characterConditionValue2;
+	private Optional<AcceptanceConditionString> characterConditionValue2;
 
 	/**
 	 * 文字‗条件値1
 	 */
-	private Optional<AcceptingConditionString> characterConditionValue1;
+	private Optional<AcceptanceConditionString> characterConditionValue1;
 
 	/**
 	 * 数値‗条件値2
@@ -95,8 +95,8 @@ public class AcScreenCondSet extends DomainObject {
 		this.timeMomentConditionValue1 = Optional.ofNullable(new AcceptanceConditionTime(timeMomentConditionValue1));
 		this.dateConditionValue2 = Optional.ofNullable(dateConditionValue2);
 		this.dateConditionValue1 = Optional.ofNullable(dateConditionValue1);
-		this.characterConditionValue2 = Optional.ofNullable(new AcceptingConditionString(characterConditionValue2));
-		this.characterConditionValue1 = Optional.ofNullable(new AcceptingConditionString(characterConditionValue1));
+		this.characterConditionValue2 = Optional.ofNullable(new AcceptanceConditionString(characterConditionValue2));
+		this.characterConditionValue1 = Optional.ofNullable(new AcceptanceConditionString(characterConditionValue1));
 		this.numberConditionValue2 = Optional.ofNullable(new AcceptanceConditionValue(numberConditionValue2));
 		this.numberConditionValue1 = Optional.ofNullable(new AcceptanceConditionValue(numberConditionValue1));
 	}

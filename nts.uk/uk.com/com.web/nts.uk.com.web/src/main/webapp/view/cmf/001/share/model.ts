@@ -72,33 +72,59 @@ module nts.uk.com.view.cmf001.share.model {
     
     export function getSystemTypes(): Array<ItemModel> {
         return [
-            new model.ItemModel(0, getText('Enum_SystemType_PERSON_SYSTEM')),
-            new model.ItemModel(1, getText('Enum_SystemType_ATTENDANCE_SYSTEM')),
-            new model.ItemModel(2, getText('Enum_SystemType_PAYROLL_SYSTEM')),
-            new model.ItemModel(3, getText('Enum_SystemType_OFFICE_HELPER'))
+            new ItemModel(0, getText('Enum_SystemType_PERSON_SYSTEM')),
+            new ItemModel(1, getText('Enum_SystemType_ATTENDANCE_SYSTEM')),
+            new ItemModel(2, getText('Enum_SystemType_PAYROLL_SYSTEM')),
+            new ItemModel(3, getText('Enum_SystemType_OFFICE_HELPER'))
         ];
     }
     
     export function getDeleteExistDataMethod(): Array<ItemModel> {
         return [
-            new model.ItemModel(1, getText('Enum_DeleteExistDataMethod_DELETE_ALL')),
-            new model.ItemModel(2, getText('Enum_DeleteExistDataMethod_DELETE_TARGET'))
+            new ItemModel(1, getText('Enum_DeleteExistDataMethod_DELETE_ALL')),
+            new ItemModel(2, getText('Enum_DeleteExistDataMethod_DELETE_TARGET'))
+        ];
+    }
+    
+    export function getItemTypes(): Array<ItemModel> {
+        return [
+            new ItemModel(0, getText('Enum_ItemType_NUMERIC')),
+            new ItemModel(1, getText('Enum_ItemType_CHARACTER')),
+            new ItemModel(2, getText('Enum_ItemType_DATE')),
+            new ItemModel(3, getText('Enum_ItemType_INS_TIME')),
+            new ItemModel(4, getText('Enum_ItemType_TME'))
         ];
     }
     
     export function getCompareTypes(): Array<ItemModel> {
         return [
-            new model.ItemModel(0, getText('Enum_SelectComparisonCondition_DO_NOT_COND')),
-            new model.ItemModel(1, getText('Enum_SelectComparisonCondition_COND1_LESS_VAL')),
-            new model.ItemModel(2, getText('Enum_SelectComparisonCondition_COND1_LESS_EQUAL_VAL')),
-            new model.ItemModel(3, getText('Enum_SelectComparisonCondition_VAL_LESS_COND1')),
-            new model.ItemModel(4, getText('Enum_SelectComparisonCondition_VAL_LESS_EQUAL_COND1')),
-            new model.ItemModel(5, getText('Enum_SelectComparisonCondition_COND1_LESS_VAL_AND_VAL_LESS_COND2')),
-            new model.ItemModel(6, getText('Enum_SelectComparisonCondition_COND1_LESS_EQUAL_VAL_AND_VAL_LESS_EQUAL_COND2')),
-            new model.ItemModel(7, getText('Enum_SelectComparisonCondition_VAL_LESS_COND1_OR_COND2_LESS_VAL')),
-            new model.ItemModel(8, getText('Enum_SelectComparisonCondition_VAL_LESS_EQUAL_COND1_OR_COND2_LESS_EQUAL_VAL')),
-            new model.ItemModel(9, getText('Enum_SelectComparisonCondition_COND1_EQUAL_VAL')),
-            new model.ItemModel(10, getText('Enum_SelectComparisonCondition_COND1_NOT_EQUAL_VAL'))
+            new ItemModel(0, getText('Enum_SelectComparisonCondition_DO_NOT_COND')),
+            new ItemModel(1, getText('Enum_SelectComparisonCondition_COND1_LESS_VAL')),
+            new ItemModel(2, getText('Enum_SelectComparisonCondition_COND1_LESS_EQUAL_VAL')),
+            new ItemModel(3, getText('Enum_SelectComparisonCondition_VAL_LESS_COND1')),
+            new ItemModel(4, getText('Enum_SelectComparisonCondition_VAL_LESS_EQUAL_COND1')),
+            new ItemModel(5, getText('Enum_SelectComparisonCondition_COND1_LESS_VAL_AND_VAL_LESS_COND2')),
+            new ItemModel(6, getText('Enum_SelectComparisonCondition_COND1_LESS_EQUAL_VAL_AND_VAL_LESS_EQUAL_COND2')),
+            new ItemModel(7, getText('Enum_SelectComparisonCondition_VAL_LESS_COND1_OR_COND2_LESS_VAL')),
+            new ItemModel(8, getText('Enum_SelectComparisonCondition_VAL_LESS_EQUAL_COND1_OR_COND2_LESS_EQUAL_VAL')),
+            new ItemModel(9, getText('Enum_SelectComparisonCondition_COND1_EQUAL_VAL')),
+            new ItemModel(10, getText('Enum_SelectComparisonCondition_COND1_NOT_EQUAL_VAL'))
+        ];
+    }
+    
+    export function getDelimiterSetting(): Array<ItemModel> {
+        return [
+            new model.ItemModel(0, getText('Enum_DelimiterSetting_NO_DELIMITER')),
+            new model.ItemModel(1, getText('Enum_DelimiterSetting_CUT_BYDECIMAL_POINT')),
+            new model.ItemModel(2, getText('Enum_DelimiterSetting_CUT_BY_COLON'))
+        ];
+    }
+    
+    export function getTimeRounding(): Array<ItemModel> {
+        return [
+            new model.ItemModel(0, getText('Enum_TimeRounding_DOWN_LESS_1_MINUTE')),
+            new model.ItemModel(1, getText('Enum_TimeRounding_LESS_1_MINUTE')),
+            new model.ItemModel(2, getText('Enum_TimeRounding_OFF_TO_LESS_1_MINUTE'))
         ];
     }
     
@@ -112,11 +138,12 @@ module nts.uk.com.view.cmf001.share.model {
         acceptMode: KnockoutObservable<number>;
         csvDataItemLineNumber: KnockoutObservable<number>;
         csvDataStartLine: KnockoutObservable<number>;
-        systemType: KnockoutObservable<number> = ko.observable(0);
+        systemType: KnockoutObservable<number>;
         alreadySetting: KnockoutObservable<boolean> = ko.observable(false);
         action: KnockoutObservable<number> = ko.observable(0);
 
-        constructor(code: string, name: string, deleteExistData: number, acceptMode: number, csvDataItemLineNumber: number, csvDataStartLine: number, deleteExistDataMethod?: number, alreadySetting?: boolean) {
+        constructor(systemType: number, code: string, name: string, deleteExistData: number, acceptMode: number, csvDataItemLineNumber: number, csvDataStartLine: number, deleteExistDataMethod?: number, alreadySetting?: boolean) {
+            this.systemType = ko.observable(0);
             this.conditionSettingCode = ko.observable(code);
             this.dispConditionSettingCode = code;
             this.conditionSettingName = ko.observable(name);
@@ -148,16 +175,16 @@ module nts.uk.com.view.cmf001.share.model {
         acceptItemNumber: KnockoutObservable<number>;
         acceptItemName: KnockoutObservable<string>;
         conditionSettingCode: KnockoutObservable<string>;
-        numberFormatSetting: KnockoutObservable<NumericDataFormatSetting>;
-        charFormatSetting: KnockoutObservable<CharacterDataFormatSetting>;
-        dateFormatSetting: KnockoutObservable<DateDataFormatSetting>;
-        instTimeFormatSetting: KnockoutObservable<InstantTimeDataFormatSetting>; 
-        timeFormatSetting: KnockoutObservable<TimeDataFormatSetting>
-        screenConditionSetting: KnockoutObservable<AcceptScreenConditionSetting>;
+        numberFormatSetting: KnockoutObservable<NumericDataFormatSetting> = ko.observable(null);
+        charFormatSetting: KnockoutObservable<CharacterDataFormatSetting> = ko.observable(null);
+        dateFormatSetting: KnockoutObservable<DateDataFormatSetting> = ko.observable(null);
+        instTimeFormatSetting: KnockoutObservable<InstantTimeDataFormatSetting> = ko.observable(null); 
+        timeFormatSetting: KnockoutObservable<TimeDataFormatSetting> = ko.observable(null);
+        screenConditionSetting: KnockoutObservable<AcceptScreenConditionSetting> = ko.observable(null);
         categoryItemNo: KnockoutObservable<number>;
         categoryId: KnockoutObservable<string> = ko.observable("");
 
-        constructor(csvItemName: string, csvItemNumber: number, itemType: number, acceptItemNumber: number, acceptItemName: string, conditionCode: string, categoryItemNo: number, numSet?: NumericDataFormatSetting, charSet?: CharacterDataFormatSetting, dateSet?: DateDataFormatSetting, instTimeSet?: InstantTimeDataFormatSetting, timeSet?: TimeDataFormatSetting, screenSet?: AcceptScreenConditionSetting, categoryId?: string) {
+        constructor(csvItemName: string, csvItemNumber: number, itemType: number, acceptItemNumber: number, acceptItemName: string, conditionCode: string, categoryItemNo: number, formatSet?: any, screenSet?: AcceptScreenConditionSetting, categoryId?: string) {
             this.csvItemName = ko.observable(csvItemName);
             this.csvItemNumber = ko.observable(csvItemNumber);
             this.itemType = ko.observable(itemType);
@@ -165,34 +192,39 @@ module nts.uk.com.view.cmf001.share.model {
             this.acceptItemName = ko.observable(acceptItemName);
             this.conditionSettingCode = ko.observable(conditionCode);
             this.categoryItemNo = ko.observable(categoryItemNo);
-            if (numSet)
-                this.numberFormatSetting = ko.observable(numSet);
-            if (charSet)
-                this.charFormatSetting = ko.observable(charSet);
-            if (dateSet)
-                this.dateFormatSetting = ko.observable(dateSet);
-            if (instTimeSet)
-                this.instTimeFormatSetting = ko.observable(instTimeSet);
-            if (timeSet)
-                this.timeFormatSetting = ko.observable(timeSet);
+            if (formatSet) {
+                switch(itemType) {
+                    case model.ITEM_TYPE.NUMERIC: 
+                        this.numberFormatSetting(formatSet);
+                        break;
+                    case model.ITEM_TYPE.CHARACTER: 
+                        this.charFormatSetting(formatSet);
+                        break;
+                    case model.ITEM_TYPE.DATE: 
+                        this.dateFormatSetting(formatSet);
+                        break;
+                    case model.ITEM_TYPE.INS_TIME: 
+                        this.instTimeFormatSetting(formatSet);
+                        break;
+                    case model.ITEM_TYPE.TIME: 
+                        this.timeFormatSetting(formatSet);
+                        break;
+                }
+            }
             if (screenSet)
-                this.screenConditionSetting = ko.observable(screenSet);
+                this.screenConditionSetting(screenSet);
             if (categoryId)
                 this.categoryId(categoryId);
         }
     }
 
     export class ExternalAcceptanceCategory {
-        categoryCode: KnockoutObservable<string>;
-        categoryName: KnockoutObservable<string>;
-        dispCategoryCode: string;
-        dispCategoryName: string;
+        categoryId: string;
+        categoryName: string;
 
-        constructor(code: string, name: string) {
-            this.categoryCode = ko.observable(code);
-            this.categoryName = ko.observable(name);
-            this.dispCategoryCode = code;
-            this.dispCategoryName = name;
+        constructor(id: string, name: string) {
+            this.categoryId = id;
+            this.categoryName = name;
         }
     }
 
@@ -258,7 +290,7 @@ module nts.uk.com.view.cmf001.share.model {
         fixedValue: KnockoutObservable<number>;
         decimalDivision: KnockoutObservable<number>;
         effectiveDigitLength: KnockoutObservable<number>;
-        codeConvertCode: KnockoutObservable<AcceptanceCodeConvert>;
+        codeConvertCode: KnockoutObservable<string>;
         valueOfFixedValue: KnockoutObservable<string>;
         decimalDigitNumber: KnockoutObservable<number>;
         startDigit: KnockoutObservable<number>;
@@ -267,7 +299,7 @@ module nts.uk.com.view.cmf001.share.model {
         decimalFraction: KnockoutObservable<number>;
 
         constructor(effectDigitLength: number, startDigit: number, endDigit: number, decimalDivision: number, decimalDigitNumber: number,
-         decimalPointClassification: number, decimalFraction: number, codeConvertCode: AcceptanceCodeConvert, fixedValue: number, valueOfFixedValue: string) {
+         decimalPointClassification: number, decimalFraction: number, codeConvertCode: string, fixedValue: number, valueOfFixedValue: string) {
             this.fixedValue = ko.observable(fixedValue);
             this.decimalDivision = ko.observable(decimalDivision);
             this.effectiveDigitLength = ko.observable(effectDigitLength);
@@ -286,7 +318,7 @@ module nts.uk.com.view.cmf001.share.model {
         codeEditing: KnockoutObservable<number>;
         fixedValue: KnockoutObservable<number>;
         effectiveDigitLength: KnockoutObservable<number>;
-        codeConvertCode: KnockoutObservable<AcceptanceCodeConvert>;
+        codeConvertCode: KnockoutObservable<string>;
         codeEditingMethod: KnockoutObservable<number>;
         codeEditDigit: KnockoutObservable<number>;
         fixedVal: KnockoutObservable<string>;
@@ -294,7 +326,7 @@ module nts.uk.com.view.cmf001.share.model {
         endDigit: KnockoutObservable<number>;
 
         constructor(effectDigitLength: number, startDigit: number, endDigit: number, codeEditing: number, codeEditDigit: number,
-         codeEditingMethod: number, codeConvertCode: AcceptanceCodeConvert, fixedValue: number, fixedVal: string) {
+         codeEditingMethod: number, codeConvertCode: string, fixedValue: number, fixedVal: string) {
             this.fixedValue = ko.observable(fixedValue);
             this.codeEditing = ko.observable(codeEditing);
             this.effectiveDigitLength = ko.observable(effectDigitLength);
@@ -312,12 +344,12 @@ module nts.uk.com.view.cmf001.share.model {
         fixedValue: KnockoutObservable<number>;
         formatSelection: KnockoutObservable<number>;
         //importedJapCalendarName: KnockoutObservable<number>;
-        valueOfFixed: KnockoutObservable<string>;
+        valueOfFixedValue: KnockoutObservable<string>;
 
-        constructor(formatSelection: number, fixedValue: number, valueOfFixed: string) {
+        constructor(formatSelection: number, fixedValue: number, valueOfFixedValue: string) {
             this.formatSelection = ko.observable(formatSelection);
             this.fixedValue = ko.observable(fixedValue);            
-            this.valueOfFixed = ko.observable(valueOfFixed);
+            this.valueOfFixedValue = ko.observable(valueOfFixedValue);
         }
     }
 
@@ -326,53 +358,54 @@ module nts.uk.com.view.cmf001.share.model {
         effectiveDigitLength: KnockoutObservable<number>;
         startDigit: KnockoutObservable<number>;
         endDigit: KnockoutObservable<number>;
-        decimalSelection: KnockoutObservable<number>;
-        hourMinuteSelection: KnockoutObservable<number>;
-        delimiterSetting: KnockoutObservable<number>;
-        roundingProcessing: KnockoutObservable<number>;
-        roundProcessingClassification: KnockoutObservable<number>;
+        decimalSelect: KnockoutObservable<number>;
+        hourMinSelect: KnockoutObservable<number>;
+        delimiterSet: KnockoutObservable<number>;
+        roundProc: KnockoutObservable<number>;
+        roundProcCls: KnockoutObservable<number>;
         fixedValue: KnockoutObservable<number>;
-        valueOfFixed: KnockoutObservable<string>;
-        constructor(effectiveDigitLength: number, startDigit: number, endDigit: number, decimalSelection: number,
-            hourMinuteSelection: number, delimiterSetting: number, roundingProcessing: number,
-            roundProcessingClassification: number, fixedValue: number, valueOfFixed: string) {
+        valueOfFixedValue: KnockoutObservable<string>;
+        constructor(effectiveDigitLength: number, startDigit: number, endDigit: number, decimalSelect: number,
+            hourMinSelect: number, delimiterSet: number, roundProc: number,
+            roundProcCls: number, fixedValue: number, valueOfFixedValue: string) {
             this.effectiveDigitLength = ko.observable(effectiveDigitLength);
             this.startDigit = ko.observable(startDigit);
             this.endDigit = ko.observable(endDigit);
-            this.decimalSelection = ko.observable(decimalSelection);
-            this.hourMinuteSelection = ko.observable(hourMinuteSelection);
-            this.delimiterSetting = ko.observable(delimiterSetting);
-            this.roundingProcessing = ko.observable(roundingProcessing);
-            this.roundProcessingClassification = ko.observable(roundProcessingClassification);
+            this.decimalSelect = ko.observable(decimalSelect);
+            this.hourMinSelect = ko.observable(hourMinSelect);
+            this.delimiterSet = ko.observable(delimiterSet);
+            this.roundProc = ko.observable(roundProc);
+            this.roundProcCls = ko.observable(roundProcCls);
             this.fixedValue = ko.observable(fixedValue);
-            this.valueOfFixed = ko.observable(valueOfFixed);
+            this.valueOfFixedValue = ko.observable(valueOfFixedValue);
         }
     }
     
+     //screen J
     export class TimeDataFormatSetting {
         effectiveDigitLength: KnockoutObservable<number>;
         startDigit: KnockoutObservable<number>;
         endDigit: KnockoutObservable<number>;
-        decimalSelection: KnockoutObservable<number>;
-        hourMinuteSelection: KnockoutObservable<number>;
-        delimiterSetting: KnockoutObservable<number>;
-        roundingProcessing: KnockoutObservable<number>;
-        roundProcessingClassification: KnockoutObservable<number>;
+        decimalSelect: KnockoutObservable<number>;
+        hourMinSelect: KnockoutObservable<number>;
+        delimiterSet: KnockoutObservable<number>;
+        roundProc: KnockoutObservable<number>;
+        roundProcCls: KnockoutObservable<number>;
         fixedValue: KnockoutObservable<number>;
-        valueOfFixed: KnockoutObservable<string>;
-        constructor(effectiveDigitLength: number, startDigit: number, endDigit: number, decimalSelection: number,
-            hourMinuteSelection: number, delimiterSetting: number, roundingProcessing: number,
-            roundProcessingClassification: number, fixedValue: number, valueOfFixed: string) {
+        valueOfFixedValue: KnockoutObservable<string>;
+        constructor(effectiveDigitLength: number, startDigit: number, endDigit: number, decimalSelect: number,
+            hourMinSelect: number, delimiterSet: number, roundProc: number,
+            roundProcCls: number, fixedValue: number, valueOfFixedValue: string) {
             this.effectiveDigitLength = ko.observable(effectiveDigitLength);
             this.startDigit = ko.observable(startDigit);
             this.endDigit = ko.observable(endDigit);
-            this.decimalSelection = ko.observable(decimalSelection);
-            this.hourMinuteSelection = ko.observable(hourMinuteSelection);
-            this.delimiterSetting = ko.observable(delimiterSetting);
-            this.roundingProcessing = ko.observable(roundingProcessing);
-            this.roundProcessingClassification = ko.observable(roundProcessingClassification);
+            this.decimalSelect = ko.observable(decimalSelect);
+            this.hourMinSelect = ko.observable(hourMinSelect);
+            this.delimiterSet = ko.observable(delimiterSet);
+            this.roundProc = ko.observable(roundProc);
+            this.roundProcCls = ko.observable(roundProcCls);
             this.fixedValue = ko.observable(fixedValue);
-            this.valueOfFixed = ko.observable(valueOfFixed);
+            this.valueOfFixedValue = ko.observable(valueOfFixedValue);
         }
     }
 
@@ -394,7 +427,7 @@ module nts.uk.com.view.cmf001.share.model {
         conditionSetCd: KnockoutObservable<string>;
         
         constructor(receiptItemName: string, selectComparisonCondition: number,timeConditionValue2: number, timeConditionValue1: number, timeMomentConditionValue2:number, timeMomentConditionValue1: number,
-        dateConditionValue2: string, dateConditionValue1: string, characterConditionValue2: string, characterConditionValue1: string, numberConditionValue2: number, numberConditionValue1: number) {
+        dateConditionValue2: string, dateConditionValue1: string, characterConditionValue2: string, characterConditionValue1: string, numberConditionValue2: number, numberConditionValue1: number, conditionSetCd?: string, acceptItemNum?: number) {
             this.receiptItemName = ko.observable(receiptItemName);
             this.selectComparisonCondition = ko.observable(selectComparisonCondition);
             this.timeConditionValue2 = ko.observable(timeConditionValue2);
@@ -407,6 +440,7 @@ module nts.uk.com.view.cmf001.share.model {
             this.characterConditionValue1 = ko.observable(characterConditionValue1);
             this.numberConditionValue2 = ko.observable(numberConditionValue2);
             this.numberConditionValue1 = ko.observable(numberConditionValue1);
+            
         }
     }
 

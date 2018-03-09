@@ -10,9 +10,13 @@
 			<script type='text/javascript'>
 				var dialogSize = {
 					width : 550,
-					height : 400
+					height : 430
 				};
 			</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionCode
+				nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionName
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:stylefile path="cmf001.m.style.css" />
@@ -26,7 +30,7 @@
 				<div>
 					<div class="title_content">
 					<!-- M1_1タイトル -->
-						<div class="title_content_left">#{i18n.getText('CMF001_413')}</div>
+						<div class="title_content_left large">#{i18n.getText('CMF001_400')}</div>
 						<!-- M5_2対象種類  -->
 						<div class="title_content_right">
 							<label data-bind="text: targetType"></label>
@@ -46,7 +50,7 @@
 							<tr>
 								<td class="td_left">
 								<!-- M2_2コード/名称 -->
-									<div style="border-color: #00B050"  data-bind="ntsFormLabel: {required: true }" class="form-label enable">
+									<div data-bind="ntsFormLabel: {required: true }" class="form-label enable">
 										<label>#{i18n.getText('CMF001_405')}</label>
 									</div>
 								</td>
@@ -71,10 +75,14 @@
 								<!-- M2_7コード（先） -->
 								<td><input class="td_center_sp" id="M4" tabindex="1" data-bind="ntsTextEditor: {value: newCondCode, 
 																					name: '#[CMF001_408]',
+																					constraint: 'AcceptanceConditionCode',
+																					option: {width: '40px'},
 																					required: true}" /></td>
 								<!-- M2_8名称（先）-->
 								<td class="td_right"><input tabindex="2" data-bind="ntsTextEditor: {value: newCondName, 
 																					name: '#[CMF001_409]',
+																					option: {width: '200px'},
+																					constraint: 'AcceptanceConditionName',
 																					required: true}" /></td>
 							</tr>
 						</table>

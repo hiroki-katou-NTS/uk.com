@@ -5,11 +5,11 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
+	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 1150,
+					width : 980,
 					height : 610
 				};
 			</script>
@@ -42,15 +42,15 @@
 					tabindex="4">#{i18n.getText('CMF001_193')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
-				<div id="content-left" class="fixed-flex-layout-left bg-green">
+				<div id="content-left" class="fixed-flex-layout-left">
 					<!--F2_1 コード変換選択(パネル)--> 
 					<div
-						data-bind="ntsPanel:{width: '500px', height: '400px', direction: 'right', visible: true}">
+						data-bind="ntsPanel:{width: '350px', height: '440px', showIcon:true, direction: 'right', visible: true}">
 						<div class="flex">
 							<!--F2_2 コード/名称-->
 							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_194')}</div>
 							<!--F2_3 絞り込み検索--> 
-							<div
+							<div style="width: 240px"
 								data-bind="ntsSearchBox: {
 												searchMode: 'filter',
 												targetKey: 'dispConvertCode',
@@ -71,13 +71,13 @@
 		                                            optionsValue: selectedConvertCode,
 		                                            primaryKey: 'dispConvertCode',
 		                                            columns: [
-																{headerText: '#{i18n.getText('CMF001_195')}', key: 'dispConvertCode', width: 80, formatter: _.escape},
-								                				{headerText: '#{i18n.getText('CMF001_196')}', key: 'dispConvertName', width: 250, formatter: _.escape}
+																{headerText: '#{i18n.getText('CMF002_37')}', key: 'dispConvertCode', width: 80, formatter: _.escape},
+								                				{headerText: '#{i18n.getText('CMF002_38')}', key: 'dispConvertName', width: 200, formatter: _.escape}
 								                			],
 		                                            multiple: false,
 		                                            value: selectedConvertCode,
 		                                            showNumbering: true,
-		                                            rows: 15,
+		                                            rows: 16,
 		                                            enable: true}">
 							</table>
 						</div>
