@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.entity.application.holidayshipment.breakoffsuspensionchangemanager;
+package nts.uk.ctx.at.request.infra.entity.application.holidayshipment.brkoffsupchangemng;
 
 import java.io.Serializable;
 
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtBreakOffSuspensionChangeManager extends UkJpaEntity implements Serializable {
+public class KrqdtBrkOffSupChangeMng extends UkJpaEntity implements Serializable {
 
 	/**
 	 * 
@@ -31,7 +31,7 @@ public class KrqdtBreakOffSuspensionChangeManager extends UkJpaEntity implements
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public KrqdtBreakOffSuspensionChangeManagerPK pk;
+	public KrqdtBrkOffSupChangeMngPK pk;
 
 	@Override
 	protected Object getKey() {

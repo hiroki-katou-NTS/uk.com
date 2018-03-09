@@ -14,6 +14,8 @@ import javax.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.val;
+import nts.uk.ctx.pereg.app.find.processor.ItemDefFinder;
+import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregCommandHandlerCollector;
@@ -27,6 +29,7 @@ import nts.uk.shr.pereg.app.command.userdef.PeregUserDefDeleteCommand;
 import nts.uk.shr.pereg.app.command.userdef.PeregUserDefDeleteCommandHandler;
 import nts.uk.shr.pereg.app.command.userdef.PeregUserDefUpdateCommand;
 import nts.uk.shr.pereg.app.command.userdef.PeregUserDefUpdateCommandHandler;
+import nts.uk.shr.pereg.app.find.PeregQuery;
 
 @ApplicationScoped
 public class PeregCommandFacade {
@@ -55,6 +58,9 @@ public class PeregCommandFacade {
 	@Inject
 	private PeregUserDefDeleteCommandHandler userDefDelete;
 
+	@Inject
+	private ItemDefFinder itemDefFinder;
+	
 	/**
 	 * Initializes.
 	 */
@@ -79,6 +85,10 @@ public class PeregCommandFacade {
 	 */
 	@Transactional
 	public String add(PeregInputContainer container) {
+		return addNonTransaction(container);
+	}
+	
+	private String addNonTransaction(PeregInputContainer container) {
 		// Filter input category
 		List<ItemsByCategory> addInputs = container.getInputs().stream().filter(p->StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
 		PeregInputContainer addPeregInputContainer = new PeregInputContainer(container.getPersonId(), container.getEmployeeId(), addInputs);
@@ -125,6 +135,10 @@ public class PeregCommandFacade {
 	 */
 	@Transactional
 	public void update(PeregInputContainer container) {
+		updateNonTransaction(container);
+	}
+
+	private void updateNonTransaction(PeregInputContainer container) {
 
 		container.getInputs().forEach(itemsByCategory -> {
 			val handler = this.updateHandlers.get(itemsByCategory.getCategoryCd());
@@ -137,7 +151,39 @@ public class PeregCommandFacade {
 			this.userDefUpdate.handle(commandForUserDef);
 		});
 	}
-
+	
+	@Transactional
+	public Object register(PeregInputContainer inputContainer){
+		String recordId = null;
+		List<ItemsByCategory> addInputs = inputContainer.getInputs().stream().filter(p->StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
+		if (addInputs!= null && !addInputs.isEmpty()){
+			recordId= this.add(inputContainer);
+		}
+		
+		List<ItemsByCategory> updateInputs = inputContainer.getInputs().stream().filter(p->!StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
+		if (updateInputs!= null && !updateInputs.isEmpty()){
+			// Add item invisible to list
+			for (ItemsByCategory itemByCategory : updateInputs) {
+				
+				PeregQuery query = new PeregQuery(itemByCategory.getCategoryCd(), inputContainer.getEmployeeId(),inputContainer.getPersonId(),null);
+				query.setInfoId(itemByCategory.getRecordId());
+				List<ItemValue> fullItems = itemDefFinder.getFullListItemDef(query);
+				List<String> itemVisible = itemByCategory.getItems().stream().map(ItemValue::itemCode).collect(Collectors.toList());
+				
+				// List item invisible
+				List<ItemValue> itemInvisible = fullItems.stream().filter(i->!itemVisible.contains(i.itemCode()) && i.itemCode().charAt(1) == 'S').collect(Collectors.toList());
+				itemInvisible.addAll(itemByCategory.getItems());
+				
+				itemByCategory.setItems(itemInvisible);
+			}
+			
+			
+			PeregInputContainer registerPeregInputContainer = new PeregInputContainer(inputContainer.getPersonId(), inputContainer.getEmployeeId(), updateInputs);
+			this.update(registerPeregInputContainer);
+		}
+		
+		return new Object[] { recordId };
+	}
 	/**
 	 * Handles delete command.
 	 * 

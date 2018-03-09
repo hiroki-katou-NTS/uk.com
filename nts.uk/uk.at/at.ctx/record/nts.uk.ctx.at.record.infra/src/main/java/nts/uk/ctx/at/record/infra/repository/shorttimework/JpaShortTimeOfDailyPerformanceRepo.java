@@ -50,10 +50,10 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 					.findFirst().orElse(null);
 			if(current != null){
 				current.childCareAtr = c.getChildCareAttr().value;
-				current.deductionTime = c.getDeductionTime() == null ? null : c.getDeductionTime().valueAsMinutes();
-				current.endTime = c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes();
-				current.startTime = c.getStartTime() == null ? null : c.getStartTime().valueAsMinutes();
-				current.time = c.getShortTime() == null ? null : c.getShortTime().valueAsMinutes();
+				current.deductionTime = c.getDeductionTime() == null ? 0 : c.getDeductionTime().valueAsMinutes();
+				current.endTime = c.getEndTime() == null ? 0 : c.getEndTime().valueAsMinutes();
+				current.startTime = c.getStartTime() == null ? 0 : c.getStartTime().valueAsMinutes();
+				current.time = c.getShortTime() == null ? 0 : c.getShortTime().valueAsMinutes();
 			} else {
 				entities.add(newEntities(shortWork.getEmployeeId(), shortWork.getYmd(), c));
 			}

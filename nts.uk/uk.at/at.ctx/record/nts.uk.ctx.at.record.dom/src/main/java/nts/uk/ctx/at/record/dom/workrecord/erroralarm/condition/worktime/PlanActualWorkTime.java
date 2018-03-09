@@ -81,34 +81,28 @@ public class PlanActualWorkTime extends WorkTimeCondition {
 
 	@Override
 	public boolean checkWorkTime(WorkInfoOfDailyPerformance workInfo) {
-		if (this.getUseAtr() != null && this.getUseAtr()) {
-			boolean planCheck = false;
-			if (this.workTimePlan != null) {
-				if (this.workTimePlan.getFilterAtr() != null && this.workTimePlan.getFilterAtr()) {
-					planCheck = this.workTimePlan.getLstWorkTime()
-							.contains(workInfo.getScheduleWorkInformation().getWorkTimeCode());
-				}
-			}
-			boolean actualCheck = false;
-			if (this.workTimeActual != null) {
-				if (this.workTimeActual.getFilterAtr() != null && this.workTimeActual.getFilterAtr()) {
-					planCheck = this.workTimeActual.getLstWorkTime()
-							.contains(workInfo.getRecordWorkInformation().getWorkTimeCode());
-				} else {
-					return planCheck;
-				}
-			}
-			if (this.operatorBetweenPlanActual != null) {
-				switch (this.operatorBetweenPlanActual) {
-				case AND:
-					return planCheck && actualCheck;
-				case OR:
-					return planCheck || actualCheck;
-				default:
-					break;
-				}
-			}
+		if (!this.isUse()) {
+			return false;
 		}
-		return false;
+
+		boolean planCheck = false;
+		if (this.workTimePlan != null) {
+			planCheck = this.workTimePlan.contains(workInfo.getScheduleWorkInformation().getWorkTimeCode());
+		}
+
+		if (this.workTimeActual == null || !this.workTimeActual.isUse()) {
+			return planCheck;
+		}
+
+		boolean actualCheck = this.workTimeActual.contains(workInfo.getRecordWorkInformation().getWorkTimeCode());
+
+		switch (this.operatorBetweenPlanActual) {
+		case AND:
+			return planCheck && actualCheck;
+		case OR:
+			return planCheck || actualCheck;
+		default:
+			throw new RuntimeException("invalid operatorBetweenPlanActual: " + this.operatorBetweenPlanActual);
+		}
 	}
 }

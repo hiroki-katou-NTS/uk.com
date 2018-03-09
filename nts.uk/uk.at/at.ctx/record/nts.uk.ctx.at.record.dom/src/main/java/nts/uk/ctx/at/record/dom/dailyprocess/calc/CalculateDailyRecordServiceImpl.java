@@ -323,7 +323,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 											   new BreakDownTimeDay(new AttendanceTime(4),new AttendanceTime(4),new AttendanceTime(8)),
 												personalInfo.getStatutoryWorkTime(),autoCalcOverTimeWork,LegalOTSetting.LEGAL_INTERNAL_TIME,StatutoryPrioritySet.priorityNormalOverTimeWork,
 												workTime.get(),flexWorkSetOpt.get(),goOutTimeSheetList,oneRange.getOneDayOfRange(),oneRange.getAttendanceLeavingWork(),
-												workTime.get().getWorkTimeDivision(),breakTimeOfDailyList,midNightTimeSheet
+												workTime.get().getWorkTimeDivision(),breakTimeOfDailyList,midNightTimeSheet,personalInfo
 											   );
 		} else {
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
@@ -345,7 +345,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						fixedWorkSetting.get().getOffdayWorkTimezone().getLstWorkTimezone(), overDayEndCalcSet, Collections.emptyList(), yesterDay.get(), workType.get(),
 						tomorrow.get(), new BreakDownTimeDay(new AttendanceTime(4),new AttendanceTime(4),new AttendanceTime(8)),
 						personalInfo.getStatutoryWorkTime(), autoCalcOverTimeWork, fixedWorkSetting.get().getLegalOTSetting(), StatutoryPrioritySet.priorityNormalOverTimeWork, 
-						workTime.get(),breakTimeOfDailyList,midNightTimeSheet);
+						workTime.get(),breakTimeOfDailyList,midNightTimeSheet,personalInfo);
 				break;
 			case FLOW_WORK:
 				/* 流動勤務 */
@@ -487,11 +487,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	
 
 		// 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
-		List<Integer> attendanceItemIdList = copyIntegrationOfDaily.getEditState().stream().filter(editState -> editState.getEmployeeId()==copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId()
-																								   && editState.getYmd() == copyIntegrationOfDaily.getAffiliationInfor().getYmd())
-																			               .map(editState -> editState.getAttendanceItemId())
-																			               .distinct()
-																			               .collect(Collectors.toList());
+		List<Integer> attendanceItemIdList = integrationOfDaily.getEditState().stream().filter(editState -> editState.getEmployeeId()==copyIntegrationOfDaily.getAffiliationInfor().getEmployeeId()
+				   && editState.getYmd() == copyIntegrationOfDaily.getAffiliationInfor().getYmd())
+        .map(editState -> editState.getAttendanceItemId())
+        .distinct()
+        .collect(Collectors.toList());
 
 		DailyRecordToAttendanceItemConverter beforDailyRecordDto = this.dailyRecordToAttendanceItemConverter.setData(copyIntegrationOfDaily);	
 		List<ItemValue> itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);		

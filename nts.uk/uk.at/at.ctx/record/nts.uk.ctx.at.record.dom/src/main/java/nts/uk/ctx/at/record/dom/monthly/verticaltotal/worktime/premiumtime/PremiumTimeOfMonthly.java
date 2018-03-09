@@ -83,6 +83,7 @@ public class PremiumTimeOfMonthly {
 		
 		val actualWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
 		val premiumTimeOfDaily = actualWorkingTime.getPremiumTimeOfDailyPerformance();
+		if (premiumTimeOfDaily.getPremiumTimes() == null) return;
 		for (val premiumTime : premiumTimeOfDaily.getPremiumTimes()){
 			val premiumTimeNo = premiumTime.getPremiumTimeNo();
 			this.premiumTime.putIfAbsent(premiumTimeNo, new AggregatePremiumTime(premiumTimeNo));

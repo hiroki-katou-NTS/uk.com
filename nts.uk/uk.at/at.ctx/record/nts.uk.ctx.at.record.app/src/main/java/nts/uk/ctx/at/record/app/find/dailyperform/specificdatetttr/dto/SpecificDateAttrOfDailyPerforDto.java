@@ -31,7 +31,9 @@ public class SpecificDateAttrOfDailyPerforDto extends AttendanceItemCommon {
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());
 			dto.setSepecificDateAttrs(ConvertHelper.mapTo(domain.getSpecificDateAttrSheets(), (c) -> {
-				return new SpecificDateAttrDto(c.getSpecificDateAttr().value, c.getSpecificDateItemNo().v().intValue());
+				return new SpecificDateAttrDto(
+						c.getSpecificDateAttr() == null ? 0 : c.getSpecificDateAttr().value, 
+						c.getSpecificDateItemNo().v().intValue());
 			}));
 			dto.exsistData();
 		}
@@ -54,7 +56,7 @@ public class SpecificDateAttrOfDailyPerforDto extends AttendanceItemCommon {
 			return null;
 		}
 		return new SpecificDateAttrOfDailyPerfor(emp,
-				sepecificDateAttrs == null ? new ArrayList<>() : ConvertHelper.mapTo(sepecificDateAttrs,
+				ConvertHelper.mapTo(sepecificDateAttrs,
 						(c) -> new SpecificDateAttrSheet(new SpecificDateItemNo(c.getItemNo()),
 								ConvertHelper.getEnum(c.getSpecificDate(), SpecificDateAttr.class))),
 						date);
