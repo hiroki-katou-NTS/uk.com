@@ -14,7 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Class CompanyWebService.
  */
-@Path("at/shared/holidaysetting/company")
+@Path("at/shared/holidaysetting/companycommon")
 @Produces(MediaType.APPLICATION_JSON)
 public class CompanyWebService extends WebService{
 	

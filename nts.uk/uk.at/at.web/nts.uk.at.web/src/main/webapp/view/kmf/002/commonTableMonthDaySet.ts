@@ -5,7 +5,7 @@ module nts.uk.at.view.kmf002 {
     export module viewmodel {
         
         var path: any = {
-                findFirstMonth: "basic/company/beginningmonth/find"
+                findFirstMonth: "at/shared/holidaysetting/companycommon"
             };
         
         export class CommonTableMonthDaySet { 
@@ -66,7 +66,7 @@ module nts.uk.at.view.kmf002 {
             }
             
             private findFirstMonth() :JQueryPromise<any> {
-                return nts.uk.request.ajax("com", path.findFirstMonth); 
+                return nts.uk.request.ajax("at", path.findFirstMonth); 
             }
        }      
     }

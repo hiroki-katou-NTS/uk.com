@@ -6,7 +6,7 @@ module nts.uk.at.view.kmf002.e {
         var path: any = {
                 find: "at/shared/holidaysetting/company/findCompanyMonthDaySetting",
                 save: "at/shared/holidaysetting/company/save",
-                findFirstMonth: "at/shared/holidaysetting/company",
+                findFirstMonth: "at/shared/holidaysetting/companycommon",
                 remove: "at/shared/holidaysetting/company/remove"
             };
         
