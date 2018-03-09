@@ -84,6 +84,13 @@ module nts.uk.ui.koExtentions {
             $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
             
             setEnterHandlerIfRequired($input, data);
+            
+            $input.on("keydown", e => {
+                // prevent backspace in readonly editor
+                if (ko.unwrap(data.readonly) && e.keyCode === 8) {
+                    e.preventDefault();
+                }
+            });
 
             $input.on(valueUpdate, (e) => {
                 
@@ -230,10 +237,14 @@ module nts.uk.ui.koExtentions {
 
             setEnterHandlerIfRequired($input, data);
             
-            $input.on("keyup", (e) => {
-                if($input.attr('readonly')){
-                    return;
+            $input.on("keydown", e => {
+                // prevent backspace in readonly editor
+                if (ko.unwrap(data.readonly) && e.keyCode === 8) {
+                    e.preventDefault();
                 }
+            });
+            
+            $input.on("keyup", (e) => {
                 var code = e.keyCode || e.which;
                 if (!$input.attr('readonly') && code.toString() !== '9') {
                     let validator = self.getValidator(data);
