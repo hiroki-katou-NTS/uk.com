@@ -6,7 +6,7 @@ module nts.uk.at.view.kmf002.e {
         var path: any = {
                 find: "at/shared/holidaysetting/company/findCompanyMonthDaySetting",
                 save: "at/shared/holidaysetting/company/save",
-                findFirstMonth: "basic/company/beginningmonth/find",
+                findFirstMonth: "at/shared/holidaysetting/companycommon/getFirstMonth",
                 remove: "at/shared/holidaysetting/company/remove"
             };
         
@@ -32,7 +32,7 @@ module nts.uk.at.view.kmf002.e {
         }
         
         export function findFirstMonth(): JQueryPromise<any>{
-            return nts.uk.request.ajax("com", path.findFirstMonth);
+            return nts.uk.request.ajax("at", path.findFirstMonth);
         }
         
         export function remove(year: string): JQueryPromise<any> {
