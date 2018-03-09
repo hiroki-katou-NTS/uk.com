@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_ALARM_PATTERN_SET")
+@Table(name = "KFNMT_ALEX_PROCESS_STATUS")
 public class KfnmtAlarmListExtraProcessStatus  extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId

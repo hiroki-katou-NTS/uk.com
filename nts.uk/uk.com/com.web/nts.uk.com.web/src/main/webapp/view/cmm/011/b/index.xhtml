@@ -25,8 +25,8 @@
 
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
-			<div id="contents-area">
-				<div id="left-content"
+			<div id="contents-area" class="fixed-flex-layout">
+				<div class="fixed-flex-layout-left"
 					class="bg-green caret-right caret-inline caret-background pull-left"
 					data-bind="with: workplaceHistory">
 					<div>
@@ -52,8 +52,8 @@
 							{ key: 'textDisplay', length: 15 }
 						]}"></div>
 				</div>
-
-				<div id="right-content">
+				
+				<div class="fixed-flex-layout-right">
 					<div style="margin-left: 35px; margin-right: 20px;"
 						data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM011_23')}</div>
 					<div tabindex="5" id="startDate"

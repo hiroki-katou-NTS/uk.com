@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.SubHolOccurrenceInfo;
@@ -220,7 +221,7 @@ public class OverTimeSheet {
 		for(OverTimeFrameTimeSheetForCalc timeSheet:frameTimeSheets) {
 			val calcSet = getCalcSetByAtr(autoCalcSet, timeSheet.getWithinStatutryAtr(),timeSheet.isGoEarly());
 			if(timeSheet.getMidNightTimeSheet().isPresent()) {
-				calcTime = calcTime.addMinutes(timeSheet.getMidNightTimeSheet().get().calcMidNight(calcSet.getCalculationClassification()).valueAsMinutes());
+				calcTime = calcTime.addMinutes(timeSheet.calcMidNight(calcSet.getCalculationClassification()).valueAsMinutes());
 			}
 		}
 		return calcTime;

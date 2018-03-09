@@ -22,7 +22,7 @@ public interface SyWorkplacePub {
 	 * @param baseDate the base date
 	 * @return the optional
 	 */
-	// RequestList #30
+	// RequestList30
 	Optional<SWkpHistExport> findBySid(String employeeId, GeneralDate baseDate);
 
 	/**
@@ -33,7 +33,7 @@ public interface SyWorkplacePub {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	// RequestList #41
+	// RequestList41
 	List<String> findWpkIdsByWkpCode(String companyId, String wpkCode, GeneralDate baseDate);
 
 	/**

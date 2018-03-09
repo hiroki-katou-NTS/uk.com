@@ -275,7 +275,6 @@
 												value: numericItemMin,
 												constraint: 'NumericItemMin',
 												option:  new nts.uk.ui.option.NumberEditorOption({
-												grouplength: 3,
 												decimallength: decimalPart>8?8:decimalPart,
 									            	placeholder: '',
 									            	width: '80px',
@@ -292,7 +291,6 @@
 												value: numericItemMax,
 												constraint: 'NumericItemMax',
 												option:  new nts.uk.ui.option.NumberEditorOption({
-												grouplength: 3,
 												decimallength: decimalPart>8?8:decimalPart,
 												mantissaMaxLength: decimalPart>8?8:decimalPart,
 									            	placeholder: '',
@@ -398,7 +396,6 @@
 												value: numericItemMin,
 												constraint: 'NumericItemMin',
 												option: new nts.uk.ui.option.NumberEditorOption({
-							                        grouplength: 3,
 							                       decimallength: decimalPart>8?8:decimalPart,
 							                       mantissaMaxLength: decimalPart>8?8:decimalPart,
 							                        width: '75px',
@@ -415,7 +412,6 @@
 												value: numericItemMax,
 												constraint: 'NumericItemMax',
 												option:  new nts.uk.ui.option.NumberEditorOption({
-							                        grouplength: 3,
 							                        decimallength: decimalPart>8?8:decimalPart,
 							                        mantissaMaxLength: decimalPart>8?8:decimalPart,
 							                        width: '75px',
@@ -517,7 +513,7 @@
 										 		option: {
 								                    width: '65px',
 								                    placeholder: hintTimeMin,
-								                    timeWithDay: false
+								                    timeWithDay: true
 								                },
 												required: true,
 												enable: true,
@@ -531,7 +527,7 @@
 										 		option: {
 								                    width: '65px',
 								                    placeholder: hintTimeMax,
-								                    timeWithDay: false
+								                    timeWithDay: true
 								                },
 												required: true,
 												enable: true,

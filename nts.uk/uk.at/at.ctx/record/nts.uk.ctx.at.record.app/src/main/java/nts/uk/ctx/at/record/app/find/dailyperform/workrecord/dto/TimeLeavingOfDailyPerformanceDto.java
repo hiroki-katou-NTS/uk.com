@@ -1,32 +1,26 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @AttendanceItemRoot(rootName = "日別実績の出退勤")
 @Data
-public class TimeLeavingOfDailyPerformanceDto implements ConvertibleAttendanceItem {
+public class TimeLeavingOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private String employeeId;
 
@@ -49,6 +43,7 @@ public class TimeLeavingOfDailyPerformanceDto implements ConvertibleAttendanceIt
 					(c) -> new WorkLeaveTimeDto(c.getWorkNo().v(),
 							WithActualTimeStampDto.toWithActualTimeStamp(c.getAttendanceStamp().orElse(null)),
 							WithActualTimeStampDto.toWithActualTimeStamp(c.getLeaveStamp().orElse(null)))));
+			dto.exsistData();
 		}
 		return dto;
 	}
@@ -65,9 +60,11 @@ public class TimeLeavingOfDailyPerformanceDto implements ConvertibleAttendanceIt
 	
 	@Override
 	public TimeLeavingOfDailyPerformance toDomain(String emp, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new TimeLeavingOfDailyPerformance(emp, new WorkTimes(toWorkTime()),
-				workAndLeave == null ? new ArrayList<>() : ConvertHelper.mapTo(workAndLeave, c -> toTimeLeaveWork(c)),
-				date);
+				ConvertHelper.mapTo(workAndLeave, c -> toTimeLeaveWork(c)), date);
 	}
 
 	private int toWorkTime() {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
@@ -12,7 +13,9 @@ import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
+import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -81,10 +84,14 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * 計算用休出枠時間帯リストの作成
 	 * @return
 	 */
-	public static List<HolidayWorkFrameTimeSheetForCalc> createHolidayTimeWorkFrame(TimeLeavingWork attendanceLeave,List<HDWorkTimeSheetSetting> holidayWorkTimeList,WorkType todayWorkType) {
+	public static List<HolidayWorkFrameTimeSheetForCalc> createHolidayTimeWorkFrame(TimeLeavingWork attendanceLeave,List<HDWorkTimeSheetSetting> holidayWorkTimeList,WorkType todayWorkType
+																					,BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet) {
 		List<HolidayWorkFrameTimeSheetForCalc> returnList = new ArrayList<>();
 		for(HDWorkTimeSheetSetting holidayWorkTime:holidayWorkTimeList) {
-			returnList.add(createHolidayTimeWorkFrameTimeSheet(attendanceLeave,holidayWorkTime,todayWorkType));
+			val duplicateTimeSpan = holidayWorkTime.getTimezone().timeSpan().getDuplicatedWith(attendanceLeave.getTimespan()); 
+			if(duplicateTimeSpan.isPresent()) {
+				returnList.add(createHolidayTimeWorkFrameTimeSheet(duplicateTimeSpan.get(),holidayWorkTime,todayWorkType,bonusPaySetting,midNightTimeSheet));
+			}
 		}
 		return returnList;
 	}
@@ -103,26 +110,41 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * @param today
 	 * @return
 	 */
-	public static HolidayWorkFrameTimeSheetForCalc createHolidayTimeWorkFrameTimeSheet(TimeLeavingWork attendanceLeave,HDWorkTimeSheetSetting holidayWorkFrameTimeSheet,WorkType today) {
-		//計算範囲判断
-		Optional<TimeSpanForCalc> calcrange = holidayWorkFrameTimeSheet.getTimezone().getDuplicatedWith(attendanceLeave.getTimespan());
-		if(!calcrange.isPresent()) {
-			calcrange = Optional.of(new TimeSpanForCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)));
-		}
+	public static HolidayWorkFrameTimeSheetForCalc createHolidayTimeWorkFrameTimeSheet(TimeSpanForCalc timeSpan,HDWorkTimeSheetSetting holidayWorkFrameTimeSheet,WorkType today
+																					  ,BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet) {
+
 		//時間帯跨いだ控除時間帯分割
 		//控除時間帯を保持させる(継承先に)
 		//控除の丸め
 		//休出枠No
 		BreakFrameNo breakFrameNo = holidayWorkFrameTimeSheet.decisionBreakFrameNoByHolidayAtr(today.getWorkTypeSetList().get(0).getHolidayAtr());
-		//加給
-		//深夜
-		return new HolidayWorkFrameTimeSheetForCalc(new TimeZoneRounding(calcrange.get().getStart(),calcrange.get().getEnd(),holidayWorkFrameTimeSheet.getTimezone().getRounding()),
-													calcrange.get(),
+		/*加給*/
+		val bonusPayTimeSheet = bonusPaySetting.getLstBonusPayTimesheet().stream().map(tc ->BonusPayTimeSheetForCalc.convertForCalc(tc)).collect(Collectors.toList());
+		val duplibonusPayTimeSheet = bonusPayTimeSheet.stream()
+											 .filter(tc -> tc.getCalcrange().checkDuplication(timeSpan).isDuplicated())
+											 .map(tc -> tc.convertForCalcCorrectRange(tc.getCalcrange().getDuplicatedWith(timeSpan).get()))
+											 .collect(Collectors.toList());
+											 
+		/*特定日*/
+		val specifiedBonusPayTimeSheet = bonusPaySetting.getLstSpecBonusPayTimesheet().stream().map(tc -> SpecBonusPayTimeSheetForCalc.convertForCalc(tc)).collect(Collectors.toList());
+		val duplispecifiedBonusPayTimeSheet = specifiedBonusPayTimeSheet.stream()
+											 .filter(tc -> tc.getCalcrange().checkDuplication(timeSpan).isDuplicated())
+				 							 .map(tc -> tc.convertForCalcCorrectRange(tc.getCalcrange().getDuplicatedWith(timeSpan).get()))
+				 							 .collect(Collectors.toList());
+		/*深夜*/
+		val duplicateMidNightSpan = timeSpan.getDuplicatedWith(midNightTimeSheet.getTimeSpan());
+		Optional<MidNightTimeSheetForCalc> duplicatemidNightTimeSheet = Optional.empty();
+		if(duplicateMidNightSpan.isPresent()) {
+			duplicatemidNightTimeSheet = Optional.of(MidNightTimeSheetForCalc.convertForCalc(midNightTimeSheet).getDuplicateRangeTimeSheet(duplicateMidNightSpan.get()));
+		}
+		
+		return new HolidayWorkFrameTimeSheetForCalc(new TimeZoneRounding(timeSpan.getStart(),timeSpan.getEnd(),holidayWorkFrameTimeSheet.getTimezone().getRounding()),
+													timeSpan,
 													Collections.emptyList(),
 													Collections.emptyList(),
-													Collections.emptyList(),
-													Collections.emptyList(),
-													Optional.empty(),
+													duplibonusPayTimeSheet,
+													duplispecifiedBonusPayTimeSheet,
+													duplicatemidNightTimeSheet,
 													new HolidayWorkFrameTime(new HolidayWorkFrameNo(breakFrameNo.v().intValue()),
 										  					Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
 										  					Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),

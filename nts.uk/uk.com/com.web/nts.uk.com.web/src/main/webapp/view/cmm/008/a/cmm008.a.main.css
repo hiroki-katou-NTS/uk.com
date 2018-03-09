@@ -13,18 +13,12 @@
 	padding: 20px;
 }
 
-.tr-height {
-	height: 70px;
+.width-label {
+    white-space: nowrap;
+    width: 200px;
 }
 
-#right-contents div table {
-	margin-right: 40px;
-}
-
-.td-width {
-	width: 200px;
-}
-
-.padding-left {
-	padding-left: 12px;
+#row2 > div:nth-child(1), #row2 > div:nth-child(2) {
+	padding-top: 12px;
+	padding-bottom: 12px;
 }
