@@ -11,7 +11,7 @@ module nts.uk.com.view.cmf001.g.viewmodel {
 
     export class ScreenModel {
         numDataFormatSetting: KnockoutObservable<model.NumericDataFormatSetting>
-        = ko.observable(new model.NumericDataFormatSetting(0, null, null, 0, null, null, null, new model.AcceptanceCodeConvert("", "", 0), 0, ""));
+        = ko.observable(new model.NumericDataFormatSetting(0, null, null, 0, null, null, null, "", 0, ""));
         
         effectDigitItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
             new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_223')),
@@ -27,6 +27,7 @@ module nts.uk.com.view.cmf001.g.viewmodel {
         ]);
         decimalPointClsItem: KnockoutObservableArray<model.ItemModel>;
         decimalFractionItem: KnockoutObservableArray<model.ItemModel>;
+        codeConvertCode: KnockoutObservable<model.AcceptanceCodeConvert> = ko.observable(new model.AcceptanceCodeConvert("","",0));
         inputMode: boolean = true;
         lineNumber: number = -1;
         constructor() {
@@ -63,29 +64,82 @@ module nts.uk.com.view.cmf001.g.viewmodel {
             }
             self.numDataFormatSetting(new model.NumericDataFormatSetting(numFormat.effectiveDigitLength, numFormat.startDigit,
                 numFormat.endDigit, numFormat.decimalDivision, numFormat.decimalDigitNumber, numFormat.decimalPointClassification,
-                numFormat.decimalFraction, convertCode, numFormat.fixedValue, numFormat.valueOfFixed));
+                numFormat.decimalFraction, numFormat.codeConvertCode, numFormat.fixedValue, numFormat.valueOfFixed));
+        }
+        start(): JQueryPromise<any> {
+            block.invisible();
+            var self = this;
+            var dfd = $.Deferred();
+            let convertCodeSelected = self.numDataFormatSetting().codeConvertCode();
+            service.getAcceptCodeConvert(convertCodeSelected).done(function(codeConvert) {
+                if (codeConvert) {
+                    self.numDataFormatSetting().codeConvertCode(codeConvert.convertCode);
+                    self.codeConvertCode(new model.AcceptanceCodeConvert(codeConvert.convertCd, codeConvert.convertName, codeConvert.acceptWithoutSetting));
+                }
+                block.clear();
+                dfd.resolve();
+            }).fail(function(error) {
+                alertError(error);
+                block.clear();
+                dfd.reject();
+            });
+            return dfd.promise();
         }
         // コード変換の選択を行う
         open001_K(data) {
             var self = this;
-            let selectedConvertCode = data.codeConvertCode();
-            setShared("CMF001kParams", { selectedConvertCode: selectedConvertCode });
+            let codeConvertCode = self.codeConvertCode();
+            setShared("CMF001kParams", { selectedConvertCode: ko.toJS(codeConvertCode)});
             modal("/view/cmf/001/k/index.xhtml").onClosed(() => {
                 let params = getShared("CMF001kOutput");
                 if(!nts.uk.util.isNullOrUndefined(params)){
                     let codeConvertCodeSelected = params.selectedConvertCodeShared;
-                    self.numDataFormatSetting().codeConvertCode(codeConvertCodeSelected);
+                    self.codeConvertCode(codeConvertCodeSelected);
+                    self.numDataFormatSetting().codeConvertCode(codeConvertCodeSelected.dispConvertCode);
                 }
             });
         }
         // 数値編集の設定をして終了する
         saveNumericSetting() {
             var self = this;
-            if (self.inputMode) {
+            if (self.checkValidInput()) {
                 setShared("CMF001FormatOutput", { lineNumber: self.lineNumber, formatSetting: ko.toJS(self.numDataFormatSetting) });
+                nts.uk.ui.windows.close();
+            }else{
+                alertError({ messageId: "Msg_2"});
             }
-            nts.uk.ui.windows.close();
         }
+        /**
+        * 開始桁、終了桁に入力はあるか判別, 小数桁数に入力があるか判別, 固定値に入力があるか判別
+        */
+        checkValidInput (){
+            var self = this;
+            let checkValidInput: boolean = true;
+            if (self.numDataFormatSetting().effectiveDigitLength() ==1){
+                let startDigit = self.numDataFormatSetting().startDigit();
+                let endDigit = self.numDataFormatSetting().endDigit();
+                if (startDigit ==0 || endDigit ==0){
+                    checkValidInput = false;    
+                }else{
+                    if (startDigit > endDigit ){
+                        checkValidInput = false;  
+                        alertError({ messageId: "Msg_1108"});
+                    } 
+                }
+            }
+            if (self.numDataFormatSetting().decimalDivision() ==1){
+                if (self.numDataFormatSetting().decimalDigitNumber() == 0){
+                    checkValidInput = false;
+                }
+            }
+            if (self.numDataFormatSetting().fixedValue() ==1){
+                if (_.isEmpty(self.numDataFormatSetting().valueOfFixedValue())){
+                    checkValidInput = false;
+                }
+            }
+            return checkValidInput;
+        }
+        
         // キャンセルして終了する
         cancelNumericSetting() {
             nts.uk.ui.windows.close();

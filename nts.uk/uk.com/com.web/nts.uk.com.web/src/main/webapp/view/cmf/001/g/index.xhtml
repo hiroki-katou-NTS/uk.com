@@ -19,6 +19,7 @@
 			<com:scriptfile path="cmf001.g.vm.js" />
 			<com:stylefile path="cmf001.g.style.css" />
 			<com:scriptfile path="cmf001.g.start.js" />
+			<com:scriptfile path="cmf001.g.service.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -155,10 +156,10 @@
 								data-bind="click: function() {$parent.open001_K($data)}, enable: $parent.inputMode">#{i18n.getText('CMF001_251')}</button>
 						</div>
 						<div id="G4_3" class="label-vertical-align-center"
-							data-bind="text: codeConvertCode().dispConvertCode"></div>
+							data-bind="text: $parent.codeConvertCode().dispConvertCode"></div>
 						<div id="G4_4" class="label-vertical-align-center"
 							style="margin-left: 15px;"
-							data-bind="text: codeConvertCode().dispConvertName"></div>
+							data-bind="text: $parent.codeConvertCode().dispConvertName"></div>
 					</div>
 					<div class="div-table-row">
 						<div class="div-table-col-2">
