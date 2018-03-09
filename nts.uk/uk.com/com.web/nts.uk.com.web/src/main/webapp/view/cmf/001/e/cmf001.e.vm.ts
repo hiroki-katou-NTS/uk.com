@@ -36,8 +36,8 @@ module nts.uk.com.view.cmf001.e.viewmodel {
         // CSVファイルの項目を設定して戻る
         save() {
             var self = this;
-            let selectedCsvItem = _.find(ko.toJS(self.listCsvItem), (x: model.MappingListData) => x.dispCsvItemNumber == ko.toJS(self.selectedCsvItemNumber));
-            setShared("CMF001eOutput", {selectedCsvItem: ko.toJS(selectedCsvItem)});
+            let selectedCsvItem = _.find(self.listCsvItem(), (x: model.MappingListData) => x.csvItemNumber == self.selectedCsvItemNumber());
+            setShared("CMF001eOutput", {selectedCsvItem: selectedCsvItem});
             nts.uk.ui.windows.close();
         }
     }

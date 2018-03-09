@@ -46,6 +46,8 @@ public class StdAcceptItemDto {
 	 * 項目型
 	 */
 	private int itemType;
+	
+	private int categoryItemNo;
 
 	private NumDataFormatSetDto numberFormatSetting;
 
@@ -61,7 +63,7 @@ public class StdAcceptItemDto {
 
 	public static StdAcceptItemDto fromDomain(StdAcceptItem domain) {
 		return new StdAcceptItemDto(domain.getConditionSetCd().v(), domain.getAcceptItemNumber(),
-				domain.getCsvItemNumber(), domain.getCsvItemName(), domain.getItemType().value,
+				domain.getCsvItemNumber(), domain.getCsvItemName(), domain.getItemType().value, domain.getCategoryItemNo(),
 				domain.getItemType() == ItemType.NUMERIC && domain.getDataFormatSetting() != null
 						? NumDataFormatSetDto.fromDomain((NumDataFormatSet) domain.getDataFormatSetting()) : null,
 				domain.getItemType() == ItemType.CHARACTER && domain.getDataFormatSetting() != null

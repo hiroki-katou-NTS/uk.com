@@ -37,13 +37,13 @@ public class StdAcceptCondSetFinder {
 		// dummy request list #50: get system code by employee id
 		LoginUserInCharge charge = new LoginUserInCharge(true, true, true, true, true);
 		if (charge.isHumanResource()) {
-			result.add(new SystemTypeDto(SystemType.PERSON_SYSTEM.value, "Human Resources"));
+			result.add(new SystemTypeDto(SystemType.PERSON_SYSTEM.value, SystemType.PERSON_SYSTEM.nameId));
 		}
 		if (charge.isOfficeHelper()) {
-			result.add(new SystemTypeDto(SystemType.OFFICE_HELPER.value, "Office Helper"));
+			result.add(new SystemTypeDto(SystemType.OFFICE_HELPER.value, SystemType.OFFICE_HELPER.nameId));
 		}
 		if (charge.isSalary()) {
-			result.add(new SystemTypeDto(SystemType.PAYROLL_SYSTEM.value, "Salary"));
+			result.add(new SystemTypeDto(SystemType.PAYROLL_SYSTEM.value, SystemType.PAYROLL_SYSTEM.nameId));
 		}
 		return result;
 	}
