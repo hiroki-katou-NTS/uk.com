@@ -92,7 +92,7 @@ module nts.uk.com.view.cmf001.share.model {
             new ItemModel(1, getText('Enum_ItemType_CHARACTER')),
             new ItemModel(2, getText('Enum_ItemType_DATE')),
             new ItemModel(3, getText('Enum_ItemType_INS_TIME')),
-            new ItemModel(4, getText('Enum_ItemType_TIME'))
+            new ItemModel(4, getText('Enum_ItemType_TME'))
         ];
     }
     
@@ -159,16 +159,16 @@ module nts.uk.com.view.cmf001.share.model {
         acceptItemNumber: KnockoutObservable<number>;
         acceptItemName: KnockoutObservable<string>;
         conditionSettingCode: KnockoutObservable<string>;
-        numberFormatSetting: KnockoutObservable<NumericDataFormatSetting>;
-        charFormatSetting: KnockoutObservable<CharacterDataFormatSetting>;
-        dateFormatSetting: KnockoutObservable<DateDataFormatSetting>;
-        instTimeFormatSetting: KnockoutObservable<InstantTimeDataFormatSetting>; 
-        timeFormatSetting: KnockoutObservable<TimeDataFormatSetting>
-        screenConditionSetting: KnockoutObservable<AcceptScreenConditionSetting>;
+        numberFormatSetting: KnockoutObservable<NumericDataFormatSetting> = ko.observable(null);
+        charFormatSetting: KnockoutObservable<CharacterDataFormatSetting> = ko.observable(null);
+        dateFormatSetting: KnockoutObservable<DateDataFormatSetting> = ko.observable(null);
+        instTimeFormatSetting: KnockoutObservable<InstantTimeDataFormatSetting> = ko.observable(null); 
+        timeFormatSetting: KnockoutObservable<TimeDataFormatSetting> = ko.observable(null);
+        screenConditionSetting: KnockoutObservable<AcceptScreenConditionSetting> = ko.observable(null);
         categoryItemNo: KnockoutObservable<number>;
         categoryId: KnockoutObservable<string> = ko.observable("");
 
-        constructor(csvItemName: string, csvItemNumber: number, itemType: number, acceptItemNumber: number, acceptItemName: string, conditionCode: string, categoryItemNo: number, numSet?: NumericDataFormatSetting, charSet?: CharacterDataFormatSetting, dateSet?: DateDataFormatSetting, instTimeSet?: InstantTimeDataFormatSetting, timeSet?: TimeDataFormatSetting, screenSet?: AcceptScreenConditionSetting, categoryId?: string) {
+        constructor(csvItemName: string, csvItemNumber: number, itemType: number, acceptItemNumber: number, acceptItemName: string, conditionCode: string, categoryItemNo: number, formatSet?: any, screenSet?: AcceptScreenConditionSetting, categoryId?: string) {
             this.csvItemName = ko.observable(csvItemName);
             this.csvItemNumber = ko.observable(csvItemNumber);
             this.itemType = ko.observable(itemType);
@@ -176,18 +176,27 @@ module nts.uk.com.view.cmf001.share.model {
             this.acceptItemName = ko.observable(acceptItemName);
             this.conditionSettingCode = ko.observable(conditionCode);
             this.categoryItemNo = ko.observable(categoryItemNo);
-            if (numSet)
-                this.numberFormatSetting = ko.observable(numSet);
-            if (charSet)
-                this.charFormatSetting = ko.observable(charSet);
-            if (dateSet)
-                this.dateFormatSetting = ko.observable(dateSet);
-            if (instTimeSet)
-                this.instTimeFormatSetting = ko.observable(instTimeSet);
-            if (timeSet)
-                this.timeFormatSetting = ko.observable(timeSet);
+            if (formatSet) {
+                switch(itemType) {
+                    case model.ITEM_TYPE.NUMERIC: 
+                        this.numberFormatSetting(formatSet);
+                        break;
+                    case model.ITEM_TYPE.CHARACTER: 
+                        this.charFormatSetting(formatSet);
+                        break;
+                    case model.ITEM_TYPE.DATE: 
+                        this.dateFormatSetting(formatSet);
+                        break;
+                    case model.ITEM_TYPE.INS_TIME: 
+                        this.instTimeFormatSetting(formatSet);
+                        break;
+                    case model.ITEM_TYPE.TIME: 
+                        this.timeFormatSetting(formatSet);
+                        break;
+                }
+            }
             if (screenSet)
-                this.screenConditionSetting = ko.observable(screenSet);
+                this.screenConditionSetting(screenSet);
             if (categoryId)
                 this.categoryId(categoryId);
         }
@@ -265,7 +274,7 @@ module nts.uk.com.view.cmf001.share.model {
         fixedValue: KnockoutObservable<number>;
         decimalDivision: KnockoutObservable<number>;
         effectiveDigitLength: KnockoutObservable<number>;
-        codeConvertCode: KnockoutObservable<AcceptanceCodeConvert>;
+        codeConvertCode: KnockoutObservable<string>;
         valueOfFixedValue: KnockoutObservable<string>;
         decimalDigitNumber: KnockoutObservable<number>;
         startDigit: KnockoutObservable<number>;
@@ -274,7 +283,7 @@ module nts.uk.com.view.cmf001.share.model {
         decimalFraction: KnockoutObservable<number>;
 
         constructor(effectDigitLength: number, startDigit: number, endDigit: number, decimalDivision: number, decimalDigitNumber: number,
-         decimalPointClassification: number, decimalFraction: number, codeConvertCode: AcceptanceCodeConvert, fixedValue: number, valueOfFixedValue: string) {
+         decimalPointClassification: number, decimalFraction: number, codeConvertCode: string, fixedValue: number, valueOfFixedValue: string) {
             this.fixedValue = ko.observable(fixedValue);
             this.decimalDivision = ko.observable(decimalDivision);
             this.effectiveDigitLength = ko.observable(effectDigitLength);
@@ -293,7 +302,7 @@ module nts.uk.com.view.cmf001.share.model {
         codeEditing: KnockoutObservable<number>;
         fixedValue: KnockoutObservable<number>;
         effectiveDigitLength: KnockoutObservable<number>;
-        codeConvertCode: KnockoutObservable<AcceptanceCodeConvert>;
+        codeConvertCode: KnockoutObservable<string>;
         codeEditingMethod: KnockoutObservable<number>;
         codeEditDigit: KnockoutObservable<number>;
         fixedVal: KnockoutObservable<string>;
@@ -301,7 +310,7 @@ module nts.uk.com.view.cmf001.share.model {
         endDigit: KnockoutObservable<number>;
 
         constructor(effectDigitLength: number, startDigit: number, endDigit: number, codeEditing: number, codeEditDigit: number,
-         codeEditingMethod: number, codeConvertCode: AcceptanceCodeConvert, fixedValue: number, fixedVal: string) {
+         codeEditingMethod: number, codeConvertCode: string, fixedValue: number, fixedVal: string) {
             this.fixedValue = ko.observable(fixedValue);
             this.codeEditing = ko.observable(codeEditing);
             this.effectiveDigitLength = ko.observable(effectDigitLength);
@@ -401,7 +410,7 @@ module nts.uk.com.view.cmf001.share.model {
         conditionSetCd: KnockoutObservable<string>;
         
         constructor(receiptItemName: string, selectComparisonCondition: number,timeConditionValue2: number, timeConditionValue1: number, timeMomentConditionValue2:number, timeMomentConditionValue1: number,
-        dateConditionValue2: string, dateConditionValue1: string, characterConditionValue2: string, characterConditionValue1: string, numberConditionValue2: number, numberConditionValue1: number) {
+        dateConditionValue2: string, dateConditionValue1: string, characterConditionValue2: string, characterConditionValue1: string, numberConditionValue2: number, numberConditionValue1: number, conditionSetCd?: string, acceptItemNum?: number) {
             this.receiptItemName = ko.observable(receiptItemName);
             this.selectComparisonCondition = ko.observable(selectComparisonCondition);
             this.timeConditionValue2 = ko.observable(timeConditionValue2);
@@ -414,6 +423,7 @@ module nts.uk.com.view.cmf001.share.model {
             this.characterConditionValue1 = ko.observable(characterConditionValue1);
             this.numberConditionValue2 = ko.observable(numberConditionValue2);
             this.numberConditionValue1 = ko.observable(numberConditionValue1);
+            
         }
     }
 
