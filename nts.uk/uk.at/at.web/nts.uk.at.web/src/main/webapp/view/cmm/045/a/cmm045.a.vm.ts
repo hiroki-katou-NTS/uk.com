@@ -138,7 +138,7 @@ module cmm045.a.viewmodel {
                                 overTime.workClockTo2, overTime.total, lstFrame, overTime.overTimeShiftNight, overTime.flexExessTime));
                         });
                         _.each(data.lstAppGroup, function(group) {
-                            lstAppGroup.push(new vmbase.AppPrePostGroup(group.preAppID, group.postAppID, group.time));
+                            lstAppGroup.push(new vmbase.AppPrePostGroup(group.preAppID, group.postAppID, group.time, group.appPre, group.reasonAppPre));
                         });
                         self.itemApplication([]);
                         self.itemApplication.push(new vmbase.ChoseApplicationList(-1, '全件表示'));
@@ -389,7 +389,7 @@ module cmm045.a.viewmodel {
             let check: vmbase.AppPrePostGroup = self.findAppPre(lstAppGroup, app.applicationID);
             if (check !== undefined) {
                 if (check.preAppID != '') {
-                    let prRes = self.findContentPre(check.preAppID, check.lstFrameRes);
+                    let prRes = self.findContentPre(check.preAppID, check.lstFrameRes, check.appPre, check.reasonAppPre);
                     contentPre = prRes.appPre == '' ? '' : '<br/>' + prRes.appPre;
                     contentResult = prRes.appRes == '' ? '' :'<br/>' + prRes.appRes;
                 }
@@ -411,14 +411,17 @@ module cmm045.a.viewmodel {
                 return app.postAppID == appId;
             });
         }
-        findContentPre(appId: string, lstFrameRes: Array<vmbase.OverTimeFrame>): any {
+        findContentPre(appId: string, lstFrameRes: Array<vmbase.OverTimeFrame>, appPreDB: any, reasonAppPre: string): any {
             let self = this;
-            let overTime = self.findOverTimeById(appId, self.lstAppOt());
-            let masterInfo = self.findMasterInfo(self.lstAppMaster(), appId);
-            let app = self.findCommon(self.lstAppCommon(), appId);
-            let appPre = null;
-            if(app !== undefined && overTime !== undefined && masterInfo !== undefined){
-                appPre = self.fomartOverTimeBf(app, overTime, masterInfo);
+//            let overTime = self.findOverTimeById(appId, self.lstAppOt());
+//            let masterInfo = self.findMasterInfo(self.lstAppMaster(), appId);
+//            let app = self.findCommon(self.lstAppCommon(), appId);
+            let appPre = '';
+//            if(app !== undefined && overTime !== undefined && masterInfo !== undefined){
+//                appPre = self.fomartOverTimeBf(app, overTime, masterInfo);
+//            }
+            if(appPreDB != null){
+                appPre = getText('CMM045_268') + ' ' + appPreDB.workClockFrom1 + getText('CMM045_100') + appPreDB.workClockTo1 + ' 残業合計' + self.convertFrameTime(appPreDB.lstFrame) + '<br/>' + reasonAppPre;
             }
             let appResContent = '';
             //thuc te
@@ -427,7 +430,7 @@ module cmm045.a.viewmodel {
 
 
             let appInfor = {
-                appPre: appPre == null ? '' : getText('CMM045_272') + appPre.appContent,
+                appPre: appPre == null ? '' : getText('CMM045_272') + appPre,
                 appRes: lstFrameRes.length == 0 ? '' : appResContent
             }
             return appInfor;
@@ -625,7 +628,7 @@ module cmm045.a.viewmodel {
                         overTime.workClockTo2, overTime.total, lstFrame, overTime.overTimeShiftNight, overTime.flexExessTime));
                 });
                 _.each(data.lstAppGroup, function(group) {
-                    lstAppGroup.push(new vmbase.AppPrePostGroup(group.preAppID, group.postAppID, group.time));
+                    lstAppGroup.push(new vmbase.AppPrePostGroup(group.preAppID, group.postAppID, group.time, group.appPre, group.reasonAppPre));
                 });
                 self.itemApplication([]);
                 self.itemApplication.push(new vmbase.ChoseApplicationList(-1, '全件表示'));

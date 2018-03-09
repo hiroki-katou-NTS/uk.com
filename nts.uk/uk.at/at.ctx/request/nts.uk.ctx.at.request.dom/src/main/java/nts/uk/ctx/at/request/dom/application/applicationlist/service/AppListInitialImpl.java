@@ -196,7 +196,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		List<Application_New> lstAppFilter = lstOverTime;
 		lstAppFilter.addAll(lstGoBack);
-		//		for (Application_New application : lstAppFilter) {
+//		for (Application_New application : lstAppFilter) {
 //			//get app xin lam them
 //			if(overTimeDisplay && application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)){
 ////				Optional<AppOverTime> appOvertime = repoOverTime.getAppOvertime(companyId, application.getAppID());
@@ -499,6 +499,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				AppPrePostGroup group = null;
 				AppOverTimeInfoFull appOtPost = repoAppDetail.getAppOverTimeInfo(companyId, appID);
 				CheckColorTime checkColor = null;
+				AppOverTimeInfoFull appPre = null;
+				String reasonAppPre = "";
 				if(displaySet.getOtAdvanceDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
 					//ドメインモデル「申請」を取得する
 					List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr.PREDICT.value, ApplicationType.OVER_TIME_APPLICATION.value);
@@ -506,19 +508,24 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					// TODO Auto-generated method stub
 					//find overtime
 					// TODO Auto-generated method stub
-					if(lstAppPre.isEmpty() || lstAppPre.get(0).getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.DENIAL)){
+					if(lstAppPre.isEmpty()){
 //						lstColorTime.add(new CheckColorTime(appID, 1));
 						checkColor = new CheckColorTime(appID, 1);
 					}else{
-						AppOverTimeInfoFull appPre = repoAppDetail.getAppOverTimeInfo(companyId, lstAppPre.get(0).getAppID());
-						boolean checkPrePostColor = this.checkPrePostColor(appPre.getLstFrame(), appOtPost.getLstFrame());
-						if(checkPrePostColor){
+						appPre = repoAppDetail.getAppOverTimeInfo(companyId, lstAppPre.get(0).getAppID());
+						reasonAppPre = lstAppPre.get(0).getAppReason().v();
+						if(lstAppPre.get(0).getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.DENIAL)){
 							checkColor = new CheckColorTime(appID, 1);
-//							lstColorTime.add(new CheckColorTime(appID, 1));
+						}else{
+							boolean checkPrePostColor = this.checkPrePostColor(appPre.getLstFrame(), appOtPost.getLstFrame());
+							if(checkPrePostColor){
+								checkColor = new CheckColorTime(appID, 1);
+//								lstColorTime.add(new CheckColorTime(appID, 1));
+							}
 						}
 					}
 					if(!lstAppPre.isEmpty()){
-						group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null);
+						group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null, appPre, reasonAppPre);
 					}
 				}
 				//承認一覧表示設定.残業の実績
@@ -538,7 +545,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					if(group != null){
 						group.setTime(result.getLstFrameResult());
 					}else{
-						group = new AppPrePostGroup("", appID, result.getLstFrameResult());
+						group = new AppPrePostGroup("", appID, result.getLstFrameResult(), appPre, reasonAppPre);
 					}
 				}
 				if(group != null){
