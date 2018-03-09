@@ -431,13 +431,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		AddSettingOfFlexWork flexAddSetting = new AddSettingOfFlexWork(new CompanyId(companyId),holidaycalcMethodSet);
 		//固定勤務の加算設定
 		AddSettingOfRegularWork regularAddSetting = new AddSettingOfRegularWork(new CompanyId(companyId),holidaycalcMethodSet);
-		//休暇加算時間設定
-		VacationAddTimeSet vacationAddSetting = new VacationAddTimeSet(new BreakDownTimeDay(new AttendanceTime(480), 
-																							new AttendanceTime(210),
-																							new AttendanceTime(260)),
-																	   new AddVacationSet(nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To,
-																			   			  nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To,
-																			   			  nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To));
+
 		
 		//遅刻時間帯
 		LateTimeSheet lateTimeSheet = new LateTimeSheet(Optional.empty(),
@@ -487,7 +481,17 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if(integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode() != null) {
 			val workTimeSetting = workTimeSettingRepository.findByCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
 			workTime = workTimeSetting.isPresent()?Optional.of(workTimeSetting.get().getWorkTimeDivision().getWorkTimeDailyAtr()):Optional.empty();
+			
+
 		}
+		
+		//休暇加算時間設定
+		VacationAddTimeSet vacationAddSetting = new VacationAddTimeSet(new BreakDownTimeDay(oneRange.getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getOneDay(), 
+																							oneRange.getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getMorning(),
+																							oneRange.getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getAfternoon()),
+																	   new AddVacationSet(nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To,
+																			   			  nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To,
+																			   			  nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr.To));
 		
 		/*時間の計算*/
 		integrationOfDaily = AttendanceTimeOfDailyPerformance.calcTimeResult(oneRange,integrationOfDaily,overTimeAutoCalcSet,holidayAutoCalcSetting,
