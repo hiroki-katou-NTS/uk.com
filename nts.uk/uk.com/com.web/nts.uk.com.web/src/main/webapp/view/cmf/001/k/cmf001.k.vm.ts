@@ -35,7 +35,6 @@ module nts.uk.com.view.cmf001.k.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.getCodeConvert().done(function(result: Array<any>) {
-                let x = result;
                 if (result && result.length) {
                     let _listConvertCode: Array<model.AcceptanceCodeConvert> = _.map(result, x => {
                         return new model.AcceptanceCodeConvert(x.convertCd, x.convertName, x.acceptWithoutSetting);
