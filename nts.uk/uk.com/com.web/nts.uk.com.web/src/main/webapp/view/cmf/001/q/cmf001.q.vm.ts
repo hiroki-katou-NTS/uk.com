@@ -206,6 +206,7 @@ module nts.uk.com.view.cmf001.q {
                             }
 
                             if (res.succeeded || res.failed || res.cancelled) {
+                                self.isStop(true);
                                 if (self.isCheckMode() == true) {
                                     self.executionState(getListProcessing()[1].value);
                                 }else {
