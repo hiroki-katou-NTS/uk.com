@@ -92,6 +92,18 @@
 							</span></td>
 						</tr>
 						<tr>
+							<td class="pad_left_30" colspan="2"><label>期限チェック月数</label></td>
+							<td class="pad_over_left_80" colspan="2"><span tabindex="7"
+								data-bind="ntsSwitchButton: {
+										options: applyPermissionEnums,
+										optionsValue: 'value',
+										optionsText: 'localizedName',
+										value: compenPreApply,
+										enable: isManageCompen }">
+							</span></td>
+						</tr>
+						
+						<tr>
 							<td colspan="6">
 								<div class ="margin_right_50" data-bind="ntsFormLabel: {}">
 									#{i18n.getText('KMF001_78')}</div> 
@@ -235,6 +247,8 @@
 					<button
 						data-bind="click: saveEmployment,enable: !isEmptyEmployment()"
 						class="proceed register-button">#{i18n.getText('KMF001_28')}</button>
+					<button tabindex="4" data-bind="click: deleteEmployment,enable: !isEmptyEmployment()"
+						class="danger register-button">#{i18n.getText('KMF001_149')}</button>
 					<!-- <div class="link_label">
 						<label data-bind="click: gotoVacationSetting">#{i18n.getText('KMF001_29')}</label>
 					</div> -->
@@ -250,6 +264,15 @@
 							<td id="main-scr-tbl-right">
 								<!-- right -->
 								<table class="em_table_with">
+									<tr>
+										<td colspan="2">
+											<div class="margin_right_50">#{i18n.getText('KMF001_150')}</div>
+										</td>
+										<td colspan="2">
+											<span data-bind="text: emSelectedCode"></span>:
+											<span class="margin_right_50" data-bind="text: emSelectedName"></span>
+										</td>
+									</tr>
 									<tr>
 										<td colspan="2">
 											<div data-bind="ntsFormLabel: {required: true}"

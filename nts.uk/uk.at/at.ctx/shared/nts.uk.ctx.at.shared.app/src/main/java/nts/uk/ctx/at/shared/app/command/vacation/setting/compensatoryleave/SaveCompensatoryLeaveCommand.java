@@ -28,6 +28,9 @@ public class SaveCompensatoryLeaveCommand {
 
 	/** The company id. */
 	private String companyId;
+	
+	/** The employment code */
+	private String employmentCode;
 
 	/** The is managed. */
 	private Integer isManaged;

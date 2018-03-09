@@ -146,17 +146,22 @@
 					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }">#{i18n.getText('KMF001_27')}</a>
 					<button class="proceed" data-bind="click: registerByEmployment, enable: enableRegister">#{i18n.getText('KMF001_28')}</button>
 					<!-- <div class="register-annual-holiday-table"><a href="#register-annual-holiday-table">#{i18n.getText('KMF001_29')}</a></div> -->
-					
+					<button class="danger register-button" data-bind="click: deleteByEmployment, enable: enableRegister">#{i18n.getText('KMF001_149')}</button>
 				</div>
 				<div class="ruledLine"></div>
 				<div id="by-employment-content">
-					<table style="margin: 50px">
+					<table style="margin: 45px">
 						<tr>
 							<td>
 								<div id="left-content" tabindex="1"></div>
 							</td>
 
 							<td id="right-content">
+								<div class="employment-detail">
+									<span>#{i18n.getText('KMF001_150')}</span>
+									<span style="margin-left: 100px" data-bind="text: selectedItem"></span>
+									<span data-bind="text: selectedName"></span>
+								</div>
 								<div id="form-lbl" data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_71')}</div>
 								<div id="ruledLine2"></div>
 								<table id="right-table">

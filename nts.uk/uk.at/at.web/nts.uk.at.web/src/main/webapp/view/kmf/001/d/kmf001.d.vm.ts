@@ -31,6 +31,8 @@ module nts.uk.pr.view.kmf001.d {
             leaveAsWorkDays: KnockoutObservable<boolean>;
             leaveAsWorkDaysOpt: KnockoutObservableArray<LeaveAsWorkDaysModel>;
             isShowEmployment: KnockoutObservable<boolean>;
+            
+            selectedName: KnockoutObservable<string>;
 
             employmentVisible: KnockoutObservable<boolean>;
             
@@ -40,6 +42,8 @@ module nts.uk.pr.view.kmf001.d {
             constructor() {
                 var self = this;
                 this.selectedItem = ko.observable(null);
+                
+                self.selectedName = ko.observable(null);
                 self.alreadySettingList = ko.observableArray([]);
 
                 self.employmentList = ko.observableArray<ItemModel>([]);
@@ -195,11 +199,20 @@ module nts.uk.pr.view.kmf001.d {
                         service.findByEmployment(data).done(function(data1: EmploymentSettingFindDto) {
                             self.bindEmploymentSettingData(data1);
                         });
+                        
+                        // Set displayed Employee name
+                        let employmentList: Array<UnitModel> = $('#left-content').getDataList();  
+                        let selectedEmp = _.find(employmentList, { 'code': data });
+                        self.selectedName(':   ' + selectedEmp.name);
+                        
                         self.hasSelectedEmp(true);
                     }
                     else {
+                        // Set displayed Employee name to empty
+                        self.selectedName('');
                         self.hasSelectedEmp(false);
                     }
+                    
                 });
 
                 // Load Component
@@ -280,6 +293,20 @@ module nts.uk.pr.view.kmf001.d {
                 dto.employmentCode = self.selectedItem();
                 dto.managementCategory = self.selectedManagement();
                 return dto;
+            }
+            
+            private deleteByEmployment(): void {
+                var self = this;
+                service.deleteByEmployment(self.selectedItem());
+                nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                
+                // Remove item from setting list (un-tick)
+                self.alreadySettingList.remove(function(item){ return item.code == self.selectedItem()});
+                
+                // Reload current setting
+                service.findByEmployment(self.selectedItem()).done(function(data1: EmploymentSettingFindDto) {
+                    self.bindEmploymentSettingData(data1);
+                });
             }
             
             // Method register By Employment

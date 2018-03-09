@@ -12,6 +12,9 @@ module nts.uk.pr.view.kmf001.h {
             listComponentOption: KnockoutObservable<any>;
             alreadySettingList: KnockoutObservableArray<any>;
             
+            // Employment name
+            selectedName: KnockoutObservable<string>;
+            
             // Service.
             service: service.Service;
 
@@ -37,7 +40,8 @@ module nts.uk.pr.view.kmf001.h {
             constructor() {
                 var self = this;
                 self.service = service.instance;
-                self.selectedItem = ko.observable(null);
+                self.selectedItem = ko.observable('');
+                self.selectedName = ko.observable('');
                 self.alreadySettingList = ko.observableArray([]);
                 
                 self.vacationExpirationEnums = ko.observableArray([]);
@@ -71,17 +75,6 @@ module nts.uk.pr.view.kmf001.h {
                 });
 
                 self.selectedContractTypeCode = ko.observable('');
-                self.selectedItem.subscribe(function(data: string) {
-                    if (data) {
-                        self.empSettingModel().contractTypeCode(data);
-                        self.loadEmpSettingDetails(data);
-                        self.hasEmp(true);
-                        self.saveDisable(true);
-                    } else {
-                        self.hasEmp(false);
-                        self.saveDisable(false);
-                    }
-                });
                 
                 //list Emp
                 self.listComponentOption = {
@@ -109,6 +102,7 @@ module nts.uk.pr.view.kmf001.h {
                 $.when(self.loadVacationExpirationEnums(), self.loadApplyPermissionEnums(), self.loadManageDistinctEnums(),self.loadEmploymentList()).done(function() {
                     self.loadComSettingDetails();
                     self.selectedItem(self.employmentList()[0].code);
+                    self.selectedName(self.employmentList()[0].name);
                     $('#company-manage').focus();
                     dfd.resolve();
                 });
@@ -124,6 +118,23 @@ module nts.uk.pr.view.kmf001.h {
                         dfd.resolve();
                     }
                     $('#employment-manage').focus();
+                });
+                self.selectedItem.subscribe(function(data: string) {
+                    if (data) {
+                        self.empSettingModel().contractTypeCode(data);
+                        self.loadEmpSettingDetails(data);
+                        self.hasEmp(true);
+                        self.saveDisable(true);
+                        
+                        // Set displayed Employee name
+                        let employmentList: Array<UnitModel> = $('#left-content').getDataList();  
+                        let selectedEmp = _.find(employmentList, { 'code': data });
+                        self.selectedName(':' + selectedEmp.name);
+                    } else {
+                        self.selectedName('');
+                        self.hasEmp(false);
+                        self.saveDisable(false);
+                    }
                 });
             }
             private loadEmploymentList(): JQueryPromise<any> {
@@ -243,6 +254,20 @@ module nts.uk.pr.view.kmf001.h {
                     self.alreadySettingList.push({ "code": self.selectedItem(), "isAlreadySetting": true });
                     self.loadEmpSettingDetails(self.selectedItem());
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                })
+            }
+            
+            public deleteEmpSetting(): void {
+                let self = this;
+                let dfd = $.Deferred();
+                
+                this.service.deleteEmpSetting(self.selectedItem()).done(function() {
+                    // Remove item from setting list (un-tick)
+                    self.alreadySettingList.remove(function(item){ return item.code == self.selectedItem()});
+                    
+                    // Reload setting (empty out fields)
+                    self.loadEmpSettingDetails(self.selectedItem());
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                 })
             }
 

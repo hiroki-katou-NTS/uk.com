@@ -52,6 +52,7 @@ module nts.uk.pr.view.kmf001.f {
             employmentList: KnockoutObservableArray<ItemModel>;
             columnsSetting: KnockoutObservable<nts.uk.ui.NtsGridListColumn>;
             emSelectedCode: KnockoutObservable<string>;
+            emSelectedName: KnockoutObservable<string>;
 
             emCompenManage: KnockoutObservable<number>;
             emExpirationTime: KnockoutObservable<number>;
@@ -137,6 +138,7 @@ module nts.uk.pr.view.kmf001.f {
                 self.employmentBackUpData = ko.observable();
                 self.employmentList = ko.observableArray<ItemModel>([]);
                 self.emSelectedCode = ko.observable('');
+                self.emSelectedName = ko.observable('');
 
                 self.emCompenManage = ko.observable(0);
                 self.emExpirationTime = ko.observable(0);
@@ -156,6 +158,11 @@ module nts.uk.pr.view.kmf001.f {
                 self.emSelectedCode.subscribe(function(employmentCode: string) {
                     if (employmentCode) {
                         self.loadEmploymentSetting(employmentCode);
+                        
+                        // Load employment name
+                        let employmentList: Array<UnitModel> = $('#list-employ-component').getDataList();  
+                        let selectedEmp = _.find(employmentList, { 'code': employmentCode });
+                        self.emSelectedName(selectedEmp.name);
                         self.isEmptyEmployment(false);
                     }
                     else {
@@ -542,6 +549,20 @@ module nts.uk.pr.view.kmf001.f {
                 var self = this;
                 service.updateEmploymentSetting(self.collectEmploymentData()).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    self.loadEmploymentList().done(() => {
+                        //reload list employment
+                        $('#list-employ-component').ntsListComponent(self.listComponentOption).done(() => {
+                            self.loadEmploymentSetting(self.emSelectedCode());
+                        });
+                    });
+                });
+            }
+            
+            //delete employment
+            private deleteEmployment() {
+                var self = this;
+                service.deleteEmploymentSetting(self.collectEmploymentData()).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     self.loadEmploymentList().done(() => {
                         //reload list employment
                         $('#list-employ-component').ntsListComponent(self.listComponentOption).done(() => {
