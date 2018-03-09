@@ -26,7 +26,6 @@
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 			<div id="functions-area">
-<!-- 				<button data-bind="click: backSetupVacation" tabindex="1">#{i18n.getText('KMF001_27')}</button> -->
 				<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }"  tabindex="1">#{i18n.getText('KMF001_27')}</a>
 				<button class="proceed" data-bind="click: save,enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('KMF001_28')}</button>
 				<div class="pull-right" style="display: inline; margin-right: 15px;">
@@ -244,7 +243,7 @@
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_129')}</label></td>
-							<td><div tabindex="20"
+							<td><div tabindex="15"
 									data-bind="ntsSwitchButton: {
 										options: displayDivisionList,
 										optionsValue: 'value',
@@ -257,7 +256,7 @@
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_130')}</label></td>
-							<td><div tabindex="21"
+							<td><div tabindex="16"
 									data-bind="ntsSwitchButton: {
 										options: displayDivisionList,
 										optionsValue: 'value',
@@ -279,7 +278,7 @@
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_52')}</label></td>
-							<td><div tabindex="22"
+							<td><div tabindex="17"
 									data-bind="ntsSwitchButton: {
 										options: manageDistinctList,
 										optionsValue: 'value',
@@ -292,7 +291,7 @@
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_53')}</label></td>
-							<td><div tabindex="23"
+							<td><div tabindex="18"
 									id="combo-box-time-unit"
 									data-bind="ntsComboBox: {
 										options: vacationTimeUnitList,
@@ -311,7 +310,7 @@
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_54')}</label></td>
-							<td><div tabindex="24"
+							<td><div tabindex="19"
 									data-bind="ntsSwitchButton: {
 										options: manageDistinctList,
 										optionsValue: 'value',
@@ -324,7 +323,7 @@
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_134')}</label></td>
-							<td><div tabindex="25" id="combo-box"
+							<td><div tabindex="20" id="combo-box"
 									data-bind="ntsComboBox: {
 										options: maxDayReferenceList,
 										optionsValue: 'value',
@@ -338,7 +337,7 @@
 										]}"></div></td>
 
 							<td><label class="content-label">#{i18n.getText('KMF001_132')}</label></td>
-							<td><input tabindex="26" id="time-max-day-company"
+							<td><input tabindex="21" id="time-max-day-company"
 								class="nts-input"
 								data-bind="ntsNumberEditor: {
 									value: timeMaxNumberCompany,
@@ -353,7 +352,7 @@
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_140')}</label></td>
-							<td><div tabindex="27" id="combo-box"
+							<td><div tabindex="22" id="combo-box"
 									data-bind="ntsComboBox: {
 										options: roundProcessClassificList,
 										optionsValue: 'value',

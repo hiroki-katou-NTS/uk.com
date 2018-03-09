@@ -33,7 +33,6 @@
 			<div id="company-tab" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Company')}</span>
-<!-- 					<button tabindex="2" data-bind="click: gotoParent">#{i18n.getText('KMF001_27')}</button> -->
 					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }"  tabindex="2">#{i18n.getText('KMF001_27')}</a>
 					<button tabindex="3" data-bind="click: saveData"
 						class="proceed register-button">#{i18n.getText('KMF001_28')}</button>
@@ -44,7 +43,7 @@
 				<div id="company-content">
 					<div data-bind="ntsFormLabel: {required: true}"
 						class="margin_right_125">#{i18n.getText('KMF001_75')}</div>
-					<span tabindex="5" id="compenManage"
+					<span tabindex="4" id="compenManage"
 						data-bind="ntsSwitchButton: {
 										options: manageDistinctEnums,
 										optionsValue: 'value',
@@ -67,7 +66,7 @@
 						<tr>
 							<td class="pad_left_30" colspan="2"><label>#{i18n.getText('KMF001_76')}</label></td>
 							<td class="pad_over_left_80">
-								<div tabindex="6" class="combo-box"
+								<div tabindex="5" class="combo-box"
 									data-bind="ntsComboBox: {
 										options: expirationTimeEnums,
 										optionsValue: 'value',
@@ -82,7 +81,7 @@
 						</tr>
 						<tr>
 							<td class="pad_left_30" colspan="2"><label>#{i18n.getText('KMF001_77')}</label></td>
-							<td class="pad_over_left_80" colspan="2"><span tabindex="7"
+							<td class="pad_over_left_80" colspan="2"><span tabindex="6"
 								data-bind="ntsSwitchButton: {
 										options: applyPermissionEnums,
 										optionsValue: 'value',
@@ -91,23 +90,11 @@
 										enable: isManageCompen }">
 							</span></td>
 						</tr>
-						<tr>
-							<td class="pad_left_30" colspan="2"><label>期限チェック月数</label></td>
-							<td class="pad_over_left_80" colspan="2"><span tabindex="7"
-								data-bind="ntsSwitchButton: {
-										options: applyPermissionEnums,
-										optionsValue: 'value',
-										optionsText: 'localizedName',
-										value: compenPreApply,
-										enable: isManageCompen }">
-							</span></td>
-						</tr>
-						
 						<tr>
 							<td colspan="6">
 								<div class ="margin_right_50" data-bind="ntsFormLabel: {}">
 									#{i18n.getText('KMF001_78')}</div> 
-									<span tabindex="8"
+									<span tabindex="7"
 										data-bind="ntsSwitchButton: {
 										options: manageDistinctEnums,
 										optionsValue: 'value',
@@ -124,7 +111,7 @@
 						<tr>
 							<td colspan="2"><label class="pad_left_30">#{i18n.getText('KMF001_102')}</label></td>
 							<td class="pad_over_left_80">
-								<div class="combo-box" tabindex="9"
+								<div class="combo-box" tabindex="8"
 									data-bind="ntsComboBox: {
 										options: timeVacationDigestiveUnitEnums,
 										optionsValue: 'value',
@@ -141,7 +128,7 @@
 							<td colspan="6">
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_79')}</div>
 								<div class="float_right">
-									<button tabindex="10"
+									<button tabindex="9"
 										data-bind="ntsHelpButton: {image: 'KMF001_2.png', position: 'left top', enable: true }">?</button>
 								</div>
 								<div class="hr_width">
@@ -150,12 +137,12 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="pad_left_30"><div tabindex="11"
+							<td class="pad_left_30"><div tabindex="10"
 									data-bind="ntsCheckBox: { checked: checkWorkTime, enable: isManageCompen}">#{i18n.getText('KMF001_80')}</div></td>
 						</tr>
 						<tr>
 							<td class="radio_group_width pad_left_60" rowspan="2">
-								<div id="radio_group_work" tabindex="12"
+								<div id="radio_group_work" tabindex="11"
 									data-bind="ntsRadioBoxGroup: {
 											options: transferSettingDivisionEnums,
 											optionsValue: 'value',
@@ -166,21 +153,21 @@
 							<td colspan = "2" class="pad_left_70">
 							<div class="text_width" ><label>#{i18n.getText('KMF001_81')}</label></div>
 							<div class="input_width pad_left_30"><input id="workOneDay"
-								class="check_error float_right" tabindex="13"
+								class="check_error float_right" tabindex="12"
 								data-bind="ntsTimeEditor: {name:'#[KMF001_81]', value: workOneDay,option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" /></div>
 							</td>
 							<td colspan = "2" class="pad_left_70">
 							<div class = "text_width"><label>#{i18n.getText('KMF001_82')}</label></div>
 							<div class="input_width pad_left_30">
 							<input id="workHalfDay"
-								class="check_error" tabindex="14"
+								class="check_error" tabindex="13"
 								data-bind="ntsTimeEditor: {name:'#[KMF001_82]', value: workHalfDay, option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" /></div>
 							</td>
 						</tr>
 						<tr>
 							<td colspan="2" class="pad_left_70">
 								<div class="input_width">
-									<input id="workAll" class="check_error" tabindex="15"
+									<input id="workAll" class="check_error" tabindex="14"
 										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: workAll, option: inputOption, inputFormat: 'time', enable: enableWorkAll, required: true}" />
 								</div>
 								<div class="text_width">
@@ -189,12 +176,12 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="pad_left_30"><div tabindex="16"
+							<td class="pad_left_30"><div tabindex="15"
 									data-bind="ntsCheckBox: { checked: checkOverTime, enable: isManageCompen}">#{i18n.getText('KMF001_84')}</div></td>
 						</tr>
 						<tr>
 							<td class=" radio_group_width pad_left_60" rowspan="2">
-								<div id="radio_group_over" tabindex="17"
+								<div id="radio_group_over" tabindex="16"
 									data-bind="ntsRadioBoxGroup: {
 											options: transferSettingDivisionEnums,
 											optionsValue: 'value',
@@ -207,7 +194,7 @@
 									<label>#{i18n.getText('KMF001_81')}</label>
 								</div>
 								<div class="input_width pad_left_30">
-									<input id="overOneDay" class="check_error" tabindex="18"
+									<input id="overOneDay" class="check_error" tabindex="17"
 										data-bind="ntsTimeEditor: {name:'#[KMF001_81]',value: overOneDay, option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
 								</div>
 							</td>
@@ -216,7 +203,7 @@
 									<label>#{i18n.getText('KMF001_82')}</label>
 								</div>
 								<div class="input_width pad_left_30">
-									<input id="overHalfDay" class="check_error" tabindex="19"
+									<input id="overHalfDay" class="check_error" tabindex="18"
 										data-bind="ntsTimeEditor: {name:'#[KMF001_82]',value: overHalfDay, option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
 								</div>
 							</td>
@@ -224,7 +211,7 @@
 						<tr>
 							<td colspan="2" class="pad_left_70">
 								<div class="input_width">
-									<input id="overAll" class="check_error" tabindex="20"
+									<input id="overAll" class="check_error" tabindex="19"
 										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: overAll, option: inputOption, inputFormat: 'time', enable: enableOverAll, required: true}" />
 								</div>
 								<div class="text_width">
