@@ -557,7 +557,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//val predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId,"901");// integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
 		Optional<PredetemineTimeSetting> predetermineTimeSet = Optional.empty();
 		if(integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode() != null)
-			predetemineTimeSetRepository.findByWorkTimeCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
+			predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
 		
 		if(!predetermineTimeSet.isPresent()) {
 			predetermineTimeSet = Optional.of(new PredetemineTimeSetting(companyId,
