@@ -271,7 +271,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		OutingTimeOfDailyPerformance goOutTimeSheetList = new OutingTimeOfDailyPerformance(employeeId,targetDate,outingTimeSheets);
 		
 		MidNightTimeSheet midNightTimeSheet = new MidNightTimeSheet(companyId, 
-																	new TimeWithDayAttr(1440),
+																	new TimeWithDayAttr(1320),
 																	new TimeWithDayAttr(1740));
 		
 		//流動勤務の休憩時間帯
