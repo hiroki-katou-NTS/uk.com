@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -51,10 +52,27 @@ public class AggregationProcessService {
 		//Convert from ValueExtractAlarm to AlarmExtraValueWkReDto
 		
 		// get list workplaceId and hierarchyCode 
-		List<WkpConfigAtTimeAdapterDto> workplaceTOhierarchy = workplaceAdapter.findByWkpIdsAtTime(companyID,
+		List<WkpConfigAtTimeAdapterDto> hierarchyWPList = workplaceAdapter.findByWkpIdsAtTime(companyID,
 				GeneralDate.today(),
 				listEmployee.stream().map(e -> e.getWorkplaceId()).distinct().collect(Collectors.toList()));
+		Map<String, WkpConfigAtTimeAdapterDto> hierarchyWPMap = hierarchyWPList.stream().collect(Collectors.toMap(WkpConfigAtTimeAdapterDto::getWorkplaceId, x->x));
 		
+		Map<String, EmployeeSearchDto> mapEmployeeId = listEmployee.stream().collect(Collectors.toMap(EmployeeSearchDto::getId, x->x));
+		
+		for(ValueExtractAlarm value: valueList) {
+			AlarmExtraValueWkReDto itemResult = new AlarmExtraValueWkReDto(value.getWorkplaceID(),
+					hierarchyWPMap.get(value.getWorkplaceID()).getHierarchyCd(),
+					mapEmployeeId.get(value.getEmployeeID()).getWorkplaceName(), 
+					value.getEmployeeID(),
+					mapEmployeeId.get(value.getEmployeeID()).getCode(),
+					mapEmployeeId.get(value.getEmployeeID()).getName(), 
+					value.getAlarmValueDate(),
+					value.getClassification(),
+					value.getAlarmItem(),
+					value.getAlarmValueMessage(),
+					value.getComment());
+			result.add(itemResult);
+		}
 		return result;
 	}
 

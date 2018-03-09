@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWor
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
+import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
@@ -38,13 +39,22 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
  *
  */
 @Getter
-@AllArgsConstructor
 public class OutsideWorkTimeSheet {
 
 	private Optional<OverTimeSheet> overTimeWorkSheet;
 
 	private Optional<HolidayWorkTimeSheet> holidayWorkTimeSheet;
 
+	/**
+	 * Constructor 
+	 */
+	public OutsideWorkTimeSheet(Optional<OverTimeSheet> overTimeWorkSheet,
+			Optional<HolidayWorkTimeSheet> holidayWorkTimeSheet) {
+		super();
+		this.overTimeWorkSheet = overTimeWorkSheet;
+		this.holidayWorkTimeSheet = holidayWorkTimeSheet;
+	}
+	
 	/**
 	 * 就業時間外時間帯を作成する
 	 * 
@@ -72,7 +82,8 @@ public class OutsideWorkTimeSheet {
 			WorkTimezoneCommonSet overDayEndSet, List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem, WorkType beforeDay,
 			WorkType toDay, WorkType afterDay, WorkTimeSetting workTime, WorkingSystem workingSystem,
 			BreakDownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalculationOfOverTimeWork autoCalculationSet,
-			LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet,BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet) {
+			LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet,BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet,
+			DailyCalculationPersonalInformation personalInfo) {
 		
 		List<HolidayWorkFrameTimeSheetForCalc> holidayWorkFrameTimeSheetForCalc = new ArrayList<>();
 		List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheet = new ArrayList<>();
@@ -80,7 +91,8 @@ public class OutsideWorkTimeSheet {
 			/* 就業時間外時間帯の平日出勤の処理 */
 			overTimeWorkFrameTimeSheet = OverTimeFrameTimeSheetForCalc.createOverWorkFrame(
 					overTimeHourSetList, workingSystem, attendanceLeave, workNo, breakdownTimeDay, dailyTime,
-					autoCalculationSet, statutorySet, prioritySet,bonusPaySetting,midNightTimeSheet);
+					autoCalculationSet, statutorySet, prioritySet,bonusPaySetting,midNightTimeSheet,
+					personalInfo,true);
 
 			/* 0時跨ぎ処理 */
 			OverDayEnd processOverDayEnd = new OverDayEnd();
@@ -200,5 +212,7 @@ public class OutsideWorkTimeSheet {
 		}
 		return new AttendanceTime(0);
 	}
+
+
 	
 }

@@ -362,6 +362,7 @@ project (':at.ctx:record:nts.uk.ctx.at.record.ac') {
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.36')
 		compile(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: '0.3.7')
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: '0.3')
+		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.12.14')
 	}
 }
 project (':at.ctx:record:nts.uk.ctx.at.record.pub') {
@@ -644,7 +645,7 @@ project (':at.web:nts.uk.at.web') {
 		
 		runtime(group: 'com.query', name: 'nts.uk.query.ac', version: '0.3')
 		runtime(group: 'com.query', name: 'nts.uk.query.app', version: '0.3')
-		runtime(group: 'com.query', name: 'nts.uk.query.infra', version: '0.3')
+		runtime(group: 'com.query', name: 'nts.uk.query.infra', version: '0.3.1')
 		runtime(group: 'com.query', name: 'nts.uk.query.model', version: '0.3')
 		runtime(group: 'com.query', name: 'nts.uk.query.pub', version: '0.3')
 		runtime(group: 'com.query', name: 'nts.uk.query.pubimp', version: '0.3')

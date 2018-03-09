@@ -6,7 +6,9 @@ module nts.layout {
     import getShared = nts.uk.ui.windows.getShared;
 
     let rmError = nts.uk.ui.errors["removeByCode"],
-        getError = nts.uk.ui.errors["getErrorByElement"]
+        getError = nts.uk.ui.errors["getErrorByElement"],
+        getErrorList = nts.uk.ui.errors["getErrorList"],
+        clearError = window['nts']['uk']['ui']['errors']['clearAll'];
 
     export const validate = {
         removeDoubleLine: (items: Array<any>) => {
@@ -161,15 +163,15 @@ module nts.layout {
                 CS00002_IS00015: IFindData = finder.find('CS00002', 'IS00015'),
                 CS00002_IS00016: IFindData = finder.find('CS00002', 'IS00016'),
                 validateName = (item: IFindData) => {
-                    let value: string = ko.toJS(item.data.value);
+                    let value: string = ko.toJS(item.data.value),
+                        index: number = value.indexOf('　');
 
-                    if (![0, value.length - 1].indexOf(value.indexOf('　')) && value.indexOf('　') > -1) {
+                    if (index > -1 && !item.data.value().startsWith('　') && !item.data.value().endsWith('　')) {
                         rmError(item, "Msg_924");
                     } else if (item.data.value() && !item.ctrl.parent().hasClass('error')) {
                         !item.ctrl.is(':disabled') && item.ctrl.ntsError('set', { messageId: "Msg_924" });
                     }
                 };
-
             if (CS00002_IS00003) {
                 validateName(CS00002_IS00003);
                 CS00002_IS00003.data.value.subscribe(x => {
@@ -419,8 +421,6 @@ module nts.layout {
                     let command: ICheckParam = {
                         workTimeCode: ko.toJS(wtc || undefined)
                     },
-                        workType: IFindData = group.workType && finder.find('CS00020', group.workType),
-                        workTime: IFindData = group.workTime && finder.find('CS00020', group.workTime),
                         firstTimes: ITimeFindData = group.firstTimes && {
                             start: finder.find('CS00020', group.firstTimes.start),
                             end: finder.find('CS00020', group.firstTimes.end)
@@ -448,6 +448,41 @@ module nts.layout {
                         secondTimes && setEditAble(secondTimes.start, false);
                         secondTimes && setEditAble(secondTimes.end, false);
                     }
+
+                    if (firstTimes && secondTimes) {
+                        if (firstTimes.end && secondTimes.start) {
+                            firstTimes.end.ctrl.on('blur', () => {
+                                let pv = ko.toJS(firstTimes.end.data.value),
+                                    nv = ko.toJS(secondTimes.start.data.value),
+                                    tpt = typeof pv == 'number',
+                                    tnt = typeof nv == 'number';
+
+                                if (tpt && tnt && pv > nv) {
+                                    if (!firstTimes.end.ctrl.parent().hasClass('error')) {
+                                        firstTimes.end.ctrl.ntsError('set', { messageId: "Msg_859" });
+                                        secondTimes.start.ctrl.parent().addClass('error');
+                                    }
+                                }
+
+
+                                if (!(tpt && tnt) || !(pv > nv)) {
+                                    rmError(firstTimes.end.ctrl, "Msg_859");
+
+                                    if (!getError(secondTimes.start.ctrl).length) {
+                                        secondTimes.start.ctrl.parent().removeClass('error');
+                                    }
+
+                                    if (!getErrorList().length) {
+                                        clearError();
+                                    }
+                                }
+                            });
+
+                            secondTimes.start.ctrl.on('blur', () => {
+                                firstTimes.end.ctrl.trigger('blur');
+                            });
+                        }
+                    }
                 };
 
             _.each(groups, (group: IGroupControl) => {
@@ -466,6 +501,10 @@ module nts.layout {
                     return;
                 }
 
+                if (group.firstTimes && group.secondTimes) {
+                    validateEditable(group, workTime.data.value);
+                }
+
                 if (!workTime) {
                     workType.ctrl.on('click', () => {
                         setShared("KDL002_Multiple", false, true);
@@ -477,13 +516,11 @@ module nts.layout {
 
                             if (childData[0]) {
                                 setData(workType, childData[0].code);
-                                setData(workType, childData[0].name);
+                                setDataText(workType, childData[0].name);
                             }
                         });
                     });
                 } else {
-                    validateEditable(group, workTime.data.value);
-
                     workType.ctrl.on('click', () => {
                         setShared('parentCodes', {
                             workTypeCodes: workType && _.map(workType.data.lstComboBoxValue, x => x.optionValue),
