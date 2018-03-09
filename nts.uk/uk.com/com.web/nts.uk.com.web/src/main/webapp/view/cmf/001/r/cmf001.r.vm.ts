@@ -40,6 +40,7 @@ module nts.uk.com.view.cmf001.r.viewmodel {
             let paramReceived = getShared('CMF001-R');
             self.imexProcessID = paramReceived.imexProcessId;
             self.nameSetting = ko.observable(paramReceived.nameSetting);
+            
             // grid list constructor
             self.imExErrorLog =  ko.observableArray([]);
             let dataNull = {

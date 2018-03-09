@@ -19,7 +19,6 @@ module nts.uk.com.view.cmf001.l.viewmodel {
         required: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             var self = this;
-            
             let params = getShared("CMF001lParams");
             let inputMode = params.inputMode;
             self.selectedDataType = params.dataType;
@@ -33,7 +32,7 @@ module nts.uk.com.view.cmf001.l.viewmodel {
             self.acceptScreenConditionSetting().selectComparisonCondition.subscribe(function(selectedValue){
                 if(selectedValue == 0) {
                     self.required(false);
-                    nts.uk.ui.errors.clearAll();
+                    nts.uk.ui.errors.clearAll(); 
                 } else {
                     self.required(true);    
                 }               

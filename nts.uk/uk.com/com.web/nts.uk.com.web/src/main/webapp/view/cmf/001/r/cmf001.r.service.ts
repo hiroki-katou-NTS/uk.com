@@ -2,9 +2,9 @@ module nts.uk.com.view.cmf001.r.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths = {
-        getLogResults: "ctx/exio/ws/exi/execlog/getLogResults/{0}",
-        getErrorLogs:  "ctx/exio/ws/exi/execlog/getErrorLogs/{0}",
-        exportDatatoCsv: "ctx/exio/ws/exi/execlog/export",
+        getLogResults: "exio/exi/execlog/getLogResults/{0}",
+        getErrorLogs:  "exio/exi/execlog/getErrorLogs/{0}",
+        exportDatatoCsv: "exio/exi/execlog/export",
     }
 
     /**
