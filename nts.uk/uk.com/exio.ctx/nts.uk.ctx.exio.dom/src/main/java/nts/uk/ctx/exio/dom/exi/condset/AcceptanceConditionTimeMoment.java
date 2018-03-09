@@ -11,7 +11,6 @@ public class AcceptanceConditionTimeMoment extends TimeDurationPrimitiveValue<Ac
 
 	public AcceptanceConditionTimeMoment(int timeAsMinutes) {
 		super(timeAsMinutes);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**

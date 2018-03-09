@@ -1,17 +1,14 @@
 package nts.uk.ctx.exio.dom.exi.condset;
 
-import nts.arc.primitive.TimeClockPrimitiveValue;
-import nts.arc.primitive.constraint.TimeMaxValue;
-import nts.arc.primitive.constraint.TimeMinValue;
+import nts.arc.primitive.TimeDurationPrimitiveValue;
+import nts.arc.primitive.constraint.TimeRange;
 
-@TimeMinValue("0")
-@TimeMaxValue("999:59")
-public class AcceptanceConditionTime extends TimeClockPrimitiveValue<AcceptanceConditionTime>{
+@TimeRange(min = "00:00", max = "999:59")
+public class AcceptanceConditionTime extends TimeDurationPrimitiveValue<AcceptanceConditionTime>{
 
 
-	public AcceptanceConditionTime(Integer timeAsMinutes) {
+	public AcceptanceConditionTime(int timeAsMinutes) {
 		super(timeAsMinutes);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
