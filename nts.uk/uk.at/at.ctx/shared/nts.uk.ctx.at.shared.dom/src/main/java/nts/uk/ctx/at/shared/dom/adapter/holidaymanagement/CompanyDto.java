@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.adapter.holidaymanagement;
 
 import lombok.Getter;
@@ -10,10 +14,27 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CompanyDto {
-	
+
 	/** The start month. */
 	// 期首月
 	private int startMonth;
-	
-	
+
+	/**
+	 * Instantiates a new company dto.
+	 *
+	 * @param startMonth
+	 *            the start month
+	 */
+	private CompanyDto(int startMonth) {
+		super();
+		this.startMonth = startMonth;
+	}
+
+	/**
+	 * Instantiates a new company dto.
+	 */
+	private CompanyDto() {
+		super();
+	}
+
 }
