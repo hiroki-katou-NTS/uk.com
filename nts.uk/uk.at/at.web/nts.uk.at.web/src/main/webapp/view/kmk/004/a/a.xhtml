@@ -12,6 +12,7 @@
 			<button tabindex="2" data-bind="click: saveCompanySetting, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('KMK004_27')}</button>
 			<button tabindex="4" class="danger" data-bind="click: removeCompanySetting, disable: isNewMode">#{i18n.getText('KMK004_29')}</button>
 			<button tabindex="5" id="btn-usage-unit" class="" data-bind="click: gotoE">#{i18n.getText('KMK004_30')}</button>
+			<button tabindex="5" id="btn-usage-unit" class="" data-bind="click: gotoF">#{i18n.getText('KMK004_30')}</button>
 			</span>
 		</div>
 		<div class="contents-area cf" data-bind="ifnot: isLoading, visible: true" style="display: none">
@@ -32,44 +33,7 @@
 					<!-- NORMAL WORK TIME SETTING START -->
 					<div class="tab-content-1">
 						<com:ko tag="with" bind="normalSetting">
-						<!-- <div class="control-group">
-							<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_6')}</div>
-							<div tabindex="8" class="cbb-weekstart"
-								id="combo-box"
-								data-bind="ntsComboBox: {name:'#[KMK004_6]',
-												options: $parents[1].itemList,
-												optionsValue: 'code',
-												value: weekStart,
-												optionsText: 'name',
-												visibleItemsCount: 25,
-												enable: true,
-												columns: [
-													{ prop: 'name', length: 10 }
-												]}"></div>
-						</div> -->
 							<com:ko tag="with" bind="statutorySetting">
-								<!-- <div class="control-group">
-									<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_45')}</div>
-									<table class="border-all tbl-daily">
-										<tr class="bg-dark-green">
-											<td></td>
-											<td>#{i18n.getText('KMK004_8')}</td>
-										</tr>
-										<tr>
-											<td class="bg-green">#{i18n.getText('KMK004_9')}</td>
-											<td><input tabindex="9"
-												data-bind="ntsTimeEditor: {name:'#[KMK004_10]', value: daily, constraint:'DailyTime', inputFormat: 'time', mode: 'time', required: true}" />
-											</td>
-										</tr>
-										<tr>
-											<td class="bg-green">#{i18n.getText('KMK004_11')}</td>
-											<td><input tabindex="10"
-												data-bind="ntsTimeEditor: {name:'#[KMK004_12]', value: weekly, constraint:'WeeklyTime', inputFormat: 'time', mode: 'time', required: true}" />
-											</td>
-										</tr>
-									</table>
-								</div> -->
-								
 								<div class="control-group">
 								<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_45')}</div>
 									<table class="border-all tbl-monthly">

@@ -314,6 +314,14 @@ module nts.uk.at.view.kmk004.a {
                     $('#companyYearPicker').focus();
                 });
             }
+            
+            public gotoF(): void {
+                let self = this;
+                nts.uk.ui.windows.sub.modal("/view/kmk/004/f/index.xhtml").onClosed(() => {
+                    self.loadUsageUnitSetting();
+                    $('#companyYearPicker').focus();
+                });
+            }
 
             /**
              * Save company setting.
@@ -792,6 +800,8 @@ module nts.uk.at.view.kmk004.a {
             normalSetting: NormalSetting;
             year: KnockoutObservable<number>;
             selectedTab: KnockoutObservable<string>;
+            // Update
+            
 
             constructor() {
                 let self = this;
@@ -1076,5 +1086,255 @@ module nts.uk.at.view.kmk004.a {
 //                self.name = name;
 //            }
 //        }
+        /**
+         * Company Worktime Detail Setting
+         */
+        export class CompanyWTDetailSetting {
+            year: KnockoutObservable<number>;
+            // Normal
+            normalStatutorySetting: KnockoutObservableArray<MonthlyTime>;
+            // Flex
+            flexStatutorySetting: KnockoutObservableArray<MonthlyTime>;
+            flexSpecifiedSetting: KnockoutObservableArray<MonthlyTime>;
+            // Deformed labor
+            deformStatutorySetting: KnockoutObservableArray<MonthlyTime>;
+            
+            constructor() {
+                let self = this;
+                self.year = ko.observable(new Date().getFullYear());
+                for (let i = 1; i < 13; i++) {
+                    let m = new MonthlyTime();
+                    m.month(i);
+                    m.time(0);
+                    self.normalStatutorySetting.push(m);
+                    self.flexStatutorySetting.push(m);
+                    self.flexSpecifiedSetting.push(m);
+                    self.deformStatutorySetting.push(m);
+                }
+            }
+            
+        }
+        
+        /**
+         * Employee WorkTime Detail Setting
+         */
+        export class EmployeeWTDetailSetting {
+            year: KnockoutObservable<number>;
+            empID: KnockoutObservable<string>;
+            // Normal
+            normalStatutorySetting: KnockoutObservableArray<MonthlyTime>;
+            // Flex
+            flexStatutorySetting: KnockoutObservableArray<MonthlyTime>;
+            flexSpecifiedSetting: KnockoutObservableArray<MonthlyTime>;
+            // Deformed labor
+            deformStatutorySetting: KnockoutObservableArray<MonthlyTime>;
+            
+            constructor() {
+                let self = this;
+                self.year = ko.observable(new Date().getFullYear());
+                self.empID = ko.observable("");
+                for (let i = 1; i < 13; i++) {
+                    let m = new MonthlyTime();
+                    m.month(i);
+                    m.time(0);
+                    self.normalStatutorySetting.push(m);
+                    self.flexStatutorySetting.push(m);
+                    self.flexSpecifiedSetting.push(m);
+                    self.deformStatutorySetting.push(m);
+                }
+            }
+            
+        }
+        
+        /**
+         * Workplace Worktime Detail Setting
+         */
+        export class WorkplaceWTDetailSetting {
+            year: KnockoutObservable<number>;
+            wkpID: KnockoutObservable<string>;
+            // Normal
+            normalStatutorySetting: KnockoutObservableArray<MonthlyTime>;
+            // Flex
+            flexStatutorySetting: KnockoutObservableArray<MonthlyTime>;
+            flexSpecifiedSetting: KnockoutObservableArray<MonthlyTime>;
+            // Deformed labor
+            deformStatutorySetting: KnockoutObservableArray<MonthlyTime>;
+            
+            constructor() {
+                let self = this;
+                self.year = ko.observable(new Date().getFullYear());
+                self.wkpID = ko.observable("");
+                for (let i = 1; i < 13; i++) {
+                    let m = new MonthlyTime();
+                    m.month(i);
+                    m.time(0);
+                    self.normalStatutorySetting.push(m);
+                    self.flexStatutorySetting.push(m);
+                    self.flexSpecifiedSetting.push(m);
+                    self.deformStatutorySetting.push(m);
+                }
+            }
+            
+        }
+        
+        /**
+         * Employment WorkTime Detail Setting
+         */
+        export class EmploymentWTDetailSetting {
+            year: KnockoutObservable<number>;
+            employmentCode: KnockoutObservable<string>;
+            // Normal
+            normalStatutorySetting: KnockoutObservableArray<MonthlyTime>;
+            // Flex
+            flexStatutorySetting: KnockoutObservableArray<MonthlyTime>;
+            flexSpecifiedSetting: KnockoutObservableArray<MonthlyTime>;
+            // Deformed labor
+            deformStatutorySetting: KnockoutObservableArray<MonthlyTime>;
+            
+            constructor() {
+                let self = this;
+                self.year = ko.observable(new Date().getFullYear());
+                self.employmentCode = ko.observable("");
+                for (let i = 1; i < 13; i++) {
+                    let m = new MonthlyTime();
+                    m.month(i);
+                    m.time(0);
+                    self.normalStatutorySetting.push(m);
+                    self.flexStatutorySetting.push(m);
+                    self.flexSpecifiedSetting.push(m);
+                    self.deformStatutorySetting.push(m);
+                }
+            }
+            
+        }
+        
+        /**
+         * MonthlyTime 月単位
+         */
+        export class MonthlyTime {
+            month: KnockoutObservable<number>;
+            time: KnockoutObservable<number>;
+        }
+        //******************************Detail 3 cuc *****************
+        /**
+         * class CompanyMonthlyNormalSet
+         */
+        // Detail Cuc 1 Company: Normal Setting
+        export class CompanyNormalMonthlySet {
+            // 会社別通常勤務労働時間
+            dailyTime: KnockoutObservable<number>;
+            weeklyTime: KnockoutObservable<number>;
+            startWeek: KnockoutObservable<StartWeek>;
+            // 通常勤務労働会社別月別実績集計設定
+            excessOutsideTimeSet: ExcessOutsideTimeSet;
+            aggregateOutsideTimeSet: ExcessOutsideTimeSet;
+            
+            constructor() {
+                let self = this;
+                self.dailyTime = ko.observable(0);
+                self.weeklyTime = ko.observable(0);
+                self.startWeek = ko.observable(StartWeek.SUNDAY);
+                self.excessOutsideTimeSet = new ExcessOutsideTimeSet();
+                self.aggregateOutsideTimeSet = new ExcessOutsideTimeSet();
+            }
+        }
+        // Detail cuc 3 Company: Deform Labor Setting
+        export class CompanyDeformMonthlySet {
+            // 会社別通常勤務労働時間
+            dailyTime: KnockoutObservable<number>;
+            weeklyTime: KnockoutObservable<number>;
+            startWeek: KnockoutObservable<StartWeek>;
+            // 通常勤務労働会社別月別実績集計設定
+            excessOutsideTimeSet: ExcessOutsideTimeSet;
+            aggregateOutsideTimeSet: ExcessOutsideTimeSet;
+            
+            isDeformedOT: KnockoutObservable<boolean>;
+            period: KnockoutObservable<number>;
+            repeatCls: KnockoutObservable<boolean>;
+            startMonth: KnockoutObservable<number>;
+            
+            constructor() {
+                let self = this;
+                self.dailyTime = ko.observable(0);
+                self.weeklyTime = ko.observable(0);
+                self.startWeek = ko.observable(StartWeek.SUNDAY);
+                self.excessOutsideTimeSet = new ExcessOutsideTimeSet();
+                self.aggregateOutsideTimeSet = new ExcessOutsideTimeSet();
+                
+                self.isDeformedOT = ko.observable(false);
+                self.period = ko.observable(1);
+                self.repeatCls = ko.observable(false);
+                self.startMonth = ko.observable(new Date().getMonth());
+            }
+        }
+        
+        // Detail cuc 2 Company: Flex Setting
+        export class CompanyFlexMonthlySet {
+            shortageSetting: KnockoutObservable<ShortageSetting>;
+            includeOT: KnockoutObservable<boolean>;
+            legalAggrSet: KnockoutObservable<AggrregateSetting>;
+            aggregateMethod: KnockoutObservable<FlexAggregateMethod>;
+            
+            constructor() {
+                let self = this;
+                self.shortageSetting = ko.observable(ShortageSetting.CURRENT_MONTH_INTEGRATION);
+                self.includeOT = ko.observable(false);
+                self.legalAggrSet = ko.observable(AggrregateSetting.MANAGED_AS_FLEX_TIME);
+                self.aggregateMethod = ko.observable(FlexAggregateMethod.PRINCIPLE);
+            }
+        }
+        
+        /**
+         * 集計設定
+         */
+        export class AggrregateSetting {
+            static MANAGED_AS_FLEX_TIME = 1;
+            static MANAGE_BREAKDOWN = 2;
+        }
+        
+        /**
+         * フレックス不足時の繰越設定
+         */
+        export class ShortageSetting {
+            static CURRENT_MONTH_INTEGRATION = 1;
+            static NEXT_MONTH_CARRY_FORWARD = 2;
+        }
+        
+        /**
+         * フレックス集計方法
+         */
+        export class FlexAggregateMethod {
+            static PRINCIPLE = 1;
+            static FOR_CONVINENCE = 2;
+        }
+        
+        /**
+         * 週開始
+         */
+        export class StartWeek {
+            static MONDAY = 2;
+            static TUESDAY = 3;
+            static WEDNESDAY = 4;
+            static THURSDAY = 5;
+            static FRIDAY = 6;
+            static SATURDAY = 7;
+            static SUNDAY = 0;
+            static CLOSURE_STR_DATE = 1;
+        }
+        
+        /**
+         * 割増集計方法
+         */
+        export class ExcessOutsideTimeSet {
+            includeLegal: KnockoutObservable<boolean>;
+            includeHoliday: KnockoutObservable<boolean>;
+            includeExtra: KnockoutObservable<boolean>;
+            constructor() {
+                let self = this;
+                self.includeLegal = ko.observable(false);
+                self.includeHoliday = ko.observable(false);
+                self.includeExtra = ko.observable(false);
+            }
+        }
     }
 }
