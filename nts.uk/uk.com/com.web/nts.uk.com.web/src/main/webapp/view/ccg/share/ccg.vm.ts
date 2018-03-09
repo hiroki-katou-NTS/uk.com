@@ -1072,8 +1072,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 $('#workplaceList').fullView();
 
                 _.defer(() => {
-                    const KCP004Width = $('#multiple-tree-grid_scroll').outerWidth();
-                    const KCPMargin = 20;
+                    const KCP004Width = $('#multiple-tree-grid_scroll').outerWidth(true);
+                    const KCPMargin = 30;
                     const expandedWidth = KCP004Width + KCPMargin;
 
                     // update accordion width

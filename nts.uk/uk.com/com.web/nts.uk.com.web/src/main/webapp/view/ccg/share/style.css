@@ -19,6 +19,7 @@
 }
 
 .contentkcpWorkplace {
+	overflow: hidden !important;
 	padding-top: 8px !important;
 	padding-left: 10px !important;
 }
