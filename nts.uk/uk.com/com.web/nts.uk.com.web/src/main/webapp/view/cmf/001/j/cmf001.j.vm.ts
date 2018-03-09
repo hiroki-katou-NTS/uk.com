@@ -13,15 +13,15 @@ module nts.uk.com.view.cmf001.j.viewmodel {
 
         itemsEffectiveDigitLength: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
 
-        itemsDecimalSelection: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
+        itemsDecimalSelect: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
 
-        itemsHourMinuteSelection: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
+        itemsHourMinSelect: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
 
-        itemsDelimiterSetting: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
+        itemsDelimiterSet: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
 
-        itemsRoundingProcessing: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
+        itemsRoundProc: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
 
-        itemsRoundProcessingClassification: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
+        itemsRoundProcCls: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
 
         itemsFixedValue: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
 
@@ -42,33 +42,27 @@ module nts.uk.com.view.cmf001.j.viewmodel {
             ]);
 
             //J3
-            self.itemsDecimalSelection([
+            self.itemsDecimalSelect([
                 new model.ItemModel(self.decimal60, getText('CMF001_342')),
                 new model.ItemModel(self.decimal10, getText('CMF001_343'))
             ]);
 
             //J4
-            self.itemsHourMinuteSelection([
+            self.itemsHourMinSelect([
                 new model.ItemModel(self.timeHM, getText('CMF001_352')),
                 new model.ItemModel(self.timeM, getText('CMF001_353'))
             ]);
 
             //J5
-            self.itemsDelimiterSetting([
-                new model.ItemModel(0, getText('CMF001_355')),
-                new model.ItemModel(1, '1234567890123456789012345')
-            ]);
+            self.itemsDelimiterSet(model.getDelimiterSetting());
 
             //J6
-            self.itemsRoundingProcessing([
+            self.itemsRoundProc([
                 new model.ItemModel(self.atrUse, getText('CMF001_358')),
                 new model.ItemModel(self.atrNotUse, getText('CMF001_359'))
             ]);
 
-            self.itemsRoundProcessingClassification([
-                new model.ItemModel(0, getText('CMF001_355')),
-                new model.ItemModel(1, getText('1234567890123456789012345'))
-            ]);
+            self.itemsRoundProcCls(model.getTimeRounding());
 
             //J7
             self.itemsFixedValue([
@@ -77,29 +71,22 @@ module nts.uk.com.view.cmf001.j.viewmodel {
             ]);
 
             let params = getShared("CMF001jParams");
-            if (!nts.uk.util.isNullOrUndefined(params)) {
-                let inputMode = params.inputMode;
-                let lineNumber = params.lineNumber;
-                let dateSet = params.formatSetting;
-                self.inputMode = inputMode;
-                self.lineNumber = lineNumber;
-                if (!nts.uk.util.isNullOrUndefined(dateSet)) {
-                    self.setting = ko.observable(new model.InstantTimeDataFormatSetting(
-                        dateSet.effectiveDigitLength,
-                        dateSet.startDigit,
-                        dateSet.endDigit,
-                        dateSet.decimalSelection,
-                        dateSet.hourMinuteSelection,
-                        dateSet.delimiterSetting,
-                        dateSet.roundingProcessing,
-                        dateSet.roundProcessingClassification,
-                        dateSet.fixedValue,
-                        dateSet.valueOfFixed));
-                }
-            }
+            self.inputMode = params.inputMode;
+            self.lineNumber = params.lineNumber;
+            self.setting = ko.observable(new model.InstantTimeDataFormatSetting(
+                params.formatSetting.effectiveDigitLength,
+                params.formatSetting.startDigit,
+                params.formatSetting.endDigit,
+                params.formatSetting.decimalSelect,
+                params.formatSetting.hourMinSelect,
+                params.formatSetting.delimiterSet,
+                params.formatSetting.roundProc,
+                params.formatSetting.roundProcCls,
+                params.formatSetting.fixedValue,
+                params.formatSetting.valueOfFixedValue));
         }
 
-        checkActive1() {
+        private checkActive1(): boolean {
             let self = this;
             if (self.setting().effectiveDigitLength() == self.atrUse) {
                 return true;
@@ -107,15 +94,15 @@ module nts.uk.com.view.cmf001.j.viewmodel {
             return false;
         }
 
-        checkActive2() {
+        private checkActive2(): boolean {
             let self = this;
-            if (self.setting().roundingProcessing() == self.atrUse) {
+            if (self.setting().roundProc() == self.atrUse) {
                 return true;
             }
             return false;
         }
 
-        checkActive3() {
+        private checkActive3(): boolean {
             let self = this;
             if (self.setting().fixedValue() == self.atrUse) {
                 return true;
@@ -123,23 +110,23 @@ module nts.uk.com.view.cmf001.j.viewmodel {
             return false;
         }
 
-        checkActive4() {
+        private checkActive4(): boolean {
             let self = this;
-            if (self.setting().decimalSelection() == self.decimal60) {
+            if (self.setting().decimalSelect() == self.decimal60) {
                 return true;
             }
             return false;
         }
 
-        checkActive5() {
+        private checkActive5(): boolean {
             let self = this;
-            if (self.setting().decimalSelection() == self.decimal60) {
+            if (self.setting().decimalSelect() == self.decimal60) {
                 return false;
             }
             return true;
         }
 
-        checkActive6() {
+        private checkActive6(): boolean {
             let self = this;
             if (self.setting().fixedValue() == self.atrUse) {
                 return false;
@@ -147,14 +134,38 @@ module nts.uk.com.view.cmf001.j.viewmodel {
             return true;
         }
 
-        saveNumericSetting() {
+        private checkRequired1(): boolean {
+            let self = this;
+            if (self.setting().effectiveDigitLength() == self.atrUse) {
+                return true;
+            }
+            return false;
+        }
+
+        private checkRequired2(): boolean {
+            let self = this;
+            if (self.setting().roundProc() == self.atrUse) {
+                return true;
+            }
+            return false;
+        }
+
+        private checkRequired3(): boolean {
+            let self = this;
+            if (self.setting().fixedValue() == self.atrUse) {
+                return true;
+            }
+            return false;
+        }
+
+        private saveSetting(): void {
             let self = this;
             if (self.inputMode) {
-                setShared("CMF001Output", { lineNumber: self.lineNumber, formatSetting: ko.toJS(self.setting) });
+                setShared("CMF001FormatOutput", { lineNumber: self.lineNumber, formatSetting: ko.toJS(self.setting) });
             }
             nts.uk.ui.windows.close();
         }
-        cancelNumericSetting() {
+        private cancelSetting(): void {
             nts.uk.ui.windows.close();
         }
     }

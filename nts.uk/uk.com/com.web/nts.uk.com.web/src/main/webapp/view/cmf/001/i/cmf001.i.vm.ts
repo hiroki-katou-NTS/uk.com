@@ -38,24 +38,17 @@ module nts.uk.com.view.cmf001.i.viewmodel {
                 new model.ItemModel(self.atrUse, getText('CMF001_322')),
                 new model.ItemModel(self.atrNotUse, getText('CMF001_323'))
             ]);
-            
+
             let params = getShared("CMF001iParams");
-            if (!nts.uk.util.isNullOrUndefined(params)) {
-                let inputMode = params.inputMode;
-                let lineNumber = params.lineNumber;
-                let dateSet = params.formatSetting;
-                self.inputMode = inputMode;
-                self.lineNumber = lineNumber;
-                if (!nts.uk.util.isNullOrUndefined(dateSet)) {
-                    self.setting = ko.observable(new model.DateDataFormatSetting(
-                        dateSet.formatSelection,
-                        dateSet.fixedValue,
-                        dateSet.valueOfFixed));
-                }
-            }
+            self.inputMode = params.inputMode;
+            self.lineNumber = params.lineNumber;
+            self.setting = ko.observable(new model.DateDataFormatSetting(
+                params.formatSetting.formatSelection,
+                params.formatSetting.fixedValue,
+                params.formatSetting.valueOfFixedValue));
         }
 
-        checkActive2() {
+        private checkActive2(): boolean {
             let self = this;
             if (self.setting().fixedValue() == self.atrUse) {
                 return true;
@@ -63,7 +56,7 @@ module nts.uk.com.view.cmf001.i.viewmodel {
             return false;
         }
 
-        checkActive3() {
+        private checkActive3(): boolean {
             let self = this;
             if (self.setting().fixedValue() == self.atrUse) {
                 return false;
@@ -71,14 +64,22 @@ module nts.uk.com.view.cmf001.i.viewmodel {
             return true;
         }
 
-        saveNumericSetting() {
+        private checkRequired1(): boolean {
+            let self = this;
+            if (self.setting().fixedValue() == self.atrUse) {
+                return true;
+            }
+            return false;
+        }
+
+        private saveSetting(): void {
             let self = this;
             if (self.inputMode) {
-                setShared("CMF001Output", { lineNumber: self.lineNumber, formatSetting: ko.toJS(self.setting) });
+                setShared("CMF001FormatOutput", { lineNumber: self.lineNumber, formatSetting: ko.toJS(self.setting) });
             }
             nts.uk.ui.windows.close();
         }
-        cancelNumericSetting() {
+        private cancelSetting(): void {
             nts.uk.ui.windows.close();
         }
     }

@@ -85,12 +85,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
 
             //「システムコード」の取得結果からシステム種類に変換する
 
-            self.listSysType = ko.observableArray([
-                new model.ItemModel(model.SYSTEM_TYPE.PERSON_SYS, '人事システム'), //TODO: Enum_SystemType_PERSON_SYSTEM
-                new model.ItemModel(model.SYSTEM_TYPE.ATTENDANCE_SYS, '勤怠システム'), //TODO: Enum_SystemType_ATTENDANCE_SYSTEM
-                new model.ItemModel(model.SYSTEM_TYPE.PAYROLL_SYS, '給与システム'), //TODO: Enum_SystemType_PAYROLL_SYSTEM
-                new model.ItemModel(model.SYSTEM_TYPE.OFFICE_HELPER, 'オフィスヘルパー') //TODO: Enum_SystemType_OFFICE_HELPER
-            ]);
+            self.listSysType = ko.observableArray(model.getSystemTypes());
             //1件以上取得できた場合
             if (self.listSysType().length > 0) {
                 //システム種類を画面セットする
@@ -175,8 +170,9 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 //表示するデータがある場合   
                 if (data && data.length) {
                     let _rspList: Array<model.StandardAcceptanceConditionSetting> = _.map(data, rsp => {
-                        return new model.StandardAcceptanceConditionSetting(rsp.conditionSettingCode, rsp.conditionSettingName,
-                            rsp.deleteExistData, rsp.acceptMode, rsp.csvDataItemLineNumber, rsp.csvDataStartLine, rsp.deleteExistDataMethod);
+                        return new model.StandardAcceptanceConditionSetting(rsp.systemType, rsp.conditionSettingCode,
+                            rsp.conditionSettingName, rsp.deleteExistData, rsp.acceptMode, rsp.csvDataItemLineNumber,
+                            rsp.csvDataStartLine, rsp.deleteExistDataMethod);
                     });
                     self.listCondition(_rspList);
 
@@ -327,7 +323,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                         item.timeFormatSetting.roundProcCls,
                         item.timeFormatSetting.fixedValue,
                         item.timeFormatSetting.valueOfFixedValue);
-                    setShared("CMF001jParams", { inputMode: false, lineNumber: null, formatSetting: ko.toJS(settingJ2) });
+                    setShared("CMF001jParams", { inputMode: true, lineNumber: null, formatSetting: ko.toJS(settingJ2) });
                     nts.uk.ui.windows.sub.modal("/view/cmf/001/j/index.xhtml");
                     break;
             }
@@ -395,11 +391,11 @@ module nts.uk.com.view.cmf001.o.viewmodel {
 
         private getItemTypeName(typeCd: number): string {
             switch (typeCd) {
-                case model.ITEM_TYPE.NUMERIC: return "数値型";// TODO: Enum_ItemType_NUMERIC
-                case model.ITEM_TYPE.CHARACTER: return "文字型";// TODO: Enum_ItemType_CHARACTER
-                case model.ITEM_TYPE.DATE: return "日付型";// TODO: Enum_ItemType_DATE
-                case model.ITEM_TYPE.INS_TIME: return "時刻型";// TODO: Enum_ItemType_INS_TIME
-                case model.ITEM_TYPE.TIME: return "時間型";// TODO: Enum_ItemType_TIME
+                case model.ITEM_TYPE.NUMERIC: return getText('Enum_ItemType_NUMERIC');
+                case model.ITEM_TYPE.CHARACTER: return getText('Enum_ItemType_CHARACTER');
+                case model.ITEM_TYPE.DATE: return getText('Enum_ItemType_DATE');
+                case model.ITEM_TYPE.INS_TIME: return getText('Enum_ItemType_INS_TIME');
+                case model.ITEM_TYPE.TIME: return getText('Enum_ItemType_TIME');
             }
             return "";
         }
