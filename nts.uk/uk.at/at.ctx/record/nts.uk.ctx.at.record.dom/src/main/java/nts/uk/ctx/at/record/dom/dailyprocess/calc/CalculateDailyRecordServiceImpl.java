@@ -481,8 +481,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		if(integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode() != null) {
 			val workTimeSetting = workTimeSettingRepository.findByCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
 			workTime = workTimeSetting.isPresent()?Optional.of(workTimeSetting.get().getWorkTimeDivision().getWorkTimeDailyAtr()):Optional.empty();
-			
-
 		}
 		
 		//休暇加算時間設定
@@ -556,13 +554,16 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		/*所定時間設定取得*/
 		//val predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId,"901");// integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
 		Optional<PredetemineTimeSetting> predetermineTimeSet = Optional.empty();
-		if(integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode() != null)
+		String workTimeCode = null;
+		if(integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode() != null) {
 			predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
+			workTimeCode = integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString();
+		}
 		
 		if(!predetermineTimeSet.isPresent()) {
 			predetermineTimeSet = Optional.of(new PredetemineTimeSetting(companyId,
 															new AttendanceTime(0),
-															new WorkTimeCode(integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString()),
+															new WorkTimeCode(workTimeCode),
 															new PredetermineTime(new BreakDownTimeDay(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
 																	  			 new BreakDownTimeDay(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0))),
 															false,
