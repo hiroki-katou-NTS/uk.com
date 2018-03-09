@@ -52,7 +52,7 @@ public class ExtractAlarmForEmployeeService {
 			else if (checkCondition.is4W4D()) {
 				// アルゴリズム「4週4休の集計処理」を実行する
 				for (String checkConditionCode : checkCondition.getCheckConditionList()) {				
-					w4D4AlarmService.calculateTotal4W4D(employee.getId(), period, checkConditionCode);
+					//w4D4AlarmService.calculateTotal4W4D(employee.getId(), period, checkConditionCode);
 				}
 			}
 			// カテゴリ：月次のチェック条件 (monthly)
