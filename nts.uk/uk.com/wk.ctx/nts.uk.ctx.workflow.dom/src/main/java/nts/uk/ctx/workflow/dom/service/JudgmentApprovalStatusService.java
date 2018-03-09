@@ -4,6 +4,7 @@ import java.util.List;
 
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalStatusOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutput;
 
@@ -66,5 +67,12 @@ public interface JudgmentApprovalStatusService {
 	 */
 	public Boolean judgmentAgentListByEmployee(String companyID, String employeeID, List<String> listApprover);
 	
-	
+	/**
+	 * 4.ループ中の承認フェーズが承認中のフェーズかチェックする
+	 * @param approvalRootState 承認ルートインスタンス（ApprovalRootInstance）
+	 * @param currentPhase ループ中の承認フェーズのNo（current phase no）（5～1）
+	 * @param pastPhaseFlg 過去フェーズフラグ
+	 * @return true/false
+	 */
+	public Boolean judgmentLoopApprovalPhase(ApprovalRootState approvalRootState, ApprovalPhaseState currentPhase, Boolean pastPhaseFlg);
 }
