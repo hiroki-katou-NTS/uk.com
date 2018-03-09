@@ -50,7 +50,7 @@ public class ExceededPredAddVacationCalc extends WorkTimeDomainObject {
 	public void validate() {
 
 		// Msg_890
-		if (this.calcMethod == CalcMethodExceededPredAddVacation.CALC_AS_OVERTIME) {
+		if (CalcMethodExceededPredAddVacation.CALC_AS_OVERTIME.equals(this.calcMethod)) {
 			if (this.otFrameNo == null) {
 				this.bundledBusinessExceptions.addMessage("Msg_890");
 			}

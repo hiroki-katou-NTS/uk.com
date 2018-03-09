@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
 import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
 
 /**
  * The Interface FixedWorkSettingPolicy.
@@ -17,7 +18,8 @@ public interface FixedWorkSettingPolicy {
 	 *
 	 * @param be the be
 	 * @param predTime the pred time
+	 * @param displayMode the display mode
 	 * @param fixedWork the fixed work
 	 */
-	void validate(BundledBusinessException be, PredetemineTimeSetting predTime, FixedWorkSetting fixedWork);
+	void validate(BundledBusinessException be, PredetemineTimeSetting predTime, WorkTimeDisplayMode displayMode, FixedWorkSetting fixedWork);
 }

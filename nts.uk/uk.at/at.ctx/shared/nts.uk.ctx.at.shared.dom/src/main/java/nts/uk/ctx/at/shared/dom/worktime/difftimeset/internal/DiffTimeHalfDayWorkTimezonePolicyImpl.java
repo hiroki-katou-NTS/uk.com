@@ -1,8 +1,8 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.worktime.common.internal;
+package nts.uk.ctx.at.shared.dom.worktime.difftimeset.internal;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezone
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimezoneSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
 
 /**
  * The Class DiffTimeHalfDayWorkTimezonePolicyImpl.
@@ -27,13 +28,18 @@ public class DiffTimeHalfDayWorkTimezonePolicyImpl implements DiffTimeHalfDayWor
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.
-	 * DiffTimeHalfDayWorkTimezonePolicy#validate(nts.uk.ctx.at.shared.dom.
-	 * worktime.difftimeset.DiffTimeHalfDayWorkTimezone,
-	 * nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting)
+	 * DiffTimeHalfDayWorkTimezonePolicy#validate(nts.arc.error.
+	 * BundledBusinessException,
+	 * nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting,
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode,
+	 * nts.uk.ctx.at.shared.dom.worktime.difftimeset.
+	 * DiffTimeHalfDayWorkTimezone, boolean)
 	 */
 	@Override
-	public void validate(BundledBusinessException be, DiffTimeHalfDayWorkTimezone diffTimeHalfDay, PredetemineTimeSetting predSet) {
-		this.diffTimezonePolicy.validate(be, diffTimeHalfDay.getWorkTimezone(), predSet);
+	public void validate(BundledBusinessException be, PredetemineTimeSetting predTime, WorkTimeDisplayMode displayMode,
+			DiffTimeHalfDayWorkTimezone halfDayWork, boolean isUseHalfDayShift) {
+		this.diffTimezonePolicy.validate(be, predTime, halfDayWork.getWorkTimezone(), displayMode.getDisplayMode(),
+				halfDayWork.getAmPmAtr(), isUseHalfDayShift);
 	}
 
 }

@@ -62,7 +62,7 @@ public class OverTimeCalcNoBreak extends WorkTimeDomainObject {
 	public void validate() {
 
 		// Msg_889
-		if (this.calcMethod == CalcMethodNoBreak.CALC_AS_OVERTIME) {
+		if (CalcMethodNoBreak.CALC_AS_OVERTIME.equals(this.calcMethod)) {
 			if (this.inLawOT == null || this.notInLawOT == null) {
 				this.bundledBusinessExceptions.addMessage("Msg_889");
 			}

@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
 import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
 
 /**
  * The Interface DiffTimeWorkSettingPolicy.
@@ -13,11 +14,12 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 public interface DiffTimeWorkSettingPolicy {
 
 	/**
-	  * Validate.
-	  *
-	  * @param bundledBusinessExceptions the bundled business exceptions
-	  * @param pred the pred
-	  * @param diffTimeWorkSetting the diff time work setting
-	  */
-	void validate(BundledBusinessException bundledBusinessExceptions, PredetemineTimeSetting pred, DiffTimeWorkSetting diffTimeWorkSetting);
+	 * Validate.
+	 *
+	 * @param bundledBusinessExceptions the bundled business exceptions
+	 * @param pred the pred
+	 * @param displayMode the display mode
+	 * @param diffTimeWorkSetting the diff time work setting
+	 */
+	void validate(BundledBusinessException bundledBusinessExceptions, PredetemineTimeSetting pred, WorkTimeDisplayMode displayMode, DiffTimeWorkSetting diffTimeWorkSetting);
 }

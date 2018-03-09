@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedset.internal;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -16,16 +15,16 @@ import javax.inject.Inject;
 
 import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
 
 /**
  * The Class FixedWorkSettingPolicyImpl.
@@ -45,10 +44,18 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 	@Inject
 	private WorkTimezoneCommonSetPolicy wtzCommonSetPolicy;
 
-	/** The em tz policy. */
-	@Inject
-	private EmTimeZoneSetPolicy emTzPolicy;
-
+	/**
+	 * Validate.
+	 *
+	 * @param be
+	 *            the be
+	 * @param predetemineTimeSet
+	 *            the predetemine time set
+	 * @param displayMode
+	 *            the display mode
+	 * @param fixedWorkSetting
+	 *            the fixed work setting
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -58,16 +65,15 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 	 */
 	@Override
 	public void validate(BundledBusinessException be, PredetemineTimeSetting predetemineTimeSet,
-			FixedWorkSetting fixedWorkSetting) {
+			WorkTimeDisplayMode displayMode, FixedWorkSetting fixedWorkSetting) {
 
-		// =============validate list emTimezone, Msg_773==============
-		this.validWorkTimezone(be, fixedWorkSetting, predetemineTimeSet);
+		// Validate list work halfday
+		this.validateHalfDayWork(be, predetemineTimeSet, displayMode, fixedWorkSetting);
 
 		// Check domain StampReflectTimezone
 		// #Msg_520
 		List<StampReflectTimezone> listGoWork = fixedWorkSetting.getLstStampReflectTimezone().stream()
-				.filter(domain -> domain.getClassification() == GoLeavingWorkAtr.GO_WORK)
-				.collect(Collectors.toList());
+				.filter(domain -> domain.getClassification() == GoLeavingWorkAtr.GO_WORK).collect(Collectors.toList());
 		List<StampReflectTimezone> listLeaveWork = fixedWorkSetting.getLstStampReflectTimezone().stream()
 				.filter(domain -> domain.getClassification() == GoLeavingWorkAtr.LEAVING_WORK)
 				.collect(Collectors.toList());
@@ -79,27 +85,29 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 			if (this.predService.validateOneDay(predetemineTimeSet, setting.getStartTime(), setting.getEndTime())) {
 				be.addMessage("Msg_516");
 			}
-	
+
 			// #Msg_1028
-			if (setting.getStartTime().lessThanOrEqualTo(predetemineTimeSet.getPrescribedTimezoneSetting().getTimezoneShiftOne().getStart())) {
+			if (setting.getStartTime().lessThanOrEqualTo(
+					predetemineTimeSet.getPrescribedTimezoneSetting().getTimezoneShiftOne().getStart())) {
 				be.addMessage("Msg_1028");
 			}
-			
+
 			// #Msg_1029
-			if (setting.getEndTime().greaterThanOrEqualTo(predetemineTimeSet.getPrescribedTimezoneSetting().getTimezoneShiftOne().getStart())) {
+			if (setting.getEndTime().greaterThanOrEqualTo(
+					predetemineTimeSet.getPrescribedTimezoneSetting().getTimezoneShiftOne().getStart())) {
 				be.addMessage("Msg_1029");
 			}
-			
+
 			// #Msg_1030
-			
+
 			// #Msg_1031
-			
+
 			// #Msg_1032
-			
+
 			// #Msg_1033
-			
+
 			// #Msg_1034
-			
+
 		});
 
 		// Check #Msg_516 domain HDWorkTimeSheetSetting
@@ -123,47 +131,9 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 			predService.validatePredetemineTime(be, predetemineTimeSet);
 		}
 
-		// validate list HalfDayWorkTimezone
-		this.fixHalfDayPolicy.validate(be, fixedWorkSetting, predetemineTimeSet);
-
 		// validate WorkTimezoneCommonSet
 		this.wtzCommonSetPolicy.validate(be, predetemineTimeSet, fixedWorkSetting.getCommonSetting());
 
-	}
-
-	/**
-	 * Valid work timezone.
-	 *
-	 * @param be
-	 *            the be
-	 * @param fixedWorkSet
-	 *            the fixed work set
-	 * @param predetemineTimeSet
-	 *            the predetemine time set
-	 */
-	private void validWorkTimezone(BundledBusinessException be, FixedWorkSetting fixedWorkSet,
-			PredetemineTimeSetting predetemineTimeSet) {
-		List<AmPmAtr> lstAmPm = new ArrayList<AmPmAtr>();
-
-		// add one day
-		lstAmPm.add(AmPmAtr.ONE_DAY);
-
-		// check use half day
-		if (fixedWorkSet.getUseHalfDayShift()) {
-			lstAmPm.add(AmPmAtr.AM);
-			lstAmPm.add(AmPmAtr.PM);
-		}
-		List<EmTimeZoneSet> lstFixHalfDay = fixedWorkSet.getLstHalfDayWorkTimezone().stream()
-				.filter(fixHalfWork -> lstAmPm.contains(fixHalfWork.getDayAtr()))
-				.map(fixHalfWork -> fixHalfWork.getWorkTimezone().getLstWorkingTimezone()).flatMap(Collection::stream)
-				.collect(Collectors.toList());
-
-		// validate
-		lstFixHalfDay.forEach(workTimezone -> {
-			this.emTzPolicy.validate(be, predetemineTimeSet, workTimezone);
-			this.emTzPolicy.validateTimezone(be, predetemineTimeSet.getPrescribedTimezoneSetting(),
-					workTimezone.getTimezone());
-		});
 	}
 
 	/**
@@ -188,5 +158,35 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Validate half day work.
+	 *
+	 * @param be
+	 *            the be
+	 * @param predetemineTimeSet
+	 *            the predetemine time set
+	 * @param displayMode
+	 *            the display mode
+	 * @param fixedWorkSetting
+	 *            the fixed work setting
+	 */
+	private void validateHalfDayWork(BundledBusinessException be, PredetemineTimeSetting predetemineTimeSet,
+			WorkTimeDisplayMode displayMode, FixedWorkSetting fixedWorkSetting) {
+		List<AmPmAtr> lstAmPm = new ArrayList<AmPmAtr>();
+		lstAmPm.add(AmPmAtr.ONE_DAY);
+		if (fixedWorkSetting.getUseHalfDayShift()) {
+			lstAmPm.add(AmPmAtr.AM);
+			lstAmPm.add(AmPmAtr.PM);
+		}
+
+		List<FixHalfDayWorkTimezone> lstFixHalfWork = fixedWorkSetting.getLstHalfDayWorkTimezone().stream()
+				.filter(fixHalfWork -> lstAmPm.contains(fixHalfWork.getDayAtr())).collect(Collectors.toList());
+
+		lstFixHalfWork.forEach(fixHalfWork -> {
+			this.fixHalfDayPolicy.validate(be, predetemineTimeSet, displayMode, fixHalfWork,
+					fixedWorkSetting.getUseHalfDayShift());
+		});
 	}
 }

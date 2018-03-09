@@ -5,7 +5,9 @@
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
 import nts.arc.error.BundledBusinessException;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
 
 /**
  * The Interface DiffTimezoneSettingPolicy.
@@ -16,8 +18,11 @@ public interface DiffTimezoneSettingPolicy {
 	 * Validate.
 	 *
 	 * @param be the be
+	 * @param predTime the pred time
 	 * @param diffTzSet the diff tz set
-	 * @param predSet the pred set
+	 * @param displayMode the display mode
+	 * @param dayAtr the day atr
+	 * @param useHalfDayShift the use half day shift
 	 */
-	void validate(BundledBusinessException be, DiffTimezoneSetting diffTzSet, PredetemineTimeSetting predSet);
+	void validate(BundledBusinessException be, PredetemineTimeSetting predTime, DiffTimezoneSetting diffTzSet, DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift);
 }
