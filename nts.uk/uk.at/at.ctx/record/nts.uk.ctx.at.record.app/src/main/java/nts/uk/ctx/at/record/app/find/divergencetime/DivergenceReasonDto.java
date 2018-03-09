@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.app.find.divergencetime;
 
 import lombok.Value;
-import nts.uk.ctx.at.record.dom.divergencetime_old.DivergenceReason;
+import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReason;
 
 @Value
 public class DivergenceReasonDto {

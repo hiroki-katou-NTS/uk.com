@@ -5,8 +5,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.divergencetime_old.DivergenceReason;
-import nts.uk.ctx.at.record.dom.divergencetime_old.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReason;
+import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

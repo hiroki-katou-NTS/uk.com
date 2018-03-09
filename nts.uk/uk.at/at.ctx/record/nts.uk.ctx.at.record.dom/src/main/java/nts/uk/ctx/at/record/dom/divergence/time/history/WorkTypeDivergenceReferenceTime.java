@@ -1,18 +1,18 @@
-package nts.uk.ctx.at.record.dom.divergencetime_new;
+package nts.uk.ctx.at.record.dom.divergence.time.history;
 
 import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * The Class CompanyDivergenceReferenceTime.
+ * The Class WorkTypeDivergenceReferenceTime.
  */
-// 会社の乖離基準時間
+// 勤務種別ごとの乖離基準時間
 @Getter
-public class CompanyDivergenceReferenceTime extends AggregateRoot {
-	
+public class WorkTypeDivergenceReferenceTime extends AggregateRoot {
 	/** The divergence time no. */
 	// 乖離時間NO
 	private DivergenceType divergenceTimeNo;
@@ -25,6 +25,10 @@ public class CompanyDivergenceReferenceTime extends AggregateRoot {
 	// 使用区分
 	private NotUseAtr notUseAtr;
 	
+	/** The work type code. */
+	// 勤務種別コード
+	private WorkTypeCode workTypeCode;
+	
 	/** The history id. */
 	// 履歴ID
 	private String historyId;
@@ -34,14 +38,14 @@ public class CompanyDivergenceReferenceTime extends AggregateRoot {
 	private Optional<DivergenceReferenceTimeValue> divergenceReferenceTimeValue;
 	
 	/**
-	 * Instantiates a new company divergence reference time.
+	 * Instantiates a new work type divergence reference time.
 	 *
 	 * @param memento the memento
 	 */
-	public CompanyDivergenceReferenceTime(CompanyDivergenceReferenceTimeGetMemento memento) {
-		this.divergenceTimeNo = memento.getDivergenceTimeNo();
+	public WorkTypeDivergenceReferenceTime(WorkTypeDivergenceReferenceTimeGetMemento memento) {
 		this.cId = memento.getCompanyId();
 		this.notUseAtr = memento.getNotUseAtr();
+		this.workTypeCode = memento.getWorkTypeCode();
 		this.historyId = memento.getHistoryId();
 		this.divergenceReferenceTimeValue = memento.getDivergenceReferenceTimeValue();
 	}
@@ -51,10 +55,10 @@ public class CompanyDivergenceReferenceTime extends AggregateRoot {
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(CompanyDivergenceReferenceTimeSetMemento memento) {
-		memento.setDivergenceTimeNo(this.divergenceTimeNo);
+	public void saveToMemento (WorkTypeDivergenceReferenceTimeSetMemento memento) {
 		memento.setCompanyId(this.cId);
 		memento.setNotUseAtr(this.notUseAtr);
+		memento.setWorkTypeCode(this.workTypeCode);
 		memento.setHistoryId(this.historyId);
 		memento.setDivergenceReferenceTimeValue(this.divergenceReferenceTimeValue);
 	}
@@ -67,6 +71,7 @@ public class CompanyDivergenceReferenceTime extends AggregateRoot {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((divergenceTimeNo == null) ? 0 : divergenceTimeNo.hashCode());
+		result = prime * result + ((workTypeCode == null) ? 0 : workTypeCode.hashCode());
 		result = prime * result + ((historyId == null) ? 0 : historyId.hashCode());
 		return result;
 	}
@@ -82,8 +87,13 @@ public class CompanyDivergenceReferenceTime extends AggregateRoot {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		CompanyDivergenceReferenceTime other = (CompanyDivergenceReferenceTime) obj;
+		WorkTypeDivergenceReferenceTime other = (WorkTypeDivergenceReferenceTime) obj;
 		if (divergenceTimeNo != other.divergenceTimeNo)
+			return false;
+		if (workTypeCode == null) {
+			if (other.workTypeCode != null)
+				return false;
+		} else if (!workTypeCode.equals(other.workTypeCode))
 			return false;
 		if (historyId == null) {
 			if (other.historyId != null)

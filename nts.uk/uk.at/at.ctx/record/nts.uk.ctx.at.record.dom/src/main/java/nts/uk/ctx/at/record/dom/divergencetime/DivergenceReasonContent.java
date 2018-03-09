@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.divergencetime_old;
+package nts.uk.ctx.at.record.dom.divergencetime;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

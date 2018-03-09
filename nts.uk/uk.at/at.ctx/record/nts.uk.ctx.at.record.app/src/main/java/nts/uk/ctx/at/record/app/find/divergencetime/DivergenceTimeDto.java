@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.divergencetime_old.DivergenceTime;
+import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTime;
 @Getter
 @Setter
 @AllArgsConstructor

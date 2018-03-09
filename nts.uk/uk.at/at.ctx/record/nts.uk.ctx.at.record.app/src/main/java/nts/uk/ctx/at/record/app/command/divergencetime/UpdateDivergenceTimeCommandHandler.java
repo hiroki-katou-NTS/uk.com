@@ -9,10 +9,10 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.record.dom.divergencetime.DivergenceItemSet;
+import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTime;
+import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.dom.divergencetime.service.DivergenceReasonService;
-import nts.uk.ctx.at.record.dom.divergencetime_old.DivergenceItemSet;
-import nts.uk.ctx.at.record.dom.divergencetime_old.DivergenceTime;
-import nts.uk.ctx.at.record.dom.divergencetime_old.DivergenceTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
