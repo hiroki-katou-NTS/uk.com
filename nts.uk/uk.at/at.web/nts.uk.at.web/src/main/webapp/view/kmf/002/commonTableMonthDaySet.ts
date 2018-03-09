@@ -5,7 +5,7 @@ module nts.uk.at.view.kmf002 {
     export module viewmodel {
         
         var path: any = {
-                findFirstMonth: "at/shared/holidaysetting/companycommon"
+                findFirstMonth: "at/shared/holidaysetting/companycommon/getFirstMonth"
             };
         
         export class CommonTableMonthDaySet { 
