@@ -121,6 +121,8 @@ public class StdAcceptCondSetFinder {
 			}
 		}
 
-		return lstCategoryItemData;
+		return lstCategoryItemData.stream().filter(item -> {
+			return item.getCategoryId().equals(categoryId);
+		}).collect(Collectors.toList());
 	}
 }
