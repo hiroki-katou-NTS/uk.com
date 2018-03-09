@@ -17,67 +17,63 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area">
+			<div class="contents-area" tabindex="-1">
 				<!--I1_1 タイトル-->
-				<div id="I1_1" class="label">#{i18n.getText('CMF001_300')}</div>
-				<table id="tbl-control">
+				<div id="I1_1" class="label" tabindex="-1">#{i18n.getText('CMF001_300')}</div>
+				<table id="tbl-control" tabindex="-1">
 					<col width="180px" />
 					<col width="135px" />
 					<col width="160px" />
 					<tr>
 						<td>
 							<!--I2_1 形式選択(ラベル)-->
-							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_301')}</div>
+							<div class="label" data-bind="ntsFormLabel: { }" tabindex="-1">#{i18n.getText('CMF001_301')}</div>
 						</td>
 						<td>
 							<!--I2_2 形式選択-->
-							<div data-bind="foreach: itemsFormatSelection">
-								<div
-									data-bind="ntsRadioButton: {
-										checked: $parent.setting().formatSelection, 
-										option: $data, 
-										optionValue: 'code', 
-										enable: !(!$parent.checkActive3() || !$parent.inputMode),
-										optionText: 'name', 
-										group: 'radioFormat'}"></div>
-							</div>
+							<div tabindex="1"
+								data-bind="ntsRadioBoxGroup: {
+								options: itemsFormatSelection,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: setting().formatSelection,
+								enable: !(!checkActive3() || !inputMode)}"></div>
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<!--I4_1 固定値(ラベル)-->
-							<div class="label" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_320')}</div>
+							<div class="label" data-bind="ntsFormLabel: { }" tabindex="-1">#{i18n.getText('CMF001_320')}</div>
 						</td>
 						<td>
 							<!--I4_2 固定値-->
-							<div data-bind="foreach: itemsFixedValue">
-								<div
-									data-bind="ntsRadioButton: {
-										checked: $parent.setting().fixedValue, 
-										option: $data, 
-										optionValue: 'code', 
-										enable: $parent.inputMode, 
-										optionText: 'name', 
-										group: 'radioFixedValue'}"></div>
-							</div>
+							<div tabindex="3"
+								data-bind="ntsRadioBoxGroup: {
+								options: itemsFixedValue,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: setting().fixedValue,
+								enable: inputMode}"></div>
 						</td>
 						<!--I4_5 固定値の値-->
-						<td><input
-							data-bind="ntsNumberEditor: {
-									value: setting().valueOfFixed,
-									enable: !(!checkActive2() || !inputMode),
-									option : {width : '200px'}}" />
+						<td><input tabindex="4"
+							data-bind="ntsTextEditor: {
+								constraint: 'DataSettingFixedValue',
+								value: setting().valueOfFixedValue,
+								enable: !(!checkActive2() || !inputMode),
+								required: checkRequired1(),
+								option : {width : '200px'}}" />
 						</td>
 					</tr>
 				</table>
 			</div>
-			<div id="functions-area-bottom">
-				<!--I5_1 設定--> 
-				<button id="btn_I5_1" class="x-large proceed"
-					data-bind="click: saveNumericSetting, enable: inputMode">#{i18n.getText('CMF001_325')}</button>
-				<!--I5_2 キャンセル--> 
-				<button id="btn_I5_2" class="large"
-					data-bind="click: cancelNumericSetting">#{i18n.getText('CMF001_326')}</button>
+			<div id="functions-area-bottom" tabindex="-1">
+				<!--I5_1 設定-->
+				<button id="btn_I5_1" class="x-large proceed" tabindex="5"
+					data-bind="click: saveSetting, enable: inputMode">#{i18n.getText('CMF001_325')}</button>
+				<!--I5_2 キャンセル-->
+				<button id="btn_I5_2" class="large" tabindex="6"
+					data-bind="click: cancelSetting">#{i18n.getText('CMF001_326')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

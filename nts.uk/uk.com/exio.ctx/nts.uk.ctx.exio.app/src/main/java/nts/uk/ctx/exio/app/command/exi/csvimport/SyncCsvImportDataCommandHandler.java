@@ -3,11 +3,7 @@ package nts.uk.ctx.exio.app.command.exi.csvimport;
 import java.util.concurrent.TimeUnit;
 
 import javax.ejb.Stateful;
-import javax.json.Json;
-import javax.json.JsonObject;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -15,44 +11,29 @@ import nts.arc.task.data.TaskDataSetter;
 
 @Stateful
 public class SyncCsvImportDataCommandHandler extends AsyncCommandHandler<CsvImportDataCommand> {
+	private static final String NUMBER_OF_ERROR = "エラー件数";
+	private static final String NUMBER_OF_SUCCESS = "処理カウント";
+	private static final String NUMBER_OF_TOTAL = "処理トータルカウント";
+	private static final String STOP_MODE = "中断するしない";
+	private static final String STATUS = "動作状態";
 	
-	/** The Constant NUMBER_OF_SUCCESS. */
-	private static final String NUMBER_OF_SUCCESS = "NUMBER_OF_SUCCESS";
-	
-	/** The Constant NUMBER_OF_ERROR. */
-	private static final String NUMBER_OF_ERROR = "NUMBER_OF_ERROR";
-	/** The total record. */
-    private final String TOTAL_RECORD = "TOTAL_RECORD";
-    
-    /** The success cnt. */
-    private final String SUCCESS_CNT = "SUCCESS_CNT";
-    
-    /** The fail cnt. */
-    private final String FAIL_CNT = "FAIL_CNT";
-    
 	@Override
 	protected void handle(CommandHandlerContext<CsvImportDataCommand> context) {
 		val asyncTask = context.asAsync();
 		TaskDataSetter setter = asyncTask.getDataSetter();
 		
-		// get command
+		// アルゴリズム「非同期タスクデータを保存する」を実行する 
 		CsvImportDataCommand command = context.getCommand();
-		setter.setData(NUMBER_OF_SUCCESS, 0);
-		setter.setData(NUMBER_OF_ERROR, 0);
-		setter.setData(TOTAL_RECORD, command.getCsvLine());
+		setter.setData(NUMBER_OF_SUCCESS, command.getCurrentLine());
+		setter.setData(NUMBER_OF_ERROR, command.getErrorCount());
+		setter.setData(NUMBER_OF_TOTAL, command.getCsvLine());
+		setter.setData(STOP_MODE, command.getStopMode());
+		setter.setData(STATUS, command.getStateBehavior());
+		
 		// Thuc hien xu ly o day va gui data ve client thong qua
 		// setter.updateData();
-		for (int i = 0; i < command.getCsvLine(); i++) {
+		for (int i = 1; i < command.getCsvLine(); i++) {
 			
-			/*if (i % 2 == 0) {
-				JsonObject value = Json.createObjectBuilder().add("testString", "AAAA" + i)
-						.add("currentRec", i).build();
-				setter.updateData(NUMBER_OF_SUCCESS, value);
-			} else {
-				JsonObject value = Json.createObjectBuilder().add("testString", "BBBBB" + i)
-						.add("currentRec", i).build();
-				setter.updateData(NUMBER_OF_ERROR, value);
-			}*/
 			if (asyncTask.hasBeenRequestedToCancel()) {
 				/* do something to clean up */
 				// cancel explicitly
@@ -60,12 +41,9 @@ public class SyncCsvImportDataCommandHandler extends AsyncCommandHandler<CsvImpo
 				break;
 			}
 
-			// dump code. delete after finish pharse 2
-			if (i % 2 == 0) {				
-				setter.updateData(NUMBER_OF_SUCCESS, i);
-			} else {				
-				setter.updateData(NUMBER_OF_ERROR, i);
-			}
+			setter.updateData(NUMBER_OF_SUCCESS, i);
+			setter.updateData(NUMBER_OF_ERROR, i/5);
+			
 			try {
 				TimeUnit.SECONDS.sleep(1);
 			} catch (InterruptedException e) {
@@ -73,12 +51,6 @@ public class SyncCsvImportDataCommandHandler extends AsyncCommandHandler<CsvImpo
 				e.printStackTrace();
 			}
 		}
-	}
-	@Data
-	@AllArgsConstructor
-	public class testDataDto {
-		String status;
-		int data;
 	}
 
 }
