@@ -7,7 +7,7 @@ module nts.uk.at.view.kmf002.d {
                 save: "at/shared/holidaysetting/employment/save",
                 find: "at/shared/holidaysetting/employment/findEmploymentMonthDaySetting",
                 remove: "at/shared/holidaysetting/employment/remove",
-                findFirstMonth: "basic/company/beginningmonth/find",
+                findFirstMonth: "at/shared/holidaysetting/company",
                 findAllEmpRegister: "at/shared/holidaysetting/employment/findEmploymentMonthDaySetting/findAllEmpRegister"
             };
         
@@ -42,7 +42,7 @@ module nts.uk.at.view.kmf002.d {
         }
         
         export function findFirstMonth(): JQueryPromise<any>{
-            return nts.uk.request.ajax("com", path.findFirstMonth);
+            return nts.uk.request.ajax("at", path.findFirstMonth);
         }
     }
     
