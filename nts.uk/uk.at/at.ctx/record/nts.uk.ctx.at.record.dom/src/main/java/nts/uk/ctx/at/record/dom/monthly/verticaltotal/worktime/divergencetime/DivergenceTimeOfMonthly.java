@@ -53,6 +53,7 @@ public class DivergenceTimeOfMonthly {
 		// 日別実績の「乖離時間」「控除時間」「控除後乖離時間」を集計
 		val actualWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
 		val divergenceTimeOfDaily = actualWorkingTime.getDivTime();
+		if (divergenceTimeOfDaily.getDivergenceTime() == null) return;
 		for (val divergenceTime : divergenceTimeOfDaily.getDivergenceTime()){
 			val divTimeNo = Integer.valueOf(divergenceTime.getDivTimeId());
 			this.divergenceTimeList.putIfAbsent(divTimeNo, new AggregateDivergenceTime(divTimeNo.intValue()));

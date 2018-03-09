@@ -507,14 +507,7 @@ module nts.custombinding {
                                     <div data-bind="ntsFormLabel: { 
                                         text: className || '',
                                         cssClass: ko.computed(function() {
-                                            if(!_item.showColor()) {
-                                                return '';
-                                            }
-                                            
-                                            if(!!_.find(__items, function(x) { return x.value() })) {
-                                                 return '';
-                                            }
-                                            return 'color-operation-case-character'; 
+                                            return _item.showColor() && 'color-operation-case-character';
                                         }),
                                         required: !!_.find(__items, function(x) { return x.required }),
                                         constraint: _constraint.length && _constraint || undefined  }"></div>
@@ -1373,7 +1366,7 @@ module nts.custombinding {
                                                     !dom2.is(':disabled') && dom2.ntsError('set', { messageId: "Msg_858" });
                                                 }
 
-                                                if ((!tpt && !tnt) || (tpt && tnt)) {
+                                                if (!(tpt && tnt) || (tpt && tnt)) {
                                                     rmError(dom1, "Msg_858");
                                                     rmError(dom2, "Msg_858");
 

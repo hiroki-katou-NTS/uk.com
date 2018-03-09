@@ -53,7 +53,8 @@ public class ActualWorkTimeDailyPerformDto {
 	private List<DivergenceTimeDto> divergenceTime;
 
 	public static ActualWorkTimeDailyPerformDto toActualWorkTime(ActualWorkingTimeOfDaily domain) {
-		return domain == null ? null : new ActualWorkTimeDailyPerformDto(getPremiumTime(domain.getPremiumTimeOfDailyPerformance()),
+		return domain == null ? null : new ActualWorkTimeDailyPerformDto(
+						getPremiumTime(domain.getPremiumTimeOfDailyPerformance()),
 						getAttendanceTime(domain.getConstraintDifferenceTime()),
 						getConstraintTime(domain.getConstraintTime()),
 						getAttendanceTime(domain.getTimeDifferenceWorkingHours()),
@@ -62,7 +63,7 @@ public class ActualWorkTimeDailyPerformDto {
 	}
 
 	private static List<DivergenceTimeDto> getDivTime(DivergenceTimeOfDaily domain) {
-		return domain == null || domain.getDivergenceTime() == null ? new ArrayList<>()
+		return domain == null ? new ArrayList<>()
 				: ConvertHelper.mapTo(domain.getDivergenceTime(), d -> DivergenceTimeDto.fromDivergenceTime(d));
 	}
 
@@ -79,7 +80,7 @@ public class ActualWorkTimeDailyPerformDto {
 	}
 
 	private static List<PremiumTimeDto> getPremiumTime(PremiumTimeOfDailyPerformance domain) {
-		return domain == null || domain.getPremiumTimes() == null ? new ArrayList<>() : ConvertHelper.mapTo(domain.getPremiumTimes(),
+		return domain == null ? new ArrayList<>() : ConvertHelper.mapTo(domain.getPremiumTimes(),
 						c -> new PremiumTimeDto(
 								c.getPremitumTime() == null ? null : c.getPremitumTime().valueAsMinutes(),
 								c.getPremiumTimeNo()));
@@ -92,8 +93,7 @@ public class ActualWorkTimeDailyPerformDto {
 					constraintTime == null || constraintTime.getTotalConstraintTime() == null ? 0 : constraintTime.getTotalConstraintTime(),
 					constraintDifferenceTime == null ? 0 : constraintDifferenceTime, 
 					timeDifferenceWorkingHours == null ? 0 : timeDifferenceWorkingHours,
-				new DivergenceTimeOfDaily(divergenceTime == null ? new ArrayList<>()
-						: ConvertHelper.mapTo(divergenceTime,
+				new DivergenceTimeOfDaily(ConvertHelper.mapTo(divergenceTime,
 								c -> new DivergenceTime(toAttendanceTime(c.getDivergenceTimeAfterDeduction()),
 										toAttendanceTime(c.getDeductionTime()), toAttendanceTime(c.getDivergenceTime()),
 										c.getDivergenceTimeNo(),

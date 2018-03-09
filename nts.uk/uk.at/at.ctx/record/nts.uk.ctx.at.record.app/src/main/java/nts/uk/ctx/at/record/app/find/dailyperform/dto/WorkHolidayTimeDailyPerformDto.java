@@ -67,11 +67,11 @@ public class WorkHolidayTimeDailyPerformDto {
 	
 	public HolidayWorkTimeOfDaily toDomain() {
 		return new HolidayWorkTimeOfDaily(
-				holidyWorkFrameTimeSheet == null ? new ArrayList<>() : ConvertHelper.mapTo(holidyWorkFrameTimeSheet,
+				ConvertHelper.mapTo(holidyWorkFrameTimeSheet,
 						(c) -> new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(c.getHolidayWorkFrameNo()),
 								c.getTimeSheet() == null ? null : new TimeSpanForCalc(toTimeWithDayAttr(c.getTimeSheet().getStart()),
 										toTimeWithDayAttr(c.getTimeSheet().getEnd())))),
-				holidayWorkFrameTime == null ? new ArrayList<>() : ConvertHelper.mapTo(holidayWorkFrameTime,
+				ConvertHelper.mapTo(holidayWorkFrameTime,
 						(c) -> new HolidayWorkFrameTime(new HolidayWorkFrameNo(c.getHolidayFrameNo()),
 								createTimeWithCalc(c.getHolidayWorkTime()),
 								createTimeWithCalc(c.getTransferTime()),

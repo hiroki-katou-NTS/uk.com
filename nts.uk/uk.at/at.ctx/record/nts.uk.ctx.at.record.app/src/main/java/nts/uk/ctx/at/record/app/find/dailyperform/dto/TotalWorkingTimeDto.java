@@ -116,11 +116,11 @@ public class TotalWorkingTimeDto {
 										getAttendanceTime(c.getIntervalTime().getExemptionTime()), c.getWorkNo().v())),
 						BreakTimeSheetDailyPerformDto.fromBreakTimeOfDaily(domain.getBreakTimeOfDaily()),
 						// TODO: get domain 今回対象外
-						domain.getOutingTimeOfDailyPerformance() == null ? new ArrayList<>() : 
-								ConvertHelper.mapTo(domain.getOutingTimeOfDailyPerformance(), c -> GoOutTimeSheetDailyPerformDto.toDto(c)),
+						ConvertHelper.mapTo(domain.getOutingTimeOfDailyPerformance(), c -> GoOutTimeSheetDailyPerformDto.toDto(c)),
 						ShortWorkTimeDto.toDto(domain.getShotrTimeOfDaily()), 
 						RaisingSalaryTimeDailyPerformDto.toDto(domain.getRaiseSalaryTimeOfDailyPerfor()), 
-						null, domain.getWorkTimes().v());
+						null, 
+						domain.getWorkTimes() == null ? null : domain.getWorkTimes().v());
 	}
 
 	private static ValicationUseDto getValicationUseDto(TimevacationUseTimeOfDaily c) {
@@ -139,15 +139,13 @@ public class TotalWorkingTimeDto {
 		return new TotalWorkingTime(toAttendanceTime(totalWorkingTime), toAttendanceTime(totalCalcTime),
 				toAttendanceTime(actualTime), withinStatutoryTime == null ? null : withinStatutoryTime.toDomain(),
 				excessOfStatutoryTime == null ? null : excessOfStatutoryTime.toDomain(),
-				lateTime == null ? new ArrayList<>()
-						: ConvertHelper.mapTo(lateTime,
+				ConvertHelper.mapTo(lateTime,
 								(c) -> new LateTimeOfDaily(createTimeWithCalc(c.getLateTime()),
 										createTimeWithCalc(c.getLateDeductionTime()), new WorkNo(c.getWorkNo()),
 										createTimeValication(c.getBreakUse()),
 										new IntervalExemptionTime(null, null,
 												toAttendanceTime(c.getIntervalExemptionTime())))),
-				leaveEarlyTime == null ? new ArrayList<>()
-						: ConvertHelper.mapTo(leaveEarlyTime,
+				ConvertHelper.mapTo(leaveEarlyTime,
 								(c) -> new LeaveEarlyTimeOfDaily(createTimeWithCalc(c.getLeaveEarlyTime()),
 										createTimeWithCalc(c.getLeaveEarlyDeductionTime()), new WorkNo(c.getWorkNo()),
 										createTimeValication(c.getValicationUseTime()),
@@ -157,8 +155,7 @@ public class TotalWorkingTimeDto {
 				ConvertHelper.mapTo(goOutTimeSheet, c -> c.toDomain()), 
 				raisingSalaryTime == null ? null : raisingSalaryTime.toDomain(),
 				workTimes == null ? null : new WorkTimes(workTimes),
-				new TemporaryTimeOfDaily(temporaryTime == null ? new ArrayList<>()
-						: ConvertHelper.mapTo(temporaryTime,
+				new TemporaryTimeOfDaily(ConvertHelper.mapTo(temporaryTime,
 								(c) -> new TemporaryFrameTimeOfDaily(new WorkNo(c.getWorkNo()),
 										toAttendanceTime(c.getTemporaryTime()),
 										toAttendanceTime(c.getTemporaryNightTime())))),

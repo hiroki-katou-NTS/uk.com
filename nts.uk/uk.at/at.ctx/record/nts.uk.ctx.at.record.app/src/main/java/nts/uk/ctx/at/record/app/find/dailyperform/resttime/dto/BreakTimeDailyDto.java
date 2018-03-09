@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,7 +16,6 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -63,7 +61,7 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 		if(x != null){
 			dto.setEmployeeId(x.getEmployeeId());
 			dto.setYmd(x.getYmd());
-			dto.setRestTimeType(x.getBreakType().value);
+			dto.setRestTimeType(x.getBreakType() == null ? 0 : x.getBreakType().value);
 			dto.setTimeZone(ConvertHelper.mapTo(x.getBreakTimeSheets(), (c) -> new TimeSheetDto(
 					c.getBreakFrameNo().v().intValue(),
 					getTimeStamp(c.getStartTime()),
@@ -95,7 +93,7 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 		}
 		return new BreakTimeOfDailyPerformance(emp,
 					EnumAdaptor.valueOf(restTimeType, BreakType.class),
-					timeZone == null ? new ArrayList<>() : ConvertHelper.mapTo(timeZone,
+					ConvertHelper.mapTo(timeZone,
 							(d) -> new BreakTimeSheet(new BreakFrameNo(d.getTimeSheetNo()),
 									createWorkStamp(d.getStart()),
 									createWorkStamp(d.getEnd()),

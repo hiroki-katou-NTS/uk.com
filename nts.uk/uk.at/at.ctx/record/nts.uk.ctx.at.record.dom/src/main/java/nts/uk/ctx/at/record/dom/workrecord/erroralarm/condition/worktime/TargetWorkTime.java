@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
  * @author hungnm
@@ -36,4 +36,14 @@ public class TargetWorkTime extends DomainObject {
 		}).collect(Collectors.toList()));
 	}
 
+	public boolean contains(WorkTimeCode target) {
+		if (this.isUse()) {
+			return this.lstWorkTime.contains(target);
+		}
+		return false;
+	}
+	
+	public boolean isUse() {
+		return this.filterAtr != null && this.filterAtr;
+	}
 }

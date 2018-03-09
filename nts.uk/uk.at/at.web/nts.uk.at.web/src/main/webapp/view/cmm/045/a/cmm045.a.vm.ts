@@ -38,9 +38,7 @@ module cmm045.a.viewmodel {
                 { id: 5, name: getText('CMM045_24') },
                 { id: 6, name: getText('CMM045_25') }
             ]);
-            self.selectedRuleCode.subscribe(function(codeChanged) {
-                self.filter();
-            });
+            
             self.selectedCode.subscribe(function(codeChanged) {
                 self.filterByAppType(codeChanged);
             });
@@ -96,6 +94,9 @@ module cmm045.a.viewmodel {
                         self.roundingRules.push(new vmbase.ApplicationDisplayAtr(obj.value, obj.localizedName));
                     });
                     service.getApplicationList(param).done(function(data) {
+                        self.selectedRuleCode.subscribe(function(codeChanged) {
+                            self.filter();
+                        });
                         //luu param
                         if (self.dateValue().startDate == '' || self.dateValue().endDate == '') {
                             let date: vmbase.Date = { startDate: data.startDate, endDate: data.endDate }
@@ -293,11 +294,12 @@ module cmm045.a.viewmodel {
                     $(id).parent().addClass('denialCell');
                 }
                 //fill color in 申請内容
+                let idContent = ".appContent-" + item.appId;
                 if (item.checkTimecolor == 1) {//1: xin truoc < xin sau; k co xin truoc; xin truoc bi denail
-                    $(".nts-grid-control-appContent-" + item.appId).addClass('preAppExcess');
+                    $(idContent).parent().addClass('preAppExcess');
                 }
                 if (item.checkTimecolor == 2) {////2: thuc te < xin sau
-                    $(".nts-grid-control-appContent-" + item.appId).addClass('workingResultExcess');
+                    $(idContent).parent().addClass('workingResultExcess');
                 }
                 //fill color text
                 let color = item.appDate.substring(11,12);
@@ -396,7 +398,7 @@ module cmm045.a.viewmodel {
             let applicant: string = masterInfo.workplaceName + '<br/>' + masterInfo.empName;
             let appContentPost: string = getText('CMM045_272') + getText('CMM045_268') + ' ' + overTime.workClockFrom1 + getText('CMM045_100') + overTime.workClockTo1 + ' 残業合計' + self.convertFrameTime(overTime.lstFrame) + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
-            let contentFull = appContentPost + contentPre + contentResult;
+            let contentFull = '<div class = "appContent-' + app.applicationID + '">'+ appContentPost + contentPre + contentResult + '</div>';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                 masterInfo.dispName, prePostApp, self.convertDate(app.applicationDate), contentFull, self.convertDateTime(app.inputDate),
@@ -570,7 +572,9 @@ module cmm045.a.viewmodel {
             let self = this;
             //check filter
             if (self.dateValue().startDate == null || self.dateValue().endDate == null) {//期間開始日付または期間終了日付が入力されていない
-                nts.uk.ui.dialog.error({ messageId: "Msg_359" });
+//                $('.ntsStartDate').set
+                $('.ntsDatepicker.nts-input.ntsStartDatePicker.ntsDateRange_Component').ntsError('set', {messageId:"Msg_359"});
+//                nts.uk.ui.dialog.error({ messageId: "Msg_359" });
                 block.clear();
                 return;
             }
@@ -657,6 +661,9 @@ module cmm045.a.viewmodel {
                 block.clear();
             });
         }
+        /**
+         * find row hidden
+         */
         findRowHidden(lstItem: Array<vmbase.DataModeApp>): any{
             let lstHidden = []
             _.each(lstItem, function(item){
@@ -666,6 +673,9 @@ module cmm045.a.viewmodel {
             });
             return lstHidden;
         }
+        /**
+         * find check box
+         */
         findcheck(selectedIds: Array<any>, idCheck: number): boolean {
             let check = false;
             _.each(selectedIds, function(id) {
@@ -725,6 +735,9 @@ module cmm045.a.viewmodel {
                 self.reloadGridApplicaion();
             }
         }
+        /**
+         * count status when filter by appType
+         */
         countStatus(lstApp: Array<vmbase.DataModeApp>): vmbase.ApplicationStatus{
             let unApprovalNumber = 0;
             let approvalNumber = 0;

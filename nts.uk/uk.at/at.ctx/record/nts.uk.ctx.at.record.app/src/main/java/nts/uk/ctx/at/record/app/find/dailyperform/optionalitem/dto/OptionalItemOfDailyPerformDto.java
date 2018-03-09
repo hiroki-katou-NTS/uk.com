@@ -64,8 +64,7 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 		if(!this.isHaveData()) {
 			return null;
 		}
-		return new AnyItemValueOfDaily(employeeId, date,
-						optionalItems == null ? new ArrayList<>() : ConvertHelper.mapTo(optionalItems,
+		return new AnyItemValueOfDaily(employeeId, date, ConvertHelper.mapTo(optionalItems,
 								(c) -> new AnyItemValue(new AnyItemNo(c.getItemNo()), 
 									c.isTimesItem() ? Optional.of(new AnyItemTimes(Integer.valueOf(c.getValue()))) : Optional.empty(),
 									c.isAmountItem() ? Optional.of(new AnyItemAmount(new BigDecimal(c.getValue()))) : Optional.empty(),

@@ -621,9 +621,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (atr != undefined && atr != null) {
                     if (atr == 6) {
                         // Time
-                        valueResult = String(self.getHoursAll(value));
+                        valueResult = value == "" ? null : String(self.getHoursAll(value));
                     } else if(atr == 5){
-                         valueResult = String(self.getHoursTime(value));
+                         valueResult =  value == "" ? null : String(self.getHoursTime(value));
                     } else{
                          valueResult = value;
                     }
