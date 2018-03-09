@@ -426,11 +426,12 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 		AttendanceTime calcChildTime = calcDedTimeByAtr(dedAtr,ConditionAtr.Child);
 		//調整時間を減算(元に戻す)
 		this.calcrange.getEnd().backByMinutes(this.adjustTime.orElse(new AttendanceTime(0)).valueAsMinutes());
-		return new AttendanceTime(calcBreakTime.valueAsMinutes()
-								 +calcUnionGoOutTime.valueAsMinutes()
-								 +calcPrivateGoOutTime.valueAsMinutes()
-								 +calcCareTime.valueAsMinutes()
-								 +calcChildTime.valueAsMinutes());
+		return new AttendanceTime(this.calcrange.lengthAsMinutes()
+								 -calcBreakTime.valueAsMinutes()
+								 -calcUnionGoOutTime.valueAsMinutes()
+								 -calcPrivateGoOutTime.valueAsMinutes()
+								 -calcCareTime.valueAsMinutes()
+								 -calcChildTime.valueAsMinutes());
 	}
 	
 	/**
