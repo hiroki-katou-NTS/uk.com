@@ -209,6 +209,27 @@ module nts.uk.com.view.cmf001.f.viewmodel {
             let self = this;
             let currentAcceptCodeConvert = self.codeConvertData;
 
+            //新規モードか更新モードを判別する
+            if (model.SCREEN_MODE.NEW == self.screenMode()) {
+                //コード変換コードが既に登録されていないか判別
+                var existCode = self.codeConvertList().filter(x => x.convertCd() === currentAcceptCodeConvert().convertCd());
+                //同一コード有の場合
+                if (existCode.length > 0) {
+                    //エラーメッセージ　Msg_1094　を表示する 
+                    dialog.alertError({ messageId: "Msg_1094" });
+                    block.clear();
+                    return;
+                }
+            }
+
+            //コード一覧に変換データの有無を判別
+            if (_.isEmpty(currentAcceptCodeConvert().cdConvertDetails())) {
+                //エラーメッセージ　Msg_906　変換コードが設定されていません
+                dialog.alertError({ messageId: "Msg_906" });
+                block.clear();
+                return;
+            }
+
             let _lineError: Array<any> = [];
             let _codeDuplicate: Array<any> = [];
             for (let detail of currentAcceptCodeConvert().cdConvertDetails()) {
@@ -240,27 +261,6 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 
             if (!nts.uk.ui.errors.hasError()) {
                 block.invisible();
-
-                //新規モードか更新モードを判別する
-                if (model.SCREEN_MODE.NEW == self.screenMode()) {
-                    //コード変換コードが既に登録されていないか判別
-                    var existCode = self.codeConvertList().filter(x => x.convertCd() === currentAcceptCodeConvert().convertCd());
-                    //同一コード有の場合
-                    if (existCode.length > 0) {
-                        //エラーメッセージ　Msg_1094　を表示する 
-                        dialog.alertError({ messageId: "Msg_1094" });
-                        block.clear();
-                        return;
-                    }
-                }
-
-                //コード一覧に変換データの有無を判別
-                if (_.isEmpty(currentAcceptCodeConvert().cdConvertDetails())) {
-                    //エラーメッセージ　Msg_906　変換コードが設定されていません
-                    dialog.alertError({ messageId: "Msg_906" });
-                    block.clear();
-                    return;
-                }
 
                 self.codeConvertData().cdConvertDetails(_.filter(self.codeConvertData().cdConvertDetails(), x => !_.isEmpty(x.outputItem()) && !_.isEmpty(x.systemCd())));
 
