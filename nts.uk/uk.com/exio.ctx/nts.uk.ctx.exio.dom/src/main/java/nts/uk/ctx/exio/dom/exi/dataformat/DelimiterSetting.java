@@ -6,9 +6,12 @@ package nts.uk.ctx.exio.dom.exi.dataformat;
  *
  */
 public enum DelimiterSetting {
-	NO_DELIMITER(0, "区切り文字なし"), 
-	CUT_BYDECIMAL_POINT(1, "小数点で区切る"), 
-	CUT_BY_COLON(2, "コロンで区切る");
+	//区切り文字なし
+	NO_DELIMITER(0, "Enum_DelimiterSetting_NO_DELIMITER"), 
+	//小数点で区切る
+	CUT_BYDECIMAL_POINT(1, "Enum_DelimiterSetting_CUT_BYDECIMAL_POINT"), 
+	//コロンで区切る
+	CUT_BY_COLON(2, "Enum_DelimiterSetting_CUT_BY_COLON");
 
 	/** The value. */
 	public final int value;
