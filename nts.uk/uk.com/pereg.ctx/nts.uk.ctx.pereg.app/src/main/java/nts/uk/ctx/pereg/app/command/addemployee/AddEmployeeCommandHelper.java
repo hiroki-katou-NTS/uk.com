@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
@@ -39,27 +40,20 @@ public class AddEmployeeCommandHelper {
 	@Inject
 	private PersonRepository personRepo;
 
-	/** The workplace history repository. */
-	// @Inject
-	// private AffWorkplaceHistoryRepository workplaceHistRepo;
-	//
-	// @Inject
-	// private WorkplaceInfoRepository workPlaceInfoRepo;
-
 	public void addBasicData(AddEmployeeCommand command, String personId, String employeeId, String comHistId,
 			String companyId, String userId) {
 
 		// add newPerson
 
-		addNewPerson(personId, command);
+		addNewPerson(personId, command.getEmployeeName());
 
 		// addmngInfo
 
-		addEmployeeDataMngInfo(personId, employeeId, command, companyId);
+		addEmployeeDataMngInfo(personId, employeeId, command.getEmployeeCode(), companyId);
 
 		// add AffCompanyHist
 
-		addAffCompanyHist(personId, employeeId, command, companyId, comHistId);
+		addAffCompanyHist(personId, employeeId, command.getHireDate(), companyId, comHistId);
 
 	}
 
@@ -75,47 +69,40 @@ public class AddEmployeeCommandHelper {
 	//
 	// }
 
-	private void addNewPerson(String personId, AddEmployeeCommand command) {
-		Person newPerson = Person.createFromJavaType(ConstantUtils.minDate(), null,
-				GenderPerson.Male.value, personId, " ", "", command.getEmployeeName(), " ", "", "", "", "", "", "", "",
-				"", "", "");
+	private void addNewPerson(String personId, String employeeName) {
+		Person newPerson = Person.createFromJavaType(ConstantUtils.minDate(), null, GenderPerson.Male.value, personId,
+				" ", "", employeeName, " ", "", "", "", "", "", "", "", "", "", "");
 
 		this.personRepo.addNewPerson(newPerson);
 
 	}
 
-	private void addEmployeeDataMngInfo(String personId, String employeeId, AddEmployeeCommand command,
-			String companyId) {
+	private void addEmployeeDataMngInfo(String personId, String employeeId, String employeeCode, String companyId) {
 		// check duplicate employeeCode
-		Optional<EmployeeDataMngInfo> empInfo = this.empDataRepo.findByEmployeCD(command.getEmployeeCode(), AppContexts.user().companyId());
+		Optional<EmployeeDataMngInfo> empInfo = this.empDataRepo.findByEmployeCD(employeeCode,
+				AppContexts.user().companyId());
 
 		if (empInfo.isPresent()) {
 			throw new BusinessException("Msg_345");
 		}
+		
 		// add system data
-		this.empDataRepo.add(EmployeeDataMngInfo.createFromJavaType(companyId, personId, employeeId,
-				command.getEmployeeCode(), EmployeeDeletionAttr.NOTDELETED.value, null, "", ""));
+		this.empDataRepo.add(EmployeeDataMngInfo.createFromJavaType(companyId, personId, employeeId, employeeCode,
+				EmployeeDeletionAttr.NOTDELETED.value, null, "", ""));
 
 	}
 
-	private void addAffCompanyHist(String personId, String employeeId, AddEmployeeCommand command, String companyId,
+	private void addAffCompanyHist(String personId, String employeeId, GeneralDate hireDate, String companyId,
 			String comHistId) {
-		List<AffCompanyHistByEmployee> comHistList = new ArrayList<AffCompanyHistByEmployee>();
+		List<AffCompanyHistByEmployee> comHistList = new ArrayList<>();
+		List<AffCompanyHistItem> comHistItemList = new ArrayList<>();
 
-		List<AffCompanyHistItem> comHistItemList = new ArrayList<AffCompanyHistItem>();
-
-		comHistItemList.add(new AffCompanyHistItem(comHistId, false,
-				new DatePeriod(command.getHireDate(), ConstantUtils.maxDate())));
-
+		comHistItemList.add(new AffCompanyHistItem(comHistId, false, new DatePeriod(hireDate, GeneralDate.max())));
 		comHistList.add(new AffCompanyHistByEmployee(employeeId, comHistItemList));
-
 		AffCompanyHist newComHist = new AffCompanyHist(personId, comHistList);
-
 		this.companyHistRepo.add(newComHist);
 
-		AffCompanyInfo newComInfo = AffCompanyInfo.createFromJavaType(comHistId, " ", null,
-				null);
-
+		AffCompanyInfo newComInfo = AffCompanyInfo.createFromJavaType(comHistId, " ", null, null);
 		this.companyInfoRepo.add(newComInfo);
 
 	}

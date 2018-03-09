@@ -27,7 +27,7 @@ import nts.uk.shr.pereg.app.command.PeregInputContainer;
 @Stateless
 public class AddEmployeeCommandFacade {
 
-	List<String> requiredCtgList = Arrays.asList("CS00001", "CS00002", "CS00003");
+	private final List<String> basicCategoriesDefinition = Arrays.asList("CS00001", "CS00002", "CS00003");
 
 	@Inject
 	private PeregCommandFacade commandFacade;
@@ -38,20 +38,12 @@ public class AddEmployeeCommandFacade {
 	public void addNewFromInputs(AddEmployeeCommand command, String personId, String employeeId,
 			List<ItemsByCategory> inputs) {
 
-		updateRequiredInputs(command, inputs, personId, employeeId);
+		updateBasicCategories(command, inputs, personId, employeeId);
 
-		addNoRequiredInputs(inputs, personId, employeeId);
+		addNoBasicCategories(inputs, personId, employeeId);
 
 	}
 	
-	public void addFromInputs(AddEmployeeCommand command, String personId, String employeeId, String comHistId,
-			List<ItemsByCategory> inputs) {
-		// call add commandFacade
-		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, inputs);
-		this.commandFacade.add(addContainer);
-
-	}
-
 	public List<ItemsByCategory> createData(AddEmployeeCommand command, String personId, String employeeId,
 			String comHistId) {
 
@@ -83,23 +75,23 @@ public class AddEmployeeCommandFacade {
 
 	}
 
-	public void updateRequiredInputs(AddEmployeeCommand command, List<ItemsByCategory> inputs, String personId,
+	private void updateBasicCategories(AddEmployeeCommand command, List<ItemsByCategory> inputs, String personId,
 			String employeeId) {
 
-		List<ItemsByCategory> requiredInputs = inputs.stream()
-				.filter(x -> requiredCtgList.indexOf(x.getCategoryCd()) != -1).collect(Collectors.toList());
+		List<ItemsByCategory> basicCategories = inputs.stream()
+				.filter(x -> basicCategoriesDefinition.indexOf(x.getCategoryCd()) != -1).collect(Collectors.toList());
 
-		if (!CollectionUtil.isEmpty(requiredInputs)) {
+		if (!CollectionUtil.isEmpty(basicCategories)) {
 
-			updateRequiredSystemInputs(requiredInputs, personId, employeeId, command);
+			updateFixItemOfBasicCategory(basicCategories, personId, employeeId, command);
 
-			addRequiredOptinalInputs(requiredInputs, personId, employeeId);
+			addOptionalItemOfBasicCategory(basicCategories, personId, employeeId);
 
 		}
 
 	}
 
-	private void updateRequiredSystemInputs(List<ItemsByCategory> fixedInputs, String personId, String employeeId,
+	private void updateFixItemOfBasicCategory(List<ItemsByCategory> fixedInputs, String personId, String employeeId,
 			AddEmployeeCommand command) {
 		List<ItemsByCategory> updateInputs = new ArrayList<ItemsByCategory>();
 
@@ -121,17 +113,18 @@ public class AddEmployeeCommandFacade {
 
 	}
 
-	public void addNoRequiredInputs(List<ItemsByCategory> inputs, String personId, String employeeId) {
+	private void addNoBasicCategories(List<ItemsByCategory> inputs, String personId, String employeeId) {
 
-		List<ItemsByCategory> noRequiredInputs = inputs.stream()
-				.filter(x -> requiredCtgList.indexOf(x.getCategoryCd()) == -1).collect(Collectors.toList());
+		List<ItemsByCategory> noBasicCategories = inputs.stream()
+				.filter(x -> basicCategoriesDefinition.indexOf(x.getCategoryCd()) == -1).collect(Collectors.toList());
+		
 		// call add commandFacade
-		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, noRequiredInputs);
+		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, noBasicCategories);
 
 		this.commandFacade.add(addContainer);
 	}
 
-	private void addRequiredOptinalInputs(List<ItemsByCategory> fixedInputs, String personId, String employeeId) {
+	private void addOptionalItemOfBasicCategory(List<ItemsByCategory> fixedInputs, String personId, String employeeId) {
 		List<ItemsByCategory> addInputs = new ArrayList<ItemsByCategory>();
 
 		fixedInputs.forEach(ctg -> {
