@@ -129,9 +129,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.getDetailCheck(self.inputDetail());
                 nts.uk.ui.block.clear();
                 dfd.resolve();
-            }).fail(() => {
-                nts.uk.ui.block.clear();
-                dfd.reject();
+            }).fail((res) => {
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){
+                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
+                    nts.uk.ui.block.clear();
+                });  
             });
 
             return dfd.promise();
