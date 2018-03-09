@@ -38,12 +38,20 @@ public class AddEmployeeCommandFacade {
 	private RegisterLayoutFinder layoutFinder;
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void addNewFromInputs(AddEmployeeCommand command, String personId, String employeeId, String comHistId,
+	public void addNewFromInputs(AddEmployeeCommand command, String personId, String employeeId,
 			List<ItemsByCategory> inputs) {
 
 		updateRequiredInputs(command, inputs, personId, employeeId);
 
 		addNoRequiredInputs(inputs, personId, employeeId);
+
+	}
+	
+	public void addFromInputs(AddEmployeeCommand command, String personId, String employeeId, String comHistId,
+			List<ItemsByCategory> inputs) {
+		// call add commandFacade
+		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, inputs);
+		this.commandFacade.add(addContainer);
 
 	}
 

@@ -65,7 +65,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		helper.addBasicData(command, personId, employeeId, comHistId, companyId, userId);
 
-		process.addNewFromInputs(command, personId, employeeId, comHistId, inputs);
+		process.addNewFromInputs(command, personId, employeeId, inputs);
 
 		return employeeId;
 
