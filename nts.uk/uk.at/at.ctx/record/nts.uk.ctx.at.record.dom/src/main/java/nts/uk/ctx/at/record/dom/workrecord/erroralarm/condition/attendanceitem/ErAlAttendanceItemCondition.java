@@ -11,7 +11,6 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
@@ -72,6 +71,16 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
         this.conditionAtr = EnumAdaptor.valueOf(conditionAtr, ConditionAtr.class);
         this.useAtr = useAtr;
     }
+    
+    public ErAlAttendanceItemCondition(String companyId, String errorAlarmCode, int targetNO, ConditionAtr conditionAtr,
+            Boolean useAtr) {
+        super();
+        this.companyId = companyId;
+        this.errorAlarmCode = new ErrorAlarmWorkRecordCode(errorAlarmCode);
+        this.targetNO = targetNO;
+        this.conditionAtr = conditionAtr;
+        this.useAtr = useAtr;
+    }
 
     /**
      * Set CountableTarget
@@ -125,28 +134,25 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
     }
 
     public boolean checkTarget(Function<List<Integer>, List<Integer>> getItemValue) {
+    	if(this.useAtr == null || !this.useAtr){
+    		return false;
+    	}
         Integer targetValue = calculateTargetValue(getItemValue);
 
         if (this.compareRange != null) {
             return this.compareRange.checkRange(targetValue, c -> getVValue(c));
         } else {
-            if (this.compareSingleValue.getConditionType() == ConditionType.FIXED_VALUE) {
-                return this.compareSingleValue.check(targetValue, c -> getVValue(c));
-            } else {
-                return this.compareSingleValue.checkWithAttendanceItem(targetValue, getItemValue, c -> getVValue(c));
-            }
+        	return this.compareSingleValue.check(targetValue, getItemValue, c -> getVValue(c));
         }
     }
 
     private Integer calculateTargetValue(Function<List<Integer>, List<Integer>> getItemValue) {
-        Integer target = 0;
         if (this.uncountableTarget != null) {
-            target = getItemValue.apply(Arrays.asList(this.uncountableTarget.getAttendanceItem())).get(0);
+        	return getItemValue.apply(Arrays.asList(this.uncountableTarget.getAttendanceItem())).get(0);
         } else {
-            target = this.countableTarget.getAddSubAttendanceItems().calculate(getItemValue);
+        	return this.countableTarget.getAddSubAttendanceItems().calculate(getItemValue);
         }
 
-        return target;
 //        return toCheckValue(target);
     }
     

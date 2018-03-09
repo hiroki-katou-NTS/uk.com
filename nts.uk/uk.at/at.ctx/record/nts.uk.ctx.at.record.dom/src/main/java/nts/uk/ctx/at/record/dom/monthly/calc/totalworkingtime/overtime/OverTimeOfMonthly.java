@@ -10,6 +10,8 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
+import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
@@ -241,13 +243,23 @@ public class OverTimeOfMonthly {
 		// 日別実績の法定内時間を取得する
 		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
 		val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
-		val legalTimeOfDaily = totalWorkingTime.getWithinStatutoryTimeOfDaily();
+		WithinStatutoryTimeOfDaily legalTimeOfDaily = totalWorkingTime.getWithinStatutoryTimeOfDaily();
+		if (legalTimeOfDaily == null){
+			legalTimeOfDaily = WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
+					new AttendanceTime(0),
+					new AttendanceTime(0),
+					new AttendanceTime(0),
+					new WithinStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+					new AttendanceTime(0));
+		}
 		
 		// 法定内残業にできる時間を計算する
 		//*****（未）　正式な処理が出来てから、代入。
 		AttendanceTime canLegalOverTime = new AttendanceTime(0);
 		//		new AttendanceTime(dailyCalculationPersonalInformation.getStatutoryWorkTime().v());
-		canLegalOverTime = canLegalOverTime.minusMinutes(legalTimeOfDaily.getWorkTime().v());
+		if (legalTimeOfDaily != null){
+			canLegalOverTime = canLegalOverTime.minusMinutes(legalTimeOfDaily.getWorkTime().v());
+		}
 		return canLegalOverTime;
 	}
 	

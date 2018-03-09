@@ -1,17 +1,19 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@AllArgsConstructor
 public class AlarmExtraValueWkReDto {
 
 	/**職場ID*/
 	private String workplaceID;
+	
+	/**  階層コード*/
+	private String hierarchyCd;
 	
 	/**職場名*/
 	private String workplaceName;
@@ -24,7 +26,7 @@ public class AlarmExtraValueWkReDto {
 	private String employeeName;
 	
 	/**アラーム値日付*/
-	private GeneralDate alarmValueDate;
+	private String alarmValueDate;
 
 	/**カテゴリ*/
 	private String category;
@@ -38,12 +40,4 @@ public class AlarmExtraValueWkReDto {
 	/**コメント*/
 	private String comment;
 
-
-
-	
-
-
-
-	
-	
 }
