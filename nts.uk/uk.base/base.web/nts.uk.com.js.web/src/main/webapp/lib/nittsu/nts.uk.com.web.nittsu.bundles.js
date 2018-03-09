@@ -7814,9 +7814,11 @@ var nts;
                     function edit($exTable, $cell, land, value, forced) {
                         var $grid = $exTable.querySelector("." + BODY_PRF + DETAIL);
                         var $body = !land ? $grid : helper.getTable($exTable, land);
-                        if (!forced && errors.occurred($exTable))
-                            return;
-                        if (!forced && (selector.is($cell, "." + style.DET_CLS)
+                        var exTable = $.data($exTable, NAMESPACE);
+                        if (!forced && (errors.occurred($exTable) || selector.is($cell, "." + style.DET_CLS)
+                            || (land === BODY_PRF + DETAIL && exTable.detailContent.banEmptyInput
+                                && exTable.detailContent.banEmptyInput.some(function (m) { return m === exTable.viewMode; })
+                                && $cell.textContent === "")
                             || selector.is($cell, "." + style.HIDDEN_CLS) || selector.is($cell, "." + style.SEAL_CLS))) {
                             outsideClick($exTable, $cell, true);
                             return;
@@ -8215,7 +8217,8 @@ var nts;
                         else if (ui.innerIdx === 1) {
                             field = lowerInput;
                         }
-                        if (currentVal[field] !== ui.value) {
+                        if (currentVal[field] !== ui.value && (!uk.util.isNullOrUndefined(currentVal[field])
+                            || ui.value !== "")) {
                             oldVal = _.cloneDeep(currentVal);
                             exTable[f].dataSource[ui.rowIndex][ui.columnKey][field] = ui.value;
                             return oldVal;
@@ -11250,7 +11253,8 @@ var nts;
                                                 if (det[k].length === 0)
                                                     delete det[k];
                                                 var $c = selection.cellAt($main, k, col[0]);
-                                                helper.stripCellWith(style.DET_CLS, $c);
+                                                if ($c)
+                                                    helper.stripCellWith(style.DET_CLS, $c);
                                             });
                                             return;
                                         }
@@ -11949,10 +11953,15 @@ var nts;
                      * Return popup value.
                      */
                     function returnPopupValue($container, value) {
-                        var header = helper.getMainHeader($container).find("table:first");
+                        if (!$container)
+                            return;
+                        var header = helper.getMainHeader($container[0]);
                         if (!header)
                             return;
-                        var $pu = $.data(header, internal.POPUP);
+                        var headerTbl = header.querySelector("table");
+                        if (!headerTbl)
+                            return;
+                        var $pu = $.data(headerTbl, internal.POPUP);
                         if (!$pu)
                             return;
                         events.trigger($pu[0], events.POPUP_INPUT_END, { value: value });
@@ -13428,7 +13437,8 @@ var nts;
                         PopupPanel.prototype.addListener = function ($pu, $t) {
                             var self = this;
                             $pu.off(events.POPUP_INPUT_END);
-                            $pu.on(events.POPUP_INPUT_END, function (evt, ui) {
+                            $pu.on(events.POPUP_INPUT_END, function (evt) {
+                                var ui = evt.detail;
                                 var $header = helper.closest(self.$selector, "table").parentElement;
                                 if ($header.classList.contains(HEADER)) {
                                     var ds = helper.getDataSource($header);
@@ -23625,6 +23635,7 @@ var nts;
                                 }
                                 catch (e) { }
                             }
+                            var origData = gridUpdate._getLatestValues(rId);
                             grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
                             var isControl = utils.isNtsControl($grid, columnKey);
                             if (!isControl || forceRender)
@@ -23633,7 +23644,7 @@ var nts;
                                 $grid.trigger(events.Handler.CONTROL_CHANGE, [{ columnKey: columnKey, value: cellValue }]);
                             }
                             gridUpdate._notifyCellUpdated(rId);
-                            notifyUpdate($grid, rowId, columnKey, cellValue);
+                            notifyUpdate($grid, rowId, columnKey, cellValue, origData);
                         }
                         updating.updateCell = updateCell;
                         /**
@@ -23650,7 +23661,7 @@ var nts;
                             var origData = gridUpdate._getLatestValues(rId);
                             grid.dataSource.updateRow(rId, $.extend({}, origData, updatedRowData), autoCommit);
                             _.forEach(Object.keys(updatedRowData), function (key) {
-                                notifyUpdate($grid, rowId, key, updatedRowData[key]);
+                                notifyUpdate($grid, rowId, key, updatedRowData[key], origData);
                                 var isControl = utils.isNtsControl($grid, key);
                                 if (isControl) {
                                     $grid.trigger(events.Handler.CONTROL_CHANGE, [{ columnKey: key, value: updatedRowData[key] }]);
@@ -23681,7 +23692,9 @@ var nts;
                         /**
                          * Notify update.
                          */
-                        function notifyUpdate($grid, rowId, columnKey, value) {
+                        function notifyUpdate($grid, rowId, columnKey, value, origData) {
+                            if (origData && origData[columnKey] === value)
+                                return;
                             var updatedCells = $grid.data(internal.UPDATED_CELLS);
                             if (!updatedCells) {
                                 $grid.data(internal.UPDATED_CELLS, []);
@@ -25589,7 +25602,9 @@ var nts;
                                         }
                                     }
                                     else {
-                                        specialColumn.tryDo(self.$grid, cell, cbData, visibleColumnsMap);
+                                        setTimeout(function () {
+                                            specialColumn.tryDo(self.$grid, cell, cbData, visibleColumnsMap);
+                                        }, 1);
                                         if (columnsGroup[columnIndex].dataType === "number") {
                                             updatedRow[columnKey] = parseInt(cbData);
                                         }
@@ -25699,7 +25714,7 @@ var nts;
                                     var targetColumn = targetCol;
                                     // Errors
                                     var comboErrors = [];
-                                    for (var i = 0; i < row.length; i++) {
+                                    var _loop_3 = function() {
                                         var nextColumn = void 0;
                                         var columnKey = targetColumn.key;
                                         var cellElement = self.$grid.igGrid("cellById", $gridRow.data("id"), columnKey);
@@ -25710,11 +25725,11 @@ var nts;
                                             nextColumn = utils.nextColumn(visibleColumnsMap, targetIndex, targetColumn.fixed);
                                             targetColumn = nextColumn.options;
                                             targetIndex = nextColumn.index;
-                                            continue;
+                                            return "continue";
                                         }
                                         var columnsGroup = utils.columnsGroupOfColumn(targetColumn, visibleColumnsMap);
                                         if (targetIndex > columnsGroup.length - 1)
-                                            break;
+                                            return "break";
                                         if (utils.isComboBox(self.$grid, columnKey)) {
                                             var cellContent = row[i].trim();
                                             var copiedValue = ntsControls.comboBox.getCopiedValue({ element: cellElement[0] }, cellContent);
@@ -25728,18 +25743,22 @@ var nts;
                                                 nextColumn = utils.nextColumn(visibleColumnsMap, targetIndex, targetColumn.fixed);
                                                 targetColumn = nextColumn.options;
                                                 targetIndex = nextColumn.index;
-                                                continue;
+                                                return "continue";
                                             }
                                         }
                                         else {
-                                            var cell = {};
-                                            cell.columnKey = columnKey;
-                                            cell.element = cellElement;
-                                            cell.id = $gridRow.data("id");
-                                            cell.index = targetIndex;
-                                            cell.row = $gridRow;
-                                            cell.rowIndex = $gridRow.data("rowIdx");
-                                            specialColumn.tryDo(self.$grid, cell, row[i].trim(), visibleColumnsMap);
+                                            var cell_2 = {};
+                                            cell_2.columnKey = columnKey;
+                                            cell_2.element = cellElement;
+                                            cell_2.id = $gridRow.data("id");
+                                            cell_2.index = targetIndex;
+                                            cell_2.row = $gridRow;
+                                            cell_2.rowIndex = $gridRow.data("rowIdx");
+                                            (function (i) {
+                                                setTimeout(function () {
+                                                    specialColumn.tryDo(self.$grid, cell_2, row[i].trim(), visibleColumnsMap);
+                                                }, 1);
+                                            })(i);
                                             if (targetColumn.dataType === "number") {
                                                 rowData[columnKey] = parseInt(row[i]);
                                             }
@@ -25751,6 +25770,11 @@ var nts;
                                         nextColumn = utils.nextColumn(visibleColumnsMap, targetIndex, targetColumn.fixed);
                                         targetColumn = nextColumn.options;
                                         targetIndex = nextColumn.index;
+                                    };
+                                    for (var i = 0; i < row.length; i++) {
+                                        var state_3 = _loop_3();
+                                        if (state_3 === "break") break;
+                                        if (state_3 === "continue") continue;
                                     }
                                     updating.updateRow(self.$grid, $gridRow.data("id"), rowData);
                                     _.forEach(comboErrors, function (combo) {
