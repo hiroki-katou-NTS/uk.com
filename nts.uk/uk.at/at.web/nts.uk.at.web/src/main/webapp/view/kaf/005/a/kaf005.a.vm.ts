@@ -533,7 +533,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     workClockTo1: self.timeEnd1(),
                     workClockFrom2: self.timeStart2(),
                     workClockTo2: self.timeEnd2(),
-                    breakTimes:  ko.toJS(self.breakTimes())
+                    overtimeHours:  ko.toJS(self.overtimeHours())
                 }
             //計算をクリック
             service.getCaculationResult(param).done(function(data){
@@ -591,6 +591,18 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 if(!self.isEmptyOverTimeInput(ko.toJS(self.overtimeHours()))){
                     self.calculateFlag(0);
                 }
+//                for (let i = 0; i < self.overtimeHours().length; i++) {
+//                    self.overtimeHours()[i].applicationTime.subscribe(value => {
+//                        if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
+//                            if (self.preWorkContent.overtimeHours[i].applicationTime != value) {
+//                                //→エラーＭＳＧ
+//                                self.calculateFlag(1);
+//                            }
+//                        }
+//                    });
+//                }
+                 //Check work content Changed
+                self.checkWorkContentChanged();
                 dfd.resolve(data);
             }).fail(function(res){
                 dfd.reject(res);
@@ -917,10 +929,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 }
             });
             //休憩時間
-            for (let i = 0; i < self.breakTimes().length; i++) {
-                self.breakTimes()[i].applicationTime.subscribe(value => {
+            for (let i = 0; i < self.overtimeHours().length; i++) {
+                self.overtimeHours()[i].applicationTime.subscribe(value => {
                     if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
-                        if (self.preWorkContent.breakTimes[i].applicationTime != value) {
+                        if (self.preWorkContent.overtimeHours[i].applicationTime != value) {
                             //→エラーＭＳＧ
                             self.calculateFlag(1);
                         }
