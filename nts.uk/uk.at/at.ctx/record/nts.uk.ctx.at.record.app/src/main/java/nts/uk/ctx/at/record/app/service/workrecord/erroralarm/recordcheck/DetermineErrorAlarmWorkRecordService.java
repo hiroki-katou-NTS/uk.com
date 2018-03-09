@@ -18,7 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class DetermineErrorAlarmWorkRecordService {
 	
 	@Inject
-	private WorkRecordCheckService workRecordCheckService;
+	private ErAlWorkRecordCheckService workRecordCheckService;
 	
 	@Inject 
 	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
