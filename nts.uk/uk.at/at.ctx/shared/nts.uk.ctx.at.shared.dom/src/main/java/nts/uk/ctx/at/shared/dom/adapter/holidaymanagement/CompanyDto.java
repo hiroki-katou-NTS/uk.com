@@ -25,7 +25,7 @@ public class CompanyDto {
 	 * @param startMonth
 	 *            the start month
 	 */
-	private CompanyDto(int startMonth) {
+	public CompanyDto(int startMonth) {
 		super();
 		this.startMonth = startMonth;
 	}
@@ -33,7 +33,7 @@ public class CompanyDto {
 	/**
 	 * Instantiates a new company dto.
 	 */
-	private CompanyDto() {
+	public CompanyDto() {
 		super();
 	}
 
