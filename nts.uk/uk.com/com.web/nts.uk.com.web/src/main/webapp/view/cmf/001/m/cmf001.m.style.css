@@ -34,11 +34,14 @@ div.label {
 
 .title_content_left{
 	float:left;
+	font-size: 22px;
 }
 
 .title_content_right{
 	width:100px;
 	float:right;
+	text-align: center;
+	padding-top: 5px;
 	
 }
 
