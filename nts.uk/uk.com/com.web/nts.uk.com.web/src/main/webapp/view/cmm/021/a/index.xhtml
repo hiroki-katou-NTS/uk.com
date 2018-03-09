@@ -30,7 +30,14 @@
 		<ui:define name="sidebar-content" tabindex="-1">
 
 			<div class="sidebar-content-header" tabindex="-1">
-				<span class="title">#{i18n.getText('CMM021_3')}</span> <span
+				<com:ko tag="if" bind="isScreenBSelected">
+					<span class="title">#{i18n.getText('CMM021_3')}</span>
+				</com:ko>
+				<com:ko tag="if" bind="isScreenCSelected">
+					<span class="title">#{i18n.getText('CMM021_4')}</span>
+				</com:ko>
+
+				<span
 					class="action-bar"> <!-- BEGIN A2_1 & A2_2 -->
 					<button tabindex="1" class="proceed"
 						data-bind="click: saveAccount, enable: enable_Save">#{i18n.getText('CMM021_5')}</button>
@@ -39,9 +46,9 @@
 					<!-- END A2_1 & A2_2 -->
 				</span>
 			</div>
-
+			<div class="fixed-flex-layout">
 			<!-- start-left-content -->
-			<div class="master-list-select">
+			<div class="master-list-select fixed-flex-layout-left">
 				<div class="caret-right caret-background bg-green">
 					<i class="icon icon-searchbox"></i>
 					<div class="reference-date">
@@ -79,7 +86,7 @@
 										 comId: 'single-list', 
 										 items: listUserInfos,  
 										 selectedKey: 'loginId', 
-										 fields: ['loginId', 'employeeCode','personName','isSetting'], 
+										 fields: ['loginId', 'employeeCode','businessName','isSetting'], 
 										 mode: 'igGrid'
 							 }" />
 					</div>
@@ -103,14 +110,14 @@
 			<!-- end-left-content -->
 
 			<!-- start-right-content -->
-			<div class="right-content">
+			<div class="right-content fixed-flex-layout-right">
 				<div class="show-text-user-id">
 					<table>
-						<tr class="right-content-space-personName">
-							<td class="right-content-space-personName1"><span>#{i18n.getText('CMM021_18')}</span></td>
-							<td class="right-content-space-personName2"><span>#{i18n.getText('CMM021_19')}</span></td>
-							<td class="right-content-space-personName3"><span
-								data-bind="text: personName"></span></td>
+						<tr class="right-content-space-businessName">
+							<td class="right-content-space-businessName1"><span>#{i18n.getText('CMM021_18')}</span></td>
+							<td class="right-content-space-businessName2"><span>#{i18n.getText('CMM021_19')}</span></td>
+							<td class="right-content-space-businessName3"><span
+								data-bind="text: businessName"></span></td>
 						</tr>
 
 						<tr class="right-content-space-employee">
@@ -143,6 +150,7 @@
 				</div>
 			</div>
 			<!-- end-right-content -->
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>

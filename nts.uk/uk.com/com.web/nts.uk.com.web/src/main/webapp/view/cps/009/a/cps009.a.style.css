@@ -290,7 +290,7 @@ table tr td, table tr th {
 span.caret-background.caret-right.direction-right {
 	position: absolute;;
 	margin-top: 50px !important;
-	margin-left: -5px !important;
+	margin-left: 2px !important;
 }
 
 .table-container {

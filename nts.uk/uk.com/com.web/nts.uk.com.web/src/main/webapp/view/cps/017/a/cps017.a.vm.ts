@@ -8,6 +8,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import textUK = nts.uk.text;
     import block = nts.uk.ui.block;
+    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'];
     export class ScreenModel {
         //listSelectionItem
         listItems: KnockoutObservableArray<ISelectionItem> = ko.observableArray([]);
@@ -71,7 +72,34 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         self.constraints.selectionCode = selectedObject.formatSelection.selectionCode;
                         self.constraints.selectionName = selectedObject.formatSelection.selectionName;
                         self.constraints.selectionExternalCode = selectedObject.formatSelection.selectionExternalCode;
-
+                        let constraint = __viewContext.primitiveValueConstraints;
+                        writeConstraint("SelectionCdNumeric", {
+                            charType: constraint.SelectionCdNumeric.charType,
+                            maxLength: selectedObject.formatSelection.selectionCode,
+                            valueType: constraint.SelectionCdNumeric.valueType
+                        });
+                        writeConstraint("SelectionCdAlphaNumeric", {
+                            charType: constraint.SelectionCdAlphaNumeric.charType,
+                            maxLength: selectedObject.formatSelection.selectionCode,
+                            valueType: constraint.SelectionCdAlphaNumeric.valueType
+                        });
+                        writeConstraint("SelectionName", {
+                            charType: "Any",
+                            maxLength: selectedObject.formatSelection.selectionName,
+                            valueType: constraint.SelectionName.valueType
+                        });
+                       
+                        writeConstraint("ExternalCdAlphalNumeric", {
+                            charType: constraint.ExternalCdAlphalNumeric.charType,
+                            maxLength: selectedObject.formatSelection.selectionExternalCode,
+                            valueType: constraint.ExternalCdAlphalNumeric.valueType
+                        });   
+                        writeConstraint("ExternalCdNumeric", {
+                            charType: constraint.ExternalCdNumeric.charType,
+                            maxLength: selectedObject.formatSelection.selectionExternalCode,
+                            valueType: constraint.ExternalCdNumeric.valueType
+                        });                        
+                   
                         //self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
                     }
                     // システム管理者　かつ　選択している選択項目の「選択項目区分」＝社員のとき
@@ -236,6 +264,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             // ドメインモデル「個人情報の選択項目」をすべて取得する
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
                 if (itemList && itemList.length > 0) {
+                    
                     self.checkCreate(true);
                     self.listItems(itemList);
                     if (param != null && param != undefined) {

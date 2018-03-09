@@ -3,8 +3,6 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

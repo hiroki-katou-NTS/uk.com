@@ -75,7 +75,7 @@ public class WorkRecordCheckService {
 	}
 
 	private boolean checkErrorAlarmCondition(DailyRecordDto record, ErrorAlarmCondition condition){
-		WorkInfoOfDailyPerformance workInfo = (WorkInfoOfDailyPerformance) record.getWorkInfo().toDomain();
+		WorkInfoOfDailyPerformance workInfo = record.getWorkInfo().toDomain(record.employeeId(), record.getDate());
 
 		/** 勤務種類をチェックする */
 		boolean workTypeCheck = condition.getWorkTypeCondition().checkWorkType(workInfo);

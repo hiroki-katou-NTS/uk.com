@@ -36,4 +36,14 @@ public class TargetWorkType extends DomainObject {
 		}).collect(Collectors.toList()));
 	}
 
+	public boolean contains(WorkTypeCode target) {
+		if (this.isUse()) {
+			return this.lstWorkType.contains(target);
+		}
+		return false;
+	}
+	
+	public boolean isUse() {
+		return this.filterAtr != null && this.filterAtr;
+	}
 }

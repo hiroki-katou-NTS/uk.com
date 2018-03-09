@@ -52,7 +52,7 @@ public class NumberRange extends DomainObject {
 	 * @return true, if is invalid range
 	 */
 	public boolean isInvalidRange() {
-		if (this.upperLimit.get().greaterThan(this.lowerLimit.get())) {
+		if (this.lowerLimit.get().greaterThan(this.upperLimit.get())) {
 			return true;
 		}
 		return false;

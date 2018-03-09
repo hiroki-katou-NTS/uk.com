@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.entity.application.holidayshipment.complementleavesimultaneousmanager;
+package nts.uk.ctx.at.request.infra.entity.application.holidayshipment.subtargetdigestion;
 
 import java.io.Serializable;
 
@@ -11,22 +11,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 消化対象代休管理PK
+ * 
+ * @author sonnlb
+ */
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Embeddable
-
-/**
- * 振休振出同時申請管理PK
- * 
- * @author sonnlb
- */
-public class KrqdtCompltLeaveSimManaPK implements Serializable {
-
+public class KrqdtSubTargetDigestionPK implements Serializable {
 	/**
-	 * 
-	 */
+	* 
+	*/
 	private static final long serialVersionUID = 1L;
 
 	/**
