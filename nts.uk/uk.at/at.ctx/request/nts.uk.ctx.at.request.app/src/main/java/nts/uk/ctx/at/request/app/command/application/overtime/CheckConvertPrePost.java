@@ -143,7 +143,7 @@ public class CheckConvertPrePost {
 		if (appOvertime.getSiftCode() != null) {
 			SiftType siftType = new SiftType();
 
-			siftType.setSiftCode(appOvertime.getSiftCode().toString());
+			siftType.setSiftCode(appOvertime.getSiftCode().toString().equals("000")? "" : appOvertime.getSiftCode().toString());
 			Optional<WorkTimeSetting> workTime = workTimeRepository.findByCode(companyID,
 					appOvertime.getSiftCode().toString());
 			if (workTime.isPresent()) {
