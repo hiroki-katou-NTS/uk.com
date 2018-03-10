@@ -5,6 +5,7 @@ package nts.uk.screen.at.ws.dailyperformance.correction;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -116,7 +117,8 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@POST
 	@Path("addAndUpdate")
-	public List<DPItemValue> addAndUpdate(List<DPItemValue> itemValues) {
+	public Map<Integer, List<DPItemValue>> addAndUpdate(List<DPItemValue> itemValues) {
+		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
 		itemValues = itemValues.stream().map(x -> {
 			DPItemValue item = x;
 			if (x.getTypeGroup() == TypeLink.POSSITION.value) {
@@ -136,35 +138,43 @@ public class DailyPerformanceCorrectionWebService {
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 		// check error care item
 		List<DPItemValue> itemErrors = new ArrayList<>();
+		List<DPItemValue> itemInputErors = new ArrayList<>();
 		mapSidDate.entrySet().forEach(x -> {
-			List<ItemValue> itemCovert = x.getValue().stream().filter(y -> y.getValue() != null)
-					.map(y -> new ItemValue(y.getValue(), ValueType.valueOf(y.getValueType()), y.getLayoutCode(),
-							y.getItemId()))
-					.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.itemId()))
+			List<DPItemValue> itemCovert = x.getValue().stream().filter(y -> y.getValue() != null)
+					.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.getItemId()))
 					.collect(Collectors.toList());
-			List<ItemValue> items = validatorDataDaily.checkCareItemDuplicate(itemCovert);
-			if (!items.isEmpty())
-				itemErrors.addAll(items.stream()
-						.map(z -> new DPItemValue(x.getValue().get(0).getRowId(), x.getKey().getLeft(), x.getKey().getRight(), z.getItemId()))
-						.collect(Collectors.toList()));
+			List<DPItemValue> items = validatorDataDaily.checkCareItemDuplicate(itemCovert);
+			if (!items.isEmpty()){
+				itemErrors.addAll(items);
+			}else{
+				List<DPItemValue> itemInputs = validatorDataDaily.checkCareInputData(itemCovert);
+				itemInputErors.addAll(itemInputs);
+			}
+			
 		});
 		if (itemErrors.isEmpty()) {
-			mapSidDate.entrySet().forEach(x -> {
-				List<ItemValue> itemCovert = x.getValue().stream()
-						.map(y -> new ItemValue(y.getValue(), ValueType.valueOf(y.getValueType()), y.getLayoutCode(),
-								y.getItemId()))
-						.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.itemId()))
-						.collect(Collectors.toList());
-				if (!itemCovert.isEmpty())
-					dailyModifyCommandFacade.handleUpdate(new DailyModifyQuery(x.getValue().get(0).getEmployeeId(),
-							x.getValue().get(0).getDate(), itemCovert));
-			});
-			// insert cell edit
-			dailyModifyCommandFacade.handleEditCell(itemValues);
-			return Collections.emptyList();
+			if (itemInputErors.isEmpty()) {
+				mapSidDate.entrySet().forEach(x -> {
+					List<ItemValue> itemCovert = x.getValue().stream()
+							.map(y -> new ItemValue(y.getValue(), ValueType.valueOf(y.getValueType()),
+									y.getLayoutCode(), y.getItemId()))
+							.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.itemId()))
+							.collect(Collectors.toList());
+					if (!itemCovert.isEmpty())
+						dailyModifyCommandFacade.handleUpdate(new DailyModifyQuery(x.getValue().get(0).getEmployeeId(),
+								x.getValue().get(0).getDate(), itemCovert));
+				});
+				// insert cell edit
+				dailyModifyCommandFacade.handleEditCell(itemValues);
+			}else{
+				resultError.put(1, itemInputErors);
+				return resultError;
+			}
 		}else{
-			return itemErrors;
+			resultError.put(0, itemErrors);
+			return resultError;
 		}
+		return Collections.emptyMap();
 	}
 	
 	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {

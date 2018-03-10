@@ -188,15 +188,14 @@ public class DailyRecordWorkCommandHandler {
 		Set<String> mapped = command.itemValues().stream().map(c -> getGroup(c))
 				.distinct().collect(Collectors.toSet());
 		calcIfNeed(mapped, command);
-		//check and insert error;
-		determineErrorAlarmWorkRecordService.insertErrorAlarm(command);
-		
 		mapped.stream().forEach(c -> {
 			CommandFacade<T> handler = (CommandFacade<T>) getHandler(c, isUpdate);
 			if(handler != null){
 				handler.handle((T) command.getCommand(c));
 			}
 		});
+		//check and insert error;
+		determineErrorAlarmWorkRecordService.insertErrorAlarm(command);
 	}
 	
 	private void calcIfNeed(Set<String> group, DailyRecordWorkCommand command){

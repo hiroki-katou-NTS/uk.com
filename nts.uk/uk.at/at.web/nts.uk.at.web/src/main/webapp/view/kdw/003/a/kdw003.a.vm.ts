@@ -117,6 +117,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         hasLstHeader : boolean  =  true;
         dPErrorDto: KnockoutObservable<any> = ko.observable();
         listCareError: KnockoutObservableArray<any> = ko.observableArray([]);
+        listCareInputError: KnockoutObservableArray<any> = ko.observableArray([]);
         employIdLogin: any;
 
         constructor() {
@@ -434,13 +435,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 nts.uk.ui.block.invisible();
                 nts.uk.ui.block.grayout();
                 var self = this;
+                self.listCareError([]);
+                self.listCareInputError([])
                 let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
                 var dataSource = $("#dpGrid").igGrid("option", "dataSource");
                 let dataChangeProcess: any = [];
                 _.each(dataChange, (data: any) => {
                     if (data.columnKey != "sign") {
-                        let dataTemp = _.find(self.dpData, (item: any) => {
-                            return item.id == data.rowId.substring(1, data.rowId.length);
+                        let dataTemp = _.find(dataSource, (item: any) => {
+                            return item.id == data.rowId;
                         });
                         if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
                             if (data.columnKey.indexOf("Name") != -1) {
@@ -463,7 +466,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 })
                                 let value: any;
                                 value = self.getPrimitiveValue(data.value, item.attendanceAtr);
-                                let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), 0);
+                                let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), 0);
                                 dataChangeProcess.push(dataMap);
                             }
                         } else {
@@ -482,7 +485,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
                                 return item.itemId == columnKey;
                             });
-                            let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), item.typeGroup);
+                            let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup);
                             dataChangeProcess.push(dataMap);
                         }
                     }
@@ -493,12 +496,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     service.addAndUpdate(dataChangeProcess).done((data) => {
                         // alert("done");
                         dataChange = {};
-                        if (data.length == 0) {
+                        if (_.isEmpty(data)) {
                             self.btnExtraction_Click();
                         } else {
                             nts.uk.ui.block.clear();
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
-                            self.listCareError(data)
+                            if (data[0] != undefined) {
+                                self.listCareError(data[0])
+                                nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                            } else if (data[1] != undefined){
+                                self.listCareInputError(data[1])
+                                nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
+                            }
+                         
                         }
                         dfd.resolve();
                     }).fail((data) => {
@@ -523,6 +532,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 nts.uk.ui.block.invisible();
                 nts.uk.ui.block.grayout();
                 var self = this;
+                self.listCareError([]);
+                self.listCareInputError([])
                 let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
                 let dataSource = $("#dpGrid").igGrid("option", "dataSource");
                 let dataChangeProcess: any = [];
@@ -552,7 +563,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 })
                                 let value: any;
                                 value = self.getPrimitiveValue(data.value, item.attendanceAtr);
-                                let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), 0);
+                                let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), 0);
                                 dataChangeProcess.push(dataMap);
                             }
                         } else {
@@ -571,7 +582,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
                                 return item.itemId == columnKey;
                             });
-                            let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), item.typeGroup);
+                            let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup);
                             dataChangeProcess.push(dataMap);
                         }
                     }
@@ -581,13 +592,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let dfd = $.Deferred();
                     service.addAndUpdate(dataChangeProcess).done((data) => {
                         // alert("done");
-                        dataChange = {};
-                        if (data.length == 0) {
+                         if (_.isEmpty(data)) {
                             self.btnExtraction_Click();
                         } else {
                             nts.uk.ui.block.clear();
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
-                            self.listCareError(data)
+                            if (data[0] != undefined) {
+                                self.listCareError(data[0])
+                                nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                            } else  if (data[1] != undefined){
+                                self.listCareInputError(data[1])
+                                nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
+                            }
+                          
                         }
                         dfd.resolve();
                     }).fail((data) => {
@@ -837,6 +853,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     return item.id == value.rowId.substring(1, value.rowId.length);
                 });
                 let object = { date: dateCon.date, employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: nts.uk.resource.getMessage("Msg_996"), itemName: "", columnKey: value.itemId };
+                let item = _.find(self.optionalHeader, (data) => {
+                    return String(data.key) === "A" + value.itemId;
+                })
+                object.itemName = (item == undefined) ? "" : item.headerText;
+                errorValidateScreeen.push(object);
+            });
+            
+            // careinput
+            _.each(self.listCareInputError(), value => {
+                let dateCon = _.find(self.dpData, (item: any) => {
+                    return item.id == value.rowId.substring(1, value.rowId.length);
+                });
+                let object = { date: dateCon.date, employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: nts.uk.resource.getMessage("Msg_1108"), itemName: "", columnKey: value.itemId };
                 let item = _.find(self.optionalHeader, (data) => {
                     return String(data.key) === "A" + value.itemId;
                 })
