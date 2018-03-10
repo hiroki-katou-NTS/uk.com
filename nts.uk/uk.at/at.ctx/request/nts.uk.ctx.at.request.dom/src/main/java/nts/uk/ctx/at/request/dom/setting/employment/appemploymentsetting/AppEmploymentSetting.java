@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 
 /**
  * @author loivt
- * 申請別対象勤務種類
+ * 申請別対象勤務種類,雇用別申請承認設定, 休暇申請対象勤務種類
  */
 @Getter
 @Setter

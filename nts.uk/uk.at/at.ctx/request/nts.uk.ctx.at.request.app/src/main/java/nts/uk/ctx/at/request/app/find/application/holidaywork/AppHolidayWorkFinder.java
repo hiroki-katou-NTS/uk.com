@@ -304,10 +304,10 @@ public class AppHolidayWorkFinder {
 		// 6.計算処理 : TODO
 		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(appHolidayWork.getApplication().getEmployeeID(), 
 																								appHolidayWork.getApplication().getAppDate(), 
-																								appHolidayWork.getWorkTypeCode().v(),
-																								appHolidayWork.getWorkTimeCode().toString(), 
-																								appHolidayWork.getWorkClock1().getStartTime().v(), 
-																								appHolidayWork.getWorkClock1().getEndTime().v(), 100, 200);
+																								appHolidayWork.getWorkTypeCode() == null ? "" : appHolidayWork.getWorkTypeCode().v(),
+																								appHolidayWork.getWorkTimeCode() == null ?"" : appHolidayWork.getWorkTimeCode().toString(), 
+																								appHolidayWork.getWorkClock1().getStartTime() == null ? null : appHolidayWork.getWorkClock1().getStartTime().v(), 
+																								appHolidayWork.getWorkClock1().getEndTime() == null ? null : appHolidayWork.getWorkClock1().getEndTime().v(), 100, 200);
 		List<HolidayWorkInputDto> holidayWorkInputDtos = new ArrayList<>();
 		getBreaktime(companyID, holidayWorkInputDtos);
 		List<HolidayWorkInputDto> breakTimes = appHolidayWorkDto.getHolidayWorkInputDtos().stream().filter(x -> x.getAttendanceType() == AttendanceType.BREAKTIME.value).collect(Collectors.toList());
