@@ -19,9 +19,9 @@ public class AppForSpecLeave {
 	/**
 	 * 続柄コード
 	 */
-	private String relationshipCD;
+	private RelationshipCDPrimitive relationshipCD;
 	/**
 	 * 続柄理由
 	 */
-	private String relationshipReason;
+	private RelationshipReasonPrimitive relationshipReason;
 }
