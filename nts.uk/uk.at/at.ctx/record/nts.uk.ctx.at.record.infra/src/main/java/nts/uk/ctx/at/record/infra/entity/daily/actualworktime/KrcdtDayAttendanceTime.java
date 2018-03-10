@@ -271,30 +271,7 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 			leaveEarly.add(krcdt.toDomain());
 		}
 		
-		BreakTimeOfDaily breakTime = new BreakTimeOfDaily(
-				DeductionTotalTime.of(
-						TimeWithCalculation.createTimeWithCalculation(
-								toAttendanceTime(this.krcdtDayBreakTime.toRecordTotalTime), 
-								toAttendanceTime(this.krcdtDayBreakTime.calToRecordTotalTime)), 
-						TimeWithCalculation.createTimeWithCalculation(
-								toAttendanceTime(this.krcdtDayBreakTime.toRecordInTime), 
-								toAttendanceTime(this.krcdtDayBreakTime.calToRecordInTime)), 
-						TimeWithCalculation.createTimeWithCalculation(
-								toAttendanceTime(this.krcdtDayBreakTime.toRecordOutTime), 
-								toAttendanceTime(this.krcdtDayBreakTime.calToRecordOutTime))), 
-				DeductionTotalTime.of(
-						TimeWithCalculation.createTimeWithCalculation(
-								toAttendanceTime(this.krcdtDayBreakTime.deductionTotalTime), 
-								toAttendanceTime(this.krcdtDayBreakTime.calDeductionTotalTime)), 
-						TimeWithCalculation.createTimeWithCalculation(
-								toAttendanceTime(this.krcdtDayBreakTime.deductionInTime), 
-								toAttendanceTime(this.krcdtDayBreakTime.calDeductionInTime)), 
-						TimeWithCalculation.createTimeWithCalculation(
-								toAttendanceTime(this.krcdtDayBreakTime.deductionOutTime), 
-								toAttendanceTime(this.krcdtDayBreakTime.calDeductionOutTime))), 
-				this.krcdtDayBreakTime.count == null ? null : new BreakTimeGoOutTimes(this.krcdtDayBreakTime.count), 
-				this.krcdtDayBreakTime.duringworkTime == null ? null : new AttendanceTime(this.krcdtDayBreakTime.duringworkTime), 
-				new ArrayList<>());
+		BreakTimeOfDaily breakTime = this.krcdtDayBreakTime == null ? defaultBreakTime() : createBreakTime();
 
 		// 日別実績の総労働時間
 		TotalWorkingTime totalTime = new TotalWorkingTime(new AttendanceTime(this.totalAttTime),
@@ -325,6 +302,43 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 						new AttendanceTime(this.bfrPcLogonTime), new AttendanceTime(this.bfrWorkTime),
 						new AttendanceTime(this.stayingTime), new AttendanceTime(this.aftLeaveTime)),
 				new AttendanceTime(this.budgetTimeVariance), new AttendanceTime(this.unemployedTime));
+	}
+
+
+	private BreakTimeOfDaily defaultBreakTime() {
+		return BreakTimeOfDaily.sameTotalTime(
+								DeductionTotalTime.of(
+										TimeWithCalculation.sameTime(new AttendanceTime(0)),
+										TimeWithCalculation.sameTime(new AttendanceTime(0)),
+										TimeWithCalculation.sameTime(new AttendanceTime(0))));
+	}
+
+
+	private BreakTimeOfDaily createBreakTime() {
+		return new BreakTimeOfDaily(
+				DeductionTotalTime.of(
+						TimeWithCalculation.createTimeWithCalculation(
+								toAttendanceTime(this.krcdtDayBreakTime.toRecordTotalTime), 
+								toAttendanceTime(this.krcdtDayBreakTime.calToRecordTotalTime)), 
+						TimeWithCalculation.createTimeWithCalculation(
+								toAttendanceTime(this.krcdtDayBreakTime.toRecordInTime), 
+								toAttendanceTime(this.krcdtDayBreakTime.calToRecordInTime)), 
+						TimeWithCalculation.createTimeWithCalculation(
+								toAttendanceTime(this.krcdtDayBreakTime.toRecordOutTime), 
+								toAttendanceTime(this.krcdtDayBreakTime.calToRecordOutTime))), 
+				DeductionTotalTime.of(
+						TimeWithCalculation.createTimeWithCalculation(
+								toAttendanceTime(this.krcdtDayBreakTime.deductionTotalTime), 
+								toAttendanceTime(this.krcdtDayBreakTime.calDeductionTotalTime)), 
+						TimeWithCalculation.createTimeWithCalculation(
+								toAttendanceTime(this.krcdtDayBreakTime.deductionInTime), 
+								toAttendanceTime(this.krcdtDayBreakTime.calDeductionInTime)), 
+						TimeWithCalculation.createTimeWithCalculation(
+								toAttendanceTime(this.krcdtDayBreakTime.deductionOutTime), 
+								toAttendanceTime(this.krcdtDayBreakTime.calDeductionOutTime))), 
+				this.krcdtDayBreakTime.count == null ? null : new BreakTimeGoOutTimes(this.krcdtDayBreakTime.count), 
+				this.krcdtDayBreakTime.duringworkTime == null ? null : new AttendanceTime(this.krcdtDayBreakTime.duringworkTime), 
+				new ArrayList<>());
 	}
 
 	private AttendanceTime toAttendanceTime(Integer time){
