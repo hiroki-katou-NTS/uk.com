@@ -147,8 +147,8 @@ public class DailyPerformanceCorrectionWebService {
 			if (!items.isEmpty()){
 				itemErrors.addAll(items);
 			}else{
-				List<DPItemValue> itemInputs = validatorDataDaily.checkCareInputData(itemCovert);
-				itemInputErors.addAll(itemInputs);
+				//List<DPItemValue> itemInputs = validatorDataDaily.checkCareInputData(itemCovert);
+				//itemInputErors.addAll(itemInputs);
 			}
 			
 		});
@@ -167,7 +167,7 @@ public class DailyPerformanceCorrectionWebService {
 				// insert cell edit
 				dailyModifyCommandFacade.handleEditCell(itemValues);
 			}else{
-				resultError.put(1, itemInputErors);
+				//resultError.put(1, itemInputErors);
 				return resultError;
 			}
 		}else{
