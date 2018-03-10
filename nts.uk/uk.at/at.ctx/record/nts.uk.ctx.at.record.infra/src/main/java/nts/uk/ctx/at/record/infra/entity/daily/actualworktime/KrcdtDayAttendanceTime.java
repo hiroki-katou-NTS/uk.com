@@ -30,6 +30,7 @@ import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
@@ -37,6 +38,7 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
+import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayBreakTime;
 import nts.uk.ctx.at.record.infra.entity.daily.attendanceschedule.KrcdtDayWorkScheTime;
 import nts.uk.ctx.at.record.infra.entity.daily.holidayworktime.KrcdtDayHolidyWork;
 import nts.uk.ctx.at.record.infra.entity.daily.holidayworktime.KrcdtDayHolidyWorkTs;
@@ -153,6 +155,13 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayWorkScheTime krcdtDayWorkScheTime;
 
+	@OneToOne
+	@JoinColumns(value = { 
+			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
+	public KrcdtDayBreakTime krcdtDayBreakTime;
+	
+	
 	@Override
 	protected Object getKey() {
 		return this.krcdtDayAttendanceTimePK;
@@ -261,15 +270,37 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 		for (KrcdtDayLeaveEarlyTime krcdt : getKrcdtDayLeaveEarlyTime()) {
 			leaveEarly.add(krcdt.toDomain());
 		}
+		
+		BreakTimeOfDaily breakTime = new BreakTimeOfDaily(
+				DeductionTotalTime.of(
+						TimeWithCalculation.createTimeWithCalculation(
+								toAttendanceTime(this.krcdtDayBreakTime.toRecordTotalTime), 
+								toAttendanceTime(this.krcdtDayBreakTime.calToRecordTotalTime)), 
+						TimeWithCalculation.createTimeWithCalculation(
+								toAttendanceTime(this.krcdtDayBreakTime.toRecordInTime), 
+								toAttendanceTime(this.krcdtDayBreakTime.calToRecordInTime)), 
+						TimeWithCalculation.createTimeWithCalculation(
+								toAttendanceTime(this.krcdtDayBreakTime.toRecordOutTime), 
+								toAttendanceTime(this.krcdtDayBreakTime.calToRecordOutTime))), 
+				DeductionTotalTime.of(
+						TimeWithCalculation.createTimeWithCalculation(
+								toAttendanceTime(this.krcdtDayBreakTime.deductionTotalTime), 
+								toAttendanceTime(this.krcdtDayBreakTime.calDeductionTotalTime)), 
+						TimeWithCalculation.createTimeWithCalculation(
+								toAttendanceTime(this.krcdtDayBreakTime.deductionInTime), 
+								toAttendanceTime(this.krcdtDayBreakTime.calDeductionInTime)), 
+						TimeWithCalculation.createTimeWithCalculation(
+								toAttendanceTime(this.krcdtDayBreakTime.deductionOutTime), 
+								toAttendanceTime(this.krcdtDayBreakTime.calDeductionOutTime))), 
+				this.krcdtDayBreakTime.count == null ? null : new BreakTimeGoOutTimes(this.krcdtDayBreakTime.count), 
+				this.krcdtDayBreakTime.duringworkTime == null ? null : new AttendanceTime(this.krcdtDayBreakTime.duringworkTime), 
+				new ArrayList<>());
 
 		// 日別実績の総労働時間
 		TotalWorkingTime totalTime = new TotalWorkingTime(new AttendanceTime(this.totalAttTime),
 				new AttendanceTime(this.totalCalcTime), new AttendanceTime(this.actWorkTime),
 				this.krcdtDayPrsIncldTime == null ? null : this.krcdtDayPrsIncldTime.toDomain(), excess, lateTime, leaveEarly,
-				BreakTimeOfDaily
-						.sameTotalTime(DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-								TimeWithCalculation.sameTime(new AttendanceTime(0)),
-								TimeWithCalculation.sameTime(new AttendanceTime(0)))),
+				breakTime,
 				Collections.emptyList(),
 				new RaiseSalaryTimeOfDailyPerfor(Collections.emptyList(), Collections.emptyList()),
 				new WorkTimes(this.workTimes), new TemporaryTimeOfDaily(),
@@ -296,4 +327,7 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 				new AttendanceTime(this.budgetTimeVariance), new AttendanceTime(this.unemployedTime));
 	}
 
+	private AttendanceTime toAttendanceTime(Integer time){
+		return time == null ? null : new AttendanceTime(time);
+	}
 }
