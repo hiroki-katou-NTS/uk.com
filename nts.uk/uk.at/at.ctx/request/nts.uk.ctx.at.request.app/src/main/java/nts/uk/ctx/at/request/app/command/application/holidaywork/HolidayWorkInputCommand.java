@@ -48,8 +48,8 @@ public class HolidayWorkInputCommand {
 	private Integer applicationTime;
 	
 	public HolidayWorkInput convertToDomain(){
-		int startTime = this.startTime == null? null: this.startTime.intValue();
-		int endTime = this.endTime == null? null: this.endTime.intValue();
+		Integer startTime = this.startTime == null? null: this.startTime.intValue();
+		Integer endTime = this.endTime == null? null: this.endTime.intValue();
 		int appTime = this.applicationTime == null? -1: this.applicationTime.intValue();
 		return HolidayWorkInput.createSimpleFromJavaType(
 				this.companyID, 

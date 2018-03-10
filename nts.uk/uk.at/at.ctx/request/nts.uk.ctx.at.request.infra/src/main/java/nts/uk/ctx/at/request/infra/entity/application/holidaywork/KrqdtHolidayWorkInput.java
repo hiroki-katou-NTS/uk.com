@@ -77,8 +77,8 @@ private static final long serialVersionUID = 1L;
 	}
 	
 	public KrqdtHolidayWorkInput fromDomainValue(HolidayWorkInput holidayWorkInput){
-		this.startTime = holidayWorkInput.getStartTime().v();
-		this.endTime = holidayWorkInput.getEndTime().v();
+		this.startTime = holidayWorkInput.getStartTime()== null ? null : holidayWorkInput.getStartTime().v();
+		this.endTime = holidayWorkInput.getEndTime() == null ? null :holidayWorkInput.getEndTime().v();
 		this.applicationTime = holidayWorkInput.getApplicationTime().v();
 		return this;
 	}
