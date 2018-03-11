@@ -11,12 +11,13 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.AttendanceTimeByWorkOfDailyRepository;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
+import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
+import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalHolidaySetting;
@@ -31,11 +32,9 @@ import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.SalaryCalAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.SpecificSalaryCalAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInforDomainService;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInforDomainServiceImpl;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -48,14 +47,13 @@ import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 日別実績の仮計算(申請・スケからの窓口)
@@ -93,33 +91,29 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 	public Optional<IntegrationOfDaily> calculation(String employeeId, GeneralDate targetDate, Map<Integer, TimeZone> timeSheets,
 			WorkTypeCode workTypeCode, WorkTimeCode workTimeCode, List<BreakTimeSheet> breakTimeSheets,
 			List<OutingTimeSheet> outingTimeSheets, List<ShortWorkingTimeSheet> shortWorkingTimeSheets) {
+		if(workTypeCode == null)
+			return Optional.empty();
 		//疑似的な日別実績を作成
 		val provisionalRecord = createProvisionalDailyRecord(employeeId,targetDate,workTypeCode,workTimeCode,timeSheets);
 		
-		val provisionalDailyRecord = replaceDeductionTimeSheet(provisionalRecord,breakTimeSheets,outingTimeSheets,shortWorkingTimeSheets);
-		//取得成功
-		//if(provisionalRecord.isPresent()) {
-			//控除置き換え
-			
-			//ドメインモデル「日別実績の勤怠時間」を返す
-			//return Optional.of(calculateDailyRecordService.calculate(AppContexts.user().companyId(), placeId, employmentCd, employeeId, targetDate, provisionalRecord));
-		//}
-		//取得失敗
-		//else {
-			return Optional.empty();
-		//}
+		//控除置き換え
+		val provisionalDailyRecord = replaceDeductionTimeSheet(provisionalRecord,breakTimeSheets,outingTimeSheets,shortWorkingTimeSheets,employeeId,targetDate);
+		//ドメインモデル「日別実績の勤怠時間」を返す
+		return Optional.of(calculateDailyRecordService.calculate(provisionalDailyRecord));
+
 	}
-
-
 	/**
 	 *疑似的な日別実績を作成
 	 */
 	private IntegrationOfDaily createProvisionalDailyRecord(String employeeId, GeneralDate ymd,WorkTypeCode workTypeCode, WorkTimeCode workTimeCode,Map<Integer, TimeZone> timeSheets) {
 		//日別実績の勤務情報
 		Optional<WorkInfoOfDailyPerformance> preworkInformation = workInformationRepository.find(employeeId, ymd);
+		String setWorkTimeCode = null;
+		if(workTimeCode != null )
+			setWorkTimeCode = workTimeCode.v();
 		WorkInfoOfDailyPerformance workInformation = new WorkInfoOfDailyPerformance(employeeId, 
-																				   new WorkInformation(workTimeCode.toString(),workTypeCode.toString()), 
-																				   new WorkInformation(), 
+																				   new WorkInformation(setWorkTimeCode,workTypeCode.toString()), 
+																				   null, 
 																				   CalculationState.No_Calculated, 
 																				   NotUseAttribute.Not_use, 
 																				   NotUseAttribute.Not_use, 
@@ -189,10 +183,18 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 	}	
 
 	
-	private Object replaceDeductionTimeSheet(IntegrationOfDaily provisionalRecord, List<BreakTimeSheet> breakTimeSheets,
-			List<OutingTimeSheet> outingTimeSheets, List<ShortWorkingTimeSheet> shortWorkingTimeSheets) {
-		//休憩は、Listに２つ同じものを入れる
-		return null;
+	private IntegrationOfDaily replaceDeductionTimeSheet(IntegrationOfDaily provisionalRecord, List<BreakTimeSheet> breakTimeSheets,
+			List<OutingTimeSheet> outingTimeSheets, List<ShortWorkingTimeSheet> shortWorkingTimeSheets,
+			String employeeId,GeneralDate ymd) {
+		
+		provisionalRecord.setOutingTime(Optional.of(new OutingTimeOfDailyPerformance(employeeId,ymd,outingTimeSheets)));
+		List<BreakTimeOfDailyPerformance> addElement = new ArrayList<>();
+		addElement.add(new BreakTimeOfDailyPerformance(employeeId,BreakType.REFER_WORK_TIME,breakTimeSheets,ymd));
+		addElement.add(new BreakTimeOfDailyPerformance(employeeId,BreakType.REFER_WORK_TIME,breakTimeSheets,ymd));
+		provisionalRecord.setBreakTime(addElement);
+		provisionalRecord.setShortTime(Optional.of(new ShortTimeOfDailyPerformance(employeeId,shortWorkingTimeSheets,ymd)));
+		
+		return provisionalRecord;
 	}
 	
 }

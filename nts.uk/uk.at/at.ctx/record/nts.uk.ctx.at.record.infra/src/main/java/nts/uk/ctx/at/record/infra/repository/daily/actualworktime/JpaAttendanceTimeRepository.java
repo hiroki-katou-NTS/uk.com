@@ -33,6 +33,8 @@ import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimework
 import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkPK;
 import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkTs;
 import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkTsPK;
+import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTime;
+import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttimePK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -211,11 +213,11 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 					this.commandProxy().insert(KrcdtDayBreakTime.toEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), attendanceTime));
 				}
 				
-				/*短時間勤務時間*/
+				
 				if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily() != null) {
+					/*短時間勤務時間*/
 					Optional<KrcdtDayShorttime> krcdtDayShorttime = this.queryProxy().find(new KrcdtDayShorttimePK(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getChildCareAttribute().value),
 																				 KrcdtDayShorttime.class);
-				
 					if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily() != null && krcdtDayShorttime.isPresent()) {
 						krcdtDayShorttime.get().setData(attendanceTime);
 						this.commandProxy().update(krcdtDayShorttime.get());
@@ -224,6 +226,22 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 					else if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily() != null && !krcdtDayShorttime.isPresent()) {
 						this.commandProxy().insert(KrcdtDayShorttime.toEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), attendanceTime));
 					}
+					/*短時間勤務時間帯*/
+					for(int frameNo = 0 ; frameNo < 10 ; frameNo++) {
+						Optional<KrcdtDaiShortWorkTime> krcdtDaiShortWorkTime = this.queryProxy().find(new KrcdtDaiShortWorkTimePK(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), frameNo),
+																							KrcdtDaiShortWorkTime.class);
+						//時間帯更新
+						if(krcdtDaiShortWorkTime.isPresent()) {
+							krcdtDaiShortWorkTime.get().setData(attendanceTime,frameNo);
+							this.commandProxy().update(krcdtDaiShortWorkTime.get());
+						}
+						//時間帯登録
+						else {
+							//this.commandProxy().insert(krcdtDaiShortWorkTime.toEntity(attendanceTime));
+						}
+					}
+					
+					
 				}
 				
 				

@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +13,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.BreakTimeZoneS
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectTimezoneOutput;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
@@ -50,8 +53,37 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			WorkInfoOfDailyPerformance WorkInfo) {
 		BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut = new BreakTimeZoneSettingOutPut();
 		// 休憩時間帯設定を確認する
-		this.checkBreakTimeSetting(companyId, WorkInfo, breakTimeZoneSettingOutPut);
+		boolean checkBreakTimeSetting = this.checkBreakTimeSetting(companyId, WorkInfo, breakTimeZoneSettingOutPut);
+		if (!checkBreakTimeSetting) {
+			// no reflect
+		}
+		//出退勤と重複する休憩時間帯のみ追加する
+		addBreakTime(lstStampReflectTimezone);
+		
+		
+		
 	}
+		
+	public void addBreakTime(List<StampReflectTimezoneOutput> lstStampReflectTimezone){
+//		Collections.sort(lstStampReflectTimezone, new Comparator<StampReflectTimezoneOutput>() {
+//			public int compare(StampReflectTimezoneOutput o1, StampReflectTimezoneOutput o2) {
+//				if (o2 == null || o2.getAttendanceStamp() == null || !o2.getAttendanceStamp().isPresent()
+//						|| o2.getAttendanceStamp().get().getStamp() == null
+//						|| !o2.getAttendanceStamp().get().getStamp().isPresent()) {
+//					return 1;
+//				}
+//				if (o1 == null || o1.getAttendanceStamp() == null || !o1.getAttendanceStamp().isPresent()
+//						|| o1.getAttendanceStamp().get().getStamp() == null
+//						|| !o1.getAttendanceStamp().get().getStamp().isPresent()) {
+//					return -1;
+//				}
+//				int t1 = o1.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v().intValue();
+//				int t2 = o2.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v().intValue();
+//				if (t1 == t2)
+//					return 0;
+//				return t1 < t2 ? -1 : 1;
+//			}
+	}	
 
 	// 休憩時間帯設定を確認する
 	public boolean checkBreakTimeSetting(String companyId, WorkInfoOfDailyPerformance WorkInfo,
@@ -106,13 +138,12 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 				}
 
 			} else {
-				checkReflect = this.confirmInterFlexWorkSetting(companyId,
-						weekdayHolidayClassification, WorkInfo.getRecordWorkInformation().getWorkTimeCode().v(),
-						breakTimeZoneSettingOutPut);
+				checkReflect = this.confirmInterFlexWorkSetting(companyId, weekdayHolidayClassification,
+						WorkInfo.getRecordWorkInformation().getWorkTimeCode().v(), breakTimeZoneSettingOutPut);
 			}
 
 		}
-		
+
 		return checkReflect;
 	}
 

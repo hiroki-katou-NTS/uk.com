@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtrac
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ColorCode;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.NameWKRecord;
+import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.MessageWRExtraConPubExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.WorkRecordExtraConPub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.WorkRecordExtraConPubExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.find.ErrorAlarmConditionPubExport;
@@ -210,4 +211,16 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 		return optCheckId.isPresent();
 	}
 
+	@Override
+	public List<MessageWRExtraConPubExport> getMessageWRExtraConByListID(List<String> listErrorAlarmID) {
+		return errorAlarmConditionRepository.findMessageConByListErAlCheckId(listErrorAlarmID).stream()
+				.map(c->convertToErAlCon(c)).collect(Collectors.toList());
+	}
+
+	private MessageWRExtraConPubExport convertToErAlCon(ErrorAlarmCondition errorAlarmCondition) {
+		return new MessageWRExtraConPubExport(
+				errorAlarmCondition.getErrorAlarmCheckID(),
+				errorAlarmCondition.getDisplayMessage().v()
+				);
+	}
 }

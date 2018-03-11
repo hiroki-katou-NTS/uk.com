@@ -206,8 +206,8 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 
 		// 月別実績の変形労働時間
 		val irregularWorkingTime = IrregularWorkingTimeOfMonthly.of(
-				new AttendanceTimeMonth(entity.multiMonthIrregularMiddleTime),
-				new AttendanceTimeMonth(entity.irregularPeriodCarryforwardTime),
+				new AttendanceTimeMonthWithMinus(entity.multiMonthIrregularMiddleTime),
+				new AttendanceTimeMonthWithMinus(entity.irregularPeriodCarryforwardTime),
 				new AttendanceTimeMonth(entity.irregularWorkingShortageTime),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(entity.irregularLegalOverTime),
@@ -427,7 +427,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 		val domain = ExcessOutsideWorkOfMonthly.of(
 				new AttendanceTimeMonth(entity.totalWeeklyPremiumTime),
 				new AttendanceTimeMonth(entity.totalMonthlyPremiumTime),
-				new AttendanceTimeMonth(entity.deformationCarryforwardTime),
+				new AttendanceTimeMonthWithMinus(entity.deformationCarryforwardTime),
 				parentEntity.krcdtMonExcoutTime.stream()
 					.map(c -> toDomainExcessOutsideWork(c)).collect(Collectors.toList()));
 		return domain;

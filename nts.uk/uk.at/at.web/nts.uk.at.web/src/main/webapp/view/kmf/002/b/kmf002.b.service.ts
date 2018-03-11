@@ -7,7 +7,7 @@ module nts.uk.at.view.kmf002.b {
                 save: "at/shared/holidaysetting/workplace/save",
                 find: "at/shared/holidaysetting/workplace/findWorkplaceMonthDaySetting",
                 remove: "at/shared/holidaysetting/workplace/remove",
-                findFirstMonth: "at/shared/holidaysetting/companycommon",
+                findFirstMonth: "at/shared/holidaysetting/companycommon/getFirstMonth",
                 findAll: "at/shared/holidaysetting/workplace/findWorkplaceMonthDaySetting"
             };
         
