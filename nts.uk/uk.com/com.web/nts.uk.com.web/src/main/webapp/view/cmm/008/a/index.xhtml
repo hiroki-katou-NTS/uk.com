@@ -33,84 +33,68 @@
 					data-bind="click: deleteEmployment, enable: enableDelete()"
 					tabindex="4">#{i18n.getText('CMM008_4')}</button>
 			</div>
-			<div id="contents-area">
-				<table>
-					<tr>
-						<td id="left-content">
-							<div id="emp-component" tabindex="-1"></div>
-						</td>
-						<td id="right-contents" data-bind="with: employmentModel">
-							<table>
-								<tr>
-									<td>
-										<div class="td-width"
-											data-bind="ntsFormLabel: {required: true, constraint: ['EmploymentCode', 'EmploymentName']}">
-											<label>#{i18n.getText('CMM008_6')}</label>
-										</div>
-									</td>
-									<td>
-										<div
-											style="display: inline-block; padding-left: 10px; padding-bottom: 10px">
-											<input id="empCode"
-												data-bind="ntsTextEditor: {
-														name: '#[CMM008_7]',
-														value: employmentCode, 
-														constraint: 'EmploymentCode', 
-														option: { width: '35px' },
-														required: true, 
-														enable: isEnableCode()}"
-												tabindex="7" /> <input id="empName"
-												data-bind="ntsTextEditor: {
-														name: '#[CMM008_8]',
-														value: employmentName, 
-														constraint: 'EmploymentName',
-														option: { width: '150px' },
-														required: true,
-														enable: true}"
-												tabindex="8" />
-										</div>
-									</td>
-								</tr>
-							</table>
+			
+			<div id="contents-area" class="fixed-flex-layout">
+				<div id="left-content" class="fixed-flex-layout-left">
+					<div id="emp-component" tabindex="-1"></div>
+				</div>
+				<div id="right-contents" data-bind="with: employmentModel" class="fixed-flex-layout-right">
+					<div class="fixed-flex-layout">
+						<div class="td-width fixed-flex-layout-left"
+							data-bind="ntsFormLabel: {required: true, constraint: ['EmploymentCode', 'EmploymentName']}">
+							<label>#{i18n.getText('CMM008_6')}</label>
+						</div>
+						<div style="padding-left: 10px; padding-bottom: 10px" class="fixed-flex-layout-right">
+							<input id="empCode"
+								data-bind="ntsTextEditor: {
+										name: '#[CMM008_7]',
+										value: employmentCode, 
+										constraint: 'EmploymentCode', 
+										option: { width: '35px' },
+										required: true, 
+										enable: isEnableCode()}"
+								tabindex="7" /> 
+								<input id="empName"
+								data-bind="ntsTextEditor: {
+										name: '#[CMM008_8]',
+										value: employmentName, 
+										constraint: 'EmploymentName',
+										option: { width: '150px' },
+										required: true,
+										enable: true}"
+								tabindex="8" />
+						</div>
+					</div>
 
-
-							<hr id="ruled-line"></hr>
-							<div>
-								<table>
-									<tr class="tr-height">
-										<td class="td-width">
-											<div
-												data-bind="ntsFormLabel: {constraint: ['EmpExternalCode']}">
-												<label>#{i18n.getText('CMM008_9')}</label>
-											</div>
-										</td>
-										<td class="padding-left"><input id="extCode"
-											data-bind="ntsTextEditor: {
-														name: '#[CMM008_9]',
-														value: empExternalCode, 
-														constraint: 'EmpExternalCode',
-														option: { width: '86px' },
-														enable: true}"
-											tabindex="9" /></td>
-									</tr>
-									<tr class="tr-height">
-										<td class="td-width">
-											<div data-bind="ntsFormLabel: {constraint: ['Memo']}">
-												<label>#{i18n.getText('CMM008_10')}</label>
-											</div>
-										</td>
-										<td class="padding-left">
-											<div>
-												<textarea id="memo" tabindex="10"
-													data-bind="ntsMultilineEditor: { value: memo, name: '#[CMM008_10]', constraint: 'Memo', option: { width: '290px', height: '150px'}}" />
-											</div>
-										</td>
-									</tr>
-								</table>
+					<hr id="ruled-line"></hr>
+					<div id="row2">
+						<div class="fixed-flex-layout">
+							<div data-bind="ntsFormLabel: {constraint: ['EmpExternalCode']}" class="width-label fixed-flex-layout-left">
+								<label>#{i18n.getText('CMM008_9')}</label>
 							</div>
-						</td>
-					</tr>
-				</table>
+							<div class="fixed-flex-layout-right">
+								<input id="extCode"
+									data-bind="ntsTextEditor: {
+												name: '#[CMM008_9]',
+												value: empExternalCode, 
+												constraint: 'EmpExternalCode',
+												option: { width: '86px' },
+												enable: true}"
+									tabindex="9" />
+							</div>
+						</div>
+						<div class="fixed-flex-layout">
+							<div data-bind="ntsFormLabel: {constraint: ['Memo']}" class="width-label fixed-flex-layout-left">
+								<label>#{i18n.getText('CMM008_10')}</label>
+							</div>
+							<div class="fixed-flex-layout-right">
+								<textarea id="memo" tabindex="10"
+									data-bind="ntsMultilineEditor: { value: memo, name: '#[CMM008_10]', constraint: 'Memo', option: { width: '290px', height: '150px'}}" />
+							</div>
+						</div>
+						
+					</div>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

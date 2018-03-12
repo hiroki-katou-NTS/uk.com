@@ -429,148 +429,180 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
         proceed() {
             let errorGrid: any = $("#dpGrid").ntsGrid("errors");
-            if(errorGrid == undefined || errorGrid.length == 0){
-            nts.uk.ui.block.invisible();
-            nts.uk.ui.block.grayout();
-            var self = this;
-            let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
-            let dataChangeProcess: any = [];
-            _.each(dataChange, (data: any) => {
-                if (data.columnKey != "sign") {
-                    let dataTemp = _.find(self.dpData, (item: any) => {
-                        return item.id == data.rowId.substring(1, data.rowId.length);
-                    });
-                    if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
-                        if (data.columnKey.indexOf("Name") != -1) {
-                            // todo
+            let checkDataCare: boolean = true;
+            if (errorGrid == undefined || errorGrid.length == 0) {
+                nts.uk.ui.block.invisible();
+                nts.uk.ui.block.grayout();
+                var self = this;
+                let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
+                var dataSource = $("#dpGrid").igGrid("option", "dataSource");
+                let dataChangeProcess: any = [];
+                _.each(dataChange, (data: any) => {
+                    if (data.columnKey != "sign") {
+                        let dataTemp = _.find(self.dpData, (item: any) => {
+                            return item.id == data.rowId.substring(1, data.rowId.length);
+                        });
+                        if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
+                            if (data.columnKey.indexOf("Name") != -1) {
+                                // todo
+                            } else {
+
+                                // check itemCare 
+                                let groupCare = self.checkItemCare(Number(data.columnKey.substring(1, data.columnKey.length)));
+                                if (groupCare == 0 || groupCare == 1) {
+                                    if (self.checkErrorData(groupCare, data, dataSource) == false) {
+                                        checkDataCare = false;
+                                    }
+                                }
+                                //get layout , and type
+                                let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
+                                    return item.itemId == data.columnKey.substring(1, data.columnKey.length);
+                                });
+                                let item = _.find(self.lstAttendanceItem(), (value) => {
+                                    return String(value.id) === data.columnKey.substring(1, data.columnKey.length);
+                                })
+                                let value: any;
+                                value = self.getPrimitiveValue(data.value, item.attendanceAtr);
+                                let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), 0);
+                                dataChangeProcess.push(dataMap);
+                            }
                         } else {
-                            //get layout , and type
+                            let columnKey: any;
+                            let item: any;
+                            if (data.columnKey.indexOf("Code") != -1) {
+                                columnKey = data.columnKey.substring(4, data.columnKey.length);
+                            } else {
+                                columnKey = data.columnKey.substring(2, data.columnKey.length);
+                            }
+                            //TO Thanh: move find logic out if condition
+                            item = _.find(self.lstAttendanceItem(), (data) => {
+                                return String(data.id) === columnKey;
+                            })
+
                             let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
-                                return item.itemId == data.columnKey.substring(1, data.columnKey.length);
+                                return item.itemId == columnKey;
                             });
-                            let value: any;
-                            value = self.getPrimitiveValue(data.value);
-                            let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), 0);
+                            let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), item.typeGroup);
                             dataChangeProcess.push(dataMap);
                         }
-                    } else {
-                        let columnKey: any;
-                        let item: any;
-                        if (data.columnKey.indexOf("Code") != -1) {
-                            columnKey = data.columnKey.substring(4, data.columnKey.length);
-                        } else {
-                            columnKey = data.columnKey.substring(2, data.columnKey.length);
-                        }
-                        //TO Thanh: move find logic out if condition
-                        item = _.find(self.lstAttendanceItem(), (data) => {
-                            return String(data.id) === columnKey;
-                        })
-
-                        let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
-                            return item.itemId == columnKey;
-                        });
-                        let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), item.typeGroup);
-                        dataChangeProcess.push(dataMap);
                     }
-                }
-            });
-            let param = { itemValues: dataChangeProcess }
-            if (dataChangeProcess.length > 0) {
-                let dfd = $.Deferred();
-                service.addAndUpdate(dataChangeProcess).done((data) => {
-                   // alert("done");
-                    dataChange = {};
-                    if (data.length == 0) {
-                        self.btnExtraction_Click();
-                    } else {
-                        nts.uk.ui.block.clear();
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
-                        self.listCareError(data)
-                    }
-                    dfd.resolve();
-                }).fail((data) => {
-                     nts.uk.ui.block.clear();
-                    nts.uk.ui.dialog.alert(data.message);
-                    dfd.resolve();
                 });
-                dfd.promise();
-            }else{
-                 nts.uk.ui.block.clear(); 
-            }
+                let param = { itemValues: dataChangeProcess }
+                if (dataChangeProcess.length > 0 && checkDataCare) {
+                    let dfd = $.Deferred();
+                    service.addAndUpdate(dataChangeProcess).done((data) => {
+                        // alert("done");
+                        dataChange = {};
+                        if (data.length == 0) {
+                            self.btnExtraction_Click();
+                        } else {
+                            nts.uk.ui.block.clear();
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                            self.listCareError(data)
+                        }
+                        dfd.resolve();
+                    }).fail((data) => {
+                        nts.uk.ui.block.clear();
+                        nts.uk.ui.dialog.alert(data.message);
+                        dfd.resolve();
+                    });
+                    dfd.promise();
+                } else {
+                    nts.uk.ui.block.clear();
+                    if (!checkDataCare) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                    }
                 }
+            }
         }
         
         proceedSave() {
-            let errorGrid: any = $("#dpGrid").ntsGrid("errors");
-            if(errorGrid == undefined || errorGrid.length == 0){
-            nts.uk.ui.block.invisible();
-            nts.uk.ui.block.grayout();
-            var self = this;
-            let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
-            let dataChangeProcess: any = [];
-            _.each(dataChange, (data: any) => {
-                if (data.columnKey != "sign") {
-                    let dataTemp = _.find(self.dpData, (item: any) => {
-                        return item.id == data.rowId.substring(1, data.rowId.length);
-                    });
-                    if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
-                        if (data.columnKey.indexOf("Name") != -1) {
-                            // todo
+           let errorGrid: any = $("#dpGrid").ntsGrid("errors");
+            let checkDataCare: boolean = true;
+            if (errorGrid == undefined || errorGrid.length == 0) {
+                nts.uk.ui.block.invisible();
+                nts.uk.ui.block.grayout();
+                var self = this;
+                let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
+                let dataSource = $("#dpGrid").igGrid("option", "dataSource");
+                let dataChangeProcess: any = [];
+                _.each(dataChange, (data: any) => {
+                    if (data.columnKey != "sign") {
+                        let dataTemp = _.find(self.dpData, (item: any) => {
+                            return item.id == data.rowId.substring(1, data.rowId.length);
+                        });
+                        if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
+                            if (data.columnKey.indexOf("Name") != -1) {
+                                // todo
+                            } else {
+
+                                // check itemCare 
+                                let groupCare = self.checkItemCare(Number(data.columnKey.substring(1, data.columnKey.length)));
+                                if (groupCare == 0 || groupCare == 1) {
+                                    if (!self.checkErrorData(groupCare, data, dataSource)) {
+                                        checkDataCare = false;
+                                    }
+                                }
+                                //get layout , and type
+                                let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
+                                    return item.itemId == data.columnKey.substring(1, data.columnKey.length);
+                                });
+                                let item = _.find(self.lstAttendanceItem(), (value) => {
+                                    return String(value.id) === data.columnKey.substring(1, data.columnKey.length);
+                                })
+                                let value: any;
+                                value = self.getPrimitiveValue(data.value, item.attendanceAtr);
+                                let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), 0);
+                                dataChangeProcess.push(dataMap);
+                            }
                         } else {
-                            //get layout , and type
+                            let columnKey: any;
+                            let item: any;
+                            if (data.columnKey.indexOf("Code") != -1) {
+                                columnKey = data.columnKey.substring(4, data.columnKey.length);
+                            } else {
+                                columnKey = data.columnKey.substring(2, data.columnKey.length);
+                            }
+                            //TO Thanh: move find logic out if condition
+                            item = _.find(self.lstAttendanceItem(), (data) => {
+                                return String(data.id) === columnKey;
+                            })
+
                             let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
-                                return item.itemId == data.columnKey.substring(1, data.columnKey.length);
+                                return item.itemId == columnKey;
                             });
-                            let value: any;
-                            value = self.getPrimitiveValue(data.value);
-                            let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), 0);
+                            let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), item.typeGroup);
                             dataChangeProcess.push(dataMap);
                         }
-                    } else {
-                        let columnKey: any;
-                        let item: any;
-                        if (data.columnKey.indexOf("Code") != -1) {
-                            columnKey = data.columnKey.substring(4, data.columnKey.length);
-                        } else {
-                            columnKey = data.columnKey.substring(2, data.columnKey.length);
-                        }
-                        //TO Thanh: move find logic out if condition
-                        item = _.find(self.lstAttendanceItem(), (data) => {
-                            return String(data.id) === columnKey;
-                        })
-
-                        let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
-                            return item.itemId == columnKey;
-                        });
-                        let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), item.typeGroup);
-                        dataChangeProcess.push(dataMap);
                     }
-                }
-            });
-            let param = { itemValues: dataChangeProcess }
-            if (dataChangeProcess.length > 0) {
-                let dfd = $.Deferred();
-                service.addAndUpdate(dataChangeProcess).done((data) => {
-                   // alert("done");
-                    dataChange = {};
-                    if (data.length == 0) {
-                        self.btnExtraction_Click();
-                    } else {
-                        nts.uk.ui.block.clear();
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
-                        self.listCareError(data)
-                    }
-                    dfd.resolve();
-                }).fail((data) => {
-                    nts.uk.ui.block.clear();
-                    nts.uk.ui.dialog.alert(data.message);
-                    dfd.resolve();
                 });
-                dfd.promise();
-            }else{
-                  nts.uk.ui.block.clear();
-            }
+                let param = { itemValues: dataChangeProcess }
+                if (dataChangeProcess.length > 0 && checkDataCare) {
+                    let dfd = $.Deferred();
+                    service.addAndUpdate(dataChangeProcess).done((data) => {
+                        // alert("done");
+                        dataChange = {};
+                        if (data.length == 0) {
+                            self.btnExtraction_Click();
+                        } else {
+                            nts.uk.ui.block.clear();
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                            self.listCareError(data)
+                        }
+                        dfd.resolve();
+                    }).fail((data) => {
+                        nts.uk.ui.block.clear();
+                        nts.uk.ui.dialog.alert(data.message);
+                        dfd.resolve();
+                    });
+                    dfd.promise();
+                } else {
+                    nts.uk.ui.block.clear();
+                    if (!checkDataCare) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                    }
                 }
+            }
         }
         checkIsColumn(dataCell: any, key: any): boolean {
             let check = false;
@@ -583,13 +615,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return check;
         }
         
-        getPrimitiveValue(value : any): string{
+        getPrimitiveValue(value : any, atr: any): string{
             var self = this;
             let valueResult : string = "";
-            if(String(value).indexOf(":") != -1){
-                // Time
-                valueResult = String(self.getHoursAll(value));
-            }else{
+            if (atr != undefined && atr != null) {
+                    if (atr == 6) {
+                        // Time
+                        valueResult = value == "" ? null : String(self.getHoursAll(value));
+                    } else if(atr == 5){
+                         valueResult =  value == "" ? null : String(self.getHoursTime(value));
+                    } else{
+                         valueResult = value;
+                    }
+            } else {
                 valueResult = value;
             }
             return valueResult;
@@ -598,7 +636,22 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         getHours(value: any) : number{
             return Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]);
         }
+        //time
+        getHoursTime(value) : number{
+              var self = this;
+            if (value.indexOf(":") != -1) {
+                if (value.indexOf("-") != -1) {
+                    let valueTemp = value.split('-')[1];
+                    return 0 - self.getHours(valueTemp);
+                } else {
+                    return self.getHours(value);
+                }
+            } else {
+                return value;
+            }
+        }
         
+        //time day
         getHoursAll(value: any) : number{
              var self = this;
             if (value.indexOf(":") != -1) {
@@ -612,6 +665,50 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 return value;
             }
         }
+        
+        //check data item in care and childCare 
+        // child care = 0 , care = 1, other = 2;
+        checkItemCare(itemId : any): number {
+            if(itemId == 759 || itemId == 760 || itemId == 761 || itemId == 762){
+               return 0; 
+            }else if(itemId == 763 || itemId == 764 || itemId == 765 || itemId == 766){
+               return 1; 
+            }else{
+               return 2; 
+            }
+        }
+        
+        // check data error group care , child care
+        checkErrorData(group : number, data: any, dataSource :any ) : boolean{
+            var self = this;
+            if (data.value != "") {
+                let rowItemSelect: any = _.find(dataSource, function(value: any) {
+                    return value.id == data.rowId;
+                });
+                if (group == 0) {
+                    if ((rowItemSelect.A763 != undefined && rowItemSelect.A763 != "") || (rowItemSelect.A763 != undefined && rowItemSelect.A763 != "")
+                        || (rowItemSelect.A763 != undefined && rowItemSelect.A763 != "") || (rowItemSelect.A763 != undefined && rowItemSelect.A763 != "")) {
+                        // alert Error
+                        data["itemId"] = data.columnKey.substring(1,data.columnKey.length);
+                        self.listCareError.push(data);
+                        return false;
+                        // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                    }
+                } else if (group == 1) {
+                    if ((rowItemSelect.A759 != undefined && rowItemSelect.A759 != "") || (rowItemSelect.A760 != undefined && rowItemSelect.A760 != "")
+                        || (rowItemSelect.A761 != undefined && rowItemSelect.A761 != "") || (rowItemSelect.A762 != undefined && rowItemSelect.A762 != "")) {
+                        // alert Error
+                        data["itemId"] = data.columnKey.substring(1,data.columnKey.length);
+                        self.listCareError.push(data);
+                        return false;
+                        //nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                    }
+                }
+            }
+            return true;
+        }
+        
+        
         hideComponent() {
             var self = this;
             if (self.displayFormat() == 0) {
@@ -1340,7 +1437,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 hidePrimaryKey: true,
                 userId: self.employIdLogin.id,
                 getUserId: function(primaryKey) {
-                   return primaryKey.split("_")[2] ; 
+                   let ids =  primaryKey.split("_");
+                   return ids[2]+"-"+ ids[3]+"-"+ids[4]+"-"+ids[5]+"-"+ids[6]; 
                  },
                // recordKeys: self.createKeyLoad(),
                 features: [
@@ -1599,6 +1697,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         delete header.hidden;
                         delete header.ntsType;
                         delete header.onChange;
+                        delete header.group[1].ntsType;
+                        delete header.group[1].onChange;
                         if (header.group[0].dataType == "String") {
                             header.group[0].onChange = self.search;
                            // delete header.group[0].onChange;

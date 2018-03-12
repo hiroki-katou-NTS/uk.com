@@ -41,8 +41,16 @@ public class DailyModifyCommandFacade {
 	}
 	
 	public void handleUpdate(DailyModifyQuery query) {
+		String sid = AppContexts.user().employeeId();
+		List<EditStateOfDailyPerformance> editData = query.getItemValues().stream().map(x -> {
+			return new EditStateOfDailyPerformance(query.getEmployeeId(), x.getItemId(), query.getBaseDate(),
+					sid.equals(query.getEmployeeId()) ? EditStateSetting.HAND_CORRECTION_MYSELF
+							: EditStateSetting.HAND_CORRECTION_OTHER);
+		}).collect(Collectors.toList());
 		DailyRecordDto dto = toDto(query);
-		this.handler.handleUpdate(createCommand(dto, query));
+		DailyRecordWorkCommand comand = createCommand(dto, query);
+		comand.getEditState().updateDatas(editData);
+		this.handler.handleUpdate(comand);
 	}
 
 

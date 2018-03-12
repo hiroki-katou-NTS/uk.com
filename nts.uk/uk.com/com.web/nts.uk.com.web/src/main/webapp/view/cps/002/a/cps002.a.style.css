@@ -228,6 +228,14 @@
 	border-radius: 5px;
 }
 
+.step3-title-name {
+	width: 140px;
+}
+
+.step3-title-value {
+	width: 300px;
+}
+
 .isAllowUpload {
 	cursor: pointer;
 }

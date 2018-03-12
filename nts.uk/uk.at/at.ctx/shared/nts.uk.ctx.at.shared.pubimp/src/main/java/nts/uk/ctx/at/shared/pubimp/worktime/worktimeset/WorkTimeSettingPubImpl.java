@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.pub.worktime.worktimeset.WorkTimeSettingPub;
@@ -59,6 +60,9 @@ public class WorkTimeSettingPubImpl implements WorkTimeSettingPub {
 			return null;
 		}
 
+		if (opWorkTimeSetting.get().getAbolishAtr().equals(AbolishAtr.ABOLISH)) {
+			return null;
+		}
 		return opWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v();
 	}
 

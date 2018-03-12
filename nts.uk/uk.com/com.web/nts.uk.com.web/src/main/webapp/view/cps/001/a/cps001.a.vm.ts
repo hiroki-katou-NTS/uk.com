@@ -33,7 +33,7 @@ module cps001.a.vm {
             showQuickSearchTab: true, // クイック検索
             showAdvancedSearchTab: true, // 詳細検索
             showBaseDate: false, // 基準日利用
-            showClosure: true, // 就業締め日利用
+            showClosure: false, // 就業締め日利用
             showAllClosure: true, // 全締め表示
             showPeriod: false, // 対象期間利用
             periodFormatYM: true, // 対象期間精度
@@ -58,7 +58,7 @@ module cps001.a.vm {
             showWorkplace: true, // 職場条件
             showClassification: true, // 分類条件
             showJobTitle: true, // 職位条件
-            showWorktype: true, // 勤種条件
+            showWorktype: false, // 勤種条件
             isMutipleCheck: true, // 選択モード
 
             /** Return data */
@@ -111,6 +111,8 @@ module cps001.a.vm {
                 person = employee.personInfo(),
                 list = self.multipleData;
 
+            self.block();
+
             permision().done((data: IPersonAuth) => {
                 if (data) {
                     auth.roleId(data.roleId);
@@ -132,6 +134,7 @@ module cps001.a.vm {
             });
 
             self.tab.subscribe(tab => {
+                self.block();
                 let loadData: IReloadData = getShared(RELOAD_DT_KEY),
                     personId: string = person.personId(),
                     employeeId: string = employee.employeeId(),
@@ -240,6 +243,7 @@ module cps001.a.vm {
             });
 
             employee.employeeId.subscribe(id => {
+                self.block();
                 let reload = getShared(RELOAD_KEY);
 
                 if (id) {
@@ -375,6 +379,12 @@ module cps001.a.vm {
             }
         }
 
+        block() {
+            if (!$('.blockUI').length) {
+                block();
+            }
+        }
+
         deleteEmployee() {
             let self = this,
                 emp = self.employee(),
@@ -390,9 +400,9 @@ module cps001.a.vm {
                 sid: emp.employeeId(),
                 pid: person.personId()
             });
+
             modal('../b/index.xhtml').onClosed(() => {
                 self.start();
-                unblock();
             });
         }
 
@@ -483,7 +493,7 @@ module cps001.a.vm {
                 }
 
                 // push data layout to webservice
-                block();
+                self.block();
                 service.saveCurrentLayout(command).done((selecteds: Array<string>) => {
                     let firstData: MultiData = _.first(self.multipleData()) || new MultiData(),
                         saveData: IReloadData = {
@@ -496,7 +506,6 @@ module cps001.a.vm {
                     setShared(REPL_KEY, REPL_KEYS.NORMAL);
 
                     info({ messageId: "Msg_15" }).then(function() {
-                        unblock();
                         self.start();
                     });
                 }).fail((mes) => {
@@ -691,6 +700,12 @@ module cps001.a.vm {
         // object layout
         layout: KnockoutObservable<Layout> = ko.observable(new Layout());
 
+        block() {
+            if (!$('.blockUI').length) {
+                block();
+            }
+        }
+
         constructor(data?: IMultiData) {
             let self = this,
                 layout = self.layout(),
@@ -704,6 +719,7 @@ module cps001.a.vm {
             }
 
             self.id.subscribe(id => {
+                self.block();
                 let mode: TABS = self.mode();
 
                 setShared(REPL_KEY, REPL_KEYS.NORMAL);
@@ -737,6 +753,7 @@ module cps001.a.vm {
             });
 
             self.categoryId.subscribe(cid => {
+                self.block();
                 let id: string = self.id(),
                     mode: TABS = self.mode(),
                     loadData: IReloadData = getShared(RELOAD_DT_KEY);
@@ -764,6 +781,7 @@ module cps001.a.vm {
                                 _.defer(() => {
                                     new vc(layout.listItemCls());
                                     $('.drag-panel input:first').focus();
+                                    unblock();
                                 });
                             } else {
                                 layout.listItemCls.removeAll();
@@ -772,6 +790,7 @@ module cps001.a.vm {
                         }).fail(mgs => {
                             layout.showColor(true);
                             layout.listItemCls.removeAll();
+                            unblock();
                             setShared(RELOAD_DT_KEY, undefined);
                         });
                     } else {
@@ -798,6 +817,7 @@ module cps001.a.vm {
                                         _.defer(() => {
                                             new vc(layout.listItemCls());
                                             $('.drag-panel input:first').focus();
+                                            unblock();
                                         });
                                     } else {
                                         layout.listItemCls.removeAll();
@@ -805,6 +825,7 @@ module cps001.a.vm {
                                     setShared(RELOAD_DT_KEY, undefined);
                                 }).fail(mgs => {
                                     layout.listItemCls.removeAll();
+                                    unblock();
                                     setShared(RELOAD_DT_KEY, undefined);
                                 });
                                 break;
@@ -813,6 +834,7 @@ module cps001.a.vm {
                                 self.infoId(undefined);
                                 self.gridlist.removeAll();
                                 layout.listItemCls.removeAll();
+                                unblock();
                                 break;
                             case IT_CAT_TYPE.CONTINU:
                             case IT_CAT_TYPE.CONTINUWED:
@@ -880,6 +902,7 @@ module cps001.a.vm {
             });
 
             self.infoId.subscribe(infoId => {
+                self.block();
                 let id = self.id(),
                     mode: TABS = self.mode(),
                     ctp = cat.categoryType(),
@@ -942,6 +965,7 @@ module cps001.a.vm {
                             _.defer(() => {
                                 new vc(layout.listItemCls());
                                 $('.drag-panel input:first').focus();
+                                unblock();
                             });
 
                             let roleId = self.roleId(),
@@ -985,7 +1009,7 @@ module cps001.a.vm {
                                     self.permisions.remove(false);
                                 }
                             }).fail(msg => {
-
+                                unblock();
                             });
                         });
                     } else {

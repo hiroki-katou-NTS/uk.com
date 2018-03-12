@@ -5,25 +5,20 @@ import java.util.List;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.ActualWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.WorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.primitive.ActualWorkTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.primitive.WorkFrameNo;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
-import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 
 @Data
 @AttendanceItemRoot(rootName = "日別実績の作業別勤怠時間")
-public class AttendanceTimeByWorkOfDailyDto implements ConvertibleAttendanceItem {
+public class AttendanceTimeByWorkOfDailyDto extends AttendanceItemCommon {
 
 	//TODO: not map item id
 	/** 社員ID: 社員ID */
@@ -48,7 +43,8 @@ public class AttendanceTimeByWorkOfDailyDto implements ConvertibleAttendanceItem
 								c.getTimeSheet() == null ? null : new ActualWorkTimeSheetDto(
 										WithActualTimeStampDto.toWithActualTimeStamp(c.getTimeSheet().getStart()), 
 										WithActualTimeStampDto.toWithActualTimeStamp(c.getTimeSheet().getEnd())), 
-								c.getWorkTime().valueAsMinutes())));
+								c.getWorkTime() == null ? null : c.getWorkTime().valueAsMinutes())));
+			dto.exsistData();
 		}
 		
 		return dto;
@@ -66,8 +62,11 @@ public class AttendanceTimeByWorkOfDailyDto implements ConvertibleAttendanceItem
 	
 	@Override
 	public AttendanceTimeByWorkOfDaily toDomain(String employeeId, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new AttendanceTimeByWorkOfDaily(employeeId, date,
-					workTimes == null ? new ArrayList<>() : ConvertHelper.mapTo(workTimes,
+					ConvertHelper.mapTo(workTimes,
 								c -> new WorkTimeOfDaily(new WorkFrameNo(c.getWorkFrameNo()),
 										new ActualWorkTimeSheet(getStamp(c.getTimeSheet().getStart()),
 												getStamp(c.getTimeSheet().getEnd())),

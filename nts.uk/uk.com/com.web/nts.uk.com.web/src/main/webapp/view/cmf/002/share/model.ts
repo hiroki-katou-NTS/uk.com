@@ -155,4 +155,13 @@ module nts.uk.com.view.cmf002.share.model {
             this.itemType = ko.observable(itemType);
         }
     }
+    
+    export function getSystemTypes(): Array<ItemModel> {
+        return [
+            new ItemModel(0, getText('Enum_SystemType_PERSON_SYSTEM')),
+            new ItemModel(1, getText('Enum_SystemType_ATTENDANCE_SYSTEM')),
+            new ItemModel(2, getText('Enum_SystemType_PAYROLL_SYSTEM')),
+            new ItemModel(3, getText('Enum_SystemType_OFFICE_HELPER'))
+        ];
+    }
 }

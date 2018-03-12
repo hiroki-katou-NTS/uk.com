@@ -62,7 +62,7 @@
 				<div class="right-content">
 					<div class="control-group" data-bind="with: currentItem">
 						<div id="code-sphd" 
-							data-bind="ntsFormLabel: {required: true,constraint:['SpecialHolidayCode','SpecialHolidayName']}">#{i18n.getText('KMF004_9')}</div>
+							data-bind="ntsFormLabel: {required: true, constraint:['SpecialHolidayCode','SpecialHolidayName']}">#{i18n.getText('KMF004_9')}</div>
 						<span><input id="code-text"  tabindex="6"
 							style="width: 40px; margin-left: -1px;" 
 							data-bind="ntsTextEditor: {value: specialHolidayCode,constraint:'SpecialHolidayCode' , required: true, enable:$parent.isEnableCode, immediate: true ,option: {autofill:true, filldirection:'left'}, name: '#[KMF004_10]'} " /></span>
