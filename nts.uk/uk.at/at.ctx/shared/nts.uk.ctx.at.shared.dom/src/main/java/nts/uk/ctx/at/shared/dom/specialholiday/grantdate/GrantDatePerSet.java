@@ -15,7 +15,7 @@ public class GrantDatePerSet {
 	private String companyId;
 
 	/*付与日のID*/
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 
 	/*特別休暇コード*/
 	private PersonalGrantDateCode personalGrantDateCode;
@@ -32,7 +32,7 @@ public class GrantDatePerSet {
 	/* 
 	 * Create from java type
 	 */
-	public static GrantDatePerSet createSimpleFromJavaType(String companyId, String specialHolidayCode, String personalGrantDateCode, int grantDateNo,
+	public static GrantDatePerSet createSimpleFromJavaType(String companyId, int specialHolidayCode, String personalGrantDateCode, int grantDateNo,
 			int grantDateMonth, int grantDateYear) {
 		return new GrantDatePerSet(companyId,
 				specialHolidayCode,

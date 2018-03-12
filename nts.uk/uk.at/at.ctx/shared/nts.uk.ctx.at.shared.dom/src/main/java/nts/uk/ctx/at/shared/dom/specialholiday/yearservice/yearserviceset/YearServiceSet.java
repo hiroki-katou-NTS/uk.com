@@ -18,7 +18,7 @@ import nts.arc.error.BusinessException;
 @AllArgsConstructor
 public class YearServiceSet {
 	private String companyId;
-	private String specialHolidayCode; 
+	private int specialHolidayCode; 
 	private int yearServiceNo;
 	private Integer year;
 	private Integer month;
@@ -34,7 +34,7 @@ public class YearServiceSet {
 	 * @param date
 	 * @return
 	 */
-	public static YearServiceSet createFromJavaType(String companyId, String specialHolidayCode, int yearServiceNo, Integer year, Integer month, Integer date){
+	public static YearServiceSet createFromJavaType(String companyId, int specialHolidayCode, int yearServiceNo, Integer year, Integer month, Integer date){
 		return new YearServiceSet(companyId, specialHolidayCode, yearServiceNo, year, month, date);
 	}
 	

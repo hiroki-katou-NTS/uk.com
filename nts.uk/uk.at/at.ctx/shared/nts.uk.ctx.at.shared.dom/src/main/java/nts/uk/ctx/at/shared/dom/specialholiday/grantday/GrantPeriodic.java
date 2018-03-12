@@ -56,7 +56,7 @@ public class GrantPeriodic extends DomainObject {
 	 * @param grantPeriodicMethod
 	 * @return
 	 */
-	public static GrantPeriodic createFromJavaType(String companyId, String specialHolidayCode, int grantDay,
+	public static GrantPeriodic createFromJavaType(String companyId, int specialHolidayCode, int grantDay,
 			int splitAcquisition, int grantPeriodicMethod) {
 		return new GrantPeriodic(companyId, new SpecialHolidayCode(specialHolidayCode), new GrantDay(grantDay),
 				EnumAdaptor.valueOf(splitAcquisition, SplitAcquisition.class),
