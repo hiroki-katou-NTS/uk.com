@@ -39,6 +39,42 @@ module nts.uk.com.view.cas003.a {
                 self.violationPassCheck = ko.observable(false);
                 self.firstTimeCheck = ko.observable(false);
                 self.accLockCheck = ko.observable(true);
+                self.passPolicyCheck.subscribe(x => {
+                    if (!x) {
+                        if ($("#txtlowestDigit").ntsError("hasError")) {
+                            $("#txtlowestDigit").ntsError("clear");
+                        }
+                        if ($("#txtAlphabetDigit").ntsError("hasError")) {
+                            $("#txtAlphabetDigit").ntsError("clear");
+                        }
+                        if ($("#txtNumberOfDigit").ntsError("hasError")) {
+                            $("#txtNumberOfDigit").ntsError("clear");
+                        }
+                        if ($("#txtSymbolCharacters").ntsError("hasError")) {
+                            $("#txtSymbolCharacters").ntsError("clear");
+                        }
+                        if ($("#txtHistoryCount").ntsError("hasError")) {
+                            $("#txtHistoryCount").ntsError("clear");
+                        }
+                        if ($("#txtValidityPeriod").ntsError("hasError")) {
+                            $("#txtValidityPeriod").ntsError("clear");
+                        }
+                        if ($("#txtPasswordChange").ntsError("hasError")) {
+                            $("#txtPasswordChange").ntsError("clear");
+                        }
+
+                    }
+                });
+                self.accLockCheck.subscribe(x => {
+                    if (!x) {
+                        if ($("#txtLockInterval").ntsError("hasError")) {
+                            $("#txtLockInterval").ntsError("clear");
+                        }
+                        if($("#txtErrorCount").ntsError("hasError")){
+                            $("#txtErrorCount").ntsError("clear");
+                        }
+                    }
+                });
             }
 
 
@@ -103,6 +139,7 @@ module nts.uk.com.view.cas003.a {
                     $("#txtLockOutMessage").trigger("validate");
                 }
 
+
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
@@ -117,7 +154,7 @@ module nts.uk.com.view.cas003.a {
                     accountPolicy = new AccountPolicy({ errorCount: 0, lockInterval: 0, lockOutMessage: self.lockOutMessage(), isAccLockUse: self.accLockCheck(), notificationPasswordChange: 0, loginCheck: false, initialPasswordChange: false, isPasswordUse: self.passPolicyCheck(), historyCount: 0, lowestDigits: 1, validityPeriod: 0, numberOfDigits: 0, symbolCharacters: 0, alphabetDigit: 0 });
                 }
                 else {
-                  accountPolicy =   new AccountPolicy({ errorCount: self.errorCount(), lockInterval: self.lockInterval(), lockOutMessage: self.lockOutMessage(), isAccLockUse: self.accLockCheck(), notificationPasswordChange: self.notificationPasswordChange(), loginCheck: self.violationPassCheck(), initialPasswordChange: self.firstTimeCheck(), isPasswordUse: self.passPolicyCheck(), historyCount: self.historyCount(), lowestDigits: self.lowestDigits(), validityPeriod: self.validityPeriod(), numberOfDigits: self.numberOfDigits(), symbolCharacters: self.symbolCharacters(), alphabetDigit: self.alphabetDigit() });
+                    accountPolicy = new AccountPolicy({ errorCount: self.errorCount(), lockInterval: self.lockInterval(), lockOutMessage: self.lockOutMessage(), isAccLockUse: self.accLockCheck(), notificationPasswordChange: self.notificationPasswordChange(), loginCheck: self.violationPassCheck(), initialPasswordChange: self.firstTimeCheck(), isPasswordUse: self.passPolicyCheck(), historyCount: self.historyCount(), lowestDigits: self.lowestDigits(), validityPeriod: self.validityPeriod(), numberOfDigits: self.numberOfDigits(), symbolCharacters: self.symbolCharacters(), alphabetDigit: self.alphabetDigit() });
                 }
 
                 service.updateAccountPolicy(accountPolicy).done(() => {

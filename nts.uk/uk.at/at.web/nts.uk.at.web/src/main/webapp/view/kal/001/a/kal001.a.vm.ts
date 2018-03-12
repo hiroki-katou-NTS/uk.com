@@ -37,7 +37,7 @@ module nts.uk.at.view.kal001.a.model {
         constructor() {
             let self = this;
             
-            //search component
+        //search component
             self.ccg001ComponentOption = {
                 /** Common properties */
                 systemType: 1,
@@ -80,10 +80,9 @@ module nts.uk.at.view.kal001.a.model {
                   
             
             
-            // employee list component
-           // self.baseDate = ko.observable(new Date());
-            self.selectedCode = ko.observable('1');
-            self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
+          // employee list component
+            self.selectedCode = ko.observable('');
+            self.multiSelectedCode = ko.observableArray([]);
             self.isShowAlreadySet = ko.observable(false);
             self.alreadySettingList = ko.observableArray([
                 {code: '1', isAlreadySetting: true},
@@ -192,6 +191,13 @@ module nts.uk.at.view.kal001.a.model {
         
         public open_Dialog(): any {
             let self = this;
+            let listSelectedEmpployee : Array<UnitModel> = self.employeeList().filter(e => self.multiSelectedCode().indexOf(e.code)>-1);
+            let listPeriodByCategory = self.periodByCategory().filter(x => x.checkBox()==true);
+            service.extractAlarm(listSelectedEmpployee, self.currentAlarmCode(), listPeriodByCategory).done((dataExtractAlarm)=>{
+                
+            }).fail((errorExtractAlarm)=>{
+                alertError(errorExtractAlarm);
+            });
             nts.uk.ui.windows.setShared("alarmCode", self.currentAlarmCode());
             modal("/view/kal/001/b/index.xhtml").onClosed(() => {
                 

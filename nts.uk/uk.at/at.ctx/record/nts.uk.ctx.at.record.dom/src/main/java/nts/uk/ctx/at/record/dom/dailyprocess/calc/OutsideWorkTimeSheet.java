@@ -39,13 +39,22 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
  *
  */
 @Getter
-@AllArgsConstructor
 public class OutsideWorkTimeSheet {
 
 	private Optional<OverTimeSheet> overTimeWorkSheet;
 
 	private Optional<HolidayWorkTimeSheet> holidayWorkTimeSheet;
 
+	/**
+	 * Constructor 
+	 */
+	public OutsideWorkTimeSheet(Optional<OverTimeSheet> overTimeWorkSheet,
+			Optional<HolidayWorkTimeSheet> holidayWorkTimeSheet) {
+		super();
+		this.overTimeWorkSheet = overTimeWorkSheet;
+		this.holidayWorkTimeSheet = holidayWorkTimeSheet;
+	}
+	
 	/**
 	 * 就業時間外時間帯を作成する
 	 * 
@@ -74,7 +83,7 @@ public class OutsideWorkTimeSheet {
 			WorkType toDay, WorkType afterDay, WorkTimeSetting workTime, WorkingSystem workingSystem,
 			BreakDownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalculationOfOverTimeWork autoCalculationSet,
 			LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet,BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet,
-			DailyCalculationPersonalInformation personalInfo) {
+			DailyCalculationPersonalInformation personalInfo,DeductionTimeSheet deductionTimeSheet) {
 		
 		List<HolidayWorkFrameTimeSheetForCalc> holidayWorkFrameTimeSheetForCalc = new ArrayList<>();
 		List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheet = new ArrayList<>();
@@ -83,7 +92,7 @@ public class OutsideWorkTimeSheet {
 			overTimeWorkFrameTimeSheet = OverTimeFrameTimeSheetForCalc.createOverWorkFrame(
 					overTimeHourSetList, workingSystem, attendanceLeave, workNo, breakdownTimeDay, dailyTime,
 					autoCalculationSet, statutorySet, prioritySet,bonusPaySetting,midNightTimeSheet,
-					personalInfo,true);
+					personalInfo,true,deductionTimeSheet);
 
 			/* 0時跨ぎ処理 */
 			OverDayEnd processOverDayEnd = new OverDayEnd();
@@ -104,7 +113,7 @@ public class OutsideWorkTimeSheet {
 //			new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(1), new TimeSpanForCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)));
 //					fixOff.getWorkTimezone(), attendanceLeave, dayEndSet, overDayEndSet, holidayTimeWorkItem, beforeDay,
 //					toDay, afterDay);
-			holidayWorkFrameTimeSheetForCalc = HolidayWorkFrameTimeSheetForCalc.createHolidayTimeWorkFrame(attendanceLeave,fixOff,toDay,bonusPaySetting,midNightTimeSheet);
+			holidayWorkFrameTimeSheetForCalc = HolidayWorkFrameTimeSheetForCalc.createHolidayTimeWorkFrame(attendanceLeave,fixOff,toDay,bonusPaySetting,midNightTimeSheet,deductionTimeSheet);
 
 			/* 0時跨ぎ */
 			OverDayEnd overEnd = new OverDayEnd();
@@ -203,5 +212,7 @@ public class OutsideWorkTimeSheet {
 		}
 		return new AttendanceTime(0);
 	}
+
+
 	
 }
