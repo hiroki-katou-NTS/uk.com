@@ -30,60 +30,6 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 	@Inject
 	private TimeZoneRoundingPolicy tzrPolicy;
 
-	/**
-	 * Validate.
-	 *
-	 * @param be
-	 *            the be
-	 * @param predTime
-	 *            the pred time
-	 * @param otSet
-	 *            the ot set
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetPolicy#validate(nts
-	 * .uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting,
-	 * nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet)
-	 */
-//	@Override
-//	public void validate(BundledBusinessException be, PredetemineTimeSetting predTime, OverTimeOfTimeZoneSet otSet) {
-//		val otTimezone = otSet.getTimezone();
-//		val shift1Timezone = predTime.getPrescribedTimezoneSetting().getTimezoneShiftOne();
-//		val shift2Timezone = predTime.getPrescribedTimezoneSetting().getTimezoneShiftTwo();
-//
-//		// validate msg_516
-//		if (this.tzrPolicy.validateRange(predTime, otSet.getTimezone())) {
-//			be.addMessage("Msg_516", "KMK003_89");
-//		}
-//
-//		// validate msg_519
-//		if (!predTime.isPredetermine() && predTime.getPrescribedTimezoneSetting().getLstTimezone().stream()
-//				.filter(shift -> shift.getUseAtr().equals(UseSetting.USE))
-//				.anyMatch(shift -> otTimezone.isOverlap(shift))) {
-//			be.addMessage("Msg_519", "KMK003_89");
-//		}
-//
-//		// validate msg_779
-//		boolean isNotEarlyAndPred = !otSet.isEarlyOTUse() && !predTime.isPredetermine();
-//		boolean condition1 = !shift2Timezone.isUsed() && (otTimezone.getStart().lessThan(shift1Timezone.getEnd())
-//				|| otTimezone.getEnd().lessThan(shift1Timezone.getEnd()));
-//		boolean condition2 = shift2Timezone.isUsed() && (otTimezone.getStart().lessThan(shift2Timezone.getEnd())
-//				|| otTimezone.getEnd().lessThan(shift2Timezone.getEnd()));
-//		if (isNotEarlyAndPred && (condition1 || condition2)) {
-//			be.addMessage("Msg_779");
-//		}
-//
-//		// validate msg_780
-//		if (!predTime.isPredetermine() && otSet.isEarlyOTUse()
-//				&& (otTimezone.getStart().greaterThan(shift1Timezone.getStart())
-//						|| otTimezone.getEnd().greaterThan(shift1Timezone.getStart()))) {
-//			be.addMessage("Msg_780");
-//		}
-//	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -117,19 +63,77 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 			}
 		}
 
-		// TODO
 		// Msg_779
+		if (!predTime.isPredetermine() && AmPmAtr.ONE_DAY.equals(dayAtr) && !otSet.isEarlyOTUse()) {
+			if (((otTimezone.getStart().lessThan(shift1Timezone.getEnd())
+					|| otTimezone.getEnd().lessThan(shift1Timezone.getEnd())))) {
+				be.addMessage("Msg_779");
+			}
+		}
+		if (!predTime.isPredetermine() && AmPmAtr.AM.equals(dayAtr) && !otSet.isEarlyOTUse() && !presTz.isUseShiftTwo()
+				&& DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
+			if (((otTimezone.getStart().lessThan(presTz.getMorningEndTime())
+					|| otTimezone.getEnd().lessThan(presTz.getMorningEndTime())))) {
+				be.addMessage("Msg_779");
+			}
+		}
+		if (!predTime.isPredetermine() && AmPmAtr.AM.equals(dayAtr) && !otSet.isEarlyOTUse() && presTz.isUseShiftTwo()
+				&& DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
+			TimeWithDayAttr startTime1 = shift1Timezone.getStart();
+			TimeWithDayAttr endTime1 = shift1Timezone.getEnd();
+			TimeWithDayAttr startTime2 = shift2Timezone.getStart();
+			TimeWithDayAttr endTime2 = shift2Timezone.getEnd();
+			if (startTime1.lessThanOrEqualTo(presTz.getMorningEndTime())
+					&& endTime1.greaterThanOrEqualTo(presTz.getMorningEndTime())) {
+				if (((otTimezone.getStart().lessThan(presTz.getMorningEndTime())
+						|| otTimezone.getEnd().lessThan(presTz.getMorningEndTime())))) {
+					be.addMessage("Msg_779");
+				}
+			}
+			if (startTime2.lessThanOrEqualTo(presTz.getMorningEndTime())
+					&& endTime2.greaterThanOrEqualTo(presTz.getMorningEndTime())) {
+				if (((otTimezone.getStart().lessThan(endTime1) || otTimezone.getEnd().lessThan(endTime1)))) {
+					be.addMessage("Msg_779");
+				}
+			}
+		}
+		if (!predTime.isPredetermine() && AmPmAtr.PM.equals(dayAtr) && !otSet.isEarlyOTUse() && !presTz.isUseShiftTwo()
+				&& DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
+			if (((otTimezone.getStart().lessThan(shift1Timezone.getEnd())
+					|| otTimezone.getEnd().lessThan(shift1Timezone.getEnd())))) {
+				be.addMessage("Msg_779");
+			}
+		}
+		if (!predTime.isPredetermine() && AmPmAtr.PM.equals(dayAtr) && !otSet.isEarlyOTUse() && presTz.isUseShiftTwo()
+				&& DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
+			TimeWithDayAttr startTime1 = shift1Timezone.getStart();
+			TimeWithDayAttr endTime1 = shift1Timezone.getEnd();
+			TimeWithDayAttr startTime2 = shift2Timezone.getStart();
+			TimeWithDayAttr endTime2 = shift2Timezone.getEnd();
+			if (startTime1.lessThanOrEqualTo(presTz.getAfternoonStartTime())
+					&& endTime1.greaterThanOrEqualTo(presTz.getAfternoonStartTime())) {
+				if (((otTimezone.getStart().lessThan(endTime1) || otTimezone.getEnd().lessThan(endTime1)))) {
+					be.addMessage("Msg_779");
+				}
+			}
+			if (startTime2.lessThanOrEqualTo(presTz.getAfternoonStartTime())
+					&& endTime2.greaterThanOrEqualTo(presTz.getAfternoonStartTime())) {
+				if (((otTimezone.getStart().lessThan(endTime2) || otTimezone.getEnd().lessThan(endTime2)))) {
+					be.addMessage("Msg_779");
+				}
+			}
+		}
 
 		// Msg_780
 		if (!predTime.isPredetermine() && AmPmAtr.ONE_DAY.equals(dayAtr) && otSet.isEarlyOTUse()) {
-			if (!((otTimezone.getStart().greaterThan(shift1Timezone.getStart())
+			if (((otTimezone.getStart().greaterThan(shift1Timezone.getStart())
 					|| otTimezone.getEnd().greaterThan(shift1Timezone.getStart())))) {
 				be.addMessage("Msg_780");
 			}
 		}
 		if (!predTime.isPredetermine() && (AmPmAtr.AM.equals(dayAtr) || AmPmAtr.PM.equals(dayAtr))
 				&& otSet.isEarlyOTUse() && DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
-			if (!((otTimezone.getStart().greaterThan(shift1Timezone.getStart())
+			if (((otTimezone.getStart().greaterThan(shift1Timezone.getStart())
 					|| otTimezone.getEnd().greaterThan(shift1Timezone.getStart())))) {
 				be.addMessage("Msg_780");
 			}
