@@ -1,20 +1,19 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
 
-import java.util.List;
-
 /**
  * The Interface CompanyDivergenceReferenceTimeHistoryRepository.
  */
 public interface CompanyDivergenceReferenceTimeHistoryRepository {
 	
+	
 	/**
-	 * Find by key.
+	 * Find by hist id.
 	 *
 	 * @param companyId the company id
 	 * @param histId the hist id
 	 * @return the company divergence reference time history
 	 */
-	CompanyDivergenceReferenceTimeHistory findByKey(String companyId, String histId);
+	CompanyDivergenceReferenceTimeHistory findByHistId(String companyId, String histId);
 	
 	/**
 	 * Find all.
@@ -22,7 +21,7 @@ public interface CompanyDivergenceReferenceTimeHistoryRepository {
 	 * @param companyId the company id
 	 * @return the list
 	 */
-	List<CompanyDivergenceReferenceTimeHistory> findAll(String companyId);
+	CompanyDivergenceReferenceTimeHistory findAll(String companyId);
 	
 	/**
 	 * Adds the.
