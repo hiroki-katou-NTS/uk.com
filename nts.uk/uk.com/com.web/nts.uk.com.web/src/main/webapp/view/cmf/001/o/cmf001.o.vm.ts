@@ -77,7 +77,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             // block ui
-            block.grayout();
+            block.invisible();
 
             //Imported(共通)　「システムコード」を取得する
 
@@ -127,7 +127,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
 
         private uploadFile(): void {
             var self = this;
-            block.grayout();
+            block.invisible();
             $("#file-upload").ntsFileUpload({ stereoType: "csvfile" }).done(function(res) {
                 service.getNumberOfLine(res[0].id).done(function(totalLine: any) {
                     self.totalLine(totalLine);
@@ -158,7 +158,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
 
         private loadListCondition(sysType): void {
             let self = this;
-            block.grayout();
+            block.invisible();
             //「条件設定一覧」を初期化して取得した設定を表示する
             $('.clear-btn.ntsSearchBox_Component').click();
             self.listCondition([]);
@@ -192,7 +192,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
 
         private loadListAccept(): void {
             let self = this;
-            block.grayout();
+            block.invisible();
             //ドメインモデル「受入項目（定型）」を取得する
             service.getStdAcceptItem(self.selectedSysType(), self.selectedConditionCd()).done(function(data: Array<any>) {
                 self.listAccept.removeAll();

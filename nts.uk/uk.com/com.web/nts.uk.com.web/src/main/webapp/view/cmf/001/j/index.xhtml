@@ -28,7 +28,9 @@
 					<tr>
 						<td>
 							<!--J2_1 有効桁長(ラベル)-->
-							<div class="label" data-bind="ntsFormLabel: { }" tabindex="-1">#{i18n.getText('CMF001_331')}</div>
+							<div class="label"
+								data-bind="ntsFormLabel: { text: '#{i18n.getText('CMF001_331')}' }"
+								tabindex="-1"></div>
 						</td>
 						<td>
 							<!--J2_2 有効桁長-->
@@ -67,12 +69,15 @@
 					<tr>
 						<td>
 							<!--J3_1 進数選択(ラベル)-->
-							<div class="label" data-bind="ntsFormLabel: { }" tabindex="-1">#{i18n.getText('CMF001_340')}</div>
+							<div class="label"
+								data-bind="ntsFormLabel: { text: '#{i18n.getText('CMF001_340')}' }"
+								tabindex="-1"></div>
 						</td>
 						<td colspan="2">
 							<!--J3_2 進数選択-->
 							<div class="cf" tabindex="4"
 								data-bind="ntsSwitchButton: {
+								name: '#[CMF001_341]',
 								options: itemsDecimalSelect,
 								optionsValue: 'code',
 								optionsText: 'name',
@@ -84,12 +89,15 @@
 					<tr>
 						<td>
 							<!--J4_1 時分/分選択(ラベル)-->
-							<div class="label" data-bind="ntsFormLabel: { }" tabindex="-1">#{i18n.getText('CMF001_350')}</div>
+							<div class="label"
+								data-bind="ntsFormLabel: { text: '#{i18n.getText('CMF001_350')}' }"
+								tabindex="-1"></div>
 						</td>
 						<td colspan="2">
 							<!--J4_2 時分/分選択-->
 							<div class="cf" tabindex="5"
 								data-bind="ntsSwitchButton: {
+								name: '#[CMF001_351]',
 								options: itemsHourMinSelect,
 								optionsValue: 'code',
 								optionsText: 'name',
@@ -101,12 +109,15 @@
 					<tr>
 						<td>
 							<!--J5_1 区切り文字設定-->
-							<div class="label" data-bind="ntsFormLabel: { }" tabindex="-1">#{i18n.getText('CMF001_354')}</div>
+							<div class="label"
+								data-bind="ntsFormLabel: { text: '#{i18n.getText('CMF001_354')}' }"
+								tabindex="-1"></div>
 						</td>
 						<td colspan="2">
 							<!--J5_2 区切り文字選択-->
 							<div tabindex="6"
 								data-bind="ntsComboBox: {
+								name: '#[CMF001_355]',
 								options: itemsDelimiterSet,
 								optionsValue: 'code',
 								enable: checkActive6() &amp;&amp; inputMode ,
@@ -122,12 +133,15 @@
 					<tr>
 						<td>
 							<!--J6_1 端数処理（１０進数）-->
-							<div class="label" data-bind="ntsFormLabel: { }" tabindex="-1">#{i18n.getText('CMF001_356')}</div>
+							<div class="label"
+								data-bind="ntsFormLabel: { text: '#{i18n.getText('CMF001_356')}' }"
+								tabindex="-1"></div>
 						</td>
 						<td>
 							<!--J6_2 端数処理の有無-->
 							<div tabindex="7"
 								data-bind="ntsRadioBoxGroup: {
+								name: '#[CMF001_357]',
 								options: itemsRoundProc,
 								optionsValue: 'code',
 								optionsText: 'name',
@@ -138,6 +152,7 @@
 							<!--J6_5 端数処理内容-->
 							<div tabindex="8"
 								data-bind="ntsComboBox: {
+								name: '#[CMF001_360]',
 								options: itemsRoundProcCls,
 								optionsValue: 'code',
 								enable: checkActive6() &amp;&amp; checkActive5() &amp;&amp; checkActive2() &amp;&amp; inputMode, 
@@ -154,12 +169,15 @@
 					<tr>
 						<td>
 							<!--J7_1 固定値(ラベル)-->
-							<div class="label" data-bind="ntsFormLabel: { }" tabindex="-1">#{i18n.getText('CMF001_361')}</div>
+							<div class="label"
+								data-bind="ntsFormLabel: { text: '#{i18n.getText('CMF001_361')}' }"
+								tabindex="-1"></div>
 						</td>
 						<td>
 							<!--J7_2 固定値使用有無-->
 							<div tabindex="9"
 								data-bind="ntsRadioBoxGroup: {
+								name: '#[CMF001_362]',
 								options: itemsFixedValue,
 								optionsValue: 'code',
 								optionsText: 'name',
@@ -169,6 +187,7 @@
 						<!--J7_5 固定値の値-->
 						<td><input tabindex="10"
 							data-bind="ntsTextEditor: {
+								name: '#[CMF001_365]',
 								constraint: 'DataSettingFixedValue',
 								value: setting().valueOfFixedValue,
 								enable: checkActive3() &amp;&amp; inputMode,
