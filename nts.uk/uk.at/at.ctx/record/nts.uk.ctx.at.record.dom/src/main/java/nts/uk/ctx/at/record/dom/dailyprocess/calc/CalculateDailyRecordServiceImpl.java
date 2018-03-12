@@ -246,10 +246,15 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
 		//休憩時間帯(BreakManagement)
 		List<BreakTimeSheet> breakTimeSheet = new ArrayList<>();
-		breakTimeSheet.add(new BreakTimeSheet(new BreakFrameNo(1),
-											  new TimeWithDayAttr(720),
-											  new TimeWithDayAttr(780),
-											  new AttendanceTime(0)));
+//		breakTimeSheet.add(new BreakTimeSheet(new BreakFrameNo(1),
+//											  new TimeWithDayAttr(720),
+//											  new TimeWithDayAttr(780),
+//											  new AttendanceTime(0)));
+		if(!integrationOfDaily.getBreakTime().isEmpty()) {
+			if(!integrationOfDaily.getBreakTime().get(0).getBreakTimeSheets().isEmpty()) {
+				breakTimeSheet.addAll(integrationOfDaily.getBreakTime().get(0).getBreakTimeSheets());
+			}
+		}
 		
 		List<BreakTimeOfDailyPerformance> breakTimeOfDailyList = new ArrayList<>();
 		breakTimeOfDailyList.add(new BreakTimeOfDailyPerformance(employeeId, 
