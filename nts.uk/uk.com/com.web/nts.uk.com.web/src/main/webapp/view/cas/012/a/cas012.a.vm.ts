@@ -39,7 +39,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
                 self.datePeriod().startDate = value;
                 self.datePeriod.valueHasMutated();
             });
-            self.endValidPeriod.subscribe((value) => { 
+            self.endValidPeriod.subscribe((value) => {
                 self.datePeriod().endDate = value;
                 self.datePeriod.valueHasMutated();
             });
@@ -59,7 +59,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
                     self.getData().done(() => {
                         self.createSubscribe();
                         self.selectRoleByIndex(0);
-                        
+
                     });
                 } else {
                     nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
@@ -70,7 +70,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
             return dfd.promise();
         }
 
-        private createSubscribe(): void {   
+        private createSubscribe(): void {
             var self = this;
             self.selectedRoleType.subscribe((value) => {
                 self.getData().done(() => {
@@ -138,32 +138,33 @@ module nts.uk.com.view.cas012.a.viewmodel {
             block.invisible();
             if (self.selectedRoleType() == 0) {
                 nts.uk.ui.windows.sub.modal("/view/cas/012/c/index.xhtml").onClosed(() => {
-                    let data = nts.uk.ui.windows.getShared("CAS012CResult"); 
+                    let data = nts.uk.ui.windows.getShared("CAS012CResult");
                     param.setRoleAdminFlag = data.setRoleAdminFlag;
                     param.decisionCompanyID = data.decisionCompanyID;
-                    if(!data.isCancel){ 
+                    if (!data.isCancel) {
                         self.createRoleProcess(param);
                     }
                 });
             } else {
-                self.createRoleProcess(param); 
+                self.createRoleProcess(param);
             }
         }
 
         private createRoleProcess(param: RoleIndividualGrantBaseCommand): void {
             var self = this;
+           
             service.create(param).done((data: any) => {
                 self.getData().done(() => {
                     self.selectRoleByKey(data.companyID, data.userID, data.roleType);
                     nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                 });
             }).fail((res) => {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_218" , messageParams: [nts.uk.resource.getText("CAS012_24")]});
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId });
             }).always(() => {
                 block.clear();
             });
         }
-        
+
         private updateRole(): void {
             var self = this;
             var param: RoleIndividualGrantBaseCommand = new RoleIndividualGrantBaseCommand(self.selectRoleIndividual());
