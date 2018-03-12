@@ -16,7 +16,7 @@ public class KrcstDrtPK implements Serializable {
 	private String histId;
 
 	@Column(name="DVGC_TIME_NO")
-	private long dvgcTimeNo;
+	private Integer dvgcTimeNo;
 
 	public KrcstDrtPK() {
 	}
@@ -26,10 +26,10 @@ public class KrcstDrtPK implements Serializable {
 	public void setHistId(String histId) {
 		this.histId = histId;
 	}
-	public long getDvgcTimeNo() {
+	public Integer getDvgcTimeNo() {
 		return this.dvgcTimeNo;
 	}
-	public void setDvgcTimeNo(long dvgcTimeNo) {
+	public void setDvgcTimeNo(Integer dvgcTimeNo) {
 		this.dvgcTimeNo = dvgcTimeNo;
 	}
 

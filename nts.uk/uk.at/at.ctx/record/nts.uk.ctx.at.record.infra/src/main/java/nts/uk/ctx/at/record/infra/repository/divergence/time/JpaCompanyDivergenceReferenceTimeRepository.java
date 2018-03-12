@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.divergence.time;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -8,6 +9,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrtPK;
 
 /**
  * The Class JpaCompanyDivergenceReferenceTimeRepository.
@@ -24,9 +27,16 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 	 * nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType)
 	 */
 	@Override
-	public CompanyDivergenceReferenceTime findByKey(String histId, DivergenceType divergenceTimeNo) {
-		// TODO Auto-generated method stub
-		return null;
+	public Optional<CompanyDivergenceReferenceTime> findByKey(String histId, DivergenceType divergenceTimeNo) {
+		KrcstDrtPK pk = new KrcstDrtPK();
+		pk.setHistId(histId);
+		pk.setDvgcTimeNo(divergenceTimeNo.value);
+
+		KrcstDrt drt = this.queryProxy().find(pk, KrcstDrt.class).orElse(new KrcstDrt());
+
+		CompanyDivergenceReferenceTime companyDivergenceReferenceTime = this.toDomain(drt);
+
+		return Optional.of(companyDivergenceReferenceTime);
 	}
 
 	/*
@@ -80,4 +90,15 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 
 	}
 
+	/**
+	 * To domain.
+	 *
+	 * @param entity
+	 *            the entity
+	 * @return the company divergence reference time
+	 */
+	private CompanyDivergenceReferenceTime toDomain(KrcstDrt entity) {
+		JpaCompanyDivergenceReferenceTimeGetMemento memento = new JpaCompanyDivergenceReferenceTimeGetMemento(entity);
+		return new CompanyDivergenceReferenceTime(memento);
+	}
 }
