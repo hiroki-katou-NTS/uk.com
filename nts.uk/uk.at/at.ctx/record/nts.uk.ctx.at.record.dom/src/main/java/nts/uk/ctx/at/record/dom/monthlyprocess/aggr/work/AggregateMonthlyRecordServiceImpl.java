@@ -9,6 +9,7 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -52,7 +53,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod) {
 		
 		val returnValue = new AggregateMonthlyRecordValue();
-		
+
 		// 「労働条件項目」を取得
 		val workingConditionItems = this.workingConditionItemRepository.getBySidAndPeriodOrderByStrD(
 				employeeId, datePeriod);
@@ -67,7 +68,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		
 		// 項目の数だけループ
 		for (val workingConditionItem : workingConditionItems){
-			
+
 			// 「労働条件」の該当履歴から期間を取得
 			val historyId = workingConditionItem.getHistoryId();
 			val workingConditionOpt = this.workingConditionRepository.getByHistoryId(historyId);
@@ -96,93 +97,29 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 				continue;
 			}
 			
-			// 月別実績の勤怠時間　初期データ作成
-			val attendanceTime = new AttendanceTimeOfMonthly(employeeId, yearMonth,
-					closureId, closureDate, procPeriod);
-			
 			// 労働制を確認する
 			val workingSystem = workingConditionItem.getLaborSystem();
 			
+			// 月別実績の勤怠時間　初期設定
+			val attendanceTime = new AttendanceTimeOfMonthly(employeeId, yearMonth, closureId, closureDate, procPeriod);
+			attendanceTime.prepareAggregation(companyId, procPeriod, workingSystem, isRetireMonth, this.repositories);
+			
 			// 月の計算
-			attendanceTime.aggregate(companyId, workingSystem, isRetireMonth, this.repositories);
+			val monthlyCalculation = attendanceTime.getMonthlyCalculation();
+			monthlyCalculation.aggregate(this.repositories);
 			
 			// 縦計
-			attendanceTime.verticalTotal(companyId, workingSystem, this.repositories);
+			val verticalTotal = attendanceTime.getVerticalTotal();
+			verticalTotal.verticalTotal(companyId, employeeId, procPeriod, workingSystem, this.repositories);
 			
 			// 時間外超過
+			ExcessOutsideWorkMng excessOutsideWorkMng = new ExcessOutsideWorkMng(monthlyCalculation);
+			excessOutsideWorkMng.aggregate(this.repositories);
+			attendanceTime.setExcessOutsideWork(excessOutsideWorkMng.getExcessOutsideWork());
 
 			// 計算結果を戻り値に蓄積
 			returnValue.getAttendanceTimes().add(attendanceTime);
 		}
-		
-		//*****（テスト）　2017/12検収テスト用。仮データ設定。
-		/*
-		Random random = new Random();
-		val randomVal = random.nextInt(9) + 1;		// 1～9の乱数発生
-		val attendanceTime = new AttendanceTimeOfMonthly(employeeId, yearMonth,
-				closureId, closureDate, datePeriod);
-		val monthlyCalculation = attendanceTime.getMonthlyCalculation();
-		val totalWorkingTime = monthlyCalculation.getTotalWorkingTime();
-		totalWorkingTime.getWorkTime().setWorkTime(new AttendanceTimeMonth(450 + randomVal));
-		val aggrOvertime1 =	AggregateOverTime.of(
-				new OverTimeFrameNo(1),
-				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(118),
-						new AttendanceTimeMonth(120 + randomVal)),
-				new AttendanceTimeMonth(0),
-				TimeMonthWithCalculation.ofSameTime(0),
-				new AttendanceTimeMonth(0),
-				new AttendanceTimeMonth(0));
-		val aggrOvertime2 =	AggregateOverTime.of(
-				new OverTimeFrameNo(2),
-				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(236),
-						new AttendanceTimeMonth(240 + randomVal)),
-				new AttendanceTimeMonth(0),
-				TimeMonthWithCalculation.ofSameTime(0),
-				new AttendanceTimeMonth(0),
-				new AttendanceTimeMonth(0));
-		totalWorkingTime.getOverTime().getAggregateOverTimeMap().put(
-				aggrOvertime1.getOverTimeFrameNo(), aggrOvertime1);
-		if (randomVal >= 5){
-			totalWorkingTime.getOverTime().getAggregateOverTimeMap().put(
-					aggrOvertime2.getOverTimeFrameNo(), aggrOvertime2);
-		}
-		val aggrHdwktime1 = AggregateHolidayWorkTime.of(
-				new HolidayWorkFrameNo(1),
-				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(178),
-						new AttendanceTimeMonth(180 + randomVal)),
-				new AttendanceTimeMonth(0),
-				TimeMonthWithCalculation.ofSameTime(0),
-				new AttendanceTimeMonth(0),
-				new AttendanceTimeMonth(0));
-		val aggrHdwktime2 = AggregateHolidayWorkTime.of(
-				new HolidayWorkFrameNo(2),
-				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(296),
-						new AttendanceTimeMonth(300 + randomVal)),
-				new AttendanceTimeMonth(0),
-				TimeMonthWithCalculation.ofSameTime(0),
-				new AttendanceTimeMonth(0),
-				new AttendanceTimeMonth(0));
-		totalWorkingTime.getHolidayWorkTime().getAggregateHolidayWorkTimeMap().put(
-				aggrHdwktime1.getHolidayWorkFrameNo(), aggrHdwktime1);
-		if (randomVal >= 6){
-			totalWorkingTime.getHolidayWorkTime().getAggregateHolidayWorkTimeMap().put(
-					aggrHdwktime2.getHolidayWorkFrameNo(), aggrHdwktime2);
-		}
-		val actualWorkingTime = monthlyCalculation.getActualWorkingTime();
-		actualWorkingTime.setWeeklyTotalPremiumTime(new AttendanceTimeMonth(540 + randomVal));
-		actualWorkingTime.setMonthlyTotalPremiumTime(new AttendanceTimeMonth(2460 + randomVal));
-		returnValue.getAttendanceTimes().add(attendanceTime);
-		*/
-		
-		//*****（テスト）　2017/12集計設定読み込み
-		/*
-		val aggrSet = this.repositories.getAggrSettingMonthly().get("TESTCMP", "TESTWKP", "XM", "XESTSYA");
-		val otlist = aggrSet.getRegularWork().getAggregateTimeSet().getTreatOverTimeOfLessThanCriteriaPerDay().getAutoExcludeOverTimeFrames();
-		*/
 		
 		return returnValue;
 	}	

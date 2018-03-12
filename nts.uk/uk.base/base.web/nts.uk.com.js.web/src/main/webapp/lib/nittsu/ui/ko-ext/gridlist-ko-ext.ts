@@ -32,13 +32,15 @@ module nts.uk.ui.koExtentions {
             $grid.data("init", true);
             
             if (data.multiple){
-                ROW_HEIGHT = 24;      
+                ROW_HEIGHT = 24;
                 
                 // Internet Explorer 6-11
-                var isIE = /*@cc_on!@*/false || !!document.documentMode;
+                let _document: any = document;
+                var isIE = /*@cc_on!@*/false || !!_document.documentMode;
                 
                 // Edge 20+
-                var isEdge = !isIE && !!window.StyleMedia; 
+                let _window: any = window;
+                var isEdge = !isIE && !!_window.StyleMedia; 
                 if (isIE || isEdge) {
                     DIFF_NUMBER = -2;    
                 }

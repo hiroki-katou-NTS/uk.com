@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.app.command.wkpmanager.RemoveWorkplaceManagerCommand;
 import nts.uk.ctx.sys.auth.app.command.wkpmanager.RemoveWorkplaceManagerCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.wkpmanager.SaveWorkplaceManagerCommand;
@@ -48,5 +49,11 @@ public class WorkplaceManagerWebService extends WebService {
     @POST
     public void removeWorkplaceManager(RemoveWorkplaceManagerCommand command) {
         this.removeWkpMngHandler.handle(command);
+    }
+	
+	@Path("findAllWorkplaceId")
+    @POST
+    public List<String> findAllWorkplaceId(GeneralDate baseDate) {
+        return this.wkpManagerFinder.findAllWorkplaceId(baseDate);
     }
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.WorkTimeWorkplaceDto;
@@ -183,5 +184,7 @@ public interface DailyPerformanceScreenRepo {
 	void updateColumnsWidth(Map<Integer, Integer> lstHeader, List<String> formatCodes);
 	
 	Optional<DailyRecOpeFuncDto> findDailyRecOpeFun(String companyId);
+	
+	List<EnumConstant> findErAlApplication(String companyId, List<String> errorCode);
 	
  }

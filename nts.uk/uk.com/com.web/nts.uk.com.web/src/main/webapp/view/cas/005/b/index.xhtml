@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 700, height: 320 };</script>
 			<com:stylefile path="cas005.b.main.css" />
-			
+
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="cas005.b.vm.js" />
 			<com:scriptfile path="cas005.b.service.js" />
@@ -27,32 +27,38 @@
 							<tr>
 								<td style="width: 100px">#{i18n.getText('CAS005_100')}</td>
 								<td style="width: 140px">
-									<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('CAS005_101')}</div>
+									<div style="float: left;" data-bind="ntsFormLabel: {}">#{i18n.getText('CAS005_101')}</div>
 								</td>
-								<td style="width: 60px"><label data-bind="text : roleCode" ></label></td>
-								<td style="width: 270px;"><label style="margin-left: 10px;" data-bind="text : roleName"></label></td>
+								<td style="width: 60px"><label data-bind="text : roleCode"></label></td>
+								<td style="width: 270px;"><label style="margin-left: 10px;"
+									data-bind="text : roleName"></label></td>
 							</tr>
 							<tr>
 								<td style="width: 100px">#{i18n.getText('CAS005_102')}</td>
 								<td style="width: 140px">
 									<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_103')}</div>
 								</td>
-								<td style="width: 60px"><input id="newRoleCode" style="width: 60px" data-bind="ntsTextEditor: {value: newRoleCode,name:'#{i18n.getText('CAS005_104')}', constraint: 'RoleCode',required: true}" /></td>
-								<td style="width: 270px"><input id="newRoleName"  style=" margin-left: 10px;" data-bind="ntsTextEditor: {value: newRoleName,name:'#{i18n.getText('CAS005_105')}', constraint: 'RoleName',required: true}" /></td>
+								<td style="width: 60px"><input id="newRoleCode"
+									style="width: 60px"
+									data-bind="ntsTextEditor: {value: newRoleCode,name:'#{i18n.getText('CAS005_104')}', constraint: 'RoleCode',required: true}" /></td>
+								<td style="width: 270px"><input id="newRoleName"
+									style="margin-left: 10px;"
+									data-bind="ntsTextEditor: {value: newRoleName,name:'#{i18n.getText('CAS005_105')}', constraint: 'RoleName',required: true}" /></td>
 							</tr>
 						</table>
 					</div>
 				</div>
-			</div>	
-			<div class="container" style="width: 700px;">			
+			</div>
+			<div class="container" style="width: 700px;">
 				<div id="functions-area-bottom">
-					<div style=" margin-bottom: 10px;" data-bind="ntsCheckBox: { checked: checked, style: 'warnpanel'}">#{i18n.getText('CAS005_106')}</div>
+					<div style="margin-bottom: 10px;"
+						data-bind="ntsCheckBox: { checked: checked, style: 'warnpanel'}">#{i18n.getText('CAS005_106')}</div>
 					<div>
 						<button class="proceed x-large" data-bind="click : buttonCopy">#{i18n.getText('CAS005_107')}</button>
-						<button class="large" data-bind="click: closeDialog" >#{i18n.getText('CAS005_108')}</button>
+						<button class="large" data-bind="click: closeDialog">#{i18n.getText('CAS005_108')}</button>
 					</div>
 				</div>
-			</div>	
+			</div>
 		</ui:define>
 
 

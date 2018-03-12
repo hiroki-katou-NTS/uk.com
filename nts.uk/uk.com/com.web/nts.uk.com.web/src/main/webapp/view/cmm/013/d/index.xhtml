@@ -7,58 +7,60 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			
+
 			<script>
 				var dialogSize = {
 					width : 500,
 					height : 270
 				};
 			</script>
-			
+
 			<com:scriptfile set="IGNITE" />
-			
-			<com:stylefile path="style.css" />			
+
+			<com:stylefile path="style.css" />
 			<com:scriptfile path="../_base/cmm013.base.js" />
 			<com:scriptfile path="cmm013.d.service.js" />
 			<com:scriptfile path="cmm013.d.vm.js" />
 			<com:scriptfile path="cmm013.d.start.js" />
 		</ui:define>
-		
+
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 			<div id="contents-area">
 				<div>#{i18n.getText('CMM013_27')}</div>
-				
+
 				<table class="table_content">
 					<colgroup>
 						<col width="120px" />
 						<col width="250px" />
 					</colgroup>
-					
+
 					<tr>
-						<td>	
+						<td>
 							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM013_28')}</div>
 						</td>
 						<td>
-							<div id="start-date" tabindex="1" data-bind="ntsDatePicker: {
+							<div id="start-date" tabindex="1"
+								data-bind="ntsDatePicker: {
 								name: '#[CMM013_29]', 
 								required: true, 
 								value: startDate,
 								dateFormat: 'YYYY/MM/DD'
 							}"></div>
-							<span style="margin: 10px;">#{i18n.getText('CMM013_30')}</span> 
-							<span data-bind="text: endDate"></span>
+							<span style="margin: 10px;">#{i18n.getText('CMM013_30')}</span> <span
+							data-bind="text: endDate"></span>
 						</td>
-					</tr>				
+					</tr>
 				</table>
 			</div>
-			
+
 			<div id="functions-area-bottom">
-				<button class="x-large proceed" tabindex="3" data-bind="click: execution">#{i18n.getText('CMM013_32')}</button>
+				<button class="x-large proceed" tabindex="3"
+					data-bind="click: execution">#{i18n.getText('CMM013_32')}</button>
 				<button class="large" tabindex="4" data-bind="click: close">#{i18n.getText('CMM013_33')}</button>
 			</div>
 		</ui:define>
-		
+
 	</ui:composition>
 </body>
 </html>

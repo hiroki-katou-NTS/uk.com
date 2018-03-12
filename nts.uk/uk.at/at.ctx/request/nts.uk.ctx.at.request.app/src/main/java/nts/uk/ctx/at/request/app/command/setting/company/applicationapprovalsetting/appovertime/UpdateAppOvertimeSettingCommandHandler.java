@@ -10,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSettingRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -19,9 +20,10 @@ public class UpdateAppOvertimeSettingCommandHandler extends CommandHandler<AppOv
 
 	@Override
 	protected void handle(CommandHandlerContext<AppOvertimeSettingCommand> context) {
+		String companyId = AppContexts.user().companyId();
 		AppOvertimeSettingCommand data = context.getCommand();
 		Optional<AppOvertimeSetting> appOver = appOverRep.getAppOver();
-		AppOvertimeSetting appOvertime = AppOvertimeSetting.createFromJavaType(data.getCid(), 
+		AppOvertimeSetting appOvertime = AppOvertimeSetting.createFromJavaType(companyId, 
 				data.getFlexExcessUseSetAtr(), data.getPreTypeSiftReflectFlg(), data.getPreOvertimeReflectFlg(), 
 				data.getPostTypesiftReflectFlg(), data.getPostBreakReflectFlg(), 
 				data.getPostWorktimeReflectFlg(), data.getCalendarDispAtr(), data.getEarlyOverTimeUseAtr(), 

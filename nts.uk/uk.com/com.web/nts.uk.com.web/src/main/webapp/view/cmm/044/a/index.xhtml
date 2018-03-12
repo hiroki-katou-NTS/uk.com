@@ -12,18 +12,19 @@
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<!-- COMPONENT KCP009 -->
 			<com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web" />
 			<com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
 			<!-- #CCG001 -->
 			<com:stylefile path="cmm044.a.main.css" />
-<!-- 			<com:scriptfile path="ko-profile-ext.js" /> -->
+			<!-- 			<com:scriptfile path="ko-profile-ext.js" /> -->
 			<com:scriptfile path="cmm044.a.start.js" />
 			<com:scriptfile path="cmm044.a.vm.js" />
 			<com:scriptfile path="cmm044.a.service.js" />
-			
+
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
@@ -38,10 +39,9 @@
 				<div id="ccgcomponent_contents">
 					<div id="emp-component"></div>
 					<div class="left-content">
-					<div id="ccgcomponent"></div>
-						<div class="cell-column1">
-						</div>
-						<div  id = "list" class="bg-green caret-right caret-background">
+						<div id="ccgcomponent"></div>
+						<div class="cell-column1"></div>
+						<div id="list" class="bg-green caret-right caret-background">
 							<table id="H_LST_001"
 								data-bind="ntsGridList: {
 								options: histItems,
@@ -134,7 +134,7 @@
 												<button id="BTN_A5_003"
 													data-bind="enable: displayEmployeeInfo2,click: openCDL021.bind($data, 2, agentSid2())"
 													class="button separate-button">#{i18n.getText('CMM044_19')}</button>
-												<label id="A5-004" 
+												<label id="A5-004"
 													data-bind="text: employeeNameScreen2,visible: agentAppType2() == 0 "></label>
 											</div>
 										</td>

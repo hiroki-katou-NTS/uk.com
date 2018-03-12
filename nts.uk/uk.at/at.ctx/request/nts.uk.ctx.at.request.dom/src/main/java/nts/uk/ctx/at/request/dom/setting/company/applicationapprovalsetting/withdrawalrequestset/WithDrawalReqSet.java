@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.UseAtr;
 
 /**
@@ -122,8 +123,12 @@ public class WithDrawalReqSet extends AggregateRoot {
 			String deferredComment, int deferredBold, String deferredLettleColor, int deferredWorkTimeSelect,
 			int simulAppliReq, int lettleSuperLeave) {
 
-		return new WithDrawalReqSet(companyId, permissionDivision, appliDateContrac, useAtr, checkUpLimitHalfDayHD,
-				pickUpComment, pickUpBold, pickUpLettleColor, deferredComment, deferredBold, deferredLettleColor,
-				deferredWorkTimeSelect, simulAppliReq, lettleSuperLeave);
+		return new WithDrawalReqSet(companyId, permissionDivision, appliDateContrac, 
+									useAtr, checkUpLimitHalfDayHD,
+									StringUtil.isNullOrEmpty(pickUpComment, true) ? null : pickUpComment, 
+									pickUpBold, pickUpLettleColor, 
+									StringUtil.isNullOrEmpty(deferredComment, true) ? null : deferredComment, 
+									deferredBold, deferredLettleColor,
+									deferredWorkTimeSelect, simulAppliReq, lettleSuperLeave);
 	}
 }

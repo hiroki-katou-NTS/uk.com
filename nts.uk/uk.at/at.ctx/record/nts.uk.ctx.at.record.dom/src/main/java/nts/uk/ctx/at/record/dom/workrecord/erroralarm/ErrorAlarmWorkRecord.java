@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.text.IdentifierUtil;
@@ -54,6 +55,9 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 	private List<Integer> lstApplication;
 
 	private String errorAlarmCheckID;
+	
+	@Setter
+	private ErrorAlarmCondition errorAlarmCondition;
 
 	/* Constructor */
 	private ErrorAlarmWorkRecord() {

@@ -8,22 +8,25 @@
 
 #roleName {
 	width: 326px !important;
-	margin-left: 5px!important;
+	margin-left: 5px !important;
 }
+
 #roleCodeOld {
 	width: 50px !important;
 }
+
 #roleNameOld {
-    margin-left: 30px;
+	margin-left: 30px;
 }
-#C_001{
+
+#C_001 {
 	width: 100px !important;
 }
 
-#label_code{
+#label_code {
 	width: 200px !important;
 }
-#copyCheck{
+
+#copyCheck {
 	margin-top: 10px !important;
 }
-

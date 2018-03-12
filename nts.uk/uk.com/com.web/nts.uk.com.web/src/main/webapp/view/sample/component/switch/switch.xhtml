@@ -31,12 +31,16 @@
 						</div>
 						<br/>
 						<div id="switch-buttons" data-bind="ntsSwitchButton: {
+							name: 'Sample Switch',
 							options: roundingRules,
 							optionsValue: 'code',
 							optionsText: 'name',
 							value: selectedRuleCode,
+							required: required,
 							enable: enable }"></div>
+						<div data-bind="ntsCheckBox: {checked: required, text: 'Required'}"></div>
 						<div data-bind="ntsCheckBox: {checked: enable, text: 'Enable'}"></div>
+						<button data-bind="click: validate">validate</button>
 						<div>Selected code: <span data-bind="text: selectedRuleCode"></span></div>
 						<article class="cf">
 							<div class="tabs">
@@ -47,10 +51,12 @@
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
 <pre><![CDATA[<div class="cf" data-bind="ntsSwitchButton: {
+	name: 'Sample Switch',
 	options: roundingRules,
 	optionsValue: 'code',
 	optionsText: 'name',
 	value: selectedRuleCode,
+	required: required,
 	enable: enable }"></div>]]></pre>
 									<h2>API</h2>
 									<table>
@@ -90,6 +96,14 @@
 												<td>
 													<b>Type:</b> any<br/>
 													Value of selected Switch
+												</td>
+											</tr>
+											<tr>
+												<td>required<i>(optional)</i></td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													<b>Default:</b> false<br/>
+													Set required or not.
 												</td>
 											</tr>
 											<tr>

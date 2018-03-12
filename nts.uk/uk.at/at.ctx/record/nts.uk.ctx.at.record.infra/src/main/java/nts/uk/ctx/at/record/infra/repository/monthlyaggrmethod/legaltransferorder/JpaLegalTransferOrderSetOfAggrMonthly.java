@@ -36,24 +36,6 @@ public class JpaLegalTransferOrderSetOfAggrMonthly extends JpaRepository impleme
 				.map(c -> toDomain(c));
 	}
 	
-	/** 追加 */
-	@Override
-	public void insert(LegalTransferOrderSetOfAggrMonthly legalTransferOrderSetOfAggrMonthly) {
-		this.commandProxy().insert(toEntity(legalTransferOrderSetOfAggrMonthly, false));
-	}
-	
-	/** 更新 */
-	@Override
-	public void update(LegalTransferOrderSetOfAggrMonthly legalTransferOrderSetOfAggrMonthly) {
-		this.toEntity(legalTransferOrderSetOfAggrMonthly, true);
-	}
-	
-	/** 削除 */
-	@Override
-	public void remove(String companyId) {
-		this.commandProxy().remove(KrcstMonsetLglTrnsSet.class, new KrcstMonsetLglTrnsSetPK(companyId));
-	}
-	
 	/**
 	 * エンティティ→ドメイン
 	 * @param entity エンティティ：月別実績の法定内振替順設定
@@ -120,14 +102,9 @@ public class JpaLegalTransferOrderSetOfAggrMonthly extends JpaRepository impleme
 		return domain;
 	}
 	
-	/**
-	 * ドメイン→エンティティ
-	 * @param domain ドメイン：月別実績の法定内振替順設定
-	 * @param execUpdate 更新を実行する
-	 * @return エンティティ：月別実績の法定内振替順設定
-	 */
-	private KrcstMonsetLglTrnsSet toEntity(LegalTransferOrderSetOfAggrMonthly domain,
-			boolean execUpdate){
+	/** 登録および更新 */
+	@Override
+	public void persistAndUpdate(LegalTransferOrderSetOfAggrMonthly domain) {
 		
 		// キー
 		val key = new KrcstMonsetLglTrnsSetPK(domain.getCompanyId());
@@ -136,16 +113,17 @@ public class JpaLegalTransferOrderSetOfAggrMonthly extends JpaRepository impleme
 		val legalOverTimeTransferOrder = domain.getLegalOverTimeTransferOrder();
 		// 月次集計の法定内休出振替順
 		val legalHolidayWorkTransferOrder = domain.getLegalHolidayWorkTransferOrder();
-		
-		KrcstMonsetLglTrnsSet entity;
-		if (execUpdate) {
-			entity = this.queryProxy().find(key, KrcstMonsetLglTrnsSet.class).get();
-		}
-		else {
+
+		// 登録・更新を判断　および　キー値設定
+		boolean isNeedPersist = false;
+		KrcstMonsetLglTrnsSet entity = this.getEntityManager().find(KrcstMonsetLglTrnsSet.class, key);
+		if (entity == null){
+			isNeedPersist = true;
 			entity = new KrcstMonsetLglTrnsSet();
 			entity.PK = key;
 		}
 		
+		// 登録・更新値の設定
 		for (val overTimeOrder : legalOverTimeTransferOrder.getLegalOverTimeTransferOrders()){
 			switch(overTimeOrder.getOverTimeFrameNo().v()){
 			case 1:
@@ -216,7 +194,13 @@ public class JpaLegalTransferOrderSetOfAggrMonthly extends JpaRepository impleme
 			}
 		}
 		
-		if (execUpdate) this.commandProxy().update(entity);
-		return entity;
+		// 登録が必要な時、登録を実行
+		if (isNeedPersist) this.getEntityManager().persist(entity);
+	}
+	
+	/** 削除 */
+	@Override
+	public void remove(String companyId) {
+		this.commandProxy().remove(KrcstMonsetLglTrnsSet.class, new KrcstMonsetLglTrnsSetPK(companyId));
 	}
 }

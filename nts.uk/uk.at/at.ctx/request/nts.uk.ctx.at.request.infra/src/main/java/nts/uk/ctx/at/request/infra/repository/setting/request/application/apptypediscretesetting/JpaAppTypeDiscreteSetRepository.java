@@ -40,7 +40,7 @@ public class JpaAppTypeDiscreteSetRepository extends JpaRepository implements Ap
 				EnumAdaptor.valueOf(entity.prePostCanChangeFlg, AppCanAtr.class),
 				EnumAdaptor.valueOf(entity.typicalReasonDisplayFlg, AppDisplayAtr.class),
 				EnumAdaptor.valueOf(entity.sendMailWhenApprovalFlg, AppCanAtr.class),
-				EnumAdaptor.valueOf(entity.sendMailWhenRegisterlFlg, AppCanAtr.class),
+				EnumAdaptor.valueOf(entity.sendMailWhenRegisterFlg, AppCanAtr.class),
 				EnumAdaptor.valueOf(entity.displayReasonFlg, AppDisplayAtr.class),
 				EnumAdaptor.valueOf(entity.retrictPreMethodFlg, CheckMethod.class),
 				EnumAdaptor.valueOf(entity.retrictPreUseFlg, UseAtr.class),

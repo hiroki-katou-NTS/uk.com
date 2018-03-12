@@ -86,11 +86,9 @@ public class AggregateHolidayWorkTime {
 	 * @param ymd 年月日
 	 * @return 時系列ワーク
 	 */
-	public HolidayWorkTimeOfTimeSeries getTimeSeriesWork(GeneralDate ymd){
+	public HolidayWorkTimeOfTimeSeries getAndPutTimeSeriesWork(GeneralDate ymd){
 		
-		if (!this.timeSeriesWorks.containsKey(ymd)){
-			this.timeSeriesWorks.put(ymd, new HolidayWorkTimeOfTimeSeries(ymd, this.holidayWorkFrameNo));
-		}
+		this.timeSeriesWorks.putIfAbsent(ymd, new HolidayWorkTimeOfTimeSeries(ymd, this.holidayWorkFrameNo));
 		return this.timeSeriesWorks.get(ymd);
 	}
 	
@@ -101,9 +99,7 @@ public class AggregateHolidayWorkTime {
 	 */
 	public void addHolidayWorkTimeInTimeSeriesWork(GeneralDate ymd, HolidayWorkFrameTime holidayWorkTime){
 		
-		if (!this.timeSeriesWorks.containsKey(ymd)){
-			this.timeSeriesWorks.put(ymd, new HolidayWorkTimeOfTimeSeries(ymd, holidayWorkTime.getHolidayFrameNo()));
-		}
+		this.timeSeriesWorks.putIfAbsent(ymd, new HolidayWorkTimeOfTimeSeries(ymd, holidayWorkTime.getHolidayFrameNo()));
 		val targetTimeSeriesWork = this.timeSeriesWorks.get(ymd);
 		
 		targetTimeSeriesWork.addHolidayWorkTime(holidayWorkTime);
@@ -116,9 +112,7 @@ public class AggregateHolidayWorkTime {
 	 */
 	public void addLegalHolidayWorkTimeInTimeSeriesWork(GeneralDate ymd, HolidayWorkFrameTime legalHolidayWorkTime){
 		
-		if (!this.timeSeriesWorks.containsKey(ymd)){
-			this.timeSeriesWorks.put(ymd, new HolidayWorkTimeOfTimeSeries(ymd, legalHolidayWorkTime.getHolidayFrameNo()));
-		}
+		this.timeSeriesWorks.putIfAbsent(ymd, new HolidayWorkTimeOfTimeSeries(ymd, legalHolidayWorkTime.getHolidayFrameNo()));
 		val targetTimeSeriesWork = this.timeSeriesWorks.get(ymd);
 		
 		targetTimeSeriesWork.addLegalHolidayWorkTime(legalHolidayWorkTime);

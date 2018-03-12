@@ -38,7 +38,7 @@ public class SaveOtherSysAccountCommandHandler extends CommandHandler<SaveOtherS
 		Optional<OtherSysAccount> opOtherSysAcc = otherSysAccountRepository.findByUserId(command.getUserId());
 
 		if (opOtherSysAcc.isPresent()) {
-			//this.validate(command);				
+			this.validate(command);				
 			// update
 			this.otherSysAccountRepository.update(new OtherSysAccount(command) , opOtherSysAcc.get());
 		}else{

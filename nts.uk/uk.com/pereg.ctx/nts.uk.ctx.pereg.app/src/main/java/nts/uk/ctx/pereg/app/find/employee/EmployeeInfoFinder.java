@@ -30,6 +30,8 @@ public class EmployeeInfoFinder {
 	@Inject
 	private PersonRepository personRepository;
 
+	private static final String JP_SPACE = "　";
+	
 	public String getGenerateEmplCodeAndComId(String startLetters) {
 		String ComId = AppContexts.user().companyId();
 		String EmpCode = employeeBusiness.generateEmplCode(startLetters);
@@ -42,6 +44,12 @@ public class EmployeeInfoFinder {
 
 		if (isDuplicateEmpCode) {
 			throw new BusinessException("Msg_345");
+		}
+		
+		String employeeName = empInfo.getEmployeeName();
+		if (employeeName.startsWith(JP_SPACE) || employeeName.endsWith(JP_SPACE)
+				|| !employeeName.contains(JP_SPACE)){
+			throw new BusinessException("Msg_924");
 		}
 		// Boolean isDuplicateCardNo =
 		// this.employeeRepository.isDuplicateCardNo(AppContexts.user().companyId(),

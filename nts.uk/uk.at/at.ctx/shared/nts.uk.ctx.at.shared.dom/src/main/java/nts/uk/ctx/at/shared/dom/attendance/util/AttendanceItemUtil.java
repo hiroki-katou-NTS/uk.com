@@ -31,18 +31,18 @@ public class AttendanceItemUtil {
 	}
 
 	public static <T extends ConvertibleAttendanceItem> T fromItemValues(Class<T> classType,
-			List<ItemValue> attendanceItems) {
+			Collection<ItemValue> attendanceItems) {
 		T newObject = ReflectionUtil.newInstance(classType);
 		return fromItemValues(newObject, attendanceItems);
 	}
 
 	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems,
-			List<Integer> itemIds) {
+			Collection<Integer> itemIds) {
 		// return toItemValues(attendanceItems, "", itemIds, 0);
 		return getItemValues(attendanceItems, 0, "", "", "", 0, getItemMap(itemIds, null));
 	}
 
-	public static <T> T fromItemValues(T attendanceItems, List<ItemValue> itemValues) {
+	public static <T> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues) {
 		// return toItemValues(attendanceItems, "", itemIds, 0);
 		Map<Integer, ItemValue> itemMap = itemValues.stream().collect(Collectors.toMap(c -> c.itemId(), c -> c));
 		return fromItemValues(attendanceItems, 0, "", "", 0, false,
@@ -63,11 +63,11 @@ public class AttendanceItemUtil {
 						currentLayout = mergeLayout(layoutCode, layout.layout()),
 						exCon = getExCondition(extraCondition, attendanceItems, layout);
 				if (isList) {
-					List<T> list = ReflectionUtil.getFieldValue(field, attendanceItems);
+					List<T> list = getListAndSort(attendanceItems, field, className, layout);
 					return mapByPath(c.getValue(),
 									x -> layout.listNoIndex() ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path())
 								).entrySet().stream().map(idx -> {
-										T idxValue = list == null || list.size() < idx.getKey() ? null : list.get(idx.getKey() - 1);
+										T idxValue = list.size() < idx.getKey() ? null : list.get(idx.getKey() - 1);
 										return getItemValues(
 													fieldValue(className, idxValue),  layoutIdx + 1,
 													layout.listNoIndex() ? currentLayout : currentLayout + idx.getKey(), 
@@ -107,6 +107,9 @@ public class AttendanceItemUtil {
 	@SuppressWarnings("unchecked")
 	private static <T> T fromItemValues(T attendanceItems, int layoutIdx, String layoutCode, String path, int index,
 			boolean needCheckWithIdx, Map<String, List<ItemValue>> groups) {
+		if(attendanceItems.getClass().getAnnotation(AttendanceItemRoot.class) != null){
+			ReflectionUtil.invoke(attendanceItems.getClass(), attendanceItems, "exsistData");
+		}
 		Map<String, Field> fields = getFieldMap(attendanceItems, groups);
 		groups.entrySet().stream().forEach(c -> {
 			Field field = fields.get(c.getKey());
@@ -117,12 +120,12 @@ public class AttendanceItemUtil {
 				String pathName = getPath(path, layout, getRootAnnotation(field)),
 						currentLayout = mergeLayout(layoutCode, layout.layout());
 				if (isList) {
+					boolean listNoIdx = layout.listNoIndex();
 					List<T> list = processListToMax(
 										ReflectionUtil.getFieldValue(field, attendanceItems),
-										layout.listMaxLength(), 
+										layout, 
 										className, 
-										layout.indexField());
-					boolean listNoIdx = layout.listNoIndex();
+										c.getValue().isEmpty() ? "" : c.getValue().get(0).path());
 					String idxFieldName = listNoIdx ? layout.enumField() : layout.indexField();
 					Field idxField = idxFieldName.isEmpty() ? null : getField(idxFieldName, className);
 					Map<Integer, List<ItemValue>> itemsForIdx = mapByPath(c.getValue(), 
@@ -174,6 +177,21 @@ public class AttendanceItemUtil {
 		});
 
 		return attendanceItems;
+	}
+	
+	private static <T> void clearConflictEnumsInList(AttendanceItemLayout layout, Class<T> className, List<T> value,
+			String path) {
+		if (!layout.enumField().isEmpty() && layout.removeConflictEnum() && !path.isEmpty()) {
+			String enumText = getExConditionFromString(path);
+			if(!enumText.isEmpty()){
+				Field field = getField(layout.enumField(), className);
+				int eVal = AttendanceItemIdContainer.getEnumValue(enumText);
+				value.removeIf(c -> {
+					Integer currentEval = ReflectionUtil.getFieldValue(field, c); 
+					return currentEval != null && currentEval != eVal; 
+				});
+			}
+		}
 	}
 
 	private static Integer getEValAsIdxPlus(String path) {
@@ -253,10 +271,36 @@ public class AttendanceItemUtil {
 				(needCheckWithIdx ? String.valueOf(idx) : ""));
 	}
 
-	private static <T> List<T> processListToMax(List<T> list, int max, Class<T> targetClass, String idxFieldName) {
+	private static <T> List<T> getListAndSort(T attendanceItems, Field field, Class<T> className, AttendanceItemLayout layout) {
+		List<T> list = ReflectionUtil.getFieldValue(field, attendanceItems);
+		if(list == null){
+			return new ArrayList<>();
+		}
+		if(!layout.indexField().isEmpty()){
+			processAndSort(list, layout.listMaxLength(), className, layout.indexField());
+		}
+		return list;
+	}
+
+	private static <T> List<T> processListToMax(List<T> list, AttendanceItemLayout layout, Class<T> targetClass, String path) {
 		list = list == null ? new ArrayList<>() : new ArrayList<>(list);
-		if (!idxFieldName.isEmpty()) {
-			Field idxField = getField(idxFieldName, targetClass);
+		if(layout.listNoIndex()){
+			return list;
+		}
+		clearConflictEnumsInList(layout, targetClass, list, path);
+		if (!layout.indexField().isEmpty()) {
+			processAndSort(list, layout.listMaxLength(), targetClass, layout.indexField());
+		} else {
+			for (int x = list.size(); x < layout.listMaxLength(); x++) {
+				list.add(ReflectionUtil.newInstance(targetClass));
+			}
+		}
+		return list;
+	}
+
+	private static <T> void processAndSort(List<T> list, int max, Class<T> targetClass, String idxFieldName) {
+		Field idxField = getField(idxFieldName, targetClass);
+		if(list.size() < max){
 			for (int x = 0; x < max; x++) {
 				int index = x;
 				Optional<T> idxValue = list.stream().filter(c -> {
@@ -267,29 +311,24 @@ public class AttendanceItemUtil {
 					list.add(createIdxFieldValue(targetClass, idxField, index + 1));
 				}
 			}
-			Collections.sort(list, new Comparator<T>() {
-				@Override
-				public int compare(T c1, T c2) {
-					Integer idx1 = ReflectionUtil.getFieldValue(idxField, c1);
-					Integer idx2 = ReflectionUtil.getFieldValue(idxField, c2);
-					if (idx1 == null && idx2 == null) {
-						return 0;
-					}
-					if (idx1 == null) {
-						return 1;
-					}
-					if (idx2 == null) {
-						return -1;
-					}
-					return idx1.compareTo(idx2);
-				}
-			});
-		} else {
-			for (int x = list.size(); x < max; x++) {
-				list.add(ReflectionUtil.newInstance(targetClass));
-			}
 		}
-		return list;
+		Collections.sort(list, new Comparator<T>() {
+			@Override
+			public int compare(T c1, T c2) {
+				Integer idx1 = ReflectionUtil.getFieldValue(idxField, c1);
+				Integer idx2 = ReflectionUtil.getFieldValue(idxField, c2);
+				if (idx1 == null && idx2 == null) {
+					return 0;
+				}
+				if (idx1 == null) {
+					return 1;
+				}
+				if (idx2 == null) {
+					return -1;
+				}
+				return idx1.compareTo(idx2);
+			}
+		});
 	}
 
 	public static <T> T createIdxFieldValue(Class<T> targetClass, Field idxField, int index) {

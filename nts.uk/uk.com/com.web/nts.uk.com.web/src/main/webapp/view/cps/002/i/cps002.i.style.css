@@ -1,21 +1,26 @@
-input.txtEmpCodeFirstChar{
+input.txtEmpCodeFirstChar {
 	width: 100px;
-    height: 25px;
-    border-radius: 3px;
-    border: 1px solid gray;
+	height: 25px;
+	border-radius: 3px;
+	border: 1px solid gray;
 }
 
-.tblContent{
+.tblContent {
 	margin: auto;
 }
-.tblContent td{
+
+.tblContent td {
 	padding: 10px 0px;
 }
-.tblContent td:first-child{
+
+.tblContent td:first-child {
 	vertical-align: top;
 }
 
-.tblContent td div{
+.tblContent td div {
 	margin: 5px 0px;
 }
-.comfirm-checkbox{display: none;}
+
+.comfirm-checkbox {
+	display: none;
+}

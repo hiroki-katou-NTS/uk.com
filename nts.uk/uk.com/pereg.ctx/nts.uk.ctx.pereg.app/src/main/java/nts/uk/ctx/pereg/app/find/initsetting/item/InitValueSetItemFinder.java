@@ -1,6 +1,7 @@
 package nts.uk.ctx.pereg.app.find.initsetting.item;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -10,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.find.additionaldata.item.EmpInfoItemDataFinder;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
@@ -47,7 +49,7 @@ public class InitValueSetItemFinder {
 	GeneralDate baseDate;
 
 	// sonnlb
-	public List<SettingItemDto> getAllInitItemByCtgCode(boolean isSetText, findInitItemDto command) {
+	public List<SettingItemDto> getAllInitItemByCtgCode(boolean isScreenC, findInitItemDto command) {
 
 		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
 
@@ -75,26 +77,45 @@ public class InitValueSetItemFinder {
 
 		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASSYSTEMDATE, GeneralDate.today());
 
-		if (isSetText) {
+		boolean isSetSameLoginSuccess = setItemSameLogin(itemList, result);
 
+		if (isScreenC) {
 			this.settingItemMap.setTextForSelectionItem(result, employeeId, command.getBaseDate());
-
+		} else {
+			if (!isSetSameLoginSuccess) {
+				boolean isAllItemIsSameAsLogin = isAllItemIsSameAsLogin(itemList, ReferenceMethodType.SAMEASLOGIN);
+				if (isAllItemIsSameAsLogin) {
+					return Collections.emptyList();
+				}
+			}
 		}
 
 		return result;
 	}
 
-	private void setItemSameLogin(List<PerInfoInitValueSetItem> itemList, List<SettingItemDto> result) {
+	private boolean isAllItemIsSameAsLogin(List<PerInfoInitValueSetItem> itemList, ReferenceMethodType sameaslogin) {
+		if (!CollectionUtil.isEmpty(itemList)) {
+			List<PerInfoInitValueSetItem> sameAsLoginItems = itemList.stream()
+					.filter(obj -> obj.getRefMethodType().equals(sameaslogin)).collect(Collectors.toList());
+			if (sameAsLoginItems.size() == itemList.size()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean setItemSameLogin(List<PerInfoInitValueSetItem> itemList, List<SettingItemDto> result) {
 		if (isHaveItemRefType(itemList, ReferenceMethodType.SAMEASLOGIN)) {
 
 			if (categoryCd.charAt(1) == 'S') {
 
-				setSystemLoginData(itemList, result);
+				return setSystemCtgData(itemList, result);
 
 			}
 
-			setOptinalLoginData(itemList, result);
+			return setOptinalCtgData(itemList, result);
 		}
+		return true;
 	}
 
 	private void setDataByRefType(List<PerInfoInitValueSetItem> itemList, List<SettingItemDto> result,
@@ -130,28 +151,34 @@ public class InitValueSetItemFinder {
 		}
 	}
 
-	private void setOptinalLoginData(List<PerInfoInitValueSetItem> itemList, List<SettingItemDto> result) {
+	private boolean setOptinalCtgData(List<PerInfoInitValueSetItem> itemList, List<SettingItemDto> result) {
 
 		List<SettingItemDto> optList = this.infoItemDataFinder.loadInfoItemDataList(categoryCd,
 				AppContexts.user().companyId(), employeeId);
-
-		itemList.stream().filter(x -> x.getRefMethodType().equals(ReferenceMethodType.SAMEASLOGIN))
-				.collect(Collectors.toList()).forEach(x -> {
-					Optional<SettingItemDto> itemDtoOpt = result.stream()
-							.filter(item -> item.getItemCode().equals(x.getItemCode())).findFirst();
-					if (itemDtoOpt.isPresent()) {
-						Optional<SettingItemDto> itemDataOpt = optList.stream()
+		if (!CollectionUtil.isEmpty(optList)) {
+			itemList.stream().filter(x -> x.getRefMethodType().equals(ReferenceMethodType.SAMEASLOGIN))
+					.collect(Collectors.toList()).forEach(x -> {
+						Optional<SettingItemDto> itemDtoOpt = result.stream()
 								.filter(item -> item.getItemCode().equals(x.getItemCode())).findFirst();
-						if (itemDataOpt.isPresent()) {
-							itemDtoOpt.get().setData(itemDataOpt.get().getSaveData().getValue());
-						}
+						if (itemDtoOpt.isPresent()) {
+							Optional<SettingItemDto> itemDataOpt = optList.stream()
+									.filter(item -> item.getItemCode().equals(x.getItemCode())).findFirst();
+							if (itemDataOpt.isPresent()) {
+								itemDtoOpt.get().setData(itemDataOpt.get().getSaveData().getValue());
+							}
 
-					}
-				});
+						}
+					});
+
+			return true;
+		} else {
+
+			return false;
+		}
 
 	}
 
-	private void setSystemLoginData(List<PerInfoInitValueSetItem> itemList, List<SettingItemDto> result) {
+	private boolean setSystemCtgData(List<PerInfoInitValueSetItem> itemList, List<SettingItemDto> result) {
 		PeregQuery query = new PeregQuery(categoryCd, employeeId, null, baseDate);
 
 		PeregDto dto = this.layoutProc.findSingle(query);
@@ -173,6 +200,10 @@ public class InitValueSetItemFinder {
 						});
 
 			}
+			return true;
+		} else {
+			return false;
+
 		}
 	}
 

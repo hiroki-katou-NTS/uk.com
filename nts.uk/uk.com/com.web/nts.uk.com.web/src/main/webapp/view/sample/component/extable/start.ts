@@ -1,4 +1,4 @@
-//__viewContext.noHeader = true;
+__viewContext.noHeader = true;
 __viewContext.ready(function () {
     class ScreenModel {
         constructor() {
@@ -16,14 +16,14 @@ __viewContext.ready(function () {
         symbol: string;
         startTime: any;
         endTime: any;
-        constructor(workTypeCode: string, workTypeName: string, workTimeCode: string, workTimeName: string) {
+        constructor(workTypeCode: string, workTypeName: string, workTimeCode: string, workTimeName: string, startTime?: string, endTime?: string) {
             this.workTypeCode = workTypeCode;
             this.workTypeName = workTypeName;
             this.workTimeCode = workTimeCode;
             this.workTimeName = workTimeName;
             this.symbol = parseInt(workTypeCode) % 3 === 0 ? "通" : "◯";
-            this.startTime = "8:30";
-            this.endTime = "17:30";
+            this.startTime = startTime !== undefined ? startTime : "8:30";
+            this.endTime = endTime !== undefined ? endTime : "17:30";
         }
     }
     class ExItem {
@@ -91,7 +91,7 @@ __viewContext.ready(function () {
                 else if (i === 2) this["_" + i] = new ExCell("002", "出勤B" + this.empId, "1", "通常８ｈ" + this.empId);
                 else if (i === 3) this["_" + i] = new ExCell("003", "出勤C" + this.empId, "1", "通常８ｈ" + this.empId);
                 else if (i === 4) this["_" + i] = new ExCell("004", "出勤D" + this.empId, "1", "通常８ｈ" + this.empId);
-                else if (i === 6) this["_" + i] = new ExCell(null, null, null, null);
+                else if (i === 6) this["_" + i] = new ExCell(null, null, null, null, null, null);
                 else this["_" + i] = new ExCell("00" + i, "出勤" + i + this.empId, "1", "通常８ｈ" + this.empId);
             }
         }
@@ -150,11 +150,12 @@ __viewContext.ready(function () {
     let horzSumContentDs = [], leftHorzContentDs = [], vertSumContentDs = [], newVertSumContentDs = [];
     for (let i = 0; i < 300; i++) {
         detailContentDs.push(new ExItem(i.toString()));
-        leftmostDs.push({　empId: i.toString(), empName: "社員名" + i + "    AAA" });
+        let eName = nts.uk.text.padRight("社員名" + i, " ", 10) + "AAA";
+        leftmostDs.push({　empId: i.toString(), empName: eName });//"社員名" + i + "    AAA" });
         middleDs.push({ empId: i.toString(), cert: "★", over1: 100 + i + "", over2: 1 + i + "" });
         updateMiddleDs.push({ empId: i.toString(), time: "100:00", days: "38", can: "", get: "" });
         if (i % 2 === 0) middleContentDeco.push(new CellColor("over1", i.toString(), "cell-red"));
-        else middleContentDeco.push(new CellColor("over2", i.toString(), "cell-green"));
+        else middleContentDeco.push(new CellColor("over2", i.toString(), "cell-green cell-red"));
         if (i % 7 === 0) {
             detailContentDeco.push(new CellColor("_2", i.toString(), "xseal", 0));
             detailContentDeco.push(new CellColor("_2", i.toString(), "xcustom", 0));
@@ -184,7 +185,7 @@ __viewContext.ready(function () {
         }, {
             key: "_2", width: "100px", handlerType: "Input", dataType: "duration/duration", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
         }, {
-            key: "_3", width: "100px", handlerType: "Input", dataType: "time/time", required: true
+            key: "_3", width: "100px", handlerType: "Input", dataType: "duration/duration", required: true, min: "-12:00", max: "71:59"
         }, {
             key: "_4", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
@@ -349,7 +350,8 @@ __viewContext.ready(function () {
         },
         fields: [ "workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "symbol", "startTime", "endTime" ],
         upperInput: "startTime",
-        lowerInput: "endTime"
+        lowerInput: "endTime",
+        banEmptyInput: [ "time" ]
     };
     
     let leftHorzColumns = [
@@ -419,7 +421,7 @@ __viewContext.ready(function () {
             bodyHeightMode: "dynamic",
             windowXOccupation: 170,
             windowYOccupation: 300,
-            updateMode: "stick",
+            updateMode: "edit",
             pasteOverWrite: true,
             stickOverWrite: true,
             viewMode: "shortName",
@@ -439,7 +441,8 @@ __viewContext.ready(function () {
         .DetailHeader(detailHeader).DetailContent(detailContent)
         .VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent)
         .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
-        .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent).create();
+        .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent)
+        .create();
     
     
     let leftHorzColumns2 = [

@@ -119,7 +119,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 			
 			Optional<ExecutionLog> dailyCalculationLog =
 					Optional.of(logsMap.get(ExecutionContent.DAILY_CALCULATION));
-			finalStatus = this.dailyCalculationService.manager(asyncContext, companyId, employeeIdList,
+			finalStatus = this.dailyCalculationService.manager(asyncContext, employeeIdList,
 					periodTime, executionAttr, empCalAndSumExecLogID, dailyCalculationLog);
 		}
 		

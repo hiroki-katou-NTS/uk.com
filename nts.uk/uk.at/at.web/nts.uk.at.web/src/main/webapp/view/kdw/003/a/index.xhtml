@@ -28,10 +28,14 @@
 			<com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.sample.SampleTimeClock
-					nts.uk.shr.com.primitive.sample.ProcessingNo
-					nts.uk.shr.com.primitive.sample.CommonAmount
-					nts.uk.shr.com.time.TimeWithDayAttr
+					nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode
+					nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode
+					nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD
+					nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode
+					nts.uk.shr.com.primitive.WorkplaceCode
+					nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode
+					nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode
+					nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode
 		    </com:ValidatorScript>
 		</ui:define>
 
@@ -140,7 +144,7 @@
 							<button id="btn-saveColumnWidth"
 								data-bind="click: btnSaveColumnWidth_Click, visible : showButton().available8">#{i18n.getText('KDW003_24')}</button>
 							<div class="setting-container">
-								<button id="btn-setting" data-bind="click: btnSetting_Click , visible:false">&#9881;</button>
+								<button id="btn-setting" data-bind="click: btnSetting_Click , visible:true">&#9881;</button>
 								<div id="setting-content">
 									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW003_28')}</div>
 									<div id="cbCursorMoveDirection"

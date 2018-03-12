@@ -86,7 +86,7 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 		HolidayWorkInstruction holidayInstructInformation = new HolidayWorkInstruction();
 		if (appCommonSettingOutput != null) {
 			if(appCommonSettingOutput.approvalFunctionSetting != null){
-				int useAtr = appCommonSettingOutput.approvalFunctionSetting.getInstructionUseSetting().getInstructionAtr().value;
+				int useAtr = appCommonSettingOutput.approvalFunctionSetting.getInstructionUseSetting().getInstructionUseDivision().value;
 				if (useAtr == UseAtr.USE.value && appCommonSettingOutput.approvalFunctionSetting.getInstructionUseSetting().getInstructionAtr().value == InstructionCategory.HOLIDAYWORK.value) {
 					if (appDate != null) {
 						holidayInstructInformation.setDisplayHolidayWorkInstructInforFlg(true);

@@ -1,12 +1,27 @@
 /// <reference path="../../reference.ts"/>
 
 interface JQuery {
-    ntsError(action: string, param?: any, errorCode?: string): any;
+    ntsError(action: string, param?: any, errorCode?: string, businessError?: boolean): any;
 }
 
 module nts.uk.ui {
     export const DATA_SET_ERROR_STYLE = "set-error-style";
     export const DATA_CLEAR_ERROR_STYLE = "clear-error-style";
+    
+    export module bindErrorStyle {
+        export function setError($element: JQuery, callback: () => void) {
+            $element.data(DATA_SET_ERROR_STYLE, callback);
+        }
+        
+        export function clearError($element: JQuery, callback: () => void) {
+            $element.data(DATA_CLEAR_ERROR_STYLE, callback);
+        }
+        
+        export function useDefaultErrorClass($element: JQuery) {
+            setError($element, function () { $element.addClass("error"); });
+            clearError($element, function () { $element.removeClass("error"); });
+        } 
+    }
 }
 
 module nts.uk.ui.jqueryExtentions {

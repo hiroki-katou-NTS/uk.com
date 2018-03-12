@@ -2,7 +2,9 @@ package nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerMaxValue;
-@IntegerMaxValue(1440)
+import nts.arc.primitive.constraint.IntegerMinValue;
+@IntegerMaxValue(4320)
+@IntegerMinValue(-720)
 public class WorkTimeGoBack extends IntegerPrimitiveValue<WorkTimeGoBack> {
 
 	/**

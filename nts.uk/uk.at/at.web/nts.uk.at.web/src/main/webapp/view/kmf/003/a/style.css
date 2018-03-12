@@ -70,6 +70,10 @@ button.nts-switch-button {
 	width: 100px;
 }
 
+table#tbl-condition, table#tbl-grant-hd-set {
+    width: 840px;
+}
+
 table#tbl-condition tr, table#tbl-grant-hd-set tr {
     height: 20px;
 }

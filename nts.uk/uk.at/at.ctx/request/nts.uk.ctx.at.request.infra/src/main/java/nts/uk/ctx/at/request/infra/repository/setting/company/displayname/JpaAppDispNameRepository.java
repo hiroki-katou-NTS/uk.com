@@ -36,7 +36,7 @@ public class JpaAppDispNameRepository extends JpaRepository implements AppDispNa
 	private static KrqmtAppDispName toEntity(AppDispName domain){
 		val entity = new KrqmtAppDispName();
 		entity.krqmtAppDispNamePK = new KrqmtAppDispNamePK(domain.getCompanyId(), domain.getAppType().value);
-		entity.dispName = domain.getDispName().v();
+		entity.dispName = domain.getDispName() == null ? null : domain.getDispName().v();
 		return entity;
 	}
 	/**

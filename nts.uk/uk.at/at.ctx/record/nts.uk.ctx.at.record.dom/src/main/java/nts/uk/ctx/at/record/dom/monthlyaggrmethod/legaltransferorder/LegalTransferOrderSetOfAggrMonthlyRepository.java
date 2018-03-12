@@ -16,16 +16,10 @@ public interface LegalTransferOrderSetOfAggrMonthlyRepository {
 	Optional<LegalTransferOrderSetOfAggrMonthly> find(String companyId);
 	
 	/**
-	 * 追加
+	 * 登録および更新
 	 * @param legalTransferOrderSetOfAggrMonthly 月次集計の法定内振替順設定
 	 */
-	void insert(LegalTransferOrderSetOfAggrMonthly legalTransferOrderSetOfAggrMonthly);
-	
-	/**
-	 * 更新
-	 * @param legalTransferOrderSetOfAggrMonthly 月次集計の法定内振替順設定
-	 */
-	void update(LegalTransferOrderSetOfAggrMonthly legalTransferOrderSetOfAggrMonthly);
+	void persistAndUpdate(LegalTransferOrderSetOfAggrMonthly legalTransferOrderSetOfAggrMonthly);
 	
 	/**
 	 * 削除

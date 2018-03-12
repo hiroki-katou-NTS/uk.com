@@ -22,10 +22,19 @@
 				<div id="content" class="cf">
 					<h2>CCG026 Testing page</h2>
 					<div data-bind="with: componentViewmodel">
-						<h3>roleId: <input class="nts-input" id="inpRoleId" data-bind="ntsTextEditor:{ value: roleId, required: true}" style="width:300px;"/></h3>
+						<h3>
+							roleId: <input class="nts-input" id="inpRoleId"
+								data-bind="ntsTextEditor:{ value: roleId, required: true}"
+								style="width: 300px;" />
+						</h3>
 						<div data-bind="with: setting">
-							<h3>classification: <span data-bind="text: ko.toJSON(classification)" /></h3>
-							<h3>maxRow: <span data-bind="text: ko.toJSON(maxRow)" /></h3>
+							<h3>
+								classification: <span
+									data-bind="text: ko.toJSON(classification)" />
+							</h3>
+							<h3>
+								maxRow: <span data-bind="text: ko.toJSON(maxRow)" />
+							</h3>
 						</div>
 						<ui:include src="/view/ccg/026/component/index.xhtml" />
 						<div>
@@ -58,7 +67,8 @@
 							</ol>
 							<div id="tabs-html" class="cf">
 								<h2>HTML</h2>
-<pre><![CDATA[// Add Javascript file
+								<pre>
+									<![CDATA[// Add Javascript file
 <com:stylefile path="view/ccg/026/component/component.css" />
 <com:scriptfile path="view/ccg/026/component/component.service.js" />
 <com:scriptfile path="view/ccg/026/component/component.vm.js" />
@@ -66,9 +76,11 @@
 // Use in HTML
 <div bind-data = "with: component">
 <ui:include src="/view/ccg/026/component/index.xhtml" />
-</div>]]></pre>
+</div>]]>
+								</pre>
 								<h2>TypeScript</h2>
-<pre><![CDATA[module nts.uk.com.view.cdl026.a {
+								<pre>
+									<![CDATA[module nts.uk.com.view.cdl026.a {
 	import getText = nts.uk.resource.getText;
 	import ccg = nts.uk.com.view.ccg026;
 	import model = nts.uk.com.view.ccg026.component.model;
@@ -100,7 +112,8 @@
 			
 		}
 	}
-}]]></pre>
+}]]>
+								</pre>
 							</div>
 							<div id="tabs-api" class="cf">
 								<h2>ComponentModel Constructor</h2>
@@ -116,32 +129,33 @@
 									</thead>
 									<tbody>
 										<tr>
-											<td>classification<br/><i>(optional)</i></td>
-											<td><b>Type:</b> number<br/>
-												<b>Default:</b> 1<br/>
-												Classification to get data from
-											</td>
+											<td>classification<br />
+											<i>(optional)</i></td>
+											<td><b>Type:</b> number<br /> <b>Default:</b> 1<br />
+												Classification to get data from</td>
 										</tr>
 										<tr>
-											<td>maxRow<br/><i>(optional)</i></td>
-											<td><b>Type:</b> number<br/>
-											<b>Default:</b> 10<br/>
-											Display row</td>
+											<td>maxRow<br />
+											<i>(optional)</i></td>
+											<td><b>Type:</b> number<br /> <b>Default:</b> 10<br />
+												Display row</td>
 										</tr>
 										<tr>
-											<td>tabindex<br/><i>(optional)</i></td>
-											<td><b>Type:</b> number<br/>
-											<b>Default:</b> 0<br/>
-											Set tabindex for component</td>
+											<td>tabindex<br />
+											<i>(optional)</i></td>
+											<td><b>Type:</b> number<br /> <b>Default:</b> 0<br />
+												Set tabindex for component</td>
 										</tr>
 									</tbody>
 								</table>
-<pre><![CDATA[// Demo
+								<pre>
+									<![CDATA[// Demo
 self.component = new ccg.component.viewmodel.ComponentModel({ 
 	roleId: '00000000-0000-0000-0000-000000000001',
 	classification: 1,
 	maxRow: 3
-});]]></pre>
+});]]>
+								</pre>
 								<h2>ComponentModel Properties</h2>
 								<table class="table">
 									<colgroup>
@@ -156,21 +170,22 @@ self.component = new ccg.component.viewmodel.ComponentModel({
 									<tbody>
 										<tr>
 											<td>roleId</td>
-											<td><b>Type:</b> KnockoutObservableArray&lt;string&gt;<br/>
-												Id of current role
-											</td>
+											<td><b>Type:</b> KnockoutObservableArray&lt;string&gt;<br />
+												Id of current role</td>
 										</tr>
 										<tr>
 											<td>listPermissions</td>
-											<td><b>Type:</b> KnockoutObservableArray&lt;model.FunctionPermission&gt;<br/>
-												List FunctionPermission
-											</td>
+											<td><b>Type:</b>
+												KnockoutObservableArray&lt;model.FunctionPermission&gt;<br />
+												List FunctionPermission</td>
 										</tr>
 									</tbody>
 								</table>
-<pre><![CDATA[// Demo
+								<pre>
+									<![CDATA[// Demo
 self.component.roleId(); // Get/Set roleId
-self.component.listPermissions() // Get list permission ]]></pre>
+self.component.listPermissions() // Get list permission ]]>
+								</pre>
 							</div>
 						</div>
 					</article>

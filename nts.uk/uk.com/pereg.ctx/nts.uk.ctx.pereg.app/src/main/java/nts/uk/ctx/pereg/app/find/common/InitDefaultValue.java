@@ -12,6 +12,7 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueD
 import nts.uk.ctx.pereg.dom.common.WorkTimeSettingRepo;
 import nts.uk.ctx.pereg.dom.common.WorkTypeRepo;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 @Stateless
 public class InitDefaultValue {
@@ -21,6 +22,11 @@ public class InitDefaultValue {
 
 	@Inject
 	private WorkTypeRepo wtRepo;
+	
+	@Inject
+	I18NResourcesForUK ukResouce;
+	
+	private static final String SPACE_JP = " ";
 
 	public void setDefaultValueRadio(List<LayoutPersonInfoClsDto> classItemList) {
 		List<String> firstReqLstItems = new ArrayList<String>();
@@ -89,12 +95,20 @@ public class InitDefaultValue {
 
 	// request list request 251
 	private String getFirstValueText(String itemValue) {
-		return wtRepo.acquireWorkTypeName(itemValue);
+		String resultText = wtRepo.acquireWorkTypeName(itemValue);
+		if(resultText == null) {
+			resultText = ukResouce.getRawContent("CPS001_107").get();
+		}
+		return resultText;
 	}
 
 	// request list request 252
 	private String getSecValueText(String itemValue, String companyId) {
-		return wtsRepo.getWorkTimeSettingName(companyId, itemValue);
+		String resultText = wtsRepo.getWorkTimeSettingName(companyId, itemValue);
+		if(resultText == null) {
+			resultText = ukResouce.getRawContent("CPS001_107").get();
+		}
+		return resultText;
 	}
 
 }

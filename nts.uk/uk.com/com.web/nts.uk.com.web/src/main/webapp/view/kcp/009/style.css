@@ -26,6 +26,7 @@
 .caret-inline:after {
 	color: black;
 }
+
 .show {
 	visibility: hidden;
 }
@@ -35,6 +36,7 @@ table#employ_view {
 	border-right: none !important;
 	margin: 10px;
 }
+
 #employ_view tr {
 	height: 42px;
 }
@@ -43,30 +45,33 @@ table#employ_view {
 	border-left: none;
 	border-right: none;
 	border-top: solid #ccc 1px;
-	border-bottom: solid #ccc 1px; 
+	border-bottom: solid #ccc 1px;
 }
 
 .border-left {
 	border-right: none;
 	border-left: solid #ccc 1px;
 	border-top: solid #ccc 1px;
-	border-bottom: solid #ccc 1px; 
+	border-bottom: solid #ccc 1px;
 }
 
 .border-right {
 	border-left: none;
 	border-right: solid #ccc 1px;
 	border-top: solid #ccc 1px;
-	border-bottom: solid #ccc 1px; 
+	border-bottom: solid #ccc 1px;
 }
-td.employment-tdpad{
+
+td.employment-tdpad {
 	padding: 3px 5px 3px 5px;
 }
-.over_text{
+
+.over_text {
 	/* overflow: auto; */
 	width: 120px;
 }
-#search-input{
+
+#search-input {
 	width: 100px;
 }
 

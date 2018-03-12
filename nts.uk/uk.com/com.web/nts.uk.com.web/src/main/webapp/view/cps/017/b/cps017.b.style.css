@@ -1,8 +1,9 @@
-#table-grid-selection{
+#table-grid-selection {
 	display: inline-block;
 	width: 400px;
 	margin-top: 10px;
 }
-#item_register_grid2 tbody tr td:NTH-CHILD(1){ 
+
+#item_register_grid2 tbody tr td:NTH-CHILD(1) {
 	text-align: center;
 }

@@ -23,15 +23,15 @@ module nts.uk.com.view.ccg015.a {
                 self.topPageModel = ko.observable(new TopPageModel());
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("CCG015_11"), width: "50px", key: 'code', dataType: "string", hidden: false },
-                    { headerText: nts.uk.resource.getText("CCG015_12"), width: "300px", key: 'nodeText', dataType: "string",formatter: _.escape}
+                    { headerText: nts.uk.resource.getText("CCG015_12"), width: "260px", key: 'nodeText', dataType: "string", formatter: _.escape }
                 ]);
                 self.isNewMode = ko.observable(true);
                 self.toppageSelectedCode.subscribe(function(selectedTopPageCode: string) {
-                    if(!self.isNewMode() && selectedTopPageCode === ''){
+                    if (nts.uk.text.isNullOrEmpty(selectedTopPageCode)) {
                         self.isNewMode(true);
-                        return;    
+                        self.newTopPage();
                     }
-                    if (selectedTopPageCode && selectedTopPageCode != "") {
+                    else {
                         service.loadDetailTopPage(selectedTopPageCode).done(function(data: TopPageDto) {
                             self.loadTopPageItemDetail(data);
                             $('.save-error').ntsError('clear');
@@ -39,12 +39,6 @@ module nts.uk.com.view.ccg015.a {
                         self.isNewMode(false);
                         self.breakNewMode = false;
                         $("#inp_name").focus();
-                    }
-                    else {
-                        if (self.breakNewMode == false) {
-                            self.isNewMode(false);
-                            self.newTopPage();
-                        }
                     }
                 });
                 self.languageListOption = ko.observableArray([
@@ -56,7 +50,7 @@ module nts.uk.com.view.ccg015.a {
                 self.listLinkScreen = ko.observableArray([
                     { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_17"), action: function(evt, ui) {/*TODO go to ccg011*/ } },
                     { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_18"), action: function(evt, ui) { nts.uk.request.jump("/view/ccg/014/a/index.xhtml"); } },
-                    { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_19"), action: function(evt, ui) {nts.uk.request.jump("/view/ccg/018/a/index.xhtml"); } },
+                    { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_19"), action: function(evt, ui) { nts.uk.request.jump("/view/ccg/018/a/index.xhtml"); } },
                 ]);
 
                 self.isProcess = ko.observable(false);
@@ -64,7 +58,6 @@ module nts.uk.com.view.ccg015.a {
                 //end constructor
 
                 $("#preview-iframe").on("load", function() {
-                    console.log("done");
                     if (self.isNewMode() == true)
                         $("#inp_code").focus();
                     else
@@ -142,7 +135,6 @@ module nts.uk.com.view.ccg015.a {
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
                                 self.isProcess(false);
                             });
-                            //                            nts.uk.ui.dialog.alert(res.message);
                         });
                     }
                     else {
@@ -157,14 +149,9 @@ module nts.uk.com.view.ccg015.a {
                     }
                 }
             }
-            private openMyPageSettingDialog() {
-                nts.uk.ui.windows.sub.modal("/view/ccg/015/b/index.xhtml", {
-                    height: 650, width: 850,
-                    title: "マイページの設定",
-                    dialogClass: 'no-close'
-                }).onClosed(() => {
-                });
 
+            private openMyPageSettingDialog() {
+                nts.uk.ui.windows.sub.modal("/view/ccg/015/b/index.xhtml");
             }
 
             private copyTopPage() {
@@ -172,13 +159,9 @@ module nts.uk.com.view.ccg015.a {
                 nts.uk.ui.windows.setShared('topPageCode', self.topPageModel().topPageCode());
                 nts.uk.ui.windows.setShared('topPageName', self.topPageModel().topPageName());
                 nts.uk.ui.windows.setShared('layoutId', self.topPageModel().layoutId());
-                nts.uk.ui.windows.sub.modal("/view/ccg/015/c/index.xhtml", {
-                    height: 320, width: 800,
-                    title: "他のトップページコピー",
-                    dialogClass: 'no-close'
-                }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal("/view/ccg/015/c/index.xhtml").onClosed(() => {
                     var codeOfNewTopPage = nts.uk.ui.windows.getShared("codeOfNewTopPage");
-                    self.loadTopPageList().done(function() {
+                    self.loadTopPageList().done(() => {
                         self.toppageSelectedCode(codeOfNewTopPage);
                     });
                 });
@@ -188,11 +171,7 @@ module nts.uk.com.view.ccg015.a {
                 var self = this;
                 nts.uk.ui.windows.setShared('topPageCode', self.topPageModel().topPageCode());
                 nts.uk.ui.windows.setShared('topPageName', self.topPageModel().topPageName());
-                nts.uk.ui.windows.sub.modal("/view/ccg/030/a/index.xhtml", {
-                    title: "フローメニューの設定",
-                    dialogClass: 'no-close'
-                }).onClosed(() => {
-                });
+                nts.uk.ui.windows.sub.modal("/view/ccg/030/a/index.xhtml");
             }
 
             private openLayoutSettingDialog() {
@@ -201,10 +180,7 @@ module nts.uk.com.view.ccg015.a {
                 var topPageCode = self.topPageModel().topPageCode();
                 var transferData: commonModel.TransferLayoutInfo = { parentCode: topPageCode, layoutID: layoutId, pgType: 0 };
                 nts.uk.ui.windows.setShared('layout', transferData);
-                nts.uk.ui.windows.sub.modal("/view/ccg/031/a/index.xhtml", {
-                    title: "レイアウトの設定",
-                    dialogClass: 'no-close'
-                }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal("/view/ccg/031/a/index.xhtml").onClosed(() => {
                     let returnInfo: commonModel.TransferLayoutInfo = nts.uk.ui.windows.getShared("layout");
                     self.topPageModel().layoutId(returnInfo.layoutID);
                     self.changePreviewIframe(returnInfo.layoutID);
@@ -226,7 +202,7 @@ module nts.uk.com.view.ccg015.a {
             }
 
             private removeTopPage() {
-                var self = this;                
+                var self = this;
                 nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18")).ifYes(function() {
                     var removeCode = self.toppageSelectedCode();
                     var removeIndex = self.getIndexOfRemoveItem(removeCode);
@@ -251,17 +227,18 @@ module nts.uk.com.view.ccg015.a {
                 }).ifNo(function() {
                 });
             }
+
             //for frame review layout
             private changePreviewIframe(layoutID: string): void {
                 $("#preview-iframe").attr("src", "/nts.uk.com.web/view/ccg/common/previewWidget/index.xhtml?layoutid=" + layoutID);
             }
+
             private getIndexOfRemoveItem(code: string): number {
                 var self = this;
                 var ind = 0;
                 self.listTopPage().forEach(function(item, index) {
-                    if (item.code == code) {
+                    if (item.code == code)
                         ind = index;
-                    }
                 });
                 return ind;
             }

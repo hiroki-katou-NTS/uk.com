@@ -83,7 +83,7 @@ module nts.uk.at.view.kmk008.e {
                 self.alreadySettingList([]);
                 new service.Service().getList(self.laborSystemAtr).done(data => {
                     if (data.workPlaceIds.length > 0) {
-                        self.alreadySettingList(_.map(data.workPlaceIds, item => { return new UnitAlreadySettingModel(item.toString()) }));
+                        self.alreadySettingList(_.map(data.workPlaceIds, item => { return new UnitAlreadySettingModel(item.toString(), true); }));
                         _.defer(() => self.workplaceGridList($('#tree-grid-screen-e').getDataList()));
                     }
                 })
@@ -302,7 +302,7 @@ module nts.uk.at.view.kmk008.e {
         export class UnitAlreadySettingModel {
             workplaceId: string;
             isAlreadySetting: boolean = true;
-            constructor(workplaceId: string) {
+            constructor(workplaceId: string, isAlreadySetting: boolean) {
                 this.workplaceId = workplaceId;
             }
         }

@@ -312,7 +312,8 @@ public class DeductionTotalTimeForFluidCalc {
 			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
 					   new TimeZoneRounding(deductionItem.timeSheet.getStart(), baseTime, deductionItem.timeSheet.getRounding())
 					  ,new TimeSpanForCalc(deductionItem.calcrange.getStart(), baseTime)
-					  ,deductionItem.recreateDeductionItemBeforeBase(baseTime, true)
+					  ,deductionItem.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Appropriate)
+					  ,deductionItem.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Deduction)
 					  ,deductionItem.recreateBonusPayListBeforeBase(baseTime, true)
 					  ,deductionItem.recreateSpecifiedBonusPayListBeforeBase(baseTime, true)
 					  ,deductionItem.recreateMidNightTimeSheetBeforeBase(baseTime, true)
@@ -323,7 +324,8 @@ public class DeductionTotalTimeForFluidCalc {
 			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed( 
 					   new TimeZoneRounding(baseTime, deductionItem.timeSheet.getEnd(), deductionItem.timeSheet.getRounding())
 					  ,new TimeSpanForCalc(baseTime, deductionItem.calcrange.getEnd())
-					  ,deductionItem.recreateDeductionItemBeforeBase(baseTime, false)
+					  ,deductionItem.recreateDeductionItemBeforeBase(baseTime, false,DeductionAtr.Appropriate)
+					  ,deductionItem.recreateDeductionItemBeforeBase(baseTime, false,DeductionAtr.Deduction)
 					  ,deductionItem.recreateBonusPayListBeforeBase(baseTime, false)
 					  ,deductionItem.recreateSpecifiedBonusPayListBeforeBase(baseTime, false)
 					  ,deductionItem.recreateMidNightTimeSheetBeforeBase(baseTime, false)
@@ -337,6 +339,7 @@ public class DeductionTotalTimeForFluidCalc {
 			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
 					  deductionItem.timeSheet
 					 ,deductionItem.calcrange
+					 ,deductionItem.recordedTimeSheet
 					 ,deductionItem.deductionTimeSheet
 					 ,deductionItem.bonusPayTimeSheet
 					 ,deductionItem.specBonusPayTimesheet

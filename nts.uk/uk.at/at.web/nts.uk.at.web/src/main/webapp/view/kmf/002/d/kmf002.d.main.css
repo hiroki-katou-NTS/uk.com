@@ -1,13 +1,13 @@
-#scrD table {
+#scrD #tableCommonMonth table {
 	border-collapse: collapse;
 }
 
-#scrD table th, #scrD table td{
+#scrD #tableCommonMonth table th, #scrD #tableCommonMonth table td{
 	border: 1px solid  black;
 	padding: 5px;
 }
 
-#scrD table td > span > input{
+#scrD #tableCommonMonth table td > span > input{
 	/* background-color:transparent;
     border: 0px solid; */
     text-align: center;

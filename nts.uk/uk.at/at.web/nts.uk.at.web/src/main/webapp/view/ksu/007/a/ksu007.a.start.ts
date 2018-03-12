@@ -10,7 +10,7 @@ module nts.uk.at.view.ksu007.a {
                 $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption).done(function() {
                     $('#dateRangePickerPeriod').find('input').first().focus();
                     if(self.employeeList().length <= 0){
-                        $('#hor-scroll-button-hide').trigger('click');  
+                        $('#ccg001-btn-search-drawer').trigger('click');  
                     }                                    
                 });
             });

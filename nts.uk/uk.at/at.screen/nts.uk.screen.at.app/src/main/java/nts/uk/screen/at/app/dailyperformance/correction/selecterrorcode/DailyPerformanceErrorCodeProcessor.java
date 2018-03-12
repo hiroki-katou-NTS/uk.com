@@ -101,6 +101,7 @@ public class DailyPerformanceErrorCodeProcessor {
 	private static final String LOCK_EDIT_CELL_DAY = "D";
 	private static final String LOCK_EDIT_CELL_MONTH = "M";
 	private static final String LOCK_EDIT_CELL_WORK = "C";
+	private static final String STATE_DISABLE = "ntsgrid-disable";
 
 	public DailyPerformanceCorrectionDto generateData(DateRange dateRange,
 			List<DailyPerformanceEmployeeDto> lstEmployee, Integer initScreen, Integer displayFormat, CorrectionOfDailyPerformance correct,
@@ -174,7 +175,7 @@ public class DailyPerformanceErrorCodeProcessor {
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
 						.getErrorSetting(lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
 				// Seperate Error and Alarm
-				screenDto.addErrorToResponseData(lstError, lstErrorSetting);
+				//screenDto.addErrorToResponseData(lstError, lstErrorSetting);
 			}
 		}
 
@@ -282,12 +283,12 @@ public class DailyPerformanceErrorCodeProcessor {
 				}
 			}
 			if(lock){
-				screenDto.setLock(data.getId(), LOCK_DATE);
-			    screenDto.setLock(data.getId(), LOCK_EMP_CODE);
-			    screenDto.setLock(data.getId(), LOCK_EMP_NAME);
-			    screenDto.setLock(data.getId(), LOCK_ERROR);
-			    screenDto.setLock(data.getId(), LOCK_SIGN);
-			    screenDto.setLock(data.getId(), LOCK_PIC);
+				screenDto.setLock(data.getId(), LOCK_DATE, STATE_DISABLE);
+			    screenDto.setLock(data.getId(), LOCK_EMP_CODE, STATE_DISABLE);
+			    screenDto.setLock(data.getId(), LOCK_EMP_NAME, STATE_DISABLE);
+			    screenDto.setLock(data.getId(), LOCK_ERROR, STATE_DISABLE);
+			    screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
+			    screenDto.setLock(data.getId(), LOCK_PIC, STATE_DISABLE);
 			}
 			DailyModifyResult resultOfOneRow = resultDailyMap.isEmpty() ? null : resultDailyMap.get(data.getEmployeeId()+"|"+data.getDate());
 			if(resultOfOneRow != null){
@@ -299,7 +300,7 @@ public class DailyPerformanceErrorCodeProcessor {
 				screenDto.getItemValues().addAll(attendanceTimes);
 				itemValueMap = attendanceTimes.isEmpty()? Collections.emptyMap(): attendanceTimes.stream().collect(Collectors.toMap(x -> x.itemId()+"|"+data.getEmployeeId()+"|"+data.getDate(), x -> x));
 			}
-			List<DPCellDataDto> cellDatas = new ArrayList<>();
+			Set<DPCellDataDto> cellDatas = new HashSet<>();
 			if (dPControlDisplayItem.getLstAttendanceItem() != null) {
 				for (DPAttendanceItem item : dPControlDisplayItem.getLstAttendanceItem()){
 					//int a = 1;
@@ -310,8 +311,8 @@ public class DailyPerformanceErrorCodeProcessor {
 							|| attendanceAtr == DailyAttendanceAtr.Classification.value) {
 						if(attendanceAtr == DailyAttendanceAtr.Code.value){
 							if(lock){
-								screenDto.setLock(data.getId(), CODE + String.valueOf(item.getId()));
-								screenDto.setLock(data.getId(), NAME + String.valueOf(item.getId()));
+								screenDto.setLock(data.getId(), CODE + String.valueOf(item.getId()), STATE_DISABLE);
+								screenDto.setLock(data.getId(), NAME + String.valueOf(item.getId()), STATE_DISABLE);
 							}
 							cellDatas.add(new DPCellDataDto(CODE + String.valueOf(item.getId()), value ,
 									String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
@@ -327,8 +328,8 @@ public class DailyPerformanceErrorCodeProcessor {
 							
 						}else{
 							if(lock){
-								screenDto.setLock(data.getId(), NO + String.valueOf(item.getId()));
-								screenDto.setLock(data.getId(), NAME + String.valueOf(item.getId()));
+								screenDto.setLock(data.getId(), NO + String.valueOf(item.getId()), STATE_DISABLE);
+								screenDto.setLock(data.getId(), NAME + String.valueOf(item.getId()), STATE_DISABLE);
 							}
 							cellDatas.add(new DPCellDataDto(NO + String.valueOf(item.getId()), value ,
 									String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
@@ -338,7 +339,7 @@ public class DailyPerformanceErrorCodeProcessor {
 						
 					} else {
 						if (lock) {
-							screenDto.setLock(data.getId(), ADD_CHARACTER + String.valueOf(item.getId()));
+							screenDto.setLock(data.getId(), ADD_CHARACTER + String.valueOf(item.getId()), STATE_DISABLE);
 						}
 						if (attendanceAtr == DailyAttendanceAtr.Time.value
 								|| attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
@@ -409,7 +410,7 @@ public class DailyPerformanceErrorCodeProcessor {
 				for (int i = 0; i < lstDate.size(); i++) {
 					GeneralDate filterDate = lstDate.get(i);
 					result.add(new DPDataDto(employee.getId()+"_"+dataId, "", "", filterDate, false, employee.getId(), employee.getCode(),
-							employee.getBusinessName(), employee.getWorkplaceId()));
+							employee.getBusinessName(), employee.getWorkplaceId(), "", ""));
 					dataId++;
 				}
 			}
@@ -507,7 +508,7 @@ public class DailyPerformanceErrorCodeProcessor {
 					result.setLstHeader(lstHeader);
 					// result.setLstSheet(lstSheet);
 					result.createSheets(lstSheet);
-					result.addColumnsToSheet(lstFormat, mapDP);
+					result.addColumnsToSheet(lstFormat, mapDP, true);
 				}
 			} else {
 				// アルゴリズム「社員の勤務種別に対応する表示項目を取得する」を実行する
@@ -536,7 +537,7 @@ public class DailyPerformanceErrorCodeProcessor {
 										.collect(Collectors.toList());
 						mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
 					}
-					result.addColumnsToSheet(lstFormat, mapDP);
+					result.addColumnsToSheet(lstFormat, mapDP, true);
 					List<DPHeaderDto> lstHeader = new ArrayList<>();
 					for (FormatDPCorrectionDto dto : lstFormat) {
 						lstHeader.add(DPHeaderDto.createSimpleHeader(ADD_CHARACTER + String.valueOf(dto.getAttendanceItemId()),

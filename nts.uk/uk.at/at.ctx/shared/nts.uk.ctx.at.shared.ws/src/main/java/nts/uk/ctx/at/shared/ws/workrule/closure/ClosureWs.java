@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.ws.workrule.closure;
@@ -35,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.DayMonthChange;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -44,6 +45,10 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Path("ctx/at/shared/workrule/closure")
 @Produces("application/json")
 public class ClosureWs {
+
+	/** The closure service. */
+	@Inject
+	private ClosureService closureService;
 	
 	/** The finder. */
 	@Inject
@@ -278,4 +283,43 @@ public class ClosureWs {
 		}).collect(Collectors.toList());
 	}
 	
+	/**
+	 * Gets the closure tied by employment.
+	 *
+	 * @param employmentCode the employment code
+	 * @return the closure tied by employment
+	 */
+	@POST
+	@Path("getclosuretiedbyemployment/{employmentcode}")
+	public Integer getClosureTiedByEmployment(@PathParam("employmentcode") String employmentCode) {
+		return this.finder.getClosureIdByEmploymentCode(employmentCode);
+	}
+
+	/**
+	 * Calculate period.
+	 *
+	 * @param closureId the closure id
+	 * @param yearMonth the year month
+	 * @return the date period dto
+	 */
+	@POST
+	@Path("calculateperiod/{closureid}/{yearmonth}")
+	public DatePeriodDto calculatePeriod(@PathParam("closureid") int closureId, @PathParam("yearmonth") int yearMonth) {
+		DatePeriod period = this.closureService.getClosurePeriod(closureId, YearMonth.of(yearMonth));
+		return DatePeriodDto.builder()
+				.endDate(period.end().toString("yyyy-MM-dd"))
+				.startDate(period.start().toString("yyyy-MM-dd")).build();
+	}
+
+	/**
+	 * Gets the closures by base date.
+	 *
+	 * @param basedate the basedate
+	 * @return the closures by base date
+	 */
+	@POST
+	@Path("getclosuresbybasedate/{basedate}")
+	public List<ClosureIdNameDto> getClosuresByBaseDate(@PathParam("basedate") String basedate) {
+		return this.finder.getClosuresByBaseDate(GeneralDate.fromString(basedate, "yyyy-MM-dd"));
+	}
 }

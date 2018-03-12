@@ -51,8 +51,8 @@ public class AgentAdapterImp implements AgentAdapter {
 	/**
 	 * 代行者、期間から承認代行情報を取得する			
 	 */
-	public List<AgentDataRequestPubImport> lstAgentData(String companyId, String employeeId, GeneralDate baseDate) {
-		List<AgentDataRequestPubImport> lstData = AgentPub.getBySidDate(companyId, employeeId, baseDate)
+	public List<AgentDataRequestPubImport> lstAgentData(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate) {
+		List<AgentDataRequestPubImport> lstData = AgentPub.getBySidDate(companyId, employeeId, startDate, endDate)
 				.stream()
 				.map(x -> new AgentDataRequestPubImport(companyId, 
 						x.getEmployeeId(), 

@@ -24,7 +24,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
         // Combo box 
         executionContents: KnockoutObservableArray<any> = ko.observableArray([]);
-        selectedExeContent: KnockoutObservable<string> = ko.observable('1');
+        selectedExeContent: KnockoutObservable<any> = ko.observable(null);
+        contents: any;
 
         // GridList
         errorMessageInfo: KnockoutObservableArray<shareModel.PersonInfoErrMessageLog> = ko.observableArray([]);
@@ -91,7 +92,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                     self.visibleMonthly(true);
                 }
 
-                self.executionContents(res.enumComboBox);
+                self.contents = res.enumComboBox;
+                //self.executionContents(res.enumComboBox);
                 self.startTime(moment.utc(res.startTime).format("YYYY/MM/DD HH:mm:ss"));
                 self.startAsyncTask();
                 dfd.resolve();
@@ -140,6 +142,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
                         if (!info.pending && !info.running) {
                             self.isComplete(true);
+                            self.executionContents(self.contents);
+                            self.selectedExeContent(self.executionContents().length > 0 ? self.executionContents()[0].value : null);
 
                             // End count time
                             self.elapseTime.end();

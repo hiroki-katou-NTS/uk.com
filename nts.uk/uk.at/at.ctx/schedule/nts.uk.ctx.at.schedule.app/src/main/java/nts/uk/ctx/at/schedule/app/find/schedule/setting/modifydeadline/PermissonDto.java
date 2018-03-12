@@ -3,7 +3,11 @@ package nts.uk.ctx.at.schedule.app.find.schedule.setting.modifydeadline;
 import java.util.List;
 
 import lombok.Data;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Data
 public class PermissonDto {
 	/** 会社ID*/

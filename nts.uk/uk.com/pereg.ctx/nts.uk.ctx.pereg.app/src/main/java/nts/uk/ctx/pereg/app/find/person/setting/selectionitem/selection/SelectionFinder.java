@@ -2,6 +2,7 @@ package nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -11,6 +12,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.SelectionInitDto;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.IPerInfoSelectionItemRepository;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoSelectionItem;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionItemOrder;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionItemOrderRepository;
@@ -35,6 +38,10 @@ public class SelectionFinder {
 	@Inject
 	private ComboBoxRetrieveFactory comboBoxFactory;
 
+	// fix bug: 23.2.2018
+	@Inject
+	private IPerInfoSelectionItemRepository selectionItemRpo;
+
 	// アルゴリズム「選択肢履歴選択時処理」を実行する(Thực thi xử lý chọn 選択肢履歴)
 	public List<SelectionDto> getAllSelection() {
 		String contractCode = AppContexts.user().contractCode();
@@ -48,19 +55,20 @@ public class SelectionFinder {
 
 		// lay selection
 		List<Selection> selectionList = this.selectionRepo.getAllSelectByHistId(histId);
-
+		Optional<PerInfoSelectionItem> sltItemOpt = selectionItemRpo.getSelectionItemByHistId(histId);
 		// kiem tra so luong item lay duoc
-		if (selectionList.isEmpty()) {
+		if (selectionList.isEmpty() || !sltItemOpt.isPresent()) {
 			return orderList;
 		} else {
 			String getByHisId = selectionList.get(0).getHistId();
 			List<SelectionItemOrder> orderDomainlst = this.selectionOrderRpo.getAllOrderSelectionByHistId(getByHisId);
-
+			PerInfoSelectionItem sltItem = sltItemOpt.get();
 			if (!orderDomainlst.isEmpty()) {
 				orderList = orderDomainlst.stream().map(i -> {
-					Selection selectionItem = selectionList.stream()
+					Selection selection = selectionList.stream()
 							.filter(s -> s.getSelectionID().equals(i.getSelectionID())).findFirst().orElse(null);
-					return SelectionItemOrderDto.fromSelectionOrder(i, selectionItem);
+					return SelectionItemOrderDto.fromSelectionOrder(i, selection,
+							sltItem.getFormatSelection().getSelectionCodeCharacter().value);
 				}).collect(Collectors.toList());
 			}
 

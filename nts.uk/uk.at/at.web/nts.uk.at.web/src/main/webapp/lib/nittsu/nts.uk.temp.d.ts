@@ -84,6 +84,16 @@ interface JQuery {
     ntsFixedTable(option: any): void;
     ntsGrid(option: any): void;
     ntsGrid(method: string, option: any, data: any): void;
+    
+    /**
+     * Go to full view mode KCP004.
+     */
+    fullView(): void;
+    
+    /**
+     * Go to scroll view mode KCP004.
+     */
+    scrollView(): void;
 }
 
 interface UnitModel {

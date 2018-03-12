@@ -1,29 +1,28 @@
-
-
 .body-right {
-    margin-left: 50px;
-    float: left;
+	margin-left: 50px;
+	float: left;
 }
 
-.layout-table td{
+.layout-table td {
 	padding-bottom: 7px;
 }
 
-button.nts-switch-button{
+button.nts-switch-button {
 	width: 85px;
 }
 
-#table-infor th,#table-infor td{
-	 border: 1px solid black;
+#table-infor th, #table-infor td {
+	border: 1px solid black;
 }
 
-#table-infor th,#table-label th{
-
+#table-infor th, #table-label th {
+	
 }
-#master-wrapper{
+
+#master-wrapper {
 	overflow: hidden !important;
 }
-#combo-box.ui-igcombo-wrapper{
+
+#combo-box.ui-igcombo-wrapper {
 	width: 220px !important;
-	
 }

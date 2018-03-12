@@ -66,6 +66,7 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 		if(allApprovalFlg.equals(Boolean.TRUE)){
 			// 実績反映状態 = 反映状態．反映待ち
 			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.WAITREFLECTION);
+			applicationRepository.update(application);
 		}
 		AppTypeDiscreteSetting discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
 		// 承認処理時に自動でメールを送信するが trueの場合

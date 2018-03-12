@@ -29,7 +29,7 @@ public class JpaAggregateHolidayWorkTime extends JpaRepository implements Aggreg
 	public void insert(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
 			AggregateHolidayWorkTime aggregateHolidayWorkTime) {
 		
-		this.commandProxy().insert(toEntity(attendanceTimeOfMonthlyKey, aggregateHolidayWorkTime, false));
+		this.getEntityManager().persist(toEntity(attendanceTimeOfMonthlyKey, aggregateHolidayWorkTime, false));
 	}
 
 	/** 更新 */
@@ -48,12 +48,12 @@ public class JpaAggregateHolidayWorkTime extends JpaRepository implements Aggreg
 		val closureDate = attendanceTimeOfMonthlyKey.getClosureDate();
 		
 		this.getEntityManager().createQuery(DELETE_BY_PARENT_PK)
-			.setParameter("employeeID", attendanceTimeOfMonthlyKey.getEmployeeId())
-			.setParameter("yearMonth", attendanceTimeOfMonthlyKey.getYearMonth().v())
-			.setParameter("closureId", attendanceTimeOfMonthlyKey.getClosureId().value)
-			.setParameter("closureDay", closureDate.getClosureDay().v())
-			.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
-			.executeUpdate();
+				.setParameter("employeeID", attendanceTimeOfMonthlyKey.getEmployeeId())
+				.setParameter("yearMonth", attendanceTimeOfMonthlyKey.getYearMonth().v())
+				.setParameter("closureId", attendanceTimeOfMonthlyKey.getClosureId().value)
+				.setParameter("closureDay", closureDate.getClosureDay().v())
+				.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+				.executeUpdate();
 	}
 	
 	/**
@@ -80,7 +80,7 @@ public class JpaAggregateHolidayWorkTime extends JpaRepository implements Aggreg
 		
 		KrcdtMonAggrHdwkTime entity;
 		if (execUpdate) {
-			entity = this.queryProxy().find(key, KrcdtMonAggrHdwkTime.class).get();
+			entity = this.getEntityManager().find(KrcdtMonAggrHdwkTime.class, key);
 		}
 		else {
 			entity = new KrcdtMonAggrHdwkTime();
@@ -93,7 +93,6 @@ public class JpaAggregateHolidayWorkTime extends JpaRepository implements Aggreg
 		entity.calcTransferTime = domain.getTransferTime().getCalcTime().v();
 		entity.legalHolidayWorkTime = domain.getLegalHolidayWorkTime().v();
 		entity.legalTransferHolidayWorkTime = domain.getLegalTransferHolidayWorkTime().v();
-		if (execUpdate) this.commandProxy().update(entity);
 		return entity;
 	}
 }

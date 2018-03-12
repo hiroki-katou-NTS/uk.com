@@ -29,7 +29,7 @@
 					<div style="margin-left: 40px">
 						<div id="wkp-component"></div>
 					</div>
-					
+
 					<!-- BEGIN DESCRIPTION -->
 					<article class="cf" style="margin-top: 40px;">
 						<div class="tabs">
@@ -37,27 +37,42 @@
 								<li><a href="#tabs-html">HTML Binding</a></li>
 								<li><a href="#tabs-viewmodel">ViewModel</a></li>
 								<li><a href="#tabs-method">Methods</a></li>
-								
+
 							</ol>
 							<!-- BEGIN TAB HTML -->
 							<div id="tabs-html" class="cf">
 								<h2>HTML</h2>
-								<p>Using Ignite library so you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
-								<pre><![CDATA[<ui:define name="htmlHead">
+								<p>
+									Using Ignite library so you must include following line in <i>&lt;ui:define
+										name="htmlHead"&gt;</i>
+								</p>
+								<pre>
+									<![CDATA[<ui:define name="htmlHead">
 		<com:scriptfile set="IGNITE" />
-</ui:define>]]></pre>
+</ui:define>]]>
+								</pre>
 
-								<p>Import library to use Component, you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
-								<pre><![CDATA[<com:scriptfile path="/view/kcp/010/kcp010.js" of="/nts.uk.com.web" />]]></pre>
-								<pre><![CDATA[<com:stylefile path="/view/kcp/010/style.css" of="/nts.uk.com.web" />]]></pre>
-								<p>Create a div tag  to bind grid list</p>
-								<pre><![CDATA[
+								<p>
+									Import library to use Component, you must include following
+									line in <i>&lt;ui:define name="htmlHead"&gt;</i>
+								</p>
+								<pre>
+									<![CDATA[<com:scriptfile path="/view/kcp/010/kcp010.js" of="/nts.uk.com.web" />]]>
+								</pre>
+								<pre>
+									<![CDATA[<com:stylefile path="/view/kcp/010/style.css" of="/nts.uk.com.web" />]]>
+								</pre>
+								<p>Create a div tag to bind grid list</p>
+								<pre>
+									<![CDATA[
 								<div id="sample-component"></div>
 								
 								Example:
-								<div id="wkp-component"></div>]]></pre>
-							</div><!-- END TAB HTML -->
-							
+								<div id="wkp-component"></div>]]>
+								</pre>
+							</div>
+							<!-- END TAB HTML -->
+
 							<!-- BEGIN VIEWMODEL TAB-->
 							<div id="tabs-viewmodel" class="cf">
 								<h2>TypeScript</h2>
@@ -91,42 +106,41 @@
         workplaceName: string;
     }
 							]]>
-							<div><b>Note:</b> which property contains '?' is not compulsory</div>
+							<div>
+										<b>Note:</b> which property contains '?' is not compulsory</div>
 							</pre>
-							<pre><![CDATA[
+								<pre>
+									<![CDATA[
 					<!--It is just called after apply binding done to initialize Component.-->
 					<!--This return JQueryPromise<void>-->
 						 $('#sample-component').ntsLoadListComponent(listComponentOption);
 						  
 						 Example:
 						 $('#wkp-component').ntsLoadListComponent(self.listComponentOption);
-							]]></pre>
+							]]>
+								</pre>
 								<h2>API</h2>
 								<table style="width: 700px">
 									<thead>
 										<td style="text-align: center;"><h4>Binding</h4></td>
 										<td style="text-align: center;"><h4>Description</h4></td>
-										</thead>
-										
-									
+									</thead>
+
+
 									<tr>
 										<td>targetBtnText</td>
-										<td>
-											<b>Type:</b> string<br/>
-											<label>Text for Target Button</label><br></br>
-											<b>Default:</b> #KCP010_3<br/>
-										</td>
+										<td><b>Type:</b> string<br /> <label>Text for
+												Target Button</label><br></br> <b>Default:</b> #KCP010_3<br /></td>
 									</tr>
 									<tr>
 										<td>tabIndex</td>
-										<td>
-											<b>Type:</b> number<br/>
-											<label>Set TabIndex to Component Elements</label>
-										</td>
+										<td><b>Type:</b> number<br /> <label>Set TabIndex
+												to Component Elements</label></td>
 									</tr>
 								</table>
-							</div><!-- END VIEWMODEL TAB-->
-							
+							</div>
+							<!-- END VIEWMODEL TAB-->
+
 							<!-- BEGIN METHOD TAB-->
 							<div id="tabs-method" class="cf">
 								<table>
@@ -136,21 +150,27 @@
 									</thead>
 									<tr>
 										<td>$('#sample-component').ntsLoadListComponent(listComponentOption);
-										<br></br><br></br>
-										<b>Example:</b><br></br>
-										$('#wkp-component').ntsLoadListComponent(listComponentOption);
+											<br></br>
+										<br></br> <b>Example:</b><br></br>
+											$('#wkp-component').ntsLoadListComponent(listComponentOption);
 										</td>
 										<td>
-											<div><b>Reload Component</b></div>
-											<div><i>Description:</i> listComponentOption is initialized.</div>
+											<div>
+												<b>Reload Component</b>
+											</div>
+											<div>
+												<i>Description:</i> listComponentOption is initialized.
+											</div>
 										</td>
 									</tr>
-									
+
 								</table>
-							</div><!-- END METHOD TAB -->
-							
+							</div>
+							<!-- END METHOD TAB -->
+
 						</div>
-					</article><!-- END DESCRIPTION -->
+					</article>
+					<!-- END DESCRIPTION -->
 				</div>
 			</div>
 		</ui:define>

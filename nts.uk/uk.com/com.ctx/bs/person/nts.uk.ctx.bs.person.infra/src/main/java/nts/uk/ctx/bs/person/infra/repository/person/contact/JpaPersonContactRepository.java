@@ -73,42 +73,15 @@ public class JpaPersonContactRepository  extends JpaRepository implements Person
 	 * @param entity
 	 */
 	private void updateEntity(PersonContact domain, BpsmtPersonContact entity){
-		
-		if (domain.getMailAdress() != null && !domain.getMailAdress().equals("")){
-			entity.mailAdress = domain.getMailAdress().v();
-		}
-		
-		if (domain.getMobileMailAdress() != null && !domain.getMobileMailAdress().v().equals("")){
-			entity.mobileMailAdress = domain.getMobileMailAdress().v();
-		}
-		
-		if (domain.getCellPhoneNumber() != null && !domain.getCellPhoneNumber().v().equals("")){
-			entity.cellPhoneNumber = domain.getCellPhoneNumber().v();
-		}
-		
-		if (domain.getEmergencyContact1() != null && !domain.getEmergencyContact1().getMemo().v().equals("")){
-			entity.memo1 = domain.getEmergencyContact1().getMemo().v();
-		}
-		
-		if (domain.getEmergencyContact1() != null && !domain.getEmergencyContact1().getContactName().v().equals("")){
-			entity.contactName1 = domain.getEmergencyContact1().getContactName().v();
-		}
-		
-		if (domain.getEmergencyContact1() != null && !domain.getEmergencyContact1().getPhoneNumber().v().equals("")){
-			entity.phoneNo1 = domain.getEmergencyContact1().getPhoneNumber().v();
-		}
-		
-		if (domain.getEmergencyContact2() != null && !domain.getEmergencyContact2().getMemo().v().equals("")){
-			entity.memo2 = domain.getEmergencyContact2().getMemo().v();
-		}
-		
-		if (domain.getEmergencyContact2() != null && !domain.getEmergencyContact2().getContactName().v().equals("")){
-			entity.contactName2 = domain.getEmergencyContact2().getContactName().v();
-		}
-		
-		if (domain.getEmergencyContact2() != null && !domain.getEmergencyContact2().getPhoneNumber().v().equals("")){
-			entity.phoneNo2 = domain.getEmergencyContact2().getPhoneNumber().v();
-		}
+		entity.mailAdress = domain.getMailAdress().v();
+		entity.mobileMailAdress = domain.getMobileMailAdress().v();
+		entity.cellPhoneNumber = domain.getCellPhoneNumber().v();
+		entity.memo1 = domain.getEmergencyContact1().getMemo().v();
+		entity.contactName1 = domain.getEmergencyContact1().getContactName().v();
+		entity.phoneNo1 = domain.getEmergencyContact1().getPhoneNumber().v();
+		entity.memo2 = domain.getEmergencyContact2().getMemo().v();
+		entity.contactName2 = domain.getEmergencyContact2().getContactName().v();
+		entity.phoneNo2 = domain.getEmergencyContact2().getPhoneNumber().v();
 			
 	}
 

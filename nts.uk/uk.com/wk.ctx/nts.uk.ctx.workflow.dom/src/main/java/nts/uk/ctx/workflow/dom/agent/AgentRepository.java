@@ -95,5 +95,14 @@ public interface AgentRepository {
 	 * @param baseDate
 	 * @return
 	 */
-	public List<Agent> findBySidDate(String companyId, String employeeId, GeneralDate baseDate);
+	public List<Agent> findBySidDate(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate);
+	/**
+	 * パラメータの承認者が代行者に依頼されているか、パラメータの期間に依頼期間が１日でも重なるものを取得する
+	 * @param companyId
+	 * @param approverID
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<Agent> findByApproverAndDate(String companyId, String approverID, GeneralDate startDate, GeneralDate endDate);
 }

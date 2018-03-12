@@ -15,6 +15,9 @@ import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.BusinessDayCalendarAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.dto.BusinessDayCalendarImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.dto.HolidayClsImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
@@ -41,6 +44,8 @@ public class HolidayServiceImpl implements HolidayService {
 	private ApplicationApprovalService_New appRepository;
 	@Inject
 	private AppHolidayWorkRepository appHolidayWorkRepository;
+	@Inject
+	private BusinessDayCalendarAdapter businessDayCalendarAdapter;
 	
 	@Override
 	public WorkTypeHolidayWork getWorkTypes(String companyID, String employeeID, List<AppEmploymentSetting> appEmploymentSettings,
@@ -51,20 +56,49 @@ public class HolidayServiceImpl implements HolidayService {
 		if(workTypeHolidayWorks.getWorkTypeCodes() == null){
 			return workTypeHolidayWorks;
 		}
-		getWorkType(workTypeHolidayWorks,baseDate,employeeID,personalLablorCodition);
+		getWorkType(companyID,workTypeHolidayWorks,baseDate,employeeID,personalLablorCodition);
 		return workTypeHolidayWorks;
 	}
 	// 4_c.初期選択
 	@Override
-	public void getWorkType(WorkTypeHolidayWork workTypes, GeneralDate appDate, String employeeID,Optional<PersonalLaborCondition> personalLablorCodition){
+	public void getWorkType(String companyID,WorkTypeHolidayWork workTypes, GeneralDate appDate, String employeeID,Optional<PersonalLaborCondition> personalLablorCodition){
 		if(personalLablorCodition.isPresent() && personalLablorCodition.get().getWorkCategory().getWeekdayTime() == null){
 			// 先頭の勤務種類を選択する
 			if(!CollectionUtil.isEmpty(workTypes.getWorkTypeCodes())){
 				workTypes.setWorkTypeCode(workTypes.getWorkTypeCodes().get(0));
 			}
 		}else{
-			// 「申請日－法定外・法定内休日区分」をチェック : TODO
 			
+			//Imported(申請承認)「職場ID」を取得する : TODO
+			String workplaceID = "";
+			// 「申請日－法定外・法定内休日区分」をチェック　→Imported(申請承認)「対象日法定休日区分.法定休日区分」を取得する
+			Optional<BusinessDayCalendarImport> buOptional = this.businessDayCalendarAdapter.acquiredHolidayClsOfTargetDate(companyID, workplaceID, appDate);
+			if(buOptional.isPresent()){
+				String workTypeCode = personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString();
+				if(buOptional.get().holidayCls.equals(HolidayClsImport.STATUTORY_HOLIDAYS)){
+					// 申請日＝＞法定内休日
+					if(personalLablorCodition.get().getWorkCategory().getInLawBreakTime().isPresent()){
+						workTypeCode = personalLablorCodition.get().getWorkCategory().getInLawBreakTime().get().getWorkTypeCode().toString();
+					}
+					
+				}else if(buOptional.get().holidayCls.equals(HolidayClsImport.NON_STATUTORY_HOLIDAYS)){
+					// 申請日＝＞法定外休日
+					if(personalLablorCodition.get().getWorkCategory().getOutsideLawBreakTime().isPresent()){
+						workTypeCode = personalLablorCodition.get().getWorkCategory().getOutsideLawBreakTime().get().getWorkTypeCode().toString();
+					}
+				}else if(buOptional.get().holidayCls.equals(HolidayClsImport.PUBLIC_HOLIDAY)){
+					// 申請日＝＞祝日
+					if(personalLablorCodition.get().getWorkCategory().getHolidayAttendanceTime().isPresent()){
+						workTypeCode = personalLablorCodition.get().getWorkCategory().getHolidayAttendanceTime().get().getWorkTypeCode().toString();
+					}
+				}
+				workTypes.setWorkTypeCode(workTypeCode);
+			}
+		}
+		
+		Optional<WorkType> workType = workTypeRepository.findByPK(companyID, workTypes.getWorkTypeCode());
+		if(workType.isPresent()){
+			workTypes.setWorkTypeName(workType.get().getName().toString());
 		}
 	}
 	/** 5.就業時間帯を取得する */

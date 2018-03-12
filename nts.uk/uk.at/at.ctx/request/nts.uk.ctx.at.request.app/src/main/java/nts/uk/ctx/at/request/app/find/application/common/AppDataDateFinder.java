@@ -11,6 +11,7 @@ import org.apache.logging.log4j.util.Strings;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
@@ -20,6 +21,8 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
@@ -56,17 +59,27 @@ public class AppDataDateFinder {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
+	@Inject
+	private EmployeeRequestAdapter employeeAdaptor;
+	
 	private final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	public AppDateDataDto getAppDataByDate(Integer appTypeValue, String appDate, Boolean isStartUp, String appID){
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		GeneralDate appGeneralDate = GeneralDate.fromString(appDate, DATE_FORMAT);
-		OutputMessageDeadline outputMessageDeadline = getDataAppCfDetailFinder.getDataConfigDetail(new ApplicationMetaDto("", appTypeValue, appGeneralDate));
 		ApprovalRootPattern approvalRootPattern = null;
 		ApplicationDto_New applicationDto = null;
 		PrePostAtr defaultPrePostAtr = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), appGeneralDate);
 		if(Strings.isNotBlank(appID)){
+			Application_New application = applicationRepository_New.findByID(companyID, appID).get();
+			SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(
+					companyID, 
+					application.getEmployeeID(), 
+					appGeneralDate);
+			if(empHistImport==null || empHistImport.getEmploymentCode()==null){
+				throw new BusinessException("Msg_426");
+			}
 			approvalRootPattern = approvalRootPatternService.getApprovalRootPatternService(
 					companyID, 
 					employeeID, 
@@ -75,7 +88,6 @@ public class AppDataDateFinder {
 					appGeneralDate,
 					appID,
 					false);
-			Application_New application = applicationRepository_New.findByID(companyID, appID).get();
 			applicationDto = ApplicationDto_New.builder()
 					.version(application.getVersion())
 					.companyID(application.getCompanyID())
@@ -111,6 +123,7 @@ public class AppDataDateFinder {
 			startupErrorCheckService.startupErrorCheck(appGeneralDate, appTypeValue, approvalRootPattern.getApprovalRootContentImport());
 		}
 		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appGeneralDate);
+		OutputMessageDeadline outputMessageDeadline = getDataAppCfDetailFinder.getDataConfigDetail(new ApplicationMetaDto("", appTypeValue, appGeneralDate));
 		return new AppDateDataDto(
 				outputMessageDeadline, 
 				approvalRootPattern.getApprovalRootContentImport().getApprovalRootState().getListApprovalPhaseState()
@@ -133,14 +146,17 @@ public class AppDataDateFinder {
 class ApprovalPhaseStateDto{
 	private Integer phaseOrder;
 	
-	private String approvalAtr;
+	private Integer approvalAtrValue;
+	
+	private String approvalAtrName;
 	
 	private List<ApprovalFrameDto> listApprovalFrame;
 	
 	public static ApprovalPhaseStateDto fromApprovalPhaseStateImport(ApprovalPhaseStateImport_New approvalPhaseStateImport){
 		return new ApprovalPhaseStateDto(
 				approvalPhaseStateImport.getPhaseOrder(), 
-				approvalPhaseStateImport.getApprovalAtr(), 
+				approvalPhaseStateImport.getApprovalAtr().value,
+				approvalPhaseStateImport.getApprovalAtr().name,
 				approvalPhaseStateImport.getListApprovalFrame().stream().map(x -> ApprovalFrameDto.fromApprovalFrameImport(x)).collect(Collectors.toList()));
 	}
 }
@@ -152,13 +168,19 @@ class ApprovalFrameDto {
 	
 	private Integer frameOrder;
 	
-	private String approvalAtr;
+	private Integer approvalAtrValue;
+	
+	private String approvalAtrName;
 	
 	private List<ApproverStateDto> listApprover;
 	
 	private String approverID;
 	
+	private String approverName;
+	
 	private String representerID;
+	
+	private String representerName;
 	
 	private String approvalReason;
 	
@@ -166,10 +188,19 @@ class ApprovalFrameDto {
 		return new ApprovalFrameDto(
 				approvalFrameImport.getPhaseOrder(), 
 				approvalFrameImport.getFrameOrder(), 
-				approvalFrameImport.getApprovalAtr(), 
-				approvalFrameImport.getListApprover().stream().map(x -> new ApproverStateDto(x.getApprover(), x.getRepresenter())).collect(Collectors.toList()), 
-				approvalFrameImport.getApproverID(), 
-				approvalFrameImport.getRepresenterID(), 
+				approvalFrameImport.getApprovalAtr().value,
+				approvalFrameImport.getApprovalAtr().name, 
+				approvalFrameImport.getListApprover().stream()
+					.map(x -> new ApproverStateDto(
+							x.getApproverID(), 
+							x.getApproverName(),
+							x.getRepresenterID(),
+							x.getRepresenterName()))
+					.collect(Collectors.toList()), 
+				approvalFrameImport.getApproverID(),
+				approvalFrameImport.getApproverName(),
+				approvalFrameImport.getRepresenterID(),
+				approvalFrameImport.getRepresenterName(),
 				approvalFrameImport.getApprovalReason());
 	}
 }
@@ -177,9 +208,13 @@ class ApprovalFrameDto {
 @Value
 @AllArgsConstructor
 class ApproverStateDto {
-	private String approver;
+	private String approverID;
 	
-	private String representer;
+	private String approverName;
+	
+	private String representerID;
+	
+	private String representerName;
 }
 
 @Value

@@ -10,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdapplicationsetting.TimeHdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdapplicationsetting.TimeHdAppSetRepository;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * update time holiday application setting command handler
  * @author yennth
@@ -23,9 +24,10 @@ public class UpdateTimeHdAppSetHandler extends CommandHandler<TimeHdAppSetComman
 
 	@Override
 	protected void handle(CommandHandlerContext<TimeHdAppSetCommand> context) {
+		String companyId = AppContexts.user().companyId();
 		TimeHdAppSetCommand data = context.getCommand();
 		Optional<TimeHdAppSet> time = timeRep.getByCid();
-		TimeHdAppSet timeHd = TimeHdAppSet.createFromJavaType(data.getCompanyId(), 
+		TimeHdAppSet timeHd = TimeHdAppSet.createFromJavaType(companyId, 
 				data.getCheckDay(), data.getUse60h(), data.getUseAttend2(), data.getNameBefore2(), 
 				data.getUseBefore(), data.getNameBefore(), data.getActualDisp(), data.getCheckOver(), 
 				data.getUseTimeHd(), data.getUseTimeYear(), data.getUsePrivate(), data.getPrivateName(),

@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 
 /**
  * 月別実績の外出
@@ -15,17 +18,17 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerforma
 public class GoOutOfMonthly {
 
 	/** 外出 */
-	private List<AggregateGoOut> goOuts;
+	private Map<GoingOutReason, AggregateGoOut> goOuts;
 	/** 育児外出 */
-	private List<GoOutForChildCare> goOutForChildCares;
+	private Map<ChildCareAtr, GoOutForChildCare> goOutForChildCares;
 	
 	/**
 	 * コンストラクタ
 	 */
 	public GoOutOfMonthly(){
 		
-		this.goOuts = new ArrayList<>();
-		this.goOutForChildCares = new ArrayList<>();
+		this.goOuts = new HashMap<>();
+		this.goOutForChildCares = new HashMap<>();
 	}
 
 	/**
@@ -39,8 +42,14 @@ public class GoOutOfMonthly {
 			List<GoOutForChildCare> goOutForChildCares){
 		
 		val domain = new GoOutOfMonthly();
-		domain.goOuts = goOuts;
-		domain.goOutForChildCares = goOutForChildCares;
+		for (val goOut : goOuts){
+			val goOutReason = goOut.getGoOutReason();
+			domain.goOuts.putIfAbsent(goOutReason, goOut);
+		}
+		for (val goOutForChildCare : goOutForChildCares){
+			val childCareAtr = goOutForChildCare.getChildCareAtr();
+			domain.goOutForChildCares.putIfAbsent(childCareAtr, goOutForChildCare);
+		}
 		return domain;
 	}
 	

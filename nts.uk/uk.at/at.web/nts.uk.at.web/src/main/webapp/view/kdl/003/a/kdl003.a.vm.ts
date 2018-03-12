@@ -124,8 +124,10 @@ module nts.uk.at.view.kdl003.a {
                 
                 // On selectedWorkTimeCode changed event.
                 self.selectedWorkTimeCode.subscribe(code => {
-                    self.getListTimeBySeleckedCode(code);
-                    self.getTimeBySelectedCode(self.listWorkTime(), code);
+                    if (code){
+                        self.getListTimeBySeleckedCode(code);
+                        self.getTimeBySelectedCode(self.listWorkTime(), code);
+                    }
                 }); 
                 
                 //parent data
@@ -422,10 +424,11 @@ module nts.uk.at.view.kdl003.a {
              */
             public search(): void {
                 var self = this;
-                if (!self.startTime() && !self.endTime()) {
+                if (nts.uk.util.isNullOrEmpty(self.startTime()) && nts.uk.util.isNullOrEmpty(self.endTime())) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_53" });
                     return;
                 }
+                
                 if ($('#inputEndTime').ntsError('hasError') ||
                     $('#inputStartTime').ntsError('hasError')) {
                     return;

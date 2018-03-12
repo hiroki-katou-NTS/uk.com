@@ -13,13 +13,19 @@ import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.appt
 @Data
 @NoArgsConstructor
 public class BfReqSetDto {
-	private String companyId;
-	private Integer appType;
-	private Integer retrictPreMethodFlg;
-	private Integer retrictPreUseFlg;
-	private Integer retrictPreDay;
-	private Integer retrictPreTimeDay;
-	private Integer retrictPostAllowFutureFlg;
+	public String companyId;
+	// 申請種類
+	public Integer appType;
+	// チェック方法
+	public Integer retrictPreMethodFlg;
+	// 利用する
+	public Integer retrictPreUseFlg;
+	// 日数
+	public Integer retrictPreDay;
+	// 時刻
+	public Integer retrictPreTimeDay;
+	// 未来日許可しない
+	public Integer retrictPostAllowFutureFlg;
 	
 	public static List<BfReqSetDto> convertToDto(RequestSetting domain){
 		List<ReceptionRestrictionSetting> appType = domain.getApplicationSetting().getListReceptionRestrictionSetting();

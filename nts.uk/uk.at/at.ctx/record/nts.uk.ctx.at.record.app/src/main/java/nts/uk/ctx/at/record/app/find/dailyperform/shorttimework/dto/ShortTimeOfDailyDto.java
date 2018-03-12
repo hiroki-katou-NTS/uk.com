@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -12,13 +11,13 @@ import nts.uk.ctx.at.record.dom.shorttimework.primitivevalue.ShortWorkTimFrameNo
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @AttendanceItemRoot(rootName = "日別実績の短時間勤務時間帯")
 @Data
-public class ShortTimeOfDailyDto implements ConvertibleAttendanceItem {
+public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 
 	/** 社員ID: 社員ID */
 	private String employeeId;
@@ -27,7 +26,8 @@ public class ShortTimeOfDailyDto implements ConvertibleAttendanceItem {
 	private GeneralDate ymd;
 
 	/** 時間帯: 短時間勤務時間帯 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "時間帯", listMaxLength = 2, indexField = "shortWorkTimeFrameNo", enumField = "childCareAttr")
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "時間帯", listMaxLength = 2, 
+			indexField = "shortWorkTimeFrameNo", enumField = "childCareAttr", removeConflictEnum = true)
 	private List<ShortWorkTimeSheetDto> shortWorkingTimeSheets;
 
 	public static ShortTimeOfDailyDto getDto(ShortTimeOfDailyPerformance domain){
@@ -36,11 +36,13 @@ public class ShortTimeOfDailyDto implements ConvertibleAttendanceItem {
 			result.setEmployeeId(domain.getEmployeeId());
 			result.setYmd(domain.getYmd());
 			result.setShortWorkingTimeSheets(ConvertHelper.mapTo(domain.getShortWorkingTimeSheets(),
-					(c) -> new ShortWorkTimeSheetDto(c.getShortWorkTimeFrameNo().v(), c.getChildCareAttr().value,
+					(c) -> new ShortWorkTimeSheetDto(c.getShortWorkTimeFrameNo().v(), 
+							c.getChildCareAttr() == null ? 0 : c.getChildCareAttr().value,
 							c.getStartTime() == null ? null : c.getStartTime().valueAsMinutes(),
 							c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes(),
 							c.getDeductionTime() == null ? null : c.getDeductionTime().valueAsMinutes(),
 							c.getShortTime() == null ? null : c.getShortTime().valueAsMinutes())));
+			result.exsistData();
 		}
 		return result;
 	}
@@ -57,9 +59,12 @@ public class ShortTimeOfDailyDto implements ConvertibleAttendanceItem {
 
 	@Override
 	public ShortTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new ShortTimeOfDailyPerformance(
 					emp,
-					shortWorkingTimeSheets == null ? new ArrayList<>() : ConvertHelper.mapTo(shortWorkingTimeSheets,
+					ConvertHelper.mapTo(shortWorkingTimeSheets,
 							(c) -> new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.getShortWorkTimeFrameNo()),
 									c.getChildCareAttr() == null ? ChildCareAttribute.CHILD_CARE : ConvertHelper.getEnum(c.getChildCareAttr(), ChildCareAttribute.class),
 									createTimeWithDayAttr(c.getStartTime()), createTimeWithDayAttr(c.getEndTime()),

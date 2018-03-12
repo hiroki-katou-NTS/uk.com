@@ -2,7 +2,11 @@ package nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Getter
 @AllArgsConstructor
 public class PerWorkplace {
@@ -12,10 +16,10 @@ public class PerWorkplace {
 	/** ロールID*/	
 	private String roleId;
 	
-	/** 利用できる*/
+	/** 職場別権限制御: 利用できる*/
 	private int availableWorkplace;
 	
-	/** 機能NO*/
+	/** 職場別権限制御: 機能NO*/
 	private Integer functionNoWorkplace;
 	
 	public static PerWorkplace createFromJavaType(String companyId, String roleId, int availableWorkplace, Integer functionNoWorkplace){

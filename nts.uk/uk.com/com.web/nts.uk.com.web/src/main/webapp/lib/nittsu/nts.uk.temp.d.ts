@@ -81,6 +81,15 @@ interface JQuery {
     ntsCalendar(action: string, option: any);
     
     delegate(selector: string, eventName: string, handler: (evt: any, ui: any) => void)
+    /**
+     * Go to full view mode KCP004.
+     */
+    fullView(): void;
+    
+    /**
+     * Go to scroll view mode KCP004.
+     */
+    scrollView(): void;
 }
 
 interface UnitModel {

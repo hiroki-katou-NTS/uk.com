@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pubimp.employee;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -34,12 +33,11 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
+import nts.uk.ctx.bs.employee.pub.employee.EmployeeDataMngInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.JobClassification;
 import nts.uk.ctx.bs.employee.pub.employee.MailAddress;
@@ -93,6 +91,8 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Inject
 	private EmploymentHistoryItemRepository emptHistItem;
 
+	@Inject
+	private EmployeeDataMngInfoRepository sDataMngInfoRepo;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -373,6 +373,30 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		}
 		return lstHistItem.stream().map(i -> i.getEmploymentCode() == null ? "" : i.getEmploymentCode().v())
 				.collect(Collectors.toList());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub#getSdataMngInfo(java.lang.String)
+	 */
+	@Override
+	public Optional<EmployeeDataMngInfoExport> getSdataMngInfo(String sid) {
+		Optional<EmployeeDataMngInfo> optEmployeeDataMngInfo = this.sDataMngInfoRepo
+				.findByEmpId(sid);
+
+		// Check exist
+		if (!optEmployeeDataMngInfo.isPresent()) {
+			return Optional.empty();
+		}
+
+		EmployeeDataMngInfo mngInfo = optEmployeeDataMngInfo.get();
+
+		return Optional.of(EmployeeDataMngInfoExport.builder().companyId(mngInfo.getCompanyId())
+				.personId(mngInfo.getPersonId()).employeeId(mngInfo.getEmployeeId())
+				.employeeCode(mngInfo.getEmployeeCode().v())
+				.deletedStatus(mngInfo.getDeletedStatus().value)
+				.deleteDateTemporary(mngInfo.getDeleteDateTemporary())
+				.removeReason(mngInfo.getRemoveReason().v())
+				.externalCode(mngInfo.getExternalCode().v()).build());
 	}
 
 }

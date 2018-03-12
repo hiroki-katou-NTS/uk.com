@@ -25,16 +25,16 @@ import nts.uk.shr.com.context.AppContexts;
 public abstract class UkJpaEntity extends JpaEntity {
 
 	@Convert(converter = GeneralDateTimeToDBConverter.class)
-    @Column(name = "INS_DATE")
+    @Column(name = "INS_DATE", updatable = false)
     private GeneralDateTime insDate;
     
-    @Column(name = "INS_CCD")
+    @Column(name = "INS_CCD", updatable = false)
     private String insCcd;
     
-    @Column(name = "INS_SCD")
+    @Column(name = "INS_SCD", updatable = false)
     private String insScd;
     
-    @Column(name = "INS_PG")
+    @Column(name = "INS_PG", updatable = false)
     private String insPg;
 
     @Column(name = "UPD_DATE")

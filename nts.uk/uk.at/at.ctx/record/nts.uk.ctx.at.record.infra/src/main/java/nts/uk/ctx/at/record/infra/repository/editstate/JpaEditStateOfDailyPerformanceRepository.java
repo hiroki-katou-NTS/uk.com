@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.editstate;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -98,6 +99,26 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 				.collect(Collectors.groupingBy(c -> c.krcdtDailyRecEditSetPK.employeeId + c.krcdtDailyRecEditSetPK.processingYmd.toString()))
 				.entrySet().stream().map(c -> c.getValue().stream().map(x -> toDomain(x)).collect(Collectors.toList()))
 				.flatMap(List::stream).collect(Collectors.toList());
+	}
+
+	@Override
+	public void addAndUpdate(List<EditStateOfDailyPerformance> editStates) {
+		editStates.forEach(x -> {
+			if(this.findByKeyId(x.getEmployeeId(), x.getYmd(), x.getAttendanceItemId()).isPresent()){
+				this.commandProxy().update(new KrcdtDailyRecEditSet(new KrcdtDailyRecEditSetPK(x.getEmployeeId(),
+						x.getYmd(), x.getAttendanceItemId()), x.getEditStateSetting().value));
+			}else{
+				KrcdtDailyRecEditSet entity = new KrcdtDailyRecEditSet(new KrcdtDailyRecEditSetPK(x.getEmployeeId(),
+						x.getYmd(), x.getAttendanceItemId()), x.getEditStateSetting().value);
+				this.commandProxy().insert(entity);
+			}
+		});
+	}
+
+	@Override
+	public Optional<EditStateOfDailyPerformance> findByKeyId(String employeeId, GeneralDate ymd, Integer id) {
+		return this.queryProxy().find(new KrcdtDailyRecEditSetPK(employeeId, ymd, id), KrcdtDailyRecEditSet.class)
+				.map(x -> new EditStateOfDailyPerformance(employeeId, id, ymd, EnumAdaptor.valueOf(x.editState, EditStateSetting.class)));
 	}
 
 }

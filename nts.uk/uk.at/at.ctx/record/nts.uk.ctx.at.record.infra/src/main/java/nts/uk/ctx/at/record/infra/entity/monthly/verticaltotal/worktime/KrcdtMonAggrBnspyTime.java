@@ -1,0 +1,68 @@
+package nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+/**
+ * 集計加給時間
+ * @author shuichu_ishida
+ */
+@Entity
+@Table(name = "KRCDT_MON_AGGR_BNSPY_TIME")
+@NoArgsConstructor
+@AllArgsConstructor
+public class KrcdtMonAggrBnspyTime extends UkJpaEntity implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	/** プライマリキー */
+	@EmbeddedId
+	public KrcdtMonAggrBnspyTimePK PK;
+	
+	/** 加給時間 */
+	@Column(name = "BONUS_PAY_TIME")
+	public int bonusPayTime;
+	
+	/** 特定加給時間 */
+	@Column(name = "SPEC_BONUS_PAY_TIME")
+	public int specificBonusPayTime;
+	
+	/** 休出加給時間 */
+	@Column(name = "HDWK_BONUS_PAY_TIME")
+	public int holidayWorkBonusPayTime;
+	
+	/** 休出特定加給時間 */
+	@Column(name = "HDWK_SPEC_BNSPAY_TIME")
+	public int holidayWorkSpecificBonusPayTime;
+
+	/** マッチング：月別実績の勤怠時間 */
+	@ManyToOne
+	@JoinColumns({
+		@JoinColumn(name = "SID", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.SID", insertable = false, updatable = false),
+		@JoinColumn(name = "YM", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.YM", insertable = false, updatable = false),
+		@JoinColumn(name = "CLOSURE_ID", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.CLOSURE_ID", insertable = false, updatable = false),
+		@JoinColumn(name = "CLOSURE_DAY", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.CLOSURE_DAY", insertable = false, updatable = false),
+		@JoinColumn(name = "IS_LAST_DAY", referencedColumnName = "KRCDT_MON_ATTENDANCE_TIME.IS_LAST_DAY", insertable = false, updatable = false)
+	})
+	public KrcdtMonAttendanceTime krcdtMonAttendanceTime;
+	
+	/**
+	 * キー取得
+	 */
+	@Override
+	protected Object getKey() {		
+		return this.PK;
+	}
+}

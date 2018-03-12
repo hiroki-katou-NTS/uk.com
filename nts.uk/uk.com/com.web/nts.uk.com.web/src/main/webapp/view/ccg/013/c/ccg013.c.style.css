@@ -41,16 +41,15 @@ img {
 	padding-top: 1em
 }
 
+#liveview{
+	height: 200px;
+}
+
 #imageName {
 	cursor: pointer;
 	width: 200px;
 	overflow: hidden;
 	display: inline-block;
-}
-
-.text-blue-underline {
-	color: blue;
-	text-decoration: underline;
 }
 
 #description {
@@ -89,5 +88,5 @@ img {
 }
 
 .nts-fileupload-container .nts-input {
-    display: none !important;
+	display: none !important;
 }

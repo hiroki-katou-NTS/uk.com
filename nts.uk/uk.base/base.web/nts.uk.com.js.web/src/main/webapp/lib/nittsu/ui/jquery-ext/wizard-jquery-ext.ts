@@ -32,7 +32,7 @@ module nts.uk.ui.jqueryExtentions {
             };
         }
 
-        function begin(wizard: JQuery): JQueryDeferred<any> {
+        function begin(wizard: JQuery): JQueryPromise<any> {
             let dfd = $.Deferred();
 
             wizard.data("waitStepShowed", true);
@@ -48,7 +48,7 @@ module nts.uk.ui.jqueryExtentions {
             return dfd.promise();
         }
 
-        function end(wizard: JQuery): JQueryDeferred<any> {
+        function end(wizard: JQuery): JQueryPromise<any> {
             let dfd = $.Deferred();
             
             wizard.data("waitStepShowed", true);
@@ -63,7 +63,7 @@ module nts.uk.ui.jqueryExtentions {
             return dfd.promise();
         }
 
-        function goto(wizard: JQuery, index: number): JQueryDeferred<any> {
+        function goto(wizard: JQuery, index: number): JQueryPromise<any> {
             let dfd = $.Deferred();
 
             wizard.data("waitStepShowed", true);
@@ -78,7 +78,7 @@ module nts.uk.ui.jqueryExtentions {
             return dfd.promise();
         }
 
-        function prev(wizard: JQuery): JQueryDeferred<any> {
+        function prev(wizard: JQuery): JQueryPromise<any> {
             let dfd = $.Deferred();
 
             wizard.data("waitStepShowed", true);
@@ -93,7 +93,7 @@ module nts.uk.ui.jqueryExtentions {
             return dfd.promise();
         }
 
-        function next(wizard: JQuery): JQueryDeferred<any> {
+        function next(wizard: JQuery): JQueryPromise<any> {
             let dfd = $.Deferred();
 
             wizard.data("waitStepShowed", true);

@@ -7,6 +7,7 @@ module nts.uk.com.view.cas014.a {
     import setShared = nts.uk.ui.windows.setShared;
     import textUK = nts.uk.text;
     import block = nts.uk.ui.block;
+    import error = nts.uk.ui.errors;
     export module viewmodel {
         export class ScreenModel {
             date: KnockoutObservable<string>;
@@ -16,7 +17,7 @@ module nts.uk.com.view.cas014.a {
             roleSetJobTitle: KnockoutObservable<RoleSetJobTitle>;
 
             viewmodelB = new cas014.b.viewmodel.ScreenModel();
-
+            firstLoadTab2: KnockoutObservable<boolean> = ko.observable(true);
             constructor() {
                 let self = this;
                 self.date = ko.observable(new Date().toISOString());
@@ -37,7 +38,6 @@ module nts.uk.com.view.cas014.a {
                 block.invisible();
                 self.roleSetList.removeAll();
                 self.jobTitleList.removeAll();
-                $("#A3_4").trigger("validate");
                 service.getAllData(self.date()).done(function(data: any) {
                     if (data) {
                         let _rsList: Array<RoleSet> = _.map(data.listRoleSetDto, (rs: any) => {
@@ -66,7 +66,7 @@ module nts.uk.com.view.cas014.a {
                     } else {
                         nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                     }
-                    self.viewmodelB.startPage();
+                    
                     $("#A4").focus();
                     dfd.resolve();
                 }).fail(function(error) {
@@ -80,6 +80,13 @@ module nts.uk.com.view.cas014.a {
                     block.clear();
                 });
                 return dfd.promise();
+            }
+
+            findBtnClick(): void {
+                $("#A3_4").trigger("validate");
+                if (!error.hasError()) {
+                    this.startPage();
+                }
             }
 
             register() {
@@ -103,6 +110,15 @@ module nts.uk.com.view.cas014.a {
                 }).always(() => {
                     block.clear();
                 });
+            }
+            
+            loadTab2() {
+                let self = this;
+                error.clearAll();
+                if (self.firstLoadTab2()) {
+                    self.viewmodelB.startPage();
+                    self.firstLoadTab2(false);
+                }
             }
 
         }

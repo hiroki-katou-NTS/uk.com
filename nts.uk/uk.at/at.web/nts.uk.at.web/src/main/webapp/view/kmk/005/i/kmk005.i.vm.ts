@@ -5,22 +5,14 @@ module nts.uk.at.view.kmk005.i {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
+    import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
 
     let __viewContext: any = window["__viewContext"] || {};
 
     export module viewmodel {
         export class ScreenModel {
-            ccgcomponent: any = {
-                isOnlyMe: true,
-                isMutipleCheck: true,
-                isQuickSearchTab: true,
-                isSelectAllEmployee: true,
-                isAdvancedSearchTab: true,
-                isEmployeeOfWorkplace: true,
-                isAllReferableEmployee: true,
-                isEmployeeWorkplaceFollow: true,
-                baseDate: ko.observable(new Date())
-            };
+            ccg001ComponentOption: any;
 
             kcpcompoment: IKCPCompoment = {
                 listType: 4,
@@ -40,80 +32,82 @@ module nts.uk.at.view.kmk005.i {
             constructor() {
                 let self = this,
                     model = self.model();
+                
+                self.reloadCcg001();
 
                 // define event for ccgcomponent
-                $.extend(self.ccgcomponent, {
-                    onSearchAllClicked: (datas: Array<any>) => {
-                        self.kcpcompoment.employeeInputList(datas.map(x => {
-                            return {
-                                employeeId: x.employeeId,
-                                code: x.employeeCode,
-                                name: x.employeeName,
-                                workplaceId: x.workplaceId,
-                                workplaceCode: x.workplaceCode,
-                                workplaceName: x.workplaceName
-                            };
-                        }));
-                        model.ecd(datas[0].employeeCode);
-                        model.bid.valueHasMutated();
-                    },
-                    onSearchOnlyClicked: (data: any) => {
-                        self.kcpcompoment.employeeInputList([data].map(x => {
-                            return {
-                                employeeId: x.employeeId,
-                                code: x.employeeCode,
-                                name: x.employeeName,
-                                workplaceId: x.workplaceId,
-                                workplaceCode: x.workplaceCode,
-                                workplaceName: x.workplaceName
-                            };
-                        }));
-                        model.ecd(data.employeeCode);
-                        model.bid.valueHasMutated();
-                    },
-                    onSearchOfWorkplaceClicked: (datas: Array<any>) => {
-                        self.kcpcompoment.employeeInputList(datas.map(x => {
-                            return {
-                                employeeId: x.employeeId,
-                                code: x.employeeCode,
-                                name: x.employeeName,
-                                workplaceId: x.workplaceId,
-                                workplaceCode: x.workplaceCode,
-                                workplaceName: x.workplaceName
-                            };
-                        }));
-                        model.ecd(datas[0].employeeCode);
-                        model.bid.valueHasMutated()
-                    },
-                    onSearchWorkplaceChildClicked: (datas: Array<any>) => {
-                        self.kcpcompoment.employeeInputList(datas.map(x => {
-                            return {
-                                employeeId: x.employeeId,
-                                code: x.employeeCode,
-                                name: x.employeeName,
-                                workplaceId: x.workplaceId,
-                                workplaceCode: x.workplaceCode,
-                                workplaceName: x.workplaceName
-                            };
-                        }));
-                        model.ecd(datas[0].employeeCode);
-                        model.bid.valueHasMutated()
-                    },
-                    onApplyEmployee: (datas: Array<any>) => {
-                        self.kcpcompoment.employeeInputList(datas.map(x => {
-                            return {
-                                employeeId: x.employeeId,
-                                code: x.employeeCode,
-                                name: x.employeeName,
-                                workplaceId: x.workplaceId,
-                                workplaceCode: x.workplaceCode,
-                                workplaceName: x.workplaceName
-                            };
-                        }));
-                        model.ecd(datas[0].employeeCode);
-                        model.bid.valueHasMutated()
-                    }
-                });
+//                $.extend(self.ccgcomponent, {
+//                    onSearchAllClicked: (datas: Array<any>) => {
+//                        self.kcpcompoment.employeeInputList(datas.map(x => {
+//                            return {
+//                                employeeId: x.employeeId,
+//                                code: x.employeeCode,
+//                                name: x.employeeName,
+//                                workplaceId: x.workplaceId,
+//                                workplaceCode: x.workplaceCode,
+//                                workplaceName: x.workplaceName
+//                            };
+//                        }));
+//                        model.ecd(datas[0].employeeCode);
+//                        model.bid.valueHasMutated();
+//                    },
+//                    onSearchOnlyClicked: (data: any) => {
+//                        self.kcpcompoment.employeeInputList([data].map(x => {
+//                            return {
+//                                employeeId: x.employeeId,
+//                                code: x.employeeCode,
+//                                name: x.employeeName,
+//                                workplaceId: x.workplaceId,
+//                                workplaceCode: x.workplaceCode,
+//                                workplaceName: x.workplaceName
+//                            };
+//                        }));
+//                        model.ecd(data.employeeCode);
+//                        model.bid.valueHasMutated();
+//                    },
+//                    onSearchOfWorkplaceClicked: (datas: Array<any>) => {
+//                        self.kcpcompoment.employeeInputList(datas.map(x => {
+//                            return {
+//                                employeeId: x.employeeId,
+//                                code: x.employeeCode,
+//                                name: x.employeeName,
+//                                workplaceId: x.workplaceId,
+//                                workplaceCode: x.workplaceCode,
+//                                workplaceName: x.workplaceName
+//                            };
+//                        }));
+//                        model.ecd(datas[0].employeeCode);
+//                        model.bid.valueHasMutated()
+//                    },
+//                    onSearchWorkplaceChildClicked: (datas: Array<any>) => {
+//                        self.kcpcompoment.employeeInputList(datas.map(x => {
+//                            return {
+//                                employeeId: x.employeeId,
+//                                code: x.employeeCode,
+//                                name: x.employeeName,
+//                                workplaceId: x.workplaceId,
+//                                workplaceCode: x.workplaceCode,
+//                                workplaceName: x.workplaceName
+//                            };
+//                        }));
+//                        model.ecd(datas[0].employeeCode);
+//                        model.bid.valueHasMutated()
+//                    },
+//                    onApplyEmployee: (datas: Array<any>) => {
+//                        self.kcpcompoment.employeeInputList(datas.map(x => {
+//                            return {
+//                                employeeId: x.employeeId,
+//                                code: x.employeeCode,
+//                                name: x.employeeName,
+//                                workplaceId: x.workplaceId,
+//                                workplaceCode: x.workplaceCode,
+//                                workplaceName: x.workplaceName
+//                            };
+//                        }));
+//                        model.ecd(datas[0].employeeCode);
+//                        model.bid.valueHasMutated()
+//                    }
+//                });
 
                 // extend selectedCode for kcpcomponent 
                 $.extend(self.kcpcompoment, {
@@ -169,11 +163,75 @@ module nts.uk.at.view.kmk005.i {
 
 
                 // binding component controls
-                $('#ccgcomponent')['ntsGroupComponent'](self.ccgcomponent).done(() => {
+                $('#ccgcomponent')['ntsGroupComponent'](self.ccg001ComponentOption).done(() => {
                     $('#kcpcomponent')['ntsListComponent'](self.kcpcompoment).done(() => {
                         self.start();
                     });
                 });
+            }
+            
+            public reloadCcg001(): void {
+                let self = this,
+                    model = self.model();
+                if ($('.ccg-sample-has-error').ntsError('hasError')) {
+                    return;
+                }
+//                if (!self.showBaseDate() && !self.showClosure() && !self.showPeriod()){
+//                    nts.uk.ui.dialog.alertError("Base Date or Closure or Period must be shown!" );
+//                    return;
+//                }
+                self.ccg001ComponentOption = {
+                    /** Common properties */
+                    systemType: 2, // システム区分
+                    showEmployeeSelection: false, // 検索タイプ
+                    showQuickSearchTab: false, // クイック検索
+                    showAdvancedSearchTab: true, // 詳細検索
+                    showBaseDate: true, // 基準日利用
+                    showClosure: false, // 就業締め日利用
+                    showAllClosure: false, // 全締め表示
+                    showPeriod: false, // 対象期間利用
+                    periodFormatYM: false, // 対象期間精度
+
+                    /** Required parameter */
+                    baseDate: moment().toISOString(), // 基準日
+                    inService: true, // 在職区分
+                    leaveOfAbsence: false, // 休職区分
+                    closed: false, // 休業区分
+                    retirement: false, // 退職区分
+                    
+                    /** Quick search tab options */
+                    showAllReferableEmployee: false, // 参照可能な社員すべて
+                    showOnlyMe: false, // 自分だけ
+                    showSameWorkplace: false, // 同じ職場の社員
+                    showSameWorkplaceAndChild: false, // 同じ職場とその配下の社員
+
+                    /** Advanced search properties */
+                    showEmployment: true, // 雇用条件
+                    showWorkplace: true, // 職場条件
+                    showClassification: true, // 分類条件
+                    showJobTitle: true, // 職位条件
+                    showWorktype: true, // 勤種条件
+                    isMutipleCheck: true, // 選択モード
+
+                    /** Return data */
+                    returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                        self.kcpcompoment.employeeInputList(data.map(x => {
+                            return {
+                                employeeId: x.employeeId,
+                                code: x.employeeCode,
+                                name: x.employeeName,
+                                workplaceId: x.workplaceId,
+                                workplaceCode: x.workplaceCode,
+                                workplaceName: x.workplaceName
+                            };
+                        }));
+                        model.ecd(data[0].employeeCode);
+                        model.bid.valueHasMutated();
+                    }
+                }
+
+                // Start component
+                $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
             }
 
             start() {

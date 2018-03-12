@@ -21,35 +21,40 @@
 				<div id="side-menu" class="cf"></div>
 				<div id="content" class="cf">
 					<div id="functions-area">
-						<button class="large" data-bind="click: openDialogCDL008" >CDL008</button>
+						<button class="large" data-bind="click: openDialogCDL008">CDL008</button>
 					</div>
 					<div>
-					<table>
-						<tr>
-						<td class="header-text">基準日</td>
-						<td class="content-sample">
-							<div data-bind = "ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, required: true}" style="padding: 0px;"></div>
-						</td>
-						</tr> 
-						<tr>
-							<td class="header-text">職場ID 選択済項目:</td>
-							<td class="content-sample"><input class="inputSelectCode" data-bind="ntsTextEditor: {
+						<table>
+							<tr>
+								<td class="header-text">基準日</td>
+								<td class="content-sample">
+									<div
+										data-bind="ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, required: true}"
+										style="padding: 0px;"></div>
+								</td>
+							</tr>
+							<tr>
+								<td class="header-text">職場ID 選択済項目:</td>
+								<td class="content-sample"><input class="inputSelectCode"
+									data-bind="ntsTextEditor: {
 								value: canSelectWorkplaceIds,
 								required: false,
 								enable: true,
 								readonly: false}" /></td>
 							</tr>
-						<tr>
-							<td class="header-text">選択モード:</td>
-							<td class="content-sample"><div data-bind="ntsCheckBox: { checked: selectMode }"></div></td>
-						</tr>
-					</table>
-							
-						<br/>
+							<tr>
+								<td class="header-text">選択モード:</td>
+								<td class="content-sample"><div
+										data-bind="ntsCheckBox: { checked: selectMode }"></div></td>
+							</tr>
+						</table>
+
+						<br />
 						<div style="font-weight: bold">Returned Data:</div>
-						<div> Selected Work place id:</div>
-						<div style="word-break: break-all;" data-bind="text: selectWorkplaceIds"></div>
-						
+						<div>Selected Work place id:</div>
+						<div style="word-break: break-all;"
+							data-bind="text: selectWorkplaceIds"></div>
+
 					</div>
 				</div>
 			</div>

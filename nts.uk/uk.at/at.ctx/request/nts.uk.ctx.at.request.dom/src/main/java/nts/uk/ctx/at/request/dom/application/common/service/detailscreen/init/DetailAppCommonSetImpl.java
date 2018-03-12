@@ -24,9 +24,12 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 	private NewAppCommonSetService newAppCommonSetService;
 	
 	@Override
-	public void getDetailAppCommonSet(String companyID, String applicationID) {
+	public ApplicationMetaOutput getDetailAppCommonSet(String companyID, String applicationID) {
 		Optional<Application_New> opApplication = applicationRepository.findByID(companyID, applicationID);
-		
+		return new ApplicationMetaOutput(
+				opApplication.get().getAppID(),
+				opApplication.get().getAppType(), 
+				opApplication.get().getAppDate());
 	}
 
 }

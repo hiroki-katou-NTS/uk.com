@@ -11,6 +11,7 @@
 				nts.uk.ctx.sys.portal.dom.toppage.TopPageCode
 				nts.uk.ctx.sys.portal.dom.toppage.TopPageName
   			</com:ValidatorScript>
+  			<script>var dialogSize = { width: 800, height: 320 };</script>
 			<com:stylefile path="ccg015.c.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../a/ccg015.a.service.js" />
@@ -67,9 +68,11 @@
 			</div>
 
 			<div id="functions-area-bottom" class="bottom_area_style">
-				<div data-bind="ntsCheckBox: { checked: check, enable: true}" style ="background-color: #F7EFD4; padding: 10px 25px; margin-bottom: 10px;">#{i18n.getText('CCG015_38')}</div>
-				<br/>
-				<button data-bind=" click: copyTopPage, enable: $root.errors.isEmpty"
+				<div data-bind="ntsCheckBox: { checked: check, enable: true}"
+					style="background-color: #F7EFD4; padding: 10px 25px; margin-bottom: 10px;">#{i18n.getText('CCG015_38')}</div>
+				<br />
+				<button
+					data-bind=" click: copyTopPage, enable: $root.errors.isEmpty"
 					class="btn-default proceed x-large copy_btn">#{i18n.getText('CCG015_37')}</button>
 				<button onclick="nts.uk.ui.windows.close()">#{i18n.getText('CCG015_31')}</button>
 			</div>

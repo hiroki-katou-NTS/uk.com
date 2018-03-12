@@ -15,9 +15,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategorySetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCat;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCatPK;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeek;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeekPK;
+
 
 /**
  * The Class JpaPersonalWorkCategorySetMemento.
@@ -40,16 +38,15 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 *            the entitys
 	 */
 	public JpaPerWorkCatSetMemento(String historyId, List<KshmtPerWorkCat> entities) {
-//		this.mapSingleDaySchedule = new HashMap<>();
-//		if (!CollectionUtil.isEmpty(entities)) {
-//			this.mapSingleDaySchedule = entities.stream().collect(Collectors.toMap(
-//					entity -> entity.getKshmtPerWorkCatPK().getPerWorkCatAtr(), entity -> entity));
-//		}
+		this.mapSingleDaySchedule = new HashMap<>();
+		if (!CollectionUtil.isEmpty(entities)) {
+			this.mapSingleDaySchedule = entities.stream().collect(Collectors.toMap(
+					entity -> entity.getKshmtPerWorkCatPK().getPerWorkCatAtr(), Function.identity()));
+		}
 
 		this.entities = entities;
+		this.entities.clear();
 
-		// Clean all
-//		this.entities.clear();
 		this.historyId = historyId;
 	}
 
@@ -63,9 +60,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	@Override
 	public void setHolidayWork(SingleDaySchedule holidayWork) {
-		if (holidayWork != null) {
-			this.toEntity(holidayWork, WorkCategoryAtr.HOLIDAY_WORK.value);
-		}		
+		this.toEntity(holidayWork, WorkCategoryAtr.HOLIDAY_WORK.value);
 	}
 
 	/*
@@ -78,9 +73,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	@Override
 	public void setHolidayTime(SingleDaySchedule holidayTime) {
-		if (holidayTime != null) {
-			this.toEntity(holidayTime, WorkCategoryAtr.HOLIDAY_TIME.value);
-		}	
+		this.toEntity(holidayTime, WorkCategoryAtr.HOLIDAY_TIME.value);
 	}
 
 	/*
@@ -93,9 +86,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	@Override
 	public void setWeekdayTime(SingleDaySchedule weekdayTime) {
-		if (weekdayTime != null) {
-			this.toEntity(weekdayTime, WorkCategoryAtr.WEEKDAY_TIME.value);
-		}
+		this.toEntity(weekdayTime, WorkCategoryAtr.WEEKDAY_TIME.value);
 	}
 
 	/*
@@ -167,32 +158,16 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 * @return the kshmt per work category
 	 */
 	private void toEntity(SingleDaySchedule domain, int workCategoryAtr) {
-//		KshmtPerWorkCat entity = this.mapSingleDaySchedule.getOrDefault(workCategoryAtr,
-//				new KshmtPerWorkCat());
-//		domain.saveToMemento(
-//				new JpaSDayScheWorkCatSetMemento(this.historyId, workCategoryAtr, entity));
-//		return entity;
-		// Convert list entities to map for searching
-		Map<KshmtPerWorkCatPK, KshmtPerWorkCat> mapEntities = this.entities.stream()
-				.collect(Collectors.toMap(KshmtPerWorkCat::getKshmtPerWorkCatPK, Function.identity()));
-		
 		// Create primary key
-		KshmtPerWorkCatPK pk = new KshmtPerWorkCatPK();
-		pk.setHistoryId(historyId);
-		pk.setPerWorkCatAtr(workCategoryAtr);
-		
-		// Get exist item with primary key or return new entity if not exist
-		KshmtPerWorkCat entity = mapEntities.getOrDefault(pk, new KshmtPerWorkCat());
-		
-		// Save new data into entity
-		domain.saveToMemento(new JpaSDayScheWorkCatSetMemento(historyId, workCategoryAtr, entity));
-		
+		KshmtPerWorkCat entity = this.mapSingleDaySchedule.getOrDefault(Integer.valueOf(workCategoryAtr), new KshmtPerWorkCat());
+		domain.saveToMemento(new JpaSDayScheWorkCatSetMemento(this.historyId, workCategoryAtr, entity));
+
 		// Put new/updated entity into map
-		mapEntities.put(pk, entity);
-		
+		this.mapSingleDaySchedule.put(workCategoryAtr, entity);
+
 		// Put back to the entities list
 		this.entities.clear();
-		this.entities.addAll(mapEntities.values());
+		this.entities.addAll(this.mapSingleDaySchedule.values());
 	}
 	
 

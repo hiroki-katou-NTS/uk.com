@@ -1,32 +1,42 @@
 .contents-area-a .container {
-    padding: 30px;
-    box-sizing: border-box;
+	padding: 30px;
+	box-sizing: border-box;
 }
 
-.top-row{
+.top-row {
 	height: 50px;
 	vertical-align: middle;
 }
 
-.block{
+.block {
 	float: left;
 	padding-left: 20px
 }
 
-.contents-area-b{
+.contents-area-b {
 	padding: 30px 0px;
 }
 
 .caret-right.outline:after {
-    margin-left: 0.3em;    
-    border-left: 1.5em solid;
-    border-top: 6em solid transparent;
-    border-bottom: 6em solid transparent;
+	margin-left: 0.3em;
+	border-left: 1.5em solid;
+	border-top: 6em solid transparent;
+	border-bottom: 6em solid transparent;
 }
 
-.jobtitle-table > tbody > tr > td {
+.jobtitle-table>tbody>tr>td {
 	height: 52px;
 }
 
-.contents-area-b .bottom-row .label-code{display:inline-block;padding-left:5px; width:110px;}
-.contents-area-b .bottom-row .label-name{display:inline-block;padding-left:10px; width:20px; white-space: nowrap;}
+.contents-area-b .bottom-row .label-code {
+	display: inline-block;
+	padding-left: 5px;
+	width: 110px;
+}
+
+.contents-area-b .bottom-row .label-name {
+	display: inline-block;
+	padding-left: 10px;
+	width: 20px;
+	white-space: nowrap;
+}

@@ -10,8 +10,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ApprovalTempCommand {
-	// 会社ID
-	private String companyId;
 	// 本文
 	private String content;
 }

@@ -8,7 +8,11 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.worktype.control.WorktypeDis;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.worktype.control.WorktypeDisRepository;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Stateless
 public class WorktypeDisplayFinder {
 

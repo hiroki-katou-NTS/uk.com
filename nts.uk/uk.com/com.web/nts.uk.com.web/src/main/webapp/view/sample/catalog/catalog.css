@@ -1,6 +1,7 @@
 /* Common Elements */
 html, body {background-color:#f5f5f5;}
-a{color:#00B050;text-decoration: none;}
+a,a.link{color:#00B050;text-decoration: none;}
+a.link:hover{text-decoration:underline;}
 b{font-weight:bold;}
 i{font-style: italic;}
 h1{color:#00B050;font-size: 25px; margin:15px 0;}

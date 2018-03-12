@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.infra.repository.monthlyaggrmethod;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,10 +34,22 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.Settlement
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.SettlementPeriodOfIrg;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.TreatHolidayWorkTimeOfLessThanCriteriaPerWeek;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.TreatOverTimeOfLessThanCriteriaPerDay;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpFlxAggr;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpIrgAggr;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpIrgExot;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpIrgSetl;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpIrgSetlPK;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpRegExot;
 import nts.uk.ctx.at.shared.dom.common.Month;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.KrcstMonsetRegAggr;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.KrcstMonsetWkpRegAggr;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.KrcstMonsetWkpRegAggrPK;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.flex.KrcstMonsetFlxAggr;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.regularandirregular.KrcstMonsetIrgAggr;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.regularandirregular.KrcstMonsetIrgExot;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.regularandirregular.KrcstMonsetIrgSetl;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.regularandirregular.KrcstMonsetRegExot;
 
 /**
  * リポジトリ実装：職場月別実績集計設定
@@ -50,24 +64,6 @@ public class JpaAggrSettingMonthlyForWorkplace extends JpaRepository implements 
 		return this.queryProxy()
 				.find(new KrcstMonsetWkpRegAggrPK(companyId, workplaceId), KrcstMonsetWkpRegAggr.class)
 				.map(c -> toDomain(c));
-	}
-	
-	/** 追加 */
-	@Override
-	public void insert(AggrSettingMonthlyForWorkplace aggrMonthlySettingOfRegular) {
-		this.commandProxy().insert(toEntity(aggrMonthlySettingOfRegular, false));
-	}
-	
-	/** 更新 */
-	@Override
-	public void update(AggrSettingMonthlyForWorkplace aggrMonthlySettingOfRegular) {
-		this.toEntity(aggrMonthlySettingOfRegular, true);
-	}
-	
-	/** 削除 */
-	@Override
-	public void remove(String companyId, String workplaceId) {
-		this.commandProxy().remove(KrcstMonsetWkpRegAggr.class, new KrcstMonsetWkpRegAggrPK(companyId, workplaceId));
 	}
 	
 	/**
@@ -349,14 +345,9 @@ public class JpaAggrSettingMonthlyForWorkplace extends JpaRepository implements 
 		return domain;
 	}
 	
-	/**
-	 * ドメイン→エンティティ
-	 * @param domain ドメイン：職場月別実績集計設定
-	 * @param execUpdate 更新を実行する
-	 * @return エンティティ：職場月別実績集計設定
-	 */
-	private KrcstMonsetWkpRegAggr toEntity(AggrSettingMonthlyForWorkplace domain,
-			boolean execUpdate){
+	/** 登録および更新 */
+	@Override
+	public void persistAndUpdate(AggrSettingMonthlyForWorkplace domain){
 		
 		// キー
 		val key = new KrcstMonsetWkpRegAggrPK(domain.getCompanyId(), domain.getWorkplaceId());
@@ -366,89 +357,64 @@ public class JpaAggrSettingMonthlyForWorkplace extends JpaRepository implements 
 		// 集計時間設定
 		val aggregateTimeSet = legalAggrSet.getAggregateTimeSet();
 		// 1日の基準時間未満の残業時間の扱い
-		val treatOverTimeOfLessThanCriteriaPerDay = aggregateTimeSet.getTreatOverTimeOfLessThanCriteriaPerDay();
+		TreatOverTimeOfLessThanCriteriaPerDay treatOverTimeOfLessThanCriteriaPerDay =
+				aggregateTimeSet.getTreatOverTimeOfLessThanCriteriaPerDay();
 		// 1週間の基準時間未満の休日出勤時間の扱い
-		val treatHolidayWorkTimeOfLessThanCriteriaPerWeek = aggregateTimeSet.getTreatHolidayWorkTimeOfLessThanCriteriaPerWeek();
+		TreatHolidayWorkTimeOfLessThanCriteriaPerWeek treatHolidayWorkTimeOfLessThanCriteriaPerWeek =
+				aggregateTimeSet.getTreatHolidayWorkTimeOfLessThanCriteriaPerWeek();
 		
-		KrcstMonsetWkpRegAggr entity;
-		if (execUpdate) {
-			entity = this.queryProxy().find(key, KrcstMonsetWkpRegAggr.class).get();
-		}
-		else {
+		// 登録・更新を判断　および　キー値設定
+		boolean isNeedPersist = false;
+		KrcstMonsetWkpRegAggr entity = this.getEntityManager().find(KrcstMonsetWkpRegAggr.class, key);
+		if (entity == null){
+			isNeedPersist = true;
 			entity = new KrcstMonsetWkpRegAggr();
 			entity.PK = key;
+			entity.setValue = new KrcstMonsetRegAggr();
 		}
+		
+		// 登録・更新値の設定
 		entity.setValue.askPremium = (aggregateTimeSet.isAskPremium() ? 1 : 0);
 		
-		int atrAutoExcludeOverTime = 1;
-		for (val autoExcludeOverTimeFrame : treatOverTimeOfLessThanCriteriaPerDay.getAutoExcludeOverTimeFrames()){
-			switch(autoExcludeOverTimeFrame.v().intValue()){
-			case 1:
-				entity.setValue.treatOverTime01 = atrAutoExcludeOverTime;
-				break;
-			case 2:
-				entity.setValue.treatOverTime02 = atrAutoExcludeOverTime;
-				break;
-			case 3:
-				entity.setValue.treatOverTime03 = atrAutoExcludeOverTime;
-				break;
-			case 4:
-				entity.setValue.treatOverTime04 = atrAutoExcludeOverTime;
-				break;
-			case 5:
-				entity.setValue.treatOverTime05 = atrAutoExcludeOverTime;
-				break;
-			case 6:
-				entity.setValue.treatOverTime06 = atrAutoExcludeOverTime;
-				break;
-			case 7:
-				entity.setValue.treatOverTime07 = atrAutoExcludeOverTime;
-				break;
-			case 8:
-				entity.setValue.treatOverTime08 = atrAutoExcludeOverTime;
-				break;
-			case 9:
-				entity.setValue.treatOverTime09 = atrAutoExcludeOverTime;
-				break;
-			case 10:
-				entity.setValue.treatOverTime10 = atrAutoExcludeOverTime;
-				break;
+		for (int atrTreatOverTime = 1; atrTreatOverTime <= 2; atrTreatOverTime++){
+			List<OverTimeFrameNo> overTimeFrameNoList =
+					treatOverTimeOfLessThanCriteriaPerDay.getAutoExcludeOverTimeFrames();
+			if (atrTreatOverTime == 2){
+				overTimeFrameNoList = treatOverTimeOfLessThanCriteriaPerDay.getLegalOverTimeFrames();
 			}
-		}
-		
-		int atrLegalOverTime = 2;
-		for (val legalOverTimeFrame : treatOverTimeOfLessThanCriteriaPerDay.getLegalOverTimeFrames()){
-			switch(legalOverTimeFrame.v().intValue()){
-			case 1:
-				entity.setValue.treatOverTime01 = atrLegalOverTime;
-				break;
-			case 2:
-				entity.setValue.treatOverTime02 = atrLegalOverTime;
-				break;
-			case 3:
-				entity.setValue.treatOverTime03 = atrLegalOverTime;
-				break;
-			case 4:
-				entity.setValue.treatOverTime04 = atrLegalOverTime;
-				break;
-			case 5:
-				entity.setValue.treatOverTime05 = atrLegalOverTime;
-				break;
-			case 6:
-				entity.setValue.treatOverTime06 = atrLegalOverTime;
-				break;
-			case 7:
-				entity.setValue.treatOverTime07 = atrLegalOverTime;
-				break;
-			case 8:
-				entity.setValue.treatOverTime08 = atrLegalOverTime;
-				break;
-			case 9:
-				entity.setValue.treatOverTime09 = atrLegalOverTime;
-				break;
-			case 10:
-				entity.setValue.treatOverTime10 = atrLegalOverTime;
-				break;
+			for (val overTimeFrameNo : overTimeFrameNoList){
+				switch(overTimeFrameNo.v().intValue()){
+				case 1:
+					entity.setValue.treatOverTime01 = atrTreatOverTime;
+					break;
+				case 2:
+					entity.setValue.treatOverTime02 = atrTreatOverTime;
+					break;
+				case 3:
+					entity.setValue.treatOverTime03 = atrTreatOverTime;
+					break;
+				case 4:
+					entity.setValue.treatOverTime04 = atrTreatOverTime;
+					break;
+				case 5:
+					entity.setValue.treatOverTime05 = atrTreatOverTime;
+					break;
+				case 6:
+					entity.setValue.treatOverTime06 = atrTreatOverTime;
+					break;
+				case 7:
+					entity.setValue.treatOverTime07 = atrTreatOverTime;
+					break;
+				case 8:
+					entity.setValue.treatOverTime08 = atrTreatOverTime;
+					break;
+				case 9:
+					entity.setValue.treatOverTime09 = atrTreatOverTime;
+					break;
+				case 10:
+					entity.setValue.treatOverTime10 = atrTreatOverTime;
+					break;
+				}
 			}
 		}
 		
@@ -488,7 +454,340 @@ public class JpaAggrSettingMonthlyForWorkplace extends JpaRepository implements 
 			}
 		}
 		
-		if (execUpdate) this.commandProxy().update(entity);
-		return entity;
+		// 通常勤務：時間外超過設定
+		val regExcessOutsideTimeSet = legalAggrSet.getExcessOutsideTimeSet();
+		if (entity.krcstMonsetWkpRegExot == null){
+			entity.krcstMonsetWkpRegExot = new KrcstMonsetWkpRegExot();
+			entity.krcstMonsetWkpRegExot.PK = key;
+			entity.krcstMonsetWkpRegExot.setValue = new KrcstMonsetRegExot();
+		}
+		val entityRegExot = entity.krcstMonsetWkpRegExot;
+		entityRegExot.setValue.askPremium = (regExcessOutsideTimeSet.isAskPremium() ? 1 : 0);
+		entityRegExot.setValue.exceptLegalHolidayWorkTime =
+				(regExcessOutsideTimeSet.isAutoExcludeHolidayWorkTimeFromExcessOutsideWorkTime() ? 1 : 0);
+
+		treatOverTimeOfLessThanCriteriaPerDay = regExcessOutsideTimeSet.getTreatOverTimeOfLessThanCriteriaPerDay();
+		treatHolidayWorkTimeOfLessThanCriteriaPerWeek = regExcessOutsideTimeSet.getTreatHolidayWorkTimeOfLessThanCriteriaPerWeek();
+				
+		for (int atrTreatOverTime = 1; atrTreatOverTime <= 2; atrTreatOverTime++){
+			List<OverTimeFrameNo> overTimeFrameNoList =
+					treatOverTimeOfLessThanCriteriaPerDay.getAutoExcludeOverTimeFrames();
+			if (atrTreatOverTime == 2){
+				overTimeFrameNoList = treatOverTimeOfLessThanCriteriaPerDay.getLegalOverTimeFrames();
+			}
+			for (val overTimeFrameNo : overTimeFrameNoList){
+				switch(overTimeFrameNo.v().intValue()){
+				case 1:
+					entityRegExot.setValue.treatOverTime01 = atrTreatOverTime;
+					break;
+				case 2:
+					entityRegExot.setValue.treatOverTime02 = atrTreatOverTime;
+					break;
+				case 3:
+					entityRegExot.setValue.treatOverTime03 = atrTreatOverTime;
+					break;
+				case 4:
+					entityRegExot.setValue.treatOverTime04 = atrTreatOverTime;
+					break;
+				case 5:
+					entityRegExot.setValue.treatOverTime05 = atrTreatOverTime;
+					break;
+				case 6:
+					entityRegExot.setValue.treatOverTime06 = atrTreatOverTime;
+					break;
+				case 7:
+					entityRegExot.setValue.treatOverTime07 = atrTreatOverTime;
+					break;
+				case 8:
+					entityRegExot.setValue.treatOverTime08 = atrTreatOverTime;
+					break;
+				case 9:
+					entityRegExot.setValue.treatOverTime09 = atrTreatOverTime;
+					break;
+				case 10:
+					entityRegExot.setValue.treatOverTime10 = atrTreatOverTime;
+					break;
+				}
+			}
+		}
+		
+		atrAutoExcludeHolidayWork = 1;
+		for (val autoExcludeHolidayWorkFrame : treatHolidayWorkTimeOfLessThanCriteriaPerWeek.getAutoExcludeHolidayWorkFrames()){
+			switch(autoExcludeHolidayWorkFrame.v().intValue()){
+			case 1:
+				entityRegExot.setValue.treatHolidayWorkTime01 = atrAutoExcludeHolidayWork;
+				break;
+			case 2:
+				entityRegExot.setValue.treatHolidayWorkTime02 = atrAutoExcludeHolidayWork;
+				break;
+			case 3:
+				entityRegExot.setValue.treatHolidayWorkTime03 = atrAutoExcludeHolidayWork;
+				break;
+			case 4:
+				entityRegExot.setValue.treatHolidayWorkTime04 = atrAutoExcludeHolidayWork;
+				break;
+			case 5:
+				entityRegExot.setValue.treatHolidayWorkTime05 = atrAutoExcludeHolidayWork;
+				break;
+			case 6:
+				entityRegExot.setValue.treatHolidayWorkTime06 = atrAutoExcludeHolidayWork;
+				break;
+			case 7:
+				entityRegExot.setValue.treatHolidayWorkTime07 = atrAutoExcludeHolidayWork;
+				break;
+			case 8:
+				entityRegExot.setValue.treatHolidayWorkTime08 = atrAutoExcludeHolidayWork;
+				break;
+			case 9:
+				entityRegExot.setValue.treatHolidayWorkTime09 = atrAutoExcludeHolidayWork;
+				break;
+			case 10:
+				entityRegExot.setValue.treatHolidayWorkTime10 = atrAutoExcludeHolidayWork;
+				break;
+			}
+		}
+
+		// 変形労働時間勤務
+		val irregularWork = domain.getIrregularWork();
+		val irgAggregateTimeSet = irregularWork.getAggregateTimeSet();
+		val calcSetOfIrregular = irregularWork.getCalcSetOfIrregular();
+		if (entity.krcstMonsetWkpIrgAggr == null){
+			entity.krcstMonsetWkpIrgAggr = new KrcstMonsetWkpIrgAggr();
+			entity.krcstMonsetWkpIrgAggr.PK = key;
+			entity.krcstMonsetWkpIrgAggr.setValue = new KrcstMonsetIrgAggr();
+		}
+		val entityIrgAggr = entity.krcstMonsetWkpIrgAggr;
+		entityIrgAggr.setValue.toOverTimeWithinIrregularCriteria =
+				(calcSetOfIrregular.isOverTimeLessThanCriteriaIsOverTimeWithinIrregularCriteria() ? 1 : 0);
+		entityIrgAggr.setValue.toWorkTimeOutsideCriteria =
+				(calcSetOfIrregular.isWorkTimeMoreThanPrescribedOrCriteriaIsWorkTimeOutsideCriteria() ? 1 : 0);
+
+		treatOverTimeOfLessThanCriteriaPerDay = irgAggregateTimeSet.getTreatOverTimeOfLessThanCriteriaPerDay();
+		treatHolidayWorkTimeOfLessThanCriteriaPerWeek = irgAggregateTimeSet.getTreatHolidayWorkTimeOfLessThanCriteriaPerWeek();
+				
+		for (int atrTreatOverTime = 1; atrTreatOverTime <= 2; atrTreatOverTime++){
+			List<OverTimeFrameNo> overTimeFrameNoList =
+					treatOverTimeOfLessThanCriteriaPerDay.getAutoExcludeOverTimeFrames();
+			if (atrTreatOverTime == 2){
+				overTimeFrameNoList = treatOverTimeOfLessThanCriteriaPerDay.getLegalOverTimeFrames();
+			}
+			for (val overTimeFrameNo : overTimeFrameNoList){
+				switch(overTimeFrameNo.v().intValue()){
+				case 1:
+					entityIrgAggr.setValue.treatOverTime01 = atrTreatOverTime;
+					break;
+				case 2:
+					entityIrgAggr.setValue.treatOverTime02 = atrTreatOverTime;
+					break;
+				case 3:
+					entityIrgAggr.setValue.treatOverTime03 = atrTreatOverTime;
+					break;
+				case 4:
+					entityIrgAggr.setValue.treatOverTime04 = atrTreatOverTime;
+					break;
+				case 5:
+					entityIrgAggr.setValue.treatOverTime05 = atrTreatOverTime;
+					break;
+				case 6:
+					entityIrgAggr.setValue.treatOverTime06 = atrTreatOverTime;
+					break;
+				case 7:
+					entityIrgAggr.setValue.treatOverTime07 = atrTreatOverTime;
+					break;
+				case 8:
+					entityIrgAggr.setValue.treatOverTime08 = atrTreatOverTime;
+					break;
+				case 9:
+					entityIrgAggr.setValue.treatOverTime09 = atrTreatOverTime;
+					break;
+				case 10:
+					entityIrgAggr.setValue.treatOverTime10 = atrTreatOverTime;
+					break;
+				}
+			}
+		}
+		
+		atrAutoExcludeHolidayWork = 1;
+		for (val autoExcludeHolidayWorkFrame : treatHolidayWorkTimeOfLessThanCriteriaPerWeek.getAutoExcludeHolidayWorkFrames()){
+			switch(autoExcludeHolidayWorkFrame.v().intValue()){
+			case 1:
+				entityIrgAggr.setValue.treatHolidayWorkTime01 = atrAutoExcludeHolidayWork;
+				break;
+			case 2:
+				entityIrgAggr.setValue.treatHolidayWorkTime02 = atrAutoExcludeHolidayWork;
+				break;
+			case 3:
+				entityIrgAggr.setValue.treatHolidayWorkTime03 = atrAutoExcludeHolidayWork;
+				break;
+			case 4:
+				entityIrgAggr.setValue.treatHolidayWorkTime04 = atrAutoExcludeHolidayWork;
+				break;
+			case 5:
+				entityIrgAggr.setValue.treatHolidayWorkTime05 = atrAutoExcludeHolidayWork;
+				break;
+			case 6:
+				entityIrgAggr.setValue.treatHolidayWorkTime06 = atrAutoExcludeHolidayWork;
+				break;
+			case 7:
+				entityIrgAggr.setValue.treatHolidayWorkTime07 = atrAutoExcludeHolidayWork;
+				break;
+			case 8:
+				entityIrgAggr.setValue.treatHolidayWorkTime08 = atrAutoExcludeHolidayWork;
+				break;
+			case 9:
+				entityIrgAggr.setValue.treatHolidayWorkTime09 = atrAutoExcludeHolidayWork;
+				break;
+			case 10:
+				entityIrgAggr.setValue.treatHolidayWorkTime10 = atrAutoExcludeHolidayWork;
+				break;
+			}
+		}
+
+		// 変形労働時間勤務：時間外超過設定
+		val irgExcessOutsideTimeSet = irregularWork.getExcessOutsideTimeSet();
+		if (entity.krcstMonsetWkpIrgExot == null){
+			entity.krcstMonsetWkpIrgExot = new KrcstMonsetWkpIrgExot();
+			entity.krcstMonsetWkpIrgExot.PK = key;
+			entity.krcstMonsetWkpIrgExot.setValue = new KrcstMonsetIrgExot();
+		}
+		val entityIrgExot = entity.krcstMonsetWkpIrgExot;
+		entityIrgExot.setValue.exceptLegalHolidayWorkTime =
+				(irgExcessOutsideTimeSet.isAutoExcludeHolidayWorkTimeFromExcessOutsideWorkTime() ? 1 : 0);
+
+		treatOverTimeOfLessThanCriteriaPerDay = irgExcessOutsideTimeSet.getTreatOverTimeOfLessThanCriteriaPerDay();
+		treatHolidayWorkTimeOfLessThanCriteriaPerWeek = irgExcessOutsideTimeSet.getTreatHolidayWorkTimeOfLessThanCriteriaPerWeek();
+				
+		for (int atrTreatOverTime = 1; atrTreatOverTime <= 2; atrTreatOverTime++){
+			List<OverTimeFrameNo> overTimeFrameNoList =
+					treatOverTimeOfLessThanCriteriaPerDay.getAutoExcludeOverTimeFrames();
+			if (atrTreatOverTime == 2){
+				overTimeFrameNoList = treatOverTimeOfLessThanCriteriaPerDay.getLegalOverTimeFrames();
+			}
+			for (val overTimeFrameNo : overTimeFrameNoList){
+				switch(overTimeFrameNo.v().intValue()){
+				case 1:
+					entityIrgExot.setValue.treatOverTime01 = atrTreatOverTime;
+					break;
+				case 2:
+					entityIrgExot.setValue.treatOverTime02 = atrTreatOverTime;
+					break;
+				case 3:
+					entityIrgExot.setValue.treatOverTime03 = atrTreatOverTime;
+					break;
+				case 4:
+					entityIrgExot.setValue.treatOverTime04 = atrTreatOverTime;
+					break;
+				case 5:
+					entityIrgExot.setValue.treatOverTime05 = atrTreatOverTime;
+					break;
+				case 6:
+					entityIrgExot.setValue.treatOverTime06 = atrTreatOverTime;
+					break;
+				case 7:
+					entityIrgExot.setValue.treatOverTime07 = atrTreatOverTime;
+					break;
+				case 8:
+					entityIrgExot.setValue.treatOverTime08 = atrTreatOverTime;
+					break;
+				case 9:
+					entityIrgExot.setValue.treatOverTime09 = atrTreatOverTime;
+					break;
+				case 10:
+					entityIrgExot.setValue.treatOverTime10 = atrTreatOverTime;
+					break;
+				}
+			}
+		}
+		
+		atrAutoExcludeHolidayWork = 1;
+		for (val autoExcludeHolidayWorkFrame : treatHolidayWorkTimeOfLessThanCriteriaPerWeek.getAutoExcludeHolidayWorkFrames()){
+			switch(autoExcludeHolidayWorkFrame.v().intValue()){
+			case 1:
+				entityIrgExot.setValue.treatHolidayWorkTime01 = atrAutoExcludeHolidayWork;
+				break;
+			case 2:
+				entityIrgExot.setValue.treatHolidayWorkTime02 = atrAutoExcludeHolidayWork;
+				break;
+			case 3:
+				entityIrgExot.setValue.treatHolidayWorkTime03 = atrAutoExcludeHolidayWork;
+				break;
+			case 4:
+				entityIrgExot.setValue.treatHolidayWorkTime04 = atrAutoExcludeHolidayWork;
+				break;
+			case 5:
+				entityIrgExot.setValue.treatHolidayWorkTime05 = atrAutoExcludeHolidayWork;
+				break;
+			case 6:
+				entityIrgExot.setValue.treatHolidayWorkTime06 = atrAutoExcludeHolidayWork;
+				break;
+			case 7:
+				entityIrgExot.setValue.treatHolidayWorkTime07 = atrAutoExcludeHolidayWork;
+				break;
+			case 8:
+				entityIrgExot.setValue.treatHolidayWorkTime08 = atrAutoExcludeHolidayWork;
+				break;
+			case 9:
+				entityIrgExot.setValue.treatHolidayWorkTime09 = atrAutoExcludeHolidayWork;
+				break;
+			case 10:
+				entityIrgExot.setValue.treatHolidayWorkTime10 = atrAutoExcludeHolidayWork;
+				break;
+			}
+		}
+
+		// 変形労働時間勤務：精算期間
+		val settlementPeriods = irregularWork.getSettlementPeriod().getSettlementPeriods();
+		if (entity.krcstMonsetWkpIrgSetls == null) entity.krcstMonsetWkpIrgSetls = new ArrayList<>();
+		val entityIrgSetls = entity.krcstMonsetWkpIrgSetls;
+		entityIrgSetls.removeIf(a -> { return !settlementPeriods.stream()
+				.filter(c -> c.getStartMonth().v() == a.PK.startMonth).findFirst().isPresent(); });
+		for (val settlementPeriod : settlementPeriods){
+			KrcstMonsetWkpIrgSetl entityIrgSetl = new KrcstMonsetWkpIrgSetl();
+			boolean isAddIrgSetl = false;
+			val entityIrgSetlOpt = entityIrgSetls.stream()
+					.filter(c -> c.PK.startMonth == settlementPeriod.getStartMonth().v()).findFirst();
+			if (entityIrgSetlOpt.isPresent()){
+				entityIrgSetl = entityIrgSetlOpt.get();
+			}
+			else {
+				isAddIrgSetl = true;
+				entityIrgSetl.PK = new KrcstMonsetWkpIrgSetlPK(
+						domain.getCompanyId(),
+						domain.getWorkplaceId(),
+						settlementPeriod.getStartMonth().v());
+				entityIrgSetl.setValue = new KrcstMonsetIrgSetl();
+			}
+			entityIrgSetl.setValue.endMonth = settlementPeriod.getEndMonth().v();
+			if (isAddIrgSetl) entityIrgSetls.add(entityIrgSetl);
+		}
+		
+		// フレックス時間勤務
+		val flexWork = domain.getFlexWork();
+		val flxShortageSet = flexWork.getShortageSet();
+		val flxLegalAggrSet = flexWork.getLegalAggregateSet();
+		val flxAggrTimeSet = flxLegalAggrSet.getAggregateTimeSet();
+		val flxExcessOutsideTimeSet = flxLegalAggrSet.getExcessOutsideTimeSet();
+		val flxAggrMethod36Agreement = flexWork.getArrgMethod36Agreement();
+		if (entity.krcstMonsetWkpFlxAggr == null){
+			entity.krcstMonsetWkpFlxAggr = new KrcstMonsetWkpFlxAggr();
+			entity.krcstMonsetWkpFlxAggr.PK = key;
+			entity.krcstMonsetWkpFlxAggr.setValue = new KrcstMonsetFlxAggr();
+		}
+		val entityFlxAggr = entity.krcstMonsetWkpFlxAggr;
+		entityFlxAggr.setValue.aggregateMethod = flexWork.getAggregateMethod().value;
+		entityFlxAggr.setValue.includeOverTime = (flexWork.isIncludeOverTime() ? 1 : 0);
+		entityFlxAggr.setValue.carryforwardSet = flxShortageSet.getCarryforwardSet().value;
+		entityFlxAggr.setValue.aggregateSet = flxAggrTimeSet.getAggregateSet().value;
+		entityFlxAggr.setValue.excessOutsideTimeTargetSet = flxExcessOutsideTimeSet.getExcessOutsideTimeTargetSet().value;
+		entityFlxAggr.setValue.aggregateMethodOf36AgreementTime = flxAggrMethod36Agreement.getAggregateMethod().value;
+		
+		// 登録が必要な時、登録を実行
+		if (isNeedPersist) this.getEntityManager().persist(entity);
+	}
+	
+	/** 削除 */
+	@Override
+	public void remove(String companyId, String workplaceId) {
+		this.commandProxy().remove(KrcstMonsetWkpRegAggr.class, new KrcstMonsetWkpRegAggrPK(companyId, workplaceId));
 	}
 }

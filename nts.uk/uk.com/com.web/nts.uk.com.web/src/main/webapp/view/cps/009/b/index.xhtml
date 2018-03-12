@@ -27,18 +27,19 @@
 					<label id="ctg">#{i18n.getText('CPS009_31')}</label>
 				</div>
 				<!-- B002: Text: カテゴリ名 -->
-				<label id="ctgName" style = "margin-top: 10px; margin-left: 10px;" data-bind="text: categoryName"></label>
-				<br/>
+				<label id="ctgName" style="margin-top: 10px; margin-left: 10px;"
+					data-bind="text: categoryName"></label> <br />
 				<!-- B003: label 項目選択 -->
 				<div data-bind="ntsFormLabel: {}" class='distane'>
 					<label id="itemSel">#{i18n.getText('CPS009_32')}</label>
 				</div>
 				<!-- B004: table -->
-<!-- 				<div id="itemLst" style="margin-left: 80px">
+				<!-- 				<div id="itemLst" style="margin-left: 80px">
 					<div id="grid_B" style="background-color: #F3F3F3; width: 260px;"></div>
 				</div> -->
 				<div id="itemLst" style="margin-left: 80px">
-						<table id="grid_B" data-bind="ntsGridList: {
+					<table id="grid_B"
+						data-bind="ntsGridList: {
 								height: 350,
 								dataSource: itemInitLst,
 								optionsValue: 'perInfoItemDefId',
@@ -46,25 +47,27 @@
 								multiple: true,
 								value: currentItem,
 								rows: 15
-							}"></table>				
-				</div>				
+							}"></table>
+				</div>
 				<!-- B009: label 一括指定する区分 -->
 				<div data-bind="ntsFormLabel: {}" class='distane'>
 					<label id="itemSel">#{i18n.getText('CPS009_34')}</label>
 				</div>
 				<!-- B010: switch button 項目初期値設定-->
-				<div id="B_010" class="cf" data-bind="ntsSwitchButton: {
+				<div id="B_010" class="cf"
+					data-bind="ntsSwitchButton: {
 											name: '#[CPS009_35]',
 											options: roundingRules,
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: selectedRuleCode,
-											enable: true }" tab-index ="4">
-				</div>
+											enable: true }"
+					tab-index="4"></div>
 			</div>
 			<div id='functions-area-bottom'>
 				<!-- B011: button 決定 -->
-				<button id="registration" class="proceed large" data-bind="click: registerItems" tab-index="5">#{i18n.getText('CPS009_29')}</button>
+				<button id="registration" class="proceed large"
+					data-bind="click: registerItems" tab-index="5">#{i18n.getText('CPS009_29')}</button>
 				<!-- B012: button キャンセル -->
 				<button id="cancel" data-bind="click: closeDialog" tab-index="6">#{i18n.getText('CPS009_30')}</button>
 

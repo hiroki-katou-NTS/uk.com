@@ -22,9 +22,11 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- B1_1: button 登録 -->
-				<button id="buton-register" class="proceed" data-bind = "click: register" tabindex="1">#{i18n.getText('CPS017_27')}</button>
+				<button id="buton-register" class="proceed"
+					data-bind="click: register" tabindex="1">#{i18n.getText('CPS017_27')}</button>
 				<!-- B1_2: button 閉じる -->
-				<button id="button-close" style="margin-left: 328px;" data-bind = "click: close" tabindex="2">#{i18n.getText('CPS017_28')}</button>
+				<button id="button-close" style="margin-left: 328px;"
+					data-bind="click: close" tabindex="2">#{i18n.getText('CPS017_28')}</button>
 			</div>
 			<div id="contents-area">
 				<div style="margin-left: 10px;">
@@ -42,8 +44,7 @@
 								comId: '#item_register_grid2',
 								type: 'grid'
 							}"
-						style="margin-left: 10px;"
-					 ></div>
+						style="margin-left: 10px;"></div>
 				</div>
 			</div>
 		</ui:define>

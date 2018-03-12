@@ -11,29 +11,31 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+/**
+ * 
+ * @author phongtq
+ *
+ */
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCST_SCHE_PER_WORKPLACE")
-public class KscstSchePerWorkplace  extends UkJpaEntity implements Serializable {
+public class KscstSchePerWorkplace extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@EmbeddedId
 	public KscstSchePerWorkplacePK kscstSchePerWorkplacePK;
-	
-			/** 利用できる*/
-			@Column(name = "AVAILABLE_WORKPLACE")
-			public int availableWorkplace;
-			
 
+	/** 利用できる */
+	@Column(name = "AVAILABLE_WORKPLACE")
+	public int availableWorkplace;
 
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
+
 }

@@ -1,10 +1,11 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.AnnualLeaveUseTimeOfTimeSeries;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
@@ -21,10 +22,7 @@ public class AnnualLeaveUseTimeOfMonthly {
 	private AttendanceTimeMonth useTime;
 	/** 時系列ワーク */
 	@Getter
-	private List<AnnualLeaveUseTimeOfTimeSeries> timeSeriesWorks;
-
-	/** 集計済 */
-	private boolean isAggregated;
+	private Map<GeneralDate, AnnualLeaveUseTimeOfTimeSeries> timeSeriesWorks;
 	
 	/**
 	 * コンストラクタ
@@ -32,8 +30,7 @@ public class AnnualLeaveUseTimeOfMonthly {
 	public AnnualLeaveUseTimeOfMonthly(){
 	
 		this.useTime = new AttendanceTimeMonth(0);
-		this.timeSeriesWorks = new ArrayList<>();
-		this.isAggregated = false;
+		this.timeSeriesWorks = new HashMap<>();
 	}
 
 	/**
@@ -52,15 +49,16 @@ public class AnnualLeaveUseTimeOfMonthly {
 	/**
 	 * 年休使用時間を確認する
 	 * @param datePeriod 期間
-	 * @param attendanceTimeOfDailys リスト：日別実績の勤怠時間
+	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 */
 	public void confirm(DatePeriod datePeriod,
-			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap){
 
-		for (val attendanceTimeOfDaily : attendanceTimeOfDailys) {
+		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.values()) {
+			val ymd = attendanceTimeOfDaily.getYmd();
 			
 			// 期間外はスキップする
-			if (!datePeriod.contains(attendanceTimeOfDaily.getYmd())) continue;
+			if (!datePeriod.contains(ymd)) continue;
 			
 			// 「日別実績の年休」を取得する
 			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -71,7 +69,8 @@ public class AnnualLeaveUseTimeOfMonthly {
 			
 			// 取得した使用時間を「月別実績の年休使用時間」に入れる
 			//*****（未）　「日別実績の年休」クラスをnewして、値を入れて、それをset？
-			this.timeSeriesWorks.add(AnnualLeaveUseTimeOfTimeSeries.of(attendanceTimeOfDaily.getYmd()));
+			val annualLeaveUseTimeOfTimeSeries = AnnualLeaveUseTimeOfTimeSeries.of(ymd);
+			this.timeSeriesWorks.putIfAbsent(ymd, annualLeaveUseTimeOfTimeSeries);
 		}
 	}
 	
@@ -81,15 +80,12 @@ public class AnnualLeaveUseTimeOfMonthly {
 	 */
 	public void aggregate(DatePeriod datePeriod){
 		
-		if (this.isAggregated) return;
-		
 		this.useTime = new AttendanceTimeMonth(0);
 		
-		for (val timeSeriesWork : this.timeSeriesWorks){
+		for (val timeSeriesWork : this.timeSeriesWorks.values()){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 			//AnnualLeaveOfDaily annualLeaveUseTime = timeSeriesWork.getAnnualLeaveUseTime();
 			//this.useTime.addMinutes(annualLeaveUseTime.getUseTime().valueAsMinutes());
 		}
-		this.isAggregated = true;
 	}
 }

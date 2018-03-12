@@ -6,7 +6,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.pereg.app.command.person.info.category.GetListCompanyOfContract;
@@ -17,6 +16,8 @@ import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
+import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
+import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 
 @Stateless
 public class RemoveItemCommandHandler extends CommandHandlerWithResult<RemoveItemCommand, String> {
@@ -29,9 +30,15 @@ public class RemoveItemCommandHandler extends CommandHandlerWithResult<RemoveIte
 
 	@Inject
 	private EmpInfoItemDataRepository empInfoRepo;
-	
+
 	@Inject
 	private PerInfoItemDataRepository perItemRepo;
+
+	@Inject
+	private PersonInfoItemAuthRepository itemAuthRepo;
+
+	@Inject
+	private PerInfoInitValueSetItemRepository itemInitRepo;
 
 	@Override
 	protected String handle(CommandHandlerContext<RemoveItemCommand> context) {
@@ -52,8 +59,8 @@ public class RemoveItemCommandHandler extends CommandHandlerWithResult<RemoveIte
 		}
 		List<String> perInfoCtgIds = this.perInfoCtgRep.getPerInfoCtgIdList(companyIdList,
 				category.getCategoryCode().v());
-		if (this.empInfoRepo.getAllInfoItem(itemDef.getItemCode().toString(), perInfoCtgIds) || this.perItemRepo.isExitedItem(perInfoCtgIds, itemDef.getItemCode().toString())) {
-			throw  new BusinessException(new RawErrorMessage("Msg_214"));
+		if (this.isCheckData(itemDef.getItemCode().toString(), perInfoCtgIds)) {
+			throw new BusinessException("Msg_214");
 		}
 		perInfoCtgIds.add(itemDef.getPerInfoCategoryId());
 		this.pernfoItemDefRep.removePerInfoItemDefRoot(perInfoCtgIds, category.getCategoryCode().v(), contractCd,
@@ -61,4 +68,15 @@ public class RemoveItemCommandHandler extends CommandHandlerWithResult<RemoveIte
 		return null;
 	}
 
+	private boolean isCheckData(String itemCode, List<String> ctgLst) {
+		boolean itemAuth = this.itemAuthRepo.hasItemData(itemCode, ctgLst),
+				itemInit = this.itemInitRepo.hasItemData(itemCode, ctgLst),
+				isEmpData = this.empInfoRepo.hasItemData(itemCode, ctgLst),
+				isPerData = this.perItemRepo.hasItemData(ctgLst, itemCode);
+		if (itemAuth || itemInit || isEmpData || isPerData) {
+			return true;
+		}
+		return false;
+
+	}
 }

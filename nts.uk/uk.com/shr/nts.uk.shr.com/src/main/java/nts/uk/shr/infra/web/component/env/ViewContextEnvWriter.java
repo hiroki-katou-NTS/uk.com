@@ -8,6 +8,7 @@ import javax.faces.context.ResponseWriter;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
 import nts.uk.shr.infra.web.component.util.ObjectWriter;
 
@@ -20,15 +21,16 @@ public class ViewContextEnvWriter {
 	public void write(ResponseWriter rw) throws IOException {
 		rw.write("__viewContext.env = {};");
 		
-		this.writeSystemName(rw);
+		this.writeSystem(rw);
 		this.writeJapanseEras(rw);
 	}
 	
-	private void writeSystemName(ResponseWriter rw) throws IOException {
+	private void writeSystem(ResponseWriter rw) throws IOException {
 		
-		String systemName = "勤次郎";
-		
-		rw.write("__viewContext.env.systemName = '" + systemName + "';");
+		val system = AppContexts.system();
+		rw.write("__viewContext.env.systemName = '" + system.getSystemName() + "';");
+		rw.write("__viewContext.env.isCloud = " + (system.isCloud() ? "true" : "false") + ";");
+		rw.write("__viewContext.env.isOnPremise = " + (system.isOnPremise() ? "true" : "false") + ";");
 	}
 	
 	private void writeJapanseEras(ResponseWriter rw) throws IOException {

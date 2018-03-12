@@ -255,7 +255,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
              /**
               * 確認メッセージ（Msg_18）を表示する
               */
-             dialog.confirm({messageId: "Msg_18"}).ifYes(() => {
+             dialog.confirmDanger({messageId: "Msg_18"}).ifYes(() => {
                 if (currentRoleSet.roleSetCd()) {
                     var object : any = {roleSetCd : currentRoleSet.roleSetCd()}; 
                     service.removeRoleSet(ko.toJS(object)).done(function() {

@@ -4,53 +4,53 @@ module nts.uk.at.view.kmf002.a {
          * define path to service
          */
         var path: any = {
-                save: "bs/employee/holidaysetting/config/save",
-                findAll: "bs/employee/holidaysetting/config/find",
-                getPubHDPeriodEnum: "bs/employee/holidaysetting/config/enum/publicholidayperiod",
-                getDayOfPubHDEnum: "bs/employee/holidaysetting/config/enum/dayofpublicholiday",
-                getPubHDManageClassificationEnum: "bs/employee/holidaysetting/config/enum/pubhdmanagementatr",
-                getPublicHolidayCarryOverDeadline: "bs/employee/holidaysetting/config/enum/publicholidaycarryoverdeadline",
-                getDaysOfTheWeek: "bs/employee/holidaysetting/config/enum/dayofweek",
-                findAllManageUseUnit: "bs/employee/publicholidaymanagementusageunit/find",
-                saveManageUnit: "bs/employee/publicholidaymanagementusageunit/save",
-                getManageEnum: "bs/employee/holidaysetting/config/enum/manage"
+                save: "at/shared/holidaysetting/config/save",
+                findAll: "at/shared/holidaysetting/config/find",
+                getPubHDPeriodEnum: "at/shared/holidaysetting/config/enum/publicholidayperiod",
+                getDayOfPubHDEnum: "at/shared/holidaysetting/config/enum/dayofpublicholiday",
+                getPubHDManageClassificationEnum: "at/shared/holidaysetting/config/enum/pubhdmanagementatr",
+                getPublicHolidayCarryOverDeadline: "at/shared/holidaysetting/config/enum/publicholidaycarryoverdeadline",
+                getDaysOfTheWeek: "at/shared/holidaysetting/config/enum/dayofweek",
+                findAllManageUseUnit: "at/shared/publicholidaymanagementusageunit/find",
+                saveManageUnit: "at/shared/publicholidaymanagementusageunit/save",
+                getManageEnum: "at/shared/holidaysetting/config/enum/manage"
             };
         
         export function save(pubHdSet: any, forwardSetOfPubHD: any, weekHDSet: any, fourWkFourHDNumSet: any): JQueryPromise<any> {
             let data:any = toDto(pubHdSet, forwardSetOfPubHD, weekHDSet, fourWkFourHDNumSet);
-            return nts.uk.request.ajax("com", path.save, ko.toJSON(data));
+            return nts.uk.request.ajax("at", path.save, ko.toJSON(data));
         }
         
         export function findAll(): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.findAll);
+            return nts.uk.request.ajax("at", path.findAll);
         }
         
         export function getPubHDPeriodEnum(): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.getPubHDPeriodEnum);
+            return nts.uk.request.ajax("at", path.getPubHDPeriodEnum);
         }
         
         export function getDayOfPubHDEnum(): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.getDayOfPubHDEnum);
+            return nts.uk.request.ajax("at", path.getDayOfPubHDEnum);
         }
         
         export function getPubHDManageClassificationEnum(): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.getPubHDManageClassificationEnum);
+            return nts.uk.request.ajax("at", path.getPubHDManageClassificationEnum);
         }
         
         export function getManageEnum(): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.getManageEnum);
+            return nts.uk.request.ajax("at", path.getManageEnum);
         }
         
         export function getPublicHolidayCarryOverDeadline(): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.getPublicHolidayCarryOverDeadline);
+            return nts.uk.request.ajax("at", path.getPublicHolidayCarryOverDeadline);
         }
         
         export function getDaysOfTheWeek(): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.getDaysOfTheWeek);
+            return nts.uk.request.ajax("at", path.getDaysOfTheWeek);
         }
         
         export function findAllManageUseUnit(): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.findAllManageUseUnit);
+            return nts.uk.request.ajax("at", path.findAllManageUseUnit);
         }  
         
         export function saveManageUnit(isManageEmployeePublicHd: number, isManageWkpPublicHd: number, isManageEmpPublicHd: number): JQueryPromise<any> {
@@ -58,7 +58,7 @@ module nts.uk.at.view.kmf002.a {
             data.isManageEmployeePublicHd = isManageEmployeePublicHd; 
             data.isManageWkpPublicHd = isManageWkpPublicHd;
             data.isManageEmpPublicHd = isManageEmpPublicHd;
-            return nts.uk.request.ajax("com", path.saveManageUnit, data);
+            return nts.uk.request.ajax("at", path.saveManageUnit, data);
         }
         
         export function toDto(pubHdSet: any, forwardSetOfPubHD: any, weekHDSet: any, fourWkFourHDNumSet: any): any {

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 /**
  * 申請表示名
@@ -23,6 +24,6 @@ public class AppDispName extends AggregateRoot{
 	private DispName dispName;
 	public static AppDispName createFromJavaType(String companyId, int appType, String dispName){
 		return new AppDispName(companyId, EnumAdaptor.valueOf(appType, ApplicationType.class), 
-				new DispName(dispName));
+				StringUtil.isNullOrEmpty(dispName, true) ? null : new DispName(dispName));
 	}
 }

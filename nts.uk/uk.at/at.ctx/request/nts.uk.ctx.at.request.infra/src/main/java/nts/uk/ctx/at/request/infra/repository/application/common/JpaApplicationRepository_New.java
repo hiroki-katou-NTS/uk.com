@@ -41,7 +41,8 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	private final String SELECT_APP_BY_SID = SELECT_FROM_APPLICATION + " AND ( a.employeeID = :employeeID Or a.enteredPersonID = :employeeID )"
 			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate";
 	private final String SELECT_APP_BY_REFLECT = SELECT_FROM_APPLICATION + " AND a.stateReflectionReal != 5"
-			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate";
+			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate ORDER BY a.inputDate ASC";
+	private final String SELECT_APP_BY_SIDS = "SELECT a FROM KrqdtApplication_New a" + " WHERE a.employeeID IN :employeeID" + " AND a.appDate >= :startDate AND a.appDate <= :endDate";
 	
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
@@ -146,5 +147,15 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	public List<Application_New> getListAppPre(String companyId, String sID, GeneralDate appDate, int prePostAtr) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	@Override
+	public List<Application_New> getApplicationBySIDs(List<String> employeeID, GeneralDate startDate,
+			GeneralDate endDate) {
+		List<Application_New> data = this.queryProxy().query(SELECT_APP_BY_SIDS, KrqdtApplication_New.class)
+				.setParameter("employeeID", employeeID)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList(c -> c.toDomain());
+		return data;
 	}
 }

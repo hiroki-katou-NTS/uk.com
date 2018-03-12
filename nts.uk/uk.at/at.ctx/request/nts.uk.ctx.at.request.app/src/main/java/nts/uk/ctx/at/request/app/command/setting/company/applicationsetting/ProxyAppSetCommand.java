@@ -14,8 +14,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ProxyAppSetCommand {
-	// 会社ID
-	private String companyId;
 	// 申請種類
 	private List<Integer> appType;
 }

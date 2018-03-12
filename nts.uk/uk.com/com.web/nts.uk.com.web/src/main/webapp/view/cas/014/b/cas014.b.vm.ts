@@ -74,7 +74,10 @@ module nts.uk.com.view.cas014.b {
                         _.each(_rsList, rs => self.roleSetList.push(rs));
 
                         //select first role set
-                        self.selectedRoleSet(self.roleSetList()[0].code);
+                        if (self.selectedRoleSet() == self.roleSetList()[0].code) 
+                            self.selectedRoleSet.valueHasMutated();
+                        else
+                            self.selectedRoleSet(self.roleSetList()[0].code);
                     } else {
                         nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                     }
@@ -95,6 +98,7 @@ module nts.uk.com.view.cas014.b {
 
             loadRoleSetHolder(rsCode: string, empId?: string): JQueryPromise<any> {
                 let self = this;
+                block.invisible();
                 let dfd = service.getAllRoleSetPerson(rsCode);
                 dfd.done(function(data: Array<any>) {
                     self.roleSetPersonList.removeAll();
@@ -107,12 +111,16 @@ module nts.uk.com.view.cas014.b {
 
                         if (empId) {
                             //select empId 
-                            self.selectedEmployeeId(empId);
-                            //self.selectedEmployeeId.valueHasMutated();
+                            if (self.selectedEmployeeId() == empId)
+                                self.selectedEmployeeId.valueHasMutated();
+                            else
+                                self.selectedEmployeeId(empId);
                         } else {
-                            //select first 
-                            self.selectedEmployeeId(self.roleSetPersonList()[0].employeeId);
-                            //self.selectedEmployeeId.valueHasMutated();
+                            //select first
+                            if (self.selectedEmployeeId() == self.roleSetPersonList()[0].employeeId)
+                                self.selectedEmployeeId.valueHasMutated();
+                            else
+                                self.selectedEmployeeId(self.roleSetPersonList()[0].employeeId);
                         }
 
                         self.screenMode(ScreenMode.UPDATE);
@@ -123,6 +131,8 @@ module nts.uk.com.view.cas014.b {
                     }
                 }).fail(function(error) {
                     alertError(error);
+                }).always(() => {
+                    block.clear();
                 });
                 return dfd;
             }
@@ -151,7 +161,7 @@ module nts.uk.com.view.cas014.b {
             registerRoleSetPerson() {
                 let self = this, data: RoleSetPerson = ko.toJS(self.roleSetPerson);
                 $(".ntsDateRange_Component").trigger("validate");
-                if (!nts.uk.ui.errors.hasError() && data.employeeId) {
+                if (!nts.uk.ui.errors.hasError()) {
                     let command: any = {
                         roleSetCd: data.roleSetCd,
                         employeeId: data.employeeId,

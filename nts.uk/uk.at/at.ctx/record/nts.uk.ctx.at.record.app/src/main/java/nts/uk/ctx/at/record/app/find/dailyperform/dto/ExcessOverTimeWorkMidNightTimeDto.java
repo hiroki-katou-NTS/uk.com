@@ -20,9 +20,8 @@ public class ExcessOverTimeWorkMidNightTimeDto {
 
 	public static ExcessOverTimeWorkMidNightTimeDto fromOverTimeWorkDailyPerform(
 			ExcessOverTimeWorkMidNightTime domain) {
-		return domain == null || domain.getTime() == null ? null : new ExcessOverTimeWorkMidNightTimeDto(new CalcAttachTimeDto(
-					domain.getTime().getCalcTime() == null ? null : domain.getTime().getCalcTime().valueAsMinutes(),
-					domain.getTime().getTime() == null ? null : domain.getTime().getTime().valueAsMinutes()));
+		return domain == null || domain.getTime() == null ? null : 
+				new ExcessOverTimeWorkMidNightTimeDto(CalcAttachTimeDto.toTimeWithCal(domain.getTime()));
 	}
 
 	public ExcessOverTimeWorkMidNightTime toDomain() {

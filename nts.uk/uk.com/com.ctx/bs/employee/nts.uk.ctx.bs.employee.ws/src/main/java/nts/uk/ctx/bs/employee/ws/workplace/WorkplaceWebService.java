@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.ws.workplace;
 
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -21,6 +22,7 @@ import nts.uk.ctx.bs.employee.app.command.workplace.history.DeleteWkpHistoryComm
 import nts.uk.ctx.bs.employee.app.command.workplace.history.SaveWkpHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.history.SaveWkpHistoryCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.workplace.BSWorkplaceFinder;
+import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemFinder;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceDto;
 
 /**

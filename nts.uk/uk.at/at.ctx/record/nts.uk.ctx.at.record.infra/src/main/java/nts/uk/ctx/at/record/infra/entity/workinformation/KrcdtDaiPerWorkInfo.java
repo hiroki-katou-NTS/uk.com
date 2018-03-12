@@ -16,9 +16,9 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -91,13 +91,13 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 		return new KrcdtDaiPerWorkInfo(
 				new KrcdtDaiPerWorkInfoPK(workInfoOfDailyPerformance.getEmployeeId(),
 						workInfoOfDailyPerformance.getYmd()),
-				workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode().v(),
-				workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTimeCode().v(),
-				workInfoOfDailyPerformance.getScheduleWorkInformation().getWorkTypeCode().v(),
-				workInfoOfDailyPerformance.getScheduleWorkInformation().getWorkTimeCode().v(),
-				workInfoOfDailyPerformance.getCalculationState().value,
-				workInfoOfDailyPerformance.getGoStraightAtr().value,
-				workInfoOfDailyPerformance.getBackStraightAtr().value,
+				workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode() !=null ? workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode().v() : null,
+				workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTimeCode() != null ? workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTimeCode().v() : null,
+				workInfoOfDailyPerformance.getScheduleWorkInformation().getWorkTypeCode() != null ? workInfoOfDailyPerformance.getScheduleWorkInformation().getWorkTypeCode().v() : null,
+				workInfoOfDailyPerformance.getScheduleWorkInformation().getWorkTimeCode() != null ? workInfoOfDailyPerformance.getScheduleWorkInformation().getWorkTimeCode().v() : null,
+				workInfoOfDailyPerformance.getCalculationState() != null ? workInfoOfDailyPerformance.getCalculationState().value : null,
+				workInfoOfDailyPerformance.getGoStraightAtr() != null ? workInfoOfDailyPerformance.getGoStraightAtr().value : null,
+				workInfoOfDailyPerformance.getBackStraightAtr() != null ? workInfoOfDailyPerformance.getBackStraightAtr().value : null,
 				workInfoOfDailyPerformance.getScheduleTimeSheets() != null ? 
 				workInfoOfDailyPerformance.getScheduleTimeSheets().stream().map(f -> KrcdtWorkScheduleTime
 						.toEntity(workInfoOfDailyPerformance.getEmployeeId(), workInfoOfDailyPerformance.getYmd(), f))

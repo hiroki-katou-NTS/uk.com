@@ -18,4 +18,7 @@ public class MonthlyPatternSettingFindAllDto {
 
 	/** The employee ids. */
 	private List<String> employeeIds;
+	
+	/** The monthly pattern codes. */
+	private List<String> monthlyPatternCodes;
 }

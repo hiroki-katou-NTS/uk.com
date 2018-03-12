@@ -10,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * Update Withdrawal App Set Command Handler
  * @author yennth
@@ -23,9 +24,10 @@ public class UpdateWDAppSetCommandHandler extends CommandHandler<WithdrawalAppSe
 
 	@Override
 	protected void handle(CommandHandlerContext<WithdrawalAppSetCommand> context) {
+		String companyId = AppContexts.user().companyId();
 		WithdrawalAppSetCommand data = context.getCommand();
 		Optional<WithdrawalAppSet> with = withRep.getWithDraw();
-		WithdrawalAppSet withDraw = WithdrawalAppSet.createFromJavaType(data.getCompanyId(), 
+		WithdrawalAppSet withDraw = WithdrawalAppSet.createFromJavaType(companyId, 
 				0, data.getBreakTime(), data.getWorkTime(), data.getCheckHdTime(), 
 				data.getTypePaidLeave(), data.getWorkChange(), data.getTimeInit(), data.getCheckOut(), 
 				data.getPrefixLeave(), 0, 0, data.getBounSeg(), 

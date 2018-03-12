@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.schedule.app.find.schedule.setting.modifydeadline;
 
 import lombok.Data;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Data
 public class PersAuthorityDto {
 	/** 会社ID*/
@@ -10,9 +14,9 @@ public class PersAuthorityDto {
 	/** ロールID*/	
 	private String roleId;
 	
-	/** 利用区分*/
+	/** 個人別権限制御: 利用できる*/
 	private int availablePers;
 	
-	/** 修正期限*/
+	/** 個人別権限制御: 機能NO*/
 	private Integer functionNoPers;
 }

@@ -136,6 +136,18 @@ public class ScheCreExeBasicScheduleHandler {
 				commandSave.updateWorkScheduleTimeZones(workTimeSet);
 			}
 		}
+
+		if (worktypeDto.getWorktypeSet() != null && !commandSave.getWorkScheduleTimeZones().isEmpty()) {
+			Optional<BounceAtr> bounceAtrOpt = Optional.of(this.getBounceAtr(worktypeDto.getWorktypeSet()));
+		
+			if (bounceAtrOpt.isPresent()) {
+				commandSave.setWorkScheduleTimeZones(commandSave.getWorkScheduleTimeZones().stream().map(timeZone -> {
+					timeZone.setBounceAtr(bounceAtrOpt.get().value);
+					return timeZone;
+				}).collect(Collectors.toList()));
+			}
+		}
+		
 		// update is confirm
 		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getConfirm(), ConfirmedAtr.UNSETTLED).value);
 
@@ -436,9 +448,10 @@ public class ScheCreExeBasicScheduleHandler {
 		}
 		BasicScheduleSaveCommand basicScheduleSaveCommand = new BasicScheduleSaveCommand();
 		basicScheduleSaveCommand.setEmployeeId(basicSchedule.getEmployeeId());
-		basicScheduleSaveCommand.setWorktimeCode(basicSchedule.getWorkTimeCode());
-		basicScheduleSaveCommand.setWorktypeCode(basicSchedule.getWorkTypeCode());
+		basicScheduleSaveCommand.setWorktimeCode(command.getWorkingCode());
+		basicScheduleSaveCommand.setWorktypeCode(command.getWorktypeCode());
 		basicScheduleSaveCommand.setYmd(basicSchedule.getDate());
+		basicScheduleSaveCommand.setWorkScheduleTime(basicSchedule.getWorkScheduleTime());
 		
 		PrescribedTimezoneSetting prescribedTimezoneSetting;
 		

@@ -591,10 +591,6 @@ module nts.uk.pr.view.kmf001.f {
             private gotoVacationSetting() {
                 //TODO
             }
-
-            private gotoParent() {
-                nts.uk.request.jump("/view/kmf/001/a/index.xhtml");
-            }
         }
 
         class ItemModel {

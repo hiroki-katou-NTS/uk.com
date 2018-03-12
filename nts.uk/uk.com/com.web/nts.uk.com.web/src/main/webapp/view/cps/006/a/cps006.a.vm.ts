@@ -34,10 +34,12 @@ module nts.uk.com.view.cps006.a.viewmodel {
             let self = this;
             self.start(undefined);
             self.id.subscribe(function(value) {
+                nts.uk.ui.errors.clearAll();
                 if (nts.uk.text.isNullOrEmpty(value)) return;
                 self.getDetailCategory(value);
             });
             self.isAbolished.subscribe(function(value) {
+                nts.uk.ui.errors.clearAll();
                 if (value) {
                     if (!self.isFiltered) {
                         self.categoryList.removeAll();
@@ -115,6 +117,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         getDetailCategory(id: string) {
             let self = this;
             service.getDetailCtgInfo(id).done(function(data: any) {
+                nts.uk.ui.errors.clearAll();
                 if (data) {
                     self.currentCategory().setData({
                         categoryNameDefault: data.categoryNameDefault, categoryName: data.categoryName,
@@ -426,7 +429,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         id: KnockoutObservable<string>;
         categoryNameDefault: KnockoutObservable<string>;
         categoryName: KnockoutObservable<string>;
-        categoryType: number;
+        categoryType: KnockoutObservable<number>;
         isAbolition: KnockoutObservable<boolean>;
         personEmployeeType: number;
         isExistedItemLst: KnockoutObservable<number>;
@@ -445,7 +448,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
             this.id = ko.observable("");
             this.categoryNameDefault = ko.observable(params.categoryNameDefault);
             this.categoryName = ko.observable(params.categoryName);
-            this.categoryType = params.categoryType;
+            this.categoryType = ko.observable(params.categoryType);
             this.isAbolition = ko.observable(false);
             this.itemList = ko.observableArray(params.itemList || []);
             this.personEmployeeType = params.personEmployeeType || 1;
@@ -456,7 +459,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
             this.id(params.id);
             this.categoryNameDefault(params.categoryNameDefault);
             this.categoryName(params.categoryName);
-            this.categoryType = params.categoryType;
+            this.categoryType(params.categoryType);
             this.isAbolition(params.isAbolition);
             this.displayIsAbolished = displayIsAbolished;
             this.isExistedItemLst(isExistedItemLst);

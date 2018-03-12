@@ -36,7 +36,7 @@ public class JpaApprovalTempRepository extends JpaRepository implements Approval
 	private KrqmtApprovalTemp toEntity(ApprovalTemp domain){
 		val entity = new KrqmtApprovalTemp();
 		entity.companyId = domain.getCompanyId();
-		entity.content = domain.getContent().v();
+		entity.content = domain.getContent() == null ? null : domain.getContent().v();
 		return entity;
 	}
 	/**

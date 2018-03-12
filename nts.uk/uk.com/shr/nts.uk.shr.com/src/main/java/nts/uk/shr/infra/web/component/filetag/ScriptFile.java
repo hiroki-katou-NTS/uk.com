@@ -19,7 +19,7 @@ import org.apache.logging.log4j.util.Strings;
 @FacesComponent(tagName = "scriptfile", createTag = true)
 public class ScriptFile extends UIComponentBase {
 
-    private static Set<String> FILES_BASIC = new LinkedHashSet<String>(Arrays.asList(new String[] {
+    public static Set<String> FILES_BASIC = new LinkedHashSet<String>(Arrays.asList(new String[] {
             "/lib/generic/jquery/jquery-3.1.1.js",
             "/lib/generic/jqueryui/jquery-ui.js",
             "/lib/generic/jquery/jquery.steps.js",
@@ -37,7 +37,7 @@ public class ScriptFile extends UIComponentBase {
             "/lib/nittsu/nts.uk.com.web.nittsu.bundles.js"
     }));
     
-    private static Set<String> FILES_IGNITE = new LinkedHashSet<String>(Arrays.asList(new String[] {
+    public static Set<String> FILES_IGNITE = new LinkedHashSet<String>(Arrays.asList(new String[] {
             "/lib/generic/igniteui/js/infragistics.core.js",
             "/lib/generic/igniteui/js/infragistics.lob.js",
             "/lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js",

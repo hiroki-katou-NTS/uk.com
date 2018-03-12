@@ -1,5 +1,5 @@
 .employeeInfoSearch {
-	margin-top: 30px;
+	margin-top: 10px;
 	display: inline-flex;
 }
 
@@ -49,6 +49,7 @@
 	margin-left: 15px;
 	width: 120px;
 }
-#hor-scroll-button-hide{
-	margin-top: 143px !important;
+
+#contents-area { 
+	overflow-x: hidden;
 }

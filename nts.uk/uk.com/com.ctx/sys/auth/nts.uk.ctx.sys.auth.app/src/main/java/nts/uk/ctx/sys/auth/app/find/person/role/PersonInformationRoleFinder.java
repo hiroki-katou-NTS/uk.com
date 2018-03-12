@@ -59,6 +59,9 @@ public class PersonInformationRoleFinder {
 		return result;
 	}
 	
+	public PersonRole find(String roleId) {
+		return this.personRoleRepo.find(roleId).get();
+	}
 	
 	public List<RoleDto> getListRoleByRoleType(int roleType ){
 		String companyId = AppContexts.user().companyId();

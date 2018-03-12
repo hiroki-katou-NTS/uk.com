@@ -99,7 +99,8 @@ module nts.uk.ui.errors {
                         if (error.$control.length > 0) {
                             let controlNameId = error.$control.eq(0).attr("data-name");
                             if (controlNameId) {
-                                error.messageText = nts.uk.resource.getMessage(error.message.messageId, nts.uk.resource.getText(controlNameId), error.message.messageParams);
+                                let params = _.concat(nts.uk.resource.getText(controlNameId), error.message.messageParams);
+                                error.messageText = nts.uk.resource.getMessage(error.message.messageId, params);
                             } else {
                                 error.messageText = nts.uk.resource.getMessage(error.message.messageId, error.message.messageParams);
                             }
@@ -211,7 +212,7 @@ module nts.uk.ui.errors {
         option: any;
         allResolved: JQueryCallback;
         allCellsResolved: JQueryCallback;
-        errorElements: JQuery[];
+        errorElements: JQuery;
         
         setErrors(errors: ErrorListItem[]) {
             if (!_.isArray(errors)) {

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.editstate.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
@@ -19,4 +20,8 @@ public interface EditStateOfDailyPerformanceRepository {
 	List<EditStateOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd);
 	
 	void updateByKey(List<EditStateOfDailyPerformance> editStates);
+	
+	void addAndUpdate(List<EditStateOfDailyPerformance> editStates);
+	
+	Optional<EditStateOfDailyPerformance> findByKeyId(String employeeId, GeneralDate ymd, Integer id);
 }

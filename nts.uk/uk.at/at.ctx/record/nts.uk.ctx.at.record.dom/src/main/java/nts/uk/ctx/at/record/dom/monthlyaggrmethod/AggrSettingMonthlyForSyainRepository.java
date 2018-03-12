@@ -17,16 +17,10 @@ public interface AggrSettingMonthlyForSyainRepository {
 	Optional<AggrSettingMonthlyForSyain> find(String companyId, String employeeId);
 	
 	/**
-	 * 追加
+	 * 登録および更新
 	 * @param aggrSettingMonthlyForSyain 社員月別実績集計設定
 	 */
-	void insert(AggrSettingMonthlyForSyain aggrSettingMonthlyForSyain);
-	
-	/**
-	 * 更新
-	 * @param aggrSettingMonthlyForSyain 社員月別実績集計設定
-	 */
-	void update(AggrSettingMonthlyForSyain aggrSettingMonthlyForSyain);
+	void persistAndUpdate(AggrSettingMonthlyForSyain aggrSettingMonthlyForSyain);
 	
 	/**
 	 * 削除

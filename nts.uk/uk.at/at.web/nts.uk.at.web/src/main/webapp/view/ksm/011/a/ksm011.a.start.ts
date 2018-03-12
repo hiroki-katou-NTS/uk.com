@@ -11,16 +11,28 @@ module nts.uk.at.view.ksm011.a {
             viewmodelD: new ksm.d.viewmodel.ScreenModel()
         };
 
-        __viewContext.bind(__viewContext.viewModel);
+            __viewContext.bind(__viewContext.viewModel);
 
-        $(".link-control a").on("click", function() {
-            event.preventDefault();
-            $(".link-control a").removeClass('hyperlink-disable');
-            $(this).addClass("hyperlink-disable");
-            $('#item-panel').animate({ scrollTop: $(".item-panel").scrollTop() + $($(this).attr("href")).position().top - 5 }, 'fast');
-        });
         
         // show active tab panel 
-        _.defer(() => { $('.navigator li a.active').trigger('click'); });
+        _.delay(() => {
+            $(".link-control a").on("click", function() {
+                event.preventDefault();
+                $(".link-control a").removeClass('hyperlink-disable');
+                $(this).addClass("hyperlink-disable");
+                $('#item-panel').animate({ scrollTop: $(".item-panel").scrollTop() + $($(this).attr("href")).position().top - 5 }, 'fast');
+            });
+            $('.navigator li a.active').trigger('click');
+        }, 200);
+        
+        // show active tab panel 
+        _.delay(() => {
+            $(".link-control1 a").on("click", function() {
+                event.preventDefault();
+                $(".link-control1 a").removeClass('hyperlink-disable');
+                $(this).addClass("hyperlink-disable");
+                $('#item-panel-d').animate({ scrollTop: $("#item-panel-d").scrollTop() + $($(this).attr("href")).position().top }, 'fast');
+            });
+        }, 2);
     });
 }

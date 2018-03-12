@@ -54,7 +54,7 @@ public class MonthlyPatternSettingWs {
 	@POST
 	@Path("findAll")
 	public List<MonthlyPatternSettingDto> findById(MonthlyPatternSettingFindAllDto input){
-		return this.finder.findAllMonthlyPatternSettingBySid(input.getEmployeeIds());
+		return this.finder.findAllMonthlyPatternSettingBySid(input.getEmployeeIds(), input.getMonthlyPatternCodes());
 	}
 	
 	/**

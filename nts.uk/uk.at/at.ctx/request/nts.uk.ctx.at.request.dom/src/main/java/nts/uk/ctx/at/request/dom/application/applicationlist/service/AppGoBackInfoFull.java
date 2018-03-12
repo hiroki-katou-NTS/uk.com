@@ -16,7 +16,7 @@ public class AppGoBackInfoFull {
 	/**
 	 * 勤務時間開始1
 	 */
-	private Integer workTimeStart1;
+	private String workTimeStart1;
 	/**
 	 * 勤務直帰1
 	 */
@@ -24,7 +24,7 @@ public class AppGoBackInfoFull {
 	/**
 	 * 勤務時間終了1
 	 */
-	private Integer workTimeEnd1;
+	private String workTimeEnd1;
 	/**
 	 * 勤務直行2
 	 */
@@ -32,7 +32,7 @@ public class AppGoBackInfoFull {
 	/**
 	 * 勤務時間開始2
 	 */
-	private Integer workTimeStart2;
+	private String workTimeStart2;
 	/**
 	 * 勤務直帰2
 	 */
@@ -40,5 +40,5 @@ public class AppGoBackInfoFull {
 	/**
 	 * 勤務時間終了2
 	 */
-	private Integer workTimeEnd2;
+	private String workTimeEnd2;
 }

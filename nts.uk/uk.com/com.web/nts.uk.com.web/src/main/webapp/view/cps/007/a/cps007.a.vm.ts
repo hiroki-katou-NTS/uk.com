@@ -44,19 +44,7 @@ module cps007.a.vm {
                     layoutID: layout.id,
                     layoutCode: layout.code,
                     layoutName: layout.name,
-                    itemsClassification: _(layout.itemsClassification || []).map((item, i) => {
-                        return {
-                            dispOrder: i + 1,
-                            personInfoCategoryID: item.personInfoCategoryID,
-                            layoutItemType: _(IT_CLA_TYPE).map(x => x).indexOf(item.layoutItemType),
-                            listItemClsDf: _(item.listItemDf || []).map((def, j) => {
-                                return {
-                                    dispOrder: j + 1,
-                                    personInfoItemDefinitionID: def.id
-                                };
-                            }).value()
-                        };
-                    }).value()
+                    itemsClassification: layout.outData
                 };
 
             let itemids = _(command.itemsClassification)
@@ -111,6 +99,7 @@ module cps007.a.vm {
         name: string;
         editable?: boolean;
         itemsClassification?: Array<IItemClassification>;
+        outData?: Array<any>;
     }
 
     class Layout {
@@ -119,7 +108,7 @@ module cps007.a.vm {
         name: KnockoutObservable<string> = ko.observable('');
         editable: KnockoutObservable<boolean> = ko.observable(true);
         itemsClassification: KnockoutObservableArray<IItemClassification> = ko.observableArray([]);
-
+        outData: KnockoutObservableArray<any> = ko.observableArray([]);
         constructor(param: ILayout) {
             let self = this;
 

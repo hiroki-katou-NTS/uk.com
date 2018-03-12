@@ -106,9 +106,10 @@ public class LayoutPersonInfoClsFinder {
 				break;
 			}
 		}
+
 		return listItemCls.stream()
-				.filter(m -> (m.getLayoutItemType() != LayoutItemType.SeparatorLine && !m.getListItemDf().isEmpty())
-						|| m.getLayoutItemType() == LayoutItemType.SeparatorLine)
+				.filter(m -> (m.getLayoutItemType() != LayoutItemType.SeparatorLine && m.getListItemDf() != null
+						&& !m.getListItemDf().isEmpty()) || m.getLayoutItemType() == LayoutItemType.SeparatorLine)
 				.collect(Collectors.toList());
 
 	}

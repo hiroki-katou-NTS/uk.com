@@ -14,9 +14,6 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiBreakTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -90,18 +87,14 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 				value.get(0).krcdtDaiBreakTimePK.employeeId, EnumAdaptor.valueOf(type, BreakType.class),
 				value.stream().map(item -> new BreakTimeSheet(
 							new BreakFrameNo(item.krcdtDaiBreakTimePK.breakFrameNo), 
-							toWorkStamp(item.startStampRoundingTimeDay, item.startStampTime, item.startStampPlaceCode, item.startStampSourceInfo),
-							toWorkStamp(item.endStampRoundingTimeDay, item.endStampTime, item.endStampPlaceCode, item.endStampSourceInfo), 
+							toTimeWithDayAttr(item.startStampTime),
+							toTimeWithDayAttr(item.endStampTime), 
 							new AttendanceTime(0))).collect(Collectors.toList()), 
 				value.get(0).krcdtDaiBreakTimePK.ymd);
 	}
 
-	private WorkStamp toWorkStamp(Integer stampRound, Integer stamp, String workplaceCode, Integer stampInfo) {
-		return new WorkStamp(
-				stampRound == null ? null : new TimeWithDayAttr(stampRound),
-				stamp == null ? null : new TimeWithDayAttr(stamp), 
-				workplaceCode == null ? null : new WorkLocationCD(workplaceCode),
-				stampInfo == null ? null : EnumAdaptor.valueOf(stampInfo, StampSourceInfo.class));
+	private TimeWithDayAttr toTimeWithDayAttr(Integer time) {
+		return time == null ? null : new TimeWithDayAttr(time);
 	}
 
 	@Override

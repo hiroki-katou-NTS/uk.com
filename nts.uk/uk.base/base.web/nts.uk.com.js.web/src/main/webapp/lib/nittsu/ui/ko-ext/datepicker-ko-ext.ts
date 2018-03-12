@@ -123,6 +123,7 @@ module nts.uk.ui.koExtentions {
                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
                     value(newText);
                 }
+                $input.focus();
             });
             
             $input.on("blur", () => {
@@ -169,6 +170,8 @@ module nts.uk.ui.koExtentions {
             
             new nts.uk.util.value.DefaultValue().onReset($input, data.value);
             container.data("init", false);
+            
+            $input.ntsDatepicker("bindFlip");
         }
 
         /**
@@ -677,7 +680,7 @@ module nts.uk.ui.koExtentions {
         }
         
         parseDate(date: string): any {
-            var exp = new RegExp(/\d+(\/\d+)?(\/\d+)?/);
+            var exp = /\d+(\/\d+)?(\/\d+)?/;
             if (exp.test(date) === false) return;
             var dateParts = date.split(this.DATE_SPLITTER);
             return {

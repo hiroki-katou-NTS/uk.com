@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Content;
 /**
  * 申請承認メールテンプレート
@@ -19,6 +20,6 @@ public class ApprovalTemp extends AggregateRoot{
 	// 本文
 	private Content content;
 	public static ApprovalTemp createFromJavaType(String companyId, String content){
-		return new ApprovalTemp(companyId, new Content(content));
+		return new ApprovalTemp(companyId, StringUtil.isNullOrEmpty(content, true) ? null : new Content(content));
 	}
 }

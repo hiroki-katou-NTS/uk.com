@@ -72,6 +72,20 @@ public class PredetermineTimeSetForCalc {
 	}
 	
 	/**
+	 * 所定終了時間を所定開始時間と同じ時刻に変更する
+	 */
+	public void endTimeSetStartTime() {
+		val copyTimeSheet = this.getTimeSheets();
+		this.timeSheets.clear();
+		for(TimezoneUse timeSheet : copyTimeSheet) {
+			this.timeSheets.add(new TimezoneUse(timeSheet.getStart(),
+												timeSheet.getStart(),
+												timeSheet.getUseAtr(),
+												timeSheet.getWorkNo()));
+		}
+	}
+	
+	/**
 	 * 勤務の単位を基に時間帯の開始、終了を補正
 	 * @param dailyWork 1日の勤務
 	 */

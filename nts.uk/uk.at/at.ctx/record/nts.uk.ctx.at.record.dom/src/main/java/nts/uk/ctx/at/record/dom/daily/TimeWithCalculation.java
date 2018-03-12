@@ -22,7 +22,7 @@ public class TimeWithCalculation {
 	
 	/**
 	 * 時間、計算時間が同じ計算付き時間帯を作成する
-	 * @return
+	 * @return 計算付き時間
 	 */
 	public static TimeWithCalculation sameTime(AttendanceTime time) {
 		return new TimeWithCalculation(time,time);
@@ -31,7 +31,7 @@ public class TimeWithCalculation {
 	
 	/**
 	 * 指定された時間で計算付き時間を作成する
-	 * @return
+	 * @return 計算付き時間
 	 */
 	public static TimeWithCalculation createTimeWithCalculation(AttendanceTime time,AttendanceTime calcTime) {
 		return new TimeWithCalculation(time,calcTime);
@@ -39,13 +39,13 @@ public class TimeWithCalculation {
 	}
 	
 	/**
-	 * 時間を加算する(返値なし)
-	 * @param time
-	 * @param calcTime
+	 * 時間を加算する（返り値なし）
+	 * @param time 時間
+	 * @param calcTime 計算時間
 	 */
 	public void addMinutesNotReturn(AttendanceTime time,AttendanceTime calcTime) {
-		this.time.addMinutes(time.valueAsMinutes());
-		this.calcTime.addMinutes(calcTime.valueAsMinutes());
+		this.time = this.time.addMinutes(time.valueAsMinutes());
+		this.calcTime = this.calcTime.addMinutes(calcTime.valueAsMinutes());
 	}
 	
 	/**

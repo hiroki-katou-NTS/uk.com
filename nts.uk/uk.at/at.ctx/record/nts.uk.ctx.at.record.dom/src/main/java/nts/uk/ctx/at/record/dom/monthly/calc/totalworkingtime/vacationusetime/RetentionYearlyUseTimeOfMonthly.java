@@ -1,10 +1,11 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.RetentionYearlyUseTimeOfTimeSeries;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
@@ -21,10 +22,7 @@ public class RetentionYearlyUseTimeOfMonthly {
 	private AttendanceTimeMonth useTime;
 	/** 時系列ワーク */
 	@Getter
-	private List<RetentionYearlyUseTimeOfTimeSeries> timeSeriesWorks;
-
-	/** 集計済 */
-	private boolean isAggregated;
+	private Map<GeneralDate, RetentionYearlyUseTimeOfTimeSeries> timeSeriesWorks;
 
 	/**
 	 * コンストラクタ
@@ -32,8 +30,7 @@ public class RetentionYearlyUseTimeOfMonthly {
 	public RetentionYearlyUseTimeOfMonthly(){
 		
 		this.useTime = new AttendanceTimeMonth(0);
-		this.timeSeriesWorks = new ArrayList<>();
-		this.isAggregated = false;
+		this.timeSeriesWorks = new HashMap<>();
 	}
 
 	/**
@@ -52,15 +49,16 @@ public class RetentionYearlyUseTimeOfMonthly {
 	/**
 	 * 積立年休使用時間を確認する
 	 * @param datePeriod 期間
-	 * @param attendanceTimeOfDailys リスト：日別実績の勤怠時間
+	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
 	 */
 	public void confirm(DatePeriod datePeriod,
-			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
 
-		for (val attendanceTimeOfDaily : attendanceTimeOfDailys) {
+		for (val attendanceTimeOfDaily : attendanceTimeOfDailys.values()) {
+			val ymd = attendanceTimeOfDaily.getYmd();
 			
 			// 期間外はスキップする
-			if (!datePeriod.contains(attendanceTimeOfDaily.getYmd())) continue;
+			if (!datePeriod.contains(ymd)) continue;
 			
 			// 「日別実績の積立年休」を取得する
 			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -71,7 +69,8 @@ public class RetentionYearlyUseTimeOfMonthly {
 			
 			// 取得した使用時間を「月別実績の積立年休使用時間」に入れる
 			//*****（未）　「日別実績の積立年休」クラスをnewして、値を入れて、それをset？
-			this.timeSeriesWorks.add(RetentionYearlyUseTimeOfTimeSeries.of(attendanceTimeOfDaily.getYmd()));
+			val retentionYearlyUseTimeOfTimeSeries = RetentionYearlyUseTimeOfTimeSeries.of(ymd);
+			this.timeSeriesWorks.putIfAbsent(ymd, retentionYearlyUseTimeOfTimeSeries);
 		}
 	}
 	
@@ -81,15 +80,12 @@ public class RetentionYearlyUseTimeOfMonthly {
 	 */
 	public void aggregate(DatePeriod datePeriod){
 		
-		if (this.isAggregated) return;
-		
 		this.useTime = new AttendanceTimeMonth(0);
 		
-		for (val timeSeriesWork : this.timeSeriesWorks){
+		for (val timeSeriesWork : this.timeSeriesWorks.values()){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 			//RetentionYearlyOfDaily retentionYearly = timeSeriesWork.getRetentionYearly();
 			//this.useTime.addMinutes(retentionYearly.getUseTime().valueAsMinutes());
 		}
-		this.isAggregated = true;
 	}
 }

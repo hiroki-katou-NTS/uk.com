@@ -28,14 +28,21 @@ public class DefaultMailSender implements MailSender {
 		
 		String companyId = AppContexts.user().companyId();
 		val setting = this.settingAdaptor.getSetting(companyId);
+		
+		if (setting == null) {
+			throw SendMailFailedException.asNoSetting();
+		}
+		
 		val mailer = MailerFactory.create(setting);
 		
 		try {
 			mailer.send(new DefaultMailToSend(from, to, contents));
-		} catch (FailedConnectSmtpServerException
-				| FailedConnectAuthServerException
-				| FailedAuthenticateException e) {
-			throw new SendMailFailedException();
+		} catch (FailedConnectSmtpServerException e) {
+			throw SendMailFailedException.asCannotConnectSmtpServer();
+		} catch (FailedConnectAuthServerException e) {
+			throw SendMailFailedException.asCannotConnectAuthServer();
+		} catch (FailedAuthenticateException e) {
+			throw SendMailFailedException.asAuthenticationFailed();
 		}
 	}
 	

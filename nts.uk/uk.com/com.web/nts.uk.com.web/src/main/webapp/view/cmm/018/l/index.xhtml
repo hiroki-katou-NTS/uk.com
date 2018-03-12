@@ -18,15 +18,15 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="btnPrint" data-bind = "click: printExcel" class="proceed">#{i18n.getText('CMM018_71')}</button>
-				<button id="btnClose" data-bind = "click: closeDialog">#{i18n.getText('CMM018_72')}</button>
+				<button id="btnPrint" data-bind="click: printExcel" class="proceed">#{i18n.getText('CMM018_71')}</button>
+				<button id="btnClose" data-bind="click: closeDialog">#{i18n.getText('CMM018_72')}</button>
 			</div>
-			<div id="contents-area">			
-				<div id="lblTitle" class="label">#{i18n.getText('CMM018_73')}</div>				
-				<span id="spBaseDate" class="label with-image">
-					<i class="image image-calendar"/>
-					<span>#{i18n.getText('CMM018_74')}</span>
-					<div id="baseDate" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+			<div id="contents-area">
+				<div id="lblTitle" class="label">#{i18n.getText('CMM018_73')}</div>
+				<span id="spBaseDate" class="label with-image"> <i
+					class="image image-calendar" /> <span>#{i18n.getText('CMM018_74')}</span>
+					<div id="baseDate"
+						data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
 				</span>
 			</div>
 		</ui:define>

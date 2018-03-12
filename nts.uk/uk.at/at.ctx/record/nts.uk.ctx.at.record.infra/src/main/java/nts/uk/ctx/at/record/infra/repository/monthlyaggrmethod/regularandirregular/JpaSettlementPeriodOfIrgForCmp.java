@@ -8,6 +8,7 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.Settlement
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.SettlementPeriodOfIrgForCmpRepository;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.company.KrcstMonsetCmpIrgSetl;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.company.KrcstMonsetCmpIrgSetlPK;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.regularandirregular.KrcstMonsetIrgSetl;
 
 /**
  * リポジトリ実装：会社の変形労働の精算期間
@@ -22,7 +23,7 @@ public class JpaSettlementPeriodOfIrgForCmp extends JpaRepository implements Set
 	/** 追加 */
 	@Override
 	public void insert(String companyId, SettlementPeriod settlementPeriod) {
-		this.commandProxy().insert(toEntity(companyId, settlementPeriod, false));
+		this.getEntityManager().persist(toEntity(companyId, settlementPeriod, false));
 	}
 	
 	/** 更新 */
@@ -35,8 +36,8 @@ public class JpaSettlementPeriodOfIrgForCmp extends JpaRepository implements Set
 	@Override
 	public void removeByParentPK(String companyId) {
 		this.getEntityManager().createQuery(DELETE_BY_PARENT_PK)
-			.setParameter("companyId", companyId)
-			.executeUpdate();
+				.setParameter("companyId", companyId)
+				.executeUpdate();
 	}
 	
 	/**
@@ -54,14 +55,14 @@ public class JpaSettlementPeriodOfIrgForCmp extends JpaRepository implements Set
 		
 		KrcstMonsetCmpIrgSetl entity;
 		if (execUpdate){
-			entity = this.queryProxy().find(key, KrcstMonsetCmpIrgSetl.class).get();
+			entity = this.getEntityManager().find(KrcstMonsetCmpIrgSetl.class, key);
 		}
 		else {
 			entity = new KrcstMonsetCmpIrgSetl();
 			entity.PK = key;
+			entity.setValue = new KrcstMonsetIrgSetl();
 		}
 		entity.setValue.endMonth = domain.getEndMonth().v();
-		if (execUpdate) this.commandProxy().update(entity);
 		return entity;
 	}
 }

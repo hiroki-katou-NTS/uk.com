@@ -20,9 +20,11 @@ public class KscstWorkTypeDispSetPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	/** 会社ID **/
 	@Column(name = "CID")
 	public String companyId;
 
+	/** 勤務種類 **/
 	@Column(name = "WORKTYPE_CD")
 	public String workTypeCode;
 

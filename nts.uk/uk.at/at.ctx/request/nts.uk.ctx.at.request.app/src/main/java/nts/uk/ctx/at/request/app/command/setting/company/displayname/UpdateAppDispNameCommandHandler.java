@@ -11,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * update app display name
  * @author yennth
@@ -23,10 +24,11 @@ public class UpdateAppDispNameCommandHandler extends CommandHandler<List<AppDisp
 	private AppDispNameRepository dispRep;
 	@Override
 	protected void handle(CommandHandlerContext<List<AppDispNameCommand>> context) {
+		String companyId = AppContexts.user().companyId();
 		List<AppDispNameCommand> data = context.getCommand();
 		for(AppDispNameCommand item : data){
 			Optional<AppDispName> appDisp = dispRep.getDisplay(item.getAppType());
-			AppDispName app = AppDispName.createFromJavaType(item.getCompanyId(), item.getAppType(), item.getDispName());
+			AppDispName app = AppDispName.createFromJavaType(companyId, item.getAppType(), item.getDispName());
 			if(appDisp.isPresent()){
 				dispRep.update(app);
 			}else{

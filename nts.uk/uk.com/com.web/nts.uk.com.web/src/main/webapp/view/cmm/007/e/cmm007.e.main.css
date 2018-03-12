@@ -3,6 +3,10 @@
 }
 
 .main-table-e {
-	display: flex; 
+	display: flex;
 	padding-top: 40px;
+}
+
+#tabpanel-4 .main-content {
+	min-width: 1200px;
 }

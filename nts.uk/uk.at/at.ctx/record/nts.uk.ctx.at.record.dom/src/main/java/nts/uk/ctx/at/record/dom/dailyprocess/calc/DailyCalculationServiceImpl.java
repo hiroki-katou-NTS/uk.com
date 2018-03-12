@@ -38,7 +38,6 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 	/**
 	 * Managerクラス
 	 * @param asyncContext 同期コマンドコンテキスト
-	 * @param companyId 会社ID
 	 * @param employeeIds 社員IDリスト
 	 * @param datePeriod 期間
 	 * @param executionAttr 実行区分　（手動、自動）
@@ -46,7 +45,7 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 	 * @param executionLog 実行ログ
 	 */
 	@Override
-	public ProcessState manager(AsyncCommandHandlerContext asyncContext, String companyId, List<String> employeeIds,
+	public ProcessState manager(AsyncCommandHandlerContext asyncContext, List<String> employeeIds,
 			DatePeriod datePeriod, ExecutionAttr executionAttr, String empCalAndSumExecLogID,
 			Optional<ExecutionLog> executionLog) {
 		
@@ -80,7 +79,7 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 		
 			// 社員の日別実績を計算
 			status = this.dailyCalculationEmployeeService.calculate(asyncContext,
-					companyId, employeeId, datePeriod, empCalAndSumExecLogID, reCalcAtr);
+					employeeId, datePeriod, empCalAndSumExecLogID, reCalcAtr);
 
 			// 状態確認
 			if (status == ProcessState.SUCCESS){

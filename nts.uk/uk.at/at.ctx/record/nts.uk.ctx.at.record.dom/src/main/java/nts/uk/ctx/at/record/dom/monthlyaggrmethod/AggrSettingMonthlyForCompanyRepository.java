@@ -16,16 +16,10 @@ public interface AggrSettingMonthlyForCompanyRepository {
 	Optional<AggrSettingMonthlyForCompany> find(String companyId);
 	
 	/**
-	 * 追加
+	 * 登録および更新
 	 * @param aggrSettingMonthlyForCompany 会社月別実績集計設定
 	 */
-	void insert(AggrSettingMonthlyForCompany aggrSettingMonthlyForCompany);
-	
-	/**
-	 * 更新
-	 * @param aggrSettingMonthlyForCompany 会社月別実績集計設定
-	 */
-	void update(AggrSettingMonthlyForCompany aggrSettingMonthlyForCompany);
+	void persistAndUpdate(AggrSettingMonthlyForCompany aggrSettingMonthlyForCompany);
 	
 	/**
 	 * 削除

@@ -933,9 +933,15 @@ public class WorkingConditionDto extends PeregDomainDto {
 		dto.setAutoIntervalSetAtr(workingConditionItem.getAutoIntervalSetAtr().value);
 		dto.setVacationAddedTimeAtr(workingConditionItem.getVacationAddedTimeAtr().value);
 		if(workingConditionItem.getHolidayAddTimeSet().isPresent()){
-			dto.setOneDay(workingConditionItem.getHolidayAddTimeSet().get().getOneDay().v());
-			dto.setMorning(workingConditionItem.getHolidayAddTimeSet().get().getMorning().v());
-			dto.setAfternoon(workingConditionItem.getHolidayAddTimeSet().get().getAfternoon().v());
+			if (workingConditionItem.getHolidayAddTimeSet().get().getOneDay() != null){
+				dto.setOneDay(workingConditionItem.getHolidayAddTimeSet().get().getOneDay().v());
+			}
+			if (workingConditionItem.getHolidayAddTimeSet().get().getMorning() != null){
+				dto.setMorning(workingConditionItem.getHolidayAddTimeSet().get().getMorning().v());
+			}
+			if (workingConditionItem.getHolidayAddTimeSet().get().getAfternoon() != null){
+				dto.setAfternoon(workingConditionItem.getHolidayAddTimeSet().get().getAfternoon().v());
+			}
 		}
 		dto.setLaborSystem(workingConditionItem.getLaborSystem().value);
 		dto.setContractTime(workingConditionItem.getContractTime().v());
@@ -950,14 +956,19 @@ public class WorkingConditionDto extends PeregDomainDto {
 			dto.setReferenceBusinessDayCalendar(scheduleMethod.getWorkScheduleBusCal().get().getReferenceBusinessDayCalendar().value);			
 			dto.setReferenceBasicWork(scheduleMethod.getWorkScheduleBusCal().get().getReferenceBasicWork().value);
 		}
-		if(scheduleMethod.getBasicCreateMethod() == WorkScheduleBasicCreMethod.MONTHLY_PATTERN)
-		{
-			if(scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent())
-				dto.setReferenceType(scheduleMethod.getMonthlyPatternWorkScheduleCre().get().getReferenceType().value);
-		}else if(scheduleMethod.getBasicCreateMethod() == WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR) {
-			if(scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent())
+		
+		if(scheduleMethod.getBasicCreateMethod() != WorkScheduleBasicCreMethod.PERSONAL_DAY_OF_WEEK) {
+			if(scheduleMethod.getWorkScheduleBusCal().isPresent())
 				dto.setReferenceType(scheduleMethod.getWorkScheduleBusCal().get().getReferenceWorkingHours().value);
 		}
+//		if(scheduleMethod.getBasicCreateMethod() == WorkScheduleBasicCreMethod.MONTHLY_PATTERN)
+//		{
+//			if(scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent())
+//				dto.setReferenceType(scheduleMethod.getMonthlyPatternWorkScheduleCre().get().getReferenceType().value);
+//		}else if(scheduleMethod.getBasicCreateMethod() == WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR) {
+//			if(scheduleMethod.getWorkScheduleBusCal().isPresent())
+//				dto.setReferenceType(scheduleMethod.getWorkScheduleBusCal().get().getReferenceWorkingHours().value);
+//		}
 	}
 
 	private static void setHolidayTime(WorkingConditionDto dto, SingleDaySchedule holidayTime) {

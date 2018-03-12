@@ -14,7 +14,7 @@
 					height : 600
 				};
 			</script>
-			
+
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cdl024.main.css" />
 			<com:scriptfile path="cdl024.start.js" />
@@ -24,13 +24,15 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-			
+
 				<div id="label1" class="label">#{i18n.getText('CDL024_6')}</div>
-				
+
 				<div id="filterArea">
-					<div style="width: 400px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
+					<div style="width: 400px"
+						data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
 						items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}"></div>
-					<table id="multi-list" data-bind="ntsGridList: {
+					<table id="multi-list"
+						data-bind="ntsGridList: {
 							height: 320,
 							options: items,
 							optionsValue: 'code',
@@ -40,12 +42,12 @@
 						}"></table>
 				</div>
 			</div>
-			
+
 			<div id="functions-area-bottom">
 				<button class="proceed" data-bind="click: sendAttribute">#{i18n.getText('CDL024_4')}</button>
 				<button data-bind="click: closeDialog">#{i18n.getText('CDL024_5')}</button>
 			</div>
-			
+
 		</ui:define>
 
 	</ui:composition>

@@ -12,26 +12,26 @@
 			<table id="wkp_view">
 				<tr id="function-tr">
 					<td class="bg-green border-left wkp-tdpad" id="tbl_left"><button
-							id="btn_show_dialog" data-bind="click: openDialogCDL008, text: targetBtnText, attr: {tabindex: tabIndex}"></button>
+							id="btn_show_dialog"
+							data-bind="click: openDialogCDL008, text: targetBtnText, attr: {tabindex: tabIndex}"></button>
 					</td>
 					<td class="bg-green none_border wkp-tdpad">
-					<button class="btn_select" id="prev-btn"
+						<button class="btn_select" id="prev-btn"
 							data-bind="click: previousWkp, enable: isActivePreviousBtn(), attr: {tabindex: tabIndex}">
-						</button></td>
+						</button>
+					</td>
 					<td class="bg-green border-right wkp-tdpad">
 						<button class="btn_select" id="next-btn"
 							data-bind="click: nextWkp, enable: isActiveNextBtn(), attr: {tabindex: tabIndex}">
 						</button>
 					</td>
-					<td class="none_border wkp-tdpad nts-searchbbox-wrapper">
-						<input type="search"
-								class="ntsSearchBox"
-								id="search-input"
-								data-bind=" ntsTextEditor: {
+					<td class="none_border wkp-tdpad nts-searchbbox-wrapper"><input
+						type="search" class="ntsSearchBox" id="search-input"
+						data-bind=" ntsTextEditor: {
 										value: keySearch,
 										name: '#[KCP009_2]',
 										option: {enable: true}
-										}, attr: {tabindex: tabIndex}, valueUpdate: 'afterkeydown'"  />
+										}, attr: {tabindex: tabIndex}, valueUpdate: 'afterkeydown'" />
 					</td>
 					<td class="none_border em_display wkp-tdpad">
 						<div class="over_text">

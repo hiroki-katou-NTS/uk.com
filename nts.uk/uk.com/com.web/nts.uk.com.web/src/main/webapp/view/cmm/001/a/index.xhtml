@@ -83,9 +83,10 @@
 				</div>
 
 				<!-- ======================= Chi tiet man hinh ben phai của màn hình A ========================== -->
-				<div class="fixed-flex-layout-right" data-bind="with: currentCompany">
+				<div class="fixed-flex-layout-right"
+					data-bind="with: currentCompany">
 					<div class="line-height flex">
-						<div style="width: 176px;">
+						<div>
 							<!-- A3_1 -->
 							<div id="LBLCompanyCode"
 								data-bind="ntsFormLabel: { required: true, constraint: 'CompanyCode'}">#{i18n.getText('CMM001_7')}</div>
@@ -131,7 +132,8 @@
 								</tr>
 								<tr style="margin-top: 20px;">
 									<th colspan="1" class="th-col1">
-										<div data-bind="ntsFormLabel:{required: true, constraint: 'KNName'}">
+										<div
+											data-bind="ntsFormLabel:{required: true, constraint: 'KNName'}">
 											<!-- A3_7 -->
 											<label id="LBLCompanyNameKana">#{i18n.getText('CMM001_12')}</label>
 										</div>
@@ -141,14 +143,15 @@
 										<div style="margin-top: 5px">
 											<!-- A3_8 -->
 											<input id="companyNameKana" tabindex="12" class="save-error"
-												data-bind="ntsTextEditor: {value:comNameKana, constraint: 'KNName', required: true, name: '#[CMM001_13]'}" />
+												data-bind="ntsTextEditor: {value: comNameKana, constraint: 'KNName', required: true, name: '#[CMM001_13]'}" />
 										</div>
 									</th>
 								</tr>
 								<tr style="margin-top: 20px;">
 									<th colspan="1" class="th-col1">
 										<!-- data-bind="ntsFormLabel:{required: true, constraint:'CompanyNameAbb'}" -->
-										<div data-bind="ntsFormLabel: {required: true, constraint: 'ABName'}">
+										<div
+											data-bind="ntsFormLabel: {required: true, constraint: 'ABName'}">
 											<!-- A3_9 -->
 											<label id="LBLCompanyNameAbb">#{i18n.getText('CMM001_14')}</label>
 										</div>
@@ -170,7 +173,7 @@
 
 					<!-- <Tabpanel> -->
 					<div class="cf flex">
-						<div style=" margin-top: 20px">
+						<div style="margin-top: 20px">
 
 							<div class="cf"
 								data-bind="ntsTabPanel: { dataSource: $parent.tabs,
@@ -182,7 +185,7 @@
 										<tbody>
 											<!-- 1 -->
 											<tr style="margin-top: 10px;">
-												<th colspan="1" class="th-col1" style="width: 150px">
+												<th colspan="1" class="th-col3" style="width: 150px">
 													<div class="form-label"
 														data-bind="ntsFormLabel:{required: false}"
 														style="margin-top: 5px;">
@@ -193,14 +196,15 @@
 												<th colspan="2" class="th-col2">
 													<div>
 														<!-- B1_2 -->
-														<input id="corporateMyNumber" tabindex="17" class="save-error"
+														<input id="corporateMyNumber" tabindex="17"
+															class="save-error"
 															data-bind="ntsTextEditor: {value: taxNum, constraint: 'TaxNo', name: '#[CMM001_19]'}" />
 													</div>
 												</th>
 											</tr>
 											<!--  2  -->
 											<tr style="margin-top: 10px;">
-												<th colspan="1" class="th-col1">
+												<th colspan="1" class="th-col3">
 													<div class="form-label"
 														data-bind="ntsFormLabel:{required: false, constraint: 'RepName'}">
 														<!-- B1_3 -->
@@ -219,7 +223,7 @@
 											<!-- 3  -->
 
 											<tr style="margin-top: 20px;">
-												<th colspan="1" class="th-col1">
+												<th colspan="1" class="th-col3">
 													<div class="form-label"
 														data-bind="ntsFormLabel:{required: false, constraint: 'RepJob'}">
 														<!-- B1_5 -->
@@ -246,7 +250,7 @@
 										<tbody>
 											<!-- 1 -->
 											<tr style="margin-top: 5px;">
-												<th colspan="1" class="th-col1">
+												<th colspan="1" class="th-col3">
 													<div class="form-label"
 														data-bind="ntsFormLabel:{required: false}">
 														<!-- C1_1 -->
@@ -271,7 +275,7 @@
 												</th>
 											</tr>
 											<tr style="margin-top: 5px;">
-												<th colspan="2" class="th-col1">
+												<th colspan="2" class="th-col3">
 													<!-- C1_4 -->
 													<div class="form-label"
 														data-bind="ntsFormLabel:{required: false, constraint: ['Add_1', 'Add_2']}">
@@ -281,7 +285,7 @@
 											<!-- 4 -->
 											<tr style="margin-top: 5px;">
 												<!-- C1_5 -->
-												<th colspan="1" class="th-col1"><div
+												<th colspan="1" class="th-col3"><div
 														class="left20 border_none"
 														data-bind="ntsFormLabel:{required: false}">
 														<label id="LBLAddress1">#{i18n.getText('CMM001_25')}</label>
@@ -303,12 +307,11 @@
 											<!-- 5 -->
 											<tr style="margin-top: 5px;">
 												<!-- C1_7 -->
-												<th colspan="1" class="th-col1">
-												<div
-														class="left20 border_none"
+												<th colspan="1" class="th-col3">
+													<div class="left20 border_none"
 														data-bind="ntsFormLabel:{required: false}">
-												<label id="LBLAddress2">#{i18n.getText('CMM001_26')}</label>
-												</div>
+														<label id="LBLAddress2">#{i18n.getText('CMM001_26')}</label>
+													</div>
 												</th>
 												<th colspan="2" class="th-col2">
 													<div id="colum1">
@@ -322,8 +325,8 @@
 											</tr>
 											<!-- 6 -->
 											<tr style="margin-top: 5px;">
-												<th colspan="2" class="th-col1">
-													<!-- C1_9 --> 
+												<th colspan="2" class="th-col3">
+													<!-- C1_9 -->
 													<div class="form-label"
 														data-bind="ntsFormLabel:{required: false, constraint: ['Add_Kana_1', 'Add_Kana_2']}">
 														#{i18n.getText('CMM001_27')}</div>
@@ -332,11 +335,11 @@
 											<!-- 7 -->
 											<tr style="margin-top: 5px;">
 												<!-- C1_10 -->
-												<th colspan="1" class="th-col1">
-												<div class="left20 border_none"
+												<th colspan="1" class="th-col3">
+													<div class="left20 border_none"
 														data-bind="ntsFormLabel:{required: false}">
-												<label id="LBLAddressKana1">#{i18n.getText('CMM001_25')}</label>
-												</div>
+														<label id="LBLAddressKana1">#{i18n.getText('CMM001_25')}</label>
+													</div>
 												</th>
 
 												<th colspan="2" class="th-col2">
@@ -351,11 +354,11 @@
 											<!-- 8 -->
 											<tr style="margin-top: 5px;">
 												<!-- C1_12 -->
-												<th colspan="1" class="th-col1" >
-												<div class="left20 border_none"
+												<th colspan="1" class="th-col3">
+													<div class="left20 border_none"
 														data-bind="ntsFormLabel:{required: true}">
-												<label id="LBLAddressKana2">#{i18n.getText('CMM001_26')}</label>
-												</div>
+														<label id="LBLAddressKana2">#{i18n.getText('CMM001_26')}</label>
+													</div>
 												</th>
 												<th colspan="2" class="th-col2">
 													<div id="colum1">
@@ -367,9 +370,10 @@
 											</tr>
 											<!-- 9 -->
 											<tr style="margin-top: 5px;">
-												<th colspan="1" class="th-col1">
-													<!-- C1_14 --> 
-													<div class="form-label" data-bind="ntsFormLabel:{required: false}">
+												<th colspan="1" class="th-col3">
+													<!-- C1_14 -->
+													<div class="form-label"
+														data-bind="ntsFormLabel:{required: false}">
 														#{i18n.getText('CMM001_28')}</div>
 												</th>
 
@@ -384,17 +388,16 @@
 											</tr>
 											<!-- 10 -->
 											<tr style="margin-top: 5px;">
-												<th colspan="1" class="th-col1">
+												<th colspan="1" class="th-col3">
 													<!-- " -->
-													<div id = "fax" data-bind="ntsFormLabel:{required: false}">
+													<div id="fax" data-bind="ntsFormLabel:{required: false}">
 														<!-- C1_16 -->
 														<label style="margin-left: 3px;">#{i18n.getText('CMM001_29')}</label>
 													</div>
 												</th>
 
-												<th colspan="2" class="th-col2">
-												 <input
-													id="faxNo" tabindex="23" class="save-error"
+												<th colspan="2" class="th-col2"><input id="faxNo"
+													tabindex="23" class="save-error"
 													data-bind="ntsTextEditor: {value: addinfor().faxNum, constraint: 'FaxNum', name: '#[CMM001_29]'}" />
 												</th>
 											</tr>
@@ -409,7 +412,7 @@
 											<tbody>
 												<!-- 1 -->
 												<tr style="margin-top: 5px;">
-													<th colspan="1" class="th-col1">
+													<th colspan="1" class="th-col3">
 														<!-- D1_1 -->
 														<div class="form-label"
 															data-bind="ntsFormLabel:{required: true}"
@@ -434,7 +437,7 @@
 												</tr>
 												<!-- 2 -->
 												<tr style="margin-top: 5px;">
-													<th colspan="1" class="th-col1">
+													<th colspan="1" class="th-col3">
 														<div class="form-label"
 															data-bind="ntsFormLabel:{required: true}">
 															<!-- D1_3 -->
@@ -458,7 +461,7 @@
 												<!-- 3 -->
 												<!-- D1_5 -->
 												<tr style="margin-top: 5px;">
-													<th colspan="1" class="th-col1">
+													<th colspan="1" class="th-col3">
 														<div class="form-label"
 															data-bind="ntsFormLabel:{required: true}">
 															<label id="D_LBL_003">#{i18n.getText('CMM001_34')}</label>
@@ -479,7 +482,7 @@
 													</th>
 												</tr>
 												<tr style="margin-top: 5px;">
-													<th colspan="1" class="th-col1">
+													<th colspan="1" class="th-col3">
 														<div class="form-label"
 															data-bind="ntsFormLabel:{required: true}">
 															<!-- D1_7 -->
@@ -504,7 +507,7 @@
 													</th>
 												</tr>
 												<tr style="margin-top: 5px;">
-													<th colspan="1" class="th-col1">
+													<th colspan="1" class="th-col3">
 														<div data-bind="ntsFormLabel:{required: true}">
 															<!-- D1_10 -->
 															<label id="Ds_LBL_005">#{i18n.getText('CMM001_38')}</label>

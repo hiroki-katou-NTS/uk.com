@@ -74,7 +74,7 @@
 				</div>
 			</div>
 			<div data-bind="if: !screenModeNew()" style="display: inline-block;">
-				<span class="label fix-margin-left" data-bind="text: prePostSelected()==0 ? '#{i18n.getText('KAF009_9')}' : '#{i18n.getText('KAF009_10')}'"></span>
+				<span class="label fix-margin-left-kaf005" data-bind="text: prePostSelected()==0 ? '#{i18n.getText('KAF009_9')}' : '#{i18n.getText('KAF009_10')}'"></span>
 			</div>
 		</div>
 		<div class="valign-center control-group">
@@ -86,7 +86,7 @@
 					data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF005_33')}',required:true, value: appDate, dateFormat: 'YYYY/MM/DD'}, acceptJapaneseCalendar: true"></div>
 			</div>
 			<div data-bind="if: !screenModeNew()" style="display: inline-block;">
-				<span class="label fix-margin-left" data-bind="text: appDate"></span>
+				<span class="label fix-margin-left-kaf005" data-bind="text: appDate"></span>
 			</div>
 		</div>
 		<div data-bind="if: displayCaculationTime">
@@ -128,7 +128,7 @@
 					<div class="cell valign-center">
 						<div>
 							<!--A4_9 勤務時間From1--> 							
-							<input tabindex="8" class="row-cell-margin right-content" id="inpStartTime1"
+							<input tabindex="8" class="row-cell-margin inputTime-kaf005 right-content" id="inpStartTime1"
 								data-bind="ntsTimeWithDayEditor: { name: '#[KAF005_333]', constraint:'TimeWithDayAttr',value: timeStart1, enable: true, readonly: false, required: true }" />
 							<!--A4_10 ~1--> 								
 							<label class="valign-center link-label-kaf005">#{i18n.getText('KAF005_38')}</label>
@@ -137,7 +137,7 @@
 					<div class="cell valign-center">
 						<div class="row-cell-margin">
 							<!--A4_11 勤務時間To1--> 							
-							<input tabindex="9" id="inpEndTime1" class  ="right-content"
+							<input tabindex="9" id="inpEndTime1" class  ="right-content inputTime-kaf005"
 								data-bind="ntsTimeWithDayEditor: {name: '#[KAF005_334]', constraint:'TimeWithDayAttr', value: timeEnd1, enable: true, readonly: false, required: true}" />
 						</div>
 					</div>
@@ -152,7 +152,7 @@
 					<div class="cell valign-center">
 						<div>
 							<!--A4_12 勤務時間From2--> 							
-							<input tabindex="10" class="row-cell-margin right-content" id="inpStartTime2"
+							<input tabindex="10" class="row-cell-margin inputTime-kaf005 right-content" id="inpStartTime2"
 								data-bind="ntsTimeWithDayEditor: {name: '#[KAF005_335]',constraint:'TimeWithDayAttr',value: timeStart2}" />
 							<!--A4_13 ~2--> 								
 							<label class="valign-center link-label-kaf005">#{i18n.getText('KAF005_39')}</label>
@@ -161,7 +161,7 @@
 					<div class="cell valign-center">
 						<div>
 							<!--A4_14 勤務時間To2--> 							
-							<input tabindex="11" class="row-cell-margin right-content" id="inpEndTime2"
+							<input tabindex="11" class="row-cell-margin inputTime-kaf005 right-content" id="inpEndTime2"
 								data-bind="ntsTimeWithDayEditor: {name: '#[KAF005_336]', constraint:'TimeWithDayAttr',value: timeEnd2}" />
 						</div>
 					</div>
@@ -350,7 +350,7 @@
 				data-bind="ntsFormLabel: {}">#{i18n.getText('KAF005_88')}</div>
 			<!--A9_4 申請理由入力--> 
 			<div id="multiline">
-				<textarea tabindex="19" id ="appReason"
+				<textarea tabindex="19" id ="appReason" class ="textarea-kaf005"
 					data-bind="ntsMultilineEditor: {name: '#[KAF005_89]', 
 								value: multilContent,
 								option: {
@@ -385,7 +385,7 @@
 				data-bind="ntsFormLabel: {}">#{i18n.getText('KAF005_92')}</div>
 			<!--A9_8 乖離理由入力--> 
 			<div id="multiline"> 
-				<textarea tabindex="21" id ="divergenceReason"
+				<textarea tabindex="21" id ="divergenceReason" class ="textarea-kaf005"
 					data-bind="ntsMultilineEditor: {name: '#[KAF005_93]', 
 								value: multilContent2,
 								option: {

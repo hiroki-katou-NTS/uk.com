@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
+import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -62,12 +63,17 @@ public class WorkTypeDaysCountTable {
 	/** 特別休暇を加算する */
 	private boolean addSpecialHoliday;
 	
+	/** 月別実績の縦計方法 */
+	private VerticalTotalMethodOfMonthly verticalTotalMethod;
+	
 	/**
 	 * コンストラクタ
 	 * @param workType 勤務種類
 	 * @param vacationAddSet 休暇加算設定
+	 * @param verticalTotalMethod 月別実績の縦計方法
 	 */
-	public WorkTypeDaysCountTable(WorkType workType, VacationAddSet vacationAddSet){
+	public WorkTypeDaysCountTable(WorkType workType,
+			VacationAddSet vacationAddSet, VerticalTotalMethodOfMonthly verticalTotalMethod){
 		
 		// init
 		this.attendanceDays = new AttendanceDaysMonth(0.0);
@@ -92,6 +98,8 @@ public class WorkTypeDaysCountTable {
 		this.addRetentionYearly = vacationAddSet.isRetentionYearly();
 		//*****（未）　特別休暇の判定方法について、設計確認要。
 		this.addSpecialHoliday = false;
+		
+		this.verticalTotalMethod = verticalTotalMethod;
 		
 		this.confirmCount(workType);
 	}
@@ -194,9 +202,7 @@ public class WorkTypeDaysCountTable {
 		case Absence:
 			if (sumAbsenceNo >= 0){
 				val absenceFrameNo = Integer.valueOf(sumAbsenceNo);
-				if (!this.absenceDaysMap.containsKey(absenceFrameNo)) {
-					this.absenceDaysMap.put(absenceFrameNo, new AggregateAbsenceDays(absenceFrameNo));
-				}
+				this.absenceDaysMap.putIfAbsent(absenceFrameNo, new AggregateAbsenceDays(absenceFrameNo));
 				val targetAbsenceDays = this.absenceDaysMap.get(absenceFrameNo);
 				targetAbsenceDays.addDays(addDays);
 			}

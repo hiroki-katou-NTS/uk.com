@@ -5,6 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.WorkTypeDisplaySetting;
 import nts.uk.shr.com.context.AppContexts;
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,7 +20,7 @@ public class WorkTypeSetCommand {
 	/**
 	 * To domain
 	 * @param companyId
-	 * @param conditionNo
+	 * @param workTypeCode
 	 * @return
 	 */
 	public WorkTypeDisplaySetting toDomain(String workTypeCode){

@@ -1,3 +1,0 @@
-interface HTMLElement {
-    files: File[];
-}

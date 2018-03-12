@@ -53,6 +53,13 @@ public class ErrorAlarmWorkRecordAcFinder implements ErrorAlarmWorkRecordAdapter
 				.stream().map(c->convertToImport(c)).collect(Collectors.toList());
 		return data;
 	}
+
+	@Override
+	public List<ErrorAlarmWorkRecordAdapterDto> getListErAlByListCode(String companyId, List<String> listCode) {
+		List<ErrorAlarmWorkRecordAdapterDto> data = repo.getListErAlByListCode(companyId, listCode)
+				.stream().map(c->convertToImport(c)).collect(Collectors.toList());
+		return data;
+	}
 	
 
 }

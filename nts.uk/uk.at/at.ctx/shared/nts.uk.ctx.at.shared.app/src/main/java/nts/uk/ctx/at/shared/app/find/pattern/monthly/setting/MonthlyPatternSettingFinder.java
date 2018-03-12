@@ -40,9 +40,9 @@ public class MonthlyPatternSettingFinder {
      * @param employeeIds the employee ids
      * @return the list
      */
-    public List<MonthlyPatternSettingDto> findAllMonthlyPatternSettingBySid(List<String> employeeIds){
+    public List<MonthlyPatternSettingDto> findAllMonthlyPatternSettingBySid(List<String> employeeIds, List<String> monthlyPatternCodes){
     	
-    	List<WorkingConditionItem> listResult = this.repositoryWorkingCondItem.getByListSidAndMonthlyPatternNotNull(employeeIds);
+    	List<WorkingConditionItem> listResult = this.repositoryWorkingCondItem.getByListSidAndMonthlyPatternNotNull(employeeIds, monthlyPatternCodes);
     	
     	if (!listResult.isEmpty()) {
     		List<MonthlyPatternSettingDto> list = new ArrayList<>();

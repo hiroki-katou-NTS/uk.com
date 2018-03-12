@@ -10,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -19,9 +20,10 @@ public class UpdateHdAppSetCommandHandler extends CommandHandler<HdAppSetCommand
 
 	@Override
 	protected void handle(CommandHandlerContext<HdAppSetCommand> context) {
+		String companyId = AppContexts.user().companyId();
 		HdAppSetCommand data = context.getCommand();
 		Optional<HdAppSet> hdApp = hdRep.getAll();
-		HdAppSet hdAppSet = HdAppSet.createFromJavaType(data.companyId, 
+		HdAppSet hdAppSet = HdAppSet.createFromJavaType(companyId, 
 				data.use60h, data.obstacleName, data.regisShortLostHd, data.hdName, data.regisLackPubHd, 
 				data.changeWrkHour, data.ckuperLimit, data.actualDisp, data.wrkHours, data.pridigCheck, 
 				data.yearHdName, data.regisNumYear, data.furikyuName, data.regisInsuff, data.useGener, 

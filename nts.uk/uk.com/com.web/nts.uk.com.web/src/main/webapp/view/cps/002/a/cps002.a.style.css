@@ -187,7 +187,6 @@
 .table_item, th, td {
 	border: 1px solid black;
 	padding: 5px;
-	min-height: 20px;
 }
 
 .table_item th {
@@ -227,6 +226,14 @@
 	width: 100px;
 	height: 130px;
 	border-radius: 5px;
+}
+
+.step3-title-name {
+	width: 140px;
+}
+
+.step3-title-value {
+	width: 300px;
 }
 
 .isAllowUpload {

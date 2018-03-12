@@ -11,8 +11,6 @@ import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetti
 @Data
 @AllArgsConstructor
 public class StampRequestSettingCommand {
-	public String companyID;
-	
 	public String topComment;
 	
 	public String topCommentFontColor;

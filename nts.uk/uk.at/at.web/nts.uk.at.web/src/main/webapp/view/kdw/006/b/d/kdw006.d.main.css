@@ -24,7 +24,11 @@
 	padding-left: 5px;
 }
 
-#checkBox21,#checkBox31{
+#checkBox21
+{
+width: 176px;
+}
+#checkBox31{
 width: 147px;
 }
 #checkBox41{

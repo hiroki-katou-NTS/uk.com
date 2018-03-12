@@ -62,7 +62,9 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Int
 	 * @return 分の整数
 	 */
 	public int lengthAsMinutes() {
+		if(this.end.lessThan(this.start))  return 0;
 		return this.end.v() - this.start.v();
+		
 	}
 
 	/**

@@ -7,7 +7,6 @@
 <body>
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../base/base.js" />
 			<com:scriptfile path="ccg018.a.start.js" />
@@ -21,18 +20,16 @@
 
 			<!-- component -->
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js"
-				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 		</ui:define>
-		
+
 		<script type="text/html" id="jobtitle-template">
     		<ui:include src="../a1/index.xhtml" />
 		</script>
-		
+
 		<script type="text/html" id="person-template">
     		<ui:include src="../b/index.xhtml" />
 		</script>
@@ -50,9 +47,11 @@
 			</div>
 		</ui:define>
 		<ui:define name="sidebar-content">
-			<div role="tabpanel" data-bind="attr:{id: 'tabpanel-' + currentTab().id()}">
-				<div data-bind="attr:{class: 'screen-content screen-' + currentTab().id(), id: 'screen-' + currentTab().id()} ">
-					
+			<div role="tabpanel"
+				data-bind="attr:{id: 'tabpanel-' + currentTab().id()}">
+				<div
+					data-bind="attr:{class: 'screen-content screen-' + currentTab().id(), id: 'screen-' + currentTab().id()} ">
+
 				</div>
 			</div>
 		</ui:define>

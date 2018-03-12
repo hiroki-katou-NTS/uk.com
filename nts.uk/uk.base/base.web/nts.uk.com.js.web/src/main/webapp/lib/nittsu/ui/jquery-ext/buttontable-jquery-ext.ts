@@ -1,4 +1,7 @@
 /// <reference path="../../reference.ts"/>
+interface JQuery {
+    ntsButtonTable(method: string, option?: any, option2?: any, option3?: any): any;
+}
 
 module nts.uk.ui.jqueryExtentions {
     import isNull = nts.uk.util.isNullOrUndefined;

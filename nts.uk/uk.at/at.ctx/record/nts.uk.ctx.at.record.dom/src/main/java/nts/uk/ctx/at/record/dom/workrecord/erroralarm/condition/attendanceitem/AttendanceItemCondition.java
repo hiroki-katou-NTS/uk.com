@@ -3,6 +3,9 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem;
 
+import java.util.List;
+import java.util.function.Function;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
@@ -40,6 +43,11 @@ public class AttendanceItemCondition extends DomainObject {
 				group2UseAtr);
 	}
 
+	/** Init from Java type. */
+	public static AttendanceItemCondition init(LogicalOperator operatorBetweenGroups, boolean group2UseAtr) {
+		return new AttendanceItemCondition(operatorBetweenGroups, group2UseAtr);
+	}
+
 	public void setGroup1(ErAlConditionsAttendanceItem group) {
 		this.group1 = group;
 	}
@@ -54,5 +62,26 @@ public class AttendanceItemCondition extends DomainObject {
 
 	public void setGroupId2(String groupId) {
 		this.group2.setGroupId(groupId);
+	}
+
+	/** 勤怠項目をチェックする */
+	public boolean check(Function<List<Integer>, List<Integer>> getValueFromItemIds) {
+		boolean checkGroup1 = group1.check(getValueFromItemIds);
+		if (!this.isUseGroup2()) {
+			return checkGroup1;
+		}
+		boolean checkGroup2 = group2.check(getValueFromItemIds);
+		switch (this.operatorBetweenGroups) {
+		case AND:
+			return checkGroup1 && checkGroup2;
+		case OR:
+			return checkGroup1 || checkGroup2;
+		default:
+			throw new RuntimeException("invalid this.operatorBetweenGroups: " + this.operatorBetweenGroups);
+		}
+	}
+
+	private boolean isUseGroup2() {
+		return this.group2UseAtr != null && this.group2UseAtr;
 	}
 }

@@ -35,7 +35,6 @@ public class EmployeeAdapterImpliment implements EmployeeInfoAdapter {
 				.map(f -> {
 					return new EmployeeInfoDtoImport(f.getCompanyId(), f.getEmployeeCode(), f.getEmployeeId(), f.getPersonId());
 				})
-				.filter(EmployeeInfoDtoImport.distinctByKey(EmployeeInfoDtoImport::getEmployeeId))
 				.collect(Collectors.toList());	
 	}
 }

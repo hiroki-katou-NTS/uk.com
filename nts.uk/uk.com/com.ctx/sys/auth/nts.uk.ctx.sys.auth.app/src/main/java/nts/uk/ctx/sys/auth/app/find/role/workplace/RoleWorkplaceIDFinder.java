@@ -119,6 +119,70 @@ public class RoleWorkplaceIDFinder {
 
 		return listWkpId.stream().distinct().collect(Collectors.toList());
 	}
+	
+	/**
+	 * Find list workplace id.
+	 *
+	 * @param param the param
+	 * @return the list
+	 * @author TrangTh
+	 */
+	public List<String> findListWorkplaceId(WorkplaceParam param) {
+
+		List<String> listWkpId = new ArrayList<>();
+		//check ReferenceRange 
+		if (param.getReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE.value) {
+			//get list WorkplaceId by WorkplaceAdapter
+			listWkpId = workplaceAdapter.findListWkpIdByBaseDate(param.getBaseDate());
+		} else {
+			//get list WorkplaceId by function findListWkpId
+			listWkpId = this.findListWkpId(param);
+		}
+		return listWkpId;
+
+	}
+	
+	/**
+	 * Find list wkp id.
+	 *
+	 * @param param the param
+	 * @return the list
+	 */
+	public List<String> findListWkpId(WorkplaceParam param) {
+		List<String> listWkpId = new ArrayList<>();
+
+		String workplaceId = "";
+		String employeeId = AppContexts.user().employeeId();
+		String companyId = AppContexts.user().companyId();
+		
+		// get workplace manager 
+		List<WorkplaceManager> listWkpManager = workplaceManagerRepository.findListWkpManagerByEmpIdAndBaseDate(employeeId, param.getBaseDate());
+		
+		// add wkpId to listWkpId
+		listWkpId = listWkpManager.stream().map(m -> m.getWorkplaceId()).collect(Collectors.toList());
+				
+		// requestList #30 get aff workplace history
+		Optional<AffWorkplaceHistImport> opAffWorkplaceHistImport = workplaceAdapter
+				.findWkpByBaseDateAndEmployeeId(param.getBaseDate(), employeeId);
+
+		// add wkpId to listWkpId
+		if (opAffWorkplaceHistImport.isPresent()) {
+			workplaceId = opAffWorkplaceHistImport.get().getWorkplaceId();
+		}
+
+		// check workplace id != null
+		if (workplaceId != null) {
+			listWkpId.add(workplaceId);
+		}
+
+		// action RequestList #154
+		if (param.getReferenceRange() == EmployeeReferenceRange.DEPARTMENT_AND_CHILD.value && workplaceId != null) {
+			List<String> list = workplaceAdapter.findListWorkplaceIdByCidAndWkpIdAndBaseDate(companyId, workplaceId, param.getBaseDate());
+			listWkpId.addAll(list);
+		}
+
+		return listWkpId.stream().distinct().collect(Collectors.toList());
+	}
 		
 
 	/**

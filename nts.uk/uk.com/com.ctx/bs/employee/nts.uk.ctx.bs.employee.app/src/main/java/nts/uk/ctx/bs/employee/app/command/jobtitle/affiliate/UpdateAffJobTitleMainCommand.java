@@ -31,4 +31,5 @@ public class UpdateAffJobTitleMainCommand{
 	
 	@PeregItem("IS00078")
 	private GeneralDate endDate;
+	
 }

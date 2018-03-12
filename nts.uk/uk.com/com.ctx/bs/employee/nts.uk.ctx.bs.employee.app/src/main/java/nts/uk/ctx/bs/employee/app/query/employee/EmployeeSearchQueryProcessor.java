@@ -185,6 +185,84 @@ public class EmployeeSearchQueryProcessor {
 
 		return employeeSearchData;
 	}
+	
+	public List<EmployeeSearchData> toEmployeeNew(GeneralDate baseDate, List<String> employeeIds,
+			String companyId) {
+
+		// get employee list
+		List<EmployeeDataMngInfo> employeeDatas = this.employeeRepository
+				.findByListEmployeeId(companyId, employeeIds);
+
+		// check exist employee
+		if (CollectionUtil.isEmpty(employeeDatas)) {
+			throw new BusinessException("Msg_317");
+		}
+
+		// get work place history by employee
+		List<AffWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
+				.findByEmployees(employeeIds, baseDate);
+
+		// get all work place of company
+		List<WorkplaceInfo> workplaces = this.workplaceInfoRepo.findAll(companyId, baseDate);
+
+		// to map work place
+		Map<String, WorkplaceInfo> workplaceMap = workplaces.stream()
+				.collect(Collectors.toMap((workplace) -> {
+					return workplace.getWorkplaceId();
+				}, Function.identity()));
+
+		// to map work place history
+		Map<String, AffWorkplaceHistory> workplaceHistoryMap = workplaceHistory.stream()
+				.collect(Collectors.toMap((workplace) -> {
+					return workplace.getEmployeeId();
+				}, Function.identity()));
+
+		// get person name
+		List<PersonImport> persons = this.personAdapter.findByPersonIds(employeeDatas.stream()
+				.map(employee -> employee.getPersonId()).collect(Collectors.toList()));
+
+		// to map person (person id)
+		Map<String, PersonImport> personMap = persons.stream()
+				.collect(Collectors.toMap((person) -> {
+					return person.getPersonId();
+				}, Function.identity()));
+
+		List<EmployeeSearchData> employeeSearchData = new ArrayList<>();
+
+		employeeDatas.forEach(employee -> {
+			// check exist data
+			if (workplaceHistoryMap.containsKey(employee.getEmployeeId())
+					&& personMap.containsKey(employee.getPersonId())) {
+
+				// Find
+				String wplId = this.affWorkplaceHistoryItemRepository
+						.getByHistId(workplaceHistoryMap.get(employee.getEmployeeId())
+								.getHistoryItems().get(0).identifier())
+						.get().getWorkplaceId();
+				// If worplace is not found.
+				if (workplaceMap.get(wplId) == null) {
+					return;
+				}
+				// add to dto
+				EmployeeSearchData dto = new EmployeeSearchData();
+				dto.setEmployeeId(employee.getEmployeeId());
+				dto.setEmployeeCode(employee.getEmployeeCode().v());
+				dto.setEmployeeName(personMap.get(employee.getPersonId()).getBusinessName());
+				dto.setWorkplaceId(wplId);
+
+				dto.setWorkplaceCode(workplaceMap.get(dto.getWorkplaceId()).getWorkplaceCode().v());
+				dto.setWorkplaceName(workplaceMap.get(dto.getWorkplaceId()).getWorkplaceName().v());
+				employeeSearchData.add(dto);
+			}
+		});
+
+		// check exist data employee search
+		if (CollectionUtil.isEmpty(employeeSearchData)) {
+			throw new BusinessException("Msg_317");
+		}
+
+		return employeeSearchData;
+	}
 
 	/**
 	 * Search all employee.
@@ -234,6 +312,26 @@ public class EmployeeSearchQueryProcessor {
 
 		// get data
 		return toEmployee(baseDate, employeeIds, companyId);
+	}
+	
+	public List<EmployeeSearchData> searchOnlyEmployeeByLogin(GeneralDate baseDate) {
+
+		// get login user
+		LoginUserContext loginUserContext = AppContexts.user();
+
+		// get company id
+		String companyId = loginUserContext.companyId();
+
+		// get employee id
+		String employeeId = loginUserContext.employeeId();
+
+		// add employeeId
+		List<String> employeeIds = new ArrayList<>();
+
+		employeeIds.add(employeeId);
+
+		// get data
+		return toEmployeeNew(baseDate, employeeIds, companyId);
 	}
 
 	/**

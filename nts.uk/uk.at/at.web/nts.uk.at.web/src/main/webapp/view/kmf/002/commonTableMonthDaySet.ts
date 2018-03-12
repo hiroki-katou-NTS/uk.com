@@ -5,7 +5,7 @@ module nts.uk.at.view.kmf002 {
     export module viewmodel {
         
         var path: any = {
-                findFirstMonth: "basic/company/beginningmonth/find"
+                findFirstMonth: "at/shared/holidaysetting/companycommon/getFirstMonth"
             };
         
         export class CommonTableMonthDaySet { 
@@ -42,6 +42,9 @@ module nts.uk.at.view.kmf002 {
                 _self.arrMonth = ko.observableArray([]);
                 
                 $.when(_self.findFirstMonth()).done(function(data: any) {
+                    if (_.isNull(data.startMonth)) {
+                            data.startMonth = 1;
+                        }
                     for (let i=data.startMonth; i<=12; i++) {
                         _self.arrMonth.push({'month': ko.observable(i), 'day': ko.observable(0), 'enable': ko.observable(true)});
                     }
@@ -63,7 +66,7 @@ module nts.uk.at.view.kmf002 {
             }
             
             private findFirstMonth() :JQueryPromise<any> {
-                return nts.uk.request.ajax("com", path.findFirstMonth); 
+                return nts.uk.request.ajax("at", path.findFirstMonth); 
             }
        }      
     }

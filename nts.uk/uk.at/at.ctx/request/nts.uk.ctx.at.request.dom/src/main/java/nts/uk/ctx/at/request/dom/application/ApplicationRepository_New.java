@@ -12,6 +12,15 @@ public interface ApplicationRepository_New {
 	
 	public List<Application_New> getApplicationIdByDate(String companyId, GeneralDate startDate, GeneralDate endDate);
 	
+	/**
+	 * getApplicationBySIDs
+	 * @param employeeID
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<Application_New> getApplicationBySIDs(List<String> employeeID,GeneralDate startDate, GeneralDate endDate);
+	
 	public List<Application_New> getApp(String applicantSID, GeneralDate appDate, int prePostAtr, int appType);
 	
 	/**

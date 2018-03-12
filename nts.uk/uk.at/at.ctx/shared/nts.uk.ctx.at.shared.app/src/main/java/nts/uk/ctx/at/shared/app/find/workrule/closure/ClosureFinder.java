@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.workrule.closure;
@@ -77,6 +77,28 @@ public class ClosureFinder {
 			return ClosureIdNameDto.fromDomain(x);
 		}).collect(Collectors.toList());
 		return closureIdNameDtoList;
+	}
+
+	/**
+	 * Gets the closures by base date.
+	 *
+	 * @param baseDate the base date
+	 * @return the closures by base date
+	 */
+	public List<ClosureIdNameDto> getClosuresByBaseDate(GeneralDate baseDate) {
+		// Get companyID.
+		String companyId = AppContexts.user().companyId();
+
+		// Find All Closure in use
+		List<Closure> closureList = this.repository.findAllUse(companyId);
+
+		// Get List ClosureHistory by base date
+		List<ClosureIdNameDto> lstClosureHistory = new ArrayList<>();
+		closureList.forEach(clo -> {
+			ClosureIdNameDto closureDto = ClosureIdNameDto.fromDomain(clo.getHistoryByBaseDate(baseDate));
+			lstClosureHistory.add(closureDto);
+		});
+		return lstClosureHistory;
 	}
 
 	/**
@@ -293,5 +315,20 @@ public class ClosureFinder {
 		// Get Employment Codes from ClosureEmployment acquired above
 		return closureEmpList.stream().map(ClosureEmployment::getEmploymentCD)
 				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Gets the closure id by employment code.
+	 *
+	 * @param employmentCode the employment code
+	 * @return the closure id by employment code
+	 */
+	public Integer getClosureIdByEmploymentCode(String employmentCode) {
+		Optional<ClosureEmployment> closureEmp = this.closureEmpRepo.findByEmploymentCD(AppContexts.user().companyId(),
+				employmentCode);
+		if (closureEmp.isPresent()) {
+			return closureEmp.get().getClosureId();
+		}
+		return null;
 	}
 }

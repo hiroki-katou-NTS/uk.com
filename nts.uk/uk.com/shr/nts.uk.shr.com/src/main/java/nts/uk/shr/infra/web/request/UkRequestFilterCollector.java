@@ -15,6 +15,7 @@ public class UkRequestFilterCollector implements RequestFilterCollector {
 
 	private static final List<RequestFilterMapping> FILTERS = Arrays.asList(
 			RequestFilterMapping.map(".*", new RequestPerformanceLogFilter()),
+			RequestFilterMapping.map(".*", new CorsPreflightFilter()),
 			RequestFilterMapping.map(".*/webapi/.*", new ProgramIdDetector()),
 			RequestFilterMapping.map(".*\\.xhtml.*", new ScreenLoginSessionValidator())
 			);

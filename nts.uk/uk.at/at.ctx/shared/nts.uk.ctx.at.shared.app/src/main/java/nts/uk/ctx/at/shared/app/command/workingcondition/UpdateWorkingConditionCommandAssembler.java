@@ -158,12 +158,11 @@ public class UpdateWorkingConditionCommandAssembler {
 		// ----------------------- BreakdownTimeDay
 		BreakdownTimeDay holidayAddTimeSet = new BreakdownTimeDay(command.getOneDay() != null?
 				new AttendanceTime(command.getOneDay().intValue()):null,
-				command.getMorning() != null? new AttendanceTime(command.getMorning().intValue()):null,
+				command.getMorning() != null? new AttendanceTime(command.getMorning().intValue()): null,
 				command.getAfternoon() != null ? new AttendanceTime(command.getAfternoon().intValue()):null);
 		// ------------------------
 		
 		// ScheduleMethod
-		WorkScheduleBasicCreMethod basicCreMethod = command.getBasicCreateMethod()!=null? EnumAdaptor.valueOf(command.getBasicCreateMethod().intValue(), WorkScheduleBasicCreMethod.class) : null;
 		// WorkScheduleBusCal - 営業日カレンダーによる勤務予定作成
 		WorkScheduleBusCal busCal = new WorkScheduleBusCal(
 				command.getReferenceBusinessDayCalendar() != null
@@ -172,12 +171,11 @@ public class UpdateWorkingConditionCommandAssembler {
 						command.getReferenceBasicWork() != null ? EnumAdaptor.valueOf(command.getReferenceBasicWork().intValue(),
 						WorkScheduleMasterReferenceAtr.class) : null,
 						// 予定作成方法.営業日カレンダーによる勤務予定作成.就業時間帯の参照先（基本作成方法＝営業部カレンダーの場合）
-						command.getReferenceType() != null && basicCreMethod == WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR ? EnumAdaptor.valueOf(command.getReferenceType().intValue(),
+						command.getReferenceType() != null ? EnumAdaptor.valueOf(command.getReferenceType().intValue(),
 						TimeZoneScheduledMasterAtr.class) : null);
 		// MonthlyPatternWorkScheduleCre
-		MonthlyPatternWorkScheduleCre monthlySchedule = new MonthlyPatternWorkScheduleCre(
-				// 予定作成方法.月間パターンによる勤務予定作成.勤務種類と就業時間帯の参照先（基本作成方法＝月間パターンの場合）
-				command.getReferenceType()!=null && basicCreMethod == WorkScheduleBasicCreMethod.MONTHLY_PATTERN ? EnumAdaptor.valueOf(command.getReferenceType().intValue(), TimeZoneScheduledMasterAtr.class) : null);
+		// Set default to FOLLOW_MASTER_REFERENCE
+		MonthlyPatternWorkScheduleCre monthlySchedule = new MonthlyPatternWorkScheduleCre(TimeZoneScheduledMasterAtr.FOLLOW_MASTER_REFERENCE);
 		ScheduleMethod scheduleMethod = new ScheduleMethod(
 				command.getBasicCreateMethod()!=null? EnumAdaptor.valueOf(command.getBasicCreateMethod().intValue(), WorkScheduleBasicCreMethod.class) :null,
 				busCal, monthlySchedule);

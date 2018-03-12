@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
-import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
  * @author dxthuong
@@ -44,6 +41,12 @@ public class CheckCondition  extends DomainObject {
 		return this.alarmCategory == AlarmCategory.DAILY;
 	}
 	
-	
+	public boolean isMonthly() {
+		return this.alarmCategory == AlarmCategory.MONTHLY;
+	}
 
+	public boolean is4W4D() {
+		return this.alarmCategory == AlarmCategory.SCHEDULE_4WEEK;
+	}
+	
 }

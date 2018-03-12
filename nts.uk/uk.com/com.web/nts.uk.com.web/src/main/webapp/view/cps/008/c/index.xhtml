@@ -78,13 +78,16 @@
 					</table>
 				</div>
 			</div>
-			<div id="functions-area-bottom" style = "height: 100px !important">
-			
-			<div style="margin-left: -10px" data-bind="ntsCheckBox: { checked: overrideMode, enable: true, text: '#{i18n.getText('CPS008_43')}' , style: 'warnpanel'}"></div>
-			
-			<div style = "margin-top: 10px">
-				<button class="x-large proceed" id="BTN_DECIDE" data-bind="click : coppyBtn">#{i18n.getText('CPS008_36')}</button>
-				<button id="BTN_CANCEL" data-bind="click : close">#{i18n.getText('CPS008_37')}</button> </div>
+			<div id="functions-area-bottom" style="height: 100px !important">
+
+				<div style="margin-left: -10px"
+					data-bind="ntsCheckBox: { checked: overrideMode, enable: true, text: '#{i18n.getText('CPS008_43')}' , style: 'warnpanel'}"></div>
+
+				<div style="margin-top: 10px">
+					<button class="x-large proceed" id="BTN_DECIDE"
+						data-bind="click : coppyBtn">#{i18n.getText('CPS008_36')}</button>
+					<button id="BTN_CANCEL" data-bind="click : close">#{i18n.getText('CPS008_37')}</button>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

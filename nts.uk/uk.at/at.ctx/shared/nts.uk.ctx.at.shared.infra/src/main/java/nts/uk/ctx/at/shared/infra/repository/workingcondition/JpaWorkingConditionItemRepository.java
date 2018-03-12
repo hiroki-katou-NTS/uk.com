@@ -38,11 +38,6 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 	/** The Constant FIRST_ITEM_INDEX. */
 	private final static int FIRST_ITEM_INDEX = 0;
-	
-	/** The Constant FIND_WORKCONDITEM_MONTHLY_NOT_NULL. */
-	private final static String FIND_WORKCONDITEM_MONTHLY_NOT_NULL = "SELECT wi FROM KshmtWorkingCondItem wi"
-																	+ " WHERE wi.monthlyPattern IS NOT NULL"
-																	+ " AND wi.sid IN :employeeIds";
 
 	/** The Constant FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D. */
 	private final static String FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D =
@@ -58,16 +53,52 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	 * @param employeeIds the employee ids
 	 * @return the by list sid and monthly pattern not null
 	 */
-	public List<WorkingConditionItem> getByListSidAndMonthlyPatternNotNull(List<String> employeeIds){
+	public List<WorkingConditionItem> getByListSidAndMonthlyPatternNotNull(List<String> employeeIds, List<String> monthlyPatternCodes){
 		if (employeeIds.isEmpty()){
 			return Collections.emptyList();
 		}
-		List<KshmtWorkingCondItem> entitys = this.queryProxy().query(FIND_WORKCONDITEM_MONTHLY_NOT_NULL, KshmtWorkingCondItem.class)
-													.setParameter("employeeIds", employeeIds).getList();
-		if(entitys.isEmpty()){
+
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<KshmtWorkingCondItem> cq = criteriaBuilder
+				.createQuery(KshmtWorkingCondItem.class);
+
+		// root data
+		Root<KshmtWorkingCondItem> root = cq.from(KshmtWorkingCondItem.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// condition
+		lstpredicateWhere
+				.add(root.get(KshmtWorkingCondItem_.sid).in(employeeIds));
+		lstpredicateWhere
+				.add(root.get(KshmtWorkingCondItem_.monthlyPattern).in(monthlyPatternCodes));
+//		lstpredicateWhere.add(criteriaBuilder.isNotNull(root.get(KshmtWorkingCondItem_.monthlyPattern)));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.endD),
+				GeneralDate.max()));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		
+		// create query
+		TypedQuery<KshmtWorkingCondItem> query = em.createQuery(cq);
+
+		List<KshmtWorkingCondItem> result = query.getResultList();
+		
+		// Check empty
+		if (CollectionUtil.isEmpty(result)) {
 			return Collections.emptyList();
 		}
-		return entitys.stream().map(e -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(e))).collect(Collectors.toList());
+
+		// exclude select
+		return result.stream().map(e -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(e))).collect(Collectors.toList());
 	}
 
 	/*

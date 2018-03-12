@@ -12,19 +12,19 @@ public class AppOverTimeInfoFull {
 	/**
 	 * 勤務時間From1
 	 */
-	private int workClockFrom1;
+	private String workClockFrom1;
 	/**
 	 * 勤務時間To1
 	 */
-	private int workClockTo1;
+	private String workClockTo1;
 	/**
 	 * 勤務時間From2
 	 */
-	private int workClockFrom2;
+	private String workClockFrom2;
 	/**
 	 * 勤務時間To2
 	 */
-	private int workClockTo2;
+	private String workClockTo2;
 	/**残業時間合計 - wait loivt*/
 	private int total;
 	

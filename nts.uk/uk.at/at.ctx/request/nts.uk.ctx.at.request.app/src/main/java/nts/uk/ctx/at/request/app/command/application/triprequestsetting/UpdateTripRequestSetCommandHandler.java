@@ -10,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.triprequestsetting.TripRequestSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.triprequestsetting.TripRequestSetRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -19,11 +20,12 @@ public class UpdateTripRequestSetCommandHandler extends CommandHandler<TripReque
 
 	@Override
 	protected void handle(CommandHandlerContext<TripRequestSetCommand> context) {
+		String companyId = AppContexts.user().companyId();
 		TripRequestSetCommand data = context.getCommand();
 		Optional<TripRequestSet> trip = tripRep.findByCid();
-		TripRequestSet tripRequest = TripRequestSet.createFromJavaType(data.getCompanyId(), 
-				data.getComment1(), "", 0, data.getComment2(), 
-				"", 0, data.getWorkType(), data.getWorkChange(), 
+		TripRequestSet tripRequest = TripRequestSet.createFromJavaType(companyId, 
+				data.getComment1(), data.getColor1(), data.getWeight1(), data.getComment2(), 
+				data.getColor2(), data.getWeight2(), data.getWorkType(), data.getWorkChange(), 
 				data.getWorkChangeTime(), data.getContractCheck(), data.getLateLeave());
 		if(trip.isPresent()){
 			tripRep.update(tripRequest);

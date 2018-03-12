@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 public class WorkDaysDetailOfMonthly {
 
 	/** 日数 */
+	@Setter
 	private AttendanceDaysMonth days;
 	
 	/**

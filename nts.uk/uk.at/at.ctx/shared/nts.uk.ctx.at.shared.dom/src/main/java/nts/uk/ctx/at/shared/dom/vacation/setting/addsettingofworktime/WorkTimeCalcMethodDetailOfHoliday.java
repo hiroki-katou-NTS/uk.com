@@ -16,6 +16,13 @@ public class WorkTimeCalcMethodDetailOfHoliday {
 	@Getter
 	private IncludeHolidaysWorkCalcDetailSet IncludeHolidaysWorkCalcDetailSet;
 	
+	public WorkTimeCalcMethodDetailOfHoliday(NotUseAtr deductLateLeaveEarly,
+			IncludeHolidaysWorkCalcDetailSet includeHolidaysWorkCalcDetailSet) {
+		super();
+		this.deductLateLeaveEarly = deductLateLeaveEarly;
+		IncludeHolidaysWorkCalcDetailSet = includeHolidaysWorkCalcDetailSet;
+	}
+	
 	/**
 	 * 就業時間内時間帯から控除するか判断
 	 * @param deductTime
@@ -45,5 +52,9 @@ public class WorkTimeCalcMethodDetailOfHoliday {
 				throw new RuntimeException("unknown DeductionAtr" + deductLateLeaveEarly);
 		}	
 	}
+
+
+
+
 	
 }

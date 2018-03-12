@@ -366,6 +366,12 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             self.changeBooleanToNumber(command.oneDay);
             self.changeBooleanToNumber(command.morning);
             self.changeBooleanToNumber(command.afternoon);
+            
+            command.morning.closeAtr = null;
+            command.afternoon.closeAtr = null;
+            if (WorkTypeCls.Closure != workType.oneDayCls()) {
+                command.oneDay.closeAtr = null;
+            }
 
             $("#input-workTypeCode").trigger("validate");
             $("#input-workTypeName").trigger("validate");
@@ -475,7 +481,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     self.enableMethod(true);
                 } if (workTypeSetCode == WorkTypeCls.SubstituteHoliday) {
                     self.currentWorkType().calculatorMethod(CalculatorMethod.EXCLUDE_FROM_WORK_DAY);
-                    self.enableMethod(false);
+                    self.enableMethod(true);
                 } if (workTypeSetCode == WorkTypeCls.Shooting) {
                     self.currentWorkType().calculatorMethod(CalculatorMethod.MAKE_ATTENDANCE_DAY);
                     self.enableMethod(false);
@@ -790,7 +796,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             let langId = self.langId();
             service.saveAsExcel(langId).done(function() {
             }).fail(function(error) {
-                nts.uk.ui.dialog.alertError(error.message);
+                nts.uk.ui.dialog.alertError({messageId: error.messageId});
             }).always(function() {
                 nts.uk.ui.block.clear();
             });

@@ -14,6 +14,7 @@ public class AggregateSpecificDays {
 
 	/** 特定日項目No */
 	private SpecificDateItemNo specificDayItemNo;
+	
 	/** 特定日数 */
 	private AttendanceDaysMonth specificDays;
 	/** 休出特定日数 */
@@ -21,10 +22,11 @@ public class AggregateSpecificDays {
 	
 	/**
 	 * コンストラクタ
+	 * @param specificDayItemNo 特定日項目No
 	 */
-	public AggregateSpecificDays(){
+	public AggregateSpecificDays(SpecificDateItemNo specificDayItemNo){
 		
-		this.specificDayItemNo = new SpecificDateItemNo(0);
+		this.specificDayItemNo = specificDayItemNo;
 		this.specificDays = new AttendanceDaysMonth(0.0);
 		this.holidayWorkSpecificDays = new AttendanceDaysMonth(0.0);
 	}
@@ -41,10 +43,25 @@ public class AggregateSpecificDays {
 			AttendanceDaysMonth specificDays,
 			AttendanceDaysMonth holidayWorkSpecificDays){
 		
-		val domain = new AggregateSpecificDays();
-		domain.specificDayItemNo = specificDayItemNo;
+		val domain = new AggregateSpecificDays(specificDayItemNo);
 		domain.specificDays = specificDays;
 		domain.holidayWorkSpecificDays = holidayWorkSpecificDays;
 		return domain;
+	}
+	
+	/**
+	 * 特定日数に日数を加算する
+	 * @param days 日数
+	 */
+	public void addDaysToSpecificDays(Double days){
+		this.specificDays = this.specificDays.addDays(days);
+	}
+	
+	/**
+	 * 休出特定日数に日数を加算する
+	 * @param days 日数
+	 */
+	public void addDaysToHolidayWorkSpecificDays(Double days){
+		this.holidayWorkSpecificDays = this.holidayWorkSpecificDays.addDays(days);
 	}
 }

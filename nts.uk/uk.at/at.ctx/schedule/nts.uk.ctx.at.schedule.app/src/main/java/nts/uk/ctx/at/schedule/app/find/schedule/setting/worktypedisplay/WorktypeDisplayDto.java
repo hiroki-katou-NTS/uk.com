@@ -6,9 +6,12 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.schedule.app.find.schedule.setting.functioncontrol.ScheFuncCondDto;
-import nts.uk.ctx.at.schedule.app.find.schedule.setting.functioncontrol.ScheFuncControlDto;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.worktype.control.WorktypeDis;
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

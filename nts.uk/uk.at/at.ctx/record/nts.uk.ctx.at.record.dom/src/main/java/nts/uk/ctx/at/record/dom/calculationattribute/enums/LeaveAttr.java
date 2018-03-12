@@ -17,5 +17,13 @@ public enum LeaveAttr {
 	USE(1);
 	
 	public final int value;
+	
+	/**
+	 * USE であるか判定する
+	 * @return　USEである
+	 */
+	public boolean isUse() {
+		return this.equals(USE);
+	}
 
 }

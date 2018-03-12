@@ -75,13 +75,13 @@ public class GetHeaderOfCPS001Finder {
 
 			if (tempHist.isPresent()) {
 
-				_emp.setNumberOfTempHist(
-						tempHist.get().items().stream()
-								.filter(f -> f.start().localDate().compareTo(LocalDate.now()) < 0).map(
-										m -> ChronoUnit.DAYS.between(m.start().localDate(),
-												m.end().localDate().compareTo(LocalDate.now()) < 0 ? m.end().localDate()
-														: LocalDate.now()))
-								.mapToInt(m -> Math.abs(m.intValue())).sum());
+				_emp.setNumberOfTempHist(tempHist
+						.get().items().stream().filter(
+								f -> f.start().localDate().compareTo(LocalDate.now()) < 0)
+						.map(m -> ChronoUnit.DAYS.between(m.start().localDate(),
+								m.end().localDate().compareTo(LocalDate.now()) < 0 ? m.end().localDate()
+										: LocalDate.now()))
+						.mapToInt(m -> Math.abs(m.intValue())).sum());
 			}
 
 			Optional<AffDepartmentHistory> department = this.departmentRepo.getAffDeptHistByEmpHistStandDate(sid, date);
@@ -108,18 +108,19 @@ public class GetHeaderOfCPS001Finder {
 			String roleId = AppContexts.user().roles().forPersonalInfo();
 
 			boolean isBirthdayRef = isSelfRef(roleId, "COM1_00000000000000000000000_CS00002",
-					"COM1_000000000000000_CS00002_IS00017");
+					"COM1_000000000000000_CS00002_IS00017", AppContexts.user().employeeId().equals(sid));
+
 			if (!isBirthdayRef) {
 				_emp.setBirthday(null);
 			}
 
 			boolean isJobEntryRef = isSelfRef(roleId, "COM1_00000000000000000000000_CS00003",
-					"COM1_000000000000000_CS00003_IS00020");
+					"COM1_000000000000000_CS00003_IS00020", AppContexts.user().employeeId().equals(sid));
+
 			if (!isJobEntryRef) {
 				_emp.setNumberOfWork(-1);
 				_emp.setNumberOfTempHist(-1);
 			} else {
-
 				AffCompanyHist comHist = achFinder.getAffCompanyHistoryOfEmployee(cid, sid);
 
 				if (comHist != null) {
@@ -130,7 +131,8 @@ public class GetHeaderOfCPS001Finder {
 										.filter(f -> f.start().localDate().compareTo(LocalDate.now()) < 0)
 										.map(m -> ChronoUnit.DAYS.between(m.start().localDate(),
 												m.end().localDate().compareTo(LocalDate.now()) <= 0
-														? m.end().localDate() : LocalDate.now()))
+														? m.end().localDate()
+														: LocalDate.now()))
 										.mapToInt(m -> Math.abs(m.intValue())).sum());
 
 						Optional<AffJobTitleHistoryItem> jobTitleHisItem = this.jobTitleHisRepo
@@ -164,16 +166,20 @@ public class GetHeaderOfCPS001Finder {
 		return new EmployeeInfo();
 	}
 
-	private boolean isSelfRef(String roleId, String CtgId, String ItemId) {
+	private boolean isSelfRef(String roleId, String CtgId, String ItemId, boolean self) {
 		Optional<PersonInfoItemAuth> itemAuth = this.perItemAuthRepo.getItemDetai(roleId, CtgId, ItemId);
+
 		if (itemAuth.isPresent()) {
-			return itemAuth.get().getSelfAuth().equals(PersonInfoAuthType.REFERENCE)
-					|| itemAuth.get().getSelfAuth().equals(PersonInfoAuthType.UPDATE);
-
+			PersonInfoItemAuth auth = itemAuth.get();
+			if (self) {
+				return auth.getSelfAuth().equals(PersonInfoAuthType.REFERENCE)
+						|| auth.getSelfAuth().equals(PersonInfoAuthType.UPDATE);
+			} else {
+				return auth.getOtherAuth().equals(PersonInfoAuthType.REFERENCE)
+						|| auth.getOtherAuth().equals(PersonInfoAuthType.UPDATE);
+			}
 		} else {
-
 			return false;
 		}
-
 	}
 }

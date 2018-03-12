@@ -6,8 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class AppOvertimeSettingCommand {
-	private String cid;
-	    
     private int flexExcessUseSetAtr;
     
     private int preTypeSiftReflectFlg;

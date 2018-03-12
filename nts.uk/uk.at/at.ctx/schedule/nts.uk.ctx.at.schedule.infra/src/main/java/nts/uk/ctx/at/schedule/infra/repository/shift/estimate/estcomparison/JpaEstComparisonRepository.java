@@ -61,9 +61,16 @@ public class JpaEstComparisonRepository extends JpaRepository implements Estimat
 	 */
 	@Override
 	public Optional<EstimateComparison> findByCompanyId(String companyId) {
-		return this.queryProxy().find(companyId, KscstEstComparison.class).map(e -> {
-			return new EstimateComparison(new JpaEstComparisonGetMemento(e));
-		});
+		Optional<KscstEstComparison> optKscstEstComparison = this.queryProxy().find(companyId,
+				KscstEstComparison.class);
+
+		// Check exist
+		if (!optKscstEstComparison.isPresent()) {
+			return Optional.empty();
+		}
+
+		return Optional.of(new EstimateComparison(
+				new JpaEstComparisonGetMemento(optKscstEstComparison.get())));
 	}
 
 	/* (non-Javadoc)

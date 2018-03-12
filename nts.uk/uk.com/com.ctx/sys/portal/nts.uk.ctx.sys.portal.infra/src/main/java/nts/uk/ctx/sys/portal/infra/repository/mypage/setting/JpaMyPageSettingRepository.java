@@ -96,7 +96,7 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 		List<TopPagePartUseSetting> lstTopPagePartUseSetting = this.queryProxy()
 				.query(GET_ONE_PIS, CcgmtPartItemSet.class).setParameter("companyId", c.cid)
 				.getList(p -> pusToDomain(p));
-		MyPageSetting mps = MyPageSetting.createFromJavaType(c.cid, c.useMyPageAtr, c.useWidgetAtr, c.useDashBoardAtr,
+		MyPageSetting mps = MyPageSetting.createFromJavaType(c.cid, c.useMyPageAtr, c.useStandarWidgetAtr, c.useOptionalWidgetAtr, c.useDashBoardAtr,
 				c.useFolowMenuAtr, c.externalUrlPermissionAtr, lstTopPagePartUseSetting);
 		return mps;
 	}
@@ -113,14 +113,15 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 				.setParameter("companyId", domain.getCompanyId()).getSingleOrNull();
 		if (entity != null) {
 			entity.setUseMyPageAtr(domain.getUseMyPage().value);
-			entity.setUseWidgetAtr(domain.getUseWidget().value);
+			entity.setUseStandarWidgetAtr(domain.getUseStandarWidget().value);
+			entity.setUseOptionalWidgetAtr(domain.getUseOptionalWidget().value);
 			entity.setUseDashBoardAtr(domain.getUseDashboard().value);
 			entity.setUseFolowMenuAtr(domain.getUseFlowMenu().value);
 			entity.setExternalUrlPermissionAtr(domain.getExternalUrlPermission().value);
 			return entity;
 		} else {
 			CcgmtMyPageSet newEntity = new CcgmtMyPageSet(domain.getCompanyId(), domain.getUseMyPage().value,
-					domain.getUseWidget().value, domain.getUseDashboard().value, domain.getUseFlowMenu().value,
+					domain.getUseStandarWidget().value, domain.getUseOptionalWidget().value, domain.getUseDashboard().value, domain.getUseFlowMenu().value,
 					domain.getExternalUrlPermission().value);
 			return newEntity;
 		}
@@ -197,7 +198,8 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 		 List<TopPagePartUseSetting> lstTopPart = null;
 		val domain = MyPageSetting.createFromJavaType(entity.getCid(),
 				Integer.valueOf(entity.getUseMyPageAtr()),
-				Integer.valueOf(entity.getUseWidgetAtr()),
+				Integer.valueOf(entity.getUseStandarWidgetAtr()),
+				Integer.valueOf(entity.getUseOptionalWidgetAtr()),
 				Integer.valueOf(entity.getUseDashBoardAtr()),
 				Integer.valueOf(entity.getUseFolowMenuAtr()),
 				Integer.valueOf(entity.getExternalUrlPermissionAtr()),

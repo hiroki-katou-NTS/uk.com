@@ -13,7 +13,8 @@
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ccg013.c.style.css" />
-			<com:scriptfile path="/view/ccg/013/base/base.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/013/base/base.js"
+				of="/nts.uk.com.web" />
 			<com:scriptfile path="ccg013.c.start.js" />
 			<com:scriptfile path="ccg013.c.service.js" />
 			<com:scriptfile path="ccg013.c.vm.js" />
@@ -89,10 +90,10 @@
 								</table>
 							</div>
 						</td>
-						<td style="vertical-align: top;">
+						<td style="vertical-align: top; height: 37px">
 							<div class="labelRight" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_41')}</div>
 						</td>
-						<td colspan="2" style="vertical-align: top;">
+						<td colspan="2" style="vertical-align: top; ; height: 37px">
 							<div id="file_upload" tabindex="6"
 								data-bind="ntsFileUpload:{
 								filename: filename,
@@ -104,11 +105,13 @@
 					</tr>
 					<tr>
 						<td></td>
-						<td class="col2"><span id="imageName" tabindex="7"
+						<td class="col2"><span id="imageName" class="hyperlink" href="#" tabindex="7"
 							data-bind="text:imageName"></span></td>
 						<td class="pull-right" style="vertical-align: top;">
-							<div><button id="delBtn" tabindex="8"
-								class="danger" data-bind="click: deleteFile, enable: isDelete()">#{i18n.getText('CCG030_5')}</button></div>
+							<div>
+								<button id="delBtn" tabindex="8" class="danger"
+									data-bind="click: deleteFile, enable: isDelete()">#{i18n.getText('CCG030_5')}</button>
+							</div>
 						</td>
 					</tr>
 					<tr>

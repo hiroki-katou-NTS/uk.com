@@ -10,6 +10,8 @@ import javax.ws.rs.Produces;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.auth.app.command.person.role.RemovePersonRoleCommand;
 import nts.uk.ctx.sys.auth.app.command.person.role.RemovePersonRoleCommandHandler;
@@ -18,6 +20,8 @@ import nts.uk.ctx.sys.auth.app.command.person.role.SavePersonRoleCommandHandler;
 import nts.uk.ctx.sys.auth.app.find.person.role.PersonInformationRole;
 import nts.uk.ctx.sys.auth.app.find.person.role.PersonInformationRoleFinder;
 import nts.uk.ctx.sys.auth.app.find.person.role.dto.RoleDto;
+import nts.uk.ctx.sys.auth.app.find.role.workplace.RoleWorkplaceIDFinder;
+import nts.uk.ctx.sys.auth.app.find.role.workplace.WorkplaceParam;
 import nts.uk.ctx.sys.auth.dom.adapter.persettingmenu.PermissionSettingMenuAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.persettingmenu.PermissionSettingMenuImport;
 import nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange;
@@ -27,6 +31,8 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 @Path("ctx/sys/auth/role")
 @Produces("application/json")
 public class RoleWebservice extends WebService {
+	@Inject
+	private RoleWorkplaceIDFinder roleWorkplaceIDFinder;
 	@Inject
 	private PersonInformationRoleFinder personInforRoleFinder;
 	@Inject
@@ -48,6 +54,16 @@ public class RoleWebservice extends WebService {
 	@Path("getrolebyroleid/{roleid}")
 	public RoleDto getRoleByRoleId(@PathParam("roleid") String roleId) {
 		return this.personInforRoleFinder.getRoleByRoleId(roleId);
+	}
+
+	@POST
+	@Path("getrefrangebysystype/{systype}")
+	public int getRefRangeByRoleId(@PathParam("systype") int sysType) {
+		String roleId = this.roleWorkplaceIDFinder.findRoleIdBySystemType(sysType);
+		if (roleId == null) {
+			throw new BusinessException(new RawErrorMessage("Access denied"));
+		}
+		return this.personInforRoleFinder.getRoleByRoleId(roleId).getEmployeeReferenceRange();
 	}
 	
 	@POST
@@ -96,6 +112,12 @@ public class RoleWebservice extends WebService {
 	@Path("per/setting/menu/{roleType}")
 	public List<PermissionSettingMenuImport> perSettingMenu( @PathParam("roleType") int roleType){
 		return 	permissionSettingMenuAdapter.findByRoleType(roleType);
+	}
+	
+	@POST
+	@Path("getListWorkplaceId")
+	public List<String> findListWorkplaceId(WorkplaceParam param){
+		return roleWorkplaceIDFinder.findListWorkplaceId(param);
 	}
 	
 }

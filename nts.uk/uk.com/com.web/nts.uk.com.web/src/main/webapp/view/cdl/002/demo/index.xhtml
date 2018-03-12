@@ -16,24 +16,33 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-			<div id="side-menu" class="cf"></div>
+				<div id="side-menu" class="cf"></div>
 				<div id="content">
 					<div id="function-area" style="margin: 40px; margin-bottom: 10px">
 						<h1>Demo Main SCR to test -> CDL002 - 雇用選択ダイアログ</h1>
 						<h2>(Launch Employment selection dialog)</h2>
 
 						<div style="margin-left: 10px; padding-top: 10px">
-							<p><b>Single/Multiple Selection</b></p><br></br>
-							<div class="cf" data-bind="ntsSwitchButton: {
+							<p>
+								<b>Single/Multiple Selection</b>
+							</p>
+							<br></br>
+							<div class="cf"
+								data-bind="ntsSwitchButton: {
 														options: selectionOption,
 														optionsValue: 'code',
 														optionsText: 'name',
 														value: selectedOption,
-														enable: true }"></div><br></br><br></br>
-							<p><b>Unselection Item</b></p>
+														enable: true }"></div>
+							<br></br>
+							<br></br>
+							<p>
+								<b>Unselection Item</b>
+							</p>
 							<div data-bind="ntsCheckBox:{checked: isDisplayUnselect}">Show/Hide</div>
 
-							<div><br></br>
+							<div>
+								<br></br>
 								<p>
 									<b>Selected Code(s):</b>
 								</p>
@@ -46,11 +55,11 @@
 								<b>Click Button to Open Dialog</b>
 							</p>
 							<br></br>
-							<BUTTON data-bind="click: openDialog"
-								style="margin-right: 10px">Open Dialog</BUTTON>
+							<BUTTON data-bind="click: openDialog" style="margin-right: 10px">Open
+								Dialog</BUTTON>
 							<br></br>
-							
-							
+
+
 						</div>
 						<hr></hr>
 					</div>

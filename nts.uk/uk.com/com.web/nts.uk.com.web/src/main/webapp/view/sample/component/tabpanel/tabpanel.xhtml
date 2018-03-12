@@ -9,6 +9,9 @@
 		
 		<ui:composition template="../../../../master/base.xhtml">
 			<ui:define name="htmlHead">
+				<com:ValidatorScript>
+					nts.uk.shr.com.primitive.sample.CommonAmount
+   				</com:ValidatorScript>
 				<script>var dialogSize = { width: 300, height: 200 };</script>
 				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="../../catalog/catalog.css" />
@@ -32,6 +35,8 @@
 										<div id="tab-panel2" data-bind="ntsTabPanel: { dataSource: tabs2, active: selectedTab2, direction: 'horizontal' }">
 											<div class="x-tab-content-1">
 												<span>Tab Content 1</span><br/>
+												
+												<button id="test-button2">test-button2</button>
 											</div>
 											<div class="x-tab-content-2">
 												<table id="multi-list" data-bind="ntsGridList: {
@@ -43,7 +48,7 @@
 												 		value: currentCodeList }"></table>
 											</div>
 											<div class="x-tab-content-3">
-												<table id="grid"></table>
+												<input id="number-1" data-bind="ntsNumberEditor: { name: 'Number', value: commonAmount, constraint: 'CommonAmount' }" />
 											</div>
 											<div class="x-tab-content-4">
 												<p>Fusce vitae libero non sem blandit pharetra a vel mi. Integer euismod pellentesque hendrerit. Nam interdum maximus lacus. Mauris dapibus pulvinar quam vitae maximus. Morbi dapibus vitae ligula at facilisis. Quisque rhoncus magna ut enim scelerisque, venenatis tempus lacus volutpat. Sed ut tellus erat. Morbi sollicitudin luctus condimentum. Sed malesuada hendrerit dignissim.</p>
@@ -95,24 +100,6 @@
 												<p>Aliquam pharetra tempor neque sed feugiat. Morbi velit quam, porttitor ac metus quis, sodales efficitur dui. Praesent convallis ligula dui. Duis placerat dignissim egestas. Fusce fermentum eleifend risus quis fermentum. Nullam vel dolor arcu. Vivamus id varius arcu. Ut commodo risus erat, quis tincidunt nisl tristique vitae. Maecenas in pulvinar odio. Sed feugiat viverra congue.</p>
 											</div>
 										</div>
-									</div>
-								</div>
-							</div>
-							<div style="width: 50%; padding-left: 10px;">
-								<div id="tab-panel" class="cf" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab, direction: 'vertical' }">
-									<div class="tab-content-1">
-										<span>Tab Content 1</span><br/>
-									</div>
-									<div class="tab-content-2">
-										<span>Tab Content 2</span><br/>
-									</div>
-									<div class="tab-content-3">
-										<span>Tab Content 3</span><br/>
-									</div>
-									<div class="tab-content-4">
-										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus laoreet magna sed massa feugiat, non accumsan nunc sollicitudin. Curabitur ligula nisl, rhoncus vitae feugiat nec, consequat posuere ex. Aenean accumsan a orci non vulputate. Sed fermentum metus vitae ex tristique, id cursus ex vehicula. Donec gravida felis lectus, sed iaculis sapien rutrum eget. Aliquam dui augue, ultricies non consequat ac, commodo vel mauris. Pellentesque molestie placerat justo sed ullamcorper. Quisque at suscipit mi, in mollis erat. Nulla congue ex eu ornare aliquet. Cras laoreet, odio vel tempor interdum, diam mi placerat nisl, in vehicula nisl mauris a sapien. Aenean id ex eros. Maecenas volutpat arcu at dolor mattis tincidunt. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
-										<p>Curabitur pulvinar molestie libero, non rutrum quam pharetra sed. Sed vel congue ex. Maecenas interdum lacus enim, in laoreet metus blandit in. Etiam sem elit, ornare nec pulvinar a, pellentesque sed dui. Pellentesque dignissim tortor id erat eleifend congue. Suspendisse vitae dapibus sapien. Suspendisse tristique risus in leo luctus sagittis. Nulla sodales, nisi ut viverra pretium, diam libero pulvinar risus, id gravida orci dolor gravida nisl. Praesent at consequat leo, et mattis ex.</p>
-										<p>Aliquam pharetra tempor neque sed feugiat. Morbi velit quam, porttitor ac metus quis, sodales efficitur dui. Praesent convallis ligula dui. Duis placerat dignissim egestas. Fusce fermentum eleifend risus quis fermentum. Nullam vel dolor arcu. Vivamus id varius arcu. Ut commodo risus erat, quis tincidunt nisl tristique vitae. Maecenas in pulvinar odio. Sed feugiat viverra congue.</p>
 									</div>
 								</div>
 							</div>

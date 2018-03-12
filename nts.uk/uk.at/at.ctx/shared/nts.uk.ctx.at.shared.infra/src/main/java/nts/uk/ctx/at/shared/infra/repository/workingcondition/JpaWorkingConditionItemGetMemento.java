@@ -189,9 +189,9 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 		Integer hdAddTimeOneDay = this.entity.getHdAddTimeOneDay();
 		return hdAddTimeOneDay != null
 				? Optional.of(
-						new BreakdownTimeDay(new AttendanceTime(this.entity.getHdAddTimeOneDay()),
-								new AttendanceTime(this.entity.getHdAddTimeMorning()),
-								new AttendanceTime(this.entity.getHdAddTimeAfternoon())))
+						new BreakdownTimeDay(this.entity.getHdAddTimeOneDay() != null? new AttendanceTime(this.entity.getHdAddTimeOneDay()): null,
+								this.entity.getHdAddTimeMorning() != null ? new AttendanceTime(this.entity.getHdAddTimeMorning()) : null,
+										this.entity.getHdAddTimeAfternoon() != null ? new AttendanceTime(this.entity.getHdAddTimeAfternoon()): null))
 				: Optional.empty();
 	}
 

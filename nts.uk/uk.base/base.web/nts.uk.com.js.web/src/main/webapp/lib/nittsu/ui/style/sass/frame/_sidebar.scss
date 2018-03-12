@@ -16,7 +16,12 @@ $sidebar_arrow_width: 50px;
 	color: $sidebar_theme_color;
 }
 
-#sidebar {height: 100%; width: 100%;}
+#sidebar {
+	table-layout: fixed;
+	height: 100%;
+	width: 100%;
+}
+
 #sidebar > tbody > tr > td {vertical-align: top;}
 
 #sidebar-header {

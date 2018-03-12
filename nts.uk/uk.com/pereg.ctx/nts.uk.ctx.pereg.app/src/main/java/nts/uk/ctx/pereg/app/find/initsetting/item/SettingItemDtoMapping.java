@@ -39,7 +39,7 @@ public class SettingItemDtoMapping {
 						item.getSelectionItemRefCd(), baseDate, employeeId, null, true, true);
 
 				comboxList.forEach(cbItem -> {
-					if (cbItem.getOptionValue().equals(item.getSaveData().getValue())) {
+					if (cbItem.getOptionValue().equals(item.getSaveData().getValue().toString())) {
 
 						item.getSaveData().setValue(cbItem.getOptionText());
 					}

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 /**
  * 出張申請設定
  * @author yennth
@@ -42,9 +43,11 @@ public class TripRequestSet extends AggregateRoot{
 	public static TripRequestSet createFromJavaType(String companyId, String comment1, 
 			String color1, int weight1, String comment2, String color2, int weight2, int workType, 
 			int workChange, int workChangeTime, int contractCheck, int lateLeave){
-		return new TripRequestSet(companyId, new Comment(comment1), 
+		return new TripRequestSet(companyId, 
+				StringUtil.isNullOrEmpty(comment1, true) ? null : new Comment(comment1), 
 				new FontColor(color1), EnumAdaptor.valueOf(weight1, Weight.class), 
-				new Comment(comment2), new FontColor(color2),
+				StringUtil.isNullOrEmpty(comment2, true) ? null : new Comment(comment2), 
+				new FontColor(color2),
 				EnumAdaptor.valueOf(weight2, Weight.class), 
 				EnumAdaptor.valueOf(workType, WorkTypeBusinessTrip.class),
 				EnumAdaptor.valueOf(workChange, WorkChange.class), 

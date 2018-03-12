@@ -40,51 +40,49 @@ public class UpdatePersonInfoRoleAuthCommandHandler extends CommandHandler<Updat
 		String companyId = AppContexts.user().companyId();
 		Optional<PersonInfoRoleAuth> p_RoleDestination = this.personRoleAuthRepository
 				.getDetailPersonRoleAuth(update.getRoleIdDestination(), companyId);
-		if (p_RoleDestination.isPresent()) {
-			update.getRoleIds().forEach(c -> {
-				Optional<PersonInfoRoleAuth> p_RoleSource = this.personRoleAuthRepository.getDetailPersonRoleAuth(c,
-						AppContexts.user().companyId());
-				PersonInfoRoleAuth insert = PersonInfoRoleAuth.createFromJavaType(c, companyId,
-						p_RoleDestination.get().getAllowDocUpload().value,
-						p_RoleDestination.get().getAllowMapBrowse().value,
-						p_RoleDestination.get().getAllowDocUpload().value,
-						p_RoleDestination.get().getAllowDocRef().value,
-						p_RoleDestination.get().getAllowAvatarUpload().value,
-						p_RoleDestination.get().getAllowAvatarRef().value);
-				if (p_RoleSource.isPresent()) {
-					this.personRoleAuthRepository.delete(c);
-					this.ctgAuthRepo.deleteByRoleId(c);
-					this.itemAuthRepo.deleteByRoleId(c);
-				}
+		update.getRoleIds().forEach(c -> {
+			Optional<PersonInfoRoleAuth> p_RoleSource = this.personRoleAuthRepository.getDetailPersonRoleAuth(c,
+					AppContexts.user().companyId());
+			PersonInfoRoleAuth insert = null;
+			if (p_RoleDestination.isPresent()) {
+				PersonInfoRoleAuth auth = p_RoleDestination.get();
+				insert = PersonInfoRoleAuth.createFromJavaType(c, companyId, auth.getAllowDocUpload().value,
+						auth.getAllowMapBrowse().value, auth.getAllowDocUpload().value, auth.getAllowDocRef().value,
+						auth.getAllowAvatarUpload().value, auth.getAllowAvatarRef().value);
+			} else {
+				insert = PersonInfoRoleAuth.createFromDefaultValue(c, companyId);
+			}
+			if (p_RoleSource.isPresent()) {
+				this.personRoleAuthRepository.delete(c);
+				this.ctgAuthRepo.deleteByRoleId(c);
+				this.itemAuthRepo.deleteByRoleId(c);
+			}
 
-				List<PersonInfoCategoryAuth> ctgLstUpdate = this.ctgAuthRepo
-						.getAllCategoryAuthByRoleId(update.getRoleIdDestination());
-				if (ctgLstUpdate.size() > 0) {
-					ctgLstUpdate.stream().forEach(ctg -> {
-						PersonInfoCategoryAuth addCtg = new PersonInfoCategoryAuth(c, ctg.getPersonInfoCategoryAuthId(),
-								ctg.getAllowPersonRef(), ctg.getAllowOtherRef(), ctg.getAllowOtherCompanyRef(),
-								ctg.getSelfPastHisAuth(), ctg.getSelfFutureHisAuth(), ctg.getSelfAllowAddHis(),
-								ctg.getSelfAllowDelHis(), ctg.getOtherPastHisAuth(), ctg.getOtherFutureHisAuth(),
-								ctg.getOtherAllowAddHis(), ctg.getOtherAllowDelMulti(), ctg.getSelfAllowAddMulti(),
-								ctg.getSelfAllowDelMulti(), ctg.getOtherAllowAddMulti(), ctg.getOtherAllowDelMulti());
-						this.ctgAuthRepo.add(addCtg);
-						List<PersonInfoItemAuth> itemLst = this.itemAuthRepo
-								.getAllItemAuth(update.getRoleIdDestination(), ctg.getPersonInfoCategoryAuthId());
+			List<PersonInfoCategoryAuth> ctgLstUpdate = this.ctgAuthRepo
+					.getAllCategoryAuthByRoleId(update.getRoleIdDestination());
+			if (ctgLstUpdate.size() > 0) {
+				ctgLstUpdate.stream().forEach(ctg -> {
+					PersonInfoCategoryAuth addCtg = new PersonInfoCategoryAuth(c, ctg.getPersonInfoCategoryAuthId(),
+							ctg.getAllowPersonRef(), ctg.getAllowOtherRef(), ctg.getAllowOtherCompanyRef(),
+							ctg.getSelfPastHisAuth(), ctg.getSelfFutureHisAuth(), ctg.getSelfAllowAddHis(),
+							ctg.getSelfAllowDelHis(), ctg.getOtherPastHisAuth(), ctg.getOtherFutureHisAuth(),
+							ctg.getOtherAllowAddHis(), ctg.getOtherAllowDelMulti(), ctg.getSelfAllowAddMulti(),
+							ctg.getSelfAllowDelMulti(), ctg.getOtherAllowAddMulti(), ctg.getOtherAllowDelMulti());
+					this.ctgAuthRepo.add(addCtg);
+					List<PersonInfoItemAuth> itemLst = this.itemAuthRepo.getAllItemAuth(update.getRoleIdDestination(),
+							ctg.getPersonInfoCategoryAuthId());
 
-						itemLst.stream().forEach(item -> {
-							PersonInfoItemAuth addItem = new PersonInfoItemAuth(c, ctg.getPersonInfoCategoryAuthId(),
-									item.getPersonItemDefId(), item.getSelfAuth(), item.getOtherAuth());
-							this.itemAuthRepo.add(addItem);
-
-						});
+					itemLst.stream().forEach(item -> {
+						PersonInfoItemAuth addItem = new PersonInfoItemAuth(c, ctg.getPersonInfoCategoryAuthId(),
+								item.getPersonItemDefId(), item.getSelfAuth(), item.getOtherAuth());
+						this.itemAuthRepo.add(addItem);
 
 					});
-				}
 
-				this.personRoleAuthRepository.add(insert);
-			});
-		}
+				});
+			}
 
+			this.personRoleAuthRepository.add(insert);
+		});
 	}
-
 }

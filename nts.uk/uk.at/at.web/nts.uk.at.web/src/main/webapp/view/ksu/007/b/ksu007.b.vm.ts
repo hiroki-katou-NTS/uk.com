@@ -111,8 +111,7 @@ module nts.uk.at.view.ksu007.b {
                         // update state on screen
                         if (res.running || res.succeeded || res.cancelled) {
                              _.forEach(res.taskDatas, item => {
-                                if (item.key == 'DATA_EXECUTION') {
-                                    console.log(item);
+                                if (item.key.substring(0, 5) == "DATA_") {
                                     var errors = JSON.parse(item.valueAsString);
                                     _.forEach(errors, error => {
                                         var errorContent : ErrorContentDto = {
@@ -120,8 +119,7 @@ module nts.uk.at.view.ksu007.b {
                                             employeeName : error.employeeName,
                                             ymd : error.dateYMD,
                                             message : nts.uk.resource.getMessage(error.message)
-                                        }
-                                        self.dataError.push(errorContent);
+                                        }   
                                         self.errorLogs.push(errorContent);
                                     });
                                 }
@@ -139,6 +137,10 @@ module nts.uk.at.view.ksu007.b {
                         self.executionError(nts.uk.resource.getText("KSC001_85", [self.numberFail()]));
                         // finish task
                         if (res.succeeded || res.failed || res.cancelled) {
+                            self.errorLogs.sort(function(a,b) {
+                                return (a.employeeId - b.employeeId) || (moment(a.ymd, 'YYYY/MM/DD').toDate() - moment(b.ymd, 'YYYY/MM/DD').toDate());
+                            });
+                            
                             self.executionState('完了');
                             
                             $('.countdown').stopCount();
@@ -185,6 +187,7 @@ module nts.uk.at.view.ksu007.b {
                 }
                 // interrupt process import then close dialog
                 nts.uk.request.asyncTask.requestToCancel(self.taskId());
+                nts.uk.ui.windows.close();
             }
             
             /**

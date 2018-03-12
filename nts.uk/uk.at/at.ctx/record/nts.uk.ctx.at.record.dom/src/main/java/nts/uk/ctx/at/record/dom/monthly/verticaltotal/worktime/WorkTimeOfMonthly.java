@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.medical.MedicalCareTimeOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.attdleavegatetime.AttendanceLeaveGateTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime.BonusPayTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.breaktime.BreakTimeOfMonthly;
@@ -48,7 +52,7 @@ public class WorkTimeOfMonthly {
 	/** 乖離時間 */
 	private DivergenceTimeOfMonthly divergenceTime;
 	/** 医療時間 */
-	private MedicalTimeOfMonthly medicalTime;
+	private Map<WorkTimeNightShift, MedicalTimeOfMonthly> medicalTime;
 	/** 予約 */
 	//reservation
 	
@@ -67,7 +71,7 @@ public class WorkTimeOfMonthly {
 		this.attendanceLeaveGateTime = new AttendanceLeaveGateTimeOfMonthly();
 		this.budgetTimeVarience = new BudgetTimeVarienceOfMonthly();
 		this.divergenceTime = new DivergenceTimeOfMonthly();
-		this.medicalTime = new MedicalTimeOfMonthly(WorkTimeNightShift.DAY_SHIFT);
+		this.medicalTime = new HashMap<>();
 	}
 
 	/**
@@ -82,7 +86,7 @@ public class WorkTimeOfMonthly {
 	 * @param attendanceLeaveGateTime 入退門時間
 	 * @param budgetTimeVarience 予実差異時間
 	 * @param divergenceTime 乖離時間
-	 * @param medicalTime 医療時間
+	 * @param medicalTimeList 医療時間リスト
 	 * @return 月別実績の勤務時間
 	 */
 	public static WorkTimeOfMonthly of(
@@ -96,7 +100,7 @@ public class WorkTimeOfMonthly {
 			AttendanceLeaveGateTimeOfMonthly attendanceLeaveGateTime,
 			BudgetTimeVarienceOfMonthly budgetTimeVarience,
 			DivergenceTimeOfMonthly divergenceTime,
-			MedicalTimeOfMonthly medicalTime){
+			List<MedicalTimeOfMonthly> medicalTimeList){
 		
 		val domain = new WorkTimeOfMonthly();
 		domain.bonusPayTime = bonusPayTime;
@@ -109,7 +113,10 @@ public class WorkTimeOfMonthly {
 		domain.attendanceLeaveGateTime = attendanceLeaveGateTime;
 		domain.budgetTimeVarience = budgetTimeVarience;
 		domain.divergenceTime = divergenceTime;
-		domain.medicalTime = medicalTime;
+		for (val medicalTime : medicalTimeList){
+			val dayNightAtr = medicalTime.getDayNightAtr();
+			domain.medicalTime.putIfAbsent(dayNightAtr, medicalTime);
+		}
 		return domain;
 	}
 	
@@ -152,11 +159,32 @@ public class WorkTimeOfMonthly {
 		this.divergenceTime.aggregate(attendanceTimeOfDaily);
 		
 		// 医療項目の集計
-		//*****（未）　医療時間クラスをリスト管理に設計変更要。
-		this.medicalTime.aggregate(attendanceTimeOfDaily);
+		//*****（未）　日別実績の医療時間が、リスト化実装された後、処理の調整要。
+		this.aggregateMedicalTime(attendanceTimeOfDaily);
 		
 		// 予約データの集計
 		
+	}
+	
+	/**
+	 * 医療項目の集計
+	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
+	 */
+	private void aggregateMedicalTime(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
+
+		// 日別実績の医療時間を取得する
+		//*****（未）　日別実績の医療時間が、リスト化実装された後、処理の調整要。仮に、空リストで処理実装。
+		List<MedicalCareTimeOfDaily> medicalTimeList = new ArrayList<>();
+		for (val medicalTime : medicalTimeList){
+			val dayNightAtr = medicalTime.getDayNightAtr();
+			
+			// 日別実績の医療時間（勤務時間、控除時間、申送時間）を集計する
+			this.medicalTime.putIfAbsent(dayNightAtr, new MedicalTimeOfMonthly(dayNightAtr));
+			val targetMedicalTime = this.medicalTime.get(dayNightAtr);
+			targetMedicalTime.addMinutesToWorkTime(medicalTime.getWorkTime().v());
+			targetMedicalTime.addMinutesToDeducationTime(medicalTime.getDeductionTime().v());
+			targetMedicalTime.addMinutesToTakeOverTime(medicalTime.getTakeOverTime().v());
+		}
 	}
 	
 	/**

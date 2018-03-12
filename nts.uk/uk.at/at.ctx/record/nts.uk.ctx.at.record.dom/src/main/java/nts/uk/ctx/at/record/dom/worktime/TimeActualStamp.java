@@ -15,11 +15,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TimeActualStamp {
 	
-	private WorkStamp actualStamp;
+	private Optional<WorkStamp> actualStamp;
 	
 	private Optional<WorkStamp> stamp = Optional.of(new WorkStamp());
 	
-	private int numberOfReflectionStamp;
+	private Integer numberOfReflectionStamp;
 	
 	/**
 	 * 打刻時間を指定時間分経過させた勤怠打刻を返す
@@ -27,14 +27,14 @@ public class TimeActualStamp {
 	 * @return　勤怠打刻
 	 */
 	public TimeActualStamp moveAheadStampTime(int moveTime) {
-		WorkStamp actualWorkStamp = new WorkStamp(this.actualStamp.getAfterRoundingTime().forwardByMinutes(moveTime),
-												  this.actualStamp.getTimeWithDay().forwardByMinutes(moveTime),
-												  this.actualStamp.getLocationCode(),
-												  this.actualStamp.getStampSourceInfo());
+		WorkStamp actualWorkStamp = new WorkStamp(this.actualStamp.get().getAfterRoundingTime().forwardByMinutes(moveTime),
+												  this.actualStamp.get().getTimeWithDay().forwardByMinutes(moveTime),
+												  this.actualStamp.get().getLocationCode().isPresent() ? this.actualStamp.get().getLocationCode().get() : null,
+												  this.actualStamp.get().getStampSourceInfo());
 		
 		WorkStamp stamp = new WorkStamp(this.stamp.get().getAfterRoundingTime().forwardByMinutes(moveTime),
 										this.stamp.get().getTimeWithDay().forwardByMinutes(moveTime),
-										this.stamp.get().getLocationCode(),
+										this.stamp.get().getLocationCode().isPresent() ? this.stamp.get().getLocationCode().get() : null,
 										this.stamp.get().getStampSourceInfo());
 		
 		return new TimeActualStamp( actualWorkStamp,
@@ -47,27 +47,27 @@ public class TimeActualStamp {
 	 * @return　勤怠打刻
 	 */
 	public TimeActualStamp moveBackStampTime(int moveTime) {
-		WorkStamp actualWorkStamp = new WorkStamp(this.actualStamp.getAfterRoundingTime().backByMinutes(moveTime),
-				  this.actualStamp.getTimeWithDay().backByMinutes(moveTime),
-				  this.actualStamp.getLocationCode(),
-				  this.actualStamp.getStampSourceInfo());
+		WorkStamp actualWorkStamp = new WorkStamp(this.actualStamp.get().getAfterRoundingTime().backByMinutes(moveTime),
+				  this.actualStamp.get().getTimeWithDay().backByMinutes(moveTime),
+				  this.actualStamp.get().getLocationCode().isPresent() ? this.actualStamp.get().getLocationCode().get() : null,
+				  this.actualStamp.get().getStampSourceInfo());
 
 		WorkStamp stamp = new WorkStamp(this.stamp.get().getAfterRoundingTime().forwardByMinutes(moveTime),
 				  this.stamp.get().getTimeWithDay().backByMinutes(moveTime),
-				  this.stamp.get().getLocationCode(),
+				  this.stamp.get().getLocationCode().isPresent() ? this.stamp.get().getLocationCode().get() : null,
 				  this.stamp.get().getStampSourceInfo());
 		
 		return new TimeActualStamp(actualWorkStamp,
 								   stamp,
                 				   this.numberOfReflectionStamp);
 	}
-	public TimeActualStamp(WorkStamp actualStamp, WorkStamp stamp, int numberOfReflectionStamp) {
+	public TimeActualStamp(WorkStamp actualStamp, WorkStamp stamp, Integer numberOfReflectionStamp) {
 		super();
-		this.actualStamp = actualStamp;
+		this.actualStamp = Optional.ofNullable(actualStamp);
 		this.stamp = Optional.ofNullable(stamp);
 		this.numberOfReflectionStamp = numberOfReflectionStamp;
 	}
-	public void setPropertyTimeActualStamp(WorkStamp actualStamp, Optional<WorkStamp> stamp, int numberOfReflectionStamp){
+	public void setPropertyTimeActualStamp(Optional<WorkStamp> actualStamp, Optional<WorkStamp> stamp, Integer numberOfReflectionStamp){
 		this.actualStamp = actualStamp;
 		this.stamp = stamp;
 		this.numberOfReflectionStamp = numberOfReflectionStamp;

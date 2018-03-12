@@ -35,7 +35,7 @@ public class BreakTimeStampLeakageChecking {
 			List<BreakTimeSheet> breakTimeSheets = breakTimeOfDailyPerformance.getBreakTimeSheets();
 
 			for (BreakTimeSheet breakTimeSheet : breakTimeSheets) {
-				if (breakTimeSheet.getStartTime().getTimeWithDay() == null) {
+				if (breakTimeSheet.getStartTime() == null) {
 
 					List<Integer> attendanceItemIDList = new ArrayList<>();
 
@@ -65,7 +65,7 @@ public class BreakTimeStampLeakageChecking {
 							new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
 				}
 
-				if (breakTimeSheet.getEndTime().getTimeWithDay() == null) {
+				if (breakTimeSheet.getEndTime() == null) {
 					List<Integer> attendanceItemIDList = new ArrayList<>();
 
 					if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(1))) {

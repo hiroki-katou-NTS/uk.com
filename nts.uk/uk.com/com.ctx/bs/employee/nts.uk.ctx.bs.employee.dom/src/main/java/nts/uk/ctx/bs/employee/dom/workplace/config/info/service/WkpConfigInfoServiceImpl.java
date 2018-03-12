@@ -5,9 +5,11 @@
 package nts.uk.ctx.bs.employee.dom.workplace.config.info.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -132,8 +134,8 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
             }
             // update hierarchyCd child
             if (this.isChangedHierarchyChild(hierarchyCd, hierarchyCdSelected, createType)) {
-                String newHierarchyCd = hierarchyCd.replace(hierarchyCdSelected,
-                        this.getNewHierarchyCd(hierarchyCdSelected));
+            	String codeChange = this.getNewHierarchyCd(hierarchyCd.substring(hierarchyCdSelected.length() - 3, hierarchyCdSelected.length()));
+                String newHierarchyCd = this.makeNewHierarchyCd(hierarchyCd, hierarchyCdSelected, codeChange);
                 wkpHierarchy.setHierarchyCode(new HierarchyCode(newHierarchyCd));
                 continue;
             }
@@ -153,6 +155,52 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
         WorkplaceConfigInfo newWkpConfigInfo = WorkplaceConfigInfo.cloneWithWkpHierarchy(wkpConfigInfo,
                 Arrays.asList(newWkpHierarchy));
         this.wkpConfigInfoRepo.add(newWkpConfigInfo);
+    }
+    
+    /**
+     * Make new hierarchy cd.
+     *
+     * @param currentHierarchyCd the current hierarchy cd
+     * @param hierarchyCdSelected the hierarchy cd selected
+     * @param codeChange the code change
+     * @return the string
+     */
+    private String makeNewHierarchyCd(String currentHierarchyCd, String hierarchyCdSelected, String codeChange) {
+    	String[] arrCode = currentHierarchyCd.split("(?<=\\G.{3})");
+    	String newHierarchyCd = null;
+    	ArrayList<String> tempList = new ArrayList<String>();
+    	int index = 1;
+    	for (String code : arrCode){
+    		if(index == (hierarchyCdSelected.length()/3)){
+    			code = codeChange;
+    		}
+    		tempList.add(code);
+    		index++;
+    	}
+    	
+    	if(!tempList.isEmpty()){
+    		newHierarchyCd = tempList.stream().collect(Collectors.joining(""));
+    	}
+    	return newHierarchyCd;
+    }
+    
+    /**
+     * Gets the new hierarchy cd.
+     *
+     * @param hierarchyCd
+     *            the hierarchy cd
+     * @return the new hierarchy cd
+     */
+    private String getNewHierarchyCd(String hierarchyCd) {
+        BigDecimal number = new BigDecimal(hierarchyCd);
+        BigDecimal newNumber = number.add(BigDecimal.ONE);
+        StringBuffer result = new StringBuffer(newNumber.toString());
+        result.reverse();
+        String charZero = "0";
+        while(result.length() < hierarchyCd.length()) {
+            result.append(charZero);
+        }
+        return result.reverse().toString();
     }
 
     /**
@@ -230,25 +278,6 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
     }
 
     /**
-     * Gets the new hierarchy cd.
-     *
-     * @param hierarchyCd
-     *            the hierarchy cd
-     * @return the new hierarchy cd
-     */
-    private String getNewHierarchyCd(String hierarchyCd) {
-        BigDecimal number = new BigDecimal(hierarchyCd);
-        BigDecimal newNumber = number.add(BigDecimal.ONE);
-        StringBuffer result = new StringBuffer(newNumber.toString());
-        result.reverse();
-        String charZero = "0";
-        while(result.length() < hierarchyCd.length()) {
-            result.append(charZero);
-        }
-        return result.reverse().toString();
-    }
-
-    /**
      * Checks if is changed hierarchy child.
      *
      * @param hierarchyCd the hierarchy cd
@@ -258,12 +287,14 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
      */
     private Boolean isChangedHierarchyChild(String hierarchyCd, String hierarchyCdSelected,
             CreateWorkpceType createType) {
+    	BigDecimal hierarchyCdNumb = new BigDecimal(hierarchyCd.substring(hierarchyCdSelected.length() - 3, hierarchyCdSelected.length()));
+    	BigDecimal hierarchyCdSelectedNumb = new BigDecimal(hierarchyCdSelected.substring(hierarchyCdSelected.length() - 3, hierarchyCdSelected.length()));
         // when create at top
         boolean isCreatedTop = createType == CreateWorkpceType.CREATE_ON_TOP
-                && hierarchyCd.length() > hierarchyCdSelected.length();
+                && hierarchyCd.length() > hierarchyCdSelected.length() && hierarchyCdNumb.intValue() >= hierarchyCdSelectedNumb.intValue();
         // when create at below
         boolean isCreatedBelow = createType == CreateWorkpceType.CREATE_ON_BELOW
-                && hierarchyCd.length() > hierarchyCdSelected.length() && !hierarchyCd.startsWith(hierarchyCdSelected);
+                && hierarchyCd.length() > hierarchyCdSelected.length() && !hierarchyCd.startsWith(hierarchyCdSelected) && hierarchyCdNumb.intValue() >= hierarchyCdSelectedNumb.intValue();
         return isCreatedTop || isCreatedBelow;
     }
 
