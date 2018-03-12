@@ -31,15 +31,15 @@ public class WindowsAccountCatcher implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		// TODO: Hit performance unless minimize no of requests to be filtered.
-		// Only filter login request?
 		HttpServletRequest httpRequest = (HttpServletRequest) request; 
 		String account = httpRequest.getUserPrincipal().getName();
 		Optional<WindowsAccount> accOpt = getAccountInfo(account);
+		
 		if (!accOpt.isPresent()) {
 			chain.doFilter(request, response);
 			return;
 		}
+		
 		AppContextsConfig.setWindowsAccount(accOpt.get());
 		chain.doFilter(request, response);
 	}
