@@ -1,7 +1,4 @@
 module nts.uk.at.view.kmk004.f {
-
-    import UsageUnitSettingDto = service.model.UsageUnitSettingDto;
-
     export module viewmodel {
 
         export class ScreenModel {
@@ -9,7 +6,9 @@ module nts.uk.at.view.kmk004.f {
             startWeekList: KnockoutObservableArray<any>;
             startWeek: KnockoutObservable<number>;// F1_2
             isIncludeExtraAggr: KnockoutObservable<boolean>;// F2_3
+            includeExtraAggrOpt: KnockoutObservableArray<any>;// Opt for F2_3 (F2_4, F2_5)
             isIncludeLegalAggr: KnockoutObservable<boolean>; // F2_8
+            includeAggrOpt: KnockoutObservableArray<any>;
             isIncludeHolidayAggr: KnockoutObservable<boolean>; // F2_12
             
             isIncludeExtraExcessOutside: KnockoutObservable<boolean>;// F2_16
@@ -28,6 +27,15 @@ module nts.uk.at.view.kmk004.f {
                     new ItemModel(7, '土曜日'),
                     new ItemModel(0, '日曜日'),
                     new ItemModel(1, '締め開始日')]);
+                
+                self.includeExtraAggrOpt = ko.observableArray([
+                    new ItemModel(0, nts.uk.resource.getText("KMK004_58")),
+                    new ItemModel(1, nts.uk.resource.getText("KMK004_59"))]);
+                
+                self.includeAggrOpt = ko.observableArray([
+                    new ItemModel(0, nts.uk.resource.getText("KMK004_63")),
+                    new ItemModel(1, nts.uk.resource.getText("KMK004_64"))]);
+                
                 self.startWeek = ko.observable(params.startWeek ? params.startWeek : StartWeek.MONDAY);
                 self.isIncludeExtraAggr = ko.observable(params.isIncludeExtraAggr ? params.isIncludeExtraAggr : false);
                 self.isIncludeLegalAggr = ko.observable(params.isIncludeLegalAggr ? params.isIncludeLegalAggr : false);

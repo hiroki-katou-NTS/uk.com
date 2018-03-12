@@ -322,6 +322,22 @@ module nts.uk.at.view.kmk004.a {
                     $('#companyYearPicker').focus();
                 });
             }
+            
+            public gotoG(): void {
+                let self = this;
+                nts.uk.ui.windows.sub.modal("/view/kmk/004/g/index.xhtml").onClosed(() => {
+                    self.loadUsageUnitSetting();
+                    $('#companyYearPicker').focus();
+                });
+            }
+            
+            public gotoH(): void {
+                let self = this;
+                nts.uk.ui.windows.sub.modal("/view/kmk/004/h/index.xhtml").onClosed(() => {
+                    self.loadUsageUnitSetting();
+                    $('#companyYearPicker').focus();
+                });
+            }
 
             /**
              * Save company setting.
