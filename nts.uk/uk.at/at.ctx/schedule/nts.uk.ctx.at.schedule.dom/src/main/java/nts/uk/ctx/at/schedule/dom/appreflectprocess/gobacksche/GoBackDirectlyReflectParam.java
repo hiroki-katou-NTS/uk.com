@@ -1,10 +1,10 @@
-package nts.uk.ctx.at.schedule.dom.applicationreflectprocess.applicationsmanager.gobackdirectlysche;
+package nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.applicationreflectprocess.applicationsmanager.ApplyTimeAtr;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.ApplyTimeAtr;
 
 /**
  * 直行直帰申請申請反映パラメータ

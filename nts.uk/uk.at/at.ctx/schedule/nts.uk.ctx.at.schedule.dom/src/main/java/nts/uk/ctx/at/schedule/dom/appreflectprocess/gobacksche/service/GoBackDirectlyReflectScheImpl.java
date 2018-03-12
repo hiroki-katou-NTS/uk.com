@@ -1,10 +1,10 @@
-package nts.uk.ctx.at.schedule.dom.applicationreflectprocess.applicationsmanager.gobackdirectlysche.service.reflectprocess;
+package nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.service;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.applicationreflectprocess.applicationsmanager.ReflectedStatesScheInfo;
-import nts.uk.ctx.at.schedule.dom.applicationreflectprocess.applicationsmanager.gobackdirectlysche.GoBackDirectlyReflectParam;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.ReflectedStatesScheInfo;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.GoBackDirectlyReflectParam;
 
 @Stateless
 public class GoBackDirectlyReflectScheImpl implements GoBackDirectlyReflectSche{

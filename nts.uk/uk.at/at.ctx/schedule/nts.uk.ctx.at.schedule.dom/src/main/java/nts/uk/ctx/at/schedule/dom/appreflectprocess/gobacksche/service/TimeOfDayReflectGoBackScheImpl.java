@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.applicationreflectprocess.applicationsmanager.gobackdirectlysche.service.reflectprocess;
+package nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.service;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -6,11 +6,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.applicationreflectprocess.applicationsmanager.ApplyTimeAtr;
-import nts.uk.ctx.at.schedule.dom.applicationreflectprocess.applicationsmanager.ReflectedStatesScheInfo;
-import nts.uk.ctx.at.schedule.dom.applicationreflectprocess.applicationsmanager.gobackdirectlysche.GoBackDirectlyReflectParam;
-import nts.uk.ctx.at.schedule.dom.applicationreflectprocess.applicationsmanager.gobackdirectlysche.OutsetBreakReflectScheAtr;
-import nts.uk.ctx.at.schedule.dom.applicationreflectprocess.applicationsmanager.gobackdirectlysche.TimeOfDayReflectFindDto;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.ApplyTimeAtr;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.ReflectedStatesScheInfo;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.GoBackDirectlyReflectParam;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.OutsetBreakReflectScheAtr;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.TimeOfDayReflectFindDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.EndTimeReflectScheService;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.StartTimeReflectScheService;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.servicedto.TimeReflectScheDto;
