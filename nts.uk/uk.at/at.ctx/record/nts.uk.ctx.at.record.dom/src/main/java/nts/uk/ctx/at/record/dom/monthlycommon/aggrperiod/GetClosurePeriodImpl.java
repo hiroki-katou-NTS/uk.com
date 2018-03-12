@@ -40,8 +40,8 @@ public class GetClosurePeriodImpl implements GetClosurePeriod {
 	@Inject
 	private ClosureService closureService;
 	
-	/** 締め処理期間 */
-	private ClosurePeriod closurePeriod;
+	/** 締め処理期間リスト */
+	private List<ClosurePeriod> closurePeriods;
 	/** 締めID履歴リスト */
 	private List<ClosureIdHistory> closureIdHistories;
 	/** 実締め毎集計期間リスト */
@@ -49,34 +49,40 @@ public class GetClosurePeriodImpl implements GetClosurePeriod {
 	
 	/** 集計期間を取得する */
 	@Override
-	public ClosurePeriod get(String companyId, String employeeId, GeneralDate criteriaDate,
+	public List<ClosurePeriod> get(String companyId, String employeeId, GeneralDate criteriaDate,
 			Optional<YearMonth> yearMonthOpt, Optional<ClosureId> closureIdOpt, Optional<ExecutionType> executionTypeOpt) {
 		
-		this.closurePeriod = new ClosurePeriod();
+		this.closurePeriods = new ArrayList<>();
 		this.closureIdHistories = new ArrayList<>();
 		this.aggrPeriods = new ArrayList<>();
 
 		// 集計すべき期間を計算
 		this.calculatePeriodForAggregate(companyId, employeeId, criteriaDate);
 
-		return this.closurePeriod;
+		return this.closurePeriods;
 	}
 	
 	/**
 	 * 集計すべき期間を計算
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
-	 * @param aggrEndDate 集計終了日
+	 * @param aggrEnd 集計終了日
 	 */
-	private void calculatePeriodForAggregate(String companyId, String employeeId, GeneralDate aggrEndDate){
+	private void calculatePeriodForAggregate(String companyId, String employeeId, GeneralDate aggrEnd){
 	
 		// 締められていない期間の締めIDを取得
 		this.getClosureIdOfNotClosurePeriod(companyId, employeeId);
-		
+
 		for (val closureIdHistory: this.closureIdHistories){
 			
 			// 締めID履歴の期間内で締め処理期間を作成
-			this.createAggrPeriodEachActualClosureWithinHistories(companyId, closureIdHistory, aggrEndDate);
+			this.createAggrPeriodEachActualClosureWithinHistories(companyId, closureIdHistory, aggrEnd);
+		}
+		
+		for (val aggrPeriod : this.aggrPeriods){
+			
+			// 締め処理期間を作成
+			this.createClosurePeriod(aggrPeriod, aggrEnd);
 		}
 	}
 	
@@ -130,14 +136,82 @@ public class GetClosurePeriodImpl implements GetClosurePeriod {
 	 * 締めID履歴の期間内で締め処理期間を作成
 	 * @param companyId 会社ID
 	 * @param closureIdHistory 締めID履歴
-	 * @param aggrEndDate 集計終了日
+	 * @param aggrEnd 集計終了日
 	 */
 	private void createAggrPeriodEachActualClosureWithinHistories(
-			String companyId, ClosureIdHistory closureIdHistory, GeneralDate aggrEndDate){
+			String companyId, ClosureIdHistory closureIdHistory, GeneralDate aggrEnd){
 	
-		// 指定した年月日時点の締め期間を取得する
-		val closurePeriodOpt = this.closureService.getClosurePeriodByYmd(
-				closureIdHistory.getClosureId().value, closureIdHistory.getPeriod().start());
-		if (!closurePeriodOpt.isPresent()) return;
+		val closureId = closureIdHistory.getClosureId();
+		val histPeriod = closureIdHistory.getPeriod();
+		
+		// 集計開始日を取得
+		GeneralDate aggrStart = histPeriod.start();
+		
+		// 「締め」を取得
+		val closureOpt = this.closureRepository.findById(companyId, closureId.value);
+		if (!closureOpt.isPresent()) return;
+		val closure = closureOpt.get();
+		if (closure.getUseClassification() != UseClassification.UseClass_Use) return;
+		
+		while (true){
+		
+			// 指定した年月日時点の締め期間を取得する
+			val closurePeriodOpt = closure.getClosurePeriodByYmd(aggrStart);
+			if (!closurePeriodOpt.isPresent()) return;
+			val closurePeriod = closurePeriodOpt.get();
+			
+			// 集計対象期間を作成する
+			DatePeriod aggrTargetPeriod = new DatePeriod(aggrStart, closurePeriod.getPeriod().end());
+			
+			// 「締めID履歴．期間」と「集計対象期間」の重複を計算
+			if (histPeriod.isBefore(aggrTargetPeriod)) break;
+			if (histPeriod.isAfter(aggrTargetPeriod)) break;
+			if (aggrTargetPeriod.contains(histPeriod.start())){
+				aggrTargetPeriod = aggrTargetPeriod.cutOffWithNewStart(histPeriod.start());
+			}
+			if (aggrTargetPeriod.contains(histPeriod.end())){
+				aggrTargetPeriod = aggrTargetPeriod.cutOffWithNewEnd(histPeriod.end());
+			}
+			
+			// 「実締め毎集計期間」を作成
+			this.aggrPeriods.add(AggrPeriodEachActualClosure.of(closureId, closurePeriod.getClosureDate(),
+					closurePeriod.getYearMonth(), aggrTargetPeriod, closurePeriod.getPeriod()));
+			
+			// 「締めID履歴．終了日」と「対象集計期間．終了日」を比較
+			if (histPeriod.end().beforeOrEquals(aggrTargetPeriod.end())) break;
+			
+			// 「集計終了日」と「対象集計期間．終了日」を比較
+			if (aggrEnd.beforeOrEquals(aggrTargetPeriod.end())) break;
+			
+			// 集計開始日←「対象集計期間．終了日」の翌日
+			aggrStart = aggrTargetPeriod.end().addDays(1);
+		}
+	}
+	
+	/**
+	 * 締め処理期間を作成
+	 * @param aggrPeriod 実締め毎集計期間
+	 * @param aggrEnd 集計終了日
+	 */
+	private void createClosurePeriod(AggrPeriodEachActualClosure aggrPeriod, GeneralDate aggrEnd){
+		
+		// 「締め処理期間リスト」の末尾を確認
+		if (this.closurePeriods.size() > 0) {
+			val lastPeriod = this.closurePeriods.get(this.closurePeriods.size() - 1);
+			
+			// 末尾の「締め処理期間．締め年月日」と「実締め毎集計期間．本来の締め期間．終了日」を比較
+			if (lastPeriod.getClosureYmd().afterOrEquals(aggrPeriod.getOriginalClosurePeriod().end())){
+				
+				// 末尾の締め処理期間に実締め毎集計期間を追加
+				lastPeriod.addAggrPeriodEachActualClosure(aggrPeriod);
+				return;
+			}
+		}
+		
+		// 集計終了日を過ぎた期間かチェック
+		if (aggrPeriod.getPeriod().start().after(aggrEnd)) return;
+		
+		// 締め処理期間を新規作成し、リストに追加
+		this.closurePeriods.add(ClosurePeriod.of(aggrPeriod));
 	}
 }
