@@ -576,30 +576,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		// TODO Auto-generated method stub
 		return new AppListAtrOutput(appStatus.getLstAppFull(), appStatus.getCount(), lstColorTime, lstAppGroup);
 	}
-	private boolean checkExistColor(List<CheckColorTime> lstColor, String appId){
-		for (CheckColorTime checkColorTime : lstColor) {
-			if(checkColorTime.getAppID().equals(appId)){
-				return true;
-			}
-		}
-		return false;
-	}
-	private boolean checkPrePostColor(List<OverTimeFrame> timePre, List<OverTimeFrame> timePost){
-		for (OverTimeFrame overTimeFrame : timePost) {
-			if(overTimeFrame.getApplicationTime() == this.findTimePre(timePre, overTimeFrame.getFrameNo())){
-				return true;
-			}
-		}
-		return false;
-	}
-	private Integer findTimePre(List<OverTimeFrame> lstFrame, int frameNo){
-		for (OverTimeFrame overTimeFrame : lstFrame) {
-			if(overTimeFrame.getFrameNo() == frameNo){
-				return overTimeFrame.getApplicationTime();
-			}
-		}
-		return null;
-	}	
 	/**
 	 * 5.1 - 申請一覧リスト取得実績休出申請
 	 */
@@ -1242,7 +1218,15 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		return false;
 	}
-	
+	/**
+	 * convert status phase
+	 * －：承認フェーズ.承認区分　＝　未承認
+	 * 〇：承認フェーズ.承認区分　＝　承認済
+	 * ×：承認フェーズ.承認区分　＝　否認
+	 * @param appId
+	 * @param lstPhaseState
+	 * @return
+	 */
 	private PhaseStatus convertStatusPhase(String appId, List<ApprovalPhaseStateImport_New> lstPhaseState){
 		String phaseStatus = "";
 		List<Integer> lstPhaseAtr = new ArrayList<>();
@@ -1257,10 +1241,58 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		return new PhaseStatus(appId, phaseStatus, lstPhaseAtr);
 	}
+	/**
+	 * find phase status
+	 * @param lstPhaseState
+	 * @param order
+	 * @return
+	 */
 	private Integer findPhaseStatus(List<ApprovalPhaseStateImport_New> lstPhaseState, int order){
 		for (ApprovalPhaseStateImport_New phase : lstPhaseState) {
 			if(phase.getPhaseOrder().equals(order)){
 				return phase.getApprovalAtr().value;
+			}
+		}
+		return null;
+	}
+	/**
+	 * check color application exist list check???
+	 * @param lstColor
+	 * @param appId
+	 * @return
+	 */
+	private boolean checkExistColor(List<CheckColorTime> lstColor, String appId){
+		for (CheckColorTime checkColorTime : lstColor) {
+			if(checkColorTime.getAppID().equals(appId)){
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * check time pr < time post
+	 * @param timePre
+	 * @param timePost
+	 * @return
+	 */
+	private boolean checkPrePostColor(List<OverTimeFrame> timePre, List<OverTimeFrame> timePost){
+		for (OverTimeFrame overTimeFrame : timePost) {
+			if(overTimeFrame.getApplicationTime() < this.findTimePre(timePre, overTimeFrame.getFrameNo())){
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * find time application pre
+	 * @param lstFrame
+	 * @param frameNo
+	 * @return
+	 */
+	private Integer findTimePre(List<OverTimeFrame> lstFrame, int frameNo){
+		for (OverTimeFrame overTimeFrame : lstFrame) {
+			if(overTimeFrame.getFrameNo() == frameNo){
+				return overTimeFrame.getApplicationTime();
 			}
 		}
 		return null;

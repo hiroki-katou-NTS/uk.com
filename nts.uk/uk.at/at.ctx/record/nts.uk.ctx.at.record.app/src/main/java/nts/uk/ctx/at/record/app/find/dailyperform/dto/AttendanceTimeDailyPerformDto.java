@@ -56,7 +56,8 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 			items.setEmployeeID(domain.getEmployeeId());
 			items.setDate(domain.getYmd());
 			items.setActualWorkTime(ActualWorkTimeDailyPerformDto.toActualWorkTime(domain.getActualWorkingTimeOfDaily()));
-			items.setBudgetTimeVariance(domain.getBudgetTimeVariance().valueAsMinutes());
+			//items.setBudgetTimeVariance(domain.getBudgetTimeVariance().valueAsMinutes());
+			items.setBudgetTimeVariance(domain.getBudgetTimeVariance() == null ? null : domain.getBudgetTimeVariance().valueAsMinutes());
 			items.setDate(domain.getYmd());
 			items.setEmployeeID(domain.getEmployeeId());
 			items.setMedicalTime(MedicalTimeDailyPerformDto.fromMedicalCareTime(domain.getMedicalCareTime()));

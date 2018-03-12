@@ -8814,7 +8814,7 @@ var nts;
                             var structure = [];
                             var structData = "";
                             _.forEach(cells, function (cell, index) {
-                                var rowIndex = cell.rowIndex;
+                                var rowIndex = parseInt(cell.rowIndex);
                                 var columnIndex = helper.getDisplayColumnIndex(self.$grid, cell.columnKey);
                                 if (index === 0) {
                                     minRow = maxRow = rowIndex;
@@ -9211,6 +9211,13 @@ var nts;
                                     || which(innerIdx, dataType, internal.DURATION)
                                     || which(innerIdx, dataType, internal.NUMBER)
                                     || which(innerIdx, dataType, internal.TEXT);
+                                var constraints = ui.validation.getConstraint(col.primitiveValue);
+                                if (constraints && constraints.valueType === "Time") {
+                                    max = constraints.max ? constraints.max : col.max;
+                                    min = constraints.min ? constraints.min : col.min;
+                                    required = constraints.required ? constraints.required : col.required;
+                                    return false;
+                                }
                                 max = col.max;
                                 min = col.min;
                                 required = col.required;
@@ -9519,7 +9526,7 @@ var nts;
                      * Select range.
                      */
                     function selectRange($grid, $cell) {
-                        if (uk.util.isNullOrUndefined($cell))
+                        if (uk.util.isNullOrUndefined($cell) || selector.is($cell, "." + BODY_PRF + DETAIL))
                             return;
                         var lastSelected = $.data($grid, internal.LAST_SELECTED);
                         if (!lastSelected) {
@@ -15245,6 +15252,12 @@ var nts;
                         $input.addClass('nts-editor nts-input');
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
                         setEnterHandlerIfRequired($input, data);
+                        $input.on("keydown", function (e) {
+                            // prevent backspace in readonly editor
+                            if (ko.unwrap(data.readonly) && e.keyCode === 8) {
+                                e.preventDefault();
+                            }
+                        });
                         $input.on(valueUpdate, function (e) {
                             var newText = $input.val();
                             var validator = _this.getValidator(data);
@@ -15379,10 +15392,13 @@ var nts;
                         $input.addClass('nts-editor nts-input');
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
                         setEnterHandlerIfRequired($input, data);
-                        $input.on("keyup", function (e) {
-                            if ($input.attr('readonly')) {
-                                return;
+                        $input.on("keydown", function (e) {
+                            // prevent backspace in readonly editor
+                            if (ko.unwrap(data.readonly) && e.keyCode === 8) {
+                                e.preventDefault();
                             }
+                        });
+                        $input.on("keyup", function (e) {
                             var code = e.keyCode || e.which;
                             if (!$input.attr('readonly') && code.toString() !== '9') {
                                 var validator = self.getValidator(data);
@@ -23432,6 +23448,18 @@ var nts;
                         function editStarted(evt, ui) {
                             var $grid = $(ui.owner.element);
                             var valueType = validation.getValueType($grid, ui.columnKey);
+                            if (!evt.currentTarget) {
+                                if (valueType === "TimeWithDay" || valueType === "Clock") {
+                                    var $editor = $(ui.editor.find("input")[0]);
+                                    $editor.css("text-align", "right");
+                                }
+                                else if (valueType === "Currency") {
+                                    ui.editor.addClass(updating.INPUT_CURR_SYM);
+                                    var $editor = $(ui.editor.find("input")[0]);
+                                    $editor.css("text-align", "right");
+                                }
+                                return;
+                            }
                             if (!uk.util.isNullOrUndefined(ui.value) && !_.isEmpty(ui.value)) {
                                 if (valueType === "TimeWithDay" || valueType === "Clock") {
                                     var formatted_1;
@@ -23514,30 +23542,41 @@ var nts;
                             if (!utils.isDeleteKey(evt)) {
                                 setTimeout(function () {
                                     var cellValue;
+                                    var char = evt.key === "Subtract" ? "-" : evt.key;
                                     var $editor = $targetGrid.igGridUpdating("editorForCell", $(cell.element));
                                     if (!uk.util.isNullOrUndefined($editor.data("igTextEditor"))) {
-                                        var newText = $editor.igTextEditor("value");
-                                        newText = newText.substr(newText.length - 1);
-                                        $editor.igTextEditor("value", newText.trim());
-                                        var input = $editor.find("input")[0];
-                                        var len = input.value.length;
-                                        input.setSelectionRange(len, len);
-                                        cellValue = newText;
-                                    }
-                                    else if (!uk.util.isNullOrUndefined($editor.data("igNumericEditor"))) {
-                                        var numericStr = "-";
-                                        if (!utils.isMinusSymbol(evt)) {
-                                            numericStr = String.fromCharCode(evt.keyCode);
-                                            $editor.igNumericEditor("value", parseInt(numericStr));
+                                        $editor.igTextEditor("value", char);
+                                        var input_1 = $editor.find("input")[0];
+                                        var len_1 = input_1.value.length;
+                                        if ($.ig.util.isChrome || $.ig.util.isSafari) {
+                                            setTimeout(function () {
+                                                input_1.setSelectionRange(len_1, len_1);
+                                            }, 110);
                                         }
                                         else {
-                                            $editor.igNumericEditor("value", numericStr);
+                                            input_1.setSelectionRange(len_1, len_1);
                                         }
-                                        setTimeout(function () {
-                                            var length = String($editor.igNumericEditor("value")).length;
-                                            $editor.igNumericEditor("select", length, length);
-                                        }, 100);
-                                        cellValue = numericStr;
+                                        cellValue = char;
+                                    }
+                                    else if (!uk.util.isNullOrUndefined($editor.data("igNumericEditor"))) {
+                                        cellValue = char;
+                                        if (!utils.isMinusSymbol(evt)) {
+                                            $editor.igNumericEditor("value", parseInt(cellValue));
+                                        }
+                                        else {
+                                            cellValue = "-";
+                                            $editor.igNumericEditor("value", cellValue);
+                                        }
+                                        if ($.ig.util.isChrome || $.ig.util.isSafari) {
+                                            setTimeout(function () {
+                                                var length = String($editor.igNumericEditor("value")).length;
+                                                $editor.igNumericEditor("select", length, length);
+                                            }, 110);
+                                        }
+                                        else {
+                                            var length_1 = String($editor.igNumericEditor("value")).length;
+                                            $editor.igNumericEditor("select", length_1, length_1);
+                                        }
                                     }
                                     // Validate
                                     var validators = $targetGrid.data(validation.VALIDATORS);
@@ -23550,14 +23589,15 @@ var nts;
                                     if (!result.isValid) {
                                         errors.set($targetGrid, cell, result.errorMessage);
                                     }
-                                }, 200);
+                                }, 1);
                             }
                             else {
                                 setTimeout(function () {
                                     var $editor = $targetGrid.igGridUpdating("editorForCell", $(cell.element));
                                     $editor.find("input").val("");
-                                }, 200);
+                                }, 1);
                             }
+                            evt.preventDefault();
                             evt.stopImmediatePropagation();
                         }
                         /**

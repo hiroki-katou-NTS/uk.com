@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
-public class WorkRecordCheckService {
+public class ErAlWorkRecordCheckService {
 
 	@Inject
 	private RegulationInfoEmployeeQueryAdapter employeeSearch;
@@ -39,6 +40,16 @@ public class WorkRecordCheckService {
 
 	public List<RegulationInfoEmployeeQueryR> filterEmployees(GeneralDate workingDate, Collection<String> employeeIds,
 			ErrorAlarmCondition checkCondition) {
+		return this.employeeSearch.search(createQueryToFilterEmployees(workingDate, checkCondition));
+	}
+	
+	public List<RegulationInfoEmployeeQueryR> filterEmployees(GeneralDate workingDate, Collection<String> employeeIds,
+			String EACheckID) {
+		ErrorAlarmCondition checkCondition = errorRecordRepo.findConditionByErrorAlamCheckId(EACheckID).orElse(null);
+
+		if (checkCondition != null) {
+			return new ArrayList<>();
+		}
 		return this.employeeSearch.search(createQueryToFilterEmployees(workingDate, checkCondition));
 	}
 

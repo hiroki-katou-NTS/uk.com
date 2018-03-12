@@ -9,8 +9,8 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateMonthlyValue;
+import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.AggrSettingMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
@@ -24,9 +24,10 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.TargetPre
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtion;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
@@ -582,7 +583,7 @@ public class RegularAndIrregularTimeOfMonthly {
 				employeeId, yearMonth, closureId, closureDate, legalAggrSetOfIrg, repositories);
 		
 		// 開始月～当月の変形期間繰越時間を求める
-		AttendanceTimeMonth totalIrregularPeriodCarryforwardsTime = new AttendanceTimeMonth(
+		AttendanceTimeMonthWithMinus totalIrregularPeriodCarryforwardsTime = new AttendanceTimeMonthWithMinus(
 				pastIrregularPeriodCarryforwardsTime.v());
 		totalIrregularPeriodCarryforwardsTime = totalIrregularPeriodCarryforwardsTime.addMinutes(
 				this.irregularPeriodCarryforwardsTime.getTime().v());
@@ -591,17 +592,17 @@ public class RegularAndIrregularTimeOfMonthly {
 		if (legalAggrSetOfIrg.getSettlementPeriod().isSettlementMonth(yearMonth, isRetireMonth)){
 			
 			// 精算月の時、月割増合計時間に集計結果を入れる
-			this.monthlyTotalPremiumTime = totalIrregularPeriodCarryforwardsTime;
+			this.monthlyTotalPremiumTime = new AttendanceTimeMonth(totalIrregularPeriodCarryforwardsTime.v());
 			
 			// 変形期間繰越時間を 0 にする
-			this.irregularWorkingTime.setIrregularPeriodCarryforwardTime(new AttendanceTimeMonth(0));
+			this.irregularWorkingTime.setIrregularPeriodCarryforwardTime(new AttendanceTimeMonthWithMinus(0));
 		}
 		else{
 			
 			// 精算月でない時、複数月変形途中時間・変形期間繰越時間に集計結果を入れる
 			this.irregularWorkingTime.setMultiMonthIrregularMiddleTime(totalIrregularPeriodCarryforwardsTime);
 			this.irregularWorkingTime.setIrregularPeriodCarryforwardTime(
-					new AttendanceTimeMonth(this.irregularPeriodCarryforwardsTime.getTime().v()));
+					new AttendanceTimeMonthWithMinus(this.irregularPeriodCarryforwardsTime.getTime().v()));
 		}
 	}
 	
