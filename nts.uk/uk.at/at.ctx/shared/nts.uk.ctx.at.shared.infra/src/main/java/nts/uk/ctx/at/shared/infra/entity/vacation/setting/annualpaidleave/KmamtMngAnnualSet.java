@@ -77,7 +77,7 @@ public class KmamtMngAnnualSet extends UkJpaEntity implements Serializable {
     
     /** The yearly of day. */
     @Column(name = "YEARLY_OF_DAYS")
-    private double yearlyOfDays;
+    private Double yearlyOfDays;
     
     /** The Round Processing Classification. */
     @Column(name = "ROUND_PRO_CLA")

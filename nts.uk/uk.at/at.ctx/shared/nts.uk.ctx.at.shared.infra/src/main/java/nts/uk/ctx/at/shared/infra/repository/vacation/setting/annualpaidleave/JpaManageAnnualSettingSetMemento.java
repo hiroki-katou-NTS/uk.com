@@ -117,6 +117,8 @@ public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetM
      */
 	@Override
 	public void setYearLyOfDays(YearLyOfNumberDays yearLyOfNumberDays) {
-		this.entity.setYearlyOfDays(yearLyOfNumberDays.v());
+		 if (yearLyOfNumberDays != null) {
+			 this.entity.setYearlyOfDays(yearLyOfNumberDays.v());
+		 }		
 	}
 }
