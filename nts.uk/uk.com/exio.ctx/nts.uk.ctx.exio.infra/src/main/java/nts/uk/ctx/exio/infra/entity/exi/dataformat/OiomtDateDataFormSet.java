@@ -58,7 +58,6 @@ public class OiomtDateDataFormSet extends UkJpaEntity implements Serializable {
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "SYSTEM_TYPE", referencedColumnName = "SYSTEM_TYPE", insertable = false, updatable = false),
 			@JoinColumn(name = "CONDITION_SET_CD", referencedColumnName = "CONDITION_SET_CD", insertable = false, updatable = false),
-			@JoinColumn(name = "CATEGORY_ID", referencedColumnName = "CATEGORY_ID", insertable = false, updatable = false),
 			@JoinColumn(name = "ACCEPT_ITEM_NUM", referencedColumnName = "ACCEPT_ITEM_NUMBER", insertable = false, updatable = false) })
 	public OiomtStdAcceptItem acceptItem;
 
@@ -67,10 +66,10 @@ public class OiomtDateDataFormSet extends UkJpaEntity implements Serializable {
 		return dateDataFormSetPk;
 	}
 
-	public OiomtDateDataFormSet(String cid, int sysType, String conditionCode, String categoryId, int acceptItemNum,
-			int fixedValue, int formatSelection, String valueOfFixedValue) {
+	public OiomtDateDataFormSet(String cid, int sysType, String conditionCode, int acceptItemNum, int fixedValue,
+			int formatSelection, String valueOfFixedValue) {
 		super();
-		this.dateDataFormSetPk = new OiomtDateDataFormSetPk();
+		this.dateDataFormSetPk = new OiomtDateDataFormSetPk(cid, sysType, conditionCode, acceptItemNum);
 		this.fixedValue = fixedValue;
 		this.valueOfFixedValue = valueOfFixedValue;
 		this.formatSelection = formatSelection;
@@ -78,8 +77,7 @@ public class OiomtDateDataFormSet extends UkJpaEntity implements Serializable {
 
 	public static OiomtDateDataFormSet fromDomain(StdAcceptItem item, DateDataFormSet domain) {
 		return new OiomtDateDataFormSet(item.getCid(), item.getSystemType().value, item.getConditionSetCd().v(),
-				item.getCategoryId(), item.getAcceptItemNumber(), domain.getFixedValue().value,
-				domain.getFormatSelection().value,
+				item.getAcceptItemNumber(), domain.getFixedValue().value, domain.getFormatSelection().value,
 				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null);
 	}
 

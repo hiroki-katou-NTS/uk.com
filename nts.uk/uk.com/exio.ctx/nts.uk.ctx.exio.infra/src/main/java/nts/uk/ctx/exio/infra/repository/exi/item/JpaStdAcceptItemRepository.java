@@ -18,10 +18,9 @@ public class JpaStdAcceptItemRepository extends JpaRepository implements StdAcce
 
 	@Override
 	public Optional<StdAcceptItem> getStdAcceptItemById(String cid, int sysType, String conditionSetCd,
-			String categoryId, int acceptItemNumber) {
+			int acceptItemNumber) {
 		Optional<OiomtStdAcceptItem> entity = this.queryProxy().find(
-				new OiomtStdAcceptItemPk(cid, sysType, conditionSetCd, categoryId, acceptItemNumber),
-				OiomtStdAcceptItem.class);
+				new OiomtStdAcceptItemPk(cid, sysType, conditionSetCd, acceptItemNumber), OiomtStdAcceptItem.class);
 		if (entity.isPresent()) {
 			return Optional.of(OiomtStdAcceptItem.toDomain(entity.get()));
 		} else {
@@ -39,7 +38,7 @@ public class JpaStdAcceptItemRepository extends JpaRepository implements StdAcce
 		Optional<OiomtStdAcceptItem> entityOpt = this
 				.queryProxy().find(
 						new OiomtStdAcceptItemPk(domain.getCid(), domain.getSystemType().value,
-								domain.getConditionSetCd().v(), "", domain.getAcceptItemNumber()),
+								domain.getConditionSetCd().v(), domain.getAcceptItemNumber()),
 						OiomtStdAcceptItem.class);
 		if (entityOpt.isPresent()) {
 			OiomtStdAcceptItem entity = entityOpt.get();
@@ -48,9 +47,9 @@ public class JpaStdAcceptItemRepository extends JpaRepository implements StdAcce
 	}
 
 	@Override
-	public void remove(String cid, int sysType, String conditionSetCd, String categoryId, int acceptItemNumber) {
+	public void remove(String cid, int sysType, String conditionSetCd, int acceptItemNumber) {
 		this.commandProxy().remove(OiomtStdAcceptItem.class,
-				new OiomtStdAcceptItemPk(cid, sysType, conditionSetCd, categoryId, acceptItemNumber));
+				new OiomtStdAcceptItemPk(cid, sysType, conditionSetCd, acceptItemNumber));
 	}
 
 	@Override

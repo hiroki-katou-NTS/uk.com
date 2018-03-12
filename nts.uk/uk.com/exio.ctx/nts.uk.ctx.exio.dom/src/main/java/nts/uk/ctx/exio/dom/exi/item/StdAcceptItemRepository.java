@@ -11,13 +11,13 @@ public interface StdAcceptItemRepository
 
 //    List<StdAcceptItem> getAllStdAcceptItem();
 
-    Optional<StdAcceptItem> getStdAcceptItemById(String cid, int sysType, String conditionSetCd, String categoryId, int acceptItemNumber);
+    Optional<StdAcceptItem> getStdAcceptItemById(String cid, int sysType, String conditionSetCd, int acceptItemNumber);
 
     void add(StdAcceptItem domain);
 
     void update(StdAcceptItem domain);
 
-    void remove(String cid, int sysType, String conditionSetCd, String categoryId, int acceptItemNumber);
+    void remove(String cid, int sysType, String conditionSetCd, int acceptItemNumber);
 
     List<StdAcceptItem> getListStdAcceptItems(String cid, int systemType, String conditionSetCd);
 }

@@ -108,7 +108,6 @@ public class OiomtInsTimeDatFmSet extends UkJpaEntity implements Serializable {
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "SYSTEM_TYPE", referencedColumnName = "SYSTEM_TYPE", insertable = false, updatable = false),
 			@JoinColumn(name = "CONDITION_SET_CD", referencedColumnName = "CONDITION_SET_CD", insertable = false, updatable = false),
-			@JoinColumn(name = "CATEGORY_ID", referencedColumnName = "CATEGORY_ID", insertable = false, updatable = false),
 			@JoinColumn(name = "ACCEPT_ITEM_NUM", referencedColumnName = "ACCEPT_ITEM_NUMBER", insertable = false, updatable = false) })
 	public OiomtStdAcceptItem acceptItem;
 
@@ -117,11 +116,11 @@ public class OiomtInsTimeDatFmSet extends UkJpaEntity implements Serializable {
 		return insTimeDatFmSetPk;
 	}
 
-	public OiomtInsTimeDatFmSet(String cid, int sysType, String conditionCode, String categoryId, int acceptItemNum,
-			int delimiterSet, int fixedValue, int hourMinSelect, int effectiveDigitLength, int roundProc,
-			int decimalSelect, String valueOfFixedValue, int startDigit, int endDigit, int roundProcCls) {
+	public OiomtInsTimeDatFmSet(String cid, int sysType, String conditionCode, int acceptItemNum, int delimiterSet,
+			int fixedValue, int hourMinSelect, int effectiveDigitLength, int roundProc, int decimalSelect,
+			String valueOfFixedValue, int startDigit, int endDigit, int roundProcCls) {
 		super();
-		this.insTimeDatFmSetPk = new OiomtInsTimeDatFmSetPk(cid, sysType, conditionCode, categoryId, acceptItemNum);
+		this.insTimeDatFmSetPk = new OiomtInsTimeDatFmSetPk(cid, sysType, conditionCode, acceptItemNum);
 		this.delimiterSet = delimiterSet;
 		this.fixedValue = fixedValue;
 		this.hourMinSelect = hourMinSelect;
@@ -136,9 +135,9 @@ public class OiomtInsTimeDatFmSet extends UkJpaEntity implements Serializable {
 
 	public static OiomtInsTimeDatFmSet fromDomain(StdAcceptItem item, InsTimeDatFmSet domain) {
 		return new OiomtInsTimeDatFmSet(item.getCid(), item.getSystemType().value, item.getConditionSetCd().v(),
-				item.getCategoryId(), item.getAcceptItemNumber(), domain.getDelimiterSet().value,
-				domain.getFixedValue().value, domain.getHourMinSelect().value, domain.getEffectiveDigitLength().value,
-				domain.getRoundProc().value, domain.getDecimalSelect().value,
+				item.getAcceptItemNumber(), domain.getDelimiterSet().value, domain.getFixedValue().value,
+				domain.getHourMinSelect().value, domain.getEffectiveDigitLength().value, domain.getRoundProc().value,
+				domain.getDecimalSelect().value,
 				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
 				domain.getStartDigit().isPresent() ? domain.getStartDigit().get().v() : null,
 				domain.getEndDigit().isPresent() ? domain.getEndDigit().get().v() : null,

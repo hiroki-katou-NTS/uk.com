@@ -44,13 +44,6 @@ public class OiomtStdAcceptItemPk implements Serializable
     public String conditionSetCd;
     
     /**
-    * カテゴリID
-    */
-    @Basic(optional = false)
-    @Column(name = "CATEGORY_ID")
-    public String categoryId;
-    
-    /**
     * 受入項目番号
     */
     @Basic(optional = false)
