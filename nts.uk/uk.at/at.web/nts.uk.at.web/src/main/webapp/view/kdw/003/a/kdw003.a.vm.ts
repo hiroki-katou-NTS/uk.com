@@ -508,9 +508,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 self.listCareInputError(data[1])
                                // nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
                             }
-//                            if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
-//                                self.dialogShow.close();
-//                            }
+                            if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
+                                self.dialogShow.close();
+                            }
                          self.showErrorDialog();
                         }
                         dfd.resolve();
@@ -524,9 +524,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     nts.uk.ui.block.clear();
                     if (!checkDataCare) {
                        // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
-//                        if (self.dialogShow != undefined || self.dialogShow.$dialog != null) {
-//                            self.dialogShow.close();
-//                        }
+                        if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
+                            self.dialogShow.close();
+                        }
                         self.showErrorDialog();
                     }
                 }
@@ -612,9 +612,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 self.listCareInputError(data[1])
                                // nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
                             }
-//                            if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
-//                                self.dialogShow.close();
-//                            }
+                            if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
+                                self.dialogShow.close();
+                            }
                          self.showErrorDialog();
                         }
                         dfd.resolve();
@@ -628,9 +628,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     nts.uk.ui.block.clear();
                     if (!checkDataCare) {
                        // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
-//                        if (self.dialogShow != undefined || self.dialogShow.$dialog != null) {
-//                            self.dialogShow.close();
-//                        }
+                        if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
+                            self.dialogShow.close();
+                        }
                         self.showErrorDialog();
                     }
                 }
