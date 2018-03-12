@@ -423,6 +423,18 @@ module nts.uk.ui.jqueryExtentions {
             function editStarted(evt: any, ui: any) {
                 let $grid = $(ui.owner.element);
                 let valueType = validation.getValueType($grid, ui.columnKey);
+                if (!evt.currentTarget) {
+                    if (valueType === "TimeWithDay" || valueType === "Clock") {
+                        let $editor = $(ui.editor.find("input")[0]);
+                        $editor.css("text-align", "right");
+                    } else if (valueType === "Currency") {
+                        ui.editor.addClass(updating.INPUT_CURR_SYM);
+                        let $editor = $(ui.editor.find("input")[0]);
+                        $editor.css("text-align", "right");
+                    }
+                    return;
+                }
+                
                 if (!util.isNullOrUndefined(ui.value) && !_.isEmpty(ui.value)) {
                     if (valueType === "TimeWithDay" || valueType === "Clock") {
                         let formatted;
@@ -499,28 +511,37 @@ module nts.uk.ui.jqueryExtentions {
                 if (!utils.isDeleteKey(evt)) {
                     setTimeout(function() {
                         let cellValue;
+                        let char = evt.key === "Subtract" ? "-" : evt.key;
                         let $editor = $targetGrid.igGridUpdating("editorForCell", $(cell.element));
                         if (!util.isNullOrUndefined($editor.data("igTextEditor"))) {
-                            let newText = $editor.igTextEditor("value");
-                            newText = newText.substr(newText.length - 1);
-                            $editor.igTextEditor("value", newText.trim());
+                            $editor.igTextEditor("value", char);
                             let input = $editor.find("input")[0];
                             let len = input.value.length;
-                            input.setSelectionRange(len, len);
-                            cellValue = newText;
-                        } else if (!util.isNullOrUndefined($editor.data("igNumericEditor"))) {
-                            let numericStr = "-";
-                            if (!utils.isMinusSymbol(evt)) {
-                                numericStr = String.fromCharCode(evt.keyCode);
-                                $editor.igNumericEditor("value", parseInt(numericStr));
+                            if ($.ig.util.isChrome || $.ig.util.isSafari) {
+                                setTimeout(function() {
+                                    input.setSelectionRange(len, len);
+                                }, 110);
                             } else {
-                                $editor.igNumericEditor("value", numericStr);
+                                input.setSelectionRange(len, len);
                             }
-                            setTimeout(function() {
+                            cellValue = char;
+                        } else if (!util.isNullOrUndefined($editor.data("igNumericEditor"))) {
+                            cellValue = char;
+                            if (!utils.isMinusSymbol(evt)) {
+                                $editor.igNumericEditor("value", parseInt(cellValue));
+                            } else {
+                                cellValue = "-";
+                                $editor.igNumericEditor("value", cellValue);
+                            }
+                            if ($.ig.util.isChrome || $.ig.util.isSafari) {
+                                setTimeout(function() {
+                                    let length = String($editor.igNumericEditor("value")).length;
+                                    $editor.igNumericEditor("select", length, length); 
+                                }, 110);
+                            } else {
                                 let length = String($editor.igNumericEditor("value")).length;
                                 $editor.igNumericEditor("select", length, length); 
-                            }, 100);
-                            cellValue = numericStr;
+                            }
                         }
                         
                         // Validate
@@ -534,13 +555,14 @@ module nts.uk.ui.jqueryExtentions {
                         if (!result.isValid) {
                             errors.set($targetGrid, cell, result.errorMessage);
                         }
-                    }, 200);
+                    }, 1);
                 } else {
                     setTimeout(function() {
                         let $editor = $targetGrid.igGridUpdating("editorForCell", $(cell.element));
                         $editor.find("input").val("");
-                    }, 200);
+                    }, 1);
                 }
+                evt.preventDefault();
                 evt.stopImmediatePropagation();
             }
             

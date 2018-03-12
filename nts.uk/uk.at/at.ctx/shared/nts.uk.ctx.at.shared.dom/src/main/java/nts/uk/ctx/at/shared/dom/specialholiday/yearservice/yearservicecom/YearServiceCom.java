@@ -16,12 +16,12 @@ public class YearServiceCom extends AggregateRoot {
 	/** 会社ID **/
 	private String companyId;
 	/** コード **/
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 	/** 勤続年数 **/
 	private int lengthServiceYearAtr;
 	private List<YearServiceSet> yearServiceSets;
 
-	public YearServiceCom(String companyId, String specialHolidayCode, int lengthServiceYearAtr,
+	public YearServiceCom(String companyId, int specialHolidayCode, int lengthServiceYearAtr,
 			List<YearServiceSet> yearServiceSets) {
 		super();
 		this.companyId = companyId;
@@ -30,7 +30,7 @@ public class YearServiceCom extends AggregateRoot {
 		this.yearServiceSets = yearServiceSets;
 	}
 
-	public static YearServiceCom createFromJavaType(String companyId, String specialHolidayCode,
+	public static YearServiceCom createFromJavaType(String companyId, int specialHolidayCode,
 			int lengthServiceYearAtr, List<YearServiceSet> yearServiceSets) {
 		return new YearServiceCom(companyId, specialHolidayCode, lengthServiceYearAtr, yearServiceSets);
 	}

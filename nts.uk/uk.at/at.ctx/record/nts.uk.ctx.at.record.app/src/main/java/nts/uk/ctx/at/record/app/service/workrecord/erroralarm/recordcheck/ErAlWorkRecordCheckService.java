@@ -93,9 +93,13 @@ public class ErAlWorkRecordCheckService {
 			/** 就業時間帯をチェックする */
 			if (!condition.getWorkTimeCondition().checkWorkTime(workInfo)) {
 				/** 勤怠項目をチェックする */
-				return condition.getAtdItemCondition().check(c -> AttendanceItemUtil.toItemValues(record, c)
-						.stream().map(iv -> getValue(iv)).collect(Collectors.toList())
-				);
+				return condition.getAtdItemCondition().check(c -> {
+					if(c.isEmpty()){
+						return c;
+					}
+					return AttendanceItemUtil.toItemValues(record, c)
+							.stream().map(iv -> getValue(iv)).collect(Collectors.toList());
+				});
 			}
 		}
 		return false;

@@ -48,7 +48,9 @@ public class RegulationInfoEmployeeQueryImpl implements RegulationInfoEmployeeQu
 							.includeWorkersOnLeave(true)
 							.includeOccupancy(true)
 							.includeAreOnLoan(true)
-							.includeGoingOnLoan(false).systemType(2).sortOrderNo(1)
+							.includeGoingOnLoan(false)
+							.systemType(2)
+//							.sortOrderNo(1)
 							.includeRetirees(false).build();
 	}
 }

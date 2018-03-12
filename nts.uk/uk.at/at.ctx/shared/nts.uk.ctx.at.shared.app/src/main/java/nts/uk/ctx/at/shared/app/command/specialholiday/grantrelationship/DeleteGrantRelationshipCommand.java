@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class DeleteGrantRelationshipCommand {
 	/** コード */
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 	/** コード */
 	private String relationshipCode;
 }

@@ -40,7 +40,7 @@ public class YearServicePerWebService extends WebService{
 	 */
 	@POST
 	@Path("findAllPer/{specialHolidayCode}")
-	public List<YearServicePerDto> finderPer(@PathParam("specialHolidayCode") String specialHolidayCode){
+	public List<YearServicePerDto> finderPer(@PathParam("specialHolidayCode") int specialHolidayCode){
 		return this.finderPer.finder(specialHolidayCode);
 	}
 	/**
@@ -48,7 +48,7 @@ public class YearServicePerWebService extends WebService{
 	 */
 	@POST
 	@Path("findAllPerSet/{a}/{b}")
-	public List<YearServicePerSetDto> finderPerSet(@PathParam("a") String a, @PathParam("b") String b){
+	public List<YearServicePerSetDto> finderPerSet(@PathParam("a") int a, @PathParam("b") String b){
 		return this.finderPerSet.finder(a, b);
 	}
 	@POST
