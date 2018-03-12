@@ -226,7 +226,10 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 	 * @param sortOrderNo the sort order no
 	 * @return the sort conditions
 	 */
-	private List<BsymtEmpOrderCond> getSortConditions(String comId, int systemType, int sortOrderNo) {
+	private List<BsymtEmpOrderCond> getSortConditions(String comId, Integer systemType, Integer sortOrderNo) {
+		if (sortOrderNo == null) {
+			return Collections.emptyList();
+		}
 		BsymtEmployeeOrderPK pk = new BsymtEmployeeOrderPK(comId, sortOrderNo, systemType);
 		Optional<BsymtEmployeeOrder> empOrder = this.queryProxy().find(pk, BsymtEmployeeOrder.class);
 		return empOrder.isPresent() ? empOrder.get().getLstBsymtEmpOrderCond() : Collections.emptyList();
