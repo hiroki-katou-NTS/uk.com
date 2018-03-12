@@ -152,17 +152,24 @@ module nts.uk.com.view.cas012.a.viewmodel {
 
         private createRoleProcess(param: RoleIndividualGrantBaseCommand): void {
             var self = this;
-           
-            service.create(param).done((data: any) => {
-                self.getData().done(() => {
-                    self.selectRoleByKey(data.companyID, data.userID, data.roleType);
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+            if (nts.uk.text.isNullOrEmpty(param.userID)) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_218", messageParams: [nts.uk.resource.getText("CAS012_24")] })
+                    block.clear();
+                
+            } else{
+                service.create(param).done((data: any) => {
+                    if (nts.uk.text.isNullOrEmpty(param.userID)) {
+                    }
+                    self.getData().done(() => {
+                        self.selectRoleByKey(data.companyID, data.userID, data.roleType);
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    });
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                }).always(() => {
+                    block.clear();
                 });
-            }).fail((res) => {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-            }).always(() => {
-                block.clear();
-            });
+                }
         }
 
         private updateRole(): void {
@@ -189,7 +196,6 @@ module nts.uk.com.view.cas012.a.viewmodel {
             if (!nts.uk.text.isNullOrEmpty(self.currentCode())) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
                     block.invisible();
-                    console.time("Delete");
                     let param: RoleIndividualGrantBaseCommand = new RoleIndividualGrantBaseCommand(self.selectRoleIndividual());
                     param.startValidPeriod = nts.uk.time.parseMoment(self.datePeriod().startDate).format();
                     param.endValidPeriod = nts.uk.time.parseMoment(self.datePeriod().endDate).format();
