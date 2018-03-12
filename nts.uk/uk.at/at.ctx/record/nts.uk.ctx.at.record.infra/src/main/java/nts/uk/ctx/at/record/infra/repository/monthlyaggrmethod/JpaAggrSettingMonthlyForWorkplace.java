@@ -42,8 +42,14 @@ import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonset
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpRegExot;
 import nts.uk.ctx.at.shared.dom.common.Month;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.KrcstMonsetRegAggr;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.KrcstMonsetWkpRegAggr;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.KrcstMonsetWkpRegAggrPK;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.flex.KrcstMonsetFlxAggr;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.regularandirregular.KrcstMonsetIrgAggr;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.regularandirregular.KrcstMonsetIrgExot;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.regularandirregular.KrcstMonsetIrgSetl;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.regularandirregular.KrcstMonsetRegExot;
 
 /**
  * リポジトリ実装：職場月別実績集計設定
@@ -364,6 +370,7 @@ public class JpaAggrSettingMonthlyForWorkplace extends JpaRepository implements 
 			isNeedPersist = true;
 			entity = new KrcstMonsetWkpRegAggr();
 			entity.PK = key;
+			entity.setValue = new KrcstMonsetRegAggr();
 		}
 		
 		// 登録・更新値の設定
@@ -452,6 +459,7 @@ public class JpaAggrSettingMonthlyForWorkplace extends JpaRepository implements 
 		if (entity.krcstMonsetWkpRegExot == null){
 			entity.krcstMonsetWkpRegExot = new KrcstMonsetWkpRegExot();
 			entity.krcstMonsetWkpRegExot.PK = key;
+			entity.krcstMonsetWkpRegExot.setValue = new KrcstMonsetRegExot();
 		}
 		val entityRegExot = entity.krcstMonsetWkpRegExot;
 		entityRegExot.setValue.askPremium = (regExcessOutsideTimeSet.isAskPremium() ? 1 : 0);
@@ -546,6 +554,7 @@ public class JpaAggrSettingMonthlyForWorkplace extends JpaRepository implements 
 		if (entity.krcstMonsetWkpIrgAggr == null){
 			entity.krcstMonsetWkpIrgAggr = new KrcstMonsetWkpIrgAggr();
 			entity.krcstMonsetWkpIrgAggr.PK = key;
+			entity.krcstMonsetWkpIrgAggr.setValue = new KrcstMonsetIrgAggr();
 		}
 		val entityIrgAggr = entity.krcstMonsetWkpIrgAggr;
 		entityIrgAggr.setValue.toOverTimeWithinIrregularCriteria =
@@ -639,6 +648,7 @@ public class JpaAggrSettingMonthlyForWorkplace extends JpaRepository implements 
 		if (entity.krcstMonsetWkpIrgExot == null){
 			entity.krcstMonsetWkpIrgExot = new KrcstMonsetWkpIrgExot();
 			entity.krcstMonsetWkpIrgExot.PK = key;
+			entity.krcstMonsetWkpIrgExot.setValue = new KrcstMonsetIrgExot();
 		}
 		val entityIrgExot = entity.krcstMonsetWkpIrgExot;
 		entityIrgExot.setValue.exceptLegalHolidayWorkTime =
@@ -729,14 +739,8 @@ public class JpaAggrSettingMonthlyForWorkplace extends JpaRepository implements 
 		val settlementPeriods = irregularWork.getSettlementPeriod().getSettlementPeriods();
 		if (entity.krcstMonsetWkpIrgSetls == null) entity.krcstMonsetWkpIrgSetls = new ArrayList<>();
 		val entityIrgSetls = entity.krcstMonsetWkpIrgSetls;
-		val itrIrgSetls = entityIrgSetls.iterator();
-		while (itrIrgSetls.hasNext()){
-			val irgSetl = itrIrgSetls.next();
-			if (!settlementPeriods.stream()
-					.filter(c -> c.getStartMonth().v() == irgSetl.PK.startMonth).findFirst().isPresent()){
-				itrIrgSetls.remove();
-			}
-		}
+		entityIrgSetls.removeIf(a -> { return !settlementPeriods.stream()
+				.filter(c -> c.getStartMonth().v() == a.PK.startMonth).findFirst().isPresent(); });
 		for (val settlementPeriod : settlementPeriods){
 			KrcstMonsetWkpIrgSetl entityIrgSetl = new KrcstMonsetWkpIrgSetl();
 			boolean isAddIrgSetl = false;
@@ -751,6 +755,7 @@ public class JpaAggrSettingMonthlyForWorkplace extends JpaRepository implements 
 						domain.getCompanyId(),
 						domain.getWorkplaceId(),
 						settlementPeriod.getStartMonth().v());
+				entityIrgSetl.setValue = new KrcstMonsetIrgSetl();
 			}
 			entityIrgSetl.setValue.endMonth = settlementPeriod.getEndMonth().v();
 			if (isAddIrgSetl) entityIrgSetls.add(entityIrgSetl);
@@ -766,6 +771,7 @@ public class JpaAggrSettingMonthlyForWorkplace extends JpaRepository implements 
 		if (entity.krcstMonsetWkpFlxAggr == null){
 			entity.krcstMonsetWkpFlxAggr = new KrcstMonsetWkpFlxAggr();
 			entity.krcstMonsetWkpFlxAggr.PK = key;
+			entity.krcstMonsetWkpFlxAggr.setValue = new KrcstMonsetFlxAggr();
 		}
 		val entityFlxAggr = entity.krcstMonsetWkpFlxAggr;
 		entityFlxAggr.setValue.aggregateMethod = flexWork.getAggregateMethod().value;

@@ -35,7 +35,7 @@ table.link-control td {
 	width: 90%;
 }
 
-hr {
+hr.nav {
 	width: 640px;
 	float: left;
 	margin-left: 8px;
@@ -222,7 +222,6 @@ button.nts-switch-button {
 }
 
 .link-control1 {
-	width: 46%;
 	margin-left: 40px;
 	margin-top: 15px;
 	margin-left: -23px !important;
@@ -237,5 +236,14 @@ button.nts-switch-button {
 }
 
 .combo {
-	margin-left: 184px;
+	margin-left: 186px;
+}
+
+.combo-d .ui-igcombo-wrapper {
+	width: 65px;
+}
+
+.combo-d {
+	margin-left: 245px;
+	margin-top: -24px;
 }

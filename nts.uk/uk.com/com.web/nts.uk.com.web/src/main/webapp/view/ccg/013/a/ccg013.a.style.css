@@ -1,9 +1,5 @@
 @CHARSET "UTF-8";
 
-#contents-area {
-	display: table;
-}
-
 .fixed-flex-layout-left {
 	width: 340px;
 	height: 328px;

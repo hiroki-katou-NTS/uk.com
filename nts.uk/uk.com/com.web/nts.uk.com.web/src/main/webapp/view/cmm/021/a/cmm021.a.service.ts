@@ -70,7 +70,7 @@ module nts.uk.com.view.cmm021.a {
                 userId: string;
                 employeeCode: string;
                 loginId: string;
-                personName: string;
+                businessName: string;
                 employeeId: string;
                 isSetting: boolean;
                 isScreenC: boolean;
@@ -125,14 +125,7 @@ module nts.uk.com.view.cmm021.a {
                 companyCode: string;
                 userName: string;
                 useAtr: number;
-                
-//                constructor(userId: string, companyCode: string, userName: string, useAtr: number) {
-//                    this.userId = userId;
-//                    this.companyCode = companyCode;
-//                    this.userName = userName;
-//                    this.useAtr = useAtr;
-//                }
-
+               
             }
 
         }

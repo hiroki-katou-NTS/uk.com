@@ -109,11 +109,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 if(!nts.uk.text.isNullOrEmpty(deadlineMsg.deadline)){
                     self.reasonOutputMessDealineFull(self.reasonOutputMessDealine + deadlineMsg.deadline);
                 }
-                if(nts.uk.text.isNullOrEmpty(deadlineMsg.message) && nts.uk.text.isNullOrEmpty(deadlineMsg.deadline)){
-                    self.messageArea(false);
-                }else{
-                    self.messageArea(true);
-                }
+                self.messageArea(deadlineMsg.chkShow);
                 dfd.resolve(data);
             }).fail((res)=>{
                 dfd.reject(res);    

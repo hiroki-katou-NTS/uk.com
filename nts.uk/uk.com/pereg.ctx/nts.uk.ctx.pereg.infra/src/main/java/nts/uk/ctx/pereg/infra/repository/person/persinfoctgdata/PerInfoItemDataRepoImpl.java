@@ -202,7 +202,7 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 	}
 
 	@Override
-	public boolean isExitedItem(List<String> ctgId, String itemCd) {
+	public boolean hasItemData(List<String> ctgId, String itemCd) {
 		List<Object[]> itemLst = this.queryProxy().query(SEL_ALL_ITEM_BY_CTG_IDS,  Object[].class)
 				.setParameter("perInfoCtgId", ctgId)
 				.setParameter("itemCd", itemCd)

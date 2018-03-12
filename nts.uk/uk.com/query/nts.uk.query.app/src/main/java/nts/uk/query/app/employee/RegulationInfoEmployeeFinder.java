@@ -50,6 +50,8 @@ public class RegulationInfoEmployeeFinder {
 						.employeeCode(model.getEmployeeCode())
 						.employeeId(model.getEmployeeID())
 						.employeeName(model.getName().orElse(""))
+						.workplaceId(model.getWorkplaceId().orElse(""))
+						.workplaceCode(model.getWorkplaceCode().orElse(""))
 						.workplaceName(model.getWorkplaceName().orElse(""))
 						.build())
 				.collect(Collectors.toList());
@@ -108,7 +110,7 @@ public class RegulationInfoEmployeeFinder {
 			}
 			break;
 		default:
-			break;
+			throw new RuntimeException("Invalid enum value");
 		}
 
 	}

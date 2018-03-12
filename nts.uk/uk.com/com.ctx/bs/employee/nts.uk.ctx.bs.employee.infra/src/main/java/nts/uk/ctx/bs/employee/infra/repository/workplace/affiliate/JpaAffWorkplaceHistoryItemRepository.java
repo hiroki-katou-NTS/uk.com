@@ -68,12 +68,8 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 	}
 	
 	private void updateEntity(AffWorkplaceHistoryItem domain, BsymtAffiWorkplaceHistItem entity) {
-		if (StringUtils.isNotEmpty(domain.getWorkplaceId())){
-			entity.setWorkPlaceId(domain.getWorkplaceId());
-		}
-		if (StringUtils.isNotEmpty(domain.getNormalWorkplaceId())){
-			entity.setNormalWkpId(domain.getNormalWorkplaceId());
-		}
+		entity.setWorkPlaceId(domain.getWorkplaceId());
+		entity.setNormalWkpId(domain.getNormalWorkplaceId());
 	}
 	@Override
 	public void add(AffWorkplaceHistoryItem domain) {

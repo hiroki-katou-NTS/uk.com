@@ -79,7 +79,7 @@ public class AlarmPatternSettingFinder {
 		} else if (domain.getExtractPeriod().getExtractionRange() == ExtractionRange.WEEK) {
 			extractionUnit = ExtractionPeriodUnitDto.fromDomain((ExtractionPeriodUnit) domain.getExtractPeriod());
 		} else {
-
+			// Monthly
 		}
 
 		return new CheckConditionDto(domain.getAlarmCategory().value, domain.getCheckConditionList(),
@@ -87,34 +87,22 @@ public class AlarmPatternSettingFinder {
 
 	}
 
-	public List<AlarmPatternSettingDto> findAllAlarmByUser() {
-		String companyId = AppContexts.user().companyId();
-		List<AlarmPatternSettingDto> alarmList = alarmPatternRepo.findByCompanyId(companyId).stream()
-				.map(domain -> convertToAlarmPatternDto(domain)).collect(Collectors.toList());
-
-		String userId = AppContexts.user().userId();
-		List<String> roleIds = roleByUserFinder.getRoleIdFromUserId(userId);
-
-		return alarmList.stream()
-				.filter(a -> !a.getAlarmPerSet().isAuthSetting() || a.getAlarmPerSet().isAuthSetting()
-						&& intersectTwoListRoleId(a.getAlarmPerSet().getRoleIds(), roleIds))
-				.collect(Collectors.toList());
-	}
-
-	public boolean intersectTwoListRoleId(List<String> listRole1, List<String> listRole2) {
-		List<String> intersect = listRole1.stream().filter(listRole2::contains).collect(Collectors.toList());
-		return !intersect.isEmpty();
-
-	}
-
 	public List<CodeNameAlarmDto> getCodeNameAlarm() {
+		
 		String companyId = AppContexts.user().companyId();
 		String userId = AppContexts.user().userId();
 		List<String> roleIds = roleByUserFinder.getRoleIdFromUserId(userId);
-
-		return alarmPatternRepo.findByCompanyIdAndUser(companyId).stream()
+		List<CodeNameAlarmDto> result = alarmPatternRepo.findByCompanyIdAndUser(companyId).stream()
 				.filter(a -> !a.isAuthSetting() || a.isAuthSetting() && intersectTwoListRoleId(a.getRoleIds(), roleIds))
 				.map(a -> new CodeNameAlarmDto(a.getAlarmCode(), a.getAlarmName())).collect(Collectors.toList());
+
+		result.sort((a, b) -> a.getAlarmCode().compareTo(b.getAlarmCode()));
+		return result;
 	}
 
+	private boolean intersectTwoListRoleId(List<String> listRole1, List<String> listRole2) {
+		List<String> intersect = listRole1.stream().filter(listRole2::contains).collect(Collectors.toList());
+		return !intersect.isEmpty();
+	}
+	
 }

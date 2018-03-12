@@ -159,9 +159,9 @@ module nts.uk.at.view.kmf002.d {
                         });
                         _self.enableDelete(false);
                     } else {
-                        if (_.isEmpty(data2)) {
-                            data2.startMonth = 0;
-                        }
+//                        if (_.isNull(data2.startMonth)) {
+//                            data2.startMonth = 1;
+//                        }
                         _self.commonTableMonthDaySet().arrMonth.removeAll();
                         for (let i=data2.startMonth-1; i<12; i++) {
                             _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 'day': ko.observable(data.publicHolidayMonthSettings[i].inLegalHoliday), 'enable': ko.observable(true)});    

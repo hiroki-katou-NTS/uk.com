@@ -3,8 +3,10 @@ package nts.uk.ctx.sys.portal.app.find.layout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.uk.ctx.sys.portal.app.find.placement.PlacementDto;
 import nts.uk.ctx.sys.portal.app.find.placement.PlacementPartDto;
 import nts.uk.ctx.sys.portal.dom.layout.Layout;
@@ -37,7 +39,7 @@ public class DefaultPortalLayoutFactory implements PortalLayoutFactory {
 				placementDtos.add(new PlacementDto(
 					placement.getPlacementID(), placement.getLayoutID(),
 					placement.getColumn().v(), placement.getRow().v(),
-					fromExternalUrl(externalUrl)));
+					PlacementPartDto.createExternalUrl(externalUrl)));
 			}
 			else {
 				Optional<TopPagePart> topPagePart = activeTopPageParts.stream().filter(c -> c.getToppagePartID().equals(placement.getToppagePartID())).findFirst();
@@ -45,26 +47,10 @@ public class DefaultPortalLayoutFactory implements PortalLayoutFactory {
 					placementDtos.add(new PlacementDto(
 						placement.getPlacementID(), placement.getLayoutID(),
 						placement.getColumn().v(), placement.getRow().v(),
-						fromTopPagePart(topPagePart.get())));
+						PlacementPartDto.createFromTopPagePart(topPagePart.get())));
 			}
 		}
 		return placementDtos;
-	}
-
-	private PlacementPartDto fromTopPagePart(TopPagePart topPagePart) {
-		return new PlacementPartDto(
-			topPagePart.getWidth().v(), topPagePart.getHeight().v(), topPagePart.getToppagePartID(),
-			topPagePart.getCode().v(), topPagePart.getName().v(), topPagePart.getType().value,
-			null
-		);
-	}
-
-	private PlacementPartDto fromExternalUrl(ExternalUrl externalUrl) {
-		return new PlacementPartDto(
-			externalUrl.getWidth().v(), externalUrl.getHeight().v(),
-			null, null, null, null,
-			externalUrl.getUrl().v()
-		);
 	}
 
 }

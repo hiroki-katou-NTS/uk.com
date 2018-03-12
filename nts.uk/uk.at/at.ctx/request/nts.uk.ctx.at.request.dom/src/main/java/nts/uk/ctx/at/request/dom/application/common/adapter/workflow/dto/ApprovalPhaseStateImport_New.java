@@ -15,9 +15,7 @@ public class ApprovalPhaseStateImport_New {
 	
 	private Integer phaseOrder;
 	
-	private String approvalAtr;
-	
-	private ApprovalBehaviorAtrImport_New approvalAtr_Enum;
+	private ApprovalBehaviorAtrImport_New approvalAtr;
 	
 	private List<ApprovalFrameImport_New> listApprovalFrame;
 }

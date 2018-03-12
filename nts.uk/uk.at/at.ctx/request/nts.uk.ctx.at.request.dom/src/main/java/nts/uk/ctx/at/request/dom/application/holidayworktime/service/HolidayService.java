@@ -38,7 +38,7 @@ public interface HolidayService {
 	 * @param workType
 	 * @param appDate
 	 */
-	public void getWorkType(WorkTypeHolidayWork workType,GeneralDate appDate, String employeeID,Optional<PersonalLaborCondition> personalLablorCodition);
+	public void getWorkType(String companyID,WorkTypeHolidayWork workType,GeneralDate appDate, String employeeID,Optional<PersonalLaborCondition> personalLablorCodition);
 	/**
 	 * 5.就業時間帯を取得する
 	 * @param companyID

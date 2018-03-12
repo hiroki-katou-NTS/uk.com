@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
@@ -73,24 +75,33 @@ public class ApproveImpl implements ApproveService {
 				if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 					return;
 				}
-				List<String> listApprover = approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
-				if(listApprover.contains(employeeID)){
-					approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-					approvalFrame.setApproverID(employeeID);
-					approvalFrame.setRepresenterID("");
-					approvalFrame.setApprovalDate(GeneralDate.today());
-					approvalFrame.setApprovalReason(memo);
-					return;
+				if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
+					List<String> listApprover = approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
+					if(!listApprover.contains(employeeID)){
+						ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
+						if(approvalRepresenterOutput.getListAgent().contains(employeeID)){
+							approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
+							approvalFrame.setApproverID("");
+							approvalFrame.setRepresenterID(employeeID);
+							approvalFrame.setApprovalDate(GeneralDate.today());
+							approvalFrame.setApprovalReason(memo);
+							return;
+						}
+						return;
+					}
+				} else {
+					// if文： ドメインモデル「承認枠」．承認者 == INPUT．社員ID　OR ドメインモデル「承認枠」．代行者 == INPUT．社員ID
+					if(!((Strings.isNotBlank(approvalFrame.getApproverID())&&approvalFrame.getApproverID().equals(employeeID))|
+						(Strings.isNotBlank(approvalFrame.getRepresenterID())&&approvalFrame.getRepresenterID().equals(employeeID)))){
+						return;
+					}
 				}
-				ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
-				if(approvalRepresenterOutput.getListAgent().contains(employeeID)){
-					approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-					approvalFrame.setApproverID("");
-					approvalFrame.setRepresenterID(employeeID);
-					approvalFrame.setApprovalDate(GeneralDate.today());
-					approvalFrame.setApprovalReason(memo);
-					return;
-				}
+				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
+				approvalFrame.setApproverID(employeeID);
+				approvalFrame.setRepresenterID("");
+				approvalFrame.setApprovalDate(GeneralDate.today());
+				approvalFrame.setApprovalReason(memo);
+				return;
 			});
 			Boolean approveApprovalPhaseStateFlag = this.isApproveApprovalPhaseStateComplete(companyID, approvalPhaseState);
 			if(approveApprovalPhaseStateFlag.equals(Boolean.FALSE)){

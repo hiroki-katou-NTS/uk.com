@@ -33,8 +33,8 @@ public class JpaMailOtInstructionRepository extends JpaRepository implements Mai
 	private static KrqmtMailOtInstruction toEntity(MailOtInstruction domain){
 		val entity = new KrqmtMailOtInstruction();
 		entity.companyId = domain.getCompanyId();
-		entity.content = domain.getContent().v();
-		entity.subject = domain.getSubject().v();
+		entity.content = domain.getContent() == null ? null : domain.getContent().v();
+		entity.subject = domain.getSubject() == null ? null : domain.getSubject().v();
 		return entity;
 	}
 	/**

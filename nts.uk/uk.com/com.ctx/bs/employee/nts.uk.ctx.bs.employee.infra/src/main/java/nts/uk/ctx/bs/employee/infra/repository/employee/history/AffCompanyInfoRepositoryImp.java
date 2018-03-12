@@ -27,15 +27,9 @@ public class AffCompanyInfoRepositoryImp extends JpaRepository implements AffCom
 		BsymtAffCompanyInfo entity = this.queryProxy().query(SELECT_BY_HISTID, BsymtAffCompanyInfo.class)
 				.setParameter("histId", domain.getHistoryId()).getSingleOrNull();
 		if (entity != null) {
-			if (domain.getAdoptionDate() != null){
-				entity.adoptionDate = domain.getAdoptionDate();
-			}
-			if (domain.getRetirementAllowanceCalcStartDate() != null){
-				entity.retirementAllowanceCalcStartDate = domain.getRetirementAllowanceCalcStartDate();
-			}
-			if (domain.getRecruitmentClassification() != null && !domain.getRecruitmentClassification().v().equals("")){
-				entity.recruitmentCategoryCode = domain.getRecruitmentClassification().v();
-			}
+			entity.adoptionDate = domain.getAdoptionDate();
+			entity.retirementAllowanceCalcStartDate = domain.getRetirementAllowanceCalcStartDate();
+			entity.recruitmentCategoryCode = domain.getRecruitmentClassification().v();
 			
 			this.commandProxy().update(entity);
 		}

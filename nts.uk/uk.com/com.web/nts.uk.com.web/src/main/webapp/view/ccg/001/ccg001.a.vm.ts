@@ -100,6 +100,15 @@ module nts.uk.com.view.ccg001.a {
                 if ($('.ccg-sample-has-error').ntsError('hasError')) {
                     return;
                 }
+                // clear ccg001 errors
+                $('#inp_baseDate').ntsError('clear');
+                $('#inp-period-startYMD').ntsError('clear');
+                $('#inp-period-endYMD').ntsError('clear');
+                $('#inp-period-startYM').ntsError('clear');
+                $('#inp-period-endYM').ntsError('clear');
+                $('#ccg001-partg-start').ntsError('clear');
+                $('#ccg001-partg-end').ntsError('clear');
+                
                 if (!self.showBaseDate() && !self.showClosure() && !self.showPeriod()){
                     nts.uk.ui.dialog.alertError("Base Date or Closure or Period must be shown!" );
                     return;

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,6 +32,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
@@ -58,10 +60,52 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 	}
 
 	@Override
-	public List<ItemValue> convert(List<Integer> attendanceItemIds) {
+	public List<ItemValue> convert(Collection<Integer> attendanceItemIds) {
 		return AttendanceItemUtil.toItemValues(this.dailyRecord, attendanceItemIds);
 	}
 
+	
+	@Override
+	public void merge(ItemValue value) {
+		AttendanceItemUtil.fromItemValues(dailyRecord, Arrays.asList(value));
+	}
+
+	@Override
+	public void merge(Collection<ItemValue> values) {
+		AttendanceItemUtil.fromItemValues(dailyRecord, values);
+	}
+
+	@Override
+	public IntegrationOfDaily toDomain() {
+		return (IntegrationOfDaily) dailyRecord.toDomain();
+	}
+
+	@Override
+	public DailyRecordToAttendanceItemConverter setData(IntegrationOfDaily domain) {
+		if(domain.getWorkInformation() != null) {
+			this.employeeId(domain.getWorkInformation().getEmployeeId());
+			this.workingDate(domain.getWorkInformation().getYmd());
+		}
+		this.withWorkInfo(domain.getWorkInformation());
+		this.withCalcAttr(domain.getCalAttr());
+		this.withAffiliationInfo(domain.getAffiliationInfor());
+		if(!domain.getEmployeeError().isEmpty()) {
+			this.withEmployeeErrors(domain.getEmployeeError().get(0));
+		}
+		this.withOutingTime(domain.getOutingTime().orElse(null));
+		this.withBreakTime(domain.getBreakTime());
+		this.withAttendanceTime(domain.getAttendanceTimeOfDailyPerformance().orElse(null));
+		this.withAttendanceTimeByWork(domain.getAttendancetimeByWork().orElse(null));
+		this.withTimeLeaving(domain.getAttendanceLeave().orElse(null));
+		this.withShortTime(domain.getShortTime().orElse(null));
+		this.withSpecificDateAttr(domain.getSpecDateAttr().orElse(null));
+		this.withAttendanceLeavingGate(domain.getAttendanceLeavingGate().orElse(null));
+		this.withAnyItems(domain.getAnyItemValue().orElse(null));
+		this.withEditStates(domain.getEditState());
+		this.withTemporaryTime(domain.getTempTime().orElse(null));
+		return this;
+	}
+	
 	public static DailyRecordToAttendanceItemConverter builder() {
 		return new DailyRecordToAttendanceItemConverterImpl();
 	}

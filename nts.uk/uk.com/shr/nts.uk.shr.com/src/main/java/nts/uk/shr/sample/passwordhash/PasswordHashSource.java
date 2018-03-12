@@ -1,7 +1,5 @@
 package nts.uk.shr.sample.passwordhash;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.Value;
 
 @Value

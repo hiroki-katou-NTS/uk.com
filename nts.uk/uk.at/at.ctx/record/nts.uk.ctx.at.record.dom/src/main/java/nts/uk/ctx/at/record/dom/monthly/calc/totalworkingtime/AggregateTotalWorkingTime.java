@@ -21,7 +21,7 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.ExcessOuts
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.TreatHolidayWorkTimeOfLessThanCriteriaPerWeek;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.TreatOverTimeOfLessThanCriteriaPerDay;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -105,6 +105,26 @@ public class AggregateTotalWorkingTime {
 		
 		// 所定労働時間を集計する
 		this.prescribedWorkingTime.confirm(datePeriod, attendanceTimeOfDailyMap);
+		
+		// 総労働時間を集計する
+		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.values()) {
+			val ymd = attendanceTimeOfDaily.getYmd();
+			if (!datePeriod.contains(ymd)) continue;
+			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
+			this.totalWorkingTime = this.totalWorkingTime.addMinutes(totalWorkingTime.getTotalTime().v());
+		}
+	}
+	
+	/**
+	 * 共有項目をコピーする
+	 * @param aggregateTotalWorkingTime 総労働時間
+	 */
+	public void copySharedItem(AggregateTotalWorkingTime aggregateTotalWorkingTime){
+		
+		this.workTime = aggregateTotalWorkingTime.getWorkTime();
+		this.vacationUseTime = aggregateTotalWorkingTime.getVacationUseTime();
+		this.prescribedWorkingTime = aggregateTotalWorkingTime.getPrescribedWorkingTime();
 	}
 	
 	/**

@@ -33,7 +33,6 @@ public class UpdateEmployeeInfoContactCommandHandler extends CommandHandler<Upda
 		
 		val command = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		
 		EmployeeInfoContact domain = new EmployeeInfoContact(cid, command.getSid(), command.getMailAddress(),
 				command.getSeatDialIn(), command.getSeatExtensionNo(), command.getPhoneMailAddress(),
 				command.getCellPhoneNo());

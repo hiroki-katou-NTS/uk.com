@@ -146,11 +146,11 @@ public class KrqstApplicationSetting extends UkJpaEntity {
 	@Column(name = "SCHEDULE_CONFIRM_ATR")
 	public int scheduleConfirmedAtr;
 	
-	@OneToMany(targetEntity=KrqstAppTypeDiscrete.class, cascade = CascadeType.ALL, mappedBy = "krqstApplicationSetting", orphanRemoval = true)
+	@OneToMany(targetEntity=KrqstAppTypeDiscrete.class, cascade = CascadeType.ALL, mappedBy = "krqstApplicationSetting")
 	@JoinTable(name = "KRQST_APP_TYPE_DISCRETE")
 	public List<KrqstAppTypeDiscrete> krqstAppTypeDiscretes;
 	
-	@OneToMany(targetEntity=KrqstAppDeadline.class, cascade = CascadeType.ALL, mappedBy = "krqstApplicationSetting", orphanRemoval = true)
+	@OneToMany(targetEntity=KrqstAppDeadline.class, cascade = CascadeType.ALL, mappedBy = "krqstApplicationSetting")
 	@JoinTable(name = "KRQST_APP_DEADLINE")
 	public List<KrqstAppDeadline> krqstAppDeadlines;
 	

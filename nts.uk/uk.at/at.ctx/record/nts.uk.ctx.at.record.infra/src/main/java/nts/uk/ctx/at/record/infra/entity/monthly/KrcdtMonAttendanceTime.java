@@ -22,6 +22,8 @@ import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.hdwkandco
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.KrcdtMonAggrOverTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.KrcdtMonOverTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.vacationusetime.KrcdtMonVactUseTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcessOutside;
+import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcoutTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.KrcdtMonVerticalTotal;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrAbsnDays;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrSpecDays;
@@ -100,6 +102,14 @@ public class KrcdtMonAttendanceTime extends UkJpaEntity implements Serializable 
 	/** 集計総拘束時間 */
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
 	public KrcdtMonAggrTotalSpt krcdtMonAggrTotalSpt;
+	
+	/** 月別実績の時間外超過 */
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
+	public KrcdtMonExcessOutside krcdtMonExcessOutside;
+	
+	/** 時間外超過：時間外超過 */
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
+	public List<KrcdtMonExcoutTime> krcdtMonExcoutTime;
 	
 	/** 縦計 */
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)

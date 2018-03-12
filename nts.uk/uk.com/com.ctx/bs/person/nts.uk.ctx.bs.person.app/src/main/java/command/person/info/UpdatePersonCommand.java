@@ -70,4 +70,5 @@ public class UpdatePersonCommand{
 	
 	@PeregItem("IS00008")
 	private String PersonalNameMultilingualKana;
+	
 }

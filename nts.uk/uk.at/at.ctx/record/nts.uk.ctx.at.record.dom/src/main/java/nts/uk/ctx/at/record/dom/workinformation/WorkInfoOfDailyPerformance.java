@@ -11,6 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 
 /**
  * 

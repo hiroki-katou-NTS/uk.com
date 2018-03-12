@@ -31,6 +31,8 @@ public interface IPerInfoSelectionItemRepository {
 
 	List<PerInfoSelectionItem> getAllSelectionItemByContractCd(String contractCode);
 
+	Optional<PerInfoSelectionItem> getSelectionItemByHistId(String histId);
+
 	// Lanlt
 
 }

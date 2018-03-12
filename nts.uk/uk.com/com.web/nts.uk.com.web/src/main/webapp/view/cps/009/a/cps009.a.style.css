@@ -288,7 +288,7 @@ table tr td, table tr th {
 }
 
 span.caret-background.caret-right.direction-right {
-	position: fixed !important;
+	position: absolute;;
 	margin-top: 50px !important;
 	margin-left: 2px !important;
 }

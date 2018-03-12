@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.worktime;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
@@ -30,7 +32,7 @@ public class WorkStamp extends DomainObject{
 	/*
 	 * 場所コード
 	 */
-	private WorkLocationCD locationCode;
+	private Optional<WorkLocationCD> locationCode;
 	
 	/*
 	 * 打刻元情報
@@ -42,7 +44,7 @@ public class WorkStamp extends DomainObject{
 		super();
 		this.AfterRoundingTime = afterRoundingTime;
 		this.timeWithDay = timeWithDay;
-		this.locationCode = locationCode;
+		this.locationCode = Optional.ofNullable(locationCode);
 		this.stampSourceInfo = stampSourceInfo;
 	}
 	
@@ -50,7 +52,7 @@ public class WorkStamp extends DomainObject{
 			StampSourceInfo stampSourceInfo){
 		this.AfterRoundingTime = afterRoundingTime;
 		this.timeWithDay = timeWithDay;
-		this.locationCode = locationCode;
+		this.locationCode = Optional.ofNullable(locationCode);
 		this.stampSourceInfo = stampSourceInfo;
 		
 	}

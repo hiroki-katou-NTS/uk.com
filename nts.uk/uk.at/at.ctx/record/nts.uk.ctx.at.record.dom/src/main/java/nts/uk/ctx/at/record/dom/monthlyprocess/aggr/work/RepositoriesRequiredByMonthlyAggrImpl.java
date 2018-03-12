@@ -8,6 +8,7 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepo
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.GetAggrSettingMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthlyRepository;
@@ -98,6 +99,10 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 月別実績の給与項目カウントの取得 */
 	@Inject
 	public PayItemCountOfMonthlyRepository payItemCountOfMonthly;
+	
+	/** 月別実績の丸め設定の取得 */
+	@Inject
+	public RoundingSetOfMonthlyRepository roundingSetOfMonthly;
 	
 	/** 法定労働時間の取得 */
 	@Inject

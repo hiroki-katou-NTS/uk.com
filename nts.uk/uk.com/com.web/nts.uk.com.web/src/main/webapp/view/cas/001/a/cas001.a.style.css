@@ -19,7 +19,7 @@
 
 #content-left {
 	width: 270px;
-	height: 745px;
+	height: 690px;
 }
 
 #content-right {
@@ -141,8 +141,8 @@
 	border-left: 2.2em solid transparent;
 }
 
-.requiredCell {
-	background-color: #FAEC82;
+.ntsgrid-alarm {
+	background-color: #FAEC82 !important;
 }
 
 #item_role_table_cover {

@@ -5,7 +5,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.arc.layer.app.command.JavaTypeResult;
 import nts.uk.ctx.sys.portal.app.command.layout.RegistryPortalLayoutCommand;
 import nts.uk.ctx.sys.portal.app.command.layout.RegistryPortalLayoutCommandHandler;
 import nts.uk.ctx.sys.portal.app.find.layout.LayoutDto;

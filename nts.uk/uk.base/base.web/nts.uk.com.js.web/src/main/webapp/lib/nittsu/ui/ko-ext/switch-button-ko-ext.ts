@@ -23,8 +23,7 @@ module nts.uk.ui.koExtentions {
                 container.attr("tabindex", "0");
             
             container.data("tabindex", container.attr("tabindex"));
-            
-            var container = $(element);
+
             container.keydown(function (evt, ui) {
                 let code = evt.which || evt.keyCode;
                 if (code === 32) {
@@ -64,6 +63,17 @@ module nts.uk.ui.koExtentions {
             });
             // Default value.
             var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
+            
+            
+            container.bind("validate", function () {
+                if (container.ctState("required", "get") && !container.ctState("selected", "get")) {
+                    container.ntsError("set", resource.getMessage("FND_E_REQ_SELECT", [container.ctState("name", "get")]), "FND_E_REQ_SELECT");
+                } else {
+                    container.ntsError("clear");
+                }
+            });
+            
+            ui.bindErrorStyle.useDefaultErrorClass(container);
         }
 
         /**
@@ -85,7 +95,9 @@ module nts.uk.ui.koExtentions {
             // Container.
             var container = $(element);
             container.data("enable", enable);
-            container.addClass("ntsControl switchButton-wrapper")
+            container.addClass("ntsControl switchButton-wrapper");
+            container.ctState("required", "set", ko.unwrap(data.required) === true);
+            container.ctState("name", "set", ko.unwrap(data.name));
             
             // Remove deleted button.
             $('button', container).each(function(index, btn) {
@@ -144,6 +156,7 @@ module nts.uk.ui.koExtentions {
         
         static setSelectedClass($container: JQuery, selectedCssClass: string, selectedValue: any, optValue?: any): any {
             var targetBtn;
+            $container.ctState("selected", "set", false);
             $('button', $container).each(function(index, btn) {
                 var btnValue = $(btn).data('swbtn');
                 if (btnValue == optValue) {
@@ -152,6 +165,8 @@ module nts.uk.ui.koExtentions {
 
                 if (btnValue == selectedValue) {
                     $(btn).addClass(selectedCssClass);
+                    $container.ctState("selected", "set", true);
+                    $container.ntsError("clear");
                 } else {
                     $(btn).removeClass(selectedCssClass);
                 }

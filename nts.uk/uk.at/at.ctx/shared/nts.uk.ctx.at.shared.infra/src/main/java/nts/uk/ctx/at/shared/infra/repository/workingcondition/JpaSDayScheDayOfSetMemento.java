@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -57,9 +56,7 @@ public class JpaSDayScheDayOfSetMemento implements SingleDayScheduleSetMemento {
 	 */
 	@Override
 	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
-		if (workTypeCode != null && !StringUtil.isNullOrEmpty(workTypeCode.v(), true)) {
-			this.entity.setWorkTypeCode(workTypeCode.v());
-		}
+		this.entity.setWorkTypeCode(workTypeCode.v());
 	}
 
 	/*
@@ -70,15 +67,13 @@ public class JpaSDayScheDayOfSetMemento implements SingleDayScheduleSetMemento {
 	 */
 	@Override
 	public void setWorkingHours(List<TimeZone> workingHours) {
-		if (workingHours.size() > 0){
-			List<KshmtDayofweekTimeZone> kshmtDayofweekTimeZones = workingHours.stream().map(item -> {
-				KshmtDayofweekTimeZone entity = new KshmtDayofweekTimeZone();
-				item.saveToMemento(new JpaTimezoneSetMemento<KshmtDayofweekTimeZone>(historyId,
-						this.perWorkDayOffAtr, entity));
-				return entity;
-			}).collect(Collectors.toList());
-			this.entity.setKshmtDayofweekTimeZones(kshmtDayofweekTimeZones);
-		}
+		List<KshmtDayofweekTimeZone> kshmtDayofweekTimeZones = workingHours.stream().map(item -> {
+			KshmtDayofweekTimeZone entity = new KshmtDayofweekTimeZone();
+			item.saveToMemento(new JpaTimezoneSetMemento<KshmtDayofweekTimeZone>(historyId,
+					this.perWorkDayOffAtr, entity));
+			return entity;
+		}).collect(Collectors.toList());
+		this.entity.setKshmtDayofweekTimeZones(kshmtDayofweekTimeZones);
 	}
 
 	/*
@@ -89,8 +84,10 @@ public class JpaSDayScheDayOfSetMemento implements SingleDayScheduleSetMemento {
 	 */
 	@Override
 	public void setWorkTimeCode(Optional<WorkTimeCode> workTimeCode) {
-		if (workTimeCode.isPresent() && !StringUtil.isNullOrEmpty(workTimeCode.get().v(), true)) {
+		if (workTimeCode != null && workTimeCode.isPresent()){
 			this.entity.setWorkTimeCode(workTimeCode.get().v());
+		} else {
+			this.entity.setWorkTimeCode(null);
 		}
 	}
 

@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -10,6 +13,8 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
+import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.AggregateMonthlyRecordService;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
@@ -26,6 +31,8 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	/** ドメインサービス：月別実績を集計する */
 	@Inject
 	private AggregateMonthlyRecordService aggregateMonthlyRecordService;
+	// （2018.3.1 shuichi_ishida）　単純入出力テスト用クラス
+	//private MonthlyRelatedDataInOutTest aggregateMonthlyRecordService;
 	
 	/** リポジトリ：月別実績の勤怠時間 */
 	@Inject
@@ -48,17 +55,30 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 		val dataSetter = asyncContext.getDataSetter();
 		
 		// 集計期間の判断
-		//*****（未）　実締め毎集計期間クラスの作成が必要。仮に変数で設定。実締め毎集計期間は、ループで複数件の処理要。
-		for (int ixClosure = 1; ixClosure <= 1; ixClosure++){
-			YearMonth yearMonth = YearMonth.of(2017, 11);
-			val closureId = ClosureId.RegularEmployee;
-			ClosureDate closureDate = new ClosureDate(0, true);
-			DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2017, 11, 1), GeneralDate.ymd(2017, 11, 30));
-			if (ixClosure == 2) {
-				yearMonth = YearMonth.of(2017, 12);
-				closureDate = new ClosureDate(20, false);
-				datePeriod = new DatePeriod(GeneralDate.ymd(2017, 12, 1), GeneralDate.ymd(2017, 12, 20));
-			}
+		//*****（2018.3.9 shuichi_ishida 暫定）　テスト中の条件に沿って、固定的に、締め4、末締め、2018/1/1～2/27の条件で処理。
+		List<AggrPeriodEachActualClosure> aggrPeriods = new ArrayList<>();
+		aggrPeriods.add(AggrPeriodEachActualClosure.of(
+				ClosureId.ClosureFour,
+				new ClosureDate(0, true),
+				YearMonth.of(2018, 1),
+				new DatePeriod(GeneralDate.ymd(2018, 1, 1), GeneralDate.ymd(2018, 1, 31))));
+		aggrPeriods.add(AggrPeriodEachActualClosure.of(
+				ClosureId.ClosureFour,
+				new ClosureDate(0, true),
+				YearMonth.of(2018, 2),
+				new DatePeriod(GeneralDate.ymd(2018, 2, 1), GeneralDate.ymd(2018, 2, 27))));
+		ClosurePeriod closurePeriod = ClosurePeriod.of(
+				ClosureId.ClosureFour,
+				new ClosureDate(0, true),
+				YearMonth.of(2018, 1),
+				GeneralDate.ymd(2018, 2, 28),
+				aggrPeriods);
+		
+		for (val aggrPeriod : closurePeriod.getAggrPeriods()){
+			val yearMonth = aggrPeriod.getYearMonth();
+			val closureId = aggrPeriod.getClosureId();
+			val closureDate = aggrPeriod.getClosureDate();
+			val datePeriod = aggrPeriod.getPeriod();
 			
 			// 中断依頼が出されているかチェックする
 			if (asyncContext.hasBeenRequestedToCancel()) {
@@ -96,23 +116,5 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 		
 		// 登録および更新
 		this.attendanceTimeRepository.persistAndUpdate(attendanceTime);
-		
-		//*****（テスト　2018.2.5 shuichi_ishida） 子（残業時間）だけ更新してみる
-		/*
-		val monthlyCalculation = attendanceTime.getMonthlyCalculation();
-		val aggregateTotalWorkingTime = monthlyCalculation.getTotalWorkingTime();
-		val overTimeWork = aggregateTotalWorkingTime.getOverTime();
-		val aggregateOverTimeList = overTimeWork.getAggregateOverTimeMap().values();
-		val attendanceTimeKey = new AttendanceTimeOfMonthlyKey(
-				attendanceTime.getEmployeeId(),
-				attendanceTime.getYearMonth(),
-				attendanceTime.getClosureId(),
-				attendanceTime.getClosureDate());
-		this.overTimeRepository.update(attendanceTimeKey, overTimeWork);
-		this.aggregateOverTimeRepository.removeByParentPK(attendanceTimeKey);
-		for (val aggregateOverTime : aggregateOverTimeList){
-			this.aggregateOverTimeRepository.insert(attendanceTimeKey, aggregateOverTime);
-		}
-		*/
 	}
 }

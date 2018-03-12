@@ -34,9 +34,9 @@ public class UpdateJobtitleSearchSetCommandHandler extends CommandHandler<List<J
 			jobSearch.validate();
 			if(jobtitle.isPresent()){
 				jobRep.update(jobSearch);
-				return;
+			}else{
+				jobRep.insert(jobSearch);
 			}
-			jobRep.insert(jobSearch);
 		}
 	}
 }

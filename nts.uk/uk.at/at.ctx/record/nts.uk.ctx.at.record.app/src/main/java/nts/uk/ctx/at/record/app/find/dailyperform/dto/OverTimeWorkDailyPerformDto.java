@@ -53,55 +53,47 @@ public class OverTimeWorkDailyPerformDto {
 	private Integer irregularWithinPrescribedOverTimeWork;
 
 	/** フレックス時間: フレックス時間 */
+	
 	@AttendanceItemLayout(layout = "F", jpPropertyName = "フレックス時間")
 	private FlexTimeDto flexTime;
 
 	public static OverTimeWorkDailyPerformDto fromOverTimeWorkDailyPerform(OverTimeOfDaily domain) {
 		return domain == null ? null
 				: new OverTimeWorkDailyPerformDto(
-						domain.getOverTimeWorkFrameTime() == null ? new ArrayList<>()
-								: ConvertHelper.mapTo(domain.getOverTimeWorkFrameTime(),
-										c -> new OverTimeFrameTimeDto(getWithCalc(c.getTransferTime()),
-												getWithCalc(c.getOverTimeWork()),
+						ConvertHelper.mapTo(domain.getOverTimeWorkFrameTime(),
+										c -> new OverTimeFrameTimeDto(CalcAttachTimeDto.toTimeWithCal(c.getTransferTime()),
+												CalcAttachTimeDto.toTimeWithCal(c.getOverTimeWork()),
 												getAttendanceTime(c.getBeforeApplicationTime()),
 												getAttendanceTime(c.getOrderTime()), c.getOverWorkFrameNo().v())),
-						domain.getOverTimeWorkFrameTimeSheet() == null ? new ArrayList<>()
-								: ConvertHelper.mapTo(domain.getOverTimeWorkFrameTimeSheet(),
+						ConvertHelper.mapTo(domain.getOverTimeWorkFrameTimeSheet(),
 										c -> new OverTimeFrameTimeSheetDto(
 												new TimeSpanForCalcDto(getAttendanceTime(c.getTimeSpan().getStart()),
 														getAttendanceTime(c.getTimeSpan().getEnd())),
 												c.getFrameNo().v())),
 						ExcessOverTimeWorkMidNightTimeDto
-								.fromOverTimeWorkDailyPerform(domain.getExcessOverTimeWorkMidNightTime().get()),
+								.fromOverTimeWorkDailyPerform(domain.getExcessOverTimeWorkMidNightTime().isPresent()
+																? domain.getExcessOverTimeWorkMidNightTime().get() : null),
 						getAttendanceTime(domain.getOverTimeWorkSpentAtWork()),
 						getAttendanceTime(domain.getIrregularWithinPrescribedOverTimeWork()),
 						domain.getFlexTime() == null ? null
-								: new FlexTimeDto(getWithCalc(domain.getFlexTime().getFlexTime()),
+								: new FlexTimeDto(CalcAttachTimeDto.toTimeWithCal(domain.getFlexTime().getFlexTime()),
 										getAttendanceTime(domain.getFlexTime().getBeforeApplicationTime())));
 	}
 
-	private static int getAttendanceTime(AttendanceTime time) {
+	private static Integer getAttendanceTime(AttendanceTime time) {
 		return time == null ? null : time.valueAsMinutes();
 	}
 
-	private static int getAttendanceTime(TimeWithDayAttr time) {
+	private static Integer getAttendanceTime(TimeWithDayAttr time) {
 		return time == null ? null : time.valueAsMinutes();
-	}
-
-	private static CalcAttachTimeDto getWithCalc(TimeWithCalculation c) {
-		return c == null ? null : new CalcAttachTimeDto(c.getCalcTime().valueAsMinutes(), c.getTime().valueAsMinutes());
-	}
-
-	private static CalcAttachTimeDto getWithCalc(TimeWithCalculationMinusExist c) {
-		return c == null ? null : new CalcAttachTimeDto(c.getCalcTime().valueAsMinutes(), c.getTime().valueAsMinutes());
 	}
 
 	public OverTimeOfDaily toDomain() {
 		return new OverTimeOfDaily(
-				overTimeFrameTimeSheet == null ? new ArrayList<>() : ConvertHelper.mapTo(overTimeFrameTimeSheet,
+				ConvertHelper.mapTo(overTimeFrameTimeSheet,
 						(c) -> new OverTimeFrameTimeSheet(createTimeSheet(c.getTimeSheet()),
 								new OverTimeFrameNo(c.getOvertimeFrameNo()))),
-				overTimeFrameTime == null ? new ArrayList<>() : ConvertHelper.mapTo(overTimeFrameTime,
+				ConvertHelper.mapTo(overTimeFrameTime,
 						(c) -> new OverTimeFrameTime(new OverTimeFrameNo(c.getOvertimeFrameNo()),
 								createTimeWithCalc(c.getOvertime()), createTimeWithCalc(c.getTransferTime()),
 								toAttendanceTime(c.getBeforeApplicationTime()), toAttendanceTime(c.getOrderTime()))),

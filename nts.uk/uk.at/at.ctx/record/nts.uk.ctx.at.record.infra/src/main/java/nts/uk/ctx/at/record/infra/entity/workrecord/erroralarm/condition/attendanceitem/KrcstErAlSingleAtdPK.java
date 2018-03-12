@@ -37,5 +37,5 @@ public class KrcstErAlSingleAtdPK implements Serializable {
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "ATTENDANCE_ITEM_ID")
-	public BigDecimal attendanceItemId;
+	public Integer attendanceItemId;
 }

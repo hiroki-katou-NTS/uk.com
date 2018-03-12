@@ -37,5 +37,5 @@ public class UpdateLateEarReqHandler extends CommandHandler<LateEarlyRequestComm
 			return;
 		}
 		repository.addLateEarlyRequest(data);
-	};
+	}
 }

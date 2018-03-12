@@ -63,9 +63,9 @@ module cps002.i.vm {
                 self.isChange(true);
             if (isImageLoaded.imgOnView) {
                 if (self.isChange()) {
-                    $("#test").ntsImageEditor("upload", { stereoType: "image" }).done(function(data) {
+                    $("#test").ntsImageEditor("upload", { stereoType: "avatarfile" }).done(function(data) {
                         self.imageId().cropImgId = data.id;
-                        $("#test").ntsImageEditor("uploadOriginal", { stereoType: "original-img" }).done(function(data2) {
+                        $("#test").ntsImageEditor("uploadOriginal", { stereoType: "avatarfile" }).done(function(data2) {
                             self.imageId().defaultImgId = data2.id;
                             nts.uk.ui.block.clear();
 

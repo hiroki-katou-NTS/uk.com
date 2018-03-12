@@ -2,83 +2,80 @@ module nts.uk.at.view.kal001.b {
     import getText = nts.uk.resource.getText;
     export module viewmodel {
         export class ScreenModel {
-            //table
-            columns: Array<any>;//nts.uk.ui.NtsGridListColumn
+
+            columns: KnockoutObservableArray<any>;
             currentSelectedRow: KnockoutObservable<any>;
-            //data
-            listAlarmExtraValueWorkRecord : KnockoutObservableArray<model.AlarmExtraValueWorkRecord>;
+
+            dataSource : KnockoutObservableArray<model.ExtractAlarmData>;
             constructor() {
                 let self = this;
                 self.currentSelectedRow = ko.observable(null);
-                self.listAlarmExtraValueWorkRecord = ko.observableArray([]);
-                
-                for (let i = 1; i < 100; i++) {
-                    var temp = new model.AlarmExtraValueWorkRecord(
-                        'employeeID ' + i, 
-                        'workplaceID' + i, 
-                        false,
-                        'comment '+i,
-                        'alarmValueMessage'+ i,
-                        '2018/01/'+(i%30+1),    
-                        'alarmItem '+i,
-                        'employeeCode'+i, 
-                        'employeeName'+i,
-                        i);
-                    self.listAlarmExtraValueWorkRecord.push(temp);
-                }
+                self.dataSource = ko.observableArray([]);
                 
                 self.columns = ko.observableArray([
                     { headerText: '', key: 'GUID', width: 1 ,hidden :true },
-                    { headerText: getText('KAL001_20'), key: 'workplaceID', width: 100 },
-                    { headerText: getText('KAL001_13'), key: 'employeeCode', width: 100 },
+                    { headerText: getText('KAL001_20'), key: 'workplaceName', width: 100 },
+                    { headerText: getText('KAL001_13'), key: 'employeeCode', width: 150 },
                     { headerText: getText('KAL001_14'), key: 'employeeName', width: 150 },
                     { headerText: getText('KAL001_15'), key: 'alarmValueDate', width: 100, isDateColumn: true, format: 'YYYY/MM/DD' },
-                    { headerText: getText('KAL001_16'), key: 'category', width: 60},
+                    { headerText: getText('KAL001_16'), key: 'category', width: 120},
                     { headerText: getText('KAL001_17'), key: 'alarmItem', width: 150 },
                     { headerText: getText('KAL001_18'), key: 'alarmValueMessage', width: 150 },
                     { headerText: getText('KAL001_19'), key: 'comment', width: 200 }
                 ]);
-            $("#grid").igGrid({ 
-                    width: '1020px',
-                    height: '400px',
-                    dataSource: self.listAlarmExtraValueWorkRecord(),
-                    primaryKey: 'GUID',
-                    virtualization: true,
-                    virtualizationMode: 'continuous',
-                    columns: self.columns(), 
-                    features: [{ name: 'Paging', type: 'local',pageSize: 10 },
-                    {
-                        name: "Tooltips",
-                            columnSettings: [
-                                { columnKey: "workplaceID", allowTooltips: true }
-                            ]
-                    }],
-                    avgRowHeight: "26px",
-                    enableTooltip : true
-                    });
+
             }
 
-            /**
-             * functiton start pagea
-             */
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                // get all CaseSpecExeContent
+                
+                for (let i = 1; i < 100; i++) {
+                    let temp = new model.ExtractAlarmData({
+                                    workplaceName: "workplaceName" +i,
+                                    employeeID: "employeeId" +i,
+                                    employeeCode: "employeeCode" +i,
+                                    employeeName: "employeeName" +i,
+                                    alarmValueDate: '2018/01/'+(i%30+1),
+                                    category: "category" +i,
+                                    alarmItem: "alarm pattern" +i,            
+                                    alarmValueMessage: "message" +i,
+                                    comment: "comment" +i,      
+                                });
+                    self.dataSource.push(temp);
+                }
+                
+                $("#grid").igGrid({ 
+                        height: '500px',
+                        dataSource: self.dataSource(),
+                        primaryKey: 'GUID',
+                        columns: self.columns(), 
+                        features: [
+                            { name: 'Paging', type: 'local', pageSize: 15 },
+                            {
+                              name: "Tooltips",
+                              columnSettings: [ 
+                                                { columnKey: "workplaceName", allowTooltips: true }
+                                              ]
+                            }
+                        ],
+                        enableTooltip : true
+                        });
+                                
 
                 dfd.resolve();
 
                 return dfd.promise();
-            }//end start page
+            }
 
-            printErrorByCsv(): void {
+            exportExcel(): void {
                 let self = this;
-                service.saveAsCsv(self.listAlarmExtraValueWorkRecord());
+                service.saveAsExcel(self.dataSource());
             }
             
-            printErrorByExcel(): void {
+            sendEmail(): void {
                 let self = this;
-                service.saveAsExcel(self.listAlarmExtraValueWorkRecord());
+                
             }
             
             closeDialog(){
@@ -86,51 +83,37 @@ module nts.uk.at.view.kal001.b {
             }
 
 
-        }//end screenModel
-    }//end viewmodel
+        }
+    }
 
-    //module model
+
     export module model {
-
-        //class AlarmExtraValueWorkRecord
-        export class AlarmExtraValueWorkRecord {
+        export class ExtractAlarmData {
             GUID : string;
             employeeID: string;
-            workplaceID: string;
-            isClassification: boolean;
+            workplaceName: string;
             comment: string;
             alarmValueMessage: string;
             alarmValueDate: string;
             alarmItem: string;
             employeeCode: string;
             employeeName: string;
-            category: number;
-            constructor(employeeID: string,
-                workplaceID: string,
-                isClassification: boolean,
-                comment: string,
-                alarmValueMessage: string,
-                alarmValueDate: string,
-                alarmItem: string,
-                employeeCode: string,
-                employeeName: string,
-                category: number) {
+            category: string;
+            constructor(dto: service.ExtractAlarmDto ) {
                 this.GUID = nts.uk.util.randomId();
-                this.employeeID = employeeID;
-                this.workplaceID = workplaceID;
-                this.isClassification = isClassification;
-                this.comment = comment;
-                this.alarmValueMessage = alarmValueMessage;
-                this.alarmValueDate = alarmValueDate;
-                this.alarmItem = alarmItem;
-                this.employeeCode = employeeCode;
-                this.employeeName = employeeName;
-                this.category = category;
+                this.employeeID = dto.employeeID;
+                this.workplaceName = dto.workplaceName;
+                this.comment = dto.comment;
+                this.alarmValueMessage = dto.alarmValueMessage;
+                this.alarmValueDate = dto.alarmValueDate;
+                this.alarmItem = dto.alarmItem;
+                this.employeeCode = dto.employeeCode;
+                this.employeeName = dto.employeeName;
+                this.category = dto.category;
             }
+        }
+        
+        
+    }
 
-        }//end class AlarmExtraValueWorkRecord
-
-
-    }//end module model
-
-}//end module
+}

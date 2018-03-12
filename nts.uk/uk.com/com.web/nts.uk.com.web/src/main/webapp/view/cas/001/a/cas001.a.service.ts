@@ -8,7 +8,8 @@ module nts.uk.com.view.cas001.a.service {
         getCategoryRoleList: "/ctx/pereg/roles/auth/category/findAllCategory/{0}",
         getCategoryAuth: "/ctx/pereg/roles/auth/category/find/{0}/{1}",
         getPersonRoleItemList: "/ctx/pereg/roles/auth/item/findAllItem/{0}/{1}",
-        savePersonRole: "/ctx/pereg/roles/auth/save"
+        savePersonRole: "/ctx/pereg/roles/auth/save",
+        getAllItemIdRequired: "ctx/pereg/person/info/ctgItem/layout/findAll/required"
     }
 
 
@@ -86,6 +87,10 @@ module nts.uk.com.view.cas001.a.service {
                 _.defer(() => block.clear());
             });
         return dfd.promise();
+    }
+
+    export function getAllItemIdRequired(): JQueryPromise<Array<any>> {
+       return nts.uk.request.ajax(paths.getAllItemIdRequired);
     }
 
 }

@@ -20,6 +20,7 @@ import nts.uk.ctx.pereg.app.command.person.info.item.UpdateItemCommand;
 import nts.uk.ctx.pereg.app.command.person.info.item.UpdateItemCommandHandler;
 import nts.uk.ctx.pereg.app.command.person.info.item.UpdateOrderItemChangeCommand;
 import nts.uk.ctx.pereg.app.command.person.info.item.UpdateOrderItemChangeCommandHandler;
+import nts.uk.ctx.pereg.app.find.person.info.item.ItemRequiredBackGroud;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemChangeDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
@@ -37,7 +38,7 @@ public class PernfoItemDefWebservice extends WebService {
 
 	@Inject
 	private UpdateItemCommandHandler updateItemCm;
-	
+
 	@Inject
 	private RemoveItemCommandHandler removeItemCm;
 
@@ -46,11 +47,11 @@ public class PernfoItemDefWebservice extends WebService {
 
 	@Inject
 	private UpdateOrderItemChangeCommandHandler updateOrderItemChange;
-	
 
 	@POST
 	@Path("findby/categoryId1/{perInfoCtgId}/{personEmployeeType}")
-	public PerInfoItemDefFullEnumDto getAllPerInfoItemDefByCtgId(@PathParam("perInfoCtgId") String perInfoCtgId, @PathParam("personEmployeeType") int personEmployeeType) {
+	public PerInfoItemDefFullEnumDto getAllPerInfoItemDefByCtgId(@PathParam("perInfoCtgId") String perInfoCtgId,
+			@PathParam("personEmployeeType") int personEmployeeType) {
 		return itemDefFinder.getAllPerInfoItemDefByCtgId(perInfoCtgId, personEmployeeType);
 	}
 
@@ -63,13 +64,15 @@ public class PernfoItemDefWebservice extends WebService {
 
 	@POST
 	@Path("findby/itemIdOfOtherCompany/{Id}/{personEmployeeType}")
-	public PerInfoItemChangeDefDto getPerInfoItemDefByIdOfOtherCompany(@PathParam("Id") String Id,@PathParam("personEmployeeType") int personEmployeeType) {
+	public PerInfoItemChangeDefDto getPerInfoItemDefByIdOfOtherCompany(@PathParam("Id") String Id,
+			@PathParam("personEmployeeType") int personEmployeeType) {
 		return itemDefFinder.getPerInfoItemDefByIdOfOtherCompany(Id, personEmployeeType);
 	}
 
 	@POST
 	@Path("findby/itemId/{Id}/{personEmployeeType}")
-	public PerInfoItemChangeDefDto getPerInfoItemDefById(@PathParam("Id") String Id, @PathParam("personEmployeeType") int personEmployeeType) {
+	public PerInfoItemChangeDefDto getPerInfoItemDefById(@PathParam("Id") String Id,
+			@PathParam("personEmployeeType") int personEmployeeType) {
 		return itemDefFinder.getPerInfoItemDefById(Id, personEmployeeType);
 	}
 
@@ -93,10 +96,19 @@ public class PernfoItemDefWebservice extends WebService {
 		return itemDefFinder.getPerInfoItemDefByIdForLayout(Id);
 	}
 
+
 	@POST
 	@Path("layout/findby/listItemId")
 	public List<PerInfoItemDefDto> getPerInfoItemDefByListIdForLayout(List<String> listItemDefId) {
 		return itemDefFinder.getPerInfoItemDefByListIdForLayout(listItemDefId);
+	}
+
+	// to anh Vuong
+	//test hieu nang Layout
+	@POST
+	@Path("layout/findby/listItemIdv2")
+	public List<PerInfoItemDefDto> getPerInfoItemDefByListIdForLayoutV2(List<String> listItemDefId) {
+		return itemDefFinder.getPerInfoItemDefByIds(listItemDefId);
 	}
 
 	@POST
@@ -116,13 +128,14 @@ public class PernfoItemDefWebservice extends WebService {
 	public JavaTypeResult<String> updateItemDef(UpdateItemCommand updateItemCommand) {
 		return new JavaTypeResult<String>(updateItemCm.handle(updateItemCommand));
 	}
-	
+
 	@POST
 	@Path("remove")
 	public JavaTypeResult<String> removeItemDef(RemoveItemCommand removeCommand) {
 		return new JavaTypeResult<String>(removeItemCm.handle(removeCommand));
-		
+
 	}
+
 	// service update item change
 	@POST
 	@Path("updateItemChange")
@@ -135,10 +148,26 @@ public class PernfoItemDefWebservice extends WebService {
 	public void updateItemChange(UpdateOrderItemChangeCommand command) {
 		this.updateOrderItemChange.handle(command);
 	}
-	
+
 	@POST
 	@Path("checkExistItem/{selectionItemId}")
 	public boolean checkExistedSelectionItemId(@PathParam("selectionItemId") String selectionItemId) {
 		return this.itemDefFinder.checkExistedSelectionItemId(selectionItemId);
 	}
+
+	// lalt start
+
+	@POST
+	@Path("layout/findAll/required")
+	public List<ItemRequiredBackGroud> getAllRequiredIds() {
+		return itemDefFinder.getAllRequiredIds();
+	}
+	
+	@POST
+	@Path("check/itemData/{itemId}")
+	public boolean checkItemData(@PathParam("itemId") String itemId) {
+		return this.itemDefFinder.isCheckData(itemId);
+	}
+	
+	// lanlt end
 }

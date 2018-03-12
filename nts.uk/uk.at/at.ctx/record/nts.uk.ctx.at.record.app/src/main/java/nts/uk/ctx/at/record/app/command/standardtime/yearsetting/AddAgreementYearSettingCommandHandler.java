@@ -1,17 +1,22 @@
 package nts.uk.ctx.at.record.app.command.standardtime.yearsetting;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementYearSetting;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneYear;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneYear;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSetDomainService;
+import nts.uk.ctx.at.shared.app.service.workingcondition.WorkingConditionService;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
 /**
  * 
@@ -19,16 +24,19 @@ import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepo
  *
  */
 @Stateless
-public class AddAgreementYearSettingCommandHandler extends CommandHandler<AddAgreementYearSettingCommand> {
+public class AddAgreementYearSettingCommandHandler extends CommandHandlerWithResult<AddAgreementYearSettingCommand, List<String>> {
 
 	@Inject
-	private AgreementYearSettingRepository agreementYearSettingRepository;
+	private AgreementYearSetDomainService agreementYearSetDomainService;
+	
+	@Inject
+	private WorkingConditionService workingConditionService;
 
 	@Override
-	protected void handle(CommandHandlerContext<AddAgreementYearSettingCommand> context) {
+	protected List<String> handle(CommandHandlerContext<AddAgreementYearSettingCommand> context) {
 		AddAgreementYearSettingCommand command = context.getCommand();
 		
-		if(this.agreementYearSettingRepository.checkExistData(command.getEmployeeId(), new BigDecimal(command.getYearValue()))){
+		if(this.agreementYearSetDomainService.checkExistData(command.getEmployeeId(), new BigDecimal(command.getYearValue()))){
 			throw new BusinessException("Msg_61");
 		};
 		
@@ -38,9 +46,11 @@ public class AddAgreementYearSettingCommandHandler extends CommandHandler<AddAgr
 				new ErrorOneYear(command.getErrorOneYear()),
 				new AlarmOneYear(command.getAlarmOneYear()));
 		
-		agreementYearSetting.validate();
+//		agreementYearSetting.validate();
+		
+		Optional<WorkingConditionItem> workingConditionItem = this.workingConditionService.findWorkConditionByEmployee(command.getEmployeeId(), GeneralDate.today());
 
-		this.agreementYearSettingRepository.add(agreementYearSetting);
+		return this.agreementYearSetDomainService.add(agreementYearSetting, workingConditionItem);
 	}
 
 }

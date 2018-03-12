@@ -17,6 +17,8 @@ module a12 {
      */
     class ScreenModel {
         
+        selectedTab: KnockoutObservable<string>;
+        
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
         
@@ -37,8 +39,9 @@ module a12 {
         /**
          * Constructor
          */
-        constructor(screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
+        constructor(selectedTab: KnockoutObservable<string>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
             let _self = this;
+            _self.selectedTab = selectedTab;
             
             // Check exist
             if (nts.uk.util.isNullOrUndefined(model) || nts.uk.util.isNullOrUndefined(settingEnum)) {
@@ -82,6 +85,20 @@ module a12 {
             _self.lateNightSettingRoundingTime = _self.model.commonSetting.lateNightTimeSet.roundingSetting.roundingTime;
             _self.lateNightSettingRounding = _self.model.commonSetting.lateNightTimeSet.roundingSetting.rounding;
         }                
+        
+        /**
+         * Handle when using tab button
+         */
+        public changeTab(data: any, e: any) {
+            let _self = this;
+            if (e.which == 9) {
+                if (_self.isDetailMode()) {
+                    _self.selectedTab('tab-13');  
+                } else {
+                    _self.selectedTab('tab-1');  
+                }            
+            }
+        }
     }
       
     /**
@@ -112,7 +129,7 @@ module a12 {
             let model = input.model;
             let settingEnum = input.enum;
 
-            let screenModel = new ScreenModel(screenMode, model, settingEnum);
+            let screenModel = new ScreenModel(input.selectedTab, screenMode, model, settingEnum);
             $(element).load(webserviceLocator, () => {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
