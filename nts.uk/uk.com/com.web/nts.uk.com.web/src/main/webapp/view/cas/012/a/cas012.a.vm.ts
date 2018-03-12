@@ -200,8 +200,8 @@ module nts.uk.com.view.cas012.a.viewmodel {
                     param.startValidPeriod = nts.uk.time.parseMoment(self.datePeriod().startDate).format();
                     param.endValidPeriod = nts.uk.time.parseMoment(self.datePeriod().endDate).format();
                     service.deleteRoleIndividual(param).done(() => {
-                        let index = _.findIndex(self.listRoleType(), ['GUID', self.currentCode()]);
-                        index = _.min([self.listRoleType().length - 2, index]);
+                        let index = _.findIndex(self.listRoleIndividual(), ['GUID', self.currentCode()]);
+                        index = _.min([self.listRoleIndividual().length - 2, index]);
                         self.getData().done(() => {
                             self.selectRoleByIndex(index);
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" });
