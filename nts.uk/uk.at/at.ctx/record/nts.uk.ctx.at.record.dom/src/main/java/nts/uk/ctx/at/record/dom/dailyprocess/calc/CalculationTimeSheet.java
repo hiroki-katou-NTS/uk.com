@@ -363,7 +363,8 @@ public abstract class CalculationTimeSheet {
 		for(TimeSheetOfDeductionItem deductionItem : deductionList) {
 			
 			if(deductionItem.contains(baseTime)) {
-				returnList.add(deductionItem.reCreateOwn(baseTime,isDateBefore));
+				//returnList.add(deductionItem.reCreateOwn(baseTime,isDateBefore));
+				returnList.add(deductionItem);
 			}
 			else if(deductionItem.calcrange.getEnd().lessThan(baseTime) && isDateBefore) {
 				returnList.add(deductionItem);
@@ -385,7 +386,8 @@ public abstract class CalculationTimeSheet {
 	public Optional<MidNightTimeSheetForCalc> recreateMidNightTimeSheetBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
 		if(this.midNightTimeSheet.isPresent()) {
 			if(midNightTimeSheet.get().calcrange.contains(baseTime)) {
-				return midNightTimeSheet.get().midNightTimeSheet.get().reCreateOwn(baseTime,isDateBefore);
+				//return midNightTimeSheet.get().midNightTimeSheet.get().reCreateOwn(baseTime,isDateBefore);
+				return midNightTimeSheet;
 			}
 			else if(midNightTimeSheet.get().calcrange.getEnd().lessThan(baseTime) && isDateBefore) {
 				return midNightTimeSheet;
