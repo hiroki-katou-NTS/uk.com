@@ -25,7 +25,7 @@ public class GrantDatePer extends DomainObject {
 	private String companyId;
 
 	/*付与日のID*/
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 
 	/*特別休暇コード*/
 	private PersonalGrantDateCode personalGrantDateCode;
@@ -44,7 +44,7 @@ public class GrantDatePer extends DomainObject {
 	/* 
 	 * Create from java type
 	 */
-	public static GrantDatePer createSimpleFromJavaType(String companyId, String specialHolidayCode, String personalGrantDateCode, String personalGrantDateName,
+	public static GrantDatePer createSimpleFromJavaType(String companyId, int specialHolidayCode, String personalGrantDateCode, String personalGrantDateName,
 			GeneralDate grantDate, int grantDateAtr, List<GrantDatePerSet> grantDatePerSet) {
 		return new GrantDatePer(companyId,
 				specialHolidayCode,

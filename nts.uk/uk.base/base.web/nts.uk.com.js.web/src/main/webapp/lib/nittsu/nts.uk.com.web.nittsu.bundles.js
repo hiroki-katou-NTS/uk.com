@@ -8814,7 +8814,7 @@ var nts;
                             var structure = [];
                             var structData = "";
                             _.forEach(cells, function (cell, index) {
-                                var rowIndex = cell.rowIndex;
+                                var rowIndex = parseInt(cell.rowIndex);
                                 var columnIndex = helper.getDisplayColumnIndex(self.$grid, cell.columnKey);
                                 if (index === 0) {
                                     minRow = maxRow = rowIndex;
@@ -9211,6 +9211,13 @@ var nts;
                                     || which(innerIdx, dataType, internal.DURATION)
                                     || which(innerIdx, dataType, internal.NUMBER)
                                     || which(innerIdx, dataType, internal.TEXT);
+                                var constraints = ui.validation.getConstraint(col.primitiveValue);
+                                if (constraints && constraints.valueType === "Time") {
+                                    max = constraints.max ? constraints.max : col.max;
+                                    min = constraints.min ? constraints.min : col.min;
+                                    required = constraints.required ? constraints.required : col.required;
+                                    return false;
+                                }
                                 max = col.max;
                                 min = col.min;
                                 required = col.required;
@@ -9519,7 +9526,7 @@ var nts;
                      * Select range.
                      */
                     function selectRange($grid, $cell) {
-                        if (uk.util.isNullOrUndefined($cell))
+                        if (uk.util.isNullOrUndefined($cell) || selector.is($cell, "." + BODY_PRF + DETAIL))
                             return;
                         var lastSelected = $.data($grid, internal.LAST_SELECTED);
                         if (!lastSelected) {
@@ -13919,10 +13926,11 @@ var nts;
                      */
                     ComboBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var container = $(element);
-                        if (nts.uk.util.isNullOrUndefined(container.attr("tabindex"))) {
-                            container.attr("tabindex", "0");
-                        }
+                        //            if(nts.uk.util.isNullOrUndefined(container.attr("tabindex"))){
+                        //                container.attr("tabindex", "0");    
+                        //            }
                         container.data("tabindex", container.attr("tabindex"));
+                        container.removeAttr("tabindex");
                         container.keypress(function (evt, ui) {
                             var code = evt.which || evt.keyCode;
                             if (code === 32) {
@@ -14031,6 +14039,7 @@ var nts;
                                 return option;
                             });
                         }
+                        var $input = container.find(".ui-igcombo-field");
                         var currentColumnSetting = container.data("columns");
                         var currentComboMode = container.data("comboMode");
                         var isInitCombo = !_.isEqual(currentColumnSetting, columns) || !_.isEqual(currentComboMode, comboMode);
@@ -14060,7 +14069,7 @@ var nts;
                                 mode: comboMode,
                                 disabled: !enable,
                                 placeHolder: '',
-                                tabIndex: -1,
+                                tabIndex: nts.uk.util.isNullOrEmpty(container.data("tabindex")) ? 0 : parseInt(container.data("tabindex")),
                                 enableClearButton: false,
                                 initialSelectedItems: [
                                     { value: selectedValue }
@@ -14072,16 +14081,22 @@ var nts;
                                     }
                                 }
                             });
+                            $input = container.find(".ui-igcombo-field");
+                            $input.focus(function (evt, ui) {
+                                $input[0].selectionStart = 0;
+                                $input[0].selectionEnd = 0;
+                                //                    container.focus();
+                            });
                         }
                         else {
                             container.igCombo("option", "disabled", !enable);
                         }
                         if (!enable) {
                             defVal.applyReset(container, data.value);
-                            container.attr("tabindex", "-1");
+                            $input.attr("disabled", "disabled");
                         }
                         else {
-                            container.attr("tabindex", container.data("tabindex"));
+                            $input.removeAttr("disabled");
                         }
                         if (isChangeOptions && !isInitCombo) {
                             container.igCombo("option", "dataSource", options);
@@ -15245,6 +15260,12 @@ var nts;
                         $input.addClass('nts-editor nts-input');
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
                         setEnterHandlerIfRequired($input, data);
+                        $input.on("keydown", function (e) {
+                            // prevent backspace in readonly editor
+                            if (ko.unwrap(data.readonly) && e.keyCode === 8) {
+                                e.preventDefault();
+                            }
+                        });
                         $input.on(valueUpdate, function (e) {
                             var newText = $input.val();
                             var validator = _this.getValidator(data);
@@ -15379,10 +15400,13 @@ var nts;
                         $input.addClass('nts-editor nts-input');
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
                         setEnterHandlerIfRequired($input, data);
-                        $input.on("keyup", function (e) {
-                            if ($input.attr('readonly')) {
-                                return;
+                        $input.on("keydown", function (e) {
+                            // prevent backspace in readonly editor
+                            if (ko.unwrap(data.readonly) && e.keyCode === 8) {
+                                e.preventDefault();
                             }
+                        });
+                        $input.on("keyup", function (e) {
                             var code = e.keyCode || e.which;
                             if (!$input.attr('readonly') && code.toString() !== '9') {
                                 var validator = self.getValidator(data);
@@ -16112,6 +16136,9 @@ var nts;
                                 }
                             }, 100);
                         });
+                        $grid.bind("checknewitem", function (evt) {
+                            return false;
+                        });
                     };
                     NtsGridListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $grid = $(element);
@@ -16131,7 +16158,22 @@ var nts;
                             }
                         }
                         $grid.data("enable", enable);
-                        if ($grid.data("ui-changed") !== true) {
+                        if (String($grid.attr("filtered")) === "true" && $grid.data("ui-changed") !== true) {
+                            var filteredSource_1 = [];
+                            _.forEach(gridSource, function (item) {
+                                var itemX = _.find(sources, function (s) {
+                                    return s[optionsValue] === item[optionsValue];
+                                });
+                                if (!nts.uk.util.isNullOrUndefined(itemX)) {
+                                    filteredSource_1.push(itemX);
+                                }
+                            });
+                            if (!_.isEqual(filteredSource_1, gridSource)) {
+                                $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_1));
+                                $grid.igGrid("dataBind");
+                            }
+                        }
+                        else if ($grid.data("ui-changed") !== true) {
                             var currentSources = sources.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -16150,21 +16192,6 @@ var nts;
                                 $grid.igGrid("dataBind");
                             }
                         }
-                        //            else if(String($grid.attr("filtered")) === "true"){
-                        //                let filteredSource = [];
-                        //                _.forEach(gridSource, function(item){
-                        //                    let itemX = _.find(sources, function (s){
-                        //                        return s[optionsValue] === item[optionsValue];        
-                        //                    });
-                        //                    if(!nts.uk.util.isNullOrUndefined(itemX)){ 
-                        //                        filteredSource.push(itemX);
-                        //                    }     
-                        //                });     
-                        //                if(!_.isEqual(filteredSource, gridSource)){
-                        //                    $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource));
-                        //                    $grid.igGrid("dataBind");    
-                        //                }
-                        //            }
                         var currentSelectedItems = $grid.ntsGridList('getSelected');
                         var isEqual = _.isEqualWith(currentSelectedItems, data.value(), function (current, newVal) {
                             if ((current === undefined && newVal === undefined) || (current !== undefined && current.id === newVal)) {
@@ -16588,17 +16615,17 @@ var nts;
                             }
                         }
                         else if (String(container.attr("filtered")) === "true") {
-                            var filteredSource_1 = [];
+                            var filteredSource_2 = [];
                             _.forEach(currentSource, function (item) {
                                 var itemX = _.find(sources, function (s) {
                                     return s[optionValue] === item[optionValue];
                                 });
                                 if (!nts.uk.util.isNullOrUndefined(itemX)) {
-                                    filteredSource_1.push(itemX);
+                                    filteredSource_2.push(itemX);
                                 }
                             });
-                            if (!_.isEqual(filteredSource_1, currentSource)) {
-                                container.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_1));
+                            if (!_.isEqual(filteredSource_2, currentSource)) {
+                                container.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_2));
                                 container.igGrid("dataBind");
                             }
                         }
@@ -17234,19 +17261,22 @@ var nts;
                         }
                         var srhX = $searchBox.data("searchObject");
                         if (component.attr("filtered") === "true") {
-                            var currentSoruce_1 = srhX.getDataSource();
-                            var newItems = _.filter(arr, function (i) {
-                                return _.find(currentSoruce_1, function (ci) {
-                                    return ci[primaryKey] === i[primaryKey];
-                                }) === undefined;
-                            });
-                            if (!nts.uk.util.isNullOrEmpty(newItems)) {
-                                var gridSources_1 = component.igGrid("option", "dataSource");
-                                _.forEach(newItems, function (item) {
-                                    gridSources_1.push(item);
+                            var isCheck = component.triggerHandler("checknewitem");
+                            if (isCheck !== false) {
+                                var currentSoruce_1 = srhX.getDataSource();
+                                var newItems = _.filter(arr, function (i) {
+                                    return _.find(currentSoruce_1, function (ci) {
+                                        return ci[primaryKey] === i[primaryKey];
+                                    }) === undefined;
                                 });
-                                component.igGrid("option", "dataSource", _.cloneDeep(gridSources_1));
-                                component.igGrid("dataBind");
+                                if (!nts.uk.util.isNullOrEmpty(newItems)) {
+                                    var gridSources_1 = component.igGrid("option", "dataSource");
+                                    _.forEach(newItems, function (item) {
+                                        gridSources_1.push(item);
+                                    });
+                                    component.igGrid("option", "dataSource", _.cloneDeep(gridSources_1));
+                                    component.igGrid("dataBind");
+                                }
                             }
                         }
                         srhX.setDataSource(arr);
@@ -22276,30 +22306,35 @@ var nts;
                         return $container;
                     };
                     function bindFlip($input) {
-                        var datepickerID = $input.attr("id");
-                        var container = $input.parent();
+                        //            let container = $input.parent();
                         $input.on('show.datepicker', function (evt) {
-                            $input.data("showed", true);
+                            var picker = $(this);
+                            picker.data("showed", true);
                             setTimeout(function () {
-                                $input.trigger("flippickercontainer");
+                                picker.trigger("flippickercontainer");
                             }, 10);
                         });
                         $input.on('hide.datepicker', function (evt) {
-                            $input.data("showed", false);
-                            CONTAINER_CLASSES.forEach(function (cls) { return container.removeClass(cls); });
+                            var picker = $(this);
+                            picker.data("showed", false);
+                            CONTAINER_CLASSES.forEach(function (cls) { return picker.parent().removeClass(cls); });
                             //                let currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
                             //                $("body").append(currentShowContainer);
                         });
                         $(window).resize(function () {
-                            if ($input.data("showed")) {
-                                $input.datepicker('hide');
+                            var picker = $(this);
+                            if (picker.data("showed")) {
+                                picker.datepicker('hide');
                                 setTimeout(function () {
-                                    $input.datepicker('show');
+                                    picker.datepicker('show');
                                 }, 10);
                             }
                         });
                         $input.bind("flippickercontainer", function (evt, data) {
+                            var picker = $(this);
+                            var container = picker.parent();
                             var currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
+                            var datepickerID = picker.attr("id");
                             //                let container = $input.parent();
                             //                container.append(currentShowContainer);
                             var ePos = container.offset();
@@ -23432,6 +23467,18 @@ var nts;
                         function editStarted(evt, ui) {
                             var $grid = $(ui.owner.element);
                             var valueType = validation.getValueType($grid, ui.columnKey);
+                            if (!evt.currentTarget) {
+                                if (valueType === "TimeWithDay" || valueType === "Clock") {
+                                    var $editor = $(ui.editor.find("input")[0]);
+                                    $editor.css("text-align", "right");
+                                }
+                                else if (valueType === "Currency") {
+                                    ui.editor.addClass(updating.INPUT_CURR_SYM);
+                                    var $editor = $(ui.editor.find("input")[0]);
+                                    $editor.css("text-align", "right");
+                                }
+                                return;
+                            }
                             if (!uk.util.isNullOrUndefined(ui.value) && !_.isEmpty(ui.value)) {
                                 if (valueType === "TimeWithDay" || valueType === "Clock") {
                                     var formatted_1;
@@ -23514,30 +23561,41 @@ var nts;
                             if (!utils.isDeleteKey(evt)) {
                                 setTimeout(function () {
                                     var cellValue;
+                                    var char = evt.key === "Subtract" ? "-" : evt.key;
                                     var $editor = $targetGrid.igGridUpdating("editorForCell", $(cell.element));
                                     if (!uk.util.isNullOrUndefined($editor.data("igTextEditor"))) {
-                                        var newText = $editor.igTextEditor("value");
-                                        newText = newText.substr(newText.length - 1);
-                                        $editor.igTextEditor("value", newText.trim());
-                                        var input = $editor.find("input")[0];
-                                        var len = input.value.length;
-                                        input.setSelectionRange(len, len);
-                                        cellValue = newText;
-                                    }
-                                    else if (!uk.util.isNullOrUndefined($editor.data("igNumericEditor"))) {
-                                        var numericStr = "-";
-                                        if (!utils.isMinusSymbol(evt)) {
-                                            numericStr = String.fromCharCode(evt.keyCode);
-                                            $editor.igNumericEditor("value", parseInt(numericStr));
+                                        $editor.igTextEditor("value", char);
+                                        var input_1 = $editor.find("input")[0];
+                                        var len_1 = input_1.value.length;
+                                        if ($.ig.util.isChrome || $.ig.util.isSafari) {
+                                            setTimeout(function () {
+                                                input_1.setSelectionRange(len_1, len_1);
+                                            }, 110);
                                         }
                                         else {
-                                            $editor.igNumericEditor("value", numericStr);
+                                            input_1.setSelectionRange(len_1, len_1);
                                         }
-                                        setTimeout(function () {
-                                            var length = String($editor.igNumericEditor("value")).length;
-                                            $editor.igNumericEditor("select", length, length);
-                                        }, 100);
-                                        cellValue = numericStr;
+                                        cellValue = char;
+                                    }
+                                    else if (!uk.util.isNullOrUndefined($editor.data("igNumericEditor"))) {
+                                        cellValue = char;
+                                        if (!utils.isMinusSymbol(evt)) {
+                                            $editor.igNumericEditor("value", parseInt(cellValue));
+                                        }
+                                        else {
+                                            cellValue = "-";
+                                            $editor.igNumericEditor("value", cellValue);
+                                        }
+                                        if ($.ig.util.isChrome || $.ig.util.isSafari) {
+                                            setTimeout(function () {
+                                                var length = String($editor.igNumericEditor("value")).length;
+                                                $editor.igNumericEditor("select", length, length);
+                                            }, 110);
+                                        }
+                                        else {
+                                            var length_1 = String($editor.igNumericEditor("value")).length;
+                                            $editor.igNumericEditor("select", length_1, length_1);
+                                        }
                                     }
                                     // Validate
                                     var validators = $targetGrid.data(validation.VALIDATORS);
@@ -23550,14 +23608,15 @@ var nts;
                                     if (!result.isValid) {
                                         errors.set($targetGrid, cell, result.errorMessage);
                                     }
-                                }, 200);
+                                }, 1);
                             }
                             else {
                                 setTimeout(function () {
                                     var $editor = $targetGrid.igGridUpdating("editorForCell", $(cell.element));
                                     $editor.find("input").val("");
-                                }, 200);
+                                }, 1);
                             }
+                            evt.preventDefault();
                             evt.stopImmediatePropagation();
                         }
                         /**

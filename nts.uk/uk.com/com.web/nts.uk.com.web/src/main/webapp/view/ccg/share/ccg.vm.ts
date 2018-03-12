@@ -1316,12 +1316,15 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             public getSelectedCodeEmployee(): string[]{
                 var self = this;
-                if(self.isMultiple){
-                    return self.selectedCodeEmployee();    
+                if (self.isMultiple) {
+                    return self.selectedCodeEmployee();
+                } else {
+                    let employeeCodes = [];
+                    if (!nts.uk.util.isNullOrEmpty(self.selectedCodeEmployee())) {
+                        employeeCodes.push(self.selectedCodeEmployee());
+                    }
+                    return employeeCodes;
                 }
-                var employeeIds: string[] = [];
-                employeeIds.push(self.selectedCodeEmployee() + "");
-                return employeeIds;
             }        
             
             /**

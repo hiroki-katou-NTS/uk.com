@@ -64,8 +64,8 @@
 						<div id="code-sphd" 
 							data-bind="ntsFormLabel: {required: true, constraint:['SpecialHolidayCode','SpecialHolidayName']}">#{i18n.getText('KMF004_9')}</div>
 						<span><input id="code-text"  tabindex="6"
-							style="width: 40px; margin-left: -1px;" 
-							data-bind="ntsTextEditor: {value: specialHolidayCode,constraint:'SpecialHolidayCode' , required: true, enable:$parent.isEnableCode, immediate: true ,option: {autofill:true, filldirection:'left'}, name: '#[KMF004_10]'} " /></span>
+							style="width: 17px; margin-left: 48px;" 
+							data-bind="ntsNumberEditor: {value: specialHolidayCode,constraint:'SpecialHolidayCode' , required: true, enable:$parent.isEnableCode , name: '#[KMF004_10]'} " /></span>
 						<span><input id="code-text2" style="width: 180px" tabindex="7"
 							data-bind="ntsTextEditor: {value: specialHolidayName,constraint:'SpecialHolidayName', required: true, name: '#[KMF004_8]'}" /></span>
 						<div>

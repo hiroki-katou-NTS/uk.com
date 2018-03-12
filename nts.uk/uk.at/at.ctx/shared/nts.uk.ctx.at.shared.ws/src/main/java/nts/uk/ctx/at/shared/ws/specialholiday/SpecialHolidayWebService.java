@@ -90,13 +90,13 @@ public class SpecialHolidayWebService extends WebService{
 	
 	@Path("getComByCode/{specialHolidayCode}")
 	@POST
-	public GrantDateComDto getComByCode(@PathParam("specialHolidayCode") String specialHolidayCode) {
+	public GrantDateComDto getComByCode(@PathParam("specialHolidayCode") int specialHolidayCode) {
 		return this.specialHolidayFinder.getComByCode(specialHolidayCode);
 	}
 	
 	@Path("getAllSetByCode/{specialHolidayCode}")
 	@POST
-	public List<GrantDateSetDto> getAllSetByCode(@PathParam("specialHolidayCode") String specialHolidayCode) {
+	public List<GrantDateSetDto> getAllSetByCode(@PathParam("specialHolidayCode") int specialHolidayCode) {
 		return this.specialHolidayFinder.getAllSetByCode(specialHolidayCode);
 	}
 	
@@ -108,13 +108,13 @@ public class SpecialHolidayWebService extends WebService{
 	
 	@Path("getPerByCode/{specialHolidayCode}/{personalGrantDateCode}")
 	@POST
-	public GrantDatePerDto getPerByCode(@PathParam("specialHolidayCode") String specialHolidayCode, @PathParam("personalGrantDateCode") String personalGrantDateCode) {
+	public GrantDatePerDto getPerByCode(@PathParam("specialHolidayCode") int specialHolidayCode, @PathParam("personalGrantDateCode") String personalGrantDateCode) {
 		return this.specialHolidayFinder.getPerByCode(specialHolidayCode, personalGrantDateCode);
 	}
 	
 	@Path("getPerSetByCode/{specialHolidayCode}/{personalGrantDateCode}")
 	@POST
-	public List<GrantDatePerSetDto> getPerSetByCode(@PathParam("specialHolidayCode") String specialHolidayCode, @PathParam("personalGrantDateCode") String personalGrantDateCode) {
+	public List<GrantDatePerSetDto> getPerSetByCode(@PathParam("specialHolidayCode") int specialHolidayCode, @PathParam("personalGrantDateCode") String personalGrantDateCode) {
 		return this.specialHolidayFinder.getPerSetByCode(specialHolidayCode, personalGrantDateCode);
 	}
 	
@@ -132,7 +132,7 @@ public class SpecialHolidayWebService extends WebService{
 	
 	@Path("getAllPerByCode/{specialHolidayCode}")
 	@POST
-	public List<GrantDatePerDto> getAllPerByCode(@PathParam("specialHolidayCode") String specialHolidayCode) {
+	public List<GrantDatePerDto> getAllPerByCode(@PathParam("specialHolidayCode") int specialHolidayCode) {
 		return this.specialHolidayFinder.getAllPerByCode(specialHolidayCode);
 	}
 	

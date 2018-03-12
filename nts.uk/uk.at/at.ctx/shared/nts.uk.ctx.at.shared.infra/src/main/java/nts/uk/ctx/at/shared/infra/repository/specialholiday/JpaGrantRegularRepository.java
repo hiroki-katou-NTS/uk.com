@@ -168,7 +168,7 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 	 * Find all Grant Regular by CompanyId & SpecialHolidayCode
 	 */
 	@Override
-	public List<GrantRegular> findAll(String companyId, String specialHolidayCode) {
+	public List<GrantRegular> findAll(String companyId, int specialHolidayCode) {
 		return this.queryProxy().query(SELECT_ALL, KshstGrantRegular.class).setParameter("companyId", companyId)
 				.setParameter("specialHolidayCode", specialHolidayCode).getList(c -> convertToDomain(c));
 	}
@@ -177,7 +177,7 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 	 * Find all Grant Date Company
 	 */
 	@Override
-	public List<GrantDateCom> findAllCom(String companyId, String specialHolidayCode) {
+	public List<GrantDateCom> findAllCom(String companyId, int specialHolidayCode) {
 		return this.queryProxy().query(SELECT_ALL_COM, KshstGrantDateCom.class).setParameter("companyId", companyId)
 				.setParameter("specialHolidayCode", specialHolidayCode).getList(c -> convertToDomainCom(c));
 	}
@@ -191,13 +191,13 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 	}
 
 	@Override
-	public Optional<GrantDateCom> getComByCode(String companyId, String specialHolidayCode) {
+	public Optional<GrantDateCom> getComByCode(String companyId, int specialHolidayCode) {
 		return this.queryProxy().find(new KshstGrantDateComPK(companyId, specialHolidayCode), KshstGrantDateCom.class)
 				.map(x -> convertToDomainCom(x));
 	}
 
 	@Override
-	public List<GrantDateSet> getSetByCode(String companyId, String specialHolidayCode) {
+	public List<GrantDateSet> getSetByCode(String companyId, int specialHolidayCode) {
 		return this.queryProxy().query(SELECT_ALL_SET, KshstGrantDateSet.class)
 				.setParameter("companyId", companyId)
 				.setParameter("specialHolidayCode", specialHolidayCode)
@@ -224,7 +224,7 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 	}
 
 	@Override
-	public Optional<GrantDatePer> getPerByCode(String companyId, String specialHolidayCode, String personalGrantDateCode) {
+	public Optional<GrantDatePer> getPerByCode(String companyId, int specialHolidayCode, String personalGrantDateCode) {
 		return this.queryProxy().find(new KshstGrantDatePerPK(companyId, specialHolidayCode, personalGrantDateCode), KshstGrantDatePer.class)
 				.map(x -> convertToDomainPer(x));
 	}
@@ -246,7 +246,7 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 	}
 
 	@Override
-	public List<GrantDatePerSet> getPerSetByCode(String companyId, String specialHolidayCode, String personalGrantDateCode) {
+	public List<GrantDatePerSet> getPerSetByCode(String companyId, int specialHolidayCode, String personalGrantDateCode) {
 		return this.queryProxy().query(SELECT_ALL_PER_SET, KshstGrantDatePerSet.class)
 				.setParameter("companyId", companyId)
 				.setParameter("specialHolidayCode", specialHolidayCode)
@@ -337,18 +337,18 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 	}
 
 	@Override
-	public List<GrantDatePer> findAllPer(String companyId, String specialHolidayCode) {
+	public List<GrantDatePer> findAllPer(String companyId, int specialHolidayCode) {
 		return this.queryProxy().query(SELECT_ALL_PER, KshstGrantDatePer.class).setParameter("companyId", companyId)
 				.setParameter("specialHolidayCode", specialHolidayCode).getList(c -> convertToDomainPer(c));
 	}
 
 	@Override
-	public void removePer(String companyId, String specialHolidayCode, String personalGrantDateCode) {
+	public void removePer(String companyId, int specialHolidayCode, String personalGrantDateCode) {
 		this.commandProxy().remove(KshstGrantDatePer.class, new KshstGrantDatePerPK(companyId, specialHolidayCode, personalGrantDateCode));
 	}
 
 	@Override
-	public void removePerSet(String companyId, String specialHolidayCode, String personalGrantDateCode) {
+	public void removePerSet(String companyId, int specialHolidayCode, String personalGrantDateCode) {
 		this.getEntityManager().createQuery(DELETE_ALL_PER_SET_BY_CODES)
 		.setParameter("companyId", companyId)
 		.setParameter("specialHolidayCode", specialHolidayCode)
