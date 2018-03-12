@@ -95,9 +95,9 @@ public class RoleIndividualFinder {
 	}
 	
 	public RoleIndividualGrantMetaDto getCAS012Metadata() {
-		/*LoginUserContext user = AppContexts.user();
+		LoginUserContext user = AppContexts.user();
 		if (!user.roles().have().systemAdmin())
-			return null;*/
+			return null;
 		
 		// Get List Enum RoleType
 		List<EnumConstant> enumRoleType = EnumAdaptor.convertToValueNameList(RoleType.class,  RoleType.SYSTEM_MANAGER, RoleType.COMPANY_MANAGER, RoleType.GROUP_COMAPNY_MANAGER);
