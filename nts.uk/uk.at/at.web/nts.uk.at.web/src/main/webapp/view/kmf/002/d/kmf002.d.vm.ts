@@ -112,7 +112,7 @@ module nts.uk.at.view.kmf002.d {
                 $.when($('#empt-list-setting').ntsListComponent(_self.listComponentOption),
                         service.findAllEmpRegister(_self.commonTableMonthDaySet().fiscalYear())).done(function(data: any, data2: any){
                     _self.catchChangeSelectEmp();
-                    _self.getDataFromService();
+//                    _self.getDataFromService();
                     _.forEach(data2, function(code) {
                         _self.alreadySettingList.push({code: code, isAlreadySetting: true});
                     });
@@ -154,14 +154,15 @@ module nts.uk.at.view.kmf002.d {
                         /** 
                          *   create value null for prepare create new 
                         **/
-                        _.forEach(_self.commonTableMonthDaySet().arrMonth(), function(value: any) {
-                            value.day(0);
-                        });
+                        _self.commonTableMonthDaySet().arrMonth.removeAll();
+                        for (let i=data2.startMonth-1; i<12; i++) {
+                            _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(i+1), 'day': ko.observable(0), 'enable': ko.observable(true)});    
+                        }
+                        for (let i=0; i<data2.startMonth-1; i++) {
+                            _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(i+1), 'day': ko.observable(0), 'enable': ko.observable(true)});    
+                        } 
                         _self.enableDelete(false);
                     } else {
-//                        if (_.isNull(data2.startMonth)) {
-//                            data2.startMonth = 1;
-//                        }
                         _self.commonTableMonthDaySet().arrMonth.removeAll();
                         for (let i=data2.startMonth-1; i<12; i++) {
                             _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 'day': ko.observable(data.publicHolidayMonthSettings[i].inLegalHoliday), 'enable': ko.observable(true)});    

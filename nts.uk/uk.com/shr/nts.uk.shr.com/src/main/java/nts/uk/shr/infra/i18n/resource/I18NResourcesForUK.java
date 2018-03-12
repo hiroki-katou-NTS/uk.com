@@ -91,6 +91,14 @@ public class I18NResourcesForUK implements I18NResources, I18NResourceCustomizer
 		this.resourcesRepository.refreshResource(context.companyId, context.languageId, GeneralDateTime.now());
 	}
 	
+	public String getVersionOfCurrentCompany() {
+		
+		val context = CompanyAndLanguage.createAsLogin();
+		return this.resourcesRepository.getLastUpdatedDateTime(context.companyId, context.languageId)
+				.map(d -> d.toString("yyyyMMdd_hhmmss"))
+				.orElse("0");
+	}
+	
 	public Map<String, String> loadForUserByClassId(String classId) {
 		
 		val context = CompanyAndLanguage.createAsLogin();

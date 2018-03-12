@@ -78,7 +78,7 @@ public class I18NResourcesWebService {
 		}
 		
 		String systemId = "COM";
-		String version = "1";
+		String version = this.i18n.getVersionOfCurrentCompany();
 		
 		EntityTag eTag = createEtag(companyId, languageId, systemId, version);
 		ResponseBuilder responseBuilder = request.evaluatePreconditions(eTag);

@@ -25,7 +25,7 @@
 		<jar-file>lib/nts.uk.ctx.at.shared.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.screen.at.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.query.infra-0.3.1.jar</jar-file>
-		<jar-file>lib/nts.uk.shr.com-0.8.jar</jar-file>
+		<jar-file>lib/nts.uk.shr.com-0.9.1.jar</jar-file>
 		
 		<class>nts.uk.shr.infra.i18n.entity.CompanyResource</class>
 		<class>nts.uk.shr.infra.i18n.entity.SystemResource</class>

@@ -26,10 +26,10 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.LeaveHolidayType;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
@@ -152,8 +152,8 @@ public class EmployeeInDesignatedFinder {
 			EmployeeSearchOutput empData = EmployeeSearchOutput.builder().employeeId(employeeInfo.getEmployeeId())
 					.employeeCode((employeeInfo.getEmployeeCode() == null) ? null : employeeInfo.getEmployeeCode().v())
 					.employeeName((person == null || person.getPersonNameGroup() == null
-							|| (person.getPersonNameGroup().getPersonName() == null)) ? null
-									: person.getPersonNameGroup().getPersonName().getFullName().v())
+							|| (person.getPersonNameGroup().getBusinessName() == null)) ? null
+									: person.getPersonNameGroup().getBusinessName().v())
 					.workplaceId(affWkpHistItem == null || (affWkpHistItem.getWorkplaceId() == null) ? null
 							: affWkpHistItem.getWorkplaceId())
 					.workplaceCode((wkpInfo == null) || (wkpInfo.getWorkplaceCode() == null) ? null

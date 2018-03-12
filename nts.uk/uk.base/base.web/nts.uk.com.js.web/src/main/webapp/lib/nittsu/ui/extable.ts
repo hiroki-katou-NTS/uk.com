@@ -2704,7 +2704,7 @@ module nts.uk.ui.exTable {
                 let structure = [];
                 let structData: string = "";
                 _.forEach(cells, function(cell: any, index: number) {
-                    let rowIndex = cell.rowIndex;
+                    let rowIndex = parseInt(cell.rowIndex);
                     let columnIndex = helper.getDisplayColumnIndex(self.$grid, cell.columnKey);
                     if (index === 0) {
                         minRow = maxRow = rowIndex;
@@ -3082,6 +3082,14 @@ module nts.uk.ui.exTable {
                                 || which(innerIdx, dataType, internal.DURATION)
                                 || which(innerIdx, dataType, internal.NUMBER)
                                 || which(innerIdx, dataType, internal.TEXT);
+                    
+                    let constraints = ui.validation.getConstraint(col.primitiveValue);
+                    if (constraints && constraints.valueType === "Time") {
+                        max = constraints.max ? constraints.max : col.max;
+                        min = constraints.min ? constraints.min : col.min;
+                        required = constraints.required ? constraints.required : col.required;
+                        return false;
+                    }
                     max = col.max;
                     min = col.min;
                     required = col.required;
@@ -3371,9 +3379,9 @@ module nts.uk.ui.exTable {
          * Select range.
          */
         function selectRange($grid: HTMLElement, $cell: HTMLElement) {
-            if (util.isNullOrUndefined($cell)) return;
+            if (util.isNullOrUndefined($cell) || selector.is($cell, "." + BODY_PRF + DETAIL)) return;
             let lastSelected = $.data($grid, internal.LAST_SELECTED);
-            if (!lastSelected) {
+            if (!lastSelected) { 
                 selectCell($grid, $cell);
                 return;
             }
