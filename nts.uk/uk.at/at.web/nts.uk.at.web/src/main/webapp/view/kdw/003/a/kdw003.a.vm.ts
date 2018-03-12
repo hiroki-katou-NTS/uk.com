@@ -119,6 +119,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         listCareError: KnockoutObservableArray<any> = ko.observableArray([]);
         listCareInputError: KnockoutObservableArray<any> = ko.observableArray([]);
         employIdLogin: any;
+        dialogShow: any
 
         constructor() {
             var self = this;
@@ -507,6 +508,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 self.listCareInputError(data[1])
                                // nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
                             }
+                            if (self.dialogShow != undefined || self.dialogShow.$dialog != null) {
+                                self.dialogShow.close();
+                            }
                          self.showErrorDialog();
                         }
                         dfd.resolve();
@@ -520,6 +524,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     nts.uk.ui.block.clear();
                     if (!checkDataCare) {
                        // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                        if (self.dialogShow != undefined || self.dialogShow.$dialog != null) {
+                            self.dialogShow.close();
+                        }
                         self.showErrorDialog();
                     }
                 }
@@ -527,21 +534,21 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
         
         proceedSave() {
-           let errorGrid: any = $("#dpGrid").ntsGrid("errors");
+            let errorGrid: any = $("#dpGrid").ntsGrid("errors");
             let checkDataCare: boolean = true;
             if (errorGrid == undefined || errorGrid.length == 0) {
                 nts.uk.ui.block.invisible();
                 nts.uk.ui.block.grayout();
-                var self = this;
+                var self = this;        
                 self.listCareError([]);
                 self.listCareInputError([])
                 let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
-                let dataSource = $("#dpGrid").igGrid("option", "dataSource");
+                var dataSource = $("#dpGrid").igGrid("option", "dataSource");
                 let dataChangeProcess: any = [];
                 _.each(dataChange, (data: any) => {
                     if (data.columnKey != "sign") {
-                        let dataTemp = _.find(self.dpData, (item: any) => {
-                            return item.id == data.rowId.substring(1, data.rowId.length);
+                        let dataTemp = _.find(dataSource, (item: any) => {
+                            return item.id == data.rowId;
                         });
                         if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
                             if (data.columnKey.indexOf("Name") != -1) {
@@ -551,7 +558,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 // check itemCare 
                                 let groupCare = self.checkItemCare(Number(data.columnKey.substring(1, data.columnKey.length)));
                                 if (groupCare == 0 || groupCare == 1) {
-                                    if (!self.checkErrorData(groupCare, data, dataSource) || self.listCareInputError().length >0) {
+                                    if (self.checkErrorData(groupCare, data, dataSource) == false || self.listCareInputError().length >0) {
                                         checkDataCare = false;
                                     }
                                 }
@@ -593,18 +600,22 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let dfd = $.Deferred();
                     service.addAndUpdate(dataChangeProcess).done((data) => {
                         // alert("done");
-                         if (_.isEmpty(data)) {
+                        dataChange = {};
+                        if (_.isEmpty(data)) {
                             self.btnExtraction_Click();
                         } else {
                             nts.uk.ui.block.clear();
                             if (data[0] != undefined) {
                                 self.listCareError(data[0])
-                                nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
-                            } else  if (data[1] != undefined){
+                               // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                            } else if (data[1] != undefined){
                                 self.listCareInputError(data[1])
-                                nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
+                               // nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
                             }
-                          
+                            if (self.dialogShow != undefined || self.dialogShow.$dialog != null) {
+                                self.dialogShow.close();
+                            }
+                         self.showErrorDialog();
                         }
                         dfd.resolve();
                     }).fail((data) => {
@@ -616,7 +627,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 } else {
                     nts.uk.ui.block.clear();
                     if (!checkDataCare) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                       // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                        if (self.dialogShow != undefined || self.dialogShow.$dialog != null) {
+                            self.dialogShow.close();
+                        }
+                        self.showErrorDialog();
                     }
                 }
             }
@@ -964,8 +979,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             };
             nts.uk.ui.windows.setShared("paramToGetError", param);
             nts.uk.ui.windows.setShared("errorValidate", errorValidateScreeen);
-            nts.uk.ui.windows.sub.modal("/view/kdw/003/b/index.xhtml").onClosed(() => {
-            });
+            self.dialogShow = nts.uk.ui.windows.sub.modeless("/view/kdw/003/b/index.xhtml");
         }
         changeExtractionCondition() {
             var self = this;
