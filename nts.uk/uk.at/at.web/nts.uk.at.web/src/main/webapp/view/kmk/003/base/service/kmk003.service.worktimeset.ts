@@ -31,6 +31,11 @@ module nts.uk.at.view.kmk003.a {
                     note: string;
                 }
 
+                export interface WorkTimeDisplayModeDto {
+                    worktimeCode: string;
+                    displayMode: number;
+                }
+                
                 export interface SimpleWorkTimeSettingDto {
                     worktimeCode: string;
                     workTimeName: string;

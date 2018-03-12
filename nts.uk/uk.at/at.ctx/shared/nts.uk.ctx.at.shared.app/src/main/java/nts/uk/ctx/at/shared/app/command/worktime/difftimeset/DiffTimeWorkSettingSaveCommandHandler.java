@@ -111,7 +111,7 @@ public class DiffTimeWorkSettingSaveCommandHandler extends CommandHandler<DiffTi
 
 		// Check policy
 		this.difftimePolicy.validate(bundledBusinessExceptions, command.toDomainPredetemineTimeSetting(),
-				diffTimeWorkSetting);
+				command.toWorkTimeDisplayMode(), diffTimeWorkSetting);
 
 		// Throw exceptions if exist
 		if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {

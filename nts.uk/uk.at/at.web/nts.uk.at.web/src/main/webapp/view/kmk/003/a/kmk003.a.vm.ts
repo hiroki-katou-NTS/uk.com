@@ -11,6 +11,7 @@ module nts.uk.at.view.kmk003.a {
     import WorkTimeSettingInfoDto = nts.uk.at.view.kmk003.a.service.model.common.WorkTimeSettingInfoDto;
     
     import WorkTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.worktimeset.WorkTimeSettingModel;
+    import WorkTimeDisplayModeModel = nts.uk.at.view.kmk003.a.viewmodel.worktimeset.WorkTimeDisplayModeModel;
     import PredetemineTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.predset.PredetemineTimeSettingModel;
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
     import FixedWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.fixedset.FixedWorkSettingModel;
@@ -131,6 +132,8 @@ module nts.uk.at.view.kmk003.a {
                     { code: TabMode.SIMPLE, name: nts.uk.resource.getText("KMK003_190") },
                     { code: TabMode.DETAIL, name: nts.uk.resource.getText("KMK003_191") }
                 ]);
+                        self.mainSettingModel.displayMode.displayMode(0);
+                        self.mainSettingModel.displayMode.displayMode(1);
 
                 self.useHalfDayOptions = ko.observableArray([
                     { code: true, name: nts.uk.resource.getText("KMK003_49") },
@@ -688,6 +691,7 @@ module nts.uk.at.view.kmk003.a {
         export class MainSettingModel {
             workTimeSetting: WorkTimeSettingModel;
             predetemineTimeSetting: PredetemineTimeSettingModel;
+            displayMode: WorkTimeDisplayModeModel;
             
             //dientx add for common
             commonSetting: WorkTimezoneCommonSetModel;
@@ -706,6 +710,7 @@ module nts.uk.at.view.kmk003.a {
                 
                 this.workTimeSetting = new WorkTimeSettingModel();
                 this.predetemineTimeSetting = new PredetemineTimeSettingModel();
+                this.displayMode = new WorkTimeDisplayModeModel();
                 this.commonSetting = new WorkTimezoneCommonSetModel();
                 this.fixedWorkSetting = new FixedWorkSettingModel();
                 this.flowWorkSetting = new FlowWorkSettingModel();
@@ -770,6 +775,7 @@ module nts.uk.at.view.kmk003.a {
                     addMode: addMode,
                     predseting: _self.predetemineTimeSetting.toDto(),
                     worktimeSetting: _self.workTimeSetting.toDto(),
+                    displayMode: _self.displayMode.toDto(),
                     fixedWorkSetting: _self.fixedWorkSetting.toDto(_self.commonSetting),
                     screenMode: tabMode
                 };
@@ -782,6 +788,7 @@ module nts.uk.at.view.kmk003.a {
                     addMode: addMode,
                     predseting: _self.predetemineTimeSetting.toDto(),
                     worktimeSetting: _self.workTimeSetting.toDto(),
+                    displayMode: _self.displayMode.toDto(),
                     flowWorkSetting: _self.flowWorkSetting.toDto(_self.commonSetting),
                     screenMode: tabMode
                 };
@@ -799,7 +806,8 @@ module nts.uk.at.view.kmk003.a {
                     addMode: addMode,
                     flexWorkSetting: self.flexWorkSetting.toDto(self.commonSetting),
                     predseting: self.predetemineTimeSetting.toDto(),
-                    worktimeSetting: self.workTimeSetting.toDto()
+                    worktimeSetting: self.workTimeSetting.toDto(),
+                    displayMode: self.displayMode.toDto()
                 };
                 return command;
             }
@@ -815,7 +823,8 @@ module nts.uk.at.view.kmk003.a {
                     addMode: addMode,
                     diffTimeWorkSetting: self.diffWorkSetting.toDto(self.commonSetting),
                     predseting: self.predetemineTimeSetting.toDto(),
-                    worktimeSetting: self.workTimeSetting.toDto()
+                    worktimeSetting: self.workTimeSetting.toDto(),
+                    displayMode: self.displayMode.toDto()
                 };
                 return command;
             }

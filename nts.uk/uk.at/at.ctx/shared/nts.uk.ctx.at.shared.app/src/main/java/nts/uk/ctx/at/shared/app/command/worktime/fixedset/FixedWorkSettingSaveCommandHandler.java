@@ -111,7 +111,7 @@ public class FixedWorkSettingSaveCommandHandler extends CommandHandler<FixedWork
 
 		// Check policy
 		this.fixedPolicy.validate(bundledBusinessExceptions, command.toDomainPredetemineTimeSetting(),
-				fixedWorkSetting);
+				command.toWorkTimeDisplayMode(), fixedWorkSetting);
 
 		// Throw exceptions if exist
 		if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {

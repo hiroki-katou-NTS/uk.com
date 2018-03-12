@@ -110,7 +110,8 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 		}
 
 		// Check policy
-		this.flexPolicy.validate(bundledBusinessExceptions, command.toDomainPredetemineTimeSetting(), flexWorkSetting);
+		this.flexPolicy.validate(bundledBusinessExceptions, command.toDomainPredetemineTimeSetting(),
+				command.toWorkTimeDisplayMode(), flexWorkSetting);
 
 		// Throw exceptions if exist
 		if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {

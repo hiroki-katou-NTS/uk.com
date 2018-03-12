@@ -1,5 +1,5 @@
 module nts.uk.at.view.kmk003.a {
-    
+
     export module service {
         export module model {
             export module common {
@@ -264,6 +264,7 @@ module nts.uk.at.view.kmk003.a {
                 export interface WorkTimeCommonDto {
                     predseting: predset.PredetemineTimeSettingDto;
                     worktimeSetting: worktimeset.WorkTimeSettingDto;
+                    displayMode: worktimeset.WorkTimeDisplayModeDto;
                 }
 
                 export interface WorkTimeSettingInfoDto extends WorkTimeCommonDto {
@@ -272,48 +273,48 @@ module nts.uk.at.view.kmk003.a {
                     flowWorkSetting: flowset.FlWorkSettingDto;
                     diffTimeWorkSetting: difftimeset.DiffTimeWorkSettingDto;
                 }
-                
+
                 export interface FixedWorkTimezoneSetDto {
                     lstWorkingTimezone: EmTimeZoneSetDto[];
                     lstOTTimezone: OverTimeOfTimeZoneSetDto[];
                 }
 
                 export interface HolidayCalculationDto {
-                    isCalculate: number;    
+                    isCalculate: number;
                 }
-                
+
                 export interface OverTimeCalcNoBreakDto {
                     calcMethod: number;
                     inLawOT: number;
                     notInLawOT: number;
                 }
-                
+
                 export interface ExceededPredAddVacationCalcDto {
                     calcMethod: number;
                     otFrameNo: number;
                 }
-                
+
                 export interface FixedWorkCalcSettingDto {
                     exceededPredAddVacationCalc: ExceededPredAddVacationCalcDto;
                     overTimeCalcNoBreak: OverTimeCalcNoBreakDto;
                 }
-                
+
                 // Common Enum
                 export enum LateEarlyAtr {
                     LATE,
                     EARLY
-                }               
-                
+                }
+
                 export enum SubHolidayOriginAtr {
                     FROM_OVER_TIME,
                     WORK_DAY_OFF_TIME
                 }
-                
+
                 export enum SubHolTransferSetAtr {
                     SPECIFIED_TIME_SUB_HOL,
                     CERTAIN_TIME_EXC_SUB_HOL
                 }
-                
+
                 export enum WorkSystemAtr {
                     DAY_SHIFT,
                     NIGHT_SHIFT

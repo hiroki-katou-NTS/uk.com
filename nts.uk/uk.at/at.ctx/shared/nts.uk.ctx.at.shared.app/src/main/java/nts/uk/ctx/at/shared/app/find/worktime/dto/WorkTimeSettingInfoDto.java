@@ -12,28 +12,28 @@ import nts.uk.ctx.at.shared.app.find.worktime.fixedset.dto.FixedWorkSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.flexset.dto.FlexWorkSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.flowset.dto.FlWorkSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.PredetemineTimeSettingDto;
+import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeDisplayModeDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeSettingDto;
 
 /**
  * The Class WorkTimeSettingInfoDto.
  */
-
 @Getter
 @Setter
-public class WorkTimeSettingInfoDto extends WorkTimeCommonDto{
+public class WorkTimeSettingInfoDto extends WorkTimeCommonDto {
 
 	/** The flex work setting. */
 	private FlexWorkSettingDto flexWorkSetting;
-	
+
 	/** The fixed work setting. */
 	private FixedWorkSettingDto fixedWorkSetting;
-	
+
 	/** The flow work setting. */
 	private FlWorkSettingDto flowWorkSetting;
-	
+
 	/** The diff time work setting. */
 	private DiffTimeWorkSettingDto diffTimeWorkSetting;
-	
+
 	/**
 	 * @param flexWorkSetting
 	 * @param fixedWorkSetting
@@ -41,9 +41,10 @@ public class WorkTimeSettingInfoDto extends WorkTimeCommonDto{
 	 * @param diffTimeWorkSetting
 	 */
 	public WorkTimeSettingInfoDto(PredetemineTimeSettingDto predseting, WorkTimeSettingDto worktimeSetting,
-			FlexWorkSettingDto flexWorkSetting, FixedWorkSettingDto fixedWorkSetting, FlWorkSettingDto flowWorkSetting,
+			WorkTimeDisplayModeDto displayMode, FlexWorkSettingDto flexWorkSetting,
+			FixedWorkSettingDto fixedWorkSetting, FlWorkSettingDto flowWorkSetting,
 			DiffTimeWorkSettingDto diffTimeWorkSetting) {
-		super(predseting, worktimeSetting);
+		super(predseting, worktimeSetting, displayMode);
 		this.flexWorkSetting = flexWorkSetting;
 		this.fixedWorkSetting = fixedWorkSetting;
 		this.flowWorkSetting = flowWorkSetting;
@@ -56,5 +57,5 @@ public class WorkTimeSettingInfoDto extends WorkTimeCommonDto{
 	public WorkTimeSettingInfoDto() {
 		super();
 	}
-	
+
 }

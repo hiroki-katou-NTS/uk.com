@@ -2,6 +2,7 @@ module nts.uk.at.view.kmk003.a {
     import WorkTimeSettingDto = service.model.worktimeset.WorkTimeSettingDto;
     import WorkTimeDivisionDto = service.model.worktimeset.WorkTimeDivisionDto;
     import WorkTimeDisplayNameDto = service.model.worktimeset.WorkTimeDisplayNameDto;
+    import WorkTimeDisplayModeDto = service.model.worktimeset.WorkTimeDisplayModeDto;
     
     export module viewmodel {
         export module worktimeset {
@@ -66,6 +67,35 @@ module nts.uk.at.view.kmk003.a {
                     this.workTimeSymbol('');    
                 }
             }
+            
+            export class WorkTimeDisplayModeModel {
+                worktimeCode: KnockoutObservable<string>;
+                displayMode: KnockoutObservable<number>;
+                
+                constructor() {
+                    this.worktimeCode = ko.observable('');
+                    this.displayMode = ko.observable(1);
+                }
+
+                updateData(data: WorkTimeDisplayModeDto) {
+                    this.worktimeCode(data.worktimeCode);
+                    this.displayMode(data.displayMode);
+                }
+
+                toDto(): WorkTimeDisplayModeDto {
+                    var dataDTO: WorkTimeDisplayModeDto = {
+                        worktimeCode: this.worktimeCode(),
+                        displayMode: this.displayMode()
+                    };
+                    return dataDTO;
+                }
+                
+                resetData(){
+                    this.worktimeCode('');
+                    this.displayMode(1); 
+                }
+            }
+            
             export class WorkTimeSettingModel {
                 worktimeCode: KnockoutObservable<string>;
                 workTimeDivision: WorkTimeDivisionModel;
