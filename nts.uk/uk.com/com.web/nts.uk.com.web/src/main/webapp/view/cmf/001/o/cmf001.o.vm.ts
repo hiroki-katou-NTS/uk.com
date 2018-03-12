@@ -66,6 +66,8 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     self.selectedConditionLineNumber(0);
                     self.selectedConditionStartLine(0);
                 }
+                self.fileId('');
+                self.fileName('');
             });
 
             $("#grd_Accept").ntsFixedTable({ height: 373 });
@@ -343,7 +345,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             if (timeSet)
                 this.timeFormatSetting = timeSet;
             if (screenSet)
-                this.screenConditionSetting(screenSet);
+                this.screenConditionSetting = screenSet;
         }
 
         private getItemTypeName(typeCd: number): string {

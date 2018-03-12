@@ -34,17 +34,17 @@
 				</table>
 				<table style="width: 100%;" tabindex="-1">
 					<tr>
-						<td rowspan="2" style="width: 360px;">
-							<div class="" style="width: 360px; float: left;">
+						<td rowspan="2" style="width: 400px;">
+							<div class="" style="width: 400px; float: left;">
 								<!--O4_1 条件設定選択(パネル)-->
 								<div tabindex="-1"
-									data-bind="ntsPanel:{width: '320px', height: '464px', direction: 'none', showIcon: true, visible: true}">
+									data-bind="ntsPanel:{width: '360px', height: '434px', direction: 'none', showIcon: true, visible: true}">
 									<div class="valign-center control-group">
 										<!--O4_2 コード/名称-->
 										<div class="pull-left" tabindex="-1"
 											data-bind="ntsFormLabel: {text: '#{i18n.getText('CMF001_438')}'}"></div>
 										<!--O4_3 絞り込み検索-->
-										<div class="pull-left" tabindex="2" style="width: 230px"
+										<div class="pull-left" tabindex="2" style="width: 270px"
 											data-bind="ntsSearchBox: {
 											searchMode: 'filter', 
 											targetKey: 'dispConditionSettingCode', 
@@ -63,7 +63,7 @@
 											showNumbering: true,
 				 							columns: [
 										    	{ headerText: '#{i18n.getText('CMF001_440')}', key: 'dispConditionSettingCode', width: 60, formatter: _.escape },
-										    	{ headerText: '#{i18n.getText('CMF001_441')}', key: 'dispConditionSettingName', width: 220, formatter: _.escape }
+										    	{ headerText: '#{i18n.getText('CMF001_441')}', key: 'dispConditionSettingName', width: 260, formatter: _.escape }
 										    ], 
 											multiple: false,
 											value: selectedConditionCd}">
