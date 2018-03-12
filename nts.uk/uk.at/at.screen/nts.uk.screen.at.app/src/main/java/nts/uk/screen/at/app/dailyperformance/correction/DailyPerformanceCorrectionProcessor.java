@@ -348,22 +348,12 @@ public class DailyPerformanceCorrectionProcessor {
 		System.out.println("time create HashMap: " + (System.currentTimeMillis() - startTime2));
 		start = System.currentTimeMillis();
 		screenDto.markLoginUser();
-		service = Executors.newFixedThreadPool(1);
-		CountDownLatch latch1 = new CountDownLatch(1);
-		// set disable cell
-		service.submit(new Runnable() {
-			@Override
-			public void run() {
-				long start1 = System.currentTimeMillis();
-				screenDto.createAccessModifierCellState(mapDP);
-				screenDto.getLstFixedHeader().forEach(column -> {
-					screenDto.getLstControlDisplayItem().getColumnSettings()
-							.add(new ColumnSetting(column.getKey(), false));
-				});
-				System.out.println("time disable : " + (System.currentTimeMillis() - start1));
-				latch1.countDown();
-			}
+		long start1 = System.currentTimeMillis();
+		screenDto.createAccessModifierCellState(mapDP);
+		screenDto.getLstFixedHeader().forEach(column -> {
+			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
 		});
+		System.out.println("time disable : " + (System.currentTimeMillis() - start1));
 		// set cell data
 		long start2 = System.currentTimeMillis();
 		for (DPDataDto data : screenDto.getLstData()) {
@@ -413,7 +403,6 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 		System.out.println("time get data into cell : " + (System.currentTimeMillis() - start2));
 		screenDto.setLstData(lstData);
-		latch1.await();
 		System.out.println("time add  return : " + (System.currentTimeMillis() - start));
 		System.out.println("All time :" + (System.currentTimeMillis() - timeStart));
 		return screenDto;

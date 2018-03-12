@@ -19,7 +19,7 @@ public class KshstSphdEmploymentPK  implements Serializable{
 	
 	/*特別休暇コード*/
 	@Column(name = "SPHD_CD")
-	public String specialHolidayCode;
+	public int specialHolidayCode;
 	
 	/* 勤務種類コード */
 	@Column(name = "EMP_CD")

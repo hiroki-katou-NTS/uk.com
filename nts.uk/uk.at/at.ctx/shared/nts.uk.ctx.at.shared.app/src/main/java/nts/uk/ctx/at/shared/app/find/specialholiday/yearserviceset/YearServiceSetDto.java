@@ -8,7 +8,7 @@ import lombok.Value;
  */
 @Value
 public class YearServiceSetDto {
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 	private int yearServiceNo;
 	private int year;
 	private int month;

@@ -19,7 +19,7 @@ public class Employment extends DomainObject{
 	/** 勤務種類コード */
 	private String employmentCode;
 	
-	public static Employment createFromJavaType(String companyId, String specialHolidayCode, String employmentCode){
+	public static Employment createFromJavaType(String companyId, int specialHolidayCode, String employmentCode){
 		return new Employment(companyId, new SpecialHolidayCode(specialHolidayCode), employmentCode);
 	}
 	

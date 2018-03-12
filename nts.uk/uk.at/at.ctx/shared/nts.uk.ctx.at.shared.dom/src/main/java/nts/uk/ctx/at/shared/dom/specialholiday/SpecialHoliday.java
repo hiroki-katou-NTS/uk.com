@@ -89,7 +89,7 @@ public class SpecialHoliday extends AggregateRoot {
 	 * @param grantSingle
 	 * @return
 	 */
-	public static SpecialHoliday createFromJavaType(String companyId, String specialHolidayCode,
+	public static SpecialHoliday createFromJavaType(String companyId, int specialHolidayCode,
 			String specialHolidayName, int grantPeriodicCls, String memo, List<String> workTypeList,
 			GrantRegular grantRegular, GrantPeriodic grantPeriodic, SphdLimit sphdLimit, SubCondition subCondition,
 			GrantSingle grantSingle) {

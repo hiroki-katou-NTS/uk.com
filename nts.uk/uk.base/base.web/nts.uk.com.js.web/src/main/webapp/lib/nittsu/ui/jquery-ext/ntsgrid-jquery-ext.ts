@@ -423,6 +423,18 @@ module nts.uk.ui.jqueryExtentions {
             function editStarted(evt: any, ui: any) {
                 let $grid = $(ui.owner.element);
                 let valueType = validation.getValueType($grid, ui.columnKey);
+                if (!evt.currentTarget) {
+                    if (valueType === "TimeWithDay" || valueType === "Clock") {
+                        let $editor = $(ui.editor.find("input")[0]);
+                        $editor.css("text-align", "right");
+                    } else if (valueType === "Currency") {
+                        ui.editor.addClass(updating.INPUT_CURR_SYM);
+                        let $editor = $(ui.editor.find("input")[0]);
+                        $editor.css("text-align", "right");
+                    }
+                    return;
+                }
+                
                 if (!util.isNullOrUndefined(ui.value) && !_.isEmpty(ui.value)) {
                     if (valueType === "TimeWithDay" || valueType === "Clock") {
                         let formatted;
@@ -499,28 +511,37 @@ module nts.uk.ui.jqueryExtentions {
                 if (!utils.isDeleteKey(evt)) {
                     setTimeout(function() {
                         let cellValue;
+                        let char = evt.key === "Subtract" ? "-" : evt.key;
                         let $editor = $targetGrid.igGridUpdating("editorForCell", $(cell.element));
                         if (!util.isNullOrUndefined($editor.data("igTextEditor"))) {
-                            let newText = $editor.igTextEditor("value");
-                            newText = newText.substr(newText.length - 1);
-                            $editor.igTextEditor("value", newText.trim());
+                            $editor.igTextEditor("value", char);
                             let input = $editor.find("input")[0];
                             let len = input.value.length;
-                            input.setSelectionRange(len, len);
-                            cellValue = newText;
-                        } else if (!util.isNullOrUndefined($editor.data("igNumericEditor"))) {
-                            let numericStr = "-";
-                            if (!utils.isMinusSymbol(evt)) {
-                                numericStr = String.fromCharCode(evt.keyCode);
-                                $editor.igNumericEditor("value", parseInt(numericStr));
+                            if ($.ig.util.isChrome || $.ig.util.isSafari) {
+                                setTimeout(function() {
+                                    input.setSelectionRange(len, len);
+                                }, 110);
                             } else {
-                                $editor.igNumericEditor("value", numericStr);
+                                input.setSelectionRange(len, len);
                             }
-                            setTimeout(function() {
+                            cellValue = char;
+                        } else if (!util.isNullOrUndefined($editor.data("igNumericEditor"))) {
+                            cellValue = char;
+                            if (!utils.isMinusSymbol(evt)) {
+                                $editor.igNumericEditor("value", parseInt(cellValue));
+                            } else {
+                                cellValue = "-";
+                                $editor.igNumericEditor("value", cellValue);
+                            }
+                            if ($.ig.util.isChrome || $.ig.util.isSafari) {
+                                setTimeout(function() {
+                                    let length = String($editor.igNumericEditor("value")).length;
+                                    $editor.igNumericEditor("select", length, length); 
+                                }, 110);
+                            } else {
                                 let length = String($editor.igNumericEditor("value")).length;
                                 $editor.igNumericEditor("select", length, length); 
-                            }, 100);
-                            cellValue = numericStr;
+                            }
                         }
                         
                         // Validate
@@ -534,13 +555,14 @@ module nts.uk.ui.jqueryExtentions {
                         if (!result.isValid) {
                             errors.set($targetGrid, cell, result.errorMessage);
                         }
-                    }, 200);
+                    }, 1);
                 } else {
                     setTimeout(function() {
                         let $editor = $targetGrid.igGridUpdating("editorForCell", $(cell.element));
                         $editor.find("input").val("");
-                    }, 200);
+                    }, 1);
                 }
+                evt.preventDefault();
                 evt.stopImmediatePropagation();
             }
             
@@ -613,6 +635,7 @@ module nts.uk.ui.jqueryExtentions {
                             time.minutesBased.clock.dayattr.parseString(String(cellValue)).asMinutes).shortText;
                     } catch(e) {}
                 }
+                let origData = gridUpdate._getLatestValues(rId);
                 grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
                 let isControl = utils.isNtsControl($grid, columnKey);
                 if (!isControl || forceRender) renderCell($grid, rId, columnKey);
@@ -620,7 +643,7 @@ module nts.uk.ui.jqueryExtentions {
                     $grid.trigger(events.Handler.CONTROL_CHANGE, [{ columnKey: columnKey, value: cellValue }]);
                 }
                 gridUpdate._notifyCellUpdated(rId);
-                notifyUpdate($grid, rowId, columnKey, cellValue);
+                notifyUpdate($grid, rowId, columnKey, cellValue, origData);
             }
             
             /**
@@ -633,10 +656,10 @@ module nts.uk.ui.jqueryExtentions {
                 let autoCommit = grid.options.autoCommit;
                 let columnsMap: any = allColumnsMap || utils.getColumnsMap($grid);
                 let rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
-                let origData = gridUpdate._getLatestValues(rId); 
+                let origData = gridUpdate._getLatestValues(rId);
                 grid.dataSource.updateRow(rId, $.extend({}, origData, updatedRowData), autoCommit);
                 _.forEach(Object.keys(updatedRowData), function(key: any) {
-                    notifyUpdate($grid, rowId, key, updatedRowData[key]);
+                    notifyUpdate($grid, rowId, key, updatedRowData[key], origData);
                     let isControl = utils.isNtsControl($grid, key);
                     if (isControl) {
                         $grid.trigger(events.Handler.CONTROL_CHANGE, [{ columnKey: key, value: updatedRowData[key] }]);
@@ -666,7 +689,8 @@ module nts.uk.ui.jqueryExtentions {
             /**
              * Notify update.
              */
-            function notifyUpdate($grid: JQuery, rowId: any, columnKey: any, value: any) {
+            function notifyUpdate($grid: JQuery, rowId: any, columnKey: any, value: any, origData: any) {
+                if (origData && origData[columnKey] === value) return;
                 let updatedCells = $grid.data(internal.UPDATED_CELLS);
                 if (!updatedCells) {
                     $grid.data(internal.UPDATED_CELLS, []);
@@ -2543,7 +2567,9 @@ module nts.uk.ui.jqueryExtentions {
                                 return;
                             }
                         } else {
-                            specialColumn.tryDo(self.$grid, cell, cbData, visibleColumnsMap);
+                            setTimeout(function() {
+                                specialColumn.tryDo(self.$grid, cell, cbData, visibleColumnsMap);
+                            }, 1);
                             if (columnsGroup[columnIndex].dataType === "number") {
                                 updatedRow[columnKey] = parseInt(cbData);
                             } else {
@@ -2693,7 +2719,11 @@ module nts.uk.ui.jqueryExtentions {
                                 cell.index = targetIndex;
                                 cell.row = $gridRow;
                                 cell.rowIndex = $gridRow.data("rowIdx");
-                                specialColumn.tryDo(self.$grid, cell, row[i].trim(), visibleColumnsMap);
+                                (function(i) {
+                                    setTimeout(function() {
+                                        specialColumn.tryDo(self.$grid, cell, row[i].trim(), visibleColumnsMap);
+                                    }, 1);
+                                })(i);
                                 
                                 if (targetColumn.dataType === "number") {
                                     rowData[columnKey] = parseInt(row[i]);

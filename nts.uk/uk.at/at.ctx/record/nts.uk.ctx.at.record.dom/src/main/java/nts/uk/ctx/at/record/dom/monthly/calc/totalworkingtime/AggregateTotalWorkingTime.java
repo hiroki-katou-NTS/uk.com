@@ -105,6 +105,15 @@ public class AggregateTotalWorkingTime {
 		
 		// 所定労働時間を集計する
 		this.prescribedWorkingTime.confirm(datePeriod, attendanceTimeOfDailyMap);
+		
+		// 総労働時間を集計する
+		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.values()) {
+			val ymd = attendanceTimeOfDaily.getYmd();
+			if (!datePeriod.contains(ymd)) continue;
+			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
+			this.totalWorkingTime = this.totalWorkingTime.addMinutes(totalWorkingTime.getTotalTime().v());
+		}
 	}
 	
 	/**
