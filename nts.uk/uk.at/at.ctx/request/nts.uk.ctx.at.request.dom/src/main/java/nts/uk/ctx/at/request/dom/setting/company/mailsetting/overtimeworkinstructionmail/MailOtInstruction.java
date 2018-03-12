@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.setting.company.mailsetting.overtimeworkinstru
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Content;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Subject;
 /**
@@ -21,6 +22,8 @@ public class MailOtInstruction {
 	// 本文
 	private Content content;
 	public static MailOtInstruction createFromJavaType(String companyId, String subject, String content){
-		return new MailOtInstruction(companyId, new Subject(subject), new Content(content));
+		return new MailOtInstruction(companyId, 
+					StringUtil.isNullOrEmpty(subject, true) ? null : new Subject(subject), 
+					StringUtil.isNullOrEmpty(content, true) ? null : new Content(content));
 	}
 }

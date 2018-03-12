@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
@@ -23,9 +24,12 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
+import nts.uk.ctx.pereg.app.find.processor.PeregProcessor;
+import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
@@ -67,6 +71,11 @@ public class RegisterLayoutFinder {
 	@Inject
 
 	private InitDefaultValue initDefaultValue;
+	
+	@Inject
+	private PeregProcessor processor;
+	
+	private final String END_DATE_NAME = "終了日";
 
 	// sonnlb end
 
@@ -107,6 +116,15 @@ public class RegisterLayoutFinder {
 			items = this.getSetItems(command);
 		}
 		setData(items, itemCls, command);
+		
+		itemCls.forEach(classItem -> {
+			if (classItem.getCtgType() == CategoryType.CONTINUOUSHISTORY.value && classItem.getItems().size() == 3) {
+				LayoutPersonInfoValueDto theThirdItem = (LayoutPersonInfoValueDto) classItem.getItems().get(2);
+				if (theThirdItem.getItemName().equals(END_DATE_NAME) && theThirdItem.getValue() == null ) {
+					theThirdItem.setValue(GeneralDate.max());
+				}
+			}
+		});
 
 		return itemCls;
 	}
@@ -195,6 +213,13 @@ public class RegisterLayoutFinder {
 						command.getHireDate(), item.isRequired());
 
 				item.setLstComboBoxValue(comboValues);
+				PerInfoItemDefForLayoutDto dto = new PerInfoItemDefForLayoutDto();
+				dto.setItemTypeState(itemDef.getItemTypeState());
+				dto.setLstComboxBoxValue(comboValues);
+				if(setItem == null) {
+					Object value =  processor.getValue(dto);
+					item.setValue(value);
+				}
 
 			}
 		}

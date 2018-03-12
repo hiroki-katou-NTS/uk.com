@@ -40,10 +40,16 @@ import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.employment.KrcstMonse
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.employment.KrcstMonsetEmpIrgSetl;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.employment.KrcstMonsetEmpIrgSetlPK;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.employment.KrcstMonsetEmpRegExot;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.flex.KrcstMonsetFlxAggr;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.regularandirregular.KrcstMonsetIrgAggr;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.regularandirregular.KrcstMonsetIrgExot;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.regularandirregular.KrcstMonsetIrgSetl;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.regularandirregular.KrcstMonsetRegExot;
 import nts.uk.ctx.at.shared.dom.common.Month;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.KrcstMonsetEmpRegAggr;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.KrcstMonsetEmpRegAggrPK;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.KrcstMonsetRegAggr;
 
 /**
  * リポジトリ実装：雇用月別実績集計設定
@@ -364,6 +370,7 @@ public class JpaAggrSettingMonthlyForEmployment extends JpaRepository implements
 			isNeedPersist = true;
 			entity = new KrcstMonsetEmpRegAggr();
 			entity.PK = key;
+			entity.setValue = new KrcstMonsetRegAggr();
 		}
 		
 		// 登録・更新値の設定
@@ -452,6 +459,7 @@ public class JpaAggrSettingMonthlyForEmployment extends JpaRepository implements
 		if (entity.krcstMonsetEmpRegExot == null){
 			entity.krcstMonsetEmpRegExot = new KrcstMonsetEmpRegExot();
 			entity.krcstMonsetEmpRegExot.PK = key;
+			entity.krcstMonsetEmpRegExot.setValue = new KrcstMonsetRegExot();
 		}
 		val entityRegExot = entity.krcstMonsetEmpRegExot;
 		entityRegExot.setValue.askPremium = (regExcessOutsideTimeSet.isAskPremium() ? 1 : 0);
@@ -546,6 +554,7 @@ public class JpaAggrSettingMonthlyForEmployment extends JpaRepository implements
 		if (entity.krcstMonsetEmpIrgAggr == null){
 			entity.krcstMonsetEmpIrgAggr = new KrcstMonsetEmpIrgAggr();
 			entity.krcstMonsetEmpIrgAggr.PK = key;
+			entity.krcstMonsetEmpIrgAggr.setValue = new KrcstMonsetIrgAggr();
 		}
 		val entityIrgAggr = entity.krcstMonsetEmpIrgAggr;
 		entityIrgAggr.setValue.toOverTimeWithinIrregularCriteria =
@@ -639,6 +648,7 @@ public class JpaAggrSettingMonthlyForEmployment extends JpaRepository implements
 		if (entity.krcstMonsetEmpIrgExot == null){
 			entity.krcstMonsetEmpIrgExot = new KrcstMonsetEmpIrgExot();
 			entity.krcstMonsetEmpIrgExot.PK = key;
+			entity.krcstMonsetEmpIrgExot.setValue = new KrcstMonsetIrgExot();
 		}
 		val entityIrgExot = entity.krcstMonsetEmpIrgExot;
 		entityIrgExot.setValue.exceptLegalHolidayWorkTime =
@@ -729,14 +739,8 @@ public class JpaAggrSettingMonthlyForEmployment extends JpaRepository implements
 		val settlementPeriods = irregularWork.getSettlementPeriod().getSettlementPeriods();
 		if (entity.krcstMonsetEmpIrgSetls == null) entity.krcstMonsetEmpIrgSetls = new ArrayList<>();
 		val entityIrgSetls = entity.krcstMonsetEmpIrgSetls;
-		val itrIrgSetls = entityIrgSetls.iterator();
-		while (itrIrgSetls.hasNext()){
-			val irgSetl = itrIrgSetls.next();
-			if (!settlementPeriods.stream()
-					.filter(c -> c.getStartMonth().v() == irgSetl.PK.startMonth).findFirst().isPresent()){
-				itrIrgSetls.remove();
-			}
-		}
+		entityIrgSetls.removeIf(a -> { return !settlementPeriods.stream()
+				.filter(c -> c.getStartMonth().v() == a.PK.startMonth).findFirst().isPresent(); });
 		for (val settlementPeriod : settlementPeriods){
 			KrcstMonsetEmpIrgSetl entityIrgSetl = new KrcstMonsetEmpIrgSetl();
 			boolean isAddIrgSetl = false;
@@ -751,6 +755,7 @@ public class JpaAggrSettingMonthlyForEmployment extends JpaRepository implements
 						domain.getCompanyId(),
 						domain.getEmploymentCd(),
 						settlementPeriod.getStartMonth().v());
+				entityIrgSetl.setValue = new KrcstMonsetIrgSetl();
 			}
 			entityIrgSetl.setValue.endMonth = settlementPeriod.getEndMonth().v();
 			if (isAddIrgSetl) entityIrgSetls.add(entityIrgSetl);
@@ -766,6 +771,7 @@ public class JpaAggrSettingMonthlyForEmployment extends JpaRepository implements
 		if (entity.krcstMonsetEmpFlxAggr == null){
 			entity.krcstMonsetEmpFlxAggr = new KrcstMonsetEmpFlxAggr();
 			entity.krcstMonsetEmpFlxAggr.PK = key;
+			entity.krcstMonsetEmpFlxAggr.setValue = new KrcstMonsetFlxAggr();
 		}
 		val entityFlxAggr = entity.krcstMonsetEmpFlxAggr;
 		entityFlxAggr.setValue.aggregateMethod = flexWork.getAggregateMethod().value;

@@ -219,7 +219,7 @@ module nts.uk.at.view.kaf005.share {
                 startTime: number,
                 endTime: number,
                 applicationTime: number,
-                nameID: string, color : string) {
+                nameID: string) {
                 this.companyID = ko.observable(companyID);
                 this.appID = ko.observable(appID);
                 this.attendanceID = ko.observable(attendanceID);

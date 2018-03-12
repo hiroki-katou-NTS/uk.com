@@ -9,8 +9,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -46,7 +49,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.primitive.ShowName;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
@@ -64,7 +67,11 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-
+/**
+ * 
+ * @author hoatt
+ *
+ */
 @Stateless
 public class AppListInitialImpl implements AppListInitialRepository{
 
@@ -106,18 +113,18 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	private AgentAdapter agentAdapter;
 	@Inject
 	private AtEmployeeAdapter employeeAdapter;
+	
 	/**
 	 * 0 - 申請一覧事前必須チェック
 	 */
 	@Override
-	public Boolean checkAppPredictRequire(int appType, String wkpID) {
+	public Boolean checkAppPredictRequire(int appType, String wkpID, String companyId) {
 		//申請種類-(Check AppType)
 		if(appType != 0 && appType != 6){//「休出時間申請」又は「残業申請」以外の場合
 			return false;
 		}
 		//「休出時間申請」又は「残業申請」の場合
 		//ドメイン「職場別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by workplace)
-		String companyId = AppContexts.user().companyId();
 		Optional<ApprovalFunctionSetting> appFuncSet = null;
 		appFuncSet = repoRequestWkp.getFunctionSetting(companyId, wkpID, appType);
 		//対象が存在しない場合 - TH doi tuong k ton tai
@@ -156,13 +163,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//ドメインモデル「休暇申請設定」を取得する (Vacation application setting)- YenNTH
 //		Optional<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
 		return appFull;
-	}
-	private List<Integer> lstAppType(List<Application_New> lstApp){
-		List<Integer> lstAppDis = new ArrayList<>();
-		for (Application_New app : lstApp) {
-			
-		}
-		return null;
 	}
 	/**
 	 * 2 - 申請一覧リスト取得申請
@@ -222,14 +222,14 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//imported(申請承認）「稟議書」を取得する - wait
 		//アルゴリズム「申請一覧リスト取得マスタ情報」を実行する(get List App Master Info): 9 - 申請一覧リスト取得マスタ情報
 //		List<AppMasterInfo> lstAppMasterInfo = this.getListAppMasterInfo(lstApp);
-		List<AppMasterInfo> lstAppMasterInfo = this.getListAppMasterInfo(lstAppFilter);
+		List<AppMasterInfo> lstAppMasterInfo = this.getListAppMasterInfo(lstAppFilter, companyId);
 		//申請日付順でソートする
 		
 		// TODO Auto-generated method stub
 		
 		//get status app
 //		List<ApplicationFullOutput> lstAppFull = this.findStatusAPp(lstAppFilter);
-		return new AppListOutPut(lstAppMasterInfo, lstAppFilter, lstAppOt, lstAppGoBack, null, null);// NOTE
+		return new AppListOutPut(lstAppMasterInfo, lstAppFilter, lstAppOt, lstAppGoBack, null, null, null, null, null, null);// NOTE
 	}
 	/**
 	 * 3 - 申請一覧リスト取得承認
@@ -242,9 +242,10 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//ドメインモデル「承認機能設定」を取得する-(Lấy dữ liệu domain 承認機能設定) - wait hoi lai ben nhat
 		// TODO Auto-generated method stub
 		//申請一覧抽出条件.申請表示対象が「部下の申請」が指定-(Check đk lọc)
+		List<String> lstEmployeeIdSub = new ArrayList<>();
 		if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_SUB)){//部下の申請の場合
 			//アルゴリズム「自部門職場と配下の社員をすべて取得する」を実行する - wait request 243
-			List<String> lstEmployeeId = employeeAdapter.getListSid(sID, baseDate);
+			lstEmployeeIdSub = employeeAdapter.getListSid(sID, baseDate);
 		}
 		//申請一覧抽出条件.申請表示対象が「事前通知」または「検討指示」が指定
 		List<Application_New> lstApp = new ArrayList<>();
@@ -259,34 +260,44 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			//ドメインモデル「申請」を取得する-(Lấy dữ liệu domain 申請) - get List App By Reflect
 			lstApp = repoApp.getListAppByReflect(companyId, param.getStartDate(), param.getEndDate());
 			//loc du lieu
+			List<ApplicationFullOutput> lstAppFull = this.mergeAppAndPhase(lstApp, companyId);
 			//条件１： ログイン者の表示対象の基本条件
-			List<Application_New> lstAppFilter1 = lstApp.stream().filter(c -> this.filterConditions1(c)).collect(Collectors.toList());
+			List<ApplicationFullOutput> lstAppFullFil1 = lstAppFull.stream().filter(c -> this.filterConditions1(c, lstAgent, sID)).collect(Collectors.toList());
+//			List<Application_New> lstAppFilter1 = lstApp.stream().filter(c -> this.filterConditions1(c, lstAgent)).collect(Collectors.toList());
+//			List<Application_New> lstAppFilter1 = 
 			//条件2: 申請者の指定条件
-			List<Application_New> lstAppFilter2 = new ArrayList<>();
-			for (Application_New app : lstAppFilter1) {
+			List<ApplicationFullOutput> lstAppFilter2 = new ArrayList<>();
+			for (ApplicationFullOutput app : lstAppFullFil1) {
 				//「全て」の場合
 				if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.ALL_APP)){
 					lstAppFilter2.add(app);
 				}
 				//「自分の申請」の場合
 				if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_MYSELF)){
-					if(app.getEmployeeID().equals(AppContexts.user().employeeId())){
+					if(app.getApplication().getEmployeeID().equals(sID)){
 						lstAppFilter2.add(app);
 					}
 				}
 				//「部下の申請」の場合
 				if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_SUB)){
-					if(app.getEmployeeID().equals(AppContexts.user().employeeId())){
+					if(lstEmployeeIdSub.equals(app.getApplication().getEmployeeID())){
 						lstAppFilter2.add(app);
 					}
 				}
 				//「承認する申請」の場合
+				if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_APPROVED)){
+					lstAppFilter2.add(app);
+				}
 				// TODO Auto-generated method stub
 			}
 			//条件３：承認区分の指定条件
 			List<Application_New> lstAppFilter3 = new ArrayList<>();
-			List<ApplicationFullOutput> lstAppFullFilter3 = this.mergeAppAndPhase(lstAppFilter2);
-			for (ApplicationFullOutput appFull : lstAppFullFilter3) {
+//			List<ApplicationFullOutput> lstAppFullFilter3 = lstAppFilter2;
+			List<ApplicationFullOutput> lstAppFullFilter3 = new ArrayList<>();
+			List<String> lstFrameUn = new ArrayList<>();
+			List<PhaseStatus> lstPhaseStatus = new ArrayList<>();
+//			List<ApplicationFullOutput> lstAppFullFilter3 = this.mergeAppAndPhase(lstAppFilter2);
+			for (ApplicationFullOutput appFull : lstAppFilter2) {
 				ReflectedState_New state = appFull.getApplication().getReflectionInformation().getStateReflectionReal();
 				PhaseFrameStatus status = this.findPhaseFrameStatus(appFull.getLstPhaseState(), sID);
 				boolean check = false;
@@ -294,8 +305,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					continue;
 				}
 				//申請一覧共通設定.承認状況＿未承認がチェックあり(True)の場合 - A4_1_1: check
-				if(param.isUnapprovalStatus() && state.equals(ReflectedState_New.NOTREFLECTED)){
-					if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.REMAND)
+				//「承認する申請」の場合
+				if(param.isUnapprovalStatus() && state.equals(ReflectedState_New.NOTREFLECTED) || param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_APPROVED)){
+					if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
 							&& status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
 						check = true;
 					}
@@ -307,7 +319,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 						check = true;
 					}
 					if(state.equals(ReflectedState_New.NOTREFLECTED) 
-							&& state.equals(ReflectedState_New.REFLECTED)){
+							|| state.equals(ReflectedState_New.REFLECTED)){
 						if((status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED) || status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED))
 								&& status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){
 							check = true;
@@ -319,8 +331,12 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					check = true;
 				}
 				//申請一覧共通設定.承認状況＿代行承認済がチェックあり(True)の場合 - A4_1_4: check
-				if(param.isAgentApprovalStatus()){
-					check = true;
+				if(param.isAgentApprovalStatus()&& (status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED) 
+						|| status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED))){//承認フェーズ.承認区分　＝　未承認または承認済
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)
+							&& Strings.isNotBlank(status.getAgentId()) && !status.getAgentId().equals(sID)){
+						check = true;
+					}
 				}
 				//申請一覧共通設定.承認状況＿差戻がチェックあり(True)の場合 - A4_1_5: check
 				if(param.isRemandStatus() && state.equals(ReflectedState_New.NOTREFLECTED)){
@@ -334,7 +350,18 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					check = true;
 				}
 				if(check){
-					lstAppFilter3.add(appFull.getApplication());
+					//条件 bo sung:
+					int phaseOrderCur = status.getPhaseOrder().intValue();
+					PhaseStatus statusPhase = this.convertStatusPhase(appFull.getApplication().getAppID(), appFull.getLstPhaseState());
+					if(phaseOrderCur == 1 || statusPhase.getPhaseAtr().get(phaseOrderCur -2) == 1){//phase truoc do da approve
+						lstAppFilter3.add(appFull.getApplication());
+						lstAppFullFilter3.add(appFull);
+						if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
+							lstFrameUn.add(appFull.getApplication().getAppID());
+						}
+						
+						lstPhaseStatus.add(statusPhase);
+					}
 				}
 			}
 			//条件５：重複承認の対応条件
@@ -373,28 +400,40 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//imported(申請承認）「稟議書」を取得する - wait request : return list app - tam thoi bo qua
 		// TODO Auto-generated method stub
 		//アルゴリズム「申請一覧リスト取得マスタ情報」を実行する(get List App Master Info): 9 - 申請一覧リスト取得マスタ情報
-		List<AppMasterInfo> lstMaster = this.getListAppMasterInfo(lstAppFilter3);
+		List<AppMasterInfo> lstMaster = this.getListAppMasterInfo(lstAppFilter3, companyId);
 		//アルゴリズム「申請一覧リスト取得実績」を実行する-(get App List Achievement): 5 - 申請一覧リスト取得実績
-		AppListAtrOutput timeOutput = this.getAppListAchievement(lstAppFilter3, displaySet);
+		AppListAtrOutput timeOutput = this.getAppListAchievement(lstAppFullFilter3, displaySet, companyId, sID);
+		//Check appPr exist listFilter??
+//		List<AppPrePostGroup> lstAppGroup = timeOutput.getLstAppGroup();
+//		for (AppPrePostGroup appPrePostGroup : lstAppGroup) {
+//			
+//		}
+		
+		
+		
 		//承認一覧に稟議書リスト追加し、申請日付順に整列する - phu thuoc vao request
 		// TODO Auto-generated method stub
-		return new AppListOutPut(lstMaster, lstAppFilter3, lstAppOt, lstAppGoBack, timeOutput.getAppStatus(), timeOutput.getLstAppFull());
+		return new AppListOutPut(lstMaster, lstAppFilter3, lstAppOt, lstAppGoBack, timeOutput.getAppStatus(),
+				timeOutput.getLstAppFull(), timeOutput.getLstAppColor(), lstFrameUn, lstPhaseStatus, timeOutput.getLstAppGroup());
 	}
+//	private boolean findAppPre(String preAppID){
+//		return true;
+//	}
+	
 	/**
 	 * lam o ui
 	 * 4 - 申請一覧リスト取得承認件数
 	 */
 	@Override
-	public AppInfoStatus countAppListApproval(List<Application_New> lstApp) {
-		String sID = AppContexts.user().employeeId();
+	public AppInfoStatus countAppListApproval(List<ApplicationFullOutput> lstAppFull, String sID) {
 		ApplicationStatus appStatus = new ApplicationStatus(0,0,0,0,0,0);
-		List<ApplicationFullOutput> lstAppFull = mergeAppAndPhase(lstApp);
+//		List<ApplicationFullOutput> lstAppFull = mergeAppAndPhase(lstApp);
 		for (ApplicationFullOutput appFull : lstAppFull) {
-			PhaseFrameStatus status = this.findPhaseFrameStatus(appFull.getLstPhaseState(), AppContexts.user().employeeId());
+			PhaseFrameStatus status = this.findPhaseFrameStatus(appFull.getLstPhaseState(), sID);
 			if(status.getFrameStatus() == null && status.getPhaseStatus() == null){
 				appFull.setStatus(null);
 			}else{
-				int statusApp = this.calApplication(appFull.getApplication().getReflectionInformation().getStateReflection(), status, status.getAgentId());
+				int statusApp = this.calApplication(appFull.getApplication().getReflectionInformation().getStateReflectionReal(), status, status.getAgentId(), sID);
 				appFull.setStatus(statusApp);
 				appFull.setAgentId(status.getAgentId());
 			}
@@ -438,42 +477,90 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * 5 - 申請一覧リスト取得実績
 	 */
 	@Override
-	public AppListAtrOutput getAppListAchievement(List<Application_New> lstApp, ApprovalListDisplaySetting displaySet) {
-		List<Application_New> lstOtPost = lstApp.stream().filter(c -> c.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION))
-				.filter(c->c.getPrePostAtr().equals(PrePostAtr.POSTERIOR))
+	public AppListAtrOutput getAppListAchievement(List<ApplicationFullOutput> lstAppFull, ApprovalListDisplaySetting displaySet, String companyId, String sIDLogin) {
+		List<ApplicationFullOutput> lstOtPost = lstAppFull.stream().filter(c -> c.getApplication().getAppType().equals(ApplicationType.OVER_TIME_APPLICATION))
+				.filter(c->c.getApplication().getPrePostAtr().equals(PrePostAtr.POSTERIOR))
 				.collect(Collectors.toList());
-		List<Application_New> lstBrPost = lstApp.stream().filter(c -> c.getAppType().equals(ApplicationType.BREAK_TIME_APPLICATION))
-				.filter(c->c.getPrePostAtr().equals(PrePostAtr.POSTERIOR)).collect(Collectors.toList());
-		List<Application_New> lstPost = lstOtPost;
-		lstPost.addAll(lstBrPost);
-		List<Application_New> lstDif = lstApp.stream().filter(s -> !lstPost.contains(s)).collect(Collectors.toList());
+		List<ApplicationFullOutput> lstBrPost = lstAppFull.stream().filter(c -> c.getApplication().getAppType().equals(ApplicationType.BREAK_TIME_APPLICATION))
+				.filter(c->c.getApplication().getPrePostAtr().equals(PrePostAtr.POSTERIOR)).collect(Collectors.toList());
+//		List<ApplicationFullOutput> lstPost = lstOtPost;
+//		lstPost.addAll(lstBrPost);
+//		List<Application_New> lstDif = lstApp.stream().filter(s -> !lstPost.contains(s)).collect(Collectors.toList());
+		List<CheckColorTime> lstColorTime = new ArrayList<>();
 		//事後申請で且申請種類が「残業申請」または「休出時間申請」の場合 (Xin sau của xin làm thêm hoặc làm ngày nghỉ)
-		for (Application_New appPost : lstPost) {
-			if(appPost.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)){//残業申請の場合
+		List<AppPrePostGroup> lstAppGroup = new ArrayList<>();
+//		for (ApplicationFullOutput appPost : lstPost) {
+		for (ApplicationFullOutput appPost : lstOtPost) {
+//			if(appPost.getApplication().getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)){//残業申請の場合
 				//承認一覧表示設定.残業の事前申請
+				String appID = appPost.getApplication().getAppID();
+				String sID = appPost.getApplication().getEmployeeID();
+				GeneralDate appDate = appPost.getApplication().getAppDate();
+				AppPrePostGroup group = null;
+				AppOverTimeInfoFull appOtPost = repoAppDetail.getAppOverTimeInfo(companyId, appID);
+				CheckColorTime checkColor = null;
 				if(displaySet.getOtAdvanceDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
 					//ドメインモデル「申請」を取得する
+					List<Application_New> lstAppPre = repoApp.getApp(sID, appDate, PrePostAtr.PREDICT.value, ApplicationType.OVER_TIME_APPLICATION.value);
+					//find master
 					// TODO Auto-generated method stub
+					//find overtime
+					// TODO Auto-generated method stub
+					if(lstAppPre.isEmpty() || lstAppPre.get(0).getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.DENIAL)){
+//						lstColorTime.add(new CheckColorTime(appID, 1));
+						checkColor = new CheckColorTime(appID, 1);
+					}else{
+						AppOverTimeInfoFull appPre = repoAppDetail.getAppOverTimeInfo(companyId, lstAppPre.get(0).getAppID());
+						boolean checkPrePostColor = this.checkPrePostColor(appPre.getLstFrame(), appOtPost.getLstFrame());
+						if(checkPrePostColor){
+							checkColor = new CheckColorTime(appID, 1);
+//							lstColorTime.add(new CheckColorTime(appID, 1));
+						}
+					}
+					if(!lstAppPre.isEmpty()){
+						group = new AppPrePostGroup(lstAppPre.get(0).getAppID(), appID, null);
+					}
 				}
 				//承認一覧表示設定.残業の実績
 				if(displaySet.getOtActualDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
 					//アルゴリズム「申請一覧リスト取得実績残業申請」を実行する-(5.2)
-					this.getAppListAchievementOverTime(appPost.getEmployeeID(), appPost.getAppDate());
-					// TODO Auto-generated method stub
+					List<OverTimeFrame> time = appOtPost.getLstFrame();
+					TimeResultOutput result = this.getAppListAchievementOverTime(sID, appDate, time);
+					if(result.isCheckColor()){
+						if(this.checkExistColor(lstColorTime, appID)){
+							checkColor.setColorAtr(2);
+						}else{
+//							lstColorTime.add(new CheckColorTime(appID, 2));
+							checkColor = new CheckColorTime(appID, 2);
+						}
+						
+					}
+					if(group != null){
+						group.setTime(result.getLstFrameResult());
+					}else{
+						group = new AppPrePostGroup("", appID, result.getLstFrameResult());
+					}
 				}
-			}else{//休出時間申請の場合
-				//承認一覧表示設定.休出の事前申請
-				if(displaySet.getHwAdvanceDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
-					//ドメインモデル「申請」を取得する
-					// TODO Auto-generated method stub
+				if(group != null){
+					lstAppGroup.add(group);
 				}
-				//承認一覧表示設定.休出の実績
-				if(displaySet.getHwActualDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
-					//アルゴリズム「申請一覧リスト取得実績休出申請」を実行する-(5.1))
-//					this.getAppListAchievementBreak(appPost.getEmployeeID(), appPost.getAppDate());
-					// TODO Auto-generated method stub
+				if(checkColor != null){
+					lstColorTime.add(checkColor);
 				}
-			}
+//			}
+//			else{//休出時間申請の場合
+//				//承認一覧表示設定.休出の事前申請
+//				if(displaySet.getHwAdvanceDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
+//					//ドメインモデル「申請」を取得する
+//					// TODO Auto-generated method stub
+//				}
+//				//承認一覧表示設定.休出の実績
+//				if(displaySet.getHwActualDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
+//					//アルゴリズム「申請一覧リスト取得実績休出申請」を実行する-(5.1))
+////					this.getAppListAchievementBreak(appPost.getEmployeeID(), appPost.getAppDate());
+//					// TODO Auto-generated method stub
+//				}
+//			}
 		}
 		//「残業申請」または「休出時間申請」の事後以外の場合 (Không phải xin sau)
 //		for (Application_New appDif : lstDif) {
@@ -485,9 +572,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 //			this.getListAppAbsence(appDif);
 //		}
 		//アルゴリズム「申請一覧リスト取得承認件数」を実行する(countAppListApproval): 4 -   申請一覧リスト取得承認件数
-		AppInfoStatus appStatus = this.countAppListApproval(lstApp);
+		AppInfoStatus appStatus = this.countAppListApproval(lstAppFull, sIDLogin);
 		// TODO Auto-generated method stub
-		return new AppListAtrOutput(appStatus.getLstAppFull(), appStatus.getCount(), appStatus.getCount());
+		return new AppListAtrOutput(appStatus.getLstAppFull(), appStatus.getCount(), lstColorTime, lstAppGroup);
 	}
 	/**
 	 * 5.1 - 申請一覧リスト取得実績休出申請
@@ -505,47 +592,70 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * 5.2 - 申請一覧リスト取得実績残業申請
 	 */
 	@Override
-	public Boolean getAppListAchievementOverTime(String sID, GeneralDate date) {
+	public TimeResultOutput getAppListAchievementOverTime(String sID, GeneralDate date, List<OverTimeFrame> time) {
 		//Imported(申請承認)「勤務実績」を取得する - req #5
 		RecordWorkInfoImport record = recordWkpInfoAdapter.getRecordWorkInfo(sID, date);
-		DailyAttendanceTimeCaculationImport cal = calTime.getCalculation(sID, date, record.getWorkTypeCode(), record.getWorkTimeCode(), 0, 0, 0, 0);
+		DailyAttendanceTimeCaculationImport cal = calTime.getCalculation(sID, date, record.getWorkTypeCode(), record.getWorkTimeCode(),record.getAttendanceStampTimeFirst(), record.getLeaveStampTimeFirst(), 0, 0);
 		//Imported(申請承認)「計算残業時間」を取得する - req #23
-		List<Integer> lstFrameNo = new ArrayList<>();
-		
+		boolean checkColor = false;
+		List<OverTimeFrame> lstFrameResult = new ArrayList<>();
 		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getOverTime().entrySet()){
-			for(Integer i : lstFrameNo){
-				if(i == entry.getKey()){
-				int a =	entry.getValue().getCalTime();
+			for(OverTimeFrame i : time){
+				if(i.getFrameNo() == entry.getKey() && i.getAttendanceType() == 1){
+					int a =	entry.getValue().getCalTime();
+					if(a < i.getApplicationTime()){
+						checkColor = true;
+					}
+					OverTimeFrame frameRes = i;
+					frameRes.setApplicationTime(a);
+					lstFrameResult.add(frameRes);
 				}
 			}
 		}
 		// TODO Auto-generated method stub
 		//Imported(申請承認)「計算休出時間」を取得する - req #23
 		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getHolidayWorkTime().entrySet()){
-			for(Integer i : lstFrameNo){
-				if(i == entry.getKey()){
-				int a =	entry.getValue().getCalTime();
+			for(OverTimeFrame i : time){
+				if(i.getFrameNo() == entry.getKey() && i.getAttendanceType() == 0){
+					int a =	entry.getValue().getCalTime();
+					if(a < i.getApplicationTime()){
+						checkColor = true;
+					}
+					OverTimeFrame frameRes = i;
+					frameRes.setApplicationTime(a);
+					lstFrameResult.add(frameRes);
 				}
 			}
 		}
 		// TODO Auto-generated method stub
 		//Imported(申請承認)「計算加給時間」を取得する - req #23
-		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getBonusPayTime().entrySet()){
-			for(Integer i : lstFrameNo){
-				if(i == entry.getKey()){
-				int a =	entry.getValue().getCalTime();
+		for(Map.Entry<Integer,Integer> entry : cal.getBonusPayTime().entrySet()){
+			for(OverTimeFrame i : time){
+				if(i.getFrameNo() == entry.getKey() && i.getAttendanceType() == 3){
+					int a =	entry.getValue().intValue();
+					if(a < i.getApplicationTime()){
+						checkColor = true;
+					}
+					OverTimeFrame frameRes = i;
+					frameRes.setApplicationTime(a);
+					lstFrameResult.add(frameRes);
 				}
 			}
 		}
-		for(Map.Entry<Integer,TimeWithCalculationImport> entry : cal.getSpecBonusPayTime().entrySet()){
-			for(Integer i : lstFrameNo){
-				if(i == entry.getKey()){
-				int a =	entry.getValue().getCalTime();
+		for(Map.Entry<Integer,Integer> entry : cal.getSpecBonusPayTime().entrySet()){
+			for(OverTimeFrame i : time){
+				if(i.getFrameNo() == entry.getKey() && i.getAttendanceType() == 4){
+					int a =	entry.getValue().intValue();
+					if(a < i.getApplicationTime()){
+						checkColor = true;
+					}
+					OverTimeFrame frameRes = i;
+					frameRes.setApplicationTime(a);
+					lstFrameResult.add(frameRes);
 				}
 			}
 		}
-		// TODO Auto-generated method stub
-		return null;
+		return new TimeResultOutput(checkColor, lstFrameResult);
 	}
 	/**
 	 * 6 - 申請一覧リスト取得振休振出
@@ -566,8 +676,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * 7 - 申請一覧リスト取得打刻取消
 	 */
 	@Override
-	public Boolean getListAppStampIsCancel(Application_New application) {
-		String companyID = AppContexts.user().companyId();
+	public Boolean getListAppStampIsCancel(Application_New application, String companyID) {
 		String applicantID = "";
 		//申請種類-(Check AppType)
 		if(!application.getAppType().equals(ApplicationType.STAMP_APPLICATION)){
@@ -591,8 +700,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * wait - kaf006
 	 */
 	@Override
-	public List<Application_New> getListAppAbsence(Application_New application) {
-		String companyId = AppContexts.user().companyId();
+	public List<Application_New> getListAppAbsence(Application_New application, String companyID) {
 		//申請種類 - check app type
 		if(application.getAppType().equals(ApplicationType.ABSENCE_APPLICATION)){//休暇申請以外の場合
 			
@@ -601,7 +709,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		String relationshipCd = "";
 		// TODO Auto-generated method stub
 		//imported(就業.Shared)「続柄」を取得する
-		repoRelationship.findByCode(companyId, relationshipCd);
+		repoRelationship.findByCode(companyID, relationshipCd);
 		return null;
 	}
 
@@ -609,31 +717,39 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * 9 - 申請一覧リスト取得マスタ情報
 	 */
 	@Override
-	public List<AppMasterInfo> getListAppMasterInfo(List<Application_New> lstApp) {
+	public List<AppMasterInfo> getListAppMasterInfo(List<Application_New> lstApp, String companyId) {
 		//ドメインモデル「申請一覧共通設定」を取得する-(Lấy domain Application list common settings) - wait YenNTH
 		Optional<AppCommonSet> appCommonSet = repoAppCommonSet.find();
+		ShowName displaySet = appCommonSet.get().getShowWkpNameBelong();
 		List<AppMasterInfo> lstAppMasterInfo = new ArrayList<>();
 		//申請一覧リスト　繰返し実行
 		for (Application_New app : lstApp) {
 			//ドメインモデル「申請表示名」より申請表示名称を取得する-(Lấy Application display name) - wait YenNTH
 			Optional<AppDispName> appDispName = repoAppDispName.getDisplay(app.getAppType().value);
 			//アルゴリズム「社員IDから個人社員基本情報を取得」を実行する - req #1
-			String empName = empRequestAdapter.getEmployeeName(app.getEmployeeID());
+			String empName = displaySet.equals(ShowName.SHOW) ? empRequestAdapter.getEmployeeName(app.getEmployeeID()) : "";
 			// TODO Auto-generated method stub
 			//アルゴリズム「社員から職場を取得する」を実行する - req #30
 			WkpHistImport wkp = wkpAdapter.findWkpBySid(app.getEmployeeID(), app.getAppDate());
-			String wkpID = wkp == null ? "" : wkp.getWorkplaceId();
+			String wkpID = "";
+			if(displaySet.equals(ShowName.SHOW) && wkp != null){
+				wkp.getWorkplaceId();
+			}
+//			String wkpID = wkp == null ? "" : wkp.getWorkplaceId();
 			//アルゴリズム「申請一覧事前必須チェック」を実行する- (check App Predict Require): 0 - 申請一覧事前必須チェック
-			Boolean check = this.checkAppPredictRequire(app.getAppType().value, wkpID);
+			Boolean check = this.checkAppPredictRequire(app.getAppType().value, wkpID, companyId);
+			boolean checkAddNote = false;
 			if(check == true){//必須(True)
 				//事前、事後の後ろに#CMM045_101(※)を追加
 				// TODO Auto-generated method stub
+				checkAddNote = true;
 			}
 			String appDispNameStr = "";
 			if(appDispName.isPresent()){
 				appDispNameStr = appDispName.get().getDispName().v();
 			}
-			lstAppMasterInfo.add(new AppMasterInfo(app.getAppID(), app.getAppType().value, appDispNameStr, empName, wkp.getWkpDisplayName()));
+			lstAppMasterInfo.add(new AppMasterInfo(app.getAppID(), app.getAppType().value, appDispNameStr,
+					empName, wkp.getWkpDisplayName(), false, null, checkAddNote, 0));
 		}
 		return lstAppMasterInfo;
 	}
@@ -641,8 +757,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * 12 - 申請一覧初期日付期間
 	 */
 	@Override
-	public DatePeriod getInitialPeriod(String companyId) {
-		String companyID = AppContexts.user().companyId();
+	public DatePeriod getInitialPeriod(String companyID) {
 		//ドメイン「締め」を取得する
 		List<Closure> lstClosure = repoClosure.findAllActive(companyID, UseClassification.UseClass_Use);
 		//list clourse hist
@@ -712,13 +827,24 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * @param lstApp
 	 * @return
 	 */
-	private List<ApplicationFullOutput> mergeAppAndPhase(List<Application_New> lstApp){
-		String companyID = AppContexts.user().companyId();
+	private List<ApplicationFullOutput> mergeAppAndPhase(List<Application_New> lstApp, String companyID){
 		List<ApplicationFullOutput> lstAppFull = new ArrayList<>();
-		for (Application_New app : lstApp) {
-			List<ApprovalPhaseStateImport_New> lstPhase = approvalRootStateAdapter.getApprovalRootContent(companyID, 
-					app.getEmployeeID(), app.getAppType().value, app.getAppDate(), app.getAppID(), false).getApprovalRootState().getListApprovalPhaseState();
-			lstAppFull.add(new ApplicationFullOutput(app, lstPhase,-1,""));
+		List<String> appIDs = lstApp.stream().map(x -> x.getAppID()).collect(Collectors.toList());
+//		for (Application_New app : lstApp) {
+//			List<ApprovalPhaseStateImport_New> lstPhase = approvalRootStateAdapter.getApprovalRootContent(companyID, 
+//					app.getEmployeeID(), app.getAppType().value, app.getAppDate(), app.getAppID(), false).getApprovalRootState().getListApprovalPhaseState();
+//			lstAppFull.add(new ApplicationFullOutput(app, lstPhase,-1,""));
+//		}
+		if(!CollectionUtil.isEmpty(appIDs)){
+			Map<String,List<ApprovalPhaseStateImport_New>> approvalRootContentImport_News = approvalRootStateAdapter.getApprovalRootContents(appIDs, companyID);
+			for(Map.Entry<String,List<ApprovalPhaseStateImport_New>> entry : approvalRootContentImport_News.entrySet()){
+				for (Application_New app : lstApp) {
+					if(entry.getKey().equals(app.getAppID())){
+						lstAppFull.add(new ApplicationFullOutput(app, entry.getValue(),-1,""));
+					}
+				}
+				
+			}
 		}
 		return lstAppFull;
 	}
@@ -733,8 +859,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		for (ApprovalPhaseStateImport_New appPhase : lstPhase) {
 			FrameOutput frame = this.checkPhaseCurrent(appPhase, sID);
 			if(frame.getFrameStatus() != null){
+				status.setPhaseOrder(appPhase.getPhaseOrder());
 				status.setFrameStatus(EnumAdaptor.valueOf(frame.getFrameStatus(), ApprovalBehaviorAtrImport_New.class));
-				status.setPhaseStatus(appPhase.getApprovalAtr_Enum());
+				status.setPhaseStatus(appPhase.getApprovalAtr());
 				status.setAgentId(frame.getAgentId());
 				break;
 			}
@@ -754,7 +881,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		FrameOutput statusFrame = new FrameOutput();
 		for (ApprovalFrameImport_New frame : lstFrame) {
 			if(this.checkExistEmp(frame.getListApprover(), sID)){
-				statusFrame.setFrameStatus(frame.getApprovalAtr_Enum().value);
+				statusFrame.setFrameStatus(frame.getApprovalAtr().value);
 				statusFrame.setAgentId(frame.getRepresenterID());
 				break;
 			}
@@ -777,17 +904,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		return check;
 	}
-//	private List<ApplicationFullOutput> findStatusAPp(List<Application_New> lstApp){
-//		List<ApplicationFullOutput> lstAppFull = mergeAppAndPhase(lstApp);
-//		for (ApplicationFullOutput appFull : lstAppFull) {
-//			PhaseFrameStatus status = this.findPhaseFrameStatus(appFull.getLstPhaseState(), AppContexts.user().employeeId());
-//			int statusApp = this.calApplication(appFull.getApplication().getReflectionInformation().getStateReflection(), status, status.getAgentId());
-//			appFull.setStatus(statusApp);
-//			appFull.setAgentId(status.getAgentId());
-//		}
-//		return lstAppFull;
-//	}
-	
 	/**
 	 * calculate status of application
 	 * @param appStatus
@@ -795,8 +911,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * @param agentId
 	 * @return
 	 */
-	private int calApplication(ReflectedState_New appStatus, PhaseFrameStatus status, String agentId){
-		String sIdLogin = AppContexts.user().employeeId();
+	private int calApplication(ReflectedState_New appStatus, PhaseFrameStatus status, String agentId, String sIdLogin){
 		if(agentId != null){//※ログイン者　　＝代行者の場合
 			if(agentId.equals(sIdLogin)){
 				return this.calAppAgent(appStatus, status);
@@ -1021,23 +1136,27 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				return 0;
 		}
 	}
-	
-	private boolean filterConditions1(Application_New app){
+	/**
+	 * 条件１： ログイン者の表示対象の基本条件 (filter application by conditions 1)
+	 * @param app
+	 * @return
+	 */
+	private boolean filterConditions1(ApplicationFullOutput app, List<AgentDataRequestPubImport> lstAgent, String sID){
 		//dk1
-		String companyID = AppContexts.user().companyId();
-		List<ApprovalPhaseStateImport_New> lstPhase = approvalRootStateAdapter.getApprovalRootContent(companyID, 
-				app.getEmployeeID(), app.getAppType().value, app.getAppDate(), app.getAppID(), false).getApprovalRootState().getListApprovalPhaseState();
+//		List<ApprovalPhaseStateImport_New> lstPhase = approvalRootStateAdapter.getApprovalRootContent(companyID, 
+//				app.getEmployeeID(), app.getAppType().value, app.getAppDate(), app.getAppID(), false).getApprovalRootState().getListApprovalPhaseState();
+		List<ApprovalPhaseStateImport_New> lstPhase = app.getLstPhaseState();
 		boolean check = false;
 		for (ApprovalPhaseStateImport_New appPhase : lstPhase) {
 			for (ApprovalFrameImport_New frame : appPhase.getListApprovalFrame()) {
 				//承認枠.承認区分!=未承認 
-				if(frame.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
-					if(this.checkDifNotAppv(frame)){
+				if(!frame.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
+					if(this.checkDifNotAppv(frame, sID)){
 						check = true;
 						break;
 					}
 				}else{
-					if(this.checkNotAppv(frame)){
+					if(this.checkNotAppv(frame, lstAgent, appPhase.getApprovalAtr(), app.getApplication(), sID)){
 						check = true;
 						break;
 					}
@@ -1047,13 +1166,17 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		return check;
 	}
-	
-	private boolean checkDifNotAppv(ApprovalFrameImport_New frame){
-		String sID = AppContexts.user().employeeId();
-		if(frame.getApproverID().equals(sID)){
+	/**
+	 * 承認枠.承認区分!=未承認 
+	 * @param frame
+	 * @return
+	 */
+	private boolean checkDifNotAppv(ApprovalFrameImport_New frame, String sID){
+		
+		if(Strings.isNotBlank(frame.getApproverID())&& frame.getApproverID().equals(sID)){
 			return true;
 		}
-		if(frame.getRepresenterID().equals(sID)){
+		if(Strings.isNotBlank(frame.getRepresenterID())&& frame.getRepresenterID().equals(sID)){
 			return true;
 		}
 		if(this.checkExistEmp(frame.getListApprover(), sID)){
@@ -1061,20 +1184,117 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		return false;
 	}
-	private boolean checkNotAppv(ApprovalFrameImport_New frame){
-		String sID = AppContexts.user().employeeId();
-		if(this.checkExistEmp(frame.getListApprover(), sID)){
+	/**
+	 * 承認枠.承認区分 = 未承認 
+	 * @param frame
+	 * @return
+	 */
+	private boolean checkNotAppv(ApprovalFrameImport_New frame, List<AgentDataRequestPubImport> lstAgent,
+			ApprovalBehaviorAtrImport_New phaseAtr, Application_New app, String sID){
+		//※前提条件：「申請.反映情報　＝　未反映」且　「自身の承認フェーズ　＝　未承認/差し戻し」の場合
+		if(!app.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.NOTREFLECTED) || (!phaseAtr.equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)
+				&& !phaseAtr.equals(ApprovalBehaviorAtrImport_New.REMAND))){
+			return false;
+		}
+		//１．承認予定者より取得（自身が承認する申請）
+		if(this.checkExistEmp(frame.getListApprover(), sID)){//承認枠.承認者リスト(複数ID)　＝ログイン者社員ID
+			return true;
+		}
+		//２．取得したドメイン「代行者管理」より代理者指定されている場合は取得
+		//申請.申請日付　＝　代行者管理：代行承認.代行依頼期間 &&承認枠.承認者リスト（複数ID）＝　代行者管理：代行承認.代行依頼者\
+		List<String> lstId = new ArrayList<>();
+		for(AgentDataRequestPubImport agent : lstAgent){
+			if(agent.getStartDate().beforeOrEquals(app.getAppDate()) && agent.getEndDate().equals(app.getAppDate())
+					&& this.checkExistEmp(frame.getListApprover(), agent.getAgentSid1())){
+				lstId.add(agent.getAgentSid1());
+			}
+		}
+//		List<AgentDataRequestPubImport> lstAgentFilter = lstAgent.stream()
+//				.filter(c -> c.getStartDate().beforeOrEquals(app.getAppDate()) && c.getEndDate().equals(app.getAppDate()) && this.checkExistEmp(frame.getListApprover(), c.getAgentSid1()))
+//				.collect(Collectors.toList());
+//		 lstId = lstAgentFilter.stream().map(c -> c.getAgentSid1()).collect(Collectors.toList());
+		if(lstId.contains(sID)){//代行承認.承認代行者　＝　ログイン者社員ID
 			return true;
 		}
 		return false;
 	}
-
-	private boolean filterConditions3(int approvalAtr){
-		//dk3
-		return true;
+	/**
+	 * convert status phase
+	 * －：承認フェーズ.承認区分　＝　未承認
+	 * 〇：承認フェーズ.承認区分　＝　承認済
+	 * ×：承認フェーズ.承認区分　＝　否認
+	 * @param appId
+	 * @param lstPhaseState
+	 * @return
+	 */
+	private PhaseStatus convertStatusPhase(String appId, List<ApprovalPhaseStateImport_New> lstPhaseState){
+		String phaseStatus = "";
+		List<Integer> lstPhaseAtr = new ArrayList<>();
+		for (int i = 1; i<= 5; i++) {
+			String phaseI = "";
+			Integer status = this.findPhaseStatus(lstPhaseState, i);
+			lstPhaseAtr.add(status);
+			if(status != null){//phase exist
+				phaseI = status == 1 ? "〇" : status == 2 ? "×" : "－";
+			}
+			phaseStatus += phaseI;
+		}
+		return new PhaseStatus(appId, phaseStatus, lstPhaseAtr);
 	}
-	private boolean filterConditions4(int approvalAtr){
-		//dk4
-		return true;
+	/**
+	 * find phase status
+	 * @param lstPhaseState
+	 * @param order
+	 * @return
+	 */
+	private Integer findPhaseStatus(List<ApprovalPhaseStateImport_New> lstPhaseState, int order){
+		for (ApprovalPhaseStateImport_New phase : lstPhaseState) {
+			if(phase.getPhaseOrder().equals(order)){
+				return phase.getApprovalAtr().value;
+			}
+		}
+		return null;
+	}
+	/**
+	 * check color application exist list check???
+	 * @param lstColor
+	 * @param appId
+	 * @return
+	 */
+	private boolean checkExistColor(List<CheckColorTime> lstColor, String appId){
+		for (CheckColorTime checkColorTime : lstColor) {
+			if(checkColorTime.getAppID().equals(appId)){
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * check time pr < time post
+	 * @param timePre
+	 * @param timePost
+	 * @return
+	 */
+	private boolean checkPrePostColor(List<OverTimeFrame> timePre, List<OverTimeFrame> timePost){
+		for (OverTimeFrame overTimeFrame : timePost) {
+			if(overTimeFrame.getApplicationTime() < this.findTimePre(timePre, overTimeFrame.getFrameNo())){
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * find time application pre
+	 * @param lstFrame
+	 * @param frameNo
+	 * @return
+	 */
+	private Integer findTimePre(List<OverTimeFrame> lstFrame, int frameNo){
+		for (OverTimeFrame overTimeFrame : lstFrame) {
+			if(overTimeFrame.getFrameNo() == frameNo){
+				return overTimeFrame.getApplicationTime();
+			}
+		}
+		return null;
 	}
 }

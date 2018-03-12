@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -22,6 +23,11 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.ExtractionPeriodUnit;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfPublicHoliday;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHoliday;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayManagementStartDate;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySetting;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -32,6 +38,10 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 	private AlarmPatternSettingRepository alarmRepo;
 	@Inject
 	private ClosureService closureService;
+	@Inject
+	private PublicHolidaySettingRepository publicHolidaySettingRepo; 
+	
+	
 
 	@Override
 	public List<CheckConditionTimeDto> getPeriodByCategory(String alarmCode, String companyId, int closureId,
@@ -46,7 +56,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				result.add(daily);
 			} else if (c.getAlarmCategory() == AlarmCategory.SCHEDULE_4WEEK) {
 
-				CheckConditionTimeDto schedual_4week = this.get4WeekTime(c, closureId, new YearMonth(processingYm));
+				CheckConditionTimeDto schedual_4week = this.get4WeekTime(c, closureId, new YearMonth(processingYm), companyId);
 				result.add(schedual_4week);
 			} else if(c.getAlarmCategory() == AlarmCategory.MONTHLY) {
 				CheckConditionTimeDto other = new CheckConditionTimeDto(c.getAlarmCategory().value,
@@ -97,20 +107,32 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				formatter.format(endDate), null, null);
 	}
 
-	public CheckConditionTimeDto get4WeekTime(CheckCondition c, int closureId, YearMonth yearMonth) {
+	public CheckConditionTimeDto get4WeekTime(CheckCondition c, int closureId, YearMonth yearMonth, String companyId) {
 		LocalDate sDate = null;
 		LocalDate eDate = null;
 
 		ExtractionPeriodUnit periodUnit = (ExtractionPeriodUnit) c.getExtractPeriod();
-
+		
+		LocalDate countingDate;
+		boolean isYMD;
+		
 		// Get from PublicHolidaySetting domain
-		LocalDate countingDate = LocalDate.of(2010, 1, 1);
-		boolean isYMD = true;
-
+		Optional<PublicHolidaySetting> publicHolidaySettingOpt = publicHolidaySettingRepo.findByCID(companyId);
+		if (!publicHolidaySettingOpt.isPresent())
+			throw new RuntimeException("「公休設定」ドメインが見つかりません！");
+		PublicHoliday publicHoliday = (PublicHoliday) publicHolidaySettingOpt.get().getPublicHdManagementStartDate();
+		if (publicHoliday.getDetermineStartDate() == DayOfPublicHoliday.DESIGNATE_BY_YEAR_MONTH_DAY) {
+			countingDate= publicHoliday.getDate().localDate();
+			isYMD = true;
+		}else {			
+			String dayMonth= publicHoliday.getDayMonth().toString();
+			if(dayMonth.length()<4) dayMonth ="0" +dayMonth;
+			countingDate = LocalDate.of(LocalDate.now().getYear(), Integer.valueOf(dayMonth.substring(0, 2)).intValue(),
+					Integer.valueOf(dayMonth.substring(2, 4)).intValue());
+			isYMD= false;
+		}
+		LocalDate currentDate = LocalDate.now();
 		if (isYMD) {
-
-			LocalDate currentDate = LocalDate.now();
-
 			long totalDays = ChronoUnit.DAYS.between(countingDate, currentDate);
 			long index = totalDays / 28;
 
@@ -131,9 +153,6 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 			eDate = sDate.plusDays(27);
 
 		} else {
-			countingDate = LocalDate.of(2018, 1, 1);
-			LocalDate currentDate = LocalDate.now();
-
 			long totalDays = ChronoUnit.DAYS.between(countingDate, currentDate);
 			long index = totalDays / 28;
 

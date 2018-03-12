@@ -11,6 +11,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.AppTypeBfCommand;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.ApprovalListAppCommand;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.ApprovalListAppCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.UpdateAppTypeBfCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListExtractConditionDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfDto;
@@ -36,6 +38,9 @@ public class ApplicationListWebservice extends WebService{
 	
 	@Inject
 	private UpdateAppTypeBfCommandHandler update;
+	
+	@Inject
+	private ApprovalListAppCommandHandler approvalListApp;
 	
 	@POST
 	/**
@@ -78,5 +83,14 @@ public class ApplicationListWebservice extends WebService{
 	@Path("get/appdisplayatr")
 	public List<EnumConstant> getListAppDisplayAtr() {
 		return EnumAdaptor.convertToValueNameList(ApplicationDisplayAtr.class);
+	}
+	/**
+	 * approval list application
+	 * @param command
+	 */
+	@POST
+	@Path("approval")
+	public void approvalListApp(List<ApprovalListAppCommand> command){
+		approvalListApp.handle(command);
 	}
 }

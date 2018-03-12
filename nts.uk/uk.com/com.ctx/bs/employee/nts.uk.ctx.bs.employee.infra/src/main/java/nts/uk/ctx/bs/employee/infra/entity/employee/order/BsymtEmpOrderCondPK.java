@@ -32,7 +32,7 @@ public class BsymtEmpOrderCondPK implements Serializable {
 	private Integer no;
 
 	/** The search type. */
-	@Column(name = "SEARCH_TYPE")
+	@Column(name = "SYSTEM_TYPE")
 	private Integer searchType;
 
 	/** The order type. */

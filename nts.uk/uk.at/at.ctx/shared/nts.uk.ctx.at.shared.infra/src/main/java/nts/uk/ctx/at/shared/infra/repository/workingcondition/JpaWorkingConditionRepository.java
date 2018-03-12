@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
@@ -200,13 +200,24 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 		List<KshmtWorkingCond> entities = this.findBy(workingCondition.getCompanyId(), workingCondition.getEmployeeId(),
 		null);
 		
-		List<KshmtWorkingCond> newWorkingCondition = entities;
+		List<KshmtWorkingCond> newWorkingCondition = new ArrayList<>(entities);
 
 		workingCondition.saveToMemento(new JpaWorkingConditionSetMemento(newWorkingCondition));
 		
-//		this.add(newWorkingCondition.stream().filter(item ->  !entities.contains(item)).collect(Collectors.toList()));
-
-		this.update(newWorkingCondition);
+		this.add(newWorkingCondition.stream()
+				.filter(item -> {
+					int index = entities.indexOf(item);
+					if (index == -1) {
+						return true;
+					}				
+					
+					KshmtWorkingCond oldItem = entities.get(index);
+					if (oldItem.getStrD().equals(item.getStrD()) && oldItem.getEndD().equals(item.getEndD())) {
+						return false;
+					}
+					return true;
+				})
+				.collect(Collectors.toList()));
 		
 		this.deleteAll(entities.stream().filter(item ->  !newWorkingCondition.contains(item)).collect(Collectors.toList()));
 	}
@@ -276,6 +287,52 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 		TypedQuery<KshmtWorkingCond> query = em.createQuery(cq);
 
 		return query.getResultList();
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository
+	 * #getBySidAndStandardDate(java.lang.String, java.lang.String, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public Optional<WorkingCondition> getBySidAndStandardDate(String companyId, String employeeId,
+			GeneralDate baseDate) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<KshmtWorkingCond> cq = criteriaBuilder.createQuery(KshmtWorkingCond.class);
+
+		// root data
+		Root<KshmtWorkingCond> root = cq.from(KshmtWorkingCond.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// eq company id
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KshmtWorkingCond_.cid), companyId));
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KshmtWorkingCond_.kshmtWorkingCondPK).get(KshmtWorkingCondPK_.sid), employeeId));
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(root.get(KshmtWorkingCond_.strD), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KshmtWorkingCond_.endD), baseDate));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// creat query
+		TypedQuery<KshmtWorkingCond> query = em.createQuery(cq);
+
+		List<KshmtWorkingCond> result = query.getResultList();
+
+		// Check exist
+		if (CollectionUtil.isEmpty(result)) {
+			return Optional.empty();
+		}
+
+		return Optional.of(new WorkingCondition(new JpaWorkingConditionGetMemento(result)));
 	}
 
 }

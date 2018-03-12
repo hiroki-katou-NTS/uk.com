@@ -56,19 +56,19 @@ public class AppOverTime extends AggregateRoot{
 	/**
 	 * 勤務時間From1
 	 */
-	private int workClockFrom1;
+	private Integer workClockFrom1;
 	/**
 	 * 勤務時間To1
 	 */
-	private int workClockTo1;
+	private Integer workClockTo1;
 	/**
 	 * 勤務時間From2
 	 */
-	private int workClockFrom2;
+	private Integer workClockFrom2;
 	/**
 	 * 勤務時間To2
 	 */
-	private int workClockTo2;
+	private Integer workClockTo2;
 	/**
 	 * 乖離定型理由
 	 */
@@ -87,10 +87,10 @@ public class AppOverTime extends AggregateRoot{
 						int overTimeAtr,
 						String workTypeCode, 
 						String siftCode, 
-						int workClockFrom1,
-						int workClockTo1,
-						int workClockFrom2,
-						int workClockTo2,
+						Integer workClockFrom1,
+						Integer workClockTo1,
+						Integer workClockFrom2,
+						Integer workClockTo2,
 						String divergenceReason,
 						int flexExessTime,
 						int overTimeShiftNight){
@@ -113,10 +113,10 @@ public class AppOverTime extends AggregateRoot{
 														int overTimeAtr,
 														String workTypeCode, 
 														String siftCode, 
-														int workClockFrom1,
-														int workClockTo1,
-														int workClockFrom2,
-														int workClockTo2,
+														Integer workClockFrom1,
+														Integer workClockTo1,
+														Integer workClockFrom2,
+														Integer workClockTo2,
 														String divergenceReason,
 														int flexExessTime,
 														int overTimeShiftNight ){

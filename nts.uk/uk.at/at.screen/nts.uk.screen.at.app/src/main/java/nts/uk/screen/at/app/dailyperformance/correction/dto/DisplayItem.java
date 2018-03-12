@@ -20,7 +20,7 @@ public class DisplayItem {
 	
 	private List<Integer> lstAtdItemUnique; 
 	
-	private List<String> lstBusinessTypeCode;
+	private List<DPBusinessTypeControl> lstBusinessTypeCode;
 	
 	private int bussiness;
 	

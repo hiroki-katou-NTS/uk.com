@@ -1,14 +1,17 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.workflow;
 
 import java.util.List;
+import java.util.Map;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApprovedImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverPersonImport;
 
 public interface ApprovalRootStateAdapter {
+	public Map<String,List<ApprovalPhaseStateImport_New>> getApprovalRootContents(List<String> appIDs,String companyID);
 	
 	public ApprovalRootContentImport_New getApprovalRootContent(String companyID, String employeeID, Integer appTypeValue, GeneralDate appDate, String appID, Boolean isCreate);
 	
@@ -38,5 +41,9 @@ public interface ApprovalRootStateAdapter {
 	public Boolean judgmentTargetPersonIsApprover(String companyID, String rootStateID, String employeeID);
 	
 	public ApproverPersonImport judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID);
+	
+	public List<String> doRemandForApprover(String companyID, String rootStateID, Integer order);
+
+	public void doRemandForApplicant(String companyID, String rootStateID);
 	
 }

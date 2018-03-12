@@ -22,7 +22,7 @@ public class FlowMenu extends TopPagePart {
 
 	/** DefaultClassificationAtribute */
 	private DefClassAtr defClassAtr;
-
+	
 	/** All Agrs constructor */
 	public FlowMenu(String companyID, String toppagePartID,
 			TopPagePartCode code, TopPagePartName name,
@@ -31,18 +31,20 @@ public class FlowMenu extends TopPagePart {
 		super(companyID, toppagePartID, code, name, type, size);
 		this.fileID = fileID;
 		this.defClassAtr = defClassAtr;
+		
 	}
 	
 	/** Create from Java type */
 	public static FlowMenu createFromJavaType(String companyID, String toppagePartID,
 			String code, String name,
 			int type, int width, int height,
-			String fileID,  int defClassAtr) {
-		return new FlowMenu(companyID, toppagePartID,
+			String fileID,  int defClassAtr ) {
+		return new FlowMenu(companyID, toppagePartID, 
 			new TopPagePartCode(code), new TopPagePartName(name),
 			EnumAdaptor.valueOf(type, TopPagePartType.class), Size.createFromJavaType(width, height),
 			fileID,
-			EnumAdaptor.valueOf(defClassAtr, DefClassAtr.class)
+			EnumAdaptor.valueOf(defClassAtr, DefClassAtr.class
+			)
 		);
 	}
 

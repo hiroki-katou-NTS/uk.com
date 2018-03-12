@@ -8,5 +8,18 @@ import java.util.List;
  *
  */
 public interface WorkScheduleStateRepository {
+	/**
+	 * find all data of WorkScheduleState
+	 * 
+	 * @return List WorkScheduleState
+	 */
 	public List<WorkScheduleState> findAll();
+
+	/**
+	 * update ScheduleEditState
+	 * 
+	 * @param domain
+	 * @return
+	 */
+	public void updateScheduleEditState(WorkScheduleState domain);
 }

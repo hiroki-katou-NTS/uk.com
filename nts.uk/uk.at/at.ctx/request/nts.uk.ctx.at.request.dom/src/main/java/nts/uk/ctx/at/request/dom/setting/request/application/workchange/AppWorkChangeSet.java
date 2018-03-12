@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.setting.request.application.comment.CommentContent;
 import nts.uk.ctx.at.request.dom.setting.request.application.comment.CommentFontColor;
 import nts.uk.ctx.at.request.dom.setting.request.application.comment.FontWeightFlg;
@@ -74,9 +75,11 @@ public class AppWorkChangeSet extends AggregateRoot {
 			int displayResultAtr, int initDisplayWorktime, String commentContent1, int commentFontWeight1,
 			String commentFontColor1, String commentContent2, int commentFontWeight2, String commentFontColor2) {
 		return new AppWorkChangeSet(cid, excludeHoliday, workChangeTimeAtr, displayResultAtr,
-				EnumAdaptor.valueOf(displayResultAtr, InitDisplayWorktimeAtr.class),
-				new CommentContent(commentContent1), EnumAdaptor.valueOf(commentFontWeight1, FontWeightFlg.class),
-				new CommentFontColor(commentFontColor1), new CommentContent(commentContent2),
+				EnumAdaptor.valueOf(initDisplayWorktime, InitDisplayWorktimeAtr.class),
+				StringUtil.isNullOrEmpty(commentContent1, true) ? null : new CommentContent(commentContent1), 
+				EnumAdaptor.valueOf(commentFontWeight1, FontWeightFlg.class),
+				new CommentFontColor(commentFontColor1), 
+				StringUtil.isNullOrEmpty(commentContent2, true) ? null : new CommentContent(commentContent2),
 				EnumAdaptor.valueOf(commentFontWeight2, FontWeightFlg.class), new CommentFontColor(commentFontColor2));
 	}
 

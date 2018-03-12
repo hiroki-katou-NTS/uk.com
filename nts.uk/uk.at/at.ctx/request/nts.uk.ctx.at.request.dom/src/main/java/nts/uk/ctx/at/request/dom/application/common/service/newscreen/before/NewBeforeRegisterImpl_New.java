@@ -213,7 +213,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 					// ドメインモデル「事前の受付制限」．チェック方法をチェックする
 					if(appTypeDiscreteSetting.getRetrictPreMethodFlg().equals(CheckMethod.DAYCHECK)){
 						// ループする日と受付制限日と比較する
-						GeneralDate limitDay = systemDate.addDays(0 - appTypeDiscreteSetting.getRetrictPreDay().value);
+						GeneralDate limitDay = systemDate.addDays(appTypeDiscreteSetting.getRetrictPreDay().value);
 						if(loopDay.before(limitDay)) {
 							throw new BusinessException("Msg_327", loopDay.toString(DATE_FORMAT));
 						}

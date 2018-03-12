@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAI_OUTING_TIME")
+@Table(name = "KRCDT_DAI_OUTING_TIME_TS")
 public class KrcdtDaiOutingTime extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -56,7 +56,7 @@ public class KrcdtDaiOutingTime extends UkJpaEntity implements Serializable {
 	public Integer outActualSourceInfo;
 
 	@Column(name = "OUT_NUMBER_STAMP")
-	public int outNumberStamp;
+	public Integer outNumberStamp;
 
 	@Column(name = "BACK_STAMP_TIME")
 	public Integer backStampTime;
@@ -83,7 +83,7 @@ public class KrcdtDaiOutingTime extends UkJpaEntity implements Serializable {
 	public Integer backActualSourceInfo;
 
 	@Column(name = "BACK_NUMBER_STAMP")
-	public int backNumberStamp;
+	public Integer backNumberStamp;
 
 	@Column(name = "OUTING_TIME_CALCULATION")
 	public Integer outingTimeCalculation;
@@ -104,32 +104,32 @@ public class KrcdtDaiOutingTime extends UkJpaEntity implements Serializable {
 		TimeActualStamp backactualStamp = outingTime.getComeBack().orElse(null);
 		WorkStamp outStamp = gooutactualStamp == null ? null : gooutactualStamp.getStamp().orElseGet(null);
 		WorkStamp backStamp = backactualStamp == null ? null : backactualStamp.getStamp().orElseGet(null);
-		WorkStamp outActual = gooutactualStamp == null ? null : gooutactualStamp.getActualStamp();
-		WorkStamp backActual = backactualStamp == null ? null : backactualStamp.getActualStamp();
+		WorkStamp outActual = gooutactualStamp == null ? null : gooutactualStamp.getActualStamp().orElse(null);
+		WorkStamp backActual = backactualStamp == null ? null : backactualStamp.getActualStamp().orElse(null);
 		return new KrcdtDaiOutingTime(new KrcdtDaiOutingTimePK(employeeId, date, outingTime.getOutingFrameNo().v()),
 				outStamp == null ? null : outStamp.getTimeWithDay() == null ? null : outStamp.getTimeWithDay().valueAsMinutes(),
 				outStamp == null ? null : outStamp.getAfterRoundingTime() == null ? null
 								: outStamp.getAfterRoundingTime().valueAsMinutes(),
-				outStamp == null ? null : outStamp.getLocationCode().v(),
+				outStamp == null || !outStamp.getLocationCode().isPresent() ? null : outStamp.getLocationCode().get().v(),
 				outStamp == null ? null : outStamp.getStampSourceInfo().value,
 				outActual == null || outActual.getTimeWithDay() == null ? null
 						: outActual.getTimeWithDay().valueAsMinutes(),
 				outActual == null || outActual.getAfterRoundingTime() == null ? null
 						: outActual.getAfterRoundingTime().valueAsMinutes(),
-				outActual == null ? null :  outActual.getLocationCode().v(),
+				outActual == null || !outActual.getLocationCode().isPresent() ? null :  outActual.getLocationCode().get().v(),
 				outActual == null ? null : outActual.getStampSourceInfo().value,
 					gooutactualStamp == null ? null : gooutactualStamp.getNumberOfReflectionStamp(),
 				backStamp == null ? null : backStamp.getTimeWithDay() == null ? null
 						: backStamp.getTimeWithDay().valueAsMinutes(),
 				backStamp == null ? null : backStamp.getAfterRoundingTime() == null ? null
 						: backStamp.getAfterRoundingTime().valueAsMinutes(),
-				backStamp == null ? null : backStamp.getLocationCode().v(),
+				backStamp == null || !backStamp.getLocationCode().isPresent() ? null : backStamp.getLocationCode().get().v(),
 				backStamp == null ? null : backStamp.getStampSourceInfo().value,
 				backActual == null || backActual.getTimeWithDay() == null ? null
 						: backActual.getTimeWithDay().valueAsMinutes(),
 				backActual == null || backActual.getAfterRoundingTime() == null ? null
 						: backActual.getAfterRoundingTime().valueAsMinutes(),
-				backActual == null ? null :  backActual.getLocationCode().v(),
+				backActual == null || !backActual.getLocationCode().isPresent() ? null :  backActual.getLocationCode().get().v(),
 				backActual == null ? null : backActual.getStampSourceInfo().value,
 				backactualStamp == null ? null : backactualStamp.getNumberOfReflectionStamp(),
 				outingTime.getOutingTimeCalculation().valueAsMinutes(), outingTime.getOutingTime().valueAsMinutes(),

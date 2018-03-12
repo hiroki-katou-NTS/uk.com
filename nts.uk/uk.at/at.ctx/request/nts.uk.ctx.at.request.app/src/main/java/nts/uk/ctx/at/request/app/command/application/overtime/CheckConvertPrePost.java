@@ -74,6 +74,7 @@ public class CheckConvertPrePost {
 					// 01-18_実績の内容を表示し直す
 					ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
 					AppOvertimeReference appOvertimeReference = iOvertimePreProcess.getResultContentActual(prePostAtr, siftCD, companyID,employeeID, appDate,approvalFunctionSetting,overtimeHours);
+					result.setAppOvertimeReference(appOvertimeReference);
 				}
 				if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value== UseAtr.USE.value){
 					result.setAllPreAppPanelFlg(true);

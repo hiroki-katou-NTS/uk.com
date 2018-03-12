@@ -13,9 +13,11 @@ module nts.uk.com.view.ccg031.c.viewmodel {
         /** Start Page */
         startPage(): void {
             var self = this;
-            var placements: Array<model.Placement> = windows.getShared("placements");
-            if (placements !== undefined)
-                self.placements = placements;
+            var placementDTOs: Array<model.PlacementDto> = windows.getShared("placements");
+            if (placementDTOs !== undefined)
+                self.placements = _.map(placementDTOs, (placementDTO) => {
+                    return new model.Placement(placementDTO);
+                });
             _.defer(() => { positionUtil.setupPositionAndSizeAll(self.placements); });
         }
 

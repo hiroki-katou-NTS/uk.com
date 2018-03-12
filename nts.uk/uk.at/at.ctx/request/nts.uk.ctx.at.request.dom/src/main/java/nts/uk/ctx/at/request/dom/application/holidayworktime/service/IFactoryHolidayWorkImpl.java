@@ -48,8 +48,8 @@ public class IFactoryHolidayWorkImpl implements IFactoryHolidayWork{
 
 	@Override
 	public AppHolidayWork buildHolidayWork(String companyID, String appID, String workTypeCode,
-			String siftCode, int workClockStart1, int workClockEnd1, int workClockStart2,
-			int workClockEnd2, int goAtr1, int backAtr1, int goAtr2, int backAtr2, String divergenceReason,
+			String siftCode, Integer workClockStart1, Integer workClockEnd1, Integer workClockStart2,
+			Integer workClockEnd2, int goAtr1, int backAtr1, int goAtr2, int backAtr2, String divergenceReason,
 			int overTimeShiftNight, List<HolidayWorkInput> holidayWorkInputs) {
 		AppHolidayWork appHolidayWork = AppHolidayWork.createSimpleFromJavaType(companyID, appID, workTypeCode,
 				siftCode, workClockStart1, workClockEnd1, workClockStart2, workClockEnd2,goAtr1,backAtr1,goAtr2,backAtr2, divergenceReason,

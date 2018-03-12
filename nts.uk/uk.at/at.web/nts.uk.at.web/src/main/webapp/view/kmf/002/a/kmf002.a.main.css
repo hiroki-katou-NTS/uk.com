@@ -90,3 +90,15 @@
 #scrA .weekHDCheck_A > div > div:nth-child(1){
 	width:100px !important	
 }
+
+.bg-dark-green {
+	background-color: #C7F391;
+}
+
+#sidebar-area {
+	min-width: 100px;
+}
+
+.sidebar-content {
+	white-space: nowrap;
+}

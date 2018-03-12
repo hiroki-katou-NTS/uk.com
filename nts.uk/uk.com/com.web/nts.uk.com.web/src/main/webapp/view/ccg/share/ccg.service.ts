@@ -5,10 +5,9 @@ module nts.uk.com.view.ccg.share.ccg {
 
         // Service paths.
         var servicePath = {
-            searchEmployeeByLogin: "basic/organization/employee/onlyemployee",
+            searchEmployeeByLogin: "basic/organization/employee/onlyemployeenew",
             searchWorkplaceOfEmployee: "basic/organization/employee/workplaceemp",
-            getOfSelectedEmployee: "basic/organization/employee/getoffselect",
-            searchAllWorkType: "at/share/worktype/findNotDeprecated",
+            searchAllWorkType: "at/record/businesstype/findAll",
             getEmploymentCodeByClosureId: "ctx/at/shared/workrule/closure/findEmpByClosureId",
             getRefRangeBySysType: "ctx/sys/auth/role/getrefrangebysystype",
             getClosuresByBaseDate: "ctx/at/shared/workrule/closure/getclosuresbybasedate",
@@ -96,7 +95,7 @@ module nts.uk.com.view.ccg.share.ccg {
         /**
          * Calculate period
          */
-        export function calculatePeriod(closureId: number, yearMonth: number): JQueryPromise<string> {
+        export function calculatePeriod(closureId: number, yearMonth: number): JQueryPromise<model.DatePeriodDto> {
             const param = '/' + closureId + '/' + yearMonth;
             return nts.uk.request.ajax('at', servicePath.calculatePeriod + param);
         }
@@ -117,16 +116,9 @@ module nts.uk.com.view.ccg.share.ccg {
         }
         
         /**
-         * get of selected Employee
-         */
-        export function getOfSelectedEmployee(baseDate: Date, employeeIds: string[]): JQueryPromise<model.EmployeeSearchDto[]> {
-            return nts.uk.request.ajax('com', servicePath.getOfSelectedEmployee, { baseDate: baseDate, employeeIds: employeeIds });
-        }
-        
-        /**
          * search all worktype
          */
-        export function searchAllWorkType(): JQueryPromise<string[]> {
+        export function searchAllWorkType(): JQueryPromise<Array<model.BusinessType>> {
             return nts.uk.request.ajax('at', servicePath.searchAllWorkType);
         }
         
@@ -141,11 +133,10 @@ module nts.uk.com.view.ccg.share.ccg {
 
             export class EmployeeSearchDto {
                 employeeId: string;
-
                 employeeCode: string;
-
                 employeeName: string;
-
+                workplaceCode: string;
+                workplaceId: string;
                 workplaceName: string;
             }
 
@@ -186,6 +177,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 isMutipleCheck: boolean; // 選択モード
                 // showDepartment: boolean; // 部門条件 not covered
                 // showDelivery: boolean; not covered
+
+                /** Optional properties */
+                isInDialog?: boolean;
 
                 /** Data returned */
                 returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
@@ -239,6 +233,16 @@ module nts.uk.com.view.ccg.share.ccg {
                 sortOrderNo: number;
                 nameType: number;
                 systemType: number;
+            }
+
+            export interface DatePeriodDto {
+                startDate: string;
+                endDate: string
+            }
+
+            export interface BusinessType {
+                businessTypeCode: string;
+                businessTypeName: string;
             }
 
             export class EmployeeRangeSelection {

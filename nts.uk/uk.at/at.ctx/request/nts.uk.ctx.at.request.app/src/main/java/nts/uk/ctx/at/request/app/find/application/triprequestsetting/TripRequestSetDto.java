@@ -34,8 +34,10 @@ public class TripRequestSetDto {
 	/** 遅刻早退設定 */
 	public int lateLeave;
 	public static TripRequestSetDto convertToDto(TripRequestSet domain){
-		return new TripRequestSetDto(domain.getCompanyId(), domain.getComment1().v(), 
-				domain.getColor1().v(), domain.getWeight1().value, domain.getComment2().v(), domain.getColor2().v(), 
+		return new TripRequestSetDto(domain.getCompanyId(), 
+				domain.getComment1() == null ? null : domain.getComment1().v(), 
+				domain.getColor1().v(), domain.getWeight1().value, 
+				domain.getComment2() == null ? null : domain.getComment2().v(), domain.getColor2().v(), 
 				domain.getWeight2().value, domain.getWorkType().value, domain.getWorkChange().value, 
 				domain.getWorkChangeTime().value, domain.getContractCheck().value, domain.getLateLeave().value);
 	}

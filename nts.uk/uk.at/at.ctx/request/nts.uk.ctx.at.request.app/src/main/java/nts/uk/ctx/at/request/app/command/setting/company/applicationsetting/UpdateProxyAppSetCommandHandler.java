@@ -34,5 +34,4 @@ public class UpdateProxyAppSetCommandHandler extends CommandHandler<ProxyAppSetC
 			}
 		}
 	}
-	
 }

@@ -9,8 +9,8 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateMonthlyValue;
+import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.AggrSettingMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
@@ -24,9 +24,10 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.TargetPre
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtion;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
@@ -49,6 +50,8 @@ public class RegularAndIrregularTimeOfMonthly {
 	/** 変形労働時間 */
 	private IrregularWorkingTimeOfMonthly irregularWorkingTime;
 	
+	/** 当月の変形期間繰越時間 */
+	private IrregularPeriodCarryforwardsTimeOfCurrent irregularPeriodCarryforwardsTime;
 	/** 加算した休暇使用時間 */
 	private AddedVacationUseTime addedVacationUseTime;
 	/** 週割増処理期間 */
@@ -65,6 +68,7 @@ public class RegularAndIrregularTimeOfMonthly {
 		this.monthlyTotalPremiumTime = new AttendanceTimeMonth(0);
 		this.irregularWorkingTime = new IrregularWorkingTimeOfMonthly();
 		
+		this.irregularPeriodCarryforwardsTime = new IrregularPeriodCarryforwardsTimeOfCurrent();
 		this.addedVacationUseTime = new AddedVacationUseTime();
 		this.weekPermiumProcPeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		this.weekPremiumTime = new AttendanceTimeMonth(0);
@@ -179,7 +183,7 @@ public class RegularAndIrregularTimeOfMonthly {
 				// 集計区分を確認する
 				if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
 				
-					// 週割増時間を逆時系列で割り当てる
+					// 時間外超過の時、週割増時間を逆時系列で割り当てる
 					excessOutsideWorkMng.assignWeeklyPremiumTimeByReverseTimeSeries(
 							this.weekPermiumProcPeriod, this.weekPremiumTime, aggregateTotalWorkingTime, repositories);
 				}
@@ -567,47 +571,38 @@ public class RegularAndIrregularTimeOfMonthly {
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 当月の変形期間繰越時間を集計する
-		val irregularPeriodCarryforwardsTime = new IrregularPeriodCarryforwardsTimeOfCurrent();
-		irregularPeriodCarryforwardsTime.aggregate(companyId, employeeId, datePeriod,
+		this.irregularPeriodCarryforwardsTime = new IrregularPeriodCarryforwardsTimeOfCurrent();
+		this.irregularPeriodCarryforwardsTime.aggregate(companyId, employeeId, datePeriod,
 				this.weeklyTotalPremiumTime, holidayAdditionOpt,
 				aggregateTotalWorkingTime, statutoryWorkingTimeMonth);
 		this.addedVacationUseTime.addMinutesToAddTimePerMonth(
-				irregularPeriodCarryforwardsTime.getAddedVacationUseTime().v());
+				this.irregularPeriodCarryforwardsTime.getAddedVacationUseTime().v());
 		
 		// 該当精算期間の開始月～前月の変形期間繰越時間を集計する
 		val pastIrregularPeriodCarryforwardsTime = this.aggregatePastIrregularPeriodCarryforwardsTime(
 				employeeId, yearMonth, closureId, closureDate, legalAggrSetOfIrg, repositories);
 		
 		// 開始月～当月の変形期間繰越時間を求める
-		AttendanceTimeMonth totalIrregularPeriodCarryforwardsTime = new AttendanceTimeMonth(
+		AttendanceTimeMonthWithMinus totalIrregularPeriodCarryforwardsTime = new AttendanceTimeMonthWithMinus(
 				pastIrregularPeriodCarryforwardsTime.v());
 		totalIrregularPeriodCarryforwardsTime = totalIrregularPeriodCarryforwardsTime.addMinutes(
-				irregularPeriodCarryforwardsTime.getTime().v());
+				this.irregularPeriodCarryforwardsTime.getTime().v());
 
 		// 精算月か確認する
-		boolean isSettlementMonth = false;
-		if (legalAggrSetOfIrg.isSameSettlementEndMonth(yearMonth)){
-			
-			isSettlementMonth = true;
-		}
-		else{
-			if (isRetireMonth) isSettlementMonth = true;
-		}
-
-		if (isSettlementMonth){
+		if (legalAggrSetOfIrg.getSettlementPeriod().isSettlementMonth(yearMonth, isRetireMonth)){
 			
 			// 精算月の時、月割増合計時間に集計結果を入れる
-			this.monthlyTotalPremiumTime = totalIrregularPeriodCarryforwardsTime;
+			this.monthlyTotalPremiumTime = new AttendanceTimeMonth(totalIrregularPeriodCarryforwardsTime.v());
 			
 			// 変形期間繰越時間を 0 にする
-			this.irregularWorkingTime.setIrregularPeriodCarryforwardTime(new AttendanceTimeMonth(0));
+			this.irregularWorkingTime.setIrregularPeriodCarryforwardTime(new AttendanceTimeMonthWithMinus(0));
 		}
 		else{
 			
 			// 精算月でない時、複数月変形途中時間・変形期間繰越時間に集計結果を入れる
 			this.irregularWorkingTime.setMultiMonthIrregularMiddleTime(totalIrregularPeriodCarryforwardsTime);
 			this.irregularWorkingTime.setIrregularPeriodCarryforwardTime(
-					new AttendanceTimeMonth(irregularPeriodCarryforwardsTime.getTime().v()));
+					new AttendanceTimeMonthWithMinus(this.irregularPeriodCarryforwardsTime.getTime().v()));
 		}
 	}
 	
@@ -630,7 +625,7 @@ public class RegularAndIrregularTimeOfMonthly {
 		AttendanceTimeMonth irregularPeriodCarryforwardsTime = new AttendanceTimeMonth(0);
 		
 		// 精算期間を取得する
-		val pastYearMonths = legalAggrSetOfIrg.getPastSettlementYearMonths(yearMonth);
+		val pastYearMonths = legalAggrSetOfIrg.getSettlementPeriod().getPastSettlementYearMonths(yearMonth);
 		
 		// 開始月～前月までの変形期間繰越時間を集計する
 		for (val pastYearMonth : pastYearMonths){

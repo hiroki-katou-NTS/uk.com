@@ -8,11 +8,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
-import nts.uk.ctx.sys.portal.dom.enums.PermissionDivision;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.enums.UseDivision;
+import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
 import nts.uk.ctx.sys.portal.dom.layout.PGType;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSetting;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSettingRepository;
@@ -29,6 +30,9 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 
 	@Inject
 	private TopPagePartRepository topPagePartRepository;
+	
+	@Inject
+	private FlowMenuRepository flowMenuRepository;
 	
 	@Inject
 	private PlacementService placementService;
@@ -63,25 +67,43 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 		else if (pgType == PGType.MYPAGE) {
 			return getMyPagePartType(companyID);
 		}
-		return null;
+		return new ArrayList<EnumConstant>();
 	}
 
 	@Override
 	public List<TopPagePart> getAllActiveTopPagePart(String companyID, PGType pgType) {
 		List<EnumConstant> activeTopPagePartTypes = getAllActiveTopPagePartType(companyID, pgType);
 		List<Integer> activeTopPagePartTypeIDs = activeTopPagePartTypes.stream().map(c -> c.getValue()).collect(Collectors.toList());
+		if (activeTopPagePartTypeIDs.isEmpty())
+			return new ArrayList<TopPagePart>();
 		
+		List<TopPagePart> listTopPagePart = new ArrayList<TopPagePart>();
 		if (pgType == PGType.TOPPAGE) {
-			return topPagePartRepository.findByTypes(companyID, activeTopPagePartTypeIDs);
+			listTopPagePart = topPagePartRepository.findByTypes(companyID, activeTopPagePartTypeIDs);
 		}
 		else if (pgType == PGType.TITLEMENU) {
-			return topPagePartRepository.findByTypes(companyID, activeTopPagePartTypeIDs);
+			listTopPagePart = topPagePartRepository.findByTypes(companyID, activeTopPagePartTypeIDs);
 		}
 		else if (pgType == PGType.MYPAGE) {
 			List<String> activeTopPagePartIDs = getMyPageActivePartIDs(companyID);
-			return topPagePartRepository.findByTypesAndIDs(companyID, activeTopPagePartTypeIDs, activeTopPagePartIDs);
+			if (activeTopPagePartIDs.isEmpty())
+				return new ArrayList<TopPagePart>();
+			listTopPagePart = topPagePartRepository.findByTypesAndIDs(companyID, activeTopPagePartTypeIDs, activeTopPagePartIDs);
 		}
-		return null;
+		
+		List<TopPagePart> result =  new ArrayList<TopPagePart>();
+		// Get list FlowMenu
+		val listFlowMenu = listTopPagePart.stream().filter(c -> c.isFlowMenu()).collect(Collectors.toList());
+		List<String> listFlowMenuID = listFlowMenu.stream().map(c -> c.getToppagePartID()).collect(Collectors.toList());
+		if (listFlowMenuID.isEmpty())
+			return new ArrayList<TopPagePart>();
+		
+		// TODO: Get list Widget
+		
+		// TODO: Get list Dashboard
+		
+		result.addAll(flowMenuRepository.findByCodes(companyID, listFlowMenuID));
+		return result;
 	}
 	
 	/**
@@ -114,16 +136,16 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 		Optional<MyPageSetting> checkMyPageSetting = myPageSettingRepository.findByCompanyId(companyID);
 		if (checkMyPageSetting.isPresent()) {
 			MyPageSetting myPageSetting = checkMyPageSetting.get();
-			if (myPageSetting.getUseMyPage() == UseDivision.Use) {
-				if (myPageSetting.getUseStandardWidget() == UseDivision.Use)
+			if (myPageSetting.useMyPage()) {
+				if (myPageSetting.useStandarWidget())
 					checkingTopPagePartTypeValues.add(TopPagePartType.StandardWidget.value);
-				if (myPageSetting.getUseOptionalWidget() == UseDivision.Use)
+				if (myPageSetting.useOptionalWidget())
 					checkingTopPagePartTypeValues.add(TopPagePartType.OptionalWidget.value);
-				if (myPageSetting.getUseDashboard() == UseDivision.Use)
+				if (myPageSetting.useDashboard())
 					checkingTopPagePartTypeValues.add(TopPagePartType.DashBoard.value);
-				if (myPageSetting.getUseFlowMenu() == UseDivision.Use)
+				if (myPageSetting.useFlowMenu())
 					checkingTopPagePartTypeValues.add(TopPagePartType.FlowMenu.value);
-				if (myPageSetting.getExternalUrlPermission() == PermissionDivision.Allow)
+				if (myPageSetting.isAllowExternalUrlPermission())
 					checkingTopPagePartTypeValues.add(TopPagePartType.ExternalUrl.value);
 			}
 		}

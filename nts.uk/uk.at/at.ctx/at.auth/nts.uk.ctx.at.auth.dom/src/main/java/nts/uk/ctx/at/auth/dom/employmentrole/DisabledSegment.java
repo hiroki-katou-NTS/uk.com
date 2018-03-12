@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.auth.dom.employmentrole;
-
+/**
+ * するしない区分
+ * @author tutk
+ *
+ */
 public enum DisabledSegment {
 	/**
 	 * する(toUse)

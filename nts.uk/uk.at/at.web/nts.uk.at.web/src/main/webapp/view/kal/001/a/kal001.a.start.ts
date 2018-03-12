@@ -8,7 +8,7 @@ module nts.uk.at.view.kal001.a {
         screenModel.startPage().done(function(){
             __viewContext.bind(screenModel);
             $('#component-employee-list').ntsListComponent(screenModel.listComponentOption);  
-            $('#ccgcomponent').ntsGroupComponent(screenModel.ccgcomponent);               
+            $('#ccgcomponent').ntsGroupComponent(screenModel.ccg001ComponentOption);               
         });
         
     });

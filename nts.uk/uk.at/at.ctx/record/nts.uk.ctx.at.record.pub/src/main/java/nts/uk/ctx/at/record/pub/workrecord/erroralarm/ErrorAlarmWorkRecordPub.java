@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.pub.workrecord.erroralarm;
 import java.util.List;
 
 
+
 public interface ErrorAlarmWorkRecordPub {
 		//	get all error by companyID
 		List<ErrorAlarmWorkRecordPubExport> getAllErrorAlarmWorkRecord(String companyID);
@@ -12,6 +13,8 @@ public interface ErrorAlarmWorkRecordPub {
 		
 		//get error by list eralCheckId
 		List<ErrorAlarmWorkRecordPubExport> findByListErrorAlamCheckId(List<String> listEralCheckId);
+		
+		List<ErrorAlarmWorkRecordPubExport> getListErAlByListCode(String companyId,List<String> listCode);
 		
 		void addErrorAlarmWorkRecordPub(ErrorAlarmWorkRecordPubExport errorAlarmWorkRecordPubExport);
 		

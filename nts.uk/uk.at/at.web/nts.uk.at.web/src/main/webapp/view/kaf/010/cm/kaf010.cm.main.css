@@ -65,6 +65,9 @@ div#combo-box.reset-element.ui-igcombo-wrapper {
 textarea.nts-editor.nts-input.reset-element {
 	height: 120px;
 }
+.textarea-kaf010{
+	height: 120px !important;
+}
 
 #multiline {
 	display: inline-block;
@@ -146,6 +149,9 @@ div.form-label.broken {
 .fix-margin-left{
 	margin-left:13px;
 }
+.fix-margin-left-kaf010{
+	margin-left:10px;
+}
 .cm-column {
 	width: 130px;
 }
@@ -155,4 +161,10 @@ div.form-label.broken {
 .overlay-reason {
 	position: relative;
 	z-index: 1;
+}
+.inputTime-kaf010{
+	width: 85px !important;
+}
+.fix-margin-left-emp-kaf010{
+	margin-left: 14px;
 }

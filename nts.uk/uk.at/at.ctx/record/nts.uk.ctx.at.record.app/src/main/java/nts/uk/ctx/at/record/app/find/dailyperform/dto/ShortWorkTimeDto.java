@@ -3,13 +3,18 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 import java.util.Arrays;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 /** 日別実績の短時間勤務時間 */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ShortWorkTimeDto {
 
 	/** 合計控除時間 */
@@ -28,10 +33,10 @@ public class ShortWorkTimeDto {
 	/** 育児介護区分 */
 	@AttendanceItemLayout(layout = "D", jpPropertyName = "育児介護区分")
 	@AttendanceItemValue(type = ValueType.INTEGER)
-	private int childCareAndFamilyCareAtr;
+	private int childCareAttr;
 	
 	public String childCareAttr(){
-		switch (this.childCareAndFamilyCareAtr) {
+		switch (this.childCareAttr) {
 		case 0:
 			return "育児";
 
@@ -44,13 +49,22 @@ public class ShortWorkTimeDto {
 	
 	public void childCare(String text){
 		if(text.contains("育児")){
-			this.childCareAndFamilyCareAtr = 0;
+			this.childCareAttr = 0;
 		} else if (text.contains("介護")){
-			this.childCareAndFamilyCareAtr = 1;
+			this.childCareAttr = 1;
 		}
 	}
 	
 	public List<String> childCareEnum(){
 		return Arrays.asList("育児", "介護");
 	}
+	
+	public static ShortWorkTimeDto toDto(ShortWorkTimeOfDaily domain){
+		return domain == null ? null : new ShortWorkTimeDto(
+											TotalDeductionTimeDto.getDeductionTime(domain.getTotalDeductionTime()), 
+											TotalDeductionTimeDto.getDeductionTime(domain.getTotalTime()), 
+											domain.getWorkTimes() == null ? null : domain.getWorkTimes().v(), 
+											domain.getChildCareAttribute().value);
+	}
+	
 }

@@ -201,7 +201,7 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 	}
 
 	@Override
-	public boolean getAllInfoItem(String itemCd, List<String> perInfoCtgId) {
+	public boolean hasItemData(String itemCd, List<String> perInfoCtgId) {
 		List<Object[]> item = this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_ALL_CID_QUERY_STRING, Object[].class)
 				.setParameter("itemCd", itemCd)
 				.setParameter("perInfoCtgId", perInfoCtgId)

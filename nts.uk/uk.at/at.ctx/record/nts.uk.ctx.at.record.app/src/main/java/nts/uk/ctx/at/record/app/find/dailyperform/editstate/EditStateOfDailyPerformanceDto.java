@@ -8,13 +8,14 @@ import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 
 @AttendanceItemRoot(rootName = "日別実績の編集状態")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EditStateOfDailyPerformanceDto implements ConvertibleAttendanceItem {
+public class EditStateOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	// TODO: not map item id
 	/** 社員ID: 社員ID */
@@ -32,8 +33,13 @@ public class EditStateOfDailyPerformanceDto implements ConvertibleAttendanceItem
 	private int editStateSetting;
 
 	public static EditStateOfDailyPerformanceDto getDto(EditStateOfDailyPerformance c) {
-		return new EditStateOfDailyPerformanceDto(c.getEmployeeId(), c.getAttendanceItemId(), c.getYmd(),
-				c.getEditStateSetting().value);
+		if(c == null) {
+			return new EditStateOfDailyPerformanceDto();
+		}
+		EditStateOfDailyPerformanceDto dto = new EditStateOfDailyPerformanceDto(c.getEmployeeId(), c.getAttendanceItemId(), c.getYmd(),
+				c.getEditStateSetting() == null ? 0 : c.getEditStateSetting().value);
+		dto.exsistData();
+		return dto;
 	}
 
 	@Override
@@ -48,6 +54,9 @@ public class EditStateOfDailyPerformanceDto implements ConvertibleAttendanceItem
 
 	@Override
 	public EditStateOfDailyPerformance toDomain(String employeeId, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
 		return new EditStateOfDailyPerformance(employeeId, attendanceItemId, date,
 				ConvertHelper.getEnum(editStateSetting, EditStateSetting.class));
 	}

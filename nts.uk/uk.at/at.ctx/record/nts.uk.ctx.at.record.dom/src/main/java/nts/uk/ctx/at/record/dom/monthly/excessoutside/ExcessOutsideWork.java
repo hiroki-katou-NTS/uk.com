@@ -20,11 +20,12 @@ public class ExcessOutsideWork {
 	/**
 	 * コンストラクタ
 	 * @param breakdownNo 内訳NO
+	 * @param excessNo 超過NO
 	 */
-	public ExcessOutsideWork(int breakdownNo){
+	public ExcessOutsideWork(int breakdownNo, int excessNo){
 		
 		this.breakdownNo = breakdownNo;
-		this.excessNo = 0;
+		this.excessNo = excessNo;
 		this.excessTime = new AttendanceTimeMonth(0);
 	}
 	
@@ -37,9 +38,16 @@ public class ExcessOutsideWork {
 	 */
 	public static ExcessOutsideWork of(int breakdownNo, int excessNo, AttendanceTimeMonth excessTime){
 		
-		ExcessOutsideWork domain = new ExcessOutsideWork(breakdownNo);
-		domain.excessNo = excessNo;
+		ExcessOutsideWork domain = new ExcessOutsideWork(breakdownNo, excessNo);
 		domain.excessTime = excessTime;
 		return domain;
+	}
+	
+	/**
+	 * 分を超過時間に加算する
+	 * @param minutes
+	 */
+	public void addMinutesToExcessTime(int minutes){
+		this.excessTime = this.excessTime.addMinutes(minutes);
 	}
 }

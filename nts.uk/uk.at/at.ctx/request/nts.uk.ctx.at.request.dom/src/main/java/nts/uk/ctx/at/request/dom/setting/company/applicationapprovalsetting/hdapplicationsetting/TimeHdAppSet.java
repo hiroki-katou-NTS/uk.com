@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.UseAtr;
 /**
  * 時間休申請設定
@@ -61,15 +62,21 @@ public class TimeHdAppSet extends AggregateRoot{
 		return new TimeHdAppSet(companyId, 
 				EnumAdaptor.valueOf(checkDay, UseAtr.class), 
 				EnumAdaptor.valueOf(use60h, UseAtr.class), 
-				EnumAdaptor.valueOf(useAttend2, UseAtr.class), new NameWork(nameBefore2), 
-				EnumAdaptor.valueOf(useBefore, UseAtr.class), new NameWork(nameBefore), 
+				EnumAdaptor.valueOf(useAttend2, UseAtr.class), 
+				StringUtil.isNullOrEmpty(nameBefore2, true) ? null : new NameWork(nameBefore2), 
+				EnumAdaptor.valueOf(useBefore, UseAtr.class), 
+				StringUtil.isNullOrEmpty(nameBefore, true) ? null : new NameWork(nameBefore), 
 				EnumAdaptor.valueOf(actualDisp, UseAtr.class), 
 				EnumAdaptor.valueOf(checkOver, UseAtr.class), 
 				EnumAdaptor.valueOf(useTimeHd, UseAtr.class), 
 				EnumAdaptor.valueOf(useTimeYear, UseAtr.class), 
-				EnumAdaptor.valueOf(usePrivate, UseAtr.class), new NameWork(privateName), 
-				EnumAdaptor.valueOf(unionLeave, UseAtr.class), new NameWork(unionName), 
-				EnumAdaptor.valueOf(useAfter2, UseAtr.class), new NameWork(nameAfter2), 
-				EnumAdaptor.valueOf(useAfter, UseAtr.class), new NameWork(nameAfter));
+				EnumAdaptor.valueOf(usePrivate, UseAtr.class), 
+				StringUtil.isNullOrEmpty(privateName, true) ? null : new NameWork(privateName), 
+				EnumAdaptor.valueOf(unionLeave, UseAtr.class), 
+				StringUtil.isNullOrEmpty(unionName, true) ? null : new NameWork(unionName), 
+				EnumAdaptor.valueOf(useAfter2, UseAtr.class), 
+				StringUtil.isNullOrEmpty(nameAfter2, true) ? null : new NameWork(nameAfter2), 
+				EnumAdaptor.valueOf(useAfter, UseAtr.class), 
+				StringUtil.isNullOrEmpty(nameAfter, true) ? null : new NameWork(nameAfter));
 	}
 }

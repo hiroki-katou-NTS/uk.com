@@ -74,29 +74,6 @@ public class BonusPaySetting extends AggregateRoot{
 
 	
 	/**
-	 * 加給時間帯の作成
-	 * @param timeSpan 計算範囲
-	 * @return 計算範囲に重複している時間帯リスト
-	 */
-	public List<BonusPayTimesheet> createDuplicationBonusPayTimeSheet(TimeSpanForCalc calcSpan){
-		List<BonusPayTimesheet> bonusPayList = new ArrayList<>();
-		Optional<TimeSpanForCalc> duplicateRange;
-		for(BonusPayTimesheet bonusPay : bonusPayList) {
-			duplicateRange = calcSpan.getDuplicatedWith(new TimeSpanForCalc(new TimeWithDayAttr(bonusPay.getStartTime().valueAsMinutes()),new TimeWithDayAttr(bonusPay.getEndTime().valueAsMinutes())));
-			if(duplicateRange.isPresent()){
-				bonusPayList.add(new BonusPayTimesheet(bonusPay.getTimeSheetId(),
-													   bonusPay.getUseAtr(),
-													   bonusPay.getTimeItemId(),
-													   new AttendanceClock(duplicateRange.get().getStart().valueAsMinutes()),
-													   new AttendanceClock(duplicateRange.get().getEnd().valueAsMinutes()),
-													   bonusPay.getRoundingTimeAtr(),
-													   bonusPay.getRoundingAtr()));
-			}
-		}
-		return bonusPayList;
-	}
-	
-	/**
 	 * 特定日加給時間帯の作成
 	 * @param timeSpan 計算範囲
 	 * @return 計算範囲に重複している時間帯リスト

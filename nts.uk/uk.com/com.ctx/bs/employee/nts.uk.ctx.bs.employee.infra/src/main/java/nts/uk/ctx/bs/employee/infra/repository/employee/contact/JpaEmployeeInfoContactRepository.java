@@ -55,25 +55,11 @@ public class JpaEmployeeInfoContactRepository extends JpaRepository implements E
 	 * @param entity
 	 */
 	private void updateEntity(EmployeeInfoContact domain, BsymtEmpInfoContact entity){
-		if (domain.getMailAddress() != null && !domain.getMailAddress().v().equals("")){
-			entity.mailAdress = domain.getMailAddress().v();
-		}
-		
-		if (domain.getSeatDialIn() != null && !domain.getSeatDialIn().v().equals("")){
-			entity.seatDialIn = domain.getSeatDialIn().v();
-		}
-		
-		if (domain.getSeatExtensionNo() != null && !domain.getSeatExtensionNo().v().equals("")){
-			entity.seatExtensionNo = domain.getSeatExtensionNo().v();
-		}
-		
-		if (domain.getPhoneMailAddress() != null && !domain.getPhoneMailAddress().v().equals("")){
-			entity.phoneMailAddress = domain.getPhoneMailAddress().v();
-		}
-		
-		if (domain.getCellPhoneNo() != null && !domain.getCellPhoneNo().v().equals("")){
-			entity.cellPhoneNo = domain.getCellPhoneNo().v();
-		}
+		entity.mailAdress = domain.getMailAddress().v();
+		entity.seatDialIn = domain.getSeatDialIn().v();
+		entity.seatExtensionNo = domain.getSeatExtensionNo().v();
+		entity.phoneMailAddress = domain.getPhoneMailAddress().v();
+		entity.cellPhoneNo = domain.getCellPhoneNo().v();
 	}
 
 	@Override

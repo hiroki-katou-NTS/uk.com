@@ -28,8 +28,8 @@ public class MyPageSettingBaseCommand {
 	/** The use my page. */
 	private Integer useMyPage;
 
-	/** The use Standar widget. */
-	private Integer useStandardWidget;
+	/** The use Standard widget. */
+	private Integer useStandarWidget;
 	
 	/** The use Optional Widget. */
 	private Integer useOptionalWidget;
@@ -53,7 +53,7 @@ public class MyPageSettingBaseCommand {
 	 */
 	public MyPageSetting toDomain() {
 		String companyId = AppContexts.user().companyId();
-		return new MyPageSetting(companyId, UseDivision.valueOf(useMyPage), UseDivision.valueOf(useStandardWidget), 
+		return new MyPageSetting(companyId, UseDivision.valueOf(useMyPage), UseDivision.valueOf(useStandarWidget), 
 				UseDivision.valueOf(useOptionalWidget), UseDivision.valueOf(useDashboard), UseDivision.valueOf(useFlowMenu),
 				PermissionDivision.valueOf(externalUrlPermission), this.topPagePartUseSettingDto.stream().map(item -> {
 					return TopPagePartUseSetting.createFromJavaType(companyId,item.getTopPagePartId(),item.getPartItemCode(),

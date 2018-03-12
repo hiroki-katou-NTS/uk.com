@@ -15,6 +15,8 @@ module a10 {
      */
     class ScreenModel {
         
+        selectedTab: KnockoutObservable<string>;
+        
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
         
@@ -32,8 +34,9 @@ module a10 {
         /**
          * Constructor
          */
-        constructor(screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto,lstPaySetting:any) {
-            let _self = this;
+        constructor(selectedTab: KnockoutObservable<string>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto, lstPaySetting:any) {
+            let _self = this;          
+            _self.selectedTab = selectedTab;
             
             _self.lstBonusPaysetting = ko.observableArray(lstPaySetting);
             // Check exist
@@ -84,7 +87,7 @@ module a10 {
         
         private bindingNameByCode(code: string) {
             let _self = this;
-            if (code && code != "") {
+            if (!nts.uk.util.isNullOrUndefined(code) && (code != "") && (typeof code == 'string')) {
                 //filter to get name by code
                 let itemPaySetting: any = _.filter(_self.lstBonusPaysetting(), item => item.code == code);
                 _self.bonusPaySettingName(itemPaySetting[0].name);
@@ -107,7 +110,7 @@ module a10 {
             nts.uk.ui.windows.setShared('KDL007_PARAM', param, true);
             nts.uk.ui.windows.sub.modal('/view/kdl/007/a/index.xhtml').onClosed(() => {
                 let listResult = nts.uk.ui.windows.getShared('KDL007_VALUES');
-                if (listResult && listResult.selecteds && !nts.uk.util.isNullOrEmpty(listResult.selecteds[0])) {
+                if (listResult && listResult.selecteds && !nts.uk.util.isNullOrEmpty(listResult.selecteds[0]) && (typeof listResult.selecteds[0] == 'string')) {
                     _self.bonusPaySettingCode(listResult.selecteds[0]);
 //                    _self.bonusPaySettingName(listResult.selecteds[0]);
                 } else {
@@ -115,6 +118,16 @@ module a10 {
                     _self.bonusPaySettingName(null);
                 }
             });
+        }
+        
+        /**
+         * Handle when using tab button
+         */
+        public changeTab(data: any, e: any) {
+            let _self = this;
+            if (e.which == 9) {
+                _self.selectedTab('tab-11');     
+            }
         }
     }
     
@@ -147,7 +160,7 @@ module a10 {
             let settingEnum = input.enum;
 
             nts.uk.at.view.kmk003.a10.service.findAllBonusPaySetting().done(function(lstPaySetting:any) {
-                let screenModel = new ScreenModel(screenMode, model, settingEnum,lstPaySetting);
+                let screenModel = new ScreenModel(input.selectedTab, screenMode, model, settingEnum,lstPaySetting);
 
                 $(element).load(webserviceLocator, () => {
                     ko.cleanNode($(element)[0]);

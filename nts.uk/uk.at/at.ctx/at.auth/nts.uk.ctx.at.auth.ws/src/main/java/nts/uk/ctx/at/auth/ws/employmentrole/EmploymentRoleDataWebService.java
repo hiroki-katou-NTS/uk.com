@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.auth.ws.employmentrole;
 
 import java.util.List;
@@ -40,6 +44,8 @@ public class EmploymentRoleDataWebService {
 	@Inject
 	private DeleteEmploymentRoleCmdHandler deleteEmploymentRole;
 	
+	/** The Constant HAS_PERMISSION. */
+	private static final int HAS_PERMISSION = 0;
 	
 	/** Finder */
 	//get all list employment role
@@ -87,7 +93,8 @@ public class EmploymentRoleDataWebService {
 		if (roleId == null) {
 			throw new BusinessException(new RawErrorMessage("Access denied"));
 		}
-		return this.employmentRoleFinder.getEmploymentRoleById(roleId).getFutureDateRefPermit() == 0 ? false : true;
+		return this.employmentRoleFinder.getEmploymentRoleById(roleId).getFutureDateRefPermit() == HAS_PERMISSION ? true
+				: false;
 	}
 
 }

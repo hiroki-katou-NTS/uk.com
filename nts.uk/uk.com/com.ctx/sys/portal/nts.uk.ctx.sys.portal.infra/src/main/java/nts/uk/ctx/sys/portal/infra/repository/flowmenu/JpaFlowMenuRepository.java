@@ -65,7 +65,8 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 		return new CcgmtFlowMenu(
 				new CcgmtFlowMenuPK(domain.getCompanyID(), domain.getToppagePartID()),
 				domain.getFileID(), 
-				domain.getDefClassAtr().value);
+				domain.getDefClassAtr().value
+				);
 	}
 
 	/**

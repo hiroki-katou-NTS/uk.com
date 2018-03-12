@@ -162,7 +162,7 @@ public class FlexTimeOfMonthly {
 			
 			if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
 			
-				// フレックス超過時間を割り当てる
+				// 時間外超過の時、フレックス超過時間を割り当てる
 				excessOutsideWorkMng.assignFlexExcessTime(datePeriod, flexAggregateMethod,
 						procDate, aggrSetOfFlex, aggregateTotalWorkingTime, this.flexTime,
 						prescribedWorkingTimeMonth, statutoryWorkingTimeMonth, repositories);
@@ -209,7 +209,7 @@ public class FlexTimeOfMonthly {
 			val prevAttendanceTimeList =
 					repositories.getAttendanceTimeOfMonthly().findByYearMonthOrderByStartYmd(employeeId, prevYearMonth);
 			
-			// 前月のフレックス不足時間を取得する
+			// 前月のフレックス不足時間を取得する　（開始日が最も大きい日のデータ）
 			AttendanceTimeMonth prevFlexShortageTime = new AttendanceTimeMonth(0);
 			if (!prevAttendanceTimeList.isEmpty()){
 				val prevAttendanceTime = prevAttendanceTimeList.get(prevAttendanceTimeList.size() - 1);

@@ -19,7 +19,7 @@
 	margin-left: 90px;
 }
 
-.ui-tabs-panel > div {
+#kmk008-tab-panel .ui-tabs-panel > div {
     height: 350px;
 }
 

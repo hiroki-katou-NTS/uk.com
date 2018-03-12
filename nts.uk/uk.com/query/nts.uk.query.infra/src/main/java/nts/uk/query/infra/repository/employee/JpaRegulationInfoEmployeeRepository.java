@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -36,7 +39,10 @@ import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
 public class JpaRegulationInfoEmployeeRepository extends JpaRepository implements RegulationInfoEmployeeRepository {
 
 	/** The Constant LEAVE_ABSENCE_QUOTA_NO. */
-	private static final int LEAVE_ABSENCE_QUOTA_NO = 1;
+	public static final int LEAVE_ABSENCE_QUOTA_NO = 1;
+
+	/** The Constant NOT_DELETED. */
+	private static final int NOT_DELETED = 0;
 
 	/*
 	 * (non-Javadoc)
@@ -47,6 +53,11 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 	 */
 	@Override
 	public List<RegulationInfoEmployee> find(String comId, EmployeeSearchQuery paramQuery) {
+		// Return empty list if all status of employee = 対象外
+		if (!paramQuery.getIncludeIncumbents() && !paramQuery.getIncludeOccupancy() && !paramQuery.getIncludeRetirees()
+				&& !paramQuery.getIncludeWorkersOnLeave()) {
+			return Collections.emptyList();
+		}
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -64,6 +75,14 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 		// Add company condition 
 		conditions.add(cb.equal(root.get(EmployeeDataView_.cid), comId));
+//		conditions.add(cb.or(
+//				cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodStart()),
+//						cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodStart())),
+//				cb.and(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodEnd()),
+//						cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodEnd()))));
+
+		// Add NOT_DELETED condition
+		conditions.add(cb.equal(root.get(EmployeeDataView_.delStatusAtr), NOT_DELETED));
 
 		// employment condition
 		if (paramQuery.getFilterByEmployment()) {
@@ -134,75 +153,15 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.workTypeEndDate),
 					GeneralDate.localDate(paramQuery.getBaseDate().toLocalDate())));
 		}
-
-		// status of employee conddition
-		Predicate statusOfEmployeeCondition = cb.disjunction();
-		Predicate incumbentCondition = cb.conjunction();
-		Predicate workerOnLeaveCondition = cb.conjunction();
-		Predicate occupancyCondition = cb.conjunction();
-		Predicate retireCondition = cb.conjunction();
-
-		// include incumbents condition
-		if (paramQuery.getIncludeIncumbents()) {
-			Predicate comDateCondition = cb.or(
-					cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodStart()),
-					cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodStart()),
-					cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodEnd()),
-					cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodEnd()));
-			Predicate absDateCondition = cb.or(
-					cb.lessThan(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodEnd()),
-					cb.greaterThan(root.get(EmployeeDataView_.absEndDate), paramQuery.getPeriodStart()));
-			incumbentCondition = cb.and(comDateCondition, absDateCondition);
-		}
-
-		// include workers on leave condition
-		if (paramQuery.getIncludeWorkersOnLeave()) {
-			Predicate comDateCondition = cb.or(
-					cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodStart()),
-					cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodStart()),
-					cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodEnd()),
-					cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodEnd()));
-			Predicate absDateCondition = cb.or(
-					cb.lessThanOrEqualTo(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodStart()),
-					cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodStart()),
-					cb.lessThanOrEqualTo(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodEnd()),
-					cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodEnd()));
-			Predicate frameNoCondition = cb.equal(root.get(EmployeeDataView_.tempAbsFrameNo), LEAVE_ABSENCE_QUOTA_NO);
-			workerOnLeaveCondition = cb.and(comDateCondition, absDateCondition, frameNoCondition);
-		}
-
-		// include occupancy condition
-		if (paramQuery.getIncludeOccupancy()) {
-			Predicate comDateCondition = cb.or(
-					cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodStart()),
-					cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodStart()),
-					cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comStrDate), paramQuery.getPeriodEnd()),
-					cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodEnd()));
-			Predicate absDateCondition = cb.or(
-					cb.lessThanOrEqualTo(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodStart()),
-					cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodStart()),
-					cb.lessThanOrEqualTo(root.get(EmployeeDataView_.absStrDate), paramQuery.getPeriodEnd()),
-					cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), paramQuery.getPeriodEnd()));
-			Predicate frameNoCondition = cb.notEqual(root.get(EmployeeDataView_.tempAbsFrameNo),
-					LEAVE_ABSENCE_QUOTA_NO);
-			occupancyCondition = cb.and(comDateCondition, absDateCondition, frameNoCondition);
-		}
-
-		// include retire condition
-		if (paramQuery.getIncludeRetirees()) {
-			retireCondition = cb.greaterThan(root.get(EmployeeDataView_.comEndDate), paramQuery.getRetireStart());
-		}
-
-		// set condition
-		statusOfEmployeeCondition = cb.or(incumbentCondition, workerOnLeaveCondition, occupancyCondition,
-				retireCondition);
-		conditions.add(statusOfEmployeeCondition);
 		cq.where(conditions.toArray(new Predicate[] {}));
 
 		// getSortConditions
 		List<Order> orders = new ArrayList<>();
 		List<BsymtEmpOrderCond> sortConditions = this.getSortConditions(comId, paramQuery.getSystemType(),
 				paramQuery.getSortOrderNo());
+
+		// sort by employee code
+		orders.add(cb.asc(root.get(EmployeeDataView_.scd)));
 
 		sortConditions.forEach(cond -> {
 			switch (cond.getId().getSearchType()) {
@@ -233,20 +192,28 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		// sort by worktype code
 		if (paramQuery.getSystemType() == SystemType.EMPLOYMENT.value) {
 			orders.add(cb.asc(root.get(EmployeeDataView_.workTypeCd)));
-		}
+		} 
 
-		// sort by employee code
-		orders.add(cb.asc(root.get(EmployeeDataView_.scd)));
 		cq.orderBy(orders);
 
 		// execute query & add to resultList
 		resultList.addAll(em.createQuery(cq).getResultList());
 
+		// Filter result list by status of employee
+		resultList = resultList.stream().filter(item -> item.isFiltered(paramQuery)).collect(Collectors.toList());
+
+		// Distinct employee in result list.
+		resultList = resultList.stream().filter(this.distinctByKey(EmployeeDataView::getSid))
+				.collect(Collectors.toList());
+
 		return resultList.stream().map(entity -> RegulationInfoEmployee.builder()
 				.classificationCode(Optional.ofNullable(entity.getClassificationCode())).employeeCode(entity.getScd())
 				.employeeID(entity.getSid()).employmentCode(Optional.ofNullable(entity.getEmpCd()))
-				.hireDate(Optional.ofNullable(entity.getComStrDate())).jobTitleCode(Optional.ofNullable(entity.getJobCd()))
-				.name(Optional.ofNullable(entity.getBusinessName())).workplaceCode(Optional.ofNullable(entity.getWplCd()))
+				.hireDate(Optional.ofNullable(entity.getComStrDate()))
+				.jobTitleCode(Optional.ofNullable(entity.getJobCd()))
+				.name(Optional.ofNullable(entity.getBusinessName()))
+				.workplaceId(Optional.ofNullable(entity.getWorkplaceId()))
+				.workplaceCode(Optional.ofNullable(entity.getWplCd()))
 				.workplaceName(Optional.ofNullable(entity.getWplName()))
 				.build()).collect(Collectors.toList());
 	}
@@ -263,6 +230,11 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		BsymtEmployeeOrderPK pk = new BsymtEmployeeOrderPK(comId, sortOrderNo, systemType);
 		Optional<BsymtEmployeeOrder> empOrder = this.queryProxy().find(pk, BsymtEmployeeOrder.class);
 		return empOrder.isPresent() ? empOrder.get().getLstBsymtEmpOrderCond() : Collections.emptyList();
+	}
+	
+	private <T> java.util.function.Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+	    Set<Object> seen = ConcurrentHashMap.newKeySet();
+	    return t -> seen.add(keyExtractor.apply(t));
 	}
 
 	/**

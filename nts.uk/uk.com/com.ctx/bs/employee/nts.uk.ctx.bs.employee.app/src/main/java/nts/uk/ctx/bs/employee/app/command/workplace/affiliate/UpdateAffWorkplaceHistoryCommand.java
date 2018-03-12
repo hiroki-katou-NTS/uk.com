@@ -35,4 +35,5 @@ public class UpdateAffWorkplaceHistoryCommand{
 	@PeregItem("IS00083")
 	/** 終了日 */
 	private GeneralDate endDate;
+	
 }

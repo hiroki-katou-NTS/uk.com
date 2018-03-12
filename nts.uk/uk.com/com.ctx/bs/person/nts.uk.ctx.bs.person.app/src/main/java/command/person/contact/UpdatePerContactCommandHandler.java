@@ -30,7 +30,6 @@ public class UpdatePerContactCommandHandler extends CommandHandler<UpdatePerCont
 	@Override
 	protected void handle(CommandHandlerContext<UpdatePerContactCommand> context) {
 		val command = context.getCommand();
-		
 		PersonContact perContact = new PersonContact(command.getPersonId(), command.getCellPhoneNumber(),
 				command.getMailAdress(), command.getMobileMailAdress(), command.getMemo1(), command.getContactName1(),
 				command.getPhoneNumber1(), command.getMemo2(), command.getContactName2(), command.getPhoneNumber2());

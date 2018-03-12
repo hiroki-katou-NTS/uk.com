@@ -1498,7 +1498,11 @@ public class ProgramsManager {
 	/**  KDW004 */
 	public static final Program KDW004A= new Program(WebAppId.AT, ProgramIdConsts.KDW004A, null,
 			"/view/kdw/004/a/index.xhtml");
-	
+	/**CMM045*/
+	public static final Program CMM045A= new Program(WebAppId.AT, ProgramIdConsts.CMM045A, "CMM045_1",
+			"/view/cmm/045/a/index.xhtml");
+	public static final Program CMM045B= new Program(WebAppId.AT, ProgramIdConsts.CMM045B, "CMM045_2",
+			"/view/cmm/045/b/index.xhtml");
 	/**
 	 * All programs map.
 	 */

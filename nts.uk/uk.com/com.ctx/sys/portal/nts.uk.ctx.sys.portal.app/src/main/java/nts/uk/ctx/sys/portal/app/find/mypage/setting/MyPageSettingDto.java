@@ -23,7 +23,7 @@ public class MyPageSettingDto {
 	private Integer useMyPage;
 
 	/** The use Standar widget. */
-	private Integer useStandardWidget;
+	private Integer useStandarWidget;
 	
 	/** The use Optional Widget. */
 	private Integer useOptionalWidget;
@@ -49,7 +49,7 @@ public class MyPageSettingDto {
 	public static MyPageSettingDto fromDomain(MyPageSetting myPageSetting) {
 		MyPageSettingDto myPageSettingDto = new MyPageSettingDto();
 		myPageSettingDto.useMyPage = myPageSetting.getUseMyPage().value;
-		myPageSettingDto.useStandardWidget = myPageSetting.getUseStandardWidget().value;
+		myPageSettingDto.useStandarWidget = myPageSetting.getUseStandarWidget().value;
 		myPageSettingDto.useOptionalWidget = myPageSetting.getUseOptionalWidget().value;
 		myPageSettingDto.useDashboard = myPageSetting.getUseDashboard().value;
 		myPageSettingDto.useFlowMenu = myPageSetting.getUseFlowMenu().value;

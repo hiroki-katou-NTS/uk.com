@@ -275,8 +275,7 @@
 												value: numericItemMin,
 												constraint: 'NumericItemMin',
 												option:  new nts.uk.ui.option.NumberEditorOption({
-												grouplength: 3,
-												decimalPart>8?8:decimalPart,
+												decimallength: decimalPart>8?8:decimalPart,
 									            	placeholder: '',
 									            	width: '80px',
 									            	textalign: 'left'
@@ -292,8 +291,8 @@
 												value: numericItemMax,
 												constraint: 'NumericItemMax',
 												option:  new nts.uk.ui.option.NumberEditorOption({
-												grouplength: 3,
-												decimalPart>8?8:decimalPart,
+												decimallength: decimalPart>8?8:decimalPart,
+												mantissaMaxLength: decimalPart>8?8:decimalPart,
 									            	placeholder: '',
 									            	width: '80px',
 									            	textalign: 'left'
@@ -313,6 +312,7 @@
 												option:  new nts.uk.ui.option.CurrencyEditorOption({
 													grouplength: 3,
 									            	decimallength: decimalPart>8?8:decimalPart,
+									            	mantissaMaxLength: decimalPart>8?8:decimalPart,
 									            	width: '70px',
 									            	textalign: 'left',
 									            	currencyformat: 'JPY',
@@ -331,6 +331,7 @@
 												option:  new nts.uk.ui.option.CurrencyEditorOption({
 													grouplength: 3,
 									            	decimallength: decimalPart>8?8:decimalPart,
+									            	mantissaMaxLength: decimalPart>8?8:decimalPart,
 									            	width: '70px',
 									            	textalign: 'left',
 									            	currencyformat: 'JPY',
@@ -395,8 +396,8 @@
 												value: numericItemMin,
 												constraint: 'NumericItemMin',
 												option: new nts.uk.ui.option.NumberEditorOption({
-							                        grouplength: 3,
 							                       decimallength: decimalPart>8?8:decimalPart,
+							                       mantissaMaxLength: decimalPart>8?8:decimalPart,
 							                        width: '75px',
 							                        textalign: 'left'
 							                    }),
@@ -411,8 +412,8 @@
 												value: numericItemMax,
 												constraint: 'NumericItemMax',
 												option:  new nts.uk.ui.option.NumberEditorOption({
-							                        grouplength: 3,
 							                        decimallength: decimalPart>8?8:decimalPart,
+							                        mantissaMaxLength: decimalPart>8?8:decimalPart,
 							                        width: '75px',
 							                        textalign: 'left'
 							                    }),
@@ -512,7 +513,7 @@
 										 		option: {
 								                    width: '65px',
 								                    placeholder: hintTimeMin,
-								                    timeWithDay: false
+								                    timeWithDay: true
 								                },
 												required: true,
 												enable: true,
@@ -526,7 +527,7 @@
 										 		option: {
 								                    width: '65px',
 								                    placeholder: hintTimeMax,
-								                    timeWithDay: false
+								                    timeWithDay: true
 								                },
 												required: true,
 												enable: true,

@@ -48,7 +48,7 @@ public class FileStorageWebService {
 		
 		val fileInfoOpt = FileStereoTypeDescriptionExtend.of(fileInfo.getFileType());
 		if (fileInfoOpt.isPresent()) {
-			if (fileInfoOpt.get().isPack()) {
+			if (fileInfoOpt.get().isFileOrKeepedPack()) {
 				return Response.status(404).build();
 			}
 		}
@@ -86,7 +86,7 @@ public class FileStorageWebService {
 	}
 	
 	@GET
-	@Path("liveview/{fileid}/{entry}")
+	@Path("liveview/{fileid}/{entry: .+}")
 	public Response liveviewZipEntry(@PathParam("fileid") String fileId, @PathParam("entry") String entryName) {
 		return this.fileInfoRepository.findZipEntry(fileId, entryName)
 				.map(fileInfo -> this.buildFileResponseInLine(fileInfo))

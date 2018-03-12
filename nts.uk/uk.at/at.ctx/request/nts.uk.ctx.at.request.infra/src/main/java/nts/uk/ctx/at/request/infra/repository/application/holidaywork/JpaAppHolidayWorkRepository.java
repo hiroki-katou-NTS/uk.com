@@ -23,7 +23,7 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 	static {
 		StringBuilder query = new StringBuilder();
 		query.append(FIND_ALL);
-		query.append(" WHERE e.krqdtAppHolidayWorkPk.cid = :companyID");
+		query.append(" WHERE e.krqdtAppHolidayWorkPK.cid = :companyID");
 		query.append(" AND e.krqdtAppHolidayWorkPK.appId = :appID");
 		FIND_BY_APPID = query.toString();
 	}
@@ -67,8 +67,8 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 				domain.getWorkClock1().getEndTime().v(),
 				domain.getWorkClock1().getGoAtr().value,
 				domain.getWorkClock1().getBackAtr().value,
-				domain.getWorkClock2().getStartTime().v(),
-				domain.getWorkClock2().getEndTime().v(),
+				domain.getWorkClock2().getStartTime() == null ? null : domain.getWorkClock2().getStartTime().v(),
+				domain.getWorkClock2().getEndTime() == null ? null : domain.getWorkClock2().getEndTime().v(),
 				domain.getWorkClock2().getGoAtr().value,
 				domain.getWorkClock2().getBackAtr().value,
 				domain.getDivergenceReason(),

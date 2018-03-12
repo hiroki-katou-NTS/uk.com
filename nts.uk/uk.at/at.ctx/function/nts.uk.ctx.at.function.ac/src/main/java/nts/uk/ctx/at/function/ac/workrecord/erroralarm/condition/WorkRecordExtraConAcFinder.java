@@ -13,8 +13,10 @@ import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.AttendanceItemConAda
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErAlAtdItemConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErAlConAttendanceItemAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErrorAlarmConAdapterDto;
+import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.MessageWRExtraConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.WorkTimeConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.WorkTypeConAdapterDto;
+import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.MessageWRExtraConPubExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.WorkRecordExtraConPub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.WorkRecordExtraConPubExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.find.AlarmCheckTargetConditionPubExport;
@@ -262,6 +264,19 @@ public class WorkRecordExtraConAcFinder implements WorkRecordExtraConAdapter {
 	public  List<String> addNewListErAl(List<WorkRecordExtraConAdapterDto> listErroAlarm) {
 		return this.repo.addNewListErAl(
 				listErroAlarm.stream().map(c->convertToExport(c)).collect(Collectors.toList())
+				);
+	}
+
+	@Override
+	public List<MessageWRExtraConAdapterDto> getMessageWRExtraConByListID(List<String> listErrorAlarmID) {
+		return repo.getMessageWRExtraConByListID(listErrorAlarmID)
+				.stream().map(c->convertToMessageEx(c)).collect(Collectors.toList());
+	}
+	
+	private MessageWRExtraConAdapterDto convertToMessageEx(MessageWRExtraConPubExport export) {
+		return new MessageWRExtraConAdapterDto(
+				export.getErrorAlarmCheckID(),
+				export.getDisplayMessage()
 				);
 	}
 

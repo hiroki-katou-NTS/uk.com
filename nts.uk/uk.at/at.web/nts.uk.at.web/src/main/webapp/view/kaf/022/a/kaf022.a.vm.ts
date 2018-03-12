@@ -138,7 +138,7 @@ module nts.uk.at.view.kmf022 {
             //a6
             listDataA6: KnockoutObservableArray<any>;
             //a7
-            listDataA7:KnockoutObservableArray<any>;
+            listDataA7: KnockoutObservableArray<any>;
             enableA7_17: KnockoutObservable<boolean>;
             enableA7_26: KnockoutObservable<boolean>;
             enableA7_31: KnockoutObservable<boolean>;
@@ -182,7 +182,7 @@ module nts.uk.at.view.kmf022 {
             selectedCodeA7_40: KnockoutObservable<number>;
             selectedCodeA7_41: KnockoutObservable<number>;
             //a8
-            listDataA8:KnockoutObservableArray<any>;
+            listDataA8: KnockoutObservableArray<any>;
             enableA8_29: KnockoutObservable<boolean>;
             enableA8_35: KnockoutObservable<boolean>;
             enableA8_36: KnockoutObservable<boolean>;
@@ -346,7 +346,7 @@ module nts.uk.at.view.kmf022 {
 
             //a13
             textEditorA13_4: KnockoutObservable<any>;
-            listDataA13 : KnockoutObservableArray<number>;
+            listDataA13: KnockoutObservableArray<number>;
 
             //a14
             itemListA14_3: KnockoutObservableArray<ItemModel>;
@@ -540,7 +540,7 @@ module nts.uk.at.view.kmf022 {
             selectedIdK21: KnockoutObservable<number>;
             itemListK22: KnockoutObservableArray<ItemModel>;
             selectedIdK22: KnockoutObservable<number>;
-            
+
             //appliSet 
             baseDateFlg: KnockoutObservable<number>;
             advanceExcessMessDispAtr: KnockoutObservable<number>;
@@ -641,7 +641,7 @@ module nts.uk.at.view.kmf022 {
                 self.selectedCodeA4_7 = ko.observable(0);
                 self.selectedCodeA4_8 = ko.observable(0);
                 self.isEnable = ko.observable(true);
-                self.isEditable = ko.observable(true);
+                self.isEditable = ko.observable(false);
                 self.dataA4Display = ko.observableArray([]);
                 self.sizeArrayA4 = ko.observable(0);
 
@@ -653,16 +653,15 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdA5_14 = ko.observable(0);
                 self.enableA5_14 = ko.observable(true);
                 self.itemListA5_16 = ko.observableArray([
-                    new ItemModel(0, '0'),
-                    new ItemModel(1, '1'),
-                    new ItemModel(2, '2'),
-                    new ItemModel(3, '3'),
-                    new ItemModel(4, '4'),
-                    new ItemModel(5, '5'),
-                    new ItemModel(6, '6'),
-                    new ItemModel(7, '7'),
+                    new ItemModel(1, '0'),
+                    new ItemModel(2, '1'),
+                    new ItemModel(3, '2'),
+                    new ItemModel(4, '3'),
+                    new ItemModel(5, '4'),
+                    new ItemModel(6, '5'),
+                    new ItemModel(7, '6'),
                 ]);
-                self.selectedCodeA5_16 = ko.observable(0);
+                self.selectedCodeA5_16 = ko.observable(1);
                 self.selectedIdA5_18 = ko.observable(0);
                 self.selectedIdA5_19 = ko.observable(0);
                 self.selectedIdA5_20 = ko.observable(0);
@@ -690,7 +689,7 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdA17_5 = ko.observable(0);
                 //a6
                 self.listDataA6 = ko.observableArray([]);
-                
+
                 //a7
                 self.listDataA7 = ko.observableArray([]);
                 self.enableA7_17 = ko.observable(false);
@@ -1255,13 +1254,13 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdD16 = ko.observable(0);
                 self.enableD15 = ko.observable(true);
 
-                self.selectedValueD13.subscribe((value) => {
-                    if (value == 1) {
-                        self.enableD15(true);
-                    } else {
-                        self.enableD15(false);
-                    }
-                });
+//                self.selectedValueD13.subscribe((value) => {
+//                    if (value == 1) {
+//                        self.enableD15(true);
+//                    } else {
+//                        self.enableD15(false);
+//                    }
+//                });
                 //e
                 self.itemListE9 = ko.observableArray([
                     new ItemModel(0, nts.uk.resource.getText('KAF022_195')),
@@ -1275,7 +1274,7 @@ module nts.uk.at.view.kmf022 {
                 ]);
                 self.selectedIdE10 = ko.observable(0);
                 self.selectedValueE11 = ko.observable(0);
-                self.enableE11_5 = ko.observable(false);
+                self.enableE11_5 = ko.observable(true);
                 self.itemListE12 = ko.observableArray([
                     new ItemModel(0, nts.uk.resource.getText('KAF022_173')),
                     new ItemModel(1, nts.uk.resource.getText('KAF022_174')),
@@ -1313,20 +1312,20 @@ module nts.uk.at.view.kmf022 {
                 self.valueE17 = ko.observable('');
                 self.enableE18 = ko.observable(false);
                 self.checkedE11_5 = ko.observable(false);
-                self.selectedValueE11.subscribe((newValue) => {
-                    if (newValue == 2) {
-                        self.enableE11_5(true);
-                    } else {
-                        self.enableE11_5(false);
-                    }
-                })
+//                self.selectedValueE11.subscribe((newValue) => {
+//                    if (newValue == 2) {
+//                        self.enableE11_5(true);
+//                    } else {
+//                        self.enableE11_5(false);
+//                    }
+//                })
                 //f
                 self.selectedIdF10 = ko.observable(0);
                 self.selectedIdF11 = ko.observable(0);
                 self.selectedIdF12 = ko.observable(0);
                 self.selectedValueF13 = ko.observable(0);
                 self.checkedF13_1 = ko.observable(false);
-                self.enableF13_1 = ko.observable(false);
+                self.enableF13_1 = ko.observable(true);
                 self.selectedIdF14 = ko.observable(0);
                 self.texteditorF15 = {
                     value: ko.observable(''),
@@ -1362,13 +1361,13 @@ module nts.uk.at.view.kmf022 {
                     new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
                     new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
                 ]);
-                self.selectedValueF13.subscribe((newValue) => {
-                    if (newValue == 2) {
-                        self.enableF13_1(true);
-                    } else {
-                        self.enableF13_1(false);
-                    }
-                })
+//                self.selectedValueF13.subscribe((newValue) => {
+//                    if (newValue == 2) {
+//                        self.enableF13_1(true);
+//                    } else {
+//                        self.enableF13_1(false);
+//                    }
+//                })
                 //g
                 self.itemListG16 = ko.observableArray([
                     new ItemModel(0, nts.uk.resource.getText('KAF022_221')),
@@ -1628,7 +1627,7 @@ module nts.uk.at.view.kmf022 {
                 self.appReasonDispAtr = ko.observable(0);
                 self.scheReflectFlg = ko.observable(0);
                 self.priorityTimeReflectFlg = ko.observable(0);
-                
+
                 self.start();
             }
 
@@ -1636,48 +1635,56 @@ module nts.uk.at.view.kmf022 {
                 var self = this;
                 var dfd = $.Deferred();
                 dfd.resolve();
-                self.initData();
+                self.loadData();
                 return dfd.promise();
             }
-            initData(): void {
+            loadData(): void {
                 let self = this;
-                self.initDataA4();
-                self.initDataA5();
-                self.initDataA6();
-                self.initDataA7AndA8();
-                self.initDataA10();
-                self.initDataA14();
-                self.initDataA16();
-                self.initDataA15();
-                self.initDataA17();
-
-                self.initDataB();
-                self.initDataC();
-                self.initDataD();
-                self.initDataF();
-                self.initDataE();
-                self.initDataG();
-                self.initDataH();
-                self.initDataI();
-                self.initDataJ();
-                self.initDataK();
+                nts.uk.ui.block.grayout();
+                service.findAllData().done((data: any)=> {
+                    self.initDataA4(data);
+                    self.initDataA5(data);
+                    self.initDataA6(data);
+                    self.initDataA7AndA8(data);
+                    self.initDataA10(data);
+                    self.initDataA13(data);
+                    self.initDataA14(data);
+                    self.initDataA16(data);
+                    self.initDataA15();
+                    self.initDataA17(data);
+    
+                    self.initDataB(data);
+                    self.initDataC(data);
+                    self.initDataD(data);
+                    self.initDataF(data);
+                    self.initDataE(data);
+                    self.initDataG(data);
+                    self.initDataH(data);
+                    self.initDataI(data);
+                    self.initDataJ(data);
+                    self.initDataK(data);
+                }).always(()=>{
+                    nts.uk.ui.block.clear();
+                    $("#a4_6").focus();
+                });
+                    
             }
-            initDataA4(): void {
+            initDataA4(allData: any): void {
                 let self = this;
                 // init data A4
                 self.dataA4Display([]);
                 self.sizeArrayA4(0);
-
-                service.findAllClosure().done( (data : any) => {
+                let data = allData.allClosure;
+                if (data) {
                     self.sizeArrayA4(data.length);
-                    _.forEach(data, element => {
-                        let name = element.id + "." + element.name;
-                        service.findApp(element.id).done((obj: any) => {
-                            if (obj) {
-                                self.dataA4Display.push(new ItemA4(element.id, name, obj.userAtr, obj.deadlineCriteria, obj.deadline));
-                            }else{
-                                self.dataA4Display.push(new ItemA4(element.id, name, 0, 0, 1));    
-                            }
+                    let ids = _.map(data, 'id');
+                    let closureId = {
+                        closureId:ids   
+                    };
+                    service.findApp(closureId).done((arr: any) => {
+                        _.forEach(arr, (obj: any, index: number) => {
+                            let name = obj.closureId + "." + _.find(data, ['id', obj.closureId]).name;
+                            self.dataA4Display.push(new ItemA4(obj.closureId, name, obj.userAtr, obj.deadlineCriteria, obj.deadline));
                             if (self.dataA4Display().length == data.length) {
                                 for (let i = data.length + 1; i <= 5; i++) {
                                     self.dataA4Display.push(new ItemA4(i, i + '.', 0, 0, 1));
@@ -1685,106 +1692,106 @@ module nts.uk.at.view.kmf022 {
                             }
                         });
                     });
-                });
-            }
-            initDataA5(): void {
-                let self = this;
-                service.findApproSet().done((data : any) => {
-                    if (data) {
-                        self.companyId(data.companyId);
-                        self.selectedIdA5_14(data.reasonDisp);
-                        self.selectedCodeA5_16(data.warnDateDisp);
-                        self.selectedIdA5_18(data.overtimePre);
-                        self.selectedIdA5_19(data.hdPre);
-                        self.selectedIdA5_20(data.msgAdvance);
-                        self.selectedIdA5_21(data.overtimePerfom);
-                        self.selectedIdA5_22(data.hdPerform);
-                        self.selectedIdA5_23(data.msgExceeded)
-                        self.selectedIdA5_24(data.scheduleCon);
-                        self.selectedIdA5_25(data.achiveCon);
-                    }
-                });
-            }
-            initDataA6(): void {
-                let self = this;
-                let listAppType = __viewContext.enums.ApplicationType;
-                service.findDisp().done((data : any) => {
-                    if (data) {
-                        _.forEach(listAppType, (appType) => {
-                            let obj: any = _.find(data, ['appType', appType.value]);
-                            if (obj) {
-                                self.listDataA6.push(new ItemA6(self.companyId(), appType.name, obj.dispName, appType.value));
-                            } else {
-                                self.listDataA6.push(new ItemA6(self.companyId(), appType.name, '', appType.value));
-                            }
-                        });
-                    }
-                });
-            }
-            initDataA7AndA8(): void {
-                let self = this;
-                let listAppType = __viewContext.enums.ApplicationType;
-                service.findBfReqSet().done((data: any) => {
-                    if (data) {
-                        _.forEach(listAppType, (appType) => {
-                            let obj: any = _.find(data.beforeAfter, ['appType', appType.value]);
-                            if (obj) {
-                                self.listDataA7.push(new ItemA7(self.companyId, appType.name, appType.value, obj.retrictPreUseFlg, obj.retrictPreMethodFlg,
-                                    obj.retrictPreDay, obj.retrictPreTimeDay, obj.retrictPostAllowFutureFlg));
-                            } else {
-                                self.listDataA7.push(new ItemA7(self.companyId, appType.name, appType.value, 0, 0, 0, 0, 0));
-                            }
-                            let obj1: any = _.find(data.appType, ['appType', appType.value]);
-                            if (obj1) {
-                                self.listDataA8.push(new ItemA8(self.companyId(), appType.value, obj1.displayFixedReason, obj1.displayAppReason,
-                                    obj1.sendMailWhenRegister, obj1.sendMailWhenApproval, obj1.displayInitialSegment,
-                                    obj1.canClassificationChange, appType.name));
-                            } else {
-                                self.listDataA8.push(new ItemA8(self.companyId(), appType.value, 0, 0, 0, 0, 0, 0, appType.name));
-                            }
-                        });
-                    }
                 }
             }
-            initDataA10(): void {
+            
+            initDataA5(allData:any): void {
                 let self = this;
-                service.findAppCom().done((data : any) => {
-                    if (data) {
-                        self.selectedIdA10_3(data.showWkpNameBelong);
-                    }
-                });
+                let data = allData.appSet;
+                if(data) {
+                    self.companyId(data.companyId);
+                    self.selectedIdA5_14(data.reasonDisp);
+                    self.selectedCodeA5_16(data.warnDateDisp);
+                    self.selectedIdA5_18(data.overtimePre);
+                    self.selectedIdA5_19(data.hdPre);
+                    self.selectedIdA5_20(data.msgAdvance);
+                    self.selectedIdA5_21(data.overtimePerfom);
+                    self.selectedIdA5_22(data.hdPerform);
+                    self.selectedIdA5_23(data.msgExceeded)
+                    self.selectedIdA5_24(data.scheduleCon);
+                    self.selectedIdA5_25(data.achiveCon);
+                }
             }
-            initDataA13():void{
+            initDataA6(allData:any): void {
                 let self = this;
                 let listAppType = __viewContext.enums.ApplicationType;
-                serivce.findAllPro().done((data : any)=>{
-                    let dataA13 : string = '';
-                    if(data){
-                        self.listDataA13(_.map(data,['appType']));
-                        _.forEach(listAppType, (appType) => {
-                             let obj: any = _.find(data, ['appType', appType.value]);
-                             if(obj){
-                                dataA13 += appType.name;
-                             }
-                        });   
-                    }
-                    self.textEditorA13_4(dataA13);  
-                })    
+                self.listDataA6([]);
+                let data = allData.appName;
+                if(data) {
+                    _.forEach(listAppType, (appType) => {
+                        let obj: any = _.find(data, ['appType', appType.value]);
+                        if (obj) {
+                            self.listDataA6.push(new ItemA6(self.companyId(), appType.name, obj.dispName, appType.value));
+                        } else {
+                            self.listDataA6.push(new ItemA6(self.companyId(), appType.name, '', appType.value));
+                        }
+                    });
+                }
             }
-            initDataA14(): void {
+            initDataA7AndA8(allData:any): void {
                 let self = this;
-                service.findJobAssign().done((data : any) => {
-                    if (data) {
-                        self.selectedIdA14_3(data.isConcurrently ? 1 : 0);
-                    }
-                });
+                let listAppType = __viewContext.enums.ApplicationType;
+                self.listDataA7([]);
+                self.listDataA8([])
+                let data = allData.appBf;
+                if(data) {
+                    _.forEach(listAppType, (appType: any) => {
+                        let obj: any = _.find(data.beforeAfter, ['appType', appType.value]);
+                        if (obj) {
+                            self.listDataA7.push(new ItemA7(self.companyId(), appType.name, appType.value, obj.retrictPreUseFlg, obj.retrictPreMethodFlg,
+                                obj.retrictPreDay, obj.retrictPreTimeDay, obj.retrictPostAllowFutureFlg));
+                        } else {
+                            self.listDataA7.push(new ItemA7(self.companyId(), appType.name, appType.value, 0, 0, 0, 0, 0));
+                        }
+                        let obj1: any = _.find(data.appType, ['appType', appType.value]);
+                        if (obj1) {
+                            self.listDataA8.push(new ItemA8(self.companyId(), appType.value, obj1.displayFixedReason, obj1.displayAppReason,
+                                obj1.sendMailWhenRegister, obj1.sendMailWhenApproval, obj1.displayInitialSegment,
+                                obj1.canClassificationChange, appType.name));
+                        } else {
+                            self.listDataA8.push(new ItemA8(self.companyId(), appType.value, 0, 0, 0, 0, 0, 0, appType.name));
+                        }
+                    });
+                }
+            }
+            initDataA10(allData:any): void {
+                let self = this;
+                let data = allData.appCommon;
+                if(data) {
+                    self.selectedIdA10_3(data.showWkpNameBelong);
+                }
+            }
+            initDataA13(allData:any): void {
+                let self = this;
+                let listAppType = __viewContext.enums.ApplicationType;
+                self.listDataA13([]);
+                let data = allData.proxy;
+                let dataA13: Array<any> = [];
+                if(data) {
+                    self.listDataA13(_.map(data, 'appType'));
+                    _.forEach(listAppType, (appType) => {
+                        let obj: any = _.find(data, ['appType', appType.value]);
+                        if (obj) {
+                            dataA13.push(appType.name);
+                        }
+                    });
+                }
+                self.textEditorA13_4(dataA13.join(" + "));
+            }
+            initDataA14(allData:any): void {
+                let self = this;
+                let data = allData.jobAssign;
+                if(data) {
+                    self.selectedIdA14_3(data.isConcurrently ? 1 : 0);
+                }
             }
             initDataA15(): void {
                 let self = this;
                 let date = {
                     baseDate: new Date().toISOString()
                 };
-                service.findJobId(date).done((data : any) => {
+                self.listDataA15([]);
+                service.findJobId(date).done((data: any) => {
                     if (data) {
                         let jobIds = _.map(data, 'id');
 
@@ -1795,9 +1802,9 @@ module nts.uk.at.view.kmf022 {
                             _.forEach(data, element => {
                                 let finder = _.find(obj, ['jobId', element.id]);
                                 if (finder) {
-                                    self.listDataA15.push(new ItemA15(element.name, finder.searchSetFlg));
+                                    self.listDataA15.push(new ItemA15(element.id, element.name, finder.searchSetFlg));
                                 } else {
-                                    self.listDataA15.push(new ItemA15(element.name, 1));
+                                    self.listDataA15.push(new ItemA15(element.id, element.name, 1));
                                 }
                             });
                         });
@@ -1805,270 +1812,256 @@ module nts.uk.at.view.kmf022 {
                 });
             }
 
-            initDataA16(): void {
+            initDataA16(allData:any): void {
                 let self = this;
-                service.findMail().done((data : any) => {
-                    if (data) {
-                        self.texteditorA16_7.value(data.subject);
-                        self.texteditorA16_8.value(data.content);
-                    }
-                });
-                service.findOt().done((data : any) => {
-                    if (data) {
-                        self.texteditorA16_9.value(data.subject);
-                        self.texteditorA16_10.value(data.content);
-                    }
-                });
-                service.findTemp().done((data : any) => {
-                    if (data) {
-                        self.texteditorA16_11.value(data.content);
-                    }
-                });
+                let dataMailHd = allData.mailHd;
+                if(dataMailHd) {
+                    self.texteditorA16_7.value(dataMailHd.subject);
+                    self.texteditorA16_8.value(dataMailHd.content);
+                }
+                 let dataMailOt = allData.mailOt; 
+                if(dataMailOt) {
+                    self.texteditorA16_9.value(dataMailOt.subject);
+                    self.texteditorA16_10.value(dataMailOt.content);
+                }
+                let dataAppTemp = allData.appTemp;
+                if(dataAppTemp) {
+                    self.texteditorA16_11.value(dataAppTemp.content);
+                }
             }
 
-            initDataA17(): void {
+            initDataA17(allData:any): void {
                 let self = this;
-                service.findAppro().done((data : any) => {
-                    if (data) {
-                        self.selectedIdA17_5(data.prinFlg);
+                let dataAppro = allData.approvalSettingDto;
+                    if (dataAppro) {
+                        self.selectedIdA17_5(dataAppro.prinFlg);
                     }
-                });
-                service.findAppSet().done((data : any) => {
-                    if (data) {
-                        self.selectedIdA17_4(data.appContentChangeFlg);
-                        self.selectedIdA9_5(data.attendentTimeReflectFlg);
-                        self.selectedIdA11_8(data.appActMonthConfirmFlg);
-                        self.selectedIdA11_9(data.appOvertimeNightFlg);
-                        self.selectedIdA11_10(data.appActLockFlg);
-                        self.selectedIdA11_11(data.appEndWorkFlg);
-                        self.selectedIdA11_12(data.requireAppReasonFlg);
-                        self.selectedIdA11_13(data.appActConfirmFlg);
-                        self.selectedIdA12_5(data.displayPrePostFlg);
-                        self.selectedIdA12_6(data.displaySearchTimeFlg);
-                        self.selectedIdA12_7(data.manualSendMailAtr);
-                        self.baseDateFlg(data.baseDateFlg);
-                        self.advanceExcessMessDispAtr(data.advanceExcessMessDispAtr);
-                        self.hwAdvanceDispAtr(data.hwAdvanceDispAtr);
-                        self.hwActualDispAtr(data.hwActualDispAtr);
-                        self.actualExcessMessDispAtr(data.actualExcessMessDispAtr);
-                        self.otAdvanceDispAtr(data.otAdvanceDispAtr);
-                        self.otActualDispAtr(data.otActualDispAtr);
-                        self.warningDateDispAtr(data.warningDateDispAtr);
-                        self.appReasonDispAtr(data.appReasonDispAtr);
-                        self.scheReflectFlg(data.scheReflectFlg);
-                        self.priorityTimeReflectFlg(data.priorityTimeReflectFlg);
+                let dataAppSet = allData.appliSet;
+                    if (dataAppSet) {
+                        self.selectedIdA17_4(dataAppSet.appContentChangeFlg);
+                        self.selectedIdA9_5(dataAppSet.attendentTimeReflectFlg);
+                        self.selectedIdA11_8(dataAppSet.appActMonthConfirmFlg);
+                        self.selectedIdA11_9(dataAppSet.appOvertimeNightFlg);
+                        self.selectedIdA11_10(dataAppSet.appActLockFlg);
+                        self.selectedIdA11_11(dataAppSet.appEndWorkFlg);
+                        self.selectedIdA11_12(dataAppSet.requireAppReasonFlg);
+                        self.selectedIdA11_13(dataAppSet.appActConfirmFlg);
+                        self.selectedIdA12_5(dataAppSet.displayPrePostFlg);
+                        self.selectedIdA12_6(dataAppSet.displaySearchTimeFlg);
+                        self.selectedIdA12_7(dataAppSet.manualSendMailAtr);
+                        self.baseDateFlg(dataAppSet.baseDateFlg);
+                        self.advanceExcessMessDispAtr(dataAppSet.advanceExcessMessDispAtr);
+                        self.hwAdvanceDispAtr(dataAppSet.hwAdvanceDispAtr);
+                        self.hwActualDispAtr(dataAppSet.hwActualDispAtr);
+                        self.actualExcessMessDispAtr(dataAppSet.actualExcessMessDispAtr);
+                        self.otAdvanceDispAtr(dataAppSet.otAdvanceDispAtr);
+                        self.otActualDispAtr(dataAppSet.otActualDispAtr);
+                        self.warningDateDispAtr(dataAppSet.warningDateDispAtr);
+                        self.appReasonDispAtr(dataAppSet.appReasonDispAtr);
+                        self.selectedIdA9_8(dataAppSet.scheReflectFlg);
+                        self.selectedIdA9_9(dataAppSet.priorityTimeReflectFlg);
                     }
-                });
             }
-            initDataB(): void {
+            initDataB(allData:any): void {
                 let self = this;
-                service.findOvertime().done((data : any) => {
-                    if (data) {
-                        self.selectedIdB18(data.flexExcessUseSetAtr);
-                        self.selectedIdB19(data.priorityStampSetAtr);
-                        self.selectedIdB21(data.preTypeSiftReflectFlg);
-                        self.selectedIdB23(data.preOvertimeReflectFlg);
-                        self.selectedIdB25(data.postTypesiftReflectFlg);
-                        self.selectedIdB27(data.postWorktimeReflectFlg);
-                        self.selectedIdB29(data.postBreakReflectFlg);
-                        self.selectedCodeB30(data.attendanceId);
-                        self.selectedIdB31(data.calendarDispAtr);
-                        self.selectedIdB32(data.instructExcessOtAtr);
-                        self.selectedCodeB33(data.unitAssignmentOvertime);
-                        self.selectedIdB34(data.useOt);
-                        self.selectedIdB35(data.earlyOverTimeUseAtr);
-                        self.selectedIdB36(data.normalOvertimeUseAtr);
-                    }
-                });
+                let data = allData.appOt;
+                if(data) {
+                    self.selectedIdB18(data.flexExcessUseSetAtr);
+                    self.selectedIdB19(data.priorityStampSetAtr);
+                    self.selectedIdB21(data.preTypeSiftReflectFlg);
+                    self.selectedIdB23(data.preOvertimeReflectFlg);
+                    self.selectedIdB25(data.postTypesiftReflectFlg);
+                    self.selectedIdB27(data.postWorktimeReflectFlg);
+                    self.selectedIdB29(data.postBreakReflectFlg);
+                    self.selectedCodeB30(data.attendanceId);
+                    self.selectedIdB31(data.calendarDispAtr);
+                    self.selectedIdB32(data.instructExcessOtAtr);
+                    self.selectedCodeB33(data.unitAssignmentOvertime);
+                    self.selectedIdB34(data.useOt);
+                    self.selectedIdB35(data.earlyOverTimeUseAtr);
+                    self.selectedIdB36(data.normalOvertimeUseAtr);
+                }
             }
-            initDataC(): void {
+            initDataC(allData:any): void {
                 let self = this;
-                service.findAllVaca().done((data : any) => {
-                    if (data) {
-                        self.selectedIdC27(data.wrkHours);
-                        self.selectedIdC28(data.actualDisp);
-                        self.selectedIdC29(data.appDateContra);
-                        self.selectedIdC30(data.concheckOutLegal);
-                        self.selectedIdC31(data.concheckDateRelease);
-                        self.selectedIdC32(data.ckuperLimit);
-                        self.selectedIdC33(data.regisNumYear);
-                        self.selectedIdC34(data.regisShortLostHd);
-                        self.selectedIdC35(data.regisShortReser);
-                        self.selectedIdC36(data.regisLackPubHd);
-                        self.selectedIdC37(data.regisInsuff);
-                        self.selectedIdC38(data.useYear);
-                        self.selectedIdC39(data.use60h);
-                        self.selectedIdC40(data.useGener);
-                        self.texteditorC41.value(data.yearHdName);
-                        self.texteditorC42.value(data.obstacleName);
-                        self.texteditorC43.value(data.absenteeism);
-                        self.texteditorC44.value(data.specialVaca);
-                        self.texteditorC45.value(data.yearResig);
-                        self.texteditorC46.value(data.hdName);
-                        self.texteditorC47.value(data.timeDigest);
-                        self.selectedIdC48(data.changeWrkHour);
-                        self.selectedIdC49(data.pridigCheck);
-                        self.texteditorC51.value(data.furikyuName);
-                    }
-                });
+                let data = allData.hdSet;
+                if(data) {
+                    self.selectedIdC27(data.wrkHours);
+                    self.selectedIdC28(data.actualDisp);
+                    self.selectedIdC29(data.appDateContra);
+                    self.selectedIdC30(data.concheckOutLegal);
+                    self.selectedIdC31(data.concheckDateRelease);
+                    self.selectedIdC32(data.ckuperLimit);
+                    self.selectedIdC33(data.regisNumYear);
+                    self.selectedIdC34(data.regisShortLostHd);
+                    self.selectedIdC35(data.regisShortReser);
+                    self.selectedIdC36(data.regisLackPubHd);
+                    self.selectedIdC37(data.regisInsuff);
+                    self.selectedIdC38(data.useYear);
+                    self.selectedIdC39(data.use60h);
+                    self.selectedIdC40(data.useGener);
+                    self.texteditorC41.value(data.yearHdName);
+                    self.texteditorC42.value(data.obstacleName);
+                    self.texteditorC43.value(data.absenteeism);
+                    self.texteditorC44.value(data.specialVaca);
+                    self.texteditorC45.value(data.yearResig);
+                    self.texteditorC46.value(data.hdName);
+                    self.texteditorC47.value(data.timeDigest);
+                    self.selectedIdC48(data.changeWrkHour);
+                    self.selectedIdC49(data.pridigCheck);
+                    self.texteditorC51.value(data.furikyuName);
+                }
             }
-            initDataD(): void {
+            initDataD(allData:any): void {
                 let self = this;
-                service.findWorkChange().done((data : any) => {
-                    if (data) {
-                        self.selectedIdD8(data.displayResultAtr);
-                        self.valueD10(data.commentFontColor1);
-                        self.enableD11(data.commentFontWeight1);
-                        self.texteditorD9.value(data.commentContent1);
-                        self.valueD10_1(data.commentFontColor2);
-                        self.enableD11_1(data.commentFontWeight2);
-                        self.texteditorD12.value(data.commentContent2);
-                        self.selectedValueD13(data.workChangeTimeAtr);
-                        self.selectedIdD15(data.initDisplayWorktime);
-                        self.selectedIdD16(data.excludeHoliday);
-                    }
-                });
+                let data = allData.appChange;
+                if(data) {
+                    self.selectedIdD8(data.displayResultAtr);
+                    self.valueD10(data.commentFontColor1);
+                    self.enableD11(data.commentFontWeight1);
+                    self.texteditorD9.value(data.commentContent1);
+                    self.valueD10_1(data.commentFontColor2);
+                    self.enableD11_1(data.commentFontWeight2);
+                    self.texteditorD12.value(data.commentContent2);
+                    self.selectedValueD13(data.workChangeTimeAtr);
+                    self.selectedIdD15(data.initDisplayWorktime);
+                    self.selectedIdD16(data.excludeHoliday);
+                }
             }
 
-            initDataF(): void {
+            initDataF(allData:any): void {
                 let self = this;
-                service.findDirectlycommon().done((data : any) => {
-                    if (data) {
-                        self.selectedIdF10(data.workType);
-                        self.selectedIdF11(data.performanceDisplayAtr);
-                        self.selectedIdF12(data.contraditionCheckAtr);
-                        self.selectedValueF13(data.workChangeFlg);
-                        self.checkedF13_1(data.workChangeTimeAtr == 1 ? true : false);
-                        self.selectedIdF14(data.lateLeaveEarlySetAtr);
-                        self.texteditorF15.value(data.commentContent1);
-                        self.valueF15_1(data.commentFontColor1);
-                        self.enableF15_2(data.commentFontWeight1 == 1 ? true : false);
-                        self.texteditorF16.value(data.commentContent2);
-                        self.valueF16_1(data.commentFontColor2);
-                        self.enableF16_1(data.commentFontWeight2 == 1 ? true : false);
-                    }
-                });
+                let data = allData.goBack;
+                if(data) {
+                    self.selectedIdF10(data.workType);
+                    self.selectedIdF11(data.performanceDisplayAtr);
+                    self.selectedIdF12(data.contraditionCheckAtr);
+                    self.selectedValueF13(data.workChangeFlg);
+                    self.checkedF13_1(data.workChangeTimeAtr == 1 ? true : false);
+                    self.selectedIdF14(data.lateLeaveEarlySetAtr);
+                    self.texteditorF15.value(data.commentContent1);
+                    self.valueF15_1(data.commentFontColor1);
+                    self.enableF15_2(data.commentFontWeight1 == 1 ? true : false);
+                    self.texteditorF16.value(data.commentContent2);
+                    self.valueF16_1(data.commentFontColor2);
+                    self.enableF16_1(data.commentFontWeight2 == 1 ? true : false);
+                }
             }
-            initDataE(): void {
+            initDataE(allData:any): void {
                 let self = this;
-                service.findTrip().done((data : any) => {
-                    if (data) {
-                        self.selectedIdE9(data.workType);
-                        self.selectedIdE10(data.contractCheck);
-                        self.selectedValueE11(data.workChange);
-                        self.checkedE11_5(data.WorkChangeAppTime);
-                        self.selectedIdE12(data.lateLeave);
-                        self.texteditorE13.value(data.comment1);
-                        self.texteditorE16.value(data.comment2);
-                    }
-                });
+                let data = allData.tripReq;
+                if(data) {
+                    self.selectedIdE9(data.workType);
+                    self.selectedIdE10(data.contractCheck);
+                    self.selectedValueE11(data.workChange);
+                    self.checkedE11_5(data.workChangeTime == 1 ? true : false);
+                    self.selectedIdE12(data.lateLeave);
+                    self.texteditorE13.value(data.comment1);
+                    self.texteditorE16.value(data.comment2);
+                    self.valueE14(data.color1);
+                    self.enableE15(data.weight1);
+                    self.valueE17(data.color2);
+                    self.enableE18(data.weight2);
+                }
             }
-            initDataG(): void {
+            initDataG(allData:any): void {
                 let self = this;
-                service.findWith().done((data : any) => {
-                    if (data) {
-                        self.selectedIdG16(data.typePaidLeave);
-                        self.selectedIdG18(data.restTime);
-                        self.selectedIdG20(data.workTime);
-                        self.selectedIdG22(data.breakTime);
-                        self.selectedIdG23(data.checkOut);
-                        self.selectedIdG24(data.workChange);
-                        self.selectedIdG25(data.timeInit);
-                        self.selectedIdG26(data.checkHdTime);
-                        self.selectedIdG27(data.prefixLeave);
-                        self.selectedIdG28(data.directDivi);
-                        self.selectedIdG29(data.bounSeg);
-                    }
-                });
+                let data = allData.wdApp;
+                if(data) {
+                    self.selectedIdG16(data.typePaidLeave);
+                    self.selectedIdG18(data.restTime);
+                    self.selectedIdG20(data.workTime);
+                    self.selectedIdG22(data.breakTime);
+                    self.selectedIdG23(data.checkOut);
+                    self.selectedIdG24(data.workChange);
+                    self.selectedIdG25(data.timeInit);
+                    self.selectedIdG26(data.checkHdTime);
+                    self.selectedIdG27(data.prefixLeave);
+                    self.selectedIdG28(data.directDivi);
+                    self.selectedIdG29(data.bounSeg);
+                }
             }
-            initDataJ(): void {
+            initDataJ(allData:any): void {
                 let self = this;
-                service.findStamp().done((data : any) => {
-                    if (data) {
-                        self.selectedCodeJ18(data.supFrameDispNO);
-                        self.selectedIdJ19(data.resultDisp);
-                        self.selectedIdJ20(data.stampAtr_Work_Disp);
-                        self.selectedIdJ21(data.stampAtr_GoOut_Disp);
-                        self.selectedIdJ22(data.stampAtr_Care_Disp);
-                        self.selectedIdJ23(data.stampAtr_Sup_Disp);
-                        self.selectedIdJ24(data.stampAtr_Child_Care_Disp);
-                        self.selectedIdJ25(data.stampGoOutAtr_Private_Disp);
-                        self.selectedIdJ26(data.stampGoOutAtr_Public_Disp);
-                        self.selectedIdJ27(data.stampGoOutAtr_Compensation_Disp);
-                        self.selectedIdJ28(data.stampGoOutAtr_Union_Disp);
-                        self.texteditorJ29.value(data.topComment);
-                        self.texteditorJ32.value(data.bottomComment);
-                        //self.valueJ30(data.topCommentFontColor);
-                        //self.valueJ30_1(data.bottomCommentFontColor);
-                        //self.enableJ31(data.topCommentFontWeight);
-                        //self.enableJ31_1(data.bottomCommentFontWeight);
+                let data = allData.stampReq;
+                if(data) {
+                    self.selectedCodeJ18(data.supFrameDispNO);
+                    self.selectedIdJ19(data.resultDisp);
+                    self.selectedIdJ20(data.stampAtr_Work_Disp);
+                    self.selectedIdJ21(data.stampAtr_GoOut_Disp);
+                    self.selectedIdJ22(data.stampAtr_Care_Disp);
+                    self.selectedIdJ23(data.stampAtr_Sup_Disp);
+                    self.selectedIdJ24(data.stampAtr_Child_Care_Disp);
+                    self.selectedIdJ25(data.stampGoOutAtr_Private_Disp);
+                    self.selectedIdJ26(data.stampGoOutAtr_Public_Disp);
+                    self.selectedIdJ27(data.stampGoOutAtr_Compensation_Disp);
+                    self.selectedIdJ28(data.stampGoOutAtr_Union_Disp);
+                    self.texteditorJ29.value(data.topComment);
+                    self.texteditorJ32.value(data.bottomComment);
+                    self.valueJ30(data.topCommentFontColor);
+                    self.valueJ30_1(data.bottomCommentFontColor);
+                    self.enableJ31(data.topCommentFontWeight);
+                    self.enableJ31_1(data.bottomCommentFontWeight);
 
-                        //e
-                        self.valueE14(data.topCommentFontColor);
-                        self.enableE15(data.topCommentFontWeight);
-                        self.valueE17(data.bottomCommentFontColor);
-                        self.enableE18(data.bottomCommentFontWeight);
-                    }
-                });
+                }
             }
-            initDataH(): void {
+            initDataH(allData:any): void {
                 let self = this;
-                service.findTimeHd().done((data : any) => {
-                    if (data) {
-                        self.selectedIdH15(data.actualDisp);
-                        self.selectedIdH16(data.checkOver);
-                        self.selectedIdH17(data.checkDay);
-                        self.selectedIdH18(data.useTimeYear);
-                        self.selectedIdH19(data.use60h);
-                        self.selectedIdH20(data.useTimeHd);
-                        self.enableH21(data.useBefore == 1 ? true : false);
-                        self.texteditorH22.value(data.nameBefore);
-                        self.enableH23(data.useAfter == 1 ? true : false);
-                        self.texteditorH23_1.value(data.nameAfter);
-                        self.enableH24(data.useAttend2 == 1 ? true : false);
-                        self.texteditorH24_1.value(data.nameBefore2);
-                        self.enableH25(data.useAfter2 == 1 ? true : false);
-                        self.texteditorH25_1.value(data.nameAfter2);
-                        self.enableH26(data.usePrivate == 1 ? true : false);
-                        self.texteditorH26_1.value(data.privateName);
-                        self.enableH27(data.unionLeave == 1 ? true : false);
-                        self.texteditorH27_1.value(data.unionName);
-                    }
-                });
+                let data = allData.timeHd;
+                if(data) {
+                    self.selectedIdH15(data.actualDisp);
+                    self.selectedIdH16(data.checkOver);
+                    self.selectedIdH17(data.checkDay);
+                    self.selectedIdH18(data.useTimeYear);
+                    self.selectedIdH19(data.use60h);
+                    self.selectedIdH20(data.useTimeHd);
+                    self.enableH21(data.useBefore == 1 ? true : false);
+                    self.texteditorH22.value(data.nameBefore);
+                    self.enableH23(data.useAfter == 1 ? true : false);
+                    self.texteditorH23_1.value(data.nameAfter);
+                    self.enableH24(data.useAttend2 == 1 ? true : false);
+                    self.texteditorH24_1.value(data.nameBefore2);
+                    self.enableH25(data.useAfter2 == 1 ? true : false);
+                    self.texteditorH25_1.value(data.nameAfter2);
+                    self.enableH26(data.usePrivate == 1 ? true : false);
+                    self.texteditorH26_1.value(data.privateName);
+                    self.enableH27(data.unionLeave == 1 ? true : false);
+                    self.texteditorH27_1.value(data.unionName);
+                }
             }
-            initDataK(): void {
+            initDataK(allData:any): void {
                 let self = this;
-                service.findDraw().done((data : any) => {
-                    if (data) {
-                        self.selectedIdK12(data.deferredWorkTimeSelect);
-                        self.selectedIdK13(data.simulAppliReq);
-                        self.selectedIdK14(data.lettleSuperLeave);
-                        self.selectedIdK15(data.useAtr);
-                        self.selectedIdK16(data.checkUpLimitHalfDayHD);
-                        self.texteditorK17.value(data.pickUpComment);
-                        self.valueK18(data.pickUpLettleColor);
-                        self.enableK19(data.pickUpBold);
-                        self.texteditorK20.value(data.deferredComment);
-                        self.valueK18_1(data.deferredLettleColor);
-                        self.enableK19_1(data.deferredBold);
-                        self.selectedIdK21(data.permissionDivision);
-                        self.selectedIdK22(data.appliDateContrac);
-                    }
-                });
+                let data = allData.wdReq;
+                if(data) {
+                    self.selectedIdK12(data.deferredWorkTimeSelect);
+                    self.selectedIdK13(data.simulAppliReq);
+                    self.selectedIdK14(data.lettleSuperLeave);
+                    self.selectedIdK15(data.useAtr);
+                    self.selectedIdK16(data.checkUpLimitHalfDayHD);
+                    self.texteditorK17.value(data.pickUpComment);
+                    self.valueK18(data.pickUpLettleColor);
+                    self.enableK19(data.pickUpBold);
+                    self.texteditorK20.value(data.deferredComment);
+                    self.valueK18_1(data.deferredLettleColor);
+                    self.enableK19_1(data.deferredBold);
+                    self.selectedIdK21(data.permissionDivision);
+                    self.selectedIdK22(data.appliDateContrac);
+                }
             }
-            initDataI(): void {
+            initDataI(allData:any): void {
                 let self = this;
-                service.findLateEarly().done((data : any) => {
-                    if(data){
-                        self.selectedIdI4(data.showResult);
-                    }
-                });
+                let data = allData.lateEarly;
+                if(data) {
+                    self.selectedIdI4(data.showResult);
+                }
             }
             save(): void {
                 let self = this;
                 self.saveDataAt();
             }
             saveDataAt(): void {
+                if (nts.uk.ui.errors.hasError()){return;}
+                nts.uk.ui.block.invisible();
                 let self = this;
                 let data: any = {};
                 let dataA4 = [];
@@ -2080,7 +2073,7 @@ module nts.uk.at.view.kmf022 {
                         deadline: self.dataA4Display()[i].a4_8()
                     });
                 }
-                data.appDead = dataA4; //done
+                data.appDead = dataA4;  
                 data.appSet = {
                     companyId: self.companyId(),
                     reasonDisp: self.selectedIdA5_14(),
@@ -2093,12 +2086,12 @@ module nts.uk.at.view.kmf022 {
                     msgExceeded: self.selectedIdA5_23(),
                     scheduleCon: self.selectedIdA5_24(),
                     achiveCon: self.selectedIdA5_25(),
-                    //done
+                     
                 };
                 data.appCommon = {
                     companyId: self.companyId(),
                     showWkpNameBelong: self.selectedIdA10_3(),
-                    //done
+                     
                 };
                 data.proxy = {
                     companyId: self.companyId(),
@@ -2109,32 +2102,32 @@ module nts.uk.at.view.kmf022 {
                     companyId: self.companyId(),
                     subject: self.texteditorA16_7.value(),
                     content: self.texteditorA16_8.value()
-                    //done
+                     
                 };
                 data.mailOt = {
                     companyId: self.companyId(),
                     subject: self.texteditorA16_9.value(),
                     content: self.texteditorA16_10.value()
-                    //done    
+                         
                 };
                 data.appTemp = {
                     companyId: self.companyId(),
                     content: self.texteditorA16_11.value()
-                    //done    
+                         
                 };
                 data.appliSet = {
                     companyId: self.companyId(),
-                    baseDateFlg:self.baseDateFlg(),
-                    advanceExcessMessDispAtr:self.advanceExcessMessDispAtr(),
-                    hwAdvanceDispAtr:self.hwAdvanceDispAtr(),
-                    hwActualDispAtr:self.hwActualDispAtr(),
-                    actualExcessMessDispAtr:self.actualExcessMessDispAtr(),
-                    otAdvanceDispAtr:self.otAdvanceDispAtr(),
-                    otActualDispAtr:self.otActualDispAtr(),
-                    warningDateDispAtr:self.warningDateDispAtr(),
-                    appReasonDispAtr:self.appReasonDispAtr(),
-                    scheReflectFlg:self.scheReflectFlg(),
-                    priorityTimeReflectFlg:self.priorityTimeReflectFlg(),
+                    baseDateFlg: self.baseDateFlg(),
+                    advanceExcessMessDispAtr: self.advanceExcessMessDispAtr(),
+                    hwAdvanceDispAtr: self.hwAdvanceDispAtr(),
+                    hwActualDispAtr: self.hwActualDispAtr(),
+                    actualExcessMessDispAtr: self.actualExcessMessDispAtr(),
+                    otAdvanceDispAtr: self.otAdvanceDispAtr(),
+                    otActualDispAtr: self.otActualDispAtr(),
+                    warningDateDispAtr: self.warningDateDispAtr(),
+                    appReasonDispAtr: self.appReasonDispAtr(),
+                    scheReflectFlg: self.selectedIdA9_8(),
+                    priorityTimeReflectFlg: self.selectedIdA9_9(),
                     appContentChangeFlg: self.selectedIdA17_4(),
                     attendentTimeReflectFlg: self.selectedIdA9_5(),
                     appActMonthConfirmFlg: self.selectedIdA11_8(),
@@ -2148,7 +2141,7 @@ module nts.uk.at.view.kmf022 {
                     manualSendMailAtr: self.selectedIdA12_7(),
                     //todo wait -check 
                 };
-                data.appName = ko.toJS(self.listDataA6()); 
+                data.appName = ko.toJS(self.listDataA6());
                 data.stampReq = {
                     companyId: self.companyId(),
                     supFrameDispNO: self.selectedCodeJ18(),
@@ -2164,11 +2157,10 @@ module nts.uk.at.view.kmf022 {
                     stampGoOutAtr_Union_Disp: self.selectedIdJ28(),
                     topComment: self.texteditorJ29.value(),
                     bottomComment: self.texteditorJ32.value(),
-                    topCommentFontColor: self.valueE14(),
-                    topCommentFontWeight: self.enableE15(),
-                    bottomCommentFontColor: self.valueE17(),
-                    bottomCommentFontWeight: self.enableE18(),
-                    //done
+                    topCommentFontColor: self.valueJ30(),
+                    topCommentFontWeight: self.enableJ31()? 1 : 0,
+                    bottomCommentFontColor: self.valueJ30_1(),
+                    bottomCommentFontWeight: self.enableJ31_1()? 1 : 0                 
                 };
                 data.goBack = {
                     companyId: self.companyId(),
@@ -2184,7 +2176,7 @@ module nts.uk.at.view.kmf022 {
                     commentContent2: self.texteditorF16.value(),
                     commentFontColor2: self.valueF16_1(),
                     commentFontWeight2: (self.enableF16_1() ? 1 : 0),
-                    //done
+                     
                 };
                 data.appOt = {
                     cid: self.companyId(),
@@ -2202,7 +2194,7 @@ module nts.uk.at.view.kmf022 {
                     useOt: self.selectedIdB34(),
                     earlyOverTimeUseAtr: self.selectedIdB35(),
                     normalOvertimeUseAtr: self.selectedIdB36(),
-                    //done
+                     
                 };
                 data.hdSet = {
                     companyId: self.companyId(),
@@ -2230,7 +2222,7 @@ module nts.uk.at.view.kmf022 {
                     changeWrkHour: self.selectedIdC48(),
                     pridigCheck: self.selectedIdC49(),
                     furikyuName: self.texteditorC51.value()
-                    //done
+                     
                 };
                 data.appChange = {
                     cid: self.companyId(),
@@ -2239,23 +2231,26 @@ module nts.uk.at.view.kmf022 {
                     commentFontWeight1: self.enableD11() ? 1 : 0,
                     commentContent1: self.texteditorD9.value(),
                     commentFontColor2: self.valueD10_1(),
-                    commentFontWeight2: self.enableD11_1() ? 1 : 0 ,
+                    commentFontWeight2: self.enableD11_1() ? 1 : 0,
                     commentContent2: self.texteditorD12.value(),
                     workChangeTimeAtr: self.selectedValueD13(),
                     initDisplayWorktime: self.selectedIdD15(),
                     excludeHoliday: self.selectedIdD16()
-                    //done
+                     
                 };
                 data.tripReq = {
                     companyId: self.companyId(),
                     workType: self.selectedIdE9(),
                     contractCheck: self.selectedIdE10(),
                     workChange: self.selectedValueE11(),
-                    WorkChangeAppTime: self.checkedE11_5(),
+                    workChangeTime: self.checkedE11_5() ? 1 : 0,
                     lateLeave: self.selectedIdE12(),
                     comment1: self.texteditorE13.value(),
-                    comment2: self.texteditorE16.value()
-                    //done
+                    comment2: self.texteditorE16.value(),
+                    color1:self.valueE14(),
+                    weight1:self.enableE15()? 1 : 0,
+                    color2:self.valueE17(),
+                    weight2:self.enableE18()? 1 : 0
                 };
                 data.wdApp = {
                     companyId: self.companyId(),
@@ -2270,7 +2265,7 @@ module nts.uk.at.view.kmf022 {
                     prefixLeave: self.selectedIdG27(),
                     directDivi: self.selectedIdG28(),
                     bounSeg: self.selectedIdG29()
-                    //done
+                     
                 };
                 data.timeHd = {
                     companyId: self.companyId(),
@@ -2292,7 +2287,7 @@ module nts.uk.at.view.kmf022 {
                     privateName: self.texteditorH26_1.value(),
                     unionLeave: (self.enableH27() ? 1 : 0),
                     unionName: self.texteditorH27_1.value()
-                    //done
+                     
                 };
                 data.wdReq = {
                     companyId: self.companyId(),
@@ -2303,23 +2298,23 @@ module nts.uk.at.view.kmf022 {
                     checkUpLimitHalfDayHD: self.selectedIdK16(),
                     pickUpComment: self.texteditorK17.value(),
                     pickUpLettleColor: self.valueK18(),
-                    pickUpBold: self.enableK19() ? 1 : 0 ,
+                    pickUpBold: self.enableK19() ? 1 : 0,
                     deferredComment: self.texteditorK20.value(),
                     deferredLettleColor: self.valueK18_1(),
-                    deferredBold: self.enableK19_1() ? 1 : 0 ,
+                    deferredBold: self.enableK19_1() ? 1 : 0,
                     permissionDivision: self.selectedIdK21(),
                     appliDateContrac: self.selectedIdK22(),
-                    //done                    
+                                         
                 };
                 data.lateEarly = {
                     companyId: self.companyId(),
                     showResult: self.selectedIdI4()
-                    //done
+                     
                 };
                 data.appBf = {
                     beforeAfter: _.map(ko.toJS(self.listDataA7()), (x: any) => {
-                        x.retrictPreMethodFlg = x.retrictPreMethodFlg ? 1 : 0;
                         x.retrictPostAllowFutureFlg = x.retrictPostAllowFutureFlg ? 1 : 0;
+                        x.retrictPreUseFlg = x.retrictPreUseFlg ? 1 : 0;
                         return x;
                     }),
                     appType: _.map(ko.toJS(self.listDataA8()), (x: any) => {
@@ -2330,11 +2325,23 @@ module nts.uk.at.view.kmf022 {
                         x.canClassificationChange = x.canClassificationChange ? 1 : 0;
                         return x;
                     })
-                }
+                };
                 data.jobAssign = {
-                    isConcurrently : self.selectedIdA14_3() ? 1 : 0
-                } ;
-                service.update(data).done();
+                    isConcurrently: self.selectedIdA14_3() ? 1 : 0
+                };
+                data.approvalSet = {
+                    prinFlg: self.selectedIdA17_5()
+                };
+                data.jobSearch = ko.toJS(self.listDataA15());
+                service.update(data).done(() => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        //Load data setting
+                        self.loadData();
+                    });
+                }).always(()=>{
+                    nts.uk.ui.block.clear();
+                });
+           
             }
 
         }
@@ -2377,8 +2384,8 @@ module nts.uk.at.view.kmf022 {
         class ItemA7 {
             companyId: KnockoutObservable<string>;
             appType: KnockoutObservable<number>;
-            retrictPreMethodFlg: KnockoutObservable<boolean>;
-            retrictPreUseFlg: KnockoutObservable<number>;
+            retrictPreMethodFlg: KnockoutObservable<number>;
+            retrictPreUseFlg: KnockoutObservable<boolean>;
             retrictPreDay: KnockoutObservable<number>;
             retrictPreTimeDay: KnockoutObservable<number>;
             retrictPostAllowFutureFlg: KnockoutObservable<boolean>;
@@ -2388,14 +2395,14 @@ module nts.uk.at.view.kmf022 {
                 this.companyId = ko.observable(companyId);
                 this.appTypeName = ko.observable(appTypeName);
                 this.appType = ko.observable(appType);
-                this.retrictPreMethodFlg = ko.observable(retrictPreMethodFlg==1 ? true:false);
-                this.retrictPreUseFlg = ko.observable(retrictPreUseFlg);
+                this.retrictPreMethodFlg = ko.observable(retrictPreMethodFlg);
+                this.retrictPreUseFlg = ko.observable(retrictPreUseFlg==1 ? true : false);
                 this.retrictPreDay = ko.observable(retrictPreDay);
                 this.retrictPreTimeDay = ko.observable(retrictPreTimeDay);
-                this.retrictPostAllowFutureFlg = ko.observable(retrictPostAllowFutureFlg==1 ? true:false);
+                this.retrictPostAllowFutureFlg = ko.observable(retrictPostAllowFutureFlg == 1 ? true : false);
             }
         }
-        class ItemA8{
+        class ItemA8 {
             companyId: KnockoutObservable<string>;
             appType: KnockoutObservable<number>;
             displayFixedReason: KnockoutObservable<boolean>;
@@ -2405,26 +2412,28 @@ module nts.uk.at.view.kmf022 {
             displayInitialSegment: KnockoutObservable<number>;
             canClassificationChange: KnockoutObservable<boolean>;
             appTypeName: KnockoutObservable<string>;
-            constructor(companyId:string,appType: number,displayFixedReason:number,displayAppReason:number,
-            sendMailWhenRegister:number,sendMailWhenApproval:number,displayInitialSegment:number,
-            canClassificationChange:number,appTypeName:string){
-                this.companyId= ko.observable(companyId);
+            constructor(companyId: string, appType: number, displayFixedReason: number, displayAppReason: number,
+                sendMailWhenRegister: number, sendMailWhenApproval: number, displayInitialSegment: number,
+                canClassificationChange: number, appTypeName: string) {
+                this.companyId = ko.observable(companyId);
                 this.appType = ko.observable(appType);
-                this.displayFixedReason= ko.observable(displayFixedReason==1?true:false);
-                this.displayAppReason=ko.observable(displayAppReason== 1 ? true : false);
-                this.sendMailWhenRegister=ko.observable(sendMailWhenRegister== 1 ? true : false);
-                this.sendMailWhenApproval=ko.observable(sendMailWhenApproval== 1 ? true : false);
-                this.displayInitialSegment=ko.observable(displayInitialSegment);
-                this.canClassificationChange=ko.observable(canClassificationChange== 1 ? true : false);
-                this.appTypeName=ko.observable(appTypeName);
-            }   
+                this.displayFixedReason = ko.observable(displayFixedReason == 1 ? true : false);
+                this.displayAppReason = ko.observable(displayAppReason == 1 ? true : false);
+                this.sendMailWhenRegister = ko.observable(sendMailWhenRegister == 1 ? true : false);
+                this.sendMailWhenApproval = ko.observable(sendMailWhenApproval == 1 ? true : false);
+                this.displayInitialSegment = ko.observable(displayInitialSegment);
+                this.canClassificationChange = ko.observable(canClassificationChange == 1 ? true : false);
+                this.appTypeName = ko.observable(appTypeName);
+            }
         }
         class ItemA15 {
+            jobId: KnockoutObservable<string>;
             name: KnockoutObservable<string>;
-            selectedId: KnockoutObservable<number>;
-            constructor(name: string, selectedId: number) {
+            searchSetFlg: KnockoutObservable<number>;
+            constructor(jobId: string, name: string, searchSetFlg: number) {
+                this.jobId = ko.observable(jobId);
                 this.name = ko.observable(name);
-                this.selectedId = ko.observable(selectedId);
+                this.searchSetFlg = ko.observable(searchSetFlg);
             }
         }
 

@@ -135,4 +135,13 @@ public class ErrorAlarmWorkRecordPubImpl implements ErrorAlarmWorkRecordPub {
 		return data;
 	}
 
+	@Override
+	public List<ErrorAlarmWorkRecordPubExport> getListErAlByListCode(String companyId, List<String> listCode) {
+		List<ErrorAlarmWorkRecordPubExport> data =  this.repo.getListErAlByListCode(companyId, listCode)
+				.stream().map(c->convertToExport(c)).collect(Collectors.toList());
+		if(data.isEmpty())
+			return Collections.emptyList();
+		return data;
+	}
+
 }
