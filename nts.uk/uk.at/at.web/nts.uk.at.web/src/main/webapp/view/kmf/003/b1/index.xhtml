@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 900,
-					height : 580
+					width : 500,
+					height : 540
 				};
 			</script>
 			<com:ValidatorScript>
@@ -22,9 +22,9 @@
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
-			<com:scriptfile path="kmf003.b.vm.js" />
-			<com:scriptfile path="kmf003.b.start.js" />
-			<com:scriptfile path="kmf003.b.service.js" />
+			<com:scriptfile path="kmf003.b1.vm.js" />
+			<com:scriptfile path="kmf003.b1.start.js" />
+			<com:scriptfile path="kmf003.b1.service.js" />
 		</ui:define>
 
 		<!-- PAGE CONTENT -->
@@ -52,32 +52,6 @@
 					</tr>
 				</table>
 				
-				<div class="panel panel-frame cf">
-					<table class="cal-panel">
-						<tr>
-							<td width="90"></td>
-							<td width="135">#{i18n.getText('KMF003_50')}</td>
-							<td width="80"></td>
-						</tr>
-						<tr></tr>
-						<tr>
-							<td>#{i18n.getText('KMF003_46')}</td>
-							<td style="text-align: right">
-								<div id="reference-date" class="cal-value" data-bind="ntsDatePicker: {value: referenceDate, dateFormat: 'YYYY/MM/DD'}, hasfocus: true"></div>
-							</td>
-							<td></td>
-						</tr>
-						<tr></tr>
-						<tr>
-							<td><span data-bind="visible: displayDateSelected">#{i18n.getText('KMF003_53')}</span></td>
-							<td style="text-align: center;"><span data-bind="text: dateSelected"></span></td>
-							<td><button class="caret-bottom btn-cal" data-bind="click: calculate">#{i18n.getText('KMF003_54')}</button></td>
-						</tr>
-					</table>
-				</div>
-				
-				<div class="bound"></div>
-				
 				<table class="contents-header">
 					<thead>
 						<tr>
@@ -85,10 +59,7 @@
 							<td colspan="2">#{i18n.getText('KMF003_40')}</td>
 							<td rowspan="2" class="input-units">#{i18n.getText('KMF003_43')}</td>
 							<td rowspan="2" class="input-units">#{i18n.getText('KMF003_44')}</td>
-							<td rowspan="2" class="input-units">#{i18n.getText('KMF003_45')}</td>
-							<td rowspan="2" class="base-date">#{i18n.getText('KMF003_46')}</td>
-							<td rowspan="2" class="allow-pay">#{i18n.getText('KMF003_39')}</td>
-							<td rowspan="2" class="pay-day-cal">#{i18n.getText('KMF003_47')}</td>
+							<td rowspan="2" class="input-units-last">#{i18n.getText('KMF003_45')}</td>
 						</tr>
 						<tr>
 							<td class="input-units">#{i18n.getText('KMF003_41')}</td>
@@ -107,6 +78,7 @@
 										value: lengthOfServiceYears, 
 										constraint: 'LengthOfServiceYears',
 										name: '#[KMF003_48]',
+										enable: false,
 										option: ko.mapping.fromJS({
 											unitID: 'YEARS',
 											width: '50'
@@ -115,6 +87,7 @@
 										value: lengthOfServiceMonths, 
 										constraint: 'LengthOfServiceMonths',
 										name: '#[KMF003_49]',
+										enable: false,
 										option: ko.mapping.fromJS({
 											unitID: 'MONTHS',
 											width: '60'
@@ -123,6 +96,7 @@
 										value: grantDays, 
 										constraint: 'GrantDays',
 										name: '#[KMF003_43]',
+										enable: gdEnable,
 										option: ko.mapping.fromJS({
 											unitID: 'DAYS',
 											width: '50'
@@ -131,6 +105,7 @@
 										value: limitedTimeHdDays, 
 										constraint: 'LimitedTimeHdDays',
 										name: '#[KMF003_44]',
+										enable: ltdEnable,
 										option: ko.mapping.fromJS({
 											unitID: 'DAYS',
 											width: '50'
@@ -139,21 +114,11 @@
 										value: limitedHalfHdCnt, 
 										constraint: 'LimitedHalfHdCnt',
 										name: '#[KMF003_45]',
+										enable: lthEnable,
 										option: ko.mapping.fromJS({
 											unitID: 'TIMES',
 											width: '50'
 										})}" /></td>
-							<td class="base-date"><div class="base-date-options" id="combo-box" data-bind="ntsComboBox: {
- 										options: $parent.grantReferenceDateOptions,
- 										optionsValue: 'code',
- 										value: $data.grantReferenceDate,
- 										optionsText: 'name',
- 										columns: [
- 											{ prop: 'name', length: 10 }
- 										],
- 										enable: true}"></div></td>
-							<td class="allow-pay"><div data-bind="ntsCheckBox: { checked: grantSimultaneity }"></div></td>
-							<td class="pay-day-cal"><span data-bind="text: grantDate"></span></td>
 						</tr>
 					</tbody>
 				</table>

@@ -49,7 +49,7 @@ span.nts-editor-wrapped.ntsControl.symbol.symbol-right {
 }
 
 table.contents-header td.numbers {
-	width: 42px;
+	width: 18px;
 }
 
 table.contents-header td.pay-day-cal {
@@ -57,7 +57,11 @@ table.contents-header td.pay-day-cal {
 }
 
 table.contents-header td.input-units {
-	width: 63px;
+	width: 25px;
+}
+
+table.contents-header td.input-units-last {
+	width: 33px;
 }
 
 table.contents-header td.base-date {
@@ -74,11 +78,12 @@ table.contents-header td.allow-pay {
 }
 
 .contents-header {
-	width: 100%;
+	width: 436px;
+    margin-top: 40px;
 }
 
 .contents-data {
-	width: 100%;
+	width: 436px;
 }
 
 .contents-data td {
@@ -92,7 +97,7 @@ table.contents-header td.allow-pay {
 }
 
 table.contents-data td.numbers {
-	width: 47px;
+	width: 54px;
 }
 
 table.contents-data td.pay-day-cal {
@@ -100,7 +105,7 @@ table.contents-data td.pay-day-cal {
 }
 
 table.contents-data td.input-units {
-	width: 69px;
+	width: 71px;
 }
 
 table.contents-data td.base-date {
@@ -116,7 +121,7 @@ table.contents-data thead, table.contents-data tbody {
 }
 
 table.contents-data tbody {
-    height: 245px;   
+    height: 225px;   
     overflow-y: auto;   
     overflow-x: hidden; 
     border: 1px solid #CCC;
