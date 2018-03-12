@@ -3,7 +3,11 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.midnighttime;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
+import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * 月別実績の深夜時間
@@ -75,8 +79,16 @@ public class MidnightTimeOfMonthly {
 		if (attendanceTimeOfDaily == null) return;
 		
 		val totalWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime();
-		val legalTime = totalWorkingTime.getWithinStatutoryTimeOfDaily();
+		WithinStatutoryTimeOfDaily legalTime = totalWorkingTime.getWithinStatutoryTimeOfDaily();
 		val illegalTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
+		if (legalTime == null){
+			legalTime = WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
+					new AttendanceTime(0),
+					new AttendanceTime(0),
+					new AttendanceTime(0),
+					new WithinStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+					new AttendanceTime(0));
+		}
 		
 		// 所定内深夜時間を累積
 		val legalMidnightTime = legalTime.getWithinStatutoryMidNightTime().getTime();

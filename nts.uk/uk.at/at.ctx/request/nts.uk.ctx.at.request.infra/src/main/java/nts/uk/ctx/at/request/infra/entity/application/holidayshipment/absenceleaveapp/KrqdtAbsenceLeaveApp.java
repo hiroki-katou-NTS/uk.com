@@ -12,7 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -67,88 +66,32 @@ public class KrqdtAbsenceLeaveApp extends UkJpaEntity implements Serializable {
 	private String workTimeCD;
 
 	/**
-	 * 日区分
-	 */
-	@Basic(optional = true)
-	@Column(name = "START_WORK_TIME_ATR1")
-	private int startWorkTimeAtr1;
-
-	/**
 	 * 開始時刻
 	 */
 	@Basic(optional = true)
 	@Column(name = "START_WORK_TIME1")
-	private GeneralDate startWorkTime1;
-
-	/**
-	 * 日区分
-	 */
-	@Basic(optional = true)
-	@Column(name = "END_WORK_TIME_ATR1")
-	private int endWorkTimeAtr1;
+	private int startWorkTime1;
 
 	/**
 	 * 終了時刻
 	 */
 	@Basic(optional = true)
 	@Column(name = "END_WORK_TIME1")
-	private GeneralDate endWorkTime1;
-
-	/**
-	 * 日区分
-	 */
-	@Basic(optional = true)
-	@Column(name = "START_WORK_TIME_ATR2")
-	private int startWorkTimeAtr2;
+	private int endWorkTime1;
 
 	/**
 	 * 開始時刻
 	 */
 	@Basic(optional = true)
 	@Column(name = "START_WORK_TIME2")
-	private GeneralDate startWorkTime2;
-
-	/**
-	 * 日区分
-	 */
-	@Basic(optional = true)
-	@Column(name = "END_WORK_TIME_ATR2")
-	private int endWorkTimeAtr2;
+	private int startWorkTime2;
 
 	/**
 	 * 終了時刻
 	 */
 	@Basic(optional = true)
 	@Column(name = "END_WORK_TIME2")
-	private GeneralDate endWorkTime2;
-
-	/**
-	 * 管理データ日数単位
-	 */
-	@Basic(optional = false)
-	@Column(name = "DAYS_USED_NO")
-	private int daysUsedNo;
-
-	/**
-	 * 振出管理データ
-	 */
-	@Basic(optional = true)
-	@Column(name = "PAYOUT_MNG_DATA_ID")
-	private String payoutMngDataID;
-
-	/**
-	 * 管理データ区分
-	 */
-	@Basic(optional = false)
-	@Column(name = "PICK_UP_STATE")
-	private int pickUpState;
-
-	/**
-	 * 振休発生日
-	 */
-	@Basic(optional = false)
-	@Column(name = "OCCURRENCE_DATE")
-	private GeneralDate occurrenceDate;
+	private int endWorkTime2;
 
 	@Override
 	protected Object getKey() {

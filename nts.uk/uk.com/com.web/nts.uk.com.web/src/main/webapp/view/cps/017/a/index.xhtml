@@ -177,57 +177,8 @@
 				<!-- phần bên phải của màn hình  -->
 				<div id="content-right" class="pull-left"
 					data-bind="with: selection">
-					
-			<!-- 		
-					<div class="form-input">
-						<div class='form-lable'
-							data-bind="ntsFormLabel: {constraint: ['SelectionCD','SelectionName'], required: true}">
-							<label>#{i18n.getText('CPS017_20')}</label>
-						</div>
 
-						<div class="input">
-							<div>
-								<span
-									data-bind="if: infoSelection().selectionCodeCharacter() == 1">
-									<input id="code"
-									data-bind="ntsTextEditor: {
-										name: '#[CPS017_21]', 
-										value: selectionCD,
-										constraint: 'SelectionCD', 
-										required: true, 
-										enable: $parent.selectionCd, 
-		 								immediate: false									
-										}" />
-								</span> <span
-									data-bind="if: infoSelection().selectionCodeCharacter() == 0">
-									<input id="code"
-									data-bind="ntsTextEditor: {
-										name: '#[CPS017_21]', 
-										value: selectionCD,
-										constraint: 'SelectionCD', 
-										required: true, 
-										enable: $parent.selectionCd, 
-		 								immediate: false}" />
-								</span>
-							</div>
-							
-							
-							<div>
-								<input id="name"
-									data-bind="ntsTextEditor: {
-								name: '#[CPS017_22]',
-								value: selectionName, 
-								constraint: 'SelectionName', 
-								required: true, 
- 								enable: $parent.enableSelName, 
-								immediate: false}" />
-							</div>
-						</div>
-					</div>
-					 -->
-					
-<!-- fdgfdgfffgf -->
-					<com:ko-if bind="codeType() === 0">	
+					<com:ko-if bind="codeType() === 0">
 						<div class="form-input">
 							<div class="form-lable"
 								data-bind="ntsFormLabel: {constraint: ['SelectionCdNumeric', 'SelectionName'] , required: true }">
@@ -270,13 +221,13 @@
 									immediate: false}" />
 								</div>
 							</div>
-							
-							
+
+
 						</div>
 					</com:ko-if>
 
-<!-- fdgfdgfffgf -->					
-					<com:ko-if bind="codeType() === 1">	
+					<!-- fdgfdgfffgf -->
+					<com:ko-if bind="codeType() === 1">
 						<div class="form-input">
 							<div class="form-lable"
 								data-bind="ntsFormLabel: {constraint: ['SelectionCdAlphaNumeric', 'SelectionName'], required: true }">
@@ -320,10 +271,7 @@
 								</div>
 							</div>
 						</div>
-					</com:ko-if>				
-					
-					
-					
+					</com:ko-if>
 					<com:ko-if bind="codeType() === 0">
 						<div class="form-input">
 							<div class="form-lable"

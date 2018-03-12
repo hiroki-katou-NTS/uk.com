@@ -602,16 +602,17 @@ module nts.uk.at.view.kaf005.b {
                         siftCD: self.siftCD()
                     }
                     //setting work content
+                     //setting work content
                     self.preWorkContent = {
-                            applicationDate: self.appDate(),
-                            workType: self.workTypeCd(),
-                            siftType: self.siftCD(),
-                            workClockFrom1: self.timeStart1(),
-                            workClockTo1: self.timeEnd1(),
-                            workClockFrom2: self.timeStart2(),
-                            workClockTo2: self.timeEnd2(),
-                            breakTimes:  ko.toJS(self.breakTimes())
-                        }
+                        applicationDate: self.appDate(),
+                        workType: self.workTypeCd(),
+                        siftType: self.siftCD(),
+                        workClockFrom1: self.timeStart1(),
+                        workClockTo1: self.timeEnd1(),
+                        workClockFrom2: self.timeStart2(),
+                        workClockTo2: self.timeEnd2(),
+                        overtimeHours: ko.toJS(self.overtimeHours())
+                    }
                     service.getCaculationResult(param).done(function(data){
                            
                     
@@ -679,6 +680,8 @@ module nts.uk.at.view.kaf005.b {
                         if(!self.isEmptyOverTimeInput(ko.toJS(self.overtimeHours()))){
                             self.calculateFlag(0);
                         }
+                        //Check work content Changed
+                        self.checkWorkContentChanged();
                          dfd.resolve(data);
                     }).fail(function(res){
                         dfd.reject(res);
@@ -848,10 +851,10 @@ module nts.uk.at.view.kaf005.b {
                     }
                 });
                 //休憩時間
-                for (let i = 0; i < self.breakTimes().length; i++) {
-                    self.breakTimes()[i].applicationTime.subscribe(value => {
+                for (let i = 0; i < self.overtimeHours().length; i++) {
+                    self.overtimeHours()[i].applicationTime.subscribe(value => {
                         if (!nts.uk.util.isNullOrEmpty(self.preWorkContent)) {
-                            if (self.preWorkContent.breakTimes[i].applicationTime != value) {
+                            if (self.preWorkContent.overtimeHours[i].applicationTime != value) {
                                 //→エラーＭＳＧ
                                 self.calculateFlag(1);
                             }

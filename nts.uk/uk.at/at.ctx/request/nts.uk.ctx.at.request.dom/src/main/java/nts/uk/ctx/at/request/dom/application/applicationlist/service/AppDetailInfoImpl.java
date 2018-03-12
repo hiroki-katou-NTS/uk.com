@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
- * 
+ * get info detail application
  * @author hoatt
  *
  */
@@ -39,15 +39,19 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 	private WorkdayoffFrameRepository repoWork;
 	@Inject
 	private OvertimeWorkFrameRepository repoOverTimeFr;
+	
+	/**
+	 * get Application Over Time Info
+	 * @param companyID
+	 * @param appId
+	 * @return
+	 */
 	@Override
 	public AppOverTimeInfoFull getAppOverTimeInfo(String companyID, String appId) {
 		String companyId = AppContexts.user().companyId();
 		Optional<AppOverTime> appOtOp = repoOverTime.getFullAppOvertime(companyID, appId);
 		AppOverTime appOt = appOtOp.get();
 		List<OverTimeInput> lstOverTimeInput = appOt.getOverTimeInput();
-		
-//		List<Integer> lstWorkDay = new ArrayList<>();
-		
 		List<OverTimeFrame> lstFrame = new ArrayList<>();
 		for (OverTimeInput overTime : lstOverTimeInput) {
 			List<Integer> lstFrameNo = new ArrayList<>();
@@ -78,18 +82,6 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 						name, null, overTime.getApplicationTime().v()));
 			}
 		}
-//		List<BonusPayTimeItem> lstFramBonus = repoBonusTime.getListBonusPayTimeItemName(companyId, lstBonus);
-//		for (BonusPayTimeItem bonusPay : lstFramBonus) {
-//			lstFrame.add(new OverTimeFrame(3, bonusPay.getId(),bonusPay.getTimeItemName().v(), bonusPay.getTimeItemTypeAtr().value));
-//		}
-//		List<WorkdayoffFrame> lstFramWork = repoWork.getWorkdayoffFrameBy(companyId,lstWorkDay);
-//		for (WorkdayoffFrame workday : lstFramWork) {
-//			lstFrame.add(new OverTimeFrame(2, workday.getWorkdayoffFrNo().v().intValue(), workday.getWorkdayoffFrName().v(), null));
-//		}
-//		List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(companyId, lstOverTime);
-//		for (OvertimeWorkFrame normal : lstFramOt) {
-//			lstFrame.add(new OverTimeFrame(1, normal.getOvertimeWorkFrNo().v().intValue(), normal.getOvertimeWorkFrName().v(), null));
-//		}
 		return new AppOverTimeInfoFull(appId, 
 				this.convertTime(appOt.getWorkClockFrom1()),
 				this.convertTime(appOt.getWorkClockTo1()),
@@ -99,6 +91,12 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				appOt.getFlexExessTime());
 	}
 
+	/**
+	 * get Application Go Back Info
+	 * @param companyID
+	 * @param appId
+	 * @return
+	 */
 	@Override
 	public AppGoBackInfoFull getAppGoBackInfo(String companyID, String appId) {
 		Optional<GoBackDirectly> appGoBackOp = repoGoBack.findByApplicationID(companyID, appId);
@@ -112,7 +110,11 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				appGoBack.getBackHomeAtr2().value,
 				this.convertTime(appGoBack.getWorkTimeEnd2().v()));
 	}
-	//convert time
+	/**
+	 * convert time from integer to Time_Short_HM
+	 * @param time
+	 * @return
+	 */
 	private String convertTime(Integer time){
 		if(time == null){
 			return "";

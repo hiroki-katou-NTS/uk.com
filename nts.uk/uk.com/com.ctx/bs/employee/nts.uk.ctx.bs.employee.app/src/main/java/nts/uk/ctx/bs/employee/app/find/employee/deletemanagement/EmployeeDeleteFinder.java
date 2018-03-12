@@ -42,9 +42,12 @@ public class EmployeeDeleteFinder {
 		List<EmployeeDataMngInfo> listEmpData = empDataMngRepo.getListEmpToDelete(loginCID);
 		if (!listEmpData.isEmpty()) {
 			for (EmployeeDataMngInfo employeeDataMngInfo : listEmpData) {
-				Person person = personRepo.getByPersonId(employeeDataMngInfo.getPersonId()).get();
+				Optional<Person> person = personRepo.getByPersonId(employeeDataMngInfo.getPersonId());
+				if (!person.isPresent()){
+					continue;
+				}
 				listResult.add(EmployeeToDeleteDto.fromDomain(employeeDataMngInfo.getEmployeeCode().v(), "",
-						person.getPersonNameGroup().getPersonName().getFullName().v().trim(),
+						person.get().getPersonNameGroup().getPersonName().getFullName().v().trim(),
 						employeeDataMngInfo.getEmployeeId().toString()));
 			}
 		} else {

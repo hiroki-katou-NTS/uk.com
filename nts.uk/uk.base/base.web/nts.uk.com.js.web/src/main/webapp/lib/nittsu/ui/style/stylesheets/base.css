@@ -1294,6 +1294,12 @@ button .icon {
   height: 22px;
 }
 
+/* line 77, ../sass/components/_ignitecommons.scss */
+.ui-iggrid-table {
+  /* for IE */
+  background-color: #F3F3F3 !important;
+}
+
 /* line 2, ../sass/components/_accordion.scss */
 .ui-accordion .ui-accordion-header {
   border-color: #999;
@@ -2658,6 +2664,12 @@ button.nts-switch-button[disabled]:hover {
   overflow: hidden;
 }
 
+/* line 77, ../sass/components/_ignitecommons.scss */
+.ui-iggrid-table {
+  /* for IE */
+  background-color: #F3F3F3 !important;
+}
+
 /* line 3, ../sass/components/_gridlist.scss */
 .ui-iggrid {
   cursor: default;
@@ -2801,6 +2813,12 @@ button.nts-switch-button[disabled]:hover {
   padding: 1em;
 }
 
+/* line 77, ../sass/components/_ignitecommons.scss */
+.ui-iggrid-table {
+  /* for IE */
+  background-color: #F3F3F3 !important;
+}
+
 /* line 3, ../sass/components/_treedrag.scss */
 .ui-igtree {
   border: 1px solid #dddddd;
@@ -2825,6 +2843,12 @@ button.nts-switch-button[disabled]:hover {
 /* line 16, ../sass/components/_treedrag.scss */
 .ui-igtree li {
   list-style-type: none;
+}
+
+/* line 77, ../sass/components/_ignitecommons.scss */
+.ui-iggrid-table {
+  /* for IE */
+  background-color: #F3F3F3 !important;
 }
 
 /* line 3, ../sass/components/_treegridview.scss */

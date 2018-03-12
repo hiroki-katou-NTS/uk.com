@@ -111,11 +111,13 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 //			data.krcdtDaiPerWorkInfoPK.employeeId = domain.getEmployeeId();
 //			data.krcdtDaiPerWorkInfoPK.ymd = domain.getYmd();
 			if(domain.getRecordWorkInformation() != null){
-				data.recordWorkWorktimeCode = domain.getRecordWorkInformation().getWorkTimeCode().v();
+				data.recordWorkWorktimeCode = domain.getRecordWorkInformation().getWorkTimeCode() == null 
+						? null : domain.getRecordWorkInformation().getWorkTimeCode().v();
 				data.recordWorkWorktypeCode = domain.getRecordWorkInformation().getWorkTypeCode().v();
 			}
 			if(domain.getScheduleWorkInformation() != null){
-				data.scheduleWorkWorktimeCode = domain.getScheduleWorkInformation().getWorkTimeCode().v();
+				data.scheduleWorkWorktimeCode = domain.getScheduleWorkInformation().getWorkTimeCode() == null 
+						? null : domain.getScheduleWorkInformation().getWorkTimeCode().v();
 				data.scheduleWorkWorktypeCode = domain.getScheduleWorkInformation().getWorkTypeCode().v();
 			}
 			data.calculationState = domain.getCalculationState().value;
