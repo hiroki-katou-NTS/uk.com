@@ -2,11 +2,13 @@ package nts.uk.ctx.at.record.app.find.divergence.time.history;
 
 import java.util.Optional;
 
+import lombok.Data;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeSetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeValue;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+@Data
 public class CompanyDivergenceReferenceTimeDto implements CompanyDivergenceReferenceTimeSetMemento{
 	
 	private int divergenceTimeNo;
@@ -14,6 +16,10 @@ public class CompanyDivergenceReferenceTimeDto implements CompanyDivergenceRefer
 	private int notUseAtr;
 	
 	private DivergenceReferenceTimeValueDto divergenceReferenceTimeValue;
+	
+	public CompanyDivergenceReferenceTimeDto() {
+		super();
+	}
 
 	@Override
 	public void setDivergenceTimeNo(DivergenceType divergenceTimeNo) {
@@ -37,9 +43,10 @@ public class CompanyDivergenceReferenceTimeDto implements CompanyDivergenceRefer
 
 	@Override
 	public void setDivergenceReferenceTimeValue(Optional<DivergenceReferenceTimeValue> divergenceReferenceTimeValue) {
-//		if (divergenceReferenceTimeValue.isPresent()){
-//			this.divergenceReferenceTimeValue = divergenceReferenceTimeValue;
-//		}
+		if (divergenceReferenceTimeValue.isPresent()){
+			this.divergenceReferenceTimeValue = new DivergenceReferenceTimeValueDto(divergenceReferenceTimeValue.get().getAlarmTime().get().hour(),
+														divergenceReferenceTimeValue.get().getErrorTime().get().hour());
+		}
 	}
 
 }
