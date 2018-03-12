@@ -66,6 +66,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     self.selectedConditionLineNumber(0);
                     self.selectedConditionStartLine(0);
                 }
+                //「受入ファイルアップロード」をクリアする
                 self.fileId('');
                 self.fileName('');
             });
