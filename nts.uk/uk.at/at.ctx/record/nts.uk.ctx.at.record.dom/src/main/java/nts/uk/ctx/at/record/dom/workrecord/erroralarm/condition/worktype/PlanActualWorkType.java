@@ -7,6 +7,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
 
@@ -26,7 +27,7 @@ public class PlanActualWorkType extends WorkTypeCondition {
 
 	// 実績
 	private TargetWorkType workTypeActual;
-	
+
 	/* Constructor from Superclass */
 	private PlanActualWorkType(Boolean useAtr, FilterByCompare comparePlanAndActual) {
 		super(useAtr, comparePlanAndActual);
@@ -37,38 +38,66 @@ public class PlanActualWorkType extends WorkTypeCondition {
 		return new PlanActualWorkType(useAtr, EnumAdaptor.valueOf(comparePlanAndActual, FilterByCompare.class));
 	}
 
-	/** 
+	/**
 	 * Set logical operator
-	 * @param: operator 
-	 * 0: AND
-	 * 1: OR
+	 * 
+	 * @param: operator
+	 *             0: AND 1: OR
 	 * @return itself
-	 * */
+	 */
 	public PlanActualWorkType chooseOperator(int operator) {
 		this.operatorBetweenPlanActual = EnumAdaptor.valueOf(operator, LogicalOperator.class);
 		return this;
 	}
 
-	/** 
+	/**
 	 * Set WorkType plan
+	 * 
 	 * @param: filterAtr
 	 * @param lstWorkType
 	 * @return itself
-	 * */
+	 */
 	public PlanActualWorkType setWorkTypePlan(boolean filterAtr, List<String> lstWorkType) {
 		this.workTypePlan = TargetWorkType.createFromJavaType(filterAtr, lstWorkType);
 		return this;
 	}
 
-	/** 
+	/**
 	 * Set WorkType actual
+	 * 
 	 * @param filterAtr
 	 * @param lstWorkType
 	 * @return itself
-	 * */
+	 */
 	public PlanActualWorkType setworkTypeActual(boolean filterAtr, List<String> lstWorkType) {
 		this.workTypeActual = TargetWorkType.createFromJavaType(filterAtr, lstWorkType);
 		return this;
 	}
 
+	@Override
+	public boolean checkWorkType(WorkInfoOfDailyPerformance workInfo) {
+		if (!this.isUse()) {
+			return false;
+		}
+		
+		boolean planCheck = false;
+		if (this.workTypePlan != null) {
+			planCheck = this.workTypePlan.contains(workInfo.getScheduleWorkInformation().getWorkTypeCode());
+		}
+		
+		if (this.workTypeActual == null || !this.workTypeActual.isUse()) {
+			return planCheck;
+		}
+			
+		boolean actualCheck = this.workTypeActual.contains(workInfo.getRecordWorkInformation().getWorkTypeCode());
+		
+		switch (this.operatorBetweenPlanActual) {
+		case AND:
+			return planCheck && actualCheck;
+		case OR:
+			return planCheck || actualCheck;
+		default:
+			throw new RuntimeException("invalid operatorBetweenPlanActual: " + this.operatorBetweenPlanActual);
+		}
+	}
 }

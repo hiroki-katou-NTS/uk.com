@@ -42,12 +42,12 @@ public class AcScreenCondSet extends DomainObject {
 	/**
 	 * 時刻‗条件値2
 	 */
-	private Optional<AcceptanceConditionTime> timeMomentConditionValue2;
+	private Optional<AcceptanceConditionTimeMoment> timeMomentConditionValue2;
 
 	/**
 	 * 時刻‗条件値1
 	 */
-	private Optional<AcceptanceConditionTime> timeMomentConditionValue1;
+	private Optional<AcceptanceConditionTimeMoment> timeMomentConditionValue1;
 
 	/**
 	 * 日付‗条件値2
@@ -91,8 +91,8 @@ public class AcScreenCondSet extends DomainObject {
 				.ofNullable(EnumAdaptor.valueOf(selectComparisonCondition, SelectComparisonCondition.class));
 		this.timeConditionValue2 = Optional.ofNullable(new AcceptanceConditionTime(timeConditionValue2));
 		this.timeConditionValue1 = Optional.ofNullable(new AcceptanceConditionTime(timeConditionValue1));
-		this.timeMomentConditionValue2 = Optional.ofNullable(new AcceptanceConditionTime(timeMomentConditionValue2));
-		this.timeMomentConditionValue1 = Optional.ofNullable(new AcceptanceConditionTime(timeMomentConditionValue1));
+		this.timeMomentConditionValue2 = Optional.ofNullable(new AcceptanceConditionTimeMoment(timeMomentConditionValue2));
+		this.timeMomentConditionValue1 = Optional.ofNullable(new AcceptanceConditionTimeMoment(timeMomentConditionValue1));
 		this.dateConditionValue2 = Optional.ofNullable(dateConditionValue2);
 		this.dateConditionValue1 = Optional.ofNullable(dateConditionValue1);
 		this.characterConditionValue2 = Optional.ofNullable(new AcceptanceConditionString(characterConditionValue2));

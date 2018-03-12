@@ -144,7 +144,7 @@ module nts.uk.at.view.ksc001.b {
                     
                     /** Common properties */
                     systemType: 2, // システム区分
-                    showEmployeeSelection: true, // 検索タイプ
+                    showEmployeeSelection: false, // 検索タイプ
                     showQuickSearchTab: true, // クイック検索
                     showAdvancedSearchTab: true, // 詳細検索
                     showBaseDate: false, // 基準日利用
@@ -603,7 +603,7 @@ module nts.uk.at.view.ksc001.b {
                     }
 
                     //NO3
-                    if (self.checkProcessExecutionAtrRebuild()) {
+                    if (self.checkProcessExecutionAtrRebuild()==0) {
                         lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")
                             + nts.uk.resource.getText("KSC001_7"));
                     } else {

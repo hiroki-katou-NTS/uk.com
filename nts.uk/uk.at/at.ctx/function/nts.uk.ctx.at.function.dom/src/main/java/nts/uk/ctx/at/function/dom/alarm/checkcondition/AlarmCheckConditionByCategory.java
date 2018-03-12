@@ -61,4 +61,16 @@ public class AlarmCheckConditionByCategory extends AggregateRoot {
 		}
 	}
 
+	public boolean isDaily() {
+		return this.category == AlarmCategory.DAILY;
+	}
+	
+	public boolean isMonthly() {
+		return this.category == AlarmCategory.MONTHLY;
+	}
+	
+	public boolean is4Week4Day() {
+		return this.category == AlarmCategory.SCHEDULE_4WEEK;
+	}
+	
 }

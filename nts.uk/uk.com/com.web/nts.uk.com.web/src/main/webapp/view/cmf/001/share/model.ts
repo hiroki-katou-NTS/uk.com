@@ -141,8 +141,9 @@ module nts.uk.com.view.cmf001.share.model {
         systemType: KnockoutObservable<number>;
         alreadySetting: KnockoutObservable<boolean> = ko.observable(false);
         action: KnockoutObservable<number> = ko.observable(0);
+        categoryId: KnockoutObservable<string> = ko.observable("");
 
-        constructor(systemType: number, code: string, name: string, deleteExistData: number, acceptMode: number, csvDataItemLineNumber: number, csvDataStartLine: number, deleteExistDataMethod?: number, alreadySetting?: boolean) {
+        constructor(systemType: number, code: string, name: string, deleteExistData: number, acceptMode: number, csvDataItemLineNumber: number, csvDataStartLine: number, deleteExistDataMethod?: number, categoryId?: string) {
             this.systemType = ko.observable(0);
             this.conditionSettingCode = ko.observable(code);
             this.dispConditionSettingCode = code;
@@ -155,6 +156,7 @@ module nts.uk.com.view.cmf001.share.model {
             this.acceptMode = ko.observable(acceptMode);
             this.csvDataItemLineNumber = ko.observable(csvDataItemLineNumber);
             this.csvDataStartLine = ko.observable(csvDataStartLine);
+            if (categoryId) this.categoryId(categoryId); 
         }
     }
 
@@ -273,15 +275,13 @@ module nts.uk.com.view.cmf001.share.model {
     
     //screen E
     export class MappingListData {
-        csvItemName: KnockoutObservable<string>;
-        csvItemNumber: KnockoutObservable<number>;
+        csvItemName: string;
+        csvItemNumber: number;
         dispCsvItemName: string;
         dispCsvItemNumber: number;
         constructor(itemNumber: number, itemName: string) {
-            this.csvItemName = ko.observable(itemName);
-            this.csvItemNumber = ko.observable(itemNumber);
-            this.dispCsvItemName = itemName;
-            this.dispCsvItemNumber = itemNumber;
+            this.csvItemName = itemName;
+            this.csvItemNumber = itemNumber;
         }
     }
     

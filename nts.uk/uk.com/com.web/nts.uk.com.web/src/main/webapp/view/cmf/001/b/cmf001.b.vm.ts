@@ -36,7 +36,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             self.screenMode = ko.observable(model.SCREEN_MODE.NEW);
             self.listStandardImportSetting = ko.observableArray([]);
             self.selectedStandardImportSettingCode = ko.observable('');
-            self.selectedStandardImportSetting = ko.observable(new model.StandardAcceptanceConditionSetting(0, '', '', 1, -1, 0, 0));
+            self.selectedStandardImportSetting = ko.observable(new model.StandardAcceptanceConditionSetting(0, '', '', 1, null, 0, 0));
             self.selectedStandardImportSettingCode.subscribe((data) => {
                 if (data) {
                     block.invisible();
@@ -44,7 +44,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                     let d2 = service.getAllStdItemData(self.systemType(), data);
                     $.when( d1, d2 ).done(function ( result, rs ) {
                         if (result) {
-                            let item = new model.StandardAcceptanceConditionSetting(result.systemType, result.conditionSettingCode, result.conditionSettingName, result.deleteExistData, result.acceptMode, result.csvDataItemLineNumber, result.csvDataStartLine);
+                            let item = new model.StandardAcceptanceConditionSetting(result.systemType, result.conditionSettingCode, result.conditionSettingName, result.deleteExistData, result.acceptMode, result.csvDataItemLineNumber, result.csvDataStartLine, result.deleteExistDataMethod, result.categoryId);
                             self.selectedStandardImportSetting(item);
                             self.screenMode(model.SCREEN_MODE.UPDATE);
                             $("#B4_4").focus();
@@ -159,7 +159,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             let self = this;
             nts.uk.ui.errors.clearAll();
             self.selectedStandardImportSettingCode('');
-            self.selectedStandardImportSetting(new model.StandardAcceptanceConditionSetting(self.systemType(), '', '', 1, -1, 0, 0));
+            self.selectedStandardImportSetting(new model.StandardAcceptanceConditionSetting(self.systemType(), '', '', 1, null, 0, 0));
             self.screenMode(model.SCREEN_MODE.NEW);
             $("#B4_3").focus();
         }

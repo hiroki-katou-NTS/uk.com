@@ -1,5 +1,5 @@
 .employeeInfoSearch {
-	margin-top: 30px;
+	margin-top: 10px;
 	display: inline-flex;
 }
 
@@ -48,4 +48,8 @@
 	margin-top: 30px;
 	margin-left: 15px;
 	width: 120px;
+}
+
+#contents-area { 
+	overflow-x: hidden;
 }
