@@ -15,7 +15,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class GrantDatePerCommand {
 
 	/*付与日のID*/
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 
 	/*特別休暇コード*/
 	private String personalGrantDateCode;

@@ -112,7 +112,7 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 	 * author: Hoang Yen
 	 */
 	@Override
-	public List<YearServiceSet> findAllSet(String companyId, String specialHolidayCode) {
+	public List<YearServiceSet> findAllSet(String companyId, int specialHolidayCode) {
 		return this.queryProxy().query(SELECT_ITEM_SPHC, KshstYearServiceSet.class).setParameter("companyId", companyId)
 																					.setParameter("specialHolidayCode", specialHolidayCode)
 																					.getList(c->toDomainSet(c));
@@ -136,7 +136,7 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 		}
 	}
 	@Override
-	public Optional<YearServiceSet> findSet(String companyId, String specialHolidayCode, int yearServiceType) {
+	public Optional<YearServiceSet> findSet(String companyId, int specialHolidayCode, int yearServiceType) {
 		return this.queryProxy().find(new KshstYearServiceSetPK(companyId, specialHolidayCode, yearServiceType), KshstYearServiceSet.class).map(c->toDomainSet(c));
 	}
 	@Override
@@ -147,7 +147,7 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 				.getList(c->toDomainSet(c));
 	}
 	@Override
-	public Optional<YearServiceCom> findAllCom(String companyId, String specialHolidayCode) {
+	public Optional<YearServiceCom> findAllCom(String companyId, int specialHolidayCode) {
 		KshstYearServiceComPK key = new KshstYearServiceComPK(companyId, specialHolidayCode);
 		return this.queryProxy().find(key, KshstYearServiceCom.class).map(c -> toDomainCom(c));
 	}
@@ -168,7 +168,7 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 		this.commandProxy().insert(toEntityCom(yearServiceCom));
 	}
 	@Override
-	public Optional<YearServiceCom> findCom(String companyId, String specialHolidayCode) {
+	public Optional<YearServiceCom> findCom(String companyId, int specialHolidayCode) {
 		return this.queryProxy().find(new KshstYearServiceComPK(companyId, specialHolidayCode), KshstYearServiceCom.class).map(c->toDomainCom(c));
 	}
 	

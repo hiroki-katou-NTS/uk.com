@@ -118,7 +118,7 @@ public class SubCondition extends DomainObject {
 	 * @param ageBaseDates
 	 * @return
 	 */
-	public static SubCondition createFromJavaType(String companyId, String specialHolidayCode, int useGender,
+	public static SubCondition createFromJavaType(String companyId, int specialHolidayCode, int useGender,
 			int useEmployee, int useCls, int useAge, int genderAtr, Integer limitAgeFrom, Integer limitAgeTo,
 			int ageCriteriaAtr, int ageBaseYearAtr, int ageBaseDates, List<String> employmentList, List<String> classificationList) {
 		return new SubCondition(companyId, new SpecialHolidayCode(specialHolidayCode),

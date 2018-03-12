@@ -9,7 +9,7 @@ public class SphdLimitCommand {
 	private String companyId;
 
 	/**特別休暇コード*/
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 	
 	/**月数*/
 	private Integer specialVacationMonths;
