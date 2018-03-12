@@ -5,7 +5,6 @@ import java.util.Optional;
 import lombok.Data;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeSetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeValue;
-import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Data
@@ -22,8 +21,8 @@ public class CompanyDivergenceReferenceTimeDto implements CompanyDivergenceRefer
 	}
 
 	@Override
-	public void setDivergenceTimeNo(DivergenceType divergenceTimeNo) {
-		this.divergenceTimeNo = divergenceTimeNo.value;
+	public void setDivergenceTimeNo(Integer divergenceTimeNo) {
+		this.divergenceTimeNo = divergenceTimeNo.intValue();
 	}
 
 	@Override

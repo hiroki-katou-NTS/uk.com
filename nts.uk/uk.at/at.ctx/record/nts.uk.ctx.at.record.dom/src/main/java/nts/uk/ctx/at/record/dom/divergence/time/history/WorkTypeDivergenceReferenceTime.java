@@ -15,7 +15,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class WorkTypeDivergenceReferenceTime extends AggregateRoot {
 	/** The divergence time no. */
 	// 乖離時間NO
-	private DivergenceType divergenceTimeNo;
+	private Integer divergenceTimeNo;
 	
 	/** The c id. */
 	// 会社ID

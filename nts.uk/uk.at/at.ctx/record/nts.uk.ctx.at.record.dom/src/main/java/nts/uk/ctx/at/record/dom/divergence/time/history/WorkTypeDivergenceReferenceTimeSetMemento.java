@@ -15,7 +15,7 @@ public interface WorkTypeDivergenceReferenceTimeSetMemento {
 	 *
 	 * @param divergenceTimeNo the new divergence time no
 	 */
-	void setDivergenceTimeNo(DivergenceType divergenceTimeNo);
+	void setDivergenceTimeNo(Integer divergenceTimeNo);
 	
 	/**
 	 * Sets the company id.

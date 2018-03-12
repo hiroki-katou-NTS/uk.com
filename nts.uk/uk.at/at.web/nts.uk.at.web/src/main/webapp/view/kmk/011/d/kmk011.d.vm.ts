@@ -11,6 +11,14 @@ module nts.uk.at.view.kmk011.d {
         export class ScreenModel {
             screenE: KnockoutObservable<any>;
             
+            //divergence time setting
+            emailAuth: KnockoutObservable<string>;
+            myMessage: KnockoutObservable<string>;
+            selectedRuleCode: KnockoutObservable<any>;
+            roundingRules: KnockoutObservableArray<any>;
+            required: KnockoutObservable<boolean>;
+            enable: KnockoutObservable<boolean>;
+            
             //history screen
             enable_button_creat: KnockoutObservable<boolean>;
             enable_button_edit: KnockoutObservable<boolean>;
@@ -24,6 +32,17 @@ module nts.uk.at.view.kmk011.d {
             constructor() {
                 var _self = this;
                 _self.screenE = ko.observable(new viewModelScreenE.ScreenModel());
+                
+                //divergence time setting
+                _self.emailAuth =  ko.observable("test");
+                _self.myMessage = ko.observable("test21");
+                _self.roundingRules = ko.observableArray([
+                    { code: '1', name: '四捨五入' },
+                    { code: '2', name: '切り上げ' }
+                ]);
+                _self.selectedRuleCode = ko.observable(1);
+                _self.required = ko.observable(true);
+                _self.enable = ko.observable(true);
                 
                  //history screen
                 _self.enable_button_creat = ko.observable(true);
@@ -108,10 +127,14 @@ module nts.uk.at.view.kmk011.d {
             
             // history mode
             public createMode() : void {
-                
+                nts.uk.ui.windows.sub.modal("/view/kmk/011/f/index.xhtml").onClosed(function() {
+                       
+                });
             }
             public editMode() : void {
-                
+                 nts.uk.ui.windows.sub.modal("/view/kmk/011/g/index.xhtml").onClosed(function() {
+                       
+                });
             }
             public deleteMode() : void {
                 

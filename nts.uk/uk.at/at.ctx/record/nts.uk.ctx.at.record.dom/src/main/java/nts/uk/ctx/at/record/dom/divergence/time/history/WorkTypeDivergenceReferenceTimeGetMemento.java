@@ -14,7 +14,7 @@ public interface WorkTypeDivergenceReferenceTimeGetMemento {
 	 *
 	 * @return the divergence type
 	 */
-	DivergenceType getDivergenceTimeNo();
+	Integer getDivergenceTimeNo();
 	
 	/**
 	 * Gets the company id.
