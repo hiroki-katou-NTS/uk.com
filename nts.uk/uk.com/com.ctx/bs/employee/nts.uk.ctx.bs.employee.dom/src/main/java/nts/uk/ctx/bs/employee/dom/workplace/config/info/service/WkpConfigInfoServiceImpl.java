@@ -287,12 +287,14 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
      */
     private Boolean isChangedHierarchyChild(String hierarchyCd, String hierarchyCdSelected,
             CreateWorkpceType createType) {
+    	BigDecimal hierarchyCdNumb = new BigDecimal(hierarchyCd.substring(hierarchyCdSelected.length() - 3, hierarchyCdSelected.length()));
+    	BigDecimal hierarchyCdSelectedNumb = new BigDecimal(hierarchyCdSelected.substring(hierarchyCdSelected.length() - 3, hierarchyCdSelected.length()));
         // when create at top
         boolean isCreatedTop = createType == CreateWorkpceType.CREATE_ON_TOP
-                && hierarchyCd.length() > hierarchyCdSelected.length();
+                && hierarchyCd.length() > hierarchyCdSelected.length() && hierarchyCdNumb.intValue() >= hierarchyCdSelectedNumb.intValue();
         // when create at below
         boolean isCreatedBelow = createType == CreateWorkpceType.CREATE_ON_BELOW
-                && hierarchyCd.length() > hierarchyCdSelected.length() && !hierarchyCd.startsWith(hierarchyCdSelected);
+                && hierarchyCd.length() > hierarchyCdSelected.length() && !hierarchyCd.startsWith(hierarchyCdSelected) && hierarchyCdNumb.intValue() >= hierarchyCdSelectedNumb.intValue();
         return isCreatedTop || isCreatedBelow;
     }
 
