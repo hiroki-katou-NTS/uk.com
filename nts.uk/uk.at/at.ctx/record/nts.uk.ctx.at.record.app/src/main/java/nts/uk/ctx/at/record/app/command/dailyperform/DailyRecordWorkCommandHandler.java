@@ -188,23 +188,22 @@ public class DailyRecordWorkCommandHandler {
 		Set<String> mapped = command.itemValues().stream().map(c -> getGroup(c))
 				.distinct().collect(Collectors.toSet());
 		calcIfNeed(mapped, command);
-		//check and insert error;
-		determineErrorAlarmWorkRecordService.insertErrorAlarm(command);
-		
 		mapped.stream().forEach(c -> {
 			CommandFacade<T> handler = (CommandFacade<T>) getHandler(c, isUpdate);
 			if(handler != null){
 				handler.handle((T) command.getCommand(c));
 			}
 		});
+		//check and insert error;
+		determineErrorAlarmWorkRecordService.insertErrorAlarm(command);
 	}
 	
 	private void calcIfNeed(Set<String> group, DailyRecordWorkCommand command){
-		if(group.contains("I") || group.contains("G") 
+//		if(group.contains("I") || group.contains("G") 
 //				|| group.contains("E") || group.contains("F") || group.contains("H") || 
 //				group.contains("J") || group.contains("K") || group.contains("L") || 
 //				group.contains("M") || group.contains("O")
-				){
+//				){
 			IntegrationOfDaily calced = calcService.calculate(
 					new IntegrationOfDaily(command.getWorkInfo().getData(), command.getCalcAttr().getData(), command.getAffiliationInfo().getData(), 
 							Optional.empty(), Arrays.asList(command.getErrors().getData()), command.getOutingTime().getData(), command.getBreakTime().getData(), 
@@ -229,7 +228,7 @@ public class DailyRecordWorkCommandHandler {
 //			command.getLogOnInfo
 //			group.add("I");
 			group.add("G");
-		}
+//		}
 	}
 	
 	private CommandFacade<?> getHandler(String group, boolean isUpdate) {

@@ -6,6 +6,7 @@ import java.util.Collections;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
@@ -17,7 +18,6 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
-import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTimePK;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -68,6 +68,9 @@ public class KrcdtDayBreakTime extends UkJpaEntity implements Serializable{
 	
 	@Column(name ="COUNT")
 	public Integer count;
+	
+	@OneToOne(mappedBy="krcdtDayBreakTime")
+	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
 	
 	@Override
 	protected Object getKey() {
