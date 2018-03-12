@@ -111,12 +111,14 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             if (self.selectedConditionCd() == null || self.selectedConditionCd() == '') {
                 //Msg_963　を表示する。受入条件が選択されていません。
                 dialog({ messageId: "Msg_963" });
+                $("#grd_Condition").focus();
                 return;
             }
             //受入ファイルがアップロードされているか判別
             if (self.fileId() == null || self.fileId() == '') {
                 //Msg_964　を表示する。受入ファイルがアップロードされていません。
                 dialog({ messageId: "Msg_964" });
+                $("#file-upload").focus();
                 return;
             }
             //P:外部受入サマリー画面へ遷移する
@@ -154,6 +156,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 self.fileId('');
                 //エラーメッセージ　Msg_910　　ファイルアップロードに失敗しました。
                 dialog({ messageId: "Msg_910" });
+                $("#file-upload").focus();
             }).always(() => {
                 block.clear();
             });
@@ -185,6 +188,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 else {
                     //エラーメッセージ表示　Msg_907　外部受入設定が作成されていません。
                     dialog({ messageId: "Msg_907" });
+                    $("#O6_1").focus();
                 }
             }).fail(function(error) {
                 alertError(error);
