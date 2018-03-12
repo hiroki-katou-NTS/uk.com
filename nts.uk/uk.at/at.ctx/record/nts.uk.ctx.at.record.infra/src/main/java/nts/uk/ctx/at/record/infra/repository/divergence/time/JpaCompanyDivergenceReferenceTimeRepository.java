@@ -1,9 +1,16 @@
 package nts.uk.ctx.at.record.infra.repository.divergence.time;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTime;
@@ -11,6 +18,8 @@ import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferen
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceType;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrtPK;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrtPK_;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt_;
 
 /**
  * The Class JpaCompanyDivergenceReferenceTimeRepository.
@@ -34,9 +43,7 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 
 		KrcstDrt drt = this.queryProxy().find(pk, KrcstDrt.class).orElse(new KrcstDrt());
 
-		CompanyDivergenceReferenceTime companyDivergenceReferenceTime = this.toDomain(drt);
-
-		return Optional.of(companyDivergenceReferenceTime);
+		return Optional.of(this.toDomain(drt));
 	}
 
 	/*
@@ -47,8 +54,27 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 	 */
 	@Override
 	public List<CompanyDivergenceReferenceTime> findAll(String histId) {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<KrcstDrt> cq = criteriaBuilder.createQuery(KrcstDrt.class);
+		Root<KrcstDrt> root = cq.from(KrcstDrt.class);
+
+		// Build query
+		cq.select(root);
+
+		// create where conditions
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(criteriaBuilder.equal(root.get(KrcstDrt_.id).get(KrcstDrtPK_.histId), histId));
+
+		// add where to query
+		cq.where(predicates.toArray(new Predicate[] {}));
+
+		// query data
+		List<KrcstDrt> krcstDrts = em.createQuery(cq).getResultList();
+
+		// return
+		return krcstDrts.isEmpty() ? new ArrayList<CompanyDivergenceReferenceTime>()
+				: krcstDrts.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 
 	/*
@@ -60,8 +86,7 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 	 */
 	@Override
 	public void add(CompanyDivergenceReferenceTime domain) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().insert(this.toEntity(domain));
 	}
 
 	/*
@@ -73,8 +98,7 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 	 */
 	@Override
 	public void update(CompanyDivergenceReferenceTime domain) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().update(this.toEntity(domain));
 	}
 
 	/*
@@ -86,8 +110,7 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 	 */
 	@Override
 	public void delete(CompanyDivergenceReferenceTime domain) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().remove(this.toEntity(domain));
 	}
 
 	/**
@@ -100,5 +123,22 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 	private CompanyDivergenceReferenceTime toDomain(KrcstDrt entity) {
 		JpaCompanyDivergenceReferenceTimeGetMemento memento = new JpaCompanyDivergenceReferenceTimeGetMemento(entity);
 		return new CompanyDivergenceReferenceTime(memento);
+	}
+	
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the krcst drt
+	 */
+	private KrcstDrt toEntity(CompanyDivergenceReferenceTime domain) {
+		KrcstDrtPK pk = new KrcstDrtPK();
+		pk.setHistId(domain.getHistoryId());
+		pk.setDvgcTimeNo(domain.getDivergenceTimeNo());
+
+		KrcstDrt entity = this.queryProxy().find(pk, KrcstDrt.class).orElse(new KrcstDrt());
+		domain.saveToMemento(new JpaCompanyDivergenceReferenceTimeSetMemento(entity));
+		
+		return entity;
 	}
 }
