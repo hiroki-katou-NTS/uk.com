@@ -48,6 +48,7 @@ public class JpaWorkRecorExtraConRepository extends JpaRepository implements Wor
 		updateEntity.messageBold = newEntity.messageBold;
 		updateEntity.messageColor = newEntity.messageColor;
 		updateEntity.sortOrderBy = newEntity.sortOrderBy;
+		updateEntity.checkItem = newEntity.checkItem;
 		updateEntity.useAtr = newEntity.useAtr;
 		updateEntity.nameWKRecord = newEntity.nameWKRecord;
 		this.commandProxy().update(updateEntity);

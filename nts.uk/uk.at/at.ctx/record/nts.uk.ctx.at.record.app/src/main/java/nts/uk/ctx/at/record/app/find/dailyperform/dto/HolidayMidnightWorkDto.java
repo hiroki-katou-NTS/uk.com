@@ -44,8 +44,7 @@ public class HolidayMidnightWorkDto {
 	
 	private static CalcAttachTimeDto getWorkTime(List<HolidayWorkMidNightTime> source, StaturoryAtrOfHolidayWork type){
 		return source.stream().filter(c -> c.getStatutoryAtr() == type).findFirst().map(c -> 
-			new CalcAttachTimeDto(c.getTime().getCalcTime() == null ? null : c.getTime().getCalcTime().valueAsMinutes(), 
-					c.getTime().getTime() == null ? null : c.getTime().getTime().valueAsMinutes())).orElse(null);
+														CalcAttachTimeDto.toTimeWithCal(c.getTime())).orElse(null);
 	}
 	
 	public HolidayMidnightWork toDomain() {
@@ -56,9 +55,7 @@ public class HolidayMidnightWorkDto {
 	}
 
 	public HolidayWorkMidNightTime newMidNightTime(CalcAttachTimeDto time, StaturoryAtrOfHolidayWork attr) {
-		return new HolidayWorkMidNightTime(TimeWithCalculation.createTimeWithCalculation(toAttendanceTime(time.getTime()),
-				toAttendanceTime(time.getCalcTime())),
-		attr);
+		return new HolidayWorkMidNightTime(TimeWithCalculation.sameTime(toAttendanceTime(time.getTime())), attr);
 	}
 	
 	private AttendanceTime toAttendanceTime(Integer time) {

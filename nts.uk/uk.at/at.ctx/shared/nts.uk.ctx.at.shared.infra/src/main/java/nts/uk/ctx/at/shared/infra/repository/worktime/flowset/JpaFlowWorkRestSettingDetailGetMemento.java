@@ -5,9 +5,9 @@
 package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSettingDetailGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetailGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSet;
 
 /**

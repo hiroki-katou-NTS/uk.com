@@ -31,29 +31,37 @@ module cps003.a.vm {
             isMutipleCheck: ko.observable(true),
             isSelectAllEmployee: ko.observable(true),
             onSearchAllClicked: (dataList: Array<IEmployee>) => {
-                let self = this;
-                self.employees(dataList);
+                let self = this,
+                    data = self.gridList.inData;
+                data.employees(dataList);
             },
             onSearchOnlyClicked: (data: IEmployee) => {
-                let self = this;
-                self.employees([data]);
+                let self = this,
+                    _data = self.gridList.inData;
+                _data.employees([data]);
             },
             onSearchOfWorkplaceClicked: (dataList: Array<IEmployee>) => {
-                let self = this;
-                self.employees(dataList);
+                let self = this,
+                    data = self.gridList.inData;
+                data.employees(dataList);
             },
             onSearchWorkplaceChildClicked: (dataList: Array<IEmployee>) => {
-                let self = this;
-                self.employees(dataList);
+                let self = this,
+                    data = self.gridList.inData;
+                data.employees(dataList);
             },
             onApplyEmployee: (dataList: Array<IEmployee>) => {
-                let self = this;
-                self.employees(dataList);
+                let self = this,
+                    data = self.gridList.inData;
+                data.employees(dataList);
             }
         };
 
         gridList = {
-            inData: ko.observableArray([]),
+            inData: {
+                employees: ko.observableArray([]),
+                itemDefitions: ko.observableArray([])
+            },
             outData: ko.observableArray([])
         }
 
@@ -72,18 +80,6 @@ module cps003.a.vm {
         start() {
             let self = this,
                 employee = self.employee();
-        }
-
-        addRow() {
-            let self = this,
-                data = _.concat(self.gridList.inData(), [{ ProductID: 1 }, { ProductID: 2 }, { ProductID: 3 }, { ProductID: 4 }, { ProductID: 5 }, { ProductID: 6 }]);
-
-            self.gridList.inData(data);
-        }
-
-        removeRow() {
-            let self = this;
-            self.gridList.inData.pop();
         }
 
         saveData() {

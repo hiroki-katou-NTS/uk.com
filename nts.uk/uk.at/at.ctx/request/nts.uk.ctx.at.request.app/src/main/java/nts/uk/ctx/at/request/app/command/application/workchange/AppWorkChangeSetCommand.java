@@ -7,11 +7,6 @@ public class AppWorkChangeSetCommand
 {
     
     /**
-    * 会社ID
-    */
-    private String cid;
-    
-    /**
     * スケジュールが休日の場合は除くを表示する
     */
     private int excludeHoliday;

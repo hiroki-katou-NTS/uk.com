@@ -6,15 +6,15 @@ package nts.uk.ctx.at.shared.app.command.worktime.flowset.dto;
 
 import lombok.Value;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.FlowWorkRestTimezoneDto;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlHalfDayWtzGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWtzGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
 
 /**
  * The Class FlHalfDayWorkTzDto.
  */
 @Value
-public class FlHalfDayWorkTzDto implements FlHalfDayWtzGetMemento {
+public class FlHalfDayWorkTzDto implements FlowHalfDayWtzGetMemento {
 
 	/** The rest timezone. */
 	private FlowWorkRestTimezoneDto restTimezone;

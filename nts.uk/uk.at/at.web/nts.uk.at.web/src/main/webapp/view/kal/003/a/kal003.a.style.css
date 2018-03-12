@@ -14,8 +14,11 @@
 }
 
 div[class^="tab-content"] {
-	/*width: 600px;
-	height: 300px;*/
+	padding: 20px;
+}
+
+div[class="tab-content-1"] {
+	padding: 0px !important;
 }
 
 .tab-content-1 button {
@@ -24,7 +27,7 @@ div[class^="tab-content"] {
 }
 
 .tab-content-1 .control-group {
-	margin-top: 25px;
+	margin: 30px;
 }
 
 .flabel {
@@ -39,3 +42,5 @@ div[class^="tab-content"] {
 #div_table_check_conditions .nts-fixed-table .nts-fixed-body-container {
 	overflow-x: hidden;
 }
+div .tab-content-3 .ntsControl.radio-wrapper.reset-element {margin-top: 20px;}
+label.label4w4d {margin-left: 30px; display: block;}

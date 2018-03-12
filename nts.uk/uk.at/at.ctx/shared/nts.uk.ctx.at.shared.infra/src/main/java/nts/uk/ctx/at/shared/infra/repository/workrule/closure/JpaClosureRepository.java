@@ -687,7 +687,7 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository#findByCurrentMonth(nts.arc.time.YearMonth)
 	 */
 	@Override
-	public List<ClosureHistory> findByCurrentMonth(YearMonth closureYm) {
+	public List<ClosureHistory> findByCurrentMonth(String companyId, YearMonth closureYm) {
 
 		// get entity manager
 		EntityManager em = this.getEntityManager();
@@ -709,6 +709,7 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
 				root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.strYM), closureYm.v()));
 		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KclmtClosureHist_.endYM), closureYm.v()));
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.cid), companyId));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));

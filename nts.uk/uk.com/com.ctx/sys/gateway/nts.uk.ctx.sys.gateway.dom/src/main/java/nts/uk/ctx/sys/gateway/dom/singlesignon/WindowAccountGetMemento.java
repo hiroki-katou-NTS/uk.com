@@ -21,7 +21,7 @@ public interface WindowAccountGetMemento {
 	 *
 	 * @return the hot name
 	 */
-	String getHostName();
+	HostName getHostName();
 	
 	
 	/**
@@ -29,7 +29,7 @@ public interface WindowAccountGetMemento {
 	 *
 	 * @return the user name
 	 */
-	String getUserName();
+	UserName getUserName();
 	
 	/**
 	 * Gets the no.

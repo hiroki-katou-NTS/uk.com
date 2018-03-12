@@ -23,7 +23,8 @@ public class ApplicationDeadlineCommand {
 	
 	public ApplicationDeadline toDomain(Integer closureId){
 		String companyId = AppContexts.user().companyId();
-		ApplicationDeadline appDead = ApplicationDeadline.createSimpleFromJavaType(companyId, this.getClosureId(), this.getUserAtr(), this.getDeadline(), this.getDeadlineCriteria());
+		ApplicationDeadline appDead = ApplicationDeadline.createSimpleFromJavaType(companyId, this.closureId, 
+										this.userAtr, this.deadline, this.deadlineCriteria);
 		return appDead;
 	}
 }

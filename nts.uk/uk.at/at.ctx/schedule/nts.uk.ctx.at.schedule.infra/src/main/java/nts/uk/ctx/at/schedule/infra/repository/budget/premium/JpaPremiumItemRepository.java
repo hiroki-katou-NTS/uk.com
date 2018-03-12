@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumItem;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumItemRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName;
@@ -24,10 +25,16 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 	
 	private final String findByListDisplayNumber = findAll + " AND a.kmnmpPremiumItemPK.displayNumber IN :displayNumbers";
 	
+	private final String findByListPremiumNoIsUse = findAll +  " AND a.kmnmpPremiumItemPK.displayNumber NOT IN :displayNumbers AND a.useAtr = :useAtr";
+	
+	private final String findAllIsUse = findAll + " AND a.useAtr = :useAtr";
+	
 	@Override
 	public void update(PremiumItem premiumItem) {
-		KmnmtPremiumItem item = this.queryProxy().find(new KmnmpPremiumItemPK(premiumItem.getCompanyID(), premiumItem.getDisplayNumber()), KmnmtPremiumItem.class).get();
-		if(premiumItem.getUseAtr().equals(UseAttribute.Use)){
+		KmnmtPremiumItem item = this.queryProxy().find(new KmnmpPremiumItemPK(premiumItem.getCompanyID(),
+				premiumItem.getDisplayNumber()), KmnmtPremiumItem.class).get();
+		
+		if(premiumItem.getUseAtr() == UseAttribute.Use){
 			item.setUseAtr(premiumItem.getUseAtr().value);
 			item.setName(premiumItem.getName().v());
 		} else {
@@ -47,6 +54,26 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 		return this.queryProxy().query(findByListDisplayNumber, KmnmtPremiumItem.class)
 				.setParameter("CID", companyID)
 				.setParameter("displayNumbers", displayNumbers)
+				.getList(x -> convertToDomain(x));
+	}
+	
+	@Override
+	public List<PremiumItem> findByCompanyIDAndListPremiumNo (String companyID, List<Integer> premiumNo) {
+		if (CollectionUtil.isEmpty(premiumNo)) {
+			return this.findAllIsUse(companyID);
+		}
+		return this.queryProxy().query(findByListPremiumNoIsUse, KmnmtPremiumItem.class)
+				.setParameter("CID", companyID)
+				.setParameter("displayNumbers", premiumNo)
+				.setParameter("useAtr", UseAttribute.Use.value)
+				.getList(x -> convertToDomain(x));
+	}
+	
+	@Override
+	public List<PremiumItem> findAllIsUse (String companyID) {
+		return this.queryProxy().query(findAllIsUse, KmnmtPremiumItem.class)
+				.setParameter("CID", companyID)
+				.setParameter("useAtr", UseAttribute.Use.value)
 				.getList(x -> convertToDomain(x));
 	}
 	

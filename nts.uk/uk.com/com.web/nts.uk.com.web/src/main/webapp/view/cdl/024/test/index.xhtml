@@ -15,11 +15,10 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area">
-				
-			</div>
+			<div id="functions-area"></div>
 			<div id="contents-area">
-				<div id="list-box" data-bind="ntsListBox: {
+				<div id="list-box"
+					data-bind="ntsListBox: {
 					options: items,
 					optionsValue: 'code',
 					optionsText: 'code',
@@ -30,7 +29,7 @@
 						{ key: 'code', length: 10 }
 					]}"></div>
 				<button data-bind="click: openDialog">Open CDL024</button>
-			</div>			
+			</div>
 		</ui:define>
 
 	</ui:composition>

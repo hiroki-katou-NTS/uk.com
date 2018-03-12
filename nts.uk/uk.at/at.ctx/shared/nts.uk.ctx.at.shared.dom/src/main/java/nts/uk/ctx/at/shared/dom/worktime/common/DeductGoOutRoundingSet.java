@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 // 計上控除別外出丸め設定
 @Getter
-public class DeductGoOutRoundingSet extends DomainObject {
+public class DeductGoOutRoundingSet extends WorkTimeDomainObject {
 
 	/** The deduct time rounding setting. */
 	// 控除時間の丸め設定

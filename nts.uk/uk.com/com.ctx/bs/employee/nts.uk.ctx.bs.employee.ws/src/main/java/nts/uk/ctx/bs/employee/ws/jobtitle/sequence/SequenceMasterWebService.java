@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2018 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.ws.jobtitle.sequence;
 
 import java.util.List;
@@ -16,6 +20,9 @@ import nts.uk.ctx.bs.employee.app.command.jobtitle.sequence.SaveSequenceCommandH
 import nts.uk.ctx.bs.employee.app.find.jobtitle.sequence.SequenceMasterFinder;
 import nts.uk.ctx.bs.employee.app.find.jobtitle.sequence.dto.SequenceMasterFindDto;
 
+/**
+ * The Class SequenceMasterWebService.
+ */
 @Path("bs/employee/jobtitle/sequence")
 @Produces(MediaType.APPLICATION_JSON)
 public class SequenceMasterWebService extends WebService {
@@ -28,7 +35,7 @@ public class SequenceMasterWebService extends WebService {
 	@Inject
 	private SaveSequenceCommandHandler saveSequenceCommandHandler;
 	
-	/** The Remove sequence command handler. */
+	/** The remove sequence command handler. */
 	@Inject
 	private RemoveSequenceCommandHandler removeSequenceCommandHandler;
 	
@@ -47,7 +54,7 @@ public class SequenceMasterWebService extends WebService {
 	 * Find sequence by sequence code.
 	 *
 	 * @param findObj the find obj
-	 * @return the sequence master dto
+	 * @return the sequence master find dto
 	 */
 	@Path("find")
 	@POST
@@ -75,5 +82,16 @@ public class SequenceMasterWebService extends WebService {
 	@POST
 	public void removeSequence(RemoveSequenceCommand command) {
 		this.removeSequenceCommandHandler.handle(command);
+	}
+	
+	/**
+	 * Update order.
+	 *
+	 * @param listCommand the list command
+	 */
+	@Path("updateOrder")
+	@POST
+	public void updateOrder(List<SaveSequenceCommand> listCommand) {
+		this.saveSequenceCommandHandler.updateOrder(listCommand);
 	}
 }

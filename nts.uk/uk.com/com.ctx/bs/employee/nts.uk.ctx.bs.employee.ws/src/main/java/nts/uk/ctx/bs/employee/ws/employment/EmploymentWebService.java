@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.ws.employment;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -90,5 +92,14 @@ public class EmploymentWebService extends WebService {
 	@Path("findByCodes")
 	public List<EmploymentDto> findByCodes(List<String> employmentCodes) {
 		return this.finder.findByCodes(employmentCodes);
+	}
+	
+	@POST
+	@Path("findNamesByCodes")
+	public List<String> findNamesByCodes(List<String> employmentCodes) {
+		List<String> names = new ArrayList<>();
+		if (employmentCodes == null || employmentCodes.isEmpty()) return names;
+		names = this.finder.findByCodes(employmentCodes).stream().map(item -> item.getName()).collect(Collectors.toList());
+		return names;
 	}
 }

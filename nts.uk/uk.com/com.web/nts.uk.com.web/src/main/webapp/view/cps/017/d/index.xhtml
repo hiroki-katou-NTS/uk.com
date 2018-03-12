@@ -26,19 +26,20 @@
 						<!-- D1_1: label 新たに作成する履歴の、作成情報を入力してください。 -->
 						<div class="collll">#{i18n.getText('CPS017_42')}</div>
 					</div>
-					<br/>
+					<br />
 					<div class="row">
 						<!-- D1_2: label 名称 -->
 						<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS017_43')}</div>
 						<!-- D1_4: 選択項目名称 -->
 						<span class="label" data-bind="text: selectionName"></span>
 					</div>
-					<br/>
+					<br />
 					<div class="row">
 						<!-- D1_5: label 期間 -->
 						<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS017_44')}</div>
 						<!-- D1_6: 履歴開始日 -->
-						<div id ="start-date-sel" data-bind="ntsDatePicker: {
+						<div id="start-date-sel"
+							data-bind="ntsDatePicker: {
 										name: '#[CPS017_45]',
 										value: startDate, 
 										required: true,
@@ -50,7 +51,7 @@
 				</div>
 				<div id="functions-area-bottom" style="width: 380px">
 					<!-- D2_1: button 決定 -->
-					<button id="A_BTN_REGISTER" class="proceed x-large" 
+					<button id="A_BTN_REGISTER" class="proceed x-large"
 						data-bind="click : editHistory, enable: $root.errors.isEmpty">#{i18n.getText('CPS017_46')}</button>
 					<!-- D2_2: button キャンセル -->
 					<button id="A_BTN_COPPY" data-bind="click: closeDialog">#{i18n.getText('CPS017_47')}</button>

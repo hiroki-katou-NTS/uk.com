@@ -1,0 +1,39 @@
+package nts.uk.ctx.at.shared.infra.repository.worktime.difftimeset;
+
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDaySetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimezoneSetting;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSetPK;
+
+public class JpaDiffTimeHalfDayWorkTimezoneSetMemento implements DiffTimeHalfDaySetMemento {
+
+	private KshmtDiffTimeWorkSet entity;
+
+	private int type;
+
+	public JpaDiffTimeHalfDayWorkTimezoneSetMemento(KshmtDiffTimeWorkSet entity, int value) {
+		this.entity = entity;
+		if (this.entity.getKshmtDiffTimeWorkSetPK() == null) {
+			this.entity.setKshmtDiffTimeWorkSetPK(new KshmtDiffTimeWorkSetPK());
+		}
+		this.type = value;
+	}
+
+	@Override
+	public void setRestTimezone(DiffTimeRestTimezone restTimezone) {
+		restTimezone.saveToMemento(new JpaDiffTimeRestTimezoneSetMemento(this.entity, this.type));
+	}
+
+	@Override
+	public void setWorkTimezone(DiffTimezoneSetting workTimezone) {
+		workTimezone.saveToMemento(new JpaDiffTimezoneSettingSetMemento(this.entity, this.type));
+	}
+
+	@Override
+	public void setAmPmAtr(AmPmAtr amPmAtr) {
+		this.type = amPmAtr.value;
+	}
+
+}

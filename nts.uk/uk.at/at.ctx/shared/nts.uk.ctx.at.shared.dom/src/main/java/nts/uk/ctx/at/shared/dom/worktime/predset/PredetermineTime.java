@@ -5,14 +5,14 @@
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class PredetermineTime.
  */
 @Getter
 //所定時間
-public class PredetermineTime extends DomainObject {
+public class PredetermineTime extends WorkTimeDomainObject {
 
 	/** The add time. */
 	//就業加算時間
@@ -21,6 +21,16 @@ public class PredetermineTime extends DomainObject {
 	/** The pred time. */
 	//所定時間
 	private BreakDownTimeDay predTime;
+	
+	/**
+	 * Constructor
+	 */
+	public PredetermineTime(BreakDownTimeDay addTime, BreakDownTimeDay predTime) {
+		super();
+		this.addTime = addTime;
+		this.predTime = predTime;
+	}
+	
 	
 	/**
 	 * Instantiates a new predetermine time.
@@ -41,5 +51,7 @@ public class PredetermineTime extends DomainObject {
 		memento.setAddTime(this.addTime);
 		memento.setPredTime(this.predTime);
 	}
+
+
 	
 }

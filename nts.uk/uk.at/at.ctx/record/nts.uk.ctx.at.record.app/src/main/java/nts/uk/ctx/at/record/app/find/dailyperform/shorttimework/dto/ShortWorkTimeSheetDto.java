@@ -52,7 +52,7 @@ public class ShortWorkTimeSheetDto {
 			return "";
 		}
 		
-		switch (childCareAttr - 1) {
+		switch (childCareAttr) {
 		case 0:
 			return "育児";
 		case 1:

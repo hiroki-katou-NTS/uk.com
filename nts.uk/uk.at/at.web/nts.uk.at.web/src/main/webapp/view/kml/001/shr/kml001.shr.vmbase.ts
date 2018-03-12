@@ -182,7 +182,7 @@ module nts.uk.at.view.kml001.shr {
                             koPremiumSets.push(ProcessHandler.fromObjectPremiumSet(premiumSet));        
                         } else {
                             koPremiumSets.push(
-                                new vmbase.PremiumSetting("", "", premiumItem.displayNumber(), 1, premiumItem.name(), premiumItem.useAtr(), [])
+                                new vmbase.PremiumSetting("", "", premiumItem.displayNumber(), 100, premiumItem.name(), premiumItem.useAtr(), [])
                             );    
                         }
                     }

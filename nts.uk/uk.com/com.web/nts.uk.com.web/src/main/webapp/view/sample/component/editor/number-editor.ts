@@ -19,8 +19,9 @@ __viewContext.ready(function() {
                 value: ko.observable(),
                 constraint: 'CommonAmount',
                 option: {
-                    width: "50",
-                    defaultValue: 2
+                    width: "100",
+                    defaultValue: 2,
+                    unitID: 'DAYS'
                 },
                 required: ko.observable(true),
                 enable: ko.observable(true),

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.worktime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
@@ -38,12 +39,12 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	 */
 	public TimeLeavingWork getAttendanceLeavingWork(WorkNo workNo) {
 		
-		List<TimeLeavingWork> attendanceLeavingWorkList = this.timeLeavingWorks.stream()
-				.filter(ts -> ts.getWorkNo() == workNo).collect(Collectors.toList());
-		if(attendanceLeavingWorkList.size()>1) {
+		Optional<TimeLeavingWork> attendanceLeavingWorkList = this.timeLeavingWorks.stream()
+				.filter(ts -> ts.getWorkNo().v().intValue() == workNo.v().intValue()).findFirst();
+		if(!attendanceLeavingWorkList.isPresent()) {
 			throw new RuntimeException("Exist duplicate workNo : " + workNo);
 		}	
-		return attendanceLeavingWorkList.get(0);		
+		return attendanceLeavingWorkList.get();		
 	}
 	
 	/**

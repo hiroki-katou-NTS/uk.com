@@ -1,6 +1,5 @@
 package nts.uk.ctx.pereg.app.command.person.info.item;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +7,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
@@ -43,7 +41,7 @@ public class AddItemCommandHandler extends CommandHandlerWithResult<AddItemComma
 		String contractCd = PersonInfoItemDefinition.ROOT_CONTRACT_CODE;
 		String itemName = addItemCommand.getItemName();
 		if (CheckNameSpace.checkName(itemName)) {
-			throw new BusinessException(new RawErrorMessage("Msg_928"));
+			throw new BusinessException("Msg_928");
 		}
 		if (addItemCommand.getSingleItem().getDataType() == 6) {
 			List<Selection> selection = new ArrayList<>();
@@ -56,7 +54,7 @@ public class AddItemCommandHandler extends CommandHandlerWithResult<AddItemComma
 			}
 			if (selection == null || selection.size() == 0) {
 
-				throw new BusinessException(new RawErrorMessage("Msg_587"));
+				throw new BusinessException("Msg_587");
 
 			}
 		}
@@ -64,7 +62,7 @@ public class AddItemCommandHandler extends CommandHandlerWithResult<AddItemComma
 		// need perInfoItemDefId = ' ' becase sql oracle server can't query ''
 		if (!this.pernfoItemDefRep.checkItemNameIsUnique(addItemCommand.getPerInfoCtgId(), addItemCommand.getItemName(),
 				" ")) {
-			throw new BusinessException(new RawErrorMessage("Msg_358"));
+			throw new BusinessException("Msg_358");
 		}
 		PersonInfoCategory perInfoCtg = this.perInfoCtgRep
 				.getPerInfoCategory(addItemCommand.getPerInfoCtgId(), contractCd).orElse(null);

@@ -10,12 +10,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
@@ -26,7 +26,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
  */
 @Getter
 // 時差勤務設定
-public class DiffTimeWorkSetting extends AggregateRoot {
+public class DiffTimeWorkSetting extends WorkTimeAggregateRoot {
 
 	/** The company id. */
 	// 会社ID
@@ -111,20 +111,20 @@ public class DiffTimeWorkSetting extends AggregateRoot {
 	 * @param workTimeType the work time type
 	 * @param other the other
 	 */
-	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, DiffTimeWorkSetting other) {
+	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, DiffTimeWorkSetting oldDomain) {
 		// restore 平日勤務時間帯
 		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK
 				&& workTimeType.getWorkTimeMethodSet() == WorkTimeMethodSet.DIFFTIME_WORK) {
-			
+
 			// convert map
-			Map<AmPmAtr, DiffTimeHalfDayWorkTimezone> mapFixHalfWork = other.getHalfDayWorkTimezones().stream()
+			Map<AmPmAtr, DiffTimeHalfDayWorkTimezone> mapFixHalfWork = oldDomain.getHalfDayWorkTimezones().stream()
 					.collect(Collectors.toMap(item -> ((DiffTimeHalfDayWorkTimezone) item).getAmPmAtr(),
 							Function.identity()));
-			
-			this.halfDayWorkTimezones.forEach(item -> item.restoreData(screenMode, this,
-					mapFixHalfWork.get(item.getAmPmAtr())));
+
+			this.halfDayWorkTimezones
+					.forEach(item -> item.restoreData(screenMode, this, mapFixHalfWork.get(item.getAmPmAtr())));
 		} else {
-			this.halfDayWorkTimezones = other.getHalfDayWorkTimezones();
+			this.halfDayWorkTimezones = oldDomain.getHalfDayWorkTimezones();
 		}
 	}
 
@@ -163,6 +163,11 @@ public class DiffTimeWorkSetting extends AggregateRoot {
 		} else if (!workTimeCode.equals(other.workTimeCode))
 			return false;
 		return true;
+	}
+
+	public void restoreDefaultData(ScreenMode valueOf) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

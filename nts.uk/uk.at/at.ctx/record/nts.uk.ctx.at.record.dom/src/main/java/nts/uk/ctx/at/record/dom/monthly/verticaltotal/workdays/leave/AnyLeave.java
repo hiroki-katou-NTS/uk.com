@@ -18,10 +18,11 @@ public class AnyLeave {
 	
 	/**
 	 * コンストラクタ
+	 * @param anyLeaveNo 任意休業No
 	 */
-	public AnyLeave(){
+	public AnyLeave(int anyLeaveNo){
 		
-		this.anyLeaveNo = 0;
+		this.anyLeaveNo = anyLeaveNo;
 		this.days = new AttendanceDaysMonth(0.0);
 	}
 
@@ -34,9 +35,16 @@ public class AnyLeave {
 	public static AnyLeave of(
 			int anyLeaveNo, AttendanceDaysMonth days){
 		
-		val domain = new AnyLeave();
-		domain.anyLeaveNo = anyLeaveNo;
+		val domain = new AnyLeave(anyLeaveNo);
 		domain.days = days;
 		return domain;
+	}
+	
+	/**
+	 * 日数を加算する
+	 * @param days 日数
+	 */
+	public void addDays(Double days){
+		this.days = this.days.addDays(days);
 	}
 }

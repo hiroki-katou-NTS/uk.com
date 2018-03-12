@@ -53,4 +53,8 @@ public class CaculationTime {
 	 * errorCode
 	 */
 	private int errorCode;
+	/**
+	 * displayOvertimeHour
+	 */
+	private boolean displayOvertimeHour;
 }

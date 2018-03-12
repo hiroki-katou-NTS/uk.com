@@ -20,7 +20,7 @@ public interface SyJobTitlePub {
 	 * @param employeeId the employee id
 	 * @return the list
 	 */
-	// RequestList #17
+	// RequestList17
 	List<JobTitleExport> findJobTitleBySid(String employeeId);
 
 	/**
@@ -30,7 +30,7 @@ public interface SyJobTitlePub {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	// RequestList #33
+	// RequestList33
 	Optional<EmployeeJobHistExport> findBySid(String employeeId, GeneralDate baseDate);
 
 	/**
@@ -83,6 +83,6 @@ public interface SyJobTitlePub {
 	 * @return the list
 	 */
 	// RequestList From  LamDT
-	Optional<AffJobTitleHistory_ver1Export> gerBySidAndBaseDate(String employeeId, GeneralDate baseDate);
+	Optional<AffJobTitleHistoryExport> gerBySidAndBaseDate(String employeeId, GeneralDate baseDate);
 
 }

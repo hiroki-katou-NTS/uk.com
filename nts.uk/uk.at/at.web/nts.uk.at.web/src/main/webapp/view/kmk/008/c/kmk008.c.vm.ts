@@ -43,7 +43,9 @@ module nts.uk.at.view.kmk008.c {
                     new service.Service().updateAgreementTimeOfCompany(timeOfCompanyNew).done(function(listError) {
                         if (listError.length > 0) {
                             let errorCode = _.split(listError[0], ',');
-                            nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [nts.uk.resource.getText(errorCode[1]), nts.uk.resource.getText(errorCode[2])] });
+                            let periodName = nts.uk.resource.getText(errorCode[1]);
+                            let param1 = "期間: "+nts.uk.resource.getText(errorCode[1]) +"<br>" + nts.uk.resource.getText(errorCode[2]);
+                            nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [param1, nts.uk.resource.getText(errorCode[3])] });
                             return;
                         }
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function(data) {
@@ -55,7 +57,9 @@ module nts.uk.at.view.kmk008.c {
                 new service.Service().addAgreementTimeOfCompany(timeOfCompanyNew).done(function(listError) {
                     if (listError.length > 0) {
                         let errorCode = _.split(listError[0], ',');
-                        nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [nts.uk.resource.getText(errorCode[1]), nts.uk.resource.getText(errorCode[2])] });
+                        let periodName = nts.uk.resource.getText(errorCode[1]);
+                        let param1 = "期間: "+nts.uk.resource.getText(errorCode[1]) +"<br>" + nts.uk.resource.getText(errorCode[2]);
+                        nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [param1, nts.uk.resource.getText(errorCode[3])] });
                         return;
                     }
                     nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function(data) {

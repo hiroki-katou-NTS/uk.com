@@ -79,7 +79,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 if (value) {
 
                     self.getItemList(self.initSettingId(), value);
- 
+
 
                 } else {
                     return;
@@ -89,22 +89,27 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
 
         }
-        
-        getTitleName(itemName: string){
-            return ko.computed(()=>{
+
+        getTitleName(itemName: string) {
+            return ko.computed(() => {
                 return itemName.length > 5 ? itemName : "";
             });
         }
 
         // get item list
         getItemList(settingId: string, ctgId: string) {
-            let self = this;
+            let self = this,
+            i: number = 0;
+            currentCtg = self.findCtg(self.currentCategory().ctgList(), ctgId);
             self.currentCategory().itemList.removeAll();
             service.getAllItemByCtgId(settingId, ctgId).done((item: Array<IPerInfoInitValueSettingItemDto>) => {
                 if (item.length > 0) {
                     let itemConvert = _.map(item, function(obj: IPerInfoInitValueSettingItemDto) {
                         primitiveConst(obj);
+                        i = i + 1;
                         return new PerInfoInitValueSettingItemDto({
+                            categoryType: currentCtg.categoryType,
+                            indexItem : i ,    
                             fixedItem: obj.fixedItem,
                             perInfoItemDefId: obj.perInfoItemDefId,
                             settingId: obj.settingId,
@@ -138,22 +143,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             stringItemLength: obj.stringItemLength,
                             stringItemDataType: obj.stringItemDataType
                         });
+                        
                     });
 
                     self.currentCategory().itemList.removeAll();
                     self.currentCategory().itemList(itemConvert);
                     self.lstItemFilter = itemConvert;
-                       
-//                    $.fn.hasScrollBar = function() {
-//                        return this.get(0).scrollHeight > this.height();
-//                    }
-//                    if($("#sub-right>table>tbody").hasScrollBar()){
-//                        $(".contents-header thead, #sub-right>table>tbody").css("width", "651px");
-//                        $("#COL_3").css("width", "257px !important");
-//                    }else{
-//                        $(".contents-header thead, #sub-right>table>tbody").css("width", "634px");
-//                        $("#COL_3").css("width", "240px !important");
-//                    }
                 } else {
                     self.currentCategory().itemList.removeAll();
                     self.currentCategory().itemList([]);
@@ -263,14 +258,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 if (itemSelected.isCancel) {
                     return;
                 } else {
+                    let itemLst: Array<any> = _.map(ko.toJS(self.currentCategory().itemList()), function(obj) {
+                        return obj.perInfoItemDefId;
+                    });
                     if (itemSelected.lstItem.length > 0) {
                         _.each(itemSelected.lstItem, function(item) {
-                            // đoạn này kiểm tra xem những item được chọn trong màn B được thiết lập
-                            // sau đó thì đi tìm kiếm index của item đó nằm trong list item hiện tại của màn A 
-                            // để set lại selected cho combox của cột 2 của item
-                            let i: number = _.indexOf(_.map(ko.toJS(self.currentCategory().itemList()), function(obj) {
-                                return obj.perInfoItemDefId;
-                            }), item);
+                            let i: number = _.indexOf(itemLst, item);
                             if (i > -1) {
                                 self.currentCategory().itemList()[i].selectedRuleCode(Number(itemSelected.refMethodType));
                             }
@@ -707,6 +700,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         stringItemDataType?: number;
         fixedItem: boolean;
+        // dung de phan biet category thuoc dang lich su lien tuc thi cot 2
+        // cua itemList se ko hoat dong
+        categoryType: number;
+        
+        indexItem : number;
     }
 
     export class PerInfoInitValueSettingItemDto {
@@ -772,8 +770,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         stringItemDataType: number;
         getTitle: KnockoutObservable<string> = ko.observable("");
+        
+        categoryType: number;
+        indexItem: number = 0;
         constructor(params: IPerInfoInitValueSettingItemDto) {
             let self = this;
+            
+            self.categoryType = params.categoryType;
+            self.indexItem = params.indexItem;
             self.getTitle(self.getWidthText(params.itemName) > 200 ? params.itemName : "");
             self.fixedItem = params.fixedItem;
             self.perInfoItemDefId = ko.observable(params.perInfoItemDefId || "");
@@ -805,7 +809,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.itemType = ko.observable(params.itemType || undefined);
             self.dataType = ko.observable(params.dataType || undefined);
-            
+
             if (params.dataType === 3) {
                 if (params.dateType === 1) {
                     self.dateValue = ko.observable(params.dateValue || undefined);
@@ -843,7 +847,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.selectedRuleCode = ko.observable(params.refMethodType || 1);
 
-            if (params.dataType === 6) {
+            if (params.dataType === 6 || params.dataType === 7 || params.dataType === 8) {
                 self.selectionItemId = params.selectionItemId || undefined;
 
                 self.selectionItemRefType = params.selectionItemRefType || undefined;
@@ -854,7 +858,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.dateType = params.dateType || undefined;
 
-            if (params.dataType === 3 || params.dataType === 4 || params.dataType === 5) {
+            if (params.dataType === 3) {
                 self.listComboItem = ko.observableArray([
                     { code: 1, name: ReferenceMethodType.NOSETTING },
                     { code: 2, name: ReferenceMethodType.FIXEDVALUE },
@@ -943,8 +947,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
 
         }
-        getWidthText(str: string) : number{
-            let div = $('<span>').text(str).appendTo('body'), width = div.width(); div.remove(); 
+        getWidthText(str: string): number {
+            let div = $('<span>').text(str).appendTo('body'), width = div.width(); div.remove();
             return width;
         }
     }
@@ -969,6 +973,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         constructor(params: number, params2: INumbericItem) {
             let self = this;
             if (params === 2) {
+
                 this.numberIntegerPart = params2.numberIntegerPart;
                 this.numberDecimalPart = params2.numberDecimalPart;
             }

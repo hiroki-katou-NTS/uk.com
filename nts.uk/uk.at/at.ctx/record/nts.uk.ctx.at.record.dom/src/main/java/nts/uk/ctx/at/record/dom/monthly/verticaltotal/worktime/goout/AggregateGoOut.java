@@ -27,9 +27,9 @@ public class AggregateGoOut {
 	/**
 	 * コンストラクタ
 	 */
-	public AggregateGoOut(){
+	public AggregateGoOut(GoingOutReason goOutReason){
 		
-		this.goOutReason = GoingOutReason.PRIVATE;
+		this.goOutReason = goOutReason;
 		this.times = new AttendanceTimesMonth(0);
 		this.legalTime = TimeMonthWithCalculation.ofSameTime(0);
 		this.illegalTime = TimeMonthWithCalculation.ofSameTime(0);
@@ -52,12 +52,46 @@ public class AggregateGoOut {
 			TimeMonthWithCalculation illegalTime,
 			TimeMonthWithCalculation totalTime){
 		
-		val domain = new AggregateGoOut();
-		domain.goOutReason = goOutReason;
+		val domain = new AggregateGoOut(goOutReason);
 		domain.times = times;
 		domain.legalTime = legalTime;
 		domain.illegalTime = illegalTime;
 		domain.totalTime = totalTime;
 		return domain;
+	}
+	
+	/**
+	 * 回数に加算する
+	 * @param times 回数
+	 */
+	public void addTimes(int times){
+		this.times = this.times.addTimes(times);
+	}
+	
+	/**
+	 * 法定内時間に分を加算する
+	 * @param minutes 分
+	 * @param calcMinutes 分(計算用)
+	 */
+	public void addMinutesToLegalTime(int minutes, int calcMinutes){
+		this.legalTime = this.legalTime.addMinutes(minutes, calcMinutes);
+	}
+	
+	/**
+	 * 法定外時間に分を加算する
+	 * @param minutes 分
+	 * @param calcMinutes 分(計算用)
+	 */
+	public void addMinutesToIllegalTime(int minutes, int calcMinutes){
+		this.illegalTime = this.illegalTime.addMinutes(minutes, calcMinutes);
+	}
+	
+	/**
+	 * 合計時間に分を加算する
+	 * @param minutes 分
+	 * @param calcMinutes 分(計算用)
+	 */
+	public void addMinutesToTotalTime(int minutes, int calcMinutes){
+		this.totalTime = this.totalTime.addMinutes(minutes, calcMinutes);
 	}
 }

@@ -95,15 +95,15 @@ public class OverTimeOfTimeSeries {
 	}
 	
 	/**
-	 * 残業枠時間を加算する
-	 * @param target 加算先残業枠時間
-	 * @param addTime 加算時間　（残業枠時間）
-	 * @return 加算後残業枠時間
+	 * 残業枠時間に加算する
+	 * @param target 残業枠時間　（加算先）
+	 * @param addTime 加算する残業枠時間
+	 * @return 残業枠時間　（加算後）
 	 */
 	private OverTimeFrameTime addOverTimeFrameTime(OverTimeFrameTime target, OverTimeFrameTime addTime){
 		
 		return new OverTimeFrameTime(
-				new OverTimeFrameNo(target.getOverWorkFrameNo().v()),
+				target.getOverWorkFrameNo(),
 				target.getOverTimeWork().addMinutes(
 						addTime.getOverTimeWork().getTime(),
 						addTime.getOverTimeWork().getCalcTime()),
@@ -116,40 +116,38 @@ public class OverTimeOfTimeSeries {
 	}
 	
 	/**
-	 * 残業時間のみ加算する
-	 * @param target 残業枠時間　（設定先）
-	 * @param overTime 残業時間　（計算付き時間）
+	 * 残業枠時間の残業時間のみ加算する
+	 * @param target 残業枠時間　（加算先）
+	 * @param overTime 加算する時間　（計算付き時間）
+	 * @return 残業枠時間　（加算後）
 	 */
 	private OverTimeFrameTime addOverTimeOnly(OverTimeFrameTime target, TimeWithCalculation overTime){
 		
 		return new OverTimeFrameTime(
-				new OverTimeFrameNo(target.getOverWorkFrameNo().v()),
+				target.getOverWorkFrameNo(),
 				target.getOverTimeWork().addMinutes(
 						overTime.getTime(),
 						overTime.getCalcTime()),
-				TimeWithCalculation.createTimeWithCalculation(
-						new AttendanceTime(target.getTransferTime().getTime().v()),
-						new AttendanceTime(target.getTransferTime().getCalcTime().v())),
-				new AttendanceTime(target.getBeforeApplicationTime().v()),
-				new AttendanceTime(target.getOrderTime().v()));
+				target.getTransferTime(),
+				target.getBeforeApplicationTime(),
+				target.getOrderTime());
 	}
 	
 	/**
-	 * 振替時間のみ加算する
-	 * @param target 残業枠時間　（設定先）
-	 * @param transferTime 振替時間　（計算付き時間）
+	 * 残業枠時間の振替時間のみ加算する
+	 * @param target 残業枠時間　（加算先）
+	 * @param transferTime 加算する時間　（計算付き時間）
+	 * @return 残業枠時間　（加算後）
 	 */
 	private OverTimeFrameTime addTransferTimeOnly(OverTimeFrameTime target, TimeWithCalculation transferTime){
 		
 		return new OverTimeFrameTime(
-				new OverTimeFrameNo(target.getOverWorkFrameNo().v()),
-				TimeWithCalculation.createTimeWithCalculation(
-						new AttendanceTime(target.getOverTimeWork().getTime().v()),
-						new AttendanceTime(target.getOverTimeWork().getCalcTime().v())),
+				target.getOverWorkFrameNo(),
+				target.getOverTimeWork(),
 				target.getTransferTime().addMinutes(
 						transferTime.getTime(),
 						transferTime.getCalcTime()),
-				new AttendanceTime(target.getBeforeApplicationTime().v()),
-				new AttendanceTime(target.getOrderTime().v()));
+				target.getBeforeApplicationTime(),
+				target.getOrderTime());
 	}
 }

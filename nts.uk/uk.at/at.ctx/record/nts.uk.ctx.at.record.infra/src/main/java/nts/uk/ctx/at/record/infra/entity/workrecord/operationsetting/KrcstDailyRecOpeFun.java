@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -18,43 +16,43 @@ public class KrcstDailyRecOpeFun extends UkJpaEntity {
 	public String cid;
 	
 	@Column(name = "REGISTER_TOTAL_TIME_CHEER_ATR")
-	public BigDecimal registerTotalTimeCheerAtr;
+	public int registerTotalTimeCheerAtr;
 	
 	@Column(name = "COMPLETED_DIS_ONE_MONTH_ATR")
-	public BigDecimal completedDisOneMonthAtr;
+	public int completedDisOneMonthAtr;
 	
 	@Column(name = "DIS_CONFIRM_MESSAGE_ATR")
-	public BigDecimal disConfirmMessageAtr;
+	public int disConfirmMessageAtr;
 	
 	@Column(name = "USE_INITIAL_VALUE_SET_ATR")
-	public BigDecimal useInitialValueSetAtr;
+	public int useInitialValueSetAtr;
 	
 	@Column(name = "USE_WORK_DETAIL_ATR")
-	public BigDecimal useWorkDetailAtr;
+	public int useWorkDetailAtr;
 	
 	@Column(name = "REGISTER_ACTUAL_EXCEED_ATR")
-	public BigDecimal registerActualExceedAtr;
+	public int registerActualExceedAtr;
 	
 	@Column(name = "START_APP_SCREEN_ATR")
-	public BigDecimal startAppScreenAtr;
+	public int startAppScreenAtr;
 	
 	@Column(name = "CONFIRM_SUBMIT_APP_ATR")
-	public BigDecimal confirmSubmitAppAtr;
+	public int confirmSubmitAppAtr;
 	
 	@Column(name = "CONFIRM_BY_YOURSELF_ATR")
-	public BigDecimal confirmByYourselfAtr;
+	public int confirmByYourselfAtr;
 	
 	@Column(name = "INITIAL_VALUE_SETTING_ATR")
-	public BigDecimal initialValueSettingAtr;
+	public int initialValueSettingAtr;
 	
 	@Column(name = "CONFIRM_BY_SUPERVISOR_ATR")
-	public BigDecimal confirmBySupervisorAtr;
+	public int confirmBySupervisorAtr;
 	
 	@Column(name = "YOURSELF_CONFIRM_WHEN_ERROR")
-	public BigDecimal yourselfConfirmWhenError;
+	public int yourselfConfirmWhenError;
 	
 	@Column(name = "SUPERVISOR_CONFIRM_WHEN_ERROR")
-	public BigDecimal supervisorConfirmWhenError;
+	public int supervisorConfirmWhenError;
 
 	@Override
 	protected Object getKey() {

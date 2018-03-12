@@ -22,17 +22,9 @@ public class SgwmtOtherSysAccPK implements Serializable {
 	@Column(name="USER_ID")
 	private String userId;
 
-	// company code
-	@Column(name="CCD")
-	private String ccd;
-
-	@Column(name="USER_NAME")
-	private String userName;
-
 	public SgwmtOtherSysAccPK() {
 		super();
-	}
-	
+	}	
 
 	public boolean equals(Object other) {
 		if (this == other) {
@@ -43,27 +35,21 @@ public class SgwmtOtherSysAccPK implements Serializable {
 		}
 		SgwmtOtherSysAccPK castOther = (SgwmtOtherSysAccPK)other;
 		return 
-			this.userId.equals(castOther.userId)
-			&& this.ccd.equals(castOther.ccd)
-			&& this.userName.equals(castOther.userName);
+			this.userId.equals(castOther.userId);
 	}
 
 	public int hashCode() {
 		final int prime = 31;
 		int hash = 17;
 		hash = hash * prime + this.userId.hashCode();
-		hash = hash * prime + this.ccd.hashCode();
-		hash = hash * prime + this.userName.hashCode();
 		
 		return hash;
 	}
 
 
-	public SgwmtOtherSysAccPK(String userId, String ccd, String userName) {
+	public SgwmtOtherSysAccPK(String userId) {
 		super();
 		this.userId = userId;
-		this.ccd = ccd;
-		this.userName = userName;
 	}
 	
 	

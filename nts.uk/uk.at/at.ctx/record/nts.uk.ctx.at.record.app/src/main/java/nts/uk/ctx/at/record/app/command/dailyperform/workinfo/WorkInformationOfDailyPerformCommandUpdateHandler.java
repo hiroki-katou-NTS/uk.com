@@ -15,8 +15,7 @@ public class WorkInformationOfDailyPerformCommandUpdateHandler extends CommandFa
 
 	@Override
 	protected void handle(CommandHandlerContext<WorkInformationOfDailyPerformCommand> context) {
-		WorkInformationOfDailyPerformCommand command = context.getCommand();
-		repo.updateByKey(command.toDomain());
+		repo.updateByKey(context.getCommand().getData());
 	}
 
 }

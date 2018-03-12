@@ -105,6 +105,7 @@ module nts.uk.at.view.kmk003.a {
 
                 resetData(): void {
                     let self = this;
+                    self.useAtr(false);
                     self.start(0);
                     self.end(0);
                 }

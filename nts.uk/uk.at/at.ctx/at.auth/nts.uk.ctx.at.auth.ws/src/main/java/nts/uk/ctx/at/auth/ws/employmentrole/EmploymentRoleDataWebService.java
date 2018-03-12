@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.auth.ws.employmentrole;
 
 import java.util.List;
@@ -9,6 +13,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.at.auth.app.command.employmentrole.CreateEmploymentRoleCmd;
 import nts.uk.ctx.at.auth.app.command.employmentrole.CreateEmploymentRoleCmdHandler;
 import nts.uk.ctx.at.auth.app.command.employmentrole.DeleteEmploymentRoleCmd;
@@ -17,6 +23,7 @@ import nts.uk.ctx.at.auth.app.command.employmentrole.UpdateEmploymentRoleCmd;
 import nts.uk.ctx.at.auth.app.command.employmentrole.UpdateEmploymentRoleCmdHandler;
 import nts.uk.ctx.at.auth.app.find.employmentrole.EmploymentRoleDataFinder;
 import nts.uk.ctx.at.auth.app.find.employmentrole.dto.EmploymentRoleDataDto;
+import nts.uk.shr.com.context.AppContexts;
 
 //import nts.uk.ctx.at.auth.pub.wkpmanager.WorkplaceManagerExport;
 //import nts.uk.ctx.at.auth.pub.wkpmanager.WorkplaceManagerPub;
@@ -37,6 +44,8 @@ public class EmploymentRoleDataWebService {
 	@Inject
 	private DeleteEmploymentRoleCmdHandler deleteEmploymentRole;
 	
+	/** The Constant HAS_PERMISSION. */
+	private static final int HAS_PERMISSION = 0;
 	
 	/** Finder */
 	//get all list employment role
@@ -75,6 +84,17 @@ public class EmploymentRoleDataWebService {
 	@Path("deleteemploymentrole")
 	public void deleteEmploymentRole(DeleteEmploymentRoleCmd command) {
 		this.deleteEmploymentRole.handle(command);
+	}
+
+	@POST
+	@Path("get/futurerefpermit")
+	public boolean getFutureDateRefPermit() {
+		String roleId = AppContexts.user().roles().forAttendance(); // 就業
+		if (roleId == null) {
+			throw new BusinessException(new RawErrorMessage("Access denied"));
+		}
+		return this.employmentRoleFinder.getEmploymentRoleById(roleId).getFutureDateRefPermit() == HAS_PERMISSION ? true
+				: false;
 	}
 
 }

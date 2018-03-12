@@ -52,6 +52,55 @@ __viewContext.ready(function() {
             }    
             self.itemsSwap(array);
         }
+        
+        beforeLeft(toRight, oldSource, newI){
+            console.log("before Left");
+            console.log(toRight);
+            console.log(oldSource);
+            console.log(newI);
+        }
+        beforeRight(toRight, oldSource, newI){
+            console.log("before right");
+            console.log(toRight);
+            console.log(oldSource);
+            console.log(newI);
+        }
+        beforeAllL(toRight, oldSource, newI){
+            console.log("before all Left");
+            console.log(toRight);
+            console.log(oldSource);
+            console.log(newI);
+        }
+        beforeAllR(toRight, oldSource, newI){
+            console.log("before all right");
+            console.log(toRight);
+            console.log(oldSource);
+            console.log(newI);
+        }
+        afterLeft(toRight, oldSource, newI){
+            console.log("after Left");
+            console.log(toRight);
+            console.log(oldSource);
+            console.log(newI);
+        }
+        afterRight(toRight, oldSource, newI){
+            console.log("after right");
+            console.log(toRight);
+            console.log(oldSource);
+            console.log(newI);
+        }
+        afterAllL(toRight, oldSource, newI){
+            console.log("after all Left");
+            console.log(toRight);
+            console.log(oldSource);
+            console.log(newI);
+        }
+        afterAllR(toRight, oldSource, newI){
+            console.log("after all right");
+            console.log(toRight);
+            console.log(oldSource);
+            console.log(newI);
+        }
     }
     
     class ItemModel {

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -38,13 +37,20 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 	private final String SEL_ALL_ITEM_AUTH_BY_ROLE_ID_CTG_ID = " SELECT c FROM PpemtPersonItemAuth c"
 			+ " WHERE c.ppemtPersonItemAuthPk.roleId =:roleId"
 			+ " AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId =:categoryId ";
-	
+
 	private final String SEL_ALL_BY_ROLE_ID_CTG_ID_LIST = " SELECT c FROM PpemtPersonItemAuth c"
 			+ " WHERE c.ppemtPersonItemAuthPk.roleId =:roleId"
 			+ " AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId IN :categoryIdList ";
 
 	private final String DELETE_BY_ROLE_ID = "DELETE FROM PpemtPersonItemAuth c"
 			+ " WHERE c.ppemtPersonItemAuthPk.roleId =:roleId";
+
+	private final String SEL_ALL_ITEM_DATA = String.join(" ", "SELECT id.ppemtPersonItemAuthPk.personItemDefId",
+			" FROM PpemtPersonItemAuth id",
+			" INNER JOIN PpemtPerInfoItem pi ON id.ppemtPersonItemAuthPk.personItemDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId",
+			" INNER JOIN PpemtPerInfoCtg pc ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId",
+			" INNER JOIN PpemtPerInfoItemCm pm ON pi.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd",
+			" WHERE pm.ppemtPerInfoItemCmPK.itemCd =:itemCd", " AND pi.perInfoCtgId IN :perInfoCtgId");
 
 	private static PpemtPersonItemAuth toEntity(PersonInfoItemAuth domain) {
 		PpemtPersonItemAuth entity = new PpemtPersonItemAuth();
@@ -123,38 +129,9 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 	@Override
 	public List<PersonInfoItemDetail> getAllItemDetail(String roleId, String personInfoCategoryAuthId,
 			String contractCd) {
-		List<PersonInfoItemDetail> x = this.queryProxy()
-				.query(SELECT_ITEM_INFO_AUTH_BY_CATEGORY_ID_QUERY, Object[].class)
+		return this.queryProxy().query(SELECT_ITEM_INFO_AUTH_BY_CATEGORY_ID_QUERY, Object[].class)
 				.setParameter("personInfoCategoryAuthId", personInfoCategoryAuthId).setParameter("roleId", roleId)
 				.setParameter("contractCd", contractCd).getList(c -> toDomain(c));
-
-		return setSetitemForSetType(x);
-	}
-
-	private List<PersonInfoItemDetail> setSetitemForSetType(List<PersonInfoItemDetail> itemList) {
-		List<PersonInfoItemDetail> setItemList = itemList.stream().filter(x -> x.getItemParentCd() != null)
-				.collect(Collectors.toList());
-		List<PersonInfoItemDetail> newItemList = itemList.stream().filter(x -> x.getItemParentCd() == null)
-				.collect(Collectors.toList());
-
-		if (!newItemList.isEmpty()) {
-			setItemList.forEach(i -> {
-				PersonInfoItemDetail newItem = newItemList.stream()
-						.filter(ni -> ni.getItemCd().equals(i.getItemParentCd())).findFirst().get();
-				if (newItem != null) {
-
-					if (newItem.getSetItems() == null) {
-						List<PersonInfoItemDetail> newList = new ArrayList<PersonInfoItemDetail>();
-						newList.add(i);
-						newItem.setSetItems(newList);
-					} else {
-						newItem.getSetItems().add(i);
-					}
-				}
-			});
-		}
-
-		return newItemList;
 	}
 
 	@Override
@@ -173,7 +150,7 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 		return this.queryProxy().query(SEL_ALL_ITEM_AUTH_BY_ROLE_ID_CTG_ID, PpemtPersonItemAuth.class)
 				.setParameter("roleId", roleId).setParameter("categoryId", categoryId).getList(c -> toDomain(c));
 	}
-	
+
 	@Override
 	public Map<String, List<PersonInfoItemAuth>> getByRoleIdAndCategories(String roleId, List<String> categoryIdList) {
 
@@ -186,7 +163,7 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 				.setParameter("categoryIdList", categoryIdList).getList();
 
 		Map<String, List<PersonInfoItemAuth>> resultMap = new HashMap<>();
-		
+
 		for (PpemtPersonItemAuth itemAuth : itemAuthList) {
 			List<PersonInfoItemAuth> resultItemAuthList = resultMap
 					.get(itemAuth.ppemtPersonItemAuthPk.personInfoCategoryAuthId);
@@ -196,7 +173,7 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 			}
 			resultItemAuthList.add(toDomain(itemAuth));
 		}
-		
+
 		return resultMap;
 	}
 
@@ -205,6 +182,18 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 		this.getEntityManager().createQuery(DELETE_BY_ROLE_ID).setParameter("roleId", roleId).executeUpdate();
 		this.getEntityManager().flush();
 
+	}
+
+	@Override
+	public boolean hasItemData(String itemCd, List<String> perInfoCtgId) {
+		// SEL_ALL_ITEM_DATA
+		List<String> itemList = this.queryProxy().query(SEL_ALL_ITEM_DATA, String.class).setParameter("itemCd", itemCd)
+				.setParameter("perInfoCtgId", perInfoCtgId).getList();
+		if (itemList.size() > 0) {
+
+			return true;
+		}
+		return false;
 	}
 
 }

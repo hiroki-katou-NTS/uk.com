@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,16 +19,17 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezoneSetMeme
 @Getter
 @Setter
 public class DiffTimeRestTimezoneDto implements DiffTimeRestTimezoneSetMemento {
-	
+
 	/** The rest timezone. */
 	private List<DiffTimeDeductTimezoneDto> restTimezones;
 
 	@Override
 	public void setRestTimezones(List<DiffTimeDeductTimezone> restTimezones) {
-		restTimezones.stream().map(item -> {
+		this.restTimezones = new ArrayList<>();
+		this.restTimezones.addAll(restTimezones.stream().map(item -> {
 			DiffTimeDeductTimezoneDto dto = new DiffTimeDeductTimezoneDto();
 			item.saveToMemento(dto);
 			return dto;
-		}).collect(Collectors.toList());
+		}).collect(Collectors.toList()));
 	}
 }

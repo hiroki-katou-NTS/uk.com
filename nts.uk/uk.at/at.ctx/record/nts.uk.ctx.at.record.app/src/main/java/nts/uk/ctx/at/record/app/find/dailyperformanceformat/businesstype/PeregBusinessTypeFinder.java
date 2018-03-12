@@ -62,7 +62,7 @@ public class PeregBusinessTypeFinder implements PeregFinder<BusinessTypeDto> {
 			DateHistoryItem dateHistoryItem = optional.get().getHistory().get(0);
 			Optional<BusinessTypeOfEmployee> optionalType = typeOfEmployeeRepos
 					.findByHistoryId(dateHistoryItem.identifier());
-			return new BusinessTypeDto(query.getInfoId(), dateHistoryItem.start(), dateHistoryItem.end(),
+			return new BusinessTypeDto(dateHistoryItem.identifier(), dateHistoryItem.start(), dateHistoryItem.end(),
 					optionalType.get().getBusinessTypeCode().v());
 		}
 		return null;

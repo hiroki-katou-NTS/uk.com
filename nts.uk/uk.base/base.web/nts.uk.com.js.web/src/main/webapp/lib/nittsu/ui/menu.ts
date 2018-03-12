@@ -1,5 +1,8 @@
 module nts.uk.ui.menu {
     
+    const DATA_TITLEITEM_PGID = "pgid";
+    const DATA_TITLEITEM_PGNAME = "pgname";
+    
     /** Showing item */
     let showingItem;
     
@@ -316,7 +319,12 @@ module nts.uk.ui.menu {
                             height += 30;
                             return;
                         }
-                        let $item = $("<li class='title-item'/>").data("path", item.url).text(item.displayName || item.defaultName);
+                        let nameToShow = item.displayName || item.defaultName;
+                        let $item = $("<li class='title-item'/>")
+                            .data("path", item.url)
+                            .data(DATA_TITLEITEM_PGID, item.programId + item.screenId)
+                            .data(DATA_TITLEITEM_PGNAME, nameToShow)
+                            .text(nameToShow);
                         $item.on(constants.CLICK, function() {
                             let path = $(this).data("path");
                             if (path && path.indexOf("http") !== 0) {
@@ -335,6 +343,25 @@ module nts.uk.ui.menu {
             $title.css({ height: maxHeight + "px", width: width + "px" });
         }
     }
+    
+    $(function () {
+        let showsName = true;
+        $(window)
+            .onkey("down", KeyCodes.Ctrl, function () {
+                if (!showsName || $(".category-name.opening").length === 0) return;
+                $(".title-item").each(function () {
+                    $(this).text($(this).data(DATA_TITLEITEM_PGID));
+                });
+                showsName = false;
+            })
+            .onkey("up", KeyCodes.Ctrl, function () {
+                if (showsName) return;
+                $(".title-item").each(function () {
+                    $(this).text($(this).data(DATA_TITLEITEM_PGNAME));
+                });
+                showsName = true;
+            })
+    });
     
     module constants {
         export let APP_ID = "com";

@@ -1,0 +1,25 @@
+.valign-center > * {
+	vertical-align: top;	
+}
+.label-div {
+	margin-top: 10px;
+    margin-left: 20px;
+    margin-bottom: 20px;	
+}
+.label-div > label {
+	font-size: large;
+}
+.table {
+	margin: 10px;
+	margin-left: 25px;
+}
+.column1 {
+	width: 135px;	
+}
+#combo-box {
+	width: 240px;		
+}
+#appReasonArea {
+	width: 520px;
+    height: 140px;
+}

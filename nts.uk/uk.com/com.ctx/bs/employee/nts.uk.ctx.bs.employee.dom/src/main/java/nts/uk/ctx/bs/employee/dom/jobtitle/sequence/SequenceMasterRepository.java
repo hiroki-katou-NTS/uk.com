@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.jobtitle.sequence;
@@ -54,7 +54,12 @@ public interface SequenceMasterRepository {
 	/**
 	 * Find max order.
 	 *
-	 * @return the short
+	 * @return the int
 	 */
 	int findMaxOrder();
+	
+	/**
+	 * Update order.
+	 */
+	void updateOrder(List<SequenceMaster> listSequenceMaster);
 }

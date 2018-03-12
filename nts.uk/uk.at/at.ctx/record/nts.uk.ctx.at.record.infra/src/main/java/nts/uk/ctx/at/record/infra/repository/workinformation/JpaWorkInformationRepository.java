@@ -27,6 +27,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 
 	private static final String DEL_BY_KEY;
 	
+	private static final String FIND_BY_PERIOD_ORDER_BY_YMD;
+	
 	private static final String FIND_BY_LIST_SID_AND_PERIOD;
 	
 	private static final String DEL_BY_KEY_ID;
@@ -48,6 +50,15 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		builderString.append("WHERE a.krcdtWorkScheduleTimePK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtWorkScheduleTimePK.ymd = :ymd ");
 		DEL_BY_KEY_ID = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcdtDaiPerWorkInfo a ");
+		builderString.append("WHERE a.krcdtDaiPerWorkInfoPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd >= :startDate ");
+		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd <= :endDate ");
+		builderString.append("ORDER BY a.krcdtDaiPerWorkInfoPK.ymd ");
+		FIND_BY_PERIOD_ORDER_BY_YMD = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -75,6 +86,13 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	}
 
 	@Override
+	public List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
+		return this.queryProxy().query(FIND_BY_PERIOD_ORDER_BY_YMD, KrcdtDaiPerWorkInfo.class)
+				.setParameter("employeeId", employeeId).setParameter("startDate", datePeriod.start())
+				.setParameter("endDate", datePeriod.end()).getList(f -> f.toDomain());
+	}
+	
+	@Override
 	public List<WorkInfoOfDailyPerformance> findByListEmployeeId(List<String> employeeIds, DatePeriod ymds) {
 		return this.queryProxy().query(FIND_BY_LIST_SID_AND_PERIOD, KrcdtDaiPerWorkInfo.class)
 				.setParameter("employeeIds", employeeIds).setParameter("startDate", ymds.start())
@@ -93,11 +111,13 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 //			data.krcdtDaiPerWorkInfoPK.employeeId = domain.getEmployeeId();
 //			data.krcdtDaiPerWorkInfoPK.ymd = domain.getYmd();
 			if(domain.getRecordWorkInformation() != null){
-				data.recordWorkWorktimeCode = domain.getRecordWorkInformation().getWorkTimeCode().v();
+				data.recordWorkWorktimeCode = domain.getRecordWorkInformation().getWorkTimeCode() == null 
+						? null : domain.getRecordWorkInformation().getWorkTimeCode().v();
 				data.recordWorkWorktypeCode = domain.getRecordWorkInformation().getWorkTypeCode().v();
 			}
 			if(domain.getScheduleWorkInformation() != null){
-				data.scheduleWorkWorktimeCode = domain.getScheduleWorkInformation().getWorkTimeCode().v();
+				data.scheduleWorkWorktimeCode = domain.getScheduleWorkInformation().getWorkTimeCode() == null 
+						? null : domain.getScheduleWorkInformation().getWorkTimeCode().v();
 				data.scheduleWorkWorktypeCode = domain.getScheduleWorkInformation().getWorkTypeCode().v();
 			}
 			data.calculationState = domain.getCalculationState().value;

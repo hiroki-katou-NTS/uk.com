@@ -1,57 +1,80 @@
 module nts.uk.at.view.ksm001.g {
     
-    import UsageSettingDto = nts.uk.at.view.ksm001.a.service.model.UsageSettingDto;
-    
     export module service {
         var paths = {
-            findCommonGuidelineSetting: "ctx/at/schedule/shift/estimate/guideline/find",
-            saveCommonGuidelineSetting: "ctx/at/schedule/shift/estimate/guideline/save"
+            findAggregateSetting: "at/schedule/shift/estimate/aggregateset/find",
+            saveAggregateSetting: "at/schedule/shift/estimate/aggregateset/save",
+            getListPremium: "at/schedule/shift/estimate/aggregateset/getListPremiumNo"
         }
 
         /**
          * call service find setting
          */
-        export function findCommonGuidelineSetting(): JQueryPromise<model.CommonGuidelineSettingDto> {
-            return nts.uk.request.ajax('at', paths.findCommonGuidelineSetting);
-        }
-
-        export function saveCommonGuidelineSetting(command: model.CommonGuidelineSettingDto): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.saveCommonGuidelineSetting, command);
+        export function findAggregateSetting(): JQueryPromise<model.AggregateSettingDto> {
+            return nts.uk.request.ajax(paths.findAggregateSetting);
         }
         
-
+        /**
+         * call service save setting
+         */
+        export function saveAggregateSetting(command: model.AggregateSettingDto): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.saveAggregateSetting, command);
+        }
+        
+        /**
+         * call service get list premium
+         */
+        export function getListPremium(): JQueryPromise<Array<model.PremiumItemDto>> {
+            return nts.uk.request.ajax(paths.getListPremium);
+        }
+        
+        /**
+         * define dto
+         */
         export module model {
-            
-            
-            export interface EstimatedAlarmColorDto {
-                guidelineCondition: number;
-                color: string;
+            // 
+            export class AggregateSettingDto {
+                premiumNo: number[];
+                monthlyWorkingDaySettingDto: MonthlyWorkingDaySettingDto;
+                
+                constructor(premiumNo: number[], monthlyWorkingDaySettingDto: MonthlyWorkingDaySettingDto){
+                    this.premiumNo = premiumNo;
+                    this.monthlyWorkingDaySettingDto = monthlyWorkingDaySettingDto;
+                }
             }
             
-            export interface ReferenceConditionDto {
-                yearlyDisplayCondition: number;
-                monthlyDisplayCondition: number;
-                alarmCheckCondition: number;
+            export class MonthlyWorkingDaySettingDto {
+                halfDayAtr: number;
+                
+                yearHdAtr: number;
+                
+                sphdAtr: number;
+                
+                havyHdAtr: number;
+                
+                constructor(halfDayAtr: number, yearHdAtr: number, sphdAtr: number, havyHdAtr: number) {
+                    this.halfDayAtr = halfDayAtr;
+                    this.yearHdAtr = yearHdAtr;
+                    this.sphdAtr = sphdAtr;
+                    this.havyHdAtr = havyHdAtr;
+                }
             }
             
-            export interface CommonGuidelineSettingDto {
-                /** The alarm colors. */
-                alarmColors: EstimatedAlarmColorDto[];
-
-                /** The estimate time. */
-                estimateTime: ReferenceConditionDto;
-
-                /** The estimate price. */
-                estimatePrice: ReferenceConditionDto;
-
-                /** The estimate number of days. */
-                estimateNumberOfDays: ReferenceConditionDto;
-            }
-            
-            
-            export interface EstimatedConditionDto {
-                code: number;
+            export class PremiumItemDto {
+                companyId: string;
+    
+                displayNumber: number;
+                
                 name: string;
+            
+                useAtr: number;
+                
+                constructor(companyId: string, displayNumber: number, name: string, useAtr: number) {
+                    this.companyId = companyId;
+                    this.displayNumber = displayNumber;
+                    this.name = name;
+                    this.useAtr = useAtr;
+                }
             }
         }
     }

@@ -20,8 +20,9 @@ public class JobAssignSettingCommand {
 	 * 兼務者を含める
 	 */
 	private Boolean isConcurrently;
+	
 	public JobAssignSetting toDomain(String companyId){
-		JobAssignSetting job = JobAssignSetting.createFromJavaType(companyId, this.getIsConcurrently());
+		JobAssignSetting job = JobAssignSetting.createFromJavaType(companyId, this.isConcurrently);
 		return job;
 	}
 }

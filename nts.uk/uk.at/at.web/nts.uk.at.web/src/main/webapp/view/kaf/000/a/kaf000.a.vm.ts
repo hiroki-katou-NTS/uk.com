@@ -64,8 +64,8 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             let dfd = $.Deferred();
             
             //Call approval list
-            self.getAppDataDate(appType, standardDate, true).done(function() {
-                dfd.resolve(); 
+            self.getAppDataDate(appType, standardDate, true).done(function(data) {
+                dfd.resolve(data); 
             }).fail((res)=>{
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){
                     nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
@@ -109,12 +109,8 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 if(!nts.uk.text.isNullOrEmpty(deadlineMsg.deadline)){
                     self.reasonOutputMessDealineFull(self.reasonOutputMessDealine + deadlineMsg.deadline);
                 }
-                if(nts.uk.text.isNullOrEmpty(deadlineMsg.message) && nts.uk.text.isNullOrEmpty(deadlineMsg.deadline)){
-                    self.messageArea(false);
-                }else{
-                    self.messageArea(true);
-                }
-                dfd.resolve();
+                self.messageArea(deadlineMsg.chkShow);
+                dfd.resolve(data);
             }).fail((res)=>{
                 dfd.reject(res);    
             });            

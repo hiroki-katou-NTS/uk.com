@@ -29,7 +29,8 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 			/**
 			 * パラメータ parameters {0}：#KMK008_66 {1}：#KMK008_68
 			 */
-			errors.add("Msg_59,KMK008_66,KMK008_68");
+			String rowNamePeriod = getRowNamePeriodForLimitTime(basicAgreementSetting);
+			errors.add("Msg_59,"+rowNamePeriod+",KMK008_66,KMK008_68");
 			// throw new BusinessException("Msg_59","#KMK008_66", "#KMK008_68");
 		}
 
@@ -38,7 +39,8 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 			 * パラメータ parameters {0}：#KMK008_67 {1}：#KMK008_66
 			 * 
 			 */
-			errors.add("Msg_59,KMK008_67,KMK008_66");
+			String rowNamePeriod = getRowNamePeriodForAlarmTime(basicAgreementSetting);
+			errors.add("Msg_59,"+rowNamePeriod+",KMK008_67,KMK008_66");
 		}
 
 		if (errors.isEmpty()) {
@@ -57,7 +59,8 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 			/**
 			 * パラメータ parameters {0}：#KMK008_66 {1}：#KMK008_68
 			 */
-			errors.add("Msg_59,KMK008_66,KMK008_68");
+			String rowNamePeriod = getRowNamePeriodForLimitTime(basicAgreementSetting);
+			errors.add("Msg_59,"+rowNamePeriod+",KMK008_66,KMK008_68");
 			// throw new BusinessException("Msg_59","#KMK008_66", "#KMK008_68");
 		}
 
@@ -66,7 +69,8 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 			 * パラメータ parameters {0}：#KMK008_67 {1}：#KMK008_66
 			 * 
 			 */
-			errors.add("Msg_59,KMK008_67,KMK008_66");
+			String rowNamePeriod = getRowNamePeriodForAlarmTime(basicAgreementSetting);
+			errors.add("Msg_59,"+rowNamePeriod+",KMK008_67,KMK008_66");
 		}
 		if (errors.isEmpty()) {
 			this.basicAgreementSettingRepository.update2(basicAgreementSetting);
@@ -107,6 +111,55 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 			return true;
 		}
 		return false;
+	}
+	private String getRowNamePeriodForLimitTime(BasicAgreementSetting setting) {
+		if (setting.getErrorWeek().v().compareTo(setting.getLimitWeek().v()) > 0 && setting.getLimitWeek().v()!=0) {
+			return "KMK008_22";
+		}
+		if (setting.getErrorTwoWeeks().v().compareTo(setting.getLimitTwoWeeks().v()) > 0 && setting.getLimitTwoWeeks().v()!=0) {
+			return "KMK008_23";
+		}
+		if (setting.getErrorFourWeeks().v().compareTo(setting.getLimitFourWeeks().v()) > 0 && setting.getLimitFourWeeks().v()!=0) {
+			return "KMK008_24";
+		}
+		if (setting.getErrorOneMonth().v().compareTo(setting.getLimitOneMonth().v()) > 0 && setting.getLimitOneMonth().v()!=0 ) {
+			return "KMK008_25";
+		}
+		if (setting.getErrorTwoMonths().v().compareTo(setting.getLimitTwoMonths().v()) > 0 && setting.getLimitTwoMonths().v()!=0) {
+			return "KMK008_26";
+		}
+		if (setting.getErrorThreeMonths().v().compareTo(setting.getLimitThreeMonths().v()) > 0 && setting.getLimitThreeMonths().v()!=0) {
+			return "KMK008_27";
+		}
+		if (setting.getErrorOneYear().v().compareTo(setting.getLimitOneYear().v()) > 0 && setting.getLimitOneYear().v()!=0) {
+			return "KMK008_28";
+		}
+		return "KMK008_22";
+	}
+
+	private String getRowNamePeriodForAlarmTime(BasicAgreementSetting setting) {
+		if (setting.getAlarmWeek().v().compareTo(setting.getErrorWeek().v()) > 0) {
+			return "KMK008_22";
+		}
+		if (setting.getAlarmTwoWeeks().v().compareTo(setting.getErrorTwoWeeks().v()) > 0) {
+			return "KMK008_23";
+		}
+		if (setting.getAlarmFourWeeks().v().compareTo(setting.getErrorFourWeeks().v()) > 0) {
+			return "KMK008_24";
+		}
+		if (setting.getAlarmOneMonth().v().compareTo(setting.getErrorOneMonth().v()) > 0) {
+			return "KMK008_25";
+		}
+		if (setting.getAlarmTwoMonths().v().compareTo(setting.getErrorTwoMonths().v()) > 0) {
+			return "KMK008_26";
+		}
+		if (setting.getAlarmThreeMonths().v().compareTo(setting.getErrorThreeMonths().v()) > 0) {
+			return "KMK008_27";
+		}
+		if (setting.getAlarmOneYear().v().compareTo(setting.getErrorOneYear().v()) > 0) {
+			return "KMK008_28";
+		}
+		return "KMK008_22";
 	}
 
 }

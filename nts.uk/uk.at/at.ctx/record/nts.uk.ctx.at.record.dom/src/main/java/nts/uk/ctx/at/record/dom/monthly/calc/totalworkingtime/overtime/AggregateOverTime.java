@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.OverTimeOfTimeSeries;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 集計残業時間
@@ -85,11 +86,9 @@ public class AggregateOverTime {
 	 * @param ymd 年月日
 	 * @return 時系列ワーク
 	 */
-	public OverTimeOfTimeSeries getTimeSeriesWork(GeneralDate ymd){
+	public OverTimeOfTimeSeries getAndPutTimeSeriesWork(GeneralDate ymd){
 		
-		if (!this.timeSeriesWorks.containsKey(ymd)){
-			this.timeSeriesWorks.put(ymd, new OverTimeOfTimeSeries(ymd, this.overTimeFrameNo));
-		}
+		this.timeSeriesWorks.putIfAbsent(ymd, new OverTimeOfTimeSeries(ymd, this.overTimeFrameNo));
 		return this.timeSeriesWorks.get(ymd);
 	}
 	
@@ -100,9 +99,7 @@ public class AggregateOverTime {
 	 */
 	public void addOverTimeInTimeSeriesWork(GeneralDate ymd, OverTimeFrameTime overTime){
 		
-		if (!this.timeSeriesWorks.containsKey(ymd)){
-			this.timeSeriesWorks.put(ymd, new OverTimeOfTimeSeries(ymd, overTime.getOverWorkFrameNo()));
-		}
+		this.timeSeriesWorks.putIfAbsent(ymd, new OverTimeOfTimeSeries(ymd, overTime.getOverWorkFrameNo()));
 		val targetTimeSeriesWork = this.timeSeriesWorks.get(ymd);
 		
 		targetTimeSeriesWork.addOverTime(overTime);
@@ -115,9 +112,7 @@ public class AggregateOverTime {
 	 */
 	public void addLegalOverTimeInTimeSeriesWork(GeneralDate ymd, OverTimeFrameTime legalOverTime){
 		
-		if (!this.timeSeriesWorks.containsKey(ymd)){
-			this.timeSeriesWorks.put(ymd, new OverTimeOfTimeSeries(ymd, legalOverTime.getOverWorkFrameNo()));
-		}
+		this.timeSeriesWorks.putIfAbsent(ymd, new OverTimeOfTimeSeries(ymd, legalOverTime.getOverWorkFrameNo()));
 		val targetTimeSeriesWork = this.timeSeriesWorks.get(ymd);
 		
 		targetTimeSeriesWork.addLegalOverTime(legalOverTime);
@@ -125,8 +120,9 @@ public class AggregateOverTime {
 	
 	/**
 	 * 集計する
+	 * @param datePeriod 期間
 	 */
-	public void aggregate(){
+	public void aggregate(DatePeriod datePeriod){
 
 		this.overTime = TimeMonthWithCalculation.ofSameTime(0);
 		this.beforeOverTime = new AttendanceTimeMonth(0);
@@ -135,6 +131,7 @@ public class AggregateOverTime {
 		this.legalTransferOverTime = new AttendanceTimeMonth(0);
 		
 		for (val timeSeriesWork : this.timeSeriesWorks.values()){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 			this.overTime = this.overTime.addMinutes(
 					timeSeriesWork.getOverTime().getOverTimeWork().getTime().v(),
 					timeSeriesWork.getOverTime().getOverTimeWork().getCalcTime().v());

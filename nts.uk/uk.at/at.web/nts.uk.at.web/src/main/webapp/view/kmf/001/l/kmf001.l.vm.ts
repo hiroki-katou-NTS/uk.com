@@ -75,10 +75,6 @@ module nts.uk.pr.view.kmf001.l {
                 return dfd.promise();
             }
             
-            private backSetupVacation(): void {
-                nts.uk.request.jump("/view/kmf/001/a/index.xhtml", {});
-            }
-            
             private toJsObject(): any {
                 let self = this;
                 let command: any = {};

@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 300,
+					height : 400
+				};
+			</script>
+				<com:scriptfile set="IGNITE" />
+				<com:stylefile path="kdw003.e.style.css" />
+				<com:scriptfile path="kdw003.e.start.js" />
+				<com:scriptfile path="kdw003.e.service.js" />
+				<com:scriptfile path="kdw003.e.vm.js" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="contents-area">
+					<div class="label">#{i18n.getText('KDW003_47')}</div>
+					<div style="margin-top: 20px">
+					 <label>#{i18n.getText('KDW003_56')}</label>
+					 <label data-bind="text: dateRefer"></label>
+					</div>
+					<div style="margin-top: 20px" id="list-box2" data-bind="ntsListBox: {
+											options: itemList,
+											optionsValue: 'code',
+											optionsText: 'name',
+											multiple: false,
+											value: selectedCode,
+											enable: true,
+											rows: 5 }"></div>
+				</div>
+				<div id="functions-area-bottom">
+					<button class="proceed" data-bind="click: extract">#{i18n.getText('KDW003_49')}</button>
+					<button data-bind="click: closeDialog">#{i18n.getText('KDW003_50')}</button>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

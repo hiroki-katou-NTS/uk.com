@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.attdleavegatetim
 
 import lombok.Getter;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
@@ -51,5 +52,23 @@ public class AttendanceLeaveGateTimeOfMonthly {
 		domain.stayingTime = stayingTime;
 		domain.unemployedTime = unemployedTime;
 		return domain;
+	}
+	
+	/**
+	 * 集計
+	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
+	 */
+	public void aggregate(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
+
+		if (attendanceTimeOfDaily == null) return;
+		
+		// 不就労時間を累積
+		this.unemployedTime = this.unemployedTime.addMinutes(attendanceTimeOfDaily.getUnEmployedTime().v());
+
+		// 滞在時間、出勤前時間、退勤後時間を累積
+		val stayingTime = attendanceTimeOfDaily.getStayingTime();
+		this.stayingTime = this.stayingTime.addMinutes(stayingTime.getStayingTime().v());
+		this.timeBeforeAttendance = this.timeBeforeAttendance.addMinutes(stayingTime.getBeforeWoringTime().v());
+		this.timeAfterLeaveWork = this.timeAfterLeaveWork.addMinutes(stayingTime.getAfterLeaveTime().v());
 	}
 }

@@ -12,11 +12,11 @@ public enum ProcessExecutionAtr {
 
 	/** The rebuild. */
 	// もう一度作り直す
-	REBUILD(0, "Enum_ProcessExecutionAtr_rebuild", "もう一度作り直す"),
+	REBUILD(0, "KSC001_7", "もう一度作り直す"),
 
 	/** The reconfig. */
 	// 再設定する
-	RECONFIG(1, "Enum_ProcessExecutionAtr_reconfig", "再設定する");
+	RECONFIG(1, "KSC001_8", "再設定する");
 
 	/** The value. */
 	public final int value;

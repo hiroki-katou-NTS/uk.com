@@ -15,8 +15,11 @@ public class PersonInforExportAdapterImpl implements PersonAdapter{
 	@Override
 	public PersonImport getPersonInfo(String sID) {
 		PersonInfoExport data = psInfor.getPersonInfo(sID);
+		if(data==null){
+			return new PersonImport("", "", "", "");
+		}
 		return new PersonImport(data.getEmployeeId(), data.getEmployeeCode(),
-				data.getPname(),
+				data.getBusinessName(),
 				"");	
 	}
 

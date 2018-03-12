@@ -14,7 +14,7 @@
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="cdl002.a.start.js" />
 			<com:scriptfile path="cdl002.a.vm.js" />
 		</ui:define>
@@ -26,7 +26,8 @@
 			</div>
 			<div id="ruled-line" style="border: 1px solid;"></div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click: decideData" tabindex="2">#{i18n.getText('CDL002_2')}</button>
+				<button class="proceed x-large" data-bind="click: decideData"
+					tabindex="2">#{i18n.getText('CDL002_2')}</button>
 				<button data-bind="click: closeDialog" tabindex="3">#{i18n.getText('CDL002_3')}</button>
 			</div>
 		</ui:define>

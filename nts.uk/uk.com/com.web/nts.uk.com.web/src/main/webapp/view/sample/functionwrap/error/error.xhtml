@@ -34,9 +34,10 @@
 					<h3>ResidenceCode (CharType: number, Maxlegth: 6)</h3>
 					<input id="residence-code" class="save-error"
 						data-name="ResidentCode"
-						data-bind="ntsTextEditor: {value: ResidentCode, constraint: 'ResidenceCode'}" />
+						data-bind="ntsTextEditor: {value: ResidentCode, constraint: 'ResidenceCode', required: true, name: 'コード' }" />
 					<button data-bind="click: setErrorToResidenceCode">setError</button>
 					<button data-bind="click: clearErrorToResidenceCode">clearError</button>
+					<button data-bind="click: validateResidenceCode">validate</button>
 					<h3>Number</h3>
 					<input id="number" class="save-error" data-name="Number"
 						data-bind="ntsNumberEditor: {value: NumberValue}" />
@@ -67,6 +68,8 @@ nts.uk.request.ajax('').fail(function(err){
 $('.save-error').ntsError('clear');]]></pre>
 								<h3>Clear all errors</h3>
 								<pre><![CDATA[nts.uk.ui.errors.clearAll()]]></pre>
+								<h3>Validate</h3>
+								<pre><![CDATA[$('#residence-code').ntsError('check');]]></pre>
 								<h3>Check if has any error</h3>
 								<pre><![CDATA[nts.uk.ui.errors.hasError()]]></pre>
 								<h3>Get viewmodel</h3>
@@ -221,6 +224,12 @@ $('.save-error').ntsError('clear');]]></pre>
 											<td><b>Return:</b> JQuery<br /> <b>Agruments:</b><br />
 												<i>selector: string</i> Jquery selector<br /> Clear all
 												errors for Jquery element(s)</td>
+										</tr>
+										<tr>
+											<td>$(selector).ntsError("validate")</td>
+											<td><b>Return:</b> JQuery<br /> <b>Agruments:</b><br />
+												<i>selector: string</i> Jquery selector<br /> Validate control(s) specified by selector
+											</td>
 										</tr>
 										<tr>
 											<td>$(selector).ntsError("hasError")</td>

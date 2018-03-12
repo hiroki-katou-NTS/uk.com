@@ -18,19 +18,21 @@ public class GetAggrSettingMonthlyImpl implements GetAggrSettingMonthly {
 	@Inject
 	private AggrSettingMonthlyForCompanyRepository aggrSettingMonthlyForCompanyRepository;
 	/** 職場月別実績集計設定 */
-	@Inject
-	private AggrSettingMonthlyForWorkplaceRepository aggrSettingMonthlyForWorkplaceRepository;
+	//@Inject
+	//private AggrSettingMonthlyForWorkplaceRepository aggrSettingMonthlyForWorkplaceRepository;
 	/** 雇用月別実績集計設定 */
-	@Inject
-	private AggrSettingMonthlyForEmploymentRepository aggrSettingMonthlyForEmploymentRepository;
+	//@Inject
+	//private AggrSettingMonthlyForEmploymentRepository aggrSettingMonthlyForEmploymentRepository;
 	/** 社員月別実績集計設定 */
-	@Inject
-	private AggrSettingMonthlyForSyainRepository aggrSettingMonthlyForSyainRepository;
+	//@Inject
+	//private AggrSettingMonthlyForSyainRepository aggrSettingMonthlyForSyainRepository;
 	
 	/** 取得 */
 	@Override
 	public Optional<AggrSettingMonthly> get(String companyId, String workplaceId, String employmentCd, String employeeId){
 
+		//*****（未）　設計が不確実なため、社員～職場の範囲適用は、マスクしておく。
+		/*
 		// 社員別設定　確認
 		val aggrSettingMonthlyForSyain = this.aggrSettingMonthlyForSyainRepository.find(companyId, employeeId);
 		if (aggrSettingMonthlyForSyain.isPresent()) {
@@ -58,6 +60,7 @@ public class GetAggrSettingMonthlyImpl implements GetAggrSettingMonthly {
 					aggrSettingMonthlyForWorkplace.get().getIrregularWork(),
 					aggrSettingMonthlyForWorkplace.get().getFlexWork()));
 		}
+		*/
 		
 		// 会社別設定　確認
 		val aggrSettingMonthlyForCompany = this.aggrSettingMonthlyForCompanyRepository.find(companyId);

@@ -48,7 +48,6 @@ public class SequenceMasterFinder {
 					sequence.saveToMemento(memento);
 					return memento;
 				})
-				.sorted((seq1, seq2) -> seq1.getSequenceCode().compareTo(seq2.getSequenceCode()))
 				.collect(Collectors.toList());
 	}
 

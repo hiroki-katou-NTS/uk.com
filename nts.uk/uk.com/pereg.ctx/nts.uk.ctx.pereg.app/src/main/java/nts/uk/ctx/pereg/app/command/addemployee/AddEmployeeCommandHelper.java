@@ -111,7 +111,7 @@ public class AddEmployeeCommandHelper {
 	// }
 
 	private void addNewPerson(String personId, AddEmployeeCommand command) {
-		Person newPerson = Person.createFromJavaType(ConstantUtils.minDate(), BloodType.Unselected.value,
+		Person newPerson = Person.createFromJavaType(ConstantUtils.minDate(), null,
 				GenderPerson.Male.value, personId, " ", "", command.getEmployeeName(), " ", "", "", "", "", "", "", "",
 				"", "", "");
 
@@ -148,8 +148,8 @@ public class AddEmployeeCommandHelper {
 
 		this.companyHistRepo.add(newComHist);
 
-		AffCompanyInfo newComInfo = AffCompanyInfo.createFromJavaType(comHistId, " ", ConstantUtils.maxDate(),
-				ConstantUtils.maxDate());
+		AffCompanyInfo newComInfo = AffCompanyInfo.createFromJavaType(comHistId, " ", null,
+				null);
 
 		this.companyInfoRepo.add(newComInfo);
 

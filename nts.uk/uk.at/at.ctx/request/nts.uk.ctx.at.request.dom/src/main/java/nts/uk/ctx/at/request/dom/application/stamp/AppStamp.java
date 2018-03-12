@@ -83,6 +83,16 @@ public class AppStamp extends AggregateRoot {
 				appStampOnlineRecord);
 	}
 	
+	public static AppStamp createOtherStamp(String companyID, GeneralDate appDate, String employeeID, AppReason appReason, List<AppStampWork> appStampWorks){
+		return new AppStamp(
+				StampRequestMode.OTHER, 
+				Application_New.firstCreate(companyID, PrePostAtr.POSTERIOR, appDate, ApplicationType.STAMP_APPLICATION, employeeID, appReason), 
+				Collections.emptyList(), 
+				appStampWorks, 
+				Collections.emptyList(), 
+				Optional.empty());
+	}
+	
 	public void customValidate(){
 		switch(this.stampRequestMode){
 			case STAMP_GO_OUT_PERMIT: {

@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSettingGetMemento;
 
 /**
  * The Class FlowRestSettingDto.

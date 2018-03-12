@@ -9,9 +9,9 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryService;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
@@ -21,10 +21,10 @@ public class DeleteAffWorkplaceHistoryCommandHandler extends CommandHandler<Dele
 	implements PeregDeleteCommandHandler<DeleteAffWorkplaceHistoryCommand>{
 	
 	@Inject
-	private AffWorkplaceHistoryRepository_v1 affWorkplaceHistoryRepository;
+	private AffWorkplaceHistoryRepository affWorkplaceHistoryRepository;
 	
 	@Inject
-	private AffWorkplaceHistoryItemRepository_v1 affWorkplaceHistoryItemRepository;
+	private AffWorkplaceHistoryItemRepository affWorkplaceHistoryItemRepository;
 	
 	@Inject 
 	private AffWorkplaceHistoryService affWorkplaceHistoryService;
@@ -43,7 +43,7 @@ public class DeleteAffWorkplaceHistoryCommandHandler extends CommandHandler<Dele
 	protected void handle(CommandHandlerContext<DeleteAffWorkplaceHistoryCommand> context) {
 		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		Optional<AffWorkplaceHistory_ver1> existHist = affWorkplaceHistoryRepository.getByEmployeeId(companyId, command.getEmployeeId());
+		Optional<AffWorkplaceHistory> existHist = affWorkplaceHistoryRepository.getByEmployeeId(companyId, command.getEmployeeId());
 		
 		if (!existHist.isPresent()){
 			throw new RuntimeException("invalid AffWorkplaceHistory"); 

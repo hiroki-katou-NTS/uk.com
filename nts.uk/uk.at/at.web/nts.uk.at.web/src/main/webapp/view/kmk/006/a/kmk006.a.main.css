@@ -128,3 +128,7 @@
 #single-tree-grid_container{
 	width: 352px !important;
 }
+
+.fixed-flex-layout > .fixed-flex-layout-right {
+  flex: 1 1 auto;
+}

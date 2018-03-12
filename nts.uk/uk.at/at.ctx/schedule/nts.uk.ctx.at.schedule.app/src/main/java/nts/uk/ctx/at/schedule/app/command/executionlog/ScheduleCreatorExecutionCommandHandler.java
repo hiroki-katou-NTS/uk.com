@@ -17,6 +17,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.BasicScheduleResetCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicScheduleHandler;
+import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeMonthlyPatternHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTimeHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTypeHandler;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
@@ -80,6 +81,9 @@ public class ScheduleCreatorExecutionCommandHandler
 	/** The sche cre exe basic schedule handler. */
 	@Inject
 	private ScheCreExeBasicScheduleHandler scheCreExeBasicScheduleHandler;
+	
+	@Inject
+	private ScheCreExeMonthlyPatternHandler scheCreExeMonthlyPatternHandler;
 	
 	
 	/** The Constant DEFAULT_CODE. */
@@ -198,6 +202,8 @@ public class ScheduleCreatorExecutionCommandHandler
 			// check is client submit cancel
 			if (asyncTask.hasBeenRequestedToCancel()) {
 				asyncTask.finishedAsCancelled();
+				// ドメインモデル「スケジュール作成実行ログ」を更新する(update domain 「スケジュール作成実行ログ」)
+				this.updateStatusScheduleExecutionLog(scheduleExecutionLog, CompletionStatus.INTERRUPTION);
 				break;
 			}
 			
@@ -224,7 +230,14 @@ public class ScheduleCreatorExecutionCommandHandler
 			domain.updateToCreated();
 			this.scheduleCreatorRepository.update(domain);
 		}
-		this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
+		
+		// find execution log by id
+		ScheduleExecutionLog scheExeLog = this.scheduleExecutionLogRepository.findById(
+				command.getCompanyId(), scheduleExecutionLog.getExecutionId()).get();
+		if (scheExeLog.getCompletionStatus() != CompletionStatus.INTERRUPTION) {
+			System.out.println("not hasBeenRequestedToCancel: " + asyncTask.hasBeenRequestedToCancel() + "&exeid="+ scheduleExecutionLog.getExecutionId());
+			this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
+		}
 	}
 	
 	/**
@@ -286,6 +299,18 @@ public class ScheduleCreatorExecutionCommandHandler
 		this.scheduleExecutionLogRepository.update(domain);
 	}
 	
+	/**
+	 * Update status schedule execution log.
+	 *
+	 * @param domain the domain
+	 */
+	private void updateStatusScheduleExecutionLog(ScheduleExecutionLog domain, CompletionStatus completionStatus) {
+		// check exist data schedule error log
+		domain.setCompletionStatus(completionStatus);
+		domain.updateExecutionTimeEndToNow();
+		this.scheduleExecutionLogRepository.update(domain);
+	}
+	
 	
 	/**
 	 * Creates the schedule based person.
@@ -307,9 +332,11 @@ public class ScheduleCreatorExecutionCommandHandler
 		// loop start period date => end period date
 		while (command.getToDate().beforeOrEquals(domain.getPeriod().end())) {
 
-			// check is client submit cancel
+			// check is client submit cancel ［中断］(Interrupt)
 			if (asyncTask.hasBeenRequestedToCancel()) {
 				asyncTask.finishedAsCancelled();
+				// ドメインモデル「スケジュール作成実行ログ」を更新する(update domain 「スケジュール作成実行ログ」)
+				this.updateStatusScheduleExecutionLog(domain, CompletionStatus.INTERRUPTION);
 				break;
 			}
 			Optional<WorkingConditionItem> workingConditionItem = this.scheCreExeWorkTimeHandler
@@ -319,9 +346,17 @@ public class ScheduleCreatorExecutionCommandHandler
 			if (workingConditionItem.isPresent()
 					&& workingConditionItem.get().getScheduleManagementAtr() == NotUseAtr.USE
 					&& workingConditionItem.get().getScheduleMethod().isPresent()
-					&& workingConditionItem.get().getScheduleMethod().get()
+					) {
+				if (workingConditionItem.get().getScheduleMethod().get()
 							.getBasicCreateMethod() == WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR) {
-				this.createWorkScheduleByBusinessDayCalenda(command, domain, workingConditionItem.get(), context);
+					this.createWorkScheduleByBusinessDayCalenda(command, domain, workingConditionItem.get(), context);
+				} else if (workingConditionItem.get().getScheduleMethod().get()
+						.getBasicCreateMethod() == WorkScheduleBasicCreMethod.MONTHLY_PATTERN) {
+					//create schedule by monthly pattern
+					this.scheCreExeMonthlyPatternHandler.createScheduleWithMonthlyPattern(command, workingConditionItem.get());
+				} else {
+					//TODO no something
+				}
 			}
 			command.setToDate(this.nextDay(command.getToDate()));
 		}

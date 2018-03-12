@@ -144,7 +144,7 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<App
 				if(CollectionUtil.isEmpty(appStampOtherCmdsReal)){
 					return null;
 				}
-				appStamp = AppStamp.createWorkStamp(
+				appStamp = AppStamp.createOtherStamp(
 						companyID, 
 						GeneralDate.fromString(appStampCmd.getApplicationDate(), DATE_FORMAT), 
 						employeeID, 

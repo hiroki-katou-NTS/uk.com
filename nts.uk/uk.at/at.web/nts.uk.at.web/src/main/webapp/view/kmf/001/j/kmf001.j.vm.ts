@@ -223,9 +223,6 @@ module nts.uk.pr.view.kmf001.j {
                 });
                 return dfd.promise();
             }
-            public back(): void {
-                nts.uk.request.jump("/view/kmf/001/a/index.xhtml", {});
-            }
 
             public saveComSetting(): void {
                 let self = this;

@@ -30,7 +30,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 @Builder
 public class ApplicationDto_New {
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
-	
+	private static final String DATE_TIME_FORMAT = "yyyy/MM/dd hh:mm";
 	private Long version;
 	
 	// 会社ID
@@ -97,7 +97,7 @@ public class ApplicationDto_New {
 				domain.getCompanyID(),
 				domain.getAppID(),
 				domain.getPrePostAtr().value,
-				domain.getInputDate() == null ? null :domain.getInputDate().toString(DATE_FORMAT), 
+				domain.getInputDate() == null ? null :domain.getInputDate().toString(DATE_TIME_FORMAT), 
 				domain.getEnteredPersonID(), 
 				domain.getReversionReason().v(), 
 				domain.getAppDate() == null ? null :domain.getAppDate().toString(DATE_FORMAT), 

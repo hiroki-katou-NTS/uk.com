@@ -14,48 +14,79 @@ public class AggregateBonusPayTime {
 	/** 加給枠No */
 	private int bonusPayFrameNo;
 	/** 加給時間 */
-	private AttendanceTimeMonth bonusPay;
+	private AttendanceTimeMonth bonusPayTime;
+	/** 特定加給時間 */
+	private AttendanceTimeMonth specificBonusPayTime;
 	/** 休出加給時間 */
 	private AttendanceTimeMonth holidayWorkBonusPayTime;
 	/** 休出特定加給時間 */
 	private AttendanceTimeMonth holidayWorkSpecificBonusPayTime;
-	/** 特定加給時間 */
-	private AttendanceTimeMonth specificBonusPayTime;
 	
 	/**
 	 * コンストラクタ
 	 */
-	public AggregateBonusPayTime(){
+	public AggregateBonusPayTime(int bonusPayFrameNo){
 		
-		this.bonusPayFrameNo = 0;
-		this.bonusPay = new AttendanceTimeMonth(0);
+		this.bonusPayFrameNo = bonusPayFrameNo;
+		this.bonusPayTime = new AttendanceTimeMonth(0);
+		this.specificBonusPayTime = new AttendanceTimeMonth(0);
 		this.holidayWorkBonusPayTime = new AttendanceTimeMonth(0);
 		this.holidayWorkSpecificBonusPayTime = new AttendanceTimeMonth(0);
-		this.specificBonusPayTime = new AttendanceTimeMonth(0);
 	}
 	
 	/**
 	 * ファクトリー
 	 * @param bonusPayFrameNo 加給時間枠No
-	 * @param bonusPay 加給時間
+	 * @param bonusPayTime 加給時間
+	 * @param specificBonusPayTime 特定加給時間
 	 * @param holidayWorkBonusPayTime 休出加給時間
 	 * @param holidayWorkSpecificBonusPayTime 休出特定加給時間
-	 * @param specificBonusPayTime 特定加給時間
 	 * @return 集計加給時間
 	 */
 	public static AggregateBonusPayTime of(
 			int bonusPayFrameNo,
-			AttendanceTimeMonth bonusPay,
+			AttendanceTimeMonth bonusPayTime,
+			AttendanceTimeMonth specificBonusPayTime,
 			AttendanceTimeMonth holidayWorkBonusPayTime,
-			AttendanceTimeMonth holidayWorkSpecificBonusPayTime,
-			AttendanceTimeMonth specificBonusPayTime){
+			AttendanceTimeMonth holidayWorkSpecificBonusPayTime){
 		
-		val domain = new AggregateBonusPayTime();
-		domain.bonusPayFrameNo = bonusPayFrameNo;
-		domain.bonusPay = bonusPay;
+		val domain = new AggregateBonusPayTime(bonusPayFrameNo);
+		domain.bonusPayTime = bonusPayTime;
+		domain.specificBonusPayTime = specificBonusPayTime;
 		domain.holidayWorkBonusPayTime = holidayWorkBonusPayTime;
 		domain.holidayWorkSpecificBonusPayTime = holidayWorkSpecificBonusPayTime;
-		domain.specificBonusPayTime = specificBonusPayTime;
 		return domain;
+	}
+	
+	/**
+	 * 加給時間に分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinutesToBonusPayTime(int minutes){
+		this.bonusPayTime = this.bonusPayTime.addMinutes(minutes);
+	}
+	
+	/**
+	 * 特定加給時間に分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinutesToSpecificBonusPayTime(int minutes){
+		this.specificBonusPayTime = this.specificBonusPayTime.addMinutes(minutes);
+	}
+	
+	/**
+	 * 休出加給時間に分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinutesToHolidayWorkBonusPayTime(int minutes){
+		this.holidayWorkBonusPayTime = this.holidayWorkBonusPayTime.addMinutes(minutes);
+	}
+	
+	/**
+	 * 休出特定加給時間に分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinutesToHolidayWorkSpecificBonusPayTime(int minutes){
+		this.holidayWorkSpecificBonusPayTime = this.holidayWorkSpecificBonusPayTime.addMinutes(minutes);
 	}
 }

@@ -13,14 +13,16 @@ public class RetentionYearlyUseTimeOfTimeSeries {
 
 	/** 年月日 */
 	private GeneralDate ymd;
+	
 	/** 積立年休使用時間 */
 	//private RetentionYearlyOfDaily retentionYearly;
 
 	/**
 	 * コンストラクタ
 	 */
-	public RetentionYearlyUseTimeOfTimeSeries(){
+	public RetentionYearlyUseTimeOfTimeSeries(GeneralDate ymd){
 		
+		this.ymd = ymd;
 		//this.retentionYearly = new RetentionYearlyOfDaily();
 	}
 
@@ -31,8 +33,7 @@ public class RetentionYearlyUseTimeOfTimeSeries {
 	 */
 	public static RetentionYearlyUseTimeOfTimeSeries of(GeneralDate ymd){
 		
-		val domain = new RetentionYearlyUseTimeOfTimeSeries();
-		domain.ymd = ymd;
+		val domain = new RetentionYearlyUseTimeOfTimeSeries(ymd);
 		return domain;
 	}
 }

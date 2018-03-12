@@ -15,4 +15,14 @@ public class VacationAddTimeSet {
 	//加算休暇設定
 	private AddVacationSet addVacationSet;
 	
+	/**
+	 * Constructor 
+	 */
+	public VacationAddTimeSet(BreakDownTimeDay additionTime, AddVacationSet addVacationSet) {
+		super();
+		AdditionTime = additionTime;
+		this.addVacationSet = addVacationSet;
+	}
+	
+	
 }

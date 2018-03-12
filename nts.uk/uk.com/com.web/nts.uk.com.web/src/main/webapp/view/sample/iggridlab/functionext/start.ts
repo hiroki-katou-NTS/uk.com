@@ -139,10 +139,17 @@ module nts.uk.ui.gridlist {
             rowStates.push(new RowState(i, true));
         }
         
+        let keys = [];
+        for (let i = 0; i < 300; i++) {
+            keys.push(i);
+        }
         $("#grid2").ntsGrid({ 
                             width: '1500px',
                             height: '800px',
                             dataSource: model.items,
+                            dataSourceAdapter: function(ds) {
+                                return ds;
+                            },
                             primaryKey: 'id',
                             rowVirtualization: true,
                             virtualization: true,
@@ -151,6 +158,10 @@ module nts.uk.ui.gridlist {
                             autoFitWindow: true,
                             preventEditInError: false,
                             hidePrimaryKey: true,
+                            userId: "4",
+                            getUserId: function(k) { return String(k); },
+                            errorColumns: [ "ruleCode" ],
+//                            recordKeys: keys, 
 //                            avgRowHeight: 36,
 //                            autoAdjustHeight: false,
 //                            adjustVirtualHeights: false,
@@ -168,18 +179,19 @@ module nts.uk.ui.gridlist {
                                                             }
                                             },
 //                                    ],
-                                { headerText: 'Inbound time', key: 'time', dataType: 'string', width: '140px',
+                                { headerText: 'Inbound time', key: 'time', width: '140px', columnCssClass: "halign-right", headerCssClass: "center-align",
                                                 constraint: { 
 //                                                                primitiveValue: 'SampleTimeClock',
                                                                 cDisplayType: "Clock",
+                                                                min: "10:00", max: "30:00",
                                                                 required: true
                                                             }
                                 },
                                 { headerText: 'Address',
                                     group: [
-                                            { headerText: 'Item<br/>Code', key: 'addressCode1', dataType: 'string', width: '150px', //columnCssClass: 'currency-symbol',
+                                            { headerText: 'Item<br/>Code', key: 'addressCode1', dataType: 'string', width: '150px', columnCssClass: 'currency-symbol',
                                                 constraint: {
-                                                    cDisplayType: "HalfInt",
+                                                    cDisplayType: "Currency",
                                                     min: 3, max: 9,
                                                     required: true
                                                 }},
@@ -188,7 +200,12 @@ module nts.uk.ui.gridlist {
                                 },
                                 { headerText: 'Combo1',
                                     group: [
-                                            { headerText: 'Code', key: 'comboCode1', dataType: 'number', width: '60px', ntsType: 'comboCode'  },
+                                            { headerText: 'Code', key: 'comboCode1', dataType: 'number', width: '60px', ntsType: 'comboCode',
+                                                constraint: {
+                                                    cDisplayType: "Integer",
+                                                    min: 1, max: 3,
+                                                    required: true
+                                                }},
                                             { headerText: 'Combobox', key: 'combo', dataType: 'string', width: '230px', ntsControl: 'Combobox' }
                                            ]
                                 },
@@ -301,11 +318,11 @@ module nts.uk.ui.gridlist {
                                       ],
                             ntsFeatures: [{ name: 'CopyPaste' },
                                             { name: 'CellEdit' },
-                                            { name: 'Storage',
-                                                type: 'Remote',
-                                                loadPath: 'sample/store/load',
-                                                savePath: 'sample/store/save'
-                                            },
+//                                            { name: 'Storage',
+//                                                type: 'Remote',
+//                                                loadPath: 'sample/store/load',
+//                                                savePath: 'sample/store/save'
+//                                            },
                                             { name: 'CellColor', columns: [ 
                                                   { 
                                                     key: 'ruleCode', 
@@ -341,6 +358,9 @@ module nts.uk.ui.gridlist {
                                                 name: 'HeaderStyles',
                                                 columns: [
                                                     { key: 'ruleCode', color: 'header1' },
+                                                    { key: 'addressCode1', color: 'header1' },
+                                                    { key: 'address1', color: 'header1' },
+                                                    { key: 'comboCode1', color: 'header2' },
                                                     { key: 'combo', color: 'header2' },
                                                     { key: 'header3', color: 'header2' },
                                                     { key: 'header0', color: 'header1' },
@@ -440,15 +460,16 @@ module nts.uk.ui.gridlist {
         }
         
         // Grid cell errors
-        let dialogOptions: any = {
-            forGrid: true,
-            headers: [
-                    new nts.uk.ui.errors.ErrorHeader("rowId", "Row ID", "auto", true),
-                    new nts.uk.ui.errors.ErrorHeader("columnKey", "Column Key", "auto", true),
-                    new nts.uk.ui.errors.ErrorHeader("message", "Message", "auto", true),
-                    new nts.uk.ui.errors.ErrorHeader("ruleCode", "Rule code", "auto", true) 
-                ]
-        };
-        this.bind(model, dialogOptions);
+//        let dialogOptions: any = {
+//            forGrid: true,
+//            headers: [
+//                    new nts.uk.ui.errors.ErrorHeader("rowId", "Row ID", "auto", true),
+//                    new nts.uk.ui.errors.ErrorHeader("columnKey", "Column Key", "auto", true),
+//                    new nts.uk.ui.errors.ErrorHeader("message", "Message", "auto", true),
+//                    new nts.uk.ui.errors.ErrorHeader("ruleCode", "Rule code", "auto", true) 
+//                ]
+//        };
+//        this.bind(model, dialogOptions);
+        this.bind(model);
     });
 }

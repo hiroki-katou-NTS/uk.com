@@ -1,15 +1,10 @@
 package nts.uk.ctx.bs.employee.pubimp.person;
 
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
@@ -58,8 +53,8 @@ public class PersonInfoPubImp implements IPersonInfoPub {
 			perResult.setBirthDay(person.getBirthDate());
 			perResult.setPid(person.getPersonId());
 			perResult.setGender(person.getGender().value);
-			perResult.setPname(person.getPersonNameGroup().getPersonName().getFullName() == null ? ""
-					: person.getPersonNameGroup().getPersonName().getFullName().v());
+			perResult.setBusinessName(person.getPersonNameGroup().getBusinessName() == null ? ""
+					: person.getPersonNameGroup().getBusinessName().v());
 		}
 	}
 

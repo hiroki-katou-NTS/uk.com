@@ -79,21 +79,69 @@ module nts.uk.ui {
             }
             $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
             //            if($("#functions-area-bottom").length!=0){
-            //            }
+            //            } 
+        }
+        
+        var startP = function(){
+            _.defer(() => _start.call(__viewContext));
+                
+            // Menu
+            if ($(document).find("#header").length > 0) {
+                menu.request();
+            } else if (!util.isInFrame() && !__viewContext.noHeader) {
+                let header = "<div id='header'><div id='menu-header'>" 
+                                + "<div id='logo-area' class='cf'>" 
+                                + "<div id='logo'>勤次郎</div>"
+                                + "<div id='user-info' class='cf'>"
+                                + "<div id='company' class='cf' />"
+                                + "<div id='user' class='cf' />"    
+                                + "</div></div>"                            
+                                + "<div id='nav-area' class='cf' />"
+                                + "<div id='pg-area' class='cf' />"
+                                + "</div></div>";
+                $("#master-wrapper").prepend(header);
+                menu.request();
+            }    
         }
         
         $(function () {
+            console.log("call");
             documentReady.fire();
             
             __viewContext.transferred = uk.sessionStorage.getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
                 .map(v => JSON.parse(v));
             
-            _.defer(() => _start.call(__viewContext));
-            
-            // Menu
-            if ($(document).find("#header").length > 0) {
-                menu.request();
+            if($(".html-loading").length <= 0){
+                startP();
+                return;
             }
+            let dfd = [];
+            _.forEach($(".html-loading"), function(e){
+                let $container = $(e);
+                let dX = $.Deferred(); 
+                $container.load($container.attr("link"), function(){
+                    dX.resolve();
+                });
+                dfd.push(dX);
+                dX.promise();
+            })
+            $.when(...dfd).then(function( data, textStatus, jqXHR ) {
+                $('.html-loading').contents().unwrap();
+                startP();
+            });  
+        });
+
+
+        $(function () {
+            let lastPause: any = new Date();
+            $(window).keydown(e => {
+                if (e.keyCode !== 19) return;
+                let now: any = new Date();
+                if (now - lastPause < 500) {
+                    ui.dialog.version();
+                }
+                lastPause = new Date();
+            });
         });
     }
 }

@@ -30,7 +30,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.busin
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
@@ -178,7 +178,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	}
 
 	@Override
-	public DisplayPrePost getDisplayPrePost(String companyID, int uiType, String appDate) {
+	public DisplayPrePost getDisplayPrePost(String companyID, int uiType, String appDate,int appType) {
 		Optional<ApplicationSetting> applicationSetting = applicationSettingRepository
 				.getApplicationSettingByComID(companyID);
 		DisplayPrePost result = new DisplayPrePost();
@@ -192,7 +192,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 				 */
 				if (uiType == 0) {
 					Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo
-							.getAppTypeDiscreteSettingByAppType(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
+							.getAppTypeDiscreteSettingByAppType(companyID, appType);
 					if (discreteSetting.isPresent()) {
 						result.setPrePostAtr(discreteSetting.get().getPrePostInitFlg().value);
 					}
@@ -247,9 +247,9 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 			// 01-14-3_始業時刻、退勤時刻を初期表示
 			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,
 					GeneralDate.fromString(appDate, DATE_FORMAT));
-			Optional<PredetemineTimeSetting> workTimeSet = workTimeSetRepository.findByWorkTimeCode(companyID, siftCD);
+			Optional<PredetemineTimeSetting> workTimeSet = workTimeSetRepository.findByWorkTimeCode(companyID, recordWorkInfoImport.getWorkTimeCode());
 			if (workTimeSet.isPresent()) {
-				if (workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().size() > 1) {
+				if (workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().size() > 1 && workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(1).getUseAtr().value == UseAtr.USE.value) {
 					startTime2 = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(1).getStart().v();
 				}
 				if (workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().size() > 0) {
@@ -276,11 +276,11 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 			// 01-14-4_始業時刻、終業時刻を初期表示
 			Optional<PredetemineTimeSetting> workTimeSet = workTimeSetRepository.findByWorkTimeCode(companyID, siftCD);
 			if (workTimeSet.isPresent()) {
-				if (workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().size() > 1) {
+				if (workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().size() > 1 && workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(1).getUseAtr().value == UseAtr.USE.value) {
 					startTime2 = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(1).getStart().v();
 					endTime2 = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(1).getEnd().v();
 				}
-				if (workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().size() > 0) {
+				if (workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().size() > 0 ) {
 					startTime1 = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(0).getStart().v();
 					endTime1 = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(0).getEnd().v();
 				}
@@ -415,7 +415,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 					if (application!= null && application.size() > 0) {
 						applicationOvertime.setAppDate(application.get(0).getAppDate());
 						Optional<AppOverTime> appOvertime = this.overtimeRepository
-								.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getAppDate().toString(DATE_FORMAT));
+								.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getAppID());
 						if (appOvertime.isPresent()) {
 							result.setWorkTypeCode(appOvertime.get().getWorkTypeCode());
 							result.setSiftCode(appOvertime.get().getSiftCode());
@@ -426,7 +426,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 
 							List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(
 									appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),
-									AttendanceID.NORMALOVERTIME.value);
+									AttendanceType.NORMALOVERTIME.value);
 							result.setOverTimeInput(overtimeInputs);
 							result.setOverTimeShiftNight(appOvertime.get().getOverTimeShiftNight());
 							result.setFlexExessTime(appOvertime.get().getFlexExessTime());
@@ -445,6 +445,9 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	public AppOvertimeReference getResultContentActual(int prePostAtr, String siftCode, String companyID, String employeeID, String appDate,ApprovalFunctionSetting approvalFunctionSetting,List<CaculationTime> overtimeHours) {
 		// TODO Auto-generated method stub
 		AppOvertimeReference result = new AppOvertimeReference();
+		if(appDate == null){
+			return result;
+		}
 		List<CaculationTime> caculationTimes = new ArrayList<>();
 		if (PrePostAtr.POSTERIOR.value == prePostAtr) {
 			//Imported(申請承認)「勤務実績」を取得する

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.ws.jobtitle;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -118,5 +119,14 @@ public class JobTitleWebService extends WebService {
 	@POST
 	public void removeHistory(RemoveJobTitleHistoryCommand command) {
 		this.removeJobTitleHistoryCommandHandler.handle(command);
+	}
+	
+	@Path("getNamesByIds")
+	@POST
+	public List<String> getNamesByIds(List<String> listId) {
+		List<String> names = new ArrayList<>();
+		if (listId == null || listId.isEmpty()) return names;
+		names = this.jobTitleFinder.findNamesByIds(listId);
+		return names;
 	}
 }

@@ -5,9 +5,11 @@ import lombok.Value;
 @Value
 public class UserKeyDto {
 
-	 private String key;
-	 
-	 private boolean Special;
-	 
-	 private boolean Multi;
+	private String key;
+
+	private boolean Special;
+
+	private boolean Multi;
+
+	private int roleType;
 }

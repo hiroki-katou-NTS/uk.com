@@ -1,31 +1,25 @@
-
-
-
-#table{
-	margin-top:20px;
-	margin-left:50px;
+#table {
+	margin-top: 20px;
+	margin-left: 50px;
 }
 
-#gridlist{
-	margin-left:30px;
+#gridlist {
+	margin-left: 30px;
 	margin-top: 10px;
 }
 
-#caret-bottom{
+#caret-bottom {
 	margin-left: 170px;
 	margin-top: 5px;
 }
 
-#search{
+#search {
 	margin-bottom: 5px;
 }
-.ui-iggrid.ui-widget.ui-helper-clearfix.ui-corner-all.nts-gridlist{
+
+.ui-iggrid.ui-widget.ui-helper-clearfix.ui-corner-all.nts-gridlist {
 	overflow-y: scroll;
 	overflow-x: hidden;
 	height: 324px;
 	width: 430px !important;
 }
-
-
-
-

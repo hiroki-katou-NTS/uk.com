@@ -17,31 +17,20 @@ import nts.uk.ctx.at.record.infra.entity.monthly.calc.actualworkingtime.KrcdtMon
 @Stateless
 public class JpaRegularAndIrregularTimeOfMonthly extends JpaRepository implements RegularAndIrregularTimeOfMonthlyRepository {
 
-	/** 追加 */
-	@Override
-	public void insert(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
-			RegularAndIrregularTimeOfMonthly regularAndIrregularTimeOfMonthly) {
-		
-		this.commandProxy().insert(toEntity(attendanceTimeOfMonthlyKey, regularAndIrregularTimeOfMonthly, false));
-	}
-
 	/** 更新 */
 	@Override
 	public void update(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
 			RegularAndIrregularTimeOfMonthly regularAndIrregularTimeOfMonthly) {
 		
-		this.toEntity(attendanceTimeOfMonthlyKey, regularAndIrregularTimeOfMonthly, true);
+		this.toUpdate(attendanceTimeOfMonthlyKey, regularAndIrregularTimeOfMonthly);
 	}
 	
 	/**
-	 * ドメイン→エンティティ
+	 * データ更新
 	 * @param domainKey キー値：月別実績の勤怠時間
 	 * @param domain ドメイン：月別実績の通常変形時間
-	 * @param execUpdate 更新を実行する
-	 * @return エンティティ：月別実績の通常変形時間
 	 */
-	private KrcdtMonRegIrregTime toEntity(AttendanceTimeOfMonthlyKey domainKey,
-			RegularAndIrregularTimeOfMonthly domain, boolean execUpdate){
+	private void toUpdate(AttendanceTimeOfMonthlyKey domainKey, RegularAndIrregularTimeOfMonthly domain){
 
 		// 締め日付
 		val closureDate = domainKey.getClosureDate();
@@ -57,14 +46,8 @@ public class JpaRegularAndIrregularTimeOfMonthly extends JpaRepository implement
 		// 月別実績の変形労働時間
 		val irregularWorkingTime = domain.getIrregularWorkingTime();
 		
-		KrcdtMonRegIrregTime entity;
-		if (execUpdate){
-			entity = this.queryProxy().find(key, KrcdtMonRegIrregTime.class).get();
-		}
-		else {
-			entity = new KrcdtMonRegIrregTime();
-			entity.PK = key;
-		}
+		KrcdtMonRegIrregTime entity = this.getEntityManager().find(KrcdtMonRegIrregTime.class, key);
+		if (entity == null) return;
 		entity.weeklyTotalPremiumTime = domain.getWeeklyTotalPremiumTime().v();
 		entity.monthlyTotalPremiumTime = domain.getMonthlyTotalPremiumTime().v();
 		entity.multiMonthIrregularMiddleTime = irregularWorkingTime.getMultiMonthIrregularMiddleTime().v();
@@ -72,7 +55,5 @@ public class JpaRegularAndIrregularTimeOfMonthly extends JpaRepository implement
 		entity.irregularWorkingShortageTime = irregularWorkingTime.getIrregularWorkingShortageTime().v();
 		entity.irregularLegalOverTime = irregularWorkingTime.getIrregularLegalOverTime().getTime().v();
 		entity.calcIrregularLegalOverTime = irregularWorkingTime.getIrregularLegalOverTime().getCalcTime().v();
-		if (execUpdate) this.commandProxy().update(entity);
-		return entity;
 	}
 }

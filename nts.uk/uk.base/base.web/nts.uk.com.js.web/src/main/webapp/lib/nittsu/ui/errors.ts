@@ -10,6 +10,7 @@ module nts.uk.ui.errors {
         location?: string;
         tab?: string;
         $control?: JQuery;
+        businessError?: boolean;
     }
     
     export interface ErrorMessage {
@@ -98,7 +99,8 @@ module nts.uk.ui.errors {
                         if (error.$control.length > 0) {
                             let controlNameId = error.$control.eq(0).attr("data-name");
                             if (controlNameId) {
-                                error.messageText = nts.uk.resource.getMessage(error.message.messageId, nts.uk.resource.getText(controlNameId), error.message.messageParams);
+                                let params = _.concat(nts.uk.resource.getText(controlNameId), error.message.messageParams);
+                                error.messageText = nts.uk.resource.getMessage(error.message.messageId, params);
                             } else {
                                 error.messageText = nts.uk.resource.getMessage(error.message.messageId, error.message.messageParams);
                             }
@@ -133,8 +135,20 @@ module nts.uk.ui.errors {
             });
         }
         
-        getErrorByElement($element: JQuery): ErrorListItem {
-            return _.find(this.errors(), e => { 
+        removeErrorByCode($element: JQuery, errorCode: string) {
+            this.errors.remove((error) => {
+                return error.$control.is($element) && error.errorCode === errorCode;
+            });
+        }
+        
+        removeKibanError($element: JQuery) {
+            this.errors.remove((error) => {
+                return error.$control.is($element) && error.businessError == false;
+            });
+        }
+        
+        getErrorByElement($element: JQuery): ErrorListItem[] {
+            return _.filter(this.errors(), e => { 
                 return e.$control.is($element)
             });
         }
@@ -198,7 +212,7 @@ module nts.uk.ui.errors {
         option: any;
         allResolved: JQueryCallback;
         allCellsResolved: JQueryCallback;
-        errorElements: JQuery[];
+        errorElements: JQuery;
         
         setErrors(errors: ErrorListItem[]) {
             if (!_.isArray(errors)) {
@@ -277,7 +291,15 @@ module nts.uk.ui.errors {
         errorsViewModel().removeErrorByElement($control);
     }
     
-    export function getErrorByElement($element: JQuery): ErrorListItem{
+    export function removeByCode($control: JQuery, errorCode: string): void {
+        errorsViewModel().removeErrorByCode($control, errorCode);
+    }
+    
+    export function removeCommonError($control: JQuery): void {
+        errorsViewModel().removeKibanError($control);
+    }
+    
+    export function getErrorByElement($element: JQuery): ErrorListItem[] {
         return errorsViewModel().getErrorByElement($element);    
     }
     

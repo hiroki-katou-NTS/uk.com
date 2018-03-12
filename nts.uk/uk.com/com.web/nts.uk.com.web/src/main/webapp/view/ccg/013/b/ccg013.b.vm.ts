@@ -114,7 +114,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             if (standMenu) {
                 menuCls = standMenu.classification;
                 code = standMenu.code;
-                name = standMenu.displayName;
+                name = self.nameMenuBar();
             }
 
             if (self.selectedRadioAtcClass() == 1) {

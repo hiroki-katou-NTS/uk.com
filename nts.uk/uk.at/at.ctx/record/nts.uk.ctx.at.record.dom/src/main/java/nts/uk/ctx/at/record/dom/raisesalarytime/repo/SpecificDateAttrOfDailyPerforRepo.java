@@ -11,6 +11,8 @@ public interface SpecificDateAttrOfDailyPerforRepo {
 
 	public Optional<SpecificDateAttrOfDailyPerfor> find(String employeeId, GeneralDate baseDate);
 	
+	public List<SpecificDateAttrOfDailyPerfor> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
+	
 	public List<SpecificDateAttrOfDailyPerfor> finds(List<String> employeeId, DatePeriod baseDate);
 	
 	public void update(SpecificDateAttrOfDailyPerfor domain);

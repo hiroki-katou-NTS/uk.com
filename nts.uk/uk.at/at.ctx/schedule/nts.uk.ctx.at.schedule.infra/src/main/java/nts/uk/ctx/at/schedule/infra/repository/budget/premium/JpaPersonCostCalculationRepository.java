@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.infra.repository.budget.premium;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -59,7 +60,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	@Override
 	public List<PersonCostCalculation> findByCompanyID(String companyID) {
 		return this.queryProxy().query(SEL_BY_CID, KmlmtPersonCostCalculation.class).setParameter("companyID", companyID)
-				.getList(x -> toDomainPersonCostCalculation(x));
+				.getList(x -> toSimpleDomain(x));
 	}
 	
 	@Override
@@ -135,6 +136,17 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	public void delete(PersonCostCalculation personCostCalculation) {
 		this.commandProxy().remove(KmlmtPersonCostCalculation.class, 
 				new KmlmpPersonCostCalculationPK(personCostCalculation.getCompanyID(), personCostCalculation.getHistoryID()));
+	}
+	
+	private PersonCostCalculation toSimpleDomain(KmlmtPersonCostCalculation kmlmtPersonCostCalculation){
+		return new PersonCostCalculation(
+				kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.companyID, 
+				kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.historyID, 
+				kmlmtPersonCostCalculation.startDate, 
+				kmlmtPersonCostCalculation.endDate,
+				EnumAdaptor.valueOf(kmlmtPersonCostCalculation.unitPrice, UnitPrice.class), 
+				new Memo(kmlmtPersonCostCalculation.memo),
+				Collections.emptyList());
 	}
 	
 	/**

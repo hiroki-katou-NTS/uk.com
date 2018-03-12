@@ -1919,6 +1919,9 @@ interface JQuery {
      * @param handler A function to execute each time the event is triggered.
      */
     bind(eventType: string, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    bind(eventType: string, handler: (eventObject: JQueryEventObject, param1: any) => any): JQuery;
+    bind(eventType: string, handler: (eventObject: JQueryEventObject, param1: any, param2: any) => any): JQuery;
+    bind(eventType: string, handler: (eventObject: JQueryEventObject, param1: any, param2: any, param3: any) => any): JQuery;
     /**
      * Attach a handler to an event for the elements.
      * 
@@ -2032,6 +2035,7 @@ interface JQuery {
     dblclick(eventData?: any, handler?: (eventObject: JQueryEventObject) => any): JQuery;
 
     delegate(selector: any, eventType: string, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    delegate(selector: any, eventType: string, handler: (eventObject: JQueryEventObject, ui: any) => any): JQuery;
     delegate(selector: any, eventType: string, eventData: any, handler: (eventObject: JQueryEventObject) => any): JQuery;
 
     /**
@@ -2465,6 +2469,7 @@ interface JQuery {
      * @param handler A function to execute each time the event is triggered.
      */
     scroll(handler: (eventObject: JQueryEventObject) => any): JQuery;
+    scroll(handler: (eventObject: JQueryEventObject, ui: any) => any): JQuery;
     /**
      * Bind an event handler to the "scroll" JavaScript event.
      *
@@ -2572,7 +2577,7 @@ interface JQuery {
      * @param eventType A string containing a JavaScript event type, such as "click" or "keydown"
      * @param handler A function to execute at the time the event is triggered.
      */
-    undelegate(selector: string, eventType: string, handler?: (eventObject: JQueryEventObject) => any): JQuery;
+    undelegate(selector: string, eventType: string, handler?: (eventObject: JQueryEventObject, param: any) => any): JQuery;
     /**
      * Remove a handler from the event for all elements which match the current selector, based upon a specific set of root elements.
      * 

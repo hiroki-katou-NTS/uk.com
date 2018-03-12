@@ -21,4 +21,14 @@ public class AttendanceAmountMonth extends IntegerPrimitiveValue<AttendanceAmoun
 		
 		super(amount);
 	}
+	
+	/**
+	 * 金額を加算する
+	 * @param amount 金額
+	 * @return 加算後の勤怠月間金額
+	 */
+	public AttendanceAmountMonth addAmount(Integer amount){
+	
+		return new AttendanceAmountMonth(this.v() + amount);
+	}
 }

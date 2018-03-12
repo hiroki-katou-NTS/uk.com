@@ -80,4 +80,10 @@ public class DelEmpManagementWebService extends WebService {
 	public void deleteEmp(@PathParam("employeeId") String employeeId) {
 		this.completelyDelEmpHandler.handle(employeeId);
 	}
+	
+	@POST
+	@Path("checkexit/{empCode}")
+	public boolean checkExit(@PathParam("empCode") String empCode) {
+		return this.checkExit(empCode);
+	}
 }

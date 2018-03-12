@@ -22,6 +22,8 @@ public interface UserRepository {
 	List<User> getByListUser(List<String> userID);
 
 	List<User> getAllUser();
+	
+	List<User> getListUserByListAsID(List<String> listAssociatePersonId);
 
 	void addNewUser(User newUser);
 

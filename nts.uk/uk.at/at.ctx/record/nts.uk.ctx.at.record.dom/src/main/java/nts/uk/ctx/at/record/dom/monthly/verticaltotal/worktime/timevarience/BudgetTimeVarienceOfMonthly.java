@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.timevarience;
 
 import lombok.Getter;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
@@ -32,5 +33,17 @@ public class BudgetTimeVarienceOfMonthly {
 		val domain = new BudgetTimeVarienceOfMonthly();
 		domain.time = time;
 		return domain;
+	}
+	
+	/**
+	 * 集計
+	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
+	 */
+	public void aggregate(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
+
+		if (attendanceTimeOfDaily == null) return;
+		
+		// 日別実績の「予実差異時間」を集計する
+		this.time = this.time.addMinutes(attendanceTimeOfDaily.getBudgetTimeVariance().v());
 	}
 }

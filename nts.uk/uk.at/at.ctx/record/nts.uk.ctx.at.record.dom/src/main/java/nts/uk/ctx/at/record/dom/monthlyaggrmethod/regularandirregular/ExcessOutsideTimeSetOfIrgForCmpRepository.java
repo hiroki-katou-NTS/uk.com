@@ -7,13 +7,6 @@ package nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular;
 public interface ExcessOutsideTimeSetOfIrgForCmpRepository {
 
 	/**
-	 * 追加
-	 * @param companyId 会社ID
-	 * @param excessOutsideTimeSet 時間外超過設定
-	 */
-	void insert(String companyId, ExcessOutsideTimeSet excessOutsideTimeSet);
-
-	/**
 	 * 更新
 	 * @param companyId 会社ID
 	 * @param excessOutsideTimeSet 時間外超過設定

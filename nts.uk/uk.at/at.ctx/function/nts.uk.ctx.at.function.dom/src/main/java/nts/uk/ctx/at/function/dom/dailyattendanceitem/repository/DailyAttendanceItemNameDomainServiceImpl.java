@@ -156,7 +156,7 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 		Map<Integer, OvertimeWorkFrame> overTimes = overtimeWorkFrames.stream().collect(Collectors.toMap(function, x -> x));
 
 		List<WorkdayoffFrame> workdayoffFrames = this.workdayoffFrameRepository
-				.getWorkdayoffFrameBy(new CompanyId(companyId), frameNos);
+				.getWorkdayoffFrameBy(companyId, frameNos);
 		Function<WorkdayoffFrame, Integer> fun = workDay -> workDay.getWorkdayoffFrNo().v().intValue();
 		// 休出 2 + 休出振替 3
 		Map<Integer, WorkdayoffFrame> leave = workdayoffFrames.stream().collect(Collectors.toMap(fun, x -> x));

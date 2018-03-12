@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.dom.worktime.predset;
 import lombok.Builder;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class BreakDownTimeDay.
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @Builder
 @Getter
 //１日の時間内訳
-public class BreakDownTimeDay extends DomainObject{
+public class BreakDownTimeDay extends WorkTimeDomainObject {
 
 	/** The one day. */
 	// 1日
@@ -36,21 +36,19 @@ public class BreakDownTimeDay extends DomainObject{
 	 */
 	@Override
 	public void validate() {
-		super.validate();
-		
 		// if 1日<午前 => Msg_518 
-		
 		if (this.oneDay.lessThan(this.morning)) {
-			throw new BusinessException("Msg_518", "KMK003_217");
+			this.bundledBusinessExceptions.addMessage("Msg_518", "KMK003_217");
 		}
 
 		// 1日<午後 => Msg_518
 		if (this.oneDay.lessThan(this.afternoon)) {
-			throw new BusinessException("Msg_518", "KMK003_218");
+			this.bundledBusinessExceptions.addMessage("Msg_518", "KMK003_218");
 		}
 		
+		super.validate();
 	}
-
+	
 
 	/**
 	 * Instantiates a new break down time day.
@@ -85,6 +83,14 @@ public class BreakDownTimeDay extends DomainObject{
 		this.oneDay = oneDay;
 		this.morning = morning;
 		this.afternoon = afternoon;
+	}
+	
+	/**
+	 * 所定労働時間の取得
+	 * @return　所定労働時間
+	 */
+	public int getPredetermineWorkTime(){
+		return this.morning.valueAsMinutes() + this.afternoon.valueAsMinutes();
 	}
 	
 }

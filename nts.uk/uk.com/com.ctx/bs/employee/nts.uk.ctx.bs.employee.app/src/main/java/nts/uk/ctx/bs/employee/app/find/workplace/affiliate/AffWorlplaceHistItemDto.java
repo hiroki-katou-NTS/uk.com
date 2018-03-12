@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
@@ -47,13 +47,13 @@ public class AffWorlplaceHistItemDto extends PeregDomainDto {
 		super(recordId);
 	}
 
-	public static AffWorlplaceHistItemDto getFirstFromDomain(AffWorkplaceHistory_ver1 affWrkPlcHist,
+	public static AffWorlplaceHistItemDto getFirstFromDomain(AffWorkplaceHistory affWrkPlcHist,
 			AffWorkplaceHistoryItem affWrkplcHistItem) {
 		return getBaseOnDateHist(affWrkplcHistItem, affWrkPlcHist.getHistoryItems().get(0).start(),
 				affWrkPlcHist.getHistoryItems().get(0).end());
 	}
 
-	public static List<AffWorlplaceHistItemDto> getListFromDomain(AffWorkplaceHistory_ver1 affWrkPlcHist,
+	public static List<AffWorlplaceHistItemDto> getListFromDomain(AffWorkplaceHistory affWrkPlcHist,
 			AffWorkplaceHistoryItem affWrkplcHistItem) {
 		return affWrkPlcHist.getHistoryItems().stream()
 				.map(item -> getBaseOnDateHist(affWrkplcHistItem, item.start(), item.end()))

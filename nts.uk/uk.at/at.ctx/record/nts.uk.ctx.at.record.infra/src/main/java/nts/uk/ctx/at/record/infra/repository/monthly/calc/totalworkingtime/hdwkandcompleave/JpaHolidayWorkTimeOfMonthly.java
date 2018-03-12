@@ -17,31 +17,20 @@ import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.hdwkandco
 @Stateless
 public class JpaHolidayWorkTimeOfMonthly extends JpaRepository implements HolidayWorkTimeOfMonthlyRepository {
 
-	/** 追加 */
-	@Override
-	public void insert(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
-			HolidayWorkTimeOfMonthly holidayWorkTimeOfMonthly) {
-		
-		this.commandProxy().insert(toEntity(attendanceTimeOfMonthlyKey, holidayWorkTimeOfMonthly, false));
-	}
-
 	/** 更新 */
 	@Override
 	public void update(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
 			HolidayWorkTimeOfMonthly holidayWorkTimeOfMonthly) {
 
-		this.toEntity(attendanceTimeOfMonthlyKey, holidayWorkTimeOfMonthly, true);
+		this.toUpdate(attendanceTimeOfMonthlyKey, holidayWorkTimeOfMonthly);
 	}
 	
 	/**
-	 * ドメイン→エンティティ
+	 * データ更新
 	 * @param domainKey キー値：月別実績の勤怠時間
 	 * @param domain ドメイン：月別実績の休出時間
-	 * @param execUpdate 更新を実行する
-	 * @return エンティティ：月別実績の休出時間
 	 */
-	private KrcdtMonHdwkTime toEntity(AttendanceTimeOfMonthlyKey domainKey,
-			HolidayWorkTimeOfMonthly domain, boolean execUpdate){
+	private void toUpdate(AttendanceTimeOfMonthlyKey domainKey, HolidayWorkTimeOfMonthly domain){
 
 		// 締め日付
 		val closureDate = domainKey.getClosureDate();
@@ -54,20 +43,12 @@ public class JpaHolidayWorkTimeOfMonthly extends JpaRepository implements Holida
 				closureDate.getClosureDay().v(),
 				(closureDate.getLastDayOfMonth() ? 1 : 0));
 		
-		KrcdtMonHdwkTime entity;
-		if (execUpdate){
-			entity = this.queryProxy().find(key, KrcdtMonHdwkTime.class).get();
-		}
-		else {
-			entity = new KrcdtMonHdwkTime();
-			entity.PK = key;
-		}
+		KrcdtMonHdwkTime entity = this.getEntityManager().find(KrcdtMonHdwkTime.class, key);
+		if (entity == null) return;
 		entity.totalHolidayWorkTime = domain.getTotalHolidayWorkTime().getTime().v();
 		entity.calcTotalHolidayWorkTime = domain.getTotalHolidayWorkTime().getCalcTime().v();
 		entity.beforeHolidayWorkTime = domain.getBeforeHolidayWorkTime().v();
 		entity.totalTransferTime = domain.getTotalTransferTime().getTime().v();
 		entity.calcTotalTransferTime = domain.getTotalTransferTime().getCalcTime().v();
-		if (execUpdate) this.commandProxy().update(entity);
-		return entity;
 	}
 }

@@ -5,15 +5,15 @@
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class FlexCalcSetting.
  */
 // フレックス計算設定
 @Getter
-public class FlexCalcSetting extends DomainObject {
+public class FlexCalcSetting extends WorkTimeDomainObject {
 
 	/** The remove from work time. */
 	// コアタイム内の外出を就業時間から控除する

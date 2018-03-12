@@ -27,12 +27,11 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div class=' valign-center' data-bind="with: roleCopy">
-					<div  class='distane'
-						data-bind="ntsFormLabel: {}">
+					<div class='distane' data-bind="ntsFormLabel: {}">
 						<label id="codeName">#{i18n.getText('CAS001_63')}</label>
 					</div>
-					<label id="roleCode" data-bind="text: personRole.roleCode"></label> <label
-						id="roleName" data-bind="text: personRole.roleName"></label>
+					<label id="roleCode" data-bind="text: personRole.roleCode"></label>
+					<label id="roleName" data-bind="text: personRole.roleName"></label>
 				</div>
 				<div class='distane' data-bind="ntsFormLabel: {}">
 					<label id="codeName">#{i18n.getText('CAS001_64')}</label>
@@ -47,8 +46,7 @@
 				<button id="registration" class="proceed x-large"
 					data-bind='click: createCategory' tabindex="2">#{i18n.getText('CAS001_61')}
 				</button>
-				<button id="cancel"  data-bind='click: closeDialog'
-					tabindex="3">#{i18n.getText('CAS001_62')}</button>
+				<button id="cancel" data-bind='click: closeDialog' tabindex="3">#{i18n.getText('CAS001_62')}</button>
 
 			</div>
 

@@ -432,7 +432,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         // get list value
         List<String> lstValue = result.subList(INDEX_BEGIN_COL_VALUE, result.size());
         
-        // convert value
+        // convert value 0 -> 47
         for (int i=0; i<lstValue.size(); i++) {
             String rawValue = lstValue.get(i);
             Long value = this.parseActualValue(rawValue);
@@ -593,7 +593,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                     .lineNo(importProcess.startLine)
                     .columnNo(idxColReal)
                     .acceptedDate(inputDate)
-                    .errorContent("Invalid format date.") // Not has message id
+                    .errorContent(this.getMessageById("Msg_977"))
                     .build();
             this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
             
@@ -665,9 +665,13 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
     private void validValByPrimitive (ImportProcess importProcess, int columnNo, String value) {
         int columnRealNo = columnNo + 1;
         String itemName = this.getItemNameById("KSU006_18");
+        String mesageId = StringUtils.EMPTY;
         try {
             switch (importProcess.externalBudget.getBudgetAtr()) {
                 case TIME:
+                	// set message id
+                	mesageId = "Msg_978";
+                	
                     // convert HH:mm -> minute
                     Long valueTime = this.convertVal(value);
                     PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetTime(valueTime.intValue()), (ex) ->{
@@ -675,24 +679,36 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                     });
                     break;
                 case PEOPLE:
+                	// set message id
+                	mesageId = "Msg_979";
+                	
                     Long valuePeople= Long.parseLong(value);
                     PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetNumberPerson(valuePeople.intValue()), (ex) ->{
                         this.logError(importProcess, columnRealNo, value, ex.getErrorMessage(itemName));
                     });
                     break;
                 case MONEY:
+                	// set message id
+                	mesageId = "Msg_980";
+                	
                     Long valueMoney= Long.parseLong(value);
                     PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetMoney(valueMoney.intValue()), (ex) ->{
                         this.logError(importProcess, columnRealNo, value, ex.getErrorMessage(itemName));
                     });
                     break;
                 case NUMERICAL:
+                	// set message id
+                	mesageId = "Msg_979";
+                	
                     Long valueNumerical= Long.parseLong(value);
                     PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetNumericalVal(valueNumerical.intValue()), (ex) ->{
                         this.logError(importProcess, columnRealNo, value, ex.getErrorMessage(itemName));
                     });
                     break;
                 case PRICE:
+                	// set message id
+                	mesageId = "Msg_981";
+                	
                     Long valuePrice= Long.parseLong(value);
                     PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetUnitPrice(valuePrice.intValue()), (ex) ->{
                         this.logError(importProcess, columnRealNo, value, ex.getErrorMessage(itemName));
@@ -702,9 +718,9 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                     throw new RuntimeException("Not budget atr suitable.");
             }
         } catch (BusinessException e) {
-            this.logError(importProcess, columnRealNo, value, e.getMessage());
+            this.logError(importProcess, columnRealNo, value, this.getMessageById(mesageId));
         } catch (NumberFormatException numberFormat) {
-            this.logError(importProcess, columnRealNo, value, "Invalid format number.");
+            this.logError(importProcess, columnRealNo, value, this.getMessageById(mesageId));
         }
     }
     
@@ -731,14 +747,26 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      */
     private Long convertVal(String value) {
         String CHARACTER_COLON = ":";
-        // error when case time not contain character ":" or format: hh:mm:ss
-        int limitCharacterColon = 1;
-        if (!value.contains(CHARACTER_COLON)
-                || StringUtils.countMatches(value, CHARACTER_COLON) > limitCharacterColon) {
+        int numberFirst = 1;
+        
+        // not have colon
+        if (!value.contains(CHARACTER_COLON)) {
+            // it's is number: 0 (mean 00:00 -> 00:59), 1 (mean 01:00 -> 01:59), ...  --> #86500
+            return Long.parseLong(value);
+        }
+        // check number colon character.
+        // error when format: hh:mm:ss
+        else if (StringUtils.countMatches(value, CHARACTER_COLON) > numberFirst) {
             throw new BusinessException(new RawErrorMessage("Invalid format time of value."));
         }
+        
         // format time of value: 99:00 (hh:mm)
         String[] timeComponents = value.split(CHARACTER_COLON);
+        
+        // error when format: hh:
+        if (timeComponents.length <= numberFirst) {
+        	throw new BusinessException(new RawErrorMessage("Invalid format time of value."));
+        }
         
         Integer HOUR = 60;
         Long numberHour = Long.parseLong(timeComponents[0]);

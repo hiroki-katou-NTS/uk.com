@@ -70,4 +70,9 @@ public class JobTitleFinder {
 				.sorted((job1, job2) -> job1.getCode().compareTo(job2.getCode()))
 				.collect(Collectors.toList());
 	}
+	
+	public List<String> findNamesByIds(List<String> ids) {
+		String companyId = AppContexts.user().companyId();
+		return this.jobTitleInfoRepository.findByIds(companyId, ids, GeneralDate.today()).stream().map(item -> item.getJobTitleName().v()).collect(Collectors.toList());
+	}
 }

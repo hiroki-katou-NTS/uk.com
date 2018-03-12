@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -83,8 +82,7 @@ public class WorkTimeSettingServiceImpl implements WorkTimeSettingService {
 				Optional<DiffTimeWorkSetting> optDiffTimeWorkSetting = this.diffTimeWorkSettingRepo
 						.find(companyId, workTimeCode);
 				if (optDiffTimeWorkSetting.isPresent()) {
-					return Arrays.asList(optDiffTimeWorkSetting.get().getStampReflectTimezone()
-							.getStampReflectTimezone());
+					return optDiffTimeWorkSetting.get().getStampReflectTimezone().getStampReflectTimezone();
 				}
 				break;
 			case FLOW_WORK:

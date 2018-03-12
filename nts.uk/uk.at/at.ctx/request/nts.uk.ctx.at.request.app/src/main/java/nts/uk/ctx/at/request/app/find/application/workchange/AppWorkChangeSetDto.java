@@ -66,10 +66,13 @@ public class AppWorkChangeSetDto {
 
 	public static AppWorkChangeSetDto fromDomain(AppWorkChangeSet domain) {
 		return new AppWorkChangeSetDto(domain.getCid(), domain.getExcludeHoliday(), domain.getWorkChangeTimeAtr(),
-				domain.getDisplayResultAtr(), domain.getInitDisplayWorktime().value, domain.getCommentContent1().v(),
-				domain.getCommentFontWeight1().value, domain.getCommentFontColor1().v(),
-				domain.getCommentContent2().v(), domain.getCommentFontWeight2().value,
-				domain.getCommentFontColor2().v());
+				domain.getDisplayResultAtr(), domain.getInitDisplayWorktime().value, 
+				domain.getCommentContent1() != null ? domain.getCommentContent1().v() : null,
+				domain.getCommentFontWeight1() != null ? domain.getCommentFontWeight1().value : null, 
+				domain.getCommentFontColor1() != null ? domain.getCommentFontColor1().v() : null,
+				domain.getCommentContent2() != null ? domain.getCommentContent2().v() : null,
+				domain.getCommentFontWeight2() != null ? domain.getCommentFontWeight2().value : null,
+				domain.getCommentFontColor2() != null ? domain.getCommentFontColor2().v() : null);
 	}
 
 }

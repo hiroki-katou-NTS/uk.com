@@ -1,14 +1,21 @@
 package nts.uk.ctx.at.record.dom.breakorgoout;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.BreakClassification;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionClassification;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 
 /**
  * 
@@ -57,6 +64,22 @@ public class OutingTimeSheet extends DomainObject {
 		
 	}
 	
-	
+	/**
+	 * 自分自身を控除項目の時間帯に変換する
+	 * @return 控除項目の時間帯
+	 */
+	public TimeSheetOfDeductionItem toTimeSheetOfDeductionItem() {
+		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeZoneRounding(this.goOut.get().getStamp().get().getTimeWithDay(), this.comeBack.get().getStamp().get().getTimeWithDay(), null),
+																			  new TimeSpanForCalc(this.goOut.get().getStamp().get().getTimeWithDay(), this.comeBack.get().getStamp().get().getTimeWithDay()),
+																			  Collections.emptyList(),
+																			  Collections.emptyList(),
+																			  Collections.emptyList(),
+																			  Collections.emptyList(),
+																			  Optional.empty(),
+																			  Finally.empty(),
+																			  Finally.of(BreakClassification.BREAK),
+																			  DeductionClassification.BREAK
+																			  );
+	}
 	
 }

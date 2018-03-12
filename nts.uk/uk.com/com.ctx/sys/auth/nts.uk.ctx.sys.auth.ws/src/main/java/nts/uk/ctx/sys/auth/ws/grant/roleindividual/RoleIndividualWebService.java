@@ -30,6 +30,7 @@ import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleTypeDto;
 import nts.uk.ctx.sys.auth.app.find.person.role.PersonInformationRoleFinder;
 import nts.uk.ctx.sys.auth.app.find.person.role.dto.RoleDto;
 import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
+import nts.uk.shr.com.context.AppContexts;
 
 @Path("ctx/sys/auth/grant/roleindividual")
 @Produces("application/json")
@@ -68,7 +69,7 @@ public class RoleIndividualWebService extends WebService {
 	@POST
 	@Path("getmetadata")
 	public RoleIndividualGrantMetaDto getCompany() {
-		return this.roleIndividualFinder.getMetadata();
+		return this.roleIndividualFinder.getCAS012Metadata();
 	}
 
 	@POST
@@ -92,7 +93,7 @@ public class RoleIndividualWebService extends WebService {
 	@POST
 	@Path("getRoleType")
 	public List<RoleTypeDto> GetRoleType() {
-		return this.roleIndividualFinder.GetRoleType();
+		return this.roleIndividualFinder.getCAS013Metadata();
 	}
 	
 	@POST
@@ -138,4 +139,11 @@ public class RoleIndividualWebService extends WebService {
 		this.deleteRoleGrant.deleteRoleGrant(roleGrant);
 	}
 	
+	@POST
+	@Path("get/futurerefpermit")
+	public boolean getFutureDateRefPermit() {
+		String roleId = AppContexts.user().roles().forPersonalInfo();
+		return this.personInforRoleFinder.find(roleId).getReferFutureDate();
+	}
+
 }

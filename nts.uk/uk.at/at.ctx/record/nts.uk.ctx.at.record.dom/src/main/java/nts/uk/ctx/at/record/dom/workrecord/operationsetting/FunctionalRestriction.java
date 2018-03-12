@@ -1,13 +1,11 @@
 package nts.uk.ctx.at.record.dom.workrecord.operationsetting;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 
 @Getter
 public class FunctionalRestriction {
-	
+
 	/**
 	 * 総労働時間≠応援の総労働時間合計のときに登録することが出来る
 	 */
@@ -52,7 +50,7 @@ public class FunctionalRestriction {
 	 * 上司確認を利用する
 	 */
 	private Boolean useSupervisorConfirm;
-	
+
 	/**
 	 * エラーがある場合の上司確認
 	 */
@@ -101,8 +99,7 @@ public class FunctionalRestriction {
 		this.useConfirmByYourself = useConfirmByYourself;
 		this.yourselfConfirmError = yourselfConfirmError;
 	}
-	
-	
+
 	/**
 	 * @param registeredTotalTimeCheer
 	 * @param completeDisplayOneMonth
@@ -117,11 +114,10 @@ public class FunctionalRestriction {
 	 * @param useConfirmByYourself
 	 * @param yourselfConfirmError
 	 */
-	public FunctionalRestriction(BigDecimal registeredTotalTimeCheer, BigDecimal completeDisplayOneMonth,
-			BigDecimal useWorkDetail, BigDecimal registerActualExceed, BigDecimal confirmSubmitApp,
-			BigDecimal useInitialValueSet, BigDecimal startAppScreen, BigDecimal displayConfirmMessage,
-			BigDecimal useSupervisorConfirm, BigDecimal supervisorConfirmError, BigDecimal useConfirmByYourself,
-			BigDecimal yourselfConfirmError) {
+	public FunctionalRestriction(int registeredTotalTimeCheer, int completeDisplayOneMonth, int useWorkDetail,
+			int registerActualExceed, int confirmSubmitApp, int useInitialValueSet, int startAppScreen,
+			int displayConfirmMessage, int useSupervisorConfirm, int supervisorConfirmError, int useConfirmByYourself,
+			int yourselfConfirmError) {
 		super();
 		this.registeredTotalTimeCheer = toBooleanValue(registeredTotalTimeCheer);
 		this.completeDisplayOneMonth = toBooleanValue(completeDisplayOneMonth);
@@ -132,17 +128,15 @@ public class FunctionalRestriction {
 		this.startAppScreen = toBooleanValue(startAppScreen);
 		this.displayConfirmMessage = toBooleanValue(displayConfirmMessage);
 		this.useSupervisorConfirm = toBooleanValue(useSupervisorConfirm);
-		this.supervisorConfirmError = EnumAdaptor.valueOf(supervisorConfirmError.intValue(),
-				ConfirmOfManagerOrYouself.class);
+		this.supervisorConfirmError = EnumAdaptor.valueOf(supervisorConfirmError, ConfirmOfManagerOrYouself.class);
 		this.useConfirmByYourself = toBooleanValue(useConfirmByYourself);
-		this.yourselfConfirmError = EnumAdaptor.valueOf(yourselfConfirmError.intValue(),
-				ConfirmOfManagerOrYouself.class);
+		this.yourselfConfirmError = EnumAdaptor.valueOf(yourselfConfirmError, ConfirmOfManagerOrYouself.class);
 	}
-	
-	private Boolean toBooleanValue(BigDecimal decimalNumber) {
-		if (decimalNumber.intValue() == 0) {
+
+	private Boolean toBooleanValue(int decimalNumber) {
+		if (decimalNumber == 0) {
 			return false;
-		} else if (decimalNumber.intValue() == 1) {
+		} else if (decimalNumber == 1) {
 			return true;
 		} else {
 			return null;

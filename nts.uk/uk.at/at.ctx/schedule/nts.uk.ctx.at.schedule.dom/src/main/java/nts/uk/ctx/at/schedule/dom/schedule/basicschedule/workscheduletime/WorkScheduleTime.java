@@ -6,14 +6,18 @@ package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * The Class WorkScheduleTime.
  */
 //勤務予定時間
 @Getter
+@AllArgsConstructor
 public class WorkScheduleTime extends DomainObject{
 
 	/** The person fee time. */

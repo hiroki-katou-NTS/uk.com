@@ -41,7 +41,7 @@ public class RemoveWindowAccountCommandHandler extends CommandHandler<RemoveWind
 
 		// remove
 		for (WindowAccount wd : listWindowAcc) {
-			windowAccountRepository.remove(wd.getUserId(), wd.getUserName(), wd.getHostName());
+			windowAccountRepository.remove(wd.getUserId(), wd.getNo());
 		}
 
 	}

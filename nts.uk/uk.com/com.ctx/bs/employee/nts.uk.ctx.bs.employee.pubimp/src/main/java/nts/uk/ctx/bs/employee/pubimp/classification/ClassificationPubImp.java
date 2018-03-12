@@ -12,9 +12,9 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.classification.Classification;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItemRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem_ver1;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepository_ver1;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItem;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItemRepository;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.classification.SClsHistExport;
 import nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -31,11 +31,11 @@ public class ClassificationPubImp implements SyClassificationPub {
 
 	/** The aff class hist item repository ver 1. */
 	@Inject
-	private AffClassHistItemRepository_ver1 affClassHistItemRepository_ver1;
+	private AffClassHistItemRepository affClassHistItemRepository;
 
 	/** The aff class history repository ver 1. */
 	@Inject
-	private AffClassHistoryRepository_ver1 affClassHistoryRepository_ver1;
+	private AffClassHistoryRepository affClassHistoryRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -48,7 +48,7 @@ public class ClassificationPubImp implements SyClassificationPub {
 	public Optional<SClsHistExport> findSClsHistBySid(String companyId, String employeeId,
 			GeneralDate baseDate) {
 
-		Optional<DateHistoryItem> dateHistoryItem = affClassHistoryRepository_ver1
+		Optional<DateHistoryItem> dateHistoryItem = affClassHistoryRepository
 				.getByEmpIdAndStandardDate(employeeId, baseDate);
 
 		// Check exist
@@ -56,16 +56,16 @@ public class ClassificationPubImp implements SyClassificationPub {
 			return Optional.empty();
 		}
 
-		Optional<AffClassHistItem_ver1> opAffClassHistItem_ver1 = affClassHistItemRepository_ver1
+		Optional<AffClassHistItem> opAffClassHistItem = affClassHistItemRepository
 				.getByHistoryId(dateHistoryItem.get().identifier());
 
-		if (!opAffClassHistItem_ver1.isPresent()) {
+		if (!opAffClassHistItem.isPresent()) {
 			return Optional.empty();
 		}
 
 		// Find emp by empCd
 		Optional<Classification> optClassification = classificationRepository.findClassification(
-				companyId, opAffClassHistItem_ver1.get().getClassificationCode().v());
+				companyId, opAffClassHistItem.get().getClassificationCode().v());
 
 		if (!optClassification.isPresent()) {
 			return Optional.empty();

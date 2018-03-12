@@ -5,14 +5,15 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 
 /**
  * The Class HDWorkTimeSheetSetting.
  */
 // 休出時間の時間帯設定
 @Getter
-public class HDWorkTimeSheetSetting extends DomainObject {
+public class HDWorkTimeSheetSetting extends WorkTimeDomainObject {
 	
 	/** The work time no. */
 	//就業時間帯NO
@@ -78,4 +79,21 @@ public class HDWorkTimeSheetSetting extends DomainObject {
 		memento.setOutLegalPubHDFrameNo(this.outLegalPubHDFrameNo);
 	}
 
+	/**
+	 * 休日区分に従って、休出枠Ｎｏを返す
+	 * @param atr
+	 * @return 休出枠Ｎｏ
+	 */
+	public BreakFrameNo decisionBreakFrameNoByHolidayAtr(HolidayAtr atr) {
+		switch(atr) {
+			case STATUTORY_HOLIDAYS:
+				return this.inLegalBreakFrameNo;
+			case NON_STATUTORY_HOLIDAYS:			
+				return this.outLegalBreakFrameNo;
+			case PUBLIC_HOLIDAY:
+				return this.outLegalPubHDFrameNo;
+			default:
+				throw new RuntimeException("unknown holidayAtr:"+atr); 
+		}
+	}
 }

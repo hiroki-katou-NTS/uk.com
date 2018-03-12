@@ -50,7 +50,7 @@ public class EmployeeFileManagementFinder {
 		List<EmployeeFileManagementDto> s = empFileManagementRepository.getListDocumentFile(employeeId, 2).stream()
 				.map(x -> new EmployeeFileManagementDto(x[0].toString(), x[1].toString(),
 						fileStorage.getInfo(x[1].toString()).get().getOriginalName(),
-						Integer.parseInt(x[2].toString())))
+						Integer.parseInt(x[2].toString()), fileStorage.getInfo(x[1].toString()).get().getOriginalSize()))
 				.collect(Collectors.toList());
 		return s;
 

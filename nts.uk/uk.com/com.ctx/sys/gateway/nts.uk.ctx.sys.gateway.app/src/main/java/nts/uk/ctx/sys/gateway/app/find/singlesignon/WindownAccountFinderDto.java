@@ -5,7 +5,9 @@
 package nts.uk.ctx.sys.gateway.app.find.singlesignon;
 
 import lombok.Getter;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.HostName;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.UserName;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountSetMemento;
 
 /**
@@ -48,16 +50,16 @@ public class WindownAccountFinderDto implements WindowAccountSetMemento{
 	 * @see nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountSetMemento#setHotName(java.lang.String)
 	 */
 	@Override
-	public void setHostName(String hostName) {
-		this.hostName = hostName;
+	public void setHostName(HostName hostName) {
+		this.hostName = hostName.v();
 	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountSetMemento#setUserName(java.lang.String)
 	 */
 	@Override
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUserName(UserName userName) {
+		this.userName = userName.v();
 	}
 
 	/* (non-Javadoc)

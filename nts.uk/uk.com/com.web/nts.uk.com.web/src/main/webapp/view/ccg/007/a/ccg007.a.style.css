@@ -116,13 +116,15 @@ button.nts-switch-button {
 #inp-name {
 	width: 240px !important;
 }
-.pad_top_20
-{
+
+.pad_top_20 {
 	padding-top: 20px;
-} 
-.pad_left_20{
+}
+
+.pad_left_20 {
 	padding-left: 20px;
 }
+
 .bg-yellow {
 	padding: 10px 5px;
 	margin: 11px 156px;

@@ -6,9 +6,12 @@ package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.workingcondition.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.workingcondition.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
+import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
+import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeek;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
@@ -186,10 +189,34 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 		Integer hdAddTimeOneDay = this.entity.getHdAddTimeOneDay();
 		return hdAddTimeOneDay != null
 				? Optional.of(
-						new BreakdownTimeDay(new AttendanceTime(this.entity.getHdAddTimeOneDay()),
-								new AttendanceTime(this.entity.getHdAddTimeMorning()),
-								new AttendanceTime(this.entity.getHdAddTimeAfternoon())))
+						new BreakdownTimeDay(this.entity.getHdAddTimeOneDay() != null? new AttendanceTime(this.entity.getHdAddTimeOneDay()): null,
+								this.entity.getHdAddTimeMorning() != null ? new AttendanceTime(this.entity.getHdAddTimeMorning()) : null,
+										this.entity.getHdAddTimeAfternoon() != null ? new AttendanceTime(this.entity.getHdAddTimeAfternoon()): null))
 				: Optional.empty();
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemGetMemento#getHourlyPaymentAtr()
+	 */
+	@Override
+	public HourlyPaymentAtr getHourlyPaymentAtr() {
+		return HourlyPaymentAtr.valueOf(this.entity.getHourlyPayAtr());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemGetMemento#getTimeApply()
+	 */
+	@Override
+	public Optional<BonusPaySettingCode> getTimeApply() {
+		return Optional.of(new BonusPaySettingCode(this.entity.getTimeApply()));
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemGetMemento#getMonthlyPattern()
+	 */
+	@Override
+	public Optional<MonthlyPatternCode> getMonthlyPattern() {
+		return Optional.of(new MonthlyPatternCode(this.entity.getMonthlyPattern()));
 	}
 
 }

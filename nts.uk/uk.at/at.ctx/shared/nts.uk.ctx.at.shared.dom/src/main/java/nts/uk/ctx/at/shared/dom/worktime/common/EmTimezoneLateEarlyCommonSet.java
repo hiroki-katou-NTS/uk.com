@@ -5,13 +5,14 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class EmTimezoneLateEarlyCommonSet.
  */
 // 就業時間帯の遅刻・早退共通設定
 @Getter
-public class EmTimezoneLateEarlyCommonSet {
+public class EmTimezoneLateEarlyCommonSet extends WorkTimeDomainObject {
 
 	/** The del from em time. */
 	// 就業時間から控除する

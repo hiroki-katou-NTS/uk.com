@@ -11,8 +11,9 @@ module cas009.b.viewmodel {
         /** Start Page */
        public  startPage(): any {           
             let self = this;
-            service.getPerMissingMenu().done(function(res){                    
-                    self.listMenu(_.map(res,  x =>{return new model.Menu(x.code, x.displayName, x.screenId, x.programId, x.queryString)}));
+            service.getPerMissingMenu().done(function(res){    
+                $("#list_link").focus();                   
+                self.listMenu(_.map(res,  x =>{return new model.Menu(x.code, x.displayName, x.screenId, x.programId, x.queryString)}));
             });
         }
 
@@ -39,7 +40,7 @@ module cas009.b.viewmodel {
                 this.screenId = screenId;
                 this.programId = programId;
                 this.queryString = queryString;
-                this.url = "/nts.uk.com.web/view/" + programId.substr(0,3).toLowerCase() + "/" +programId.substr(3,6) + "/" + screenId + "/index.xhtml";
+                this.url = "/nts.uk.com.web/view/" + programId.substr(0,3).toLowerCase() + "/" +programId.substr(3,6).toLowerCase() + "/" + screenId.toLowerCase() + "/index.xhtml";
             }
        }
     }

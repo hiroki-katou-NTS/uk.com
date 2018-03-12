@@ -7,14 +7,16 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerforma
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 日別実績の勤怠時間 */
 @Getter
 @Setter
 @AttendanceItemRoot(rootName = "日別実績の勤怠時間")
-public class AttendanceTimeDailyPerformDto implements ConvertibleAttendanceItem {
+public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 
 	/** 年月日: 年月日 */
 	private GeneralDate date;
@@ -54,13 +56,15 @@ public class AttendanceTimeDailyPerformDto implements ConvertibleAttendanceItem 
 			items.setEmployeeID(domain.getEmployeeId());
 			items.setDate(domain.getYmd());
 			items.setActualWorkTime(ActualWorkTimeDailyPerformDto.toActualWorkTime(domain.getActualWorkingTimeOfDaily()));
-			items.setBudgetTimeVariance(domain.getBudgetTimeVariance().valueAsMinutes());
+			//items.setBudgetTimeVariance(domain.getBudgetTimeVariance().valueAsMinutes());
+			items.setBudgetTimeVariance(domain.getBudgetTimeVariance() == null ? null : domain.getBudgetTimeVariance().valueAsMinutes());
 			items.setDate(domain.getYmd());
 			items.setEmployeeID(domain.getEmployeeId());
 			items.setMedicalTime(MedicalTimeDailyPerformDto.fromMedicalCareTime(domain.getMedicalCareTime()));
 			items.setScheduleTime(WorkScheduleTimeDailyPerformDto.fromWorkScheduleTime(domain.getWorkScheduleTimeOfDaily()));
 			items.setStayingTime(StayingTimeDto.fromStayingTime(domain.getStayingTime()));
-			items.setUnemployedTime(domain.getUnEmployedTime().valueAsMinutes());
+			items.setUnemployedTime(domain.getUnEmployedTime() == null ? null : domain.getUnEmployedTime().valueAsMinutes());
+			items.exsistData();
 		}
 		return items;
 	}
@@ -73,5 +77,18 @@ public class AttendanceTimeDailyPerformDto implements ConvertibleAttendanceItem 
 	@Override
 	public GeneralDate workingDate() {
 		return this.date;
+	}
+	
+	@Override
+	public AttendanceTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
+		return new AttendanceTimeOfDailyPerformance(emp, date,
+				scheduleTime == null ? null : scheduleTime.toDomain(), 
+				actualWorkTime == null ? null : actualWorkTime.toDomain(),
+				stayingTime == null ? null : stayingTime.toDomain(), 
+				budgetTimeVariance == null ? null : new AttendanceTime(budgetTimeVariance),
+				unemployedTime == null ? null : new AttendanceTime(unemployedTime));
 	}
 }

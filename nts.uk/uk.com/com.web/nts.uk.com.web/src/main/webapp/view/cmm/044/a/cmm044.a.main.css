@@ -1,4 +1,4 @@
- #function_area {
+#function_area {
 	margin-top: 10px;
 }
 
@@ -91,7 +91,7 @@
 	margin-left: -15px;
 }
 
-#list{
+#list {
 	margin-top: 30px;
 	margin-left: 100px;
 	width: 300px;
@@ -106,7 +106,6 @@
 	height: 530px;
 	float: left;
 } */
-
 #H_LST_001_grid_displayContainer {
 	margin-left: 10px;
 }
@@ -218,6 +217,7 @@
 .top-content-data {
 	height: 39px;
 }
+
 #emp-component {
 	margin-left: 100px;
-} 
+}

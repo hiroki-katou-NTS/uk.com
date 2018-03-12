@@ -8,7 +8,8 @@ module nts.uk.com.view.cps005.b {
                 updateItemDef: "ctx/pereg/person/info/ctgItem/update",
                 removeItemDef: "ctx/pereg/person/info/ctgItem/remove",
                 getAllSelectionItem: "ctx/pereg/person/info/setting/selection/findAllSelectionItem",
-                filterHisSel: "ctx/pereg/person/info/setting/selection/find/{0}/{1}/{2}"
+                filterHisSel: "ctx/pereg/person/info/setting/selection/find/{0}/{1}/{2}",
+                checkItemData: "ctx/pereg/person/info/ctgItem/check/itemData/{0}"
 
             }
 
@@ -44,6 +45,10 @@ module nts.uk.com.view.cps005.b {
             
             getAllSelByHistory(selectionItemId: string, baseDate: any, selectionItemClsAtr : number) {
                 return nts.uk.request.ajax(nts.uk.text.format(this.paths.filterHisSel, selectionItemId, baseDate, selectionItemClsAtr));
+            };
+            
+            checkItemData(itemId: string){
+               return nts.uk.request.ajax((nts.uk.text.format(this.paths.checkItemData, itemId));
             };
         }
     }

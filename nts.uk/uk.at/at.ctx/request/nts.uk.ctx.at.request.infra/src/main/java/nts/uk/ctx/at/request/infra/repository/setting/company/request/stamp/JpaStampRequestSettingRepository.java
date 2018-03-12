@@ -34,6 +34,7 @@ public class JpaStampRequestSettingRepository extends JpaRepository implements S
 		entity.companyID = companyId;
 		entity.resultDisp = domain.getResultDisp().value;
 		entity.stampAtr_Care_Disp = domain.getStampDisplayControl().getStampAtrCareDisp().value;
+		entity.stampAtr_Child_Care_Disp = domain.getStampDisplayControl().getStampAtrChildCareDisp().value;
 		entity.stampAtr_GoOut_Disp = domain.getStampDisplayControl().getStampAtrGoOutDisp().value;
 		entity.stampAtr_Sup_Disp = domain.getStampDisplayControl().getStampAtrSupDisp().value;
 		entity.stampAtr_Work_Disp = domain.getStampDisplayControl().getStampAtrWorkDisp().value;
@@ -55,7 +56,7 @@ public class JpaStampRequestSettingRepository extends JpaRepository implements S
 																entity.bottomCommentFontWeight == 1 ? true : false, 
 																entity.resultDisp, entity.supFrameDispNO, entity.stampPlaceDisp, 
 																entity.stampAtr_Work_Disp, entity.stampAtr_GoOut_Disp, 
-																entity.stampAtr_Care_Disp, entity.stampAtr_Sup_Disp, 
+																entity.stampAtr_Care_Disp, entity.stampAtr_Sup_Disp, entity.stampAtr_Child_Care_Disp, 
 																entity.stampGoOutAtr_Private_Disp, entity.stampGoOutAtr_Public_Disp, 
 																entity.stampGoOutAtr_Compensation_Disp, entity.stampGoOutAtr_Union_Disp);
 		return stamp;
@@ -80,11 +81,12 @@ public class JpaStampRequestSettingRepository extends JpaRepository implements S
 		oldEntity.stampGoOutAtr_Private_Disp = entity.stampGoOutAtr_Private_Disp;
 		oldEntity.stampGoOutAtr_Public_Disp = entity.stampGoOutAtr_Public_Disp;
 		oldEntity.stampGoOutAtr_Union_Disp = entity.stampGoOutAtr_Union_Disp;
-		oldEntity.stampPlaceDisp = entity.stampPlaceDisp;
+		oldEntity.stampPlaceDisp = oldEntity.stampPlaceDisp;
 		oldEntity.supFrameDispNO = entity.supFrameDispNO;
 		oldEntity.topComment = entity.topComment;
 		oldEntity.topCommentFontColor = entity.topCommentFontColor;
 		oldEntity.topCommentFontWeight = entity.topCommentFontWeight;
+		oldEntity.stampAtr_Child_Care_Disp = entity.stampAtr_Child_Care_Disp;
 		this.commandProxy().update(oldEntity);
 	}
 	/**
@@ -95,5 +97,13 @@ public class JpaStampRequestSettingRepository extends JpaRepository implements S
 	public void insertStamp(StampRequestSetting stamp) {
 		KrqstStampRequestSetting entity = toEntity(stamp);
 		this.commandProxy().insert(entity);
+	}
+	/**
+	 * delete stamp request setting
+	 * @author tanlv
+	 */
+	@Override
+	public void deleteStamp(String companyID) {
+		this.commandProxy().remove(KrqstStampRequestSetting.class, companyID);
 	}
 }

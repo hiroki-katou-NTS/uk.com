@@ -1,6 +1,7 @@
 module cps001.d.vm {
     import text = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
+    import alertError = nts.uk.ui.dialog.alertError;
     import confirm = nts.uk.ui.dialog.confirm;
     import close = nts.uk.ui.windows.close;
     import setShared = nts.uk.ui.windows.setShared;
@@ -26,7 +27,7 @@ module cps001.d.vm {
             let self = this,
                 params: IEmpFileMn = getShared("CPS001D_PARAMS");
             $('input[type=checkbox]').prop('checked', false);
-
+            $(".comfirm-checkbox").hide();
 
             self.empFileMn().employeeId = params.employeeId;
             //get employee file management domain by employeeId
@@ -40,6 +41,7 @@ module cps001.d.vm {
                     else self.isChange(true);
                     self.oldEmpFileMn = { employeeId: self.empFileMn().employeeId, fileId: self.empFileMn().fileId, fileType: self.empFileMn().fileType };
                 } else {
+                    unblock();
                     self.isChange(true);
                     $(".checkbox-holder").hide();
                 }
@@ -48,12 +50,19 @@ module cps001.d.vm {
                     $('input[type=checkbox]').prop('checked', true);
                     if (!self.isInit) {
                         self.isChange(true);
+                        unblock();
+                        // check size if req
+                        
+                       /*  if (query.size > 10485760) { // 10485760 = 10MB
+                            self.hasError = true;
+                            alertError({ messageId: "Msg_77" });
+                        } */
+                        
                         return;
                     }
                     self.isInit = false;
+                    unblock();
                 });
-
-                unblock();
 
             }).fail((mes) => {
                 unblock();
@@ -81,19 +90,22 @@ module cps001.d.vm {
             }
 
             let isImageLoaded = $("#test").ntsImageEditor("getImgStatus");
-            if ($("#test").data("cropper") == undefined) {
-                self.close();
-                return;
-            }
-            if ($("#test").data("cropper").cropped)
-                self.isChange(true);
+
             if (isImageLoaded.imgOnView) {
+
+                if ($("#test").data("cropper") == undefined) {
+                    self.close();
+                    return;
+                }
+                if ($("#test").data("cropper").cropped)
+                    self.isChange(true);
+
                 if (self.isChange()) {
-                    $("#test").ntsImageEditor("upload", { stereoType: "image" }).done(function(data1) {
+                    $("#test").ntsImageEditor("upload", { stereoType: "avatarfile" }).done(function(data1) {
 
                         self.empFileMn().fileId = data1.id;
 
-                        $("#test").ntsImageEditor("uploadOriginal", { stereoType: "original-img" }).done(function(data2) {
+                        $("#test").ntsImageEditor("uploadOriginal", { stereoType: "avatarfile" }).done(function(data2) {
 
                             let emp = { employeeId: self.empFileMn().employeeId, fileId: data1.id, fileType: 0, fileIdnew: data2.id, isAvatar: true };
                             self.updateImage(emp);
@@ -102,7 +114,8 @@ module cps001.d.vm {
                     });
                 } else self.close();
             } else {
-                self.close();
+                alertError({ messageId: "Msg_617" });
+                nts.uk.ui.block.clear();
             }
         }
 
@@ -151,6 +164,7 @@ module cps001.d.vm {
                 self.isChange(true);
             }
         }
+
         close() {
             nts.uk.ui.block.clear();
             close();

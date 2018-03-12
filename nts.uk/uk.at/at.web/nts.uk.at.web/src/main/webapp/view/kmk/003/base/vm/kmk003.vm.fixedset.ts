@@ -6,7 +6,6 @@ module nts.uk.at.view.kmk003.a {
     import HDWorkTimeSheetSettingDto = service.model.common.HDWorkTimeSheetSettingDto;
     import StampReflectTimezoneDto = service.model.common.StampReflectTimezoneDto;
     
-    import FixedWorkSettingDto = service.model.fixedset.FixedWorkSettingDto;
     import FixOffdayWorkTimezoneDto = service.model.fixedset.FixOffdayWorkTimezoneDto;
     import FixRestTimezoneSetDto = service.model.fixedset.FixRestTimezoneSetDto;
     import FixedWorkTimezoneSetDto = service.model.fixedset.FixedWorkTimezoneSetDto;
@@ -25,6 +24,7 @@ module nts.uk.at.view.kmk003.a {
     import OtherFlowColumnSetting = nts.uk.at.view.kmk003.a.viewmodel.common.OtherFlowColumnSetting;
     import OffdayWorkTimeConverter = nts.uk.at.view.kmk003.a.viewmodel.common.OffdayWorkTimeConverter;
     
+    import FixedWorkSettingDto = service.model.fixedset.FixedWorkSettingDto;
     export module viewmodel {
         export module fixedset {
             
@@ -253,10 +253,9 @@ module nts.uk.at.view.kmk003.a {
                     this.getHDWtzAfternoon().resetData();
                     this.lstStampReflectTimezone = [];
                     //update ver7.2 
-                    this.legalOTSetting(1);
+                    this.legalOTSetting(0);
                 }
             }
-            
         }
     }
 }

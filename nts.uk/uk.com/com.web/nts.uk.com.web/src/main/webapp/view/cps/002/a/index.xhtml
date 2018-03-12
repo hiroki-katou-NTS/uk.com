@@ -17,10 +17,12 @@
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 
 			<com:stylefile path="cps002.a.style.css" />
+			<com:scriptfile path="/view/cps/shr/layout-control-ko-ext.js" />
+			<com:scriptfile path="/view/cps/shr/layout-control-validation.js" />
 			<com:scriptfile path="cps002.a.service.js" />
 			<com:scriptfile path="cps002.a.vm.js" />
 			<com:scriptfile path="cps002.a.start.js" />
-			<com:scriptfile path="/view/cps/shr/layout-control-ko-ext.js" />
+
 			<com:ValidatorScript>
 				nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
 				nts.uk.ctx.sys.gateway.dom.login.UserName
@@ -107,7 +109,7 @@
 												data-bind="ntsFormLabel: {  required: true,constraint:'FullName' }">#{i18n.getText('CPS002_105')}</div>
 										</div>
 										<div class="step1_top_left_col2">
-											<input class="form_step1"
+											<input class="form_step1" id="employeeName"
 												data-bind="ntsTextEditor: {
 											value: employeeName ,
 											constraint:'FullName',
@@ -229,7 +231,7 @@
 														optionsValue: 'id' ,
 														optionsText: 'name' ,
 														value: createTypeId ,
-														enable: false
+														enable: true
 														       		}">
 										</div>
 									</div>
@@ -245,7 +247,7 @@
 								</div>
 								<div class='div_line'>
 									<button class="x-large proceed next_btn" id="step1_next_btn"
-										data-bind="click:completeStep1">#{i18n.getText('CPS002_29')}</button>
+										data-bind="click:completeStep0">#{i18n.getText('CPS002_29')}</button>
 								</div>
 							</div>
 						</div>
@@ -374,7 +376,7 @@
 										<button class="prev_btn" id="step2_prev_btn"
 											data-bind="click:prev">#{i18n.getText('CPS002_38')}</button>
 										<button class="x-large proceed next_btn" id="next_btn"
-											data-bind="click:completeStep2">#{i18n.getText('CPS002_29')}</button>
+											data-bind="click:completeStep1">#{i18n.getText('CPS002_29')}</button>
 									</div>
 								</div>
 							</div>
@@ -395,25 +397,25 @@
 								<div class="step3_col2">
 									<table class="table_item">
 										<tbody>
-											<tr>
-												<td width="120px" class="bg-green">#{i18n.getText('CPS002_103')}</td>
-												<td width="300px"
+											<tr class="step3-tr">
+												<td class="step3-title-name bg-green">#{i18n.getText('CPS002_103')}</td>
+												<td class="step3-title-value" 
 													data-bind="text:nts.uk.time.formatDate(currentEmployee().hireDate(),'yyyy/MM/dd')"></td>
 											</tr>
-											<tr>
-												<td class="bg-green">#{i18n.getText('CPS002_106')}</td>
-												<td>
+											<tr class="step3-tr">
+												<td class="step3-title-name bg-green">#{i18n.getText('CPS002_106')}</td>
+												<td class="step3-title-value" >
 													<div class='ellipsis_step3_title'
 														data-bind="text:currentEmployee().employeeCode()+' '+currentEmployee().employeeName()"></div>
 												</td>
 											</tr>
-											<tr>
-												<td class="bg-green">#{i18n.getText('CPS002_18')}</td>
-												<td data-bind="text:currentEmployee().cardNo()"></td>
+											<tr class="step3-tr">
+												<td class="step3-title-name bg-green">#{i18n.getText('CPS002_18')}</td>
+												<td class="step3-title-value" data-bind="text:currentEmployee().cardNo()"></td>
 											</tr>
-											<tr>
-												<td class="bg-green">#{i18n.getText('CPS002_108')}</td>
-												<td data-bind="text:currentEmployee().loginId()"></td>
+											<tr class="step3-tr">
+												<td class="step3-title-name bg-green">#{i18n.getText('CPS002_108')}</td>
+												<td class="step3-title-value" data-bind="text:currentEmployee().loginId()"></td>
 											</tr>
 										</tbody>
 									</table>
@@ -425,7 +427,7 @@
 							<div class="div_line" data-bind="with: layout">
 								<div
 									data-bind="ntsLayoutControl: { 
-											data: listItemClsDto,
+											data: listItemCls,
 											editAble: 2 ,
 											outData: $parent.layoutData
 											}"></div>

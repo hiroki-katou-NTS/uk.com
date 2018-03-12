@@ -77,7 +77,7 @@ module nts.uk.ui.koExtentions {
                 let $yearType = $("<label/>").attr("for", idString)
                                                 .css({ "position": "absolute",
                                                       "line-height": "30px",
-                                                      "right": "42px"});
+                                                      "right": jumpButtonsDisplay ? "40px" : "5px"});
                 let labelText = fiscalYear ? "年度" : "年"; 
                 $yearType.text(labelText);
                 container.append($yearType);
@@ -120,16 +120,17 @@ module nts.uk.ui.koExtentions {
                     value(result.parsedValue);
                 }
                 else {                    
-                    $input.ntsError('set', result.errorMessage, result.errorCode);
+                    $input.ntsError('set', result.errorMessage, result.errorCode, false);
                     value(newText);
                 }
+                $input.focus();
             });
             
             $input.on("blur", () => {
                 var newText = $input.val();
                 var result = validator.validate(newText);
                 if (!result.isValid) {
-                    $input.ntsError('set', result.errorMessage, result.errorCode);
+                    $input.ntsError('set', result.errorMessage, result.errorCode, false);
                 } else if (acceptJapaneseCalendar){
                     // Day of Week
                     if (hasDayofWeek) {
@@ -149,9 +150,9 @@ module nts.uk.ui.koExtentions {
             $input.on('validate', (function(e: Event) {
                 var newText = $input.val();
                 var result = validator.validate(newText);
-                $input.ntsError('clear');
+                $input.ntsError('clearKibanError');
                 if (!result.isValid) {
-                    $input.ntsError('set', result.errorMessage, result.errorCode);
+                    $input.ntsError('set', result.errorMessage, result.errorCode, false);
                 } else if (acceptJapaneseCalendar){
                     // Day of Week
                     if (hasDayofWeek) {
@@ -169,6 +170,8 @@ module nts.uk.ui.koExtentions {
             
             new nts.uk.util.value.DefaultValue().onReset($input, data.value);
             container.data("init", false);
+            
+            $input.ntsDatepicker("bindFlip");
         }
 
         /**
@@ -677,7 +680,7 @@ module nts.uk.ui.koExtentions {
         }
         
         parseDate(date: string): any {
-            var exp = new RegExp(/\d+(\/\d+)?(\/\d+)?/);
+            var exp = /\d+(\/\d+)?(\/\d+)?/;
             if (exp.test(date) === false) return;
             var dateParts = date.split(this.DATE_SPLITTER);
             return {

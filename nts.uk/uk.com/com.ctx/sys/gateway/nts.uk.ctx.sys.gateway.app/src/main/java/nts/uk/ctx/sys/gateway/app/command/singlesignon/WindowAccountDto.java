@@ -5,7 +5,9 @@
 package nts.uk.ctx.sys.gateway.app.command.singlesignon;
 
 import lombok.Setter;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.HostName;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.UserName;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountGetMemento;
 
 /**
@@ -56,8 +58,8 @@ public class WindowAccountDto implements WindowAccountGetMemento {
 	 * getHostName()
 	 */
 	@Override
-	public String getHostName() {
-		return this.hostName;
+	public HostName getHostName() {
+		return new HostName(this.hostName);
 	}
 
 	/*
@@ -67,8 +69,8 @@ public class WindowAccountDto implements WindowAccountGetMemento {
 	 * getUserName()
 	 */
 	@Override
-	public String getUserName() {
-		return this.userName;
+	public UserName getUserName() {
+		return new UserName(this.userName);
 	}
 
 	/*

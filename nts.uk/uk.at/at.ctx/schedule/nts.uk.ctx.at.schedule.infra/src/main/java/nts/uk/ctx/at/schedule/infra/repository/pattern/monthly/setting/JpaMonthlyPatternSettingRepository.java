@@ -183,7 +183,13 @@ public class JpaMonthlyPatternSettingRepository extends JpaRepository
 	 * @return the kmpst month pattern set
 	 */
 	private KscmtMonthPatternSet toEntity(MonthlyPatternSetting domain){
+		Optional<KscmtMonthPatternSet> optional = this.queryProxy().find(domain.getEmployeeId(),
+				KscmtMonthPatternSet.class);
+		
 		KscmtMonthPatternSet entity = new KscmtMonthPatternSet();
+		if (optional.isPresent()) {
+			entity = optional.get();
+		}
 		domain.saveToMemento(new JpaMonthlyPatternSettingSetMemento(entity));
 		return entity;
 	}

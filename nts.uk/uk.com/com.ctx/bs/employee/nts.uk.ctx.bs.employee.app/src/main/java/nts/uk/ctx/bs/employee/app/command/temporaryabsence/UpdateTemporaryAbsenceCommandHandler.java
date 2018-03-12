@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistoryService;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
@@ -61,7 +62,8 @@ public class UpdateTemporaryAbsenceCommandHandler extends CommandHandler<UpdateT
 			if (!itemToBeUpdate.isPresent()) {
 				throw new RuntimeException("invalid TempAbsenceHistory");
 			}
-			existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
+			existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(),
+					command.getEndDate() != null ? command.getEndDate() : GeneralDate.max()));
 			tempAbsHistoryService.update(existHist.get(), itemToBeUpdate.get());
 		}
 		BigDecimal falseValue = new BigDecimal(0);

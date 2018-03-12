@@ -22,14 +22,14 @@ public interface OtherSysAccountGetMemento {
 	 *
 	 * @return the company code
 	 */
-	String getCompanyCode();
+	CompanyCode getCompanyCode();
 	
 	/**
 	 * Gets the user name.
 	 *
 	 * @return the user name
 	 */
-	String getUserName();
+	UserName getUserName();
 	
 
 	/**

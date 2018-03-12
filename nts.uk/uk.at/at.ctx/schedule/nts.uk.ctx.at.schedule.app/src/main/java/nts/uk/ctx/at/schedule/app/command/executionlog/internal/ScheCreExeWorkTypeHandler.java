@@ -17,9 +17,11 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 
@@ -179,12 +181,41 @@ public class ScheCreExeWorkTypeHandler {
 			if (!optionalWorkingConditionItem.isPresent()) {
 				return command.getWorkTypeCode();
 			}
-			return optionalWorkingConditionItem.get().getWorkCategory().getHolidayWork().getWorkTypeCode().v();
+			return optionalWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().v();
 		} else {
-
+			
+			int closeAtr = 0;
+			String WorkTypeCd = null;
+			//convert TEMP_ABS_FRAME_NO -> CLOSE_ATR
+			switch (employmentStatus.getLeaveHolidayType()) {
+			case 1:
+				List<WorkType> findByCompanyIdAndLeaveAbsences = this.workTypeRepository.findByCompanyIdAndLeaveAbsence(command.getBaseGetter().getCompanyId());
+				WorkType workType2 = findByCompanyIdAndLeaveAbsences.get(FIRST_DATA);
+				WorkTypeCd = workType2.getWorkTypeCode().v();
+				break;
+			case 2:
+				closeAtr = 0;
+				break;
+			case 3:
+				closeAtr = 1;
+				break;
+			case 4:
+				closeAtr = 2;
+				break;
+			case 5:
+				closeAtr = 3;
+				break;
+			default:
+				//6,7,8,9,10
+				closeAtr = 4;
+				break;
+			}
+			if(WorkTypeCd!=null){
+				return WorkTypeCd;
+			}
 			// find work type set by close atr employment status
 			List<WorkTypeSet> worktypeSets = this.workTypeRepository.findWorkTypeSetCloseAtr(
-					command.getBaseGetter().getCompanyId(), employmentStatus.getLeaveHolidayType());
+					command.getBaseGetter().getCompanyId(), closeAtr);
 
 			// check empty work type set
 			if (CollectionUtil.isEmpty(worktypeSets)) {
@@ -259,7 +290,7 @@ public class ScheCreExeWorkTypeHandler {
 	 * @return the worktype
 	 */
 	// 勤務種類を取得する
-	private Optional<WorktypeDto> getWorktype(WorkTypeGetterCommand command) {
+	public Optional<WorktypeDto> getWorktype(WorkTypeGetterCommand command) {
 
 		// setup command getter
 		BasicWorkSettingGetterCommand commandBasicGetter = command.toBasicWorkSetting();
@@ -294,7 +325,7 @@ public class ScheCreExeWorkTypeHandler {
 	 * @return the work type by employment status
 	 */
 	// 在職状態に対応する「勤務種類コード」を取得する
-	private Optional<WorktypeDto> getWorkTypeByEmploymentStatus(WorkTypeByEmpStatusGetterCommand command) {
+	public Optional<WorktypeDto> getWorkTypeByEmploymentStatus(WorkTypeByEmpStatusGetterCommand command) {
 		String worktypeCode = null;
 		// check 就業時間帯の参照先  == 個人曜日別
 		if (command.getReferenceWorkingHours() == TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK.value) {
@@ -318,5 +349,4 @@ public class ScheCreExeWorkTypeHandler {
 		}
 		return Optional.empty();
 	}
-
 }

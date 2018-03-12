@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTimePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetPolicy;
@@ -32,9 +33,9 @@ public class TimezoneOfFixedRestTimeSetPolicyImpl implements TimezoneOfFixedRest
 	 * nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet)
 	 */
 	@Override
-	public void validate(PredetemineTimeSetting predTime, TimezoneOfFixedRestTimeSet fixedRest) {
+	public void validate(BundledBusinessException be, PredetemineTimeSetting predTime, TimezoneOfFixedRestTimeSet fixedRest) {
 		// validate list DeductionTime
-		fixedRest.getTimezones().forEach(dedTime -> this.dedTimePolicy.validate(predTime, dedTime));
+		fixedRest.getTimezones().forEach(dedTime -> this.dedTimePolicy.validate(be, predTime, dedTime));
 	}
 
 }

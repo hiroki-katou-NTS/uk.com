@@ -15,16 +15,17 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
-				<div style="padding: 10px;" data-bind="text: '#{i18n.getText('CCG007_10')}'"></div>
+				<div style="padding: 10px;"
+					data-bind="text: '#{i18n.getText('CCG007_10')}'"></div>
 				<div>
 					<table>
 						<tr>
-							<td style=" width:100px; padding: 10px;">
+							<td style="width: 100px; padding: 10px;">
 								<div data-bind="ntsFormLabel: {required: true}">
 									<label data-bind="text: '#{i18n.getText('CCG007_1')}'"><br /></label>
 								</div>
 							</td>
-							<td style="width:230px; padding: 10px;">
+							<td style="width: 230px; padding: 10px;">
 								<div>
 									<input tabindex="1" id="contract-code-inp"
 										data-bind="ntsTextEditor: {
@@ -33,17 +34,18 @@
 											required: false,
 											option: {textmode: 'text',width: '200px'}, 
 											enable: true,
-											readonly: false}" />
+											readonly: false,
+											enterkey: AuthContract}" />
 								</div>
 							</td>
 						</tr>
 						<tr>
-							<td style="width:100px; padding: 10px;">
+							<td style="width: 100px; padding: 10px;">
 								<div data-bind="ntsFormLabel: {required: true}">
 									<label data-bind="text: '#{i18n.getText('CCG007_2')}'"><br /></label>
 								</div>
 							</td>
-							<td style="width:230px; padding: 10px;">
+							<td style="width: 230px; padding: 10px;">
 								<div>
 									<input tabindex="2" id="password-input"
 										data-bind="ntsTextEditor: {
@@ -52,7 +54,8 @@
 											required: false,
 											option: {textmode: 'password',width: '200px'},
 											enable: true,
-											readonly: false}" />
+											readonly: false,
+											enterkey: AuthContract}" />
 								</div>
 							</td>
 						</tr>

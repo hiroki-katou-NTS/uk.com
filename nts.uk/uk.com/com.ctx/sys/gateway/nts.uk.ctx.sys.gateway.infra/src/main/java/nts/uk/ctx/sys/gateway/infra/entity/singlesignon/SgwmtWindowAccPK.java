@@ -21,12 +21,10 @@ public class SgwmtWindowAccPK implements Serializable {
 
 	@Column(name="USER_ID")
 	private String userId;
+	
+	@Column(name="NO")
+	private Integer no;
 
-	@Column(name="HOST_NAME")
-	private String hostName;
-
-	@Column(name="USER_NAME")
-	private String userName;
 
 	public SgwmtWindowAccPK() {
 		super();
@@ -42,26 +40,22 @@ public class SgwmtWindowAccPK implements Serializable {
 		SgwmtWindowAccPK castOther = (SgwmtWindowAccPK)other;
 		return 
 			this.userId.equals(castOther.userId)
-			&& this.hostName.equals(castOther.hostName)
-			&& this.userName.equals(castOther.userName);
+			&& this.no.equals(castOther.no);
 	}
 
 	public int hashCode() {
 		final int prime = 31;
 		int hash = 17;
 		hash = hash * prime + this.userId.hashCode();
-		hash = hash * prime + this.hostName.hashCode();
-		hash = hash * prime + this.userName.hashCode();
+		hash = hash * prime + this.no.hashCode();
 		
 		return hash;
 	}
 
-	public SgwmtWindowAccPK(String userId, String userName, String hostName) {
+	public SgwmtWindowAccPK(String userId, Integer no) {
 		super();
 		this.userId = userId;
-		this.userName = userName;
-		this.hostName = hostName;
+		this.no = no;
 	}
-	
-	
+		
 }

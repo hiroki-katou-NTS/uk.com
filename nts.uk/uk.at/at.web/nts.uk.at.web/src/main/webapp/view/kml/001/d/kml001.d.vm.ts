@@ -5,7 +5,6 @@ module nts.uk.at.view.kml001.d {
         export class ScreenModel {
             isUpdate: KnockoutObservable<boolean>;
             deleteAble: KnockoutObservable<boolean>;
-            beforeIndex: number;
             size: number;
             personCostList: KnockoutObservableArray<vmbase.PersonCostCalculation>;
             currentPersonCost: KnockoutObservable<vmbase.PersonCostCalculation>;
@@ -23,10 +22,9 @@ module nts.uk.at.view.kml001.d {
                     vmbase.ProcessHandler.fromObjectPerconCost(nts.uk.ui.windows.getShared('currentPersonCost'))
                 );
                 self.size = _.size(self.personCostList());
-                self.isLast = ko.observable((_.findIndex(self.personCostList(), function(o){return self.currentPersonCost().startDate() == o.startDate(); })==(self.size-1))?true:false);
+                self.isLast = ko.observable((_.findIndex(self.personCostList(), function(o){return self.currentPersonCost().startDate() == o.startDate(); })==0)?true:false);
                 self.deleteAble = ko.observable((self.isLast()&&(self.size>1))); // can delete when item is last and list have more than one item
-                self.beforeIndex = _.findIndex(self.personCostList(), function(o) { return o.startDate() == self.currentPersonCost().startDate(); })-1;
-                self.beforeStartDate = ko.observable((self.beforeIndex>=0)?self.personCostList()[self.beforeIndex].startDate():"1900/01/01");
+                self.beforeStartDate = ko.observable((self.size>1)?self.personCostList()[1].startDate():"1900/01/01");
                 self.onedayAfterBeforeStartDate = ko.observable(moment(self.beforeStartDate()).add(1,'days').format('YYYY/MM/DD'));
                 self.currentEndDate = ko.observable(self.currentPersonCost().endDate());
                 self.newStartDate = ko.observable(self.currentPersonCost().startDate());

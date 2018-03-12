@@ -17,6 +17,7 @@ public class KshmtWorkingCondItem_ {
 	public static volatile SingularAttribute<KshmtWorkingCondItem, Integer> exclusVer;
 	public static volatile SingularAttribute<KshmtWorkingCondItem, String> sid;
 	public static volatile SingularAttribute<KshmtWorkingCondItem, Integer> hdAddTimeMorning;
+	public static volatile SingularAttribute<KshmtWorkingCondItem, Integer> hourlyPayAtr;
 	public static volatile ListAttribute<KshmtWorkingCondItem, KshmtPersonalDayOfWeek> kshmtPersonalDayOfWeeks;
 	public static volatile SingularAttribute<KshmtWorkingCondItem, Integer> autoIntervalSetAtr;
 	public static volatile SingularAttribute<KshmtWorkingCondItem, Integer> autoStampSetAtr;
@@ -28,5 +29,6 @@ public class KshmtWorkingCondItem_ {
 	public static volatile SingularAttribute<KshmtWorkingCondItem, Integer> laborSys;
 	public static volatile SingularAttribute<KshmtWorkingCondItem, Integer> scheManagementAtr;
 	public static volatile SingularAttribute<KshmtWorkingCondItem, KshmtWorkingCond> kshmtWorkingCond;
-
+	public static volatile SingularAttribute<KshmtWorkingCondItem, String> timeApply;
+	public static volatile SingularAttribute<KshmtWorkingCondItem, String> monthlyPattern;
 }

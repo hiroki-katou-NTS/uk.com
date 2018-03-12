@@ -75,6 +75,9 @@ public class KrcdtDayLeaveEarlyTime  extends UkJpaEntity implements Serializable
 	}
 	
 	public void setData(LeaveEarlyTimeOfDaily leaveEarlyTime){
+		if(leaveEarlyTime == null){
+			return;
+		}
 		if(leaveEarlyTime.getLeaveEarlyTime() != null){
 			TimeWithCalculation leaveEarly = leaveEarlyTime.getLeaveEarlyTime();
 			//早退時間

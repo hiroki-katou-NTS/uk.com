@@ -7,6 +7,7 @@ package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.ExtraTimeItemNo;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * The Class PersonFeeTime.

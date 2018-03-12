@@ -41,4 +41,15 @@ public class SyRoleAdapterImpl implements SyRoleAdapter {
 		return workplaceIDImport;
 	}
 
+	@Override
+	public WorkplaceIDImport findListWkpId(Integer systemType) {
+		WorkplaceIDImport workplaceIDImport = new WorkplaceIDImport();
+
+		WorkplaceIdExport workplaceIdExport = roleExportRepo.findWorkPlaceIdNoRole(systemType);
+		workplaceIDImport.setIsAllEmp(workplaceIdExport.getIsAllEmp());
+		workplaceIDImport.setListWorkplaceIds(workplaceIdExport.getListWorkplaceIds());
+
+		return workplaceIDImport;
+	}
+
 }

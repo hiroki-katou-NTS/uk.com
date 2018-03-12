@@ -10,6 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecordRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcmtFixedConditionWorkRecord;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcmtFixedConditionWorkRecordPK;
 
 @Stateless
 public class JpaFixedConWorkRecordRepository extends JpaRepository implements  FixedConditionWorkRecordRepository {
@@ -17,8 +18,13 @@ public class JpaFixedConWorkRecordRepository extends JpaRepository implements  F
 	private final String SELECT_FROM_FIXED_CON = " SELECT c FROM KrcmtFixedConditionWorkRecord c ";
 	
 	private final String SELECT_FIXED_CON_BY_ALARM_ID =SELECT_FROM_FIXED_CON 
-			+ " WHERE c.errorAlarmID = :errorAlarmID ";
+			+ " WHERE c.krcmtFixedConditionWorkRecordPK.dailyAlarmConID = :dailyAlarmConID ";
 	
+	private final String SELECT_FIXED_CON_BY_CODE =SELECT_FIXED_CON_BY_ALARM_ID 
+			+ " AND c.krcmtFixedConditionWorkRecordPK.fixConWorkRecordNo = :fixConWorkRecordNo ";
+	
+	private final String DELETE_FIXED_CON_BY_DAILY_ID =  "DELETE FROM KrcmtFixedConditionWorkRecord c "
+			+ " WHERE c.krcmtFixedConditionWorkRecordPK.dailyAlarmConID = :dailyAlarmConID ";
 	@Override
 	public List<FixedConditionWorkRecord> getAllFixedConditionWorkRecord() {
 		List<FixedConditionWorkRecord> data = this.queryProxy().query(SELECT_FROM_FIXED_CON,KrcmtFixedConditionWorkRecord.class)
@@ -29,9 +35,10 @@ public class JpaFixedConWorkRecordRepository extends JpaRepository implements  F
 
 
 	@Override
-	public Optional<FixedConditionWorkRecord> getFixedConWRByCode(String errorAlarmID) {
-		Optional<FixedConditionWorkRecord> data = this.queryProxy().query(SELECT_FIXED_CON_BY_ALARM_ID,KrcmtFixedConditionWorkRecord.class)
-				.setParameter("errorAlarmID", errorAlarmID)
+	public Optional<FixedConditionWorkRecord> getFixedConWRByCode(String dailyAlarmConID,int fixConWorkRecordNo) {
+		Optional<FixedConditionWorkRecord> data = this.queryProxy().query(SELECT_FIXED_CON_BY_CODE,KrcmtFixedConditionWorkRecord.class)
+				.setParameter("dailyAlarmConID", dailyAlarmConID)
+				.setParameter("fixConWorkRecordNo", fixConWorkRecordNo)
 				.getSingle(c->c.toDomain());
 		return data;
 	}
@@ -47,32 +54,30 @@ public class JpaFixedConWorkRecordRepository extends JpaRepository implements  F
 	public void updateFixedConWorkRecord(FixedConditionWorkRecord fixedConditionWorkRecord) {
 		KrcmtFixedConditionWorkRecord newEntity = KrcmtFixedConditionWorkRecord.toEntity(fixedConditionWorkRecord);
 		KrcmtFixedConditionWorkRecord updateEntity = this.queryProxy().find(
-				newEntity.errorAlarmID,
+				new KrcmtFixedConditionWorkRecordPK(
+						newEntity.krcmtFixedConditionWorkRecordPK.dailyAlarmConID,
+						newEntity.krcmtFixedConditionWorkRecordPK.fixConWorkRecordNo
+						),
 				KrcmtFixedConditionWorkRecord.class).get();
 		updateEntity.message = newEntity.message;
 		updateEntity.useAtr = newEntity.useAtr;
 		this.commandProxy().update(updateEntity);
 	}
 
+	
 	@Override
-	public void deleteFixedConWorkRecord(String errorAlarmID) {
-		this.commandProxy().remove(KrcmtFixedConditionWorkRecord.class,
-				errorAlarmID);
-		
+	public void deleteFixedConWorkRecord(String dailyAlarmConID) {
+		this.getEntityManager().createQuery(DELETE_FIXED_CON_BY_DAILY_ID)
+		.setParameter("dailyAlarmConID", dailyAlarmConID).executeUpdate();
 	}
 
 
 
 	@Override
-	public List<FixedConditionWorkRecord> getAllFixedConWorkRecordByListID(List<String> listErrorAlarmID) {
-		List<FixedConditionWorkRecord> data = new ArrayList<>();
-		for(String errorAlarmID : listErrorAlarmID) {
-			Optional<FixedConditionWorkRecord> fixedConditionWorkRecord = getFixedConWRByCode(errorAlarmID);
-			if(fixedConditionWorkRecord.isPresent()) {
-				data.add(fixedConditionWorkRecord.get());
-				
-			}
-		}
+	public List<FixedConditionWorkRecord> getAllFixedConWorkRecordByID(String dailyAlarmConID) {
+		List<FixedConditionWorkRecord> data = this.queryProxy().query(SELECT_FIXED_CON_BY_ALARM_ID,KrcmtFixedConditionWorkRecord.class)
+				.setParameter("dailyAlarmConID", dailyAlarmConID)
+				.getList(c->c.toDomain());
 		return data;
 	}
 

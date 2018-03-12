@@ -41,9 +41,7 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 					c.getAlarmPerSet().isAuthSetting(), c.getAlarmPerSet().getRoleIds());
 
 			List<CheckCondition> checkConList = c.getCheckConditonList().stream()
-					.map(x -> new CheckCondition(c.getAlarmPatternCD(), companyId,
-							EnumAdaptor.valueOf(x.getAlarmCategory(), AlarmCategory.class), x.getCheckConditionCodes(),
-							(ExtractionRangeBase) x.getExtractionPeriodDaily().toDomain()))
+					.map(x -> convertToCheckCondition(x))
 					.collect(Collectors.toList());
 			
 			// create domain
@@ -59,4 +57,15 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 			throw new BusinessException("Msg_3");
 		}
 	}
+	
+	public CheckCondition convertToCheckCondition (CheckConditionCommand command) {
+		ExtractionRangeBase extraction = null;
+		if(command.getExtractionPeriodDaily()!=null) {
+			extraction = command.getExtractionPeriodDaily().toDomain();
+		}else if(command.getExtractionPeriodUnit()  !=null){
+			extraction = command.getExtractionPeriodUnit().toDomain();
+		}
+		return new CheckCondition(EnumAdaptor.valueOf(command.getAlarmCategory(), AlarmCategory.class), command.getCheckConditionCodes(), extraction);
+	}
+	
 }

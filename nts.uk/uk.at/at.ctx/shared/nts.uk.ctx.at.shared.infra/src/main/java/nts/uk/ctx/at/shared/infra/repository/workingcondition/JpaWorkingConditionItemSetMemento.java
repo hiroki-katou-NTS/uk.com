@@ -8,8 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.workingcondition.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
+import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
+import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeek;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
@@ -222,10 +225,66 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 			this.entity.setHdAddTimeOneDay(null);
 			return;
 		}
+		if (holidayAddTimeSet.get().getMorning() != null){
+			this.entity.setHdAddTimeMorning(holidayAddTimeSet.get().getMorning().v());
+		} else {
+			this.entity.setHdAddTimeMorning(null);
+		}
+		if (holidayAddTimeSet.get().getAfternoon() != null){
+			this.entity.setHdAddTimeAfternoon(holidayAddTimeSet.get().getAfternoon().v());
+		} else {
+			this.entity.setHdAddTimeAfternoon(null);
+		}
+		if (holidayAddTimeSet.get().getOneDay() != null){
+			this.entity.setHdAddTimeOneDay(holidayAddTimeSet.get().getOneDay().v());
+		} else {
+				this.entity.setHdAddTimeOneDay(null);
+		}
+	}
 
-		this.entity.setHdAddTimeMorning(holidayAddTimeSet.get().getMorning().v());
-		this.entity.setHdAddTimeAfternoon(holidayAddTimeSet.get().getAfternoon().v());
-		this.entity.setHdAddTimeOneDay(holidayAddTimeSet.get().getOneDay().v());
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemSetMemento#
+	 * setHourlyPaymentAtr(nts.uk.ctx.at.shared.dom.workingcondition.
+	 * HourlyPaymentAtr)
+	 */
+	@Override
+	public void setHourlyPaymentAtr(HourlyPaymentAtr hourlyPaymentAtr) {
+		this.entity.setHourlyPayAtr(hourlyPaymentAtr.value);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemSetMemento#
+	 * setTimeApply(java.util.Optional)
+	 */
+	@Override
+	public void setTimeApply(Optional<BonusPaySettingCode> timeApply) {
+		if (timeApply.isPresent()){
+			this.entity.setTimeApply(timeApply.get().v());
+		} else {
+			this.entity.setTimeApply(null);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemSetMemento#
+	 * setMonthlyPattern(java.util.Optional)
+	 */
+	@Override
+	public void setMonthlyPattern(Optional<MonthlyPatternCode> monthlyPattern) {
+		if (monthlyPattern.isPresent()){
+			this.entity.setMonthlyPattern(monthlyPattern.get().v());
+		} else {
+			this.entity.setMonthlyPattern(null);
+		}
 	}
 
 }

@@ -13,4 +13,9 @@ public class SamplePackStereoType implements FileStereoTypeDescription {
 	public boolean isPack() {
 		return true;
 	}
+	
+	@Override
+	public boolean keepsPack() {
+		return true;
+	}
 }

@@ -1,12 +1,15 @@
-.pad_5{
+.pad_5 {
 	padding: 5px;
 }
-.full_width{
+
+.full_width {
 	width: 100%;
 }
-.align_right{
+
+.align_right {
 	text-align: right;
 }
-.align_center{
+
+.align_center {
 	text-align: center;
 }

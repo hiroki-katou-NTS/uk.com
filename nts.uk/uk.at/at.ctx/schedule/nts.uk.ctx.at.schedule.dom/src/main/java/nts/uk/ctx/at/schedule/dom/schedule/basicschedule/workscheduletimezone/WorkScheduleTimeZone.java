@@ -87,4 +87,12 @@ public class WorkScheduleTimeZone extends DomainObject {
 		this.scheduleStartClock = scheduleStartClock;
 		this.scheduleEndClock = scheduleEndClock;
 	}
+
+	/**
+	 * Update 直行直帰区分
+	 * @param bounceAtr2
+	 */
+	public void updateBounceAtr(BounceAtr bounceAtr) {
+		this.bounceAtr = bounceAtr;
+	}
 }

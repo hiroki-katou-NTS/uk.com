@@ -18,7 +18,7 @@ public interface DenyService {
 				true：否認を実行した
 				false：否認を実行しなかった
 	 */
-	public Boolean doDeny(String companyID, String rootStateID, String employeeID);
+	public Boolean doDeny(String companyID, String rootStateID, String employeeID, String memo);
 	
 	/**
 	 * 1.否認できるかチェックする

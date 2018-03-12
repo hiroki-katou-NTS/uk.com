@@ -7,13 +7,16 @@
 
 	<body>
 		
-		<ui:composition template="../../../../master/base.xhtml">
+		<ui:composition template="../../../../master/masterpage.xhtml">
 			<ui:define name="htmlHead">
 				<script>var dialogSize = { width: 300, height: 200 };</script>
 				<com:stylefile path="../../catalog/catalog.css" />
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="../../catalog/catalog.js" />		
 				<com:scriptfile path="start.js" />
+				<com:ValidatorScript>
+					nts.uk.ctx.at.request.dom.application.holidayworktime.primitivevalue.HolidayAppPrimitiveTime
+				</com:ValidatorScript>
 				<style>
 					.medium-font-size {
 						font-size: 0.6rem;

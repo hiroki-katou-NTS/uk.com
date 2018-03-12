@@ -9,6 +9,8 @@ __viewContext.ready(function() {
     });
 
     class ScreenModel {
+        controlName: KnockoutObservable<string>;
+        required: KnockoutObservable<boolean>;
         stereoType: KnockoutObservable<string>;
         fileId: KnockoutObservable<string>;
         filename: KnockoutObservable<string>;
@@ -23,6 +25,8 @@ __viewContext.ready(function() {
         onfilenameclick: (filename) => void;
         
         constructor() {
+            this.controlName = ko.observable("テスト");
+            this.required = ko.observable(true);
             this.stereoType = ko.observable("samplefile");
             this.fileId = ko.observable("");
             this.filename = ko.observable("");
@@ -39,6 +43,10 @@ __viewContext.ready(function() {
             this.onfilenameclick = (filename) => {
                 alert(filename);
             };
+        }
+        
+        validate() {
+            $("#file-upload").ntsError("check");
         }
 
         upload() {

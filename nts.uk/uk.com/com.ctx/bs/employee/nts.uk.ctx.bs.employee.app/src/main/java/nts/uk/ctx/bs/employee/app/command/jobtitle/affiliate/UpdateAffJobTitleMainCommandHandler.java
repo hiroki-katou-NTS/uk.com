@@ -8,12 +8,11 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryService;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem_ver1;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistory_ver1;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -24,10 +23,10 @@ public class UpdateAffJobTitleMainCommandHandler extends CommandHandler<UpdateAf
 	implements PeregUpdateCommandHandler<UpdateAffJobTitleMainCommand>{
 
 	@Inject
-	private AffJobTitleHistoryRepository_ver1 affJobTitleHistoryRepository_ver1;
+	private AffJobTitleHistoryRepository affJobTitleHistoryRepository;
 	
 	@Inject
-	private AffJobTitleHistoryItemRepository_ver1 affJobTitleHistoryItemRepository_v1;
+	private AffJobTitleHistoryItemRepository affJobTitleHistoryItemRepository;
 	
 	@Inject 
 	private AffJobTitleHistoryService affJobTitleHistoryService;
@@ -48,7 +47,7 @@ public class UpdateAffJobTitleMainCommandHandler extends CommandHandler<UpdateAf
 		String companyId = AppContexts.user().companyId();
 		// In case of date period are exist in the screen
 		if (command.getStartDate() != null){
-			Optional<AffJobTitleHistory_ver1> existHist = affJobTitleHistoryRepository_ver1.getListBySid(companyId, command.getSid());
+			Optional<AffJobTitleHistory> existHist = affJobTitleHistoryRepository.getListBySid(companyId, command.getSid());
 			
 			if (!existHist.isPresent()){
 				throw new RuntimeException("invalid AffWorkplaceHistory"); 
@@ -64,8 +63,8 @@ public class UpdateAffJobTitleMainCommandHandler extends CommandHandler<UpdateAf
 			
 			affJobTitleHistoryService.update(existHist.get(), itemToBeUpdate.get());
 		}
-		AffJobTitleHistoryItem_ver1 histItem = AffJobTitleHistoryItem_ver1.createFromJavaType(command.getHistoryId(), command.getSid(), command.getJobTitleId(), command.getNote());
-		affJobTitleHistoryItemRepository_v1.update(histItem);
+		AffJobTitleHistoryItem histItem = AffJobTitleHistoryItem.createFromJavaType(command.getHistoryId(), command.getSid(), command.getJobTitleId(), command.getNote());
+		affJobTitleHistoryItemRepository.update(histItem);
 	}
 
 }

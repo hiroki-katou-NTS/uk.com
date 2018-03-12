@@ -11,13 +11,14 @@ import javax.ws.rs.Produces;
 import lombok.Value;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.command.application.common.RemandApplicationHandler;
+import nts.uk.ctx.at.request.app.command.application.common.RemandCommand;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationApproveHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCancelHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommonCmd;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDelete;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDenyHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationReleaseHandler;
-import nts.uk.ctx.at.request.app.command.setting.request.AddApplicationDeadlineCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.request.ApplicationDeadlineCommand;
 import nts.uk.ctx.at.request.app.command.setting.request.UpdateApplicationDeadlineCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.common.AppDataDateFinder;
@@ -58,6 +59,9 @@ public class ApplicationWebservice extends WebService {
 	private UpdateApplicationDenyHandler denyApp;
 	
 	@Inject
+	private RemandApplicationHandler remandApplicationHandler;
+	
+	@Inject
 	private UpdateApplicationReleaseHandler releaseApp;
 	
 	@Inject
@@ -71,8 +75,7 @@ public class ApplicationWebservice extends WebService {
 	private AppDataDateFinder appDataDateFinder;
 	@Inject
 	private UpdateApplicationDeadlineCommandHandler update;
-	@Inject
-	private AddApplicationDeadlineCommandHandler add;
+
 	
 	
 	/**
@@ -93,6 +96,16 @@ public class ApplicationWebservice extends WebService {
 	@Path("denyapp")
 	public JavaTypeResult<String> denyApp(InputCommonData command){
 		return new JavaTypeResult<String>(this.denyApp.handle(command));
+	}
+	
+	/**
+	 * remand application
+	 * @return
+	 */
+	@POST
+	@Path("remandapp")
+	public String remandApp(RemandCommand command){
+		return remandApplicationHandler.handle(command);
 	}
 	
 	/**
@@ -165,6 +178,12 @@ public class ApplicationWebservice extends WebService {
 	}
 	
 	@POST
+	@Path("getAppInfoByAppID")
+	public ApplicationMetaDto getAppInfo(String appID){
+		return this.finderApp.getAppByID(appID);
+	}
+	
+	@POST
 	@Path("getAppDataByDate")
 	public AppDateDataDto getAppDataByDate(AppDateParam param){
 		return appDataDateFinder.getAppDataByDate(param.getAppTypeValue(), param.getAppDate(), param.getIsStartup(), param.getAppID());
@@ -176,9 +195,9 @@ public class ApplicationWebservice extends WebService {
 	 * @return
 	 */
 	@POST
-    @Path("getalldatabyclosureId/{closureId}")
-    public ApplicationDeadlineDto getDeadlineByClosureId(@PathParam("closureId") int closureId){
-        return this.getDataAppCfDetailFinder.findByClosureId(closureId);
+    @Path("getalldatabyclosureId")
+    public List<ApplicationDeadlineDto> getDeadlineByClosureId(ClosureParam closureId){
+        return this.getDataAppCfDetailFinder.findByClosureId(closureId.getClosureId());
     }
 	/**
 	 * update application deadline
@@ -187,18 +206,10 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("update")
-	public void update(ApplicationDeadlineCommand command){
+	public void update(List<ApplicationDeadlineCommand> command){
 		this.update.handle(command);
 	}
-	/**
-	 * insert application dead line
-	 * @param command
-	 */
-	@POST
-	@Path("add")
-	public void insert(ApplicationDeadlineCommand command){
-		this.add.handle(command);
-	}
+
 }
 
 @Value
@@ -207,4 +218,10 @@ class AppDateParam {
 	private String appDate;
 	private Boolean isStartup;
 	private String appID;
+}
+
+
+@Value
+class ClosureParam {
+	private List<Integer> closureId;
 }

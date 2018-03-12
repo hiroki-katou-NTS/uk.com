@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 /**
- * 
+ * 申請
  * @author Doan Duy Hung
  *
  */

@@ -29,15 +29,15 @@
 				</div>
 			</div>
 
-			<div id="content-area" data-bind="visible: true" style="display: none">
-				<div id="left-content" class="bg-green caret-right caret-background">
+			<div id="content-area" data-bind="visible: true" style="display: none" class="fixed-flex-layout">
+				<div id="left-content" class="bg-green caret-right caret-background fixed-flex-layout-left">
 					<div class="cf">
 						<div style="float: left">
 							<table tabindex="2" id="single-list-dataSource"
 								data-bind="ntsGridList:{
 									name: '#[KMK009_3]',
 									width: 450,
-									height: 380,
+									height: 368,
 									options: itemTotalTimes,								
 									optionsValue: 'totalCountNo',
 									primaryKey: 'totalCountNo',
@@ -48,7 +48,7 @@
 						</div>
 					</div>
 				</div>
-				<div id="right-content" >
+				<div id="right-content" class="fixed-flex-layout-right">
 					<table>
 						<colgroup>
 							<col width="135px" />

@@ -24,6 +24,9 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 
 	private static final String SELECT_AGENT_SID_DATE;
 	
+	private static final String SELECT_AGENT_ALL_DATE;
+	
+	private static final String SELECT_AGENT_BY_APPROVER_DATE;
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -63,6 +66,27 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString.append(" AND e.startDate <= :baseDate");
 		builderString.append(" AND e.endDate >= :baseDate");
 		SELECT_AGENT_SID_DATE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM CmmmtAgent e");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId"); 
+		builderString.append(" AND e.agentSid1 = :employeeId");
+		builderString.append(" OR e.agentSid2 = :employeeId");
+		builderString.append(" OR e.agentSid3 = :employeeId");
+		builderString.append(" OR e.agentSid4 = :employeeId");
+		builderString.append(" AND e.startDate <= :startDate");
+		builderString.append(" AND e.endDate >= :endDate");
+		SELECT_AGENT_ALL_DATE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM CmmmtAgent e");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
+		builderString.append(" AND e.agentSid1 = :employeeId");
+		builderString.append(" AND e.startDate <= :endDate");
+		builderString.append(" OR e.endDate >= :startDate");
+		SELECT_AGENT_BY_APPROVER_DATE = builderString.toString(); 
 		
 		}
 	
@@ -212,6 +236,30 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		return this.queryProxy().query(SELECT_AGENT_SID, CmmmtAgent.class)
 				.setParameter("companyId", companyId)
 				.setParameter("agentSid", agentSid)
+				.getList(c -> convertToDomain(c));
+	}
+	
+	/**
+	 * Find All Agent by Agent Sid
+	 */
+	@Override
+	public List<Agent> findBySidDate(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate) {
+		return this.queryProxy().query(SELECT_AGENT_ALL_DATE, CmmmtAgent.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeId", employeeId)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList(c -> convertToDomain(c));
+	}
+
+	@Override
+	public List<Agent> findByApproverAndDate(String companyId, String approverID, GeneralDate startDate,
+			GeneralDate endDate) {
+		return this.queryProxy().query(SELECT_AGENT_BY_APPROVER_DATE, CmmmtAgent.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeId", approverID)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
 				.getList(c -> convertToDomain(c));
 	}
 

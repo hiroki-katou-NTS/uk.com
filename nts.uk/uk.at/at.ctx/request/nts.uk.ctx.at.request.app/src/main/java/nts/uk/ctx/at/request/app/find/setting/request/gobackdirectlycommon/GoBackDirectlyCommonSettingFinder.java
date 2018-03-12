@@ -43,7 +43,7 @@ public class GoBackDirectlyCommonSettingFinder {
 		return new GoBackDirectlyCommonSettingDto(
 				domain.getCompanyID(), 
 				domain.getWorkChangeFlg().value,
-				domain.getWorkChangeFlg().value,
+				domain.getWorkChangeTimeAtr().value,
 				domain.getPerformanceDisplayAtr().value,
 				domain.getContraditionCheckAtr().value,
 				domain.getGoBackWorkType().value,

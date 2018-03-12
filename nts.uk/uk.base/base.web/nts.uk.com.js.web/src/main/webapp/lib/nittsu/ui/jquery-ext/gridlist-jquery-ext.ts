@@ -92,10 +92,11 @@ module nts.uk.ui.jqueryExtentions {
                     _.defer(() => { 
                         let selected = getSelectRow($grid);
                         if(!nts.uk.util.isNullOrEmpty(selected)){
-                            if ($grid.igGrid("scrollContainer").length > 0){
+                            let $scrollContainer: any = $grid.igGrid("scrollContainer");
+                            if ($scrollContainer.length > 0){
                                 let firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
                                 let selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
-                                $grid.igGrid("scrollContainer").scrollTop(selectRowOffset - firstRowOffset);
+                                $scrollContainer.scrollTop(selectRowOffset - firstRowOffset);
                             } else { 
                                 let index = $(selected["element"]).attr("data-row-idx");
                                 $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
@@ -217,7 +218,7 @@ module nts.uk.ui.jqueryExtentions {
             var mousePos: { x: number, y: number, rowIndex: number } = null;
 
 
-            $grid.bind('mousedown', function(e) {
+            $grid.bind('pointerdown', function(e) {
 
                 // グリッド内がマウスダウンされていない場合は処理なしで終了
                 var $container = $grid.closest('.ui-iggrid-scrolldiv');
@@ -254,7 +255,7 @@ module nts.uk.ui.jqueryExtentions {
                 }, 20);
 
                 // handle mousemove on window while dragging (unhandle when mouseup)
-                $(window).bind('mousemove.NtsGridListDragging', function(e) {
+                $(window).bind('pointermove.NtsGridListDragging', function(e) {
 
                     var newPointedRowIndex = ig.grid.getRowIndexFrom($(e.target));
 
@@ -277,10 +278,10 @@ module nts.uk.ui.jqueryExtentions {
                 });
 
                 // stop dragging
-                $(window).one('mouseup', function(e) {
+                $(window).one('pointerup', function(e) {
                     mousePos = null;
                     dragSelectRange = [];
-                    $(window).unbind('mousemove.NtsGridListDragging');
+                    $(window).unbind('pointermove.NtsGridListDragging');
                     if ($grid.data("selectUpdated") === true) {
                         $grid.triggerHandler('selectionchanged');
                     }
@@ -339,7 +340,7 @@ module nts.uk.ui.jqueryExtentions {
 
         function unsetupDragging($grid: JQuery) {
 
-            $grid.unbind('mousedown');
+            $grid.unbind('pointerdown');
         }
 
         function unsetupSelectingEvents($grid: JQuery) {

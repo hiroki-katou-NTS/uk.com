@@ -3,7 +3,6 @@
  */
 package nts.uk.ctx.at.record.infra.repository.workrecord.operationsetting;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -12,8 +11,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DisplayRestriction;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FunctionalRestriction;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OperationOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OpOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.OperationOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcstDailyRecOpe;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcstDailyRecOpeDisp;
@@ -58,7 +57,7 @@ public class JpaOperationOfDailyPerformanceRepository extends JpaRepository
 		if (krcstDailyRecOpeOpt.isPresent()) {
 			KrcstDailyRecOpe krcstDailyRecOpe = krcstDailyRecOpeOpt.get();
 			return new OperationOfDailyPerformance(companyId, functionalRestriction, displayRestriction,
-					EnumAdaptor.valueOf(krcstDailyRecOpe.settingUnit.intValue(), SettingUnit.class),
+					EnumAdaptor.valueOf(krcstDailyRecOpe.settingUnit, SettingUnit.class),
 					krcstDailyRecOpe.comment);
 		} else {
 			return new OperationOfDailyPerformance(companyId, functionalRestriction, displayRestriction, null, null);
@@ -120,7 +119,7 @@ public class JpaOperationOfDailyPerformanceRepository extends JpaRepository
 	}
 
 	private void updateKrcstDailyRecOpeEntity(KrcstDailyRecOpe entity, OperationOfDailyPerformance domain) {
-		entity.settingUnit = new BigDecimal(domain.getSettingUnit().value);
+		entity.settingUnit = domain.getSettingUnit().value;
 		entity.comment = domain.getComment().toString();
 	}
 
@@ -156,15 +155,15 @@ public class JpaOperationOfDailyPerformanceRepository extends JpaRepository
 		entity.confirmByYourselfAtr = booleanToBigDecimal(funcRest.getUseConfirmByYourself());
 		entity.initialValueSettingAtr = booleanToBigDecimal(funcRest.getUseInitialValueSet());
 		entity.confirmBySupervisorAtr = booleanToBigDecimal(funcRest.getUseSupervisorConfirm());
-		entity.yourselfConfirmWhenError = new BigDecimal(funcRest.getYourselfConfirmError().value);
-		entity.supervisorConfirmWhenError = new BigDecimal(funcRest.getSupervisorConfirmError().value);
+		entity.yourselfConfirmWhenError = funcRest.getYourselfConfirmError().value;
+		entity.supervisorConfirmWhenError = funcRest.getSupervisorConfirmError().value;
 	}
 
-	private BigDecimal booleanToBigDecimal(boolean value) {
+	private int booleanToBigDecimal(boolean value) {
 		if (value) {
-			return new BigDecimal(1);
+			return 1;
 		}
-		return new BigDecimal(0);
+		return 0;
 
 	}
 }

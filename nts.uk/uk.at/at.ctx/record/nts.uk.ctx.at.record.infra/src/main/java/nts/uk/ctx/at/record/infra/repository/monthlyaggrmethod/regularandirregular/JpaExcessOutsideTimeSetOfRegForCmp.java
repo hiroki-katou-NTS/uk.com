@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.monthlyaggrmethod.regularandirregular;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 
 import lombok.val;
@@ -8,6 +10,7 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.ExcessOuts
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.ExcessOutsideTimeSetOfRegForCmpRepository;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.KrcstMonsetCmpRegAggrPK;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.company.KrcstMonsetCmpRegExot;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
 /**
  * リポジトリ実装：会社の通常勤務の時間外超過設定
@@ -15,28 +18,19 @@ import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.company.KrcstMonsetCm
  */
 @Stateless
 public class JpaExcessOutsideTimeSetOfRegForCmp extends JpaRepository implements ExcessOutsideTimeSetOfRegForCmpRepository {
-
-	/** 追加 */
-	@Override
-	public void insert(String companyId, ExcessOutsideTimeSet excessOutsideTimeSet) {
-		this.commandProxy().insert(toEntity(companyId, excessOutsideTimeSet, false));
-	}
 	
 	/** 更新 */
 	@Override
 	public void update(String companyId, ExcessOutsideTimeSet excessOutsideTimeSet) {
-		this.toEntity(companyId, excessOutsideTimeSet, true);
+		this.toUpdate(companyId, excessOutsideTimeSet);
 	}
 	
 	/**
-	 * ドメイン→エンティティ
+	 * データ更新
 	 * @param companyId キー値：会社ID
 	 * @param domain ドメイン：時間外超過設定
-	 * @param execUpdate 更新を実行する
-	 * @return エンティティ：会社の通常勤務の時間外超過設定
 	 */
-	private KrcstMonsetCmpRegExot toEntity(String companyId,
-			ExcessOutsideTimeSet domain, boolean execUpdate){
+	private void toUpdate(String companyId, ExcessOutsideTimeSet domain){
 
 		// キー
 		val key = new KrcstMonsetCmpRegAggrPK(companyId);
@@ -46,87 +40,51 @@ public class JpaExcessOutsideTimeSetOfRegForCmp extends JpaRepository implements
 		// 1週間の基準時間未満の休日出勤時間の扱い
 		val treatHolidayWorkTimeOfLessThanCriteriaPerWeek = domain.getTreatHolidayWorkTimeOfLessThanCriteriaPerWeek();
 		
-		KrcstMonsetCmpRegExot entity;
-		if (execUpdate){
-			entity = this.queryProxy().find(key, KrcstMonsetCmpRegExot.class).get();
-		}
-		else {
-			entity = new KrcstMonsetCmpRegExot();
-			entity.PK = key;
-		}
+		KrcstMonsetCmpRegExot entity = this.getEntityManager().find(KrcstMonsetCmpRegExot.class, key);
+		if (entity == null) return;
 		entity.setValue.askPremium = (domain.isAskPremium() ? 1 : 0);
 		entity.setValue.exceptLegalHolidayWorkTime =
 				(domain.isAutoExcludeHolidayWorkTimeFromExcessOutsideWorkTime() ? 1 : 0);
 				
-		int atrAutoExcludeOverTime = 1;
-		for (val autoExcludeOverTimeFrame : treatOverTimeOfLessThanCriteriaPerDay.getAutoExcludeOverTimeFrames()){
-			switch(autoExcludeOverTimeFrame.v().intValue()){
-			case 1:
-				entity.setValue.treatOverTime01 = atrAutoExcludeOverTime;
-				break;
-			case 2:
-				entity.setValue.treatOverTime02 = atrAutoExcludeOverTime;
-				break;
-			case 3:
-				entity.setValue.treatOverTime03 = atrAutoExcludeOverTime;
-				break;
-			case 4:
-				entity.setValue.treatOverTime04 = atrAutoExcludeOverTime;
-				break;
-			case 5:
-				entity.setValue.treatOverTime05 = atrAutoExcludeOverTime;
-				break;
-			case 6:
-				entity.setValue.treatOverTime06 = atrAutoExcludeOverTime;
-				break;
-			case 7:
-				entity.setValue.treatOverTime07 = atrAutoExcludeOverTime;
-				break;
-			case 8:
-				entity.setValue.treatOverTime08 = atrAutoExcludeOverTime;
-				break;
-			case 9:
-				entity.setValue.treatOverTime09 = atrAutoExcludeOverTime;
-				break;
-			case 10:
-				entity.setValue.treatOverTime10 = atrAutoExcludeOverTime;
-				break;
+		for (int atrTreatOverTime = 1; atrTreatOverTime <= 2; atrTreatOverTime++){
+			List<OverTimeFrameNo> overTimeFrameNoList =
+					treatOverTimeOfLessThanCriteriaPerDay.getAutoExcludeOverTimeFrames();
+			if (atrTreatOverTime == 2){
+				overTimeFrameNoList = treatOverTimeOfLessThanCriteriaPerDay.getLegalOverTimeFrames();
 			}
-		}
-		
-		int atrLegalOverTime = 2;
-		for (val legalOverTimeFrame : treatOverTimeOfLessThanCriteriaPerDay.getLegalOverTimeFrames()){
-			switch(legalOverTimeFrame.v().intValue()){
-			case 1:
-				entity.setValue.treatOverTime01 = atrLegalOverTime;
-				break;
-			case 2:
-				entity.setValue.treatOverTime02 = atrLegalOverTime;
-				break;
-			case 3:
-				entity.setValue.treatOverTime03 = atrLegalOverTime;
-				break;
-			case 4:
-				entity.setValue.treatOverTime04 = atrLegalOverTime;
-				break;
-			case 5:
-				entity.setValue.treatOverTime05 = atrLegalOverTime;
-				break;
-			case 6:
-				entity.setValue.treatOverTime06 = atrLegalOverTime;
-				break;
-			case 7:
-				entity.setValue.treatOverTime07 = atrLegalOverTime;
-				break;
-			case 8:
-				entity.setValue.treatOverTime08 = atrLegalOverTime;
-				break;
-			case 9:
-				entity.setValue.treatOverTime09 = atrLegalOverTime;
-				break;
-			case 10:
-				entity.setValue.treatOverTime10 = atrLegalOverTime;
-				break;
+			for (val overTimeFrameNo : overTimeFrameNoList){
+				switch(overTimeFrameNo.v().intValue()){
+				case 1:
+					entity.setValue.treatOverTime01 = atrTreatOverTime;
+					break;
+				case 2:
+					entity.setValue.treatOverTime02 = atrTreatOverTime;
+					break;
+				case 3:
+					entity.setValue.treatOverTime03 = atrTreatOverTime;
+					break;
+				case 4:
+					entity.setValue.treatOverTime04 = atrTreatOverTime;
+					break;
+				case 5:
+					entity.setValue.treatOverTime05 = atrTreatOverTime;
+					break;
+				case 6:
+					entity.setValue.treatOverTime06 = atrTreatOverTime;
+					break;
+				case 7:
+					entity.setValue.treatOverTime07 = atrTreatOverTime;
+					break;
+				case 8:
+					entity.setValue.treatOverTime08 = atrTreatOverTime;
+					break;
+				case 9:
+					entity.setValue.treatOverTime09 = atrTreatOverTime;
+					break;
+				case 10:
+					entity.setValue.treatOverTime10 = atrTreatOverTime;
+					break;
+				}
 			}
 		}
 		
@@ -165,8 +123,5 @@ public class JpaExcessOutsideTimeSetOfRegForCmp extends JpaRepository implements
 				break;
 			}
 		}
-				
-		if (execUpdate) this.commandProxy().update(entity);
-		return entity;
 	}
 }

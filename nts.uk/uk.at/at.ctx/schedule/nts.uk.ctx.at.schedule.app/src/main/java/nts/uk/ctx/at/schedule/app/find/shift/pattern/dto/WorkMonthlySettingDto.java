@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.find.shift.pattern.dto;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
@@ -77,7 +79,7 @@ public class WorkMonthlySettingDto implements WorkMonthlySettingSetMemento{
 	 */
 	@Override
 	public void setWorkingCode(WorkingCode workingCode) {
-		this.workingCode = workingCode.v();
+		this.workingCode = workingCode == null ? "" : workingCode.v();
 	}
 
 	/*

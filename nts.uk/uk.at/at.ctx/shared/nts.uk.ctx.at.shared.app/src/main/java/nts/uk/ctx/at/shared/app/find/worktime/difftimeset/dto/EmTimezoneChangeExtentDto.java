@@ -34,6 +34,7 @@ public class EmTimezoneChangeExtentDto implements EmTimezoneChangeExtentSetMemen
 
 	@Override
 	public void setUnit(InstantRounding unit) {
+		this.unit = new InstantRoundingDto(); 
 		unit.saveToMememto(this.unit);
 	}
 

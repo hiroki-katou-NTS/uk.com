@@ -9,15 +9,15 @@
 							options: controlUseCls,
 							optionsValue: 'code',
 							optionsText: 'name',
-							value: selectedControlUse,
+							value: useAtr,
 							enable: true }"></div>
 				</td>
 			</tr>
 			<tr>
 				<td><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KSM011_1')}</div></td>
 				<td>
-					<button tabindex="3" data-bind="click: openDialog, enable: openDialogEnable">#{i18n.getText('KSM011_45')}</button>
-					<input tabindex="-1" class="txtWorkTypeList" data-bind="ntsTextEditor: { value: workTypeList, readonly: true, enable: workTypeListEnable }" />
+					<button tabindex="3" data-bind="click: openKDL002Dialog, enable: openDialogEnable">#{i18n.getText('KSM011_45')}</button>
+					<input tabindex="-1" class="txtWorkTypeList" data-bind="ntsTextEditor: { value: workTypeNames, readonly: true, enable: workTypeListEnable }" />
 				</td>
 			</tr>
 		</table>

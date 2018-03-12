@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.agent;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.agent.output.ApprovalAgencyInfoOutput;
 
 /**
@@ -13,4 +14,5 @@ import nts.uk.ctx.workflow.dom.agent.output.ApprovalAgencyInfoOutput;
 public interface ApprovalAgencyInfoService {
 	ApprovalAgencyInfoOutput getApprovalAgencyInformation(String companyID, List<String> approverList);
 
+	List<Agent> getApprovalAgencyInfoByPeriod(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate);
 }

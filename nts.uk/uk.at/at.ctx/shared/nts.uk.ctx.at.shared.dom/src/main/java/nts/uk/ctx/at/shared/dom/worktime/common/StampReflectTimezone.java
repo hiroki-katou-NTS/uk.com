@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -13,7 +13,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 //打刻反映時間帯
 @Getter
-public class StampReflectTimezone extends DomainObject {
+public class StampReflectTimezone extends WorkTimeDomainObject {
 
 	/** The work no. */
 	// 勤務NO
@@ -53,16 +53,6 @@ public class StampReflectTimezone extends DomainObject {
 		memento.setClassification(this.classification);
 		memento.setEndTime(this.endTime);
 		memento.setStartTime(this.startTime);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.arc.layer.dom.DomainObject#validate()
-	 */
-	@Override
-	public void validate() {
-		super.validate();
 	}
 	
 }

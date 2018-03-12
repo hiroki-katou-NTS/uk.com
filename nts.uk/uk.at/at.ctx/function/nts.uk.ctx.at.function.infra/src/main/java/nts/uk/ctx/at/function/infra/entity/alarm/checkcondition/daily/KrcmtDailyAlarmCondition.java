@@ -56,15 +56,15 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 	@OneToMany(mappedBy = "dailyAlarmCondition", cascade = CascadeType.ALL, orphanRemoval = true)
 	public List<KrcmtDailyErrorCode> listErrorAlarmCode;
 
-	@OneToMany(mappedBy = "dailyAlarmCondition", cascade = CascadeType.ALL, orphanRemoval = true)
-	public List<KrcmtDailyFixExtra> listFixedExtractConditionWorkRecord;
+//	@OneToMany(mappedBy = "dailyAlarmCondition", cascade = CascadeType.ALL, orphanRemoval = true)
+//	public List<KrcmtDailyFixExtra> listFixedExtractConditionWorkRecord;
 
 	@OneToMany(mappedBy = "dailyAlarmCondition", cascade = CascadeType.ALL, orphanRemoval = true)
 	public List<KrcmtDailyWkRecord> listExtractConditionWorkRecord;
 
 	public KrcmtDailyAlarmCondition(String dailyAlarmConID, String companyId, String code, int category,
 			int conExtractedDaily, int addApplication, List<KrcmtDailyErrorCode> dailyErrorCode,
-			List<KrcmtDailyFixExtra> dailyFixExtra, List<KrcmtDailyWkRecord> dailyWkRecord) {
+			List<KrcmtDailyWkRecord> dailyWkRecord) {
 		super();
 		this.dailyAlarmConID = dailyAlarmConID;
 		this.companyId = companyId;
@@ -73,7 +73,7 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 		this.conExtractedDaily = conExtractedDaily;
 		this.addApplication = addApplication;
 		this.listErrorAlarmCode = dailyErrorCode;
-		this.listFixedExtractConditionWorkRecord = dailyFixExtra;
+//		this.listFixedExtractConditionWorkRecord = dailyFixExtra;
 		this.listExtractConditionWorkRecord = dailyWkRecord;
 	}
 
@@ -87,17 +87,15 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 		return new KrcmtDailyAlarmCondition(domain.getDailyAlarmConID(), companyId, code.v(), category.value,
 				domain.getConExtractedDaily().value, domain.isAddApplication() ? 1 : 0,
 				KrcmtDailyErrorCode.toEntity(domain.getDailyAlarmConID(), domain.getErrorAlarmCode()),
-				KrcmtDailyFixExtra.toEntity(domain.getDailyAlarmConID(), domain.getErrorAlarmCode()),
-				KrcmtDailyWkRecord.toEntity(domain.getDailyAlarmConID(), domain.getErrorAlarmCode()));
+//				KrcmtDailyFixExtra.toEntity(domain.getDailyAlarmConID(), domain.getErrorAlarmCode()),
+				KrcmtDailyWkRecord.toEntity(domain.getDailyAlarmConID(), domain.getExtractConditionWorkRecord()));
 	}
 
 	public DailyAlarmCondition toDomain() {
 		return new DailyAlarmCondition(this.dailyAlarmConID, this.conExtractedDaily,
 				this.addApplication == 1 ? true : false,
-				this.listErrorAlarmCode.stream().map(c -> c.krcmtDailyErrorCodePK.errorAlarmCode)
-						.collect(Collectors.toList()),
-				this.listFixedExtractConditionWorkRecord.stream().map(c -> c.krcmtDailyFixExtraPK.errorAlarmID).collect(Collectors.toList()),
-				this.listExtractConditionWorkRecord.stream().map(c -> c.krcmtDailyWkRecordPK.errorAlarmID).collect(Collectors.toList()));
+				this.listExtractConditionWorkRecord.stream().map(c -> c.krcmtDailyWkRecordPK.errorAlarmID).collect(Collectors.toList()),
+				this.listErrorAlarmCode.stream().map(c -> c.krcmtDailyErrorCodePK.errorAlarmCode).collect(Collectors.toList()));
 	}
 
 }

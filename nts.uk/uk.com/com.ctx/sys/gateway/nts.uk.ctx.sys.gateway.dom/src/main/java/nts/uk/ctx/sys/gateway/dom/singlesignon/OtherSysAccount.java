@@ -17,11 +17,11 @@ public class OtherSysAccount extends AggregateRoot{
 
 	/** The company code. */
 	//会社コード
-	private String companyCode;
+	private CompanyCode companyCode;
 
 	//ユーザ名
 	/** The user name. */
-	private String userName;
+	private UserName userName;
 
 	//利用区分
 	/** The use division. */

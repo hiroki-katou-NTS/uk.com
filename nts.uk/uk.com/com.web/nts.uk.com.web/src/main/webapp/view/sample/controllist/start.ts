@@ -7,7 +7,7 @@ __viewContext.ready(function() {
             var self = this;
             self.controlName = ko.observable("");
             self.properties = ko.observableArray([]);
-        }
+        }}
     class Property {
         propertyName: KnockoutObservable<string>;
         link: KnockoutObservable<string>;

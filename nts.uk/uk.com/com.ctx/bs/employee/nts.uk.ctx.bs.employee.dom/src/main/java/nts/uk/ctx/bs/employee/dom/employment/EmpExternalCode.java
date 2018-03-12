@@ -4,19 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.employment;
 
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
-import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
 /**
  * The Class EmpExternalCode.
  */
 // 雇用外部コード
-@StringCharType(CharType.ALPHA_NUMERIC)
+//@StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(10)
-@ZeroPaddedCode
+//@ZeroPaddedCode
 public class EmpExternalCode extends CodePrimitiveValue<EmpExternalCode> {
 
 	/**

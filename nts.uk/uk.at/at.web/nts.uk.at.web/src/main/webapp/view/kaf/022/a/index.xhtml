@@ -8,23 +8,37 @@
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
 			<script>var dialogSize = { width: 1200, height: 800 };</script>
-			<com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.primitives.YearServiceCode
-				nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.primitives.YearServiceName
-				nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceset.primitives.Year
-				nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceset.primitives.Month
-				nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceset.primitives.Date
-			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
 			<com:stylefile path="kaf022.a.main.css" />
+			<com:stylefile path="../l/kaf022.l.main.css" />
 			<!-- <com:stylefile path="../e/kmf004.e.main.css" /> -->
-
+			
 			<com:scriptfile path="kaf022.a.vm.js" />
 			<com:scriptfile path="kaf022.a.service.js" />
 			<com:scriptfile path="kaf022.a.start.js" />
-
- 			<!-- <com:scriptfile path="../e/kmf004.e.vm.js" /> 
+			<com:scriptfile path="../m/kaf022.m.vm.js" /> 
+			<com:scriptfile path="../m/kaf022.m.service.js" /> 
+			<com:stylefile path="../m/kaf022.m.style.css" />
+			<com:scriptfile path="../l/kaf022.l.vm.js" />
+			<com:scriptfile path="../l/kaf022.l.service.js" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+			<!-- <com:scriptfile path="../e/kmf004.e.vm.js" /> 
  			<com:scriptfile path="../e/kmf004.e.service.js" />  -->
+ 			<com:ValidatorScript>
+				nts.uk.shr.com.primitive.Memo
+				nts.uk.ctx.at.request.dom.setting.company.displayname.DispName
+				nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Subject
+				nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Content
+				nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.ObstacleName
+				nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdapplicationsetting.NameWork
+				nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.triprequestsetting.Comment
+				nts.uk.shr.com.time.AttendanceClock
+			</com:ValidatorScript>
+			<com:EnumScript>
+				nts.uk.ctx.at.request.dom.application.ApplicationType
+				nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppType
+			</com:EnumScript>
 		</ui:define>
 		<ui:define name="sidebar">
 			<div data-bind="with: tabView">
@@ -40,28 +54,945 @@
 				<span class="title" data-bind="text: title"></span>
 				<com:ko-if bind="currentTab()==='a'">
 					<!-- A2_1 -->
-					<button class="proceed">#{i18n.getText('KMF004_2')}</button> <!-- data-bind="click: $parent.viewmodelD.register.bind($parent.viewmodelD)" -->
-				</com:ko-if>	
-<!-- 				<com:ko-if bind="currentTab()==='e'">
-					E1_1: Button New
-					<button tabindex="1" id="btn_001" class="button separate-button fix-button"  data-bind="enable: $parent.viewmodelE.lstPer().length>0, click: $parent.viewmodelE.newMode.bind($parent.viewmodelE)">#{i18n.getText('KMF004_1')}</button>
-					E1_2: Button Registration
-					<button tabindex="2" id="btn_002" class="button proceed separate-button fix-button" data-bind="click: $parent.viewmodelE.register.bind($parent.viewmodelE), enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
-					E1_3: Button Delete
-					<button tabindex="3" id="btn_004" class="button danger separate-button fix-button" data-bind="enable: $parent.viewmodelE.lstPer().length>0, click: $parent.viewmodelE.remove.bind($parent.viewmodelE)" >#{i18n.getText('KMF004_3')}</button>
-					E1_1: Button New
-					<button tabindex="4" id="btn_005" class="button separate-button fix-button"  data-bind="click: $parent.viewmodelE.closeDialog">#{i18n.getText('KMF004_4')}</button>
-				</com:ko-if> -->	
-			</div>
-			<div id="tabpanel-a" role="tabpanel" class="screen-a"> <!-- data-bind="with: viewmodelA" -->
-				<div class="contents-area">
+					<button class="proceed" data-bind="click: function(){$parent.viewmodelA.save($parent.viewmodelA);}">#{i18n.getText('KMF004_2')}</button>
 					
+				</com:ko-if>
+				<com:ko-if bind="currentTab()==='l'">
+					<div class="center-content-kaf022l">
+                        <button  id="btn_001" class="button proceed separate-button fix-button"  
+                                data-bind="click: function(){$parent.viewmodelL.registerEmploymentSet($parent.viewmodelL);}">#{i18n.getText('KAF022_1')}</button>
+                        <button  id="btn_002" class="button separate-button fix-button" 
+                                data-bind="click: function(){$parent.viewmodelL.copyEmploymentSet($parent.viewmodelL);},
+                                enable: $parent.viewmodelL.screenMode() == 1">#{i18n.getText('KAF022_274')}</button>
+                        <button  id="btn_004" class="button danger separate-button fix-button" 
+                                data-bind="click: function(){$parent.viewmodelL.deleteEmploymentSet($parent.viewmodelL);},
+                                enable: $parent.viewmodelL.screenMode() == 1" >#{i18n.getText('KAF022_275')}</button>
+                    </div>
+				</com:ko-if>
+				<com:ko-if bind="currentTab()==='m'">
+					<div class="center-content-kaf022l">
+						<button  id="btn_001" class="button proceed separate-button fix-button"  data-bind="click: $parent.viewmodelM.update">#{i18n.getText('KAF022_1')}</button>
+						<button  id="btn_002" class="button separate-button fix-button" data-bind="click: $parent.viewmodelM.openDialogCopy, enable: $parent.viewmodelM.isUpdateMode">#{i18n.getText('KAF022_274')}</button>
+						<button  id="btn_004" class="button danger separate-button fix-button" data-bind="click: $parent.viewmodelM.remove, enable: $parent.viewmodelM.isUpdateMode" >#{i18n.getText('KAF022_275')}</button>
+					</div>
+				</com:ko-if>
+			</div>
+			<div id="tabpanel-a" role="tabpanel" class="screen-a"
+				data-bind="with: viewmodelA">
+				<!-- data-bind="with: viewmodelA" -->
+				<div  class="fixed-flex-layout">
+					<div id="tab-panel"
+						data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab ,direction :'vertical '}">
+						<div class="tab-content-1">
+							<!-- A4 -->
+							<table class="viewmodel-a" id="fixed-table-a4">
+								<colgroup>
+									<col width="200px" />
+									<col width="400px" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th class="ui-widget-header" id="a4_1" colspan="2">#{i18n.getText('KAF022_14')}</th>
+									</tr>
+									<tr>
+										<th class="ui-widget-header" id="a4_2">#{i18n.getText('KAF022_15')}</th>
+										<th class="ui-widget-header" id="a4_3">#{i18n.getText('KAF022_16')}</th>
+									</tr>
+								</thead>
+								<tbody data-bind="foreach : dataA4Display">
+									<tr>
+										<td class="color-header"><span class="label " data-bind="text: a4_5"></span></td>
+										<td class="td-table-a4">
+											<div class="a4_checkbox" id="a4_6"
+												data-bind="ntsCheckBox: { checked: a4_6 },attr:{
+														tabindex:1 + $index()*3
+													}"></div>
+											<div tabindex="1" id="a4_7"
+												data-bind="ntsComboBox: {
+													options: $parent.itemListA4_7,
+													optionsValue: 'code',
+													visibleItemsCount: 2,
+													value: a4_7,
+													optionsText: 'name',
+													editable: $parent.isEditable,
+													enable: $parent.isEnable,
+													columns: [
+														{ prop: 'name', length: 8 }
+													]},
+													attr:{
+														tabindex:2 + $index()*3
+													}">
+											</div> <span class="label">#{i18n.getText('KAF022_355')}</span>
+											<div id="a4_8"
+												data-bind="ntsComboBox: {
+													options: $parent.itemListA4_8,
+													optionsValue: 'code',
+													visibleItemsCount: 32,
+													value: a4_8,
+													optionsText: 'name',
+													editable: $parent.isEditable,
+													enable: $parent.isEnable,
+													columns: [
+														{ prop: 'name', length: 4 }
+													]},attr:{
+														tabindex:3 + $index()*3
+													}">
+											</div> <span class="label">#{i18n.getText('KAF022_356')}</span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- A5 -->
+							<table class="viewmodel-a" id="fixed-table-a5">
+								<colgroup>
+									<col width="250px" />
+									<col width="600px" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th class="ui-widget-header" id="a5_1" colspan="2">#{i18n.getText('KAF022_22')}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td class="color-header" id="a5_2">#{i18n.getText('KAF022_23')}</td>
+										<td>
+											<div id="a5_14" class="a5_14" tabindex="16"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA5_14,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA5_14,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a5_3 ">#{i18n.getText('KAF022_24')}</td>
+										<td><span class="label">#{i18n.getText('KAF022_38')}</span>
+											<div tabindex="17" id="a5_16"
+												data-bind="ntsComboBox: {
+												options: itemListA5_16,
+												optionsValue: 'code',
+												visibleItemsCount: 8,
+												value: selectedCodeA5_16,
+												optionsText: 'name',
+												editable: isEditable,
+												enable: isEnable,
+												columns: [
+													{ prop: 'name', length: 2 },
+												]}"></div>
+											<span class="label" tabindex="-1">#{i18n.getText('KAF022_40')}</span>
+										</td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a5_4 ">#{i18n.getText('KAF022_25')}</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a5_5">#{i18n.getText('KAF022_26')}</td>
+										<td>
+											<div class="a5_14" id="a5_18" tabindex="19"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA5_14,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA5_18,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a5_6">#{i18n.getText('KAF022_27')}</td>
+										<td>
+											<div class="a5_14" id="a5_19" tabindex="20"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA5_14,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA5_19,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a5_7">#{i18n.getText('KAF022_28')}</td>
+										<td>
+											<div id="a5_20" class="a5_14" tabindex="21"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA5_14,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA5_20,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td  class="color-header" id="a5_8">#{i18n.getText('KAF022_29')}</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a5_9">#{i18n.getText('KAF022_30')}</td>
+										<td>
+											<div id="a5_21" class="a5_14" tabindex="22"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA5_14,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA5_21,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a5_10">#{i18n.getText('KAF022_31')}</td>
+										<td>
+											<div id="a5_22" class="a5_14" tabindex="23"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA5_14,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA5_22,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a5_11">#{i18n.getText('KAF022_32')}</td>
+										<td>
+											<div id="a5_23" class="a5_14" tabindex="24"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA5_14,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA5_23,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a5_12 color-header">#{i18n.getText('KAF022_33')}</td>
+										<td>
+											<div class="a5_24" id="a5_24" tabindex="25"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA5_24,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA5_24,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a5_13">#{i18n.getText('KAF022_34')}</td>
+										<td>
+											<div class="a5_24" id="a5_25" tabindex="26"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA5_24,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA5_25,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- A17 -->
+							<table class="viewmodel-a" id="fixed-table-a17">
+								<colgroup>
+									<col width="250px" />
+									<col width="600px" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th class="ui-widget-header" id="a17_1" colspan="2">#{i18n.getText('KAF022_365')}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td class="color-header" id="a5_13">#{i18n.getText('KAF022_366')}</td>
+										<td>
+											<div class="a17" id="a17_4" tabindex="27"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA17_4,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA17_4,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a5_13">#{i18n.getText('KAF022_367')}</td>
+										<td>
+											<div class="a17" id="a17_5" tabindex="28"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA17_5,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA17_5,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- A6 -->
+							<table class="viewmodel-a" id="fixed-table-a6">
+								<colgroup>
+									<col width="250px" />
+									<col width="400px" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th class="ui-widget-header" id="a6_1">#{i18n.getText('KAF022_45')}</th>
+										<th class="ui-widget-header" id="a6_2">#{i18n.getText('KAF022_46')}</th>
+									</tr>
+								</thead>
+								<tbody data-bind="foreach: listDataA6">
+									<tr>
+										<td class="color-header"><div data-bind="ntsFormLabel: { constraint: 'DispName',text:appTypeName,inline:true}"></div></td>
+										<td>
+											<div class="a6_text color-header">
+												<input tabindex="29"
+													data-bind="ntsTextEditor: {
+													name : appTypeName,
+													value: dispName,
+													constraint: 'DispName',
+													option: $parent.option,
+													required: $parent.required,
+													enable: $parent.enable,
+													readonly: $parent.readonly
+													 },attr:{
+														tabindex:29 + $index()
+													}" />
+											</div> <span class="label" >#{i18n.getText('KAF022_58')}</span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- A7 -->
+							<table class="viewmodel-a" id="fixed-table-a7">
+								<colgroup>
+									<col width="200px" />
+									<col width="100px" />
+									<col width="460px" />
+									<col width="160px" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th class="ui-widget-header" id="a7_1" colspan="1">#{i18n.getText('KAF022_45')}</th>
+										<th class="ui-widget-header" id="a7_2" colspan="2">#{i18n.getText('KAF022_59')}</th>
+										<th class="ui-widget-header" id="a7_3" colspan="1">#{i18n.getText('KAF022_60')}</th>
+									</tr>
+								</thead>
+								<tbody data-bind="foreach:listDataA7">
+									<tr data-bind="if: appType() == 0">
+										<td class="color-header" id="a7_4" data-bind="text:appTypeName"></td>
+										<td><div 
+												data-bind="ntsCheckBox: { checked: retrictPreUseFlg },attr:{
+														tabindex:42 
+													}">#{i18n.getText('KAF022_61')}</div></td>
+										<td><span class="ntsControl"> <label
+												class="ntsRadioBox" tabindex="43"> <input 
+													type="radio" name="textRadioA7_18"
+													data-bind="checkedValue: 0, checked: retrictPreMethodFlg, enable: true,attr:{
+														tabindex:43
+													}" />
+													<span class="box"></span><span class="label">#{i18n.getText('KAF022_63')}</span>
+											</label>
+										</span>
+											<span  id="a7_row1"
+												data-bind="ntsComboBox: {
+													options: $parent.itemListA7_20,
+													optionsValue: 'code',
+													visibleItemsCount: 8,
+													value: retrictPreDay,
+													optionsText: 'name',
+													editable: $parent.isEditable,
+													enable: $parent.isEnable,
+													columns: [
+														{ prop: 'name', length: 4 }
+													]},attr:{
+														tabindex:44 
+													}">
+											</span> <span class="label" id="a7_21">#{i18n.getText('KAF022_65')}</span>
+
+											<span class="ntsControl special-a7"> <label class="ntsRadioBox" >
+													<span tabindex="45">
+													<input  type="radio" name="textRadioA7_18"
+													data-bind="checkedValue: 1, checked: retrictPreMethodFlg, enable: true,attr:{
+														tabindex:45 
+													}" />
+													<span class="box"></span><span class="label">#{i18n.getText('KAF022_66')}</span>
+													</span>
+													<span> <input
+														id="a7_23" 
+														data-bind="ntsTimeEditor: {
+													name:'#{i18n.getText('KAF022_67')}',
+													value: retrictPreTimeDay,
+													constraint: 'AttendanceClock',
+								                    inputFormat: 'time',
+								                    mode:'time',
+													required: false,
+													enable: true,
+													readonly: false,
+													immediate: false},attr:{
+														tabindex:46 
+													}" />
+												</span> <span class="label" id="a7_24">#{i18n.getText('KAF022_65')}</span>
+											</label>
+										</span></td>
+										<td><div 
+												data-bind="ntsCheckBox: { checked: retrictPostAllowFutureFlg },attr:{
+														tabindex:47
+													}">#{i18n.getText('KAF022_68')}</div></td>
+									</tr>
+									<tr data-bind="if: appType()!=0">
+										<td class="color-header" id="a7_5" data-bind="text:appTypeName">#{i18n.getText('KAF022_4')}</td>
+										<td><div 
+												data-bind="ntsCheckBox: { checked: retrictPreUseFlg },attr:{
+														tabindex:48 + ($index()-1)*3
+													}">#{i18n.getText('KAF022_61')}</div></td>
+										<td><span class="label label-a27" id="a7_27">#{i18n.getText('KAF022_63')}</span>
+											<span  id="a4_8"
+												data-bind="ntsComboBox: {
+													options: $parent.itemListA7_20,
+													optionsValue: 'code',
+													visibleItemsCount: 8,
+													value: retrictPreDay,
+													optionsText: 'name',
+													editable: $parent.isEditable,
+													enable: $parent.isEnable,
+													columns: [
+														{ prop: 'name', length: 4 }
+													]},attr:{
+														tabindex:49 + ($index()-1)*3
+													}">
+											</span> <span class="label" id="a7_29">#{i18n.getText('KAF022_65')}</span>
+										</td>
+										<td><div 
+												data-bind="ntsCheckBox: { checked: retrictPostAllowFutureFlg },attr:{
+														tabindex:50 + ($index()-1)*3
+													}">#{i18n.getText('KAF022_68')}</div></td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- A8 -->
+							<table class="viewmodel-a" id="fixed-table-a8">
+								<colgroup>
+									<col width="165px" />
+									<col width="120px" />
+									<col width="120px" />
+									<col width="130px" />
+									<col width="130px" />
+									<col width="130px" />
+									<col width="120px" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th class="ui-widget-header" id="a8_1" rowspan="2">#{i18n.getText('KAF022_45')}</th>
+										<th class="ui-widget-header" id="a8_2" rowspan="2">#{i18n.getText('KAF022_69')}</th>
+										<th class="ui-widget-header full-header" id="a8_3" rowspan="2">#{i18n.getText('KAF022_70')}</th>
+										<th class="ui-widget-header full-header" id="a8_4" rowspan="2">#{i18n.getText('KAF022_71')}</th>
+										<th class="ui-widget-header full-header" id="a8_5" rowspan="2">#{i18n.getText('KAF022_72')}</th>
+										<th class="ui-widget-header full-header" id="a8_6" rowspan="2">#{i18n.getText('KAF022_73')}</th>
+										<th class="ui-widget-header full-header" id="a8_7" rowspan="2">#{i18n.getText('KAF022_74')}</th>
+									</tr>
+									<tr>
+									</tr>
+								</thead>
+								<tbody data-bind="foreach:listDataA8">
+									<tr>
+										<td class="color-header"><span  id="a8_8" class="label" data-bind="text:appTypeName"></span></td>
+										<td><div 
+												data-bind="ntsCheckBox: { checked: displayFixedReason },attr:{
+														tabindex:87 + $index()*6
+													}">#{i18n.getText('KAF022_61')}</div></td>
+										<td><div 
+												data-bind="ntsCheckBox: { checked: displayAppReason },attr:{
+														tabindex:88 + $index()*6
+													}">#{i18n.getText('KAF022_61')}</div></td>
+										<td><div 
+												data-bind="ntsCheckBox: { checked: sendMailWhenRegister },attr:{
+														tabindex:89 + $index()*6
+													}">#{i18n.getText('KAF022_75')}</div></td>
+										<td><div 
+												data-bind="ntsCheckBox: { checked: sendMailWhenApproval },attr:{
+														tabindex:90 + $index()*6
+													}">#{i18n.getText('KAF022_75')}</div></td>
+										<td>
+											<div  id="a4_7"
+												data-bind="ntsComboBox: {
+													options: $parent.itemListA8_33,
+													optionsValue: 'code',
+													visibleItemsCount: 2,
+													value: displayInitialSegment,
+													optionsText: 'name',
+													editable: $parent.isEditable,
+													enable: $parent.isEnable,
+													columns: [
+														{ prop: 'name', length: 7 }
+													]},attr:{
+														tabindex:91 + $index()*6
+													}">
+											</div>
+										</td>
+										<td><div
+												data-bind="ntsCheckBox: { checked: canClassificationChange },attr:{
+														tabindex:92 + $index()*6
+													}">#{i18n.getText('KAF022_75')}</div></td>
+									</tr>
+			
+								</tbody>
+							</table>
+							<!-- A9 -->
+							<table class="viewmodel-a" id="fixed-table-a9">
+								<colgroup>
+									<col width="300px" />
+									<col width="500px" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th class="ui-widget-header" id="a5_1" colspan="2">#{i18n.getText('KAF022_77')}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td class="color-header" id="a9_2">#{i18n.getText('KAF022_78')}</td>
+										<td>
+											<div id="a9_5" class="a5_14" tabindex="210"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA9_5,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA9_5,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a9_3">#{i18n.getText('KAF022_79')}</td>
+										<td>
+											<div id="a9_8" class="a5_14" tabindex="211"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA9_5,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA9_8,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a9_4">#{i18n.getText('KAF022_80')}</td>
+										<td>
+											<div id="a9_9" class="a9_9" tabindex="212"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA9_9,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA9_9,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- A10 -->
+							<table class="viewmodel-a" id="fixed-table-a10">
+								<colgroup>
+									<col width="300px" />
+									<col width="600px" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th class="ui-widget-header" id="a10_1" colspan="2">#{i18n.getText('KAF022_86')}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td class="color-header" id="a10_2">#{i18n.getText('KAF022_87')}</td>
+										<td>
+											<div id="a10_3" class="a9_9" tabindex="213"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA10_3,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA10_3,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- A11 -->
+							<table class="viewmodel-a" id="fixed-table-a11">
+								<colgroup>
+									<col width="300px" />
+									<col width="500px" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th class="ui-widget-header" id="a11_1" colspan="2">#{i18n.getText('KAF022_88')}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td class="color-header" id="a11_2">#{i18n.getText('KAF022_89')}</td>
+										<td>
+											<div id="a11_8" class="a5_14" tabindex="214"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA11_8,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA11_8,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a11_3">#{i18n.getText('KAF022_90')}</td>
+										<td>
+											<div id="a11_9" class="a5_14" tabindex="215"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA11_8,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA11_9,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td  class="color-header" id="a11_4">#{i18n.getText('KAF022_91')}</td>
+										<td>
+											<div id="a11_10" class="a5_14" tabindex="216"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA11_8,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA11_10,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a11_5">#{i18n.getText('KAF022_92')}</td>
+										<td>
+											<div id="a11_11" class="a5_14" tabindex="217"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA11_8,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA11_11,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td  class="color-header" id="a11_6">#{i18n.getText('KAF022_93')}</td>
+										<td>
+											<div id="a11_12" class="a5_14" tabindex="218"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA11_8,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA11_12,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a11_7">#{i18n.getText('KAF022_94')}</td>
+										<td>
+											<div id="a11_13" class="a5_14" tabindex="219"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA11_8,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA11_13,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- A12 -->
+							<table class="viewmodel-a" id="fixed-table-a12">
+								<colgroup>
+									<col width="300px" />
+									<col width="500px" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th class="ui-widget-header" id="a12_1" colspan="2">#{i18n.getText('KAF022_95')}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td class="color-header" id="a12_2">#{i18n.getText('KAF022_96')}</td>
+										<td>
+											<div id="a12_5" class="a12_5" tabindex="220"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA12_5 ,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA12_5,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a12_3">#{i18n.getText('KAF022_97')}</td>
+										<td>
+											<div id="a12_6" class="a12_5" tabindex="221"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA12_6,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA12_6,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a12_4">#{i18n.getText('KAF022_98')}</td>
+										<td>
+											<div id="a12_7" class="a5_14" tabindex="222"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA12_7,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA12_7,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- A13 -->
+							<table class="viewmodel-a" id="fixed-table-a13">
+								<colgroup>
+									<col width="300px" />
+									<col width="500px" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th class="ui-widget-header" id="a13_1" colspan="2">#{i18n.getText('KAF022_102')}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+									<td class="color-header" id="a13_2">#{i18n.getText('KAF022_103')}</td>
+									<td>
+										<button tabindex="223" class="small">#{i18n.getText('KAF022_104')}</button>
+										<span tabindex="224">
+											<input  class="nts-input"
+												id="inpName" style="width: 350px"
+												data-bind="ntsTextEditor:{
+												value: textEditorA13_4 ,
+												required: true,
+												readonly: true,
+												enable: true}" />
+										</span>
+									</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- A14 -->
+							<table class="viewmodel-a" id="fixed-table-a14">
+								<colgroup>
+									<col width="300px" />
+									<col width="500px" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th class="ui-widget-header" id="a14_1" colspan="2">#{i18n.getText('KAF022_105')}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td class="color-header" id="a14_2">#{i18n.getText('KAF022_106')}</td>
+										<td>
+											<div id="a14_3" class="a5_14" tabindex="225"
+												data-bind="ntsRadioBoxGroup: {
+													options: itemListA14_3,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedIdA14_3,
+													enable: enableA5_14}">
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- A15 -->
+							<table class="viewmodel-a" id="fixed-table-a15">
+								<colgroup>
+									<col width="300px" />
+									<col width="500px" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th class="ui-widget-header" id="a15_1" colspan="1">#{i18n.getText('KAF022_105')}</th>
+										<th class="ui-widget-header" id="a15_2" colspan="1">#{i18n.getText('KAF022_105')}</th>
+									</tr>
+								</thead>
+								<tbody data-bind="foreach : listDataA15" >
+									<tr>
+										<td class="color-header" data-bind="text:name"></td>
+										<td>
+											<div  class="a5_14" tabindex="226"
+												data-bind="ntsRadioBoxGroup: {
+													options: $parent.itemListA15_4,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: searchSetFlg,
+													enable: true}, 
+													attr:{
+														tabindex:226 + $index()
+													}">
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- A16 -->
+							<table class="viewmodel-a" id="fixed-table-a16">
+								<colgroup>
+									<col width="300px" />
+									<col width="500px" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th class="ui-widget-header" id="a16_1" colspan="2">#{i18n.getText('KAF022_110')}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td class="color-header" id="a16_2"><div data-bind="ntsFormLabel: { constraint: 'Subject',inline:true}">#{i18n.getText('KAF022_111')}</div></td>
+										<td>
+											<div data-bind="with: texteditorA16_7">
+												<input tabindex="500" data-bind="ntsTextEditor: {
+													name:'#{i18n.getText('KAF022_111')}',
+													value: value,
+													constraint: constraint,
+													option: option,
+													required: required,
+													enable: enable,
+													readonly: readonly}" />
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td  class="color-header" id="a16_3"><div data-bind="ntsFormLabel: { constraint: 'Content',inline:true}">#{i18n.getText('KAF022_112')}</div></td>
+										<td>
+											<div tabindex="501" data-bind="with: texteditorA16_8">
+												<textarea data-bind="ntsTextEditor: {
+												    name:'#{i18n.getText('KAF022_112')}',
+													value: value,
+													constraint: constraint,
+													option: option,
+													required: required,
+													enable: enable,
+													readonly: readonly}" ></textarea>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a16_4"><div data-bind="ntsFormLabel: { constraint: 'Subject',inline:true}">#{i18n.getText('KAF022_113')}</div></td>
+										<td>
+											<div  data-bind="with: texteditorA16_9">
+												<input tabindex="502" data-bind="ntsTextEditor: {
+												    name:'#{i18n.getText('KAF022_113')}',
+													value: value,
+													constraint: constraint,
+													option: option,
+													required: required,
+													enable: enable,
+													readonly: readonly}" />
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a16_5"><div data-bind="ntsFormLabel: { constraint: 'Content',inline:true}">#{i18n.getText('KAF022_114')}</div></td>
+										<td>
+											<div tabindex="503" data-bind="with: texteditorA16_10">
+												<textarea data-bind="ntsTextEditor: {
+													name:'#{i18n.getText('KAF022_114')}',
+													value: value,
+													constraint: constraint,
+													option: option,
+													required: required,
+													enable: enable,
+													readonly: readonly}" ></textarea>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="color-header" id="a16_6"><div data-bind="ntsFormLabel: { constraint: 'Subject',inline:true}">#{i18n.getText('KAF022_116')}</div></td>
+										<td>
+											<div tabindex="504" data-bind="with: texteditorA16_11">
+												<textarea data-bind="ntsTextEditor: {
+													name:'#{i18n.getText('KAF022_116')}',
+													value: value,
+													constraint: constraint,
+													option: option,
+													required: required,
+													enable: enable,
+													readonly: readonly}" ></textarea>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+
+						</div>
+						<div class="tab-content-2">
+							<ui:include src="b.xhtml" />
+						</div>
+						<div class="tab-content-3">
+							<ui:include src="c.xhtml" />
+						</div>
+						<div class="tab-content-4">
+							<ui:include src="d.xhtml" />
+						</div>
+						<div class="tab-content-5">
+							<ui:include src="e.xhtml" />
+						</div>
+						<div class="tab-content-6">
+							<ui:include src="f.xhtml" />
+						</div>
+						<div class="tab-content-7">
+							<ui:include src="g.xhtml" />
+						</div>
+						<div class="tab-content-8">
+							<ui:include src="h.xhtml" />
+						</div>
+						<div class="tab-content-9">
+							<ui:include src="i.xhtml" />
+						</div>
+						<div class="tab-content-10">
+							<ui:include src="j.xhtml" />
+						</div>
+						<div class="tab-content-11">
+							<ui:include src="k.xhtml" />
+						</div>
+						<div class="tab-content-12">
+						</div>
+					</div>
 
 				</div>
 			</div>
-<!-- 			<div id="tabpanel-e" role="tabpanel" class="screen-e" data-bind="with: viewmodelE">
-				<ui:include src="../e/index.xhtml" />
-			</div> -->
+			<div id="tabpanel-l" role="tabpanel" class="screen-l" data-bind="with: viewmodelL">
+				<ui:include src="../l/index.xhtml" />
+			</div>
+			<div id="tabpanel-m" role="tabpanel" class="screen-m" data-bind="with: viewmodelM">
+				<ui:include src="../m/index.xhtml" />
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>

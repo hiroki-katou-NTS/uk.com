@@ -7,7 +7,7 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.RaisingSalaryTimeItemNo;
 
 /**
- * 
+ * 加給時間
  * @author nampt 加給時間
  *
  */

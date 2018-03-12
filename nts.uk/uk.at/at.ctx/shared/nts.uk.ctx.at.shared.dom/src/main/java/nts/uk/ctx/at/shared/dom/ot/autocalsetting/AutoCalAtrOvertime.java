@@ -73,4 +73,29 @@ public enum AutoCalAtrOvertime {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 打刻から計算するであるか判定する
+	 * @return　打刻から計算する
+	 */
+	public boolean isCalculateEmbossing() {
+		return CALCULATEMBOSS.equals(this);
+	}
+	
+	/**
+	 * 申請または手入力であるか判定する
+	 * @return　申請または手入力である
+	 */
+	public boolean isApplyOrManuallyEnter() {
+		return APPLYMANUALLYENTER.equals(this);
+	}
+	
+	
+	/**
+	 * タイムレコーダーで選択するであるか判定する
+	 * @return　タイムレコーダーで選択する
+	 */
+	public boolean isSelectTimeRecorder() {
+		return TIMERECORDER.equals(this);
+	}
 }

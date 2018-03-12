@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset.internal;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetPolicy;
@@ -29,16 +29,18 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyServic
 @Stateless
 public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 
+	/** The pred service. */
 	@Inject
 	private PredeteminePolicyService predService;
 
+	/** The fix half day policy. */
 	@Inject
 	private FixHalfDayWorkTimezonePolicy fixHalfDayPolicy;
 
 	/** The wtz common set policy. */
 	@Inject
 	private WorkTimezoneCommonSetPolicy wtzCommonSetPolicy;
-	
+
 	/** The em tz policy. */
 	@Inject
 	private EmTimeZoneSetPolicy emTzPolicy;
@@ -51,58 +53,63 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 	 * nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSet)
 	 */
 	@Override
-	public void canRegister(FixedWorkSetting fixedWorkSetting, PredetemineTimeSetting predetemineTimeSet) {
-		
-		//=============validate list emTimezone, Msg_773==============
-		this.validWorkTimezone(fixedWorkSetting, predetemineTimeSet);
-		
+	public void validate(BundledBusinessException be, PredetemineTimeSetting predetemineTimeSet, 
+			FixedWorkSetting fixedWorkSetting) {
+
+		// =============validate list emTimezone, Msg_773==============
+		this.validWorkTimezone(be, fixedWorkSetting, predetemineTimeSet);
+
 		// Check #Msg_516 domain StampReflectTimezone
 		fixedWorkSetting.getLstStampReflectTimezone().forEach(setting -> {
 			this.predService.validateOneDay(predetemineTimeSet, setting.getStartTime(), setting.getEndTime());
 		});
-		
+
 		// Check #Msg_516 domain HDWorkTimeSheetSetting
 		fixedWorkSetting.getOffdayWorkTimezone().getLstWorkTimezone().forEach(setting -> {
 			if (this.predService.validateOneDay(predetemineTimeSet, setting.getTimezone().getStart(),
 					setting.getTimezone().getEnd())) {
-				throw new BusinessException("Msg_516", "KMK003_90");
+				be.addMessage("Msg_516", "KMK003_90");
 			}
 		});
-		
+
 		// Check #Msg_516 domain FixRestTimezoneSet
 		fixedWorkSetting.getOffdayWorkTimezone().getRestTimezone().getLstTimezone().forEach(setting -> {
 			if (this.predService.validateOneDay(predetemineTimeSet, setting.getStart(), setting.getEnd())) {
-				throw new BusinessException("Msg_516", "KMK003_21");
+				be.addMessage("Msg_516", "KMK003_21");
 			}
 		});
 
 		// check use half day
 		if (fixedWorkSetting.getUseHalfDayShift()) {
 			// validate Msg_516 PredetemineTimeSetting
-			predService.validatePredetemineTime(predetemineTimeSet);
+			predService.validatePredetemineTime(be, predetemineTimeSet);
 		}
 
 		// validate list HalfDayWorkTimezone
-		this.fixHalfDayPolicy.validate(fixedWorkSetting, predetemineTimeSet);
+		this.fixHalfDayPolicy.validate(be, fixedWorkSetting, predetemineTimeSet);
 
 		// validate WorkTimezoneCommonSet
-		this.wtzCommonSetPolicy.validate(predetemineTimeSet, fixedWorkSetting.getCommonSetting());
+		this.wtzCommonSetPolicy.validate(be, predetemineTimeSet, fixedWorkSetting.getCommonSetting());
 
 	}
 
 	/**
 	 * Valid work timezone.
 	 *
-	 * @param fixedWorkSet the fixed work set
-	 * @param predetemineTimeSet the predetemine time set
-	 * @see Check message Msg_773
+	 * @param be
+	 *            the be
+	 * @param fixedWorkSet
+	 *            the fixed work set
+	 * @param predetemineTimeSet
+	 *            the predetemine time set
 	 */
-	private void validWorkTimezone(FixedWorkSetting fixedWorkSet, PredetemineTimeSetting predetemineTimeSet) {
+	private void validWorkTimezone(BundledBusinessException be, FixedWorkSetting fixedWorkSet,
+			PredetemineTimeSetting predetemineTimeSet) {
 		List<AmPmAtr> lstAmPm = new ArrayList<AmPmAtr>();
-		
+
 		// add one day
 		lstAmPm.add(AmPmAtr.ONE_DAY);
-		
+
 		// check use half day
 		if (fixedWorkSet.getUseHalfDayShift()) {
 			lstAmPm.add(AmPmAtr.AM);
@@ -110,14 +117,13 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 		}
 		List<EmTimeZoneSet> lstFixHalfDay = fixedWorkSet.getLstHalfDayWorkTimezone().stream()
 				.filter(fixHalfWork -> lstAmPm.contains(fixHalfWork.getDayAtr()))
-				.map(fixHalfWork -> fixHalfWork.getWorkTimezone().getLstWorkingTimezone())
-				.flatMap(Collection::stream)
+				.map(fixHalfWork -> fixHalfWork.getWorkTimezone().getLstWorkingTimezone()).flatMap(Collection::stream)
 				.collect(Collectors.toList());
-		
+
 		// validate
 		lstFixHalfDay.forEach(workTimezone -> {
-			this.emTzPolicy.validate(predetemineTimeSet, workTimezone);
-			this.emTzPolicy.validateTimezone(predetemineTimeSet.getPrescribedTimezoneSetting(),
+			this.emTzPolicy.validate(be, predetemineTimeSet, workTimezone);
+			this.emTzPolicy.validateTimezone(be, predetemineTimeSet.getPrescribedTimezoneSetting(),
 					workTimezone.getTimezone());
 		});
 	}

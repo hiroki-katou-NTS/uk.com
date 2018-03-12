@@ -1,9 +1,10 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime;
 
-import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
@@ -20,9 +21,9 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.ExcessOuts
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.TreatHolidayWorkTimeOfLessThanCriteriaPerWeek;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.TreatOverTimeOfLessThanCriteriaPerDay;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -91,19 +92,39 @@ public class AggregateTotalWorkingTime {
 	/**
 	 * 共有項目を集計する
 	 * @param datePeriod 期間
-	 * @param attendanceTimeOfDailys リスト：日別実績の勤怠時間
+	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 */
 	public void aggregateSharedItem(DatePeriod datePeriod,
-			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
-		
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap){
+
 		// 就業時間を集計する
-		this.workTime.confirm(datePeriod, attendanceTimeOfDailys);
+		this.workTime.confirm(datePeriod, attendanceTimeOfDailyMap);
 	
 		// 休暇使用時間を集計する
-		this.vacationUseTime.confirm(attendanceTimeOfDailys);
+		this.vacationUseTime.confirm(datePeriod, attendanceTimeOfDailyMap);
 		
 		// 所定労働時間を集計する
-		this.prescribedWorkingTime.confirm(attendanceTimeOfDailys);
+		this.prescribedWorkingTime.confirm(datePeriod, attendanceTimeOfDailyMap);
+		
+		// 総労働時間を集計する
+		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.values()) {
+			val ymd = attendanceTimeOfDaily.getYmd();
+			if (!datePeriod.contains(ymd)) continue;
+			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
+			this.totalWorkingTime = this.totalWorkingTime.addMinutes(totalWorkingTime.getTotalTime().v());
+		}
+	}
+	
+	/**
+	 * 共有項目をコピーする
+	 * @param aggregateTotalWorkingTime 総労働時間
+	 */
+	public void copySharedItem(AggregateTotalWorkingTime aggregateTotalWorkingTime){
+		
+		this.workTime = aggregateTotalWorkingTime.getWorkTime();
+		this.vacationUseTime = aggregateTotalWorkingTime.getVacationUseTime();
+		this.prescribedWorkingTime = aggregateTotalWorkingTime.getPrescribedWorkingTime();
 	}
 	
 	/**
@@ -119,7 +140,8 @@ public class AggregateTotalWorkingTime {
 	 * @param legalTransferOrderSet 法定内振替順設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void aggregateDailyForRegAndIrreg(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
+	public void aggregateDailyForRegAndIrreg(
+			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String workplaceId, String employmentCd,
 			WorkingSystem workingSystem, MonthlyAggregateAtr aggregateAtr,
 			WorkInformation workInfo,
@@ -131,7 +153,7 @@ public class AggregateTotalWorkingTime {
 		ExcessOutsideTimeSet excessOutsideTimeSet;					// 時間外超過設定
 		TreatOverTimeOfLessThanCriteriaPerDay treatOverTimeOfLessThanCriteriaPerDay;	// 1日の基準時間未満の残業時間の扱い
 		TreatHolidayWorkTimeOfLessThanCriteriaPerWeek treatHolidayWorkTimeOfLessThanCriteriaPerWeek;	// 1週間の基準時間未満の休日出勤時間の扱い
-		if (workingSystem.isVariableWorkingTimeWork()) {
+		if (workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK) {
 			// 変形労働の時
 			val legalAggrSetOfIrregular = aggrSettingMonthly.getIrregularWork();
 			aggregateTimeSet = legalAggrSetOfIrregular.getAggregateTimeSet();
@@ -143,7 +165,7 @@ public class AggregateTotalWorkingTime {
 			aggregateTimeSet = legalAggrSetOfRegular.getAggregateTimeSet();
 			excessOutsideTimeSet = legalAggrSetOfRegular.getExcessOutsideTimeSet();
 		}
-		if (aggregateAtr.isExcessOutsideWork()){
+		if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
 			// 集計区分＝時間外超過の時、時間外超過設定から参照
 			treatOverTimeOfLessThanCriteriaPerDay = excessOutsideTimeSet.getTreatOverTimeOfLessThanCriteriaPerDay();
 			treatHolidayWorkTimeOfLessThanCriteriaPerWeek =
@@ -179,7 +201,8 @@ public class AggregateTotalWorkingTime {
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 * @return フレックス時間　（当日分のみ）
 	 */
-	public FlexTime aggregateDailyForFlex(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
+	public FlexTime aggregateDailyForFlex(
+			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String workplaceId, String employmentCd,
 			WorkingSystem workingSystem, MonthlyAggregateAtr aggregateAtr,
 			AggrSettingMonthlyOfFlx aggrSetOfFlex,
@@ -198,29 +221,31 @@ public class AggregateTotalWorkingTime {
 	
 	/**
 	 * 実働時間の集計
+	 * @param datePeriod 期間
 	 * @param workingSystem 労働制
 	 * @param actualWorkingTime 実働時間
 	 * @param flexTime フレックス時間
 	 */
 	public void aggregateActualWorkingTime(
+			DatePeriod datePeriod,
 			WorkingSystem workingSystem,
 			RegularAndIrregularTimeOfMonthly actualWorkingTime,
 			FlexTimeOfMonthly flexTime){
 		
 		// 残業合計時間を集計する
-		this.overTime.aggregateTotal();
+		this.overTime.aggregateTotal(datePeriod);
 		
 		// 休出合計時間を集計する
-		this.holidayWorkTime.aggregateTotal();
+		this.holidayWorkTime.aggregateTotal(datePeriod);
 		
 		// 休暇使用時間を集計する
-		this.vacationUseTime.aggregate();
+		this.vacationUseTime.aggregate(datePeriod);
 		
 		// 所定労働時間を集計する
-		this.prescribedWorkingTime.aggregate();
+		this.prescribedWorkingTime.aggregate(datePeriod);
 		
 		// 就業時間を集計する
-		this.workTime.aggregate(workingSystem, actualWorkingTime, flexTime,
+		this.workTime.aggregate(datePeriod, workingSystem, actualWorkingTime, flexTime,
 				this.overTime, this.holidayWorkTime);
 	}
 }

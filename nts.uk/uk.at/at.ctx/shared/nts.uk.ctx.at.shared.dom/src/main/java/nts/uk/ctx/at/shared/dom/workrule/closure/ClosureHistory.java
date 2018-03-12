@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.workrule.closure;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 
 /**
@@ -39,6 +40,9 @@ public class ClosureHistory extends DomainObject {
 	/** The start year month. */
 	// 開始年月: 年月
 	private YearMonth startYearMonth;
+
+	/** The Constant ONE_DAY. */
+	private static final int ONE_DAY = 1;
 
 	
 	/**
@@ -79,5 +83,10 @@ public class ClosureHistory extends DomainObject {
 			return 0;
 		}
 		return this.getClosureDate().getClosureDay().v();
+	}
+
+	public GeneralDate getClosureYMD() {
+		return GeneralDate.ymd(this.startYearMonth.year(), this.startYearMonth.month(),
+				this.closureDate.getClosureDay().v() + ONE_DAY);
 	}
 }

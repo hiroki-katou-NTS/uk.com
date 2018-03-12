@@ -6,4 +6,6 @@ import lombok.Value;
 public class DeleteFixedConWorkRecordCmd {
 	/** 日次のアラームチェック条件ID */
 	private String dailyAlarmConID;
+	
+	private int fixConWorkRecordNo;
 }

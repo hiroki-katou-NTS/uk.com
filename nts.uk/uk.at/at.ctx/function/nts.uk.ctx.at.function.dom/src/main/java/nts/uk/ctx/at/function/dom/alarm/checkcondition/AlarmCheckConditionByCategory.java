@@ -56,7 +56,21 @@ public class AlarmCheckConditionByCategory extends AggregateRoot {
 		this.name = new AlarmCheckConditionName(name);
 		this.listRoleId = lstRoleId;
 		this.extractTargetCondition.changeState(targetCondition);
-		this.extractionCondition.changeState(extractCondition);
+		if (this.extractionCondition != null && extractCondition != null) {
+			this.extractionCondition.changeState(extractCondition);
+		}
 	}
 
+	public boolean isDaily() {
+		return this.category == AlarmCategory.DAILY;
+	}
+	
+	public boolean isMonthly() {
+		return this.category == AlarmCategory.MONTHLY;
+	}
+	
+	public boolean is4Week4Day() {
+		return this.category == AlarmCategory.SCHEDULE_4WEEK;
+	}
+	
 }

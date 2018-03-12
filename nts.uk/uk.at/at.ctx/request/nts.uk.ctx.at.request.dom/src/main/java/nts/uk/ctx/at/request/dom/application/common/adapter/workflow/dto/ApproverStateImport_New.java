@@ -12,7 +12,11 @@ import lombok.Value;
 @Value
 public class ApproverStateImport_New {
 	
-	private String approver;
+	private String approverID;
 	
-	private String representer;
+	private String approverName;
+	
+	private String representerID;
+	
+	private String representerName;
 }

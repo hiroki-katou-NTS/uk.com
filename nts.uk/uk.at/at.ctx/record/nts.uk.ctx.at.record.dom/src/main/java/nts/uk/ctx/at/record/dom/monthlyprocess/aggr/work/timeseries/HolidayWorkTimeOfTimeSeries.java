@@ -35,15 +35,15 @@ public class HolidayWorkTimeOfTimeSeries {
 		
 		this.ymd = ymd;
 		this.holidayWorkTime = new HolidayWorkFrameTime(
-				new HolidayWorkFrameNo(holidayWorkFrameNo.v()),
-				new Finally<TimeWithCalculation>(TimeWithCalculation.sameTime(new AttendanceTime(0)), true),
-				new Finally<TimeWithCalculation>(TimeWithCalculation.sameTime(new AttendanceTime(0)), true),
-				new Finally<AttendanceTime>(new AttendanceTime(0), true));
+				holidayWorkFrameNo,
+				Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+				Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+				Finally.of(new AttendanceTime(0)));
 		this.legalHolidayWorkTime = new HolidayWorkFrameTime(
-				new HolidayWorkFrameNo(holidayWorkFrameNo.v()),
-				new Finally<TimeWithCalculation>(TimeWithCalculation.sameTime(new AttendanceTime(0)), true),
-				new Finally<TimeWithCalculation>(TimeWithCalculation.sameTime(new AttendanceTime(0)), true),
-				new Finally<AttendanceTime>(new AttendanceTime(0), true));
+				holidayWorkFrameNo,
+				Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+				Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+				Finally.of(new AttendanceTime(0)));
 	}
 	
 	/**
@@ -95,13 +95,14 @@ public class HolidayWorkTimeOfTimeSeries {
 	}
 	
 	/**
-	 * 休出時間のみ加算する
-	 * @param target 休出枠時間　（設定先）
-	 * @param addTime 加算時間　（休出枠時間）
+	 * 休出枠時間に加算する
+	 * @param target 休出枠時間　（加算先）
+	 * @param addTime 加算する休出枠時間
+	 * @return 休出枠時間　（加算後）
 	 */
 	private HolidayWorkFrameTime addHolidayWorkFrameTime(HolidayWorkFrameTime target, HolidayWorkFrameTime addTime){
 		return new HolidayWorkFrameTime(
-				new HolidayWorkFrameNo(target.getHolidayFrameNo().v()),
+				target.getHolidayFrameNo(),
 				Finally.of(target.getHolidayWorkTime().get().addMinutes(
 						addTime.getHolidayWorkTime().get().getTime(),
 						addTime.getHolidayWorkTime().get().getCalcTime())),
@@ -114,38 +115,36 @@ public class HolidayWorkTimeOfTimeSeries {
 	}
 	
 	/**
-	 * 休出時間のみ加算する
-	 * @param target 休出枠時間　（設定先）
-	 * @param holidayWorkTime 休出時間　（計算付き時間）
+	 * 休出枠時間の休出時間のみ加算する
+	 * @param target 休出枠時間　（加算先）
+	 * @param holidayWorkTime 加算する時間　（計算付き時間）
+	 * @return 休出枠時間　（加算後）
 	 */
 	private HolidayWorkFrameTime addHolidayWorkTimeOnly(HolidayWorkFrameTime target, TimeWithCalculation holidayWorkTime){
 		return new HolidayWorkFrameTime(
-				new HolidayWorkFrameNo(target.getHolidayFrameNo().v()),
+				target.getHolidayFrameNo(),
 				Finally.of(target.getHolidayWorkTime().get().addMinutes(
 						holidayWorkTime.getTime(),
 						holidayWorkTime.getCalcTime())),
-				Finally.of(TimeWithCalculation.createTimeWithCalculation(
-						new AttendanceTime(target.getTransferTime().get().getTime().v()),
-						new AttendanceTime(target.getTransferTime().get().getCalcTime().v()))),
-				Finally.of(new AttendanceTime(target.getBeforeApplicationTime().get().v()))
+				Finally.of(target.getTransferTime().get()),
+				Finally.of(target.getBeforeApplicationTime().get())
 			);
 	}
 	
 	/**
-	 * 振替時間のみ加算する
-	 * @param target 休出枠時間　（設定先）
-	 * @param transferTime 振替時間　（計算付き時間）
+	 * 休出枠時間の振替時間のみ加算する
+	 * @param target 休出枠時間　（加算先）
+	 * @param transferTime 加算する時間　（計算付き時間）
+	 * @return 休出枠時間　（加算後）
 	 */
 	private HolidayWorkFrameTime addTransferTimeOnly(HolidayWorkFrameTime target, TimeWithCalculation transferTime){
 		return new HolidayWorkFrameTime(
-				new HolidayWorkFrameNo(target.getHolidayFrameNo().v()),
-				Finally.of(TimeWithCalculation.createTimeWithCalculation(
-						new AttendanceTime(target.getHolidayWorkTime().get().getTime().v()),
-						new AttendanceTime(target.getHolidayWorkTime().get().getCalcTime().v()))),
+				target.getHolidayFrameNo(),
+				Finally.of(target.getHolidayWorkTime().get()),
 				Finally.of(target.getTransferTime().get().addMinutes(
 						transferTime.getTime(),
 						transferTime.getCalcTime())),
-				Finally.of(new AttendanceTime(target.getBeforeApplicationTime().get().v()))
+				Finally.of(target.getBeforeApplicationTime().get())
 			);
 	}
 }

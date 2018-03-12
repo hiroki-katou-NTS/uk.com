@@ -24,13 +24,15 @@ public class UpdateApprovalSettingCommandHandler extends CommandHandler<Approval
 
 	@Override
 	protected void handle(CommandHandlerContext<ApprovalSettingCommand> context) {
-		ApprovalSettingCommand data = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		Optional<ApprovalSetting> approOld = appRep.getApprovalByComId(companyId);
+		ApprovalSettingCommand data = context.getCommand();		
 		ApprovalSetting appro = ApprovalSetting.createFromJavaType(companyId, data.getPrinFlg());
 		appro.validate();
+		
+		Optional<ApprovalSetting> approOld = appRep.getApprovalByComId(companyId);
 		if(approOld.isPresent()){
 			appRep.update(appro);
+			return;
 		}
 		appRep.insert(appro);
 	}

@@ -32,7 +32,8 @@ public class RegisterAtApproveReflectionInfoDefault_New implements RegisterAtApp
 				application.getEmployeeID(), 
 				false, 
 				application.getAppType().value, 
-				application.getAppDate());
+				application.getAppDate(),
+				"");
 		// アルゴリズム「実績反映状態の判断」を実行する
 		Boolean approvalCompletionFlag = approvalRootStateAdapter.isApproveAllComplete(
 				application.getCompanyID(), 

@@ -14,13 +14,13 @@ body {
 	margin-left: 20px;
 }
 #search-div {
-	padding-left: 213px;
+	padding-left: 120px;
 	margin-bottom: 10px;
 }
 #search-div span:NTH-CHILD(3) {
 /* 	font-size: x-large; */
 	margin-left: 10px;
-	margin-right: 10px;
+	margin-right: 15px;
 }
 .ui-igcombo-wrapper {
 	width: 90px;
@@ -36,18 +36,13 @@ div.nts-column{
 	width: 60px;
 }
 #search-div button:LAST-CHILD {
-	margin-left: 170px;
+	margin-left: 257px;
 }
 #day-list-div {
 	padding-left: 15px;
 	padding-right: 15px;
 }
-#day-list-div th, #day-list-div td {
-	padding-left: 10px;
-}
-#day-list-tbl > tbody > tr > td:LAST-CHILD {
-    height: 40px;
-}
+
 #day-list-tbl > tbody > tr > td:LAST-CHILD > span{
    	display: inline-block;
 }

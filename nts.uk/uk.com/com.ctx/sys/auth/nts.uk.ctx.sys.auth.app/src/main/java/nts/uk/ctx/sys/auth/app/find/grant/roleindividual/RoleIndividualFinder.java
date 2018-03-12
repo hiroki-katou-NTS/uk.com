@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.gul.text.StringUtil;
@@ -25,6 +26,7 @@ import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserName;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 @Stateless
 public class RoleIndividualFinder {
@@ -87,12 +89,15 @@ public class RoleIndividualFinder {
 					roleIndividualGrant.getValidPeriod().end());
 			listRoleIndividualGrantDto.add(dto);
 		}
-
+		listRoleIndividualGrantDto.sort((obj1,obj2)->{return obj1.getLoginID().compareTo(obj2.getLoginID());});
 		return new RoleIndividualDto(COMPANY_ID_SYSADMIN, listRoleIndividualGrantDto);
 
 	}
 	
-	public RoleIndividualGrantMetaDto getMetadata() {
+	public RoleIndividualGrantMetaDto getCAS012Metadata() {
+		LoginUserContext user = AppContexts.user();
+		if (!user.roles().have().systemAdmin())
+			return null;
 		
 		// Get List Enum RoleType
 		List<EnumConstant> enumRoleType = EnumAdaptor.convertToValueNameList(RoleType.class,  RoleType.SYSTEM_MANAGER, RoleType.COMPANY_MANAGER, RoleType.GROUP_COMAPNY_MANAGER);
@@ -103,14 +108,19 @@ public class RoleIndividualFinder {
 		return new RoleIndividualGrantMetaDto(enumRoleType, listCompanyImport);
 	}
 
-	public List<RoleTypeDto> GetRoleType(){
-		String companyId = AppContexts.user().companyId();
-		if (companyId == null)
+	public List<RoleTypeDto> getCAS013Metadata(){
+		val user = AppContexts.user();
+		if (!user.roles().have().systemAdmin() && !user.roles().have().companyAdmin())
 			return null;
 		
+		// Get List Enum RoleType
+		List<EnumConstant> enumRoleType = EnumAdaptor.convertToValueNameList(RoleType.class,
+				RoleType.EMPLOYMENT, RoleType.SALARY, RoleType.HUMAN_RESOURCE,
+				RoleType.OFFICE_HELPER, RoleType.MY_NUMBER, RoleType.PERSONAL_INFO);
+		
 		List<RoleTypeDto> roleTypeDtos = new ArrayList<>();
-		for (RoleType r : RoleType.values()) {
-			roleTypeDtos.add(new RoleTypeDto(r.value, r.nameId, r.description));
+		for (EnumConstant r : enumRoleType) {
+			roleTypeDtos.add(new RoleTypeDto(r.getValue(), r.getFieldName(), r.getLocalizedName()));
 		}
 		return roleTypeDtos;
 	}
@@ -160,7 +170,6 @@ public class RoleIndividualFinder {
 
 		}
 		return rGrants;
-
 	}
 	
 	public RoleIndividualGrantDto getRoleGrant(String userId, String roleId){

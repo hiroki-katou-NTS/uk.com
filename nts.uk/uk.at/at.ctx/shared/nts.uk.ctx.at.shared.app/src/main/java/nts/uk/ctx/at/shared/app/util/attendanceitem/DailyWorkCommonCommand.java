@@ -21,5 +21,5 @@ public abstract class DailyWorkCommonCommand implements SetterCommonCommand {
 		this.workDate = date;
 	}
 	
-	public abstract Object toDomain();
+	public abstract void updateData(Object data);
 }

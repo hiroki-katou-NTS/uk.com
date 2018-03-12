@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.find.application.overtime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -22,20 +23,26 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeInputDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.PreAppOvertimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.output.ApprovalRootPattern;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
+import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeFourProcess;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeInstructInfomation;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess;
@@ -66,7 +73,10 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AppOvertimeFinder {
-	final String DATE_FORMAT = "yyyy/MM/dd";
+	final static String DATE_FORMAT = "yyyy/MM/dd";
+	final static String ZEZO_TIME = "00:00";
+	final static String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm";
+	final static String SPACE = " ";
 	
 	@Inject
 	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
@@ -97,9 +107,16 @@ public class AppOvertimeFinder {
 	
 	@Inject
 	private OvertimeRepository overtimeRepository;
-	
 	@Inject
 	private OvertimeSixProcess overtimeSixProcess;
+	@Inject
+	private OvertimeFourProcess overtimeFourProcess;
+	@Inject
+	private CollectApprovalRootPatternService collectApprovalRootPatternService;
+	@Inject
+	private StartupErrorCheckService startupErrorCheckService;
+	@Inject
+	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
 	/**
 	 * @param url
@@ -124,9 +141,9 @@ public class AppOvertimeFinder {
 				rootAtr, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class),appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT));
 		result.setManualSendMailAtr(appCommonSettingOutput.applicationSetting.getManualSendMailAtr().value  ==1 ?true : false);
 		//アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する
-		//startApprovalRootService.getApprovalRootPattern(companyID, employeeID, 1, ApplicationType.OVER_TIME_APPLICATION.value, null);
+		ApprovalRootPattern approvalRootPattern = collectApprovalRootPatternService.getApprovalRootPatternService(companyID, employeeID, EmploymentRootAtr.APPLICATION, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), appCommonSettingOutput.generalDate, "", true);
 		//アルゴリズム「1-5.新規画面起動時のエラーチェック」を実行する 
-		// startCheckErrorService.checkError(ApplicationType.OVER_TIME_APPLICATION.value);
+		 startupErrorCheckService.startupErrorCheck(appCommonSettingOutput.generalDate, ApplicationType.OVER_TIME_APPLICATION.value, approvalRootPattern.getApprovalRootContentImport());
 		// 02_残業区分チェック : check loai lam them
 		int overtimeAtr = overtimeService.checkOvertime(url);
 		result.setOvertimeAtr(overtimeAtr);
@@ -241,10 +258,12 @@ public class AppOvertimeFinder {
 				}
 				overTimeDto.setSiftTypes(siftCodes);
 				
-				WorkTimeSetting workTime = workTimeRepository.findByCode(companyID, appOverTime.getSiftCode().v()).get();
-				overTimeDto.setSiftType(new SiftType(workTime.getWorktimeCode().v(), workTime.getWorkTimeDisplayName().getWorkTimeName().v()));
-				
-				;
+				WorkTimeSetting workTime = workTimeRepository.findByCode(companyID, appOverTime.getSiftCode().v()).isPresent() ? workTimeRepository.findByCode(companyID, appOverTime.getSiftCode().v()).get() : null;
+				if(workTime != null){
+					overTimeDto.setSiftType(new SiftType(workTime.getWorktimeCode().v(), workTime.getWorkTimeDisplayName().getWorkTimeName().v()));
+				}else{
+					overTimeDto.setSiftType(new SiftType("", ""));
+				}
 				
 				// 01-17_休憩時間取得(lay thoi gian nghi ngoi)
 				boolean displayRestTime = iOvertimePreProcess.getRestTime(approvalFunctionSetting);
@@ -295,18 +314,18 @@ public class AppOvertimeFinder {
 		
 		for(OvertimeWorkFrame overtimeFrame :overtimeFrames){
 			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
-			overtimeInputDto.setAttendanceID(AttendanceID.NORMALOVERTIME.value);
+			overtimeInputDto.setAttendanceID(AttendanceType.NORMALOVERTIME.value);
 			overtimeInputDto.setFrameNo(overtimeFrame.getOvertimeWorkFrNo().v().intValue());
 			overtimeInputDto.setFrameName(overtimeFrame.getOvertimeWorkFrName().toString());
 			overTimeInputs.add(overtimeInputDto);
 		}
 		OvertimeInputDto overtimeInputShiftNight = new OvertimeInputDto();
-		overtimeInputShiftNight.setAttendanceID(AttendanceID.NORMALOVERTIME.value);
+		overtimeInputShiftNight.setAttendanceID(AttendanceType.NORMALOVERTIME.value);
 		overtimeInputShiftNight.setFrameNo(11);
 		overTimeInputs.add(overtimeInputShiftNight);
 		
 		OvertimeInputDto overtimeInputFlexExessTime = new OvertimeInputDto();
-		overtimeInputFlexExessTime.setAttendanceID(AttendanceID.NORMALOVERTIME.value);
+		overtimeInputFlexExessTime.setAttendanceID(AttendanceType.NORMALOVERTIME.value);
 		overtimeInputFlexExessTime.setFrameNo(12);
 		overTimeInputs.add(overtimeInputFlexExessTime);
 		
@@ -314,7 +333,7 @@ public class AppOvertimeFinder {
 		List<WorkdayoffFrame> breaktimeFrames = iOvertimePreProcess.getBreaktimeFrame(companyID);
 		for(WorkdayoffFrame breaktimeFrame :breaktimeFrames){
 			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
-			overtimeInputDto.setAttendanceID(AttendanceID.BREAKTIME.value);
+			overtimeInputDto.setAttendanceID(AttendanceType.BREAKTIME.value);
 			overtimeInputDto.setFrameNo(breaktimeFrame.getWorkdayoffFrNo().v().intValueExact());
 			overtimeInputDto.setFrameName(breaktimeFrame.getWorkdayoffFrName().toString());
 			overTimeInputs.add(overtimeInputDto);
@@ -333,7 +352,7 @@ public class AppOvertimeFinder {
 						overTimeDto.getSiftType());
 				for(BonusPayTimeItem bonusPayTimeItem : bonusPayTimeItems){
 					OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
-					overtimeInputDto.setAttendanceID(AttendanceID.BONUSPAYTIME.value);
+					overtimeInputDto.setAttendanceID(AttendanceType.BONUSPAYTIME.value);
 					overtimeInputDto.setFrameNo(bonusPayTimeItem.getId());
 					overtimeInputDto.setFrameName(bonusPayTimeItem.getTimeItemName().toString());
 					overtimeInputDto.setTimeItemTypeAtr(bonusPayTimeItem.getTimeItemTypeAtr().value);
@@ -345,7 +364,7 @@ public class AppOvertimeFinder {
 		}
 		for(int i = 1; i < 11; i++){
 			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
-			overtimeInputDto.setAttendanceID(AttendanceID.RESTTIME.value);
+			overtimeInputDto.setAttendanceID(AttendanceType.RESTTIME.value);
 			overtimeInputDto.setFrameNo(i);
 			overtimeInputDto.setFrameName(Integer.toString(i));
 			overtimeInputDto.setTimeItemTypeAtr(0);
@@ -364,29 +383,76 @@ public class AppOvertimeFinder {
 		});
 		
 		overTimeDto.setOverTimeInputs(overTimeInputs);
-		//01-09_事前申請を取得
-				if(overTimeDto.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value ){
-					AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(companyID, appOverTime.getApplication().getEmployeeID(),overtimeRestAppCommonSet, appOverTime.getApplication().getAppDate().toString(DATE_FORMAT),appOverTime.getApplication().getPrePostAtr().value);
-					if(appOvertime != null){
-						PreAppOvertimeDto preAppOvertimeDto = new PreAppOvertimeDto();
-						convertOverTimeDto(companyID,preAppOvertimeDto,overTimeDto,appOvertime);
-					}else{
-						overTimeDto.setPreAppPanelFlg(false);
-					}
-					
-		}
-				
+		
 		// xu li hien thi du lieu xin truoc
-		if(overtimeRestAppCommonSet.isPresent()){
-			if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.NOTUSE.value){
-				overTimeDto.setAllPreAppPanelFlg(false);
-			}else{
-				overTimeDto.setAllPreAppPanelFlg(true);
+				if(overtimeRestAppCommonSet.isPresent()){
+					// hien thi du lieu thuc te
+					overTimeDto.setReferencePanelFlg(false);
+					if(overTimeDto.getApplication().getPrePostAtr() == InitValueAtr.POST.value && overtimeRestAppCommonSet.get().getPerformanceDisplayAtr().value == UseAtr.USE.value){
+						overTimeDto.setReferencePanelFlg(true);
+					}
+					// hien thi don xin truoc
+					overTimeDto.setAllPreAppPanelFlg(false);
+					if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.USE.value && overTimeDto.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value){
+						overTimeDto.setAllPreAppPanelFlg(true);
+					}
+				}
+		//01-09_事前申請を取得
+				if(overTimeDto.isAllPreAppPanelFlg()){
+					if(overTimeDto.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value ){
+						AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(companyID, appOverTime.getApplication().getEmployeeID(),overtimeRestAppCommonSet, appOverTime.getApplication().getAppDate().toString(DATE_FORMAT),appOverTime.getApplication().getPrePostAtr().value);
+						if(appOvertime != null){
+							overTimeDto.setPreAppPanelFlg(true);
+							PreAppOvertimeDto preAppOvertimeDto = new PreAppOvertimeDto();
+							convertOverTimeDto(companyID,preAppOvertimeDto,overTimeDto,appOvertime);
+						}else{
+							overTimeDto.setPreAppPanelFlg(false);
+						}
+						
+					}
+				}
+				
+		//xu li tinh toan
+		List<OvertimeInputDto> overtimeHours = overTimeInputs.stream().filter(x -> x.getAttendanceID() == AttendanceType.NORMALOVERTIME.value).collect(Collectors.toList());
+		checkColorCaculationForUIB(overtimeHours,overTimeDto.getApplication().getPrePostAtr(),overTimeDto.getApplication().getApplicationDate(),overTimeDto.getApplication().getInputDate());
+		for(OvertimeInputDto overtime : overtimeHours){
+			for(OvertimeInputDto overtimeHour : overTimeDto.getOverTimeInputs()){
+				if(overtime.getAttendanceID() == overtimeHour.getAttendanceID()){
+					if(overtime.getFrameNo() == overtimeHour.getFrameNo()){
+						overtimeHour.setErrorCode(overtime.getErrorCode());
+					}
+				}
 			}
 		}
-		
 		return overTimeDto;
 	} 
+	public List<OvertimeInputDto> checkColorCaculationForUIB(List<OvertimeInputDto> overtimeHours,int prePostAtr,String appDate,String inputDate){
+		
+		String companyID = AppContexts.user().companyId();
+		String employeeID = AppContexts.user().employeeId();
+		/*
+		 * 06_計算処理
+		 * TODO
+		 */
+		List<CaculationTime> overTimeInputs = new ArrayList<>();
+		for(OvertimeInputDto overtime : overtimeHours){
+			CaculationTime calcu = new CaculationTime();
+			calcu.setAttendanceID(overtime.getAttendanceID());
+			calcu.setFrameNo(overtime.getFrameNo());
+			calcu.setApplicationTime(overtime.getApplicationTime());
+			overTimeInputs.add(calcu);
+		}
+		List<OvertimeInputCaculation> overtimeInputCaculations = new ArrayList<>();
+		overTimeInputs = this.overtimeFourProcess.checkDisplayColor(overTimeInputs, overtimeInputCaculations, prePostAtr, inputDate == null ? null : GeneralDateTime.fromString(inputDate, DATE_TIME_FORMAT), appDate == null ? null :GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION.value, employeeID, companyID);
+		for(OvertimeInputDto overtime : overtimeHours){
+			for(CaculationTime calculation : overTimeInputs){
+				if(overtime.getFrameNo() == calculation.getFrameNo()){
+					overtime.setErrorCode(calculation.getErrorCode());
+				}
+			}
+		}
+		return overtimeHours;
+	}
 	
 	/**
 	 * @param appDate
@@ -413,23 +479,45 @@ public class AppOvertimeFinder {
 		result.setApplication(applicationDto);
 		// 01-09_事前申請を取得
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
-		if(prePostAtr  == PrePostAtr.POSTERIOR.value ){
-			
-			AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(companyID, employeeID,overtimeRestAppCommonSet, appDate,prePostAtr);
-			if(appOvertime != null){
-				result.setPreAppPanelFlg(true);
-				convertOverTimeDto(companyID,preAppOvertimeDto,result,appOvertime);
-			}else{
-				result.setPreAppPanelFlg(false);
+		
+		// xu li hien thi du lieu xin truoc
+		if(overtimeRestAppCommonSet.isPresent()){
+			// hien thi du lieu thuc te
+			result.setReferencePanelFlg(false);
+			if(result.getApplication().getPrePostAtr() == InitValueAtr.POST.value && overtimeRestAppCommonSet.get().getPerformanceDisplayAtr().value == UseAtr.USE.value){
+				result.setReferencePanelFlg(true);
 			}
-			
+			// hien thi don xin truoc
+			result.setAllPreAppPanelFlg(false);
+			if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.USE.value && result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value){
+				result.setAllPreAppPanelFlg(true);
+			}
+		}
+		//01-09_事前申請を取得
+		if(result.isAllPreAppPanelFlg()){
+			if(prePostAtr  == PrePostAtr.POSTERIOR.value ){
+				AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(companyID, employeeID,overtimeRestAppCommonSet, appDate,prePostAtr);
+				if(appOvertime != null){
+					result.setPreAppPanelFlg(true);
+					convertOverTimeDto(companyID,preAppOvertimeDto,result,appOvertime);
+				}else{
+					result.setPreAppPanelFlg(false);
+				}
+				
+			}
 		}
 		
+		
 		// ドメインモデル「申請表示設定」．事前事後区分表示をチェックする
-//		if(appCommonSettingOutput.applicationSetting.getDisplayPrePostFlg().value == AppDisplayAtr.NOTDISPLAY.value){
-//			// 3.事前事後の判断処理(事前事後非表示する場合)
-//			PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), GeneralDate.fromString(appDate, DATE_FORMAT));
-//		}
+		result.setDisplayPrePostFlg(AppDisplayAtr.DISPLAY.value);
+		if(appCommonSettingOutput.applicationSetting.getDisplayPrePostFlg().value == AppDisplayAtr.NOTDISPLAY.value){
+			result.setDisplayPrePostFlg(AppDisplayAtr.NOTDISPLAY.value);
+			// 3.事前事後の判断処理(事前事後非表示する場合)
+			PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), GeneralDate.fromString(appDate, DATE_FORMAT));
+			if(prePostAtrJudgment != null){
+				prePostAtr = prePostAtrJudgment.value;
+			}
+		}
 		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする ( Domain model "application setting". Check base date of approval route )
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
 			
@@ -473,7 +561,7 @@ public class AppOvertimeFinder {
 				if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
 					result.setDisplayCaculationTime(true);
 					// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do
-					RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,approvalFunctionSetting,result.getSiftType() == null ? "" : result.getSiftType().getSiftCode());
+					RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,approvalFunctionSetting,result.getSiftType() == null ? siftCD : result.getSiftType().getSiftCode());
 					result.setDisplayCaculationTime(BooleanUtils.toBoolean(recordWorkOutput.getRecordWorkDisplay().value));
 					result.setWorkClockFrom1(recordWorkOutput.getStartTime1());
 					result.setWorkClockFrom2(recordWorkOutput.getStartTime2());
@@ -520,12 +608,9 @@ public class AppOvertimeFinder {
 		 * chưa phải làm
 		 */
 		// 01-13_事前事後区分を取得
-		DisplayPrePost displayPrePost =	iOvertimePreProcess.getDisplayPrePost(companyID, uiType,appDate);
+		DisplayPrePost displayPrePost =	iOvertimePreProcess.getDisplayPrePost(companyID, uiType,appDate,ApplicationType.OVER_TIME_APPLICATION.value);
 		result.setDisplayPrePostFlg(displayPrePost.getDisplayPrePostFlg());
 		applicationDto.setPrePostAtr(displayPrePost.getPrePostAtr());
-		if(displayPrePost.getPrePostAtr() == InitValueAtr.POST.value){
-			result.setReferencePanelFlg(true);
-		}
 		result.setApplication(applicationDto);
 				
 		//String workplaceID = employeeAdapter.getWorkplaceId(companyID, employeeID, GeneralDate.today());
@@ -558,7 +643,7 @@ public class AppOvertimeFinder {
 				result.setWorkType(workTypeAndSiftType.getWorkType());
 				result.setSiftType(workTypeAndSiftType.getSiftType());
 				// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do
-				RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,approvalFunctionSetting,result.getSiftType().getSiftCode());
+				RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,approvalFunctionSetting,result.getSiftType() == null? "" :result.getSiftType().getSiftCode());
 				result.setDisplayCaculationTime(BooleanUtils.toBoolean(recordWorkOutput.getRecordWorkDisplay().value));
 				result.setWorkClockFrom1(recordWorkOutput.getStartTime1());
 				result.setWorkClockFrom2(recordWorkOutput.getStartTime2());
@@ -580,7 +665,7 @@ public class AppOvertimeFinder {
 		
 		for(OvertimeWorkFrame overtimeFrame :overtimeFrames){
 			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
-			overtimeInputDto.setAttendanceID(AttendanceID.NORMALOVERTIME.value);
+			overtimeInputDto.setAttendanceID(AttendanceType.NORMALOVERTIME.value);
 			overtimeInputDto.setFrameNo(overtimeFrame.getOvertimeWorkFrNo().v().intValueExact());
 			overtimeInputDto.setFrameName(overtimeFrame.getOvertimeWorkFrName().toString());
 			overTimeInputs.add(overtimeInputDto);
@@ -590,7 +675,7 @@ public class AppOvertimeFinder {
 		List<WorkdayoffFrame> breaktimeFrames = iOvertimePreProcess.getBreaktimeFrame(companyID);
 		for(WorkdayoffFrame breaktimeFrame :breaktimeFrames){
 			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
-			overtimeInputDto.setAttendanceID(AttendanceID.BREAKTIME.value);
+			overtimeInputDto.setAttendanceID(AttendanceType.BREAKTIME.value);
 			overtimeInputDto.setFrameNo(breaktimeFrame.getWorkdayoffFrNo().v().intValueExact());
 			overtimeInputDto.setFrameName(breaktimeFrame.getWorkdayoffFrName().toString());
 			overTimeInputs.add(overtimeInputDto);
@@ -600,11 +685,6 @@ public class AppOvertimeFinder {
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
 		// xu li hien thi du lieu xin truoc
 		if(overtimeRestAppCommonSet.isPresent()){
-			if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.NOTUSE.value){
-				result.setAllPreAppPanelFlg(false);
-			}else{
-				result.setAllPreAppPanelFlg(true);
-			}
 			//時間外表示区分
 			result.setExtratimeDisplayFlag(overtimeRestAppCommonSet.get().getExtratimeDisplayAtr().value == 1 ? true : false);
 		}
@@ -616,7 +696,7 @@ public class AppOvertimeFinder {
 				List<BonusPayTimeItem> bonusPayTimeItems= this.iOvertimePreProcess.getBonusTime(employeeID,overtimeRestAppCommonSet,appDate,companyID, result.getSiftType());
 				for(BonusPayTimeItem bonusPayTimeItem : bonusPayTimeItems){
 					OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
-					overtimeInputDto.setAttendanceID(AttendanceID.BONUSPAYTIME.value);
+					overtimeInputDto.setAttendanceID(AttendanceType.BONUSPAYTIME.value);
 					overtimeInputDto.setFrameNo(bonusPayTimeItem.getId());
 					overtimeInputDto.setFrameName(bonusPayTimeItem.getTimeItemName().toString());
 					overtimeInputDto.setTimeItemTypeAtr(bonusPayTimeItem.getTimeItemTypeAtr().value);
@@ -655,14 +735,30 @@ public class AppOvertimeFinder {
 			//01-07_乖離理由を取得
 			result.setDisplayDivergenceReasonInput(result.getApplication().getPrePostAtr() != PrePostAtr.PREDICT.value && iOvertimePreProcess.displayDivergenceReasonInput(overtimeRestAppCommonSet));
 		}
-		//01-09_事前申請を取得
-		if(result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value ){
-			result.setPreAppPanelFlg(false);
-			AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(companyID, employeeID,overtimeRestAppCommonSet, appDate,result.getApplication().getPrePostAtr());
-			if(appOvertime != null){
-				result.setPreAppPanelFlg(true);
-				convertOverTimeDto(companyID,preAppOvertimeDto,result,appOvertime);
-			}			
+		
+		// xu li hien thi du lieu xin truoc
+		if(overtimeRestAppCommonSet.isPresent()){
+			// hien thi du lieu thuc te
+			if(result.getApplication().getPrePostAtr() == InitValueAtr.POST.value && overtimeRestAppCommonSet.get().getPerformanceDisplayAtr().value == UseAtr.USE.value){
+				result.setReferencePanelFlg(true);
+			}
+			// hien thi don xin truoc
+			if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.NOTUSE.value && result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value){
+				result.setAllPreAppPanelFlg(false);
+			}else{
+				result.setAllPreAppPanelFlg(true);
+			}
+		}
+		if(result.isAllPreAppPanelFlg()){
+			//01-09_事前申請を取得
+			if(result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value ){
+				result.setPreAppPanelFlg(false);
+				AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(companyID, employeeID,overtimeRestAppCommonSet, appDate,result.getApplication().getPrePostAtr());
+				if(appOvertime != null){
+					result.setPreAppPanelFlg(true);
+					convertOverTimeDto(companyID,preAppOvertimeDto,result,appOvertime);
+				}			
+			}
 		}
 		
 	}
@@ -729,7 +825,7 @@ public class AppOvertimeFinder {
 			List<Integer> frameNo = new ArrayList<>();
 			for (OverTimeInput overTimeInput : overtimeInputs) {
 				OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
-				overtimeInputDto.setAttendanceID(overTimeInput.getAttendanceID().value);
+				overtimeInputDto.setAttendanceID(overTimeInput.getAttendanceType().value);
 				overtimeInputDto.setFrameNo(overTimeInput.getFrameNo());
 				overtimeInputDto.setStartTime(overTimeInput.getStartTime().v());
 				overtimeInputDto.setEndTime(overTimeInput.getEndTime().v());
@@ -754,81 +850,7 @@ public class AppOvertimeFinder {
 		result.setPreAppOvertimeDto(preAppOvertimeDto);
 	}
 
-//	private List<OvertimeInputDto> convertOverTimeInputDto(List<OverTimeInput> overtimeInputs,String companyID){
-//		List<OvertimeInputDto> overTimeInputDtos = new ArrayList<>();
-//		List<Integer> frameOverTimeNo = new ArrayList<>();
-//		List<Integer> frameBonusTimeNo = new ArrayList<>();
-//		List<Integer> frameBonusSpecTimeNo = new ArrayList<>();
-//		for(OverTimeInput overTimeInput : overtimeInputs){
-//			OvertimeInputDto overtimeInputDto = new OvertimeInputDto(overTimeInput.getCompanyID(),
-//					overTimeInput.getAppID(),
-//					overTimeInput.getAttendanceID().value,
-//					overTimeInput.getFrameNo(),
-//					overTimeInput.getTimeItemTypeAtr().value, 
-//					"", 
-//					overTimeInput.getStartTime().v(),
-//					overTimeInput.getEndTime().v(),
-//					overTimeInput.getApplicationTime().v());
-//			
-//			overTimeInputDtos.add(overtimeInputDto);
-//			
-//			if(overTimeInput.getAttendanceID().value == AttendanceID.NORMALOVERTIME.value){
-//				frameOverTimeNo.add(overTimeInput.getFrameNo());
-//			}
-//			if(overTimeInput.getAttendanceID().value == AttendanceID.BONUSPAYTIME.value){
-//				if(overTimeInput.getTimeItemTypeAtr().value == TimeItemTypeAtr.NORMAL_TYPE.value){
-//					frameBonusTimeNo.add(overTimeInput.getFrameNo());
-//				}else{
-//					frameBonusSpecTimeNo.add(overTimeInput.getFrameNo());
-//				}
-//			}
-//			
-//		}
-//		List<OvertimeWorkFrame> overtimeFrames = new ArrayList<>();
-//		if(frameOverTimeNo != null && frameOverTimeNo.size() > 0){
-//			overtimeFrames = this.overtimeFrameRepository.getOvertimeWorkFrameByFrameNos(companyID,frameOverTimeNo);
-//		}
-//		List<BonusPayTimeItem> bonusPayTimeItems = new ArrayList<>();
-//		if(frameBonusTimeNo != null && frameBonusTimeNo.size() > 0){
-//			bonusPayTimeItems = bPTimeItemRepository.getListBonusPayTimeItemName(companyID, frameBonusTimeNo);
-//		}
-//		List<BonusPayTimeItem> specBonusPayTimeItems = new ArrayList<>();
-//		if(frameBonusSpecTimeNo != null &&  frameBonusSpecTimeNo.size() > 0){
-//			specBonusPayTimeItems  = bPTimeItemRepository.getListSpecialBonusPayTimeItemName(companyID, frameBonusSpecTimeNo);
-//		}
-//		for(OvertimeInputDto dto : overTimeInputDtos){
-//			// get frameName of Overtime
-//			if(dto.getAttendanceID() == AttendanceID.NORMALOVERTIME.value){
-//				for(OvertimeWorkFrame overtimFrame :overtimeFrames){
-//					if(dto.getFrameNo() == overtimFrame.getOvertimeWorkFrNo().v().intValueExact()){
-//						dto.setFrameName(overtimFrame.getOvertimeWorkFrName().toString());
-//						break;
-//					}
-//				}
-//			}
-//			//get BonusTimeFrame
-//			if(dto.getAttendanceID() == AttendanceID.BONUSPAYTIME.value){
-//				if(dto.getTimeItemTypeAtr() == TimeItemTypeAtr.NORMAL_TYPE.value){
-//					for(BonusPayTimeItem bonusPayTimeItem : bonusPayTimeItems){
-//						if(dto.getFrameNo() == bonusPayTimeItem.getId()){
-//							dto.setFrameName(bonusPayTimeItem.getTimeItemName().toString());
-//							break;
-//						}
-//					}
-//				}else{
-//					for(BonusPayTimeItem bonusPayTimeItem : specBonusPayTimeItems){
-//						if(dto.getFrameNo() == bonusPayTimeItem.getId()){
-//							dto.setFrameName(bonusPayTimeItem.getTimeItemName().toString());
-//							break;
-//						}
-//					}
-//				}
-//			}
-//		}
-//		
-//		return overTimeInputDtos;
-//		
-//	}
+
 	
 	/**
 	 * 01-14_勤務時間取得

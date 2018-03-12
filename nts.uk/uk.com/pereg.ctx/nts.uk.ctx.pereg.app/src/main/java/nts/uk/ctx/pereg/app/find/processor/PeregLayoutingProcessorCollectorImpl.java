@@ -9,19 +9,21 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.util.TypeLiteral;
 
+import find.person.contact.PersonContactDto;
 import find.person.info.PersonDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.businesstype.BusinessTypeDto;
 import nts.uk.ctx.at.shared.app.find.shortworktime.ShortWorkTimeDto;
+import nts.uk.ctx.at.shared.app.find.workingcondition.WorkingConditionDto;
 import nts.uk.ctx.bs.employee.app.find.classification.affiliate.AffClassificationDto;
 import nts.uk.ctx.bs.employee.app.find.department.affiliate.AffDeptHistDto;
+import nts.uk.ctx.bs.employee.app.find.employee.contact.EmpInfoContactDto;
 import nts.uk.ctx.bs.employee.app.find.employee.history.AffCompanyHistInfoDto;
 import nts.uk.ctx.bs.employee.app.find.employee.mngdata.EmployeeDataMngInfoDto;
 import nts.uk.ctx.bs.employee.app.find.jobtitle.affiliate.AffJobTitleDto;
 import nts.uk.ctx.bs.employee.app.find.temporaryabsence.TempAbsHisItemDto;
 import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemDto;
 import nts.uk.ctx.pereg.app.find.employment.history.EmploymentHistoryDto;
-import nts.uk.shr.pereg.app.find.PeregFinder;
-import nts.uk.ctx.at.shared.app.find.workingcondition.WorkingConditionDto;;
+import nts.uk.shr.pereg.app.find.PeregFinder;;
 
 @Stateless
 @SuppressWarnings("serial")
@@ -52,7 +54,11 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			// CS00020 労働条件
 			new TypeLiteral<PeregFinder<WorkingConditionDto>>(){},
 			// CS00021 勤務種別
-			new TypeLiteral<PeregFinder<BusinessTypeDto>>(){}
+			new TypeLiteral<PeregFinder<BusinessTypeDto>>(){},
+			// CS00022 個人連絡先
+			new TypeLiteral<PeregFinder<PersonContactDto>>(){},
+			// CS00023 社員連絡先
+			new TypeLiteral<PeregFinder<EmpInfoContactDto>>(){}
 			);
 
 	@Override

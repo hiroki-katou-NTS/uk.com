@@ -24,38 +24,33 @@
 					<div id="content" class="cf">
 						<h1>ComboBox</h1>
 						<h2>Overview</h2>
+						<div class="status">
+							<span data-bind="ntsCheckBox: { checked: isEnable }">Enable</span>
+							<span data-bind="ntsCheckBox: { checked: isEditable }">Editable</span>
+							<span data-bind="ntsCheckBox: { checked: isRequired }">isRequired</span>
+							<span data-bind="ntsCheckBox: { checked: selectFirstIfNull }">selectFirstIfNull</span>
+						</div>
 						<div class="control-group valign-center">
-							<div id="combo-box" tabindex="1" data-bind="ntsComboBox: {options: itemList,
+							<div id="combo-box" tabindex="1" data-bind="ntsComboBox: {
+												name: 'Sample List',
+												options: itemList,
 												optionsValue: 'code',
 												visibleItemsCount: 5,
 												value: selectedCode,
 												optionsText: 'name',
 												editable: isEditable,
 												enable: isEnable,
+												required: isRequired,
+												selectFirstIfNull: selectFirstIfNull,
 												columns: [
 														{ prop: 'code', length: 4 },
 														{ prop: 'name', length: 10 },
 													]}"></div>
-													<div id="combo-box2" tabindex="2" data-bind="ntsComboBox: {options: itemList,
-												optionsValue: 'code',
-												visibleItemsCount: 5,
-												value: selectedCode,
-												optionsText: 'name',
-												editable: isEditable,
-												enable: isEnable,
-												dropDownAttachedToBody: true,
-												columns: [
-														{ prop: 'code', length: 4 },
-														{ prop: 'name', length: 10 },
-													]}
-												"></div>
-						</div>
-						<div class="status">
-							<span data-bind="ntsCheckBox: { checked: isEnable }">Enable</span>
-							<span tabindex="4" data-bind="ntsCheckBox: { checked: isEditable }">Editable</span>
-						</div>
-						<div>
-							Your selected code: <span data-bind="text:selectedCode"></span>
+
+							<div>
+								Your selected code: <input type="text" data-bind="value:selectedCode" style="width: 50px;"/>
+								<button data-bind="click: validate">validate</button>
+							</div>
 						</div>
 						
 						<h2>Expand width when dropped down</h2>
@@ -63,10 +58,11 @@
 							<div id="combo-box2" data-bind="ntsComboBox: {options: itemList,
  												optionsValue: 'code',
  												visibleItemsCount: 5,
- 												value: selectedCode,
+ 												value: selectedCode2,
  												optionsText: 'name',
  												editable: isEditable,
  												enable: isEnable,
+												required: isRequired,
  												columns: [
  														{ prop: 'code', length: 4 },
  														{ prop: 'name', length: 10, lengthDropDown: 20 },
@@ -77,7 +73,7 @@
 							<div class="tabs">
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
-									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+									<li><a href="#tabs-viewmodel">API</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
@@ -86,6 +82,7 @@
 	<com:scriptfile set="IGNITE" />
 </ui:define>]]></pre>
 <pre><![CDATA[<div id="combo-box" data-bind="ntsComboBox: {
+	name: 'Sample List',
 	options: itemListCbb1,
 	optionsValue: 'code',
 	visibleItemsCount: 5,
@@ -93,6 +90,8 @@
 	optionsText: 'name',
 	editable: isEditable,
 	enable: isEnable,
+	required: isRequired,
+	selectFirstIfNull: selectFirstIfNull,
 	columns: [
 		{ prop: 'code', length: 4 },
 		{ prop: 'name', length: 10 },
@@ -188,7 +187,7 @@ class ItemModel {
 												</td>
 											</tr>
 											<tr>
-												<td>editable</td>
+												<td>editable<i>(optional)</i></td>
 												<td>
 													<b>Type:</b> boolean<br/>
 													<b>Default:</b> false<br/>
@@ -197,11 +196,27 @@ class ItemModel {
 												</td>
 											</tr>											
 											<tr>
-												<td>enable</td>
+												<td>enable<i>(optional)</i></td>
 												<td>
 													<b>Type:</b> boolean<br/>
 													<b>Default:</b> true<br/>
-													Set enable/disable for MultiCheckBox control
+													Set enable/disable.
+												</td>
+											</tr>											
+											<tr>
+												<td>required<i>(optional)</i></td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													<b>Default:</b> false<br/>
+													Set required or not.
+												</td>
+											</tr>											
+											<tr>
+												<td>selectFirstIfNull<i>(optional)</i></td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													<b>Default:</b> true<br/>
+													If true (default), first item will be selected when value is null or undefined or "".
 												</td>
 											</tr>
 											<tr>

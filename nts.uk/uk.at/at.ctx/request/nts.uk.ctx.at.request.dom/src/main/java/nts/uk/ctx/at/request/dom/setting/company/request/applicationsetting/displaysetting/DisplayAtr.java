@@ -10,10 +10,14 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum DisplayAtr {
 	
-	// 使用しない
+	/**
+	 * 使用しない
+	 */
 	NOT_DISPLAY(0, "使用しない"),
 	
-	// 使用する
+	/**
+	 * 使用する
+	 */
 	DISPLAY(1, "使用する");
 	
 	public final Integer value;

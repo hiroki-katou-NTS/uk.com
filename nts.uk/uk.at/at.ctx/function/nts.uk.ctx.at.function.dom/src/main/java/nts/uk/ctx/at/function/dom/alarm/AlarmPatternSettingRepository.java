@@ -3,6 +3,9 @@ package nts.uk.ctx.at.function.dom.alarm;
 import java.util.List;
 import java.util.Optional;
 
+import alarmPatternRepo.AlarmPatternSettingSimple;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
+
 public interface AlarmPatternSettingRepository {
 	
 	/**
@@ -11,6 +14,14 @@ public interface AlarmPatternSettingRepository {
 	 * @return AlarmPatternSetting List
 	 */
 	public List<AlarmPatternSetting> findByCompanyId(String companyId);
+	
+	
+	/**
+	 * @param companyId
+	 * 	 
+	 * @return simple domain
+	 */
+	public List<AlarmPatternSettingSimple> findByCompanyIdAndUser(String companyId);
 	
 	/**
 	 * @param companyId
@@ -24,5 +35,7 @@ public interface AlarmPatternSettingRepository {
 	public void update(AlarmPatternSetting domain);
 	
 	public void delete(String companyId, String alarmPatternCode);
+	
+	public List<CheckCondition> getCheckCondition(String companyId, String alarmPatternCode);
 		
 }

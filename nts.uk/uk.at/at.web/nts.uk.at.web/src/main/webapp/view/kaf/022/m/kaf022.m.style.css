@@ -1,0 +1,15 @@
+.wrap-content {
+	padding: 40px;
+}
+
+#wkp-list {
+	display: inline-block;
+}
+
+#display-detail {
+	display: inline-block;
+}
+
+#display-detail .ntsRadioBox {
+	display: block !IMPORTANT;
+}

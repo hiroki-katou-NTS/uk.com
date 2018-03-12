@@ -20,7 +20,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * 
  * @author keisuke_hoshina
  */
-@RequiredArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
 public class TimeSpanForCalc extends DomainObject implements ComparableRange<Integer> {
@@ -28,6 +27,31 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Int
 	private final TimeWithDayAttr start;
 	private final TimeWithDayAttr end;
 
+	/**
+	 * Constructor 
+	 */
+	public TimeSpanForCalc(TimeWithDayAttr start, TimeWithDayAttr end) {
+		super();
+
+		if(start == null && end == null) {
+			this.start = new TimeWithDayAttr(0);
+			this.end = new TimeWithDayAttr(0);
+		}
+		else if(start == null){
+			this.start = end;
+			this.end = end;
+		}
+		else if(end == null) {
+			this.start = start;
+			this.end = start;
+		}
+		else {
+			this.start = start;
+			this.end = end;
+		}
+	}
+	
+	
 	public TimeSpanForCalc getSpan() {
 		return this;
 	}
@@ -38,7 +62,9 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Int
 	 * @return 分の整数
 	 */
 	public int lengthAsMinutes() {
+		if(this.end.lessThan(this.start))  return 0;
 		return this.end.v() - this.start.v();
+		
 	}
 
 	/**

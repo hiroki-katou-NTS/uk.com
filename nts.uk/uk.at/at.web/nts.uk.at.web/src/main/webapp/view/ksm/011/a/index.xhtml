@@ -7,11 +7,19 @@
 <body>
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
-<!-- 			<com:ValidatorScript> -->
-<!-- 				nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalCd -->
-<!-- 			</com:ValidatorScript> -->
-			
+			<com:ValidatorScript>
+				nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.PersonSymbolQualify
+				nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.CorrectDeadline
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
+			
+			<com:stylefile path="/view/ccg/025/component/component.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/025/component/component.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/025/component/component.vm.js" of="/nts.uk.com.web" />
+			
+			<com:stylefile path="/view/ccg/026/component/component.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/026/component/component.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/026/component/component.vm.js" of="/nts.uk.com.web" />
 				
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:stylefile path="/view/ksm/011/main.css"  of="/nts.uk.at.web"/>
@@ -26,9 +34,7 @@
 			<com:scriptfile path="ksm011.a.service.js" />
 			<com:scriptfile path="ksm011.a.start.js" />
 			
-			<com:stylefile path="/view/ccg/025/component/component.css" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/025/component/component.service.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/025/component/component.vm.js" of="/nts.uk.com.web" />
+			
 		</ui:define>
 
 		<ui:define name="sidebar" tabindex="1">
@@ -50,7 +56,7 @@
 				</com:ko-if>
 				
 				<com:ko-if bind="currentTab()=='B'">
-					<button class="proceed" data-bind="click: $parent.viewmodelB.registration.bind($parent.viewmodelB)">#{i18n.getText('KSM011_6')}</button>
+					<button tabindex="2" class="proceed" data-bind="click: $parent.viewmodelB.registration.bind($parent.viewmodelB)">#{i18n.getText('KSM011_6')}</button>
 				</com:ko-if>
 				
 				<com:ko-if bind="currentTab()=='C'">
@@ -59,7 +65,7 @@
 				
 				<com:ko-if bind="currentTab()=='D'">
 					<button class="proceed" data-bind="click: $parent.viewmodelD.registration.bind($parent.viewmodelD)">#{i18n.getText('KSM011_6')}</button>
-					<button data-bind="click: $parent.viewmodelD.registration.bind($parent.viewmodelD)">#{i18n.getText('KSM011_81')}</button>
+					<button>#{i18n.getText('KSM011_81')}</button>
 				</com:ko-if>
 			</div>
 			
@@ -67,21 +73,21 @@
 				<div class="contents-area-a cf">
 					<table class="link-control">
 						<tr>
-							<td><a tabindex="3" class="hyperlink" href="#control-01">#{i18n.getText('KSM011_76')}</a></td>
-							<td><a tabindex="4" class="hyperlink" href="#control-02">#{i18n.getText('KSM011_16')}</a></td>
-							<td><a tabindex="5" class="hyperlink" href="#control-03">#{i18n.getText('KSM011_20')}</a></td>
-							<td><a tabindex="6" class="hyperlink" href="#control-04">#{i18n.getText('KSM011_23')}</a></td>
-							<td><a tabindex="7" class="hyperlink" href="#control-05">#{i18n.getText('KSM011_27')}</a></td>
-							<td><a tabindex="8" class="hyperlink" href="#control-06">#{i18n.getText('KSM011_34')}</a></td>
-							<td><a tabindex="9" class="hyperlink" href="#control-07">#{i18n.getText('KSM011_38')}</a></td>
-							<td><a tabindex="10" class="hyperlink" href="#control-08">#{i18n.getText('KSM011_48')}</a></td>
+							<td><a tabindex="3" href="#control-01" class="hyperlink hyperlink-disable">#{i18n.getText('KSM011_76')}</a></td>
+							<td><a tabindex="4" href="#control-02" class="hyperlink">#{i18n.getText('KSM011_16')}</a></td>
+							<td><a tabindex="5" href="#control-03" class="hyperlink">#{i18n.getText('KSM011_20')}</a></td>
+							<td><a tabindex="6" href="#control-04" class="hyperlink">#{i18n.getText('KSM011_23')}</a></td>
+							<td><a tabindex="7" href="#control-05" class="hyperlink">#{i18n.getText('KSM011_27')}</a></td>
+							<td><a tabindex="8" href="#control-06" class="hyperlink">#{i18n.getText('KSM011_34')}</a></td>
+							<td><a tabindex="9" href="#control-07" class="hyperlink">#{i18n.getText('KSM011_38')}</a></td>
+							<td><a tabindex="10" href="#control-08" class="hyperlink">#{i18n.getText('KSM011_48')}</a></td>
 						</tr>
 					</table>
 					
-					<div class="panel panel-frame item-panel">
+					<div id="item-panel" class="panel panel-frame item-panel">
 						<div id="control-01" class="block-1">
 							<label class="basic-label">#{i18n.getText('KSM011_76')}</label>
-							<hr />
+							<hr class="nav" />
 							<table class="basic-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_7')}</div></td>
@@ -155,7 +161,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_80')}</div></td>
-									<td><div tabindex="18" class="cbx-days" data-bind="ntsComboBox: {
+									<td><div id="x" tabindex="18" class="cbx-days" data-bind="ntsComboBox: {
 											options: dayOfWeek,
 											optionsValue: 'code',
 											value: selectedDay,
@@ -171,7 +177,7 @@
 						
 						<div id="control-02" class="block-2">
 							<label class="basic-label">#{i18n.getText('KSM011_16')}</label>
-							<hr />
+							<hr class="nav" />
 							<table class="type-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_17')}</div></td>
@@ -208,7 +214,7 @@
 						
 						<div id="control-03" class="block-3">
 							<label class="basic-label">#{i18n.getText('KSM011_20')}</label>
-							<hr />
+							<hr class="nav" />
 							<table class="period-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_21')}</div></td>
@@ -235,7 +241,7 @@
 						
 						<div id="control-04" class="block-4">
 							<label class="basic-label">#{i18n.getText('KSM011_23')}</label>
-							<hr />
+							<hr class="nav" />
 							<table class="activation-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_24')}</div></td>
@@ -272,7 +278,7 @@
 						
 						<div id="control-05" class="block-5">
 							<label class="basic-label">#{i18n.getText('KSM011_27')}</label>
-							<hr />
+							<hr class="nav" />
 							<table class="time-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_28')}</div></td>
@@ -319,7 +325,7 @@
 						
 						<div id="control-06" class="block-6">
 							<label class="basic-label">#{i18n.getText('KSM011_34')}</label>
-							<hr />
+							<hr class="nav" />
 							<table class="creation-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_35')}</div></td>
@@ -356,7 +362,7 @@
 						
 						<div id="control-07" class="block-7">
 							<label class="basic-label">#{i18n.getText('KSM011_38')}</label>
-							<hr />
+							<hr class="nav" />
 							<table class="complete-method-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_39')}</div></td>
@@ -379,7 +385,7 @@
 									</td>
 								</tr>
 								<tr>
-									<td colspan="2"><label class="basic-label sub-label-title">#{i18n.getText('KSM011_43')}</label><hr /></td>
+									<td colspan="2"><label class="basic-label sub-label-title">#{i18n.getText('KSM011_43')}</label><hr class="nav" /></td>
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KSM011_7')}</div></td>
@@ -404,7 +410,7 @@
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KSM011_44')}</div></td>
 									<td>
-										<button tabindex="38" data-bind="click: openEDialog, enable: openEDialogEnable">#{i18n.getText('KSM011_6')}</button>
+										<button tabindex="38" data-bind="click: openEDialog, enable: openEDialogEnable">#{i18n.getText('KSM011_45')}</button>
 										<input class="txtcondition" data-bind="ntsTextEditor: { value: conditionList, enable: conditionListEnable, readonly: true }" />
 									</td>
 								</tr>
@@ -433,7 +439,7 @@
 						
 						<div id="control-08" class="block-8">
 							<label class="basic-label">#{i18n.getText('KSM011_48')}</label>
-							<hr />
+							<hr class="nav" />
 							<table class="search-control-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_49')}</div></td>

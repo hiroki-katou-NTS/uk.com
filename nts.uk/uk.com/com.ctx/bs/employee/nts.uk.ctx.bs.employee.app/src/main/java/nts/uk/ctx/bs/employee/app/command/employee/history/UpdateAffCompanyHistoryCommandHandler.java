@@ -62,7 +62,8 @@ public class UpdateAffCompanyHistoryCommandHandler extends CommandHandler<Update
 				throw new RuntimeException("Invalid AffCompanyHist");
 			}
 			// 所属期間．終了日が指定されない場合（＝退職していない）、所属期間．終了日＝9999/12/31を自動的に設定する。
-			listHistBySID.changeSpan(itemToBeUpdated.get(),new DatePeriod(command.getStartDate(),command.getEndDate()!= null? command.getEndDate():ConstantUtils.maxDate()) );
+			listHistBySID.changeSpan(itemToBeUpdated.get(), new DatePeriod(command.getStartDate(),
+					command.getEndDate() != null ? command.getEndDate() : ConstantUtils.maxDate()));
 			affCompanyHistService.update(listHistBySID, itemToBeUpdated.get());
 		}
 		AffCompanyInfo histItem = AffCompanyInfo.createFromJavaType(command.getHistoryId(), command.getRecruitmentClassification(), command.getAdoptionDate(), command.getRetirementAllowanceCalcStartDate());

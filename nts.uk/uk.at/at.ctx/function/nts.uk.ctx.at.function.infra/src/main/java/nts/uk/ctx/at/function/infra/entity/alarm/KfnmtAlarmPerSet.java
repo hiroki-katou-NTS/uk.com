@@ -72,11 +72,11 @@ public class KfnmtAlarmPerSet extends UkJpaEntity implements Serializable{
 	}
 
 	public void fromEntity(KfnmtAlarmPerSet  newEntity) {
-		this.alarmPerSetItems = newEntity.alarmPerSetItems;
-//		this.alarmPerSetItems.removeIf(c->!newEntity.alarmPerSetItems.contains(c));	
-//		newEntity.alarmPerSetItems.forEach( item ->{
-//			if(!this.alarmPerSetItems.contains(item)) this.alarmPerSetItems.add(item);		
-//		});
+//		this.alarmPerSetItems = newEntity.alarmPerSetItems;
+		this.alarmPerSetItems.removeIf(c->!newEntity.alarmPerSetItems.contains(c));	
+		newEntity.alarmPerSetItems.forEach( item ->{
+			if(!this.alarmPerSetItems.contains(item)) this.alarmPerSetItems.add(item);		
+		});
 		this.authSetting = newEntity.authSetting;
 	}
 }

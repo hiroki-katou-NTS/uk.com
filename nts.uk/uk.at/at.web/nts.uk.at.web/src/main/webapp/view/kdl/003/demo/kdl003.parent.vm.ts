@@ -10,18 +10,30 @@ module kdl003.parent.viewmodel {
         childSelectWorkTypeName: KnockoutObservable<string>;
         childSelectSiftCode: KnockoutObservable<string>;
         childSelectSiftName: KnockoutObservable<string>;
+        firstStartTime: KnockoutObservable<number>;
+        firstEndTime : KnockoutObservable<number>;
+        secondStartTime: KnockoutObservable<number>;
+        secondEndTime: KnockoutObservable<number>;
+        first: time;
+        second: time;
         constructor() {
             var self = this;
             //construct codes 
             self.canSelectWorkTypeCodes = ko.observable('001,002,003,004,005,006,007,008,009,010');
             self.selectWorkTypeCode = ko.observable('002');
-            self.canSelectSiftCodes = ko.observable('001,003,005');
-            self.selectSiftCode = ko.observable('003');
+            self.canSelectSiftCodes = ko.observable('');
+            self.selectSiftCode = ko.observable('324');
 
             self.childSelectWorkTypeCode = ko.observable('');
             self.childSelectWorkTypeName = ko.observable('');
             self.childSelectSiftCode = ko.observable('');
             self.childSelectSiftName = ko.observable('');
+            self.firstStartTime = ko.observable(null);
+            self.firstEndTime = ko.observable(null);
+            self.secondStartTime = ko.observable(null);
+            self.secondEndTime = ko.observable(null);
+            self.first = <time>{};
+            self.second = <time>{};
         }
         //open dialog 003 
         OpenDialog003() {
@@ -43,8 +55,19 @@ module kdl003.parent.viewmodel {
                     self.childSelectWorkTypeName(childData.selectedWorkTypeName);
                     self.childSelectSiftCode(childData.selectedWorkTimeCode);
                     self.childSelectSiftName(childData.selectedWorkTimeName);
+                    self.firstStartTime(childData.firstStartTime);
+                    self.firstEndTime(childData.firstEndTime);
+                    self.secondStartTime(childData.secondStartTime);
+                    self.secondEndTime(childData.secondEndTime);
+                    self.first(childData.first);
+                    self.second(childData.second);
                 }
             })
         }
+        
+    }
+     interface time {
+        start: number;
+        end: number;
     }
 }

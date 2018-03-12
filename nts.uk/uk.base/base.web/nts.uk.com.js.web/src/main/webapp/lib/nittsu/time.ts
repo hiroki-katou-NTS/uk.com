@@ -601,7 +601,7 @@ module nts.uk.time {
         if (momentObject.isValid() && (momentObject.isSameOrBefore(result.systemMax()) && momentObject.isSameOrAfter(result.systemMin()))) {
             result.succeeded();
         } else {
-            let parsedFormat = momentObject.creationData().format;
+            let parsedFormat: any = momentObject.creationData().format;
             let isHasYear = (nts.uk.util.isNullOrEmpty(outputFormat) ? false : outputFormat.indexOf("Y") >= 0) || parsedFormat.indexOf("Y") >= 0;
             let isHasMonth = (nts.uk.util.isNullOrEmpty(outputFormat) ? false : outputFormat.indexOf("M") >= 0) || parsedFormat.indexOf("M") >= 0;
             let isHasDay = (nts.uk.util.isNullOrEmpty(outputFormat) ? false : outputFormat.indexOf("D") >= 0) || parsedFormat.indexOf("D") >= 0;
@@ -875,7 +875,7 @@ module nts.uk.time {
         if (endEraSymbolIndex > -1) {
             let startEraDate = moment(currentEra.start, "YYYY-MM-DD");
             let inputEraDate = inputDate.substring(endEraSymbolIndex);
-            let tempEra = moment.utc(inputEraDate, eraAcceptFormats, true); 
+            let tempEra: any = moment.utc(inputEraDate, eraAcceptFormats, true); 
             if (tempEra.isValid()) {
                 return startEraDate.add(tempEra.format("YY"), "Y")
                                     .set({'month': tempEra.month(), "date": tempEra.date()})
@@ -885,6 +885,5 @@ module nts.uk.time {
         
         return japaneseDate;
     }
-
 
 }

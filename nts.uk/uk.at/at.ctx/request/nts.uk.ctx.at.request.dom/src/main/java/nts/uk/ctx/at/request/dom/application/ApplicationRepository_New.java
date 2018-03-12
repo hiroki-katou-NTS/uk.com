@@ -12,6 +12,15 @@ public interface ApplicationRepository_New {
 	
 	public List<Application_New> getApplicationIdByDate(String companyId, GeneralDate startDate, GeneralDate endDate);
 	
+	/**
+	 * getApplicationBySIDs
+	 * @param employeeID
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<Application_New> getApplicationBySIDs(List<String> employeeID,GeneralDate startDate, GeneralDate endDate);
+	
 	public List<Application_New> getApp(String applicantSID, GeneralDate appDate, int prePostAtr, int appType);
 	
 	/**
@@ -32,5 +41,30 @@ public interface ApplicationRepository_New {
 	public void updateWithVersion(Application_New application);
 	
 	public void delete(String companyID, String appID);
-	
+	/**
+	 * get list application by sID
+	 * @param companyId
+	 * @param sID
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<Application_New> getListAppBySID(String companyId, String sID, GeneralDate startDate, GeneralDate endDate);
+	/**
+	 * get List Application By Reflect
+	 * @param companyId
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<Application_New> getListAppByReflect(String companyId, GeneralDate startDate, GeneralDate endDate);
+	/**
+	 * get List Application Pre
+	 * @param companyId
+	 * @param sID
+	 * @param appDate
+	 * @param prePostAtr
+	 * @return
+	 */
+	public List<Application_New> getListAppPre(String companyId, String sID, GeneralDate appDate, int prePostAtr);
 }

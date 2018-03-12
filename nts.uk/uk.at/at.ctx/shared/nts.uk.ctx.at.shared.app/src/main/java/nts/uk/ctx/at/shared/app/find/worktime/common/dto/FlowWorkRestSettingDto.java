@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSettingDetail;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetail;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingSetMemento;
 
 /**
  * The Class FlowWorkRestSettingDto.

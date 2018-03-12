@@ -93,7 +93,7 @@ public class DataWorkServiceImpl implements IDataWorkService {
 				workTypeCodes.add(x.getWorkTypeCode());
 			});
 			result = this.workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCodes).stream()
-					.map(x -> x.getName().v()).collect(Collectors.toList());
+					.map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
 			return result;
 		}
 		List<Integer> allDayAtrs = allDayAtrs();

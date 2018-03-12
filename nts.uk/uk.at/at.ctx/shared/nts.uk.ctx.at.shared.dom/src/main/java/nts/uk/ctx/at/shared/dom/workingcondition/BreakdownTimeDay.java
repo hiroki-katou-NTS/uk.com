@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * The Class BreakdownTimeDay.
@@ -37,6 +38,14 @@ public class BreakdownTimeDay extends DomainObject{
 		this.oneDay = oneDay;
 		this.morning = morning;
 		this.afternoon = afternoon;
+	}
+	
+	/**
+	 * 所定労働時間の取得
+	 * @return　所定労働時間
+	 */
+	public int getPredetermineWorkTime(){
+		return this.morning.valueAsMinutes() + this.afternoon.valueAsMinutes();
 	}
 	
 }

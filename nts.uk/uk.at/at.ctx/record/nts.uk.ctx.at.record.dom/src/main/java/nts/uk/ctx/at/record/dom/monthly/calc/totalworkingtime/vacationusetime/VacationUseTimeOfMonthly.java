@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime;
 
-import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の休暇使用時間
@@ -57,38 +59,41 @@ public class VacationUseTimeOfMonthly {
 	
 	/**
 	 * 休暇使用時間を確認する
-	 * @param attendanceTimeOfDailys リスト：日別実績の勤怠時間
+	 * @param datePeriod 期間
+	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 */
-	public void confirm(List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
+	public void confirm(DatePeriod datePeriod,
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap){
 		
 		// 年休使用時間を確認する
-		this.annualLeave.confirm(attendanceTimeOfDailys);
+		this.annualLeave.confirm(datePeriod, attendanceTimeOfDailyMap);
 
 		// 積立年休使用時間を確認する
-		this.retentionYearly.confirm(attendanceTimeOfDailys);
+		this.retentionYearly.confirm(datePeriod, attendanceTimeOfDailyMap);
 
 		// 特別休暇使用時間を確認する
-		this.specialHoliday.confirm(attendanceTimeOfDailys);
+		this.specialHoliday.confirm(datePeriod, attendanceTimeOfDailyMap);
 
 		// 代休使用時間を確認する
-		this.compensatoryLeave.confirm(attendanceTimeOfDailys);
+		this.compensatoryLeave.confirm(datePeriod, attendanceTimeOfDailyMap);
 	}
 	
 	/**
 	 * 休暇使用時間を集計する
+	 * @param datePeriod 期間
 	 */
-	public void aggregate(){
+	public void aggregate(DatePeriod datePeriod){
 		
 		// 年休使用時間を集計する
-		this.annualLeave.aggregate();
+		this.annualLeave.aggregate(datePeriod);
 		
 		// 積立年休使用時間を集計する
-		this.retentionYearly.aggregate();
+		this.retentionYearly.aggregate(datePeriod);
 		
 		// 特別年休使用時間を集計する
-		this.specialHoliday.aggregate();
+		this.specialHoliday.aggregate(datePeriod);
 		
 		// 代休使用時間を集計する
-		this.compensatoryLeave.aggregate();
+		this.compensatoryLeave.aggregate(datePeriod);
 	}
 }

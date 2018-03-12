@@ -9,14 +9,6 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 public interface RegularAndIrregularTimeOfMonthlyRepository {
 
 	/**
-	 * 追加
-	 * @param attendanceTimeOfMonthlyKey キー値：月別実績の勤怠時間
-	 * @param regularAndIrregularTimeOfMonthly 月別実績の通常変形時間
-	 */
-	void insert(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
-			RegularAndIrregularTimeOfMonthly regularAndIrregularTimeOfMonthly);
-
-	/**
 	 * 更新
 	 * @param attendanceTimeOfMonthlyKey キー値：月別実績の勤怠時間
 	 * @param regularAndIrregularTimeOfMonthly 月別実績の通常変形時間

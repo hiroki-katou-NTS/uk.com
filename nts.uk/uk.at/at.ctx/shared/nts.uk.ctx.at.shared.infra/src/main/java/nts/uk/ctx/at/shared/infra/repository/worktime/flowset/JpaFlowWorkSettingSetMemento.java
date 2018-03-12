@@ -4,26 +4,31 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkDedicateSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFstampReflectTime;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFstampReflectTimePK;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetSetMemento;
 
 /**
  * The Class JpaFlowWorkSettingSetMemento.
  */
-public class JpaFlowWorkSettingSetMemento implements FlWorkSettingSetMemento {
+public class JpaFlowWorkSettingSetMemento implements FlowWorkSettingSetMemento {
 
 	/** The entity. */
 	private KshmtFlowWorkSet entity;
@@ -37,6 +42,9 @@ public class JpaFlowWorkSettingSetMemento implements FlWorkSettingSetMemento {
 	public JpaFlowWorkSettingSetMemento(KshmtFlowWorkSet entity) {
 		super();
 		this.entity = entity;
+		if (this.entity.getKshmtFlowWorkSetPK() == null) {
+			this.entity.setKshmtFlowWorkSetPK(new KshmtFlowWorkSetPK());
+		}
 	}
 
 	/*
@@ -70,7 +78,20 @@ public class JpaFlowWorkSettingSetMemento implements FlWorkSettingSetMemento {
 	 */
 	@Override
 	public void setRestSetting(FlowWorkRestSetting restSet) {
-		restSet.saveToMemento(new JpaFlowWorkRestSettingSetMemento(this.entity.getKshmtFlowRestSet()));
+		KshmtFlowRestSet restEntity = this.entity.getKshmtFlowRestSet();
+		if (restEntity == null) {
+			restEntity = new KshmtFlowRestSet();
+			
+			// new pk
+			KshmtFlowRestSetPK pk = new KshmtFlowRestSetPK();
+			pk.setCid(this.entity.getKshmtFlowWorkSetPK().getCid());
+			pk.setWorktimeCd(this.entity.getKshmtFlowWorkSetPK().getWorktimeCd());
+			
+			// set pk
+			restEntity.setKshmtFlowRestSetPK(pk);			
+			this.entity.setKshmtFlowRestSet(restEntity);
+		}
+		restSet.saveToMemento(new JpaFlowWorkRestSettingSetMemento(restEntity));
 	}
 
 	/*
@@ -135,6 +156,16 @@ public class JpaFlowWorkSettingSetMemento implements FlWorkSettingSetMemento {
 	 */
 	@Override
 	public void setStampReflectTimezone(FlowStampReflectTimezone stampRefTz) {
+		KshmtFstampReflectTime stampEntity = this.entity.getKshmtFstampReflectTime();
+		if (stampEntity == null) {
+			KshmtFstampReflectTimePK pk = new KshmtFstampReflectTimePK();
+			pk.setCid(this.entity.getKshmtFlowWorkSetPK().getCid());
+			pk.setWorktimeCd(this.entity.getKshmtFlowWorkSetPK().getWorktimeCd());
+			
+			stampEntity = new KshmtFstampReflectTime();
+			stampEntity.setKshmtFstampReflectTimePK(pk);
+			this.entity.setKshmtFstampReflectTime(stampEntity);
+		}
 		stampRefTz.saveToMemento(new JpaFlowStampReflectTimezoneSetMemento(this.entity.getKshmtFstampReflectTime()));
 	}
 

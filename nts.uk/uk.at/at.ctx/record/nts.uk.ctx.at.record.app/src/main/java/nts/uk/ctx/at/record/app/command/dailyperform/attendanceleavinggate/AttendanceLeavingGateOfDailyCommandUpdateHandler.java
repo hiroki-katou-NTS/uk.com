@@ -18,7 +18,7 @@ public class AttendanceLeavingGateOfDailyCommandUpdateHandler extends CommandFac
 	protected void handle(CommandHandlerContext<AttendanceLeavingGateOfDailyCommand> context) {
 		AttendanceLeavingGateOfDailyCommand command = context.getCommand();
 		if(command.getData().isPresent()){
-			repo.add(command.toDomain());
+			repo.add(command.getData().get());
 		}
 	}
 }

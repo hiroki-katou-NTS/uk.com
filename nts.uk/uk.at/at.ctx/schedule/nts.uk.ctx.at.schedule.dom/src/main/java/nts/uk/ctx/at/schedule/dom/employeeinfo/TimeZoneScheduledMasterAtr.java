@@ -9,18 +9,18 @@ package nts.uk.ctx.at.schedule.dom.employeeinfo;
  */
 // 勤務予定の時間帯マスタ参照区分
 public enum TimeZoneScheduledMasterAtr {
-		
+	
+	/** The follow master reference. */
+	// マスタ参照区分に従う
+	FOLLOW_MASTER_REFERENCE(0, "Enum_TimeZoneScheduledMasterAtr_FollowMasterReference", "マスタ参照区分に従う"),
+	
 	/** The personal day of week. */
 	// 個人曜日別
 	PERSONAL_DAY_OF_WEEK(2, "Enum_TimeZoneScheduledMasterAtr_PersonalDayOfWeek", "個人曜日別"),
 
 	/** The personal work daily. */
 	// 個人勤務日別
-	PERSONAL_WORK_DAILY(1, "Enum_TimeZoneScheduledMasterAtr_PersonalWorkDaily", "個人勤務日別"),
-	
-	/** The follow master reference. */
-	// マスタ参照区分に従う
-	FOLLOW_MASTER_REFERENCE(0, "Enum_TimeZoneScheduledMasterAtr_FollowMasterReference", "マスタ参照区分に従う");
+	PERSONAL_WORK_DAILY(1, "Enum_TimeZoneScheduledMasterAtr_PersonalWorkDaily", "個人勤務日別");
 
 	/** The value. */
 	public final int value;

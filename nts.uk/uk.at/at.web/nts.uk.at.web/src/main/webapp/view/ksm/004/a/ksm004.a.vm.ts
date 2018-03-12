@@ -12,6 +12,7 @@ module nts.uk.at.view.ksm004.a {
             yearMonthPicked2: KnockoutObservable<number> = ko.observable(Number(moment(new Date()).format('YYYY01')));
             currentCalendarWorkPlace: KnockoutObservable<SimpleObject> = ko.observable(new SimpleObject('',''));
             currentCalendarClass: KnockoutObservable<SimpleObject> = ko.observable(new SimpleObject('',''));
+            removeFlg: KnockoutObservable<boolean> = ko.observable(false);
             calendarPanel: ICalendarPanel = {
                 optionDates: ko.observableArray([]),
                 yearMonth: this.yearMonthPicked,
@@ -46,7 +47,7 @@ module nts.uk.at.view.ksm004.a {
                 endDate: 31,
                 workplaceId: ko.observable("0"),
                 workplaceName: ko.observable(""),
-                eventDisplay: ko.observable(false),
+                eventDisplay: ko.observable(true),
                 eventUpdatable: ko.observable(false),
                 holidayDisplay: ko.observable(true),
                 cellButtonDisplay: ko.observable(false)
@@ -225,6 +226,7 @@ module nts.uk.at.view.ksm004.a {
                         switch(info.newIndex) {
                             case 1:
                                 // select tab Work Place
+                                self.removeFlg(true);
                                 self.isShowDatepicker = false;
                                 self.yearMonthPicked1(Number(moment(new Date()).format('YYYY01')));
                                 self.yearMonthPicked1.valueHasMutated();
@@ -232,6 +234,7 @@ module nts.uk.at.view.ksm004.a {
                                 break;
                             case 2:
                                 // select tab Class
+                                self.removeFlg(true);
                                 self.isShowDatepicker = false;
                                 self.yearMonthPicked2(Number(moment(new Date()).format('YYYY01')));
                                 self.yearMonthPicked2.valueHasMutated();
@@ -239,6 +242,7 @@ module nts.uk.at.view.ksm004.a {
                                 break;
                             default:
                                 // select tab Company
+                                self.removeFlg(false);
                                 self.isShowDatepicker = false;
                                 self.yearMonthPicked(Number(moment(new Date()).format('YYYY01')));
                                 self.yearMonthPicked.valueHasMutated();
@@ -465,7 +469,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.getCalendarCompanySet(self.yearMonthPicked().toString())
                 .done(data => {
                     if(!nts.uk.util.isNullOrEmpty(data)) {
-                        a = {};
+                        let a = {};
                         a[Math.floor(self.yearMonthPicked()/100)] = data;
                         self.cssRangerYM(a);
                         $("#yearMonthPicker1").datepicker("hide");
@@ -484,7 +488,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.getCalendarWorkplaceSet(value,self.yearMonthPicked1().toString())
                 .done(data => {
                     if(!nts.uk.util.isNullOrEmpty(data)) {
-                        a = {};
+                        let a = {};
                         a[Math.floor(self.yearMonthPicked()/100)] = data;
                         self.cssRangerYM1(a);
                     }else{
@@ -505,7 +509,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.getCalendarClassSet(value,self.yearMonthPicked2().toString())
                 .done(data => {
                     if(!nts.uk.util.isNullOrEmpty(data)) {
-                        a = {};
+                        let a = {};
                         a[Math.floor(self.yearMonthPicked()/100)] = data;
                         self.cssRangerYM2(a);
                     }else{
@@ -849,7 +853,7 @@ module nts.uk.at.view.ksm004.a {
                 convert enum string nam to number value
             */
             convertEnumNametoNumber(name){
-                let n = '';
+                let n: number;
                 switch(name) {
                     case WorkingDayAtr.WorkingDayAtr_WorkPlace: n = 1; break;
                     case WorkingDayAtr.WorkingDayAtr_Class: n = 2; break;
@@ -1021,7 +1025,7 @@ module nts.uk.at.view.ksm004.a {
             start: string;
             textColor: string;
             backgroundColor: string;
-            listText: [];
+            listText: Array<any>;
             constructor(start: number, listText: number) {
                 this.start = moment(start.toString()).format('YYYY-MM-DD');
                 this.backgroundColor = 'white';

@@ -5,15 +5,15 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class WorkTimezoneLateNightTimeSet.
  */
 // 就業時間帯の深夜時間設定
 @Getter
-public class WorkTimezoneLateNightTimeSet extends DomainObject {
+public class WorkTimezoneLateNightTimeSet extends WorkTimeDomainObject {
 
 	/** The rounding setting. */
 	// 丸め設定

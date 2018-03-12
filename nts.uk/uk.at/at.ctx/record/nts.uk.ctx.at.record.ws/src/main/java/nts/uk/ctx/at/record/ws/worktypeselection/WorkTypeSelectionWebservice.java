@@ -23,4 +23,10 @@ public class WorkTypeSelectionWebservice {
 	public List<WorkTypeSelectionDto> getAll() {
 		return this.finder.getListWorkTypeSelection();
 	}
+	
+	@POST
+	@Path("getNamesByCodes")
+	public List<String> getNamesByCodes(List<String> codes) {
+		return this.finder.getWorkTypeNamesByCodes(codes);
+	}
 }

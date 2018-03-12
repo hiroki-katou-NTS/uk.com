@@ -33,5 +33,7 @@ public interface PerInfoItemDataRepository {
 	 * @param domain
 	 */
 	void deleteItemData(PersonInfoItemData domain);
+	
+	boolean hasItemData(List<String> ctgId, String itemCd);
 
 }

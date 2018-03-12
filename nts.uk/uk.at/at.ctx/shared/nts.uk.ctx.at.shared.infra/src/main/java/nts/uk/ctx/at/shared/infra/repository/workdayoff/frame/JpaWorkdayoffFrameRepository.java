@@ -130,7 +130,7 @@ public class JpaWorkdayoffFrameRepository extends JpaRepository
 	 * java.util.List)
 	 */
 	@Override
-	public List<WorkdayoffFrame> getWorkdayoffFrameBy(CompanyId companyId,
+	public List<WorkdayoffFrame> getWorkdayoffFrameBy(String companyId,
 			List<Integer> workdayoffFrNos) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();

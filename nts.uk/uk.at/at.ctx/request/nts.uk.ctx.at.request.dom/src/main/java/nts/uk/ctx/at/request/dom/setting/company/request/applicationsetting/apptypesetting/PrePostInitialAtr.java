@@ -1,0 +1,31 @@
+package nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting;
+
+import lombok.AllArgsConstructor;
+
+/**
+ * 
+ * @author Doan Duy Hung
+ *
+ */
+@AllArgsConstructor
+public enum PrePostInitialAtr {
+	
+	/**
+	 * 事前
+	 */
+	PRE(0, "事前"),
+	
+	/**
+	 * 事後
+	 */
+	POST(1, "事後"),
+	
+	/**
+	 * 選択なし 
+	 */
+	NO_CHOISE(2, "選択なし ");
+	
+	public final Integer value;
+
+	public final String name;
+}

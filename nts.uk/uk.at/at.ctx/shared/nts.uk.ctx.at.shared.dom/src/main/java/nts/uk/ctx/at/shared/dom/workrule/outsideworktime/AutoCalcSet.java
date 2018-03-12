@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.workrule.outsideworktime;
 
 import lombok.Value;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 
 /**
  * 自動計算設定
@@ -9,6 +10,6 @@ import lombok.Value;
  */
 @Value
 public class AutoCalcSet {
-	AutoCalculationCategoryOutsideHours CalculationClassification; 
+	AutoCalAtrOvertime CalculationClassification; 
 	
 }

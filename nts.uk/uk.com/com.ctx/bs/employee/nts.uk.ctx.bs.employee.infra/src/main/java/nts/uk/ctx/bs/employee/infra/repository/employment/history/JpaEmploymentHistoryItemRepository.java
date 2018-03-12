@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.employment.history;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,6 +37,10 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 			+ " WHERE h.sid =:sid" + " AND h.strDate <= :date"
 			+ " AND h.endDate >= :date " 
 			+ " AND a.bsymtEmploymentPK.cid =:companyId";
+	
+	private static final String SELECT_BY_EMPID_BASEDATE = "SELECT ehi FROM BsymtEmploymentHistItem ehi"
+			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId"
+			+ " WHERE eh.sid = :sid AND eh.strDate <= :basedate AND :basedate <= eh.endDate";
 
 	
 	@Override
@@ -64,7 +69,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	 */
 	private BsymtEmploymentHistItem toEntity(EmploymentHistoryItem domain) {
 		return new BsymtEmploymentHistItem(domain.getHistoryId(), domain.getEmployeeId(),
-				domain.getEmploymentCode().v(), domain.getSalarySegment() !=null? domain.getSalarySegment().value: 0);
+				domain.getEmploymentCode().v(), domain.getSalarySegment() !=null? domain.getSalarySegment().value: null);
 	}
 
 	private EmploymentInfo toDomainEmployee(Object[] entity) {
@@ -85,12 +90,8 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	 * @param entity
 	 */
 	private void updateEntity(EmploymentHistoryItem domain, BsymtEmploymentHistItem entity) {
-		if (domain.getEmploymentCode() != null && !domain.getEmploymentCode().v().equals("")){
-			entity.empCode = domain.getEmploymentCode().v();
-		}
-		if (domain.getSalarySegment() != null){
-			entity.salarySegment = domain.getSalarySegment().value;
-		}
+		entity.empCode = domain.getEmploymentCode().v();
+		entity.salarySegment = domain.getSalarySegment()!= null? domain.getSalarySegment().value: null;
 	}
 
 	@Override
@@ -191,7 +192,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	 * nts.arc.time.GeneralDate, java.util.List)
 	 */
 	@Override
-	public List<EmploymentHistoryItem> searchEmployee(List<String> employeeIds, GeneralDate baseDate,
+	public List<EmploymentHistoryItem> searchEmployee(GeneralDate baseDate, List<String> employeeIds, 
 			List<String> employmentCodes) {
 		if (CollectionUtil.isEmpty(employeeIds) || CollectionUtil.isEmpty(employmentCodes)) {
 			return new ArrayList<>();
@@ -335,6 +336,26 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	 */
 	private EmploymentHistoryItem toDomain(BsymtEmploymentHistItem entity) {
 		return EmploymentHistoryItem.createFromJavaType(entity.hisId, entity.sid, entity.empCode, entity.salarySegment);
+	}
+
+	@Override
+	public List<EmploymentHistoryItem> getEmploymentByEmpIdAndDate(GeneralDate basedate, String employeeId) {
+		
+		List<BsymtEmploymentHistItem> listHistItem = this.queryProxy()
+				.query(SELECT_BY_EMPID_BASEDATE, BsymtEmploymentHistItem.class)
+				.setParameter("sid", employeeId).setParameter("basedate", basedate)
+				.getList();
+
+		// Check exist items
+		if (listHistItem.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		// Return
+		return listHistItem.stream().map(e -> {
+			EmploymentHistoryItem domain = this.toDomain(e);
+			return domain;
+		}).collect(Collectors.toList());
 	}
 
 }

@@ -14,6 +14,7 @@
 /// <reference path="number.ts"/>
 
 /// <reference path="time.ts"/>
+/// <reference path="time/timeformat.ts"/>
 /// <reference path="time/minutesbased/minutesbased.ts"/>
 /// <reference path="time/minutesbased/minutesbased_duration.ts"/>
 /// <reference path="time/minutesbased/minutesbased_clock.ts"/>
@@ -26,8 +27,12 @@
 /// <reference path="ui/validation.ts"/>
 /// <reference path="ui/errors.ts"/>
 /// <reference path="ui/ui.ts"/>
+/// <reference path="ui/ui_sub/windows.ts"/>
+/// <reference path="ui/ui_sub/dialog.ts"/>
+/// <reference path="ui/ui_sub/ig.ts"/>
 /// <reference path="ui/dialog-options.ts"/>
 /// <reference path="ui/textbox-options.ts"/>
+/// <reference path="ui/extable.ts"/>
 /// <reference path="ui/jquery-ext.ts"/>
 /// <reference path="ui/ko-ext.ts"/>
 /// <reference path="ui/ko-ext/checkbox-ko-ext.ts"/>

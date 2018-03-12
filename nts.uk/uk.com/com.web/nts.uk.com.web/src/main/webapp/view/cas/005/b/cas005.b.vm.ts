@@ -52,6 +52,7 @@ module nts.uk.com.view.csa005.b {
             //btn copy role cas005
             buttonCopy(){
                 let self = this;
+                $("#newRoleName").trigger("validate");
                 if (!$(".nts-input").ntsError("hasError")){
                     if(self.newRoleCode()){
                         self.objCommandScreenB().roleCode = self.newRoleCode();

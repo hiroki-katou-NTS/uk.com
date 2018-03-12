@@ -27,15 +27,19 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<!-- D_001: label コード/名称-->
-				<div id="label_code" data-bind="ntsFormLabel: {required: true, constraint: ['ValueSettingCode' , 'ValueSettingName']}" class="form-label ">#{i18n.getText('CPS009_12')}</div>
+				<div id="label_code"
+					data-bind="ntsFormLabel: {required: true, constraint: ['ValueSettingCode' , 'ValueSettingName']}"
+					class="form-label ">#{i18n.getText('CPS009_12')}</div>
 				<!-- D_002: コード -->
-				<input id="roleCode" tabindex="1" data-bind="ntsTextEditor: {value: currentInitVal().itemCode,  
+				<input id="roleCode" tabindex="1"
+					data-bind="ntsTextEditor: {value: currentInitVal().itemCode,  
 											name: '#[CPS009_13]',
 											required: true, enable: true,
 											constraint: 'ValueSettingCode',
 											immediate: true}" />
 				<!-- D_003: 名称 -->
-				<input id="roleName" tabindex="2" data-bind="ntsTextEditor: {value: currentInitVal().itemName,  
+				<input id="roleName" tabindex="2"
+					data-bind="ntsTextEditor: {value: currentInitVal().itemName,  
 											name: '#[CPS009_14]',
 											required: true, enable: true,
 											constraint: 'ValueSettingName',
@@ -43,9 +47,12 @@
 			</div>
 			<div id='functions-area-bottom'>
 				<!-- D_004: button 実行 -->
-				<button id="registration" data-bind="click: newInitValue" class="proceed large" tabindex="3">#{i18n.getText('CPS009_29')} </button>
+				<button id="registration" data-bind="click: newInitValue"
+					class="proceed large" tabindex="3">#{i18n.getText('CPS009_29')}
+				</button>
 				<!-- D_005: button キャンセル -->
-				<button id="cancel" data-bind="click: cancelNewInitValue" tabindex="4">#{i18n.getText('CPS009_30')}</button>
+				<button id="cancel" data-bind="click: cancelNewInitValue"
+					tabindex="4">#{i18n.getText('CPS009_30')}</button>
 
 			</div>
 		</ui:define>

@@ -4,7 +4,7 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringMaxLength(100)
-public class AffJobTitleHistoryItemNote extends StringPrimitiveValue<AffJobTitleHistoryItemNote>{
+public class AffJobTitleHistoryItemNote extends StringPrimitiveValue<AffJobTitleHistoryItemNote> {
 
 	/**
 	 * 

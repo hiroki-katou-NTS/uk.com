@@ -21,14 +21,14 @@ public interface WindowAccountSetMemento {
 	 *
 	 * @param hotName the new hot name
 	 */
-	void setHostName(String hostName);
+	void setHostName(HostName hostName);
 	
 	/**
 	 * Sets the user name.
 	 *
 	 * @param userName the new user name
 	 */
-	void setUserName(String userName);
+	void setUserName(UserName userName);
 	
 	/**
 	 * Sets the no.

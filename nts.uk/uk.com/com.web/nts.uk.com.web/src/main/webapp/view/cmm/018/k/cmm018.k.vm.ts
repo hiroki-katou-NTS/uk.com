@@ -38,7 +38,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         treeGrid: ITreeGrid = {
                 treeType: 1,
                 selectType: 4,
-                isDialog: false,
+                isDialog: true,
                 isMultiSelect: true,
                 isShowAlreadySet: false,
                 isShowSelectButton: true,
@@ -149,7 +149,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     if(sID.approvalAtr === 0){
                         service.getPersonInfor(sID.id).done(function(data: any){
                             self.approverList.push(new shrVm.ApproverDtoK(data.sid, data.employeeCode, data.employeeName, 0,sID.dispOrder));
-                            self.approverList(_.orderBy(self.approverList(),["dispOrder"], ["asc"]);
+                            self.approverList(_.orderBy(self.approverList(),["dispOrder"], ["asc"]));
                         })
                     }else{
                         let job = new service.model.JobtitleInfor;
@@ -162,7 +162,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                         job.endDate = moment(new Date()).toDate();
                         service.getJobTitleName(job).done(function(data: any){
                             self.approverList.push(new shrVm.ApproverDtoK(data.positionId, data.positionCode, data.positionName, 1,sID.dispOrder));
-                            self.approverList(_.orderBy(self.approverList(),["dispOrder"], ["asc"]);
+                            self.approverList(_.orderBy(self.approverList(),["dispOrder"], ["asc"]));
                         })    
                     }
                 })    
@@ -230,12 +230,13 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             var dataRes: shrVm.ApproverDtoK[] = [];
 
             for (var item: service.model.EmployeeSearchDto of dataList) {
-                dataRes.push({
+                let a:shrVm.ApproverDtoK = {
                     id: item.sid,
                     code: item.scd,
                     name: item.pname,
                     approvalAtr: 0
-                });
+                }
+                dataRes.push(a);
             }
             return dataRes;
         }
@@ -244,6 +245,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
          */
         applyDataSearch(): void {
              let self = this;
+            if (nts.uk.ui.errors.hasError()){return;}
             if(self.selectTypeSet() == 0){
                 self.treeGrid.baseDate(this.standardDate());
                 $('#tree-grid').ntsTreeComponent(self.treeGrid);

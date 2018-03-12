@@ -12,12 +12,13 @@
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="../shr/cmm018.shr.vmbase.js" />
-			<com:scriptfile path="cmm018.k.service.js" />			
+			<com:scriptfile path="cmm018.k.service.js" />
 			<com:scriptfile path="cmm018.k.vm.js" />
-			<com:scriptfile path="cmm018.k.start.js" />			
+			<com:scriptfile path="cmm018.k.start.js" />
 			<com:stylefile path="cmm018.k.main.css" />
 		</ui:define>
 
@@ -25,18 +26,23 @@
 			<div id="contents-area">
 				<div class="contentHeader">
 					<!--K1_1-->
-					<div class = "titleAppType" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_47')}</div>
+					<div class="titleAppType"
+						data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_47')}</div>
 					<!--K1_2-->
 					<label id="appType" data-bind="text: appType"></label>
 					<!--K1_7-->
-					<div class = "titleDate" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_74')}</div>
+					<div class="titleDate" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_74')}</div>
 					<!--K1_8-->
-					<div id ="standardDate"  tabindex="2" data-bind="ntsDatePicker: {value: standardDate, dateFormat: 'YYYY/MM/DD', name: '#[CMM018_74]'}"></div>
+					<div id="standardDate" tabindex="2"
+						data-bind="ntsDatePicker: {value: standardDate, dateFormat: 'YYYY/MM/DD', name: '#[CMM018_74]'}"></div>
 					<!--K1_9  Caret-->
-					<button data-bind="click: applyDataSearch"  tabindex="3" id = "applyButton" class="caret-bottom">#{i18n.getText('CMM018_77')}</button>
+					<button data-bind="click: applyDataSearch" tabindex="3"
+						id="applyButton" class="caret-bottom">#{i18n.getText('CMM018_77')}</button>
 				</div>
 				<!--K1_3-->
-				<div class="typeSetting x-large" id = "typeSetting" style="margin-top: 5px" tabindex="1" data-bind="ntsSwitchButton: {
+				<div class="typeSetting x-large" id="typeSetting"
+					style="margin-top: 5px" tabindex="1"
+					data-bind="ntsSwitchButton: {
 									options: typeSetting,
 									optionsValue: 'code',
 									optionsText: 'name',
@@ -44,18 +50,21 @@
 									name: '#[CMM018_11]',
 									enable: true }"></div>
 				<!--K1_6 職場リスト-->
-				<div class="leftExtend"  data-bind = "if: enableListWp">
-					<div id="tree-grid"></div>	
+				<div class="leftExtend" data-bind="if: enableListWp">
+					<div id="tree-grid"></div>
 				</div>
-				<div class = "settingApprover">
+				<div class="settingApprover">
 					<div>
-						<!--K2_1-->					
-						<div class = "titleSelect" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_61')}</div>
-						<div style = "float: right;margin-right: 210px;">
+						<!--K2_1-->
+						<div class="titleSelect"
+							data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_61')}</div>
+						<div style="float: right; margin-right: 210px;">
 							<!--K2_10-->
-							<div class ="titleSelected" data-bind = "ntsFormLabel: {required: true }">#{i18n.getText('CMM018_27')}</div>
+							<div class="titleSelected"
+								data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMM018_27')}</div>
 							<!--K2_11-->
-							<div class="formSetting" tabindex="6" data-bind="ntsSwitchButton: {
+							<div class="formSetting" tabindex="6"
+								data-bind="ntsSwitchButton: {
 												options: formSetting,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -64,13 +73,15 @@
 												enable: true }"></div>
 						</div>
 					</div>
-					<br/>
+					<br />
 					<!--選択された承認者 -->
 					<!--K2_14-->
-					<div class = "approverSelect" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_62')}</div><br/>
-					<br/>
+					<div class="approverSelect"
+						data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_62')}</div>
+					<br /> <br />
 					<div style="display: inline-flex;">
-						<div id="swap-list" data-bind="ntsSwapList: { 
+						<div id="swap-list"
+							data-bind="ntsSwapList: { 
 										showSearchBox: { showLeft : true, showRight: false},
 										height: 300,
 										dataSource: employeeList,
@@ -85,22 +96,26 @@
 										innerDrag: { left: false, right: true },
 										outerDrag: { left: true, right: true },
 										itemsLimit: { right: 5}
-									}"></div> 
-						<div id="up-down"  tabindex="4" data-bind="ntsUpDown: {
+									}"></div>
+						<div id="up-down" tabindex="4"
+							data-bind="ntsUpDown: {
 									targetSource: approverList,
 									primaryKey: 'code',
 									comId: '#swap-list',
 									type: 'swap',
 									swapTarget: 'right'
 								}"
-								class=""></div>
+							class=""></div>
 					</div>
-					<br/>
-					<div style="float: right; margin-right: 180px; margin-top: 5px; margin-bottom: 5px">
+					<br />
+					<div
+						style="float: right; margin-right: 180px; margin-top: 5px; margin-bottom: 5px">
 						<!--K2_20-->
-						<div style="vertical-align: top;" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_64')}</div>
+						<div style="vertical-align: top;"
+							data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_64')}</div>
 						<!--K2_21 確定者の選択-->
-						<div id="combo-box" data-bind="ntsComboBox: {
+						<div id="combo-box"
+							data-bind="ntsComboBox: {
 																	options: itemListCbb,
 																	optionsValue: 'id',
 																	visibleItemsCount: 5,
@@ -112,16 +127,17 @@
 																	columns: [
 																		{ prop: 'name', length: 10 },
 																	]}"></div>
-						
+
 					</div>
-									
-				</div>				
+
+				</div>
 			</div>
 			<div id="functions-area-bottom">
 				<!-- K2_22 -->
-				<button id="execution"  tabindex="9" class="proceed x-large" data-bind="click: submitClickButton, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_44')}</button>
+				<button id="execution" tabindex="9" class="proceed x-large"
+					data-bind="click: submitClickButton, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_44')}</button>
 				<!-- K2_23 -->
-				<button id="cancel"  tabindex="10" data-bind="click: closeDialog">#{i18n.getText('CMM018_45')}</button>
+				<button id="cancel" tabindex="10" data-bind="click: closeDialog">#{i18n.getText('CMM018_45')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

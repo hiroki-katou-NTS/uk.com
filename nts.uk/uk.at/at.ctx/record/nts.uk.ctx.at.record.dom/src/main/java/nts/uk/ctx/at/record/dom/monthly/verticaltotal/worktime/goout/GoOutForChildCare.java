@@ -23,9 +23,9 @@ public class GoOutForChildCare {
 	/**
 	 * コンストラクタ
 	 */
-	public GoOutForChildCare(){
+	public GoOutForChildCare(ChildCareAtr childCareAtr){
 		
-		this.childCareAtr = ChildCareAtr.CHILD_CARE;
+		this.childCareAtr = childCareAtr;
 		this.times = new AttendanceTimesMonth(0);
 		this.time = new AttendanceTimeMonth(0);
 	}
@@ -42,10 +42,25 @@ public class GoOutForChildCare {
 			AttendanceTimesMonth times,
 			AttendanceTimeMonth time){
 		
-		val domain = new GoOutForChildCare();
-		domain.childCareAtr = childCareAtr;
+		val domain = new GoOutForChildCare(childCareAtr);
 		domain.times = times;
 		domain.time = time;
 		return domain;
+	}
+	
+	/**
+	 * 回数に加算する
+	 * @param times 回数
+	 */
+	public void addTimes(int times){
+		this.times = this.times.addTimes(times);
+	}
+	
+	/**
+	 * 時間に分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinutesToTime(int minutes){
+		this.time = this.time.addMinutes(minutes);
 	}
 }

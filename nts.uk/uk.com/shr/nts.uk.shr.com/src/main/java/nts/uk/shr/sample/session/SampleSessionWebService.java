@@ -30,6 +30,8 @@ public class SampleSessionWebService extends WebService {
 	@POST
 	@Path("getvalue")
 	public JavaTypeResult<String> getValue() {
+		val user = AppContexts.user();
+		user.toString();
 		return new JavaTypeResult<>((String)SessionContextProvider.get().get("SAMPLE_SESSION"));
 	}
 	

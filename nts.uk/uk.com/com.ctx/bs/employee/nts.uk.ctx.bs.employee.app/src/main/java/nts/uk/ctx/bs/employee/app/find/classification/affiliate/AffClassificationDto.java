@@ -5,7 +5,7 @@ package nts.uk.ctx.bs.employee.app.find.classification.affiliate;
 
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem_ver1;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItem;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
@@ -45,7 +45,7 @@ public class AffClassificationDto extends PeregDomainDto {
 		super(recordId);
 	}
 
-	public static AffClassificationDto createFromDomain(AffClassHistItem_ver1 histItem,
+	public static AffClassificationDto createFromDomain(AffClassHistItem histItem,
 			DateHistoryItem dateHistoryItem) {
 		AffClassificationDto dto = new AffClassificationDto(histItem.getHistoryId());
 		dto.setStartDate(dateHistoryItem.start());

@@ -2,6 +2,8 @@
 
 module nts.uk.time.minutesBased.clock {
     
+    // このファイルはminutesbased_clockに統合したい
+    
     export module dayattr {
         
         export const MAX_VALUE = create(4319);
@@ -14,7 +16,7 @@ module nts.uk.time.minutesBased.clock {
             TWO_DAY_LATER = 3,
         }
         
-        export function getDayAttrText(dayAttr: DayAttr) {
+        function getDayAttrText(dayAttr: DayAttr) {
             switch (dayAttr) {
                 case DayAttr.THE_PREVIOUS_DAY: return "前日";
                 case DayAttr.THE_PRESENT_DAY: return "当日";
@@ -24,7 +26,7 @@ module nts.uk.time.minutesBased.clock {
             } 
         }
         
-        export function getDaysOffset(dayAttr: DayAttr) {
+        function getDaysOffset(dayAttr: DayAttr) {
             switch (dayAttr) {
                 case DayAttr.THE_PREVIOUS_DAY: return -1;
                 case DayAttr.THE_PRESENT_DAY: return 0;
@@ -95,20 +97,12 @@ module nts.uk.time.minutesBased.clock {
             
             util.accessor.defineInto(timeWithDayAttr)
                 .get("dayAttr", () => getDayAttrFromDaysOffset(timeWithDayAttr.daysOffset))
-                .get("fullText", () => getDayAttrText(timeWithDayAttr.dayAttr) + timeWithDayAttr.clockTextInDay)
-                .get("shortText", () => createShortText(timeWithDayAttr));
+                .get("fullText", () => timeWithDayAttr.formatById("ClockDay_Short_HM"))
+                .get("shortText", () => timeWithDayAttr.formatById("Clock_Short_HM"));
             
             return timeWithDayAttr;
         }
         
-        function createShortText(timeWithDayAttr: TimeWithDayAttr): string {
-            if (timeWithDayAttr.daysOffset >= 0) {
-                let asDuration = duration.create(timeWithDayAttr.asMinutes);
-                return asDuration.text;
-            } else {
-                return "-" + timeWithDayAttr.clockTextInDay;
-            }
-        }
         
         function getDayAttrFromDaysOffset(daysOffset: number): DayAttr {
             switch (daysOffset) {

@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 300,
+					height : 430
+				};
+			</script>
+				<com:scriptfile set="IGNITE" />
+<!-- 				<com:stylefile path="kdw003.c.style.css" /> -->
+				<com:scriptfile path="kbt002.d.service.js" />
+				<com:scriptfile path="kbt002.d.vm.js" />
+				<com:scriptfile path="kbt002.d.start.js" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="contents-area">
+					<p style="margin-bottom: 15px;" id="explain-text">#{i18n.getText('KBT002_106')}</p>
+					<table id="monthDaysList" data-bind="ntsGridList: {
+						height: 265,
+						options: monthDaysList,
+						optionsValue: 'value',
+						columns: gridListColumns,
+						multiple: true,
+						value: selectedDaysList}">
+					</table>
+				</div>
+				<div id="functions-area-bottom">
+					<button class="proceed large" data-bind="click: select">#{i18n.getText('KBT002_109')}</button>
+					<button data-bind="click: closeDialog">#{i18n.getText('KBT002_110')}</button>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

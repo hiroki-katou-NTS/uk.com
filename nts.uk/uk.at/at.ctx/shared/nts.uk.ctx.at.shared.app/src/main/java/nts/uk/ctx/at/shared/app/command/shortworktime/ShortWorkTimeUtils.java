@@ -102,7 +102,7 @@ public class ShortWorkTimeUtils {
 	 * @return
 	 */
 	private static boolean time2IsAfter(BigDecimal endTime1, BigDecimal startTime2, BigDecimal endTime2){
-		if (startTime2.intValue() <=  endTime1.intValue() && endTime2.intValue() >= endTime1.intValue()){
+		if (startTime2.intValue() <  endTime1.intValue() && endTime2.intValue() >= endTime1.intValue()){
 			return true;
 		}
 		return false;

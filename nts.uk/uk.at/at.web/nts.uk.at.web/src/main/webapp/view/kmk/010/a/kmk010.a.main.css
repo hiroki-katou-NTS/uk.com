@@ -63,12 +63,14 @@
 
 .overtimeSettingDetail {
 	margin-top: 20px;
+	width: 100%;
 }
 
 .overtimeDetail {
 	float: left;
 	margin-left: 20px;
 	max-width: 30%;
+	margin-bottom: 10px;
 }
 
 .overtimeName {
@@ -117,7 +119,7 @@
 }
 
 .overtimeRate60H {
-	margin-left: 130px;
+	margin-left: 87px;
 	border-radius: 5px;
 	border-color: #565555;
 	border-width: 1px;
@@ -182,8 +184,8 @@
 }
 
 #switch-language {
-	float: right;
-	margin-right: 43%;
+	float: left;
+	margin-left: 32px;
 }
 
 .selectionVaction {
@@ -202,4 +204,13 @@
   padding: 5px;
   z-index: 120100;
   border-radius: 0px;
+}
+.float-left {
+	float: left;
+}
+#functions-area {
+	display: flex;
+}
+.fixed-flex-layout-left {
+	width: 100%;
 }

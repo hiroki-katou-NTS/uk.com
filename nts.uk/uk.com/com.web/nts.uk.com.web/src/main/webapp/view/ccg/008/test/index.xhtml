@@ -14,13 +14,18 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<button tabindex = "1" id = "btn_login" class = "btn" data-bind="click: loginScreen">Login</button>		
+				<button tabindex="1" id="btn_login" class="btn"
+					data-bind="click: loginScreen">Login</button>
 				<hr />
-				<input type="text" id="toppagecode" data-bind="ntsTextEditor: {name: '#[CCG015_42]',value: topPageCode, required: true}" placeholder="Enter Top Page Code" />
-				<button tabindex = "2" id = "btn_toppage" class = "btn" data-bind="click: topPage">Top Page</button>
+				<input type="text" id="toppagecode"
+					data-bind="ntsTextEditor: {name: '#[CCG015_42]',value: topPageCode, required: true}"
+					placeholder="Enter Top Page Code" />
+				<button tabindex="2" id="btn_toppage" class="btn"
+					data-bind="click: topPage">Top Page</button>
 				<hr />
-				<button tabindex = "3" id = "btn_other" class = "btn" data-bind="click: otherScreen">Other</button>		
-			</div>				
+				<button tabindex="3" id="btn_other" class="btn"
+					data-bind="click: otherScreen">Other</button>
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>

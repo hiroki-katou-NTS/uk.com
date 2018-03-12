@@ -12,6 +12,7 @@ import nts.uk.ctx.sys.portal.dom.webmenu.TitleBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.TreeMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
+import nts.uk.ctx.sys.portal.dom.webmenu.valueobject.WebMenuSimple;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstMenuBar;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstMenuBarPK;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.CcgstTitleBar;
@@ -43,6 +44,17 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 		});
 	}
 	
+	private String SELECT_SIMPLE_WEBMENU = "SELECT a.ccgstWebMenuPK.webMenuCd, a.webMenuName FROM CcgstWebMenu a "
+			+ "WHERE a.ccgstWebMenuPK.companyId = :companyId";
+	@Override
+	public List<WebMenuSimple> findAllSimpleValue(String companyId) {
+		return this.queryProxy().query(SELECT_SIMPLE_WEBMENU, Object[].class)
+				.setParameter("companyId", companyId)
+				.getList(c -> {
+					return new WebMenuSimple((String) c[0], (String) c[1]);
+				});
+	}
+	
 	@Override
 	public Optional<WebMenu> findDefault(String companyId) {
 		Optional<CcgstWebMenu> menuOpt = this.queryProxy().query(FIND_DEFAULT, CcgstWebMenu.class)
@@ -71,7 +83,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 			return toDomain(companyId, w);
 		});
 	}
-
+	
 	@Override
 	public void add(WebMenu webMenu) {
 		this.commandProxy().insert(toEntity(webMenu));
@@ -101,9 +113,6 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 			.setParameter("webMenuCd", webMenuCode)
 			.executeUpdate();
 	}
-
-
-	
 
 	/**
 	 * convert to domain WebMenu
@@ -217,6 +226,5 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 				}).collect(Collectors.toList());
 		return treeMenus;
 	}
-
 
 }

@@ -80,7 +80,7 @@ public class MappingDtoToDomain {
 					singleI.getStringItemDataType());
 		case 2:
 			return DataTypeState.createNumericItem(singleI.getNumericItemMinus(), singleI.getNumericItemAmount(),
-					singleI.getIntegerPart(), singleI.getDecimalPart(), singleI.getNumericItemMin(),
+					singleI.getIntegerPart(), singleI.getDecimalPart()== null? 0: singleI.getDecimalPart(), singleI.getNumericItemMin(),
 					singleI.getNumericItemMax());
 		case 3:
 			return DataTypeState.createDateItem(singleI.getDateItemType());

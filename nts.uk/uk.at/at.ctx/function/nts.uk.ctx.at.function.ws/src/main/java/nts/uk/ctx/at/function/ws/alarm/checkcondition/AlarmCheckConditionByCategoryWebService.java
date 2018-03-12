@@ -14,6 +14,7 @@ import nts.uk.ctx.at.function.app.command.alarm.checkcondition.DeleteAlarmCheckC
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.RegisterAlarmCheckCondtionByCategoryCommandHandler;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AlarmCheckConditionByCategoryDto;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AlarmCheckConditionByCategoryFinder;
+import nts.uk.ctx.at.function.app.find.alarm.checkcondition.DailyErrorAlarmCheckDto;
 
 /**
  * 
@@ -41,6 +42,18 @@ public class AlarmCheckConditionByCategoryWebService extends WebService {
 	}
 	
 	@POST
+	@Path("findOne/{category}/{code}")
+	public AlarmCheckConditionByCategoryDto findAll(@PathParam("category") int category, @PathParam("code") String code){
+		return this.finder.getDataByCode(category, code);
+	}
+	
+	@POST
+	@Path("findDailyErrorAlarmCheck")
+	public List<DailyErrorAlarmCheckDto> findDailyErrorAlarmCheck(){
+		return this.finder.getDailyErrorAlarmCheck();
+	}
+	
+	@POST
 	@Path("register")
 	public void register(AlarmCheckConditionByCategoryCommand command){
 		this.regHandler.handle(command);
@@ -50,5 +63,11 @@ public class AlarmCheckConditionByCategoryWebService extends WebService {
 	@Path("delete")
 	public void delete(AlarmCheckConditionByCategoryCommand command){
 		this.delHandler.handle(command);
+	}
+	
+	@POST
+	@Path("checkManager")
+	public boolean checkManager(){
+		return this.finder.checkManager();
 	}
 }

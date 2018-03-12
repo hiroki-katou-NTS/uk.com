@@ -33,7 +33,7 @@ public class DiffTimeOTTimezoneSetDto implements DiffTimeOTTimezoneSetMemento {
 	private TimeZoneRoundingDto timezone;
 
 	/** The OT frame no. */
-	private Integer oTFrameNo;
+	private Integer otFrameNo;
 
 	/** The legal O tframe no. */
 	private Integer legalOTframeNo;
@@ -61,12 +61,13 @@ public class DiffTimeOTTimezoneSetDto implements DiffTimeOTTimezoneSetMemento {
 
 	@Override
 	public void setTimezone(TimeZoneRounding timezone) {
+		this.timezone = new TimeZoneRoundingDto();
 		timezone.saveToMemento(this.timezone);
 	}
 
 	@Override
 	public void setOTFrameNo(OTFrameNo oTFrameNo) {
-		this.oTFrameNo = oTFrameNo.v();
+		this.otFrameNo = oTFrameNo.v();
 	}
 
 	@Override

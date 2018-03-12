@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -16,6 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
+@Transactional
 public class UpdateStampRequestSettingCommandHandler extends CommandHandler<StampRequestSettingCommand>{
 	@Inject
 	private StampRequestSettingRepository stampRep;
@@ -28,6 +30,7 @@ public class UpdateStampRequestSettingCommandHandler extends CommandHandler<Stam
 		StampRequestSetting stampRequest = data.toDomain(companyId);
 		if(stamp.isPresent()){
 			stampRep.updateStamp(stampRequest);
+			return;
 		}
 		stampRep.insertStamp(stampRequest);
 	}

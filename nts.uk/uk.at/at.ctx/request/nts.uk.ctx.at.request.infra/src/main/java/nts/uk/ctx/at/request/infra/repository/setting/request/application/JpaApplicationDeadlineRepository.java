@@ -54,7 +54,12 @@ public class JpaApplicationDeadlineRepository extends JpaRepository implements A
 
 		return data;
 	}
-	
+	/**
+	 * convert from ApplicationDeadline domain to entity
+	 * @param domain
+	 * @return
+	 * @author yennth
+	 */
 	private static KrqstAppDeadline toEntityDeadline(ApplicationDeadline domain){
 		val entity = new KrqstAppDeadline();
 		entity.krqstAppDeadlinePK = new KrqstAppDeadlinePK(domain.getCompanyId(), domain.getClosureId());
@@ -75,6 +80,7 @@ public class JpaApplicationDeadlineRepository extends JpaRepository implements A
 		oldentity.deadline = entity.deadline;
 		oldentity.deadlineCriteria = entity.deadlineCriteria;
 		oldentity.useAtr = entity.useAtr;
+		this.commandProxy().update(oldentity);
 	}
 	/**
 	 * insert deadline

@@ -12,15 +12,19 @@ module a6 {
         fixTableOptionFlow: any;
         fixTableOptionFlex: any;
         fixTableOptionFixed: any;
+        fixTableOptionDiffTime: any;
         selectedTab: KnockoutObservable<string>;
         isFlowMode: KnockoutObservable<boolean>;
         isFlexMode: KnockoutObservable<boolean>;
         isFixedMode: KnockoutObservable<boolean>;
+        isDiffTimeMode: KnockoutObservable<boolean>;
         dataSourceFlow: KnockoutObservableArray<any>;
         dataSourceFlex: KnockoutObservableArray<any>;
         dataSourceFixed: KnockoutObservableArray<any>;
+        dataSourceDiffTime: KnockoutObservableArray<any>;
         settingEnum: WorkTimeSettingEnumDto;
         mainSettingModel: MainSettingModel;
+        isLoading: KnockoutObservable<boolean>;
         
         //update specs 7.6
 //        lstOvertimeWorkFrame: OvertimeWorkFrameFindDto[];
@@ -29,13 +33,17 @@ module a6 {
         /**
         * Constructor.
         */
-        constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel) {
+        constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, isLoading: KnockoutObservable<boolean>) {
             let self = this;
             self.settingEnum = settingEnum;
             self.mainSettingModel = mainSettingModel;
-
+            self.isLoading = isLoading;
+            self.isLoading.subscribe((isLoading: boolean) => {
+                if (isLoading) {
+                    self.updateDataModel();
+                }
+            });
             self.updateDataByUpdateModel();
-
         }
 
         /**
@@ -44,9 +52,9 @@ module a6 {
         public initDataModel(): void {
             var self = this;
             self.fixTableOptionFlow = {
-                maxRow: 10,
+                maxRow: 5,
                 minRow: 0,
-                maxRowDisplay: 10,
+                maxRowDisplay: 5,
                 isShowButton: true,
                 dataSource: self.dataSourceFlow,
                 isMultipleSelect: true,
@@ -73,7 +81,32 @@ module a6 {
                 columns: self.columnSettingOtherFlow(),
                 tabindex: 89
             };
+            self.fixTableOptionDiffTime = {
+                maxRow: 10,
+                minRow: 0,
+                maxRowDisplay: 10,
+                isShowButton: true,
+                dataSource: self.dataSourceDiffTime,
+                isMultipleSelect: true,
+                columns: self.columnSettingOtherFlow(),
+                tabindex: 89
+            };
         }
+        
+        /**
+         * function update data model
+         */
+        private updateDataModel(): void {
+            var self = this;
+            if (self.isFlowMode()) {
+                var dataFlow: any[] = [];
+                for (var dataModelFlow of self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.lstWorkTimezone()) {
+                    dataFlow.push(self.toModelFlowColumnSetting(dataModelFlow.toDto()));
+                }
+                self.dataSourceFlow(dataFlow);
+            }
+        }
+        
         /**
          * function update data by update model
          */
@@ -82,10 +115,23 @@ module a6 {
             self.isFlowMode = self.mainSettingModel.workTimeSetting.isFlow;
             self.isFlexMode = self.mainSettingModel.workTimeSetting.isFlex;
             self.isFixedMode = self.mainSettingModel.workTimeSetting.isFixed;
-            //TODO chua lam flow
+            self.isDiffTimeMode = self.mainSettingModel.workTimeSetting.isDiffTime;
 
+            self.dataSourceFlow = ko.observableArray([]);
+            self.dataSourceFlow.subscribe((dataFlow: any[]) => {
+                var lstWorkTimezone: FlWorkHdTimeZoneDto[] = [];
+                var workTimezoneNo: number = 0;
+                //sort list item by time 
+                dataFlow = _.sortBy(dataFlow, [function(o:any) { return o.elapsedTime(); }]);
+                for (var dataModel of dataFlow) {
+                    workTimezoneNo++;
+                    lstWorkTimezone.push(self.toModelFlowDto(dataModel, workTimezoneNo));
+                }
+                self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.updateHDTimezone(lstWorkTimezone);
+            });       
             self.dataSourceFlex = self.mainSettingModel.flexWorkSetting.offdayWorkTime.convertedList;
             self.dataSourceFixed = self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.convertedList;
+            self.dataSourceDiffTime = self.mainSettingModel.diffWorkSetting.dayoffWorkTimezone.convertedList;
         }
         /**
          * function convert dto to model
@@ -177,7 +223,7 @@ module a6 {
                     key: "outLegalPubHolFrameNo",
                     defaultValue: ko.observable(1),
                     dataSource: self.lstWorkDayOffFrame,
-                    width: 130,
+                    width: 170,
                     template: `<div data-key="workdayoffFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
                                     visibleItemsCount: 10,
@@ -209,7 +255,7 @@ module a6 {
                     unitAttrName: 'roundingTime',
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0),
-                    width: 170,
+                    width: 200,
                     template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 3,
@@ -231,9 +277,12 @@ module a6 {
                     headerText: nts.uk.resource.getText("KMK003_174"),
                     key: "elapsedTime",
                     defaultValue: ko.observable(0),
-                    width: 143,
+                    width: 100,
                     template: `<input data-bind="ntsTimeEditor: {
-                        inputFormat: 'time'}" />`
+                            constraint: 'AttendanceTime',
+                            mode: 'time',
+                            inputFormat: 'time',
+                            required: true }" />`
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_77"),
@@ -270,7 +319,7 @@ module a6 {
                     key: "outLegalPubHolFrameNo",
                     dataSource: self.lstWorkDayOffFrame,
                     defaultValue: ko.observable(1),
-                    width: 130,
+                    width: 160,
                     template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
                                     visibleItemsCount: 10,
@@ -302,7 +351,7 @@ module a6 {
                     unitAttrName: 'roundingTime',
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0),
-                    width: 170,
+                    width: 200,
                     template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 3,
@@ -341,14 +390,21 @@ module a6 {
             let input = valueAccessor();
             var settingEnum: WorkTimeSettingEnumDto = input.enum;
             var mainSettingModel: MainSettingModel = input.mainModel;
+            var isLoading: KnockoutObservable<boolean> = input.isLoading;
+            var isClickSave: KnockoutObservable<boolean> = input.isClickSave;
             nts.uk.at.view.kmk003.a6.service.findAllWorkDayoffFrame().done(function(data) {
-                let screenModel = new ScreenModel(settingEnum, mainSettingModel);
+                let screenModel = new ScreenModel(settingEnum, mainSettingModel, isLoading);
                 screenModel.lstWorkDayOffFrame = data;
                 screenModel.initDataModel();
                 _.defer(() => {
                     $(element).load(webserviceLocator, function() {
                         ko.cleanNode($(element)[0]);
                         ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+                        isClickSave.subscribe((v) => {
+                            if (v) {
+                                screenModel.dataSourceFlow.valueHasMutated();
+                            }
+                        });
                     });
                 });
             });

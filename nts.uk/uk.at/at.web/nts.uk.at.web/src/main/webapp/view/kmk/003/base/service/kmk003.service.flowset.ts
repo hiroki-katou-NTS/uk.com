@@ -17,7 +17,7 @@ module nts.uk.at.view.kmk003.a {
                 export interface FlOTTimezoneDto {
                     worktimeNo: number;
                     restrictTime: boolean;
-                    overtimeFrameNo: number;
+                    otFrameNo: number;
                     flowTimeSetting: FlTimeSettingDto;
                     inLegalOTFrameNo: number;
                     settlementOrder: number;

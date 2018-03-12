@@ -27,7 +27,7 @@ module nts.uk.com.view.cas012.b.viewmodel {
         search() {
             let self = this;
             if (nts.uk.text.isNullOrEmpty(self.searchValue())) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_438" });
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_438" , messageParams: [nts.uk.resource.getText("CAS012_20")]});
                 return;
             }
             service.searchUser(self.searchValue()).done(function(data) {
@@ -42,7 +42,7 @@ module nts.uk.com.view.cas012.b.viewmodel {
         decision() {
             var self = this;
             if (nts.uk.text.isNullOrEmpty(self.selectUserID())) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_218" , messageParams: [nts.uk.resource.getText("CAS012_17")]});
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_218" , messageParams: [nts.uk.resource.getText("No message param 218")]});
                 return;
             }
 

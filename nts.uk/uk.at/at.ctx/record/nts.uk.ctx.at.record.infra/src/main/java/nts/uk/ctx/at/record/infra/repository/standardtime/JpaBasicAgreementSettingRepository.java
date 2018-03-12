@@ -7,46 +7,18 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.repository.BasicAgreementSettingRepository;
-import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementOperationSetting;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtBasicAgreementSetting;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtBasicAgreementSettingPK;
 
 @Stateless
 public class JpaBasicAgreementSettingRepository extends JpaRepository implements BasicAgreementSettingRepository {
 
-	private static final String UPDATE_FOR_COMPANY;
-
-	private static final String UPDATE_BY_KEY;
-
 	private static final String FIND;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("UPDATE KmkmtBasicAgreementSetting a ");
-		builderString
-				.append("SET a.alarmWeek = :alarmWeek , a.alarmTwoWeeks = :alarmTwoWeeks , a.alarmFourWeeks = :alarmFourWeeks , a.alarmOneMonth = :alarmOneMonth ,"
-						+ " a.alarmTwoMonths = :alarmTwoMonths , a.alarmThreeMonths = :alarmThreeMonths , a.alarmOneYear = :alarmOneYear , a.errorWeek = :errorWeek ,"
-						+ " a.errorTwoWeeks = :errorTwoWeeks , a.errorFourWeeks = :errorFourWeeks , a.errorOneMonth = :errorOneMonth , a.errorTwoMonths = :errorTwoMonths , "
-						+ " a.errorThreeMonths = :errorThreeMonths , a.errorOneYear = :errorOneYear , a.limitWeek = :limitWeek , a.limitTwoWeeks = :limitTwoWeeks , "
-						+ " a.limitFourWeeks = :limitFourWeeks , a.limitOneMonth = :limitOneMonth , a.limitTwoMonths = :limitTwoMonths ,"
-						+ " a.limitThreeMonths = :limitThreeMonths , a.limitOneYear = :limitOneYear ");
-		builderString.append("WHERE a.kmkmtBasicAgreementSettingPK.basicSettingId = :basicSettingId ");
-		UPDATE_FOR_COMPANY = builderString.toString();
-
-		builderString = new StringBuilder();
-		builderString.append("UPDATE KmkmtBasicAgreementSetting a ");
-		builderString
-				.append("SET a.alarmWeek = :alarmWeek , a.alarmTwoWeeks = :alarmTwoWeeks , a.alarmFourWeeks = :alarmFourWeeks , a.alarmOneMonth = :alarmOneMonth ,"
-						+ " a.alarmTwoMonths = :alarmTwoMonths , a.alarmThreeMonths = :alarmThreeMonths , a.alarmOneYear = :alarmOneYear , a.errorWeek = :errorWeek ,"
-						+ " a.errorTwoWeeks = :errorTwoWeeks , a.errorFourWeeks = :errorFourWeeks , a.errorOneMonth = :errorOneMonth , a.errorTwoMonths = :errorTwoMonths , "
-						+ " a.errorThreeMonths = :errorThreeMonths , a.errorOneYear = :errorOneYear ");
-		builderString.append("WHERE a.kmkmtBasicAgreementSettingPK.basicSettingId = :basicSettingId ");
-		UPDATE_BY_KEY = builderString.toString();
-
-		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KmkmtBasicAgreementSetting a ");
 		builderString.append("WHERE a.kmkmtBasicAgreementSettingPK.basicSettingId = :basicSettingId ");
@@ -65,50 +37,63 @@ public class JpaBasicAgreementSettingRepository extends JpaRepository implements
 	}
 
 	@Override
-	public void updateForCompany(BasicAgreementSetting basicAgreementSetting) {
-		this.getEntityManager().createQuery(UPDATE_FOR_COMPANY)
-				.setParameter("basicSettingId", basicAgreementSetting.getBasicSettingId())
-				.setParameter("alarmWeek", basicAgreementSetting.getAlarmWeek().v())
-				.setParameter("alarmTwoWeeks", basicAgreementSetting.getAlarmTwoWeeks().v())
-				.setParameter("alarmFourWeeks", basicAgreementSetting.getAlarmFourWeeks().v())
-				.setParameter("alarmOneMonth", basicAgreementSetting.getAlarmOneMonth().v())
-				.setParameter("alarmTwoMonths", basicAgreementSetting.getAlarmTwoMonths().v())
-				.setParameter("alarmThreeMonths", basicAgreementSetting.getAlarmThreeMonths().v())
-				.setParameter("alarmOneYear", basicAgreementSetting.getAlarmOneYear().v())
-				.setParameter("errorWeek", basicAgreementSetting.getErrorWeek().v())
-				.setParameter("errorTwoWeeks", basicAgreementSetting.getErrorTwoWeeks().v())
-				.setParameter("errorFourWeeks", basicAgreementSetting.getErrorFourWeeks().v())
-				.setParameter("errorOneMonth", basicAgreementSetting.getErrorOneMonth().v())
-				.setParameter("errorTwoMonths", basicAgreementSetting.getErrorTwoMonths().v())
-				.setParameter("errorThreeMonths", basicAgreementSetting.getErrorThreeMonths().v())
-				.setParameter("errorOneYear", basicAgreementSetting.getErrorOneYear().v())
-				.setParameter("limitWeek", basicAgreementSetting.getLimitWeek().v())
-				.setParameter("limitTwoWeeks", basicAgreementSetting.getLimitTwoWeeks().v())
-				.setParameter("limitFourWeeks", basicAgreementSetting.getLimitFourWeeks().v())
-				.setParameter("limitOneMonth", basicAgreementSetting.getLimitOneMonth().v())
-				.setParameter("limitTwoMonths", basicAgreementSetting.getLimitTwoMonths().v())
-				.setParameter("limitThreeMonths", basicAgreementSetting.getLimitThreeMonths().v())
-				.setParameter("limitOneYear", basicAgreementSetting.getLimitOneYear().v()).executeUpdate();
+	public void updateForCompany(BasicAgreementSetting basicAgreementSetting) { 
+		Optional<KmkmtBasicAgreementSetting> entity = this.queryProxy().query(FIND, KmkmtBasicAgreementSetting.class)
+				.setParameter("basicSettingId", basicAgreementSetting.getBasicSettingId()).getSingle();
+		
+		if (entity.isPresent()) {
+			KmkmtBasicAgreementSetting data = entity.get();
+			data.alarmWeek = new BigDecimal(basicAgreementSetting.getAlarmWeek().v());
+			data.alarmTwoWeeks = new BigDecimal(basicAgreementSetting.getAlarmTwoWeeks().v());
+			data.alarmFourWeeks = new BigDecimal(basicAgreementSetting.getAlarmFourWeeks().v());
+			data.alarmOneMonth = new BigDecimal(basicAgreementSetting.getAlarmOneMonth().v());
+			data.alarmTwoMonths = new BigDecimal(basicAgreementSetting.getAlarmTwoMonths().v());
+			data.alarmThreeMonths = new BigDecimal(basicAgreementSetting.getAlarmThreeMonths().v());
+			data.alarmOneYear = new BigDecimal(basicAgreementSetting.getAlarmOneYear().v());
+			data.errorWeek = new BigDecimal(basicAgreementSetting.getErrorWeek().v());
+			data.errorTwoWeeks = new BigDecimal(basicAgreementSetting.getErrorTwoWeeks().v());
+			data.errorFourWeeks = new BigDecimal(basicAgreementSetting.getErrorFourWeeks().v());
+			data.errorOneMonth = new BigDecimal(basicAgreementSetting.getErrorOneMonth().v());
+			data.errorTwoMonths = new BigDecimal(basicAgreementSetting.getErrorTwoMonths().v());
+			data.errorThreeMonths = new BigDecimal(basicAgreementSetting.getErrorThreeMonths().v());
+			data.errorOneYear = new BigDecimal(basicAgreementSetting.getErrorOneYear().v());
+			data.limitWeek = new BigDecimal(basicAgreementSetting.getLimitWeek().v());
+			data.limitTwoWeeks = new BigDecimal(basicAgreementSetting.getLimitTwoWeeks().v());
+			data.limitFourWeeks = new BigDecimal(basicAgreementSetting.getLimitFourWeeks().v());
+			data.limitOneMonth = new BigDecimal(basicAgreementSetting.getLimitOneMonth().v());
+			data.limitTwoMonths = new BigDecimal(basicAgreementSetting.getLimitTwoMonths().v());
+			data.limitThreeMonths = new BigDecimal(basicAgreementSetting.getLimitThreeMonths().v());
+			data.limitOneYear = new BigDecimal(basicAgreementSetting.getLimitOneYear().v());
+			
+			this.commandProxy().update(data);
+		}
 	}
 
 	@Override
 	public void update2(BasicAgreementSetting basicAgreementSetting) {
-		this.getEntityManager().createQuery(UPDATE_BY_KEY)
-				.setParameter("basicSettingId", basicAgreementSetting.getBasicSettingId())
-				.setParameter("alarmWeek", basicAgreementSetting.getAlarmWeek().v())
-				.setParameter("alarmTwoWeeks", basicAgreementSetting.getAlarmTwoWeeks().v())
-				.setParameter("alarmFourWeeks", basicAgreementSetting.getAlarmFourWeeks().v())
-				.setParameter("alarmOneMonth", basicAgreementSetting.getAlarmOneMonth().v())
-				.setParameter("alarmTwoMonths", basicAgreementSetting.getAlarmTwoMonths().v())
-				.setParameter("alarmThreeMonths", basicAgreementSetting.getAlarmThreeMonths().v())
-				.setParameter("alarmOneYear", basicAgreementSetting.getAlarmOneYear().v())
-				.setParameter("errorWeek", basicAgreementSetting.getErrorWeek().v())
-				.setParameter("errorTwoWeeks", basicAgreementSetting.getErrorTwoWeeks().v())
-				.setParameter("errorFourWeeks", basicAgreementSetting.getErrorFourWeeks().v())
-				.setParameter("errorOneMonth", basicAgreementSetting.getErrorOneMonth().v())
-				.setParameter("errorTwoMonths", basicAgreementSetting.getErrorTwoMonths().v())
-				.setParameter("errorThreeMonths", basicAgreementSetting.getErrorThreeMonths().v())
-				.setParameter("errorOneYear", basicAgreementSetting.getErrorOneYear().v()).executeUpdate();
+		
+		Optional<KmkmtBasicAgreementSetting> entity = this.queryProxy().query(FIND, KmkmtBasicAgreementSetting.class)
+				.setParameter("basicSettingId", basicAgreementSetting.getBasicSettingId()).getSingle();
+		
+		if (entity.isPresent()) {
+			KmkmtBasicAgreementSetting data = entity.get();
+			data.alarmWeek = new BigDecimal(basicAgreementSetting.getAlarmWeek().v());
+			data.alarmTwoWeeks = new BigDecimal(basicAgreementSetting.getAlarmTwoWeeks().v());
+			data.alarmFourWeeks = new BigDecimal(basicAgreementSetting.getAlarmFourWeeks().v());
+			data.alarmOneMonth = new BigDecimal(basicAgreementSetting.getAlarmOneMonth().v());
+			data.alarmTwoMonths = new BigDecimal(basicAgreementSetting.getAlarmTwoMonths().v());
+			data.alarmThreeMonths = new BigDecimal(basicAgreementSetting.getAlarmThreeMonths().v());
+			data.alarmOneYear = new BigDecimal(basicAgreementSetting.getAlarmOneYear().v());
+			data.errorWeek = new BigDecimal(basicAgreementSetting.getErrorWeek().v());
+			data.errorTwoWeeks = new BigDecimal(basicAgreementSetting.getErrorTwoWeeks().v());
+			data.errorFourWeeks = new BigDecimal(basicAgreementSetting.getErrorFourWeeks().v());
+			data.errorOneMonth = new BigDecimal(basicAgreementSetting.getErrorOneMonth().v());
+			data.errorTwoMonths = new BigDecimal(basicAgreementSetting.getErrorTwoMonths().v());
+			data.errorThreeMonths = new BigDecimal(basicAgreementSetting.getErrorThreeMonths().v());
+			data.errorOneYear = new BigDecimal(basicAgreementSetting.getErrorOneYear().v());
+			
+			this.commandProxy().update(data);
+		}
 	}
 
 	@Override

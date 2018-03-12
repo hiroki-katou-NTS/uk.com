@@ -9,6 +9,7 @@ module ccg018.a1.viewmodel {
         listJobTitle: KnockoutObservableArray<any>;
         roundingRules: KnockoutObservableArray<any>;
         isEmpty: KnockoutObservable<boolean>;
+        referenceDate: string = nts.uk.resource.getText("CCG018_6");
 
         constructor(baseModel: base.result.BaseResultModel) {
             super(baseModel);

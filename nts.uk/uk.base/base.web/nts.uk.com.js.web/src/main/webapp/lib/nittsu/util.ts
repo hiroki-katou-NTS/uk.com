@@ -3,6 +3,7 @@
     export module KeyCodes {
         export const Tab = 9;
         export const Enter = 13;
+        export const Ctrl = 17;
     }
 
     export module util {
@@ -690,7 +691,7 @@
         var names = window['names'] || {};
         var messages = window['messages'] || {};
 
-        export function getText(code: string, params?: string[]): string {
+        export function getText(code: string, params?: any[]): string {
             let text = names[code];
             if (text) {
                 text = formatParams(text, params);
@@ -700,7 +701,7 @@
             return code;
         }
 
-        export function getMessage(messageId: string, params?: string[]): string {
+        export function getMessage(messageId: string, params?: any[]): string {
             let message = messages[messageId];
             if (!message) {
                 let responseText="";

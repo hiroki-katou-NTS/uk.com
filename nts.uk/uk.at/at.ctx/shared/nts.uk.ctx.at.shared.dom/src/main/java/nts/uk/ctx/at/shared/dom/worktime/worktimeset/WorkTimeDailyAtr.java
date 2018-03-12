@@ -75,4 +75,8 @@ public enum WorkTimeDailyAtr {
 	public boolean isFlex() {
 		return FLEX_WORK.equals(this);
 	}
+	
+	public boolean isRegular() {
+		return REGULAR_WORK.equals(this);
+	}
 }

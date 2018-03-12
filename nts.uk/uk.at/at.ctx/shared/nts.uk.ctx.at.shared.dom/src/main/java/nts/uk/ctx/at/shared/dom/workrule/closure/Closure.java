@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 
 /**
  * The Class Closure.
@@ -62,5 +63,16 @@ public class Closure extends AggregateRoot {
 		memento.setUseClassification(this.useClassification);
 		memento.setClosureMonth(this.closureMonth);
 		memento.setClosureHistories(this.closureHistories);
+	}
+
+	/**
+	 * Gets the history by base date.
+	 *
+	 * @param baseDate the base date
+	 * @return the history by base date
+	 */
+	public ClosureHistory getHistoryByBaseDate(GeneralDate baseDate) {
+		return this.closureHistories.stream().filter(his -> his.getClosureYMD().beforeOrEquals(baseDate)).findFirst()
+				.get();
 	}
 }

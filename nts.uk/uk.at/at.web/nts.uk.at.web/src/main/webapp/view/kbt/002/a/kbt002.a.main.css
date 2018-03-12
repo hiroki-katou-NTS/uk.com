@@ -1,0 +1,24 @@
+#contents-area{
+	padding-top: 14px;
+    padding-left: 30px;
+    box-sizing: border-box;
+}
+
+#buttonA1_2 {
+	background-position:center;
+	background-image: url('image/IMG_KBT002_1.png');
+	background-size: 276px 82px;
+	background-repeat: no-repeat;
+	width: 296px;
+	height: 102px;
+}
+
+#buttonA1_3 {
+	margin-left: 20px;
+	background-position:center;
+	background-image: url('image/IMG_KBT002_2.png');
+	background-size: 276px 82px;
+	background-repeat: no-repeat;
+	width: 296px;
+	height: 102px;
+}

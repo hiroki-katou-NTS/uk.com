@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -224,7 +226,11 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 
 		// domain update all, add all collection
 		lstDomain.forEach(domainsetting -> {
-
+			
+			if (StringUtils.isEmpty(domainsetting.getWorkingCode().v())){
+				domainsetting.setWorkingCode(null);
+			}
+			
 			// check exist of domain update
 			if (mapDomainUpdate.containsKey(domainsetting.getYmdk())) {
 				updateAllDomains.add(domainsetting);

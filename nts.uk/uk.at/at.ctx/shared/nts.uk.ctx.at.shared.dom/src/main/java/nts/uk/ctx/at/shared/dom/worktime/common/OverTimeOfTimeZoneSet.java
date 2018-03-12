@@ -1,18 +1,18 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class OverTimeOfTimeZoneSet.
  */
 // 残業時間の時間帯設定
 @Getter
-public class OverTimeOfTimeZoneSet extends DomainObject {
+public class OverTimeOfTimeZoneSet extends WorkTimeDomainObject {
 
 	/** The work timezone no. */
 	// 就業時間帯NO
@@ -26,6 +26,7 @@ public class OverTimeOfTimeZoneSet extends DomainObject {
 	// 早出残業として扱う
 	private boolean earlyOTUse;
 
+	/** The timezone. */
 	// 時間帯
 	private TimeZoneRounding timezone;
 
@@ -72,9 +73,18 @@ public class OverTimeOfTimeZoneSet extends DomainObject {
 		memento.setSettlementOrder(this.settlementOrder);
 	}
 	
-	@Override
-	public void validate()
-	{
-		super.validate();
+	/**
+	 * Restore data.
+	 *
+	 * @param other the other
+	 */
+	public void restoreData(OverTimeOfTimeZoneSet other) {
+		this.workTimezoneNo = other.getWorkTimezoneNo();
+		this.restraintTimeUse = other.isRestraintTimeUse();
+		this.earlyOTUse = other.isEarlyOTUse();
+		this.timezone = other.getTimezone();
+		this.otFrameNo = other.getOtFrameNo();
+		this.legalOTframeNo = other.getLegalOTframeNo();
+		this.settlementOrder = other.getSettlementOrder();
 	}
 }

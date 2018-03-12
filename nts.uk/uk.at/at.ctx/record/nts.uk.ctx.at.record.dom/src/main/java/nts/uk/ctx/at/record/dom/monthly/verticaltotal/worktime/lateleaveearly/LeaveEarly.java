@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly;
 
 import lombok.Getter;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 
@@ -38,5 +39,30 @@ public class LeaveEarly {
 		domain.times = times;
 		domain.time = time;
 		return domain;
+	}
+	
+	/**
+	 * 集計
+	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
+	 */
+	public void aggregate(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
+
+		if (attendanceTimeOfDaily == null) return;
+		
+		val totalWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+		val leaveEarlyTimeOfDailys = totalWorkingTime.getLeaveEarlyTimeOfDaily();
+		for (val leaveEarlyTimeOfDaily : leaveEarlyTimeOfDailys){
+			val leaveEarlyTime = leaveEarlyTimeOfDaily.getLeaveEarlyTime();
+			
+			// 回数をインクリメント
+			if (leaveEarlyTime.getTime().greaterThan(0)){
+				this.times = this.times.addTimes(1);
+			}
+			
+			// 時間を計算
+			this.time = this.time.addMinutes(
+					leaveEarlyTime.getTime().v(),
+					leaveEarlyTime.getCalcTime().v());
+		}
 	}
 }

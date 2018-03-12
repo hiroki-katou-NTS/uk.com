@@ -4,10 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
+import java.util.Optional;
+
 import lombok.Getter;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -15,7 +16,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 // 時間帯
 @Getter
-public class TimeZone extends DomainObject {
+public class TimeZone extends WorkTimeDomainObject {
 
 	/** The start. */
 	// 開始
@@ -38,6 +39,16 @@ public class TimeZone extends DomainObject {
 		super();
 		this.start = start;
 		this.end = end;
+		if(start == null && end == null) {
+			this.start = new TimeWithDayAttr(0);
+			this.end = new TimeWithDayAttr(0);
+		}
+		else if(start == null){
+			this.start = this.end;
+		}
+		else if(end == null) {
+			this.end = this.start;
+		}
 	}
 
 	/**
@@ -54,7 +65,7 @@ public class TimeZone extends DomainObject {
 	 */
 	public void validateRange(String param) {
 		if (this.start.greaterThanOrEqualTo(this.end)) {
-			throw new BusinessException("Msg_770", param);
+			this.bundledBusinessExceptions.addMessage("Msg_770", param);
 		}
 	}
 
@@ -104,8 +115,50 @@ public class TimeZone extends DomainObject {
 		return time.greaterThanOrEqualTo(this.start) && time.lessThanOrEqualTo(this.end);
 	}
 	
+	/**
+	 * Convert Time Span
+	 * @return timeSpanForCalc
+	 */
 	public TimeSpanForCalc timeSpan() {
 		return new TimeSpanForCalc(this.start,this.end);
 	}
 
+	/**
+	 * 指定時刻が時間帯に含まれているか判断する Returns true if a given time is contained by this time
+	 * span.
+	 * 
+	 * @param time
+	 *            指定時刻
+	 * @return 含まれていればtrue
+	 */
+	public boolean contains(TimeWithDayAttr time) {
+		return this.start.lessThanOrEqualTo(time) && this.end.greaterThanOrEqualTo(time);
+	}
+	
+	/**
+	 * 重複している時間帯を返す
+	 * @param other 比較対象
+	 * @return 重複部分
+	 */
+	public Optional<TimeSpanForCalc> getDuplicatedWith(TimeSpanForCalc other) {
+		TimeSpanForCalc result;
+		
+		if (this.timeSpan().contains(other)) {
+			result = other;
+		} else if (other.getSpan().contains(this.timeSpan())) {
+			result = this.timeSpan();
+		} else if (this.contains(other.getStart())) {
+			result = new TimeSpanForCalc(other.getStart(), this.end);
+		} else if (this.contains(other.getEnd())) {
+			result = new TimeSpanForCalc(this.start, other.getEnd());
+		} else {
+			return Optional.empty();
+		}
+		
+		if (result.lengthAsMinutes() == 0) {
+			return Optional.empty();
+		}
+		
+		return Optional.of(result);
+	}
 }

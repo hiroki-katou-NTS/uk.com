@@ -6,7 +6,7 @@ __viewContext.ready(function () {
 
         constructor() {
             var self = this;
-            self.ResidentCode = ko.observable('123');
+            self.ResidentCode = ko.observable('ABC');
             self.NumberValue = ko.observable(5);
         }
         
@@ -17,6 +17,10 @@ __viewContext.ready(function () {
         
         clearErrorToResidenceCode() {
             $('#residence-code').ntsError('clear');
+        }
+        
+        validateResidenceCode() {
+            $("#residence-code").ntsError("check");
         }
         
         clearSaveErrors() {

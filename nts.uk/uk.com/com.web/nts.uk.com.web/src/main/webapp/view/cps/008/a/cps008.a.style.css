@@ -11,7 +11,9 @@
 }
 
 @media ( min-width : 1260px) {
-	#functions-area, #contents-area {}
+	#functions-area, #contents-area {
+		
+	}
 }
 
 #contents-area {

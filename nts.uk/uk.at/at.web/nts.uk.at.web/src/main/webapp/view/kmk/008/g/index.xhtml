@@ -27,8 +27,8 @@
 			data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a></div>
 			</div>
 			<div id="contents-area">
+				<div id="ccgcomponent" tabindex="1"></div>
 				<div id="main" class=" container cf">
-					<div id="ccgcomponent" tabindex="1"></div>
 					<div id="component-items-list"></div>
 
 					<div style=" margin-left: 30px; float: left;">
@@ -38,6 +38,7 @@
 						</div>
 						<div class="label">#{i18n.getText('KMK008_10')}</div>
 						<HR />
+						<div id="kmk008-tab-panel">
 						<div id="tab-panel" tabindex="2"
 							data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab }" style="margin-top: 30px;">
 							<div class="tab-content-1">
@@ -62,12 +63,13 @@
 									height: 250,
 									dataSource: items2,
 									primaryKey: 'code',
-									columns: columns,
+									columns: columns2,
 									multiple: false,
 									value: currentCode
 								}"></table>
 								</div>
 							</div>
+						</div>
 						</div>
 					</div>
 				</div>

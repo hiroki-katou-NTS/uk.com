@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.WorkTimeWorkplaceDto;
@@ -30,6 +31,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecEditSetDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecOpeFuncDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DivergenceTimeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmploymentDto;
@@ -96,6 +98,9 @@ public interface DailyPerformanceScreenRepo {
 	/** Get list employee by jobTitle, employment, workplace, classification */
 	List<DailyPerformanceEmployeeDto> getListEmployee(List<String> lstJobTitle, List<String> lstEmployment,
 			Map<String, String> lstWorkplace, List<String> lstClassification);
+	
+	/** Get list employee by sid*/
+	List<DailyPerformanceEmployeeDto> getListEmployeeWithSid(List<String> sid);
 
 	/** Get list business type of list employee (no duplicated) */
 	List<String> getListBusinessType(List<String> lstEmployee, DateRange dateRange);
@@ -132,11 +137,17 @@ public interface DailyPerformanceScreenRepo {
 	
 	List<CodeName> findJobInfo(String companyId, GeneralDate baseDate);
 	
+	Optional<CodeName> findJobInfoId(String companyId, GeneralDate baseDate, String id);
+	
 	List<CodeName> findClassification(String companyId);
 	
 	List<CodeName> findWorkplace(String companyId, GeneralDate date);
 	
+	Optional<CodeName> findWorkplaceId(String companyId, GeneralDate date, String id);
+	
 	List<CodeName> findWorkplaceLocation(String companyId);
+	
+	List<CodeName> findReason(String companyId);
 	
 	ClosureEmploymentDto findByEmploymentCD(String companyID, String employmentCD);
 	
@@ -171,4 +182,9 @@ public interface DailyPerformanceScreenRepo {
 	List<CodeName> findWorkType(String companyId, Set<String> typeCodes);
 	
 	void updateColumnsWidth(Map<Integer, Integer> lstHeader, List<String> formatCodes);
+	
+	Optional<DailyRecOpeFuncDto> findDailyRecOpeFun(String companyId);
+	
+	List<EnumConstant> findErAlApplication(String companyId, List<String> errorCode);
+	
  }

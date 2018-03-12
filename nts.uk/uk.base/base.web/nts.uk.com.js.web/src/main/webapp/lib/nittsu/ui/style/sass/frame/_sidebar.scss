@@ -16,7 +16,12 @@ $sidebar_arrow_width: 50px;
 	color: $sidebar_theme_color;
 }
 
-#sidebar {height: 100%; width: 100%;}
+#sidebar {
+	table-layout: fixed;
+	height: 100%;
+	width: 100%;
+}
+
 #sidebar > tbody > tr > td {vertical-align: top;}
 
 #sidebar-header {
@@ -63,7 +68,9 @@ $sidebar_arrow_width: 50px;
 		border-top: 1px solid $sidebar_theme_color;
 	}
 }
-
+.show-immediately {
+	display: block !important;
+}
 .sidebar-content-header {
 	position: relative;
 	height: $sidebar_content_header_height;

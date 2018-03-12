@@ -706,7 +706,7 @@ public class ScheCreExeWorkTimeHandler {
 	 * @return the working time zone code
 	 */
 	// 在職状態に対応する「就業時間帯コード」を取得する
-	private Optional<String> getWorkingTimeZoneCode(WorkTimeZoneGetterCommand command) {
+	public Optional<String> getWorkingTimeZoneCode(WorkTimeZoneGetterCommand command) {
 
 		String worktimeCode = null;
 
@@ -725,7 +725,7 @@ public class ScheCreExeWorkTimeHandler {
 		}
 
 		// check work time code null
-		if(worktimeCode == null){
+		if(StringUtil.isNullOrEmpty(worktimeCode, true)){ // fix bug #87723 for case not setting work time
 			return null;
 		}
 		

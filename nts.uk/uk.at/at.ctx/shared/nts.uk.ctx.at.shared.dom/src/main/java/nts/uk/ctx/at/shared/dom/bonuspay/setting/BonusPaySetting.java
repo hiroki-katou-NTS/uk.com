@@ -11,7 +11,10 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingName;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.SpecBonusPayNumber;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.shr.com.time.AttendanceClock;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * @author hungnm
@@ -71,23 +74,6 @@ public class BonusPaySetting extends AggregateRoot{
 
 	
 	/**
-	 * 加給時間帯の作成
-	 * @param timeSpan 計算範囲
-	 * @return 計算範囲に重複している時間帯リスト
-	 */
-	public List<BonusPayTimesheet> createDuplicationBonusPayTimeSheet(TimeSpanForCalc calcSpan){
-		List<BonusPayTimesheet> bonusPayList = new ArrayList<>();
-		Optional<TimeSpanForCalc> duplicateRange;
-		for(BonusPayTimesheet bonusPay : bonusPayList) {
-			duplicateRange = Optional.empty();//calcSpan.getDuplicatedWith(bonusPay.getCalcrange());
-			if(duplicateRange.isPresent()){
-				//bonusPayList.add(bonusPay.reCreateCalcRange(duplicateRange.get()));
-			}
-		}
-		return bonusPayList;
-	}
-	
-	/**
 	 * 特定日加給時間帯の作成
 	 * @param timeSpan 計算範囲
 	 * @return 計算範囲に重複している時間帯リスト
@@ -96,9 +82,17 @@ public class BonusPaySetting extends AggregateRoot{
 		List<SpecBonusPayTimesheet> bonusPayList = new ArrayList<>();
 		Optional<TimeSpanForCalc> duplicateRange;
 		for(SpecBonusPayTimesheet bonusPay : bonusPayList) {
-			duplicateRange = Optional.empty();//calcSpan.getDuplicatedWith(bonusPay.getCalcrange());
+			duplicateRange = calcSpan.getDuplicatedWith(new TimeSpanForCalc(new TimeWithDayAttr(bonusPay.getStartTime().valueAsMinutes()),new TimeWithDayAttr(bonusPay.getEndTime().valueAsMinutes())));
 			if(duplicateRange.isPresent()){
-				bonusPayList.add(bonusPay.reCreateCalcRange(duplicateRange.get()));
+				bonusPayList.add(new SpecBonusPayTimesheet(bonusPay.getTimeSheetId(),
+						   								   bonusPay.getUseAtr(),
+						   								   bonusPay.getTimeItemId(),
+						   								   new AttendanceClock(duplicateRange.get().getStart().valueAsMinutes()),
+						   								   new AttendanceClock(duplicateRange.get().getEnd().valueAsMinutes()),
+						   								   bonusPay.getRoundingTimeAtr(),
+						   								   bonusPay.getRoundingAtr(),
+						   								   bonusPay.getDateCode(),
+						   								   bonusPay.getSpecBonusPayNumber()));
 			}
 		}
 		return bonusPayList;

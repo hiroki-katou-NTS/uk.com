@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezoneSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezoneSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFlowRtSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFlowRtSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRtSet;

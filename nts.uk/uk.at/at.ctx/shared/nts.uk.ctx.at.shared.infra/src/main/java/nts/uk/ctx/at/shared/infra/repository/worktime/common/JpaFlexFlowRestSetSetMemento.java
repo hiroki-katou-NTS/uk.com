@@ -5,10 +5,10 @@
 package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestClockCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestClockCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexRestSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexRestSetPK;
 

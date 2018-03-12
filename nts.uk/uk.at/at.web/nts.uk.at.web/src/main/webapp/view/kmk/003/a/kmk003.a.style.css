@@ -27,7 +27,7 @@
 }
 
 .label_header {
-	margin-left: 10px;
+	margin-left: 15px;
 }
 
 .label_memo {
@@ -41,7 +41,7 @@
 
 .setting_header_br {
 	margin-left: 10px;
-	margin-top: 15px;
+	margin-top: 20px;
 	display: inline-flex;
 }
 .icon-x {
@@ -62,3 +62,34 @@
 	text-align: center;
 }
 
+.tab-outline {
+	margin: 20px;
+}
+
+.tab-block {
+	margin: 20px;
+}
+
+.tab-rows {
+	margin-top: 20px;
+	width: 100%;
+	display: flex;
+    align-items: center;
+}
+
+.tab-seperator {
+	margin-top: 20px;
+}
+
+.tab-inline-item {
+	padding: 0px 10px 0px 10px;
+	display: inline-block;
+}
+
+.main-input {
+	margin: 3px;
+}
+
+#tab-3 {
+	overflow-x: visible;
+}

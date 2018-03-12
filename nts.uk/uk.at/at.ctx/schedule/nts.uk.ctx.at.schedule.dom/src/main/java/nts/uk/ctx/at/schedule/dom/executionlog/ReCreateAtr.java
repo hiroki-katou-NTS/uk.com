@@ -12,11 +12,11 @@ public enum ReCreateAtr {
 
 	/** The all case. */
 	// 全件
-	ALL_CASE(0, "Enum_ReCreateAtr_allCase", "全件"),
+	ALL_CASE(0, "KSC001_4", "全件"),
 
 	/** The only un confirm. */
 	// 未確定データのみ
-	ONLY_UNCONFIRM(1, "Enum_ReCreateAtr_onlyUnconfirm", "未確定データのみ");
+	ONLY_UNCONFIRM(1, "KSC001_5", "未確定データのみ");
 
 	/** The value. */
 	public final int value;

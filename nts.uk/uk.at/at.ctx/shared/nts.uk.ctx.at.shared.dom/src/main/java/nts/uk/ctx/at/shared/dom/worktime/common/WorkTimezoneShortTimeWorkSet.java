@@ -5,14 +5,14 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class WorkTimezoneShortTimeWorkSet.
  */
 // 就業時間帯の短時間勤務設定
 @Getter
-public class WorkTimezoneShortTimeWorkSet extends DomainObject {
+public class WorkTimezoneShortTimeWorkSet extends WorkTimeDomainObject {
 
 	/** The nurs timezone work use. */
 	// 介護時間帯に勤務した場合に勤務として扱う

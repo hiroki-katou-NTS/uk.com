@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name="KMNMT_PREMIUM_ITEM")
-public class KmnmtPremiumItem extends UkJpaEntity{
+public class KmnmtPremiumItem extends UkJpaEntity {
 	@EmbeddedId
 	public KmnmpPremiumItemPK kmnmpPremiumItemPK;
 	

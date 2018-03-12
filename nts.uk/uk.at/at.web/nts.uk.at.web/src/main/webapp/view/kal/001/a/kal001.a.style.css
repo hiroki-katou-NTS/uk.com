@@ -1,0 +1,28 @@
+
+
+#component-employee-list{
+    margin-left: 90px;
+    margin-top: 15px;
+}
+
+.control-group td {
+	padding-top: 30px;
+	padding-left: 15px;
+}
+.control-group{
+	margin-top: 70px;
+}
+.check_column{
+	text-align: center !important;
+}
+.periodTime{
+	padding-left: 15px !important;
+}
+
+.nts-datepicker-wrapper .ntsDatepicker.yearmonth-picker{
+	width: 85px;
+}
+
+#fixed-table{
+    overflow-y: scroll
+}

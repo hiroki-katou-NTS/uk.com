@@ -54,9 +54,10 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 	@Override
 	@Transactional
 	public void update(ShortWorkTimeHistoryItem domain) {
-		this.delete(domain.getEmployeeId(), domain.getHistoryId());
-		
-		this.add(domain);
+//		this.delete(domain.getEmployeeId(), domain.getHistoryId());
+//		
+//		this.add(domain);
+		this.commandProxy().update(toEntity(domain));
 	}
 
 	/*

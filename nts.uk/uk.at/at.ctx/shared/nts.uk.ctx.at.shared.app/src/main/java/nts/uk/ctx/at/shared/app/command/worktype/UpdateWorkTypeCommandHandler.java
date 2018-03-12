@@ -9,6 +9,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -38,12 +39,21 @@ public class UpdateWorkTypeCommandHandler extends CommandHandler<WorkTypeCommand
 			// Add data WorkTypeSet in OneDay or Morning and Afternoon
 			if (workType.isOneDay()) {
 				workTypeCommandBase.getOneDay().setWorkAtr(WorkAtr.OneDay.value);
-				workTypeRepo.addWorkTypeSet(workTypeCommandBase.getOneDay().toDomainWorkTypeSet(companyId));
+				WorkTypeSet oneDay = workTypeCommandBase.getOneDay().toDomainWorkTypeSet(companyId);
+				if (!workType.getDailyWork().isClosure()) {
+					oneDay.changeCloseAtr(null);
+				}
+				workTypeRepo.addWorkTypeSet(oneDay);
 			} else {
 				workTypeCommandBase.getMorning().setWorkAtr(WorkAtr.Monring.value);
-				workTypeRepo.addWorkTypeSet(workTypeCommandBase.getMorning().toDomainWorkTypeSet(companyId));
+				WorkTypeSet monring =workTypeCommandBase.getMorning().toDomainWorkTypeSet(companyId);
+				monring.changeCloseAtr(null);
+				workTypeRepo.addWorkTypeSet(monring);
+				
 				workTypeCommandBase.getAfternoon().setWorkAtr(WorkAtr.Afternoon.value);
-				workTypeRepo.addWorkTypeSet(workTypeCommandBase.getAfternoon().toDomainWorkTypeSet(companyId));
+				WorkTypeSet afternoon = workTypeCommandBase.getAfternoon().toDomainWorkTypeSet(companyId);
+				afternoon.changeCloseAtr(null);
+				workTypeRepo.addWorkTypeSet(afternoon);
 			}
 		}
 	}

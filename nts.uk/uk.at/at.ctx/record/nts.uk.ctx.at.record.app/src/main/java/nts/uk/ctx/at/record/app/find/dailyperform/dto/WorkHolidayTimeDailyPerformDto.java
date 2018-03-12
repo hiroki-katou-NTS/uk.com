@@ -51,8 +51,8 @@ public class WorkHolidayTimeDailyPerformDto {
 				HolidayMidnightWorkDto.fromHolidayMidnightWork(domain.getHolidayMidNightWork().get()), 
 				domain.getHolidayTimeSpentAtWork().valueAsMinutes(), 
 				ConvertHelper.mapTo(domain.getHolidayWorkFrameTime(), (c) -> new HolidayWorkFrameTimeDto(
-						getWithCalc(c.getHolidayWorkTime().get()), 
-						getWithCalc(c.getTransferTime().get()), 
+						CalcAttachTimeDto.toTimeWithCal(c.getHolidayWorkTime().get()), 
+						CalcAttachTimeDto.toTimeWithCal(c.getTransferTime().get()), 
 						getAttendanceTime(c.getBeforeApplicationTime().get()),
 						c.getHolidayFrameNo().v())));
 	}
@@ -61,33 +61,28 @@ public class WorkHolidayTimeDailyPerformDto {
 		return c == null ? null : new TimeSpanForCalcDto(c.getStart().valueAsMinutes(), c.getEnd().valueAsMinutes());
 	}
 	
-	private static CalcAttachTimeDto getWithCalc(TimeWithCalculation c) {
-		return c == null ? null : new CalcAttachTimeDto(c.getCalcTime().valueAsMinutes(), c.getTime().valueAsMinutes());
-	}
-	
 	private static int getAttendanceTime(AttendanceTime time) {
 		return time == null ? null : time.valueAsMinutes();
 	}
 	
 	public HolidayWorkTimeOfDaily toDomain() {
 		return new HolidayWorkTimeOfDaily(
-				holidyWorkFrameTimeSheet == null ? new ArrayList<>() : ConvertHelper.mapTo(holidyWorkFrameTimeSheet,
+				ConvertHelper.mapTo(holidyWorkFrameTimeSheet,
 						(c) -> new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(c.getHolidayWorkFrameNo()),
 								c.getTimeSheet() == null ? null : new TimeSpanForCalc(toTimeWithDayAttr(c.getTimeSheet().getStart()),
 										toTimeWithDayAttr(c.getTimeSheet().getEnd())))),
-				holidayWorkFrameTime == null ? new ArrayList<>() : ConvertHelper.mapTo(holidayWorkFrameTime,
+				ConvertHelper.mapTo(holidayWorkFrameTime,
 						(c) -> new HolidayWorkFrameTime(new HolidayWorkFrameNo(c.getHolidayFrameNo()),
-								Finally.of(createTimeWithCalc(c.getHolidayWorkTime())),
-								Finally.of(createTimeWithCalc(c.getTransferTime())),
-								Finally.of(toAttendanceTime(c.getBeforeApplicationTime())))),
-				Finally.of(holidayMidnightWork.toDomain()),
+								createTimeWithCalc(c.getHolidayWorkTime()),
+								createTimeWithCalc(c.getTransferTime()),
+								c.getBeforeApplicationTime() == null ? Finally.empty() 
+										: Finally.of(toAttendanceTime(c.getBeforeApplicationTime())))),
+				holidayMidnightWork == null ? Finally.empty() : Finally.of(holidayMidnightWork.toDomain()),
 				toAttendanceTime(holidayTimeSpentAtWork));
 	}
 
-	private TimeWithCalculation createTimeWithCalc(CalcAttachTimeDto c) {
-		return c == null ? null : TimeWithCalculation.createTimeWithCalculation(
-				toAttendanceTime(c.getTime()),
-				toAttendanceTime(c.getCalcTime()));
+	private Finally<TimeWithCalculation> createTimeWithCalc(CalcAttachTimeDto c) {
+		return c == null ? Finally.empty() : Finally.of(TimeWithCalculation.sameTime(toAttendanceTime(c.getTime())));
 	}
 	
 	private TimeWithDayAttr toTimeWithDayAttr(Integer time) {

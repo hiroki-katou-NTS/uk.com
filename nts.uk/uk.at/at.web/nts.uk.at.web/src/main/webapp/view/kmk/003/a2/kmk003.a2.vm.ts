@@ -132,8 +132,8 @@ module a2 {
             // ====================================== Defined Variable Flow Mode ======================================
             
             self.roundingProcsses = ko.observableArray([
-                { code: 0, name: nts.uk.resource.getText("KMK003_91") },
-                { code: 1, name: nts.uk.resource.getText("KMK003_92") }
+                { code: 1, name: nts.uk.resource.getText("KMK003_91") },
+                { code: 0, name: nts.uk.resource.getText("KMK003_92") }
             ]);
             self.calculationMethods = ko.observableArray([
                 { code: 0, name: nts.uk.resource.getText("KMK003_136") },

@@ -1,10 +1,12 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.ac.find.user;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -72,6 +74,26 @@ public class UserAdapterImpl implements UserAdapter {
 				.expirationDate(userInfo.getExpirationDate())
 				.contractCode(userInfo.getContractCode())
 				.build());
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter#getListUsersByListPersonIds(java.util.List)
+	 */
+	@Override
+	public List<UserImport> getListUsersByListPersonIds(List<String> listPersonIds) {
+		return this.userPublisher.getListUserByListAsId(listPersonIds).stream().map(userInfo -> 		
+		UserImport.builder()
+		.userId(userInfo.getUserID())
+		.userName(userInfo.getUserName())
+		.mailAddress(userInfo.getMailAddress())
+		.loginId(userInfo.getLoginID())
+		.associatePersonId(userInfo.getAssociatedPersonID())
+		.password(userInfo.getPassword())
+		.expirationDate(userInfo.getExpirationDate())
+		.contractCode(userInfo.getContractCode())
+		.build()).collect(Collectors.toList());
 	}
 
 }

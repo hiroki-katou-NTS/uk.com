@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.ws.classification;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -83,5 +85,14 @@ public class ClassificationWs extends WebService{
 	@POST
 	public void remove(ClfRemoveCommand command) {
 		this.removeHandler.handle(command);
+	}
+	
+	@POST
+	@Path("getClsNameByCds")
+	public List<String> getClsNameByListCode(List<String> codes) {
+		List<String> names = new ArrayList<>();
+		if (codes == null || codes.isEmpty()) return names;
+		names = codes.stream().map(cd -> this.finder.findClassificationByCode(cd).getName()).collect(Collectors.toList());
+		return names;
 	}
 }

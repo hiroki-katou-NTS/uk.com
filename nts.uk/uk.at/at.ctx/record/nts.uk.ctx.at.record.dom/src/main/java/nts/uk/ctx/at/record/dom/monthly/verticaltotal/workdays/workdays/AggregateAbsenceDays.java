@@ -18,10 +18,11 @@ public class AggregateAbsenceDays {
 	
 	/**
 	 * コンストラクタ
+	 * @param absenceFrameNo 欠勤枠NO
 	 */
-	public AggregateAbsenceDays(){
+	public AggregateAbsenceDays(int absenceFrameNo){
 		
-		this.absenceFrameNo = 0;
+		this.absenceFrameNo = absenceFrameNo;
 		this.days = new AttendanceDaysMonth(0.0);
 	}
 
@@ -35,9 +36,16 @@ public class AggregateAbsenceDays {
 			int absenceFrameNo,
 			AttendanceDaysMonth days){
 		
-		val domain = new AggregateAbsenceDays();
-		domain.absenceFrameNo = absenceFrameNo;
+		val domain = new AggregateAbsenceDays(absenceFrameNo);
 		domain.days = days;
 		return domain;
+	}
+	
+	/**
+	 * 日数を加算する
+	 * @param days 日数
+	 */
+	public void addDays(Double days){
+		this.days = this.days.addDays(days);
 	}
 }

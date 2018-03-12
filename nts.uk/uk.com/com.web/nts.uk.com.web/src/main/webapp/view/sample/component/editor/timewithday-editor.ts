@@ -5,6 +5,7 @@ __viewContext.ready(function () {
         timeOfDay: KnockoutObservable<number>;
         time: KnockoutObservable<number>;
         time2: KnockoutObservable<number>;
+        withDayAttr: KnockoutObservable<boolean>;
         
         constructor() {
             var self = this;
@@ -14,6 +15,8 @@ __viewContext.ready(function () {
             self.timeOfDay = ko.observable(2400);
             self.time = ko.observable(null);
             self.time2 = ko.observable(3200);
+            
+            self.withDayAttr = ko.observable(false);
         }
     }
 

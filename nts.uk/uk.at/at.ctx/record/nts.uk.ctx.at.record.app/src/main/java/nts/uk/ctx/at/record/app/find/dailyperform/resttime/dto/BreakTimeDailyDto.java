@@ -4,19 +4,24 @@ import java.util.Arrays;
 import java.util.List;
 
 import lombok.Data;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeSheetDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
+import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
+import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
 @AttendanceItemRoot(rootName = "日別実績の休憩時間帯")
-public class BreakTimeDailyDto implements ConvertibleAttendanceItem {
+public class BreakTimeDailyDto extends AttendanceItemCommon {
 
 	private String employeeId;
 	
@@ -56,20 +61,19 @@ public class BreakTimeDailyDto implements ConvertibleAttendanceItem {
 		if(x != null){
 			dto.setEmployeeId(x.getEmployeeId());
 			dto.setYmd(x.getYmd());
-			dto.setRestTimeType(x.getBreakType().value);
+			dto.setRestTimeType(x.getBreakType() == null ? 0 : x.getBreakType().value);
 			dto.setTimeZone(ConvertHelper.mapTo(x.getBreakTimeSheets(), (c) -> new TimeSheetDto(
 					c.getBreakFrameNo().v().intValue(),
 					getTimeStamp(c.getStartTime()),
 					getTimeStamp(c.getEndTime()),
 					c.getBreakTime() == null ? null : c.getBreakTime().valueAsMinutes())));
+			dto.exsistData();
 		}
 		return dto;
 	}
 	
-	private static TimeStampDto getTimeStamp(WorkStamp c) {
-		return c == null ? null : new TimeStampDto(c.getTimeWithDay().valueAsMinutes(),
-				c.getAfterRoundingTime().valueAsMinutes(),
-				c.getLocationCode().v(), c.getStampSourceInfo().value);
+	private static TimeStampDto getTimeStamp(TimeWithDayAttr c) {
+		return c == null ? null : new TimeStampDto(c.valueAsMinutes(), null, null, null);
 	}
 
 	@Override
@@ -80,5 +84,25 @@ public class BreakTimeDailyDto implements ConvertibleAttendanceItem {
 	@Override
 	public GeneralDate workingDate() {
 		return this.ymd;
+	}
+	
+	@Override
+	public BreakTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
+		return new BreakTimeOfDailyPerformance(emp,
+					EnumAdaptor.valueOf(restTimeType, BreakType.class),
+					ConvertHelper.mapTo(timeZone,
+							(d) -> new BreakTimeSheet(new BreakFrameNo(d.getTimeSheetNo()),
+									createWorkStamp(d.getStart()),
+									createWorkStamp(d.getEnd()),
+									// TODO: calculate break time
+									new AttendanceTime(d.getBreakTime()))),
+					date);
+	}
+
+	private TimeWithDayAttr createWorkStamp(TimeStampDto d) {
+		return d == null || d.getTimesOfDay() == null ? null : new TimeWithDayAttr(d.getTimesOfDay());
 	}
 }

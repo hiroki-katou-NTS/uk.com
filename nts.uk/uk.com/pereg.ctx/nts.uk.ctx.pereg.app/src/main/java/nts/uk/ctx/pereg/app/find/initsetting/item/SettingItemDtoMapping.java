@@ -36,10 +36,10 @@ public class SettingItemDtoMapping {
 			SelectionItemLst.forEach(item -> {
 
 				List<ComboBoxObject> comboxList = this.comboBoxFac.getComboBox(item.getSelectionItemRefType(),
-						item.getSelectionItemRefCd(), baseDate, employeeId, null);
+						item.getSelectionItemRefCd(), baseDate, employeeId, null, true, true);
 
 				comboxList.forEach(cbItem -> {
-					if (cbItem.getOptionValue().equals(item.getSaveData().getValue())) {
+					if (cbItem.getOptionValue().equals(item.getSaveData().getValue().toString())) {
 
 						item.getSaveData().setValue(cbItem.getOptionText());
 					}

@@ -20,6 +20,8 @@ public class RegisterRoleSetGrantedPersonCommandHandler extends CommandHandler<R
 	@Override
 	protected void handle(CommandHandlerContext<RoleSetGrantedPersonCommand> context) {
 		RoleSetGrantedPersonCommand command = context.getCommand();
+		if (command.getEmployeeId() == null || command.getEmployeeId().isEmpty())
+			throw new BusinessException("Msg_218", "Com_Person");
 		String companyId = AppContexts.user().companyId();
 		if (command.getMode() == 0) {
 			if (roleSetPersonRepo.getByEmployeeId(command.getEmployeeId()).isPresent()) {

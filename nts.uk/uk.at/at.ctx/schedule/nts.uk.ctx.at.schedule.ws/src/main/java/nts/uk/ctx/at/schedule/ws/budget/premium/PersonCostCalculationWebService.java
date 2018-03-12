@@ -58,6 +58,12 @@ public class PersonCostCalculationWebService extends WebService{
 	}
 	
 	@POST
+	@Path("findByHistoryID")
+	public PersonCostCalculationSettingDto findByHistoryID(String historyID){
+		return this.personCostCalculationSettingFinder.findByHistoryID(historyID);
+	}
+	
+	@POST
 	@Path("updatePersonCostCalculation")
 	public void update(PersonCostCalculationCommand command){
 		this.updatePersonCostCalculationSettingCommandHandler.handle(command);

@@ -9,7 +9,7 @@ import lombok.Setter;
 public class FixedConWorkRecordAdapterDto {
 	/** 日次のアラームチェック条件ID */
 	@Setter
-	private String errorAlarmID;
+	private String dailyAlarmConID;
 	/** No */
 	private int fixConWorkRecordNo;
 	/** メッセージ */
@@ -17,9 +17,9 @@ public class FixedConWorkRecordAdapterDto {
 	/** 使用区分 */
 	private boolean useAtr;
 	
-	public FixedConWorkRecordAdapterDto(String errorAlarmID, int fixConWorkRecordNo, String message, boolean useAtr) {
+	public FixedConWorkRecordAdapterDto(String dailyAlarmConID, int fixConWorkRecordNo, String message, boolean useAtr) {
 		super();
-		this.errorAlarmID = errorAlarmID;
+		this.dailyAlarmConID = dailyAlarmConID;
 		this.fixConWorkRecordNo = fixConWorkRecordNo;
 		this.message = message;
 		this.useAtr = useAtr;

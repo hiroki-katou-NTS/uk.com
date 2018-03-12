@@ -13,6 +13,7 @@ module nts.uk.com.view.cmm013.f {
             findBySequenceCode: "bs/employee/jobtitle/sequence/find",
             saveSequenceMaster: "bs/employee/jobtitle/sequence/save",
             removeSequenceMaster: "bs/employee/jobtitle/sequence/remove",
+            updateOrder: "bs/employee/jobtitle/sequence/updateOrder",
         };
         
         /**
@@ -42,7 +43,14 @@ module nts.uk.com.view.cmm013.f {
         export function removeSequenceMaster(command: SequenceMasterRemoveCommand): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.removeSequenceMaster, command);
         }
-                
+               
+        /**
+         * updateOrder
+         */
+        export function updateOrder(command: SequenceMasterSaveCommand[]): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.updateOrder, command);
+        }
+        
         /**
         * Model namespace.
         */

@@ -9,8 +9,14 @@ import java.util.Optional;
 /**
  * The Interface WorkingConditionItemSetMemento.
  */
-
 public interface WorkingConditionItemSetMemento {
+	
+	/**
+	 * Sets the hourly payment atr.
+	 *
+	 * @param hourlyPaymentAtr the new hourly payment atr
+	 */
+	void setHourlyPaymentAtr(HourlyPaymentAtr hourlyPaymentAtr);
 
 	/**
 	 * Sets the schedule management atr.
@@ -95,4 +101,18 @@ public interface WorkingConditionItemSetMemento {
 	 * @param holidayAddTimeSet the new holiday add time set
 	 */
 	void setHolidayAddTimeSet(Optional<BreakdownTimeDay> holidayAddTimeSet);
+	
+	/**
+	 * Sets the time apply.
+	 *
+	 * @param timeApply the new time apply
+	 */
+	void setTimeApply(Optional<BonusPaySettingCode> timeApply);
+	
+	/**
+	 * Sets the monthly pattern.
+	 *
+	 * @param monthlyPattern the new monthly pattern
+	 */
+	void setMonthlyPattern(Optional<MonthlyPatternCode> monthlyPattern);
 }

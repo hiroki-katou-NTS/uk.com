@@ -1,7 +1,5 @@
 package nts.uk.ctx.pereg.dom.roles.auth.item;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +32,5 @@ public class PersonInfoItemDetail {
 	private boolean setting;
 
 	private String itemParentCd;
-
-	List<PersonInfoItemDetail> setItems;
 
 }

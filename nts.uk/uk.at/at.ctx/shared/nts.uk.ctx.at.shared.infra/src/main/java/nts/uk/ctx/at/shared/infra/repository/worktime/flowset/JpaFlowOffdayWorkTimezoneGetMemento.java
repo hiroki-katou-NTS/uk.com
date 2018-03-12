@@ -9,15 +9,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOffdayWtzGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWtzGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
 
 /**
  * The Class JpaFlowOffdayWorkTimezoneGetMemento.
  */
-public class JpaFlowOffdayWorkTimezoneGetMemento implements FlOffdayWtzGetMemento {
+public class JpaFlowOffdayWorkTimezoneGetMemento implements FlowOffdayWtzGetMemento {
 
 	/** The entity. */
 	private KshmtFlowWorkSet entity;

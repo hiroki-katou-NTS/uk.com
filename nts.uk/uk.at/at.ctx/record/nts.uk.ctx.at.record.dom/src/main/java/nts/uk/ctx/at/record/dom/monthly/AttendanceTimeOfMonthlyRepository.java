@@ -30,19 +30,13 @@ public interface AttendanceTimeOfMonthlyRepository {
 	 * @param yearMonth 年月
 	 * @return 年月に該当する月別実績の勤怠時間　（開始日順）
 	 */
-	List<AttendanceTimeOfMonthly> findByYearMonth(String employeeId, YearMonth yearMonth);
+	List<AttendanceTimeOfMonthly> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth);
 	
 	/**
-	 * 追加
+	 * 登録および更新
 	 * @param attendanceTimeOfMonthly 月別実績の勤怠時間
 	 */
-	void insert(AttendanceTimeOfMonthly attendanceTimeOfMonthly);
-	
-	/**
-	 * 更新
-	 * @param attendanceTimeOfMonthly 月別実績の勤怠時間
-	 */
-	void update(AttendanceTimeOfMonthly attendanceTimeOfMonthly);
+	void persistAndUpdate(AttendanceTimeOfMonthly attendanceTimeOfMonthly);
 	
 	/**
 	 * 削除

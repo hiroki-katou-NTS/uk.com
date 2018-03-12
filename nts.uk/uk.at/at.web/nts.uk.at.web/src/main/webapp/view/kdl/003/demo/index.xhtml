@@ -16,7 +16,7 @@
 			<com:scriptfile path="kdl003.parent.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area">
+			<div id="functions-area" style="padding-top: 30px !important;">
 				<button class="large" data-bind="click: OpenDialog003" >KDL003</button>
 			</div>
 			<div id="contents-area">
@@ -68,6 +68,18 @@
 				
 				<div> Selected Work Time Name:</div>
 				<span data-bind="text: childSelectSiftName"></span>
+				
+				<div> First Start Time Zone:</div>
+				<span data-bind="text: firstStartTime"></span>
+				
+				<div> First End Time Zone:</div>
+				<span data-bind="text: firstEndTime"></span>
+				
+				<div> Second Start Time Zone:</div>
+				<span data-bind="text: secondStartTime"></span>
+				
+				<div> Second End Time Zone:</div>
+				<span data-bind="text: secondEndTime"></span>
 			</div>
 		</ui:define>
 	</ui:composition>

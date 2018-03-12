@@ -8,12 +8,13 @@ public class MasterRefConditionDto extends SelectionItemDto {
 
 	private String masterType;
 
-	private MasterRefConditionDto(String masterType) {
+	private MasterRefConditionDto(String masterType, int dataTypeValue) {
 		super(ReferenceTypes.DESIGNATED_MASTER);
 		this.masterType = masterType;
+		this.dataTypeValue = dataTypeValue;
 	}
 
-	public static MasterRefConditionDto createFromJavaType(String masterType) {
-		return new MasterRefConditionDto(masterType);
+	public static SelectionItemDto createFromJavaType(String masterType, int dataTypeValue) {
+		return new MasterRefConditionDto(masterType, dataTypeValue);
 	}
 }

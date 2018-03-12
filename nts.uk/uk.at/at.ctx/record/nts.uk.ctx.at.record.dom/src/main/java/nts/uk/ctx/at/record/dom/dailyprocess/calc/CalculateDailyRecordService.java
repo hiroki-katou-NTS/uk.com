@@ -18,6 +18,5 @@ public interface CalculateDailyRecordService {
 	 * @param integrationOfDaily 日別実績(Work) 
 	 * @return 日別実績(Work)
 	 */
-	public IntegrationOfDaily calculate(String companyId, String placeId, String employmentCd,
-			String employeeId, GeneralDate targetDate, IntegrationOfDaily integrationOfDaily);
+	public IntegrationOfDaily calculate(IntegrationOfDaily integrationOfDaily);
 }

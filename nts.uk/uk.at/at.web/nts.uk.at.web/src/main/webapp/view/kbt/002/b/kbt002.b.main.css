@@ -1,0 +1,51 @@
+@CHARSET "UTF-8";
+
+#left-content {
+	width: 330px;
+	float: left;
+	margin: 0px 10px;
+}
+#left-content-top {
+	width: 100%;
+	padding: 10px 15px;
+	margin-bottom: 45px;
+}
+.caret-background.caret-bottom:after {
+	left: 160px !important;
+}
+#left-content-bottom {
+	width: 100%;
+	padding: 15px;
+	border-radius: 5px;
+}
+#right-content {
+	width: 875px;
+	float: left;
+	margin-left: 60px;
+	/* margin-top: 10px; */
+}
+
+.middle {
+	vertical-align: middle;
+}
+
+#line-one{
+    margin-bottom: 10px;
+}
+
+#targetRadioBox {
+	width: 340px
+}
+
+#targetCheckBoxes {
+	width: 460px
+}
+
+.execSetting{
+	margin-top: 10px;
+}
+
+.subExecSetting {
+	margin-left: 17px;
+	margin-top: 5px;
+}

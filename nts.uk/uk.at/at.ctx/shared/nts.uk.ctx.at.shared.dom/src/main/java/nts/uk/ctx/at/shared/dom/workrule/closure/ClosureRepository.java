@@ -147,7 +147,7 @@ public interface ClosureRepository {
 	 * @param endDate the end date
 	 * @return the list
 	 */
-	List<ClosureHistory> findByCurrentMonth(YearMonth currentMonth);
+	List<ClosureHistory> findByCurrentMonth(String companyId, YearMonth currentMonth);
 	
 	
 	/**

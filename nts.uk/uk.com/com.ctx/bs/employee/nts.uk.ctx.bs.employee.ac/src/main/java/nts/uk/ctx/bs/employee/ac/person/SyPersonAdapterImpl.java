@@ -34,7 +34,7 @@ public class SyPersonAdapterImpl implements SyPersonAdapter {
 	@Override
 	public List<PersonImport> findByPersonIds(List<String> personIds) {
 		return personPub.findByPersonIds(personIds).stream()
-				.map(item -> new PersonImport(item.getPersonId(), item.getPersonName()))
+				.map(item -> new PersonImport(item.getPersonId(), item.getPersonName(), item.getBusinessName()))
 				.collect(Collectors.toList());
 	}
 

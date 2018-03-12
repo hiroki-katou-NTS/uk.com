@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.log;
 
 import java.io.Serializable;
-import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -82,6 +81,19 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 		this.periodCoverdEndDate = periodCoverdEndDate;
 		this.calExecutionSetInfoID = calExecutionSetInfoID;
 	}
+	
+	public KrcdtExecutionLog(KrcdtExecutionLogPK krcdtExecutionLogPK, int existenceError,
+			GeneralDateTime executionStartDate, GeneralDateTime executionEndDate, int processStatus,
+			GeneralDate periodCoverdStartDate, GeneralDate periodCoverdEndDate) {
+		super();
+		this.krcdtExecutionLogPK = krcdtExecutionLogPK;
+		this.existenceError = existenceError;
+		this.executionStartDate = executionStartDate;
+		this.executionEndDate = executionEndDate;
+		this.processStatus = processStatus;
+		this.periodCoverdStartDate = periodCoverdStartDate;
+		this.periodCoverdEndDate = periodCoverdEndDate;
+	}
 
 	public ExecutionLog toDomain() {
 		val domain = ExecutionLog.createFromJavaType(
@@ -93,7 +105,6 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 				this.processStatus, 
 				this.periodCoverdStartDate, 
 				this.periodCoverdEndDate);
-		
 		if (this.krcdtExecutionLogPK.executionContent == ExecutionContent.DAILY_CREATION.value) {
 			domain.setDailyCreationSetInfo(calExeSetInfor.toDomain());
 		} else if(this.krcdtExecutionLogPK.executionContent == ExecutionContent.DAILY_CALCULATION.value ) {
@@ -135,5 +146,4 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 		}
 		return entity;
 	}
-	
 }

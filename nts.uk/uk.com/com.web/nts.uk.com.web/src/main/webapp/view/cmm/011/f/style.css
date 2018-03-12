@@ -1,8 +1,10 @@
 @CHARSET "UTF-8";
 
 .ntsRadioBox {
-    margin-bottom: 10px !important;
+	margin-bottom: 10px !important;
 }
+
 #radio-group-box {
-	display: inline-grid;margin-left: 136px;
+	display: inline-grid;
+	margin-left: 136px;
 }

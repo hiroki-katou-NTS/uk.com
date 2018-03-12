@@ -9,6 +9,8 @@ module a1 {
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
     
     class ScreenModel {
+        
+        selectedTab: KnockoutObservable<string>;
 
         dayStartTime: KnockoutObservable<number>;
         dayStartTimeOption: KnockoutObservable<any>;
@@ -38,8 +40,10 @@ module a1 {
         /**
         * Constructor.
         */
-        constructor(input) {
+        constructor(input: any) {
             let self = this;
+            self.selectedTab = input.selectedTab;
+            
             self.loadDataFromMainScreen(input);
             self.isTimezoneTwoEnabled = ko.computed(() => {
                 return !self.isFlexMode() && !self.isDiffTimeMode();
@@ -79,7 +83,7 @@ module a1 {
         /**
          * Load data from main screen
          */
-        private loadDataFromMainScreen(data): void {
+        private loadDataFromMainScreen(data: any): void {
             let self = this;
             let settingEnum: WorkTimeSettingEnumDto = data.enum;
             self.isDetailMode = data.isDetailMode;
@@ -97,6 +101,16 @@ module a1 {
         public collectData(oldData: any) {
             let self = this;
             oldData.startDateClock = self.dayStartTime();
+        }
+        
+        /**
+         * Handle when using tab button
+         */
+        public changeTab(data: any, e: any) {
+            let _self = this;
+            if (e.which == 9) {
+                _self.selectedTab('tab-2');        
+            }
         }
 
     }

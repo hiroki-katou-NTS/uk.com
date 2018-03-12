@@ -41,4 +41,21 @@ public class IllegalMidnightTime {
 		domain.beforeTime = beforeTime;
 		return domain;
 	}
+	
+	/**
+	 * 時間に分を加算する
+	 * @param minutes 分
+	 * @param calcMinutes 分（計算用）
+	 */
+	public void addMinutesToTime(int minutes, int calcMinutes){
+		this.time = this.time.addMinutes(minutes, calcMinutes);
+	}
+	
+	/**
+	 * 事前時間に分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinutesToBeforeTime(int minutes){
+		this.beforeTime = this.beforeTime.addMinutes(minutes);
+	}
 }

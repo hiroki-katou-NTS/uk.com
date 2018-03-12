@@ -27,7 +27,7 @@ public class ScEmployeeAdapterImpl implements SCEmployeeAdapter {
 		// covert to dto
 		EmployeeDto dto = new EmployeeDto();
 		dto.setEmployeeCode(per.getEmployeeCode());
-		dto.setEmployeeName(per.getPname());
+		dto.setEmployeeName(per.getBusinessName());
 		return dto;
 	}
 }

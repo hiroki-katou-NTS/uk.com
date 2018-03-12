@@ -6,10 +6,10 @@ package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestClockCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestClockCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetGetMemento;
 
 /**
  * The Class FlowRestSetDto.

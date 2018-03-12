@@ -6,8 +6,10 @@ package nts.uk.ctx.sys.gateway.app.command.singlesignon;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.CompanyCode;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountGetMemento;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.UserName;
 
 /**
  * Sets the use atr.
@@ -46,16 +48,16 @@ public class SaveOtherSysAccountCommand implements OtherSysAccountGetMemento {
 	 * @see nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountGetMemento#getCompanyCode()
 	 */
 	@Override
-	public String getCompanyCode() {
-		return this.companyCode;
+	public CompanyCode getCompanyCode() {
+		return new CompanyCode(this.companyCode);
 	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountGetMemento#getUserName()
 	 */
 	@Override
-	public String getUserName() {
-		return this.userName;
+	public UserName getUserName() {
+		return new UserName(this.userName);
 	}
 
 	/* (non-Javadoc)

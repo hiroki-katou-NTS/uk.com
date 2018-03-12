@@ -36,11 +36,9 @@
 					</div>
 				</div>
 			</div>
-			<div id="contents-area">
-				<div id="left-content"
-					class="bg-green caret-right caret-background cf"
-					style="width: 340px; height: 335px;">
-					<div id="LST_001" style="margin-left: 10px; padding: 10px;">
+			<div id="contents-area" class="fixed-flex-layout">
+				<div class="fixed-flex-layout-left bg-green caret-right caret-background cf">
+					<div id="LST_001" style="padding: 15px;">
 						<table id="single-list"
 							data-bind="ntsGridList: {	
 								width: 300,
@@ -53,7 +51,7 @@
 						}"></table>
 					</div>
 				</div>
-				<div class="right-content">
+				<div class="fixed-flex-layout-right">
 					<div class="control-group" data-bind="with: currentWebMenu">
 						<div style="vertical-align: middle"
 							data-bind="ntsFormLabel: {constraint: ['WebMenuCode','WebMenuName'],required: true}">#{i18n.getText('CCG013_11')}</div>

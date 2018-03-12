@@ -8,6 +8,8 @@ import nts.uk.ctx.pereg.dom.person.info.order.PerInfoItemDefOrder;
 public interface PerInfoItemDefRepositoty {
 
 	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCategoryId, String contractCd);
+	
+	List<PersonInfoItemDefinition> getAllItemByCtgWithAuth(String perInfoCategoryId, String contractCd, String roleId, boolean isSelfRef);
 
 	Optional<PersonInfoItemDefinition> getPerInfoItemDefById(String perInfoItemDefId, String contractCd);
 
@@ -50,9 +52,8 @@ public interface PerInfoItemDefRepositoty {
 
 	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryIdWithoutSetItem(String perInfoCtgId,
 			String contractCd);
-
-	List<PersonInfoItemDefinition> getAllItemFromCodeList(String companyId, String categoryCd,
-			List<String> itemCodeList);
+	
+	List<PersonInfoItemDefinitionSimple> getRequiredItemFromCtgCdLst(String  contractCd,String companyId, List<String> CtgCodeList);
 
 	// Sonnlb Code
 
@@ -81,6 +82,13 @@ public interface PerInfoItemDefRepositoty {
 	 * dùng cho màn hình cps016
 	 */
 	boolean checkExistedSelectionItemId(String selectionItemId);
+	
+	/**
+	 * 
+	 */
+	List<PersonInfoItemDefinition> getAllItemUsedByCtgId(List<String> ctgId);
+	
+	List<String> getAllRequiredIds(String contractCd, String companyId);
 
 	
 }

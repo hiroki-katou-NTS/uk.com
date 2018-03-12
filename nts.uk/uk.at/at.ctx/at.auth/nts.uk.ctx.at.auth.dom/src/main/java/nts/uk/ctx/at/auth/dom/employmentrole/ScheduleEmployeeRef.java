@@ -4,7 +4,7 @@ public enum ScheduleEmployeeRef {
 	/**
 	 * 全員(all)
 	 */
-	ALL(0,"全員"),
+	ALL(0,"全社員"),
 	/**
 	 * 所属部門全員（配下含む）(allIncludeSubor)
 	 */

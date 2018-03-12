@@ -1,21 +1,22 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
- * The Interface FlTimeSettingPolicy.
+ * The Interface FlowTimeSettingPolicy.
  */
 public interface FlowTimeSettingPolicy {
-	
+
 	/**
 	 * Validate.
 	 *
-	 * @param predTime the pred time
-	 * @param flTimeSetting the fl time setting
+	 * @param predetemineTimeSetting the predetemine time setting
+	 * @param flowTimeSetting the flow time setting
 	 */
-	void validate(PredetemineTimeSetting predTime, FlowTimeSetting flTimeSetting);
+	void validate(BundledBusinessException be, PredetemineTimeSetting predetemineTimeSetting, FlowTimeSetting flowTimeSetting);
 }

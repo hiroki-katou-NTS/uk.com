@@ -18,6 +18,7 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -25,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @author NWS_THANHNC_PC
  */
 @Entity
-@Table(name = "KRCDT_DAI_SHORT_WORK_TIME")
+@Table(name = "KRCDT_DAI_SHORTTIME_TS")
 @XmlRootElement
 @NamedQueries({
 //    @NamedQuery(name = "KrcdtDaiShortWorkTime.findAll", query = "SELECT k FROM KrcdtDaiShortWorkTime k"),
@@ -120,6 +121,10 @@ public class KrcdtDaiShortWorkTime extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return krcdtDaiShortWorkTimePK;
+	}
+
+	public void setData(AttendanceTimeOfDailyPerformance attendanceTime,int frameNo) {
+		
 	}
     
 }

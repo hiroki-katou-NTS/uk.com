@@ -9,7 +9,13 @@ import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr;
  *
  */
 public class IncludeHolidaysPremiumCalcDetailSet {
-	@Getter
-	private NotUseAtr toAdd;//型の参照先は変更する必要あり
 	
+	public IncludeHolidaysPremiumCalcDetailSet(NotUseAtr toAdd) {
+		super();
+		this.toAdd = toAdd;
+	}//型の参照先は変更する必要あり
+	
+	@Getter
+	private NotUseAtr toAdd;
+
 }

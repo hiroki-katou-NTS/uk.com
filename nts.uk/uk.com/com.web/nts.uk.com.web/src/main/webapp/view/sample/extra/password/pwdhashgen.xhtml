@@ -28,9 +28,14 @@
 									<td><input type="text" data-bind="value: salt" style="width: 400px;"/></td>
 								</tr>
 							</table>
-							<button data-bind="click: generate">generate hash</button>
+							<button data-bind="click: generate">generate hash</button>：　<span data-bind="text: hash" style="height: 30px;"></span>
 							<hr />
-							<div data-bind="text: hash" style="height: 30px;"></div>
+							
+							<button data-bind="click:bulkGenerate">Bulk generate</button>
+							<span data-bind="text: bulkProgress"></span>/<span data-bind="text: bulkTotalSize"></span>
+							<br />
+							<textarea data-bind="value: bulkSource" style="width: 800px; height: 400px; font-family: Consolas"></textarea>
+							
 						</div>
 						<div class="footer cf">
 							<button class="previous large">Previous</button>

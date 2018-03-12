@@ -204,7 +204,12 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                     return;
                 }
                 // interrupt process import then close dialog
-                nts.uk.request.asyncTask.requestToCancel(self.taskId());
+                nts.uk.request.asyncTask.requestToCancel(self.taskId()).done(function() {
+                    $('.countdown').stopCount();
+                    self.updateInfoStatus();
+                    self.isFinish(true);
+                    self.reloadPage();
+                });
             }
 
             /**

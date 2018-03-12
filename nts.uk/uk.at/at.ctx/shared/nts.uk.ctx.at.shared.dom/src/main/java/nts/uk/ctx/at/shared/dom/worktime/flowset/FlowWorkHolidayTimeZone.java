@@ -5,15 +5,15 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class FlowWorkHolidayTimeZone.
  */
 //流動休出時間帯
 @Getter
-public class FlowWorkHolidayTimeZone extends DomainObject {
+public class FlowWorkHolidayTimeZone extends WorkTimeDomainObject {
 
 	/** The worktime no. */
 	// 就業時間帯NO

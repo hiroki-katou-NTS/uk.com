@@ -9,6 +9,8 @@ import nts.arc.primitive.constraint.StringMaxLength;
 @StringMaxLength(80)
 public class PersonMailAddress extends StringPrimitiveValue<PersonMailAddress>{
 
+	private static final long serialVersionUID = 1L;
+
 	public PersonMailAddress(String rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub

@@ -17,8 +17,9 @@
 		</ui:define>
 
 		<ui:define name="extended-222">
-			<div id="component-items-list" style="margin-left: 20px; margin-top: 100px"></div>
-			<div class="personalEstablishment">
+			<div class="fixed-flex-layout">
+			<div class="fixed-flex-layout-left" id="component-items-list" style="margin-left: 20px; margin-top: 100px"></div>
+			<div class="fixed-flex-layout-right personalEstablishment">
 				<table class="table-label">
 					<tr style="margin-top: 10px">
 						<td class="pull-left">
@@ -52,6 +53,7 @@
 				<div data-bind="ifnot: $parent.isLoading">
 					<ui:include src="data-table.xhtml" />
 				</div>
+			</div>
 			</div>
 		</ui:define>
 	</ui:composition>

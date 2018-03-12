@@ -9,13 +9,6 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 public interface FlexTimeOfMonthlyRepository {
 
 	/**
-	 * 追加
-	 * @param attendanceTimeOfMonthlyKey キー値：月別実績の勤怠時間
-	 * @param flexTimeOfMonthly 月別実績のフレックス時間
-	 */
-	void insert(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey, FlexTimeOfMonthly flexTimeOfMonthly);
-
-	/**
 	 * 更新
 	 * @param attendanceTimeOfMonthlyKey キー値：月別実績の勤怠時間
 	 * @param flexTimeOfMonthly 月別実績のフレックス時間

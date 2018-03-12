@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.monthlyaggrmethod.regularandirregular;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 
 import lombok.val;
@@ -8,6 +10,7 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.ExcessOuts
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.ExcessOutsideTimeSetOfIrgForWkpRepository;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.KrcstMonsetWkpRegAggrPK;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpIrgExot;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
 /**
  * リポジトリ実装：職場の変形労働時間勤務の時間外超過設定
@@ -15,29 +18,20 @@ import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonset
  */
 @Stateless
 public class JpaExcessOutsideTimeSetOfIrgForWkp extends JpaRepository implements ExcessOutsideTimeSetOfIrgForWkpRepository {
-
-	/** 追加 */
-	@Override
-	public void insert(String companyId, String workplaceId, ExcessOutsideTimeSet excessOutsideTimeSetting) {
-		this.commandProxy().insert(toEntity(companyId, workplaceId, excessOutsideTimeSetting, false));
-	}
 	
 	/** 更新 */
 	@Override
 	public void update(String companyId, String workplaceId, ExcessOutsideTimeSet excessOutsideTimeSetting) {
-		this.toEntity(companyId, workplaceId, excessOutsideTimeSetting, true);
+		this.toUpdate(companyId, workplaceId, excessOutsideTimeSetting);
 	}
 	
 	/**
-	 * ドメイン→エンティティ
+	 * データ更新
 	 * @param companyId キー値：会社ID
 	 * @param workplaceId キー値：職場ID
 	 * @param domain ドメイン：時間外超過設定
-	 * @param execUpdate 更新を実行する
-	 * @return エンティティ：会社の変形労働時間勤務の時間外超過設定
 	 */
-	private KrcstMonsetWkpIrgExot toEntity(String companyId, String workplaceId,
-			ExcessOutsideTimeSet domain, boolean execUpdate){
+	private void toUpdate(String companyId, String workplaceId, ExcessOutsideTimeSet domain){
 
 		// キー
 		val key = new KrcstMonsetWkpRegAggrPK(companyId, workplaceId);
@@ -47,86 +41,50 @@ public class JpaExcessOutsideTimeSetOfIrgForWkp extends JpaRepository implements
 		// 1週間の基準時間未満の休日出勤時間の扱い
 		val treatHolidayWorkTimeOfLessThanCriteriaPerWeek = domain.getTreatHolidayWorkTimeOfLessThanCriteriaPerWeek();
 		
-		KrcstMonsetWkpIrgExot entity;
-		if (execUpdate){
-			entity = this.queryProxy().find(key, KrcstMonsetWkpIrgExot.class).get();
-		}
-		else {
-			entity = new KrcstMonsetWkpIrgExot();
-			entity.PK = key;
-		}
+		KrcstMonsetWkpIrgExot entity = this.getEntityManager().find(KrcstMonsetWkpIrgExot.class, key);
+		if (entity == null) return;
 		entity.setValue.exceptLegalHolidayWorkTime =
 				(domain.isAutoExcludeHolidayWorkTimeFromExcessOutsideWorkTime() ? 1 : 0);
 				
-		int atrAutoExcludeOverTime = 1;
-		for (val autoExcludeOverTimeFrame : treatOverTimeOfLessThanCriteriaPerDay.getAutoExcludeOverTimeFrames()){
-			switch(autoExcludeOverTimeFrame.v().intValue()){
-			case 1:
-				entity.setValue.treatOverTime01 = atrAutoExcludeOverTime;
-				break;
-			case 2:
-				entity.setValue.treatOverTime02 = atrAutoExcludeOverTime;
-				break;
-			case 3:
-				entity.setValue.treatOverTime03 = atrAutoExcludeOverTime;
-				break;
-			case 4:
-				entity.setValue.treatOverTime04 = atrAutoExcludeOverTime;
-				break;
-			case 5:
-				entity.setValue.treatOverTime05 = atrAutoExcludeOverTime;
-				break;
-			case 6:
-				entity.setValue.treatOverTime06 = atrAutoExcludeOverTime;
-				break;
-			case 7:
-				entity.setValue.treatOverTime07 = atrAutoExcludeOverTime;
-				break;
-			case 8:
-				entity.setValue.treatOverTime08 = atrAutoExcludeOverTime;
-				break;
-			case 9:
-				entity.setValue.treatOverTime09 = atrAutoExcludeOverTime;
-				break;
-			case 10:
-				entity.setValue.treatOverTime10 = atrAutoExcludeOverTime;
-				break;
+		for (int atrTreatOverTime = 1; atrTreatOverTime <= 2; atrTreatOverTime++){
+			List<OverTimeFrameNo> overTimeFrameNoList =
+					treatOverTimeOfLessThanCriteriaPerDay.getAutoExcludeOverTimeFrames();
+			if (atrTreatOverTime == 2){
+				overTimeFrameNoList = treatOverTimeOfLessThanCriteriaPerDay.getLegalOverTimeFrames();
 			}
-		}
-		
-		int atrLegalOverTime = 2;
-		for (val legalOverTimeFrame : treatOverTimeOfLessThanCriteriaPerDay.getLegalOverTimeFrames()){
-			switch(legalOverTimeFrame.v().intValue()){
-			case 1:
-				entity.setValue.treatOverTime01 = atrLegalOverTime;
-				break;
-			case 2:
-				entity.setValue.treatOverTime02 = atrLegalOverTime;
-				break;
-			case 3:
-				entity.setValue.treatOverTime03 = atrLegalOverTime;
-				break;
-			case 4:
-				entity.setValue.treatOverTime04 = atrLegalOverTime;
-				break;
-			case 5:
-				entity.setValue.treatOverTime05 = atrLegalOverTime;
-				break;
-			case 6:
-				entity.setValue.treatOverTime06 = atrLegalOverTime;
-				break;
-			case 7:
-				entity.setValue.treatOverTime07 = atrLegalOverTime;
-				break;
-			case 8:
-				entity.setValue.treatOverTime08 = atrLegalOverTime;
-				break;
-			case 9:
-				entity.setValue.treatOverTime09 = atrLegalOverTime;
-				break;
-			case 10:
-				entity.setValue.treatOverTime10 = atrLegalOverTime;
-				break;
+			for (val overTimeFrameNo : overTimeFrameNoList){
+				switch(overTimeFrameNo.v().intValue()){
+				case 1:
+					entity.setValue.treatOverTime01 = atrTreatOverTime;
+					break;
+				case 2:
+					entity.setValue.treatOverTime02 = atrTreatOverTime;
+					break;
+				case 3:
+					entity.setValue.treatOverTime03 = atrTreatOverTime;
+					break;
+				case 4:
+					entity.setValue.treatOverTime04 = atrTreatOverTime;
+					break;
+				case 5:
+					entity.setValue.treatOverTime05 = atrTreatOverTime;
+					break;
+				case 6:
+					entity.setValue.treatOverTime06 = atrTreatOverTime;
+					break;
+				case 7:
+					entity.setValue.treatOverTime07 = atrTreatOverTime;
+					break;
+				case 8:
+					entity.setValue.treatOverTime08 = atrTreatOverTime;
+					break;
+				case 9:
+					entity.setValue.treatOverTime09 = atrTreatOverTime;
+					break;
+				case 10:
+					entity.setValue.treatOverTime10 = atrTreatOverTime;
+					break;
+				}
 			}
 		}
 		
@@ -165,8 +123,5 @@ public class JpaExcessOutsideTimeSetOfIrgForWkp extends JpaRepository implements
 				break;
 			}
 		}
-				
-		if (execUpdate) this.commandProxy().update(entity);
-		return entity;
 	}
 }

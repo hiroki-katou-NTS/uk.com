@@ -2,6 +2,7 @@ package nts.uk.ctx.pereg.app.find.copysetting.item;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,7 +39,7 @@ public class CopySettingItemFinder {
 	@Inject
 	private SettingItemDtoMapping settingItemMap;
 
-	public List<SettingItemDto> getAllCopyItemByCtgCode(boolean isSetText, String categoryCd, String employeeId,
+	public List<SettingItemDto> getAllCopyItemByCtgCode(boolean isScreenB, String categoryCd, String employeeId,
 			GeneralDate baseDate) {
 
 		String companyId = AppContexts.user().companyId();
@@ -51,7 +52,7 @@ public class CopySettingItemFinder {
 		List<EmpCopySettingItem> itemList = this.empCopyItemRepo.getAllItemFromCategoryCd(categoryCd, companyId,
 				isSelf);
 
-		if (isSetText && CollectionUtil.isEmpty(itemList)) {
+		if (isScreenB && CollectionUtil.isEmpty(itemList)) {
 
 			boolean isPersonnelRepresentative = true;
 			if (isPersonnelRepresentative) {
@@ -88,9 +89,14 @@ public class CopySettingItemFinder {
 				}
 
 			});
+		} else {
+			if (!isScreenB) {
+				return Collections.emptyList();
+			}
+
 		}
 
-		if (isSetText) {
+		if (isScreenB) {
 
 			this.settingItemMap.setTextForItem(result, employeeId, baseDate);
 

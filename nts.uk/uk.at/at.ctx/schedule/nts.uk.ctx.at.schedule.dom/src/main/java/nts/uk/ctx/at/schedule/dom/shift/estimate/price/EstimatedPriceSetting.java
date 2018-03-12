@@ -63,7 +63,7 @@ public class EstimatedPriceSetting {
 
 			if (priceBase.getEstimatedPrice().v() != ZERO_VALUE
 					&& priceNext.getEstimatedPrice().v() != ZERO_VALUE
-					&& priceNext.getEstimatedPrice().v() >= priceBase.getEstimatedPrice().v()) {
+					&& priceNext.getEstimatedPrice().v() <= priceBase.getEstimatedPrice().v()) {
 				I18NText text = I18NText.main("Msg_147").addId("KSM001_24").addRaw(GUILDANCE_TEXT).build();
 				throw new BusinessException(text);
 			}

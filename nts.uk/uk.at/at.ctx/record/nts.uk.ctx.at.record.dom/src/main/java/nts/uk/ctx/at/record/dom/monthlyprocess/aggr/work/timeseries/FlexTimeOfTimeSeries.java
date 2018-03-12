@@ -47,4 +47,16 @@ public class FlexTimeOfTimeSeries {
 		domain.flexTime = flexTime;
 		return domain;
 	}
+	
+	/**
+	 * フレックス時間：フレックス時間：時間に分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinutesToFlexTimeInFlexTime(int minutes){
+		this.flexTime = new FlexTime(
+				TimeWithCalculationMinusExist.createTimeWithCalculation(
+						this.flexTime.getFlexTime().getTime().addMinutes(minutes),
+						this.flexTime.getFlexTime().getCalcTime()),
+				this.flexTime.getBeforeApplicationTime());
+	}
 }

@@ -45,14 +45,6 @@ module nts.uk.com.view.cps009.a.service {
     }
 
     /**
-     * Reference History
-     */
-    export function refHistSel(param) {
-        return ajax(paths.refHistSel, param);
-    }
-
-
-    /**
     * Get all init value setting
     */
     export function getAllSelByHistory(selectionItemId: string, baseDate: any) {

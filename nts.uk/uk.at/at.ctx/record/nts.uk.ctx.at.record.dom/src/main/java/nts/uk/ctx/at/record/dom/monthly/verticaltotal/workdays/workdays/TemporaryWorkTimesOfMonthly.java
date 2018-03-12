@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
+import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 
 /**
  * 月別実績の臨時勤務回数
@@ -32,5 +33,17 @@ public class TemporaryWorkTimesOfMonthly {
 		val domain = new TemporaryWorkTimesOfMonthly();
 		domain.times = times;
 		return domain;
+	}
+	
+	/**
+	 * 集計
+	 * @param temporaryTimeOfDaily 日別実績の臨時出退勤
+	 */
+	public void aggregate(TemporaryTimeOfDailyPerformance temporaryTimeOfDaily){
+
+		if (temporaryTimeOfDaily == null) return;
+		
+		// 勤務回数を計算
+		this.times = this.times.addTimes(temporaryTimeOfDaily.getWorkTimes().v());
 	}
 }

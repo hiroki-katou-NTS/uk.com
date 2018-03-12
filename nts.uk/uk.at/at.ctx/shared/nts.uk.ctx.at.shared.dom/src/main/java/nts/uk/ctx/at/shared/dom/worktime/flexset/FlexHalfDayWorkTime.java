@@ -4,13 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.val;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
@@ -18,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 //フレックス勤務の平日出勤用勤務時間帯
 @Getter
-public class FlexHalfDayWorkTime extends DomainObject {
+public class FlexHalfDayWorkTime extends WorkTimeDomainObject {
 
 	/** The rest timezone. */
 	// 休憩時間帯
@@ -37,13 +38,12 @@ public class FlexHalfDayWorkTime extends DomainObject {
 	 */
 	@Override
 	public void validate() {
-		super.validate();
 		if (!this.restTimezone.isFixRestTime() && this.hasNoNo1()) {
-			throw new BusinessException("Msg_847");
+			this.bundledBusinessExceptions.addMessage("Msg_847");
 		}
 
 		if (this.restTimezone.isFixRestTime() && !this.isInFixedWork(this.restTimezone)) {
-			throw new BusinessException("Msg_755");
+			this.bundledBusinessExceptions.addMessage("Msg_755");
 		}
 		
 		// validate 770 for list work
@@ -66,6 +66,8 @@ public class FlexHalfDayWorkTime extends DomainObject {
 			// validate Msg_515 for rest time
 			this.restTimezone.getFixedRestTimezone().checkOverlap("KMK003_20");
 		}
+		
+		super.validate();
 	}
 
 	/**
@@ -121,13 +123,13 @@ public class FlexHalfDayWorkTime extends DomainObject {
 	 * @param other the other
 	 */
 	public void restoreData(ScreenMode screenMode, FlexWorkSetting flexWorkSet,
-			FlexHalfDayWorkTime other) {
+			FlexHalfDayWorkTime oldDomain) {
 		switch (screenMode) {
 		case SIMPLE:
-			this.restoreSimpleMode(other);
+			this.restoreSimpleMode(oldDomain);
 			break;
 		case DETAIL:
-			this.restoreDetailMode(flexWorkSet, other);;
+			this.restoreDetailMode(screenMode,flexWorkSet, oldDomain);;
 			break;
 		default:
 			throw new RuntimeException("ScreenMode not found.");
@@ -139,9 +141,9 @@ public class FlexHalfDayWorkTime extends DomainObject {
 	 *
 	 * @param other the other
 	 */
-	private void restoreSimpleMode(FlexHalfDayWorkTime other) {
-		if (other.getAmpmAtr() != AmPmAtr.ONE_DAY) {
-			this.workTimezone.restoreData(other.getWorkTimezone());
+	private void restoreSimpleMode(FlexHalfDayWorkTime oldDomain) {
+		if (oldDomain.getAmpmAtr() != AmPmAtr.ONE_DAY) {
+			this.workTimezone.restoreData(oldDomain.getWorkTimezone());
 		}
 	}
 	
@@ -151,10 +153,21 @@ public class FlexHalfDayWorkTime extends DomainObject {
 	 * @param flexWorkSet the flex work set
 	 * @param other the other
 	 */
-	private void restoreDetailMode(FlexWorkSetting flexWorkSet, FlexHalfDayWorkTime other) {
-		// restore data of dayAtr = AM, PM
-		if (!flexWorkSet.isUseHalfDayShift() && other.getAmpmAtr() != AmPmAtr.ONE_DAY) {
-			this.workTimezone.restoreData(other.getWorkTimezone());
+	private void restoreDetailMode(ScreenMode screenMode,FlexWorkSetting flexWorkSet, FlexHalfDayWorkTime oldDomain) {
+		// restore worktime data of dayAtr = AM, PM
+		if (!flexWorkSet.isUseHalfDayShift() && oldDomain.getAmpmAtr() != AmPmAtr.ONE_DAY) {
+			this.workTimezone.restoreData(oldDomain.getWorkTimezone());
+		}
+		// restore rest time data of dayAtr = AM, PM
+		if (!flexWorkSet.isUseHalfDayShift() && oldDomain.getAmpmAtr() != AmPmAtr.ONE_DAY) {
+			this.restTimezone = oldDomain.getRestTimezone();
+			Optional<FlexHalfDayWorkTime> oneDay = flexWorkSet.getLstHalfDayWorkTimezone().stream()
+					.filter(half -> half.ampmAtr.equals(AmPmAtr.ONE_DAY)).findFirst();
+			if (oneDay.isPresent()) {
+				this.restTimezone.restoreFixRestTime(oneDay.get().getRestTimezone().isFixRestTime());
+			}
+		} else {
+			this.restTimezone.restoreData(screenMode, oldDomain.getRestTimezone());
 		}
 	}
 }

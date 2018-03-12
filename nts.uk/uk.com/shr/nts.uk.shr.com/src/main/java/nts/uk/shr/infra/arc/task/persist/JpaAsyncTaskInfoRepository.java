@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.task.AsyncTaskError;
 import nts.arc.task.AsyncTaskInfo;
@@ -17,6 +18,7 @@ import nts.arc.task.AsyncTaskInfoRepository;
 import nts.arc.task.AsyncTaskStatus;
 import nts.arc.task.data.AsyncTaskData;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.util.Nullable;
 
 @Stateless
@@ -127,6 +129,26 @@ public class JpaAsyncTaskInfoRepository extends JpaRepository implements AsyncTa
 
 	private AsyncTaskData convertToTaskDataDom(CisdtAsyncTaskData en) {
 		return new AsyncTaskData(en.pk.dataKey, en.value);
+	}
+
+	@Override
+	public void removeOldTasks(GeneralDateTime baseDateTime) {
+		
+		String toCorrectIds = "SELECT e FROM CisdtAsyncTask e"
+				+ " WHERE e.finishedAt < :baseDateTime";
+		val targetTaskIds = this.queryProxy().query(toCorrectIds, CisdtAsyncTask.class)
+				.setParameter("baseDateTime", baseDateTime)
+				.getList(e -> e.taskId);
+		
+		String toDeleteData = "DELETE FROM CisdtAsyncTaskData e"
+				+ " WHERE e.pk.taskId IN :targetTaskIds";
+		
+		CollectionUtil.split(targetTaskIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, ids -> {
+			this.getEntityManager().createQuery(toDeleteData)
+					.setParameter("targetTaskIds", ids);
+		});
+		
+		this.commandProxy().removeAll(CisdtAsyncTask.class, targetTaskIds);
 	}
 
 }

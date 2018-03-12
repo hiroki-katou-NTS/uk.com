@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.app.find.worktime.flowset.dto;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FlowWorkRestTimezoneDto;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlHalfDayWtzSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWtzSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
 
 /**
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
  */
 @Getter
 @Setter
-public class FlHalfDayWorkTzDto implements FlHalfDayWtzSetMemento {
+public class FlHalfDayWorkTzDto implements FlowHalfDayWtzSetMemento {
 
 	/** The rest timezone. */
 	private FlowWorkRestTimezoneDto restTimezone;
@@ -33,7 +33,10 @@ public class FlHalfDayWorkTzDto implements FlHalfDayWtzSetMemento {
 	 */
 	@Override
 	public void setRestTimezone(FlowWorkRestTimezone tzone) {
-		tzone.saveToMemento(this.restTimezone);
+		if (tzone != null) {
+			this.restTimezone = new FlowWorkRestTimezoneDto();
+			tzone.saveToMemento(this.restTimezone);
+		}	
 	}
 
 	/*
@@ -45,6 +48,9 @@ public class FlHalfDayWorkTzDto implements FlHalfDayWtzSetMemento {
 	 */
 	@Override
 	public void setWorkTimeZone(FlowWorkTimezoneSetting tzone) {
-		tzone.saveToMemento(this.workTimeZone);
+		if (tzone != null) {
+			this.workTimeZone = new FlWorkTzSettingDto();
+			tzone.saveToMemento(this.workTimeZone);
+		}	
 	}
 }

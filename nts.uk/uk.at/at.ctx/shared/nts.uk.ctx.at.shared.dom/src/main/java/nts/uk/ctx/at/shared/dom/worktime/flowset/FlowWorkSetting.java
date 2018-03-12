@@ -1,15 +1,14 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
@@ -20,9 +19,9 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
  */
 // 流動勤務設定
 @Getter
-public class FlowWorkSetting extends AggregateRoot {
+public class FlowWorkSetting extends WorkTimeAggregateRoot {
 
-	/** The company code. */
+	/** The company id. */
 	// 会社ID
 	private String companyId;
 
@@ -42,7 +41,7 @@ public class FlowWorkSetting extends AggregateRoot {
 	// 打刻反映時間帯
 	private FlowStampReflectTimezone stampReflectTimezone;
 
-	/** The designated setting. */
+	/** The legal OT setting. */
 	// 法定内残業設定
 	private LegalOTSetting legalOTSetting;
 
@@ -64,7 +63,7 @@ public class FlowWorkSetting extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public FlowWorkSetting(FlWorkSettingGetMemento memento) {
+	public FlowWorkSetting(FlowWorkSettingGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.workingCode = memento.getWorkingCode();
 		this.restSetting = memento.getRestSetting();
@@ -82,7 +81,7 @@ public class FlowWorkSetting extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(FlWorkSettingSetMemento memento) {
+	public void saveToMemento(FlowWorkSettingSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setWorkingCode(this.workingCode);
 		memento.setRestSetting(this.restSetting);
@@ -93,21 +92,54 @@ public class FlowWorkSetting extends AggregateRoot {
 		memento.setLegalOTSetting(this.legalOTSetting);
 		memento.setFlowSetting(this.flowSetting);
 	}
-	
+
 	/**
 	 * Restore data.
 	 *
-	 * @param screenMode the screen mode
-	 * @param oldDomain the old domain
+	 * @param screenMode
+	 *            the screen mode
+	 * @param workTimeType
+	 *            the work time type
+	 * @param other
+	 *            the other
 	 */
-	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlowWorkSetting other) {
-		// restore 平日勤務時間帯
+	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlowWorkSetting other) {		
+		// Tab 2 + 5 + 7
 		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK
 				&& workTimeType.getWorkTimeMethodSet() == WorkTimeMethodSet.FLOW_WORK) {
+			// Tab 2: restore 平日勤務時間帯
 			this.flowSetting.restoreData(screenMode, other.getFlowSetting());
+			// Tab 5
+			this.halfDayWorkTimezone.restoreData(screenMode, other.getHalfDayWorkTimezone());
+			// Tab 7
+			this.offdayWorkTimezone.restoreData(screenMode, other.getOffdayWorkTimezone());
 		} else {
-			this.halfDayWorkTimezone = other.getHalfDayWorkTimezone();
+			// Tab 2
 			this.flowSetting = other.getFlowSetting();
+			// Tab 5
+			this.halfDayWorkTimezone = other.getHalfDayWorkTimezone();
+			// Tab 7
+			this.offdayWorkTimezone = other.getOffdayWorkTimezone();
 		}
+		
+		// Tab 8 -> 16
+		this.commonSetting.restoreData(screenMode, other.getCommonSetting());
+	}
+
+	/**
+	 * Restore default data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 */
+	public void restoreDefaultData(ScreenMode screenMode) {
+		// Tab 2 + 5: restore 平日勤務時間帯
+		this.halfDayWorkTimezone.restoreDefaultData(screenMode);
+		
+		// Tab 7
+		this.offdayWorkTimezone.restoreDefaultData(screenMode);
+		
+		// Tab 8 -> 16
+		this.commonSetting.restoreDefaultData(screenMode);
 	}
 }

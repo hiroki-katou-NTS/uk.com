@@ -29,7 +29,7 @@
 							<div class="caret-right caret-background bg-green">
 								<div>
 									<button class="dateControlBtn" data-bind="click: createDialog">#{i18n.getText('KML001_41')}</button>
-									<button class="dateControlBtn" data-bind="click: editDialog, enable: !isInsert()">#{i18n.getText('KML001_42')}</button>
+									<button class="dateControlBtn" data-bind="click: editDialog, enable: !isInsert() &amp;&amp; isLastItem()">#{i18n.getText('KML001_42')}</button>
 								</div>
 								<div id="dateRange-list-content">
 									<table id="dateRange-list" data-bind="ntsGridList: {
@@ -133,7 +133,7 @@
 															constraint: 'PremiumRate',
 															option: { 
 																width: '80px',
-																decimallength: 1, 
+																decimallength: 0, 
 																unitID: 'PERCENT' 
 															},
 															required: true, 

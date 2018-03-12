@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.entity.workplace;
 
+import javax.persistence.metamodel.ListAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
@@ -22,5 +23,8 @@ public class BsymtWkpConfig_ {
 
 	/** The end D. */
 	public static volatile SingularAttribute<BsymtWkpConfig, GeneralDate> endD;
+	
+	/** The bsymt wkp config infos. */
+	public static volatile ListAttribute<BsymtWkpConfig, BsymtWkpConfigInfo> bsymtWkpConfigInfos;
 
 }

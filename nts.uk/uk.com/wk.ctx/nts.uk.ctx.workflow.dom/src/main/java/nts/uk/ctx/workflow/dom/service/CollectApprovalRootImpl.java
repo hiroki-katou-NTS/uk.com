@@ -285,8 +285,8 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		// 承認者の
 		List<ConcurrentEmployeeImport> employeeList = employeeAdapter.getConcurrentEmployee(cid, jobTitleId,
 				baseDate);
-		JobAssignSetting assignSet = jobAssignSetRepository.findById(cid);
-		if (assignSet.getIsConcurrently()) {
+		Optional<JobAssignSetting> assignSet = jobAssignSetRepository.findById();
+		if (assignSet.get().getIsConcurrently()) {
 			// 本務兼務区分が兼務の対象者を除く
 			employeeList.removeIf(x -> x.isConcurrent());
 		}

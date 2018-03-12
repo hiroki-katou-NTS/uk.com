@@ -31,6 +31,10 @@ public class JpaRoleSetLinkWebMenuRepository extends JpaRepository implements Ro
             + " WHERE rw.roleSetWebMenuPK.companyId = :companyId"
             + "     AND rw.roleSetWebMenuPK.roleSetCd = :roleSetCd ";
     
+    private static final String SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_AND_ROLE_SET_CDS = "SELECT rw FROM SptmtRoleSetWebMenu rw"
+            + " WHERE rw.roleSetWebMenuPK.companyId = :companyId"
+            + "     AND rw.roleSetWebMenuPK.roleSetCd IN :roleSetCds ";
+    
     private static final String DELETE_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_ROLE_SET_CD = "DELETE FROM SptmtRoleSetWebMenu rw"
             + " WHERE rw.roleSetWebMenuPK.companyId = :companyId "
             + " AND rw.roleSetWebMenuPK.roleSetCd = :roleSetCd ";
@@ -89,6 +93,14 @@ public class JpaRoleSetLinkWebMenuRepository extends JpaRepository implements Ro
                 .getList(c -> toDomain(c));
     }
 
+    public List<RoleSetLinkWebMenu> findByListRoleSetCd(String companyId, List<String> roleSetCds) {
+        return this.queryProxy().query(SELECT_All_ROLE_SET_AND_WEB_MENU_BY_COMPANY_ID_AND_ROLE_SET_CDS
+                , SptmtRoleSetWebMenu.class)
+                .setParameter("companyId", companyId)
+                .setParameter("roleSetCds", roleSetCds)
+                .getList(c -> toDomain(c));
+    }
+    
     @Override
     public Optional<RoleSetLinkWebMenu> findByKey(String companyId, String webMenuCd, String roleSetCd) {
         SptmtRoleSetWebMenuPK pk = new SptmtRoleSetWebMenuPK(companyId, webMenuCd, roleSetCd);

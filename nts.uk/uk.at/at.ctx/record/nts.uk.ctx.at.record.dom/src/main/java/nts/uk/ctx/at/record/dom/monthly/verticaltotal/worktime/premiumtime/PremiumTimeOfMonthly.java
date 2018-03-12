@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.premiumtime;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
@@ -15,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class PremiumTimeOfMonthly {
 
 	/** 割増時間 */
-	private List<AggregatePremiumTime> premiumTime;
+	private Map<Integer, AggregatePremiumTime> premiumTime;
 	/** 深夜時間 */
 	private AttendanceTimeMonth midnightTime;
 	/** 法定内時間外時間 */
@@ -32,7 +34,7 @@ public class PremiumTimeOfMonthly {
 	 */
 	public PremiumTimeOfMonthly(){
 		
-		this.premiumTime = new ArrayList<>();
+		this.premiumTime = new HashMap<>();
 		this.midnightTime = new AttendanceTimeMonth(0);
 		this.legalOutsideWorkTime = new AttendanceTimeMonth(0);
 		this.legalHolidayWorkTime = new AttendanceTimeMonth(0);
@@ -59,12 +61,34 @@ public class PremiumTimeOfMonthly {
 			AttendanceTimeMonth illegalHolidayWorkTime){
 		
 		val domain = new PremiumTimeOfMonthly();
-		domain.premiumTime = premiumTimes;
+		for (val premiumTime : premiumTimes){
+			val premiumTimeItemNo = Integer.valueOf(premiumTime.getPremiumTimeItemNo());
+			domain.premiumTime.putIfAbsent(premiumTimeItemNo, premiumTime);
+		}
 		domain.midnightTime = midnightTime;
 		domain.legalOutsideWorkTime = legalOutsideWorkTime;
 		domain.legalHolidayWorkTime = legalHolidayWorkTime;
 		domain.illegalOutsideWorkTime = illegalOutsideWorkTime;
 		domain.illegalHolidayWorkTime = illegalHolidayWorkTime;
 		return domain;
+	}
+	
+	/**
+	 * 集計
+	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
+	 */
+	public void aggregate(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
+
+		if (attendanceTimeOfDaily == null) return;
+		
+		val actualWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+		val premiumTimeOfDaily = actualWorkingTime.getPremiumTimeOfDailyPerformance();
+		if (premiumTimeOfDaily.getPremiumTimes() == null) return;
+		for (val premiumTime : premiumTimeOfDaily.getPremiumTimes()){
+			val premiumTimeNo = premiumTime.getPremiumTimeNo();
+			this.premiumTime.putIfAbsent(premiumTimeNo, new AggregatePremiumTime(premiumTimeNo));
+			val targetPremiumTime = this.premiumTime.get(premiumTimeNo);
+			targetPremiumTime.addMinutesToTime(premiumTime.getPremitumTime().v());
+		}
 	}
 }

@@ -1,13 +1,15 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.SpecialHolidayUseTimeOfTimeSeries;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の特別休暇使用時間
@@ -21,10 +23,7 @@ public class SpecialHolidayUseTimeOfMonthly {
 	private AttendanceTimeMonth useTime;
 	/** 時系列ワーク */
 	@Getter
-	private List<SpecialHolidayUseTimeOfTimeSeries> timeSeriesWorks;
-	
-	/** 集計済 */
-	private boolean isAggregated;
+	private Map<GeneralDate, SpecialHolidayUseTimeOfTimeSeries> timeSeriesWorks;
 	
 	/**
 	 * コンストラクタ
@@ -32,8 +31,7 @@ public class SpecialHolidayUseTimeOfMonthly {
 	public SpecialHolidayUseTimeOfMonthly(){
 
 		this.useTime = new AttendanceTimeMonth(0);
-		this.timeSeriesWorks = new ArrayList<>();
-		this.isAggregated = false;
+		this.timeSeriesWorks = new HashMap<>();
 	}
 
 	/**
@@ -52,11 +50,17 @@ public class SpecialHolidayUseTimeOfMonthly {
 	
 	/**
 	 * 特別休暇使用時間を確認する
-	 * @param attendanceTimeOfDailys リスト：日別実績の勤怠時間
+	 * @param datePeriod 期間
+	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 */
-	public void confirm(List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
+	public void confirm(DatePeriod datePeriod,
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap){
 
-		for (val attendanceTimeOfDaily : attendanceTimeOfDailys) {
+		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.values()) {
+			val ymd = attendanceTimeOfDaily.getYmd();
+			
+			// 期間外はスキップする
+			if (!datePeriod.contains(ymd)) continue;
 			
 			// 「日別実績の特別休暇」を取得する
 			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -67,23 +71,23 @@ public class SpecialHolidayUseTimeOfMonthly {
 			
 			// 取得した使用時間を「月別実績の特別休暇使用時間」に入れる
 			//*****（未）　「日別実績の特別休暇」クラスをnewして、値を入れて、それをset？
-			this.timeSeriesWorks.add(SpecialHolidayUseTimeOfTimeSeries.of(attendanceTimeOfDaily.getYmd()));
+			val specialHolidayUseTimeOfTimeSeries = SpecialHolidayUseTimeOfTimeSeries.of(ymd);
+			this.timeSeriesWorks.putIfAbsent(ymd, specialHolidayUseTimeOfTimeSeries);
 		}
 	}
 	
 	/**
 	 * 特別休暇使用時間を集計する
+	 * @param datePeriod 期間
 	 */
-	public void aggregate(){
-		
-		if (this.isAggregated) return;
+	public void aggregate(DatePeriod datePeriod){
 		
 		this.useTime = new AttendanceTimeMonth(0);
 		
-		for (val timeSeriesWork : this.timeSeriesWorks){
+		for (val timeSeriesWork : this.timeSeriesWorks.values()){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 			//SpecialHolidayOfDaily specialHolidayUseTime = timeSeriesWork.getSpecialHolidayUseTime();
 			//this.useTime.addMinutes(specialHolidayUseTime.getUseTime().valueAsMinutes());
 		}
-		this.isAggregated = true;
 	}
 }

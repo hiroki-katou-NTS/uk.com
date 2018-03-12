@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSetPolicy;
@@ -31,9 +32,9 @@ public class WorkTimezoneOtherSubHolTimeSetPolicyImpl implements WorkTimezoneOth
 	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet)
 	 */
 	@Override
-	public void validate(PredetemineTimeSetting predSet, WorkTimezoneOtherSubHolTimeSet otherSubHdSet) {
+	public void validate(BundledBusinessException be, PredetemineTimeSetting predSet, WorkTimezoneOtherSubHolTimeSet otherSubHdSet) {
 		// validate SubHolTransferSet
-		this.subHdTransPolicy.validate(predSet, otherSubHdSet.getSubHolTimeSet());
+		this.subHdTransPolicy.validate(be, predSet, otherSubHdSet.getSubHolTimeSet());
 	}
 
 }

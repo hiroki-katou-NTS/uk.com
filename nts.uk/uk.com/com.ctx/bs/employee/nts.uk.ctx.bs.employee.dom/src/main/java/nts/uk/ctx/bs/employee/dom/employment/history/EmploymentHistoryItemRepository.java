@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 
 public interface EmploymentHistoryItemRepository {
 	
@@ -53,8 +54,8 @@ public interface EmploymentHistoryItemRepository {
 	 * @param employmentCodes the employment codes
 	 * @return the list
 	 */
-	List<EmploymentHistoryItem> searchEmployee(List<String> employeeIds, 
-			GeneralDate baseDate, List<String> employmentCodes );
+	List<EmploymentHistoryItem> searchEmployee(GeneralDate baseDate, List<String> employeeIds, 
+			 List<String> employmentCodes );
 
 	/**
 	 * Search employment of sids.
@@ -65,5 +66,13 @@ public interface EmploymentHistoryItemRepository {
 	 */
 	List<EmploymentHistoryItem> searchEmploymentOfSids(List<String> employeeIds,
 			GeneralDate baseDate);
+	
+	/**
+	 * 
+	 * @param basedate
+	 * @param employeeId
+	 * @return
+	 */
+	List<EmploymentHistoryItem> getEmploymentByEmpIdAndDate(GeneralDate basedate, String employeeId);
 
 }

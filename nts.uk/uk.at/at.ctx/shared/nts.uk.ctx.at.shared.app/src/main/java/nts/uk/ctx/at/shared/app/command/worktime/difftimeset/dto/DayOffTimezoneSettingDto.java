@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.difftimeset.dto;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.HDWorkTimeSheetSettingDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
@@ -13,6 +15,8 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DayOffTimezoneSettingGetMem
 /**
  * The Class DayOffTimezoneSettingDto.
  */
+@Getter
+@Setter
 public class DayOffTimezoneSettingDto extends HDWorkTimeSheetSettingDto {
 
 	/** The is update start time. */

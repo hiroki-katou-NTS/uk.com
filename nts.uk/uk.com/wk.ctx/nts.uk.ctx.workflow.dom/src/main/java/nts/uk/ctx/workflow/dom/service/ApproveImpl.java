@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.dom.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -8,10 +9,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
@@ -44,7 +48,7 @@ public class ApproveImpl implements ApproveService {
 	private CollectApprovalRootService collectApprovalRootService;
 	
 	@Override
-	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, ApplicationType appType, GeneralDate appDate) {
+	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, ApplicationType appType, GeneralDate appDate, String memo) {
 		Integer approvalPhaseNumber = 0;
 		ApprovalRootState approvalRootState = null;
 		if(isCreate.equals(Boolean.TRUE)){
@@ -62,6 +66,7 @@ public class ApproveImpl implements ApproveService {
 			}
 			approvalRootState = opApprovalRootState.get();
 		}
+		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder));
 		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
 			if(approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 				continue;
@@ -70,20 +75,33 @@ public class ApproveImpl implements ApproveService {
 				if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 					return;
 				}
-				List<String> listApprover = approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
-				if(listApprover.contains(employeeID)){
-					approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-					approvalFrame.setApproverID(employeeID);
-					approvalFrame.setRepresenterID("");
-					return;
+				if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
+					List<String> listApprover = approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList());
+					if(!listApprover.contains(employeeID)){
+						ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
+						if(approvalRepresenterOutput.getListAgent().contains(employeeID)){
+							approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
+							approvalFrame.setApproverID("");
+							approvalFrame.setRepresenterID(employeeID);
+							approvalFrame.setApprovalDate(GeneralDate.today());
+							approvalFrame.setApprovalReason(memo);
+							return;
+						}
+						return;
+					}
+				} else {
+					// if文： ドメインモデル「承認枠」．承認者 == INPUT．社員ID　OR ドメインモデル「承認枠」．代行者 == INPUT．社員ID
+					if(!((Strings.isNotBlank(approvalFrame.getApproverID())&&approvalFrame.getApproverID().equals(employeeID))|
+						(Strings.isNotBlank(approvalFrame.getRepresenterID())&&approvalFrame.getRepresenterID().equals(employeeID)))){
+						return;
+					}
 				}
-				ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
-				if(approvalRepresenterOutput.getListAgent().contains(employeeID)){
-					approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-					approvalFrame.setApproverID("");
-					approvalFrame.setRepresenterID(employeeID);
-					return;
-				}
+				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
+				approvalFrame.setApproverID(employeeID);
+				approvalFrame.setRepresenterID("");
+				approvalFrame.setApprovalDate(GeneralDate.today());
+				approvalFrame.setApprovalReason(memo);
+				return;
 			});
 			Boolean approveApprovalPhaseStateFlag = this.isApproveApprovalPhaseStateComplete(companyID, approvalPhaseState);
 			if(approveApprovalPhaseStateFlag.equals(Boolean.FALSE)){
@@ -111,7 +129,7 @@ public class ApproveImpl implements ApproveService {
 			}
 			return false;
 		}
-		Optional<ApprovalFrame> opApprovalFrameIsConfirm = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(Boolean.TRUE)).findAny();
+		Optional<ApprovalFrame> opApprovalFrameIsConfirm = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
 		if(opApprovalFrameIsConfirm.isPresent()){
 			ApprovalFrame approvalFrame = opApprovalFrameIsConfirm.get();
 			if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
@@ -124,7 +142,8 @@ public class ApproveImpl implements ApproveService {
 			}
 			return false;
 		}
-		Optional<ApprovalFrame> opApprovalFrameIsApprove = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(Boolean.TRUE)).findAny();
+		Optional<ApprovalFrame> opApprovalFrameIsApprove = approvalPhaseState.getListApprovalFrame().stream()
+				.filter(x -> x.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)).findAny();
 		if(opApprovalFrameIsApprove.isPresent()){
 			return true;
 		}
@@ -155,6 +174,7 @@ public class ApproveImpl implements ApproveService {
 			}
 			approvalRootState = opApprovalRootState.get();
 		}
+		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
 		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
 			if(approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 				approveAllFlag = true;

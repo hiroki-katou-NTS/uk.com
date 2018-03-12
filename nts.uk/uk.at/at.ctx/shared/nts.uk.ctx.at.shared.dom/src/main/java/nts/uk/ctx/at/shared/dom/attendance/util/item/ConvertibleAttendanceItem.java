@@ -7,4 +7,10 @@ public interface ConvertibleAttendanceItem {
 	String employeeId();
 	
 	GeneralDate workingDate();
+	
+	default Object toDomain(){
+		return toDomain(employeeId(), workingDate());
+	}
+	
+	Object toDomain(String employeeId, GeneralDate date);
 }

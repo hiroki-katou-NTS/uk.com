@@ -9,13 +9,6 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 public interface AggregateTotalTimeSpentAtWorkRepository {
 
 	/**
-	 * 追加
-	 * @param attendanceTimeOfMonthlyKey キー値：月別実績の勤怠時間
-	 * @param aggregateTotalTimeSpentAtWork 集計総拘束時間
-	 */
-	void insert(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey, AggregateTotalTimeSpentAtWork aggregateTotalTimeSpentAtWork);
-
-	/**
 	 * 更新
 	 * @param attendanceTimeOfMonthlyKey キー値：月別実績の勤怠時間
 	 * @param aggregateTotalTimeSpentAtWork 集計総拘束時間

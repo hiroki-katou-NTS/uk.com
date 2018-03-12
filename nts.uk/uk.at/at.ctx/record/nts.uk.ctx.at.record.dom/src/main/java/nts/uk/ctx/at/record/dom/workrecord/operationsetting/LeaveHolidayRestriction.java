@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.workrecord.operationsetting;
 
-import java.math.BigDecimal;
-
 public class LeaveHolidayRestriction {
 
 	/**
@@ -20,7 +18,7 @@ public class LeaveHolidayRestriction {
 		this.validate();
 	}
 
-	public LeaveHolidayRestriction(BigDecimal displayAtr, BigDecimal remainingNumberCheck) {
+	public LeaveHolidayRestriction(int displayAtr, int remainingNumberCheck) {
 		this.displayAtr = toBooleanValue(displayAtr);
 		this.remainingNumberCheck = toBooleanValue(remainingNumberCheck);
 		this.validate();
@@ -32,10 +30,10 @@ public class LeaveHolidayRestriction {
 		}
 	}
 
-	private Boolean toBooleanValue(BigDecimal decimalNumber) {
-		if (decimalNumber.intValue() == 0) {
+	private Boolean toBooleanValue(int decimalNumber) {
+		if (decimalNumber == 0) {
 			return false;
-		} else if (decimalNumber.intValue() == 1) {
+		} else if (decimalNumber == 1) {
 			return true;
 		} else {
 			return null;

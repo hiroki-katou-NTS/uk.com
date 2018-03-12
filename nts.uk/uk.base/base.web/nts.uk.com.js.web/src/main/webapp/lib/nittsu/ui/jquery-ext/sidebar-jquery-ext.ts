@@ -113,7 +113,9 @@ module nts.uk.ui.jqueryExtentions {
         function setErrorPosition($displayPanel: JQuery) {
             setTimeout(function() {
                 if ($displayPanel.find(".sidebar-content-header").length > 0) {
-                    $('#func-notifier-errors').position({ my: 'left+5 top+44', at: 'left top', of: $displayPanel.find(".sidebar-content-header") });
+                    $('#func-notifier-errors').addClass("show-immediately");
+                    $('#func-notifier-errors').position({ my: 'left+145 top+44', at: 'left top', of: $displayPanel.find(".sidebar-content-header") });
+                    $('#func-notifier-errors').removeClass("show-immediately");
                 } else {
                     setErrorPosition($(".sidebar-content"));
                 }

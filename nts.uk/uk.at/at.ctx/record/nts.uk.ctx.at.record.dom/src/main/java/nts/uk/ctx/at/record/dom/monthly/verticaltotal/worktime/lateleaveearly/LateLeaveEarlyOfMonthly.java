@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly;
 
 import lombok.Getter;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 
 /**
  * 月別実績の遅刻早退
@@ -36,5 +37,18 @@ public class LateLeaveEarlyOfMonthly {
 		domain.leaveEarly = leaveEarly;
 		domain.late = late;
 		return domain;
+	}
+	
+	/**
+	 * 集計
+	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
+	 */
+	public void aggregate(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
+		
+		// 早退を集計
+		this.leaveEarly.aggregate(attendanceTimeOfDaily);
+		
+		// 遅刻を集計
+		this.late.aggregate(attendanceTimeOfDaily);
 	}
 }

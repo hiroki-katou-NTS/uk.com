@@ -48,19 +48,19 @@
 	border: none !important;
 }
 
-th {
+.table1 th.tbl-th {
 	border: 1px solid #999999;
 	background-color: #E0F59E;
 	height: 25px;
 }
 
-td {
+.table1 td.tbl-td {
 	border: 1px solid #999999;
 	border-top: 0px
 }
 
 .table1 {
-	width: 842px
+	width: 842px;
 }
 
 .table1 thead tr, .table1 tbody {
@@ -75,13 +75,14 @@ td {
 
 /* for IE browser */
 *::-ms-backdrop, .table1 tbody {
-	height: 300px;
+	height: 296px;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
 
 /* for EDGE browser */
-@supports (-ms-ime-align:auto ) { .table1 tbody {
+@
+supports (-ms-ime-align:auto ) { .table1 tbody {
 	height: 495px;
 	overflow-y: auto;
 	overflow-x: hidden;

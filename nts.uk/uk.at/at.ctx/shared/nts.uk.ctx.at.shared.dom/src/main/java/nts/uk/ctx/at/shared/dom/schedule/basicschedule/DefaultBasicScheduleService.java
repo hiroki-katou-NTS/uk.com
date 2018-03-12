@@ -11,7 +11,11 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
+import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -29,6 +33,11 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 
 	@Inject
 	public WorkTypeRepository workTypeRepo;
+	@Inject
+	private WorkTimeSettingRepository workTimeRepository;
+
+	/** The Constant DEFAULT_CODE. */
+	private static final String DEFAULT_CODE = "000";
 
 	@Override
 	public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -168,7 +177,10 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	}
 
 	/*
+	 * 勤務種類と職業時間帯のペアチェック
+	 * 
 	 * (non-Javadoc)
+	 * 
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService#
@@ -186,6 +198,46 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 		// In case of Not Required and work time is set.
 		if (setupType == SetupType.NOT_REQUIRED && this.isWorkTimeValid(workTimeCode)) {
 			throw new BusinessException("Msg_434");
+		}
+	}
+
+	@Override
+	public void checkWorkTypeMaster(String companyId, String worktypeCode) {
+		// call repository find work type by code
+		Optional<WorkType> optionalWorkType = this.workTypeRepo.findByPK(companyId, worktypeCode);
+
+		// check work type not exist
+		if (!optionalWorkType.isPresent()) {
+			throw new BusinessException("Msg_436");
+		}
+
+		// work type exist => check deprecate of work type is 廃止する
+		if (optionalWorkType.isPresent()
+				&& optionalWorkType.get().getDeprecate() == DeprecateClassification.Deprecated) {
+			throw new BusinessException("Msg_468");
+		}
+	}
+
+	@Override
+	public void checkWorkTimeMater(String companyId, String workTimeCode) {
+		// check default work time code
+		// 設定されていない（就業時間帯コード＝NULL || 就業時間帯コード＝000）
+		if ((DEFAULT_CODE.equals(workTimeCode) || StringUtil.isNullOrEmpty(workTimeCode, false))) {
+			return;
+		}
+
+		// call repository find work time by code
+		// ドメインモデル「就業時間帯の設定」に該当の就業時間帯コードが存在するかチェックする
+		Optional<WorkTimeSetting> optionalWorkTime = this.workTimeRepository.findByCode(companyId, workTimeCode);
+
+		// check work time not exits
+		if (!optionalWorkTime.isPresent()) {
+			throw new BusinessException("Msg_437");
+		}
+
+		// work time exits => check display attr not display
+		if (optionalWorkTime.isPresent() && optionalWorkTime.get().getAbolishAtr().value == AbolishAtr.ABOLISH.value) {
+			throw new BusinessException("Msg_469");
 		}
 	}
 

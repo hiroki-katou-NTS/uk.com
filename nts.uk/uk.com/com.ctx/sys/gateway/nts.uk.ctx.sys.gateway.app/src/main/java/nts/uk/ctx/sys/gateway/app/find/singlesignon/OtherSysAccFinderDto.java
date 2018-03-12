@@ -6,8 +6,10 @@ package nts.uk.ctx.sys.gateway.app.find.singlesignon;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.CompanyCode;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountSetMemento;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.UserName;
 
 /**
  * Gets the use atr.
@@ -48,16 +50,16 @@ public class OtherSysAccFinderDto implements OtherSysAccountSetMemento{
 	 * @see nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountSetMemento#setCompanyCode(java.lang.String)
 	 */
 	@Override
-	public void setCompanyCode(String companyCode) {
-		this.companyCode = companyCode;
+	public void setCompanyCode(CompanyCode companyCode) {
+		this.companyCode = companyCode.v();
 	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountSetMemento#setUserName(java.lang.String)
 	 */
 	@Override
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUserName(UserName userName) {
+		this.userName = userName.v();
 	}
 
 	/* (non-Javadoc)

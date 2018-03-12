@@ -5,9 +5,11 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import alarmPatternRepo.AlarmPatternSettingSimple;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.KfnmtAlarmPatternSet;
 import nts.uk.ctx.at.function.infra.entity.alarm.KfnmtAlarmPatternSetPK;
 
@@ -60,4 +62,17 @@ public class JpaAlarmPatternSettingRepository extends JpaRepository implements A
 		this.commandProxy().remove(KfnmtAlarmPatternSet.class, pk);		
 	}
 
+	@Override
+	public List<AlarmPatternSettingSimple> findByCompanyIdAndUser(String companyId) {		
+		return this.queryProxy().query(SELECT_BY_COMPANY, KfnmtAlarmPatternSet.class).setParameter("companyId", companyId).getList( c ->c.toSimpleDomain());
+	}
+
+	@Override
+	public List<CheckCondition> getCheckCondition(String companyId, String alarmPatternCode) {
+		return this.queryProxy().query(SELECT_BY_ALARM_PATTERN_CD, KfnmtAlarmPatternSet.class)
+				.setParameter("companyId", companyId).setParameter("alarmPatternCode", alarmPatternCode)
+				.getSingle(c -> c.toCheckCondition()).get();
+	}
+
+	
 }

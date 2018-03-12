@@ -15,6 +15,6 @@ public class AffiliationInforOfDailyPerformCommandAddHandler extends CommandFaca
 
 	@Override
 	protected void handle(CommandHandlerContext<AffiliationInforOfDailyPerformCommand> context) {
-		repo.add(context.getCommand().toDomain());
+		repo.add(context.getCommand().getData());
 	}
 }

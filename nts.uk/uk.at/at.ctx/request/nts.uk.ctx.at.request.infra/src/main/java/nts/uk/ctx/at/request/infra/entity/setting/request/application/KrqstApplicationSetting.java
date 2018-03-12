@@ -1,14 +1,20 @@
 package nts.uk.ctx.at.request.infra.entity.setting.request.application;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
+@Builder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -132,6 +138,22 @@ public class KrqstApplicationSetting extends UkJpaEntity {
 	@Column(name = "ATTENDENT_TIME_REFLECT_FLG")
 	public int attendentTimeReflectFlg;
 
+	/**スケジュールが確定されている場合*/
+	@Column(name = "ACHIEVEMENT_CONFIRM_ATR")
+	public int achievementConfirmedAtr;
+	
+	/**実績が確定されている場合*/
+	@Column(name = "SCHEDULE_CONFIRM_ATR")
+	public int scheduleConfirmedAtr;
+	
+	@OneToMany(targetEntity=KrqstAppTypeDiscrete.class, cascade = CascadeType.ALL, mappedBy = "krqstApplicationSetting")
+	@JoinTable(name = "KRQST_APP_TYPE_DISCRETE")
+	public List<KrqstAppTypeDiscrete> krqstAppTypeDiscretes;
+	
+	@OneToMany(targetEntity=KrqstAppDeadline.class, cascade = CascadeType.ALL, mappedBy = "krqstApplicationSetting")
+	@JoinTable(name = "KRQST_APP_DEADLINE")
+	public List<KrqstAppDeadline> krqstAppDeadlines;
+	
 	@Override
 	protected Object getKey() {
 		return krqstApplicationSettingPK;

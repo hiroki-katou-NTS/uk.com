@@ -10,5 +10,11 @@ import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr;
  */
 public class IncludeHolidaysWorkCalcDetailSet {
 	@Getter
-	private NotUseAtr toAdd;//型の参照先は変更する必要あり
+	private NotUseAtr toAdd;
+
+	public IncludeHolidaysWorkCalcDetailSet(NotUseAtr toAdd) {
+		super();
+		this.toAdd = toAdd;
+	}//型の参照先は変更する必要あり
+	
 }

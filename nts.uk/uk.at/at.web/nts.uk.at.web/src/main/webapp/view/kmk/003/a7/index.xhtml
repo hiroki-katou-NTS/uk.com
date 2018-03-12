@@ -3,49 +3,33 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<table>
-		<tr data-bind="visible: isFlowOrFlex()">
-			<td class="td-cell">
-				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_141')}</div>
-			</td>
-			<td class="td-cell">
-				<div tabindex ="93" class="cf"
-					data-bind="ntsSwitchButton: {
-							options: useFixedRestTimeOptions,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: useFixedRestTime,
-							enable: true }"></div>
-			</td>
-		</tr>
-		
-		<tr data-bind="visible: !isFlowOrFlex()">
-			<td class="td-cell">
-				<div tabindex ="92" id="nts-fix-table-a7-fixed-difftime"
-					data-bind="ntsFixTableCustom: {option: fixTableOptionForFixedOrDiffTime }"></div>
-			</td>
-		</tr>
-		
-		<tr data-bind="visible: isFixedRestTime()">
-			<td colspan="2" class="td-cell">
-				<div tabindex="94" id="nts-fix-table-a7-flow-flex-use"
-					data-bind="ntsFixTableCustom: {option: fixTableOptionForFlowOrFlexUse }"></div>
-			</td>
-		</tr>
+	
+	<div class="tab-rows" data-bind="visible: isFlowOrFlex()">
+		<div style="width: 150px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_141')}</div>	
+		<div tabindex ="93" class="cf" data-bind="ntsSwitchButton: {
+				options: useFixedRestTimeOptions,
+				optionsValue: 'code',
+				optionsText: 'name',
+				value: useFixedRestTime,
+				enable: true }"></div>
+	</div>
 
-		<tr data-bind="visible: isFlexOrFlowNotUse()">
-			<td colspan ="2" class="td-cell">
- 				<div tabindex="95" id="nts-fix-table-a7-flow-flex-notuse-1"
-					data-bind="ntsFixTableCustom: {option: fixTableOptionForFlowOrFlexNotUse1 }"></div>
-			</td>
-		</tr>
-		<tr data-bind="visible: isFlexOrFlowNotUse()">
-			<td colspan ="2" class="td-cell">
-				<div tabindex="96"
-					data-bind="ntsCheckBox: { checked: isCheckFollowTime,text: '#{i18n.getText('KMK003_144')}'}"></div>
-				<div tabindex="97" id="nts-fix-table-a7-flow-flex-notuse-2"
-					data-bind="ntsFixTableCustom: {option: fixTableOptionForFlowOrFlexNotUse2,isEnableAllControl: isCheckFollowTime}"></div>
-			</td>
-		</tr>
-	</table>
+	<div class="tab-seperator">
+		<com:ko tag="if" bind="!isFlowOrFlex()">
+			<div tabindex="92" id="nts-fix-table-a7-fixed-difftime"
+				data-bind="ntsFixTableCustom: {option: fixTableOptionForFixedOrDiffTime }"></div>
+		</com:ko>
+		<com:ko tag="if" bind="isFixedRestTime()">
+			<div tabindex="94" id="nts-fix-table-a7-flow-flex-use"
+				data-bind="ntsFixTableCustom: {option: fixTableOptionForFlowOrFlexUse }"></div>
+		</com:ko>
+		<com:ko tag="if" bind="isFlexOrFlowNotUse()">
+			<div tabindex="95" id="nts-fix-table-a7-flow-flex-notuse-1"
+				data-bind="visible: isFlexOrFlowNotUse(),ntsFixTableCustom: {option: fixTableOptionForFlowOrFlexNotUse1 }"></div>
+			<div tabindex="96"
+				data-bind="ntsCheckBox: { checked: isCheckFollowTime,text: '#{i18n.getText('KMK003_144')}'}"></div>
+			<div tabindex="97" id="nts-fix-table-a7-flow-flex-notuse-2"
+				data-bind="ntsFixTableCustom: {option: fixTableOptionForFlowOrFlexNotUse2,isEnableAllControl: isCheckFollowTime}"></div>
+		</com:ko>
+	</div>
 </ui:composition>

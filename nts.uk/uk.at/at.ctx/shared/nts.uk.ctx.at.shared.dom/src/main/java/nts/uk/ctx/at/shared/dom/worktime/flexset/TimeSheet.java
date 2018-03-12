@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -13,7 +13,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 // 時間帯
 @Getter
-public class TimeSheet extends DomainObject {
+public class TimeSheet extends WorkTimeDomainObject {
 
 	/** The start time. */
 	// 開始時刻

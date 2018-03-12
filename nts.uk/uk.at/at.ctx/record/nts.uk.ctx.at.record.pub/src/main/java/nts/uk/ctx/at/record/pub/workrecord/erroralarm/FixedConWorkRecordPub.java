@@ -9,7 +9,7 @@ public interface FixedConWorkRecordPub {
 	 * get all fixed condition work record by list errorAlarmID
 	 * @return
 	 */
-	List<FixedConWorkRecordPubExport> getAllFixedConWorkRecordByListID(List<String> listErrorAlarmID);
+	List<FixedConWorkRecordPubExport> getAllFixedConWorkRecordByID(String dailyAlarmConID);
 
 	/**
 	 * get fixed condition work record by dailyAlarmConID and fixConWorkRecordNo
@@ -17,11 +17,12 @@ public interface FixedConWorkRecordPub {
 	 * @param fixConWorkRecordNo
 	 * @return
 	 */
-	FixedConWorkRecordPubExport getFixedConWRByCode(String errorAlarmID);
+	FixedConWorkRecordPubExport getFixedConWRByCode(String dailyAlarmConID,int fixConWorkRecordNo);
+	
 	
 	void addFixedConWorkRecordPub(FixedConWorkRecordPubExport fixedConWorkRecordPubExport);
 	
 	void updateFixedConWorkRecordPub(FixedConWorkRecordPubExport fixedConWorkRecordPubExport);
 	
-	void deleteFixedConWorkRecordPub(List<String> errorAlarmID);
+	void deleteFixedConWorkRecordPub(String dailyAlarmConID);
 }

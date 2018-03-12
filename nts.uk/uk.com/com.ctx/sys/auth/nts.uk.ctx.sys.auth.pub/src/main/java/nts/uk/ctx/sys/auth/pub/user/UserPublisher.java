@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.auth.pub.user;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserPublisher {
@@ -14,6 +15,8 @@ public interface UserPublisher {
 	/** Requestlist 220
 	 * 紐付け先個人IDからユーザを取得する
 	 */
+
 	Optional<UserExport> getUserByAssociateId(String associatePersonId);
 	
+	List<UserExport> getListUserByListAsId(List<String> listAssociatePersonId);
 }

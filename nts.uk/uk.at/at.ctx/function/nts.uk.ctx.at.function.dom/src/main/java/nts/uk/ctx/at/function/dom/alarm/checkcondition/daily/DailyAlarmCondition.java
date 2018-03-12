@@ -26,19 +26,18 @@ public class DailyAlarmCondition extends ExtractionCondition {
 
 	private List<String> extractConditionWorkRecord = new ArrayList<String>();
 
-	private List<String> fixedExtractConditionWorkRecord = new ArrayList<String>();
+	private List<Integer> fixedExtractConditionWorkRecord = new ArrayList<Integer>();
 
 	private List<String> errorAlarmCode = new ArrayList<String>();
 
 	public DailyAlarmCondition(String dailyAlarmConID, int conExtractedDaily, boolean addApplication,
-			List<String> errorAlarmWk, List<String> errorAlarmFixed, List<String> errorAlarmCode) {
+			List<String> errorAlarmWk, List<String> errorAlarmCode) {
 		super();
 		this.dailyAlarmConID = dailyAlarmConID;
 		this.conExtractedDaily = EnumAdaptor.valueOf(conExtractedDaily, ConExtractedDaily.class);
-		;
 		this.addApplication = addApplication;
 		this.extractConditionWorkRecord = errorAlarmWk;
-		this.fixedExtractConditionWorkRecord = errorAlarmFixed;
+//		this.fixedExtractConditionWorkRecord = errorAlarmFixed;
 		this.errorAlarmCode = errorAlarmCode;
 	}
 

@@ -14,9 +14,6 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiBreakTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -86,21 +83,18 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 	}
 
 	private BreakTimeOfDailyPerformance toDtomain(Integer type, List<KrcdtDaiBreakTime> value) {
-		BreakTimeOfDailyPerformance breakTimeOfDailyPerformance = new BreakTimeOfDailyPerformance(
+		return new BreakTimeOfDailyPerformance(
 				value.get(0).krcdtDaiBreakTimePK.employeeId, EnumAdaptor.valueOf(type, BreakType.class),
-				value.stream().map(item -> {
-					WorkStamp startActualStamp = new WorkStamp(new TimeWithDayAttr(item.startStampRoundingTimeDay),
-							new TimeWithDayAttr(item.startStampTime), new WorkLocationCD(item.startStampPlaceCode),
-							EnumAdaptor.valueOf(item.startStampSourceInfo, StampSourceInfo.class));
+				value.stream().map(item -> new BreakTimeSheet(
+							new BreakFrameNo(item.krcdtDaiBreakTimePK.breakFrameNo), 
+							toTimeWithDayAttr(item.startStampTime),
+							toTimeWithDayAttr(item.endStampTime), 
+							new AttendanceTime(0))).collect(Collectors.toList()), 
+				value.get(0).krcdtDaiBreakTimePK.ymd);
+	}
 
-					WorkStamp endActualStamp = new WorkStamp(new TimeWithDayAttr(item.endStampRoundingTimeDay),
-							new TimeWithDayAttr(item.endStampTime), new WorkLocationCD(item.endStampPlaceCode),
-							EnumAdaptor.valueOf(item.endStampSourceInfo, StampSourceInfo.class));
-
-					return new BreakTimeSheet(new BreakFrameNo(item.krcdtDaiBreakTimePK.breakFrameNo), startActualStamp,
-							endActualStamp, new AttendanceTime(0));
-				}).collect(Collectors.toList()), value.get(0).krcdtDaiBreakTimePK.ymd);
-		return breakTimeOfDailyPerformance;
+	private TimeWithDayAttr toTimeWithDayAttr(Integer time) {
+		return time == null ? null : new TimeWithDayAttr(time);
 	}
 
 	@Override

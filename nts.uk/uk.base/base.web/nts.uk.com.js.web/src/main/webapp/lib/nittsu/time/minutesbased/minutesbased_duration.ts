@@ -28,7 +28,7 @@ module nts.uk.time.minutesBased {
             
             toValue() {
                 if (!this.success)
-                    return 0;
+                    return NaN;
                 return (this.minus ? -1 : 1) * (this.hours * 60 + this.minutes);
             }
         
@@ -80,11 +80,14 @@ module nts.uk.time.minutesBased {
         }
     
 
+        export type DurationFormatId
+            = "Time_Short_HM"           // 105:03
+        
         export interface DurationMinutesBasedTime extends MinutesBasedTime<DurationMinutesBasedTime> {
             asHoursDouble: number;
             asHoursInt: number;
-            minutePart: number;
             text: string;
+            formatById(formatId: DurationFormatId): string;
         }
         
         export function create(timeAsMinutes: number): DurationMinutesBasedTime {
@@ -94,15 +97,21 @@ module nts.uk.time.minutesBased {
                 .get("typeName", () => "DurationMinutesBasedTime")
                 .get("asHoursDouble", () => timeAsMinutes / 60)
                 .get("asHoursInt", () => ntsNumber.trunc(duration.asHoursDouble))
-                .get("minutePart", () => Math.abs(timeAsMinutes) % 60)
                 .get("text", () => createText(duration));
+            
+            duration.formatById = function (formatId: DurationFormatId) {
+                switch (formatId) {
+                    default: return createText(duration);
+                }
+            };
             
             return duration;
         }
         
         function createText(duration: DurationMinutesBasedTime): string {
             return (duration.isNegative ? "-" : "")
-                + duration.asHoursInt + ":" + text.padLeft(duration.minutePart.toString(), "0", 2);
+                + duration.asHoursInt + ":" + duration.minutePartText;
         }
+        
     }
 }

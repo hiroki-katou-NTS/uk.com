@@ -21,4 +21,14 @@ public class AttendanceTimesMonth extends IntegerPrimitiveValue<AttendanceTimesM
 		
 		super(times);
 	}
+	
+	/**
+	 * 回数を加算する
+	 * @param times 回数
+	 * @return 加算後の勤怠月間回数
+	 */
+	public AttendanceTimesMonth addTimes(Integer times){
+		
+		return new AttendanceTimesMonth(this.v() + times);
+	}
 }

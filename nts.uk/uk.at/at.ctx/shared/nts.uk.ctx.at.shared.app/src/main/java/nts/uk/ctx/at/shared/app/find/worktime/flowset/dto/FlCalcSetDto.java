@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.app.find.worktime.flowset.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlCalcSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowCalculateSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.PrePlanWorkTimeCalcMethod;
 
 /**
@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.PrePlanWorkTimeCalcMethod;
  */
 @Getter
 @Setter
-public class FlCalcSetDto implements FlCalcSetMemento {
+public class FlCalcSetDto implements FlowCalculateSetMemento {
 
 	/** The calc start time set. */
 	private Integer calcStartTimeSet;

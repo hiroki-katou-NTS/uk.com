@@ -22,6 +22,11 @@ public class ItemValue {
 	
 	private String pathLink;
 	
+	private ItemValue(int itemId, String path){
+		this.itemId = itemId;
+		this.pathLink = path;
+	}
+	
 	public ItemValue(Object value, ValueType valueType, String layoutCode, Integer itemId){
 		this(valueType, layoutCode, itemId, value);
 	}
@@ -94,6 +99,10 @@ public class ItemValue {
 	
 	public static ItemValue builder(){
 		return new ItemValue();
+	}
+	
+	public static ItemValue build(String path, int id){
+		return new ItemValue(id, path);
 	}
 	
 }

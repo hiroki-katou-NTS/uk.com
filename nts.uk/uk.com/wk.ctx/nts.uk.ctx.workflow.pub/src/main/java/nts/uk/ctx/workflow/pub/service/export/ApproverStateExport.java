@@ -14,5 +14,9 @@ public class ApproverStateExport {
 	
 	private String approverID;
 	
+	private String approverName;
+	
 	private String representerID;
+	
+	private String representerName;
 }

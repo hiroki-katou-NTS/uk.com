@@ -2,11 +2,14 @@ package nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.find.ErrorAlarmConditionPubExport;
 
 @Getter
+
 @NoArgsConstructor
 public class WorkRecordExtraConPubExport {
+	@Setter
 	private String errorAlarmCheckID;
 	//TypeCheckWorkRecord
 	private int checkItem;
@@ -23,8 +26,15 @@ public class WorkRecordExtraConPubExport {
 	
 	private ErrorAlarmConditionPubExport errorAlarmCondition;
 	
+	public void setErrorAlarmCondition(ErrorAlarmConditionPubExport errorAlarmCondition) {
+		this.errorAlarmCondition = errorAlarmCondition;
+	}
+
+
+
 	public WorkRecordExtraConPubExport(String errorAlarmCheckID, int checkItem, boolean messageBold,
-			String messageColor, int sortOrderBy, boolean useAtr, String nameWKRecord) {
+			String messageColor, int sortOrderBy, boolean useAtr, String nameWKRecord,
+			ErrorAlarmConditionPubExport errorAlarmCondition) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
 		this.checkItem = checkItem;
@@ -33,9 +43,6 @@ public class WorkRecordExtraConPubExport {
 		this.sortOrderBy = sortOrderBy;
 		this.useAtr = useAtr;
 		this.nameWKRecord = nameWKRecord;
-	}
-	
-	public void setErrorAlarmCondition(ErrorAlarmConditionPubExport errorAlarmCondition) {
 		this.errorAlarmCondition = errorAlarmCondition;
 	}
 	

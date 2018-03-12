@@ -3,8 +3,10 @@ package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.app
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 /**
  * 残業申請設定
  * @author loivt
@@ -64,11 +66,35 @@ public class AppOvertimeSetting extends AggregateRoot{
 	 */
 	private PriorityStampSetAtr priorityStampSetAtr;
 	/**
-	 * 残業時間単位制御区分
+	 * 残業時間指定単位
 	 */
 	private UnitAssignmentOvertime unitAssignmentOvertime;
 	/**
 	 * 通常残業使用区分
 	 */
 	private UseAtr normalOvertimeUseAtr;
+	/**
+	 * 残業時間単位制御区分
+	 */
+	private OtHourUnitControl otHour;
+	public static AppOvertimeSetting createFromJavaType(String companyId, int flexJExcessUseSetAtr, 
+			int preTypeSiftReflectFlg, int preOvertimeReflectFlg, int postTypeSiftReflectFlg, 
+			int postBreakReflectFlg, int postWorktimeReflectFlg, int calendarDispAtr, 
+			int earlyOvertimeUseAtr, int instructExcessOTAtr, int priorityStampSetAtr, 
+			int unitAssignmentOvertime, int normalOvertimeUseAtr, int attendanceId, int useOt){
+		return new  AppOvertimeSetting(companyId, EnumAdaptor.valueOf(flexJExcessUseSetAtr, FlexExcessUseSetAtr.class), 
+				EnumAdaptor.valueOf(preTypeSiftReflectFlg, UseAtr.class), 
+				EnumAdaptor.valueOf(preOvertimeReflectFlg, UseAtr.class), 
+				EnumAdaptor.valueOf(postTypeSiftReflectFlg, UseAtr.class), 
+				EnumAdaptor.valueOf(postBreakReflectFlg, UseAtr.class), 
+				EnumAdaptor.valueOf(postWorktimeReflectFlg, UseAtr.class), 
+				EnumAdaptor.valueOf(calendarDispAtr, UseAtr.class), 
+				EnumAdaptor.valueOf(earlyOvertimeUseAtr, UseAtr.class), 
+				EnumAdaptor.valueOf(instructExcessOTAtr, UseAtr.class), 
+				EnumAdaptor.valueOf(priorityStampSetAtr, PriorityStampSetAtr.class), 
+				EnumAdaptor.valueOf(unitAssignmentOvertime, UnitAssignmentOvertime.class), 
+				EnumAdaptor.valueOf(normalOvertimeUseAtr, UseAtr.class), 
+				new OtHourUnitControl(EnumAdaptor.valueOf(attendanceId, AttendanceType.class), 
+						EnumAdaptor.valueOf(useOt, UseOtWk.class)));
+	}
 }

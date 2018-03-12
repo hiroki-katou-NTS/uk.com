@@ -12,7 +12,6 @@ module nts.uk.com.view.cps009.b.viewmodel {
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
         categoryName: KnockoutObservable<string> = ko.observable('');
-        dataSource: Array<any> = [];
         itemColumns: Array<any> = [];
         currentItem: KnockoutObservableArray<any> = ko.observableArray([]);
         constructor() {
@@ -25,9 +24,9 @@ module nts.uk.com.view.cps009.b.viewmodel {
             ]);
 
             self.itemColumns = [
-                { headerText: 'id', key: 'id', width: 10, hidden: true },
-                { headerText: 'REQUIRED', key: 'isRequired', width: 10, hidden: true },
-                { headerText: nts.uk.resource.getText('CPS009_33'), key: 'itemName', width: 200}];
+                { headerText: 'perInfoItemDefId', key: 'perInfoItemDefId', width: 10, hidden: true },
+                { headerText: 'isRequired', key: 'isRequired', width: 10, hidden: true },
+                { headerText: nts.uk.resource.getText('CPS009_33'), key: 'itemName', width: 200 }];
             self.selectedRuleCode = ko.observable(1);
         }
         /**
@@ -48,10 +47,8 @@ module nts.uk.com.view.cps009.b.viewmodel {
                         close();
                     });
                 } else {
-                    self.dataSource = data;
-                    _.each(self.dataSource, function(item) {
-                        self.itemInitLst.push(new ItemInitValue(item.perInfoItemDefId, item.itemCode, item.itemName, item.isRequired, false));
-                    });
+                    
+                    self.itemInitLst(data);
 
 
                 }
@@ -64,29 +61,18 @@ module nts.uk.com.view.cps009.b.viewmodel {
          * send data to screen main when click button 決定
          */
         registerItems() {
-            let self = this;
-            //対象項目選択があろうかどうかをチェック (Kiểm tra có Item được chọn không)
-            let lstIdResult = [];
-            let lstItemResult = [];
-            _.each(self.itemInitLst(), function(item) {
-                if (item.isCheckBox) {
-                    lstIdResult.push(item.id);
-                }
-            });
+            let self = this,
+                obj = {
+                    isCancel: false,
+                    refMethodType: self.selectedRuleCode(),
+                    lstItem: self.currentItem()
+                };;
             if (self.currentItem().length == 0) {
                 //メッセージ（Msg_362)を表示 (Hiển thị Error Message Msg_362)
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_362' });
                 return;
             }
-            _.each(lstIdResult, function(itemId) {
-                let item = self.findItem(self.dataSource, itemId);
-                lstItemResult.push(item);
-            });
-            let obj = {
-                isCancel: false,
-                refMethodType: self.selectedRuleCode(),
-                lstItem: self.currentItem()
-            };
+
             setShared('CPS009B_DATA', obj);
 
             close();
@@ -105,33 +91,9 @@ module nts.uk.com.view.cps009.b.viewmodel {
             setShared('CPS009B_DATA', obj);
             close();
         }
-        /**
-         * find item by id
-         */
-        findItem(lstItem: Array<any>, id: string): any {
-            return _.find(lstItem, function(obj) {
-                return obj.perInfoItemDefId == id;
-            });
-        }
+
     }
 
-    export class ItemInitValue {
-        id: string;
-        itemCode: string;
-        itemName: string;
-        isRequired: number;
-        isCheckBox: boolean;
-        constructor(id: string, itemCode: string,
-            itemName: string, isRequired: number,
-            isCheckBox: boolean) {
-            let self = this;
-            self.id = id;
-            self.itemCode = itemCode;
-            self.itemName = itemName;
-            self.isRequired = isRequired;
-            self.isCheckBox = isCheckBox;
-        }
-    }
     export enum ReferenceMethodType {
         NOSETTING = '設定なし',
         FIXEDVALUE = '固定値',

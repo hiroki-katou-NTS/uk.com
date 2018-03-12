@@ -9,7 +9,7 @@ import nts.uk.ctx.at.function.dom.attendanceitemframelinking.primitivevalue.Fram
 /**
  * 
  * @author nampt
- *
+ *勤怠項目と枠の紐付け
  */
 @Getter
 public class AttendanceItemLinking {

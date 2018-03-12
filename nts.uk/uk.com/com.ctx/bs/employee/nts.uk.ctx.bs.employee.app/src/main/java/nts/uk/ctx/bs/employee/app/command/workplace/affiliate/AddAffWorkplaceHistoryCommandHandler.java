@@ -11,10 +11,10 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryService;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -27,10 +27,10 @@ public class AddAffWorkplaceHistoryCommandHandler extends CommandHandlerWithResu
 	implements PeregAddCommandHandler<AddAffWorkplaceHistoryCommand>{
 	
 	@Inject
-	private AffWorkplaceHistoryRepository_v1 affWorkplaceHistoryRepository;
+	private AffWorkplaceHistoryRepository affWorkplaceHistoryRepository;
 	
 	@Inject
-	private AffWorkplaceHistoryItemRepository_v1 affWorkplaceHistoryItemRepository;
+	private AffWorkplaceHistoryItemRepository affWorkplaceHistoryItemRepository;
 	
 	@Inject 
 	private AffWorkplaceHistoryService affWorkplaceHistoryService;
@@ -52,9 +52,9 @@ public class AddAffWorkplaceHistoryCommandHandler extends CommandHandlerWithResu
 		
 		String newHistID = IdentifierUtil.randomUniqueId();
 		DateHistoryItem dateItem = new DateHistoryItem(newHistID, new DatePeriod(command.getStartDate()!=null?command.getStartDate():ConstantUtils.minDate(), command.getEndDate()!= null? command.getEndDate():  ConstantUtils.maxDate()));
-		Optional<AffWorkplaceHistory_ver1> existHist = affWorkplaceHistoryRepository.getByEmployeeId(companyId, command.getEmployeeId());
+		Optional<AffWorkplaceHistory> existHist = affWorkplaceHistoryRepository.getByEmployeeId(companyId, command.getEmployeeId());
 		
-		AffWorkplaceHistory_ver1 itemtoBeAdded = new AffWorkplaceHistory_ver1(companyId, command.getEmployeeId(),new ArrayList<>());
+		AffWorkplaceHistory itemtoBeAdded = new AffWorkplaceHistory(companyId, command.getEmployeeId(),new ArrayList<>());
 		// In case of exist history of this employee
 		if (existHist.isPresent()){
 			itemtoBeAdded = existHist.get();

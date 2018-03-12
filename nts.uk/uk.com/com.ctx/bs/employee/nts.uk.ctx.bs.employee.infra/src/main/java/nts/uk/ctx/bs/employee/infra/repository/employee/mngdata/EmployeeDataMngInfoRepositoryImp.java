@@ -5,7 +5,6 @@
 package nts.uk.ctx.bs.employee.infra.repository.employee.mngdata;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -23,9 +22,6 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfoPk;
-import nts.uk.ctx.bs.person.dom.person.info.GenderPerson;
-import nts.uk.ctx.bs.person.dom.person.info.Person;
-import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 
 @Stateless
 public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements EmployeeDataMngInfoRepository {
@@ -69,7 +65,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	private static final String GET_ALL_BY_CID = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid AND e.delStatus = 1 ORDER BY  e.employeeCode ASC";
 
 	private static final String SELECT_BY_EMP_CODE = String.join(" ", SELECT_NO_PARAM,
-			"WHERE e.employeeCode = :empcode AND e.companyId = :cid");
+			"WHERE e.employeeCode = :empcode AND e.companyId = :cid AND e.delStatus = 0");
 
 	// duongtv start code
 	/** The select by list emp code. */
@@ -78,7 +74,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	/** The select by list emp id. */
 	public final String SELECT_BY_LIST_EMP_ID = SELECT_NO_PARAM + " WHERE e.companyId = :companyId"
-			+ " AND e.bsymtEmployeeDataMngInfoPk.sId IN :employeeIds ";
+			+ " AND e.bsymtEmployeeDataMngInfoPk.sId IN :employeeIds ORDER BY e.employeeCode ASC";
 
 	// duongtv end code
 
@@ -110,12 +106,8 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.getSingleOrNull();
 
 		if (entity != null) {
-			if (domain.getEmployeeCode() != null && !domain.getEmployeeCode().v().equals("")) {
-				entity.employeeCode = domain.getEmployeeCode().v();
-			}
-			if (domain.getExternalCode() != null && !domain.getExternalCode().v().equals("")) {
-				entity.extCode = domain.getExternalCode().v();
-			}
+			entity.employeeCode = domain.getEmployeeCode().v();
+			entity.extCode = domain.getExternalCode().v();
 			commandProxy().update(entity);
 		}
 	}
@@ -193,10 +185,10 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 			if (entity[4] != null) {
 				if (Integer.valueOf(entity[4].toString()) == 1) {
-					emp.setGender("男");
+					emp.setGender("男性");
 
 				} else if (Integer.valueOf(entity[4].toString()) == 2) {
-					emp.setGender("女");
+					emp.setGender("女性");
 				}
 
 			}

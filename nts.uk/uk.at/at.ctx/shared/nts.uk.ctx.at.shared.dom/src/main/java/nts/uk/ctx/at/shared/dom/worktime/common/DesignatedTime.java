@@ -5,14 +5,14 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class DesignatedTime.
  */
 // 指定時間
 @Getter
-public class DesignatedTime extends DomainObject {
+public class DesignatedTime extends WorkTimeDomainObject {
 
 	/** The one day time. */
 	// 1日の時間
@@ -52,16 +52,6 @@ public class DesignatedTime extends DomainObject {
 	public DesignatedTime(DesignatedTimeGetMemento memento){
 		this.oneDayTime = memento.getOneDayTime();
 		this.halfDayTime = memento.getHalfDayTime();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.arc.layer.dom.DomainObject#validate()
-	 */
-	@Override
-	public void validate() {
-		super.validate();
 	}
 
 	/**

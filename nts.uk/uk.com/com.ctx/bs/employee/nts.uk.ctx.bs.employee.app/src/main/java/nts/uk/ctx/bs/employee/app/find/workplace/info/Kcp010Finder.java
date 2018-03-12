@@ -15,9 +15,9 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.Kcp010WorkplaceSearchData;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -34,11 +34,11 @@ public class Kcp010Finder {
 	
 	/** The workplace history repository. */
 	@Inject
-	private AffWorkplaceHistoryRepository_v1 workplaceHistoryRepo;
+	private AffWorkplaceHistoryRepository workplaceHistoryRepo;
 	
-	/**AffWorkplaceHistoryItemRepository_v1*/
+	/**AffWorkplaceHistoryItemRepository*/
 	@Inject
-	private AffWorkplaceHistoryItemRepository_v1 workplaceHistoryItemRepository;
+	private AffWorkplaceHistoryItemRepository workplaceHistoryItemRepository;
 
 	/**
 	 * Find wkp info by workplaceCode
@@ -65,8 +65,8 @@ public class Kcp010Finder {
 	}
 	
 	public Optional<Kcp010WorkplaceSearchData> findBySid(String employeeId, GeneralDate baseDate) {
-		//get AffWorkplaceHistory_ver1
-		Optional<AffWorkplaceHistory_ver1> affWrkPlc = workplaceHistoryRepo.getByEmpIdAndStandDate(employeeId, baseDate);
+		//get AffWorkplaceHistory
+		Optional<AffWorkplaceHistory> affWrkPlc = workplaceHistoryRepo.getByEmpIdAndStandDate(employeeId, baseDate);
 		if(!affWrkPlc.isPresent()) 
 			return Optional.empty();
 		

@@ -7,14 +7,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 
 @AttendanceItemRoot(rootName = "社員の日別実績エラー一覧")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmployeeDailyPerErrorDto implements ConvertibleAttendanceItem {
+public class EmployeeDailyPerErrorDto extends AttendanceItemCommon {
 
 	//TODO: item id not map
 	
@@ -45,7 +47,8 @@ public class EmployeeDailyPerErrorDto implements ConvertibleAttendanceItem {
 			dto.setCompanyID(domain.getCompanyID());
 			dto.setDate(domain.getDate());
 			dto.setEmployeeID(domain.getEmployeeID());
-			dto.setErrorCode(domain.getErrorAlarmWorkRecordCode().v());
+			dto.setErrorCode(domain.getErrorAlarmWorkRecordCode() == null ? null : domain.getErrorAlarmWorkRecordCode().v());
+			dto.exsistData();
 		}
 		return dto;
 	}
@@ -58,5 +61,14 @@ public class EmployeeDailyPerErrorDto implements ConvertibleAttendanceItem {
 	@Override
 	public GeneralDate workingDate() {
 		return this.date;
+	}
+	
+	@Override
+	public EmployeeDailyPerError toDomain(String employeeId, GeneralDate date) {
+		if(!this.isHaveData()) {
+			return null;
+		}
+		return new EmployeeDailyPerError(companyID, employeeId, date,
+				errorCode == null ? null : new ErrorAlarmWorkRecordCode(errorCode), attendanceItemList, 0);
 	}
 }

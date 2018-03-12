@@ -12,11 +12,11 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItemRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem_ver1;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepositoryService;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistory_ver1;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItem;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItemRepository;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepositoryService;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -35,10 +35,10 @@ public class AddAffClassCommandHandler
 		implements PeregAddCommandHandler<AddAffClassificationCommand> {
 
 	@Inject
-	private AffClassHistoryRepository_ver1 affClassHistoryRepo;
+	private AffClassHistoryRepository affClassHistoryRepo;
 
 	@Inject
-	private AffClassHistItemRepository_ver1 affClassHistItemRepo;
+	private AffClassHistItemRepository affClassHistItemRepo;
 
 	@Inject
 	private AffClassHistoryRepositoryService affClassHistoryRepositoryService;
@@ -60,9 +60,9 @@ public class AddAffClassCommandHandler
 		// add history
 		String newHistoryId = IdentifierUtil.randomUniqueId();
 		
-		Optional<AffClassHistory_ver1> historyOption = affClassHistoryRepo.getByEmployeeId(companyId,command.getEmployeeId());
+		Optional<AffClassHistory> historyOption = affClassHistoryRepo.getByEmployeeId(companyId,command.getEmployeeId());
 		
-		AffClassHistory_ver1 history = new AffClassHistory_ver1(companyId, command.getEmployeeId(), new ArrayList<>());
+		AffClassHistory history = new AffClassHistory(companyId, command.getEmployeeId(), new ArrayList<>());
 		if (historyOption.isPresent()) {
 			history = historyOption.get();
 		}
@@ -71,7 +71,7 @@ public class AddAffClassCommandHandler
 		affClassHistoryRepositoryService.add(history);
 		
 		// add history item
-		AffClassHistItem_ver1 histItem = AffClassHistItem_ver1.createFromJavaType(command.getEmployeeId(), newHistoryId,
+		AffClassHistItem histItem = AffClassHistItem.createFromJavaType(command.getEmployeeId(), newHistoryId,
 				command.getClassificationCode());
 		affClassHistItemRepo.add(histItem);
 

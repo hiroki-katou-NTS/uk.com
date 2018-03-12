@@ -13,7 +13,7 @@ public class DefaultLoginUserRoles implements LoginUserRoles, Serializable {
 	private String forPersonalInfo = null;
 	private String forOfficeHelper = null;
 	private String forSystemAdmin = null;
-	private String forCompanyAdmin = "99900000-0000-0000-0000-000000000001";
+	private String forCompanyAdmin = null;
 	
 	@Override
 	public String forAttendance() {

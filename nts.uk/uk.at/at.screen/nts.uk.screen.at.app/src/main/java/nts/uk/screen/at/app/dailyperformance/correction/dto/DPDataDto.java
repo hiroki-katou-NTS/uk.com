@@ -4,8 +4,8 @@
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
@@ -17,7 +17,7 @@ import nts.arc.time.GeneralDate;
 @Getter
 @Setter
 public class DPDataDto {
-    private int id;
+    private String id;
 	private String state;
     private String error;
     private GeneralDate date;
@@ -26,10 +26,12 @@ public class DPDataDto {
     private String employeeCode;
     private String employeeName;
     private String workplaceId;
+    private String employmentCode;
+    private String typeGroup;
     private Set<DPCellDataDto> cellDatas;
     
-	public DPDataDto(int id, String state, String error, GeneralDate date, boolean sign, String employeeId,
-			String employeeCode, String employeeName, String workplaceId) {
+	public DPDataDto(String id, String state, String error, GeneralDate date, boolean sign, String employeeId,
+			String employeeCode, String employeeName, String workplaceId, String employmentCode, String typeGroup) {
 		this.id = id;
 		this.state = state;
 		this.error = error;
@@ -39,11 +41,13 @@ public class DPDataDto {
 		this.employeeCode = employeeCode;
 		this.employeeName = employeeName;
 		this.workplaceId = workplaceId;
+		this.employmentCode = employmentCode;
+		this.typeGroup = typeGroup;
 		this.cellDatas = new HashSet<DPCellDataDto>();
 	}
 	
-	public void setCellDatas(List<DPCellDataDto> lstCellData) {
-		this.cellDatas = new HashSet<DPCellDataDto>(lstCellData);
+	public void setCellDatas(Set<DPCellDataDto> lstCellData) {
+		this.cellDatas = lstCellData;
 	}
 	
 	public void addCellData(DPCellDataDto cellData) {

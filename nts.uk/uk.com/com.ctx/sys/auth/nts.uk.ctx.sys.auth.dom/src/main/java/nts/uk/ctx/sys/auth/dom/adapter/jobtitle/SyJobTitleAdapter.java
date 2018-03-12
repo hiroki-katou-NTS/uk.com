@@ -11,6 +11,6 @@ import nts.arc.time.GeneralDate;
  */
 public interface SyJobTitleAdapter {
 
-	Optional<AffJobTitleHistory_ver1Import> gerBySidAndBaseDate(String employeeId, GeneralDate baseDate);
+	Optional<AffJobTitleHistoryImport> gerBySidAndBaseDate(String employeeId, GeneralDate baseDate);
 	
 }

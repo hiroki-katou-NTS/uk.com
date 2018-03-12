@@ -14,12 +14,14 @@ module nts.uk.at.view.kmk003.a {
     import PredetemineTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.predset.PredetemineTimeSettingModel;
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
     import FixedWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.fixedset.FixedWorkSettingModel;
-    import FlowWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flowset.FlWorkSettingModel;
+    import FlowWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flowset.FlowWorkSettingModel;
     import DiffTimeWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.difftimeset.DiffTimeWorkSettingModel;
     import FlexWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flexset.FlexWorkSettingModel;
     
     import FixedWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FixedWorkSettingSaveCommand;
+    import FlowWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FlowWorkSettingSaveCommand;
     import FlexWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FlexWorkSettingSaveCommand;
+    import DiffTimeSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.DiffTimeWorkSettingSaveCommand;
     
     export module viewmodel {
 
@@ -60,7 +62,11 @@ module nts.uk.at.view.kmk003.a {
 
             constructor() {
                 let self = this;
+                self.isDetailMode = ko.observable(false);
                 self.useHalfDay = ko.observable(false); // A5_19 initial value = false
+                self.useHalfDay.subscribe(() => {
+                    self.clearAllError();
+                });
                 self.mainSettingModel = new MainSettingModel(self.useHalfDay);
                 self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(() => {
                     if (self.isNewMode()) {
@@ -79,7 +85,8 @@ module nts.uk.at.view.kmk003.a {
                     }
                 });
 
-                self.workTimeSettingLoader = new WorkTimeSettingLoader();
+                self.selectedWorkTimeCode = ko.observable('');
+                self.workTimeSettingLoader = new WorkTimeSettingLoader(self.mainSettingModel.workTimeSetting.worktimeCode);
                 
                 self.workTimeSettings = ko.observableArray([]);
                 self.columnWorktimeSettings = ko.observableArray([
@@ -94,7 +101,6 @@ module nts.uk.at.view.kmk003.a {
                         }
                     }
                 ]);
-                self.selectedWorkTimeCode = ko.observable('');
 
                 //tab mode
                 self.tabModeOptions = ko.observableArray([
@@ -109,9 +115,9 @@ module nts.uk.at.view.kmk003.a {
                     } else {                       
                         self.changeTabMode(false);
                     }   
-                    if (self.isUpdateMode()) {
-                        self.reloadWorktimeSetting();
-                    }
+//                    if (self.isUpdateMode()) {
+//                        self.reloadWorktimeSetting();
+//                    }
                 });
 
                 self.useHalfDayOptions = ko.observableArray([
@@ -137,31 +143,33 @@ module nts.uk.at.view.kmk003.a {
 
                 //
                 self.tabs = ko.observableArray([]);
-                self.tabs.push(new TabItem('tab-1', nts.uk.resource.getText("KMK003_17"), '.tab-a1', true, true));
-                self.tabs.push(new TabItem('tab-2', nts.uk.resource.getText("KMK003_18"), '.tab-a2', true, true));
-                self.tabs.push(new TabItem('tab-3', nts.uk.resource.getText("KMK003_89"), '.tab-a3', true, true));
-                self.tabs.push(new TabItem('tab-4', nts.uk.resource.getText("KMK003_19"), '.tab-a4', true, true));
-                self.tabs.push(new TabItem('tab-5', nts.uk.resource.getText("KMK003_20"), '.tab-a5', true, true));
-                self.tabs.push(new TabItem('tab-6', nts.uk.resource.getText("KMK003_90"), '.tab-a6', true, true));
-                self.tabs.push(new TabItem('tab-7', nts.uk.resource.getText("KMK003_21"), '.tab-a7', true, true));
-                self.tabs.push(new TabItem('tab-8', nts.uk.resource.getText("KMK003_200"), '.tab-a8', true, true));
-                self.tabs.push(new TabItem('tab-9', nts.uk.resource.getText("KMK003_23"), '.tab-a9', true, true));
-                self.tabs.push(new TabItem('tab-10', nts.uk.resource.getText("KMK003_24"), '.tab-a10', true, true));
-                self.tabs.push(new TabItem('tab-11', nts.uk.resource.getText("KMK003_25"), '.tab-a11', true, true));
-                self.tabs.push(new TabItem('tab-12', nts.uk.resource.getText("KMK003_26"), '.tab-a12', true, true));
-                self.tabs.push(new TabItem('tab-13', nts.uk.resource.getText("KMK003_27"), '.tab-a13', true, true));
-                self.tabs.push(new TabItem('tab-14', nts.uk.resource.getText("KMK003_28"), '.tab-a14', true, true));
-                self.tabs.push(new TabItem('tab-15', nts.uk.resource.getText("KMK003_29"), '.tab-a15', true, true));
-                self.tabs.push(new TabItem('tab-16', nts.uk.resource.getText("KMK003_30"), '.tab-a16', true, true));
+                self.tabs.push(new TabItem(TabID.TAB1, nts.uk.resource.getText("KMK003_17"), '.tab-a1', true, true));
+                self.tabs.push(new TabItem(TabID.TAB2, nts.uk.resource.getText("KMK003_18"), '.tab-a2', true, true));
+                self.tabs.push(new TabItem(TabID.TAB3, nts.uk.resource.getText("KMK003_89"), '.tab-a3', true, true));
+                self.tabs.push(new TabItem(TabID.TAB4, nts.uk.resource.getText("KMK003_19"), '.tab-a4', true, true));
+                self.tabs.push(new TabItem(TabID.TAB5, nts.uk.resource.getText("KMK003_20"), '.tab-a5', true, true));
+                self.tabs.push(new TabItem(TabID.TAB6, nts.uk.resource.getText("KMK003_90"), '.tab-a6', true, true));
+                self.tabs.push(new TabItem(TabID.TAB7, nts.uk.resource.getText("KMK003_21"), '.tab-a7', true, true));
+                self.tabs.push(new TabItem(TabID.TAB8, nts.uk.resource.getText("KMK003_200"), '.tab-a8', true, true));
+                self.tabs.push(new TabItem(TabID.TAB9, nts.uk.resource.getText("KMK003_23"), '.tab-a9', true, true));
+                self.tabs.push(new TabItem(TabID.TAB10, nts.uk.resource.getText("KMK003_24"), '.tab-a10', true, true));
+                self.tabs.push(new TabItem(TabID.TAB11, nts.uk.resource.getText("KMK003_25"), '.tab-a11', true, true));
+                self.tabs.push(new TabItem(TabID.TAB12, nts.uk.resource.getText("KMK003_26"), '.tab-a12', true, true));
+                self.tabs.push(new TabItem(TabID.TAB13, nts.uk.resource.getText("KMK003_27"), '.tab-a13', true, true));
+                self.tabs.push(new TabItem(TabID.TAB14, nts.uk.resource.getText("KMK003_28"), '.tab-a14', true, true));
+                self.tabs.push(new TabItem(TabID.TAB15, nts.uk.resource.getText("KMK003_29"), '.tab-a15', true, true));
+                self.tabs.push(new TabItem(TabID.TAB16, nts.uk.resource.getText("KMK003_30"), '.tab-a16', true, true));
                 
-                self.selectedTab = ko.observable('tab-1');
+                self.selectedTab = ko.observable(TabID.TAB1);
 
                 //data get from service
                 self.isClickSave = ko.observable(false);
                 
                 self.selectedWorkTimeCode.subscribe(function(worktimeCode: string){
                     if (worktimeCode) {
-                       self.loadWorktimeSetting(worktimeCode); 
+                        self.loadWorktimeSetting(worktimeCode);
+                        // focus worktime atr
+                        $('#search-daily-atr').focus();
                     }
                 });
                 
@@ -220,13 +228,14 @@ module nts.uk.at.view.kmk003.a {
 
                     // enter update mode if has data
                     if (data && data.length > 0) {
+                        let found = _.find(self.workTimeSettings(), worktime => worktime.worktimeCode == selectedCode);
                         // select first item
-                        if (!selectedCode && !selectedIndex) {
+                        if (!found && !selectedIndex) {
                             self.selectedWorkTimeCode(data[0].worktimeCode);
                         }
 
                         // select item by selected code
-                        if (selectedCode) {
+                        if (found) {
                             self.selectedWorkTimeCode(selectedCode);
                         }
 
@@ -304,7 +313,6 @@ module nts.uk.at.view.kmk003.a {
 
                         // update mainSettingModel data
                         self.mainSettingModel.updateData(worktimeSettingInfo);
-
                         self.isLoading(true);
                         self.mainSettingModel.isChangeItemTable.valueHasMutated();
                     }).always(() => _.defer(() => nts.uk.ui.block.clear()));
@@ -324,14 +332,15 @@ module nts.uk.at.view.kmk003.a {
                     _.defer(() => nts.uk.ui.block.invisible());
 
                     service.findWorktimeSetingInfoByCode(worktimeCode).done(worktimeSettingInfo => {
-                        // enter update mode
-                        self.enterUpdateMode();
 
                         // update mainSettingModel data
                         self.mainSettingModel.updateData(worktimeSettingInfo);
 
                         self.isLoading(true);
                         self.mainSettingModel.isChangeItemTable.valueHasMutated();
+                        
+                        // enter update mode
+                        self.enterUpdateMode();
                         dfd.resolve();
                     }).always(() => _.defer(() => nts.uk.ui.block.clear()));
                     return dfd.promise();
@@ -341,12 +350,13 @@ module nts.uk.at.view.kmk003.a {
             /**
              * Change tab mode
              */
-            private changeTabMode(isDetail: boolean): void {
+            private changeTabMode(isDetail: boolean): void {              
                 let _self = this;
+                _self.clearAllError();
                 if (isDetail) {
                     _.forEach(_self.tabs(), tab => tab.setVisible(true));
                 } else {
-                    let simpleTabsId: string[] = ['tab-1','tab-2','tab-3','tab-4','tab-5','tab-6','tab-7','tab-9','tab-10','tab-11','tab-12'];
+                    let simpleTabsId: string[] = [TabID.TAB1, TabID.TAB2, TabID.TAB3, TabID.TAB4, TabID.TAB5, TabID.TAB6, TabID.TAB7, TabID.TAB9, TabID.TAB10, TabID.TAB11, TabID.TAB12];
                     _.forEach(_self.tabs(), tab => {
                         if (_.findIndex(simpleTabsId, id => tab.id === id) === -1) {
                             tab.setVisible(false);
@@ -393,7 +403,7 @@ module nts.uk.at.view.kmk003.a {
              */
             private setupTestMode(): void {
                 let self = this;
-                const inputKeys = [];
+                const inputKeys: any[] = [];
                 const patwuot = 'ahihi';
 
                 window.addEventListener('keyup', e => {
@@ -427,6 +437,14 @@ module nts.uk.at.view.kmk003.a {
                         self.loadWorktimeSetting(self.selectedWorkTimeCode());
                     }).fail((err) => {
                         self.isClickSave(false);
+                        let errors = _.uniqBy(err.errors, (v: any) => {
+                            let key = v.messageId;
+                            for (let param of v.parameterIds) {
+                                key = key + ' ' + param;
+                            }
+                            return key;
+                        });
+                        err.errors = errors;
                         self.showMessageError(err);
                     });
             }
@@ -464,6 +482,16 @@ module nts.uk.at.view.kmk003.a {
 
                 let isSameWorkDivision = leftAtr() == rightAtr() && leftMethod() == rightMethod();
 
+                if (leftAtr() == EnumWorkForm.REGULAR && rightAtr() == EnumWorkForm.REGULAR) {
+                    if (leftMethod() == SettingMethod.ALL) {
+                        isSameWorkDivision = true;
+                    }
+                }
+                
+                if (leftAtr() == EnumWorkForm.FLEX && rightAtr() == EnumWorkForm.FLEX) {
+                    isSameWorkDivision = true;
+                }
+                
                 // reload list work time
                 if (loader.isAllWorkAtr() || isSameWorkDivision) {
                     _.defer(() => self.loadListWorktime(self.mainSettingModel.workTimeSetting.worktimeCode()));
@@ -542,16 +570,14 @@ module nts.uk.at.view.kmk003.a {
                 self.screenMode(ScreenMode.COPY);
                 
                 // focus worktime atr
-                $('#cbb-worktime-atr').focus();
+                $('#search-daily-atr').focus();
             }
 
             /**
              * Clear all errors
              */
             public clearAllError(): void {
-                $('.nts-editor').ntsError('clear');
-                $('.ntsControl').ntsError('clear');
-                $('.time-range-editor').ntsError('clear');
+                nts.uk.ui.errors.clearAll();
             }
 
             /**
@@ -683,8 +709,21 @@ module nts.uk.at.view.kmk003.a {
                         .done(() => self.onSaveSuccess(dfd))
                         .fail(err => dfd.reject(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
+                }                
+                if (self.workTimeSetting.isFlow()) {
+                    service.saveFlowWorkSetting(self.toFlowCommand(addMode, tabMode))
+                        .done(() => self.onSaveSuccess(dfd))
+                        .fail(err => dfd.reject(err))
+                        .always(() => _.defer(() => nts.uk.ui.block.clear()));
                 }
 
+                if (self.workTimeSetting.isDiffTime()) {
+                    service.saveDiffTimeWorkSetting(self.toDiffTimeCommand(addMode, tabMode))
+                        .done(() => self.onSaveSuccess(dfd))
+                        .fail(err => dfd.reject(err))
+                        .always(() => _.defer(() => nts.uk.ui.block.clear()));
+                }
+                
                 return dfd.promise();
             }
 
@@ -703,6 +742,18 @@ module nts.uk.at.view.kmk003.a {
                 return command;  
             }
 
+            toFlowCommand(addMode: boolean, tabMode: number): FlowWorkSettingSaveCommand {
+                let _self = this;
+                let command: FlowWorkSettingSaveCommand = {
+                    addMode: addMode,
+                    predseting: _self.predetemineTimeSetting.toDto(),
+                    worktimeSetting: _self.workTimeSetting.toDto(),
+                    flowWorkSetting: _self.flowWorkSetting.toDto(_self.commonSetting),
+                    screenMode: tabMode
+                };
+                return command;  
+            }
+            
             /**
              * Collect flex data and convert to command dto
              */
@@ -718,6 +769,22 @@ module nts.uk.at.view.kmk003.a {
                 };
                 return command;
             }
+            
+            /**
+             * Collect difftime data and convert to command dto
+             */
+            toDiffTimeCommand(addMode: boolean, tabMode: number): DiffTimeSettingSaveCommand {
+                let self = this;
+                let command: DiffTimeSettingSaveCommand;
+                command = {
+                    screenMode: tabMode,
+                    addMode: addMode,
+                    diffTimeWorkSetting: self.diffWorkSetting.toDto(self.commonSetting),
+                    predseting: self.predetemineTimeSetting.toDto(),
+                    worktimeSetting: self.workTimeSetting.toDto()
+                };
+                return command;
+            }
 
             updateData(worktimeSettingInfo: WorkTimeSettingInfoDto): void {
                 let self = this;
@@ -726,7 +793,6 @@ module nts.uk.at.view.kmk003.a {
                 
                 if (self.workTimeSetting.isFlex()) {
                     self.flexWorkSetting.updateData(worktimeSettingInfo.flexWorkSetting);
-                    //dientx add
                     self.commonSetting.updateData(worktimeSettingInfo.flexWorkSetting.commonSetting);
 
                     // set useHalfDay to mainScreen model
@@ -734,31 +800,39 @@ module nts.uk.at.view.kmk003.a {
                 }
                 if (self.workTimeSetting.isFlow()) {
                     self.flowWorkSetting.updateData(worktimeSettingInfo.flowWorkSetting);
-                    //dientx add
                     self.commonSetting.updateData(worktimeSettingInfo.flowWorkSetting.commonSetting);
                 }
                 if (self.workTimeSetting.isFixed()) {
                     self.fixedWorkSetting.updateData(worktimeSettingInfo.fixedWorkSetting);
-                    //dientx add
                     self.commonSetting.updateData(worktimeSettingInfo.fixedWorkSetting.commonSetting);
 
                     // set useHalfDay to mainScreen model
                     self.useHalfDay(worktimeSettingInfo.fixedWorkSetting.useHalfDayShift);
                 }
-                //TODO update diff viewmodel
+                
+                if (self.workTimeSetting.isDiffTime()) {
+                    self.diffWorkSetting.updateData(worktimeSettingInfo.diffTimeWorkSetting);
+                    self.commonSetting.updateData(worktimeSettingInfo.diffTimeWorkSetting.commonSet);
+
+                    // set useHalfDay to mainScreen model
+                    self.useHalfDay(worktimeSettingInfo.diffTimeWorkSetting.useHalfDayShift);
+                }
             }
             
-            resetData(isNewMode?: boolean){
-                this.useHalfDay(false);
-                this.predetemineTimeSetting.resetData();
-                this.fixedWorkSetting.resetData();
-                this.flexWorkSetting.resetData();
-                this.commonSetting.resetData();
+            resetData(isNewMode?: boolean) {
+                let self = this;
+                self.useHalfDay(false);
+                self.fixedWorkSetting.resetData();
+                self.flowWorkSetting.resetData();
+                self.flexWorkSetting.resetData();
+                self.diffWorkSetting.resetData();
                 if (!isNewMode) {
-                    this.workTimeSetting.resetData();
-                    this.workTimeSetting.resetWorkTimeDivision();
+                    //check change mode to convert data
+                    self.commonSetting.resetData();
+                    self.predetemineTimeSetting.resetData();
+                    self.workTimeSetting.resetData();
+                    self.workTimeSetting.resetWorkTimeDivision();
                 }
-                //TODO update diff viewmodel
             }
         }
 
@@ -766,19 +840,22 @@ module nts.uk.at.view.kmk003.a {
             workTimeAtrEnums: EnumConstantDto[];
             workTimeMethodEnums: EnumConstantDto[];
             loadListWorktime: (selectedCode?: string, selectedIndex?: number) => JQueryPromise<void>;
-            constructor() {
+            selectedWorktimeCode: KnockoutObservable<string>;
+            constructor(selectedWorktimeCode: KnockoutObservable<string>) {
                 super();
+                let self = this;
+                this.selectedWorktimeCode = selectedWorktimeCode;
                 this.isAbolish(false); // initial value in specs = clear
                 this.workTimeDivision.workTimeDailyAtr(3);
                 this.workTimeDivision.workTimeMethodSet(3);
                 this.workTimeDivision.workTimeDailyAtr.subscribe(() => {
-                    this.loadListWorktime();
+                    this.loadListWorktime(self.selectedWorktimeCode());
                 });
                 this.workTimeDivision.workTimeMethodSet.subscribe(() => {
-                    this.loadListWorktime();
+                    this.loadListWorktime(self.selectedWorktimeCode());
                 });
                 this.isAbolish.subscribe(() => {
-                    this.loadListWorktime();
+                    this.loadListWorktime(self.selectedWorktimeCode());
                 });
             }
 
@@ -838,7 +915,8 @@ module nts.uk.at.view.kmk003.a {
         export enum SettingMethod {
             FIXED,
             DIFFTIME,
-            FLOW
+            FLOW,
+            ALL
         }
         
         export enum TabMode {
@@ -850,6 +928,26 @@ module nts.uk.at.view.kmk003.a {
             NEW,
             UPDATE,
             COPY
+        }
+        
+        export class TabID {
+            static TAB1 = "tab-1";
+            static TAB2 = "tab-2";
+            static TAB3 = "tab-3";
+            static TAB4 = "tab-4";
+            static TAB5 = "tab-5";
+            static TAB6 = "tab-6";
+            static TAB7 = "tab-7";
+            static TAB8 = "tab-8";
+            static TAB9 = "tab-9";
+            static TAB10 = "tab-10";
+            static TAB11 = "tab-11";
+            static TAB12 = "tab-12";
+            static TAB13 = "tab-13";
+            static TAB14 = "tab-14";
+            static TAB15 = "tab-15";
+            static TAB16 = "tab-16";
+            static TAB17 = "tab-17";
         }
     }
 }

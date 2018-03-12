@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.difftimeset.dto;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezone;
@@ -13,6 +15,9 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimezoneSetting;
 /**
  * The Class DiffTimeHalfDayWorkTimezoneDto.
  */
+
+@Getter
+@Setter
 public class DiffTimeHalfDayWorkTimezoneDto {
 
 	/** The rest timezone. */
@@ -47,17 +52,17 @@ public class DiffTimeHalfDayWorkTimezoneDto {
 
 		@Override
 		public DiffTimeRestTimezone getRestTimezone() {
-			return this.dto.restTimezone.toDomain();
+			return this.dto.restTimezone == null ? null : this.dto.restTimezone.toDomain();
 		}
 
 		@Override
 		public DiffTimezoneSetting getWorkTimezone() {
-			return this.dto.workTimezone.toDomain();
+			return this.dto.workTimezone == null ? null : this.dto.workTimezone.toDomain();
 		}
 
 		@Override
 		public AmPmAtr getAmPmAtr() {
-			return AmPmAtr.valueOf(this.dto.amPmAtr);
+			return this.dto.amPmAtr == null ? null : AmPmAtr.valueOf(this.dto.amPmAtr);
 		}
 
 	}

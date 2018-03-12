@@ -17,31 +17,20 @@ import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.
 @Stateless
 public class JpaOverTimeOfMonthly extends JpaRepository implements OverTimeOfMonthlyRepository {
 
-	/** 追加 */
-	@Override
-	public void insert(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
-			OverTimeOfMonthly overTimeWorkOfMonthly) {
-		
-		this.commandProxy().insert(toEntity(attendanceTimeOfMonthlyKey, overTimeWorkOfMonthly, false));
-	}
-
 	/** 更新 */
 	@Override
 	public void update(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
 			OverTimeOfMonthly overTimeWorkOfMonthly) {
 
-		this.toEntity(attendanceTimeOfMonthlyKey, overTimeWorkOfMonthly, true);
+		this.toUpdate(attendanceTimeOfMonthlyKey, overTimeWorkOfMonthly);
 	}
 	
 	/**
-	 * ドメイン→エンティティ
+	 * データ更新
 	 * @param domainKey キー値：月別実績の勤怠時間
 	 * @param domain ドメイン：月別実績の残業時間
-	 * @param execUpdate 更新を実行する
-	 * @return エンティティ：月別実績の残業時間
 	 */
-	private KrcdtMonOverTime toEntity(AttendanceTimeOfMonthlyKey domainKey,
-			OverTimeOfMonthly domain, boolean execUpdate){
+	private void toUpdate(AttendanceTimeOfMonthlyKey domainKey, OverTimeOfMonthly domain){
 
 		// 締め日付
 		val closureDate = domainKey.getClosureDate();
@@ -54,20 +43,13 @@ public class JpaOverTimeOfMonthly extends JpaRepository implements OverTimeOfMon
 				closureDate.getClosureDay().v(),
 				(closureDate.getLastDayOfMonth() ? 1 : 0));
 		
-		KrcdtMonOverTime entity;
-		if (execUpdate){
-			entity = this.queryProxy().find(key, KrcdtMonOverTime.class).get();
-		}
-		else {
-			entity = new KrcdtMonOverTime();
-			entity.PK = key;
-		}
+		// データ更新
+		KrcdtMonOverTime entity = this.getEntityManager().find(KrcdtMonOverTime.class, key);
+		if (entity == null) return;
 		entity.totalOverTime = domain.getTotalOverTime().getTime().v();
 		entity.calcTotalOverTime = domain.getTotalOverTime().getCalcTime().v();
 		entity.beforeOverTime = domain.getBeforeOverTime().v();
 		entity.totalTransferOverTime = domain.getTotalTransferOverTime().getTime().v();
 		entity.calcTotalTransferOverTime = domain.getTotalTransferOverTime().getCalcTime().v();
-		if (execUpdate) this.commandProxy().update(entity);
-		return entity;
 	}
 }

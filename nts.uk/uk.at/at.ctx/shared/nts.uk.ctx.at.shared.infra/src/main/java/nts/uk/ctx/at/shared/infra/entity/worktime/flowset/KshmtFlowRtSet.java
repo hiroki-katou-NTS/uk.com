@@ -60,18 +60,18 @@ public class KshmtFlowRtSet extends UkJpaEntity implements Serializable {
 	/** The lst kshmt flow flow rt set PK. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = false, updatable = false),
-		@JoinColumn(name = "RESTTIME_ATR", referencedColumnName = "RESTTIME_ATR", insertable = false, updatable = false)
+		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
+		@JoinColumn(name = "RESTTIME_ATR", referencedColumnName = "RESTTIME_ATR", insertable = true, updatable = true)
 	})
 	private List<KshmtFlowFlowRtSet> lstKshmtFlowFlowRtSet;
 	
 	/** The lst kshmt flow fixed rt set PK. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = false, updatable = false),
-		@JoinColumn(name = "RESTTIME_ATR", referencedColumnName = "RESTTIME_ATR", insertable = false, updatable = false)
+		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
+		@JoinColumn(name = "RESTTIME_ATR", referencedColumnName = "RESTTIME_ATR", insertable = true, updatable = true)
 	})
 	private List<KshmtFlowFixedRtSet> lstKshmtFlowFixedRtSet;
 

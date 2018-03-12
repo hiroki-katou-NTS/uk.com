@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimezoneSettingPolicy;
@@ -31,8 +32,8 @@ public class DiffTimeHalfDayWorkTimezonePolicyImpl implements DiffTimeHalfDayWor
 	 * nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting)
 	 */
 	@Override
-	public void validate(DiffTimeHalfDayWorkTimezone diffTimeHalfDay, PredetemineTimeSetting predSet) {
-		this.diffTimezonePolicy.validate(diffTimeHalfDay.getWorkTimezone(), predSet);
+	public void validate(BundledBusinessException be, DiffTimeHalfDayWorkTimezone diffTimeHalfDay, PredetemineTimeSetting predSet) {
+		this.diffTimezonePolicy.validate(be, diffTimeHalfDay.getWorkTimezone(), predSet);
 	}
 
 }

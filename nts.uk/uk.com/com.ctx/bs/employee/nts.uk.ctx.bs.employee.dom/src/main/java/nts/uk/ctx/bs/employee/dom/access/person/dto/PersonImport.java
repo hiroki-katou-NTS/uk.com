@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.access.person.dto;
@@ -17,6 +17,9 @@ public class PersonImport {
 
 	/** The person name. */
 	private String personName;
+	
+	/** The business name. */
+	private String businessName;
 
 	/**
 	 * Instantiates a new person dto.
@@ -26,10 +29,11 @@ public class PersonImport {
 	 * @param personName
 	 *            the person name
 	 */
-	public PersonImport(String personId, String personName) {
+	public PersonImport(String personId, String personName, String businessName) {
 		super();
 		this.personId = personId;
 		this.personName = personName;
+		this.businessName = businessName;
 	}
 
 }

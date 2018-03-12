@@ -4,6 +4,7 @@ module cas009.a.viewmodel {
     import ccg = nts.uk.com.view.ccg025.a;
     import windows = nts.uk.ui.windows;
     import block = nts.uk.ui.block;
+    import alertError = nts.uk.ui.dialog.alertError;    
     export class ScreenModel {
         listRole : KnockoutObservableArray<viewmodel.model.Role>; 
         roleCode: KnockoutObservable<string>;
@@ -61,7 +62,8 @@ module cas009.a.viewmodel {
                                 self.assignAtr(current.assignAtr);
                                 self.employeeReferenceRange(current.employeeReferenceRange);
                                 self.referFutureDate(current.referFutureDate );                                      
-                                $(".nts-input").ntsError("clear");   
+                                $(".nts-input").ntsError("clear"); 
+                                 $('#roleName').focus();  
                             }
                  
                         }else{
@@ -136,7 +138,7 @@ module cas009.a.viewmodel {
             service.userHasRole().done(function(res){
                    self.enableDetail(res);
             }).fail((error) => {
-                 nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                alertError(error);
             });
             return dfd.promise();
                 
@@ -149,6 +151,7 @@ module cas009.a.viewmodel {
             let self = this;
                 self.component.currentCode("");
                 nts.uk.ui.errors.clearAll();
+                $('#roleCode').focus();
         }
         
         public save(): any{
@@ -168,7 +171,7 @@ module cas009.a.viewmodel {
                  });
           
             }).fail((error) => {
-                 nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                 alertError(error);
                  block.clear();
             });    
         }
@@ -189,7 +192,7 @@ module cas009.a.viewmodel {
                             });
                             
                         }).fail((error) => {
-                                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                                alertError(error);
                                 block.clear();
                         });   
                    }); 

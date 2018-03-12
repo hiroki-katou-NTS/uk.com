@@ -10,14 +10,14 @@ import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlStampReflectTzGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTzGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.ReflectReferenceTwoWorkTime;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFstampReflectTime;
 
 /**
  * The Class JpaFlowStampReflectTimezoneGetMemento.
  */
-public class JpaFlowStampReflectTimezoneGetMemento implements FlStampReflectTzGetMemento {
+public class JpaFlowStampReflectTimezoneGetMemento implements FlowStampReflectTzGetMemento {
 
 	/** The entity. */
 	private KshmtFstampReflectTime entity;

@@ -102,7 +102,7 @@ module nts.uk.at.view.kdw001.h {
                     });
                 }).fail(function(res: any) {
                     dfd.reject();
-                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                    nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
                 });
                 return dfd.promise();
             }
@@ -126,7 +126,7 @@ module nts.uk.at.view.kdw001.h {
                     dfd.resolve(data);
                 }).fail(function(res: any) {
                     dfd.reject();
-                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                    nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
                 });
                 return dfd.promise();
                 

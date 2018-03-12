@@ -11,7 +11,7 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.TargetSelectionRange;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.TargetServiceType;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.TypeCheckWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
@@ -58,11 +58,11 @@ public class Kal003bWebService extends WebService{
                 TypeCheckWorkRecord.TIME,
                 TypeCheckWorkRecord.TIMES,
                 TypeCheckWorkRecord.AMOUNT_OF_MONEY,
-                TypeCheckWorkRecord.TIME_OF_DATE,
+                TypeCheckWorkRecord.TIME_OF_DAY,
                 TypeCheckWorkRecord.CONTINUOUS_TIME,
                 TypeCheckWorkRecord.CONTINUOUS_WORK,
                 TypeCheckWorkRecord.CONTINUOUS_TIME_ZONE,
-                TypeCheckWorkRecord.COMPOUND_CONDITION);
+                TypeCheckWorkRecord.CONTINUOUS_CONDITION);
 
     }
 	

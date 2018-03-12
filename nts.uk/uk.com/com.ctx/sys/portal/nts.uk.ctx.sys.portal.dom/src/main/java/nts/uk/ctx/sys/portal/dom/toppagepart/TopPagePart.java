@@ -76,4 +76,24 @@ public class TopPagePart extends AggregateRoot {
 	public void setSize(int width, int height) {
 		this.size = Size.createFromJavaType(width, height);
 	}
+	
+	public boolean isFlowMenu() {
+		return this.type == TopPagePartType.FlowMenu;
+	}
+	
+	public boolean isStandardWidget() {
+		return this.type == TopPagePartType.StandardWidget;
+	}
+	
+	public boolean isOptionalWidget() {
+		return this.type == TopPagePartType.OptionalWidget;
+	}
+	
+	public boolean isDashBoard() {
+		return this.type == TopPagePartType.DashBoard;
+	}
+	
+	public boolean isExternalUrl() {
+		return this.type == TopPagePartType.ExternalUrl;
+	}
 }

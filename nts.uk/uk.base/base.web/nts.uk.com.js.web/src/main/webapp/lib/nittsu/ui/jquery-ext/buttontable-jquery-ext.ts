@@ -1,4 +1,7 @@
 /// <reference path="../../reference.ts"/>
+interface JQuery {
+    ntsButtonTable(method: string, option?: any, option2?: any, option3?: any): any;
+}
 
 module nts.uk.ui.jqueryExtentions {
     import isNull = nts.uk.util.isNullOrUndefined;
@@ -292,7 +295,7 @@ module nts.uk.ui.jqueryExtentions {
                     }
                 });
 
-                button.contextmenu(function() {
+                button.contextmenu(function() { 
                     let c = $(this);
                     let enable: boolean = c.data("empty-cell");
                     if (self.mode === "master") {

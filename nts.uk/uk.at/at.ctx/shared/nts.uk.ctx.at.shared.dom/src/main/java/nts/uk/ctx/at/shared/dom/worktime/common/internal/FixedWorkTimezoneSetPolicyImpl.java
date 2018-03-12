@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSetPolicy;
@@ -25,7 +26,7 @@ public class FixedWorkTimezoneSetPolicyImpl implements FixedWorkTimezoneSetPolic
 
 	/** The ot policy. */
 	@Inject
-	OverTimeOfTimeZoneSetPolicy otPolicy;
+	private OverTimeOfTimeZoneSetPolicy otPolicy;
 
 	/*
 	 * (non-Javadoc)
@@ -35,10 +36,10 @@ public class FixedWorkTimezoneSetPolicyImpl implements FixedWorkTimezoneSetPolic
 	 * nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting)
 	 */
 	@Override
-	public void validate(FixedWorkTimezoneSet fixedWtz, PredetemineTimeSetting predTime) {
+	public void validate(BundledBusinessException be, FixedWorkTimezoneSet fixedWtz, PredetemineTimeSetting predTime) {
 		// validate list emTimezone
-		fixedWtz.getLstWorkingTimezone().forEach(wtz -> this.emTzPolicy.validate(predTime, wtz));
+		fixedWtz.getLstWorkingTimezone().forEach(wtz -> this.emTzPolicy.validate(be, predTime, wtz));
 
-		fixedWtz.getLstOTTimezone().forEach(otz -> this.otPolicy.validate(predTime, otz));
+		fixedWtz.getLstOTTimezone().forEach(otz -> this.otPolicy.validate(be, predTime, otz));
 	}
 }

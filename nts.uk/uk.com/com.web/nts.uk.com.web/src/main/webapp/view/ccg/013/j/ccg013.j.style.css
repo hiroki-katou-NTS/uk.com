@@ -54,11 +54,6 @@ table.control {
 	display: inline-block;
 }
 
-.text-blue-underline {
-	color: blue;
-	text-decoration: underline;
-}
-
 .description {
 	height: 30px;
 }
@@ -87,4 +82,8 @@ table.control {
 
 .control td {
 	padding-bottom: 0.5em
+}
+
+.nts-fileupload-container .nts-input {
+	display: none !important;
 }

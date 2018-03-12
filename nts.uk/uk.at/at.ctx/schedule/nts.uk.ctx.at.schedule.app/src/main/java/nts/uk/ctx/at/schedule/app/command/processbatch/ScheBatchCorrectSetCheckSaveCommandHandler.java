@@ -60,22 +60,27 @@ public class ScheBatchCorrectSetCheckSaveCommandHandler extends CommandHandler<S
 		ScheBatchCorrectSetCheckSaveCommand command = context.getCommand();
 		
 		// check null or default work type code => message 10
-		if(this.checkDefaultCode(command.getWorktypeCode())){
+		//勤務種類が選択されていない場合 → Msg_10
+		if(StringUtil.isNullOrEmpty(command.getWorktypeCode(),false)){
 			throw new BusinessException("Msg_10");
 		}
 		
 		// check empty employee id => message 559
+		//選択されている社員がない。→　Msg_559
 		if(CollectionUtil.isEmpty(command.getEmployeeIds())){
 			throw new BusinessException("Msg_559");
 		}
 		
 		// check work type master
+		//勤務種類のマスタチェック
 		this.checkWorkTypeMaster(companyId, command.getWorktypeCode());
 		
 		// check work time master
+		//就業時間帯のマスタチェック
 		this.checkWorkTimeMater(companyId, command.getWorktimeCode());
 		
 		// check pair work work type and work time
+		//勤務種類・就業時間帯ペアチェック
 		this.basicScheduleService.checkPairWorkTypeWorkTime(command.getWorktypeCode(), command.getWorktimeCode());
 	}
 
@@ -114,6 +119,7 @@ public class ScheBatchCorrectSetCheckSaveCommandHandler extends CommandHandler<S
 	
 	/**
 	 * Check work time mater.
+	 * 就業時間帯のマスタチェック
 	 *
 	 * @param companyId the company id
 	 * @param workTimeCode the work time code
@@ -121,11 +127,13 @@ public class ScheBatchCorrectSetCheckSaveCommandHandler extends CommandHandler<S
 	private void checkWorkTimeMater(String companyId, String workTimeCode) {
 
 		// check default work time code
+		//設定されていない（就業時間帯コード＝NULL || 就業時間帯コード＝000）
 		if (this.checkDefaultCode(workTimeCode)) {
 			return;
 		}
 
 		// call repository find work time by code
+		//ドメインモデル「就業時間帯の設定」に該当の就業時間帯コードが存在するかチェックする
 		Optional<WorkTimeSetting> optionalWorkTime = this.workTimeRepository.findByCode(companyId, workTimeCode);
 
 		// check work time not exits

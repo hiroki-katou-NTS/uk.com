@@ -6,20 +6,29 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.at.record.dom.actualworkinghours.SubHolOccurrenceInfo;
+import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
+import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
+import nts.uk.ctx.at.record.dom.raisesalarytime.RaisingSalaryTime;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
-import nts.uk.ctx.at.shared.dom.common.time.BreakdownTimeDay;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
+import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
+import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -30,14 +39,22 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
  *
  */
 @Getter
-@AllArgsConstructor
 public class OutsideWorkTimeSheet {
-	private ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily;
 
 	private Optional<OverTimeSheet> overTimeWorkSheet;
 
 	private Optional<HolidayWorkTimeSheet> holidayWorkTimeSheet;
 
+	/**
+	 * Constructor 
+	 */
+	public OutsideWorkTimeSheet(Optional<OverTimeSheet> overTimeWorkSheet,
+			Optional<HolidayWorkTimeSheet> holidayWorkTimeSheet) {
+		super();
+		this.overTimeWorkSheet = overTimeWorkSheet;
+		this.holidayWorkTimeSheet = holidayWorkTimeSheet;
+	}
+	
 	/**
 	 * 就業時間外時間帯を作成する
 	 * 
@@ -60,19 +77,22 @@ public class OutsideWorkTimeSheet {
 	 * @param prioritySet
 	 * @return
 	 */
-	public static void createOutsideWorkTimeSheet(List<OverTimeOfTimeZoneSet> overTimeHourSetList,
-			FixOffdayWorkTimezone fixOff, TimeLeavingWork attendanceLeave, int workNo, OverDayEndCalcSet dayEndSet,
+	public static OutsideWorkTimeSheet createOutsideWorkTimeSheet(List<OverTimeOfTimeZoneSet> overTimeHourSetList,
+			List<HDWorkTimeSheetSetting> fixOff, TimeLeavingWork attendanceLeave, int workNo, OverDayEndCalcSet dayEndSet,
 			WorkTimezoneCommonSet overDayEndSet, List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem, WorkType beforeDay,
 			WorkType toDay, WorkType afterDay, WorkTimeSetting workTime, WorkingSystem workingSystem,
-			BreakdownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalculationOfOverTimeWork autoCalculationSet,
-			LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet) {
-		Optional<OverTimeSheet> overTimeWorkSheet;
-		Optional<HolidayWorkTimeSheet> holidayWorkTimeSheet;
+			BreakDownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalculationOfOverTimeWork autoCalculationSet,
+			LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet,BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet,
+			DailyCalculationPersonalInformation personalInfo,DeductionTimeSheet deductionTimeSheet) {
+		
+		List<HolidayWorkFrameTimeSheetForCalc> holidayWorkFrameTimeSheetForCalc = new ArrayList<>();
+		List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheet = new ArrayList<>();
 		if (toDay.isWeekDayAttendance()) {
 			/* 就業時間外時間帯の平日出勤の処理 */
-//			List<OverTimeFrameTimeSheet> overTimeWorkFrameTimeSheet = OverTimeFrameTimeSheet.createOverWorkFrame(
-//					overTimeHourSetList, workingSystem, attendanceLeave, workNo, breakdownTimeDay, dailyTime,
-//					autoCalculationSet, statutorySet, prioritySet);
+			overTimeWorkFrameTimeSheet = OverTimeFrameTimeSheetForCalc.createOverWorkFrame(
+					overTimeHourSetList, workingSystem, attendanceLeave, workNo, breakdownTimeDay, dailyTime,
+					autoCalculationSet, statutorySet, prioritySet,bonusPaySetting,midNightTimeSheet,
+					personalInfo,true,deductionTimeSheet);
 
 			/* 0時跨ぎ処理 */
 			OverDayEnd processOverDayEnd = new OverDayEnd();
@@ -90,10 +110,10 @@ public class OutsideWorkTimeSheet {
 
 		} else {
 			/* 休日出勤 */
-			List<HolidayWorkFrameTimeSheet> outsideWorkTimeSheet = new ArrayList<>();//new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(1), new TimeSpanForCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0))); 
-//					HolidayWorkFrameTimeSheet.getHolidayWorkTimeOfDaily(
+//			new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(1), new TimeSpanForCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)));
 //					fixOff.getWorkTimezone(), attendanceLeave, dayEndSet, overDayEndSet, holidayTimeWorkItem, beforeDay,
 //					toDay, afterDay);
+			holidayWorkFrameTimeSheetForCalc = HolidayWorkFrameTimeSheetForCalc.createHolidayTimeWorkFrame(attendanceLeave,fixOff,toDay,bonusPaySetting,midNightTimeSheet,deductionTimeSheet);
 
 			/* 0時跨ぎ */
 			OverDayEnd overEnd = new OverDayEnd();
@@ -110,11 +130,16 @@ public class OutsideWorkTimeSheet {
 //			}
 
 		}
-
-//		return new OutsideWorkTimeSheet(new ExcessOfStatutoryTimeOfDaily(new ExcessOfStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0)) ,Optional.of(overTimeWorkSheet.get().getOverWorkTimeOfDaily()),Optional.of(holidayWorkTimeSheet.get().getWorkHolidayTime()))
-//				   ,overTimeWorkSheet
-//				   ,holidayWorkTimeSheet);
-
+		return new OutsideWorkTimeSheet(
+				   Optional.of(new OverTimeSheet(new RaisingSalaryTime(),
+						   						 overTimeWorkFrameTimeSheet,
+						   						new SubHolOccurrenceInfo()
+						   						 ))
+				   ,
+				   Optional.of(new HolidayWorkTimeSheet(new RaisingSalaryTime(),
+						   								holidayWorkFrameTimeSheetForCalc, 
+						   								new SubHolOccurrenceInfo()))
+				   );
 	}
 
 	/**
@@ -133,8 +158,8 @@ public class OutsideWorkTimeSheet {
 		Optional<OverTimeSheet> overTimeWork = Optional.empty();
 		Optional<HolidayWorkTimeSheet> holidayTimeSheet = Optional.empty();
 		if (overTimeWorkSheet.isPresent()) {
-			overTimeWork = Optional.of(overTimeWorkSheet.get().reCreateToCalcExcessWork(overTimeWorkSheet.get(),
-					autoCalculationOfOverTimeWork));
+//			overTimeWork = Optional.of(overTimeWorkSheet.get().calcMidNightTime(overTimeWorkSheet.get(),
+//					autoCalculationOfOverTimeWork));
 
 		}
 		if (holidayWorkSheet.isPresent()) {
@@ -150,4 +175,44 @@ public class OutsideWorkTimeSheet {
 		// ExcessOfStatutoryTimeOfDaily(totalExcessTime,Optional.empty(),Optional.empty());
 	}
 
+//	public void addtimesheet(OutsideWorkTimeSheet outsideSheet) {
+//		if(this.overTimeWorkSheet.isPresent()) {
+//			
+//		}
+//		else {
+//			this.overTimeWorkSheet = outsideSheet.getOverTimeWorkSheet();
+//		}
+//			
+//	}
+//	
+//	private void addoverTimesheet(OverTime)
+	
+	/**
+	 * 残業時間の中にある控除時間を算出する
+	 * @param dedAtr
+	 * @param atr
+	 * @return 控除時間
+	 */
+	public AttendanceTime caluclationAllOverTimeFrameTime(DeductionAtr dedAtr,ConditionAtr atr) {
+		if(this.overTimeWorkSheet.isPresent()) {
+			this.overTimeWorkSheet.get().calculationAllFrameDeductionTime(dedAtr,atr);
+		}
+		return new AttendanceTime(0);
+	}
+	
+	/**
+	 * 休出時間の中にある控除時間を算出する
+	 * @param dedAtr
+	 * @param atr
+	 * @return　控除時間
+	 */
+	public AttendanceTime caluclationAllHolidayFrameTime(DeductionAtr dedAtr,ConditionAtr atr) {
+		if(this.holidayWorkTimeSheet.isPresent()) {
+			this.holidayWorkTimeSheet.get().calculationAllFrameDeductionTime(dedAtr,atr);
+		}
+		return new AttendanceTime(0);
+	}
+
+
+	
 }

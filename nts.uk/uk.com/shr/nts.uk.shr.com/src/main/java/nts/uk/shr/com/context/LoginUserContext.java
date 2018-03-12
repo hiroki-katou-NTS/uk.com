@@ -64,4 +64,14 @@ public interface LoginUserContext {
 	 * @return language ID
 	 */
 	SelectedLanguage language();
+	
+	/**
+	 * Returns company ID zero in current contract.
+	 * 契約内ゼロ会社の会社IDを取得する
+	 * 
+	 * @return company ID zero in current contract
+	 */
+	default String zeroCompanyIdInContract() {
+		return this.contractCode() + "-0000";
+	}
 }

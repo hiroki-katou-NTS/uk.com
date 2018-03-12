@@ -15,4 +15,8 @@ import nts.arc.layer.dom.DomainObject;
 public class WorkTypeDisplaySetting extends DomainObject {
 	private String companyId;
 	private String workTypeCode;
+	
+	public static WorkTypeDisplaySetting createFromJavaType(String companyId, String workTypeCode){
+					return new WorkTypeDisplaySetting(companyId,workTypeCode );
+	}
 }

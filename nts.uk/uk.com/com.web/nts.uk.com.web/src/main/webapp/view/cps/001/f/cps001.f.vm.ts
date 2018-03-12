@@ -23,8 +23,9 @@ module cps001.f.vm {
         asLink: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
         fileSize: KnockoutObservable<string>;
-        onchange: (filename) => void;
+        uploadFinished: (fileInfo) => void;
         onfilenameclick: (fileId) => void;
+
 
         items: Array<GridItem> = [];
 
@@ -34,7 +35,6 @@ module cps001.f.vm {
         constructor() {
             let self = this,
                 dto: any = getShared('CPS001F_PARAMS') || {};
-
             self.fileId = ko.observable("");
             self.filename = ko.observable("");
             self.fileInfo = ko.observable(null);
@@ -43,12 +43,15 @@ module cps001.f.vm {
             self.asLink = ko.observable(true);
             self.enable = ko.observable(true);
             self.fileSize = ko.observable("");
-            self.onchange = (filename) => {
-
+            self.uploadFinished = (fileInfo) => {
+                console.log("change");
+                console.log(fileInfo);
+                self.pushData(fileInfo);
             };
             self.onfilenameclick = (fileId) => {
                 alert(fileId);
             };
+
         }
 
         start(): JQueryPromise<any> {
@@ -58,84 +61,48 @@ module cps001.f.vm {
             let dataShare: IDataShare = getShared('CPS001F_PARAMS') || null;
             var dfdGetData = service.getData(dataShare.pid);
 
-
+            block();
             $.when(dfdGetData).done((datafile: Array<IEmpFileMana>) => {
+                var totalSize = 0;
                 _.forEach(datafile, function(item) {
+                    totalSize = totalSize + item.originalSize;
                     self.items.push(new GridItem(item));
                 });
-                dfd.resolve();
-            });
-
-            permision().done((data: IPersonAuth) => {
-                if (data) {
-                    if (data.allowDocUpload != 1) {
-                        $(".browser-button").attr('disabled', 'disabled');
-                        $(".delete-button").attr('disabled', 'disabled');
-                    }
+                if (totalSize != 0) {
+                    let sum = (totalSize / 1024).toFixed(2);
+                    self.fileSize(nts.uk.resource.getText("CPS001_85", [sum]));
                 }
+                unblock();
+                dfd.resolve();
             });
 
             return dfd.promise();
         }
 
-
-        pushData() {
+        pushData(fileInfo) {
             let self = this,
                 dataShare: IDataShare = getShared('CPS001F_PARAMS') || null;
+
             if (dataShare.pid != null) {
-
-                self.start();
-
-                // upload file
+                var dfdGetData = service.getData(dataShare.pid);
                 block();
-                $("#file-upload").ntsFileUpload({ stereoType: "document" }).done(function(res) {
-                    self.fileId(res[0].id);
-                    var fileSize = ((res[0].originalSize) / 1024).toFixed(2);
-                    self.fileSize(nts.uk.resource.getText("CPS001_85", [fileSize]));
 
-                    // get Info
-                    nts.uk.request.ajax("/shr/infra/file/storage/infor/" + self.fileId()).done(function(info: any) {
-                        self.fileInfo(info);
+                var fileSize = ((fileInfo.originalSize) / 1024).toFixed(2);
+                self.fileSize(nts.uk.resource.getText("CPS001_85", [fileSize]));
 
-                        // save file to domain EmployeeFileManagement
-                        if (self.items.length == 0) {
-                            service.savedata({
-                                pid: dataShare.pid,
-                                fileid: res[0].id,
-                                personInfoCtgId: "",
-                                uploadOrder: 1
-                            }).done(() => {
-                                self.restart();
-                                self.filename("");
-                            });
-                        } else {
-                            service.savedata({
-                                pid: dataShare.pid,
-                                fileid: res[0].id,
-                                personInfoCtgId: "",
-                                uploadOrder: ((self.items[self.items.length - 1].uploadOrder) + 1)
-                            }).done(() => {
-                                self.start().done(() => {
-                                    self.restart();
-                                    self.filename("");
-                                });
-                            });
-                        }
-
+                // save file to domain EmployeeFileManagement
+                service.savedata({
+                    pid: dataShare.pid,
+                    fileid: fileInfo.id,
+                    personInfoCtgId: "",
+                    uploadOrder: 1
+                }).done(() => {
+                    self.start().done(() => {
+                        self.restart();
+                        unblock();
                     });
-
-                    unblock();
-
-                }).fail(function(err) {
-                    unblock();
-                    showDialog.alertError(err);
                 });
-                setShared('CPS001F_VALUES', {});
             }
-        }
-
-        onchangefileupload(filename: string) {
-            this.pushData();
         }
 
         checkSize() {
@@ -150,8 +117,8 @@ module cps001.f.vm {
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 block();
                 service.deletedata(rowItem.fileId).done(() => {
-                    unblock();
                     self.restart();
+                    unblock();
                 }).fail((mes) => {
                     unblock();
                 });
@@ -170,11 +137,9 @@ module cps001.f.vm {
         }
 
         restart() {
-            //__viewContext['viewModel'] = new vm.ViewModel();
-
             __viewContext['viewModel'].start().done(() => {
                 init();
-                //__viewContext.bind(__viewContext['viewModel']);
+                $('.browser-button').focus();
             });
         }
 
@@ -231,6 +196,7 @@ module cps001.f.vm {
         categoryName: string;
         personInfoCategoryId: string;
         uploadOrder: number;
+        originalSize: number;
     }
 
     class EmpFileMana {

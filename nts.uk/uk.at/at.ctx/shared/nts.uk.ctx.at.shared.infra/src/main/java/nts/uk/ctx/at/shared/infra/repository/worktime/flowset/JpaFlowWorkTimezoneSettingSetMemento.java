@@ -14,6 +14,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWtzSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowTimeZone;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowTimeZonePK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtOtTimeZone;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtOtTimeZonePK;
@@ -57,6 +59,16 @@ public class JpaFlowWorkTimezoneSettingSetMemento implements FlWtzSettingSetMeme
 	 */
 	@Override
 	public void setWorkTimeRounding(TimeRoundingSetting trSet) {
+		KshmtFlowTimeZone timeZoneEntity = this.entity.getKshmtFlowTimeZone();
+		if (timeZoneEntity == null) {
+			KshmtFlowTimeZonePK pk = new KshmtFlowTimeZonePK();
+			pk.setCid(this.companyId);
+			pk.setWorktimeCd(this.workTimeCd);
+			
+			timeZoneEntity = new KshmtFlowTimeZone();
+			timeZoneEntity.setKshmtFlowTimeZonePK(pk);
+			this.entity.setKshmtFlowTimeZone(timeZoneEntity);
+		}
 		this.entity.getKshmtFlowTimeZone().setUnit(trSet.getRoundingTime().value);
 		this.entity.getKshmtFlowTimeZone().setRounding(trSet.getRounding().value);
 	}

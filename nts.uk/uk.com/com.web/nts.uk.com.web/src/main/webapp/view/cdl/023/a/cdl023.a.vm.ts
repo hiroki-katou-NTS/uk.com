@@ -91,7 +91,10 @@ module nts.uk.com.view.cdl023.a.viewmodel {
             }
             
             // if not override, remove items is saved setting.
-            return self.lstSelected().filter(item => self.itemListSetting.indexOf(item) == -1);
+            _.remove(self.lstSelected(), function(obj) {
+               return _.includes(self.itemListSetting, obj);
+            });
+            return self.lstSelected();
         }
         
         /**

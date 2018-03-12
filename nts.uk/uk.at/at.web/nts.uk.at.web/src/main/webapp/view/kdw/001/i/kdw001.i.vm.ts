@@ -115,7 +115,7 @@
                     //self.empCalAndSumExecLog(data[0]);
                 }).fail(function(res: any) {
                     dfd.reject();
-                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                    nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
                 });
 
                 return dfd.promise();
@@ -141,7 +141,7 @@
                     
                 }).fail(function(res: any) {
                     dfd.reject();
-                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                    nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
                 });
                 return dfd.promise();
 
@@ -168,7 +168,7 @@
                     dfd.resolve(data);
                 }).fail(function(res: any) {
                     dfd.reject();
-                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                    nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
                 });
                 return dfd.promise();
                 
@@ -185,7 +185,7 @@
                     dfd.resolve();
                 }).fail(function(res: any) {
                     dfd.reject();
-                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                    nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
                 });
                 return dfd.promise();
             }

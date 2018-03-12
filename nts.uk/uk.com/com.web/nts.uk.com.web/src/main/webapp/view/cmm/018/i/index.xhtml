@@ -26,7 +26,7 @@
 					<div data-bind="if: dataSource.mode">
 						<div class="cell column1">
 							<!-- I1_2: Label 設定対象 -->
-							<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_47')}</div>	
+							<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_47')}</div>
 						</div>
 						<div class="cell">
 							<!-- I1_3: 設定対象 -->
@@ -37,13 +37,14 @@
 				<div class="table">
 					<div class="cell column1">
 						<!-- I1_4: Label -->
-						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM018_48')}</div>	
+						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM018_48')}</div>
 					</div>
 					<div class="cell">
 						<div class="dateTime-input">
 							<div>
-							<!-- I1_5: Start Date -->
-								<div id="startDateInput" data-bind="ntsDatePicker: {
+								<!-- I1_5: Start Date -->
+								<div id="startDateInput"
+									data-bind="ntsDatePicker: {
 											name: '#[CMM018_48]',
 											value: newStartDate,
 											dateFormat: 'YYYY/MM/DD',
@@ -64,7 +65,8 @@
 					</div>
 					<div class="cell">
 						<!-- I1_8: Radio Box -->
-						<div id="radioBox" data-bind="ntsRadioBoxGroup: {
+						<div id="radioBox"
+							data-bind="ntsRadioBoxGroup: {
 									name: '#[CMM018_49]',
 									options: ko.observableArray([
 							            { value: true, name: '#{i18n.getText('CMM018_50')}' },
@@ -79,9 +81,11 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- I1_11: Button 登録 -->
-				<button class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_44')}</button>
+				<button class="x-large proceed center-e"
+					data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_44')}</button>
 				<!-- I1_12: Button キャンセル -->
-				<button class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('CMM018_45')}</button>	
+				<button class="ui-dialog-titlebar-close"
+					data-bind="click: closeDialog">#{i18n.getText('CMM018_45')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

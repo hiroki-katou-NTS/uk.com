@@ -25,6 +25,7 @@
 .caret-inline:after {
 	color: black;
 }
+
 .show {
 	visibility: hidden;
 }
@@ -34,6 +35,7 @@ table#wkp_view {
 	border-right: none !important;
 	margin: 10px;
 }
+
 #wkp_view tr {
 	height: 42px;
 }
@@ -42,29 +44,32 @@ table#wkp_view {
 	border-left: none;
 	border-right: none;
 	border-top: solid #ccc 1px;
-	border-bottom: solid #ccc 1px; 
+	border-bottom: solid #ccc 1px;
 }
 
 .border-left {
 	border-right: none;
 	border-left: solid #ccc 1px;
 	border-top: solid #ccc 1px;
-	border-bottom: solid #ccc 1px; 
+	border-bottom: solid #ccc 1px;
 }
 
 .border-right {
 	border-left: none;
 	border-right: solid #ccc 1px;
 	border-top: solid #ccc 1px;
-	border-bottom: solid #ccc 1px; 
+	border-bottom: solid #ccc 1px;
 }
-td.wkp-tdpad{
+
+td.wkp-tdpad {
 	padding: 3px 5px 3px 5px;
 }
-.over_text{
+
+.over_text {
 	overflow: auto;
 	height: 20px;
 }
-#search-input{
+
+#search-input {
 	width: 150px;
 }

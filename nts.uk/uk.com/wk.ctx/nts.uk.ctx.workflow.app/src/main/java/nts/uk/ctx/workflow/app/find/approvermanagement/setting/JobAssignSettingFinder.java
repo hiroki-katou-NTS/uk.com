@@ -1,5 +1,7 @@
 package nts.uk.ctx.workflow.app.find.approvermanagement.setting;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 /**
  * @author yennth
@@ -16,7 +18,10 @@ public class JobAssignSettingFinder {
 	
 	public JobAssignSettingDto findApp(){
 		String companyId = AppContexts.user().companyId();
-		JobAssignSetting jobAssign = jobRep.findById(companyId);
-		return new JobAssignSettingDto(companyId, jobAssign.getIsConcurrently());
+		Optional<JobAssignSetting> jobAssign = jobRep.findById();
+		if(jobAssign.isPresent()){
+			return new JobAssignSettingDto(companyId, jobAssign.get().getIsConcurrently());
+		}
+		return null;
 	}
 }

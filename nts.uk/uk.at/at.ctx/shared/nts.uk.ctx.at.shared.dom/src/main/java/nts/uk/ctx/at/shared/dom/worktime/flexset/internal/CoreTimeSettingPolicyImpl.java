@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flexset.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -33,11 +33,11 @@ public class CoreTimeSettingPolicyImpl implements CoreTimeSettingPolicy {
 	 * nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting)
 	 */
 	@Override
-	public void validate(CoreTimeSetting coreTimeSetting, PredetemineTimeSetting predTime) {
+	public void validate(BundledBusinessException be, CoreTimeSetting coreTimeSetting, PredetemineTimeSetting predTime) {
 		// 使用区分 = 使用しない AND 最低勤務時間 > 所定時間.1日 => Msg_775
 		if (coreTimeSetting.getMinWorkTime() != null && !coreTimeSetting.isUseTimeSheet()
 				&& coreTimeSetting.getMinWorkTime().greaterThan(predTime.getPredTime().getPredTime().getOneDay())) {
-			throw new BusinessException("Msg_775");
+			be.addMessage("Msg_775");
 		}
 
 		// 使用区分 = 使用する
@@ -48,7 +48,7 @@ public class CoreTimeSettingPolicyImpl implements CoreTimeSettingPolicy {
 					.greaterThanOrEqualTo(coreTimeSetting.getCoreTimeSheet().getStartTime())
 					&& predTime.getPrescribedTimezoneSetting().getAfternoonStartTime()
 							.lessThanOrEqualTo(coreTimeSetting.getCoreTimeSheet().getEndTime()))) {
-				throw new BusinessException("Msg_777", "KMK003_157");
+				be.addMessage("Msg_777", "KMK003_157");
 			}
 
 			// get time zone
@@ -57,14 +57,14 @@ public class CoreTimeSettingPolicyImpl implements CoreTimeSettingPolicy {
 			// NOT (コアタイム時間帯.開始時刻 >= 開始 && コアタイム時間帯.終了時刻 <= 終了) => Msg_773
 			if (!(coreTimeSetting.getCoreTimeSheet().getStartTime().greaterThanOrEqualTo(timezone.getStart())
 					&& coreTimeSetting.getCoreTimeSheet().getEndTime().lessThanOrEqualTo(timezone.getEnd()))) {
-				throw new BusinessException("Msg_773", "KMK003_157");
+				be.addMessage("Msg_773", "KMK003_157");
 			}
 
 			// validate Msg_516 CoreTimeSetting
 			if (this.predeteminePolicyService.validateOneDay(predTime,
 					coreTimeSetting.getCoreTimeSheet().getStartTime(),
 					coreTimeSetting.getCoreTimeSheet().getEndTime())) {
-				throw new BusinessException("Msg_516", "KMK003_157");
+				be.addMessage("Msg_516", "KMK003_157");
 			}
 		}
 

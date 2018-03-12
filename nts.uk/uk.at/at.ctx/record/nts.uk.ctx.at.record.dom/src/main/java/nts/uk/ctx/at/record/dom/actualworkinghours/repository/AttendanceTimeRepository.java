@@ -14,9 +14,8 @@ public interface AttendanceTimeRepository {
 	
 	Optional<AttendanceTimeOfDailyPerformance> find(String employeeId, GeneralDate ymd);
 	
+	List<AttendanceTimeOfDailyPerformance> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
+	
 	List<AttendanceTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd);
-	
-	List<AttendanceTimeOfDailyPerformance> findAllOf(String employeeId, List<GeneralDate> ymd);
-	
 	
 }

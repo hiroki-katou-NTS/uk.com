@@ -27,7 +27,6 @@
 	vertical-align: top !important;
 	position: relative !important;
 	overflow: hidden !important;
-
 }
 
 #H_LST_001_scrollContainer {
@@ -36,9 +35,11 @@
 	width: 17px !important;
 	height: 434px !important;
 }
-.bg-green{
+
+.bg-green {
 	margin-top: 20px;
 }
+
 .table1 .fixed-width-1 {
 	width: 16px;
 }

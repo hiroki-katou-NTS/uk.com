@@ -59,7 +59,7 @@ module nts.uk.ui.option {
     
     export class TimeEditorOption extends EditorOptionBase {
         inputFormat: string;
-        defaultValue?: string;
+        defaultValue: string;
         
         constructor(option?: ITimeEditorOption) {
             super();

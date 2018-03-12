@@ -88,4 +88,21 @@ public interface AgentRepository {
 	 * @return list of agent
 	 */
 	List<Agent> find(String companyId, List<String> employeeIds, GeneralDate baseDate);
+	/**
+	 * 代行者、期間から承認代行情報を取得する
+	 * @param companyId
+	 * @param employee
+	 * @param baseDate
+	 * @return
+	 */
+	public List<Agent> findBySidDate(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate);
+	/**
+	 * パラメータの承認者が代行者に依頼されているか、パラメータの期間に依頼期間が１日でも重なるものを取得する
+	 * @param companyId
+	 * @param approverID
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<Agent> findByApproverAndDate(String companyId, String approverID, GeneralDate startDate, GeneralDate endDate);
 }

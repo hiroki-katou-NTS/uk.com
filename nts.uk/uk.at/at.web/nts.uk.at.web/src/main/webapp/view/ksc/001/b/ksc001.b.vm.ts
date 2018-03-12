@@ -28,13 +28,9 @@ module nts.uk.at.view.ksc001.b {
 
             selectImplementAtr: KnockoutObservableArray<RadioBoxModel>;
             selectedImplementAtrCode: KnockoutObservable<number>;
-            checkReCreateAtrAllCase: KnockoutObservable<boolean>;
-            checkReCreateAtrOnlyUnConfirm: KnockoutObservable<boolean>;
-            checkProcessExecutionAtrRebuild: KnockoutObservable<boolean>;
-            checkProcessExecutionAtrReconfig: KnockoutObservable<boolean>;
-            checkCreateMethodAtrPersonalInfo: KnockoutObservable<boolean>;
-            checkCreateMethodAtrPatternSchedule: KnockoutObservable<boolean>;
-            checkCreateMethodAtrCopyPastSchedule: KnockoutObservable<boolean>;
+            checkReCreateAtrAllCase: KnockoutObservable<number>;
+            checkProcessExecutionAtrRebuild: KnockoutObservable<number>;
+            checkCreateMethodAtrPersonalInfo: KnockoutObservable<number>;
             resetWorkingHours: KnockoutObservable<boolean>;
             resetDirectLineBounce: KnockoutObservable<boolean>;
             resetMasterInfo: KnockoutObservable<boolean>;
@@ -67,6 +63,14 @@ module nts.uk.at.view.ksc001.b {
             //for control field
             isReCreate: KnockoutObservable<boolean>;
             isReSetting: KnockoutObservable<boolean>;
+            
+            //list
+            lstCreateMethod: KnockoutObservableArray<any>;
+            lstReCreate: KnockoutObservableArray<any>;
+            lstProcessExecution: KnockoutObservableArray<any>;
+            periodStartDate: KnockoutObservable<moment.Moment>;
+            periodEndDate: KnockoutObservable<moment.Moment>;
+            
             constructor() {
                 var self = this;
 
@@ -87,10 +91,8 @@ module nts.uk.at.view.ksc001.b {
                 self.responeDailyPatternSetting = ko.observable(null);
 
                 self.periodDate = ko.observable({});
-                self.checkReCreateAtrOnlyUnConfirm = ko.observable(false);
-                self.checkReCreateAtrAllCase = ko.observable(true);
-                self.checkProcessExecutionAtrRebuild = ko.observable(true);
-                self.checkProcessExecutionAtrReconfig = ko.observable(false);
+                self.checkReCreateAtrAllCase = ko.observable(0);
+                self.checkProcessExecutionAtrRebuild = ko.observable(0);
                 self.resetWorkingHours = ko.observable(false);
                 self.resetDirectLineBounce = ko.observable(false);
                 self.resetMasterInfo = ko.observable(false);
@@ -98,47 +100,87 @@ module nts.uk.at.view.ksc001.b {
                 self.resetAbsentHolidayBusines = ko.observable(false);
                 self.resetTimeAssignment = ko.observable(false);
                 self.confirm = ko.observable(false);
-                self.checkCreateMethodAtrPersonalInfo = ko.observable(true);
-                self.checkCreateMethodAtrPatternSchedule = ko.observable(false);
-                self.checkCreateMethodAtrCopyPastSchedule = ko.observable(false);
+                self.checkCreateMethodAtrPersonalInfo = ko.observable(0);
                 self.copyStartDate = ko.observable(new Date());
+                self.periodStartDate = ko.observable(moment());
+                self.periodEndDate = ko.observable(moment());
+                
                 self.ccgcomponent = {
-                    baseDate: self.baseDate,
-                    //Show/hide options
-                    isQuickSearchTab: true,
-                    isAdvancedSearchTab: true,
-                    isAllReferableEmployee: true,
-                    isOnlyMe: true,
-                    isEmployeeOfWorkplace: true,
-                    isEmployeeWorkplaceFollow: true,
-                    isMutipleCheck: true,
-                    isSelectAllEmployee: true,
-                    /**
-                    * @param dataList: list employee returned from component.
-                    * Define how to use this list employee by yourself in the function's body.
-                    */
-                    onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
-                        self.selectedEmployee(dataList);
-                        self.applyKCP005ContentSearch(dataList);
-                    },
-                    onSearchOnlyClicked: function(data: EmployeeSearchDto) {
-                        var dataEmployee: EmployeeSearchDto[] = [];
-                        dataEmployee.push(data);
-                        self.selectedEmployee(dataEmployee);
-                        self.applyKCP005ContentSearch(dataEmployee);
-                    },
-                    onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
-                        self.selectedEmployee(dataList);
-                        self.applyKCP005ContentSearch(dataList);
-                    },
-                    onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
-                        self.selectedEmployee(dataList);
-                        self.applyKCP005ContentSearch(dataList);
-                    },
-                    onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
-                        self.applyKCP005ContentSearch(dataEmployee);
-                    }
+//                    baseDate: self.baseDate,
+//                    //Show/hide options
+//                    isQuickSearchTab: true,
+//                    isAdvancedSearchTab: true,
+//                    isAllReferableEmployee: true,
+//                    isOnlyMe: true,
+//                    isEmployeeOfWorkplace: true,
+//                    isEmployeeWorkplaceFollow: true,
+//                    isMutipleCheck: true,
+//                    isSelectAllEmployee: true,
+//                    /**
+//                    * @param dataList: list employee returned from component.
+//                    * Define how to use this list employee by yourself in the function's body.
+//                    */
+//                    onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
+//                        self.selectedEmployee(dataList);
+//                        self.applyKCP005ContentSearch(dataList);
+//                    },
+//                    onSearchOnlyClicked: function(data: EmployeeSearchDto) {
+//                        var dataEmployee: EmployeeSearchDto[] = [];
+//                        dataEmployee.push(data);
+//                        self.selectedEmployee(dataEmployee);
+//                        self.applyKCP005ContentSearch(dataEmployee);
+//                    },
+//                    onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
+//                        self.selectedEmployee(dataList);
+//                        self.applyKCP005ContentSearch(dataList);
+//                    },
+//                    onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
+//                        self.selectedEmployee(dataList);
+//                        self.applyKCP005ContentSearch(dataList);
+//                    },
+//                    onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
+//                        self.applyKCP005ContentSearch(dataEmployee);
+//                    }
+                    
+                    /** Common properties */
+                    systemType: 2, // システム区分
+                    showEmployeeSelection: false, // 検索タイプ
+                    showQuickSearchTab: true, // クイック検索
+                    showAdvancedSearchTab: true, // 詳細検索
+                    showBaseDate: false, // 基準日利用
+                    showClosure: false, // 就業締め日利用
+                    showAllClosure: false, // 全締め表示
+                    showPeriod: true, // 対象期間利用
+                    periodFormatYM: false, // 対象期間精度
 
+                    /** Required parameter */
+                    baseDate: self.baseDate().toISOString(), // 基準日
+                    periodStartDate: self.periodStartDate().toISOString(), // 対象期間開始日
+                    periodEndDate: self.periodEndDate().toISOString(), // 対象期間終了日
+                    inService: true, // 在職区分
+                    leaveOfAbsence: true, // 休職区分
+                    closed: true, // 休業区分
+                    retirement: true, // 退職区分
+
+                    /** Quick search tab options */
+                    showAllReferableEmployee: true, // 参照可能な社員すべて
+                    showOnlyMe: true, // 自分だけ
+                    showSameWorkplace: true, // 同じ職場の社員
+                    showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
+
+                    /** Advanced search properties */
+                    showEmployment: true, // 雇用条件
+                    showWorkplace: true, // 職場条件
+                    showClassification: true, // 分類条件
+                    showJobTitle: true, // 職位条件
+                    showWorktype: true, // 勤種条件
+                    isMutipleCheck: true, // 選択モード
+
+                    /** Return data */
+                    returnDataFromCcg001: function(data: any) {
+                        self.selectedEmployee(data.listEmployee);
+                        self.applyKCP005ContentSearch(data.listEmployee);
+                    }
                 }
                 self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
                 var lstRadioBoxModelImplementAtr: RadioBoxModel[] = [];
@@ -148,46 +190,6 @@ module nts.uk.at.view.ksc001.b {
                     nts.uk.resource.getText("KSC001_75")));
                 self.selectImplementAtr = ko.observableArray(lstRadioBoxModelImplementAtr);
                 self.selectedImplementAtrCode = ko.observable(ImplementAtr.GENERALLY_CREATED);
-
-                // update ReCreateAtr
-                self.checkReCreateAtrAllCase.subscribe(function(check: boolean) {
-                    self.checkReCreateAtrOnlyUnConfirm(!check);
-                });
-                self.checkReCreateAtrOnlyUnConfirm.subscribe(function(check: boolean) {
-                    self.checkReCreateAtrAllCase(!check);
-                });
-
-                // update ProcessExecutionAtr
-                self.checkProcessExecutionAtrRebuild.subscribe(function(check: boolean) {
-                    self.checkProcessExecutionAtrReconfig(!check);
-                });
-                self.checkProcessExecutionAtrReconfig.subscribe(function(check: boolean) {
-                    self.checkProcessExecutionAtrRebuild(!check);
-                });
-
-                // update CreateMethodAtr
-                self.checkCreateMethodAtrPersonalInfo.subscribe(function(check: boolean) {
-                    if (check) {
-                        self.checkCreateMethodAtrPatternSchedule(!check);
-                        self.checkCreateMethodAtrCopyPastSchedule(!check);
-                    }
-                });
-
-                // update CreateMethodAtr
-                self.checkCreateMethodAtrPatternSchedule.subscribe(function(check: boolean) {
-                    if (check) {
-                        self.checkCreateMethodAtrPersonalInfo(!check);
-                        self.checkCreateMethodAtrCopyPastSchedule(!check);
-                    }
-                });
-
-                // update CreateMethodAtr
-                self.checkCreateMethodAtrCopyPastSchedule.subscribe(function(check: boolean) {
-                    if (check) {
-                        self.checkCreateMethodAtrPersonalInfo(!check);
-                        self.checkCreateMethodAtrPatternSchedule(!check);
-                    }
-                });
 
                 self.lstLabelInfomation = ko.observableArray([]);
                 self.infoCreateMethod = ko.observable('');
@@ -201,13 +203,17 @@ module nts.uk.at.view.ksc001.b {
 
                 // for is reseting
                 self.isReSetting = ko.computed(function() {
-                    return self.checkProcessExecutionAtrReconfig() && self.isReCreate();
+                    return self.checkProcessExecutionAtrRebuild() == ProcessExecutionAtr.RECONFIG && self.isReCreate();
                 });
                 self.periodDate.subscribe((newValue)=>{
                     if(newValue.startDate){
                         self.copyStartDate(newValue.startDate);    
                     }    
                 });
+                
+                self.lstCreateMethod = ko.observableArray(__viewContext.enums.CreateMethodAtr);
+                self.lstReCreate = ko.observableArray(__viewContext.enums.ReCreateAtr);
+                self.lstProcessExecution = ko.observableArray(__viewContext.enums.ProcessExecutionAtr);
             }
             /**
              * save to client service PersonalSchedule by employeeId
@@ -379,32 +385,15 @@ module nts.uk.at.view.ksc001.b {
                 data.resetAbsentHolidayBusines = self.resetAbsentHolidayBusines();
 
                 // set CreateMethodAtr
-                if (self.checkCreateMethodAtrPersonalInfo()) {
-                    data.createMethodAtr = CreateMethodAtr.PERSONAL_INFO;
-                }
-                if (self.checkCreateMethodAtrPatternSchedule()) {
-                    data.createMethodAtr = CreateMethodAtr.PATTERN_SCHEDULE;
-                }
-                if (self.checkCreateMethodAtrCopyPastSchedule()) {
-                    data.createMethodAtr = CreateMethodAtr.COPY_PAST_SCHEDULE;
-                }
+                data.createMethodAtr = self.checkCreateMethodAtrPersonalInfo();
+                
                 data.confirm = self.confirm();
 
                 // set ReCreateAtr
-                if (self.checkReCreateAtrAllCase()) {
-                    data.reCreateAtr = ReCreateAtr.ALLCASE;
-                }
-                if (self.checkReCreateAtrOnlyUnConfirm()) {
-                    data.reCreateAtr = ReCreateAtr.ONLYUNCONFIRM;
-                }
-
+                data.reCreateAtr = self.checkReCreateAtrAllCase(); //ReCreateAtr.ALLCASE;
+                
                 // set ProcessExecutionAtr
-                if (self.checkProcessExecutionAtrRebuild()) {
-                    data.processExecutionAtr = ProcessExecutionAtr.REBUILD;
-                }
-                if (self.checkProcessExecutionAtrReconfig()) {
-                    data.processExecutionAtr = ProcessExecutionAtr.RECONFIG;
-                }
+                data.processExecutionAtr = self.checkProcessExecutionAtrRebuild();
 
                 // set ImplementAtr
                 data.implementAtr = self.selectedImplementAtrCode();
@@ -434,7 +423,7 @@ module nts.uk.at.view.ksc001.b {
             private nextPageC(): void {
                 var self = this;
                 if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
-                    && self.checkProcessExecutionAtrReconfig()) {
+                    && self.checkProcessExecutionAtrRebuild() == ProcessExecutionAtr.RECONFIG) {
                     //build string for Screen E
                     self.buildString();
                     //goto screen E
@@ -455,7 +444,7 @@ module nts.uk.at.view.ksc001.b {
              */
             private isInValidCopyPasteSchedule(): boolean {
                 let self = this;
-                if (self.checkCreateMethodAtrCopyPastSchedule()) {
+                if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.COPY_PAST_SCHEDULE) {
                     $('#copy-start-date').ntsEditor('validate');
                 }
                 return $('.nts-input').ntsError('hasError');
@@ -480,7 +469,7 @@ module nts.uk.at.view.ksc001.b {
                 }
 
                 // check D1_4 is checked
-                if (self.checkCreateMethodAtrPatternSchedule()) {
+                if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PATTERN_SCHEDULE) {
 
                     if (self.responeReflectionSetting()) {
 
@@ -560,7 +549,7 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
 
                 if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
-                    && self.checkProcessExecutionAtrReconfig()) {
+                    && self.checkProcessExecutionAtrRebuild() == ProcessExecutionAtr.RECONFIG) {
                     //back screen C
                     self.previousTwo();
                 } else {
@@ -604,17 +593,17 @@ module nts.uk.at.view.ksc001.b {
                     lstLabelInfomation.push(nts.uk.resource.getText("KSC001_36"));
 
                     //NO2
-                    if (self.checkReCreateAtrAllCase()) {
+                    if (self.checkReCreateAtrAllCase() == ReCreateAtr.ALLCASE) {
                         lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")
                             + nts.uk.resource.getText("KSC001_4"));
                     }
-                    if (self.checkReCreateAtrOnlyUnConfirm()) {
+                    if (self.checkReCreateAtrAllCase() == ReCreateAtr.ONLYUNCONFIRM) {
                         lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")
                             + nts.uk.resource.getText("KSC001_5"));
                     }
 
                     //NO3
-                    if (self.checkProcessExecutionAtrRebuild()) {
+                    if (self.checkProcessExecutionAtrRebuild()==0) {
                         lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")
                             + nts.uk.resource.getText("KSC001_7"));
                     } else {
@@ -668,19 +657,19 @@ module nts.uk.at.view.ksc001.b {
                 self.infoCreateMethod('');
                 //check select recreate and select resetting
                 if (!((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
-                    && self.checkProcessExecutionAtrReconfig())) {
+                    && self.checkProcessExecutionAtrRebuild() == ProcessExecutionAtr.RECONFIG)) {
 
                     // set to view
-                    if (self.checkCreateMethodAtrPersonalInfo()) {
+                    if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PERSONAL_INFO) {
                         self.infoCreateMethod(nts.uk.resource.getText("KSC001_22"));
                     }
 
                     // set to view
-                    if (self.checkCreateMethodAtrPatternSchedule()) {
+                    if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PATTERN_SCHEDULE) {
                         self.infoCreateMethod(nts.uk.resource.getText("KSC001_23"));
                     }
                     // set to view
-                    if (self.checkCreateMethodAtrCopyPastSchedule()) {
+                    if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.COPY_PAST_SCHEDULE) {
                         self.infoCreateMethod(nts.uk.resource.getText("KSC001_39",
                             [moment(self.copyStartDate()).format('YYYY/MM/DD')]));
                     }

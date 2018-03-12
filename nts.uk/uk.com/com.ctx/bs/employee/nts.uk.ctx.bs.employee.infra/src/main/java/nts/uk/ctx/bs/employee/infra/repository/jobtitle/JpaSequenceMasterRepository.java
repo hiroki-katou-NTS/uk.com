@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle;
@@ -38,9 +38,8 @@ public class JpaSequenceMasterRepository extends JpaRepository implements Sequen
 	/**
 	 * To entity.
 	 *
-	 * @param domain
-	 *            the domain
-	 * @return the csqmt sequence master
+	 * @param domain the domain
+	 * @return the bsymt job seq master
 	 */
 	private BsymtJobSeqMaster toEntity(SequenceMaster domain) {
 		BsymtJobSeqMasterPK pk = new BsymtJobSeqMasterPK(domain.getCompanyId().v(), domain.getSequenceCode().v());
@@ -54,8 +53,7 @@ public class JpaSequenceMasterRepository extends JpaRepository implements Sequen
 	/**
 	 * To domain.
 	 *
-	 * @param entity
-	 *            the entity
+	 * @param entity the entity
 	 * @return the sequence master
 	 */
 	private SequenceMaster toDomain(BsymtJobSeqMaster entity) {
@@ -215,5 +213,15 @@ public class JpaSequenceMasterRepository extends JpaRepository implements Sequen
 		Long count = em.createQuery(cq).getSingleResult();
 
 		return count == 0;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterRepository#updateOrder(java.util.List)
+	 */
+	@Override
+	public void updateOrder(List<SequenceMaster> listSequenceMaster) {
+		this.commandProxy().updateAll(listSequenceMaster.stream()
+				.map(domain -> this.toEntity(domain))
+				.collect(Collectors.toList()));
 	}
 }

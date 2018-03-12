@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.predset.service;
 
 import javax.ejb.Stateless;
 
-import nts.arc.error.BusinessException;
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyGraceTime;
@@ -45,14 +45,14 @@ public class PredeteminePolicyServiceImpl implements PredeteminePolicyService {
 	 * nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime)
 	 */
 	@Override
-	public void compareWithOneDayRange( PredetemineTimeSetting pred, DesignatedTime designatedTime) {
+	public void compareWithOneDayRange(BundledBusinessException be, PredetemineTimeSetting pred, DesignatedTime designatedTime) {
 		AttendanceTime oneDayRange = pred.getRangeTimeDay();
 
 		OneDayTime designatedHalfDayTime = designatedTime.getHalfDayTime();
 		OneDayTime designatedOneDayTime = designatedTime.getOneDayTime();
 		if (designatedHalfDayTime.greaterThanOrEqualTo(oneDayRange)
 				|| designatedOneDayTime.greaterThanOrEqualTo(oneDayRange)) {
-			throw new BusinessException("Msg_781");
+			be.addMessage("Msg_781");
 		}
 	}
 	
@@ -77,10 +77,10 @@ public class PredeteminePolicyServiceImpl implements PredeteminePolicyService {
 	 * nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyGraceTime)
 	 */
 	@Override
-	public void compareWithOneDayRange( PredetemineTimeSetting pred,
+	public void compareWithOneDayRange(BundledBusinessException be, PredetemineTimeSetting pred,
 			LateEarlyGraceTime lateEarlyGraceTime) {
 		if (lateEarlyGraceTime.valueAsMinutes() > pred.getRangeTimeDay().valueAsMinutes()) {
-			throw new BusinessException("Msg_517");
+			be.addMessage("Msg_517");
 		}
 	}
 
@@ -92,20 +92,20 @@ public class PredeteminePolicyServiceImpl implements PredeteminePolicyService {
 	 * .worktime.predset.PredetemineTimeSetting)
 	 */
 	@Override
-	public void validatePredetemineTime(PredetemineTimeSetting pred) {
+	public void validatePredetemineTime(BundledBusinessException be, PredetemineTimeSetting pred) {
 		int predEndTime = pred.getStartDateClock().valueAsMinutes() + pred.getRangeTimeDay().valueAsMinutes();
 		int predStartTime = pred.getStartDateClock().valueAsMinutes();
 		
 		// validate morning
 		if (!this.isBetweenTime(pred.getPrescribedTimezoneSetting().getMorningEndTime(),
 				new TimeWithDayAttr(predStartTime), new TimeWithDayAttr(predEndTime))) {
-			throw new BusinessException("Msg_516", "KMK003_39");
+			be.addMessage("Msg_516", "KMK003_39");
 		}
 		
 		// validate afternoon
 		if (!this.isBetweenTime(pred.getPrescribedTimezoneSetting().getAfternoonStartTime(),
 				new TimeWithDayAttr(predStartTime), new TimeWithDayAttr(predEndTime))) {
-			throw new BusinessException("Msg_516", "KMK003_40");
+			be.addMessage("Msg_516", "KMK003_40");
 		}
 		
 	}

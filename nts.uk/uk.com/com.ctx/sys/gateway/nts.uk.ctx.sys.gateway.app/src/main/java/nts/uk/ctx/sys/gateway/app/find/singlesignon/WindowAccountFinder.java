@@ -6,12 +6,10 @@ package nts.uk.ctx.sys.gateway.app.find.singlesignon;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccount;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountRepository;
 
@@ -36,8 +34,7 @@ public class WindowAccountFinder {
 
 		List<WindownAccountFinderDto> listWindownAccountFinderDto = new ArrayList<>();
 
-		List<WindowAccount> listWindowAccount = this.windowAccountRepository.findByUserIdAndUseAtr(userId,
-				UseAtr.Use.value);
+		List<WindowAccount> listWindowAccount = this.windowAccountRepository.findListWindowAccountByUserId(userId);
 		if (!listWindowAccount.isEmpty()) {
 
 			for (WindowAccount windowAccount : listWindowAccount) {
@@ -46,9 +43,8 @@ public class WindowAccountFinder {
 				listWindownAccountFinderDto.add(windownAccountFinderDto);
 			}
 		}
-		return listWindownAccountFinderDto.stream().sorted((dto1, dto2) -> {
-			return dto1.getNo().compareTo(dto2.getNo());
-		}).collect(Collectors.toList());
+		
+		return listWindownAccountFinderDto;
 
 	}
 

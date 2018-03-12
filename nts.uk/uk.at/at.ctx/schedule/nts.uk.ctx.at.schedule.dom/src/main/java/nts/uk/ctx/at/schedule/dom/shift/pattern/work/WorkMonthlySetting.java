@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.pattern.work;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode;
@@ -17,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  */
 // 月間勤務就業設定
 @Getter
+@Setter
 public class WorkMonthlySetting extends AggregateRoot {
 
 	/** The company id. */
@@ -74,7 +78,7 @@ public class WorkMonthlySetting extends AggregateRoot {
 	public void saveToMemento(WorkMonthlySettingSetMemento memento){
 		memento.setCompanyId(this.companyId);
 		memento.setWorkTypeCode(this.workTypeCode);
-		memento.setWorkingCode(this.workingCode);
+		memento.setWorkingCode(this.workingCode == null || StringUtils.isEmpty(this.workingCode.v()) ? null : this.workingCode);
 		memento.setYmdK(this.ymdk);
 		memento.setMonthlyPatternCode(this.monthlyPatternCode);
 	}

@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KscmtMonthPattern.
@@ -24,7 +24,7 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 @Setter
 @Entity
 @Table(name = "KSCMT_MONTH_PATTERN")
-public class KscmtMonthPattern extends JpaEntity implements Serializable {
+public class KscmtMonthPattern extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;

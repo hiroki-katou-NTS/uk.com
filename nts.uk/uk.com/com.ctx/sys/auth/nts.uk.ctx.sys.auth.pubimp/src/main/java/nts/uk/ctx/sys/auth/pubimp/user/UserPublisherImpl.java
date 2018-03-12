@@ -1,6 +1,9 @@
 package nts.uk.ctx.sys.auth.pubimp.user;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -49,5 +52,13 @@ public class UserPublisherImpl implements UserPublisher {
 				domain.getUserName().v(), domain.getPassword().v(), domain.getMailAddress().v(),
 				domain.getAssociatedPersonID(), domain.getExpirationDate());
 	}
-	
+
+	@Override
+	public List<UserExport> getListUserByListAsId(List<String> listAssociatePersonId) {
+		List<UserExport> listUser = userRepo.getListUserByListAsID(listAssociatePersonId).stream()
+				.map(c->fromDomain(c)).collect(Collectors.toList());
+		if(listUser.isEmpty())
+			return Collections.emptyList();
+		return listUser;
+	}
 }

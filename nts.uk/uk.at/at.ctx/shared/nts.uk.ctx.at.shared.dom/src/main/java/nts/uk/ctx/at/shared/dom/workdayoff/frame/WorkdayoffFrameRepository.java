@@ -45,6 +45,6 @@ public interface WorkdayoffFrameRepository {
 	 * @param workdayoffFrNos the workdayoff fr nos
 	 * @return the workdayoff frame by
 	 */
-	List<WorkdayoffFrame> getWorkdayoffFrameBy(CompanyId companyId, List<Integer> workdayoffFrNos);
+	List<WorkdayoffFrame> getWorkdayoffFrameBy(String companyId, List<Integer> workdayoffFrNos);
 
 }

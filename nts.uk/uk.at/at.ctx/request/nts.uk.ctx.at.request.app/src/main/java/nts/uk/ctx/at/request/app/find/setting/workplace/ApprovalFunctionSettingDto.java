@@ -9,7 +9,7 @@ import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 public class ApprovalFunctionSettingDto {
 	public int appType;
 	public String memo;
-	public int userAtr;
+	public int useAtr;
 	public int prerequisiteForpauseFlg;
 	public int otAppSettingFlg;
 	public int holidayTimeAppCalFlg;

@@ -15,10 +15,10 @@ module nts.uk.at.view.kdl001.test {
                 let codeList = _.split(self.selectedCodeList(), ','); 
                 nts.uk.ui.windows.setShared('kml001selectAbleCodeList', nts.uk.util.isNullOrEmpty(ableCodeList[0])?[]:ableCodeList);
                 nts.uk.ui.windows.setShared('kml001selectedCodeList', nts.uk.util.isNullOrEmpty(codeList[0])?[]:codeList);
-                nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
-                    if(nts.uk.ui.windows.getShared("kml001selectedCodeList")!=null){
-                        self.selectedCodeList((<Array<string>>nts.uk.ui.windows.getShared("kml001selectedCodeList")[0]).toString());    
-                    }
+                nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {           
+                        if(nts.uk.ui.windows.getShared("kml001selectedCodeList").length != 0){
+                            self.selectedCodeList((<Array<string>>nts.uk.ui.windows.getShared("kml001selectedCodeList")[0]).toString());    
+                        }
                 });        
             }
             
@@ -30,7 +30,7 @@ module nts.uk.at.view.kdl001.test {
                 nts.uk.ui.windows.setShared('kml001selectAbleCodeList', nts.uk.util.isNullOrEmpty(ableCodeList[0])?[]:ableCodeList);
                 nts.uk.ui.windows.setShared('kml001selectedCodeList', nts.uk.util.isNullOrEmpty(codeList[0])?[]:codeList);
                 nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
-                    if(nts.uk.ui.windows.getShared("kml001selectedCodeList")!=null){
+                    if(nts.uk.ui.windows.getShared("kml001selectedCodeList").length != 0){
                         self.selectedCodeList((<Array<string>>nts.uk.ui.windows.getShared("kml001selectedCodeList")).toString()); 
                     }    
                 });        

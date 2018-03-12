@@ -1,0 +1,20 @@
+@CHARSET "UTF-8";
+table {
+	border-collapse: separate;
+}
+table, th, td {
+    border: 1px solid #CCC;
+    height: 33px;
+    font-family: "DroidSansMono", "Meiryo";
+    font-size: 1em;
+    color: #000;
+}
+
+td {
+	padding-left: 2px;
+}
+.inputLabel {
+    background-color: #CFF1A5;
+    font-weight: bold;
+    text-align:left;
+}

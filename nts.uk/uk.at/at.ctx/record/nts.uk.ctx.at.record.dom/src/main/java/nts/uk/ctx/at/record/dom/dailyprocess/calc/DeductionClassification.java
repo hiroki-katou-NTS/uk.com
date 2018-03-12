@@ -6,10 +6,21 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
  *
  */
 public enum DeductionClassification {
+	NON_RECORD,//計上なし
 	GO_OUT, //外出
 	CHILD_CARE, //育児
 	BREAK //休憩
 	;
+	
+	/**
+	 * 計上なしであるか判定する
+	 * @return　計上なしである
+	 * 
+	 */
+	
+	public boolean isNonRecord() {
+		return NON_RECORD.equals(this);
+	}
 	/**
 	 *外出であるか判定する
 	 *@param 外出である 

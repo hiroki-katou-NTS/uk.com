@@ -1,7 +1,6 @@
 @CHARSET "UTF-8";
 
 .contentSchedule {
-	margin-top: 15px;
 	margin-left: 20px;
 }
 
@@ -10,7 +9,7 @@
 }
 
 .tableSchedule {
-	margin-top: 20px;
+	margin-top: 10px;
 }
 
 .tableSchedule td {
@@ -35,11 +34,23 @@
 	margin-top: 60px;
 }
 
+.executionStateTime {
+	margin-left: 25px;
+}
+
+.errorCount {
+	margin-left: 50px;
+}
+
 ul.countdown {
 	list-style: none;
 	display: block;
+	margin-left: 25px;
 }
 
 ul.countdown li {
 	display: inline-block;
+}
+#functions-area-bottom {
+	height: 45px;
 }

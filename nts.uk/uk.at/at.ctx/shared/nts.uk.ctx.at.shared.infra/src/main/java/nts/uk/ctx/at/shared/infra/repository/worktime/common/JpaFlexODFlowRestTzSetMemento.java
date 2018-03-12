@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezoneSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezoneSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdRestSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdRestSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdRtSet;
@@ -44,6 +44,9 @@ public class JpaFlexODFlowRestTzSetMemento implements FlowRestTimezoneSetMemento
 		if (CollectionUtil.isEmpty(set)) {
 			this.entity.setKshmtFlexOdRestSets(new ArrayList<>());
 		} else {
+			if (this.entity.getKshmtFlexOdRestSets() == null) {
+				this.entity.setKshmtFlexOdRestSets(new ArrayList<>());
+			}
 			Map<KshmtFlexOdRestSetPK, KshmtFlexOdRestSet> mapEntity = this.entity.getKshmtFlexOdRestSets().stream()
 					.collect(Collectors.toMap(KshmtFlexOdRestSet::getKshmtFlexOdRestSetPK, Function.identity()));
 			List<KshmtFlexOdRestSet> lstNew = new ArrayList<>();

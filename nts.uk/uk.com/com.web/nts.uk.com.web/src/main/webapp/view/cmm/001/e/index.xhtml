@@ -17,16 +17,15 @@
 		</ui:define>
 
 		<ui:define name="content">
-		<div style="margin-top: 15px;">
-			<label class="labelfirst">郵便番号に該当する住所が複数存在します。</label>
-			<br/>
-			<label class="labelfirst"> 対象の住所を選択してください。</label>
-		</div>
+			<div style="margin-top: 15px;">
+				<label class="labelfirst">郵便番号に該当する住所が複数存在します。</label> <br /> <label
+					class="labelfirst"> 対象の住所を選択してください。</label>
+			</div>
 
-			<div id="contents-area" >
-			<div >
-				<table id='dataAddress' 
-					data-bind="ntsGridList: {
+			<div id="contents-area">
+				<div>
+					<table id='dataAddress'
+						data-bind="ntsGridList: {
 					width: 500,
 					height: 200,
 					options: postCodeList,
@@ -36,8 +35,8 @@
 					value: zipCode,
 					enable: true
 					}">
-				</table>
-			</div>
+					</table>
+				</div>
 			</div>
 			<hr />
 			<div id="this-functions-area" class="control-group halign-center">
