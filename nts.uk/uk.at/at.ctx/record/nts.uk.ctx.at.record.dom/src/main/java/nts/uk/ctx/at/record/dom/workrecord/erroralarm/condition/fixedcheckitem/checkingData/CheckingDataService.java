@@ -10,5 +10,5 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.c
  *
  */
 public interface CheckingDataService {
-	public List<ValueExtractAlarmWR> checkingData(List<ValueExtractAlarmWR> listValue,String workplaceID,String employeeID,GeneralDate startDate,GeneralDate endDate);
+	public List<ValueExtractAlarmWR> checkingData(String workplaceID,String employeeID,GeneralDate startDate,GeneralDate endDate);
 }

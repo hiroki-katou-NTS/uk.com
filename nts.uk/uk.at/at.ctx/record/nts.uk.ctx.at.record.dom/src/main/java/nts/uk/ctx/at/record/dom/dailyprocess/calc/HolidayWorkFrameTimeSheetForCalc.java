@@ -85,12 +85,12 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * @return
 	 */
 	public static List<HolidayWorkFrameTimeSheetForCalc> createHolidayTimeWorkFrame(TimeLeavingWork attendanceLeave,List<HDWorkTimeSheetSetting> holidayWorkTimeList,WorkType todayWorkType
-																					,BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet) {
+																					,BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet,DeductionTimeSheet deductionTimeSheet) {
 		List<HolidayWorkFrameTimeSheetForCalc> returnList = new ArrayList<>();
 		for(HDWorkTimeSheetSetting holidayWorkTime:holidayWorkTimeList) {
 			val duplicateTimeSpan = holidayWorkTime.getTimezone().timeSpan().getDuplicatedWith(attendanceLeave.getTimespan()); 
 			if(duplicateTimeSpan.isPresent()) {
-				returnList.add(createHolidayTimeWorkFrameTimeSheet(duplicateTimeSpan.get(),holidayWorkTime,todayWorkType,bonusPaySetting,midNightTimeSheet));
+				returnList.add(createHolidayTimeWorkFrameTimeSheet(duplicateTimeSpan.get(),holidayWorkTime,todayWorkType,bonusPaySetting,midNightTimeSheet,deductionTimeSheet));
 			}
 		}
 		return returnList;
@@ -111,9 +111,11 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * @return
 	 */
 	public static HolidayWorkFrameTimeSheetForCalc createHolidayTimeWorkFrameTimeSheet(TimeSpanForCalc timeSpan,HDWorkTimeSheetSetting holidayWorkFrameTimeSheet,WorkType today
-																					  ,BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet) {
+																					  ,BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet,DeductionTimeSheet deductionTimeSheet) {
 
 		//時間帯跨いだ控除時間帯分割
+		List<TimeSheetOfDeductionItem> dedTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(timeSpan, DeductionAtr.Deduction);
+		List<TimeSheetOfDeductionItem> recordTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(timeSpan, DeductionAtr.Appropriate);
 		//控除時間帯を保持させる(継承先に)
 		//控除の丸め
 		//休出枠No
@@ -140,8 +142,8 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 		
 		return new HolidayWorkFrameTimeSheetForCalc(new TimeZoneRounding(timeSpan.getStart(),timeSpan.getEnd(),holidayWorkFrameTimeSheet.getTimezone().getRounding()),
 													timeSpan,
-													Collections.emptyList(),
-													Collections.emptyList(),
+													dedTimeSheet.stream().map(tc ->tc.createWithExcessAtr()).collect(Collectors.toList()),
+													recordTimeSheet.stream().map(tc ->tc.createWithExcessAtr()).collect(Collectors.toList()),
 													duplibonusPayTimeSheet,
 													duplispecifiedBonusPayTimeSheet,
 													duplicatemidNightTimeSheet,

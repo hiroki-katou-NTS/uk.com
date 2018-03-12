@@ -5,11 +5,13 @@
 package nts.uk.ctx.at.shared.dom.workrule.closure;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 
 /**
  * The Class Closure.
@@ -74,5 +76,22 @@ public class Closure extends AggregateRoot {
 	public ClosureHistory getHistoryByBaseDate(GeneralDate baseDate) {
 		return this.closureHistories.stream().filter(his -> his.getClosureYMD().beforeOrEquals(baseDate)).findFirst()
 				.get();
+	}
+
+	/**
+	 * Gets the history by year month.
+	 *
+	 * @param yearMonth this year month
+	 * @return the history by year month
+	 */
+	// 2018.3.11 add shuichi_ishida
+	public Optional<ClosureHistory> getHistoryByYearMonth(YearMonth yearMonth) {
+		for (ClosureHistory closureHistory : this.closureHistories){
+			if (closureHistory.getStartYearMonth().lessThanOrEqualTo(yearMonth) &&
+				closureHistory.getEndYearMonth().greaterThanOrEqualTo(yearMonth)){
+				return Optional.ofNullable(closureHistory);
+			}
+		}
+		return Optional.empty();
 	}
 }

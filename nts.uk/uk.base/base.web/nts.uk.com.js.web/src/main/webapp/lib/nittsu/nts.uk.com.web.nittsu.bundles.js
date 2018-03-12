@@ -7814,9 +7814,11 @@ var nts;
                     function edit($exTable, $cell, land, value, forced) {
                         var $grid = $exTable.querySelector("." + BODY_PRF + DETAIL);
                         var $body = !land ? $grid : helper.getTable($exTable, land);
-                        if (!forced && errors.occurred($exTable))
-                            return;
-                        if (!forced && (selector.is($cell, "." + style.DET_CLS)
+                        var exTable = $.data($exTable, NAMESPACE);
+                        if (!forced && (errors.occurred($exTable) || selector.is($cell, "." + style.DET_CLS)
+                            || (land === BODY_PRF + DETAIL && exTable.detailContent.banEmptyInput
+                                && exTable.detailContent.banEmptyInput.some(function (m) { return m === exTable.viewMode; })
+                                && $cell.textContent === "")
                             || selector.is($cell, "." + style.HIDDEN_CLS) || selector.is($cell, "." + style.SEAL_CLS))) {
                             outsideClick($exTable, $cell, true);
                             return;
@@ -8215,7 +8217,8 @@ var nts;
                         else if (ui.innerIdx === 1) {
                             field = lowerInput;
                         }
-                        if (currentVal[field] !== ui.value) {
+                        if (currentVal[field] !== ui.value && (!uk.util.isNullOrUndefined(currentVal[field])
+                            || ui.value !== "")) {
                             oldVal = _.cloneDeep(currentVal);
                             exTable[f].dataSource[ui.rowIndex][ui.columnKey][field] = ui.value;
                             return oldVal;
@@ -8811,7 +8814,7 @@ var nts;
                             var structure = [];
                             var structData = "";
                             _.forEach(cells, function (cell, index) {
-                                var rowIndex = cell.rowIndex;
+                                var rowIndex = parseInt(cell.rowIndex);
                                 var columnIndex = helper.getDisplayColumnIndex(self.$grid, cell.columnKey);
                                 if (index === 0) {
                                     minRow = maxRow = rowIndex;
@@ -9208,6 +9211,13 @@ var nts;
                                     || which(innerIdx, dataType, internal.DURATION)
                                     || which(innerIdx, dataType, internal.NUMBER)
                                     || which(innerIdx, dataType, internal.TEXT);
+                                var constraints = ui.validation.getConstraint(col.primitiveValue);
+                                if (constraints && constraints.valueType === "Time") {
+                                    max = constraints.max ? constraints.max : col.max;
+                                    min = constraints.min ? constraints.min : col.min;
+                                    required = constraints.required ? constraints.required : col.required;
+                                    return false;
+                                }
                                 max = col.max;
                                 min = col.min;
                                 required = col.required;
@@ -9516,7 +9526,7 @@ var nts;
                      * Select range.
                      */
                     function selectRange($grid, $cell) {
-                        if (uk.util.isNullOrUndefined($cell))
+                        if (uk.util.isNullOrUndefined($cell) || selector.is($cell, "." + BODY_PRF + DETAIL))
                             return;
                         var lastSelected = $.data($grid, internal.LAST_SELECTED);
                         if (!lastSelected) {
@@ -11250,7 +11260,8 @@ var nts;
                                                 if (det[k].length === 0)
                                                     delete det[k];
                                                 var $c = selection.cellAt($main, k, col[0]);
-                                                helper.stripCellWith(style.DET_CLS, $c);
+                                                if ($c)
+                                                    helper.stripCellWith(style.DET_CLS, $c);
                                             });
                                             return;
                                         }
@@ -11949,10 +11960,15 @@ var nts;
                      * Return popup value.
                      */
                     function returnPopupValue($container, value) {
-                        var header = helper.getMainHeader($container).find("table:first");
+                        if (!$container)
+                            return;
+                        var header = helper.getMainHeader($container[0]);
                         if (!header)
                             return;
-                        var $pu = $.data(header, internal.POPUP);
+                        var headerTbl = header.querySelector("table");
+                        if (!headerTbl)
+                            return;
+                        var $pu = $.data(headerTbl, internal.POPUP);
                         if (!$pu)
                             return;
                         events.trigger($pu[0], events.POPUP_INPUT_END, { value: value });
@@ -13428,7 +13444,8 @@ var nts;
                         PopupPanel.prototype.addListener = function ($pu, $t) {
                             var self = this;
                             $pu.off(events.POPUP_INPUT_END);
-                            $pu.on(events.POPUP_INPUT_END, function (evt, ui) {
+                            $pu.on(events.POPUP_INPUT_END, function (evt) {
+                                var ui = evt.detail;
                                 var $header = helper.closest(self.$selector, "table").parentElement;
                                 if ($header.classList.contains(HEADER)) {
                                     var ds = helper.getDataSource($header);
@@ -13909,10 +13926,11 @@ var nts;
                      */
                     ComboBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var container = $(element);
-                        if (nts.uk.util.isNullOrUndefined(container.attr("tabindex"))) {
-                            container.attr("tabindex", "0");
-                        }
+                        //            if(nts.uk.util.isNullOrUndefined(container.attr("tabindex"))){
+                        //                container.attr("tabindex", "0");    
+                        //            }
                         container.data("tabindex", container.attr("tabindex"));
+                        container.removeAttr("tabindex");
                         container.keypress(function (evt, ui) {
                             var code = evt.which || evt.keyCode;
                             if (code === 32) {
@@ -14021,6 +14039,7 @@ var nts;
                                 return option;
                             });
                         }
+                        var $input = container.find(".ui-igcombo-field");
                         var currentColumnSetting = container.data("columns");
                         var currentComboMode = container.data("comboMode");
                         var isInitCombo = !_.isEqual(currentColumnSetting, columns) || !_.isEqual(currentComboMode, comboMode);
@@ -14050,7 +14069,7 @@ var nts;
                                 mode: comboMode,
                                 disabled: !enable,
                                 placeHolder: '',
-                                tabIndex: -1,
+                                tabIndex: nts.uk.util.isNullOrEmpty(container.data("tabindex")) ? 0 : parseInt(container.data("tabindex")),
                                 enableClearButton: false,
                                 initialSelectedItems: [
                                     { value: selectedValue }
@@ -14062,16 +14081,22 @@ var nts;
                                     }
                                 }
                             });
+                            $input = container.find(".ui-igcombo-field");
+                            $input.focus(function (evt, ui) {
+                                $input[0].selectionStart = 0;
+                                $input[0].selectionEnd = 0;
+                                //                    container.focus();
+                            });
                         }
                         else {
                             container.igCombo("option", "disabled", !enable);
                         }
                         if (!enable) {
                             defVal.applyReset(container, data.value);
-                            container.attr("tabindex", "-1");
+                            $input.attr("disabled", "disabled");
                         }
                         else {
-                            container.attr("tabindex", container.data("tabindex"));
+                            $input.removeAttr("disabled");
                         }
                         if (isChangeOptions && !isInitCombo) {
                             container.igCombo("option", "dataSource", options);
@@ -15235,6 +15260,12 @@ var nts;
                         $input.addClass('nts-editor nts-input');
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
                         setEnterHandlerIfRequired($input, data);
+                        $input.on("keydown", function (e) {
+                            // prevent backspace in readonly editor
+                            if (ko.unwrap(data.readonly) && e.keyCode === 8) {
+                                e.preventDefault();
+                            }
+                        });
                         $input.on(valueUpdate, function (e) {
                             var newText = $input.val();
                             var validator = _this.getValidator(data);
@@ -15369,10 +15400,13 @@ var nts;
                         $input.addClass('nts-editor nts-input');
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
                         setEnterHandlerIfRequired($input, data);
-                        $input.on("keyup", function (e) {
-                            if ($input.attr('readonly')) {
-                                return;
+                        $input.on("keydown", function (e) {
+                            // prevent backspace in readonly editor
+                            if (ko.unwrap(data.readonly) && e.keyCode === 8) {
+                                e.preventDefault();
                             }
+                        });
+                        $input.on("keyup", function (e) {
                             var code = e.keyCode || e.which;
                             if (!$input.attr('readonly') && code.toString() !== '9') {
                                 var validator = self.getValidator(data);
@@ -16102,6 +16136,9 @@ var nts;
                                 }
                             }, 100);
                         });
+                        $grid.bind("checknewitem", function (evt) {
+                            return false;
+                        });
                     };
                     NtsGridListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $grid = $(element);
@@ -16121,7 +16158,22 @@ var nts;
                             }
                         }
                         $grid.data("enable", enable);
-                        if ($grid.data("ui-changed") !== true) {
+                        if (String($grid.attr("filtered")) === "true" && $grid.data("ui-changed") !== true) {
+                            var filteredSource_1 = [];
+                            _.forEach(gridSource, function (item) {
+                                var itemX = _.find(sources, function (s) {
+                                    return s[optionsValue] === item[optionsValue];
+                                });
+                                if (!nts.uk.util.isNullOrUndefined(itemX)) {
+                                    filteredSource_1.push(itemX);
+                                }
+                            });
+                            if (!_.isEqual(filteredSource_1, gridSource)) {
+                                $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_1));
+                                $grid.igGrid("dataBind");
+                            }
+                        }
+                        else if ($grid.data("ui-changed") !== true) {
                             var currentSources = sources.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -16140,21 +16192,6 @@ var nts;
                                 $grid.igGrid("dataBind");
                             }
                         }
-                        //            else if(String($grid.attr("filtered")) === "true"){
-                        //                let filteredSource = [];
-                        //                _.forEach(gridSource, function(item){
-                        //                    let itemX = _.find(sources, function (s){
-                        //                        return s[optionsValue] === item[optionsValue];        
-                        //                    });
-                        //                    if(!nts.uk.util.isNullOrUndefined(itemX)){ 
-                        //                        filteredSource.push(itemX);
-                        //                    }     
-                        //                });     
-                        //                if(!_.isEqual(filteredSource, gridSource)){
-                        //                    $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource));
-                        //                    $grid.igGrid("dataBind");    
-                        //                }
-                        //            }
                         var currentSelectedItems = $grid.ntsGridList('getSelected');
                         var isEqual = _.isEqualWith(currentSelectedItems, data.value(), function (current, newVal) {
                             if ((current === undefined && newVal === undefined) || (current !== undefined && current.id === newVal)) {
@@ -16578,17 +16615,17 @@ var nts;
                             }
                         }
                         else if (String(container.attr("filtered")) === "true") {
-                            var filteredSource_1 = [];
+                            var filteredSource_2 = [];
                             _.forEach(currentSource, function (item) {
                                 var itemX = _.find(sources, function (s) {
                                     return s[optionValue] === item[optionValue];
                                 });
                                 if (!nts.uk.util.isNullOrUndefined(itemX)) {
-                                    filteredSource_1.push(itemX);
+                                    filteredSource_2.push(itemX);
                                 }
                             });
-                            if (!_.isEqual(filteredSource_1, currentSource)) {
-                                container.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_1));
+                            if (!_.isEqual(filteredSource_2, currentSource)) {
+                                container.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_2));
                                 container.igGrid("dataBind");
                             }
                         }
@@ -17224,19 +17261,22 @@ var nts;
                         }
                         var srhX = $searchBox.data("searchObject");
                         if (component.attr("filtered") === "true") {
-                            var currentSoruce_1 = srhX.getDataSource();
-                            var newItems = _.filter(arr, function (i) {
-                                return _.find(currentSoruce_1, function (ci) {
-                                    return ci[primaryKey] === i[primaryKey];
-                                }) === undefined;
-                            });
-                            if (!nts.uk.util.isNullOrEmpty(newItems)) {
-                                var gridSources_1 = component.igGrid("option", "dataSource");
-                                _.forEach(newItems, function (item) {
-                                    gridSources_1.push(item);
+                            var isCheck = component.triggerHandler("checknewitem");
+                            if (isCheck !== false) {
+                                var currentSoruce_1 = srhX.getDataSource();
+                                var newItems = _.filter(arr, function (i) {
+                                    return _.find(currentSoruce_1, function (ci) {
+                                        return ci[primaryKey] === i[primaryKey];
+                                    }) === undefined;
                                 });
-                                component.igGrid("option", "dataSource", _.cloneDeep(gridSources_1));
-                                component.igGrid("dataBind");
+                                if (!nts.uk.util.isNullOrEmpty(newItems)) {
+                                    var gridSources_1 = component.igGrid("option", "dataSource");
+                                    _.forEach(newItems, function (item) {
+                                        gridSources_1.push(item);
+                                    });
+                                    component.igGrid("option", "dataSource", _.cloneDeep(gridSources_1));
+                                    component.igGrid("dataBind");
+                                }
                             }
                         }
                         srhX.setDataSource(arr);
@@ -22252,6 +22292,131 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
+        (function (ui) {
+            var jqueryExtentions;
+            (function (jqueryExtentions) {
+                var ntsDatepicker;
+                (function (ntsDatepicker) {
+                    var CONTAINER_CLASSES = ["arrow-bottom", "arrow-top", "arrow-right", "arrow-left"];
+                    $.fn.ntsDatepicker = function (action, index) {
+                        var $container = $(this);
+                        if (action === "bindFlip") {
+                            return bindFlip($container);
+                        }
+                        return $container;
+                    };
+                    function bindFlip($input) {
+                        //            let container = $input.parent();
+                        $input.on('show.datepicker', function (evt) {
+                            var picker = $(this);
+                            picker.data("showed", true);
+                            setTimeout(function () {
+                                picker.trigger("flippickercontainer");
+                            }, 10);
+                        });
+                        $input.on('hide.datepicker', function (evt) {
+                            var picker = $(this);
+                            picker.data("showed", false);
+                            CONTAINER_CLASSES.forEach(function (cls) { return picker.parent().removeClass(cls); });
+                            //                let currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
+                            //                $("body").append(currentShowContainer);
+                        });
+                        $(window).resize(function () {
+                            var picker = $(this);
+                            if (picker.data("showed")) {
+                                picker.datepicker('hide');
+                                setTimeout(function () {
+                                    picker.datepicker('show');
+                                }, 10);
+                            }
+                        });
+                        $input.bind("flippickercontainer", function (evt, data) {
+                            var picker = $(this);
+                            var container = picker.parent();
+                            var currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
+                            var datepickerID = picker.attr("id");
+                            //                let container = $input.parent();
+                            //                container.append(currentShowContainer);
+                            var ePos = container.offset();
+                            if (ePos.top < 0 && ePos.left < 0) {
+                                return;
+                            }
+                            CONTAINER_CLASSES.forEach(function (cls) { return container.removeClass(cls); });
+                            var containerHeight = container.outerHeight(true);
+                            var containerWidth = container.outerWidth(true);
+                            var showContainerHeight = currentShowContainer.outerHeight(true);
+                            var showContainerWidth = currentShowContainer.outerWidth(true);
+                            var documentHeight = document.body.clientHeight;
+                            var documentWidth = document.body.clientWidth;
+                            var headerHeight = $("#functions-area").outerHeight(true) + $("#header").outerHeight(true);
+                            var bottomHeight = $("#functions-area-bottom").outerHeight(true);
+                            var spaceBottom = documentHeight - ePos.top - containerHeight;
+                            var spaceTop = ePos.top; // - headerHeight;
+                            var spaceRight = documentWidth - ePos.left - containerWidth;
+                            var spaceLeft = ePos.left;
+                            // case 1: show below
+                            if (showContainerHeight + 10 <= spaceBottom) {
+                                //currentShowContainer.css({top: containerHeight + 5, left: 0});
+                                container.addClass("arrow-bottom");
+                                //container.addClass("caret-bottom");
+                                currentShowContainer.position({
+                                    my: "left bottom+" + (showContainerHeight + 10),
+                                    at: "left bottom",
+                                    'of': "#" + datepickerID
+                                });
+                                return;
+                            }
+                            //case 2: show above
+                            if (showContainerHeight + 10 <= spaceTop) {
+                                //currentShowContainer.css({top: 0 - showContainerHeight - 5, left: 0});
+                                container.addClass("arrow-top");
+                                currentShowContainer.position({
+                                    my: "left top-" + (showContainerHeight + 10),
+                                    at: "left top",
+                                    'of': "#" + datepickerID
+                                });
+                                return;
+                            }
+                            // case 3: show right
+                            var diaTop = ePos.top <= 0 ? 0 : ePos.top - showContainerHeight + containerHeight + headerHeight;
+                            if (ePos.top <= diaTop) {
+                                diaTop = ePos.top;
+                            }
+                            if (showContainerWidth + 10 <= spaceRight) {
+                                //                    currentShowContainer.css({top: 0, left: containerWidth + 5 + 2});
+                                var diaRight = ePos.left + containerWidth + 10;
+                                container.addClass("arrow-right");
+                                currentShowContainer.css({ top: diaTop, left: diaRight });
+                                return;
+                            }
+                            //case 4: show left
+                            if (showContainerWidth + 10 <= spaceLeft) {
+                                var diaLeft = ePos.left - 10 - showContainerWidth;
+                                //                    currentShowContainer.css({top: 0, left: 0 - showContainerWidth - 5 - 2 });
+                                container.addClass("arrow-left");
+                                currentShowContainer.css({ top: diaTop, left: diaLeft });
+                                return;
+                            }
+                            container.addClass("arrow-bottom");
+                            currentShowContainer.position({
+                                my: "left bottom+" + (showContainerHeight + 10),
+                                at: "left bottom",
+                                'of': "#" + datepickerID
+                            });
+                        });
+                        return $input;
+                    }
+                })(ntsDatepicker || (ntsDatepicker = {}));
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
         (function (ui_27) {
             var koExtentions;
             (function (koExtentions) {
@@ -23302,6 +23467,18 @@ var nts;
                         function editStarted(evt, ui) {
                             var $grid = $(ui.owner.element);
                             var valueType = validation.getValueType($grid, ui.columnKey);
+                            if (!evt.currentTarget) {
+                                if (valueType === "TimeWithDay" || valueType === "Clock") {
+                                    var $editor = $(ui.editor.find("input")[0]);
+                                    $editor.css("text-align", "right");
+                                }
+                                else if (valueType === "Currency") {
+                                    ui.editor.addClass(updating.INPUT_CURR_SYM);
+                                    var $editor = $(ui.editor.find("input")[0]);
+                                    $editor.css("text-align", "right");
+                                }
+                                return;
+                            }
                             if (!uk.util.isNullOrUndefined(ui.value) && !_.isEmpty(ui.value)) {
                                 if (valueType === "TimeWithDay" || valueType === "Clock") {
                                     var formatted_1;
@@ -23384,30 +23561,41 @@ var nts;
                             if (!utils.isDeleteKey(evt)) {
                                 setTimeout(function () {
                                     var cellValue;
+                                    var char = evt.key === "Subtract" ? "-" : evt.key;
                                     var $editor = $targetGrid.igGridUpdating("editorForCell", $(cell.element));
                                     if (!uk.util.isNullOrUndefined($editor.data("igTextEditor"))) {
-                                        var newText = $editor.igTextEditor("value");
-                                        newText = newText.substr(newText.length - 1);
-                                        $editor.igTextEditor("value", newText.trim());
-                                        var input = $editor.find("input")[0];
-                                        var len = input.value.length;
-                                        input.setSelectionRange(len, len);
-                                        cellValue = newText;
-                                    }
-                                    else if (!uk.util.isNullOrUndefined($editor.data("igNumericEditor"))) {
-                                        var numericStr = "-";
-                                        if (!utils.isMinusSymbol(evt)) {
-                                            numericStr = String.fromCharCode(evt.keyCode);
-                                            $editor.igNumericEditor("value", parseInt(numericStr));
+                                        $editor.igTextEditor("value", char);
+                                        var input_1 = $editor.find("input")[0];
+                                        var len_1 = input_1.value.length;
+                                        if ($.ig.util.isChrome || $.ig.util.isSafari) {
+                                            setTimeout(function () {
+                                                input_1.setSelectionRange(len_1, len_1);
+                                            }, 110);
                                         }
                                         else {
-                                            $editor.igNumericEditor("value", numericStr);
+                                            input_1.setSelectionRange(len_1, len_1);
                                         }
-                                        setTimeout(function () {
-                                            var length = String($editor.igNumericEditor("value")).length;
-                                            $editor.igNumericEditor("select", length, length);
-                                        }, 100);
-                                        cellValue = numericStr;
+                                        cellValue = char;
+                                    }
+                                    else if (!uk.util.isNullOrUndefined($editor.data("igNumericEditor"))) {
+                                        cellValue = char;
+                                        if (!utils.isMinusSymbol(evt)) {
+                                            $editor.igNumericEditor("value", parseInt(cellValue));
+                                        }
+                                        else {
+                                            cellValue = "-";
+                                            $editor.igNumericEditor("value", cellValue);
+                                        }
+                                        if ($.ig.util.isChrome || $.ig.util.isSafari) {
+                                            setTimeout(function () {
+                                                var length = String($editor.igNumericEditor("value")).length;
+                                                $editor.igNumericEditor("select", length, length);
+                                            }, 110);
+                                        }
+                                        else {
+                                            var length_1 = String($editor.igNumericEditor("value")).length;
+                                            $editor.igNumericEditor("select", length_1, length_1);
+                                        }
                                     }
                                     // Validate
                                     var validators = $targetGrid.data(validation.VALIDATORS);
@@ -23420,14 +23608,15 @@ var nts;
                                     if (!result.isValid) {
                                         errors.set($targetGrid, cell, result.errorMessage);
                                     }
-                                }, 200);
+                                }, 1);
                             }
                             else {
                                 setTimeout(function () {
                                     var $editor = $targetGrid.igGridUpdating("editorForCell", $(cell.element));
                                     $editor.find("input").val("");
-                                }, 200);
+                                }, 1);
                             }
+                            evt.preventDefault();
                             evt.stopImmediatePropagation();
                         }
                         /**
@@ -23496,6 +23685,7 @@ var nts;
                                 }
                                 catch (e) { }
                             }
+                            var origData = gridUpdate._getLatestValues(rId);
                             grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
                             var isControl = utils.isNtsControl($grid, columnKey);
                             if (!isControl || forceRender)
@@ -23504,7 +23694,7 @@ var nts;
                                 $grid.trigger(events.Handler.CONTROL_CHANGE, [{ columnKey: columnKey, value: cellValue }]);
                             }
                             gridUpdate._notifyCellUpdated(rId);
-                            notifyUpdate($grid, rowId, columnKey, cellValue);
+                            notifyUpdate($grid, rowId, columnKey, cellValue, origData);
                         }
                         updating.updateCell = updateCell;
                         /**
@@ -23521,7 +23711,7 @@ var nts;
                             var origData = gridUpdate._getLatestValues(rId);
                             grid.dataSource.updateRow(rId, $.extend({}, origData, updatedRowData), autoCommit);
                             _.forEach(Object.keys(updatedRowData), function (key) {
-                                notifyUpdate($grid, rowId, key, updatedRowData[key]);
+                                notifyUpdate($grid, rowId, key, updatedRowData[key], origData);
                                 var isControl = utils.isNtsControl($grid, key);
                                 if (isControl) {
                                     $grid.trigger(events.Handler.CONTROL_CHANGE, [{ columnKey: key, value: updatedRowData[key] }]);
@@ -23552,7 +23742,9 @@ var nts;
                         /**
                          * Notify update.
                          */
-                        function notifyUpdate($grid, rowId, columnKey, value) {
+                        function notifyUpdate($grid, rowId, columnKey, value, origData) {
+                            if (origData && origData[columnKey] === value)
+                                return;
                             var updatedCells = $grid.data(internal.UPDATED_CELLS);
                             if (!updatedCells) {
                                 $grid.data(internal.UPDATED_CELLS, []);
@@ -25460,7 +25652,9 @@ var nts;
                                         }
                                     }
                                     else {
-                                        specialColumn.tryDo(self.$grid, cell, cbData, visibleColumnsMap);
+                                        setTimeout(function () {
+                                            specialColumn.tryDo(self.$grid, cell, cbData, visibleColumnsMap);
+                                        }, 1);
                                         if (columnsGroup[columnIndex].dataType === "number") {
                                             updatedRow[columnKey] = parseInt(cbData);
                                         }
@@ -25570,7 +25764,7 @@ var nts;
                                     var targetColumn = targetCol;
                                     // Errors
                                     var comboErrors = [];
-                                    for (var i = 0; i < row.length; i++) {
+                                    var _loop_3 = function() {
                                         var nextColumn = void 0;
                                         var columnKey = targetColumn.key;
                                         var cellElement = self.$grid.igGrid("cellById", $gridRow.data("id"), columnKey);
@@ -25581,11 +25775,11 @@ var nts;
                                             nextColumn = utils.nextColumn(visibleColumnsMap, targetIndex, targetColumn.fixed);
                                             targetColumn = nextColumn.options;
                                             targetIndex = nextColumn.index;
-                                            continue;
+                                            return "continue";
                                         }
                                         var columnsGroup = utils.columnsGroupOfColumn(targetColumn, visibleColumnsMap);
                                         if (targetIndex > columnsGroup.length - 1)
-                                            break;
+                                            return "break";
                                         if (utils.isComboBox(self.$grid, columnKey)) {
                                             var cellContent = row[i].trim();
                                             var copiedValue = ntsControls.comboBox.getCopiedValue({ element: cellElement[0] }, cellContent);
@@ -25599,18 +25793,22 @@ var nts;
                                                 nextColumn = utils.nextColumn(visibleColumnsMap, targetIndex, targetColumn.fixed);
                                                 targetColumn = nextColumn.options;
                                                 targetIndex = nextColumn.index;
-                                                continue;
+                                                return "continue";
                                             }
                                         }
                                         else {
-                                            var cell = {};
-                                            cell.columnKey = columnKey;
-                                            cell.element = cellElement;
-                                            cell.id = $gridRow.data("id");
-                                            cell.index = targetIndex;
-                                            cell.row = $gridRow;
-                                            cell.rowIndex = $gridRow.data("rowIdx");
-                                            specialColumn.tryDo(self.$grid, cell, row[i].trim(), visibleColumnsMap);
+                                            var cell_2 = {};
+                                            cell_2.columnKey = columnKey;
+                                            cell_2.element = cellElement;
+                                            cell_2.id = $gridRow.data("id");
+                                            cell_2.index = targetIndex;
+                                            cell_2.row = $gridRow;
+                                            cell_2.rowIndex = $gridRow.data("rowIdx");
+                                            (function (i) {
+                                                setTimeout(function () {
+                                                    specialColumn.tryDo(self.$grid, cell_2, row[i].trim(), visibleColumnsMap);
+                                                }, 1);
+                                            })(i);
                                             if (targetColumn.dataType === "number") {
                                                 rowData[columnKey] = parseInt(row[i]);
                                             }
@@ -25622,6 +25820,11 @@ var nts;
                                         nextColumn = utils.nextColumn(visibleColumnsMap, targetIndex, targetColumn.fixed);
                                         targetColumn = nextColumn.options;
                                         targetIndex = nextColumn.index;
+                                    };
+                                    for (var i = 0; i < row.length; i++) {
+                                        var state_3 = _loop_3();
+                                        if (state_3 === "break") break;
+                                        if (state_3 === "continue") continue;
                                     }
                                     updating.updateRow(self.$grid, $gridRow.data("id"), rowData);
                                     _.forEach(comboErrors, function (combo) {
@@ -28678,126 +28881,6 @@ var nts;
                         }
                     }
                 })(ntsImageEditor || (ntsImageEditor = {}));
-            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var jqueryExtentions;
-            (function (jqueryExtentions) {
-                var ntsDatepicker;
-                (function (ntsDatepicker) {
-                    var CONTAINER_CLASSES = ["arrow-bottom", "arrow-top", "arrow-right", "arrow-left"];
-                    $.fn.ntsDatepicker = function (action, index) {
-                        var $container = $(this);
-                        if (action === "bindFlip") {
-                            return bindFlip($container);
-                        }
-                        return $container;
-                    };
-                    function bindFlip($input) {
-                        var datepickerID = $input.attr("id");
-                        var container = $input.parent();
-                        $input.on('show.datepicker', function (evt) {
-                            $input.data("showed", true);
-                            setTimeout(function () {
-                                $input.trigger("flippickercontainer");
-                            }, 10);
-                        });
-                        $input.on('hide.datepicker', function (evt) {
-                            $input.data("showed", false);
-                            CONTAINER_CLASSES.forEach(function (cls) { return container.removeClass(cls); });
-                            //                let currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
-                            //                $("body").append(currentShowContainer);
-                        });
-                        $(window).resize(function () {
-                            if ($input.data("showed")) {
-                                $input.datepicker('hide');
-                                setTimeout(function () {
-                                    $input.datepicker('show');
-                                }, 10);
-                            }
-                        });
-                        $input.bind("flippickercontainer", function (evt, data) {
-                            var currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
-                            //                let container = $input.parent();
-                            //                container.append(currentShowContainer);
-                            var ePos = container.offset();
-                            if (ePos.top < 0 && ePos.left < 0) {
-                                return;
-                            }
-                            CONTAINER_CLASSES.forEach(function (cls) { return container.removeClass(cls); });
-                            var containerHeight = container.outerHeight(true);
-                            var containerWidth = container.outerWidth(true);
-                            var showContainerHeight = currentShowContainer.outerHeight(true);
-                            var showContainerWidth = currentShowContainer.outerWidth(true);
-                            var documentHeight = document.body.clientHeight;
-                            var documentWidth = document.body.clientWidth;
-                            var headerHeight = $("#functions-area").outerHeight(true) + $("#header").outerHeight(true);
-                            var bottomHeight = $("#functions-area-bottom").outerHeight(true);
-                            var spaceBottom = documentHeight - ePos.top - containerHeight;
-                            var spaceTop = ePos.top; // - headerHeight;
-                            var spaceRight = documentWidth - ePos.left - containerWidth;
-                            var spaceLeft = ePos.left;
-                            // case 1: show below
-                            if (showContainerHeight + 10 <= spaceBottom) {
-                                //currentShowContainer.css({top: containerHeight + 5, left: 0});
-                                container.addClass("arrow-bottom");
-                                //container.addClass("caret-bottom");
-                                currentShowContainer.position({
-                                    my: "left bottom+" + (showContainerHeight + 10),
-                                    at: "left bottom",
-                                    'of': "#" + datepickerID
-                                });
-                                return;
-                            }
-                            //case 2: show above
-                            if (showContainerHeight + 10 <= spaceTop) {
-                                //currentShowContainer.css({top: 0 - showContainerHeight - 5, left: 0});
-                                container.addClass("arrow-top");
-                                currentShowContainer.position({
-                                    my: "left top-" + (showContainerHeight + 10),
-                                    at: "left top",
-                                    'of': "#" + datepickerID
-                                });
-                                return;
-                            }
-                            // case 3: show right
-                            var diaTop = ePos.top <= 0 ? 0 : ePos.top - showContainerHeight + containerHeight + headerHeight;
-                            if (ePos.top <= diaTop) {
-                                diaTop = ePos.top;
-                            }
-                            if (showContainerWidth + 10 <= spaceRight) {
-                                //                    currentShowContainer.css({top: 0, left: containerWidth + 5 + 2});
-                                var diaRight = ePos.left + containerWidth + 10;
-                                container.addClass("arrow-right");
-                                currentShowContainer.css({ top: diaTop, left: diaRight });
-                                return;
-                            }
-                            //case 4: show left
-                            if (showContainerWidth + 10 <= spaceLeft) {
-                                var diaLeft = ePos.left - 10 - showContainerWidth;
-                                //                    currentShowContainer.css({top: 0, left: 0 - showContainerWidth - 5 - 2 });
-                                container.addClass("arrow-left");
-                                currentShowContainer.css({ top: diaTop, left: diaLeft });
-                                return;
-                            }
-                            container.addClass("arrow-bottom");
-                            currentShowContainer.position({
-                                my: "left bottom+" + (showContainerHeight + 10),
-                                at: "left bottom",
-                                'of': "#" + datepickerID
-                            });
-                        });
-                        return $input;
-                    }
-                })(ntsDatepicker || (ntsDatepicker = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,9 +77,23 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 		// システム日付を取得する
 		val criteriaDate = GeneralDate.today();
 		
+		// 対象社員を判断
+		List<String> procEmployeeIds = new ArrayList<>();
+		if (executionAttr == ExecutionAttr.AUTO){
+			
+			// 自動実行の時
+			//*****（未）　社員IDリストを得るアルゴリズムの引数設計に不整合があるので、確認待ち。以下、仮対応。
+			procEmployeeIds = employeeIds;
+		}
+		else {
+			
+			// 手動実行の時
+			procEmployeeIds = employeeIds;
+		}
+		
 		// 社員の数だけループ
 		int aggregatedCount = 0;
-		for (val employeeId : employeeIds) {
+		for (val employeeId : procEmployeeIds) {
 		
 			// 社員1人分の処理　（社員の月別実績を集計する）
 			status = this.monthlyAggregationEmployeeService.aggregate(asyncContext,

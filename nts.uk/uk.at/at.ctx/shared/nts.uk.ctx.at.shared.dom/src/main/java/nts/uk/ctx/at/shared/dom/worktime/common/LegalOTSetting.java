@@ -69,5 +69,13 @@ public enum LegalOTSetting {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 法定内残業として扱うか判定する
+	 * @return　法定内残業として扱う
+	 */
+	public boolean isLegal() {
+		return this.equals(LEGAL_INTERNAL_TIME);
+	}
 
 }

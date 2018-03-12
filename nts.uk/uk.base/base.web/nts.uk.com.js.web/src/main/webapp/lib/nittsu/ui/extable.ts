@@ -1749,8 +1749,11 @@ module nts.uk.ui.exTable {
         export function edit($exTable: HTMLElement, $cell: HTMLElement, land: any, value?: any, forced?: boolean) {
             let $grid = $exTable.querySelector("." + BODY_PRF + DETAIL);
             let $body = !land ? $grid : helper.getTable($exTable, land);
-            if (!forced && errors.occurred($exTable)) return;
-            if (!forced && (selector.is($cell, "." + style.DET_CLS)
+            let exTable = $.data($exTable, NAMESPACE);
+            if (!forced && (errors.occurred($exTable) || selector.is($cell, "." + style.DET_CLS)
+                || (land === BODY_PRF + DETAIL && exTable.detailContent.banEmptyInput 
+                    && exTable.detailContent.banEmptyInput.some(m => m === exTable.viewMode)
+                    && $cell.textContent === "")
                 || selector.is($cell, "." + style.HIDDEN_CLS) || selector.is($cell, "." + style.SEAL_CLS))) {
                 outsideClick($exTable, $cell, true);
                 return;
@@ -2132,7 +2135,8 @@ module nts.uk.ui.exTable {
             } else if (ui.innerIdx === 1) {
                 field = lowerInput;
             }
-            if (currentVal[field] !== ui.value) {
+            if (currentVal[field] !== ui.value && (!util.isNullOrUndefined(currentVal[field])
+                || ui.value !== "")) {
                 oldVal = _.cloneDeep(currentVal);
                 exTable[f].dataSource[ui.rowIndex][ui.columnKey][field] = ui.value;
                 return oldVal;
@@ -2700,7 +2704,7 @@ module nts.uk.ui.exTable {
                 let structure = [];
                 let structData: string = "";
                 _.forEach(cells, function(cell: any, index: number) {
-                    let rowIndex = cell.rowIndex;
+                    let rowIndex = parseInt(cell.rowIndex);
                     let columnIndex = helper.getDisplayColumnIndex(self.$grid, cell.columnKey);
                     if (index === 0) {
                         minRow = maxRow = rowIndex;
@@ -3078,6 +3082,14 @@ module nts.uk.ui.exTable {
                                 || which(innerIdx, dataType, internal.DURATION)
                                 || which(innerIdx, dataType, internal.NUMBER)
                                 || which(innerIdx, dataType, internal.TEXT);
+                    
+                    let constraints = ui.validation.getConstraint(col.primitiveValue);
+                    if (constraints && constraints.valueType === "Time") {
+                        max = constraints.max ? constraints.max : col.max;
+                        min = constraints.min ? constraints.min : col.min;
+                        required = constraints.required ? constraints.required : col.required;
+                        return false;
+                    }
                     max = col.max;
                     min = col.min;
                     required = col.required;
@@ -3367,9 +3379,9 @@ module nts.uk.ui.exTable {
          * Select range.
          */
         function selectRange($grid: HTMLElement, $cell: HTMLElement) {
-            if (util.isNullOrUndefined($cell)) return;
+            if (util.isNullOrUndefined($cell) || selector.is($cell, "." + BODY_PRF + DETAIL)) return;
             let lastSelected = $.data($grid, internal.LAST_SELECTED);
-            if (!lastSelected) {
+            if (!lastSelected) { 
                 selectCell($grid, $cell);
                 return;
             }
@@ -5079,7 +5091,7 @@ module nts.uk.ui.exTable {
                                     let col = det[k].splice(indices[k], 1);
                                     if (det[k].length === 0) delete det[k];
                                     let $c = selection.cellAt($main, k, col[0]);
-                                    helper.stripCellWith(DET_CLS, $c);
+                                    if ($c) helper.stripCellWith(DET_CLS, $c);
                                 });
                                 return;
                             }
@@ -5770,9 +5782,12 @@ module nts.uk.ui.exTable {
          * Return popup value.
          */
         function returnPopupValue($container: JQuery, value: any) {
-            let header = helper.getMainHeader($container).find("table:first");
+            if (!$container) return;
+            let header = helper.getMainHeader($container[0]);
             if (!header) return;
-            let $pu = $.data(header, internal.POPUP);
+            let headerTbl = header.querySelector("table");
+            if (!headerTbl) return;
+            let $pu = $.data(headerTbl, internal.POPUP);
             if (!$pu) return;
             events.trigger($pu[0], events.POPUP_INPUT_END, { value: value });
         }
@@ -7203,7 +7218,8 @@ module nts.uk.ui.exTable {
             addListener($pu: JQuery, $t: JQuery) {
                 let self = this;
                 $pu.off(events.POPUP_INPUT_END);
-                $pu.on(events.POPUP_INPUT_END, function(evt: any, ui: any) {
+                $pu.on(events.POPUP_INPUT_END, function(evt: any) {
+                    let ui = evt.detail;
                     let $header = helper.closest(self.$selector, "table").parentElement;
                     if ($header.classList.contains(HEADER)) {
                         let ds = helper.getDataSource($header);

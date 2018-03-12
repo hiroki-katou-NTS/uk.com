@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
-public class WorkRecordCheckService {
+public class ErAlWorkRecordCheckService {
 
 	@Inject
 	private RegulationInfoEmployeeQueryAdapter employeeSearch;
@@ -39,6 +40,16 @@ public class WorkRecordCheckService {
 
 	public List<RegulationInfoEmployeeQueryR> filterEmployees(GeneralDate workingDate, Collection<String> employeeIds,
 			ErrorAlarmCondition checkCondition) {
+		return this.employeeSearch.search(createQueryToFilterEmployees(workingDate, checkCondition));
+	}
+	
+	public List<RegulationInfoEmployeeQueryR> filterEmployees(GeneralDate workingDate, Collection<String> employeeIds,
+			String EACheckID) {
+		ErrorAlarmCondition checkCondition = errorRecordRepo.findConditionByErrorAlamCheckId(EACheckID).orElse(null);
+
+		if (checkCondition != null) {
+			return new ArrayList<>();
+		}
 		return this.employeeSearch.search(createQueryToFilterEmployees(workingDate, checkCondition));
 	}
 
@@ -78,15 +89,17 @@ public class WorkRecordCheckService {
 		WorkInfoOfDailyPerformance workInfo = record.getWorkInfo().toDomain(record.employeeId(), record.getDate());
 
 		/** 勤務種類をチェックする */
-		boolean workTypeCheck = condition.getWorkTypeCondition().checkWorkType(workInfo);
-		if (workTypeCheck) {
+		if (!condition.getWorkTypeCondition().checkWorkType(workInfo)) {
 			/** 就業時間帯をチェックする */
-			boolean workTimeCheck = condition.getWorkTimeCondition().checkWorkTime(workInfo);
-			if (workTimeCheck) {
+			if (!condition.getWorkTimeCondition().checkWorkTime(workInfo)) {
 				/** 勤怠項目をチェックする */
-				return condition.getAtdItemCondition().check(c -> AttendanceItemUtil.toItemValues(record, c)
-						.stream().map(iv -> getValue(iv)).collect(Collectors.toList())
-				);
+				return condition.getAtdItemCondition().check(c -> {
+					if(c.isEmpty()){
+						return c;
+					}
+					return AttendanceItemUtil.toItemValues(record, c)
+							.stream().map(iv -> getValue(iv)).collect(Collectors.toList());
+				});
 			}
 		}
 		return false;
