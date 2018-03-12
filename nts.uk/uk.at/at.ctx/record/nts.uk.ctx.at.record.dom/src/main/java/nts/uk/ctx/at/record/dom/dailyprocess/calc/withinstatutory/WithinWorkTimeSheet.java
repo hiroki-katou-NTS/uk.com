@@ -852,5 +852,19 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		}
 		return totalTime;
 	}
+	
+//	/**
+//	 * 控除区分に従って該当のリストを取得(現時点では休憩のみしか取得できない)
+//	 * @param dedAtr
+//	 * @param conAtr
+//	 * @return
+//	 */
+//	public List<TimeSheetOfDeductionItem> getDedTimeSheetByDedAtr(DeductionAtr dedAtr,ConditionAtr conAtr){
+//		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
+//		for(WithinWorkTimeFrame timeSheet : this.getWithinWorkTimeFrame()) {
+//			returnList.addAll(timeSheet.getDedTimeSheetByDedAtr(dedAtr, conAtr));
+//		}
+//		return returnList;
+//	}
 
 }
