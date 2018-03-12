@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.ac.schedule.applicationreflectprocess.applicationsmanager;
+package nts.uk.ctx.at.request.ac.schedule.appreflectprocess;
 
 import javax.ejb.Stateless;
 import javax.persistence.EnumType;
@@ -9,17 +9,17 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.applicationreflect.workschedule.ReflectScheDto;
 import nts.uk.ctx.at.request.dom.applicationreflect.workschedule.ReflectedStatesInfo;
 import nts.uk.ctx.at.request.dom.applicationreflect.workschedule.service.ApplicationReflectProcessSche;
-import nts.uk.ctx.at.schedule.pub.applicationreflectprocess.applicationsmanager.ApplicationGobackScheInforDto;
-import nts.uk.ctx.at.schedule.pub.applicationreflectprocess.applicationsmanager.ApplicationReflectProcessSchePub;
-import nts.uk.ctx.at.schedule.pub.applicationreflectprocess.applicationsmanager.ApplyTimeAtrPub;
-import nts.uk.ctx.at.schedule.pub.applicationreflectprocess.applicationsmanager.ChangeAtrAppGobackPub;
-import nts.uk.ctx.at.schedule.pub.applicationreflectprocess.applicationsmanager.GoBackDirectlyReflectParamDto;
-import nts.uk.ctx.at.schedule.pub.applicationreflectprocess.applicationsmanager.OutsetBreakReflectScheAtrPub;
-import nts.uk.ctx.at.schedule.pub.applicationreflectprocess.applicationsmanager.ReflectedStatesScheInfoDto;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.ApplicationGobackScheInforDto;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.AppReflectProcessSchePub;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.ApplyTimeAtrPub;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.ChangeAtrAppGobackPub;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.GoBackDirectlyReflectParamDto;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.OutsetBreakReflectScheAtrPub;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.ReflectedStatesScheInfoDto;
 
 @Stateless
 public class ApplicationReflectProcessScheImpl implements ApplicationReflectProcessSche{
-	private ApplicationReflectProcessSchePub appReflectSchePub;
+	private AppReflectProcessSchePub appReflectSchePub;
 
 	@Override
 	public ReflectedStatesInfo goBackDirectlyReflect(ReflectScheDto reflectSche) {
