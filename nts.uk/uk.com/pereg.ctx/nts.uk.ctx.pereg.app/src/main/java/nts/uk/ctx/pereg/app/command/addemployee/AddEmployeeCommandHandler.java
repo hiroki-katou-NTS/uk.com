@@ -76,12 +76,12 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		validateTime(inputs, employeeId, personId);
 		checkRequiredInputs(inputs, employeeId, personId, companyId);
 
-		helper.addBasicData(command, personId, employeeId, comHistId, companyId, userId);
-		commandFacade.addNewFromInputs(command, personId, employeeId, inputs);
+		helper.addBasicData(command, personId, employeeId, comHistId, companyId);
+		commandFacade.addNewFromInputs(personId, employeeId, inputs);
 		
 		addNewUser(personId, command, userId);
 		
-		addAvatar(personId, command);
+		addAvatar(personId, command.getAvatarId());
 		
 		updateEmployeeRegHist(companyId, employeeId);
 
@@ -154,16 +154,16 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		// add new user
 		String passwordHash = PasswordHash.generate(command.getPassword(), userId);
 		User newUser = User.createFromJavatype(userId, false, passwordHash, command.getLoginId(),
-				AppContexts.user().contractCode(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), 0, 0, "",
+				AppContexts.user().contractCode(), GeneralDate.max(), 0, 0, "",
 				command.getEmployeeName(), personId);
 
 		this.userRepository.addNewUser(newUser);
 
 	}
 	
-	private void addAvatar(String personId, AddEmployeeCommand command) {
-		if (command.getAvatarId() != "") {
-			PersonFileManagement perFile = PersonFileManagement.createFromJavaType(personId, command.getAvatarId(),
+	private void addAvatar(String personId, String avatarId) {
+		if (avatarId != "") {
+			PersonFileManagement perFile = PersonFileManagement.createFromJavaType(personId, avatarId,
 					TypeFile.AVATAR_FILE.value, null);
 
 			this.perFileManagementRepository.insert(perFile);

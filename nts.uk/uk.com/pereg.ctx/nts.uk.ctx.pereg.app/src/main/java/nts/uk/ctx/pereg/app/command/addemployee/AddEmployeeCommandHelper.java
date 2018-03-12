@@ -41,7 +41,7 @@ public class AddEmployeeCommandHelper {
 	private PersonRepository personRepo;
 
 	public void addBasicData(AddEmployeeCommand command, String personId, String employeeId, String comHistId,
-			String companyId, String userId) {
+			String companyId) {
 
 		// add newPerson
 

@@ -35,12 +35,11 @@ public class AddEmployeeCommandFacade {
 	@Inject
 	private RegisterLayoutFinder layoutFinder;
 
-	public void addNewFromInputs(AddEmployeeCommand command, String personId, String employeeId,
-			List<ItemsByCategory> inputs) {
+	public void addNewFromInputs(String personId, String employeeId, List<ItemsByCategory> inputs) {
 
-		updateBasicCategories(command, inputs, personId, employeeId);
+		updateBasicCategories(personId, employeeId, inputs);
 
-		addNoBasicCategories(inputs, personId, employeeId);
+		addNoBasicCategories(personId, employeeId, inputs);
 
 	}
 	
@@ -75,15 +74,15 @@ public class AddEmployeeCommandFacade {
 
 	}
 
-	private void updateBasicCategories(AddEmployeeCommand command, List<ItemsByCategory> inputs, String personId,
-			String employeeId) {
+	private void updateBasicCategories(String personId, String employeeId, List<ItemsByCategory> inputs) {
 
 		List<ItemsByCategory> basicCategories = inputs.stream()
-				.filter(x -> basicCategoriesDefinition.indexOf(x.getCategoryCd()) != -1).collect(Collectors.toList());
+				.filter(category -> basicCategoriesDefinition.contains(category.getCategoryCd()))
+				.collect(Collectors.toList());
 
 		if (!CollectionUtil.isEmpty(basicCategories)) {
 
-			updateFixItemOfBasicCategory(basicCategories, personId, employeeId, command);
+			updateFixItemOfBasicCategory(basicCategories, personId, employeeId);
 
 			addOptionalItemOfBasicCategory(basicCategories, personId, employeeId);
 
@@ -91,17 +90,18 @@ public class AddEmployeeCommandFacade {
 
 	}
 
-	private void updateFixItemOfBasicCategory(List<ItemsByCategory> fixedInputs, String personId, String employeeId,
-			AddEmployeeCommand command) {
+	private void updateFixItemOfBasicCategory(List<ItemsByCategory> basicCategories, String personId,
+			String employeeId) {
 		List<ItemsByCategory> updateInputs = new ArrayList<ItemsByCategory>();
 
-		fixedInputs.forEach(ctg -> {
-			List<ItemValue> lstItem = ctg.getItems().stream().filter(item -> item.itemCode().charAt(1) == 'S')
+		basicCategories.forEach(category -> {
+			List<ItemValue> fixedItems = category.getItems().stream().filter(item -> item.itemCode().charAt(1) == 'S')
 					.collect(Collectors.toList());
 
-			if (!CollectionUtil.isEmpty(lstItem)) {
+			if (!CollectionUtil.isEmpty(fixedItems)) {
 
-				ItemsByCategory newItemCtg = new ItemsByCategory(ctg.getCategoryCd(), ctg.getRecordId(), lstItem);
+				ItemsByCategory newItemCtg = new ItemsByCategory(category.getCategoryCd(), category.getRecordId(),
+						fixedItems);
 				updateInputs.add(newItemCtg);
 			}
 
@@ -113,30 +113,33 @@ public class AddEmployeeCommandFacade {
 
 	}
 
-	private void addNoBasicCategories(List<ItemsByCategory> inputs, String personId, String employeeId) {
+	private void addNoBasicCategories(String personId, String employeeId, List<ItemsByCategory> inputs) {
 
 		List<ItemsByCategory> noBasicCategories = inputs.stream()
-				.filter(x -> basicCategoriesDefinition.indexOf(x.getCategoryCd()) == -1).collect(Collectors.toList());
-		
+				.filter(category -> !basicCategoriesDefinition.contains(category.getCategoryCd()))
+				.collect(Collectors.toList());
+
 		// call add commandFacade
 		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, noBasicCategories);
 
 		this.commandFacade.add(addContainer);
 	}
+	
+	
 
 	private void addOptionalItemOfBasicCategory(List<ItemsByCategory> fixedInputs, String personId, String employeeId) {
 		List<ItemsByCategory> addInputs = new ArrayList<ItemsByCategory>();
 
-		fixedInputs.forEach(ctg -> {
+		fixedInputs.forEach(category -> {
 
-			List<ItemValue> lstItem = ctg.getItems().stream().filter(item -> item.itemCode().charAt(1) == 'O')
+			List<ItemValue> optionalItems = category.getItems().stream().filter(item -> item.itemCode().charAt(1) == 'O')
 					.collect(Collectors.toList());
 
-			if (!CollectionUtil.isEmpty(lstItem)) {
-				ItemsByCategory newItemCtg = new ItemsByCategory(ctg.getCategoryCd(), null, lstItem);
+			if (!CollectionUtil.isEmpty(optionalItems)) {
+				ItemsByCategory newItemCtg = new ItemsByCategory(category.getCategoryCd(), null, optionalItems);
 				addInputs.add(newItemCtg);
 				// add item for get recordId in commandFacade.add
-				ItemsByCategory itemCtg = new ItemsByCategory(ctg.getCategoryCd(), ctg.getRecordId(), null);
+				ItemsByCategory itemCtg = new ItemsByCategory(category.getCategoryCd(), category.getRecordId(), null);
 				addInputs.add(itemCtg);
 
 			}
