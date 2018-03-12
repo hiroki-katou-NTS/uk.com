@@ -41,7 +41,7 @@
 
 			<div id="contents-area" class="cf">
 				<div
-					data-bind="visible: currentStep()===1 &amp;&amp; createTypeId()===1">
+					data-bind="css: {'visibility-hidden': !(currentStep()===1 &amp;&amp; createTypeId()===1) }">
 					<div id="ccgcomponent"></div>
 				</div>
 				<div id="emp_reg_info_wizard"
@@ -247,7 +247,7 @@
 								</div>
 								<div class='div_line'>
 									<button class="x-large proceed next_btn" id="step1_next_btn"
-										data-bind="click:completeStep1">#{i18n.getText('CPS002_29')}</button>
+										data-bind="click:completeStep0">#{i18n.getText('CPS002_29')}</button>
 								</div>
 							</div>
 						</div>
@@ -376,7 +376,7 @@
 										<button class="prev_btn" id="step2_prev_btn"
 											data-bind="click:prev">#{i18n.getText('CPS002_38')}</button>
 										<button class="x-large proceed next_btn" id="next_btn"
-											data-bind="click:completeStep2">#{i18n.getText('CPS002_29')}</button>
+											data-bind="click:completeStep1">#{i18n.getText('CPS002_29')}</button>
 									</div>
 								</div>
 							</div>

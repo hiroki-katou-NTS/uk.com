@@ -48,11 +48,12 @@ module nts.uk.ui.koExtentions {
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var container = $(element);
             
-            if(nts.uk.util.isNullOrUndefined(container.attr("tabindex"))){
-                container.attr("tabindex", "0");    
-            }
+//            if(nts.uk.util.isNullOrUndefined(container.attr("tabindex"))){
+//                container.attr("tabindex", "0");    
+//            }
             
             container.data("tabindex", container.attr("tabindex"));
+            container.removeAttr("tabindex");
             container.keypress(function (evt, ui){
                 let code = evt.which || evt.keyCode;
                 if (code === 32) {
@@ -176,7 +177,7 @@ module nts.uk.ui.koExtentions {
                     return option;
                 });
             }
-
+            let $input = container.find(".ui-igcombo-field");
             var currentColumnSetting = container.data("columns");
             var currentComboMode = container.data("comboMode");
             var isInitCombo = !_.isEqual(currentColumnSetting, columns) || !_.isEqual(currentComboMode, comboMode);
@@ -208,7 +209,7 @@ module nts.uk.ui.koExtentions {
                     mode: comboMode,
                     disabled: !enable,
                     placeHolder: '',
-                    tabIndex : -1,
+                    tabIndex : nts.uk.util.isNullOrEmpty(container.data("tabindex")) ? 0 : parseInt(container.data("tabindex")), 
                     enableClearButton: false,
                     initialSelectedItems: [
                         { value: selectedValue }
@@ -220,14 +221,24 @@ module nts.uk.ui.koExtentions {
                         }
                     }
                 });
+                
+                $input = container.find(".ui-igcombo-field");
+                $input.focus(function(evt, ui){
+                    $input[0].selectionStart = 0;
+                    $input[0].selectionEnd = 0;
+//                    container.focus();
+                });
             } else {
                 container.igCombo("option", "disabled", !enable);
             }
+            
             if (!enable) { 
                 defVal.applyReset(container, data.value);
-                container.attr("tabindex", "-1");
+                $input.attr("disabled", "disabled");
+//                container.attr("tabindex", "-1");
             } else {
-                container.attr("tabindex", container.data("tabindex"));    
+                $input.removeAttr("disabled");
+//                container.attr("tabindex", container.data("tabindex"));    
             }
             if (isChangeOptions && !isInitCombo) {
                 container.igCombo("option", "dataSource", options);

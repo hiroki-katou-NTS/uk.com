@@ -28,12 +28,13 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransf
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.ExcessOutsideTimeSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.FlexTimeOfTimeSeries;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtion;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTCalMed;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
+import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -650,7 +651,7 @@ public class ExcessOutsideWorkMng {
 		if (settlementPeriod.isSingleMonth(this.yearMonth)){
 			
 			// 単月の時、変形繰越時間を 0 にする
-			this.excessOutsideWork.setDeformationCarryforwardTime(new AttendanceTimeMonth(0));
+			this.excessOutsideWork.setDeformationCarryforwardTime(new AttendanceTimeMonthWithMinus(0));
 			
 			// 精算月の月割増時間を逆時系列で割り当てる　（単月）　※　通常勤務の方式と同じ
 			this.assignMonthlyPremiumTimeByReverseTimeSeriesOfReg(
@@ -660,7 +661,7 @@ public class ExcessOutsideWorkMng {
 			
 			// 複数月の時、変形繰越時間に月割増時間の値をコピーする
 			val monthPremiumTime = regAndIrgTime.getMonthlyTotalPremiumTime();
-			this.excessOutsideWork.setDeformationCarryforwardTime(monthPremiumTime);
+			this.excessOutsideWork.setDeformationCarryforwardTime(new AttendanceTimeMonthWithMinus(monthPremiumTime.v()));
 			
 			// 精算月か確認する
 			if (settlementPeriod.isSettlementMonth(this.yearMonth, this.isRetireMonth)){
@@ -826,6 +827,7 @@ public class ExcessOutsideWorkMng {
 		if (this.outsideOTSetOpt.isPresent()){
 			outsideOTBDItems = this.outsideOTSetOpt.get().getBreakdownItems();
 		}
+		outsideOTBDItems.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
 		outsideOTBDItems.sort((a, b) -> a.getProductNumber().value - b.getProductNumber().value);
 		for (val outsideOTBDItem : outsideOTBDItems){
 			
@@ -873,6 +875,7 @@ public class ExcessOutsideWorkMng {
 		if (this.outsideOTSetOpt.isPresent()){
 			outsideOTBDItems = this.outsideOTSetOpt.get().getBreakdownItems();
 		}
+		outsideOTBDItems.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
 		outsideOTBDItems.sort((a, b) -> a.getProductNumber().value - b.getProductNumber().value);
 		for (val outsideOTBDItem : outsideOTBDItems){
 			
@@ -903,6 +906,7 @@ public class ExcessOutsideWorkMng {
 		if (this.outsideOTSetOpt.isPresent()){
 			overTimes = this.outsideOTSetOpt.get().getOvertimes();
 		}
+		overTimes.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
 		overTimes.sort((a, b) -> a.getOvertime().v() - b.getOvertime().v());
 		
 		// 時間外超過の時間を合計する　→　時間外超過累積時間

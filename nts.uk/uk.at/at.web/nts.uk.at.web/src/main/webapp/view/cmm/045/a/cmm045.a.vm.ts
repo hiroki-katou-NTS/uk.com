@@ -38,9 +38,7 @@ module cmm045.a.viewmodel {
                 { id: 5, name: getText('CMM045_24') },
                 { id: 6, name: getText('CMM045_25') }
             ]);
-            self.selectedRuleCode.subscribe(function(codeChanged) {
-                self.filter();
-            });
+            
             self.selectedCode.subscribe(function(codeChanged) {
                 self.filterByAppType(codeChanged);
             });
@@ -96,6 +94,9 @@ module cmm045.a.viewmodel {
                         self.roundingRules.push(new vmbase.ApplicationDisplayAtr(obj.value, obj.localizedName));
                     });
                     service.getApplicationList(param).done(function(data) {
+                        self.selectedRuleCode.subscribe(function(codeChanged) {
+                            self.filter();
+                        });
                         //luu param
                         if (self.dateValue().startDate == '' || self.dateValue().endDate == '') {
                             let date: vmbase.Date = { startDate: data.startDate, endDate: data.endDate }
@@ -571,7 +572,9 @@ module cmm045.a.viewmodel {
             let self = this;
             //check filter
             if (self.dateValue().startDate == null || self.dateValue().endDate == null) {//期間開始日付または期間終了日付が入力されていない
-                nts.uk.ui.dialog.error({ messageId: "Msg_359" });
+//                $('.ntsStartDate').set
+                $('.ntsDatepicker.nts-input.ntsStartDatePicker.ntsDateRange_Component').ntsError('set', {messageId:"Msg_359"});
+//                nts.uk.ui.dialog.error({ messageId: "Msg_359" });
                 block.clear();
                 return;
             }
@@ -658,6 +661,9 @@ module cmm045.a.viewmodel {
                 block.clear();
             });
         }
+        /**
+         * find row hidden
+         */
         findRowHidden(lstItem: Array<vmbase.DataModeApp>): any{
             let lstHidden = []
             _.each(lstItem, function(item){
@@ -667,6 +673,9 @@ module cmm045.a.viewmodel {
             });
             return lstHidden;
         }
+        /**
+         * find check box
+         */
         findcheck(selectedIds: Array<any>, idCheck: number): boolean {
             let check = false;
             _.each(selectedIds, function(id) {
@@ -726,6 +735,9 @@ module cmm045.a.viewmodel {
                 self.reloadGridApplicaion();
             }
         }
+        /**
+         * count status when filter by appType
+         */
         countStatus(lstApp: Array<vmbase.DataModeApp>): vmbase.ApplicationStatus{
             let unApprovalNumber = 0;
             let approvalNumber = 0;

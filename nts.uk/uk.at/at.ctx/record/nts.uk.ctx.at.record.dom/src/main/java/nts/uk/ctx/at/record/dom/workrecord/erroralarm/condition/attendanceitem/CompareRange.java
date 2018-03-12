@@ -30,6 +30,11 @@ public class CompareRange<V> extends CheckedCondition {
         super();
         this.compareOperator = EnumAdaptor.valueOf(compareOperator, RangeCompareType.class);
     }
+    
+    public CompareRange(RangeCompareType compareOperator) {
+        super();
+        this.compareOperator = compareOperator;
+    }
 
     /**
      * @return the startValue

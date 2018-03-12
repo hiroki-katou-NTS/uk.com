@@ -53,6 +53,7 @@ public class OverTimeWorkDailyPerformDto {
 	private Integer irregularWithinPrescribedOverTimeWork;
 
 	/** フレックス時間: フレックス時間 */
+	
 	@AttendanceItemLayout(layout = "F", jpPropertyName = "フレックス時間")
 	private FlexTimeDto flexTime;
 
@@ -70,7 +71,8 @@ public class OverTimeWorkDailyPerformDto {
 														getAttendanceTime(c.getTimeSpan().getEnd())),
 												c.getFrameNo().v())),
 						ExcessOverTimeWorkMidNightTimeDto
-								.fromOverTimeWorkDailyPerform(domain.getExcessOverTimeWorkMidNightTime().get()),
+								.fromOverTimeWorkDailyPerform(domain.getExcessOverTimeWorkMidNightTime().isPresent()
+																? domain.getExcessOverTimeWorkMidNightTime().get() : null),
 						getAttendanceTime(domain.getOverTimeWorkSpentAtWork()),
 						getAttendanceTime(domain.getIrregularWithinPrescribedOverTimeWork()),
 						domain.getFlexTime() == null ? null
@@ -78,11 +80,11 @@ public class OverTimeWorkDailyPerformDto {
 										getAttendanceTime(domain.getFlexTime().getBeforeApplicationTime())));
 	}
 
-	private static int getAttendanceTime(AttendanceTime time) {
+	private static Integer getAttendanceTime(AttendanceTime time) {
 		return time == null ? null : time.valueAsMinutes();
 	}
 
-	private static int getAttendanceTime(TimeWithDayAttr time) {
+	private static Integer getAttendanceTime(TimeWithDayAttr time) {
 		return time == null ? null : time.valueAsMinutes();
 	}
 

@@ -19,7 +19,7 @@ import nts.uk.ctx.at.request.app.find.setting.company.applicationcommonsetting.A
  * @author yennth
  *
  */
-@Path("at/request/application/common/setting")
+@Path("at/request/application/common/setting/approval")
 @Produces("application/json")
 public class ApprovalSetWebservice extends WebService{
 	@Inject 

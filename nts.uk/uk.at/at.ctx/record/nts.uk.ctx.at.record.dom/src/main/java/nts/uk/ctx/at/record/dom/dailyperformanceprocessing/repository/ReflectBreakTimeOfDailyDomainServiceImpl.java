@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,16 +13,24 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.BreakTimeZoneS
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectTimezoneOutput;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDeductTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezone;
@@ -44,13 +54,60 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 	private FlowWorkSettingRepository flowWorkSettingRep;
 	@Inject
 	private FlexWorkSettingRepository flexWorkSettingRepo;
+	@Inject
+	private DiffTimeWorkSettingRepository diffTimeWorkSettingRepo;
 
 	@Override
-	public void reflectBreakTime(String companyId, List<StampReflectTimezoneOutput> lstStampReflectTimezone,
+	public void reflectBreakTime(String companyId, List<TimeLeavingWork> timeLeavingWorks,
 			WorkInfoOfDailyPerformance WorkInfo) {
 		BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut = new BreakTimeZoneSettingOutPut();
 		// 休憩時間帯設定を確認する
-		this.checkBreakTimeSetting(companyId, WorkInfo, breakTimeZoneSettingOutPut);
+		boolean checkBreakTimeSetting = this.checkBreakTimeSetting(companyId, WorkInfo, breakTimeZoneSettingOutPut);
+		if (!checkBreakTimeSetting) {
+			return;
+		}
+		List<DeductionTime> lstTimezone = breakTimeZoneSettingOutPut.getLstTimezone();
+		Collections.sort(lstTimezone, new Comparator<DeductionTime>() {
+			public int compare(DeductionTime o1, DeductionTime o2) {
+				int t1 = o1.getStart().v();
+				int t2 = o2.getStart().v();
+				if (t1 == t2)
+					return 0;
+				return t1 < t2 ? -1 : 1;
+			}
+		});
+		for (DeductionTime deductionTime : lstTimezone) {
+			// 出退勤と重複する休憩時間帯のみ追加する
+			addBreakTime(timeLeavingWorks);
+		}
+
+	}
+
+	public void addBreakTime(List<TimeLeavingWork> timeLeavingWorks) {
+		Collections.sort(timeLeavingWorks, new Comparator<TimeLeavingWork>() {
+			public int compare(TimeLeavingWork o1, TimeLeavingWork o2) {
+				if (o2 == null || o2.getAttendanceStamp() == null || !o2.getAttendanceStamp().isPresent()
+						|| o2.getAttendanceStamp().get().getStamp() == null
+						|| !o2.getAttendanceStamp().get().getStamp().isPresent()) {
+					return 1;
+				}
+				if (o1 == null || o1.getAttendanceStamp() == null || !o1.getAttendanceStamp().isPresent()
+						|| o1.getAttendanceStamp().get().getStamp() == null
+						|| !o1.getAttendanceStamp().get().getStamp().isPresent()) {
+					return -1;
+				}
+				int t1 = o1.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v().intValue();
+				int t2 = o2.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v().intValue();
+				if (t1 == t2)
+					return 0;
+				return t1 < t2 ? -1 : 1;
+			}
+		});
+		for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
+			
+			// fixed 状態区分 = 非重複
+		}
+
 	}
 
 	// 休憩時間帯設定を確認する
@@ -88,66 +145,107 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 				switch (workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet().value) {
 				case 0:// 固定勤務
 					checkReflect = this.CheckBreakTimeFromFixedWorkSetting(companyId, weekdayHolidayClassification,
-							WorkInfo.getRecordWorkInformation().getWorkTimeCode().v(), breakTimeZoneSettingOutPut);
-					break;
-				case 1:// 時差勤務
-					checkReflect = ConfirmInterTimezoneStaggeredWorkSetting(companyId, weekdayHolidayClassification,
-							WorkInfo, breakTimeZoneSettingOutPut);
+							WorkInfo.getRecordWorkInformation().getWorkTimeCode().v(), breakTimeZoneSettingOutPut,
+							checkWorkDay);
 					break;
 				case 2:// 流動勤務
 					checkReflect = this.confirmIntermissionTimeZone(companyId, weekdayHolidayClassification,
 							WorkInfo.getRecordWorkInformation().getWorkTimeCode().v(), breakTimeZoneSettingOutPut);
 
 					break;
+				case 1:// 時差勤務
+					checkReflect = ConfirmInterTimezoneStaggeredWorkSetting(companyId, weekdayHolidayClassification,
+							WorkInfo, breakTimeZoneSettingOutPut, checkWorkDay);
+					break;
+
 				default:
 					checkReflect = this.CheckBreakTimeFromFixedWorkSetting(companyId, weekdayHolidayClassification,
-							WorkInfo.getRecordWorkInformation().getWorkTimeCode().v(), breakTimeZoneSettingOutPut);
+							WorkInfo.getRecordWorkInformation().getWorkTimeCode().v(), breakTimeZoneSettingOutPut,
+							checkWorkDay);
 					break;
 				}
 
 			} else {
-				checkReflect = this.confirmInterFlexWorkSetting(companyId,
-						weekdayHolidayClassification, WorkInfo.getRecordWorkInformation().getWorkTimeCode().v(),
-						breakTimeZoneSettingOutPut);
+				checkReflect = this.confirmInterFlexWorkSetting(companyId, weekdayHolidayClassification,
+						WorkInfo.getRecordWorkInformation().getWorkTimeCode().v(), breakTimeZoneSettingOutPut,
+						checkWorkDay);
 			}
 
 		}
-		
+
 		return checkReflect;
 	}
 
 	// フレックス勤務設定から休憩時間帯を確認する
 	public boolean confirmInterFlexWorkSetting(String companyId, String weekdayHolidayClassification,
-			String workTimeCode, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut) {
+			String workTimeCode, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut, WorkStyle checkWorkDay) {
 		Optional<FlexWorkSetting> FlexWorkSettingOptional = this.flexWorkSettingRepo.find(companyId, workTimeCode);
 		FlexWorkSetting flexWorkSetting = FlexWorkSettingOptional.get();
-
+		List<DeductionTime> lstTimezone = null;
 		boolean fixRestTime = true;
 		if ("平日".equals(weekdayHolidayClassification)) {
-			// fixRestTime =
-			// flexWorkSetting.getLstHalfDayWorkTimezone().getRestTimezone().isFixRestTime();
-			// lstTimezone =
-			// flowWorkSetting.getHalfDayWorkTimezone().getRestTimezone().getFixedRestTimezone()
-			// .getTimezones();
+			List<FlexHalfDayWorkTime> lstHalfDayWorkTimezone = flexWorkSetting.getLstHalfDayWorkTimezone();
+
+			switch (checkWorkDay.value) {
+			case 3:// 1日出勤系
+				for (FlexHalfDayWorkTime fixHalfDayWorkTimezone : lstHalfDayWorkTimezone) {
+					AmPmAtr dayAtr = fixHalfDayWorkTimezone.getAmpmAtr();
+					// １日
+					if (dayAtr.value == 0) {
+						lstTimezone = fixHalfDayWorkTimezone.getRestTimezone().getFixedRestTimezone().getTimezones();
+						fixRestTime = fixHalfDayWorkTimezone.getRestTimezone().isFixRestTime();
+					}
+				}
+				break;
+			case 1: // 午前出勤系
+				for (FlexHalfDayWorkTime fixHalfDayWorkTimezone : lstHalfDayWorkTimezone) {
+					AmPmAtr dayAtr = fixHalfDayWorkTimezone.getAmpmAtr();
+					// 午前
+					if (dayAtr.value == 1) {
+						lstTimezone = fixHalfDayWorkTimezone.getRestTimezone().getFixedRestTimezone().getTimezones();
+						fixRestTime = fixHalfDayWorkTimezone.getRestTimezone().isFixRestTime();
+					}
+				}
+				break;
+			case 2: // 午後出勤系
+				for (FlexHalfDayWorkTime fixHalfDayWorkTimezone : lstHalfDayWorkTimezone) {
+					AmPmAtr dayAtr = fixHalfDayWorkTimezone.getAmpmAtr();
+					// 午後
+					if (dayAtr.value == 2) {
+						lstTimezone = fixHalfDayWorkTimezone.getRestTimezone().getFixedRestTimezone().getTimezones();
+						fixRestTime = fixHalfDayWorkTimezone.getRestTimezone().isFixRestTime();
+					}
+				}
+				break;
+			default:
+				for (FlexHalfDayWorkTime fixHalfDayWorkTimezone : lstHalfDayWorkTimezone) {
+					AmPmAtr dayAtr = fixHalfDayWorkTimezone.getAmpmAtr();
+					// １日
+					if (dayAtr.value == 0) {
+						lstTimezone = fixHalfDayWorkTimezone.getRestTimezone().getFixedRestTimezone().getTimezones();
+						fixRestTime = fixHalfDayWorkTimezone.getRestTimezone().isFixRestTime();
+
+					}
+				}
+				break;
+			}
+
 		} else {
-			// fixRestTime =
-			// flowWorkSetting.getOffdayWorkTimezone().getRestTimeZone().isFixRestTime();
-			// lstTimezone =
-			// flowWorkSetting.getOffdayWorkTimezone().getRestTimeZone().getFixedRestTimezone()
-			// .getTimezones();
+			fixRestTime = flexWorkSetting.getOffdayWorkTime().getRestTimezone().isFixRestTime();
+			lstTimezone = flexWorkSetting.getOffdayWorkTime().getRestTimezone().getFixedRestTimezone().getTimezones();
 		}
 		if (fixRestTime) {
-			// breakTimeZoneSettingOutPut.setLstTimezone(lstTimezone);
-			// return true;
+			breakTimeZoneSettingOutPut.setLstTimezone(lstTimezone);
+			return true;
 		}
-		// fixed case nay LstTimezone co the null (confirm?)
 		return false;
 
 	}
 
 	// 時差勤務設定から休憩時間帯を確認する
 	public boolean ConfirmInterTimezoneStaggeredWorkSetting(String companyId, String weekdayHolidayClassification,
-			WorkInfoOfDailyPerformance WorkInfo, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut) {
+			WorkInfoOfDailyPerformance WorkInfo, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut,
+			WorkStyle checkWorkDay) {
 
 		if (WorkInfo != null && WorkInfo.getScheduleTimeSheets() != null
 				&& !WorkInfo.getScheduleTimeSheets().isEmpty()) {
@@ -163,7 +261,98 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			}
 			if (workNoIsOne) {
 
+				// 時差勤務時間の計算 xử ly chung newwaves
+				// 時差勤務の時刻補正 xu ly chung newwaves
+				// fixed errorAlarm = false
+				boolean errorAlarm = false;
+				if (errorAlarm) {
+
+					// fixed 13/3 viet tiep
+					// エラーログ書き込み
+					return false;
+				} else {
+					DiffTimeWorkSetting diffTimeWorkSetting = this.diffTimeWorkSettingRepo
+							.find(companyId, WorkInfo.getRecordWorkInformation().getWorkTimeCode().v()).get();
+					List<DiffTimeHalfDayWorkTimezone> lstHalfDayWorkTimezones = diffTimeWorkSetting
+							.getHalfDayWorkTimezones();
+					List<DeductionTime> timezones = null;
+					if ("平日".equals(weekdayHolidayClassification)) {
+						switch (checkWorkDay.value) {
+						case 3:// 1日出勤系
+							for (DiffTimeHalfDayWorkTimezone fixHalfDayWorkTimezone : lstHalfDayWorkTimezones) {
+								AmPmAtr dayAtr = fixHalfDayWorkTimezone.getAmPmAtr();
+								// １日
+								if (dayAtr.value == 0) {
+									timezones = new ArrayList<DeductionTime>();
+									List<DiffTimeDeductTimezone> restTimezones = fixHalfDayWorkTimezone
+											.getRestTimezone().getRestTimezones();
+									for (DiffTimeDeductTimezone diffTimeDeductTimezone : restTimezones) {
+										DeductionTime d = diffTimeDeductTimezone;
+										timezones.add(d);
+									}
+								}
+							}
+							break;
+						case 1: // 午前出勤系
+							for (DiffTimeHalfDayWorkTimezone fixHalfDayWorkTimezone : lstHalfDayWorkTimezones) {
+								AmPmAtr dayAtr = fixHalfDayWorkTimezone.getAmPmAtr();
+								// 午前
+								if (dayAtr.value == 1) {
+									timezones = new ArrayList<DeductionTime>();
+									List<DiffTimeDeductTimezone> restTimezones = fixHalfDayWorkTimezone
+											.getRestTimezone().getRestTimezones();
+									for (DiffTimeDeductTimezone diffTimeDeductTimezone : restTimezones) {
+										DeductionTime d = diffTimeDeductTimezone;
+										timezones.add(d);
+									}
+								}
+							}
+							break;
+						case 2: // 午後出勤系
+							for (DiffTimeHalfDayWorkTimezone fixHalfDayWorkTimezone : lstHalfDayWorkTimezones) {
+								AmPmAtr dayAtr = fixHalfDayWorkTimezone.getAmPmAtr();
+								// 午後
+								if (dayAtr.value == 2) {
+									timezones = new ArrayList<DeductionTime>();
+									List<DiffTimeDeductTimezone> restTimezones = fixHalfDayWorkTimezone
+											.getRestTimezone().getRestTimezones();
+									for (DiffTimeDeductTimezone diffTimeDeductTimezone : restTimezones) {
+										DeductionTime d = diffTimeDeductTimezone;
+										timezones.add(d);
+									}
+								}
+							}
+							break;
+						default:
+							for (DiffTimeHalfDayWorkTimezone fixHalfDayWorkTimezone : lstHalfDayWorkTimezones) {
+								AmPmAtr dayAtr = fixHalfDayWorkTimezone.getAmPmAtr();
+								// １日
+								if (dayAtr.value == 0) {
+									timezones = new ArrayList<DeductionTime>();
+									List<DiffTimeDeductTimezone> restTimezones = fixHalfDayWorkTimezone
+											.getRestTimezone().getRestTimezones();
+									for (DiffTimeDeductTimezone diffTimeDeductTimezone : restTimezones) {
+										DeductionTime d = diffTimeDeductTimezone;
+										timezones.add(d);
+									}
+								}
+							}
+							break;
+						}
+					} else {
+						List<DiffTimeDeductTimezone> restTimezones = diffTimeWorkSetting.getDayoffWorkTimezone()
+								.getRestTimezone().getRestTimezones();
+						timezones = new ArrayList<DeductionTime>();
+						for (DiffTimeDeductTimezone diffTimeDeductTimezone : restTimezones) {
+							DeductionTime d = diffTimeDeductTimezone;
+							timezones.add(d);
+						}
+					}
+					breakTimeZoneSettingOutPut.setLstTimezone(timezones);
+					return true;
+				}
 			}
+			return false;
 		}
 		return false;
 	}
@@ -189,24 +378,61 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			breakTimeZoneSettingOutPut.setLstTimezone(lstTimezone);
 			return true;
 		}
-		// fixed case nay LstTimezone co the null (confirm?)
 		return false;
 	}
 
 	// 固定勤務設定から休憩時間帯を確認する
 	public boolean CheckBreakTimeFromFixedWorkSetting(String companyId, String weekdayHolidayClassification,
-			String workTimeCode, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut) {
+			String workTimeCode, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut, WorkStyle checkWorkDay) {
 
 		List<DeductionTime> lstTimezone = new ArrayList<DeductionTime>();
 		Optional<FixedWorkSetting> FixedWorkSettingOptional = this.fixedWorkSettingRepo.findByKey(companyId,
 				workTimeCode);
 		// check null?
 		FixedWorkSetting fixedWorkSetting = FixedWorkSettingOptional.get();
+		List<FixHalfDayWorkTimezone> lstHalfDayWorkTimezone = fixedWorkSetting.getLstHalfDayWorkTimezone();
 		if ("平日".equals(weekdayHolidayClassification)) {
-			List<FixHalfDayWorkTimezone> lstHalfDayWorkTimezone = fixedWorkSetting.getLstHalfDayWorkTimezone();
-			for (FixHalfDayWorkTimezone fixHalfDayWorkTimezone : lstHalfDayWorkTimezone) {
-				List<DeductionTime> timezones = fixHalfDayWorkTimezone.getRestTimezone().getLstTimezone();
-				lstTimezone.addAll(timezones);
+			switch (checkWorkDay.value) {
+			case 3:// 1日出勤系
+				for (FixHalfDayWorkTimezone fixHalfDayWorkTimezone : lstHalfDayWorkTimezone) {
+					AmPmAtr dayAtr = fixHalfDayWorkTimezone.getDayAtr();
+					// １日
+					if (dayAtr.value == 0) {
+						List<DeductionTime> timezones = fixHalfDayWorkTimezone.getRestTimezone().getLstTimezone();
+						lstTimezone.addAll(timezones);
+					}
+				}
+				break;
+			case 1: // 午前出勤系
+				for (FixHalfDayWorkTimezone fixHalfDayWorkTimezone : lstHalfDayWorkTimezone) {
+					AmPmAtr dayAtr = fixHalfDayWorkTimezone.getDayAtr();
+					// 午前
+					if (dayAtr.value == 1) {
+						List<DeductionTime> timezones = fixHalfDayWorkTimezone.getRestTimezone().getLstTimezone();
+						lstTimezone.addAll(timezones);
+					}
+				}
+				break;
+			case 2: // 午後出勤系
+				for (FixHalfDayWorkTimezone fixHalfDayWorkTimezone : lstHalfDayWorkTimezone) {
+					AmPmAtr dayAtr = fixHalfDayWorkTimezone.getDayAtr();
+					// 午後
+					if (dayAtr.value == 2) {
+						List<DeductionTime> timezones = fixHalfDayWorkTimezone.getRestTimezone().getLstTimezone();
+						lstTimezone.addAll(timezones);
+					}
+				}
+				break;
+			default:
+				for (FixHalfDayWorkTimezone fixHalfDayWorkTimezone : lstHalfDayWorkTimezone) {
+					AmPmAtr dayAtr = fixHalfDayWorkTimezone.getDayAtr();
+					// １日
+					if (dayAtr.value == 0) {
+						List<DeductionTime> timezones = fixHalfDayWorkTimezone.getRestTimezone().getLstTimezone();
+						lstTimezone.addAll(timezones);
+					}
+				}
+				break;
 			}
 		} else {
 			List<DeductionTime> timezones = fixedWorkSetting.getOffdayWorkTimezone().getRestTimezone().getLstTimezone();

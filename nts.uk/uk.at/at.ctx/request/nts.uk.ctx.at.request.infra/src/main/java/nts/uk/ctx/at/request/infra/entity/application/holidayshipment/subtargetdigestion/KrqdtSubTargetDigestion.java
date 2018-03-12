@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @author sonnlb
  */
 @Entity
-@Table(name = "KRQDT_ABSENCE_LEAVE_APP")
+@Table(name = "KRQDT_SUB_TAG_DIGESTION")
 @Getter
 @Setter
 @AllArgsConstructor

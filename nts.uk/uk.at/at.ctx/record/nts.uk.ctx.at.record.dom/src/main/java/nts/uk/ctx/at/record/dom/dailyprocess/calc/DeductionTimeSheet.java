@@ -26,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSet;
@@ -383,7 +384,6 @@ public class DeductionTimeSheet {
 	 * 固定勤務 時に休 時間帯を取得する
 	 * @param restCalc 固定給系の計算方法
 	 * @return 休  時間帯
-
  */
 	public static List<TimeSheetOfDeductionItem> getFixedBreakTimeSheet(Optional<FixedRestCalculateMethod> calcRest,List<BreakTimeOfDailyPerformance> breakTimeOfDailyList) {
 		//就業時間帯を参照
@@ -584,4 +584,44 @@ public class DeductionTimeSheet {
 		return timeVacationOffSetTime;
 	}
 	
+	/**
+	 * 受け取った計算範囲へ控除時間帯を補正＆絞り込む
+	 * @param timeSpan　計算範囲
+	 * @param atr　控除区分
+	 * @return　控除項目の時間帯リスト(控除区分に従ってＬｉｓｔ取得)
+	 */
+	public List<TimeSheetOfDeductionItem> getDupliRangeTimeSheet(TimeSpanForCalc timeSpan , DeductionAtr atr) {
+		List<TimeSheetOfDeductionItem> dedList = getDedListWithAtr(atr);
+		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
+		for(TimeSheetOfDeductionItem timeSheet : dedList) {
+			val dupCalcRange = timeSheet.calcrange.getDuplicatedWith(timeSpan);
+			if(dupCalcRange.isPresent()) {
+				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeZoneRounding(dupCalcRange.get().getStart(), dupCalcRange.get().getEnd(), timeSheet.timeSheet.getRounding()),
+																							  dupCalcRange.get(),
+																							  timeSheet.getDeductionTimeSheet(),
+																							  timeSheet.getRecordedTimeSheet(),
+																							  timeSheet.getBonusPayTimeSheet(),
+																							  timeSheet.getSpecBonusPayTimesheet(),
+																							  timeSheet.getMidNightTimeSheet(),
+																							  timeSheet.getGoOutReason(),
+																							  timeSheet.getBreakAtr(),
+																							  timeSheet.getDeductionAtr()));
+			}
+		}
+		return returnList;
+	}
+	
+	/**
+	 * 控除区分に従って控除リスト取得
+	 * @param atr
+	 * @return
+	 */
+	private List<TimeSheetOfDeductionItem> getDedListWithAtr(DeductionAtr atr){
+		if(atr.isDeduction()) {
+			return this.forDeductionTimeZoneList;
+		}
+		else {
+			return this.forRecordTimeZoneList;
+		}
+	}
 }

@@ -18,6 +18,7 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -120,6 +121,10 @@ public class KrcdtDaiShortWorkTime extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return krcdtDaiShortWorkTimePK;
+	}
+
+	public void setData(AttendanceTimeOfDailyPerformance attendanceTime,int frameNo) {
+		
 	}
     
 }
