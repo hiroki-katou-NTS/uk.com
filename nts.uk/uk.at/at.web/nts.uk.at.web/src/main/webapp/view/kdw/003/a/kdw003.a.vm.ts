@@ -1612,7 +1612,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         controlType: 'FlexImage'
                     },
                     {
-                        name: 'Button', controlType: 'Button', text: nts.uk.resource.getText("KDW003_64"), enable: true, click: function(data) {
+                        name: 'Button', controlType: 'Button', text: nts.uk.resource.getText("KDW003_63"), enable: true, click: function(data) {
                             let source: any = $("#dpGrid").igGrid("option", "dataSource");
                             let rowItemSelect: any = _.find(source, function(value: any) {
                                 return value.id == data.id;
