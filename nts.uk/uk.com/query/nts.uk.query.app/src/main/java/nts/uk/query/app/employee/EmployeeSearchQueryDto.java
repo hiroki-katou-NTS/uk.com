@@ -106,8 +106,6 @@ public class EmployeeSearchQueryDto implements Serializable {
 
 	/** The system type. */
 	private Integer systemType;
-	
-	private String roleId;
 
 	/**
 	 * To query model.
@@ -141,7 +139,6 @@ public class EmployeeSearchQueryDto implements Serializable {
 				.sortOrderNo(this.sortOrderNo)
 				.workplaceCodes(this.workplaceCodes)
 				.systemType(this.systemType)
-				.roleId(this.roleId)
 				.build();
 	}
 }
