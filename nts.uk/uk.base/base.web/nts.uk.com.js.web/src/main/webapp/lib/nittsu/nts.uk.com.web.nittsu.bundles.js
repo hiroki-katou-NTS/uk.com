@@ -22292,30 +22292,35 @@ var nts;
                         return $container;
                     };
                     function bindFlip($input) {
-                        var datepickerID = $input.attr("id");
-                        var container = $input.parent();
+                        //            let container = $input.parent();
                         $input.on('show.datepicker', function (evt) {
-                            $input.data("showed", true);
+                            var picker = $(this);
+                            picker.data("showed", true);
                             setTimeout(function () {
-                                $input.trigger("flippickercontainer");
+                                picker.trigger("flippickercontainer");
                             }, 10);
                         });
                         $input.on('hide.datepicker', function (evt) {
-                            $input.data("showed", false);
-                            CONTAINER_CLASSES.forEach(function (cls) { return container.removeClass(cls); });
+                            var picker = $(this);
+                            picker.data("showed", false);
+                            CONTAINER_CLASSES.forEach(function (cls) { return picker.parent().removeClass(cls); });
                             //                let currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
                             //                $("body").append(currentShowContainer);
                         });
                         $(window).resize(function () {
-                            if ($input.data("showed")) {
-                                $input.datepicker('hide');
+                            var picker = $(this);
+                            if (picker.data("showed")) {
+                                picker.datepicker('hide');
                                 setTimeout(function () {
-                                    $input.datepicker('show');
+                                    picker.datepicker('show');
                                 }, 10);
                             }
                         });
                         $input.bind("flippickercontainer", function (evt, data) {
+                            var picker = $(this);
+                            var container = picker.parent();
                             var currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
+                            var datepickerID = picker.attr("id");
                             //                let container = $input.parent();
                             //                container.append(currentShowContainer);
                             var ePos = container.offset();
