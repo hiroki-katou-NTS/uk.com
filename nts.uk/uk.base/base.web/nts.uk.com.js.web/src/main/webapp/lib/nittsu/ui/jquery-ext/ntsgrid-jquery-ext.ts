@@ -287,6 +287,9 @@ module nts.uk.ui.jqueryExtentions {
             sheet.load.setup($self, options);
             
             if (!onDemand.initial($self, options)) {
+                if (!$self.data(internal.ORIG_DS)) {
+                    $self.data(internal.ORIG_DS, _.cloneDeep(options.dataSource));
+                }
                 $self.igGrid(options);
             }
             // Window resize
@@ -623,6 +626,7 @@ module nts.uk.ui.jqueryExtentions {
                 let grid: any = $grid.data("igGrid");
                 if (!utils.updatable($grid)) return;
                 let gridUpdate: any = $grid.data("igGridUpdating");
+                let origDs = $grid.data(internal.ORIG_DS);
                 let autoCommit = grid.options.autoCommit;
                 let columnsMap: any = allColumnsMap || utils.getColumnsMap($grid);
                 let rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
@@ -635,7 +639,11 @@ module nts.uk.ui.jqueryExtentions {
                             time.minutesBased.clock.dayattr.parseString(String(cellValue)).asMinutes).shortText;
                     } catch(e) {}
                 }
-                let origData = gridUpdate._getLatestValues(rId);
+                
+                let setting = $grid.data(internal.SETTINGS);
+                let idx = setting.descriptor.keyIdxes[rId];
+                if (util.isNullOrUndefined(idx)) return;
+                let origData = origDs[idx]; //gridUpdate._getLatestValues(rId);
                 grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
                 let isControl = utils.isNtsControl($grid, columnKey);
                 if (!isControl || forceRender) renderCell($grid, rId, columnKey);
@@ -690,7 +698,40 @@ module nts.uk.ui.jqueryExtentions {
              * Notify update.
              */
             function notifyUpdate($grid: JQuery, rowId: any, columnKey: any, value: any, origData: any) {
-                if (origData && origData[columnKey] === value) return;
+                if (origData && origData[columnKey] === value) {
+                    let updatedCells = $grid.data(internal.UPDATED_CELLS);
+                    if (updatedCells) {
+                        _.remove(updatedCells, function(c, i) {
+                            return c.rowId === rowId && c.columnKey === columnKey;
+                        });
+                    }
+                    
+                    let options = $grid.data(internal.GRID_OPTIONS);
+                    if (!options || !options.getUserId || !options.userId) return;
+                    
+                    let record = $grid.igGrid("findRecordByKey", rowId);
+                    let userId = options.getUserId(record[options.primaryKey]);
+                    let $cell = internal.getCellById($grid, rowId, columnKey);
+                    
+                    let cols;
+                    if (userId === options.userId) {
+                        $cell.removeClass(color.ManualEditTarget);
+                        let targetEdits = $grid.data(internal.TARGET_EDITS);
+                        if (targetEdits && (cols = targetEdits[rowId])) {
+                            _.remove(cols, c => c === columnKey);
+                            if (cols.length === 0) delete targetEdits[rowId]; 
+                        }
+                    } else {
+                        $cell.removeClass(color.ManualEditOther);
+                        let otherEdits = $grid.data(internal.OTHER_EDITS);
+                        if (otherEdits && (cols = otherEdits[rowId])) {
+                            _.remove(cols, c => c === columnKey);
+                            if (cols.length === 0) delete otherEdits[rowId];
+                        }
+                    }
+                    return;
+                }
+                
                 let updatedCells = $grid.data(internal.UPDATED_CELLS);
                 if (!updatedCells) {
                     $grid.data(internal.UPDATED_CELLS, []);
@@ -2206,7 +2247,7 @@ module nts.uk.ui.jqueryExtentions {
                 
                 draw(data: any): JQuery {
                     return $('<div/>').addClass(this.containerClass()).append($("<a/>")
-                                        .addClass("link-button").css({ backgroundColor: "inherit", color: "deepskyblue" })
+                                        .addClass("link-button").css({ backgroundColor: "inherit", color: "#0066CC" })
                                         .text(data.initValue).on("click", $.proxy(data.controlDef.click, null, data.rowId, data.columnKey)))
                                         .data("click", data.controlDef.click);
                 }
@@ -3496,7 +3537,7 @@ module nts.uk.ui.jqueryExtentions {
                                     let minutes = time.minutesBased.clock.dayattr.parseString(value).asMinutes;
                                     let timeOpts = { timeWithDay: true };
                                     let formatter = new text.TimeWithDayFormatter(timeOpts);
-                                    value = formatter.format(minutes);
+                                    if (!util.isNullOrUndefined(minutes)) value = formatter.format(minutes);
                                 } else if (valueType === "Clock") {
                                     let minutes = time.minutesBased.clock.dayattr.parseString(value).asMinutes;
                                     let timeOpts = { timeWithDay: false };
@@ -4117,15 +4158,26 @@ module nts.uk.ui.jqueryExtentions {
             /**
              * Load data
              */
-            export function loadLazy(path: any, keys: Array<any>, startIndex: number, endIndex: number, 
-                dataSource: any, primaryKey: any) {
+            export function loadLazy($grid: JQuery, path: any, keys: Array<any>, 
+                startIndex: number, endIndex: number, dataSource: any, primaryKey: any) {
                 let dfd = $.Deferred();
                 request.ajax(path, keys).done(function(data) {
+                    let origDs = $grid.data(internal.ORIG_DS);
+                    if (!origDs) {
+                        $grid.data(internal.ORIG_DS, []);
+                        origDs = $grid.data(internal.ORIG_DS);
+                    }
+                    
+                    let add = true;
+                    if (origDs.length >= endIndex) {
+                        add = false;
+                    }
                     _.forEach(data, function(rData, index) {
                         for (let i = startIndex; i < endIndex; i++) {
                             if (dataSource[i] && dataSource[i][primaryKey] === rData[primaryKey]) {
                                 rData.loaded = true;
                                 dataSource.splice(i, 1, rData); 
+                                if (add) origDs[i] = _.cloneDeep(rData);
                             }
                         }
                     });
@@ -4171,7 +4223,7 @@ module nts.uk.ui.jqueryExtentions {
                     let firstRecordIndex = (pagingFt.currentPageIndex || 0) * pageSize;
                     let lastRecordIndex = firstRecordIndex + pageSize;
                     let firstPageItems = keys.slice(firstRecordIndex, lastRecordIndex);
-                    loadLazy(demandLoadFt.pageRecordsPath, firstPageItems, firstRecordIndex, lastRecordIndex,
+                    loadLazy($grid, demandLoadFt.pageRecordsPath, firstPageItems, firstRecordIndex, lastRecordIndex,
                         ds, primaryKey).done(function(data) {
                         options.dataSource = options.dataSourceAdapter ? options.dataSourceAdapter(data) : data;
                         $grid.igGrid(options);
@@ -4215,7 +4267,7 @@ module nts.uk.ui.jqueryExtentions {
                         }
                     }
                     if (newKeys.length === 0) return;
-                    loadLazy(loader.pageRecordsPath, newKeys, startIndex, endIndex, dataSource, primaryKey).done(function(data) {
+                    loadLazy($grid, loader.pageRecordsPath, newKeys, startIndex, endIndex, dataSource, primaryKey).done(function(data) {
                         let ds = settings.dataSourceAdapter ? settings.dataSourceAdapter(data) : data;
                         $grid.igGrid("option", "dataSource", ds);
                         ui.owner.pageIndex(ui.newPageIndex);
@@ -4241,7 +4293,7 @@ module nts.uk.ui.jqueryExtentions {
                         }
                     }
                     if (newKeys.length === 0) return;
-                    loadLazy(loader.pageRecordsPath, newKeys, startIndex, endIndex, dataSource, primaryKey).done(function(data) {
+                    loadLazy($grid, loader.pageRecordsPath, newKeys, startIndex, endIndex, dataSource, primaryKey).done(function(data) {
                         let ds = setting.dataSourceAdapter ? setting.dataSourceAdapter(data) : data;
                         $grid.igGrid("option", "dataSource", ds);
                         ui.owner.pageSize(ui.newPageSize);
@@ -4370,6 +4422,7 @@ module nts.uk.ui.jqueryExtentions {
         }
         
         module internal {
+            export let ORIG_DS = "ntsOrigDs";
             export let CONTROL_TYPES = "ntsControlTypesGroup";
             export let COMBO_SELECTED = "ntsComboSelection";
             export let CB_SELECTED = "ntsCheckboxSelection";
