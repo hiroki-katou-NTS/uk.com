@@ -1,6 +1,6 @@
-package nts.uk.ctx.at.schedule.dom.applicationreflectprocess.applicationsmanager.gobackdirectlysche.service.reflectprocess;
+package nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.service;
 
-import nts.uk.ctx.at.schedule.dom.applicationreflectprocess.applicationsmanager.gobackdirectlysche.GoBackDirectlyReflectParam;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.GoBackDirectlyReflectParam;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 
 public interface WorkTypeHoursReflectSche {

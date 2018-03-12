@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.applicationreflectprocess.applicationsmanager.gobackdirectlysche;
+package nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche;
 /**
  * 振出・休出時反映する区分
  * @author dudt
