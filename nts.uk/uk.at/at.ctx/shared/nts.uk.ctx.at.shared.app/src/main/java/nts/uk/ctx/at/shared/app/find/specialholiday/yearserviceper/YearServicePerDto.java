@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class YearServicePerDto {
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 	private String yearServiceCode;
 	private String yearServiceName;
 	private int yearServiceCls;

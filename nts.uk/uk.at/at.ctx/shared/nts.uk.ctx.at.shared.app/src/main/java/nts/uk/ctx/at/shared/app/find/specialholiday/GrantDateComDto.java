@@ -15,7 +15,7 @@ public class GrantDateComDto {
 	private String companyId;
 
 	/*付与日のID*/
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 
 	/*付与基準日*/
 	private int grantDateAtr;

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class YearServicePerSetDto {
 	/**コード**/
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 	private String yearServiceCode;
 	private int yearServiceNo;
 	/** 年数 **/
