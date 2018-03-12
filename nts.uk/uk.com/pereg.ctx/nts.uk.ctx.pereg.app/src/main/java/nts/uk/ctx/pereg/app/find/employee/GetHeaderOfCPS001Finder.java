@@ -86,14 +86,6 @@ public class GetHeaderOfCPS001Finder {
 
 			Optional<AffDepartmentHistory> department = this.departmentRepo.getAffDeptHistByEmpHistStandDate(sid, date);
 
-			String roleId = AppContexts.user().roles().forPersonalInfo();
-
-			boolean isBirthdayRef = isSelfRef(roleId, "COM1_00000000000000000000000_CS00002",
-					"COM1_000000000000000_CS00002_IS00017", AppContexts.user().employeeId().equals(sid));
-
-			boolean isJobEntryRef = isSelfRef(roleId, "COM1_00000000000000000000000_CS00003",
-					"COM1_000000000000000_CS00003_IS00020", AppContexts.user().employeeId().equals(sid));
-
 			if (department.isPresent()) {
 				String historyId = department.get().getHistoryItems().get(0).identifier();
 
@@ -104,23 +96,26 @@ public class GetHeaderOfCPS001Finder {
 
 					if (departmentInfo.isPresent()) {
 						EmployeeInfo _dept = departmentInfo.get();
-						if (isJobEntryRef) {
-							_emp.setDepartmentCode(_dept.getDepartmentCode());
-							_emp.setDepartmentName(_dept.getDepartmentName());
-						} else {
-							_emp.setDepartmentCode(null);
-							_emp.setDepartmentName(null);
-						}
+						_emp.setDepartmentCode(_dept.getDepartmentCode());
+						_emp.setDepartmentName(_dept.getDepartmentName());
 					} else {
-						_emp.setDepartmentCode(null);
-						_emp.setDepartmentName(null);
+						_emp.setDepartmentCode(" ");
+						_emp.setDepartmentName(" ");
 					}
 				}
 			}
 
+			String roleId = AppContexts.user().roles().forPersonalInfo();
+
+			boolean isBirthdayRef = isSelfRef(roleId, "COM1_00000000000000000000000_CS00002",
+					"COM1_000000000000000_CS00002_IS00017", AppContexts.user().employeeId().equals(sid));
+
 			if (!isBirthdayRef) {
 				_emp.setBirthday(null);
 			}
+
+			boolean isJobEntryRef = isSelfRef(roleId, "COM1_00000000000000000000000_CS00003",
+					"COM1_000000000000000_CS00003_IS00020", AppContexts.user().employeeId().equals(sid));
 
 			if (!isJobEntryRef) {
 				_emp.setNumberOfWork(-1);

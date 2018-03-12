@@ -439,7 +439,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let time = new Time(currentDay);
                 objDetailHeaderDs['_' + time.yearMonthDay] = '';
                 detailColumns.push({
-                    key: "_" + time.yearMonthDay, width: "50px", headerText: "", handlerType: "input", dataType: "time/time", visible: true
+                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", min: "-12:00", max: "71:59", visible: true
                 });
 
                 currentDay.setDate(currentDay.getDate() + 1);
@@ -522,7 +522,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 },
                 fields: ["workTypeCode", "workTimeCode", "startTime", "endTime"],
                 upperInput: "startTime",
-                lowerInput: "endTime"
+                lowerInput: "endTime",
+                banEmptyInput: ["time"]
             };
 
             //create VerticalSum Header and Content
@@ -715,7 +716,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             //define the new detailColumns
             _.each(self.arrDay, (x: Time) => {
                 newDetailColumns.push({
-                    key: "_" + x.yearMonthDay, width: "50px", headerText: "", handlerType: "input", dataType: "time/time", visible: true
+                    key: "_" + x.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", min: "-12:00", max: "71:59", visible: true
                 });
             });
 
@@ -875,12 +876,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let currentDay = new Date(self.dtPrev().toString());
             self.arrDay = [];
             let newDetailColumns = [], newObjDetailHeaderDs = [], newDetailHeaderDs = [], newDetailContentDs = [];
-            while (currentDay <= self.dtAft()) {
+            while (moment(currentDay).format('YYYY-MM-DD') <= moment(self.dtAft()).format('YYYY-MM-DD')) {
                 self.arrDay.push(new Time(currentDay));
                 let time = new Time(currentDay);
                 //define the new detailColumns
                 newDetailColumns.push({
-                    key: "_" + time.yearMonthDay, width: "50px", headerText: "", handlerType: "input", dataType: "time/time", visible: true
+                    key: "_" + time.yearMonthDay, width: "50px", handlerType: "input", dataType: "duration/duration", min: "-12:00", max: "71:59", visible: true
                 });
                 //create new detailHeaderDs
                 newObjDetailHeaderDs['_' + time.yearMonthDay] = '';
@@ -1433,9 +1434,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let workScheduleTimeZone: any = self.selectedModeDisplay() != 1 ? [{
                     scheduleCnt: 1,
                     scheduleStartClock: (typeof arrCell[i].value.startTime === 'number') ? arrCell[i].value.startTime
-                        : (arrCell[i].value.startTime ? moment.duration(arrCell[i].value.startTime).asMinutes() : null),
+                        : (arrCell[i].value.startTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(arrCell[i].value.startTime).asMinutes : null),
                     scheduleEndClock: (typeof arrCell[i].value.endTime === 'number') ? arrCell[i].value.endTime
-                        : (arrCell[i].value.endTime ? moment.duration(arrCell[i].value.endTime).asMinutes() : null),
+                        : (arrCell[i].value.endTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(arrCell[i].value.endTime).asMinutes : null),
                     //set static bounceAtr =  1
                     bounceAtr: 1
                 }] : null;

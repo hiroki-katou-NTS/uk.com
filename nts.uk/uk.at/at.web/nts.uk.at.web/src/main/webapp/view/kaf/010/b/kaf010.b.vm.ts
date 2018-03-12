@@ -733,6 +733,8 @@ module nts.uk.at.view.kaf010.b {
                         if(!self.isEmptyOverTimeInput(ko.toJS(self.breakTimes()))){
                             self.calculateFlag(0);
                         }
+                        //Check work content Changed
+                         self.checkWorkContentChanged();
                          dfd.resolve(data);
                     }).fail(function(res){
                         dfd.reject(res);

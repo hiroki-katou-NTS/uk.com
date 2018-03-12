@@ -87,13 +87,14 @@ public class DailyPerformanceCorrectionDto {
 
 	/** Find cell by dataID and columnKey */
 	private Optional<DPCellStateDto> findExistCellState(String dataId, String columnKey) {
-		if(this.lstCellState != null){
+		String rowId, column;
 		for (int i = 0; i < this.lstCellState.size(); i++) {
-			if (this.lstCellState.get(i).getRowId().equals("_" + String.valueOf(dataId))
-					&& this.lstCellState.get(i).getColumnKey().equals(String.valueOf(columnKey))) {
+			rowId = this.lstCellState.get(i).getRowId();
+			column = this.lstCellState.get(i).getColumnKey();
+			if (rowId != null && column != null & rowId.equals("_" + String.valueOf(dataId))
+					&& column.equals(String.valueOf(columnKey))) {
 				return Optional.of(this.lstCellState.get(i));
 			}
-		}
 		}
 		return Optional.empty();
 	}

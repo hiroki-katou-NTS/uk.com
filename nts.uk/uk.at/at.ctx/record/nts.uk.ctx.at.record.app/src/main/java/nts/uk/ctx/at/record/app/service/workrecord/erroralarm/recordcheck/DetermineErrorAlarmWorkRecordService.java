@@ -32,13 +32,13 @@ public class DetermineErrorAlarmWorkRecordService {
 		if (!lstErrorAlarm.isEmpty()) {
 			lstErrorAlarm.forEach(erAl -> {
 				if (erAl.getErrorAlarmCondition() != null && erAl.getErrorDisplayItem() != null) {
-//					Map<String, Boolean> lstSidCheck = workRecordCheckService.check(command.getWorkDate(),
-//							Arrays.asList(command.getEmployeeId()), erAl.getErrorAlarmCondition());
-//					if (!lstSidCheck.isEmpty() && lstSidCheck.get(command.getEmployeeId())) {
+					Map<String, Boolean> lstSidCheck = workRecordCheckService.check(command.getWorkDate(),
+							Arrays.asList(command.getEmployeeId()), erAl.getErrorAlarmCondition());
+					if (!lstSidCheck.isEmpty() && lstSidCheck.get(command.getEmployeeId())) {
 						createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, command.getEmployeeId(),
 								command.getWorkDate(), new ErrorAlarmWorkRecordCode(erAl.getCode().v()), Arrays.asList(erAl.getErrorDisplayItem().intValue()));
 					}
-//				}
+				}
 			});
 		}
 	}

@@ -43,8 +43,10 @@ public class IntegrationOfDaily {
 	//社員の日別実績エラー一覧
 	private List<EmployeeDailyPerError> employeeError;
 	//日別実績の外出時間帯
+	@Setter
 	private Optional<OutingTimeOfDailyPerformance> outingTime;
 	//日別実績の休憩時間帯
+	@Setter
 	private List<BreakTimeOfDailyPerformance> breakTime;
 	//日別実績の勤怠時間
 	@Setter
@@ -54,6 +56,7 @@ public class IntegrationOfDaily {
 	//日別実績の出退勤
 	private Optional<TimeLeavingOfDailyPerformance> attendanceLeave;
 	//日別実績の短時間勤務時間帯
+	@Setter
 	private Optional<ShortTimeOfDailyPerformance> shortTime;
 	//日別実績の特定日区分
 	private Optional<SpecificDateAttrOfDailyPerfor> specDateAttr;
