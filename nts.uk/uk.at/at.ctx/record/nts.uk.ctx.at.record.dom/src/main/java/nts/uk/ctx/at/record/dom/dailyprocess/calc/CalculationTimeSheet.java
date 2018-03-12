@@ -530,4 +530,22 @@ public abstract class CalculationTimeSheet {
 			return new AttendanceTime(0);
 		}
 	}
+	
+//	/**
+//	 * 控除区分に従って該当のリストを取得(現時点では休憩のみしか取得できない)
+//	 * @param dedAtr
+//	 * @param conAtr
+//	 * @return
+//	 */
+//	public List<TimeSheetOfDeductionItem> getDedTimeSheetByDedAtr(DeductionAtr dedAtr,ConditionAtr conAtr){
+//		switch(dedAtr) {
+//		case Appropriate:
+//			return this.recordedTimeSheet.stream().filter(tc -> tc.getBreakAtr().get().isBreak()).collect(Collectors.toList());
+//		case Deduction:
+//			return this.deductionTimeSheet.stream().filter(tc -> tc.getBreakAtr().get().isBreak()).collect(Collectors.toList());
+//		default:
+//			throw new RuntimeException("unknown DedAtr:" + dedAtr);
+//		}
+//		
+//	}
 }
