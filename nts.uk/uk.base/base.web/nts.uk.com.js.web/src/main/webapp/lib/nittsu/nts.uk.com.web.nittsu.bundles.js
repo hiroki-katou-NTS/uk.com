@@ -13926,10 +13926,11 @@ var nts;
                      */
                     ComboBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var container = $(element);
-                        if (nts.uk.util.isNullOrUndefined(container.attr("tabindex"))) {
-                            container.attr("tabindex", "0");
-                        }
+                        //            if(nts.uk.util.isNullOrUndefined(container.attr("tabindex"))){
+                        //                container.attr("tabindex", "0");    
+                        //            }
                         container.data("tabindex", container.attr("tabindex"));
+                        container.removeAttr("tabindex");
                         container.keypress(function (evt, ui) {
                             var code = evt.which || evt.keyCode;
                             if (code === 32) {
@@ -14038,6 +14039,7 @@ var nts;
                                 return option;
                             });
                         }
+                        var $input = container.find(".ui-igcombo-field");
                         var currentColumnSetting = container.data("columns");
                         var currentComboMode = container.data("comboMode");
                         var isInitCombo = !_.isEqual(currentColumnSetting, columns) || !_.isEqual(currentComboMode, comboMode);
@@ -14067,7 +14069,7 @@ var nts;
                                 mode: comboMode,
                                 disabled: !enable,
                                 placeHolder: '',
-                                tabIndex: -1,
+                                tabIndex: nts.uk.util.isNullOrEmpty(container.data("tabindex")) ? 0 : parseInt(container.data("tabindex")),
                                 enableClearButton: false,
                                 initialSelectedItems: [
                                     { value: selectedValue }
@@ -14079,16 +14081,22 @@ var nts;
                                     }
                                 }
                             });
+                            $input = container.find(".ui-igcombo-field");
+                            $input.focus(function (evt, ui) {
+                                $input[0].selectionStart = 0;
+                                $input[0].selectionEnd = 0;
+                                //                    container.focus();
+                            });
                         }
                         else {
                             container.igCombo("option", "disabled", !enable);
                         }
                         if (!enable) {
                             defVal.applyReset(container, data.value);
-                            container.attr("tabindex", "-1");
+                            $input.attr("disabled", "disabled");
                         }
                         else {
-                            container.attr("tabindex", container.data("tabindex"));
+                            $input.removeAttr("disabled");
                         }
                         if (isChangeOptions && !isInitCombo) {
                             container.igCombo("option", "dataSource", options);
@@ -16128,6 +16136,9 @@ var nts;
                                 }
                             }, 100);
                         });
+                        $grid.bind("checknewitem", function (evt) {
+                            return false;
+                        });
                     };
                     NtsGridListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $grid = $(element);
@@ -16147,7 +16158,22 @@ var nts;
                             }
                         }
                         $grid.data("enable", enable);
-                        if ($grid.data("ui-changed") !== true) {
+                        if (String($grid.attr("filtered")) === "true" && $grid.data("ui-changed") !== true) {
+                            var filteredSource_1 = [];
+                            _.forEach(gridSource, function (item) {
+                                var itemX = _.find(sources, function (s) {
+                                    return s[optionsValue] === item[optionsValue];
+                                });
+                                if (!nts.uk.util.isNullOrUndefined(itemX)) {
+                                    filteredSource_1.push(itemX);
+                                }
+                            });
+                            if (!_.isEqual(filteredSource_1, gridSource)) {
+                                $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_1));
+                                $grid.igGrid("dataBind");
+                            }
+                        }
+                        else if ($grid.data("ui-changed") !== true) {
                             var currentSources = sources.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -16166,21 +16192,6 @@ var nts;
                                 $grid.igGrid("dataBind");
                             }
                         }
-                        //            else if(String($grid.attr("filtered")) === "true"){
-                        //                let filteredSource = [];
-                        //                _.forEach(gridSource, function(item){
-                        //                    let itemX = _.find(sources, function (s){
-                        //                        return s[optionsValue] === item[optionsValue];        
-                        //                    });
-                        //                    if(!nts.uk.util.isNullOrUndefined(itemX)){ 
-                        //                        filteredSource.push(itemX);
-                        //                    }     
-                        //                });     
-                        //                if(!_.isEqual(filteredSource, gridSource)){
-                        //                    $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource));
-                        //                    $grid.igGrid("dataBind");    
-                        //                }
-                        //            }
                         var currentSelectedItems = $grid.ntsGridList('getSelected');
                         var isEqual = _.isEqualWith(currentSelectedItems, data.value(), function (current, newVal) {
                             if ((current === undefined && newVal === undefined) || (current !== undefined && current.id === newVal)) {
@@ -16604,17 +16615,17 @@ var nts;
                             }
                         }
                         else if (String(container.attr("filtered")) === "true") {
-                            var filteredSource_1 = [];
+                            var filteredSource_2 = [];
                             _.forEach(currentSource, function (item) {
                                 var itemX = _.find(sources, function (s) {
                                     return s[optionValue] === item[optionValue];
                                 });
                                 if (!nts.uk.util.isNullOrUndefined(itemX)) {
-                                    filteredSource_1.push(itemX);
+                                    filteredSource_2.push(itemX);
                                 }
                             });
-                            if (!_.isEqual(filteredSource_1, currentSource)) {
-                                container.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_1));
+                            if (!_.isEqual(filteredSource_2, currentSource)) {
+                                container.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_2));
                                 container.igGrid("dataBind");
                             }
                         }
@@ -17250,19 +17261,22 @@ var nts;
                         }
                         var srhX = $searchBox.data("searchObject");
                         if (component.attr("filtered") === "true") {
-                            var currentSoruce_1 = srhX.getDataSource();
-                            var newItems = _.filter(arr, function (i) {
-                                return _.find(currentSoruce_1, function (ci) {
-                                    return ci[primaryKey] === i[primaryKey];
-                                }) === undefined;
-                            });
-                            if (!nts.uk.util.isNullOrEmpty(newItems)) {
-                                var gridSources_1 = component.igGrid("option", "dataSource");
-                                _.forEach(newItems, function (item) {
-                                    gridSources_1.push(item);
+                            var isCheck = component.triggerHandler("checknewitem");
+                            if (isCheck !== false) {
+                                var currentSoruce_1 = srhX.getDataSource();
+                                var newItems = _.filter(arr, function (i) {
+                                    return _.find(currentSoruce_1, function (ci) {
+                                        return ci[primaryKey] === i[primaryKey];
+                                    }) === undefined;
                                 });
-                                component.igGrid("option", "dataSource", _.cloneDeep(gridSources_1));
-                                component.igGrid("dataBind");
+                                if (!nts.uk.util.isNullOrEmpty(newItems)) {
+                                    var gridSources_1 = component.igGrid("option", "dataSource");
+                                    _.forEach(newItems, function (item) {
+                                        gridSources_1.push(item);
+                                    });
+                                    component.igGrid("option", "dataSource", _.cloneDeep(gridSources_1));
+                                    component.igGrid("dataBind");
+                                }
                             }
                         }
                         srhX.setDataSource(arr);
