@@ -158,12 +158,12 @@ module nts.uk.com.view.cas012.a.viewmodel {
                     nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                 });
             }).fail((res) => {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_218" , messageParams: [nts.uk.resource.getText("CAS012_24")]});
             }).always(() => {
                 block.clear();
             });
         }
-
+        
         private updateRole(): void {
             var self = this;
             var param: RoleIndividualGrantBaseCommand = new RoleIndividualGrantBaseCommand(self.selectRoleIndividual());
@@ -204,7 +204,6 @@ module nts.uk.com.view.cas012.a.viewmodel {
                     }).always(() => {
                         block.clear();
                     });
-                    console.timeEnd("Delete");
                 })
             }
 
