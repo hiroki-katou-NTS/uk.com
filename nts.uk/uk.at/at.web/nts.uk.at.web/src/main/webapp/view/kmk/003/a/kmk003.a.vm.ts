@@ -64,31 +64,55 @@ module nts.uk.at.view.kmk003.a {
                 let self = this;
                 self.isDetailMode = ko.observable(false);
                 self.useHalfDay = ko.observable(false); // A5_19 initial value = false
-                self.useHalfDay.subscribe(() => {
-                    self.clearAllError();
-                });
                 self.mainSettingModel = new MainSettingModel(self.useHalfDay);
-                self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(() => {
-                    if (self.isNewMode()) {
-                        self.clearAllError();
-                        self.isLoading(false);
-                        self.mainSettingModel.resetData(self.isNewMode());
-                        self.isLoading(true);
-                    }
-                });
-                self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(() => {
-                    if (self.isNewMode()) {
-                        self.clearAllError();
-                        self.isLoading(false);
-                        self.mainSettingModel.resetData(self.isNewMode());
-                        self.isLoading(true);
-                    }
-                });
-
                 self.selectedWorkTimeCode = ko.observable('');
                 self.workTimeSettingLoader = new WorkTimeSettingLoader(self.mainSettingModel.workTimeSetting.worktimeCode);
-                
                 self.workTimeSettings = ko.observableArray([]);
+                self.isLoading = ko.observable(false);
+
+                // data get from service
+                self.isClickSave = ko.observable(false);
+
+                // initial tab mode
+                self.tabMode = ko.observable(TabMode.DETAIL);
+                self.selectedTab = ko.observable(TabID.TAB1);
+                
+                // initial screen mode
+                self.screenMode = ko.observable(ScreenMode.NEW);
+
+                // initial data source
+                self.initDatasource();
+
+                // initial subscribe
+                self.initSubscribe();
+
+                // Set up test mode
+                self.isTestMode = ko.observable(false);
+                self.setupTestMode();
+            }
+           
+            /**
+             * Start page.
+             */
+            public startPage(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                self.bindFunction();
+
+                self.getAllEnums().done(() => {
+                    self.loadListWorktime().done(() => dfd.resolve());
+                });
+                
+                return dfd.promise();
+            }
+
+            /**
+             * Initial data source
+             */
+            private initDatasource(): void {
+                let self = this;
+
+                // Define workTimeSetting column 
                 self.columnWorktimeSettings = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KMK003_10"), prop: 'worktimeCode', width: 50 },
                     { headerText: nts.uk.resource.getText("KMK003_11"), prop: 'workTimeName', width: 180 },
@@ -107,41 +131,13 @@ module nts.uk.at.view.kmk003.a {
                     { code: TabMode.SIMPLE, name: nts.uk.resource.getText("KMK003_190") },
                     { code: TabMode.DETAIL, name: nts.uk.resource.getText("KMK003_191") }
                 ]);
-                self.isLoading = ko.observable(false);
-                self.tabMode = ko.observable(TabMode.DETAIL);
-                self.tabMode.subscribe(newValue => {
-                    if (newValue === TabMode.DETAIL) {
-                        self.changeTabMode(true);
-                    } else {                       
-                        self.changeTabMode(false);
-                    }   
-//                    if (self.isUpdateMode()) {
-//                        self.reloadWorktimeSetting();
-//                    }
-                });
 
                 self.useHalfDayOptions = ko.observableArray([
                     { code: true, name: nts.uk.resource.getText("KMK003_49") },
                     { code: false, name: nts.uk.resource.getText("KMK003_50") }
                 ]);
 
-                self.useHalfDay.subscribe(useHalfDay => {
-                    if (self.mainSettingModel.workTimeSetting.isFlex()) {
-                        self.mainSettingModel.flexWorkSetting.useHalfDayShift(useHalfDay);
-                    }
-                    if (self.mainSettingModel.workTimeSetting.isFixed()) {
-                        self.mainSettingModel.fixedWorkSetting.useHalfDayShift(useHalfDay);
-                    }
-                    if (self.mainSettingModel.workTimeSetting.isDiffTime()) {
-                        self.mainSettingModel.diffWorkSetting.isUseHalfDayShift(useHalfDay);
-                    }
-                });
-
-                // test mode
-                self.isTestMode = ko.observable(false);
-                self.setupTestMode();
-
-                //
+                // tabs data source
                 self.tabs = ko.observableArray([]);
                 self.tabs.push(new TabItem(TabID.TAB1, nts.uk.resource.getText("KMK003_17"), '.tab-a1', true, true));
                 self.tabs.push(new TabItem(TabID.TAB2, nts.uk.resource.getText("KMK003_18"), '.tab-a2', true, true));
@@ -160,12 +156,58 @@ module nts.uk.at.view.kmk003.a {
                 self.tabs.push(new TabItem(TabID.TAB15, nts.uk.resource.getText("KMK003_29"), '.tab-a15', true, true));
                 self.tabs.push(new TabItem(TabID.TAB16, nts.uk.resource.getText("KMK003_30"), '.tab-a16', true, true));
                 self.tabs.push(new TabItem(TabID.TAB17, nts.uk.resource.getText("KMK003_219"), '.tab-a17', true, true));
-                
-                self.selectedTab = ko.observable(TabID.TAB1);
+            }
 
-                //data get from service
-                self.isClickSave = ko.observable(false);
-                
+            /**
+             * Initial subscribe & computed value
+             */
+            private initSubscribe(): void {
+                let self = this;
+
+                self.useHalfDay.subscribe(() => {
+                    self.clearAllError();
+                });
+
+                self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(() => {
+                    if (self.isNewMode()) {
+                        self.clearAllError();
+                        self.isLoading(false);
+                        self.mainSettingModel.resetData(self.isNewMode());
+                        self.isLoading(true);
+                    }
+                });
+                self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(() => {
+                    if (self.isNewMode()) {
+                        self.clearAllError();
+                        self.isLoading(false);
+                        self.mainSettingModel.resetData(self.isNewMode());
+                        self.isLoading(true);
+                    }
+                });
+
+                self.tabMode.subscribe(newValue => {
+                    if (newValue === TabMode.DETAIL) {
+                        self.changeTabMode(true);
+                    } else {                       
+                        self.changeTabMode(false);
+                    }   
+//                    if (self.isUpdateMode()) {
+//                        self.reloadWorktimeSetting();
+//                    }
+                });
+
+                self.useHalfDay.subscribe(useHalfDay => {
+                    if (self.mainSettingModel.workTimeSetting.isFlex()) {
+                        self.mainSettingModel.flexWorkSetting.useHalfDayShift(useHalfDay);
+                    }
+                    if (self.mainSettingModel.workTimeSetting.isFixed()) {
+                        self.mainSettingModel.fixedWorkSetting.useHalfDayShift(useHalfDay);
+                    }
+                    if (self.mainSettingModel.workTimeSetting.isDiffTime()) {
+                        self.mainSettingModel.diffWorkSetting.isUseHalfDayShift(useHalfDay);
+                    }
+                });
+
                 self.selectedWorkTimeCode.subscribe(function(worktimeCode: string){
                     if (worktimeCode) {
                         self.loadWorktimeSetting(worktimeCode);
@@ -173,8 +215,8 @@ module nts.uk.at.view.kmk003.a {
                         $('#search-daily-atr').focus();
                     }
                 });
-                
-                self.screenMode = ko.observable(ScreenMode.NEW);
+
+                // initial computed value
                 self.isNewMode = ko.computed(() => {
                     return self.screenMode() == ScreenMode.NEW;
                 });
@@ -194,27 +236,18 @@ module nts.uk.at.view.kmk003.a {
                     return self.tabMode() == TabMode.DETAIL;
                 });
             }
-           
+
             /**
-             * Start page.
+             * Bind workTimeSetting loader function
              */
-            public startPage(): JQueryPromise<void> {
-                let self = this;
-                let dfd = $.Deferred<void>();
-                self.bindFunction();
-
-                self.getAllEnums().done(() => {
-                    self.loadListWorktime().done(() => dfd.resolve());
-                });
-                
-                return dfd.promise();
-            }
-
             private bindFunction(): void {
                 let self = this;
                 self.workTimeSettingLoader.loadListWorktime = self.loadListWorktime.bind(self);
             }
 
+            /**
+             * Load list work time
+             */
             private loadListWorktime(selectedCode?: string, selectedIndex?: number): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
