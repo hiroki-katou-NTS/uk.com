@@ -324,7 +324,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 														),
 												flexWorkSetOpt.get().getOffdayWorkTime().getLstWorkTimezone(),
 											   flexWorkSetOpt.get().getLstHalfDayWorkTimezone().get(0).getWorkTimezone().getLstOTTimezone(),
-											   /*休出時間帯リスト*/Collections.emptyList(),overDayEndCalcSet, yesterDay.get(), workType.get(),tomorrow.get(),
+											   /*休出時間帯リスト*/Collections.emptyList(),overDayEndCalcSet, yesterDay, workType.get(),tomorrow,
 											   new BreakDownTimeDay(new AttendanceTime(4),new AttendanceTime(4),new AttendanceTime(8)),
 												personalInfo.getStatutoryWorkTime(),autoCalcOverTimeWork,LegalOTSetting.LEGAL_INTERNAL_TIME,StatutoryPrioritySet.priorityNormalOverTimeWork,
 												workTime.get(),flexWorkSetOpt.get(),goOutTimeSheetList,oneRange.getOneDayOfRange(),oneRange.getAttendanceLeavingWork(),
