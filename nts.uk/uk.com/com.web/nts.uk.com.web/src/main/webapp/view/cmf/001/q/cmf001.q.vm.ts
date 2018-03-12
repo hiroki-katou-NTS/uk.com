@@ -227,17 +227,19 @@ module nts.uk.com.view.cmf001.q {
             */
             private stopExecution(): void {
                 let self = this;
+                confirm({ messageId: "Msg_911" }).ifYes(() => {
+                    self.isStop(true);
 
-                self.isStop(true);
-
-                if (nts.uk.text.isNullOrEmpty(self.taskId())) {
-                    return;
-                }
-                nts.uk.request.asyncTask.requestToCancel(self.taskId());
+                    if (nts.uk.text.isNullOrEmpty(self.taskId())) {
+                        return;
+                    }
+                    nts.uk.request.asyncTask.requestToCancel(self.taskId());
+                    }).ifNo(() => {
+                        return;
+                    });
             }
         }
-     }
-    
+    }
     // 対象アルゴリズム
     export class CSVManager {
         csvLine: number;

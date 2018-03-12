@@ -126,7 +126,7 @@ module nts.uk.com.view.cmf001.r.viewmodel {
                 });
             }).ifNo(() => {
                 return;
-            })
+            });
         }
         
         //　閉じる
