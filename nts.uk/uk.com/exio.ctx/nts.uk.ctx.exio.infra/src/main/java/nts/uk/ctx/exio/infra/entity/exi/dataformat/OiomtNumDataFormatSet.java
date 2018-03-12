@@ -108,21 +108,20 @@ public class OiomtNumDataFormatSet extends UkJpaEntity implements Serializable {
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "SYSTEM_TYPE", referencedColumnName = "SYSTEM_TYPE", insertable = false, updatable = false),
 			@JoinColumn(name = "CONDITION_SET_CD", referencedColumnName = "CONDITION_SET_CD", insertable = false, updatable = false),
-			@JoinColumn(name = "CATEGORY_ID", referencedColumnName = "CATEGORY_ID", insertable = false, updatable = false),
 			@JoinColumn(name = "ACCEPT_ITEM_NUM", referencedColumnName = "ACCEPT_ITEM_NUMBER", insertable = false, updatable = false) })
 	public OiomtStdAcceptItem acceptItem;
-	
+
 	@Override
 	protected Object getKey() {
 		return numDataFormatSetPk;
 	}
 
-	public OiomtNumDataFormatSet(String cid, int sysType, String conditionCode, String categoryId, int acceptItemNum,
-			int fixedValue, int decimalDivision, int effectiveDigitLength, String cdConvertCd, String valueOfFixedValue,
+	public OiomtNumDataFormatSet(String cid, int sysType, String conditionCode, int acceptItemNum, int fixedValue,
+			int decimalDivision, int effectiveDigitLength, String cdConvertCd, String valueOfFixedValue,
 			Integer decimalDigitNum, Integer startDigit, Integer endDigit, Integer decimalPointCls,
 			Integer decimalFraction) {
 		super();
-		this.numDataFormatSetPk = new OiomtNumDataFormatSetPk(cid, sysType, conditionCode, categoryId, acceptItemNum);
+		this.numDataFormatSetPk = new OiomtNumDataFormatSetPk(cid, sysType, conditionCode, acceptItemNum);
 		this.fixedValue = fixedValue;
 		this.decimalDivision = decimalDivision;
 		this.effectiveDigitLength = effectiveDigitLength;
@@ -137,8 +136,8 @@ public class OiomtNumDataFormatSet extends UkJpaEntity implements Serializable {
 
 	public static OiomtNumDataFormatSet fromDomain(StdAcceptItem item, NumDataFormatSet domain) {
 		return new OiomtNumDataFormatSet(item.getCid(), item.getSystemType().value, item.getConditionSetCd().v(),
-				item.getCategoryId(), item.getAcceptItemNumber(), domain.getFixedValue().value,
-				domain.getDecimalDivision().value, domain.getEffectiveDigitLength().value,
+				item.getAcceptItemNumber(), domain.getFixedValue().value, domain.getDecimalDivision().value,
+				domain.getEffectiveDigitLength().value,
 				domain.getCdConvertCd().isPresent() ? domain.getCdConvertCd().get().v() : null,
 				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
 				domain.getDecimalDigitNum().isPresent() ? domain.getDecimalDigitNum().get().v() : null,

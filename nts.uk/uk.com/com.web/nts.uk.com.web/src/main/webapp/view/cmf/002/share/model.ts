@@ -102,13 +102,13 @@ module nts.uk.com.view.cmf002.share.model {
         codeEditDigit: KnockoutObservable<number>;
         codeEditingMethod: KnockoutObservable<number>;
         spaceEditing: KnockoutObservable<number>;
-        codeConvertCode: KnockoutObservable<AcceptanceCodeConvert>;
+        codeConvertCode: KnockoutObservable<string>;
         nullValueReplace: KnockoutObservable<number>;
         valueOfNullValueReplace: KnockoutObservable<string>;
         fixedValue: KnockoutObservable<number>;
         valueOfFixedValue: KnockoutObservable<string>;
         constructor(effectDigitLength: number, startDigit: number, endDigit: number, codeEditing: number,
-            codeEditDigit: number, codeEditingMethod: number, spaceEditing: number, codeConvertCode: AcceptanceCodeConvert, 
+            codeEditDigit: number, codeEditingMethod: number, spaceEditing: number, codeConvertCode: string, 
             nullValueReplace: number, valueOfNullValueReplace: string, fixedValue: number, valueOfFixedValue: string) {
             this.effectDigitLength = ko.observable(effectDigitLength);
             this.startDigit = ko.observable(startDigit);

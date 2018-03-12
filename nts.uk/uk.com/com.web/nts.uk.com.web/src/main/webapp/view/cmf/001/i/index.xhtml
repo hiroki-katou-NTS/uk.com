@@ -37,7 +37,7 @@
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: setting().formatSelection,
-								enable: !(!checkActive3() || !inputMode)}"></div>
+								enable: checkActive3() &amp;&amp; inputMode}"></div>
 						</td>
 					</tr>
 					<tr>
@@ -60,7 +60,7 @@
 							data-bind="ntsTextEditor: {
 								constraint: 'DataSettingFixedValue',
 								value: setting().valueOfFixedValue,
-								enable: !(!checkActive2() || !inputMode),
+								enable: checkActive2() &amp;&amp; inputMode,
 								required: checkRequired1(),
 								option : {width : '200px'}}" />
 						</td>
@@ -70,7 +70,7 @@
 			<div id="functions-area-bottom" tabindex="-1">
 				<!--I5_1 設定-->
 				<button id="btn_I5_1" class="x-large proceed" tabindex="5"
-					data-bind="click: saveSetting, enable: inputMode">#{i18n.getText('CMF001_325')}</button>
+					data-bind="click: saveSetting, enable: inputMode &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CMF001_325')}</button>
 				<!--I5_2 キャンセル-->
 				<button id="btn_I5_2" class="large" tabindex="6"
 					data-bind="click: cancelSetting">#{i18n.getText('CMF001_326')}</button>

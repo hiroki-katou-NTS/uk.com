@@ -105,8 +105,6 @@ module nts.uk.com.view.cmf001.g.viewmodel {
             if (self.checkValidInput()) {
                 setShared("CMF001FormatOutput", { lineNumber: self.lineNumber, formatSetting: ko.toJS(self.numDataFormatSetting) });
                 nts.uk.ui.windows.close();
-            }else{
-                alertError({ messageId: "Msg_2"});
             }
         }
         /**
@@ -123,7 +121,8 @@ module nts.uk.com.view.cmf001.g.viewmodel {
                 }else{
                     if (startDigit > endDigit ){
                         checkValidInput = false;  
-                        alertError({ messageId: "Msg_1108"});
+                        alertError({ messageId: "Msg_1108", messageParams: [getText('CMF001_270'), getText('CMF001_273')] });
+                        return false;
                     } 
                 }
             }
@@ -136,6 +135,9 @@ module nts.uk.com.view.cmf001.g.viewmodel {
                 if (_.isEmpty(self.numDataFormatSetting().valueOfFixedValue())){
                     checkValidInput = false;
                 }
+            }
+            if (!checkValidInput){
+                alertError({ messageId: "Msg_2"});
             }
             return checkValidInput;
         }

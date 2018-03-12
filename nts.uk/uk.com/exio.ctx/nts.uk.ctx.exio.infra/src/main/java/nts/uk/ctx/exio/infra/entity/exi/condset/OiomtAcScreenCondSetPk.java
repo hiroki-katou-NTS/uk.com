@@ -41,13 +41,6 @@ public class OiomtAcScreenCondSetPk implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "CONDITION_SET_CD")
 	public String conditionSetCd;
-
-	/**
-    * カテゴリID
-    */
-    @Basic(optional = false)
-    @Column(name = "CATEGORY_ID")
-    public String categoryId;
     
 	/**
 	 * 受入項目の番号

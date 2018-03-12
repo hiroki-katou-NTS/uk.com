@@ -37,8 +37,6 @@ public class StdAcceptItem extends AggregateRoot {
 	 * システム種類
 	 */
 	private SystemType systemType;
-
-	private String categoryId;
 	
 	/**
 	 * CSV項目番号
@@ -70,13 +68,12 @@ public class StdAcceptItem extends AggregateRoot {
 	 */
 	private DataFormatSetting dataFormatSetting;
 
-	public StdAcceptItem(String cid, int systemType, String conditionSetCd, String categoryId, int acceptItemNumber, int categoryItemNo,
+	public StdAcceptItem(String cid, int systemType, String conditionSetCd, int acceptItemNumber, int categoryItemNo,
 			int csvItemNumber, String csvItemName, int itemType, AcScreenCondSet acceptScreenConditionSetting, DataFormatSetting dataFormatSetting) {
 		super();
 		this.cid = cid;
 		this.systemType = EnumAdaptor.valueOf(systemType, SystemType.class);
 		this.conditionSetCd = new AcceptanceConditionCode(conditionSetCd);
-		this.categoryId = categoryId;
 		this.categoryItemNo = categoryItemNo;
 		this.acceptItemNumber = acceptItemNumber;
 		this.csvItemNumber = csvItemNumber;

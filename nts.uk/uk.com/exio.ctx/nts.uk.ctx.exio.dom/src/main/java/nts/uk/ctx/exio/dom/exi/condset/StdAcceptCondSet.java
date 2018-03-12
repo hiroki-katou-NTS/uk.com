@@ -69,21 +69,33 @@ public class StdAcceptCondSet extends AggregateRoot {
 	private Optional<DeleteExistDataMethod> deleteExtDataMethod;
 
 	public StdAcceptCondSet(String cid, int systemType, String conditionSetCd, String conditionSetName,
-			int deleteExistData, int acceptMode, int checkCompleted, String categoryId, Integer csvDataLineNumber,
+			int deleteExistData, Integer acceptMode, int checkCompleted, String categoryId, Integer csvDataLineNumber,
 			Integer csvDataStartLine, Integer deleteExtDataMethod) {
 		super();
 		this.cid = cid;
 		this.conditionSetCd = new AcceptanceConditionCode(conditionSetCd);
 		this.systemType = EnumAdaptor.valueOf(systemType, SystemType.class);
 		this.deleteExistData = EnumAdaptor.valueOf(deleteExistData, NotUseAtr.class);
-		this.acceptMode = Optional.ofNullable(EnumAdaptor.valueOf(acceptMode, AcceptMode.class));
+		if (acceptMode == null)
+			this.acceptMode = Optional.empty();
+		else
+			this.acceptMode = Optional.of(EnumAdaptor.valueOf(acceptMode, AcceptMode.class));
 		this.conditionSetName = new AcceptanceConditionName(conditionSetName);
 		this.checkCompleted = EnumAdaptor.valueOf(checkCompleted, NotUseAtr.class);
 		this.categoryId = Optional.ofNullable(categoryId);
-		this.csvDataLineNumber = Optional.ofNullable(new AcceptanceLineNumber(csvDataLineNumber));
-		this.csvDataStartLine = Optional.ofNullable(new AcceptanceLineNumber(csvDataStartLine));
-		this.deleteExtDataMethod = Optional
-				.ofNullable(EnumAdaptor.valueOf(deleteExtDataMethod.intValue(), DeleteExistDataMethod.class));
+		if (csvDataLineNumber == null)
+			this.csvDataLineNumber = Optional.empty();
+		else
+			this.csvDataLineNumber = Optional.of(new AcceptanceLineNumber(csvDataLineNumber));
+		if (csvDataStartLine == null)
+			this.csvDataStartLine = Optional.empty();
+		else
+			this.csvDataStartLine = Optional.of(new AcceptanceLineNumber(csvDataStartLine));
+		if (deleteExtDataMethod == null)
+			this.deleteExtDataMethod = Optional.empty();
+		else
+			this.deleteExtDataMethod = Optional
+					.of(EnumAdaptor.valueOf(deleteExtDataMethod.intValue(), DeleteExistDataMethod.class));
 	}
 
 }

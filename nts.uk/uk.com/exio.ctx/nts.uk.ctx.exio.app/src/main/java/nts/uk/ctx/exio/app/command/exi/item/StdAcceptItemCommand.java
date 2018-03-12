@@ -20,7 +20,6 @@ public class StdAcceptItemCommand {
 	 */
 	private String conditionSettingCode;
 
-	private String categoryId;
 	/**
 	 * 受入項目番号
 	 */
@@ -75,8 +74,8 @@ public class StdAcceptItemCommand {
 			dataFormatSet = this.timeFormatSetting == null ? null : this.timeFormatSetting.toDomain();
 			break;
 		}
-		return new StdAcceptItem(companyId, this.systemType, this.getConditionSettingCode(), this.getCategoryId(),
-				this.acceptItemNumber, this.categoryItemNo, this.csvItemNumber, this.csvItemName, this.itemType,
+		return new StdAcceptItem(companyId, this.systemType, this.getConditionSettingCode(), this.acceptItemNumber,
+				this.categoryItemNo, this.csvItemNumber, this.csvItemName, this.itemType,
 				this.screenConditionSetting == null ? null : this.screenConditionSetting.toDomain(), dataFormatSet);
 	}
 
