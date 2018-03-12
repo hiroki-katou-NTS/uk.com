@@ -19,6 +19,7 @@
 }
 
 .contentkcpWorkplace {
+	overflow: hidden !important;
 	padding-top: 8px !important;
 	padding-left: 10px !important;
 }
@@ -28,7 +29,7 @@
 }
 
 .accordion {
-	width: 380px;
+	width: 390px;
 }
 
 .accordion label {
@@ -152,13 +153,11 @@
 	width: 85px;
 }
 .ccg-tabpanel #tab-1 {
-	background-color: white;
 	width: 400px;
 }
 
-.ccg-tabpanel #tab-2 {
+.ccg-tabpanel #tab-1, .ccg-tabpanel #tab-2 {
 	background-color: white;
-	padding-right: 8px;
 }
 
 #component-ccg001 {

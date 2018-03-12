@@ -31,7 +31,7 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 	private final String FIND_LIST_CODE = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId "
 			+ " AND a.kwrmtErAlWorkRecordPK.errorAlarmCode = :errorAlarmCode ";
 	private final String FIND_ALL_ER_AL_COMPANY = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId "
-			+ " AND a.useAtr = 1 AND  a.fixedAtr = 0 AND a.typeAtr IN (0,1)";
+			+ " AND a.useAtr = 1 AND a.typeAtr IN (0,1)";
 	
 
 	@Override

@@ -34,4 +34,6 @@ public @interface AttendanceItemLayout {
 	String methodForEnumValues() default "";
 	
 	String enumField() default "";
+	
+	boolean removeConflictEnum() default false;
 }

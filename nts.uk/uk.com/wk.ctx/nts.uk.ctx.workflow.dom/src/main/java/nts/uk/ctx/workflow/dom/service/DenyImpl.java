@@ -70,13 +70,14 @@ public class DenyImpl implements DenyService {
 							approvalFrame.setRepresenterID(employeeID);
 							approvalFrame.setApprovalDate(GeneralDate.today());
 							approvalFrame.setApprovalReason(memo);
+							approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 							continue;
 						} else {
 							continue;
 						}
 					}
 				} else {
-					if(!((Strings.isNotBlank(approvalFrame.getApproverID())&&approvalFrame.getApproverID().equals(employeeID))|
+					if(!((Strings.isNotBlank(approvalFrame.getApproverID())&&approvalFrame.getApproverID().equals(employeeID))||
 						(Strings.isNotBlank(approvalFrame.getRepresenterID())&&approvalFrame.getRepresenterID().equals(employeeID)))){
 						continue;
 					}
@@ -86,6 +87,7 @@ public class DenyImpl implements DenyService {
 				approvalFrame.setRepresenterID("");
 				approvalFrame.setApprovalDate(GeneralDate.today());
 				approvalFrame.setApprovalReason(memo);
+				approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 				executedFlag = true;
 			}
 			approvalRootStateRepository.update(approvalRootState);
