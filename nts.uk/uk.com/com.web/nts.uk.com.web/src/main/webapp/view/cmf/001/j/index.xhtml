@@ -38,7 +38,7 @@
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: setting().effectiveDigitLength,
-								enable: !(!checkActive6() || !inputMode),}"></div>
+								enable: checkActive6() &amp;&amp; inputMode}"></div>
 						</td>
 						<td>
 							<div class="disp-inline" tabindex="-1">
@@ -47,7 +47,7 @@
 									data-bind="ntsNumberEditor: {
 										constraint: 'AcceptedDigit',
 										value: setting().startDigit, 
-										enable: !(!checkActive6() || !checkActive1() || !inputMode),
+										enable: checkActive6() &amp;&amp; checkActive1() &amp;&amp; inputMode,
 										required: checkRequired1(),
 										option : {width : '40px'}}" />
 							</div> <label>#{i18n.getText('CMF001_336')}</label> <label>#{i18n.getText('CMF001_337')}</label>
@@ -57,7 +57,7 @@
 									data-bind="ntsNumberEditor: {
 										constraint: 'AcceptedDigit',
 										value: setting().endDigit, 
-										enable: !(!checkActive6() || !checkActive1() || !inputMode),
+										enable: checkActive6() &amp;&amp; checkActive1() &amp;&amp; inputMode,
 										required: checkRequired1(),
 										option : {width : '40px'}}" />
 							</div> <label tabindex="-1">#{i18n.getText('CMF001_339')}</label>
@@ -77,7 +77,7 @@
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: setting().decimalSelect,
-								enable: !(!checkActive6() || !inputMode) }"></div>
+								enable: checkActive6() &amp;&amp; inputMode }"></div>
 						</td>
 					</tr>
 					<!-- J4 -->
@@ -94,7 +94,7 @@
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: setting().hourMinSelect,
-								enable: !(!checkActive6() || !checkActive4() || !inputMode) }"></div>
+								enable: checkActive6() &amp;&amp; checkActive4() &amp;&amp; inputMode }"></div>
 						</td>
 					</tr>
 					<!-- J5 -->
@@ -109,7 +109,7 @@
 								data-bind="ntsComboBox: {
 								options: itemsDelimiterSet,
 								optionsValue: 'code',
-								enable: !(!checkActive6() || !inputMode) ,
+								enable: checkActive6() &amp;&amp; inputMode ,
 								visibleItemsCount: 5,
 								value: setting().delimiterSet,
 								optionsText: 'name',
@@ -132,7 +132,7 @@
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: setting().roundProc,
-								enable: !(!checkActive6() || !checkActive5() || !inputMode)}"></div>
+								enable: checkActive6() &amp;&amp; checkActive5() &amp;&amp; inputMode}"></div>
 						</td>
 						<td>
 							<!--J6_5 端数処理内容-->
@@ -140,7 +140,7 @@
 								data-bind="ntsComboBox: {
 								options: itemsRoundProcCls,
 								optionsValue: 'code',
-								enable: !(!checkActive6() || !checkActive5() || !checkActive2() || !inputMode), 
+								enable: checkActive6() &amp;&amp; checkActive5() &amp;&amp; checkActive2() &amp;&amp; inputMode, 
 								required: checkRequired2(),
 								visibleItemsCount: 5,
 								value: setting().roundProcCls,
@@ -171,7 +171,7 @@
 							data-bind="ntsTextEditor: {
 								constraint: 'DataSettingFixedValue',
 								value: setting().valueOfFixedValue,
-								enable: !(!checkActive3() || !inputMode),
+								enable: checkActive3() &amp;&amp; inputMode,
 								required: checkRequired3(),
 								option : {width : '200px'}}" />
 						</td>
@@ -181,7 +181,7 @@
 			<div id="functions-area-bottom" tabindex="-1">
 				<!--J8_1 設定-->
 				<button id="btn_J8_1" class="x-large proceed" tabindex="11"
-					data-bind="click: saveSetting, enable: inputMode">#{i18n.getText('CMF001_366')}</button>
+					data-bind="click: saveSetting, enable: inputMode &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CMF001_366')}</button>
 				<!--J8_2 キャンセル-->
 				<button id="btn_J8_2" class="large" tabindex="12"
 					data-bind="click: cancelSetting">#{i18n.getText('CMF001_367')}</button>
