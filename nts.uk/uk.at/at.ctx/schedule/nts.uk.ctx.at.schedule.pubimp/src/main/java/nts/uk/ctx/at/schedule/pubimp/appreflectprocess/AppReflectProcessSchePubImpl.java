@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.pubimp.applicationreflectprocess.applicationsmanager;
+package nts.uk.ctx.at.schedule.pubimp.appreflectprocess;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,14 +13,14 @@ import nts.uk.ctx.at.schedule.dom.applicationreflectprocess.applicationsmanager.
 import nts.uk.ctx.at.schedule.dom.applicationreflectprocess.applicationsmanager.gobackdirectlysche.GoBackDirectlyReflectParam;
 import nts.uk.ctx.at.schedule.dom.applicationreflectprocess.applicationsmanager.gobackdirectlysche.OutsetBreakReflectScheAtr;
 import nts.uk.ctx.at.schedule.dom.applicationreflectprocess.applicationsmanager.gobackdirectlysche.service.reflectprocess.GoBackDirectlyReflectSche;
-import nts.uk.ctx.at.schedule.pub.applicationreflectprocess.applicationsmanager.ApplicationReflectProcessSchePub;
-import nts.uk.ctx.at.schedule.pub.applicationreflectprocess.applicationsmanager.GoBackDirectlyReflectParamDto;
-import nts.uk.ctx.at.schedule.pub.applicationreflectprocess.applicationsmanager.ReasonNotReflectSchePub;
-import nts.uk.ctx.at.schedule.pub.applicationreflectprocess.applicationsmanager.ReflectedStateSchePub;
-import nts.uk.ctx.at.schedule.pub.applicationreflectprocess.applicationsmanager.ReflectedStatesScheInfoDto;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.AppReflectProcessSchePub;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.GoBackDirectlyReflectParamDto;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.ReasonNotReflectSchePub;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.ReflectedStateSchePub;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.ReflectedStatesScheInfoDto;
 
 @Stateless
-public class ApplicationReflectProcessSchePubImpl implements ApplicationReflectProcessSchePub{
+public class AppReflectProcessSchePubImpl implements AppReflectProcessSchePub{
 	@Inject
 	private GoBackDirectlyReflectSche goBackReflect;
 

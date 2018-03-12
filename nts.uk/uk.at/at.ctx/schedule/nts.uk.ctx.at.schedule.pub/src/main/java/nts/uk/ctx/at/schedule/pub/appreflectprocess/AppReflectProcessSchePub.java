@@ -1,6 +1,6 @@
-package nts.uk.ctx.at.schedule.pub.applicationreflectprocess.applicationsmanager;
+package nts.uk.ctx.at.schedule.pub.appreflectprocess;
 
-public interface ApplicationReflectProcessSchePub {
+public interface AppReflectProcessSchePub {
 	/**
 	 * 	直行直帰申請: 勤務予定への反映
 	 * @param reflectPara
