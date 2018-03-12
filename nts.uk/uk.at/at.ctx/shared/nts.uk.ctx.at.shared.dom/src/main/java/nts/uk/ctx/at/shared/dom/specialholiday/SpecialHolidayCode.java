@@ -1,19 +1,15 @@
 package nts.uk.ctx.at.shared.dom.specialholiday;
 
-import nts.arc.primitive.constraint.StringMaxLength;
-import nts.arc.primitive.constraint.StringRegEx;
-import nts.uk.shr.com.primitive.CodePrimitiveValue;
-import nts.uk.shr.com.primitive.ZeroPaddedCode;
+import nts.arc.primitive.IntegerPrimitiveValue;
+import nts.arc.primitive.PrimitiveValue;
+import nts.arc.primitive.constraint.IntegerRange;
 
-@StringRegEx("^0*([1-9]|1[0-9]|20)$")
-//@StringCharType(CharType.ALPHA_NUMERIC)
-@StringMaxLength(2)
-@ZeroPaddedCode
-public class SpecialHolidayCode extends CodePrimitiveValue<SpecialHolidayCode> {
+@IntegerRange(min = 1, max = 20)
+public class SpecialHolidayCode extends IntegerPrimitiveValue<PrimitiveValue<Integer>> {
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 
-	public SpecialHolidayCode(String rawValue) {
+	public SpecialHolidayCode(int rawValue) {
 		super(rawValue);
 	}
 }
