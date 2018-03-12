@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -23,6 +24,6 @@ public interface GetClosurePeriod {
 	 * @param executionTypeOpt 実行区分（通常、再実行）
 	 * @return 集計期間
 	 */
-	ClosurePeriod get(String companyId, String employeeId, GeneralDate criteriaDate,
+	List<ClosurePeriod> get(String companyId, String employeeId, GeneralDate criteriaDate,
 			Optional<YearMonth> yearMonthOpt, Optional<ClosureId> closureIdOpt, Optional<ExecutionType> executionTypeOpt);
 }
