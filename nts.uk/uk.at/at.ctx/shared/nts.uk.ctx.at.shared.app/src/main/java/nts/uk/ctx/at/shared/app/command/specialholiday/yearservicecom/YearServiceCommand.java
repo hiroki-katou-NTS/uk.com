@@ -19,7 +19,7 @@ public class YearServiceCommand {
 	 * @param companyId company id
 	 * @return YearServiceSet
 	 */
-	public YearServiceSet toDomain(String specialHoliday, String companyId) {
+	public YearServiceSet toDomain(int specialHoliday, String companyId) {
 		return YearServiceSet.createFromJavaType(
 				companyId, 
 				specialHoliday, 

@@ -19,32 +19,37 @@ module nts.uk.ui.jqueryExtentions {
         }
 
         function bindFlip($input: JQuery): JQuery{
-            var datepickerID = $input.attr("id");
-            let container = $input.parent();
+//            let container = $input.parent();
             
-            $input.on('show.datepicker', function (evt) { 
-                $input.data("showed", true);
+            $input.on('show.datepicker', function (evt) {
+                let picker = $(this); 
+                picker.data("showed", true);
                 setTimeout(function (){
-                    $input.trigger("flippickercontainer");
+                    picker.trigger("flippickercontainer");
                 }, 10);
             });
             $input.on('hide.datepicker', function (evt) {
-                $input.data("showed", false); 
-                CONTAINER_CLASSES.forEach(cls => container.removeClass(cls));
+                let picker = $(this); 
+                picker.data("showed", false); 
+                CONTAINER_CLASSES.forEach(cls => picker.parent().removeClass(cls));
 //                let currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
 //                $("body").append(currentShowContainer);
             });
             $( window ).resize(function() {
-                if($input.data("showed")){
-                    $input.datepicker('hide');
+                let picker = $(this); 
+                if(picker.data("showed")){
+                    picker.datepicker('hide');
                     setTimeout(function (){
-                        $input.datepicker('show');
+                        picker.datepicker('show');
                     }, 10);   
                 }
             });
             
             $input.bind("flippickercontainer", function(evt, data){
+                let picker = $(this); 
+                let container = picker.parent();
                 let currentShowContainer = $(".datepicker-container:not(.datepicker-hide)");
+                let datepickerID = picker.attr("id");
 //                let container = $input.parent();
 //                container.append(currentShowContainer);
                 let ePos = container.offset();

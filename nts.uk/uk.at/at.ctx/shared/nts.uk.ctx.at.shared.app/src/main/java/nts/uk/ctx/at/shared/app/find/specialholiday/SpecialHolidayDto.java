@@ -8,7 +8,7 @@ import lombok.Data;
 public class SpecialHolidayDto {
 
 	/*特別休暇コード*/
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 
 	/*特別休暇名称*/
 	private String specialHolidayName;

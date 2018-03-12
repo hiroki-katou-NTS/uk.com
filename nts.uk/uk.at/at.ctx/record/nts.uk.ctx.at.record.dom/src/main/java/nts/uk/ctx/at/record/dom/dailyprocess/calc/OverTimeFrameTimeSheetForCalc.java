@@ -180,7 +180,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 				 							 .map(tc -> tc.convertForCalcCorrectRange(tc.getCalcrange().getDuplicatedWith(timeSpan).get()))
 				 							 .collect(Collectors.toList());
 		/*深夜*/
-		val duplicateMidNightSpan = overTimeHourSet.getTimezone().getDuplicatedWith(midNightTimeSheet.getTimeSpan());
+		val duplicateMidNightSpan = timeSpan.getDuplicatedWith(midNightTimeSheet.getTimeSpan());
 		Optional<MidNightTimeSheetForCalc> duplicatemidNightTimeSheet = Optional.empty();
 		if(duplicateMidNightSpan.isPresent()) {
 			duplicatemidNightTimeSheet = Optional.of(MidNightTimeSheetForCalc.convertForCalc(midNightTimeSheet).getDuplicateRangeTimeSheet(duplicateMidNightSpan.get()));

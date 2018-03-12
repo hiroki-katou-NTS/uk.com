@@ -26,7 +26,7 @@ public class GrantRelationshipFinder {
 	@Inject
 	private RelationshipRepository relationshopRepo;
 	
-	public List<GrantRelationshipDto> finder(String sphdCode) {
+	public List<GrantRelationshipDto> finder(int sphdCode) {
 		String companyId = AppContexts.user().companyId();
 		
 		List<Relationship> relationshipList = relationshopRepo.findAll(companyId);
@@ -38,7 +38,7 @@ public class GrantRelationshipFinder {
 			GrantRelationship grantRelationship = grantRelationshipMap.get(item.getRelationshipCode().v());
 			
 			return new GrantRelationshipDto(
-					grantRelationship != null ? grantRelationship.getSpecialHolidayCode() : "00", 
+					grantRelationship != null ? grantRelationship.getSpecialHolidayCode() : 0, 
 					item.getRelationshipCode().v(),
 					item.getRelationshipName().v(),
 					grantRelationship != null && grantRelationship.getGrantRelationshipDay() != null ? grantRelationship.getGrantRelationshipDay().v() : null,

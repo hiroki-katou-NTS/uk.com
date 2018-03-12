@@ -33,7 +33,7 @@ public class YearServicePerFinder {
 	 * find all year service per
 	 * @return
 	 */
-	public List<YearServicePerDto> finder(String specialHolidayCode){
+	public List<YearServicePerDto> finder(int specialHolidayCode){
 		String companyId = AppContexts.user().companyId();
 		return this.yearServicePerRep.findAllPer(companyId, specialHolidayCode)
 				.stream()

@@ -59,7 +59,7 @@ public class GrantSingle extends DomainObject {
 	 * @param holidayExclusionAtr
 	 * @return
 	 */
-	public static GrantSingle createSimpleFromJavaType(String companyId, String specialHolidayCode,
+	public static GrantSingle createSimpleFromJavaType(String companyId, int specialHolidayCode,
 			int grantDaySingleType, Integer fixNumberDays, int makeInvitation, int holidayExclusionAtr) {
 		return new GrantSingle(companyId, new SpecialHolidayCode(specialHolidayCode),
 				EnumAdaptor.valueOf(grantDaySingleType, GrantDaySingleType.class), 

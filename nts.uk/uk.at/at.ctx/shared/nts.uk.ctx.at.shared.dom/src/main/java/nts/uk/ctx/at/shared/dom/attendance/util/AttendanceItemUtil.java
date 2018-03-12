@@ -123,10 +123,9 @@ public class AttendanceItemUtil {
 					boolean listNoIdx = layout.listNoIndex();
 					List<T> list = processListToMax(
 										ReflectionUtil.getFieldValue(field, attendanceItems),
-										layout.listMaxLength(), 
+										layout, 
 										className, 
-										layout.indexField(),
-										listNoIdx);
+										c.getValue().isEmpty() ? "" : c.getValue().get(0).path());
 					String idxFieldName = listNoIdx ? layout.enumField() : layout.indexField();
 					Field idxField = idxFieldName.isEmpty() ? null : getField(idxFieldName, className);
 					Map<Integer, List<ItemValue>> itemsForIdx = mapByPath(c.getValue(), 
@@ -178,6 +177,21 @@ public class AttendanceItemUtil {
 		});
 
 		return attendanceItems;
+	}
+	
+	private static <T> void clearConflictEnumsInList(AttendanceItemLayout layout, Class<T> className, List<T> value,
+			String path) {
+		if (!layout.enumField().isEmpty() && layout.removeConflictEnum() && !path.isEmpty()) {
+			String enumText = getExConditionFromString(path);
+			if(!enumText.isEmpty()){
+				Field field = getField(layout.enumField(), className);
+				int eVal = AttendanceItemIdContainer.getEnumValue(enumText);
+				value.removeIf(c -> {
+					Integer currentEval = ReflectionUtil.getFieldValue(field, c); 
+					return currentEval != null && currentEval != eVal; 
+				});
+			}
+		}
 	}
 
 	private static Integer getEValAsIdxPlus(String path) {
@@ -268,15 +282,16 @@ public class AttendanceItemUtil {
 		return list;
 	}
 
-	private static <T> List<T> processListToMax(List<T> list, int max, Class<T> targetClass, String idxFieldName, boolean listNoIdx) {
+	private static <T> List<T> processListToMax(List<T> list, AttendanceItemLayout layout, Class<T> targetClass, String path) {
 		list = list == null ? new ArrayList<>() : new ArrayList<>(list);
-		if(listNoIdx){
+		if(layout.listNoIndex()){
 			return list;
 		}
-		if (!idxFieldName.isEmpty()) {
-			processAndSort(list, max, targetClass, idxFieldName);
+		clearConflictEnumsInList(layout, targetClass, list, path);
+		if (!layout.indexField().isEmpty()) {
+			processAndSort(list, layout.listMaxLength(), targetClass, layout.indexField());
 		} else {
-			for (int x = list.size(); x < max; x++) {
+			for (int x = list.size(); x < layout.listMaxLength(); x++) {
 				list.add(ReflectionUtil.newInstance(targetClass));
 			}
 		}

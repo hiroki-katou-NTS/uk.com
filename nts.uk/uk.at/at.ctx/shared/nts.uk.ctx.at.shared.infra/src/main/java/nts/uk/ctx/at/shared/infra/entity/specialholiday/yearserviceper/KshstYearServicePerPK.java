@@ -17,7 +17,7 @@ public class KshstYearServicePerPK implements Serializable{
 	public String companyId;
 	/*コード*/
 	@Column(name = "SPHD_CD")
-	public String specialHolidayCode;
+	public int specialHolidayCode;
 	/*コード*/
 	@Column(name = "YEAR_SERVICE_CD")
 	public String yearServiceCode;

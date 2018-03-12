@@ -39,7 +39,7 @@ public class GrantDateCom extends DomainObject {
 	/* 
 	 * Create from java type
 	 */
-	public static GrantDateCom createFromJavaType(String companyId, String specialHolidayCode, int grantDateAtr,
+	public static GrantDateCom createFromJavaType(String companyId, int specialHolidayCode, int grantDateAtr,
 			GeneralDate grantDate ,List<GrantDateSet> grantDateSets) {
 		return new GrantDateCom(companyId,
 				new SpecialHolidayCode(specialHolidayCode),
