@@ -70,7 +70,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
             return dfd.promise();
         }
 
-        private createSubscribe(): void {
+        private createSubscribe(): void {   
             var self = this;
             self.selectedRoleType.subscribe((value) => {
                 self.getData().done(() => {
@@ -172,12 +172,10 @@ module nts.uk.com.view.cas012.a.viewmodel {
 
             block.invisible();
             service.update(param).done(() => {
-                console.time("Update");
                 self.getData().done(() => {
                     self.selectRoleByKey(param.companyID, param.userID, param.roleType);
                 });
                 nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                console.timeEnd("Update");
             }).fail((res) => {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId });
             }).always(() => {
