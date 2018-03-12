@@ -23327,6 +23327,9 @@ var nts;
                         // Sheet
                         sheet.load.setup($self, options);
                         if (!onDemand.initial($self, options)) {
+                            if (!$self.data(internal.ORIG_DS)) {
+                                $self.data(internal.ORIG_DS, _.cloneDeep(options.dataSource));
+                            }
                             $self.igGrid(options);
                         }
                         // Window resize
@@ -23674,6 +23677,7 @@ var nts;
                             if (!utils.updatable($grid))
                                 return;
                             var gridUpdate = $grid.data("igGridUpdating");
+                            var origDs = $grid.data(internal.ORIG_DS);
                             var autoCommit = grid.options.autoCommit;
                             var columnsMap = allColumnsMap || utils.getColumnsMap($grid);
                             var rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
@@ -23685,7 +23689,11 @@ var nts;
                                 }
                                 catch (e) { }
                             }
-                            var origData = gridUpdate._getLatestValues(rId);
+                            var setting = $grid.data(internal.SETTINGS);
+                            var idx = setting.descriptor.keyIdxes[rId];
+                            if (uk.util.isNullOrUndefined(idx))
+                                return;
+                            var origData = origDs[idx]; //gridUpdate._getLatestValues(rId);
                             grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
                             var isControl = utils.isNtsControl($grid, columnKey);
                             if (!isControl || forceRender)
@@ -23743,8 +23751,40 @@ var nts;
                          * Notify update.
                          */
                         function notifyUpdate($grid, rowId, columnKey, value, origData) {
-                            if (origData && origData[columnKey] === value)
+                            if (origData && origData[columnKey] === value) {
+                                var updatedCells_1 = $grid.data(internal.UPDATED_CELLS);
+                                if (updatedCells_1) {
+                                    _.remove(updatedCells_1, function (c, i) {
+                                        return c.rowId === rowId && c.columnKey === columnKey;
+                                    });
+                                }
+                                var options_1 = $grid.data(internal.GRID_OPTIONS);
+                                if (!options_1 || !options_1.getUserId || !options_1.userId)
+                                    return;
+                                var record_1 = $grid.igGrid("findRecordByKey", rowId);
+                                var userId_1 = options_1.getUserId(record_1[options_1.primaryKey]);
+                                var $cell_1 = internal.getCellById($grid, rowId, columnKey);
+                                var cols = void 0;
+                                if (userId_1 === options_1.userId) {
+                                    $cell_1.removeClass(color.ManualEditTarget);
+                                    var targetEdits = $grid.data(internal.TARGET_EDITS);
+                                    if (targetEdits && (cols = targetEdits[rowId])) {
+                                        _.remove(cols, function (c) { return c === columnKey; });
+                                        if (cols.length === 0)
+                                            delete targetEdits[rowId];
+                                    }
+                                }
+                                else {
+                                    $cell_1.removeClass(color.ManualEditOther);
+                                    var otherEdits = $grid.data(internal.OTHER_EDITS);
+                                    if (otherEdits && (cols = otherEdits[rowId])) {
+                                        _.remove(cols, function (c) { return c === columnKey; });
+                                        if (cols.length === 0)
+                                            delete otherEdits[rowId];
+                                    }
+                                }
                                 return;
+                            }
                             var updatedCells = $grid.data(internal.UPDATED_CELLS);
                             if (!updatedCells) {
                                 $grid.data(internal.UPDATED_CELLS, []);
@@ -24587,8 +24627,8 @@ var nts;
                                 if (headerCell) {
                                     $(headerCell.find("span")[1]).html(text);
                                 }
-                                var options_1 = $grid.data(internal.GRID_OPTIONS);
-                                updateHeaderColumn(options_1.columns, key, text, group);
+                                var options_2 = $grid.data(internal.GRID_OPTIONS);
+                                updateHeaderColumn(options_2.columns, key, text, group);
                                 var sheetMng_1 = $grid.data(internal.SHEETS);
                                 if (sheetMng_1) {
                                     Object.keys(sheetMng_1.sheetColumns).forEach(function (k) {
@@ -25284,7 +25324,7 @@ var nts;
                             };
                             LinkLabel.prototype.draw = function (data) {
                                 return $('<div/>').addClass(this.containerClass()).append($("<a/>")
-                                    .addClass("link-button").css({ backgroundColor: "inherit", color: "deepskyblue" })
+                                    .addClass("link-button").css({ backgroundColor: "inherit", color: "#0066CC" })
                                     .text(data.initValue).on("click", $.proxy(data.controlDef.click, null, data.rowId, data.columnKey)))
                                     .data("click", data.controlDef.click);
                             };
@@ -26559,7 +26599,8 @@ var nts;
                                                 var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
                                                 var timeOpts = { timeWithDay: true };
                                                 var formatter = new uk.text.TimeWithDayFormatter(timeOpts);
-                                                value = formatter.format(minutes);
+                                                if (!uk.util.isNullOrUndefined(minutes))
+                                                    value = formatter.format(minutes);
                                             }
                                             else if (valueType === "Clock") {
                                                 var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
@@ -27187,14 +27228,25 @@ var nts;
                         /**
                          * Load data
                          */
-                        function loadLazy(path, keys, startIndex, endIndex, dataSource, primaryKey) {
+                        function loadLazy($grid, path, keys, startIndex, endIndex, dataSource, primaryKey) {
                             var dfd = $.Deferred();
                             uk.request.ajax(path, keys).done(function (data) {
+                                var origDs = $grid.data(internal.ORIG_DS);
+                                if (!origDs) {
+                                    $grid.data(internal.ORIG_DS, []);
+                                    origDs = $grid.data(internal.ORIG_DS);
+                                }
+                                var add = true;
+                                if (origDs.length >= endIndex) {
+                                    add = false;
+                                }
                                 _.forEach(data, function (rData, index) {
                                     for (var i = startIndex; i < endIndex; i++) {
                                         if (dataSource[i] && dataSource[i][primaryKey] === rData[primaryKey]) {
                                             rData.loaded = true;
                                             dataSource.splice(i, 1, rData);
+                                            if (add)
+                                                origDs[i] = _.cloneDeep(rData);
                                         }
                                     }
                                 });
@@ -27243,7 +27295,7 @@ var nts;
                                 var firstRecordIndex = (pagingFt.currentPageIndex || 0) * pageSize;
                                 var lastRecordIndex = firstRecordIndex + pageSize;
                                 var firstPageItems = keys.slice(firstRecordIndex, lastRecordIndex);
-                                loadLazy(demandLoadFt.pageRecordsPath, firstPageItems, firstRecordIndex, lastRecordIndex, ds, primaryKey).done(function (data) {
+                                loadLazy($grid, demandLoadFt.pageRecordsPath, firstPageItems, firstRecordIndex, lastRecordIndex, ds, primaryKey).done(function (data) {
                                     options.dataSource = options.dataSourceAdapter ? options.dataSourceAdapter(data) : data;
                                     $grid.igGrid(options);
                                 });
@@ -27286,7 +27338,7 @@ var nts;
                                 }
                                 if (newKeys.length === 0)
                                     return;
-                                loadLazy(loader.pageRecordsPath, newKeys, startIndex, endIndex, dataSource, primaryKey).done(function (data) {
+                                loadLazy($grid, loader.pageRecordsPath, newKeys, startIndex, endIndex, dataSource, primaryKey).done(function (data) {
                                     var ds = settings.dataSourceAdapter ? settings.dataSourceAdapter(data) : data;
                                     $grid.igGrid("option", "dataSource", ds);
                                     ui.owner.pageIndex(ui.newPageIndex);
@@ -27313,7 +27365,7 @@ var nts;
                                 }
                                 if (newKeys.length === 0)
                                     return;
-                                loadLazy(loader.pageRecordsPath, newKeys, startIndex, endIndex, dataSource, primaryKey).done(function (data) {
+                                loadLazy($grid, loader.pageRecordsPath, newKeys, startIndex, endIndex, dataSource, primaryKey).done(function (data) {
                                     var ds = setting.dataSourceAdapter ? setting.dataSourceAdapter(data) : data;
                                     $grid.igGrid("option", "dataSource", ds);
                                     ui.owner.pageSize(ui.newPageSize);
@@ -27432,6 +27484,7 @@ var nts;
                     })(settings || (settings = {}));
                     var internal;
                     (function (internal) {
+                        internal.ORIG_DS = "ntsOrigDs";
                         internal.CONTROL_TYPES = "ntsControlTypesGroup";
                         internal.COMBO_SELECTED = "ntsComboSelection";
                         internal.CB_SELECTED = "ntsCheckboxSelection";
