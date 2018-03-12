@@ -25,10 +25,8 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         selectedConditionStartLine: KnockoutObservable<number> = ko.observable(0);
 
         //upload file
-        stereoType: KnockoutObservable<string> = ko.observable('');
         fileId: KnockoutObservable<string> = ko.observable('');
         fileName: KnockoutObservable<string> = ko.observable('');
-        textId: KnockoutObservable<string> = ko.observable("CMF001_447");
         listAccept: KnockoutObservableArray<AcceptItems> = ko.observableArray([]);
         selectedAccept: KnockoutObservable<any> = ko.observable('');
         totalRecord: KnockoutObservable<number> = ko.observable(0);

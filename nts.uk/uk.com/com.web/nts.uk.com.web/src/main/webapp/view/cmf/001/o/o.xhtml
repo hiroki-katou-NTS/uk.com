@@ -20,6 +20,7 @@
 							<!--O5_2 システム種類選択-->
 							<div id="cbbSysType" tabindex="3"
 								data-bind="ntsComboBox: {
+									name: '#[CMF001_443]', 
 									options: listSysType,
 									optionsValue: 'code',
 									visibleItemsCount: 5,
@@ -38,24 +39,25 @@
 								<!--O4_1 条件設定選択(パネル)-->
 								<div tabindex="-1"
 									data-bind="ntsPanel:{width: '320px', height: '464px', direction: 'none', showIcon: true, visible: true}">
-									<!--O4_2 コード/名称-->
-									<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_438')}</div>
-									<!--O4_3 絞り込み検索-->
-									<div tabindex="2" style="width: 320px"
-										data-bind="ntsSearchBox: {
+									<div class="valign-center control-group">
+										<!--O4_2 コード/名称-->
+										<div class="pull-left" tabindex="-1"
+											data-bind="ntsFormLabel: {text: '#{i18n.getText('CMF001_438')}'}"></div>
+										<!--O4_3 絞り込み検索-->
+										<div class="pull-left" tabindex="2" style="width: 230px"
+											data-bind="ntsSearchBox: {
 											searchMode: 'filter', 
 											targetKey: 'dispConditionSettingCode', 
 											comId: 'grd_Condition', 
-											items: listCondition, 
-											selected: selectedConditionCd, 
-											selectedKey: 'dispConditionSettingCode', 
+											items: listCondition, 											
 											fields: ['dispConditionSettingCode', 'dispConditionSettingName'], 
 											mode: 'igGrid'}" />
+									</div>
 									<!--O4_4 条件設定一覧-->
 									<table id="grd_Condition" tabindex="-1"
 										data-bind="ntsGridList: {
 											height: 384,
-											name: '#[CMF001_39]', 
+											name: '#[CMF001_439]', 
 				 							dataSource: listCondition,
 											primaryKey: 'dispConditionSettingCode', 
 											showNumbering: true,
@@ -106,12 +108,14 @@
 											<div id="file-upload" class="form_step0" tabindex="4"
 												style="display: inline-block;"
 												data-bind="ntsFileUpload:{
+													name: '#[CMF001_446]', 
+													text: '#{i18n.getText('CMF001_447')}',
 													filename: fileName,
 													accept: ['.csv'],
-													text: textId,
 													aslink: false,
 													enable: true,
 													required: true,
+													immediateUpload: true,
 													onchange: uploadFile.bind($data)}">
 											</div>
 										</td>
