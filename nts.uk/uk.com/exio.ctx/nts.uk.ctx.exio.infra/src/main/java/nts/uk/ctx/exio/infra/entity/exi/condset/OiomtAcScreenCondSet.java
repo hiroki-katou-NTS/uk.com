@@ -125,12 +125,12 @@ public class OiomtAcScreenCondSet extends UkJpaEntity implements Serializable {
 		return acScreenCondSetPk;
 	}
 
-	public OiomtAcScreenCondSet(String cid, int sysType, String conditionCode, String categoryId, int acceptItemNum,
+	public OiomtAcScreenCondSet(String cid, int sysType, String conditionCode, int acceptItemNum,
 			Integer selCompareCond, Integer timeCondVal1, Integer timeCondVal2, Integer timeMoCondVal1,
 			Integer timeMoCondVal2, GeneralDate dateCondVal1, GeneralDate dateCondVal2, String charCondVal1,
 			String charCondVal2, BigDecimal numCondVal1, BigDecimal numCondVal2) {
 		super();
-		this.acScreenCondSetPk = new OiomtAcScreenCondSetPk(cid, sysType, conditionCode, categoryId, acceptItemNum);
+		this.acScreenCondSetPk = new OiomtAcScreenCondSetPk(cid, sysType, conditionCode, acceptItemNum);
 		this.selCompareCond = selCompareCond;
 		this.timeCondVal2 = timeCondVal2;
 		this.timeCondVal1 = timeCondVal1;
@@ -146,7 +146,7 @@ public class OiomtAcScreenCondSet extends UkJpaEntity implements Serializable {
 
 	public static OiomtAcScreenCondSet fromDomain(StdAcceptItem item, AcScreenCondSet domain) {
 		return new OiomtAcScreenCondSet(item.getCid(), item.getSystemType().value, item.getConditionSetCd().v(),
-				item.getCategoryId(), item.getAcceptItemNumber(),
+				item.getAcceptItemNumber(),
 				domain.getSelectComparisonCondition().isPresent() ? domain.getSelectComparisonCondition().get().value
 						: null,
 				domain.getTimeConditionValue1().isPresent() ? domain.getTimeConditionValue1().get().v() : null,

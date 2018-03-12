@@ -97,13 +97,13 @@ public class OiomtStdAcceptItem extends UkJpaEntity implements Serializable {
 		return stdAcceptItemPk;
 	}
 
-	public OiomtStdAcceptItem(String cid, int sysType, String conditionCode, String categoryId, int acceptItemNum,
-			int categoryItemNo, int csvItemNumber, String csvItemName, int itemType,
-			OiomtAcScreenCondSet acceptScreenCondSet, OiomtNumDataFormatSet numDataFormatSet,
-			OiomtChrDataFormatSet charDataFormatSet, OiomtDateDataFormSet dateDataFormatSet,
-			OiomtInsTimeDatFmSet insTimeDataFormatSet, OiomtTimeDataFmSet timeDataFormatSet) {
+	public OiomtStdAcceptItem(String cid, int sysType, String conditionCode, int acceptItemNum, int categoryItemNo,
+			int csvItemNumber, String csvItemName, int itemType, OiomtAcScreenCondSet acceptScreenCondSet,
+			OiomtNumDataFormatSet numDataFormatSet, OiomtChrDataFormatSet charDataFormatSet,
+			OiomtDateDataFormSet dateDataFormatSet, OiomtInsTimeDatFmSet insTimeDataFormatSet,
+			OiomtTimeDataFmSet timeDataFormatSet) {
 		super();
-		this.stdAcceptItemPk = new OiomtStdAcceptItemPk(cid, sysType, conditionCode, categoryId, acceptItemNum);
+		this.stdAcceptItemPk = new OiomtStdAcceptItemPk(cid, sysType, conditionCode, acceptItemNum);
 		this.categoryItemNo = categoryItemNo;
 		this.csvItemNumber = csvItemNumber;
 		this.csvItemName = csvItemName;
@@ -117,7 +117,7 @@ public class OiomtStdAcceptItem extends UkJpaEntity implements Serializable {
 	}
 
 	public static OiomtStdAcceptItem fromDomain(StdAcceptItem domain) {
-		return new OiomtStdAcceptItem(domain.getCid(), domain.getSystemType().value, domain.getConditionSetCd().v(), "",
+		return new OiomtStdAcceptItem(domain.getCid(), domain.getSystemType().value, domain.getConditionSetCd().v(),
 				domain.getAcceptItemNumber(), domain.getCategoryItemNo(), domain.getCsvItemNumber(),
 				domain.getCsvItemName(), domain.getItemType().value,
 				domain.getAcceptScreenConditionSetting().isPresent()
@@ -161,9 +161,8 @@ public class OiomtStdAcceptItem extends UkJpaEntity implements Serializable {
 			break;
 		}
 		return new StdAcceptItem(entity.stdAcceptItemPk.cid, entity.stdAcceptItemPk.systemType,
-				entity.stdAcceptItemPk.conditionSetCd, entity.stdAcceptItemPk.categoryId,
-				entity.stdAcceptItemPk.acceptItemNumber, entity.categoryItemNo, entity.csvItemNumber,
-				entity.csvItemName, entity.itemType,
+				entity.stdAcceptItemPk.conditionSetCd, entity.stdAcceptItemPk.acceptItemNumber, entity.categoryItemNo,
+				entity.csvItemNumber, entity.csvItemName, entity.itemType,
 				entity.acceptScreenCondSet == null ? null : entity.acceptScreenCondSet.toDomain(), dataFormatSet);
 	}
 
