@@ -98,6 +98,7 @@ module nts.layout {
 
             if (subscribe) {
                 return <IFindData>{
+                    id: `#${subscribe.itemDefId.replace(/[-_]/g, '')}`,
                     data: subscribe,
                     ctrl: $('#' + subscribe.itemDefId.replace(/[-_]/g, ''))
                 };
@@ -117,6 +118,7 @@ module nts.layout {
 
             return subscribes.map(x => {
                 return <IFindData>{
+                    id: `#${x.itemDefId.replace(/[-_]/g, '')}`,
                     data: x,
                     ctrl: $('#' + x.itemDefId.replace(/[-_]/g, ''))
                 };
@@ -130,6 +132,7 @@ module nts.layout {
 
             return subscribes.map(x => {
                 return <IFindData>{
+                    id: `#${x.itemDefId.replace(/[-_]/g, '')}`,
                     data: x,
                     ctrl: $('#' + x.itemDefId.replace(/[-_]/g, ''))
                 };
@@ -163,42 +166,27 @@ module nts.layout {
                 CS00002_IS00015: IFindData = finder.find('CS00002', 'IS00015'),
                 CS00002_IS00016: IFindData = finder.find('CS00002', 'IS00016'),
                 validateName = (item: IFindData) => {
-                    let value: string = ko.toJS(item.data.value),
-                        index: number = value.indexOf('　');
+                    $(document).on('change', item.id, () => {
+                        let value: string = ko.toJS(item.data.value),
+                            index: number = value.indexOf('　'),
+                            lindex: number = value.lastIndexOf('　'),
+                            dom = $(item.id);
 
-                    if (index > -1 && !item.data.value().startsWith('　') && !item.data.value().endsWith('　')) {
-                        rmError(item, "Msg_924");
-                    } else if (item.data.value() && !item.ctrl.parent().hasClass('error')) {
-                        !item.ctrl.is(':disabled') && item.ctrl.ntsError('set', { messageId: "Msg_924" });
-                    }
+                        if (index > 0 && lindex < value.length - 1) {
+                            rmError(dom, "Msg_924");
+                        } else if (!dom.parent().hasClass('error')) {
+                            !dom.is(':disabled') && dom.ntsError('set', { messageId: "Msg_924" });
+                        }
+                    });
                 };
-            if (CS00002_IS00003) {
-                validateName(CS00002_IS00003);
-                CS00002_IS00003.data.value.subscribe(x => {
-                    validateName(CS00002_IS00003);
-                });
-            }
 
-            if (CS00002_IS00004) {
-                validateName(CS00002_IS00004);
-                CS00002_IS00004.data.value.subscribe(x => {
-                    validateName(CS00002_IS00004);
-                });
-            }
+            CS00002_IS00003 && validateName(CS00002_IS00003);
 
-            if (CS00002_IS00015) {
-                validateName(CS00002_IS00015);
-                CS00002_IS00015.data.value.subscribe(x => {
-                    validateName(CS00002_IS00015);
-                });
-            }
+            CS00002_IS00004 && validateName(CS00002_IS00004);
 
-            if (CS00002_IS00016) {
-                validateName(CS00002_IS00016);
-                CS00002_IS00016.data.value.subscribe(x => {
-                    validateName(CS00002_IS00016);
-                });
-            }
+            CS00002_IS00015 && validateName(CS00002_IS00015);
+
+            CS00002_IS00016 && validateName(CS00002_IS00016);
         }
 
         radio = () => {
@@ -249,9 +237,22 @@ module nts.layout {
                 finder = self.finder,
                 groups: Array<IGroupControl> = [
                     {
+                        ctgCode: 'CS00019',
+                        firstTimes: {
+                            start: 'IS00106',
+                            end: 'IS00107'
+                        },
+                        secondTimes: {
+                            start: 'IS00109',
+                            end: 'IS00110'
+                        }
+                    },
+                    {
+                        ctgCode: 'CS00020',
                         workType: 'IS00128'
                     },
                     {
+                        ctgCode: 'CS00020',
                         workType: 'IS00130',
                         workTime: 'IS00131',
                         firstTimes: {
@@ -264,6 +265,7 @@ module nts.layout {
                         }
                     },
                     {
+                        ctgCode: 'CS00020',
                         workType: 'IS00139',
                         workTime: 'IS00140',
                         firstTimes: {
@@ -276,42 +278,7 @@ module nts.layout {
                         }
                     },
                     {
-                        workType: 'IS00157',
-                        workTime: 'IS00158',
-                        firstTimes: {
-                            start: 'IS00160',
-                            end: 'IS00161'
-                        },
-                        secondTimes: {
-                            start: 'IS00163',
-                            end: 'IS00164'
-                        }
-                    },
-                    {
-                        workType: 'IS00166',
-                        workTime: 'IS00167',
-                        firstTimes: {
-                            start: 'IS00169',
-                            end: 'IS00170'
-                        },
-                        secondTimes: {
-                            start: 'IS00172',
-                            end: 'IS00173'
-                        }
-                    },
-                    {
-                        workType: 'IS00175',
-                        workTime: 'IS00176',
-                        firstTimes: {
-                            start: 'IS00178',
-                            end: 'IS00179'
-                        },
-                        secondTimes: {
-                            start: 'IS00181',
-                            end: 'IS00182'
-                        }
-                    },
-                    {
+                        ctgCode: 'CS00020',
                         workType: 'IS00148',
                         workTime: 'IS00149',
                         firstTimes: {
@@ -324,6 +291,46 @@ module nts.layout {
                         }
                     },
                     {
+                        ctgCode: 'CS00020',
+                        workType: 'IS00157',
+                        workTime: 'IS00158',
+                        firstTimes: {
+                            start: 'IS00160',
+                            end: 'IS00161'
+                        },
+                        secondTimes: {
+                            start: 'IS00163',
+                            end: 'IS00164'
+                        }
+                    },
+                    {
+                        ctgCode: 'CS00020',
+                        workType: 'IS00166',
+                        workTime: 'IS00167',
+                        firstTimes: {
+                            start: 'IS00169',
+                            end: 'IS00170'
+                        },
+                        secondTimes: {
+                            start: 'IS00172',
+                            end: 'IS00173'
+                        }
+                    },
+                    {
+                        ctgCode: 'CS00020',
+                        workType: 'IS00175',
+                        workTime: 'IS00176',
+                        firstTimes: {
+                            start: 'IS00178',
+                            end: 'IS00179'
+                        },
+                        secondTimes: {
+                            start: 'IS00181',
+                            end: 'IS00182'
+                        }
+                    },
+                    {
+                        ctgCode: 'CS00020',
                         workType: 'IS00193',
                         workTime: 'IS00194',
                         firstTimes: {
@@ -336,6 +343,7 @@ module nts.layout {
                         }
                     },
                     {
+                        ctgCode: 'CS00020',
                         workType: 'IS00202',
                         workTime: 'IS00203',
                         firstTimes: {
@@ -348,6 +356,7 @@ module nts.layout {
                         }
                     },
                     {
+                        ctgCode: 'CS00020',
                         workType: 'IS00211',
                         workTime: 'IS00212',
                         firstTimes: {
@@ -360,6 +369,7 @@ module nts.layout {
                         }
                     },
                     {
+                        ctgCode: 'CS00020',
                         workType: 'IS00220',
                         workTime: 'IS00221',
                         firstTimes: {
@@ -372,6 +382,7 @@ module nts.layout {
                         }
                     },
                     {
+                        ctgCode: 'CS00020',
                         workType: 'IS00229',
                         workTime: 'IS00230',
                         firstTimes: {
@@ -384,6 +395,7 @@ module nts.layout {
                         }
                     },
                     {
+                        ctgCode: 'CS00020',
                         workType: 'IS00238',
                         workTime: 'IS00239',
                         firstTimes: {
@@ -396,6 +408,7 @@ module nts.layout {
                         }
                     },
                     {
+                        ctgCode: 'CS00020',
                         workType: 'IS00184',
                         workTime: 'IS00185',
                         firstTimes: {
@@ -417,17 +430,64 @@ module nts.layout {
                 setEditAble = (ctrl: IFindData, editable?: boolean) => {
                     ctrl && ctrl.data.editable(editable || false);
                 },
+                validateGroup = (group: IGroupControl) => {
+                    let firstTimes: ITimeFindData = group.firstTimes && {
+                        start: finder.find(group.ctgCode, group.firstTimes.start),
+                        end: finder.find(group.ctgCode, group.firstTimes.end)
+                    },
+                        secondTimes: ITimeFindData = group.secondTimes && {
+                            start: finder.find(group.ctgCode, group.secondTimes.start),
+                            end: finder.find(group.ctgCode, group.secondTimes.end)
+                        };
+
+                    if (firstTimes && secondTimes) {
+                        if (firstTimes.end && secondTimes.start) {
+                            $(document).on('change', `${firstTimes.end.id}, ${secondTimes.start.id}`, () => {
+                                setTimeout(() => {
+                                    let dom1 = $(firstTimes.end.id),
+                                        dom2 = $(secondTimes.start.id),
+                                        pv = ko.toJS(firstTimes.end.data.value),
+                                        nv = ko.toJS(secondTimes.start.data.value),
+                                        tpt = typeof pv == 'number',
+                                        tnt = typeof nv == 'number';
+
+                                    if (tpt && tnt && pv > nv) {
+                                        if (!dom1.parent().hasClass('error')) {
+                                            dom1.ntsError('set', { messageId: "Msg_859" });
+                                        }
+
+                                        if (!dom2.parent().hasClass('error')) {
+                                            dom2.parent().addClass('error');
+                                        }
+                                    }
+
+                                    if ((tpt && tnt && !(pv > nv)) || (!tpt || !tnt)) {
+                                        rmError(dom1, "Msg_859");
+
+                                        if (!getError(dom2).length) {
+                                            dom2.parent().removeClass('error');
+                                        }
+
+                                        if (!getErrorList().length) {
+                                            clearError();
+                                        }
+                                    }
+                                }, 100);
+                            });
+                        }
+                    }
+                },
                 validateEditable = (group: IGroupControl, wtc?: any) => {
                     let command: ICheckParam = {
                         workTimeCode: ko.toJS(wtc || undefined)
                     },
                         firstTimes: ITimeFindData = group.firstTimes && {
-                            start: finder.find('CS00020', group.firstTimes.start),
-                            end: finder.find('CS00020', group.firstTimes.end)
+                            start: finder.find(group.ctgCode, group.firstTimes.start),
+                            end: finder.find(group.ctgCode, group.firstTimes.end)
                         },
                         secondTimes: ITimeFindData = group.secondTimes && {
-                            start: finder.find('CS00020', group.secondTimes.start),
-                            end: finder.find('CS00020', group.secondTimes.end)
+                            start: finder.find(group.ctgCode, group.secondTimes.start),
+                            end: finder.find(group.ctgCode, group.secondTimes.end)
                         };
 
 
@@ -448,61 +508,26 @@ module nts.layout {
                         secondTimes && setEditAble(secondTimes.start, false);
                         secondTimes && setEditAble(secondTimes.end, false);
                     }
-
-                    if (firstTimes && secondTimes) {
-                        if (firstTimes.end && secondTimes.start) {
-                            firstTimes.end.ctrl.on('blur', () => {
-                                let pv = ko.toJS(firstTimes.end.data.value),
-                                    nv = ko.toJS(secondTimes.start.data.value),
-                                    tpt = typeof pv == 'number',
-                                    tnt = typeof nv == 'number';
-
-                                if (tpt && tnt && pv > nv) {
-                                    if (!firstTimes.end.ctrl.parent().hasClass('error')) {
-                                        firstTimes.end.ctrl.ntsError('set', { messageId: "Msg_859" });
-                                        secondTimes.start.ctrl.parent().addClass('error');
-                                    }
-                                }
-
-
-                                if (!(tpt && tnt) || !(pv > nv)) {
-                                    rmError(firstTimes.end.ctrl, "Msg_859");
-
-                                    if (!getError(secondTimes.start.ctrl).length) {
-                                        secondTimes.start.ctrl.parent().removeClass('error');
-                                    }
-
-                                    if (!getErrorList().length) {
-                                        clearError();
-                                    }
-                                }
-                            });
-
-                            secondTimes.start.ctrl.on('blur', () => {
-                                firstTimes.end.ctrl.trigger('blur');
-                            });
-                        }
-                    }
                 };
 
             _.each(groups, (group: IGroupControl) => {
-                let workType: IFindData = group.workType && finder.find('CS00020', group.workType),
-                    workTime: IFindData = group.workTime && finder.find('CS00020', group.workTime),
+                let workType: IFindData = group.workType && finder.find(group.ctgCode, group.workType),
+                    workTime: IFindData = group.workTime && finder.find(group.ctgCode, group.workTime),
                     firstTimes: ITimeFindData = group.firstTimes && {
-                        start: finder.find('CS00020', group.firstTimes.start),
-                        end: finder.find('CS00020', group.firstTimes.end)
+                        start: finder.find(group.ctgCode, group.firstTimes.start),
+                        end: finder.find(group.ctgCode, group.firstTimes.end)
                     },
                     secondTimes: ITimeFindData = group.secondTimes && {
-                        start: finder.find('CS00020', group.secondTimes.start),
-                        end: finder.find('CS00020', group.secondTimes.end)
+                        start: finder.find(group.ctgCode, group.secondTimes.start),
+                        end: finder.find(group.ctgCode, group.secondTimes.end)
                     };
+
+                if (firstTimes && secondTimes) {
+                    validateGroup(group);
+                }
 
                 if (!workType) {
                     return;
-                }
-
-                if (group.firstTimes && group.secondTimes) {
-                    validateEditable(group, workTime.data.value);
                 }
 
                 if (!workTime) {
@@ -521,6 +546,8 @@ module nts.layout {
                         });
                     });
                 } else {
+                    validateEditable(group, workTime.data.value);
+
                     workType.ctrl.on('click', () => {
                         setShared('parentCodes', {
                             workTypeCodes: workType && _.map(workType.data.lstComboBoxValue, x => x.optionValue),
@@ -591,6 +618,11 @@ module nts.layout {
                 CS00020_IS00123.data.value.valueHasMutated();
             }
         }
+
+        dateTime = () => {
+            let self = this,
+                finder: IFinder = self.finder;
+        }
     }
 
     // define ITEM_CLASSIFICATION_TYPE
@@ -618,8 +650,9 @@ module nts.layout {
     }
 
     interface IFindData {
+        id: string;
         ctrl: JQuery;
-        data: IItemData
+        data: IItemData;
     }
 
     interface IItemData {
@@ -667,7 +700,8 @@ module nts.layout {
     }
 
     interface IGroupControl {
-        workType: string;
+        ctgCode: string;
+        workType?: string;
         workTime?: string;
         firstTimes?: ITimeRange;
         secondTimes?: ITimeRange;
