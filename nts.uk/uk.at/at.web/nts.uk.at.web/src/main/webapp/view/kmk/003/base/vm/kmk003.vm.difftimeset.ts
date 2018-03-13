@@ -116,7 +116,7 @@ module nts.uk.at.view.kmk003.a {
                     return {
                         start: convertedItem.column1().startTime,
                         end: convertedItem.column1().endTime,
-                        isUpdateStartTime: convertedItem.isUpdateStartTime(),
+                        isUpdateStartTime: convertedItem.isUpdateStartTime ? convertedItem.isUpdateStartTime() : false,
                     };
                 }
 

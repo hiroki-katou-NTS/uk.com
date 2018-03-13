@@ -192,20 +192,8 @@ module a5 {
             });
         }
 
-        /**
-         * Force to add fixed table event listener
-         */
-        public forceAddFixedTableEvent(): void {
-            let self = this;
-            self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.valueHasMutated();
-            
-            // set tabindex
-            self.setTabIndexTable();
-        }
-
         private setTabIndexTable() {
             let self = this;
-            
             
             //=================== TIMEZONE ===================
             // flex timezone
@@ -370,7 +358,7 @@ module a5 {
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                _.defer(() => screenModel.forceAddFixedTableEvent());
+                _.defer(() => screenModel.setTabIndexTable()); // set tabindex
             });
         }
 
