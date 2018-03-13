@@ -85,6 +85,26 @@ module nts.uk.com.view.cmf001.g.viewmodel {
             });
             return dfd.promise();
         }
+        enableEffectDigitLength(){
+            var self = this;
+            return (self.numDataFormatSetting().effectiveDigitLength() == model.NOT_USE_ATR.USE && self.inputMode && !self.numDataFormatSetting().fixedValue());
+        }
+        enableMinorityEdit(){
+            var self = this;
+            return (self.numDataFormatSetting().decimalDivision() == model.NOT_USE_ATR.USE && self.inputMode && !self.numDataFormatSetting().fixedValue());
+        }
+        disableMinorityEdit(){
+            var self = this;
+            return (self.numDataFormatSetting().decimalDivision() == model.NOT_USE_ATR.NOT_USE && self.inputMode && !self.numDataFormatSetting().fixedValue());
+        }
+        enableConvertCode(){
+             var self = this;
+            return (self.inputMode && !self.numDataFormatSetting().fixedValue());   
+        }
+        enableFixedValue(){
+            var self = this;
+            return (self.numDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE && self.inputMode);
+        }
         // コード変換の選択を行う
         open001_K(data) {
             var self = this;
