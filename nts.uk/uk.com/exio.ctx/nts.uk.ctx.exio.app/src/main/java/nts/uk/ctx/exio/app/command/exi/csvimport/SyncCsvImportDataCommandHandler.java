@@ -14,7 +14,7 @@ public class SyncCsvImportDataCommandHandler extends AsyncCommandHandler<CsvImpo
 	private static final String NUMBER_OF_ERROR = "エラー件数";
 	private static final String NUMBER_OF_SUCCESS = "処理カウント";
 	private static final String NUMBER_OF_TOTAL = "処理トータルカウント";
-	private static final String STOP_MODE = "中断するしない";
+	private static final String STOP_MODE = "中断するしない"; // 0 - しない　1-する
 	private static final String STATUS = "動作状態";
 	
 	@Override
@@ -29,25 +29,25 @@ public class SyncCsvImportDataCommandHandler extends AsyncCommandHandler<CsvImpo
 		setter.setData(NUMBER_OF_TOTAL, command.getCsvLine());
 		setter.setData(STOP_MODE, command.getStopMode());
 		setter.setData(STATUS, command.getStateBehavior());
-		
-		// Thuc hien xu ly o day va gui data ve client thong qua
-		// setter.updateData();
+
 		for (int i = 1; i < command.getCsvLine(); i++) {
-			
+			//TODO アルゴリズム「外部受入テスト本体」を実行する
+
 			if (asyncTask.hasBeenRequestedToCancel()) {
-				/* do something to clean up */
-				// cancel explicitly
+				// 外部受入動作管理の中断するしない区分を更新する
+				setter.updateData(STOP_MODE, 1);
 				asyncTask.finishedAsCancelled();
 				break;
 			}
 
+			// TODO	Dump data. delete after proccess pharse 2
 			setter.updateData(NUMBER_OF_SUCCESS, i);
 			setter.updateData(NUMBER_OF_ERROR, i/5);
+			setter.updateData(STATUS, command.getStateBehavior());
 			
 			try {
 				TimeUnit.SECONDS.sleep(1);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

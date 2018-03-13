@@ -19,6 +19,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         selectedSysType: KnockoutObservable<number> = ko.observable(0);
 
         listCondition: KnockoutObservableArray<model.StandardAcceptanceConditionSetting> = ko.observableArray([]);
+        selectedConditionItem: any;
         selectedConditionCd: KnockoutObservable<string> = ko.observable('');
         selectedConditionName: KnockoutObservable<string> = ko.observable('');
         selectedConditionLineNumber: KnockoutObservable<number> = ko.observable(0);
@@ -27,7 +28,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         //upload file
         fileId: KnockoutObservable<string> = ko.observable('');
         fileName: KnockoutObservable<string> = ko.observable('');
-        listAccept: KnockoutObservableArray<AcceptItems> = ko.observableArray([]);
+        listAccept: KnockoutObservableArray<model.StandardAcceptItem> = ko.observableArray([]);
         selectedAccept: KnockoutObservable<any> = ko.observable('');
         totalRecord: KnockoutObservable<number> = ko.observable(0);
         totalLine: KnockoutObservable<number> = ko.observable(0);
@@ -60,11 +61,13 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 if (data) {
                     let item = _.find(ko.toJS(self.listCondition), (x: any) => x.dispConditionSettingCode == data);
                     //選択したカレント行の「条件コード/名称」を画面右側の「条件コード/名称」にセットする
+                    self.selectedConditionItem = item;
                     self.selectedConditionName(item.dispConditionSettingName);
                     self.selectedConditionLineNumber(item.csvDataItemLineNumber);
                     self.selectedConditionStartLine(item.csvDataStartLine);
                 }
                 else {
+                    self.selectedConditionItem = null;
                     self.selectedConditionName('');
                     self.selectedConditionLineNumber(0);
                     self.selectedConditionStartLine(0);
@@ -104,7 +107,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 block.clear();
             });
             return dfd.promise();
-        }        
+        }
 
         //次の画面へ遷移する
         private gotoExAccSummary(): void {
@@ -179,7 +182,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     let _rspList: Array<model.StandardAcceptanceConditionSetting> = _.map(data, rsp => {
                         return new model.StandardAcceptanceConditionSetting(rsp.systemType, rsp.conditionSettingCode,
                             rsp.conditionSettingName, rsp.deleteExistData, rsp.acceptMode, rsp.csvDataItemLineNumber,
-                            rsp.csvDataStartLine, rsp.deleteExistDataMethod);
+                            rsp.csvDataStartLine, rsp.deleteExistDataMethod, rsp.categoryId);
                     });
                     self.listCondition(_rspList);
 
@@ -203,56 +206,95 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         private loadListAccept(): void {
             let self = this;
             block.invisible();
-            //ドメインモデル「受入項目（定型）」を取得する
+            //ドメインモデル「受入項目（定型）」を取得する      
             service.getStdAcceptItem(self.selectedSysType(), self.selectedConditionCd()).done(function(data: Array<any>) {
                 self.listAccept.removeAll();
                 if (data && data.length) {
-                    let _rspList: Array<AcceptItems> = _.map(data, rsp => {
-                        return new AcceptItems(
-                            '',
-                            rsp.csvItemName,
-                            rsp.csvItemNumber,
-                            rsp.acceptItemNumber,
-                            '',
-                            rsp.itemType,
-                            rsp.numberFormatSetting,
-                            rsp.charFormatSetting,
-                            rsp.dateFormatSetting,
-                            rsp.instTimeFormatSetting,
-                            rsp.timeFormatSetting,
-                            rsp.screenConditionSetting);
+                    let _rspList: Array<model.StandardAcceptItem> = _.map(data, rs => {
+                        let formatSetting = null, fs = null, screenCondition: model.AcceptScreenConditionSetting = null;
+                        switch (rs.itemType) {
+                            case model.ITEM_TYPE.NUMERIC:
+                                fs = rs.numberFormatSetting;
+                                if (fs)
+                                    formatSetting = new model.NumericDataFormatSetting(
+                                        fs.effectiveDigitLength, fs.startDigit, fs.endDigit,
+                                        fs.decimalDivision, fs.decimalDigitNum, fs.decimalPointCls,
+                                        fs.decimalFraction, fs.cdConvertCd, fs.fixedValue, fs.valueOfFixedValue);
+                                break;
+                            case model.ITEM_TYPE.CHARACTER:
+                                fs = rs.charFormatSetting;
+                                if (fs)
+                                    formatSetting = new model.CharacterDataFormatSetting(
+                                        fs.effectiveDigitLength, fs.startDigit, fs.endDigit,
+                                        fs.cdEditing, fs.cdEditDigit, fs.cdEditMethod,
+                                        fs.cdConvertCd, fs.fixedValue, fs.fixedVal);
+                                break;
+                            case model.ITEM_TYPE.DATE:
+                                fs = rs.dateFormatSetting;
+                                if (fs)
+                                    formatSetting = new model.DateDataFormatSetting(fs.formatSelection, fs.fixedValue, fs.valueOfFixedValue);
+                                break;
+                            case model.ITEM_TYPE.INS_TIME:
+                                fs = rs.instTimeFormatSetting;
+                                if (fs)
+                                    formatSetting = new model.InstantTimeDataFormatSetting(
+                                        fs.effectiveDigitLength, fs.startDigit, fs.endDigit,
+                                        fs.decimalSelect, fs.hourMinSelect, fs.delimiterSet,
+                                        fs.roundProc, fs.roundProcCls, fs.fixedValue, fs.valueOfFixedValue);
+                                break;
+                            case model.ITEM_TYPE.TIME:
+                                fs = rs.timeFormatSetting;
+                                if (fs)
+                                    formatSetting = new model.TimeDataFormatSetting(
+                                        fs.effectiveDigitLength, fs.startDigit, fs.endDigit,
+                                        fs.decimalSelect, fs.hourMinSelect, fs.delimiterSet,
+                                        fs.roundProc, fs.roundProcCls, fs.fixedValue, fs.valueOfFixedValue);
+                                break;
+                        }
+                        if (rs.screenConditionSetting) {
+                            let sc = rs.screenConditionSetting;
+                            screenCondition = new model.AcceptScreenConditionSetting(rs.acceptItemName, sc.selectComparisonCondition,
+                                sc.timeConditionValue2, sc.timeConditionValue1,
+                                sc.timeMomentConditionValue2, sc.timeMomentConditionValue1,
+                                sc.dateConditionValue2, sc.dateConditionValue1,
+                                sc.characterConditionValue2, sc.characterConditionValue1,
+                                sc.numberConditionValue2, sc.numberConditionValue1,
+                                rs.conditionCode, rs.acceptItemNumber);
+                        }
+                        return new model.StandardAcceptItem(rs.csvItemName, rs.csvItemNumber, rs.itemType, rs.acceptItemNumber, rs.acceptItemName, rs.systemType, rs.conditionCode, rs.categoryItemNo, formatSetting, screenCondition);
                     });
-                    self.listAccept(_rspList);
+
+                    //アップロードしたファイルを読み込む
+                    let sv1 = service.getRecord(self.fileId(), _rspList.length, self.selectedConditionStartLine() - 1);
+                    let sv2 = service.getCategoryItem(self.selectedConditionItem.categoryId);
+
+                    $.when(sv1, sv2).done(function(data1: Array<any>, data2: Array<any>) {
+                        _.each(_rspList, rs => {
+                            let item1 = data1[rs.csvItemNumber() - 1];
+                            rs.sampleData(item1);
+
+                            let item2 = _.find(data2, x => { return x.itemNo == rs.categoryItemNo(); });
+                            rs.acceptItemName(item2.itemName);
+                        });
+
+                        self.listAccept(_rspList);
+
+                        //ファイルの行数を取得する
+                        let count = self.totalLine() - self.selectedConditionStartLine() + 1;
+                        if (count < 0) {
+                            count = 0;
+                        }
+                        self.totalRecord(count);
+                    }).fail(function(error) {
+                        alertError(error);
+                    }).always(() => {
+                        block.clear();
+                    });
                 }
-                //アップロードしたファイルを読み込む
-                self.readUploadFile(self.listAccept().length);
             }).fail(function(error) {
                 alertError(error);
-            }).always(() => {
                 block.clear();
             });
-        }
-
-        private readUploadFile(numOfCol: number): void {
-            let self = this;
-            //アップロードしたファイルの「取込開始行」のＣＳＶ項Ｎｏの値
-            service.getRecord(self.fileId(), numOfCol, self.selectedConditionStartLine()).done(function(data: Array<any>) {
-                for (let i = 0; i < numOfCol; i++) {
-                    let temp = data[self.listAccept()[i].csvItemNumber()];
-                    self.listAccept()[i].sampleData(temp);
-                }
-            }).fail(function(error) {
-                alertError(error);
-            }).always(() => {
-                block.clear();
-            });
-
-            //ファイルの行数を取得する
-            let count = self.totalLine() - self.selectedConditionStartLine();
-            if (count < 0) {
-                count = 0;
-            }
-            self.totalRecord(count);
         }
 
         private editIngestion(item: any): void {
@@ -293,7 +335,6 @@ module nts.uk.com.view.cmf001.o.viewmodel {
 
         private receiveCondition(item): void {
             //L:「受入条件設定ダイアログをモーダルで表示する
-            //let settingL = new model.AcceptScreenConditionSetting("", 0, 0, 0, 0, 0, "", "", "", "", 0, 0);
             let settingL = null;
             if (item.screenConditionSetting) settingL = ko.toJS(item.screenConditionSetting);
             setShared("CMF001lParams", { inputMode: false, dataType: 0, formatSetting: ko.toJS(settingL) });
@@ -313,51 +354,9 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             });
             nts.uk.ui.windows.sub.modal("/view/cmf/001/q/index.xhtml");
         }
-    }
 
-    class AcceptItems {
-        infoName: KnockoutObservable<string>;
-        csvItemName: KnockoutObservable<string>;
-        csvItemNumber: KnockoutObservable<number>;
-        acceptItemNumber: KnockoutObservable<number>;
-        sampleData: KnockoutObservable<string>;
-        itemType: KnockoutObservable<number>;
-        itemTypeName: KnockoutObservable<string>;
-        numberFormatSetting: model.NumericDataFormatSetting;
-        charFormatSetting: model.CharacterDataFormatSetting;
-        dateFormatSetting: model.DateDataFormatSetting;
-        instTimeFormatSetting: model.InstantTimeDataFormatSetting;
-        timeFormatSetting: model.TimeDataFormatSetting;
-        screenConditionSetting: model.AcceptScreenConditionSetting;
-
-        constructor(infoName: string, csvItemName: string, csvItemNumber: number,
-            acceptItemNumber: number, sampleData: string, itemType: number,
-            numSet?: model.NumericDataFormatSetting, charSet?: model.CharacterDataFormatSetting,
-            dateSet?: model.DateDataFormatSetting, instTimeSet?: model.InstantTimeDataFormatSetting,
-            timeSet?: model.TimeDataFormatSetting, screenSet?: model.AcceptScreenConditionSetting) {
-            this.infoName = ko.observable(infoName);
-            this.csvItemName = ko.observable(csvItemName);
-            this.csvItemNumber = ko.observable(csvItemNumber);
-            this.acceptItemNumber = ko.observable(acceptItemNumber);
-            this.sampleData = ko.observable(sampleData);
-            this.itemType = ko.observable(itemType);
-            this.itemTypeName = ko.observable(this.getItemTypeName(itemType));
-            if (numSet)
-                this.numberFormatSetting = numSet;
-            if (charSet)
-                this.charFormatSetting = charSet;
-            if (dateSet)
-                this.dateFormatSetting = dateSet;
-            if (instTimeSet)
-                this.instTimeFormatSetting = instTimeSet;
-            if (timeSet)
-                this.timeFormatSetting = timeSet;
-            if (screenSet)
-                this.screenConditionSetting = screenSet;
-        }
-
-        private getItemTypeName(typeCd: number): string {
-            switch (typeCd) {
+        private getItemTypeName(itemType: number): string {
+            switch (itemType) {
                 case model.ITEM_TYPE.NUMERIC: return getText('Enum_ItemType_NUMERIC');
                 case model.ITEM_TYPE.CHARACTER: return getText('Enum_ItemType_CHARACTER');
                 case model.ITEM_TYPE.DATE: return getText('Enum_ItemType_DATE');

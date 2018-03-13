@@ -18,6 +18,7 @@ import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
 import nts.uk.ctx.exio.dom.exi.condset.SystemType;
 import nts.uk.ctx.exio.dom.exi.service.FileUtil;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 /**
@@ -33,17 +34,20 @@ public class StdAcceptCondSetFinder {
 
 	public List<SystemTypeDto> getSystemTypes() {
 		List<SystemTypeDto> result = new ArrayList<>();
-		String employeeId = AppContexts.user().employeeId();
-		// dummy request list #50: get system code by employee id
+//		String employeeId = AppContexts.user().employeeId();
+		// dummy request list #325: get system code by employee id
 		LoginUserInCharge charge = new LoginUserInCharge(true, true, true, true, true);
+		if (charge.isAttendance()) {
+			result.add(new SystemTypeDto(SystemType.ATTENDANCE_SYSTEM.value, TextResource.localize(SystemType.ATTENDANCE_SYSTEM.nameId)));
+		}
 		if (charge.isHumanResource()) {
-			result.add(new SystemTypeDto(SystemType.PERSON_SYSTEM.value, SystemType.PERSON_SYSTEM.nameId));
+			result.add(new SystemTypeDto(SystemType.PERSON_SYSTEM.value, TextResource.localize(SystemType.PERSON_SYSTEM.nameId)));
 		}
 		if (charge.isOfficeHelper()) {
-			result.add(new SystemTypeDto(SystemType.OFFICE_HELPER.value, SystemType.OFFICE_HELPER.nameId));
+			result.add(new SystemTypeDto(SystemType.OFFICE_HELPER.value, TextResource.localize(SystemType.OFFICE_HELPER.nameId)));
 		}
 		if (charge.isSalary()) {
-			result.add(new SystemTypeDto(SystemType.PAYROLL_SYSTEM.value, SystemType.PAYROLL_SYSTEM.nameId));
+			result.add(new SystemTypeDto(SystemType.PAYROLL_SYSTEM.value, TextResource.localize(SystemType.PAYROLL_SYSTEM.nameId)));
 		}
 		return result;
 	}
@@ -116,8 +120,14 @@ public class StdAcceptCondSetFinder {
 		List<ExAcpCtgItemDatDto> lstCategoryItemData = new ArrayList<ExAcpCtgItemDatDto>();
 		for (int i = 1; i <= 4; i++) {
 			for (int j = 1; j < 11; j++) {
-				lstCategoryItemData.add(new ExAcpCtgItemDatDto("" + i, j, "カテゴリ項目データ" + "" + i + "" + j, j, 1, 1, 1,
+				lstCategoryItemData.add(new ExAcpCtgItemDatDto("1dfsdffs" + i, j, "カテゴリ項目データ" + "" + i + "" + j, j, 1, 1, 1,
 						"1", 1, 1, 1, "5", "5", "5", "5", j, 1, 0L));
+			}
+		}
+		for (int i = 5; i <= 9; i++) {
+			for (int j = 1; j < 11; j++) {
+				lstCategoryItemData.add(new ExAcpCtgItemDatDto("" + (i - 5), j, "カテゴリ項目データ" + "" + i + "" + j, j, 1, 1,
+						1, "1", 1, 1, 1, "5", "5", "5", "5", j, 1, 0L));
 			}
 		}
 

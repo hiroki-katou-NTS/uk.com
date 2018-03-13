@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.app.find.exi.condset;
+package nts.uk.ctx.exio.dom.exi.adapter;
 
 import lombok.Value;
 
@@ -23,7 +23,7 @@ public class LoginUserInCharge {
 	// Person in charge of personal information
 	private boolean personalInfo;
 	// Employment personnel
-	private boolean attendance;
+	private boolean employment;
 	// Will it be a salary professional?
 	private boolean salary;
 }

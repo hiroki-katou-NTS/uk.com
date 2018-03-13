@@ -8,7 +8,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.exio.app.command.exi.csvimport.CsvImportDataCommand;
 import nts.uk.ctx.exio.app.command.exi.csvimport.SyncCsvImportDataCommandHandler;
-import nts.uk.ctx.exio.app.command.exi.csvimport.csvImportExecutionRespone;
+import nts.uk.ctx.exio.app.command.exi.csvimport.CsvImportExecutionRespone;
 @Path("exio/exi/csvimport")
 @Produces("application/json")
 public class SyncCsvDataImportService extends WebService{
@@ -18,8 +18,16 @@ public class SyncCsvDataImportService extends WebService{
 	
 	@POST
 	@Path("execution")
-	public csvImportExecutionRespone csvImportProcess(CsvImportDataCommand command){
-		csvImportExecutionRespone response = new csvImportExecutionRespone();
+	public CsvImportExecutionRespone csvImportProcess(CsvImportDataCommand command){
+		CsvImportExecutionRespone response = new CsvImportExecutionRespone();
+		response.taskInfor = importHandler.handle(command);
+		return response;
+	}
+	
+	@POST
+	@Path("check")
+	public CsvImportExecutionRespone csvChecktProcess(CsvImportDataCommand command){
+		CsvImportExecutionRespone response = new CsvImportExecutionRespone();
 		response.taskInfor = importHandler.handle(command);
 		return response;
 	}

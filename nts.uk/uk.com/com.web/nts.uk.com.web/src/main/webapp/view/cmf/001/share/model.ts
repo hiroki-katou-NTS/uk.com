@@ -135,15 +135,15 @@ module nts.uk.com.view.cmf001.share.model {
         dispConditionSettingName: string;
         deleteExistData: KnockoutObservable<number>;
         deleteExistDataMethod: KnockoutObservable<number> = ko.observable(1);
-        acceptMode: KnockoutObservable<number>;
-        csvDataItemLineNumber: KnockoutObservable<number>;
-        csvDataStartLine: KnockoutObservable<number>;
+        acceptMode: KnockoutObservable<number> = ko.observable(null);
+        csvDataItemLineNumber: KnockoutObservable<number> = ko.observable(null);
+        csvDataStartLine: KnockoutObservable<number> = ko.observable(null);
         systemType: KnockoutObservable<number>;
         alreadySetting: KnockoutObservable<boolean> = ko.observable(false);
         action: KnockoutObservable<number> = ko.observable(0);
-        categoryId: KnockoutObservable<string> = ko.observable("");
+        categoryId: KnockoutObservable<string> = ko.observable(null);
 
-        constructor(systemType: number, code: string, name: string, deleteExistData: number, acceptMode: number, csvDataItemLineNumber: number, csvDataStartLine: number, deleteExistDataMethod?: number, categoryId?: string) {
+        constructor(systemType: number, code: string, name: string, deleteExistData: number, acceptMode?: number, csvDataItemLineNumber?: number, csvDataStartLine?: number, deleteExistDataMethod?: number, categoryId?: string) {
             this.systemType = ko.observable(0);
             this.conditionSettingCode = ko.observable(code);
             this.dispConditionSettingCode = code;
@@ -153,9 +153,12 @@ module nts.uk.com.view.cmf001.share.model {
             if (deleteExistDataMethod) {
                 this.deleteExistDataMethod(deleteExistDataMethod);
             }
-            this.acceptMode = ko.observable(acceptMode);
-            this.csvDataItemLineNumber = ko.observable(csvDataItemLineNumber);
-            this.csvDataStartLine = ko.observable(csvDataStartLine);
+            if (acceptMode)
+                this.acceptMode(acceptMode);
+            if (csvDataItemLineNumber)
+                this.csvDataItemLineNumber(csvDataItemLineNumber);
+            if (csvDataStartLine)
+                this.csvDataStartLine(csvDataStartLine);
             if (categoryId) this.categoryId(categoryId); 
         }
     }
@@ -185,14 +188,17 @@ module nts.uk.com.view.cmf001.share.model {
         screenConditionSetting: KnockoutObservable<AcceptScreenConditionSetting> = ko.observable(null);
         categoryItemNo: KnockoutObservable<number>;
         categoryId: KnockoutObservable<string> = ko.observable("");
-
-        constructor(csvItemName: string, csvItemNumber: number, itemType: number, acceptItemNumber: number, acceptItemName: string, conditionCode: string, categoryItemNo: number, formatSet?: any, screenSet?: AcceptScreenConditionSetting, categoryId?: string) {
+        systemType: KnockoutObservable<number>;
+        sampleData: KnockoutObservable<string>;
+        
+        constructor(csvItemName: string, csvItemNumber: number, itemType: number, acceptItemNumber: number, acceptItemName: string, systemType: number, conditionCode: string, categoryItemNo: number, formatSet?: any, screenSet?: AcceptScreenConditionSetting, categoryId?: string) {
             this.csvItemName = ko.observable(csvItemName);
             this.csvItemNumber = ko.observable(csvItemNumber);
             this.itemType = ko.observable(itemType);
             this.acceptItemNumber = ko.observable(acceptItemNumber);
             this.acceptItemName = ko.observable(acceptItemName);
             this.conditionSettingCode = ko.observable(conditionCode);
+            this.systemType = ko.observable(systemType);
             this.categoryItemNo = ko.observable(categoryItemNo);
             if (formatSet) {
                 switch(itemType) {
@@ -216,7 +222,8 @@ module nts.uk.com.view.cmf001.share.model {
             if (screenSet)
                 this.screenConditionSetting(screenSet);
             if (categoryId)
-                this.categoryId(categoryId);
+                this.categoryId(categoryId);            
+            this.sampleData = ko.observable("");
         }
     }
 

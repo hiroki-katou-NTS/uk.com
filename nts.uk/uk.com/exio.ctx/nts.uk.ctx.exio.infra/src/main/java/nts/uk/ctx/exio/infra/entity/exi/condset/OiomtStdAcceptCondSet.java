@@ -90,7 +90,7 @@ public class OiomtStdAcceptCondSet extends UkJpaEntity implements Serializable {
 	}
 
 	public OiomtStdAcceptCondSet(String companyId, int systemType, String conditionSettingCode, String conditionSetName,
-			int deleteExistData, int acceptMode, int checkCompleted, String categoryId, Integer csvDataLineNumber,
+			int deleteExistData, Integer acceptMode, int checkCompleted, String categoryId, Integer csvDataLineNumber,
 			Integer csvDataStartLine, Integer deleteExtDataMethod) {
 		super();
 		this.stdAcceptCondSetPk = new OiomtStdAcceptCondSetPk(companyId, systemType, conditionSettingCode);

@@ -29,6 +29,11 @@ module nts.uk.com.view.cmf001.h.viewmodel {
             let charSet = params.formatSetting;
             self.inputMode = inputMode;
             self.lineNumber = lineNumber;
+            if (inputMode) {
+                $('#H2_2').focus();
+            } else {
+                $('#H6_2').focus();
+            }
             if (!nts.uk.util.isNullOrUndefined(charSet)) {
                 self.initial(charSet);
             }
@@ -69,49 +74,68 @@ module nts.uk.com.view.cmf001.h.viewmodel {
             } else {
                 convertCode = new model.AcceptanceCodeConvert(convertCodeShared.convertCode, convertCodeShared.convertName, 0);
             }
-            self.characterDataFormatSetting = ko.observable(new model.CharacterDataFormatSetting(charSet.effectiveDigitLength, charSet.startDigit,
-                charSet.endDigit, charSet.codeEditing, charSet.codeEditDigit, charSet.codeEditingMethod,
-                charSet.codeConvertCode, charSet.fixedValue, charSet.valueOfFixed));
+            self.characterDataFormatSetting = ko.observable(new model.CharacterDataFormatSetting(charSet.effectiveDigitLength, charSet.startDigit, charSet.endDigit,
+                                                charSet.codeEditing, charSet.codeEditDigit, charSet.codeEditingMethod,
+                                                charSet.codeConvertCode, charSet.fixedValue, charSet.fixedVal));
         }
         start(): JQueryPromise<any> {
             block.invisible();
             var self = this;
             var dfd = $.Deferred();
-            service.getAcceptCodeConvert(self.characterDataFormatSetting().codeConvertCode()).done(function(codeConvert) {
-                if (codeConvert) {
-                    self.characterDataFormatSetting().codeConvertCode(codeConvert.convertCode);
-                    self.codeConvertCode(new model.AcceptanceCodeConvert(codeConvert.convertCd, codeConvert.convertName, codeConvert.acceptWithoutSetting));
-                }
+            let convertCodeSelected = self.characterDataFormatSetting().codeConvertCode();
+            if (!_.isEmpty(convertCodeSelected)) {
+                service.getAcceptCodeConvert(convertCodeSelected).done(function(codeConvert) {
+                    if (codeConvert) {
+                        self.characterDataFormatSetting().codeConvertCode(codeConvert.convertCode);
+                        self.codeConvertCode(new model.AcceptanceCodeConvert(codeConvert.convertCd, codeConvert.convertName, codeConvert.acceptWithoutSetting));
+                    }
+                    block.clear();
+                    dfd.resolve();
+                }).fail(function(error) {
+                    alertError(error);
+                    block.clear();
+                    dfd.reject();
+                });
+            }else{
                 block.clear();
                 dfd.resolve();
-            }).fail(function(error) {
-                alertError(error);
-                block.clear();
-                dfd.reject();
-            });
+            }
+            
             return dfd.promise();
         }
-        enableEffectDigitLength(){
+        enableEffectDigitLengthCls(){
             var self = this;
-            return (self.characterDataFormatSetting().effectiveDigitLength() == model.NOT_USE_ATR.USE && self.inputMode && !self.characterDataFormatSetting().fixedValue());
+            return (self.inputMode && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
-        enableCodeEditing (){
+        enableCodeEditingCls(){
             var self = this;
-            return (self.characterDataFormatSetting().codeEditing() == model.NOT_USE_ATR.USE && self.inputMode && !self.characterDataFormatSetting().fixedValue());
+            return (self.inputMode && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
-        enableConvertCode(){
-             var self = this;
-            return (self.inputMode && !self.characterDataFormatSetting().fixedValue());   
+        enableFixedValueCls(){
+            var self = this;
+            return (self.inputMode);
         }
-        enableFixedValue(){
+        enableEffectDigitLength() {
+            var self = this;
+            return (self.characterDataFormatSetting().effectiveDigitLength() == model.NOT_USE_ATR.USE && self.inputMode && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+        }
+        enableCodeEditing() {
+            var self = this;
+            return (self.characterDataFormatSetting().codeEditing() == model.NOT_USE_ATR.USE && self.inputMode && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+        }
+        enableConvertCode() {
+            var self = this;
+            return (self.inputMode && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+        }
+        enableFixedValue() {
             var self = this;
             return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE && self.inputMode);
         }
         // コード変換の選択を行う
         open001_K(data) {
             var self = this;
-            let selectedConvertCode = self.characterDataFormatSetting().codeConvertCode();
-            setShared("CMF001kParams", { selectedConvertCode: ko.toJS(selectedConvertCode) });
+            let codeConvertCode = self.codeConvertCode();
+            setShared("CMF001kParams", { selectedConvertCode: ko.toJS(codeConvertCode)});
             modal("/view/cmf/001/k/index.xhtml").onClosed(() => {
                 // コード変換選択を行う
                 let params = getShared("CMF001kOutput");
@@ -132,34 +156,34 @@ module nts.uk.com.view.cmf001.h.viewmodel {
         }
         checkValidInput() {
             var self = this;
-            let checkValidInput: boolean = true;
-            if (self.characterDataFormatSetting().effectiveDigitLength() == 1) {
-                let startDigit = self.characterDataFormatSetting().startDigit();
-                let endDigit = self.characterDataFormatSetting().endDigit();
-                if (startDigit == 0 || endDigit == 0) {
-                    checkValidInput = false;
-                } else {
-                    if (startDigit > endDigit) {
-                        checkValidInput = false;
-                        alertError({ messageId: "Msg_1108" });
-                        return false;
-                    }
-                }
-            }
-            if (self.characterDataFormatSetting().codeEditing() == 1) {
-                if (self.characterDataFormatSetting().codeEditDigit() == 0) {
-                    checkValidInput = false;
-                }
-            }
             if (self.characterDataFormatSetting().fixedValue() == 1) {
                 if (_.isEmpty(self.characterDataFormatSetting().fixedVal())) {
-                    checkValidInput = false;
+                    alertError({ messageId: "Msg_2" });
+                    return false;
                 }
+                return true;
+            }else{
+                if (self.characterDataFormatSetting().effectiveDigitLength() == 1) {
+                    let startDigit = self.characterDataFormatSetting().startDigit();
+                    let endDigit = self.characterDataFormatSetting().endDigit();
+                    if (startDigit == 0 || endDigit == 0) {
+                        alertError({ messageId: "Msg_2" });
+                        return false;
+                    } else {
+                        if (startDigit > endDigit) {
+                            alertError({ messageId: "Msg_1108", messageParams: [getText('CMF001_270'), getText('CMF001_273')] });
+                            return false;
+                        }
+                    }
+                }
+                if (self.characterDataFormatSetting().codeEditing() == 1) {
+                    if (self.characterDataFormatSetting().codeEditDigit() == 0) {
+                        alertError({ messageId: "Msg_2" });
+                        return false;
+                    }
+                } 
             }
-            if (!checkValidInput){
-                alertError({ messageId: "Msg_2" });
-            }
-            return checkValidInput;
+            return true;
         }
         // キャンセルして終了する
         cancelCharacterSetting() {

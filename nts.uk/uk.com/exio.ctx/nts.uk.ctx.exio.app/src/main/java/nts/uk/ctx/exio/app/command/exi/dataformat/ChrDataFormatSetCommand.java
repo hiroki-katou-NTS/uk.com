@@ -10,7 +10,7 @@ public class ChrDataFormatSetCommand {
 	/**
 	 * コード編集
 	 */
-	private int cdEditing;
+	private int codeEditing;
 
 	/**
 	 * 固定値
@@ -25,17 +25,17 @@ public class ChrDataFormatSetCommand {
 	/**
 	 * コード変換コード
 	 */
-	private String cdConvertCd;
+	private String codeConvertCode;
 
 	/**
 	 * コード編集方法
 	 */
-	private Integer cdEditMethod;
+	private Integer codeEditingMethod;
 
 	/**
 	 * コード編集桁
 	 */
-	private Integer cdEditDigit;
+	private Integer codeEditDigit;
 
 	/**
 	 * 固定値の値
@@ -53,9 +53,9 @@ public class ChrDataFormatSetCommand {
 	private Integer endDigit;
 
 	public ChrDataFormatSet toDomain() {
-		return new ChrDataFormatSet(ItemType.CHARACTER.value, this.cdEditing, this.fixedValue,
-				this.effectiveDigitLength, this.cdConvertCd, this.cdEditMethod, this.cdEditDigit, this.fixedVal,
-				this.startDigit, this.endDigit);
+		return new ChrDataFormatSet(ItemType.CHARACTER.value, this.codeEditing, this.fixedValue,
+				this.effectiveDigitLength, this.codeConvertCode, this.codeEditingMethod, this.codeEditDigit,
+				this.fixedVal, this.startDigit, this.endDigit);
 	}
 
 }
