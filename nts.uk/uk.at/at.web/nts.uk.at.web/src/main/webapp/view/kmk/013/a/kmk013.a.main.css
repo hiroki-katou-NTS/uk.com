@@ -1,5 +1,13 @@
 #contents-area {
-	width: 1200px !important;
+	/* width: 1200px !important; */
+	display: flex;
+	flex-direction: column;
+}
+
+#contents-area > div {
+	display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
 }
 
 .boder-style {
@@ -15,14 +23,14 @@
 }
 
 .contents-area-middle {
-	height: 200px;
-	width: 306px;
+	/* height: 200px; */
+	/* width: 306px; */
 	text-align: center;
 }
 
 .contents-area-right {
-    height: 200px;
-    width: 198px;
+    /* height: 200px; */
+    /* width: 198px; */
     text-align: center;
 }
 
@@ -59,4 +67,14 @@
 
 .lbl-general-labor-explanation-margin-top {
 	margin-top: 30px;
+}
+
+.panel.panel-gray-bg {
+	white-space: nowrap;
+}
+
+.panel.panel-frame {
+	display: flex;
+    flex-direction: column;
+    align-items:  center;	
 }
