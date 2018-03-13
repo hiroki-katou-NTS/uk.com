@@ -9124,6 +9124,7 @@ var nts;
                     validation.DEF_HOUR_MAX = 9999;
                     validation.DEF_HOUR_MIN = 0;
                     validation.DEF_MIN_MAXMIN = 0;
+                    validation.DAY_MINS = 1439;
                     var Result = (function () {
                         function Result(isValid, value) {
                             this.isValid = isValid;
@@ -9303,7 +9304,9 @@ var nts;
                         if (((uk.util.isNullOrUndefined(hour) || hour === NaN) && (uk.util.isNullOrUndefined(minute) || minute === NaN))
                             || minute > validation.MINUTE_MAX)
                             return false;
-                        var targetTime = { hour: hour, minute: minute, negative: negative };
+                        var targetTime = getComplement({ hour: hour, minute: minute, negative: negative });
+                        if (!targetTime)
+                            return false;
                         if (compare(targetTime, maxTime) > 0 || compare(targetTime, minTime) < 0)
                             return false;
                         return true;
@@ -9352,6 +9355,19 @@ var nts;
                             return -1;
                         }
                         return 0;
+                    }
+                    /**
+                     * Get complement.
+                     */
+                    function getComplement(time) {
+                        if (!time.negative)
+                            return time;
+                        var oTime = validation.DAY_MINS - (time.hour * 60 + time.minute);
+                        if (oTime < 0)
+                            return;
+                        var hour = Math.floor(oTime / 60);
+                        var minute = oTime - hour * 60;
+                        return { hour: hour, minute: minute, negative: true };
                     }
                     /**
                      * Parse.
@@ -26618,15 +26634,23 @@ var nts;
                                                 var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
                                                 var timeOpts = { timeWithDay: true };
                                                 var formatter = new uk.text.TimeWithDayFormatter(timeOpts);
-                                                if (!uk.util.isNullOrUndefined(minutes))
-                                                    value = formatter.format(minutes);
+                                                if (!uk.util.isNullOrUndefined(minutes)) {
+                                                    try {
+                                                        value = formatter.format(minutes);
+                                                    }
+                                                    catch (e) { }
+                                                }
                                             }
                                             else if (valueType === "Clock") {
                                                 var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
                                                 var timeOpts = { timeWithDay: false };
                                                 var formatter = new uk.text.TimeWithDayFormatter(timeOpts);
-                                                if (!uk.util.isNullOrUndefined(minutes))
-                                                    value = formatter.format(minutes);
+                                                if (!uk.util.isNullOrUndefined(minutes)) {
+                                                    try {
+                                                        value = formatter.format(minutes);
+                                                    }
+                                                    catch (e) { }
+                                                }
                                             }
                                             else if (valueType === "Currency") {
                                                 var currencyOpts = new ui.option.CurrencyEditorOption();

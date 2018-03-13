@@ -3553,12 +3553,20 @@ module nts.uk.ui.jqueryExtentions {
                                     let minutes = time.minutesBased.clock.dayattr.parseString(value).asMinutes;
                                     let timeOpts = { timeWithDay: true };
                                     let formatter = new text.TimeWithDayFormatter(timeOpts);
-                                    if (!util.isNullOrUndefined(minutes)) value = formatter.format(minutes);
+                                    if (!util.isNullOrUndefined(minutes)) {
+                                        try {
+                                            value = formatter.format(minutes);
+                                        } catch(e) {}
+                                    }
                                 } else if (valueType === "Clock") {
                                     let minutes = time.minutesBased.clock.dayattr.parseString(value).asMinutes;
                                     let timeOpts = { timeWithDay: false };
                                     let formatter = new text.TimeWithDayFormatter(timeOpts);
-                                    if (!util.isNullOrUndefined(minutes)) value = formatter.format(minutes);
+                                    if (!util.isNullOrUndefined(minutes)) {
+                                        try {
+                                            value = formatter.format(minutes);
+                                        } catch(e) {}
+                                    }
                                 } else if (valueType === "Currency") { 
                                     let currencyOpts: any = new ui.option.CurrencyEditorOption();
                                     currencyOpts.grouplength = constraint.groupLength | 3;
