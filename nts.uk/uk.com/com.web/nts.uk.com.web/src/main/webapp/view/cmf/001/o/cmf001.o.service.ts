@@ -5,10 +5,15 @@ module nts.uk.com.view.cmf001.o {
 
     export module service {
         var paths = {
+            getSystemType: "exio/exi/condset/getSysType",
             getConditionList: "exio/exi/condset/getStdAcceptCondSetBySysType/{0}",
             getNumberOfLine: "exio/exi/condset/getNumberOfLine/{0}",
             getAllStdAcceptItem: "exio/exi/item/getAllStdAcceptItem/{0}/{1}",
             getRecord: "exio/exi/condset/getRecord/{0}/{1}/{2}",
+        }
+
+        export function getSysTypes(): JQueryPromise<any> {
+            return ajax("com", paths.getSystemType);
         }
 
         export function getConditionList(systemType: number): JQueryPromise<any> {

@@ -7,11 +7,10 @@
 <body>
 	<ui:composition>
 		<!-- P 出力設定選択 -->
-		<div class="contentP" tabindex="-1">
+		<div class="contentP">
 			<!--P3_1 テキスト受入を行う-->
-			<div class="label" tabindex="-1">#{i18n.getText('CMF001_461')}</div>
-			<table style="margin: 0 20px 15px 20px; width: calc(100% - 40px)"
-				tabindex="-1">
+			<div class="label">#{i18n.getText('CMF001_461')}</div>
+			<table style="margin: 0 20px 5px 20px; width: calc(100% - 40px)">
 				<colgroup>
 					<col width="110px" />
 					<col width="50px" />
@@ -23,61 +22,57 @@
 				<tr>
 					<td style="padding: 5px 0;">
 						<!--P3_2 条件コード/名称-->
-						<div class="label" tabindex="-1">#{i18n.getText('CMF001_462')}</div>
+						<div class="label">#{i18n.getText('CMF001_462')}</div>
 					</td>
 					<td>
 						<!--P3_3 条件コード-->
-						<div class="label" data-bind="text: selectedConditionCd"
-							tabindex="-1"></div>
+						<div class="label" data-bind="text: selectedConditionCd"></div>
 					</td>
 					<td>
 						<!--P3_4 条件名称-->
-						<div class="label" data-bind="text: selectedConditionName"
-							tabindex="-1"></div>
+						<div class="label" data-bind="text: selectedConditionName"></div>
 					</td>
 					<td>
 						<!--P3_5 項目行行数（ラベル）-->
-						<div class="label" tabindex="-1">#{i18n.getText('CMF001_463')}</div>
+						<div class="label">#{i18n.getText('CMF001_463')}</div>
 					</td>
 					<td>
 						<!--P3_6 項目行行数-->
-						<div class="label" data-bind="text: selectedConditionLineNumber"
-							tabindex="-1"></div>
+						<div class="label" data-bind="text: selectedConditionLineNumber"></div>
 					</td>
 					<td>
 						<!--P3_7 行目-->
-						<div class="label" tabindex="-1">#{i18n.getText('CMF001_464')}</div>
+						<div class="label">#{i18n.getText('CMF001_464')}</div>
 					</td>
 				</tr>
 				<tr>
 					<td style="padding: 5px 0;">
 						<!--P3_8 受入ファイル（ラベル）-->
-						<div class="label" tabindex="-1">#{i18n.getText('CMF001_465')}</div>
+						<div class="label">#{i18n.getText('CMF001_465')}</div>
 					</td>
 					<td colspan="2">
 						<!--P3_9 受入ファイル名-->
-						<div class="label" data-bind="text: fileName" tabindex="-1"></div>
+						<div class="label" data-bind="text: fileName"></div>
 					</td>
 					<td style="">
 						<!--P3_10 取込開始行（ラベル）-->
-						<div class="label" tabindex="-1">#{i18n.getText('CMF001_466')}</div>
+						<div class="label">#{i18n.getText('CMF001_466')}</div>
 					</td>
 					<td style="">
 						<!--P3_11 取込開始行-->
-						<div class="label" data-bind="text: selectedConditionStartLine"
-							tabindex="-1"></div>
+						<div class="label" data-bind="text: selectedConditionStartLine"></div>
 					</td>
 					<td style="">
 						<!--P3_12 開始する-->
-						<div class="label" tabindex="-1">#{i18n.getText('CMF001_467')}</div>
+						<div class="label">#{i18n.getText('CMF001_467')}</div>
 					</td>
 				</tr>
 			</table>
 			<!--P3_13 取込項目-->
-			<div class="label" style="margin-bottom: 5px;" tabindex="-1">#{i18n.getText('CMF001_468')}</div>
+			<div class="label" style="margin-bottom: 5px;">#{i18n.getText('CMF001_468')}</div>
 
 			<!--P4_1 取込項目一覧-->
-			<table id="grd_Accept" tabindex="-1">
+			<table id="grd_Accept">
 				<colgroup>
 					<col width="40px" />
 					<col width="130px" />
@@ -129,19 +124,18 @@
 					</tr>
 				</tbody>
 			</table>
-			<table style="margin-top: 5px; margin-bottom: 10px;" tabindex="-1">
+			<table style="margin-top: 5px; margin-bottom: 5px;">
 				<tr>
 					<!--P5_1 対象件数-->
-					<td width="80"><div class="label" tabindex="-1">#{i18n.getText('CMF001_477')}</div></td>
+					<td width="80"><div class="label">#{i18n.getText('CMF001_477')}</div></td>
 					<!--P5_2 件数-->
 					<td style="padding-right: 5px;"><div class="label"
-							style="font-size: 1.5em;" data-bind="text: totalRecord"
-							tabindex="-1"></div></td>
+							style="font-size: 1.5em;" data-bind="text: totalRecord"></div></td>
 					<!--P5_3 件-->
-					<td><div class="label" tabindex="-1">#{i18n.getText('CMF001_478')}</div></td>
+					<td><div class="label">#{i18n.getText('CMF001_478')}</div></td>
 				</tr>
 			</table>
-			<table style="width: 100%" tabindex="-1">
+			<table style="width: 100%">
 				<tr>
 					<td style="text-align: center;">
 						<!--P6_1 ←受入設定へ-->

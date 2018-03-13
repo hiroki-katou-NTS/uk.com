@@ -17,17 +17,18 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area" tabindex="-1">
+			<div class="contents-area">
 				<!--I1_1 タイトル-->
-				<div id="I1_1" class="label" tabindex="-1">#{i18n.getText('CMF001_300')}</div>
-				<table id="tbl-control" tabindex="-1">
+				<div id="I1_1" class="label">#{i18n.getText('CMF001_300')}</div>
+				<table id="tbl-control">
 					<col width="180px" />
 					<col width="135px" />
 					<col width="160px" />
 					<tr>
 						<td>
 							<!--I2_1 形式選択(ラベル)-->
-							<div class="label" data-bind="ntsFormLabel: { }" tabindex="-1">#{i18n.getText('CMF001_301')}</div>
+							<div class="label"
+								data-bind="ntsFormLabel: { text: '#{i18n.getText('CMF001_301')}' }"></div>
 						</td>
 						<td>
 							<!--I2_2 形式選択-->
@@ -43,7 +44,8 @@
 					<tr>
 						<td>
 							<!--I4_1 固定値(ラベル)-->
-							<div class="label" data-bind="ntsFormLabel: { }" tabindex="-1">#{i18n.getText('CMF001_320')}</div>
+							<div class="label"
+								data-bind="ntsFormLabel: { text: '#{i18n.getText('CMF001_320')}' }"></div>
 						</td>
 						<td>
 							<!--I4_2 固定値-->
@@ -67,7 +69,7 @@
 					</tr>
 				</table>
 			</div>
-			<div id="functions-area-bottom" tabindex="-1">
+			<div id="functions-area-bottom">
 				<!--I5_1 設定-->
 				<button id="btn_I5_1" class="x-large proceed" tabindex="5"
 					data-bind="click: saveSetting, enable: inputMode &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CMF001_325')}</button>

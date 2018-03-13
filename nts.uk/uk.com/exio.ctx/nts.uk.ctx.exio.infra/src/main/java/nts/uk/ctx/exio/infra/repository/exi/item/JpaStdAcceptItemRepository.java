@@ -14,7 +14,7 @@ import nts.uk.ctx.exio.infra.entity.exi.item.OiomtStdAcceptItemPk;
 @Stateless
 public class JpaStdAcceptItemRepository extends JpaRepository implements StdAcceptItemRepository {
 
-	private static final String SELECT_ALL = "SELECT f FROM OiomtStdAcceptItem f WHERE f.stdAcceptItemPk.cid = :cid AND f.stdAcceptItemPk.systemType = :systemType AND f.stdAcceptItemPk.conditionSetCd = :conditionSetCd";
+	private static final String SELECT_ALL = "SELECT f FROM OiomtStdAcceptItem f WHERE f.stdAcceptItemPk.cid = :cid AND f.stdAcceptItemPk.systemType = :systemType AND f.stdAcceptItemPk.conditionSetCd = :conditionSetCd ORDER BY f.stdAcceptItemPk.acceptItemNumber";
 
 	private static final String DELETE_ACCEPTITEM_BY_COND_SET = "DELETE FROM OiomtStdAcceptItem f "
 			+ "WHERE f.stdAcceptItemPk.cid =:companyId "

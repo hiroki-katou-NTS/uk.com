@@ -3,11 +3,11 @@
 }
 #ex_accept_wizard > .steps{
 	width: 250px;
-	height: 620px;
+	height: 590px;
 }
 #ex_accept_wizard > .content{
-	width: 850px;
-	height: 620px;
+	width: 890px;
+	height: 590px;
 	background: none;
 }
 #file-upload{
