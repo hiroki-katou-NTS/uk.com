@@ -962,8 +962,8 @@ module nts.uk.at.view.kmk003.a {
 
                 toOriginalDto(convertedModel: FixedTableTimeEditorModel): FlowRestSettingDto {
                     return {
-                        flowPassageTime: convertedModel.startCol()
-                        flowRestTime: convertedModel.endCol(),
+                        flowPassageTime: convertedModel.startCol(),
+                        flowRestTime: convertedModel.endCol()
                     };
                 }
 
