@@ -33,3 +33,7 @@
 	padding-top: 20px;
 	padding-bottom: 20px
 }
+
+#scrD #tableCommonMonth table thead tr th:nth-child(1) {
+	width: 60px;
+}
