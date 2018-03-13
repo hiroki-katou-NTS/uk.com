@@ -28,6 +28,16 @@ module nts.uk.at.view.kaf000.test.viewmodel {
                 }
             });
         }
+        
+        openSingle() {
+            var self = this;
+            let data = $("#appID-input").val();
+            service.getAppInfoByAppID(data).done(function(values: any) {
+                if (values.length != 0) {
+                    nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'appID': values.appID });
+                }
+            });
+        }
     }
     export class Application {
         applicationType: number;

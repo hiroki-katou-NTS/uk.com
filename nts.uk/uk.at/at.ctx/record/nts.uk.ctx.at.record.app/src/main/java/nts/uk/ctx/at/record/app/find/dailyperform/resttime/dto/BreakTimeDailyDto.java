@@ -62,11 +62,12 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 			dto.setEmployeeId(x.getEmployeeId());
 			dto.setYmd(x.getYmd());
 			dto.setRestTimeType(x.getBreakType() == null ? 0 : x.getBreakType().value);
-			dto.setTimeZone(ConvertHelper.mapTo(x.getBreakTimeSheets(), (c) -> new TimeSheetDto(
-					c.getBreakFrameNo().v().intValue(),
-					getTimeStamp(c.getStartTime()),
-					getTimeStamp(c.getEndTime()),
-					c.getBreakTime() == null ? null : c.getBreakTime().valueAsMinutes())));
+			dto.setTimeZone(ConvertHelper.mapTo(x.getBreakTimeSheets(), 
+													(c) -> new TimeSheetDto(
+														c.getBreakFrameNo().v().intValue(),
+														getTimeStamp(c.getStartTime()),
+														getTimeStamp(c.getEndTime()),
+														c.getBreakTime() == null ? 0 : c.getBreakTime().valueAsMinutes())));
 			dto.exsistData();
 		}
 		return dto;

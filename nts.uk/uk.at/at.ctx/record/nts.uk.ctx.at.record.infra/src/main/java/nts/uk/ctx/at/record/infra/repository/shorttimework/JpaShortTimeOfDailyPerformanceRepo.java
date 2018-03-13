@@ -44,21 +44,11 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 	@Override
 	public void updateByKey(ShortTimeOfDailyPerformance shortWork) {
 		List<KrcdtDaiShortWorkTime> entities = findEntities(shortWork.getEmployeeId(), shortWork.getYmd()).getList();
-		shortWork.getShortWorkingTimeSheets().stream().forEach(c -> {
-			KrcdtDaiShortWorkTime current = entities.stream()
-					.filter(x -> x.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo == c.getShortWorkTimeFrameNo().v())
-					.findFirst().orElse(null);
-			if(current != null){
-				current.childCareAtr = c.getChildCareAttr().value;
-				current.deductionTime = c.getDeductionTime() == null ? 0 : c.getDeductionTime().valueAsMinutes();
-				current.endTime = c.getEndTime() == null ? 0 : c.getEndTime().valueAsMinutes();
-				current.startTime = c.getStartTime() == null ? 0 : c.getStartTime().valueAsMinutes();
-				current.time = c.getShortTime() == null ? 0 : c.getShortTime().valueAsMinutes();
-			} else {
-				entities.add(newEntities(shortWork.getEmployeeId(), shortWork.getYmd(), c));
-			}
-		});
-		commandProxy().updateAll(entities);
+        commandProxy().removeAll(entities);
+        getEntityManager().flush();
+        commandProxy().insertAll(shortWork.getShortWorkingTimeSheets().stream()
+        		.map(c -> newEntities(shortWork.getEmployeeId(), shortWork.getYmd(), c))
+        		.collect(Collectors.toList()));
 	}
 
 	@Override
