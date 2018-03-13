@@ -7,17 +7,22 @@ package nts.uk.ctx.at.shared.app.command.vacation.setting.annualpaidleave;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingDomainEvent;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplayDivision;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSettingDomainEvent;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RoundProcessingClassification;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSettingDomainEvent;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingDomainEvent;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -61,6 +66,28 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
             this.annualRepo.update(setting);
         } else {
             this.annualRepo.add(setting);
+        }
+        
+        boolean annualManage = command.getAnnualManage() == ManageDistinct.NO.value;
+        if (annualManage) {
+            val annualPaidLeaveSettingEvent = new AnnualPaidLeaveSettingDomainEvent(annualManage);
+            val retentionYearlySettingEvent = new RetentionYearlySettingDomainEvent(annualManage);
+            val timeAnnualSettingEvent = new TimeAnnualSettingDomainEvent(annualManage);
+            annualPaidLeaveSettingEvent.toBePublished();
+            retentionYearlySettingEvent.toBePublished();
+            timeAnnualSettingEvent.toBePublished();
+        }
+        
+        boolean timeManageType = command.getTimeManageType() == ManageDistinct.NO.value;
+        if (timeManageType && !annualManage) {
+            val timeAnnualSettingEvent = new TimeAnnualSettingDomainEvent(timeManageType);
+            timeAnnualSettingEvent.toBePublished();
+        }
+        
+        boolean maxManageSemiVacation = command.getMaxManageSemiVacation() == ManageDistinct.NO.value;
+        if (maxManageSemiVacation && !annualManage) {
+            val manageAnnualSettingEvent = new ManageAnnualSettingDomainEvent(timeManageType);
+            manageAnnualSettingEvent.toBePublished();
         }
     }
 
