@@ -25,7 +25,6 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.ExtractionPeriodUnit;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfPublicHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHoliday;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayManagementStartDate;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -120,6 +119,10 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		Optional<PublicHolidaySetting> publicHolidaySettingOpt = publicHolidaySettingRepo.findByCID(companyId);
 		if (!publicHolidaySettingOpt.isPresent())
 			throw new RuntimeException("「公休設定」ドメインが見つかりません！");
+		
+		if(!(publicHolidaySettingOpt.get().getPublicHdManagementStartDate() instanceof PublicHoliday ))
+			throw new  RuntimeException("In domain 「公休設定」, the field: 公休管理開始日 is not intance of 公休起算日 /nEAP don't check this Exception. /nPlease view EA!");
+		
 		PublicHoliday publicHoliday = (PublicHoliday) publicHolidaySettingOpt.get().getPublicHdManagementStartDate();
 		if (publicHoliday.getDetermineStartDate() == DayOfPublicHoliday.DESIGNATE_BY_YEAR_MONTH_DAY) {
 			countingDate= publicHoliday.getDate().localDate();
