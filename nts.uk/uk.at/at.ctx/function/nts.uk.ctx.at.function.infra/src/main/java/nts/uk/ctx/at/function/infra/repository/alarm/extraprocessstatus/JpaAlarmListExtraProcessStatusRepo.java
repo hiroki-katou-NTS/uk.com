@@ -2,7 +2,9 @@ package nts.uk.ctx.at.function.infra.repository.alarm.extraprocessstatus;
 
 import java.util.List;
 import java.util.Optional;
+
 import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatus;
@@ -60,7 +62,7 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 
 	@Override
 	public void deleteAlListExtaProcess(String companyID, GeneralDate startDate, int startTime) {
-		this.commandProxy().remove(KfnmtAlarmListExtraProcessStatus.class,new KfnmtAlarmListExtraProcessStatusPK(companyID,startDate.date(),startTime));
+		this.commandProxy().remove(KfnmtAlarmListExtraProcessStatus.class,new KfnmtAlarmListExtraProcessStatusPK(companyID,startDate,startTime));
 		
 	}
 
@@ -72,9 +74,9 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 				.getSingle(c -> c.toDomain());
 		if (optAlarmStatus.isPresent() && optAlarmStatus.get().getEndDate() == null
 				&& optAlarmStatus.get().getEndTime() == null)
-			return Optional.ofNullable(null);
+			return optAlarmStatus ;
 		else
-			return optAlarmStatus;
+			return Optional.ofNullable(null);
 
 	}
 
