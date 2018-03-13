@@ -84,10 +84,30 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             }, true);
             
             modal("/view/cmf/001/m/index.xhtml").onClosed(function() {
-                var output = getShared('CMF001mOutput');
+                let output = getShared('CMF001mOutput');
                 if (output) {
-                    self.selectedStandardImportSetting().conditionSettingCode(output.code);
-                    self.selectedStandardImportSetting().conditionSettingName(output.name);
+                    let isOverride = output.checked;
+                    let desCode = output.code;
+                    let desName = output.name;
+                    
+                    //process copy condition setting.
+                    let copyParam : any = {systemType: self.selectedStandardImportSetting().systemType(),
+                                            sourceCondSetCode: self.selectedStandardImportSetting().conditionSettingCode(),
+                                            destCondSetCode: desCode,
+                                            destCondSetName: desName,
+                                            override: isOverride};
+                    service.copyStdData(copyParam).done(function(sourceCondSet: any){
+                        //Reload grid condition setting
+                        self.getAllData(desCode).done(() => {
+                        info({ messageId: "Msg_15" }).then(() => {
+                            if (self.screenMode() == model.SCREEN_MODE.UPDATE) {
+                                $("#B4_4").focus();
+                            } else {
+                                $("#B4_3").focus();
+                            }
+                        });
+                    });
+                    });
                 }
             });
         }

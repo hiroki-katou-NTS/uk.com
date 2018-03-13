@@ -62,9 +62,9 @@ module nts.uk.com.view.cmf001.g.viewmodel {
             } else {
                 convertCode = new model.AcceptanceCodeConvert(convertCodeShared.convertCode, convertCodeShared.convertName, 0);
             }
-            self.numDataFormatSetting(new model.NumericDataFormatSetting(numFormat.effectiveDigitLength, numFormat.startDigit,
-                numFormat.endDigit, numFormat.decimalDivision, numFormat.decimalDigitNumber, numFormat.decimalPointClassification,
-                numFormat.decimalFraction, numFormat.codeConvertCode, numFormat.fixedValue, numFormat.valueOfFixed));
+            self.numDataFormatSetting(new model.NumericDataFormatSetting(numFormat.effectiveDigitLength, numFormat.startDigit, numFormat.endDigit, 
+                                                        numFormat.decimalDivision, numFormat.decimalDigitNumber, numFormat.decimalPointClassification, 
+                                                        numFormat.decimalFraction, numFormat.codeConvertCode, numFormat.fixedValue, numFormat.valueOfFixedValue));
         }
         start(): JQueryPromise<any> {
             block.invisible();
@@ -84,6 +84,26 @@ module nts.uk.com.view.cmf001.g.viewmodel {
                 dfd.reject();
             });
             return dfd.promise();
+        }
+        enableEffectDigitLength(){
+            var self = this;
+            return (self.numDataFormatSetting().effectiveDigitLength() == model.NOT_USE_ATR.USE && self.inputMode && !self.numDataFormatSetting().fixedValue());
+        }
+        enableMinorityEdit(){
+            var self = this;
+            return (self.numDataFormatSetting().decimalDivision() == model.NOT_USE_ATR.USE && self.inputMode && !self.numDataFormatSetting().fixedValue());
+        }
+        disableMinorityEdit(){
+            var self = this;
+            return (self.numDataFormatSetting().decimalDivision() == model.NOT_USE_ATR.NOT_USE && self.inputMode && !self.numDataFormatSetting().fixedValue());
+        }
+        enableConvertCode(){
+             var self = this;
+            return (self.inputMode && !self.numDataFormatSetting().fixedValue());   
+        }
+        enableFixedValue(){
+            var self = this;
+            return (self.numDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE && self.inputMode);
         }
         // コード変換の選択を行う
         open001_K(data) {

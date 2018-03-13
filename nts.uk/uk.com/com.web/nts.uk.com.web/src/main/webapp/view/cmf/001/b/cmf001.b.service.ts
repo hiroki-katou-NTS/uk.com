@@ -8,6 +8,7 @@ module nts.uk.com.view.cmf001.b.service {
         getOneStdData: "exio/exi/condset/getOneStdCondSet/{0}/{1}",
         registerStdData: "exio/exi/condset/registerStd",
         deleteStdData: "exio/exi/condset/deleteStd", 
+        copyStdData: "exio/exi/condset/copyCondSet",
         getAllStdItemData: "exio/exi/item/getAllStdAcceptItem/{0}/{1}"
     }
 
@@ -27,6 +28,10 @@ module nts.uk.com.view.cmf001.b.service {
 
     export function registerStdData(data: any): JQueryPromise<any> {
         return ajax("com", paths.registerStdData, data);
+    };
+    
+    export function copyStdData(data: any): JQueryPromise<any> {
+        return ajax("com", paths.copyStdData, data);
     };
 
     export function deleteStdData(data: any): JQueryPromise<any> {

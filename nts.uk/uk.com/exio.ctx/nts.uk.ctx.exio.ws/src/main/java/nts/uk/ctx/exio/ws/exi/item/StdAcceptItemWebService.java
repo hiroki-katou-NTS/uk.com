@@ -8,7 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.exio.app.command.exi.item.StdAcceptItemCommand;
+import nts.uk.ctx.exio.app.command.exi.item.Cmf001DCommand;
+import nts.uk.ctx.exio.app.command.exi.item.RegisterStdAcceptItemCommandHandler;
 import nts.uk.ctx.exio.app.find.exi.item.StdAcceptItemDto;
 import nts.uk.ctx.exio.app.find.exi.item.StdAcceptItemFinder;
 
@@ -17,6 +18,9 @@ import nts.uk.ctx.exio.app.find.exi.item.StdAcceptItemFinder;
 public class StdAcceptItemWebService {
 	@Inject
 	private StdAcceptItemFinder stdAcceptItem;
+	
+	@Inject
+	private RegisterStdAcceptItemCommandHandler regStdAcceptItemHandler;
 
 	@POST
 	@Path("getAllStdAcceptItem/{systemType}/{conditionSetCd}")
@@ -27,9 +31,9 @@ public class StdAcceptItemWebService {
 	
 	@POST
 	@Path("register")
-	public void getAllStdAcceptItem(List<StdAcceptItemCommand> listItem) {
-		int length = listItem.size();
-		System.out.println("data size: " + length);
-//		return this.stdAcceptItem.getStdAcceptItems(systemType, conditionSetCd);
+	public void getAllStdAcceptItem(Cmf001DCommand command) {
+//		int length = listItem.size();
+//		System.out.println("data size: " + length);
+		this.regStdAcceptItemHandler.handle(command);
 	}
 }

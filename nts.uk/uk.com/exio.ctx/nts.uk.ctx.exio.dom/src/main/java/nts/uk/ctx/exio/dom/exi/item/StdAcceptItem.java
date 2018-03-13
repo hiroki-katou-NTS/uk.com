@@ -68,6 +68,8 @@ public class StdAcceptItem extends AggregateRoot {
 	 */
 	private DataFormatSetting dataFormatSetting;
 
+	
+	
 	public StdAcceptItem(String cid, int systemType, String conditionSetCd, int acceptItemNumber, int categoryItemNo,
 			int csvItemNumber, String csvItemName, int itemType, AcScreenCondSet acceptScreenConditionSetting, DataFormatSetting dataFormatSetting) {
 		super();
@@ -80,6 +82,22 @@ public class StdAcceptItem extends AggregateRoot {
 		this.csvItemName = csvItemName;
 		this.itemType = EnumAdaptor.valueOf(itemType, ItemType.class);
 		this.acceptScreenConditionSetting = Optional.ofNullable(acceptScreenConditionSetting);
+		this.dataFormatSetting = dataFormatSetting;
+	}
+
+	public StdAcceptItem(String cid, AcceptanceConditionCode conditionSetCd, int acceptItemNumber,
+			SystemType systemType, int csvItemNumber, String csvItemName, ItemType itemType, int categoryItemNo,
+			Optional<AcScreenCondSet> acceptScreenConditionSetting, DataFormatSetting dataFormatSetting) {
+		super();
+		this.cid = cid;
+		this.conditionSetCd = conditionSetCd;
+		this.acceptItemNumber = acceptItemNumber;
+		this.systemType = systemType;
+		this.csvItemNumber = csvItemNumber;
+		this.csvItemName = csvItemName;
+		this.itemType = itemType;
+		this.categoryItemNo = categoryItemNo;
+		this.acceptScreenConditionSetting = acceptScreenConditionSetting;
 		this.dataFormatSetting = dataFormatSetting;
 	}
 

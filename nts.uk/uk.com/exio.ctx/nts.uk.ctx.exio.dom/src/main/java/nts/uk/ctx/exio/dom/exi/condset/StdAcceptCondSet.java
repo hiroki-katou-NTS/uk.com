@@ -12,7 +12,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 @Getter
 public class StdAcceptCondSet extends AggregateRoot {
-
+	
 	/**
 	 * 会社ID
 	 */
@@ -61,13 +61,38 @@ public class StdAcceptCondSet extends AggregateRoot {
 	/**
 	 * チェック完了
 	 */
-	private NotUseAtr checkCompleted;
+	private NotUseAtr checkCompleted = NotUseAtr.USE;
 
 	/**
 	 * 既存データの削除方法
 	 */
 	private Optional<DeleteExistDataMethod> deleteExtDataMethod;
 
+	public StdAcceptCondSet(String cid, 
+			AcceptanceConditionCode conditionSetCd, 
+			Optional<String> categoryId,
+			Optional<AcceptanceLineNumber> csvDataLineNumber, 
+			SystemType systemType, 
+			NotUseAtr deleteExistData,
+			Optional<AcceptanceLineNumber> csvDataStartLine, 
+			Optional<AcceptMode> acceptMode,
+			AcceptanceConditionName conditionSetName, 
+			NotUseAtr checkCompleted,
+			Optional<DeleteExistDataMethod> deleteExtDataMethod) {
+		super();
+		this.cid = cid;
+		this.conditionSetCd = conditionSetCd;
+		this.categoryId = categoryId;
+		this.csvDataLineNumber = csvDataLineNumber;
+		this.systemType = systemType;
+		this.deleteExistData = deleteExistData;
+		this.csvDataStartLine = csvDataStartLine;
+		this.acceptMode = acceptMode;
+		this.conditionSetName = conditionSetName;
+		this.checkCompleted = checkCompleted;
+		this.deleteExtDataMethod = deleteExtDataMethod;
+	}
+	
 	public StdAcceptCondSet(String cid, int systemType, String conditionSetCd, String conditionSetName,
 			int deleteExistData, Integer acceptMode, int checkCompleted, String categoryId, Integer csvDataLineNumber,
 			Integer csvDataStartLine, Integer deleteExtDataMethod) {
@@ -98,4 +123,8 @@ public class StdAcceptCondSet extends AggregateRoot {
 					.of(EnumAdaptor.valueOf(deleteExtDataMethod.intValue(), DeleteExistDataMethod.class));
 	}
 
+	public void updateCheckCompleted(int check) {
+		this.checkCompleted = EnumAdaptor.valueOf(check, NotUseAtr.class);
+	}
+	
 }

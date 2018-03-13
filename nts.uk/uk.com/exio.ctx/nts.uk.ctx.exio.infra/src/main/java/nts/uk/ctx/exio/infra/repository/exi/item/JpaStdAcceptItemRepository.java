@@ -14,8 +14,12 @@ import nts.uk.ctx.exio.infra.entity.exi.item.OiomtStdAcceptItemPk;
 @Stateless
 public class JpaStdAcceptItemRepository extends JpaRepository implements StdAcceptItemRepository {
 
-	private static final String SELECT_ALL = "SELECT f FROM OiomtStdAcceptItem f WHERE f.stdAcceptItemPk.cid = :cid AND f.stdAcceptItemPk.systemType = :systemType AND f.stdAcceptItemPk.conditionSetCd = :conditionSetCd";
+	private static final String SELECT_ALL = "SELECT f FROM OiomtStdAcceptItem f WHERE f.stdAcceptItemPk.cid = :cid AND f.stdAcceptItemPk.systemType = :systemType AND f.stdAcceptItemPk.conditionSetCd = :conditionSetCd ORDER BY f.stdAcceptItemPk.acceptItemNumber";
 
+	private static final String DELETE_ACCEPTITEM_BY_COND_SET = "DELETE FROM OiomtStdAcceptItem f "
+			+ "WHERE f.stdAcceptItemPk.cid =:companyId "
+			+ "AND f.stdAcceptItemPk.systemType =:systemType "
+			+ "AND f.stdAcceptItemPk.conditionSetCd =:conditionSetCd";
 	@Override
 	public Optional<StdAcceptItem> getStdAcceptItemById(String cid, int sysType, String conditionSetCd,
 			int acceptItemNumber) {
@@ -51,6 +55,16 @@ public class JpaStdAcceptItemRepository extends JpaRepository implements StdAcce
 		this.commandProxy().remove(OiomtStdAcceptItem.class,
 				new OiomtStdAcceptItemPk(cid, sysType, conditionSetCd, acceptItemNumber));
 	}
+	
+	@Override
+	public void removeAll(String cid, int sysType, String conditionSetCd) {		
+		this.getEntityManager().createQuery(DELETE_ACCEPTITEM_BY_COND_SET)
+				.setParameter("companyId", cid)
+				.setParameter("systemType", sysType)
+				.setParameter("conditionSetCd", conditionSetCd)
+				.executeUpdate();
+		this.getEntityManager().flush();
+	}
 
 	@Override
 	public List<StdAcceptItem> getListStdAcceptItems(String cid, int systemType, String conditionSetCd) {
@@ -58,5 +72,7 @@ public class JpaStdAcceptItemRepository extends JpaRepository implements StdAcce
 				.setParameter("systemType", systemType).setParameter("conditionSetCd", conditionSetCd)
 				.getList(c -> OiomtStdAcceptItem.toDomain(c));
 	}
+
+	
 
 }
