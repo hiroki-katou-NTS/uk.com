@@ -829,6 +829,7 @@ module cmm045.a.viewmodel {
          * count status when filter by appType
          */
         countStatus(lstApp: Array<vmbase.DataModeApp>): vmbase.ApplicationStatus{
+            var self = this;
             let unApprovalNumber = 0;
             let approvalNumber = 0;
             let approvalAgentNumber = 0;
@@ -838,7 +839,7 @@ module cmm045.a.viewmodel {
             _.each(lstApp, function(app){
                 if(app.appStatus == '未'){ unApprovalNumber += 1; }//UNAPPROVED:5
                 if(app.appStatus == '承認済み'){//APPROVED: 4
-                    let agent = this.findAgent(app.appId);
+                    let agent = self.findAgent(app.appId);
                     if(agent != undefined && agent.agentId != null && agent.agentId != ''){
                         approvalAgentNumber += 1;
                     }else{
