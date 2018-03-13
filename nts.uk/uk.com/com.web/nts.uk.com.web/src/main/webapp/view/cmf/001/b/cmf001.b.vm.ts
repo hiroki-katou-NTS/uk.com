@@ -99,14 +99,14 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                     service.copyStdData(copyParam).done(function(sourceCondSet: any){
                         //Reload grid condition setting
                         self.getAllData(desCode).done(() => {
-                        info({ messageId: "Msg_15" }).then(() => {
-                            if (self.screenMode() == model.SCREEN_MODE.UPDATE) {
-                                $("#B4_4").focus();
-                            } else {
-                                $("#B4_3").focus();
-                            }
+                            info({ messageId: "Msg_15" }).then(() => {
+                                if (self.screenMode() == model.SCREEN_MODE.UPDATE) {
+                                    $("#B4_4").focus();
+                                } else {
+                                    $("#B4_3").focus();
+                                }
+                            });
                         });
-                    });
                     });
                 }
             });
