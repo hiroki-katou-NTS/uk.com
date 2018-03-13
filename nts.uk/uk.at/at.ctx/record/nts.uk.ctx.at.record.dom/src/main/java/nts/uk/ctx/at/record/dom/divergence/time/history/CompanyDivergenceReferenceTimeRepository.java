@@ -26,19 +26,13 @@ public interface CompanyDivergenceReferenceTimeRepository {
 	 */
 	List<CompanyDivergenceReferenceTime> findAll(String histId);
 	
-	/**
-	 * Adds the.
-	 *
-	 * @param domain the domain
-	 */
-	void add(CompanyDivergenceReferenceTime domain);
 	
 	/**
 	 * Update.
 	 *
 	 * @param domain the domain
 	 */
-	void update(CompanyDivergenceReferenceTime domain);
+	void update(List<CompanyDivergenceReferenceTime> listDomain);
 	
 	/**
 	 * Delete.
@@ -46,4 +40,11 @@ public interface CompanyDivergenceReferenceTimeRepository {
 	 * @param domain the domain
 	 */
 	void delete(CompanyDivergenceReferenceTime domain);
+	
+	/**
+	 * Adds the default data when create history.
+	 *
+	 * @param historyId the history id
+	 */
+	void addDefaultDataWhenCreateHistory(String historyId);
 }

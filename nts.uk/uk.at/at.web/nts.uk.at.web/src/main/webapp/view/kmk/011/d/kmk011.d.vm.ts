@@ -85,7 +85,10 @@ module nts.uk.at.view.kmk011.d {
                 let _self = this;
                 var dfd = $.Deferred<any>();
                 
-                dfd.resolve();
+                service.getAllHistory().done(() => {
+                    dfd.resolve();    
+                });
+                
                 return dfd.promise();
             }
             

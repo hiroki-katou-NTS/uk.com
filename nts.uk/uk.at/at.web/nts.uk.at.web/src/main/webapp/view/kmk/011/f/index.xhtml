@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 600,
+					height : 470
+				};
+			</script>
+
+			<com:scriptfile set="IGNITE" />
+
+			<com:stylefile path="kmk011.f.main.css" />
+			<com:scriptfile path="kmk011.f.service.js" />
+			<com:scriptfile path="kmk011.f.vm.js" />
+			<com:scriptfile path="kmk011.f.start.js" />
+		</ui:define>
+
+		<!-- PAGE CONTENT -->
+		<ui:define name="content">
+			<div id="contents-area" style="padding: 20px 45px;">
+				<div>#{i18n.getText('KMK011_57')}</div>
+
+				<div style="margin: 20px 0;">
+					<div style="float: left"
+						data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK011_58')}</div>
+					<div id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: {
+						name: '#[KMK011_58]',
+						required: requiredDateRange, 
+						enable: enableDateRange,
+						showNextPrevious: false, 
+						value: dateValue, 
+						maxRange: 'none',
+						startName: '#[KMK011_59]',
+						endName: '#[KMK011_61]'}"/>
+				</div>
+				<div style="margin-left: 135px; margin-top: 20px;" data-bind="ntsRadioBoxGroup: {
+						name: '#[KMK011_30]',
+						options: itemListRadio,
+						optionsValue: 'id',
+						optionsText: 'name',
+						value: selectedId,
+						enable: enableRadio}"></div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="x-large proceed" tabindex="2"
+					data-bind="click: execution">#{i18n.getText('KMK011_62')}</button>
+				<button class="large" tabindex="3" data-bind="click: close">#{i18n.getText('#KMK011_63')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -77,16 +77,13 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 				: krcstDrts.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
-	 * CompanyDivergenceReferenceTimeRepository#add(nts.uk.ctx.at.record.dom.
-	 * divergence.time.history.CompanyDivergenceReferenceTime)
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeRepository#addDefaultDataWhenCreateHistory(java.lang.String)
 	 */
 	@Override
-	public void add(CompanyDivergenceReferenceTime domain) {
-		this.commandProxy().insert(this.toEntity(domain));
+	public void addDefaultDataWhenCreateHistory(String historyId) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/*
@@ -97,8 +94,8 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 	 * divergence.time.history.CompanyDivergenceReferenceTime)
 	 */
 	@Override
-	public void update(CompanyDivergenceReferenceTime domain) {
-		this.commandProxy().update(this.toEntity(domain));
+	public void update(List<CompanyDivergenceReferenceTime> listDomain) {
+//		this.commandProxy().update(this.toEntity(domain));
 	}
 
 	/*
