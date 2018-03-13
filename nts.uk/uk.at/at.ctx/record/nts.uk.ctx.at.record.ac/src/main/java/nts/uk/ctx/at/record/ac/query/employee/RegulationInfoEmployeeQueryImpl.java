@@ -34,8 +34,8 @@ public class RegulationInfoEmployeeQueryImpl implements RegulationInfoEmployeeQu
 		return EmployeeSearchQueryDto.builder().baseDate(workingDate)
 							.filterByEmployment(queryX.getFilterByEmployment())
 							.employmentCodes(queryX.getEmploymentCodes())
-							.filterByDepartment(false)
-							.filterByWorkplace(false)
+							.filterByDepartment(queryX.getFilterByDepartment())
+							.filterByWorkplace(queryX.getFilterByWorkplace())
 							.filterByClassification(queryX.getFilterByClassification())
 							.classificationCodes(queryX.getClassificationCodes())
 							.filterByJobTitle(queryX.getFilterByJobTitle())
@@ -44,13 +44,13 @@ public class RegulationInfoEmployeeQueryImpl implements RegulationInfoEmployeeQu
 							.worktypeCodes(queryX.getWorktypeCodes())
 							.periodStart(workingDate)
 							.periodEnd(workingDate)
-							.includeIncumbents(true)
-							.includeWorkersOnLeave(true)
-							.includeOccupancy(true)
-							.includeAreOnLoan(true)
-							.includeGoingOnLoan(false)
+							.includeIncumbents(queryX.getIncludeIncumbents())
+							.includeWorkersOnLeave(queryX.getIncludeWorkersOnLeave())
+							.includeOccupancy(queryX.getIncludeOccupancy())
+							.includeAreOnLoan(queryX.getIncludeAreOnLoan())
+							.includeGoingOnLoan(queryX.getIncludeGoingOnLoan())
 							.systemType(2)
 //							.sortOrderNo(1)
-							.includeRetirees(false).build();
+							.includeRetirees(queryX.getIncludeRetirees()).build();
 	}
 }
