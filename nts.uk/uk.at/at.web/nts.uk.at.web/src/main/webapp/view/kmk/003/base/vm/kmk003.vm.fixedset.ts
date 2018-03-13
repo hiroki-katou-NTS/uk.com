@@ -1,6 +1,5 @@
 module nts.uk.at.view.kmk003.a {
     
-    import DeductionTimeDto = service.model.common.DeductionTimeDto;
     import EmTimeZoneSetDto = service.model.common.EmTimeZoneSetDto;
     import OverTimeOfTimeZoneSetDto = service.model.common.OverTimeOfTimeZoneSetDto;
     import HDWorkTimeSheetSettingDto = service.model.common.HDWorkTimeSheetSettingDto;
@@ -10,7 +9,6 @@ module nts.uk.at.view.kmk003.a {
     import FixedWorkCalcSettingDto = service.model.common.FixedWorkCalcSettingDto;
     
     import FixOffdayWorkTimezoneDto = service.model.fixedset.FixOffdayWorkTimezoneDto;
-    import FixRestTimezoneSetDto = service.model.fixedset.FixRestTimezoneSetDto;
     import FixedWorkTimezoneSetDto = service.model.fixedset.FixedWorkTimezoneSetDto;
     import FixHalfDayWorkTimezoneDto = service.model.fixedset.FixHalfDayWorkTimezoneDto;
     
@@ -27,6 +25,9 @@ module nts.uk.at.view.kmk003.a {
     import FixedWorkCalcSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixedWorkCalcSettingModel;
     import OtherFlowColumnSetting = nts.uk.at.view.kmk003.a.viewmodel.common.OtherFlowColumnSetting;
     import OffdayWorkTimeConverter = nts.uk.at.view.kmk003.a.viewmodel.common.OffdayWorkTimeConverter;
+    import FixRestTimezoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixRestTimezoneSetModel;
+    import BaseDataModel = nts.uk.at.view.kmk003.a.viewmodel.common.BaseDataModel;
+    import FixedTableDataConverterNew = nts.uk.at.view.kmk003.a.viewmodel.common.FixedTableDataConverterNew;
     
     import FixedWorkSettingDto = service.model.fixedset.FixedWorkSettingDto;
     export module viewmodel {
@@ -74,12 +75,13 @@ module nts.uk.at.view.kmk003.a {
 
             }
 
-            export class FixHalfDayWorkTimezoneModel {
+            export class FixHalfDayWorkTimezoneModel extends BaseDataModel {
                 restTimezone: FixRestTimezoneSetModel;
                 workTimezone: FixedWorkTimezoneSetModel;
                 dayAtr: KnockoutObservable<number>;
                 
                 constructor() {
+                    super();
                     this.restTimezone = new FixRestTimezoneSetModel();
                     this.workTimezone = new FixedWorkTimezoneSetModel();
                     this.dayAtr = ko.observable(0);
@@ -118,51 +120,6 @@ module nts.uk.at.view.kmk003.a {
                     this.workTimezone.resetData();    
                 }
             }
-            
-            export class FixRestTimezoneSetModel extends TimeRangeModelConverter<DeductionTimeModel> {
-                lstTimezone: KnockoutObservableArray<DeductionTimeModel>;
-                
-                constructor() {
-                    super();
-                    this.lstTimezone = this.originalList;
-                }
-
-                toConvertedList(): Array<TimeRangeModel> {
-                    let self = this;
-                    return _.map(self.lstTimezone(), tz => self.toTimeRangeItem(tz.start(), tz.end()));
-                }
-
-                fromConvertedList(newList: Array<TimeRangeModel>): Array<DeductionTimeModel> {
-                    return _.map(newList, newVl => {
-                        let vl = new DeductionTimeModel();
-                        vl.start(newVl.column1().startTime);
-                        vl.end(newVl.column1().endTime);
-                        return vl;
-                    });
-                }
-                
-                updateData(data: FixRestTimezoneSetDto) {
-                    let mapped = _.map(data.lstTimezone, (dataDTO) => {
-                        let dataModel = new DeductionTimeModel();
-                        dataModel.updateData(dataDTO);
-                        return dataModel;
-                    });  
-                    this.lstTimezone(_.sortBy(mapped, item => item.start()));
-                }
-                
-                toDto(): FixRestTimezoneSetDto {
-                    let lstTimezone: DeductionTimeDto[] = _.map(this.lstTimezone(), dataModel => dataModel.toDto());
-                    
-                    let dataDTO: FixRestTimezoneSetDto = {
-                        lstTimezone: lstTimezone
-                    };
-                    return dataDTO;
-                }
-                
-                resetData(){
-                    this.lstTimezone([]);    
-                }
-            }           
             
             export class FixedWorkSettingModel {
                 workTimeCode: KnockoutObservable<string>;

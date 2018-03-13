@@ -191,7 +191,7 @@ module a7 {
                         deduct.end(item.column1().endTime);
                         listDeductionTimeModel.push(deduct);
                     }
-                    self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone(listDeductionTimeModel);
+                    self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.timezones(listDeductionTimeModel);
                 }
 
                 if (self.mainSettingModel.workTimeSetting.isDiffTime()) {
@@ -348,7 +348,7 @@ module a7 {
             {
                 let data: any = [];
                 if (self.mainSettingModel.workTimeSetting.isFixed()) {
-                    for (let item of self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone()) {
+                    for (let item of self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.timezones()) {
                         data.push({
                             column1: ko.observable({ startTime: item.start(), endTime: item.end() })
                         });

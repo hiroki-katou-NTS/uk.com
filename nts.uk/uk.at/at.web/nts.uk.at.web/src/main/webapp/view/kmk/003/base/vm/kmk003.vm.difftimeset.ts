@@ -25,6 +25,8 @@ module nts.uk.at.view.kmk003.a {
     import TimeRangeModelConverter = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModelConverter;
     import TimeRangeModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModel;
     import OffdayWorkTimeConverter = nts.uk.at.view.kmk003.a.viewmodel.common.OffdayWorkTimeConverter;
+    import FixedTableDataConverterNew = nts.uk.at.view.kmk003.a.viewmodel.common.FixedTableDataConverterNew;
+    import TimeRange = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRange;
 
     import DiffTimeWorkSettingDto = nts.uk.at.view.kmk003.a.service.model.difftimeset.DiffTimeWorkSettingDto;
     export module viewmodel {
@@ -59,6 +61,19 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
+            export class DiffTimeRangeModel {
+                column1: KnockoutObservable<TimeRange>;
+                isUpdateStartTime: KnockoutObservable<boolean>;
+
+                constructor(dtdtz: DiffTimeDeductTimezoneModel) {
+                    let range = new TimeRange();
+                    range.startTime = dtdtz.start();
+                    range.endTime = dtdtz.end();
+                    this.column1 = ko.observable(range);
+                    this.isUpdateStartTime = ko.observable(dtdtz.isUpdateStartTime());
+                }
+            }
+
             export class DiffTimeDeductTimezoneModel extends DeductionTimeModel {
                 isUpdateStartTime: KnockoutObservable<boolean>;
 
@@ -88,7 +103,7 @@ module nts.uk.at.view.kmk003.a {
             }
 
 
-            export class DiffTimeRestTimezoneModel extends TimeRangeModelConverter<DiffTimeDeductTimezoneModel>{
+            export class DiffTimeRestTimezoneModel extends FixedTableDataConverterNew<DiffTimeRangeModel, DiffTimeDeductTimezoneModel>{
                 restTimezones: KnockoutObservableArray<DiffTimeDeductTimezoneModel>;
 
                 constructor() {
@@ -97,18 +112,20 @@ module nts.uk.at.view.kmk003.a {
                     this.restTimezones = self.originalList;
                 }
 
-                toConvertedList(): Array<TimeRangeModel> {
-                    let self = this;
-                    return _.map(self.restTimezones(), tz => self.toTimeRangeItem(tz.start(), tz.end()));
+                toOriginalDto(convertedItem: DiffTimeRangeModel): DiffTimeDeductTimezoneDto {
+                    return {
+                        start: convertedItem.column1().startTime,
+                        end: convertedItem.column1().endTime,
+                        isUpdateStartTime: convertedItem.isUpdateStartTime(),
+                    };
                 }
 
-                fromConvertedList(newList: Array<TimeRangeModel>): Array<DiffTimeDeductTimezoneModel> {
-                    return _.map(newList, newVl => {
-                        let vl = new DiffTimeDeductTimezoneModel();
-                        vl.start(newVl.column1().startTime);
-                        vl.end(newVl.column1().endTime);
-                        return vl;
-                    });
+                createOriginal(): DiffTimeDeductTimezoneModel {
+                    return new DiffTimeDeductTimezoneModel();
+                }
+
+                createConverted(original: DiffTimeDeductTimezoneModel): DiffTimeRangeModel {
+                    return new DiffTimeRangeModel(original);
                 }
 
                 updateData(data: DiffTimeRestTimezoneDto) {

@@ -650,11 +650,120 @@ module nts.uk.at.view.kmk003.a {
 
             export class TimeRangeModel {
                 column1: KnockoutObservable<TimeRange>;
+                constructor(deductionTimeModel: DeductionTimeModel) {
+                    let range = new TimeRange();
+                    range.startTime = deductionTimeModel.start();
+                    range.endTime = deductionTimeModel.end();
+                    this.column1 = ko.observable(range);
+                }
             }
 
             export class TimeRange {
                 startTime: number;
                 endTime: number;
+            }
+
+            export abstract class BaseDataModel {
+                abstract updateData(data: any): void;
+                abstract toDto(): any;
+            }
+
+            export abstract class FixedTableDataConverterNew<Converted, Original extends BaseDataModel> {
+                convertedList: KnockoutObservableArray<Converted>;
+                originalList: KnockoutObservableArray<Original>;
+                originalListTemp: Array<any>;
+                convertedListTemp: Array<any>;
+
+                constructor() {
+                    let self = this;
+                    self.convertedList = ko.observableArray([]);
+                    self.originalList = ko.observableArray([]);
+                    self.originalListTemp = [];
+                    self.convertedListTemp = [];
+
+                    self.originalList.subscribe(newList => {
+                        // set new original list temp
+                        self.originalListTemp = self.toListOriginalDto(newList);
+
+                        // check new converted list vs converted list temp
+                        let newConverted = self.toListConvertedModel();
+                        let newConvertedTemp = self.fromListConvertedToListOriginalDto(newConverted);
+                        if (self.isNotEqual(newConvertedTemp, self.convertedListTemp)) {
+                            self.convertedList(newConverted); // update new converted list
+                        }
+                    });
+
+                    self.convertedList.subscribe(newList => {
+                        // set new converted list temp
+                        self.convertedListTemp = self.fromListConvertedToListOriginalDto(newList);
+
+                        // check new original list vs original list temp
+                        let newOriginal = self.toListOriginalModel(newList);
+                        let newOriginalTemp = self.toListOriginalDto(newOriginal);
+                        if (self.isNotEqual(newOriginalTemp, self.originalListTemp)) {
+                            self.originalList(newOriginal); // update new original list
+                        }
+                    });
+                }
+
+                fromListConvertedToListOriginalDto(list: Array<Converted>): Array<any> {
+                    let self = this;
+                    return _.map(list, item => self.toOriginalDto(item));
+                }
+
+                toListConvertedModel(): Array<Converted> {
+                    let self = this;
+                    return _.map(self.originalList(), o => self.createConverted(o));
+                }
+
+                /**
+                 * To original list temp
+                 */
+                toListOriginalDto(list: Array<Original>): Array<any> {
+                    return _.map(list, item => {
+                        return item.toDto();
+                    });
+                }
+
+                /**
+                 * Revert to original list
+                 */
+                toListOriginalModel(newList: Array<Converted>): Array<Original> {
+                    let self = this;
+                    self.optionalProcessing(newList);
+                    return _.map(newList, newVl => {
+                        let vl = this.createOriginal();
+                        vl.updateData(self.toOriginalDto(newVl));
+                        return vl;
+                    });
+                }
+
+                /**
+                 * Override if needed
+                 */
+                optionalProcessing(list: Array<Converted>): void {}
+
+                /**
+                 * From converted item to original Dto
+                 */
+                abstract toOriginalDto(convertedItem: Converted): any;
+
+                /**
+                 * Create new Original model
+                 */
+                abstract createOriginal(): Original;
+
+                /**
+                 * Create new Converted model
+                 */
+                abstract createConverted(original: Original): Converted;
+
+                /**
+                 * Evaluate 2 arrays
+                 */
+                isNotEqual(value: any, other: any): boolean {
+                    return !_.isEqual(value, other);
+                }
             }
 
             export abstract class FixedTableDataConverter<C, O> {
@@ -843,11 +952,12 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class DeductionTimeModel {
+            export class DeductionTimeModel extends BaseDataModel {
                 start: KnockoutObservable<number>;
                 end: KnockoutObservable<number>;
 
                 constructor() {
+                    super();
                     this.start = ko.observable(0);
                     this.end = ko.observable(0);
                 }
@@ -868,51 +978,6 @@ module nts.uk.at.view.kmk003.a {
                 resetData() {
                     this.start(0);
                     this.end(0);
-                }
-            }
-
-            export class TimezoneOfFixedRestTimeSetModel extends TimeRangeModelConverter<DeductionTimeModel> {
-                timezones: KnockoutObservableArray<DeductionTimeModel>;
-
-                constructor() {
-                    super();
-                    this.timezones = this.originalList;
-                }
-
-                toConvertedList(): Array<TimeRangeModel> {
-                    let self = this;
-                    return _.map(self.timezones(), tz => self.toTimeRangeItem(tz.start(), tz.end()));
-                }
-
-                fromConvertedList(newList: Array<TimeRangeModel>): Array<DeductionTimeModel> {
-                    return _.map(newList, newVl => {
-                        let vl = new DeductionTimeModel();
-                        vl.start(newVl.column1().startTime);
-                        vl.end(newVl.column1().endTime);
-                        return vl;
-                    });
-                }
-
-                updateData(data: TimezoneOfFixedRestTimeSetDto) {
-                    let mapped = _.map(data.timezones, dto => {
-                        let model = new DeductionTimeModel();
-                        model.updateData(dto);
-                        return model
-                    });
-                    this.timezones(_.sortBy(mapped, item => item.start()));
-                }
-
-                toDto(): TimezoneOfFixedRestTimeSetDto {
-                    var timezones: DeductionTimeDto[] = [];
-                    _.forEach(this.timezones(), tz => timezones.push(tz.toDto()));
-                    var dataDTO: TimezoneOfFixedRestTimeSetDto = {
-                        timezones: timezones
-                    };
-                    return dataDTO;
-                }
-
-                resetData() {
-                    this.timezones([]);
                 }
             }
 
@@ -941,6 +1006,50 @@ module nts.uk.at.view.kmk003.a {
                 resetData() {
                     this.flowRestTime(0);
                     this.flowPassageTime(0);
+                }
+            }
+
+            export class FixRestTimezoneSetModel extends FixedTableDataConverterNew<TimeRangeModel, DeductionTimeModel> {
+                timezones: KnockoutObservableArray<DeductionTimeModel>;
+                
+                constructor() {
+                    super();
+                    this.timezones = this.originalList;
+                }
+
+                toOriginalDto(convertedItem: TimeRangeModel): DeductionTimeDto {
+                    return {
+                        start: convertedItem.column1().startTime,
+                        end: convertedItem.column1().endTime,
+                    };
+                }
+
+                createOriginal(): DeductionTimeModel {
+                    return new DeductionTimeModel();
+                }
+
+                createConverted(original: DeductionTimeModel): TimeRangeModel {
+                    return new TimeRangeModel(original);
+                }
+
+                updateData(data: TimezoneOfFixedRestTimeSetDto) {
+                    let mapped = _.map(data.timezones, (dataDTO) => {
+                        let dataModel = new DeductionTimeModel();
+                        dataModel.updateData(dataDTO);
+                        return dataModel;
+                    });  
+                    this.timezones(_.sortBy(mapped, item => item.start()));
+                }
+                
+                toDto(): TimezoneOfFixedRestTimeSetDto {
+                    let lstTimezone: DeductionTimeDto[] = _.map(this.timezones(), dataModel => dataModel.toDto());
+                    return {
+                        timezones: lstTimezone
+                    };
+                }
+                
+                resetData(){
+                    this.timezones([]);    
                 }
             }
 
@@ -1030,12 +1139,12 @@ module nts.uk.at.view.kmk003.a {
 
             export class FlowWorkRestTimezoneModel {
                 fixRestTime: KnockoutObservable<boolean>;
-                fixedRestTimezone: TimezoneOfFixedRestTimeSetModel;
+                fixedRestTimezone: FixRestTimezoneSetModel;
                 flowRestTimezone: FlowRestTimezoneModel;
 
                 constructor() {
                     this.fixRestTime = ko.observable(true);
-                    this.fixedRestTimezone = new TimezoneOfFixedRestTimeSetModel();
+                    this.fixedRestTimezone = new FixRestTimezoneSetModel();
                     this.flowRestTimezone = new FlowRestTimezoneModel();
                 }
 
