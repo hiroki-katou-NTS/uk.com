@@ -501,6 +501,11 @@ module nts.uk.com.view.ccg.share.ccg {
                     self.loadClosure()
                 ).done((refRange, noValue) => {
                     self.referenceRange = refRange;
+                    if (refRange == ConfigEnumReferenceRange.ONLY_MYSELF){
+                        self.showAllReferableEmployee = false;
+                        self.showSameWorkplace = false;
+                        self.showSameWorkplaceAndChild = false;
+                    }
                     dfd.resolve();
                 }).fail(err => nts.uk.ui.dialog.alertError(err));
 
