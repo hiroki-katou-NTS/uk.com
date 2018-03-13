@@ -834,8 +834,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	public AttendanceTime calcMidNightTime(AutoCalAtrOvertime autoCalcSet) {
 		int totalMidNightTime = 0;
 		totalMidNightTime = withinWorkTimeFrame.stream()
-											   .filter(tg -> tg.getMidNightTimeSheet().isPresent())
-											   .map(ts -> ts.getMidNightTimeSheet().get().calcMidNight(autoCalcSet).valueAsMinutes())
+											   .filter(tc -> tc.getMidNightTimeSheet().isPresent())
+											   .map(ts -> ts.getMidNightTimeSheet().get().calcTotalTime().v())
 											   .collect(Collectors.summingInt(tc -> tc));
 		return new AttendanceTime(totalMidNightTime);
 	}

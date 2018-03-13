@@ -90,7 +90,7 @@ public class HolidayWorkTimeSheet{
 		AttendanceTime totalTime = new AttendanceTime(0);
 		List<TimeSheetOfDeductionItem> forcsList = new ArrayList<>(); 
 		for(HolidayWorkFrameTimeSheetForCalc frameTime : this.workHolidayTime) {
-			totalTime.addMinutes(frameTime.forcs(forcsList,atr,dedAtr).valueAsMinutes());
+			totalTime = totalTime.addMinutes(frameTime.forcs(forcsList,atr,dedAtr).valueAsMinutes());
 		}
 		return totalTime;
 	}
