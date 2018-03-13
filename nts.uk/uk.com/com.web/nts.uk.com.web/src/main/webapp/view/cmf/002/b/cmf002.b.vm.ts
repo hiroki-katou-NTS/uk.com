@@ -6,6 +6,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     export class ScreenModel {
+        isNewMode:                KnockoutObservable<boolean> = ko.observable(true);
         conditionSettingList:     KnockoutObservableArray<IConditionSet> = ko.observableArray([]);
         outputItemList:           KnockoutObservableArray<IOutputItem>   = ko.observableArray([]);
         selectedConditionSetting: KnockoutObservable<string> = ko.observable('');
@@ -24,6 +25,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             stringFormat: 0,
             outputItemCode: ''
         }));
+        
 
         constructor() {
             let self = this;
@@ -31,10 +33,35 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.initScreen();
         }
         
-        initScreen(){
+        /**
+         * 起動する
+         * アルゴリズム「外部出力条件設定一覧」を実行する
+         */
+        initScreen(conditionSetCode: string){
             let self = this;
             let itemList: Array<IConditionSet> = [];
             let outputItemList: Array<IOutputItem> = [];
+            let conditionSetCodeParam: string = '';
+            
+            //アルゴリズム「外部出力取得設定一覧」を実行する
+            //TODO: Tạo domain ngoài
+            service.getOutputConditionSetting(conditionSetCodeParam).done((itemList: Array<IConditionSet>) =>{
+                if (itemList && itemList.length > 0) {
+                    self.conditionSettingList(itemList);
+                   
+                    let index : number = 0;
+                    if (conditionSetCode) {
+                        index = _.findIndex(self.conditionSettingList(), function(x: IConditionSet)
+                        { return x.conditionSetCode == conditionSetCode });
+                        if (index === -1) index = 0;
+                    }
+                    let _conditionSet = self.conditionSettingList()[index];
+                    self.settingCurrentCondition(_conditionSet);
+                    self.settingUpdateMode();
+                } else {
+                    self.settingNewMode();
+                }
+            });
             
             for (let i = 1; i <= 30; i++) {
                 itemList.push(ko.toJS({ companyId: '1', conditionSetCode: i >= 10 ? '0' + i : '00' + i, conditionSetName: '名名名名名名名名名名' }));
@@ -43,6 +70,48 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             
             self.conditionSettingList(itemList);
             self.outputItemList(outputItemList);
+        }
+
+        /**
+         * アルゴリズム「外部出力設定選択」
+         */
+        selectExternalOutputSetting(conditionSetCode: string) {
+
+        }
+
+        /**
+         * Setting each item on screen
+         */
+        settingCurrentCondition(condSet: IConditionSet) {
+            let self = this;
+            if (self.conditionSetData().conditionSetCode() === condSet.conditionSetCode) {
+                return;
+            }
+            self.conditionSetData().companyId(condSet.companyId);
+            self.conditionSetData().conditionSetCode(condSet.conditionSetCode);
+            self.conditionSetData().conditionSetName(condSet.conditionSetName);
+            self.conditionSetData().categoryId(condSet.categoryId);
+            self.conditionSetData().conditionOutputName(condSet.conditionOutputName);
+            self.conditionSetData().automaticExecution(condSet.automaticExecution);
+            self.conditionSetData().delimiter(condSet.delimiter);
+            self.conditionSetData().stringFormat(condSet.stringFormat);
+            self.conditionSetData().outputItemCode(condSet.outputItemCode);
+        }
+
+        /**
+         * 画面モード　＝　新規
+         */
+        settingNewMode() {
+            let self = this;
+            self.isNewMode(true);
+        }
+
+        /**
+         * 画面モード　＝　更新
+         */
+        settingUpdateMode() {
+            let self = this;
+            self.isNewMode(false);
         }
 
         start(): JQueryPromise<any> {
