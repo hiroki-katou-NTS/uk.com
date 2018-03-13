@@ -105,7 +105,7 @@
 						<td style="text-align: right;"></td>
 						<!--P4_9 取込項目名-->
 						<td style="text-align: left;"><div class="label"
-								data-bind="text: infoName"></div></td>
+								data-bind="text: acceptItemName"></div></td>
 						<!--P4_10 ＣＳＶ項目名-->
 						<td style="text-align: left;"><div class="label"
 								data-bind="text: csvItemName"></div></td>
@@ -114,7 +114,7 @@
 								data-bind="text: sampleData"></div></td>
 						<!--P4_12 項目形式-->
 						<td style="text-align: left;"><div class="label"
-								data-bind="text: itemTypeName"></div></td>
+								data-bind="text: $parent.getItemTypeName($data.itemType())"></div></td>
 						<!--P4_13 取込時の編集-->
 						<td style="text-align: center;"><i
 							data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: function() {$parent.editIngestion($data)}"></i></td>

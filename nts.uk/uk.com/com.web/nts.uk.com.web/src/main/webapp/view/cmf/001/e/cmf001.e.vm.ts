@@ -23,6 +23,8 @@ module nts.uk.com.view.cmf001.e.viewmodel {
                 // 一覧表の該当行にフォーカスする
                 if (!nts.uk.util.isNullOrUndefined(selectedCsvItemNumber)) {
                     self.selectedCsvItemNumber(selectedCsvItemNumber);
+                }else{
+                    self.selectedCsvItemNumber(listCsvItem[0].csvItemNumber);
                 }
             }else{
                 // データ0件＝CSVが未読込の場合

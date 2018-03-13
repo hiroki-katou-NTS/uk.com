@@ -189,7 +189,8 @@ module nts.uk.com.view.cmf001.share.model {
         categoryItemNo: KnockoutObservable<number>;
         categoryId: KnockoutObservable<string> = ko.observable("");
         systemType: KnockoutObservable<number>;
-
+        sampleData: KnockoutObservable<string>;
+        
         constructor(csvItemName: string, csvItemNumber: number, itemType: number, acceptItemNumber: number, acceptItemName: string, systemType: number, conditionCode: string, categoryItemNo: number, formatSet?: any, screenSet?: AcceptScreenConditionSetting, categoryId?: string) {
             this.csvItemName = ko.observable(csvItemName);
             this.csvItemNumber = ko.observable(csvItemNumber);
@@ -221,7 +222,8 @@ module nts.uk.com.view.cmf001.share.model {
             if (screenSet)
                 this.screenConditionSetting(screenSet);
             if (categoryId)
-                this.categoryId(categoryId);
+                this.categoryId(categoryId);            
+            this.sampleData = ko.observable("");
         }
     }
 

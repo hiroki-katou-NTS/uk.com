@@ -17,7 +17,7 @@ public class JpaExacErrorLogRepository extends JpaRepository implements ExacErro
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtExacErrorLog f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.exacErrorLogPk.logSeqNumber =:logSeqNumber AND  f.exacErrorLogPk.cid =:cid AND  f.exacErrorLogPk.externalProcessId =:externalProcessId ";
-    private static final String SELECT_BY_PROCESS_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.exacErrorLogPk.externalProcessId =:externalProcessId ORDER BY f.recordNumber, f.csvErrorItemName";
+    private static final String SELECT_BY_PROCESS_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.exacErrorLogPk.externalProcessId =:externalProcessId ORDER BY f.exacErrorLogPk.logSeqNumber";
     
     @Override
     public List<ExacErrorLog> getAllExacErrorLog(){

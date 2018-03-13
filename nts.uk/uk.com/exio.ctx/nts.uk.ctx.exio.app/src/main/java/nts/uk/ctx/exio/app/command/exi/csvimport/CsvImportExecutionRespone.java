@@ -6,8 +6,8 @@ import nts.arc.task.AsyncTaskInfo;
 
 @Getter
 @Setter
-public class csvImportExecutionRespone {
+public class CsvImportExecutionRespone {
     
     /** The task infor. */
-    public AsyncTaskInfo taskInfor;    
+    public AsyncTaskInfo taskInfor;
 }

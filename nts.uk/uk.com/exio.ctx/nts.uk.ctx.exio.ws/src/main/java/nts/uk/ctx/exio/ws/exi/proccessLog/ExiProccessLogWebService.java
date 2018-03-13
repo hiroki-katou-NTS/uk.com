@@ -12,7 +12,7 @@ import nts.uk.ctx.exio.app.command.exi.execlog.ExacExeResultLogCommand;
 /**
  * The Class ExiProccessLogWebService
  */
-@Path("ctx/exio/ws/exi/proccessLog")
+@Path("exio/exi/proccessLog")
 @Produces("application/json")
 public class ExiProccessLogWebService extends WebService{
 	@Inject
