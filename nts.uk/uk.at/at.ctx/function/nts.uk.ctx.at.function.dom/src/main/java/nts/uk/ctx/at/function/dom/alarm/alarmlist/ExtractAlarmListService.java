@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +38,7 @@ public class ExtractAlarmListService {
 		// チェック条件に当てはまる場合 (When the check conditions apply)
 		if (alarmListExtraProcessStatus.isPresent()) {
 			// 情報メッセージ(#Msg_993)を表示する
-			return new ExtractedAlarmDto(null, true, false);
+			return new ExtractedAlarmDto(new ArrayList<>(), true, false);
 		}
 		
 		// チェック条件に当てはまらない場合(When it does not fit the check condition)
@@ -70,7 +71,7 @@ public class ExtractAlarmListService {
 		// 集計データが無い場合
 		if (listAlarmExtraValueWR.isEmpty()) {
 			// 情報メッセージ(#Msg_835) を表示する
-			return  new ExtractedAlarmDto(null, false, true);
+			return  new ExtractedAlarmDto(new ArrayList<>(), false, true);
 		}
 		// 集計データがある場合
 		// B画面 ダイアログ「アラームリスト」を起動する

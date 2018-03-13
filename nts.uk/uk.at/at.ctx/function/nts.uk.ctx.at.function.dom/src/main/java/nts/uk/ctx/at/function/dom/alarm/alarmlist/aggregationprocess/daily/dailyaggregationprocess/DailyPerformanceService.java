@@ -26,6 +26,7 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -121,13 +122,13 @@ public class DailyPerformanceService {
 			// Attendance name and value
 			Map<Integer, String> attendanceNameMap = dailyAttendanceItemNameAdapter
 					.getDailyAttendanceItemNameAsMapName(eDaily.getAttendanceItemList());
-			List<ItemValue> attendanceValueList = dailyRecordWorkAdapter
-					.getByEmployeeList(employee.getId(), eDaily.getDate(), eDaily.getAttendanceItemList()).getItems();
+//			List<ItemValue> attendanceValueList = dailyRecordWorkAdapter
+//					.getByEmployeeList(employee.getId(), eDaily.getDate(), eDaily.getAttendanceItemList()).getItems();
 			
 			// アラーム値メッセージ caculate from 	attendance Name and attendance value 		
 			String alarmContent ="";
 			ValueExtractAlarm data = new ValueExtractAlarm(employee.getWorkplaceId(), employee.getId(),
-					eDaily.getDate().toString(), EnumAdaptor.convertToValueName(AlarmCategory.DAILY).getLocalizedName(),
+					eDaily.getDate().toString(), TextResource.localize("KAL010_1"),
 					errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode()).getName(), alarmContent,
 					errAlarmCheckIDToMessage
 							.get(errorAlarmMap.get(eDaily.getErrorAlarmWorkRecordCode()).getErrorAlarmCheckID())
