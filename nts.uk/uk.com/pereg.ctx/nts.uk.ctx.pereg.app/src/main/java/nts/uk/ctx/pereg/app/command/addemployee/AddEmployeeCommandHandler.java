@@ -1,7 +1,11 @@
 package nts.uk.ctx.pereg.app.command.addemployee;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -60,7 +64,56 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	
 	@Inject
 	private EmpRegHistoryRepository empHisRepo;
+	
+	private static List<String> historyCategoryCodeList = Arrays.asList("CS00004", "CS00014", "CS00016", "CS00017", "CS00018",
+			"CS00019", "CS00020", "CS00021");
+			       
+	private static Map<String, String> startDateItemCodes;
+	static {
+		Map<String, String> aMap = new HashMap<>();
+		// 分類１
+		aMap.put("CS00004", "IS00026");
+		// 雇用
+		aMap.put("CS00014", "IS00066");
+		// 職位本務
+		aMap.put("CS00016", "IS00077");
+		// 職場
+		aMap.put("CS00017", "IS00082");
+		// 休職休業
+		aMap.put("CS00018", "IS00087");
+		// 短時間勤務
+		aMap.put("CS00019", "IS00102");
+		// 労働条件
+		aMap.put("CS00020", "IS00119");
+		//勤務種別
+		aMap.put("CS00021", "IS00255");
 
+		startDateItemCodes = Collections.unmodifiableMap(aMap);
+	}
+	
+	private static Map<String, String> endDateItemCodes;
+	static {
+		Map<String, String> aMap = new HashMap<>();
+		// 分類１
+		aMap.put("CS00004", "IS00027");
+		// 雇用
+		aMap.put("CS00014", "IS00067");
+		// 職位本務
+		aMap.put("CS00016", "IS00078");
+		// 職場
+		aMap.put("CS00017", "IS00083");
+		// 休職休業
+		aMap.put("CS00018", "IS00088");
+		// 短時間勤務
+		aMap.put("CS00019", "IS00103");
+		// 労働条件
+		aMap.put("CS00020", "IS00120");
+		//勤務種別
+		aMap.put("CS00021", "IS00256");
+
+		endDateItemCodes = Collections.unmodifiableMap(aMap);
+	}
+	
 	@Override
 	protected String handle(CommandHandlerContext<AddEmployeeCommand> context) {
 
@@ -75,6 +128,8 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		validateTime(inputs, employeeId, personId);
 		checkRequiredInputs(inputs, employeeId, personId, companyId);
+		
+		processHistoryPeriod(inputs, command.getHireDate());
 
 		helper.addBasicData(command, personId, employeeId, comHistId, companyId);
 		commandFacade.addNewFromInputs(personId, employeeId, inputs);
@@ -148,6 +203,24 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			wkCodAs.fromDTO(null, wkCod);
 		}
 
+	}
+	
+	private void processHistoryPeriod(List<ItemsByCategory> inputs, GeneralDate hireDate) {
+		inputs.forEach( category -> {
+			if (historyCategoryCodeList.contains(category.getCategoryCd())) {
+				String startDateItemCode = startDateItemCodes.get(category.getCategoryCd());
+				String endDateItemCode = endDateItemCodes.get(category.getCategoryCd());
+				
+				if (!category.getItems().stream().anyMatch(item -> item.itemCode().equals(startDateItemCode))) {
+					category.getItems().add(new ItemValue("", startDateItemCode, hireDate.toString(), 3));
+				} 
+				
+				if (!category.getItems().stream().anyMatch(item -> item.itemCode().equals(endDateItemCode))) {
+					category.getItems().add(new ItemValue("", endDateItemCode, "9999/12/31", 3));
+				} 
+					
+			}
+		});
 	}
 	
 	private void addNewUser(String personId, AddEmployeeCommand command, String userId) {
