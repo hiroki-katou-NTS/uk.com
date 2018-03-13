@@ -506,6 +506,13 @@ module nts.uk.com.view.ccg.share.ccg {
                         self.showSameWorkplace = false;
                         self.showSameWorkplaceAndChild = false;
                     }
+                    if ((refRange == ConfigEnumReferenceRange.ALL_EMPLOYEE || 
+                        refRange == ConfigEnumReferenceRange.DEPARTMENT_AND_CHILD) && 
+                        self.showSameWorkplaceAndChild){
+                        self.showSameWorkplaceAndChild = true;
+                    } else {
+                        self.showSameWorkplaceAndChild = false;
+                    }
                     dfd.resolve();
                 }).fail(err => nts.uk.ui.dialog.alertError(err));
 
