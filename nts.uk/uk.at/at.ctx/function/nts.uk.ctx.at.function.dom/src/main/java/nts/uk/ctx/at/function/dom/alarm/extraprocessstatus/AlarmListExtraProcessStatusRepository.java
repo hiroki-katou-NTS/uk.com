@@ -11,7 +11,7 @@ public interface AlarmListExtraProcessStatusRepository {
 	
 	Optional<AlarmListExtraProcessStatus> getAlListExtaProcess(String companyID,GeneralDate startDate,int startTime);
 	
-	Optional<AlarmListExtraProcessStatus> getAlListExtaProcessByEndDate(String companyID);
+	Optional<AlarmListExtraProcessStatus> getAlListExtaProcessByEndDate(String companyID, String employeeID);
 	
 	void addAlListExtaProcess (AlarmListExtraProcessStatus alarmListExtraProcessStatus);
 	

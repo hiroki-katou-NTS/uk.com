@@ -34,7 +34,7 @@ public class ExtractAlarmListService {
 		
 		// ドメインモデル「アラームリスト抽出処理状況」をチェックする
 		Optional<AlarmListExtraProcessStatus> alarmListExtraProcessStatus = alListExtraProcessStatusRepo
-				.getAlListExtaProcessByEndDate(companyID);
+				.getAlListExtaProcessByEndDate(companyID, employeeId);
 		// チェック条件に当てはまる場合 (When the check conditions apply)
 		if (alarmListExtraProcessStatus.isPresent()) {
 			// 情報メッセージ(#Msg_993)を表示する
@@ -65,7 +65,6 @@ public class ExtractAlarmListService {
 		comparator = comparator.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getEmployeeCode));
 		comparator = comparator.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getAlarmValueDate));
 		comparator = comparator.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getCategory));
-		comparator = comparator.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getAlarmItem));
 		Stream<AlarmExtraValueWkReDto> alarmExtraValueStream = listAlarmExtraValueWR.stream().sorted(comparator);
 		List<AlarmExtraValueWkReDto> sortedAlarmExtraValue = alarmExtraValueStream.collect(Collectors.toList());
 		// 集計データが無い場合

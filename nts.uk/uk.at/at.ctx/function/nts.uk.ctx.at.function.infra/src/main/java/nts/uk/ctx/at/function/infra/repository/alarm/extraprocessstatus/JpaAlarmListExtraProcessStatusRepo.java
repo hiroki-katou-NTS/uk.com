@@ -2,9 +2,7 @@ package nts.uk.ctx.at.function.infra.repository.alarm.extraprocessstatus;
 
 import java.util.List;
 import java.util.Optional;
-
 import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatus;
@@ -21,9 +19,10 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 	private final String SELECT_ALEX_PROCESS_BY_CODE = SELECT_ALL_ALEX_PROCESS_BY_CID 
 			+ " AND c.kfnmtAlarmListExtraProcessStatusPK.startDate = :startDate"
 			+ " AND c.kfnmtAlarmListExtraProcessStatusPK.startTime = :startTime";
-	private final String SELECT_ALEX_PROCESS_BY_END_DATE = SELECT_ALL_ALEX_PROCESS_BY_CID 
-			+ " AND c.kfnmtAlarmListExtraProcessStatusPK.endDate = :endDate"
-			+ " AND c.kfnmtAlarmListExtraProcessStatusPK.endTime = :endTime";
+	private final String SELECT_ALEX_PROCESS_BY_END_DATE = "SELECT c FROM KfnmtAlarmListExtraProcessStatus c "
+			+ "WHERE c.kfnmtAlarmListExtraProcessStatusPK.companyID = :companyID"
+			+ " AND c.employeeID = :employeeID";
+
 	
 	@Override
 	public List<AlarmListExtraProcessStatus> getAllAlListExtaProcess(String companyID) {
@@ -61,17 +60,22 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 
 	@Override
 	public void deleteAlListExtaProcess(String companyID, GeneralDate startDate, int startTime) {
-		this.commandProxy().remove(KfnmtAlarmListExtraProcessStatus.class,new KfnmtAlarmListExtraProcessStatusPK(companyID,startDate,startTime));
+		this.commandProxy().remove(KfnmtAlarmListExtraProcessStatus.class,new KfnmtAlarmListExtraProcessStatusPK(companyID,startDate.date(),startTime));
 		
 	}
 
 	@Override
-	public Optional<AlarmListExtraProcessStatus> getAlListExtaProcessByEndDate(String companyID) {
-		return this.queryProxy().query(SELECT_ALEX_PROCESS_BY_END_DATE,KfnmtAlarmListExtraProcessStatus.class)
-				.setParameter("companyID", companyID)
-				.setParameter("endDate", null)
-				.setParameter("endTime", null)
+	public Optional<AlarmListExtraProcessStatus> getAlListExtaProcessByEndDate(String companyID, String employeeID) {
+		Optional<AlarmListExtraProcessStatus> optAlarmStatus = this.queryProxy()
+				.query(SELECT_ALEX_PROCESS_BY_END_DATE, KfnmtAlarmListExtraProcessStatus.class)
+				.setParameter("companyID", companyID).setParameter("employeeID", employeeID)
 				.getSingle(c -> c.toDomain());
+		if (optAlarmStatus.isPresent() && optAlarmStatus.get().getEndDate() == null
+				&& optAlarmStatus.get().getEndTime() == null)
+			return Optional.ofNullable(null);
+		else
+			return optAlarmStatus;
+
 	}
 
 
