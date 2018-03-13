@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
 
-import java.util.List;
-
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
@@ -17,16 +15,16 @@ public interface WorkTypeDivergenceReferenceTimeHistoryRepository {
 	 * @param histId the hist id
 	 * @return the work type divergence reference time history
 	 */
-	WorkTypeDivergenceReferenceTimeHistory findByKey(String companyId, WorkTypeCode workTypeCode, String histId);
+	WorkTypeDivergenceReferenceTimeHistory findByKey(String histId);
 	
 	/**
 	 * Find all.
 	 *
 	 * @param companyId the company id
 	 * @param workTypeCode the work type code
-	 * @return the list
+	 * @return the work type divergence reference time history
 	 */
-	List<WorkTypeDivergenceReferenceTimeHistory> findAll(String companyId, WorkTypeCode workTypeCode);
+	WorkTypeDivergenceReferenceTimeHistory findAll(String companyId, WorkTypeCode workTypeCode);
 	
 	/**
 	 * Adds the.

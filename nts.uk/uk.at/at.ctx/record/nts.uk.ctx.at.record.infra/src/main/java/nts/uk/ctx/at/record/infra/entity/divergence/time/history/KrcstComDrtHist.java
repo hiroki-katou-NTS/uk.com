@@ -3,12 +3,15 @@ package nts.uk.ctx.at.record.infra.entity.divergence.time.history;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 
@@ -36,11 +39,13 @@ public class KrcstComDrtHist extends UkJpaEntity implements Serializable {
 
 	/** The end D. */
 	@Column(name="END_D")
-	private String endD;
+	@Convert(converter= GeneralDateToDBConverter.class)
+	private GeneralDate endD;
 
 	/** The str D. */
 	@Column(name="STR_D")
-	private String strD;
+	@Convert(converter= GeneralDateToDBConverter.class)
+	private GeneralDate strD;
 
 	@Override
 	protected Object getKey() {

@@ -1,10 +1,25 @@
+/*
+ * 
+ */
 package nts.uk.ctx.at.record.infra.repository.divergence.time.history;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistory;
+import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistoryGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistoryRepository;
+import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistorySetMemento;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstComDrtHist;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstComDrtHist_;
 
 /**
  * The Class JpaCompanyDivergenceReferenceTimeHistoryRepository.
@@ -21,9 +36,13 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 	 * String, java.lang.String)
 	 */
 	@Override
-	public CompanyDivergenceReferenceTimeHistory findByHistId(String companyId, String histId) {
-		// TODO Auto-generated method stub
-		return null;
+	public CompanyDivergenceReferenceTimeHistory findByHistId(String histId) {
+		KrcstComDrtHist krcstComDrtHist = this.queryProxy().find(histId, KrcstComDrtHist.class)
+				.orElse(new KrcstComDrtHist());
+		ArrayList<KrcstComDrtHist> entities = new ArrayList<>();
+		entities.add(krcstComDrtHist);
+
+		return this.toDomain(entities);
 	}
 
 	/*
@@ -34,8 +53,9 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 	 */
 	@Override
 	public CompanyDivergenceReferenceTimeHistory findAll(String companyId) {
-		// TODO Auto-generated method stub
-		return null;
+
+		// return
+		return this.toDomain(this.findByCompanyId(companyId));
 	}
 
 	/*
@@ -47,8 +67,7 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 	 */
 	@Override
 	public void add(CompanyDivergenceReferenceTimeHistory domain) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().insertAll(this.toEntities(domain));
 	}
 
 	/*
@@ -60,8 +79,7 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 	 */
 	@Override
 	public void update(CompanyDivergenceReferenceTimeHistory domain) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().updateAll(this.toEntities(domain));
 	}
 
 	/*
@@ -73,8 +91,66 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 	 */
 	@Override
 	public void delete(CompanyDivergenceReferenceTimeHistory domain) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().removeAll(this.toEntities(domain));
 	}
 
+	/**
+	 * To domain.
+	 *
+	 * @param entities
+	 *            the entities
+	 * @return the company divergence reference time history
+	 */
+	private CompanyDivergenceReferenceTimeHistory toDomain(List<KrcstComDrtHist> entities) {
+		CompanyDivergenceReferenceTimeHistoryGetMemento memento = new JpaCompanyDivergenceReferenceTimeHistoryGetMemento(
+				entities);
+		return new CompanyDivergenceReferenceTimeHistory(memento);
+	}
+
+	/**
+	 * To entities.
+	 *
+	 * @param domain
+	 *            the domain
+	 * @return the list
+	 */
+	private List<KrcstComDrtHist> toEntities(CompanyDivergenceReferenceTimeHistory domain) {
+		List<KrcstComDrtHist> comDrtHists = this.findByCompanyId(domain.getCId());
+
+		CompanyDivergenceReferenceTimeHistorySetMemento memento = new JpaCompanyDivergenceReferenceTimeHistorySetMemento(
+				comDrtHists);
+
+		domain.saveToMemento(memento);
+		
+		return comDrtHists;
+	}
+
+	/**
+	 * Find by company id.
+	 *
+	 * @param companyId
+	 *            the company id
+	 * @return the list
+	 */
+	private List<KrcstComDrtHist> findByCompanyId(String companyId) {
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<KrcstComDrtHist> cq = criteriaBuilder.createQuery(KrcstComDrtHist.class);
+		Root<KrcstComDrtHist> root = cq.from(KrcstComDrtHist.class);
+
+		// Build query
+		cq.select(root);
+
+		// create where conditions
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(criteriaBuilder.equal(root.get(KrcstComDrtHist_.cid), companyId));
+
+		// add where to query
+		cq.where(predicates.toArray(new Predicate[] {}));
+
+		// query data
+		List<KrcstComDrtHist> comDrtHists = em.createQuery(cq).getResultList();
+
+		return comDrtHists;
+	}
 }

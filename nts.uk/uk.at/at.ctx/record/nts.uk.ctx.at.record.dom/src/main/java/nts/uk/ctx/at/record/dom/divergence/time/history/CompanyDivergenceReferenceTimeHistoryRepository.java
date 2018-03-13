@@ -9,11 +9,10 @@ public interface CompanyDivergenceReferenceTimeHistoryRepository {
 	/**
 	 * Find by hist id.
 	 *
-	 * @param companyId the company id
 	 * @param histId the hist id
 	 * @return the company divergence reference time history
 	 */
-	CompanyDivergenceReferenceTimeHistory findByHistId(String companyId, String histId);
+	CompanyDivergenceReferenceTimeHistory findByHistId(String histId);
 	
 	/**
 	 * Find all.
