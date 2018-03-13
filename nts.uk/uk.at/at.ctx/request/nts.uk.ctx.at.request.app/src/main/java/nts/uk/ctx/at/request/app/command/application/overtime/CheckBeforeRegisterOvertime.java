@@ -196,13 +196,13 @@ public class CheckBeforeRegisterOvertime {
 	private static List<OverTimeInput> getOverTimeInput(List<OvertimeInputCommand> inputCommand, String Cid, String appId,
 			int attendanceId) {
 		return inputCommand.stream().filter(item -> {
-			int startTime = item.getStartTime() == null ? -1 : item.getStartTime().intValue();
-			int endTime = item.getEndTime() == null ? -1 : item.getEndTime().intValue();
+			Integer startTime = item.getStartTime() == null ? null : item.getStartTime().intValue();
+			Integer endTime = item.getEndTime() == null ? null : item.getEndTime().intValue();
 			int appTime = item.getApplicationTime() == null ? -1 : item.getApplicationTime().intValue();
-			return startTime != -1 || endTime != -1 || appTime != -1;
+			return startTime != null || endTime != null || appTime != -1;
 		}).map(item -> {
-			int startTime = item.getStartTime() == null ? -1 : item.getStartTime().intValue();
-			int endTime = item.getEndTime() == null ? -1 : item.getEndTime().intValue();
+			Integer startTime = item.getStartTime() == null ? null : item.getStartTime().intValue();
+			Integer endTime = item.getEndTime() == null ? null : item.getEndTime().intValue();
 			int appTime = item.getApplicationTime() == null ? -1 : item.getApplicationTime().intValue();
 			return OverTimeInput.createSimpleFromJavaType(Cid, appId, attendanceId, item.getFrameNo(), startTime,
 					endTime, appTime, item.getTimeItemTypeAtr());
