@@ -57,8 +57,8 @@ public class HolidayWorkInputDto {
 				holidayWorkInput.getAttendanceType().value, 
 				holidayWorkInput.getFrameNo(),
 				"", 
-				holidayWorkInput.getStartTime().v(), 
-				holidayWorkInput.getEndTime().v(), 
+				holidayWorkInput.getStartTime()== null ? null : holidayWorkInput.getStartTime().v(), 
+				holidayWorkInput.getEndTime() == null ? null : holidayWorkInput.getEndTime().v(), 
 				holidayWorkInput.getApplicationTime().v(),0);
 	}
 }

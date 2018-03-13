@@ -25,7 +25,7 @@ public class UpdateSysRoleIndividualGrantCommandHandler extends CommandHandler<U
 		UpdateRoleIndividualGrantCommand command = context.getCommand();
 
 		if (command.getUserID().isEmpty()) {
-			throw new BusinessException("Msg_218");
+			throw new BusinessException("Msg_218" , "CAS012_24");
 		}
 		if(command.roleType == RoleType.SYSTEM_MANAGER.value) {
 			DatePeriod insertPeriod = new DatePeriod(command.getStartValidPeriod(),command.getEndValidPeriod());

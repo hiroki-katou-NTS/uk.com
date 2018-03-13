@@ -10,6 +10,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
@@ -39,7 +40,7 @@ public class CreateSysRoleIndividualGrantCommandHandler extends CommandHandlerWi
 		CreateRoleIndividualGrantCommand command = context.getCommand();
 		
 		if (StringUtil.isNullOrEmpty(command.getUserID(), true)) {
-			throw new BusinessException("Msg_218", "CAS012_17");
+			throw new BusinessException("Msg_218", "CAS012_24");
 		}
 		
 		if (command.getRoleType() != RoleType.COMPANY_MANAGER.value)
@@ -72,12 +73,13 @@ public class CreateSysRoleIndividualGrantCommandHandler extends CommandHandlerWi
 				roleIndividualGrantRepo.add(roleIndiGrantSys);
 			}
 		}
-		
-		Optional<User> user = userRepo.getByUserID(command.getUserID());
+		if(command.getRoleType() == RoleType.SYSTEM_MANAGER.value)
+		{	
+		Optional<User> user = userRepo.getListUserByDefUser(command.getUserID(), 0, GeneralDate.max());
 		if (user.get().isDefaultUser() == true) {
 			user.get().setExpirationDate(command.getEndValidPeriod());
 		}
-		
+		}
 		return new CreateRoleIndividualGrantCommandResult(domain.getCompanyId(), domain.getUserId(), domain.getRoleType().value);
 	}
 }

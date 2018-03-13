@@ -37,11 +37,11 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 			result.setYmd(domain.getYmd());
 			result.setShortWorkingTimeSheets(ConvertHelper.mapTo(domain.getShortWorkingTimeSheets(),
 					(c) -> new ShortWorkTimeSheetDto(c.getShortWorkTimeFrameNo().v(), 
-							c.getChildCareAttr() == null ? 0 : c.getChildCareAttr().value,
-							c.getStartTime() == null ? null : c.getStartTime().valueAsMinutes(),
-							c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes(),
-							c.getDeductionTime() == null ? null : c.getDeductionTime().valueAsMinutes(),
-							c.getShortTime() == null ? null : c.getShortTime().valueAsMinutes())));
+														c.getChildCareAttr() == null ? 0 : c.getChildCareAttr().value,
+														c.getStartTime() == null ? null : c.getStartTime().valueAsMinutes(),
+														c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes(),
+														c.getDeductionTime() == null ? null : c.getDeductionTime().valueAsMinutes(),
+														c.getShortTime() == null ? null : c.getShortTime().valueAsMinutes())));
 			result.exsistData();
 		}
 		return result;

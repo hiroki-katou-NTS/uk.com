@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.daily.medical.MedicalCareTime
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 日別実績の医療時間 */
 @Data
@@ -67,9 +68,13 @@ public class MedicalTimeDailyPerformDto {
 
 	public static MedicalTimeDailyPerformDto fromMedicalCareTime(MedicalCareTimeOfDaily domain) {
 		return domain == null ? null : new MedicalTimeDailyPerformDto(
-						domain.getDayNightAtr() == null ? 0 : domain.getDayNightAtr().value,
-						domain.getTakeOverTime() == null ? null : domain.getTakeOverTime().valueAsMinutes(),
-						domain.getDeductionTime() == null ? null : domain.getDeductionTime().valueAsMinutes(),
-						domain.getWorkTime() == null ? null : domain.getWorkTime().valueAsMinutes());
+											domain.getDayNightAtr() == null ? 0 : domain.getDayNightAtr().value,
+											getAttendanceTime(domain.getTakeOverTime()),
+											getAttendanceTime(domain.getDeductionTime()),
+											getAttendanceTime(domain.getWorkTime()));
+	}
+
+	private static Integer getAttendanceTime(AttendanceTime domain) {
+		return domain == null ? null : domain.valueAsMinutes();
 	}
 }

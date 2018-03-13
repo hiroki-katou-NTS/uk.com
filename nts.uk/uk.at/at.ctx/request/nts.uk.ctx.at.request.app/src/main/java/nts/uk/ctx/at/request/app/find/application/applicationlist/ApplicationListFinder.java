@@ -96,8 +96,9 @@ public class ApplicationListFinder {
 			}
 		}
 		List<Integer> lstAppType = this.findListApp(lstAppDto);
-		return new ApplicationListDto(param.getStartDate(), param.getEndDate(), displaySet, lstApp.getLstMasterInfo(),lstAppDto,lstApp.getLstAppOt(),lstApp.getLstAppGoBack(),
-				lstApp.getAppStatusCount(), lstApp.getLstAppGroup(), lstAppType, lstAgent);
+		return new ApplicationListDto(param.getStartDate(), param.getEndDate(), displaySet, lstApp.getLstMasterInfo(),lstAppDto,
+				lstApp.getLstAppOt(),lstApp.getLstAppGoBack(), lstApp.getAppStatusCount(), lstApp.getLstAppGroup(), 
+				lstAppType, lstAgent, lstApp.getLstAppHdWork(), lstApp.getLstAppWorkChange());
 	}
 	
 	private Integer findStatusAppv(List<AppStatusApproval> lstStatusApproval, String appID){

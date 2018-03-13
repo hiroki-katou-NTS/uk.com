@@ -193,15 +193,19 @@ module nts.uk.at.view.kal001.a.model {
             let self = this;
             let listSelectedEmpployee : Array<UnitModel> = self.employeeList().filter(e => self.multiSelectedCode().indexOf(e.code)>-1);
             let listPeriodByCategory = self.periodByCategory().filter(x => x.checkBox()==true);
-            service.extractAlarm(listSelectedEmpployee, self.currentAlarmCode(), listPeriodByCategory).done((dataExtractAlarm)=>{
+            if(self.currentAlarmCode()=='' ) return;
+            service.extractAlarm(listSelectedEmpployee, self.currentAlarmCode(), listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
                 
+                
+                
+                nts.uk.ui.windows.setShared("alarmCode", self.currentAlarmCode());
+                modal("/view/kal/001/b/index.xhtml").onClosed(() => {
+                    
+                });
             }).fail((errorExtractAlarm)=>{
                 alertError(errorExtractAlarm);
             });
-            nts.uk.ui.windows.setShared("alarmCode", self.currentAlarmCode());
-            modal("/view/kal/001/b/index.xhtml").onClosed(() => {
-                
-            });
+
         }
 
     }
