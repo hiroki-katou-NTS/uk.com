@@ -9,6 +9,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.exio.app.command.exi.condset.AddStdAcceptCondSetCommandHandler;
+import nts.uk.ctx.exio.app.command.exi.condset.CopyStdAcceptCondSetCommand;
+import nts.uk.ctx.exio.app.command.exi.condset.CopyStdAcceptCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exi.condset.RemoveStdAcceptCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exi.condset.StdAcceptCondSetCommand;
 import nts.uk.ctx.exio.app.command.exi.condset.UpdateStdAcceptCondSetCommandHandler;
@@ -32,6 +34,9 @@ public class StdAcceptCondSetWebService {
 	
 	@Inject
 	private RemoveStdAcceptCondSetCommandHandler removeStdAccCondSetHandler;
+	
+	@Inject
+	private CopyStdAcceptCondSetCommandHandler copyStdAccCondSetHandler;
 	
 	@POST
 	@Path("getSysType")
@@ -83,6 +88,13 @@ public class StdAcceptCondSetWebService {
 	@Path("getRecord/{fileId}/{numOfCol}/{index}")
 	public List<String> getRecord(@PathParam("fileId") String fileId, @PathParam("numOfCol") int numOfCol, @PathParam("index") int index) {
 		return stdAcceptCondSetFind.getRecordByIndex(fileId, numOfCol, index);
+	}
+	
+	
+	@POST
+	@Path("copyCondSet")
+	public void copyCondSet(CopyStdAcceptCondSetCommand command) {
+		copyStdAccCondSetHandler.handle(command);
 	}
 	
 	/**
