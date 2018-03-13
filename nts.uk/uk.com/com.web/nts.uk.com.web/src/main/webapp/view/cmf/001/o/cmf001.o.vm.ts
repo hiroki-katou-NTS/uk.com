@@ -280,7 +280,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                         self.listAccept(_rspList);
 
                         //ファイルの行数を取得する
-                        let count = self.totalLine() - self.selectedConditionStartLine();
+                        let count = self.totalLine() - self.selectedConditionStartLine() + 1;
                         if (count < 0) {
                             count = 0;
                         }
