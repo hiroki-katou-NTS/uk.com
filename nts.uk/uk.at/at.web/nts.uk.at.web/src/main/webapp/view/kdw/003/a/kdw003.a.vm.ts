@@ -508,7 +508,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 self.listCareInputError(data[1])
                                // nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
                             }
-                            if (self.dialogShow != undefined || self.dialogShow.$dialog != null) {
+                            if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
                                 self.dialogShow.close();
                             }
                          self.showErrorDialog();
@@ -524,7 +524,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     nts.uk.ui.block.clear();
                     if (!checkDataCare) {
                        // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
-                        if (self.dialogShow != undefined || self.dialogShow.$dialog != null) {
+                        if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
                             self.dialogShow.close();
                         }
                         self.showErrorDialog();
@@ -612,7 +612,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 self.listCareInputError(data[1])
                                // nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
                             }
-                            if (self.dialogShow != undefined || self.dialogShow.$dialog != null) {
+                            if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
                                 self.dialogShow.close();
                             }
                          self.showErrorDialog();
@@ -628,7 +628,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     nts.uk.ui.block.clear();
                     if (!checkDataCare) {
                        // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
-                        if (self.dialogShow != undefined || self.dialogShow.$dialog != null) {
+                        if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
                             self.dialogShow.close();
                         }
                         self.showErrorDialog();
@@ -1612,7 +1612,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         controlType: 'FlexImage'
                     },
                     {
-                        name: 'Button', controlType: 'Button', text: nts.uk.resource.getText("KDW003_64"), enable: true, click: function(data) {
+                        name: 'Button', controlType: 'Button', text: nts.uk.resource.getText("KDW003_63"), enable: true, click: function(data) {
                             let source: any = $("#dpGrid").igGrid("option", "dataSource");
                             let rowItemSelect: any = _.find(source, function(value: any) {
                                 return value.id == data.id;

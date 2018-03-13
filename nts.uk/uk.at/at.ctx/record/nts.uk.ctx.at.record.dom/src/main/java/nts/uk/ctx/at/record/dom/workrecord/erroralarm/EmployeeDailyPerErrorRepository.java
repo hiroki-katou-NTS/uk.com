@@ -21,4 +21,6 @@ public interface EmployeeDailyPerErrorRepository {
 	
 	List<EmployeeDailyPerError> finds(List<String> employeeID, DatePeriod processingDate);
 	
+	void removeParam(String sid, GeneralDate date);
+	
 }
