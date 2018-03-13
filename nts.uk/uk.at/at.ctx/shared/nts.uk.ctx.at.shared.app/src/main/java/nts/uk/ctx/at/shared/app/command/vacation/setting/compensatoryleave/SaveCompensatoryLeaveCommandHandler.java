@@ -4,9 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.vacation.setting.compensatoryleave;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.compensatoryleave.dto.CompensatoryAcquisitionUseDto;
@@ -16,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrencePolicy;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingDivision;
 import nts.uk.shr.com.context.AppContexts;
@@ -29,6 +33,10 @@ public class SaveCompensatoryLeaveCommandHandler extends CommandHandler<SaveComp
 	/** The compens leave com set repository. */
 	@Inject
 	private CompensLeaveComSetRepository compensLeaveComSetRepository;
+	
+	/** The flow policy. */
+	@Inject
+	private CompensatoryOccurrencePolicy compensatoryOccurrencePolicy;
 
 	/*
 	 * (non-Javadoc)
@@ -44,6 +52,9 @@ public class SaveCompensatoryLeaveCommandHandler extends CommandHandler<SaveComp
 
 		boolean compensManage = command.getIsManaged() != ManageDistinct.YES.value;
 
+		//Check validate common handler
+		this.validate(compensManage, command);
+		
 		CompensatoryLeaveComSetting findClsc = compensLeaveComSetRepository.find(companyId);
 		if (findClsc != null) {
 			CompensatoryOccurrenceSetting overTime = null;
@@ -95,7 +106,7 @@ public class SaveCompensatoryLeaveCommandHandler extends CommandHandler<SaveComp
 			compensLeaveComSetRepository.update(clcs);
 		}
 	}
-	
+
 	public void controllOccurrence(boolean compensManage, CompensatoryOccurrenceSettingDto commandOccurrence,
 			CompensatoryOccurrenceSetting findOccurrence) {
 		// for certain time
@@ -123,5 +134,17 @@ public class SaveCompensatoryLeaveCommandHandler extends CommandHandler<SaveComp
 					.setTransferDivision(findOccurrence.getTransferSetting().getTransferDivision().value);
 		}
 	}
-
+	
+	
+	private void validate(boolean compensManage, SaveCompensatoryLeaveCommand command) {
+		BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
+		
+		if(!compensManage){			
+			compensatoryOccurrencePolicy.validate(bundledBusinessExceptions, command.toDomainCompensatoryOccurrenceSetting());
+			// Throw exceptions if exist
+			if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {
+				throw bundledBusinessExceptions;
+			}
+		}
+	}
 }

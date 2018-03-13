@@ -419,13 +419,45 @@ module nts.uk.pr.view.kmf001.f {
             //save company
             private saveData() {
                 let self = this;
+                let dfd = $.Deferred<void>();
                 self.reCallValidate().done(function() {
-                    if (!$('.check_error').ntsError('hasError'))
+                    if (!$('.check_error').ntsError('hasError')){
                         service.update(self.collectData()).done(function() {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                             self.loadSetting();
+                        })
+                        .fail((err) => {
+                            let errors = _.uniqBy(err.errors, (v: any) => {
+                                let key = v.messageId;
+                                for (let param of v.parameterIds) {
+                                    key = key + ' ' + param;
+                                }
+                                return key;
+                            });
+                            err.errors = errors;
+                            self.showMessageError(err);
                         });
+                    }
                 });
+            }
+            
+            /**
+             * showMessageError
+             */
+            public showMessageError(res: any) {
+                let dfd = $.Deferred<any>();
+                
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+                
+                // show error message
+                if (Array.isArray(res.errors)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
             }
             
             //recall validate for company

@@ -20,7 +20,7 @@ module nts.uk.pr.view.kmf001.b {
 
                 self.categoryEnums = ko.observableArray([]);
 
-                self.selectedPriority = ko.observable(1);
+                self.selectedPriority = ko.observable(0);
                 self.enableInputPriority = ko.computed(function() {
                     return self.selectedPriority() == 1;
                 }, self);
