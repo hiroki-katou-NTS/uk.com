@@ -86,6 +86,9 @@ module nts.uk.com.view.cmf001.j.viewmodel {
                     params.formatSetting.fixedValue,
                     params.formatSetting.valueOfFixedValue));
             }
+            else {
+                self.setting(new model.InstantTimeDataFormatSetting(1, 0, 0, 1, 1, 1, 1, 0, 0, ""));
+            }
         }
 
         private checkActive1(): boolean {

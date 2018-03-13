@@ -48,6 +48,9 @@ module nts.uk.com.view.cmf001.i.viewmodel {
                     params.formatSetting.fixedValue,
                     params.formatSetting.valueOfFixedValue));
             }
+            else {
+                self.setting(new model.DateDataFormatSetting(1, 0, ""));
+            }
         }
 
         private checkActive2(): boolean {
