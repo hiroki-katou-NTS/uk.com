@@ -37,3 +37,6 @@
 hr {
 	clear: both;
 }
+.visibility-hidden {
+	visibility: hidden;
+}

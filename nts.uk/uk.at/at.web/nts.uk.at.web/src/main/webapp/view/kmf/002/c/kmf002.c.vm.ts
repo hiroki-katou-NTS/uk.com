@@ -256,7 +256,15 @@ module nts.uk.at.view.kmf002.c {
             let _self = this;
             _self.getDataFromService();
              $.when($('#ccgcomponent').ntsGroupComponent(_self.ccgcomponent), 
-                    $('#component-items-list').ntsListComponent(_self.listComponentOption)).done(function(data: any) {    
+                    $('#component-items-list').ntsListComponent(_self.listComponentOption),
+                    service.findFirstMonth()).done(function(data: any, data2: any, data3: any) {
+                        _self.commonTableMonthDaySet().arrMonth.removeAll();
+                        for (let i=data3.startMonth-1; i<12; i++) {
+                            _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(i+1), 'day': ko.observable(0), 'enable': ko.observable(true)});    
+                        }
+                        for (let i=0; i<data3.startMonth-1; i++) {
+                            _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(i+1), 'day': ko.observable(0), 'enable': ko.observable(true)});    
+                        }
                 dfd.resolve();    
             });
             return dfd.promise();
@@ -313,14 +321,15 @@ module nts.uk.at.view.kmf002.c {
                         /** 
                          *   create value null for prepare create new 
                         **/
-                        _.forEach(_self.commonTableMonthDaySet().arrMonth(), function(value: any) {
-                            value.day(0);
-                        });
+                        _self.commonTableMonthDaySet().arrMonth.removeAll();
+                        for (let i=data2.startMonth-1; i<12; i++) {
+                            _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(i+1), 'day': ko.observable(0), 'enable': ko.observable(true)});    
+                        }
+                        for (let i=0; i<data2.startMonth-1; i++) {
+                            _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(i+1), 'day': ko.observable(0), 'enable': ko.observable(true)});    
+                        } 
                         _self.enableDelete(false);
                     } else {
-                        if (_.isNull(data2.startMonth)) {
-                            data2.startMonth = 1;
-                        }
                         _self.commonTableMonthDaySet().arrMonth.removeAll();
                         for (let i=data2.startMonth-1; i<12; i++) {
                             _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 

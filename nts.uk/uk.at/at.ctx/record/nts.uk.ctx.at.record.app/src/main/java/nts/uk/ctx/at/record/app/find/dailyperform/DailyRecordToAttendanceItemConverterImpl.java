@@ -141,7 +141,7 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 	}
 	
 	public DailyRecordToAttendanceItemConverter withBreakTime(List<BreakTimeOfDailyPerformance> domain) {
-		this.dailyRecord.addBreakTime(domain.stream().map(c -> BreakTimeDailyDto.getDto(c)).collect(Collectors.toList()));
+		this.dailyRecord.breakTime(domain.stream().map(c -> BreakTimeDailyDto.getDto(c)).collect(Collectors.toList()));
 		return this;
 	}
 
@@ -186,7 +186,8 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 	}
 
 	public DailyRecordToAttendanceItemConverter withEditStates(List<EditStateOfDailyPerformance> domain) {
-		this.dailyRecord.addEditStates(domain.stream().map(c -> EditStateOfDailyPerformanceDto.getDto(c)).collect(Collectors.toList()));
+//		List<Integer> current = this.dailyRecord.getEditStates().stream().map(c -> c.getAttendanceItemId()).collect(Collectors.toList());
+		this.dailyRecord.editStates(domain.stream().map(c -> EditStateOfDailyPerformanceDto.getDto(c)).collect(Collectors.toList()));
 		return this;
 	}
 

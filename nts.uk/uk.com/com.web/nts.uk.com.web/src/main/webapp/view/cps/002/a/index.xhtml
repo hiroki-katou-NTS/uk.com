@@ -41,7 +41,7 @@
 
 			<div id="contents-area" class="cf">
 				<div
-					data-bind="visible: currentStep()===1 &amp;&amp; createTypeId()===1">
+					data-bind="css: {'visibility-hidden': !(currentStep()===1 &amp;&amp; createTypeId()===1) }">
 					<div id="ccgcomponent"></div>
 				</div>
 				<div id="emp_reg_info_wizard"

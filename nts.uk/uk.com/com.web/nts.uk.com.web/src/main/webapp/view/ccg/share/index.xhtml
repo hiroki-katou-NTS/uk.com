@@ -124,7 +124,7 @@
 			<com:ko tag="if" bind="showAdvancedSearchTab">
 				<div tabindex="-1" class="tab-content-2 height-maximum">
 						<div id="ccg001-tab-content-2" class="height-maximum">
-							<div class="pull-left height-maximum" style="padding-right: 20px; overflow: auto;">
+							<div class="pull-left height-maximum" style="padding-right: 20px; overflow-y: scroll;">
 								<div>
 									<label>#{i18n.getText('CCG001_24')}</label>
 								</div>
@@ -213,19 +213,9 @@
 											<label>#{i18n.getText('Com_Workplace')}</label>
 										</h3>
 										<div class="contentkcpWorkplace">
-											<div tabindex="21" id="workplaceList"></div>
+											<div tabindex="21" id="workplaceList"></div><br/>
 											<button tabindex="22" id="btnDetailWorkplace"
 												data-bind="click: detailWorkplace">#{i18n.getText('CCG001_55')}</button>
-											<!--<com:ko tag="ifnot" bind="isExpanded">
-												<button style="margin-left: 130px" tabindex="23" data-bind="click: expand">
-													<i class="icon icon-28-expand"></i>#{i18n.getText('CCG001_56')}
-												</button>
-											</com:ko>
-											 <com:ko tag="if" bind="isExpanded">
-												<button id="ccg-001-btn-collapse" tabindex="24" data-bind="click: collapse">
-													<i class="icon icon-29-collapse"></i>#{i18n.getText('CCG001_62')}
-												</button>
-											</com:ko> -->
 										</div>
 									</div>
 								</com:ko>

@@ -66,7 +66,7 @@ public class JpaGrantRelationshipItemRepository extends JpaRepository implements
 	 * @author yennth
 	 */
 	@Override
-	public List<GrantRelationship> findBySPCode(String companyId, String specialHolidayCode) {
+	public List<GrantRelationship> findBySPCode(String companyId, int specialHolidayCode) {
 		return this.queryProxy().query(SELECT_BY_CODE, KshstGrantRelationshipItem.class)
 								.setParameter("companyId", companyId)
 								.setParameter("specialHolidayCode", specialHolidayCode)
@@ -100,7 +100,7 @@ public class JpaGrantRelationshipItemRepository extends JpaRepository implements
 	 * author: Hoang Yen
 	 */
 	@Override
-	public Optional<GrantRelationship> findByCode(String companyId, String specialHolidayCode, String relationshipCode) {
+	public Optional<GrantRelationship> findByCode(String companyId, int specialHolidayCode, String relationshipCode) {
 		return this.queryProxy().find(new KshstGrantRelationshipPK(companyId, specialHolidayCode, relationshipCode), KshstGrantRelationshipItem.class).map(c-> toDomain(c));
 	}
 	
@@ -109,7 +109,7 @@ public class JpaGrantRelationshipItemRepository extends JpaRepository implements
 	 * author: Hoang Yen
 	 */
 	@Override
-	public void delete(String companyId, String specialHolidayCode, String relationshipCode) {
+	public void delete(String companyId, int specialHolidayCode, String relationshipCode) {
 		KshstGrantRelationshipPK kshstGrantRelationshipPK = new KshstGrantRelationshipPK(companyId, specialHolidayCode, relationshipCode);
 		this.commandProxy().remove(KshstGrantRelationshipItem.class, kshstGrantRelationshipPK);
 	}

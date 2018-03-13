@@ -26,6 +26,8 @@ import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -49,6 +51,8 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	private RecordWorkInfoAdapter recordWorkInfoAdapter;
 	@Inject
 	private PredetemineTimeSettingRepository workTimeSetRepository;
+	@Inject
+	private WithdrawalAppSetRepository withdrawalAppSetRepository;
 	
 	// 03-02_実績超過チェック
 	@Override
@@ -152,10 +156,10 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 		Optional<WorkType> workType = workTypeRep.findByPK(companyID, recordWorkInfoImport.getWorkTypeCode());
 		if(workType.isPresent()){
 			if(workType.get().getDailyWork().isHolidayWork()){
-				// 03-02-3-1_当日_休日出勤の場合
+				// 03-02-3-1_当日_休日出勤の場合 :TODO
 				this.checkOnDayTheDayForHoliday(companyID, employeeID, appDate, siftCD, breakTime, recordWorkInfoImport, calTime);
 			}else{
-				//03-02-3-2_当日_休日の場合
+				//03-02-3-2_当日_休日の場合:TODO
 				this.checkOutSideTimeTheDayNoForHoliday(companyID, employeeID, appDate, siftCD, breakTime, recordWorkInfoImport, calTime);
 			}
 		}
@@ -165,6 +169,8 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	@Override
 	public void checkOnDayTheDayForHoliday(String companyID, String employeeID, String appDate, String siftCD,
 			CaculationTime breakTime, RecordWorkInfoImport recordWorkInfoImport, Integer calTime) {
+		// ドメインモデル「休出申請設定」を取得
+		Optional<WithdrawalAppSet> withdrawalApp =	withdrawalAppSetRepository.getWithDraw();
 		if(recordWorkInfoImport != null){
 			//打刻漏れチェック
 			if(recordWorkInfoImport.getAttendanceStampTimeFirst() != null && recordWorkInfoImport.getLeaveStampTimeFirst() != null){

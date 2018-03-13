@@ -6,7 +6,9 @@ package nts.uk.ctx.sys.auth.dom.grant.roleindividual;
 
 import java.util.List;
 import java.util.Optional;
+
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.auth.dom.role.RoleType;
 
 /**
  * The Interface RoleIndividualGrantRepository.
@@ -31,6 +33,16 @@ public interface RoleIndividualGrantRepository {
 	 * @return the list
 	 */
 	List<RoleIndividualGrant> findListByUserAndDate(String userId, GeneralDate today);
+	
+	/**
+	 * Find list by user and date for company admin.
+	 *
+	 * @param userId the user id
+	 * @param today the today
+	 * @param roleType the role type
+	 * @return the list
+	 */
+	List<RoleIndividualGrant> findListByUserAndDateForCompanyAdmin(String userId, GeneralDate today,RoleType roleType);
 	
 	/** Find by user and role */
 	List<RoleIndividualGrant> findByUserAndRole(String userId, int roleType);

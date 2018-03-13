@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DeleteYearServicePerCommand {
-	public String specialHolidayCode;
+	public int specialHolidayCode;
 	public String yearServiceCode;
 }

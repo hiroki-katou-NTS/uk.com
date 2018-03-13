@@ -4,7 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workrule.closure.service;
 
+import java.util.Optional;
+
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**

@@ -116,7 +116,7 @@ public class ActualWorkingTimeOfDaily {
 			   AddSettingOfRegularWork addSettingOfRegularWork,
 			   VacationAddTimeSet vacationAddTimeSet,
 			   AutoCalOverTimeAttr overTimeAutoCalcAtr,
-			   WorkTimeDailyAtr workTimeDailyAtr,
+			   Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			   Optional<SettingOfFlexWork> flexCalcMethod,
 			   HolidayCalcMethodSet holidayCalcMethodSet,
 			   RaisingSalaryCalcAtr raisingAutoCalcSet,

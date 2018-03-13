@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 
 /**
  * 月別実績の変形労働時間
@@ -15,10 +16,10 @@ public class IrregularWorkingTimeOfMonthly {
 
 	/** 複数月変形途中時間 */
 	@Setter
-	private AttendanceTimeMonth multiMonthIrregularMiddleTime;
+	private AttendanceTimeMonthWithMinus multiMonthIrregularMiddleTime;
 	/** 変形期間繰越時間 */
 	@Setter
-	private AttendanceTimeMonth irregularPeriodCarryforwardTime;
+	private AttendanceTimeMonthWithMinus irregularPeriodCarryforwardTime;
 	/** 変形労働不足時間 */
 	@Setter
 	private AttendanceTimeMonth irregularWorkingShortageTime;
@@ -31,8 +32,8 @@ public class IrregularWorkingTimeOfMonthly {
 	 */
 	public IrregularWorkingTimeOfMonthly(){
 		
-		this.multiMonthIrregularMiddleTime = new AttendanceTimeMonth(0);
-		this.irregularPeriodCarryforwardTime = new AttendanceTimeMonth(0);
+		this.multiMonthIrregularMiddleTime = new AttendanceTimeMonthWithMinus(0);
+		this.irregularPeriodCarryforwardTime = new AttendanceTimeMonthWithMinus(0);
 		this.irregularWorkingShortageTime = new AttendanceTimeMonth(0);
 		this.irregularLegalOverTime = TimeMonthWithCalculation.ofSameTime(0);
 	}
@@ -46,8 +47,8 @@ public class IrregularWorkingTimeOfMonthly {
 	 * @return 月別実績の変形労働時間
 	 */
 	public static IrregularWorkingTimeOfMonthly of(
-			AttendanceTimeMonth multiMonthIrregularMiddleTime,
-			AttendanceTimeMonth irregularPeriodCarryforwardTime,
+			AttendanceTimeMonthWithMinus multiMonthIrregularMiddleTime,
+			AttendanceTimeMonthWithMinus irregularPeriodCarryforwardTime,
 			AttendanceTimeMonth irregularWorkingShortageTime,
 			TimeMonthWithCalculation irregularLegalOverTime){
 

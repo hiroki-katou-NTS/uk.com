@@ -88,18 +88,18 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             maxLength: selectedObject.formatSelection.selectionName,
                             valueType: constraint.SelectionName.valueType
                         });
-                       
+
                         writeConstraint("ExternalCdAlphalNumeric", {
                             charType: constraint.ExternalCdAlphalNumeric.charType,
                             maxLength: selectedObject.formatSelection.selectionExternalCode,
                             valueType: constraint.ExternalCdAlphalNumeric.valueType
-                        });   
+                        });
                         writeConstraint("ExternalCdNumeric", {
                             charType: constraint.ExternalCdNumeric.charType,
                             maxLength: selectedObject.formatSelection.selectionExternalCode,
                             valueType: constraint.ExternalCdNumeric.valueType
-                        });                        
-                   
+                        });
+
                         //self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
                     }
                     // システム管理者　かつ　選択している選択項目の「選択項目区分」＝社員のとき
@@ -234,7 +234,13 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     selection.selectionName(selectLists.selectionName);
                     selection.externalCD(selectLists.externalCD);
                     selection.memoSelection(selectLists.memoSelection);
-                    selection.codeType(selectLists.codeType);
+
+                    // Chu y: Tim hieu them ham _.defer
+                    selection.codeType(99);
+                    _.defer(() => {
+                        selection.codeType(selectLists.codeType);
+                    });
+
                     $("#name").focus();
                 } else {
                     self.registerData();
@@ -264,7 +270,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             // ドメインモデル「個人情報の選択項目」をすべて取得する
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
                 if (itemList && itemList.length > 0) {
-                    
+
                     self.checkCreate(true);
                     self.listItems(itemList);
                     if (param != null && param != undefined) {
@@ -307,15 +313,22 @@ module nts.uk.com.view.cps017.a.viewmodel {
         //新規ボタン
         registerData() {
             let self = this,
-                selection: Selection = self.selection();
+                selection: Selection = self.selection(),
+                perSelection: any = ko.toJS(self.perInfoSelectionItem);
+
             nts.uk.ui.errors.clearAll();
             selection.selectionID(undefined);
             selection.externalCD('');
             selection.selectionCD('');
             selection.selectionName('');
             selection.memoSelection('');
-            selection.codeType(self.perInfoSelectionItem().selectionCodeCharacter());
+
+            selection.codeType(99);
+            _.defer(() => {
+                selection.codeType(perSelection.selectionCodeCharacter);
+            });
             self.checkCreateaaa(true);
+
             if (self.enableSelName() == true) {
                 self.selectionCd(true);
             } else {
