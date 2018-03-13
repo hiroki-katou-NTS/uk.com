@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.ChangeAtrAppGoback;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.GoBackDirectlyReflectParam;
-import nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.OutsetBreakReflectScheAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -51,7 +50,7 @@ public class WorkTypeHoursReflectScheImpl implements WorkTypeHoursReflectSche{
 		//INPUT．勤務を変更するをチェックする
 		if(gobackPara.getAppInfor().getChangeAtrAppGoback() == ChangeAtrAppGoback.CHANGE) {
 			//INPUT．振出・休出時反映する区分をチェックする
-			if(gobackPara.getOutsetBreakReflectAtr() == OutsetBreakReflectScheAtr.REFLECT) {
+			if(gobackPara.isOutsetBreakReflectAtr()) {
 				isFlag = true;
 			}else {				
 				//勤務種類が休出振出かの判断

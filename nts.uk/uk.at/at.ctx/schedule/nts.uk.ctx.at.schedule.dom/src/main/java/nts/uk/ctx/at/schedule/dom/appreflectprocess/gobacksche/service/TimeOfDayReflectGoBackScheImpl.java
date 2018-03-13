@@ -7,14 +7,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.ApplyTimeAtr;
-import nts.uk.ctx.at.schedule.dom.appreflectprocess.ReflectedStatesScheInfo;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.GoBackDirectlyReflectParam;
-import nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.OutsetBreakReflectScheAtr;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.TimeOfDayReflectFindDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.EndTimeReflectScheService;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.StartTimeReflectScheService;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.servicedto.TimeReflectScheDto;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -29,7 +26,7 @@ public class TimeOfDayReflectGoBackScheImpl implements TimeOfDayReflectGoBackSch
 	@Inject
 	private EndTimeReflectScheService endTimeService;
 	@Override
-	public ReflectedStatesScheInfo stampReflectGobackSche(GoBackDirectlyReflectParam reflectPara) {
+	public boolean stampReflectGobackSche(GoBackDirectlyReflectParam reflectPara) {
 		//(開始時刻)反映する時刻を求める
 		reflectPara.setApplyTimeAtr(ApplyTimeAtr.START);
 		TimeOfDayReflectFindDto startTimeReflectFind = this.timeReflectFind(reflectPara);
@@ -48,8 +45,8 @@ public class TimeOfDayReflectGoBackScheImpl implements TimeOfDayReflectGoBackSch
 			endTimeService.updateEndTimeRflect(timeData);
 		}
 		//TODO (開始時刻2, 終了時刻2)反映する時刻を求める
-		
-		return null;
+		//phai xac nhan lai
+		return endTimeReflectFind.isReflectFlg();
 	}
 
 	@Override
@@ -66,7 +63,7 @@ public class TimeOfDayReflectGoBackScheImpl implements TimeOfDayReflectGoBackSch
 			return timeFind;
 		} else {
 			//INPUT．勤種・就時の反映できるフラグをチェックする
-			if(reflectPara.getOutsetBreakReflectAtr() == OutsetBreakReflectScheAtr.NOTREFLECT) {
+			if(!reflectPara.isOutsetBreakReflectAtr()) {
 				return timeFind;
 			} else {
 				//ドメインモデル「就業時間帯の設定」を取得する

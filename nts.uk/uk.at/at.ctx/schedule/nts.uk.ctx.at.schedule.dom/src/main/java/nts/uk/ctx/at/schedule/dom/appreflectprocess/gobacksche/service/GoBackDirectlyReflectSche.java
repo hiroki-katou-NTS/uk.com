@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.service;
 
-import nts.uk.ctx.at.schedule.dom.appreflectprocess.ReflectedStatesScheInfo;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.GoBackDirectlyReflectParam;
 
 public interface GoBackDirectlyReflectSche {
@@ -9,5 +8,5 @@ public interface GoBackDirectlyReflectSche {
 	 * @param reflectPara
 	 * @return
 	 */
-	public ReflectedStatesScheInfo goBackDirectlyReflectSch(GoBackDirectlyReflectParam reflectPara);
+	public boolean goBackDirectlyReflectSch(GoBackDirectlyReflectParam reflectPara);
 }

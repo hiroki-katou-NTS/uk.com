@@ -6,6 +6,6 @@ public interface AppReflectProcessSchePub {
 	 * @param reflectPara
 	 * @return
 	 */
-	public ReflectedStatesScheInfoDto goBackDirectlyReflectSch(GoBackDirectlyReflectParamDto reflectPara);
+	public boolean goBackDirectlyReflectSch(GoBackDirectlyReflectParamDto reflectPara);
 
 }

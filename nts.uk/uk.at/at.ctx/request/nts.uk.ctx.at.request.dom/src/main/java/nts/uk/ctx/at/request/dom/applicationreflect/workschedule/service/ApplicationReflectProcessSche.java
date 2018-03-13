@@ -9,6 +9,6 @@ public interface ApplicationReflectProcessSche {
 	 * @param reflectSche
 	 * @return
 	 */
-	public ReflectedStatesInfo goBackDirectlyReflect(ReflectScheDto reflectSche);
+	public boolean goBackDirectlyReflect(ReflectScheDto reflectSche);
 
 }

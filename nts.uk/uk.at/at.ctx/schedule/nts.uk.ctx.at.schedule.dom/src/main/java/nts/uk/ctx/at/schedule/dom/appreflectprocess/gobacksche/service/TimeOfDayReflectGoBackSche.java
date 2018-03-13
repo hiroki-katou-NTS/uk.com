@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.service;
 
-import nts.uk.ctx.at.schedule.dom.appreflectprocess.ReflectedStatesScheInfo;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.GoBackDirectlyReflectParam;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.TimeOfDayReflectFindDto;
 /**
@@ -14,7 +13,7 @@ public interface TimeOfDayReflectGoBackSche {
 	 * @param reflectPara
 	 * @return
 	 */
-	public ReflectedStatesScheInfo stampReflectGobackSche(GoBackDirectlyReflectParam reflectPara);
+	public boolean stampReflectGobackSche(GoBackDirectlyReflectParam reflectPara);
 	/**
 	 * 反映する時刻を求める
 	 * @param reflectPara

@@ -20,7 +20,7 @@ public class GoBackDirectlyReflectParam {
 	/**	年月日 */
 	private GeneralDate datePara;
 	/**	 振出・休出時反映する区分*/
-	private OutsetBreakReflectScheAtr outsetBreakReflectAtr; 
+	private boolean outsetBreakReflectAtr; 
 	/**	直行直帰申請 */
 	private ApplicationGobackScheInfor appInfor;
 	/**直行直帰申請 の　時刻の反映：　固定（開始）	 */
