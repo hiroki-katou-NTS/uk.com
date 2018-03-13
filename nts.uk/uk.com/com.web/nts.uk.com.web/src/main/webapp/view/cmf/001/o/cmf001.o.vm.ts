@@ -28,7 +28,6 @@ module nts.uk.com.view.cmf001.o.viewmodel {
         //upload file
         fileId: KnockoutObservable<string> = ko.observable('');
         fileName: KnockoutObservable<string> = ko.observable('');
-        //listAccept: KnockoutObservableArray<AcceptItems> = ko.observableArray([]);
         listAccept: KnockoutObservableArray<model.StandardAcceptItem> = ko.observableArray([]);
         selectedAccept: KnockoutObservable<any> = ko.observable('');
         totalRecord: KnockoutObservable<number> = ko.observable(0);
@@ -210,7 +209,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             //ドメインモデル「受入項目（定型）」を取得する      
             service.getStdAcceptItem(self.selectedSysType(), self.selectedConditionCd()).done(function(data: Array<any>) {
                 self.listAccept.removeAll();
-                if (data && data.length) {                    
+                if (data && data.length) {
                     let _rspList: Array<model.StandardAcceptItem> = _.map(data, rs => {
                         let formatSetting = null, fs = null, screenCondition: model.AcceptScreenConditionSetting = null;
                         switch (rs.itemType) {
@@ -266,12 +265,12 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     });
 
                     //アップロードしたファイルを読み込む
-                    let sv1 = service.getRecord(self.fileId(), _rspList.length, self.selectedConditionStartLine());
+                    let sv1 = service.getRecord(self.fileId(), _rspList.length, self.selectedConditionStartLine() - 1);
                     let sv2 = service.getCategoryItem(self.selectedConditionItem.categoryId);
 
                     $.when(sv1, sv2).done(function(data1: Array<any>, data2: Array<any>) {
                         _.each(_rspList, rs => {
-                            let item1 = data1[rs.csvItemNumber()];
+                            let item1 = data1[rs.csvItemNumber() - 1];
                             rs.sampleData(item1);
 
                             let item2 = _.find(data2, x => { return x.itemNo == rs.categoryItemNo(); });
@@ -366,5 +365,5 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             }
             return "";
         }
-    }    
+    }
 }
