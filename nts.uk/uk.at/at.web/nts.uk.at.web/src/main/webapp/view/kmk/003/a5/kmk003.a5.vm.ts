@@ -192,7 +192,7 @@ module a5 {
             });
         }
 
-        private setTabIndexTable() {
+        public setTabIndexTable() {
             let self = this;
             
             //=================== TIMEZONE ===================
