@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.appforleave.AppForLeave;
+import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 @AllArgsConstructor
 @Setter
@@ -28,5 +28,5 @@ public class ReflectScheDto {
 	/**
 	 * 休暇申請
 	 */
-	private AppForLeave forLeave;
+	private AppAbsence forLeave;
 }
