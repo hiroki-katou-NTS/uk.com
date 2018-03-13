@@ -27,4 +27,7 @@ public interface StdAcceptItemRepository
     void remove(String cid, int sysType, String conditionSetCd, int acceptItemNumber);
 
     List<StdAcceptItem> getListStdAcceptItems(String cid, int systemType, String conditionSetCd);
+    
+    void addList(List<StdAcceptItem> listItem);
+    
 }

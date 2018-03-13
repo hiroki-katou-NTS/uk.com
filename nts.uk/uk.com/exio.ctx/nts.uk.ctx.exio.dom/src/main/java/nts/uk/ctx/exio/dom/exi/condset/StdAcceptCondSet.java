@@ -61,7 +61,7 @@ public class StdAcceptCondSet extends AggregateRoot {
 	/**
 	 * チェック完了
 	 */
-	private NotUseAtr checkCompleted = NotUseAtr.USE;
+	private Optional<NotUseAtr> checkCompleted;
 
 	/**
 	 * 既存データの削除方法
@@ -77,7 +77,7 @@ public class StdAcceptCondSet extends AggregateRoot {
 			Optional<AcceptanceLineNumber> csvDataStartLine, 
 			Optional<AcceptMode> acceptMode,
 			AcceptanceConditionName conditionSetName, 
-			NotUseAtr checkCompleted,
+			Optional<NotUseAtr> checkCompleted,
 			Optional<DeleteExistDataMethod> deleteExtDataMethod) {
 		super();
 		this.cid = cid;
@@ -94,7 +94,7 @@ public class StdAcceptCondSet extends AggregateRoot {
 	}
 	
 	public StdAcceptCondSet(String cid, int systemType, String conditionSetCd, String conditionSetName,
-			int deleteExistData, Integer acceptMode, int checkCompleted, String categoryId, Integer csvDataLineNumber,
+			int deleteExistData, Integer acceptMode, Integer checkCompleted, String categoryId, Integer csvDataLineNumber,
 			Integer csvDataStartLine, Integer deleteExtDataMethod) {
 		super();
 		this.cid = cid;
@@ -106,7 +106,10 @@ public class StdAcceptCondSet extends AggregateRoot {
 		else
 			this.acceptMode = Optional.of(EnumAdaptor.valueOf(acceptMode, AcceptMode.class));
 		this.conditionSetName = new AcceptanceConditionName(conditionSetName);
-		this.checkCompleted = EnumAdaptor.valueOf(checkCompleted, NotUseAtr.class);
+		if (checkCompleted == null)
+			this.checkCompleted = Optional.empty();
+		else 
+			this.checkCompleted = Optional.of(EnumAdaptor.valueOf(checkCompleted, NotUseAtr.class));
 		this.categoryId = Optional.ofNullable(categoryId);
 		if (csvDataLineNumber == null)
 			this.csvDataLineNumber = Optional.empty();
@@ -123,8 +126,11 @@ public class StdAcceptCondSet extends AggregateRoot {
 					.of(EnumAdaptor.valueOf(deleteExtDataMethod.intValue(), DeleteExistDataMethod.class));
 	}
 
-	public void updateCheckCompleted(int check) {
-		this.checkCompleted = EnumAdaptor.valueOf(check, NotUseAtr.class);
+	public void updateWhenSettingItems(Integer check, String categoryId, Integer csvDataLineNumber, Integer csvDataStartLine) {
+		this.checkCompleted = Optional.of(EnumAdaptor.valueOf(check, NotUseAtr.class));
+		this.categoryId = Optional.of(categoryId);
+		this.csvDataLineNumber = Optional.of(new AcceptanceLineNumber(csvDataLineNumber));
+		this.csvDataStartLine = Optional.of(new AcceptanceLineNumber(csvDataStartLine));
 	}
 	
 }

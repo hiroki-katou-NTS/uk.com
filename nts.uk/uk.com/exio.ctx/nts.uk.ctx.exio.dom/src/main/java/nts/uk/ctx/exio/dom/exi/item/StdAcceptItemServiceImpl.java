@@ -19,17 +19,20 @@ public class StdAcceptItemServiceImpl implements StdAcceptItemService {
 
 	@Inject
 	private StdAcceptItemRepository acceptItemRepo;
-	
-	@Inject 
+
+	@Inject
 	private StdAcceptCondSetRepository acceptCondRepo;
 
 	@Override
 	public void register(List<StdAcceptItem> listItem, StdAcceptCondSet conditionSetting) {
-//		acceptItemRepo.removeAll(conditionSetting);
-//		acceptItemRepo.addList(listItem);
-		conditionSetting.updateCheckCompleted(NotUseAtr.NOT_USE.value);
+		StdAcceptCondSet condSet = acceptCondRepo.getStdAcceptCondSetById(conditionSetting.getCid(),
+				conditionSetting.getSystemType().value, conditionSetting.getConditionSetCd().v()).get();
+		condSet.updateWhenSettingItems(NotUseAtr.NOT_USE.value, conditionSetting.getCategoryId().get(),
+				conditionSetting.getCsvDataLineNumber().get().v(), conditionSetting.getCsvDataStartLine().get().v());
 		acceptCondRepo.update(conditionSetting);
+		acceptItemRepo.removeAll(conditionSetting.getCid(), conditionSetting.getSystemType().value,
+				conditionSetting.getConditionSetCd().v());
+		acceptItemRepo.addList(listItem);
 	}
-	
-	
+
 }
