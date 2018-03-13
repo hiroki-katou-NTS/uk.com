@@ -216,7 +216,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 				} 
 				
 				if (!category.getItems().stream().anyMatch(item -> item.itemCode().equals(endDateItemCode))) {
-					category.getItems().add(new ItemValue("", endDateItemCode, "9999/12/31", 3));
+					category.getItems().add(new ItemValue("", endDateItemCode, GeneralDate.max().toString(), 3));
 				} 
 					
 			}
