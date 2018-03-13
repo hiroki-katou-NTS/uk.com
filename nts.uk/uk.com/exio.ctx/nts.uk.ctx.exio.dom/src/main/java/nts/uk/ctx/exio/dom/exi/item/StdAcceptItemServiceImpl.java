@@ -25,8 +25,8 @@ public class StdAcceptItemServiceImpl implements StdAcceptItemService {
 
 	@Override
 	public void register(List<StdAcceptItem> listItem, StdAcceptCondSet conditionSetting) {
-		acceptItemRepo.removeAll(conditionSetting);
-		acceptItemRepo.addList(listItem);
+//		acceptItemRepo.removeAll(conditionSetting);
+//		acceptItemRepo.addList(listItem);
 		conditionSetting.updateCheckCompleted(NotUseAtr.NOT_USE.value);
 		acceptCondRepo.update(conditionSetting);
 	}
