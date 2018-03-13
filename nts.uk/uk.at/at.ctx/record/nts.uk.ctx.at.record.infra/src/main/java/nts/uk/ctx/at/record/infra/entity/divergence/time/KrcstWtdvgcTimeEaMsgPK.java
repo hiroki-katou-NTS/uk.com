@@ -1,47 +1,60 @@
 package nts.uk.ctx.at.record.infra.entity.divergence.time;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The primary key class for the KRCST_WTDVGC_TIME_EA_MSG database table.
  * 
  */
+@Getter
+@Setter
 @Embeddable
 public class KrcstWtdvgcTimeEaMsgPK implements Serializable {
+	
+	/** The Constant serialVersionUID. */
 	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
+	/** The cid. */
 	@Column(name="CID")
 	private String cid;
 
+	/** The dvgc time no. */
 	@Column(name="DVGC_TIME_NO")
-	private long dvgcTimeNo;
+	private Integer dvgcTimeNo;
 
+	/** The worktype cd. */
 	@Column(name="WORKTYPE_CD")
 	private String worktypeCd;
 
+	/**
+	 * Instantiates a new krcst wtdvgc time ea msg PK.
+	 */
 	public KrcstWtdvgcTimeEaMsgPK() {
 	}
-	public String getCid() {
-		return this.cid;
-	}
-	public void setCid(String cid) {
+	
+	/**
+	 * Instantiates a new krcst wtdvgc time ea msg PK.
+	 *
+	 * @param cid the cid
+	 * @param dvgcTimeNo the dvgc time no
+	 * @param worktypeCd the worktype cd
+	 */
+	public KrcstWtdvgcTimeEaMsgPK(String cid, Integer dvgcTimeNo, String worktypeCd) {
 		this.cid = cid;
-	}
-	public long getDvgcTimeNo() {
-		return this.dvgcTimeNo;
-	}
-	public void setDvgcTimeNo(long dvgcTimeNo) {
 		this.dvgcTimeNo = dvgcTimeNo;
-	}
-	public String getWorktypeCd() {
-		return this.worktypeCd;
-	}
-	public void setWorktypeCd(String worktypeCd) {
 		this.worktypeCd = worktypeCd;
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	public boolean equals(Object other) {
 		if (this == other) {
 			return true;
@@ -56,6 +69,9 @@ public class KrcstWtdvgcTimeEaMsgPK implements Serializable {
 			&& this.worktypeCd.equals(castOther.worktypeCd);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	public int hashCode() {
 		final int prime = 31;
 		int hash = 17;

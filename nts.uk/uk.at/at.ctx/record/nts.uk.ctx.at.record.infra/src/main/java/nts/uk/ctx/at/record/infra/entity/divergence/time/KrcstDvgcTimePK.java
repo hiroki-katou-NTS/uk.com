@@ -1,38 +1,56 @@
+/*
+ * 
+ */
 package nts.uk.ctx.at.record.infra.entity.divergence.time;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The primary key class for the KRCST_DVGC_TIME database table.
  * 
  */
+@Getter
+@Setter
 @Embeddable
 public class KrcstDvgcTimePK implements Serializable {
-	//default serial version id, required for serializable classes.
+	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The no. */
 	@Column(name="[NO]")
-	private long no;
+	private Integer no;
 
+	/** The cid. */
 	@Column(name="CID")
 	private String cid;
 
+	/**
+	 * Instantiates a new krcst dvgc time PK.
+	 */
 	public KrcstDvgcTimePK() {
 	}
-	public long getNo() {
-		return this.no;
-	}
-	public void setNo(long no) {
-		this.no = no;
-	}
-	public String getCid() {
-		return this.cid;
-	}
-	public void setCid(String cid) {
+	
+	/**
+	 * Instantiates a new krcst dvgc time PK.
+	 *
+	 * @param no the no
+	 * @param cid the cid
+	 */
+	public KrcstDvgcTimePK(Integer no, String cid) {
+		this.no= no;
 		this.cid = cid;
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	public boolean equals(Object other) {
 		if (this == other) {
 			return true;
@@ -46,6 +64,9 @@ public class KrcstDvgcTimePK implements Serializable {
 			&& this.cid.equals(castOther.cid);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	public int hashCode() {
 		final int prime = 31;
 		int hash = 17;

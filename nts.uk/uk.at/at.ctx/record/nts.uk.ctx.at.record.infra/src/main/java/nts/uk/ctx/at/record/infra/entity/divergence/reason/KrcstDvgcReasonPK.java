@@ -1,47 +1,60 @@
 package nts.uk.ctx.at.record.infra.entity.divergence.reason;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The primary key class for the KRCST_DVGC_REASON database table.
  * 
  */
+@Getter
+@Setter
 @Embeddable
 public class KrcstDvgcReasonPK implements Serializable {
+	
+	/** The Constant serialVersionUID. */
 	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
+	/** The no. */
 	@Column(name="[NO]")
-	private long no;
+	private Integer no;
 
+	/** The cid. */
 	@Column(name="CID")
 	private String cid;
 
+	/** The reason code. */
 	@Column(name="REASON_CODE")
 	private String reasonCode;
 
+	/**
+	 * Instantiates a new krcst dvgc reason PK.
+	 */
 	public KrcstDvgcReasonPK() {
 	}
-	public long getNo() {
-		return this.no;
-	}
-	public void setNo(long no) {
+	
+	/**
+	 * Instantiates a new krcst dvgc reason PK.
+	 *
+	 * @param no the no
+	 * @param cid the cid
+	 * @param reasonCode the reason code
+	 */
+	public KrcstDvgcReasonPK(Integer no, String cid, String reasonCode) {
 		this.no = no;
-	}
-	public String getCid() {
-		return this.cid;
-	}
-	public void setCid(String cid) {
 		this.cid = cid;
-	}
-	public String getReasonCode() {
-		return this.reasonCode;
-	}
-	public void setReasonCode(String reasonCode) {
 		this.reasonCode = reasonCode;
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	public boolean equals(Object other) {
 		if (this == other) {
 			return true;
@@ -56,6 +69,9 @@ public class KrcstDvgcReasonPK implements Serializable {
 			&& this.reasonCode.equals(castOther.reasonCode);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	public int hashCode() {
 		final int prime = 31;
 		int hash = 17;
