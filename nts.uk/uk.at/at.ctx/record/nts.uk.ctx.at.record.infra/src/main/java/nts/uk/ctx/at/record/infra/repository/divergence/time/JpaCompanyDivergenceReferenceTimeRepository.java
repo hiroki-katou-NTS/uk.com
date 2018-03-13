@@ -28,6 +28,8 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt_;
 public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 		implements CompanyDivergenceReferenceTimeRepository {
 
+	/** The Constant DIVERGENCE_TIME_MAX. */
+	private final int DIVERGENCE_TIME_MAX = 10;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -77,13 +79,23 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 				: krcstDrts.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeRepository#addDefaultDataWhenCreateHistory(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.divergence.time.history.
+	 * CompanyDivergenceReferenceTimeRepository#addDefaultDataWhenCreateHistory(java
+	 * .lang.String)
 	 */
 	@Override
 	public void addDefaultDataWhenCreateHistory(String historyId) {
-		// TODO Auto-generated method stub
-		
+		for (int i = 0; i < DIVERGENCE_TIME_MAX; i++) {
+			// set value for entity
+			KrcstDrt drt = new KrcstDrt();
+			drt.setId(new KrcstDrtPK(historyId, i));
+			
+			// Insert to DB
+			this.commandProxy().insert(drt);
+		}
 	}
 
 	/*
@@ -95,7 +107,8 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 	 */
 	@Override
 	public void update(List<CompanyDivergenceReferenceTime> listDomain) {
-//		this.commandProxy().update(this.toEntity(domain));
+		this.commandProxy()
+				.updateAll(listDomain.stream().map(domain -> this.toEntity(domain)).collect(Collectors.toList()));
 	}
 
 	/*
@@ -121,11 +134,12 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 		JpaCompanyDivergenceReferenceTimeGetMemento memento = new JpaCompanyDivergenceReferenceTimeGetMemento(entity);
 		return new CompanyDivergenceReferenceTime(memento);
 	}
-	
+
 	/**
 	 * To entity.
 	 *
-	 * @param domain the domain
+	 * @param domain
+	 *            the domain
 	 * @return the krcst drt
 	 */
 	private KrcstDrt toEntity(CompanyDivergenceReferenceTime domain) {
@@ -135,7 +149,7 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 
 		KrcstDrt entity = this.queryProxy().find(pk, KrcstDrt.class).orElse(new KrcstDrt());
 		domain.saveToMemento(new JpaCompanyDivergenceReferenceTimeSetMemento(entity));
-		
+
 		return entity;
 	}
 }
