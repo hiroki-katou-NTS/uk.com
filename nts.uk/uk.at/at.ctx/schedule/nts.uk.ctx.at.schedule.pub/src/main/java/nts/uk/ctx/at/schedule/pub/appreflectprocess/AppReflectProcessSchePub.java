@@ -6,6 +6,11 @@ public interface AppReflectProcessSchePub {
 	 * @param reflectPara
 	 * @return
 	 */
-	public boolean goBackDirectlyReflectSch(GoBackDirectlyReflectParamDto reflectPara);
+	public boolean goBackDirectlyReflectSch(ApplicationReflectParamScheDto reflectPara);
+	/**
+	 * 休暇申請
+	 * @param reflectPara
+	 */
+	public void appForLeaveSche(ApplicationReflectParamScheDto reflectPara);
 
 }

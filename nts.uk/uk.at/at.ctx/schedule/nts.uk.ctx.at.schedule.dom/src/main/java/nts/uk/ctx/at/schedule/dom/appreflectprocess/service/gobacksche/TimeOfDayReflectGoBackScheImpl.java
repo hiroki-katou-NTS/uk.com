@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.service;
+package nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -6,9 +6,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.appreflectprocess.ApplyTimeAtr;
-import nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.GoBackDirectlyReflectParam;
-import nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche.TimeOfDayReflectFindDto;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.ApplicationReflectParam;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.ApplyTimeAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.EndTimeReflectScheService;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.StartTimeReflectScheService;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.servicedto.TimeReflectScheDto;
@@ -26,7 +25,7 @@ public class TimeOfDayReflectGoBackScheImpl implements TimeOfDayReflectGoBackSch
 	@Inject
 	private EndTimeReflectScheService endTimeService;
 	@Override
-	public boolean stampReflectGobackSche(GoBackDirectlyReflectParam reflectPara) {
+	public boolean stampReflectGobackSche(ApplicationReflectParam reflectPara) {
 		//(開始時刻)反映する時刻を求める
 		reflectPara.setApplyTimeAtr(ApplyTimeAtr.START);
 		TimeOfDayReflectFindDto startTimeReflectFind = this.timeReflectFind(reflectPara);
@@ -50,7 +49,7 @@ public class TimeOfDayReflectGoBackScheImpl implements TimeOfDayReflectGoBackSch
 	}
 
 	@Override
-	public TimeOfDayReflectFindDto timeReflectFind(GoBackDirectlyReflectParam reflectPara) {
+	public TimeOfDayReflectFindDto timeReflectFind(ApplicationReflectParam reflectPara) {
 		String companyId = AppContexts.user().companyId();
 		TimeOfDayReflectFindDto timeFind = new TimeOfDayReflectFindDto(false, 0);
 		//INPUT．申請する時刻をチェックする

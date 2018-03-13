@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.appreflectprocess;
+package nts.uk.ctx.at.schedule.dom.appreflectprocess.service;
 
 import lombok.AllArgsConstructor;
 /**

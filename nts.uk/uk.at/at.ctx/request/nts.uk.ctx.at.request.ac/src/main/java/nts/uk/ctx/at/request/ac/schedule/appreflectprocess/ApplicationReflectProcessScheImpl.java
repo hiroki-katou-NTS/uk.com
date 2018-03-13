@@ -1,18 +1,21 @@
 package nts.uk.ctx.at.request.ac.schedule.appreflectprocess;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.applicationreflect.workschedule.ReflectScheDto;
 import nts.uk.ctx.at.request.dom.applicationreflect.workschedule.service.ApplicationReflectProcessSche;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.ApplicationGobackScheInforDto;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.AppForLeaveDto;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.AppReflectProcessSchePub;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.ApplyTimeAtrPub;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.ChangeAtrAppGobackPub;
-import nts.uk.ctx.at.schedule.pub.appreflectprocess.GoBackDirectlyReflectParamDto;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.ApplicationReflectParamScheDto;
 
 @Stateless
 public class ApplicationReflectProcessScheImpl implements ApplicationReflectProcessSche{
+	@Inject
 	private AppReflectProcessSchePub appReflectSchePub;
 
 	@Override
@@ -24,13 +27,27 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 				reflectSche.getGoBackDirectly().getWorkTimeEnd2().v(),
 				reflectSche.getGoBackDirectly().getWorkTimeStart2().v(),
 				reflectSche.getGoBackDirectly().getWorkTimeEnd2().v());
-		GoBackDirectlyReflectParamDto dto = new GoBackDirectlyReflectParamDto(reflectSche.getEmployeeId(), 
+		ApplicationReflectParamScheDto dto = new ApplicationReflectParamScheDto(reflectSche.getEmployeeId(), 
 				reflectSche.getDatePara(),
 				true,
 				appInfo, 
-				EnumAdaptor.valueOf(reflectSche.getTimeAtr().value, ApplyTimeAtrPub.class)); 
+				EnumAdaptor.valueOf(reflectSche.getTimeAtr().value, ApplyTimeAtrPub.class),
+				new AppForLeaveDto(null)); 
 		boolean data = appReflectSchePub.goBackDirectlyReflectSch(dto);
 		return data;
 	}
+
+	@Override
+	public void forleaveReflect(ReflectScheDto reflectSche) {
+		ApplicationReflectParamScheDto dto = new ApplicationReflectParamScheDto(reflectSche.getEmployeeId(),
+				reflectSche.getDatePara(),
+				true,
+				new ApplicationGobackScheInforDto(ChangeAtrAppGobackPub.CHANGE, null, null, null, null, null, null),
+				ApplyTimeAtrPub.END, 
+				new AppForLeaveDto(reflectSche.getForLeave().getWorkTypeCode().v()));
+		appReflectSchePub.appForLeaveSche(dto);
+	}
+	
+	
 
 }

@@ -7,7 +7,7 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @Setter
 @Getter
-public class GoBackDirectlyReflectParamDto {
+public class ApplicationReflectParamScheDto {
 	/**	社員ID */
 	private String employeeId;
 	/**	年月日 */
@@ -15,7 +15,11 @@ public class GoBackDirectlyReflectParamDto {
 	/**	 振出・休出時反映する区分*/
 	private boolean outsetBreakReflectAtr; 
 	/**	直行直帰申請 */
-	private ApplicationGobackScheInforDto appInfor;
+	private ApplicationGobackScheInforDto gobackInfor;
 	/**直行直帰申請 の　時刻の反映：　固定（開始）	 */
 	private ApplyTimeAtrPub applyTimeAtr;
+	/**
+	 * 休暇申請
+	 */
+	private AppForLeaveDto leaveInfo;
 }

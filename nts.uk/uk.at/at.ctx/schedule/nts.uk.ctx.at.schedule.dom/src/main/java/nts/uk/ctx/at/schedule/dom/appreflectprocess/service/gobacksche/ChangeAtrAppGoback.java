@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.appreflectprocess.gobacksche;
+package nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche;
 
 import nts.arc.enums.EnumAdaptor;
 /**

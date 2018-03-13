@@ -27,13 +27,13 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 			return reflectInfo;
 		} else if (application.getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION //直行直帰申請
 				&& application.getPrePostAtr() == PrePostAtr.PREDICT){
-			boolean isReflectGoBack = appReflectProcess.goBackDirectlyReflect(reflectSheDto);
-			if(isReflectGoBack) {
-				reflectInfo = new ReflectedStatesInfo(ReflectedState_New.REFLECTED, ReasonNotReflect_New.WORK_FIXED);
-			} else {
-				reflectInfo = new ReflectedStatesInfo(reflectSheDto.getApplication().getReflectionInformation().getStateReflection(), 
-						reflectSheDto.getApplication().getReflectionInformation().getNotReason().isPresent() ? reflectSheDto.getApplication().getReflectionInformation().getNotReason().get() : ReasonNotReflect_New.NOT_PROBLEM);
-			}
+			appReflectProcess.goBackDirectlyReflect(reflectSheDto);
+			reflectInfo = new ReflectedStatesInfo(ReflectedState_New.REFLECTED, ReasonNotReflect_New.WORK_FIXED);
+			
+		} else if (application.getAppType() == ApplicationType.ABSENCE_APPLICATION //休暇申請
+				&& application.getPrePostAtr() == PrePostAtr.PREDICT) {
+			appReflectProcess.forleaveReflect(reflectSheDto);
+			reflectInfo = new ReflectedStatesInfo(ReflectedState_New.REFLECTED, ReasonNotReflect_New.WORK_FIXED);
 		}
 		return reflectInfo;
 	}
