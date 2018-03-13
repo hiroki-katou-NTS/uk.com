@@ -174,7 +174,7 @@
 					<!-- Normal Setting -->
 					<div class="panel panel-frame setting-panel">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_46')}</div>
-						<BUTTON id="open-Detail-F">#{i18n.getText('KMK004_47')}</BUTTON>
+						<button id="open-Detail-F" data-bind="click: $parent.gotoF">#{i18n.getText('KMK004_47')}</button>
 						<com:ko tag="with" bind="normalSetting">
 							<com:ko tag="with"  bind="statutorySetting">
 								<table class="border-all">

@@ -9,15 +9,15 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 380,
-					height : 610
+					width : 400,
+					height : 710
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
-			<!-- <com:scriptfile path="kmk004.f.service.js" /> -->
-			<com:scriptfile path="kmk004.f.vm.js" />
-			<com:scriptfile path="kmk004.f.start.js" />
+			<!-- <com:scriptfile path="kmk004.g.service.js" /> -->
+			<com:scriptfile path="kmk004.h.vm.js" />
+			<com:scriptfile path="kmk004.h.start.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area cf">
@@ -39,18 +39,62 @@
 								{ prop: 'name', length: 6 },
 							]}"></div></td>
 					</tr>
+					
+					<!-- H2_1 -->
+					<tr>
+						<td colspan="2" class="padding-bottom"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_78')}</div></td>
+					</tr>
+					
+					<!-- H2_2 -> H2_9 -->
+					<tr>
+						<td style="width: 120px;" class="padding-bottom">
+							<div id="str-month-txt" class="label">#{i18n.getText('KMK004_79')}</div>
+							<div tabindex="2" style="float: left">
+								<input data-bind="ntsTextEditor: {
+									value: strMonth,
+									option: ko.mapping.fromJS({
+											textmode: 'text',
+											width: '26',
+											textalign: 'left'
+										}),
+									required: true,
+									enable: true
+									}" />
+							</div>
+						</td>
+						
+						<td style="width: 240px;" class="padding-bottom">
+							<div id="period-txt" class="label">#{i18n.getText('KMK004_80')}</div>
+							<div tabindex="3" style="float: left">
+								<input data-bind="ntsTextEditor: {
+									value: period,
+									option: ko.mapping.fromJS({
+											unitID: 'MONTHS',
+											textmode: 'text',
+											width: '26',
+											textalign: 'left'
+										}),
+									required: true,
+									enable: true
+									}" />
+							</div>
+							<div tabindex="4" style="float: right" data-bind="ntsCheckBox: { checked: repeatCls }">#{i18n.getText('KMK004_81')}</div>
+						</td>
+					</tr>
+					
+					<!-- H3_1 -->
 					<tr><td colspan="2" class="padding-bottom">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_55')}</div>
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_78')}</div>
 					</td></tr>
 					
-					<!-- F2_2 -->
+					<!-- H3_2 -->
 					<tr><td colspan="2" class="description-label">
 						<div class="label">#{i18n.getText('KMK004_56')}</div>
 					</td></tr>
 					
-					<!-- F2_3 -->
+					<!-- H3_3 -->
 					<tr><td colspan="2" class="switch-alone">
-						<div tabindex="2" class="cf" data-bind="ntsSwitchButton: {
+						<div tabindex="5" class="cf" data-bind="ntsSwitchButton: {
 							name: '#[KMK004_57]',
 							options: includeExtraAggrOpt,
 							optionsValue: 'code',
@@ -60,16 +104,16 @@
 							enable: true }"></div>
 					</td></tr>
 					
-					<!-- F2_6 -->
+					<!-- H3_6 -->
 					<tr><td colspan="2" class="description-label">
 						<div class="label">#{i18n.getText('KMK004_60')}</div>
 					</td></tr>
 					
-					<!-- F2-7, F2_8 -->
+					<!-- H3-7, H3_8 -->
 					<tr>
 						<td class="padding-left-35"><div class="label">#{i18n.getText('KMK004_61')}</div></td>
 						<td class="switch-btn-set">
-							<div tabindex="3" class="cf" data-bind="ntsSwitchButton: {
+							<div tabindex="6" class="cf" data-bind="ntsSwitchButton: {
 							name: '#[KMK004_62]',
 							options: includeAggrOpt,
 							optionsValue: 'code',
@@ -80,11 +124,11 @@
 						</td>
 					</tr>
 					
-					<!-- F2_11, F2_12 -->
+					<!-- H3_11, H3_12 -->
 					<tr>
 						<td class="padding-left-35"><div class="label">#{i18n.getText('KMK004_65')}</div></td>
 						<td class="switch-btn-set">
-							<div tabindex="4" class="cf" data-bind="ntsSwitchButton: {
+							<div tabindex="7" class="cf" data-bind="ntsSwitchButton: {
 							name: '#[KMK004_66]',
 							options: includeAggrOpt,
 							optionsValue: 'code',
@@ -96,14 +140,14 @@
 					</tr>
 					
 					<!-- Clone from F2_2 -->
-					<!-- F2_15 -->
+					<!-- H3_15 -->
 					<tr><td colspan="2" class="description-label" style="padding-top: 23px">
 						<div class="label">#{i18n.getText('KMK004_67')}</div>
 					</td></tr>
 					
-					<!-- F2_16 -->
+					<!-- H3_16 -->
 					<tr><td colspan="2" class="switch-alone">
-						<div tabindex="5" class="cf" data-bind="ntsSwitchButton: {
+						<div tabindex="8" class="cf" data-bind="ntsSwitchButton: {
 							name: '#[KMK004_68]',
 							options: includeExtraAggrOpt,
 							optionsValue: 'code',
@@ -113,16 +157,16 @@
 							enable: true }"></div>
 					</td></tr>
 					
-					<!-- F2_19 -->
+					<!-- H3_19 -->
 					<tr><td colspan="2" class="description-label">
 						<div class="label">#{i18n.getText('KMK004_69')}</div>
 					</td></tr>
 					
-					<!-- F2-20, F2_21 -->
+					<!-- H3-20, H3_21 -->
 					<tr>
 						<td class="padding-left-35"><div class="label">#{i18n.getText('KMK004_61')}</div></td>
 						<td class="switch-btn-set">
-							<div tabindex="6" class="cf" data-bind="ntsSwitchButton: {
+							<div tabindex="9" class="cf" data-bind="ntsSwitchButton: {
 							name: '#[KMK004_62]',
 							options: includeAggrOpt,
 							optionsValue: 'code',
@@ -133,11 +177,11 @@
 						</td>
 					</tr>
 					
-					<!-- F2_24, F2_25 -->
+					<!-- H3_24, H3_25 -->
 					<tr>
 						<td class="padding-left-35"><div class="label">#{i18n.getText('KMK004_65')}</div></td>
 						<td class="switch-btn-set">
-							<div tabindex="7" class="cf" data-bind="ntsSwitchButton: {
+							<div tabindex="10" class="cf" data-bind="ntsSwitchButton: {
 							name: '#[KMK004_66]',
 							options: includeAggrOpt,
 							optionsValue: 'code',
@@ -153,8 +197,8 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="8" class="x-large proceed" data-bind="click: decideData">#{i18n.getText('KMK004_36')}</button>
-				<button tabindex="9" data-bind="click: cancel">#{i18n.getText('KMK004_37')}</button>
+				<button tabindex="11" class="x-large proceed" data-bind="click: decideData">#{i18n.getText('KMK004_36')}</button>
+				<button tabindex="12" data-bind="click: cancel">#{i18n.getText('KMK004_37')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -1,19 +1,23 @@
-module nts.uk.at.view.kmk004.f {
+module nts.uk.at.view.kmk004.h {
     export module viewmodel {
 
         export class ScreenModel {
             //***********
-            startWeekList: KnockoutObservableArray<any>;
-            startWeek: KnockoutObservable<number>;// F1_2
-            isIncludeExtraAggr: KnockoutObservable<boolean>;// F2_3////
-            includeExtraAggrOpt: KnockoutObservableArray<any>;// Opt for F2_3 (F2_4, F2_5)
-            isIncludeLegalAggr: KnockoutObservable<boolean>; // F2_8
-            includeAggrOpt: KnockoutObservableArray<any>;
-            isIncludeHolidayAggr: KnockoutObservable<boolean>; // F2_12
+            strMonth: KnockoutObservable<number>;
+            period: KnockoutObservable<number>;
+            repeatCls: KnockoutObservable<boolean>;
             
-            isIncludeExtraExcessOutside: KnockoutObservable<boolean>;// F2_16////
-            isIncludeLegalExcessOutside: KnockoutObservable<boolean>; // F2_21
-            isIncludeHolidayExcessOutside: KnockoutObservable<boolean>; // F2_25
+            startWeekList: KnockoutObservableArray<any>;
+            startWeek: KnockoutObservable<number>;// H1_2
+            isIncludeExtraAggr: KnockoutObservable<boolean>;// H3_3
+            includeExtraAggrOpt: KnockoutObservableArray<any>;// Opt for H3_3 (H3_4, H3_5)
+            isIncludeLegalAggr: KnockoutObservable<boolean>; // H3_8
+            includeAggrOpt: KnockoutObservableArray<any>;
+            isIncludeHolidayAggr: KnockoutObservable<boolean>; // H3_12
+            
+            isIncludeExtraExcessOutside: KnockoutObservable<boolean>;// H3_16
+            isIncludeLegalExcessOutside: KnockoutObservable<boolean>; // H3_21
+            isIncludeHolidayExcessOutside: KnockoutObservable<boolean>; // H3_25
             
             // Enable/Disable variables
             isEnableExtraSelection: KnockoutObservable<boolean>;
@@ -21,8 +25,11 @@ module nts.uk.at.view.kmk004.f {
 
             constructor() {
                 let self = this;
-//                let params: NormalSetParams = nts.uk.ui.windows.getShared("NormalSetParams");
-                let params: NormalSetParams = new NormalSetParams();
+//                let params: NormalSetParams = nts.uk.ui.windows.getShared("DeformSetParams");
+                let params: DeformSetParams = new DeformSetParams();
+                
+                
+                
                 self.startWeekList = ko.observableArray([new ItemModel(2, '月曜日'),
                     new ItemModel(3, '火曜日'),
                     new ItemModel(4, '水曜日'),
@@ -40,6 +47,10 @@ module nts.uk.at.view.kmk004.f {
                     new ItemModel(1, nts.uk.resource.getText("KMK004_63")),
                     new ItemModel(0, nts.uk.resource.getText("KMK004_64"))]);
                 
+                // Initialize vars
+                self.strMonth = ko.observable(params.strMonth ? params.strMonth : (moment(new Date()).toDate().getMonth()));
+                self.period = ko.observable(params.period ? params.period : 1);
+                self.repeatCls = ko.observable(params.repeatCls ? params.repeatCls : false);
                 self.startWeek = ko.observable(params.startWeek ? params.startWeek : StartWeek.MONDAY);
                 self.isIncludeExtraAggr = ko.observable(params.isIncludeExtraAggr ? params.isIncludeExtraAggr : false);
                 self.isIncludeLegalAggr = ko.observable(params.isIncludeLegalAggr ? params.isIncludeLegalAggr : false);
@@ -71,14 +82,17 @@ module nts.uk.at.view.kmk004.f {
 
             public decideData(): void {
                 let self = this;
-                nts.uk.ui.windows.setShared("Normal_Set_Output", {
+                nts.uk.ui.windows.setShared("Deform_Set_Output", {
                     startWeek: self.startWeek(),
                     isIncludeExtraAggr: self.isIncludeExtraAggr(),
                     isIncludeLegalAggr: self.isIncludeLegalAggr(),
                     isIncludeHolidayAggr: self.isIncludeHolidayAggr(),
                     isIncludeExtraExcessOutside: self.isIncludeExtraExcessOutside(),
                     isIncludeLegalExcessOutside: self.isIncludeLegalExcessOutside(),
-                    isIncludeHolidayExcessOutside: self.isIncludeHolidayExcessOutside()
+                    isIncludeHolidayExcessOutside: self.isIncludeHolidayExcessOutside(),
+                    strMonth: self.strMonth(),
+                    period: self.period(),
+                    repeatCls: self.repeatCls()
                 } , true);
             }
 
@@ -115,9 +129,12 @@ module nts.uk.at.view.kmk004.f {
             }
         }
         /**
-         * Normal Setting Params Model
+         * Deformed Labor Setting Params Model
          */
-        export class NormalSetParams {
+        export class DeformSetParams {
+            strMonth: number;
+            period: number;
+            repeatCls: boolean;
             startWeek: number;
             isIncludeExtraAggr: boolean;
             isIncludeLegalAggr: boolean;
@@ -128,6 +145,9 @@ module nts.uk.at.view.kmk004.f {
             
             constructor() {
                 let self = this;
+                self.strMonth = moment(new Date()).toDate().getMonth();
+                self.period = 1;
+                self.repeatCls = false;
                 self.startWeek = 0;
                 self.isIncludeExtraAggr = false;
                 self.isIncludeLegalAggr = false;

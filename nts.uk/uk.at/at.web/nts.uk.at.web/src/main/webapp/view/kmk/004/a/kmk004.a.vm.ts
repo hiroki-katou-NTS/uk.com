@@ -2,6 +2,9 @@ module nts.uk.at.view.kmk004.a {
     export module viewmodel {
 
         import UsageUnitSettingService = nts.uk.at.view.kmk004.e.service;
+        import NormalSetParams = nts.uk.at.view.kmk004.f.viewmodel.NormalSetParams;
+        import FlexSetParams = nts.uk.at.view.kmk004.g.viewmodel.FlexSetParams;
+        import DeformSetParams = nts.uk.at.view.kmk004.h.viewmodel.DeformSetParams;
 
         export class ScreenModel {
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
@@ -34,7 +37,7 @@ module nts.uk.at.view.kmk004.a {
             // Start month.
             startMonth: KnockoutObservable<number>;
             
-            // Update
+            // Update QuyenNT
             aggrSelectionItemList: KnockoutObservableArray<any>;
             selectedAggrSelection: KnockoutObservable<number>;
 
@@ -318,7 +321,6 @@ module nts.uk.at.view.kmk004.a {
             public gotoF(): void {
                 let self = this;
                 nts.uk.ui.windows.sub.modal("/view/kmk/004/f/index.xhtml").onClosed(() => {
-                    self.loadUsageUnitSetting();
                     $('#companyYearPicker').focus();
                 });
             }
@@ -326,7 +328,6 @@ module nts.uk.at.view.kmk004.a {
             public gotoG(): void {
                 let self = this;
                 nts.uk.ui.windows.sub.modal("/view/kmk/004/g/index.xhtml").onClosed(() => {
-                    self.loadUsageUnitSetting();
                     $('#companyYearPicker').focus();
                 });
             }
@@ -334,7 +335,6 @@ module nts.uk.at.view.kmk004.a {
             public gotoH(): void {
                 let self = this;
                 nts.uk.ui.windows.sub.modal("/view/kmk/004/h/index.xhtml").onClosed(() => {
-                    self.loadUsageUnitSetting();
                     $('#companyYearPicker').focus();
                 });
             }

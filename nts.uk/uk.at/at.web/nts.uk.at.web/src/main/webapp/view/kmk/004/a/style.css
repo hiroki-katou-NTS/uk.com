@@ -72,5 +72,7 @@
 	margin-left: 20px;
 }
 #open-Detail-F {
-	margin: 10px 10px 10px 100px;
+	float: right;
+	margin-bottom: 20px;
+	margin-top: 10px;
 }
