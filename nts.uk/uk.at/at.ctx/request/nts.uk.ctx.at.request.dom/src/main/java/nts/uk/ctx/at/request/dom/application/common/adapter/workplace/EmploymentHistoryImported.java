@@ -1,14 +1,10 @@
-package nts.uk.ctx.at.record.dom.organization;
+package nts.uk.ctx.at.request.dom.application.common.adapter.workplace;
 
 import lombok.Getter;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
-/**
- *  所属雇用履歴 
- *  */
 @Getter
 public class EmploymentHistoryImported {
-
 	/** The employee id. */
 	// 社員ID
 	private String employeeId;
@@ -27,5 +23,4 @@ public class EmploymentHistoryImported {
 		this.employmentCode = employmentCode;
 		this.period = period;
 	}
-
 }
