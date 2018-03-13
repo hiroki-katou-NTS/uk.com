@@ -4,6 +4,7 @@ module nts.uk.com.view.cmf001.q {
         export class ScreenModel {
             // テストモード ＝ チェック中モード
             isCheckMode: KnockoutObservable<boolean> = ko.observable(true);
+            isCheckFinish: KnockoutObservable<boolean> = ko.observable(false);
             // 中断 モード
             isStop: KnockoutObservable<boolean> = ko.observable(false);
             
@@ -26,7 +27,8 @@ module nts.uk.com.view.cmf001.q {
             // 項目移送表
             totalRecord: KnockoutObservable<number> =  ko.observable(0);
             currentRecord: KnockoutObservable<number> =  ko.observable(0);
-            stopMode: KnockoutObservable<string> = ko.observable('しない');
+            stopMode: KnockoutObservable<number> = ko.observable(0);
+            stateBehavior: KnockoutObservable<number> = ko.observable(0);
             count: number = 100;
             executionStartDate: string;
             executionState: KnockoutObservable<string> =  ko.observable('');
@@ -46,6 +48,7 @@ module nts.uk.com.view.cmf001.q {
                 let self = this;
                 
                 let startDate = new Date().toLocaleDateString();
+                self.timeStart = new Date();
                 self.exacExeResultLog = {
                     cid: '', /* 会社ID set at server*/
                     //conditionSetCd: self.params.conditionCd,  /* 条件設定コード*/
@@ -70,7 +73,7 @@ module nts.uk.com.view.cmf001.q {
 
                 self.codCode = ko.observable('001');
                 self.codName = ko.observable('A社人事管理情報');
-                self.timeOver = ko.observable('00:01:27');
+                self.timeOver = ko.observable(self.timeStart.getTime());
 
                 //init
                 //self.totalRecord(self.params.totalRecord);
@@ -92,8 +95,9 @@ module nts.uk.com.view.cmf001.q {
                 dfd.resolve();
                 return dfd.promise();
             }
-            
-            //エラーボタン
+            /*
+            * エラーボタン
+            */
             gotoErrorList(){
                 let self = this;
                 nts.uk.ui.windows.setShared('CMF001-R', {
@@ -104,8 +108,9 @@ module nts.uk.com.view.cmf001.q {
                 
                 nts.uk.ui.windows.sub.modal("/view/cmf/001/r/index.xhtml");
             }
-            
-            // 閉じる
+            /**
+            * 閉じる
+            */
             close(){
                  nts.uk.ui.windows.close();
             }
@@ -120,10 +125,10 @@ module nts.uk.com.view.cmf001.q {
                     self.currentRecord(),
                     self.numberFail(),
                     self.stopMode(),
-                    self.executionState());
+                    self.stateBehavior());
 
                 // find task id
-                service.executionImportCsvData(command).done(function(res: any) {
+                service.check(command).done(function(res: any) {
                     self.taskId(res.taskInfor.id);
                     // update state
                     self.updateState();
@@ -147,7 +152,7 @@ module nts.uk.com.view.cmf001.q {
                     self.currentRecord(),
                     self.numberFail(),
                     self.stopMode(),
-                    self.executionState());
+                    self.stateBehavior());
 
                 // find task id
                 service.executionImportCsvData(command).done(function(res: any) {
@@ -172,12 +177,14 @@ module nts.uk.com.view.cmf001.q {
                     self.executionState(getListProcessing()[2].value);
                 }
 
+                // 1秒おきに下記を実行
                 nts.uk.deferred.repeat(conf => conf
                     .task(() => {
                         return nts.uk.request.asyncTask.getInfo(self.taskId()).done(function(res: any) {
                             // update state on screen
                             if (res.running || res.succeeded || res.cancelled) {
                                 _.forEach(res.taskDatas, item => {
+                                    // 「非同期タスク情報」を取得する
                                     let serverData = JSON.parse(item.valueAsString);
                                     console.log(serverData);
                                     if (self.isCheckMode() == true) {
@@ -199,15 +206,21 @@ module nts.uk.com.view.cmf001.q {
                                     }
                                     // 動作状態
                                     if (item.key == 'STATUS') {
-                                        self.executionState(item.valueAsNumber);
+                                        self.stateBehavior(item.valueAsNumber);
                                     }
                                 });
-
+//                                // 経過時間＝現在時刻－開始時刻
+//                                self.timeNow = new Date();
+//                                self.timeOver(self.timeNow.getTime() - self.timeStart.getTime());
                             }
 
                             if (res.succeeded || res.failed || res.cancelled) {
                                 self.isStop(true);
                                 if (self.isCheckMode() == true) {
+                                    if (res.succeeded) {
+                                        // チェック終了モード
+                                        self.isCheckFinish(true);
+                                    }
                                     self.executionState(getListProcessing()[1].value);
                                 }else {
                                     self.executionState(getListProcessing()[3].value);
@@ -227,16 +240,17 @@ module nts.uk.com.view.cmf001.q {
             */
             private stopExecution(): void {
                 let self = this;
-                confirm({ messageId: "Msg_911" }).ifYes(() => {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_911" })
+                .ifYes(() => {
                     self.isStop(true);
-
                     if (nts.uk.text.isNullOrEmpty(self.taskId())) {
                         return;
                     }
                     nts.uk.request.asyncTask.requestToCancel(self.taskId());
-                    }).ifNo(() => {
-                        return;
-                    });
+                 })
+                 .ifNo(() => {
+                     return;
+                 });
             }
         }
     }
@@ -245,9 +259,9 @@ module nts.uk.com.view.cmf001.q {
         csvLine: number;
         currentLine: number;
         errorCount: number;
-        stopMode: string;
-        stateBehavior: string;
-        constructor(csvLine: number, currentLine: number, errorCount: number, stopMode: string, stateBehavior: string) {
+        stopMode: number;
+        stateBehavior: number;
+        constructor(csvLine: number, currentLine: number, errorCount: number, stopMode: number, stateBehavior: number) {
             let self = this;
             self.csvLine = csvLine;
             self.currentLine = currentLine;
