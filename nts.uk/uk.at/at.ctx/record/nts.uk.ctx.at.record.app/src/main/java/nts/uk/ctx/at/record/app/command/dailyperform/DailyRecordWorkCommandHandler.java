@@ -201,7 +201,7 @@ public class DailyRecordWorkCommandHandler {
 		//remove data error
 		employeeDailyPerErrorRepository.removeParam(command.getEmployeeId(), command.getWorkDate());
 		//check and insert error;
-		determineErrorAlarmWorkRecordService.insertErrorAlarm(command);
+		determineErrorAlarmWorkRecordService.insertErrorAlarm(command.getEmployeeId(), command.getWorkDate());
 	}
 	
 	private void calcIfNeed(Set<String> group, DailyRecordWorkCommand command){
