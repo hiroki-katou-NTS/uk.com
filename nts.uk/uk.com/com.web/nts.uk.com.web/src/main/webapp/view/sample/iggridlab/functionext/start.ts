@@ -182,7 +182,7 @@ module nts.uk.ui.gridlist {
                                 { headerText: 'Inbound time', key: 'time', width: '140px', columnCssClass: "halign-right", headerCssClass: "center-align",
                                                 constraint: { 
 //                                                                primitiveValue: 'SampleTimeClock',
-                                                                cDisplayType: "Clock",
+                                                                cDisplayType: "TimeWithDay",
                                                                 min: "10:00", max: "30:00",
                                                                 required: true
                                                             }
@@ -374,11 +374,11 @@ module nts.uk.ui.gridlist {
                                                         { name: "sheet2", text: "Sheet 2", columns: ["header1", "header2", "header3", "header4", "header5", "header6", "alert"] }
                                                       ]
                                             },
-                                            {
-                                                name: "LoadOnDemand",
-                                                allKeysPath: "/sample/lazyload/keys",
-                                                pageRecordsPath: "/sample/lazyload/data",
-                                            }
+//                                            {
+//                                                name: "LoadOnDemand",
+//                                                allKeysPath: "/sample/lazyload/keys",
+//                                                pageRecordsPath: "/sample/lazyload/data",
+//                                            }
                                          ],
                             ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                                             { name: 'Combobox', width: '70px', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
