@@ -7,6 +7,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferen
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeValue;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDrt;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -44,7 +45,7 @@ public class JpaCompanyDivergenceReferenceTimeGetMemento implements CompanyDiver
 	 */
 	@Override
 	public String getCompanyId() {
-		return null;
+		return AppContexts.user().companyId();
 	}
 
 	/*
