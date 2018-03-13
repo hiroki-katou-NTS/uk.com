@@ -107,7 +107,7 @@ public class StdAcceptCondSetFinder {
 
 		List<ExAcpCategoryDto> lstDataCategory = new ArrayList<ExAcpCategoryDto>();
 		for (int i = 1; i <= 4; i++) {
-			lstDataCategory.add(new ExAcpCategoryDto("1dfsdffs" + i, "カテゴリ名　" + i, 0L));
+			lstDataCategory.add(new ExAcpCategoryDto("" + i, "カテゴリ名　" + i, 0L));
 		}
 		return lstDataCategory;
 	}

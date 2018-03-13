@@ -6,23 +6,26 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import javax.transaction.Transactional;
-import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
+import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetService;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 
 @Stateless
 @Transactional
 public class RemoveStdAcceptCondSetCommandHandler extends CommandHandler<StdAcceptCondSetCommand> {
 
 	@Inject
-	private StdAcceptCondSetRepository repository;
+	private StdAcceptCondSetService condsetService;
 
 	@Override
 	protected void handle(CommandHandlerContext<StdAcceptCondSetCommand> context) {
+		//会社ＩＤ
 		String cid = AppContexts.user().companyId();
+		//システム種類
 		int sysType = context.getCommand().getSystemType();
+		//選択中の条件設定コード
 		String conditionSetCd = context.getCommand().getConditionSettingCode();
-		repository.remove(cid, sysType, conditionSetCd);
+		
+		//アルゴリズム「受入設定の削除」を実行する
+		condsetService.deleteConditionSetting(cid, sysType, conditionSetCd);
 	}
 }
