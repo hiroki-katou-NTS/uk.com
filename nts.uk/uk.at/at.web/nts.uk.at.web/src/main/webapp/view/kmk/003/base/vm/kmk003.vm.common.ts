@@ -668,7 +668,7 @@ module nts.uk.at.view.kmk003.a {
                 abstract toDto(): any;
             }
 
-            export abstract class FixedTableDataConverterNew<Converted, Original extends BaseDataModel> {
+            export abstract class FixedTableDataConverter<Converted, Original extends BaseDataModel> {
                 convertedList: KnockoutObservableArray<Converted>;
                 originalList: KnockoutObservableArray<Original>;
                 originalListTemp: Array<any>;
@@ -768,7 +768,7 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class OffdayWorkTimeConverter extends FixedTableDataConverterNew<OtherFlowColumnSetting, HDWorkTimeSheetSettingModel> {
+            export class OffdayWorkTimeConverter extends FixedTableDataConverter<OtherFlowColumnSetting, HDWorkTimeSheetSettingModel> {
                 constructor() {
                     super();
                 }
@@ -896,7 +896,7 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class FixRestTimezoneSetModel extends FixedTableDataConverterNew<TimeRangeModel, DeductionTimeModel> {
+            export class FixRestTimezoneSetModel extends FixedTableDataConverter<TimeRangeModel, DeductionTimeModel> {
                 timezones: KnockoutObservableArray<DeductionTimeModel>;
                 
                 constructor() {
@@ -940,7 +940,7 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class FlowRestTimezoneModel extends FixedTableDataConverterNew<FixedTableTimeEditorModel, FlowRestSettingModel> {
+            export class FlowRestTimezoneModel extends FixedTableDataConverter<FixedTableTimeEditorModel, FlowRestSettingModel> {
                 flowRestSets: KnockoutObservableArray<FlowRestSettingModel>;
                 useHereAfterRestSet: KnockoutObservable<boolean>;
                 hereAfterRestSet: FlowRestSettingModel;

@@ -18,7 +18,7 @@ module nts.uk.at.view.kmk003.a {
     import StampReflectTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.common.StampReflectTimezoneModel;
     import FlowWorkRestSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowWorkRestSettingModel;
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
-    import FixedTableDataConverterNew = nts.uk.at.view.kmk003.a.viewmodel.common.FixedTableDataConverterNew;
+    import FixedTableDataConverter = nts.uk.at.view.kmk003.a.viewmodel.common.FixedTableDataConverter;
     
     import FlWorkSettingDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlWorkSettingDto;
     export module viewmodel {
@@ -285,7 +285,7 @@ module nts.uk.at.view.kmk003.a {
 
             }
 
-            export class FlowOffdayWorkTzModel extends FixedTableDataConverterNew<FlowHdTimeZoneDuongModel, FlowWorkHdTimeZoneModel> {
+            export class FlowOffdayWorkTzModel extends FixedTableDataConverter<FlowHdTimeZoneDuongModel, FlowWorkHdTimeZoneModel> {
                 restTimeZone: FlowWorkRestTimezoneModel;
                 lstWorkTimezone: KnockoutObservableArray<FlowWorkHdTimeZoneModel>;
 

@@ -26,7 +26,7 @@ module nts.uk.at.view.kmk003.a {
     import OffdayWorkTimeConverter = nts.uk.at.view.kmk003.a.viewmodel.common.OffdayWorkTimeConverter;
     import FixRestTimezoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixRestTimezoneSetModel;
     import BaseDataModel = nts.uk.at.view.kmk003.a.viewmodel.common.BaseDataModel;
-    import FixedTableDataConverterNew = nts.uk.at.view.kmk003.a.viewmodel.common.FixedTableDataConverterNew;
+    import FixedTableDataConverter = nts.uk.at.view.kmk003.a.viewmodel.common.FixedTableDataConverter;
     
     import FixedWorkSettingDto = service.model.fixedset.FixedWorkSettingDto;
     export module viewmodel {
