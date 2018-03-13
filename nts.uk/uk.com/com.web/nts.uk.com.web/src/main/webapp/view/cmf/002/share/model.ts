@@ -156,6 +156,20 @@ module nts.uk.com.view.cmf002.share.model {
         }
     }
     
+    export class ExternalOutputCategoryItemData {
+        itemNo: KnockoutObservable<string>;
+        dispItemNo: string;
+        itemName: KnockoutObservable<string>;
+        dispitemName: string;
+
+        constructor(itemNo: string, itemName: string) {
+            this.itemNo = ko.observable(itemNo);
+            this.dispItemNo = itemNo;
+            this.itemName = ko.observable(itemName);
+            this.dispitemName = itemName;
+        }
+    }
+    
     export function getSystemTypes(): Array<ItemModel> {
         return [
             new ItemModel(0, getText('Enum_SystemType_PERSON_SYSTEM')),

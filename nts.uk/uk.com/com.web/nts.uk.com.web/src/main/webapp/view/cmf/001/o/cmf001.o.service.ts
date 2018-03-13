@@ -9,6 +9,7 @@ module nts.uk.com.view.cmf001.o {
             getConditionList: "exio/exi/condset/getStdAcceptCondSetBySysType/{0}",
             getNumberOfLine: "exio/exi/condset/getNumberOfLine/{0}",
             getAllStdAcceptItem: "exio/exi/item/getAllStdAcceptItem/{0}/{1}",
+            getCategoryItem: "exio/exi/condset/getCategoryItemData/{0}",
             getRecord: "exio/exi/condset/getRecord/{0}/{1}/{2}",
         }
 
@@ -29,6 +30,11 @@ module nts.uk.com.view.cmf001.o {
         export function getStdAcceptItem(systemType: number, conditionSetCd: string): JQueryPromise<any> {
             let _path = format(paths.getAllStdAcceptItem, systemType, conditionSetCd);
             return ajax('com', _path);
+        };
+
+        export function getCategoryItem(categoryId: string): JQueryPromise<any> {
+            let _path = format(paths.getCategoryItem, categoryId);
+            return ajax("com", _path);
         };
 
         export function getRecord(fileId: string, numOfCol: number, index: number): JQueryPromise<any> {

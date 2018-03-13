@@ -37,7 +37,7 @@
 									option: $parent.effectDigitItem()[0], 
 									name:'#{i18n.getText('CMF001_222')}',
 									optionValue: 'code', 
-									enable: $parent.inputMode, 
+									enable: $parent.enableEffectDigitLengthCls(), 
 									optionText: 'name', 
 									group: 'effectDigitCls'
 									}">
@@ -48,7 +48,7 @@
 									option: $parent.effectDigitItem()[1], 
 									name:'#{i18n.getText('CMF001_222')}',
 									optionValue: 'code', 
-									enable: $parent.inputMode, 
+									enable: $parent.enableEffectDigitLengthCls(), 
 									optionText: 'name', 
 									group: 'effectDigitCls' 
 									}">
@@ -89,7 +89,7 @@
 									checked: decimalDivision, 
 									option: $parent.effectMinorityItem()[0], 
 									optionValue: 'code', 
-									enable: $parent.inputMode, 
+									enable: $parent.enableEffectMinorityCls(), 
 									name: '#{i18n.getText('CMF001_231')}', 
 									optionText: 'name', 
 									group: 'minorityDigitCls' 
@@ -100,7 +100,7 @@
 									checked: decimalDivision, 
 									option: $parent.effectMinorityItem()[1], 
 									optionValue: 'code', 
-									enable: $parent.inputMode, 
+									enable: $parent.enableEffectMinorityCls(), 
 									name: '#{i18n.getText('CMF001_231')}', 
 									optionText: 'name', 
 									group: 'minorityDigitCls' 
@@ -171,7 +171,7 @@
 									checked: fixedValue, 
 									option: $parent.effectFixedValItem()[0], 
 									optionValue: 'code', 
-									enable: $parent.inputMode, 
+									enable: $parent.enableFixedValueCls(), 
 									name: '#{i18n.getText('CMF001_253')}', 
 									optionText: 'name', 
 									group: 'fixedValCls' 
@@ -203,9 +203,9 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="11" id="btn_G6_1" class="x-large proceed "
+				<button tabindex="11" id="G6_1" class="x-large proceed "
 					data-bind="click: saveNumericSetting, enable: inputMode &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CMF001_257')}</button>
-				<button tabindex="12" id="btn_G6_2" class="large"
+				<button tabindex="12" id="G6_2" class="large"
 					data-bind="click: cancelNumericSetting">#{i18n.getText('CMF001_258')}</button>
 			</div>
 		</ui:define>

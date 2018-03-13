@@ -124,6 +124,12 @@ public class StdAcceptCondSetFinder {
 						"1", 1, 1, 1, "5", "5", "5", "5", j, 1, 0L));
 			}
 		}
+		for (int i = 5; i <= 9; i++) {
+			for (int j = 1; j < 11; j++) {
+				lstCategoryItemData.add(new ExAcpCtgItemDatDto("" + (i - 5), j, "カテゴリ項目データ" + "" + i + "" + j, j, 1, 1,
+						1, "1", 1, 1, 1, "5", "5", "5", "5", j, 1, 0L));
+			}
+		}
 
 		return lstCategoryItemData.stream().filter(item -> {
 			return item.getCategoryId().equals(categoryId);
